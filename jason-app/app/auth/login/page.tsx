@@ -6,6 +6,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
 
+const MAX_ATTEMPTS = 5
+const BLOCK_DURATION_MS = 10 * 60 * 1000 // 10 minutes
+
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
@@ -15,16 +18,36 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [attempts, setAttempts] = useState(0)
+  const [blockedUntil, setBlockedUntil] = useState<number | null>(null)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+
+    // Check if blocked
+    if (blockedUntil && Date.now() < blockedUntil) {
+      const minutesLeft = Math.ceil((blockedUntil - Date.now()) / 60000)
+      setError(`Trop de tentatives. Réessaie dans ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}.`)
+      return
+    }
+
     setLoading(true)
     setError('')
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      setError('Email ou mot de passe incorrect.')
+      const newAttempts = attempts + 1
+      setAttempts(newAttempts)
+
+      if (newAttempts >= MAX_ATTEMPTS) {
+        setBlockedUntil(Date.now() + BLOCK_DURATION_MS)
+        setAttempts(0)
+        setError('Trop de tentatives. Compte temporairement bloqué pendant 10 minutes.')
+      } else {
+        const remaining = MAX_ATTEMPTS - newAttempts
+        setError(`Email ou mot de passe incorrect. ${remaining} tentative${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`)
+      }
       setLoading(false)
       return
     }
@@ -32,6 +55,8 @@ export default function LoginPage() {
     router.push('/dashboard')
     router.refresh()
   }
+
+  const isBlocked = blockedUntil !== null && Date.now() < blockedUntil
 
   return (
     <div style={styles.page}>
@@ -61,11 +86,17 @@ export default function LoginPage() {
               onChange={e => setEmail(e.target.value)}
               required
               autoComplete="email"
+              disabled={isBlocked}
             />
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Mot de passe</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label style={styles.label}>Mot de passe</label>
+              <Link href="/auth/forgot-password" style={styles.forgotLink}>
+                Mot de passe oublié ?
+              </Link>
+            </div>
             <div style={{ position: 'relative' }}>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -76,6 +107,7 @@ export default function LoginPage() {
                 required
                 autoComplete="current-password"
                 style={{ paddingRight: '44px' }}
+                disabled={isBlocked}
               />
               <button
                 type="button"
@@ -89,7 +121,12 @@ export default function LoginPage() {
 
           {error && <p style={styles.error}>{error}</p>}
 
-          <button type="submit" className="btn-primary" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}>
+          <button
+            type="submit"
+            className="btn-primary"
+            disabled={loading || isBlocked}
+            style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
+          >
             {loading ? 'Connexion...' : 'Se connecter'}
             {!loading && <ArrowRight size={16} weight="bold" />}
           </button>
@@ -164,6 +201,10 @@ const styles: Record<string, React.CSSProperties> = {
   form: { display: 'flex', flexDirection: 'column', gap: '18px' },
   field: { display: 'flex', flexDirection: 'column', gap: '7px' },
   label: { fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.7)' },
+  forgotLink: {
+    fontSize: '12px', color: 'rgba(255,213,107,0.7)',
+    textDecoration: 'none', fontWeight: 400,
+  },
   eyeBtn: {
     position: 'absolute', right: '12px', top: '50%',
     transform: 'translateY(-50%)',
