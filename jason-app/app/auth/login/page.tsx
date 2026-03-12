@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
 
+const MAX_ATTEMPTS = 5
+const BLOCK_DURATION_MS = 10 * 60 * 1000 // 10 minutes
+
 export default function LoginPage() {
-  const router = useRouter()
   const supabase = createClient()
 
   const [email, setEmail] = useState('')
@@ -15,12 +16,21 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [attempts, setAttempts] = useState(0)
+  const [blockedUntil, setBlockedUntil] = useState<number | null>(null)
   const [emailNotConfirmed, setEmailNotConfirmed] = useState(false)
   const [resendLoading, setResendLoading] = useState(false)
   const [resendSent, setResendSent] = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+
+    if (blockedUntil && Date.now() < blockedUntil) {
+      const minutesLeft = Math.ceil((blockedUntil - Date.now()) / 60000)
+      setError(`Trop de tentatives. Réessaie dans ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}.`)
+      return
+    }
+
     setLoading(true)
     setError('')
     setEmailNotConfirmed(false)
@@ -32,14 +42,23 @@ export default function LoginPage() {
         setEmailNotConfirmed(true)
         setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
       } else {
-        setError('Email ou mot de passe incorrect.')
+        const newAttempts = attempts + 1
+        setAttempts(newAttempts)
+
+        if (newAttempts >= MAX_ATTEMPTS) {
+          setBlockedUntil(Date.now() + BLOCK_DURATION_MS)
+          setAttempts(0)
+          setError('Trop de tentatives. Compte temporairement bloqué pendant 10 minutes.')
+        } else {
+          const remaining = MAX_ATTEMPTS - newAttempts
+          setError(`Email ou mot de passe incorrect. ${remaining} tentative${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`)
+        }
       }
       setLoading(false)
       return
     }
 
-    router.push('/dashboard')
-    router.refresh()
+    window.location.href = '/dashboard'
   }
 
   async function handleResendConfirmation() {
@@ -57,13 +76,14 @@ export default function LoginPage() {
     }
   }
 
+  const isBlocked = blockedUntil !== null && Date.now() < blockedUntil
+
   return (
     <div style={styles.page}>
       <div style={styles.bg1} />
       <div style={styles.bg2} />
 
       <div style={styles.card} className="fade-up">
-        {/* Logo */}
         <div style={styles.logo}>
           <div style={styles.logoIcon}>
             <Waves size={22} color="#FFD56B" weight="bold" />
@@ -85,11 +105,17 @@ export default function LoginPage() {
               onChange={e => setEmail(e.target.value)}
               required
               autoComplete="email"
+              disabled={isBlocked}
             />
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Mot de passe</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label style={styles.label}>Mot de passe</label>
+              <Link href="/auth/forgot-password" style={styles.forgotLink}>
+                Mot de passe oublié ?
+              </Link>
+            </div>
             <div style={{ position: 'relative' }}>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -100,6 +126,7 @@ export default function LoginPage() {
                 required
                 autoComplete="current-password"
                 style={{ paddingRight: '44px' }}
+                disabled={isBlocked}
               />
               <button
                 type="button"
@@ -130,7 +157,12 @@ export default function LoginPage() {
             </div>
           )}
 
-          <button type="submit" className="btn-primary" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}>
+          <button
+            type="submit"
+            className="btn-primary"
+            disabled={loading || isBlocked}
+            style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
+          >
             {loading ? 'Connexion...' : 'Se connecter'}
             {!loading && <ArrowRight size={16} weight="bold" />}
           </button>
@@ -205,6 +237,10 @@ const styles: Record<string, React.CSSProperties> = {
   form: { display: 'flex', flexDirection: 'column', gap: '18px' },
   field: { display: 'flex', flexDirection: 'column', gap: '7px' },
   label: { fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.7)' },
+  forgotLink: {
+    fontSize: '12px', color: 'rgba(255,213,107,0.7)',
+    textDecoration: 'none', fontWeight: 400,
+  },
   eyeBtn: {
     position: 'absolute', right: '12px', top: '50%',
     transform: 'translateY(-50%)',
@@ -218,11 +254,6 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '8px', padding: '10px 14px',
   },
-  footer: {
-    marginTop: '24px', textAlign: 'center',
-    fontSize: '13px', color: 'rgba(240,244,255,0.4)',
-  },
-  link: { color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
   resendBtn: {
     marginTop: '8px',
     background: 'none',
@@ -243,4 +274,9 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '8px',
     padding: '10px 14px',
   },
+  footer: {
+    marginTop: '24px', textAlign: 'center',
+    fontSize: '13px', color: 'rgba(240,244,255,0.4)',
+  },
+  link: { color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
 }
