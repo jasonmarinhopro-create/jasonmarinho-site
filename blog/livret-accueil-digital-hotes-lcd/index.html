@@ -539,6 +539,8 @@ function subscriberBrevo(e) {
     btn.disabled = false;
   });
 }
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
+document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
 </script>
 </body>
 </html>
