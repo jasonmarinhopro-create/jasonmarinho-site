@@ -516,5 +516,54 @@ const nav=document.getElementById('nav'),hbg=document.getElementById('hbg'),mob=
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
 hbg&&hbg.addEventListener('click',()=>mob.classList.toggle('open'));
 </script>
+
+<script>
+function subscriberBrevo(e) {
+  e.preventDefault();
+  var email = document.getElementById('brevo-email').value;
+  var msg = document.getElementById('brevo-msg');
+  var btn = document.getElementById('brevo-submit');
+  if (!email || !email.includes('@')) {
+    msg.textContent = 'Saisis une adresse email valide.';
+    msg.style.color = '#FFD56B';
+    msg.style.display = 'block';
+    return;
+  }
+  btn.textContent = 'Envoi...';
+  btn.disabled = true;
+  // Brevo API — remplace XXXX par ton List ID Brevo
+  fetch('https://api.brevo.com/v3/contacts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': 'BREVO_API_KEY' // ← Remplace par ta clé API Brevo
+    },
+    body: JSON.stringify({
+      email: email,
+      listIds: [2], // ← Remplace 2 par ton ID de liste Brevo
+      updateEnabled: true
+    })
+  }).then(function(r) {
+    if (r.ok || r.status === 204) {
+      msg.textContent = '✓ Bienvenue ! Vérifie ta boîte mail.';
+      msg.style.color = '#FFD56B';
+      msg.style.display = 'block';
+      document.getElementById('brevo-email').value = '';
+    } else {
+      msg.textContent = 'Déjà inscrit ou erreur — réessaie.';
+      msg.style.color = 'rgba(255,255,255,.6)';
+      msg.style.display = 'block';
+    }
+    btn.textContent = "S'inscrire";
+    btn.disabled = false;
+  }).catch(function() {
+    msg.textContent = 'Connexion impossible. Réessaie plus tard.';
+    msg.style.color = 'rgba(255,255,255,.6)';
+    msg.style.display = 'block';
+    btn.textContent = "S'inscrire";
+    btn.disabled = false;
+  });
+}
+</script>
 </body>
 </html>

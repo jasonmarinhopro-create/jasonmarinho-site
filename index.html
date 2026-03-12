@@ -340,7 +340,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   <div class="h-g1"></div><div class="h-g2"></div><div class="h-grid"></div>
   <div class="h-inner">
     <div>
-      <div class="h-badge"><div class="h-dot"></div> Formation · Ressources · Accompagnement · Fait en France</div>
+      <div class="h-badge"><div class="h-dot"></div> Formation · Ressources · Accompagnement</div>
       <h1 class="h-h1">Développe ton activité<br>de <em>location<br>courte durée</em></h1>
       <p class="h-sub">Formations pratiques, ressources prêtes à l'emploi et accompagnement humain pour progresser dans ta gestion locative et développer ton activité LCD.</p>
       <div class="h-acts">
@@ -365,8 +365,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
       <div class="h-card-foot">
         <i class="ph-bold ph-map-pin-line"></i>
-        <p><strong>Fait en France</strong>, conçu et maintenu par Jason Marinho, basé à Paris</p>
-      </div>
+              </div>
     </div>
   </div>
 </section>
@@ -382,8 +381,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <!-- TRUST BAR -->
 <div class="trust">
   <div class="trust-inner">
-    <div class="trust-item"><i class="ph-bold ph-map-pin-line"></i> Fait en France</div>
-    <div class="trust-item"><i class="ph-bold ph-chat-circle-text"></i> Réponse rapide, toujours</div>
+        <div class="trust-item"><i class="ph-bold ph-chat-circle-text"></i> Réponse rapide, toujours</div>
     <div class="trust-item"><i class="ph-bold ph-lock-simple"></i> 100% indépendant</div>
     <div class="trust-item"><i class="ph-bold ph-hand-heart"></i> Accompagnement humain</div>
     <div class="trust-item"><i class="ph-bold ph-certificate"></i> 4 ans dans le secteur LCD</div>
@@ -453,7 +451,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
       <div class="sup-card">
         <div class="sv-ico" style="background:rgba(168,213,181,.08);margin-bottom:18px"><i class="ph-light ph-map-pin-line" style="color:#a8d5b5"></i></div>
-        <div class="sup-t">Fait en France</div>
+        
         <p class="sup-d">Conçu, maintenu et mis à jour depuis Paris. Contenu en français, adapté au marché LCD français et à ses spécificités réglementaires.</p>
         <div class="sup-tag" style="background:rgba(168,213,181,.08);color:#a8d5b5;border:1px solid rgba(168,213,181,.15)"><i class="ph-bold ph-flag"></i> Paris, France</div>
       </div>
@@ -640,10 +638,11 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <div class="lbl lt ct rv" style="justify-content:center">Newsletter</div>
     <h2 class="h2 lt ct rv">Prêt à te lancer<br><em>sans prise de vague ?</em></h2>
     <p class="sub lt ct rv" style="margin-bottom:0;max-width:380px">Conseils LCD, ressources et outils pratiques dans ta boîte mail chaque semaine.</p>
-    <div class="cta-fm rv">
-      <input type="email" class="cta-i" placeholder="ton@email.com" aria-label="Email">
-      <button class="btn-p">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
+    <div class="cta-fm rv" id="brevo-form">
+      <input type="email" id="brevo-email" class="cta-i" placeholder="ton@email.com" aria-label="Email" autocomplete="email">
+      <button class="btn-p" id="brevo-submit" onclick="subscriberBrevo(event)">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
     </div>
+    <p id="brevo-msg" style="display:none;font-size:13px;margin-top:10px;color:var(--y)"></p>
     <p class="cta-n"><i class="ph-regular ph-lock"></i> Aucun spam. Désinscription en un clic.</p>
   </div>
 </section>
