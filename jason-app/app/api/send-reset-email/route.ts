@@ -58,23 +58,83 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: 'Jason Marinho <noreply@jasonmarinho.com>',
       to: normalized,
-      subject: 'Réinitialisation de ton mot de passe',
-      html: `
-        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;background:#0a0f0d;color:#f0f4ff;padding:40px;border-radius:16px;">
-          <h1 style="font-size:22px;margin-bottom:12px;">Réinitialise ton mot de passe</h1>
-          <p style="color:rgba(240,244,255,0.6);font-size:15px;line-height:1.6;margin-bottom:28px;">
-            Tu as demandé à réinitialiser ton mot de passe. Clique sur le bouton ci-dessous.
-            Ce lien expire dans <strong style="color:#FFD56B;">1 heure</strong>.
+      subject: 'Réinitialise ton mot de passe 🔐',
+      html: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Réinitialisation du mot de passe</title></head>
+<body style="margin:0;padding:0;background-color:#060d0b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#060d0b;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+
+        <!-- Header / Logo -->
+        <tr><td style="padding-bottom:32px;" align="center">
+          <table cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="background:#004C3F;border:1px solid rgba(255,213,107,0.25);border-radius:12px;width:44px;height:44px;text-align:center;vertical-align:middle;">
+                <span style="font-size:20px;line-height:44px;">🌊</span>
+              </td>
+              <td style="padding-left:12px;vertical-align:middle;">
+                <span style="font-size:20px;font-weight:600;color:#f0f4ff;letter-spacing:-0.3px;">Jason <em style="color:#FFD56B;font-style:italic;">Marinho</em></span>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
+
+        <!-- Card -->
+        <tr><td style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:40px 36px;">
+
+          <!-- Icon -->
+          <p style="text-align:center;margin:0 0 24px 0;">
+            <span style="display:inline-block;background:rgba(0,76,63,0.4);border:1px solid rgba(255,213,107,0.2);border-radius:50%;width:64px;height:64px;line-height:64px;font-size:28px;text-align:center;">🔐</span>
           </p>
-          <a href="${data.properties.action_link}"
-            style="display:inline-block;background:#004C3F;color:#FFD56B;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px;">
-            Réinitialiser mon mot de passe
-          </a>
-          <p style="color:rgba(240,244,255,0.3);font-size:12px;margin-top:32px;">
-            Si tu n'as pas fait cette demande, ignore cet email.
+
+          <!-- Title -->
+          <h1 style="margin:0 0 12px 0;font-size:26px;font-weight:400;color:#f0f4ff;text-align:center;letter-spacing:-0.5px;">
+            Réinitialise ton<br/>mot de passe
+          </h1>
+
+          <!-- Divider -->
+          <div style="width:48px;height:2px;background:linear-gradient(90deg,#004C3F,#FFD56B);border-radius:2px;margin:20px auto;"></div>
+
+          <!-- Body -->
+          <p style="margin:0 0 28px 0;font-size:15px;line-height:1.7;color:rgba(240,244,255,0.6);text-align:center;">
+            Tu as demandé à réinitialiser ton mot de passe.<br/>
+            Clique sur le bouton ci-dessous — ce lien expire dans&nbsp;<strong style="color:#FFD56B;">1&nbsp;heure</strong>.
           </p>
-        </div>
-      `,
+
+          <!-- CTA Button -->
+          <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding-bottom:32px;">
+            <a href="${data.properties.action_link}"
+              style="display:inline-block;background:linear-gradient(135deg,#004C3F 0%,#006653 100%);color:#FFD56B;padding:16px 36px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:0.2px;border:1px solid rgba(255,213,107,0.2);">
+              Réinitialiser mon mot de passe →
+            </a>
+          </td></tr></table>
+
+          <!-- Security note -->
+          <div style="background:rgba(255,213,107,0.06);border:1px solid rgba(255,213,107,0.12);border-radius:10px;padding:14px 18px;">
+            <p style="margin:0;font-size:13px;color:rgba(240,244,255,0.45);line-height:1.6;text-align:center;">
+              🛡️ Si tu n'as pas demandé cette réinitialisation, ignore cet email.<br/>Ton mot de passe ne sera pas modifié.
+            </p>
+          </div>
+
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="padding-top:28px;text-align:center;">
+          <p style="margin:0 0 6px 0;font-size:12px;color:rgba(240,244,255,0.2);">
+            Jason Marinho · Formation Location Courte Durée
+          </p>
+          <p style="margin:0;font-size:12px;color:rgba(240,244,255,0.15);">
+            <a href="https://app.jasonmarinho.com" style="color:rgba(255,213,107,0.3);text-decoration:none;">app.jasonmarinho.com</a>
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
     })
 
     return NextResponse.json({ success: true })
