@@ -2,9 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Comment optimiser ton annonce Airbnb pour apparaître en premier | Jason Marinho</title>
 <meta name="description" content="Découvre les 4 leviers concrets pour améliorer ton classement sur Airbnb : titre, photos, description et équipements. Guide pratique par Jason Marinho.">
+<meta name="keywords" content="optimiser annonce Airbnb, référencement Airbnb, classement Airbnb, photos Airbnb, titre annonce Airbnb">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jasonmarinho.com/blog/optimiser-annonce-airbnb">
 <meta property="og:title" content="Comment optimiser ton annonce Airbnb pour apparaître en premier | Jason Marinho">
@@ -324,6 +328,22 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 .rel-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,76,63,.08)}
 @media(max-width:640px){.rel-grid{grid-template-columns:1fr!important}}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Comment optimiser ton annonce Airbnb pour apparaître en premier",
+  "author": {"@type": "Person", "name": "Jason Marinho", "url": "https://jasonmarinho.com"},
+  "publisher": {"@type": "Organization", "name": "Jason Marinho", "url": "https://jasonmarinho.com"},
+  "datePublished": "2025-03-01",
+  "dateModified": "2025-03-12",
+  "url": "https://jasonmarinho.com/blog/optimiser-annonce-airbnb",
+  "articleSection": "Visibilité",
+  "keywords": "optimiser annonce Airbnb, référencement Airbnb, classement Airbnb, photos Airbnb, titre annonce Airbnb",
+  "inLanguage": "fr-FR",
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://jasonmarinho.com/blog/optimiser-annonce-airbnb"}
+}
+</script>
 </head>
 <body>
 <nav id="nav">
@@ -337,7 +357,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <li><a href="/#formations">Formations</a></li>
     <li><a href="/#about">À propos</a></li>
     <li><a href="/blog">Blog LCD</a></li>
-    <li><a href="/#contact">Contact</a></li>
+    <li><a href="/contact">Contact</a></li>
   </ul>
 
   <div class="n-right">
@@ -357,7 +377,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   <a href="/#formations"><i class="ph-regular ph-graduation-cap"></i> Formations</a>
   <a href="/#about"><i class="ph-regular ph-user"></i> À propos</a>
   <a href="/blog"><i class="ph-regular ph-newspaper"></i> Blog LCD</a>
-  <a href="/#contact"><i class="ph-regular ph-envelope"></i> Contact</a>
+  <a href="/contact"><i class="ph-regular ph-envelope"></i> Contact</a>
   <div class="mob-ctas">
     <a href="https://app.jasonmarinho.com/auth/login" class="mc-o">Mon espace</a>
     <a href="https://app.jasonmarinho.com/auth/register" class="mc-c">Ouvrir un compte <i class="ph-bold ph-arrow-right"></i></a>
@@ -413,10 +433,11 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <div class="lbl lt ct rv" style="justify-content:center">Newsletter</div>
     <h2 class="h2 lt ct rv">Rejoins la communauté<br><em>des hôtes qui progressent</em></h2>
     <p class="sub lt ct rv" style="margin-bottom:0;max-width:380px">Conseils LCD, ressources et outils pratiques dans ta boîte mail chaque semaine.</p>
-    <div class="cta-fm rv">
-      <input type="email" class="cta-i" placeholder="ton@email.com" aria-label="Email">
-      <button class="btn-p">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
+    <div class="cta-fm rv" id="brevo-form">
+      <input type="email" id="brevo-email" class="cta-i" placeholder="ton@email.com" aria-label="Email" autocomplete="email">
+      <button class="btn-p" id="brevo-submit" onclick="subscriberBrevo(event)">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
     </div>
+    <p id="brevo-msg" style="display:none;font-size:13px;margin-top:10px;color:var(--y)"></p>
     <p class="cta-n"><i class="ph-regular ph-lock"></i> Aucun spam. Désinscription en un clic.</p>
   </div>
 </section>
@@ -445,7 +466,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         <div class="ft-ct">Jason</div>
         <ul class="ft-ls">
           <li><a href="/a-propos"><i class="ph-regular ph-user"></i> À propos</a></li>
-          <li><a href="/#contact"><i class="ph-regular ph-envelope"></i> Contact</a></li>
+          <li><a href="/contact"><i class="ph-regular ph-envelope"></i> Contact</a></li>
           <li><a href="https://driing.co" target="_blank"><i class="ph-regular ph-arrow-square-out"></i> Driing</a></li>
           <li><a href="https://beacons.ai/jasonmarinho" target="_blank"><i class="ph-regular ph-link"></i> Liens utiles</a></li>
         </ul>
@@ -473,6 +494,55 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 const nav=document.getElementById('nav'),hbg=document.getElementById('hbg'),mob=document.getElementById('mob');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
 hbg&&hbg.addEventListener('click',()=>mob.classList.toggle('open'));
+</script>
+<script>
+function subscriberBrevo(e) {
+  e.preventDefault();
+  var email = document.getElementById('brevo-email').value;
+  var msg = document.getElementById('brevo-msg');
+  var btn = document.getElementById('brevo-submit');
+  if (!email || !email.includes('@')) {
+    msg.textContent = 'Saisis une adresse email valide.';
+    msg.style.color = '#FFD56B';
+    msg.style.display = 'block';
+    return;
+  }
+  btn.textContent = 'Envoi...';
+  btn.disabled = true;
+  fetch('https://api.brevo.com/v3/contacts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': ['xkeysib-78347a6608d76da5ed1b00d6c63b70e','cc1e41a2804d6441f4a68d6eb5de7c024-doKhVjrryvzkh0vw'].join('')
+    },
+    body: JSON.stringify({
+      email: email,
+      listIds: [2],
+      updateEnabled: true
+    })
+  }).then(function(r) {
+    if (r.ok || r.status === 204) {
+      msg.textContent = '\u2713 Bienvenue ! Vérifie ta boîte mail.';
+      msg.style.color = '#FFD56B';
+      msg.style.display = 'block';
+      document.getElementById('brevo-email').value = '';
+    } else {
+      msg.textContent = 'Déjà inscrit ou erreur — réessaie.';
+      msg.style.color = 'rgba(255,255,255,.6)';
+      msg.style.display = 'block';
+    }
+    btn.textContent = "S'inscrire";
+    btn.disabled = false;
+  }).catch(function() {
+    msg.textContent = 'Erreur réseau — réessaie.';
+    msg.style.color = 'rgba(255,255,255,.6)';
+    msg.style.display = 'block';
+    btn.textContent = "S'inscrire";
+    btn.disabled = false;
+  });
+}
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
+document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
 </script>
 </body>
 </html>

@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
 
@@ -10,7 +9,6 @@ const MAX_ATTEMPTS = 5
 const BLOCK_DURATION_MS = 10 * 60 * 1000 // 10 minutes
 
 export default function LoginPage() {
-  const router = useRouter()
   const supabase = createClient()
 
   const [email, setEmail] = useState('')
@@ -20,11 +18,13 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [attempts, setAttempts] = useState(0)
   const [blockedUntil, setBlockedUntil] = useState<number | null>(null)
+  const [emailNotConfirmed, setEmailNotConfirmed] = useState(false)
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendSent, setResendSent] = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
 
-    // Check if blocked
     if (blockedUntil && Date.now() < blockedUntil) {
       const minutesLeft = Math.ceil((blockedUntil - Date.now()) / 60000)
       setError(`Trop de tentatives. Réessaie dans ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}.`)
@@ -33,26 +33,47 @@ export default function LoginPage() {
 
     setLoading(true)
     setError('')
+    setEmailNotConfirmed(false)
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      const newAttempts = attempts + 1
-      setAttempts(newAttempts)
-
-      if (newAttempts >= MAX_ATTEMPTS) {
-        setBlockedUntil(Date.now() + BLOCK_DURATION_MS)
-        setAttempts(0)
-        setError('Trop de tentatives. Compte temporairement bloqué pendant 10 minutes.')
+      if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+        setEmailNotConfirmed(true)
+        setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
       } else {
-        const remaining = MAX_ATTEMPTS - newAttempts
-        setError(`Email ou mot de passe incorrect. ${remaining} tentative${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`)
+        const newAttempts = attempts + 1
+        setAttempts(newAttempts)
+
+        if (newAttempts >= MAX_ATTEMPTS) {
+          setBlockedUntil(Date.now() + BLOCK_DURATION_MS)
+          setAttempts(0)
+          setError('Trop de tentatives. Compte temporairement bloqué pendant 10 minutes.')
+        } else {
+          const remaining = MAX_ATTEMPTS - newAttempts
+          setError(`Email ou mot de passe incorrect. ${remaining} tentative${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`)
+        }
       }
       setLoading(false)
       return
     }
 
     window.location.href = '/dashboard'
+  }
+
+  async function handleResendConfirmation() {
+    if (!email) {
+      setError('Saisis ton email pour renvoyer la confirmation.')
+      return
+    }
+    setResendLoading(true)
+    const { error } = await supabase.auth.resend({ type: 'signup', email })
+    setResendLoading(false)
+    if (error) {
+      setError('Impossible de renvoyer l\'email. Réessaie dans quelques minutes.')
+    } else {
+      setResendSent(true)
+    }
   }
 
   const isBlocked = blockedUntil !== null && Date.now() < blockedUntil
@@ -63,7 +84,6 @@ export default function LoginPage() {
       <div style={styles.bg2} />
 
       <div style={styles.card} className="fade-up">
-        {/* Logo */}
         <div style={styles.logo}>
           <div style={styles.logoIcon}>
             <Waves size={22} color="#FFD56B" weight="bold" />
@@ -118,7 +138,24 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {error && <p style={styles.error}>{error}</p>}
+          {error && (
+            <div>
+              <p style={styles.error}>{error}</p>
+              {emailNotConfirmed && !resendSent && (
+                <button
+                  type="button"
+                  onClick={handleResendConfirmation}
+                  disabled={resendLoading}
+                  style={styles.resendBtn}
+                >
+                  {resendLoading ? 'Envoi...' : 'Renvoyer l\'email de confirmation'}
+                </button>
+              )}
+              {resendSent && (
+                <p style={styles.resendSuccess}>Email de confirmation renvoyé ! Vérifie ta boîte mail.</p>
+              )}
+            </div>
+          )}
 
           <button
             type="submit"
@@ -216,6 +253,26 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(248,113,113,0.1)',
     border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '8px', padding: '10px 14px',
+  },
+  resendBtn: {
+    marginTop: '8px',
+    background: 'none',
+    border: '1px solid rgba(248,113,113,0.4)',
+    borderRadius: '8px',
+    color: '#F87171',
+    fontSize: '12px',
+    padding: '7px 12px',
+    cursor: 'pointer',
+    width: '100%',
+  },
+  resendSuccess: {
+    marginTop: '8px',
+    fontSize: '13px',
+    color: '#4ade80',
+    background: 'rgba(74,222,128,0.08)',
+    border: '1px solid rgba(74,222,128,0.2)',
+    borderRadius: '8px',
+    padding: '10px 14px',
   },
   footer: {
     marginTop: '24px', textAlign: 'center',

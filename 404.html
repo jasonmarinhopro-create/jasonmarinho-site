@@ -5,116 +5,113 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Page introuvable · Jason Marinho</title>
 <meta name="robots" content="noindex">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--g:#004C3F;--gd:#003329;--y:#FFD56B}
+:root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--w:#FDFCF9;--td:#0F1A0D;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 html,body{height:100%}
-body{
-  font-family:'Outfit',sans-serif;
-  background:var(--gd);
-  color:#f0f4ff;
-  min-height:100svh;
-  display:flex;align-items:center;justify-content:center;
-  padding:24px 16px;
-  position:relative;overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-}
+body{font-family:'Outfit',sans-serif;background:var(--gd);color:#f0f4ff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;overflow-x:hidden}
 
-/* Gradient blobs */
-.bg1{position:fixed;top:-15%;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(0,76,63,.18) 0%,transparent 60%);pointer-events:none}
-.bg2{position:fixed;bottom:-20%;right:-10%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,213,107,.05) 0%,transparent 60%);pointer-events:none}
-.bg3{position:fixed;top:30%;left:-10%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,90,74,.1) 0%,transparent 60%);pointer-events:none}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5vw,60px);background:rgba(0,51,41,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,213,107,.07)}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.n-brand{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px}
+.n-brand em{color:var(--y);font-style:italic;font-weight:300}
+.n-cta{font-size:13px;font-weight:600;color:var(--y);text-decoration:none;opacity:.9;transition:opacity .2s}
+.n-cta:hover{opacity:1}
 
-/* Card */
-.card{
-  text-align:center;position:relative;z-index:2;
-  max-width:460px;width:100%;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  animation:fu .6s ease both;
-}
-@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+/* ── BACKGROUND BLOBS ── */
+.blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+.blob-1{top:-10%;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(0,76,63,.22) 0%,transparent 65%)}
+.blob-2{bottom:-20%;right:-8%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,213,107,.05) 0%,transparent 65%)}
+.blob-3{top:30%;left:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(0,90,74,.12) 0%,transparent 65%)}
 
-/* Compass icon */
-.icon-wrap{
-  width:80px;height:80px;border-radius:20px;
-  background:rgba(0,76,63,.3);border:1px solid rgba(255,213,107,.15);
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:8px;
-}
-.icon-wrap i{font-size:48px;color:var(--y);opacity:.9}
+/* ── MAIN ── */
+main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px clamp(20px,5vw,40px) 80px;position:relative;z-index:1}
 
-/* 404 ghost number */
-.code{
-  font-family:'Fraunces',serif;font-size:72px;font-weight:300;
-  color:rgba(240,244,255,.06);letter-spacing:12px;line-height:1;
-  margin-bottom:-16px;
-}
+/* ── COMPASS ICON ── */
+.compass-wrap{width:84px;height:84px;border-radius:22px;background:rgba(0,76,63,.35);border:1px solid rgba(255,213,107,.15);display:flex;align-items:center;justify-content:center;margin-bottom:28px;animation:float 4s ease-in-out infinite}
+.compass-wrap i{font-size:44px;color:var(--y)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
-h1{
-  font-family:'Fraunces',serif;font-size:clamp(24px,4vw,36px);
-  font-weight:400;color:#f0f4ff;line-height:1.25;
-}
+/* ── 404 ── */
+.code{font-family:'Fraunces',serif;font-size:clamp(72px,14vw,130px);font-weight:300;color:rgba(240,244,255,.06);letter-spacing:8px;line-height:1;margin-bottom:-18px;user-select:none}
+
+/* ── HEADLINE ── */
+h1{font-family:'Fraunces',serif;font-size:clamp(26px,4vw,38px);font-weight:400;color:#f0f4ff;margin-bottom:14px;line-height:1.25}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 
-p.desc{
-  font-size:15px;font-weight:300;
-  color:rgba(240,244,255,.45);
-  line-height:1.65;max-width:360px;
-}
+/* ── DESC ── */
+p.desc{font-size:15px;font-weight:300;color:rgba(240,244,255,.45);max-width:380px;line-height:1.7;margin-bottom:12px}
 
-/* Waves decoration */
-.waves{display:flex;gap:6px;align-items:center;margin:8px 0}
-.waves i:nth-child(1){font-size:20px;color:rgba(255,213,107,.3)}
-.waves i:nth-child(2){font-size:20px;color:rgba(255,213,107,.15)}
-.waves i:nth-child(3){font-size:20px;color:rgba(255,213,107,.07)}
+/* ── WAVES DECO ── */
+.waves-deco{display:flex;gap:8px;align-items:center;justify-content:center;margin:16px 0 28px}
+.waves-deco i{color:rgba(255,213,107,.25);font-size:20px}
+.waves-deco i:nth-child(2){color:rgba(255,213,107,.13)}
+.waves-deco i:nth-child(3){color:rgba(255,213,107,.06)}
 
-/* Button */
-.btn{
-  margin-top:12px;
-  background:var(--y);color:var(--gd);
-  font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;
-  padding:13px 24px;border-radius:10px;text-decoration:none;
-  display:inline-flex;align-items:center;gap:7px;
-  transition:all .2s;
-}
-.btn:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.28)}
+/* ── BUTTONS ── */
+.actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;padding:12px 22px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.22)}
+.btn-s{background:rgba(255,255,255,.06);color:rgba(240,244,255,.7);font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;padding:12px 22px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.1);transition:all .2s}
+.btn-s:hover{border-color:rgba(255,213,107,.2);color:#f0f4ff}
 
-.hint{font-size:13px;color:rgba(240,244,255,.3)}
-.hint a{color:var(--y);text-decoration:none;font-weight:500}
-.hint a:hover{text-decoration:underline}
+/* ── FOOTER ── */
+footer{position:relative;z-index:1;padding:20px clamp(16px,5vw,60px);display:flex;justify-content:center;border-top:1px solid rgba(255,255,255,.04)}
+.ft-cp{font-size:12px;color:rgba(240,244,255,.2);font-weight:300}
+
+/* ── WAVE BOTTOM SVG ── */
+.wave-bottom{position:fixed;bottom:0;left:0;right:0;pointer-events:none;z-index:0;opacity:.35}
 </style>
 </head>
 <body>
 
-<div class="bg1"></div>
-<div class="bg2"></div>
-<div class="bg3"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
 
-<div class="card">
-  <div class="icon-wrap">
+<nav>
+  <a href="/" class="n-logo">
+    <span class="n-brand">Jason <em>Marinho</em></span>
+  </a>
+  <a href="https://app.jasonmarinho.com" class="n-cta">Accéder à la plateforme →</a>
+</nav>
+
+<main>
+  <div class="compass-wrap">
     <i class="ph-thin ph-compass"></i>
   </div>
 
-  <p class="code">4 0 4</p>
+  <div class="code">404</div>
 
   <h1>Vous êtes <em>perdus en mer</em></h1>
-  <p class="desc">Cette page a été emportée par les vagues. Le cap que vous cherchez n'existe pas (ou n'existe plus).</p>
 
-  <div class="waves">
+  <p class="desc">Cette page a été emportée par les vagues. Le cap que vous cherchez n'existe pas, ou n'existe plus.</p>
+
+  <div class="waves-deco">
     <i class="ph-regular ph-waves"></i>
     <i class="ph-regular ph-waves"></i>
     <i class="ph-regular ph-waves"></i>
   </div>
 
-  <a href="/" class="btn">
-    <i class="ph-bold ph-arrow-left"></i> Regagner le port
-  </a>
+  <div class="actions">
+    <a href="/" class="btn-p"><i class="ph-bold ph-anchor"></i> Regagner le port</a>
+    <a href="https://app.jasonmarinho.com" class="btn-s"><i class="ph-bold ph-arrow-right"></i> Accéder à la plateforme</a>
+  </div>
+</main>
 
-  <p class="hint">ou <a href="https://app.jasonmarinho.com">accéder à la plateforme</a></p>
-</div>
+<footer>
+  <span class="ft-cp">© 2026 Jason Marinho</span>
+</footer>
+
+<svg class="wave-bottom" viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <path d="M0,60 C240,100 480,20 720,60 C960,100 1200,20 1440,60 L1440,120 L0,120 Z" fill="rgba(0,76,63,0.18)"/>
+  <path d="M0,80 C360,40 720,110 1080,70 C1260,50 1380,90 1440,80 L1440,120 L0,120 Z" fill="rgba(0,76,63,0.1)"/>
+</svg>
 
 </body>
 </html>
