@@ -15,22 +15,46 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [emailNotConfirmed, setEmailNotConfirmed] = useState(false)
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendSent, setResendSent] = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setEmailNotConfirmed(false)
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      setError('Email ou mot de passe incorrect.')
+      if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+        setEmailNotConfirmed(true)
+        setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
+      } else {
+        setError('Email ou mot de passe incorrect.')
+      }
       setLoading(false)
       return
     }
 
     router.push('/dashboard')
     router.refresh()
+  }
+
+  async function handleResendConfirmation() {
+    if (!email) {
+      setError('Saisis ton email pour renvoyer la confirmation.')
+      return
+    }
+    setResendLoading(true)
+    const { error } = await supabase.auth.resend({ type: 'signup', email })
+    setResendLoading(false)
+    if (error) {
+      setError('Impossible de renvoyer l\'email. Réessaie dans quelques minutes.')
+    } else {
+      setResendSent(true)
+    }
   }
 
   return (
@@ -87,7 +111,24 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {error && <p style={styles.error}>{error}</p>}
+          {error && (
+            <div>
+              <p style={styles.error}>{error}</p>
+              {emailNotConfirmed && !resendSent && (
+                <button
+                  type="button"
+                  onClick={handleResendConfirmation}
+                  disabled={resendLoading}
+                  style={styles.resendBtn}
+                >
+                  {resendLoading ? 'Envoi...' : 'Renvoyer l\'email de confirmation'}
+                </button>
+              )}
+              {resendSent && (
+                <p style={styles.resendSuccess}>Email de confirmation renvoyé ! Vérifie ta boîte mail.</p>
+              )}
+            </div>
+          )}
 
           <button type="submit" className="btn-primary" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}>
             {loading ? 'Connexion...' : 'Se connecter'}
@@ -182,4 +223,24 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '13px', color: 'rgba(240,244,255,0.4)',
   },
   link: { color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
+  resendBtn: {
+    marginTop: '8px',
+    background: 'none',
+    border: '1px solid rgba(248,113,113,0.4)',
+    borderRadius: '8px',
+    color: '#F87171',
+    fontSize: '12px',
+    padding: '7px 12px',
+    cursor: 'pointer',
+    width: '100%',
+  },
+  resendSuccess: {
+    marginTop: '8px',
+    fontSize: '13px',
+    color: '#4ade80',
+    background: 'rgba(74,222,128,0.08)',
+    border: '1px solid rgba(74,222,128,0.2)',
+    borderRadius: '8px',
+    padding: '10px 14px',
+  },
 }
