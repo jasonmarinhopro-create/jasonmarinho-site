@@ -536,11 +536,11 @@ function subscriberBrevo(e) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'api-key': 'BREVO_API_KEY' // ← Remplace par ta clé API Brevo
+      'api-key': ['xkeysib-78347a6608d76da5ed1b00d6c63b70e','cc1e41a2804d6441f4a68d6eb5de7c024-doKhVjrryvzkh0vw'].join('')
     },
     body: JSON.stringify({
       email: email,
-      listIds: [2], // ← Remplace 2 par ton ID de liste Brevo
+      listIds: [2],
       updateEnabled: true
     })
   }).then(function(r) {
