@@ -84,7 +84,7 @@ const styles: Record<string, React.CSSProperties> = {
   pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,36px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px' },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '480px' },
   catSection: { marginBottom: '36px' },
-  catTitle: { fontFamily: 'Fraunces, serif', fontSize: '16px', fontWeight: 400, color: 'rgba(240,244,255,0.55)', marginBottom: '16px', letterSpacing: '0.5px', textTransform: 'uppercase', fontSize: '11px' },
+  catTitle: { fontFamily: 'Fraunces, serif', fontSize: '11px', fontWeight: 400, color: 'rgba(240,244,255,0.55)', marginBottom: '16px', letterSpacing: '0.5px', textTransform: 'uppercase' },
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' },
   card: { padding: '24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '14px' },
   logoWrap: { display: 'flex', alignItems: 'center', gap: '12px' },

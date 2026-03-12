@@ -50,7 +50,7 @@ export default function GabaritsPage() {
 
     // Increment copy count
     const supabase = createClient()
-    await supabase.rpc('increment_copy_count', { template_id: t.id }).catch(() => {})
+    try { await supabase.rpc('increment_copy_count', { template_id: t.id }) } catch {}
   }
 
   return (
