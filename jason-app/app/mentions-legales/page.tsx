@@ -26,7 +26,7 @@ export default function MentionsLegales() {
             <li><strong>Statut :</strong> Entrepreneur individuel</li>
             <li><strong>SIRET :</strong> 83289193100012</li>
             <li><strong>SIREN :</strong> 832 891 931</li>
-            <li><strong>Adresse :</strong> [ADRESSE À COMPLÉTER], France</li>
+            <li><strong>Adresse :</strong> Paris, 75000, France</li>
             <li><strong>Email :</strong> contact@jasonmarinho.com</li>
           </ul>
         </Section>
