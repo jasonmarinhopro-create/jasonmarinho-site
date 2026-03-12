@@ -8,6 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Les 5 messages Airbnb à automatiser absolument dès cette semaine | Jason Marinho</title>
 <meta name="description" content="Quels messages automatiser sur Airbnb en premier ? Confirmation, rappel check-in, bienvenue, check-out et demande d’avis. Templates inclus par Jason Marinho.">
+<meta name="keywords" content="automatiser messages Airbnb, Hospitable, messages automatiques Airbnb, templates messages hôte">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jasonmarinho.com/blog/messages-airbnb-automatiser">
 <meta property="og:title" content="Les 5 messages Airbnb à automatiser absolument dès cette semaine | Jason Marinho">
@@ -327,6 +328,22 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 .rel-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,76,63,.08)}
 @media(max-width:640px){.rel-grid{grid-template-columns:1fr!important}}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Les 5 messages Airbnb à automatiser absolument dès cette semaine",
+  "author": {"@type": "Person", "name": "Jason Marinho", "url": "https://jasonmarinho.com"},
+  "publisher": {"@type": "Organization", "name": "Jason Marinho", "url": "https://jasonmarinho.com"},
+  "datePublished": "2025-03-01",
+  "dateModified": "2025-03-12",
+  "url": "https://jasonmarinho.com/blog/messages-airbnb-automatiser",
+  "articleSection": "Automatisation",
+  "keywords": "automatiser messages Airbnb, Hospitable, messages automatiques Airbnb, templates messages hôte",
+  "inLanguage": "fr-FR",
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://jasonmarinho.com/blog/messages-airbnb-automatiser"}
+}
+</script>
 </head>
 <body>
 <nav id="nav">
@@ -416,10 +433,11 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <div class="lbl lt ct rv" style="justify-content:center">Newsletter</div>
     <h2 class="h2 lt ct rv">Rejoins la communauté<br><em>des hôtes qui progressent</em></h2>
     <p class="sub lt ct rv" style="margin-bottom:0;max-width:380px">Conseils LCD, ressources et outils pratiques dans ta boîte mail chaque semaine.</p>
-    <div class="cta-fm rv">
-      <input type="email" class="cta-i" placeholder="ton@email.com" aria-label="Email">
-      <button class="btn-p">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
+    <div class="cta-fm rv" id="brevo-form">
+      <input type="email" id="brevo-email" class="cta-i" placeholder="ton@email.com" aria-label="Email" autocomplete="email">
+      <button class="btn-p" id="brevo-submit" onclick="subscriberBrevo(event)">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
     </div>
+    <p id="brevo-msg" style="display:none;font-size:13px;margin-top:10px;color:var(--y)"></p>
     <p class="cta-n"><i class="ph-regular ph-lock"></i> Aucun spam. Désinscription en un clic.</p>
   </div>
 </section>
