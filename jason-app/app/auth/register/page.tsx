@@ -51,7 +51,7 @@ export default function RegisterPage() {
     return (
       <div style={styles.page}>
         <div style={styles.bg1} />
-        <div style={styles.card} className="fade-up" style2={{ textAlign: 'center' }}>
+        <div style={{ ...styles.card, textAlign: 'center' }} className="fade-up">
           <div style={{ textAlign: 'center', padding: '8px 0' }}>
             <CheckCircle size={52} color="#34D399" weight="fill" style={{ marginBottom: '20px' }} />
             <h1 style={{ ...styles.title, marginBottom: '12px' }}>Compte créé</h1>
