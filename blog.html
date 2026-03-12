@@ -3,12 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jason Marinho | Formation Location Courte Durée pour Hôtes et Conciergeries</title>
-<meta name="description" content="Formation location courte durée, ressources et accompagnement pour hôtes Airbnb et conciergeries. Formations pratiques, gabarits et outils par Jason Marinho, co-fondateur de Driing.">
+<title>Blog LCD – Conseils Location Courte Durée | Jason Marinho</title>
+<meta name="description" content="Conseils pratiques, stratégies et ressources gratuites pour hôtes Airbnb et conciergeries. Optimisation, tarification, automatisation et bien plus — par Jason Marinho.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jasonmarinho.com/blog">
+<meta property="og:title" content="Blog LCD – Conseils Location Courte Durée | Jason Marinho">
+<meta property="og:description" content="Conseils pratiques, stratégies et ressources gratuites pour hôtes Airbnb et conciergeries.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jasonmarinho.com/blog">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
-<style>
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script><style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --g:#004C3F;--gd:#003329;--gm:#005A4A;
@@ -288,10 +293,22 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .trust-item{font-size:12px}
 }
 </style>
+<style>
+.blog-hero{background:var(--gd);padding:clamp(100px,14vw,140px) clamp(16px,5vw,60px) clamp(60px,8vw,80px);text-align:center;position:relative;overflow:hidden}
+.blog-hero .bh-g1{position:absolute;top:-10%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,107,88,.28) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.blog-hero .bh-g2{position:absolute;bottom:-10%;left:-10%;width:380px;height:380px;background:radial-gradient(circle,rgba(85,107,47,.15) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.blog-hero h1{font-family:'Fraunces',serif;font-size:clamp(38px,5vw,68px);font-weight:300;line-height:1.08;letter-spacing:-2px;color:#fff;margin-bottom:16px}
+.blog-hero h1 em{font-style:italic;color:var(--y)}
+.blog-hero p{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.48);max-width:480px;margin:0 auto;line-height:1.75}
+.blog-cats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.blog-cat{font-size:12px;font-weight:500;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);padding:6px 14px;border-radius:100px;cursor:pointer;transition:all .2s;text-decoration:none}
+.blog-cat:hover,.blog-cat.active{color:#fff;border-color:rgba(255,213,107,.4);background:rgba(255,213,107,.08)}
+.blog-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}
+@media(max-width:1024px){.blog-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:640px){.blog-grid{grid-template-columns:1fr!important}.driing-icon{display:none!important}.driing-featured{grid-template-columns:1fr!important}}
+</style>
 </head>
 <body>
-
-<!-- NAV -->
 <nav id="nav">
   <a href="/" class="n-logo">
     <!-- Logo JM inline SVG — blanc sur fond vert -->
@@ -300,10 +317,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   </a>
 
   <ul class="n-links">
-    <li><a href="#formations">Formations</a></li>
-    <li><a href="#about">À propos</a></li>
+    <li><a href="/#formations">Formations</a></li>
+    <li><a href="/#about">À propos</a></li>
     <li><a href="/blog">Blog LCD</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="/#contact">Contact</a></li>
   </ul>
 
   <div class="n-right">
@@ -319,275 +336,76 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <span></span><span></span><span></span>
   </button>
 </nav>
-
-<!-- MOBILE MENU -->
 <div class="mob-menu" id="mob">
-  <a href="#formations"><i class="ph-regular ph-graduation-cap"></i> Formations</a>
-  <a href="#about"><i class="ph-regular ph-user"></i> À propos</a>
+  <a href="/#formations"><i class="ph-regular ph-graduation-cap"></i> Formations</a>
+  <a href="/#about"><i class="ph-regular ph-user"></i> À propos</a>
   <a href="/blog"><i class="ph-regular ph-newspaper"></i> Blog LCD</a>
-  <a href="#contact"><i class="ph-regular ph-envelope"></i> Contact</a>
+  <a href="/#contact"><i class="ph-regular ph-envelope"></i> Contact</a>
   <div class="mob-ctas">
     <a href="https://app.jasonmarinho.com/auth/login" class="mc-o">Mon espace</a>
     <a href="https://app.jasonmarinho.com/auth/register" class="mc-c">Ouvrir un compte <i class="ph-bold ph-arrow-right"></i></a>
   </div>
 </div>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="h-g1"></div><div class="h-g2"></div><div class="h-grid"></div>
-  <div class="h-inner">
-    <div>
-      <div class="h-badge"><div class="h-dot"></div> Formation · Ressources · Accompagnement · Fait en France</div>
-      <h1 class="h-h1">Développe ton activité<br>de <em>location<br>courte durée</em></h1>
-      <p class="h-sub">Formations pratiques, ressources prêtes à l'emploi et accompagnement humain pour progresser dans ta gestion locative et développer ton activité LCD.</p>
-      <div class="h-acts">
-        <a href="#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a>
-        <a href="#about" class="btn-g">Découvrir Jason</a>
-      </div>
-    </div>
-
-    <div class="h-card">
-      <div class="h-card-lbl">Pourquoi Jason</div>
-      <div class="sr">
-        <div class="sr-v">4<span>ans</span></div>
-        <div class="sr-l">dans le secteur<br>LCD en France</div>
-      </div>
-      <div class="sr">
-        <div class="sr-v"><i class="ph-bold ph-lightning" style="font-size:22px;color:var(--y)"></i></div>
-        <div class="sr-l">réponse rapide<br>garantie</div>
-      </div>
-      <div class="sr">
-        <div class="sr-v">100<span>%</span></div>
-        <div class="sr-l">indépendant<br>et transparent</div>
-      </div>
-      <div class="h-card-foot">
-        <i class="ph-bold ph-map-pin-line"></i>
-        <p><strong>Fait en France</strong>, conçu et maintenu par Jason Marinho, basé à Paris</p>
-      </div>
+<!-- BLOG HERO -->
+<section class="blog-hero">
+  <div class="bh-g1"></div>
+  <div class="bh-g2"></div>
+  <div style="position:relative;z-index:2;max-width:700px;margin:0 auto">
+    <div class="lbl lt ct" style="justify-content:center;margin-bottom:16px">Blog LCD</div>
+    <h1>Conseils et ressources<br><em>gratuits</em> pour hôtes</h1>
+    <p>Stratégies concrètes pour optimiser ta location courte durée, automatiser tes tâches et maximiser tes revenus.</p>
+    <div class="blog-cats">
+      <a href="/blog" class="blog-cat active">Tous les articles</a>
+      <a href="#visibilite" class="blog-cat">Visibilité</a>
+      <a href="#tarification" class="blog-cat">Tarification</a>
+      <a href="#automatisation" class="blog-cat">Automatisation</a>
+      <a href="#driing" class="blog-cat">Driing</a>
     </div>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="mq">
-  <div class="mq-t">
-    <div class="mq-i">Airbnb<div class="mq-d"></div>Booking.com<div class="mq-d"></div>Tarification Dynamique<div class="mq-d"></div>Réservation Directe<div class="mq-d"></div>Automatisation<div class="mq-d"></div>Conciergerie Pro<div class="mq-d"></div>Driing<div class="mq-d"></div>LCD France<div class="mq-d"></div></div>
-    <div class="mq-i" aria-hidden="true">Airbnb<div class="mq-d"></div>Booking.com<div class="mq-d"></div>Tarification Dynamique<div class="mq-d"></div>Réservation Directe<div class="mq-d"></div>Automatisation<div class="mq-d"></div>Conciergerie Pro<div class="mq-d"></div>Driing<div class="mq-d"></div>LCD France<div class="mq-d"></div></div>
-  </div>
-</div>
-
-<!-- TRUST BAR -->
-<div class="trust">
-  <div class="trust-inner">
-    <div class="trust-item"><i class="ph-bold ph-map-pin-line"></i> Fait en France</div>
-    <div class="trust-item"><i class="ph-bold ph-chat-circle-text"></i> Réponse rapide, toujours</div>
-    <div class="trust-item"><i class="ph-bold ph-lock-simple"></i> 100% indépendant</div>
-    <div class="trust-item"><i class="ph-bold ph-hand-heart"></i> Accompagnement humain</div>
-    <div class="trust-item"><i class="ph-bold ph-certificate"></i> 4 ans dans le secteur LCD</div>
-  </div>
-</div>
-
-<!-- SERVICES -->
-<section class="sec wh">
+<!-- ARTICLES -->
+<section class="sec wh" style="padding-top:clamp(40px,6vw,64px)">
   <div class="s-in">
-    <div class="lbl rv">Ce que je propose</div>
-    <h2 class="h2 rv">Tout pour développer<br><em>ton activité LCD</em></h2>
-    <p class="sub rv">Des formations pratiques, des ressources immédiatement utilisables et un accompagnement humain. Pas du contenu générique.</p>u contenu générique.</p>
-    <div class="svc-g rv">
-      <div class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-graduation-cap"></i></div>
-        <div class="sv-t">Formations en ligne</div>
-        <p class="sv-d">Des parcours concrets sur Airbnb, la tarification et l'automatisation. Accessibles à vie, à ton rythme.</p>
-      </div>
-      <div class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-files"></i></div>
-        <div class="sv-t">Gabarits & ressources</div>
-        <p class="sv-d">Messages voyageurs, règlements intérieurs, checklists ménage. À utiliser directement dans ton activité.</p>
-      </div>
-      <div class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-handshake"></i></div>
-        <div class="sv-t">Partenaires triés</div>
-        <p class="sv-d">Assurances, PMS, channel managers : une sélection d'outils validés avec des conditions négociées pour les membres.</p>
-      </div>
-      <div class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-users-three"></i></div>
-        <div class="sv-t">Communauté LCD</div>
-        <p class="sv-d">Groupes Facebook sélectionnés et gabarits de présentation pour rejoindre et développer ton réseau de professionnels LCD.</p>
-      </div>
-      <div class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-chat-circle-dots"></i></div>
-        <div class="sv-t">Support réactif</div>
-        <p class="sv-d">Une vraie personne qui répond, pas un bot. Questions, blocages, conseils : Jason répond toujours le plus rapidement possible.</p>
-      </div>
-      <div class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-video-camera"></i></div>
-        <div class="sv-t">Webinaires & contenus</div>
-        <p class="sv-d">Des sessions en direct pour rester à jour sur les tendances, outils et stratégies LCD, avec la possibilité de poser tes questions en live.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- SUPPORT / VALEURS — style Shine -->
-<section class="sec gd">
-  <div class="s-in">
-    <div style="text-align:center;margin-bottom:48px">
-      <div class="lbl lt ct rv">Pourquoi Jason</div>
-      <h2 class="h2 lt ct rv">Un accompagnement <em>humain</em><br>pas une usine à formations</h2>
-    </div>
-    <div class="sup-g rv">
-      <div class="sup-card">
-        <div class="sv-ico" style="background:rgba(255,213,107,.1);margin-bottom:18px"><i class="ph-light ph-chat-circle-text" style="color:var(--y)"></i></div>
-        <div class="sup-t">Réponse rapide, toujours</div>
-        <p class="sup-d">Tu envoies un message, Jason répond, pas un bot, pas une FAQ. Toujours le plus vite possible, parce que ton temps compte.</p>
-        <div class="sup-tag" style="background:rgba(255,213,107,.1);color:var(--y);border:1px solid rgba(255,213,107,.2)"><i class="ph-bold ph-lightning"></i> Réactif</div>
-      </div>
-      <div class="sup-card">
-        <div class="sv-ico" style="background:rgba(168,213,181,.08);margin-bottom:18px"><i class="ph-light ph-map-pin-line" style="color:#a8d5b5"></i></div>
-        <div class="sup-t">Fait en France</div>
-        <p class="sup-d">Conçu, maintenu et mis à jour depuis Paris. Contenu en français, adapté au marché LCD français et à ses spécificités réglementaires.</p>
-        <div class="sup-tag" style="background:rgba(168,213,181,.08);color:#a8d5b5;border:1px solid rgba(168,213,181,.15)"><i class="ph-bold ph-flag"></i> Paris, France</div>
-      </div>
-      <div class="sup-card">
-        <div class="sv-ico" style="background:rgba(255,255,255,.05);margin-bottom:18px"><i class="ph-light ph-shield-check" style="color:rgba(255,255,255,.5)"></i></div>
-        <div class="sup-t">Transparent et honnête</div>
-        <p class="sup-d">Pas de promesses inventées, pas de chiffres bidons. Du contenu basé sur 4 ans de terrain en LCD, avec les limites clairement assumées.</p>
-        <div class="sup-tag" style="background:rgba(255,255,255,.05);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.08)"><i class="ph-bold ph-check"></i> Sans bullshit</div>
+    <!-- Article vedette Driing -->
+    <div style="margin-bottom:48px" id="driing">
+      <div style="background:linear-gradient(135deg,rgba(232,160,32,.08) 0%,rgba(0,76,63,.06) 100%);border:2px solid rgba(232,160,32,.25);border-radius:18px;padding:clamp(24px,4vw,40px);display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center" class="driing-featured">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:#C47C00;font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;padding:6px 12px;border-radius:100px;margin-bottom:16px">
+            <span style="width:5px;height:5px;background:#E8A020;border-radius:50%;display:inline-block;animation:blink 2.5s ease-in-out infinite"></span> Article vedette
+          </div>
+          <div style="font-size:11px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:10px">Driing &middot; Nouvelle plateforme</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:clamp(22px,2.8vw,32px);font-weight:400;color:var(--td);line-height:1.22;letter-spacing:-.4px;margin-bottom:14px">Driing : la plateforme de vacances<br><em style="font-style:italic;color:var(--g)">sans commissions</em> qui change la donne</h2>
+          <p style="font-size:15px;font-weight:300;color:var(--tm);line-height:1.72;margin-bottom:22px;max-width:560px">Fini les 15 à 20 % de commissions Airbnb ! Driing est la nouvelle plateforme de réservation de vacances co-fondée par Jason Marinho, qui connecte directement hôtes et voyageurs — sans intermédiaire, sans frais cachés et avec un contrôle total sur tes réservations. Une révolution pour les hôtes LCD qui veulent reprendre la main sur leurs revenus.</p>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <a href="https://www.driing.co/" target="_blank" rel="noopener noreferrer" class="btn-p" style="font-size:14px;padding:12px 22px">Découvrir Driing <i class="ph-bold ph-arrow-up-right"></i></a>
+            <span style="font-size:12px;color:var(--tl);display:flex;align-items:center;gap:5px"><i class="ph-regular ph-clock"></i> 6 min de lecture</span>
+          </div>
+        </div>
+        <div class="driing-icon" style="opacity:.15;font-size:90px;line-height:1;display:flex;align-items:center;justify-content:center;color:var(--g)">
+          <i class="ph-regular ph-sun-horizon"></i>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ABOUT -->
-<section class="sec gd" id="about" style="padding-top:0">
-  <div class="s-in">
-    <div class="ab-g">
-      <div class="ph-wrap rv">
-        <div class="ph-fr">
-          <i class="ph-light ph-user-circle"></i>
-          <p>Photo à intégrer</p>
-        </div>
-        <div class="fl-card">
-          <div class="fv">Driing</div>
-          <div class="fl">Co-fondateur</div>
-        </div>
-      </div>
-      <div class="rv d1">
-        <div class="lbl lt">À propos</div>
-        <h2 class="h2 lt">Hôte avant d'être<br><em>formateur</em></h2>
-        <p class="sub lt">Je suis hôte et co-fondateur de Driing avant d'être formateur. Je partage ce que j'ai appris sur le terrain, les bonnes pratiques comme les erreurs à éviter. Pas de mise en scène, pas de faux résultats.</p>
-        <ul class="ab-list">
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div>4 ans d'expérience terrain en location courte durée</li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Co-fondateur de Driing, plateforme de réservation et livrets d'accueil digitaux</li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div>250+ hôtes accompagnés dans leur développement LCD</li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Support humain et réactif : Jason répond lui-même à chaque message</li>
-        </ul>
-        <a href="#contact" class="btn-p">Prendre contact <i class="ph-bold ph-arrow-right"></i></a>
-      </div>
+    <!-- All articles grid -->
+    <div style="margin-bottom:24px;display:flex;align-items:baseline;gap:12px">
+      <h2 style="font-family:'Fraunces',serif;font-size:clamp(20px,2.2vw,26px);font-weight:400;color:var(--td);letter-spacing:-.2px">Tous les articles</h2>
+      <span style="color:var(--tl);font-size:14px;font-weight:300">10 ressources gratuites</span>
     </div>
-  </div>
-</section>
 
-<!-- FORMATIONS -->
-<section class="sec cr" id="formations">
-  <div class="s-in">
-    <div class="f-hd">
-      <div>
-        <div class="lbl rv">Formations</div>
-        <h2 class="h2 rv" style="margin-bottom:0">Les formations <em>disponibles</em></h2>
-      </div>
-      <a href="/formations" class="btn-ol rv">Tout le catalogue <i class="ph-bold ph-arrow-right"></i></a>
-    </div>
-    <div class="f-gr">
-      <div class="f-card rv">
-        <div class="f-th" style="background:linear-gradient(135deg,#002B22,#004C3F)">
-          <i class="ph-light ph-map-trifold"></i>
-          <span class="f-bge bge-s">Débutant</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Visibilité locale</div>
-          <h3 class="f-tt">Google My Business pour la Location Courte Durée</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph-regular ph-stack"></i> 7 modules</div>
-            <div class="f-mi"><i class="ph-regular ph-clock"></i> 2h30</div>
-            <div class="f-mi"><i class="ph-regular ph-play-circle"></i> 11 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph-regular ph-infinity"></i> Accès à vie</span>
-            <a href="/formations/google-my-business" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="f-card rv d1">
-        <div class="f-th" style="background:linear-gradient(135deg,#002B22,#3A5010)">
-          <i class="ph-light ph-trend-up"></i>
-          <span class="f-bge bge-i">Intermédiaire</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Revenus</div>
-          <h3 class="f-tt">Tarification Dynamique & Revenue Management LCD</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph-regular ph-stack"></i> 9 modules</div>
-            <div class="f-mi"><i class="ph-regular ph-clock"></i> 4h00</div>
-            <div class="f-mi"><i class="ph-regular ph-play-circle"></i> 18 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph-regular ph-infinity"></i> Accès à vie</span>
-            <a href="/formations/tarification" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="f-card rv d2">
-        <div class="f-th" style="background:linear-gradient(135deg,#002B22,#2A4400)">
-          <i class="ph-light ph-robot"></i>
-          <span class="f-bge bge-s">Débutant</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Automatisation</div>
-          <h3 class="f-tt">Automatiser ses messages Airbnb — Zéro stress</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph-regular ph-stack"></i> 5 modules</div>
-            <div class="f-mi"><i class="ph-regular ph-clock"></i> 1h45</div>
-            <div class="f-mi"><i class="ph-regular ph-play-circle"></i> 9 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph-regular ph-infinity"></i> Accès à vie</span>
-            <a href="/formations/automatisation" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- BLOG -->
-<section class="sec wh" id="blog">
-  <div class="s-in">
-    <div class="f-hd rv" style="justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">
-      <div>
-        <div class="lbl rv">Blog LCD</div>
-        <h2 class="h2 rv" style="margin-bottom:0">Conseils et ressources <em>gratuits</em></h2>
-      </div>
-      <a href="/blog" class="btn-g rv" style="font-size:14px;padding:10px 18px">Voir tous les articles <i class="ph-bold ph-arrow-right"></i></a>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px" class="rv blog-grid">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px" class="blog-grid">
 
       <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
         <div style="height:10px;background:var(--g)"></div>
         <div style="padding:22px">
           <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Visibilité</div>
-          <h3 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Comment optimiser ton annonce Airbnb pour apparaître en premier dans les résultats</h3>
-          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Titre, photos, description et équipements : les 4 leviers concrets pour améliorer ton classement sur Airbnb sans dépenser un euro.</p>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Comment optimiser ton annonce Airbnb pour apparaître en premier dans les résultats</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Titre, photos, description et équipements : les 4 leviers concrets pour améliorer ton classement sur Airbnb sans dépenser un euro.</p>
           <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
             <span style="font-size:11px;color:var(--tl)">5 min de lecture</span>
-            <a href="#contact" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+            <a href="/blog/optimiser-annonce-airbnb" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
           </div>
         </div>
       </article>
@@ -596,11 +414,11 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         <div style="height:10px;background:var(--ol)"></div>
         <div style="padding:22px">
           <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Tarification</div>
-          <h3 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Tarification dynamique en location courte durée : par où commencer</h3>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Tarification dynamique en location courte durée : par où commencer</h2>
           <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Pourquoi un prix fixe te fait perdre des réservations, et comment adapter tes tarifs à la demande sans y passer des heures chaque semaine.</p>
           <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
             <span style="font-size:11px;color:var(--tl)">7 min de lecture</span>
-            <a href="#contact" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+            <a href="/blog/tarification-dynamique-lcd" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
           </div>
         </div>
       </article>
@@ -609,24 +427,108 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         <div style="height:10px;background:#2A5C8A"></div>
         <div style="padding:22px">
           <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Automatisation</div>
-          <h3 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Les 5 messages Airbnb à automatiser absolument dès cette semaine</h3>
-          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Confirmation de réservation, rappel check-in, bienvenue, check-out et demande d'avis : les 5 messages qui font gagner des heures chaque mois.</p>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Les 5 messages Airbnb à automatiser absolument dès cette semaine</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Confirmation de réservation, rappel check-in, bienvenue, check-out et demande d’avis : les 5 messages qui font gagner des heures chaque mois.</p>
           <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
             <span style="font-size:11px;color:var(--tl)">4 min de lecture</span>
-            <a href="#contact" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+            <a href="/blog/messages-airbnb-automatiser" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+      </article>
+
+      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
+        <div style="height:10px;background:var(--g)"></div>
+        <div style="padding:22px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Google My Business</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Pourquoi Google My Business est indispensable pour les hôtes LCD en 2025</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">La plupart des hôtes ignorent cet outil gratuit de Google. Pourtant, il permet d’attirer des voyageurs qui ne passent pas par Airbnb et de réduire les commissions.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
+            <span style="font-size:11px;color:var(--tl)">6 min de lecture</span>
+            <a href="/blog/google-my-business-hotes-lcd" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+      </article>
+
+      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
+        <div style="height:10px;background:var(--ol)"></div>
+        <div style="padding:22px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Réservation directe</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Réservation directe sans commission : comment se lancer sans site web</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Tu n’as pas besoin d’un site complexe pour recevoir des réservations directes. Voici les 3 méthodes simples utilisées par les hôtes qui se passent d’Airbnb.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
+            <span style="font-size:11px;color:var(--tl)">8 min de lecture</span>
+            <a href="/blog/reservation-directe-sans-commission" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+      </article>
+
+      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
+        <div style="height:10px;background:#2A5C8A"></div>
+        <div style="padding:22px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Conciergerie</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Créer sa conciergerie Airbnb en 2025 : les étapes essentielles pour démarrer</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Statut juridique, premiers clients, outils indispensables et tarification : tout ce qu’il faut savoir avant de se lancer dans la conciergerie LCD.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
+            <span style="font-size:11px;color:var(--tl)">10 min de lecture</span>
+            <a href="/blog/creer-conciergerie-airbnb-2025" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+      </article>
+
+      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
+        <div style="height:10px;background:var(--g)"></div>
+        <div style="padding:22px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Avis voyageurs</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Comment obtenir plus d’avis 5 étoiles sur Airbnb sans harceler tes voyageurs</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Le timing, le wording et les petites attentions qui font la différence entre un voyageur qui repart sans rien dire et un qui laisse un avis enthousiaste.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
+            <span style="font-size:11px;color:var(--tl)">5 min de lecture</span>
+            <a href="/blog/obtenir-avis-5-etoiles-airbnb" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+      </article>
+
+      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
+        <div style="height:10px;background:var(--ol)"></div>
+        <div style="padding:22px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Fiscalité</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Location courte durée et impôts : ce que tout hôte doit savoir en France</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Régime micro-BIC, LMNP, déclaration des revenus Airbnb : les bases fiscales pour être en règle sans payer plus que nécessaire.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
+            <span style="font-size:11px;color:var(--tl)">9 min de lecture</span>
+            <a href="/blog/location-courte-duree-impots-france" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+      </article>
+
+      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
+        <div style="height:10px;background:#2A5C8A"></div>
+        <div style="padding:22px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Outils</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Les 7 outils indispensables pour gérer sa location courte durée en 2025</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">PMS, channel manager, tarification dynamique, caution digitale : la sélection des outils qui font vraiment gagner du temps au quotidien.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
+            <span style="font-size:11px;color:var(--tl)">6 min de lecture</span>
+            <a href="/blog/outils-gerer-location-courte-duree-2025" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+      </article>
+
+      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
+        <div style="height:10px;background:var(--g)"></div>
+        <div style="padding:22px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Livret d’accueil</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Livret d’accueil digital : pourquoi c’est devenu indispensable pour les hôtes LCD</h2>
+          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Un livret d’accueil bien conçu réduit les questions des voyageurs, améliore leur expérience et se traduit directement par de meilleures notes.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
+            <span style="font-size:11px;color:var(--tl)">4 min de lecture</span>
+            <a href="/blog/livret-accueil-digital-hotes-lcd" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
           </div>
         </div>
       </article>
 
     </div>
-    <style>
-      .blog-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}
-      @media(max-width:1024px){.blog-grid{grid-template-columns:repeat(2,1fr)!important}}
-      @media(max-width:640px){.blog-grid{grid-template-columns:1fr!important}}
-    </style>
-    <div style="text-align:center;margin-top:32px" class="rv">
-      <a href="/blog" class="btn-p">Voir tous les articles <i class="ph-bold ph-arrow-right"></i></a>
-    </div>
+
   </div>
 </section>
 
@@ -635,7 +537,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   <div class="cta-gw"></div>
   <div class="cta-in">
     <div class="lbl lt ct rv" style="justify-content:center">Newsletter</div>
-    <h2 class="h2 lt ct rv">Prêt à te lancer<br><em>sans prise de vague ?</em></h2>
+    <h2 class="h2 lt ct rv">Prêt à te lancer<br><em>sans prise de vague ?</em></h2>
     <p class="sub lt ct rv" style="margin-bottom:0;max-width:380px">Conseils LCD, ressources et outils pratiques dans ta boîte mail chaque semaine.</p>
     <div class="cta-fm rv">
       <input type="email" class="cta-i" placeholder="ton@email.com" aria-label="Email">
@@ -644,7 +546,6 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <p class="cta-n"><i class="ph-regular ph-lock"></i> Aucun spam. Désinscription en un clic.</p>
   </div>
 </section>
-
 <!-- FOOTER -->
 <footer>
   <div class="ft-in">
@@ -669,7 +570,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         <div class="ft-ct">Jason</div>
         <ul class="ft-ls">
           <li><a href="/a-propos"><i class="ph-regular ph-user"></i> À propos</a></li>
-          <li><a href="#contact"><i class="ph-regular ph-envelope"></i> Contact</a></li>
+          <li><a href="/#contact"><i class="ph-regular ph-envelope"></i> Contact</a></li>
           <li><a href="https://driing.co" target="_blank"><i class="ph-regular ph-arrow-square-out"></i> Driing</a></li>
           <li><a href="https://beacons.ai/jasonmarinho" target="_blank"><i class="ph-regular ph-link"></i> Liens utiles</a></li>
         </ul>
@@ -693,23 +594,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     </div>
   </div>
 </footer>
-
 <script>
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('sc',scrollY>8),{passive:true});
-
-const hbg=document.getElementById('hbg'),mob=document.getElementById('mob');
-let open=false;
-hbg.addEventListener('click',()=>{
-  open=!open;mob.classList.toggle('open',open);
-  const [a,b,c]=hbg.querySelectorAll('span');
-  if(open){a.style.cssText='transform:rotate(45deg) translate(5px,5px);width:22px';b.style.opacity='0';c.style.cssText='transform:rotate(-45deg) translate(5px,-5px);width:22px'}
-  else{[a,b,c].forEach(s=>{s.style.transform='';s.style.opacity=''})}
-});
-mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{open=false;mob.classList.remove('open');hbg.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity=''})}));
-
-const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.08,rootMargin:'0px 0px -28px 0px'});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+const nav=document.getElementById('nav'),hbg=document.getElementById('hbg'),mob=document.getElementById('mob');
+window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
+hbg&&hbg.addEventListener('click',()=>mob.classList.toggle('open'));
 </script>
 </body>
 </html>
