@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash } from '@phosphor-icons/react'
@@ -11,6 +12,7 @@ const BLOCK_DURATION_MS = 10 * 60 * 1000
 
 export default function LoginPage() {
   const supabase = createClient()
+  const router = useRouter()
 
   // Handle Supabase tokens redirected to this page
   useEffect(() => {
@@ -113,10 +115,12 @@ export default function LoginPage() {
       return
     }
 
-    // Browser client sets cookies via document.cookie — navigate to dashboard
+    // Browser client sets session cookies via document.cookie.
+    // router.refresh() forces the server to re-read the new cookies before navigating.
     setSuccess(true)
     setLoading(false)
-    window.location.href = '/dashboard'
+    router.refresh()
+    router.push('/dashboard')
   }
 
   async function handleResendConfirmation() {
