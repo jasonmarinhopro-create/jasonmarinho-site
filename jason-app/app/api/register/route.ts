@@ -60,6 +60,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Erreur lors de la création du compte.' }, { status: 500 })
     }
 
+    // Create profile (in case the DB trigger isn't set up)
+    if (userData.user) {
+      await supabaseAdmin
+        .from('profiles')
+        .upsert({
+          id: userData.user.id,
+          email: normalized,
+          full_name: fullName || null,
+        }, { onConflict: 'id', ignoreDuplicates: true })
+    }
+
     // Generate confirmation link
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'signup',
