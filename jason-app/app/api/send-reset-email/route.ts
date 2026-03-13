@@ -51,11 +51,11 @@ export async function POST(req: NextRequest) {
     })
 
     if (error || !data?.properties?.action_link) {
-      // On ne révèle pas si l'email existe ou non (sécurité)
+      console.error('[reset-email] generateLink error:', error?.message, '| data:', JSON.stringify(data))
       return NextResponse.json({ success: true })
     }
 
-    await resend.emails.send({
+    const { error: resendError } = await resend.emails.send({
       from: 'Jason Marinho <noreply@jasonmarinho.com>',
       to: normalized,
       subject: 'Réinitialise ton mot de passe 🔐',
@@ -137,8 +137,14 @@ export async function POST(req: NextRequest) {
 </html>`,
     })
 
+    if (resendError) {
+      console.error('[reset-email] Resend error:', resendError)
+      return NextResponse.json({ error: 'Erreur envoi email.' }, { status: 500 })
+    }
+
     return NextResponse.json({ success: true })
-  } catch {
+  } catch (e) {
+    console.error('[reset-email] Unexpected error:', e)
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }
