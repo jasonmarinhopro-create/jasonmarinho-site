@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
-import { loginAction } from './actions'
 
 const MAX_ATTEMPTS = 5
 const BLOCK_DURATION_MS = 10 * 60 * 1000
@@ -70,16 +69,15 @@ export default function LoginPage() {
     setError('')
     setEmailNotConfirmed(false)
 
-    const result = await loginAction(email, password)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (result?.error === 'EMAIL_NOT_CONFIRMED') {
-      setEmailNotConfirmed(true)
-      setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
-      setLoading(false)
-      return
-    }
-
-    if (result?.error) {
+    if (error) {
+      if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+        setEmailNotConfirmed(true)
+        setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
+        setLoading(false)
+        return
+      }
       const newAttempts = attempts + 1
       setAttempts(newAttempts)
       if (newAttempts >= MAX_ATTEMPTS) {
@@ -94,7 +92,6 @@ export default function LoginPage() {
       return
     }
 
-    // Full page navigation ensures middleware re-evaluates session cookies
     window.location.href = '/dashboard'
   }
 
