@@ -1,25 +1,25 @@
 'use server'
 
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export async function loginAction(email: string, password: string) {
   const cookieStore = await cookies()
 
-  // Create client directly here — does NOT use the shared createClient() which has
-  // a silent try/catch{} that swallows cookie-setting errors.
+  // @supabase/ssr v0.3.x requires get/set/remove (not getAll/setAll)
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll()
+        get(name: string) {
+          return cookieStore.get(name)?.value
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          )
+        set(name: string, value: string, options: CookieOptions) {
+          cookieStore.set(name, value, options)
+        },
+        remove(name: string, options: CookieOptions) {
+          cookieStore.set(name, '', { ...options, maxAge: 0 })
         },
       },
     }
@@ -37,7 +37,6 @@ export async function loginAction(email: string, password: string) {
     return { error: 'INVALID_CREDENTIALS' as const }
   }
 
-  // Supabase returned success but no session (edge case: unconfirmed email)
   if (!data.session) {
     return { error: 'EMAIL_NOT_CONFIRMED' as const }
   }
