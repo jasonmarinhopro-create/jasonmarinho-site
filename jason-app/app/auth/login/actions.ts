@@ -1,9 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 
-export async function loginAction(email: string, password: string): Promise<{ error?: string }> {
+export async function loginAction(email: string, password: string): Promise<{ error?: string; success?: boolean }> {
   const supabase = await createClient()
 
   const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -15,5 +14,5 @@ export async function loginAction(email: string, password: string): Promise<{ er
     return { error: 'INVALID_CREDENTIALS' }
   }
 
-  redirect('/dashboard')
+  return { success: true }
 }
