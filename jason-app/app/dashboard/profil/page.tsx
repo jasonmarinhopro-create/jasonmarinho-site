@@ -1,18 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useTransition } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { saveProfileName } from './actions'
 import Header from '@/components/layout/Header'
 import { Check, User, EnvelopeSimple, PencilSimple, Warning } from '@phosphor-icons/react'
 
 export default function ProfilPage() {
-  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
-  const [userId, setUserId] = useState('')
-  const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [saveError, setSaveError] = useState('')
   const [editName, setEditName] = useState(false)
@@ -21,10 +19,8 @@ export default function ProfilPage() {
     const supabase = createClient()
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return
-      const user = session.user
-      setUserId(user.id)
-      setEmail(user.email ?? '')
-      supabase.from('profiles').select('full_name').eq('id', user.id).single().then(({ data }) => {
+      setEmail(session.user.email ?? '')
+      supabase.from('profiles').select('full_name').eq('id', session.user.id).single().then(({ data }) => {
         if (data?.full_name) {
           const parts = data.full_name.trim().split(' ')
           setFirstName(parts[0] ?? '')
@@ -34,25 +30,19 @@ export default function ProfilPage() {
     })
   }, [])
 
-  async function handleSave() {
-    if (!userId) return
+  function handleSave() {
     setSaveError('')
-    setLoading(true)
-    const supabase = createClient()
     const fullName = [firstName, lastName].filter(Boolean).join(' ')
-    const { error } = await supabase
-      .from('profiles')
-      .update({ full_name: fullName })
-      .eq('id', userId)
-    setLoading(false)
-    if (error) {
-      setSaveError('Erreur lors de la sauvegarde. Réessaie.')
-      return
-    }
-    setSaved(true)
-    setEditName(false)
-    router.refresh() // Invalide le Router Cache → les autres pages re-fetched le profil à jour
-    setTimeout(() => setSaved(false), 2500)
+    startTransition(async () => {
+      const result = await saveProfileName(fullName)
+      if (result.error) {
+        setSaveError(result.error)
+        return
+      }
+      setSaved(true)
+      setEditName(false)
+      setTimeout(() => setSaved(false), 2500)
+    })
   }
 
   const fullName = [firstName, lastName].filter(Boolean).join(' ')
@@ -73,8 +63,11 @@ export default function ProfilPage() {
         <div style={styles.content} className="fade-up d1">
           {/* Avatar */}
           <div style={styles.avatarSection}>
-            <div style={styles.avatar}>
-              <span style={styles.avatarText}>{initials}</span>
+            <div style={styles.avatarWrap} className="avatar-wrap">
+              <div style={styles.avatar}>
+                <span style={styles.avatarText}>{initials}</span>
+              </div>
+              <div className="avatar-shine" />
             </div>
             <div>
               <div style={styles.avatarName}>{fullName || email}</div>
@@ -119,13 +112,13 @@ export default function ProfilPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <button
                     onClick={handleSave}
-                    disabled={loading}
+                    disabled={isPending}
                     className="btn-primary"
                     style={{ fontSize: '13px', padding: '10px 18px' }}
                   >
                     {saved
                       ? <><Check size={14} weight="bold" /> Sauvegardé</>
-                      : loading ? 'Sauvegarde...' : 'Enregistrer'}
+                      : isPending ? 'Sauvegarde...' : 'Enregistrer'}
                   </button>
                   <button onClick={() => { setEditName(false); setSaveError('') }} style={styles.cancelBtn}>
                     Annuler
@@ -175,8 +168,12 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: '600px',
   },
   avatarSection: { display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '28px' },
+  avatarWrap: {
+    position: 'relative', width: '64px', height: '64px', flexShrink: 0,
+    borderRadius: '50%', overflow: 'hidden',
+  },
   avatar: {
-    width: '64px', height: '64px', flexShrink: 0,
+    width: '64px', height: '64px',
     background: 'rgba(0,76,63,0.5)', border: '2px solid rgba(255,213,107,0.25)',
     borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
