@@ -1,0 +1,43 @@
+import { createServerClient } from '@supabase/ssr'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function POST(req: NextRequest) {
+  try {
+    const { email, password } = await req.json()
+
+    if (!email || !password) {
+      return NextResponse.json({ error: 'INVALID_CREDENTIALS' }, { status: 400 })
+    }
+
+    const response = NextResponse.json({ success: true })
+
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return req.cookies.getAll() },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            )
+          },
+        },
+      }
+    )
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+        return NextResponse.json({ error: 'EMAIL_NOT_CONFIRMED' }, { status: 401 })
+      }
+      return NextResponse.json({ error: 'INVALID_CREDENTIALS' }, { status: 401 })
+    }
+
+    return response
+  } catch (e) {
+    console.error('[login] error:', e)
+    return NextResponse.json({ error: 'INVALID_CREDENTIALS' }, { status: 500 })
+  }
+}

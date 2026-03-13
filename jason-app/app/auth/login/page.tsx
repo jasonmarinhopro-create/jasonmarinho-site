@@ -69,10 +69,15 @@ export default function LoginPage() {
     setError('')
     setEmailNotConfirmed(false)
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
 
-    if (error) {
-      if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      if (body.error === 'EMAIL_NOT_CONFIRMED') {
         setEmailNotConfirmed(true)
         setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
         setLoading(false)
