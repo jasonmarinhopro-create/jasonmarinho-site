@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { loginAction } from './actions'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
 
@@ -69,15 +70,10 @@ export default function LoginPage() {
     setError('')
     setEmailNotConfirmed(false)
 
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    })
+    const result = await loginAction(email, password)
 
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}))
-      if (body.error === 'EMAIL_NOT_CONFIRMED') {
+    if ('error' in result) {
+      if (result.error === 'EMAIL_NOT_CONFIRMED') {
         setEmailNotConfirmed(true)
         setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
         setLoading(false)
@@ -97,6 +93,7 @@ export default function LoginPage() {
       return
     }
 
+    // Server Action sets cookies server-side — full page nav ensures middleware sees the session
     window.location.href = '/dashboard'
   }
 
