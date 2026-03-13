@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
@@ -11,6 +11,14 @@ const BLOCK_DURATION_MS = 10 * 60 * 1000
 
 export default function LoginPage() {
   const supabase = createClient()
+
+  // If Supabase redirects a recovery token to this page, forward to reset-password
+  useEffect(() => {
+    const hash = window.location.hash
+    if (hash.includes('type=recovery') || hash.includes('type=signup')) {
+      window.location.replace('/auth/reset-password' + hash)
+    }
+  }, [])
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
