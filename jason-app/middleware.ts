@@ -30,6 +30,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Always allow access to reset-password page (needs unauthenticated access with token)
+  if (request.nextUrl.pathname === '/auth/reset-password') {
+    return supabaseResponse
+  }
+
   // Redirect authenticated users away from auth pages
   if (user && request.nextUrl.pathname.startsWith('/auth')) {
     const url = request.nextUrl.clone()
