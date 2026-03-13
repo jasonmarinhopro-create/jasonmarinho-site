@@ -12,7 +12,7 @@ export default function JmLogo({ size = 22 }: JmLogoProps) {
       alt="Jason Marinho"
       width={size}
       height={size}
-      style={{ objectFit: 'contain', display: 'block' }}
+      style={{ objectFit: 'contain', display: 'block', filter: 'brightness(0) invert(1)' }}
     />
   )
 }
