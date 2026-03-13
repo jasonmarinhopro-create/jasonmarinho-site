@@ -1,0 +1,565 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import {
+  ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
+  CaretDown, CaretRight, Star, Check,
+} from '@phosphor-icons/react'
+
+interface Lesson {
+  id: number
+  title: string
+  duration: string
+  content: string
+}
+
+interface Module {
+  id: number
+  title: string
+  duration: string
+  lessons: Lesson[]
+}
+
+interface Formation {
+  title: string
+  description: string
+  duration: string
+  level: string
+  objectifs: string[]
+  modules: Module[]
+}
+
+export default function FormationView({ formation }: { formation: Formation }) {
+  const totalLessons = formation.modules.reduce((a, m) => a + m.lessons.length, 0)
+  const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
+  const [openModules, setOpenModules] = useState<number[]>([1])
+  const [completedLessons, setCompletedLessons] = useState<number[]>([])
+
+  const currentLesson = activeLesson
+    ? formation.modules
+        .find(m => m.id === activeLesson.moduleId)
+        ?.lessons.find(l => l.id === activeLesson.lessonId)
+    : null
+
+  const currentModule = activeLesson
+    ? formation.modules.find(m => m.id === activeLesson.moduleId)
+    : null
+
+  function toggleModule(id: number) {
+    setOpenModules(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    )
+  }
+
+  function markComplete(lessonId: number) {
+    setCompletedLessons(prev =>
+      prev.includes(lessonId) ? prev : [...prev, lessonId]
+    )
+    // Auto-advance to next lesson
+    const allLessons = formation.modules.flatMap(m =>
+      m.lessons.map(l => ({ moduleId: m.id, lessonId: l.id }))
+    )
+    const curr = allLessons.findIndex(l => l.lessonId === lessonId)
+    if (curr !== -1 && curr < allLessons.length - 1) {
+      const next = allLessons[curr + 1]
+      setActiveLesson(next)
+      setOpenModules(prev => prev.includes(next.moduleId) ? prev : [...prev, next.moduleId])
+    }
+  }
+
+  const progress = Math.round((completedLessons.length / totalLessons) * 100)
+
+  // Render markdown-like content
+  function renderContent(content: string) {
+    const lines = content.split('\n')
+    const elements: React.ReactNode[] = []
+    let i = 0
+    let key = 0
+
+    while (i < lines.length) {
+      const line = lines[i]
+
+      if (line.startsWith('## ')) {
+        elements.push(<h2 key={key++} style={s.h2}>{line.slice(3)}</h2>)
+      } else if (line.startsWith('### ')) {
+        elements.push(<h3 key={key++} style={s.h3}>{line.slice(4)}</h3>)
+      } else if (line.startsWith('**') && line.endsWith('**') && line.includes('—')) {
+        // Bold title like **① Nom...**
+        elements.push(<p key={key++} style={s.boldLine} dangerouslySetInnerHTML={{ __html: formatInline(line) }} />)
+      } else if (line.startsWith('| ')) {
+        // Table
+        const tableLines: string[] = []
+        while (i < lines.length && lines[i].startsWith('|')) {
+          tableLines.push(lines[i])
+          i++
+        }
+        const [header, , ...rows] = tableLines
+        const headers = header.split('|').filter(Boolean).map(h => h.trim())
+        const tableRows = rows.map(r => r.split('|').filter(Boolean).map(c => c.trim()))
+        elements.push(
+          <div key={key++} style={s.tableWrap}>
+            <table style={s.table}>
+              <thead>
+                <tr>{headers.map((h, j) => <th key={j} style={s.th}>{h}</th>)}</tr>
+              </thead>
+              <tbody>
+                {tableRows.map((row, ri) => (
+                  <tr key={ri}>
+                    {row.map((cell, ci) => <td key={ci} style={s.td}>{cell}</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+        continue
+      } else if (line.startsWith('```')) {
+        // Code block
+        const codeLines: string[] = []
+        i++
+        while (i < lines.length && !lines[i].startsWith('```')) {
+          codeLines.push(lines[i])
+          i++
+        }
+        elements.push(
+          <pre key={key++} style={s.pre}>{codeLines.join('\n')}</pre>
+        )
+      } else if (line.startsWith('- ') || line.startsWith('✅ ') || line.startsWith('❌ ')) {
+        const items: string[] = []
+        while (i < lines.length && (lines[i].startsWith('- ') || lines[i].startsWith('✅ ') || lines[i].startsWith('❌ '))) {
+          items.push(lines[i])
+          i++
+        }
+        elements.push(
+          <ul key={key++} style={s.ul}>
+            {items.map((item, j) => {
+              const isGood = item.startsWith('✅')
+              const isBad = item.startsWith('❌')
+              const text = item.replace(/^[-✅❌]\s/, '')
+              return (
+                <li key={j} style={{ ...s.li, color: isGood ? '#34D399' : isBad ? '#F87171' : 'rgba(240,244,255,0.72)' }}>
+                  <span style={s.bullet}>{isGood ? '✅' : isBad ? '❌' : '•'}</span>
+                  <span dangerouslySetInnerHTML={{ __html: formatInline(text) }} />
+                </li>
+              )
+            })}
+          </ul>
+        )
+        continue
+      } else if (line.startsWith('> ')) {
+        elements.push(
+          <blockquote key={key++} style={s.blockquote}>
+            <span dangerouslySetInnerHTML={{ __html: formatInline(line.slice(2)) }} />
+          </blockquote>
+        )
+      } else if (line.trim() === '') {
+        // skip empty lines
+      } else {
+        elements.push(
+          <p key={key++} style={s.p} dangerouslySetInnerHTML={{ __html: formatInline(line) }} />
+        )
+      }
+      i++
+    }
+    return elements
+  }
+
+  function formatInline(text: string): string {
+    return text
+      .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#f0f4ff;font-weight:600">$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em style="color:#FFD56B;font-style:italic">$1</em>')
+      .replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.08);padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;color:#FFD56B">$1</code>')
+  }
+
+  return (
+    <div style={styles.root} className="dash-page">
+      {/* SIDEBAR nav formation */}
+      <aside style={styles.navPanel}>
+        <div style={styles.navHeader}>
+          <Link href="/dashboard/formations" style={styles.backLink}>
+            <ArrowLeft size={15} />
+            Retour
+          </Link>
+          <div style={styles.formationMeta}>
+            <div style={styles.formationTitle}>{formation.title}</div>
+            <div style={styles.formationStats}>
+              <span><Clock size={12} /> {formation.duration}</span>
+              <span><BookOpen size={12} /> {totalLessons} leçons</span>
+            </div>
+          </div>
+          {/* Progress bar */}
+          <div style={styles.progressWrap}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={styles.progressLabel}>Progression</span>
+              <span style={styles.progressPct}>{progress}%</span>
+            </div>
+            <div className="progress-bar">
+              <div className="progress-fill" style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Modules list */}
+        <nav style={styles.navModules}>
+          {formation.modules.map(module => {
+            const isOpen = openModules.includes(module.id)
+            const allDone = module.lessons.every(l => completedLessons.includes(l.id))
+            return (
+              <div key={module.id} style={styles.moduleGroup}>
+                <button
+                  onClick={() => toggleModule(module.id)}
+                  style={styles.moduleBtn}
+                >
+                  <div style={styles.moduleBtnLeft}>
+                    {allDone
+                      ? <CheckCircle size={16} color="#34D399" weight="fill" />
+                      : <div style={styles.moduleNum}>{module.id}</div>
+                    }
+                    <span style={styles.moduleLabel}>{module.title}</span>
+                  </div>
+                  {isOpen ? <CaretDown size={14} /> : <CaretRight size={14} />}
+                </button>
+                {isOpen && (
+                  <div style={styles.lessonList}>
+                    {module.lessons.map(lesson => {
+                      const isActive = activeLesson?.lessonId === lesson.id
+                      const isDone = completedLessons.includes(lesson.id)
+                      return (
+                        <button
+                          key={lesson.id}
+                          onClick={() => setActiveLesson({ moduleId: module.id, lessonId: lesson.id })}
+                          style={{
+                            ...styles.lessonBtn,
+                            ...(isActive ? styles.lessonBtnActive : {}),
+                          }}
+                        >
+                          <div style={{ ...styles.lessonDot, ...(isDone ? { background: '#34D399' } : isActive ? { background: '#FFD56B' } : {}) }}>
+                            {isDone && <Check size={9} color="#000" weight="bold" />}
+                          </div>
+                          <span style={{ flex: 1, textAlign: 'left' }}>{lesson.title}</span>
+                          <span style={styles.lessonDur}>{lesson.duration}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </nav>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main style={styles.main}>
+        {!activeLesson ? (
+          /* Overview */
+          <div style={styles.overview}>
+            <div style={styles.overviewBadge} className="badge badge-yellow">
+              <GraduationCap size={12} weight="fill" />
+              {formation.level}
+            </div>
+            <h1 style={styles.overviewTitle}>{formation.title}</h1>
+            <p style={styles.overviewDesc}>{formation.description}</p>
+
+            <div style={styles.overviewMeta}>
+              <div style={styles.metaChip}>
+                <Clock size={16} color="#FFD56B" />
+                <div>
+                  <div style={styles.metaVal}>{formation.duration}</div>
+                  <div style={styles.metaLbl}>durée totale</div>
+                </div>
+              </div>
+              <div style={styles.metaChip}>
+                <BookOpen size={16} color="#FFD56B" />
+                <div>
+                  <div style={styles.metaVal}>{formation.modules.length} modules</div>
+                  <div style={styles.metaLbl}>{totalLessons} leçons</div>
+                </div>
+              </div>
+              <div style={styles.metaChip}>
+                <Star size={16} color="#FFD56B" weight="fill" />
+                <div>
+                  <div style={styles.metaVal}>{formation.level}</div>
+                  <div style={styles.metaLbl}>niveau</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={styles.objectifBox}>
+              <div style={styles.objectifTitle}>Ce que tu vas apprendre</div>
+              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {formation.objectifs.map((obj, i) => (
+                  <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <CheckCircle size={16} color="#34D399" weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
+                    <span style={{ fontSize: '14px', color: 'rgba(240,244,255,0.75)', lineHeight: 1.5 }}>{obj}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <button
+              className="btn-primary"
+              onClick={() => {
+                setActiveLesson({ moduleId: 1, lessonId: 1 })
+                setOpenModules([1])
+              }}
+              style={{ fontSize: '15px', padding: '13px 26px' }}
+            >
+              Commencer la formation <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
+            </button>
+          </div>
+        ) : (
+          /* Lesson content */
+          <div style={styles.lessonContent}>
+            <div style={styles.lessonBreadcrumb}>
+              <span style={styles.breadcrumbModule}>Module {currentModule?.id} — {currentModule?.title}</span>
+              <span style={styles.breadcrumbSep}>›</span>
+              <span style={styles.breadcrumbLesson}>{currentLesson?.title}</span>
+            </div>
+
+            <div style={styles.lessonMeta}>
+              <span style={styles.lessonMetaItem}>
+                <Clock size={13} />
+                {currentLesson?.duration}
+              </span>
+            </div>
+
+            <div style={styles.lessonBody}>
+              {currentLesson && renderContent(currentLesson.content)}
+            </div>
+
+            <div style={styles.lessonActions}>
+              {completedLessons.includes(currentLesson!.id) ? (
+                <div style={styles.doneMsg}>
+                  <CheckCircle size={18} color="#34D399" weight="fill" />
+                  Leçon terminée
+                </div>
+              ) : (
+                <button
+                  className="btn-primary"
+                  onClick={() => markComplete(currentLesson!.id)}
+                  style={{ fontSize: '14px', padding: '12px 24px' }}
+                >
+                  <Check size={16} weight="bold" />
+                  Marquer comme terminé
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
+
+const styles: Record<string, React.CSSProperties> = {
+  root: {
+    display: 'flex', minHeight: 'calc(100svh - var(--header-h))',
+    padding: 0,
+  },
+  navPanel: {
+    width: '280px', flexShrink: 0,
+    borderRight: '1px solid rgba(255,255,255,0.06)',
+    display: 'flex', flexDirection: 'column',
+    position: 'sticky', top: 'var(--header-h)',
+    height: 'calc(100svh - var(--header-h))',
+    overflowY: 'auto',
+  },
+  navHeader: {
+    padding: '20px 16px',
+    borderBottom: '1px solid rgba(255,255,255,0.06)',
+  },
+  backLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '13px', color: 'rgba(240,244,255,0.4)',
+    textDecoration: 'none', marginBottom: '16px',
+    transition: 'color 0.18s',
+  },
+  formationTitle: {
+    fontSize: '14px', fontWeight: 600, color: '#f0f4ff',
+    lineHeight: 1.3, marginBottom: '8px',
+  },
+  formationMeta: { marginBottom: '14px' },
+  formationStats: {
+    display: 'flex', gap: '12px',
+    fontSize: '12px', color: 'rgba(240,244,255,0.35)',
+  },
+  progressWrap: {},
+  progressLabel: { fontSize: '11px', color: 'rgba(240,244,255,0.35)' },
+  progressPct: { fontSize: '11px', color: '#FFD56B' },
+  navModules: {
+    flex: 1, padding: '8px 8px',
+    display: 'flex', flexDirection: 'column', gap: '2px',
+  },
+  moduleGroup: {},
+  moduleBtn: {
+    width: '100%', display: 'flex', alignItems: 'center',
+    justifyContent: 'space-between', gap: '8px',
+    padding: '9px 10px', borderRadius: '9px',
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'rgba(240,244,255,0.55)',
+    transition: 'background 0.18s',
+    textAlign: 'left',
+  },
+  moduleBtnLeft: { display: 'flex', alignItems: 'center', gap: '10px', flex: 1 },
+  moduleNum: {
+    width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
+    background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '10px', fontWeight: 700, color: 'rgba(240,244,255,0.5)',
+  },
+  moduleLabel: { fontSize: '13px', fontWeight: 500, lineHeight: 1.3 },
+  lessonList: {
+    paddingLeft: '8px', paddingBottom: '4px',
+    display: 'flex', flexDirection: 'column', gap: '1px',
+  },
+  lessonBtn: {
+    width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '8px 10px', borderRadius: '8px',
+    background: 'none', border: 'none', cursor: 'pointer',
+    fontSize: '12px', color: 'rgba(240,244,255,0.45)',
+    transition: 'background 0.15s, color 0.15s',
+    textAlign: 'left',
+  },
+  lessonBtnActive: {
+    background: 'rgba(255,213,107,0.08)',
+    color: '#FFD56B',
+  },
+  lessonDot: {
+    width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,
+    background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  lessonDur: {
+    fontSize: '11px', color: 'rgba(240,244,255,0.25)', flexShrink: 0,
+  },
+
+  // Main area
+  main: { flex: 1, overflowY: 'auto' },
+
+  // Overview
+  overview: {
+    padding: 'clamp(28px,4vw,52px)',
+    maxWidth: '720px',
+  },
+  overviewBadge: { marginBottom: '20px' },
+  overviewTitle: {
+    fontFamily: 'Fraunces, serif', fontSize: 'clamp(28px,3vw,42px)',
+    fontWeight: 400, color: '#f0f4ff', lineHeight: 1.15,
+    marginBottom: '16px',
+  },
+  overviewDesc: {
+    fontSize: '16px', fontWeight: 300, color: 'rgba(240,244,255,0.55)',
+    lineHeight: 1.7, marginBottom: '32px',
+  },
+  overviewMeta: {
+    display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '36px',
+  },
+  metaChip: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '12px', padding: '14px 18px',
+  },
+  metaVal: { fontSize: '14px', fontWeight: 600, color: '#f0f4ff' },
+  metaLbl: { fontSize: '11px', color: 'rgba(240,244,255,0.35)', marginTop: '2px' },
+  objectifBox: {
+    background: 'rgba(0,76,63,0.15)', border: '1px solid rgba(52,211,153,0.12)',
+    borderRadius: '16px', padding: '24px 24px',
+    marginBottom: '32px',
+  },
+  objectifTitle: {
+    fontSize: '13px', fontWeight: 600, letterSpacing: '0.5px',
+    textTransform: 'uppercase', color: 'rgba(240,244,255,0.35)',
+    marginBottom: '16px',
+  },
+
+  // Lesson content
+  lessonContent: {
+    padding: 'clamp(24px,4vw,52px)',
+    maxWidth: '780px',
+  },
+  lessonBreadcrumb: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    marginBottom: '20px',
+  },
+  breadcrumbModule: { fontSize: '12px', color: 'rgba(240,244,255,0.3)' },
+  breadcrumbSep: { fontSize: '12px', color: 'rgba(240,244,255,0.2)' },
+  breadcrumbLesson: { fontSize: '12px', color: 'rgba(240,244,255,0.5)', fontWeight: 500 },
+  lessonMeta: {
+    display: 'flex', gap: '16px', marginBottom: '32px',
+  },
+  lessonMetaItem: {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', color: 'rgba(240,244,255,0.35)',
+  },
+  lessonBody: {
+    fontSize: '15px', lineHeight: 1.75, color: 'rgba(240,244,255,0.72)',
+  },
+  lessonActions: {
+    marginTop: '48px', paddingTop: '24px',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
+    display: 'flex', alignItems: 'center', gap: '16px',
+  },
+  doneMsg: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    fontSize: '14px', color: '#34D399', fontWeight: 500,
+  },
+}
+
+// Lesson content styles
+const s: Record<string, React.CSSProperties> = {
+  h2: {
+    fontFamily: 'Fraunces, serif', fontSize: 'clamp(22px,2.5vw,30px)',
+    fontWeight: 400, color: '#f0f4ff', marginBottom: '20px', marginTop: '8px',
+    lineHeight: 1.2,
+  },
+  h3: {
+    fontSize: '16px', fontWeight: 600, color: '#f0f4ff',
+    marginBottom: '12px', marginTop: '28px',
+  },
+  p: {
+    marginBottom: '14px', fontSize: '15px',
+    color: 'rgba(240,244,255,0.72)', lineHeight: 1.75,
+  },
+  boldLine: {
+    marginBottom: '10px', fontSize: '15px',
+    color: 'rgba(240,244,255,0.8)', lineHeight: 1.65, fontWeight: 500,
+  },
+  ul: { listStyle: 'none', padding: 0, margin: '0 0 16px', display: 'flex', flexDirection: 'column', gap: '8px' },
+  li: {
+    display: 'flex', alignItems: 'flex-start', gap: '10px',
+    fontSize: '14px', lineHeight: 1.6,
+  },
+  bullet: { flexShrink: 0, marginTop: '1px' },
+  blockquote: {
+    background: 'rgba(255,213,107,0.06)',
+    border: '1px solid rgba(255,213,107,0.15)',
+    borderLeft: '3px solid #FFD56B',
+    borderRadius: '8px', padding: '12px 16px',
+    fontSize: '14px', color: 'rgba(240,244,255,0.65)',
+    marginBottom: '16px', lineHeight: 1.6,
+  },
+  pre: {
+    background: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '12px', padding: '18px 20px',
+    fontSize: '13px', lineHeight: 1.65,
+    color: 'rgba(240,244,255,0.75)',
+    fontFamily: 'monospace', whiteSpace: 'pre-wrap',
+    overflowX: 'auto', marginBottom: '16px',
+  },
+  tableWrap: { overflowX: 'auto', marginBottom: '20px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)' },
+  table: { width: '100%', borderCollapse: 'collapse' },
+  th: {
+    padding: '10px 16px', textAlign: 'left',
+    fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px',
+    textTransform: 'uppercase', color: 'rgba(240,244,255,0.4)',
+    background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.08)',
+  },
+  td: {
+    padding: '10px 16px', fontSize: '14px',
+    color: 'rgba(240,244,255,0.72)',
+    borderBottom: '1px solid rgba(255,255,255,0.04)',
+  },
+}

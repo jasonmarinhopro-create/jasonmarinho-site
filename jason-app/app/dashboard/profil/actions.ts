@@ -11,10 +11,14 @@ export async function saveProfileName(fullName: string): Promise<{ error?: strin
 
   const { error } = await supabase
     .from('profiles')
-    .update({ full_name: fullName.trim() || null })
-    .eq('id', session.user.id)
+    .upsert({
+      id: session.user.id,
+      email: session.user.email ?? '',
+      full_name: fullName.trim() || null,
+      updated_at: new Date().toISOString(),
+    })
 
-  if (error) return { error: 'Erreur lors de la sauvegarde. Réessaie.' }
+  if (error) return { error: `Erreur: ${error.message}` }
 
   // Invalide le cache de TOUTES les routes du dashboard
   revalidatePath('/dashboard', 'layout')
