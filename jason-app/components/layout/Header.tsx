@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { List, Bell, UserCircle } from '@phosphor-icons/react'
+import Link from 'next/link'
 import Sidebar from './Sidebar'
 
 interface HeaderProps {
@@ -33,7 +34,7 @@ export default function Header({ title, userName }: HeaderProps) {
           <button style={styles.iconBtn} aria-label="Notifications">
             <Bell size={18} weight="regular" />
           </button>
-          <div style={styles.avatar}>
+          <Link href="/dashboard/profil" style={{ ...styles.avatar, textDecoration: 'none' }} title="Mon profil">
             {userName ? (
               <span style={styles.avatarInitial}>
                 {userName.charAt(0).toUpperCase()}
@@ -41,7 +42,7 @@ export default function Header({ title, userName }: HeaderProps) {
             ) : (
               <UserCircle size={28} weight="fill" color="rgba(240,244,255,0.4)" />
             )}
-          </div>
+          </Link>
         </div>
       </header>
     </>

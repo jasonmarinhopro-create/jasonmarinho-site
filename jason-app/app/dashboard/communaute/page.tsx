@@ -26,7 +26,7 @@ export default async function CommunautePage() {
           <p style={styles.pageDesc}>Les meilleurs groupes pour échanger avec d'autres hôtes — avec les gabarits de présentation pour bien démarrer.</p>
         </div>
 
-        <div style={styles.grid}>
+        <div style={styles.grid} className="dash-grid-2">
           {(groups ?? []).map((g, i) => (
             <div key={g.id} style={styles.card} className={`glass-card fade-up d${i + 1}`}>
               {/* Header */}
@@ -76,11 +76,11 @@ export default async function CommunautePage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(24px,4vw,40px)', maxWidth: '960px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '36px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,36px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '480px' },
-  grid: { display: 'flex', flexDirection: 'column', gap: '20px' },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6 },
+  grid: {}, /* className dash-grid-2 */
   card: { padding: '28px', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '16px' },
   cardHead: { display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' },
   platformIcon: {

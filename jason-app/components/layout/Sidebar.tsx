@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
-  UsersThree, SignOut, X
+  UsersThree, SignOut, X, UserCircle
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -16,6 +16,7 @@ const navItems = [
   { href: '/dashboard/partenaires',  label: 'Partenaires',  icon: Handshake },
   { href: '/dashboard/gabarits',     label: 'Gabarits',     icon: FileText },
   { href: '/dashboard/communaute',   label: 'Communauté',   icon: UsersThree },
+  { href: '/dashboard/profil',       label: 'Mon profil',   icon: UserCircle },
 ]
 
 interface SidebarProps {

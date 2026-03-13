@@ -101,7 +101,7 @@ export default function GabaritsPage() {
         </div>
 
         {/* Grid */}
-        <div style={styles.grid}>
+        <div style={styles.grid} className="dash-grid-3">
           {filtered.map((t, i) => (
             <div key={t.id} style={styles.card} className={`glass-card fade-up d${(i % 3) + 1}`}>
               <div style={styles.cardHead}>
@@ -141,15 +141,15 @@ export default function GabaritsPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(24px,4vw,40px)', maxWidth: '960px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '28px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,36px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '520px' },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6 },
   controls: { display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' },
   searchWrap: {
     display: 'flex', alignItems: 'center', gap: '10px',
     background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '10px', padding: '10px 14px', maxWidth: '380px',
+    borderRadius: '10px', padding: '10px 14px', maxWidth: '440px',
   },
   searchInput: {
     background: 'none', border: 'none', outline: 'none',
@@ -168,7 +168,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.3)',
     color: '#FFD56B',
   },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' },
+  grid: {}, /* className dash-grid-3 */
   card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '14px' },
   cardHead: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
   cardIcon: {
@@ -195,7 +195,7 @@ const styles: Record<string, React.CSSProperties> = {
   toast: {
     position: 'fixed', bottom: '24px', left: '50%',
     transform: 'translateX(-50%)',
-    background: 'rgba(15,30,53,0.95)', border: '1px solid rgba(52,211,153,0.2)',
+    background: 'rgba(0,30,20,0.96)', border: '1px solid rgba(52,211,153,0.2)',
     borderRadius: '10px', padding: '12px 20px',
     display: 'flex', alignItems: 'center', gap: '8px',
     fontSize: '13px', fontWeight: 500, color: '#f0f4ff',

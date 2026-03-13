@@ -29,7 +29,7 @@ export default async function DashboardPage() {
     .select('id')
     .eq('is_published', true)
 
-  const firstName = profile?.full_name?.split(' ')[0] ?? 'toi'
+  const firstName = profile?.full_name?.split(' ')[0] ?? user?.email?.split('@')[0] ?? ''
   const enrolled = userFormations?.length ?? 0
   const completed = userFormations?.filter(f => f.progress === 100).length ?? 0
 
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
         <section style={styles.welcome} className="fade-up dash-welcome">
           <div>
             <p style={styles.welcomeSub}>Bonjour,</p>
-            <h2 style={styles.welcomeTitle}>Bienvenue, <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>{firstName}</em></h2>
+            <h2 style={styles.welcomeTitle}>Bienvenue{firstName ? ', ' : ''}<em style={{ color: '#FFD56B', fontStyle: 'italic' }}>{firstName}</em></h2>
             <p style={styles.welcomeDesc}>Retrouve tes formations, gabarits et ressources pour développer ton activité LCD.</p>
           </div>
           <div style={styles.statsRow} className="dash-stats-row">
