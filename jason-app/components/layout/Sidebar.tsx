@@ -10,13 +10,17 @@ import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
-const navItems = [
+const mainNav = [
   { href: '/dashboard',             label: 'Accueil',     icon: HouseSimple },
   { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap },
   { href: '/dashboard/gabarits',    label: 'Gabarits',    icon: FileText },
   { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake },
   { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree },
-  { href: '/dashboard/abonnement',  label: 'Abonnement',  icon: CreditCard },
+]
+
+const accountNav = [
+  { href: '/dashboard/abonnement',  label: 'Abonnement',   icon: CreditCard },
+  { href: '/dashboard/profil',      label: 'Mon profil',   icon: UserCircle },
   { href: '/dashboard/aide',        label: "Centre d'aide", icon: Question },
 ]
 
@@ -71,40 +75,55 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
 
         {/* Navigation */}
         <nav style={styles.nav}>
-          {navItems.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href
-            return (
-              <Link
-                key={href}
-                href={href}
-                onClick={onClose}
-                style={{ ...styles.navItem, ...(active ? styles.navItemActive : {}) }}
-              >
-                <Icon size={18} weight={active ? 'fill' : 'regular'} />
-                <span>{label}</span>
-                {active && <div style={styles.activeDot} />}
-              </Link>
-            )
-          })}
+          {/* Section principale */}
+          <div style={styles.navSection}>
+            {mainNav.map(({ href, label, icon: Icon }) => {
+              const active = pathname === href
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={onClose}
+                  style={{ ...styles.navItem, ...(active ? styles.navItemActive : {}) }}
+                >
+                  <Icon size={18} weight={active ? 'fill' : 'regular'} />
+                  <span>{label}</span>
+                  {active && <div style={styles.activeDot} />}
+                </Link>
+              )
+            })}
+          </div>
+
+          {/* Séparateur Compte */}
+          <div style={styles.navDivider}>
+            <div style={styles.navDividerLine} />
+            <span style={styles.navDividerLabel}>Compte</span>
+            <div style={styles.navDividerLine} />
+          </div>
+
+          {/* Section compte */}
+          <div style={styles.navSection}>
+            {accountNav.map(({ href, label, icon: Icon }) => {
+              const active = pathname === href
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={onClose}
+                  style={{ ...styles.navItem, ...(active ? styles.navItemActive : {}) }}
+                >
+                  <Icon size={18} weight={active ? 'fill' : 'regular'} />
+                  <span>{label}</span>
+                  {active && <div style={styles.activeDot} />}
+                </Link>
+              )
+            })}
+          </div>
         </nav>
 
         {/* Footer */}
         <div style={styles.sideFooter}>
-          <Link
-            href="/dashboard/profil"
-            onClick={onClose}
-            style={{
-              ...styles.navItem,
-              ...(pathname === '/dashboard/profil' ? styles.navItemActive : {}),
-            }}
-          >
-            <UserCircle size={18} weight={pathname === '/dashboard/profil' ? 'fill' : 'regular'} />
-            <span>Mon profil</span>
-            {pathname === '/dashboard/profil' && <div style={styles.activeDot} />}
-          </Link>
-
           <div style={styles.footerDivider} />
-
           <a
             href="https://jasonmarinho.com"
             target="_blank"
@@ -156,9 +175,24 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center', justifyContent: 'center',
   },
   nav: {
-    flex: 1, padding: '16px 12px',
-    display: 'flex', flexDirection: 'column', gap: '4px',
+    flex: 1, padding: '12px 12px',
+    display: 'flex', flexDirection: 'column', gap: '0',
     overflowY: 'auto',
+  },
+  navSection: {
+    display: 'flex', flexDirection: 'column', gap: '2px',
+  },
+  navDivider: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '14px 4px 10px',
+  },
+  navDividerLine: {
+    flex: 1, height: '1px', background: 'rgba(255,255,255,0.07)',
+  },
+  navDividerLabel: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.9px',
+    textTransform: 'uppercase', color: 'rgba(240,244,255,0.2)',
+    whiteSpace: 'nowrap', flexShrink: 0,
   },
   navItem: {
     display: 'flex', alignItems: 'center', gap: '11px',
@@ -182,11 +216,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   sideFooter: {
     padding: '12px',
-    borderTop: '1px solid rgba(255,255,255,0.05)',
     display: 'flex', flexDirection: 'column', gap: '4px',
   },
   footerDivider: {
-    height: '1px', background: 'rgba(255,255,255,0.05)', margin: '6px 0',
+    height: '1px', background: 'rgba(255,255,255,0.06)', margin: '0 0 4px',
   },
   footerLink: {
     display: 'flex', alignItems: 'center', gap: '8px',

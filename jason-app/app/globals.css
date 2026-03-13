@@ -159,6 +159,34 @@ em { font-style: italic; color: var(--accent); }
 /* ── LINK ── */
 a { color: inherit; }
 
+/* ── AVATAR SHINE ── */
+@keyframes avatarShine {
+  0%   { transform: translateX(-160%) skewX(-20deg); }
+  100% { transform: translateX(260%) skewX(-20deg); }
+}
+
+.avatar-wrap {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.avatar-shine {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 45%;
+  height: 120%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.16) 50%,
+    transparent 80%
+  );
+  pointer-events: none;
+  animation: avatarShine 3.6s ease-in-out infinite;
+  animation-delay: 1.8s;
+}
+
 /* ── SECTION PAGES RESPONSIVE ── */
 .dash-grid-3 {
   display: grid;
