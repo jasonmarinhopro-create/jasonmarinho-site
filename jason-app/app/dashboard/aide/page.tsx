@@ -1,6 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
+import { getProfile } from '@/lib/queries/profile'
 import Header from '@/components/layout/Header'
-import Sidebar from '@/components/layout/Sidebar'
 import Link from 'next/link'
 import {
   GraduationCap, FileText, Handshake, UsersThree,
@@ -54,17 +53,10 @@ const faqs = [
 ]
 
 export default async function AidePage() {
-  const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) { const { redirect } = await import('next/navigation'); redirect('/auth/login') }
-  const userId = session!.user.id
-
-  const { data: profile } = await supabase
-    .from('profiles').select('full_name').eq('id', userId).single()
+  const profile = await getProfile()
 
   return (
     <>
-      <Sidebar />
       <Header title="Centre d'aide" userName={profile?.full_name ?? undefined} />
 
       <div style={styles.page}>

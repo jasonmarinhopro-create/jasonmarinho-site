@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Header from '@/components/layout/Header'
-import Sidebar from '@/components/layout/Sidebar'
 import { Check, User, EnvelopeSimple, PencilSimple, Warning } from '@phosphor-icons/react'
 
 export default function ProfilPage() {
+  const router = useRouter()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -50,6 +51,7 @@ export default function ProfilPage() {
     }
     setSaved(true)
     setEditName(false)
+    router.refresh() // Invalide le Router Cache → les autres pages re-fetched le profil à jour
     setTimeout(() => setSaved(false), 2500)
   }
 
@@ -60,7 +62,6 @@ export default function ProfilPage() {
 
   return (
     <>
-      <Sidebar />
       <Header title="Mon profil" userName={fullName || undefined} />
 
       <div style={styles.page} className="dash-page">

@@ -18,7 +18,6 @@ const categoryLabels: Record<string, string> = {
 // In production, use React Server Components + client interaction
 import { useEffect } from 'react'
 import Header from '@/components/layout/Header'
-import Sidebar from '@/components/layout/Sidebar'
 
 export default function GabaritsPage() {
   const [templates, setTemplates] = useState<Template[]>([])
@@ -55,7 +54,6 @@ export default function GabaritsPage() {
 
   return (
     <>
-      <Sidebar />
       <Header title="Gabarits" />
 
       {/* Toast */}

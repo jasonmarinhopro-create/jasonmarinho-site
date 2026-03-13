@@ -1,6 +1,6 @@
+import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
-import Sidebar from '@/components/layout/Sidebar'
 import Link from 'next/link'
 import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock } from '@phosphor-icons/react/dist/ssr'
 
@@ -11,19 +11,14 @@ const levelLabel: Record<string, string> = {
 }
 
 export default async function FormationsPage() {
+  const profile = await getProfile()
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) { const { redirect } = await import('next/navigation'); redirect('/auth/login') }
-  const userId = session!.user.id
+  const userId = profile?.userId ?? ''
 
-  const { data: profile } = await supabase
-    .from('profiles').select('full_name').eq('id', userId).single()
-
-  const { data: formations } = await supabase
-    .from('formations').select('*').eq('is_published', true).order('created_at')
-
-  const { data: userFormations } = await supabase
-    .from('user_formations').select('*').eq('user_id', userId)
+  const [{ data: formations }, { data: userFormations }] = await Promise.all([
+    supabase.from('formations').select('*').eq('is_published', true).order('created_at'),
+    supabase.from('user_formations').select('*').eq('user_id', userId),
+  ])
 
   const progressMap = Object.fromEntries(
     (userFormations ?? []).map(uf => [uf.formation_id, uf.progress])
@@ -31,7 +26,6 @@ export default async function FormationsPage() {
 
   return (
     <>
-      <Sidebar />
       <Header title="Formations" userName={profile?.full_name ?? undefined} />
 
       <div style={styles.page}>
