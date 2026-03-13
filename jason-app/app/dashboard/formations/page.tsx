@@ -2,7 +2,8 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import Link from 'next/link'
-import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock } from '@phosphor-icons/react/dist/ssr'
+import FormationsSuggestForm from './FormationsSuggestForm'
+import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench } from '@phosphor-icons/react/dist/ssr'
 
 const levelLabel: Record<string, string> = {
   debutant: 'Débutant',
@@ -10,13 +11,36 @@ const levelLabel: Record<string, string> = {
   avance: 'Avancé',
 }
 
+// Formations à venir — hardcodées, pas encore en DB
+const COMING_SOON = [
+  {
+    id: 'tarification',
+    title: 'Tarification Dynamique & Revenue Management',
+    description: 'Maximise tes revenus en ajustant tes prix à la demande. De la stratégie de base aux outils avancés comme PriceLabs.',
+    duration: '4h',
+    modules: 9,
+    lessons: 18,
+    level: 'Intermédiaire',
+  },
+  {
+    id: 'messages',
+    title: 'Automatiser ses messages Airbnb',
+    description: 'Économise 3h par semaine en automatisant tes 5 messages essentiels. Templates inclus, prêts à copier.',
+    duration: '1h45',
+    modules: 5,
+    lessons: 9,
+    level: 'Débutant',
+  },
+]
+
 export default async function FormationsPage() {
   const profile = await getProfile()
   const supabase = await createClient()
   const userId = profile?.userId ?? ''
 
+  // Ne charger que la formation GMB (la seule disponible)
   const [{ data: formations }, { data: userFormations }] = await Promise.all([
-    supabase.from('formations').select('*').eq('is_published', true).order('created_at'),
+    supabase.from('formations').select('*').eq('slug', 'google-my-business-lcd').eq('is_published', true),
     supabase.from('user_formations').select('*').eq('user_id', userId),
   ])
 
@@ -34,70 +58,111 @@ export default async function FormationsPage() {
           <p style={styles.pageDesc}>Des parcours concrets pour optimiser ta location courte durée. Accessibles à vie, à ton rythme.</p>
         </div>
 
-        <div style={styles.grid} className="dash-grid-3">
-          {(formations ?? []).map((f, i) => {
-            const progress = progressMap[f.id] ?? null
-            const enrolled = progress !== null
-            const done = progress === 100
+        {/* Formation disponible */}
+        <div style={styles.section} className="fade-up d1">
+          <div style={styles.grid} className="dash-grid-3">
+            {(formations ?? []).map((f, i) => {
+              const progress = progressMap[f.id] ?? null
+              const enrolled = progress !== null
+              const done = progress === 100
 
-            return (
-              <div key={f.id} style={styles.card} className={`glass-card fade-up d${i + 1}`}>
-                {/* Header card */}
+              return (
+                <div key={f.id} style={styles.card} className={`glass-card fade-up d${i + 1}`}>
+                  <div style={styles.cardHeader}>
+                    <div style={styles.cardIcon}>
+                      <GraduationCap size={28} color="#FFD56B" weight="fill" />
+                    </div>
+                    <div style={styles.cardBadges}>
+                      <span className="badge badge-yellow">{levelLabel[f.level] ?? f.level}</span>
+                      <span className="badge badge-green">Disponible</span>
+                      {done && <span className="badge badge-green">Terminé ✓</span>}
+                    </div>
+                  </div>
+
+                  <h3 style={styles.cardTitle}>{f.title}</h3>
+                  <p style={styles.cardDesc}>{f.description}</p>
+
+                  <div style={styles.meta}>
+                    <span style={styles.metaItem}><Clock size={13} /> {f.duration}</span>
+                    <span style={styles.metaItem}><BookOpen size={13} /> {f.modules_count} modules</span>
+                    <span style={styles.metaItem}><CheckCircle size={13} /> {f.lessons_count} leçons</span>
+                  </div>
+
+                  {enrolled && (
+                    <div style={styles.progressArea}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                        <span style={styles.progressLabel}>Progression</span>
+                        <span style={styles.progressPct}>{progress}%</span>
+                      </div>
+                      <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${progress}%` }} />
+                      </div>
+                    </div>
+                  )}
+
+                  <div style={styles.cardFooter}>
+                    {enrolled ? (
+                      <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                        {done ? 'Revoir' : 'Continuer'} <ArrowRight size={14} weight="bold" />
+                      </Link>
+                    ) : (
+                      <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                        Commencer <ArrowRight size={14} weight="bold" />
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+
+            {/* Formations en construction */}
+            {COMING_SOON.map((f, i) => (
+              <div key={f.id} style={styles.comingSoonCard} className={`glass-card fade-up d${i + 2}`}>
                 <div style={styles.cardHeader}>
-                  <div style={styles.cardIcon}>
-                    <GraduationCap size={28} color="#FFD56B" weight="fill" />
+                  <div style={{ ...styles.cardIcon, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    <Wrench size={24} color="rgba(240,244,255,0.25)" weight="fill" />
                   </div>
                   <div style={styles.cardBadges}>
-                    <span className="badge badge-yellow">{levelLabel[f.level] ?? f.level}</span>
-                    {done && <span className="badge badge-green">Terminé</span>}
+                    <span style={styles.wip}>En construction</span>
                   </div>
                 </div>
 
-                {/* Content */}
-                <h3 style={styles.cardTitle}>{f.title}</h3>
-                <p style={styles.cardDesc}>{f.description}</p>
+                <h3 style={{ ...styles.cardTitle, color: 'rgba(240,244,255,0.45)' }}>{f.title}</h3>
+                <p style={{ ...styles.cardDesc, color: 'rgba(240,244,255,0.3)' }}>{f.description}</p>
 
-                {/* Meta */}
                 <div style={styles.meta}>
-                  <span style={styles.metaItem}>
-                    <Clock size={13} /> {f.duration}
-                  </span>
-                  <span style={styles.metaItem}>
-                    <BookOpen size={13} /> {f.modules_count} modules
-                  </span>
-                  <span style={styles.metaItem}>
-                    <CheckCircle size={13} /> {f.lessons_count} leçons
-                  </span>
+                  <span style={{ ...styles.metaItem, opacity: 0.4 }}><Clock size={13} /> {f.duration}</span>
+                  <span style={{ ...styles.metaItem, opacity: 0.4 }}><BookOpen size={13} /> {f.modules} modules</span>
+                  <span style={{ ...styles.metaItem, opacity: 0.4 }}><CheckCircle size={13} /> {f.lessons} leçons</span>
                 </div>
 
-                {/* Progress */}
-                {enrolled && (
-                  <div style={styles.progressArea}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                      <span style={styles.progressLabel}>Progression</span>
-                      <span style={styles.progressPct}>{progress}%</span>
-                    </div>
-                    <div className="progress-bar">
-                      <div className="progress-fill" style={{ width: `${progress}%` }} />
-                    </div>
-                  </div>
-                )}
-
-                {/* CTA */}
                 <div style={styles.cardFooter}>
-                  {enrolled ? (
-                    <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
-                      {done ? 'Revoir' : 'Continuer'} <ArrowRight size={14} weight="bold" />
-                    </Link>
-                  ) : (
-                    <Link href={`/dashboard/formations/${f.slug}`} className="btn-ghost" style={{ fontSize: '13px', padding: '10px 18px' }}>
-                      Commencer <ArrowRight size={14} />
-                    </Link>
-                  )}
+                  <div style={styles.lockedBtn}>
+                    <Lock size={13} />
+                    Bientôt disponible
+                  </div>
                 </div>
               </div>
-            )
-          })}
+            ))}
+          </div>
+        </div>
+
+        {/* Suggestion de formation */}
+        <div style={styles.suggestSection} className="fade-up d3">
+          <div style={styles.suggestBox} className="glass-card">
+            <div style={styles.suggestLeft}>
+              <div style={styles.suggestEmoji}>💡</div>
+              <div>
+                <h3 style={styles.suggestTitle}>
+                  Tu voudrais une formation sur un autre sujet ?
+                </h3>
+                <p style={styles.suggestDesc}>
+                  Dis-nous ce qui t'aiderait le plus dans ton activité — on construit les prochaines formations en fonction de tes besoins.
+                </p>
+              </div>
+            </div>
+            <FormationsSuggestForm />
+          </div>
         </div>
       </div>
     </>
@@ -109,8 +174,14 @@ const styles: Record<string, React.CSSProperties> = {
   intro: { marginBottom: '36px' },
   pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6 },
-  grid: {}, /* handled by className dash-grid-3 */
+  section: { marginBottom: '40px' },
+  grid: {},
   card: { padding: '28px', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0' },
+  comingSoonCard: {
+    padding: '28px', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0',
+    background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+    opacity: 0.7,
+  },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' },
   cardIcon: {
     width: '52px', height: '52px', borderRadius: '14px',
@@ -118,6 +189,12 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   cardBadges: { display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'flex-end' },
+  wip: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.7px', textTransform: 'uppercase',
+    padding: '4px 10px', borderRadius: '100px',
+    background: 'rgba(255,255,255,0.06)', color: 'rgba(240,244,255,0.3)',
+    border: '1px solid rgba(255,255,255,0.08)',
+  },
   cardTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: '#f0f4ff', lineHeight: 1.3, marginBottom: '10px' },
   cardDesc: { fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.65, marginBottom: '18px', flex: 1 },
   meta: { display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' },
@@ -126,4 +203,21 @@ const styles: Record<string, React.CSSProperties> = {
   progressLabel: { fontSize: '12px', color: 'rgba(240,244,255,0.4)' },
   progressPct: { fontSize: '12px', color: '#FFD56B' },
   cardFooter: { paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' },
+  lockedBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    fontSize: '13px', fontWeight: 400, color: 'rgba(240,244,255,0.25)',
+    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)',
+    borderRadius: '8px', padding: '9px 16px',
+  },
+
+  // Suggest section
+  suggestSection: { marginTop: '8px' },
+  suggestBox: {
+    display: 'flex', alignItems: 'flex-start', gap: '32px',
+    padding: 'clamp(20px,3vw,36px)', borderRadius: '20px', flexWrap: 'wrap',
+  },
+  suggestLeft: { display: 'flex', alignItems: 'flex-start', gap: '16px', flex: 1, minWidth: '260px' },
+  suggestEmoji: { fontSize: '28px', flexShrink: 0, marginTop: '3px' },
+  suggestTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px', lineHeight: 1.3 },
+  suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.6 },
 }
