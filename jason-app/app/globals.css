@@ -154,3 +154,54 @@ em { font-style: italic; color: var(--accent); }
 
 /* ── LINK ── */
 a { color: inherit; }
+
+/* ── DASHBOARD RESPONSIVE ── */
+.dash-sidebar {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dash-menu-btn { display: none; }
+.dash-close-btn { display: none; }
+
+@media (max-width: 768px) {
+  .dash-sidebar {
+    transform: translateX(-100%);
+  }
+  .dash-sidebar.open {
+    transform: translateX(0);
+  }
+  .dash-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .dash-close-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .dash-header {
+    left: 0 !important;
+  }
+  .dash-main {
+    margin-left: 0 !important;
+  }
+  /* Page content */
+  .dash-page {
+    padding: 16px !important;
+    max-width: 100% !important;
+  }
+  /* Welcome card */
+  .dash-welcome {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 20px !important;
+  }
+  /* Quick links grid */
+  .dash-quick-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  /* Stats */
+  .dash-stats-row {
+    align-self: flex-start;
+  }
+}

@@ -46,10 +46,10 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         />
       )}
 
-      <aside style={{
-        ...styles.sidebar,
-        transform: mobileOpen ? 'translateX(0)' : undefined,
-      }}>
+      <aside
+        className={`dash-sidebar${mobileOpen ? ' open' : ''}`}
+        style={styles.sidebar}
+      >
         {/* Logo */}
         <div style={styles.logoWrap}>
           <div style={styles.logoIcon}>
@@ -59,7 +59,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
             Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em>
           </span>
           {onClose && (
-            <button onClick={onClose} style={styles.closeBtn}>
+            <button onClick={onClose} style={styles.closeBtn} className="dash-close-btn">
               <X size={18} />
             </button>
           )}
@@ -109,7 +109,7 @@ const styles: Record<string, React.CSSProperties> = {
   sidebar: {
     position: 'fixed', top: 0, left: 0, bottom: 0,
     width: 'var(--sidebar-w)',
-    background: 'rgba(10,22,40,0.98)',
+    background: 'rgba(0,51,42,0.98)',
     borderRight: '1px solid rgba(255,255,255,0.06)',
     display: 'flex', flexDirection: 'column',
     zIndex: 99,
@@ -134,7 +134,7 @@ const styles: Record<string, React.CSSProperties> = {
   closeBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
     color: 'rgba(240,244,255,0.4)', padding: '4px',
-    display: 'none',
+    alignItems: 'center', justifyContent: 'center',
   },
   nav: {
     flex: 1, padding: '16px 12px',

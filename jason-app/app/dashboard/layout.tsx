@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div style={styles.layout}>
       {/* Sidebar is rendered inside Header component for mobile toggle */}
-      <main style={styles.main}>
+      <main style={styles.main} className="dash-main">
         {children}
       </main>
     </div>
