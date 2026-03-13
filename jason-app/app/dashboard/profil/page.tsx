@@ -4,38 +4,55 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Header from '@/components/layout/Header'
 import Sidebar from '@/components/layout/Sidebar'
-import { Check, User, EnvelopeSimple, PencilSimple } from '@phosphor-icons/react'
+import { Check, User, EnvelopeSimple, PencilSimple, Warning } from '@phosphor-icons/react'
 
 export default function ProfilPage() {
-  const [fullName, setFullName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [userId, setUserId] = useState('')
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [editName, setEditName] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return
+      const user = session.user
+      setUserId(user.id)
       setEmail(user.email ?? '')
       supabase.from('profiles').select('full_name').eq('id', user.id).single().then(({ data }) => {
-        if (data?.full_name) setFullName(data.full_name)
+        if (data?.full_name) {
+          const parts = data.full_name.trim().split(' ')
+          setFirstName(parts[0] ?? '')
+          setLastName(parts.slice(1).join(' ') ?? '')
+        }
       })
     })
   }, [])
 
   async function handleSave() {
+    if (!userId) return
+    setSaveError('')
     setLoading(true)
     const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    await supabase.from('profiles').upsert({ id: user.id, full_name: fullName })
+    const fullName = [firstName, lastName].filter(Boolean).join(' ')
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({ id: userId, full_name: fullName }, { onConflict: 'id' })
     setLoading(false)
+    if (error) {
+      setSaveError('Erreur lors de la sauvegarde. Réessaie.')
+      return
+    }
     setSaved(true)
     setEditName(false)
     setTimeout(() => setSaved(false), 2500)
   }
 
+  const fullName = [firstName, lastName].filter(Boolean).join(' ')
   const initials = fullName
     ? fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : email.charAt(0).toUpperCase()
@@ -65,37 +82,59 @@ export default function ProfilPage() {
 
           <div style={styles.divider} />
 
-          {/* Nom complet */}
+          {/* Prénom & Nom */}
           <div style={styles.field}>
             <label style={styles.label}>
               <User size={15} />
-              Nom complet
+              Prénom &amp; Nom
             </label>
+
             {editName ? (
-              <div style={styles.editRow}>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={e => setFullName(e.target.value)}
-                  style={styles.input}
-                  placeholder="Prénom Nom"
-                  autoFocus
-                />
-                <button
-                  onClick={handleSave}
-                  disabled={loading}
-                  className="btn-primary"
-                  style={{ fontSize: '13px', padding: '10px 18px' }}
-                >
-                  {saved ? <><Check size={14} weight="bold" /> Sauvegardé</> : 'Enregistrer'}
-                </button>
-                <button onClick={() => setEditName(false)} style={styles.cancelBtn}>
-                  Annuler
-                </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={styles.nameRow}>
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)}
+                    style={styles.input}
+                    placeholder="Prénom"
+                    autoFocus
+                  />
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={e => setLastName(e.target.value)}
+                    style={styles.input}
+                    placeholder="Nom"
+                  />
+                </div>
+                {saveError && (
+                  <div style={styles.errorBox}>
+                    <Warning size={14} />
+                    {saveError}
+                  </div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <button
+                    onClick={handleSave}
+                    disabled={loading}
+                    className="btn-primary"
+                    style={{ fontSize: '13px', padding: '10px 18px' }}
+                  >
+                    {saved
+                      ? <><Check size={14} weight="bold" /> Sauvegardé</>
+                      : loading ? 'Sauvegarde...' : 'Enregistrer'}
+                  </button>
+                  <button onClick={() => { setEditName(false); setSaveError('') }} style={styles.cancelBtn}>
+                    Annuler
+                  </button>
+                </div>
               </div>
             ) : (
               <div style={styles.valueRow}>
-                <span style={styles.value}>{fullName || <span style={{ color: 'rgba(240,244,255,0.28)' }}>Non renseigné</span>}</span>
+                <span style={styles.value}>
+                  {fullName || <span style={{ color: 'rgba(240,244,255,0.28)' }}>Non renseigné</span>}
+                </span>
                 <button onClick={() => setEditName(true)} style={styles.editBtn}>
                   <PencilSimple size={14} />
                   Modifier
@@ -156,11 +195,10 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.45)',
     background: 'none', border: '1px solid rgba(255,255,255,0.1)',
     borderRadius: '8px', padding: '6px 12px', cursor: 'pointer',
-    transition: 'all 0.18s',
   },
-  editRow: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
+  nameRow: { display: 'flex', gap: '10px', flexWrap: 'wrap' },
   input: {
-    flex: 1, minWidth: '180px',
+    flex: 1, minWidth: '140px',
     background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,213,107,0.3)',
     borderRadius: '10px', padding: '10px 14px',
     fontFamily: 'Outfit, sans-serif', fontSize: '15px', color: '#f0f4ff',
@@ -169,6 +207,12 @@ const styles: Record<string, React.CSSProperties> = {
   cancelBtn: {
     fontSize: '13px', fontWeight: 400, color: 'rgba(240,244,255,0.38)',
     background: 'none', border: 'none', cursor: 'pointer', padding: '6px',
+  },
+  errorBox: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    fontSize: '13px', color: '#F87171',
+    background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.18)',
+    borderRadius: '8px', padding: '10px 14px',
   },
   readOnly: {
     fontSize: '11px', fontWeight: 500, color: 'rgba(240,244,255,0.25)',

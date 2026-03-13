@@ -11,12 +11,11 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
 const navItems = [
-  { href: '/dashboard',              label: 'Accueil',      icon: HouseSimple },
-  { href: '/dashboard/formations',   label: 'Formations',   icon: GraduationCap },
-  { href: '/dashboard/partenaires',  label: 'Partenaires',  icon: Handshake },
-  { href: '/dashboard/gabarits',     label: 'Gabarits',     icon: FileText },
-  { href: '/dashboard/communaute',   label: 'Communauté',   icon: UsersThree },
-  { href: '/dashboard/profil',       label: 'Mon profil',   icon: UserCircle },
+  { href: '/dashboard',             label: 'Accueil',     icon: HouseSimple },
+  { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap },
+  { href: '/dashboard/gabarits',    label: 'Gabarits',    icon: FileText },
+  { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake },
+  { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree },
 ]
 
 interface SidebarProps {
@@ -87,6 +86,21 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
 
         {/* Footer */}
         <div style={styles.sideFooter}>
+          <Link
+            href="/dashboard/profil"
+            onClick={onClose}
+            style={{
+              ...styles.navItem,
+              ...(pathname === '/dashboard/profil' ? styles.navItemActive : {}),
+            }}
+          >
+            <UserCircle size={18} weight={pathname === '/dashboard/profil' ? 'fill' : 'regular'} />
+            <span>Mon profil</span>
+            {pathname === '/dashboard/profil' && <div style={styles.activeDot} />}
+          </Link>
+
+          <div style={styles.footerDivider} />
+
           <a
             href="https://jasonmarinho.com"
             target="_blank"
@@ -166,6 +180,9 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '12px',
     borderTop: '1px solid rgba(255,255,255,0.05)',
     display: 'flex', flexDirection: 'column', gap: '4px',
+  },
+  footerDivider: {
+    height: '1px', background: 'rgba(255,255,255,0.05)', margin: '6px 0',
   },
   footerLink: {
     display: 'flex', alignItems: 'center', gap: '8px',
