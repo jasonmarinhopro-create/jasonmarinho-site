@@ -4,8 +4,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
-  UsersThree, SignOut, Waves, X
+  UsersThree, SignOut, X
 } from '@phosphor-icons/react'
+import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
@@ -52,7 +53,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         {/* Logo */}
         <div style={styles.logoWrap}>
           <div style={styles.logoIcon}>
-            <Waves size={20} color="#FFD56B" weight="bold" />
+            <JmLogo size={20} />
           </div>
           <span style={styles.logoText}>
             Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em>
@@ -91,7 +92,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
             rel="noopener noreferrer"
             style={styles.footerLink}
           >
-            <Waves size={14} />
+            <JmLogo size={14} color="rgba(240,244,255,0.4)" />
             jasonmarinho.com
           </a>
           <button onClick={handleSignOut} style={styles.signOut}>
