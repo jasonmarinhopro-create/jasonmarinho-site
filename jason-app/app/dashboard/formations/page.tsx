@@ -86,13 +86,13 @@ export default async function FormationsPage() {
                 {/* CTA */}
                 <div style={styles.cardFooter}>
                   {enrolled ? (
-                    <button className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                    <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
                       {done ? 'Revoir' : 'Continuer'} <ArrowRight size={14} weight="bold" />
-                    </button>
+                    </Link>
                   ) : (
-                    <button className="btn-ghost" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                    <Link href={`/dashboard/formations/${f.slug}`} className="btn-ghost" style={{ fontSize: '13px', padding: '10px 18px' }}>
                       Commencer <ArrowRight size={14} />
-                    </button>
+                    </Link>
                   )}
                 </div>
               </div>
