@@ -12,12 +12,20 @@ const BLOCK_DURATION_MS = 10 * 60 * 1000
 export default function LoginPage() {
   const supabase = createClient()
 
-  // If Supabase redirects a recovery token to this page, forward to reset-password
+  // If Supabase redirects a recovery/signup token to this page, wait for session
+  // exchange then forward to reset-password (without hash to avoid double-exchange)
   useEffect(() => {
     const hash = window.location.hash
-    if (hash.includes('type=recovery') || hash.includes('type=signup')) {
-      window.location.replace('/auth/reset-password' + hash)
-    }
+    if (!hash.includes('type=recovery') && !hash.includes('type=signup')) return
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+        subscription.unsubscribe()
+        window.location.replace('/auth/reset-password')
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const [email, setEmail] = useState('')
@@ -94,12 +102,12 @@ export default function LoginPage() {
       <div style={styles.bg2} />
 
       <div style={styles.card} className="fade-up">
-        <div style={styles.logo}>
+        <a href="https://jasonmarinho.com" style={styles.logo}>
           <div style={styles.logoIcon}>
             <Waves size={22} color="#FFD56B" weight="bold" />
           </div>
           <span style={styles.logoText}>Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em></span>
-        </div>
+        </a>
 
         <h1 style={styles.title}>Bon retour</h1>
         <p style={styles.subtitle}>Connecte-toi à ton espace membre</p>
@@ -213,7 +221,7 @@ const styles: Record<string, React.CSSProperties> = {
     backdropFilter: 'blur(20px)',
     position: 'relative', zIndex: 2,
   },
-  logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px' },
+  logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px', textDecoration: 'none' },
   logoIcon: {
     width: '36px', height: '36px',
     background: 'rgba(0,76,63,0.5)',

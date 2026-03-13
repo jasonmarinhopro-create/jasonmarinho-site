@@ -87,12 +87,12 @@ function ResetPasswordForm() {
 
   return (
     <div style={styles.card} className="fade-up">
-      <div style={styles.logo}>
+      <a href="https://jasonmarinho.com" style={styles.logo}>
         <div style={styles.logoIcon}>
           <Waves size={22} color="#FFD56B" weight="bold" />
         </div>
         <span style={styles.logoText}>Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em></span>
-      </div>
+      </a>
 
       <h1 style={styles.title}>Nouveau mot de passe</h1>
       <p style={styles.subtitle}>Choisis un mot de passe sécurisé</p>
@@ -188,7 +188,7 @@ const styles: Record<string, React.CSSProperties> = {
     backdropFilter: 'blur(20px)',
     position: 'relative', zIndex: 2,
   },
-  logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px' },
+  logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px', textDecoration: 'none' },
   logoIcon: {
     width: '36px', height: '36px',
     background: 'rgba(0,76,63,0.5)',
