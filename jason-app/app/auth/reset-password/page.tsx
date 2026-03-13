@@ -52,19 +52,19 @@ function ResetPasswordForm() {
 
     setLoading(true)
 
+    // Debug: check session before updating
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      setError('DEBUG: Pas de session active. Lien expiré — demande un nouveau lien.')
+      setLoading(false)
+      return
+    }
+
     const { error } = await supabase.auth.updateUser({ password })
 
     if (error) {
-      const msg = error.message.toLowerCase()
-      let friendlyError = 'Une erreur est survenue. Réessaie.'
-      if (msg.includes('session') || msg.includes('auth session missing')) {
-        friendlyError = 'Lien expiré ou invalide. Demande un nouveau lien de réinitialisation.'
-      } else if (msg.includes('same password') || msg.includes('different from the old')) {
-        friendlyError = 'Le nouveau mot de passe doit être différent de l\'ancien.'
-      } else if (msg.includes('weak') || msg.includes('password')) {
-        friendlyError = 'Mot de passe trop faible. Choisis un mot de passe plus sécurisé.'
-      }
-      setError(friendlyError)
+      // Show raw error for debugging
+      setError(`Erreur: ${error.message}`)
       setLoading(false)
       return
     }
