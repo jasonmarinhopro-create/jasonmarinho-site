@@ -162,6 +162,13 @@ a { color: inherit; }
 .dash-menu-btn { display: none; }
 .dash-close-btn { display: none; }
 
+/* Tablet: 2-col quick grid */
+@media (max-width: 1024px) {
+  .dash-quick-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
 @media (max-width: 768px) {
   .dash-sidebar {
     transform: translateX(-100%);
@@ -185,23 +192,41 @@ a { color: inherit; }
   .dash-main {
     margin-left: 0 !important;
   }
+
   /* Page content */
   .dash-page {
     padding: 16px !important;
-    max-width: 100% !important;
   }
-  /* Welcome card */
+
+  /* Welcome card — stack text + stats vertically */
   .dash-welcome {
     flex-direction: column !important;
-    align-items: flex-start !important;
-    padding: 20px !important;
+    align-items: stretch !important;
+    padding: 22px 20px !important;
+    gap: 20px !important;
   }
-  /* Quick links grid */
+
+  /* Stats row — horizontal, left-aligned */
+  .dash-stats-row {
+    gap: 20px !important;
+  }
+
+  /* Quick links: 2 columns */
   .dash-quick-grid {
     grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
   }
-  /* Stats */
-  .dash-stats-row {
-    align-self: flex-start;
+
+  /* Quick card: tighter on mobile */
+  .dash-quick-grid .glass-card {
+    padding: 14px 12px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  /* Hide arrow on small cards */
+  .dash-quick-grid .glass-card svg:last-child {
+    display: none;
   }
 }
