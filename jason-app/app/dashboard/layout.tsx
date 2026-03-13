@@ -3,9 +3,12 @@ import { createClient } from '@/lib/supabase/server'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // Use getSession() — reads the JWT from the cookie locally (no network call).
+  // getUser() makes an outbound call to Supabase which can fail/timeout on cold starts,
+  // causing a redirect loop even when the session is valid.
+  const { data: { session } } = await supabase.auth.getSession()
 
-  if (!user) redirect('/auth/login')
+  if (!session) redirect('/auth/login')
 
   return (
     <div style={styles.layout}>
