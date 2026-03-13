@@ -50,6 +50,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const [attempts, setAttempts] = useState(0)
   const [blockedUntil, setBlockedUntil] = useState<number | null>(null)
@@ -70,7 +71,14 @@ export default function LoginPage() {
     setError('')
     setEmailNotConfirmed(false)
 
-    const result = await loginAction(email, password)
+    let result: Awaited<ReturnType<typeof loginAction>>
+    try {
+      result = await loginAction(email, password)
+    } catch (e) {
+      setError('Une erreur inattendue est survenue. Réessaie dans quelques instants.')
+      setLoading(false)
+      return
+    }
 
     if ('error' in result) {
       if (result.error === 'EMAIL_NOT_CONFIRMED') {
@@ -93,7 +101,9 @@ export default function LoginPage() {
       return
     }
 
-    // Server Action sets cookies server-side — full page nav ensures middleware sees the session
+    // Cookies set server-side — show success state then navigate
+    setSuccess(true)
+    setLoading(false)
     window.location.href = '/dashboard'
   }
 
@@ -196,11 +206,11 @@ export default function LoginPage() {
           <button
             type="submit"
             className="btn-primary"
-            disabled={loading || isBlocked}
-            style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
+            disabled={loading || isBlocked || success}
+            style={{ width: '100%', justifyContent: 'center', marginTop: '8px', ...(success ? { background: 'rgba(74,222,128,0.15)', borderColor: 'rgba(74,222,128,0.4)' } : {}) }}
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
-            {!loading && <ArrowRight size={16} weight="bold" />}
+            {success ? '✓ Connecté · Redirection...' : loading ? 'Connexion...' : 'Se connecter'}
+            {!loading && !success && <ArrowRight size={16} weight="bold" />}
           </button>
         </form>
 
