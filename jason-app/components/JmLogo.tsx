@@ -12,8 +12,11 @@ export default function JmLogo({ size = 22, color = '#FFD56B' }: JmLogoProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      {/* Small circle at apex between the two arch peaks */}
+      <circle cx="12" cy="4.5" r="1.8" fill={color} />
+      {/* J hook → left diagonal leg → left inner arch → valley → right inner arch → right diagonal leg */}
       <path
-        d="M 9,17 C 10,21.5 2.5,22 2.5,16 L 2.5,10 Q 2.5,1.5 8,1.5 Q 10.5,1.5 12,7 Q 13.5,1.5 16,1.5 Q 21.5,1.5 21.5,10 L 21.5,18.5"
+        d="M 9.5,19.5 C 10,23.5 3.5,24 3.5,19 L 8.5,7 Q 10.5,15.5 12,14 Q 13.5,15.5 15.5,7 L 20.5,19"
         stroke={color}
         strokeWidth="2.3"
         strokeLinecap="round"
