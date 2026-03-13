@@ -170,14 +170,55 @@ a { color: inherit; }
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
-@media (min-width: 1600px) {
+
+/* XL (≥ 1800px) : grilles plus larges */
+@media (min-width: 1800px) {
+  .dash-grid-3 { grid-template-columns: repeat(4, 1fr) !important; }
+  .dash-grid-2 { grid-template-columns: repeat(3, 1fr) !important; }
+}
+/* Large (1400-1800px) : 4 col pour grid-3 */
+@media (min-width: 1400px) and (max-width: 1799px) {
   .dash-grid-3 { grid-template-columns: repeat(4, 1fr) !important; }
 }
-@media (max-width: 1100px) {
+/* Tablet landscape (1024-1399px) : 2 col */
+@media (max-width: 1399px) {
   .dash-grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
 }
+/* Tablet portrait (768-1023px) : 2 col */
+@media (max-width: 900px) {
+  .dash-grid-2 { grid-template-columns: 1fr !important; gap: 14px !important; }
+}
+/* Mobile (< 640px) */
 @media (max-width: 640px) {
-  .dash-grid-3, .dash-grid-2 { grid-template-columns: 1fr !important; gap: 12px !important; }
+  .dash-grid-3 { grid-template-columns: 1fr !important; gap: 12px !important; }
+  .dash-grid-2 { grid-template-columns: 1fr !important; gap: 12px !important; }
+}
+
+/* Driing services grid */
+.driing-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media (max-width: 900px) {
+  .driing-services-grid { grid-template-columns: 1fr !important; }
+}
+
+/* Profile name in header — hide on very small screens */
+@media (max-width: 480px) {
+  .dash-profile-name { display: none !important; }
+}
+
+/* Dropdown hover states */
+.dash-dropdown a:hover,
+.dash-dropdown button:hover {
+  background: rgba(255,255,255,0.06) !important;
+  color: #f0f4ff !important;
+}
+
+/* Help row hover */
+.dash-help-row:hover {
+  background: rgba(255,255,255,0.04) !important;
 }
 
 /* ── DASHBOARD RESPONSIVE ── */
