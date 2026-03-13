@@ -5,322 +5,377 @@ export const GMB_FORMATION = {
   duration: '2h30',
   level: 'Débutant',
   objectifs: [
-    'Créer et optimiser ta fiche Google My Business de A à Z',
-    'Choisir les bonnes catégories pour apparaître dans les recherches',
-    'Obtenir des avis Google de tes voyageurs (templates prêts)',
-    'Générer des réservations directes sans commission',
-    'Comprendre les statistiques et améliorer ta visibilité',
+    'Comprendre la différence entre Google Business Profile et Google Vacation Rentals',
+    'Créer et vérifier ta fiche Google Business Profile (si éligible)',
+    'Optimiser ta fiche pour apparaître dans le Local Pack',
+    'Collecter des avis Google automatiquement avec des templates prêts',
+    'Générer des réservations directes sans commission Airbnb',
   ],
   modules: [
     {
       id: 1,
-      title: 'Pourquoi Google My Business change la donne',
-      duration: '20 min',
+      title: 'Comprendre le paysage Google pour la LCD',
+      duration: '25 min',
       lessons: [
         {
           id: 1,
-          title: 'GMB : ton meilleur allié pour les réservations directes',
-          duration: '10 min',
-          content: `## Google My Business : le levier sous-utilisé des hôtes LCD
+          title: 'GBP vs Google Vacation Rentals : ne confonds pas les deux',
+          duration: '15 min',
+          content: `## La confusion qui coûte cher à des centaines d'hôtes
 
-La plupart des hôtes passent **100% de leurs efforts sur Airbnb**. C'est une erreur stratégique.
+La première chose à comprendre — et que la plupart des formations ne disent pas — c'est qu'il existe **deux systèmes Google complètement différents** pour la LCD.
 
-### Ce que tu rates sans fiche GMB
+Les confondre, c'est créer une fiche qui peut être suspendue, ou rater complètement la bonne opportunité.
 
-Quand un voyageur tape "appartement Marseille location courte durée" ou "chalet montagne semaine ski" dans Google, c'est la **carte locale de Google** qui s'affiche en premier — avant les OTAs, avant Airbnb.
+### Système 1 : Google Business Profile (GBP)
 
-Les fiches Google My Business qui apparaissent dans ce bloc reçoivent en moyenne **3x plus de visibilité** qu'un résultat organique classique.
+Anciennement "Google My Business". C'est la fiche d'établissement pour les **entreprises avec une présence physique** : un bureau, un accueil, des horaires.
 
-### Le coût réel des commissions OTA
+**Qui peut créer une fiche GBP ?**
 
-| Plateforme | Commission hôte | Sur 10 000 € de CA |
-|-----------|----------------|-------------------|
-| Airbnb | 3 % | -300 € |
-| Booking.com | 15-18 % | -1 700 € |
-| Réservation directe | 0 % | 0 € |
+✅ Conciergeries avec bureau ou espace de travail
+✅ Gîtes avec accueil physique des voyageurs
+✅ Chambres d'hôtes avec réception
+✅ Multi-propriétaires avec une vraie structure d'entreprise
 
-Avec une fiche GMB bien optimisée, même **2-3 réservations directes par mois** supplémentaires représentent plusieurs centaines d'euros de marge récupérée.
+❌ Appartement LCD sans réception permanente
+❌ Logement individuel sans accueil physique
+❌ Hôte particulier qui n'a pas d'adresse professionnelle
 
-### Le parcours client que tu dois comprendre
+> ⚠️ Google a officiellement confirmé que les logements vacances individuels sans accueil sont **non-éligibles** à GBP. Des fiches créées malgré cela peuvent être suspendues.
 
-1. Le voyageur a une destination en tête
-2. Il cherche sur Google
-3. Il voit le **Local Pack** (les 3 fiches en carte)
-4. Il clique, lit les avis, visite ton site direct
-5. Il réserve **sans passer par Airbnb**
+### Système 2 : Google Vacation Rentals (GVR)
 
-C'est ce parcours qu'on va construire ensemble dans cette formation.
+C'est le **moteur de méta-recherche de Google** pour les hébergements (comme Trivago, mais par Google). Il affiche les locations directement dans Google Search, Maps et Google Travel.
 
-### Action immédiate
+**La différence cruciale :** GVR n'est accessible qu'en passant par un **channel manager partenaire** :
+- Lodgify ✓
+- Hostaway ✓
+- Smoobu ✓
+- iGMS ✓
+- Rentals United ✓
 
-Tape dans Google : **"location courte durée [ta ville]"** et observe les résultats. Est-ce que tu apparais ? Ce qu'on voit ici, c'est ce qu'on va construire pour toi.`,
+**Et Airbnb ?**
+
+Airbnb et Vrbo refusent **délibérément** d'intégrer Google Vacation Rentals. Ils y voient une menace directe à leur modèle.
+
+**Conséquence pour toi :** Si tu as un site de réservation directe via l'un de ces channel managers, tes disponibilités apparaissent dans Google **avant** les résultats Airbnb. 0% de commission. C'est l'opportunité la plus sous-exploitée de 2025.
+
+### En résumé : qui fait quoi ?
+
+| Profil | Outil Google recommandé |
+|--------|------------------------|
+| Conciergerie avec bureau | GBP (fiche d'établissement) |
+| Gîte / chambre d'hôtes avec accueil | GBP (catégorie "Gîte" ou "Chambre d'hôtes") |
+| Appartement LCD individuel | GVR via channel manager |
+| Multi-propriétaire avec structure | GBP pour l'entreprise + GVR pour les biens |
+| Hôte particulier Airbnb uniquement | GVR indirect (Airbnb ≠ partenaire GVR) |
+
+### Ce que cette formation couvre
+
+Dans les prochains modules, on travaille les **deux systèmes** :
+- Les modules 2 à 5 → optimiser ta fiche **GBP** (si tu es éligible)
+- Le module 6 → stratégie **GVR** pour les réservations directes (sans commission)
+- Le module 7 → mesurer tes résultats et améliorer`,
         },
         {
           id: 2,
-          title: 'Comment Google décide qui apparaît dans les résultats locaux',
+          title: 'L\'algorithme Google Local : les 3 facteurs qui font tout',
           duration: '10 min',
-          content: `## L'algorithme local de Google : les 3 facteurs clés
+          content: `## Comment Google décide qui apparaît dans le Local Pack
 
-Google utilise 3 critères principaux pour classer les fiches locales :
+Le "Local Pack" (ou Pack Local) c'est le bloc des **3 fiches Google Maps** qui s'affiche en haut des résultats pour les requêtes locales. Être là = visibilité maximale, 0 commission.
 
-### 1. La Pertinence
-Est-ce que ta fiche correspond à ce que cherche le voyageur ?
+Statistique clé : **95% des vacanciers cherchent leur hébergement sur internet, et 90% passent par Google**.
 
-- Tes **catégories** doivent correspondre à son intention
-- Ta **description** doit contenir les bons mots-clés
-- Tes **services** listés doivent répondre à ses besoins
+### Les 3 piliers officiels du classement local
 
-### 2. La Distance
-Google favorise les fiches proches de la recherche. Tu ne contrôles pas ta localisation, mais tu peux :
-- T'assurer que ton **adresse est exacte**
-- Couvrir ta **zone de service** correctement
-- Mentionner le quartier, les points d'intérêt proches
+**① Pertinence — Est-ce que ta fiche correspond à la recherche ?**
 
-### 3. La Notoriété (le plus important)
-C'est là que beaucoup de hôtes perdent face à leurs concurrents :
+Optimisé par :
+- Tes **catégories** (modules suivants)
+- Ta **description** avec les bons mots-clés
+- Les **services** que tu listes
+- La section **Q&A** (questions/réponses)
 
-- **Nombre d'avis Google** : plus tu en as, plus Google te fait confiance
-- **Note moyenne** : vise 4,7+ pour rester compétitif
-- **Fréquence des avis** : des avis récents comptent plus que des vieux
-- **Réponses aux avis** : Google récompense les propriétaires qui répondent
+*Exemple :* si quelqu'un cherche "conciergerie Airbnb Bordeaux", avoir ces mots dans ta fiche booste ton score de pertinence.
 
-### Le Local Pack : les 3 places en or
+**② Distance — Quelle est ta proximité géographique ?**
 
-Quand quelqu'un cherche localement, Google affiche un bloc de 3 fiches ("Local Pack"). Être dans ce bloc = **visibilité maximale, 0 commission**.
+Tu ne contrôles pas ta localisation. Mais tu peux :
+- Vérifier que ton **adresse est précise** sur la carte (glisse le marqueur si nécessaire)
+- Définir une **zone de service** si tu couvres plusieurs villes
+- Créer des pages sur ton site par ville (ex : /conciergerie-bordeaux)
 
-Les clés pour y entrer :
-✅ Fiche 100% complète
-✅ 15+ avis récents avec bonne note
-✅ Photos de qualité
-✅ Activité régulière (posts, réponses)
-✅ Catégories bien choisies
+**③ Notoriété — À quel point Google te fait confiance ?**
 
-Dans les prochains modules, on travaille chaque point.`,
+C'est le facteur sur lequel tu as le plus d'impact :
+
+- **Avis Google** : nombre, note, récence (un avis cette semaine > un avis il y a 2 ans)
+- **Activité** : posts réguliers, photos mises à jour, réponses aux avis
+- **Cohérence NAP** : Nom, Adresse, Téléphone **identiques** sur Google, ton site, Pages Jaunes, etc.
+- **Backlinks** : d'autres sites qui pointent vers le tien (office de tourisme, blogs locaux)
+
+### Objectifs concrets à 3 mois
+
+Au bout de 3 mois de travail régulier (30 min/semaine) :
+
+✅ Apparition dans le Local Pack sur 3-5 recherches locales
+✅ 20+ avis avec note ≥ 4,7
+✅ 50+ vues du profil par semaine
+✅ 5-10 clics vers ton site par semaine
+✅ 1-3 contacts directs par mois via Google
+
+Les modules qui suivent construisent chacun de ces résultats.`,
         },
       ],
     },
     {
       id: 2,
-      title: 'Créer et configurer ta fiche de A à Z',
+      title: 'Créer et vérifier ta fiche GBP',
       duration: '30 min',
       lessons: [
         {
           id: 3,
-          title: 'Créer ta fiche GMB étape par étape',
+          title: 'Créer ta fiche Google Business Profile (étape par étape)',
           duration: '15 min',
-          content: `## Créer ta fiche Google My Business
+          content: `## Créer sa fiche GBP : le guide complet 2025
 
-### Avant de commencer : ce qu'il te faut
+> Rappel : ce module s'adresse aux conciergeries, gîtes avec accueil, et hébergements avec présence physique. Si tu loues un appartement individuel sans bureau/réception, saute au module 6 (Google Vacation Rentals).
 
-- Un compte Google (Gmail)
-- L'adresse exacte de ton logement (ou une adresse de bureau si conciergerie)
-- Ton numéro de téléphone
-- L'URL de ton site web ou page de réservation directe
+### Avant de commencer : checklist
 
-### Étape 1 : Accéder à Google Business Profile
+- [ ] Un compte Google professionnel (idéalement avec ton nom de domaine, ex: contact@ma-conciergerie.fr — réduit les risques de suspension)
+- [ ] Ton adresse physique exacte (bureau, local, ou adresse de gîte)
+- [ ] Ton numéro de téléphone direct
+- [ ] L'URL de ton site de réservation directe
 
-Va sur **business.google.com** et clique "Gérer maintenant".
+### Étape 1 — Accéder à Google Business Profile
 
-> ⚠️ Important : Vérifie d'abord qu'une fiche n'existe pas déjà avec ton adresse. Parfois Google crée des fiches automatiquement à partir d'informations publiques.
+Va sur **business.google.com** et connecte-toi.
 
-### Étape 2 : Entrer le nom de ton établissement
+> ⚠️ Avant tout : tape ton nom ou adresse dans Google Maps pour vérifier qu'une fiche n'existe pas déjà. Google crée parfois des fiches automatiquement. Si c'est le cas, **revendique-la** plutôt que d'en créer une nouvelle.
 
-Pour **une conciergerie ou une activité professionnelle** :
-→ Ton nom d'entreprise ("Conciergerie XYZ", "Appartements Jason Marinho")
+### Étape 2 — Saisir tes informations
 
-Pour **un logement unique** en tant que particulier :
-→ Décris le logement ("Appartement centre Bordeaux - Vue fleuve", "Chalet ski Les Arcs 1950")
+**Nom d'établissement :** Ton vrai nom d'entreprise — sans mots-clés ajoutés.
 
-**Évite** les noms génériques type "Location vacances Marseille" — trop vague, Google pourrait le refuser.
+✅ "Conciergerie Azur Nice"
+❌ "Conciergerie Airbnb Nice – Location Vacances Pas Cher"
 
-### Étape 3 : Choisir la catégorie principale
+Google suspend les fiches avec du keyword stuffing dans le nom.
 
-> C'est l'une des décisions les plus importantes. Détail complet dans la leçon suivante.
+**Adresse :** Adresse réelle où tu travailles. Pas une boîte postale, pas une domiciliation commerciale partagée, pas l'adresse d'un des biens gérés.
 
-### Étape 4 : Ajouter l'adresse
+**Site web :** L'URL directe de ton site (pas de redirection bit.ly, pas de Linktree).
 
-- Adresse complète et précise
-- Si tu ne veux pas afficher l'adresse publiquement : coche "Je livre des produits et services" pour afficher uniquement ta zone
+### Étape 3 — La vérification (méthode 2025)
 
-### Étape 5 : La vérification
+Google a largement **abandonné les cartes postales**. La méthode principale est désormais la **vidéo**.
 
-Google va t'envoyer une **carte postale** avec un code à l'adresse indiquée (5-7 jours). Il existe aussi la vérification par vidéo ou téléphone selon les cas.
+**Vérification par vidéo (méthode dominante) :**
+- Se fait sur mobile, **sur place** (pas de vidéo pré-enregistrée)
+- Durée idéale : 60 à 90 secondes
+- Ce que la vidéo doit montrer dans l'ordre :
+  1. La rue et la signalisation confirmant l'adresse
+  2. La façade ou l'entrée de ton établissement
+  3. Ton enseigne (correspondant au nom sur la fiche)
+  4. Ton accès aux locaux (clé, badge, espace de travail)
+  5. Si conciergerie : ton bureau, ton équipement, les clés des biens gérés
 
-> 💡 Pendant l'attente de la vérification, remplis quand même toutes les infos — elles seront actives dès que tu seras vérifié.
+- Délai de traitement : jusqu'à 5 jours ouvrés
+- Si refus : refais une vidéo plus courte et plus claire
 
-### Étape 6 : Compléter la fiche
+**Vérification instantanée :** Si ton site est déjà vérifié dans Google Search Console avec le même email, Google peut valider immédiatement.
 
-Une fois vérifié, remplis **absolument tout** :
-- Horaires d'ouverture (pour une conciergerie) ou "Ouvert 24h/24" pour un logement
-- Description (voir module 3)
-- Photos (voir module 4)
-- Numéro WhatsApp/téléphone
-- URL site web ou page de réservation`,
+### Étape 4 — Pendant l'attente
+
+La fiche n'est pas visible tant qu'elle n'est pas vérifiée. Mais tu peux déjà tout remplir pendant ce temps — les infos seront actives dès validation.
+
+**Ce qu'il ne faut jamais faire :**
+❌ Mettre une boîte postale ou adresse domiciliation
+❌ URL de redirection dans le champ "Site web"
+❌ Se connecter depuis des VPN ou IP multiples pendant la vérification
+❌ Demander plusieurs codes (chaque nouveau code annule le précédent)`,
         },
         {
           id: 4,
-          title: 'Choisir les bonnes catégories (erreur fatale à éviter)',
+          title: 'Choisir les bonnes catégories (l\'erreur que tout le monde fait)',
           duration: '15 min',
-          content: `## Les catégories GMB : le choix qui fait tout
+          content: `## Les catégories GBP pour la LCD : le guide officiel
 
-### Les meilleures catégories pour la LCD
+La catégorie principale détermine dans quelles recherches tu apparais. C'est une des décisions les plus impactantes de ta fiche.
 
-Google propose des centaines de catégories. Voici celles qui fonctionnent le mieux selon ton profil :
+### Les catégories recommandées par profil
 
-**Si tu gères une conciergerie / plusieurs logements :**
-- ✅ **Catégorie principale : "Agence de location de vacances"**
-- Secondaires : "Appartement meublé", "Service de conciergerie"
+**Pour une conciergerie professionnelle :**
+- Catégorie principale : **"Agence de location de vacances"** ou **"Agence de gestion immobilière"**
+- Secondaires : "Conciergerie", "Gestionnaire de propriétés"
 
-**Si tu loues un appartement unique :**
-- ✅ **Catégorie principale : "Location de vacances"** ou **"Appartement de vacances"**
-- Secondaires : selon ton type de bien
+**Pour un gîte avec accueil :**
+- Catégorie principale : **"Gîte"** (Google a réintégré cette catégorie)
+- Alternatives : "Maison de vacances", "Hébergement de vacances"
+- Secondaires : "Chambre d'hôtes", "Hébergement touristique"
 
-**Si tu loues une maison / villa :**
-- ✅ **Catégorie principale : "Location de maison de vacances"**
-- Secondaires : "Maison d'hôtes", "Location saisonnière"
+**Pour une chambre d'hôtes / B&B :**
+- Catégorie principale : **"Chambre d'hôtes"** ou **"Bed and breakfast"**
 
-**Si tu loues un chalet / montagne :**
-- ✅ **Catégorie principale : "Chalet de vacances"** ou **"Location de vacances"**
+**Pour un appart-hôtel :**
+- Catégorie principale : **"Appartement meublé"**
 
-### Comment ajouter des catégories secondaires
+### Les règles d'or
 
-Dans ton tableau de bord GMB :
-1. Clique sur "Modifier le profil"
-2. Section "Catégories"
-3. Tu peux ajouter jusqu'à **9 catégories secondaires**
+1. Google permet jusqu'à **9 catégories** (1 principale + 8 secondaires). Mais n'ajoute que celles vraiment pertinentes — trop de catégories non pertinentes peut nuire.
 
-### Les catégories à éviter
+2. La catégorie principale est la plus importante pour le référencement. Elle détermine 80% de ta pertinence.
 
-❌ "Hôtel" — tu n'en es pas un, Google peut suspendre ta fiche
-❌ "Hôtel de voyageurs" — idem
-❌ Des catégories non pertinentes pour gonfler artificiellement
+3. Si ta fiche est refusée avec une catégorie, essaie une catégorie similaire puis change après vérification.
 
-### Astuce pro : surveille tes concurrents
+4. **Surveille les concurrents :** cherche les locations de vacances bien positionnées dans ta ville sur Google Maps, clique sur leur profil → tu peux voir leur catégorie principale.
 
-Regarde les fiches GMB des locations de vacances qui apparaissent bien dans ta zone. Clique sur leur profil, puis sur les 3 points "..." → "Partager ou intégrer" — tu pourras voir leur catégorie principale dans l'URL.
+### Les catégories à éviter absolument
 
-### Les catégories et la saisonnalité
+❌ **"Hôtel"** — tu n'en es pas un, risque de suspension
+❌ **"Agence immobilière"** pour un logement individuel — incompatible
+❌ Des catégories non pertinentes pour paraître dans plus de recherches
 
-Si ton activité est saisonnière (location ski l'hiver, balnéaire l'été), pense à :
-- Mettre à jour tes horaires pour les périodes de fermeture
-- Utiliser les **Google Posts** pour signaler tes disponibilités (module 6)`,
+### Les attributs : la mine d'or oubliée
+
+Après les catégories, Google propose des **attributs** selon ton type d'activité. Chaque attribut coché = plus de pertinence sur les bonnes recherches.
+
+À cocher systématiquement si applicable :
+- Wi-Fi
+- Parking (gratuit / payant)
+- Climatisation
+- Animaux acceptés
+- Accessible PMR
+- Réception 24h/24
+- Check-in autonome
+- Langues parlées (Français, Anglais, Espagnol...)
+- Méthodes de paiement
+
+Un attribut "Animaux acceptés" coché te fait apparaître dans les recherches "location vacances chien accepté [ville]" — sans aucun autre effort.`,
         },
       ],
     },
     {
       id: 3,
-      title: 'Optimiser ta fiche pour dominer le référencement local',
-      duration: '35 min',
+      title: 'Optimiser ta fiche à 100%',
+      duration: '30 min',
       lessons: [
         {
           id: 5,
           title: 'Les 10 informations qui maximisent ta visibilité',
-          duration: '20 min',
-          content: `## Remplir ta fiche GMB à 100% : le checklist complet
+          duration: '15 min',
+          content: `## Remplir ta fiche GBP à 100% : le checklist complet
 
-Google favorise les fiches **complètes**. Une fiche incomplète perd des positions face à des concurrents bien remplis.
+Google favorise les fiches **entièrement complètes**. Chaque champ vide = opportunité perdue face à un concurrent qui l'a rempli.
 
-### Les 10 points incontournables
+### Les 10 champs incontournables
 
 **① Nom d'établissement**
-- Clair, mémorable, sans keyword stuffing
-- Ex : "Conciergerie Le Littoral" plutôt que "Location vacances Biarritz pas cher"
+Ton vrai nom, sans keyword stuffing. Max 100 caractères.
 
 **② Adresse / Zone de service**
-- Si logement : adresse exacte pour la carte
-- Si conciergerie avec déplacements : zone de service (rayon en km ou villes)
+Si conciergerie itinérante : définis une zone de service (rayon en km ou liste de villes) plutôt qu'une adresse fixe. Tu peux masquer l'adresse physique si tu travailles depuis chez toi.
 
 **③ Numéro de téléphone**
-- Obligatoire. Met ton numéro direct, pas un standard
-- Idéalement un numéro WhatsApp activé pour les voyageurs internationaux
+Direct, pas un standard. Idéalement un numéro WhatsApp activé pour les voyageurs internationaux.
 
 **④ Site web**
-- Ton site direct (pas ton profil Airbnb !)
-- Si pas de site : la page Linktree ou Driing fonctionne
-- C'est ici que tu captes les réservations sans commission
+Ton site de réservation directe (pas ton profil Airbnb !). C'est ici que tu captes les réservations sans commission.
 
 **⑤ Horaires**
-- Pour une location : "Ouvert 24h/24, 7j/7" est souvent le mieux
-- Pour une conciergerie : tes vraies heures de travail
-- Pense aux **horaires spéciaux** pour les jours fériés
+Pour une location : "Ouvert 24h/24, 7j/7" est souvent le mieux.
+Pour une conciergerie : tes vraies heures, avec les **horaires spéciaux** des jours fériés.
 
-**⑥ Description (voir leçon 6)**
-- 750 caractères max, stratégiques
+**⑥ Description** (voir leçon 6)
 
-**⑦ Catégories (voir leçon 4)**
-- Principale + secondaires
+**⑦ Catégories + Attributs** (voir leçon 4)
 
-**⑧ Attributs**
-- Google propose des attributs selon ta catégorie
-- Coche tout ce qui s'applique : WiFi, parking, climatisation, animaux acceptés, etc.
-- Chaque attribut coché = plus de pertinence pour les bonnes recherches
+**⑧ Services**
+Liste chaque prestation individuellement (jusqu'à 300 caractères de description par service) :
+- "Accueil et remise des clés"
+- "Ménage professionnel"
+- "Gestion du calendrier multi-plateformes"
+- "Photographie professionnelle"
+- "État des lieux d'entrée et de sortie"
 
-**⑨ Services / Produits**
-- Ajoute tes types de logements comme des "services"
-- Ex : "Studio centre-ville", "Appartement 2 pièces vue mer", "Villa avec piscine"
-- Prix indicatifs si tu le souhaites
+**⑨ Questions & Réponses (Q&A)**
+Section publique que **n'importe qui peut alimenter**. Anticipe les questions et réponds-y toi-même avant qu'un inconnu le fasse :
+- "Le parking est-il inclus ?"
+- "Acceptez-vous les animaux ?"
+- "Quel est le délai minimum de réservation ?"
+- "Proposez-vous le check-in tardif ?"
 
-**⑩ Questions & Réponses**
-- Les internautes peuvent poser des questions directement sur ta fiche
-- Anticipe les questions fréquentes et réponds-y toi-même avant qu'on te les pose
-- Ex : "Le parking est-il inclus ?", "Acceptez-vous les animaux ?", "Quel est le délai minimum de réservation ?"
+Ces réponses sont indexées par Google et boostent ta pertinence sur les bonnes requêtes.
 
-### Score de complétion
+**⑩ Score de complétion**
+Google t'indique lui-même les champs manquants dans l'interface. Objectif : atteindre le score maximum affiché.
 
-Objectif : **100% de complétion** dans l'espace Google Business Profile. Google t'indique lui-même les champs manquants dans l'interface.`,
+### La cohérence NAP : la règle d'or du SEO local
+
+**NAP = Name, Address, Phone (Nom, Adresse, Téléphone)**
+
+Ces 3 informations doivent être **exactement identiques** partout :
+- Ta fiche Google
+- Ton site web (footer + page contact)
+- Pages Jaunes, Yelp
+- TripAdvisor
+- Facebook
+- Airbnb (si professionnel)
+- Office de tourisme local
+
+> ⚠️ "Rue" vs "R." vs "r." = trois versions différentes pour Google. La moindre variation brouille les signaux et nuit à ton classement local.`,
         },
         {
           id: 6,
-          title: 'La description parfaite — mots-clés et copywriting',
+          title: 'La description parfaite (750 caractères qui font ranker)',
           duration: '15 min',
-          content: `## Rédiger une description qui vend et qui positionne
+          content: `## Rédiger une description qui vend ET qui positionne
 
-### Les 2 objectifs de ta description
+### La règle des 250 premiers caractères
 
-1. **Référencement** : inclure les mots-clés que cherchent tes voyageurs
-2. **Conversion** : convaincre le lecteur de te contacter
+Seuls les **250 premiers caractères** sont visibles sans cliquer sur "Voir plus". C'est ton accroche. Les 500 restants servent au référencement et aux lecteurs motivés.
 
-### La structure en 4 parties (750 caractères)
+**Structure recommandée :**
+- Caractères 1-250 : Qui tu es + ta zone géo + ta proposition de valeur + appel à l'action
+- Caractères 251-750 : Services, points forts, types de biens, langues, disponibilité
 
-**Partie 1 — Accroche (100 caractères)**
-Qui tu es et ce que tu offres. Commence par le plus important.
+### Exemple de description complète (à adapter)
 
-*Exemple :* "Conciergerie spécialisée en location courte durée sur Bordeaux et sa métropole."
+*Pour une conciergerie :*
+> "Conciergerie Azur gère vos locations saisonnières à Nice et sur la Côte d'Azur. Réservation directe sans commission, accueil personnalisé, ménage et check-in/out inclus. Contactez-nous pour votre première réservation ou pour confier la gestion de votre bien.
 
-**Partie 2 — Ce que tu proposes (250 caractères)**
-Tes logements, ta zone géographique, tes points forts.
-
-*Exemple :* "Nous gérons des appartements et maisons meublées pour des séjours de 1 nuit à plusieurs semaines. Nos logements sont situés en centre-ville, proche des vignobles et des plages du Bassin d'Arcachon."
-
-**Partie 3 — Tes avantages (250 caractères)**
-Ce qui te différencie. Réservation directe, accueil personnalisé, flexibilité.
-
-*Exemple :* "Réservez en direct pour économiser les frais de service. Accueil personnalisé, check-in flexible et assistance 24h/24. Idéal pour vacances, déplacements professionnels et séjours longue durée."
-
-**Partie 4 — Appel à l'action (150 caractères)**
-Dis exactement quoi faire.
-
-*Exemple :* "Consultez nos disponibilités sur notre site et obtenez un tarif direct sans commission en nous contactant par téléphone ou WhatsApp."
+> Nous gérons appartements, villas et studios meublés sur Nice, Antibes, Cannes et Juan-les-Pins. Disponibles 7j/7. Nous accompagnons aussi les propriétaires qui souhaitent déléguer intégralement leur bien : annonces, communication voyageurs, ménage, gestion des avis."
 
 ### Les mots-clés à intégrer naturellement
 
-Pour **une location** :
-- "location courte durée [ville]"
-- "appartement/maison/chalet [ville]"
-- "hébergement [ville]"
-- "séjour [ville]"
-
 Pour **une conciergerie** :
-- "conciergerie Airbnb [ville]"
+- "conciergerie [ville]"
+- "location courte durée [ville]"
 - "gestion locative [ville]"
-- "location saisonnière [ville]"
 
-### Ce qu'il ne faut PAS mettre
+Pour **un gîte / logement** :
+- "location vacances [ville]"
+- "hébergement [ville]"
+- "appartement/maison/chalet [ville]"
 
-❌ Les noms des concurrents (Airbnb, Booking) — inutile et contre-productif
+### Ce que tu ne dois jamais mettre
+
+❌ Des URLs ou liens (non cliquables et interdit par Google)
 ❌ Des promotions temporaires (la description n'est pas un post)
-❌ Des majuscules excessives ou des emojis en excès
-❌ Des liens (ils ne sont pas cliquables dans la description)`,
+❌ Bourrage de mots-clés "location Nice location vacances Nice appartement Nice"
+❌ Majuscules excessives
+❌ Contenu trompeur
+
+### Astuce : les mots-clés dans les réponses aux avis
+
+Quand tu réponds aux avis, glisse naturellement des mots-clés géographiques :
+
+> "Merci Marie ! Ravi que votre séjour **en appartement à Lyon** se soit si bien passé. À bientôt dans **notre logement du 2e arrondissement** !"
+
+Ces réponses sont indexées par Google et renforcent ta pertinence locale.`,
         },
       ],
     },
@@ -331,67 +386,76 @@ Pour **une conciergerie** :
       lessons: [
         {
           id: 7,
-          title: 'Photos qui convertissent : la stratégie complète',
+          title: 'Stratégie photos : 42% plus de clics avec les bonnes images',
           duration: '20 min',
-          content: `## Les photos GMB : ton premier argument de vente
+          content: `## Les photos GBP : ton premier argument de vente
 
-### Pourquoi les photos sont critiques
+### Les chiffres qui motivent
 
-Les fiches avec des photos reçoivent en moyenne **42% plus de demandes d'itinéraires** et **35% plus de clics** vers le site web que celles sans photos (source : Google).
+Les fiches avec des photos reçoivent en moyenne :
+- **42% plus de demandes d'itinéraires**
+- **35% plus de clics vers le site web**
 
-### Le minimum vital : 10 photos
+Que celles sans photos (source : Google). Une fiche avec **100+ photos** génère significativement plus d'interactions.
 
-| Type de photo | Quantité recommandée |
-|--------------|---------------------|
-| Photo de couverture | 1 (soignée, lumineuse) |
-| Salon / espace de vie | 2-3 |
-| Chambre(s) | 1 par chambre |
-| Cuisine | 1-2 |
-| Salle de bain | 1 |
-| Terrasse/balcon/extérieur | 1-2 |
-| Vue / quartier | 1-2 |
-| Détails (déco, équipements) | 2-3 |
+### Spécifications techniques (2025)
 
-### Les règles photo pour GMB
+- Format : JPEG ou PNG
+- Taille minimale : 720 x 720 px
+- Taille optimale : **1080 x 1080 px** (carré) ou **1200 x 900 px** (4:3)
+- Poids max : 5 MB par photo
+- Vidéos : max 30 secondes, 100 MB
 
-**Format et résolution :**
-- Minimum 720 x 720 px (idéal : 1920 x 1080 px)
-- Format JPG ou PNG
-- Taille max : 5 Mo
+### Le plan photo complet
 
-**Qualité :**
-- ✅ Photos prises en journée, lumière naturelle
-- ✅ Logement rangé, propre, staging soigné
-- ✅ Légèrement retouchées (luminosité, contraste) — mais réalistes
-- ❌ Pas de photos sombres, floues ou avec personnes identifiables
-- ❌ Pas de filtres Instagram excessifs
+| Type | Quantité | Priorité |
+|------|----------|----------|
+| Photo de couverture (bannière) | 1 | 🔴 Urgent |
+| Photo de profil (logo ou façade) | 1 | 🔴 Urgent |
+| Salon / espace de vie | 2-3 | 🔴 Urgent |
+| Chambre(s) | 1 par chambre | 🟡 Haute |
+| Cuisine | 1-2 | 🟡 Haute |
+| Salle de bain | 1 | 🟡 Haute |
+| Extérieur / terrasse / piscine | 2-3 | 🟡 Haute |
+| Vue / quartier | 1-2 | 🟢 Utile |
+| Équipe / accueil (conciergerie) | 2-3 | 🟢 Utile |
+| Local / détails déco | 2-3 | 🟢 Utile |
 
-### La photo de couverture : ton vitrine
+### La photo de couverture : ta vitrine
 
-C'est la **première image** que voit un voyageur dans la carte Google. Elle doit :
-- Montrer le logement sous son meilleur angle
+C'est la **première image** visible dans la carte Google. Elle doit :
+- Montrer le logement sous son meilleur angle (vue panoramique, pièce lumineuse)
 - Être claire et lisible même en miniature
-- Donner envie d'en savoir plus
+- Format : 1080 x 608 px
 
-### Ajouter des photos régulièrement
+### Règles qualité
 
-Google favorise les fiches **actives**. Objectif : ajouter 1-2 nouvelles photos par mois.
-- Photo des saisons (déco Noël, jardin fleuri en été)
-- Nouveaux équipements
-- Vue du quartier, événements locaux
+✅ Photos prises en journée, lumière naturelle
+✅ Logement rangé, staging soigné
+✅ Légèrement retouchées (luminosité, contraste) — mais réalistes
+✅ Angles larges pour les pièces
 
-### La photo de logo
+❌ Photos sombres ou floues
+❌ Fouillis visible (câbles, désordre)
+❌ Filtres Instagram excessifs
+❌ Photos de stock (Google peut les détecter)
 
-Si tu as une conciergerie : ajoute ton logo (format carré, fond simple).
-Si logement unique : une photo de toi ou du logement fonctionne.
+### Photos d'équipe pour les conciergeries
 
-### Vidéo (bonus)
+Photos de toi ou ton équipe en action : remise de clés, état des lieux, accueil d'un voyageur. Ces photos **humanisent** ton service et créent une connexion émotionnelle que les concurrents sans visage n'ont pas.
 
-GMB accepte les vidéos jusqu'à 30 secondes. Une courte visite virtuelle filmée au smartphone peut faire la différence face aux concurrents qui n'en ont pas.
+### Les photos de voyageurs (UGC)
 
-### Ce que tu ne contrôles pas : les photos des voyageurs
+Google permet aux voyageurs d'ajouter des photos sur ta fiche. Tu ne peux pas les supprimer (sauf si inappropriées). C'est une raison supplémentaire d'offrir un logement impeccable — tes voyageurs deviennent tes photographes.
 
-Les voyageurs peuvent ajouter des photos à ta fiche. Tu ne peux pas les supprimer (sauf si inappropriées). C'est une raison supplémentaire d'offrir un logement impeccable — tes voyageurs deviendront tes photographes.`,
+Encourage-les activement à partager leurs photos **directement sur Google** (pas seulement Instagram).
+
+### La fréquence de mise à jour
+
+Objectif : **1 à 2 nouvelles photos par mois**. Google favorise les fiches actives avec du contenu récent.
+- Déco saisonnière (Noël, printemps...)
+- Nouveaux équipements (TV, nouveau canapé)
+- Vue du quartier lors d'événements locaux`,
         },
       ],
     },
@@ -402,314 +466,437 @@ Les voyageurs peuvent ajouter des photos à ta fiche. Tu ne peux pas les supprim
       lessons: [
         {
           id: 8,
-          title: 'Obtenir des avis de tes voyageurs (templates à copier)',
+          title: 'Obtenir des avis automatiquement (templates à copier)',
           duration: '15 min',
           content: `## Collecter des avis Google : la méthode qui fonctionne
 
 ### Pourquoi les avis Google > les avis Airbnb
 
-Les avis Airbnb restent sur Airbnb. Les avis Google, eux :
-- Apparaissent dans tous les résultats Google (Maps, Recherche, Assistant)
-- Renforcent ta crédibilité auprès des voyageurs qui ne te connaissent pas
-- Améliorent ton positionnement dans le Local Pack
-- T'appartiennent, peu importe la plateforme
+Les avis Airbnb restent enfermés dans Airbnb. Les avis Google, eux :
+- Apparaissent dans **tous les résultats Google** (Maps, Recherche, Assistant)
+- **T'appartiennent** — ils existent indépendamment de la plateforme
+- Influencent directement ton **classement dans le Local Pack**
+- Donnent confiance aux voyageurs qui ne te connaissent pas encore
 
-### Objectif : 15 avis minimum pour démarrer
+### Les 3 signaux que Google mesure
 
-En dessous de 15 avis, ta fiche sera trop fragile face aux concurrents. Visée : 30+ avis avec une note de 4,7+.
+1. **Quantité** : nombre total d'avis
+2. **Note** : moyenne étoiles (vise 4,7+)
+3. **Récence** : un avis cette semaine > un avis il y a 2 ans
 
-### Le moment parfait pour demander un avis
+**Objectif minimal : 20 avis** avec note ≥ 4,5 pour commencer à apparaître régulièrement dans le Local Pack.
 
-**Moment idéal :** 24-48h après le départ du voyageur, quand l'expérience est encore fraîche et positive.
-
-**Pas au départ** (le voyageur est pressé), **pas 2 semaines après** (il a oublié).
-
-### Le lien magique (à créer une fois)
+### Le lien magique (à créer une seule fois)
 
 Dans ton tableau de bord Google Business Profile :
-1. Clique sur "Demander des avis"
+1. Clique sur "Obtenir plus d'avis"
 2. Copie le **lien court** généré
-3. Sauvegarde-le — c'est ce lien que tu vas partager
+3. Sauvegarde-le → c'est ce lien que tu vas partager partout
 
-Il pointe directement vers le formulaire d'avis, sans que le voyageur ait à chercher.
+Il envoie directement à la page d'avis, sans friction pour le voyageur.
 
-### Templates de messages à copier
+### QR code = avis en pilote automatique
 
-**Message SMS / WhatsApp (après départ) :**
+Génère un QR code depuis ce lien (via qr-code-generator.com). Imprime-le sur :
+- Carton de bienvenue dans le logement
+- Plaquette esthétique près de l'entrée
+- Guide d'utilisation du logement
+- Feuille de départ avec instructions check-out
+
+**Texte suggéré :**
+> "Votre séjour vous a plu ? Votre avis Google nous aide à accueillir d'autres voyageurs. Merci ! [QR code]"
+
+### Templates de messages (à copier-coller)
+
+**SMS / WhatsApp — 24h après le départ :**
 \`\`\`
 Bonjour [Prénom] 👋
 
-J'espère que ton séjour à [nom du logement] s'est bien passé !
+J'espère que ton séjour à [logement/ville] s'est bien passé !
 
-Si l'expérience t'a plu, un avis Google m'aiderait vraiment — ça ne prend que 2 minutes et c'est une façon concrète de soutenir les hôtes indépendants 🙏
+Si tu as eu une bonne expérience, un avis Google m'aiderait vraiment — ça prend 2 minutes et c'est une façon concrète de soutenir les hôtes indépendants 🙏
 
 → [LIEN COURT GMB]
 
-Merci beaucoup et à bientôt peut-être !
+Merci beaucoup, et à bientôt peut-être !
 [Ton prénom]
 \`\`\`
 
-**Message Airbnb (via la messagerie intégrée) :**
+**Via messagerie Airbnb :**
 \`\`\`
 Bonjour [Prénom],
 
-Merci d'avoir choisi mon logement ! Si tu as eu un bon séjour, je t'invite à laisser aussi un avis Google — c'est très utile pour les hôtes indépendants comme moi.
+Merci d'avoir choisi mon logement ! Si tu as apprécié ton séjour, je t'invite à laisser aussi un avis Google — très utile pour les hôtes indépendants.
 
 [LIEN COURT GMB]
 
 À bientôt !
 \`\`\`
 
-**Par email (si tu as l'adresse) :**
+**Par email :**
 \`\`\`
 Objet : Ton avis compte pour moi ⭐
 
 Bonjour [Prénom],
 
-Quel plaisir d'avoir pu t'accueillir à [ville] du [date] au [date] !
+Quel plaisir de t'avoir accueilli(e) à [ville] !
 
-Si tu as apprécié ton séjour, un avis Google m'aiderait énormément à développer mon activité. Il ne faut que 2 minutes et c'est vraiment précieux pour moi.
+Si tu as apprécié ton séjour, un avis Google m'aiderait énormément à développer mon activité. Il ne faut que 2 minutes.
 
 [LIEN COURT GMB]
 
-Merci sincèrement, et n'hésite pas à revenir !
-
+Merci sincèrement !
 [Ton prénom]
 \`\`\`
 
-### Transformer le QR code en outil automatique
+### Ce qu'il ne faut jamais faire
 
-Mets le QR code de ton lien GMB dans :
-- Le livret d'accueil physique ou digital (Driing)
-- Un carton de remerciement dans le logement
-- L'écran de la TV si tu as un smartTV
-
-Ainsi, les voyageurs peuvent laisser un avis **pendant ou juste après leur séjour** sans que tu aies à faire quoi que ce soit.`,
+❌ Acheter de faux avis (suspension définitive de fiche)
+❌ Demander explicitement un avis "5 étoiles"
+❌ Poster des avis toi-même ou via des proches
+❌ Ignorer les avis sans répondre`,
         },
         {
           id: 9,
-          title: 'Répondre aux avis — la stratégie qui booste le référencement',
+          title: 'Répondre aux avis — la stratégie qui booste le classement',
           duration: '15 min',
           content: `## Répondre aux avis : obligatoire, pas facultatif
 
 ### Pourquoi répondre à TOUS tes avis
 
-1. **Google le valorise** : les fiches qui répondent aux avis sont mieux positionnées
+1. **Google le valorise** : les fiches qui répondent systématiquement sont mieux classées
 2. **Les futurs voyageurs lisent les réponses** : ta réponse à un mauvais avis peut convaincre quelqu'un de réserver quand même
-3. **Ça humanise ta fiche** : tu n'es pas une grande chaîne anonyme
+3. **Tu contrôles le récit** : chaque réponse est visible publiquement et indexée
+
+**Répondre dans les 24-48h maximum.** Active les notifications Google Business Profile pour être alerté immédiatement.
 
 ### Répondre aux avis positifs
 
-**Objectif** : remercier, mentionner le logement/la ville, inviter à revenir.
+**Objectif :** remercier + mentionner un détail spécifique + inviter à revenir.
 
 **Template avis positif :**
 \`\`\`
 Merci beaucoup [Prénom] pour cet avis ! 🙏
 
-Ravis que vous ayez apprécié [mention un détail de l'avis ou du logement].
-C'est exactement ce qu'on essaie d'offrir à chaque séjour.
+Ravis que [mention un élément de leur avis ou du logement]
+vous ait plu. C'est exactement l'expérience qu'on essaie
+d'offrir à chaque séjour.
 
 Au plaisir de vous accueillir à nouveau à [ville] !
-[Ton prénom] - [Nom établissement]
+[Ton prénom] — [Nom établissement]
 \`\`\`
 
-💡 **Astuce référencement** : glisse naturellement le nom de ta ville et ton type de logement dans les réponses. Ex : "Ravi que votre séjour en appartement à Lyon se soit si bien passé."
+> 💡 **Astuce SEO** : glisse naturellement le nom de ta ville dans les réponses. Ex : "Ravi que votre séjour en appartement à Lyon se soit si bien passé." Ces réponses sont indexées par Google.
 
 ### Répondre aux avis négatifs (sans se braquer)
 
-C'est là que beaucoup d'hôtes font des erreurs catastrophiques. La règle d'or : **reste professionnel, jamais émotionnel**.
+C'est là que beaucoup d'hôtes font des erreurs catastrophiques. La règle absolue : **reste professionnel, jamais émotionnel**.
 
 **Les 4 étapes d'une bonne réponse négative :**
-
-1. **Remercie** pour le retour (même si tu n'es pas d'accord)
-2. **Reconnaîs** le problème signalé (sans t'écraser)
-3. **Explique** si c'est pertinent (sans chercher d'excuses)
-4. **Propose** une solution ou rassure les futurs voyageurs
+1. Remercie pour le retour (même si tu n'es pas d'accord)
+2. Reconnais le problème signalé
+3. Explique si c'est pertinent (sans chercher d'excuses)
+4. Propose une solution ou rassure les futurs voyageurs
 
 **Template avis négatif :**
 \`\`\`
 Merci [Prénom] pour votre retour.
 
-Nous prenons tous les avis au sérieux et nous sommes désolés que votre expérience n'ait pas été à la hauteur de vos attentes concernant [le point soulevé].
+Nous sommes désolés que [le point soulevé] n'ait pas
+été à la hauteur de vos attentes.
 
-[Si c'est légitime] : Nous avons depuis [mesure corrective prise].
+[Si c'est légitime] : Nous avons depuis [mesure corrective].
 
-[Si c'est injuste] : Nous sommes surpris par ce retour car [explication factuelle], mais nous prenons note pour améliorer notre communication.
+[Si c'est injuste] : Nous sommes surpris par ce retour
+car [explication factuelle], mais nous prenons note pour
+améliorer notre communication.
 
-N'hésitez pas à nous contacter directement pour tout futur séjour.
+N'hésitez pas à nous contacter directement.
 [Ton prénom]
 \`\`\`
 
-### Ce qu'il ne faut JAMAIS faire
+### Ce qu'il ne faut jamais faire
 
 ❌ Répondre avec agressivité ou ironie
 ❌ Accuser le voyageur publiquement
 ❌ Mentionner des détails privés
-❌ Ne pas répondre du tout (les non-réponses font fuir les clients)
-❌ Poster de faux avis (Google les détecte et peut suspendre ta fiche)
+❌ Ne pas répondre du tout
 
-### La fréquence idéale
+### Signaler un avis frauduleux
 
-Réponds aux avis dans les **24-48h**. Active les notifications Google pour ne pas les rater.`,
+Si tu reçois un avis d'un concurrent ou basé sur une expérience qui n'a pas eu lieu :
+1. Ne réponds pas de façon agressive
+2. Clique sur "Signaler comme inapproprié"
+3. Si l'avis persiste : contacte le support Google Business Profile
+
+### Surveiller ta fiche chaque semaine
+
+Google autorise n'importe quel utilisateur à **suggérer des modifications** sur ta fiche (adresse, horaires, catégorie). Google peut les appliquer automatiquement sans te prévenir.
+
+**Vérifie ta fiche au moins une fois par semaine** pour détecter et refuser les modifications non souhaitées.`,
         },
       ],
     },
     {
       id: 6,
-      title: 'Google Posts — reste visible et actif',
-      duration: '15 min',
+      title: 'Google Posts et Google Vacation Rentals',
+      duration: '25 min',
       lessons: [
         {
           id: 10,
-          title: 'Publier des posts pour attirer des réservations directes',
+          title: 'Google Posts : rester visible et attirer des réservations directes',
           duration: '15 min',
           content: `## Google Posts : l'outil méconnu qui fait la différence
 
 ### Qu'est-ce qu'un Google Post ?
 
-Un Google Post est un **mini-article** qui apparaît directement sur ta fiche Google. Il est visible dans les résultats Maps et dans la recherche Google quand quelqu'un consulte ta fiche.
+Un mini-article publié directement sur ta fiche Google. Visible dans Google Maps et la recherche quand quelqu'un consulte ton profil — sans qu'il soit abonné à quoi que ce soit.
 
-Les posts durent **6 mois** (après quoi ils sont archivés mais pas supprimés).
+> ⚠️ **Mise à jour 2024 importante :** La **messagerie directe** (chat) de Google Business Profile a été **supprimée en juillet 2024**. Les hôtes ne peuvent plus échanger de messages via GMB. Les demandes passent maintenant par le téléphone ou ton site web.
 
-### Les 3 types de posts utiles pour la LCD
+### Les 4 types de posts
 
-**① Post "Offre" — pour promouvoir une période**
-Idéal pour : week-ends de dernière minute, tarifs spéciaux, séjours longue durée.
+**1. Mise à jour (What's New)** → actualités générales. Dure **7 jours** au premier plan.
 
-*Exemple :*
+**2. Offre** → promotion avec date de début/fin. Reste jusqu'à expiration.
+
+**3. Événement** → date et heure précise. Idéal pour les saisons touristiques, festivals.
+
+**4. Produit** → pour mettre en avant un bien ou une formule spécifique.
+
+### Fréquence recommandée
+
+- Minimum : **1 post par semaine** pour maintenir l'activité aux yeux de Google
+- Idéal : 2-3 par semaine en période haute (été, vacances, fêtes)
+
+### Exemples de posts concrets
+
+**Post "Offre" — dernière minute :**
 \`\`\`
-🌊 Été 2025 — Quelques disponibilités restantes
+🌊 Appartement vue mer disponible ce week-end
 
-Notre appartement avec terrasse et vue mer est disponible du 14 au 28 juillet.
+Quelques nuits libres dans notre studio terrasse
+à Nice. Réservation directe → pas de frais de
+plateforme.
 
-Réservez en direct et économisez les frais de plateforme.
-
-→ [Bouton : Réserver maintenant]
-\`\`\`
-
-**② Post "Nouveauté" — pour valoriser une amélioration**
-Idéal pour : nouveau équipement, rénovation, saison estivale/hivernale.
-
-*Exemple :*
-\`\`\`
-Nouveau : Terrasse aménagée avec coin repas extérieur 🌿
-
-Notre logement s'est offert une belle mise à jour pour l'été. Profitez maintenant d'un espace extérieur privatif idéal pour les soirées estivales à Bordeaux.
-
-→ [Bouton : En savoir plus]
-\`\`\`
-
-**③ Post "Événement" — pour surfer sur l'actualité locale**
-Idéal pour : festivals, marchés de Noël, événements sportifs, concerts.
-
-*Exemple :*
-\`\`\`
-🎸 Hellfest 2025 — Logement à 20 min de Clisson
-
-Vous cherchez un hébergement pour le Hellfest ? Notre maison à [ville] accueille 4 personnes à 20 min du festival.
-
-Réservation directe, sans commission, disponibilité immédiate.
-
-→ [Bouton : Contacter]
+[Bouton : Réserver maintenant]
 \`\`\`
 
-### La fréquence idéale
+**Post "Événement" — saison :**
+\`\`\`
+Été 2025 : notre villa Cannes disponible en juillet
 
-**Minimum 1 post par mois** pour signaler à Google que ta fiche est active.
-**Idéal : 2-3 posts par mois** pendant les périodes de forte demande.
+4 chambres, piscine, 200m de la plage.
+Réservation directe, sans commission OTA.
+Places limitées.
 
-### Les boutons d'action disponibles
+[Bouton : Voir les disponibilités]
+\`\`\`
 
-- Réserver — pointe vers ta page de réservation directe
-- En savoir plus — vers ton site
-- Contacter — vers ton formulaire ou numéro
-- S'inscrire — pour une newsletter ou liste de préférence
+**Post "Nouveauté" — amélioration :**
+\`\`\`
+Nouveau : check-in tardif jusqu'à 23h
 
-### Astuce : recycler le contenu
+Voyage tardif ? On s'adapte. Ce service est
+désormais inclus sur tous nos appartements
+du centre de Lyon.
 
-Un post GMB = un story Instagram = un message dans ton groupe Facebook. Crée une fois, distribue partout.`,
+[Bouton : Nous contacter]
+\`\`\`
+
+**Post "Local" — événement de ville :**
+\`\`\`
+Ce week-end à Bordeaux : marché des Capucins
+
+Un incontournable à 5 min à pied de nos
+appartements Saint-Pierre.
+
+[Bouton : Voir nos logements]
+\`\`\`
+
+### Bonnes pratiques
+
+- Commence par le **bénéfice client**, pas par "Nous sommes..."
+- Limite à **150-300 caractères** visibles (le reste est tronqué)
+- Toujours un **bouton d'action** (Réserver, Appeler, En savoir plus)
+- Toujours une **photo de qualité** (1200x900px)
+- Un mot-clé géographique dans au moins un post sur deux
+
+### Recycler le contenu
+
+1 post GMB = 1 story Instagram = 1 message Facebook. Crée une fois, distribue partout.`,
+        },
+        {
+          id: 11,
+          title: 'Google Vacation Rentals : apparaître avant Airbnb',
+          duration: '10 min',
+          content: `## Google Vacation Rentals : l'arme que tu n'utilises pas encore
+
+### L'opportunité que Airbnb ne veut pas que tu saches
+
+Airbnb et Vrbo refusent **délibérément** d'intégrer Google Vacation Rentals. Résultat : si tu passes par un channel manager partenaire GVR, tes disponibilités apparaissent dans Google **avant** les résultats Airbnb — pour **0% de commission**.
+
+### Comment ça fonctionne
+
+GVR est un moteur de méta-recherche intégré à Google Search, Maps et Google Travel. Il affiche les disponibilités et les tarifs directement dans Google.
+
+Pour y apparaître, tu dois passer par un **logiciel de gestion partenaire GVR** :
+
+| Channel Manager | Prix indicatif | Lien GVR |
+|----------------|---------------|----------|
+| Lodgify | ~30-80€/mois | ✅ Partenaire officiel |
+| Hostaway | ~100€+/mois | ✅ Partenaire officiel |
+| Smoobu | ~25-60€/mois | ✅ Partenaire officiel |
+| iGMS | ~20€+/mois | ✅ Partenaire officiel |
+| Rentals United | Sur devis | ✅ Partenaire officiel |
+
+Ces logiciels synchronisent ton calendrier, publient tes disponibilités sur GVR, et redirigent le voyageur vers **ton site de réservation directe**.
+
+### Le calcul économique
+
+- Airbnb : ~3% hôte + 15-20% voyageur = **18-23% total** perdu en commissions
+- Booking.com : **15-18% côté hôte**
+- Google Vacation Rentals : **0% de commission**
+- Abonnement channel manager : ~300-600€/an
+
+**Exemple :** Sur un bien à 2 000€/mois, 30% de réservations directes via GVR = **économie de ~1 500€ par an** (sans compter les frais voyageur récupérés).
+
+### La stratégie en 5 étapes
+
+1. **Créer un site web direct** avec moteur de réservation (priorité absolue)
+2. **S'abonner à un channel manager** partenaire GVR (Lodgify ou Smoobu pour commencer)
+3. **Connecter ton calendrier** Airbnb/Booking pour éviter les doubles réservations
+4. **Proposer un avantage** au voyageur qui réserve en direct :
+   - Prix légèrement inférieur (tu peux te le permettre sans commission)
+   - Service offert : bouteille de bienvenue, late check-out, guide personnalisé
+   - Politique d'annulation plus souple
+5. **Recapturer les voyageurs passés** : après un séjour via Airbnb, invite-les à réserver directement la prochaine fois
+
+### Bing Places : le bonus à 5 minutes
+
+15% du marché des moteurs de recherche en France utilise Bing. Tu peux **importer ta fiche Google Business Profile** directement dans Bing Places en quelques clics. Zéro effort, audience supplémentaire.`,
         },
       ],
     },
     {
       id: 7,
-      title: 'Analyser et améliorer ta visibilité',
+      title: 'Analyser, mesurer et éviter les erreurs fatales',
       duration: '20 min',
       lessons: [
         {
-          id: 11,
-          title: 'Statistiques GMB : ce qui compte vraiment',
+          id: 12,
+          title: 'Les statistiques qui comptent et les 10 erreurs à éviter',
           duration: '20 min',
-          content: `## Les statistiques Google Business Profile : ton tableau de bord
+          content: `## Piloter ta fiche GBP avec les bonnes métriques
 
-### Accéder aux stats
+### Accéder aux statistiques
 
-Dans Google Business Profile → clique sur "Voir les statistiques" (tableau de bord principal).
+Dans Google Business Profile → "Voir les statistiques" ou "Performance".
 
 ### Les 5 métriques à surveiller chaque mois
 
-**① Recherches — Comment les gens te trouvent**
-
+**① Recherches — comment les gens te trouvent**
 - **Recherche directe** : quelqu'un a tapé ton nom ou adresse exacte
-- **Recherche découverte** : quelqu'un cherchait un type de logement et t'a trouvé (c'est ça qu'on vise !)
+- **Recherche découverte** : quelqu'un cherchait un type de logement et t'a trouvé
 
-> 💡 Si tu as très peu de recherches découverte, tes catégories et ta description ne sont pas assez optimisées.
+> 💡 Peu de recherches découverte = tes catégories et description ne sont pas assez optimisées.
 
 **② Vues du profil**
-
-Combien de fois ta fiche est apparue dans les résultats. Tendance à suivre mois par mois.
+Combien de fois ta fiche est apparue dans les résultats. Surveille la tendance mois par mois.
 
 **③ Actions des clients**
-
 - Clics vers ton site web → leads potentiels
 - Appels téléphoniques → conversions directes
-- Demandes d'itinéraire → très locaux, forte intention
+- Demandes d'itinéraire → forte intention locale
 
-C'est le **taux de conversion** : vue → action. Un bon taux = 5-15%.
+**Taux de conversion idéal :** vue → action = 5 à 15%.
 
 **④ Avis**
-
 - Nombre d'avis sur le mois
 - Évolution de la note
 - Avis sans réponse (à traiter immédiatement)
 
 **⑤ Photos**
+Nombre de fois que tes photos ont été vues. Si ce chiffre est bas → change tes photos, elles ne captent pas l'attention.
 
-Combien de fois tes photos ont été vues. Si ce chiffre est bas → tes photos ne retiennent pas l'attention, change-les.
-
-### Le calendrier d'optimisation mensuel
+### Le planning mensuel (30 min/semaine)
 
 | Semaine | Action |
 |---------|--------|
-| Semaine 1 | Regarder les stats du mois précédent |
-| Semaine 2 | Publier 1-2 Google Posts |
-| Semaine 3 | Ajouter 1-2 nouvelles photos |
-| Semaine 4 | Vérifier et répondre aux avis |
+| 1 | Regarder les stats du mois précédent |
+| 2 | Publier 1-2 Google Posts |
+| 3 | Ajouter 1-2 nouvelles photos |
+| 4 | Répondre aux avis + vérifier modifications de fiche |
 
-En 30 minutes par mois, ta fiche reste active et bien positionnée.
+---
 
-### Les signaux d'alarme
+## Les 10 erreurs fatales à éviter
 
-🔴 **Baisse soudaine des vues** : vérifier si Google a suggéré des modifications à ta fiche (parfois des inconnus "proposent des corrections" — il faut les valider ou refuser)
+**Erreurs de création :**
 
-🔴 **Note qui baisse** : répondre rapidement aux mauvais avis, et relancer la collecte d'avis positifs
+**① Créer une fiche pour un logement individuel non-éligible**
+Les appartements LCD sans réception physique sont officiellement non-éligibles à GBP. Résultat : suspension possible. Solution : GVR via channel manager ou fiche pour ta conciergerie.
 
-🔴 **0 clics vers le site** : ton URL est peut-être erronée, ou ta page de destination n'est pas convaincante
+**② Mauvaise catégorie principale**
+"Hôtel" pour un gîte, "Agence immobilière" pour une conciergerie LCD. La catégorie détermine dans quels résultats tu apparais.
 
-### Connecter GMB à Google Search Console
+**③ Keyword stuffing dans le nom**
+"Conciergerie Nice – Location Airbnb – Meilleur Prix Vacances Nice". Google suspend ces fiches.
 
-Pour voir quels mots-clés génèrent des clics organiques vers ton site, connecte ton site à **Google Search Console** (gratuit). Ça te donnera des données complémentaires précieuses.
+**④ Adresse non-éligible**
+Boîte postale, domiciliation commerciale partagée, adresse d'un bien géré.
 
-### Objectifs à 3 mois
+**⑤ Ne pas finaliser la vérification**
+Une fiche non vérifiée est invisible. C'est l'erreur numéro 1 des débutants.
 
-Au bout de 3 mois de travail régulier, tu devrais voir :
-- ✅ 15+ avis avec une note ≥ 4,7
-- ✅ Apparition dans le Local Pack sur au moins 3-5 recherches locales
-- ✅ 50+ vues du profil par semaine
-- ✅ 5-10 clics vers ton site par semaine
-- ✅ 1-3 contacts directs par mois grâce à GMB
+**Erreurs de gestion :**
 
-Avec une constance de 30 min/semaine, ces objectifs sont réalistes et atteignables.`,
+**⑥ Fiche inactive — zéro posts, zéro nouvelles photos**
+Google défavorise les fiches sans activité. 1 post par semaine minimum.
+
+**⑦ Ne pas répondre aux avis**
+Les fiches avec réponses systématiques ont un meilleur classement. Et les voyageurs lisent les réponses.
+
+**⑧ Acheter de faux avis**
+Suspension définitive possible. Les algorithmes de détection de Google sont de plus en plus sophistiqués.
+
+**⑨ Incohérence NAP entre les plateformes**
+Différentes versions de ton nom, adresse ou téléphone sur Google, ton site, Pages Jaunes, TripAdvisor. Brouille les signaux locaux.
+
+**⑩ Ignorer la section Q&A**
+N'importe qui peut y écrire des questions (et parfois du contenu négatif). Si tu ne la gères pas, elle s'alimente sans toi.
+
+---
+
+## Tes prochaines étapes concrètes
+
+### Semaine 1-2 : Fondamentaux
+- [ ] Vérifier ton éligibilité (GBP ou GVR ?)
+- [ ] Créer / revendiquer ta fiche GBP
+- [ ] Finaliser la vérification vidéo
+- [ ] Choisir les bonnes catégories
+
+### Semaine 3-4 : Optimisation
+- [ ] Description 750 caractères optimisée
+- [ ] Services, attributs, Q&A complétés
+- [ ] 20+ photos uploadées
+- [ ] Vérifier la cohérence NAP partout
+
+### Semaine 5-6 : Avis
+- [ ] Créer ton lien d'avis + QR code
+- [ ] Message automatique post-séjour en place
+- [ ] Carton de bienvenue avec QR code dans chaque logement
+
+### Semaine 7-8 : Activité régulière
+- [ ] Premier Google Post publié
+- [ ] Calendrier de posts planifié
+- [ ] Inscription sur Bing Places
+
+### Semaine 9-12 : Réservations directes
+- [ ] Site web avec moteur de réservation
+- [ ] Channel manager partenaire GVR connecté
+- [ ] Office de tourisme contacté pour backlink
+- [ ] Calcul de tes économies potentielles en commissions`,
         },
       ],
     },
