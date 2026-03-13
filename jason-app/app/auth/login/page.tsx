@@ -4,9 +4,10 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
+import { loginAction } from './actions'
 
 const MAX_ATTEMPTS = 5
-const BLOCK_DURATION_MS = 10 * 60 * 1000 // 10 minutes
+const BLOCK_DURATION_MS = 10 * 60 * 1000
 
 export default function LoginPage() {
   const supabase = createClient()
@@ -35,30 +36,31 @@ export default function LoginPage() {
     setError('')
     setEmailNotConfirmed(false)
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const result = await loginAction(email, password)
 
-    if (error) {
-      if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
-        setEmailNotConfirmed(true)
-        setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
+    if (result?.error === 'EMAIL_NOT_CONFIRMED') {
+      setEmailNotConfirmed(true)
+      setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
+      setLoading(false)
+      return
+    }
+
+    if (result?.error) {
+      const newAttempts = attempts + 1
+      setAttempts(newAttempts)
+      if (newAttempts >= MAX_ATTEMPTS) {
+        setBlockedUntil(Date.now() + BLOCK_DURATION_MS)
+        setAttempts(0)
+        setError('Trop de tentatives. Compte temporairement bloqué pendant 10 minutes.')
       } else {
-        const newAttempts = attempts + 1
-        setAttempts(newAttempts)
-
-        if (newAttempts >= MAX_ATTEMPTS) {
-          setBlockedUntil(Date.now() + BLOCK_DURATION_MS)
-          setAttempts(0)
-          setError('Trop de tentatives. Compte temporairement bloqué pendant 10 minutes.')
-        } else {
-          const remaining = MAX_ATTEMPTS - newAttempts
-          setError(`Email ou mot de passe incorrect. ${remaining} tentative${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`)
-        }
+        const remaining = MAX_ATTEMPTS - newAttempts
+        setError(`Email ou mot de passe incorrect. ${remaining} tentative${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`)
       }
       setLoading(false)
       return
     }
 
-    window.location.href = '/dashboard'
+    // loginAction redirects server-side on success, no need to handle here
   }
 
   async function handleResendConfirmation() {
@@ -180,12 +182,8 @@ export default function LoginPage() {
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: '100svh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '24px 16px',
-    position: 'relative',
-    overflow: 'hidden',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '24px 16px', position: 'relative', overflow: 'hidden',
   },
   bg1: {
     position: 'fixed', top: '-10%', right: '-10%',
@@ -203,15 +201,11 @@ const styles: Record<string, React.CSSProperties> = {
     width: '100%', maxWidth: '420px',
     background: 'rgba(255,255,255,0.04)',
     border: '1px solid rgba(255,255,255,0.09)',
-    borderRadius: '20px',
-    padding: '40px 36px',
+    borderRadius: '20px', padding: '40px 36px',
     backdropFilter: 'blur(20px)',
     position: 'relative', zIndex: 2,
   },
-  logo: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    marginBottom: '32px',
-  },
+  logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px' },
   logoIcon: {
     width: '36px', height: '36px',
     background: 'rgba(0,76,63,0.5)',
@@ -219,31 +213,18 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '10px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  logoText: {
-    fontFamily: 'Fraunces, serif',
-    fontSize: '18px', fontWeight: 600, color: '#f0f4ff',
-  },
+  logoText: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 600, color: '#f0f4ff' },
   title: {
-    fontFamily: 'Fraunces, serif',
-    fontSize: '28px', fontWeight: 400,
-    color: '#f0f4ff', letterSpacing: '-0.5px',
-    marginBottom: '6px',
+    fontFamily: 'Fraunces, serif', fontSize: '28px', fontWeight: 400,
+    color: '#f0f4ff', letterSpacing: '-0.5px', marginBottom: '6px',
   },
-  subtitle: {
-    fontSize: '14px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.5)',
-    marginBottom: '32px',
-  },
+  subtitle: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', marginBottom: '32px' },
   form: { display: 'flex', flexDirection: 'column', gap: '18px' },
   field: { display: 'flex', flexDirection: 'column', gap: '7px' },
   label: { fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.7)' },
-  forgotLink: {
-    fontSize: '12px', color: 'rgba(255,213,107,0.7)',
-    textDecoration: 'none', fontWeight: 400,
-  },
+  forgotLink: { fontSize: '12px', color: 'rgba(255,213,107,0.7)', textDecoration: 'none', fontWeight: 400 },
   eyeBtn: {
-    position: 'absolute', right: '12px', top: '50%',
-    transform: 'translateY(-50%)',
+    position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
     background: 'none', border: 'none', cursor: 'pointer',
     color: 'rgba(240,244,255,0.4)', padding: '4px',
     display: 'flex', alignItems: 'center',
@@ -255,28 +236,18 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '8px', padding: '10px 14px',
   },
   resendBtn: {
-    marginTop: '8px',
-    background: 'none',
+    marginTop: '8px', background: 'none',
     border: '1px solid rgba(248,113,113,0.4)',
-    borderRadius: '8px',
-    color: '#F87171',
-    fontSize: '12px',
-    padding: '7px 12px',
-    cursor: 'pointer',
-    width: '100%',
+    borderRadius: '8px', color: '#F87171',
+    fontSize: '12px', padding: '7px 12px',
+    cursor: 'pointer', width: '100%',
   },
   resendSuccess: {
-    marginTop: '8px',
-    fontSize: '13px',
-    color: '#4ade80',
+    marginTop: '8px', fontSize: '13px', color: '#4ade80',
     background: 'rgba(74,222,128,0.08)',
     border: '1px solid rgba(74,222,128,0.2)',
-    borderRadius: '8px',
-    padding: '10px 14px',
+    borderRadius: '8px', padding: '10px 14px',
   },
-  footer: {
-    marginTop: '24px', textAlign: 'center',
-    fontSize: '13px', color: 'rgba(240,244,255,0.4)',
-  },
+  footer: { marginTop: '24px', textAlign: 'center', fontSize: '13px', color: 'rgba(240,244,255,0.4)' },
   link: { color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
 }
