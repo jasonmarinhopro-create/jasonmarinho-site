@@ -55,15 +55,22 @@ function ResetPasswordForm() {
     const { error } = await supabase.auth.updateUser({ password })
 
     if (error) {
-      setError(error.message === 'Auth session missing!' || error.message.includes('session')
-        ? 'Lien expiré ou invalide. Demande un nouveau lien de réinitialisation.'
-        : error.message)
+      const msg = error.message.toLowerCase()
+      let friendlyError = 'Une erreur est survenue. Réessaie.'
+      if (msg.includes('session') || msg.includes('auth session missing')) {
+        friendlyError = 'Lien expiré ou invalide. Demande un nouveau lien de réinitialisation.'
+      } else if (msg.includes('same password') || msg.includes('different from the old')) {
+        friendlyError = 'Le nouveau mot de passe doit être différent de l\'ancien.'
+      } else if (msg.includes('weak') || msg.includes('password')) {
+        friendlyError = 'Mot de passe trop faible. Choisis un mot de passe plus sécurisé.'
+      }
+      setError(friendlyError)
       setLoading(false)
       return
     }
 
     setSuccess(true)
-    setTimeout(() => router.push('/auth/login'), 3000)
+    setTimeout(() => router.push('/dashboard'), 2000)
   }
 
   if (success) {
@@ -72,7 +79,7 @@ function ResetPasswordForm() {
         <CheckCircle size={52} color="#34D399" weight="fill" style={{ marginBottom: '20px' }} />
         <h1 style={{ ...styles.title, marginBottom: '12px' }}>Mot de passe mis à jour</h1>
         <p style={{ ...styles.subtitle, marginBottom: '0' }}>
-          Redirection vers la connexion dans quelques secondes...
+          Redirection vers ton espace dans quelques secondes...
         </p>
       </div>
     )
@@ -128,11 +135,11 @@ function ResetPasswordForm() {
         <button
           type="submit"
           className="btn-primary"
-          disabled={loading}
+          disabled={loading || !sessionReady}
           style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
         >
-          {loading ? 'Mise à jour...' : 'Mettre à jour'}
-          {!loading && <ArrowRight size={16} weight="bold" />}
+          {loading ? 'Mise à jour...' : !sessionReady ? 'Chargement...' : 'Mettre à jour'}
+          {!loading && sessionReady && <ArrowRight size={16} weight="bold" />}
         </button>
       </form>
 
