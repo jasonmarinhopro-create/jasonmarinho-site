@@ -1,6 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
+import { getProfile } from '@/lib/queries/profile'
 import Header from '@/components/layout/Header'
-import Sidebar from '@/components/layout/Sidebar'
 import { Check, X as XIcon, ArrowUpRight, Star } from '@phosphor-icons/react/dist/ssr'
 
 const PLANS = [
@@ -61,17 +60,10 @@ const FEATURES: { label: string; plans: ('decouverte' | 'hote' | 'pro' | 'agence
 ]
 
 export default async function AbonnementPage() {
-  const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) { const { redirect } = await import('next/navigation'); redirect('/auth/login') }
-  const userId = session!.user.id
-
-  const { data: profile } = await supabase
-    .from('profiles').select('full_name').eq('id', userId).single()
+  const profile = await getProfile()
 
   return (
     <>
-      <Sidebar />
       <Header title="Abonnement" userName={profile?.full_name ?? undefined} />
 
       <div style={styles.page}>

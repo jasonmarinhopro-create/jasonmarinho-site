@@ -1,37 +1,28 @@
-import { createClient } from '@/lib/supabase/server'
+import { getProfile } from '@/lib/queries/profile'
 import Header from '@/components/layout/Header'
-import Sidebar from '@/components/layout/Sidebar'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 import {
   GraduationCap, Handshake, FileText, UsersThree,
   ArrowRight, TrendUp, Star, BookOpen
 } from '@phosphor-icons/react/dist/ssr'
 
 export default async function DashboardPage() {
+  const profile = await getProfile()
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) { const { redirect } = await import('next/navigation'); redirect('/auth/login') }
-  const userId = session!.user.id
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name')
-    .eq('id', userId)
-    .single()
+  const userId = profile?.userId ?? ''
 
-  const { data: userFormations } = await supabase
-    .from('user_formations')
-    .select('*, formation:formations(*)')
-    .eq('user_id', userId)
-    .order('enrolled_at', { ascending: false })
-    .limit(3)
+  const [{ data: userFormations }, { data: allFormations }] = await Promise.all([
+    supabase.from('user_formations')
+      .select('*, formation:formations(*)')
+      .eq('user_id', userId)
+      .order('enrolled_at', { ascending: false })
+      .limit(3),
+    supabase.from('formations').select('id').eq('is_published', true),
+  ])
 
-  const { data: allFormations } = await supabase
-    .from('formations')
-    .select('id')
-    .eq('is_published', true)
-
-  const firstName = profile?.full_name?.split(' ')[0] ?? session!.user.email?.split('@')[0] ?? ''
+  const firstName = profile?.full_name?.split(' ')[0] ?? ''
   const enrolled = userFormations?.length ?? 0
   const completed = userFormations?.filter(f => f.progress === 100).length ?? 0
 
@@ -44,7 +35,6 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <Sidebar />
       <Header title="Accueil" userName={profile?.full_name ?? undefined} />
 
       <div style={styles.page} className="dash-page">
