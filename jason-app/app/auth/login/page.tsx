@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { loginAction } from './actions'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
 
@@ -71,22 +70,34 @@ export default function LoginPage() {
     setError('')
     setEmailNotConfirmed(false)
 
-    let result: Awaited<ReturnType<typeof loginAction>>
+    let signInError: Error | null = null
+    let isUnconfirmed = false
     try {
-      result = await loginAction(email, password)
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        if (
+          error.message.includes('Email not confirmed') ||
+          error.message.includes('email_not_confirmed')
+        ) {
+          isUnconfirmed = true
+        } else {
+          signInError = error
+        }
+      }
     } catch (e) {
       setError('Une erreur inattendue est survenue. Réessaie dans quelques instants.')
       setLoading(false)
       return
     }
 
-    if ('error' in result) {
-      if (result.error === 'EMAIL_NOT_CONFIRMED') {
-        setEmailNotConfirmed(true)
-        setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
-        setLoading(false)
-        return
-      }
+    if (isUnconfirmed) {
+      setEmailNotConfirmed(true)
+      setError('Tu dois confirmer ton email avant de te connecter. Vérifie ta boîte mail (et tes spams).')
+      setLoading(false)
+      return
+    }
+
+    if (signInError) {
       const newAttempts = attempts + 1
       setAttempts(newAttempts)
       if (newAttempts >= MAX_ATTEMPTS) {
@@ -101,7 +112,7 @@ export default function LoginPage() {
       return
     }
 
-    // Cookies set server-side — show success state then navigate
+    // Browser client sets cookies via document.cookie — navigate to dashboard
     setSuccess(true)
     setLoading(false)
     window.location.href = '/dashboard'
