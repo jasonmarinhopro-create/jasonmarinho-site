@@ -16,11 +16,12 @@ export default function Header({ title, userName }: HeaderProps) {
     <>
       <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
 
-      <header style={styles.header}>
+      <header style={styles.header} className="dash-header">
         <div style={styles.left}>
           <button
             onClick={() => setMobileOpen(true)}
             style={styles.menuBtn}
+            className="dash-menu-btn"
             aria-label="Menu"
           >
             <List size={22} />
@@ -54,7 +55,7 @@ const styles: Record<string, React.CSSProperties> = {
     left: 'var(--sidebar-w)',
     right: 0,
     height: 'var(--header-h)',
-    background: 'rgba(10,22,40,0.9)',
+    background: 'rgba(0,51,42,0.92)',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
     backdropFilter: 'blur(20px)',
     display: 'flex',
@@ -67,7 +68,6 @@ const styles: Record<string, React.CSSProperties> = {
   menuBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
     color: 'rgba(240,244,255,0.55)', padding: '6px',
-    display: 'none',
     borderRadius: '8px',
   },
   title: {

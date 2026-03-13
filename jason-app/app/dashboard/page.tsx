@@ -34,10 +34,10 @@ export default async function DashboardPage() {
   const completed = userFormations?.filter(f => f.progress === 100).length ?? 0
 
   const quickLinks = [
-    { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap, desc: `${allFormations?.length ?? 3} disponibles`, color: '#004C3F' },
-    { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake,      desc: '5 offres exclusives',   color: '#2563EB' },
-    { href: '/dashboard/gabarits',    label: 'Gabarits',    icon: FileText,        desc: 'Copie en 1 clic',       color: '#7C3AED' },
-    { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree,     desc: '3 groupes sélectionnés', color: '#B45309' },
+    { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap, desc: `${allFormations?.length ?? 3} disponibles`, color: '#004C3F', iconColor: '#34D399' },
+    { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake,      desc: '5 offres exclusives',   color: '#0d6e56', iconColor: '#6EE7B7' },
+    { href: '/dashboard/gabarits',    label: 'Gabarits',    icon: FileText,        desc: 'Copie en 1 clic',       color: '#2d5c40', iconColor: '#A7F3D0' },
+    { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree,     desc: '3 groupes sélectionnés', color: '#92400e', iconColor: '#FCD34D' },
   ]
 
   return (
@@ -45,15 +45,15 @@ export default async function DashboardPage() {
       <Sidebar />
       <Header title="Accueil" userName={profile?.full_name ?? undefined} />
 
-      <div style={styles.page}>
+      <div style={styles.page} className="dash-page">
         {/* Welcome */}
-        <section style={styles.welcome} className="fade-up">
+        <section style={styles.welcome} className="fade-up dash-welcome">
           <div>
             <p style={styles.welcomeSub}>Bonjour,</p>
             <h2 style={styles.welcomeTitle}>Bienvenue, <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>{firstName}</em></h2>
             <p style={styles.welcomeDesc}>Retrouve tes formations, gabarits et ressources pour développer ton activité LCD.</p>
           </div>
-          <div style={styles.statsRow}>
+          <div style={styles.statsRow} className="dash-stats-row">
             <div style={styles.stat}>
               <span style={styles.statVal}>{enrolled}</span>
               <span style={styles.statLbl}>Formation{enrolled > 1 ? 's' : ''} suivie{enrolled > 1 ? 's' : ''}</span>
@@ -69,11 +69,11 @@ export default async function DashboardPage() {
         {/* Quick links */}
         <section style={styles.section} className="fade-up d1">
           <h3 style={styles.sectionTitle}>Accès rapide</h3>
-          <div style={styles.quickGrid}>
-            {quickLinks.map(({ href, label, icon: Icon, desc, color }) => (
+          <div style={styles.quickGrid} className="dash-quick-grid">
+            {quickLinks.map(({ href, label, icon: Icon, desc, color, iconColor }) => (
               <Link key={href} href={href} style={styles.quickCard} className="glass-card">
-                <div style={{ ...styles.quickIcon, background: color + '22', border: `1px solid ${color}33` }}>
-                  <Icon size={22} color={color === '#004C3F' ? '#34D399' : color === '#2563EB' ? '#93C5FD' : color === '#7C3AED' ? '#C4B5FD' : '#FCD34D'} weight="fill" />
+                <div style={{ ...styles.quickIcon, background: color + '33', border: `1px solid ${color}55` }}>
+                  <Icon size={22} color={iconColor} weight="fill" />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={styles.quickLabel}>{label}</div>
