@@ -9,18 +9,20 @@ import {
 
 export default async function DashboardPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) { const { redirect } = await import('next/navigation'); redirect('/auth/login') }
+  const userId = session!.user.id
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('full_name')
-    .eq('id', user!.id)
+    .eq('id', userId)
     .single()
 
   const { data: userFormations } = await supabase
     .from('user_formations')
     .select('*, formation:formations(*)')
-    .eq('user_id', user!.id)
+    .eq('user_id', userId)
     .order('enrolled_at', { ascending: false })
     .limit(3)
 
@@ -29,7 +31,7 @@ export default async function DashboardPage() {
     .select('id')
     .eq('is_published', true)
 
-  const firstName = profile?.full_name?.split(' ')[0] ?? user?.email?.split('@')[0] ?? ''
+  const firstName = profile?.full_name?.split(' ')[0] ?? session!.user.email?.split('@')[0] ?? ''
   const enrolled = userFormations?.length ?? 0
   const completed = userFormations?.filter(f => f.progress === 100).length ?? 0
 

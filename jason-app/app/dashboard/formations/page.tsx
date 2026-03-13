@@ -12,16 +12,18 @@ const levelLabel: Record<string, string> = {
 
 export default async function FormationsPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) { const { redirect } = await import('next/navigation'); redirect('/auth/login') }
+  const userId = session!.user.id
 
   const { data: profile } = await supabase
-    .from('profiles').select('full_name').eq('id', user!.id).single()
+    .from('profiles').select('full_name').eq('id', userId).single()
 
   const { data: formations } = await supabase
     .from('formations').select('*').eq('is_published', true).order('created_at')
 
   const { data: userFormations } = await supabase
-    .from('user_formations').select('*').eq('user_id', user!.id)
+    .from('user_formations').select('*').eq('user_id', userId)
 
   const progressMap = Object.fromEntries(
     (userFormations ?? []).map(uf => [uf.formation_id, uf.progress])

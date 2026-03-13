@@ -5,10 +5,12 @@ import { ArrowUpRight, UsersThree, FacebookLogo, WhatsappLogo, FileText } from '
 
 export default async function CommunautePage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) { const { redirect } = await import('next/navigation'); redirect('/auth/login') }
+  const userId = session!.user.id
 
   const { data: profile } = await supabase
-    .from('profiles').select('full_name').eq('id', user!.id).single()
+    .from('profiles').select('full_name').eq('id', userId).single()
 
   const { data: groups } = await supabase
     .from('community_groups')
