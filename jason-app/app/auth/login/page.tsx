@@ -12,29 +12,35 @@ const BLOCK_DURATION_MS = 10 * 60 * 1000
 export default function LoginPage() {
   const supabase = createClient()
 
-  // If Supabase redirects a recovery/signup token to this page, forward to reset-password
+  // Handle Supabase tokens redirected to this page
   useEffect(() => {
     const hash = window.location.hash
-    if (!hash.includes('type=recovery') && !hash.includes('type=signup')) return
+    const isRecovery = hash.includes('type=recovery')
+    const isSignup = hash.includes('type=signup')
+    if (!isRecovery && !isSignup) return
 
+    // type=recovery → reset-password page
+    // type=signup (email confirmed) → dashboard (user is now signed in)
     let redirected = false
-    const redirect = () => {
+    const redirect = (destination: string) => {
       if (redirected) return
       redirected = true
-      window.location.replace('/auth/reset-password')
+      window.location.replace(destination)
     }
 
-    // Subscribe first to catch the event
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+      if (event === 'PASSWORD_RECOVERY') {
         subscription.unsubscribe()
-        redirect()
+        redirect('/auth/reset-password')
+      } else if (event === 'SIGNED_IN') {
+        subscription.unsubscribe()
+        redirect(isRecovery ? '/auth/reset-password' : '/dashboard')
       }
     })
 
     // Handle race condition: event may have fired before subscription was set up
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) redirect()
+      if (session) redirect(isRecovery ? '/auth/reset-password' : '/dashboard')
     })
 
     return () => subscription.unsubscribe()

@@ -62,13 +62,16 @@ export async function POST(req: NextRequest) {
 
     // Create profile (in case the DB trigger isn't set up)
     if (userData.user) {
-      await supabaseAdmin
+      const { error: profileError } = await supabaseAdmin
         .from('profiles')
         .upsert({
           id: userData.user.id,
           email: normalized,
           full_name: fullName || null,
         }, { onConflict: 'id', ignoreDuplicates: true })
+      if (profileError) {
+        console.error('[register] profile upsert error:', profileError.message)
+      }
     }
 
     // Generate confirmation link
