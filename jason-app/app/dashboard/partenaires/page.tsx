@@ -81,7 +81,7 @@ export default async function PartenairesPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1400px' },
   intro: { marginBottom: '36px' },
   pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6 },
