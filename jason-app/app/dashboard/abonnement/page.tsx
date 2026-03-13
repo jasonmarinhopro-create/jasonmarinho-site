@@ -107,7 +107,7 @@ export default async function AbonnementPage() {
                 <button disabled style={styles.ctaDisabled}>{plan.cta}</button>
               ) : (
                 <a
-                  href="https://wa.me/33XXXXXXXXX"
+                  href="https://wa.me/33630212592"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={plan.highlighted ? 'btn-primary' : 'btn-ghost'}

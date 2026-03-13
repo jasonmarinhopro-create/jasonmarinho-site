@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowUpRight, UsersThree, FacebookLogo, WhatsappLogo, FileText } from '@phosphor-icons/react'
+import { ArrowUpRight, UsersThree, FacebookLogo, FileText, MapPin } from '@phosphor-icons/react'
 
 interface Group {
   id: string
@@ -13,34 +13,58 @@ interface Group {
   template?: { title: string; content: string } | null
 }
 
-const PLATFORM_FILTERS = [
-  { id: 'all', label: 'Tous' },
-  { id: 'facebook', label: 'Facebook' },
-  { id: 'whatsapp', label: 'WhatsApp' },
+// French region detection from group name
+const REGIONS: { id: string; label: string; keywords: string[] }[] = [
+  { id: 'national', label: 'National', keywords: ['france', 'francophone', 'pro', 'airbnb france', 'location courte durée', 'lcd', 'conciergerie france', 'conciergeries'] },
+  { id: 'idf',      label: 'Île-de-France', keywords: ['paris', 'île-de-france', 'idf', 'seine', 'versailles', 'banlieue'] },
+  { id: 'paca',     label: 'PACA',          keywords: ['paca', 'provence', 'marseille', 'nice', 'toulon', 'côte d\'azur', 'azur', 'alpes-maritimes', 'var', 'vaucluse'] },
+  { id: 'aura',     label: 'Auvergne-Rhône-Alpes', keywords: ['lyon', 'grenoble', 'annecy', 'savoie', 'haute-savoie', 'rhône-alpes', 'rhône', 'auvergne', 'clermont'] },
+  { id: 'occ',      label: 'Occitanie',     keywords: ['toulouse', 'montpellier', 'occitanie', 'languedoc', 'hérault', 'gard', 'pyrénées'] },
+  { id: 'na',       label: 'Nouvelle-Aquitaine', keywords: ['bordeaux', 'biarritz', 'pays basque', 'périgord', 'dordogne', 'charente', 'gironde', 'nouvelle-aquitaine'] },
+  { id: 'bre',      label: 'Bretagne',      keywords: ['bretagne', 'rennes', 'brest', 'nantes', 'finistère', 'morbihan', 'ille-et-vilaine'] },
+  { id: 'nor',      label: 'Normandie',     keywords: ['normandie', 'rouen', 'caen', 'deauville', 'manche', 'calvados'] },
+  { id: 'ge',       label: 'Grand Est',     keywords: ['strasbourg', 'alsace', 'moselle', 'champagne', 'ardennes', 'grand est'] },
+  { id: 'hdf',      label: 'Hauts-de-France', keywords: ['lille', 'nord', 'pas-de-calais', 'hauts-de-france', 'amiens'] },
+  { id: 'pdl',      label: 'Pays de la Loire', keywords: ['nantes', 'le mans', 'angers', 'pays de la loire', 'loire-atlantique', 'vendée'] },
+  { id: 'dom',      label: 'DOM-TOM',       keywords: ['réunion', 'martinique', 'guadeloupe', 'guyane', 'mayotte', 'dom', 'outre-mer'] },
 ]
 
-// Detect group audience from its name
-function detectAudience(name: string): 'conciergerie' | 'hote' | 'tous' {
+function detectRegion(name: string): string {
   const lower = name.toLowerCase()
-  if (lower.includes('conciergerie') || lower.includes('concierg')) return 'conciergerie'
-  if (lower.includes('hôte') || lower.includes('hote') || lower.includes('airbnb')) return 'hote'
-  return 'tous'
+  for (const region of REGIONS) {
+    if (region.keywords.some(k => lower.includes(k))) return region.id
+  }
+  return 'national'
 }
 
 const AUDIENCE_FILTERS = [
-  { id: 'all', label: 'Tous les groupes' },
-  { id: 'conciergerie', label: 'Conciergeries' },
-  { id: 'hote', label: 'Hôtes' },
+  { id: 'all',           label: 'Tous les groupes' },
+  { id: 'conciergerie',  label: 'Conciergeries' },
+  { id: 'hote',          label: 'Hôtes' },
 ]
 
+function detectAudience(name: string): string {
+  const lower = name.toLowerCase()
+  if (lower.includes('conciergerie') || lower.includes('concierg')) return 'conciergerie'
+  if (lower.includes('hôte') || lower.includes('hote') || lower.includes('airbnb')) return 'hote'
+  return 'all'
+}
+
 export default function CommunauteView({ groups }: { groups: Group[] }) {
-  const [platform, setPlatform] = useState('all')
   const [audience, setAudience] = useState('all')
+  const [region, setRegion] = useState('all')
+
+  // Only show regions that have at least 1 group
+  const usedRegionIds = new Set(groups.map(g => detectRegion(g.name)))
+  const availableRegions = [
+    { id: 'all', label: 'Toutes les régions' },
+    ...REGIONS.filter(r => usedRegionIds.has(r.id)),
+  ]
 
   const filtered = groups.filter(g => {
-    const matchPlatform = platform === 'all' || g.platform === platform
-    const matchAudience = audience === 'all' || detectAudience(g.name) === audience || detectAudience(g.name) === 'tous'
-    return matchPlatform && matchAudience
+    const matchAudience = audience === 'all' || detectAudience(g.name) === audience || detectAudience(g.name) === 'all'
+    const matchRegion = region === 'all' || detectRegion(g.name) === region
+    return matchAudience && matchRegion
   })
 
   return (
@@ -50,14 +74,14 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
           La <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>communauté</em> LCD
         </h2>
         <p style={styles.pageDesc}>
-          Les meilleurs groupes pour échanger avec d'autres hôtes — avec les gabarits de présentation pour bien démarrer.
+          Les meilleurs groupes Facebook pour échanger avec d'autres hôtes — avec les gabarits de présentation pour bien démarrer.
         </p>
       </div>
 
       {/* Filters */}
-      <div style={styles.filtersWrap} className="fade-up">
+      <div style={styles.filtersSection} className="fade-up">
         {/* Audience */}
-        <div style={styles.filterGroup}>
+        <div style={styles.filterRow}>
           {AUDIENCE_FILTERS.map(f => (
             <button
               key={f.id}
@@ -72,31 +96,35 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
           ))}
         </div>
 
-        {/* Platform */}
-        <div style={styles.filterGroup}>
-          {PLATFORM_FILTERS.map(f => (
-            <button
-              key={f.id}
-              onClick={() => setPlatform(f.id)}
-              style={{
-                ...styles.filterPill,
-                ...(platform === f.id ? styles.filterPillPlatform : {}),
-                ...(platform === f.id && f.id === 'facebook' ? { borderColor: 'rgba(147,197,253,0.35)', color: '#93C5FD' } : {}),
-                ...(platform === f.id && f.id === 'whatsapp' ? { borderColor: 'rgba(52,211,153,0.35)', color: '#34D399' } : {}),
-              }}
-            >
-              {f.id === 'facebook' && <FacebookLogo size={13} weight={platform === 'facebook' ? 'fill' : 'regular'} />}
-              {f.id === 'whatsapp' && <WhatsappLogo size={13} weight={platform === 'whatsapp' ? 'fill' : 'regular'} />}
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {/* Regions — only if multiple exist */}
+        {availableRegions.length > 1 && (
+          <div style={styles.filterRow}>
+            <div style={styles.regionLabel}>
+              <MapPin size={13} />
+              Région :
+            </div>
+            {availableRegions.map(r => (
+              <button
+                key={r.id}
+                onClick={() => setRegion(r.id)}
+                style={{
+                  ...styles.filterPill,
+                  ...(region === r.id ? styles.filterPillRegion : {}),
+                }}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Count */}
       <div style={styles.countRow} className="fade-up">
         <span style={styles.count}>{filtered.length}</span>
-        <span style={styles.countLabel}>groupe{filtered.length > 1 ? 's' : ''}</span>
+        <span style={styles.countLabel}>
+          groupe{filtered.length > 1 ? 's' : ''} trouvé{filtered.length > 1 ? 's' : ''}
+        </span>
       </div>
 
       {/* Grid */}
@@ -105,15 +133,21 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
           <div key={g.id} style={styles.card} className={`glass-card fade-up d${i + 1}`}>
             <div style={styles.cardHead}>
               <div style={styles.platformIcon}>
-                {g.platform === 'facebook'
-                  ? <FacebookLogo size={22} color="#93C5FD" weight="fill" />
-                  : <WhatsappLogo size={22} color="#34D399" weight="fill" />}
+                <FacebookLogo size={22} color="#93C5FD" weight="fill" />
               </div>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <h3 style={styles.groupName}>{g.name}</h3>
-                <div style={styles.memberCount}>
-                  <UsersThree size={13} />
-                  {g.members_count.toLocaleString('fr-FR')} membres
+                <div style={styles.metaRow}>
+                  <div style={styles.memberCount}>
+                    <UsersThree size={13} />
+                    {g.members_count.toLocaleString('fr-FR')} membres
+                  </div>
+                  {detectRegion(g.name) !== 'national' && (
+                    <div style={styles.regionBadge}>
+                      <MapPin size={11} />
+                      {REGIONS.find(r => r.id === detectRegion(g.name))?.label}
+                    </div>
+                  )}
                 </div>
               </div>
               <a
@@ -144,7 +178,12 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
       </div>
 
       {filtered.length === 0 && (
-        <div style={styles.empty}>Aucun groupe pour ces filtres.</div>
+        <div style={styles.empty}>
+          <FacebookLogo size={36} color="rgba(240,244,255,0.15)" weight="fill" />
+          <p style={{ marginTop: '12px', color: 'rgba(240,244,255,0.35)', fontSize: '14px' }}>
+            Aucun groupe pour ces filtres.
+          </p>
+        </div>
       )}
     </div>
   )
@@ -162,13 +201,17 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6,
   },
 
-  filtersWrap: {
-    display: 'flex', gap: '12px', flexWrap: 'wrap',
-    alignItems: 'center', marginBottom: '20px',
+  filtersSection: {
+    display: 'flex', flexDirection: 'column', gap: '10px',
+    marginBottom: '24px',
   },
-  filterGroup: {
-    display: 'flex', gap: '8px', flexWrap: 'wrap',
-    padding: '4px 0',
+  filterRow: {
+    display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center',
+  },
+  regionLabel: {
+    display: 'flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', color: 'rgba(240,244,255,0.35)', fontWeight: 500,
+    marginRight: '4px',
   },
   filterPill: {
     display: 'flex', alignItems: 'center', gap: '5px',
@@ -184,10 +227,10 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(255,213,107,0.25)',
     color: '#FFD56B',
   },
-  filterPillPlatform: {
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.14)',
-    color: '#f0f4ff',
+  filterPillRegion: {
+    background: 'rgba(147,197,253,0.1)',
+    border: '1px solid rgba(147,197,253,0.25)',
+    color: '#93C5FD',
   },
 
   countRow: {
@@ -204,20 +247,31 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '28px', borderRadius: '18px',
     display: 'flex', flexDirection: 'column', gap: '16px',
   },
-  cardHead: { display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' },
+  cardHead: { display: 'flex', alignItems: 'flex-start', gap: '14px', flexWrap: 'wrap' },
   platformIcon: {
     width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'rgba(147,197,253,0.08)',
+    border: '1px solid rgba(147,197,253,0.15)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   groupName: {
     fontFamily: 'Fraunces, serif', fontSize: '17px',
-    fontWeight: 400, color: '#f0f4ff', marginBottom: '3px',
+    fontWeight: 400, color: '#f0f4ff', marginBottom: '6px',
+  },
+  metaRow: {
+    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
   },
   memberCount: {
     display: 'flex', alignItems: 'center', gap: '5px',
     fontSize: '12px', color: 'rgba(240,244,255,0.38)',
+  },
+  regionBadge: {
+    display: 'flex', alignItems: 'center', gap: '4px',
+    fontSize: '11px', fontWeight: 500,
+    color: 'rgba(147,197,253,0.7)',
+    background: 'rgba(147,197,253,0.08)',
+    border: '1px solid rgba(147,197,253,0.15)',
+    borderRadius: '100px', padding: '2px 8px',
   },
   desc: {
     fontSize: '14px', fontWeight: 300,
@@ -244,8 +298,5 @@ const styles: Record<string, React.CSSProperties> = {
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
     maxHeight: '140px', overflowY: 'auto',
   },
-  empty: {
-    textAlign: 'center', padding: '60px 20px',
-    color: 'rgba(240,244,255,0.3)', fontSize: '14px',
-  },
+  empty: { textAlign: 'center', padding: '60px 20px' },
 }

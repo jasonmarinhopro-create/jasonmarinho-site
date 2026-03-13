@@ -95,7 +95,7 @@ export default async function AidePage() {
           </div>
           <div style={styles.contactActions}>
             <a
-              href="https://wa.me/33XXXXXXXXX"
+              href="https://wa.me/33630212592"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary"

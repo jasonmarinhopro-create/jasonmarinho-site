@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowUpRight, Tag, Star, Buildings } from '@phosphor-icons/react'
+import { ArrowUpRight, Tag, Star, CalendarBlank, BookOpen, Buildings } from '@phosphor-icons/react'
 
 interface Partner {
   id: string
@@ -12,6 +12,33 @@ interface Partner {
   promo_code?: string
   url: string
 }
+
+const DRIING_SERVICES = [
+  {
+    icon: CalendarBlank,
+    name: 'Plateforme de réservation',
+    tagline: '0 % de commission',
+    desc: 'Recevez des réservations directes sans payer de commission à Airbnb ou Booking. Vos revenus, intégralement.',
+    url: 'https://driing.com',
+    color: '#34D399',
+  },
+  {
+    icon: BookOpen,
+    name: 'Livret d\'accueil digital',
+    tagline: 'Expérience voyageur premium',
+    desc: 'Créez un livret d\'accueil interactif partageable par lien ou QR code — instructions d\'arrivée, Wi-Fi, recommandations locales.',
+    url: 'https://driing.com',
+    color: '#93C5FD',
+  },
+  {
+    icon: Buildings,
+    name: 'Annuaire des conciergeries',
+    tagline: 'Visibilité & mise en réseau',
+    desc: 'Référencez votre conciergerie pour être trouvé par des propriétaires et collaborer avec d\'autres professionnels du secteur.',
+    url: 'https://driing.com',
+    color: '#FFD56B',
+  },
+]
 
 export default function PartenairesView({ partners }: { partners: Partner[] }) {
   const categories = ['Tout', ...new Set(partners.map(p => p.category))]
@@ -33,109 +60,135 @@ export default function PartenairesView({ partners }: { partners: Partner[] }) {
         </p>
       </div>
 
-      {/* Featured banner — Driing */}
+      {/* ── Driing featured banner ── */}
       <div style={styles.featured} className="fade-up">
-        <div style={styles.featuredInner}>
-          <div style={styles.featuredLeft}>
-            <div style={styles.featuredBadge}>
-              <Star size={11} weight="fill" color="#FFD56B" />
-              Partenaire phare
-            </div>
-            <div style={styles.featuredLogo}>
-              <Buildings size={28} color="#FFD56B" weight="duotone" />
-            </div>
-            <div>
-              <div style={styles.featuredName}>Driing</div>
-              <div style={styles.featuredTagline}>La suite complète pour les hôtes professionnels</div>
-            </div>
+        {/* Header */}
+        <div style={styles.featuredHeader}>
+          <div style={styles.featuredBadge}>
+            <Star size={11} weight="fill" color="#FFD56B" />
+            Partenaire phare
           </div>
-          <p style={styles.featuredDesc}>
-            Driing accompagne les conciergeries et hôtes avec des outils pensés pour professionnaliser leur activité — livret d'accueil digital, annuaire et plateforme de réservation sans commission.
-          </p>
           <a
             href="https://driing.com"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary"
-            style={{ alignSelf: 'flex-start', whiteSpace: 'nowrap' }}
+            style={{ fontSize: '13px', padding: '9px 18px', marginLeft: 'auto' }}
           >
             Découvrir Driing <ArrowUpRight size={14} weight="bold" />
           </a>
         </div>
+
+        {/* Brand */}
+        <div style={styles.featuredBrand}>
+          <div style={styles.featuredLogo}>
+            <Buildings size={26} color="#FFD56B" weight="duotone" />
+          </div>
+          <div>
+            <div style={styles.featuredName}>Driing</div>
+            <div style={styles.featuredTagline}>La suite complète pour les hôtes professionnels</div>
+          </div>
+        </div>
+
+        {/* 3 service cards */}
+        <div style={styles.servicesGrid} className="driing-services-grid">
+          {DRIING_SERVICES.map(({ icon: Icon, name, tagline, desc, url, color }) => (
+            <a
+              key={name}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={styles.serviceCard}
+              className="driing-service-card"
+            >
+              <div style={styles.serviceHead}>
+                <div style={{ ...styles.serviceIcon, background: color + '18', border: `1px solid ${color}30` }}>
+                  <Icon size={18} color={color} weight="fill" />
+                </div>
+                <div>
+                  <div style={styles.serviceName}>{name}</div>
+                  <div style={{ ...styles.serviceTagline, color }}>{tagline}</div>
+                </div>
+              </div>
+              <p style={styles.serviceDesc}>{desc}</p>
+              <div style={styles.serviceLink}>
+                En savoir plus <ArrowUpRight size={12} />
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
 
       {/* Section title + filters */}
-      <div style={styles.sectionHeader}>
-        <div style={styles.sectionTitle}>
-          Offres&nbsp;
-          <span style={{ color: 'rgba(240,244,255,0.38)', fontWeight: 400 }}>
-            ({partners.length})
-          </span>
-        </div>
-
-        {categories.length > 2 && (
-          <div style={styles.filterRow}>
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                style={{
-                  ...styles.filterPill,
-                  ...(activeCategory === cat ? styles.filterPillActive : {}),
-                }}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Grid */}
-      <div style={styles.grid} className="dash-grid-3">
-        {filtered.map((p, i) => (
-          <div key={p.id} style={styles.card} className={`glass-card fade-up d${i + 1}`}>
-            <div style={styles.cardHeader}>
-              <div style={styles.logoPlaceholder}>
-                <Buildings size={22} color="#FFD56B" weight="duotone" />
-              </div>
-              <div>
-                <div style={styles.partnerName}>{p.name}</div>
-                <div style={styles.partnerCat}>{p.category}</div>
-              </div>
+      {partners.length > 0 && (
+        <>
+          <div style={styles.sectionHeader}>
+            <div style={styles.sectionTitle}>
+              Offres&nbsp;
+              <span style={{ color: 'rgba(240,244,255,0.38)', fontWeight: 400 }}>
+                ({partners.length})
+              </span>
             </div>
 
-            <p style={styles.desc}>{p.description}</p>
-
-            <div style={styles.advantageBox}>
-              <Tag size={13} color="#FFD56B" />
-              <span style={styles.advantageText}>{p.advantage}</span>
-            </div>
-
-            {p.promo_code && (
-              <div style={styles.promoRow}>
-                <span style={styles.promoLabel}>Code promo</span>
-                <code style={styles.promoCode}>{p.promo_code}</code>
+            {categories.length > 2 && (
+              <div style={styles.filterRow}>
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    style={{
+                      ...styles.filterPill,
+                      ...(activeCategory === cat ? styles.filterPillActive : {}),
+                    }}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
             )}
-
-            <a
-              href={p.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
-              style={{ fontSize: '13px', padding: '10px 18px', alignSelf: 'flex-start', marginTop: 'auto' }}
-            >
-              Accéder à l'offre <ArrowUpRight size={14} weight="bold" />
-            </a>
           </div>
-        ))}
-      </div>
 
-      {partners.length === 0 && (
-        <div style={styles.empty}>
-          D'autres partenaires arrivent bientôt.
-        </div>
+          {/* Grid */}
+          <div style={styles.grid} className="dash-grid-3">
+            {filtered.map((p, i) => (
+              <div key={p.id} style={styles.card} className={`glass-card fade-up d${i + 1}`}>
+                <div style={styles.cardHeader}>
+                  <div style={styles.logoPlaceholder}>
+                    <Buildings size={22} color="#FFD56B" weight="duotone" />
+                  </div>
+                  <div>
+                    <div style={styles.partnerName}>{p.name}</div>
+                    <div style={styles.partnerCat}>{p.category}</div>
+                  </div>
+                </div>
+
+                <p style={styles.desc}>{p.description}</p>
+
+                <div style={styles.advantageBox}>
+                  <Tag size={13} color="#FFD56B" />
+                  <span style={styles.advantageText}>{p.advantage}</span>
+                </div>
+
+                {p.promo_code && (
+                  <div style={styles.promoRow}>
+                    <span style={styles.promoLabel}>Code promo</span>
+                    <code style={styles.promoCode}>{p.promo_code}</code>
+                  </div>
+                )}
+
+                <a
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary"
+                  style={{ fontSize: '13px', padding: '10px 18px', alignSelf: 'flex-start', marginTop: 'auto' }}
+                >
+                  Accéder à l'offre <ArrowUpRight size={14} weight="bold" />
+                </a>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )
@@ -143,40 +196,42 @@ export default function PartenairesView({ partners }: { partners: Partner[] }) {
 
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1400px' },
-  intro: { marginBottom: '32px' },
+  intro: { marginBottom: '28px' },
   pageTitle: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: '#f0f4ff', marginBottom: '10px',
   },
   pageDesc: {
     fontSize: '15px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6,
+    color: 'rgba(240,244,255,0.5)', maxWidth: '560px', lineHeight: 1.6,
   },
 
-  /* Featured banner */
+  /* ── Driing featured ── */
   featured: {
-    marginBottom: '40px',
+    marginBottom: '44px',
     background: 'linear-gradient(135deg, rgba(0,76,63,0.45) 0%, rgba(0,51,42,0.3) 100%)',
     border: '1px solid rgba(255,213,107,0.18)',
-    borderRadius: '18px',
+    borderRadius: '20px',
     padding: 'clamp(20px,3vw,32px)',
   },
-  featuredInner: {
-    display: 'flex', gap: '28px', alignItems: 'flex-start', flexWrap: 'wrap',
-  },
-  featuredLeft: {
-    display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '160px',
+  featuredHeader: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    marginBottom: '20px',
   },
   featuredBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.7px',
     textTransform: 'uppercase', color: '#FFD56B',
   },
+  featuredBrand: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    marginBottom: '24px',
+  },
   featuredLogo: {
-    width: '52px', height: '52px',
+    width: '48px', height: '48px', flexShrink: 0,
     background: 'rgba(0,76,63,0.6)',
     border: '1px solid rgba(255,213,107,0.2)',
-    borderRadius: '14px',
+    borderRadius: '13px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   featuredName: {
@@ -184,12 +239,45 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 400, color: '#f0f4ff',
   },
   featuredTagline: {
-    fontSize: '13px', color: 'rgba(240,244,255,0.5)', marginTop: '3px',
+    fontSize: '13px', color: 'rgba(240,244,255,0.45)', marginTop: '3px',
   },
-  featuredDesc: {
-    flex: 1, fontSize: '14px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.6)', lineHeight: 1.7,
-    alignSelf: 'center', minWidth: '220px',
+
+  /* 3 services */
+  servicesGrid: {},  /* handled by CSS class driing-services-grid */
+  serviceCard: {
+    display: 'flex', flexDirection: 'column', gap: '12px',
+    background: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '14px',
+    padding: '20px',
+    textDecoration: 'none',
+    transition: 'background 0.18s, border-color 0.18s',
+    cursor: 'pointer',
+  },
+  serviceHead: {
+    display: 'flex', alignItems: 'flex-start', gap: '12px',
+  },
+  serviceIcon: {
+    width: '36px', height: '36px', flexShrink: 0,
+    borderRadius: '9px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  serviceName: {
+    fontSize: '14px', fontWeight: 600, color: '#f0f4ff', marginBottom: '3px',
+  },
+  serviceTagline: {
+    fontSize: '12px', fontWeight: 600, letterSpacing: '0.3px',
+  },
+  serviceDesc: {
+    fontSize: '13px', fontWeight: 300,
+    color: 'rgba(240,244,255,0.5)', lineHeight: 1.65,
+    flex: 1,
+  },
+  serviceLink: {
+    display: 'flex', alignItems: 'center', gap: '4px',
+    fontSize: '12px', fontWeight: 500,
+    color: 'rgba(240,244,255,0.35)',
+    marginTop: 'auto',
   },
 
   /* Section header */
@@ -250,9 +338,5 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#FFD56B', background: 'rgba(255,213,107,0.08)',
     border: '1px dashed rgba(255,213,107,0.25)',
     borderRadius: '6px', padding: '3px 9px',
-  },
-  empty: {
-    textAlign: 'center', padding: '60px 20px',
-    color: 'rgba(240,244,255,0.3)', fontSize: '14px',
   },
 }
