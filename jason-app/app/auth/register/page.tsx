@@ -1,15 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeSlash, Waves, CheckCircle } from '@phosphor-icons/react'
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const supabase = createClient()
-
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -29,24 +24,25 @@ export default function RegisterPage() {
       return
     }
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: `${window.location.origin}/auth/login`,
-      },
-    })
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, fullName }),
+      })
 
-    if (error) {
-      setError(error.message === 'User already registered'
-        ? 'Un compte existe déjà avec cet email.'
-        : error.message)
-      setLoading(false)
-      return
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Une erreur est survenue.')
+        setLoading(false)
+        return
+      }
+
+      setSuccess(true)
+    } catch {
+      setError('Erreur réseau. Réessaie.')
     }
-
-    setSuccess(true)
     setLoading(false)
   }
 
@@ -76,12 +72,12 @@ export default function RegisterPage() {
       <div style={styles.bg2} />
 
       <div style={styles.card} className="fade-up">
-        <div style={styles.logo}>
+        <a href="https://jasonmarinho.com" style={styles.logo}>
           <div style={styles.logoIcon}>
             <Waves size={22} color="#FFD56B" weight="bold" />
           </div>
           <span style={styles.logoText}>Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em></span>
-        </div>
+        </a>
 
         <h1 style={styles.title}>Créer un compte</h1>
         <p style={styles.subtitle}>Accède aux formations, gabarits et partenaires</p>
@@ -179,7 +175,7 @@ const styles: Record<string, React.CSSProperties> = {
     backdropFilter: 'blur(20px)',
     position: 'relative', zIndex: 2,
   },
-  logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px' },
+  logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px', textDecoration: 'none' },
   logoIcon: {
     width: '36px', height: '36px',
     background: 'rgba(0,76,63,0.5)',
