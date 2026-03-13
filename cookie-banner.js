@@ -30,7 +30,7 @@
     '  <p id="jm-cookie-desc">',
     '    Ce site utilise des cookies essentiels pour améliorer ton expérience.',
     '    Aucun cookie publicitaire tiers n\'est utilisé.',
-    '    <a href="/politique-de-confidentialite.html">Politique de confidentialité</a>.',
+    '    <a href="/politique-de-confidentialite">Politique de confidentialité</a>.',
     '  </p>',
     '</div>',
     '<div id="jm-cookie-actions">',
