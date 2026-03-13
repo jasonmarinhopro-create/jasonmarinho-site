@@ -19,28 +19,28 @@ export default function LoginPage() {
     const isSignup = hash.includes('type=signup')
     if (!isRecovery && !isSignup) return
 
-    // type=recovery → reset-password page
-    // type=signup (email confirmed) → dashboard (user is now signed in)
+    if (isRecovery) {
+      // Pass the hash to reset-password so it can call setSession() directly with the JWT
+      window.location.replace('/auth/reset-password' + hash)
+      return
+    }
+
+    // type=signup: email confirmed → wait for session then go to dashboard
     let redirected = false
-    const redirect = (destination: string) => {
+    const redirect = () => {
       if (redirected) return
       redirected = true
-      window.location.replace(destination)
+      window.location.replace('/dashboard')
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+      if (event === 'SIGNED_IN') {
         subscription.unsubscribe()
-        redirect('/auth/reset-password')
-      } else if (event === 'SIGNED_IN') {
-        subscription.unsubscribe()
-        redirect(isRecovery ? '/auth/reset-password' : '/dashboard')
+        redirect()
       }
     })
-
-    // Handle race condition: event may have fired before subscription was set up
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) redirect(isRecovery ? '/auth/reset-password' : '/dashboard')
+      if (session) redirect()
     })
 
     return () => subscription.unsubscribe()
