@@ -21,7 +21,10 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  // getSession() reads the JWT from the cookie locally (no network call to Supabase).
+  // This avoids redirect loops caused by getUser()'s network request failing in the edge runtime.
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user ?? null
 
   // Redirect unauthenticated users from /dashboard to login
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
