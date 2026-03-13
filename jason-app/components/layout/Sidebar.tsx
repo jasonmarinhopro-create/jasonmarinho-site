@@ -52,12 +52,14 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
       >
         {/* Logo */}
         <div style={styles.logoWrap}>
-          <div style={styles.logoIcon}>
-            <JmLogo size={20} />
-          </div>
-          <span style={styles.logoText}>
-            Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em>
-          </span>
+          <a href="https://jasonmarinho.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flex: 1 }}>
+            <div style={styles.logoIcon}>
+              <JmLogo size={20} />
+            </div>
+            <span style={styles.logoText}>
+              Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em>
+            </span>
+          </a>
           {onClose && (
             <button onClick={onClose} style={styles.closeBtn} className="dash-close-btn">
               <X size={18} />

@@ -41,7 +41,8 @@ export default function ProfilPage() {
     const fullName = [firstName, lastName].filter(Boolean).join(' ')
     const { error } = await supabase
       .from('profiles')
-      .upsert({ id: userId, full_name: fullName }, { onConflict: 'id' })
+      .update({ full_name: fullName })
+      .eq('id', userId)
     setLoading(false)
     if (error) {
       setSaveError('Erreur lors de la sauvegarde. Réessaie.')
