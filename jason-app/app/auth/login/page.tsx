@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { ArrowRight, Eye, EyeSlash, Waves } from '@phosphor-icons/react'
+import { ArrowRight, Eye, EyeSlash } from '@phosphor-icons/react'
+import JmLogo from '@/components/JmLogo'
 
 const MAX_ATTEMPTS = 5
 const BLOCK_DURATION_MS = 10 * 60 * 1000
@@ -143,7 +144,7 @@ export default function LoginPage() {
       <div style={styles.card} className="fade-up">
         <a href="https://jasonmarinho.com" style={styles.logo}>
           <div style={styles.logoIcon}>
-            <Waves size={22} color="#FFD56B" weight="bold" />
+            <JmLogo size={22} />
           </div>
           <span style={styles.logoText}>Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em></span>
         </a>

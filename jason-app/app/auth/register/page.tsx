@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Eye, EyeSlash, Waves, CheckCircle } from '@phosphor-icons/react'
+import { ArrowRight, Eye, EyeSlash, CheckCircle } from '@phosphor-icons/react'
+import JmLogo from '@/components/JmLogo'
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('')
@@ -74,7 +75,7 @@ export default function RegisterPage() {
       <div style={styles.card} className="fade-up">
         <a href="https://jasonmarinho.com" style={styles.logo}>
           <div style={styles.logoIcon}>
-            <Waves size={22} color="#FFD56B" weight="bold" />
+            <JmLogo size={22} />
           </div>
           <span style={styles.logoText}>Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em></span>
         </a>
