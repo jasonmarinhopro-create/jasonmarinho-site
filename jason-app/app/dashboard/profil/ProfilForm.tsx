@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { saveProfileName } from './actions'
 import { Check, User, EnvelopeSimple, PencilSimple, Warning } from '@phosphor-icons/react'
 
@@ -11,6 +12,7 @@ interface Props {
 
 export default function ProfilForm({ initialFullName, email }: Props) {
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
   const [fullName, setFullNameState] = useState(initialFullName)
   const [firstName, setFirstName] = useState(() => {
     const parts = initialFullName.trim().split(' ')
@@ -41,6 +43,7 @@ export default function ProfilForm({ initialFullName, email }: Props) {
       setFullNameState(name)
       setSaved(true)
       setEditName(false)
+      router.refresh()
       setTimeout(() => setSaved(false), 2500)
     })
   }

@@ -16,11 +16,29 @@ interface HeaderProps {
   currentPlan?: string
 }
 
-export default function Header({ title, userName, currentPlan = 'Découverte' }: HeaderProps) {
+export default function Header({ title, userName: initialUserName, currentPlan = 'Découverte' }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [userName, setUserName] = useState(initialUserName ?? '')
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+
+  // Fetch profile client-side — garantit que le nom est toujours à jour
+  // quelle que soit la page (même les pages client qui ne passent pas userName)
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return
+      supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', session.user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.full_name) setUserName(data.full_name)
+        })
+    })
+  }, [])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -144,9 +162,9 @@ export default function Header({ title, userName, currentPlan = 'Découverte' }:
                 <div style={styles.dropDivider} />
 
                 <nav style={styles.dropNav}>
-                  <Link href="/dashboard/profil" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
+                  <Link href="/dashboard/securite" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <ShieldCheck size={15} />
-                    Sécurité
+                    Sécurité voyageurs
                   </Link>
                   <a
                     href="https://jasonmarinho.com"

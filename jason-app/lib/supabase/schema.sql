@@ -184,3 +184,30 @@ insert into public.community_groups (name, description, platform, members_count,
   ('Location Courte Durée Pro', 'Groupe dédié aux hôtes professionnels et conciergeries. Discussions avancées sur la tarification, les outils et la réglementation.', 'facebook', 12000, 'https://facebook.com/groups/locationcourteduree'),
   ('Conciergerie Airbnb France', 'La communauté des gestionnaires de conciergeries. Partage de bonnes pratiques, recrutement et développement commercial.', 'facebook', 8500, 'https://facebook.com/groups/conciergerieairbnb')
 on conflict do nothing;
+
+-- ============================================
+-- REPORTED GUESTS (base communautaire sécurité)
+-- ============================================
+
+create table if not exists public.reported_guests (
+  id uuid primary key default gen_random_uuid(),
+  identifier text not null,
+  identifier_type text check (identifier_type in ('email', 'phone', 'name')) not null,
+  name text,
+  incident_type text not null,
+  description text,
+  reporter_id uuid references public.profiles(id) on delete set null,
+  reporter_city text,
+  is_validated boolean default false,
+  reported_at timestamptz default now()
+);
+
+alter table public.reported_guests enable row level security;
+
+-- Seuls les membres authentifiés peuvent lire les signalements validés
+create policy "Auth users read validated reports" on public.reported_guests
+  for select using (auth.role() = 'authenticated' and is_validated = true);
+
+-- Les membres authentifiés peuvent signaler
+create policy "Auth users insert reports" on public.reported_guests
+  for insert with check (auth.uid() = reporter_id);

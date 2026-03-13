@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
-  UsersThree, SignOut, X, UserCircle, Question, CreditCard,
+  UsersThree, SignOut, X, UserCircle, Question, CreditCard, ShieldCheck,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -19,8 +19,9 @@ const mainNav = [
 ]
 
 const accountNav = [
-  { href: '/dashboard/abonnement',  label: 'Abonnement',   icon: CreditCard },
-  { href: '/dashboard/profil',      label: 'Mon profil',   icon: UserCircle },
+  { href: '/dashboard/securite',    label: 'Sécurité',      icon: ShieldCheck },
+  { href: '/dashboard/abonnement',  label: 'Abonnement',    icon: CreditCard },
+  { href: '/dashboard/profil',      label: 'Mon profil',    icon: UserCircle },
   { href: '/dashboard/aide',        label: "Centre d'aide", icon: Question },
 ]
 
