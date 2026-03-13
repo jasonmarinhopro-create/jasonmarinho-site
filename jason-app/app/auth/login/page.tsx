@@ -94,7 +94,8 @@ export default function LoginPage() {
       return
     }
 
-    // loginAction redirects server-side on success, no need to handle here
+    // Full page navigation ensures middleware re-evaluates session cookies
+    window.location.href = '/dashboard'
   }
 
   async function handleResendConfirmation() {
