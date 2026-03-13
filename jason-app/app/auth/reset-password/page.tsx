@@ -20,15 +20,31 @@ function ResetPasswordForm() {
   const [sessionReady, setSessionReady] = useState(false)
 
   useEffect(() => {
-    // Supabase redirects with #access_token or ?code in URL
-    // The client SDK handles the token exchange automatically
+    // The #access_token in the URL is already a valid JWT — use setSession directly
+    const hash = window.location.hash
+    if (hash.includes('access_token') && hash.includes('type=recovery')) {
+      const params = new URLSearchParams(hash.substring(1))
+      const accessToken = params.get('access_token')
+      const refreshToken = params.get('refresh_token')
+      if (accessToken && refreshToken) {
+        supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+          .then(({ error: sessionError }) => {
+            if (sessionError) {
+              setError('Lien expiré ou invalide. Demande un nouveau lien de réinitialisation.')
+            } else {
+              setSessionReady(true)
+            }
+          })
+        return
+      }
+    }
+
+    // Fallback: check for existing session in cookies
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
         setSessionReady(true)
       }
     })
-
-    // Also check if already has a session (token in URL hash)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setSessionReady(true)
     })
@@ -52,19 +68,17 @@ function ResetPasswordForm() {
 
     setLoading(true)
 
-    // Debug: check session before updating
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      setError('DEBUG: Pas de session active. Lien expiré — demande un nouveau lien.')
-      setLoading(false)
-      return
-    }
-
     const { error } = await supabase.auth.updateUser({ password })
 
     if (error) {
-      // Show raw error for debugging
-      setError(`Erreur: ${error.message}`)
+      const msg = error.message.toLowerCase()
+      let friendlyError = 'Une erreur est survenue. Réessaie.'
+      if (msg.includes('session') || msg.includes('auth session missing')) {
+        friendlyError = 'Lien expiré ou invalide. Demande un nouveau lien de réinitialisation.'
+      } else if (msg.includes('same password') || msg.includes('different from the old')) {
+        friendlyError = 'Le nouveau mot de passe doit être différent de l\'ancien.'
+      }
+      setError(friendlyError)
       setLoading(false)
       return
     }
