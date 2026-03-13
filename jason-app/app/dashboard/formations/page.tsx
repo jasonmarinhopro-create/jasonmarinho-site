@@ -38,7 +38,7 @@ export default async function FormationsPage() {
           <p style={styles.pageDesc}>Des parcours concrets pour optimiser ta location courte durée. Accessibles à vie, à ton rythme.</p>
         </div>
 
-        <div style={styles.grid}>
+        <div style={styles.grid} className="dash-grid-3">
           {(formations ?? []).map((f, i) => {
             const progress = progressMap[f.id] ?? null
             const enrolled = progress !== null
@@ -109,11 +109,11 @@ export default async function FormationsPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(24px,4vw,40px)', maxWidth: '960px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '36px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,36px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '480px' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6 },
+  grid: {}, /* handled by className dash-grid-3 */
   card: { padding: '28px', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' },
   cardIcon: {
