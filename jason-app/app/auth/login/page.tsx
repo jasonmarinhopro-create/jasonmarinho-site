@@ -12,17 +12,29 @@ const BLOCK_DURATION_MS = 10 * 60 * 1000
 export default function LoginPage() {
   const supabase = createClient()
 
-  // If Supabase redirects a recovery/signup token to this page, wait for session
-  // exchange then forward to reset-password (without hash to avoid double-exchange)
+  // If Supabase redirects a recovery/signup token to this page, forward to reset-password
   useEffect(() => {
     const hash = window.location.hash
     if (!hash.includes('type=recovery') && !hash.includes('type=signup')) return
 
+    let redirected = false
+    const redirect = () => {
+      if (redirected) return
+      redirected = true
+      window.location.replace('/auth/reset-password')
+    }
+
+    // Subscribe first to catch the event
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
         subscription.unsubscribe()
-        window.location.replace('/auth/reset-password')
+        redirect()
       }
+    })
+
+    // Handle race condition: event may have fired before subscription was set up
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) redirect()
     })
 
     return () => subscription.unsubscribe()
