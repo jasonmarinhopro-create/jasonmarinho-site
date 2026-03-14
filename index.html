@@ -200,6 +200,10 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .f-bge{position:absolute;top:12px;right:12px;z-index:3;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:100px}
 .bge-s{background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.28)}
 .bge-i{background:rgba(85,107,47,.28);color:#b4d46e;border:1px solid rgba(85,107,47,.42)}
+.bge-w{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.12)}
+.f-card.wip{opacity:.6;pointer-events:none}
+.f-card.wip .f-lk{display:none}
+.f-wip-tag{font-size:11px;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:5px;font-weight:500}
 .f-bd{padding:22px}
 .f-cat{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:7px}
 .f-tt{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.3px;margin-bottom:12px}
@@ -306,7 +310,6 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 
   <ul class="n-links">
     <li><a href="#formations">Formations</a></li>
-    <li><a href="#about">À propos</a></li>
     <li><a href="/blog">Blog LCD</a></li>
     <li><a href="/contact">Contact</a></li>
   </ul>
@@ -328,7 +331,6 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <!-- MOBILE MENU -->
 <div class="mob-menu" id="mob">
   <a href="#formations"><i class="ph-regular ph-graduation-cap"></i> Formations</a>
-  <a href="#about"><i class="ph-regular ph-user"></i> À propos</a>
   <a href="/blog"><i class="ph-regular ph-newspaper"></i> Blog LCD</a>
   <a href="/contact"><i class="ph-regular ph-envelope"></i> Contact</a>
   <div class="mob-ctas">
@@ -507,7 +509,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         <div class="lbl rv">Formations</div>
         <h2 class="h2 rv" style="margin-bottom:0">Les formations <em>disponibles</em></h2>
       </div>
-      <a href="/formations" class="btn-ol rv">Tout le catalogue <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="https://app.jasonmarinho.com" class="btn-ol rv">Accéder à la plateforme <i class="ph-bold ph-arrow-right"></i></a>
     </div>
     <div class="f-gr">
       <div class="f-card rv">
@@ -521,49 +523,47 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           <div class="f-mt">
             <div class="f-mi"><i class="ph-regular ph-stack"></i> 7 modules</div>
             <div class="f-mi"><i class="ph-regular ph-clock"></i> 2h30</div>
-            <div class="f-mi"><i class="ph-regular ph-play-circle"></i> 11 leçons</div>
+            <div class="f-mi"><i class="ph-regular ph-play-circle"></i> 12 leçons</div>
           </div>
           <div class="f-ft">
             <span class="f-ac"><i class="ph-regular ph-infinity"></i> Accès à vie</span>
-            <a href="/formations/google-my-business" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
+            <a href="https://app.jasonmarinho.com" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
           </div>
         </div>
       </div>
-      <div class="f-card rv d1">
-        <div class="f-th" style="background:linear-gradient(135deg,#002B22,#3A5010)">
-          <i class="ph-light ph-trend-up"></i>
-          <span class="f-bge bge-i">Intermédiaire</span>
+      <div class="f-card wip rv d1">
+        <div class="f-th" style="background:linear-gradient(135deg,#1a1a2e,#2a2a3e)">
+          <i class="ph-light ph-house-line" style="opacity:.4"></i>
+          <span class="f-bge bge-w">En construction</span>
         </div>
         <div class="f-bd">
-          <div class="f-cat">Revenus</div>
-          <h3 class="f-tt">Tarification Dynamique & Revenue Management LCD</h3>
+          <div class="f-cat" style="opacity:.5">Location directe</div>
+          <h3 class="f-tt" style="opacity:.6">Créer une annonce directe qui convertit</h3>
           <div class="f-mt">
-            <div class="f-mi"><i class="ph-regular ph-stack"></i> 9 modules</div>
-            <div class="f-mi"><i class="ph-regular ph-clock"></i> 4h00</div>
-            <div class="f-mi"><i class="ph-regular ph-play-circle"></i> 18 leçons</div>
+            <div class="f-mi" style="opacity:.4"><i class="ph-regular ph-stack"></i> 6 modules</div>
+            <div class="f-mi" style="opacity:.4"><i class="ph-regular ph-clock"></i> 3h00</div>
+            <div class="f-mi" style="opacity:.4"><i class="ph-regular ph-play-circle"></i> 14 leçons</div>
           </div>
           <div class="f-ft">
-            <span class="f-ac"><i class="ph-regular ph-infinity"></i> Accès à vie</span>
-            <a href="/formations/tarification" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
+            <span class="f-wip-tag"><i class="ph-regular ph-wrench"></i> Bientôt disponible</span>
           </div>
         </div>
       </div>
-      <div class="f-card rv d2">
-        <div class="f-th" style="background:linear-gradient(135deg,#002B22,#2A4400)">
-          <i class="ph-light ph-robot"></i>
-          <span class="f-bge bge-s">Débutant</span>
+      <div class="f-card wip rv d2">
+        <div class="f-th" style="background:linear-gradient(135deg,#1a1a2e,#2a2a3e)">
+          <i class="ph-light ph-users" style="opacity:.4"></i>
+          <span class="f-bge bge-w">En construction</span>
         </div>
         <div class="f-bd">
-          <div class="f-cat">Automatisation</div>
-          <h3 class="f-tt">Automatiser ses messages Airbnb — Zéro stress</h3>
+          <div class="f-cat" style="opacity:.5">Acquisition voyageurs</div>
+          <h3 class="f-tt" style="opacity:.6">Attirer des voyageurs sans Airbnb</h3>
           <div class="f-mt">
-            <div class="f-mi"><i class="ph-regular ph-stack"></i> 5 modules</div>
-            <div class="f-mi"><i class="ph-regular ph-clock"></i> 1h45</div>
-            <div class="f-mi"><i class="ph-regular ph-play-circle"></i> 9 leçons</div>
+            <div class="f-mi" style="opacity:.4"><i class="ph-regular ph-stack"></i> 5 modules</div>
+            <div class="f-mi" style="opacity:.4"><i class="ph-regular ph-clock"></i> 2h30</div>
+            <div class="f-mi" style="opacity:.4"><i class="ph-regular ph-play-circle"></i> 11 leçons</div>
           </div>
           <div class="f-ft">
-            <span class="f-ac"><i class="ph-regular ph-infinity"></i> Accès à vie</span>
-            <a href="/formations/automatisation" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
+            <span class="f-wip-tag"><i class="ph-regular ph-wrench"></i> Bientôt disponible</span>
           </div>
         </div>
       </div>
