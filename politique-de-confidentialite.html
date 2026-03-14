@@ -7,17 +7,16 @@
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/thin/style.css">
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5vw,60px);background:rgba(0,51,41,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,213,107,.07)}
-.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none}.n-logo-icon{width:32px;height:32px;background:rgba(0,76,63,.5);border:1px solid rgba(255,213,107,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#FFD56B;font-size:15px}
-.n-brand{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px}
-.n-brand em{color:var(--y);font-style:italic;font-weight:300}
+body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 main{max-width:760px;margin:0 auto;padding:104px clamp(20px,5vw,40px) 80px}
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--tl);text-decoration:none;font-size:13px;margin-bottom:36px;transition:color .2s}
 .back:hover{color:var(--g)}
@@ -41,12 +40,7 @@ footer{background:rgba(0,51,41,.97);margin-top:80px;padding:28px clamp(16px,5vw,
 <body>
 <script src="/nav.js"></script>
 
-<nav>
-  <a href="/" class="n-logo"><div class="n-logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 9,17 C 10,21.5 2.5,22 2.5,16 L 2.5,10 Q 2.5,1.5 8,1.5 Q 10.5,1.5 12,7 Q 13.5,1.5 16,1.5 Q 21.5,1.5 21.5,10 L 21.5,18.5" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <div class="n-brand">Jason <em>Marinho</em></div>
-  </a>
-  <a href="https://app.jasonmarinho.com" style="font-size:13px;font-weight:600;color:var(--y);text-decoration:none">Accéder à la plateforme →</a>
-</nav>
+
 
 <main>
   <a href="/" class="back"><i class="ph-bold ph-arrow-left"></i> Retour</a>
