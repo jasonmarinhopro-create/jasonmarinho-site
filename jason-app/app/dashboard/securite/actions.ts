@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const NOTIFY_EMAIL = 'jason@driing.co'
+const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
 export async function searchGuest(query: string): Promise<{
