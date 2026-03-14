@@ -1,50 +1,34 @@
 import { getProfile } from '@/lib/queries/profile'
 import Header from '@/components/layout/Header'
-import { Check, Lock, Wrench } from '@phosphor-icons/react/dist/ssr'
+import { Check, Lock, Wrench, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
-const PLANS = [
-  {
-    id: 'decouverte',
-    name: 'Découverte',
-    price: 0,
-    period: 'gratuit',
-    description: 'Pour découvrir la plateforme, les formations et la communauté.',
-    available: true,
-    current: true,
-  },
+const COMING_PLANS = [
   {
     id: 'hote',
     name: 'Hôte',
-    price: 39,
-    period: '/mois HT',
-    description: 'Tous les outils pour piloter et développer votre activité.',
-    available: false,
+    description: 'Tous les outils pour piloter et développer votre activité en location directe.',
+    perks: ['Toutes les formations', 'Gabarits professionnels', 'Offres partenaires', 'Support prioritaire'],
   },
   {
     id: 'pro',
     name: 'Pro',
-    price: 89,
-    period: '/mois HT',
     description: 'Accompagnement personnalisé pour passer au niveau supérieur.',
-    available: false,
+    perks: ['Tout Hôte inclus', 'Session coaching mensuelle (1h)', 'Suivi de progression', 'Audit Google My Business'],
     highlighted: true,
   },
   {
     id: 'agence',
     name: 'Agence',
-    price: 199,
-    period: '/mois HT',
     description: 'Pour les conciergeries multi-propriétés avec une équipe.',
-    available: false,
+    perks: ['Tout Pro inclus', 'Multi-utilisateurs', 'Accompagnement dédié conciergerie'],
   },
 ]
 
-// Fonctionnalités incluses dans Découverte
 const DECOUVERTE_FEATURES = [
-  'Accès à la communauté',
-  'Formations de base',
-  'Groupes Facebook partenaires',
+  'Accès à la communauté & groupes Facebook',
+  'Formations de base (Google My Business...)',
   'Conseils sécurité voyageurs',
+  'Accès aux ressources publiques',
 ]
 
 export default async function AbonnementPage() {
@@ -60,83 +44,86 @@ export default async function AbonnementPage() {
             Votre <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>abonnement</em>
           </h2>
           <p style={styles.pageDesc}>
-            Des plans adaptés à chaque étape de votre activité — de l'hôte qui démarre à la conciergerie en pleine croissance.
+            Des offres adaptées à chaque étape de votre activité — de l'hôte qui démarre à la conciergerie professionnelle.
           </p>
         </div>
 
-        {/* Current plan banner */}
-        <div style={styles.currentBanner} className="fade-up">
-          <div style={styles.currentLeft}>
-            <div style={styles.currentPlan}>
-              <div style={styles.currentDot} />
-              Plan actuel
+        <div style={styles.mainGrid}>
+          {/* LEFT — current plan */}
+          <div style={styles.leftCol}>
+            <div style={styles.currentBanner} className="glass-card fade-up">
+              <div style={styles.currentPlan}>
+                <div style={styles.currentDot} />
+                Plan actuel
+              </div>
+              <div style={styles.currentName}>Découverte</div>
+              <p style={styles.currentDesc}>
+                Accès gratuit à la plateforme et à la communauté. Commence ici, monte en gamme quand tu es prêt.
+              </p>
+              <div style={styles.featureList}>
+                {DECOUVERTE_FEATURES.map(f => (
+                  <div key={f} style={styles.featureItem}>
+                    <Check size={13} color="#34D399" weight="bold" />
+                    {f}
+                  </div>
+                ))}
+              </div>
+              <button disabled style={styles.ctaCurrent}>Offre actuelle</button>
             </div>
-            <div style={styles.currentName}>Découverte</div>
-            <p style={styles.currentDesc}>Accès gratuit à la plateforme et à la communauté.</p>
           </div>
-          <div style={styles.currentFeatures}>
-            {DECOUVERTE_FEATURES.map(f => (
-              <div key={f} style={styles.featureItem}>
-                <Check size={13} color="#34D399" weight="bold" />
-                {f}
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Plans grid */}
-        <div style={styles.sectionTitle} className="fade-up">
-          Prochaines offres
-        </div>
-        <div style={styles.plansGrid} className="fade-up">
-          {PLANS.filter(p => !p.current).map(plan => (
-            <div
-              key={plan.id}
-              style={{
-                ...styles.planCard,
-                ...(plan.highlighted ? styles.planCardHighlighted : {}),
-              }}
-            >
-              {plan.highlighted && (
-                <div style={styles.wipBadge}>
-                  <Wrench size={11} weight="fill" />
-                  En construction
-                </div>
-              )}
-              {!plan.highlighted && (
-                <div style={styles.wipBadge}>
-                  <Wrench size={11} weight="fill" />
-                  En construction
-                </div>
-              )}
-
-              <div style={styles.planName}>{plan.name}</div>
-              <p style={styles.planDesc}>{plan.description}</p>
-
-              <div style={styles.planPrice}>
-                <span style={styles.planAmount}>{plan.price} €</span>
-                <span style={styles.planPeriod}>{plan.period}</span>
-              </div>
-
-              <div style={styles.ctaLocked}>
-                <Lock size={13} />
-                Bientôt disponible
-              </div>
+          {/* RIGHT — coming plans */}
+          <div style={styles.rightCol}>
+            <div style={styles.comingLabel} className="fade-up">
+              <Wrench size={13} />
+              Prochaines offres — bientôt disponibles
             </div>
-          ))}
-        </div>
 
-        <p style={styles.note} className="fade-up">
-          Les offres payantes seront lancées progressivement. Tu seras notifié dès qu'une nouvelle offre est disponible.
-        </p>
+            <div style={styles.plansList}>
+              {COMING_PLANS.map((plan, i) => (
+                <div
+                  key={plan.id}
+                  style={{
+                    ...styles.planRow,
+                    ...(plan.highlighted ? styles.planRowHighlighted : {}),
+                  }}
+                  className={`fade-up d${i + 1}`}
+                >
+                  <div style={styles.planRowLeft}>
+                    <div style={styles.planName}>{plan.name}</div>
+                    <p style={styles.planDesc}>{plan.description}</p>
+                    <div style={styles.perks}>
+                      {plan.perks.map(p => (
+                        <span key={p} style={styles.perk}>
+                          <ArrowRight size={10} />
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={styles.planRowRight}>
+                    <div style={styles.ctaLocked}>
+                      <Lock size={12} />
+                      Bientôt
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p style={styles.note} className="fade-up">
+              Tu seras notifié dès qu'une nouvelle offre est disponible. Les tarifs seront communiqués au lancement.
+            </p>
+          </div>
+        </div>
       </div>
     </>
   )
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '900px' },
-  intro: { marginBottom: '32px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  intro: { marginBottom: '36px' },
   pageTitle: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: '#f0f4ff', marginBottom: '10px',
@@ -146,97 +133,93 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'rgba(240,244,255,0.5)', maxWidth: '560px', lineHeight: 1.6,
   },
 
+  /* 2-column large screen layout */
+  mainGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(280px, 380px) 1fr',
+    gap: '28px',
+    alignItems: 'start',
+  },
+  leftCol: {},
+  rightCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
+
   /* Current plan */
   currentBanner: {
-    display: 'flex', alignItems: 'flex-start', gap: '32px', flexWrap: 'wrap',
+    padding: '32px',
+    display: 'flex', flexDirection: 'column', gap: '16px',
     background: 'linear-gradient(135deg, rgba(52,211,153,0.08) 0%, rgba(52,211,153,0.03) 100%)',
     border: '1px solid rgba(52,211,153,0.2)',
-    borderRadius: '18px', padding: '28px 32px',
-    marginBottom: '40px',
+    borderRadius: '20px',
   },
-  currentLeft: { flex: 1, minWidth: '200px' },
   currentPlan: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px',
-    textTransform: 'uppercase', color: '#34D399',
-    marginBottom: '10px',
+    textTransform: 'uppercase' as const, color: '#34D399',
   },
   currentDot: {
-    width: '7px', height: '7px', borderRadius: '50%',
-    background: '#34D399',
+    width: '7px', height: '7px', borderRadius: '50%', background: '#34D399',
   },
   currentName: {
-    fontFamily: 'Fraunces, serif', fontSize: '28px',
-    fontWeight: 400, color: '#f0f4ff', marginBottom: '6px',
+    fontFamily: 'Fraunces, serif', fontSize: '32px',
+    fontWeight: 400, color: '#f0f4ff',
   },
-  currentDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.45)' },
-  currentFeatures: {
-    display: 'flex', flexDirection: 'column', gap: '10px',
-    justifyContent: 'center',
-  },
+  currentDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.45)', lineHeight: 1.6 },
+  featureList: { display: 'flex', flexDirection: 'column', gap: '10px' },
   featureItem: {
     display: 'flex', alignItems: 'center', gap: '9px',
     fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.65)',
   },
+  ctaCurrent: {
+    padding: '11px 16px', borderRadius: '10px',
+    background: 'rgba(52,211,153,0.06)',
+    border: '1px solid rgba(52,211,153,0.15)',
+    color: 'rgba(52,211,153,0.5)',
+    fontSize: '14px', fontWeight: 500,
+    cursor: 'not-allowed', textAlign: 'center' as const,
+    marginTop: '4px',
+  },
 
-  /* Plans coming soon */
-  sectionTitle: {
-    fontSize: '12px', fontWeight: 600, letterSpacing: '0.7px',
-    textTransform: 'uppercase', color: 'rgba(240,244,255,0.35)',
-    marginBottom: '16px',
+  /* Coming plans */
+  comingLabel: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.3)',
   },
-  plansGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '16px',
-    marginBottom: '32px',
-  },
-  planCard: {
+  plansList: { display: 'flex', flexDirection: 'column', gap: '12px' },
+  planRow: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px',
     background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: '18px',
-    padding: '24px 22px',
-    display: 'flex', flexDirection: 'column', gap: '12px',
-    opacity: 0.6,
+    borderRadius: '16px', padding: '22px 24px',
+    opacity: 0.65,
   },
-  planCardHighlighted: {
-    background: 'rgba(255,255,255,0.03)',
+  planRowHighlighted: {
     border: '1px dashed rgba(255,213,107,0.15)',
   },
-  wipBadge: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px',
-    textTransform: 'uppercase',
-    color: 'rgba(240,244,255,0.3)',
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '999px', padding: '4px 10px',
-    alignSelf: 'flex-start',
-  },
+  planRowLeft: { flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' },
   planName: {
     fontFamily: 'Fraunces, serif', fontSize: '20px',
-    fontWeight: 400, color: 'rgba(240,244,255,0.5)',
+    fontWeight: 400, color: 'rgba(240,244,255,0.6)',
   },
   planDesc: {
     fontSize: '13px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.3)', lineHeight: 1.55,
+    color: 'rgba(240,244,255,0.35)', lineHeight: 1.5,
   },
-  planPrice: { display: 'flex', alignItems: 'baseline', gap: '6px' },
-  planAmount: {
-    fontFamily: 'Fraunces, serif', fontSize: '28px',
-    fontWeight: 400, color: 'rgba(240,244,255,0.35)',
+  perks: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginTop: '4px' },
+  perk: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', color: 'rgba(240,244,255,0.3)',
   },
-  planPeriod: { fontSize: '12px', color: 'rgba(240,244,255,0.25)' },
+  planRowRight: { flexShrink: 0 },
   ctaLocked: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    fontSize: '13px', fontWeight: 400, color: 'rgba(240,244,255,0.25)',
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: '8px', padding: '9px 14px',
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', fontWeight: 500, color: 'rgba(240,244,255,0.25)',
+    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
+    borderRadius: '8px', padding: '8px 14px', whiteSpace: 'nowrap' as const,
   },
 
   note: {
     fontSize: '12px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.28)', lineHeight: 1.7,
-    maxWidth: '520px',
+    color: 'rgba(240,244,255,0.25)', lineHeight: 1.7,
   },
 }

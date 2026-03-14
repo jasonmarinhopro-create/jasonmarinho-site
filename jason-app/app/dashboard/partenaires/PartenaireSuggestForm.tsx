@@ -12,12 +12,17 @@ export default function PartenaireSuggestForm() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!message.trim() || message.trim().length < 5) return
+    if (!message.trim()) return
     setError('')
 
     startTransition(async () => {
       const res = await saveSuggestion('partner', message)
-      if (res.error) { setError(res.error); return }
+      if (res.error) {
+        setError(res.error.includes('TABLE_MISSING') || res.error.includes('pas encore configurée')
+          ? '⚠️ Base non configurée — exécute supabase-migration.sql dans Supabase.'
+          : res.error)
+        return
+      }
       setSent(true)
     })
   }
@@ -44,7 +49,7 @@ export default function PartenaireSuggestForm() {
       {error && <p style={styles.error}>{error}</p>}
       <button
         type="submit"
-        disabled={isPending || message.trim().length < 5}
+        disabled={isPending || !message.trim()}
         className="btn-primary"
         style={{ fontSize: '13px', padding: '10px 18px', alignSelf: 'flex-start' }}
       >
