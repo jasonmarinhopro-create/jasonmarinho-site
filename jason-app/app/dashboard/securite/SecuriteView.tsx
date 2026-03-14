@@ -3,8 +3,7 @@
 import { useState, useTransition } from 'react'
 import {
   MagnifyingGlass, ShieldCheck, ShieldWarning, Warning,
-  CheckCircle, Phone, EnvelopeSimple, User,
-  CaretDown, Info, PaperPlaneRight, X,
+  CheckCircle, Info, PaperPlaneRight, X, PhoneCall,
 } from '@phosphor-icons/react'
 import { searchGuest, reportGuest } from './actions'
 
@@ -55,9 +54,15 @@ const TIPS = [
 
 type SearchResult = Awaited<ReturnType<typeof searchGuest>>['results'][0]
 
+const incidentColor: Record<string, string> = {
+  'Dégradation du logement': '#F87171',
+  'Fête non autorisée': '#FB923C',
+  'Tentative d\'arnaque / fraude': '#F87171',
+  'Impayé / remboursement abusif': '#FB923C',
+}
+
 export default function SecuriteView() {
   const [query, setQuery] = useState('')
-  const [queryType, setQueryType] = useState<'email' | 'phone' | 'name'>('email')
   const [results, setResults] = useState<SearchResult[] | null>(null)
   const [searchError, setSearchError] = useState('')
   const [isSearching, startSearch] = useTransition()
@@ -67,12 +72,11 @@ export default function SecuriteView() {
   const [reportSuccess, setReportSuccess] = useState(false)
   const [reportError, setReportError] = useState('')
   const [report, setReport] = useState({
-    identifier: '',
-    identifier_type: 'email' as 'email' | 'phone' | 'name',
-    name: '',
+    email: '',
+    phone: '',
+    full_name: '',
     incident_type: INCIDENT_TYPES[0],
     description: '',
-    reporter_city: '',
   })
 
   function handleSearch(e: React.FormEvent) {
@@ -94,20 +98,14 @@ export default function SecuriteView() {
       if (res.error) { setReportError(res.error); return }
       setReportSuccess(true)
       setShowReport(false)
-      setReport({ identifier: '', identifier_type: 'email', name: '', incident_type: INCIDENT_TYPES[0], description: '', reporter_city: '' })
+      setReport({ email: '', phone: '', full_name: '', incident_type: INCIDENT_TYPES[0], description: '' })
     })
   }
 
-  const incidentColor: Record<string, string> = {
-    'Dégradation du logement': '#F87171',
-    'Fête non autorisée': '#FB923C',
-    'Tentative d\'arnaque / fraude': '#F87171',
-    'Impayé / remboursement abusif': '#FB923C',
-  }
+  const hasOneIdentifier = report.email.trim() || report.phone.trim() || report.full_name.trim()
 
   return (
     <div style={styles.page} className="dash-page">
-      {/* Header section */}
       <div style={styles.intro} className="fade-up">
         <h2 style={styles.pageTitle}>
           Sécurité <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>voyageurs</em>
@@ -131,31 +129,12 @@ export default function SecuriteView() {
             </p>
 
             <form onSubmit={handleSearch} style={styles.searchForm}>
-              {/* Type selector */}
-              <div style={styles.typeRow}>
-                {(['email', 'phone', 'name'] as const).map(t => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setQueryType(t)}
-                    style={{ ...styles.typePill, ...(queryType === t ? styles.typePillActive : {}) }}
-                  >
-                    {t === 'email' ? <EnvelopeSimple size={13} /> : t === 'phone' ? <Phone size={13} /> : <User size={13} />}
-                    {t === 'email' ? 'E-mail' : t === 'phone' ? 'Téléphone' : 'Nom'}
-                  </button>
-                ))}
-              </div>
-
               <div style={styles.inputRow}>
                 <input
-                  type={queryType === 'email' ? 'email' : 'text'}
+                  type="text"
                   value={query}
                   onChange={e => setQuery(e.target.value)}
-                  placeholder={
-                    queryType === 'email' ? 'jean.dupont@gmail.com'
-                    : queryType === 'phone' ? '+33 6 12 34 56 78'
-                    : 'Prénom Nom'
-                  }
+                  placeholder="E-mail, téléphone ou nom complet..."
                   style={styles.input}
                   required
                 />
@@ -175,13 +154,37 @@ export default function SecuriteView() {
             {results !== null && (
               <div style={styles.resultsWrap}>
                 {results.length === 0 ? (
-                  <div style={styles.resultOk}>
-                    <CheckCircle size={28} color="#34D399" weight="fill" />
-                    <div>
-                      <div style={styles.resultOkTitle}>Aucun antécédent trouvé</div>
-                      <div style={styles.resultOkDesc}>
-                        Ce voyageur n'a pas été signalé dans notre base. Cela ne garantit pas l'absence de problème — reste vigilant et utilise les conseils ci-dessous.
+                  <div>
+                    <div style={styles.resultOk}>
+                      <CheckCircle size={28} color="#34D399" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
+                      <div>
+                        <div style={styles.resultOkTitle}>Aucun signalement trouvé</div>
+                        <div style={styles.resultOkDesc}>
+                          Ce voyageur n'apparaît pas dans notre base communautaire. Cela ne garantit pas l'absence de risque — restez vigilant et fiez-vous à votre instinct.
+                        </div>
                       </div>
+                    </div>
+                    <div style={styles.vigilanceBox}>
+                      <Info size={14} color="#FFD56B" style={{ flexShrink: 0, marginTop: '2px' }} />
+                      <div style={{ fontSize: '13px', color: 'rgba(240,244,255,0.5)', lineHeight: 1.6 }}>
+                        <strong style={{ color: 'rgba(240,244,255,0.75)', fontWeight: 600 }}>Restez quand même vigilant.</strong>{' '}
+                        En cas de doute, consultez les conseils de sécurité ci-contre ou contactez-nous directement.
+                        Notre base est alimentée par la communauté et ne couvre pas tous les cas.
+                      </div>
+                    </div>
+                    <div style={styles.contactCta}>
+                      <PhoneCall size={14} color="rgba(240,244,255,0.35)" />
+                      <span style={{ fontSize: '12px', color: 'rgba(240,244,255,0.35)' }}>
+                        Doute persistant ?
+                      </span>
+                      <a
+                        href="https://wa.me/33630212592"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={styles.contactLink}
+                      >
+                        Contactez Jason sur WhatsApp
+                      </a>
                     </div>
                   </div>
                 ) : (
@@ -200,7 +203,6 @@ export default function SecuriteView() {
                           </span>
                           <span style={styles.resultDate}>
                             {new Date(r.reported_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-                            {r.reporter_city ? ` — ${r.reporter_city}` : ''}
                           </span>
                         </div>
                         {r.description && (
@@ -208,6 +210,12 @@ export default function SecuriteView() {
                         )}
                       </div>
                     ))}
+                    <div style={styles.legalNote}>
+                      <Info size={12} color="rgba(240,244,255,0.25)" style={{ flexShrink: 0 }} />
+                      <span style={{ fontSize: '11px', color: 'rgba(240,244,255,0.3)', lineHeight: 1.5 }}>
+                        Ces signalements sont soumis à modération. Ils constituent des témoignages communautaires et ne valent pas décision judiciaire.
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -219,17 +227,17 @@ export default function SecuriteView() {
               <span style={{ fontSize: '12px', color: 'rgba(240,244,255,0.35)' }}>
                 Tu as eu un problème avec un voyageur ?
               </span>
-              <button onClick={() => setShowReport(true)} style={styles.reportLink}>
-                Signaler
+              <button onClick={() => setShowReport(v => !v)} style={styles.reportLink}>
+                {showReport ? 'Annuler' : 'Signaler'}
               </button>
             </div>
           </div>
 
-          {/* Report modal / inline form */}
+          {/* Report inline form */}
           {showReport && (
             <div style={styles.reportCard} className="glass-card fade-up">
               <div style={styles.reportHeader}>
-                <div style={{ fontSize: '15px', fontWeight: 600, color: '#f0f4ff' }}>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: '#f0f4ff', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Warning size={16} color="#FB923C" /> Signaler un voyageur
                 </div>
                 <button onClick={() => setShowReport(false)} style={styles.closeBtn}>
@@ -241,42 +249,29 @@ export default function SecuriteView() {
               </p>
 
               <form onSubmit={handleReport} style={styles.reportForm}>
-                <div style={styles.formRow}>
-                  <label style={styles.label}>Type d'identifiant</label>
-                  <div style={styles.typeRow}>
-                    {(['email', 'phone', 'name'] as const).map(t => (
-                      <button key={t} type="button"
-                        onClick={() => setReport(r => ({ ...r, identifier_type: t }))}
-                        style={{ ...styles.typePill, ...(report.identifier_type === t ? styles.typePillActive : {}) }}
-                      >
-                        {t === 'email' ? 'E-mail' : t === 'phone' ? 'Téléphone' : 'Nom'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div style={styles.formRow}>
-                  <label style={styles.label}>
-                    {report.identifier_type === 'email' ? 'Adresse e-mail' : report.identifier_type === 'phone' ? 'Numéro de téléphone' : 'Nom complet'}
-                  </label>
+                {/* Identifiers — all optional, at least one required */}
+                <div style={styles.identifiersBlock}>
+                  <label style={styles.label}>Coordonnées du voyageur <span style={{ color: 'rgba(240,244,255,0.3)', fontWeight: 400 }}>(au moins un champ)</span></label>
                   <input
-                    type="text"
-                    value={report.identifier}
-                    onChange={e => setReport(r => ({ ...r, identifier: e.target.value }))}
+                    type="email"
+                    value={report.email}
+                    onChange={e => setReport(r => ({ ...r, email: e.target.value }))}
                     style={styles.input}
-                    placeholder={report.identifier_type === 'email' ? 'jean.dupont@gmail.com' : report.identifier_type === 'phone' ? '+33 6...' : 'Prénom Nom'}
-                    required
+                    placeholder="E-mail (optionnel)"
                   />
-                </div>
-
-                <div style={styles.formRow}>
-                  <label style={styles.label}>Prénom / Nom (optionnel)</label>
+                  <input
+                    type="tel"
+                    value={report.phone}
+                    onChange={e => setReport(r => ({ ...r, phone: e.target.value }))}
+                    style={styles.input}
+                    placeholder="Téléphone (optionnel)"
+                  />
                   <input
                     type="text"
-                    value={report.name}
-                    onChange={e => setReport(r => ({ ...r, name: e.target.value }))}
+                    value={report.full_name}
+                    onChange={e => setReport(r => ({ ...r, full_name: e.target.value }))}
                     style={styles.input}
-                    placeholder="Pour aider les autres membres à identifier"
+                    placeholder="Nom & prénom (optionnel)"
                   />
                 </div>
 
@@ -290,12 +285,11 @@ export default function SecuriteView() {
                     >
                       {INCIDENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
-                    <CaretDown size={14} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(240,244,255,0.4)', pointerEvents: 'none' }} />
                   </div>
                 </div>
 
                 <div style={styles.formRow}>
-                  <label style={styles.label}>Décris l'incident</label>
+                  <label style={styles.label}>Décris l'incident <span style={{ color: '#F87171' }}>*</span></label>
                   <textarea
                     value={report.description}
                     onChange={e => setReport(r => ({ ...r, description: e.target.value }))}
@@ -304,24 +298,22 @@ export default function SecuriteView() {
                     rows={4}
                     required
                   />
+                  <span style={{ fontSize: '11px', color: report.description.length < 20 ? 'rgba(240,244,255,0.3)' : '#34D399' }}>
+                    {report.description.length}/20 minimum
+                  </span>
                 </div>
 
-                <div style={styles.formRow}>
-                  <label style={styles.label}>Ta ville (optionnel)</label>
-                  <input
-                    type="text"
-                    value={report.reporter_city}
-                    onChange={e => setReport(r => ({ ...r, reporter_city: e.target.value }))}
-                    style={styles.input}
-                    placeholder="Paris, Lyon, Marseille..."
-                  />
-                </div>
-
-                {reportError && <p style={styles.errorMsg}>{reportError}</p>}
+                {reportError && (
+                  <p style={styles.errorMsg}>
+                    {reportError === 'TABLE_MISSING'
+                      ? '⚠️ La table n\'existe pas encore dans Supabase. Exécute le fichier supabase-migration.sql dans le dashboard Supabase.'
+                      : reportError}
+                  </p>
+                )}
 
                 <button
                   type="submit"
-                  disabled={isReporting}
+                  disabled={isReporting || !hasOneIdentifier || report.description.length < 20}
                   className="btn-primary"
                   style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
                 >
@@ -358,11 +350,10 @@ export default function SecuriteView() {
             ))}
           </div>
 
-          {/* Disclaimer */}
           <div style={styles.disclaimer} className="fade-up">
             <Info size={14} color="rgba(240,244,255,0.25)" style={{ flexShrink: 0, marginTop: '1px' }} />
             <p style={styles.disclaimerText}>
-              Les signalements sont soumis à modération avant publication. Cette base est alimentée par la communauté et ne remplace pas une démarche légale en cas de litige sérieux.
+              Les signalements sont soumis à modération avant publication. Cette base est alimentée par la communauté et ne remplace pas une démarche légale en cas de litige sérieux. Les données personnelles sont traitées conformément au RGPD.
             </p>
           </div>
         </div>
@@ -398,27 +389,16 @@ const styles: Record<string, React.CSSProperties> = {
   cardDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.6, marginBottom: '24px' },
 
   searchForm: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  typeRow: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
-  typePill: {
-    display: 'flex', alignItems: 'center', gap: '6px',
-    padding: '7px 14px', borderRadius: '100px', fontSize: '13px', fontWeight: 400,
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
-    color: 'rgba(240,244,255,0.5)', cursor: 'pointer',
-  },
-  typePillActive: {
-    background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.25)',
-    color: '#FFD56B',
-  },
   inputRow: { display: 'flex', gap: '10px', alignItems: 'center' },
   input: {
     flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
     borderRadius: '10px', padding: '10px 14px',
     fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: '#f0f4ff',
-    outline: 'none',
+    outline: 'none', width: '100%',
   },
-  errorMsg: { fontSize: '13px', color: '#F87171', marginTop: '4px' },
+  errorMsg: { fontSize: '13px', color: '#F87171', marginTop: '4px', lineHeight: 1.5 },
 
-  resultsWrap: { marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '20px' },
+  resultsWrap: { marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' },
   resultOk: {
     display: 'flex', alignItems: 'flex-start', gap: '14px',
     background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
@@ -426,9 +406,21 @@ const styles: Record<string, React.CSSProperties> = {
   },
   resultOkTitle: { fontSize: '15px', fontWeight: 600, color: '#34D399', marginBottom: '6px' },
   resultOkDesc: { fontSize: '13px', color: 'rgba(240,244,255,0.5)', lineHeight: 1.55 },
+  vigilanceBox: {
+    display: 'flex', alignItems: 'flex-start', gap: '10px',
+    background: 'rgba(255,213,107,0.05)', border: '1px solid rgba(255,213,107,0.12)',
+    borderRadius: '12px', padding: '14px 16px',
+  },
+  contactCta: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    marginTop: '4px', paddingTop: '12px',
+  },
+  contactLink: {
+    fontSize: '12px', fontWeight: 500, color: '#FFD56B',
+    textDecoration: 'underline',
+  },
   resultAlertHeader: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    marginBottom: '14px',
+    display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px',
   },
   resultAlertTitle: { fontSize: '15px', fontWeight: 600, color: '#F87171' },
   resultItem: {
@@ -442,6 +434,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   resultDate: { fontSize: '11px', color: 'rgba(240,244,255,0.3)' },
   resultDesc: { fontSize: '13px', color: 'rgba(240,244,255,0.6)', lineHeight: 1.55 },
+  legalNote: {
+    display: 'flex', alignItems: 'flex-start', gap: '8px',
+    marginTop: '8px', padding: '10px 12px',
+    background: 'rgba(255,255,255,0.02)', borderRadius: '8px',
+  },
 
   reportCta: {
     display: 'flex', alignItems: 'center', gap: '8px',
@@ -453,7 +450,6 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: 'underline', padding: 0,
   },
 
-  // Report form
   reportCard: { padding: '24px', borderRadius: '20px' },
   reportHeader: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -469,14 +465,15 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '8px', padding: '10px 14px', marginBottom: '20px',
   },
   reportForm: { display: 'flex', flexDirection: 'column', gap: '16px' },
+  identifiersBlock: { display: 'flex', flexDirection: 'column', gap: '10px' },
   formRow: { display: 'flex', flexDirection: 'column', gap: '8px' },
   label: {
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px',
-    textTransform: 'uppercase', color: 'rgba(240,244,255,0.4)',
+    textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.4)',
   },
   select: {
     width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '10px', padding: '10px 36px 10px 14px',
+    borderRadius: '10px', padding: '10px 14px',
     fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: '#f0f4ff',
     outline: 'none', appearance: 'none' as const,
   },
@@ -494,7 +491,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '13px', color: '#34D399',
   },
 
-  // Tips
   tipsHeader: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' },
   tipsTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: '#f0f4ff' },
   tipsList: { display: 'flex', flexDirection: 'column', gap: '10px' },

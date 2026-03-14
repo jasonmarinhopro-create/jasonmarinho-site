@@ -12,12 +12,17 @@ export default function FormationsSuggestForm() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!topic.trim() || topic.trim().length < 5) return
+    if (!topic.trim()) return
     setError('')
 
     startTransition(async () => {
       const res = await saveSuggestion('formation', topic)
-      if (res.error) { setError(res.error); return }
+      if (res.error) {
+        setError(res.error.includes('TABLE_MISSING') || res.error.includes('pas encore configurée')
+          ? '⚠️ Base non configurée — exécute supabase-migration.sql dans Supabase.'
+          : res.error)
+        return
+      }
       setSent(true)
     })
   }
@@ -44,7 +49,7 @@ export default function FormationsSuggestForm() {
       {error && <p style={styles.error}>{error}</p>}
       <button
         type="submit"
-        disabled={isPending || topic.trim().length < 5}
+        disabled={isPending || !topic.trim()}
         className="btn-primary"
         style={{ fontSize: '13px', padding: '10px 18px', alignSelf: 'flex-start' }}
       >

@@ -33,40 +33,54 @@ export async function searchGuest(query: string): Promise<{
     .order('reported_at', { ascending: false })
     .limit(10)
 
-  if (error) return { results: [], error: 'Erreur lors de la recherche.' }
+  if (error) {
+    if (error.code === '42P01') return { results: [], error: 'TABLE_MISSING' }
+    return { results: [], error: 'Erreur lors de la recherche.' }
+  }
   return { results: data ?? [] }
 }
 
 export async function reportGuest(formData: {
-  identifier: string
-  identifier_type: 'email' | 'phone' | 'name'
-  name?: string
+  email?: string
+  phone?: string
+  full_name?: string
   incident_type: string
   description: string
-  reporter_city?: string
 }): Promise<{ success?: boolean; error?: string }> {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return { error: 'Non authentifié.' }
 
-  if (!formData.identifier || formData.identifier.trim().length < 3) {
-    return { error: 'L\'identifiant est trop court.' }
+  const { email, phone, full_name, incident_type, description } = formData
+
+  const identifiers: { identifier: string; identifier_type: string }[] = []
+  if (email?.trim()) identifiers.push({ identifier: email.trim().toLowerCase(), identifier_type: 'email' })
+  if (phone?.trim()) identifiers.push({ identifier: phone.trim(), identifier_type: 'phone' })
+  if (full_name?.trim()) identifiers.push({ identifier: full_name.trim(), identifier_type: 'name' })
+
+  if (identifiers.length === 0) {
+    return { error: 'Remplis au moins un champ : e-mail, téléphone ou nom.' }
   }
-  if (!formData.description || formData.description.trim().length < 20) {
+  if (!description || description.trim().length < 20) {
     return { error: 'La description doit faire au moins 20 caractères.' }
   }
 
-  const { error } = await supabase.from('reported_guests').insert({
-    identifier: formData.identifier.trim().toLowerCase(),
-    identifier_type: formData.identifier_type,
-    name: formData.name?.trim() || null,
-    incident_type: formData.incident_type,
-    description: formData.description.trim(),
-    reporter_city: formData.reporter_city?.trim() || null,
+  const rows = identifiers.map(({ identifier, identifier_type }) => ({
+    identifier,
+    identifier_type,
+    name: full_name?.trim() || null,
+    incident_type,
+    description: description.trim(),
     reporter_id: session.user.id,
-    is_validated: false, // pending moderation
-  })
+    is_validated: false,
+  }))
 
-  if (error) return { error: 'Erreur lors du signalement. Réessaie.' }
+  const { error } = await supabase.from('reported_guests').insert(rows)
+
+  if (error) {
+    if (error.code === '42P01') return { error: 'TABLE_MISSING' }
+    if (error.code === '42501') return { error: 'Accès refusé — vérifie les policies RLS dans Supabase.' }
+    return { error: `Erreur Supabase : ${error.message}` }
+  }
   return { success: true }
 }
