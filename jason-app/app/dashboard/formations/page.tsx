@@ -14,22 +14,22 @@ const levelLabel: Record<string, string> = {
 // Formations à venir — hardcodées, pas encore en DB
 const COMING_SOON = [
   {
-    id: 'tarification',
-    title: 'Tarification Dynamique & Revenue Management',
-    description: 'Maximise tes revenus en ajustant tes prix à la demande. De la stratégie de base aux outils avancés comme PriceLabs.',
-    duration: '4h',
-    modules: 9,
-    lessons: 18,
-    level: 'Intermédiaire',
+    id: 'annonce-directe',
+    title: 'Créer une annonce directe qui convertit',
+    description: 'Comment construire une page de réservation directe attractive — photos, textes, tarification — pour recevoir des voyageurs sans commission.',
+    duration: '3h',
+    modules: 6,
+    lessons: 14,
+    level: 'Débutant',
   },
   {
-    id: 'messages',
-    title: 'Automatiser ses messages Airbnb',
-    description: 'Économise 3h par semaine en automatisant tes 5 messages essentiels. Templates inclus, prêts à copier.',
-    duration: '1h45',
+    id: 'attirer-voyageurs',
+    title: 'Attirer des voyageurs sans Airbnb',
+    description: 'SEO local, réseaux sociaux, groupes Facebook, bouche-à-oreille digital — les vraies stratégies pour remplir son calendrier en location directe.',
+    duration: '2h30',
     modules: 5,
-    lessons: 9,
-    level: 'Débutant',
+    lessons: 11,
+    level: 'Intermédiaire',
   },
 ]
 
