@@ -30,6 +30,7 @@
       '.n-drop:hover .n-caret,.n-drop.open .n-caret{transform:rotate(180deg)}',
       /* Mega menu */
       '.n-drop{position:relative}',
+      '.n-drop::after{content:"";position:absolute;bottom:-10px;left:0;right:0;height:12px}',
       '.n-mega{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(6px);opacity:0;visibility:hidden;transition:opacity .18s,transform .18s,visibility .18s;background:#001f16;border:1px solid rgba(255,213,107,.1);border-radius:14px;padding:20px;z-index:300;box-shadow:0 24px 64px rgba(0,0,0,.55);display:flex;gap:24px;pointer-events:none;min-width:200px}',
       '.n-mega::before{content:"";position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#001f16;border-top:1px solid rgba(255,213,107,.1);border-left:1px solid rgba(255,213,107,.1)}',
       '@media(hover:hover){.n-drop:hover>.n-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:auto}}',
@@ -110,7 +111,7 @@
             + '<a href="/services/acquisition-voyageurs"><i class="ph-regular ph-users"></i>Acquisition voyageurs</a>'
           + '</div>'
           + '<div class="n-col">'
-            + '<div class="n-col-title">Dashboard Driing</div>'
+            + '<div class="n-col-title">Outils &amp; Plateforme</div>'
             + '<a href="/services/groupes-facebook"><i class="ph-regular ph-users-four"></i>Groupes Facebook</a>'
             + '<a href="/services/securite"><i class="ph-regular ph-shield-check"></i>Sécurité des accès</a>'
             + '<a href="/services/partenaires"><i class="ph-regular ph-handshake"></i>Partenaires</a>'
@@ -156,7 +157,7 @@
       + '<a href="/services/acquisition-voyageurs"><i class="ph-regular ph-users"></i>Acquisition voyageurs</a>'
     + '</div>'
     + '<div class="mob-section">'
-      + '<div class="mob-section-title">Dashboard Driing</div>'
+      + '<div class="mob-section-title">Outils &amp; Plateforme</div>'
       + '<a href="/services/groupes-facebook"><i class="ph-regular ph-users-four"></i>Groupes Facebook</a>'
       + '<a href="/services/securite"><i class="ph-regular ph-shield-check"></i>Sécurité des accès</a>'
       + '<a href="/services/partenaires"><i class="ph-regular ph-handshake"></i>Partenaires</a>'
