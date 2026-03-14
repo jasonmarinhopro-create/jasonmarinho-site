@@ -2,10 +2,12 @@
   'use strict';
 
   /* ── Phosphor Icons (fallback si non chargé par la page) ── */
-  if (!document.querySelector('script[src*="phosphor-icons"]') && !document.querySelector('link[href*="phosphor-icons"]')) {
-    var ph = document.createElement('script');
-    ph.src = 'https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js';
-    document.head.appendChild(ph);
+  if (!document.querySelector('link[href*="phosphor-icons"]')) {
+    ['bold','regular','light','thin'].forEach(function(w){
+      var l=document.createElement('link');l.rel='stylesheet';
+      l.href='https://unpkg.com/@phosphor-icons/web@2.1.1/src/'+w+'/style.css';
+      document.head.appendChild(l);
+    });
   }
 
   /* ── CSS ── */

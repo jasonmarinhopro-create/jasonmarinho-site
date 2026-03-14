@@ -8,19 +8,16 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/thin/style.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--w:#FDFCF9;--td:#0F1A0D;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 html,body{height:100%}
-body{font-family:'Outfit',sans-serif;background:var(--gd);color:#f0f4ff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;overflow-x:hidden}
+body{font-family:'Outfit',sans-serif;background:var(--gd);color:#f0f4ff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;overflow-x:hidden;padding-top:64px}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5vw,60px);background:rgba(0,51,41,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,213,107,.07)}
-.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.n-brand{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px}
-.n-brand em{color:var(--y);font-style:italic;font-weight:300}
-.n-cta{font-size:13px;font-weight:600;color:var(--y);text-decoration:none;opacity:.9;transition:opacity .2s}
 .n-cta:hover{opacity:1}
 
 /* ── BACKGROUND BLOBS ── */
@@ -71,17 +68,11 @@ footer{position:relative;z-index:1;padding:20px clamp(16px,5vw,60px);display:fle
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
 </head>
 <body>
+<script src="/nav.js"></script>
 
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
 <div class="blob blob-3"></div>
-
-<nav>
-  <a href="/" class="n-logo">
-    <span class="n-brand">Jason <em>Marinho</em></span>
-  </a>
-  <a href="https://app.jasonmarinho.com" class="n-cta">Accéder à la plateforme →</a>
-</nav>
 
 <main>
   <div class="compass-wrap">
