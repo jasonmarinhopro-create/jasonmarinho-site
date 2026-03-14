@@ -1,6 +1,11 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+const NOTIFY_EMAIL = 'jason@driing.co'
+const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
 export async function searchGuest(query: string): Promise<{
   results: Array<{
@@ -65,6 +70,13 @@ export async function reportGuest(formData: {
     return { error: 'La description doit faire au moins 20 caractères.' }
   }
 
+  // Récupère le profil du signalant
+  const { data: reporterProfile } = await supabase
+    .from('profiles')
+    .select('email, full_name')
+    .eq('id', session.user.id)
+    .maybeSingle()
+
   const rows = identifiers.map(({ identifier, identifier_type }) => ({
     identifier,
     identifier_type,
@@ -82,5 +94,49 @@ export async function reportGuest(formData: {
     if (error.code === '42501') return { error: 'Accès refusé — vérifie les policies RLS dans Supabase.' }
     return { error: `Erreur Supabase : ${error.message}` }
   }
+
+  // Notification email pour modération
+  const reporterEmail = reporterProfile?.email ?? session.user.email ?? 'inconnu'
+  const reporterName = reporterProfile?.full_name ?? reporterEmail
+
+  const identifiersHtml = identifiers
+    .map(({ identifier, identifier_type }) => `<li><strong>${identifier_type} :</strong> ${identifier}</li>`)
+    .join('')
+
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: NOTIFY_EMAIL,
+    subject: `🚨 Nouveau signalement voyageur — ${incident_type}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+        <h2 style="color: #dc2626;">🚨 Nouveau signalement à modérer</h2>
+
+        <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin: 16px 0;">
+          <p style="margin: 0 0 8px; font-weight: 600; color: #dc2626;">Type d'incident : ${incident_type}</p>
+          <p style="margin: 0; font-size: 14px; color: #333; line-height: 1.6;">${description.trim()}</p>
+        </div>
+
+        <div style="margin: 16px 0;">
+          <p style="font-weight: 600; margin-bottom: 8px; color: #333;">Coordonnées signalées :</p>
+          <ul style="margin: 0; padding-left: 20px; color: #555;">
+            ${identifiersHtml}
+            ${full_name?.trim() ? `<li><strong>Nom complet :</strong> ${full_name.trim()}</li>` : ''}
+          </ul>
+        </div>
+
+        <p style="color: #666; font-size: 13px; margin-top: 16px;">
+          <strong>Signalé par :</strong> ${reporterName} (${reporterEmail})
+        </p>
+
+        <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">
+          Ce signalement est en attente de modération sur jasonmarinho.com.<br>
+          Une fois validé, il sera visible par la communauté.
+        </p>
+      </div>
+    `,
+  }).catch(() => {
+    // Ne pas bloquer si l'email échoue
+  })
+
   return { success: true }
 }
