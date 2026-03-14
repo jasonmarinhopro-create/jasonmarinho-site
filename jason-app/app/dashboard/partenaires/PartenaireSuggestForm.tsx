@@ -4,19 +4,19 @@ import { useState, useTransition } from 'react'
 import { PaperPlaneRight, Check } from '@phosphor-icons/react'
 import { saveSuggestion } from '@/app/actions/suggestions'
 
-export default function FormationsSuggestForm() {
-  const [topic, setTopic] = useState('')
+export default function PartenaireSuggestForm() {
+  const [message, setMessage] = useState('')
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!topic.trim() || topic.trim().length < 5) return
+    if (!message.trim() || message.trim().length < 5) return
     setError('')
 
     startTransition(async () => {
-      const res = await saveSuggestion('formation', topic)
+      const res = await saveSuggestion('partner', message)
       if (res.error) { setError(res.error); return }
       setSent(true)
     })
@@ -26,7 +26,7 @@ export default function FormationsSuggestForm() {
     return (
       <div style={styles.success}>
         <Check size={18} color="#34D399" weight="bold" />
-        <span>Merci ! Ta suggestion a bien été envoyée.</span>
+        <span>Suggestion reçue ! On l'étudie pour les prochains partenariats.</span>
       </div>
     )
   }
@@ -34,9 +34,9 @@ export default function FormationsSuggestForm() {
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
       <textarea
-        value={topic}
-        onChange={e => setTopic(e.target.value)}
-        placeholder="Ex : Comment gérer les voyageurs difficiles, fiscalité de la LCD, créer une conciergerie..."
+        value={message}
+        onChange={e => setMessage(e.target.value)}
+        placeholder="Ex : un outil de comptabilité pour la LCD, une assurance hôte, un channel manager accessible..."
         style={styles.textarea}
         rows={3}
         required
@@ -44,12 +44,12 @@ export default function FormationsSuggestForm() {
       {error && <p style={styles.error}>{error}</p>}
       <button
         type="submit"
-        disabled={isPending || topic.trim().length < 5}
+        disabled={isPending || message.trim().length < 5}
         className="btn-primary"
         style={{ fontSize: '13px', padding: '10px 18px', alignSelf: 'flex-start' }}
       >
         <PaperPlaneRight size={14} weight="bold" />
-        {isPending ? 'Envoi...' : 'Suggérer ce sujet'}
+        {isPending ? 'Envoi...' : 'Suggérer ce partenaire'}
       </button>
     </form>
   )

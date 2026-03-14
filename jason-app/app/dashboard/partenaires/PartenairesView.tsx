@@ -1,17 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { ArrowUpRight, Tag, Star, CalendarBlank, BookOpen, Buildings } from '@phosphor-icons/react'
-
-interface Partner {
-  id: string
-  name: string
-  category: string
-  description: string
-  advantage: string
-  promo_code?: string
-  url: string
-}
+import { ArrowUpRight, Star, CalendarBlank, BookOpen, Buildings, Handshake } from '@phosphor-icons/react'
+import PartenaireSuggestForm from './PartenaireSuggestForm'
 
 const DRIING_SERVICES = [
   {
@@ -40,14 +30,7 @@ const DRIING_SERVICES = [
   },
 ]
 
-export default function PartenairesView({ partners }: { partners: Partner[] }) {
-  const categories = ['Tout', ...new Set(partners.map(p => p.category))]
-  const [activeCategory, setActiveCategory] = useState('Tout')
-
-  const filtered = activeCategory === 'Tout'
-    ? partners
-    : partners.filter(p => p.category === activeCategory)
-
+export default function PartenairesView() {
   return (
     <div style={styles.page}>
       {/* Intro */}
@@ -119,77 +102,25 @@ export default function PartenairesView({ partners }: { partners: Partner[] }) {
         </div>
       </div>
 
-      {/* Section title + filters */}
-      {partners.length > 0 && (
-        <>
-          <div style={styles.sectionHeader}>
-            <div style={styles.sectionTitle}>
-              Offres&nbsp;
-              <span style={{ color: 'rgba(240,244,255,0.38)', fontWeight: 400 }}>
-                ({partners.length})
-              </span>
+      {/* Suggest a partner */}
+      <div style={styles.suggestSection} className="fade-up d3">
+        <div style={styles.suggestBox} className="glass-card">
+          <div style={styles.suggestLeft}>
+            <div style={styles.suggestEmoji}>
+              <Handshake size={28} color="#FFD56B" weight="duotone" />
             </div>
-
-            {categories.length > 2 && (
-              <div style={styles.filterRow}>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    style={{
-                      ...styles.filterPill,
-                      ...(activeCategory === cat ? styles.filterPillActive : {}),
-                    }}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            )}
+            <div>
+              <h3 style={styles.suggestTitle}>
+                Tu connais un outil ou service utile aux hôtes ?
+              </h3>
+              <p style={styles.suggestDesc}>
+                Suggère-nous un partenaire potentiel — on étudiera la possibilité de négocier une offre exclusive pour les membres.
+              </p>
+            </div>
           </div>
-
-          {/* Grid */}
-          <div style={styles.grid} className="dash-grid-3">
-            {filtered.map((p, i) => (
-              <div key={p.id} style={styles.card} className={`glass-card fade-up d${i + 1}`}>
-                <div style={styles.cardHeader}>
-                  <div style={styles.logoPlaceholder}>
-                    <Buildings size={22} color="#FFD56B" weight="duotone" />
-                  </div>
-                  <div>
-                    <div style={styles.partnerName}>{p.name}</div>
-                    <div style={styles.partnerCat}>{p.category}</div>
-                  </div>
-                </div>
-
-                <p style={styles.desc}>{p.description}</p>
-
-                <div style={styles.advantageBox}>
-                  <Tag size={13} color="#FFD56B" />
-                  <span style={styles.advantageText}>{p.advantage}</span>
-                </div>
-
-                {p.promo_code && (
-                  <div style={styles.promoRow}>
-                    <span style={styles.promoLabel}>Code promo</span>
-                    <code style={styles.promoCode}>{p.promo_code}</code>
-                  </div>
-                )}
-
-                <a
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary"
-                  style={{ fontSize: '13px', padding: '10px 18px', alignSelf: 'flex-start', marginTop: 'auto' }}
-                >
-                  Accéder à l'offre <ArrowUpRight size={14} weight="bold" />
-                </a>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+          <PartenaireSuggestForm />
+        </div>
+      </div>
     </div>
   )
 }
@@ -280,63 +211,14 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: 'auto',
   },
 
-  /* Section header */
-  sectionHeader: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    flexWrap: 'wrap', gap: '12px', marginBottom: '20px',
+  // Suggest section
+  suggestSection: { marginTop: '8px' },
+  suggestBox: {
+    display: 'flex', alignItems: 'flex-start', gap: '32px',
+    padding: 'clamp(20px,3vw,36px)', borderRadius: '20px', flexWrap: 'wrap',
   },
-  sectionTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: '22px',
-    fontWeight: 400, color: '#f0f4ff',
-  },
-  filterRow: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
-  filterPill: {
-    padding: '7px 16px', borderRadius: '999px',
-    fontSize: '13px', fontWeight: 400,
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    color: 'rgba(240,244,255,0.5)',
-    cursor: 'pointer', transition: 'all 0.18s',
-  },
-  filterPillActive: {
-    background: 'rgba(255,213,107,0.1)',
-    border: '1px solid rgba(255,213,107,0.25)',
-    color: '#FFD56B',
-  },
-
-  /* Cards */
-  grid: {},
-  card: {
-    padding: '24px', borderRadius: '16px',
-    display: 'flex', flexDirection: 'column', gap: '14px',
-  },
-  cardHeader: { display: 'flex', alignItems: 'center', gap: '12px' },
-  logoPlaceholder: {
-    width: '44px', height: '44px', flexShrink: 0,
-    background: 'rgba(0,76,63,0.3)',
-    border: '1px solid rgba(255,213,107,0.15)',
-    borderRadius: '11px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-  },
-  partnerName: { fontSize: '15px', fontWeight: 600, color: '#f0f4ff' },
-  partnerCat: { fontSize: '11px', color: 'rgba(240,244,255,0.35)', marginTop: '2px' },
-  desc: {
-    fontSize: '13px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.5)', lineHeight: 1.65,
-  },
-  advantageBox: {
-    display: 'flex', alignItems: 'flex-start', gap: '8px',
-    background: 'rgba(255,213,107,0.06)',
-    border: '1px solid rgba(255,213,107,0.14)',
-    borderRadius: '10px', padding: '10px 14px',
-  },
-  advantageText: { fontSize: '13px', color: 'rgba(255,213,107,0.85)', lineHeight: 1.5 },
-  promoRow: { display: 'flex', alignItems: 'center', gap: '10px' },
-  promoLabel: { fontSize: '12px', color: 'rgba(240,244,255,0.38)' },
-  promoCode: {
-    fontFamily: 'monospace', fontSize: '13px', fontWeight: 600,
-    color: '#FFD56B', background: 'rgba(255,213,107,0.08)',
-    border: '1px dashed rgba(255,213,107,0.25)',
-    borderRadius: '6px', padding: '3px 9px',
-  },
+  suggestLeft: { display: 'flex', alignItems: 'flex-start', gap: '16px', flex: 1, minWidth: '260px' },
+  suggestEmoji: { flexShrink: 0, marginTop: '3px' },
+  suggestTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px', lineHeight: 1.3 },
+  suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.6 },
 }
