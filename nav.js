@@ -2,10 +2,13 @@
   'use strict';
 
   /* ── Phosphor Icons (fallback si non chargé par la page) ── */
-  if (!document.querySelector('script[src*="phosphor-icons"]') && !document.querySelector('link[href*="phosphor-icons"]')) {
-    var ph = document.createElement('script');
-    ph.src = 'https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js';
-    document.head.appendChild(ph);
+  if (!document.querySelector('link[href*="phosphor-icons"]')) {
+    ['bold','regular'].forEach(function(w){
+      var l = document.createElement('link');
+      l.rel = 'stylesheet'; l.type = 'text/css';
+      l.href = 'https://unpkg.com/@phosphor-icons/web@2.1.1/src/'+w+'/style.css';
+      document.head.appendChild(l);
+    });
   }
 
   /* ── CSS ── */
@@ -18,7 +21,7 @@
       'nav#nav{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5vw,60px);position:fixed;top:0;left:0;right:0;z-index:200;background:var(--gd);transition:box-shadow .3s}',
       'nav#nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}',
       '.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}',
-      '.nav-logo-img{width:34px;height:34px;flex-shrink:0;border-radius:4px}',
+      '.nav-logo-img{width:34px;height:34px;flex-shrink:0;border-radius:4px;filter:brightness(0) invert(1);opacity:.9}',
       '.n-brand{font-family:\'Fraunces\',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}',
       '.n-brand em{color:var(--y);font-style:italic;font-weight:300}',
       '.n-links{display:flex;align-items:center;gap:4px;list-style:none;margin:0;padding:0}',
