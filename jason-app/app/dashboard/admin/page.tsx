@@ -38,7 +38,6 @@ export default async function AdminPage() {
     supabase
       .from('reported_guests')
       .select('*')
-      .eq('is_validated', false)
       .order('reported_at', { ascending: false }),
     supabase
       .from('suggestions')
@@ -46,7 +45,7 @@ export default async function AdminPage() {
       .order('created_at', { ascending: false }),
     supabase
       .from('profiles')
-      .select('id, email, full_name, role, driing_status, created_at')
+      .select('id, email, full_name, role, driing_status, plan, created_at')
       .order('created_at', { ascending: false }),
   ])
 
@@ -63,7 +62,7 @@ export default async function AdminPage() {
             totalUsers: totalUsers ?? 0,
             driingMembers: driingMembers ?? 0,
             pendingDriing: pendingDriing?.length ?? 0,
-            pendingReports: reports?.length ?? 0,
+            pendingReports: reports?.filter(r => !r.is_validated).length ?? 0,
             suggestions: suggestions?.length ?? 0,
           }}
         />

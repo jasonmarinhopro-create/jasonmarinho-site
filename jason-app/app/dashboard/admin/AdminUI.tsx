@@ -7,7 +7,7 @@ import {
 } from '@phosphor-icons/react'
 import {
   confirmDriingMember, rejectDriingMember,
-  validateReport, deleteReport, deleteSuggestion, deleteUser,
+  validateReport, deleteReport, deleteSuggestion, deleteUser, changeUserPlan,
 } from './actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -28,6 +28,7 @@ interface Report {
   description: string | null
   reporter_city: string | null
   reported_at: string
+  is_validated: boolean
 }
 
 interface Suggestion {
@@ -53,7 +54,15 @@ interface Member {
   role: string
   driing_status: string
   created_at: string
+  plan: string
 }
+
+const PLANS = [
+  { value: 'decouverte', label: 'Découverte', color: 'rgba(240,244,255,0.4)', bg: 'rgba(255,255,255,0.06)' },
+  { value: 'hote',       label: 'Hôte',       color: '#63D683',               bg: 'rgba(99,214,131,0.10)' },
+  { value: 'pro',        label: 'Pro',         color: '#FFD56B',               bg: 'rgba(255,213,107,0.10)' },
+  { value: 'agence',     label: 'Agence',      color: '#93C5FD',               bg: 'rgba(147,197,253,0.10)' },
+] as const
 
 interface AdminUIProps {
   pendingDriing: PendingUser[]
@@ -114,10 +123,12 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
   )
   const suspectBots = allMembers.filter(m => isBotLike(m.full_name, m.email)).length
 
+  const pendingReportsCount = reports.filter(r => !r.is_validated).length
+
   const tabs = [
     { key: 'driing',       label: 'Driing en attente', count: stats.pendingDriing  },
     { key: 'members',      label: 'Membres',            count: stats.totalUsers     },
-    { key: 'reports',      label: 'Signalements',       count: stats.pendingReports },
+    { key: 'reports',      label: 'Signalements',       count: pendingReportsCount  },
     { key: 'suggestions',  label: 'Suggestions',        count: stats.suggestions    },
   ] as const
 
@@ -129,7 +140,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
         <StatCard icon={<Users size={20} />}    label="Utilisateurs"    value={stats.totalUsers}    color="#6b7280" />
         <StatCard icon={<Lightning size={20} />} label="Membres Driing"  value={stats.driingMembers} color="#FFD56B" />
         <StatCard icon={<Robot size={20} />}     label="Bots suspects"   value={suspectBots}          color="#f87171" alert={suspectBots > 0} />
-        <StatCard icon={<Warning size={20} />}   label="Signalements"    value={stats.pendingReports} color="#fb923c" alert={stats.pendingReports > 0} />
+        <StatCard icon={<Warning size={20} />}   label="Signalements"    value={reports.length} color="#fb923c" alert={pendingReportsCount > 0} />
       </div>
 
       {/* ── Tabs ── */}
@@ -237,6 +248,13 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
                     {m.driing_status !== 'none' && <DriingBadge status={m.driing_status} />}
                   </Cell>
                   <Cell>
+                    <PlanSelect
+                      value={m.plan || 'decouverte'}
+                      loading={isPending}
+                      onChange={plan => action(m.id, () => changeUserPlan(m.id, plan), 'Plan mis à jour')}
+                    />
+                  </Cell>
+                  <Cell>
                     <div style={s.cellSub}>Inscrit le {formatDate(m.created_at)}</div>
                   </Cell>
                   <Cell align="right">
@@ -264,7 +282,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
 
       {/* ── Reports tab ── */}
       {tab === 'reports' && (
-        <Section title="Signalements à valider" empty={reports.length === 0} emptyMsg="Aucun signalement en attente.">
+        <Section title={`${reports.length} signalement${reports.length > 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
           {reports.map(r => (
             <Row key={r.id}>
               <Cell flex={2}>
@@ -274,6 +292,16 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
               <Cell>
                 <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: '#f87171' }}>
                   {r.incident_type}
+                </span>
+              </Cell>
+              <Cell>
+                <span style={{
+                  ...s.badge,
+                  ...(r.is_validated
+                    ? { background: 'rgba(52,211,153,.1)', color: '#34D399' }
+                    : { background: 'rgba(251,146,60,.1)', color: '#fb923c' }),
+                }}>
+                  {r.is_validated ? 'Validé' : 'En attente'}
                 </span>
               </Cell>
               <Cell>
@@ -291,13 +319,15 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
                     <FeedbackPill type={feedback.type} msg={feedback.msg} />
                   ) : (
                     <>
-                      <ActionBtn
-                        label="Valider"
-                        icon={<CheckCircle size={13} weight="bold" />}
-                        color="#34D399"
-                        loading={isPending}
-                        onClick={() => action(r.id, () => validateReport(r.id), 'Signalement validé')}
-                      />
+                      {!r.is_validated && (
+                        <ActionBtn
+                          label="Valider"
+                          icon={<CheckCircle size={13} weight="bold" />}
+                          color="#34D399"
+                          loading={isPending}
+                          onClick={() => action(r.id, () => validateReport(r.id), 'Signalement validé')}
+                        />
+                      )}
                       <ActionBtn
                         label="Supprimer"
                         icon={<Trash size={13} weight="bold" />}
@@ -448,6 +478,38 @@ function DriingBadge({ status }: { status: string }) {
   const cfg = map[status]
   if (!cfg) return null
   return <span style={{ ...s.badge, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+}
+
+function PlanSelect({ value, loading, onChange }: {
+  value: string; loading: boolean; onChange: (plan: string) => void
+}) {
+  const current = PLANS.find(p => p.value === value) ?? PLANS[0]
+  return (
+    <select
+      value={value}
+      disabled={loading}
+      onChange={e => onChange(e.target.value)}
+      style={{
+        background: current.bg,
+        color: current.color,
+        border: `1px solid ${current.color}30`,
+        borderRadius: '7px',
+        padding: '5px 10px',
+        fontSize: '12px',
+        fontWeight: 600,
+        cursor: loading ? 'not-allowed' : 'pointer',
+        outline: 'none',
+        fontFamily: 'Outfit, sans-serif',
+        opacity: loading ? 0.5 : 1,
+      }}
+    >
+      {PLANS.map(p => (
+        <option key={p.value} value={p.value} style={{ background: '#040d0b', color: '#f0f4ff' }}>
+          {p.label}
+        </option>
+      ))}
+    </select>
+  )
 }
 
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
