@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
   UsersThree, SignOut, X, UserCircle, Question, CreditCard, ShieldCheck, Gear,
+  FacebookLogo,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -132,8 +133,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
               </div>
               <div style={styles.navSection}>
                 {[
-                  { href: '/dashboard/admin',         label: 'Administration', Icon: Gear },
-                  { href: '/dashboard/admin/membres',  label: 'Membres',        Icon: UsersThree },
+                  { href: '/dashboard/admin',              label: 'Administration', Icon: Gear },
+                  { href: '/dashboard/admin/membres',      label: 'Membres',        Icon: UsersThree },
+                  { href: '/dashboard/admin/gabarits',     label: 'Gabarits',       Icon: FileText },
+                  { href: '/dashboard/admin/formations',   label: 'Formations',     Icon: GraduationCap },
+                  { href: '/dashboard/admin/communaute',   label: 'Communauté',     Icon: FacebookLogo },
                 ].map(({ href, label, Icon }) => {
                   const active = pathname === href
                   return (

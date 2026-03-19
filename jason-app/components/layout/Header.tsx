@@ -168,7 +168,6 @@ export default function Header({ title, userName: initialUserName, currentPlan =
                   <Link href="/dashboard/abonnement" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <CreditCard size={15} />
                     Mon abonnement
-                    <span style={styles.dropBadge}>{resolvedPlan}</span>
                   </Link>
                 </nav>
 
