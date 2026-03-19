@@ -107,12 +107,13 @@ em { font-style: italic; color: var(--accent); }
 }
 .input-field::placeholder { color: var(--text-3); }
 .input-field:focus { border-color: rgba(255,213,107,0.5); background: var(--surface-2); }
-/* Force le fond sombre sur l'autofill navigateur (sinon il passe en blanc et cache l'œil) */
+/* Force le fond sombre sur l'autofill navigateur (rgba ne marche pas, besoin d'une couleur solide) */
+.input-field { color-scheme: dark; }
 .input-field:-webkit-autofill,
 .input-field:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px var(--surface-2) inset;
-  -webkit-text-fill-color: var(--text);
-  caret-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px #0d1a15 inset;
+  -webkit-text-fill-color: #f0f4ff;
+  caret-color: #f0f4ff;
 }
 
 /* ── ANIMATIONS ── */
