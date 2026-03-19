@@ -46,10 +46,20 @@ interface Stats {
   suggestions: number
 }
 
+interface Member {
+  id: string
+  email: string
+  full_name: string | null
+  role: string
+  driing_status: string
+  created_at: string
+}
+
 interface AdminUIProps {
   pendingDriing: PendingUser[]
   reports: Report[]
   suggestions: Suggestion[]
+  allMembers: Member[]
   stats: Stats
 }
 
@@ -61,8 +71,9 @@ function formatDate(iso: string) {
 }
 
 // ── Main component ─────────────────────────────────────────────────────────
-export default function AdminUI({ pendingDriing, reports, suggestions, stats }: AdminUIProps) {
-  const [tab, setTab] = useState<'driing' | 'reports' | 'suggestions'>('driing')
+export default function AdminUI({ pendingDriing, reports, suggestions, allMembers, stats }: AdminUIProps) {
+  const [tab, setTab] = useState<'driing' | 'members' | 'reports' | 'suggestions'>('driing')
+  const [search, setSearch] = useState('')
   const [isPending, startTransition] = useTransition()
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
 
@@ -83,10 +94,17 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
     })
   }
 
+  const filteredMembers = allMembers.filter(m =>
+    !search ||
+    m.email.toLowerCase().includes(search.toLowerCase()) ||
+    (m.full_name ?? '').toLowerCase().includes(search.toLowerCase())
+  )
+
   const tabs = [
-    { key: 'driing',       label: 'Membres Driing',  count: stats.pendingDriing  },
-    { key: 'reports',      label: 'Signalements',     count: stats.pendingReports },
-    { key: 'suggestions',  label: 'Suggestions',      count: stats.suggestions    },
+    { key: 'driing',       label: 'Driing en attente', count: stats.pendingDriing  },
+    { key: 'members',      label: 'Membres',            count: stats.totalUsers     },
+    { key: 'reports',      label: 'Signalements',       count: stats.pendingReports },
+    { key: 'suggestions',  label: 'Suggestions',        count: stats.suggestions    },
   ] as const
 
   return (
@@ -162,6 +180,38 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
             </Row>
           ))}
         </Section>
+      )}
+
+      {/* ── Members tab ── */}
+      {tab === 'members' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <input
+            type="search"
+            placeholder="Rechercher par nom ou email…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={s.searchInput}
+          />
+          <Section title={`${filteredMembers.length} utilisateur${filteredMembers.length > 1 ? 's' : ''}`} empty={filteredMembers.length === 0} emptyMsg="Aucun résultat.">
+            {filteredMembers.map(m => (
+              <Row key={m.id}>
+                <Cell flex={2}>
+                  <div style={s.cellPrimary}>{m.full_name || '—'}</div>
+                  <div style={s.cellSub}>{m.email}</div>
+                </Cell>
+                <Cell>
+                  <RoleBadge role={m.role} />
+                </Cell>
+                <Cell>
+                  {m.driing_status !== 'none' && <DriingBadge status={m.driing_status} />}
+                </Cell>
+                <Cell>
+                  <div style={s.cellSub}>Inscrit le {formatDate(m.created_at)}</div>
+                </Cell>
+              </Row>
+            ))}
+          </Section>
+        </div>
       )}
 
       {/* ── Reports tab ── */}
@@ -332,6 +382,26 @@ function ActionBtn({ label, icon, color, loading, onClick }: {
   )
 }
 
+function RoleBadge({ role }: { role: string }) {
+  const map: Record<string, { label: string; bg: string; color: string }> = {
+    admin:  { label: 'Admin',       bg: 'rgba(192,132,252,.12)', color: '#C084FC' },
+    driing: { label: 'Driing',      bg: 'rgba(255,213,107,.12)', color: '#FFD56B' },
+    user:   { label: 'Utilisateur', bg: 'rgba(255,255,255,.06)', color: 'rgba(240,244,255,.4)' },
+  }
+  const { label, bg, color } = map[role] ?? map.user
+  return <span style={{ ...s.badge, background: bg, color }}>{label}</span>
+}
+
+function DriingBadge({ status }: { status: string }) {
+  const map: Record<string, { label: string; bg: string; color: string }> = {
+    pending:   { label: 'En attente',  bg: 'rgba(251,146,60,.12)', color: '#fb923c' },
+    confirmed: { label: 'Confirmé',    bg: 'rgba(52,211,153,.12)', color: '#34D399' },
+  }
+  const cfg = map[status]
+  if (!cfg) return null
+  return <span style={{ ...s.badge, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+}
+
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
   const color = type === 'ok' ? '#34D399' : '#f87171'
   return (
@@ -445,4 +515,12 @@ const s: Record<string, React.CSSProperties> = {
     letterSpacing: '0.3px', whiteSpace: 'nowrap',
   },
   actions: { display: 'flex', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap' },
+  searchInput: {
+    width: '100%', maxWidth: '360px',
+    background: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '10px', padding: '10px 16px',
+    fontSize: '14px', color: '#f0f4ff',
+    outline: 'none',
+  },
 }
