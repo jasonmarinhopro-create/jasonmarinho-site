@@ -1,6 +1,8 @@
 import { getProfile } from '@/lib/queries/profile'
+import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
-import { Check, Lock, Wrench, Star } from '@phosphor-icons/react/dist/ssr'
+import { Check, Wrench, Star } from '@phosphor-icons/react/dist/ssr'
+import DriingRequestForm from './DriingRequestForm'
 
 const DECOUVERTE_FEATURES = [
   'Accès à la communauté & groupes Facebook',
@@ -24,9 +26,14 @@ const CONSTRUCTION_PLANS = [
 ]
 
 export default async function AbonnementPage() {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  const userEmail = session?.user?.email ?? ''
+
   const profile = await getProfile()
   const plan = profile?.plan ?? 'decouverte'
   const isDriing = plan === 'driing'
+  const driingStatus = profile?.driing_status ?? 'none'
 
   return (
     <>
@@ -104,26 +111,22 @@ export default async function AbonnementPage() {
                 </div>
                 <div style={styles.driingRow} className="fade-up d1">
                   <div style={styles.driingRowGlow} />
-                  <div style={styles.planRowLeft}>
-                    <div style={styles.driingRowName}>Membre Driing</div>
-                    <p style={styles.planDesc}>
-                      Accès complet aux formations, à la communauté privée et aux contenus exclusifs.
-                    </p>
-                    <div style={styles.perks}>
-                      {DRIING_FEATURES.map(p => (
-                        <span key={p} style={styles.perk}>
-                          <Check size={10} color="#FFD56B" weight="bold" />
-                          {p}
-                        </span>
-                      ))}
-                    </div>
+                  <div style={styles.driingRowName}>Membre Driing</div>
+                  <p style={styles.planDesc}>
+                    Accès complet aux formations, à la communauté privée et aux contenus exclusifs.
+                  </p>
+                  <div style={styles.perks}>
+                    {DRIING_FEATURES.map(p => (
+                      <span key={p} style={styles.perk}>
+                        <Check size={10} color="#FFD56B" weight="bold" />
+                        {p}
+                      </span>
+                    ))}
                   </div>
-                  <div style={styles.planRowRight}>
-                    <div style={styles.ctaComingSoon}>
-                      <Lock size={12} />
-                      Bientôt
-                    </div>
-                  </div>
+                  <DriingRequestForm
+                    userEmail={userEmail}
+                    driingStatus={driingStatus}
+                  />
                 </div>
               </>
             )}
@@ -199,10 +202,17 @@ const styles: Record<string, React.CSSProperties> = {
 
   /* Upgrade Driing row */
   upgradeLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: 'rgba(255,213,107,0.6)' },
-  driingRow: { position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px', background: 'rgba(255,213,107,0.04)', border: '1px solid rgba(255,213,107,0.15)', borderRadius: '16px', padding: '22px 24px' },
+  driingRow: {
+    position: 'relative', overflow: 'hidden',
+    display: 'flex', flexDirection: 'column', gap: '14px',
+    background: 'rgba(255,213,107,0.04)', border: '1px solid rgba(255,213,107,0.15)',
+    borderRadius: '16px', padding: '24px',
+  },
   driingRowGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,213,107,0.08) 0%, transparent 70%)', pointerEvents: 'none' },
-  driingRowName: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: '#FFD56B' },
-  ctaComingSoon: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 500, color: 'rgba(255,213,107,0.4)', background: 'rgba(255,213,107,0.06)', border: '1px solid rgba(255,213,107,0.12)', borderRadius: '8px', padding: '8px 14px', whiteSpace: 'nowrap' as const },
+  driingRowName: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: '#FFD56B' },
+  planDesc: { fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.45)', lineHeight: 1.5, margin: 0 },
+  perks: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px' },
+  perk: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'rgba(240,244,255,0.5)' },
 
   /* En construction */
   comingLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.3)' },
@@ -211,9 +221,6 @@ const styles: Record<string, React.CSSProperties> = {
   planRowHighlighted: { border: '1px dashed rgba(255,213,107,0.12)' },
   planRowLeft: { flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' },
   planName: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'rgba(240,244,255,0.6)' },
-  planDesc: { fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.35)', lineHeight: 1.5 },
-  perks: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginTop: '4px' },
-  perk: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'rgba(240,244,255,0.45)' },
   planRowRight: { flexShrink: 0 },
   ctaLocked: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 500, color: 'rgba(240,244,255,0.2)', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 14px', whiteSpace: 'nowrap' as const },
 
