@@ -131,11 +131,15 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
                 <div style={styles.navDividerLine} />
               </div>
               <div style={styles.navSection}>
-                {(() => {
-                  const active = pathname === '/dashboard/admin'
+                {[
+                  { href: '/dashboard/admin',         label: 'Administration', Icon: Gear },
+                  { href: '/dashboard/admin/membres',  label: 'Membres',        Icon: UsersThree },
+                ].map(({ href, label, Icon }) => {
+                  const active = pathname === href
                   return (
                     <Link
-                      href="/dashboard/admin"
+                      key={href}
+                      href={href}
                       onClick={onClose}
                       style={{
                         ...styles.navItem,
@@ -143,12 +147,12 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
                         ...(!active ? { color: 'rgba(255,213,107,0.55)' } : {}),
                       }}
                     >
-                      <Gear size={18} weight={active ? 'fill' : 'regular'} />
-                      <span>Administration</span>
+                      <Icon size={18} weight={active ? 'fill' : 'regular'} />
+                      <span>{label}</span>
                       {active && <div style={styles.activeDot} />}
                     </Link>
                   )
-                })()}
+                })}
               </div>
             </>
           )}

@@ -26,7 +26,6 @@ export default async function AdminPage() {
     { data: pendingDriing },
     { data: reports },
     { data: suggestions },
-    { data: allMembers },
   ] = await Promise.all([
     supabase.from('profiles').select('*', { count: 'exact', head: true }),
     supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'driing'),
@@ -43,10 +42,6 @@ export default async function AdminPage() {
       .from('suggestions')
       .select('*')
       .order('created_at', { ascending: false }),
-    supabase
-      .from('profiles')
-      .select('id, email, full_name, role, driing_status, plan, created_at')
-      .order('created_at', { ascending: false }),
   ])
 
   return (
@@ -57,7 +52,6 @@ export default async function AdminPage() {
           pendingDriing={pendingDriing ?? []}
           reports={reports ?? []}
           suggestions={suggestions ?? []}
-          allMembers={allMembers ?? []}
           stats={{
             totalUsers: totalUsers ?? 0,
             driingMembers: driingMembers ?? 0,
