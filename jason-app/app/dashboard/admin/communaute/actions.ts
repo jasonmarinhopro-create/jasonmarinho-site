@@ -1,8 +1,16 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
+
+function getServiceClient() {
+  return createSupabaseAdmin(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+}
 
 async function assertAdmin() {
   const supabase = await createClient()
@@ -10,7 +18,7 @@ async function assertAdmin() {
   if (!session) return { error: 'Non authentifié', adminClient: null }
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single()
   if (profile?.role !== 'admin') return { error: 'Non autorisé', adminClient: null }
-  return { error: null, adminClient: createAdminClient() }
+  return { error: null, adminClient: getServiceClient() }
 }
 
 export async function addGroup(formData: FormData) {
