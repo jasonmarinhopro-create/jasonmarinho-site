@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
-  UsersThree, SignOut, X, UserCircle, Question, CreditCard, ShieldCheck,
+  UsersThree, SignOut, X, UserCircle, Question, CreditCard, ShieldCheck, Gear,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -28,9 +28,10 @@ const accountNav = [
 interface SidebarProps {
   mobileOpen?: boolean
   onClose?: () => void
+  isAdmin?: boolean
 }
 
-export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -120,6 +121,37 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
               )
             })}
           </div>
+
+          {/* Section admin — visible uniquement pour Jason */}
+          {isAdmin && (
+            <>
+              <div style={styles.navDivider}>
+                <div style={styles.navDividerLine} />
+                <span style={{ ...styles.navDividerLabel, color: 'rgba(255,213,107,0.35)' }}>Admin</span>
+                <div style={styles.navDividerLine} />
+              </div>
+              <div style={styles.navSection}>
+                {(() => {
+                  const active = pathname === '/dashboard/admin'
+                  return (
+                    <Link
+                      href="/dashboard/admin"
+                      onClick={onClose}
+                      style={{
+                        ...styles.navItem,
+                        ...(active ? styles.navItemActive : {}),
+                        ...(!active ? { color: 'rgba(255,213,107,0.55)' } : {}),
+                      }}
+                    >
+                      <Gear size={18} weight={active ? 'fill' : 'regular'} />
+                      <span>Administration</span>
+                      {active && <div style={styles.activeDot} />}
+                    </Link>
+                  )
+                })()}
+              </div>
+            </>
+          )}
         </nav>
 
         {/* Footer */}
