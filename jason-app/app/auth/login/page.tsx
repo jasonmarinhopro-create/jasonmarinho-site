@@ -52,7 +52,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const [attempts, setAttempts] = useState(0)
   const [blockedUntil, setBlockedUntil] = useState<number | null>(null)
@@ -117,7 +116,6 @@ export default function LoginPage() {
 
     // Browser client sets session cookies via document.cookie.
     // router.refresh() forces the server to re-read the new cookies before navigating.
-    setSuccess(true)
     setLoading(false)
     router.refresh()
     router.push('/dashboard')
@@ -222,11 +220,11 @@ export default function LoginPage() {
           <button
             type="submit"
             className="btn-primary"
-            disabled={loading || isBlocked || success}
-            style={{ width: '100%', justifyContent: 'center', marginTop: '8px', ...(success ? { background: 'rgba(74,222,128,0.15)', borderColor: 'rgba(74,222,128,0.4)' } : {}) }}
+            disabled={loading || isBlocked}
+            style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
           >
-            {success ? '✓ Connecté · Redirection...' : loading ? 'Connexion...' : 'Se connecter'}
-            {!loading && !success && <ArrowRight size={16} weight="bold" />}
+            {loading ? 'Connexion...' : 'Se connecter'}
+            {!loading && <ArrowRight size={16} weight="bold" />}
           </button>
         </form>
 
