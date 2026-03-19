@@ -20,22 +20,23 @@ export default function Header({ title, userName: initialUserName, currentPlan =
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [userName, setUserName] = useState(initialUserName ?? '')
+  const [resolvedPlan, setResolvedPlan] = useState(currentPlan)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  // Fetch profile client-side — garantit que le nom est toujours à jour
-  // quelle que soit la page (même les pages client qui ne passent pas userName)
+  // Fetch profile client-side — garantit nom + rôle à jour sur toutes les pages
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return
       supabase
         .from('profiles')
-        .select('full_name')
+        .select('full_name, role')
         .eq('id', session.user.id)
         .maybeSingle()
         .then(({ data }) => {
           if (data?.full_name) setUserName(data.full_name)
+          if (data?.role === 'admin') setResolvedPlan('Administrateur')
         })
     })
   }, [])
@@ -68,7 +69,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     'Agence':        { bg: 'rgba(147,197,253,0.12)', color: '#93C5FD', dot: '#93C5FD' },
     'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC', dot: '#C084FC' },
   }
-  const plan = planColors[currentPlan] ?? planColors['Découverte']
+  const plan = planColors[resolvedPlan] ?? planColors['Découverte']
 
   return (
     <>
@@ -140,7 +141,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
                       }}
                     >
                       <span style={{ ...styles.planDot, background: plan.dot }} />
-                      {currentPlan}
+                      {resolvedPlan}
                     </div>
                   </div>
                 </div>
@@ -156,7 +157,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
                   <Link href="/dashboard/abonnement" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <CreditCard size={15} />
                     Mon abonnement
-                    <span style={styles.dropBadge}>{currentPlan}</span>
+                    <span style={styles.dropBadge}>{resolvedPlan}</span>
                   </Link>
                 </nav>
 
