@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [isDriingMember, setIsDriingMember] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -29,7 +30,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName }),
+        body: JSON.stringify({ email, password, fullName, isDriingMember }),
       })
 
       const data = await res.json()
@@ -133,6 +134,24 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          {/* Driing membership */}
+          <div style={styles.driingBox}>
+            <label style={styles.driingLabel}>
+              <input
+                type="checkbox"
+                checked={isDriingMember}
+                onChange={e => setIsDriingMember(e.target.checked)}
+                style={styles.checkbox}
+              />
+              <span>Je suis membre <strong style={{ color: '#FFD56B' }}>Driing</strong></span>
+            </label>
+            {isDriingMember && (
+              <p style={styles.driingNote}>
+                ℹ️ Utilise l'adresse email de ton compte Driing. Jason vérifiera ton statut et activera tes avantages sous 24h.
+              </p>
+            )}
+          </div>
+
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" className="btn-primary" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}>
@@ -207,4 +226,36 @@ const styles: Record<string, React.CSSProperties> = {
   },
   footer: { marginTop: '24px', textAlign: 'center', fontSize: '13px', color: 'rgba(240,244,255,0.4)' },
   link: { color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
+  driingBox: {
+    background: 'rgba(255,213,107,0.05)',
+    border: '1px solid rgba(255,213,107,0.15)',
+    borderRadius: '10px',
+    padding: '14px 16px',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '10px',
+  },
+  driingLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    color: 'rgba(240,244,255,0.8)',
+    userSelect: 'none' as const,
+  },
+  checkbox: {
+    width: '16px',
+    height: '16px',
+    accentColor: '#FFD56B',
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
+  driingNote: {
+    fontSize: '12px',
+    color: 'rgba(240,244,255,0.45)',
+    lineHeight: 1.6,
+    margin: 0,
+    paddingLeft: '26px',
+  },
 }

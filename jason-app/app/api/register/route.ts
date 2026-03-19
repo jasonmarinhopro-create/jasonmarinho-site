@@ -21,7 +21,7 @@ function isRateLimited(email: string): boolean {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, fullName } = await req.json()
+    const { email, password, fullName, isDriingMember } = await req.json()
 
     if (!email || typeof email !== 'string' || !email.includes('@')) {
       return NextResponse.json({ error: 'Email invalide.' }, { status: 400 })
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     const { data: userData, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email: normalized,
       password,
-      user_metadata: { full_name: fullName || '' },
+      user_metadata: { full_name: fullName || '', is_driing_member: String(!!isDriingMember) },
       email_confirm: false,
     })
 
@@ -68,7 +68,8 @@ export async function POST(req: NextRequest) {
           id: userData.user.id,
           email: normalized,
           full_name: fullName || null,
-        }, { onConflict: 'id', ignoreDuplicates: true })
+          driing_status: isDriingMember ? 'pending' : 'none',
+        }, { onConflict: 'id', ignoreDuplicates: false })
       if (profileError) {
         console.error('[register] profile upsert error:', profileError.message)
       }
