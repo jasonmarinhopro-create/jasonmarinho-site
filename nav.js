@@ -24,7 +24,7 @@
       '.nav-logo-img{width:34px;height:34px;flex-shrink:0;border-radius:4px;filter:brightness(0) invert(1);opacity:.9}',
       '.n-brand{font-family:\'Fraunces\',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}',
       '.n-brand em{color:var(--y);font-style:italic;font-weight:300}',
-      '.n-links{display:flex;align-items:center;gap:4px;list-style:none;margin:0;padding:0}',
+      '.n-links{display:flex;flex-direction:row;align-items:center;gap:4px;list-style:none;margin:0;padding:0}',
       '.n-link{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;font-family:\'Outfit\',sans-serif;font-weight:500;padding:6px 12px;border-radius:7px;transition:color .2s,background .2s;white-space:nowrap}',
       '.n-link:hover,.n-link.active{color:#fff}',
       '.n-btn{background:none;border:none;color:rgba(255,255,255,.55);font:500 14px/1 \'Outfit\',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;transition:color .2s;white-space:nowrap}',
