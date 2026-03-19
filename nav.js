@@ -100,6 +100,10 @@
             + '<a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a>'
             + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes &amp; locations saisonnières</a>'
           + '</div>'
+          + '<div class="n-col">'
+            + '<div class="n-col-title">Plateforme</div>'
+            + '<a href="/pour-qui/membres-driing" style="color:var(--y)"><i class="ph ph-lightning" style="color:var(--y)"></i>Membres Driing</a>'
+          + '</div>'
         + '</div>'
       + '</li>'
 
@@ -155,6 +159,7 @@
       + '<a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a>'
       + '<a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a>'
       + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes &amp; locations saisonnières</a>'
+      + '<a href="/pour-qui/membres-driing" style="color:var(--y)"><i class="ph ph-lightning" style="color:var(--y)"></i>Membres Driing</a>'
     + '</div>'
     + '<div class="mob-section">'
       + '<div class="mob-section-title">Formations</div>'
