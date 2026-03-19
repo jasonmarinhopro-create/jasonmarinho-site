@@ -256,6 +256,9 @@ a { color: inherit; }
 .dash-menu-btn { display: none; }
 .dash-close-btn { display: none; }
 
+/* Hide Header's mobile Sidebar on desktop — layout already renders its own */
+.dash-mobile-sidebar-wrap { display: none; }
+
 /* Tablet: 2-col quick grid */
 @media (max-width: 1024px) {
   .dash-quick-grid {
@@ -280,6 +283,8 @@ a { color: inherit; }
     align-items: center;
     justify-content: center;
   }
+  /* Show Header's Sidebar on mobile */
+  .dash-mobile-sidebar-wrap { display: block; }
   .dash-header {
     left: 0 !important;
   }

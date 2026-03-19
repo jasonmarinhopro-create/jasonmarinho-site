@@ -77,7 +77,9 @@ export default function Header({ title, userName: initialUserName, currentPlan =
 
   return (
     <>
-      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} />
+      <div className="dash-mobile-sidebar-wrap">
+        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} />
+      </div>
 
       <header style={styles.header} className="dash-header">
         <div style={styles.left}>

@@ -2,6 +2,15 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
+
+function getServiceClient() {
+  return createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+}
 
 async function getAdminClient() {
   const supabase = await createClient()
@@ -82,6 +91,20 @@ export async function deleteSuggestion(suggestionId: string) {
     .from('suggestions')
     .delete()
     .eq('id', suggestionId)
+
+  if (deleteError) return { error: deleteError.message }
+  revalidatePath('/dashboard/admin')
+  return { success: true }
+}
+
+export async function deleteUser(userId: string) {
+  // Verify requester is admin first
+  const { error, supabase: _ } = await getAdminClient()
+  if (error) return { error }
+
+  // Use service role to delete the auth user (cascades to profile)
+  const adminClient = getServiceClient()
+  const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId)
 
   if (deleteError) return { error: deleteError.message }
   revalidatePath('/dashboard/admin')

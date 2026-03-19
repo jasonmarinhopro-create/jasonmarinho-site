@@ -3,11 +3,11 @@
 import { useState, useTransition } from 'react'
 import {
   Users, Lightning, Warning, Lightbulb, CheckCircle,
-  XCircle, Trash, Check, X, ArrowClockwise,
+  XCircle, Trash, Check, X, ArrowClockwise, Robot,
 } from '@phosphor-icons/react'
 import {
   confirmDriingMember, rejectDriingMember,
-  validateReport, deleteReport, deleteSuggestion,
+  validateReport, deleteReport, deleteSuggestion, deleteUser,
 } from './actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -70,6 +70,19 @@ function formatDate(iso: string) {
   })
 }
 
+/** Détecte les comptes bot : nom aléatoire sans espaces ou email avec trop de points courts */
+function isBotLike(name: string | null, email: string): boolean {
+  if (name && name.length > 8 && !name.includes(' ')) {
+    // Nom en camelCase aléatoire : contient majuscules ET minuscules mélangées
+    if (/[A-Z]/.test(name) && /[a-z]/.test(name)) return true
+  }
+  // Email : partie locale avec beaucoup de segments courts séparés par des points
+  const local = email.split('@')[0]
+  const parts = local.split('.')
+  if (parts.length >= 4 && parts.every(p => p.length <= 3)) return true
+  return false
+}
+
 // ── Main component ─────────────────────────────────────────────────────────
 export default function AdminUI({ pendingDriing, reports, suggestions, allMembers, stats }: AdminUIProps) {
   const [tab, setTab] = useState<'driing' | 'members' | 'reports' | 'suggestions'>('driing')
@@ -99,6 +112,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
     m.email.toLowerCase().includes(search.toLowerCase()) ||
     (m.full_name ?? '').toLowerCase().includes(search.toLowerCase())
   )
+  const suspectBots = allMembers.filter(m => isBotLike(m.full_name, m.email)).length
 
   const tabs = [
     { key: 'driing',       label: 'Driing en attente', count: stats.pendingDriing  },
@@ -114,8 +128,8 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
       <div style={s.statsGrid}>
         <StatCard icon={<Users size={20} />}    label="Utilisateurs"    value={stats.totalUsers}    color="#6b7280" />
         <StatCard icon={<Lightning size={20} />} label="Membres Driing"  value={stats.driingMembers} color="#FFD56B" />
-        <StatCard icon={<Warning size={20} />}   label="Driing en attente" value={stats.pendingDriing}  color="#fb923c" alert={stats.pendingDriing > 0} />
-        <StatCard icon={<Warning size={20} />}   label="Signalements"    value={stats.pendingReports} color="#f87171" alert={stats.pendingReports > 0} />
+        <StatCard icon={<Robot size={20} />}     label="Bots suspects"   value={suspectBots}          color="#f87171" alert={suspectBots > 0} />
+        <StatCard icon={<Warning size={20} />}   label="Signalements"    value={stats.pendingReports} color="#fb923c" alert={stats.pendingReports > 0} />
       </div>
 
       {/* ── Tabs ── */}
@@ -185,31 +199,65 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
       {/* ── Members tab ── */}
       {tab === 'members' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <input
-            type="search"
-            placeholder="Rechercher par nom ou email…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            style={s.searchInput}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <input
+              type="search"
+              placeholder="Rechercher par nom ou email…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={s.searchInput}
+            />
+            {filteredMembers.filter(m => isBotLike(m.full_name, m.email)).length > 0 && (
+              <span style={{ ...s.badge, background: 'rgba(248,113,113,0.12)', color: '#f87171', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                <Robot size={12} />
+                {filteredMembers.filter(m => isBotLike(m.full_name, m.email)).length} bot(s) suspect(s)
+              </span>
+            )}
+          </div>
           <Section title={`${filteredMembers.length} utilisateur${filteredMembers.length > 1 ? 's' : ''}`} empty={filteredMembers.length === 0} emptyMsg="Aucun résultat.">
-            {filteredMembers.map(m => (
-              <Row key={m.id}>
-                <Cell flex={2}>
-                  <div style={s.cellPrimary}>{m.full_name || '—'}</div>
-                  <div style={s.cellSub}>{m.email}</div>
-                </Cell>
-                <Cell>
-                  <RoleBadge role={m.role} />
-                </Cell>
-                <Cell>
-                  {m.driing_status !== 'none' && <DriingBadge status={m.driing_status} />}
-                </Cell>
-                <Cell>
-                  <div style={s.cellSub}>Inscrit le {formatDate(m.created_at)}</div>
-                </Cell>
-              </Row>
-            ))}
+            {filteredMembers.map(m => {
+              const suspect = isBotLike(m.full_name, m.email)
+              return (
+                <Row key={m.id}>
+                  <Cell flex={2}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                      <span style={s.cellPrimary}>{m.full_name || '—'}</span>
+                      {suspect && (
+                        <span title="Compte bot suspect" style={{ color: '#f87171', display: 'flex' }}>
+                          <Robot size={14} />
+                        </span>
+                      )}
+                    </div>
+                    <div style={s.cellSub}>{m.email}</div>
+                  </Cell>
+                  <Cell>
+                    <RoleBadge role={m.role} />
+                  </Cell>
+                  <Cell>
+                    {m.driing_status !== 'none' && <DriingBadge status={m.driing_status} />}
+                  </Cell>
+                  <Cell>
+                    <div style={s.cellSub}>Inscrit le {formatDate(m.created_at)}</div>
+                  </Cell>
+                  <Cell align="right">
+                    {feedback?.id === m.id ? (
+                      <FeedbackPill type={feedback.type} msg={feedback.msg} />
+                    ) : (
+                      <ActionBtn
+                        label="Supprimer"
+                        icon={<Trash size={13} weight="bold" />}
+                        color="#f87171"
+                        loading={isPending}
+                        onClick={() => {
+                          if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
+                          action(m.id, () => deleteUser(m.id), 'Utilisateur supprimé')
+                        }}
+                      />
+                    )}
+                  </Cell>
+                </Row>
+              )
+            })}
           </Section>
         </div>
       )}
