@@ -28,10 +28,11 @@ async function getAdminClient() {
 }
 
 export async function confirmDriingMember(userId: string) {
-  const { error, supabase } = await getAdminClient()
-  if (error || !supabase) return { error }
+  const { error } = await getAdminClient()
+  if (error) return { error }
 
-  const { error: updateError } = await supabase
+  const adminClient = getServiceClient()
+  const { error: updateError } = await adminClient
     .from('profiles')
     .update({ role: 'driing', driing_status: 'confirmed' })
     .eq('id', userId)
@@ -42,10 +43,11 @@ export async function confirmDriingMember(userId: string) {
 }
 
 export async function rejectDriingMember(userId: string) {
-  const { error, supabase } = await getAdminClient()
-  if (error || !supabase) return { error }
+  const { error } = await getAdminClient()
+  if (error) return { error }
 
-  const { error: updateError } = await supabase
+  const adminClient = getServiceClient()
+  const { error: updateError } = await adminClient
     .from('profiles')
     .update({ driing_status: 'none' })
     .eq('id', userId)
@@ -98,19 +100,23 @@ export async function deleteSuggestion(suggestionId: string) {
 }
 
 export async function changeUserPlan(userId: string, plan: string) {
-  const { error, supabase } = await getAdminClient()
-  if (error || !supabase) return { error }
+  // Verify requester is admin first
+  const { error } = await getAdminClient()
+  if (error) return { error }
 
   const validPlans = ['decouverte', 'driing']
   if (!validPlans.includes(plan)) return { error: 'Plan invalide' }
 
-  const { error: updateError } = await supabase
+  // Use service role to bypass RLS on profiles table
+  const adminClient = getServiceClient()
+  const { error: updateError } = await adminClient
     .from('profiles')
     .update({ plan })
     .eq('id', userId)
 
   if (updateError) return { error: updateError.message }
   revalidatePath('/dashboard/admin')
+  revalidatePath('/dashboard/admin/membres')
   return { success: true }
 }
 

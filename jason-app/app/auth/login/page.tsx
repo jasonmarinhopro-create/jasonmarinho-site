@@ -114,11 +114,10 @@ export default function LoginPage() {
       return
     }
 
-    // Browser client sets session cookies via document.cookie.
-    // router.refresh() forces the server to re-read the new cookies before navigating.
+    // Full page reload pour que le serveur relise la session fraîche
+    // (router.push seul ne recharge pas les server components du layout)
     setLoading(false)
-    router.refresh()
-    router.push('/dashboard')
+    window.location.replace('/dashboard')
   }
 
   async function handleResendConfirmation() {
@@ -284,7 +283,7 @@ const styles: Record<string, React.CSSProperties> = {
   eyeBtn: {
     position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
     background: 'none', border: 'none', cursor: 'pointer',
-    color: 'rgba(240,244,255,0.4)', padding: '4px',
+    color: 'rgba(240,244,255,0.7)', padding: '4px',
     display: 'flex', alignItems: 'center',
   },
   error: {
