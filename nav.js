@@ -40,6 +40,14 @@
       '.n-drop.open>.n-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:auto}',
       '.n-col{display:flex;flex-direction:column;gap:1px;min-width:180px}',
       '.n-col-title{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.45);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap}',
+      '.n-driing-card{display:flex;flex-direction:column;gap:6px;background:rgba(255,213,107,.05);border:1px solid rgba(255,213,107,.2);border-radius:12px;padding:16px;text-decoration:none!important;color:inherit;transition:background .2s,border-color .2s;min-width:180px;align-self:flex-start}',
+      '.n-driing-card:hover{background:rgba(255,213,107,.1)!important;border-color:rgba(255,213,107,.38)!important}',
+      '.n-driing-card-top{display:flex;align-items:center;gap:7px}',
+      '.n-driing-dot{width:6px;height:6px;border-radius:50%;background:var(--y);flex-shrink:0}',
+      '.n-driing-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,213,107,.55)}',
+      '.n-driing-name{font-family:\'Fraunces\',serif;font-size:16px;font-weight:400;color:#fff;letter-spacing:-.2px;line-height:1.2}',
+      '.n-driing-desc{font-size:12px;color:rgba(255,255,255,.4);line-height:1.5;margin-top:2px}',
+      '.n-driing-link{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--y);margin-top:6px;opacity:.85}',
       '.n-mega a{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.65);font-size:13.5px;font-family:\'Outfit\',sans-serif;text-decoration:none;padding:8px 9px;border-radius:7px;transition:color .15s,background .15s;white-space:nowrap}',
       '.n-mega a:hover{color:#fff;background:rgba(255,255,255,.05)}',
       '.n-mega a.active{color:var(--y)}',
@@ -100,10 +108,12 @@
             + '<a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a>'
             + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes</a>'
           + '</div>'
-          + '<div class="n-col">'
-            + '<div class="n-col-title">Plateforme</div>'
-            + '<a href="/pour-qui/membres-driing" style="color:var(--y)"><i class="ph ph-lightning" style="color:var(--y)"></i>Membres Driing</a>'
-          + '</div>'
+          + '<a href="/pour-qui/membres-driing" class="n-driing-card">'
+            + '<div class="n-driing-card-top"><div class="n-driing-dot"></div><span class="n-driing-label">Membres</span></div>'
+            + '<div class="n-driing-name">Driing</div>'
+            + '<div class="n-driing-desc">Avantages exclusifs pour les hôtes déjà sur Driing</div>'
+            + '<div class="n-driing-link">Voir mes avantages <i class="ph ph-arrow-right" style="font-size:11px"></i></div>'
+          + '</a>'
         + '</div>'
       + '</li>'
 
