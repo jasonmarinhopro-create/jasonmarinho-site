@@ -1,21 +1,45 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { requestDriingUpgrade } from './actions'
 import { Star, EnvelopeSimple, Warning, Check, ArrowSquareOut } from '@phosphor-icons/react'
 
 interface Props {
   userEmail: string
   driingStatus: 'none' | 'pending' | 'confirmed'
+  needsFix?: boolean   // driing_status=confirmed mais plan pas encore mis à jour
 }
 
-export default function DriingRequestForm({ userEmail, driingStatus: initialStatus }: Props) {
+export default function DriingRequestForm({ userEmail, driingStatus: initialStatus, needsFix = false }: Props) {
+  const router = useRouter()
   const [status, setStatus] = useState(initialStatus)
   const [driingEmail, setDriingEmail] = useState(userEmail)
   const [showForm, setShowForm] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [sent, setSent] = useState(false)
+
+  // Auto-correction de l'état incohérent au montage
+  useEffect(() => {
+    if (!needsFix) return
+    requestDriingUpgrade(userEmail).then(result => {
+      if (!result.error) router.refresh()
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  if (needsFix) {
+    return (
+      <div style={s.pendingBox}>
+        <div style={s.pendingIcon}>🔄</div>
+        <div>
+          <div style={s.pendingTitle}>Synchronisation en cours…</div>
+          <div style={s.pendingDesc}>Ton adhésion est confirmée, on met à jour ton compte.</div>
+        </div>
+      </div>
+    )
+  }
 
   if (status === 'pending') {
     return (
@@ -56,12 +80,7 @@ export default function DriingRequestForm({ userEmail, driingStatus: initialStat
             <Star size={14} weight="fill" />
             Faire la demande
           </button>
-          <a
-            href="https://driing.co"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={s.btnBecome}
-          >
+          <a href="https://driing.co" target="_blank" rel="noopener noreferrer" style={s.btnBecome}>
             Pas encore client Driing ?
             <ArrowSquareOut size={13} />
           </a>

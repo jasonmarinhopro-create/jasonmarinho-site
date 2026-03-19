@@ -126,6 +126,7 @@ export default async function AbonnementPage() {
                   <DriingRequestForm
                     userEmail={userEmail}
                     driingStatus={driingStatus}
+                    needsFix={driingStatus === 'confirmed'}
                   />
                 </div>
               </>
