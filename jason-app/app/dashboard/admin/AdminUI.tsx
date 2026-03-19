@@ -2,12 +2,12 @@
 
 import { useState, useTransition } from 'react'
 import {
-  Users, Lightning, Warning, Lightbulb, CheckCircle,
+  Users, Lightning, Warning, CheckCircle,
   XCircle, Trash, Check, X, ArrowClockwise, Robot,
 } from '@phosphor-icons/react'
 import {
   confirmDriingMember, rejectDriingMember,
-  validateReport, deleteReport, deleteSuggestion, deleteUser, changeUserPlan,
+  validateReport, deleteReport, deleteSuggestion,
 } from './actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -47,53 +47,23 @@ interface Stats {
   suggestions: number
 }
 
-interface Member {
-  id: string
-  email: string
-  full_name: string | null
-  role: string
-  driing_status: string
-  created_at: string
-  plan: string
-}
-
-const PLANS = [
-  { value: 'decouverte', label: 'Découverte',    color: 'rgba(240,244,255,0.4)', bg: 'rgba(255,255,255,0.06)' },
-  { value: 'driing',     label: 'Membre Driing', color: '#FFD56B',               bg: 'rgba(255,213,107,0.10)' },
-] as const
-
 interface AdminUIProps {
   pendingDriing: PendingUser[]
   reports: Report[]
   suggestions: Suggestion[]
-  allMembers: Member[]
   stats: Stats
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
+// ── Helpers ─────────────────────────────────────────────────────────────────
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fr-FR', {
     day: '2-digit', month: 'short', year: 'numeric',
   })
 }
 
-/** Détecte les comptes bot : nom aléatoire sans espaces ou email avec trop de points courts */
-function isBotLike(name: string | null, email: string): boolean {
-  if (name && name.length > 8 && !name.includes(' ')) {
-    // Nom en camelCase aléatoire : contient majuscules ET minuscules mélangées
-    if (/[A-Z]/.test(name) && /[a-z]/.test(name)) return true
-  }
-  // Email : partie locale avec beaucoup de segments courts séparés par des points
-  const local = email.split('@')[0]
-  const parts = local.split('.')
-  if (parts.length >= 4 && parts.every(p => p.length <= 3)) return true
-  return false
-}
-
-// ── Main component ─────────────────────────────────────────────────────────
-export default function AdminUI({ pendingDriing, reports, suggestions, allMembers, stats }: AdminUIProps) {
-  const [tab, setTab] = useState<'driing' | 'members' | 'reports' | 'suggestions'>('driing')
-  const [search, setSearch] = useState('')
+// ── Main component ───────────────────────────────────────────────────────────
+export default function AdminUI({ pendingDriing, reports, suggestions, stats }: AdminUIProps) {
+  const [tab, setTab] = useState<'driing' | 'reports' | 'suggestions'>('driing')
   const [isPending, startTransition] = useTransition()
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
 
@@ -114,20 +84,12 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
     })
   }
 
-  const filteredMembers = allMembers.filter(m =>
-    !search ||
-    m.email.toLowerCase().includes(search.toLowerCase()) ||
-    (m.full_name ?? '').toLowerCase().includes(search.toLowerCase())
-  )
-  const suspectBots = allMembers.filter(m => isBotLike(m.full_name, m.email)).length
-
   const pendingReportsCount = reports.filter(r => !r.is_validated).length
 
   const tabs = [
-    { key: 'driing',       label: 'Driing en attente', count: stats.pendingDriing  },
-    { key: 'members',      label: 'Membres',            count: stats.totalUsers     },
-    { key: 'reports',      label: 'Signalements',       count: pendingReportsCount  },
-    { key: 'suggestions',  label: 'Suggestions',        count: stats.suggestions    },
+    { key: 'driing',      label: 'Driing en attente', count: stats.pendingDriing  },
+    { key: 'reports',     label: 'Signalements',       count: pendingReportsCount  },
+    { key: 'suggestions', label: 'Suggestions',        count: stats.suggestions    },
   ] as const
 
   return (
@@ -135,10 +97,10 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
 
       {/* ── Stats ── */}
       <div style={s.statsGrid}>
-        <StatCard icon={<Users size={20} />}    label="Utilisateurs"    value={stats.totalUsers}    color="#6b7280" />
-        <StatCard icon={<Lightning size={20} />} label="Membres Driing"  value={stats.driingMembers} color="#FFD56B" />
-        <StatCard icon={<Robot size={20} />}     label="Bots suspects"   value={suspectBots}          color="#f87171" alert={suspectBots > 0} />
-        <StatCard icon={<Warning size={20} />}   label="Signalements"    value={reports.length} color="#fb923c" alert={pendingReportsCount > 0} />
+        <StatCard icon={<Users size={20} />}    label="Utilisateurs"      value={stats.totalUsers}    color="#6b7280" />
+        <StatCard icon={<Lightning size={20} />} label="Membres Driing"    value={stats.driingMembers} color="#FFD56B" />
+        <StatCard icon={<Warning size={20} />}   label="Driing en attente" value={stats.pendingDriing} color="#fb923c" alert={stats.pendingDriing > 0} />
+        <StatCard icon={<Warning size={20} />}   label="Signalements"      value={reports.length}      color="#f87171" alert={pendingReportsCount > 0} />
       </div>
 
       {/* ── Tabs ── */}
@@ -203,79 +165,6 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
             </Row>
           ))}
         </Section>
-      )}
-
-      {/* ── Members tab ── */}
-      {tab === 'members' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <input
-              type="search"
-              placeholder="Rechercher par nom ou email…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={s.searchInput}
-            />
-            {filteredMembers.filter(m => isBotLike(m.full_name, m.email)).length > 0 && (
-              <span style={{ ...s.badge, background: 'rgba(248,113,113,0.12)', color: '#f87171', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                <Robot size={12} />
-                {filteredMembers.filter(m => isBotLike(m.full_name, m.email)).length} bot(s) suspect(s)
-              </span>
-            )}
-          </div>
-          <Section title={`${filteredMembers.length} utilisateur${filteredMembers.length > 1 ? 's' : ''}`} empty={filteredMembers.length === 0} emptyMsg="Aucun résultat.">
-            {filteredMembers.map(m => {
-              const suspect = isBotLike(m.full_name, m.email)
-              return (
-                <Row key={m.id}>
-                  <Cell flex={2}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                      <span style={s.cellPrimary}>{m.full_name || '—'}</span>
-                      {suspect && (
-                        <span title="Compte bot suspect" style={{ color: '#f87171', display: 'flex' }}>
-                          <Robot size={14} />
-                        </span>
-                      )}
-                    </div>
-                    <div style={s.cellSub}>{m.email}</div>
-                  </Cell>
-                  <Cell>
-                    <RoleBadge role={m.role} />
-                  </Cell>
-                  <Cell>
-                    {m.driing_status !== 'none' && <DriingBadge status={m.driing_status} />}
-                  </Cell>
-                  <Cell>
-                    <PlanSelect
-                      value={m.plan || 'decouverte'}
-                      loading={isPending}
-                      onChange={plan => action(m.id, () => changeUserPlan(m.id, plan), 'Plan mis à jour')}
-                    />
-                  </Cell>
-                  <Cell>
-                    <div style={s.cellSub}>Inscrit le {formatDate(m.created_at)}</div>
-                  </Cell>
-                  <Cell align="right">
-                    {feedback?.id === m.id ? (
-                      <FeedbackPill type={feedback.type} msg={feedback.msg} />
-                    ) : (
-                      <ActionBtn
-                        label="Supprimer"
-                        icon={<Trash size={13} weight="bold" />}
-                        color="#f87171"
-                        loading={isPending}
-                        onClick={() => {
-                          if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
-                          action(m.id, () => deleteUser(m.id), 'Utilisateur supprimé')
-                        }}
-                      />
-                    )}
-                  </Cell>
-                </Row>
-              )
-            })}
-          </Section>
-        </div>
       )}
 
       {/* ── Reports tab ── */}
@@ -382,16 +271,12 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
   )
 }
 
-// ── Sub-components ─────────────────────────────────────────────────────────
-
+// ── Sub-components ──────────────────────────────────────────────────────────
 function StatCard({ icon, label, value, color, alert }: {
   icon: React.ReactNode; label: string; value: number; color: string; alert?: boolean
 }) {
   return (
-    <div style={{
-      ...s.statCard,
-      ...(alert ? { borderColor: `${color}33` } : {}),
-    }}>
+    <div style={{ ...s.statCard, ...(alert ? { borderColor: `${color}33` } : {}) }}>
       <div style={{ ...s.statIcon, color, background: `${color}18` }}>{icon}</div>
       <div>
         <div style={{ ...s.statValue, ...(alert ? { color } : {}) }}>{value}</div>
@@ -425,12 +310,8 @@ function Cell({ children, flex, align }: {
 }) {
   return (
     <div style={{
-      flex: flex ?? 1,
-      minWidth: 0,
-      textAlign: align,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
+      flex: flex ?? 1, minWidth: 0, textAlign: align,
+      display: 'flex', flexDirection: 'column', justifyContent: 'center',
     }}>
       {children}
     </div>
@@ -458,58 +339,6 @@ function ActionBtn({ label, icon, color, loading, onClick }: {
   )
 }
 
-function RoleBadge({ role }: { role: string }) {
-  const map: Record<string, { label: string; bg: string; color: string }> = {
-    admin:  { label: 'Admin',       bg: 'rgba(192,132,252,.12)', color: '#C084FC' },
-    driing: { label: 'Driing',      bg: 'rgba(255,213,107,.12)', color: '#FFD56B' },
-    user:   { label: 'Utilisateur', bg: 'rgba(255,255,255,.06)', color: 'rgba(240,244,255,.4)' },
-  }
-  const { label, bg, color } = map[role] ?? map.user
-  return <span style={{ ...s.badge, background: bg, color }}>{label}</span>
-}
-
-function DriingBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; bg: string; color: string }> = {
-    pending:   { label: 'En attente',  bg: 'rgba(251,146,60,.12)', color: '#fb923c' },
-    confirmed: { label: 'Confirmé',    bg: 'rgba(52,211,153,.12)', color: '#34D399' },
-  }
-  const cfg = map[status]
-  if (!cfg) return null
-  return <span style={{ ...s.badge, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-}
-
-function PlanSelect({ value, loading, onChange }: {
-  value: string; loading: boolean; onChange: (plan: string) => void
-}) {
-  const current = PLANS.find(p => p.value === value) ?? PLANS[0]
-  return (
-    <select
-      value={value}
-      disabled={loading}
-      onChange={e => onChange(e.target.value)}
-      style={{
-        background: current.bg,
-        color: current.color,
-        border: `1px solid ${current.color}30`,
-        borderRadius: '7px',
-        padding: '5px 10px',
-        fontSize: '12px',
-        fontWeight: 600,
-        cursor: loading ? 'not-allowed' : 'pointer',
-        outline: 'none',
-        fontFamily: 'Outfit, sans-serif',
-        opacity: loading ? 0.5 : 1,
-      }}
-    >
-      {PLANS.map(p => (
-        <option key={p.value} value={p.value} style={{ background: '#040d0b', color: '#f0f4ff' }}>
-          {p.label}
-        </option>
-      ))}
-    </select>
-  )
-}
-
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
   const color = type === 'ok' ? '#34D399' : '#f87171'
   return (
@@ -525,11 +354,10 @@ function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
   )
 }
 
-// ── Styles ─────────────────────────────────────────────────────────────────
+// ── Styles ──────────────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '24px' },
 
-  // Stats
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px' },
   statCard: {
     display: 'flex', alignItems: 'center', gap: '14px',
@@ -539,8 +367,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   statIcon: {
     width: '40px', height: '40px', borderRadius: '10px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
   },
   statValue: {
     fontFamily: 'Fraunces, serif', fontSize: '26px', fontWeight: 400,
@@ -548,7 +375,6 @@ const s: Record<string, React.CSSProperties> = {
   },
   statLabel: { fontSize: '12px', color: 'rgba(240,244,255,0.4)', marginTop: '3px' },
 
-  // Tabs
   tabBar: {
     display: 'flex', gap: '4px',
     background: 'rgba(255,255,255,0.03)',
@@ -560,29 +386,20 @@ const s: Record<string, React.CSSProperties> = {
     padding: '9px 18px', borderRadius: '9px',
     fontSize: '13px', fontWeight: 500,
     color: 'rgba(240,244,255,0.45)',
-    background: 'none', border: 'none', cursor: 'pointer',
-    transition: 'all 0.15s',
+    background: 'none', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
   },
-  tabActive: {
-    background: 'rgba(255,255,255,0.07)',
-    color: '#f0f4ff',
-  },
+  tabActive: { background: 'rgba(255,255,255,0.07)', color: '#f0f4ff' },
   tabBadge: {
     fontSize: '11px', fontWeight: 700,
-    background: 'rgba(255,255,255,0.08)',
-    color: 'rgba(240,244,255,0.4)',
+    background: 'rgba(255,255,255,0.08)', color: 'rgba(240,244,255,0.4)',
     padding: '1px 7px', borderRadius: '100px',
   },
-  tabBadgeActive: {
-    background: 'rgba(255,213,107,0.15)',
-    color: '#FFD56B',
-  },
+  tabBadgeActive: { background: 'rgba(255,213,107,0.15)', color: '#FFD56B' },
 
-  // Section
   section: { display: 'flex', flexDirection: 'column', gap: '0' },
   sectionTitle: {
     fontSize: '11px', fontWeight: 600, letterSpacing: '1.5px',
-    textTransform: 'uppercase', color: 'rgba(240,244,255,0.3)',
+    textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.3)',
     padding: '0 0 12px',
   },
   table: {
@@ -594,41 +411,30 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '16px',
     padding: '16px 20px',
     borderBottom: '1px solid rgba(255,255,255,0.05)',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap' as const,
   },
   empty: {
     background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '14px',
-    padding: '40px', textAlign: 'center',
-    fontSize: '14px', color: 'rgba(240,244,255,0.3)',
+    borderRadius: '14px', padding: '40px',
+    textAlign: 'center' as const, fontSize: '14px', color: 'rgba(240,244,255,0.3)',
   },
-
-  // Cell content
   cellPrimary: {
     fontSize: '14px', fontWeight: 500, color: '#f0f4ff',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
   },
   cellSub: {
     fontSize: '12px', color: 'rgba(240,244,255,0.4)', marginTop: '2px',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
   },
   description: {
     fontSize: '13px', color: 'rgba(240,244,255,0.55)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
   },
   badge: {
     display: 'inline-block', fontSize: '11px', fontWeight: 600,
     padding: '3px 9px', borderRadius: '100px',
-    letterSpacing: '0.3px', whiteSpace: 'nowrap',
+    letterSpacing: '0.3px', whiteSpace: 'nowrap' as const,
   },
-  actions: { display: 'flex', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap' },
-  searchInput: {
-    width: '100%', maxWidth: '360px',
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '10px', padding: '10px 16px',
-    fontSize: '14px', color: '#f0f4ff',
-    outline: 'none',
-  },
+  actions: { display: 'flex', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap' as const },
 }
