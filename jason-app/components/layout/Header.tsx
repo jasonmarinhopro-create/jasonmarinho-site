@@ -62,10 +62,11 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     : '?'
 
   const planColors: Record<string, { bg: string; color: string; dot: string }> = {
-    'Découverte': { bg: 'rgba(255,255,255,0.08)', color: 'rgba(240,244,255,0.5)', dot: '#6b7280' },
-    'Hôte':       { bg: 'rgba(99,214,131,0.12)', color: '#63D683', dot: '#63D683' },
-    'Pro':        { bg: 'rgba(255,213,107,0.12)', color: '#FFD56B', dot: '#FFD56B' },
-    'Agence':     { bg: 'rgba(147,197,253,0.12)', color: '#93C5FD', dot: '#93C5FD' },
+    'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'rgba(240,244,255,0.5)', dot: '#6b7280' },
+    'Hôte':          { bg: 'rgba(99,214,131,0.12)',  color: '#63D683', dot: '#63D683' },
+    'Pro':           { bg: 'rgba(255,213,107,0.12)', color: '#FFD56B', dot: '#FFD56B' },
+    'Agence':        { bg: 'rgba(147,197,253,0.12)', color: '#93C5FD', dot: '#93C5FD' },
+    'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC', dot: '#C084FC' },
   }
   const plan = planColors[currentPlan] ?? planColors['Découverte']
 
