@@ -7,7 +7,7 @@ import {
 } from '@phosphor-icons/react'
 import {
   confirmDriingMember, rejectDriingMember,
-  validateReport, deleteReport, deleteSuggestion, deleteUser,
+  validateReport, deleteReport, deleteSuggestion, deleteUser, changeUserPlan,
 } from './actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -53,7 +53,15 @@ interface Member {
   role: string
   driing_status: string
   created_at: string
+  plan: string
 }
+
+const PLANS = [
+  { value: 'decouverte', label: 'Découverte', color: 'rgba(240,244,255,0.4)', bg: 'rgba(255,255,255,0.06)' },
+  { value: 'hote',       label: 'Hôte',       color: '#63D683',               bg: 'rgba(99,214,131,0.10)' },
+  { value: 'pro',        label: 'Pro',         color: '#FFD56B',               bg: 'rgba(255,213,107,0.10)' },
+  { value: 'agence',     label: 'Agence',      color: '#93C5FD',               bg: 'rgba(147,197,253,0.10)' },
+] as const
 
 interface AdminUIProps {
   pendingDriing: PendingUser[]
@@ -235,6 +243,13 @@ export default function AdminUI({ pendingDriing, reports, suggestions, allMember
                   </Cell>
                   <Cell>
                     {m.driing_status !== 'none' && <DriingBadge status={m.driing_status} />}
+                  </Cell>
+                  <Cell>
+                    <PlanSelect
+                      value={m.plan || 'decouverte'}
+                      loading={isPending}
+                      onChange={plan => action(m.id, () => changeUserPlan(m.id, plan), 'Plan mis à jour')}
+                    />
                   </Cell>
                   <Cell>
                     <div style={s.cellSub}>Inscrit le {formatDate(m.created_at)}</div>
@@ -448,6 +463,38 @@ function DriingBadge({ status }: { status: string }) {
   const cfg = map[status]
   if (!cfg) return null
   return <span style={{ ...s.badge, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+}
+
+function PlanSelect({ value, loading, onChange }: {
+  value: string; loading: boolean; onChange: (plan: string) => void
+}) {
+  const current = PLANS.find(p => p.value === value) ?? PLANS[0]
+  return (
+    <select
+      value={value}
+      disabled={loading}
+      onChange={e => onChange(e.target.value)}
+      style={{
+        background: current.bg,
+        color: current.color,
+        border: `1px solid ${current.color}30`,
+        borderRadius: '7px',
+        padding: '5px 10px',
+        fontSize: '12px',
+        fontWeight: 600,
+        cursor: loading ? 'not-allowed' : 'pointer',
+        outline: 'none',
+        fontFamily: 'Outfit, sans-serif',
+        opacity: loading ? 0.5 : 1,
+      }}
+    >
+      {PLANS.map(p => (
+        <option key={p.value} value={p.value} style={{ background: '#040d0b', color: '#f0f4ff' }}>
+          {p.label}
+        </option>
+      ))}
+    </select>
+  )
 }
 
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {

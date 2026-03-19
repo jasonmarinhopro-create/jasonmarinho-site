@@ -46,7 +46,7 @@ export default async function AdminPage() {
       .order('created_at', { ascending: false }),
     supabase
       .from('profiles')
-      .select('id, email, full_name, role, driing_status, created_at')
+      .select('id, email, full_name, role, driing_status, plan, created_at')
       .order('created_at', { ascending: false }),
   ])
 

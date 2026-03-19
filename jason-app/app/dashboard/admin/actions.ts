@@ -97,6 +97,23 @@ export async function deleteSuggestion(suggestionId: string) {
   return { success: true }
 }
 
+export async function changeUserPlan(userId: string, plan: string) {
+  const { error, supabase } = await getAdminClient()
+  if (error || !supabase) return { error }
+
+  const validPlans = ['decouverte', 'hote', 'pro', 'agence']
+  if (!validPlans.includes(plan)) return { error: 'Plan invalide' }
+
+  const { error: updateError } = await supabase
+    .from('profiles')
+    .update({ plan })
+    .eq('id', userId)
+
+  if (updateError) return { error: updateError.message }
+  revalidatePath('/dashboard/admin')
+  return { success: true }
+}
+
 export async function deleteUser(userId: string) {
   // Verify requester is admin first
   const { error, supabase: _ } = await getAdminClient()
