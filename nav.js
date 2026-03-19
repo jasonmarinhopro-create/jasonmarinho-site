@@ -2,11 +2,11 @@
   'use strict';
 
   /* ── Phosphor Icons (fallback si non chargé par la page) ── */
-  if (!document.querySelector('link[href*="phosphor-icons"]')) {
+  if (!document.querySelector('link[href*="phosphor-icons"]') && !document.querySelector('link[href*="jsdelivr.net"]')) {
     ['bold','regular'].forEach(function(w){
       var l = document.createElement('link');
       l.rel = 'stylesheet'; l.type = 'text/css';
-      l.href = 'https://unpkg.com/@phosphor-icons/web@2.1.1/src/'+w+'/style.css';
+      l.href = 'https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/'+w+'/style.css';
       document.head.appendChild(l);
     });
   }
@@ -103,18 +103,21 @@
         + '</div>'
       + '</li>'
 
-      /* Services */
+      /* Formations — lien direct */
+      + '<li><a href="/formations" class="n-link">Formations</a></li>'
+
+      /* Services / Outils */
       + '<li class="n-drop">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Services ' + CARET + '</button>'
         + '<div class="n-mega">'
           + '<div class="n-col">'
             + '<div class="n-col-title">Formations</div>'
+            + '<a href="/formations"><i class="ph-regular ph-graduation-cap"></i>Voir toutes les formations</a>'
             + '<a href="/services/gmb"><i class="ph-regular ph-map-pin"></i>GMB &amp; visibilité locale</a>'
             + '<a href="/services/annonce-directe"><i class="ph-regular ph-megaphone"></i>Réservation directe</a>'
-            + '<a href="/services/acquisition-voyageurs"><i class="ph-regular ph-users"></i>Acquisition voyageurs</a>'
           + '</div>'
           + '<div class="n-col">'
-            + '<div class="n-col-title">Outils &amp; Plateforme</div>'
+            + '<div class="n-col-title">Communauté &amp; Outils</div>'
             + '<a href="/services/groupes-facebook"><i class="ph-regular ph-users-four"></i>Groupes Facebook</a>'
             + '<a href="/services/securite"><i class="ph-regular ph-shield-check"></i>Sécurité des accès</a>'
             + '<a href="/services/partenaires"><i class="ph-regular ph-handshake"></i>Partenaires</a>'
@@ -155,9 +158,9 @@
     + '</div>'
     + '<div class="mob-section">'
       + '<div class="mob-section-title">Formations</div>'
+      + '<a href="/formations"><i class="ph-regular ph-graduation-cap"></i>Toutes les formations</a>'
       + '<a href="/services/gmb"><i class="ph-regular ph-map-pin"></i>GMB &amp; visibilité locale</a>'
       + '<a href="/services/annonce-directe"><i class="ph-regular ph-megaphone"></i>Réservation directe</a>'
-      + '<a href="/services/acquisition-voyageurs"><i class="ph-regular ph-users"></i>Acquisition voyageurs</a>'
     + '</div>'
     + '<div class="mob-section">'
       + '<div class="mob-section-title">Outils &amp; Plateforme</div>'
