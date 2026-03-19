@@ -32,7 +32,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
       if (!session) return
       supabase
         .from('profiles')
-        .select('full_name, role')
+        .select('full_name, role, plan')
         .eq('id', session.user.id)
         .maybeSingle()
         .then(({ data }) => {
@@ -40,6 +40,10 @@ export default function Header({ title, userName: initialUserName, currentPlan =
           if (data?.role === 'admin') {
             setResolvedPlan('Administrateur')
             setIsAdmin(true)
+          } else if (data?.plan === 'driing') {
+            setResolvedPlan('Membre Driing')
+          } else {
+            setResolvedPlan('Découverte')
           }
         })
     })
@@ -68,6 +72,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
 
   const planColors: Record<string, { bg: string; color: string; dot: string }> = {
     'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'rgba(240,244,255,0.5)', dot: '#6b7280' },
+    'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B', dot: '#FFD56B' },
     'Hôte':          { bg: 'rgba(99,214,131,0.12)',  color: '#63D683', dot: '#63D683' },
     'Pro':           { bg: 'rgba(255,213,107,0.12)', color: '#FFD56B', dot: '#FFD56B' },
     'Agence':        { bg: 'rgba(147,197,253,0.12)', color: '#93C5FD', dot: '#93C5FD' },
