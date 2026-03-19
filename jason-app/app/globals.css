@@ -107,6 +107,13 @@ em { font-style: italic; color: var(--accent); }
 }
 .input-field::placeholder { color: var(--text-3); }
 .input-field:focus { border-color: rgba(255,213,107,0.5); background: var(--surface-2); }
+/* Force le fond sombre sur l'autofill navigateur (sinon il passe en blanc et cache l'œil) */
+.input-field:-webkit-autofill,
+.input-field:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--surface-2) inset;
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--text);
+}
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp {
