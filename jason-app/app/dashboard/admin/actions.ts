@@ -3,6 +3,10 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
 function getServiceClient() {
   return createAdminClient(
@@ -27,18 +31,67 @@ async function getAdminClient() {
   return { error: null, supabase }
 }
 
+async function sendDriingConfirmationEmail(userEmail: string, userName: string | null) {
+  const name = userName ?? userEmail
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: userEmail,
+    subject: '⭐ Bienvenue dans la communauté Membre Driing !',
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #040d0b; color: #f0f4ff; border-radius: 16px;">
+        <h1 style="font-size: 28px; color: #FFD56B; margin-bottom: 8px;">Bienvenue, ${name} !</h1>
+        <p style="font-size: 16px; color: rgba(240,244,255,0.7); line-height: 1.7; margin-bottom: 24px;">
+          Ton adhésion en tant que <strong style="color: #FFD56B;">Membre Driing</strong> vient d'être confirmée.
+          Tu as maintenant accès à l'ensemble des ressources exclusives de la plateforme.
+        </p>
+        <div style="background: rgba(255,213,107,0.08); border: 1px solid rgba(255,213,107,0.2); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+          <p style="margin: 0 0 12px; font-weight: 600; color: #FFD56B;">Ce qui t'attend :</p>
+          <ul style="margin: 0; padding-left: 20px; color: rgba(240,244,255,0.7); line-height: 2;">
+            <li>Toutes les formations incluses</li>
+            <li>Communauté privée Driing</li>
+            <li>Accès prioritaire aux nouveaux contenus</li>
+            <li>Offres partenaires exclusives</li>
+            <li>Support dédié</li>
+          </ul>
+        </div>
+        <a href="https://app.jasonmarinho.com/dashboard" style="display: inline-block; background: rgba(255,213,107,0.15); border: 1px solid rgba(255,213,107,0.3); color: #FFD56B; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600;">
+          Accéder à mon espace →
+        </a>
+        <p style="margin-top: 32px; font-size: 12px; color: rgba(240,244,255,0.25);">
+          — L'équipe Jason Marinho
+        </p>
+      </div>
+    `,
+  }).catch(() => {})
+}
+
 export async function confirmDriingMember(userId: string) {
   const { error } = await getAdminClient()
   if (error) return { error }
 
   const adminClient = getServiceClient()
+
+  // Récupère l'email et le nom avant mise à jour
+  const { data: userProfile } = await adminClient
+    .from('profiles')
+    .select('email, full_name')
+    .eq('id', userId)
+    .single()
+
   const { error: updateError } = await adminClient
     .from('profiles')
-    .update({ role: 'driing', driing_status: 'confirmed' })
+    .update({ role: 'driing', driing_status: 'confirmed', plan: 'driing' })
     .eq('id', userId)
 
   if (updateError) return { error: updateError.message }
+
+  // Email de confirmation à l'utilisateur
+  if (userProfile?.email) {
+    await sendDriingConfirmationEmail(userProfile.email, userProfile.full_name)
+  }
+
   revalidatePath('/dashboard/admin')
+  revalidatePath('/dashboard/admin/membres')
   return { success: true }
 }
 
@@ -100,32 +153,48 @@ export async function deleteSuggestion(suggestionId: string) {
 }
 
 export async function changeUserPlan(userId: string, plan: string) {
-  // Verify requester is admin first
   const { error } = await getAdminClient()
   if (error) return { error }
 
   const validPlans = ['decouverte', 'driing']
   if (!validPlans.includes(plan)) return { error: 'Plan invalide' }
 
-  // Use service role to bypass RLS on profiles table
   const adminClient = getServiceClient()
+
+  // Récupère le profil pour l'email de confirmation
+  const { data: userProfile } = await adminClient
+    .from('profiles')
+    .select('email, full_name')
+    .eq('id', userId)
+    .single()
+
+  // Quand on passe en driing : confirme le statut + rôle
+  // Quand on repasse en découverte : reset driing_status
+  const extraFields = plan === 'driing'
+    ? { role: 'driing', driing_status: 'confirmed' }
+    : { driing_status: 'none' }
+
   const { error: updateError } = await adminClient
     .from('profiles')
-    .update({ plan })
+    .update({ plan, ...extraFields })
     .eq('id', userId)
 
   if (updateError) return { error: updateError.message }
+
+  // Email de confirmation si passage en Driing
+  if (plan === 'driing' && userProfile?.email) {
+    await sendDriingConfirmationEmail(userProfile.email, userProfile.full_name)
+  }
+
   revalidatePath('/dashboard/admin')
   revalidatePath('/dashboard/admin/membres')
   return { success: true }
 }
 
 export async function deleteUser(userId: string) {
-  // Verify requester is admin first
   const { error, supabase: _ } = await getAdminClient()
   if (error) return { error }
 
-  // Use service role to delete the auth user (cascades to profile)
   const adminClient = getServiceClient()
   const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId)
 
@@ -133,3 +202,4 @@ export async function deleteUser(userId: string) {
   revalidatePath('/dashboard/admin')
   return { success: true }
 }
+
