@@ -19,9 +19,22 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
   // Récupère le profil pour avoir le nom
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, email, driing_status')
+    .select('full_name, email, driing_status, plan')
     .eq('id', session.user.id)
     .maybeSingle()
+
+  // Cas incohérent : driing_status confirmé mais plan pas encore mis à jour
+  // (bug de l'ancienne version) → on corrige directement
+  if (profile?.driing_status === 'confirmed' && profile?.plan !== 'driing') {
+    const adminClient = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } },
+    )
+    await adminClient.from('profiles').update({ plan: 'driing', role: 'driing' }).eq('id', session.user.id)
+    revalidatePath('/dashboard/abonnement')
+    return { success: true }
+  }
 
   if (profile?.driing_status === 'pending') return { error: 'Ta demande est déjà en cours de traitement.' }
   if (profile?.driing_status === 'confirmed') return { error: 'Tu es déjà Membre Driing.' }
