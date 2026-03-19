@@ -13,7 +13,7 @@ export const getProfile = cache(async () => {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, role, driing_status')
+    .select('full_name, role, driing_status, plan')
     .eq('id', session.user.id)
     .single()
 
@@ -22,5 +22,6 @@ export const getProfile = cache(async () => {
     full_name: profile?.full_name ?? null,
     role: (profile?.role ?? 'user') as 'user' | 'driing' | 'admin',
     driing_status: (profile?.driing_status ?? 'none') as 'none' | 'pending' | 'confirmed',
+    plan: (profile?.plan ?? 'decouverte') as 'decouverte' | 'driing',
   }
 })
