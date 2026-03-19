@@ -1,68 +1,41 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
 import {
-  Users, Lightning, Warning, CheckCircle,
-  XCircle, Trash, Check, X, ArrowClockwise, Robot,
+  Users, Lightning, Warning, CheckCircle, XCircle, Trash,
+  Check, X, ArrowClockwise, TrendUp, FileText, GraduationCap,
+  UsersThree, ArrowRight, Bell,
 } from '@phosphor-icons/react'
 import {
   confirmDriingMember, rejectDriingMember,
   validateReport, deleteReport, deleteSuggestion,
 } from './actions'
 
-// ── Types ──────────────────────────────────────────────────────────────────
 interface PendingUser {
-  id: string
-  email: string
-  full_name: string | null
-  created_at: string
-  driing_status: string
+  id: string; email: string; full_name: string | null; created_at: string; driing_status: string
 }
-
 interface Report {
-  id: string
-  identifier: string
-  identifier_type: string
-  name: string | null
-  incident_type: string
-  description: string | null
-  reporter_city: string | null
-  reported_at: string
-  is_validated: boolean
+  id: string; identifier: string; identifier_type: string; name: string | null
+  incident_type: string; description: string | null; reporter_city: string | null
+  reported_at: string; is_validated: boolean
 }
-
 interface Suggestion {
-  id: string
-  type: 'formation' | 'partner'
-  message: string
-  user_email: string | null
-  created_at: string
+  id: string; type: 'formation' | 'partner'; message: string; user_email: string | null; created_at: string
 }
-
 interface Stats {
-  totalUsers: number
-  driingMembers: number
-  pendingDriing: number
-  pendingReports: number
-  suggestions: number
+  totalUsers: number; driingMembers: number; newThisMonth: number
+  pendingDriing: number; pendingReports: number; suggestions: number
+  templatesCount: number; formationsCount: number; groupsCount: number
 }
 
-interface AdminUIProps {
-  pendingDriing: PendingUser[]
-  reports: Report[]
-  suggestions: Suggestion[]
-  stats: Stats
-}
-
-// ── Helpers ─────────────────────────────────────────────────────────────────
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fr-FR', {
-    day: '2-digit', month: 'short', year: 'numeric',
-  })
+  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-// ── Main component ───────────────────────────────────────────────────────────
-export default function AdminUI({ pendingDriing, reports, suggestions, stats }: AdminUIProps) {
+export default function AdminUI({ pendingDriing, reports, suggestions, stats }: {
+  pendingDriing: PendingUser[]; reports: Report[]; suggestions: Suggestion[]; stats: Stats
+}) {
   const [tab, setTab] = useState<'driing' | 'reports' | 'suggestions'>('driing')
   const [isPending, startTransition] = useTransition()
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
@@ -71,12 +44,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
     setFeedback({ id, type, msg })
     setTimeout(() => setFeedback(null), 3000)
   }
-
-  function action<T>(
-    id: string,
-    fn: () => Promise<{ error?: string | null; success?: boolean }>,
-    successMsg: string,
-  ) {
+  function action(id: string, fn: () => Promise<{ error?: string | null }>, successMsg: string) {
     startTransition(async () => {
       const res = await fn()
       if (res?.error) notify(id, 'err', String(res.error))
@@ -85,356 +53,333 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
   }
 
   const pendingReportsCount = reports.filter(r => !r.is_validated).length
+  const totalAlerts = stats.pendingDriing + pendingReportsCount
 
   const tabs = [
-    { key: 'driing',      label: 'Driing en attente', count: stats.pendingDriing  },
-    { key: 'reports',     label: 'Signalements',       count: pendingReportsCount  },
-    { key: 'suggestions', label: 'Suggestions',        count: stats.suggestions    },
-  ] as const
+    { key: 'driing' as const,      label: 'Membres Driing', count: stats.pendingDriing },
+    { key: 'reports' as const,     label: 'Signalements',   count: pendingReportsCount },
+    { key: 'suggestions' as const, label: 'Suggestions',    count: stats.suggestions },
+  ]
 
   return (
     <div style={s.wrap}>
 
+      {/* ── Titre ── */}
+      <div style={s.pageIntro} className="fade-up">
+        <h2 style={s.pageTitle}>
+          Administration
+        </h2>
+        <p style={s.pageDesc}>Gère les membres, le contenu et les demandes en attente.</p>
+      </div>
+
       {/* ── Stats ── */}
-      <div style={s.statsGrid}>
-        <StatCard icon={<Users size={20} />}    label="Utilisateurs"      value={stats.totalUsers}    color="#6b7280" />
-        <StatCard icon={<Lightning size={20} />} label="Membres Driing"    value={stats.driingMembers} color="#FFD56B" />
-        <StatCard icon={<Warning size={20} />}   label="Driing en attente" value={stats.pendingDriing} color="#fb923c" alert={stats.pendingDriing > 0} />
-        <StatCard icon={<Warning size={20} />}   label="Signalements"      value={reports.length}      color="#f87171" alert={pendingReportsCount > 0} />
+      <div style={s.statsGrid} className="fade-up">
+        <div style={s.statCard}>
+          <div style={{ ...s.statIcon, color: '#93C5FD', background: 'rgba(147,197,253,0.12)' }}>
+            <TrendUp size={18} />
+          </div>
+          <div>
+            <div style={{ ...s.statValue, color: '#93C5FD' }}>+{stats.newThisMonth}</div>
+            <div style={s.statLabel}>ce mois</div>
+          </div>
+        </div>
+        <div style={s.statCard}>
+          <div style={{ ...s.statIcon, color: 'rgba(240,244,255,0.5)', background: 'rgba(255,255,255,0.06)' }}>
+            <Users size={18} />
+          </div>
+          <div>
+            <div style={s.statValue}>{stats.totalUsers}</div>
+            <div style={s.statLabel}>membres total</div>
+          </div>
+        </div>
+        <div style={s.statCard}>
+          <div style={{ ...s.statIcon, color: '#FFD56B', background: 'rgba(255,213,107,0.12)' }}>
+            <Lightning size={18} />
+          </div>
+          <div>
+            <div style={{ ...s.statValue, color: '#FFD56B' }}>{stats.driingMembers}</div>
+            <div style={s.statLabel}>membres Driing</div>
+          </div>
+        </div>
+        {totalAlerts > 0 && (
+          <div style={{ ...s.statCard, borderColor: 'rgba(251,146,60,0.25)' }}>
+            <div style={{ ...s.statIcon, color: '#fb923c', background: 'rgba(251,146,60,0.12)' }}>
+              <Bell size={18} />
+            </div>
+            <div>
+              <div style={{ ...s.statValue, color: '#fb923c' }}>{totalAlerts}</div>
+              <div style={s.statLabel}>action{totalAlerts > 1 ? 's' : ''} requise{totalAlerts > 1 ? 's' : ''}</div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* ── Tabs ── */}
-      <div style={s.tabBar}>
-        {tabs.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            style={{ ...s.tab, ...(tab === t.key ? s.tabActive : {}) }}
-          >
-            {t.label}
-            {t.count > 0 && (
-              <span style={{ ...s.tabBadge, ...(tab === t.key ? s.tabBadgeActive : {}) }}>
-                {t.count}
-              </span>
-            )}
-          </button>
-        ))}
+      {/* ── Gestion du contenu ── */}
+      <div className="fade-up">
+        <div style={s.sectionLabel}>Gestion du contenu</div>
+        <div style={s.contentGrid}>
+          <Link href="/dashboard/admin/membres" style={s.contentCard}>
+            <div style={{ ...s.contentCardIcon, color: 'rgba(240,244,255,0.6)', background: 'rgba(255,255,255,0.06)' }}>
+              <UsersThree size={22} />
+            </div>
+            <div style={s.contentCardBody}>
+              <div style={s.contentCardTitle}>Membres</div>
+              <div style={s.contentCardDesc}>{stats.totalUsers} inscrits · {stats.driingMembers} Driing</div>
+            </div>
+            <ArrowRight size={16} style={{ color: 'rgba(240,244,255,0.25)', flexShrink: 0 }} />
+          </Link>
+
+          <Link href="/dashboard/admin/gabarits" style={s.contentCard}>
+            <div style={{ ...s.contentCardIcon, color: '#FFD56B', background: 'rgba(255,213,107,0.1)' }}>
+              <FileText size={22} />
+            </div>
+            <div style={s.contentCardBody}>
+              <div style={s.contentCardTitle}>Gabarits</div>
+              <div style={s.contentCardDesc}>{stats.templatesCount} gabarit{stats.templatesCount > 1 ? 's' : ''} publiés</div>
+            </div>
+            <ArrowRight size={16} style={{ color: 'rgba(240,244,255,0.25)', flexShrink: 0 }} />
+          </Link>
+
+          <Link href="/dashboard/admin/formations" style={s.contentCard}>
+            <div style={{ ...s.contentCardIcon, color: '#34D399', background: 'rgba(52,211,153,0.1)' }}>
+              <GraduationCap size={22} />
+            </div>
+            <div style={s.contentCardBody}>
+              <div style={s.contentCardTitle}>Formations</div>
+              <div style={s.contentCardDesc}>{stats.formationsCount} formation{stats.formationsCount > 1 ? 's' : ''} publiée{stats.formationsCount > 1 ? 's' : ''}</div>
+            </div>
+            <ArrowRight size={16} style={{ color: 'rgba(240,244,255,0.25)', flexShrink: 0 }} />
+          </Link>
+
+          <Link href="/dashboard/admin/communaute" style={s.contentCard}>
+            <div style={{ ...s.contentCardIcon, color: '#93C5FD', background: 'rgba(147,197,253,0.1)' }}>
+              <UsersThree size={22} />
+            </div>
+            <div style={s.contentCardBody}>
+              <div style={s.contentCardTitle}>Communauté</div>
+              <div style={s.contentCardDesc}>{stats.groupsCount} groupe{stats.groupsCount > 1 ? 's' : ''} en base</div>
+            </div>
+            <ArrowRight size={16} style={{ color: 'rgba(240,244,255,0.25)', flexShrink: 0 }} />
+          </Link>
+        </div>
       </div>
 
-      {/* ── Driing tab ── */}
-      {tab === 'driing' && (
-        <Section title="Demandes membres Driing" empty={pendingDriing.length === 0} emptyMsg="Aucune demande en attente.">
-          {pendingDriing.map(u => (
-            <Row key={u.id}>
-              <Cell flex={2}>
-                <div style={s.cellPrimary}>{u.full_name || '—'}</div>
-                <div style={s.cellSub}>{u.email}</div>
-              </Cell>
-              <Cell>
-                <div style={s.cellSub}>Inscrit le {formatDate(u.created_at)}</div>
-              </Cell>
-              <Cell>
-                <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c' }}>
-                  En attente
-                </span>
-              </Cell>
-              <Cell align="right">
-                <div style={s.actions}>
-                  {feedback?.id === u.id ? (
-                    <FeedbackPill type={feedback.type} msg={feedback.msg} />
-                  ) : (
-                    <>
-                      <ActionBtn
-                        label="Confirmer"
-                        icon={<Check size={13} weight="bold" />}
-                        color="#34D399"
-                        loading={isPending}
-                        onClick={() => action(u.id, () => confirmDriingMember(u.id), 'Membre Driing confirmé')}
-                      />
-                      <ActionBtn
-                        label="Rejeter"
-                        icon={<X size={13} weight="bold" />}
-                        color="#f87171"
-                        loading={isPending}
-                        onClick={() => action(u.id, () => rejectDriingMember(u.id), 'Demande rejetée')}
-                      />
-                    </>
-                  )}
-                </div>
-              </Cell>
-            </Row>
-          ))}
-        </Section>
-      )}
-
-      {/* ── Reports tab ── */}
-      {tab === 'reports' && (
-        <Section title={`${reports.length} signalement${reports.length > 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
-          {reports.map(r => (
-            <Row key={r.id}>
-              <Cell flex={2}>
-                <div style={s.cellPrimary}>{r.name || r.identifier}</div>
-                <div style={s.cellSub}>{r.identifier_type} · {r.identifier}</div>
-              </Cell>
-              <Cell>
-                <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: '#f87171' }}>
-                  {r.incident_type}
-                </span>
-              </Cell>
-              <Cell>
-                <span style={{
-                  ...s.badge,
-                  ...(r.is_validated
-                    ? { background: 'rgba(52,211,153,.1)', color: '#34D399' }
-                    : { background: 'rgba(251,146,60,.1)', color: '#fb923c' }),
-                }}>
-                  {r.is_validated ? 'Validé' : 'En attente'}
-                </span>
-              </Cell>
-              <Cell>
-                <div style={s.cellSub}>{r.reporter_city || '—'}</div>
-                <div style={s.cellSub}>{formatDate(r.reported_at)}</div>
-              </Cell>
-              {r.description && (
-                <Cell flex={2}>
-                  <div style={s.description}>{r.description}</div>
-                </Cell>
+      {/* ── Actions en attente ── */}
+      <div className="fade-up">
+        <div style={s.sectionLabel}>
+          Actions en attente
+          {totalAlerts > 0 && <span style={s.alertDot}>{totalAlerts}</span>}
+        </div>
+        <div style={s.tabBar}>
+          {tabs.map(t => (
+            <button key={t.key} onClick={() => setTab(t.key)} style={{ ...s.tab, ...(tab === t.key ? s.tabActive : {}) }}>
+              {t.label}
+              {t.count > 0 && (
+                <span style={{ ...s.tabBadge, ...(tab === t.key ? s.tabBadgeActive : {}) }}>{t.count}</span>
               )}
-              <Cell align="right">
-                <div style={s.actions}>
-                  {feedback?.id === r.id ? (
-                    <FeedbackPill type={feedback.type} msg={feedback.msg} />
-                  ) : (
-                    <>
-                      {!r.is_validated && (
-                        <ActionBtn
-                          label="Valider"
-                          icon={<CheckCircle size={13} weight="bold" />}
-                          color="#34D399"
-                          loading={isPending}
-                          onClick={() => action(r.id, () => validateReport(r.id), 'Signalement validé')}
-                        />
-                      )}
-                      <ActionBtn
-                        label="Supprimer"
-                        icon={<Trash size={13} weight="bold" />}
-                        color="#f87171"
-                        loading={isPending}
-                        onClick={() => action(r.id, () => deleteReport(r.id), 'Signalement supprimé')}
-                      />
-                    </>
-                  )}
-                </div>
-              </Cell>
-            </Row>
+            </button>
           ))}
-        </Section>
-      )}
+        </div>
 
-      {/* ── Suggestions tab ── */}
-      {tab === 'suggestions' && (
-        <Section title="Suggestions utilisateurs" empty={suggestions.length === 0} emptyMsg="Aucune suggestion.">
-          {suggestions.map(sg => (
-            <Row key={sg.id}>
-              <Cell>
-                <span style={{
-                  ...s.badge,
-                  ...(sg.type === 'formation'
-                    ? { background: 'rgba(255,213,107,.1)', color: '#FFD56B' }
-                    : { background: 'rgba(147,197,253,.1)', color: '#93C5FD' }),
-                }}>
-                  {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
-                </span>
-              </Cell>
-              <Cell flex={3}>
-                <div style={s.cellPrimary}>{sg.message}</div>
-                <div style={s.cellSub}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>
-              </Cell>
-              <Cell align="right">
-                {feedback?.id === sg.id ? (
-                  <FeedbackPill type={feedback.type} msg={feedback.msg} />
-                ) : (
-                  <ActionBtn
-                    label="Supprimer"
-                    icon={<Trash size={13} weight="bold" />}
-                    color="#f87171"
-                    loading={isPending}
-                    onClick={() => action(sg.id, () => deleteSuggestion(sg.id), 'Suggestion supprimée')}
-                  />
-                )}
-              </Cell>
-            </Row>
-          ))}
-        </Section>
-      )}
-    </div>
-  )
-}
+        {/* Driing */}
+        {tab === 'driing' && (
+          <Section title="Demandes membres Driing" empty={pendingDriing.length === 0} emptyMsg="Aucune demande en attente.">
+            {pendingDriing.map(u => (
+              <Row key={u.id}>
+                <Cell flex={2}>
+                  <div style={s.cellPrimary}>{u.full_name || '—'}</div>
+                  <div style={s.cellSub}>{u.email}</div>
+                </Cell>
+                <Cell>
+                  <div style={s.cellSub}>Inscrit le {formatDate(u.created_at)}</div>
+                </Cell>
+                <Cell>
+                  <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c' }}>En attente</span>
+                </Cell>
+                <Cell align="right">
+                  {feedback?.id === u.id
+                    ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
+                    : (
+                      <div style={s.actions}>
+                        <ActionBtn label="Confirmer" icon={<Check size={13} weight="bold" />} color="#34D399" loading={isPending}
+                          onClick={() => action(u.id, () => confirmDriingMember(u.id), 'Membre Driing confirmé ✓')} />
+                        <ActionBtn label="Rejeter" icon={<X size={13} weight="bold" />} color="#f87171" loading={isPending}
+                          onClick={() => action(u.id, () => rejectDriingMember(u.id), 'Demande rejetée')} />
+                      </div>
+                    )}
+                </Cell>
+              </Row>
+            ))}
+          </Section>
+        )}
 
-// ── Sub-components ──────────────────────────────────────────────────────────
-function StatCard({ icon, label, value, color, alert }: {
-  icon: React.ReactNode; label: string; value: number; color: string; alert?: boolean
-}) {
-  return (
-    <div style={{ ...s.statCard, ...(alert ? { borderColor: `${color}33` } : {}) }}>
-      <div style={{ ...s.statIcon, color, background: `${color}18` }}>{icon}</div>
-      <div>
-        <div style={{ ...s.statValue, ...(alert ? { color } : {}) }}>{value}</div>
-        <div style={s.statLabel}>{label}</div>
+        {/* Reports */}
+        {tab === 'reports' && (
+          <Section title={`${reports.length} signalement${reports.length > 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
+            {reports.map(r => (
+              <Row key={r.id}>
+                <Cell flex={2}>
+                  <div style={s.cellPrimary}>{r.name || r.identifier}</div>
+                  <div style={s.cellSub}>{r.identifier_type} · {r.identifier}</div>
+                </Cell>
+                <Cell>
+                  <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: '#f87171' }}>{r.incident_type}</span>
+                </Cell>
+                <Cell>
+                  <span style={{ ...s.badge, ...(r.is_validated ? { background: 'rgba(52,211,153,.1)', color: '#34D399' } : { background: 'rgba(251,146,60,.1)', color: '#fb923c' }) }}>
+                    {r.is_validated ? 'Validé' : 'En attente'}
+                  </span>
+                </Cell>
+                <Cell>
+                  <div style={s.cellSub}>{r.reporter_city || '—'} · {formatDate(r.reported_at)}</div>
+                  {r.description && <div style={s.description}>{r.description}</div>}
+                </Cell>
+                <Cell align="right">
+                  {feedback?.id === r.id
+                    ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
+                    : (
+                      <div style={s.actions}>
+                        {!r.is_validated && (
+                          <ActionBtn label="Valider" icon={<CheckCircle size={13} weight="bold" />} color="#34D399" loading={isPending}
+                            onClick={() => action(r.id, () => validateReport(r.id), 'Signalement validé')} />
+                        )}
+                        <ActionBtn label="Supprimer" icon={<Trash size={13} weight="bold" />} color="#f87171" loading={isPending}
+                          onClick={() => action(r.id, () => deleteReport(r.id), 'Supprimé')} />
+                      </div>
+                    )}
+                </Cell>
+              </Row>
+            ))}
+          </Section>
+        )}
+
+        {/* Suggestions */}
+        {tab === 'suggestions' && (
+          <Section title="Suggestions utilisateurs" empty={suggestions.length === 0} emptyMsg="Aucune suggestion.">
+            {suggestions.map(sg => (
+              <Row key={sg.id}>
+                <Cell>
+                  <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'rgba(255,213,107,.1)', color: '#FFD56B' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD' }) }}>
+                    {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
+                  </span>
+                </Cell>
+                <Cell flex={3}>
+                  <div style={s.cellPrimary}>{sg.message}</div>
+                  <div style={s.cellSub}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>
+                </Cell>
+                <Cell align="right">
+                  {feedback?.id === sg.id
+                    ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
+                    : <ActionBtn label="Supprimer" icon={<Trash size={13} weight="bold" />} color="#f87171" loading={isPending}
+                        onClick={() => action(sg.id, () => deleteSuggestion(sg.id), 'Supprimée')} />}
+                </Cell>
+              </Row>
+            ))}
+          </Section>
+        )}
       </div>
     </div>
   )
 }
 
-function Section({ title, children, empty, emptyMsg }: {
-  title: string; children: React.ReactNode; empty: boolean; emptyMsg: string
-}) {
+// ── Sub-components ─────────────────────────────────────────────────────────
+function Section({ title, children, empty, emptyMsg }: { title: string; children: React.ReactNode; empty: boolean; emptyMsg: string }) {
   return (
     <div style={s.section}>
-      <div style={s.sectionTitle}>{title}</div>
-      {empty ? (
-        <div style={s.empty}>{emptyMsg}</div>
-      ) : (
-        <div style={s.table}>{children}</div>
-      )}
+      <div style={s.sectionSubTitle}>{title}</div>
+      {empty ? <div style={s.empty}>{emptyMsg}</div> : <div style={s.table}>{children}</div>}
     </div>
   )
 }
-
 function Row({ children }: { children: React.ReactNode }) {
   return <div style={s.row}>{children}</div>
 }
-
-function Cell({ children, flex, align }: {
-  children?: React.ReactNode; flex?: number; align?: 'right'
-}) {
+function Cell({ children, flex, align }: { children?: React.ReactNode; flex?: number; align?: 'right' }) {
   return (
-    <div style={{
-      flex: flex ?? 1, minWidth: 0, textAlign: align,
-      display: 'flex', flexDirection: 'column', justifyContent: 'center',
-    }}>
+    <div style={{ flex: flex ?? 1, minWidth: 0, textAlign: align, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       {children}
     </div>
   )
 }
-
-function ActionBtn({ label, icon, color, loading, onClick }: {
-  label: string; icon: React.ReactNode; color: string; loading: boolean; onClick: () => void
-}) {
+function ActionBtn({ label, icon, color, loading, onClick }: { label: string; icon: React.ReactNode; color: string; loading: boolean; onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      disabled={loading}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: '5px',
-        padding: '6px 12px', borderRadius: '7px',
-        fontSize: '12px', fontWeight: 500, cursor: loading ? 'not-allowed' : 'pointer',
-        background: `${color}14`, color, border: `1px solid ${color}30`,
-        opacity: loading ? 0.5 : 1, transition: 'all 0.15s',
-      }}
-    >
+    <button onClick={onClick} disabled={loading} style={{
+      display: 'inline-flex', alignItems: 'center', gap: '5px',
+      padding: '6px 12px', borderRadius: '7px', fontSize: '12px', fontWeight: 500,
+      cursor: loading ? 'not-allowed' : 'pointer',
+      background: `${color}14`, color, border: `1px solid ${color}30`,
+      opacity: loading ? 0.5 : 1, fontFamily: 'Outfit, sans-serif',
+    }}>
       {loading ? <ArrowClockwise size={12} style={{ animation: 'spin 1s linear infinite' }} /> : icon}
       {label}
     </button>
   )
 }
-
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
   const color = type === 'ok' ? '#34D399' : '#f87171'
   return (
-    <div style={{
-      display: 'inline-flex', alignItems: 'center', gap: '6px',
-      padding: '6px 12px', borderRadius: '7px',
-      fontSize: '12px', fontWeight: 500, color,
-      background: `${color}14`, border: `1px solid ${color}30`,
-    }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '7px', fontSize: '12px', fontWeight: 500, color, background: `${color}14`, border: `1px solid ${color}30` }}>
       {type === 'ok' ? <CheckCircle size={13} weight="fill" /> : <XCircle size={13} weight="fill" />}
       {msg}
     </div>
   )
 }
 
-// ── Styles ──────────────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
-  wrap: { display: 'flex', flexDirection: 'column', gap: '24px' },
+  wrap: { display: 'flex', flexDirection: 'column', gap: '32px' },
 
-  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px' },
+  pageIntro: { marginBottom: '-8px' },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.45)' },
+
+  statsGrid: { display: 'flex', gap: '14px', flexWrap: 'wrap' },
   statCard: {
     display: 'flex', alignItems: 'center', gap: '14px',
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '14px', padding: '18px 20px',
+    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '14px', padding: '16px 20px', flex: '1 1 160px',
   },
-  statIcon: {
-    width: '40px', height: '40px', borderRadius: '10px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  statValue: {
-    fontFamily: 'Fraunces, serif', fontSize: '26px', fontWeight: 400,
-    color: '#f0f4ff', lineHeight: 1.1, letterSpacing: '-0.5px',
-  },
-  statLabel: { fontSize: '12px', color: 'rgba(240,244,255,0.4)', marginTop: '3px' },
+  statIcon: { width: '36px', height: '36px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  statValue: { fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 400, color: '#f0f4ff', lineHeight: 1.1 },
+  statLabel: { fontSize: '12px', color: 'rgba(240,244,255,0.35)', marginTop: '3px' },
 
-  tabBar: {
-    display: 'flex', gap: '4px',
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '12px', padding: '4px',
+  sectionLabel: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' as const,
+    color: 'rgba(240,244,255,0.3)', marginBottom: '14px',
   },
-  tab: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    padding: '9px 18px', borderRadius: '9px',
-    fontSize: '13px', fontWeight: 500,
-    color: 'rgba(240,244,255,0.45)',
-    background: 'none', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
-  },
-  tabActive: { background: 'rgba(255,255,255,0.07)', color: '#f0f4ff' },
-  tabBadge: {
+  alertDot: {
+    background: 'rgba(251,146,60,0.15)', color: '#fb923c',
+    border: '1px solid rgba(251,146,60,0.25)',
+    borderRadius: '100px', padding: '1px 8px',
     fontSize: '11px', fontWeight: 700,
-    background: 'rgba(255,255,255,0.08)', color: 'rgba(240,244,255,0.4)',
-    padding: '1px 7px', borderRadius: '100px',
   },
+
+  contentGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '12px' },
+  contentCard: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+    borderRadius: '14px', padding: '18px 20px',
+    textDecoration: 'none', transition: 'border-color 0.18s, background 0.18s',
+  },
+  contentCardIcon: { width: '42px', height: '42px', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  contentCardBody: { flex: 1, minWidth: 0 },
+  contentCardTitle: { fontSize: '14px', fontWeight: 600, color: '#f0f4ff', marginBottom: '3px' },
+  contentCardDesc: { fontSize: '12px', color: 'rgba(240,244,255,0.35)' },
+
+  tabBar: { display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '4px', marginBottom: '16px' },
+  tab: { display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.45)', background: 'none', border: 'none', cursor: 'pointer' },
+  tabActive: { background: 'rgba(255,255,255,0.07)', color: '#f0f4ff' },
+  tabBadge: { fontSize: '11px', fontWeight: 700, background: 'rgba(255,255,255,0.08)', color: 'rgba(240,244,255,0.4)', padding: '1px 7px', borderRadius: '100px' },
   tabBadgeActive: { background: 'rgba(255,213,107,0.15)', color: '#FFD56B' },
 
   section: { display: 'flex', flexDirection: 'column', gap: '0' },
-  sectionTitle: {
-    fontSize: '11px', fontWeight: 600, letterSpacing: '1.5px',
-    textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.3)',
-    padding: '0 0 12px',
-  },
-  table: {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '14px', overflow: 'hidden',
-  },
-  row: {
-    display: 'flex', alignItems: 'center', gap: '16px',
-    padding: '16px 20px',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
-    flexWrap: 'wrap' as const,
-  },
-  empty: {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '14px', padding: '40px',
-    textAlign: 'center' as const, fontSize: '14px', color: 'rgba(240,244,255,0.3)',
-  },
-  cellPrimary: {
-    fontSize: '14px', fontWeight: 500, color: '#f0f4ff',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  cellSub: {
-    fontSize: '12px', color: 'rgba(240,244,255,0.4)', marginTop: '2px',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  description: {
-    fontSize: '13px', color: 'rgba(240,244,255,0.55)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  badge: {
-    display: 'inline-block', fontSize: '11px', fontWeight: 600,
-    padding: '3px 9px', borderRadius: '100px',
-    letterSpacing: '0.3px', whiteSpace: 'nowrap' as const,
-  },
+  sectionSubTitle: { fontSize: '11px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.25)', padding: '0 0 10px' },
+  table: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', overflow: 'hidden' },
+  row: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)', flexWrap: 'wrap' as const },
+  empty: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '40px', textAlign: 'center' as const, fontSize: '14px', color: 'rgba(240,244,255,0.3)' },
+  cellPrimary: { fontSize: '14px', fontWeight: 500, color: '#f0f4ff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
+  cellSub: { fontSize: '12px', color: 'rgba(240,244,255,0.4)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
+  description: { fontSize: '13px', color: 'rgba(240,244,255,0.5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, marginTop: '2px' },
+  badge: { display: 'inline-block', fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px', letterSpacing: '0.3px', whiteSpace: 'nowrap' as const },
   actions: { display: 'flex', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap' as const },
 }
