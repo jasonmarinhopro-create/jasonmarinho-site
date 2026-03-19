@@ -5,7 +5,7 @@
 
 ALTER TABLE public.profiles
   ADD COLUMN IF NOT EXISTS plan text
-    CHECK (plan IN ('decouverte', 'hote', 'pro', 'agence'))
+    CHECK (plan IN ('decouverte', 'driing'))
     DEFAULT 'decouverte' NOT NULL;
 
 -- Politique UPDATE déjà couverte par "Update own or admin"

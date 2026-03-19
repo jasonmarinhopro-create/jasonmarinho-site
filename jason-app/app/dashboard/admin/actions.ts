@@ -101,7 +101,7 @@ export async function changeUserPlan(userId: string, plan: string) {
   const { error, supabase } = await getAdminClient()
   if (error || !supabase) return { error }
 
-  const validPlans = ['decouverte', 'hote', 'pro', 'agence']
+  const validPlans = ['decouverte', 'driing']
   if (!validPlans.includes(plan)) return { error: 'Plan invalide' }
 
   const { error: updateError } = await supabase
