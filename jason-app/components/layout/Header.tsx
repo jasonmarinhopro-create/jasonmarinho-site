@@ -21,6 +21,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [userName, setUserName] = useState(initialUserName ?? '')
   const [resolvedPlan, setResolvedPlan] = useState(currentPlan)
+  const [isAdmin, setIsAdmin] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
@@ -36,7 +37,10 @@ export default function Header({ title, userName: initialUserName, currentPlan =
         .maybeSingle()
         .then(({ data }) => {
           if (data?.full_name) setUserName(data.full_name)
-          if (data?.role === 'admin') setResolvedPlan('Administrateur')
+          if (data?.role === 'admin') {
+            setResolvedPlan('Administrateur')
+            setIsAdmin(true)
+          }
         })
     })
   }, [])
@@ -73,7 +77,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
 
   return (
     <>
-      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} />
 
       <header style={styles.header} className="dash-header">
         <div style={styles.left}>
