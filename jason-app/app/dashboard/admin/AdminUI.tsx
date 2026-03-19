@@ -58,10 +58,8 @@ interface Member {
 }
 
 const PLANS = [
-  { value: 'decouverte', label: 'Découverte', color: 'rgba(240,244,255,0.4)', bg: 'rgba(255,255,255,0.06)' },
-  { value: 'hote',       label: 'Hôte',       color: '#63D683',               bg: 'rgba(99,214,131,0.10)' },
-  { value: 'pro',        label: 'Pro',         color: '#FFD56B',               bg: 'rgba(255,213,107,0.10)' },
-  { value: 'agence',     label: 'Agence',      color: '#93C5FD',               bg: 'rgba(147,197,253,0.10)' },
+  { value: 'decouverte', label: 'Découverte',    color: 'rgba(240,244,255,0.4)', bg: 'rgba(255,255,255,0.06)' },
+  { value: 'driing',     label: 'Membre Driing', color: '#FFD56B',               bg: 'rgba(255,213,107,0.10)' },
 ] as const
 
 interface AdminUIProps {
