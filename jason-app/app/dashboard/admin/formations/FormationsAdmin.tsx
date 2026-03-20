@@ -72,7 +72,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
     <div>
       {/* Header */}
       <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: '#f0f4ff', marginBottom: '8px' }}>
+        <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '8px' }}>
           Gestion des formations
         </h2>
         <div style={{ display: 'flex', gap: '16px' }}>
@@ -80,7 +80,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
             <Eye size={13} />
             {published} publiée{published !== 1 ? 's' : ''}
           </span>
-          <span style={{ ...styles.statChip, background: 'rgba(255,255,255,0.04)', color: 'rgba(240,244,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <span style={{ ...styles.statChip, background: 'var(--surface)', color: 'var(--text-3)', border: '1px solid var(--border)' }}>
             <EyeSlash size={13} />
             {drafts} brouillon{drafts !== 1 ? 's' : ''}
           </span>
@@ -106,7 +106,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {formations.length === 0 && (
           <div style={{ textAlign: 'center', padding: '40px' }}>
-            <p style={{ color: 'rgba(240,244,255,0.3)', fontSize: '14px', marginBottom: '16px' }}>Aucune formation visible.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '16px' }}>Aucune formation visible.</p>
             <button
               onClick={() => {
                 startTransition(async () => {
@@ -129,27 +129,27 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
             <div key={f.id} style={{ ...styles.card, opacity: f.is_published ? 1 : 0.65 }}>
               <div style={{ padding: '16px', display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
                 {/* Icon */}
-                <div style={{ ...styles.iconWrap, background: f.is_published ? 'rgba(99,214,131,0.1)' : 'rgba(255,255,255,0.04)' }}>
-                  <GraduationCap size={18} color={f.is_published ? '#63D683' : 'rgba(240,244,255,0.3)'} />
+                <div style={{ ...styles.iconWrap, background: f.is_published ? 'rgba(99,214,131,0.1)' : 'var(--surface)' }}>
+                  <GraduationCap size={18} color={f.is_published ? '#63D683' : 'var(--text-muted)'} />
                 </div>
 
                 {/* Content */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '15px', fontWeight: 500, color: '#f0f4ff' }}>{f.title}</span>
+                    <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)' }}>{f.title}</span>
                     <span style={{ ...styles.badge, background: lvl.bg, color: lvl.color }}>
                       {LEVEL_LABELS[f.level] ?? f.level}
                     </span>
                     {!f.is_published && (
-                      <span style={{ ...styles.badge, background: 'rgba(255,255,255,0.06)', color: 'rgba(240,244,255,0.3)' }}>
+                      <span style={{ ...styles.badge, background: 'var(--border)', color: 'var(--text-muted)' }}>
                         Brouillon
                       </span>
                     )}
                   </div>
-                  <p style={{ fontSize: '13px', color: 'rgba(240,244,255,0.4)', marginBottom: '8px', lineHeight: 1.4 }}>
+                  <p style={{ fontSize: '13px', color: 'var(--text-3)', marginBottom: '8px', lineHeight: 1.4 }}>
                     {f.description}
                   </p>
-                  <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: 'rgba(240,244,255,0.3)' }}>
+                  <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: 'var(--text-muted)' }}>
                     <span>{f.duration}</span>
                     <span>{f.modules_count} module{f.modules_count !== 1 ? 's' : ''}</span>
                     <span>{f.lessons_count} leçon{f.lessons_count !== 1 ? 's' : ''}</span>
@@ -166,7 +166,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
                   <button
                     onClick={() => handleToggle(f.id, f.is_published)}
-                    style={{ ...styles.actionBtn, color: f.is_published ? '#63D683' : 'rgba(240,244,255,0.4)' }}
+                    style={{ ...styles.actionBtn, color: f.is_published ? '#63D683' : 'var(--text-3)' }}
                     title={f.is_published ? 'Passer en brouillon' : 'Publier'}
                     disabled={isPending}
                   >
@@ -198,7 +198,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 500,
   },
   card: {
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--surface)', border: '1px solid var(--surface-2)',
     borderRadius: '12px', overflow: 'hidden',
   },
   iconWrap: {
@@ -209,7 +209,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '100px',
   },
   actionBtn: {
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--border)', border: '1px solid var(--border)',
     borderRadius: '7px', width: '30px', height: '30px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer',

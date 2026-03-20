@@ -71,7 +71,7 @@ export default async function DashboardPage() {
                   <div style={styles.quickLabel}>{label}</div>
                   <div style={styles.quickDesc}>{desc}</div>
                 </div>
-                <ArrowRight size={16} color="rgba(240,244,255,0.25)" />
+                <ArrowRight size={16} color="var(--text-muted)" />
               </Link>
             ))}
           </div>
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
         {(!userFormations || userFormations.length === 0) && (
           <section style={styles.section} className="fade-up d2">
             <div style={styles.emptyState} className="glass-card">
-              <GraduationCap size={40} color="rgba(240,244,255,0.2)" weight="fill" />
+              <GraduationCap size={40} color="var(--text-muted)" weight="fill" />
               <h3 style={styles.emptyTitle}>Commence ta première formation</h3>
               <p style={styles.emptyDesc}>3 formations disponibles pour optimiser ta location courte durée.</p>
               <Link href="/dashboard/formations" className="btn-primary">
@@ -136,17 +136,17 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     gap: '24px',
   },
-  welcomeSub: { fontSize: '13px', color: 'rgba(240,244,255,0.4)', marginBottom: '6px' },
-  welcomeTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,2.5vw,36px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
-  welcomeDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '440px', lineHeight: 1.6 },
+  welcomeSub: { fontSize: '13px', color: 'var(--text-3)', marginBottom: '6px' },
+  welcomeTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,2.5vw,36px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  welcomeDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '440px', lineHeight: 1.6 },
   statsRow: { display: 'flex', alignItems: 'center', gap: '28px', flexShrink: 0 },
   stat: { textAlign: 'center' },
   statVal: { display: 'block', fontFamily: 'Fraunces, serif', fontSize: '40px', fontWeight: 400, color: '#FFD56B', lineHeight: 1 },
-  statLbl: { display: 'block', fontSize: '11px', color: 'rgba(240,244,255,0.4)', marginTop: '6px', letterSpacing: '0.3px' },
-  statDivider: { width: '1px', height: '44px', background: 'rgba(255,255,255,0.1)' },
+  statLbl: { display: 'block', fontSize: '11px', color: 'var(--text-3)', marginTop: '6px', letterSpacing: '0.3px' },
+  statDivider: { width: '1px', height: '44px', background: 'var(--border)' },
   section: { marginBottom: '32px' },
   sectionHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
-  sectionTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: '#f0f4ff', marginBottom: '16px' },
+  sectionTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', marginBottom: '16px' },
   seeAll: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
   quickGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' },
   quickCard: {
@@ -155,8 +155,8 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'transform 0.2s',
   },
   quickIcon: { width: '42px', height: '42px', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  quickLabel: { fontSize: '14px', fontWeight: 500, color: '#f0f4ff', marginBottom: '3px' },
-  quickDesc: { fontSize: '12px', color: 'rgba(240,244,255,0.4)' },
+  quickLabel: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '3px' },
+  quickDesc: { fontSize: '12px', color: 'var(--text-3)' },
   formationsGrid: { display: 'flex', flexDirection: 'column', gap: '10px' },
   formationCard: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '14px' },
   formationIcon: {
@@ -164,13 +164,13 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(0,76,63,0.3)', border: '1px solid rgba(255,213,107,0.15)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  formationTitle: { fontSize: '14px', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
+  formationTitle: { fontSize: '14px', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   progressWrap: { display: 'flex', alignItems: 'center', gap: '10px' },
-  progressPct: { fontSize: '12px', color: 'rgba(240,244,255,0.4)', flexShrink: 0 },
+  progressPct: { fontSize: '12px', color: 'var(--text-3)', flexShrink: 0 },
   emptyState: {
     padding: '56px 32px', textAlign: 'center',
     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px', borderRadius: '18px',
   },
-  emptyTitle: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: '#f0f4ff' },
-  emptyDesc: { fontSize: '14px', color: 'rgba(240,244,255,0.4)', maxWidth: '340px', lineHeight: 1.6 },
+  emptyTitle: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)' },
+  emptyDesc: { fontSize: '14px', color: 'var(--text-3)', maxWidth: '340px', lineHeight: 1.6 },
 }

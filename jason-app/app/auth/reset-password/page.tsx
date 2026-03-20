@@ -197,8 +197,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   card: {
     width: '100%', maxWidth: '420px',
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.09)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
     borderRadius: '20px', padding: '40px 36px',
     backdropFilter: 'blur(20px)',
     position: 'relative', zIndex: 2,
@@ -211,19 +211,19 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '10px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  logoText: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 600, color: '#f0f4ff' },
+  logoText: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 600, color: 'var(--text)' },
   title: {
     fontFamily: 'Fraunces, serif', fontSize: '28px', fontWeight: 400,
-    color: '#f0f4ff', letterSpacing: '-0.5px', marginBottom: '6px',
+    color: 'var(--text)', letterSpacing: '-0.5px', marginBottom: '6px',
   },
-  subtitle: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', marginBottom: '32px' },
+  subtitle: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', marginBottom: '32px' },
   form: { display: 'flex', flexDirection: 'column', gap: '18px' },
   field: { display: 'flex', flexDirection: 'column', gap: '7px' },
-  label: { fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.7)' },
+  label: { fontSize: '13px', fontWeight: 500, color: 'var(--text-2)' },
   eyeBtn: {
     position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
     background: 'none', border: 'none', cursor: 'pointer',
-    color: 'rgba(240,244,255,0.4)', padding: '4px',
+    color: 'var(--text-3)', padding: '4px',
     display: 'flex', alignItems: 'center',
   },
   error: {
@@ -232,6 +232,6 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '8px', padding: '10px 14px',
   },
-  footer: { marginTop: '24px', textAlign: 'center', fontSize: '13px', color: 'rgba(240,244,255,0.4)' },
+  footer: { marginTop: '24px', textAlign: 'center', fontSize: '13px', color: 'var(--text-3)' },
   link: { color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
 }

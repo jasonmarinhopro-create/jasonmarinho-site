@@ -25,10 +25,10 @@ export default async function ProfilPage() {
       <Header title="Mon profil" userName={fullName || undefined} />
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }} className="dash-page">
         <div style={{ marginBottom: '32px' }} className="fade-up">
-          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' }}>
+          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' }}>
             Mon <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>profil</em>
           </h2>
-          <p style={{ fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)' }}>
+          <p style={{ fontSize: '15px', fontWeight: 300, color: 'var(--text-2)' }}>
             Gère tes informations personnelles.
           </p>
         </div>
@@ -99,11 +99,11 @@ const cardStyles: Record<string, React.CSSProperties> = {
     borderRadius: '100px', padding: '5px 12px',
   },
   desc: {
-    fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.6)', lineHeight: 1.7,
+    fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.7,
   },
   perks: { display: 'flex', flexDirection: 'column', gap: '12px' },
   perk: {
     display: 'flex', alignItems: 'center', gap: '10px',
-    fontSize: '13px', fontWeight: 400, color: 'rgba(240,244,255,0.7)',
+    fontSize: '13px', fontWeight: 400, color: 'var(--text-2)',
   },
 }

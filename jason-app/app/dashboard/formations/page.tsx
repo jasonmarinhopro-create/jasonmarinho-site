@@ -119,16 +119,16 @@ export default async function FormationsPage() {
             {COMING_SOON.map((f, i) => (
               <div key={f.id} style={styles.comingSoonCard} className={`glass-card fade-up d${i + 2}`}>
                 <div style={styles.cardHeader}>
-                  <div style={{ ...styles.cardIcon, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                    <Wrench size={24} color="rgba(240,244,255,0.25)" weight="fill" />
+                  <div style={{ ...styles.cardIcon, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                    <Wrench size={24} color="var(--text-muted)" weight="fill" />
                   </div>
                   <div style={styles.cardBadges}>
                     <span style={styles.wip}>En construction</span>
                   </div>
                 </div>
 
-                <h3 style={{ ...styles.cardTitle, color: 'rgba(240,244,255,0.45)' }}>{f.title}</h3>
-                <p style={{ ...styles.cardDesc, color: 'rgba(240,244,255,0.3)' }}>{f.description}</p>
+                <h3 style={{ ...styles.cardTitle, color: 'var(--text-3)' }}>{f.title}</h3>
+                <p style={{ ...styles.cardDesc, color: 'var(--text-muted)' }}>{f.description}</p>
 
                 <div style={styles.meta}>
                   <span style={{ ...styles.metaItem, opacity: 0.4 }}><Clock size={13} /> {f.duration}</span>
@@ -172,14 +172,14 @@ export default async function FormationsPage() {
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '36px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6 },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6 },
   section: { marginBottom: '40px' },
   grid: {},
   card: { padding: '28px', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0' },
   comingSoonCard: {
     padding: '28px', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0',
-    background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     opacity: 0.7,
   },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' },
@@ -192,21 +192,21 @@ const styles: Record<string, React.CSSProperties> = {
   wip: {
     fontSize: '10px', fontWeight: 600, letterSpacing: '0.7px', textTransform: 'uppercase',
     padding: '4px 10px', borderRadius: '100px',
-    background: 'rgba(255,255,255,0.06)', color: 'rgba(240,244,255,0.3)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--border)', color: 'var(--text-muted)',
+    border: '1px solid var(--border)',
   },
-  cardTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: '#f0f4ff', lineHeight: 1.3, marginBottom: '10px' },
-  cardDesc: { fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.65, marginBottom: '18px', flex: 1 },
+  cardTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.3, marginBottom: '10px' },
+  cardDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, marginBottom: '18px', flex: 1 },
   meta: { display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' },
-  metaItem: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'rgba(240,244,255,0.38)' },
+  metaItem: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--text-3)' },
   progressArea: { marginBottom: '20px' },
-  progressLabel: { fontSize: '12px', color: 'rgba(240,244,255,0.4)' },
+  progressLabel: { fontSize: '12px', color: 'var(--text-3)' },
   progressPct: { fontSize: '12px', color: '#FFD56B' },
-  cardFooter: { paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' },
+  cardFooter: { paddingTop: '16px', borderTop: '1px solid var(--border)' },
   lockedBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
-    fontSize: '13px', fontWeight: 400, color: 'rgba(240,244,255,0.25)',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)',
+    fontSize: '13px', fontWeight: 400, color: 'var(--text-muted)',
+    background: 'var(--surface)', border: '1px solid var(--surface-2)',
     borderRadius: '8px', padding: '9px 16px',
   },
 
@@ -218,6 +218,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   suggestLeft: { display: 'flex', alignItems: 'flex-start', gap: '16px', flex: 1, minWidth: '260px' },
   suggestEmoji: { fontSize: '28px', flexShrink: 0, marginTop: '3px' },
-  suggestTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px', lineHeight: 1.3 },
-  suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.6 },
+  suggestTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)', marginBottom: '8px', lineHeight: 1.3 },
+  suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6 },
 }

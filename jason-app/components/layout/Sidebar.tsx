@@ -49,7 +49,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
         <div
           onClick={onClose}
           style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
             zIndex: 98, backdropFilter: 'blur(4px)',
           }}
         />
@@ -128,7 +128,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
             <>
               <div style={styles.navDivider}>
                 <div style={styles.navDividerLine} />
-                <span style={{ ...styles.navDividerLabel, color: 'rgba(255,213,107,0.35)' }}>Admin</span>
+                <span style={{ ...styles.navDividerLabel, color: 'rgba(255,213,107,0.45)' }}>Admin</span>
                 <div style={styles.navDividerLine} />
               </div>
               <div style={styles.navSection}>
@@ -171,7 +171,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
             rel="noopener noreferrer"
             style={styles.footerLink}
           >
-            <JmLogo size={14} color="rgba(240,244,255,0.4)" />
+            <JmLogo size={14} color="var(--nav-item)" />
             jasonmarinho.com
           </a>
           <button onClick={handleSignOut} style={styles.signOut}>
@@ -188,16 +188,17 @@ const styles: Record<string, React.CSSProperties> = {
   sidebar: {
     position: 'fixed', top: 0, left: 0, bottom: 0,
     width: 'var(--sidebar-w)',
-    background: 'rgba(0,51,42,0.98)',
-    borderRight: '1px solid rgba(255,255,255,0.06)',
+    background: 'var(--nav-bg)',
+    borderRight: '1px solid var(--nav-border)',
     display: 'flex', flexDirection: 'column',
     zIndex: 99,
     backdropFilter: 'blur(20px)',
+    transition: 'background 0.25s ease, border-color 0.25s ease',
   },
   logoWrap: {
     display: 'flex', alignItems: 'center', gap: '10px',
     padding: '20px 20px 16px',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
+    borderBottom: '1px solid var(--nav-border)',
   },
   logoIcon: {
     width: '34px', height: '34px', flexShrink: 0,
@@ -208,11 +209,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   logoText: {
     fontFamily: 'Fraunces, serif', fontSize: '15px',
-    fontWeight: 600, color: '#f0f4ff', flex: 1,
+    fontWeight: 600, color: 'var(--text)', flex: 1,
   },
   closeBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    color: 'rgba(240,244,255,0.4)', padding: '4px',
+    color: 'var(--text-3)', padding: '4px',
     alignItems: 'center', justifyContent: 'center',
   },
   nav: {
@@ -228,27 +229,27 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '14px 4px 10px',
   },
   navDividerLine: {
-    flex: 1, height: '1px', background: 'rgba(255,255,255,0.07)',
+    flex: 1, height: '1px', background: 'var(--nav-border)',
   },
   navDividerLabel: {
     fontSize: '10px', fontWeight: 600, letterSpacing: '0.9px',
-    textTransform: 'uppercase', color: 'rgba(240,244,255,0.2)',
+    textTransform: 'uppercase', color: 'var(--text-muted)',
     whiteSpace: 'nowrap', flexShrink: 0,
   },
   navItem: {
     display: 'flex', alignItems: 'center', gap: '11px',
     padding: '10px 12px', borderRadius: '10px',
     fontSize: '14px', fontWeight: 400,
-    color: 'rgba(240,244,255,0.5)',
+    color: 'var(--nav-item)',
     textDecoration: 'none',
     transition: 'all 0.18s',
     position: 'relative',
   },
   navItemActive: {
-    background: 'rgba(255,213,107,0.08)',
+    background: 'var(--nav-active-bg)',
     color: '#FFD56B',
     fontWeight: 500,
-    border: '1px solid rgba(255,213,107,0.12)',
+    border: '1px solid var(--nav-active-border)',
   },
   activeDot: {
     position: 'absolute', right: '12px',
@@ -260,12 +261,12 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column', gap: '4px',
   },
   footerDivider: {
-    height: '1px', background: 'rgba(255,255,255,0.06)', margin: '0 0 4px',
+    height: '1px', background: 'var(--nav-border)', margin: '0 0 4px',
   },
   footerLink: {
     display: 'flex', alignItems: 'center', gap: '8px',
     padding: '9px 12px', borderRadius: '9px',
-    fontSize: '12px', color: 'rgba(240,244,255,0.3)',
+    fontSize: '12px', color: 'var(--text-muted)',
     textDecoration: 'none',
     transition: 'color 0.18s',
   },
@@ -273,7 +274,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
     padding: '9px 12px', borderRadius: '9px',
     fontSize: '13px', fontWeight: 400,
-    color: 'rgba(240,244,255,0.4)',
+    color: 'var(--text-3)',
     background: 'none', border: 'none', cursor: 'pointer',
     width: '100%', textAlign: 'left',
     transition: 'all 0.18s',

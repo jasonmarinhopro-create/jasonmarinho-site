@@ -37,7 +37,7 @@ export default function DashboardLoading() {
 }
 
 const pulse = {
-  background: 'linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.05) 100%)',
+  background: 'linear-gradient(90deg, var(--border) 0%, var(--border) 50%, var(--border) 100%)',
   backgroundSize: '200% 100%',
   animation: 'shimmer 1.6s infinite',
   borderRadius: '8px',

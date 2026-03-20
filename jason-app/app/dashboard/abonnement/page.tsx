@@ -171,8 +171,8 @@ export default async function AbonnementPage() {
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '36px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '560px', lineHeight: 1.6 },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.6 },
   mainGrid: { display: 'grid', gridTemplateColumns: 'minmax(280px, 380px) 1fr', gap: '28px', alignItems: 'start' },
   leftCol: {},
   rightCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
@@ -185,10 +185,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   currentPlan: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: '#34D399' },
   currentDot: { width: '7px', height: '7px', borderRadius: '50%', background: '#34D399' },
-  currentName: { fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 400, color: '#f0f4ff' },
-  currentDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.45)', lineHeight: 1.6 },
+  currentName: { fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 400, color: 'var(--text)' },
+  currentDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.6 },
   featureList: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  featureItem: { display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.65)' },
+  featureItem: { display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', fontWeight: 300, color: 'var(--text-2)' },
   ctaCurrent: { padding: '11px 16px', borderRadius: '10px', background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)', color: 'rgba(52,211,153,0.5)', fontSize: '14px', fontWeight: 500, cursor: 'not-allowed', textAlign: 'center' as const, marginTop: '4px' },
 
   /* Driing plan actuel */
@@ -211,19 +211,19 @@ const styles: Record<string, React.CSSProperties> = {
   },
   driingRowGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,213,107,0.08) 0%, transparent 70%)', pointerEvents: 'none' },
   driingRowName: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: '#FFD56B' },
-  planDesc: { fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.45)', lineHeight: 1.5, margin: 0 },
+  planDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.5, margin: 0 },
   perks: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px' },
-  perk: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'rgba(240,244,255,0.5)' },
+  perk: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'var(--text-2)' },
 
   /* En construction */
-  comingLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.3)' },
+  comingLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' },
   plansList: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  planRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '22px 24px', opacity: 0.55 },
+  planRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '22px 24px', opacity: 0.55 },
   planRowHighlighted: { border: '1px dashed rgba(255,213,107,0.12)' },
   planRowLeft: { flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' },
-  planName: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'rgba(240,244,255,0.6)' },
+  planName: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text-2)' },
   planRowRight: { flexShrink: 0 },
-  ctaLocked: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 500, color: 'rgba(240,244,255,0.2)', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 14px', whiteSpace: 'nowrap' as const },
+  ctaLocked: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 14px', whiteSpace: 'nowrap' as const },
 
-  note: { fontSize: '12px', fontWeight: 300, color: 'rgba(240,244,255,0.25)', lineHeight: 1.7 },
+  note: { fontSize: '12px', fontWeight: 300, color: 'var(--text-muted)', lineHeight: 1.7 },
 }
