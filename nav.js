@@ -125,9 +125,9 @@
         + '<div class="n-mega">'
           + '<div class="n-col">'
             + '<div class="n-col-title">Par profil</div>'
-            + '<a href="/pour-qui/hotes-lcd"><i class="ph ph-house-line"></i>Hôtes Airbnb &amp; LCD</a>'
+            + '<a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a>'
+            + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes</a>'
             + '<a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a>'
-            + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes &amp; chambres d\'hôtes</a>'
           + '</div>'
           + '<a href="/pour-qui/membres-driing" class="n-driing-card">'
             + '<div class="n-driing-badge"><div class="n-driing-dot"></div><span class="n-driing-badge-txt">Membres</span></div>'
@@ -138,18 +138,12 @@
         + '</div>'
       + '</li>'
 
-      /* ── Services (Formations incluses) ── */
+      /* ── Services ── */
       + '<li class="n-drop">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Services ' + CARET + '</button>'
         + '<div class="n-mega">'
           + '<div class="n-col">'
-            + '<div class="n-col-title">Formations &amp; Accompagnement</div>'
             + '<a href="/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
-            + '<a href="/services/gmb"><i class="ph ph-map-pin"></i>GMB &amp; visibilité locale</a>'
-            + '<a href="/services/annonce-directe"><i class="ph ph-megaphone"></i>Réservation directe</a>'
-          + '</div>'
-          + '<div class="n-col">'
-            + '<div class="n-col-title">Outils &amp; Ressources</div>'
             + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a>'
             + '<a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a>'
             + '<a href="/ressources/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
@@ -160,6 +154,12 @@
       /* ── Blog ── */
       + '<li><a href="/blog" class="n-link">Blog</a></li>'
 
+      /* ── Qui suis-je ── */
+      + '<li><a href="/qui-suis-je" class="n-link">Qui suis-je</a></li>'
+
+      /* ── Tarifs ── */
+      + '<li><a href="/tarifs" class="n-link">Tarifs</a></li>'
+
     + '</ul>'
     + '<div class="n-right">'
       + '<a href="https://app.jasonmarinho.com/auth/login" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
@@ -168,18 +168,19 @@
     + '<button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>'
   + '</nav>'
 
-  /* ── MOBILE MENU — 8 liens, sans scroll, animation fluide ── */
+  /* ── MOBILE MENU — compact, sans scroll, animation fluide ── */
   + '<div class="mob-menu" id="mob">'
 
     + '<div class="mob-stitle">Services</div>'
     + '<a href="/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
-    + '<a href="/services/gmb"><i class="ph ph-map-pin"></i>GMB &amp; visibilité locale</a>'
-    + '<a href="/services/annonce-directe"><i class="ph ph-megaphone"></i>Réservation directe</a>'
+    + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a>'
+    + '<a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a>'
 
     + '<div class="mob-sep"></div>'
 
     + '<div class="mob-stitle">Pour qui</div>'
-    + '<a href="/pour-qui/hotes-lcd"><i class="ph ph-house-line"></i>Hôtes Airbnb &amp; LCD</a>'
+    + '<a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a>'
+    + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes</a>'
     + '<a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a>'
     + '<a href="/pour-qui/membres-driing" class="mob-driing">'
       + '<i class="ph ph-lightning"></i>'
@@ -192,6 +193,8 @@
     + '<div class="mob-sep"></div>'
 
     + '<a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a>'
+    + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
+    + '<a href="/tarifs"><i class="ph ph-tag"></i>Tarifs</a>'
 
     + '<div class="mob-ctas">'
       + '<a href="https://app.jasonmarinho.com/auth/login" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
