@@ -1,9 +1,18 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import Header from '@/components/layout/Header'
 import FormationsAdmin from './FormationsAdmin'
 
 export const metadata = { title: 'Formations — Admin — Jason Marinho' }
+
+function getServiceClient() {
+  return createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+}
 
 export default async function AdminFormationsPage() {
   const supabase = await createClient()
@@ -18,13 +27,16 @@ export default async function AdminFormationsPage() {
 
   if (profile?.role !== 'admin') redirect('/dashboard')
 
-  const { data: formations } = await supabase
+  // Use service role to bypass RLS and see ALL formations (including drafts)
+  const adminClient = getServiceClient()
+
+  const { data: formations } = await adminClient
     .from('formations')
     .select('*')
     .order('created_at', { ascending: false })
 
   // Get enrollment counts per formation
-  const { data: enrollments } = await supabase
+  const { data: enrollments } = await adminClient
     .from('user_formations')
     .select('formation_id')
 

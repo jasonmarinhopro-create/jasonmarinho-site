@@ -37,6 +37,23 @@ export async function toggleFormationPublished(formationId: string, isPublished:
   return { success: true }
 }
 
+// One-time helper: republish a formation by slug (bypasses RLS via service role)
+export async function republishFormationBySlug(slug: string) {
+  const { error, adminClient } = await assertAdmin()
+  if (error || !adminClient) return { success: false, error }
+
+  const { error: dbError } = await adminClient
+    .from('formations')
+    .update({ is_published: true })
+    .eq('slug', slug)
+
+  if (dbError) return { success: false, error: dbError.message }
+
+  revalidatePath('/dashboard/admin/formations')
+  revalidatePath('/dashboard/formations')
+  return { success: true }
+}
+
 export async function deleteFormation(formationId: string) {
   const { error, adminClient } = await assertAdmin()
   if (error || !adminClient) return { success: false, error }

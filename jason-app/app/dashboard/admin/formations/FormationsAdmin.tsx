@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Eye, EyeSlash, Trash, GraduationCap, Users } from '@phosphor-icons/react'
-import { toggleFormationPublished, deleteFormation } from './actions'
+import { Eye, EyeSlash, Trash, GraduationCap, Users, ArrowCounterClockwise } from '@phosphor-icons/react'
+import { toggleFormationPublished, deleteFormation, republishFormationBySlug } from './actions'
 
 interface Formation {
   id: string
@@ -45,7 +45,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
       const res = await toggleFormationPublished(id, !current)
       if (res.success) {
         setFormations(f => f.map(x => x.id === id ? { ...x, is_published: !current } : x))
-        showFeedback('ok', !current ? 'Formation publiée' : 'Formation dépubliée')
+        showFeedback('ok', !current ? 'Formation publiée ✓' : 'Formation passée en brouillon')
       } else {
         showFeedback('err', res.error ?? 'Erreur')
       }
@@ -80,7 +80,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
             <Eye size={13} />
             {published} publiée{published !== 1 ? 's' : ''}
           </span>
-          <span style={{ ...styles.statChip, background: 'rgba(255,255,255,0.04)', color: 'rgba(240,244,255,0.4)' }}>
+          <span style={{ ...styles.statChip, background: 'rgba(255,255,255,0.04)', color: 'rgba(240,244,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <EyeSlash size={13} />
             {drafts} brouillon{drafts !== 1 ? 's' : ''}
           </span>
@@ -105,8 +105,22 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
       {/* List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {formations.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(240,244,255,0.3)', fontSize: '14px' }}>
-            Aucune formation pour l'instant.
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p style={{ color: 'rgba(240,244,255,0.3)', fontSize: '14px', marginBottom: '16px' }}>Aucune formation visible.</p>
+            <button
+              onClick={() => {
+                startTransition(async () => {
+                  const res = await republishFormationBySlug('google-my-business-lcd')
+                  if (res.success) showFeedback('ok', 'Formation Google My Business republiée ✓')
+                  else showFeedback('err', res.error ?? 'Erreur')
+                })
+              }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '9px 16px', borderRadius: '10px', background: 'rgba(99,214,131,0.1)', border: '1px solid rgba(99,214,131,0.2)', color: '#63D683', fontSize: '13px', cursor: 'pointer' }}
+              disabled={isPending}
+            >
+              <ArrowCounterClockwise size={14} />
+              Republier la formation Google My Business
+            </button>
           </div>
         )}
         {formations.map(f => {
@@ -153,7 +167,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
                   <button
                     onClick={() => handleToggle(f.id, f.is_published)}
                     style={{ ...styles.actionBtn, color: f.is_published ? '#63D683' : 'rgba(240,244,255,0.4)' }}
-                    title={f.is_published ? 'Dépublier' : 'Publier'}
+                    title={f.is_published ? 'Passer en brouillon' : 'Publier'}
                     disabled={isPending}
                   >
                     {f.is_published ? <Eye size={14} /> : <EyeSlash size={14} />}
