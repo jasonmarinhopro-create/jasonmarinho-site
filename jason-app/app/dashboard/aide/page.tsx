@@ -61,7 +61,7 @@ export default async function AidePage() {
 
       <div style={styles.page}>
         <div style={styles.intro} className="fade-up">
-          <h2 style={styles.pageTitle}>Centre d'<em style={{ color: '#FFD56B', fontStyle: 'italic' }}>aide</em></h2>
+          <h2 style={styles.pageTitle}>Centre d'<em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>aide</em></h2>
           <p style={styles.pageDesc}>Comment pouvons-nous vous aider ?</p>
         </div>
 
@@ -203,7 +203,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(255,213,107,0.15)',
     border: '2px solid rgba(255,213,107,0.25)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '14px', fontWeight: 600, color: '#FFD56B', flexShrink: 0,
+    fontSize: '14px', fontWeight: 600, color: 'var(--accent-text)', flexShrink: 0,
   },
   contactName: { fontSize: '15px', fontWeight: 600, color: 'var(--text)' },
   contactRole: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px' },

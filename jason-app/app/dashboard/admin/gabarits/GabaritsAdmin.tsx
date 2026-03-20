@@ -206,7 +206,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '7px',
     padding: '9px 16px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.2)',
-    color: '#FFD56B', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+    color: 'var(--accent-text)', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
   },
   feedback: {
     display: 'flex', alignItems: 'center', gap: '8px',
@@ -234,7 +234,7 @@ const styles: Record<string, React.CSSProperties> = {
   submitBtn: {
     padding: '10px 20px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.3)',
-    color: '#FFD56B', fontSize: '14px', fontWeight: 500, cursor: 'pointer',
+    color: 'var(--accent-text)', fontSize: '14px', fontWeight: 500, cursor: 'pointer',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: '10px',
@@ -248,7 +248,7 @@ const styles: Record<string, React.CSSProperties> = {
   cardTitle: { fontSize: '15px', fontWeight: 500, color: 'var(--text)' },
   catBadge: {
     fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '100px',
-    background: 'rgba(255,213,107,0.1)', color: '#FFD56B', border: '1px solid rgba(255,213,107,0.15)',
+    background: 'rgba(255,213,107,0.1)', color: 'var(--accent-text)', border: '1px solid rgba(255,213,107,0.15)',
   },
   contentPreview: {
     fontSize: '13px', color: 'var(--text-3)', lineHeight: 1.5,

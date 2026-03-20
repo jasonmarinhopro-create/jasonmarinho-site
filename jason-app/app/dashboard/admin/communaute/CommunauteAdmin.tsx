@@ -217,7 +217,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '7px',
     padding: '9px 16px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.2)',
-    color: '#FFD56B', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+    color: 'var(--accent-text)', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
   },
   formCard: {
     background: 'var(--surface)', border: '1px solid var(--border)',
@@ -236,7 +236,7 @@ const styles: Record<string, React.CSSProperties> = {
   submitBtn: {
     padding: '10px 20px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.3)',
-    color: '#FFD56B', fontSize: '14px', fontWeight: 500, cursor: 'pointer',
+    color: 'var(--accent-text)', fontSize: '14px', fontWeight: 500, cursor: 'pointer',
   },
   card: {
     background: 'var(--surface)', border: '1px solid var(--surface-2)',

@@ -26,7 +26,7 @@ export default async function ProfilPage() {
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }} className="dash-page">
         <div style={{ marginBottom: '32px' }} className="fade-up">
           <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' }}>
-            Mon <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>profil</em>
+            Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>profil</em>
           </h2>
           <p style={{ fontSize: '15px', fontWeight: 300, color: 'var(--text-2)' }}>
             Gère tes informations personnelles.
@@ -93,7 +93,7 @@ const cardStyles: Record<string, React.CSSProperties> = {
   badge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: '#FFD56B',
+    color: 'var(--accent-text)',
     background: 'rgba(255,213,107,0.1)',
     border: '1px solid rgba(255,213,107,0.2)',
     borderRadius: '100px', padding: '5px 12px',

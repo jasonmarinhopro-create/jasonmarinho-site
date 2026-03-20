@@ -134,7 +134,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     padding: '9px 18px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)',
-    color: '#FFD56B', fontSize: '13px', fontWeight: 600,
+    color: 'var(--accent-text)', fontSize: '13px', fontWeight: 600,
     cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
   },
   btnBecome: {
@@ -162,7 +162,7 @@ const s: Record<string, React.CSSProperties> = {
   btnSubmit: {
     padding: '10px 20px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.3)',
-    color: '#FFD56B', fontSize: '13px', fontWeight: 600,
+    color: 'var(--accent-text)', fontSize: '13px', fontWeight: 600,
     cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
   },
   btnCancel: {

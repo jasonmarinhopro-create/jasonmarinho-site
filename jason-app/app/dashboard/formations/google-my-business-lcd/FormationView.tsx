@@ -234,7 +234,7 @@ export default function FormationView({ formation }: { formation: Formation }) {
                             ...(isActive ? styles.lessonBtnActive : {}),
                           }}
                         >
-                          <div style={{ ...styles.lessonDot, ...(isDone ? { background: '#34D399' } : isActive ? { background: '#FFD56B' } : {}) }}>
+                          <div style={{ ...styles.lessonDot, ...(isDone ? { background: '#34D399' } : isActive ? { background: 'var(--accent-text)' } : {}) }}>
                             {isDone && <Check size={9} color="#000" weight="bold" />}
                           </div>
                           <span style={{ flex: 1, textAlign: 'left' }}>{lesson.title}</span>
@@ -387,7 +387,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   progressWrap: {},
   progressLabel: { fontSize: '11px', color: 'var(--text-3)' },
-  progressPct: { fontSize: '11px', color: '#FFD56B' },
+  progressPct: { fontSize: '11px', color: 'var(--accent-text)' },
   navModules: {
     flex: 1, padding: '8px 8px',
     display: 'flex', flexDirection: 'column', gap: '2px',
@@ -424,7 +424,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   lessonBtnActive: {
     background: 'rgba(255,213,107,0.08)',
-    color: '#FFD56B',
+    color: 'var(--accent-text)',
   },
   lessonDot: {
     width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,

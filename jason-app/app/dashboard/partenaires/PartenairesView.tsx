@@ -26,7 +26,7 @@ const DRIING_SERVICES = [
     tagline: 'Visibilité & mise en réseau',
     desc: 'Référencez votre conciergerie pour être trouvé par des propriétaires et collaborer avec d\'autres professionnels du secteur.',
     url: 'https://www.driing.co/trouver-une-conciergerie',
-    color: '#FFD56B',
+    color: 'var(--accent-text)',
   },
 ]
 
@@ -36,7 +36,7 @@ export default function PartenairesView() {
       {/* Intro */}
       <div style={styles.intro} className="fade-up">
         <h2 style={styles.pageTitle}>
-          Partenaires <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>exclusifs</em>
+          Partenaires <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>exclusifs</em>
         </h2>
         <p style={styles.pageDesc}>
           Des outils et services négociés pour les membres — sélectionnés pour les hôtes et conciergeries professionnels.
@@ -152,7 +152,7 @@ const styles: Record<string, React.CSSProperties> = {
   featuredBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.7px',
-    textTransform: 'uppercase', color: '#FFD56B',
+    textTransform: 'uppercase', color: 'var(--accent-text)',
   },
   featuredBrand: {
     display: 'flex', alignItems: 'center', gap: '14px',

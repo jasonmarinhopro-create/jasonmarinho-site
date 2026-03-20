@@ -21,7 +21,7 @@ interface Member {
 
 const PLANS = [
   { value: 'decouverte', label: 'Découverte',    color: 'var(--text-3)', bg: 'var(--border)' },
-  { value: 'driing',     label: 'Membre Driing', color: '#FFD56B',                bg: 'rgba(255,213,107,0.10)' },
+  { value: 'driing',     label: 'Membre Driing', color: 'var(--accent-text)',                bg: 'rgba(255,213,107,0.10)' },
 ] as const
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -86,8 +86,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
         </div>
         <div style={s.statDiv} />
         <div style={s.stat}>
-          <Lightning size={18} style={{ color: '#FFD56B' }} />
-          <span style={{ ...s.statNum, color: '#FFD56B' }}>{totalDriing}</span>
+          <Lightning size={18} style={{ color: 'var(--accent-text)' }} />
+          <span style={{ ...s.statNum, color: 'var(--accent-text)' }}>{totalDriing}</span>
           <span style={s.statLabel}>Driing</span>
         </div>
         <div style={s.statDiv} />
@@ -307,7 +307,7 @@ const s: Record<string, React.CSSProperties> = {
   filterBtnActive: {
     background: 'rgba(255,213,107,0.08)',
     border: '1px solid rgba(255,213,107,0.2)',
-    color: '#FFD56B',
+    color: 'var(--accent-text)',
   },
   resultCount: { fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto' },
 
@@ -346,7 +346,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   avatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '13px', fontWeight: 600, color: '#FFD56B',
+    fontFamily: 'Fraunces, serif', fontSize: '13px', fontWeight: 600, color: 'var(--accent-text)',
   },
   name: {
     fontSize: '14px', fontWeight: 500, color: 'var(--text)',

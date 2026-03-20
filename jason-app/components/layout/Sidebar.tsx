@@ -128,7 +128,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
             <>
               <div style={styles.navDivider}>
                 <div style={styles.navDividerLine} />
-                <span style={{ ...styles.navDividerLabel, color: 'rgba(99,214,131,0.45)' }}>Admin</span>
+                <span style={{ ...styles.navDividerLabel, color: 'var(--nav-admin-color)' }}>Admin</span>
                 <div style={styles.navDividerLine} />
               </div>
               <div style={styles.navSection}>
@@ -148,7 +148,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
                       style={{
                         ...styles.navItem,
                         ...(active ? styles.navItemActive : {}),
-                        ...(!active ? { color: 'rgba(99,214,131,0.55)' } : {}),
+                        ...(!active ? { color: 'var(--nav-admin-color)' } : {}),
                       }}
                     >
                       <Icon size={18} weight={active ? 'fill' : 'regular'} />
