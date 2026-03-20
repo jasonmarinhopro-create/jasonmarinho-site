@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Communauté LCD — Groupes Facebook & entraide | Jason Marinho</title>
+  <meta name="description" content="Rejoins les groupes Facebook pour hôtes LCD : groupes d'entraide, visibilité locale, groupes gérés par Jason Marinho et Driing. Progresser ensemble, c'est progresser plus vite.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/communaute/">
+  <meta property="og:title" content="Communauté LCD — Groupes Facebook & entraide | Jason Marinho">
+  <meta property="og:description" content="Rejoins les groupes Facebook pour hôtes LCD : groupes d'entraide, visibilité locale, groupes gérés par Jason Marinho et Driing.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/communaute/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--fb:#1877F2}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(56px,8vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+
+    /* Typo */
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .sub{font-size:clamp(15px,1.4vw,17px);line-height:1.75;color:rgba(255,255,255,.55);margin:0 0 32px;max-width:560px}
+    .sub.dk{color:var(--tm)}
+
+    /* Buttons */
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,213,107,.25)}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
+
+    /* Hero */
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,110px) 0 clamp(56px,7vw,80px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:28px}
+    .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff}
+    .hero-brd span{font-size:11px}
+    .hero-stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:36px}
+    .h-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 20px}
+    .h-stat-n{font-family:'Fraunces',serif;font-size:1.6rem;color:var(--y);font-weight:600;line-height:1}
+    .h-stat-l{font-size:12px;color:rgba(255,255,255,.4);margin-top:4px}
+
+    /* Section title */
+    .sec-head{margin-bottom:32px}
+    .sec-head.ct{text-align:center}
+
+    /* Groupe cards — type principal */
+    .groupe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:36px}
+
+    /* Carte groupe principale (Jason & Driing) */
+    .gc{border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden}
+    .gc-default{background:#fff;border:1px solid rgba(0,76,63,.1)}
+    .gc-default:hover{box-shadow:0 8px 32px rgba(0,76,63,.09);transform:translateY(-2px);transition:all .2s}
+
+    /* Jason featured */
+    .gc-jason{background:linear-gradient(145deg,#001f16,var(--gd));border:1px solid rgba(255,213,107,.18)}
+    .gc-jason::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,213,107,.07),transparent 70%);pointer-events:none}
+
+    /* Driing featured */
+    .gc-driing{background:linear-gradient(145deg,#001a25,#002a40);border:1px solid rgba(100,180,255,.15)}
+
+    /* Badge */
+    .gc-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:6px;width:fit-content}
+    .gc-badge.jason{background:rgba(255,213,107,.15);color:var(--y)}
+    .gc-badge.driing{background:rgba(100,180,255,.12);color:#7ec8f5}
+    .gc-badge.public{background:rgba(24,119,242,.12);color:var(--fb)}
+    .gc-badge.entraide{background:rgba(0,76,63,.1);color:var(--g)}
+
+    /* Titre & desc */
+    .gc-title{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:400;margin:0;line-height:1.3}
+    .gc-default .gc-title{color:var(--td)}
+    .gc-jason .gc-title,.gc-driing .gc-title{color:#fff}
+    .gc-desc{font-size:14px;line-height:1.7;margin:0}
+    .gc-default .gc-desc{color:var(--tm)}
+    .gc-jason .gc-desc,.gc-driing .gc-desc{color:rgba(255,255,255,.5)}
+
+    /* Tags */
+    .gc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+    .gc-tag{font-size:11px;padding:3px 9px;border-radius:100px;font-weight:500}
+    .gc-default .gc-tag{background:rgba(0,76,63,.07);color:var(--tm)}
+    .gc-jason .gc-tag{background:rgba(255,213,107,.1);color:rgba(255,213,107,.7)}
+    .gc-driing .gc-tag{background:rgba(100,180,255,.08);color:#7ec8f5}
+
+    /* CTA dans la carte */
+    .gc-cta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;text-decoration:none;margin-top:auto;transition:gap .2s}
+    .gc-default .gc-cta{color:var(--g)}
+    .gc-jason .gc-cta{color:var(--y)}
+    .gc-driing .gc-cta{color:#7ec8f5}
+    .gc-cta:hover{gap:10px}
+    .gc-divider{height:1px;margin:0}
+    .gc-default .gc-divider{background:rgba(0,76,63,.07)}
+    .gc-jason .gc-divider{background:rgba(255,255,255,.07)}
+    .gc-driing .gc-divider{background:rgba(255,255,255,.07)}
+
+    /* Facebook icon */
+    .fb-ic{width:36px;height:36px;border-radius:9px;background:rgba(24,119,242,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .fb-ic i{font-size:18px;color:var(--fb)}
+
+    /* Avantages */
+    .avantages{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:36px}
+    .av{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px}
+    .av-ic{width:42px;height:42px;border-radius:10px;background:rgba(0,76,63,.08);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:20px}
+    .av h3{font-family:'Fraunces',serif;font-size:1rem;font-weight:400;color:var(--td);margin:0}
+    .av p{font-size:13.5px;line-height:1.65;color:var(--tm);margin:0}
+
+    /* Why Facebook banner */
+    .fb-why{background:rgba(24,119,242,.04);border:1px solid rgba(24,119,242,.1);border-radius:16px;padding:28px 32px;display:flex;gap:24px;align-items:flex-start;margin-top:36px}
+    .fb-why-ic{width:52px;height:52px;border-radius:14px;background:rgba(24,119,242,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .fb-why-ic i{font-size:26px;color:var(--fb)}
+    .fb-why h3{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--td);margin:0 0 8px;font-weight:400}
+    .fb-why p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+
+    /* CTA ban */
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,52px);text-align:center}
+
+    @media(max-width:640px){.groupe-grid{grid-template-columns:1fr}.avantages{grid-template-columns:1fr}.fb-why{flex-direction:column;gap:16px}}
+  </style>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd">
+      <a href="/">Accueil</a><span>›</span><a href="/services/communaute">Services</a><span>›</span><span>Communauté</span>
+    </div>
+    <div class="lbl">Groupes & Communauté</div>
+    <h1 class="h1">Progresser seul, c'est lent.<br><em>Ensemble, c'est puissant.</em></h1>
+    <p class="sub">Des groupes Facebook actifs pour gagner en visibilité, s'entraider entre hôtes et accéder à du contenu exclusif. Certains gérés par Jason et Driing, d'autres ouverts à toute la communauté LCD.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Rejoindre la communauté <i class="ph-bold ph-arrow-right"></i></a>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-n">250+</div><div class="h-stat-l">hôtes dans la communauté</div></div>
+      <div class="h-stat"><div class="h-stat-n">Gratuit</div><div class="h-stat-l">accès à tous les groupes</div></div>
+      <div class="h-stat"><div class="h-stat-n">Actif</div><div class="h-stat-l">publications quotidiennes</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- GROUPES JASON & DRIING -->
+<section class="sec">
+  <div class="s-in">
+    <div class="sec-head">
+      <div class="lbl dk">Groupes officiels</div>
+      <h2 class="h2">Gérés par <em>Jason & Driing</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:0;max-width:520px;line-height:1.7">Ces groupes sont animés directement par Jason Marinho et l'équipe Driing. Questions, partage de ressources, actualités et sessions live — tout se passe ici.</p>
+    </div>
+    <div class="groupe-grid">
+
+      <!-- Groupe Jason membres -->
+      <div class="gc gc-jason">
+        <div class="gc-badge jason">⭐ Groupe Jason Marinho</div>
+        <p class="gc-title">Espace membres & entraide LCD</p>
+        <p class="gc-desc">Le groupe principal de la communauté. Questions directes à Jason, partage de ressources, retours d'expérience et annonces en avant-première. Jason répond personnellement.</p>
+        <div class="gc-tags">
+          <span class="gc-tag">Q&amp;A avec Jason</span>
+          <span class="gc-tag">Ressources exclusives</span>
+          <span class="gc-tag">Actualités LCD</span>
+        </div>
+        <div class="gc-divider"></div>
+        <a href="https://app.jasonmarinho.com/auth/register" class="gc-cta">Accéder au groupe <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+      <!-- Groupe Driing -->
+      <div class="gc gc-driing">
+        <div class="gc-badge driing">Groupe Driing</div>
+        <p class="gc-title">Hôtes Driing — réservation directe</p>
+        <p class="gc-desc">Exclusif aux hôtes présents sur la plateforme Driing. Astuces pour maximiser ses réservations directes, retours d'expérience et nouveautés de la plateforme en avant-première.</p>
+        <div class="gc-tags">
+          <span class="gc-tag">Réservation directe</span>
+          <span class="gc-tag">Membres Driing</span>
+          <span class="gc-tag">Exclusif</span>
+        </div>
+        <div class="gc-divider"></div>
+        <a href="/pour-qui/membres-driing" class="gc-cta">Découvrir Driing <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GROUPES DE VISIBILITÉ -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="sec-head">
+      <div class="lbl dk">Visibilité & Voyageurs</div>
+      <h2 class="h2">Groupes pour <em>trouver des voyageurs</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:0;max-width:540px;line-height:1.7">Facebook regorge de groupes où des milliers de voyageurs cherchent des hébergements. Savoir lesquels rejoindre et comment publier, ça change tout.</p>
+    </div>
+    <div class="groupe-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+
+      <div class="gc gc-default">
+        <div class="gc-badge public"><i class="ph ph-map-pin" style="font-size:11px"></i>Par région</div>
+        <p class="gc-title">Groupes location par région</p>
+        <p class="gc-desc">Des groupes Facebook régionaux où des voyageurs cherchent activement des hébergements. Poster son annonce au bon endroit, au bon moment.</p>
+        <div class="gc-tags">
+          <span class="gc-tag">Île-de-France</span>
+          <span class="gc-tag">PACA</span>
+          <span class="gc-tag">Bretagne</span>
+          <span class="gc-tag">+</span>
+        </div>
+        <div class="gc-divider"></div>
+        <a href="https://app.jasonmarinho.com/auth/register" class="gc-cta">Voir la liste des groupes <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+      <div class="gc gc-default">
+        <div class="gc-badge public"><i class="ph ph-users" style="font-size:11px"></i>Par profil voyageur</div>
+        <p class="gc-title">Groupes thématiques voyageurs</p>
+        <p class="gc-desc">Groupes ciblés par type de voyageur : familles, week-end en amoureux, groupes d'amis, digital nomads. Adapter son message à l'audience pour plus de réservations.</p>
+        <div class="gc-tags">
+          <span class="gc-tag">Familles</span>
+          <span class="gc-tag">Week-end</span>
+          <span class="gc-tag">Nature</span>
+          <span class="gc-tag">Digital nomads</span>
+        </div>
+        <div class="gc-divider"></div>
+        <a href="https://app.jasonmarinho.com/auth/register" class="gc-cta">Accéder à la liste <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+      <div class="gc gc-default">
+        <div class="gc-badge public"><i class="ph ph-globe" style="font-size:11px"></i>Réservation directe</div>
+        <p class="gc-title">Groupes sans commission</p>
+        <p class="gc-desc">Des groupes Facebook dédiés à la réservation directe entre hôtes et voyageurs, sans passer par Airbnb. Une source de réservations gratuites à ne pas négliger.</p>
+        <div class="gc-tags">
+          <span class="gc-tag">0% commission</span>
+          <span class="gc-tag">Contact direct</span>
+        </div>
+        <div class="gc-divider"></div>
+        <a href="https://app.jasonmarinho.com/auth/register" class="gc-cta">Découvrir ces groupes <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GROUPES ENTRAIDE -->
+<section class="sec">
+  <div class="s-in">
+    <div class="sec-head">
+      <div class="lbl dk">Entraide entre hôtes</div>
+      <h2 class="h2">Groupes où les <em>hôtes s'entraident</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:0;max-width:540px;line-height:1.7">Les meilleurs conseils viennent de ceux qui vivent la même chose que toi. Ces groupes regroupent des milliers d'hôtes LCD prêts à partager leur expérience.</p>
+    </div>
+    <div class="groupe-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+
+      <div class="gc gc-default">
+        <div class="gc-badge entraide"><i class="ph ph-chat-circle" style="font-size:11px"></i>Bonnes pratiques</div>
+        <p class="gc-title">Trucs & astuces LCD</p>
+        <p class="gc-desc">Gestion des voyageurs difficiles, optimisation de l'annonce, tarification, check-in automatisé… Des hôtes expérimentés partagent ce qui fonctionne vraiment.</p>
+        <div class="gc-tags">
+          <span class="gc-tag">Annonce Airbnb</span>
+          <span class="gc-tag">Tarification</span>
+          <span class="gc-tag">Automatisation</span>
+        </div>
+        <div class="gc-divider"></div>
+        <a href="https://app.jasonmarinho.com/auth/register" class="gc-cta">Accéder aux groupes <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+      <div class="gc gc-default">
+        <div class="gc-badge entraide"><i class="ph ph-wrench" style="font-size:11px"></i>Prestataires</div>
+        <p class="gc-title">Partage de prestataires fiables</p>
+        <p class="gc-desc">Trouver un bon ménage, un plombier réactif ou un photographe immobilier dans ta région — d'autres hôtes ont déjà testé et recommandent. Évite les mauvaises surprises.</p>
+        <div class="gc-tags">
+          <span class="gc-tag">Ménage</span>
+          <span class="gc-tag">Maintenance</span>
+          <span class="gc-tag">Photographie</span>
+        </div>
+        <div class="gc-divider"></div>
+        <a href="https://app.jasonmarinho.com/auth/register" class="gc-cta">Rejoindre l'entraide <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+      <div class="gc gc-default">
+        <div class="gc-badge entraide"><i class="ph ph-scales" style="font-size:11px"></i>Juridique & fiscal</div>
+        <p class="gc-title">Questions juridiques & fiscales</p>
+        <p class="gc-desc">Réglementation LCD par ville, fiscalité des revenus locatifs, assurances, déclarations… Des hôtes partagent leur expérience et orientent vers les bonnes ressources.</p>
+        <div class="gc-tags">
+          <span class="gc-tag">Fiscalité</span>
+          <span class="gc-tag">Réglementation</span>
+          <span class="gc-tag">Assurance</span>
+        </div>
+        <div class="gc-divider"></div>
+        <a href="https://app.jasonmarinho.com/auth/register" class="gc-cta">Accéder aux discussions <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI FACEBOOK -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="sec-head">
+      <div class="lbl dk">Pourquoi Facebook</div>
+      <h2 class="h2">L'outil que tout le monde <em>a déjà</em></h2>
+    </div>
+    <div class="fb-why">
+      <div class="fb-why-ic"><i class="ph ph-facebook-logo"></i></div>
+      <div>
+        <h3>Accessible, gratuit, toujours dans ta poche</h3>
+        <p>Pas d'application supplémentaire à installer. Facebook est sur ton téléphone, avec les notifications activées, et regroupe des dizaines de milliers d'hôtes et voyageurs en France. C'est là que se passent les conversations réelles — pas sur des forums déserts.</p>
+      </div>
+    </div>
+    <div class="avantages" style="margin-top:24px">
+      <div class="av">
+        <div class="av-ic"><i class="ph ph-bell-ringing"></i></div>
+        <h3>Notifications en temps réel</h3>
+        <p>Tu ne rates plus aucune question, aucun signalement, aucune opportunité. L'information arrive directement à toi.</p>
+      </div>
+      <div class="av">
+        <div class="av-ic"><i class="ph ph-magnifying-glass"></i></div>
+        <h3>Recherche dans l'historique</h3>
+        <p>Une question a déjà été posée des dizaines de fois. Cherche dans le groupe avant de poster — la réponse est probablement déjà là.</p>
+      </div>
+      <div class="av">
+        <div class="av-ic"><i class="ph ph-users-four"></i></div>
+        <h3>Des milliers de membres actifs</h3>
+        <p>Une vraie masse critique. Plus le groupe est grand, plus les réponses arrivent vite et plus les retours d'expérience sont variés.</p>
+      </div>
+      <div class="av">
+        <div class="av-ic"><i class="ph ph-device-mobile"></i></div>
+        <h3>100% mobile-friendly</h3>
+        <p>Consulter les groupes entre deux séjours, depuis n'importe où. Pas besoin d'être devant un ordinateur.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec dk">
+  <div class="s-in">
+    <div class="cta-ban">
+      <div class="lbl">Rejoindre</div>
+      <h2 class="h2 lt" style="max-width:500px;margin:0 auto 14px">Prêt à rejoindre<br>une <em>communauté active</em> ?</h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.45);margin:0 0 28px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.7">Accès gratuit à tous les groupes depuis ton espace membres. La liste complète est disponible après inscription.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/contact" class="btn-ol">Une question ?</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+</body>
+</html>
