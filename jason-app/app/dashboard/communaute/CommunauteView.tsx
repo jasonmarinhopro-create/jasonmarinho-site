@@ -109,7 +109,7 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
     <div style={styles.page}>
       <div style={styles.intro} className="fade-up">
         <h2 style={styles.pageTitle}>
-          La <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>communauté</em> LCD
+          La <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>communauté</em> LCD
         </h2>
         <p style={styles.pageDesc}>
           Les meilleurs groupes Facebook pour échanger avec d'autres hôtes — et partager vos locations directement avec des voyageurs.
@@ -304,7 +304,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '5px 12px', borderRadius: '999px',
     background: 'rgba(255,213,107,0.12)',
     border: '1px solid rgba(255,213,107,0.3)',
-    color: '#FFD56B', fontSize: '12px', fontWeight: 600,
+    color: 'var(--accent-text)', fontSize: '12px', fontWeight: 600,
     letterSpacing: '0.4px', marginBottom: '10px',
   },
   featuredSubtitle: {

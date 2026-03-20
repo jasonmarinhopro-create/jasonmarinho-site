@@ -93,11 +93,11 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
           </div>
         </div>
         <div style={s.statCard}>
-          <div style={{ ...s.statIcon, color: '#FFD56B', background: 'rgba(255,213,107,0.12)' }}>
+          <div style={{ ...s.statIcon, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.12)' }}>
             <Lightning size={18} />
           </div>
           <div>
-            <div style={{ ...s.statValue, color: '#FFD56B' }}>{stats.driingMembers}</div>
+            <div style={{ ...s.statValue, color: 'var(--accent-text)' }}>{stats.driingMembers}</div>
             <div style={s.statLabel}>membres Driing</div>
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
           </Link>
 
           <Link href="/dashboard/admin/gabarits" style={s.contentCard}>
-            <div style={{ ...s.contentCardIcon, color: '#FFD56B', background: 'rgba(255,213,107,0.1)' }}>
+            <div style={{ ...s.contentCardIcon, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.1)' }}>
               <FileText size={22} />
             </div>
             <div style={s.contentCardBody}>
@@ -259,7 +259,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
             {suggestions.map(sg => (
               <Row key={sg.id}>
                 <Cell>
-                  <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'rgba(255,213,107,.1)', color: '#FFD56B' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD' }) }}>
+                  <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'rgba(255,213,107,.1)', color: 'var(--accent-text)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD' }) }}>
                     {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
                   </span>
                 </Cell>
@@ -370,7 +370,7 @@ const s: Record<string, React.CSSProperties> = {
   tab: { display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 500, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer' },
   tabActive: { background: 'var(--surface-2)', color: 'var(--text)' },
   tabBadge: { fontSize: '11px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-3)', padding: '1px 7px', borderRadius: '100px' },
-  tabBadgeActive: { background: 'rgba(255,213,107,0.15)', color: '#FFD56B' },
+  tabBadgeActive: { background: 'rgba(255,213,107,0.15)', color: 'var(--accent-text)' },
 
   section: { display: 'flex', flexDirection: 'column', gap: '0' },
   sectionSubTitle: { fontSize: '11px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', padding: '0 0 10px' },

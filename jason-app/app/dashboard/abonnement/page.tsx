@@ -42,7 +42,7 @@ export default async function AbonnementPage() {
       <div style={styles.page}>
         <div style={styles.intro} className="fade-up">
           <h2 style={styles.pageTitle}>
-            Votre <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>abonnement</em>
+            Votre <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>abonnement</em>
           </h2>
           <p style={styles.pageDesc}>
             Des offres adaptées à chaque étape de votre activité.
@@ -55,12 +55,12 @@ export default async function AbonnementPage() {
             {isDriing ? (
               <div style={styles.driingBanner} className="glass-card fade-up">
                 <div style={styles.driingGlow} />
-                <div style={{ ...styles.currentPlan, color: '#FFD56B' }}>
-                  <div style={{ ...styles.currentDot, background: '#FFD56B' }} />
+                <div style={{ ...styles.currentPlan, color: 'var(--accent-text)' }}>
+                  <div style={{ ...styles.currentDot, background: 'var(--accent-text)' }} />
                   Plan actuel
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ ...styles.currentName, color: '#FFD56B' }}>Membre Driing</div>
+                  <div style={{ ...styles.currentName, color: 'var(--accent-text)' }}>Membre Driing</div>
                   <Star size={20} color="#FFD56B" weight="fill" />
                 </div>
                 <p style={styles.currentDesc}>
@@ -210,7 +210,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '16px', padding: '24px',
   },
   driingRowGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,213,107,0.08) 0%, transparent 70%)', pointerEvents: 'none' },
-  driingRowName: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: '#FFD56B' },
+  driingRowName: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--accent-text)' },
   planDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.5, margin: 0 },
   perks: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px' },
   perk: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'var(--text-2)' },

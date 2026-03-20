@@ -26,7 +26,7 @@ const LEVEL_LABELS: Record<string, string> = {
 
 const LEVEL_COLORS: Record<string, { bg: string; color: string }> = {
   debutant:     { bg: 'rgba(99,214,131,0.1)',  color: '#63D683' },
-  intermediaire:{ bg: 'rgba(255,213,107,0.1)', color: '#FFD56B' },
+  intermediaire:{ bg: 'rgba(255,213,107,0.1)', color: 'var(--accent-text)' },
   avance:       { bg: 'rgba(239,68,68,0.1)',   color: '#f87171' },
 }
 

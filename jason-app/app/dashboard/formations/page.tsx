@@ -54,7 +54,7 @@ export default async function FormationsPage() {
 
       <div style={styles.page}>
         <div style={styles.intro} className="fade-up">
-          <h2 style={styles.pageTitle}>Tes <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>formations</em></h2>
+          <h2 style={styles.pageTitle}>Tes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>formations</em></h2>
           <p style={styles.pageDesc}>Des parcours concrets pour optimiser ta location courte durée. Accessibles à vie, à ton rythme.</p>
         </div>
 
@@ -201,7 +201,7 @@ const styles: Record<string, React.CSSProperties> = {
   metaItem: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--text-3)' },
   progressArea: { marginBottom: '20px' },
   progressLabel: { fontSize: '12px', color: 'var(--text-3)' },
-  progressPct: { fontSize: '12px', color: '#FFD56B' },
+  progressPct: { fontSize: '12px', color: 'var(--accent-text)' },
   cardFooter: { paddingTop: '16px', borderTop: '1px solid var(--border)' },
   lockedBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',

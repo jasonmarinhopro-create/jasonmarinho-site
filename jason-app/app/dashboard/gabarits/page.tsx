@@ -66,7 +66,7 @@ export default function GabaritsPage() {
 
       <div style={styles.page}>
         <div style={styles.intro} className="fade-up">
-          <h2 style={styles.pageTitle}>Gabarits <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>prêts à l'emploi</em></h2>
+          <h2 style={styles.pageTitle}>Gabarits <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>prêts à l'emploi</em></h2>
           <p style={styles.pageDesc}>Messages prêts à copier pour chaque étape du séjour. Personnalise les crochets [ ] selon ton logement.</p>
         </div>
 
@@ -164,7 +164,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   catBtnActive: {
     background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.3)',
-    color: '#FFD56B',
+    color: 'var(--accent-text)',
   },
   grid: {}, /* className dash-grid-3 */
   card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '14px' },

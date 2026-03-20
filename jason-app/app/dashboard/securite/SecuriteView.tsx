@@ -108,7 +108,7 @@ export default function SecuriteView() {
     <div style={styles.page} className="dash-page">
       <div style={styles.intro} className="fade-up">
         <h2 style={styles.pageTitle}>
-          Sécurité <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>voyageurs</em>
+          Sécurité <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>voyageurs</em>
         </h2>
         <p style={styles.pageDesc}>
           Vérifie une demande de réservation douteuse ou signale un voyageur problématique à la communauté.
@@ -411,7 +411,7 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: '4px', paddingTop: '12px',
   },
   contactLink: {
-    fontSize: '12px', fontWeight: 500, color: '#FFD56B',
+    fontSize: '12px', fontWeight: 500, color: 'var(--accent-text)',
     textDecoration: 'underline',
   },
   resultAlertHeader: {
@@ -441,7 +441,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   reportLink: {
     background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: '12px', fontWeight: 500, color: '#FFD56B',
+    fontSize: '12px', fontWeight: 500, color: 'var(--accent-text)',
     textDecoration: 'underline', padding: 0,
   },
 

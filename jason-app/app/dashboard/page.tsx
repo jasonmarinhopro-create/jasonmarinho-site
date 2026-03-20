@@ -42,7 +42,7 @@ export default async function DashboardPage() {
         <section style={styles.welcome} className="fade-up dash-welcome">
           <div>
             <p style={styles.welcomeSub}>Bonjour,</p>
-            <h2 style={styles.welcomeTitle}>Bienvenue{firstName ? ', ' : ''}<em style={{ color: '#FFD56B', fontStyle: 'italic' }}>{firstName}</em></h2>
+            <h2 style={styles.welcomeTitle}>Bienvenue{firstName ? ', ' : ''}<em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>{firstName}</em></h2>
             <p style={styles.welcomeDesc}>Retrouve tes formations, gabarits et ressources pour développer ton activité LCD.</p>
           </div>
           <div style={styles.statsRow} className="dash-stats-row">
@@ -141,13 +141,13 @@ const styles: Record<string, React.CSSProperties> = {
   welcomeDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '440px', lineHeight: 1.6 },
   statsRow: { display: 'flex', alignItems: 'center', gap: '28px', flexShrink: 0 },
   stat: { textAlign: 'center' },
-  statVal: { display: 'block', fontFamily: 'Fraunces, serif', fontSize: '40px', fontWeight: 400, color: '#FFD56B', lineHeight: 1 },
+  statVal: { display: 'block', fontFamily: 'Fraunces, serif', fontSize: '40px', fontWeight: 400, color: 'var(--accent-text)', lineHeight: 1 },
   statLbl: { display: 'block', fontSize: '11px', color: 'var(--text-3)', marginTop: '6px', letterSpacing: '0.3px' },
   statDivider: { width: '1px', height: '44px', background: 'var(--border)' },
   section: { marginBottom: '32px' },
   sectionHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   sectionTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', marginBottom: '16px' },
-  seeAll: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
+  seeAll: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500 },
   quickGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' },
   quickCard: {
     display: 'flex', alignItems: 'center', gap: '14px',

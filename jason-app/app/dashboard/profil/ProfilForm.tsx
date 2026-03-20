@@ -222,7 +222,7 @@ const styles: Record<string, React.CSSProperties> = {
   avatarSection: { display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '28px' },
   avatarWrap: { position: 'relative', width: '64px', height: '64px', flexShrink: 0, borderRadius: '50%', overflow: 'hidden' },
   avatar: { width: '64px', height: '64px', background: 'rgba(0,76,63,0.5)', border: '2px solid rgba(255,213,107,0.25)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  avatarText: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 600, color: '#FFD56B' },
+  avatarText: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 600, color: 'var(--accent-text)' },
   avatarName: { fontSize: '17px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
   avatarSub: { fontSize: '13px', color: 'var(--text-3)' },
   divider: { height: '1px', background: 'var(--border)', margin: '0 0 24px' },

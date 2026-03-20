@@ -50,6 +50,10 @@
   --nav-active-bg: rgba(99,214,131,0.1);
   --nav-active-border: rgba(99,214,131,0.18);
   --nav-active-color: #63D683;
+  --nav-admin-color: rgba(99,214,131,0.55);
+
+  /* Accent text — yellow on dark, forest green on light */
+  --accent-text: #FFD56B;
 
   /* Card shadow */
   --card-shadow:  none;
@@ -82,6 +86,10 @@
   --nav-active-bg: rgba(0,76,63,0.1);
   --nav-active-border: rgba(0,76,63,0.22);
   --nav-active-color: #005A4A;
+  --nav-admin-color: rgba(0,76,63,0.65);
+
+  /* Accent text — forest green on light bg */
+  --accent-text: #004C3F;
 
   /* Card shadow */
   --card-shadow:  0 2px 16px rgba(0,76,63,0.07);
