@@ -144,7 +144,7 @@
         + '<div class="n-mega">'
           + '<div class="n-col">'
             + '<a href="/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
-            + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Sécurité des voyageurs</a>'
+            + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
             + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a>'
             + '<a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a>'
             + '<a href="/ressources/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
@@ -188,7 +188,7 @@
 
     + '<div class="mob-stitle">Services</div>'
     + '<a href="/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
-    + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Sécurité des voyageurs</a>'
+    + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
     + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a>'
     + '<a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a>'
 
