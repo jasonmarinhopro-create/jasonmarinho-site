@@ -128,7 +128,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
             <>
               <div style={styles.navDivider}>
                 <div style={styles.navDividerLine} />
-                <span style={{ ...styles.navDividerLabel, color: 'rgba(255,213,107,0.45)' }}>Admin</span>
+                <span style={{ ...styles.navDividerLabel, color: 'rgba(99,214,131,0.45)' }}>Admin</span>
                 <div style={styles.navDividerLine} />
               </div>
               <div style={styles.navSection}>
@@ -148,7 +148,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
                       style={{
                         ...styles.navItem,
                         ...(active ? styles.navItemActive : {}),
-                        ...(!active ? { color: 'rgba(255,213,107,0.55)' } : {}),
+                        ...(!active ? { color: 'rgba(99,214,131,0.55)' } : {}),
                       }}
                     >
                       <Icon size={18} weight={active ? 'fill' : 'regular'} />
@@ -247,14 +247,14 @@ const styles: Record<string, React.CSSProperties> = {
   },
   navItemActive: {
     background: 'var(--nav-active-bg)',
-    color: '#FFD56B',
+    color: 'var(--nav-active-color)',
     fontWeight: 500,
     border: '1px solid var(--nav-active-border)',
   },
   activeDot: {
     position: 'absolute', right: '12px',
     width: '5px', height: '5px',
-    background: '#FFD56B', borderRadius: '50%',
+    background: 'var(--nav-active-color)', borderRadius: '50%',
   },
   sideFooter: {
     padding: '12px',

@@ -47,8 +47,9 @@
   --nav-bg:       rgba(0,51,42,0.98);
   --nav-border:   rgba(255,255,255,0.06);
   --nav-item:     rgba(240,244,255,0.5);
-  --nav-active-bg: rgba(255,213,107,0.08);
-  --nav-active-border: rgba(255,213,107,0.12);
+  --nav-active-bg: rgba(99,214,131,0.1);
+  --nav-active-border: rgba(99,214,131,0.18);
+  --nav-active-color: #63D683;
 
   /* Card shadow */
   --card-shadow:  none;
@@ -78,8 +79,9 @@
   --nav-bg:       rgba(255,255,255,0.97);
   --nav-border:   rgba(0,76,63,0.1);
   --nav-item:     rgba(11,29,15,0.52);
-  --nav-active-bg: rgba(255,213,107,0.14);
-  --nav-active-border: rgba(255,213,107,0.28);
+  --nav-active-bg: rgba(0,76,63,0.1);
+  --nav-active-border: rgba(0,76,63,0.22);
+  --nav-active-color: #005A4A;
 
   /* Card shadow */
   --card-shadow:  0 2px 16px rgba(0,76,63,0.07);
