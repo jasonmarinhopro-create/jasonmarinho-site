@@ -166,15 +166,15 @@ export default function SecuriteView() {
                     </div>
                     <div style={styles.vigilanceBox}>
                       <Info size={14} color="#FFD56B" style={{ flexShrink: 0, marginTop: '2px' }} />
-                      <div style={{ fontSize: '13px', color: 'rgba(240,244,255,0.5)', lineHeight: 1.6 }}>
-                        <strong style={{ color: 'rgba(240,244,255,0.75)', fontWeight: 600 }}>Restez quand même vigilant.</strong>{' '}
+                      <div style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6 }}>
+                        <strong style={{ color: 'var(--text-2)', fontWeight: 600 }}>Restez quand même vigilant.</strong>{' '}
                         En cas de doute, consultez les conseils de sécurité ci-contre ou contactez-nous directement.
                         Notre base est alimentée par la communauté et ne couvre pas tous les cas.
                       </div>
                     </div>
                     <div style={styles.contactCta}>
-                      <PhoneCall size={14} color="rgba(240,244,255,0.35)" />
-                      <span style={{ fontSize: '12px', color: 'rgba(240,244,255,0.35)' }}>
+                      <PhoneCall size={14} color="var(--text-3)" />
+                      <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
                         Doute persistant ?
                       </span>
                       <a
@@ -211,8 +211,8 @@ export default function SecuriteView() {
                       </div>
                     ))}
                     <div style={styles.legalNote}>
-                      <Info size={12} color="rgba(240,244,255,0.25)" style={{ flexShrink: 0 }} />
-                      <span style={{ fontSize: '11px', color: 'rgba(240,244,255,0.3)', lineHeight: 1.5 }}>
+                      <Info size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                         Ces signalements sont soumis à modération. Ils constituent des témoignages communautaires et ne valent pas décision judiciaire.
                       </span>
                     </div>
@@ -223,8 +223,8 @@ export default function SecuriteView() {
 
             {/* Report CTA */}
             <div style={styles.reportCta}>
-              <Info size={14} color="rgba(240,244,255,0.3)" />
-              <span style={{ fontSize: '12px', color: 'rgba(240,244,255,0.35)' }}>
+              <Info size={14} color="var(--text-muted)" />
+              <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
                 Tu as eu un problème avec un voyageur ?
               </span>
               <button onClick={() => setShowReport(v => !v)} style={styles.reportLink}>
@@ -237,7 +237,7 @@ export default function SecuriteView() {
           {showReport && (
             <div style={styles.reportCard} className="glass-card fade-up">
               <div style={styles.reportHeader}>
-                <div style={{ fontSize: '15px', fontWeight: 600, color: '#f0f4ff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Warning size={16} color="#FB923C" /> Signaler un voyageur
                 </div>
                 <button onClick={() => setShowReport(false)} style={styles.closeBtn}>
@@ -251,7 +251,7 @@ export default function SecuriteView() {
               <form onSubmit={handleReport} style={styles.reportForm}>
                 {/* Identifiers — all optional, at least one required */}
                 <div style={styles.identifiersBlock}>
-                  <label style={styles.label}>Coordonnées du voyageur <span style={{ color: 'rgba(240,244,255,0.3)', fontWeight: 400 }}>(au moins un champ)</span></label>
+                  <label style={styles.label}>Coordonnées du voyageur <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(au moins un champ)</span></label>
                   <input
                     type="email"
                     value={report.email}
@@ -298,7 +298,7 @@ export default function SecuriteView() {
                     rows={4}
                     required
                   />
-                  <span style={{ fontSize: '11px', color: report.description.length < 20 ? 'rgba(240,244,255,0.3)' : '#34D399' }}>
+                  <span style={{ fontSize: '11px', color: report.description.length < 20 ? 'var(--text-muted)' : '#34D399' }}>
                     {report.description.length}/20 minimum
                   </span>
                 </div>
@@ -351,7 +351,7 @@ export default function SecuriteView() {
           </div>
 
           <div style={styles.disclaimer} className="fade-up">
-            <Info size={14} color="rgba(240,244,255,0.25)" style={{ flexShrink: 0, marginTop: '1px' }} />
+            <Info size={14} color="var(--text-muted)" style={{ flexShrink: 0, marginTop: '1px' }} />
             <p style={styles.disclaimerText}>
               Les signalements sont soumis à modération avant publication. Cette base est alimentée par la communauté et ne remplace pas une démarche légale en cas de litige sérieux. Les données personnelles sont traitées conformément au RGPD.
             </p>
@@ -367,9 +367,9 @@ const styles: Record<string, React.CSSProperties> = {
   intro: { marginBottom: '32px' },
   pageTitle: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
-    fontWeight: 400, color: '#f0f4ff', marginBottom: '10px',
+    fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
   },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '540px', lineHeight: 1.6 },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '540px', lineHeight: 1.6 },
 
   grid: {
     display: 'grid',
@@ -384,28 +384,28 @@ const styles: Record<string, React.CSSProperties> = {
   cardTitle: {
     display: 'flex', alignItems: 'center', gap: '10px',
     fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400,
-    color: '#f0f4ff', marginBottom: '10px',
+    color: 'var(--text)', marginBottom: '10px',
   },
-  cardDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.6, marginBottom: '24px' },
+  cardDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '24px' },
 
   searchForm: { display: 'flex', flexDirection: 'column', gap: '12px' },
   inputRow: { display: 'flex', gap: '10px', alignItems: 'center' },
   input: {
-    flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+    flex: 1, background: 'var(--border)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: '#f0f4ff',
+    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', width: '100%',
   },
   errorMsg: { fontSize: '13px', color: '#F87171', marginTop: '4px', lineHeight: 1.5 },
 
-  resultsWrap: { marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' },
+  resultsWrap: { marginTop: '20px', borderTop: '1px solid var(--border)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' },
   resultOk: {
     display: 'flex', alignItems: 'flex-start', gap: '14px',
     background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
     borderRadius: '14px', padding: '16px 20px',
   },
   resultOkTitle: { fontSize: '15px', fontWeight: 600, color: '#34D399', marginBottom: '6px' },
-  resultOkDesc: { fontSize: '13px', color: 'rgba(240,244,255,0.5)', lineHeight: 1.55 },
+  resultOkDesc: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55 },
   vigilanceBox: {
     display: 'flex', alignItems: 'flex-start', gap: '10px',
     background: 'rgba(255,213,107,0.05)', border: '1px solid rgba(255,213,107,0.12)',
@@ -432,17 +432,17 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'inline-block', fontSize: '11px', fontWeight: 600,
     padding: '3px 10px', borderRadius: '100px',
   },
-  resultDate: { fontSize: '11px', color: 'rgba(240,244,255,0.3)' },
-  resultDesc: { fontSize: '13px', color: 'rgba(240,244,255,0.6)', lineHeight: 1.55 },
+  resultDate: { fontSize: '11px', color: 'var(--text-muted)' },
+  resultDesc: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55 },
   legalNote: {
     display: 'flex', alignItems: 'flex-start', gap: '8px',
     marginTop: '8px', padding: '10px 12px',
-    background: 'rgba(255,255,255,0.02)', borderRadius: '8px',
+    background: 'var(--surface)', borderRadius: '8px',
   },
 
   reportCta: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)',
+    marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border)',
   },
   reportLink: {
     background: 'none', border: 'none', cursor: 'pointer',
@@ -457,10 +457,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   closeBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    color: 'rgba(240,244,255,0.4)', padding: '4px', borderRadius: '6px',
+    color: 'var(--text-3)', padding: '4px', borderRadius: '6px',
   },
   reportNotice: {
-    fontSize: '12px', color: 'rgba(240,244,255,0.4)', lineHeight: 1.5,
+    fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5,
     background: 'rgba(255,213,107,0.06)', border: '1px solid rgba(255,213,107,0.12)',
     borderRadius: '8px', padding: '10px 14px', marginBottom: '20px',
   },
@@ -469,18 +469,18 @@ const styles: Record<string, React.CSSProperties> = {
   formRow: { display: 'flex', flexDirection: 'column', gap: '8px' },
   label: {
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px',
-    textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.4)',
+    textTransform: 'uppercase' as const, color: 'var(--text-3)',
   },
   select: {
-    width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+    width: '100%', background: 'var(--border)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: '#f0f4ff',
+    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', appearance: 'none' as const,
   },
   textarea: {
-    width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+    width: '100%', background: 'var(--border)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: '#f0f4ff',
+    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', resize: 'vertical' as const, minHeight: '100px',
   },
 
@@ -492,21 +492,21 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   tipsHeader: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' },
-  tipsTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: '#f0f4ff' },
+  tipsTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)' },
   tipsList: { display: 'flex', flexDirection: 'column', gap: '10px' },
   tip: {
     display: 'flex', alignItems: 'flex-start', gap: '14px',
     padding: '16px', borderRadius: '14px',
   },
   tipIcon: { fontSize: '20px', flexShrink: 0, marginTop: '1px' },
-  tipTitle: { fontSize: '14px', fontWeight: 600, color: '#f0f4ff', marginBottom: '4px' },
-  tipText: { fontSize: '12px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.55 },
+  tipTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' },
+  tipText: { fontSize: '12px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.55 },
 
   disclaimer: {
     display: 'flex', gap: '10px',
     padding: '12px 14px',
-    background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '10px', marginTop: '4px',
   },
-  disclaimerText: { fontSize: '11px', color: 'rgba(240,244,255,0.28)', lineHeight: 1.55 },
+  disclaimerText: { fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.55 },
 }

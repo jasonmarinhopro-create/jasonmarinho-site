@@ -283,11 +283,11 @@ const styles: Record<string, React.CSSProperties> = {
   intro: { marginBottom: '32px' },
   pageTitle: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
-    fontWeight: 400, color: '#f0f4ff', marginBottom: '10px',
+    fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
   },
   pageDesc: {
     fontSize: '15px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6,
+    color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6,
   },
 
   // Featured Jason/Driing section
@@ -308,7 +308,7 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: '0.4px', marginBottom: '10px',
   },
   featuredSubtitle: {
-    fontSize: '14px', color: 'rgba(240,244,255,0.45)', fontWeight: 300,
+    fontSize: '14px', color: 'var(--text-3)', fontWeight: 300,
   },
   featuredGrid: {},
   featuredCard: {
@@ -337,11 +337,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   featuredName: {
     fontFamily: 'Fraunces, serif', fontSize: '16px',
-    fontWeight: 400, color: '#f0f4ff',
+    fontWeight: 400, color: 'var(--text)',
   },
   featuredDesc: {
     fontSize: '13px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.5)', lineHeight: 1.65, flex: 1,
+    color: 'var(--text-2)', lineHeight: 1.65, flex: 1,
   },
 
   // Section blocks
@@ -353,7 +353,7 @@ const styles: Record<string, React.CSSProperties> = {
   sectionLabel: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '12px', fontWeight: 600, letterSpacing: '0.7px',
-    textTransform: 'uppercase', color: 'rgba(240,244,255,0.35)',
+    textTransform: 'uppercase', color: 'var(--text-3)',
     marginBottom: '18px',
   },
 
@@ -362,16 +362,16 @@ const styles: Record<string, React.CSSProperties> = {
   },
   regionLabel: {
     display: 'flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', color: 'rgba(240,244,255,0.35)', fontWeight: 500,
+    fontSize: '12px', color: 'var(--text-3)', fontWeight: 500,
     marginRight: '4px',
   },
   filterPill: {
     display: 'flex', alignItems: 'center', gap: '5px',
     padding: '7px 15px', borderRadius: '999px',
     fontSize: '13px', fontWeight: 400,
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    color: 'rgba(240,244,255,0.5)',
+    background: 'var(--border)',
+    border: '1px solid var(--border)',
+    color: 'var(--text-2)',
     cursor: 'pointer', transition: 'all 0.18s',
   },
   filterPillRegion: {
@@ -394,14 +394,14 @@ const styles: Record<string, React.CSSProperties> = {
   },
   groupName: {
     fontFamily: 'Fraunces, serif', fontSize: '17px',
-    fontWeight: 400, color: '#f0f4ff', marginBottom: '6px',
+    fontWeight: 400, color: 'var(--text)', marginBottom: '6px',
   },
   metaRow: {
     display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
   },
   memberCount: {
     display: 'flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', color: 'rgba(240,244,255,0.38)',
+    fontSize: '12px', color: 'var(--text-3)',
   },
   regionBadge: {
     display: 'flex', alignItems: 'center', gap: '4px',
@@ -413,7 +413,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   desc: {
     fontSize: '14px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.55)', lineHeight: 1.65,
+    color: 'var(--text-2)', lineHeight: 1.65,
   },
   templateBox: {
     background: 'rgba(255,213,107,0.04)',
@@ -428,11 +428,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   templateTitle: {
     fontSize: '13px', fontWeight: 500,
-    color: 'rgba(240,244,255,0.7)', marginBottom: '10px',
+    color: 'var(--text-2)', marginBottom: '10px',
   },
   templateContent: {
     fontFamily: 'Outfit, sans-serif', fontSize: '12px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.45)', lineHeight: 1.7,
+    color: 'var(--text-3)', lineHeight: 1.7,
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
     maxHeight: '140px', overflowY: 'auto',
   },

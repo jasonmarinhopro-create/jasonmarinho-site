@@ -84,7 +84,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
           </div>
         </div>
         <div style={s.statCard}>
-          <div style={{ ...s.statIcon, color: 'rgba(240,244,255,0.5)', background: 'rgba(255,255,255,0.06)' }}>
+          <div style={{ ...s.statIcon, color: 'var(--text-2)', background: 'var(--border)' }}>
             <Users size={18} />
           </div>
           <div>
@@ -119,14 +119,14 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
         <div style={s.sectionLabel}>Gestion du contenu</div>
         <div style={s.contentGrid}>
           <Link href="/dashboard/admin/membres" style={s.contentCard}>
-            <div style={{ ...s.contentCardIcon, color: 'rgba(240,244,255,0.6)', background: 'rgba(255,255,255,0.06)' }}>
+            <div style={{ ...s.contentCardIcon, color: 'var(--text-2)', background: 'var(--border)' }}>
               <UsersThree size={22} />
             </div>
             <div style={s.contentCardBody}>
               <div style={s.contentCardTitle}>Membres</div>
               <div style={s.contentCardDesc}>{stats.totalUsers} inscrits · {stats.driingMembers} Driing</div>
             </div>
-            <ArrowRight size={16} style={{ color: 'rgba(240,244,255,0.25)', flexShrink: 0 }} />
+            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           </Link>
 
           <Link href="/dashboard/admin/gabarits" style={s.contentCard}>
@@ -137,7 +137,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
               <div style={s.contentCardTitle}>Gabarits</div>
               <div style={s.contentCardDesc}>{stats.templatesCount} gabarit{stats.templatesCount > 1 ? 's' : ''} publiés</div>
             </div>
-            <ArrowRight size={16} style={{ color: 'rgba(240,244,255,0.25)', flexShrink: 0 }} />
+            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           </Link>
 
           <Link href="/dashboard/admin/formations" style={s.contentCard}>
@@ -148,7 +148,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
               <div style={s.contentCardTitle}>Formations</div>
               <div style={s.contentCardDesc}>{stats.formationsCount} formation{stats.formationsCount > 1 ? 's' : ''} publiée{stats.formationsCount > 1 ? 's' : ''}</div>
             </div>
-            <ArrowRight size={16} style={{ color: 'rgba(240,244,255,0.25)', flexShrink: 0 }} />
+            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           </Link>
 
           <Link href="/dashboard/admin/communaute" style={s.contentCard}>
@@ -159,7 +159,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
               <div style={s.contentCardTitle}>Communauté</div>
               <div style={s.contentCardDesc}>{stats.groupsCount} groupe{stats.groupsCount > 1 ? 's' : ''} en base</div>
             </div>
-            <ArrowRight size={16} style={{ color: 'rgba(240,244,255,0.25)', flexShrink: 0 }} />
+            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           </Link>
         </div>
       </div>
@@ -329,23 +329,23 @@ const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '32px' },
 
   pageIntro: { marginBottom: '-8px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.45)' },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-3)' },
 
   statsGrid: { display: 'flex', gap: '14px', flexWrap: 'wrap' },
   statCard: {
     display: 'flex', alignItems: 'center', gap: '14px',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '14px', padding: '16px 20px', flex: '1 1 160px',
   },
   statIcon: { width: '36px', height: '36px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  statValue: { fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 400, color: '#f0f4ff', lineHeight: 1.1 },
-  statLabel: { fontSize: '12px', color: 'rgba(240,244,255,0.35)', marginTop: '3px' },
+  statValue: { fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.1 },
+  statLabel: { fontSize: '12px', color: 'var(--text-3)', marginTop: '3px' },
 
   sectionLabel: {
     display: 'flex', alignItems: 'center', gap: '10px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' as const,
-    color: 'rgba(240,244,255,0.3)', marginBottom: '14px',
+    color: 'var(--text-muted)', marginBottom: '14px',
   },
   alertDot: {
     background: 'rgba(251,146,60,0.15)', color: '#fb923c',
@@ -357,29 +357,29 @@ const s: Record<string, React.CSSProperties> = {
   contentGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '12px' },
   contentCard: {
     display: 'flex', alignItems: 'center', gap: '14px',
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--surface)', border: '1px solid var(--surface-2)',
     borderRadius: '14px', padding: '18px 20px',
     textDecoration: 'none', transition: 'border-color 0.18s, background 0.18s',
   },
   contentCardIcon: { width: '42px', height: '42px', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   contentCardBody: { flex: 1, minWidth: 0 },
-  contentCardTitle: { fontSize: '14px', fontWeight: 600, color: '#f0f4ff', marginBottom: '3px' },
-  contentCardDesc: { fontSize: '12px', color: 'rgba(240,244,255,0.35)' },
+  contentCardTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
+  contentCardDesc: { fontSize: '12px', color: 'var(--text-3)' },
 
-  tabBar: { display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '4px', marginBottom: '16px' },
-  tab: { display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.45)', background: 'none', border: 'none', cursor: 'pointer' },
-  tabActive: { background: 'rgba(255,255,255,0.07)', color: '#f0f4ff' },
-  tabBadge: { fontSize: '11px', fontWeight: 700, background: 'rgba(255,255,255,0.08)', color: 'rgba(240,244,255,0.4)', padding: '1px 7px', borderRadius: '100px' },
+  tabBar: { display: 'flex', gap: '4px', background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '12px', padding: '4px', marginBottom: '16px' },
+  tab: { display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 500, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer' },
+  tabActive: { background: 'var(--surface-2)', color: 'var(--text)' },
+  tabBadge: { fontSize: '11px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-3)', padding: '1px 7px', borderRadius: '100px' },
   tabBadgeActive: { background: 'rgba(255,213,107,0.15)', color: '#FFD56B' },
 
   section: { display: 'flex', flexDirection: 'column', gap: '0' },
-  sectionSubTitle: { fontSize: '11px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'rgba(240,244,255,0.25)', padding: '0 0 10px' },
-  table: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', overflow: 'hidden' },
-  row: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)', flexWrap: 'wrap' as const },
-  empty: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '40px', textAlign: 'center' as const, fontSize: '14px', color: 'rgba(240,244,255,0.3)' },
-  cellPrimary: { fontSize: '14px', fontWeight: 500, color: '#f0f4ff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
-  cellSub: { fontSize: '12px', color: 'rgba(240,244,255,0.4)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
-  description: { fontSize: '13px', color: 'rgba(240,244,255,0.5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, marginTop: '2px' },
+  sectionSubTitle: { fontSize: '11px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', padding: '0 0 10px' },
+  table: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', overflow: 'hidden' },
+  row: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' as const },
+  empty: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', padding: '40px', textAlign: 'center' as const, fontSize: '14px', color: 'var(--text-muted)' },
+  cellPrimary: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
+  cellSub: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
+  description: { fontSize: '13px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, marginTop: '2px' },
   badge: { display: 'inline-block', fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px', letterSpacing: '0.3px', whiteSpace: 'nowrap' as const },
   actions: { display: 'flex', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap' as const },
 }

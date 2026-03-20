@@ -3,7 +3,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Brand */
+  /* Brand (unchanged in both themes) */
   --green:        #004C3F;
   --green-deep:   #003329;
   --green-mid:    #005A4A;
@@ -12,20 +12,6 @@
   --yellow-hover: #FFE08F;
   --cream:        #F7F5F0;
   --warm-white:   #FDFCF9;
-
-  /* Dashboard dark theme */
-  --bg:           #040d0b;
-  --bg-2:         #071410;
-  --bg-3:         #0a1e18;
-  --surface:      rgba(255,255,255,0.04);
-  --surface-2:    rgba(255,255,255,0.07);
-  --border:       rgba(255,255,255,0.08);
-  --border-2:     rgba(255,255,255,0.14);
-
-  /* Text */
-  --text:         #f0f4ff;
-  --text-2:       rgba(240,244,255,0.65);
-  --text-3:       rgba(240,244,255,0.38);
 
   /* Accent */
   --accent:       #FFD56B;
@@ -41,6 +27,70 @@
   --header-h:     64px;
   --radius:       12px;
   --radius-lg:    18px;
+
+  /* ── DARK THEME (default) ── */
+  --bg:           #040d0b;
+  --bg-2:         #071410;
+  --bg-3:         #0a1e18;
+
+  --surface:      rgba(255,255,255,0.04);
+  --surface-2:    rgba(255,255,255,0.07);
+  --border:       rgba(255,255,255,0.08);
+  --border-2:     rgba(255,255,255,0.14);
+
+  --text:         #f0f4ff;
+  --text-2:       rgba(240,244,255,0.62);
+  --text-3:       rgba(240,244,255,0.38);
+  --text-muted:   rgba(240,244,255,0.24);
+
+  /* Nav (sidebar + header) */
+  --nav-bg:       rgba(0,51,42,0.98);
+  --nav-border:   rgba(255,255,255,0.06);
+  --nav-item:     rgba(240,244,255,0.5);
+  --nav-active-bg: rgba(255,213,107,0.08);
+  --nav-active-border: rgba(255,213,107,0.12);
+
+  /* Card shadow */
+  --card-shadow:  none;
+
+  /* Input autofill */
+  --autofill-bg:  #0d1a15;
+  --autofill-text: #f0f4ff;
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"] {
+  --bg:           #F4F9F6;
+  --bg-2:         #EAF2EC;
+  --bg-3:         #DCE9DF;
+
+  --surface:      rgba(255,255,255,0.75);
+  --surface-2:    rgba(255,255,255,0.92);
+  --border:       rgba(0,76,63,0.12);
+  --border-2:     rgba(0,76,63,0.22);
+
+  --text:         #0B1D0F;
+  --text-2:       rgba(11,29,15,0.62);
+  --text-3:       rgba(11,29,15,0.40);
+  --text-muted:   rgba(11,29,15,0.26);
+
+  /* Nav */
+  --nav-bg:       rgba(255,255,255,0.97);
+  --nav-border:   rgba(0,76,63,0.1);
+  --nav-item:     rgba(11,29,15,0.52);
+  --nav-active-bg: rgba(255,213,107,0.14);
+  --nav-active-border: rgba(255,213,107,0.28);
+
+  /* Card shadow */
+  --card-shadow:  0 2px 16px rgba(0,76,63,0.07);
+
+  /* Input autofill */
+  --autofill-bg:  #ffffff;
+  --autofill-text: #0B1D0F;
+
+  /* Status — more saturated on light bg */
+  --success:      #059669;
+  --error:        #DC2626;
 }
 
 html { scroll-behavior: smooth; }
@@ -50,6 +100,7 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 /* ── TYPOGRAPHY ── */
@@ -63,7 +114,8 @@ em { font-style: italic; color: var(--accent); }
   border-radius: var(--radius-lg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: border-color 0.2s, background 0.2s;
+  box-shadow: var(--card-shadow);
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 .glass-card:hover { background: var(--surface-2); border-color: var(--border-2); }
 
@@ -92,7 +144,7 @@ em { font-style: italic; color: var(--accent); }
   cursor: pointer; text-decoration: none;
   transition: all 0.2s;
 }
-.btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.28); background: var(--surface); }
+.btn-ghost:hover { color: var(--text); border-color: var(--border-2); background: var(--surface-2); }
 
 /* ── INPUT ── */
 .input-field {
@@ -107,14 +159,25 @@ em { font-style: italic; color: var(--accent); }
 }
 .input-field::placeholder { color: var(--text-3); }
 .input-field:focus { border-color: rgba(255,213,107,0.5); background: var(--surface-2); }
-/* Force le fond sombre sur l'autofill navigateur (rgba ne marche pas, besoin d'une couleur solide) */
-.input-field { color-scheme: dark; }
 .input-field:-webkit-autofill,
 .input-field:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #0d1a15 inset;
-  -webkit-text-fill-color: #f0f4ff;
-  caret-color: #f0f4ff;
+  -webkit-box-shadow: 0 0 0 1000px var(--autofill-bg) inset;
+  -webkit-text-fill-color: var(--autofill-text);
+  caret-color: var(--autofill-text);
 }
+[data-theme="dark"] .input-field  { color-scheme: dark; }
+[data-theme="light"] .input-field { color-scheme: light; }
+
+/* ── THEME TOGGLE BUTTON ── */
+.theme-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-2); cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { background: var(--surface-2); color: var(--text); border-color: var(--border-2); }
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp {
@@ -155,9 +218,10 @@ em { font-style: italic; color: var(--accent); }
   font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
   padding: 4px 10px; border-radius: 100px;
 }
-.badge-green  { background: rgba(0,90,74,0.3); color: #34D399; border: 1px solid rgba(52,211,153,0.2); }
+.badge-green  { background: rgba(0,90,74,0.18); color: var(--success); border: 1px solid rgba(52,211,153,0.2); }
 .badge-yellow { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(255,213,107,0.25); }
 .badge-blue   { background: rgba(59,130,246,0.15); color: #93C5FD; border: 1px solid rgba(59,130,246,0.2); }
+[data-theme="light"] .badge-blue { color: #2563EB; background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.2); }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
@@ -248,13 +312,13 @@ a { color: inherit; }
 /* Dropdown hover states */
 .dash-dropdown a:hover,
 .dash-dropdown button:hover {
-  background: rgba(255,255,255,0.06) !important;
-  color: #f0f4ff !important;
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
 }
 
 /* Help row hover */
 .dash-help-row:hover {
-  background: rgba(255,255,255,0.04) !important;
+  background: var(--surface) !important;
 }
 
 /* ── DASHBOARD RESPONSIVE ── */

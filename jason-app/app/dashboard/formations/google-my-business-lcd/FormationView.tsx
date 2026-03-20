@@ -138,7 +138,7 @@ export default function FormationView({ formation }: { formation: Formation }) {
               const isBad = item.startsWith('❌')
               const text = item.replace(/^[-✅❌]\s/, '')
               return (
-                <li key={j} style={{ ...s.li, color: isGood ? '#34D399' : isBad ? '#F87171' : 'rgba(240,244,255,0.72)' }}>
+                <li key={j} style={{ ...s.li, color: isGood ? '#34D399' : isBad ? '#F87171' : 'var(--text-2)' }}>
                   <span style={s.bullet}>{isGood ? '✅' : isBad ? '❌' : '•'}</span>
                   <span dangerouslySetInnerHTML={{ __html: formatInline(text) }} />
                 </li>
@@ -167,9 +167,9 @@ export default function FormationView({ formation }: { formation: Formation }) {
 
   function formatInline(text: string): string {
     return text
-      .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#f0f4ff;font-weight:600">$1</strong>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:var(--text);font-weight:600">$1</strong>')
       .replace(/\*([^*]+)\*/g, '<em style="color:#FFD56B;font-style:italic">$1</em>')
-      .replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.08);padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;color:#FFD56B">$1</code>')
+      .replace(/`([^`]+)`/g, '<code style="background:var(--border);padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;color:#FFD56B">$1</code>')
   }
 
   return (
@@ -292,7 +292,7 @@ export default function FormationView({ formation }: { formation: Formation }) {
                 {formation.objectifs.map((obj, i) => (
                   <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                     <CheckCircle size={16} color="#34D399" weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
-                    <span style={{ fontSize: '14px', color: 'rgba(240,244,255,0.75)', lineHeight: 1.5 }}>{obj}</span>
+                    <span style={{ fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.5 }}>{obj}</span>
                   </li>
                 ))}
               </ul>
@@ -360,7 +360,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   navPanel: {
     width: '280px', flexShrink: 0,
-    borderRight: '1px solid rgba(255,255,255,0.06)',
+    borderRight: '1px solid var(--border)',
     display: 'flex', flexDirection: 'column',
     position: 'sticky', top: 'var(--header-h)',
     height: 'calc(100svh - var(--header-h))',
@@ -368,25 +368,25 @@ const styles: Record<string, React.CSSProperties> = {
   },
   navHeader: {
     padding: '20px 16px',
-    borderBottom: '1px solid rgba(255,255,255,0.06)',
+    borderBottom: '1px solid var(--border)',
   },
   backLink: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    fontSize: '13px', color: 'rgba(240,244,255,0.4)',
+    fontSize: '13px', color: 'var(--text-3)',
     textDecoration: 'none', marginBottom: '16px',
     transition: 'color 0.18s',
   },
   formationTitle: {
-    fontSize: '14px', fontWeight: 600, color: '#f0f4ff',
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
     lineHeight: 1.3, marginBottom: '8px',
   },
   formationMeta: { marginBottom: '14px' },
   formationStats: {
     display: 'flex', gap: '12px',
-    fontSize: '12px', color: 'rgba(240,244,255,0.35)',
+    fontSize: '12px', color: 'var(--text-3)',
   },
   progressWrap: {},
-  progressLabel: { fontSize: '11px', color: 'rgba(240,244,255,0.35)' },
+  progressLabel: { fontSize: '11px', color: 'var(--text-3)' },
   progressPct: { fontSize: '11px', color: '#FFD56B' },
   navModules: {
     flex: 1, padding: '8px 8px',
@@ -398,16 +398,16 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between', gap: '8px',
     padding: '9px 10px', borderRadius: '9px',
     background: 'none', border: 'none', cursor: 'pointer',
-    color: 'rgba(240,244,255,0.55)',
+    color: 'var(--text-2)',
     transition: 'background 0.18s',
     textAlign: 'left',
   },
   moduleBtnLeft: { display: 'flex', alignItems: 'center', gap: '10px', flex: 1 },
   moduleNum: {
     width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
-    background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
+    background: 'var(--border)', border: '1px solid var(--border-2)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '10px', fontWeight: 700, color: 'rgba(240,244,255,0.5)',
+    fontSize: '10px', fontWeight: 700, color: 'var(--text-2)',
   },
   moduleLabel: { fontSize: '13px', fontWeight: 500, lineHeight: 1.3 },
   lessonList: {
@@ -418,7 +418,7 @@ const styles: Record<string, React.CSSProperties> = {
     width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
     padding: '8px 10px', borderRadius: '8px',
     background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: '12px', color: 'rgba(240,244,255,0.45)',
+    fontSize: '12px', color: 'var(--text-3)',
     transition: 'background 0.15s, color 0.15s',
     textAlign: 'left',
   },
@@ -428,11 +428,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   lessonDot: {
     width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,
-    background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)',
+    background: 'var(--border)', border: '1px solid var(--border-2)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   lessonDur: {
-    fontSize: '11px', color: 'rgba(240,244,255,0.25)', flexShrink: 0,
+    fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0,
   },
 
   // Main area
@@ -446,11 +446,11 @@ const styles: Record<string, React.CSSProperties> = {
   overviewBadge: { marginBottom: '20px' },
   overviewTitle: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(28px,3vw,42px)',
-    fontWeight: 400, color: '#f0f4ff', lineHeight: 1.15,
+    fontWeight: 400, color: 'var(--text)', lineHeight: 1.15,
     marginBottom: '16px',
   },
   overviewDesc: {
-    fontSize: '16px', fontWeight: 300, color: 'rgba(240,244,255,0.55)',
+    fontSize: '16px', fontWeight: 300, color: 'var(--text-2)',
     lineHeight: 1.7, marginBottom: '32px',
   },
   overviewMeta: {
@@ -458,11 +458,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   metaChip: {
     display: 'flex', alignItems: 'center', gap: '12px',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '12px', padding: '14px 18px',
   },
-  metaVal: { fontSize: '14px', fontWeight: 600, color: '#f0f4ff' },
-  metaLbl: { fontSize: '11px', color: 'rgba(240,244,255,0.35)', marginTop: '2px' },
+  metaVal: { fontSize: '14px', fontWeight: 600, color: 'var(--text)' },
+  metaLbl: { fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' },
   objectifBox: {
     background: 'rgba(0,76,63,0.15)', border: '1px solid rgba(52,211,153,0.12)',
     borderRadius: '16px', padding: '24px 24px',
@@ -470,7 +470,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   objectifTitle: {
     fontSize: '13px', fontWeight: 600, letterSpacing: '0.5px',
-    textTransform: 'uppercase', color: 'rgba(240,244,255,0.35)',
+    textTransform: 'uppercase', color: 'var(--text-3)',
     marginBottom: '16px',
   },
 
@@ -483,22 +483,22 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
     marginBottom: '20px',
   },
-  breadcrumbModule: { fontSize: '12px', color: 'rgba(240,244,255,0.3)' },
-  breadcrumbSep: { fontSize: '12px', color: 'rgba(240,244,255,0.2)' },
-  breadcrumbLesson: { fontSize: '12px', color: 'rgba(240,244,255,0.5)', fontWeight: 500 },
+  breadcrumbModule: { fontSize: '12px', color: 'var(--text-muted)' },
+  breadcrumbSep: { fontSize: '12px', color: 'var(--text-muted)' },
+  breadcrumbLesson: { fontSize: '12px', color: 'var(--text-2)', fontWeight: 500 },
   lessonMeta: {
     display: 'flex', gap: '16px', marginBottom: '32px',
   },
   lessonMetaItem: {
     display: 'flex', alignItems: 'center', gap: '6px',
-    fontSize: '12px', color: 'rgba(240,244,255,0.35)',
+    fontSize: '12px', color: 'var(--text-3)',
   },
   lessonBody: {
-    fontSize: '15px', lineHeight: 1.75, color: 'rgba(240,244,255,0.72)',
+    fontSize: '15px', lineHeight: 1.75, color: 'var(--text-2)',
   },
   lessonActions: {
     marginTop: '48px', paddingTop: '24px',
-    borderTop: '1px solid rgba(255,255,255,0.06)',
+    borderTop: '1px solid var(--border)',
     display: 'flex', alignItems: 'center', gap: '16px',
   },
   doneMsg: {
@@ -511,20 +511,20 @@ const styles: Record<string, React.CSSProperties> = {
 const s: Record<string, React.CSSProperties> = {
   h2: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(22px,2.5vw,30px)',
-    fontWeight: 400, color: '#f0f4ff', marginBottom: '20px', marginTop: '8px',
+    fontWeight: 400, color: 'var(--text)', marginBottom: '20px', marginTop: '8px',
     lineHeight: 1.2,
   },
   h3: {
-    fontSize: '16px', fontWeight: 600, color: '#f0f4ff',
+    fontSize: '16px', fontWeight: 600, color: 'var(--text)',
     marginBottom: '12px', marginTop: '28px',
   },
   p: {
     marginBottom: '14px', fontSize: '15px',
-    color: 'rgba(240,244,255,0.72)', lineHeight: 1.75,
+    color: 'var(--text-2)', lineHeight: 1.75,
   },
   boldLine: {
     marginBottom: '10px', fontSize: '15px',
-    color: 'rgba(240,244,255,0.8)', lineHeight: 1.65, fontWeight: 500,
+    color: 'var(--text)', lineHeight: 1.65, fontWeight: 500,
   },
   ul: { listStyle: 'none', padding: 0, margin: '0 0 16px', display: 'flex', flexDirection: 'column', gap: '8px' },
   li: {
@@ -537,29 +537,29 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(255,213,107,0.15)',
     borderLeft: '3px solid #FFD56B',
     borderRadius: '8px', padding: '12px 16px',
-    fontSize: '14px', color: 'rgba(240,244,255,0.65)',
+    fontSize: '14px', color: 'var(--text-2)',
     marginBottom: '16px', lineHeight: 1.6,
   },
   pre: {
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
     borderRadius: '12px', padding: '18px 20px',
     fontSize: '13px', lineHeight: 1.65,
-    color: 'rgba(240,244,255,0.75)',
+    color: 'var(--text-2)',
     fontFamily: 'monospace', whiteSpace: 'pre-wrap',
     overflowX: 'auto', marginBottom: '16px',
   },
-  tableWrap: { overflowX: 'auto', marginBottom: '20px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)' },
+  tableWrap: { overflowX: 'auto', marginBottom: '20px', borderRadius: '10px', border: '1px solid var(--border)' },
   table: { width: '100%', borderCollapse: 'collapse' },
   th: {
     padding: '10px 16px', textAlign: 'left',
     fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px',
-    textTransform: 'uppercase', color: 'rgba(240,244,255,0.4)',
-    background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.08)',
+    textTransform: 'uppercase', color: 'var(--text-3)',
+    background: 'var(--surface)', borderBottom: '1px solid var(--border)',
   },
   td: {
     padding: '10px 16px', fontSize: '14px',
-    color: 'rgba(240,244,255,0.72)',
-    borderBottom: '1px solid rgba(255,255,255,0.04)',
+    color: 'var(--text-2)',
+    borderBottom: '1px solid var(--surface)',
   },
 }

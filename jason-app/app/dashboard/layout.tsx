@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/layout/Sidebar'
 import { getProfile } from '@/lib/queries/profile'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -12,15 +13,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const profile = await getProfile()
 
   return (
-    <div style={styles.layout}>
-      {/* Sidebar rendered ONCE in layout — persiste entre les navigations sans re-mount */}
-      <Sidebar isAdmin={profile?.role === 'admin'} />
-      <main style={styles.main} className="dash-main">
-        <Suspense fallback={null}>
-          {children}
-        </Suspense>
-      </main>
-    </div>
+    <ThemeProvider>
+      <div style={styles.layout}>
+        {/* Sidebar rendered ONCE in layout — persiste entre les navigations sans re-mount */}
+        <Sidebar isAdmin={profile?.role === 'admin'} />
+        <main style={styles.main} className="dash-main">
+          <Suspense fallback={null}>
+            {children}
+          </Suspense>
+        </main>
+      </div>
+    </ThemeProvider>
   )
 }
 

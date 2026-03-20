@@ -139,18 +139,18 @@ const s: Record<string, React.CSSProperties> = {
   },
   btnBecome: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', fontWeight: 400, color: 'rgba(240,244,255,0.4)',
+    fontSize: '12px', fontWeight: 400, color: 'var(--text-3)',
     textDecoration: 'none',
   },
   form: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  formDesc: { fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.6, margin: 0 },
+  formDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6, margin: 0 },
   inputWrap: { position: 'relative', display: 'flex', alignItems: 'center' },
-  inputIcon: { position: 'absolute', left: '13px', color: 'rgba(240,244,255,0.35)', flexShrink: 0 },
+  inputIcon: { position: 'absolute', left: '13px', color: 'var(--text-3)', flexShrink: 0 },
   input: {
     width: '100%', boxSizing: 'border-box',
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,213,107,0.25)',
+    background: 'var(--border)', border: '1px solid rgba(255,213,107,0.25)',
     borderRadius: '10px', padding: '10px 14px 10px 38px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: '#f0f4ff', outline: 'none',
+    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)', outline: 'none',
   },
   errorBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
@@ -166,10 +166,10 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
   },
   btnCancel: {
-    fontSize: '13px', fontWeight: 400, color: 'rgba(240,244,255,0.38)',
+    fontSize: '13px', fontWeight: 400, color: 'var(--text-3)',
     background: 'none', border: 'none', cursor: 'pointer', padding: '6px', fontFamily: 'Outfit, sans-serif',
   },
-  notClient: { fontSize: '12px', color: 'rgba(240,244,255,0.3)', margin: 0, lineHeight: 1.6 },
+  notClient: { fontSize: '12px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 },
   link: {
     display: 'inline-flex', alignItems: 'center', gap: '3px',
     color: 'rgba(255,213,107,0.5)', textDecoration: 'none',
@@ -181,7 +181,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   pendingIcon: { fontSize: '18px', flexShrink: 0 },
   pendingTitle: { fontSize: '13px', fontWeight: 600, color: 'rgba(255,213,107,0.7)', marginBottom: '4px' },
-  pendingDesc: { fontSize: '12px', fontWeight: 300, color: 'rgba(240,244,255,0.4)', lineHeight: 1.6 },
+  pendingDesc: { fontSize: '12px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.6 },
   successBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
     fontSize: '13px', color: '#34D399',

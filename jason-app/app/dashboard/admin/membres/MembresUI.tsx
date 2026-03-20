@@ -20,7 +20,7 @@ interface Member {
 }
 
 const PLANS = [
-  { value: 'decouverte', label: 'Découverte',    color: 'rgba(240,244,255,0.45)', bg: 'rgba(255,255,255,0.06)' },
+  { value: 'decouverte', label: 'Découverte',    color: 'var(--text-3)', bg: 'var(--border)' },
   { value: 'driing',     label: 'Membre Driing', color: '#FFD56B',                bg: 'rgba(255,213,107,0.10)' },
 ] as const
 
@@ -80,7 +80,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
       {/* ── Stats ── */}
       <div style={s.statsRow}>
         <div style={s.stat}>
-          <Users size={18} style={{ color: 'rgba(240,244,255,0.4)' }} />
+          <Users size={18} style={{ color: 'var(--text-3)' }} />
           <span style={s.statNum}>{members.length}</span>
           <span style={s.statLabel}>membres</span>
         </div>
@@ -92,8 +92,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
         </div>
         <div style={s.statDiv} />
         <div style={s.stat}>
-          <Robot size={18} style={{ color: totalBots > 0 ? '#f87171' : 'rgba(240,244,255,0.25)' }} />
-          <span style={{ ...s.statNum, color: totalBots > 0 ? '#f87171' : 'rgba(240,244,255,0.35)' }}>{totalBots}</span>
+          <Robot size={18} style={{ color: totalBots > 0 ? '#f87171' : 'var(--text-muted)' }} />
+          <span style={{ ...s.statNum, color: totalBots > 0 ? '#f87171' : 'var(--text-3)' }}>{totalBots}</span>
           <span style={s.statLabel}>bots suspects</span>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
       {/* ── Filters ── */}
       <div style={s.filtersRow}>
         <div style={s.searchWrap}>
-          <MagnifyingGlass size={15} style={{ color: 'rgba(240,244,255,0.3)', flexShrink: 0 }} />
+          <MagnifyingGlass size={15} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           <input
             type="search"
             placeholder="Nom ou email…"
@@ -198,7 +198,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
                       }}
                     >
                       {PLANS.map(p => (
-                        <option key={p.value} value={p.value} style={{ background: '#040d0b', color: '#f0f4ff' }}>
+                        <option key={p.value} value={p.value} style={{ background: '#040d0b', color: 'var(--text)' }}>
                           {p.label}
                         </option>
                       ))}
@@ -214,12 +214,12 @@ export default function MembresUI({ members }: { members: Member[] }) {
                       {formations}
                     </div>
                   ) : (
-                    <span style={{ color: 'rgba(240,244,255,0.2)', fontSize: '13px' }}>—</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>—</span>
                   )}
                 </div>
 
                 {/* Date */}
-                <div style={{ flex: 2, fontSize: '13px', color: 'rgba(240,244,255,0.35)' }}>
+                <div style={{ flex: 2, fontSize: '13px', color: 'var(--text-3)' }}>
                   {formatDate(m.created_at)}
                 </div>
 
@@ -275,45 +275,45 @@ const s: Record<string, React.CSSProperties> = {
 
   statsRow: {
     display: 'flex', alignItems: 'center', gap: '24px',
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--surface)',
+    border: '1px solid var(--surface-2)',
     borderRadius: '14px', padding: '16px 24px',
   },
   stat: { display: 'flex', alignItems: 'center', gap: '8px' },
-  statNum: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: '#f0f4ff' },
-  statLabel: { fontSize: '12px', color: 'rgba(240,244,255,0.35)' },
-  statDiv: { width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)' },
+  statNum: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)' },
+  statLabel: { fontSize: '12px', color: 'var(--text-3)' },
+  statDiv: { width: '1px', height: '28px', background: 'var(--border)' },
 
   filtersRow: {
     display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap',
   },
   searchWrap: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.09)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
     borderRadius: '10px', padding: '8px 14px',
     flex: '0 0 260px',
   },
   searchInput: {
     background: 'none', border: 'none', outline: 'none',
-    fontSize: '13px', color: '#f0f4ff', width: '100%',
+    fontSize: '13px', color: 'var(--text)', width: '100%',
   },
   filterBtns: { display: 'flex', gap: '4px' },
   filterBtn: {
     padding: '7px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 500,
-    background: 'none', border: '1px solid rgba(255,255,255,0.08)',
-    color: 'rgba(240,244,255,0.4)', cursor: 'pointer', transition: 'all 0.15s',
+    background: 'none', border: '1px solid var(--border)',
+    color: 'var(--text-3)', cursor: 'pointer', transition: 'all 0.15s',
   },
   filterBtnActive: {
     background: 'rgba(255,213,107,0.08)',
     border: '1px solid rgba(255,213,107,0.2)',
     color: '#FFD56B',
   },
-  resultCount: { fontSize: '12px', color: 'rgba(240,244,255,0.25)', marginLeft: 'auto' },
+  resultCount: { fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto' },
 
   table: {
-    background: 'rgba(255,255,255,0.02)',
-    border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--surface)',
+    border: '1px solid var(--surface-2)',
     borderRadius: '14px', overflow: 'hidden',
   },
   tableHead: {
@@ -321,13 +321,13 @@ const s: Record<string, React.CSSProperties> = {
     padding: '10px 20px',
     fontSize: '10px', fontWeight: 600, letterSpacing: '1px',
     textTransform: 'uppercase' as const,
-    color: 'rgba(240,244,255,0.25)',
-    borderBottom: '1px solid rgba(255,255,255,0.06)',
+    color: 'var(--text-muted)',
+    borderBottom: '1px solid var(--border)',
   },
   row: {
     display: 'flex', alignItems: 'center', gap: '16px',
     padding: '14px 20px',
-    borderBottom: '1px solid rgba(255,255,255,0.04)',
+    borderBottom: '1px solid var(--surface)',
     transition: 'background 0.15s',
   },
   rowSuspect: {
@@ -335,7 +335,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   empty: {
     padding: '48px', textAlign: 'center' as const,
-    fontSize: '14px', color: 'rgba(240,244,255,0.25)',
+    fontSize: '14px', color: 'var(--text-muted)',
   },
 
   avatar: {
@@ -349,11 +349,11 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'Fraunces, serif', fontSize: '13px', fontWeight: 600, color: '#FFD56B',
   },
   name: {
-    fontSize: '14px', fontWeight: 500, color: '#f0f4ff',
+    fontSize: '14px', fontWeight: 500, color: 'var(--text)',
     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
   },
   email: {
-    fontSize: '12px', color: 'rgba(240,244,255,0.35)', marginTop: '1px',
+    fontSize: '12px', color: 'var(--text-3)', marginTop: '1px',
     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
   },
   badge: {

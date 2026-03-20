@@ -130,11 +130,11 @@ const styles: Record<string, React.CSSProperties> = {
   intro: { marginBottom: '28px' },
   pageTitle: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
-    fontWeight: 400, color: '#f0f4ff', marginBottom: '10px',
+    fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
   },
   pageDesc: {
     fontSize: '15px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.5)', maxWidth: '560px', lineHeight: 1.6,
+    color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.6,
   },
 
   /* ── Driing featured ── */
@@ -167,18 +167,18 @@ const styles: Record<string, React.CSSProperties> = {
   },
   featuredName: {
     fontFamily: 'Fraunces, serif', fontSize: '22px',
-    fontWeight: 400, color: '#f0f4ff',
+    fontWeight: 400, color: 'var(--text)',
   },
   featuredTagline: {
-    fontSize: '13px', color: 'rgba(240,244,255,0.45)', marginTop: '3px',
+    fontSize: '13px', color: 'var(--text-3)', marginTop: '3px',
   },
 
   /* 3 services */
   servicesGrid: {},  /* handled by CSS class driing-services-grid */
   serviceCard: {
     display: 'flex', flexDirection: 'column', gap: '12px',
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
     borderRadius: '14px',
     padding: '20px',
     textDecoration: 'none',
@@ -194,20 +194,20 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   serviceName: {
-    fontSize: '14px', fontWeight: 600, color: '#f0f4ff', marginBottom: '3px',
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px',
   },
   serviceTagline: {
     fontSize: '12px', fontWeight: 600, letterSpacing: '0.3px',
   },
   serviceDesc: {
     fontSize: '13px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.5)', lineHeight: 1.65,
+    color: 'var(--text-2)', lineHeight: 1.65,
     flex: 1,
   },
   serviceLink: {
     display: 'flex', alignItems: 'center', gap: '4px',
     fontSize: '12px', fontWeight: 500,
-    color: 'rgba(240,244,255,0.35)',
+    color: 'var(--text-3)',
     marginTop: 'auto',
   },
 
@@ -219,6 +219,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   suggestLeft: { display: 'flex', alignItems: 'flex-start', gap: '16px', flex: 1, minWidth: '260px' },
   suggestEmoji: { flexShrink: 0, marginTop: '3px' },
-  suggestTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: '#f0f4ff', marginBottom: '8px', lineHeight: 1.3 },
-  suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.6 },
+  suggestTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)', marginBottom: '8px', lineHeight: 1.3 },
+  suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6 },
 }

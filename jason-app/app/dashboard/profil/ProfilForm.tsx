@@ -129,7 +129,7 @@ export default function ProfilForm({ initialFullName, email }: Props) {
         ) : (
           <div style={styles.valueRow}>
             <span style={styles.value}>
-              {displayName || <span style={{ color: 'rgba(240,244,255,0.28)' }}>Non renseigné</span>}
+              {displayName || <span style={{ color: 'var(--text-muted)' }}>Non renseigné</span>}
             </span>
             <button onClick={() => setEditName(true)} style={styles.editBtn}>
               <PencilSimple size={14} />
@@ -215,7 +215,7 @@ export default function ProfilForm({ initialFullName, email }: Props) {
 
 const styles: Record<string, React.CSSProperties> = {
   content: {
-    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '20px', padding: 'clamp(24px,3vw,40px)',
     maxWidth: '600px',
   },
@@ -223,18 +223,18 @@ const styles: Record<string, React.CSSProperties> = {
   avatarWrap: { position: 'relative', width: '64px', height: '64px', flexShrink: 0, borderRadius: '50%', overflow: 'hidden' },
   avatar: { width: '64px', height: '64px', background: 'rgba(0,76,63,0.5)', border: '2px solid rgba(255,213,107,0.25)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 600, color: '#FFD56B' },
-  avatarName: { fontSize: '17px', fontWeight: 600, color: '#f0f4ff', marginBottom: '3px' },
-  avatarSub: { fontSize: '13px', color: 'rgba(240,244,255,0.38)' },
-  divider: { height: '1px', background: 'rgba(255,255,255,0.06)', margin: '0 0 24px' },
+  avatarName: { fontSize: '17px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
+  avatarSub: { fontSize: '13px', color: 'var(--text-3)' },
+  divider: { height: '1px', background: 'var(--border)', margin: '0 0 24px' },
   field: { marginBottom: '24px' },
-  label: { display: 'flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.7px', textTransform: 'uppercase', color: 'rgba(240,244,255,0.45)', marginBottom: '10px' },
+  label: { display: 'flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.7px', textTransform: 'uppercase', color: 'var(--text-3)', marginBottom: '10px' },
   valueRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' },
-  value: { fontSize: '15px', color: '#f0f4ff', fontWeight: 400 },
-  editBtn: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.45)', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '6px 12px', cursor: 'pointer' },
+  value: { fontSize: '15px', color: 'var(--text)', fontWeight: 400 },
+  editBtn: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, color: 'var(--text-3)', background: 'none', border: '1px solid var(--border)', borderRadius: '8px', padding: '6px 12px', cursor: 'pointer' },
   nameRow: { display: 'flex', gap: '10px', flexWrap: 'wrap' },
-  input: { flex: 1, minWidth: '140px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,213,107,0.3)', borderRadius: '10px', padding: '10px 14px', fontFamily: 'Outfit, sans-serif', fontSize: '15px', color: '#f0f4ff', outline: 'none' },
-  cancelBtn: { fontSize: '13px', fontWeight: 400, color: 'rgba(240,244,255,0.38)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px' },
+  input: { flex: 1, minWidth: '140px', background: 'var(--border)', border: '1px solid rgba(255,213,107,0.3)', borderRadius: '10px', padding: '10px 14px', fontFamily: 'Outfit, sans-serif', fontSize: '15px', color: 'var(--text)', outline: 'none' },
+  cancelBtn: { fontSize: '13px', fontWeight: 400, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px' },
   errorBox: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#F87171', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.18)', borderRadius: '8px', padding: '10px 14px' },
-  readOnly: { fontSize: '11px', fontWeight: 500, color: 'rgba(240,244,255,0.25)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '6px', padding: '4px 10px' },
-  eyeBtn: { position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(240,244,255,0.7)', padding: '4px', display: 'flex', alignItems: 'center' },
+  readOnly: { fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '6px', padding: '4px 10px' },
+  eyeBtn: { position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-2)', padding: '4px', display: 'flex', alignItems: 'center' },
 }

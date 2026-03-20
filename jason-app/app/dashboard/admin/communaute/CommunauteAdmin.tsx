@@ -71,10 +71,10 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: '#f0f4ff', marginBottom: '4px' }}>
+          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>
             Groupes communautaires
           </h2>
-          <p style={{ fontSize: '13px', color: 'rgba(240,244,255,0.45)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-3)' }}>
             {groups.length} groupe{groups.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -101,7 +101,7 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
       {/* Add form */}
       {showAdd && (
         <form onSubmit={handleAdd} style={styles.formCard}>
-          <h3 style={{ fontSize: '15px', fontWeight: 600, color: '#f0f4ff', marginBottom: '16px' }}>Nouveau groupe</h3>
+          <h3 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px' }}>Nouveau groupe</h3>
           <div style={styles.formGrid}>
             <div style={styles.formGroup}>
               <label style={styles.label}>Nom</label>
@@ -136,7 +136,7 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
       {/* Groups list */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {groups.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(240,244,255,0.3)', fontSize: '14px' }}>
+          <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)', fontSize: '14px' }}>
             Aucun groupe pour l'instant.
           </div>
         )}
@@ -159,9 +159,9 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
 
                 {/* Info */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: '15px', fontWeight: 500, color: '#f0f4ff', marginBottom: '2px' }}>{g.name}</div>
+                  <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)', marginBottom: '2px' }}>{g.name}</div>
                   {g.description && (
-                    <div style={{ fontSize: '13px', color: 'rgba(240,244,255,0.4)', marginBottom: '4px' }}>{g.description}</div>
+                    <div style={{ fontSize: '13px', color: 'var(--text-3)', marginBottom: '4px' }}>{g.description}</div>
                   )}
                   <a href={g.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '12px', color: 'rgba(255,213,107,0.6)', textDecoration: 'none' }}>
                     {g.url.length > 50 ? g.url.slice(0, 50) + '…' : g.url}
@@ -220,17 +220,17 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#FFD56B', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
   },
   formCard: {
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '14px', padding: '20px', marginBottom: '20px',
   },
   formGrid: {
     display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px',
   },
   formGroup: { display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' },
-  label: { fontSize: '12px', fontWeight: 500, color: 'rgba(240,244,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  label: { fontSize: '12px', fontWeight: 500, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.5px' },
   input: {
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '9px', padding: '9px 12px', color: '#f0f4ff', fontSize: '14px',
+    background: 'var(--border)', border: '1px solid var(--border)',
+    borderRadius: '9px', padding: '9px 12px', color: 'var(--text)', fontSize: '14px',
     outline: 'none', width: '100%', boxSizing: 'border-box',
   },
   submitBtn: {
@@ -239,13 +239,13 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#FFD56B', fontSize: '14px', fontWeight: 500, cursor: 'pointer',
   },
   card: {
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--surface)', border: '1px solid var(--surface-2)',
     borderRadius: '12px', overflow: 'hidden',
   },
   iconBtn: {
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--border)', border: '1px solid var(--border)',
     borderRadius: '7px', width: '30px', height: '30px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'rgba(240,244,255,0.5)',
+    cursor: 'pointer', color: 'var(--text-2)',
   },
 }

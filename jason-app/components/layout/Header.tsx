@@ -3,12 +3,13 @@
 import { useState, useRef, useEffect } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  ShieldCheck, CaretDown, ArrowUpRight
+  ShieldCheck, CaretDown, ArrowUpRight, Sun, Moon
 } from '@phosphor-icons/react'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { useTheme } from '@/components/ThemeProvider'
 
 interface HeaderProps {
   title: string
@@ -24,6 +25,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
   const [isAdmin, setIsAdmin] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const { theme, toggleTheme } = useTheme()
 
   // Fetch profile client-side — garantit nom + rôle à jour sur toutes les pages
   useEffect(() => {
@@ -71,9 +73,9 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     : '?'
 
   const planColors: Record<string, { bg: string; color: string; dot: string }> = {
-    'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'rgba(240,244,255,0.5)', dot: '#6b7280' },
+    'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'var(--text-3)', dot: '#6b7280' },
     'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B', dot: '#FFD56B' },
-    'Hôte':          { bg: 'rgba(99,214,131,0.12)',  color: '#63D683', dot: '#63D683' },
+    'Hôte':          { bg: 'rgba(99,214,131,0.12)',  color: '#34D399', dot: '#34D399' },
     'Pro':           { bg: 'rgba(255,213,107,0.12)', color: '#FFD56B', dot: '#FFD56B' },
     'Agence':        { bg: 'rgba(147,197,253,0.12)', color: '#93C5FD', dot: '#93C5FD' },
     'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC', dot: '#C084FC' },
@@ -100,6 +102,19 @@ export default function Header({ title, userName: initialUserName, currentPlan =
         </div>
 
         <div style={styles.right}>
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            className="theme-toggle"
+            aria-label={theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'}
+            title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+          >
+            {theme === 'dark'
+              ? <Sun size={17} weight="regular" />
+              : <Moon size={17} weight="regular" />
+            }
+          </button>
+
           {/* Notifications */}
           <button style={styles.iconBtn} aria-label="Notifications">
             <Bell size={18} weight="regular" />
@@ -116,7 +131,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
                 {userName ? (
                   <span style={styles.avatarInitial}>{initials}</span>
                 ) : (
-                  <UserCircle size={22} weight="fill" color="rgba(240,244,255,0.4)" />
+                  <UserCircle size={22} weight="fill" color="var(--text-3)" />
                 )}
               </div>
               {userName && (
@@ -127,7 +142,7 @@ export default function Header({ title, userName: initialUserName, currentPlan =
               <CaretDown
                 size={12}
                 style={{
-                  color: 'rgba(240,244,255,0.4)',
+                  color: 'var(--text-3)',
                   transform: dropdownOpen ? 'rotate(180deg)' : 'none',
                   transition: 'transform 0.2s',
                 }}
@@ -215,41 +230,42 @@ const styles: Record<string, React.CSSProperties> = {
     left: 'var(--sidebar-w)',
     right: 0,
     height: 'var(--header-h)',
-    background: 'rgba(0,51,42,0.92)',
-    borderBottom: '1px solid rgba(255,255,255,0.06)',
+    background: 'var(--nav-bg)',
+    borderBottom: '1px solid var(--nav-border)',
     backdropFilter: 'blur(20px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0 clamp(16px,3vw,32px)',
     zIndex: 90,
+    transition: 'background 0.25s ease, border-color 0.25s ease',
   },
   left: { display: 'flex', alignItems: 'center', gap: '14px' },
   menuBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    color: 'rgba(240,244,255,0.55)', padding: '6px',
+    color: 'var(--nav-item)', padding: '6px',
     borderRadius: '8px',
   },
   title: {
     fontFamily: 'Fraunces, serif', fontSize: '18px',
-    fontWeight: 400, color: '#f0f4ff', letterSpacing: '-0.3px',
+    fontWeight: 400, color: 'var(--text)', letterSpacing: '-0.3px',
   },
   right: { display: 'flex', alignItems: 'center', gap: '8px' },
   iconBtn: {
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
     borderRadius: '9px',
     width: '36px', height: '36px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'rgba(240,244,255,0.5)',
+    cursor: 'pointer', color: 'var(--text-2)',
   },
 
   /* Profile button (avatar + name + caret) */
   dropdownWrap: { position: 'relative' },
   profileBtn: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
     borderRadius: '100px',
     padding: '4px 10px 4px 4px',
     cursor: 'pointer',
@@ -257,7 +273,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   avatar: {
     width: '28px', height: '28px', flexShrink: 0,
-    background: 'rgba(0,76,63,0.6)',
+    background: 'rgba(0,76,63,0.5)',
     border: '1px solid rgba(255,213,107,0.25)',
     borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -268,7 +284,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   profileName: {
     fontSize: '13px', fontWeight: 500,
-    color: 'rgba(240,244,255,0.75)', maxWidth: '90px',
+    color: 'var(--text-2)', maxWidth: '90px',
     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   },
 
@@ -276,10 +292,10 @@ const styles: Record<string, React.CSSProperties> = {
   dropdown: {
     position: 'absolute', top: 'calc(100% + 8px)', right: 0,
     width: '240px',
-    background: 'rgba(4,18,14,0.98)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border-2)',
     borderRadius: '14px',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
     backdropFilter: 'blur(20px)',
     zIndex: 200,
     overflow: 'hidden',
@@ -291,7 +307,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   dropAvatar: {
     width: '40px', height: '40px', flexShrink: 0,
-    background: 'rgba(0,76,63,0.6)',
+    background: 'rgba(0,76,63,0.5)',
     border: '1.5px solid rgba(255,213,107,0.25)',
     borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -301,7 +317,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600, color: '#FFD56B',
   },
   dropName: {
-    fontSize: '14px', fontWeight: 600, color: '#f0f4ff',
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
     marginBottom: '5px',
     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   },
@@ -315,7 +331,7 @@ const styles: Record<string, React.CSSProperties> = {
     width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0,
   },
   dropDivider: {
-    height: '1px', background: 'rgba(255,255,255,0.06)',
+    height: '1px', background: 'var(--border)',
     margin: '0',
   },
   dropNav: {
@@ -326,25 +342,18 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '10px',
     padding: '9px 12px', borderRadius: '8px',
     fontSize: '13px', fontWeight: 400,
-    color: 'rgba(240,244,255,0.65)',
+    color: 'var(--text-2)',
     textDecoration: 'none',
     transition: 'background 0.15s',
     background: 'none', border: 'none', cursor: 'pointer', width: '100%',
     textAlign: 'left',
-  },
-  dropBadge: {
-    marginLeft: 'auto',
-    fontSize: '10px', fontWeight: 600,
-    color: 'rgba(240,244,255,0.3)',
-    background: 'rgba(255,255,255,0.06)',
-    padding: '2px 7px', borderRadius: '100px',
   },
   dropSignOut: {
     display: 'flex', alignItems: 'center', gap: '10px',
     padding: '9px 18px', margin: '6px',
     borderRadius: '8px',
     fontSize: '13px', fontWeight: 400,
-    color: 'rgba(240,244,255,0.45)',
+    color: 'var(--text-3)',
     background: 'none', border: 'none', cursor: 'pointer',
     width: 'calc(100% - 12px)', textAlign: 'left',
     transition: 'background 0.15s',

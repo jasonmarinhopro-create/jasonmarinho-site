@@ -83,10 +83,10 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: '#f0f4ff', marginBottom: '4px' }}>
+          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>
             Gabarits de messages
           </h2>
-          <p style={{ fontSize: '13px', color: 'rgba(240,244,255,0.45)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-3)' }}>
             {templates.length} gabarit{templates.length !== 1 ? 's' : ''} au total
           </p>
         </div>
@@ -175,7 +175,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                       <span style={styles.catBadge}>{categoryLabel(t.category)}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'rgba(240,244,255,0.3)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--text-muted)' }}>
                         <Copy size={12} />
                         {t.copy_count} copie{t.copy_count !== 1 ? 's' : ''}
                       </div>
@@ -215,20 +215,20 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '16px',
   },
   formCard: {
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '14px', padding: '20px', marginBottom: '20px',
   },
   formTitle: {
-    fontSize: '15px', fontWeight: 600, color: '#f0f4ff', marginBottom: '16px',
+    fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px',
   },
   formGrid: {
     display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px',
   },
   formGroup: { display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' },
-  label: { fontSize: '12px', fontWeight: 500, color: 'rgba(240,244,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  label: { fontSize: '12px', fontWeight: 500, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.5px' },
   input: {
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '9px', padding: '9px 12px', color: '#f0f4ff', fontSize: '14px',
+    background: 'var(--border)', border: '1px solid var(--border)',
+    borderRadius: '9px', padding: '9px 12px', color: 'var(--text)', fontSize: '14px',
     outline: 'none', width: '100%', boxSizing: 'border-box',
   },
   submitBtn: {
@@ -238,31 +238,31 @@ const styles: Record<string, React.CSSProperties> = {
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: '10px',
-    background: 'none', border: '1px solid rgba(255,255,255,0.1)',
-    color: 'rgba(240,244,255,0.4)', fontSize: '14px', cursor: 'pointer',
+    background: 'none', border: '1px solid var(--border)',
+    color: 'var(--text-3)', fontSize: '14px', cursor: 'pointer',
   },
   card: {
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--surface)', border: '1px solid var(--surface-2)',
     borderRadius: '12px', overflow: 'hidden',
   },
-  cardTitle: { fontSize: '15px', fontWeight: 500, color: '#f0f4ff' },
+  cardTitle: { fontSize: '15px', fontWeight: 500, color: 'var(--text)' },
   catBadge: {
     fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '100px',
     background: 'rgba(255,213,107,0.1)', color: '#FFD56B', border: '1px solid rgba(255,213,107,0.15)',
   },
   contentPreview: {
-    fontSize: '13px', color: 'rgba(240,244,255,0.4)', lineHeight: 1.5,
+    fontSize: '13px', color: 'var(--text-3)', lineHeight: 1.5,
     display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
   },
   iconBtn: {
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--border)', border: '1px solid var(--border)',
     borderRadius: '7px', width: '30px', height: '30px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'rgba(240,244,255,0.5)',
+    cursor: 'pointer', color: 'var(--text-2)',
   },
   empty: {
     textAlign: 'center', padding: '40px',
-    color: 'rgba(240,244,255,0.3)', fontSize: '14px',
+    color: 'var(--text-muted)', fontSize: '14px',
   },
 }

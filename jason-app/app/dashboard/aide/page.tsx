@@ -70,13 +70,13 @@ export default async function AidePage() {
           {helpCategories.map(({ icon: Icon, label, description, href }) => (
             <Link key={href} href={href} style={styles.helpRow} className="dash-help-row">
               <div style={styles.helpIcon}>
-                <Icon size={20} color="rgba(240,244,255,0.6)" />
+                <Icon size={20} color="var(--text-2)" />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={styles.helpLabel}>{label}</div>
                 <div style={styles.helpDesc}>{description}</div>
               </div>
-              <ArrowRight size={16} color="rgba(240,244,255,0.3)" />
+              <ArrowRight size={16} color="var(--text-muted)" />
             </Link>
           ))}
         </div>
@@ -116,7 +116,7 @@ export default async function AidePage() {
         {/* FAQ */}
         <div style={styles.faqSection} className="fade-up">
           <div style={styles.faqTitle}>
-            <Question size={18} color="rgba(240,244,255,0.4)" />
+            <Question size={18} color="var(--text-3)" />
             Questions fréquentes
           </div>
           <div style={styles.faqList}>
@@ -140,13 +140,13 @@ export default async function AidePage() {
             className="dash-help-row"
           >
             <div style={styles.helpIcon}>
-              <Article size={18} color="rgba(240,244,255,0.5)" />
+              <Article size={18} color="var(--text-2)" />
             </div>
             <div style={{ flex: 1 }}>
               <div style={styles.helpLabel}>Blog & ressources</div>
               <div style={styles.helpDesc}>Conseils et stratégies pour les hôtes professionnels</div>
             </div>
-            <ArrowUpRight size={16} color="rgba(240,244,255,0.3)" />
+            <ArrowUpRight size={16} color="var(--text-muted)" />
           </a>
         </div>
       </div>
@@ -159,13 +159,13 @@ const styles: Record<string, React.CSSProperties> = {
   intro: { marginBottom: '32px' },
   pageTitle: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
-    fontWeight: 400, color: '#f0f4ff', marginBottom: '8px',
+    fontWeight: 400, color: 'var(--text)', marginBottom: '8px',
   },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.45)' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-3)' },
 
   section: {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--surface)',
+    border: '1px solid var(--surface-2)',
     borderRadius: '16px',
     overflow: 'hidden',
     marginBottom: '24px',
@@ -173,20 +173,20 @@ const styles: Record<string, React.CSSProperties> = {
   helpRow: {
     display: 'flex', alignItems: 'center', gap: '16px',
     padding: '18px 20px',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
+    borderBottom: '1px solid var(--border)',
     textDecoration: 'none',
     transition: 'background 0.18s',
     cursor: 'pointer',
   },
   helpIcon: {
     width: '40px', height: '40px', flexShrink: 0,
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--border)',
+    border: '1px solid var(--border)',
     borderRadius: '10px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  helpLabel: { fontSize: '14px', fontWeight: 500, color: '#f0f4ff', marginBottom: '3px' },
-  helpDesc: { fontSize: '12px', fontWeight: 300, color: 'rgba(240,244,255,0.4)' },
+  helpLabel: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '3px' },
+  helpDesc: { fontSize: '12px', fontWeight: 300, color: 'var(--text-3)' },
 
   /* Contact box */
   contactBox: {
@@ -205,11 +205,11 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontSize: '14px', fontWeight: 600, color: '#FFD56B', flexShrink: 0,
   },
-  contactName: { fontSize: '15px', fontWeight: 600, color: '#f0f4ff' },
-  contactRole: { fontSize: '12px', color: 'rgba(240,244,255,0.4)', marginTop: '2px' },
+  contactName: { fontSize: '15px', fontWeight: 600, color: 'var(--text)' },
+  contactRole: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px' },
   contactDesc: {
     flex: 1, fontSize: '14px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.55)', lineHeight: 1.6, minWidth: '200px',
+    color: 'var(--text-2)', lineHeight: 1.6, minWidth: '200px',
   },
   contactActions: { display: 'flex', gap: '10px', flexWrap: 'wrap' },
 
@@ -217,26 +217,26 @@ const styles: Record<string, React.CSSProperties> = {
   faqSection: { marginBottom: '24px' },
   faqTitle: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.45)',
+    fontSize: '13px', fontWeight: 500, color: 'var(--text-3)',
     letterSpacing: '0.4px', textTransform: 'uppercase',
     marginBottom: '14px',
   },
   faqList: { display: 'flex', flexDirection: 'column', gap: '10px' },
   faqItem: { padding: '18px 20px', borderRadius: '12px' },
-  faqQ: { fontSize: '14px', fontWeight: 500, color: '#f0f4ff', marginBottom: '8px' },
-  faqA: { fontSize: '13px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', lineHeight: 1.65 },
+  faqQ: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '8px' },
+  faqA: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65 },
 
   /* More */
   moreSection: {},
   moreTitle: {
-    fontSize: '13px', fontWeight: 500, color: 'rgba(240,244,255,0.4)',
+    fontSize: '13px', fontWeight: 500, color: 'var(--text-3)',
     letterSpacing: '0.4px', textTransform: 'uppercase', marginBottom: '12px',
   },
   moreRow: {
     display: 'flex', alignItems: 'center', gap: '16px',
     padding: '16px 20px',
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--surface)',
+    border: '1px solid var(--surface-2)',
     borderRadius: '12px',
     textDecoration: 'none', cursor: 'pointer',
     transition: 'background 0.18s',

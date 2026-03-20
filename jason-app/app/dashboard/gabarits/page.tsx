@@ -73,7 +73,7 @@ export default function GabaritsPage() {
         {/* Search + filters */}
         <div style={styles.controls} className="fade-up d1">
           <div style={styles.searchWrap}>
-            <MagnifyingGlass size={16} color="rgba(240,244,255,0.35)" />
+            <MagnifyingGlass size={16} color="var(--text-3)" />
             <input
               type="text"
               placeholder="Chercher un gabarit..."
@@ -129,8 +129,8 @@ export default function GabaritsPage() {
 
         {filtered.length === 0 && (
           <div style={styles.empty}>
-            <FileText size={36} color="rgba(240,244,255,0.15)" weight="fill" />
-            <p style={{ color: 'rgba(240,244,255,0.4)', marginTop: '12px' }}>Aucun gabarit dans cette catégorie.</p>
+            <FileText size={36} color="var(--text-muted)" weight="fill" />
+            <p style={{ color: 'var(--text-3)', marginTop: '12px' }}>Aucun gabarit dans cette catégorie.</p>
           </div>
         )}
       </div>
@@ -141,25 +141,25 @@ export default function GabaritsPage() {
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '28px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: '#f0f4ff', marginBottom: '10px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'rgba(240,244,255,0.5)', maxWidth: '520px', lineHeight: 1.6 },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6 },
   controls: { display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' },
   searchWrap: {
     display: 'flex', alignItems: 'center', gap: '10px',
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+    background: 'var(--border)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '10px 14px', maxWidth: '440px',
   },
   searchInput: {
     background: 'none', border: 'none', outline: 'none',
     fontFamily: 'Outfit, sans-serif', fontSize: '14px',
-    color: '#f0f4ff', width: '100%',
+    color: 'var(--text)', width: '100%',
   },
   catFilters: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
   catBtn: {
     fontSize: '12px', fontWeight: 500, padding: '6px 14px',
     borderRadius: '100px', cursor: 'pointer',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-    color: 'rgba(240,244,255,0.5)', fontFamily: 'Outfit, sans-serif',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
     transition: 'all 0.18s',
   },
   catBtnActive: {
@@ -174,17 +174,17 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(0,76,63,0.3)', border: '1px solid rgba(255,213,107,0.12)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  cardTitle: { fontSize: '14px', fontWeight: 500, color: '#f0f4ff', lineHeight: 1.35 },
+  cardTitle: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.35 },
   copyBtn: {
     width: '34px', height: '34px', borderRadius: '8px', flexShrink: 0,
-    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+    background: 'var(--border)', border: '1px solid var(--border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'rgba(240,244,255,0.55)', transition: 'all 0.18s',
+    cursor: 'pointer', color: 'var(--text-2)', transition: 'all 0.18s',
   },
   copyBtnDone: { background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)' },
   content: {
     fontFamily: 'Outfit, sans-serif', fontSize: '12.5px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.55)', lineHeight: 1.7,
+    color: 'var(--text-2)', lineHeight: 1.7,
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
     background: 'rgba(0,0,0,0.2)', borderRadius: '8px', padding: '12px',
     maxHeight: '180px', overflowY: 'auto',
@@ -196,7 +196,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(0,30,20,0.96)', border: '1px solid rgba(52,211,153,0.2)',
     borderRadius: '10px', padding: '12px 20px',
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '13px', fontWeight: 500, color: '#f0f4ff',
+    fontSize: '13px', fontWeight: 500, color: 'var(--text)',
     zIndex: 1000, backdropFilter: 'blur(12px)',
     animation: 'fadeUp 0.3s ease',
   },
