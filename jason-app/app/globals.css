@@ -47,8 +47,9 @@
   --nav-bg:       rgba(0,51,42,0.98);
   --nav-border:   rgba(255,255,255,0.06);
   --nav-item:     rgba(240,244,255,0.5);
-  --nav-active-bg: rgba(255,213,107,0.08);
-  --nav-active-border: rgba(255,213,107,0.12);
+  --nav-active-bg: rgba(99,214,131,0.1);
+  --nav-active-border: rgba(99,214,131,0.18);
+  --nav-active-color: #63D683;
 
   /* Card shadow */
   --card-shadow:  none;
@@ -78,8 +79,9 @@
   --nav-bg:       rgba(255,255,255,0.97);
   --nav-border:   rgba(0,76,63,0.1);
   --nav-item:     rgba(11,29,15,0.52);
-  --nav-active-bg: rgba(255,213,107,0.14);
-  --nav-active-border: rgba(255,213,107,0.28);
+  --nav-active-bg: rgba(0,76,63,0.1);
+  --nav-active-border: rgba(0,76,63,0.22);
+  --nav-active-color: #005A4A;
 
   /* Card shadow */
   --card-shadow:  0 2px 16px rgba(0,76,63,0.07);
@@ -292,6 +294,41 @@ a { color: inherit; }
 @media (max-width: 640px) {
   .dash-grid-3 { grid-template-columns: 1fr !important; gap: 12px !important; }
   .dash-grid-2 { grid-template-columns: 1fr !important; gap: 12px !important; }
+}
+
+/* ── PAGE-SPECIFIC RESPONSIVE GRIDS ── */
+
+/* Sécurité — search + tips side by side, stack on mobile */
+.sec-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .sec-grid { grid-template-columns: 1fr !important; }
+}
+
+/* Abonnement — plan card + plans list, stack on mobile */
+.abo-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .abo-grid { grid-template-columns: 1fr !important; }
+}
+
+/* Sécurité — search input row: stack vertically on very small screens */
+@media (max-width: 480px) {
+  .sec-input-row { flex-direction: column !important; align-items: stretch !important; }
+  .sec-input-row .btn-primary { justify-content: center; }
+}
+
+/* Abonnement — plan features grid wraps on mobile */
+@media (max-width: 640px) {
+  .abo-perks { flex-direction: column !important; }
 }
 
 /* Driing services grid */

@@ -115,7 +115,7 @@ export default function SecuriteView() {
         </p>
       </div>
 
-      <div style={styles.grid}>
+      <div style={styles.grid} className="sec-grid">
         {/* LEFT COLUMN */}
         <div style={styles.leftCol}>
           {/* Search box */}
@@ -129,7 +129,7 @@ export default function SecuriteView() {
             </p>
 
             <form onSubmit={handleSearch} style={styles.searchForm}>
-              <div style={styles.inputRow}>
+              <div style={styles.inputRow} className="sec-input-row">
                 <input
                   type="text"
                   value={query}
@@ -371,12 +371,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '540px', lineHeight: 1.6 },
 
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)',
-    gap: '24px',
-    alignItems: 'start',
-  },
+  grid: { gap: '24px' },
   leftCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
   rightCol: { display: 'flex', flexDirection: 'column', gap: '12px' },
 

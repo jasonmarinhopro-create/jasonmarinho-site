@@ -280,7 +280,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   avatarInitial: {
     fontFamily: 'Fraunces, serif', fontSize: '12px',
-    fontWeight: 600, color: '#FFD56B',
+    fontWeight: 600, color: 'var(--nav-active-color)',
   },
   profileName: {
     fontSize: '13px', fontWeight: 500,
@@ -314,7 +314,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   dropAvatarText: {
     fontFamily: 'Fraunces, serif', fontSize: '15px',
-    fontWeight: 600, color: '#FFD56B',
+    fontWeight: 600, color: 'var(--nav-active-color)',
   },
   dropName: {
     fontSize: '14px', fontWeight: 600, color: 'var(--text)',
