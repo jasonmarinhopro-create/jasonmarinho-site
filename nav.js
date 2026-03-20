@@ -168,15 +168,8 @@
     + '<button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>'
   + '</nav>'
 
-  /* ── MOBILE MENU — compact, sans scroll, animation fluide ── */
+  /* ── MOBILE MENU — ordre identique au desktop ── */
   + '<div class="mob-menu" id="mob">'
-
-    + '<div class="mob-stitle">Services</div>'
-    + '<a href="/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
-    + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a>'
-    + '<a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a>'
-
-    + '<div class="mob-sep"></div>'
 
     + '<div class="mob-stitle">Pour qui</div>'
     + '<a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a>'
@@ -186,9 +179,16 @@
       + '<i class="ph ph-lightning"></i>'
       + '<div class="mob-driing-body">'
         + '<span class="mob-driing-name">Membres Driing</span>'
-        + '<span class="mob-driing-sub">Vos avantages exclusifs</span>'
+        + '<span class="mob-driing-sub">Accès inclus avec Driing</span>'
       + '</div>'
     + '</a>'
+
+    + '<div class="mob-sep"></div>'
+
+    + '<div class="mob-stitle">Services</div>'
+    + '<a href="/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
+    + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a>'
+    + '<a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a>'
 
     + '<div class="mob-sep"></div>'
 
