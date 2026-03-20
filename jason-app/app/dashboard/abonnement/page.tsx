@@ -49,7 +49,7 @@ export default async function AbonnementPage() {
           </p>
         </div>
 
-        <div style={styles.mainGrid}>
+        <div style={styles.mainGrid} className="abo-grid">
           {/* LEFT — plan actuel */}
           <div style={styles.leftCol}>
             {isDriing ? (
@@ -115,7 +115,7 @@ export default async function AbonnementPage() {
                   <p style={styles.planDesc}>
                     Accès complet aux formations, à la communauté privée et aux contenus exclusifs.
                   </p>
-                  <div style={styles.perks}>
+                  <div style={styles.perks} className="abo-perks">
                     {DRIING_FEATURES.map(p => (
                       <span key={p} style={styles.perk}>
                         <Check size={10} color="#FFD56B" weight="bold" />
@@ -173,7 +173,7 @@ const styles: Record<string, React.CSSProperties> = {
   intro: { marginBottom: '36px' },
   pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.6 },
-  mainGrid: { display: 'grid', gridTemplateColumns: 'minmax(280px, 380px) 1fr', gap: '28px', alignItems: 'start' },
+  mainGrid: { gap: '28px' },
   leftCol: {},
   rightCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
 
