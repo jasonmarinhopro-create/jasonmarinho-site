@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  ShieldCheck, CaretDown, ArrowUpRight, Sun, Moon
+  Question, CaretDown, ArrowUpRight, Sun, Moon
 } from '@phosphor-icons/react'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
@@ -184,15 +184,15 @@ export default function Header({ title, userName: initialUserName, currentPlan =
                     <CreditCard size={15} />
                     Mon abonnement
                   </Link>
+                  <Link href="/dashboard/aide" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
+                    <Question size={15} />
+                    Centre d&apos;aide
+                  </Link>
                 </nav>
 
                 <div style={styles.dropDivider} />
 
                 <nav style={styles.dropNav}>
-                  <Link href="/dashboard/securite" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
-                    <ShieldCheck size={15} />
-                    Sécurité voyageurs
-                  </Link>
                   <a
                     href="https://jasonmarinho.com"
                     target="_blank"
