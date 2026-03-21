@@ -1,69 +1,54 @@
 import { getProfile } from '@/lib/queries/profile'
+import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
-import { Users, Clock } from '@phosphor-icons/react/dist/ssr'
+import VoyageursView from './VoyageursView'
 
 export default async function VoyageursPage() {
   const profile = await getProfile()
+  if (!profile) return null
+
+  const supabase = await createClient()
+
+  const { data: voyageurs, error } = await supabase
+    .from('voyageurs')
+    .select('id, prenom, nom, email, telephone, notes, created_at, updated_at, sejours(id, date_arrivee, date_depart)')
+    .eq('user_id', profile.userId)
+    .order('updated_at', { ascending: false })
+
+  // Table manquante → affiche quand même la vue (état vide avec message clair)
+  if (error && error.code !== '42P01') console.error('[voyageurs]', error.message)
+
+  const list = (voyageurs ?? []) as Array<{
+    id: string; prenom: string; nom: string; email: string | null
+    telephone: string | null; notes: string | null; created_at: string; updated_at: string
+    sejours: Array<{ id: string; date_arrivee: string; date_depart: string }>
+    is_flagged: boolean
+  }>
+
+  // Croiser avec reported_guests pour badge "Signalé"
+  const identifiers = list.flatMap(v =>
+    [v.email?.toLowerCase(), v.telephone].filter(Boolean) as string[]
+  )
+  if (identifiers.length > 0) {
+    const { data: reported } = await supabase
+      .from('reported_guests')
+      .select('identifier')
+      .in('identifier', identifiers)
+      .eq('is_validated', true)
+
+    const flagged = new Set((reported ?? []).map(r => r.identifier))
+    list.forEach(v => {
+      v.is_flagged = !!(
+        (v.email && flagged.has(v.email.toLowerCase())) ||
+        (v.telephone && flagged.has(v.telephone))
+      )
+    })
+  }
 
   return (
     <>
-      <Header title="Mes Voyageurs" userName={profile?.full_name ?? undefined} />
-
-      <div style={styles.page}>
-        <div style={styles.intro} className="fade-up">
-          <h2 style={styles.pageTitle}>
-            Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Voyageurs</em>
-          </h2>
-          <p style={styles.pageDesc}>
-            Gérez vos voyageurs, leurs coordonnées et votre historique d&apos;hôtes.
-          </p>
-        </div>
-
-        <div style={styles.comingSoon} className="fade-up glass-card">
-          <div style={styles.iconWrap}>
-            <Users size={32} color="var(--text-3)" />
-          </div>
-          <div style={styles.comingLabel}>
-            <Clock size={14} color="var(--text-muted)" />
-            Bientôt disponible
-          </div>
-          <p style={styles.comingDesc}>
-            Votre annuaire de voyageurs arrive prochainement. Vous pourrez y stocker les
-            coordonnées de vos hôtes, noter les incidents, et retrouver facilement chaque
-            profil pour vos futures réservations.
-          </p>
-        </div>
-      </div>
+      <Header title="Mes Voyageurs" userName={profile.full_name ?? undefined} />
+      <VoyageursView voyageurs={list} tableReady={!error} />
     </>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '860px' },
-  intro: { marginBottom: '32px' },
-  pageTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
-    fontWeight: 400, color: 'var(--text)', marginBottom: '8px',
-  },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-3)' },
-  comingSoon: {
-    padding: '48px 32px', borderRadius: '18px',
-    display: 'flex', flexDirection: 'column', alignItems: 'center',
-    gap: '16px', textAlign: 'center',
-  },
-  iconWrap: {
-    width: '64px', height: '64px',
-    background: 'var(--surface-2)', border: '1px solid var(--border)',
-    borderRadius: '16px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-  },
-  comingLabel: {
-    display: 'flex', alignItems: 'center', gap: '6px',
-    fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)',
-    textTransform: 'uppercase', letterSpacing: '0.8px',
-  },
-  comingDesc: {
-    fontSize: '14px', fontWeight: 300, color: 'var(--text-3)',
-    lineHeight: 1.7, maxWidth: '480px',
-  },
 }
