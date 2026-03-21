@@ -1,26 +1,58 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
-  FacebookLogo,
+  FacebookLogo, CaretDown,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
-const mainNav = [
-  { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
-  { href: '/dashboard/formations',  label: 'Formations',        icon: GraduationCap },
-  { href: '/dashboard/gabarits',    label: 'Gabarits',          icon: FileText },
-  { href: '/dashboard/partenaires', label: 'Partenaires',       icon: Handshake },
-  { href: '/dashboard/communaute',  label: 'Communauté',        icon: UsersThree },
-  { href: '/dashboard/securite',    label: 'Sécurité Voyageur', icon: ShieldCheck },
-  { href: '/dashboard/voyageurs',   label: 'Mes Voyageurs',     icon: Users },
-  { href: '/dashboard/guide',       label: 'Guide LCD',         icon: BookOpen },
-  { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper },
+const navGroups = [
+  {
+    label: null,
+    items: [
+      { href: '/dashboard', label: 'Accueil', icon: HouseSimple },
+    ],
+  },
+  {
+    label: 'Apprendre',
+    items: [
+      { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap },
+      { href: '/dashboard/guide',        label: 'Guide LCD',   icon: BookOpen },
+      { href: '/dashboard/actualites',   label: 'Actualités',  icon: Newspaper },
+    ],
+  },
+  {
+    label: 'Services',
+    items: [
+      { href: '/dashboard/gabarits',    label: 'Gabarits',          icon: FileText },
+      { href: '/dashboard/securite',    label: 'Sécurité Voyageur', icon: ShieldCheck },
+      { href: '/dashboard/voyageurs',   label: 'Mes Voyageurs',     icon: Users },
+    ],
+  },
+  {
+    label: 'Communauté',
+    items: [
+      { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake },
+      { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree },
+    ],
+  },
+]
+
+const adminMain = [
+  { href: '/dashboard/admin',         label: 'Administration', Icon: Gear },
+  { href: '/dashboard/admin/membres', label: 'Membres',        Icon: UsersThree },
+]
+
+const adminContent = [
+  { href: '/dashboard/admin/gabarits',   label: 'Gabarits',   Icon: FileText },
+  { href: '/dashboard/admin/formations', label: 'Formations', Icon: GraduationCap },
+  { href: '/dashboard/admin/communaute', label: 'Communauté', Icon: FacebookLogo },
 ]
 
 interface SidebarProps {
@@ -33,10 +65,32 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const [adminContentOpen, setAdminContentOpen] = useState(
+    adminContent.some(item => pathname.startsWith(item.href))
+  )
 
   async function handleSignOut() {
     await supabase.auth.signOut()
     router.push('/auth/login')
+  }
+
+  function NavItem({ href, label, Icon, adminColor }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean }) {
+    const active = pathname === href
+    return (
+      <Link
+        href={href}
+        onClick={onClose}
+        style={{
+          ...styles.navItem,
+          ...(active ? styles.navItemActive : {}),
+          ...(!active && adminColor ? { color: 'var(--nav-admin-color)' } : {}),
+        }}
+      >
+        <Icon size={18} weight={active ? 'fill' : 'regular'} />
+        <span>{label}</span>
+        {active && <div style={styles.activeDot} />}
+      </Link>
+    )
   }
 
   return (
@@ -75,24 +129,18 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
 
         {/* Navigation */}
         <nav style={styles.nav}>
-          {/* Section principale */}
-          <div style={styles.navSection}>
-            {mainNav.map(({ href, label, icon: Icon }) => {
-              const active = pathname === href
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={onClose}
-                  style={{ ...styles.navItem, ...(active ? styles.navItemActive : {}) }}
-                >
-                  <Icon size={18} weight={active ? 'fill' : 'regular'} />
-                  <span>{label}</span>
-                  {active && <div style={styles.activeDot} />}
-                </Link>
-              )
-            })}
-          </div>
+          {navGroups.map((group, i) => (
+            <div key={i}>
+              {group.label && (
+                <div style={styles.sectionLabel}>{group.label}</div>
+              )}
+              <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
+                {group.items.map(({ href, label, icon: Icon }) => (
+                  <NavItem key={href} href={href} label={label} Icon={Icon} />
+                ))}
+              </div>
+            </div>
+          ))}
 
           {/* Section admin — visible uniquement pour Jason */}
           {isAdmin && (
@@ -102,32 +150,42 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
                 <span style={{ ...styles.navDividerLabel, color: 'var(--nav-admin-color)' }}>Admin</span>
                 <div style={styles.navDividerLine} />
               </div>
+
               <div style={styles.navSection}>
-                {[
-                  { href: '/dashboard/admin',              label: 'Administration', Icon: Gear },
-                  { href: '/dashboard/admin/membres',      label: 'Membres',        Icon: UsersThree },
-                  { href: '/dashboard/admin/gabarits',     label: 'Gabarits',       Icon: FileText },
-                  { href: '/dashboard/admin/formations',   label: 'Formations',     Icon: GraduationCap },
-                  { href: '/dashboard/admin/communaute',   label: 'Communauté',     Icon: FacebookLogo },
-                ].map(({ href, label, Icon }) => {
-                  const active = pathname === href
-                  return (
-                    <Link
-                      key={href}
-                      href={href}
-                      onClick={onClose}
-                      style={{
-                        ...styles.navItem,
-                        ...(active ? styles.navItemActive : {}),
-                        ...(!active ? { color: 'var(--nav-admin-color)' } : {}),
-                      }}
-                    >
-                      <Icon size={18} weight={active ? 'fill' : 'regular'} />
-                      <span>{label}</span>
-                      {active && <div style={styles.activeDot} />}
-                    </Link>
-                  )
-                })}
+                {adminMain.map(({ href, label, Icon }) => (
+                  <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
+                ))}
+
+                {/* Contenu sub-menu toggle */}
+                <button
+                  onClick={() => setAdminContentOpen(v => !v)}
+                  style={{
+                    ...styles.navItem,
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    width: '100%', textAlign: 'left',
+                    color: 'var(--nav-admin-color)',
+                  }}
+                >
+                  <Gear size={18} weight="regular" style={{ opacity: 0.5 }} />
+                  <span style={{ flex: 1 }}>Contenu</span>
+                  <CaretDown
+                    size={12}
+                    style={{
+                      color: 'var(--nav-admin-color)',
+                      transform: adminContentOpen ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.2s',
+                      opacity: 0.6,
+                    }}
+                  />
+                </button>
+
+                {adminContentOpen && (
+                  <div style={styles.subMenu}>
+                    {adminContent.map(({ href, label, Icon }) => (
+                      <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
+                    ))}
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -192,6 +250,11 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column', gap: '0',
     overflowY: 'auto',
   },
+  sectionLabel: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.9px',
+    textTransform: 'uppercase', color: 'var(--text-muted)',
+    padding: '14px 8px 6px',
+  },
   navSection: {
     display: 'flex', flexDirection: 'column', gap: '2px',
   },
@@ -226,6 +289,13 @@ const styles: Record<string, React.CSSProperties> = {
     position: 'absolute', right: '12px',
     width: '5px', height: '5px',
     background: 'var(--nav-active-color)', borderRadius: '50%',
+  },
+  subMenu: {
+    marginLeft: '12px',
+    paddingLeft: '12px',
+    borderLeft: '1px solid var(--nav-border)',
+    display: 'flex', flexDirection: 'column', gap: '2px',
+    marginBottom: '4px',
   },
   sideFooter: {
     padding: '12px',
