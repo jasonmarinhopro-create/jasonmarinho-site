@@ -11,8 +11,20 @@ const levelLabel: Record<string, string> = {
   avance: 'Avancé',
 }
 
+// Seules les formations avec une page dashboard sont affichées
+const ACTIVE_SLUGS = ['google-my-business-lcd', 'annonce-directe']
+
 // Formations à venir — hardcodées, pas encore en DB
 const COMING_SOON = [
+  {
+    id: 'tarification-dynamique',
+    title: 'Tarification Dynamique & Revenue Management',
+    description: 'Maîtrise les outils de tarification dynamique pour maximiser ton revenu par nuit — PriceLabs, Wheelhouse, stratégies saisonnières et gestion des événements locaux.',
+    duration: '3h',
+    modules: 5,
+    lessons: 12,
+    level: 'Intermédiaire',
+  },
   {
     id: 'attirer-voyageurs',
     title: 'Attirer des voyageurs sans Airbnb',
@@ -30,7 +42,7 @@ export default async function FormationsPage() {
   const userId = profile?.userId ?? ''
 
   const [{ data: formations }, { data: userFormations }] = await Promise.all([
-    supabase.from('formations').select('*').eq('is_published', true).order('created_at', { ascending: true }),
+    supabase.from('formations').select('*').in('slug', ACTIVE_SLUGS).eq('is_published', true).order('created_at', { ascending: true }),
     supabase.from('user_formations').select('*').eq('user_id', userId),
   ])
 
