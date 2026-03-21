@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
-  UsersThree, SignOut, X, UserCircle, Question, CreditCard, ShieldCheck, Gear,
+  UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
   FacebookLogo,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
@@ -12,18 +12,15 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
 const mainNav = [
-  { href: '/dashboard',             label: 'Accueil',     icon: HouseSimple },
-  { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap },
-  { href: '/dashboard/gabarits',    label: 'Gabarits',    icon: FileText },
-  { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake },
-  { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree },
-]
-
-const accountNav = [
-  { href: '/dashboard/securite',    label: 'Sécurité',      icon: ShieldCheck },
-  { href: '/dashboard/abonnement',  label: 'Abonnement',    icon: CreditCard },
-  { href: '/dashboard/profil',      label: 'Mon profil',    icon: UserCircle },
-  { href: '/dashboard/aide',        label: "Centre d'aide", icon: Question },
+  { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
+  { href: '/dashboard/formations',  label: 'Formations',        icon: GraduationCap },
+  { href: '/dashboard/gabarits',    label: 'Gabarits',          icon: FileText },
+  { href: '/dashboard/partenaires', label: 'Partenaires',       icon: Handshake },
+  { href: '/dashboard/communaute',  label: 'Communauté',        icon: UsersThree },
+  { href: '/dashboard/securite',    label: 'Sécurité Voyageur', icon: ShieldCheck },
+  { href: '/dashboard/voyageurs',   label: 'Mes Voyageurs',     icon: Users },
+  { href: '/dashboard/guide',       label: 'Guide LCD',         icon: BookOpen },
+  { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper },
 ]
 
 interface SidebarProps {
@@ -81,32 +78,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
           {/* Section principale */}
           <div style={styles.navSection}>
             {mainNav.map(({ href, label, icon: Icon }) => {
-              const active = pathname === href
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={onClose}
-                  style={{ ...styles.navItem, ...(active ? styles.navItemActive : {}) }}
-                >
-                  <Icon size={18} weight={active ? 'fill' : 'regular'} />
-                  <span>{label}</span>
-                  {active && <div style={styles.activeDot} />}
-                </Link>
-              )
-            })}
-          </div>
-
-          {/* Séparateur Compte */}
-          <div style={styles.navDivider}>
-            <div style={styles.navDividerLine} />
-            <span style={styles.navDividerLabel}>Compte</span>
-            <div style={styles.navDividerLine} />
-          </div>
-
-          {/* Section compte */}
-          <div style={styles.navSection}>
-            {accountNav.map(({ href, label, icon: Icon }) => {
               const active = pathname === href
               return (
                 <Link
