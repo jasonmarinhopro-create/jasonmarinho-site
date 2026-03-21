@@ -14,15 +14,6 @@ const levelLabel: Record<string, string> = {
 // Formations à venir — hardcodées, pas encore en DB
 const COMING_SOON = [
   {
-    id: 'annonce-directe',
-    title: 'Créer une annonce directe qui convertit',
-    description: 'Comment construire une page de réservation directe attractive — photos, textes, tarification — pour recevoir des voyageurs sans commission.',
-    duration: '3h',
-    modules: 6,
-    lessons: 14,
-    level: 'Débutant',
-  },
-  {
     id: 'attirer-voyageurs',
     title: 'Attirer des voyageurs sans Airbnb',
     description: 'SEO local, réseaux sociaux, groupes Facebook, bouche-à-oreille digital — les vraies stratégies pour remplir son calendrier en location directe.',
@@ -38,9 +29,8 @@ export default async function FormationsPage() {
   const supabase = await createClient()
   const userId = profile?.userId ?? ''
 
-  // Ne charger que la formation GMB (la seule disponible)
   const [{ data: formations }, { data: userFormations }] = await Promise.all([
-    supabase.from('formations').select('*').eq('slug', 'google-my-business-lcd').eq('is_published', true),
+    supabase.from('formations').select('*').eq('is_published', true).order('created_at', { ascending: true }),
     supabase.from('user_formations').select('*').eq('user_id', userId),
   ])
 
