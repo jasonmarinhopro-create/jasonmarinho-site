@@ -61,6 +61,16 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
+  // Profile inline edit
+  const [editingProfile, setEditingProfile] = useState(false)
+  const [profileForm, setProfileForm] = useState({
+    prenom: voyageur.prenom,
+    nom: voyageur.nom,
+    email: voyageur.email ?? '',
+    telephone: voyageur.telephone ?? '',
+  })
+  const [profileError, setProfileError] = useState('')
+
   // Notes inline edit
   const [editingNotes, setEditingNotes] = useState(false)
   const [notes, setNotes] = useState(voyageur.notes ?? '')
@@ -74,12 +84,34 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
   const initials = `${voyageur.prenom[0]}${voyageur.nom[0]}`.toUpperCase()
   const color = avatarColor(voyageur.prenom + voyageur.nom)
 
+  function saveProfile() {
+    if (!profileForm.prenom.trim() || !profileForm.nom.trim()) {
+      setProfileError('Prénom et nom sont obligatoires.')
+      return
+    }
+    setProfileError('')
+    startTransition(async () => {
+      const data: VoyageurData = {
+        prenom: profileForm.prenom.trim(),
+        nom: profileForm.nom.trim(),
+        email: profileForm.email.trim() || undefined,
+        telephone: profileForm.telephone.trim() || undefined,
+        notes: notes.trim() || undefined,
+      }
+      const res = await updateVoyageur(voyageur.id, data)
+      if (res.error) { setProfileError(res.error); return }
+      setEditingProfile(false)
+      router.refresh()
+    })
+  }
+
   function saveNotes() {
     startTransition(async () => {
       const data: VoyageurData = {
-        prenom: voyageur.prenom, nom: voyageur.nom,
-        email: voyageur.email ?? undefined,
-        telephone: voyageur.telephone ?? undefined,
+        prenom: profileForm.prenom || voyageur.prenom,
+        nom: profileForm.nom || voyageur.nom,
+        email: profileForm.email.trim() || voyageur.email || undefined,
+        telephone: profileForm.telephone.trim() || voyageur.telephone || undefined,
         notes: notes.trim() || undefined,
       }
       await updateVoyageur(voyageur.id, data)
@@ -165,22 +197,105 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
           <span style={s.bigAvatarText}>{initials}</span>
         </div>
         <div style={s.profileInfo}>
-          <h2 style={s.profileName}>{voyageur.prenom} {voyageur.nom}</h2>
-          <div style={s.contactList}>
-            {voyageur.email && (
-              <a href={`mailto:${voyageur.email}`} style={s.contactItem}>
-                <Envelope size={14} color="var(--text-muted)" />
-                {voyageur.email}
-              </a>
-            )}
-            {voyageur.telephone && (
-              <a href={`tel:${voyageur.telephone}`} style={s.contactItem}>
-                <Phone size={14} color="var(--text-muted)" />
-                {voyageur.telephone}
-              </a>
-            )}
-          </div>
-          <div style={s.since}>Ajouté le {formatDate(voyageur.created_at)}</div>
+          {editingProfile ? (
+            <div style={s.profileEditForm}>
+              <div style={s.profileEditRow}>
+                <div style={s.field}>
+                  <label style={s.label}>Prénom *</label>
+                  <div style={s.inputWrap}>
+                    <input
+                      style={s.input} autoFocus
+                      value={profileForm.prenom}
+                      onChange={e => setProfileForm(f => ({ ...f, prenom: e.target.value }))}
+                      placeholder="Jean"
+                    />
+                  </div>
+                </div>
+                <div style={s.field}>
+                  <label style={s.label}>Nom *</label>
+                  <div style={s.inputWrap}>
+                    <input
+                      style={s.input}
+                      value={profileForm.nom}
+                      onChange={e => setProfileForm(f => ({ ...f, nom: e.target.value }))}
+                      placeholder="Dupont"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div style={s.profileEditRow}>
+                <div style={s.field}>
+                  <label style={s.label}>Email</label>
+                  <div style={s.inputWrap}>
+                    <Envelope size={14} color="var(--text-muted)" />
+                    <input
+                      style={s.input} type="email"
+                      value={profileForm.email}
+                      onChange={e => setProfileForm(f => ({ ...f, email: e.target.value }))}
+                      placeholder="jean@email.com"
+                    />
+                  </div>
+                </div>
+                <div style={s.field}>
+                  <label style={s.label}>Téléphone</label>
+                  <div style={s.inputWrap}>
+                    <Phone size={14} color="var(--text-muted)" />
+                    <input
+                      style={s.input} type="tel"
+                      value={profileForm.telephone}
+                      onChange={e => setProfileForm(f => ({ ...f, telephone: e.target.value }))}
+                      placeholder="+33 6 12 34 56 78"
+                    />
+                  </div>
+                </div>
+              </div>
+              {profileError && <p style={s.error}>{profileError}</p>}
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button onClick={() => { setEditingProfile(false); setProfileError('') }} className="btn-ghost">
+                  Annuler
+                </button>
+                <button onClick={saveProfile} className="btn-primary" disabled={isPending}>
+                  <Check size={14} />
+                  {isPending ? 'Enregistrement…' : 'Sauvegarder'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div style={s.profileNameRow}>
+                <h2 style={s.profileName}>{voyageur.prenom} {voyageur.nom}</h2>
+                <button onClick={() => setEditingProfile(true)} style={s.editBtn}>
+                  <Pencil size={14} />
+                  Modifier
+                </button>
+              </div>
+              <div style={s.contactList}>
+                {voyageur.email ? (
+                  <a href={`mailto:${voyageur.email}`} style={s.contactItem}>
+                    <Envelope size={14} color="var(--text-muted)" />
+                    {voyageur.email}
+                  </a>
+                ) : (
+                  <button onClick={() => setEditingProfile(true)} style={s.addFieldBtn}>
+                    <Envelope size={14} />
+                    Ajouter un email
+                  </button>
+                )}
+                {voyageur.telephone ? (
+                  <a href={`tel:${voyageur.telephone}`} style={s.contactItem}>
+                    <Phone size={14} color="var(--text-muted)" />
+                    {voyageur.telephone}
+                  </a>
+                ) : (
+                  <button onClick={() => setEditingProfile(true)} style={s.addFieldBtn}>
+                    <Phone size={14} />
+                    Ajouter un téléphone
+                  </button>
+                )}
+              </div>
+              <div style={s.since}>Ajouté le {formatDate(voyageur.created_at)}</div>
+            </>
+          )}
         </div>
       </div>
 
@@ -405,14 +520,24 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 600, color: '#fff',
   },
   profileInfo: { flex: 1, minWidth: 0 },
+  profileNameRow: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' },
   profileName: {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(20px,2.5vw,28px)',
-    fontWeight: 400, color: 'var(--text)', marginBottom: '8px',
+    fontWeight: 400, color: 'var(--text)', margin: 0,
   },
+  profileEditForm: { display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' },
+  profileEditRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' },
   contactList: { display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '6px' },
   contactItem: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '13px', color: 'var(--text-2)', textDecoration: 'none',
+  },
+  addFieldBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: 'none', border: '1px dashed var(--border)',
+    borderRadius: '8px', padding: '4px 10px',
+    fontSize: '12px', color: 'var(--text-muted)', cursor: 'pointer',
+    transition: 'all 0.15s',
   },
   since: { fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' },
 
