@@ -7,7 +7,7 @@
     style.textContent = [
       'footer{background:#001a11;padding:clamp(48px,6vw,72px) clamp(16px,5vw,60px) clamp(24px,4vw,40px);border-top:1px solid rgba(255,255,255,.05)}',
       '.ft-in{max-width:1200px;margin:0 auto}',
-      '.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}',
+      '.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}',
       '.ft-desc{font-size:14px;color:rgba(255,255,255,.35);line-height:1.75;max-width:280px;margin-top:14px;font-family:\'Outfit\',sans-serif}',
       '.ft-ct{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.4);margin-bottom:14px;font-family:\'Outfit\',sans-serif}',
       '.ft-ls{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}',
@@ -19,7 +19,8 @@
       '.socs{display:flex;gap:8px}',
       '.soc{width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);text-decoration:none;font-size:15px;transition:all .2s}',
       '.soc:hover{border-color:rgba(255,255,255,.3);color:#fff}',
-      '@media(max-width:768px){.ft-g{grid-template-columns:1fr 1fr;gap:28px}}',
+      '@media(max-width:960px){.ft-g{grid-template-columns:1fr 1fr 1fr;gap:28px}}',
+      '@media(max-width:640px){.ft-g{grid-template-columns:1fr 1fr;gap:24px}}',
       '@media(max-width:480px){.ft-g{grid-template-columns:1fr;gap:24px}}'
     ].join('');
     document.head.appendChild(style);
@@ -36,7 +37,17 @@
           + '<p class="ft-desc">Expert LCD et co-fondateur de Driing. J\'accompagne les hôtes et conciergeries à développer leur activité, honnêtement et efficacement.</p>'
         + '</div>'
         + '<div>'
-          + '<div class="ft-ct">Plateforme</div>'
+          + '<div class="ft-ct">Services</div>'
+          + '<ul class="ft-ls">'
+            + '<li><a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations</a></li>'
+            + '<li><a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a></li>'
+            + '<li><a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a></li>'
+            + '<li><a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a></li>'
+            + '<li><a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a></li>'
+          + '</ul>'
+        + '</div>'
+        + '<div>'
+          + '<div class="ft-ct">Ressources</div>'
           + '<ul class="ft-ls">'
             + '<li><a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a></li>'
             + '<li><a href="/ressources/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits messages</a></li>'

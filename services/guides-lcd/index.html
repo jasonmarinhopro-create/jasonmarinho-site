@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guides LCD gratuits — Hôtes & Conciergeries | Jason Marinho</title>
+<meta name="description" content="Guides pratiques gratuits pour développer ton activité en location courte durée. Réglementation, annonces, réservation directe, tarification et plus encore.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jasonmarinho.com/services/guides-lcd">
+<meta property="og:title" content="Guides LCD gratuits | Jason Marinho">
+<meta property="og:description" content="Guides pratiques gratuits pour développer ton activité en location courte durée.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jasonmarinho.com/services/guides-lcd">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#004C3F;--gd:#003329;--gm:#005A4A;
+  --ol:#556B2F;--y:#FFD56B;--yw:#FFF8E1;
+  --cr:#F7F5F0;--w:#FDFCF9;
+  --td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;
+  --bd:rgba(0,76,63,.09);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+.nav-logo-img{width:36px;height:36px;object-fit:contain;filter:brightness(0) invert(1);opacity:.9;flex-shrink:0}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5vw,60px);background:rgba(0,51,41,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,213,107,.07);transition:box-shadow .3s}
+nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.n-brand{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}
+.n-brand em{color:var(--y);font-style:italic;font-weight:300}
+.n-links{display:flex;align-items:center;gap:28px;list-style:none}
+.n-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:14px;transition:color .2s}
+.n-links a:hover{color:#fff}
+.n-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nb-o{font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18);background:transparent;padding:8px 15px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
+.nb-o:hover{border-color:rgba(255,255,255,.42);color:#fff}
+.nb-c{font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--gd);background:var(--y);padding:8px 16px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
+.nb-c:hover{background:#ffe08f;transform:translateY(-1px)}
+.hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.hbg span{display:block;height:2px;background:rgba(255,255,255,.8);border-radius:2px;transition:.3s}
+.hbg span:nth-child(1){width:22px}
+.hbg span:nth-child(2){width:16px}
+.hbg span:nth-child(3){width:20px}
+.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;background:var(--gd);border-bottom:1px solid rgba(255,213,107,.08);padding:16px clamp(16px,5vw,60px) 20px;z-index:199;flex-direction:column}
+.mob-menu.open{display:flex}
+.mob-menu a{font-size:15px;color:rgba(255,255,255,.55);text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:10px;transition:color .2s}
+.mob-menu a:hover{color:#fff}
+.mob-ctas{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.05)}
+.mob-ctas a{flex:1;justify-content:center;font-size:14px;font-weight:500;text-decoration:none;padding:12px 0;border-radius:9px;display:flex;align-items:center;gap:5px}
+.mc-o{background:rgba(255,255,255,.05);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.12)}
+.mc-c{background:var(--y);color:var(--gd)!important;font-weight:600}
+
+/* ── HERO ── */
+.hero{min-height:56svh;background:var(--gd);padding-top:64px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.h-g1{position:absolute;top:-8%;right:-12%;width:550px;height:550px;background:radial-gradient(circle,rgba(0,107,88,.3) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.h-g2{position:absolute;bottom:-12%;left:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(85,107,47,.18) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.h-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
+.h-inner{position:relative;z-index:2;flex:1;max-width:1200px;margin:0 auto;width:100%;padding:clamp(64px,9vw,88px) clamp(16px,5vw,60px) clamp(48px,7vw,72px);display:flex;flex-direction:column;justify-content:center}
+.h-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.22);color:var(--y);font-size:11px;font-weight:500;letter-spacing:1.3px;text-transform:uppercase;padding:7px 14px;border-radius:100px;margin-bottom:24px;width:fit-content;animation:fu .7s ease both}
+.h-dot{width:6px;height:6px;background:var(--y);border-radius:50%;animation:blink 2.5s ease-in-out infinite}
+.h-h1{font-family:'Fraunces',serif;font-size:clamp(38px,5vw,66px);font-weight:300;line-height:1.05;letter-spacing:-2px;color:#fff;margin-bottom:20px;animation:fu .7s .09s ease both;max-width:680px}
+.h-h1 em{font-style:italic;color:var(--y)}
+.h-sub{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.46);line-height:1.75;max-width:500px;animation:fu .7s .18s ease both}
+
+/* ── SECTIONS ── */
+.sec{padding:clamp(64px,9vw,104px) clamp(16px,5vw,60px)}
+.sec.cr{background:var(--cr)}
+.sec.wh{background:var(--w)}
+.s-in{max-width:1200px;margin:0 auto}
+.lbl{font-size:10.5px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--ol);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.lbl.lt{color:rgba(255,213,107,.5)}
+.lbl.ct{justify-content:center}
+.lbl::before{content:'';width:18px;height:2px;background:currentColor;border-radius:2px}
+.h2{font-family:'Fraunces',serif;font-size:clamp(30px,3.8vw,50px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:var(--td);margin-bottom:14px}
+.h2 em{font-style:italic;color:var(--g)}
+.h2.lt{color:#fff}.h2.lt em{color:var(--y)}
+.h2.ct{text-align:center}
+.sub{font-size:16px;font-weight:300;color:var(--tm);line-height:1.72;max-width:440px;margin-bottom:48px}
+.sub.lt{color:rgba(255,255,255,.38)}
+.sub.ct{text-align:center;margin-left:auto;margin-right:auto}
+
+/* ── GUIDES GRID ── */
+.g-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px}
+.btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+.btn-ol:hover{background:var(--g);color:#fff}
+.g-gr{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.g-card{background:var(--w);border-radius:16px;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s;display:flex;flex-direction:column;overflow:hidden}
+.g-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}
+.g-card-link{text-decoration:none;color:inherit;display:flex;flex-direction:column;height:100%}
+.g-ico{height:120px;display:flex;align-items:center;justify-content:center;position:relative}
+.g-ico i{font-size:44px;color:rgba(255,255,255,.14);position:relative;z-index:2}
+.g-ico::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.18))}
+.g-tag{position:absolute;top:12px;left:12px;z-index:3;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15)}
+.g-free{position:absolute;top:12px;right:12px;z-index:3;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.28)}
+.g-bd{padding:22px;display:flex;flex-direction:column;flex:1}
+.g-cat{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:7px}
+.g-tt{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.3px;margin-bottom:10px}
+.g-ex{font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px;flex:1}
+.g-ft{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--bd);margin-top:auto}
+.g-rt{font-size:11.5px;color:var(--tl);font-weight:300;display:flex;align-items:center;gap:4px}
+.g-rt i{font-size:13px;color:var(--ol)}
+.g-lk{font-size:13px;font-weight:600;color:var(--g);display:flex;align-items:center;gap:4px;transition:gap .2s}
+.g-card:hover .g-lk{gap:8px}
+
+/* ── FEATURES ── */
+.feat-g{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.feat-card{background:var(--cr);border:1px solid var(--bd);border-radius:16px;padding:32px;transition:box-shadow .2s}
+.feat-card:hover{box-shadow:0 8px 24px rgba(0,76,63,.08)}
+.feat-ico{width:48px;height:48px;background:rgba(0,76,63,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.feat-ico i{font-size:24px;color:var(--g)}
+.feat-t{font-family:'Fraunces',serif;font-size:19px;font-weight:400;color:var(--td);margin-bottom:9px;letter-spacing:-.3px}
+.feat-d{font-size:14px;font-weight:300;color:var(--tm);line-height:1.65}
+
+/* ── CTA BANNER ── */
+.cta-s{background:var(--g);padding:clamp(64px,8vw,88px) clamp(16px,5vw,60px);text-align:center;position:relative;overflow:hidden}
+.cta-gw{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:640px;height:300px;background:radial-gradient(ellipse,rgba(255,213,107,.06) 0%,transparent 65%);pointer-events:none}
+.cta-in{max-width:520px;margin:0 auto;position:relative;z-index:2}
+.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.28)}
+
+/* ── FOOTER ── */
+footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28px;border-top:1px solid rgba(255,213,107,.05)}
+.ft-in{max-width:1200px;margin:0 auto}
+.ft-g{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:clamp(28px,4vw,48px);margin-bottom:48px}
+.ft-desc{font-size:13px;font-weight:300;color:rgba(255,255,255,.26);line-height:1.7;margin-top:14px;max-width:230px}
+.ft-ct{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,213,107,.28);margin-bottom:15px}
+.ft-ls{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ft-ls a{font-size:13px;font-weight:300;color:rgba(255,255,255,.26);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
+.ft-ls a i{font-size:13px;opacity:.6}
+.ft-ls a:hover{color:rgba(255,255,255,.65)}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:12px}
+.ft-cp{font-size:12px;color:rgba(255,255,255,.16);font-weight:300}
+.socs{display:flex;gap:7px}
+.soc{width:32px;height:32px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:7px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:rgba(255,255,255,.3);transition:all .2s}
+.soc i{font-size:15px}
+.soc:hover{background:rgba(255,255,255,.09);color:#fff}
+
+/* ── ANIM ── */
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}.d6{transition-delay:.6s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .n-links,.n-right{display:none}
+  .hbg{display:flex}
+  .g-gr{grid-template-columns:repeat(2,1fr)}
+  .feat-g{grid-template-columns:1fr 1fr}
+  .ft-g{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media(max-width:640px){
+  .g-gr{grid-template-columns:1fr}
+  .g-hd{flex-direction:column;align-items:flex-start}
+  .feat-g{grid-template-columns:1fr}
+  .ft-g{grid-template-columns:1fr;gap:28px}
+  .ft-bot{flex-direction:column;align-items:flex-start}
+}
+</style>
+<script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+<script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="h-g1"></div>
+  <div class="h-g2"></div>
+  <div class="h-grid"></div>
+  <div class="h-inner">
+    <div class="h-badge">
+      <span class="h-dot"></span>
+      GUIDES PRATIQUES LCD
+    </div>
+    <h1 class="h-h1">Tout ce qu'il faut savoir pour <em>développer ton activité</em></h1>
+    <p class="h-sub">Des guides complets et gratuits sur la réglementation, l'optimisation, la réservation directe et bien plus. Écrits depuis le terrain, pas depuis un manuel.</p>
+  </div>
+</section>
+
+<!-- GUIDES GRID -->
+<section class="sec cr" id="guides">
+  <div class="s-in">
+    <div class="g-hd rv">
+      <div>
+        <div class="lbl">Catalogue</div>
+        <h2 class="h2">Tous les <em>guides</em></h2>
+      </div>
+      <a href="/blog" class="btn-ol">Voir le blog <i class="ph-bold ph-arrow-right"></i></a>
+    </div>
+    <div class="g-gr">
+
+      <!-- Guide 1 — Réglementation -->
+      <div class="g-card rv d1">
+        <a href="/blog/reglementation-lcd-france-2026" class="g-card-link">
+          <div class="g-ico" style="background:linear-gradient(135deg,#002B22,#004C3F)">
+            <i class="ph ph-scales"></i>
+            <span class="g-tag">Réglementation</span>
+            <span class="g-free">Gratuit</span>
+          </div>
+          <div class="g-bd">
+            <div class="g-cat">Cadre légal</div>
+            <div class="g-tt">Réglementation LCD en France — tout ce qui change en 2026</div>
+            <p class="g-ex">Déclarations, numéros d'enregistrement, limitations de nuitées : le point complet sur ce que la loi impose aux hôtes en 2026.</p>
+            <div class="g-ft">
+              <span class="g-rt"><i class="ph ph-clock"></i> 8 min de lecture</span>
+              <span class="g-lk">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Guide 2 — Tarification dynamique -->
+      <div class="g-card rv d2">
+        <a href="/blog/tarification-dynamique-lcd" class="g-card-link">
+          <div class="g-ico" style="background:linear-gradient(135deg,#1a2e0a,#2a4a10)">
+            <i class="ph ph-trend-up"></i>
+            <span class="g-tag">Tarification</span>
+            <span class="g-free">Gratuit</span>
+          </div>
+          <div class="g-bd">
+            <div class="g-cat">Revenus</div>
+            <div class="g-tt">Tarification dynamique — comment maximiser tes revenus LCD</div>
+            <p class="g-ex">Comment fonctionne la tarification dynamique, quels outils utiliser et comment l'adapter à ta situation pour augmenter ton taux d'occupation.</p>
+            <div class="g-ft">
+              <span class="g-rt"><i class="ph ph-clock"></i> 7 min de lecture</span>
+              <span class="g-lk">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Guide 3 — Réservation directe -->
+      <div class="g-card rv d3">
+        <a href="/blog/reservation-directe-sans-commission" class="g-card-link">
+          <div class="g-ico" style="background:linear-gradient(135deg,#002B22,#004C3F)">
+            <i class="ph ph-link-simple-break"></i>
+            <span class="g-tag">Réservation directe</span>
+            <span class="g-free">Gratuit</span>
+          </div>
+          <div class="g-bd">
+            <div class="g-cat">Indépendance</div>
+            <div class="g-tt">Réservation directe — comment se libérer des commissions Airbnb</div>
+            <p class="g-ex">Les étapes concrètes pour créer ton canal de réservation direct, attirer du trafic qualifié et arrêter de dépendre d'Airbnb.</p>
+            <div class="g-ft">
+              <span class="g-rt"><i class="ph ph-clock"></i> 9 min de lecture</span>
+              <span class="g-lk">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Guide 4 — Google My Business -->
+      <div class="g-card rv d1">
+        <a href="/blog/google-my-business-hotes-lcd" class="g-card-link">
+          <div class="g-ico" style="background:linear-gradient(135deg,#1a2e0a,#2a4a10)">
+            <i class="ph ph-map-pin"></i>
+            <span class="g-tag">Visibilité</span>
+            <span class="g-free">Gratuit</span>
+          </div>
+          <div class="g-bd">
+            <div class="g-cat">Visibilité locale</div>
+            <div class="g-tt">Google My Business — le guide complet pour les hôtes LCD</div>
+            <p class="g-ex">Comment créer et optimiser ta fiche Google My Business pour apparaître dans les recherches locales et attirer des voyageurs sans passer par Airbnb.</p>
+            <div class="g-ft">
+              <span class="g-rt"><i class="ph ph-clock"></i> 6 min de lecture</span>
+              <span class="g-lk">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Guide 5 — Optimiser son annonce -->
+      <div class="g-card rv d2">
+        <a href="/blog/optimiser-annonce-airbnb" class="g-card-link">
+          <div class="g-ico" style="background:linear-gradient(135deg,#002B22,#004C3F)">
+            <i class="ph ph-megaphone"></i>
+            <span class="g-tag">Annonce</span>
+            <span class="g-free">Gratuit</span>
+          </div>
+          <div class="g-bd">
+            <div class="g-cat">Optimisation</div>
+            <div class="g-tt">Optimiser son annonce Airbnb pour plus de réservations</div>
+            <p class="g-ex">Titre, description, photos, équipements : les éléments qui font vraiment la différence dans l'algorithme Airbnb et dans la décision du voyageur.</p>
+            <div class="g-ft">
+              <span class="g-rt"><i class="ph ph-clock"></i> 8 min de lecture</span>
+              <span class="g-lk">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Guide 6 — Livret d'accueil -->
+      <div class="g-card rv d3">
+        <a href="/blog/livret-accueil-digital-hotes-lcd" class="g-card-link">
+          <div class="g-ico" style="background:linear-gradient(135deg,#1a2e0a,#2a4a10)">
+            <i class="ph ph-book-open"></i>
+            <span class="g-tag">Expérience voyageur</span>
+            <span class="g-free">Gratuit</span>
+          </div>
+          <div class="g-bd">
+            <div class="g-cat">Satisfaction client</div>
+            <div class="g-tt">Livret d'accueil digital — créer une expérience 5 étoiles</div>
+            <p class="g-ex">Comment concevoir un livret d'accueil digital qui réduit les messages répétitifs, améliore l'expérience voyageur et génère plus d'avis positifs.</p>
+            <div class="g-ft">
+              <span class="g-rt"><i class="ph ph-clock"></i> 6 min de lecture</span>
+              <span class="g-lk">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI CES GUIDES -->
+<section class="sec wh">
+  <div class="s-in">
+    <div style="max-width:600px;margin-bottom:52px" class="rv">
+      <div class="lbl">Approche</div>
+      <h2 class="h2">Des guides écrits <em>depuis le terrain</em></h2>
+      <p class="sub">Pas de contenu généré à la chaîne. Chaque guide est rédigé à partir de situations réelles rencontrées avec des hôtes et conciergeries.</p>
+    </div>
+    <div class="feat-g">
+      <div class="feat-card rv d1">
+        <div class="feat-ico">
+          <i class="ph-bold ph-check-circle"></i>
+        </div>
+        <div class="feat-t">Directement applicables</div>
+        <p class="feat-d">Chaque guide se termine par des actions concrètes à mettre en place dès aujourd'hui, sans jargon ni théorie inutile.</p>
+      </div>
+      <div class="feat-card rv d2">
+        <div class="feat-ico">
+          <i class="ph-bold ph-arrows-clockwise"></i>
+        </div>
+        <div class="feat-t">Régulièrement mis à jour</div>
+        <p class="feat-d">La LCD évolue vite : réglementation, algorithmes, outils. Les guides sont mis à jour dès que quelque chose de significatif change.</p>
+      </div>
+      <div class="feat-card rv d3">
+        <div class="feat-ico">
+          <i class="ph-bold ph-currency-eur"></i>
+        </div>
+        <div class="feat-t">100 % gratuits</div>
+        <p class="feat-d">Tous les guides sont gratuits et accessibles sans inscription. Pour aller plus loin, les formations offrent une progression structurée et un support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-s">
+  <div class="cta-gw"></div>
+  <div class="cta-in rv">
+    <div class="lbl lt ct">Aller plus loin</div>
+    <h2 class="h2 lt ct">Prêt à passer à l'étape suivante&nbsp;?</h2>
+    <p class="sub lt ct" style="margin-bottom:28px">Les guides sont un bon point de départ. Les formations vont plus loin avec des modules structurés, des exercices et un support direct.</p>
+    <a href="/services/formations" class="btn-p" style="margin:0 auto;display:inline-flex">
+      Voir les formations <i class="ph-bold ph-arrow-right"></i>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<script src="/footer.js"></script>
+
+<script>
+const nav=document.getElementById('nav'),hbg=document.getElementById('hbg'),mob=document.getElementById('mob');
+window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
+hbg&&hbg.addEventListener('click',()=>mob.classList.toggle('open'));
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
+document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
+</script>
+<script src="/cookie-banner.js" defer></script>
+</body>
+</html>
