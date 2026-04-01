@@ -8,6 +8,7 @@ import {
   Wrench,
   Star,
   ChartLine,
+  ShieldCheck,
   HouseSimple,
   ArrowRight,
   ArrowUpRight,
@@ -96,6 +97,19 @@ const CATEGORIES: Category[] = [
       { title: 'Obtenir des avis 5 étoiles', desc: 'Les gestes qui font la différence aux yeux des voyageurs.', slug: 'obtenir-avis-5-etoiles-airbnb' },
       { title: 'Optimiser son annonce Airbnb', desc: 'Photos, titre, description — tout ce qui booste le clic.', slug: 'optimiser-annonce-airbnb' },
       { title: 'Répondre aux avis négatifs', desc: 'Comment transformer un mauvais avis en atout.' },
+    ],
+  },
+  {
+    id: 'assurances',
+    icon: <ShieldCheck size={26} weight="fill" />,
+    color: '#38bdf8',
+    bg: 'rgba(56,189,248,0.12)',
+    title: 'Assurances & Protection',
+    subtitle: 'Être bien couvert en toutes circonstances',
+    fiches: [
+      { title: 'AirCover vs assurance personnelle', desc: 'Ce que couvre vraiment Airbnb et ce qu\'il ne couvre pas.' },
+      { title: 'Responsabilité civile hôte', desc: 'Choisir une assurance adaptée à la LCD.' },
+      { title: 'Assurance conciergerie', desc: 'Obligations et couvertures spécifiques si tu gères pour autrui.' },
     ],
   },
   {
