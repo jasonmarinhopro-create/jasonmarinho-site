@@ -12,13 +12,13 @@ import {
   HouseSimple,
   ArrowRight,
   ArrowUpRight,
-  Lock,
 } from '@phosphor-icons/react/dist/ssr'
 
-type Fiche = {
-  title: string
-  desc: string
-  slug?: string   // /blog/slug — undefined = bientôt dispo
+type Stat = {
+  value: string      // chiffre / stat mis en avant
+  label: string      // courte phrase explicative
+  source: string     // nom affiché de la source
+  sourceUrl: string  // lien vers la source
 }
 
 type Category = {
@@ -28,10 +28,8 @@ type Category = {
   bg: string
   title: string
   subtitle: string
-  fiches: Fiche[]
+  stats: Stat[]
 }
-
-const BLOG = 'https://jasonmarinho.fr/blog/'
 
 const CATEGORIES: Category[] = [
   {
@@ -41,10 +39,25 @@ const CATEGORIES: Category[] = [
     bg: 'rgba(96,165,250,0.12)',
     title: 'Réglementation',
     subtitle: 'Tes droits & obligations légales',
-    fiches: [
-      { title: 'Lois en vigueur en 2026', desc: 'Durée max, autorisation mairie, numéro de déclaration...', slug: 'reglementation-lcd-france-2026' },
-      { title: 'Résidence principale vs secondaire', desc: 'Règles différentes selon le type de bien loué.' },
-      { title: 'Copropriété & règlement intérieur', desc: 'Peut-on louer malgré un règlement restrictif ?' },
+    stats: [
+      {
+        value: '120 nuits/an',
+        label: 'Durée max légale pour louer sa résidence principale (Loi Le Meur, 2024).',
+        source: 'jedeclaremonmeuble.com',
+        sourceUrl: 'https://www.jedeclaremonmeuble.com/loi-le-meur-location-saisonniere-fiscalite/',
+      },
+      {
+        value: '5 000 €',
+        label: 'Amende max pour absence de numéro d\'enregistrement, obligatoire dès le 20 mai 2026.',
+        source: 'loftely.com',
+        sourceUrl: 'https://www.loftely.com/blog/actualites/reglementation-locations-saisonnieres-2026.html',
+      },
+      {
+        value: '90 jours',
+        label: 'Certaines communes (Paris, Marseille...) peuvent abaisser la limite à 90 j/an.',
+        source: 'nousgerons.com',
+        sourceUrl: 'https://www.nousgerons.com/la-loi-le-meur.html',
+      },
     ],
   },
   {
@@ -54,10 +67,25 @@ const CATEGORIES: Category[] = [
     bg: 'rgba(52,211,153,0.12)',
     title: 'Fiscalité',
     subtitle: 'Impôts, régimes et optimisation',
-    fiches: [
-      { title: 'Micro-BIC vs régime réel', desc: 'Quel régime choisir selon tes revenus ?', slug: 'location-courte-duree-impots-france' },
-      { title: 'LMNP et LMP : les différences', desc: 'Statuts, seuils, avantages fiscaux expliqués.' },
-      { title: 'Taxe de séjour', desc: 'Comment la collecter et la reverser à ta commune.' },
+    stats: [
+      {
+        value: '15 000 €',
+        label: 'Nouveau plafond micro-BIC pour meublés non classés (contre 77 700 € avant 2025).',
+        source: 'service-public.fr',
+        sourceUrl: 'https://www.service-public.gouv.fr/particuliers/vosdroits/F32744',
+      },
+      {
+        value: '30 %',
+        label: 'Abattement micro-BIC pour meublés non classés — divisé par deux en 2025.',
+        source: 'impots.gouv.fr',
+        sourceUrl: 'https://www.impots.gouv.fr/particulier/les-regimes-dimposition',
+      },
+      {
+        value: '85 %',
+        label: 'Des cas où le régime réel est plus avantageux que le micro-BIC.',
+        source: 'jedeclaremonmeuble.com',
+        sourceUrl: 'https://www.jedeclaremonmeuble.com/le-regime-micro-bic/',
+      },
     ],
   },
   {
@@ -67,10 +95,25 @@ const CATEGORIES: Category[] = [
     bg: 'rgba(244,114,182,0.12)',
     title: 'Décoration & Aménagement',
     subtitle: 'Créer un logement qui se démarque',
-    fiches: [
-      { title: 'Les indispensables d\'un logement LCD', desc: 'Ce que tout voyageur s\'attend à trouver.' },
-      { title: 'Décorer sans se ruiner', desc: 'Astuces déco pour un logement premium à petit budget.' },
-      { title: 'Livret d\'accueil digital', desc: 'Remplacer le classeur papier par un guide interactif.', slug: 'livret-accueil-digital-hotes-lcd' },
+    stats: [
+      {
+        value: '+25 %',
+        label: 'De réservations en plus avec des photos professionnelles vs amateurs.',
+        source: 'objectif5etoiles.com',
+        sourceUrl: 'https://www.objectif5etoiles.com/optimisation-de-vo-photos-airbnb-et-booking/',
+      },
+      {
+        value: '+30 %',
+        label: 'De réservations supplémentaires avec une déco soignée par rapport à un logement similaire.',
+        source: 'rentaplus.immo',
+        sourceUrl: 'https://www.rentaplus.immo/meubler-logement-airbnb-maximiser-reservations/',
+      },
+      {
+        value: '3 000 – 7 000 €',
+        label: 'Budget moyen pour meubler et équiper un appartement LCD de A à Z.',
+        source: 'minut.com',
+        sourceUrl: 'https://www.minut.com/fr/blog/amenager-appartement-airbnb-recommandations',
+      },
     ],
   },
   {
@@ -80,10 +123,25 @@ const CATEGORIES: Category[] = [
     bg: 'rgba(251,146,60,0.12)',
     title: 'Gestion Locative',
     subtitle: 'Automatise et gagne du temps',
-    fiches: [
-      { title: 'Automatiser ses messages', desc: 'Répondre vite sans y passer ses soirées.', slug: 'messages-airbnb-automatiser' },
-      { title: 'Les meilleurs outils LCD', desc: 'PMS, channel manager, outils de ménage...', slug: 'outils-gerer-location-courte-duree-2025' },
-      { title: 'Créer sa conciergerie', desc: 'Gérer plusieurs biens ou déléguer efficacement.', slug: 'creer-conciergerie-airbnb-2025' },
+    stats: [
+      {
+        value: '8–12 h/sem',
+        label: 'Temps moyen consacré à gérer un logement sans outils d\'automatisation.',
+        source: 'jedeclaremonmeuble.com',
+        sourceUrl: 'https://www.jedeclaremonmeuble.com/automatiser-airbnb-guide/',
+      },
+      {
+        value: '-70 %',
+        label: 'De temps gagné en adoptant un PMS + channel manager pour ses annonces.',
+        source: 'chamconcierge.com',
+        sourceUrl: 'https://www.chamconcierge.com/post/channel-manager-et-pms-la-solution-indispensable-pour-la-gestion-locative-moderne',
+      },
+      {
+        value: '70 %',
+        label: 'Des réservations Airbnb se jouent dans les 15 min suivant la demande.',
+        source: 'jedeclaremonmeuble.com',
+        sourceUrl: 'https://www.jedeclaremonmeuble.com/automatiser-airbnb-guide/',
+      },
     ],
   },
   {
@@ -93,10 +151,25 @@ const CATEGORIES: Category[] = [
     bg: 'rgba(251,191,36,0.12)',
     title: 'Réputation & Avis',
     subtitle: 'Construire un profil 5 étoiles',
-    fiches: [
-      { title: 'Obtenir des avis 5 étoiles', desc: 'Les gestes qui font la différence aux yeux des voyageurs.', slug: 'obtenir-avis-5-etoiles-airbnb' },
-      { title: 'Optimiser son annonce Airbnb', desc: 'Photos, titre, description — tout ce qui booste le clic.', slug: 'optimiser-annonce-airbnb' },
-      { title: 'Répondre aux avis négatifs', desc: 'Comment transformer un mauvais avis en atout.' },
+    stats: [
+      {
+        value: '4,8 ⭐ min',
+        label: 'Note minimale requise pour obtenir et conserver le statut Superhôte Airbnb.',
+        source: 'eldorado-immobilier.com',
+        sourceUrl: 'https://eldorado-immobilier.com/statistiques-sur-airbnb/',
+      },
+      {
+        value: '+30 %',
+        label: 'De revenus supplémentaires pour un Superhôte parisien vs un hôte standard.',
+        source: 'reussirsalocationcourteduree.fr',
+        sourceUrl: 'https://reussirsalocationcourteduree.fr/statistiques-airbnb-2025-revenus-rentabilite/',
+      },
+      {
+        value: 'x3',
+        label: 'Les chances d\'être cliqué pour une annonce en 1ère position vs les suivantes.',
+        source: 'reussirsalocationcourteduree.fr',
+        sourceUrl: 'https://reussirsalocationcourteduree.fr/optimiser-annonce-airbnb-2026/',
+      },
     ],
   },
   {
@@ -106,10 +179,25 @@ const CATEGORIES: Category[] = [
     bg: 'rgba(56,189,248,0.12)',
     title: 'Assurances & Protection',
     subtitle: 'Être bien couvert en toutes circonstances',
-    fiches: [
-      { title: 'AirCover vs assurance personnelle', desc: 'Ce que couvre vraiment Airbnb et ce qu\'il ne couvre pas.' },
-      { title: 'Responsabilité civile hôte', desc: 'Choisir une assurance adaptée à la LCD.' },
-      { title: 'Assurance conciergerie', desc: 'Obligations et couvertures spécifiques si tu gères pour autrui.' },
+    stats: [
+      {
+        value: '3 M$',
+        label: 'Couverture dommages AirCover pour les hôtes — mais ce n\'est pas une assurance classique.',
+        source: 'halobutler.fr',
+        sourceUrl: 'https://halobutler.fr/blog/fiscalite-reglementation-airbnb/assurance-airbnb-que-couvre-aircover/',
+      },
+      {
+        value: '1 M$',
+        label: 'Couverture responsabilité civile AirCover (dommages corporels/matériels à des tiers).',
+        source: 'jedeclaremonmeuble.com',
+        sourceUrl: 'https://www.jedeclaremonmeuble.com/aircover/',
+      },
+      {
+        value: '⚠️ 14 jours',
+        label: 'Délai max pour activer AirCover après le départ du voyageur — passé ce délai, rien.',
+        source: 'locandsmile.fr',
+        sourceUrl: 'https://locandsmile.fr/assurance-airbnb-ce-que-laircover-ne-vous-dit-pas-sur-vos-protections/',
+      },
     ],
   },
   {
@@ -119,10 +207,25 @@ const CATEGORIES: Category[] = [
     bg: 'rgba(167,139,250,0.12)',
     title: 'Revenus & Tarification',
     subtitle: 'Maximise tes gains chaque nuit',
-    fiches: [
-      { title: 'Tarification dynamique', desc: 'Adapter ses prix en temps réel selon la demande.', slug: 'tarification-dynamique-lcd' },
-      { title: 'Réservation directe sans commission', desc: 'Créer son propre canal et réduire les frais.', slug: 'reservation-directe-sans-commission' },
-      { title: 'Google My Business pour hôtes', desc: 'Apparaître dans Google Maps pour attirer des réservations.', slug: 'google-my-business-hotes-lcd' },
+    stats: [
+      {
+        value: '11 200 €/an',
+        label: 'Revenu moyen annuel d\'un hôte Airbnb en France en 2025 (118 €/nuit en moyenne).',
+        source: 'eldorado-immobilier.com',
+        sourceUrl: 'https://eldorado-immobilier.com/statistiques-sur-airbnb/',
+      },
+      {
+        value: '+20–40 %',
+        label: 'De revenus supplémentaires avec tarification dynamique vs prix fixe.',
+        source: 'quelleconciergerie.fr',
+        sourceUrl: 'https://www.quelleconciergerie.fr/blog-posts/tarification-dynamique-airbnb',
+      },
+      {
+        value: '63 %',
+        label: 'Taux d\'occupation moyen Airbnb en France — 70 %+ à Paris.',
+        source: 'eldorado-immobilier.com',
+        sourceUrl: 'https://eldorado-immobilier.com/taux-remplissage-location-saisonniere/',
+      },
     ],
   },
 ]
@@ -142,9 +245,8 @@ export default async function GuidePage() {
             Guide <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
           </h2>
           <p style={styles.pageDesc}>
-            Ta bibliothèque de référence pour la location courte durée. Retrouve ici les fondamentaux :
-            réglementation, fiscalité, décoration, gestion locative — tout ce qu&apos;il faut savoir pour
-            partir du bon pied.
+            Chiffres clés, faits essentiels et sources fiables pour maîtriser chaque aspect
+            de la location courte durée — réglementation, fiscalité, gestion et rentabilité.
           </p>
         </div>
 
@@ -164,34 +266,25 @@ export default async function GuidePage() {
                 </div>
               </div>
 
-              {/* Fiches */}
-              <div style={styles.fiches}>
-                {cat.fiches.map((fiche, fi) =>
-                  fiche.slug ? (
-                    <Link
-                      key={fi}
-                      href={`${BLOG}${fiche.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={styles.fiche}
-                      className="guide-fiche"
-                    >
-                      <div style={styles.ficheText}>
-                        <span style={styles.ficheTitle}>{fiche.title}</span>
-                        <span style={styles.ficheDesc}>{fiche.desc}</span>
-                      </div>
-                      <ArrowUpRight size={14} style={{ color: cat.color, flexShrink: 0, opacity: 0.8 }} />
-                    </Link>
-                  ) : (
-                    <div key={fi} style={{ ...styles.fiche, ...styles.ficheLocked }}>
-                      <div style={styles.ficheText}>
-                        <span style={{ ...styles.ficheTitle, color: 'var(--text-muted)' }}>{fiche.title}</span>
-                        <span style={styles.ficheDesc}>{fiche.desc}</span>
-                      </div>
-                      <Lock size={12} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+              {/* Stats */}
+              <div style={styles.stats}>
+                {cat.stats.map((stat, si) => (
+                  <div key={si} style={styles.statRow}>
+                    <div style={{ ...styles.statValue, color: cat.color }}>{stat.value}</div>
+                    <div style={styles.statRight}>
+                      <p style={styles.statLabel}>{stat.label}</p>
+                      <a
+                        href={stat.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={styles.statSource}
+                        className="guide-source-link"
+                      >
+                        {stat.source} <ArrowUpRight size={10} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                      </a>
                     </div>
-                  )
-                )}
+                  </div>
+                ))}
               </div>
 
             </div>
@@ -210,7 +303,7 @@ export default async function GuidePage() {
             </p>
           </div>
           <Link
-            href={`${BLOG}driing-plateforme-vacances-sans-commissions`}
+            href="https://jasonmarinho.fr/blog/driing-plateforme-vacances-sans-commissions"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary"
@@ -223,9 +316,14 @@ export default async function GuidePage() {
       </div>
 
       <style>{`
-        .guide-fiche:hover {
-          background: var(--surface-2) !important;
-          border-color: var(--accent-border) !important;
+        .guide-source-link {
+          color: var(--text-3) !important;
+          text-decoration: none;
+          transition: color 0.15s;
+        }
+        .guide-source-link:hover {
+          color: var(--text-2) !important;
+          text-decoration: underline;
         }
       `}</style>
     </>
@@ -251,21 +349,23 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   cardTitle: { fontFamily: 'Fraunces, serif', fontSize: '17px', fontWeight: 400, color: 'var(--text)', margin: '0 0 3px' },
-  cardSub: { fontSize: '12px', fontWeight: 300, color: 'var(--text-muted)', margin: 0 },
+  cardSub: { fontSize: '12px', fontWeight: 300, color: 'var(--text-2)', margin: 0 },
 
-  fiches: { display: 'flex', flexDirection: 'column', gap: '2px' },
-  fiche: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
-    padding: '11px 12px', borderRadius: '10px',
-    border: '1px solid transparent',
-    textDecoration: 'none',
-    transition: 'background 0.15s, border-color 0.15s',
-    cursor: 'pointer',
-  } as React.CSSProperties,
-  ficheLocked: { opacity: 0.5, cursor: 'default' },
-  ficheText: { display: 'flex', flexDirection: 'column', gap: '2px' },
-  ficheTitle: { fontSize: '13px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.3 },
-  ficheDesc: { fontSize: '11px', fontWeight: 300, color: 'var(--text-muted)', lineHeight: 1.4 },
+  stats: { display: 'flex', flexDirection: 'column', gap: '12px' },
+  statRow: {
+    display: 'flex', alignItems: 'flex-start', gap: '14px',
+    padding: '10px 12px',
+    borderRadius: '10px',
+    background: 'var(--border)',
+  },
+  statValue: {
+    fontSize: '18px', fontWeight: 700, fontVariantNumeric: 'tabular-nums',
+    letterSpacing: '-0.02em', lineHeight: 1.2,
+    minWidth: '90px', flexShrink: 0, paddingTop: '1px',
+  },
+  statRight: { display: 'flex', flexDirection: 'column', gap: '4px', flex: 1, minWidth: 0 },
+  statLabel: { fontSize: '12.5px', fontWeight: 400, color: 'var(--text-2)', margin: 0, lineHeight: 1.5 },
+  statSource: { fontSize: '11px', fontWeight: 400, color: 'var(--text-3)', lineHeight: 1 },
 
   banner: {
     display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap',
