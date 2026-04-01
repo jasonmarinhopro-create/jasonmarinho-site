@@ -1,4 +1,9 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/formations", "destination": "/services/formations", "permanent": true },
+    { "source": "/formations/google-my-business-lcd", "destination": "/services/formations/google-my-business-lcd", "permanent": true },
+    { "source": "/formations/annonce-directe", "destination": "/services/formations/annonce-directe", "permanent": true }
+  ]
 }

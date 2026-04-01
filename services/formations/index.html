@@ -6,14 +6,14 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pour qui | Jason Marinho — Hôtes, Conciergeries, Membres Jason Marinho</title>
-<meta name="description" content="Formations et ressources LCD pour hôtes Airbnb, chambres d'hôtes, gîtes, conciergeries et membres de la plateforme. Découvrez si jasonmarinho.com est fait pour vous.">
+<title>Formation Location Courte Durée | Jason Marinho</title>
+<meta name="description" content="Formations en ligne pour hôtes Airbnb et conciergeries LCD. Google My Business, tarification dynamique, réservation directe. Par Jason Marinho, expert LCD.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://jasonmarinho.com/pour-qui">
-<meta property="og:title" content="Pour qui | Jason Marinho">
-<meta property="og:description" content="Formations et ressources LCD pour hôtes Airbnb, chambres d'hôtes, gîtes, conciergeries et membres de la plateforme.">
+<link rel="canonical" href="https://jasonmarinho.com/services/formations">
+<meta property="og:title" content="Formations LCD | Jason Marinho">
+<meta property="og:description" content="Formations en ligne pour hôtes Airbnb et conciergeries LCD. Google My Business, tarification dynamique, réservation directe.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://jasonmarinho.com/pour-qui">
+<meta property="og:url" content="https://jasonmarinho.com/services/formations">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
@@ -85,7 +85,12 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .h-dot{width:6px;height:6px;background:var(--y);border-radius:50%;animation:blink 2.5s ease-in-out infinite}
 .h-h1{font-family:'Fraunces',serif;font-size:clamp(40px,5.5vw,72px);font-weight:300;line-height:1.05;letter-spacing:-2px;color:#fff;margin-bottom:20px;animation:fu .7s .09s ease both;max-width:720px}
 .h-h1 em{font-style:italic;color:var(--y)}
-.h-sub{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.46);line-height:1.75;max-width:580px;margin-bottom:36px;animation:fu .7s .18s ease both}
+.h-sub{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.46);line-height:1.75;max-width:520px;margin-bottom:36px;animation:fu .7s .18s ease both}
+.h-acts{display:flex;align-items:center;gap:12px;flex-wrap:wrap;animation:fu .7s .27s ease both}
+.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.28)}
+.btn-g{background:transparent;color:rgba(255,255,255,.62);font-family:'Outfit',sans-serif;font-size:15px;font-weight:400;padding:14px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.13);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-g:hover{border-color:rgba(255,255,255,.32);color:#fff}
 
 /* ── SECTIONS ── */
 .sec{padding:clamp(64px,9vw,104px) clamp(16px,5vw,60px)}
@@ -104,41 +109,43 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .sub{font-size:16px;font-weight:300;color:var(--tm);line-height:1.72;max-width:440px;margin-bottom:48px}
 .sub.lt{color:rgba(255,255,255,.38)}
 .sub.ct{text-align:center;margin-left:auto;margin-right:auto}
-.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
-.btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.28)}
-.btn-g{background:transparent;color:rgba(255,255,255,.62);font-family:'Outfit',sans-serif;font-size:15px;font-weight:400;padding:14px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.13);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
-.btn-g:hover{border-color:rgba(255,255,255,.32);color:#fff}
+
+/* ── FORMATIONS ── */
+.f-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px}
 .btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
 .btn-ol:hover{background:var(--g);color:#fff}
+.f-gr{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.f-card{background:var(--w);border-radius:16px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s}
+.f-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}
+.f-th{height:158px;position:relative;display:flex;align-items:center;justify-content:center}
+.f-th i{font-size:52px;color:rgba(255,255,255,.11);position:relative;z-index:2}
+.f-th::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.2))}
+.f-bge{position:absolute;top:12px;right:12px;z-index:3;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:100px}
+.bge-s{background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.28)}
+.bge-i{background:rgba(85,107,47,.28);color:#b4d46e;border:1px solid rgba(85,107,47,.42)}
+.f-card.wip{opacity:.6;pointer-events:none}
+.f-card.wip .f-lk{display:none}
+.f-wip-tag{font-size:11px;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:5px;font-weight:500}
+.f-bd{padding:22px}
+.f-cat{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:7px}
+.f-tt{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.3px;margin-bottom:12px}
+.f-mt{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--tl);margin-bottom:18px}
+.f-mi{display:flex;align-items:center;gap:4px}
+.f-mi i{font-size:13px}
+.f-ft{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--bd)}
+.f-ac{font-size:11.5px;color:var(--tl);font-weight:300;display:flex;align-items:center;gap:4px}
+.f-ac i{font-size:13px;color:var(--ol)}
+.f-lk{font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap .2s}
+.f-card:hover .f-lk{gap:8px}
 
-/* ── AUDIENCE CARDS ── */
-.aud-g{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.aud-card{background:var(--w);border:1px solid var(--bd);border-radius:20px;padding:clamp(28px,3vw,40px);position:relative;transition:box-shadow .25s,transform .25s}
-.aud-card:hover{box-shadow:0 16px 48px rgba(0,76,63,.1);transform:translateY(-3px)}
-.aud-card.featured{border-color:rgba(255,213,107,.3);background:var(--w);box-shadow:0 4px 20px rgba(255,213,107,.08)}
-.aud-card.featured:hover{box-shadow:0 16px 48px rgba(255,213,107,.15);transform:translateY(-3px)}
-.aud-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,213,107,.15);border:1px solid rgba(255,213,107,.3);color:#b8913a;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:20px}
-.aud-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
-.aud-ico i{font-size:26px}
-.aud-ico.green{background:rgba(0,76,63,.08)}
-.aud-ico.green i{color:var(--g)}
-.aud-ico.yellow{background:rgba(255,213,107,.14)}
-.aud-ico.yellow i{color:#b8913a}
-.aud-t{font-family:'Fraunces',serif;font-size:22px;font-weight:400;color:var(--td);margin-bottom:5px;letter-spacing:-.4px}
-.aud-sub{font-size:13px;font-weight:400;color:var(--tl);margin-bottom:16px}
-.aud-d{font-size:14.5px;font-weight:300;color:var(--tm);line-height:1.7;margin-bottom:22px}
-.aud-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-.aud-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:300;color:var(--td);line-height:1.5}
-.aud-chk{width:20px;height:20px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
-.aud-chk.green{background:rgba(0,76,63,.08)}
-.aud-chk.green i{font-size:11px;color:var(--g)}
-.aud-chk.yellow{background:rgba(255,213,107,.15)}
-.aud-chk.yellow i{font-size:11px;color:#b8913a}
-
-/* ── BLOG CTA ── */
-.blog-cta{background:var(--cr);border:1px solid var(--bd);border-radius:18px;padding:40px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
-.blog-cta-text .lbl{margin-bottom:8px}
-.blog-cta-text p{font-size:15px;font-weight:300;color:var(--tm);line-height:1.7;max-width:480px}
+/* ── FEATURES ── */
+.feat-g{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.feat-card{background:var(--cr);border:1px solid var(--bd);border-radius:16px;padding:32px;transition:box-shadow .2s}
+.feat-card:hover{box-shadow:0 8px 24px rgba(0,76,63,.08)}
+.feat-ico{width:48px;height:48px;background:rgba(0,76,63,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.feat-ico i{font-size:24px;color:var(--g)}
+.feat-t{font-family:'Fraunces',serif;font-size:19px;font-weight:400;color:var(--td);margin-bottom:9px;letter-spacing:-.3px}
+.feat-d{font-size:14px;font-weight:300;color:var(--tm);line-height:1.65}
 
 /* ── CTA BANNER ── */
 .cta-s{background:var(--g);padding:clamp(64px,8vw,88px) clamp(16px,5vw,60px);text-align:center;position:relative;overflow:hidden}
@@ -173,15 +180,16 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 @media(max-width:1024px){
   .n-links,.n-right{display:none}
   .hbg{display:flex}
-  .aud-g{grid-template-columns:1fr 1fr}
-  .aud-g .aud-card:last-child{grid-column:1/-1}
+  .f-gr{grid-template-columns:repeat(2,1fr)}
+  .feat-g{grid-template-columns:1fr 1fr}
   .ft-g{grid-template-columns:1fr 1fr;gap:32px}
-  .blog-cta{padding:32px}
 }
 @media(max-width:640px){
-  .aud-g{grid-template-columns:1fr}
-  .aud-g .aud-card:last-child{grid-column:auto}
-  .blog-cta{flex-direction:column;align-items:flex-start;padding:28px 24px}
+  .h-acts{flex-direction:column;align-items:stretch}
+  .h-acts a{justify-content:center}
+  .f-gr{grid-template-columns:1fr}
+  .f-hd{flex-direction:column;align-items:flex-start}
+  .feat-g{grid-template-columns:1fr}
   .ft-g{grid-template-columns:1fr;gap:28px}
   .ft-desc{max-width:100%}
   .ft-bot{flex-direction:column;align-items:flex-start}
@@ -200,124 +208,148 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   <div class="h-inner">
     <div class="h-badge">
       <span class="h-dot"></span>
-      POUR QUI
+      FORMATIONS LCD
     </div>
-    <h1 class="h-h1">Fait pour ceux qui <em>prennent la LCD au sérieux</em></h1>
-    <p class="h-sub">Que tu sois hôte avec une chambre d'hôtes, une conciergerie qui gère plusieurs biens, ou membre de la plateforme — les ressources ici sont pensées pour toi.</p>
-  </div>
-</section>
-
-<!-- AUDIENCE CARDS -->
-<section class="sec wh" id="audiences">
-  <div class="s-in">
-    <div style="max-width:600px;margin-bottom:52px" class="rv">
-      <div class="lbl">Profils</div>
-      <h2 class="h2">Ce site est <em>fait pour toi</em></h2>
-      <p class="sub">Trois profils principaux bénéficient des formations et ressources disponibles ici.</p>
-    </div>
-    <div class="aud-g">
-
-      <!-- Card 1 — Hôtes -->
-      <div class="aud-card rv d1">
-        <div class="aud-ico green">
-          <i class="ph-bold ph-house-line"></i>
-        </div>
-        <div class="aud-t">Hôtes indépendants</div>
-        <div class="aud-sub">Chambres d'hôtes, gîtes, appartements</div>
-        <p class="aud-d">Tu gères ton bien toi-même et tu veux maximiser tes revenus sans y passer tout ton temps. Les formations et gabarits sont faits pour être directement applicables, même si tu démarres.</p>
-        <ul class="aud-list">
-          <li>
-            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Optimiser ta visibilité sur Airbnb
-          </li>
-          <li>
-            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Automatiser les messages voyageurs
-          </li>
-          <li>
-            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Comprendre la tarification dynamique
-          </li>
-        </ul>
-        <a href="/services/formations" class="btn-ol">
-          Voir les formations <i class="ph-bold ph-arrow-right"></i>
-        </a>
-      </div>
-
-      <!-- Card 2 — Conciergeries -->
-      <div class="aud-card rv d2">
-        <div class="aud-ico green">
-          <i class="ph-bold ph-briefcase"></i>
-        </div>
-        <div class="aud-t">Conciergeries</div>
-        <div class="aud-sub">Gestion locative multi-biens</div>
-        <p class="aud-d">Tu gères les biens de plusieurs propriétaires et tu as besoin de process reproductibles, d'outils fiables et de formations pour ton équipe.</p>
-        <ul class="aud-list">
-          <li>
-            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Standardiser les process de ton équipe
-          </li>
-          <li>
-            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Sélectionner les bons outils PMS
-          </li>
-          <li>
-            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Développer ton acquisition client
-          </li>
-        </ul>
-        <a href="/services/formations" class="btn-ol">
-          Voir les formations <i class="ph-bold ph-arrow-right"></i>
-        </a>
-      </div>
-
-      <!-- Card 3 — Membres Jason Marinho (featured) -->
-      <div class="aud-card featured rv d3">
-        <div class="aud-badge">
-          <i class="ph-bold ph-star"></i> Avantagé
-        </div>
-        <div class="aud-ico yellow">
-          <i class="ph-bold ph-lightning"></i>
-        </div>
-        <div class="aud-t">Membres Jason Marinho</div>
-        <div class="aud-sub">Plateforme de réservation directe</div>
-        <p class="aud-d">En tant que membre de la plateforme, tu accèdes à des ressources en priorité et à des conditions préférentielles sur les formations et partenaires. La communauté Driing est au cœur de ce projet.</p>
-        <ul class="aud-list">
-          <li>
-            <span class="aud-chk yellow"><i class="ph-bold ph-check"></i></span>
-            Accès prioritaire aux nouvelles formations
-          </li>
-          <li>
-            <span class="aud-chk yellow"><i class="ph-bold ph-check"></i></span>
-            Conditions négociées chez les partenaires
-          </li>
-          <li>
-            <span class="aud-chk yellow"><i class="ph-bold ph-check"></i></span>
-            Support direct de Jason
-          </li>
-        </ul>
-        <a href="https://driing.fr" target="_blank" class="btn-p" style="background:var(--y);color:var(--gd)">
-          Rejoindre Driing <i class="ph-bold ph-arrow-square-out"></i>
-        </a>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- PAS SÛR DE TE RECONNAÎTRE -->
-<section class="sec cr">
-  <div class="s-in">
-    <div class="blog-cta rv">
-      <div class="blog-cta-text">
-        <div class="lbl">Pas encore convaincu ?</div>
-        <h2 class="h2" style="font-size:clamp(24px,2.8vw,36px);margin-bottom:10px">Pas sûr de <em>te reconnaître</em> ?</h2>
-        <p>Si tu débutes en LCD ou que tu cherches juste des ressources gratuites, le blog est le meilleur endroit pour commencer. Des articles concrets, sans inscription requise.</p>
-      </div>
-      <a href="/blog" class="btn-ol" style="flex-shrink:0">
-        Lire le blog <i class="ph-bold ph-arrow-right"></i>
+    <h1 class="h-h1">Des formations concrètes pour <em>développer ton activité</em></h1>
+    <p class="h-sub">Chaque formation est construite à partir de cas réels vécus sur le terrain. Pas de théorie inutile, des étapes directement applicables.</p>
+    <div class="h-acts">
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">
+        Créer un compte gratuit <i class="ph-bold ph-arrow-right"></i>
+      </a>
+      <a href="#formations" class="btn-g">
+        Voir les formations <i class="ph-bold ph-arrow-down"></i>
       </a>
     </div>
+  </div>
+</section>
+
+<!-- FORMATIONS GRID -->
+<section class="sec cr" id="formations">
+  <div class="s-in">
+    <div class="f-hd rv">
+      <div>
+        <div class="lbl">Catalogue</div>
+        <h2 class="h2">Toutes les <em>formations</em></h2>
+      </div>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">
+        Créer un compte <i class="ph-bold ph-arrow-right"></i>
+      </a>
+    </div>
+    <div class="f-gr">
+
+      <!-- Card 1 — Disponible -->
+      <div class="f-card rv d1">
+        <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
+          <i class="ph ph-map-pin"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Visibilité locale</div>
+          <div class="f-tt">Google My Business pour la LCD</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 7 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h30</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 12 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/formations/google-my-business-lcd/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 — Disponible -->
+      <div class="f-card rv d2">
+        <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
+          <i class="ph ph-megaphone"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Annonce directe</div>
+          <div class="f-tt">Créer une annonce directe qui convertit</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 6 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 4h30</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 14 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/formations/annonce-directe/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 — WIP -->
+      <div class="f-card wip rv d3">
+        <div class="f-th" style="background:linear-gradient(135deg,#0d1a0b 0%,#1a2e17 100%)">
+          <i class="ph ph-airplane-tilt"></i>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Acquisition directe</div>
+          <div class="f-tt">Attirer des voyageurs sans Airbnb</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 5 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h30</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 11 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-wip-tag"><i class="ph ph-clock"></i> Bientôt disponible</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI CES FORMATIONS -->
+<section class="sec wh">
+  <div class="s-in">
+    <div style="max-width:600px;margin-bottom:52px" class="rv">
+      <div class="lbl">Approche</div>
+      <h2 class="h2">Pourquoi ces <em>formations</em></h2>
+      <p class="sub">Pas de remplissage, pas de généralités. Chaque formation est construite pour être actionnée dès la première leçon.</p>
+    </div>
+    <div class="feat-g">
+      <div class="feat-card rv d1">
+        <div class="feat-ico">
+          <i class="ph-bold ph-shovel"></i>
+        </div>
+        <div class="feat-t">Basées sur le terrain</div>
+        <p class="feat-d">Chaque module part de situations réelles vécues avec des hôtes et conciergeries. Ce qui marche dans la pratique, pas dans les manuels.</p>
+      </div>
+      <div class="feat-card rv d2">
+        <div class="feat-ico">
+          <i class="ph-bold ph-infinity"></i>
+        </div>
+        <div class="feat-t">Accessibles à vie</div>
+        <p class="feat-d">Une fois inscrit, tu accèdes à la formation pour toujours — mises à jour incluses. Reviens quand tu veux, au rythme qui te convient.</p>
+      </div>
+      <div class="feat-card rv d3">
+        <div class="feat-ico">
+          <i class="ph-bold ph-headset"></i>
+        </div>
+        <div class="feat-t">Support inclus</div>
+        <p class="feat-d">Des questions après une leçon ? Le support est inclus. Pas de communauté fantôme — des réponses utiles quand tu en as besoin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-s">
+  <div class="cta-gw"></div>
+  <div class="cta-in rv">
+    <div class="lbl lt ct">Passer à l'action</div>
+    <h2 class="h2 lt ct">Prêt à développer ton activité LCD&nbsp;?</h2>
+    <p class="sub lt ct" style="margin-bottom:28px">Accède à la plateforme, commence la formation disponible et rejoins les hôtes qui passent à l'étape suivante.</p>
+    <a href="https://app.jasonmarinho.com/auth/register" class="btn-p" style="margin:0 auto;display:inline-flex">
+      Créer un compte gratuit <i class="ph-bold ph-arrow-right"></i>
+    </a>
   </div>
 </section>
 
