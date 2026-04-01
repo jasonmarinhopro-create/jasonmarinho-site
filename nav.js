@@ -158,6 +158,9 @@
       /* ── Qui suis-je ── */
       + '<li><a href="/qui-suis-je" class="n-link">Qui suis-je</a></li>'
 
+      /* ── Contact ── */
+      + '<li><a href="/contact" class="n-link">Contact</a></li>'
+
       /* ── Tarifs ── */
       + '<li><a href="/tarifs" class="n-link">Tarifs</a></li>'
 
@@ -196,6 +199,7 @@
 
     + '<a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a>'
     + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
+    + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
     + '<a href="/tarifs"><i class="ph ph-tag"></i>Tarifs</a>'
 
     + '<div class="mob-ctas">'
