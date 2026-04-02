@@ -10,6 +10,9 @@ jobs:
       run:
         working-directory: jason-app
 
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
