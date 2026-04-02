@@ -1,0 +1,1892 @@
+[
+  {
+    "id": "conf-01",
+    "categorie": "confirmation",
+    "categorieLabel": "Confirmation de réservation",
+    "titre": "Confirmation Standard",
+    "variante": "Airbnb",
+    "timing": "Immédiatement après la réservation confirmée",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "confirmation",
+      "airbnb",
+      "debutant"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci pour votre réservation — j'ai hâte de vous accueillir !\n\nVotre séjour est bien confirmé :\n📅 Arrivée : [Date d'arrivée] à partir de [Heure check-in]\n📅 Départ : [Date de départ] avant [Heure check-out]\n🏠 [Nom du logement], [Ville]\n\nJe vous enverrai les instructions complètes d'arrivée la veille de votre séjour. D'ici là, n'hésitez pas si vous avez des questions.\n\nÀ très vite !\n[Prénom hôte]",
+    "corps_en": "Hi [First name] 👋\n\nThank you for your booking — I'm really looking forward to welcoming you!\n\nYour stay is confirmed:\n📅 Check-in: [Date] from [Time]\n📅 Check-out: [Date] before [Time]\n🏠 [Property name], [City]\n\nI'll send you full arrival instructions the day before your stay. Feel free to reach out if you have any questions in the meantime.\n\nSee you soon!\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Date d'arrivée]",
+      "[Heure check-in]",
+      "[Date de départ]",
+      "[Heure check-out]",
+      "[Nom du logement]",
+      "[Ville]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "conf-02",
+    "categorie": "confirmation",
+    "categorieLabel": "Confirmation de réservation",
+    "titre": "Confirmation Chaleureuse",
+    "variante": "Chambres d'hôtes",
+    "timing": "Immédiatement après la réservation confirmée",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "confirmation",
+      "chambres-dhotes",
+      "chaleureux"
+    ],
+    "corps_fr": "Bonjour,\n\nQuelle bonne nouvelle ! Votre réservation est confirmée et je suis vraiment ravi(e) de vous accueillir chez moi.\n\n📅 Vous arrives le [Date] à partir de [Heure]\n📅 Vous repars le [Date] avant [Heure]\n🏡 [Nom de la chambre / logement]\n\nQuelques mots sur votre séjour : [Description courte de l'expérience]\n\nLa veille de votre arrivée, je vous envoie toutes les informations pratiques. N'hésitez pas à me poser des questions d'ici là — je réponds toujours rapidement.\n\nÀ bientôt !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Date]",
+      "[Heure]",
+      "[Nom de la chambre]",
+      "[Description courte]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "conf-03",
+    "categorie": "confirmation",
+    "categorieLabel": "Confirmation de réservation",
+    "titre": "Confirmation Professionnelle",
+    "variante": "Booking / Direct",
+    "timing": "Dans l'heure suivant la réservation",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "confirmation",
+      "booking",
+      "direct",
+      "professionnel"
+    ],
+    "corps_fr": "Bonjour,\n\nJe confirme bien la réservation de [Nom du logement] du [Date arrivée] au [Date départ].\n\nRécapitulatif :\n• Arrivée : [Date] à partir de [Heure]\n• Départ : [Date] avant [Heure]\n• Nombre d'occupants : [Nombre]\n• Montant total : [Montant] €\n\nLes instructions d'accès vous seront envoyées 24h avant votre arrivée. Pour toute question, je suis joignable au [Téléphone] ou par retour de message.\n\nCordialement,\n[Prénom hôte]",
+    "corps_en": "Hello [First name],\n\nI confirm your booking at [Property name] from [Date] to [Date].\n\nSummary:\n• Check-in: [Date] from [Time]\n• Check-out: [Date] before [Time]\n• Guests: [Number]\n• Total amount: [Amount] €\n\nFull access instructions will be sent 24 hours before your arrival. For any questions, feel free to contact me at [Phone] or reply to this message.\n\nBest regards,\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Nom du logement]",
+      "[Date arrivée]",
+      "[Date départ]",
+      "[Heure]",
+      "[Nombre]",
+      "[Montant]",
+      "[Téléphone]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "conf-04",
+    "categorie": "confirmation",
+    "categorieLabel": "Confirmation de réservation",
+    "titre": "Confirmation avec règlement intérieur",
+    "variante": "Toutes plateformes",
+    "timing": "Immédiatement après la réservation",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "confirmation",
+      "reglement",
+      "prevention"
+    ],
+    "corps_fr": "Bonjour,\n\nVotre réservation est bien confirmée, merci !\n\n📅 [Date arrivée] → [Date départ]\n🏠 [Nom logement], [Ville]\n👥 [Nombre] voyageurs\n\nAvant votre arrivée, je vous invite à prendre connaissance du règlement intérieur ci-joint. Il contient quelques règles simples pour que tout le monde passe un excellent séjour — notamment sur le niveau sonore après [Heure] et la politique concernant les animaux / fumeurs.\n\nLes instructions complètes d'accès arrivent la veille. À bientôt !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Date arrivée]",
+      "[Date départ]",
+      "[Nom logement]",
+      "[Ville]",
+      "[Nombre]",
+      "[Heure]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "checkin-01",
+    "categorie": "checkin",
+    "categorieLabel": "Instructions de check-in",
+    "titre": "Check-in Boîte à clés",
+    "variante": "Boîte à clés",
+    "timing": "J-1, 10h00",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "checkin",
+      "boite-a-cles",
+      "autonome"
+    ],
+    "corps_fr": "Bonjour,\n\nVotre séjour commence demain, j'espère que vous êtes prêt(e) !\n\n📍 Adresse : [Adresse complète]\n🔑 Boîte à clés : [Description localisation]\n🔢 Code : [Code à 4 chiffres]\n🕐 Check-in à partir de [Heure]\n\nÀ l'intérieur, vous trouveras un guide complet avec toutes les infos pratiques (Wi-Fi, équipements, recommandations).\n\nUne question ? Je suis joignable ici ou au [Téléphone].\n\nBelle arrivée ! 🙌\n[Prénom hôte]",
+    "corps_en": "Hi [First name] 👋\n\nYour stay starts tomorrow — exciting!\n\n📍 Address: [Full address]\n🔑 Key box: [Location description]\n🔢 Code: [4-digit code]\n🕐 Check-in from [Time]\n\nInside you'll find a full guide with all practical info (Wi-Fi, appliances, local tips).\n\nAny questions? Reach me here or at [Phone].\n\nSafe travels! 🙌\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Adresse complète]",
+      "[Description localisation]",
+      "[Code]",
+      "[Heure]",
+      "[Téléphone]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "checkin-02",
+    "categorie": "checkin",
+    "categorieLabel": "Instructions de check-in",
+    "titre": "Check-in Serrure connectée",
+    "variante": "Serrure connectée",
+    "timing": "J-1, 10h00",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "checkin",
+      "serrure-connectee",
+      "autonome",
+      "code-unique"
+    ],
+    "corps_fr": "Bonjour,\n\nTout est prêt pour votre arrivée demain !\n\n📍 Adresse : [Adresse complète]\n🔐 Serrure connectée : pas de clé à récupérer !\n🔢 Votre code personnel : [Code unique]\n🕐 Valide à partir de [Heure d'arrivée] jusqu'au [Date départ] à [Heure check-out]\n\nPour ouvrir : saisis le code directement sur le pavé numérique de la serrure. La porte s'ouvre automatiquement.\n\n⚠️ Ce code est personnel et valable uniquement pour votre séjour — ne le partage pas.\n\nÀ demain !\n[Prénom hôte]",
+    "corps_en": "Hi [First name] 😊\n\nEverything is ready for your arrival tomorrow!\n\n📍 Address: [Full address]\n🔐 Smart lock — no key pickup needed!\n🔢 Your personal code: [Unique code]\n🕐 Valid from [Check-in time] until [Checkout date] at [Checkout time]\n\nTo open: enter the code on the keypad. The door unlocks automatically.\n\n⚠️ This code is personal and valid for your stay only — please don't share it.\n\nSee you tomorrow!\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Adresse complète]",
+      "[Code unique]",
+      "[Heure d'arrivée]",
+      "[Date départ]",
+      "[Heure check-out]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "checkin-03",
+    "categorie": "checkin",
+    "categorieLabel": "Instructions de check-in",
+    "titre": "Check-in Accueil physique",
+    "variante": "Accueil en personne",
+    "timing": "J-1, 10h00",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "checkin",
+      "accueil-physique",
+      "en-personne"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'ai hâte de vous accueillir demain !\n\n📍 Adresse : [Adresse complète]\n🤝 Je vous accueille en personne à partir de [Heure]\n📞 Mon numéro : [Téléphone] — appelle-moi 15 min avant votre arrivée\n\nComment venir :\n🚇 Métro : [Station + ligne]\n🚗 Parking : [Info parking]\n🚌 Bus : [Ligne + arrêt]\n\nÀ demain !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Adresse complète]",
+      "[Heure]",
+      "[Téléphone]",
+      "[Station métro]",
+      "[Info parking]",
+      "[Bus]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "checkin-04",
+    "categorie": "checkin",
+    "categorieLabel": "Instructions de check-in",
+    "titre": "Check-in Tardif",
+    "variante": "Arrivée après 20h",
+    "timing": "Jour J, 17h00 si arrivée tardive",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "checkin",
+      "tardif",
+      "nuit",
+      "autonome"
+    ],
+    "corps_fr": "Bonjour,\n\nJe vois que vous arrives ce soir — pas de souci, tout est prévu !\n\n📍 Adresse : [Adresse complète]\n🔑 Boîte à clés : [Localisation]\n🔢 Code : [Code]\n\nLe logement est entièrement prêt. Vous trouveras :\n✅ Les lumières du couloir allumées pour faciliter votre arrivée\n✅ [Petite attention] sur le comptoir\n✅ Le guide avec toutes les infos à l'intérieur\n\nSi vous avez le moindre problème à l'arrivée, je suis joignable au [Téléphone] jusqu'à [Heure] et de nouveau à partir de [Heure] demain matin.\n\nBonne route !\n[Prénom hôte]",
+    "corps_en": "Hi [First name],\n\nI see you're arriving late tonight — no worries, everything is ready!\n\n📍 Address: [Full address]\n🔑 Key box: [Location]\n🔢 Code: [Code]\n\nThe property is all set. You'll find:\n✅ Hallway lights on for easy arrival\n✅ [Small welcome gift] on the counter\n✅ The full guide inside\n\nIf you run into any issues, reach me at [Phone] until [Time] and again from [Time] tomorrow morning.\n\nSafe travels!\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Adresse complète]",
+      "[Localisation boîte]",
+      "[Code]",
+      "[Petite attention]",
+      "[Téléphone]",
+      "[Heure]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "checkin-05",
+    "categorie": "checkin",
+    "categorieLabel": "Instructions de check-in",
+    "titre": "Check-in Conciergerie",
+    "variante": "Au nom du propriétaire",
+    "timing": "J-1, 10h00",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "checkin",
+      "conciergerie",
+      "professionnel"
+    ],
+    "corps_fr": "Bonjour,\n\nJe suis [Prénom conciergerie], en charge de la gestion de [Nom logement] pour le compte du propriétaire. Tout est prêt pour votre arrivée !\n\n📍 Adresse : [Adresse complète]\n🔑 Accès : [Mode d'accès]\n🔢 Code : [Code]\n🕐 Check-in à partir de [Heure]\n\nPour toute question pendant votre séjour, je suis votre interlocuteur(trice) direct(e) :\n📞 [Téléphone conciergerie]\n📧 [Email conciergerie]\n\nLe logement est entièrement équipé. Un guide d'accueil complet vous attend à l'intérieur.\n\nExcellent séjour !\n[Prénom conciergerie]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Prénom conciergerie]",
+      "[Nom logement]",
+      "[Adresse complète]",
+      "[Mode d'accès]",
+      "[Code]",
+      "[Heure]",
+      "[Téléphone conciergerie]",
+      "[Email conciergerie]"
+    ]
+  },
+  {
+    "id": "bienvenue-01",
+    "categorie": "bienvenue",
+    "categorieLabel": "Message de bienvenue",
+    "titre": "Bienvenue Court",
+    "variante": "Court",
+    "timing": "Jour J, à l'heure estimée d'arrivée",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "bienvenue",
+      "court",
+      "wifi"
+    ],
+    "corps_fr": "Bonjour,\n\nBienvenue ! 🎉\n\nJ'espère que vous êtes bien installé(e). Le Wi-Fi est [Nom réseau] / mot de passe : [Mot de passe].\n\nN'hésitez pas si vous avez besoin de quoi que ce soit — je réponds vite.\n\nPassez un excellent séjour ! 😊\n[Prénom hôte]",
+    "corps_en": "Welcome [First name]! 🎉\n\nHope you're settling in nicely. Wi-Fi network: [Name] / password: [Password].\n\nDon't hesitate to reach out if you need anything — I reply quickly.\n\nEnjoy your stay! 😊\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Nom réseau]",
+      "[Mot de passe]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "bienvenue-02",
+    "categorie": "bienvenue",
+    "categorieLabel": "Message de bienvenue",
+    "titre": "Bienvenue Complet",
+    "variante": "Complet",
+    "timing": "Jour J, 1h après l'heure de check-in",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "bienvenue",
+      "complet",
+      "wifi",
+      "recommandations"
+    ],
+    "corps_fr": "Bonjour,\n\nBienvenue dans [Nom logement] ! J'espère que votre arrivée s'est bien passée.\n\nQuelques infos pratiques pour bien démarrer :\n\n📶 Wi-Fi : [Nom réseau] | Mot de passe : [Mot de passe]\n🌡️ Chauffage/clim : [Instructions courtes]\n📺 Télé : [Instructions courtes]\n🧺 Machine à laver : [Localisation + instructions]\n\n🗑️ Tri des déchets :\n• Jaune : emballages / plastique\n• Vert : verre\n• Gris : ordures ménagères\n[Localisation des poubelles]\n\n🍽️ Mes adresses préférées dans le quartier :\n• [Restaurant 1] — [Type cuisine, prix]\n• [Restaurant 2] — [Type cuisine, prix]\n• [Café] — idéal pour le matin\n\nUne question ? Je suis là. Belle suite de séjour ! 🙌\n[Prénom hôte]",
+    "corps_en": "Hi [First name] 😊\n\nWelcome to [Property name]! Hope your arrival went smoothly.\n\nA few practical tips to get started:\n\n📶 Wi-Fi: [Network name] | Password: [Password]\n🌡️ Heating/AC: [Short instructions]\n📺 TV: [Short instructions]\n🧺 Washing machine: [Location + short instructions]\n\n🗑️ Recycling:\n• Yellow bin: packaging / plastic\n• Green bin: glass\n• Grey bin: general waste\n[Bin location]\n\n🍽️ My favourite spots nearby:\n• [Restaurant 1] — [Cuisine type, price range]\n• [Restaurant 2] — [Cuisine type, price range]\n• [Café] — great for breakfast\n\nAny questions? I'm here. Enjoy! 🙌\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Nom logement]",
+      "[Nom réseau]",
+      "[Mot de passe]",
+      "[Instructions chauffage]",
+      "[Instructions TV]",
+      "[Localisation machine]",
+      "[Localisation poubelles]",
+      "[Restaurant 1]",
+      "[Restaurant 2]",
+      "[Café]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "bienvenue-03",
+    "categorie": "bienvenue",
+    "categorieLabel": "Message de bienvenue",
+    "titre": "Bienvenue Personnalisé",
+    "variante": "Occasion spéciale",
+    "timing": "Jour J, à l'heure estimée d'arrivée",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "bienvenue",
+      "personnalise",
+      "anniversaire",
+      "lune-de-miel",
+      "famille"
+    ],
+    "corps_fr": "Bonjour,\n\nBienvenue ! J'espère que [occasion — ex : ce weekend d'anniversaire / cette lune de miel / ces vacances en famille] sera exactement ce dont vous avez besoin.\n\nJ'ai préparé quelques petites attentions pour vous : [ex : une bouteille de rosé au frigo / des chocolats sur la table].\n\nLe Wi-Fi : [Nom réseau] / [Mot de passe]\n\nPour le reste, tout est dans le guide à l'intérieur. Et si vous avez envie de recommandations personnalisées, demandez-moi — j'ai sûrement la bonne adresse.\n\nProfitez bien ! 🥂\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Occasion]",
+      "[Attention]",
+      "[Nom réseau]",
+      "[Mot de passe]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "checkout-01",
+    "categorie": "checkout",
+    "categorieLabel": "Instructions de check-out",
+    "titre": "Check-out Standard",
+    "variante": "Standard",
+    "timing": "Veille du départ, 18h00",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "checkout",
+      "standard"
+    ],
+    "corps_fr": "Bonjour,\n\nVotre séjour touche à sa fin — j'espère que vous avez passé un excellent moment !\n\nPour le départ demain avant [Heure] :\n\n✅ Déposez les clés [Instructions]\n✅ Videz le réfrigérateur de vos affaires\n✅ Jetez les poubelles si besoin [Localisation]\n✅ Refermez bien les fenêtres\n✅ Pas besoin de faire le lit — l'équipe de ménage s'en charge\n\nMerci pour votre séjour ! Si vous avez deux minutes, un avis sur [Plateforme] me ferait vraiment plaisir. 🙏\n\nÀ bientôt peut-être !\n[Prénom hôte]",
+    "corps_en": "Hi [First name] 👋\n\nYour stay is coming to an end — hope you had a wonderful time!\n\nFor check-out tomorrow before [Time]:\n\n✅ Leave the keys [Instructions]\n✅ Clear the fridge of your belongings\n✅ Take out the bins if needed [Location]\n✅ Close all windows\n✅ No need to make the bed — the cleaning team handles that\n\nThank you for your stay! If you have a moment, a review on [Platform] would mean a lot. 🙏\n\nHope to see you again!\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Heure]",
+      "[Instructions clés]",
+      "[Localisation poubelles]",
+      "[Plateforme]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "checkout-02",
+    "categorie": "checkout",
+    "categorieLabel": "Instructions de check-out",
+    "titre": "Check-out Strict",
+    "variante": "Strict avec heure ferme",
+    "timing": "Veille du départ, 18h00",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "checkout",
+      "strict",
+      "heure-ferme"
+    ],
+    "corps_fr": "Bonjour,\n\nVotre séjour se termine demain. Je vous rappelle que le check-out doit être effectué avant [Heure] — un prochain voyageur arrive dans l'après-midi.\n\nÀ faire avant de partir :\n• Clés déposées : [Instructions]\n• Réfrigérateur vidé\n• Poubelles sorties [Localisation]\n• Fenêtres fermées\n• Thermostat réglé sur [Température]\n\nTout retard entraîne des frais de [Montant] € par heure supplémentaire, comme précisé dans le règlement.\n\nMerci pour votre compréhension et j'espère que vous avez passé un agréable séjour.\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Heure]",
+      "[Instructions clés]",
+      "[Localisation poubelles]",
+      "[Température]",
+      "[Montant]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "checkout-03",
+    "categorie": "checkout",
+    "categorieLabel": "Instructions de check-out",
+    "titre": "Check-out Flexible",
+    "variante": "Flexible avec option late",
+    "timing": "J-1, 18h00",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "checkout",
+      "flexible",
+      "late-checkout"
+    ],
+    "corps_fr": "Bonjour,\n\nLe séjour se termine demain — j'espère que vous avez passé un super moment !\n\nEn principe, le check-out est avant [Heure]. Si vous avez besoin d'un peu plus de temps, dis-le moi ce soir — je verrai ce que je peux faire selon le planning du lendemain.\n\nPour partir :\n✅ Clés [Instructions]\n✅ Frigo vidé de vos affaires\n✅ Fenêtres fermées\n\nC'est tout ! Pas besoin de faire le ménage, pas besoin de faire le lit.\n\nSi vous avez quelques secondes, un petit avis sur [Plateforme] me ferait vraiment plaisir. Merci et à bientôt ! 🙌\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Heure]",
+      "[Instructions clés]",
+      "[Plateforme]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "avis-01",
+    "categorie": "avis",
+    "categorieLabel": "Demande d'avis",
+    "titre": "Demande d'avis J+1",
+    "variante": "Airbnb — J+1",
+    "timing": "Lendemain du départ, 10h00",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "avis",
+      "airbnb",
+      "j+1"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'espère que vous êtes bien rentré(e) ! Merci encore pour votre séjour à [Nom logement].\n\nSi vous avez eu une bonne expérience, un avis sur Airbnb m'aiderait vraiment — ça prend moins de 2 minutes et ça compte beaucoup pour moi. 🙏\n\nJ'ai déjà laissé le mien de votre côté.\n\nÀ bientôt peut-être !\n[Prénom hôte]",
+    "corps_en": "Hi [First name] 👋\n\nHope you made it home safely! Thanks again for staying at [Property name].\n\nIf you enjoyed your stay, a review on Airbnb would mean a lot — it takes less than 2 minutes and really makes a difference. 🙏\n\nI've already left mine for you.\n\nHope to see you again!\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Nom logement]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "avis-02",
+    "categorie": "avis",
+    "categorieLabel": "Demande d'avis",
+    "titre": "Demande d'avis J+3",
+    "variante": "J+3 — Relance si pas d'avis",
+    "timing": "J+3 après départ si aucun avis",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "avis",
+      "relance",
+      "j+3"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'espère que tout va bien ! Je me permets de revenir vers toi — vous n'as pas encore laissé d'avis pour votre séjour à [Nom logement].\n\nSi votre séjour vous a plu, quelques mots sur [Plateforme] me feraient vraiment plaisir et aideraient les prochains voyageurs à choisir en confiance.\n\nMerci d'avance, et bonne continuation !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Nom logement]",
+      "[Plateforme]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "avis-03",
+    "categorie": "avis",
+    "categorieLabel": "Demande d'avis",
+    "titre": "Relance Douce",
+    "variante": "Dernier message J+7",
+    "timing": "J+7 si toujours pas d'avis",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "avis",
+      "relance-douce",
+      "j+7",
+      "dernier-message"
+    ],
+    "corps_fr": "Bonjour,\n\nPetit mot rapide — c'est mon dernier message, promis ! Si vous avez quelques secondes pour laisser un avis sur [Plateforme], ça compte vraiment pour moi et pour les futurs voyageurs.\n\nEt si quelque chose ne vous a pas plu, vous pouvez aussi me le dire directement — je préfère améliorer les choses plutôt qu'avoir une mauvaise surprise dans un avis public.\n\nMerci pour tout ! 🙏\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Plateforme]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "avis-04",
+    "categorie": "avis",
+    "categorieLabel": "Demande d'avis",
+    "titre": "Demande d'avis Booking",
+    "variante": "Booking.com",
+    "timing": "J+1 après le départ",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "avis",
+      "booking"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'espère que votre retour s'est bien passé. Merci d'avoir choisi [Nom logement] pour votre séjour.\n\nBooking.com vous a probablement déjà envoyé une invitation à laisser un avis — si vous avez un moment, vos retours m'aident à améliorer le logement et rassurent les futurs voyageurs dans leur choix.\n\nMerci et à bientôt peut-être !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Nom logement]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "avis-05",
+    "categorie": "avis",
+    "categorieLabel": "Demande d'avis",
+    "titre": "Demande d'avis Google",
+    "variante": "Réservation directe",
+    "timing": "J+1 après le départ",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "avis",
+      "google",
+      "direct",
+      "driing"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci encore pour votre séjour ! J'espère que vous avez passé un excellent moment.\n\nComme vous avez réservé directement avec moi, il n'y a pas de plateforme pour laisser un avis — mais si vous voulez soutenir mon activité, un avis Google m'aiderait énormément : [Lien Google My Business]\n\nÇa prend 30 secondes et c'est le meilleur moyen de me remercier. 😊\n\nÀ bientôt !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Lien Google My Business]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "avis-06",
+    "categorie": "avis",
+    "categorieLabel": "Demande d'avis",
+    "titre": "Demande d'avis après incident résolu",
+    "variante": "Après incident géré",
+    "timing": "J+1 si incident résolu pendant le séjour",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "avis",
+      "incident",
+      "compensation"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'espère que malgré [incident] du début, la suite du séjour s'est bien passée.\n\nJe suis sincèrement désolé(e) pour ce désagrément et j'ai déjà fait le nécessaire pour que ça n'arrive plus.\n\nSi vous vous sens à l'aise pour laisser un avis malgré tout, je serais touché(e) que vous mentionnes comment la situation a été gérée — c'est souvent ce qui rassure le plus les futurs voyageurs.\n\nMerci pour votre compréhension. 🙏\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Incident]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-01",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Wi-Fi en panne",
+    "variante": "Panne technique Wi-Fi",
+    "timing": "Dès que le voyageur signale le problème",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "probleme",
+      "wifi",
+      "technique",
+      "urgent"
+    ],
+    "corps_fr": "Bonjour,\n\nDésolé(e) pour ce problème ! Voici ce que vous pouvez essayer pour relancer le Wi-Fi :\n\n1. Localisez la box internet : [Description localisation]\n2. Débranchez-la complètement de la prise\n3. Attendez 30 secondes\n4. Rebranchez et attends 2 minutes que la connexion se rétablisse\n\nSi ça ne fonctionne toujours pas, appelle-moi directement au [Téléphone] — on trouvera une solution ensemble.\n\nDésolé encore pour la gêne ! 🙏\n[Prénom hôte]",
+    "corps_en": "Hi [First name],\n\nSorry about this! Here's what you can try to restart the Wi-Fi:\n\n1. Find the router: [Location description]\n2. Unplug it completely from the wall\n3. Wait 30 seconds\n4. Plug it back in and wait 2 minutes for the connection to reset\n\nIf it still doesn't work, call me directly at [Phone] — we'll sort it out.\n\nSorry for the inconvenience! 🙏\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Description localisation box]",
+      "[Téléphone]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-02",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Problème chauffage / climatisation",
+    "variante": "Panne chauffage ou clim",
+    "timing": "Dès que le voyageur signale le problème",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "chauffage",
+      "climatisation",
+      "technique"
+    ],
+    "corps_fr": "Bonjour,\n\nVraiment désolé(e) pour ce problème de [chauffage/climatisation] ! Voici comment ça fonctionne :\n\n[Instructions spécifiques à l'appareil]\n\nSi le problème persiste après avoir essayé ça :\n• Vérifiez que le disjoncteur [Numéro/localisation] est bien enclenché\n• Appelle-moi au [Téléphone] — je trouve une solution rapidement\n\nEn attendant, vous trouveras [couvertures supplémentaires / ventilateur] dans [Localisation].\n\nVraiment toutes mes excuses. 🙏\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Chauffage/climatisation]",
+      "[Instructions]",
+      "[Numéro disjoncteur]",
+      "[Téléphone]",
+      "[Solution temporaire]",
+      "[Localisation]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-03",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Problème de ménage à l'arrivée",
+    "variante": "Ménage insuffisant signalé",
+    "timing": "Dès que le voyageur signale le problème",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "menage",
+      "propreté",
+      "urgent"
+    ],
+    "corps_fr": "Bonjour,\n\nJe suis vraiment désolé(e) — ce n'est pas l'accueil que vous mérites.\n\n[Si vous pouvez envoyer quelqu'un]\nMon équipe passera dans [Durée]. Est-ce que [Heure] vous convient ?\n\n[Si vous ne peux pas envoyer quelqu'un]\nJe vous propose [Compensation — ex : remboursement des frais de ménage / avoir pour un prochain séjour].\n\nEncore toutes mes excuses. 🙏\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Durée]",
+      "[Heure]",
+      "[Compensation]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-04",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Retard de check-in voyageur",
+    "variante": "Voyageur en retard",
+    "timing": "Quand le voyageur prévient d'un retard",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "retard",
+      "checkin"
+    ],
+    "corps_fr": "Bonjour,\n\nPas de problème du tout pour le retard ! Votre logement est prêt et vous attend.\n\n[Si boîte à clés / serrure connectée]\nVous peux arriver quand vous voulez — les accès fonctionnent 24h/24. Le code reste valide : [Code].\n\n[Si accueil physique prévu]\nPrévenez-moi simplement quand vous approches pour que je sois là à votre arrivée.\n\nBon voyage et à tout à l'heure !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Code]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-05",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Voyageur signale un dégât préexistant",
+    "variante": "Dégât non causé par le voyageur",
+    "timing": "Dès que le voyageur signale",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "degat",
+      "litige"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci de m'avoir prévenu(e) — j'apprécie vraiment la transparence.\n\nEst-ce que vous pouvez me faire quelques photos du problème pour que j'évalue ça ? Je vous confirme rapidement si c'est quelque chose de préexistant ou si une intervention est nécessaire pendant votre séjour.\n\nEn tout cas, aucune inquiétude de votre part — ça ne changera rien à votre séjour.\n\nMerci encore !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-06",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Plainte pour le bruit",
+    "variante": "Bruit extérieur ou voisins",
+    "timing": "Dès réception de la plainte",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "bruit",
+      "voisins"
+    ],
+    "corps_fr": "Bonjour,\n\nJe suis vraiment désolé(e) pour ce dérangement — vous avez tout à fait raison de me le signaler.\n\n[Si bruit extérieur]\nMalheureusement, le bruit de [Source] est indépendant de ma volonté. Vous trouveras des bouchons d'oreille dans [Localisation]. Je peux aussi vous proposer [Compensation].\n\n[Si bruit maîtrisable]\nJe contacte immédiatement [le voisin / le gardien] pour régler ça. Tiens-moi au courant si ça continue.\n\nEncore toutes mes excuses pour la gêne. 🙏\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Source bruit]",
+      "[Localisation bouchons]",
+      "[Compensation]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-07",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Demande de remboursement injustifiée",
+    "variante": "Refus poli et factuel",
+    "timing": "Après analyse de la demande",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "remboursement",
+      "litige",
+      "refus"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci d'avoir pris le temps de me contacter.\n\nJ'ai bien pris en compte votre demande. Après vérification, la situation décrite ne correspond pas à ce que j'ai constaté de mon côté — voici ce que j'ai pour preuve : [photos de l'état du logement / échanges de messages].\n\nJe reste bien sûr ouvert(e) à la discussion si vous avez des éléments complémentaires à me partager.\n\nCordialement,\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Preuves]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-08",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Dépassement du nombre d'occupants",
+    "variante": "Occupants non déclarés",
+    "timing": "Dès que tu découvres la situation",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "occupants",
+      "reglement"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'ai constaté que le logement accueille plus de personnes que ce qui a été réservé ([Nombre réservé] personnes max selon la réservation).\n\nMerci de régulariser la situation rapidement : soit en mettant votre réservation à jour sur [Plateforme] pour inclure les occupants supplémentaires, soit en revenant au nombre convenu.\n\nN'hésitez pas à me contacter si vous avez des questions.\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Nombre réservé]",
+      "[Plateforme]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-09",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Urgence technique",
+    "variante": "Plomberie / Électricité",
+    "timing": "Immédiatement",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "probleme",
+      "urgence",
+      "plomberie",
+      "electricite"
+    ],
+    "corps_fr": "Bonjour,\n\nJe comprends l'urgence — voici quoi faire immédiatement :\n\n[Si fuite d'eau]\n🚨 Coupe l'eau : le robinet d'arrêt général est [Localisation]. Tourne dans le sens des aiguilles d'une montre pour couper.\n\n[Si problème électrique]\n🚨 Tableau électrique : situé [Localisation]. Vérifiez si un disjoncteur a sauté et remets-le en position haute.\n\nAppelle-moi immédiatement au [Téléphone] — je gère ça en priorité absolue.\n[Prénom hôte]",
+    "corps_en": "Hi [First name],\n\nI understand this is urgent — here's what to do right now:\n\n[If water leak]\n🚨 Shut off the water: the main valve is [location]. Turn clockwise to close.\n\n[If electrical issue]\n🚨 Fuse box: located at [location]. Check if a circuit breaker has tripped and flip it back up.\n\nCall me immediately at [Phone] — I'll handle this as a top priority.\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Localisation robinet]",
+      "[Localisation tableau]",
+      "[Téléphone]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-10",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Compensation suite à incident",
+    "variante": "Geste commercial",
+    "timing": "Après résolution d'un incident",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "compensation",
+      "geste-commercial"
+    ],
+    "corps_fr": "Bonjour,\n\nJe tenais à revenir vers toi suite à [l'incident] pendant votre séjour.\n\nMême si la situation a été résolue, ce n'est pas l'expérience que vous méritais. En signe de bonne volonté, je vous propose :\n\nOption A : Le remboursement de [Nombre] nuit(s) — soit [Montant] €\nOption B : Un avoir de [Montant] € valable sur un prochain séjour\nOption C : Le remboursement des frais de ménage\n\nDites-moi ce qui vous convient le mieux et je fais le nécessaire rapidement.\n\nEncore toutes mes excuses. 🙏\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Incident]",
+      "[Nombre nuits]",
+      "[Montant]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-11",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Voyageur qui ne répond plus avant arrivée",
+    "variante": "Silence avant check-in",
+    "timing": "J-2 si aucune réponse",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "silence",
+      "avant-arrivee"
+    ],
+    "corps_fr": "Bonjour,\n\nJe voulais m'assurer que vous avez bien reçu mes instructions d'arrivée envoyées hier.\n\nVotre séjour commence [demain / dans 2 jours] — tout est prêt de mon côté :\n📍 [Adresse]\n🔑 Code : [Code]\n🕐 Check-in à partir de [Heure]\n\nN'hésitez pas à me confirmer que tout est bon. Si votre voyage est modifié, préviens-moi le plus tôt possible.\n\nÀ bientôt !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Adresse]",
+      "[Code]",
+      "[Heure]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "probleme-12",
+    "categorie": "probleme",
+    "categorieLabel": "Gestion des problèmes",
+    "titre": "Réponse à demande spéciale",
+    "variante": "Lit bébé, allergie, équipement",
+    "timing": "Dès réception de la demande",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "probleme",
+      "demande-speciale",
+      "equipement"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci pour votre demande !\n\n[Si disponible]\nBonne nouvelle — [équipement demandé] est disponible dans le logement. Je m'assure qu'il soit prêt avant votre arrivée.\n\n[Si non disponible]\nMalheureusement, je n'ai pas [l'équipement demandé] sur place. La location la plus proche est [Option]. Je peux aussi vous recommander [Alternative].\n\nN'hésitez pas si vous avez d'autres besoins !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Équipement demandé]",
+      "[Option]",
+      "[Alternative]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-01",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Check de satisfaction mi-séjour",
+    "variante": "Mi-séjour",
+    "timing": "Milieu du séjour",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "extra",
+      "satisfaction",
+      "mi-sejour",
+      "prevention"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'espère que votre séjour se passe bien ! Je voulais juste prendre des nouvelles — est-ce que tout est à votre goût ?\n\nSi quelque chose manque ou pourrait être amélioré, dis-le moi maintenant — je préfère toujours régler les choses pendant le séjour plutôt qu'après.\n\nProfitez bien ! 🌟\n[Prénom hôte]",
+    "corps_en": "Hi [First name] 😊\n\nHope you're enjoying your stay! Just checking in — is everything to your liking?\n\nIf anything is missing or could be better, let me know now — I always prefer to sort things during the stay rather than after.\n\nEnjoy! 🌟\n[Host name]",
+    "variables": [
+      "[Prénom]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-02",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Refus de réservation",
+    "variante": "Refus poli",
+    "timing": "Dès que tu décides de refuser",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "refus",
+      "reservation"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci pour votre demande de réservation pour [Nom logement].\n\nMalheureusement, je ne suis pas en mesure d'accepter cette réservation pour le moment — [raison courte].\n\nJe vous souhaite de trouver rapidement le logement idéal pour votre séjour !\n\nBonne continuation,\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Nom logement]",
+      "[Raison courte]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-03",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Prolongation de séjour",
+    "variante": "Réponse à demande de prolongation",
+    "timing": "En réponse à une demande du voyageur",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "prolongation",
+      "disponibilite"
+    ],
+    "corps_fr": "Bonjour,\n\nRavie que vous vous plaises ici ! Pour une prolongation jusqu'au [Date] :\n\n[Si dispo]\nC'est tout à fait possible ! Le tarif serait de [Montant] € par nuit supplémentaire. Je modifie la réservation dès que vous confirmes.\n\n[Si pas dispo]\nMalheureusement, le logement est réservé dès le [Date]. Mais si vous cherches une autre option dans le coin, je peux peut-être vous aider.\n\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Date]",
+      "[Montant]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-04",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Rappel règlement (bruit, fêtes)",
+    "variante": "Rappel préventif",
+    "timing": "Si groupe suspect ou en prévention",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "reglement",
+      "bruit",
+      "fetes",
+      "prevention"
+    ],
+    "corps_fr": "Bonjour,\n\nJe me permets de vous rappeler quelques points du règlement intérieur :\n\n🔇 Niveau sonore : silence demandé après [Heure]\n🚫 Fêtes : aucun rassemblement non autorisé\n👥 Occupants : le nombre doit correspondre à la réservation\n\nJe compte sur toi pour que chacun passe un bon moment.\n\nMerci !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Heure]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-05",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Accueil voyageur avec animal",
+    "variante": "Animal de compagnie",
+    "timing": "Après confirmation d'une réservation avec animal",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "animal",
+      "pet-friendly"
+    ],
+    "corps_fr": "Bonjour \n\nSuper, j'ai bien noté que [Nom de l'animal] vous accompagne !\n\nQuelques points pratiques :\n• [Zones autorisées / interdites pour l'animal]\n• [Règles spécifiques]\n• [Info pratique — parc à proximité, vétérinaire...]\n\nJ'espère que [Nom de l'animal] sera aussi à l'aise que vous ! 😊\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Nom de l'animal]",
+      "[Zones autorisées]",
+      "[Règles spécifiques]",
+      "[Info pratique]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-06",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Réponse à demande de remise",
+    "variante": "Négociation de prix",
+    "timing": "En réponse à une tentative de négociation",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "remise",
+      "prix",
+      "negociation"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci pour votre demande !\n\nMon tarif est [Montant] € la nuit — il inclut [liste courte des services inclus]. Ce prix est celui que je pratique pour tous mes voyageurs et je ne suis pas en mesure de le modifier.\n\nSi vous cherches à optimiser votre budget, je peux vous proposer un tarif légèrement réduit pour un séjour de [X] nuits ou plus.\n\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Montant]",
+      "[Services inclus]",
+      "[X nuits]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-07",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Message pré-arrivée J-3",
+    "variante": "Anticipation questions",
+    "timing": "J-3 avant l'arrivée",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "pre-arrivee",
+      "j-3",
+      "anticipation"
+    ],
+    "corps_fr": "Bonjour,\n\nVotre séjour à [Nom logement] approche — j'espère que vous êtes impatient(e) !\n\nQuelques infos pratiques pour préparer votre arrivée :\n🚗 Parking : [Info parking]\n🛒 Courses : [Supermarché proche]\n🌡️ Météo prévue : [Info météo si pertinent]\n\nLes instructions complètes d'accès arrivent dans 2 jours. D'ici là, si vous avez des questions, je suis là !\n\nÀ très vite,\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Nom logement]",
+      "[Info parking]",
+      "[Supermarché proche]",
+      "[Info météo]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-08",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Invitation à revenir",
+    "variante": "Fidélisation directe",
+    "timing": "3 à 4 semaines après le départ",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "fidelisation",
+      "direct",
+      "driing",
+      "retour"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'espère que vous vas bien ! Votre passage à [Nom logement] m'a laissé un excellent souvenir.\n\nSi jamais vous avez envie de revenir dans la région, sache que vous pouvez me contacter directement — en réservant sans passer par une plateforme, vous économises les frais de service (environ 15 %), et moi je vous propose un tarif fidélité de [X] %.\n\nMon lien de réservation directe : [Lien Driing]\n\nÀ bientôt peut-être ! 😊\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Nom logement]",
+      "[X]",
+      "[Lien Driing]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-09",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Confirmation late check-out accordé",
+    "variante": "Late check-out",
+    "timing": "En réponse à une demande",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "late-checkout",
+      "flexibilite"
+    ],
+    "corps_fr": "Bonjour,\n\nBonne nouvelle — je peux vous accorder un late check-out jusqu'à [Heure] sans supplément.\n\nLe ménage passera à partir de [Heure] — merci de vous assurer d'être parti(e) avant. Pas besoin de me prévenir, laisse simplement les clés [Instructions].\n\nProfitez bien de ces dernières heures !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Heure late checkout]",
+      "[Heure ménage]",
+      "[Instructions clés]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-10",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Réponse à avis négatif public",
+    "variante": "Réponse publique",
+    "timing": "Dans les 48h suivant la publication de l'avis",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "avis-negatif",
+      "reponse-publique"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci pour votre retour. Je suis sincèrement désolé(e) que votre séjour n'ait pas été à la hauteur de vos attentes concernant [point soulevé].\n\n[Si problème légitime]\nCe point a depuis été corrigé — [action concrète prise].\n\n[Si problème contestable]\nDe mon côté, voici ce que j'ai constaté : [éléments factuels].\n\nJe reste disponible pour en discuter directement si vous le souhaitez.\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Point soulevé]",
+      "[Action prise]",
+      "[Éléments factuels]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-11",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Message voyageur professionnel",
+    "variante": "Séjour d'affaires",
+    "timing": "Confirmation + J-1",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "professionnel",
+      "affaires",
+      "teletravail"
+    ],
+    "corps_fr": "Bonjour,\n\nBienvenue dans [Nom logement] — j'espère que votre déplacement professionnel se passera dans les meilleures conditions.\n\n📶 Fibre optique : [Débit] Mbps — idéale pour les visioconférences\n🖥️ Bureau dédié : [Description localisation]\n🔌 Prises disponibles : [Nombre et localisation]\n🚆 Gare / aéroport le plus proche : [Info]\n\nPour une facture, contactez-moi directement — je peux vous fournir un justificatif de séjour.\n\nBon séjour professionnel !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Nom logement]",
+      "[Débit]",
+      "[Description bureau]",
+      "[Nombre prises]",
+      "[Info transport]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-12",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Accueil famille avec enfants",
+    "variante": "Famille",
+    "timing": "Après confirmation de réservation",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "famille",
+      "enfants",
+      "bebe"
+    ],
+    "corps_fr": "Bonjour \n\nSuper de vous accueillir en famille ! Quelques infos pratiques pour que le séjour se passe au mieux avec les enfants :\n\n🛏️ Lit bébé / lit d'appoint : [Disponible / à demander]\n🪑 Chaise haute : [Disponible / à demander]\n🛁 Baignoire : [Oui / Non]\n\nÀ proximité :\n🌳 Parc / aire de jeux : [Info]\n🎠 Activités enfants : [Suggestions]\n🏥 Pédiatre / urgences : [Info]\n\nN'hésitez pas si vous avez besoin d'équipements spécifiques !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Lit bébé dispo]",
+      "[Chaise haute dispo]",
+      "[Baignoire]",
+      "[Parc]",
+      "[Activités]",
+      "[Pédiatre]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-13",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Instructions tri des déchets",
+    "variante": "Tri sélectif",
+    "timing": "Dans le message de bienvenue ou séparément",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "dechets",
+      "tri",
+      "ecologie"
+    ],
+    "corps_fr": "Bonjour,\n\nPetit point sur le tri des déchets — c'est obligatoire dans [Ville/immeuble] :\n\n🟡 Bac jaune : emballages plastiques, cartons, métal\n🟢 Bac vert : verre uniquement\n⚫ Bac gris : ordures ménagères non recyclables\n\n📍 Localisation des bacs : [Description précise]\n📅 Jours de collecte : [Jours]\n\nMerci de respecter ce tri ! 😊\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Ville/immeuble]",
+      "[Description bacs]",
+      "[Jours collecte]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-14",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Réponse à question de disponibilité",
+    "variante": "Demande de disponibilité",
+    "timing": "Dès réception",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "disponibilite",
+      "reservation"
+    ],
+    "corps_fr": "Bonjour,\n\nBonne nouvelle — [les dates que vous mentionnes sont / la semaine du X est] disponible(s) !\n\nLe tarif pour cette période :\n📅 [Dates]\n💶 [Montant] € la nuit / [Montant total] € pour le séjour\n👥 Pour [X] personnes maximum\n\nSi vous voulez réserver, vous pouvez le faire directement via [Lien Driing] ou me confirmer ici.\n\nÀ bientôt !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Dates]",
+      "[Montant nuit]",
+      "[Montant total]",
+      "[X personnes]",
+      "[Lien Driing]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-15",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Instructions machine à laver",
+    "variante": "Mode d'emploi machine",
+    "timing": "Dans le message de bienvenue ou sur demande",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "machine-a-laver",
+      "instructions"
+    ],
+    "corps_fr": "Bonjour,\n\nVoici comment utiliser la machine à laver :\n\n📍 Localisation : [Endroit]\n1. Chargez le linge dans le tambour\n2. Ajoutez la lessive dans le bac [A/B/C] — [La lessive est fournie / dans le placard...]\n3. Sélectionnez le programme : [Recommandation]\n4. Appuyez sur Start\n\nDurée : environ [Durée] selon le programme.\n\nLe sèche-linge est [disponible / non disponible — un étendoir se trouve dans [Localisation]].\n\nN'hésitez pas si ça coince ! 😊",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Localisation machine]",
+      "[Bac lessive]",
+      "[Programme recommandé]",
+      "[Durée]",
+      "[Info sèche-linge]"
+    ]
+  },
+  {
+    "id": "extra-16",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Accueil groupe (EVG / EVJF / team building)",
+    "variante": "Groupe festif",
+    "timing": "Confirmation de réservation",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "groupe",
+      "evg",
+      "evjf",
+      "team-building"
+    ],
+    "corps_fr": "Bonjour \n\nSuper, j'ai hâte de vous accueillir pour [l'occasion] !\n\nQuelques rappels importants :\n\n👥 Nombre d'occupants maximum : [Nombre] — pas de personnes extérieures au groupe réservé\n🔇 Niveau sonore après [Heure] : les voisins sont proches\n🚫 Pas de rassemblement supplémentaire non autorisé\n🧹 Le logement doit être rendu dans un état correct\n\nJe vous souhaite un excellent [EVG / EVJF / séjour] et reste joignable si besoin !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Occasion]",
+      "[Nombre]",
+      "[Heure]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-17",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Oubli d'effets personnels",
+    "variante": "Objet oublié après départ",
+    "timing": "Dès que tu constates l'oubli",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "oubli",
+      "effets-personnels"
+    ],
+    "corps_fr": "Bonjour,\n\nJ'ai trouvé [description de l'objet] dans le logement après votre départ !\n\nPour le récupérer :\n1. Passez le récupérer en personne — contacte-moi pour convenir d'un créneau\n2. Je peux vous l'envoyer par courrier — frais d'envoi à votre charge ([Montant estimé] €)\n\nDites-moi ce que vous préfères et je fais le nécessaire rapidement.\n\nÀ bientôt !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Description objet]",
+      "[Montant estimé]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "extra-18",
+    "categorie": "extra",
+    "categorieLabel": "Messages complémentaires",
+    "titre": "Remerciement fin de saison",
+    "variante": "Clôture annuelle",
+    "timing": "Fin de saison ou fin d'année",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "extra",
+      "fin-saison",
+      "fidelisation",
+      "driing"
+    ],
+    "corps_fr": "Bonjour,\n\nJe prends un moment pour vous remercier d'avoir séjourné chez moi cette année — ça compte vraiment.\n\nSi jamais l'envie vous prend de revenir l'année prochaine, n'oublie pas que vous pouvez réserver directement via [Lien Driing] — sans frais de plateforme et avec un tarif fidélité de [X] % pour les anciens voyageurs.\n\nExcellentes fêtes et à l'année prochaine peut-être ! 🥂\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom]",
+      "[Lien Driing]",
+      "[X]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "upsell-01",
+    "categorie": "upsell",
+    "categorieLabel": "Services additionnels",
+    "titre": "Proposition early check-in",
+    "variante": "Early check-in payant",
+    "timing": "J-2 ou J-1 avant l'arrivée",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "upsell",
+      "early-checkin",
+      "service-additionnel"
+    ],
+    "corps_fr": "Bonjour,\n\nVotre arrivée approche ! Nous voulions vous proposer une option qui pourrait vous faciliter la journée.\n\n🕐 Early check-in disponible à partir de [Heure] (au lieu de [Heure standard])\n💶 Tarif : [Montant] €\n\nSi vous souhaitez en profiter, confirmez-nous simplement par retour de message avant [Date/Heure limite] — nous préparerons le logement en conséquence.\n\nÀ très bientôt !\n[Prénom hôte]",
+    "corps_en": "Hello,\n\nYour arrival is coming up! We wanted to offer you an option that might make your day easier.\n\n🕐 Early check-in available from [Time] (instead of [Standard time])\n💶 Fee: [Amount] €\n\nIf you'd like to take advantage of this, just confirm by reply before [Date/Time] — we'll prepare the property accordingly.\n\nSee you soon!\n[Host name]",
+    "variables": [
+      "[Heure]",
+      "[Heure standard]",
+      "[Montant]",
+      "[Date/Heure limite]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "upsell-02",
+    "categorie": "upsell",
+    "categorieLabel": "Services additionnels",
+    "titre": "Proposition late check-out payant",
+    "variante": "Late check-out",
+    "timing": "J-1 avant le départ",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "upsell",
+      "late-checkout",
+      "service-additionnel"
+    ],
+    "corps_fr": "Bonjour,\n\nVotre séjour se termine demain — nous espérons que vous passez un excellent moment !\n\nSi vous avez besoin d'un peu plus de temps le matin, nous pouvons vous proposer un late check-out :\n\n🕐 Départ jusqu'à [Heure] au lieu de [Heure standard]\n💶 Tarif : [Montant] €\n\nDisponibilité sous réserve du planning de ménage. Répondez-nous ce soir et nous vous confirmons.\n\nBonne fin de séjour !\n[Prénom hôte]",
+    "corps_en": "Hello,\n\nYour stay ends tomorrow — hope you're having a wonderful time!\n\nIf you need a little extra time in the morning, we can offer a late check-out:\n\n🕐 Departure until [Time] instead of [Standard time]\n💶 Fee: [Amount] €\n\nSubject to cleaning schedule availability. Reply tonight and we'll confirm.\n\nEnjoy the rest of your stay!\n[Host name]",
+    "variables": [
+      "[Heure]",
+      "[Heure standard]",
+      "[Montant]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "upsell-03",
+    "categorie": "upsell",
+    "categorieLabel": "Services additionnels",
+    "titre": "Service de bagagerie",
+    "variante": "Garde des bagages",
+    "timing": "Avant l'arrivée ou après le check-out",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "upsell",
+      "bagagerie",
+      "service-additionnel"
+    ],
+    "corps_fr": "Bonjour,\n\nSi vous avez besoin de déposer vos bagages avant votre check-in ou après votre départ, nous proposons un service de garde de bagages :\n\n🧳 Disponible le [Date] de [Heure] à [Heure]\n📍 [Localisation du dépôt]\n💶 [Montant] € par bagage ou [Montant forfait] € forfait\n\nConfirmez-nous le nombre de bagages et les horaires souhaités pour que nous organisions cela pour vous.\n\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Date]",
+      "[Heure début]",
+      "[Heure fin]",
+      "[Localisation]",
+      "[Montant par bagage]",
+      "[Montant forfait]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "upsell-04",
+    "categorie": "upsell",
+    "categorieLabel": "Services additionnels",
+    "titre": "Pack bienvenue / panier gourmand",
+    "variante": "Panier d'accueil",
+    "timing": "Avant la confirmation de réservation ou J-3",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "upsell",
+      "panier-bienvenue",
+      "service-additionnel",
+      "cadeau"
+    ],
+    "corps_fr": "Bonjour,\n\nPour rendre votre arrivée encore plus agréable, nous proposons un pack bienvenue préparé avec soin :\n\n🧺 Pack Essentiel — [Montant] €\n[Bouteille de vin / jus + snacks locaux + café/thé]\n\n🧺 Pack Premium — [Montant] €\n[Champagne + plateau fromages/charcuterie + douceurs locales]\n\nLe panier sera déposé dans le logement avant votre arrivée.\n\nEnvoyez-nous votre choix avant le [Date] — nous nous occupons de tout.\n\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Montant Essentiel]",
+      "[Contenu Essentiel]",
+      "[Montant Premium]",
+      "[Contenu Premium]",
+      "[Date limite]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "upsell-05",
+    "categorie": "upsell",
+    "categorieLabel": "Services additionnels",
+    "titre": "Extension de séjour proposée",
+    "variante": "Nuits supplémentaires",
+    "timing": "Mi-séjour si des nuits sont disponibles autour",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "upsell",
+      "extension-sejour",
+      "nuits-supplementaires"
+    ],
+    "corps_fr": "Bonjour,\n\nNous espérons que votre séjour se passe à merveille !\n\nNous avons une bonne nouvelle : le logement est disponible [le soir de votre départ / les nuits suivantes], si vous souhaitez prolonger votre séjour.\n\n📅 Nuits disponibles : [Dates]\n💶 Tarif : [Montant] €/nuit\n\nSi cela vous intéresse, répondez-nous rapidement — nous mettons ces nuits de côté pour vous.\n\n[Prénom hôte]",
+    "corps_en": "Hello,\n\nHope your stay is going wonderfully!\n\nGood news: the property is available [on the night of your departure / for the following nights] if you'd like to extend your stay.\n\n📅 Available nights: [Dates]\n💶 Rate: [Amount] €/night\n\nIf you're interested, let us know quickly — we'll hold these nights for you.\n\n[Host name]",
+    "variables": [
+      "[Dates]",
+      "[Montant]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "securite-01",
+    "categorie": "securite",
+    "categorieLabel": "Sécurité voyageur",
+    "titre": "Demande de vérification d'identité",
+    "variante": "Avant confirmation",
+    "timing": "Avant d'accepter une demande de réservation",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "securite",
+      "verification-identite",
+      "professionnel"
+    ],
+    "corps_fr": "Bonjour,\n\nMerci pour votre demande de réservation pour [Nom logement].\n\nAvant de confirmer, nous demandons à tous nos voyageurs de vérifier leur identité via la plateforme — cela prend moins de 2 minutes et nous permet d'accueillir nos hôtes en toute sérénité.\n\nSi ce n'est pas encore fait, rendez-vous dans les paramètres de votre profil pour compléter la vérification.\n\nUne fois validée, nous confirmons votre réservation sans délai.\n\nCordialement,\n[Prénom hôte]",
+    "corps_en": "Hello,\n\nThank you for your booking request for [Property name].\n\nBefore confirming, we ask all our guests to verify their identity through the platform — it takes less than 2 minutes and allows us to welcome guests with complete peace of mind.\n\nIf not yet done, please go to your profile settings to complete verification.\n\nOnce validated, we'll confirm your booking promptly.\n\nBest regards,\n[Host name]",
+    "variables": [
+      "[Nom logement]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "securite-02",
+    "categorie": "securite",
+    "categorieLabel": "Sécurité voyageur",
+    "titre": "Demande de caution / dépôt de garantie",
+    "variante": "Caution hors plateforme",
+    "timing": "Après confirmation, avant le check-in",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "securite",
+      "caution",
+      "depot-garantie",
+      "professionnel"
+    ],
+    "corps_fr": "Bonjour,\n\nNous vous remercions pour votre réservation à [Nom logement].\n\nConformément à nos conditions, un dépôt de garantie de [Montant] € est demandé avant votre arrivée. Il vous sera intégralement restitué dans les [X] jours suivant votre départ, sous réserve de l'état du logement.\n\nModalités de versement : [Instructions — virement, lien de paiement sécurisé...]\n\nCe dépôt est une formalité standard qui protège les deux parties. N'hésitez pas si vous avez des questions.\n\nCordialement,\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Nom logement]",
+      "[Montant]",
+      "[X jours]",
+      "[Instructions paiement]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "securite-03",
+    "categorie": "securite",
+    "categorieLabel": "Sécurité voyageur",
+    "titre": "Restitution de la caution",
+    "variante": "Caution restituée intégralement",
+    "timing": "Dans les 48h à 72h après le départ",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "securite",
+      "caution",
+      "restitution"
+    ],
+    "corps_fr": "Bonjour,\n\nNous avons effectué l'état des lieux de [Nom logement] après votre départ.\n\nTout est parfait — nous procédons au remboursement intégral de votre dépôt de garantie de [Montant] €.\n\n[Si virement] Le virement sera effectué sous [X] jours ouvrés sur le compte que vous nous avez communiqué.\n\nMerci pour votre soin ! Nous espérons vous revoir bientôt.\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Nom logement]",
+      "[Montant]",
+      "[X jours]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "securite-04",
+    "categorie": "securite",
+    "categorieLabel": "Sécurité voyageur",
+    "titre": "Retenue partielle sur caution",
+    "variante": "Dégât constaté",
+    "timing": "Dans les 48h à 72h après le départ",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "securite",
+      "caution",
+      "retenue",
+      "degat"
+    ],
+    "corps_fr": "Bonjour,\n\nNous avons effectué l'état des lieux de [Nom logement] après votre départ et avons constaté [description du dégât].\n\nVoici les frais engagés :\n→ [Prestation / remplacement] : [Montant] €\n\nNous procédons donc à une retenue de [Montant retenue] € sur votre dépôt de garantie.\nLe solde restant de [Montant restitué] € vous sera remboursé sous [X] jours.\n\nNous vous transmettons les justificatifs en pièce jointe.\n\nCordialement,\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Nom logement]",
+      "[Description dégât]",
+      "[Prestation]",
+      "[Montant dégât]",
+      "[Montant retenue]",
+      "[Montant restitué]",
+      "[X jours]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "securite-05",
+    "categorie": "securite",
+    "categorieLabel": "Sécurité voyageur",
+    "titre": "Rappel règles de sécurité incendie",
+    "variante": "Consignes sécurité",
+    "timing": "Dans le message de bienvenue ou check-in",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "securite",
+      "incendie",
+      "consignes",
+      "securite-logement"
+    ],
+    "corps_fr": "Bonjour,\n\nPour votre sécurité et celle des autres occupants, voici les consignes essentielles :\n\n🔥 En cas d'incendie\n→ Numéro d'urgence : 18 (pompiers) ou 112\n→ Extincteur : [Localisation]\n→ Sortie de secours : [Localisation]\n→ Point de rassemblement : [Localisation]\n\n⛽ Détecteur de fumée\n→ Situé [Localisation]\n→ En cas de déclenchement intempestif (vapeur, cuisine) :\n   aérez et appuyez sur le bouton test pour arrêter l'alarme\n\n🚫 Il est strictement interdit de fumer à l'intérieur du logement.\n\nBon séjour !\n[Prénom hôte]",
+    "corps_en": "Hello,\n\nFor your safety and that of other occupants, here are the essential guidelines:\n\n🔥 In case of fire\n→ Emergency number: 18 (fire brigade) or 112\n→ Fire extinguisher: [Location]\n→ Emergency exit: [Location]\n→ Assembly point: [Location]\n\n⛽ Smoke detector\n→ Located at [Location]\n→ If triggered accidentally (steam, cooking):\n   ventilate and press the test button to stop the alarm\n\n🚫 Smoking inside the property is strictly prohibited.\n\nEnjoy your stay!\n[Host name]",
+    "variables": [
+      "[Localisation extincteur]",
+      "[Localisation sortie]",
+      "[Point rassemblement]",
+      "[Localisation détecteur]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "conciergerie-01",
+    "categorie": "conciergerie",
+    "categorieLabel": "Conciergerie",
+    "titre": "Présentation de la conciergerie au voyageur",
+    "variante": "Premier contact",
+    "timing": "Dès la confirmation de réservation",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "conciergerie",
+      "presentation",
+      "professionnel"
+    ],
+    "corps_fr": "Bonjour,\n\nJe suis [Prénom], de [Nom conciergerie]. Je gère le logement [Nom logement] pour le compte du propriétaire et je serai votre interlocuteur(trice) tout au long de votre séjour.\n\nVotre réservation est bien confirmée :\n📅 Arrivée : [Date] à partir de [Heure]\n📅 Départ : [Date] avant [Heure]\n🏠 [Adresse]\n\nJe vous enverrai les instructions complètes d'accès la veille de votre arrivée. Pour toute question d'ici là :\n📞 [Téléphone conciergerie]\n📧 [Email conciergerie]\n\nÀ très bientôt !\n[Prénom conciergerie]",
+    "corps_en": "Hello,\n\nI'm [First name], from [Concierge name]. I manage [Property name] on behalf of the owner and will be your point of contact throughout your stay.\n\nYour booking is confirmed:\n📅 Check-in: [Date] from [Time]\n📅 Check-out: [Date] before [Time]\n🏠 [Address]\n\nI'll send full access instructions the day before your arrival. For any questions in the meantime:\n📞 [Concierge phone]\n📧 [Concierge email]\n\nSee you soon!\n[Concierge first name]",
+    "variables": [
+      "[Prénom conciergerie]",
+      "[Nom conciergerie]",
+      "[Nom logement]",
+      "[Date arrivée]",
+      "[Heure check-in]",
+      "[Date départ]",
+      "[Heure check-out]",
+      "[Adresse]",
+      "[Téléphone conciergerie]",
+      "[Email conciergerie]"
+    ]
+  },
+  {
+    "id": "conciergerie-02",
+    "categorie": "conciergerie",
+    "categorieLabel": "Conciergerie",
+    "titre": "Rapport mensuel au propriétaire",
+    "variante": "Rapport mensuel",
+    "timing": "1er-5 de chaque mois",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "conciergerie",
+      "rapport",
+      "proprietaire",
+      "professionnel"
+    ],
+    "corps_fr": "Bonjour [Prénom propriétaire],\n\nVoici le rapport de gestion de [Nom logement] pour le mois de [Mois] :\n\n📊 PERFORMANCE\n→ Nuits louées : [X] / [Y disponibles]\n→ Taux d'occupation : [X]%\n→ Revenus bruts : [Montant] €\n→ Note moyenne voyageurs : [Note] ⭐\n→ Nouveaux avis : [X]\n\n💶 VOTRE VERSEMENT\n→ Revenus bruts : [Montant] €\n→ Commission conciergerie ([X]%) : -[Montant] €\n→ Frais de ménage : -[Montant] €\n→ [Autres frais éventuels] : -[Montant] €\n→ NET À VOUS VERSER : [Montant] €\n\n📝 NOTES DU MOIS\n[Incidents, travaux, observations, recommandations]\n\n📅 PERSPECTIVES [Mois suivant]\n[Réservations déjà en place, événements locaux, recommandations tarifaires]\n\nVirement effectué / en cours sous [X] jours.\n\nÀ votre disposition pour toute question.\n[Prénom conciergerie]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom propriétaire]",
+      "[Nom logement]",
+      "[Mois]",
+      "[Nuits louées]",
+      "[Nuits disponibles]",
+      "[Taux occupation]",
+      "[Revenus bruts]",
+      "[Note]",
+      "[Commission %]",
+      "[Montant commission]",
+      "[Montant ménage]",
+      "[Net propriétaire]",
+      "[X jours]",
+      "[Prénom conciergerie]"
+    ]
+  },
+  {
+    "id": "conciergerie-03",
+    "categorie": "conciergerie",
+    "categorieLabel": "Conciergerie",
+    "titre": "Alerte incident au propriétaire",
+    "variante": "Incident en cours",
+    "timing": "Dès qu'un incident est constaté",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "conciergerie",
+      "incident",
+      "proprietaire",
+      "urgent"
+    ],
+    "corps_fr": "Bonjour [Prénom propriétaire],\n\nJe vous informe d'un incident survenu dans votre logement [Nom logement] :\n\n⚠️ Nature : [Description courte de l'incident]\n📅 Constaté le : [Date] à [Heure]\n👤 Par : [Voyageur / Équipe de ménage / Moi-même]\n\nActions déjà engagées :\n→ [Action 1 — ex : prestataire contacté]\n→ [Action 2 — ex : voyageur informé]\n\nProchaine étape : [Ce qui va se passer]\nEstimation coût si applicable : [Montant estimé] €\n\nJe vous tiens informé(e) de l'évolution. Aucune action de votre part n'est requise pour l'instant.\n\n[Prénom conciergerie]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom propriétaire]",
+      "[Nom logement]",
+      "[Description incident]",
+      "[Date]",
+      "[Heure]",
+      "[Par qui]",
+      "[Actions]",
+      "[Prochaine étape]",
+      "[Montant estimé]",
+      "[Prénom conciergerie]"
+    ]
+  },
+  {
+    "id": "conciergerie-04",
+    "categorie": "conciergerie",
+    "categorieLabel": "Conciergerie",
+    "titre": "Onboarding nouveau propriétaire",
+    "variante": "Bienvenue propriétaire",
+    "timing": "Après signature du contrat, avant la mise en ligne",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "conciergerie",
+      "onboarding",
+      "proprietaire",
+      "nouveau-client"
+    ],
+    "corps_fr": "Bonjour [Prénom propriétaire],\n\nBienvenue chez [Nom conciergerie] ! Je suis ravi(e) de vous accompagner dans la gestion de [Nom logement].\n\nVoici les prochaines étapes avant la mise en ligne :\n\n✅ À faire de votre côté :\n→ [Liste des éléments à fournir : clés, codes, documents...]\n→ Accès aux plateformes existantes si applicable\n\n✅ Ce que je prends en charge :\n→ Création / optimisation des annonces\n→ Photos (à planifier le [Date])\n→ Mise en place du livret d'accueil digital\n→ Configuration des prix et du calendrier\n\n📅 Objectif de mise en ligne : [Date cible]\n\nJe vous propose un point de 15 minutes cette semaine pour aligner les derniers détails. Quand êtes-vous disponible ?\n\n[Prénom conciergerie]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom propriétaire]",
+      "[Nom conciergerie]",
+      "[Nom logement]",
+      "[Liste éléments]",
+      "[Date photos]",
+      "[Date mise en ligne]",
+      "[Prénom conciergerie]"
+    ]
+  },
+  {
+    "id": "conciergerie-05",
+    "categorie": "conciergerie",
+    "categorieLabel": "Conciergerie",
+    "titre": "Renouvellement / reconduction du contrat",
+    "variante": "Bilan annuel propriétaire",
+    "timing": "1 mois avant la fin du contrat ou à date anniversaire",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "conciergerie",
+      "renouvellement",
+      "bilan-annuel",
+      "proprietaire"
+    ],
+    "corps_fr": "Bonjour [Prénom propriétaire],\n\nUn an déjà que nous gérons ensemble [Nom logement] ! Je voulais vous proposer un point bilan avant de reconduire notre collaboration.\n\n📊 EN UN AN :\n→ [X] nuits louées\n→ [Montant] € de revenus nets générés\n→ Note moyenne : [Note] ⭐\n→ [X] avis collectés\n\nPour l'année à venir, je vous propose :\n→ [Amélioration 1 — ex : optimisation des photos]\n→ [Amélioration 2 — ex : ajout d'une plateforme]\n→ [Amélioration 3 — ex : ajustement tarifaire]\n\nNotre contrat arrive à échéance le [Date]. Je vous propose de le renouveler avec [mêmes conditions / conditions mises à jour].\n\nUn appel de 20 minutes pour en discuter ?\n[Prénom conciergerie]",
+    "corps_en": null,
+    "variables": [
+      "[Prénom propriétaire]",
+      "[Nom logement]",
+      "[X nuits]",
+      "[Montant net]",
+      "[Note]",
+      "[X avis]",
+      "[Améliorations]",
+      "[Date échéance]",
+      "[Prénom conciergerie]"
+    ]
+  },
+  {
+    "id": "saisonnier-01",
+    "categorie": "saisonnier",
+    "categorieLabel": "Messages saisonniers",
+    "titre": "Bienvenue été",
+    "variante": "Saison estivale",
+    "timing": "Jour J, à l'heure d'arrivée estimée (juin - août)",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "saisonnier",
+      "ete",
+      "bienvenue"
+    ],
+    "corps_fr": "Bonjour et bienvenue ! ☀️\n\nNous espérons que votre voyage s'est bien passé. Le logement est prêt pour vous accueillir.\n\n📶 Wi-Fi : [Réseau] / [Mot de passe]\n🌡️ Climatisation : [Instructions courtes]\n🏖️ À [X] min : [Plage / activité estivale locale]\n\nQuelques conseils pour profiter de la région cet été :\n→ [Adresse 1 — restaurant en terrasse, marché...]\n→ [Adresse 2]\n\nBon séjour sous le soleil ! 🌊\n[Prénom hôte]",
+    "corps_en": "Hello and welcome! ☀️\n\nHope your journey went smoothly. The property is all ready for you.\n\n📶 Wi-Fi: [Network] / [Password]\n🌡️ Air conditioning: [Short instructions]\n🏖️ [X] min away: [Beach / local summer activity]\n\nA few tips for enjoying the area this summer:\n→ [Address 1 — terrace restaurant, market...]\n→ [Address 2]\n\nEnjoy the sunshine! 🌊\n[Host name]",
+    "variables": [
+      "[Réseau]",
+      "[Mot de passe]",
+      "[Instructions clim]",
+      "[X min]",
+      "[Activité estivale]",
+      "[Adresse 1]",
+      "[Adresse 2]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "saisonnier-02",
+    "categorie": "saisonnier",
+    "categorieLabel": "Messages saisonniers",
+    "titre": "Bienvenue hiver / montagne",
+    "variante": "Saison hivernale",
+    "timing": "Jour J, à l'heure d'arrivée estimée (décembre - mars)",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "saisonnier",
+      "hiver",
+      "montagne",
+      "bienvenue"
+    ],
+    "corps_fr": "Bonjour et bienvenue ! ❄️\n\nNous espérons que vous avez bien bravé la route ! Le logement est chaud et prêt pour vous.\n\n📶 Wi-Fi : [Réseau] / [Mot de passe]\n🌡️ Chauffage : [Instructions — thermostat, radiateurs, cheminée...]\n🎿 Navette station : [Horaires et arrêt]\n\nQuelques infos pratiques pour l'hiver :\n→ [Location de matériel ski à X min]\n→ [Restaurant de montagne recommandé]\n→ En cas de neige abondante : [Consignes pratiques — parking, accès...]\n\nBelle saison et bon ski ! ⛷️\n[Prénom hôte]",
+    "corps_en": "Hello and welcome! ❄️\n\nHope the journey wasn't too tough! The property is warm and ready for you.\n\n📶 Wi-Fi: [Network] / [Password]\n🌡️ Heating: [Instructions — thermostat, radiators, fireplace...]\n🎿 Ski shuttle: [Times and stop]\n\nA few practical tips for winter:\n→ [Ski rental X min away]\n→ [Recommended mountain restaurant]\n→ In case of heavy snow: [Practical info — parking, access...]\n\nEnjoy the slopes! ⛷️\n[Host name]",
+    "variables": [
+      "[Réseau]",
+      "[Mot de passe]",
+      "[Instructions chauffage]",
+      "[Navette horaires]",
+      "[Location ski]",
+      "[Restaurant montagne]",
+      "[Consignes neige]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "saisonnier-03",
+    "categorie": "saisonnier",
+    "categorieLabel": "Messages saisonniers",
+    "titre": "Message fêtes de fin d'année",
+    "variante": "Noël / Nouvel An",
+    "timing": "Jour J si arrivée entre le 23 décembre et le 1er janvier",
+    "langues": [
+      "fr",
+      "en"
+    ],
+    "tags": [
+      "saisonnier",
+      "noel",
+      "nouvel-an",
+      "fetes"
+    ],
+    "corps_fr": "Bonjour et bienvenue ! 🎄\n\nQuelle belle période pour séjourner ici ! Nous vous souhaitons des fêtes de fin d'année chaleureuses et joyeuses.\n\n📶 Wi-Fi : [Réseau] / [Mot de passe]\n\nQuelques petites attentions vous attendent dans le logement : [description — bouteille, déco...]\n\nPour les fêtes dans la région :\n→ [Marché de Noël / événement local]\n→ [Restaurant ouvert le 25 ou le 31]\n\nPassez de merveilleuses fêtes ! 🥂\n[Prénom hôte]",
+    "corps_en": "Hello and welcome! 🎄\n\nWhat a wonderful time of year to be here! Wishing you a warm and joyful holiday season.\n\n📶 Wi-Fi: [Network] / [Password]\n\nA few little surprises are waiting for you in the property: [description]\n\nHoliday highlights in the area:\n→ [Christmas market / local event]\n→ [Restaurant open on the 25th or 31st]\n\nHappy holidays! 🥂\n[Host name]",
+    "variables": [
+      "[Réseau]",
+      "[Mot de passe]",
+      "[Description attentions]",
+      "[Marché Noël]",
+      "[Restaurant fêtes]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "saisonnier-04",
+    "categorie": "saisonnier",
+    "categorieLabel": "Messages saisonniers",
+    "titre": "Offre basse saison voyageur fidèle",
+    "variante": "Relance hors saison",
+    "timing": "Octobre - novembre ou janvier - février",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "saisonnier",
+      "basse-saison",
+      "fidelisation",
+      "offre"
+    ],
+    "corps_fr": "Bonjour,\n\nNous espérons que vous gardez un bon souvenir de votre séjour à [Nom logement] !\n\nNous vous réservons une offre exclusive pour cette période :\n\n🍂 [Mois/Saison] à [Ville] — nos tarifs les plus bas de l'année\n💶 À partir de [Montant] €/nuit (au lieu de [Montant habituel] €)\n📅 Disponible jusqu'au [Date limite]\n\nC'est aussi la meilleure saison pour découvrir [argument local — authenticité, calme, événement...]\n\nRéservez directement ici pour profiter de ce tarif : [Lien Driing]\n\nÀ bientôt !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Nom logement]",
+      "[Mois/Saison]",
+      "[Ville]",
+      "[Montant basse saison]",
+      "[Montant habituel]",
+      "[Date limite]",
+      "[Argument local]",
+      "[Lien Driing]",
+      "[Prénom hôte]"
+    ]
+  },
+  {
+    "id": "saisonnier-05",
+    "categorie": "saisonnier",
+    "categorieLabel": "Messages saisonniers",
+    "titre": "Événement local — offre spéciale",
+    "variante": "Festival / concert / marathon",
+    "timing": "6 à 12 semaines avant l'événement",
+    "langues": [
+      "fr"
+    ],
+    "tags": [
+      "saisonnier",
+      "evenement-local",
+      "offre-speciale"
+    ],
+    "corps_fr": "Bonjour,\n\nVous aimez [Type d'événement] ? Alors cette information est pour vous.\n\n🎉 [Nom de l'événement] se déroule à [Ville] du [Date début] au [Date fin].\n\n[Nom logement] se trouve à [X] minutes du lieu — l'adresse idéale pour en profiter sans contrainte.\n\nLes disponibilités partent vite pendant cette période.\nRéservez directement ici pour garantir votre séjour : [Lien Driing]\n\n[Si tarif spécial événement] 💶 Tarif événement : [Montant] €/nuit\n\nN'hésitez pas si vous avez des questions !\n[Prénom hôte]",
+    "corps_en": null,
+    "variables": [
+      "[Type événement]",
+      "[Nom événement]",
+      "[Ville]",
+      "[Date début]",
+      "[Date fin]",
+      "[Nom logement]",
+      "[X minutes]",
+      "[Lien Driing]",
+      "[Montant]",
+      "[Prénom hôte]"
+    ]
+  }
+]
