@@ -8,6 +8,13 @@ import {
 import { changeUserPlan, deleteUser } from '../actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
+interface UserFormation {
+  id: string
+  progress: number
+  enrolled_at: string
+  formation: { id: string; title: string; slug: string }[] | null
+}
+
 interface Member {
   id: string
   email: string
@@ -16,7 +23,7 @@ interface Member {
   driing_status: string
   plan: string
   created_at: string
-  user_formations: { count: number }[]
+  user_formations: UserFormation[]
 }
 
 const PLANS = [
@@ -40,7 +47,7 @@ function isBotLike(name: string | null, email: string): boolean {
 }
 
 function getFormationsCount(member: Member): number {
-  return member.user_formations?.[0]?.count ?? 0
+  return member.user_formations?.length ?? 0
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
@@ -49,6 +56,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
   const [filterPlan, setFilterPlan] = useState<string>('all')
   const [isPending, startTransition] = useTransition()
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
+  const [expandedMember, setExpandedMember] = useState<string | null>(null)
 
   function notify(id: string, type: 'ok' | 'err', msg: string) {
     setFeedback({ id, type, msg })
@@ -153,95 +161,140 @@ export default function MembresUI({ members }: { members: Member[] }) {
               ? m.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
               : m.email[0].toUpperCase()
 
+            const isExpanded = expandedMember === m.id
+
             return (
-              <div key={m.id} style={{ ...s.row, ...(suspect ? s.rowSuspect : {}) }}>
-                {/* Avatar + name + email */}
-                <div style={{ flex: 3, display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
-                  <div style={{ ...s.avatar, ...(suspect ? { borderColor: 'rgba(248,113,113,0.3)' } : {}) }}>
-                    <span style={s.avatarText}>{initials}</span>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={s.name}>{m.full_name || '—'}</span>
-                      {suspect && <Robot size={13} style={{ color: '#f87171', flexShrink: 0 }} title="Bot suspect" />}
-                      {m.role === 'admin' && (
-                        <span style={{ ...s.badge, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
-                      )}
+              <div key={m.id}>
+                <div style={{ ...s.row, ...(suspect ? s.rowSuspect : {}) }}>
+                  {/* Avatar + name + email */}
+                  <div style={{ flex: 3, display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+                    <div style={{ ...s.avatar, ...(suspect ? { borderColor: 'rgba(248,113,113,0.3)' } : {}) }}>
+                      <span style={s.avatarText}>{initials}</span>
                     </div>
-                    <div style={s.email}>{m.email}</div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={s.name}>{m.full_name || '—'}</span>
+                        {suspect && <Robot size={13} style={{ color: '#f87171', flexShrink: 0 }} />}
+                        {m.role === 'admin' && (
+                          <span style={{ ...s.badge, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
+                        )}
+                      </div>
+                      <div style={s.email}>{m.email}</div>
+                    </div>
+                  </div>
+
+                  {/* Plan selector */}
+                  <div style={{ flex: 2 }}>
+                    {feedback?.id === m.id && feedback.type === 'ok' ? (
+                      <FeedbackPill type="ok" msg={feedback.msg} />
+                    ) : feedback?.id === m.id && feedback.type === 'err' ? (
+                      <FeedbackPill type="err" msg={feedback.msg} />
+                    ) : (
+                      <select
+                        value={m.plan || 'decouverte'}
+                        disabled={isPending || m.role === 'admin'}
+                        onChange={e => action(m.id, () => changeUserPlan(m.id, e.target.value), 'Plan mis à jour')}
+                        style={{
+                          background: planCfg.bg,
+                          color: planCfg.color,
+                          border: `1px solid ${planCfg.color}30`,
+                          borderRadius: '8px',
+                          padding: '6px 10px',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          cursor: (isPending || m.role === 'admin') ? 'not-allowed' : 'pointer',
+                          outline: 'none',
+                          fontFamily: 'Outfit, sans-serif',
+                          opacity: m.role === 'admin' ? 0.4 : 1,
+                        }}
+                      >
+                        {PLANS.map(p => (
+                          <option key={p.value} value={p.value} style={{ background: '#040d0b', color: 'var(--text)' }}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+
+                  {/* Formations count — cliquable pour expand */}
+                  <div style={{ flex: 1, textAlign: 'center' as const }}>
+                    {formations > 0 ? (
+                      <button
+                        onClick={() => setExpandedMember(isExpanded ? null : m.id)}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '5px',
+                          color: isExpanded ? '#34D399' : '#34D399',
+                          fontSize: '13px', fontWeight: 500,
+                          background: isExpanded ? 'rgba(52,211,153,0.12)' : 'rgba(52,211,153,0.06)',
+                          border: '1px solid rgba(52,211,153,0.2)',
+                          borderRadius: '7px', padding: '4px 10px',
+                          cursor: 'pointer',
+                        }}
+                        title="Voir les formations"
+                      >
+                        <GraduationCap size={13} />
+                        {formations}
+                      </button>
+                    ) : (
+                      <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>—</span>
+                    )}
+                  </div>
+
+                  {/* Date */}
+                  <div style={{ flex: 2, fontSize: '13px', color: 'var(--text-3)' }}>
+                    {formatDate(m.created_at)}
+                  </div>
+
+                  {/* Delete */}
+                  <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                    {m.role !== 'admin' && (
+                      <button
+                        disabled={isPending}
+                        onClick={() => {
+                          if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
+                          action(m.id, () => deleteUser(m.id), 'Utilisateur supprimé')
+                        }}
+                        style={s.deleteBtn}
+                        title="Supprimer"
+                      >
+                        {isPending
+                          ? <ArrowClockwise size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                          : <Trash size={14} />
+                        }
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                {/* Plan selector */}
-                <div style={{ flex: 2 }}>
-                  {feedback?.id === m.id && feedback.type === 'ok' ? (
-                    <FeedbackPill type="ok" msg={feedback.msg} />
-                  ) : feedback?.id === m.id && feedback.type === 'err' ? (
-                    <FeedbackPill type="err" msg={feedback.msg} />
-                  ) : (
-                    <select
-                      value={m.plan || 'decouverte'}
-                      disabled={isPending || m.role === 'admin'}
-                      onChange={e => action(m.id, () => changeUserPlan(m.id, e.target.value), 'Plan mis à jour')}
-                      style={{
-                        background: planCfg.bg,
-                        color: planCfg.color,
-                        border: `1px solid ${planCfg.color}30`,
-                        borderRadius: '8px',
-                        padding: '6px 10px',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        cursor: (isPending || m.role === 'admin') ? 'not-allowed' : 'pointer',
-                        outline: 'none',
-                        fontFamily: 'Outfit, sans-serif',
-                        opacity: m.role === 'admin' ? 0.4 : 1,
-                      }}
-                    >
-                      {PLANS.map(p => (
-                        <option key={p.value} value={p.value} style={{ background: '#040d0b', color: 'var(--text)' }}>
-                          {p.label}
-                        </option>
+                {/* ── Formations détail (expanded) ── */}
+                {isExpanded && formations > 0 && (
+                  <div style={s.formationsExpand}>
+                    <div style={s.formationsExpandLabel}>Formations inscrites</div>
+                    <div style={s.formationsList}>
+                      {m.user_formations.map(uf => (
+                        <div key={uf.id} style={s.formationItem}>
+                          <GraduationCap size={14} style={{ color: '#34D399', flexShrink: 0, marginTop: '1px' }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={s.formationTitle}>{uf.formation?.[0]?.title ?? 'Formation inconnue'}</div>
+                            <div style={s.formationMeta}>
+                              Inscrit le {formatDate(uf.enrolled_at)}
+                              {uf.progress === 100 && (
+                                <span style={{ ...s.badge, background: 'rgba(52,211,153,0.12)', color: '#34D399', marginLeft: '8px' }}>Terminée</span>
+                              )}
+                            </div>
+                          </div>
+                          <div style={s.progressWrap}>
+                            <div style={s.progressBar}>
+                              <div style={{ ...s.progressFill, width: `${uf.progress}%`, background: uf.progress === 100 ? '#34D399' : 'var(--accent-text)' }} />
+                            </div>
+                            <span style={s.progressPct}>{uf.progress}%</span>
+                          </div>
+                        </div>
                       ))}
-                    </select>
-                  )}
-                </div>
-
-                {/* Formations count */}
-                <div style={{ flex: 1, textAlign: 'center' as const }}>
-                  {formations > 0 ? (
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#34D399', fontSize: '13px', fontWeight: 500 }}>
-                      <GraduationCap size={14} />
-                      {formations}
                     </div>
-                  ) : (
-                    <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>—</span>
-                  )}
-                </div>
-
-                {/* Date */}
-                <div style={{ flex: 2, fontSize: '13px', color: 'var(--text-3)' }}>
-                  {formatDate(m.created_at)}
-                </div>
-
-                {/* Delete */}
-                <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-                  {m.role !== 'admin' && (
-                    <button
-                      disabled={isPending}
-                      onClick={() => {
-                        if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
-                        action(m.id, () => deleteUser(m.id), 'Utilisateur supprimé')
-                      }}
-                      style={s.deleteBtn}
-                      title="Supprimer"
-                    >
-                      {isPending
-                        ? <ArrowClockwise size={14} style={{ animation: 'spin 1s linear infinite' }} />
-                        : <Trash size={14} />
-                      }
-                    </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )
           })
@@ -368,4 +421,33 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.15s',
   },
+
+  formationsExpand: {
+    padding: '14px 20px 16px 72px',
+    background: 'rgba(52,211,153,0.03)',
+    borderBottom: '1px solid var(--surface)',
+    borderTop: '1px solid rgba(52,211,153,0.08)',
+  },
+  formationsExpandLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '1px',
+    textTransform: 'uppercase' as const,
+    color: '#34D399', marginBottom: '10px', opacity: 0.8,
+  },
+  formationsList: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },
+  formationItem: {
+    display: 'flex', alignItems: 'flex-start', gap: '10px',
+  },
+  formationTitle: {
+    fontSize: '13px', fontWeight: 500, color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+    marginBottom: '2px',
+  },
+  formationMeta: { fontSize: '11px', color: 'var(--text-3)', display: 'flex', alignItems: 'center' },
+  progressWrap: { display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 },
+  progressBar: {
+    width: '80px', height: '4px', background: 'var(--border)',
+    borderRadius: '100px', overflow: 'hidden',
+  },
+  progressFill: { height: '100%', borderRadius: '100px', transition: 'width 0.3s' },
+  progressPct: { fontSize: '11px', color: 'var(--text-3)', width: '30px', textAlign: 'right' as const },
 }

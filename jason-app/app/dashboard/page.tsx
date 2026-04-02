@@ -13,13 +13,22 @@ export default async function DashboardPage() {
 
   const userId = profile?.userId ?? ''
 
-  const [{ data: userFormations }, { data: allFormations }] = await Promise.all([
+  const [
+    { data: userFormations },
+    { data: allFormations },
+    { count: partnersCount },
+    { count: templatesCount },
+    { count: groupsCount },
+  ] = await Promise.all([
     supabase.from('user_formations')
       .select('*, formation:formations(*)')
       .eq('user_id', userId)
       .order('enrolled_at', { ascending: false })
       .limit(3),
     supabase.from('formations').select('id').eq('is_published', true),
+    supabase.from('partners').select('*', { count: 'exact', head: true }).eq('is_active', true),
+    supabase.from('templates').select('*', { count: 'exact', head: true }),
+    supabase.from('community_groups').select('*', { count: 'exact', head: true }),
   ])
 
   const firstName = profile?.full_name?.split(' ')[0] ?? ''
@@ -27,10 +36,10 @@ export default async function DashboardPage() {
   const completed = userFormations?.filter(f => f.progress === 100).length ?? 0
 
   const quickLinks = [
-    { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap, desc: `${allFormations?.length ?? 3} disponibles`, color: '#004C3F', iconColor: '#34D399' },
-    { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake,      desc: '5 offres exclusives',   color: '#0d6e56', iconColor: '#6EE7B7' },
-    { href: '/dashboard/gabarits',    label: 'Gabarits',    icon: FileText,        desc: 'Copie en 1 clic',       color: '#2d5c40', iconColor: '#A7F3D0' },
-    { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree,     desc: '3 groupes sélectionnés', color: '#92400e', iconColor: '#FCD34D' },
+    { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap, desc: `${allFormations?.length ?? 0} disponible${(allFormations?.length ?? 0) > 1 ? 's' : ''}`, color: '#004C3F', iconColor: '#34D399' },
+    { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake,      desc: `${partnersCount ?? 0} offre${(partnersCount ?? 0) > 1 ? 's' : ''} exclusive${(partnersCount ?? 0) > 1 ? 's' : ''}`, color: '#0d6e56', iconColor: '#6EE7B7' },
+    { href: '/dashboard/gabarits',    label: 'Gabarits',    icon: FileText,       desc: `${templatesCount ?? 0} gabarit${(templatesCount ?? 0) > 1 ? 's' : ''} disponible${(templatesCount ?? 0) > 1 ? 's' : ''}`, color: '#2d5c40', iconColor: '#A7F3D0' },
+    { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree,     desc: `${groupsCount ?? 0} groupe${(groupsCount ?? 0) > 1 ? 's' : ''} sélectionné${(groupsCount ?? 0) > 1 ? 's' : ''}`, color: '#92400e', iconColor: '#FCD34D' },
   ]
 
   return (
