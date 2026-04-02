@@ -12,7 +12,7 @@ interface UserFormation {
   id: string
   progress: number
   enrolled_at: string
-  formation: { id: string; title: string; slug: string }[] | null
+  formation: { id: string; title: string; slug: string } | null
 }
 
 interface Member {
@@ -276,7 +276,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
                         <div key={uf.id} style={s.formationItem}>
                           <GraduationCap size={14} style={{ color: '#34D399', flexShrink: 0, marginTop: '1px' }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={s.formationTitle}>{uf.formation?.[0]?.title ?? 'Formation inconnue'}</div>
+                            <div style={s.formationTitle}>{uf.formation?.title ?? 'Formation inconnue'}</div>
                             <div style={s.formationMeta}>
                               Inscrit le {formatDate(uf.enrolled_at)}
                               {uf.progress === 100 && (
