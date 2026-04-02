@@ -6,6 +6,7 @@ import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
   CaretDown, CaretRight, Star, Check,
 } from '@phosphor-icons/react'
+import { enrollInFormation, updateFormationProgress } from '../actions'
 
 interface Lesson {
   id: number
@@ -30,11 +31,26 @@ interface Formation {
   modules: Module[]
 }
 
-export default function FormationView({ formation }: { formation: Formation }) {
+export default function FormationView({
+  formation,
+  formationId,
+  initialProgress,
+}: {
+  formation: Formation
+  formationId?: string | null
+  initialProgress?: number | null
+}) {
   const totalLessons = formation.modules.reduce((a, m) => a + m.lessons.length, 0)
   const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
   const [openModules, setOpenModules] = useState<number[]>([1])
-  const [completedLessons, setCompletedLessons] = useState<number[]>([])
+
+  // Restore completed lessons from saved progress (approximate: first N lessons)
+  const restoredLessons = (() => {
+    if (!initialProgress || initialProgress <= 0) return []
+    const count = Math.round((initialProgress / 100) * totalLessons)
+    return formation.modules.flatMap(m => m.lessons.map(l => l.id)).slice(0, count)
+  })()
+  const [completedLessons, setCompletedLessons] = useState<number[]>(restoredLessons)
 
   const currentLesson = activeLesson
     ? formation.modules
@@ -53,9 +69,16 @@ export default function FormationView({ formation }: { formation: Formation }) {
   }
 
   function markComplete(lessonId: number) {
-    setCompletedLessons(prev =>
-      prev.includes(lessonId) ? prev : [...prev, lessonId]
-    )
+    const updated = completedLessons.includes(lessonId)
+      ? completedLessons
+      : [...completedLessons, lessonId]
+    setCompletedLessons(updated)
+
+    if (formationId) {
+      const newProgress = Math.round((updated.length / totalLessons) * 100)
+      updateFormationProgress(formationId, newProgress)
+    }
+
     // Auto-advance to next lesson
     const allLessons = formation.modules.flatMap(m =>
       m.lessons.map(l => ({ moduleId: m.id, lessonId: l.id }))
@@ -301,6 +324,7 @@ export default function FormationView({ formation }: { formation: Formation }) {
             <button
               className="btn-primary"
               onClick={() => {
+                if (formationId) enrollInFormation(formationId)
                 setActiveLesson({ moduleId: 1, lessonId: 1 })
                 setOpenModules([1])
               }}
