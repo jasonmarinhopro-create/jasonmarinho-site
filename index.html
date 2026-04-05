@@ -638,15 +638,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',scrollY>8),{passive:true});
 
-const hbg=document.getElementById('hbg'),mob=document.getElementById('mob');
-let open=false;
-hbg.addEventListener('click',()=>{
-  open=!open;mob.classList.toggle('open',open);
-  const [a,b,c]=hbg.querySelectorAll('span');
-  if(open){a.style.cssText='transform:rotate(45deg) translate(5px,5px);width:22px';b.style.opacity='0';c.style.cssText='transform:rotate(-45deg) translate(5px,-5px);width:22px'}
-  else{[a,b,c].forEach(s=>{s.style.transform='';s.style.opacity=''})}
-});
-mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{open=false;mob.classList.remove('open');hbg.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity=''})}));
+
 
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.08,rootMargin:'0px 0px -28px 0px'});
 document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
