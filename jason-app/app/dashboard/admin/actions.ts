@@ -203,3 +203,41 @@ export async function deleteUser(userId: string) {
   return { success: true }
 }
 
+function isBotLike(name: string | null, email: string): boolean {
+  if (name && name.length > 8 && !name.includes(' ') && /[A-Z]/.test(name) && /[a-z]/.test(name)) return true
+  const local = email.split('@')[0]
+  const parts = local.split('.')
+  if (parts.length >= 4 && parts.every(p => p.length <= 3)) return true
+  return false
+}
+
+export async function deleteAllBots() {
+  const { error } = await getAdminClient()
+  if (error) return { error }
+
+  const adminClient = getServiceClient()
+
+  const { data: profiles, error: fetchError } = await adminClient
+    .from('profiles')
+    .select('id, email, full_name, role')
+
+  if (fetchError) return { error: fetchError.message }
+
+  const bots = (profiles ?? []).filter(
+    p => p.role !== 'admin' && isBotLike(p.full_name, p.email),
+  )
+
+  if (bots.length === 0) return { deleted: 0 }
+
+  const results = await Promise.all(
+    bots.map(b => adminClient.auth.admin.deleteUser(b.id)),
+  )
+
+  const firstError = results.find(r => r.error)
+  if (firstError?.error) return { error: firstError.error.message }
+
+  revalidatePath('/dashboard/admin')
+  revalidatePath('/dashboard/admin/membres')
+  return { deleted: bots.length }
+}
+
