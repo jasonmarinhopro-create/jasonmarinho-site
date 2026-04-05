@@ -212,8 +212,6 @@
       + '</div>'
     + '</div>'
 
-    + '<div class="mob-sep"></div>'
-
     + '<a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a>'
     + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
     + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'

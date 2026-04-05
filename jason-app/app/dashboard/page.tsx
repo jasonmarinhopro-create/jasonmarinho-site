@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
   GraduationCap, Handshake, FileText, UsersThree,
-  ArrowRight, TrendUp, Star, BookOpen
+  ArrowRight, BookOpen, ShieldCheck,
 } from '@phosphor-icons/react/dist/ssr'
 
 export default async function DashboardPage() {
@@ -35,11 +35,63 @@ export default async function DashboardPage() {
   const enrolled = userFormations?.length ?? 0
   const completed = userFormations?.filter(f => f.progress === 100).length ?? 0
 
-  const quickLinks = [
-    { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap, desc: `${allFormations?.length ?? 0} disponible${(allFormations?.length ?? 0) > 1 ? 's' : ''}`, color: '#004C3F', iconColor: '#34D399' },
-    { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake,      desc: `${partnersCount ?? 0} offre${(partnersCount ?? 0) > 1 ? 's' : ''} exclusive${(partnersCount ?? 0) > 1 ? 's' : ''}`, color: '#0d6e56', iconColor: '#6EE7B7' },
-    { href: '/dashboard/gabarits',    label: 'Gabarits',    icon: FileText,       desc: `${templatesCount ?? 0} gabarit${(templatesCount ?? 0) > 1 ? 's' : ''} disponible${(templatesCount ?? 0) > 1 ? 's' : ''}`, color: '#2d5c40', iconColor: '#A7F3D0' },
-    { href: '/dashboard/communaute',  label: 'Communauté',  icon: UsersThree,     desc: `${groupsCount ?? 0} groupe${(groupsCount ?? 0) > 1 ? 's' : ''} sélectionné${(groupsCount ?? 0) > 1 ? 's' : ''}`, color: '#92400e', iconColor: '#FCD34D' },
+  const pl = (n: number, s = 's') => n > 1 ? s : ''
+
+  const services = [
+    {
+      href: '/dashboard/formations',
+      label: 'Formations',
+      icon: GraduationCap,
+      detail: 'Parcours complets pour optimiser ta LCD',
+      stat: `${allFormations?.length ?? 0} formation${pl(allFormations?.length ?? 0)} disponible${pl(allFormations?.length ?? 0)}`,
+      color: '#004C3F',
+      iconColor: '#34D399',
+    },
+    {
+      href: '/dashboard/guide',
+      label: 'Guide LCD',
+      icon: BookOpen,
+      detail: 'Toutes les ressources pratiques pour gérer ta location',
+      stat: 'Ressources & bonnes pratiques',
+      color: '#1a3d6e',
+      iconColor: '#60a5fa',
+    },
+    {
+      href: '/dashboard/gabarits',
+      label: 'Gabarits',
+      icon: FileText,
+      detail: 'Messages prêts à l\'emploi pour tes voyageurs',
+      stat: `${templatesCount ?? 0} gabarit${pl(templatesCount ?? 0)} disponible${pl(templatesCount ?? 0)}`,
+      color: '#2d5c40',
+      iconColor: '#A7F3D0',
+    },
+    {
+      href: '/dashboard/securite',
+      label: 'Vérification voyageurs',
+      icon: ShieldCheck,
+      detail: 'Vérifie l\'identité de tes voyageurs en toute simplicité',
+      stat: 'Sécurise tes locations',
+      color: '#4a1d5c',
+      iconColor: '#c084fc',
+    },
+    {
+      href: '/dashboard/partenaires',
+      label: 'Partenaires',
+      icon: Handshake,
+      detail: 'Outils et services négociés exclusivement pour toi',
+      stat: `${partnersCount ?? 0} offre${pl(partnersCount ?? 0)} exclusive${pl(partnersCount ?? 0)}`,
+      color: '#0d6e56',
+      iconColor: '#6EE7B7',
+    },
+    {
+      href: '/dashboard/communaute',
+      label: 'Communauté',
+      icon: UsersThree,
+      detail: 'Échange avec d\'autres hôtes LCD et progresse ensemble',
+      stat: `${groupsCount ?? 0} groupe${pl(groupsCount ?? 0)} sélectionné${pl(groupsCount ?? 0)}`,
+      color: '#92400e',
+      iconColor: '#FCD34D',
+    },
   ]
 
   return (
@@ -67,20 +119,23 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* Quick links */}
+        {/* Services grid */}
         <section style={styles.section} className="fade-up d1">
-          <h3 style={styles.sectionTitle}>Accès rapide</h3>
-          <div style={styles.quickGrid} className="dash-quick-grid">
-            {quickLinks.map(({ href, label, icon: Icon, desc, color, iconColor }) => (
-              <Link key={href} href={href} style={styles.quickCard} className="glass-card">
-                <div style={{ ...styles.quickIcon, background: color + '33', border: `1px solid ${color}55` }}>
-                  <Icon size={22} color={iconColor} weight="fill" />
+          <h3 style={styles.sectionTitle}>Mes services</h3>
+          <div style={styles.servicesGrid} className="dash-services-grid">
+            {services.map(({ href, label, icon: Icon, detail, stat, color, iconColor }) => (
+              <Link key={href} href={href} style={styles.serviceCard} className="glass-card">
+                <div style={{ ...styles.serviceIconWrap, background: color + '25', border: `1px solid ${color}55` }}>
+                  <Icon size={26} color={iconColor} weight="fill" />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={styles.quickLabel}>{label}</div>
-                  <div style={styles.quickDesc}>{desc}</div>
+                <div style={styles.serviceBody}>
+                  <div style={styles.serviceLabel}>{label}</div>
+                  <div style={styles.serviceDetail}>{detail}</div>
                 </div>
-                <ArrowRight size={16} color="var(--text-muted)" />
+                <div style={styles.serviceFooter}>
+                  <span style={styles.serviceStat}>{stat}</span>
+                  <ArrowRight size={14} color="var(--text-muted)" />
+                </div>
               </Link>
             ))}
           </div>
@@ -99,7 +154,7 @@ export default async function DashboardPage() {
               {userFormations.map((uf) => (
                 <div key={uf.id} style={styles.formationCard} className="glass-card">
                   <div style={styles.formationIcon}>
-                    <BookOpen size={20} color="#FFD56B" weight="fill" />
+                    <GraduationCap size={20} color="#FFD56B" weight="fill" />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={styles.formationTitle}>{uf.formation?.title}</div>
@@ -157,15 +212,27 @@ const styles: Record<string, React.CSSProperties> = {
   sectionHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   sectionTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', marginBottom: '16px' },
   seeAll: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500 },
-  quickGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' },
-  quickCard: {
-    display: 'flex', alignItems: 'center', gap: '14px',
-    padding: '20px 18px', textDecoration: 'none', borderRadius: '14px',
+
+  /* Services grid */
+  servicesGrid: { display: 'grid', gap: '14px' },
+  serviceCard: {
+    display: 'flex', flexDirection: 'column', gap: '14px',
+    padding: '22px 20px', textDecoration: 'none', borderRadius: '16px',
     transition: 'transform 0.2s',
   },
-  quickIcon: { width: '42px', height: '42px', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  quickLabel: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '3px' },
-  quickDesc: { fontSize: '12px', color: 'var(--text-3)' },
+  serviceIconWrap: {
+    width: '48px', height: '48px', borderRadius: '13px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  serviceBody: { flex: 1 },
+  serviceLabel: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '6px' },
+  serviceDetail: { fontSize: '13px', color: 'var(--text-3)', lineHeight: 1.55 },
+  serviceFooter: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    borderTop: '1px solid var(--border)', paddingTop: '12px', marginTop: '2px',
+  },
+  serviceStat: { fontSize: '12px', color: 'var(--accent-text)', fontWeight: 500 },
+
   formationsGrid: { display: 'flex', flexDirection: 'column', gap: '10px' },
   formationCard: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '14px' },
   formationIcon: {

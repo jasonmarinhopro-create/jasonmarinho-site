@@ -376,6 +376,19 @@ a { color: inherit; }
 /* Hide Header's mobile Sidebar on desktop — layout already renders its own */
 .dash-mobile-sidebar-wrap { display: none; }
 
+/* Services grid — 3 cols desktop, 2 tablet, 1 mobile */
+.dash-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media (max-width: 1024px) {
+  .dash-services-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 560px) {
+  .dash-services-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+}
+
 /* Tablet: 2-col quick grid */
 @media (max-width: 1024px) {
   .dash-quick-grid {
