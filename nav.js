@@ -85,6 +85,13 @@
       '.mob-menu a:hover,.mob-menu a:active{color:#fff}',
       '.mob-menu a i{font-size:17px;color:rgba(255,213,107,.4);flex-shrink:0;width:18px;text-align:center}',
       '.mob-sep{height:1px;background:rgba(255,255,255,.05);margin:6px 0}',
+      '.mob-acc{border-bottom:1px solid rgba(255,255,255,.035)}',
+      '.mob-acc-btn{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px 0 14px;color:rgba(255,213,107,.45);font:600 10px/1 \'Outfit\',sans-serif;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}',
+      '.mob-acc-btn:hover{color:rgba(255,213,107,.7)}',
+      '.mob-acc-arrow{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;flex-shrink:0}',
+      '.mob-acc.open .mob-acc-arrow{transform:rotate(180deg)}',
+      '.mob-acc-body{max-height:0;overflow:hidden;transition:max-height .32s ease}',
+      '.mob-acc.open .mob-acc-body{max-height:600px}',
 
       /* Driing mobile — carte highlight */
       '.mob-driing{background:rgba(255,213,107,.06)!important;border:1px solid rgba(255,213,107,.18)!important;border-radius:10px!important;padding:13px 14px!important;margin-top:4px;border-bottom:none!important}',
@@ -110,6 +117,7 @@
 
   /* ── SVG CARET ── */
   var CARET = '<svg class="n-caret" viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>';
+  var MOB_ARROW = '<svg class="mob-acc-arrow" viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>';
 
   /* ── NAV HTML ── */
   var h = '<nav id="nav">'
@@ -176,26 +184,32 @@
   /* ── MOBILE MENU — ordre identique au desktop ── */
   + '<div class="mob-menu" id="mob">'
 
-    + '<div class="mob-stitle">Pour qui</div>'
-    + '<a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a>'
-    + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes</a>'
-    + '<a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a>'
-    + '<a href="/pour-qui/membres-driing" class="mob-driing">'
-      + '<i class="ph ph-lightning"></i>'
-      + '<div class="mob-driing-body">'
-        + '<span class="mob-driing-name">Membres Driing</span>'
-        + '<span class="mob-driing-sub">Accès inclus avec Driing</span>'
+    + '<div class="mob-acc" id="acc-pq">'
+      + '<button class="mob-acc-btn" aria-expanded="false">Pour qui ' + MOB_ARROW + '</button>'
+      + '<div class="mob-acc-body">'
+        + '<a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a>'
+        + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes</a>'
+        + '<a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a>'
+        + '<a href="/pour-qui/membres-driing" class="mob-driing">'
+          + '<i class="ph ph-lightning"></i>'
+          + '<div class="mob-driing-body">'
+            + '<span class="mob-driing-name">Membres Driing</span>'
+            + '<span class="mob-driing-sub">Accès inclus avec Driing</span>'
+          + '</div>'
+        + '</a>'
       + '</div>'
-    + '</a>'
+    + '</div>'
 
-    + '<div class="mob-sep"></div>'
-
-    + '<div class="mob-stitle">Services</div>'
-    + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
-    + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
-    + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
-    + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a>'
-    + '<a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a>'
+    + '<div class="mob-acc" id="acc-sv">'
+      + '<button class="mob-acc-btn" aria-expanded="false">Services ' + MOB_ARROW + '</button>'
+      + '<div class="mob-acc-body">'
+        + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
+        + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
+        + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
+        + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Communauté LCD</a>'
+        + '<a href="/services/partenaires"><i class="ph ph-handshake"></i>Partenaires exclusifs</a>'
+      + '</div>'
+    + '</div>'
 
     + '<div class="mob-sep"></div>'
 
@@ -228,6 +242,14 @@
       nav.classList.toggle('sc', window.scrollY > 10);
     }, { passive: true });
 
+    /* Ferme tous les accordéons mobile */
+    function closeAccordions() {
+      document.querySelectorAll('.mob-acc.open').forEach(function (acc) {
+        acc.classList.remove('open');
+        acc.querySelector('.mob-acc-btn').setAttribute('aria-expanded', 'false');
+      });
+    }
+
     /* Hamburger — animation fluide (opacity + translateY) */
     hbg.addEventListener('click', function (e) {
       e.stopPropagation();
@@ -241,7 +263,7 @@
         mob.classList.remove('open');
         hbg.classList.remove('open');
         mob.addEventListener('transitionend', function hide() {
-          if (!mob.classList.contains('open')) mob.style.display = '';
+          if (!mob.classList.contains('open')) { mob.style.display = ''; closeAccordions(); }
           mob.removeEventListener('transitionend', hide);
         });
       }
@@ -264,6 +286,17 @@
       a.addEventListener('click', function () {
         mob.classList.remove('open');
         hbg.classList.remove('open');
+      });
+    });
+
+    /* Accordéons mobile */
+    document.querySelectorAll('.mob-acc-btn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var acc = btn.parentElement;
+        var wasOpen = acc.classList.contains('open');
+        acc.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(!wasOpen));
       });
     });
 
