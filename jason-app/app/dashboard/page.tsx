@@ -6,6 +6,8 @@ import {
   GraduationCap, Handshake, FileText, UsersThree,
   ArrowRight, BookOpen, ShieldCheck,
 } from '@phosphor-icons/react/dist/ssr'
+import { DRIING_SERVICES } from '@/lib/constants/partners'
+import { JASON_GROUPS, EXTRA_GROUPS } from '@/lib/constants/community'
 
 export default async function DashboardPage() {
   const profile = await getProfile()
@@ -26,10 +28,17 @@ export default async function DashboardPage() {
       .order('enrolled_at', { ascending: false })
       .limit(3),
     supabase.from('formations').select('id').eq('is_published', true),
+    // Partenaires DB = partenaires additionnels hors Driing (actifs)
     supabase.from('partners').select('*', { count: 'exact', head: true }).eq('is_active', true),
     supabase.from('templates').select('*', { count: 'exact', head: true }),
     supabase.from('community_groups').select('*', { count: 'exact', head: true }),
   ])
+
+  // Nombre total d'offres partenaires : services Driing + partenaires additionnels DB
+  const totalPartnerOffers = DRIING_SERVICES.length + (partnersCount ?? 0)
+
+  // Nombre total de groupes : groupes Jason/Driing + groupes extra + groupes DB
+  const totalGroups = JASON_GROUPS.length + EXTRA_GROUPS.length + (groupsCount ?? 0)
 
   const firstName = profile?.full_name?.split(' ')[0] ?? ''
   const enrolled = userFormations?.length ?? 0
@@ -79,7 +88,7 @@ export default async function DashboardPage() {
       label: 'Partenaires',
       icon: Handshake,
       detail: 'Outils et services négociés exclusivement pour toi',
-      stat: `${partnersCount ?? 0} offre${pl(partnersCount ?? 0)} exclusive${pl(partnersCount ?? 0)}`,
+      stat: `${totalPartnerOffers} offre${pl(totalPartnerOffers)} exclusive${pl(totalPartnerOffers)}`,
       color: '#0d6e56',
       iconColor: '#6EE7B7',
     },
@@ -88,7 +97,7 @@ export default async function DashboardPage() {
       label: 'Communauté',
       icon: UsersThree,
       detail: 'Échange avec d\'autres hôtes LCD et progresse ensemble',
-      stat: `${groupsCount ?? 0} groupe${pl(groupsCount ?? 0)} sélectionné${pl(groupsCount ?? 0)}`,
+      stat: `${totalGroups} groupe${pl(totalGroups)} sélectionné${pl(totalGroups)}`,
       color: '#92400e',
       iconColor: '#FCD34D',
     },
@@ -177,7 +186,7 @@ export default async function DashboardPage() {
             <div style={styles.emptyState} className="glass-card">
               <GraduationCap size={40} color="var(--text-muted)" weight="fill" />
               <h3 style={styles.emptyTitle}>Commence ta première formation</h3>
-              <p style={styles.emptyDesc}>3 formations disponibles pour optimiser ta location courte durée.</p>
+              <p style={styles.emptyDesc}>{allFormations?.length ?? 0} formation{pl(allFormations?.length ?? 0)} disponible{pl(allFormations?.length ?? 0)} pour optimiser ta location courte durée.</p>
               <Link href="/dashboard/formations" className="btn-primary">
                 Voir les formations <ArrowRight size={16} weight="bold" />
               </Link>

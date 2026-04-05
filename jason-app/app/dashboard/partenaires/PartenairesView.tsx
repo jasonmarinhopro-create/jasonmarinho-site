@@ -1,36 +1,20 @@
 'use client'
 
-import { ArrowUpRight, Star, CalendarBlank, BookOpen, Buildings, Handshake } from '@phosphor-icons/react'
+import { ArrowUpRight, Star, Buildings, Handshake } from '@phosphor-icons/react'
+import { DRIING_SERVICES } from '@/lib/constants/partners'
 import PartenaireSuggestForm from './PartenaireSuggestForm'
 
-const DRIING_SERVICES = [
-  {
-    icon: CalendarBlank,
-    name: 'Plateforme de réservation',
-    tagline: '0 % de commission',
-    desc: 'Recevez des réservations directes sans payer de commission à Airbnb ou Booking. Vos revenus, intégralement.',
-    url: 'https://www.driing.co/',
-    color: '#34D399',
-  },
-  {
-    icon: BookOpen,
-    name: 'Livret d\'accueil digital',
-    tagline: 'Expérience voyageur premium',
-    desc: 'Créez un livret d\'accueil interactif partageable par lien ou QR code — instructions d\'arrivée, Wi-Fi, recommandations locales.',
-    url: 'https://www.driing.co/livret-daccueil-digital',
-    color: '#93C5FD',
-  },
-  {
-    icon: Buildings,
-    name: 'Annuaire des conciergeries',
-    tagline: 'Visibilité & mise en réseau',
-    desc: 'Référencez votre conciergerie pour être trouvé par des propriétaires et collaborer avec d\'autres professionnels du secteur.',
-    url: 'https://www.driing.co/trouver-une-conciergerie',
-    color: 'var(--accent-text)',
-  },
-]
+interface Partner {
+  id: string
+  name: string
+  description: string
+  advantage: string
+  promo_code: string | null
+  url: string
+  category: string
+}
 
-export default function PartenairesView() {
+export default function PartenairesView({ additionalPartners = [] }: { additionalPartners?: Partner[] }) {
   return (
     <div style={styles.page}>
       {/* Intro */}
@@ -73,7 +57,7 @@ export default function PartenairesView() {
           </div>
         </div>
 
-        {/* 3 service cards */}
+        {/* Service cards — dynamiques via DRIING_SERVICES */}
         <div style={styles.servicesGrid} className="driing-services-grid">
           {DRIING_SERVICES.map(({ icon: Icon, name, tagline, desc, url, color }) => (
             <a
@@ -101,6 +85,41 @@ export default function PartenairesView() {
           ))}
         </div>
       </div>
+
+      {/* ── Partenaires additionnels (depuis la DB) ── */}
+      {additionalPartners.length > 0 && (
+        <div style={styles.additionalSection} className="fade-up d2">
+          <div style={styles.additionalLabel}>Autres partenaires</div>
+          <div style={styles.additionalGrid} className="dash-grid-2">
+            {additionalPartners.map((p) => (
+              <a
+                key={p.id}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.additionalCard}
+                className="glass-card"
+              >
+                <div style={styles.additionalTop}>
+                  <div style={styles.additionalName}>{p.name}</div>
+                  <span style={styles.categoryPill}>{p.category}</span>
+                </div>
+                <p style={styles.additionalDesc}>{p.description}</p>
+                <div style={styles.advantageBox}>
+                  <span style={styles.advantageLabel}>Avantage membres</span>
+                  <span style={styles.advantageText}>{p.advantage}</span>
+                  {p.promo_code && (
+                    <span style={styles.promoCode}>{p.promo_code}</span>
+                  )}
+                </div>
+                <div style={styles.serviceLink}>
+                  Découvrir <ArrowUpRight size={12} />
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Suggest a partner */}
       <div style={styles.suggestSection} className="fade-up d3">
@@ -173,8 +192,8 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '13px', color: 'var(--text-3)', marginTop: '3px',
   },
 
-  /* 3 services */
-  servicesGrid: {},  /* handled by CSS class driing-services-grid */
+  /* 3 services Driing */
+  servicesGrid: {},
   serviceCard: {
     display: 'flex', flexDirection: 'column', gap: '12px',
     background: 'var(--surface)',
@@ -209,6 +228,53 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 500,
     color: 'var(--text-3)',
     marginTop: 'auto',
+  },
+
+  /* ── Partenaires additionnels ── */
+  additionalSection: { marginBottom: '40px' },
+  additionalLabel: {
+    fontSize: '12px', fontWeight: 600, letterSpacing: '0.7px',
+    textTransform: 'uppercase', color: 'var(--text-3)',
+    marginBottom: '18px',
+  },
+  additionalGrid: {},
+  additionalCard: {
+    display: 'flex', flexDirection: 'column', gap: '12px',
+    padding: '22px', borderRadius: '16px', textDecoration: 'none',
+    transition: 'background 0.18s',
+  },
+  additionalTop: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
+  },
+  additionalName: {
+    fontSize: '16px', fontWeight: 600, color: 'var(--text)',
+    fontFamily: 'Fraunces, serif',
+  },
+  categoryPill: {
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.4px',
+    color: 'var(--accent-text)', background: 'rgba(0,76,63,0.2)',
+    border: '1px solid rgba(0,76,63,0.3)', borderRadius: '100px',
+    padding: '3px 10px', flexShrink: 0,
+  },
+  additionalDesc: {
+    fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65,
+  },
+  advantageBox: {
+    display: 'flex', flexDirection: 'column', gap: '4px',
+    padding: '12px', borderRadius: '10px',
+    background: 'rgba(255,213,107,0.04)',
+    border: '1px solid rgba(255,213,107,0.1)',
+  },
+  advantageLabel: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.6px',
+    textTransform: 'uppercase', color: 'rgba(255,213,107,0.5)',
+  },
+  advantageText: {
+    fontSize: '13px', color: 'var(--text-2)', fontWeight: 400,
+  },
+  promoCode: {
+    fontSize: '12px', fontWeight: 700, color: 'var(--accent-text)',
+    fontFamily: 'monospace', letterSpacing: '1px', marginTop: '2px',
   },
 
   // Suggest section
