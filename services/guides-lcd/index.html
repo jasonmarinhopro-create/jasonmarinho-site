@@ -166,6 +166,15 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 .rv.in{opacity:1;transform:translateY(0)}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}.d6{transition-delay:.6s}
 
+/* ── CONCEPT INTRO GRID ── */
+.concept-intro-g{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center}
+.preview-box{background:var(--cr);border:1px solid var(--bd);border-radius:20px;padding:32px}
+.preview-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--w);border:1px solid var(--bd);border-radius:10px}
+.preview-item-lock{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(0,76,63,.04);border:1.5px dashed rgba(0,76,63,.15);border-radius:10px}
+.preview-item-icon{font-size:18px;flex-shrink:0}
+.preview-item-title{font-size:13px;font-weight:500;color:var(--td)}
+.preview-item-desc{font-size:11.5px;font-weight:300;color:var(--tl);line-height:1.4}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
   .n-links,.n-right{display:none}
@@ -173,12 +182,19 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .concept-g{grid-template-columns:repeat(2,1fr)}
   .how-g{grid-template-columns:1fr 1fr}
   .ft-g{grid-template-columns:1fr 1fr;gap:32px}
+  .concept-intro-g{grid-template-columns:1fr;gap:clamp(28px,4vw,40px)}
 }
 @media(max-width:640px){
   .concept-g{grid-template-columns:1fr}
   .how-g{grid-template-columns:1fr}
   .ft-g{grid-template-columns:1fr;gap:28px}
   .ft-bot{flex-direction:column;align-items:flex-start}
+  .concept-intro-g{gap:24px}
+  .preview-box{padding:20px}
+  .preview-item,.preview-item-lock{padding:10px 12px}
+  .preview-item-icon{font-size:16px}
+  .preview-item-title{font-size:12.5px}
+  .preview-item-desc{font-size:11px}
 }
 </style>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
@@ -213,7 +229,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <!-- CE QUE C'EST -->
 <section class="sec wh">
   <div class="s-in">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center" class="rv">
+    <div class="concept-intro-g rv">
       <div>
         <div class="lbl">Le concept</div>
         <h2 class="h2">Pas un article. <em>Une base de données</em></h2>
@@ -237,32 +253,32 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           </li>
         </ul>
       </div>
-      <div style="background:var(--cr);border:1px solid var(--bd);border-radius:20px;padding:32px">
-        <div style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--tl);margin-bottom:20px">Aperçu du guide</div>
+      <div class="preview-box">
+        <div style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--tl);margin-bottom:16px">Aperçu du guide</div>
         <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--w);border:1px solid var(--bd);border-radius:10px">
-            <i class="ph ph-scales" style="font-size:18px;color:#60a5fa;flex-shrink:0"></i>
+          <div class="preview-item">
+            <i class="ph ph-scales preview-item-icon" style="color:#60a5fa"></i>
             <div>
-              <div style="font-size:13px;font-weight:500;color:var(--td)">Réglementation</div>
-              <div style="font-size:11.5px;font-weight:300;color:var(--tl)">120 nuits/an · 5 000 € amende · numéro d'enregistrement</div>
+              <div class="preview-item-title">Réglementation</div>
+              <div class="preview-item-desc">120 nuits/an · 5 000 € amende · enregistrement obligatoire</div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--w);border:1px solid var(--bd);border-radius:10px">
-            <i class="ph ph-currency-eur" style="font-size:18px;color:#34d399;flex-shrink:0"></i>
+          <div class="preview-item">
+            <i class="ph ph-currency-eur preview-item-icon" style="color:#34d399"></i>
             <div>
-              <div style="font-size:13px;font-weight:500;color:var(--td)">Fiscalité</div>
-              <div style="font-size:11.5px;font-weight:300;color:var(--tl)">15 000 € micro-BIC · 30 % abattement · seuil LMNP</div>
+              <div class="preview-item-title">Fiscalité</div>
+              <div class="preview-item-desc">15 000 € micro-BIC · 30 % abattement · seuil LMNP</div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--w);border:1px solid var(--bd);border-radius:10px">
-            <i class="ph ph-chart-line" style="font-size:18px;color:#a78bfa;flex-shrink:0"></i>
+          <div class="preview-item">
+            <i class="ph ph-chart-line preview-item-icon" style="color:#a78bfa"></i>
             <div>
-              <div style="font-size:13px;font-weight:500;color:var(--td)">Revenus & Tarification</div>
-              <div style="font-size:11.5px;font-weight:300;color:var(--tl)">11 200 €/an moy. · +20–40 % tarif dynamique · 63 % occupation</div>
+              <div class="preview-item-title">Revenus & Tarification</div>
+              <div class="preview-item-desc">11 200 €/an moy. · +20–40 % tarif dynamique · 63 % occupation</div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(0,76,63,.04);border:1.5px dashed rgba(0,76,63,.15);border-radius:10px">
-            <i class="ph ph-lock" style="font-size:18px;color:var(--tl);flex-shrink:0"></i>
+          <div class="preview-item-lock">
+            <i class="ph ph-lock preview-item-icon" style="color:var(--tl)"></i>
             <div style="font-size:12px;font-weight:300;color:var(--tl)">+ 4 autres thèmes dans l'espace membre</div>
           </div>
         </div>
