@@ -5,7 +5,7 @@ import {
   Robot, Trash, ArrowClockwise, CheckCircle, XCircle, MagnifyingGlass,
   GraduationCap, Lightning, Users,
 } from '@phosphor-icons/react'
-import { changeUserPlan, deleteUser } from '../actions'
+import { changeUserPlan, deleteUser, deleteAllBots } from '../actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface UserFormation {
@@ -57,10 +57,24 @@ export default function MembresUI({ members }: { members: Member[] }) {
   const [isPending, startTransition] = useTransition()
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
   const [expandedMember, setExpandedMember] = useState<string | null>(null)
+  const [botsFeedback, setBotsFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
 
   function notify(id: string, type: 'ok' | 'err', msg: string) {
     setFeedback({ id, type, msg })
     setTimeout(() => setFeedback(null), 3000)
+  }
+
+  function handleDeleteAllBots() {
+    if (!confirm(`Supprimer définitivement ${totalBots} bot(s) suspect(s) ?`)) return
+    startTransition(async () => {
+      const res = await deleteAllBots()
+      if (res?.error) {
+        setBotsFeedback({ type: 'err', msg: String(res.error) })
+      } else {
+        setBotsFeedback({ type: 'ok', msg: `${(res as { deleted: number }).deleted} bot(s) supprimé(s)` })
+      }
+      setTimeout(() => setBotsFeedback(null), 3000)
+    })
   }
 
   function action(id: string, fn: () => Promise<{ error?: string | null }>, successMsg: string) {
@@ -103,6 +117,24 @@ export default function MembresUI({ members }: { members: Member[] }) {
           <Robot size={18} style={{ color: totalBots > 0 ? '#f87171' : 'var(--text-muted)' }} />
           <span style={{ ...s.statNum, color: totalBots > 0 ? '#f87171' : 'var(--text-3)' }}>{totalBots}</span>
           <span style={s.statLabel}>bots suspects</span>
+          {totalBots > 0 && (
+            botsFeedback ? (
+              <FeedbackPill type={botsFeedback.type} msg={botsFeedback.msg} />
+            ) : (
+              <button
+                disabled={isPending}
+                onClick={handleDeleteAllBots}
+                style={s.deleteAllBotsBtn}
+                title="Supprimer tous les bots suspects"
+              >
+                {isPending
+                  ? <ArrowClockwise size={12} style={{ animation: 'spin 1s linear infinite' }} />
+                  : <Trash size={12} />
+                }
+                Delete AllBots
+              </button>
+            )
+          )}
         </div>
       </div>
 
@@ -420,6 +452,16 @@ const s: Record<string, React.CSSProperties> = {
     color: '#f87171', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.15s',
+  },
+  deleteAllBotsBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'rgba(248,113,113,0.08)',
+    border: '1px solid rgba(248,113,113,0.25)',
+    borderRadius: '8px', padding: '5px 10px',
+    color: '#f87171', cursor: 'pointer',
+    fontSize: '11px', fontWeight: 600,
+    fontFamily: 'Outfit, sans-serif',
+    transition: 'all 0.15s', marginLeft: '8px',
   },
 
   formationsExpand: {
