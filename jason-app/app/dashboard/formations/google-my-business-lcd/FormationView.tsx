@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
-  CaretDown, CaretRight, Star, Check,
+  CaretDown, CaretRight, Star, Check, List, X,
 } from '@phosphor-icons/react'
 import { enrollInFormation, updateFormationProgress } from '../actions'
 
@@ -43,6 +43,15 @@ export default function FormationView({
   const totalLessons = formation.modules.reduce((a, m) => a + m.lessons.length, 0)
   const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
   const [openModules, setOpenModules] = useState<number[]>([1])
+  const [isMobile, setIsMobile] = useState(false)
+  const [navOpen, setNavOpen] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   // Restore completed lessons from saved progress (approximate: first N lessons)
   const restoredLessons = (() => {
@@ -66,6 +75,11 @@ export default function FormationView({
     setOpenModules(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     )
+  }
+
+  function selectLesson(moduleId: number, lessonId: number) {
+    setActiveLesson({ moduleId, lessonId })
+    if (isMobile) setNavOpen(false)
   }
 
   function markComplete(lessonId: number) {
@@ -108,10 +122,8 @@ export default function FormationView({
       } else if (line.startsWith('### ')) {
         elements.push(<h3 key={key++} style={s.h3}>{line.slice(4)}</h3>)
       } else if (line.startsWith('**') && line.endsWith('**') && line.includes('—')) {
-        // Bold title like **① Nom...**
         elements.push(<p key={key++} style={s.boldLine} dangerouslySetInnerHTML={{ __html: formatInline(line) }} />)
       } else if (line.startsWith('| ')) {
-        // Table
         const tableLines: string[] = []
         while (i < lines.length && lines[i].startsWith('|')) {
           tableLines.push(lines[i])
@@ -138,7 +150,6 @@ export default function FormationView({
         )
         continue
       } else if (line.startsWith('```')) {
-        // Code block
         const codeLines: string[] = []
         i++
         while (i < lines.length && !lines[i].startsWith('```')) {
@@ -195,89 +206,128 @@ export default function FormationView({
       .replace(/`([^`]+)`/g, '<code style="background:var(--border);padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;color:#FFD56B">$1</code>')
   }
 
-  return (
-    <div style={styles.root} className="dash-page">
-      {/* SIDEBAR nav formation */}
-      <aside style={styles.navPanel}>
-        <div style={styles.navHeader}>
+  // ── Sidebar nav content (shared between desktop sidebar and mobile drawer)
+  const NavContent = () => (
+    <>
+      <div style={styles.navHeader}>
+        {!isMobile && (
           <Link href="/dashboard/formations" style={styles.backLink}>
             <ArrowLeft size={15} />
             Retour
           </Link>
-          <div style={styles.formationMeta}>
-            <div style={styles.formationTitle}>{formation.title}</div>
-            <div style={styles.formationStats}>
-              <span><Clock size={12} /> {formation.duration}</span>
-              <span><BookOpen size={12} /> {totalLessons} leçons</span>
-            </div>
-          </div>
-          {/* Progress bar */}
-          <div style={styles.progressWrap}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <span style={styles.progressLabel}>Progression</span>
-              <span style={styles.progressPct}>{progress}%</span>
-            </div>
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: `${progress}%` }} />
-            </div>
+        )}
+        <div style={styles.formationMeta}>
+          <div style={styles.formationTitle}>{formation.title}</div>
+          <div style={styles.formationStats}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Clock size={12} /> {formation.duration}
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <BookOpen size={12} /> {totalLessons} leçons
+            </span>
           </div>
         </div>
+        <div style={styles.progressWrap}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+            <span style={styles.progressLabel}>Progression</span>
+            <span style={styles.progressPct}>{progress}%</span>
+          </div>
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+      </div>
 
-        {/* Modules list */}
-        <nav style={styles.navModules}>
-          {formation.modules.map(module => {
-            const isOpen = openModules.includes(module.id)
-            const allDone = module.lessons.every(l => completedLessons.includes(l.id))
-            return (
-              <div key={module.id} style={styles.moduleGroup}>
-                <button
-                  onClick={() => toggleModule(module.id)}
-                  style={styles.moduleBtn}
-                >
-                  <div style={styles.moduleBtnLeft}>
-                    {allDone
-                      ? <CheckCircle size={16} color="#34D399" weight="fill" />
-                      : <div style={styles.moduleNum}>{module.id}</div>
-                    }
-                    <span style={styles.moduleLabel}>{module.title}</span>
-                  </div>
-                  {isOpen ? <CaretDown size={14} /> : <CaretRight size={14} />}
-                </button>
-                {isOpen && (
-                  <div style={styles.lessonList}>
-                    {module.lessons.map(lesson => {
-                      const isActive = activeLesson?.lessonId === lesson.id
-                      const isDone = completedLessons.includes(lesson.id)
-                      return (
-                        <button
-                          key={lesson.id}
-                          onClick={() => setActiveLesson({ moduleId: module.id, lessonId: lesson.id })}
-                          style={{
-                            ...styles.lessonBtn,
-                            ...(isActive ? styles.lessonBtnActive : {}),
-                          }}
-                        >
-                          <div style={{ ...styles.lessonDot, ...(isDone ? { background: '#34D399' } : isActive ? { background: 'var(--accent-text)' } : {}) }}>
-                            {isDone && <Check size={9} color="#000" weight="bold" />}
-                          </div>
-                          <span style={{ flex: 1, textAlign: 'left' }}>{lesson.title}</span>
-                          <span style={styles.lessonDur}>{lesson.duration}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
+      <nav style={styles.navModules}>
+        {formation.modules.map(module => {
+          const isOpen = openModules.includes(module.id)
+          const allDone = module.lessons.every(l => completedLessons.includes(l.id))
+          return (
+            <div key={module.id} style={styles.moduleGroup}>
+              <button onClick={() => toggleModule(module.id)} style={styles.moduleBtn}>
+                <div style={styles.moduleBtnLeft}>
+                  {allDone
+                    ? <CheckCircle size={16} color="#34D399" weight="fill" />
+                    : <div style={styles.moduleNum}>{module.id}</div>
+                  }
+                  <span style={styles.moduleLabel}>{module.title}</span>
+                </div>
+                {isOpen ? <CaretDown size={14} /> : <CaretRight size={14} />}
+              </button>
+              {isOpen && (
+                <div style={styles.lessonList}>
+                  {module.lessons.map(lesson => {
+                    const isActive = activeLesson?.lessonId === lesson.id
+                    const isDone = completedLessons.includes(lesson.id)
+                    return (
+                      <button
+                        key={lesson.id}
+                        onClick={() => selectLesson(module.id, lesson.id)}
+                        style={{
+                          ...styles.lessonBtn,
+                          ...(isActive ? styles.lessonBtnActive : {}),
+                        }}
+                      >
+                        <div style={{ ...styles.lessonDot, ...(isDone ? { background: '#34D399' } : isActive ? { background: 'var(--accent-text)' } : {}) }}>
+                          {isDone && <Check size={9} color="#000" weight="bold" />}
+                        </div>
+                        <span style={{ flex: 1, textAlign: 'left' }}>{lesson.title}</span>
+                        <span style={styles.lessonDur}>{lesson.duration}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </nav>
+    </>
+  )
+
+  return (
+    <div style={{ ...styles.root, flexDirection: isMobile ? 'column' : 'row' }} className="dash-page">
+
+      {/* ── MOBILE: barre sticky en haut ── */}
+      {isMobile && (
+        <div style={styles.mobileBar}>
+          <Link href="/dashboard/formations" style={styles.mobileBack}>
+            <ArrowLeft size={18} />
+          </Link>
+          <div style={styles.mobileBarCenter}>
+            <span style={styles.mobileBarTitle}>{formation.title}</span>
+            <div style={styles.mobileBarProgress}>
+              <div style={styles.mobileBarProgressFill} className="progress-bar">
+                <div className="progress-fill" style={{ width: `${progress}%` }} />
               </div>
-            )
-          })}
-        </nav>
-      </aside>
+              <span style={styles.mobileBarPct}>{progress}%</span>
+            </div>
+          </div>
+          <button onClick={() => setNavOpen(v => !v)} style={styles.mobileNavToggle} aria-label="Sommaire">
+            {navOpen ? <X size={20} color="var(--text)" /> : <List size={20} color="var(--text)" />}
+          </button>
+        </div>
+      )}
 
-      {/* MAIN CONTENT */}
-      <main style={styles.main}>
+      {/* ── MOBILE: drawer sommaire ── */}
+      {isMobile && navOpen && (
+        <div style={styles.mobileDrawer}>
+          <NavContent />
+        </div>
+      )}
+
+      {/* ── DESKTOP: sidebar fixe ── */}
+      {!isMobile && (
+        <aside style={styles.navPanel}>
+          <NavContent />
+        </aside>
+      )}
+
+      {/* ── CONTENU PRINCIPAL ── */}
+      <main style={{ ...styles.main, ...(isMobile ? styles.mainMobile : {}) }}>
         {!activeLesson ? (
           /* Overview */
-          <div style={styles.overview}>
+          <div style={{ ...styles.overview, ...(isMobile ? styles.overviewMobile : {}) }}>
             <div style={styles.overviewBadge} className="badge badge-yellow">
               <GraduationCap size={12} weight="fill" />
               {formation.level}
@@ -285,7 +335,7 @@ export default function FormationView({
             <h1 style={styles.overviewTitle}>{formation.title}</h1>
             <p style={styles.overviewDesc}>{formation.description}</p>
 
-            <div style={styles.overviewMeta}>
+            <div style={{ ...styles.overviewMeta, ...(isMobile ? styles.overviewMetaMobile : {}) }}>
               <div style={styles.metaChip}>
                 <Clock size={16} color="#FFD56B" />
                 <div>
@@ -328,14 +378,14 @@ export default function FormationView({
                 setActiveLesson({ moduleId: 1, lessonId: 1 })
                 setOpenModules([1])
               }}
-              style={{ fontSize: '15px', padding: '13px 26px' }}
+              style={{ fontSize: '15px', padding: '13px 26px', width: isMobile ? '100%' : 'auto' }}
             >
               Commencer la formation <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
             </button>
           </div>
         ) : (
           /* Lesson content */
-          <div style={styles.lessonContent}>
+          <div style={{ ...styles.lessonContent, ...(isMobile ? styles.lessonContentMobile : {}) }}>
             <div style={styles.lessonBreadcrumb}>
               <span style={styles.breadcrumbModule}>Module {currentModule?.id} — {currentModule?.title}</span>
               <span style={styles.breadcrumbSep}>›</span>
@@ -363,7 +413,7 @@ export default function FormationView({
                 <button
                   className="btn-primary"
                   onClick={() => markComplete(currentLesson!.id)}
-                  style={{ fontSize: '14px', padding: '12px 24px' }}
+                  style={{ fontSize: '14px', padding: '12px 24px', width: isMobile ? '100%' : 'auto' }}
                 >
                   <Check size={16} weight="bold" />
                   Marquer comme terminé
@@ -379,9 +429,58 @@ export default function FormationView({
 
 const styles: Record<string, React.CSSProperties> = {
   root: {
-    display: 'flex', minHeight: 'calc(100svh - var(--header-h))',
+    display: 'flex',
+    minHeight: 'calc(100svh - var(--header-h))',
     padding: 0,
   },
+
+  // ── Mobile bar ──
+  mobileBar: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '12px 16px',
+    borderBottom: '1px solid var(--border)',
+    background: 'var(--bg)',
+    position: 'sticky', top: 'var(--header-h)', zIndex: 20,
+  },
+  mobileBack: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: '36px', height: '36px', borderRadius: '10px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    color: 'var(--text-2)', flexShrink: 0,
+  },
+  mobileBarCenter: {
+    flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '5px',
+  },
+  mobileBarTitle: {
+    fontSize: '13px', fontWeight: 600, color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+  },
+  mobileBarProgress: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+  },
+  mobileBarProgressFill: {
+    flex: 1,
+  },
+  mobileBarPct: {
+    fontSize: '11px', color: 'var(--accent-text)', fontWeight: 600, flexShrink: 0,
+  },
+  mobileNavToggle: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: '40px', height: '40px', borderRadius: '10px', flexShrink: 0,
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    cursor: 'pointer',
+  },
+
+  // ── Mobile drawer ──
+  mobileDrawer: {
+    width: '100%',
+    borderBottom: '1px solid var(--border)',
+    background: 'var(--bg)',
+    maxHeight: '60svh',
+    overflowY: 'auto',
+  },
+
+  // ── Desktop sidebar ──
   navPanel: {
     width: '280px', flexShrink: 0,
     borderRight: '1px solid var(--border)',
@@ -420,7 +519,8 @@ const styles: Record<string, React.CSSProperties> = {
   moduleBtn: {
     width: '100%', display: 'flex', alignItems: 'center',
     justifyContent: 'space-between', gap: '8px',
-    padding: '9px 10px', borderRadius: '9px',
+    padding: '10px 10px', minHeight: '44px',
+    borderRadius: '9px',
     background: 'none', border: 'none', cursor: 'pointer',
     color: 'var(--text-2)',
     transition: 'background 0.18s',
@@ -440,7 +540,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   lessonBtn: {
     width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
-    padding: '8px 10px', borderRadius: '8px',
+    padding: '10px 10px', minHeight: '44px', borderRadius: '8px',
     background: 'none', border: 'none', cursor: 'pointer',
     fontSize: '12px', color: 'var(--text-3)',
     transition: 'background 0.15s, color 0.15s',
@@ -459,41 +559,50 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0,
   },
 
-  // Main area
+  // ── Main area ──
   main: { flex: 1, overflowY: 'auto' },
+  mainMobile: { overflowY: 'visible' },
 
   // Overview
   overview: {
     padding: 'clamp(28px,4vw,52px)',
     maxWidth: '720px',
   },
+  overviewMobile: {
+    padding: '20px 16px',
+    maxWidth: '100%',
+  },
   overviewBadge: { marginBottom: '20px' },
   overviewTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(28px,3vw,42px)',
+    fontFamily: 'Fraunces, serif', fontSize: 'clamp(24px,3vw,42px)',
     fontWeight: 400, color: 'var(--text)', lineHeight: 1.15,
     marginBottom: '16px',
   },
   overviewDesc: {
-    fontSize: '16px', fontWeight: 300, color: 'var(--text-2)',
-    lineHeight: 1.7, marginBottom: '32px',
+    fontSize: '15px', fontWeight: 300, color: 'var(--text-2)',
+    lineHeight: 1.7, marginBottom: '28px',
   },
   overviewMeta: {
-    display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '36px',
+    display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '28px',
+  },
+  overviewMetaMobile: {
+    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px',
   },
   metaChip: {
     display: 'flex', alignItems: 'center', gap: '12px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '14px 18px',
+    borderRadius: '12px', padding: '14px 16px',
+    flex: '1 1 auto',
   },
   metaVal: { fontSize: '14px', fontWeight: 600, color: 'var(--text)' },
   metaLbl: { fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' },
   objectifBox: {
     background: 'rgba(0,76,63,0.15)', border: '1px solid rgba(52,211,153,0.12)',
-    borderRadius: '16px', padding: '24px 24px',
-    marginBottom: '32px',
+    borderRadius: '16px', padding: '20px',
+    marginBottom: '28px',
   },
   objectifTitle: {
-    fontSize: '13px', fontWeight: 600, letterSpacing: '0.5px',
+    fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px',
     textTransform: 'uppercase', color: 'var(--text-3)',
     marginBottom: '16px',
   },
@@ -503,15 +612,19 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 'clamp(24px,4vw,52px)',
     maxWidth: '780px',
   },
+  lessonContentMobile: {
+    padding: '20px 16px',
+    maxWidth: '100%',
+  },
   lessonBreadcrumb: {
-    display: 'flex', alignItems: 'center', gap: '8px',
+    display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px',
     marginBottom: '20px',
   },
   breadcrumbModule: { fontSize: '12px', color: 'var(--text-muted)' },
   breadcrumbSep: { fontSize: '12px', color: 'var(--text-muted)' },
   breadcrumbLesson: { fontSize: '12px', color: 'var(--text-2)', fontWeight: 500 },
   lessonMeta: {
-    display: 'flex', gap: '16px', marginBottom: '32px',
+    display: 'flex', gap: '16px', marginBottom: '28px',
   },
   lessonMetaItem: {
     display: 'flex', alignItems: 'center', gap: '6px',
@@ -521,9 +634,10 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '15px', lineHeight: 1.75, color: 'var(--text-2)',
   },
   lessonActions: {
-    marginTop: '48px', paddingTop: '24px',
+    marginTop: '40px', paddingTop: '20px',
     borderTop: '1px solid var(--border)',
     display: 'flex', alignItems: 'center', gap: '16px',
+    flexWrap: 'wrap',
   },
   doneMsg: {
     display: 'flex', alignItems: 'center', gap: '8px',
@@ -534,7 +648,7 @@ const styles: Record<string, React.CSSProperties> = {
 // Lesson content styles
 const s: Record<string, React.CSSProperties> = {
   h2: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(22px,2.5vw,30px)',
+    fontFamily: 'Fraunces, serif', fontSize: 'clamp(20px,2.5vw,30px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '20px', marginTop: '8px',
     lineHeight: 1.2,
   },
@@ -567,7 +681,7 @@ const s: Record<string, React.CSSProperties> = {
   pre: {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '18px 20px',
+    borderRadius: '12px', padding: '16px',
     fontSize: '13px', lineHeight: 1.65,
     color: 'var(--text-2)',
     fontFamily: 'monospace', whiteSpace: 'pre-wrap',
@@ -576,13 +690,13 @@ const s: Record<string, React.CSSProperties> = {
   tableWrap: { overflowX: 'auto', marginBottom: '20px', borderRadius: '10px', border: '1px solid var(--border)' },
   table: { width: '100%', borderCollapse: 'collapse' },
   th: {
-    padding: '10px 16px', textAlign: 'left',
+    padding: '10px 14px', textAlign: 'left',
     fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px',
     textTransform: 'uppercase', color: 'var(--text-3)',
     background: 'var(--surface)', borderBottom: '1px solid var(--border)',
   },
   td: {
-    padding: '10px 16px', fontSize: '14px',
+    padding: '10px 14px', fontSize: '14px',
     color: 'var(--text-2)',
     borderBottom: '1px solid var(--surface)',
   },
