@@ -23,17 +23,7 @@ const ACTIVE_SLUGS = [
 ]
 
 // Formations à venir — hardcodées, pas encore en DB
-const COMING_SOON = [
-  {
-    id: 'attirer-voyageurs-sans-airbnb',
-    title: 'Attirer des voyageurs sans Airbnb',
-    description: 'SEO local, réseaux sociaux, groupes Facebook, bouche-à-oreille digital — les vraies stratégies pour remplir son calendrier en location directe.',
-    duration: '2h30',
-    modules: 5,
-    lessons: 11,
-    level: 'Intermédiaire',
-  },
-]
+const COMING_SOON: never[] = []
 
 export default async function FormationsPage() {
   const profile = await getProfile()
