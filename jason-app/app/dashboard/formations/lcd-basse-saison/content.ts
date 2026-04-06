@@ -1,7 +1,7 @@
 export const LCD_BASSE_SAISON_FORMATION = {
   slug: 'lcd-basse-saison',
   title: 'Développer son activité LCD en basse saison',
-  description: 'Tarification adaptée, nouvelles cibles voyageurs, optimisation de l'annonce, partenariats locaux et réservation directe : la méthode complète pour transformer vos mois creux en mois rentables.',
+  description: `Tarification adaptée, nouvelles cibles voyageurs, optimisation de l'annonce, partenariats locaux et réservation directe : la méthode complète pour transformer vos mois creux en mois rentables.`,
   duration: '2h00',
   level: 'Intermédiaire',
   objectifs: [

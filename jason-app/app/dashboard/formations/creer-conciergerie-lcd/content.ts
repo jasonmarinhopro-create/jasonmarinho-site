@@ -1,7 +1,7 @@
 export const CREER_CONCIERGERIE_FORMATION = {
   slug: 'creer-conciergerie-lcd',
   title: 'Créer et développer sa conciergerie LCD',
-  description: 'De zéro à tes premiers mandats : statut juridique, carte G, tarification, prospection, outils, présence en ligne via l'annuaire Driing. La méthode complète pour lancer une conciergerie LCD rentable et légale en France.',
+  description: `De zéro à tes premiers mandats : statut juridique, carte G, tarification, prospection, outils, présence en ligne via l'annuaire Driing. La méthode complète pour lancer une conciergerie LCD rentable et légale en France.`,
   duration: '3h00',
   level: 'Intermédiaire',
   objectifs: [

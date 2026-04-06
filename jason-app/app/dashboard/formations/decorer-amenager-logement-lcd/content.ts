@@ -1,7 +1,7 @@
 export const DECORER_AMENAGER_FORMATION = {
   slug: 'decorer-amenager-logement-lcd',
   title: 'Décorer et aménager son logement pour maximiser les avis',
-  description: 'Un logement bien décoré peut générer 20 à 30% de réservations supplémentaires. Couleurs, literie, cuisine, équipements, l'effet waouh, les erreurs à éviter : la méthode complète pour transformer votre logement sans vous ruiner.',
+  description: `Un logement bien décoré peut générer 20 à 30% de réservations supplémentaires. Couleurs, literie, cuisine, équipements, l'effet waouh, les erreurs à éviter : la méthode complète pour transformer votre logement sans vous ruiner.`,
   duration: '2h00',
   level: 'Débutant',
   objectifs: [

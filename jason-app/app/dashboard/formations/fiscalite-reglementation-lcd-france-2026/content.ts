@@ -1,7 +1,7 @@
 export const FISCALITE_LCD_FORMATION = {
   slug: 'fiscalite-reglementation-lcd-france-2026',
   title: 'Fiscalité et réglementation LCD en France 2026',
-  description: 'Loi Le Meur, micro-BIC, régime réel, numéro d'enregistrement, DPE, taxe de séjour : tout ce que tu dois savoir pour être en règle en 2026 et optimiser ta fiscalité sans prendre de risques.',
+  description: `Loi Le Meur, micro-BIC, régime réel, numéro d'enregistrement, DPE, taxe de séjour : tout ce que tu dois savoir pour être en règle en 2026 et optimiser ta fiscalité sans prendre de risques.`,
   duration: '2h30',
   level: 'Débutant',
   objectifs: [

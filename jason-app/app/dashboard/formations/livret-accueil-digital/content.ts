@@ -1,7 +1,7 @@
 export const LIVRET_ACCUEIL_FORMATION = {
   slug: 'livret-accueil-digital',
   title: 'Créer un livret d'accueil digital qui réduit les questions et améliore les avis',
-  description: 'Un livret d'accueil bien conçu réduit de 80% les questions des voyageurs, améliore vos avis et vous fait gagner des heures chaque semaine. Créez le vôtre avec Driing en moins d'une heure.',
+  description: `Un livret d'accueil bien conçu réduit de 80% les questions des voyageurs, améliore vos avis et vous fait gagner des heures chaque semaine. Créez le vôtre avec Driing en moins d'une heure.`,
   duration: '1h45',
   level: 'Débutant',
   objectifs: [

@@ -1,7 +1,7 @@
 export const SECURISER_RESERVATIONS_FORMATION = {
   slug: 'securiser-reservations-eviter-mauvais-voyageurs',
   title: 'Sécuriser ses réservations et éviter les mauvais voyageurs',
-  description: 'Vérification d'identité, signaux d'alarme, dépôt de garantie, fiche de police, AirCover, règlement intérieur : la méthode complète pour accueillir sereinement et protéger votre logement.',
+  description: `Vérification d'identité, signaux d'alarme, dépôt de garantie, fiche de police, AirCover, règlement intérieur : la méthode complète pour accueillir sereinement et protéger votre logement.`,
   duration: '2h00',
   level: 'Intermédiaire',
   objectifs: [

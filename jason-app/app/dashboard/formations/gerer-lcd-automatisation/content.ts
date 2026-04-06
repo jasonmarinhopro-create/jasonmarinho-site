@@ -1,7 +1,7 @@
 export const GERER_LCD_FORMATION = {
   slug: 'gerer-lcd-automatisation',
   title: 'Gérer sa LCD comme un pro : automatisation et gain de temps',
-  description: 'Les hôtes qui automatisent leur LCD gagnent jusqu'à 12 heures par semaine. Messages, accès, ménage, tarification : la méthode complète pour construire un système qui tourne sans vous.',
+  description: `Les hôtes qui automatisent leur LCD gagnent jusqu'à 12 heures par semaine. Messages, accès, ménage, tarification : la méthode complète pour construire un système qui tourne sans vous.`,
   duration: '2h00',
   level: 'Intermédiaire',
   objectifs: [

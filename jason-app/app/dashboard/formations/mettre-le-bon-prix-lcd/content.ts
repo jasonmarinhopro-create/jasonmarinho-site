@@ -1,7 +1,7 @@
 export const METTRE_BON_PRIX_FORMATION = {
   slug: 'mettre-le-bon-prix-lcd',
   title: 'Mettre le bon prix en location courte durée',
-  description: 'Prix minimum, prix de base, tarification saisonnière, événements locaux, réservation directe : la méthode complète pour ne jamais laisser d'argent sur la table ni travailler à perte.',
+  description: `Prix minimum, prix de base, tarification saisonnière, événements locaux, réservation directe : la méthode complète pour ne jamais laisser d'argent sur la table ni travailler à perte.`,
   duration: '2h30',
   level: 'Débutant',
   objectifs: [

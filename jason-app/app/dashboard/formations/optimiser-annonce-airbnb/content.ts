@@ -1,7 +1,7 @@
 export const OPTIMISER_ANNONCE_FORMATION = {
   slug: 'optimiser-annonce-airbnb',
   title: 'Optimiser son annonce Airbnb : photos, titre, description, algorithme',
-  description: 'L'algorithme Airbnb a changé de logique en 2026. Découvrez comment remonter dans les résultats, rédiger un titre qui convertit, des photos qui font cliquer et une description qui vend — sans changer votre logement.',
+  description: `L'algorithme Airbnb a changé de logique en 2026. Découvrez comment remonter dans les résultats, rédiger un titre qui convertit, des photos qui font cliquer et une description qui vend — sans changer votre logement.`,
   duration: '2h30',
   level: 'Débutant',
   objectifs: [
