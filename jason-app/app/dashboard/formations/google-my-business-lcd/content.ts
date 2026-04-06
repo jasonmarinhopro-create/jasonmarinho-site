@@ -579,7 +579,7 @@ Merci sincèrement !
 Merci beaucoup [Prénom] pour cet avis ! 🙏
 
 Ravis que [mention un élément de leur avis ou du logement]
-vous ait plu. C`est exactement l'expérience qu`on essaie
+vous ait plu. C'est exactement l'expérience qu'on essaie
 d'offrir à chaque séjour.
 
 Au plaisir de vous accueillir à nouveau à [ville] !
