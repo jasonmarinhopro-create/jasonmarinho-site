@@ -172,8 +172,9 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 /* ── ANIM ── */
 @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
-.rv.in{opacity:1;transform:translateY(0)}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;animation:rv-fallback 0s 1.5s forwards}
+.rv.in{opacity:1;transform:translateY(0);animation:none}
+@keyframes rv-fallback{to{opacity:1;transform:translateY(0)}}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
 /* ── RESPONSIVE ── */

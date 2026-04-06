@@ -70,15 +70,17 @@ export async function republishAllFormations() {
   const { error, adminClient } = await assertAdmin()
   if (error || !adminClient) return { success: false, error }
 
-  const { error: dbError, count } = await adminClient
+  // Update ALL formations to is_published = true (sans filtrer par état actuel)
+  const { error: dbError, data } = await adminClient
     .from('formations')
     .update({ is_published: true })
-    .eq('is_published', false)
-    .select('id', { count: 'exact', head: true })
+    .neq('id', '00000000-0000-0000-0000-000000000000') // match all rows
+    .select('id')
 
   if (dbError) return { success: false, error: dbError.message }
 
   revalidatePath('/dashboard/admin/formations')
   revalidatePath('/dashboard/formations')
-  return { success: true, count: count ?? 0 }
+  revalidatePath('/dashboard')
+  return { success: true, count: data?.length ?? 0 }
 }

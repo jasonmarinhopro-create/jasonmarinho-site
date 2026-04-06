@@ -114,17 +114,15 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
             <EyeSlash size={13} />
             {drafts} brouillon{drafts !== 1 ? 's' : ''}
           </span>
-          {drafts > 0 && (
-            <button
-              onClick={handleRepublishAll}
-              disabled={isPending}
-              style={styles.republishBtn}
-              title="Publier toutes les formations en brouillon"
-            >
-              <ArrowCounterClockwise size={13} />
-              Tout republier
-            </button>
-          )}
+          <button
+            onClick={handleRepublishAll}
+            disabled={isPending}
+            style={styles.republishBtn}
+            title="Forcer la publication de toutes les formations (utile en cas de problème d'affichage)"
+          >
+            <ArrowCounterClockwise size={13} />
+            {drafts > 0 ? 'Tout republier' : 'Forcer republication'}
+          </button>
         </div>
       </div>
 
