@@ -1,15 +1,33 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
   Question, CaretDown, ArrowUpRight, Sun, Moon
 } from '@phosphor-icons/react'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
+import NotificationPanel from './NotificationPanel'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
+import { CHANGELOG } from '@/lib/constants/changelog'
+
+const STORAGE_KEY = 'jm_notif_read'
+
+function getReadIds(): Set<string> {
+  if (typeof window === 'undefined') return new Set()
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? new Set(JSON.parse(raw) as string[]) : new Set()
+  } catch {
+    return new Set()
+  }
+}
+
+function saveReadIds(ids: Set<string>) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(ids)))
+}
 
 interface HeaderProps {
   title: string
@@ -20,12 +38,36 @@ interface HeaderProps {
 export default function Header({ title, userName: initialUserName, currentPlan = 'Découverte' }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [notifOpen, setNotifOpen] = useState(false)
+  const [readIds, setReadIds] = useState<Set<string>>(new Set())
   const [userName, setUserName] = useState(initialUserName ?? '')
   const [resolvedPlan, setResolvedPlan] = useState(currentPlan)
   const [isAdmin, setIsAdmin] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const { theme, toggleTheme } = useTheme()
+
+  // Load read IDs from localStorage on mount
+  useEffect(() => {
+    setReadIds(getReadIds())
+  }, [])
+
+  const unreadCount = CHANGELOG.filter(e => !readIds.has(e.id)).length
+
+  const handleOpenNotif = useCallback(() => {
+    setNotifOpen(true)
+    setDropdownOpen(false)
+    // Mark all as read when panel opens
+    const all = new Set(CHANGELOG.map(e => e.id))
+    setReadIds(all)
+    saveReadIds(all)
+  }, [])
+
+  const handleMarkAllRead = useCallback(() => {
+    const all = new Set(CHANGELOG.map(e => e.id))
+    setReadIds(all)
+    saveReadIds(all)
+  }, [])
 
   // Fetch profile client-side — garantit nom + rôle à jour sur toutes les pages
   useEffect(() => {
@@ -88,6 +130,13 @@ export default function Header({ title, userName: initialUserName, currentPlan =
         <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} />
       </div>
 
+      <NotificationPanel
+        open={notifOpen}
+        onClose={() => setNotifOpen(false)}
+        readIds={readIds}
+        onMarkAllRead={handleMarkAllRead}
+      />
+
       <header style={styles.header} className="dash-header">
         <div style={styles.left}>
           <button
@@ -116,8 +165,17 @@ export default function Header({ title, userName: initialUserName, currentPlan =
           </button>
 
           {/* Notifications */}
-          <button style={styles.iconBtn} aria-label="Notifications">
-            <Bell size={18} weight="regular" />
+          <button
+            style={styles.iconBtn}
+            aria-label={`Notifications${unreadCount > 0 ? ` — ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
+            onClick={handleOpenNotif}
+          >
+            <Bell size={18} weight={unreadCount > 0 ? 'fill' : 'regular'} />
+            {unreadCount > 0 && (
+              <span style={styles.notifBadge}>
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
           </button>
 
           {/* Profile dropdown */}
@@ -252,12 +310,27 @@ const styles: Record<string, React.CSSProperties> = {
   },
   right: { display: 'flex', alignItems: 'center', gap: '8px' },
   iconBtn: {
+    position: 'relative',
     background: 'var(--surface)',
     border: '1px solid var(--border)',
     borderRadius: '9px',
     width: '36px', height: '36px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-2)',
+  },
+  notifBadge: {
+    position: 'absolute',
+    top: '-5px', right: '-5px',
+    minWidth: '17px', height: '17px',
+    background: '#63D683',
+    color: '#001a14',
+    fontSize: '10px', fontWeight: 700,
+    borderRadius: '100px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '0 4px',
+    lineHeight: 1,
+    boxShadow: '0 0 0 2px var(--bg)',
+    pointerEvents: 'none',
   },
 
   /* Profile button (avatar + name + caret) */
