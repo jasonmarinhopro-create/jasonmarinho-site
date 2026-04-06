@@ -6,7 +6,7 @@ export const FISCALITE_LCD_FORMATION = {
   level: 'Débutant',
   objectifs: [
     'Comprendre ce que change la loi Le Meur pour ton activité en 2026',
-    'Savoir si tu dois déclarer ton logement et obtenir un numéro d'enregistrement',
+    `Savoir si tu dois déclarer ton logement et obtenir un numéro d'enregistrement`,
     'Choisir entre micro-BIC et régime réel selon ta situation',
     'Comprendre les obligations DPE et leur calendrier',
     'Connaître les sanctions encourues et comment les éviter',
@@ -156,7 +156,7 @@ Quelques idées reçues à corriger :
         },
         {
           id: 2,
-          title: 'Le numéro d'enregistrement : comment l'obtenir et pourquoi c'est urgent',
+          title: `Le numéro d'enregistrement : comment l'obtenir et pourquoi c'est urgent`,
           duration: '15 min',
           content: `---
 
@@ -506,7 +506,7 @@ Tenue obligatoire : un livre de recettes
         },
         {
           id: 13,
-          title: 'Le régime réel : quand et pourquoi c'est souvent plus avantageux',
+          title: `Le régime réel : quand et pourquoi c'est souvent plus avantageux`,
           duration: '13 min',
           content: `---
 
@@ -749,7 +749,7 @@ en courte durée jusqu'en 2028.
         },
         {
           id: 22,
-          title: 'Le classement meublé de tourisme : pourquoi c'est devenu stratégique',
+          title: `Le classement meublé de tourisme : pourquoi c'est devenu stratégique`,
           duration: '12 min',
           content: `---
 
@@ -1114,7 +1114,7 @@ La meilleure protection :
     },
     {
       id: 5,
-      title: 'S'organiser pour être en règle sans y passer sa vie',
+      title: `S'organiser pour être en règle sans y passer sa vie`,
       duration: '30 min',
       lessons: [
         {
@@ -1215,7 +1215,7 @@ Comment la consulter :
         },
         {
           id: 42,
-          title: 'Les documents à conserver et comment s'organiser',
+          title: `Les documents à conserver et comment s'organiser`,
           duration: '10 min',
           content: `---
 

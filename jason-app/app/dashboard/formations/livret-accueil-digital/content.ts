@@ -1,26 +1,26 @@
 export const LIVRET_ACCUEIL_FORMATION = {
   slug: 'livret-accueil-digital',
-  title: 'Créer un livret d'accueil digital qui réduit les questions et améliore les avis',
+  title: `Créer un livret d'accueil digital qui réduit les questions et améliore les avis`,
   description: `Un livret d'accueil bien conçu réduit de 80% les questions des voyageurs, améliore vos avis et vous fait gagner des heures chaque semaine. Créez le vôtre avec Driing en moins d'une heure.`,
   duration: '1h45',
   level: 'Débutant',
   objectifs: [
-    'Comprendre pourquoi un livret digital transforme l'expérience voyageur',
+    `Comprendre pourquoi un livret digital transforme l'expérience voyageur`,
     'Savoir exactement quoi mettre dans chaque section du livret',
     'Créer son livret Driing étape par étape',
     'Rédiger des contenus clairs et utiles en plusieurs langues',
     'Intégrer le livret dans sa communication pour en faire un outil actif',
-    'Utiliser le livre d'or Driing pour collecter des avis avant même la sortie',
+    `Utiliser le livre d'or Driing pour collecter des avis avant même la sortie`,
   ],
   modules: [
     {
       id: 1,
-      title: 'Pourquoi le livret d'accueil est l'outil le plus sous-estimé en LCD',
+      title: `Pourquoi le livret d'accueil est l'outil le plus sous-estimé en LCD`,
       duration: '25 min',
       lessons: [
         {
           id: 1,
-          title: 'Ce que coûte vraiment l'absence de livret',
+          title: `Ce que coûte vraiment l'absence de livret`,
           duration: '12 min',
           content: `---
 
@@ -150,7 +150,7 @@ Le livret Driing est structuré en 6 blocs :
         },
         {
           id: 2,
-          title: 'Anatomie d'un livret qui fonctionne vraiment',
+          title: `Anatomie d'un livret qui fonctionne vraiment`,
           duration: '13 min',
           content: `---
 
@@ -641,7 +641,7 @@ Pour la configurer :
     },
     {
       id: 3,
-      title: 'Activer le livret et l'intégrer dans sa communication',
+      title: `Activer le livret et l'intégrer dans sa communication`,
       duration: '25 min',
       lessons: [
         {
@@ -769,7 +769,7 @@ et le bouton "Laisser un avis".
         },
         {
           id: 22,
-          title: 'Utiliser le livre d'or pour préparer les avis publics',
+          title: `Utiliser le livre d'or pour préparer les avis publics`,
           duration: '13 min',
           content: `---
 
@@ -951,7 +951,7 @@ Exemples :
         },
         {
           id: 32,
-          title: 'Mesurer l'impact du livret sur ses avis et ses revenus',
+          title: `Mesurer l'impact du livret sur ses avis et ses revenus`,
           duration: '8 min',
           content: `---
 

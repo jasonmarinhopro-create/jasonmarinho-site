@@ -5,12 +5,12 @@ export const CREER_CONCIERGERIE_FORMATION = {
   duration: '3h00',
   level: 'Intermédiaire',
   objectifs: [
-    'Comprendre ce qu'est vraiment une conciergerie LCD et comment elle gagne de l'argent',
+    `Comprendre ce qu'est vraiment une conciergerie LCD et comment elle gagne de l'argent`,
     'Choisir le bon statut juridique selon tes ambitions',
     'Comprendre la question de la Carte G et les solutions légales',
     'Fixer tes tarifs et construire ton offre de services',
     'Trouver tes premiers propriétaires et décrocher tes premiers mandats',
-    'Construire ta présence en ligne rapidement via l'annuaire Driing',
+    `Construire ta présence en ligne rapidement via l'annuaire Driing`,
     'Mettre en place les outils pour gérer et scaler',
   ],
   modules: [
@@ -21,7 +21,7 @@ export const CREER_CONCIERGERIE_FORMATION = {
       lessons: [
         {
           id: 1,
-          title: 'Ce qu'est vraiment une conciergerie LCD (et ce que ce n'est pas)',
+          title: `Ce qu'est vraiment une conciergerie LCD (et ce que ce n'est pas)`,
           duration: '12 min',
           content: `---
 
@@ -141,7 +141,7 @@ combler ce manque avant de te lancer.
         },
         {
           id: 2,
-          title: 'Étude de marché : valider son territoire avant d'investir',
+          title: `Étude de marché : valider son territoire avant d'investir`,
           duration: '13 min',
           content: `---
 
@@ -384,7 +384,7 @@ TOTAL : ~3 000 à 5 000€ la première année
         },
         {
           id: 12,
-          title: 'La Carte G : ce que c'est, qui en a besoin, et les solutions légales',
+          title: `La Carte G : ce que c'est, qui en a besoin, et les solutions légales`,
           duration: '15 min',
           content: `---
 
@@ -1029,12 +1029,12 @@ par un avocat (voir module 2).
     },
     {
       id: 5,
-      title: 'Présence en ligne et visibilité : l'annuaire Driing comme base',
+      title: `Présence en ligne et visibilité : l'annuaire Driing comme base`,
       duration: '25 min',
       lessons: [
         {
           id: 41,
-          title: 'Pourquoi l'annuaire Driing remplace avantageusement un site internet au démarrage',
+          title: `Pourquoi l'annuaire Driing remplace avantageusement un site internet au démarrage`,
           duration: '12 min',
           content: `---
 
@@ -1427,7 +1427,7 @@ tu dois avoir ces documents :
         },
         {
           id: 52,
-          title: 'Scaler : passer de 5 à 20 logements sans s'épuiser',
+          title: `Scaler : passer de 5 à 20 logements sans s'épuiser`,
           duration: '13 min',
           content: `---
 

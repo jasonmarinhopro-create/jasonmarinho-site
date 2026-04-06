@@ -20,7 +20,7 @@ export const TARIFICATION_DYNAMIQUE_FORMATION = {
       lessons: [
         {
           id: 1,
-          title: 'Pourquoi votre prix fixe vous coûte de l'argent',
+          title: `Pourquoi votre prix fixe vous coûte de l'argent`,
           duration: '12 min',
           content: `---
 
@@ -1065,7 +1065,7 @@ La bonne approche :
         },
         {
           id: 33,
-          title: 'Le récapitulatif et le plan d'action',
+          title: `Le récapitulatif et le plan d'action`,
           duration: '11 min',
           content: `---
 

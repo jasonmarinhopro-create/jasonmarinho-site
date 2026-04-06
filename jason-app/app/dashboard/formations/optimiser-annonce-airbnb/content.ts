@@ -5,9 +5,9 @@ export const OPTIMISER_ANNONCE_FORMATION = {
   duration: '2h30',
   level: 'Débutant',
   objectifs: [
-    'Comprendre les 7 facteurs de classement de l'algorithme Airbnb 2026',
+    `Comprendre les 7 facteurs de classement de l'algorithme Airbnb 2026`,
     'Identifier les signaux qui font monter ou descendre votre annonce',
-    'Rédiger un titre optimisé pour l'algorithme et les voyageurs',
+    `Rédiger un titre optimisé pour l'algorithme et les voyageurs`,
     'Organiser et optimiser ses photos pour maximiser le taux de clic',
     'Écrire une description qui convertit les visites en réservations',
     'Obtenir et maintenir le badge Coup de Cœur Voyageurs',
@@ -15,12 +15,12 @@ export const OPTIMISER_ANNONCE_FORMATION = {
   modules: [
     {
       id: 1,
-      title: 'Comprendre l'algorithme Airbnb 2026',
+      title: `Comprendre l'algorithme Airbnb 2026`,
       duration: '30 min',
       lessons: [
         {
           id: 1,
-          title: 'Comment fonctionne vraiment l'algorithme Airbnb',
+          title: `Comment fonctionne vraiment l'algorithme Airbnb`,
           duration: '15 min',
           content: `---
 
@@ -561,7 +561,7 @@ lave-vaisselle, machine à café Nespresso"
       lessons: [
         {
           id: 21,
-          title: 'La structure d'un titre qui remonte dans les résultats',
+          title: `La structure d'un titre qui remonte dans les résultats`,
           duration: '12 min',
           content: `---
 
@@ -750,7 +750,7 @@ Séjours groupe bienvenue"
       lessons: [
         {
           id: 31,
-          title: 'La structure d'une description qui convertit',
+          title: `La structure d'une description qui convertit`,
           duration: '12 min',
           content: `---
 
@@ -847,7 +847,7 @@ MOTS QUI REFROIDISSENT :
         },
         {
           id: 32,
-          title: 'Le SEO interne Airbnb : écrire pour l'algorithme',
+          title: `Le SEO interne Airbnb : écrire pour l'algorithme`,
           duration: '12 min',
           content: `---
 
@@ -1200,7 +1200,7 @@ Les causes de perte les plus fréquentes :
         },
         {
           id: 43,
-          title: 'Le récapitulatif et le plan d'action',
+          title: `Le récapitulatif et le plan d'action`,
           duration: '10 min',
           content: `---
 

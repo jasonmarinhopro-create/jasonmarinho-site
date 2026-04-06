@@ -20,7 +20,7 @@ export const GERER_LCD_FORMATION = {
       lessons: [
         {
           id: 1,
-          title: 'L'audit de vos tâches : trouver les heures perdues',
+          title: `L'audit de vos tâches : trouver les heures perdues`,
           duration: '12 min',
           content: `---
 
@@ -508,12 +508,12 @@ Communicquez-le clairement :
     },
     {
       id: 3,
-      title: 'Automatiser l'accès et le ménage',
+      title: `Automatiser l'accès et le ménage`,
       duration: '35 min',
       lessons: [
         {
           id: 21,
-          title: 'L'accès autonome : finir avec les remises de clés',
+          title: `L'accès autonome : finir avec les remises de clés`,
           duration: '12 min',
           content: `---
 
@@ -1045,7 +1045,7 @@ avec ce temps :
         },
         {
           id: 33,
-          title: 'Le plan d'automatisation sur 8 semaines',
+          title: `Le plan d'automatisation sur 8 semaines`,
           duration: '11 min',
           content: `---
 

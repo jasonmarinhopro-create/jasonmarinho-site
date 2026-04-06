@@ -9,7 +9,7 @@ export const DECORER_AMENAGER_FORMATION = {
     'Choisir les couleurs et matières qui créent une ambiance mémorable',
     'Optimiser chaque pièce selon son impact sur les avis',
     'Identifier les équipements qui font vraiment la différence',
-    'Créer l'effet waouh avec un budget maîtrisé',
+    `Créer l'effet waouh avec un budget maîtrisé`,
     'Éviter les erreurs de décoration qui font fuir les bons voyageurs',
   ],
   modules: [
@@ -378,7 +378,7 @@ ERREURS À ÉVITER :
         },
         {
           id: 12,
-          title: 'Les textiles : l'investissement le plus rentable',
+          title: `Les textiles : l'investissement le plus rentable`,
           duration: '13 min',
           content: `---
 
@@ -780,12 +780,12 @@ CE QUI CRÉE UNE TRÈS BONNE IMPRESSION :
     },
     {
       id: 4,
-      title: 'L'effet waouh et le budget maîtrisé',
+      title: `L'effet waouh et le budget maîtrisé`,
       duration: '35 min',
       lessons: [
         {
           id: 31,
-          title: 'Créer l'effet waouh sans se ruiner',
+          title: `Créer l'effet waouh sans se ruiner`,
           duration: '12 min',
           content: `---
 
@@ -999,7 +999,7 @@ DESTOCKAGE / SOLDERIE HÔTELIÈRE
         },
         {
           id: 33,
-          title: 'Le récapitulatif et le plan d'action',
+          title: `Le récapitulatif et le plan d'action`,
           duration: '11 min',
           content: `---
 

@@ -5,17 +5,17 @@ export const SECURISER_RESERVATIONS_FORMATION = {
   duration: '2h00',
   level: 'Intermédiaire',
   objectifs: [
-    'Reconnaître les signaux d'alarme avant d'accepter une réservation',
-    'Mettre en place une procédure de vérification d'identité légale et efficace',
+    `Reconnaître les signaux d'alarme avant d'accepter une réservation`,
+    `Mettre en place une procédure de vérification d'identité légale et efficace`,
     'Configurer son règlement intérieur comme premier rempart de protection',
-    'Comprendre ce que couvre AirCover — et ce qu'il ne couvre pas',
+    `Comprendre ce que couvre AirCover — et ce qu'il ne couvre pas`,
     'Gérer un incident pendant ou après le séjour',
     'Utiliser le service de vérification voyageurs de Jason Marinho',
   ],
   modules: [
     {
       id: 1,
-      title: 'Reconnaître les signaux d'alarme avant d'accepter',
+      title: `Reconnaître les signaux d'alarme avant d'accepter`,
       duration: '35 min',
       lessons: [
         {
@@ -404,12 +404,12 @@ Ce que le service vérifie :
     },
     {
       id: 2,
-      title: 'Vérification d'identité et cadre légal',
+      title: `Vérification d'identité et cadre légal`,
       duration: '30 min',
       lessons: [
         {
           id: 11,
-          title: 'L'obligation légale de vérification : ce que dit la loi en France',
+          title: `L'obligation légale de vérification : ce que dit la loi en France`,
           duration: '15 min',
           content: `---
 
@@ -684,7 +684,7 @@ Ce que signifie un refus de caution :
       lessons: [
         {
           id: 21,
-          title: 'AirCover : ce qu'il couvre vraiment (et ce qu'il ne couvre pas)',
+          title: `AirCover : ce qu'il couvre vraiment (et ce qu'il ne couvre pas)`,
           duration: '12 min',
           content: `---
 

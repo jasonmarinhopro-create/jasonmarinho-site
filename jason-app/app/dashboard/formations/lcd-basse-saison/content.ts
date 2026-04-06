@@ -10,12 +10,12 @@ export const LCD_BASSE_SAISON_FORMATION = {
     'Identifier et cibler les segments de voyageurs actifs en hiver',
     'Optimiser son annonce pour capter les recherches de basse saison',
     'Utiliser la réservation directe comme levier anti-saisonnalité',
-    'Construire un plan d'action basse saison personnalisé',
+    `Construire un plan d'action basse saison personnalisé`,
   ],
   modules: [
     {
       id: 1,
-      title: 'Comprendre sa saisonnalité avant d'agir',
+      title: `Comprendre sa saisonnalité avant d'agir`,
       duration: '25 min',
       lessons: [
         {
@@ -541,7 +541,7 @@ de votre première journée."
         },
         {
           id: 13,
-          title: 'Capter les voyageurs longue durée : la mine d'or de l'hiver',
+          title: `Capter les voyageurs longue durée : la mine d'or de l'hiver`,
           duration: '11 min',
           content: `---
 
@@ -1000,7 +1000,7 @@ SEGMENT 3 — Voyageurs pros / télétravailleurs
     },
     {
       id: 4,
-      title: 'Mettre en place son plan d'action basse saison',
+      title: `Mettre en place son plan d'action basse saison`,
       duration: '25 min',
       lessons: [
         {
@@ -1109,7 +1109,7 @@ Coût d'un photographe pro LCD :
         },
         {
           id: 32,
-          title: 'Construire son plan d'action basse saison personnalisé',
+          title: `Construire son plan d'action basse saison personnalisé`,
           duration: '13 min',
           content: `---
 

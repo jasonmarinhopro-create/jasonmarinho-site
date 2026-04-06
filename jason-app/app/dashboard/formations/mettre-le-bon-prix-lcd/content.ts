@@ -6,7 +6,7 @@ export const METTRE_BON_PRIX_FORMATION = {
   level: 'Débutant',
   objectifs: [
     'Calculer son prix minimum absolu avant de publier quoi que ce soit',
-    'Comprendre pourquoi un prix fixe fait perdre de l'argent',
+    `Comprendre pourquoi un prix fixe fait perdre de l'argent`,
     'Maîtriser les leviers saisonniers qui multiplient les revenus',
     'Adapter sa stratégie selon les plateformes (Airbnb, Booking, Driing)',
     'Savoir quand et comment utiliser la tarification dynamique',

@@ -606,7 +606,7 @@ POURQUOI C'EST IMPORTANT :
       lessons: [
         {
           id: 21,
-          title: 'Le lien en bio : votre seul appel à l'action direct',
+          title: `Le lien en bio : votre seul appel à l'action direct`,
           duration: '12 min',
           content: `---
 

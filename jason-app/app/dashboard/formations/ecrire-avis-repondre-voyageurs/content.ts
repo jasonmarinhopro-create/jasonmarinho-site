@@ -7,8 +7,8 @@ export const ECRIRE_AVIS_FORMATION = {
   objectifs: [
     'Comprendre comment les avis impactent le classement Airbnb et Booking',
     'Savoir rédiger des avis voyageurs honnêtes et utiles',
-    'Maîtriser la structure d'une réponse à un avis négatif',
-    'Collecter plus d'avis positifs sans violer les règles des plateformes',
+    `Maîtriser la structure d'une réponse à un avis négatif`,
+    `Collecter plus d'avis positifs sans violer les règles des plateformes`,
     'Transformer les critiques en améliorations concrètes',
     'Gérer les avis injustes ou de mauvaise foi',
   ],
@@ -20,7 +20,7 @@ export const ECRIRE_AVIS_FORMATION = {
       lessons: [
         {
           id: 1,
-          title: 'L'impact direct des avis sur vos réservations',
+          title: `L'impact direct des avis sur vos réservations`,
           duration: '12 min',
           content: `---
 
@@ -154,7 +154,7 @@ Sur Google My Business :
         },
         {
           id: 2,
-          title: 'Collecter plus d'avis sans violer les règles',
+          title: `Collecter plus d'avis sans violer les règles`,
           duration: '13 min',
           content: `---
 
@@ -280,7 +280,7 @@ Pour obtenir des avis détaillés :
       lessons: [
         {
           id: 11,
-          title: 'La structure d'un bon avis positif',
+          title: `La structure d'un bon avis positif`,
           duration: '12 min',
           content: `---
 
@@ -529,7 +529,7 @@ perd des réservations.
     },
     {
       id: 3,
-      title: 'Répondre aux avis négatifs : l'art de transformer une critique en atout',
+      title: `Répondre aux avis négatifs : l'art de transformer une critique en atout`,
       duration: '35 min',
       lessons: [
         {
@@ -656,7 +656,7 @@ Sur Google My Business :
         },
         {
           id: 22,
-          title: 'La structure d'une réponse parfaite à un avis négatif',
+          title: `La structure d'une réponse parfaite à un avis négatif`,
           duration: '13 min',
           content: `---
 
