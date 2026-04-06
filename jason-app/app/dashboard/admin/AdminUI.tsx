@@ -258,9 +258,9 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
                   <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'rgba(255,213,107,.1)', color: 'var(--accent-text)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD' }) }}>
                     {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
                   </span>
-                  <div style={s.cellSub}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>
+                  <div style={{ ...s.cellSub, whiteSpace: 'normal', overflow: 'visible', textOverflow: 'unset' }}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>
                 </div>
-                <div style={s.cellPrimary}>{sg.message}</div>
+                <div style={{ ...s.cellPrimary, whiteSpace: 'normal', overflow: 'visible', textOverflow: 'unset' }}>{sg.message}</div>
                 <div className="admin-item-foot">
                   {feedback?.id === sg.id
                     ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
