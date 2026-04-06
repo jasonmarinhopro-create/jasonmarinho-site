@@ -65,3 +65,20 @@ export async function deleteFormation(formationId: string) {
   revalidatePath('/dashboard/formations')
   return { success: true }
 }
+
+export async function republishAllFormations() {
+  const { error, adminClient } = await assertAdmin()
+  if (error || !adminClient) return { success: false, error }
+
+  const { error: dbError, count } = await adminClient
+    .from('formations')
+    .update({ is_published: true })
+    .eq('is_published', false)
+    .select('id', { count: 'exact', head: true })
+
+  if (dbError) return { success: false, error: dbError.message }
+
+  revalidatePath('/dashboard/admin/formations')
+  revalidatePath('/dashboard/formations')
+  return { success: true, count: count ?? 0 }
+}

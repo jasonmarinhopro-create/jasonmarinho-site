@@ -1,0 +1,342 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import Link from 'next/link'
+import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel } from '@phosphor-icons/react'
+
+interface Formation {
+  id: string
+  slug: string
+  title: string
+  description: string
+  duration: string
+  modules_count: number
+  lessons_count: number
+  level: string
+  is_published: boolean
+}
+
+interface ComingSoon {
+  id: string
+  title: string
+  description: string
+  duration: string
+  modules: number
+  lessons: number
+  level: string
+}
+
+interface Props {
+  formations: Formation[]
+  progressMap: Record<string, number>
+  comingSoon: ComingSoon[]
+}
+
+const levelLabel: Record<string, string> = {
+  debutant: 'Débutant',
+  intermediaire: 'Intermédiaire',
+  avance: 'Avancé',
+}
+
+type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
+type StatusFilter = 'all' | 'enrolled' | 'not_enrolled' | 'done'
+
+export default function FormationsGrid({ formations, progressMap, comingSoon }: Props) {
+  const [search, setSearch] = useState('')
+  const [levelFilter, setLevelFilter] = useState<LevelFilter>('all')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+
+  const filtered = useMemo(() => {
+    return formations.filter(f => {
+      if (search && !f.title.toLowerCase().includes(search.toLowerCase())) return false
+      if (levelFilter !== 'all' && f.level !== levelFilter) return false
+
+      const progress = progressMap[f.id] ?? null
+      const enrolled = progress !== null
+      const done = progress === 100
+
+      if (statusFilter === 'enrolled' && !enrolled) return false
+      if (statusFilter === 'not_enrolled' && enrolled) return false
+      if (statusFilter === 'done' && !done) return false
+
+      return true
+    })
+  }, [formations, progressMap, search, levelFilter, statusFilter])
+
+  const enrolledCount = formations.filter(f => progressMap[f.id] !== undefined).length
+  const hasFilters = search !== '' || levelFilter !== 'all' || statusFilter !== 'all'
+
+  return (
+    <div>
+      {/* Stats */}
+      <div style={styles.statsRow}>
+        <span style={styles.statChip}>
+          <GraduationCap size={13} weight="fill" />
+          {formations.length} formation{formations.length !== 1 ? 's' : ''}
+        </span>
+        {enrolledCount > 0 && (
+          <span style={{ ...styles.statChip, background: 'rgba(99,214,131,0.08)', color: '#63D683', border: '1px solid rgba(99,214,131,0.15)' }}>
+            <CheckCircle size={13} weight="fill" />
+            {enrolledCount} commencée{enrolledCount !== 1 ? 's' : ''}
+          </span>
+        )}
+      </div>
+
+      {/* Filters */}
+      <div style={styles.filtersWrap}>
+        {/* Search */}
+        <div style={styles.searchWrap}>
+          <MagnifyingGlass size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+          <input
+            type="text"
+            placeholder="Rechercher une formation…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={styles.searchInput}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={styles.clearBtn}>×</button>
+          )}
+        </div>
+
+        <div style={styles.filtersRight}>
+          {/* Level filter */}
+          <div style={styles.filterGroup}>
+            <span style={styles.filterLabel}><Funnel size={12} /> Niveau</span>
+            {(['all', 'debutant', 'intermediaire', 'avance'] as LevelFilter[]).map(v => (
+              <button
+                key={v}
+                onClick={() => setLevelFilter(v)}
+                style={{
+                  ...styles.filterBtn,
+                  ...(levelFilter === v ? styles.filterBtnActive : {}),
+                }}
+              >
+                {v === 'all' ? 'Tous' : levelLabel[v]}
+              </button>
+            ))}
+          </div>
+
+          {/* Status filter */}
+          <div style={styles.filterGroup}>
+            <span style={styles.filterLabel}>Statut</span>
+            {([
+              { v: 'all', label: 'Toutes' },
+              { v: 'enrolled', label: 'En cours' },
+              { v: 'done', label: 'Terminées' },
+              { v: 'not_enrolled', label: 'Non commencées' },
+            ] as { v: StatusFilter; label: string }[]).map(({ v, label }) => (
+              <button
+                key={v}
+                onClick={() => setStatusFilter(v)}
+                style={{
+                  ...styles.filterBtn,
+                  ...(statusFilter === v ? styles.filterBtnActive : {}),
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Results count when filtered */}
+      {hasFilters && (
+        <div style={styles.resultsCount}>
+          {filtered.length} résultat{filtered.length !== 1 ? 's' : ''}
+          <button onClick={() => { setSearch(''); setLevelFilter('all'); setStatusFilter('all') }} style={styles.resetBtn}>
+            Réinitialiser les filtres
+          </button>
+        </div>
+      )}
+
+      {/* Grid */}
+      <div className="dash-grid-3">
+        {filtered.map((f, i) => {
+          const progress = progressMap[f.id] ?? null
+          const enrolled = progress !== null
+          const done = progress === 100
+
+          return (
+            <div key={f.id} style={styles.card} className={`glass-card fade-up d${(i % 6) + 1}`}>
+              <div style={styles.cardHeader}>
+                <div style={styles.cardIcon}>
+                  <GraduationCap size={28} color="#FFD56B" weight="fill" />
+                </div>
+                <div style={styles.cardBadges}>
+                  <span className="badge badge-yellow">{levelLabel[f.level] ?? f.level}</span>
+                  <span className="badge badge-green">Disponible</span>
+                  {done && <span className="badge badge-green">Terminé ✓</span>}
+                </div>
+              </div>
+
+              <h3 style={styles.cardTitle}>{f.title}</h3>
+              <p style={styles.cardDesc}>{f.description}</p>
+
+              <div style={styles.meta}>
+                <span style={styles.metaItem}><Clock size={13} /> {f.duration}</span>
+                <span style={styles.metaItem}><BookOpen size={13} /> {f.modules_count} modules</span>
+                <span style={styles.metaItem}><CheckCircle size={13} /> {f.lessons_count} leçons</span>
+              </div>
+
+              {enrolled && (
+                <div style={styles.progressArea}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <span style={styles.progressLabel}>Progression</span>
+                    <span style={styles.progressPct}>{progress}%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div className="progress-fill" style={{ width: `${progress}%` }} />
+                  </div>
+                </div>
+              )}
+
+              <div style={styles.cardFooter}>
+                <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                  {done ? 'Revoir' : enrolled ? 'Continuer' : 'Commencer'} <ArrowRight size={14} weight="bold" />
+                </Link>
+              </div>
+            </div>
+          )
+        })}
+
+        {/* Coming soon — only shown when no filters active */}
+        {!hasFilters && comingSoon.map((f, i) => (
+          <div key={f.id} style={styles.comingSoonCard} className={`glass-card fade-up d${(i % 6) + 1}`}>
+            <div style={styles.cardHeader}>
+              <div style={{ ...styles.cardIcon, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                <Wrench size={24} color="var(--text-muted)" weight="fill" />
+              </div>
+              <div style={styles.cardBadges}>
+                <span style={styles.wip}>En construction</span>
+              </div>
+            </div>
+
+            <h3 style={{ ...styles.cardTitle, color: 'var(--text-3)' }}>{f.title}</h3>
+            <p style={{ ...styles.cardDesc, color: 'var(--text-muted)' }}>{f.description}</p>
+
+            <div style={styles.meta}>
+              <span style={{ ...styles.metaItem, opacity: 0.4 }}><Clock size={13} /> {f.duration}</span>
+              <span style={{ ...styles.metaItem, opacity: 0.4 }}><BookOpen size={13} /> {f.modules} modules</span>
+              <span style={{ ...styles.metaItem, opacity: 0.4 }}><CheckCircle size={13} /> {f.lessons} leçons</span>
+            </div>
+
+            <div style={styles.cardFooter}>
+              <div style={styles.lockedBtn}>
+                <Lock size={13} />
+                Bientôt disponible
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Empty state */}
+      {filtered.length === 0 && (
+        <div style={styles.emptyState}>
+          <GraduationCap size={32} color="var(--text-muted)" weight="thin" />
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '12px' }}>
+            Aucune formation ne correspond à ta recherche.
+          </p>
+          <button
+            onClick={() => { setSearch(''); setLevelFilter('all'); setStatusFilter('all') }}
+            style={styles.resetBtn}
+          >
+            Réinitialiser les filtres
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+const styles: Record<string, React.CSSProperties> = {
+  statsRow: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' },
+  statChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '5px 12px', borderRadius: '100px',
+    background: 'rgba(255,213,107,0.08)', color: 'var(--accent-text)',
+    border: '1px solid rgba(255,213,107,0.15)', fontSize: '12px', fontWeight: 500,
+  },
+  filtersWrap: {
+    display: 'flex', flexWrap: 'wrap', gap: '10px',
+    marginBottom: '20px', alignItems: 'flex-start',
+  },
+  searchWrap: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '9px 14px',
+    minWidth: '220px', flex: '0 0 auto',
+  },
+  searchInput: {
+    background: 'transparent', border: 'none', outline: 'none',
+    color: 'var(--text)', fontSize: '13px', width: '180px',
+  },
+  clearBtn: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'var(--text-muted)', fontSize: '16px', lineHeight: 1,
+    padding: '0 2px', flexShrink: 0,
+  },
+  filtersRight: { display: 'flex', flexWrap: 'wrap', gap: '10px', flex: 1 },
+  filterGroup: { display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' },
+  filterLabel: {
+    display: 'flex', alignItems: 'center', gap: '4px',
+    fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)',
+    marginRight: '2px', whiteSpace: 'nowrap',
+  },
+  filterBtn: {
+    padding: '6px 12px', borderRadius: '8px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    color: 'var(--text-3)', fontSize: '12px', fontWeight: 400,
+    cursor: 'pointer',
+  },
+  filterBtnActive: {
+    background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.25)',
+    color: 'var(--accent-text)', fontWeight: 500,
+  },
+  resultsCount: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px',
+  },
+  resetBtn: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'var(--accent-text)', fontSize: '12px', textDecoration: 'underline',
+    padding: 0,
+  },
+  card: { padding: 'clamp(18px,3vw,28px)', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0' },
+  comingSoonCard: {
+    padding: 'clamp(18px,3vw,28px)', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0',
+    background: 'var(--surface)', border: '1px solid var(--border)', opacity: 0.7,
+  },
+  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' },
+  cardIcon: {
+    width: '48px', height: '48px', borderRadius: '14px', flexShrink: 0,
+    background: 'rgba(0,76,63,0.3)', border: '1px solid rgba(255,213,107,0.15)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  cardBadges: { display: 'flex', flexWrap: 'wrap', gap: '5px', alignItems: 'flex-start', justifyContent: 'flex-end' },
+  wip: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.7px', textTransform: 'uppercase',
+    padding: '4px 10px', borderRadius: '100px',
+    background: 'var(--border)', color: 'var(--text-muted)', border: '1px solid var(--border)',
+  },
+  cardTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(16px,2vw,18px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1.3, marginBottom: '10px' },
+  cardDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, marginBottom: '16px', flex: 1 },
+  meta: { display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '18px' },
+  metaItem: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--text-3)' },
+  progressArea: { marginBottom: '16px' },
+  progressLabel: { fontSize: '12px', color: 'var(--text-3)' },
+  progressPct: { fontSize: '12px', color: 'var(--accent-text)' },
+  cardFooter: { paddingTop: '14px', borderTop: '1px solid var(--border)', marginTop: 'auto' },
+  lockedBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    fontSize: '13px', fontWeight: 400, color: 'var(--text-muted)',
+    background: 'var(--surface)', border: '1px solid var(--surface-2)',
+    borderRadius: '8px', padding: '10px 16px', minHeight: '44px',
+  },
+  emptyState: {
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    padding: '48px 24px', textAlign: 'center',
+  },
+}
