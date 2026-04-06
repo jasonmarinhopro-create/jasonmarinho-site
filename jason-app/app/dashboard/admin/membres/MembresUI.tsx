@@ -172,10 +172,9 @@ export default function MembresUI({ members }: { members: Member[] }) {
       </div>
 
       {/* ── Table ── */}
-      <div style={s.tableScroll}>
       <div style={s.table}>
-        {/* Header row */}
-        <div style={s.tableHead}>
+        {/* Header row — masqué sur mobile via CSS (.mem-table-head) */}
+        <div style={s.tableHead} className="mem-table-head">
           <div style={{ flex: 3 }}>Membre</div>
           <div style={{ flex: 2 }}>Plan</div>
           <div style={{ flex: 1, textAlign: 'center' as const }}>Formations</div>
@@ -193,19 +192,19 @@ export default function MembresUI({ members }: { members: Member[] }) {
             const initials = m.full_name
               ? m.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
               : m.email[0].toUpperCase()
-
             const isExpanded = expandedMember === m.id
 
             return (
               <div key={m.id}>
-                <div style={{ ...s.row, ...(suspect ? s.rowSuspect : {}) }}>
-                  {/* Avatar + name + email */}
-                  <div style={{ flex: 3, display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+                <div className={`mem-row${suspect ? ' mem-row-suspect' : ''}`}>
+
+                  {/* Avatar + nom + email */}
+                  <div className="mem-c-main">
                     <div style={{ ...s.avatar, ...(suspect ? { borderColor: 'rgba(248,113,113,0.3)' } : {}) }}>
                       <span style={s.avatarText}>{initials}</span>
                     </div>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                         <span style={s.name}>{m.full_name || '—'}</span>
                         {suspect && <Robot size={13} style={{ color: '#f87171', flexShrink: 0 }} />}
                         {m.role === 'admin' && (
@@ -217,7 +216,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
                   </div>
 
                   {/* Plan selector */}
-                  <div style={{ flex: 2 }}>
+                  <div className="mem-c-plan">
                     {feedback?.id === m.id && feedback.type === 'ok' ? (
                       <FeedbackPill type="ok" msg={feedback.msg} />
                     ) : feedback?.id === m.id && feedback.type === 'err' ? (
@@ -228,16 +227,12 @@ export default function MembresUI({ members }: { members: Member[] }) {
                         disabled={isPending || m.role === 'admin'}
                         onChange={e => action(m.id, () => changeUserPlan(m.id, e.target.value), 'Plan mis à jour')}
                         style={{
-                          background: planCfg.bg,
-                          color: planCfg.color,
+                          background: planCfg.bg, color: planCfg.color,
                           border: `1px solid ${planCfg.color}30`,
-                          borderRadius: '8px',
-                          padding: '6px 10px',
-                          fontSize: '12px',
-                          fontWeight: 600,
+                          borderRadius: '8px', padding: '6px 10px',
+                          fontSize: '12px', fontWeight: 600,
                           cursor: (isPending || m.role === 'admin') ? 'not-allowed' : 'pointer',
-                          outline: 'none',
-                          fontFamily: 'Outfit, sans-serif',
+                          outline: 'none', fontFamily: 'Outfit, sans-serif',
                           opacity: m.role === 'admin' ? 0.4 : 1,
                         }}
                       >
@@ -250,19 +245,17 @@ export default function MembresUI({ members }: { members: Member[] }) {
                     )}
                   </div>
 
-                  {/* Formations count — cliquable pour expand */}
-                  <div style={{ flex: 1, textAlign: 'center' as const }}>
+                  {/* Formations */}
+                  <div className="mem-c-form">
                     {formations > 0 ? (
                       <button
                         onClick={() => setExpandedMember(isExpanded ? null : m.id)}
                         style={{
                           display: 'inline-flex', alignItems: 'center', gap: '5px',
-                          color: isExpanded ? '#34D399' : '#34D399',
-                          fontSize: '13px', fontWeight: 500,
+                          color: '#34D399', fontSize: '13px', fontWeight: 500,
                           background: isExpanded ? 'rgba(52,211,153,0.12)' : 'rgba(52,211,153,0.06)',
                           border: '1px solid rgba(52,211,153,0.2)',
-                          borderRadius: '7px', padding: '4px 10px',
-                          cursor: 'pointer',
+                          borderRadius: '7px', padding: '4px 10px', cursor: 'pointer',
                         }}
                         title="Voir les formations"
                       >
@@ -275,12 +268,10 @@ export default function MembresUI({ members }: { members: Member[] }) {
                   </div>
 
                   {/* Date */}
-                  <div style={{ flex: 2, fontSize: '13px', color: 'var(--text-3)' }}>
-                    {formatDate(m.created_at)}
-                  </div>
+                  <div className="mem-c-date">{formatDate(m.created_at)}</div>
 
                   {/* Delete */}
-                  <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                  <div className="mem-c-del">
                     {m.role !== 'admin' && (
                       <button
                         disabled={isPending}
@@ -302,7 +293,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
 
                 {/* ── Formations détail (expanded) ── */}
                 {isExpanded && formations > 0 && (
-                  <div style={s.formationsExpand}>
+                  <div className="mem-expand">
                     <div style={s.formationsExpandLabel}>Formations inscrites</div>
                     <div style={s.formationsList}>
                       {m.user_formations.map(uf => (
@@ -332,7 +323,6 @@ export default function MembresUI({ members }: { members: Member[] }) {
             )
           })
         )}
-      </div>
       </div>
     </div>
   )
@@ -398,12 +388,10 @@ const s: Record<string, React.CSSProperties> = {
   },
   resultCount: { fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto' },
 
-  tableScroll: { overflowX: 'auto' as const },
   table: {
     background: 'var(--surface)',
     border: '1px solid var(--surface-2)',
     borderRadius: '14px', overflow: 'hidden',
-    minWidth: '560px',
   },
   tableHead: {
     display: 'flex', alignItems: 'center', gap: '16px',
@@ -412,15 +400,6 @@ const s: Record<string, React.CSSProperties> = {
     textTransform: 'uppercase' as const,
     color: 'var(--text-muted)',
     borderBottom: '1px solid var(--border)',
-  },
-  row: {
-    display: 'flex', alignItems: 'center', gap: '16px',
-    padding: '14px 20px',
-    borderBottom: '1px solid var(--surface)',
-    transition: 'background 0.15s',
-  },
-  rowSuspect: {
-    background: 'rgba(248,113,113,0.03)',
   },
   empty: {
     padding: '48px', textAlign: 'center' as const,
@@ -468,12 +447,6 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all 0.15s', marginLeft: '8px',
   },
 
-  formationsExpand: {
-    padding: '14px 20px 16px 72px',
-    background: 'rgba(52,211,153,0.03)',
-    borderBottom: '1px solid var(--surface)',
-    borderTop: '1px solid rgba(52,211,153,0.08)',
-  },
   formationsExpandLabel: {
     fontSize: '10px', fontWeight: 700, letterSpacing: '1px',
     textTransform: 'uppercase' as const,

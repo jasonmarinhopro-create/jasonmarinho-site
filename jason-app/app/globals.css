@@ -459,3 +459,99 @@ a { color: inherit; }
     display: none;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   ADMIN ACTIONS (Driing / Signalements / Suggestions)
+   Mobile-first : card → table row on desktop
+───────────────────────────────────────────────────────────── */
+
+/* Card : mobile default */
+.admin-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.admin-item:last-child { border-bottom: none; }
+
+/* Top row inside a card: main info + badge/status */
+.admin-item-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Multiple badges side by side */
+.admin-item-badges {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Action buttons row */
+.admin-item-foot {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MEMBRES TABLE
+   Mobile-first : grid card → flex table row on desktop
+───────────────────────────────────────────────────────────── */
+
+/* Hide desktop column headers on mobile */
+.mem-table-head { display: none !important; }
+
+/* Mobile card layout — CSS grid */
+.mem-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "main del"
+    "plan form"
+    "date date";
+  gap: 8px 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--surface);
+  transition: background 0.15s;
+  align-items: start;
+}
+.mem-row-suspect { background: rgba(248,113,113,0.03); }
+
+.mem-c-main { grid-area: main; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mem-c-plan { grid-area: plan; display: flex; align-items: center; }
+.mem-c-form { grid-area: form; display: flex; align-items: center; justify-content: flex-end; }
+.mem-c-date { grid-area: date; font-size: 13px; color: var(--text-3); display: flex; align-items: center; }
+.mem-c-del  { grid-area: del;  display: flex; align-items: flex-start; justify-content: flex-end; }
+
+/* Expand section — formations detail */
+.mem-expand {
+  padding: 12px 16px;
+  background: rgba(52,211,153,0.03);
+  border-bottom: 1px solid var(--surface);
+  border-top: 1px solid rgba(52,211,153,0.08);
+}
+
+/* Desktop: revert to flex table row */
+@media (min-width: 640px) {
+  .mem-table-head { display: flex !important; }
+
+  .mem-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+  }
+  .mem-c-main { flex: 3; }
+  .mem-c-plan { flex: 2; }
+  .mem-c-form { flex: 1; justify-content: center; }
+  .mem-c-date { flex: 2; }
+  .mem-c-del  { flex: 1; justify-content: flex-end; align-items: center; }
+
+  .mem-expand { padding: 14px 20px 16px 68px; }
+}

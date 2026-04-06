@@ -185,30 +185,28 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
         {tab === 'driing' && (
           <Section title="Demandes membres Driing" empty={pendingDriing.length === 0} emptyMsg="Aucune demande en attente.">
             {pendingDriing.map(u => (
-              <Row key={u.id}>
-                <Cell flex={2}>
-                  <div style={s.cellPrimary}>{u.full_name || '—'}</div>
-                  <div style={s.cellSub}>{u.email}</div>
-                </Cell>
-                <Cell>
-                  <div style={s.cellSub}>Inscrit le {formatDate(u.created_at)}</div>
-                </Cell>
-                <Cell>
+              <div key={u.id} className="admin-item">
+                <div className="admin-item-head">
+                  <div>
+                    <div style={s.cellPrimary}>{u.full_name || '—'}</div>
+                    <div style={s.cellSub}>{u.email}</div>
+                  </div>
                   <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c' }}>En attente</span>
-                </Cell>
-                <Cell align="right">
+                </div>
+                <div style={s.cellSub}>Inscrit le {formatDate(u.created_at)}</div>
+                <div className="admin-item-foot">
                   {feedback?.id === u.id
                     ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
                     : (
-                      <div style={s.actions}>
+                      <>
                         <ActionBtn label="Confirmer" icon={<Check size={13} weight="bold" />} color="#34D399" loading={isPending}
                           onClick={() => action(u.id, () => confirmDriingMember(u.id), 'Membre Driing confirmé ✓')} />
                         <ActionBtn label="Rejeter" icon={<X size={13} weight="bold" />} color="#f87171" loading={isPending}
                           onClick={() => action(u.id, () => rejectDriingMember(u.id), 'Demande rejetée')} />
-                      </div>
+                      </>
                     )}
-                </Cell>
-              </Row>
+                </div>
+              </div>
             ))}
           </Section>
         )}
@@ -217,38 +215,36 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
         {tab === 'reports' && (
           <Section title={`${reports.length} signalement${reports.length > 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
             {reports.map(r => (
-              <Row key={r.id}>
-                <Cell flex={2}>
-                  <div style={s.cellPrimary}>{r.name || r.identifier}</div>
-                  <div style={s.cellSub}>{r.identifier_type} · {r.identifier}</div>
-                </Cell>
-                <Cell>
-                  <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: '#f87171' }}>{r.incident_type}</span>
-                </Cell>
-                <Cell>
-                  <span style={{ ...s.badge, ...(r.is_validated ? { background: 'rgba(52,211,153,.1)', color: '#34D399' } : { background: 'rgba(251,146,60,.1)', color: '#fb923c' }) }}>
-                    {r.is_validated ? 'Validé' : 'En attente'}
-                  </span>
-                </Cell>
-                <Cell>
-                  <div style={s.cellSub}>{r.reporter_city || '—'} · {formatDate(r.reported_at)}</div>
-                  {r.description && <div style={s.description}>{r.description}</div>}
-                </Cell>
-                <Cell align="right">
+              <div key={r.id} className="admin-item">
+                <div className="admin-item-head">
+                  <div>
+                    <div style={s.cellPrimary}>{r.name || r.identifier}</div>
+                    <div style={s.cellSub}>{r.identifier_type} · {r.identifier}</div>
+                  </div>
+                  <div className="admin-item-badges">
+                    <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: '#f87171' }}>{r.incident_type}</span>
+                    <span style={{ ...s.badge, ...(r.is_validated ? { background: 'rgba(52,211,153,.1)', color: '#34D399' } : { background: 'rgba(251,146,60,.1)', color: '#fb923c' }) }}>
+                      {r.is_validated ? 'Validé' : 'En attente'}
+                    </span>
+                  </div>
+                </div>
+                <div style={s.cellSub}>{r.reporter_city || '—'} · {formatDate(r.reported_at)}</div>
+                {r.description && <div style={s.description}>{r.description}</div>}
+                <div className="admin-item-foot">
                   {feedback?.id === r.id
                     ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
                     : (
-                      <div style={s.actions}>
+                      <>
                         {!r.is_validated && (
                           <ActionBtn label="Valider" icon={<CheckCircle size={13} weight="bold" />} color="#34D399" loading={isPending}
                             onClick={() => action(r.id, () => validateReport(r.id), 'Signalement validé')} />
                         )}
                         <ActionBtn label="Supprimer" icon={<Trash size={13} weight="bold" />} color="#f87171" loading={isPending}
                           onClick={() => action(r.id, () => deleteReport(r.id), 'Supprimé')} />
-                      </div>
+                      </>
                     )}
-                </Cell>
-              </Row>
+                </div>
+              </div>
             ))}
           </Section>
         )}
@@ -257,23 +253,21 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
         {tab === 'suggestions' && (
           <Section title="Suggestions utilisateurs" empty={suggestions.length === 0} emptyMsg="Aucune suggestion.">
             {suggestions.map(sg => (
-              <Row key={sg.id}>
-                <Cell>
+              <div key={sg.id} className="admin-item">
+                <div className="admin-item-head">
                   <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'rgba(255,213,107,.1)', color: 'var(--accent-text)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD' }) }}>
                     {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
                   </span>
-                </Cell>
-                <Cell flex={3}>
-                  <div style={s.cellPrimary}>{sg.message}</div>
                   <div style={s.cellSub}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>
-                </Cell>
-                <Cell align="right">
+                </div>
+                <div style={s.cellPrimary}>{sg.message}</div>
+                <div className="admin-item-foot">
                   {feedback?.id === sg.id
                     ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
                     : <ActionBtn label="Supprimer" icon={<Trash size={13} weight="bold" />} color="#f87171" loading={isPending}
                         onClick={() => action(sg.id, () => deleteSuggestion(sg.id), 'Supprimée')} />}
-                </Cell>
-              </Row>
+                </div>
+              </div>
             ))}
           </Section>
         )}
@@ -287,21 +281,7 @@ function Section({ title, children, empty, emptyMsg }: { title: string; children
   return (
     <div style={s.section}>
       <div style={s.sectionSubTitle}>{title}</div>
-      {empty ? <div style={s.empty}>{emptyMsg}</div> : (
-        <div style={s.tableScroll}>
-          <div style={s.table}>{children}</div>
-        </div>
-      )}
-    </div>
-  )
-}
-function Row({ children }: { children: React.ReactNode }) {
-  return <div style={s.row}>{children}</div>
-}
-function Cell({ children, flex, align }: { children?: React.ReactNode; flex?: number; align?: 'right' }) {
-  return (
-    <div style={{ flex: flex ?? 1, minWidth: 0, textAlign: align, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-      {children}
+      {empty ? <div style={s.empty}>{emptyMsg}</div> : <div style={s.table}>{children}</div>}
     </div>
   )
 }
@@ -378,13 +358,10 @@ const s: Record<string, React.CSSProperties> = {
 
   section: { display: 'flex', flexDirection: 'column', gap: '0' },
   sectionSubTitle: { fontSize: '11px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', padding: '0 0 10px' },
-  tableScroll: { overflowX: 'auto' as const },
-  table: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', overflow: 'hidden', minWidth: '520px' },
-  row: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderBottom: '1px solid var(--border)' },
+  table: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', overflow: 'hidden' },
   empty: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', padding: '40px', textAlign: 'center' as const, fontSize: '14px', color: 'var(--text-muted)' },
   cellPrimary: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
   cellSub: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
   description: { fontSize: '13px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, marginTop: '2px' },
   badge: { display: 'inline-block', fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px', letterSpacing: '0.3px', whiteSpace: 'nowrap' as const },
-  actions: { display: 'flex', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap' as const },
 }
