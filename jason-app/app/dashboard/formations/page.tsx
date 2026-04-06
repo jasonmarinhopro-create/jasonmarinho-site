@@ -11,22 +11,28 @@ const levelLabel: Record<string, string> = {
   avance: 'Avancé',
 }
 
-// Seules les formations avec une page dashboard sont affichées
-const ACTIVE_SLUGS = ['google-my-business-lcd', 'annonce-directe']
+// Toutes les formations disponibles avec une page dashboard
+const ACTIVE_SLUGS = [
+  'google-my-business-lcd',
+  'annonce-directe',
+  'tarification-dynamique',
+  'securiser-reservations-eviter-mauvais-voyageurs',
+  'reseaux-sociaux-lcd',
+  'optimiser-annonce-airbnb',
+  'mettre-le-bon-prix-lcd',
+  'livret-accueil-digital',
+  'lcd-basse-saison',
+  'gerer-lcd-automatisation',
+  'fiscalite-reglementation-lcd-france-2026',
+  'ecrire-avis-repondre-voyageurs',
+  'decorer-amenager-logement-lcd',
+  'creer-conciergerie-lcd',
+]
 
 // Formations à venir — hardcodées, pas encore en DB
 const COMING_SOON = [
   {
-    id: 'tarification-dynamique',
-    title: 'Tarification Dynamique & Revenue Management',
-    description: 'Maîtrise les outils de tarification dynamique pour maximiser ton revenu par nuit — PriceLabs, Wheelhouse, stratégies saisonnières et gestion des événements locaux.',
-    duration: '3h',
-    modules: 5,
-    lessons: 12,
-    level: 'Intermédiaire',
-  },
-  {
-    id: 'attirer-voyageurs',
+    id: 'attirer-voyageurs-sans-airbnb',
     title: 'Attirer des voyageurs sans Airbnb',
     description: 'SEO local, réseaux sociaux, groupes Facebook, bouche-à-oreille digital — les vraies stratégies pour remplir son calendrier en location directe.',
     duration: '2h30',
