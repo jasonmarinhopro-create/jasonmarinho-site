@@ -287,7 +287,11 @@ function Section({ title, children, empty, emptyMsg }: { title: string; children
   return (
     <div style={s.section}>
       <div style={s.sectionSubTitle}>{title}</div>
-      {empty ? <div style={s.empty}>{emptyMsg}</div> : <div style={s.table}>{children}</div>}
+      {empty ? <div style={s.empty}>{emptyMsg}</div> : (
+        <div style={s.tableScroll}>
+          <div style={s.table}>{children}</div>
+        </div>
+      )}
     </div>
   )
 }
@@ -366,7 +370,7 @@ const s: Record<string, React.CSSProperties> = {
   contentCardTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
   contentCardDesc: { fontSize: '12px', color: 'var(--text-3)' },
 
-  tabBar: { display: 'flex', gap: '4px', background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '12px', padding: '4px', marginBottom: '16px' },
+  tabBar: { display: 'flex', gap: '4px', background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '12px', padding: '4px', marginBottom: '16px', overflowX: 'auto' as const },
   tab: { display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 500, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer' },
   tabActive: { background: 'var(--surface-2)', color: 'var(--text)' },
   tabBadge: { fontSize: '11px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-3)', padding: '1px 7px', borderRadius: '100px' },
@@ -374,8 +378,9 @@ const s: Record<string, React.CSSProperties> = {
 
   section: { display: 'flex', flexDirection: 'column', gap: '0' },
   sectionSubTitle: { fontSize: '11px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', padding: '0 0 10px' },
-  table: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', overflow: 'hidden' },
-  row: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' as const },
+  tableScroll: { overflowX: 'auto' as const },
+  table: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', overflow: 'hidden', minWidth: '520px' },
+  row: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderBottom: '1px solid var(--border)' },
   empty: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', padding: '40px', textAlign: 'center' as const, fontSize: '14px', color: 'var(--text-muted)' },
   cellPrimary: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
   cellSub: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },

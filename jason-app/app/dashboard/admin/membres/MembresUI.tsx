@@ -172,6 +172,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
       </div>
 
       {/* ── Table ── */}
+      <div style={s.tableScroll}>
       <div style={s.table}>
         {/* Header row */}
         <div style={s.tableHead}>
@@ -332,6 +333,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
           })
         )}
       </div>
+      </div>
     </div>
   )
 }
@@ -359,7 +361,7 @@ const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '20px' },
 
   statsRow: {
-    display: 'flex', alignItems: 'center', gap: '24px',
+    display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap',
     background: 'var(--surface)',
     border: '1px solid var(--surface-2)',
     borderRadius: '14px', padding: '16px 24px',
@@ -377,7 +379,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
     borderRadius: '10px', padding: '8px 14px',
-    flex: '0 0 260px',
+    flex: '1 1 180px', minWidth: 0,
   },
   searchInput: {
     background: 'none', border: 'none', outline: 'none',
@@ -396,10 +398,12 @@ const s: Record<string, React.CSSProperties> = {
   },
   resultCount: { fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto' },
 
+  tableScroll: { overflowX: 'auto' as const },
   table: {
     background: 'var(--surface)',
     border: '1px solid var(--surface-2)',
     borderRadius: '14px', overflow: 'hidden',
+    minWidth: '560px',
   },
   tableHead: {
     display: 'flex', alignItems: 'center', gap: '16px',

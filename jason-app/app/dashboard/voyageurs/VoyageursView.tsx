@@ -457,8 +457,8 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text-3)', padding: '4px',
   },
   form: { padding: '20px 24px 24px', display: 'flex', flexDirection: 'column', gap: '16px' },
-  formRow: { display: 'flex', gap: '14px' },
-  field: { flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' },
+  formRow: { display: 'flex', gap: '14px', flexWrap: 'wrap' },
+  field: { flex: 1, minWidth: '140px', display: 'flex', flexDirection: 'column', gap: '6px' },
   label: { fontSize: '12px', fontWeight: 500, color: 'var(--text-2)' },
   inputWrap: {
     display: 'flex', alignItems: 'center', gap: '10px',
