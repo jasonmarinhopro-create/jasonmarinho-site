@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition, useMemo } from 'react'
-import { Eye, EyeSlash, Trash, GraduationCap, Users, ArrowCounterClockwise, MagnifyingGlass } from '@phosphor-icons/react'
+import Link from 'next/link'
+import { Eye, EyeSlash, Trash, GraduationCap, Users, ArrowCounterClockwise, MagnifyingGlass, PencilSimple } from '@phosphor-icons/react'
 import { toggleFormationPublished, deleteFormation, republishAllFormations } from './actions'
 
 interface Formation {
@@ -250,6 +251,13 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
 
                 {/* Actions */}
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                  <Link
+                    href={`/dashboard/admin/formations/${f.slug}`}
+                    style={{ ...styles.actionBtn, color: 'var(--accent-text)', textDecoration: 'none' }}
+                    title="Modifier le contenu"
+                  >
+                    <PencilSimple size={14} />
+                  </Link>
                   <button
                     onClick={() => handleToggle(f.id, f.is_published)}
                     style={{ ...styles.actionBtn, color: f.is_published ? '#63D683' : 'var(--text-3)' }}

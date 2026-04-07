@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import FormationView from '../google-my-business-lcd/FormationView'
 import { LIVRET_ACCUEIL_FORMATION } from './content'
 import { createClient } from '@/lib/supabase/server'
+import { getFormationDbContent } from '@/lib/queries/formation-db-content'
 
 export default async function FormationPage() {
   const profile = await getProfile()
@@ -27,11 +28,13 @@ export default async function FormationPage() {
     initialProgress = uf?.progress ?? null
   }
 
+  const formationContent = await getFormationDbContent(formationId, LIVRET_ACCUEIL_FORMATION)
+
   return (
     <>
       <Header title="Formation Livret d'accueil digital" userName={profile?.full_name ?? undefined} />
       <FormationView
-        formation={LIVRET_ACCUEIL_FORMATION}
+        formation={formationContent}
         formationId={formationId}
         initialProgress={initialProgress}
       />

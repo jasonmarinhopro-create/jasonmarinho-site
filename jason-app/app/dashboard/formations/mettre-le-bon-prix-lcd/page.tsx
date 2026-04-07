@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import FormationView from '../google-my-business-lcd/FormationView'
 import { METTRE_BON_PRIX_FORMATION } from './content'
 import { createClient } from '@/lib/supabase/server'
+import { getFormationDbContent } from '@/lib/queries/formation-db-content'
 
 export default async function FormationPage() {
   const profile = await getProfile()
@@ -27,11 +28,13 @@ export default async function FormationPage() {
     initialProgress = uf?.progress ?? null
   }
 
+  const formationContent = await getFormationDbContent(formationId, METTRE_BON_PRIX_FORMATION)
+
   return (
     <>
       <Header title="Formation Mettre le bon prix en LCD" userName={profile?.full_name ?? undefined} />
       <FormationView
-        formation={METTRE_BON_PRIX_FORMATION}
+        formation={formationContent}
         formationId={formationId}
         initialProgress={initialProgress}
       />
