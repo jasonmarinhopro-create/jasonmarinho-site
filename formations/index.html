@@ -115,6 +115,17 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
 .btn-ol:hover{background:var(--g);color:#fff}
 .f-gr{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+/* ── CATEGORY FILTERS ── */
+.f-filters{display:flex;align-items:center;gap:8px;margin-bottom:28px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.f-filters::-webkit-scrollbar{display:none}
+.f-filter-lbl{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);white-space:nowrap;flex-shrink:0;margin-right:4px;display:flex;align-items:center;gap:6px}
+.f-filter-lbl::before{content:'';display:inline-block;width:14px;height:2px;background:currentColor;border-radius:2px}
+.f-fbtn{font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;color:var(--tm);background:var(--w);border:1.5px solid var(--bd);border-radius:100px;padding:7px 16px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s}
+.f-fbtn:hover{border-color:var(--g);color:var(--g)}
+.f-fbtn.active{background:var(--g);color:#fff;border-color:var(--g)}
+.f-no-results{display:none;text-align:center;padding:56px 24px;color:var(--tl);font-size:15px}
+.f-no-results.show{display:block}
+.f-card[hidden]{display:none!important}
 .f-card{background:var(--w);border-radius:16px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s}
 .f-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}
 .f-th{height:158px;position:relative;display:flex;align-items:center;justify-content:center}
@@ -236,10 +247,21 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         Créer un compte <i class="ph-bold ph-arrow-right"></i>
       </a>
     </div>
-    <div class="f-gr">
+    <!-- Category filters -->
+    <div class="f-filters rv" id="f-filters">
+      <span class="f-filter-lbl">Thème</span>
+      <button class="f-fbtn active" data-cat="all">Toutes</button>
+      <button class="f-fbtn" data-cat="visibilite">Visibilité & Marketing</button>
+      <button class="f-fbtn" data-cat="revenus">Revenus & Tarification</button>
+      <button class="f-fbtn" data-cat="gestion">Gestion & Automatisation</button>
+      <button class="f-fbtn" data-cat="reglementation">Réglementation</button>
+      <button class="f-fbtn" data-cat="amenagement">Aménagement & Conciergerie</button>
+    </div>
+
+    <div class="f-gr" id="f-grid">
 
       <!-- Google My Business -->
-      <div class="f-card rv d1">
+      <div class="f-card rv d1" data-category="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-map-pin"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -260,7 +282,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Annonce Directe -->
-      <div class="f-card rv d2">
+      <div class="f-card rv d2" data-category="revenus">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-megaphone"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -281,7 +303,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Tarification dynamique -->
-      <div class="f-card rv d3">
+      <div class="f-card rv d3" data-category="revenus">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-chart-line"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -302,7 +324,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Sécuriser ses réservations -->
-      <div class="f-card rv d1">
+      <div class="f-card rv d1" data-category="gestion">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-shield-check"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -323,7 +345,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Réseaux sociaux -->
-      <div class="f-card rv d2">
+      <div class="f-card rv d2" data-category="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-instagram-logo"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -344,7 +366,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Optimiser annonce Airbnb -->
-      <div class="f-card rv d3">
+      <div class="f-card rv d3" data-category="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-star"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -365,7 +387,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Mettre le bon prix -->
-      <div class="f-card rv d1">
+      <div class="f-card rv d1" data-category="revenus">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-currency-eur"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -386,7 +408,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Livret d'accueil digital -->
-      <div class="f-card rv d2">
+      <div class="f-card rv d2" data-category="gestion">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-book-open"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -407,7 +429,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Basse saison -->
-      <div class="f-card rv d3">
+      <div class="f-card rv d3" data-category="revenus">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-snowflake"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -428,7 +450,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Gérer sa LCD / automatisation -->
-      <div class="f-card rv d1">
+      <div class="f-card rv d1" data-category="gestion">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-robot"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -449,7 +471,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Fiscalité -->
-      <div class="f-card rv d2">
+      <div class="f-card rv d2" data-category="reglementation">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-scales"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -470,7 +492,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Avis et réponses voyageurs -->
-      <div class="f-card rv d3">
+      <div class="f-card rv d3" data-category="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-chat-circle-text"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -491,7 +513,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Décorer et aménager -->
-      <div class="f-card rv d1">
+      <div class="f-card rv d1" data-category="amenagement">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-paint-roller"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -512,7 +534,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Créer sa conciergerie -->
-      <div class="f-card rv d2">
+      <div class="f-card rv d2" data-category="amenagement">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-buildings"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -534,6 +556,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 
 
     </div>
+    <div class="f-no-results" id="f-no-results">Aucune formation dans cette catégorie pour l'instant.</div>
   </div>
 </section>
 
@@ -593,6 +616,27 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
 document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
+
+// Category filter
+(function(){
+  const btns=document.querySelectorAll('#f-filters .f-fbtn');
+  const cards=document.querySelectorAll('#f-grid .f-card');
+  const noResults=document.getElementById('f-no-results');
+  btns.forEach(btn=>{
+    btn.addEventListener('click',function(){
+      btns.forEach(b=>b.classList.remove('active'));
+      this.classList.add('active');
+      const cat=this.dataset.cat;
+      let visible=0;
+      cards.forEach(card=>{
+        const match=cat==='all'||card.dataset.category===cat;
+        card.hidden=!match;
+        if(match)visible++;
+      });
+      noResults.classList.toggle('show',visible===0);
+    });
+  });
+})();
 </script>
 <script src="/cookie-banner.js" defer></script>
 </body>
