@@ -38,18 +38,47 @@ const levelLabel: Record<string, string> = {
   avance: 'Avancé',
 }
 
+// Mapping slug → category key
+const SLUG_CATEGORY: Record<string, string> = {
+  'google-my-business-lcd': 'visibilite',
+  'reseaux-sociaux-lcd': 'visibilite',
+  'optimiser-annonce-airbnb': 'visibilite',
+  'ecrire-avis-repondre-voyageurs': 'visibilite',
+  'tarification-dynamique': 'revenus',
+  'mettre-le-bon-prix-lcd': 'revenus',
+  'lcd-basse-saison': 'revenus',
+  'annonce-directe': 'revenus',
+  'gerer-lcd-automatisation': 'gestion',
+  'livret-accueil-digital': 'gestion',
+  'securiser-reservations-eviter-mauvais-voyageurs': 'gestion',
+  'fiscalite-reglementation-lcd-france-2026': 'reglementation',
+  'decorer-amenager-logement-lcd': 'amenagement',
+  'creer-conciergerie-lcd': 'amenagement',
+}
+
+const categoryLabel: Record<string, string> = {
+  visibilite: 'Visibilité & Marketing',
+  revenus: 'Revenus & Tarification',
+  gestion: 'Gestion & Automatisation',
+  reglementation: 'Réglementation',
+  amenagement: 'Aménagement & Conciergerie',
+}
+
 type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
 type StatusFilter = 'all' | 'enrolled' | 'not_enrolled' | 'done'
+type CategoryFilter = 'all' | 'visibilite' | 'revenus' | 'gestion' | 'reglementation' | 'amenagement'
 
 export default function FormationsGrid({ formations, progressMap, comingSoon }: Props) {
   const [search, setSearch] = useState('')
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
 
   const filtered = useMemo(() => {
     return formations.filter(f => {
       if (search && !f.title.toLowerCase().includes(search.toLowerCase())) return false
       if (levelFilter !== 'all' && f.level !== levelFilter) return false
+      if (categoryFilter !== 'all' && SLUG_CATEGORY[f.slug] !== categoryFilter) return false
 
       const progress = progressMap[f.id] ?? null
       const enrolled = progress !== null
@@ -61,10 +90,17 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
 
       return true
     })
-  }, [formations, progressMap, search, levelFilter, statusFilter])
+  }, [formations, progressMap, search, levelFilter, statusFilter, categoryFilter])
 
   const enrolledCount = formations.filter(f => progressMap[f.id] !== undefined).length
-  const hasFilters = search !== '' || levelFilter !== 'all' || statusFilter !== 'all'
+  const hasFilters = search !== '' || levelFilter !== 'all' || statusFilter !== 'all' || categoryFilter !== 'all'
+
+  const resetFilters = () => {
+    setSearch('')
+    setLevelFilter('all')
+    setStatusFilter('all')
+    setCategoryFilter('all')
+  }
 
   return (
     <div>
@@ -99,45 +135,62 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
           )}
         </div>
 
-        <div style={styles.filtersRight}>
+        {/* Category filter — scrollable row on mobile */}
+        <div style={styles.filterScrollRow}>
+          <span style={styles.filterLabel}><Funnel size={12} /> Thème</span>
+          {(['all', 'visibilite', 'revenus', 'gestion', 'reglementation', 'amenagement'] as CategoryFilter[]).map(v => (
+            <button
+              key={v}
+              onClick={() => setCategoryFilter(v)}
+              style={{
+                ...styles.filterBtn,
+                ...(categoryFilter === v ? styles.filterBtnActive : {}),
+              }}
+            >
+              {v === 'all' ? 'Tous' : categoryLabel[v]}
+            </button>
+          ))}
+        </div>
+
+        {/* Level + Status filters row */}
+        <div style={styles.filterScrollRow}>
           {/* Level filter */}
-          <div style={styles.filterGroup}>
-            <span style={styles.filterLabel}><Funnel size={12} /> Niveau</span>
-            {(['all', 'debutant', 'intermediaire', 'avance'] as LevelFilter[]).map(v => (
-              <button
-                key={v}
-                onClick={() => setLevelFilter(v)}
-                style={{
-                  ...styles.filterBtn,
-                  ...(levelFilter === v ? styles.filterBtnActive : {}),
-                }}
-              >
-                {v === 'all' ? 'Tous' : levelLabel[v]}
-              </button>
-            ))}
-          </div>
+          <span style={styles.filterLabel}><Funnel size={12} /> Niveau</span>
+          {(['all', 'debutant', 'intermediaire', 'avance'] as LevelFilter[]).map(v => (
+            <button
+              key={v}
+              onClick={() => setLevelFilter(v)}
+              style={{
+                ...styles.filterBtn,
+                ...(levelFilter === v ? styles.filterBtnActive : {}),
+              }}
+            >
+              {v === 'all' ? 'Tous' : levelLabel[v]}
+            </button>
+          ))}
+
+          {/* Separator */}
+          <span style={styles.filterSep} />
 
           {/* Status filter */}
-          <div style={styles.filterGroup}>
-            <span style={styles.filterLabel}>Statut</span>
-            {([
-              { v: 'all', label: 'Toutes' },
-              { v: 'enrolled', label: 'En cours' },
-              { v: 'done', label: 'Terminées' },
-              { v: 'not_enrolled', label: 'Non commencées' },
-            ] as { v: StatusFilter; label: string }[]).map(({ v, label }) => (
-              <button
-                key={v}
-                onClick={() => setStatusFilter(v)}
-                style={{
-                  ...styles.filterBtn,
-                  ...(statusFilter === v ? styles.filterBtnActive : {}),
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          <span style={styles.filterLabel}>Statut</span>
+          {([
+            { v: 'all', label: 'Toutes' },
+            { v: 'enrolled', label: 'En cours' },
+            { v: 'done', label: 'Terminées' },
+            { v: 'not_enrolled', label: 'Non commencées' },
+          ] as { v: StatusFilter; label: string }[]).map(({ v, label }) => (
+            <button
+              key={v}
+              onClick={() => setStatusFilter(v)}
+              style={{
+                ...styles.filterBtn,
+                ...(statusFilter === v ? styles.filterBtnActive : {}),
+              }}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -145,7 +198,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
       {hasFilters && (
         <div style={styles.resultsCount}>
           {filtered.length} résultat{filtered.length !== 1 ? 's' : ''}
-          <button onClick={() => { setSearch(''); setLevelFilter('all'); setStatusFilter('all') }} style={styles.resetBtn}>
+          <button onClick={resetFilters} style={styles.resetBtn}>
             Réinitialiser les filtres
           </button>
         </div>
@@ -165,6 +218,9 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
                   <GraduationCap size={28} color="#FFD56B" weight="fill" />
                 </div>
                 <div style={styles.cardBadges}>
+                  {SLUG_CATEGORY[f.slug] && (
+                    <span style={styles.categoryBadge}>{categoryLabel[SLUG_CATEGORY[f.slug]]}</span>
+                  )}
                   <span className="badge badge-yellow">{levelLabel[f.level] ?? f.level}</span>
                   <span className="badge badge-green">Disponible</span>
                   {done && <span className="badge badge-green">Terminé ✓</span>}
@@ -239,10 +295,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
           <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '12px' }}>
             Aucune formation ne correspond à ta recherche.
           </p>
-          <button
-            onClick={() => { setSearch(''); setLevelFilter('all'); setStatusFilter('all') }}
-            style={styles.resetBtn}
-          >
+          <button onClick={resetFilters} style={styles.resetBtn}>
             Réinitialiser les filtres
           </button>
         </div>
@@ -260,36 +313,46 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(255,213,107,0.15)', fontSize: '12px', fontWeight: 500,
   },
   filtersWrap: {
-    display: 'flex', flexWrap: 'wrap', gap: '10px',
-    marginBottom: '20px', alignItems: 'flex-start',
+    display: 'flex', flexDirection: 'column', gap: '8px',
+    marginBottom: '20px',
   },
   searchWrap: {
     display: 'flex', alignItems: 'center', gap: '8px',
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '9px 14px',
-    minWidth: '220px', flex: '0 0 auto',
+    width: '100%', maxWidth: '360px',
   },
   searchInput: {
     background: 'transparent', border: 'none', outline: 'none',
-    color: 'var(--text)', fontSize: '13px', width: '180px',
+    color: 'var(--text)', fontSize: '13px', flex: 1, minWidth: 0,
   },
   clearBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
     color: 'var(--text-muted)', fontSize: '16px', lineHeight: 1,
     padding: '0 2px', flexShrink: 0,
   },
-  filtersRight: { display: 'flex', flexWrap: 'wrap', gap: '10px', flex: 1 },
-  filterGroup: { display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' },
+  // Horizontally scrollable filter row — works on all screen sizes
+  filterScrollRow: {
+    display: 'flex', alignItems: 'center', gap: '4px',
+    overflowX: 'auto', paddingBottom: '2px',
+    // Hide scrollbar but keep scroll
+    scrollbarWidth: 'none',
+    WebkitOverflowScrolling: 'touch',
+  } as React.CSSProperties,
+  filterSep: {
+    width: '1px', height: '20px', background: 'var(--border)',
+    flexShrink: 0, margin: '0 4px',
+  },
   filterLabel: {
     display: 'flex', alignItems: 'center', gap: '4px',
     fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)',
-    marginRight: '2px', whiteSpace: 'nowrap',
+    marginRight: '2px', whiteSpace: 'nowrap', flexShrink: 0,
   },
   filterBtn: {
     padding: '6px 12px', borderRadius: '8px',
     background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-3)', fontSize: '12px', fontWeight: 400,
-    cursor: 'pointer',
+    cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
   },
   filterBtnActive: {
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.25)',
@@ -298,6 +361,7 @@ const styles: Record<string, React.CSSProperties> = {
   resultsCount: {
     display: 'flex', alignItems: 'center', gap: '12px',
     fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px',
+    flexWrap: 'wrap',
   },
   resetBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
@@ -316,6 +380,13 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   cardBadges: { display: 'flex', flexWrap: 'wrap', gap: '5px', alignItems: 'flex-start', justifyContent: 'flex-end' },
+  categoryBadge: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px',
+    padding: '3px 8px', borderRadius: '100px',
+    background: 'rgba(85,107,47,0.15)', color: 'var(--text-3)',
+    border: '1px solid rgba(85,107,47,0.2)',
+    whiteSpace: 'nowrap',
+  },
   wip: {
     fontSize: '10px', fontWeight: 600, letterSpacing: '0.7px', textTransform: 'uppercase',
     padding: '4px 10px', borderRadius: '100px',
