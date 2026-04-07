@@ -334,9 +334,8 @@ const styles: Record<string, React.CSSProperties> = {
   // Horizontally scrollable filter row — works on all screen sizes
   filterScrollRow: {
     display: 'flex', alignItems: 'center', gap: '4px',
-    overflowX: 'auto', paddingBottom: '2px',
-    minWidth: 0, // required for overflow-x: auto to work inside a flex container
-    // Hide scrollbar but keep scroll
+    overflowX: 'auto', paddingBottom: '4px',
+    width: '100%', minWidth: 0,
     scrollbarWidth: 'none',
     WebkitOverflowScrolling: 'touch',
   } as React.CSSProperties,
