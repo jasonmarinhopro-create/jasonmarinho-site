@@ -10,6 +10,20 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    id: 'nouveautes-page-apr-2026',
+    date: '2026-04-07',
+    tag: 'nouveau',
+    title: 'Page Nouveautés dédiée',
+    description: 'Toutes les avancées de la plateforme sont désormais consultables sur une page dédiée. Retrouve l\'historique complet depuis le menu ou le panneau de notifications.',
+  },
+  {
+    id: 'perf-dashboard-apr-2026',
+    date: '2026-04-07',
+    tag: 'amélioration',
+    title: 'Dashboard plus rapide',
+    description: 'Les requêtes au chargement du dashboard ont été optimisées pour réduire le temps d\'ouverture sur mobile comme sur ordinateur.',
+  },
+  {
     id: 'notif-system-apr-2025',
     date: '2026-04-06',
     tag: 'nouveau',
@@ -22,6 +36,13 @@ export const CHANGELOG: ChangelogEntry[] = [
     tag: 'nouveau',
     title: 'Page Blog intégrée au dashboard',
     description: 'Les articles du blog jasonmarinho.com sont désormais accessibles directement depuis ton espace membre, sans quitter le dashboard.',
+  },
+  {
+    id: 'formations-catalog-apr-2026',
+    date: '2026-04-01',
+    tag: 'amélioration',
+    title: '14 formations disponibles + filtres avancés',
+    description: 'Le catalogue atteint 14 formations avec de nouveaux filtres par thème et par niveau. L\'éditeur admin permet désormais de gérer tout le contenu directement.',
   },
   {
     id: 'theme-toggle-mar-2025',

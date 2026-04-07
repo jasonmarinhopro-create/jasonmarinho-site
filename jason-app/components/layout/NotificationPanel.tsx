@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { X, Sparkle, ArrowUp, Wrench, Star } from '@phosphor-icons/react'
+import Link from 'next/link'
+import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight } from '@phosphor-icons/react'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
 
 interface NotificationPanelProps {
@@ -157,6 +158,9 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
           {/* Footer */}
           <div style={styles.footer}>
             <span style={styles.footerText}>Tu es à jour ✦</span>
+            <Link href="/dashboard/nouveautes" onClick={onClose} style={styles.footerLink}>
+              Voir tout l&apos;historique <ArrowRight size={12} />
+            </Link>
           </div>
         </div>
       </div>
@@ -271,9 +275,18 @@ const styles: Record<string, React.CSSProperties> = {
   footer: {
     padding: '20px 24px 32px',
     textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '12px',
   },
   footerText: {
     fontSize: '12px', color: 'var(--text-muted)',
     fontStyle: 'italic',
+  },
+  footerLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--accent-text)', textDecoration: 'none',
   },
 }
