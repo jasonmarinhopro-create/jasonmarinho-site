@@ -189,7 +189,6 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .n-links,.n-right{display:none}
   .hbg{display:flex}
   .f-gr{grid-template-columns:repeat(2,1fr)}
-  @media(max-width:1200px){.f-gr{grid-template-columns:repeat(2,1fr)}}
   .feat-g{grid-template-columns:1fr 1fr}
   .ft-g{grid-template-columns:1fr 1fr;gap:32px}
 }
@@ -202,6 +201,9 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .ft-g{grid-template-columns:1fr;gap:28px}
   .ft-desc{max-width:100%}
   .ft-bot{flex-direction:column;align-items:flex-start}
+  /* Filter bar : horizontally scrollable on mobile */
+  .f-cats{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .f-cats::-webkit-scrollbar{display:none}
 }
 </style>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
