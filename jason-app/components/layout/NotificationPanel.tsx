@@ -1,9 +1,11 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight } from '@phosphor-icons/react'
+import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight, CaretDown } from '@phosphor-icons/react'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
+
+const DEFAULT_VISIBLE = 3
 
 interface NotificationPanelProps {
   open: boolean
@@ -26,6 +28,12 @@ function formatDate(iso: string): string {
 
 export default function NotificationPanel({ open, onClose, readIds, onMarkAllRead }: NotificationPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null)
+  const [showAll, setShowAll] = useState(false)
+
+  // Reset to collapsed view each time panel opens
+  useEffect(() => {
+    if (open) setShowAll(false)
+  }, [open])
 
   // Close on outside click
   useEffect(() => {
@@ -116,15 +124,15 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
 
         {/* List */}
         <div style={styles.list}>
-          {CHANGELOG.map((entry, i) => {
+          {(showAll ? CHANGELOG : CHANGELOG.slice(0, DEFAULT_VISIBLE)).map((entry, i, arr) => {
             const isRead = readIds.has(entry.id)
             const tag = TAG_CONFIG[entry.tag]
+            const isLast = i === arr.length - 1
             return (
               <div
                 key={entry.id}
                 style={{
                   ...styles.entry,
-                  ...(i < CHANGELOG.length - 1 ? styles.entryBorder : {}),
                   opacity: isRead ? 0.55 : 1,
                 }}
               >
@@ -136,7 +144,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
                     border: isRead ? '1.5px solid var(--border)' : 'none',
                     boxShadow: isRead ? 'none' : `0 0 6px ${tag.color}80`,
                   }} />
-                  {i < CHANGELOG.length - 1 && <div style={styles.dotLine} />}
+                  {!isLast && <div style={styles.dotLine} />}
                 </div>
 
                 {/* Content */}
@@ -155,13 +163,34 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
             )
           })}
 
+          {/* Voir plus button */}
+          {!showAll && CHANGELOG.length > DEFAULT_VISIBLE && (
+            <div style={styles.seeMoreWrap}>
+              <button onClick={() => setShowAll(true)} style={styles.seeMoreBtn}>
+                <CaretDown size={15} weight="bold" />
+                Voir les {CHANGELOG.length - DEFAULT_VISIBLE} autres nouveautés
+              </button>
+            </div>
+          )}
+
           {/* Footer */}
-          <div style={styles.footer}>
-            <span style={styles.footerText}>Tu es à jour ✦</span>
-            <Link href="/dashboard/nouveautes" onClick={onClose} style={styles.footerLink}>
-              Voir tout l&apos;historique <ArrowRight size={12} />
-            </Link>
-          </div>
+          {(showAll || CHANGELOG.length <= DEFAULT_VISIBLE) && (
+            <div style={styles.footer}>
+              <span style={styles.footerText}>Tu es à jour ✦</span>
+              <Link href="/dashboard/nouveautes" onClick={onClose} style={styles.footerLink}>
+                Voir tout l&apos;historique <ArrowRight size={12} />
+              </Link>
+            </div>
+          )}
+
+          {/* Compact footer link when collapsed */}
+          {!showAll && CHANGELOG.length > DEFAULT_VISIBLE && (
+            <div style={{ ...styles.footer, paddingTop: '4px', paddingBottom: '24px' }}>
+              <Link href="/dashboard/nouveautes" onClick={onClose} style={styles.footerLink}>
+                Voir tout l&apos;historique <ArrowRight size={12} />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -271,6 +300,22 @@ const styles: Record<string, React.CSSProperties> = {
   entryDesc: {
     fontSize: '13px', color: 'var(--text-3)',
     lineHeight: '1.6',
+  },
+  seeMoreWrap: {
+    padding: '4px 24px 8px',
+  },
+  seeMoreBtn: {
+    width: '100%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+    padding: '13px 20px',
+    background: 'rgba(255,213,107,0.08)',
+    border: '1px solid rgba(255,213,107,0.22)',
+    borderRadius: '12px',
+    color: 'var(--accent-text)',
+    fontSize: '13px', fontWeight: 600,
+    cursor: 'pointer',
+    fontFamily: 'Outfit, sans-serif',
+    transition: 'background 0.18s, border-color 0.18s',
   },
   footer: {
     padding: '20px 24px 32px',
