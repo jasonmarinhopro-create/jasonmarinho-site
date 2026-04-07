@@ -17,7 +17,7 @@ export default async function DashboardPage() {
 
   const [
     { data: userFormations },
-    { data: allFormations },
+    { count: allFormationsCount },
     { count: partnersCount },
     { count: templatesCount },
     { count: groupsCount },
@@ -27,7 +27,7 @@ export default async function DashboardPage() {
       .eq('user_id', userId)
       .order('enrolled_at', { ascending: false })
       .limit(3),
-    supabase.from('formations').select('id').eq('is_published', true),
+    supabase.from('formations').select('*', { count: 'exact', head: true }).eq('is_published', true),
     // Partenaires DB = partenaires additionnels hors Driing (actifs)
     supabase.from('partners').select('*', { count: 'exact', head: true }).eq('is_active', true),
     supabase.from('templates').select('*', { count: 'exact', head: true }),
@@ -52,7 +52,7 @@ export default async function DashboardPage() {
       label: 'Formations',
       icon: GraduationCap,
       detail: 'Parcours complets pour optimiser ta LCD',
-      stat: `${allFormations?.length ?? 0} formation${pl(allFormations?.length ?? 0)} disponible${pl(allFormations?.length ?? 0)}`,
+      stat: `${allFormationsCount ?? 0} formation${pl(allFormationsCount ?? 0)} disponible${pl(allFormationsCount ?? 0)}`,
       color: '#004C3F',
       iconColor: '#34D399',
     },
@@ -186,7 +186,7 @@ export default async function DashboardPage() {
             <div style={styles.emptyState} className="glass-card">
               <GraduationCap size={40} color="var(--text-muted)" weight="fill" />
               <h3 style={styles.emptyTitle}>Commence ta première formation</h3>
-              <p style={styles.emptyDesc}>{allFormations?.length ?? 0} formation{pl(allFormations?.length ?? 0)} disponible{pl(allFormations?.length ?? 0)} pour optimiser ta location courte durée.</p>
+              <p style={styles.emptyDesc}>{allFormationsCount ?? 0} formation{pl(allFormationsCount ?? 0)} disponible{pl(allFormationsCount ?? 0)} pour optimiser ta location courte durée.</p>
               <Link href="/dashboard/formations" className="btn-primary">
                 Voir les formations <ArrowRight size={16} weight="bold" />
               </Link>
