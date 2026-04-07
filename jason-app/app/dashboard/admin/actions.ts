@@ -211,6 +211,38 @@ function isBotLike(name: string | null, email: string): boolean {
   return false
 }
 
+export async function getMemberDetails(memberId: string) {
+  const { error } = await getAdminClient()
+  if (error) return { error }
+
+  const adminClient = getServiceClient()
+
+  const [
+    { count: voyageursCount },
+    { count: favoritesCount },
+    { count: customizationsCount },
+    { count: signalementsCount },
+    { count: suggestionsCount },
+    { count: sejoursCount },
+  ] = await Promise.all([
+    adminClient.from('voyageurs').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('user_template_favorites').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('user_template_customizations').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('reported_guests').select('*', { count: 'exact', head: true }).eq('reporter_id', memberId),
+    adminClient.from('suggestions').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('sejours').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+  ])
+
+  return {
+    voyageurs: voyageursCount ?? 0,
+    favorites: favoritesCount ?? 0,
+    customizations: customizationsCount ?? 0,
+    signalements: signalementsCount ?? 0,
+    suggestions: suggestionsCount ?? 0,
+    sejours: sejoursCount ?? 0,
+  }
+}
+
 export async function deleteAllBots() {
   const { error } = await getAdminClient()
   if (error) return { error }

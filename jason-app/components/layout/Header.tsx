@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon
+  Question, CaretDown, ArrowUpRight, Sun, Moon, Star
 } from '@phosphor-icons/react'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
@@ -269,6 +269,23 @@ export default function Header({ title, userName: initialUserName, currentPlan =
 
                 <div style={styles.dropDivider} />
 
+                {/* Google Review CTA */}
+                <div style={{ padding: '6px' }}>
+                  <a
+                    href="https://g.page/r/CcLzE7IbhS5_EAE/review"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setDropdownOpen(false)}
+                    style={styles.dropReviewBtn}
+                  >
+                    <Star size={14} weight="fill" style={{ color: '#FFD56B', flexShrink: 0 }} />
+                    Laisser un avis Google
+                    <ArrowUpRight size={12} style={{ marginLeft: 'auto', opacity: 0.6 }} />
+                  </a>
+                </div>
+
+                <div style={styles.dropDivider} />
+
                 <button
                   onClick={() => { setDropdownOpen(false); handleSignOut() }}
                   style={styles.dropSignOut}
@@ -433,6 +450,17 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--text-3)',
     background: 'none', border: 'none', cursor: 'pointer',
     width: 'calc(100% - 12px)', textAlign: 'left',
+    transition: 'background 0.15s',
+  },
+  dropReviewBtn: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '9px 12px', borderRadius: '8px',
+    fontSize: '13px', fontWeight: 500,
+    color: 'var(--accent-text)',
+    background: 'rgba(255,213,107,0.06)',
+    border: '1px solid rgba(255,213,107,0.18)',
+    textDecoration: 'none',
+    width: '100%',
     transition: 'background 0.15s',
   },
 }
