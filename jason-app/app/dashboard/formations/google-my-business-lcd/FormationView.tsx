@@ -288,25 +288,29 @@ export default function FormationView({
   return (
     <div style={{ ...styles.root, flexDirection: isMobile ? 'column' : 'row' }} className="dash-page">
 
-      {/* ── MOBILE: barre sticky en haut ── */}
+      {/* ── MOBILE: barre fixe en haut (sous le header principal) ── */}
       {isMobile && (
-        <div style={styles.mobileBar}>
-          <Link href="/dashboard/formations" style={styles.mobileBack}>
-            <ArrowLeft size={18} />
-          </Link>
-          <div style={styles.mobileBarCenter}>
-            <span style={styles.mobileBarTitle}>{formation.title}</span>
-            <div style={styles.mobileBarProgress}>
-              <div style={styles.mobileBarProgressFill} className="progress-bar">
-                <div className="progress-fill" style={{ width: `${progress}%` }} />
+        <>
+          <div style={styles.mobileBar}>
+            <Link href="/dashboard/formations" style={styles.mobileBack}>
+              <ArrowLeft size={18} />
+            </Link>
+            <div style={styles.mobileBarCenter}>
+              <span style={styles.mobileBarTitle}>{formation.title}</span>
+              <div style={styles.mobileBarProgress}>
+                <div style={styles.mobileBarProgressFill} className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${progress}%` }} />
+                </div>
+                <span style={styles.mobileBarPct}>{progress}%</span>
               </div>
-              <span style={styles.mobileBarPct}>{progress}%</span>
             </div>
+            <button onClick={() => setNavOpen(v => !v)} style={styles.mobileNavToggle} aria-label="Sommaire">
+              {navOpen ? <X size={20} color="var(--text)" /> : <List size={20} color="var(--text)" />}
+            </button>
           </div>
-          <button onClick={() => setNavOpen(v => !v)} style={styles.mobileNavToggle} aria-label="Sommaire">
-            {navOpen ? <X size={20} color="var(--text)" /> : <List size={20} color="var(--text)" />}
-          </button>
-        </div>
+          {/* Spacer to push content below the fixed bar */}
+          <div style={styles.mobileBarSpacer} />
+        </>
       )}
 
       {/* ── MOBILE: drawer sommaire ── */}
@@ -440,7 +444,10 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '12px 16px',
     borderBottom: '1px solid var(--border)',
     background: 'var(--bg)',
-    position: 'sticky', top: 'var(--header-h)', zIndex: 20,
+    position: 'fixed', top: 'var(--header-h)', left: 0, right: 0, zIndex: 20,
+  },
+  mobileBarSpacer: {
+    height: '62px', flexShrink: 0,
   },
   mobileBack: {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
