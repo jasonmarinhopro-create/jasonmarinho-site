@@ -84,7 +84,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
       const enrolled = progress !== null
       const done = progress === 100
 
-      if (statusFilter === 'enrolled' && !enrolled) return false
+      if (statusFilter === 'enrolled' && (!enrolled || done)) return false
       if (statusFilter === 'not_enrolled' && enrolled) return false
       if (statusFilter === 'done' && !done) return false
 
