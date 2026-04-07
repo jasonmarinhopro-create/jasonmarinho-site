@@ -313,7 +313,7 @@ export default function GabaritsPage() {
         </div>
 
         {/* Filtres simplifiés */}
-        <div style={s.filterBar} className="fade-up d1">
+        <div style={s.filterBar} className="fade-up d1 filter-bar-scroll">
           {([
             { key: 'all',            label: 'Tous' },
             { key: 'favorites',      label: '⭐ Mes favoris' },
@@ -735,7 +735,8 @@ const s: Record<string, React.CSSProperties> = {
 
   filterBar:    {
     display: 'flex', flexWrap: 'nowrap', gap: '6px', marginBottom: '18px',
-    overflowX: 'auto', paddingBottom: '4px',
+    overflowX: 'auto', overflowY: 'hidden', paddingBottom: '4px',
+    width: '100%', minWidth: 0,
     scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch',
   } as React.CSSProperties,
   filterBtn:    {
@@ -761,6 +762,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '10px',
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '10px 14px', maxWidth: '440px', marginBottom: '24px',
+    width: '100%',
   },
   searchInput:  {
     background: 'none', border: 'none', outline: 'none',

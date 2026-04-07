@@ -613,3 +613,34 @@ a { color: inherit; }
   .cl-center                          { padding-top: 16px; }
 }
 
+/* ── FILTER SCROLL ROWS (gabarits, formations) ── */
+.filter-scroll-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+  width: 100%;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.filter-scroll-row::-webkit-scrollbar { display: none; }
+
+/* Hide webkit scrollbar on filter bars */
+.filter-bar-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.filter-bar-scroll::-webkit-scrollbar { display: none; }
+
+/* Search wrap full width on mobile */
+@media (max-width: 640px) {
+  .filter-search-wrap { max-width: 100% !important; }
+}
+
