@@ -114,7 +114,7 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .f-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px}
 .btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
 .btn-ol:hover{background:var(--g);color:#fff}
-.f-gr{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.f-gr{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .f-card{background:var(--w);border-radius:16px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s}
 .f-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}
 .f-th{height:158px;position:relative;display:flex;align-items:center;justify-content:center}
@@ -181,6 +181,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .n-links,.n-right{display:none}
   .hbg{display:flex}
   .f-gr{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:1200px){.f-gr{grid-template-columns:repeat(2,1fr)}}
   .feat-g{grid-template-columns:1fr 1fr}
   .ft-g{grid-template-columns:1fr 1fr;gap:32px}
 }
@@ -237,7 +238,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     </div>
     <div class="f-gr">
 
-      <!-- Card 1 — Disponible -->
+      <!-- Card 1 — Google My Business -->
       <div class="f-card">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-map-pin"></i>
@@ -253,14 +254,14 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           </div>
           <div class="f-ft">
             <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
-            <a href="/formations/google-my-business-lcd/" class="f-lk">
+            <a href="/services/formations/google-my-business-lcd/" class="f-lk">
               Commencer <i class="ph-bold ph-arrow-right"></i>
             </a>
           </div>
         </div>
       </div>
 
-      <!-- Card 2 — Disponible -->
+      <!-- Card 2 — Annonce directe -->
       <div class="f-card">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-megaphone"></i>
@@ -276,7 +277,283 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           </div>
           <div class="f-ft">
             <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
-            <a href="/formations/annonce-directe/" class="f-lk">
+            <a href="/services/formations/annonce-directe/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 — Optimiser annonce Airbnb -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#1a3a2a 0%,#2d6e50 100%)">
+          <i class="ph ph-house-line"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Annonce Airbnb</div>
+          <div class="f-tt">Optimiser son annonce Airbnb : photos, titre, description, algorithme</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 5 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h30</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 12 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/optimiser-annonce-airbnb/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 — Tarification dynamique -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#0d2e3a 0%,#1a5c6e 100%)">
+          <i class="ph ph-chart-line-up"></i>
+          <div class="f-bge bge-i">Intermédiaire</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Tarification</div>
+          <div class="f-tt">Comprendre et utiliser la tarification dynamique</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 4 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h00</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/tarification-dynamique/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 — Mettre le bon prix -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#2a1f0d 0%,#6e4e1a 100%)">
+          <i class="ph ph-currency-eur"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Tarification</div>
+          <div class="f-tt">Mettre le bon prix en location courte durée</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 5 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h30</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 12 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/mettre-le-bon-prix-lcd/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 — Sécuriser réservations -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#1a0d2e 0%,#3d1a6e 100%)">
+          <i class="ph ph-shield-check"></i>
+          <div class="f-bge bge-i">Intermédiaire</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Sécurité</div>
+          <div class="f-tt">Sécuriser ses réservations et éviter les mauvais voyageurs</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 4 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h00</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/securiser-reservations-eviter-mauvais-voyageurs/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 — Écrire des avis -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#2a2210 0%,#6e5a1a 100%)">
+          <i class="ph ph-star"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Réputation</div>
+          <div class="f-tt">Écrire des avis et répondre aux voyageurs</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 4 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h00</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/ecrire-avis-repondre-voyageurs/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 — Décorer et aménager -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#1a2a1a 0%,#3d6e3d 100%)">
+          <i class="ph ph-couch"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Logement</div>
+          <div class="f-tt">Décorer et aménager son logement pour maximiser les avis</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 4 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h00</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/decorer-amenager-logement-lcd/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9 — Automatisation -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#0d1a2e 0%,#1a3d6e 100%)">
+          <i class="ph ph-robot"></i>
+          <div class="f-bge bge-i">Intermédiaire</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Gestion</div>
+          <div class="f-tt">Gérer sa LCD comme un pro : automatisation et gain de temps</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 4 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h00</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/gerer-lcd-automatisation/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 10 — Livret accueil digital -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#1a2a2a 0%,#2d6e6e 100%)">
+          <i class="ph ph-notebook"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Accueil</div>
+          <div class="f-tt">Créer un livret d'accueil digital qui réduit les questions et améliore les avis</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 4 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 1h45</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 9 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/livret-accueil-digital/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 11 — Réseaux sociaux -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#2a0d1a 0%,#6e1a3d 100%)">
+          <i class="ph ph-instagram-logo"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Marketing digital</div>
+          <div class="f-tt">Développer sa présence sur les réseaux sociaux pour attirer des voyageurs</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 4 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 1h45</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 9 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/reseaux-sociaux-lcd/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 12 — Basse saison -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#1a2a0d 0%,#4a6e1a 100%)">
+          <i class="ph ph-sun-dim"></i>
+          <div class="f-bge bge-i">Intermédiaire</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Stratégie</div>
+          <div class="f-tt">Développer son activité LCD en basse saison</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 4 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h00</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/lcd-basse-saison/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 13 — Créer conciergerie -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#0d1a2a 0%,#1a4a6e 100%)">
+          <i class="ph ph-buildings"></i>
+          <div class="f-bge bge-i">Intermédiaire</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Conciergerie</div>
+          <div class="f-tt">Créer et développer sa conciergerie LCD</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 6 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 3h00</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 14 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/creer-conciergerie-lcd/" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 14 — Fiscalité et réglementation -->
+      <div class="f-card">
+        <div class="f-th" style="background:linear-gradient(135deg,#1a0d0d 0%,#6e1a1a 100%)">
+          <i class="ph ph-scales"></i>
+          <div class="f-bge bge-s">Débutant</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Juridique</div>
+          <div class="f-tt">Fiscalité et réglementation LCD en France 2026</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 5 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 2h30</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 12 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/fiscalite-reglementation-lcd-france-2026/" class="f-lk">
               Commencer <i class="ph-bold ph-arrow-right"></i>
             </a>
           </div>
