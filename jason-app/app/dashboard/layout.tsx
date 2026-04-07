@@ -34,6 +34,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   main: {
     flex: 1,
+    minWidth: 0,          // empêche le flex item de dépasser son conteneur
+    overflowX: 'hidden',  // aucun scroll horizontal sur la zone de contenu
     marginLeft: 'var(--sidebar-w)',
     paddingTop: 'var(--header-h)',
     minHeight: '100svh',

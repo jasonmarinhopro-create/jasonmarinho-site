@@ -32,11 +32,11 @@ const TIMING_LABELS: Record<TimingBucket, string> = {
   'apres-depart':   'Après le départ',
 }
 
-const TIMING_OPTIONS: { value: TimingBucket | ''; label: string }[] = [
-  { value: '',              label: 'Non classifié' },
-  { value: 'avant-arrivee',  label: "Avant l'arrivée" },
-  { value: 'pendant-sejour', label: 'Pendant le séjour' },
-  { value: 'apres-depart',   label: 'Après le départ' },
+// Raccourcis de timing affichés dans la modal
+const TIMING_SHORTCUTS = [
+  "Avant l'arrivée",
+  'Pendant le séjour',
+  'Après le départ',
 ]
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -57,6 +57,15 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 function getTimingBucket(template: Template): TimingBucket | null {
   return CATEGORY_TO_TIMING[template.category] ?? null
+}
+
+// Devine le bucket depuis une étiquette libre saisie par l'utilisateur
+function guessTimingBucket(label: string): TimingBucket | null {
+  const t = label.toLowerCase()
+  if (t.includes('avant') || t.includes('j-') || t.includes('confirmation') || t.includes('arrivée') || t.includes('arrivee') || t.includes('réservation') || t.includes('check-in') || t.includes('checkin')) return 'avant-arrivee'
+  if (t.includes('pendant') || t.includes('séjour') || t.includes('sejour') || t.includes('durant') || t.includes('en cours')) return 'pendant-sejour'
+  if (t.includes('après') || t.includes('apres') || t.includes('départ') || t.includes('depart') || t.includes('check-out') || t.includes('checkout') || t.includes('sortie') || t.includes('avis')) return 'apres-depart'
+  return null
 }
 
 function extractVariables(text: string): string[] {
@@ -85,7 +94,7 @@ export default function GabaritsPage() {
   const [modalTitle, setModalTitle]           = useState('')
   const [modalContent, setModalContent]       = useState('')
   const [modalNotes, setModalNotes]           = useState('')
-  const [modalTiming, setModalTiming]         = useState<TimingBucket | ''>('')
+  const [modalTiming, setModalTiming]         = useState<string>('')
   const [savingModal, setSavingModal]         = useState(false)
   const [deletingCustom, setDeletingCustom]   = useState(false)
 
@@ -156,13 +165,13 @@ export default function GabaritsPage() {
   // ── Modal personnalisation ────────────────────────────────────────────────
   function openCustomize(t: Template) {
     const existing = customizations[t.id]
-    const defaultTiming = (existing?.timing_label as TimingBucket | '' | undefined)
-      ?? (getTimingBucket(t) ?? '')
+    const defaultTiming = existing?.timing_label
+      ?? TIMING_LABELS[getTimingBucket(t) ?? ''] ?? ''
     setEditingTemplate(t)
     setModalTitle(existing?.title ?? t.title)
     setModalContent(existing?.content ?? t.content)
     setModalNotes(existing?.notes ?? '')
-    setModalTiming(defaultTiming as TimingBucket | '')
+    setModalTiming(defaultTiming)
   }
 
   async function saveCustomization() {
@@ -233,7 +242,7 @@ export default function GabaritsPage() {
     setModalTitle(editingTemplate.title)
     setModalContent(editingTemplate.content)
     setModalNotes('')
-    setModalTiming(getTimingBucket(editingTemplate) ?? '')
+    setModalTiming(TIMING_LABELS[getTimingBucket(editingTemplate) ?? ''] ?? '')
   }
 
   // ── Toast ─────────────────────────────────────────────────────────────────
@@ -263,7 +272,8 @@ export default function GabaritsPage() {
   }
   if (activeFilter === 'favorites') {
     filtered.forEach(t => {
-      const bucket = customizations[t.id]?.timing_label as TimingBucket | null
+      const customTiming = customizations[t.id]?.timing_label
+      const bucket = (customTiming ? guessTimingBucket(customTiming) : null)
         ?? getTimingBucket(t)
         ?? 'autre'
       favoritesByTiming[bucket].push(t)
@@ -470,7 +480,11 @@ interface TemplateCardProps {
 }
 
 function TemplateCard({ template: t, isFav, customization, copied, delay, onCopy, onFavorite, onCustomize }: TemplateCardProps) {
-  const timingBucket = customization?.timing_label as TimingBucket | null ?? getTimingBucket(t)
+  // Badge : étiquette libre de l'utilisateur, ou label prédéfini du bucket, ou rien
+  const customTimingLabel = customization?.timing_label || null
+  const timingBucket = customTimingLabel ? guessTimingBucket(customTimingLabel) : getTimingBucket(t)
+  const timingDisplayLabel = customTimingLabel || (timingBucket ? TIMING_LABELS[timingBucket] : null)
+
   const displayContent = customization?.content ?? t.content
   const displayTitle   = customization?.title   ?? t.title
 
@@ -484,9 +498,9 @@ function TemplateCard({ template: t, isFav, customization, copied, delay, onCopy
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={s.cardTitle}>{displayTitle}</div>
           <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '4px' }}>
-            {timingBucket && (
-              <span style={{ ...s.timingBadge, ...timingColors[timingBucket] }}>
-                {TIMING_LABELS[timingBucket]}
+            {timingDisplayLabel && (
+              <span style={{ ...s.timingBadge, ...(timingBucket ? timingColors[timingBucket] : s.timingBadgeCustom) }}>
+                {timingDisplayLabel}
               </span>
             )}
             {customization && (
@@ -545,13 +559,13 @@ interface CustomizeModalProps {
   title:           string
   content:         string
   notes:           string
-  timing:          TimingBucket | ''
+  timing:          string
   saving:          boolean
   deleting:        boolean
   onTitleChange:   (v: string) => void
   onContentChange: (v: string) => void
   onNotesChange:   (v: string) => void
-  onTimingChange:  (v: TimingBucket | '') => void
+  onTimingChange:  (v: string) => void
   onSave:          () => void
   onDelete:        () => void
   onReset:         () => void
@@ -602,22 +616,42 @@ function CustomizeModal({
             />
           </div>
 
-          {/* Moment d'envoi */}
+          {/* Moment d'envoi — input libre + raccourcis */}
           <div style={s.fieldGroup}>
-            <label style={s.label}>Moment d'envoi</label>
+            <label style={s.label}>
+              Quand envoyer ce message ?
+              <span style={{ color: 'var(--text-muted)', fontWeight: 400, textTransform: 'none', marginLeft: '6px' }}>
+                (libre, ex: J-2 avant arrivée)
+              </span>
+            </label>
+            <input
+              value={timing}
+              onChange={e => onTimingChange(e.target.value)}
+              placeholder="Ex: J-2 avant arrivée, Après le check-out…"
+              style={s.input}
+            />
+            {/* Raccourcis rapides */}
             <div style={s.timingBtns}>
-              {TIMING_OPTIONS.map(opt => (
+              {TIMING_SHORTCUTS.map(shortcut => (
                 <button
-                  key={opt.value}
-                  onClick={() => onTimingChange(opt.value as TimingBucket | '')}
+                  key={shortcut}
+                  onClick={() => onTimingChange(shortcut)}
                   style={{
                     ...s.timingBtn,
-                    ...(timing === opt.value ? s.timingBtnActive : {}),
+                    ...(timing === shortcut ? s.timingBtnActive : {}),
                   }}
                 >
-                  {opt.label}
+                  {shortcut}
                 </button>
               ))}
+              {timing && (
+                <button
+                  onClick={() => onTimingChange('')}
+                  style={{ ...s.timingBtn, color: 'var(--text-muted)' }}
+                >
+                  Effacer
+                </button>
+              )}
             </div>
           </div>
 
@@ -699,13 +733,18 @@ const s: Record<string, React.CSSProperties> = {
   pageTitle:    { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   pageDesc:     { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.6 },
 
-  filterBar:    { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '18px' },
+  filterBar:    {
+    display: 'flex', flexWrap: 'nowrap', gap: '6px', marginBottom: '18px',
+    overflowX: 'auto', paddingBottom: '4px',
+    scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch',
+  } as React.CSSProperties,
   filterBtn:    {
     fontSize: '12.5px', fontWeight: 500, padding: '7px 14px',
     borderRadius: '100px', cursor: 'pointer',
     background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
     transition: 'all 0.18s', display: 'flex', alignItems: 'center', gap: '5px',
+    whiteSpace: 'nowrap', flexShrink: 0,
   },
   filterBtnActive: {
     background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.3)',
@@ -749,7 +788,8 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   cardTitle:    { fontSize: '13.5px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  timingBadge:  { fontSize: '10.5px', fontWeight: 500, padding: '2px 8px', borderRadius: '100px' },
+  timingBadge:       { fontSize: '10.5px', fontWeight: 500, padding: '2px 8px', borderRadius: '100px' },
+  timingBadgeCustom: { fontSize: '10.5px', fontWeight: 500, padding: '2px 8px', borderRadius: '100px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'var(--text-3)' },
   customBadge:  {
     fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '100px',
     background: 'rgba(255,213,107,0.15)', color: '#FFD56B', border: '1px solid rgba(255,213,107,0.3)',
