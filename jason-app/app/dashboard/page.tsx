@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
   GraduationCap, Handshake, FileText, UsersThree,
-  ArrowRight, BookOpen, ShieldCheck,
+  ArrowRight, BookOpen, ShieldCheck, ArrowSquareOut,
 } from '@phosphor-icons/react/dist/ssr'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
 import { JASON_GROUPS, EXTRA_GROUPS } from '@/lib/constants/community'
@@ -160,21 +160,28 @@ export default async function DashboardPage() {
               </Link>
             </div>
             <div style={styles.formationsGrid}>
-              {userFormations.map((uf) => (
-                <div key={uf.id} style={styles.formationCard} className="glass-card">
-                  <div style={styles.formationIcon}>
-                    <GraduationCap size={20} color="#FFD56B" weight="fill" />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={styles.formationTitle}>{uf.formation?.title}</div>
-                    <div style={styles.progressWrap}>
-                      <div className="progress-bar">
-                        <div className="progress-fill" style={{ width: `${uf.progress}%` }} />
-                      </div>
-                      <span style={styles.progressPct}>{uf.progress}%</span>
+              {userFormations.slice(0, 3).map((uf) => (
+                <Link
+                  key={uf.id}
+                  href={`/dashboard/formations/${uf.formation?.slug ?? ''}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <div style={styles.formationCard} className="glass-card">
+                    <div style={styles.formationIcon}>
+                      <GraduationCap size={20} color="#FFD56B" weight="fill" />
                     </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={styles.formationTitle}>{uf.formation?.title}</div>
+                      <div style={styles.progressWrap}>
+                        <div className="progress-bar" style={{ flex: 1 }}>
+                          <div className="progress-fill" style={{ width: `${uf.progress}%` }} />
+                        </div>
+                        <span style={styles.progressPct}>{uf.progress}%</span>
+                      </div>
+                    </div>
+                    <ArrowSquareOut size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
