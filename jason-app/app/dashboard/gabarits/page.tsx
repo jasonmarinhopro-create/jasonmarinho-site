@@ -1,56 +1,283 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Copy, Check, FileText, MagnifyingGlass } from '@phosphor-icons/react'
-import type { Template } from '@/types'
-
-const categoryLabels: Record<string, string> = {
-  airbnb: 'Airbnb',
-  checkin: 'Check-in',
-  checkout: 'Check-out',
-  avis: 'Demande d\'avis',
-  bienvenue: 'Bienvenue',
-  autre: 'Autre',
-}
-
-// Server-side data is passed as props for simplicity
-// In production, use React Server Components + client interaction
-import { useEffect } from 'react'
+import {
+  Copy, Check, FileText, MagnifyingGlass,
+  Heart, PencilSimple, X, ArrowLeft,
+  CalendarCheck, House, SunHorizon, CaretRight,
+} from '@phosphor-icons/react'
+import type { Template, UserTemplateCustomization } from '@/types'
 import Header from '@/components/layout/Header'
 
-export default function GabaritsPage() {
-  const [templates, setTemplates] = useState<Template[]>([])
-  const [search, setSearch] = useState('')
-  const [activeCategory, setActiveCategory] = useState('all')
-  const [copied, setCopied] = useState<string | null>(null)
-  const [toast, setToast] = useState(false)
+// ── Mapping catégorie → moment d'envoi ─────────────────────────────────────
+type TimingBucket = 'avant-arrivee' | 'pendant-sejour' | 'apres-depart'
 
-  useEffect(() => {
+const CATEGORY_TO_TIMING: Record<string, TimingBucket> = {
+  confirmation: 'avant-arrivee',
+  checkin:      'avant-arrivee',
+  bienvenue:    'avant-arrivee',
+  securite:     'avant-arrivee',
+  upsell:       'avant-arrivee',
+  probleme:     'pendant-sejour',
+  extra:        'pendant-sejour',
+  conciergerie: 'pendant-sejour',
+  checkout:     'apres-depart',
+  avis:         'apres-depart',
+}
+
+const TIMING_LABELS: Record<TimingBucket, string> = {
+  'avant-arrivee':  "Avant l'arrivée",
+  'pendant-sejour': 'Pendant le séjour',
+  'apres-depart':   'Après le départ',
+}
+
+const TIMING_OPTIONS: { value: TimingBucket | ''; label: string }[] = [
+  { value: '',              label: 'Non classifié' },
+  { value: 'avant-arrivee',  label: "Avant l'arrivée" },
+  { value: 'pendant-sejour', label: 'Pendant le séjour' },
+  { value: 'apres-depart',   label: 'Après le départ' },
+]
+
+const CATEGORY_LABELS: Record<string, string> = {
+  confirmation:  'Confirmation',
+  checkin:       'Check-in',
+  checkout:      'Check-out',
+  avis:          "Demande d'avis",
+  bienvenue:     'Bienvenue',
+  probleme:      'Problème',
+  extra:         'Extra',
+  upsell:        'Upsell',
+  securite:      'Sécurité',
+  conciergerie:  'Conciergerie',
+  saisonnier:    'Saisonnier',
+  airbnb:        'Airbnb',
+  autre:         'Autre',
+}
+
+function getTimingBucket(template: Template): TimingBucket | null {
+  return CATEGORY_TO_TIMING[template.category] ?? null
+}
+
+function extractVariables(text: string): string[] {
+  const matches = text.match(/\[[^\]]+\]/g) ?? []
+  return [...new Set(matches)]
+}
+
+// ── Types de filtre ─────────────────────────────────────────────────────────
+type FilterKey = 'all' | 'favorites' | TimingBucket
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+export default function GabaritsPage() {
+  const [templates, setTemplates]           = useState<Template[]>([])
+  const [favorites, setFavorites]           = useState<Set<string>>(new Set())
+  const [customizations, setCustomizations] = useState<Record<string, UserTemplateCustomization>>({})
+  const [userId, setUserId]                 = useState<string | null>(null)
+
+  const [search, setSearch]             = useState('')
+  const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
+  const [copied, setCopied]             = useState<string | null>(null)
+  const [toast, setToast]               = useState<string | null>(null)
+
+  // Modal personnalisation
+  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
+  const [modalTitle, setModalTitle]           = useState('')
+  const [modalContent, setModalContent]       = useState('')
+  const [modalNotes, setModalNotes]           = useState('')
+  const [modalTiming, setModalTiming]         = useState<TimingBucket | ''>('')
+  const [savingModal, setSavingModal]         = useState(false)
+  const [deletingCustom, setDeletingCustom]   = useState(false)
+
+  // ── Chargement initial ────────────────────────────────────────────────────
+  const loadData = useCallback(async () => {
     const supabase = createClient()
-    supabase.from('templates').select('*').order('created_at').then(({ data }) => {
-      if (data) setTemplates(data as Template[])
-    })
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    setUserId(user.id)
+
+    const [tmplRes, favRes, custRes] = await Promise.all([
+      supabase.from('templates').select('*').order('category').order('title'),
+      supabase.from('user_template_favorites').select('template_id').eq('user_id', user.id),
+      supabase.from('user_template_customizations').select('*').eq('user_id', user.id),
+    ])
+
+    if (tmplRes.data)  setTemplates(tmplRes.data as Template[])
+    if (favRes.data)   setFavorites(new Set(favRes.data.map((f: { template_id: string }) => f.template_id)))
+    if (custRes.data) {
+      const map: Record<string, UserTemplateCustomization> = {}
+      custRes.data.forEach((c: UserTemplateCustomization) => { map[c.template_id] = c })
+      setCustomizations(map)
+    }
   }, [])
 
-  const categories = ['all', ...new Set(templates.map(t => t.category))]
+  useEffect(() => { loadData() }, [loadData])
 
-  const filtered = templates.filter(t => {
-    const matchCat = activeCategory === 'all' || t.category === activeCategory
-    const matchSearch = !search || t.title.toLowerCase().includes(search.toLowerCase()) || t.content.toLowerCase().includes(search.toLowerCase())
-    return matchCat && matchSearch
-  })
+  // ── Favoris ───────────────────────────────────────────────────────────────
+  async function toggleFavorite(templateId: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!userId) return
+    const supabase = createClient()
+    const isFav = favorites.has(templateId)
 
-  async function copyTemplate(t: Template) {
-    await navigator.clipboard.writeText(t.content)
+    // Optimistic update
+    setFavorites(prev => {
+      const next = new Set(prev)
+      isFav ? next.delete(templateId) : next.add(templateId)
+      return next
+    })
+
+    if (isFav) {
+      await supabase.from('user_template_favorites')
+        .delete()
+        .eq('user_id', userId)
+        .eq('template_id', templateId)
+    } else {
+      await supabase.from('user_template_favorites')
+        .insert({ user_id: userId, template_id: templateId })
+    }
+
+    showToast(isFav ? 'Retiré des favoris' : '⭐ Ajouté aux favoris')
+  }
+
+  // ── Copier ────────────────────────────────────────────────────────────────
+  async function copyTemplate(t: Template, e: React.MouseEvent) {
+    e.stopPropagation()
+    const content = customizations[t.id]?.content ?? t.content
+    await navigator.clipboard.writeText(content)
     setCopied(t.id)
-    setToast(true)
-    setTimeout(() => { setCopied(null); setToast(false) }, 2000)
+    setTimeout(() => setCopied(null), 2000)
+    showToast('Copié dans le presse-papier')
 
-    // Increment copy count
     const supabase = createClient()
     try { await supabase.rpc('increment_copy_count', { template_id: t.id }) } catch {}
   }
+
+  // ── Modal personnalisation ────────────────────────────────────────────────
+  function openCustomize(t: Template) {
+    const existing = customizations[t.id]
+    const defaultTiming = (existing?.timing_label as TimingBucket | '' | undefined)
+      ?? (getTimingBucket(t) ?? '')
+    setEditingTemplate(t)
+    setModalTitle(existing?.title ?? t.title)
+    setModalContent(existing?.content ?? t.content)
+    setModalNotes(existing?.notes ?? '')
+    setModalTiming(defaultTiming as TimingBucket | '')
+  }
+
+  async function saveCustomization() {
+    if (!editingTemplate || !userId) return
+    setSavingModal(true)
+    const supabase = createClient()
+
+    const payload = {
+      user_id:      userId,
+      template_id:  editingTemplate.id,
+      title:        modalTitle.trim() || editingTemplate.title,
+      content:      modalContent.trim() || editingTemplate.content,
+      notes:        modalNotes.trim() || null,
+      timing_label: modalTiming || null,
+    }
+
+    const existing = customizations[editingTemplate.id]
+    let result
+    if (existing) {
+      result = await supabase
+        .from('user_template_customizations')
+        .update({ title: payload.title, content: payload.content, notes: payload.notes, timing_label: payload.timing_label })
+        .eq('id', existing.id)
+        .select()
+        .single()
+    } else {
+      result = await supabase
+        .from('user_template_customizations')
+        .insert(payload)
+        .select()
+        .single()
+    }
+
+    if (result.data) {
+      setCustomizations(prev => ({ ...prev, [editingTemplate.id]: result.data as UserTemplateCustomization }))
+      // Auto-favorite when customizing
+      if (!favorites.has(editingTemplate.id)) {
+        setFavorites(prev => new Set([...prev, editingTemplate.id]))
+        await supabase.from('user_template_favorites').insert({ user_id: userId, template_id: editingTemplate.id })
+      }
+      showToast('Version personnalisée enregistrée !')
+    }
+
+    setSavingModal(false)
+    setEditingTemplate(null)
+  }
+
+  async function deleteCustomization() {
+    if (!editingTemplate || !userId) return
+    const existing = customizations[editingTemplate.id]
+    if (!existing) return setEditingTemplate(null)
+
+    setDeletingCustom(true)
+    const supabase = createClient()
+    await supabase.from('user_template_customizations').delete().eq('id', existing.id)
+    setCustomizations(prev => {
+      const next = { ...prev }
+      delete next[editingTemplate.id]
+      return next
+    })
+    showToast('Version personnalisée supprimée')
+    setDeletingCustom(false)
+    setEditingTemplate(null)
+  }
+
+  function resetModal() {
+    if (!editingTemplate) return
+    setModalTitle(editingTemplate.title)
+    setModalContent(editingTemplate.content)
+    setModalNotes('')
+    setModalTiming(getTimingBucket(editingTemplate) ?? '')
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────────────────
+  function showToast(msg: string) {
+    setToast(msg)
+    setTimeout(() => setToast(null), 2500)
+  }
+
+  // ── Filtrage ──────────────────────────────────────────────────────────────
+  const filtered = templates.filter(t => {
+    if (activeFilter === 'favorites')     return favorites.has(t.id)
+    if (activeFilter === 'avant-arrivee')  return getTimingBucket(t) === 'avant-arrivee'
+    if (activeFilter === 'pendant-sejour') return getTimingBucket(t) === 'pendant-sejour'
+    if (activeFilter === 'apres-depart')   return getTimingBucket(t) === 'apres-depart'
+    // 'all' + search
+    if (!search) return true
+    const q = search.toLowerCase()
+    return t.title.toLowerCase().includes(q) || t.content.toLowerCase().includes(q)
+  })
+
+  // Groupement pour la vue favoris
+  const favoritesByTiming: Record<TimingBucket | 'autre', Template[]> = {
+    'avant-arrivee':  [],
+    'pendant-sejour': [],
+    'apres-depart':   [],
+    'autre':          [],
+  }
+  if (activeFilter === 'favorites') {
+    filtered.forEach(t => {
+      const bucket = customizations[t.id]?.timing_label as TimingBucket | null
+        ?? getTimingBucket(t)
+        ?? 'autre'
+      favoritesByTiming[bucket].push(t)
+    })
+  }
+
+  const favoriteSections: { key: TimingBucket | 'autre'; label: string; icon: React.ReactNode }[] = [
+    { key: 'avant-arrivee',  label: "Avant l'arrivée",   icon: <CalendarCheck size={16} weight="fill" color="#FFD56B" /> },
+    { key: 'pendant-sejour', label: 'Pendant le séjour', icon: <House size={16} weight="fill" color="#60BEFF" /> },
+    { key: 'apres-depart',   label: 'Après le départ',   icon: <SunHorizon size={16} weight="fill" color="#F97583" /> },
+    { key: 'autre',          label: 'Non classifié',      icon: <FileText size={16} weight="fill" color="var(--text-muted)" /> },
+  ]
+
+  const isFavoritesView = activeFilter === 'favorites'
 
   return (
     <>
@@ -58,146 +285,601 @@ export default function GabaritsPage() {
 
       {/* Toast */}
       {toast && (
-        <div style={styles.toast}>
-          <Check size={16} color="#34D399" weight="bold" />
-          Copié dans le presse-papier
+        <div style={s.toast}>
+          <Check size={14} color="#34D399" weight="bold" />
+          {toast}
         </div>
       )}
 
-      <div style={styles.page}>
-        <div style={styles.intro} className="fade-up">
-          <h2 style={styles.pageTitle}>Gabarits <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>prêts à l'emploi</em></h2>
-          <p style={styles.pageDesc}>Messages prêts à copier pour chaque étape du séjour. Personnalise les crochets [ ] selon ton logement.</p>
+      <div style={s.page}>
+        {/* Intro */}
+        <div style={s.intro} className="fade-up">
+          <h2 style={s.pageTitle}>
+            Gabarits <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>prêts à l'emploi</em>
+          </h2>
+          <p style={s.pageDesc}>
+            Messages prêts à copier pour chaque étape du séjour. Personnalise-les pour ton logement et retrouve tes versions dans tes favoris.
+          </p>
         </div>
 
-        {/* Search + filters */}
-        <div style={styles.controls} className="fade-up d1">
-          <div style={styles.searchWrap}>
-            <MagnifyingGlass size={16} color="var(--text-3)" />
+        {/* Filtres simplifiés */}
+        <div style={s.filterBar} className="fade-up d1">
+          {([
+            { key: 'all',            label: 'Tous' },
+            { key: 'favorites',      label: '⭐ Mes favoris' },
+            { key: 'avant-arrivee',  label: "Avant l'arrivée" },
+            { key: 'pendant-sejour', label: 'Pendant le séjour' },
+            { key: 'apres-depart',   label: 'Après le départ' },
+          ] as { key: FilterKey; label: string }[]).map(f => (
+            <button
+              key={f.key}
+              onClick={() => { setActiveFilter(f.key); setSearch('') }}
+              style={{
+                ...s.filterBtn,
+                ...(activeFilter === f.key ? s.filterBtnActive : {}),
+                ...(f.key === 'favorites' && activeFilter !== 'favorites' ? s.filterBtnFav : {}),
+              }}
+            >
+              {f.label}
+              {f.key !== 'all' && f.key !== 'favorites' && (
+                <span style={s.filterCount}>
+                  {templates.filter(t =>
+                    f.key === 'favorites'
+                      ? favorites.has(t.id)
+                      : getTimingBucket(t) === f.key
+                  ).length}
+                </span>
+              )}
+              {f.key === 'favorites' && favorites.size > 0 && (
+                <span style={{ ...s.filterCount, background: 'rgba(255,213,107,0.25)', color: '#FFD56B' }}>
+                  {favorites.size}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Barre de recherche (cachée en vue favoris) */}
+        {!isFavoritesView && (
+          <div style={s.searchWrap} className="fade-up d2">
+            <MagnifyingGlass size={15} color="var(--text-3)" />
             <input
               type="text"
               placeholder="Chercher un gabarit..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              style={styles.searchInput}
+              style={s.searchInput}
             />
-          </div>
-          <div style={styles.catFilters}>
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                style={{
-                  ...styles.catBtn,
-                  ...(activeCategory === cat ? styles.catBtnActive : {}),
-                }}
-              >
-                {cat === 'all' ? 'Tous' : categoryLabels[cat] ?? cat}
+            {search && (
+              <button onClick={() => setSearch('')} style={s.clearSearch}>
+                <X size={14} />
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Grid */}
-        <div style={styles.grid} className="dash-grid-3">
-          {filtered.map((t, i) => (
-            <div key={t.id} style={styles.card} className={`glass-card fade-up d${(i % 3) + 1}`}>
-              <div style={styles.cardHead}>
-                <div style={styles.cardIcon}>
-                  <FileText size={18} color="#FFD56B" weight="fill" />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={styles.cardTitle}>{t.title}</div>
-                  <span className="badge badge-blue" style={{ marginTop: '4px' }}>
-                    {categoryLabels[t.category] ?? t.category}
-                  </span>
-                </div>
-                <button
-                  onClick={() => copyTemplate(t)}
-                  style={{ ...styles.copyBtn, ...(copied === t.id ? styles.copyBtnDone : {}) }}
-                  title="Copier"
-                >
-                  {copied === t.id
-                    ? <Check size={16} color="#34D399" weight="bold" />
-                    : <Copy size={16} />}
-                </button>
-              </div>
-              <pre style={styles.content}>{t.content}</pre>
-            </div>
-          ))}
-        </div>
-
-        {filtered.length === 0 && (
-          <div style={styles.empty}>
-            <FileText size={36} color="var(--text-muted)" weight="fill" />
-            <p style={{ color: 'var(--text-3)', marginTop: '12px' }}>Aucun gabarit dans cette catégorie.</p>
+            )}
           </div>
         )}
+
+        {/* Vue favoris groupée par moment */}
+        {isFavoritesView && favorites.size === 0 && (
+          <div style={s.empty} className="fade-up">
+            <Heart size={40} color="var(--text-muted)" />
+            <p style={{ color: 'var(--text-3)', marginTop: '12px', fontSize: '14px' }}>
+              Clique sur ♡ sur un gabarit pour l'ajouter à tes favoris.
+            </p>
+          </div>
+        )}
+
+        {isFavoritesView && favorites.size > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }} className="fade-up d1">
+            {favoriteSections.map(section => {
+              const items = favoritesByTiming[section.key]
+              if (items.length === 0) return null
+              return (
+                <div key={section.key}>
+                  <div style={s.sectionHeader}>
+                    {section.icon}
+                    <span style={s.sectionTitle}>{section.label}</span>
+                    <span style={s.sectionCount}>{items.length}</span>
+                  </div>
+                  <div className="dash-grid-3">
+                    {items.map((t, i) => (
+                      <TemplateCard
+                        key={t.id}
+                        template={t}
+                        isFav={favorites.has(t.id)}
+                        customization={customizations[t.id]}
+                        copied={copied}
+                        onCopy={copyTemplate}
+                        onFavorite={toggleFavorite}
+                        onCustomize={openCustomize}
+                        delay={i % 3 + 1}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Grille normale */}
+        {!isFavoritesView && (
+          <>
+            <div className="dash-grid-3">
+              {filtered.map((t, i) => (
+                <TemplateCard
+                  key={t.id}
+                  template={t}
+                  isFav={favorites.has(t.id)}
+                  customization={customizations[t.id]}
+                  copied={copied}
+                  onCopy={copyTemplate}
+                  onFavorite={toggleFavorite}
+                  onCustomize={openCustomize}
+                  delay={i % 3 + 1}
+                />
+              ))}
+            </div>
+
+            {filtered.length === 0 && (
+              <div style={s.empty}>
+                <FileText size={36} color="var(--text-muted)" weight="fill" />
+                <p style={{ color: 'var(--text-3)', marginTop: '12px', fontSize: '14px' }}>
+                  Aucun gabarit trouvé.
+                </p>
+              </div>
+            )}
+          </>
+        )}
       </div>
+
+      {/* Modal personnalisation */}
+      {editingTemplate && (
+        <CustomizeModal
+          template={editingTemplate}
+          existing={customizations[editingTemplate.id]}
+          title={modalTitle}
+          content={modalContent}
+          notes={modalNotes}
+          timing={modalTiming}
+          saving={savingModal}
+          deleting={deletingCustom}
+          onTitleChange={setModalTitle}
+          onContentChange={setModalContent}
+          onNotesChange={setModalNotes}
+          onTimingChange={setModalTiming}
+          onSave={saveCustomization}
+          onDelete={deleteCustomization}
+          onReset={resetModal}
+          onClose={() => setEditingTemplate(null)}
+        />
+      )}
     </>
   )
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
-  intro: { marginBottom: '28px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6 },
-  controls: { display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' },
-  searchWrap: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    background: 'var(--border)', border: '1px solid var(--border)',
-    borderRadius: '10px', padding: '10px 14px', maxWidth: '440px',
-  },
-  searchInput: {
-    background: 'none', border: 'none', outline: 'none',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px',
-    color: 'var(--text)', width: '100%',
-  },
-  catFilters: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
-  catBtn: {
-    fontSize: '12px', fontWeight: 500, padding: '6px 14px',
+// ── Carte gabarit ─────────────────────────────────────────────────────────────
+interface TemplateCardProps {
+  template:      Template
+  isFav:         boolean
+  customization: UserTemplateCustomization | undefined
+  copied:        string | null
+  delay:         number
+  onCopy:        (t: Template, e: React.MouseEvent) => void
+  onFavorite:    (id: string, e: React.MouseEvent) => void
+  onCustomize:   (t: Template) => void
+}
+
+function TemplateCard({ template: t, isFav, customization, copied, delay, onCopy, onFavorite, onCustomize }: TemplateCardProps) {
+  const timingBucket = customization?.timing_label as TimingBucket | null ?? getTimingBucket(t)
+  const displayContent = customization?.content ?? t.content
+  const displayTitle   = customization?.title   ?? t.title
+
+  return (
+    <div style={s.card} className={`glass-card fade-up d${delay}`}>
+      {/* Header */}
+      <div style={s.cardHead}>
+        <div style={s.cardIcon}>
+          <FileText size={18} color="#FFD56B" weight="fill" />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={s.cardTitle}>{displayTitle}</div>
+          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '4px' }}>
+            {timingBucket && (
+              <span style={{ ...s.timingBadge, ...timingColors[timingBucket] }}>
+                {TIMING_LABELS[timingBucket]}
+              </span>
+            )}
+            {customization && (
+              <span style={s.customBadge}>Personnalisé</span>
+            )}
+          </div>
+        </div>
+        {/* Actions */}
+        <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+          <button
+            onClick={e => onFavorite(t.id, e)}
+            style={{ ...s.iconBtn, ...(isFav ? s.iconBtnFavActive : {}) }}
+            title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+          >
+            <Heart size={15} weight={isFav ? 'fill' : 'regular'} color={isFav ? '#FFD56B' : undefined} />
+          </button>
+          <button
+            onClick={() => onCustomize(t)}
+            style={{ ...s.iconBtn, ...(customization ? s.iconBtnCustomActive : {}) }}
+            title="Personnaliser"
+          >
+            <PencilSimple size={15} weight={customization ? 'fill' : 'regular'} />
+          </button>
+          <button
+            onClick={e => onCopy(t, e)}
+            style={{ ...s.iconBtn, ...(copied === t.id ? s.iconBtnCopied : {}) }}
+            title={customization ? 'Copier ma version' : 'Copier'}
+          >
+            {copied === t.id
+              ? <Check size={15} color="#34D399" weight="bold" />
+              : <Copy size={15} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Contenu */}
+      <pre style={s.content}>{displayContent}</pre>
+
+      {/* Note privée si présente */}
+      {customization?.notes && (
+        <div style={s.notePreview}>
+          <CaretRight size={10} color="var(--text-muted)" />
+          <span style={{ color: 'var(--text-3)', fontSize: '11.5px', fontStyle: 'italic', lineHeight: 1.5 }}>
+            {customization.notes}
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Modal personnalisation ────────────────────────────────────────────────────
+interface CustomizeModalProps {
+  template:        Template
+  existing?:       UserTemplateCustomization
+  title:           string
+  content:         string
+  notes:           string
+  timing:          TimingBucket | ''
+  saving:          boolean
+  deleting:        boolean
+  onTitleChange:   (v: string) => void
+  onContentChange: (v: string) => void
+  onNotesChange:   (v: string) => void
+  onTimingChange:  (v: TimingBucket | '') => void
+  onSave:          () => void
+  onDelete:        () => void
+  onReset:         () => void
+  onClose:         () => void
+}
+
+function CustomizeModal({
+  template, existing,
+  title, content, notes, timing,
+  saving, deleting,
+  onTitleChange, onContentChange, onNotesChange, onTimingChange,
+  onSave, onDelete, onReset, onClose,
+}: CustomizeModalProps) {
+  const variables = extractVariables(content)
+  const categoryLabel = CATEGORY_LABELS[template.category] ?? template.category
+
+  return (
+    <div style={s.overlay} onClick={onClose}>
+      <div style={s.modal} onClick={e => e.stopPropagation()}>
+        {/* Modal header */}
+        <div style={s.modalHeader}>
+          <div>
+            <div style={s.modalSubtitle}>
+              <span className="badge badge-blue">{categoryLabel}</span>
+              {template.timing && (
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px' }}>
+                  {template.timing}
+                </span>
+              )}
+            </div>
+            <h3 style={s.modalTitle}>Personnaliser le gabarit</h3>
+          </div>
+          <button onClick={onClose} style={s.closeBtn}>
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Corps de la modal */}
+        <div style={s.modalBody}>
+          {/* Titre */}
+          <div style={s.fieldGroup}>
+            <label style={s.label}>Titre (ton nom)</label>
+            <input
+              value={title}
+              onChange={e => onTitleChange(e.target.value)}
+              placeholder={template.title}
+              style={s.input}
+            />
+          </div>
+
+          {/* Moment d'envoi */}
+          <div style={s.fieldGroup}>
+            <label style={s.label}>Moment d'envoi</label>
+            <div style={s.timingBtns}>
+              {TIMING_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => onTimingChange(opt.value as TimingBucket | '')}
+                  style={{
+                    ...s.timingBtn,
+                    ...(timing === opt.value ? s.timingBtnActive : {}),
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Variables détectées */}
+          {variables.length > 0 && (
+            <div style={s.fieldGroup}>
+              <label style={s.label}>Variables à remplacer</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                {variables.map(v => (
+                  <span key={v} style={s.varChip}>{v}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Contenu */}
+          <div style={s.fieldGroup}>
+            <label style={s.label}>Mon message</label>
+            <textarea
+              value={content}
+              onChange={e => onContentChange(e.target.value)}
+              style={s.textarea}
+              rows={10}
+            />
+          </div>
+
+          {/* Notes privées */}
+          <div style={s.fieldGroup}>
+            <label style={s.label}>Notes privées <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optionnel)</span></label>
+            <textarea
+              value={notes}
+              onChange={e => onNotesChange(e.target.value)}
+              placeholder="Ex: À envoyer 48h avant l'arrivée via Airbnb"
+              style={{ ...s.textarea, minHeight: '64px' }}
+              rows={3}
+            />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={s.modalFooter}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {existing && (
+              <button
+                onClick={onDelete}
+                style={s.deleteBtnSmall}
+                disabled={deleting}
+              >
+                {deleting ? '...' : 'Supprimer ma version'}
+              </button>
+            )}
+            <button onClick={onReset} style={s.resetBtn}>
+              Réinitialiser
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={onClose} style={s.cancelBtn}>Annuler</button>
+            <button onClick={onSave} style={s.saveBtn} disabled={saving}>
+              {saving ? 'Enregistrement...' : 'Enregistrer ma version'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Couleurs timing ───────────────────────────────────────────────────────────
+const timingColors: Record<TimingBucket, React.CSSProperties> = {
+  'avant-arrivee':  { background: 'rgba(255,213,107,0.12)', color: '#FFD56B',  border: '1px solid rgba(255,213,107,0.25)' },
+  'pendant-sejour': { background: 'rgba(96,190,255,0.1)',   color: '#60BEFF',  border: '1px solid rgba(96,190,255,0.25)' },
+  'apres-depart':   { background: 'rgba(249,117,131,0.1)',  color: '#F97583',  border: '1px solid rgba(249,117,131,0.25)' },
+}
+
+// ── Styles ────────────────────────────────────────────────────────────────────
+const s: Record<string, React.CSSProperties> = {
+  page:         { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  intro:        { marginBottom: '28px' },
+  pageTitle:    { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  pageDesc:     { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.6 },
+
+  filterBar:    { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '18px' },
+  filterBtn:    {
+    fontSize: '12.5px', fontWeight: 500, padding: '7px 14px',
     borderRadius: '100px', cursor: 'pointer',
     background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
-    transition: 'all 0.18s',
+    transition: 'all 0.18s', display: 'flex', alignItems: 'center', gap: '5px',
   },
-  catBtnActive: {
+  filterBtnActive: {
     background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.3)',
     color: 'var(--accent-text)',
   },
-  grid: {}, /* className dash-grid-3 */
-  card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '14px' },
-  cardHead: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
+  filterBtnFav: { color: 'var(--text-2)' },
+  filterCount:  {
+    fontSize: '10px', fontWeight: 600,
+    background: 'rgba(255,255,255,0.07)', color: 'var(--text-3)',
+    borderRadius: '100px', padding: '1px 6px',
+  },
+
+  searchWrap:   {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '10px 14px', maxWidth: '440px', marginBottom: '24px',
+  },
+  searchInput:  {
+    background: 'none', border: 'none', outline: 'none',
+    fontFamily: 'Outfit, sans-serif', fontSize: '13.5px',
+    color: 'var(--text)', width: '100%',
+  },
+  clearSearch:  {
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'var(--text-3)', display: 'flex', padding: '2px',
+  },
+
+  sectionHeader: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' },
+  sectionTitle:  { fontSize: '13px', fontWeight: 600, color: 'var(--text-2)' },
+  sectionCount:  {
+    fontSize: '10px', fontWeight: 600,
+    background: 'rgba(255,255,255,0.07)', color: 'var(--text-3)',
+    borderRadius: '100px', padding: '1px 7px',
+  },
+
+  card:     { padding: '20px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px' },
+  cardHead: { display: 'flex', alignItems: 'flex-start', gap: '10px' },
   cardIcon: {
-    width: '36px', height: '36px', borderRadius: '9px', flexShrink: 0,
+    width: '34px', height: '34px', borderRadius: '9px', flexShrink: 0,
     background: 'rgba(0,76,63,0.3)', border: '1px solid rgba(255,213,107,0.12)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  cardTitle: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.35 },
-  copyBtn: {
-    width: '34px', height: '34px', borderRadius: '8px', flexShrink: 0,
+  cardTitle:    { fontSize: '13.5px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  timingBadge:  { fontSize: '10.5px', fontWeight: 500, padding: '2px 8px', borderRadius: '100px' },
+  customBadge:  {
+    fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '100px',
+    background: 'rgba(255,213,107,0.15)', color: '#FFD56B', border: '1px solid rgba(255,213,107,0.3)',
+  },
+
+  iconBtn: {
+    width: '30px', height: '30px', borderRadius: '8px', flexShrink: 0,
     background: 'var(--border)', border: '1px solid var(--border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-2)', transition: 'all 0.18s',
   },
-  copyBtnDone: { background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)' },
+  iconBtnFavActive:    { background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)', color: '#FFD56B' },
+  iconBtnCustomActive: { background: 'rgba(96,190,255,0.1)',   border: '1px solid rgba(96,190,255,0.25)', color: '#60BEFF' },
+  iconBtnCopied:       { background: 'rgba(52,211,153,0.1)',   border: '1px solid rgba(52,211,153,0.2)' },
+
   content: {
-    fontFamily: 'Outfit, sans-serif', fontSize: '12.5px', fontWeight: 300,
+    fontFamily: 'Outfit, sans-serif', fontSize: '12px', fontWeight: 300,
     color: 'var(--text-2)', lineHeight: 1.7,
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
     background: 'rgba(0,0,0,0.2)', borderRadius: '8px', padding: '12px',
-    maxHeight: '180px', overflowY: 'auto',
+    maxHeight: '160px', overflowY: 'auto', flex: 1,
   },
-  empty: { textAlign: 'center', padding: '48px 0' },
+  notePreview: {
+    display: 'flex', alignItems: 'flex-start', gap: '5px',
+    padding: '7px 10px', borderRadius: '7px',
+    background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+  },
+
+  empty: { textAlign: 'center', padding: '56px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' },
+
   toast: {
     position: 'fixed', bottom: '24px', left: '50%',
     transform: 'translateX(-50%)',
     background: 'rgba(0,30,20,0.96)', border: '1px solid rgba(52,211,153,0.2)',
-    borderRadius: '10px', padding: '12px 20px',
+    borderRadius: '10px', padding: '10px 18px',
     display: 'flex', alignItems: 'center', gap: '8px',
     fontSize: '13px', fontWeight: 500, color: 'var(--text)',
     zIndex: 1000, backdropFilter: 'blur(12px)',
-    animation: 'fadeUp 0.3s ease',
+    animation: 'fadeUp 0.3s ease', whiteSpace: 'nowrap',
+  },
+
+  // Modal
+  overlay: {
+    position: 'fixed', inset: 0, zIndex: 900,
+    background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '20px',
+  },
+  modal: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '20px', width: '100%', maxWidth: '640px',
+    maxHeight: '90vh', display: 'flex', flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  modalHeader: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+    padding: '22px 24px 16px', borderBottom: '1px solid var(--border)',
+    flexShrink: 0,
+  },
+  modalSubtitle: { display: 'flex', alignItems: 'center', marginBottom: '4px' },
+  modalTitle:    { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)' },
+  closeBtn:      {
+    width: '32px', height: '32px', borderRadius: '8px',
+    background: 'var(--border)', border: 'none', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: 'var(--text-2)', flexShrink: 0,
+  },
+  modalBody: { padding: '20px 24px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' },
+  modalFooter: {
+    padding: '16px 24px', borderTop: '1px solid var(--border)',
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    flexShrink: 0, flexWrap: 'wrap', gap: '8px',
+  },
+
+  fieldGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
+  label:      { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' },
+  input:      {
+    background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '10px 14px',
+    fontFamily: 'Outfit, sans-serif', fontSize: '13.5px', color: 'var(--text)',
+    outline: 'none', width: '100%',
+  },
+  textarea: {
+    background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '12px 14px',
+    fontFamily: 'Outfit, sans-serif', fontSize: '12.5px', color: 'var(--text-2)',
+    outline: 'none', width: '100%', resize: 'vertical',
+    minHeight: '200px', lineHeight: 1.7,
+  },
+
+  timingBtns: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+  timingBtn:  {
+    fontSize: '12px', fontWeight: 500, padding: '6px 13px',
+    borderRadius: '100px', cursor: 'pointer',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+  },
+  timingBtnActive: {
+    background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.3)',
+    color: '#FFD56B',
+  },
+
+  varChip: {
+    fontSize: '11px', fontWeight: 500, padding: '3px 9px', borderRadius: '6px',
+    background: 'rgba(96,190,255,0.1)', border: '1px solid rgba(96,190,255,0.2)',
+    color: '#60BEFF', fontFamily: 'monospace',
+  },
+
+  saveBtn: {
+    fontSize: '13px', fontWeight: 600, padding: '9px 20px',
+    borderRadius: '10px', cursor: 'pointer',
+    background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.3)',
+    color: '#FFD56B', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+  },
+  cancelBtn: {
+    fontSize: '13px', fontWeight: 500, padding: '9px 16px',
+    borderRadius: '10px', cursor: 'pointer',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
+  },
+  resetBtn: {
+    fontSize: '12px', fontWeight: 500, padding: '7px 13px',
+    borderRadius: '8px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid var(--border)',
+    color: 'var(--text-3)', fontFamily: 'Outfit, sans-serif',
+  },
+  deleteBtnSmall: {
+    fontSize: '12px', fontWeight: 500, padding: '7px 13px',
+    borderRadius: '8px', cursor: 'pointer',
+    background: 'rgba(249,117,131,0.08)', border: '1px solid rgba(249,117,131,0.25)',
+    color: '#F97583', fontFamily: 'Outfit, sans-serif',
   },
 }
