@@ -124,20 +124,18 @@ export default function NouveautesPage() {
             )
 
             return (
-              <div key={entry.id} className="cl-row">
-                {/* Colonne gauche */}
-                <div className={`cl-side l${cardOnLeft ? '' : ' hide-mobile'}`}>
-                  {cardOnLeft ? CardEl : MetaEl}
+              <div key={entry.id} className={`cl-row${cardOnLeft ? '' : ' cl-card-right'}`}>
+                {/* Carte — toujours dans .cl-card */}
+                <div className="cl-card">
+                  {CardEl}
                 </div>
 
                 {/* Centre : dot + ligne */}
                 <div className="cl-center">
                   <div style={{
                     width: '12px', height: '12px', borderRadius: '50%',
-                    background: tag.color,
-                    boxShadow: `0 0 10px ${tag.color}60`,
-                    flexShrink: 0,
-                    zIndex: 1,
+                    background: tag.color, boxShadow: `0 0 10px ${tag.color}60`,
+                    flexShrink: 0, zIndex: 1,
                   }} />
                   {i < filtered.length - 1 && (
                     <div style={{
@@ -147,9 +145,9 @@ export default function NouveautesPage() {
                   )}
                 </div>
 
-                {/* Colonne droite */}
-                <div className="cl-side r">
-                  {cardOnLeft ? MetaEl : CardEl}
+                {/* Meta date — masqué sur mobile */}
+                <div className="cl-meta-col">
+                  {MetaEl}
                 </div>
               </div>
             )

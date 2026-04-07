@@ -20,8 +20,10 @@ export default async function AdminCommunautePage() {
 
   const { data: groups } = await supabase
     .from('community_groups')
-    .select('*')
-    .order('members_count', { ascending: false })
+    .select('id, name, description, platform, members_count, url, category, tag, sort_order')
+    .order('category')
+    .order('sort_order')
+    .order('name')
 
   return (
     <>
