@@ -21,30 +21,58 @@ async function assertAdmin() {
   return { error: null, adminClient: getServiceClient() }
 }
 
+function revalidate() {
+  revalidatePath('/dashboard/admin/communaute')
+  revalidatePath('/dashboard/communaute')
+  revalidatePath('/dashboard')
+}
+
 export async function addGroup(formData: FormData) {
   const { error, adminClient } = await assertAdmin()
   if (error || !adminClient) return { success: false, error }
 
-  const name = formData.get('name') as string
-  const description = formData.get('description') as string
-  const platform = formData.get('platform') as string
-  const url = formData.get('url') as string
+  const name         = (formData.get('name') as string)?.trim()
+  const description  = (formData.get('description') as string)?.trim() ?? ''
+  const platform     = formData.get('platform') as string
+  const url          = (formData.get('url') as string)?.trim()
   const members_count = parseInt(formData.get('members_count') as string) || 0
+  const category     = (formData.get('category') as string)?.trim() || 'Général'
+  const tag          = (formData.get('tag') as string)?.trim() || null
+  const sort_order   = parseInt(formData.get('sort_order') as string) || 0
 
-  if (!name?.trim() || !url?.trim() || !platform) return { success: false, error: 'Champs manquants' }
+  if (!name || !url || !platform) return { success: false, error: 'Champs manquants' }
 
   const { error: dbError } = await adminClient.from('community_groups').insert({
-    name: name.trim(),
-    description: description?.trim() ?? '',
-    platform,
-    url: url.trim(),
-    members_count,
+    name, description, platform, url, members_count, category, tag, sort_order,
   })
 
   if (dbError) return { success: false, error: dbError.message }
+  revalidate()
+  return { success: true }
+}
 
-  revalidatePath('/dashboard/admin/communaute')
-  revalidatePath('/dashboard/communaute')
+export async function updateGroup(groupId: string, formData: FormData) {
+  const { error, adminClient } = await assertAdmin()
+  if (error || !adminClient) return { success: false, error }
+
+  const name         = (formData.get('name') as string)?.trim()
+  const description  = (formData.get('description') as string)?.trim() ?? ''
+  const platform     = formData.get('platform') as string
+  const url          = (formData.get('url') as string)?.trim()
+  const members_count = parseInt(formData.get('members_count') as string) || 0
+  const category     = (formData.get('category') as string)?.trim() || 'Général'
+  const tag          = (formData.get('tag') as string)?.trim() || null
+  const sort_order   = parseInt(formData.get('sort_order') as string) || 0
+
+  if (!name || !url || !platform) return { success: false, error: 'Champs manquants' }
+
+  const { error: dbError } = await adminClient
+    .from('community_groups')
+    .update({ name, description, platform, url, members_count, category, tag, sort_order })
+    .eq('id', groupId)
+
+  if (dbError) return { success: false, error: dbError.message }
+  revalidate()
   return { success: true }
 }
 
@@ -54,9 +82,7 @@ export async function deleteGroup(groupId: string) {
 
   const { error: dbError } = await adminClient.from('community_groups').delete().eq('id', groupId)
   if (dbError) return { success: false, error: dbError.message }
-
-  revalidatePath('/dashboard/admin/communaute')
-  revalidatePath('/dashboard/communaute')
+  revalidate()
   return { success: true }
 }
 
@@ -70,8 +96,6 @@ export async function updateGroupMembersCount(groupId: string, count: number) {
     .eq('id', groupId)
 
   if (dbError) return { success: false, error: dbError.message }
-
-  revalidatePath('/dashboard/admin/communaute')
-  revalidatePath('/dashboard/communaute')
+  revalidate()
   return { success: true }
 }

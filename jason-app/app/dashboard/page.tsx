@@ -7,7 +7,6 @@ import {
   ArrowRight, BookOpen, ShieldCheck, ArrowSquareOut,
 } from '@phosphor-icons/react/dist/ssr'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
-import { JASON_GROUPS, EXTRA_GROUPS } from '@/lib/constants/community'
 
 export default async function DashboardPage() {
   const profile = await getProfile()
@@ -37,8 +36,7 @@ export default async function DashboardPage() {
   // Nombre total d'offres partenaires : services Driing + partenaires additionnels DB
   const totalPartnerOffers = DRIING_SERVICES.length + (partnersCount ?? 0)
 
-  // Nombre total de groupes : groupes Jason/Driing + groupes extra + groupes DB
-  const totalGroups = JASON_GROUPS.length + EXTRA_GROUPS.length + (groupsCount ?? 0)
+  const totalGroups = groupsCount ?? 0
 
   const firstName = profile?.full_name?.split(' ')[0] ?? ''
   const enrolled = userFormations?.length ?? 0

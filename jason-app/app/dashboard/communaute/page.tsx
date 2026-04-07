@@ -8,8 +8,10 @@ export default async function CommunautePage() {
   const supabase = await createClient()
   const { data: groups } = await supabase
     .from('community_groups')
-    .select('*, template:templates(*)')
-    .order('members_count', { ascending: false })
+    .select('id, name, platform, description, members_count, url, category, tag')
+    .order('category')
+    .order('sort_order')
+    .order('name')
 
   return (
     <>
