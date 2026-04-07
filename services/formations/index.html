@@ -176,6 +176,14 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 .rv.in{opacity:1;transform:translateY(0)}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
+/* ── FILTER THEMES ── */
+.f-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:28px}
+.f-cat-btn{font-size:12px;font-weight:500;color:var(--tm);border:1px solid rgba(0,76,63,.18);background:rgba(0,76,63,.05);padding:6px 14px;border-radius:100px;cursor:pointer;transition:all .2s;text-decoration:none;font-family:'Outfit',sans-serif;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.f-cat-btn:hover,.f-cat-btn.active{color:#fff;border-color:var(--g);background:var(--g)}
+.f-cat-btn-count{font-size:10px;background:rgba(0,0,0,.07);padding:2px 6px;border-radius:100px;transition:background .2s}
+.f-cat-btn.active .f-cat-btn-count{background:rgba(255,255,255,.2)}
+.f-no-results{text-align:center;padding:48px 0;color:var(--tl);font-size:15px;font-weight:300;display:none}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
   .n-links,.n-right{display:none}
@@ -236,10 +244,22 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         Créer un compte <i class="ph-bold ph-arrow-right"></i>
       </a>
     </div>
-    <div class="f-gr">
+    <!-- Filtre par thème -->
+    <div class="f-cats" id="f-cats" role="navigation" aria-label="Filtrer par thème">
+      <button class="f-cat-btn active" data-filter="all" onclick="filterFormations(this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="f-cat-btn-count">14</span></button>
+      <button class="f-cat-btn" data-filter="visibilite" onclick="filterFormations(this,'visibilite')"><i class="ph-bold ph-eye"></i> Visibilité <span class="f-cat-btn-count">4</span></button>
+      <button class="f-cat-btn" data-filter="revenus" onclick="filterFormations(this,'revenus')"><i class="ph-bold ph-trending-up"></i> Revenus <span class="f-cat-btn-count">3</span></button>
+      <button class="f-cat-btn" data-filter="gestion" onclick="filterFormations(this,'gestion')"><i class="ph-bold ph-lightning"></i> Gestion <span class="f-cat-btn-count">2</span></button>
+      <button class="f-cat-btn" data-filter="logement" onclick="filterFormations(this,'logement')"><i class="ph-bold ph-house-line"></i> Logement <span class="f-cat-btn-count">2</span></button>
+      <button class="f-cat-btn" data-filter="reputation" onclick="filterFormations(this,'reputation')"><i class="ph-bold ph-star"></i> Réputation <span class="f-cat-btn-count">1</span></button>
+      <button class="f-cat-btn" data-filter="conciergerie" onclick="filterFormations(this,'conciergerie')"><i class="ph-bold ph-key"></i> Conciergerie <span class="f-cat-btn-count">1</span></button>
+      <button class="f-cat-btn" data-filter="juridique" onclick="filterFormations(this,'juridique')"><i class="ph-bold ph-scales"></i> Juridique <span class="f-cat-btn-count">1</span></button>
+    </div>
+
+    <div class="f-gr" id="f-gr">
 
       <!-- Card 1 — Google My Business -->
-      <div class="f-card">
+      <div class="f-card" data-cat="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-map-pin"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -262,7 +282,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 2 — Annonce directe -->
-      <div class="f-card">
+      <div class="f-card" data-cat="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph ph-megaphone"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -285,7 +305,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 3 — Optimiser annonce Airbnb -->
-      <div class="f-card">
+      <div class="f-card" data-cat="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,#1a3a2a 0%,#2d6e50 100%)">
           <i class="ph ph-house-line"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -308,7 +328,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 4 — Tarification dynamique -->
-      <div class="f-card">
+      <div class="f-card" data-cat="revenus">
         <div class="f-th" style="background:linear-gradient(135deg,#0d2e3a 0%,#1a5c6e 100%)">
           <i class="ph ph-chart-line-up"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -331,7 +351,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 5 — Mettre le bon prix -->
-      <div class="f-card">
+      <div class="f-card" data-cat="revenus">
         <div class="f-th" style="background:linear-gradient(135deg,#2a1f0d 0%,#6e4e1a 100%)">
           <i class="ph ph-currency-eur"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -354,7 +374,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 6 — Sécuriser réservations -->
-      <div class="f-card">
+      <div class="f-card" data-cat="gestion">
         <div class="f-th" style="background:linear-gradient(135deg,#1a0d2e 0%,#3d1a6e 100%)">
           <i class="ph ph-shield-check"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -377,7 +397,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 7 — Écrire des avis -->
-      <div class="f-card">
+      <div class="f-card" data-cat="reputation">
         <div class="f-th" style="background:linear-gradient(135deg,#2a2210 0%,#6e5a1a 100%)">
           <i class="ph ph-star"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -400,7 +420,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 8 — Décorer et aménager -->
-      <div class="f-card">
+      <div class="f-card" data-cat="logement">
         <div class="f-th" style="background:linear-gradient(135deg,#1a2a1a 0%,#3d6e3d 100%)">
           <i class="ph ph-couch"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -423,7 +443,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 9 — Automatisation -->
-      <div class="f-card">
+      <div class="f-card" data-cat="gestion">
         <div class="f-th" style="background:linear-gradient(135deg,#0d1a2e 0%,#1a3d6e 100%)">
           <i class="ph ph-robot"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -446,7 +466,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 10 — Livret accueil digital -->
-      <div class="f-card">
+      <div class="f-card" data-cat="logement">
         <div class="f-th" style="background:linear-gradient(135deg,#1a2a2a 0%,#2d6e6e 100%)">
           <i class="ph ph-notebook"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -469,7 +489,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 11 — Réseaux sociaux -->
-      <div class="f-card">
+      <div class="f-card" data-cat="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,#2a0d1a 0%,#6e1a3d 100%)">
           <i class="ph ph-instagram-logo"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -492,7 +512,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 12 — Basse saison -->
-      <div class="f-card">
+      <div class="f-card" data-cat="revenus">
         <div class="f-th" style="background:linear-gradient(135deg,#1a2a0d 0%,#4a6e1a 100%)">
           <i class="ph ph-sun-dim"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -515,7 +535,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 13 — Créer conciergerie -->
-      <div class="f-card">
+      <div class="f-card" data-cat="conciergerie">
         <div class="f-th" style="background:linear-gradient(135deg,#0d1a2a 0%,#1a4a6e 100%)">
           <i class="ph ph-buildings"></i>
           <div class="f-bge bge-i">Intermédiaire</div>
@@ -538,7 +558,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
       <!-- Card 14 — Fiscalité et réglementation -->
-      <div class="f-card">
+      <div class="f-card" data-cat="juridique">
         <div class="f-th" style="background:linear-gradient(135deg,#1a0d0d 0%,#6e1a1a 100%)">
           <i class="ph ph-scales"></i>
           <div class="f-bge bge-s">Débutant</div>
@@ -561,6 +581,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       </div>
 
     </div>
+    <div class="f-no-results" id="f-no-results">Aucune formation dans cette catégorie pour le moment.</div>
   </div>
 </section>
 
@@ -620,6 +641,32 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
 document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
+
+// Filtre thème formations
+function filterFormations(btn, cat) {
+  document.querySelectorAll('.f-cat-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  if (cat === 'all') history.replaceState(null,'',location.pathname);
+  else history.replaceState(null,'',location.pathname+'#'+cat);
+  var cards = document.querySelectorAll('#f-gr .f-card');
+  var shown = 0;
+  cards.forEach(function(card) {
+    var match = cat === 'all' || card.getAttribute('data-cat') === cat;
+    card.style.display = match ? '' : 'none';
+    if (match) shown++;
+  });
+  var noRes = document.getElementById('f-no-results');
+  if (noRes) noRes.style.display = shown === 0 ? 'block' : 'none';
+}
+
+// Init depuis le hash URL
+(function() {
+  var hash = location.hash.slice(1);
+  if (hash) {
+    var btn = document.querySelector('[data-filter="' + hash + '"]');
+    if (btn) filterFormations(btn, hash);
+  }
+})();
 </script>
 <script src="/cookie-banner.js" defer></script>
 </body>
