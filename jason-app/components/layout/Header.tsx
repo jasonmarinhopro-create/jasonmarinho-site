@@ -47,10 +47,14 @@ export default function Header({ title, userName: initialUserName, currentPlan =
   const router = useRouter()
   const { theme, toggleTheme } = useTheme()
 
-  // Load read IDs from localStorage on mount
+  // Load read IDs from localStorage — lazy init prevents badge flash on navigation
   useEffect(() => {
     setReadIds(getReadIds())
   }, [])
+
+  // Suppress badge until hydration is complete (avoids "+9" flash)
+  const [hydrated, setHydrated] = useState(false)
+  useEffect(() => { setHydrated(true) }, [])
 
   const unreadCount = CHANGELOG.filter(e => !readIds.has(e.id)).length
 
@@ -167,11 +171,11 @@ export default function Header({ title, userName: initialUserName, currentPlan =
           {/* Notifications */}
           <button
             style={styles.iconBtn}
-            aria-label={`Notifications${unreadCount > 0 ? ` — ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
+            aria-label={`Notifications${hydrated && unreadCount > 0 ? ` — ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
             onClick={handleOpenNotif}
           >
-            <Bell size={18} weight={unreadCount > 0 ? 'fill' : 'regular'} />
-            {unreadCount > 0 && (
+            <Bell size={18} weight={hydrated && unreadCount > 0 ? 'fill' : 'regular'} />
+            {hydrated && unreadCount > 0 && (
               <span style={styles.notifBadge}>
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
