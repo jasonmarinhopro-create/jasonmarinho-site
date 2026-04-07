@@ -301,6 +301,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .svc:last-child{border-bottom:none!important}
   .sup-g{grid-template-columns:1fr}
   .f-gr{grid-template-columns:1fr}
+  .f-card-mob-hide{display:none!important}
   .f-hd{flex-direction:column;align-items:flex-start}
   .cta-fm{flex-direction:column}
   .cta-fm .btn-p{justify-content:center}
@@ -487,7 +488,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         <div class="lbl rv">Formations</div>
         <h2 class="h2 rv" style="margin-bottom:0">Les formations <em>disponibles</em></h2>
       </div>
-      <a href="https://app.jasonmarinho.com/dashboard/formations" class="btn-ol rv">Voir toutes les formations <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="/services/formations" class="btn-ol rv">Voir toutes les formations <i class="ph-bold ph-arrow-right"></i></a>
     </div>
     <div class="f-gr">
       <div class="f-card rv">
@@ -547,7 +548,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           </div>
         </div>
       </div>
-      <div class="f-card rv">
+      <div class="f-card rv f-card-mob-hide">
         <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
           <i class="ph-light ph-megaphone"></i>
           <span class="f-bge bge-s">Débutant</span>
@@ -566,7 +567,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           </div>
         </div>
       </div>
-      <div class="f-card rv d1">
+      <div class="f-card rv d1 f-card-mob-hide">
         <div class="f-th" style="background:linear-gradient(135deg,#1a0d2e 0%,#3d1a6e 100%)">
           <i class="ph-light ph-shield-check"></i>
           <span class="f-bge bge-i">Intermédiaire</span>
@@ -585,7 +586,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           </div>
         </div>
       </div>
-      <div class="f-card rv d2">
+      <div class="f-card rv d2 f-card-mob-hide">
         <div class="f-th" style="background:linear-gradient(135deg,#0d1a2e 0%,#1a3d6e 100%)">
           <i class="ph-light ph-robot"></i>
           <span class="f-bge bge-i">Intermédiaire</span>
