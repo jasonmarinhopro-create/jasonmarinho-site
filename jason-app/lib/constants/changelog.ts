@@ -31,13 +31,6 @@ export const CHANGELOG: ChangelogEntry[] = [
     description: 'Un panneau dédié pour suivre toutes les nouveautés et améliorations de la plateforme — tu es au bon endroit !',
   },
   {
-    id: 'blog-page-apr-2025',
-    date: '2026-04-04',
-    tag: 'nouveau',
-    title: 'Page Blog intégrée au dashboard',
-    description: 'Les articles du blog jasonmarinho.com sont désormais accessibles directement depuis ton espace membre, sans quitter le dashboard.',
-  },
-  {
     id: 'formations-catalog-apr-2026',
     date: '2026-04-01',
     tag: 'amélioration',

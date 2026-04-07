@@ -16,8 +16,7 @@ const navGroups = [
   {
     label: null,
     items: [
-      { href: '/dashboard',            label: 'Accueil',    icon: HouseSimple },
-      { href: '/dashboard/nouveautes', label: 'Nouveautés', icon: Sparkle },
+      { href: '/dashboard', label: 'Accueil', icon: HouseSimple },
     ],
   },
   {
