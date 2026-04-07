@@ -24,8 +24,7 @@ export default async function DashboardPage() {
     supabase.from('user_formations')
       .select('*, formation:formations(*)')
       .eq('user_id', userId)
-      .order('enrolled_at', { ascending: false })
-      .limit(3),
+      .order('enrolled_at', { ascending: false }),
     supabase.from('formations').select('*', { count: 'exact', head: true }).eq('is_published', true),
     // Partenaires DB = partenaires additionnels hors Driing (actifs)
     supabase.from('partners').select('*', { count: 'exact', head: true }).eq('is_active', true),
@@ -41,6 +40,8 @@ export default async function DashboardPage() {
   const firstName = profile?.full_name?.split(' ')[0] ?? ''
   const enrolled = userFormations?.length ?? 0
   const completed = userFormations?.filter(f => f.progress === 100).length ?? 0
+  // Only show formations in progress (not completed) in the widget
+  const inProgressFormations = (userFormations ?? []).filter(f => f.progress < 100).slice(0, 3)
 
   const pl = (n: number, s = 's') => n > 1 ? s : ''
 
@@ -149,7 +150,7 @@ export default async function DashboardPage() {
         </section>
 
         {/* Formations en cours */}
-        {userFormations && userFormations.length > 0 && (
+        {inProgressFormations.length > 0 && (
           <section style={styles.section} className="fade-up d2">
             <div style={styles.sectionHead}>
               <h3 style={styles.sectionTitle}>Formations en cours</h3>
@@ -158,7 +159,7 @@ export default async function DashboardPage() {
               </Link>
             </div>
             <div style={styles.formationsGrid}>
-              {userFormations.slice(0, 3).map((uf) => (
+              {inProgressFormations.map((uf) => (
                 <Link
                   key={uf.id}
                   href={`/dashboard/formations/${uf.formation?.slug ?? ''}`}
@@ -181,6 +182,20 @@ export default async function DashboardPage() {
                   </div>
                 </Link>
               ))}
+            </div>
+          </section>
+        )}
+
+        {/* Toutes terminées */}
+        {enrolled > 0 && inProgressFormations.length === 0 && (
+          <section style={styles.section} className="fade-up d2">
+            <div style={styles.emptyState} className="glass-card">
+              <GraduationCap size={40} color="#34D399" weight="fill" />
+              <h3 style={styles.emptyTitle}>Bravo, toutes tes formations sont terminées !</h3>
+              <p style={styles.emptyDesc}>Explore les autres formations disponibles pour continuer à progresser.</p>
+              <Link href="/dashboard/formations" className="btn-primary">
+                Voir les formations <ArrowRight size={16} weight="bold" />
+              </Link>
             </div>
           </section>
         )}

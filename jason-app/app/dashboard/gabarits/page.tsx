@@ -313,7 +313,7 @@ export default function GabaritsPage() {
         </div>
 
         {/* Filtres simplifiés */}
-        <div style={s.filterBar} className="fade-up d1 filter-bar-scroll">
+        <div style={s.filterBar} className="fade-up d1">
           {([
             { key: 'all',            label: 'Tous' },
             { key: 'favorites',      label: '⭐ Mes favoris' },
@@ -734,10 +734,8 @@ const s: Record<string, React.CSSProperties> = {
   pageDesc:     { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.6 },
 
   filterBar:    {
-    display: 'flex', flexWrap: 'nowrap', gap: '6px', marginBottom: '18px',
-    overflowX: 'auto', overflowY: 'hidden', paddingBottom: '4px',
-    width: '100%', minWidth: 0,
-    scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch',
+    display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '18px',
+    width: '100%',
   } as React.CSSProperties,
   filterBtn:    {
     fontSize: '12.5px', fontWeight: 500, padding: '7px 14px',
@@ -782,8 +780,8 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '100px', padding: '1px 7px',
   },
 
-  card:     { padding: '20px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px' },
-  cardHead: { display: 'flex', alignItems: 'flex-start', gap: '10px' },
+  card:     { padding: '20px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0, overflow: 'hidden' },
+  cardHead: { display: 'flex', alignItems: 'flex-start', gap: '10px', minWidth: 0 },
   cardIcon: {
     width: '34px', height: '34px', borderRadius: '9px', flexShrink: 0,
     background: 'rgba(0,76,63,0.3)', border: '1px solid rgba(255,213,107,0.12)',
@@ -812,7 +810,8 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text-2)', lineHeight: 1.7,
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
     background: 'rgba(0,0,0,0.2)', borderRadius: '8px', padding: '12px',
-    maxHeight: '160px', overflowY: 'auto', flex: 1,
+    maxHeight: '160px', overflowY: 'auto', overflowX: 'hidden', flex: 1,
+    width: '100%',
   },
   notePreview: {
     display: 'flex', alignItems: 'flex-start', gap: '5px',
