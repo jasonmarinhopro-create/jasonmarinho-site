@@ -121,7 +121,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
       {/* Filters */}
       <div style={styles.filtersWrap}>
         {/* Search */}
-        <div style={styles.searchWrap}>
+        <div style={styles.searchWrap} className="filter-search-wrap">
           <MagnifyingGlass size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
           <input
             type="text"
@@ -136,7 +136,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
         </div>
 
         {/* Category filter — scrollable row on mobile */}
-        <div style={styles.filterScrollRow}>
+        <div style={styles.filterScrollRow} className="filter-scroll-row">
           <span style={styles.filterLabel}><Funnel size={12} /> Thème</span>
           {(['all', 'visibilite', 'revenus', 'gestion', 'reglementation', 'amenagement'] as CategoryFilter[]).map(v => (
             <button
@@ -152,9 +152,8 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
           ))}
         </div>
 
-        {/* Level + Status filters row */}
-        <div style={styles.filterScrollRow}>
-          {/* Level filter */}
+        {/* Level filter row */}
+        <div style={styles.filterScrollRow} className="filter-scroll-row">
           <span style={styles.filterLabel}><Funnel size={12} /> Niveau</span>
           {(['all', 'debutant', 'intermediaire', 'avance'] as LevelFilter[]).map(v => (
             <button
@@ -168,12 +167,11 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
               {v === 'all' ? 'Tous' : levelLabel[v]}
             </button>
           ))}
+        </div>
 
-          {/* Separator */}
-          <span style={styles.filterSep} />
-
-          {/* Status filter */}
-          <span style={styles.filterLabel}>Statut</span>
+        {/* Status filter row */}
+        <div style={styles.filterScrollRow} className="filter-scroll-row">
+          <span style={styles.filterLabel}><Funnel size={12} /> Statut</span>
           {([
             { v: 'all', label: 'Toutes' },
             { v: 'enrolled', label: 'En cours' },
@@ -332,17 +330,14 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '0 2px', flexShrink: 0,
   },
   // Horizontally scrollable filter row — works on all screen sizes
+  // Note: overflow and scroll behavior handled by .filter-scroll-row CSS class
   filterScrollRow: {
     display: 'flex', alignItems: 'center', gap: '4px',
-    overflowX: 'auto', paddingBottom: '4px',
+    overflowX: 'auto', overflowY: 'hidden', paddingBottom: '4px',
     width: '100%', minWidth: 0,
     scrollbarWidth: 'none',
     WebkitOverflowScrolling: 'touch',
   } as React.CSSProperties,
-  filterSep: {
-    width: '1px', height: '20px', background: 'var(--border)',
-    flexShrink: 0, margin: '0 4px',
-  },
   filterLabel: {
     display: 'flex', alignItems: 'center', gap: '4px',
     fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)',
