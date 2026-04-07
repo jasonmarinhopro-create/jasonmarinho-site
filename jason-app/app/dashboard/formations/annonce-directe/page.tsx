@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import FormationView from '../google-my-business-lcd/FormationView'
 import { ANNONCE_DIRECTE_FORMATION } from './content'
 import { createClient } from '@/lib/supabase/server'
+import { getFormationDbContent } from '@/lib/queries/formation-db-content'
 
 export default async function AnnonceDirecteFormationPage() {
   const profile = await getProfile()
@@ -27,11 +28,13 @@ export default async function AnnonceDirecteFormationPage() {
     initialProgress = uf?.progress ?? null
   }
 
+  const formationContent = await getFormationDbContent(formationId, ANNONCE_DIRECTE_FORMATION)
+
   return (
     <>
       <Header title="Formation Annonce Directe" userName={profile?.full_name ?? undefined} />
       <FormationView
-        formation={ANNONCE_DIRECTE_FORMATION}
+        formation={formationContent}
         formationId={formationId}
         initialProgress={initialProgress}
       />

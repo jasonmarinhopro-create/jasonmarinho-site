@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import FormationView from '../google-my-business-lcd/FormationView'
 import { DECORER_AMENAGER_FORMATION } from './content'
 import { createClient } from '@/lib/supabase/server'
+import { getFormationDbContent } from '@/lib/queries/formation-db-content'
 
 export default async function FormationPage() {
   const profile = await getProfile()
@@ -27,11 +28,13 @@ export default async function FormationPage() {
     initialProgress = uf?.progress ?? null
   }
 
+  const formationContent = await getFormationDbContent(formationId, DECORER_AMENAGER_FORMATION)
+
   return (
     <>
       <Header title="Formation Décorer et aménager son logement" userName={profile?.full_name ?? undefined} />
       <FormationView
-        formation={DECORER_AMENAGER_FORMATION}
+        formation={formationContent}
         formationId={formationId}
         initialProgress={initialProgress}
       />

@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import FormationView from './FormationView'
 import { GMB_FORMATION } from './content'
 import { createClient } from '@/lib/supabase/server'
+import { getFormationDbContent } from '@/lib/queries/formation-db-content'
 
 export default async function GmbFormationPage() {
   const profile = await getProfile()
@@ -27,11 +28,13 @@ export default async function GmbFormationPage() {
     initialProgress = uf?.progress ?? null
   }
 
+  const formationContent = await getFormationDbContent(formationId, GMB_FORMATION)
+
   return (
     <>
       <Header title="Formation GMB" userName={profile?.full_name ?? undefined} />
       <FormationView
-        formation={GMB_FORMATION}
+        formation={formationContent}
         formationId={formationId}
         initialProgress={initialProgress}
       />

@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import FormationView from '../google-my-business-lcd/FormationView'
 import { OPTIMISER_ANNONCE_FORMATION } from './content'
 import { createClient } from '@/lib/supabase/server'
+import { getFormationDbContent } from '@/lib/queries/formation-db-content'
 
 export default async function FormationPage() {
   const profile = await getProfile()
@@ -27,11 +28,13 @@ export default async function FormationPage() {
     initialProgress = uf?.progress ?? null
   }
 
+  const formationContent = await getFormationDbContent(formationId, OPTIMISER_ANNONCE_FORMATION)
+
   return (
     <>
       <Header title="Formation Optimiser son annonce Airbnb" userName={profile?.full_name ?? undefined} />
       <FormationView
-        formation={OPTIMISER_ANNONCE_FORMATION}
+        formation={formationContent}
         formationId={formationId}
         initialProgress={initialProgress}
       />
