@@ -50,9 +50,25 @@ export interface Template {
   id: string
   title: string
   content: string
-  category: 'airbnb' | 'checkin' | 'checkout' | 'avis' | 'bienvenue' | 'autre'
+  category: string
+  timing?: string | null
+  variante?: string | null
+  variables?: string[]
+  tags?: string[]
   copy_count: number
   created_at: string
+}
+
+export interface UserTemplateCustomization {
+  id: string
+  user_id: string
+  template_id: string
+  title: string
+  content: string
+  notes?: string | null
+  timing_label?: string | null
+  created_at: string
+  updated_at: string
 }
 
 export interface CommunityGroup {
