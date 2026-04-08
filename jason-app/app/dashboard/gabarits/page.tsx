@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   Copy, Check, FileText, MagnifyingGlass,
-  Heart, PencilSimple, X, ArrowLeft,
+  Heart, PencilSimple, X,
   CalendarCheck, House, SunHorizon, CaretRight,
 } from '@phosphor-icons/react'
 import type { Template, UserTemplateCustomization } from '@/types'
@@ -150,9 +150,11 @@ export default function GabaritsPage() {
   }
 
   // ── Copier ────────────────────────────────────────────────────────────────
-  async function copyTemplate(t: Template, e: React.MouseEvent) {
+  async function copyTemplate(t: Template, e: React.MouseEvent, lang: 'fr' | 'en' = 'fr') {
     e.stopPropagation()
-    const content = customizations[t.id]?.content ?? t.content
+    const content = lang === 'en'
+      ? (t.corps_en ?? t.content)
+      : (customizations[t.id]?.content ?? t.content)
     await navigator.clipboard.writeText(content)
     setCopied(t.id)
     setTimeout(() => setCopied(null), 2000)
@@ -474,19 +476,24 @@ interface TemplateCardProps {
   customization: UserTemplateCustomization | undefined
   copied:        string | null
   delay:         number
-  onCopy:        (t: Template, e: React.MouseEvent) => void
+  onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
   onFavorite:    (id: string, e: React.MouseEvent) => void
   onCustomize:   (t: Template) => void
 }
 
 function TemplateCard({ template: t, isFav, customization, copied, delay, onCopy, onFavorite, onCustomize }: TemplateCardProps) {
+  const [lang, setLang] = useState<'fr' | 'en'>('fr')
+  const hasEN = !!t.corps_en
+
   // Badge : étiquette libre de l'utilisateur, ou label prédéfini du bucket, ou rien
   const customTimingLabel = customization?.timing_label || null
   const timingBucket = customTimingLabel ? guessTimingBucket(customTimingLabel) : getTimingBucket(t)
   const timingDisplayLabel = customTimingLabel || (timingBucket ? TIMING_LABELS[timingBucket] : null)
 
-  const displayContent = customization?.content ?? t.content
-  const displayTitle   = customization?.title   ?? t.title
+  const displayContent = lang === 'en'
+    ? (t.corps_en ?? t.content)
+    : (customization?.content ?? t.content)
+  const displayTitle = customization?.title ?? t.title
 
   return (
     <div style={s.card} className={`glass-card fade-up d${delay}`}>
@@ -503,13 +510,32 @@ function TemplateCard({ template: t, isFav, customization, copied, delay, onCopy
                 {timingDisplayLabel}
               </span>
             )}
-            {customization && (
+            {customization && lang === 'fr' && (
               <span style={s.customBadge}>Personnalisé</span>
             )}
           </div>
         </div>
         {/* Actions */}
         <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+          {/* Toggle FR / EN */}
+          {hasEN && (
+            <div style={s.langToggle}>
+              <button
+                onClick={() => setLang('fr')}
+                style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}
+                title="Version française"
+              >
+                FR
+              </button>
+              <button
+                onClick={() => setLang('en')}
+                style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActiveEN : {}) }}
+                title="English version"
+              >
+                EN
+              </button>
+            </div>
+          )}
           <button
             onClick={e => onFavorite(t.id, e)}
             style={{ ...s.iconBtn, ...(isFav ? s.iconBtnFavActive : {}) }}
@@ -525,9 +551,9 @@ function TemplateCard({ template: t, isFav, customization, copied, delay, onCopy
             <PencilSimple size={15} weight={customization ? 'fill' : 'regular'} />
           </button>
           <button
-            onClick={e => onCopy(t, e)}
+            onClick={e => onCopy(t, e, lang)}
             style={{ ...s.iconBtn, ...(copied === t.id ? s.iconBtnCopied : {}) }}
-            title={customization ? 'Copier ma version' : 'Copier'}
+            title={lang === 'en' ? 'Copy English version' : (customization ? 'Copier ma version' : 'Copier')}
           >
             {copied === t.id
               ? <Check size={15} color="#34D399" weight="bold" />
@@ -539,8 +565,8 @@ function TemplateCard({ template: t, isFav, customization, copied, delay, onCopy
       {/* Contenu */}
       <pre style={s.content}>{displayContent}</pre>
 
-      {/* Note privée si présente */}
-      {customization?.notes && (
+      {/* Note privée si présente (FR only) */}
+      {customization?.notes && lang === 'fr' && (
         <div style={s.notePreview}>
           <CaretRight size={10} color="var(--text-muted)" />
           <span style={{ color: 'var(--text-3)', fontSize: '11.5px', fontStyle: 'italic', lineHeight: 1.5 }}>
@@ -804,6 +830,24 @@ const s: Record<string, React.CSSProperties> = {
   iconBtnFavActive:    { background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)', color: '#FFD56B' },
   iconBtnCustomActive: { background: 'rgba(96,190,255,0.1)',   border: '1px solid rgba(96,190,255,0.25)', color: '#60BEFF' },
   iconBtnCopied:       { background: 'rgba(52,211,153,0.1)',   border: '1px solid rgba(52,211,153,0.2)' },
+
+  langToggle: {
+    display: 'flex', borderRadius: '7px', overflow: 'hidden',
+    border: '1px solid var(--border)', background: 'var(--border)',
+    gap: '1px',
+  },
+  langBtn: {
+    fontSize: '10px', fontWeight: 700, padding: '0 7px', height: '30px',
+    background: 'var(--surface)', border: 'none', cursor: 'pointer',
+    color: 'var(--text-3)', fontFamily: 'Outfit, sans-serif',
+    letterSpacing: '0.4px', transition: 'all 0.15s',
+  },
+  langBtnActive: {
+    background: 'rgba(255,213,107,0.15)', color: 'var(--accent-text)',
+  },
+  langBtnActiveEN: {
+    background: 'rgba(129,140,248,0.15)', color: '#818cf8',
+  },
 
   content: {
     fontFamily: 'Outfit, sans-serif', fontSize: '12px', fontWeight: 300,

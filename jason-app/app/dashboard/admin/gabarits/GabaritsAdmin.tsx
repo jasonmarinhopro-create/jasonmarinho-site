@@ -21,6 +21,29 @@ interface Template {
   created_at: string
 }
 
+// ─── Timing buckets ─────────────────────────────────────────────────────────
+
+type TimingBucket = 'avant-arrivee' | 'pendant-sejour' | 'apres-depart'
+
+const CATEGORY_TO_TIMING: Record<string, TimingBucket> = {
+  confirmation: 'avant-arrivee',
+  checkin:      'avant-arrivee',
+  bienvenue:    'avant-arrivee',
+  securite:     'avant-arrivee',
+  upsell:       'avant-arrivee',
+  probleme:     'pendant-sejour',
+  extra:        'pendant-sejour',
+  conciergerie: 'pendant-sejour',
+  checkout:     'apres-depart',
+  avis:         'apres-depart',
+}
+
+const TIMING_BUCKETS: { value: TimingBucket | 'all'; label: string; color: string; bg: string }[] = [
+  { value: 'avant-arrivee',  label: "Avant l'arrivée",   color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
+  { value: 'pendant-sejour', label: 'Pendant le séjour', color: '#60BEFF', bg: 'rgba(96,190,255,0.1)'   },
+  { value: 'apres-depart',   label: 'Après le départ',   color: '#F97583', bg: 'rgba(249,117,131,0.1)'  },
+]
+
 const CATEGORIES = [
   { value: 'confirmation', label: 'Confirmation',   color: '#818cf8', bg: 'rgba(129,140,248,0.12)' },
   { value: 'checkin',      label: 'Check-in',       color: '#4ade80', bg: 'rgba(74,222,128,0.12)'  },
@@ -153,9 +176,10 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
   const [showAdd, setShowAdd]       = useState(false)
   const [editingId, setEditingId]   = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
-  const [search, setSearch]         = useState('')
-  const [filterCat, setFilterCat]   = useState('all')
-  const [isPending, startTransition] = useTransition()
+  const [search, setSearch]           = useState('')
+  const [filterCat, setFilterCat]     = useState('all')
+  const [filterTiming, setFilterTiming] = useState<TimingBucket | 'all'>('all')
+  const [isPending, startTransition]  = useTransition()
   const [feedback, setFeedback]     = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
 
   function flash(type: 'ok' | 'err', msg: string) {
@@ -218,6 +242,10 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
 
   // Filtered list
   const filtered = useMemo(() => templates.filter(t => {
+    if (filterTiming !== 'all') {
+      const bucket = CATEGORY_TO_TIMING[t.category] ?? null
+      if (bucket !== filterTiming) return false
+    }
     if (filterCat !== 'all' && t.category !== filterCat) return false
     if (!search) return true
     const q = search.toLowerCase()
@@ -227,7 +255,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
       (t.tags ?? []).some(tag => tag.toLowerCase().includes(q)) ||
       (t.timing ?? '').toLowerCase().includes(q)
     )
-  }), [templates, search, filterCat])
+  }), [templates, search, filterCat, filterTiming])
 
   // Category counts
   const counts = useMemo(() => {
@@ -236,7 +264,12 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
     return c
   }, [templates])
 
-  const usedCats = CATEGORIES.filter(c => counts[c.value])
+  // Only show category pills relevant to the selected timing bucket
+  const usedCats = CATEGORIES.filter(c => {
+    if (!counts[c.value]) return false
+    if (filterTiming === 'all') return true
+    return CATEGORY_TO_TIMING[c.value] === filterTiming
+  })
 
   return (
     <div>
@@ -291,6 +324,35 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
       {/* ── Search + filter (hors mode add) ── */}
       {!showAdd && (
         <div style={{ marginBottom: '20px' }}>
+          {/* Timing bucket filters */}
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '12px' }}>
+            <button
+              onClick={() => { setFilterTiming('all'); setFilterCat('all') }}
+              style={{
+                padding: '5px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, cursor: 'pointer',
+                background:   filterTiming === 'all' ? 'var(--surface-2)' : 'transparent',
+                border:       filterTiming === 'all' ? '1px solid var(--border-2)' : '1px solid var(--border)',
+                color:        filterTiming === 'all' ? 'var(--text)' : 'var(--text-3)',
+              }}
+            >
+              Tous les moments
+            </button>
+            {TIMING_BUCKETS.map(b => (
+              <button
+                key={b.value}
+                onClick={() => { setFilterTiming(b.value as TimingBucket); setFilterCat('all') }}
+                style={{
+                  padding: '5px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, cursor: 'pointer',
+                  background:   filterTiming === b.value ? b.bg : 'transparent',
+                  border:       filterTiming === b.value ? `1px solid ${b.color}40` : '1px solid var(--border)',
+                  color:        filterTiming === b.value ? b.color : 'var(--text-3)',
+                }}
+              >
+                {b.label}
+              </button>
+            ))}
+          </div>
+
           {/* Search bar */}
           <div style={{ position: 'relative', marginBottom: '14px' }}>
             <MagnifyingGlass size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', pointerEvents: 'none' }} />
