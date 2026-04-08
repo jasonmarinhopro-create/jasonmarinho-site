@@ -21,21 +21,28 @@ async function assertAdmin() {
   return { error: null, adminClient: getServiceClient() }
 }
 
+function parseTags(raw: string | null): string[] | null {
+  if (!raw?.trim()) return null
+  const tags = raw.split(',').map(t => t.trim()).filter(Boolean)
+  return tags.length > 0 ? tags : null
+}
+
 export async function addTemplate(formData: FormData) {
   const { error, adminClient } = await assertAdmin()
   if (error || !adminClient) return { success: false, error }
 
-  const title = formData.get('title') as string
-  const content = formData.get('content') as string
+  const title    = (formData.get('title') as string)?.trim()
+  const content  = (formData.get('content') as string)?.trim()
   const category = formData.get('category') as string
+  const timing   = (formData.get('timing') as string)?.trim() || null
+  const variante = (formData.get('variante') as string)?.trim() || null
+  const corps_en = (formData.get('corps_en') as string)?.trim() || null
+  const tags     = parseTags(formData.get('tags') as string)
 
-  if (!title?.trim() || !content?.trim() || !category) return { success: false, error: 'Champs manquants' }
+  if (!title || !content || !category) return { success: false, error: 'Champs manquants' }
 
   const { error: dbError } = await adminClient.from('templates').insert({
-    title: title.trim(),
-    content: content.trim(),
-    category,
-    copy_count: 0,
+    title, content, category, timing, variante, corps_en, tags, copy_count: 0,
   })
 
   if (dbError) return { success: false, error: dbError.message }
@@ -61,15 +68,20 @@ export async function updateTemplate(templateId: string, formData: FormData) {
   const { error, adminClient } = await assertAdmin()
   if (error || !adminClient) return { success: false, error }
 
-  const title = formData.get('title') as string
-  const content = formData.get('content') as string
+  const title    = (formData.get('title') as string)?.trim()
+  const content  = (formData.get('content') as string)?.trim()
   const category = formData.get('category') as string
+  const timing   = (formData.get('timing') as string)?.trim() || null
+  const variante = (formData.get('variante') as string)?.trim() || null
+  const corps_en = (formData.get('corps_en') as string)?.trim() || null
+  const tags     = parseTags(formData.get('tags') as string)
 
-  const { error: dbError } = await adminClient.from('templates').update({
-    title: title.trim(),
-    content: content.trim(),
-    category,
-  }).eq('id', templateId)
+  if (!title || !content || !category) return { success: false, error: 'Champs manquants' }
+
+  const { error: dbError } = await adminClient
+    .from('templates')
+    .update({ title, content, category, timing, variante, corps_en, tags })
+    .eq('id', templateId)
 
   if (dbError) return { success: false, error: dbError.message }
 
