@@ -14,21 +14,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     date: '2026-04-08',
     tag: 'amélioration',
     title: 'Gabarits — version EN et filtres par moment',
-    description: 'Les gabarits disposent d\'un toggle FR / EN pour accéder à la traduction anglaise. Côté admin, de nouveaux filtres "Avant l\'arrivée / Pendant / Après" permettent de trier rapidement.',
-  },
-  {
-    id: 'admin-stats-voyageurs-apr-2026',
-    date: '2026-04-08',
-    tag: 'amélioration',
-    title: 'Tableau de bord admin enrichi',
-    description: 'La page Administration affiche maintenant les stats globales de la plateforme : voyageurs enregistrés, séjours totaux et la formation la plus commencée.',
-  },
-  {
-    id: 'membres-minimaliste-apr-2026',
-    date: '2026-04-08',
-    tag: 'amélioration',
-    title: 'Liste membres épurée',
-    description: 'La vue membres est simplifiée : seul le nom est affiché dans la liste. L\'email et les détails restent accessibles dans la fiche du membre au clic.',
+    description: 'Les gabarits disposent d\'un toggle FR / EN pour accéder à la traduction anglaise. Filtre rapidement par moment : "Avant l\'arrivée", "Pendant le séjour" ou "Après le départ".',
   },
   {
     id: 'nouveautes-page-apr-2026',
@@ -49,7 +35,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     date: '2026-04-01',
     tag: 'amélioration',
     title: '14 formations disponibles + filtres avancés',
-    description: 'Le catalogue atteint 14 formations avec de nouveaux filtres par thème et par niveau. L\'éditeur admin permet désormais de gérer tout le contenu directement.',
+    description: 'Le catalogue atteint 14 formations avec de nouveaux filtres par thème et par niveau.',
   },
   {
     id: 'theme-toggle-mar-2026',
