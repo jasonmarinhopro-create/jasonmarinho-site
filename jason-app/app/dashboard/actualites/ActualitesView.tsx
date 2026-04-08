@@ -7,13 +7,18 @@ import {
 import type { Actualite } from './page'
 
 const CATEGORIES = [
-  { value: 'all',            label: 'Tout',          color: 'var(--text-2)',  bg: 'var(--border)' },
-  { value: 'reglementation', label: 'Réglementation', color: '#60a5fa',       bg: 'rgba(96,165,250,0.12)' },
-  { value: 'fiscalite',      label: 'Fiscalité',      color: '#34d399',       bg: 'rgba(52,211,153,0.12)' },
-  { value: 'marche',         label: 'Marché',         color: '#f472b6',       bg: 'rgba(244,114,182,0.12)' },
-  { value: 'plateformes',    label: 'Plateformes',    color: '#fb923c',       bg: 'rgba(251,146,60,0.12)' },
-  { value: 'outils',         label: 'Outils & Tech',  color: '#a78bfa',       bg: 'rgba(167,139,250,0.12)' },
-  { value: 'general',        label: 'Général',        color: '#94a3b8',       bg: 'rgba(148,163,184,0.12)' },
+  { value: 'all',                label: 'Tout',                color: 'var(--text-2)', bg: 'var(--border)' },
+  { value: 'reglementation',     label: 'Réglementation',      color: '#60a5fa',       bg: 'rgba(96,165,250,0.12)' },
+  { value: 'fiscalite',          label: 'Fiscalité',           color: '#34d399',       bg: 'rgba(52,211,153,0.12)' },
+  { value: 'gites',              label: 'Gîtes & Meublés',     color: '#f59e0b',       bg: 'rgba(245,158,11,0.12)' },
+  { value: 'chambres-hotes',     label: "Chambres d'hôtes",    color: '#ec4899',       bg: 'rgba(236,72,153,0.12)' },
+  { value: 'conciergerie',       label: 'Conciergeries',       color: '#8b5cf6',       bg: 'rgba(139,92,246,0.12)' },
+  { value: 'reservation-directe', label: 'Réserv. directe',   color: '#10b981',       bg: 'rgba(16,185,129,0.12)' },
+  { value: 'marche',             label: 'Marché',              color: '#f472b6',       bg: 'rgba(244,114,182,0.12)' },
+  { value: 'communes',           label: 'Communes & Villes',   color: '#64748b',       bg: 'rgba(100,116,139,0.12)' },
+  { value: 'plateformes',        label: 'Plateformes OTA',     color: '#fb923c',       bg: 'rgba(251,146,60,0.12)' },
+  { value: 'outils',             label: 'Outils & Tech',       color: '#a78bfa',       bg: 'rgba(167,139,250,0.12)' },
+  { value: 'general',            label: 'Général',             color: '#94a3b8',       bg: 'rgba(148,163,184,0.12)' },
 ]
 
 function getCat(value: string) {
@@ -50,7 +55,7 @@ export default function ActualitesView({ articles }: { articles: Actualite[] }) 
           Actualités <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
         </h2>
         <p style={s.pageDesc}>
-          Les dernières nouvelles du secteur — réglementation, fiscalité, plateformes et marché.
+          Réglementation, fiscalité, marché, actualités des gîtes, chambres d'hôtes, conciergeries et réservation directe — triées et résumées pour toi.
         </p>
       </div>
 
@@ -65,8 +70,9 @@ export default function ActualitesView({ articles }: { articles: Actualite[] }) 
             Bientôt disponible
           </div>
           <p style={s.emptyDesc}>
-            Le fil d&apos;actualités arrive prochainement. Réglementations, tendances du
-            marché, nouveautés Airbnb et Booking — centralisé et trié pour vous.
+            Le fil d&apos;actualités arrive prochainement. Réglementation, fiscalité, marché,
+            gîtes, chambres d&apos;hôtes, conciergeries, réservation directe — tout le secteur LCD
+            centralisé et trié par profil.
           </p>
         </div>
       ) : (
