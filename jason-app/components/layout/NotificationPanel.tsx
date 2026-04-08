@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight, CaretDown } from '@phosphor-icons/react'
+import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight } from '@phosphor-icons/react'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
 
-const DEFAULT_VISIBLE = 3
+const VISIBLE_COUNT = 3
 
 interface NotificationPanelProps {
   open: boolean
@@ -23,17 +23,11 @@ const TAG_CONFIG: Record<ChangelogTag, { label: string; color: string; bg: strin
 
 function formatDate(iso: string): string {
   const d = new Date(iso)
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
 }
 
 export default function NotificationPanel({ open, onClose, readIds, onMarkAllRead }: NotificationPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null)
-  const [showAll, setShowAll] = useState(false)
-
-  // Reset to collapsed view each time panel opens
-  useEffect(() => {
-    if (open) setShowAll(false)
-  }, [open])
 
   // Close on outside click
   useEffect(() => {
@@ -56,282 +50,206 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
   }, [open, onClose])
 
   const unreadCount = CHANGELOG.filter(e => !readIds.has(e.id)).length
+  const visibleEntries = CHANGELOG.slice(0, VISIBLE_COUNT)
+
+  if (!open) return null
 
   return (
-    <>
-      {/* Overlay */}
-      <div
-        style={{
-          position: 'fixed', inset: 0,
-          background: 'rgba(0,0,0,0.35)',
-          backdropFilter: 'blur(2px)',
-          zIndex: 150,
-          opacity: open ? 1 : 0,
-          pointerEvents: open ? 'auto' : 'none',
-          transition: 'opacity 0.25s ease',
-        }}
-        aria-hidden="true"
-      />
+    <div
+      ref={panelRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Nouveautés de la plateforme"
+      style={{
+        position: 'fixed',
+        top: 'calc(var(--header-h, 60px) + 10px)',
+        right: '16px',
+        width: 'min(360px, calc(100vw - 32px))',
+        background: 'var(--bg-2)',
+        border: '1px solid var(--border-2)',
+        borderRadius: '16px',
+        boxShadow: '0 16px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04)',
+        zIndex: 160,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        animation: 'notifPop 0.2s cubic-bezier(0.16,1,0.3,1)',
+      }}
+    >
+      <style>{`
+        @keyframes notifPop {
+          from { opacity: 0; transform: scale(0.95) translateY(-6px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+      `}</style>
 
-      {/* Panel */}
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Nouveautés de la plateforme"
-        style={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: 'min(400px, 94vw)',
-          background: 'var(--bg-2)',
-          borderLeft: '1px solid var(--border-2)',
-          boxShadow: '-24px 0 64px rgba(0,0,0,0.4)',
-          zIndex: 160,
-          display: 'flex',
-          flexDirection: 'column',
-          transform: open ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.3s cubic-bezier(0.32,0,0.15,1)',
-          overflowY: 'hidden',
-        }}
-      >
-        {/* Header */}
-        <div style={styles.panelHeader}>
-          <div style={styles.panelTitleRow}>
-            <div style={styles.panelTitleGroup}>
-              <span style={styles.panelTitle}>Nouveautés</span>
-              {unreadCount > 0 && (
-                <span style={styles.unreadPill}>{unreadCount} non lu{unreadCount > 1 ? 's' : ''}</span>
-              )}
-            </div>
-            <button onClick={onClose} style={styles.closeBtn} aria-label="Fermer">
-              <X size={18} weight="bold" />
-            </button>
-          </div>
-          <p style={styles.panelSubtitle}>
-            Suis les améliorations et nouveautés de la plateforme en temps réel.
-          </p>
+      {/* Header */}
+      <div style={s.header}>
+        <div style={s.headerLeft}>
+          <span style={s.title}>Nouveautés</span>
           {unreadCount > 0 && (
-            <button onClick={onMarkAllRead} style={styles.markAllBtn}>
-              Tout marquer comme lu
-            </button>
+            <span style={s.unreadPill}>{unreadCount} non lu{unreadCount > 1 ? 's' : ''}</span>
           )}
         </div>
-
-        {/* Divider */}
-        <div style={styles.divider} />
-
-        {/* List */}
-        <div style={styles.list}>
-          {(showAll ? CHANGELOG : CHANGELOG.slice(0, DEFAULT_VISIBLE)).map((entry, i, arr) => {
-            const isRead = readIds.has(entry.id)
-            const tag = TAG_CONFIG[entry.tag]
-            const isLast = i === arr.length - 1
-            return (
-              <div
-                key={entry.id}
-                style={{
-                  ...styles.entry,
-                  opacity: isRead ? 0.55 : 1,
-                }}
-              >
-                {/* Unread dot */}
-                <div style={styles.dotCol}>
-                  <div style={{
-                    ...styles.dot,
-                    background: isRead ? 'transparent' : tag.color,
-                    border: isRead ? '1.5px solid var(--border)' : 'none',
-                    boxShadow: isRead ? 'none' : `0 0 6px ${tag.color}80`,
-                  }} />
-                  {!isLast && <div style={styles.dotLine} />}
-                </div>
-
-                {/* Content */}
-                <div style={styles.entryContent}>
-                  <div style={styles.entryMeta}>
-                    <span style={{ ...styles.tag, color: tag.color, background: tag.bg }}>
-                      {tag.icon}
-                      {tag.label}
-                    </span>
-                    <span style={styles.date}>{formatDate(entry.date)}</span>
-                  </div>
-                  <div style={styles.entryTitle}>{entry.title}</div>
-                  <div style={styles.entryDesc}>{entry.description}</div>
-                </div>
-              </div>
-            )
-          })}
-
-          {/* Voir plus button */}
-          {!showAll && CHANGELOG.length > DEFAULT_VISIBLE && (
-            <div style={styles.seeMoreWrap}>
-              <button onClick={() => setShowAll(true)} style={styles.seeMoreBtn}>
-                <CaretDown size={15} weight="bold" />
-                Voir les {CHANGELOG.length - DEFAULT_VISIBLE} autres nouveautés
-              </button>
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {unreadCount > 0 && (
+            <button onClick={onMarkAllRead} style={s.markAllBtn} title="Tout marquer comme lu">
+              Tout lu
+            </button>
           )}
-
-          {/* Footer */}
-          {(showAll || CHANGELOG.length <= DEFAULT_VISIBLE) && (
-            <div style={styles.footer}>
-              <span style={styles.footerText}>Tu es à jour ✦</span>
-              <Link href="/dashboard/nouveautes" onClick={onClose} style={styles.footerLink}>
-                Voir tout l&apos;historique <ArrowRight size={12} />
-              </Link>
-            </div>
-          )}
-
-          {/* Compact footer link when collapsed */}
-          {!showAll && CHANGELOG.length > DEFAULT_VISIBLE && (
-            <div style={{ ...styles.footer, paddingTop: '4px', paddingBottom: '24px' }}>
-              <Link href="/dashboard/nouveautes" onClick={onClose} style={styles.footerLink}>
-                Voir tout l&apos;historique <ArrowRight size={12} />
-              </Link>
-            </div>
-          )}
+          <button onClick={onClose} style={s.closeBtn} aria-label="Fermer">
+            <X size={15} weight="bold" />
+          </button>
         </div>
       </div>
-    </>
+
+      {/* Divider */}
+      <div style={s.divider} />
+
+      {/* Entries */}
+      <div style={s.list}>
+        {visibleEntries.map((entry, i) => {
+          const isRead = readIds.has(entry.id)
+          const tag = TAG_CONFIG[entry.tag]
+          const isLast = i === visibleEntries.length - 1
+          return (
+            <div
+              key={entry.id}
+              style={{
+                ...s.entry,
+                ...(isLast ? {} : { borderBottom: '1px solid var(--border)' }),
+                opacity: isRead ? 0.5 : 1,
+              }}
+            >
+              {/* Unread dot */}
+              <div style={s.dotWrap}>
+                <div style={{
+                  ...s.dot,
+                  background: isRead ? 'transparent' : tag.color,
+                  border: isRead ? '1.5px solid var(--border)' : 'none',
+                  boxShadow: isRead ? 'none' : `0 0 5px ${tag.color}80`,
+                }} />
+              </div>
+
+              {/* Content */}
+              <div style={s.entryBody}>
+                <div style={s.entryMeta}>
+                  <span style={{ ...s.tag, color: tag.color, background: tag.bg }}>
+                    {tag.icon}
+                    {tag.label}
+                  </span>
+                  <span style={s.date}>{formatDate(entry.date)}</span>
+                </div>
+                <div style={s.entryTitle}>{entry.title}</div>
+                <div style={s.entryDesc}>{entry.description}</div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Divider */}
+      <div style={s.divider} />
+
+      {/* Footer — "En savoir plus" */}
+      <div style={s.footer}>
+        <Link
+          href="/dashboard/nouveautes"
+          onClick={onClose}
+          style={s.learnMoreBtn}
+        >
+          En savoir plus
+          <ArrowRight size={13} weight="bold" />
+        </Link>
+      </div>
+    </div>
   )
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  panelHeader: {
-    padding: '24px 24px 20px',
+const s: Record<string, React.CSSProperties> = {
+  header: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '14px 16px 12px',
     flexShrink: 0,
   },
-  panelTitleRow: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    marginBottom: '8px',
+  headerLeft: {
+    display: 'flex', alignItems: 'center', gap: '8px',
   },
-  panelTitleGroup: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-  },
-  panelTitle: {
+  title: {
     fontFamily: 'Fraunces, serif',
-    fontSize: '20px',
-    fontWeight: 400,
-    color: 'var(--text)',
-    letterSpacing: '-0.4px',
+    fontSize: '16px', fontWeight: 400,
+    color: 'var(--text)', letterSpacing: '-0.3px',
   },
   unreadPill: {
-    fontSize: '11px', fontWeight: 600,
-    padding: '2px 9px', borderRadius: '100px',
-    background: 'rgba(99,214,131,0.15)',
-    color: '#63D683',
+    fontSize: '10px', fontWeight: 700,
+    padding: '2px 8px', borderRadius: '100px',
+    background: 'rgba(99,214,131,0.15)', color: '#63D683',
     letterSpacing: '0.2px',
-  },
-  closeBtn: {
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '8px', width: '32px', height: '32px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'var(--text-3)',
-    flexShrink: 0,
-  },
-  panelSubtitle: {
-    fontSize: '13px', color: 'var(--text-3)',
-    lineHeight: '1.5', marginBottom: '14px',
   },
   markAllBtn: {
     background: 'none', border: '1px solid var(--border)',
-    borderRadius: '8px', padding: '6px 14px',
-    fontSize: '12px', fontWeight: 500,
-    color: 'var(--text-3)', cursor: 'pointer',
-    transition: 'border-color 0.15s, color 0.15s',
+    borderRadius: '6px', padding: '4px 9px',
+    fontSize: '11px', fontWeight: 500, color: 'var(--text-3)',
+    cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
   },
-  divider: {
-    height: '1px', background: 'var(--border)', flexShrink: 0,
+  closeBtn: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '7px', width: '28px', height: '28px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', color: 'var(--text-3)', flexShrink: 0,
   },
-  list: {
-    flex: 1, overflowY: 'auto',
-    padding: '8px 0',
-    scrollbarWidth: 'thin',
-    scrollbarColor: 'var(--border) transparent',
-  } as React.CSSProperties,
+  divider: { height: '1px', background: 'var(--border)', flexShrink: 0 },
+
+  list: { display: 'flex', flexDirection: 'column' },
   entry: {
-    display: 'flex', gap: '0',
-    padding: '0 24px',
+    display: 'flex', alignItems: 'flex-start', gap: '0',
+    padding: '14px 16px',
   },
-  entryBorder: {
-    // border handled by dot line
-  },
-  dotCol: {
-    display: 'flex', flexDirection: 'column', alignItems: 'center',
-    marginRight: '14px',
-    paddingTop: '18px',
-    flexShrink: 0,
+  dotWrap: {
+    paddingTop: '4px', marginRight: '12px', flexShrink: 0,
   },
   dot: {
-    width: '9px', height: '9px', borderRadius: '50%',
-    flexShrink: 0,
+    width: '8px', height: '8px', borderRadius: '50%',
     transition: 'background 0.2s',
   },
-  dotLine: {
-    width: '1px',
-    flex: 1,
-    minHeight: '20px',
-    background: 'var(--border)',
-    marginTop: '6px',
-  },
-  entryContent: {
-    paddingTop: '14px', paddingBottom: '20px',
-    flex: 1, minWidth: 0,
-  },
+  entryBody: { flex: 1, minWidth: 0 },
   entryMeta: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    marginBottom: '7px', flexWrap: 'wrap' as const,
+    display: 'flex', alignItems: 'center', gap: '7px',
+    marginBottom: '5px', flexWrap: 'wrap' as const,
   },
   tag: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '11px', fontWeight: 600,
-    padding: '2px 8px', borderRadius: '100px',
+    fontSize: '10px', fontWeight: 600,
+    padding: '2px 7px', borderRadius: '100px',
     letterSpacing: '0.2px',
   },
-  date: {
-    fontSize: '11px', color: 'var(--text-muted)',
-  },
+  date: { fontSize: '11px', color: 'var(--text-muted)' },
   entryTitle: {
-    fontSize: '14px', fontWeight: 600,
-    color: 'var(--text)', marginBottom: '5px',
-    lineHeight: '1.4',
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)', marginBottom: '3px', lineHeight: '1.35',
   },
   entryDesc: {
-    fontSize: '13px', color: 'var(--text-3)',
-    lineHeight: '1.6',
+    fontSize: '12px', color: 'var(--text-3)', lineHeight: '1.5',
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  } as React.CSSProperties,
+
+  footer: {
+    padding: '10px 16px',
+    display: 'flex', justifyContent: 'center',
   },
-  seeMoreWrap: {
-    padding: '4px 24px 8px',
-  },
-  seeMoreBtn: {
-    width: '100%',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-    padding: '13px 20px',
+  learnMoreBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '9px 20px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.08)',
     border: '1px solid rgba(255,213,107,0.22)',
-    borderRadius: '12px',
     color: 'var(--accent-text)',
     fontSize: '13px', fontWeight: 600,
-    cursor: 'pointer',
+    textDecoration: 'none',
+    width: '100%', justifyContent: 'center' as const,
+    transition: 'background 0.15s',
     fontFamily: 'Outfit, sans-serif',
-    transition: 'background 0.18s, border-color 0.18s',
-  },
-  footer: {
-    padding: '20px 24px 32px',
-    textAlign: 'center',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '12px',
-  },
-  footerText: {
-    fontSize: '12px', color: 'var(--text-muted)',
-    fontStyle: 'italic',
-  },
-  footerLink: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', fontWeight: 500,
-    color: 'var(--accent-text)', textDecoration: 'none',
   },
 }
