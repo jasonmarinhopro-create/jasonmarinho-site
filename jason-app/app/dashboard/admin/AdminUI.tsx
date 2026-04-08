@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {
   Users, Lightning, Warning, CheckCircle, XCircle, Trash,
   Check, X, ArrowClockwise, TrendUp, FileText, GraduationCap,
-  UsersThree, ArrowRight, Bell,
+  UsersThree, ArrowRight, Bell, UsersFour, CalendarBlank, Trophy,
 } from '@phosphor-icons/react'
 import {
   confirmDriingMember, rejectDriingMember,
@@ -27,6 +27,8 @@ interface Stats {
   totalUsers: number; driingMembers: number; newThisMonth: number
   pendingDriing: number; pendingReports: number; suggestions: number
   templatesCount: number; formationsCount: number; groupsCount: number
+  totalVoyageurs: number; totalSejours: number
+  topFormation: { title: string; count: number } | null
 }
 
 function formatDate(iso: string) {
@@ -112,6 +114,43 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
             </div>
           </div>
         )}
+      </div>
+
+      {/* ── Insights plateforme ── */}
+      <div className="fade-up">
+        <div style={s.sectionLabel}>Activité globale</div>
+        <div style={s.insightsGrid}>
+          <div style={s.insightCard}>
+            <div style={{ ...s.insightIcon, color: '#93C5FD', background: 'rgba(147,197,253,0.12)' }}>
+              <UsersFour size={18} />
+            </div>
+            <div style={s.insightBody}>
+              <div style={{ ...s.insightValue, color: '#93C5FD' }}>{stats.totalVoyageurs}</div>
+              <div style={s.insightLabel}>voyageurs enregistrés</div>
+            </div>
+          </div>
+          <div style={s.insightCard}>
+            <div style={{ ...s.insightIcon, color: '#34D399', background: 'rgba(52,211,153,0.12)' }}>
+              <CalendarBlank size={18} />
+            </div>
+            <div style={s.insightBody}>
+              <div style={{ ...s.insightValue, color: '#34D399' }}>{stats.totalSejours}</div>
+              <div style={s.insightLabel}>séjours au total</div>
+            </div>
+          </div>
+          {stats.topFormation && (
+            <div style={{ ...s.insightCard, flex: '2 1 280px' }}>
+              <div style={{ ...s.insightIcon, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.12)' }}>
+                <Trophy size={18} />
+              </div>
+              <div style={s.insightBody}>
+                <div style={s.insightTopLabel}>Formation la plus commencée</div>
+                <div style={s.insightTopTitle}>{stats.topFormation.title}</div>
+                <div style={s.insightLabel}>{stats.topFormation.count} inscrit{stats.topFormation.count > 1 ? 's' : ''}</div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Gestion du contenu ── */}
@@ -364,4 +403,17 @@ const s: Record<string, React.CSSProperties> = {
   cellSub: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
   description: { fontSize: '13px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, marginTop: '2px' },
   badge: { display: 'inline-block', fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px', letterSpacing: '0.3px', whiteSpace: 'nowrap' as const },
+
+  insightsGrid: { display: 'flex', gap: '14px', flexWrap: 'wrap' as const },
+  insightCard: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px 20px', flex: '1 1 160px',
+  },
+  insightIcon: { width: '36px', height: '36px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  insightBody: { flex: 1, minWidth: 0 },
+  insightValue: { fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.1 },
+  insightLabel: { fontSize: '12px', color: 'var(--text-3)', marginTop: '3px' },
+  insightTopLabel: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '4px' },
+  insightTopTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--accent-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
 }
