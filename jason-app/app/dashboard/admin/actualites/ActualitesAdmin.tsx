@@ -19,12 +19,17 @@ interface Actualite {
 }
 
 const CATEGORIES = [
-  { value: 'reglementation', label: 'Réglementation', color: '#60a5fa', bg: 'rgba(96,165,250,0.12)' },
-  { value: 'fiscalite',      label: 'Fiscalité',       color: '#34d399', bg: 'rgba(52,211,153,0.12)' },
-  { value: 'marche',         label: 'Marché',          color: '#f472b6', bg: 'rgba(244,114,182,0.12)' },
-  { value: 'plateformes',    label: 'Plateformes',     color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
-  { value: 'outils',         label: 'Outils & Tech',   color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
-  { value: 'general',        label: 'Général',         color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
+  { value: 'reglementation',      label: 'Réglementation',    color: '#60a5fa', bg: 'rgba(96,165,250,0.12)' },
+  { value: 'fiscalite',           label: 'Fiscalité',         color: '#34d399', bg: 'rgba(52,211,153,0.12)' },
+  { value: 'gites',               label: 'Gîtes & Meublés',   color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  { value: 'chambres-hotes',      label: "Chambres d'hôtes",  color: '#ec4899', bg: 'rgba(236,72,153,0.12)' },
+  { value: 'conciergerie',        label: 'Conciergeries',     color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)' },
+  { value: 'reservation-directe', label: 'Réserv. directe',  color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+  { value: 'marche',              label: 'Marché',            color: '#f472b6', bg: 'rgba(244,114,182,0.12)' },
+  { value: 'communes',            label: 'Communes & Villes', color: '#64748b', bg: 'rgba(100,116,139,0.12)' },
+  { value: 'plateformes',         label: 'Plateformes OTA',   color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
+  { value: 'outils',              label: 'Outils & Tech',     color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
+  { value: 'general',             label: 'Général',           color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
 ]
 
 function getCat(value: string) {
