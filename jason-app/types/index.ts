@@ -50,6 +50,7 @@ export interface Template {
   id: string
   title: string
   content: string
+  corps_en?: string | null
   category: string
   timing?: string | null
   variante?: string | null
