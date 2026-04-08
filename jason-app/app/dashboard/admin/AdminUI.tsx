@@ -6,6 +6,7 @@ import {
   Users, Lightning, Warning, CheckCircle, XCircle, Trash,
   Check, X, ArrowClockwise, TrendUp, FileText, GraduationCap,
   UsersThree, ArrowRight, Bell, UsersFour, CalendarBlank, Trophy,
+  BookOpen, Newspaper,
 } from '@phosphor-icons/react'
 import {
   confirmDriingMember, rejectDriingMember,
@@ -197,6 +198,28 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
             <div style={s.contentCardBody}>
               <div style={s.contentCardTitle}>Communauté</div>
               <div style={s.contentCardDesc}>{stats.groupsCount} groupe{stats.groupsCount > 1 ? 's' : ''} en base</div>
+            </div>
+            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+          </Link>
+
+          <Link href="/dashboard/admin/guides" style={s.contentCard}>
+            <div style={{ ...s.contentCardIcon, color: '#a78bfa', background: 'rgba(167,139,250,0.1)' }}>
+              <BookOpen size={22} />
+            </div>
+            <div style={s.contentCardBody}>
+              <div style={s.contentCardTitle}>Guide LCD</div>
+              <div style={s.contentCardDesc}>Structure & profils de navigation</div>
+            </div>
+            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+          </Link>
+
+          <Link href="/dashboard/admin/actualites" style={s.contentCard}>
+            <div style={{ ...s.contentCardIcon, color: '#f472b6', background: 'rgba(244,114,182,0.1)' }}>
+              <Newspaper size={22} />
+            </div>
+            <div style={s.contentCardBody}>
+              <div style={s.contentCardTitle}>Actualités</div>
+              <div style={s.contentCardDesc}>Fil d&apos;actualités LCD</div>
             </div>
             <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           </Link>

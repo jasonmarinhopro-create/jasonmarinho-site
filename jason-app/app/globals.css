@@ -644,3 +644,70 @@ a { color: inherit; }
   .filter-search-wrap { max-width: 100% !important; }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   GUIDE LCD — Profile selector + priority grid
+───────────────────────────────────────────────────────────── */
+
+/* Profile selector : 3 cards horizontally */
+.guide-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* Priority categories : 3 cols desktop, wraps naturally */
+.guide-priority-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Tablet portrait : 2 cols */
+@media (max-width: 900px) {
+  .guide-profile-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .guide-priority-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Mobile : stack everything */
+@media (max-width: 640px) {
+  .guide-profile-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .guide-priority-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* Admin guides — profiles grid responsive */
+.admin-profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 36px;
+}
+@media (max-width: 900px) {
+  .admin-profiles-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Actualités filter row — scrollable on mobile */
+@media (max-width: 640px) {
+  .actu-filter-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .actu-filter-row::-webkit-scrollbar { display: none; }
+}
+
