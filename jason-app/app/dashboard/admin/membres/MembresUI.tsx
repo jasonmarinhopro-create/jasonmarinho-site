@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useTransition, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Robot, Trash, ArrowClockwise, CheckCircle, XCircle, MagnifyingGlass,
   GraduationCap, Lightning, Users, X,
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
-  CalendarBlank, SpinnerGap, UsersFour,
+  CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
 } from '@phosphor-icons/react'
 import { changeUserPlan, deleteUser, deleteAllBots, getMemberDetails } from '../actions'
 
@@ -59,6 +60,7 @@ function isBotLike(name: string | null, email: string): boolean {
 
 // ── Main component ──────────────────────────────────────────────────────────
 export default function MembresUI({ members }: { members: Member[] }) {
+  const router = useRouter()
   const [search, setSearch] = useState('')
   const [filterPlan, setFilterPlan] = useState<string>('all')
   const [isPending, startTransition] = useTransition()
@@ -414,6 +416,16 @@ function MemberDetailPanel({ member, details, loading, onClose }: MemberDetailPa
               <X size={18} weight="bold" />
             </button>
           </div>
+          {member && (
+            <a
+              href={`/dashboard/admin/membres/${member.id}`}
+              style={ps.viewFullBtn}
+              title="Ouvrir la fiche complète"
+            >
+              <ArrowSquareOut size={13} />
+              Voir la fiche complète
+            </a>
+          )}
         </div>
 
         {/* Divider */}
@@ -659,7 +671,7 @@ const s: Record<string, React.CSSProperties> = {
 // Panel-specific styles
 const ps: Record<string, React.CSSProperties> = {
   header: { padding: '20px 24px 18px', flexShrink: 0 },
-  headerRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
+  headerRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' },
   headerTitle: {
     fontFamily: 'Fraunces, serif', fontSize: '18px',
     fontWeight: 400, color: 'var(--text)', letterSpacing: '-0.3px',
@@ -669,6 +681,15 @@ const ps: Record<string, React.CSSProperties> = {
     borderRadius: '8px', width: '32px', height: '32px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-3)',
+  },
+  viewFullBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)',
+    borderRadius: '8px', padding: '7px 12px',
+    fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)',
+    textDecoration: 'none', cursor: 'pointer',
+    transition: 'all 0.15s', width: '100%', justifyContent: 'center' as const,
+    boxSizing: 'border-box' as const,
   },
   divider: { height: '1px', background: 'var(--border)', flexShrink: 0 },
   body: {

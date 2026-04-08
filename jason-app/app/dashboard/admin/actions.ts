@@ -243,6 +243,72 @@ export async function getMemberDetails(memberId: string) {
   }
 }
 
+export async function getFullMemberProfile(memberId: string) {
+  const { error } = await getAdminClient()
+  if (error) return { error }
+
+  const adminClient = getServiceClient()
+
+  const [
+    { data: memberProfile },
+    { data: formations },
+    { count: voyageursCount },
+    { count: favoritesCount },
+    { count: customizationsCount },
+    { count: signalementsCount },
+    { count: suggestionsCount },
+    { count: sejoursCount },
+  ] = await Promise.all([
+    adminClient
+      .from('profiles')
+      .select('id, email, full_name, role, driing_status, plan, created_at, admin_notes')
+      .eq('id', memberId)
+      .single(),
+    adminClient
+      .from('user_formations')
+      .select('id, progress, enrolled_at, completed_at, formation:formations(id, title, slug, duration, level)')
+      .eq('user_id', memberId)
+      .order('enrolled_at', { ascending: false }),
+    adminClient.from('voyageurs').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('user_template_favorites').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('user_template_customizations').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('reported_guests').select('*', { count: 'exact', head: true }).eq('reporter_id', memberId),
+    adminClient.from('suggestions').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('sejours').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+  ])
+
+  if (!memberProfile) return { error: 'Membre introuvable' }
+
+  return {
+    profile: memberProfile,
+    formations: formations ?? [],
+    stats: {
+      voyageurs: voyageursCount ?? 0,
+      favorites: favoritesCount ?? 0,
+      customizations: customizationsCount ?? 0,
+      signalements: signalementsCount ?? 0,
+      suggestions: suggestionsCount ?? 0,
+      sejours: sejoursCount ?? 0,
+    },
+  }
+}
+
+export async function updateAdminNotes(memberId: string, notes: string) {
+  const { error } = await getAdminClient()
+  if (error) return { error }
+
+  const adminClient = getServiceClient()
+  const { error: updateError } = await adminClient
+    .from('profiles')
+    .update({ admin_notes: notes.trim() || null })
+    .eq('id', memberId)
+
+  if (updateError) return { error: updateError.message }
+  revalidatePath(`/dashboard/admin/membres/${memberId}`)
+  revalidatePath('/dashboard/admin/membres')
+  return { success: true }
+}
+
 export async function deleteAllBots() {
   const { error } = await getAdminClient()
   if (error) return { error }

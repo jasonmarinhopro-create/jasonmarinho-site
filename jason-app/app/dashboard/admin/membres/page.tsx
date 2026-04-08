@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 import Header from '@/components/layout/Header'
 import MembresUI from './MembresUI'
 
@@ -18,7 +19,14 @@ export default async function MembresPage() {
 
   if (profile?.role !== 'admin') redirect('/dashboard')
 
-  const { data: members } = await supabase
+  // Use service role to bypass RLS and see all members' formations
+  const adminClient = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+
+  const { data: members } = await adminClient
     .from('profiles')
     .select(`
       id, email, full_name, role, driing_status, plan, created_at,
@@ -26,11 +34,21 @@ export default async function MembresPage() {
     `)
     .order('created_at', { ascending: false })
 
+  // Normalize Supabase join result: formation relation comes as array from generic client
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const normalized = (members ?? []).map((m: any) => ({
+    ...m,
+    user_formations: (m.user_formations ?? []).map((uf: any) => ({
+      ...uf,
+      formation: Array.isArray(uf.formation) ? (uf.formation[0] ?? null) : uf.formation,
+    })),
+  }))
+
   return (
     <>
       <Header title="Membres" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
       <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '1200px' }}>
-        <MembresUI members={members ?? []} />
+        <MembresUI members={normalized} />
       </div>
     </>
   )
