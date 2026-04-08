@@ -227,7 +227,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
             return (
               <div key={m.id} className={`mem-row${suspect ? ' mem-row-suspect' : ''}`}>
 
-                {/* Avatar + nom + email — cliquable pour ouvrir le profil */}
+                {/* Avatar + nom — cliquable pour ouvrir le profil */}
                 <div
                   className="mem-c-main"
                   onClick={() => openPanel(m)}
@@ -239,13 +239,12 @@ export default function MembresUI({ members }: { members: Member[] }) {
                   </div>
                   <div style={{ minWidth: 0, flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                      <span style={s.name}>{m.full_name || '—'}</span>
+                      <span style={s.name}>{m.full_name || m.email.split('@')[0]}</span>
                       {suspect && <Robot size={13} style={{ color: '#f87171', flexShrink: 0 }} />}
                       {m.role === 'admin' && (
                         <span style={{ ...s.badge, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
                       )}
                     </div>
-                    <div style={s.email}>{m.email}</div>
                   </div>
                 </div>
 
