@@ -480,7 +480,11 @@ const styles: Record<string, React.CSSProperties> = {
 
   // ── Mobile drawer ──
   mobileDrawer: {
-    width: '100%',
+    position: 'fixed',
+    top: 'calc(var(--header-h) + 62px)',
+    left: 0,
+    right: 0,
+    zIndex: 19,
     borderBottom: '1px solid var(--border)',
     background: 'var(--bg)',
     maxHeight: '60svh',
