@@ -10,6 +10,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    id: 'guide-lcd-refonte-apr-2026',
+    date: '2026-04-09',
+    tag: 'amélioration',
+    title: 'Refonte complète du Guide LCD',
+    description: 'Le Guide LCD a été entièrement repensé : 4 profils distincts (Gîtes, Chambres d\'hôtes, Conciergeries, Réservation directe), 12 fiches détaillées avec indicateurs visuels (règle, avertissement, info) et mise à jour loi Le Meur 2025. Filtre par profil pour n\'afficher que ce qui te concerne.',
+  },
+  {
     id: 'gabarits-en-timing-apr-2026',
     date: '2026-04-08',
     tag: 'amélioration',
