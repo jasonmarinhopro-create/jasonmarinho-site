@@ -3,241 +3,287 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
-  Scales, CurrencyEur, Armchair, Wrench, Star, ChartLine, ShieldCheck,
-  HouseSimple, ArrowRight, ArrowUpRight, Lightbulb, CheckCircle,
+  HouseLine, Coffee, Buildings, Handshake,
+  Scales, CurrencyEur, ClipboardText, Globe, Briefcase, FileText, Megaphone, ShieldCheck, Gavel,
+  Warning, Info, CheckCircle, ArrowRight,
 } from '@phosphor-icons/react'
 
-type ProfileId = 'debutant' | 'intermediaire' | 'pro'
+type ProfileFilter = 'all' | 'gites' | 'chambres' | 'conciergerie' | 'direct'
+type RuleType = 'info' | 'ok' | 'warn'
 
-interface Profile {
-  id: ProfileId
-  label: string
-  desc: string
-  emoji: string
-  color: string
-  bg: string
-  priorities: string[]
-  tips: string[]
+interface Rule {
+  type: RuleType
+  text: React.ReactNode
 }
 
-interface Stat {
-  value: string
-  label: string
-  source: string
-  sourceUrl: string
-}
-
-interface Category {
+interface GuideCard {
   id: string
+  profile: Exclude<ProfileFilter, 'all'>
+  iconColor: string
+  iconBg: string
+  icon: React.ReactNode
+  title: string
+  subtitle: string
+  rules: Rule[]
+}
+
+const PROFILE_DEFS: Record<Exclude<ProfileFilter, 'all'>, {
+  label: string
   icon: React.ReactNode
   color: string
   bg: string
-  title: string
-  subtitle: string
-  stats: Stat[]
+}> = {
+  gites:        { label: 'Gîtes · EI ou SASU',    icon: <HouseLine size={13} weight="fill" />, color: '#d97706', bg: 'rgba(245,158,11,0.12)' },
+  chambres:     { label: "Chambres d'hôtes",        icon: <Coffee    size={13} weight="fill" />, color: '#db2777', bg: 'rgba(236,72,153,0.12)' },
+  conciergerie: { label: 'Conciergeries',           icon: <Buildings size={13} weight="fill" />, color: '#7c3aed', bg: 'rgba(139,92,246,0.12)' },
+  direct:       { label: 'Réservation directe',     icon: <Handshake size={13} weight="fill" />, color: '#059669', bg: 'rgba(16,185,129,0.12)' },
 }
 
-const PROFILES: Profile[] = [
+const GUIDE_CARDS: GuideCard[] = [
+  // ── GÎTES ──
   {
-    id: 'debutant',
-    label: 'Débutant',
-    desc: '0 – 1 logement',
-    emoji: '🌱',
-    color: '#34d399',
-    bg: 'rgba(52,211,153,0.1)',
-    priorities: ['reglementation', 'fiscalite', 'decoration'],
-    tips: [
-      'Vérifiez que votre règlement de copropriété autorise la LCD avant toute chose',
-      'Déclarez votre meublé en mairie et obtenez votre numéro d\'enregistrement',
-      'Comparez régime micro-BIC vs réel avant votre 1ère déclaration fiscale',
+    id: 'gites-statut',
+    profile: 'gites',
+    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    icon: <Scales size={22} weight="fill" />,
+    title: 'Statut juridique : EI ou SASU ?',
+    subtitle: 'Choisir la bonne structure selon ton projet',
+    rules: [
+      { type: 'info', text: <><strong>EI (Entreprise Individuelle)</strong> : création gratuite, régime TNS, cotisations ~40 % du bénéfice, responsabilité illimitée sur patrimoine personnel</> },
+      { type: 'info', text: <><strong>SASU</strong> : assimilé-salarié, responsabilité limitée au capital, optimisation salaire + dividendes possible — plus de charges fixes</> },
+      { type: 'ok',   text: <>EI conseillée pour <strong>1–2 biens</strong>, SASU pertinente dès que les revenus dépassent 30–40 k€/an ou pour protéger son patrimoine</> },
     ],
   },
   {
-    id: 'intermediaire',
-    label: 'Intermédiaire',
-    desc: '1 – 3 logements',
-    emoji: '🌿',
-    color: '#60a5fa',
-    bg: 'rgba(96,165,250,0.1)',
-    priorities: ['gestion', 'visibilite', 'revenus'],
-    tips: [
-      'Automatisez vos messages avec un PMS : économisez 8h+ par semaine',
-      'Photos professionnelles = +25% de réservations en moyenne',
-      'Activez la tarification dynamique pour +20–40% de revenus supplémentaires',
+    id: 'gites-fiscalite',
+    profile: 'gites',
+    iconColor: '#34d399', iconBg: 'rgba(52,211,153,0.12)',
+    icon: <CurrencyEur size={22} weight="fill" />,
+    title: 'Classement & impact fiscal (loi Le Meur 2025)',
+    subtitle: "L'abattement varie selon le classement",
+    rules: [
+      { type: 'ok',   text: <><strong>Classé Atout France (1–5★)</strong> : micro-BIC abattement <strong>71 %</strong>, plafond 77 700 €/an</> },
+      { type: 'warn', text: <><strong>Non classé depuis 2025</strong> : abattement tombé à <strong>30 %</strong>, plafond 15 000 €/an — fort impact si tu n&apos;es pas classé</> },
+      { type: 'info', text: <>Régime <strong>réel simplifié</strong> : déduction charges réelles (amortissement, travaux, intérêts) — souvent plus avantageux au-delà de 30 k€</> },
     ],
   },
   {
-    id: 'pro',
-    label: 'Pro',
-    desc: '3+ logements',
-    emoji: '🏢',
-    color: '#fbbf24',
-    bg: 'rgba(251,191,36,0.1)',
-    priorities: ['revenus', 'assurances', 'gestion'],
-    tips: [
-      'Structurez en SCI ou SASU pour optimiser fiscalement votre activité',
-      'AirCover ≠ assurance réelle : souscrivez une couverture spécialisée LCD',
-      'Un bon channel manager unifie vos calendriers sur toutes les plateformes',
+    id: 'gites-obligations',
+    profile: 'gites',
+    iconColor: '#60a5fa', iconBg: 'rgba(96,165,250,0.12)',
+    icon: <ClipboardText size={22} weight="fill" />,
+    title: 'Obligations légales du gîte',
+    subtitle: "Ce que la loi impose avant d'accueillir",
+    rules: [
+      { type: 'warn', text: <><strong>Déclaration en mairie obligatoire</strong> (Cerfa 14004*04) avant la 1ère location</> },
+      { type: 'warn', text: <><strong>Numéro d&apos;enregistrement</strong> obligatoire dans les communes &gt; 200 000 hab. et communes touristiques — amende jusqu&apos;à 5 000 €</> },
+      { type: 'info', text: <><strong>Résidence principale</strong> : 120 nuits/an max · <strong>Résidence secondaire ou dédiée</strong> : pas de plafond de nuits</> },
+      { type: 'ok',   text: <>Taxe de séjour à collecter et reverser à la mairie si la plateforme ne le fait pas</> },
+    ],
+  },
+
+  // ── CHAMBRES D'HÔTES ──
+  {
+    id: 'chambres-regles',
+    profile: 'chambres',
+    iconColor: '#fb7185', iconBg: 'rgba(251,113,133,0.12)',
+    icon: <Gavel size={22} weight="fill" />,
+    title: 'Les règles légales strictes (loi 2006)',
+    subtitle: 'Les obligations que beaucoup ignorent',
+    rules: [
+      { type: 'warn', text: <><strong>Maximum 5 chambres</strong> et <strong>15 personnes simultanément</strong> — au-delà, c&apos;est un autre régime juridique</> },
+      { type: 'warn', text: <><strong>Petit-déjeuner obligatoire</strong> (légalement) — il doit être proposé, inclus ou en option payante</> },
+      { type: 'warn', text: <><strong>Propriétaire présent sur place</strong> obligatoirement — contrairement au gîte où tu peux être absent</> },
+      { type: 'info', text: <>Ne pas appeler &ldquo;gîte&rdquo; une chambre d&apos;hôtes — la terminologie est encadrée par la loi</> },
+    ],
+  },
+  {
+    id: 'chambres-fiscalite',
+    profile: 'chambres',
+    iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)',
+    icon: <CurrencyEur size={22} weight="fill" />,
+    title: "Fiscalité spécifique chambres d'hôtes",
+    subtitle: 'Différente du meublé de tourisme classique',
+    rules: [
+      { type: 'ok',   text: <>Si revenus &lt; <strong>760 €/an</strong> : exonération fiscale totale possible</> },
+      { type: 'info', text: <>Micro-BIC <strong>71 % abattement</strong> si classées Gîtes de France ou Clévacances — <strong>50 %</strong> si non classées</> },
+      { type: 'warn', text: <>Classement <strong>Atout France (meublé de tourisme) interdit</strong> pour les chambres d&apos;hôtes — régime différent</> },
+      { type: 'ok',   text: <>Labels possibles : <strong>Gîtes de France</strong> (épis) et <strong>Clévacances</strong> (clés) — recommandés pour le référencement et la fiscalité</> },
+    ],
+  },
+  {
+    id: 'chambres-plateformes',
+    profile: 'chambres',
+    iconColor: '#2dd4bf', iconBg: 'rgba(45,212,191,0.12)',
+    icon: <Globe size={22} weight="fill" />,
+    title: 'Canaux de réservation adaptés',
+    subtitle: "Airbnb n'est pas ton seul levier",
+    rules: [
+      { type: 'ok',   text: <>Airbnb, Booking.com, Abritel/Vrbo : compatibles avec les chambres d&apos;hôtes</> },
+      { type: 'ok',   text: <><strong>Réseau Gîtes de France</strong> : spécialisé chambres d&apos;hôtes, clientèle qualifiée — recommandé</> },
+      { type: 'ok',   text: <><strong>Driing</strong> et site propre : réservation directe sans commission — fort potentiel pour fidéliser les voyageurs récurrents</> },
+      { type: 'info', text: <><strong>Google My Business</strong> : levier visibilité locale essentiel pour les chambres d&apos;hôtes en zone rurale ou touristique</> },
+    ],
+  },
+
+  // ── CONCIERGERIES ──
+  {
+    id: 'conciergerie-hoguet',
+    profile: 'conciergerie',
+    iconColor: '#818cf8', iconBg: 'rgba(129,140,248,0.12)',
+    icon: <Scales size={22} weight="fill" />,
+    title: "Loi Hoguet : quand s'applique-t-elle ?",
+    subtitle: 'La question que toute conciergerie doit se poser',
+    rules: [
+      { type: 'warn', text: <><strong>Tu encaisses les loyers pour le propriétaire</strong> → Loi Hoguet s&apos;applique → carte professionnelle obligatoire + garantie financière</> },
+      { type: 'ok',   text: <><strong>Le propriétaire encaisse directement</strong> (via Airbnb, Booking, virement) → Prestation de services classique → pas de carte pro requise</> },
+      { type: 'info', text: <>La plupart des conciergeries évitent la loi Hoguet en structurant correctement le flux de paiement dès le départ</> },
+    ],
+  },
+  {
+    id: 'conciergerie-statut',
+    profile: 'conciergerie',
+    iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)',
+    icon: <Briefcase size={22} weight="fill" />,
+    title: 'Statuts recommandés & TVA',
+    subtitle: 'Choisir la bonne structure pour scaler',
+    rules: [
+      { type: 'ok',   text: <><strong>Micro-entreprise</strong> : pour démarrer, plafond 77 700 €/an (prestations de services), franchise TVA jusqu&apos;à 36 800 €</> },
+      { type: 'ok',   text: <><strong>SASU/SAS</strong> : pour aller au-delà, protéger son patrimoine, avoir des associés ou employés</> },
+      { type: 'warn', text: <><strong>TVA 20 %</strong> obligatoire dès 36 800 € de CA — à intégrer dans ta tarification dès le départ</> },
+      { type: 'info', text: <><strong>RC Pro obligatoire</strong> dans tous les cas — couvre les dommages causés lors des prestations</> },
+    ],
+  },
+  {
+    id: 'conciergerie-contrats',
+    profile: 'conciergerie',
+    iconColor: '#2dd4bf', iconBg: 'rgba(45,212,191,0.12)',
+    icon: <FileText size={22} weight="fill" />,
+    title: 'Contrats & tarification',
+    subtitle: 'Les bases contractuelles indispensables',
+    rules: [
+      { type: 'warn', text: <><strong>Contrat de mandat de gestion</strong> obligatoire avec chaque propriétaire — définit honoraires, périmètre, durée et conditions de résiliation</> },
+      { type: 'info', text: <>Honoraires usuels : <strong>15–30 % des revenus bruts</strong> selon les services inclus (ménage, accueil, gestion messages, etc.)</> },
+      { type: 'ok',   text: <>Distinguer les prestations incluses dans les honoraires et celles facturées en supplément (ménage, linge, réparations)</> },
+    ],
+  },
+
+  // ── RÉSERVATION DIRECTE ──
+  {
+    id: 'direct-contrat',
+    profile: 'direct',
+    iconColor: '#34d399', iconBg: 'rgba(52,211,153,0.12)',
+    icon: <FileText size={22} weight="fill" />,
+    title: 'Contrat obligatoire sans plateforme',
+    subtitle: 'Ce que tu dois avoir avant le premier séjour',
+    rules: [
+      { type: 'warn', text: <><strong>Contrat de location saisonnière obligatoire</strong> — mentions légales : identité des parties, durée, prix, descriptif du logement, conditions d&apos;annulation</> },
+      { type: 'info', text: <>État des lieux <strong>recommandé</strong> (non obligatoire pour LCD &lt; 30 jours, mais utile en cas de litige)</> },
+      { type: 'ok',   text: <><strong>Taxe de séjour à collecter toi-même</strong> et reverser à la mairie — montant selon commune et catégorie du logement</> },
+    ],
+  },
+  {
+    id: 'direct-assurance',
+    profile: 'direct',
+    iconColor: '#fb7185', iconBg: 'rgba(251,113,133,0.12)',
+    icon: <ShieldCheck size={22} weight="fill" />,
+    title: "Assurance : pas d'AirCover hors Airbnb",
+    subtitle: 'La protection que tu dois assurer toi-même',
+    rules: [
+      { type: 'warn', text: <><strong>Assurance habitation classique insuffisante</strong> pour la LCD — vérifie et informe obligatoirement ton assureur</> },
+      { type: 'ok',   text: <>Contrats adaptés : <strong>MAIF, MMA, Hiscox, AXA Pro</strong> — extension LCD ou contrat dédié couvrant dommages, vol, RC voyageur</> },
+      { type: 'ok',   text: <>Caution/dépôt de garantie : <strong>Swikly</strong> (digitale), virement, ou chèque — délai de restitution à préciser dans le contrat (usage : 7 jours)</> },
+      { type: 'info', text: <>Assurance annulation voyageur : tu peux proposer Chapka, AXA Assistance — ça rassure et évite les litiges d&apos;annulation</> },
+    ],
+  },
+  {
+    id: 'direct-visibilite',
+    profile: 'direct',
+    iconColor: '#fbbf24', iconBg: 'rgba(251,191,36,0.12)',
+    icon: <Megaphone size={22} weight="fill" />,
+    title: 'Se rendre visible sans Airbnb',
+    subtitle: 'Les canaux pour remplir ton calendrier en direct',
+    rules: [
+      { type: 'ok',   text: <><strong>Google My Business</strong> : fiche gratuite, apparaît dans les recherches locales — indispensable pour gîtes et chambres d&apos;hôtes</> },
+      { type: 'ok',   text: <><strong>Driing</strong> : annonce directe sans commission, comparateur de prix intégré, voyageurs qualifiés</> },
+      { type: 'ok',   text: <>Paiements : <strong>Stripe, SumUp, Driing ou virement bancaire</strong> — prévoir une solution sécurisée avant le premier séjour direct</> },
+      { type: 'info', text: <>Construire une <strong>base de voyageurs fidèles</strong> (email, Instagram) : la réservation directe se développe sur le temps long</> },
     ],
   },
 ]
 
-const CATEGORIES: Category[] = [
-  {
-    id: 'reglementation',
-    icon: <Scales size={24} weight="fill" />,
-    color: '#60a5fa',
-    bg: 'rgba(96,165,250,0.12)',
-    title: 'Réglementation',
-    subtitle: 'Tes droits & obligations légales',
-    stats: [
-      { value: '120 nuits/an', label: 'Durée max légale pour louer sa résidence principale (Loi Le Meur, 2024).', source: 'jedeclaremonmeuble.com', sourceUrl: 'https://www.jedeclaremonmeuble.com/loi-le-meur-location-saisonniere-fiscalite/' },
-      { value: '5 000 €', label: 'Amende max pour absence de numéro d\'enregistrement, obligatoire dès le 20 mai 2026.', source: 'loftely.com', sourceUrl: 'https://www.loftely.com/blog/actualites/reglementation-locations-saisonnieres-2026.html' },
-      { value: '90 jours', label: 'Certaines communes (Paris, Marseille...) peuvent abaisser la limite à 90 j/an.', source: 'nousgerons.com', sourceUrl: 'https://www.nousgerons.com/la-loi-le-meur.html' },
-    ],
-  },
-  {
-    id: 'fiscalite',
-    icon: <CurrencyEur size={24} weight="fill" />,
-    color: '#34d399',
-    bg: 'rgba(52,211,153,0.12)',
-    title: 'Fiscalité',
-    subtitle: 'Impôts, régimes et optimisation',
-    stats: [
-      { value: '15 000 €', label: 'Nouveau plafond micro-BIC pour meublés non classés (contre 77 700 € avant 2025).', source: 'service-public.fr', sourceUrl: 'https://www.service-public.gouv.fr/particuliers/vosdroits/F32744' },
-      { value: '30 %', label: 'Abattement micro-BIC pour meublés non classés — divisé par deux en 2025.', source: 'impots.gouv.fr', sourceUrl: 'https://www.impots.gouv.fr/particulier/les-regimes-dimposition' },
-      { value: '85 %', label: 'Des cas où le régime réel est plus avantageux que le micro-BIC.', source: 'jedeclaremonmeuble.com', sourceUrl: 'https://www.jedeclaremonmeuble.com/le-regime-micro-bic/' },
-    ],
-  },
-  {
-    id: 'decoration',
-    icon: <Armchair size={24} weight="fill" />,
-    color: '#f472b6',
-    bg: 'rgba(244,114,182,0.12)',
-    title: 'Décoration & Aménagement',
-    subtitle: 'Créer un logement qui se démarque',
-    stats: [
-      { value: '+25 %', label: 'De réservations en plus avec des photos professionnelles vs amateurs.', source: 'objectif5etoiles.com', sourceUrl: 'https://www.objectif5etoiles.com/optimisation-de-vo-photos-airbnb-et-booking/' },
-      { value: '+30 %', label: 'De réservations supplémentaires avec une déco soignée par rapport à un logement similaire.', source: 'rentaplus.immo', sourceUrl: 'https://www.rentaplus.immo/meubler-logement-airbnb-maximiser-reservations/' },
-      { value: '3 000 – 7 000 €', label: 'Budget moyen pour meubler et équiper un appartement LCD de A à Z.', source: 'minut.com', sourceUrl: 'https://www.minut.com/fr/blog/amenager-appartement-airbnb-recommandations' },
-    ],
-  },
-  {
-    id: 'gestion',
-    icon: <Wrench size={24} weight="fill" />,
-    color: '#fb923c',
-    bg: 'rgba(251,146,60,0.12)',
-    title: 'Gestion Locative',
-    subtitle: 'Automatise et gagne du temps',
-    stats: [
-      { value: '8–12 h/sem', label: 'Temps moyen consacré à gérer un logement sans outils d\'automatisation.', source: 'jedeclaremonmeuble.com', sourceUrl: 'https://www.jedeclaremonmeuble.com/automatiser-airbnb-guide/' },
-      { value: '-70 %', label: 'De temps gagné en adoptant un PMS + channel manager pour ses annonces.', source: 'chamconcierge.com', sourceUrl: 'https://www.chamconcierge.com/post/channel-manager-et-pms-la-solution-indispensable-pour-la-gestion-locative-moderne' },
-      { value: '70 %', label: 'Des réservations Airbnb se jouent dans les 15 min suivant la demande.', source: 'jedeclaremonmeuble.com', sourceUrl: 'https://www.jedeclaremonmeuble.com/automatiser-airbnb-guide/' },
-    ],
-  },
-  {
-    id: 'visibilite',
-    icon: <Star size={24} weight="fill" />,
-    color: '#fbbf24',
-    bg: 'rgba(251,191,36,0.12)',
-    title: 'Réputation & Avis',
-    subtitle: 'Construire un profil 5 étoiles',
-    stats: [
-      { value: '4,8 ⭐ min', label: 'Note minimale requise pour obtenir et conserver le statut Superhôte Airbnb.', source: 'eldorado-immobilier.com', sourceUrl: 'https://eldorado-immobilier.com/statistiques-sur-airbnb/' },
-      { value: '+30 %', label: 'De revenus supplémentaires pour un Superhôte parisien vs un hôte standard.', source: 'reussirsalocationcourteduree.fr', sourceUrl: 'https://reussirsalocationcourteduree.fr/statistiques-airbnb-2025-revenus-rentabilite/' },
-      { value: 'x3', label: 'Les chances d\'être cliqué pour une annonce en 1ère position vs les suivantes.', source: 'reussirsalocationcourteduree.fr', sourceUrl: 'https://reussirsalocationcourteduree.fr/optimiser-annonce-airbnb-2026/' },
-    ],
-  },
-  {
-    id: 'assurances',
-    icon: <ShieldCheck size={24} weight="fill" />,
-    color: '#38bdf8',
-    bg: 'rgba(56,189,248,0.12)',
-    title: 'Assurances & Protection',
-    subtitle: 'Être bien couvert en toutes circonstances',
-    stats: [
-      { value: '3 M$', label: 'Couverture dommages AirCover pour les hôtes — ce n\'est pas une assurance classique.', source: 'halobutler.fr', sourceUrl: 'https://halobutler.fr/blog/fiscalite-reglementation-airbnb/assurance-airbnb-que-couvre-aircover/' },
-      { value: '1 M$', label: 'Couverture responsabilité civile AirCover (dommages corporels/matériels à des tiers).', source: 'jedeclaremonmeuble.com', sourceUrl: 'https://www.jedeclaremonmeuble.com/aircover/' },
-      { value: '⚠️ 14 jours', label: 'Délai max pour activer AirCover après le départ du voyageur — passé ce délai, rien.', source: 'locandsmile.fr', sourceUrl: 'https://locandsmile.fr/assurance-airbnb-ce-que-laircover-ne-vous-dit-pas-sur-vos-protections/' },
-    ],
-  },
-  {
-    id: 'revenus',
-    icon: <ChartLine size={24} weight="fill" />,
-    color: '#a78bfa',
-    bg: 'rgba(167,139,250,0.12)',
-    title: 'Revenus & Tarification',
-    subtitle: 'Maximise tes gains chaque nuit',
-    stats: [
-      { value: '11 200 €/an', label: 'Revenu moyen annuel d\'un hôte Airbnb en France en 2025 (118 €/nuit en moyenne).', source: 'eldorado-immobilier.com', sourceUrl: 'https://eldorado-immobilier.com/statistiques-sur-airbnb/' },
-      { value: '+20–40 %', label: 'De revenus supplémentaires avec tarification dynamique vs prix fixe.', source: 'quelleconciergerie.fr', sourceUrl: 'https://www.quelleconciergerie.fr/blog-posts/tarification-dynamique-airbnb' },
-      { value: '63 %', label: 'Taux d\'occupation moyen Airbnb en France — 70 %+ à Paris.', source: 'eldorado-immobilier.com', sourceUrl: 'https://eldorado-immobilier.com/taux-remplissage-location-saisonniere/' },
-    ],
-  },
-]
+const RULE_STYLES: Record<RuleType, { color: string; bg: string }> = {
+  warn: { color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
+  ok:   { color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
+  info: { color: '#60a5fa', bg: 'rgba(96,165,250,0.08)' },
+}
 
-function CategoryCard({ cat, priority = false, profileColor }: { cat: Category; priority?: boolean; profileColor?: string }) {
+function RuleIcon({ type }: { type: RuleType }) {
+  if (type === 'warn') return <Warning size={14} weight="fill" />
+  if (type === 'ok')   return <CheckCircle size={14} weight="fill" />
+  return <Info size={14} weight="fill" />
+}
+
+function GuideCardItem({ card }: { card: GuideCard }) {
+  const profileDef = PROFILE_DEFS[card.profile]
   return (
-    <div
-      style={{
-        ...s.card,
-        ...(priority ? { borderColor: profileColor ? `${profileColor}30` : 'var(--border-2)' } : {}),
-      }}
-      className="glass-card"
-    >
-      {priority && profileColor && (
-        <div style={{ ...s.priorityBadge, color: profileColor, background: `${profileColor}15`, borderColor: `${profileColor}25` }}>
-          Prioritaire
-        </div>
-      )}
+    <div style={s.card} className="glass-card">
+      <div style={{ ...s.profileBadge, color: profileDef.color, background: profileDef.bg, borderColor: `${profileDef.color}40` }}>
+        {profileDef.icon}
+        {profileDef.label}
+      </div>
       <div style={s.cardHead}>
-        <div style={{ ...s.iconBox, background: cat.bg, color: cat.color }}>{cat.icon}</div>
+        <div style={{ ...s.iconBox, background: card.iconBg, color: card.iconColor }}>
+          {card.icon}
+        </div>
         <div>
-          <h3 style={s.cardTitle}>{cat.title}</h3>
-          <p style={s.cardSub}>{cat.subtitle}</p>
+          <h3 style={s.cardTitle}>{card.title}</h3>
+          <p style={s.cardSub}>{card.subtitle}</p>
         </div>
       </div>
-      <div style={s.stats}>
-        {cat.stats.map((stat, si) => (
-          <div key={si} style={s.statRow}>
-            <div style={{ ...s.statValue, color: cat.color }}>{stat.value}</div>
-            <div style={s.statRight}>
-              <p style={s.statLabel}>{stat.label}</p>
-              <a href={stat.sourceUrl} target="_blank" rel="noopener noreferrer" style={s.statSource} className="guide-source-link">
-                {stat.source} <ArrowUpRight size={10} style={{ display: 'inline', verticalAlign: 'middle' }} />
-              </a>
+      <div style={s.rules}>
+        {card.rules.map((rule, i) => {
+          const rc = RULE_STYLES[rule.type]
+          return (
+            <div key={i} style={{ ...s.rule, background: rc.bg }}>
+              <span style={{ color: rc.color, flexShrink: 0, marginTop: '1px', display: 'flex' }}>
+                <RuleIcon type={rule.type} />
+              </span>
+              <span style={s.ruleText}>{rule.text}</span>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
 }
 
+const FILTER_TABS: { id: ProfileFilter; label: string; Icon: React.ComponentType<{ size: number; weight: 'fill' }> | null }[] = [
+  { id: 'all',          label: 'Tous les profils',    Icon: null },
+  { id: 'gites',        label: 'Gîtes',               Icon: HouseLine },
+  { id: 'chambres',     label: "Chambres d'hôtes",    Icon: Coffee },
+  { id: 'conciergerie', label: 'Conciergeries',       Icon: Buildings },
+  { id: 'direct',       label: 'Réservation directe', Icon: Handshake },
+]
+
 export default function GuideUI() {
-  const [activeProfileId, setActiveProfileId] = useState<ProfileId | null>(null)
-  const [mounted, setMounted] = useState(false)
+  const [activeFilter, setActiveFilter] = useState<ProfileFilter>('all')
 
   useEffect(() => {
-    setMounted(true)
-    const saved = localStorage.getItem('guide-profile') as ProfileId | null
-    if (saved && ['debutant', 'intermediaire', 'pro'].includes(saved)) {
-      setActiveProfileId(saved)
+    const saved = localStorage.getItem('guide-filter') as ProfileFilter | null
+    if (saved && ['all', 'gites', 'chambres', 'conciergerie', 'direct'].includes(saved)) {
+      setActiveFilter(saved)
     }
   }, [])
 
-  function selectProfile(id: ProfileId) {
-    setActiveProfileId(prev => {
-      const next = prev === id ? null : id
-      if (next) localStorage.setItem('guide-profile', next)
-      else localStorage.removeItem('guide-profile')
-      return next
-    })
+  function handleFilter(id: ProfileFilter) {
+    setActiveFilter(id)
+    localStorage.setItem('guide-filter', id)
   }
 
-  const profile = PROFILES.find(p => p.id === activeProfileId) ?? null
-  const priorityCats = profile ? CATEGORIES.filter(c => profile.priorities.includes(c.id)) : []
-  const remainingCats = profile ? CATEGORIES.filter(c => !profile.priorities.includes(c.id)) : CATEGORIES
+  const visibleCards = activeFilter === 'all'
+    ? GUIDE_CARDS
+    : GUIDE_CARDS.filter(c => c.profile === activeFilter)
 
   return (
     <div style={s.page}>
@@ -248,95 +294,47 @@ export default function GuideUI() {
           Guide <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
         </h2>
         <p style={s.pageDesc}>
-          Chiffres clés, faits essentiels et sources fiables pour maîtriser chaque aspect
-          de la location courte durée — réglementation, fiscalité, gestion et rentabilité.
+          Gîtes en EI ou SASU, chambres d&apos;hôtes, conciergeries, réservation directe — chaque activité a ses règles, sa fiscalité, ses obligations. Ici, on ne parle pas que d&apos;Airbnb.
         </p>
       </div>
 
-      {/* Profile selector */}
-      <div style={s.profileSection} className="fade-up d1">
-        <div style={s.profileSectionHeader}>
-          <Lightbulb size={14} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0 }} />
-          <span style={s.profileSectionLabel}>
-            Sélectionne ton profil pour voir les thèmes essentiels
-          </span>
-        </div>
-        <div className="guide-profile-grid">
-          {PROFILES.map(p => {
-            const isActive = activeProfileId === p.id
-            return (
-              <button
-                key={p.id}
-                onClick={() => selectProfile(p.id)}
-                style={{
-                  ...s.profileCard,
-                  ...(isActive ? { borderColor: p.color, background: p.bg } : {}),
-                }}
-              >
-                <span style={s.profileEmoji}>{p.emoji}</span>
-                <div style={s.profileInfo}>
-                  <div style={{ ...s.profileName, ...(isActive ? { color: p.color } : {}) }}>{p.label}</div>
-                  <div style={s.profileDesc}>{p.desc}</div>
-                </div>
-                {isActive && (
-                  <CheckCircle size={16} weight="fill" style={{ color: p.color, marginLeft: 'auto', flexShrink: 0 }} />
-                )}
-              </button>
-            )
-          })}
-        </div>
+      {/* Filter tabs */}
+      <div style={s.filterWrap} className="fade-up d1">
+        {FILTER_TABS.map(tab => {
+          const Icon = tab.Icon
+          const isActive = activeFilter === tab.id
+          const def = tab.id !== 'all' ? PROFILE_DEFS[tab.id as Exclude<ProfileFilter, 'all'>] : null
+          return (
+            <button
+              key={tab.id}
+              onClick={() => handleFilter(tab.id)}
+              style={{
+                ...s.filterTab,
+                ...(isActive ? {
+                  background: def ? def.bg : 'rgba(0,76,63,0.15)',
+                  borderColor: def ? `${def.color}70` : 'var(--accent-text)',
+                  color: def ? def.color : 'var(--accent-text)',
+                } : {}),
+              }}
+            >
+              {Icon && <Icon size={13} weight="fill" />}
+              {tab.label}
+            </button>
+          )
+        })}
       </div>
 
-      {/* Priority section — only when profile selected */}
-      {profile && mounted && (
-        <div className="fade-up">
-          <div style={s.sectionLabelRow}>
-            <span style={{ ...s.profilePill, color: profile.color, background: profile.bg, borderColor: `${profile.color}25` }}>
-              {profile.emoji} {profile.label}
-            </span>
-            <span style={s.sectionLabelText}>Essentiels pour toi</span>
-          </div>
-
-          <div className="guide-priority-grid" style={{ marginBottom: '20px' }}>
-            {priorityCats.map(cat => (
-              <CategoryCard key={cat.id} cat={cat} priority profileColor={profile.color} />
-            ))}
-          </div>
-
-          {/* Profile tips */}
-          <div style={s.tipsBox} className="glass-card">
-            <div style={s.tipsHeader}>
-              <Lightbulb size={14} weight="fill" style={{ color: 'var(--accent-text)' }} />
-              <span style={s.tipsTitle}>Conseils clés — {profile.label}</span>
-            </div>
-            <div style={s.tipsList}>
-              {profile.tips.map((tip, i) => (
-                <div key={i} style={s.tipItem}>
-                  <span style={{ ...s.tipDot, background: profile.color }} />
-                  <span style={s.tipText}>{tip}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* All / remaining categories */}
-      <div className="fade-up d2">
-        {profile && (
-          <div style={s.sectionLabelSimple}>Tous les thèmes</div>
-        )}
-        <div style={s.grid} className="dash-grid-2">
-          {remainingCats.map(cat => (
-            <CategoryCard key={cat.id} cat={cat} />
-          ))}
-        </div>
+      {/* Cards */}
+      <div className="dash-grid-2 fade-up d2" style={{ marginBottom: '32px' }}>
+        {visibleCards.map(card => (
+          <GuideCardItem key={card.id} card={card} />
+        ))}
       </div>
 
       {/* Driing banner */}
       <div style={s.banner} className="fade-up glass-card">
         <div style={s.bannerIcon}>
-          <HouseSimple size={28} color="var(--accent-text)" weight="fill" />
+          <HouseLine size={28} color="var(--accent-text)" weight="fill" />
         </div>
         <div style={s.bannerText}>
           <h3 style={s.bannerTitle}>Tu connais Driing ?</h3>
@@ -355,17 +353,6 @@ export default function GuideUI() {
         </Link>
       </div>
 
-      <style>{`
-        .guide-source-link {
-          color: var(--text-3) !important;
-          text-decoration: none;
-          transition: color 0.15s;
-        }
-        .guide-source-link:hover {
-          color: var(--text-2) !important;
-          text-decoration: underline;
-        }
-      `}</style>
     </div>
   )
 }
@@ -373,65 +360,37 @@ export default function GuideUI() {
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
 
-  intro: { marginBottom: '32px', maxWidth: '640px' },
+  intro: { marginBottom: '28px', maxWidth: '640px' },
   pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.7 },
 
-  profileSection: { marginBottom: '32px' },
-  profileSectionHeader: { display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '14px' },
-  profileSectionLabel: { fontSize: '13px', fontWeight: 400, color: 'var(--text-3)' },
-
-  profileCard: {
-    display: 'flex', alignItems: 'center', gap: '12px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '14px 18px',
-    cursor: 'pointer', textAlign: 'left' as const,
-    transition: 'border-color 0.18s, background 0.18s',
-    width: '100%',
+  filterWrap: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginBottom: '28px' },
+  filterTab: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '13px', fontWeight: 500, padding: '8px 16px',
+    borderRadius: '100px', border: '1.5px solid var(--border)',
+    background: 'var(--surface)', color: 'var(--text-2)',
+    cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap' as const,
   },
-  profileEmoji: { fontSize: '22px', flexShrink: 0, lineHeight: 1 },
-  profileInfo: { flex: 1, minWidth: 0 },
-  profileName: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' },
-  profileDesc: { fontSize: '12px', fontWeight: 400, color: 'var(--text-3)' },
 
-  sectionLabelRow: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' },
-  sectionLabelText: { fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' },
-  sectionLabelSimple: { fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '16px' },
+  card: { padding: '22px', borderRadius: '20px', display: 'flex', flexDirection: 'column' as const, gap: '0', position: 'relative' as const },
 
-  profilePill: {
+  profileBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', fontWeight: 600, padding: '4px 10px',
-    borderRadius: '100px', border: '1px solid',
-  },
-
-  grid: { marginBottom: '32px' },
-
-  card: { padding: '22px', borderRadius: '20px', display: 'flex', flexDirection: 'column', gap: '0', position: 'relative' as const },
-  priorityBadge: {
-    position: 'absolute' as const, top: '16px', right: '16px',
     fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
-    textTransform: 'uppercase' as const, padding: '3px 8px',
+    textTransform: 'uppercase' as const, padding: '4px 9px',
     borderRadius: '100px', border: '1px solid',
+    marginBottom: '16px', alignSelf: 'flex-start' as const,
   },
-  cardHead: { display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '18px' },
-  iconBox: { width: '48px', height: '48px', borderRadius: '13px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  cardTitle: { fontFamily: 'Fraunces, serif', fontSize: '17px', fontWeight: 400, color: 'var(--text)', margin: '0 0 3px' },
+
+  cardHead: { display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '16px' },
+  iconBox: { width: '46px', height: '46px', borderRadius: '13px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  cardTitle: { fontFamily: 'Fraunces, serif', fontSize: '16px', fontWeight: 400, color: 'var(--text)', margin: '0 0 3px' },
   cardSub: { fontSize: '12px', fontWeight: 300, color: 'var(--text-2)', margin: 0 },
 
-  stats: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  statRow: { display: 'flex', alignItems: 'flex-start', gap: '14px', padding: '10px 12px', borderRadius: '10px', background: 'var(--border)' },
-  statValue: { fontSize: '17px', fontWeight: 700, fontVariantNumeric: 'tabular-nums' as const, letterSpacing: '-0.02em', lineHeight: 1.2, minWidth: '88px', flexShrink: 0, paddingTop: '1px' },
-  statRight: { display: 'flex', flexDirection: 'column', gap: '4px', flex: 1, minWidth: 0 },
-  statLabel: { fontSize: '12px', fontWeight: 400, color: 'var(--text-2)', margin: 0, lineHeight: 1.5 },
-  statSource: { fontSize: '11px', fontWeight: 400, color: 'var(--text-3)', lineHeight: 1 },
-
-  tipsBox: { padding: '20px 24px', borderRadius: '16px', marginBottom: '32px' },
-  tipsHeader: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' },
-  tipsTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--text)' },
-  tipsList: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  tipItem: { display: 'flex', alignItems: 'flex-start', gap: '10px' },
-  tipDot: { width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0, marginTop: '6px' },
-  tipText: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6 },
+  rules: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  rule: { display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 12px', borderRadius: '9px' },
+  ruleText: { fontSize: '12.5px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.55 },
 
   banner: { display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' as const, padding: 'clamp(20px,3vw,32px)', borderRadius: '20px' },
   bannerIcon: { width: '52px', height: '52px', borderRadius: '14px', flexShrink: 0, background: 'rgba(0,76,63,0.25)', border: '1px solid rgba(255,213,107,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
