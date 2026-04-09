@@ -438,5 +438,5 @@ const s: Record<string, React.CSSProperties> = {
   insightValue: { fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.1 },
   insightLabel: { fontSize: '12px', color: 'var(--text-3)', marginTop: '3px' },
   insightTopLabel: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '4px' },
-  insightTopTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--accent-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
+  insightTopTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--accent-text)', lineHeight: 1.35 },
 }
