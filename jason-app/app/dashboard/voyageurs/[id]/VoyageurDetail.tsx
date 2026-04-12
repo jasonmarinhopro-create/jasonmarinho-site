@@ -5,9 +5,30 @@ import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
   Envelope, Phone, Note, CalendarBlank, House,
-  CurrencyEur, Seal, Link as LinkIcon,
+  CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star,
 } from '@phosphor-icons/react'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
+import { reportGuest } from '../../securite/actions'
+
+const INCIDENT_TYPES = [
+  'Dégradation du logement',
+  'Fête non autorisée',
+  'Non-respect des règles',
+  'Fumée dans le logement',
+  'Présence de personnes non déclarées',
+  "Tentative d'arnaque / fraude",
+  'Avis négatif abusif',
+  'Impayé / remboursement abusif',
+  'Autre',
+]
+
+const POSITIVE_TYPES = [
+  'Voyageur exemplaire',
+  'Logement laissé impeccable',
+  'Communication excellente',
+  'Respect total des règles',
+  'Je recommande vivement',
+]
 
 type Voyageur = {
   id: string; prenom: string; nom: string
@@ -74,6 +95,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
   // Notes inline edit
   const [editingNotes, setEditingNotes] = useState(false)
   const [notes, setNotes] = useState(voyageur.notes ?? '')
+
+  // Report / Testimony modal
+  const [reportModal, setReportModal] = useState<'report' | 'positive' | null>(null)
+  const [reportForm, setReportForm] = useState({ incident_type: INCIDENT_TYPES[0], description: '' })
+  const [positiveForm, setPositiveForm] = useState({ incident_type: POSITIVE_TYPES[0], description: '' })
+  const [reportError, setReportError] = useState('')
+  const [reportSuccess, setReportSuccess] = useState(false)
+  const [isReporting, startReport] = useTransition()
 
   // Séjour modal
   const [sejourModal, setSejourModal] = useState<'add' | 'edit' | null>(null)
@@ -172,6 +201,36 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
     })
   }
 
+  function openReportModal(type: 'report' | 'positive') {
+    setReportForm({ incident_type: INCIDENT_TYPES[0], description: '' })
+    setPositiveForm({ incident_type: POSITIVE_TYPES[0], description: '' })
+    setReportError('')
+    setReportSuccess(false)
+    setReportModal(type)
+  }
+
+  function handleReportSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const isPositive = reportModal === 'positive'
+    const form = isPositive ? positiveForm : reportForm
+    if (!form.description || form.description.trim().length < 20) {
+      setReportError('La description doit faire au moins 20 caractères.')
+      return
+    }
+    setReportError('')
+    startReport(async () => {
+      const res = await reportGuest({
+        email: voyageur.email ?? undefined,
+        phone: voyageur.telephone ?? undefined,
+        full_name: `${voyageur.prenom} ${voyageur.nom}`,
+        incident_type: form.incident_type,
+        description: form.description.trim(),
+      })
+      if (res.error) { setReportError(res.error); return }
+      setReportSuccess(true)
+    })
+  }
+
   return (
     <div style={s.page}>
       {/* Back */}
@@ -267,6 +326,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
                 <button onClick={() => setEditingProfile(true)} style={s.editBtn}>
                   <Pencil size={14} />
                   Modifier
+                </button>
+                <button onClick={() => openReportModal('report')} style={s.reportBtn} title="Signaler un incident">
+                  <ShieldWarning size={14} />
+                  Signaler
+                </button>
+                <button onClick={() => openReportModal('positive')} style={s.testimonyBtn} title="Laisser un témoignage positif">
+                  <Star size={14} />
+                  Témoigner
                 </button>
               </div>
               <div style={s.contactList}>
@@ -408,6 +475,106 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
           })}
         </div>
       </div>
+
+      {/* Report / Testimony modal */}
+      {reportModal && (
+        <div style={s.overlay} onClick={() => setReportModal(null)}>
+          <div style={s.modalBox} onClick={e => e.stopPropagation()}>
+            <div style={s.modalHeader}>
+              {reportModal === 'report' ? (
+                <>
+                  <h3 style={{ ...s.modalTitle, color: '#ef4444', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <ShieldWarning size={20} weight="fill" color="#ef4444" />
+                    Signaler un incident
+                  </h3>
+                </>
+              ) : (
+                <h3 style={{ ...s.modalTitle, color: '#34D399', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Star size={20} weight="fill" color="#34D399" />
+                  Témoignage positif
+                </h3>
+              )}
+              <button onClick={() => setReportModal(null)} style={s.modalClose}><X size={18} /></button>
+            </div>
+            {reportSuccess ? (
+              <div style={{ padding: '32px 24px', textAlign: 'center' }}>
+                <div style={{ fontSize: '40px', marginBottom: '12px' }}>{reportModal === 'positive' ? '⭐' : '✅'}</div>
+                <p style={{ fontSize: '15px', color: 'var(--text-2)', margin: 0 }}>
+                  {reportModal === 'positive'
+                    ? 'Témoignage envoyé. Merci pour votre retour !'
+                    : 'Signalement envoyé. Il sera examiné par la modération.'}
+                </p>
+                <button onClick={() => setReportModal(null)} className="btn-primary" style={{ marginTop: '20px' }}>
+                  Fermer
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleReportSubmit} style={s.form}>
+                <div style={s.field}>
+                  <label style={s.label}>Voyageur concerné</label>
+                  <div style={{ ...s.inputWrap, opacity: 0.7, pointerEvents: 'none' as const }}>
+                    <span style={{ fontSize: '14px', color: 'var(--text-2)' }}>
+                      {voyageur.prenom} {voyageur.nom}
+                      {voyageur.email && ` · ${voyageur.email}`}
+                      {voyageur.telephone && ` · ${voyageur.telephone}`}
+                    </span>
+                  </div>
+                </div>
+                <div style={s.field}>
+                  <label style={s.label}>Type</label>
+                  <select
+                    value={reportModal === 'positive' ? positiveForm.incident_type : reportForm.incident_type}
+                    onChange={e => reportModal === 'positive'
+                      ? setPositiveForm(f => ({ ...f, incident_type: e.target.value }))
+                      : setReportForm(f => ({ ...f, incident_type: e.target.value }))
+                    }
+                    style={{ ...s.inputWrap, cursor: 'pointer' }}
+                  >
+                    {(reportModal === 'positive' ? POSITIVE_TYPES : INCIDENT_TYPES).map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <div style={s.field}>
+                  <label style={s.label}>Description <span style={{ color: 'var(--text-muted)' }}>(min. 20 caractères)</span></label>
+                  <textarea
+                    value={reportModal === 'positive' ? positiveForm.description : reportForm.description}
+                    onChange={e => reportModal === 'positive'
+                      ? setPositiveForm(f => ({ ...f, description: e.target.value }))
+                      : setReportForm(f => ({ ...f, description: e.target.value }))
+                    }
+                    rows={4}
+                    style={s.notesTextarea}
+                    placeholder={reportModal === 'positive'
+                      ? 'Décrivez votre expérience positive avec ce voyageur…'
+                      : "Décrivez l'incident de manière précise et factuelle…"
+                    }
+                  />
+                </div>
+                {reportError && <p style={s.error}>{reportError}</p>}
+                <div style={s.formActions}>
+                  <button type="button" onClick={() => setReportModal(null)} className="btn-ghost">Annuler</button>
+                  <button
+                    type="submit"
+                    disabled={isReporting}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '6px',
+                      padding: '9px 18px', borderRadius: '10px', border: 'none',
+                      cursor: isReporting ? 'not-allowed' : 'pointer',
+                      fontSize: '13px', fontWeight: 500,
+                      background: reportModal === 'positive' ? 'rgba(52,211,153,0.15)' : 'rgba(239,68,68,0.12)',
+                      color: reportModal === 'positive' ? '#34D399' : '#ef4444',
+                    }}
+                  >
+                    {reportModal === 'positive' ? <Star size={14} /> : <ShieldWarning size={14} />}
+                    {isReporting ? 'Envoi…' : reportModal === 'positive' ? 'Envoyer le témoignage' : 'Envoyer le signalement'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Séjour modal */}
       {sejourModal && (
@@ -557,6 +724,20 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '5px',
     background: 'none', border: 'none', cursor: 'pointer',
     fontSize: '12px', color: 'var(--text-muted)',
+  },
+  reportBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
+    borderRadius: '8px', padding: '4px 10px',
+    fontSize: '12px', color: '#ef4444', cursor: 'pointer',
+    transition: 'all 0.15s',
+  },
+  testimonyBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)',
+    borderRadius: '8px', padding: '4px 10px',
+    fontSize: '12px', color: '#34D399', cursor: 'pointer',
+    transition: 'all 0.15s',
   },
   notesText: { fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.7, margin: 0 },
   notesTextarea: {
