@@ -65,3 +65,21 @@ on conflict (url) do nothing;
 -- Note : si la contrainte unique sur url n'existe pas, ajouter :
 -- alter table public.community_groups add constraint community_groups_url_unique unique (url);
 -- Puis relancer ce script.
+
+-- ============================================================
+-- Usage des tags (champ `tag`) — IMPORTANT pour le filtrage
+-- ============================================================
+-- Le champ `tag` supporte désormais des valeurs séparées par virgule.
+-- Cela permet à un seul groupe de couvrir plusieurs secteurs/régions
+-- sans avoir à créer un groupe par ville.
+--
+-- Exemples :
+--   tag = 'Bretagne, Normandie'         → filtre "Bretagne" OU "Normandie"
+--   tag = 'Ski, Montagne, Alpes'        → filtre par thème montagne
+--   tag = 'Paris, Île-de-France'        → filtre région parisienne
+--   tag = 'Hôtes LCD'                   → badge simple (rétro-compatible)
+--
+-- La barre de recherche utilisateur cherche aussi dans ces tags,
+-- donc taper "Bretagne" remonte tous les groupes ayant ce mot
+-- dans leur nom, description, catégorie ou tags.
+-- ============================================================

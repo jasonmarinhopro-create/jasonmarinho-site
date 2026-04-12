@@ -77,10 +77,10 @@ function GroupForm({ initial, existingCategories, onSubmit, onCancel, submitLabe
         </div>
         <div style={s.formGroup}>
           <label style={s.label}>
-            Étiquette
-            <span style={{ fontWeight: 400, color: 'var(--text-muted)', textTransform: 'none', marginLeft: '6px' }}>(badge)</span>
+            Tags / Secteurs
+            <span style={{ fontWeight: 400, color: 'var(--text-muted)', textTransform: 'none', marginLeft: '6px' }}>(séparés par virgule)</span>
           </label>
-          <input name="tag" defaultValue={initial?.tag ?? ''} style={s.input} placeholder="Ex: Ski, Hôtes LCD, Bretagne…" />
+          <input name="tag" defaultValue={initial?.tag ?? ''} style={s.input} placeholder="Ex: Bretagne, Normandie — ou: Ski, Montagne" />
         </div>
       </div>
 
