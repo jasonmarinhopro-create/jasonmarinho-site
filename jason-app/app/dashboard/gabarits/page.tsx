@@ -255,14 +255,15 @@ export default function GabaritsPage() {
 
   // ── Filtrage ──────────────────────────────────────────────────────────────
   const filtered = templates.filter(t => {
-    if (activeFilter === 'favorites')     return favorites.has(t.id)
-    if (activeFilter === 'avant-arrivee')  return getTimingBucket(t) === 'avant-arrivee'
-    if (activeFilter === 'pendant-sejour') return getTimingBucket(t) === 'pendant-sejour'
-    if (activeFilter === 'apres-depart')   return getTimingBucket(t) === 'apres-depart'
-    // 'all' + search
-    if (!search) return true
     const q = search.toLowerCase()
-    return t.title.toLowerCase().includes(q) || t.content.toLowerCase().includes(q)
+    const matchesSearch = !search
+      || t.title.toLowerCase().includes(q)
+      || t.content.toLowerCase().includes(q)
+    if (activeFilter === 'favorites')     return favorites.has(t.id) && matchesSearch
+    if (activeFilter === 'avant-arrivee')  return getTimingBucket(t) === 'avant-arrivee' && matchesSearch
+    if (activeFilter === 'pendant-sejour') return getTimingBucket(t) === 'pendant-sejour' && matchesSearch
+    if (activeFilter === 'apres-depart')   return getTimingBucket(t) === 'apres-depart' && matchesSearch
+    return matchesSearch
   })
 
   // Groupement pour la vue favoris
@@ -333,17 +334,16 @@ export default function GabaritsPage() {
               }}
             >
               {f.label}
+              {f.key === 'all' && (
+                <span style={s.filterCount}>{templates.length}</span>
+              )}
               {f.key !== 'all' && f.key !== 'favorites' && (
                 <span style={s.filterCount}>
-                  {templates.filter(t =>
-                    f.key === 'favorites'
-                      ? favorites.has(t.id)
-                      : getTimingBucket(t) === f.key
-                  ).length}
+                  {templates.filter(t => getTimingBucket(t) === f.key).length}
                 </span>
               )}
-              {f.key === 'favorites' && favorites.size > 0 && (
-                <span style={{ ...s.filterCount, background: 'rgba(255,213,107,0.25)', color: '#FFD56B' }}>
+              {f.key === 'favorites' && (
+                <span style={{ ...s.filterCount, ...(favorites.size > 0 ? { background: 'rgba(255,213,107,0.25)', color: '#FFD56B' } : {}) }}>
                   {favorites.size}
                 </span>
               )}
@@ -351,22 +351,29 @@ export default function GabaritsPage() {
           ))}
         </div>
 
-        {/* Barre de recherche (cachée en vue favoris) */}
-        {!isFavoritesView && (
-          <div style={s.searchWrap} className="fade-up d2">
-            <MagnifyingGlass size={15} color="var(--text-3)" />
-            <input
-              type="text"
-              placeholder="Chercher un gabarit..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={s.searchInput}
-            />
-            {search && (
-              <button onClick={() => setSearch('')} style={s.clearSearch}>
-                <X size={14} />
-              </button>
-            )}
+        {/* Barre de recherche */}
+        <div style={s.searchWrap} className="fade-up d2">
+          <MagnifyingGlass size={15} color="var(--text-3)" />
+          <input
+            type="text"
+            placeholder={isFavoritesView ? 'Chercher dans mes favoris...' : 'Chercher un gabarit...'}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={s.searchInput}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={s.clearSearch}>
+              <X size={14} />
+            </button>
+          )}
+        </div>
+
+        {/* Compteur de résultats */}
+        {(search || activeFilter !== 'all') && (
+          <div style={s.resultsCount} className="fade-up">
+            <span style={{ color: 'var(--text-2)', fontWeight: 500 }}>{filtered.length}</span>
+            {' '}{filtered.length === 1 ? 'gabarit' : 'gabarits'}
+            {search && <span style={{ color: 'var(--text-3)' }}> · &ldquo;{search}&rdquo;</span>}
           </div>
         )}
 
@@ -380,7 +387,19 @@ export default function GabaritsPage() {
           </div>
         )}
 
-        {isFavoritesView && favorites.size > 0 && (
+        {isFavoritesView && favorites.size > 0 && filtered.length === 0 && (
+          <div style={s.empty} className="fade-up">
+            <MagnifyingGlass size={36} color="var(--text-muted)" />
+            <p style={{ color: 'var(--text-3)', marginTop: '12px', fontSize: '14px' }}>
+              Aucun favori ne correspond à &ldquo;{search}&rdquo;.
+            </p>
+            <button onClick={() => setSearch('')} style={{ ...s.resetBtn, marginTop: '10px' }}>
+              Effacer la recherche
+            </button>
+          </div>
+        )}
+
+        {isFavoritesView && favorites.size > 0 && filtered.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }} className="fade-up d1">
             {favoriteSections.map(section => {
               const items = favoritesByTiming[section.key]
@@ -563,7 +582,10 @@ function TemplateCard({ template: t, isFav, customization, copied, delay, onCopy
       </div>
 
       {/* Contenu */}
-      <pre style={s.content}>{displayContent}</pre>
+      <div style={s.contentWrap}>
+        <pre style={s.content}>{displayContent}</pre>
+        <div style={s.contentFade} />
+      </div>
 
       {/* Note privée si présente (FR only) */}
       {customization?.notes && lang === 'fr' && (
@@ -813,7 +835,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(0,76,63,0.3)', border: '1px solid rgba(255,213,107,0.12)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  cardTitle:    { fontSize: '13.5px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  cardTitle:    { fontSize: '13.5px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
   timingBadge:       { fontSize: '10.5px', fontWeight: 500, padding: '2px 8px', borderRadius: '100px' },
   timingBadgeCustom: { fontSize: '10.5px', fontWeight: 500, padding: '2px 8px', borderRadius: '100px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'var(--text-3)' },
   customBadge:  {
@@ -849,18 +871,28 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(129,140,248,0.15)', color: '#818cf8',
   },
 
+  contentWrap: { position: 'relative', flex: 1 },
   content: {
     fontFamily: 'Outfit, sans-serif', fontSize: '12px', fontWeight: 300,
     color: 'var(--text-2)', lineHeight: 1.7,
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
     background: 'rgba(0,0,0,0.2)', borderRadius: '8px', padding: '12px',
-    maxHeight: '160px', overflowY: 'auto', overflowX: 'hidden', flex: 1,
+    maxHeight: '160px', overflowY: 'auto', overflowX: 'hidden',
     width: '100%',
+  },
+  contentFade: {
+    position: 'absolute', bottom: 0, left: 0, right: 0, height: '36px',
+    background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.25))',
+    borderRadius: '0 0 8px 8px', pointerEvents: 'none',
   },
   notePreview: {
     display: 'flex', alignItems: 'flex-start', gap: '5px',
     padding: '7px 10px', borderRadius: '7px',
     background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+  },
+
+  resultsCount: {
+    fontSize: '12px', color: 'var(--text-3)', marginBottom: '16px', marginTop: '-6px',
   },
 
   empty: { textAlign: 'center', padding: '56px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' },
