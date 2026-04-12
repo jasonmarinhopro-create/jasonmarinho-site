@@ -58,12 +58,18 @@ export async function reportGuest(formData: {
 
   const { email, phone, full_name, incident_type, description } = formData
 
-  const identifiers: { identifier: string; identifier_type: string }[] = []
-  if (email?.trim()) identifiers.push({ identifier: email.trim().toLowerCase(), identifier_type: 'email' })
-  if (phone?.trim()) identifiers.push({ identifier: phone.trim(), identifier_type: 'phone' })
-  if (full_name?.trim()) identifiers.push({ identifier: full_name.trim(), identifier_type: 'name' })
+  const emailVal = email?.trim().toLowerCase() || ''
+  const phoneVal = phone?.trim() || ''
+  const nameVal = full_name?.trim() || ''
 
-  if (identifiers.length === 0) {
+  // Pick the primary identifier (email > phone > name)
+  let primaryIdentifier = ''
+  let primaryType = ''
+  if (emailVal) { primaryIdentifier = emailVal; primaryType = 'email' }
+  else if (phoneVal) { primaryIdentifier = phoneVal; primaryType = 'phone' }
+  else if (nameVal) { primaryIdentifier = nameVal; primaryType = 'name' }
+
+  if (!primaryIdentifier) {
     return { error: 'Remplis au moins un champ : e-mail, téléphone ou nom.' }
   }
   if (!description || description.trim().length < 20) {
@@ -77,17 +83,16 @@ export async function reportGuest(formData: {
     .eq('id', session.user.id)
     .maybeSingle()
 
-  const rows = identifiers.map(({ identifier, identifier_type }) => ({
-    identifier,
-    identifier_type,
-    name: full_name?.trim() || null,
+  // Create ONE row per submission
+  const { error } = await supabase.from('reported_guests').insert({
+    identifier: primaryIdentifier,
+    identifier_type: primaryType,
+    name: nameVal || null,
     incident_type,
     description: description.trim(),
     reporter_id: session.user.id,
     is_validated: false,
-  }))
-
-  const { error } = await supabase.from('reported_guests').insert(rows)
+  })
 
   if (error) {
     if (error.code === '42P01') return { error: 'TABLE_MISSING' }
@@ -99,9 +104,11 @@ export async function reportGuest(formData: {
   const reporterEmail = reporterProfile?.email ?? session.user.email ?? 'inconnu'
   const reporterName = reporterProfile?.full_name ?? reporterEmail
 
-  const identifiersHtml = identifiers
-    .map(({ identifier, identifier_type }) => `<li><strong>${identifier_type} :</strong> ${identifier}</li>`)
-    .join('')
+  const identifiersHtml = [
+    emailVal ? `<li><strong>E-mail :</strong> ${emailVal}</li>` : '',
+    phoneVal ? `<li><strong>Téléphone :</strong> ${phoneVal}</li>` : '',
+    nameVal ? `<li><strong>Nom complet :</strong> ${nameVal}</li>` : '',
+  ].filter(Boolean).join('')
 
   await resend.emails.send({
     from: FROM_EMAIL,
@@ -120,7 +127,6 @@ export async function reportGuest(formData: {
           <p style="font-weight: 600; margin-bottom: 8px; color: #333;">Coordonnées signalées :</p>
           <ul style="margin: 0; padding-left: 20px; color: #555;">
             ${identifiersHtml}
-            ${full_name?.trim() ? `<li><strong>Nom complet :</strong> ${full_name.trim()}</li>` : ''}
           </ul>
         </div>
 
@@ -137,6 +143,56 @@ export async function reportGuest(formData: {
   }).catch(() => {
     // Ne pas bloquer si l'email échoue
   })
+
+  return { success: true }
+}
+
+export async function requestDeletion(params: {
+  entry_id: string
+  identifier: string
+  reason?: string
+}): Promise<{ success?: boolean; error?: string }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié.' }
+
+  const { entry_id, identifier, reason } = params
+
+  const { data: requesterProfile } = await supabase
+    .from('profiles')
+    .select('email, full_name')
+    .eq('id', session.user.id)
+    .maybeSingle()
+
+  const requesterEmail = requesterProfile?.email ?? session.user.email ?? 'inconnu'
+  const requesterName = requesterProfile?.full_name ?? requesterEmail
+
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: NOTIFY_EMAIL,
+    subject: `🔒 Demande RGPD — Suppression d'une fiche voyageur`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+        <h2 style="color: #2563eb;">🔒 Demande de suppression (droit à l'effacement — RGPD Art. 17)</h2>
+
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+          <p style="margin: 0 0 8px; font-weight: 600; color: #1d4ed8;">Fiche concernée</p>
+          <p style="margin: 0; font-size: 14px; color: #333;">ID : <code>${entry_id}</code></p>
+          <p style="margin: 4px 0 0; font-size: 14px; color: #333;">Identifiant : <strong>${identifier}</strong></p>
+          ${reason ? `<p style="margin: 8px 0 0; font-size: 14px; color: #555;">Motif : ${reason}</p>` : ''}
+        </div>
+
+        <p style="color: #666; font-size: 13px;">
+          <strong>Demandé par :</strong> ${requesterName} (${requesterEmail})
+        </p>
+
+        <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">
+          Conformément au RGPD (Art. 17), cette demande doit être traitée dans un délai raisonnable.<br>
+          Connecte-toi à Supabase pour supprimer ou anonymiser la fiche concernée.
+        </p>
+      </div>
+    `,
+  }).catch(() => {})
 
   return { success: true }
 }
