@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import {
   MagnifyingGlass, ShieldCheck, ShieldWarning, Warning,
-  CheckCircle, Info, PaperPlaneRight, X, PhoneCall,
+  CheckCircle, Info, PaperPlaneRight, X, PhoneCall, Star,
 } from '@phosphor-icons/react'
 import { searchGuest, reportGuest } from './actions'
 
@@ -17,6 +17,14 @@ const INCIDENT_TYPES = [
   'Avis négatif abusif',
   'Impayé / remboursement abusif',
   'Autre',
+]
+
+const POSITIVE_TYPES = [
+  'Voyageur exemplaire',
+  'Logement laissé impeccable',
+  'Communication excellente',
+  'Respect total des règles',
+  'Je recommande vivement',
 ]
 
 const TIPS = [
@@ -59,7 +67,14 @@ const incidentColor: Record<string, string> = {
   'Fête non autorisée': '#FB923C',
   'Tentative d\'arnaque / fraude': '#F87171',
   'Impayé / remboursement abusif': '#FB923C',
+  'Voyageur exemplaire': '#34D399',
+  'Logement laissé impeccable': '#34D399',
+  'Communication excellente': '#34D399',
+  'Respect total des règles': '#34D399',
+  'Je recommande vivement': '#34D399',
 }
+
+const POSITIVE_SET = new Set(POSITIVE_TYPES)
 
 export default function SecuriteView() {
   const [query, setQuery] = useState('')
@@ -76,6 +91,18 @@ export default function SecuriteView() {
     phone: '',
     full_name: '',
     incident_type: INCIDENT_TYPES[0],
+    description: '',
+  })
+
+  const [showPositive, setShowPositive] = useState(false)
+  const [isPositive, startPositive] = useTransition()
+  const [positiveSuccess, setPositiveSuccess] = useState(false)
+  const [positiveError, setPositiveError] = useState('')
+  const [positive, setPositive] = useState({
+    email: '',
+    phone: '',
+    full_name: '',
+    incident_type: POSITIVE_TYPES[0],
     description: '',
   })
 
@@ -102,7 +129,20 @@ export default function SecuriteView() {
     })
   }
 
+  function handlePositive(e: React.FormEvent) {
+    e.preventDefault()
+    setPositiveError('')
+    startPositive(async () => {
+      const res = await reportGuest(positive)
+      if (res.error) { setPositiveError(res.error); return }
+      setPositiveSuccess(true)
+      setShowPositive(false)
+      setPositive({ email: '', phone: '', full_name: '', incident_type: POSITIVE_TYPES[0], description: '' })
+    })
+  }
+
   const hasOneIdentifier = report.email.trim() || report.phone.trim() || report.full_name.trim()
+  const hasOnePositiveIdentifier = positive.email.trim() || positive.phone.trim() || positive.full_name.trim()
 
   return (
     <div style={styles.page} className="dash-page">
@@ -153,7 +193,76 @@ export default function SecuriteView() {
             {/* Results */}
             {results !== null && (
               <div style={styles.resultsWrap}>
-                {results.length === 0 ? (
+                {(() => {
+                  const negResults = results.filter(r => !POSITIVE_SET.has(r.incident_type))
+                  const posResults = results.filter(r => POSITIVE_SET.has(r.incident_type))
+                  return results.length === 0 ? null : (
+                    <>
+                      {negResults.length > 0 && (
+                        <div>
+                          <div style={styles.resultAlertHeader}>
+                            <ShieldWarning size={20} color="#F87171" weight="fill" />
+                            <span style={styles.resultAlertTitle}>
+                              {negResults.length} signalement{negResults.length > 1 ? 's' : ''} trouvé{negResults.length > 1 ? 's' : ''}
+                            </span>
+                          </div>
+                          {negResults.map(r => (
+                            <div key={r.id} style={styles.resultItem}>
+                              <div style={styles.resultItemHeader}>
+                                <span style={{ ...styles.incidentBadge, background: (incidentColor[r.incident_type] ?? '#FB923C') + '20', color: incidentColor[r.incident_type] ?? '#FB923C' }}>
+                                  {r.incident_type}
+                                </span>
+                                <span style={styles.resultDate}>
+                                  {new Date(r.reported_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                                </span>
+                              </div>
+                              {r.description && <p style={styles.resultDesc}>{r.description}</p>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {posResults.length > 0 && (
+                        <div>
+                          <div style={styles.resultAlertHeader}>
+                            <Star size={20} color="#34D399" weight="fill" />
+                            <span style={{ ...styles.resultAlertTitle, color: '#34D399' }}>
+                              {posResults.length} témoignage{posResults.length > 1 ? 's' : ''} positif{posResults.length > 1 ? 's' : ''}
+                            </span>
+                          </div>
+                          {posResults.map(r => (
+                            <div key={r.id} style={styles.resultItemPositive}>
+                              <div style={styles.resultItemHeader}>
+                                <span style={{ ...styles.incidentBadge, background: '#34D39920', color: '#34D399' }}>
+                                  {r.incident_type}
+                                </span>
+                                <span style={styles.resultDate}>
+                                  {new Date(r.reported_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                                </span>
+                              </div>
+                              {r.description && <p style={styles.resultDesc}>{r.description}</p>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {negResults.length === 0 && posResults.length > 0 && (
+                        <div style={styles.resultOk}>
+                          <CheckCircle size={28} color="#34D399" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
+                          <div>
+                            <div style={styles.resultOkTitle}>Aucun signalement négatif</div>
+                            <div style={styles.resultOkDesc}>Ce voyageur a uniquement des témoignages positifs dans notre base.</div>
+                          </div>
+                        </div>
+                      )}
+                      <div style={styles.legalNote}>
+                        <Info size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                          Ces signalements sont soumis à modération. Ils constituent des témoignages communautaires et ne valent pas décision judiciaire.
+                        </span>
+                      </div>
+                    </>
+                  )
+                })()}
+                {results.length === 0 && (
                   <div>
                     <div style={styles.resultOk}>
                       <CheckCircle size={28} color="#34D399" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
@@ -187,53 +296,38 @@ export default function SecuriteView() {
                       </a>
                     </div>
                   </div>
-                ) : (
-                  <div>
-                    <div style={styles.resultAlertHeader}>
-                      <ShieldWarning size={20} color="#F87171" weight="fill" />
-                      <span style={styles.resultAlertTitle}>
-                        {results.length} signalement{results.length > 1 ? 's' : ''} trouvé{results.length > 1 ? 's' : ''}
-                      </span>
-                    </div>
-                    {results.map(r => (
-                      <div key={r.id} style={styles.resultItem}>
-                        <div style={styles.resultItemHeader}>
-                          <span style={{ ...styles.incidentBadge, background: (incidentColor[r.incident_type] ?? '#FB923C') + '20', color: incidentColor[r.incident_type] ?? '#FB923C' }}>
-                            {r.incident_type}
-                          </span>
-                          <span style={styles.resultDate}>
-                            {new Date(r.reported_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-                          </span>
-                        </div>
-                        {r.description && (
-                          <p style={styles.resultDesc}>{r.description}</p>
-                        )}
-                      </div>
-                    ))}
-                    <div style={styles.legalNote}>
-                      <Info size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                        Ces signalements sont soumis à modération. Ils constituent des témoignages communautaires et ne valent pas décision judiciaire.
-                      </span>
-                    </div>
-                  </div>
                 )}
               </div>
             )}
 
-            {/* Report CTA */}
+            {/* Report CTAs */}
             <div style={styles.reportCta}>
-              <Info size={14} color="var(--text-muted)" />
-              <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
-                Tu as eu un problème avec un voyageur ?
-              </span>
-              <button onClick={() => setShowReport(v => !v)} style={styles.reportLink}>
-                {showReport ? 'Annuler' : 'Signaler'}
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, flexWrap: 'wrap' as const }}>
+                <Info size={14} color="var(--text-muted)" />
+                <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
+                  Tu as eu un problème ?
+                </span>
+                <button
+                  onClick={() => { setShowReport(v => !v); setShowPositive(false) }}
+                  style={styles.reportLink}
+                >
+                  {showReport ? 'Annuler' : 'Signaler'}
+                </button>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>·</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
+                  Tout s'est bien passé ?
+                </span>
+                <button
+                  onClick={() => { setShowPositive(v => !v); setShowReport(false) }}
+                  style={styles.positiveLink}
+                >
+                  {showPositive ? 'Annuler' : 'Témoigner'}
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Report inline form */}
+          {/* Negative report form */}
           {showReport && (
             <div style={styles.reportCard} className="glass-card fade-up">
               <div style={styles.reportHeader}>
@@ -249,7 +343,6 @@ export default function SecuriteView() {
               </p>
 
               <form onSubmit={handleReport} style={styles.reportForm}>
-                {/* Identifiers — all optional, at least one required */}
                 <div style={styles.identifiersBlock}>
                   <label style={styles.label}>Coordonnées du voyageur <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(au moins un champ)</span></label>
                   <input
@@ -277,15 +370,13 @@ export default function SecuriteView() {
 
                 <div style={styles.formRow}>
                   <label style={styles.label}>Type d'incident</label>
-                  <div style={{ position: 'relative' }}>
-                    <select
-                      value={report.incident_type}
-                      onChange={e => setReport(r => ({ ...r, incident_type: e.target.value }))}
-                      style={styles.select}
-                    >
-                      {INCIDENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </div>
+                  <select
+                    value={report.incident_type}
+                    onChange={e => setReport(r => ({ ...r, incident_type: e.target.value }))}
+                    style={styles.select}
+                  >
+                    {INCIDENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
                 </div>
 
                 <div style={styles.formRow}>
@@ -324,10 +415,98 @@ export default function SecuriteView() {
             </div>
           )}
 
+          {/* Positive report form */}
+          {showPositive && (
+            <div style={styles.positiveCard} className="glass-card fade-up">
+              <div style={styles.reportHeader}>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Star size={16} color="#34D399" weight="fill" /> Témoigner positivement
+                </div>
+                <button onClick={() => setShowPositive(false)} style={styles.closeBtn}>
+                  <X size={16} />
+                </button>
+              </div>
+              <p style={styles.positiveNotice}>
+                Partage une bonne expérience avec la communauté. Ce témoignage sera examiné avant publication.
+              </p>
+
+              <form onSubmit={handlePositive} style={styles.reportForm}>
+                <div style={styles.identifiersBlock}>
+                  <label style={styles.label}>Coordonnées du voyageur <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(au moins un champ)</span></label>
+                  <input
+                    type="email"
+                    value={positive.email}
+                    onChange={e => setPositive(r => ({ ...r, email: e.target.value }))}
+                    style={styles.input}
+                    placeholder="E-mail (optionnel)"
+                  />
+                  <input
+                    type="tel"
+                    value={positive.phone}
+                    onChange={e => setPositive(r => ({ ...r, phone: e.target.value }))}
+                    style={styles.input}
+                    placeholder="Téléphone (optionnel)"
+                  />
+                  <input
+                    type="text"
+                    value={positive.full_name}
+                    onChange={e => setPositive(r => ({ ...r, full_name: e.target.value }))}
+                    style={styles.input}
+                    placeholder="Nom & prénom (optionnel)"
+                  />
+                </div>
+
+                <div style={styles.formRow}>
+                  <label style={styles.label}>Type de témoignage</label>
+                  <select
+                    value={positive.incident_type}
+                    onChange={e => setPositive(r => ({ ...r, incident_type: e.target.value }))}
+                    style={styles.selectPositive}
+                  >
+                    {POSITIVE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+
+                <div style={styles.formRow}>
+                  <label style={styles.label}>Décris ton expérience <span style={{ color: '#34D399' }}>*</span></label>
+                  <textarea
+                    value={positive.description}
+                    onChange={e => setPositive(r => ({ ...r, description: e.target.value }))}
+                    style={styles.textareaPositive}
+                    placeholder="Décris ce qui s'est bien passé (minimum 20 caractères)."
+                    rows={4}
+                    required
+                  />
+                  <span style={{ fontSize: '11px', color: positive.description.length < 20 ? 'var(--text-muted)' : '#34D399' }}>
+                    {positive.description.length}/20 minimum
+                  </span>
+                </div>
+
+                {positiveError && <p style={styles.errorMsg}>{positiveError}</p>}
+
+                <button
+                  type="submit"
+                  disabled={isPositive || !hasOnePositiveIdentifier || positive.description.length < 20}
+                  style={{ ...styles.positiveBtn, width: '100%', justifyContent: 'center', marginTop: '8px' }}
+                >
+                  <Star size={15} weight="bold" />
+                  {isPositive ? 'Envoi...' : 'Envoyer le témoignage'}
+                </button>
+              </form>
+            </div>
+          )}
+
           {reportSuccess && (
             <div style={styles.successBanner} className="fade-up">
               <CheckCircle size={18} color="#34D399" weight="fill" />
               Signalement reçu — il sera examiné avant publication. Merci pour la communauté.
+            </div>
+          )}
+
+          {positiveSuccess && (
+            <div style={styles.positiveBanner} className="fade-up">
+              <Star size={18} color="#34D399" weight="fill" />
+              Témoignage reçu — il sera examiné avant publication. Merci pour la communauté !
             </div>
           )}
         </div>
@@ -386,7 +565,7 @@ const styles: Record<string, React.CSSProperties> = {
   searchForm: { display: 'flex', flexDirection: 'column', gap: '12px' },
   inputRow: { display: 'flex', gap: '10px', alignItems: 'center' },
   input: {
-    flex: 1, background: 'var(--border)', border: '1px solid var(--border)',
+    flex: 1, background: 'var(--bg-2)', border: '1px solid var(--border-2)',
     borderRadius: '10px', padding: '10px 14px',
     fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', width: '100%',
@@ -467,13 +646,25 @@ const styles: Record<string, React.CSSProperties> = {
     textTransform: 'uppercase' as const, color: 'var(--text-3)',
   },
   select: {
-    width: '100%', background: 'var(--border)', border: '1px solid var(--border)',
+    width: '100%', background: 'var(--bg-2)', border: '1px solid var(--border-2)',
+    borderRadius: '10px', padding: '10px 14px',
+    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
+    outline: 'none', appearance: 'none' as const,
+  },
+  selectPositive: {
+    width: '100%', background: 'var(--bg-2)', border: '1px solid rgba(52,211,153,0.25)',
     borderRadius: '10px', padding: '10px 14px',
     fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', appearance: 'none' as const,
   },
   textarea: {
-    width: '100%', background: 'var(--border)', border: '1px solid var(--border)',
+    width: '100%', background: 'var(--bg-2)', border: '1px solid var(--border-2)',
+    borderRadius: '10px', padding: '10px 14px',
+    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
+    outline: 'none', resize: 'vertical' as const, minHeight: '100px',
+  },
+  textareaPositive: {
+    width: '100%', background: 'var(--bg-2)', border: '1px solid rgba(52,211,153,0.25)',
     borderRadius: '10px', padding: '10px 14px',
     fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', resize: 'vertical' as const, minHeight: '100px',
@@ -484,6 +675,38 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
     borderRadius: '12px', padding: '14px 18px',
     fontSize: '13px', color: '#34D399',
+  },
+  positiveBanner: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
+    borderRadius: '12px', padding: '14px 18px',
+    fontSize: '13px', color: '#34D399',
+  },
+  positiveCard: {
+    padding: '24px', borderRadius: '20px',
+    border: '1px solid rgba(52,211,153,0.2)',
+    background: 'rgba(52,211,153,0.04)',
+  },
+  positiveNotice: {
+    fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5,
+    background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)',
+    borderRadius: '8px', padding: '10px 14px', marginBottom: '20px',
+  },
+  positiveLink: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    fontSize: '12px', fontWeight: 500, color: '#34D399',
+    textDecoration: 'underline', padding: 0,
+  },
+  positiveBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '8px',
+    background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.3)',
+    color: '#34D399', fontFamily: 'Outfit, sans-serif', fontSize: '14px', fontWeight: 600,
+    padding: '11px 22px', borderRadius: '10px', cursor: 'pointer',
+    whiteSpace: 'nowrap' as const,
+  },
+  resultItemPositive: {
+    background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)',
+    borderRadius: '12px', padding: '14px 16px', marginBottom: '10px',
   },
 
   tipsHeader: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' },
