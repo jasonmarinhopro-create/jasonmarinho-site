@@ -3,9 +3,9 @@
 import { useState, useTransition } from 'react'
 import {
   MagnifyingGlass, ShieldCheck, ShieldWarning, Warning,
-  CheckCircle, Info, PaperPlaneRight, X, PhoneCall, Star,
+  CheckCircle, Info, PaperPlaneRight, X, PhoneCall, Star, Trash,
 } from '@phosphor-icons/react'
-import { searchGuest, reportGuest } from './actions'
+import { searchGuest, reportGuest, requestDeletion } from './actions'
 
 const INCIDENT_TYPES = [
   'Dégradation du logement',
@@ -106,6 +106,10 @@ export default function SecuriteView() {
     description: '',
   })
 
+  const [deletionRequestId, setDeletionRequestId] = useState<string | null>(null)
+  const [isDeletionPending, startDeletion] = useTransition()
+  const [deletionSuccess, setDeletionSuccess] = useState<string | null>(null)
+
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     setSearchError('')
@@ -138,6 +142,13 @@ export default function SecuriteView() {
       setPositiveSuccess(true)
       setShowPositive(false)
       setPositive({ email: '', phone: '', full_name: '', incident_type: POSITIVE_TYPES[0], description: '' })
+    })
+  }
+
+  function handleDeletionRequest(id: string, identifier: string) {
+    startDeletion(async () => {
+      const res = await requestDeletion({ entry_id: id, identifier })
+      if (res.success) { setDeletionSuccess(id); setDeletionRequestId(null) }
     })
   }
 
@@ -258,6 +269,49 @@ export default function SecuriteView() {
                         <span style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                           Ces signalements sont soumis à modération. Ils constituent des témoignages communautaires et ne valent pas décision judiciaire.
                         </span>
+                      </div>
+
+                      {/* RGPD deletion requests */}
+                      <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                          RGPD — Droit à l'effacement (Art. 17)
+                        </div>
+                        {results.map(r => (
+                          <div key={r.id} style={{ marginBottom: '6px' }}>
+                            {deletionSuccess === r.id ? (
+                              <span style={{ fontSize: '12px', color: '#34D399' }}>
+                                ✓ Demande de suppression envoyée pour cette fiche
+                              </span>
+                            ) : deletionRequestId === r.id ? (
+                              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const }}>
+                                <span style={{ fontSize: '12px', color: 'var(--text-2)' }}>
+                                  Confirmer la demande de suppression de la fiche «&nbsp;{r.identifier}&nbsp;» ?
+                                </span>
+                                <button
+                                  onClick={() => handleDeletionRequest(r.id, r.identifier)}
+                                  disabled={isDeletionPending}
+                                  style={{ fontSize: '12px', background: 'rgba(239,68,68,0.15)', color: '#F87171', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer' }}
+                                >
+                                  {isDeletionPending ? 'Envoi...' : 'Confirmer'}
+                                </button>
+                                <button
+                                  onClick={() => setDeletionRequestId(null)}
+                                  style={{ fontSize: '12px', background: 'transparent', color: 'var(--text-muted)', border: 'none', cursor: 'pointer', padding: '4px 6px' }}
+                                >
+                                  Annuler
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => setDeletionRequestId(r.id)}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px 0', textDecoration: 'underline' }}
+                              >
+                                <Trash size={12} />
+                                Je souhaite supprimer la fiche «&nbsp;{r.identifier}&nbsp;»
+                              </button>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </>
                   )
