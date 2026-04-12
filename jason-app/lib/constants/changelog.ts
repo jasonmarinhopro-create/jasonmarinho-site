@@ -10,6 +10,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    id: 'voyageur-signalement-temoignage-apr-2026',
+    date: '2026-04-12',
+    tag: 'nouveau',
+    title: 'Signaler ou témoigner directement depuis la fiche voyageur',
+    description: 'Deux nouveaux boutons sur chaque fiche voyageur : "Signaler" pour remonter un incident (dégradation, arnaque, fête non autorisée…) et "Témoigner" pour laisser un retour positif. Les informations du voyageur sont pré-remplies automatiquement et le signalement est connecté à la base Sécurité Voyageur partagée avec la communauté.',
+  },
+  {
     id: 'guide-lcd-refonte-apr-2026',
     date: '2026-04-09',
     tag: 'amélioration',
