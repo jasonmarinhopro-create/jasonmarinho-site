@@ -296,9 +296,9 @@ a { color: inherit; }
   .dash-grid-3 { grid-template-columns: repeat(4, 1fr) !important; }
   .dash-grid-2 { grid-template-columns: repeat(3, 1fr) !important; }
 }
-/* Large (1400-1800px) : 4 col pour grid-3 */
+/* Large (1400-1800px) : 3 col pour grid-3 */
 @media (min-width: 1400px) and (max-width: 1799px) {
-  .dash-grid-3 { grid-template-columns: repeat(4, 1fr) !important; }
+  .dash-grid-3 { grid-template-columns: repeat(3, 1fr) !important; }
 }
 /* Tablet landscape (1024-1399px) : 2 col */
 @media (max-width: 1399px) {
