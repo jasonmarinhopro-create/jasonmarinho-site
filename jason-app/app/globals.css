@@ -178,6 +178,16 @@ em { font-style: italic; color: var(--accent); }
 [data-theme="dark"] .input-field  { color-scheme: dark; }
 [data-theme="light"] .input-field { color-scheme: light; }
 
+/* ── GLOBAL FORM ELEMENTS COLOR SCHEME (cross-browser / Windows fix) ── */
+/* Without this, Windows browsers render inputs with system light colors  */
+/* even when the app is in dark mode — causing white text on white bg.   */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea { color-scheme: dark; }
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea { color-scheme: light; }
+
 /* ── THEME TOGGLE BUTTON ── */
 .theme-toggle {
   display: flex; align-items: center; justify-content: center;

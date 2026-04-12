@@ -789,8 +789,8 @@ const s: Record<string, React.CSSProperties> = {
     marginBottom: '4px',
   },
   input: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border-2)',
     borderRadius: '9px',
     padding: '9px 12px',
     color: 'var(--text)',
