@@ -209,7 +209,7 @@ export default async function SignPage({
               <div style={priceBox}>
                 <p style={priceLabel}>Dépôt de garantie</p>
                 <p style={priceValue}>{Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
-                <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>remboursé sous 7 jours après l&apos;état des lieux</p>
+                <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>remboursé sous 30 jours après l&apos;état des lieux</p>
               </div>
             </div>
             <p style={{ ...contractText, marginTop: '12px' }}>
