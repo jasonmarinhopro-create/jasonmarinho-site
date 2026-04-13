@@ -473,13 +473,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                     )}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
                   <button
                     onClick={() => setContractSejour(sj)}
-                    style={{ ...s.sejourActionBtn, color: '#FFD56B' }}
+                    style={s.contractBtn}
                     title="Créer / voir le contrat"
                   >
-                    <FileText size={14} />
+                    <FileText size={13} weight="fill" />
+                    Contrat
                   </button>
                   <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} title="Modifier">
                     <Pencil size={14} />
@@ -600,8 +601,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
           sejour={contractSejour}
           voyageur={voyageur}
           bailleur={bailleur}
-          onClose={() => setContractSejour(null)}
-          onSuccess={() => { setContractSejour(null); router.refresh() }}
+          onClose={() => { setContractSejour(null); router.refresh() }}
+          onSuccess={() => router.refresh()}
         />
       )}
 
@@ -805,6 +806,13 @@ const s: Record<string, React.CSSProperties> = {
     background: 'none', border: 'none', cursor: 'pointer',
     color: 'var(--text-muted)', padding: '5px', borderRadius: '7px',
     transition: 'all 0.15s',
+  },
+  contractBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)',
+    borderRadius: '8px', padding: '5px 11px',
+    fontSize: '12px', fontWeight: 500, color: '#FFD56B',
+    cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
   },
 
   /* Modal */
