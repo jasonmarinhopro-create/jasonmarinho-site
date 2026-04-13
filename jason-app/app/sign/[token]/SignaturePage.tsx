@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   token: string
@@ -10,6 +11,7 @@ interface Props {
 
 export default function SignaturePage({ token, locataireName }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const router = useRouter()
   const [isDrawing, setIsDrawing] = useState(false)
   const [hasSignature, setHasSignature] = useState(false)
   const [agreed, setAgreed] = useState(false)
@@ -93,6 +95,23 @@ export default function SignaturePage({ token, locataireName }: Props) {
 
     const canvas = canvasRef.current
     if (!canvas) return
+
+    // Vérifier que le canvas a des dimensions valides
+    if (canvas.width === 0 || canvas.height === 0) {
+      setError('Erreur d\'initialisation du canvas. Veuillez rafraîchir la page.')
+      return
+    }
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    // Ajouter un fond blanc derrière la signature pour qu'elle soit visible sur tous les fonds
+    ctx.save()
+    ctx.globalCompositeOperation = 'destination-over'
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.restore()
+
     const signatureImage = canvas.toDataURL('image/png')
 
     setError('')
@@ -109,8 +128,8 @@ export default function SignaturePage({ token, locataireName }: Props) {
         setError(data.error ?? 'Une erreur est survenue.')
       } else {
         setSuccess(true)
-        // Recharger la page après 2s pour afficher le contrat signé avec la signature
-        setTimeout(() => window.location.reload(), 2000)
+        // Rafraîchir les données serveur via Next.js pour afficher le contrat signé
+        setTimeout(() => router.refresh(), 2000)
       }
     } catch {
       setError('Erreur réseau. Veuillez réessayer.')
