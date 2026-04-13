@@ -26,7 +26,6 @@ export async function POST() {
     // Créer un nouveau compte Express si nécessaire
     if (!accountId) {
       const account = await stripe.accounts.create({
-        type: 'express',
         country: 'FR',
         email: session.user.email,
         capabilities: {
@@ -34,6 +33,18 @@ export async function POST() {
           transfers: { requested: true },
         },
         business_type: 'individual',
+        controller: {
+          losses: {
+            payments: 'application',
+          },
+          fees: {
+            payer: 'application',
+          },
+          stripe_dashboard: {
+            type: 'express',
+          },
+          requirement_collection: 'stripe',
+        },
       })
       accountId = account.id
 
