@@ -17,7 +17,7 @@ export type SejourData = {
   date_arrivee: string
   date_depart: string
   montant?: number | null
-  contrat_statut: 'signe' | 'en_attente' | 'non_requis' // non_requis conservé pour compatibilité avec les anciens séjours
+  contrat_statut: 'signe' | 'en_attente' | 'non_requis' | 'nouveau' // non_requis conservé pour compatibilité avec les anciens séjours
   contrat_date_signature?: string | null
   contrat_lien?: string | null
 }
