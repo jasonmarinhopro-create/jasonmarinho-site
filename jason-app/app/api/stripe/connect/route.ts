@@ -34,9 +34,6 @@ export async function POST() {
           transfers: { requested: true },
         },
         business_type: 'individual',
-        settings: {
-          payouts: { schedule: { interval: 'manual' } },
-        },
       })
       accountId = account.id
 
@@ -57,8 +54,9 @@ export async function POST() {
 
     return NextResponse.json({ url: accountLink.url })
   } catch (err) {
-    console.error('[stripe/connect]', err)
-    return NextResponse.json({ error: 'Erreur lors de la création du compte Stripe.' }, { status: 500 })
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[stripe/connect POST]', message, err)
+    return NextResponse.json({ error: `Erreur lors de la création du compte Stripe : ${message}` }, { status: 500 })
   }
 }
 
