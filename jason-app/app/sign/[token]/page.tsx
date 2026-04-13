@@ -609,7 +609,7 @@ const signatureImg: React.CSSProperties = {
   borderRadius: '8px',
   border: '1px solid rgba(52,211,153,0.2)',
   padding: '8px',
-  background: 'rgba(255,255,255,0.04)',
+  background: '#ffffff',
 }
 
 const footerLegal: React.CSSProperties = {
