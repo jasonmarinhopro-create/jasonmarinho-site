@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { X, LockKey, LockKeyOpen, Warning, CurrencyEur, Copy, Check } from '@phosphor-icons/react'
+import { X, LockKey, LockKeyOpen, Warning, CurrencyEur, Copy, Check, PaperPlaneTilt } from '@phosphor-icons/react'
 import { useRouter } from 'next/navigation'
 
 type DepositStatus = 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
@@ -49,15 +49,62 @@ export default function DepositModal({ contract, onClose }: Props) {
   const [error, setError] = useState('')
   const [done, setDone] = useState<'captured' | 'released' | null>(null)
   const [copied, setCopied] = useState<'payment' | 'deposit' | null>(null)
+  const [resending, setResending] = useState(false)
+  const [resent, setResent] = useState(false)
 
   function copyLink(type: 'payment' | 'deposit') {
     const url = type === 'payment'
       ? `${signUrl}#paiement-reservation`
       : `${signUrl}#depot-garantie`
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(type)
-      setTimeout(() => setCopied(null), 2000)
-    })
+
+    const doFallback = () => {
+      const ta = document.createElement('textarea')
+      ta.value = url
+      ta.style.position = 'fixed'
+      ta.style.left = '-9999px'
+      document.body.appendChild(ta)
+      ta.focus()
+      ta.select()
+      try {
+        document.execCommand('copy')
+        setCopied(type)
+        setTimeout(() => setCopied(null), 2000)
+      } finally {
+        document.body.removeChild(ta)
+      }
+    }
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(type)
+        setTimeout(() => setCopied(null), 2000)
+      }).catch(doFallback)
+    } else {
+      doFallback()
+    }
+  }
+
+  async function handleResend() {
+    setResending(true)
+    setResent(false)
+    try {
+      const res = await fetch('/api/contracts/resend-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contract_id: contract.id }),
+      })
+      if (res.ok) {
+        setResent(true)
+        setTimeout(() => setResent(false), 4000)
+      } else {
+        const data = await res.json()
+        setError(data.error ?? 'Erreur lors de l\'envoi.')
+      }
+    } catch {
+      setError('Erreur réseau. Réessayez.')
+    } finally {
+      setResending(false)
+    }
   }
 
   const depositStatus = contract.stripe_deposit_status
@@ -135,7 +182,7 @@ export default function DepositModal({ contract, onClose }: Props) {
                   <div style={linkRow}>
                     <button onClick={() => copyLink('payment')} style={copyBtn}>
                       {copied === 'payment' ? <Check size={13} weight="bold" /> : <Copy size={13} />}
-                      {copied === 'payment' ? 'Lien copié !' : 'Copier le lien de paiement'}
+                      {copied === 'payment' ? 'Lien copié !' : 'Copier le lien'}
                     </button>
                     <a href={`${signUrl}#paiement-reservation`} target="_blank" rel="noopener noreferrer" style={viewLink}>
                       Voir →
@@ -222,7 +269,7 @@ export default function DepositModal({ contract, onClose }: Props) {
                   <div style={linkRow}>
                     <button onClick={() => copyLink('deposit')} style={copyBtn}>
                       {copied === 'deposit' ? <Check size={13} weight="bold" /> : <Copy size={13} />}
-                      {copied === 'deposit' ? 'Lien copié !' : 'Copier le lien de caution'}
+                      {copied === 'deposit' ? 'Lien copié !' : 'Copier le lien'}
                     </button>
                     <a href={`${signUrl}#depot-garantie`} target="_blank" rel="noopener noreferrer" style={viewLink}>
                       Voir →
@@ -236,6 +283,25 @@ export default function DepositModal({ contract, onClose }: Props) {
           {/* Pas de paiements configurés */}
           {!contract.stripe_payment_enabled && depositAmount <= 0 && (
             <p style={hint}>Aucun paiement en ligne configuré pour ce contrat.</p>
+          )}
+
+          {/* Renvoyer l'email au voyageur */}
+          {((!paymentStatus || paymentStatus === 'pending') || (!depositStatus || depositStatus === 'pending')) && (
+            <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border, #1e3d2f)' }}>
+              {resent ? (
+                <div style={{ ...successBox, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Check size={14} weight="bold" color="#34D399" />
+                  <p style={{ margin: 0, fontSize: '13px', color: '#34D399', fontWeight: 500 }}>
+                    Email renvoyé à {contract.locataire_prenom} {contract.locataire_nom} ✓
+                  </p>
+                </div>
+              ) : (
+                <button onClick={handleResend} disabled={resending} style={resendBtn}>
+                  <PaperPlaneTilt size={14} weight="fill" />
+                  {resending ? 'Envoi en cours…' : `Renvoyer l'email au voyageur`}
+                </button>
+              )}
+            </div>
           )}
 
           {error && (
@@ -374,4 +440,14 @@ const copyBtn: React.CSSProperties = {
 const viewLink: React.CSSProperties = {
   fontSize: '13px', color: '#6b9a7e',
   textDecoration: 'none', display: 'inline-block',
+}
+
+const resendBtn: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+  width: '100%', padding: '11px',
+  background: 'rgba(52,211,153,0.08)',
+  border: '1px solid rgba(52,211,153,0.2)',
+  borderRadius: '12px',
+  fontSize: '13px', fontWeight: 500, color: '#34D399',
+  cursor: 'pointer',
 }

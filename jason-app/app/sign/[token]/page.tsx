@@ -80,13 +80,21 @@ export default async function SignPage({
   const paymentEnabled = !!(contract.stripe_payment_enabled)
   const paymentAlreadyDone = contract.stripe_payment_status === 'paid'
 
+  const badgeStyle: React.CSSProperties = alreadySigned
+    ? { ...badge, background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.35)', color: '#34D399' }
+    : cancelled
+    ? { ...badge, background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.35)', color: '#ef4444' }
+    : expired
+    ? { ...badge, background: 'rgba(165,196,176,0.12)', border: '1px solid rgba(165,196,176,0.25)', color: '#a5c4b0' }
+    : badge
+
   return (
     <div style={page}>
       <div style={container}>
         {/* Header */}
         <div style={header}>
-          <span style={badge}>
-            {cancelled ? 'Annulé' : alreadySigned ? 'Signé' : expired ? 'Expiré' : 'En attente de signature'}
+          <span style={badgeStyle}>
+            {cancelled ? 'Annulé' : alreadySigned ? 'Signé ✓' : expired ? 'Expiré' : 'En attente de signature'}
           </span>
           <h1 style={title}>
             Contrat de location<br />

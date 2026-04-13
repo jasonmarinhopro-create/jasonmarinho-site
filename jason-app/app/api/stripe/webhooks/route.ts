@@ -64,12 +64,26 @@ export async function POST(request: NextRequest) {
         break
       }
 
-      // Paiement capturé (bailleur a encaissé)
+      // Pré-autorisation confirmée (caution retenue sur la carte)
       case 'payment_intent.amount_capturable_updated': {
         const pi = event.data.object as Stripe.PaymentIntent
         const contractId = pi.metadata?.contract_id
         if (!contractId) break
         // Mise à jour si besoin (déjà géré côté API capture)
+        break
+      }
+
+      // Autorisation expirée ou annulée (Stripe expire les pré-auths après 7–30 jours)
+      case 'payment_intent.canceled': {
+        const pi = event.data.object as Stripe.PaymentIntent
+        const contractId = pi.metadata?.contract_id
+        if (!contractId) break
+        // Si l'autorisation était retenue, remettre en 'pending' pour que le voyageur puisse repayer
+        await db
+          .from('contracts')
+          .update({ stripe_deposit_status: 'pending', stripe_deposit_payment_intent_id: null })
+          .eq('id', contractId)
+          .eq('stripe_deposit_status', 'held')
         break
       }
 
