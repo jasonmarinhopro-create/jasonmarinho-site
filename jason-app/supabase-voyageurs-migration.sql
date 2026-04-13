@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS public.sejours (
   date_arrivee           DATE NOT NULL,
   date_depart            DATE NOT NULL,
   montant                NUMERIC(10,2),
-  contrat_statut         TEXT DEFAULT 'non_requis'
-                           CHECK (contrat_statut IN ('signe', 'en_attente', 'non_requis')),
+  contrat_statut         TEXT DEFAULT 'nouveau'
+                           CHECK (contrat_statut IN ('signe', 'en_attente', 'non_requis', 'nouveau')),
   contrat_date_signature DATE,
   contrat_lien           TEXT,
   created_at             TIMESTAMPTZ DEFAULT now() NOT NULL

@@ -42,7 +42,7 @@ type Sejour = {
   id: string; voyageur_id: string; logement: string | null
   date_arrivee: string; date_depart: string
   montant: number | null
-  contrat_statut: 'signe' | 'en_attente' | 'non_requis'
+  contrat_statut: 'signe' | 'en_attente' | 'non_requis' | 'nouveau'
   contrat_date_signature: string | null; contrat_lien: string | null
 }
 
@@ -79,11 +79,12 @@ const CONTRAT_LABELS: Record<string, { label: string; color: string; bg: string 
   signe:       { label: 'Signé',       color: '#34D399', bg: 'rgba(52,211,153,0.12)' },
   en_attente:  { label: 'En attente',  color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
   non_requis:  { label: 'Non requis',  color: 'var(--text-muted)', bg: 'var(--surface-2)' },
+  nouveau:     { label: 'Nouveau',     color: '#7EB8F7', bg: 'rgba(126,184,247,0.12)' },
 }
 
 const EMPTY_SEJOUR: Omit<SejourData, 'voyageur_id'> = {
   logement: '', date_arrivee: '', date_depart: '',
-  montant: null, contrat_statut: 'en_attente',
+  montant: null, contrat_statut: 'nouveau',
   contrat_date_signature: null, contrat_lien: null,
 }
 
@@ -716,10 +717,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                     onClick={() => handleContractClick(sj)}
                     style={s.contractBtn}
                     disabled={contractLoading === sj.id}
-                    title={sj.contrat_lien || sj.contrat_statut === 'en_attente' ? 'Voir le contrat' : 'Créer un contrat'}
+                    title={sj.contrat_statut === 'nouveau' ? 'Créer un contrat' : 'Voir le contrat'}
                   >
                     <FileText size={13} weight="fill" />
-                    {contractLoading === sj.id ? '…' : sj.contrat_lien || sj.contrat_statut === 'en_attente' ? 'Voir contrat' : 'Créer contrat'}
+                    {contractLoading === sj.id ? '…' : sj.contrat_statut === 'nouveau' ? 'Créer contrat' : 'Voir contrat'}
                   </button>
                   {sj.contrat_statut === 'signe' && (
                     <button
@@ -954,6 +955,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                   onChange={e => setSejourForm(f => ({ ...f, contrat_statut: e.target.value as SejourData['contrat_statut'] }))}
                   style={{ ...s.inputWrap, cursor: 'pointer' }}
                 >
+                  <option value="nouveau">Nouveau</option>
                   <option value="en_attente">En attente</option>
                   <option value="signe">Signé</option>
                 </select>
