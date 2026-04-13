@@ -318,21 +318,25 @@ export default async function SignPage({
               <>
                 {/* 1. Paiement de la réservation */}
                 {paymentEnabled && (
-                  <PaymentSection
-                    token={token}
-                    amount={Number(contract.montant_loyer)}
-                    paymentParam={paymentParam}
-                    alreadyPaid={paymentAlreadyDone}
-                  />
+                  <div id="paiement-reservation">
+                    <PaymentSection
+                      token={token}
+                      amount={Number(contract.montant_loyer)}
+                      paymentParam={paymentParam}
+                      alreadyPaid={paymentAlreadyDone}
+                    />
+                  </div>
                 )}
                 {/* 2. Dépôt de garantie */}
                 {hasDeposit && (
-                  <DepositSection
-                    token={token}
-                    amount={Number(contract.montant_caution)}
-                    depositParam={depositParam}
-                    depositAlreadyHeld={depositAlreadyHeld}
-                  />
+                  <div id="depot-garantie">
+                    <DepositSection
+                      token={token}
+                      amount={Number(contract.montant_caution)}
+                      depositParam={depositParam}
+                      depositAlreadyHeld={depositAlreadyHeld}
+                    />
+                  </div>
                 )}
               </>
             )}

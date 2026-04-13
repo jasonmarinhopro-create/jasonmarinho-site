@@ -51,7 +51,10 @@ export default function DepositModal({ contract, onClose }: Props) {
   const [copied, setCopied] = useState<'payment' | 'deposit' | null>(null)
 
   function copyLink(type: 'payment' | 'deposit') {
-    navigator.clipboard.writeText(signUrl).then(() => {
+    const url = type === 'payment'
+      ? `${signUrl}#paiement-reservation`
+      : `${signUrl}#depot-garantie`
+    navigator.clipboard.writeText(url).then(() => {
       setCopied(type)
       setTimeout(() => setCopied(null), 2000)
     })
@@ -134,7 +137,7 @@ export default function DepositModal({ contract, onClose }: Props) {
                       {copied === 'payment' ? <Check size={13} weight="bold" /> : <Copy size={13} />}
                       {copied === 'payment' ? 'Lien copié !' : 'Copier le lien de paiement'}
                     </button>
-                    <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                    <a href={`${signUrl}#paiement-reservation`} target="_blank" rel="noopener noreferrer" style={viewLink}>
                       Voir →
                     </a>
                   </div>
@@ -221,7 +224,7 @@ export default function DepositModal({ contract, onClose }: Props) {
                       {copied === 'deposit' ? <Check size={13} weight="bold" /> : <Copy size={13} />}
                       {copied === 'deposit' ? 'Lien copié !' : 'Copier le lien de caution'}
                     </button>
-                    <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                    <a href={`${signUrl}#depot-garantie`} target="_blank" rel="noopener noreferrer" style={viewLink}>
                       Voir →
                     </a>
                   </div>
