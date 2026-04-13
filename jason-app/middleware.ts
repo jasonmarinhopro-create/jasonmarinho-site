@@ -62,5 +62,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // /sign/* routes are public (no auth required — voyageur signature page)
   matcher: ['/', '/dashboard/:path*', '/auth/:path*'],
 }

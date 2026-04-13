@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
   Envelope, Phone, Note, CalendarBlank, House,
-  CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star,
+  CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText,
 } from '@phosphor-icons/react'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
 import { reportGuest } from '../../securite/actions'
+import ContractModal from './ContractModal'
 
 const INCIDENT_TYPES = [
   'Dégradation du logement',
@@ -72,15 +73,25 @@ const EMPTY_SEJOUR: Omit<SejourData, 'voyageur_id'> = {
   contrat_date_signature: null, contrat_lien: null,
 }
 
+type BailleurProfile = {
+  prenom: string
+  nom: string
+  email: string
+}
+
 interface Props {
   voyageur: Voyageur
   sejours: Sejour[]
   isFlagged: boolean
+  bailleur: BailleurProfile
 }
 
-export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) {
+export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+
+  // Contract modal
+  const [contractSejour, setContractSejour] = useState<Sejour | null>(null)
 
   // Profile inline edit
   const [editingProfile, setEditingProfile] = useState(false)
@@ -462,7 +473,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
                     )}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '4px' }}>
+                <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <button
+                    onClick={() => setContractSejour(sj)}
+                    style={{ ...s.sejourActionBtn, color: '#FFD56B' }}
+                    title="Créer / voir le contrat"
+                  >
+                    <FileText size={14} />
+                  </button>
                   <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} title="Modifier">
                     <Pencil size={14} />
                   </button>
@@ -574,6 +592,17 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged }: Props) 
             )}
           </div>
         </div>
+      )}
+
+      {/* Contract modal */}
+      {contractSejour && (
+        <ContractModal
+          sejour={contractSejour}
+          voyageur={voyageur}
+          bailleur={bailleur}
+          onClose={() => setContractSejour(null)}
+          onSuccess={() => { setContractSejour(null); router.refresh() }}
+        />
       )}
 
       {/* Séjour modal */}
