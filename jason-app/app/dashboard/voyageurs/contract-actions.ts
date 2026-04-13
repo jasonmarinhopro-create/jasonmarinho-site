@@ -71,10 +71,11 @@ export async function createContract(data: ContractData): Promise<{
 
   if (error) return { error: error.message }
 
-  // Mettre à jour le statut du séjour associé
+  // Mettre à jour le statut du séjour associé + stocker le lien dès la création
+  const signUrl = `${APP_URL}/sign/${row.token}`
   await supabase
     .from('sejours')
-    .update({ contrat_statut: 'en_attente' })
+    .update({ contrat_statut: 'en_attente', contrat_lien: signUrl })
     .eq('id', data.sejour_id)
     .eq('user_id', session.user.id)
 

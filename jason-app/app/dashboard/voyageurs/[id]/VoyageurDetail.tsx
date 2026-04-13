@@ -122,6 +122,35 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
     }
   }
 
+  // Contract loading state (for fetching token when contrat_lien is null)
+  const [contractLoading, setContractLoading] = useState<string | null>(null)
+
+  async function handleContractClick(sj: Sejour) {
+    // If a link already exists, open it directly
+    if (sj.contrat_lien) {
+      window.open(sj.contrat_lien, '_blank', 'noopener,noreferrer')
+      return
+    }
+    // If there's an existing (en_attente) contract without link yet, fetch it
+    if (sj.contrat_statut === 'en_attente') {
+      setContractLoading(sj.id)
+      try {
+        const { getContractsBySejour } = await import('../contract-actions')
+        const res = await getContractsBySejour(sj.id)
+        const latest = res.contracts?.[0]
+        if (latest?.token) {
+          const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+          window.open(`${APP_URL}/sign/${latest.token}`, '_blank', 'noopener,noreferrer')
+          return
+        }
+      } finally {
+        setContractLoading(null)
+      }
+    }
+    // No contract yet — open creation modal
+    setContractSejour(sj)
+  }
+
   // Profile inline edit
   const [editingProfile, setEditingProfile] = useState(false)
   const [profileForm, setProfileForm] = useState({
@@ -504,12 +533,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                 </div>
                 <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
                   <button
-                    onClick={() => setContractSejour(sj)}
+                    onClick={() => handleContractClick(sj)}
                     style={s.contractBtn}
-                    title="Créer / voir le contrat"
+                    disabled={contractLoading === sj.id}
+                    title={sj.contrat_lien || sj.contrat_statut === 'en_attente' ? 'Voir le contrat' : 'Créer un contrat'}
                   >
                     <FileText size={13} weight="fill" />
-                    Contrat
+                    {contractLoading === sj.id ? '…' : sj.contrat_lien || sj.contrat_statut === 'en_attente' ? 'Voir contrat' : 'Créer contrat'}
                   </button>
                   {sj.contrat_statut === 'signe' && (
                     <button
