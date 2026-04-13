@@ -148,7 +148,8 @@ export default function SignaturePage({ token, locataireName }: Props) {
           Un email de confirmation a été envoyé à toutes les parties.
         </p>
         <p style={successMeta}>
-          Vous pouvez fermer cette page ou l&apos;imprimer en PDF via votre navigateur.
+          La page va se recharger automatiquement pour vous permettre de finaliser votre dossier
+          (paiement de la réservation et/ou du dépôt de garantie si requis).
         </p>
         <button
           onClick={() => window.print()}

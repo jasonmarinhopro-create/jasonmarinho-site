@@ -91,6 +91,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
     montant_loyer: sejour.montant ?? 0,
     montant_caution: 0,
     modalites_paiement: 'Virement bancaire',
+    stripe_payment_enabled: false,
 
     // Clauses
     conditions_annulation: DEFAULT_ANNULATION,
@@ -165,6 +166,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
       montant_loyer: form.montant_loyer,
       montant_caution: form.montant_caution,
       modalites_paiement: form.modalites_paiement,
+      stripe_payment_enabled: form.stripe_payment_enabled,
       conditions_annulation: form.conditions_annulation.trim(),
       reglement_interieur: form.reglement_interieur.trim(),
       animaux_acceptes: form.animaux_acceptes,
@@ -332,8 +334,22 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
                   <option>Airbnb / Booking (plateforme)</option>
                   <option>PayPal</option>
                   <option>Carte bancaire</option>
+                  <option>Paiement en ligne (Stripe)</option>
                 </select>
               </div>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', cursor: 'pointer', marginTop: '4px' }}>
+                <input
+                  type="checkbox"
+                  checked={form.stripe_payment_enabled}
+                  onChange={e => set('stripe_payment_enabled', e.target.checked)}
+                  style={{ marginTop: '2px', flexShrink: 0, width: '16px', height: '16px', cursor: 'pointer', accentColor: '#34D399' }}
+                />
+                <span style={{ fontSize: '13px', color: '#a5c4b0', lineHeight: 1.6 }}>
+                  <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '2px' }}>Payer la réservation en ligne via Stripe</strong>
+                  Le voyageur pourra régler le loyer directement après la signature, depuis son téléphone ou ordinateur.
+                  Nécessite que votre compte Stripe soit connecté dans les paramètres.
+                </span>
+              </label>
             </>
           )}
 

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import SignaturePage from './SignaturePage'
 import PrintButton from './PrintButton'
 import DepositSection from './DepositSection'
+import PaymentSection from './PaymentSection'
 
 // Toujours servir depuis le serveur (pas de cache) — la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -40,10 +41,10 @@ export default async function SignPage({
   searchParams,
 }: {
   params: Promise<{ token: string }>
-  searchParams: Promise<{ deposit?: string }>
+  searchParams: Promise<{ deposit?: string; payment?: string }>
 }) {
   const { token } = await params
-  const { deposit: depositParam } = await searchParams
+  const { deposit: depositParam, payment: paymentParam } = await searchParams
   const supabase = createServiceClient()
 
   const { data: contract, error } = await supabase
@@ -59,16 +60,22 @@ export default async function SignPage({
   const cancelled = contract.statut === 'annule'
   const n = nights(contract.date_arrivee, contract.date_depart)
 
-  // Caution : vérifier si le bailleur a Stripe connecté
-  const hasDeposit = Number(contract.montant_caution) > 0
+  // Stripe : vérifier si le bailleur a un compte connecté
   const { data: bailProfile } = await supabase
     .from('profiles')
     .select('stripe_account_id, stripe_onboarding_complete')
     .eq('id', contract.user_id)
     .single()
   const stripeReady = !!(bailProfile?.stripe_account_id && bailProfile?.stripe_onboarding_complete)
+
+  // Caution
+  const hasDeposit = Number(contract.montant_caution) > 0
   const depositAlreadyHeld = contract.stripe_deposit_status === 'held'
     || contract.stripe_deposit_status === 'captured'
+
+  // Paiement réservation
+  const paymentEnabled = !!(contract.stripe_payment_enabled)
+  const paymentAlreadyDone = contract.stripe_payment_status === 'paid'
 
   return (
     <div style={page}>
@@ -300,14 +307,31 @@ export default async function SignPage({
           <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
         ) : null}
 
-        {/* Dépôt de garantie (visible seulement si contrat signé + caution > 0 + Stripe connecté) */}
-        {alreadySigned && hasDeposit && stripeReady && (
-          <DepositSection
-            token={token}
-            amount={Number(contract.montant_caution)}
-            depositParam={depositParam}
-            depositAlreadyHeld={depositAlreadyHeld}
-          />
+        {/* ── Paiements (visibles seulement si contrat signé + Stripe connecté) ── */}
+        {alreadySigned && stripeReady && (paymentEnabled || hasDeposit) && (
+          <div style={paymentsBlock}>
+            <p style={paymentsTitle}>Finaliser votre dossier</p>
+
+            {/* 1. Paiement de la réservation (en premier — montant principal) */}
+            {paymentEnabled && (
+              <PaymentSection
+                token={token}
+                amount={Number(contract.montant_loyer)}
+                paymentParam={paymentParam}
+                alreadyPaid={paymentAlreadyDone}
+              />
+            )}
+
+            {/* 2. Dépôt de garantie (en second — caution optionnelle) */}
+            {hasDeposit && (
+              <DepositSection
+                token={token}
+                amount={Number(contract.montant_caution)}
+                depositParam={depositParam}
+                depositAlreadyHeld={depositAlreadyHeld}
+              />
+            )}
+          </div>
         )}
 
         {/* Footer légal */}
@@ -610,6 +634,19 @@ const signatureImg: React.CSSProperties = {
   border: '1px solid rgba(52,211,153,0.2)',
   padding: '8px',
   background: '#ffffff',
+}
+
+const paymentsBlock: React.CSSProperties = {
+  marginBottom: '24px',
+}
+
+const paymentsTitle: React.CSSProperties = {
+  fontSize: '11px',
+  fontWeight: 600,
+  letterSpacing: '1.2px',
+  textTransform: 'uppercase' as const,
+  color: '#6b9a7e',
+  margin: '0 0 12px',
 }
 
 const footerLegal: React.CSSProperties = {
