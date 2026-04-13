@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import SignaturePage from './SignaturePage'
 import PrintButton from './PrintButton'
+import DepositSection from './DepositSection'
 
 // Toujours servir depuis le serveur (pas de cache) — la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -34,8 +35,15 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
   }
 }
 
-export default async function SignPage({ params }: { params: Promise<{ token: string }> }) {
+export default async function SignPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ token: string }>
+  searchParams: Promise<{ deposit?: string }>
+}) {
   const { token } = await params
+  const { deposit: depositParam } = await searchParams
   const supabase = createServiceClient()
 
   const { data: contract, error } = await supabase
@@ -50,6 +58,17 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
   const alreadySigned = contract.statut === 'signe'
   const cancelled = contract.statut === 'annule'
   const n = nights(contract.date_arrivee, contract.date_depart)
+
+  // Caution : vérifier si le bailleur a Stripe connecté
+  const hasDeposit = Number(contract.montant_caution) > 0
+  const { data: bailProfile } = await supabase
+    .from('profiles')
+    .select('stripe_account_id, stripe_onboarding_complete')
+    .eq('id', contract.user_id)
+    .single()
+  const stripeReady = !!(bailProfile?.stripe_account_id && bailProfile?.stripe_onboarding_complete)
+  const depositAlreadyHeld = contract.stripe_deposit_status === 'held'
+    || contract.stripe_deposit_status === 'captured'
 
   return (
     <div style={page}>
@@ -280,6 +299,16 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
         ) : !expired && !cancelled ? (
           <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
         ) : null}
+
+        {/* Dépôt de garantie (visible seulement si contrat signé + caution > 0 + Stripe connecté) */}
+        {alreadySigned && hasDeposit && stripeReady && (
+          <DepositSection
+            token={token}
+            amount={Number(contract.montant_caution)}
+            depositParam={depositParam}
+            depositAlreadyHeld={depositAlreadyHeld}
+          />
+        )}
 
         {/* Footer légal */}
         <div style={footerLegal}>
