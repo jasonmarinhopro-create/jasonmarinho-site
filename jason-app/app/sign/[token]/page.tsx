@@ -289,26 +289,10 @@ export default async function SignPage({
           </section>
         </div>
 
-        {/* Signature ou confirmation */}
-        {alreadySigned ? (
-          <div style={signedBlock}>
-            <div style={signedLeft}>
-              <p style={signedLabel}>Signé par</p>
-              <p style={signedName}>{contract.locataire_prenom} {contract.locataire_nom}</p>
-              <p style={signedDate}>Le {formatDate(contract.signature_date)}</p>
-            </div>
-            {contract.signature_image && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={contract.signature_image}
-                alt="Signature"
-                style={signatureImg}
-              />
-            )}
-          </div>
-        ) : !expired && !cancelled ? (
+        {/* Signature canvas (si non signé) */}
+        {!alreadySigned && !expired && !cancelled && (
           <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
-        ) : null}
+        )}
 
         {/* ── Paiements ── */}
         {alreadySigned && (paymentEnabled || hasDeposit || hostIban) && (
@@ -361,6 +345,25 @@ export default async function SignPage({
                 amount={Number(contract.montant_loyer)}
                 reference={`LOC-${contract.id.slice(0, 8).toUpperCase()}`}
                 beneficiary={`${contract.bailleur_prenom} ${contract.bailleur_nom}`}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Signature du locataire — affichée en bas du contrat */}
+        {alreadySigned && (
+          <div style={signedBlock}>
+            <div style={signedLeft}>
+              <p style={signedLabel}>Signé par</p>
+              <p style={signedName}>{contract.locataire_prenom} {contract.locataire_nom}</p>
+              <p style={signedDate}>Le {formatDate(contract.signature_date)}</p>
+            </div>
+            {contract.signature_image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={contract.signature_image}
+                alt="Signature"
+                style={signatureImg}
               />
             )}
           </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
@@ -83,8 +83,102 @@ const CONTRAT_LABELS: Record<string, { label: string; color: string; bg: string 
 
 const EMPTY_SEJOUR: Omit<SejourData, 'voyageur_id'> = {
   logement: '', date_arrivee: '', date_depart: '',
-  montant: null, contrat_statut: 'non_requis',
+  montant: null, contrat_statut: 'en_attente',
   contrat_date_signature: null, contrat_lien: null,
+}
+
+// Custom date input: JJ / MM / AAAA (more user-friendly than native input[type=date])
+function DateInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  // value is YYYY-MM-DD or ''
+  const parts = value ? value.split('-') : ['', '', '']
+  const [year, month, day] = parts
+
+  const dayRef = useRef<HTMLInputElement>(null)
+  const monthRef = useRef<HTMLInputElement>(null)
+  const yearRef = useRef<HTMLInputElement>(null)
+
+  function emit(d: string, m: string, y: string) {
+    if (d.length === 2 && m.length === 2 && y.length === 4) {
+      onChange(`${y}-${m}-${d}`)
+    } else if (!d && !m && !y) {
+      onChange('')
+    }
+  }
+
+  function handleDay(e: React.ChangeEvent<HTMLInputElement>) {
+    const v = e.target.value.replace(/\D/g, '').slice(0, 2)
+    emit(v, month, year)
+    if (v.length === 2) monthRef.current?.focus()
+  }
+
+  function handleMonth(e: React.ChangeEvent<HTMLInputElement>) {
+    const v = e.target.value.replace(/\D/g, '').slice(0, 2)
+    emit(day, v, year)
+    if (v.length === 2) yearRef.current?.focus()
+  }
+
+  function handleYear(e: React.ChangeEvent<HTMLInputElement>) {
+    const v = e.target.value.replace(/\D/g, '').slice(0, 4)
+    emit(day, month, v)
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>, field: 'day' | 'month' | 'year') {
+    if (e.key === 'Backspace') {
+      const input = e.currentTarget
+      if (input.value === '') {
+        if (field === 'month') dayRef.current?.focus()
+        if (field === 'year') monthRef.current?.focus()
+      }
+    }
+  }
+
+  const inputStyle: React.CSSProperties = {
+    background: 'none', border: 'none', outline: 'none',
+    fontSize: '14px', color: 'var(--text)', textAlign: 'center',
+    padding: 0, fontFamily: 'inherit',
+  }
+
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: '2px',
+      background: 'var(--surface)', border: '1px solid var(--border)',
+      borderRadius: '10px', padding: '10px 12px',
+      fontSize: '14px', color: 'var(--text)',
+    }}>
+      <input
+        ref={dayRef}
+        style={{ ...inputStyle, width: '22px' }}
+        value={day}
+        onChange={handleDay}
+        onKeyDown={e => handleKeyDown(e, 'day')}
+        placeholder="JJ"
+        maxLength={2}
+        inputMode="numeric"
+      />
+      <span style={{ color: 'var(--text-muted)', userSelect: 'none' }}>/</span>
+      <input
+        ref={monthRef}
+        style={{ ...inputStyle, width: '22px' }}
+        value={month}
+        onChange={handleMonth}
+        onKeyDown={e => handleKeyDown(e, 'month')}
+        placeholder="MM"
+        maxLength={2}
+        inputMode="numeric"
+      />
+      <span style={{ color: 'var(--text-muted)', userSelect: 'none' }}>/</span>
+      <input
+        ref={yearRef}
+        style={{ ...inputStyle, width: '40px' }}
+        value={year}
+        onChange={handleYear}
+        onKeyDown={e => handleKeyDown(e, 'year')}
+        placeholder="AAAA"
+        maxLength={4}
+        inputMode="numeric"
+      />
+    </div>
+  )
 }
 
 type BailleurProfile = {
@@ -794,17 +888,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
               <div style={s.formRow}>
                 <div style={s.field}>
                   <label style={s.label}>Arrivée *</label>
-                  <div style={s.inputWrap}>
-                    <CalendarBlank size={15} color="var(--text-muted)" />
-                    <input style={s.input} type="date" value={sejourForm.date_arrivee} onChange={e => setSejourForm(f => ({ ...f, date_arrivee: e.target.value }))} />
-                  </div>
+                  <DateInput value={sejourForm.date_arrivee} onChange={v => setSejourForm(f => ({ ...f, date_arrivee: v }))} />
                 </div>
                 <div style={s.field}>
                   <label style={s.label}>Départ *</label>
-                  <div style={s.inputWrap}>
-                    <CalendarBlank size={15} color="var(--text-muted)" />
-                    <input style={s.input} type="date" value={sejourForm.date_depart} onChange={e => setSejourForm(f => ({ ...f, date_depart: e.target.value }))} />
-                  </div>
+                  <DateInput value={sejourForm.date_depart} onChange={v => setSejourForm(f => ({ ...f, date_depart: v }))} />
                 </div>
               </div>
               <div style={s.field}>
@@ -821,19 +909,15 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                   onChange={e => setSejourForm(f => ({ ...f, contrat_statut: e.target.value as SejourData['contrat_statut'] }))}
                   style={{ ...s.inputWrap, cursor: 'pointer' }}
                 >
-                  <option value="signe">Signé</option>
                   <option value="en_attente">En attente</option>
-                  <option value="non_requis">Non requis</option>
+                  <option value="signe">Signé</option>
                 </select>
               </div>
               {sejourForm.contrat_statut === 'signe' && (
                 <div style={s.formRow}>
                   <div style={s.field}>
                     <label style={s.label}>Date de signature</label>
-                    <div style={s.inputWrap}>
-                      <CalendarBlank size={15} color="var(--text-muted)" />
-                      <input style={s.input} type="date" value={sejourForm.contrat_date_signature ?? ''} onChange={e => setSejourForm(f => ({ ...f, contrat_date_signature: e.target.value || null }))} />
-                    </div>
+                    <DateInput value={sejourForm.contrat_date_signature ?? ''} onChange={v => setSejourForm(f => ({ ...f, contrat_date_signature: v || null }))} />
                   </div>
                   <div style={s.field}>
                     <label style={s.label}>Lien contrat</label>
