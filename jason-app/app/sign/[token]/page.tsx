@@ -155,8 +155,8 @@ export default async function SignPage({
             <p style={contractText}>
               Le bailleur loue au locataire le bien immobilier situé à l&apos;adresse suivante&nbsp;:
             </p>
-            <p style={{ ...contractText, fontWeight: 600, color: 'var(--text, #f0ebe1)', marginTop: '8px' }}>
-              {contract.logement_adresse}
+            <p style={{ ...contractText, fontWeight: 600, color: '#f0ebe1', marginTop: '8px' }}>
+              {contract.logement_adresse || <em style={{ color: '#6b9a7e', fontWeight: 400 }}>Adresse non renseignée</em>}
             </p>
             {contract.logement_description && (
               <p style={{ ...contractText, marginTop: '8px' }}>{contract.logement_description}</p>

@@ -344,8 +344,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
                   onChange={e => set('stripe_payment_enabled', e.target.checked)}
                   style={{ marginTop: '2px', flexShrink: 0, width: '16px', height: '16px', cursor: 'pointer', accentColor: '#34D399' }}
                 />
-                <span style={{ fontSize: '13px', color: '#a5c4b0', lineHeight: 1.6 }}>
-                  <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '2px' }}>Payer la réservation en ligne via Stripe</strong>
+                <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6 }}>
+                  <strong style={{ color: 'var(--text)', display: 'block', marginBottom: '2px' }}>Payer la réservation en ligne via Stripe</strong>
                   Le voyageur pourra régler le loyer directement après la signature, depuis son téléphone ou ordinateur.
                   Nécessite que votre compte Stripe soit connecté dans les paramètres.
                 </span>
@@ -395,7 +395,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
               <p style={doneText}>
                 Le contrat a été créé avec succès.
                 {form.locataire_email ? (
-                  <> Un email avec le lien de signature a été envoyé à <strong style={{ color: '#f0ebe1' }}>{form.locataire_email}</strong>.</>
+                  <> Un email avec le lien de signature a été envoyé à <strong style={{ color: 'var(--accent-text)' }}>{form.locataire_email}</strong>.</>
                 ) : (
                   <> Partagez le lien ci-dessous avec le locataire pour qu&apos;il puisse signer.</>
                 )}
