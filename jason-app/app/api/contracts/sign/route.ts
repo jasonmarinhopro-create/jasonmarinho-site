@@ -91,8 +91,15 @@ export async function POST(request: NextRequest) {
       hour: '2-digit', minute: '2-digit',
     })
     const contractUrl = `${APP_URL}/sign/${token}`
+    const dashboardUrl = `${APP_URL}/dashboard/voyageurs`
 
-    const confirmationHtml = (recipientName: string) => `
+    const hasPayment = !!(contract.stripe_payment_enabled)
+    const hasCaution = Number(contract.montant_caution) > 0
+    const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
+    const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
+
+    // Email voyageur : inclut les boutons de paiement + caution
+    const guestEmailHtml = `
 <!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
@@ -105,17 +112,76 @@ export async function POST(request: NextRequest) {
       </div>
       <div style="padding:28px 32px;">
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Bonjour <strong style="color:#f0ebe1;">${recipientName}</strong>,
+          Bonjour <strong style="color:#f0ebe1;">${guestName}</strong>,
         </p>
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Le contrat de location pour <strong style="color:#f0ebe1;">${contract.logement_adresse}</strong> a été signé électroniquement par <strong style="color:#f0ebe1;">${guestName}</strong> le <strong style="color:#f0ebe1;">${signDate}</strong>.
+          Votre contrat de location pour <strong style="color:#f0ebe1;">${contract.logement_adresse}</strong> a bien été signé le <strong style="color:#f0ebe1;">${signDate}</strong>.
         </p>
-        <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:18px 20px;margin:24px 0;">
+        <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:18px 20px;margin:0 0 24px;">
           <p style="margin:0 0 4px;font-size:11px;color:#6b9a7e;text-transform:uppercase;letter-spacing:1px;">Référence signature</p>
           <p style="margin:0;font-size:12px;color:#a5c4b0;word-break:break-all;">Signé le ${signDate} depuis l'adresse IP ${ip}</p>
         </div>
-        <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:16px 32px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:28px 0;">
-          Consulter le contrat signé
+        ${(hasPayment || hasCaution) ? `
+        <div style="background:#0a2018;border:1px solid rgba(255,213,107,0.25);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
+          <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#FFD56B;text-transform:uppercase;letter-spacing:1px;">Étape suivante — Finalisez votre dossier</p>
+          <p style="margin:0 0 18px;font-size:14px;color:#a5c4b0;line-height:1.6;">Pour confirmer définitivement votre séjour, effectuez le(s) paiement(s) ci-dessous :</p>
+          ${hasPayment ? `
+          <a href="${contractUrl}" style="display:block;text-align:center;background:rgba(255,213,107,0.18);border:1px solid rgba(255,213,107,0.4);color:#FFD56B;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
+            Payer la réservation — ${loyerFormatted} € →
+          </a>` : ''}
+          ${hasCaution ? `
+          <a href="${contractUrl}" style="display:block;text-align:center;background:rgba(99,91,255,0.2);border:1px solid rgba(99,91,255,0.4);color:#a29bfe;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
+            Régler la caution — ${cautionFormatted} € →
+          </a>` : ''}
+          <p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">La caution est bloquée sur votre carte mais non débitée — elle est libérée après votre séjour si aucun dommage n'est constaté.</p>
+        </div>` : ''}
+        <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 20px;">
+          Accéder au contrat signé
+        </a>
+        <p style="color:#6b9a7e;font-size:12px;line-height:1.6;margin:0;">
+          Ce contrat constitue une signature électronique simple valide selon le règlement eIDAS (UE) 910/2014 et l'article 1366 du Code civil français.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`
+
+    // Email hôte : notification de signature + lien tableau de bord
+    const hostEmailHtml = `
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#0d1f1a;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
+    <div style="background:#132b22;border:1px solid #1e3d2f;border-radius:20px;overflow:hidden;">
+      <div style="padding:32px 32px 24px;border-bottom:1px solid #1e3d2f;">
+        <p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#34D399;font-weight:600;">Contrat signé</p>
+        <h1 style="margin:0;font-size:24px;font-weight:400;color:#f0ebe1;font-family:Georgia,serif;">Signature confirmée</h1>
+      </div>
+      <div style="padding:28px 32px;">
+        <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
+          Bonjour <strong style="color:#f0ebe1;">${hostName}</strong>,
+        </p>
+        <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
+          <strong style="color:#f0ebe1;">${guestName}</strong> a signé électroniquement le contrat de location pour <strong style="color:#f0ebe1;">${contract.logement_adresse}</strong> le <strong style="color:#f0ebe1;">${signDate}</strong>.
+        </p>
+        <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:18px 20px;margin:0 0 24px;">
+          <p style="margin:0 0 4px;font-size:11px;color:#6b9a7e;text-transform:uppercase;letter-spacing:1px;">Référence signature</p>
+          <p style="margin:0;font-size:12px;color:#a5c4b0;word-break:break-all;">Signé le ${signDate} depuis l'adresse IP ${ip}</p>
+        </div>
+        ${(hasPayment || hasCaution) ? `
+        <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:16px 20px;margin:0 0 24px;">
+          <p style="margin:0 0 6px;font-size:12px;color:#6b9a7e;text-transform:uppercase;letter-spacing:1px;">Paiements attendus du locataire</p>
+          ${hasPayment ? `<p style="margin:0 0 4px;font-size:14px;color:#FFD56B;font-weight:600;">Réservation : ${loyerFormatted} €</p>` : ''}
+          ${hasCaution ? `<p style="margin:0;font-size:14px;color:#a29bfe;font-weight:600;">Caution : ${cautionFormatted} €</p>` : ''}
+          <p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">Un email de rappel a été envoyé à ${contract.locataire_prenom} avec les liens de paiement. Suivez les paiements depuis votre tableau de bord.</p>
+        </div>` : ''}
+        <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 12px;">
+          Voir le contrat signé
+        </a>
+        <a href="${dashboardUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1e3d2f;color:#a5c4b0;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 20px;">
+          Tableau de bord
         </a>
         <p style="color:#6b9a7e;font-size:12px;line-height:1.6;margin:0;">
           Ce contrat constitue une signature électronique simple valide selon le règlement eIDAS (UE) 910/2014 et l'article 1366 du Code civil français.
@@ -131,8 +197,8 @@ export async function POST(request: NextRequest) {
       await resend.emails.send({
         from: FROM_EMAIL,
         to: contract.locataire_email,
-        subject: `Contrat signé — ${contract.logement_adresse}`,
-        html: confirmationHtml(guestName),
+        subject: `Contrat signé — finalisez votre dossier pour ${contract.logement_adresse}`,
+        html: guestEmailHtml,
       }).catch(() => null)
     }
 
@@ -141,7 +207,7 @@ export async function POST(request: NextRequest) {
       from: FROM_EMAIL,
       to: contract.bailleur_email,
       subject: `${guestName} a signé le contrat — ${contract.logement_adresse}`,
-      html: confirmationHtml(hostName),
+      html: hostEmailHtml,
     }).catch(() => null)
 
     return NextResponse.json({ success: true })
