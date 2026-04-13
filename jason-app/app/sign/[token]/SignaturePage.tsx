@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 
 interface Props {
   token: string
@@ -11,7 +10,6 @@ interface Props {
 
 export default function SignaturePage({ token, locataireName }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const router = useRouter()
   const [isDrawing, setIsDrawing] = useState(false)
   const [hasSignature, setHasSignature] = useState(false)
   const [agreed, setAgreed] = useState(false)
@@ -128,8 +126,8 @@ export default function SignaturePage({ token, locataireName }: Props) {
         setError(data.error ?? 'Une erreur est survenue.')
       } else {
         setSuccess(true)
-        // Rafraîchir les données serveur via Next.js pour afficher le contrat signé
-        setTimeout(() => router.refresh(), 2000)
+        // Recharger la page pour afficher le contrat signé avec la signature
+        setTimeout(() => window.location.reload(), 2000)
       }
     } catch {
       setError('Erreur réseau. Veuillez réessayer.')
