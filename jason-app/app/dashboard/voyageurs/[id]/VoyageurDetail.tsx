@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useRef } from 'react'
+import { useState, useTransition, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
@@ -87,116 +87,143 @@ const EMPTY_SEJOUR: Omit<SejourData, 'voyageur_id'> = {
   contrat_date_signature: null, contrat_lien: null,
 }
 
-// Custom date input: JJ / MM / AAAA (more user-friendly than native input[type=date])
-function DateInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  // value is YYYY-MM-DD or ''
-  const parts = value ? value.split('-') : ['', '', '']
-  const [extYear, extMonth, extDay] = parts
+// Aesthetic calendar date picker (popup)
+function CalendarInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const [viewDate, setViewDate] = useState(() => {
+    if (value) return new Date(value + 'T12:00:00')
+    return new Date()
+  })
+  const [popupPos, setPopupPos] = useState<{ top: number; left: number; width: number } | null>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const popupRef = useRef<HTMLDivElement>(null)
 
-  // Local state for intermediate values while typing
-  const [day, setDay] = useState(extDay)
-  const [month, setMonth] = useState(extMonth)
-  const [year, setYear] = useState(extYear)
+  useEffect(() => {
+    if (value) setViewDate(new Date(value + 'T12:00:00'))
+  }, [value])
 
-  // Sync from external value when it changes (e.g. form reset)
-  const prevValue = useRef(value)
-  if (prevValue.current !== value) {
-    prevValue.current = value
-    setDay(extDay)
-    setMonth(extMonth)
-    setYear(extYear)
-  }
-
-  const dayRef = useRef<HTMLInputElement>(null)
-  const monthRef = useRef<HTMLInputElement>(null)
-  const yearRef = useRef<HTMLInputElement>(null)
-
-  function emit(d: string, m: string, y: string) {
-    if (d.length === 2 && m.length === 2 && y.length === 4) {
-      onChange(`${y}-${m}-${d}`)
-    } else if (!d && !m && !y) {
-      onChange('')
-    }
-  }
-
-  function handleDay(e: React.ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value.replace(/\D/g, '').slice(0, 2)
-    setDay(v)
-    emit(v, month, year)
-    if (v.length === 2) monthRef.current?.focus()
-  }
-
-  function handleMonth(e: React.ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value.replace(/\D/g, '').slice(0, 2)
-    setMonth(v)
-    emit(day, v, year)
-    if (v.length === 2) yearRef.current?.focus()
-  }
-
-  function handleYear(e: React.ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value.replace(/\D/g, '').slice(0, 4)
-    setYear(v)
-    emit(day, month, v)
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>, field: 'day' | 'month' | 'year') {
-    if (e.key === 'Backspace') {
-      const input = e.currentTarget
-      if (input.value === '') {
-        if (field === 'month') dayRef.current?.focus()
-        if (field === 'year') monthRef.current?.focus()
+  useEffect(() => {
+    if (!open) return
+    function handleClick(e: MouseEvent) {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
+        popupRef.current && !popupRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false)
       }
     }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  function handleOpen() {
+    if (!open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      setPopupPos({ top: rect.bottom + 6, left: rect.left, width: Math.max(rect.width, 280) })
+    }
+    setOpen(o => !o)
   }
 
-  const inputStyle: React.CSSProperties = {
-    background: 'none', border: 'none', outline: 'none',
-    fontSize: '14px', color: 'var(--text)', textAlign: 'center',
-    padding: 0, fontFamily: 'inherit',
+  const selectedDate = value ? new Date(value + 'T12:00:00') : null
+  const year = viewDate.getFullYear()
+  const month = viewDate.getMonth()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const firstDay = (() => { const d = new Date(year, month, 1).getDay(); return (d + 6) % 7 })()
+  const monthName = viewDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+  const today = new Date(); today.setHours(0, 0, 0, 0)
+  const displayValue = selectedDate
+    ? selectedDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+    : 'Choisir une date'
+  const DAYS = ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di']
+
+  function selectDay(day: number) {
+    const d = new Date(year, month, day)
+    onChange(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
+    setOpen(false)
   }
 
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: '2px',
-      background: 'var(--surface)', border: '1px solid var(--border)',
-      borderRadius: '10px', padding: '10px 12px',
-      fontSize: '14px', color: 'var(--text)',
-    }}>
-      <CalendarBlank size={14} color="var(--text-muted)" style={{ marginRight: '6px', flexShrink: 0 }} />
-      <input
-        ref={dayRef}
-        style={{ ...inputStyle, width: '22px' }}
-        value={day}
-        onChange={handleDay}
-        onKeyDown={e => handleKeyDown(e, 'day')}
-        placeholder="JJ"
-        maxLength={2}
-        inputMode="numeric"
-      />
-      <span style={{ color: 'var(--text-muted)', userSelect: 'none' }}>/</span>
-      <input
-        ref={monthRef}
-        style={{ ...inputStyle, width: '22px' }}
-        value={month}
-        onChange={handleMonth}
-        onKeyDown={e => handleKeyDown(e, 'month')}
-        placeholder="MM"
-        maxLength={2}
-        inputMode="numeric"
-      />
-      <span style={{ color: 'var(--text-muted)', userSelect: 'none' }}>/</span>
-      <input
-        ref={yearRef}
-        style={{ ...inputStyle, width: '40px' }}
-        value={year}
-        onChange={handleYear}
-        onKeyDown={e => handleKeyDown(e, 'year')}
-        placeholder="AAAA"
-        maxLength={4}
-        inputMode="numeric"
-      />
-    </div>
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={handleOpen}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
+          background: 'var(--surface)',
+          border: `1px solid ${open ? '#4a7260' : 'var(--border)'}`,
+          borderRadius: '10px', padding: '10px 12px',
+          fontSize: '14px', color: selectedDate ? 'var(--text)' : 'var(--text-muted)',
+          cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+          transition: 'border-color 0.15s', boxSizing: 'border-box',
+        }}
+      >
+        <CalendarBlank size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+        <span style={{ flex: 1 }}>{displayValue}</span>
+        <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginLeft: '4px' }}>▼</span>
+      </button>
+
+      {open && popupPos && (
+        <div
+          ref={popupRef}
+          style={{
+            position: 'fixed', top: popupPos.top, left: popupPos.left,
+            zIndex: 9999, minWidth: popupPos.width,
+            background: '#0f2018', border: '1px solid #2a5040',
+            borderRadius: '16px', padding: '14px 14px 10px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
+          }}
+        >
+          {/* Month navigation */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))} style={calNavBtnStyle}>‹</button>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: '#f0ebe1', textTransform: 'capitalize' as const }}>
+              {monthName}
+            </span>
+            <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))} style={calNavBtnStyle}>›</button>
+          </div>
+
+          {/* Weekday headers */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '2px' }}>
+            {DAYS.map(d => (
+              <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 600, color: '#4a7260', padding: '3px 0', letterSpacing: '0.5px' }}>{d}</div>
+            ))}
+          </div>
+
+          {/* Days grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '2px' }}>
+            {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} style={{ height: '34px' }} />)}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1
+              const d = new Date(year, month, day); d.setHours(0, 0, 0, 0)
+              const isSel = selectedDate ? d.getTime() === selectedDate.getTime() : false
+              const isToday2 = d.getTime() === today.getTime()
+              return (
+                <button key={day} type="button" onClick={() => selectDay(day)} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  height: '34px', borderRadius: '8px', border: 'none',
+                  fontSize: '13px', fontWeight: isSel ? 700 : 400,
+                  background: isSel ? 'rgba(255,213,107,0.18)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
+                  color: isSel ? '#FFD56B' : isToday2 ? '#34D399' : '#a5c4b0',
+                  cursor: 'pointer',
+                  outline: isSel ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
+                  transition: 'background 0.1s',
+                }}>{day}</button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </>
   )
+}
+
+const calNavBtnStyle: React.CSSProperties = {
+  background: 'rgba(255,255,255,0.05)', border: '1px solid #1e3d2f',
+  borderRadius: '8px', color: '#a5c4b0', fontSize: '18px',
+  width: '32px', height: '32px',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  cursor: 'pointer', lineHeight: 1,
 }
 
 type BailleurProfile = {
@@ -906,11 +933,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
               <div style={s.formRow}>
                 <div style={s.field}>
                   <label style={s.label}>Arrivée *</label>
-                  <DateInput value={sejourForm.date_arrivee} onChange={v => setSejourForm(f => ({ ...f, date_arrivee: v }))} />
+                  <CalendarInput value={sejourForm.date_arrivee} onChange={v => setSejourForm(f => ({ ...f, date_arrivee: v }))} />
                 </div>
                 <div style={s.field}>
                   <label style={s.label}>Départ *</label>
-                  <DateInput value={sejourForm.date_depart} onChange={v => setSejourForm(f => ({ ...f, date_depart: v }))} />
+                  <CalendarInput value={sejourForm.date_depart} onChange={v => setSejourForm(f => ({ ...f, date_depart: v }))} />
                 </div>
               </div>
               <div style={s.field}>
@@ -935,7 +962,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                 <div style={s.formRow}>
                   <div style={s.field}>
                     <label style={s.label}>Date de signature</label>
-                    <DateInput value={sejourForm.contrat_date_signature ?? ''} onChange={v => setSejourForm(f => ({ ...f, contrat_date_signature: v || null }))} />
+                    <CalendarInput value={sejourForm.contrat_date_signature ?? ''} onChange={v => setSejourForm(f => ({ ...f, contrat_date_signature: v || null }))} />
                   </div>
                   <div style={s.field}>
                     <label style={s.label}>Lien contrat</label>
