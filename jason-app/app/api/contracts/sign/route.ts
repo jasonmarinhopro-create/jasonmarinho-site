@@ -91,6 +91,8 @@ export async function POST(request: NextRequest) {
       hour: '2-digit', minute: '2-digit',
     })
     const contractUrl = `${APP_URL}/sign/${token}`
+    const paymentRedirectUrl = `${APP_URL}/api/stripe/payment/redirect?token=${token}`
+    const depositRedirectUrl = `${APP_URL}/api/stripe/deposit/redirect?token=${token}`
     const dashboardUrl = `${APP_URL}/dashboard/voyageurs`
 
     const hasPayment = !!(contract.stripe_payment_enabled)
@@ -126,11 +128,11 @@ export async function POST(request: NextRequest) {
           <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#FFD56B;text-transform:uppercase;letter-spacing:1px;">Étape suivante — Finalisez votre dossier</p>
           <p style="margin:0 0 18px;font-size:14px;color:#a5c4b0;line-height:1.6;">Pour confirmer définitivement votre séjour, effectuez le(s) paiement(s) ci-dessous :</p>
           ${hasPayment ? `
-          <a href="${contractUrl}" style="display:block;text-align:center;background:rgba(255,213,107,0.18);border:1px solid rgba(255,213,107,0.4);color:#FFD56B;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
+          <a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:rgba(255,213,107,0.18);border:1px solid rgba(255,213,107,0.4);color:#FFD56B;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
             Payer la réservation — ${loyerFormatted} € →
           </a>` : ''}
           ${hasCaution ? `
-          <a href="${contractUrl}" style="display:block;text-align:center;background:rgba(99,91,255,0.2);border:1px solid rgba(99,91,255,0.4);color:#a29bfe;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
+          <a href="${depositRedirectUrl}" style="display:block;text-align:center;background:rgba(99,91,255,0.2);border:1px solid rgba(99,91,255,0.4);color:#a29bfe;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
             Régler la caution — ${cautionFormatted} € →
           </a>` : ''}
           <p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">La caution est bloquée sur votre carte mais non débitée — elle est libérée après votre séjour si aucun dommage n'est constaté.</p>
