@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { X, LockKey, LockKeyOpen, Warning } from '@phosphor-icons/react'
+import { X, LockKey, LockKeyOpen, Warning, CurrencyEur } from '@phosphor-icons/react'
 import { useRouter } from 'next/navigation'
 
 type DepositStatus = 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
+type PaymentStatus = 'pending' | 'paid' | 'refunded' | 'failed' | null
 
 interface Contract {
   id: string
@@ -12,7 +13,10 @@ interface Contract {
   statut: string
   locataire_prenom: string
   locataire_nom: string
+  montant_loyer: number | null
   montant_caution: number | null
+  stripe_payment_enabled: boolean
+  stripe_payment_status: PaymentStatus
   stripe_deposit_status: DepositStatus
 }
 
@@ -31,6 +35,13 @@ const DEPOSIT_LABELS: Record<string, { label: string; color: string; bg: string 
   failed:   { label: 'Échec paiement',           color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
 }
 
+const PAYMENT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
+  pending:  { label: 'En attente de paiement', color: '#a5c4b0', bg: 'rgba(165,196,176,0.08)' },
+  paid:     { label: 'Réglé ✓',                color: '#34D399', bg: 'rgba(52,211,153,0.08)' },
+  refunded: { label: 'Remboursé',              color: '#FFD56B', bg: 'rgba(255,213,107,0.08)' },
+  failed:   { label: 'Échec paiement',          color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
+}
+
 export default function DepositModal({ contract, onClose }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -39,9 +50,15 @@ export default function DepositModal({ contract, onClose }: Props) {
   const [done, setDone] = useState<'captured' | 'released' | null>(null)
 
   const depositStatus = contract.stripe_deposit_status
-  const amount = Number(contract.montant_caution ?? 0)
-  const statusMeta = depositStatus ? DEPOSIT_LABELS[depositStatus] : null
+  const paymentStatus = contract.stripe_payment_status
+  const depositAmount = Number(contract.montant_caution ?? 0)
+  const paymentAmount = Number(contract.montant_loyer ?? 0)
+  const depositStatusMeta = depositStatus ? DEPOSIT_LABELS[depositStatus] : null
+  const paymentStatusMeta = paymentStatus ? PAYMENT_LABELS[paymentStatus] : null
   const signUrl = `${APP_URL}/sign/${contract.token}`
+
+  // Keep backward-compat alias
+  const amount = depositAmount
 
   async function handleAction(type: 'capture' | 'release') {
     setError('')
@@ -74,7 +91,7 @@ export default function DepositModal({ contract, onClose }: Props) {
         {/* Header */}
         <div style={header}>
           <div>
-            <p style={tag}>Dépôt de garantie</p>
+            <p style={tag}>Paiements</p>
             <h3 style={title}>
               {contract.locataire_prenom} {contract.locataire_nom}
             </h3>
@@ -83,79 +100,119 @@ export default function DepositModal({ contract, onClose }: Props) {
         </div>
 
         <div style={body}>
-          {/* Montant */}
-          <div style={amountBox}>
-            <p style={amountLabel}>Montant de la caution</p>
-            <p style={amountValue}>{amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
-          </div>
 
-          {/* Statut */}
-          {statusMeta && (
-            <div style={{ background: statusMeta.bg, borderRadius: '10px', padding: '12px 14px', marginBottom: '16px' }}>
-              <p style={{ margin: 0, fontSize: '14px', color: statusMeta.color, fontWeight: 500 }}>
-                {statusMeta.label}
+          {/* ── Paiement réservation ─────────────────────────────────────── */}
+          {contract.stripe_payment_enabled && (
+            <div style={{ marginBottom: '20px' }}>
+              <p style={sectionLabel}>
+                <CurrencyEur size={13} weight="bold" />
+                Paiement de la réservation
               </p>
-            </div>
-          )}
-
-          {/* Actions si caution retenue */}
-          {depositStatus === 'held' && !done && (
-            <>
-              <p style={hint}>
-                La carte de {contract.locataire_prenom} est bloquée. Choisissez une action :
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
-                <button
-                  onClick={() => handleAction('capture')}
-                  disabled={isPending}
-                  style={captureBtn}
-                >
-                  <LockKey size={16} weight="fill" />
-                  {action === 'capture' ? 'Encaissement…' : `Encaisser ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`}
-                </button>
-                <button
-                  onClick={() => handleAction('release')}
-                  disabled={isPending}
-                  style={releaseBtn}
-                >
-                  <LockKeyOpen size={16} />
-                  {action === 'release' ? 'Libération…' : 'Libérer la caution (séjour sans dommages)'}
-                </button>
+              <div style={{ ...amountBox, borderColor: 'rgba(255,213,107,0.25)', background: 'rgba(255,213,107,0.06)' }}>
+                <p style={{ ...amountLabel, color: '#FFD56B' }}>Loyer total</p>
+                <p style={amountValue}>{paymentAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
               </div>
-              <p style={legal}>
-                L&apos;encaissement est définitif. La libération annule le blocage carte immédiatement.
-              </p>
-            </>
-          )}
-
-          {/* Statut final */}
-          {done === 'captured' && (
-            <div style={successBox}>
-              <strong style={{ color: '#FFD56B' }}>Caution encaissée ✓</strong>
-              <p style={hint}>Le montant a été transféré vers votre compte Stripe.</p>
-            </div>
-          )}
-          {done === 'released' && (
-            <div style={successBox}>
-              <strong style={{ color: '#34D399' }}>Caution libérée ✓</strong>
-              <p style={hint}>Le blocage carte a été annulé. Le locataire est libéré.</p>
+              {paymentStatusMeta ? (
+                <div style={{ background: paymentStatusMeta.bg, borderRadius: '10px', padding: '10px 14px' }}>
+                  <p style={{ margin: 0, fontSize: '14px', color: paymentStatusMeta.color, fontWeight: 500 }}>
+                    {paymentStatusMeta.label}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p style={hint}>Le paiement en ligne n&apos;a pas encore été effectué par le locataire.</p>
+                  <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                    Voir le contrat →
+                  </a>
+                </div>
+              )}
             </div>
           )}
 
-          {/* États non-actionnables */}
-          {depositStatus === 'captured' && !done && (
-            <p style={hint}>La caution a déjà été encaissée sur votre compte Stripe.</p>
-          )}
-          {depositStatus === 'released' && !done && (
-            <p style={hint}>La caution a été libérée. Le locataire n&apos;a pas été débité.</p>
-          )}
-          {(depositStatus === 'pending' || !depositStatus) && (
+          {/* ── Dépôt de garantie ────────────────────────────────────────── */}
+          {depositAmount > 0 && (
             <div>
-              <p style={hint}>La caution n&apos;a pas encore été payée par le locataire.</p>
-              <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
-                Voir le contrat →
-              </a>
+              <p style={sectionLabel}>
+                <LockKey size={13} weight="bold" />
+                Dépôt de garantie (caution)
+              </p>
+
+              <div style={amountBox}>
+                <p style={amountLabel}>Montant de la caution</p>
+                <p style={amountValue}>{depositAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
+              </div>
+
+              {depositStatusMeta && (
+                <div style={{ background: depositStatusMeta.bg, borderRadius: '10px', padding: '12px 14px', marginBottom: '16px' }}>
+                  <p style={{ margin: 0, fontSize: '14px', color: depositStatusMeta.color, fontWeight: 500 }}>
+                    {depositStatusMeta.label}
+                  </p>
+                </div>
+              )}
+
+              {/* Actions si caution retenue */}
+              {depositStatus === 'held' && !done && (
+                <>
+                  <p style={hint}>
+                    La carte de {contract.locataire_prenom} est bloquée. Choisissez une action :
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+                    <button
+                      onClick={() => handleAction('capture')}
+                      disabled={isPending}
+                      style={captureBtn}
+                    >
+                      <LockKey size={16} weight="fill" />
+                      {action === 'capture' ? 'Encaissement…' : `Encaisser ${depositAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`}
+                    </button>
+                    <button
+                      onClick={() => handleAction('release')}
+                      disabled={isPending}
+                      style={releaseBtn}
+                    >
+                      <LockKeyOpen size={16} />
+                      {action === 'release' ? 'Libération…' : 'Libérer la caution (séjour sans dommages)'}
+                    </button>
+                  </div>
+                  <p style={legal}>
+                    L&apos;encaissement est définitif. La libération annule le blocage carte immédiatement.
+                  </p>
+                </>
+              )}
+
+              {done === 'captured' && (
+                <div style={successBox}>
+                  <strong style={{ color: '#FFD56B' }}>Caution encaissée ✓</strong>
+                  <p style={hint}>Le montant a été transféré vers votre compte Stripe.</p>
+                </div>
+              )}
+              {done === 'released' && (
+                <div style={successBox}>
+                  <strong style={{ color: '#34D399' }}>Caution libérée ✓</strong>
+                  <p style={hint}>Le blocage carte a été annulé. Le locataire est libéré.</p>
+                </div>
+              )}
+
+              {depositStatus === 'captured' && !done && (
+                <p style={hint}>La caution a déjà été encaissée sur votre compte Stripe.</p>
+              )}
+              {depositStatus === 'released' && !done && (
+                <p style={hint}>La caution a été libérée. Le locataire n&apos;a pas été débité.</p>
+              )}
+              {(depositStatus === 'pending' || !depositStatus) && (
+                <div>
+                  <p style={hint}>La caution n&apos;a pas encore été payée par le locataire.</p>
+                  <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                    Voir le contrat →
+                  </a>
+                </div>
+              )}
             </div>
+          )}
+
+          {/* Pas de paiements configurés */}
+          {!contract.stripe_payment_enabled && depositAmount <= 0 && (
+            <p style={hint}>Aucun paiement en ligne configuré pour ce contrat.</p>
           )}
 
           {error && (
@@ -182,7 +239,8 @@ const modal: React.CSSProperties = {
   background: 'var(--bg-2, #0f2018)',
   border: '1px solid var(--border-2, #1e3d2f)',
   borderRadius: '20px',
-  width: '100%', maxWidth: '420px',
+  width: '100%', maxWidth: '460px',
+  maxHeight: '90vh', overflowY: 'auto',
   boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
 }
 
@@ -210,6 +268,13 @@ const closeBtn: React.CSSProperties = {
 
 const body: React.CSSProperties = {
   padding: '20px 22px 24px',
+}
+
+const sectionLabel: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '6px',
+  fontSize: '11px', fontWeight: 600, letterSpacing: '1px',
+  textTransform: 'uppercase' as const,
+  color: '#6b9a7e', margin: '0 0 10px',
 }
 
 const amountBox: React.CSSProperties = {

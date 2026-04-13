@@ -52,7 +52,10 @@ type DepositContract = {
   statut: string
   locataire_prenom: string
   locataire_nom: string
+  montant_loyer: number | null
   montant_caution: number | null
+  stripe_payment_enabled: boolean
+  stripe_payment_status: 'pending' | 'paid' | 'refunded' | 'failed' | null
   stripe_deposit_status: 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
 }
 
@@ -136,7 +139,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
       const { getContractsBySejour } = await import('../contract-actions')
       const res = await getContractsBySejour(sejourId)
       const signed = res.contracts?.find(c => c.statut === 'signe')
-      if (signed && signed.montant_caution && Number(signed.montant_caution) > 0) {
+      if (signed) {
         setDepositContract(signed as DepositContract)
       }
     } finally {
@@ -324,6 +327,28 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
 
   return (
     <div style={s.page}>
+      <style>{`
+        .sejour-actions {
+          display: flex;
+          gap: 6px;
+          align-items: center;
+          flex-wrap: wrap;
+          flex-shrink: 0;
+        }
+        @media (max-width: 600px) {
+          .sejour-row-mobile {
+            flex-direction: column !important;
+          }
+          .sejour-actions {
+            width: 100%;
+            justify-content: flex-start;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            margin-top: 4px;
+          }
+        }
+      `}</style>
+
       {/* Back */}
       <button onClick={() => router.push('/dashboard/voyageurs')} style={s.backBtn} className="fade-up">
         <ArrowLeft size={16} />
@@ -522,7 +547,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
             const ct = CONTRAT_LABELS[sj.contrat_statut]
             const n = nights(sj.date_arrivee, sj.date_depart)
             return (
-              <div key={sj.id} style={s.sejourRow}>
+              <div key={sj.id} style={s.sejourRow} className="sejour-row-mobile">
                 <div style={s.sejourLeft}>
                   <div style={s.sejourDates}>
                     {formatDate(sj.date_arrivee)} → {formatDate(sj.date_depart)}
@@ -545,15 +570,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                       <Seal size={12} />
                       {ct.label}
                     </span>
-                    {sj.contrat_lien && (
-                      <a href={sj.contrat_lien} target="_blank" rel="noopener noreferrer" style={{ ...s.metaChip, ...s.linkChip }}>
-                        <LinkIcon size={12} />
-                        Contrat
-                      </a>
-                    )}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
+                <div className="sejour-actions">
                   <button
                     onClick={() => handleContractClick(sj)}
                     style={s.contractBtn}
@@ -578,9 +597,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                       onClick={() => openDepositModal(sj.id)}
                       disabled={depositLoading === sj.id}
                       style={s.depositBtn}
-                      title="Gérer la caution"
+                      title="Gérer les paiements"
                     >
-                      {depositLoading === sj.id ? '…' : 'Caution'}
+                      {depositLoading === sj.id ? '…' : 'Paiements'}
                     </button>
                   )}
                   <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} title="Modifier">
@@ -951,7 +970,6 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '100px', padding: '3px 9px',
     fontSize: '12px', color: 'var(--text-3)',
   },
-  linkChip: { textDecoration: 'none', color: 'var(--accent-text)' },
   sejourActionBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
     color: 'var(--text-muted)', padding: '5px', borderRadius: '7px',

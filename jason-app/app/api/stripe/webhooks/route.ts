@@ -33,21 +33,34 @@ export async function POST(request: NextRequest) {
 
   try {
     switch (event.type) {
-      // La Checkout Session est complète — pré-autorisation réussie
+      // La Checkout Session est complète
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
         const contractId = session.metadata?.contract_id
         if (!contractId || session.payment_status !== 'paid') break
 
         const paymentIntentId = session.payment_intent as string
+        const type = session.metadata?.type // 'loyer' | undefined (caution)
 
-        await db
-          .from('contracts')
-          .update({
-            stripe_deposit_payment_intent_id: paymentIntentId,
-            stripe_deposit_status: 'held',
-          })
-          .eq('id', contractId)
+        if (type === 'loyer') {
+          // Paiement immédiat du loyer
+          await db
+            .from('contracts')
+            .update({
+              stripe_payment_intent_id: paymentIntentId,
+              stripe_payment_status: 'paid',
+            })
+            .eq('id', contractId)
+        } else {
+          // Pré-autorisation caution (capture manuelle)
+          await db
+            .from('contracts')
+            .update({
+              stripe_deposit_payment_intent_id: paymentIntentId,
+              stripe_deposit_status: 'held',
+            })
+            .eq('id', contractId)
+        }
         break
       }
 
