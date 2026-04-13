@@ -39,10 +39,24 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
     isFlagged = (reported ?? []).length > 0
   }
 
+  // Profil bailleur (depuis les métadonnées utilisateur Supabase Auth)
+  const { data: { user } } = await supabase.auth.getUser()
+  const meta = user?.user_metadata ?? {}
+  const bailleur = {
+    prenom: ((meta.prenom ?? meta.first_name ?? '') as string),
+    nom:    ((meta.nom ?? meta.last_name ?? meta.full_name ?? '') as string),
+    email:  user?.email ?? '',
+  }
+
   return (
     <>
       <Header title={`${voyageur.prenom} ${voyageur.nom}`} userName={profile.full_name ?? undefined} />
-      <VoyageurDetail voyageur={voyageur} sejours={sejours ?? []} isFlagged={isFlagged} />
+      <VoyageurDetail
+        voyageur={voyageur}
+        sejours={sejours ?? []}
+        isFlagged={isFlagged}
+        bailleur={bailleur}
+      />
     </>
   )
 }
