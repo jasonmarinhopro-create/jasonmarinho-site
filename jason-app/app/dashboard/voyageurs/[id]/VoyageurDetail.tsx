@@ -91,7 +91,21 @@ const EMPTY_SEJOUR: Omit<SejourData, 'voyageur_id'> = {
 function DateInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   // value is YYYY-MM-DD or ''
   const parts = value ? value.split('-') : ['', '', '']
-  const [year, month, day] = parts
+  const [extYear, extMonth, extDay] = parts
+
+  // Local state for intermediate values while typing
+  const [day, setDay] = useState(extDay)
+  const [month, setMonth] = useState(extMonth)
+  const [year, setYear] = useState(extYear)
+
+  // Sync from external value when it changes (e.g. form reset)
+  const prevValue = useRef(value)
+  if (prevValue.current !== value) {
+    prevValue.current = value
+    setDay(extDay)
+    setMonth(extMonth)
+    setYear(extYear)
+  }
 
   const dayRef = useRef<HTMLInputElement>(null)
   const monthRef = useRef<HTMLInputElement>(null)
@@ -107,18 +121,21 @@ function DateInput({ value, onChange }: { value: string; onChange: (v: string) =
 
   function handleDay(e: React.ChangeEvent<HTMLInputElement>) {
     const v = e.target.value.replace(/\D/g, '').slice(0, 2)
+    setDay(v)
     emit(v, month, year)
     if (v.length === 2) monthRef.current?.focus()
   }
 
   function handleMonth(e: React.ChangeEvent<HTMLInputElement>) {
     const v = e.target.value.replace(/\D/g, '').slice(0, 2)
+    setMonth(v)
     emit(day, v, year)
     if (v.length === 2) yearRef.current?.focus()
   }
 
   function handleYear(e: React.ChangeEvent<HTMLInputElement>) {
     const v = e.target.value.replace(/\D/g, '').slice(0, 4)
+    setYear(v)
     emit(day, month, v)
   }
 
@@ -145,6 +162,7 @@ function DateInput({ value, onChange }: { value: string; onChange: (v: string) =
       borderRadius: '10px', padding: '10px 12px',
       fontSize: '14px', color: 'var(--text)',
     }}>
+      <CalendarBlank size={14} color="var(--text-muted)" style={{ marginRight: '6px', flexShrink: 0 }} />
       <input
         ref={dayRef}
         style={{ ...inputStyle, width: '22px' }}
