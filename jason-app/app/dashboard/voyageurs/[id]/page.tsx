@@ -42,9 +42,11 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   // Profil bailleur (depuis les métadonnées utilisateur Supabase Auth)
   const { data: { user } } = await supabase.auth.getUser()
   const meta = user?.user_metadata ?? {}
+  // Découpe full_name si prenom/nom ne sont pas définis explicitement
+  const fullNameParts = ((meta.full_name ?? '') as string).trim().split(' ')
   const bailleur = {
-    prenom: ((meta.prenom ?? meta.first_name ?? '') as string),
-    nom:    ((meta.nom ?? meta.last_name ?? meta.full_name ?? '') as string),
+    prenom: ((meta.prenom ?? meta.first_name ?? fullNameParts[0] ?? '') as string),
+    nom:    ((meta.nom ?? meta.last_name ?? (fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '')) as string),
     email:  user?.email ?? '',
   }
 

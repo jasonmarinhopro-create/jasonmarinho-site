@@ -3,6 +3,9 @@ import { notFound } from 'next/navigation'
 import SignaturePage from './SignaturePage'
 import PrintButton from './PrintButton'
 
+// Toujours servir depuis le serveur (pas de cache) — la signature doit être fraîche
+export const dynamic = 'force-dynamic'
+
 function createServiceClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

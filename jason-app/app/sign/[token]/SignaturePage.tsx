@@ -109,6 +109,8 @@ export default function SignaturePage({ token, locataireName }: Props) {
         setError(data.error ?? 'Une erreur est survenue.')
       } else {
         setSuccess(true)
+        // Recharger la page après 2s pour afficher le contrat signé avec la signature
+        setTimeout(() => window.location.reload(), 2000)
       }
     } catch {
       setError('Erreur réseau. Veuillez réessayer.')
