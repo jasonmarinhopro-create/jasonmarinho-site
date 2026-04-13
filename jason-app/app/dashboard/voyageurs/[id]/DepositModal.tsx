@@ -1,0 +1,276 @@
+'use client'
+
+import { useState, useTransition } from 'react'
+import { X, LockKey, LockKeyOpen, Warning } from '@phosphor-icons/react'
+import { useRouter } from 'next/navigation'
+
+type DepositStatus = 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
+
+interface Contract {
+  id: string
+  token: string
+  statut: string
+  locataire_prenom: string
+  locataire_nom: string
+  montant_caution: number | null
+  stripe_deposit_status: DepositStatus
+}
+
+interface Props {
+  contract: Contract
+  onClose: () => void
+}
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+
+const DEPOSIT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
+  pending:  { label: 'En attente de paiement', color: '#a5c4b0', bg: 'rgba(165,196,176,0.08)' },
+  held:     { label: 'Caution retenue ✓',       color: '#34D399', bg: 'rgba(52,211,153,0.08)' },
+  captured: { label: 'Encaissée',               color: '#FFD56B', bg: 'rgba(255,213,107,0.08)' },
+  released: { label: 'Libérée',                  color: '#6b9a7e', bg: 'rgba(107,154,126,0.08)' },
+  failed:   { label: 'Échec paiement',           color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
+}
+
+export default function DepositModal({ contract, onClose }: Props) {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const [action, setAction] = useState<'capture' | 'release' | null>(null)
+  const [error, setError] = useState('')
+  const [done, setDone] = useState<'captured' | 'released' | null>(null)
+
+  const depositStatus = contract.stripe_deposit_status
+  const amount = Number(contract.montant_caution ?? 0)
+  const statusMeta = depositStatus ? DEPOSIT_LABELS[depositStatus] : null
+  const signUrl = `${APP_URL}/sign/${contract.token}`
+
+  async function handleAction(type: 'capture' | 'release') {
+    setError('')
+    setAction(type)
+    startTransition(async () => {
+      try {
+        const res = await fetch(`/api/stripe/deposit/${type}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contract_id: contract.id }),
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          setError(data.error ?? 'Une erreur est survenue.')
+        } else {
+          setDone(type === 'capture' ? 'captured' : 'released')
+          router.refresh()
+        }
+      } catch {
+        setError('Erreur réseau. Réessayez.')
+      } finally {
+        setAction(null)
+      }
+    })
+  }
+
+  return (
+    <div style={overlay} onClick={onClose}>
+      <div style={modal} onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div style={header}>
+          <div>
+            <p style={tag}>Dépôt de garantie</p>
+            <h3 style={title}>
+              {contract.locataire_prenom} {contract.locataire_nom}
+            </h3>
+          </div>
+          <button onClick={onClose} style={closeBtn}><X size={18} /></button>
+        </div>
+
+        <div style={body}>
+          {/* Montant */}
+          <div style={amountBox}>
+            <p style={amountLabel}>Montant de la caution</p>
+            <p style={amountValue}>{amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
+          </div>
+
+          {/* Statut */}
+          {statusMeta && (
+            <div style={{ background: statusMeta.bg, borderRadius: '10px', padding: '12px 14px', marginBottom: '16px' }}>
+              <p style={{ margin: 0, fontSize: '14px', color: statusMeta.color, fontWeight: 500 }}>
+                {statusMeta.label}
+              </p>
+            </div>
+          )}
+
+          {/* Actions si caution retenue */}
+          {depositStatus === 'held' && !done && (
+            <>
+              <p style={hint}>
+                La carte de {contract.locataire_prenom} est bloquée. Choisissez une action :
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+                <button
+                  onClick={() => handleAction('capture')}
+                  disabled={isPending}
+                  style={captureBtn}
+                >
+                  <LockKey size={16} weight="fill" />
+                  {action === 'capture' ? 'Encaissement…' : `Encaisser ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`}
+                </button>
+                <button
+                  onClick={() => handleAction('release')}
+                  disabled={isPending}
+                  style={releaseBtn}
+                >
+                  <LockKeyOpen size={16} />
+                  {action === 'release' ? 'Libération…' : 'Libérer la caution (séjour sans dommages)'}
+                </button>
+              </div>
+              <p style={legal}>
+                L&apos;encaissement est définitif. La libération annule le blocage carte immédiatement.
+              </p>
+            </>
+          )}
+
+          {/* Statut final */}
+          {done === 'captured' && (
+            <div style={successBox}>
+              <strong style={{ color: '#FFD56B' }}>Caution encaissée ✓</strong>
+              <p style={hint}>Le montant a été transféré vers votre compte Stripe.</p>
+            </div>
+          )}
+          {done === 'released' && (
+            <div style={successBox}>
+              <strong style={{ color: '#34D399' }}>Caution libérée ✓</strong>
+              <p style={hint}>Le blocage carte a été annulé. Le locataire est libéré.</p>
+            </div>
+          )}
+
+          {/* États non-actionnables */}
+          {depositStatus === 'captured' && !done && (
+            <p style={hint}>La caution a déjà été encaissée sur votre compte Stripe.</p>
+          )}
+          {depositStatus === 'released' && !done && (
+            <p style={hint}>La caution a été libérée. Le locataire n&apos;a pas été débité.</p>
+          )}
+          {(depositStatus === 'pending' || !depositStatus) && (
+            <div>
+              <p style={hint}>La caution n&apos;a pas encore été payée par le locataire.</p>
+              <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                Voir le contrat →
+              </a>
+            </div>
+          )}
+
+          {error && (
+            <div style={errorBox}>
+              <Warning size={14} />
+              {error}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Styles ──────────────────────────────────────────────────────────────────
+
+const overlay: React.CSSProperties = {
+  position: 'fixed', inset: 0, zIndex: 500,
+  background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px',
+}
+
+const modal: React.CSSProperties = {
+  background: 'var(--bg-2, #0f2018)',
+  border: '1px solid var(--border-2, #1e3d2f)',
+  borderRadius: '20px',
+  width: '100%', maxWidth: '420px',
+  boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
+}
+
+const header: React.CSSProperties = {
+  display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+  padding: '20px 22px 16px',
+  borderBottom: '1px solid var(--border, #1e3d2f)',
+}
+
+const tag: React.CSSProperties = {
+  fontSize: '11px', fontWeight: 600, letterSpacing: '1px',
+  textTransform: 'uppercase', color: '#a29bfe', margin: '0 0 4px',
+}
+
+const title: React.CSSProperties = {
+  fontFamily: 'Fraunces, Georgia, serif',
+  fontSize: '18px', fontWeight: 400,
+  color: 'var(--text, #f0ebe1)', margin: 0,
+}
+
+const closeBtn: React.CSSProperties = {
+  background: 'none', border: 'none', cursor: 'pointer',
+  color: 'var(--text-3, #6b9a7e)', padding: '4px',
+}
+
+const body: React.CSSProperties = {
+  padding: '20px 22px 24px',
+}
+
+const amountBox: React.CSSProperties = {
+  background: 'rgba(99,91,255,0.08)',
+  border: '1px solid rgba(99,91,255,0.2)',
+  borderRadius: '12px', padding: '14px 16px', marginBottom: '16px',
+}
+
+const amountLabel: React.CSSProperties = {
+  fontSize: '11px', fontWeight: 600, letterSpacing: '1px',
+  textTransform: 'uppercase', color: '#a29bfe', margin: '0 0 4px',
+}
+
+const amountValue: React.CSSProperties = {
+  fontSize: '28px', fontWeight: 700, color: '#f0ebe1', margin: 0,
+  fontVariantNumeric: 'tabular-nums',
+}
+
+const hint: React.CSSProperties = {
+  fontSize: '13px', color: '#a5c4b0', lineHeight: 1.6, margin: '0 0 12px',
+}
+
+const captureBtn: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+  width: '100%', padding: '13px',
+  background: 'rgba(255,213,107,0.12)',
+  border: '1px solid rgba(255,213,107,0.3)',
+  borderRadius: '12px',
+  fontSize: '14px', fontWeight: 600, color: '#FFD56B',
+  cursor: 'pointer',
+}
+
+const releaseBtn: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+  width: '100%', padding: '13px',
+  background: 'rgba(52,211,153,0.08)',
+  border: '1px solid rgba(52,211,153,0.2)',
+  borderRadius: '12px',
+  fontSize: '14px', fontWeight: 600, color: '#34D399',
+  cursor: 'pointer',
+}
+
+const legal: React.CSSProperties = {
+  fontSize: '11px', color: '#4a7260', lineHeight: 1.6, margin: 0,
+}
+
+const successBox: React.CSSProperties = {
+  background: 'rgba(52,211,153,0.06)',
+  border: '1px solid rgba(52,211,153,0.15)',
+  borderRadius: '10px', padding: '14px',
+}
+
+const errorBox: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '8px',
+  fontSize: '13px', color: '#ef4444',
+  background: 'rgba(239,68,68,0.08)',
+  border: '1px solid rgba(239,68,68,0.2)',
+  borderRadius: '8px', padding: '10px 14px', marginTop: '12px',
+}
+
+const viewLink: React.CSSProperties = {
+  fontSize: '13px', color: '#a29bfe',
+  textDecoration: 'none', display: 'inline-block', marginTop: '4px',
+}

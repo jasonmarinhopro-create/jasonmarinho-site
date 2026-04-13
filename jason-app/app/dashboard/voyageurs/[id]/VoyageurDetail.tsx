@@ -10,6 +10,7 @@ import {
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
 import { reportGuest } from '../../securite/actions'
 import ContractModal from './ContractModal'
+import DepositModal from './DepositModal'
 
 const INCIDENT_TYPES = [
   'Dégradation du logement',
@@ -43,6 +44,16 @@ type Sejour = {
   montant: number | null
   contrat_statut: 'signe' | 'en_attente' | 'non_requis'
   contrat_date_signature: string | null; contrat_lien: string | null
+}
+
+type DepositContract = {
+  id: string
+  token: string
+  statut: string
+  locataire_prenom: string
+  locataire_nom: string
+  montant_caution: number | null
+  stripe_deposit_status: 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
 }
 
 function avatarColor(name: string) {
@@ -92,6 +103,24 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
 
   // Contract modal
   const [contractSejour, setContractSejour] = useState<Sejour | null>(null)
+
+  // Deposit modal
+  const [depositContract, setDepositContract] = useState<DepositContract | null>(null)
+  const [depositLoading, setDepositLoading] = useState<string | null>(null) // sejourId en cours de chargement
+
+  async function openDepositModal(sejourId: string) {
+    setDepositLoading(sejourId)
+    try {
+      const { getContractsBySejour } = await import('../contract-actions')
+      const res = await getContractsBySejour(sejourId)
+      const signed = res.contracts?.find(c => c.statut === 'signe')
+      if (signed && signed.montant_caution && Number(signed.montant_caution) > 0) {
+        setDepositContract(signed as DepositContract)
+      }
+    } finally {
+      setDepositLoading(null)
+    }
+  }
 
   // Profile inline edit
   const [editingProfile, setEditingProfile] = useState(false)
@@ -482,6 +511,16 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
                     <FileText size={13} weight="fill" />
                     Contrat
                   </button>
+                  {sj.contrat_statut === 'signe' && (
+                    <button
+                      onClick={() => openDepositModal(sj.id)}
+                      disabled={depositLoading === sj.id}
+                      style={s.depositBtn}
+                      title="Gérer la caution"
+                    >
+                      {depositLoading === sj.id ? '…' : 'Caution'}
+                    </button>
+                  )}
                   <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} title="Modifier">
                     <Pencil size={14} />
                   </button>
@@ -603,6 +642,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
           bailleur={bailleur}
           onClose={() => { setContractSejour(null); router.refresh() }}
           onSuccess={() => router.refresh()}
+        />
+      )}
+
+      {/* Deposit modal */}
+      {depositContract && (
+        <DepositModal
+          contract={depositContract}
+          onClose={() => setDepositContract(null)}
         />
       )}
 
@@ -812,6 +859,13 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)',
     borderRadius: '8px', padding: '5px 11px',
     fontSize: '12px', fontWeight: 500, color: '#FFD56B',
+    cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
+  },
+  depositBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'rgba(99,91,255,0.1)', border: '1px solid rgba(99,91,255,0.25)',
+    borderRadius: '8px', padding: '5px 11px',
+    fontSize: '12px', fontWeight: 500, color: '#a29bfe',
     cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
   },
 

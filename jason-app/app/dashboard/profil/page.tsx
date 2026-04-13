@@ -13,12 +13,14 @@ export default async function ProfilPage() {
 
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('full_name, plan')
+    .select('full_name, plan, stripe_account_id, stripe_onboarding_complete')
     .eq('id', userId)
     .maybeSingle()
 
   const fullName = profileData?.full_name ?? ''
   const plan = profileData?.plan ?? 'decouverte'
+  const stripeAccountId = profileData?.stripe_account_id ?? null
+  const stripeComplete = profileData?.stripe_onboarding_complete ?? false
 
   return (
     <>
@@ -34,7 +36,12 @@ export default async function ProfilPage() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '600px' }}>
-          <ProfilForm initialFullName={fullName} email={email} />
+          <ProfilForm
+            initialFullName={fullName}
+            email={email}
+            stripeAccountId={stripeAccountId}
+            stripeComplete={stripeComplete}
+          />
 
           {plan === 'driing' && (
             <div style={cardStyles.card} className="fade-up d2">

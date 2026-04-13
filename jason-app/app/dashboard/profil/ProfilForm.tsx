@@ -1,19 +1,22 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useTransition, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { saveProfileName } from './actions'
-import { Check, User, EnvelopeSimple, PencilSimple, Warning, Lock, Eye, EyeSlash } from '@phosphor-icons/react'
+import { Check, User, EnvelopeSimple, PencilSimple, Warning, Lock, Eye, EyeSlash, CreditCard } from '@phosphor-icons/react'
 
 interface Props {
   initialFullName: string
   email: string
+  stripeAccountId: string | null
+  stripeComplete: boolean
 }
 
-export default function ProfilForm({ initialFullName, email }: Props) {
+export default function ProfilForm({ initialFullName, email, stripeAccountId, stripeComplete }: Props) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [fullName, setFullNameState] = useState(initialFullName)
   const [firstName, setFirstName] = useState(() => {
     const parts = initialFullName.trim().split(' ')
@@ -36,6 +39,30 @@ export default function ProfilForm({ initialFullName, email }: Props) {
   const [pwLoading, setPwLoading] = useState(false)
   const [pwError, setPwError] = useState('')
   const [pwSaved, setPwSaved] = useState(false)
+
+  // Stripe Connect
+  const [stripeLoading, setStripeLoading] = useState(false)
+  const [stripeError, setStripeError] = useState('')
+  const stripeStatus = searchParams.get('stripe') // 'success' | 'pending' | 'error'
+  const isStripeConnected = !!stripeAccountId && stripeComplete
+
+  async function handleStripeConnect() {
+    setStripeLoading(true)
+    setStripeError('')
+    try {
+      const res = await fetch('/api/stripe/connect', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        setStripeError(data.error ?? 'Erreur lors de la connexion Stripe.')
+      } else {
+        window.location.href = data.url
+      }
+    } catch {
+      setStripeError('Erreur réseau. Réessayez.')
+    } finally {
+      setStripeLoading(false)
+    }
+  }
 
   const displayName = [firstName, lastName].filter(Boolean).join(' ')
   const initials = displayName
@@ -155,6 +182,79 @@ export default function ProfilForm({ initialFullName, email }: Props) {
 
       <div style={styles.divider} />
 
+      {/* Stripe Connect */}
+      <div style={styles.field}>
+        <label style={styles.label}>
+          <CreditCard size={15} />
+          Paiements &amp; Cautions (Stripe)
+        </label>
+
+        {/* Bannière retour Stripe */}
+        {stripeStatus === 'success' && (
+          <div style={stripeBanner('success')}>
+            <Check size={14} weight="bold" />
+            Compte Stripe connecté avec succès ! Vous pouvez maintenant collecter des cautions.
+          </div>
+        )}
+        {stripeStatus === 'pending' && (
+          <div style={stripeBanner('pending')}>
+            Finalisation en cours... Revenez ici une fois votre onboarding Stripe terminé.
+          </div>
+        )}
+        {stripeStatus === 'error' && (
+          <div style={stripeBanner('error')}>
+            Une erreur est survenue. Réessayez depuis ce bouton.
+          </div>
+        )}
+
+        {isStripeConnected ? (
+          <div style={styles.valueRow}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34D399', display: 'inline-block', flexShrink: 0 }} />
+                <span style={{ ...styles.value, color: '#34D399' }}>Compte connecté</span>
+              </div>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '0 0 0 16px' }}>
+                {stripeAccountId}
+              </p>
+            </div>
+            <button onClick={handleStripeConnect} disabled={stripeLoading} style={styles.editBtn}>
+              {stripeLoading ? 'Chargement...' : 'Gérer'}
+            </button>
+          </div>
+        ) : stripeAccountId && !stripeComplete ? (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#FFD56B', display: 'inline-block' }} />
+              <span style={{ fontSize: '14px', color: '#FFD56B' }}>Onboarding incomplet</span>
+            </div>
+            <p style={{ fontSize: '13px', color: 'var(--text-2)', marginBottom: '12px' }}>
+              Finalisez la configuration de votre compte Stripe pour activer les cautions.
+            </p>
+            <button onClick={handleStripeConnect} disabled={stripeLoading} style={stripeBtn}>
+              {stripeLoading ? 'Chargement...' : 'Finaliser mon compte Stripe →'}
+            </button>
+          </div>
+        ) : (
+          <div>
+            <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '14px' }}>
+              Connectez un compte Stripe pour collecter les cautions directement depuis vos contrats.
+              La carte de vos locataires est bloquée à la signature — vous encaissez uniquement en cas de dommages.
+            </p>
+            {stripeError && (
+              <div style={{ ...styles.errorBox, marginBottom: '12px' }}>
+                <Warning size={14} />{stripeError}
+              </div>
+            )}
+            <button onClick={handleStripeConnect} disabled={stripeLoading} style={stripeBtn}>
+              {stripeLoading ? 'Connexion en cours...' : 'Connecter mon compte Stripe →'}
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div style={styles.divider} />
+
       {/* Mot de passe */}
       <div style={styles.field}>
         <label style={styles.label}>
@@ -237,4 +337,28 @@ const styles: Record<string, React.CSSProperties> = {
   errorBox: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#F87171', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.18)', borderRadius: '8px', padding: '10px 14px' },
   readOnly: { fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '6px', padding: '4px 10px' },
   eyeBtn: { position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-2)', padding: '4px', display: 'flex', alignItems: 'center' },
+}
+
+const stripeBtn: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  background: 'rgba(99,91,255,0.15)',
+  border: '1px solid rgba(99,91,255,0.35)',
+  borderRadius: '10px', padding: '10px 18px',
+  fontSize: '13px', fontWeight: 600,
+  color: '#a29bfe', cursor: 'pointer',
+}
+
+function stripeBanner(type: 'success' | 'pending' | 'error'): React.CSSProperties {
+  const colors = {
+    success: { bg: 'rgba(52,211,153,0.08)', border: 'rgba(52,211,153,0.2)', color: '#34D399' },
+    pending: { bg: 'rgba(255,213,107,0.08)', border: 'rgba(255,213,107,0.2)', color: '#FFD56B' },
+    error:   { bg: 'rgba(239,68,68,0.08)',   border: 'rgba(239,68,68,0.2)',   color: '#ef4444' },
+  }
+  const c = colors[type]
+  return {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    background: c.bg, border: `1px solid ${c.border}`,
+    borderRadius: '10px', padding: '10px 14px',
+    fontSize: '13px', color: c.color, marginBottom: '14px',
+  }
 }
