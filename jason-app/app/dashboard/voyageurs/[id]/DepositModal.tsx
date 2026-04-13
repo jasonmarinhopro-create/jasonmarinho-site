@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { X, LockKey, LockKeyOpen, Warning, CurrencyEur } from '@phosphor-icons/react'
+import { X, LockKey, LockKeyOpen, Warning, CurrencyEur, Copy, Check } from '@phosphor-icons/react'
 import { useRouter } from 'next/navigation'
 
 type DepositStatus = 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
@@ -48,6 +48,14 @@ export default function DepositModal({ contract, onClose }: Props) {
   const [action, setAction] = useState<'capture' | 'release' | null>(null)
   const [error, setError] = useState('')
   const [done, setDone] = useState<'captured' | 'released' | null>(null)
+  const [copied, setCopied] = useState<'payment' | 'deposit' | null>(null)
+
+  function copyLink(type: 'payment' | 'deposit') {
+    navigator.clipboard.writeText(signUrl).then(() => {
+      setCopied(type)
+      setTimeout(() => setCopied(null), 2000)
+    })
+  }
 
   const depositStatus = contract.stripe_deposit_status
   const paymentStatus = contract.stripe_payment_status
@@ -121,9 +129,15 @@ export default function DepositModal({ contract, onClose }: Props) {
               ) : (
                 <div>
                   <p style={hint}>Le paiement en ligne n&apos;a pas encore été effectué par le locataire.</p>
-                  <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
-                    Voir le contrat →
-                  </a>
+                  <div style={linkRow}>
+                    <button onClick={() => copyLink('payment')} style={copyBtn}>
+                      {copied === 'payment' ? <Check size={13} weight="bold" /> : <Copy size={13} />}
+                      {copied === 'payment' ? 'Lien copié !' : 'Copier le lien de paiement'}
+                    </button>
+                    <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                      Voir →
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
@@ -202,9 +216,15 @@ export default function DepositModal({ contract, onClose }: Props) {
               {(depositStatus === 'pending' || !depositStatus) && (
                 <div>
                   <p style={hint}>La caution n&apos;a pas encore été payée par le locataire.</p>
-                  <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
-                    Voir le contrat →
-                  </a>
+                  <div style={linkRow}>
+                    <button onClick={() => copyLink('deposit')} style={copyBtn}>
+                      {copied === 'deposit' ? <Check size={13} weight="bold" /> : <Copy size={13} />}
+                      {copied === 'deposit' ? 'Lien copié !' : 'Copier le lien de caution'}
+                    </button>
+                    <a href={signUrl} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                      Voir →
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
@@ -335,7 +355,20 @@ const errorBox: React.CSSProperties = {
   borderRadius: '8px', padding: '10px 14px', marginTop: '12px',
 }
 
+const linkRow: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
+}
+
+const copyBtn: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  padding: '8px 14px', borderRadius: '10px',
+  background: 'rgba(162,155,254,0.12)',
+  border: '1px solid rgba(162,155,254,0.25)',
+  color: '#a29bfe', fontSize: '13px', fontWeight: 500,
+  cursor: 'pointer',
+}
+
 const viewLink: React.CSSProperties = {
-  fontSize: '13px', color: '#a29bfe',
-  textDecoration: 'none', display: 'inline-block', marginTop: '4px',
+  fontSize: '13px', color: '#6b9a7e',
+  textDecoration: 'none', display: 'inline-block',
 }
