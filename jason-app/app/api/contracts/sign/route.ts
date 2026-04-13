@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
       ?? 'inconnue'
     const userAgent = request.headers.get('user-agent') ?? 'inconnu'
 
-    // Enregistrer la signature
-    const { error: updateErr } = await supabase
+    // Enregistrer la signature — on utilise .select() pour détecter les échecs silencieux
+    const { data: updatedContract, error: updateErr } = await supabase
       .from('contracts')
       .update({
         statut: 'signe',
@@ -67,9 +67,12 @@ export async function POST(request: NextRequest) {
         signature_image,
       })
       .eq('id', contract.id)
+      .select('id, statut')
+      .single()
 
-    if (updateErr) {
-      return NextResponse.json({ error: 'Erreur lors de l\'enregistrement de la signature.' }, { status: 500 })
+    if (updateErr || !updatedContract || updatedContract.statut !== 'signe') {
+      console.error('[contracts/sign] Update failed:', updateErr, updatedContract)
+      return NextResponse.json({ error: 'Erreur lors de l\'enregistrement de la signature. Veuillez réessayer.' }, { status: 500 })
     }
 
     // Mettre à jour le statut du séjour
