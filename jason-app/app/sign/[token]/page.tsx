@@ -4,6 +4,7 @@ import SignaturePage from './SignaturePage'
 import PrintButton from './PrintButton'
 import DepositSection from './DepositSection'
 import PaymentSection from './PaymentSection'
+import IbanSection from './IbanSection'
 
 // Toujours servir depuis le serveur (pas de cache) — la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -60,13 +61,15 @@ export default async function SignPage({
   const cancelled = contract.statut === 'annule'
   const n = nights(contract.date_arrivee, contract.date_depart)
 
-  // Stripe : vérifier si le bailleur a un compte connecté
+  // Stripe + IBAN : récupérer le profil du bailleur
   const { data: bailProfile } = await supabase
     .from('profiles')
-    .select('stripe_account_id, stripe_onboarding_complete')
+    .select('stripe_account_id, stripe_onboarding_complete, iban, bic')
     .eq('id', contract.user_id)
     .single()
   const stripeReady = !!(bailProfile?.stripe_account_id && bailProfile?.stripe_onboarding_complete)
+  const hostIban = bailProfile?.iban ?? null
+  const hostBic = bailProfile?.bic ?? null
 
   // Caution
   const hasDeposit = Number(contract.montant_caution) > 0
@@ -307,28 +310,57 @@ export default async function SignPage({
           <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
         ) : null}
 
-        {/* ── Paiements (visibles seulement si contrat signé + Stripe connecté) ── */}
-        {alreadySigned && stripeReady && (paymentEnabled || hasDeposit) && (
+        {/* ── Paiements ── */}
+        {alreadySigned && (paymentEnabled || hasDeposit || hostIban) && (
           <div style={paymentsBlock}>
             <p style={paymentsTitle}>Finaliser votre dossier</p>
 
-            {/* 1. Paiement de la réservation (en premier — montant principal) */}
-            {paymentEnabled && (
-              <PaymentSection
-                token={token}
-                amount={Number(contract.montant_loyer)}
-                paymentParam={paymentParam}
-                alreadyPaid={paymentAlreadyDone}
-              />
+            {/* Stripe pas encore configuré par le bailleur */}
+            {(paymentEnabled || hasDeposit) && !stripeReady && !hostIban && (
+              <div style={warningBanner}>
+                <span style={{ fontSize: '20px' }}>⏳</span>
+                <div>
+                  <strong>Paiement en ligne bientôt disponible</strong>
+                  <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.85 }}>
+                    Le propriétaire finalise la configuration de son compte de paiement.
+                    Revenez dans quelques instants ou contactez-le directement.
+                  </p>
+                </div>
+              </div>
             )}
 
-            {/* 2. Dépôt de garantie (en second — caution optionnelle) */}
-            {hasDeposit && (
-              <DepositSection
-                token={token}
-                amount={Number(contract.montant_caution)}
-                depositParam={depositParam}
-                depositAlreadyHeld={depositAlreadyHeld}
+            {/* Sections Stripe (uniquement si compte prêt) */}
+            {stripeReady && (
+              <>
+                {/* 1. Paiement de la réservation */}
+                {paymentEnabled && (
+                  <PaymentSection
+                    token={token}
+                    amount={Number(contract.montant_loyer)}
+                    paymentParam={paymentParam}
+                    alreadyPaid={paymentAlreadyDone}
+                  />
+                )}
+                {/* 2. Dépôt de garantie */}
+                {hasDeposit && (
+                  <DepositSection
+                    token={token}
+                    amount={Number(contract.montant_caution)}
+                    depositParam={depositParam}
+                    depositAlreadyHeld={depositAlreadyHeld}
+                  />
+                )}
+              </>
+            )}
+
+            {/* 3. Virement bancaire IBAN (si le bailleur a configuré son IBAN) */}
+            {hostIban && (
+              <IbanSection
+                iban={hostIban}
+                bic={hostBic}
+                amount={Number(contract.montant_loyer)}
+                reference={`LOC-${contract.id.slice(0, 8).toUpperCase()}`}
+                beneficiary={`${contract.bailleur_prenom} ${contract.bailleur_nom}`}
               />
             )}
           </div>

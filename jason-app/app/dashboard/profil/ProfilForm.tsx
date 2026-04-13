@@ -3,17 +3,19 @@
 import { useState, useTransition, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { saveProfileName } from './actions'
-import { Check, User, EnvelopeSimple, PencilSimple, Warning, Lock, Eye, EyeSlash, CreditCard } from '@phosphor-icons/react'
+import { saveProfileName, saveIban } from './actions'
+import { Check, User, EnvelopeSimple, PencilSimple, Warning, Lock, Eye, EyeSlash, CreditCard, Bank } from '@phosphor-icons/react'
 
 interface Props {
   initialFullName: string
   email: string
   stripeAccountId: string | null
   stripeComplete: boolean
+  initialIban?: string
+  initialBic?: string
 }
 
-export default function ProfilForm({ initialFullName, email, stripeAccountId, stripeComplete }: Props) {
+export default function ProfilForm({ initialFullName, email, stripeAccountId, stripeComplete, initialIban = '', initialBic = '' }: Props) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -45,6 +47,14 @@ export default function ProfilForm({ initialFullName, email, stripeAccountId, st
   const [stripeError, setStripeError] = useState('')
   const stripeStatus = searchParams.get('stripe') // 'success' | 'pending' | 'error'
   const isStripeConnected = !!stripeAccountId && stripeComplete
+
+  // IBAN / Virement bancaire
+  const [editIban, setEditIban] = useState(false)
+  const [ibanValue, setIbanValue] = useState(initialIban)
+  const [bicValue, setBicValue] = useState(initialBic)
+  const [ibanPending, startIbanTransition] = useTransition()
+  const [ibanSaved, setIbanSaved] = useState(false)
+  const [ibanError, setIbanError] = useState('')
 
   async function handleStripeConnect() {
     setStripeLoading(true)
@@ -112,6 +122,28 @@ export default function ProfilForm({ initialFullName, email, stripeAccountId, st
     setConfirmPassword('')
     setPwError('')
     setEditPassword(false)
+  }
+
+  function handleIbanSave() {
+    setIbanError('')
+    const raw = ibanValue.replace(/\s/g, '').toUpperCase()
+    if (raw && raw.length < 14) { setIbanError('IBAN invalide (trop court).'); return }
+    startIbanTransition(async () => {
+      const result = await saveIban(raw, bicValue.trim().toUpperCase())
+      if (result.error) { setIbanError(result.error); return }
+      setIbanValue(raw)
+      setIbanSaved(true)
+      setEditIban(false)
+      router.refresh()
+      setTimeout(() => setIbanSaved(false), 2500)
+    })
+  }
+
+  function handleIbanCancel() {
+    setIbanValue(initialIban)
+    setBicValue(initialBic)
+    setIbanError('')
+    setEditIban(false)
   }
 
   return (
@@ -237,10 +269,16 @@ export default function ProfilForm({ initialFullName, email, stripeAccountId, st
           </div>
         ) : (
           <div>
-            <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '14px' }}>
-              Connectez un compte Stripe pour collecter les cautions directement depuis vos contrats.
+            <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '10px' }}>
+              Connectez un compte Stripe pour collecter les loyers et cautions directement depuis vos contrats.
               La carte de vos locataires est bloquée à la signature — vous encaissez uniquement en cas de dommages.
             </p>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', background: 'rgba(99,91,255,0.08)', border: '1px solid rgba(99,91,255,0.2)', borderRadius: '8px', padding: '10px 12px', marginBottom: '14px' }}>
+              <span style={{ fontSize: '13px' }}>ℹ️</span>
+              <p style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.6, margin: 0 }}>
+                <strong style={{ color: 'var(--text-2)' }}>Commissions Stripe</strong> : 1,5 % + 0,25 € par transaction (cartes européennes) — 2,9 % + 0,25 € hors UE. Automatiquement déduit de chaque versement.
+              </p>
+            </div>
             {stripeError && (
               <div style={{ ...styles.errorBox, marginBottom: '12px' }}>
                 <Warning size={14} />{stripeError}
@@ -248,6 +286,71 @@ export default function ProfilForm({ initialFullName, email, stripeAccountId, st
             )}
             <button onClick={handleStripeConnect} disabled={stripeLoading} style={stripeBtn}>
               {stripeLoading ? 'Connexion en cours...' : 'Connecter mon compte Stripe →'}
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div style={styles.divider} />
+
+      {/* IBAN / Virement bancaire */}
+      <div style={styles.field}>
+        <label style={styles.label}>
+          <Bank size={15} />
+          Virement bancaire (IBAN)
+        </label>
+
+        {ibanSaved && (
+          <div style={{ ...stripeBanner('success'), marginBottom: '12px' }}>
+            <Check size={14} weight="bold" />
+            IBAN enregistré — il sera proposé comme option de paiement dans vos contrats.
+          </div>
+        )}
+
+        {editIban ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <input
+              type="text"
+              value={ibanValue}
+              onChange={e => setIbanValue(e.target.value)}
+              style={{ ...styles.input, width: '100%', boxSizing: 'border-box', fontFamily: 'monospace', letterSpacing: '0.5px' }}
+              placeholder="FR76 1234 5678 9012 3456 7890 123"
+              autoFocus
+            />
+            <input
+              type="text"
+              value={bicValue}
+              onChange={e => setBicValue(e.target.value)}
+              style={{ ...styles.input, width: '100%', boxSizing: 'border-box', fontFamily: 'monospace', letterSpacing: '0.5px' }}
+              placeholder="BIC / SWIFT (ex : BNPAFRPP)"
+            />
+            {ibanError && <div style={styles.errorBox}><Warning size={14} />{ibanError}</div>}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button onClick={handleIbanSave} disabled={ibanPending} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                {ibanPending ? 'Sauvegarde...' : 'Enregistrer'}
+              </button>
+              <button onClick={handleIbanCancel} style={styles.cancelBtn}>Annuler</button>
+            </div>
+          </div>
+        ) : ibanValue ? (
+          <div style={styles.valueRow}>
+            <div>
+              <p style={{ margin: '0 0 2px', fontFamily: 'monospace', fontSize: '14px', color: 'var(--text)', letterSpacing: '0.5px' }}>{ibanValue}</p>
+              {bicValue && <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-3)' }}>BIC : {bicValue}</p>}
+            </div>
+            <button onClick={() => setEditIban(true)} style={styles.editBtn}>
+              <PencilSimple size={14} />
+              Modifier
+            </button>
+          </div>
+        ) : (
+          <div>
+            <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '12px' }}>
+              Ajoutez votre IBAN pour proposer le virement bancaire comme option de paiement dans vos contrats.
+              Vos locataires verront vos coordonnées bancaires directement sur la page de signature.
+            </p>
+            <button onClick={() => setEditIban(true)} style={ibanBtn}>
+              Ajouter mon IBAN →
             </button>
           </div>
         )}
@@ -346,6 +449,15 @@ const stripeBtn: React.CSSProperties = {
   borderRadius: '10px', padding: '10px 18px',
   fontSize: '13px', fontWeight: 600,
   color: '#a29bfe', cursor: 'pointer',
+}
+
+const ibanBtn: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  background: 'rgba(52,211,153,0.1)',
+  border: '1px solid rgba(52,211,153,0.25)',
+  borderRadius: '10px', padding: '10px 18px',
+  fontSize: '13px', fontWeight: 600,
+  color: '#34D399', cursor: 'pointer',
 }
 
 function stripeBanner(type: 'success' | 'pending' | 'error'): React.CSSProperties {

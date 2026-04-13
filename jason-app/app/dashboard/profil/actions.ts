@@ -20,7 +20,29 @@ export async function saveProfileName(fullName: string): Promise<{ error?: strin
 
   if (error) return { error: `Erreur: ${error.message}` }
 
-  // Invalide le cache de TOUTES les routes du dashboard
+  revalidatePath('/dashboard', 'layout')
+
+  return {}
+}
+
+export async function saveIban(iban: string, bic: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session) return { error: 'Non authentifié.' }
+
+  const { error } = await supabase
+    .from('profiles')
+    .upsert({
+      id: session.user.id,
+      email: session.user.email ?? '',
+      iban: iban || null,
+      bic: bic || null,
+      updated_at: new Date().toISOString(),
+    })
+
+  if (error) return { error: `Erreur: ${error.message}` }
+
   revalidatePath('/dashboard', 'layout')
 
   return {}
