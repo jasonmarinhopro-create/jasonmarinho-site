@@ -157,6 +157,8 @@ export async function POST(request: NextRequest) {
     const hasPayment = !!(contract.stripe_payment_enabled)
     const hasCaution = Number(contract.montant_caution) > 0
     const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
+    // Nom du logement : utilise le nom personnalisé si disponible, sinon l'adresse
+    const propertyLabel = (contract.logement_nom as string | null) ?? contract.logement_adresse
     const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
 
     // Génère une ligne de coordonnées bancaires "tap-to-select" pour l'email
@@ -201,7 +203,7 @@ export async function POST(request: NextRequest) {
           Bonjour <strong style="color:#f0ebe1;">${guestName}</strong>,
         </p>
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Votre contrat de location pour <strong style="color:#f0ebe1;">${contract.logement_adresse}</strong> a bien été signé le <strong style="color:#f0ebe1;">${signDate}</strong>.
+          Votre contrat de location pour <strong style="color:#f0ebe1;">${propertyLabel}</strong> a bien été signé le <strong style="color:#f0ebe1;">${signDate}</strong>.
         </p>
         <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:18px 20px;margin:0 0 24px;">
           <p style="margin:0 0 4px;font-size:11px;color:#6b9a7e;text-transform:uppercase;letter-spacing:1px;">Référence signature</p>
@@ -251,7 +253,7 @@ export async function POST(request: NextRequest) {
           Bonjour <strong style="color:#f0ebe1;">${hostName}</strong>,
         </p>
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          <strong style="color:#f0ebe1;">${guestName}</strong> a signé électroniquement le contrat de location pour <strong style="color:#f0ebe1;">${contract.logement_adresse}</strong> le <strong style="color:#f0ebe1;">${signDate}</strong>.
+          <strong style="color:#f0ebe1;">${guestName}</strong> a signé électroniquement le contrat de location pour <strong style="color:#f0ebe1;">${propertyLabel}</strong> le <strong style="color:#f0ebe1;">${signDate}</strong>.
         </p>
         <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:18px 20px;margin:0 0 24px;">
           <p style="margin:0 0 4px;font-size:11px;color:#6b9a7e;text-transform:uppercase;letter-spacing:1px;">Référence signature</p>
@@ -283,7 +285,7 @@ export async function POST(request: NextRequest) {
       await resend.emails.send({
         from: FROM_EMAIL,
         to: contract.locataire_email,
-        subject: `Contrat signé — finalisez votre dossier pour ${contract.logement_adresse}`,
+        subject: `Contrat signé — finalisez votre dossier pour ${propertyLabel}`,
         html: guestEmailHtml,
       }).catch(e => console.error('[sign] Guest email failed:', e))
     }
@@ -291,7 +293,7 @@ export async function POST(request: NextRequest) {
     await resend.emails.send({
       from: FROM_EMAIL,
       to: contract.bailleur_email,
-      subject: `${guestName} a signé le contrat — ${contract.logement_adresse}`,
+      subject: `${guestName} a signé le contrat — ${propertyLabel}`,
       html: hostEmailHtml,
     }).catch(e => console.error('[sign] Host email failed:', e))
 
