@@ -24,6 +24,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
     .from('sejours')
     .select('*')
     .eq('voyageur_id', id)
+    .eq('user_id', profile.userId)
     .order('date_arrivee', { ascending: false })
 
   // Vérifier si signalé

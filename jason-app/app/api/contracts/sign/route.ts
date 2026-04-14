@@ -37,6 +37,13 @@ export async function POST(request: NextRequest) {
     if (!signature_image || typeof signature_image !== 'string') {
       return NextResponse.json({ error: 'Signature manquante.' }, { status: 400 })
     }
+    const validImagePrefixes = ['data:image/png;base64,', 'data:image/jpeg;base64,', 'data:image/webp;base64,']
+    if (!validImagePrefixes.some(p => signature_image.startsWith(p))) {
+      return NextResponse.json({ error: 'Format de signature invalide.' }, { status: 400 })
+    }
+    if (signature_image.length > 5_000_000) {
+      return NextResponse.json({ error: 'Image de signature trop volumineuse (max 5 Mo).' }, { status: 400 })
+    }
 
     // Audit trail eIDAS : IP + user-agent
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
