@@ -2,11 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 
-// Service role client (bypasses RLS — utilisé uniquement côté serveur)
+// Service role client — pour le fetch du contrat (lecture seule)
 function createServiceClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  )
+}
+
+// Client anon — pour l'appel RPC sign_contract (SECURITY DEFINER, ne dépend pas du service role)
+function createAnonClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     { auth: { persistSession: false } }
   )
 }
@@ -29,64 +38,59 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Signature manquante.' }, { status: 400 })
     }
 
-    const supabase = createServiceClient()
-
-    // Récupérer le contrat par token
-    const { data: contract, error: fetchErr } = await supabase
-      .from('contracts')
-      .select('*')
-      .eq('token', token)
-      .single()
-
-    if (fetchErr || !contract) {
-      return NextResponse.json({ error: 'Contrat introuvable.' }, { status: 404 })
-    }
-
-    // Vérifications
-    if (contract.statut !== 'en_attente') {
-      return NextResponse.json({ error: 'Ce contrat a déjà été traité.' }, { status: 409 })
-    }
-    if (new Date(contract.token_expires_at) < new Date()) {
-      return NextResponse.json({ error: 'Ce lien de signature a expiré. Contactez le propriétaire.' }, { status: 410 })
-    }
-
     // Audit trail eIDAS : IP + user-agent
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
       ?? request.headers.get('x-real-ip')
       ?? 'inconnue'
     const userAgent = request.headers.get('user-agent') ?? 'inconnu'
 
-    // Enregistrer la signature — on utilise .select() pour détecter les échecs silencieux
-    const { data: updatedContract, error: updateErr } = await supabase
-      .from('contracts')
-      .update({
-        statut: 'signe',
-        signature_date: new Date().toISOString(),
-        signature_ip: ip,
-        signature_user_agent: userAgent,
-        signature_image,
-      })
-      .eq('id', contract.id)
-      .select('id, statut')
-      .single()
+    // ── Étape 1 : Signer via la fonction SECURITY DEFINER (clé anon, toujours disponible) ──
+    // Cette fonction valide le token, met à jour contracts ET sejours en une seule transaction
+    const anonClient = createAnonClient()
+    const { data: rpcResult, error: rpcError } = await anonClient.rpc('sign_contract', {
+      p_token: token,
+      p_signature_image: signature_image,
+      p_signature_ip: ip,
+      p_signature_user_agent: userAgent,
+      p_app_url: APP_URL,
+    })
 
-    if (updateErr || !updatedContract || updatedContract.statut !== 'signe') {
-      console.error('[contracts/sign] Update failed:', updateErr, updatedContract)
+    if (rpcError) {
+      console.error('[contracts/sign] RPC error:', rpcError)
       return NextResponse.json({ error: 'Erreur lors de l\'enregistrement de la signature. Veuillez réessayer.' }, { status: 500 })
     }
 
-    // Mettre à jour le statut du séjour
-    const today = new Date().toISOString().split('T')[0]
-    await supabase
-      .from('sejours')
-      .update({
-        contrat_statut: 'signe',
-        contrat_date_signature: today,
-        contrat_lien: `${APP_URL}/sign/${token}`,
-      })
-      .eq('id', contract.sejour_id)
+    const result = rpcResult as { success?: boolean; error?: string; already_signed?: boolean; contract_id?: string }
 
-    // Emails de confirmation
+    if (result?.error) {
+      if (result.already_signed) {
+        // Contrat déjà signé → retourner succès (idempotent)
+        return NextResponse.json({ success: true, already_signed: true })
+      }
+      return NextResponse.json({ error: result.error }, { status: 409 })
+    }
+
+    if (!result?.success) {
+      return NextResponse.json({ error: 'Signature non enregistrée. Veuillez réessayer.' }, { status: 500 })
+    }
+
+    // ── Étape 2 : Récupérer le contrat pour les emails (service role ou anon selon dispo) ──
+    const serviceOrAnonClient = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? createServiceClient()
+      : anonClient
+
+    const { data: contract } = await serviceOrAnonClient
+      .from('contracts')
+      .select('*')
+      .eq('token', token)
+      .single()
+
+    if (!contract) {
+      // Signing a réussi mais on ne peut pas envoyer les emails — ce n'est pas critique
+      return NextResponse.json({ success: true })
+    }
+
+    // ── Étape 3 : Emails de confirmation ──
     const guestName = `${contract.locataire_prenom} ${contract.locataire_nom}`
     const hostName = `${contract.bailleur_prenom} ${contract.bailleur_nom}`
     const signDate = new Date().toLocaleDateString('fr-FR', {

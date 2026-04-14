@@ -54,8 +54,8 @@ export default function DepositModal({ contract, onClose }: Props) {
 
   function copyLink(type: 'payment' | 'deposit') {
     const url = type === 'payment'
-      ? `${signUrl}#paiement-reservation`
-      : `${signUrl}#depot-garantie`
+      ? `${APP_URL}/api/stripe/payment/redirect?token=${contract.token}`
+      : `${APP_URL}/api/stripe/deposit/redirect?token=${contract.token}`
 
     const doFallback = () => {
       const ta = document.createElement('textarea')
@@ -113,8 +113,6 @@ export default function DepositModal({ contract, onClose }: Props) {
   const paymentAmount = Number(contract.montant_loyer ?? 0)
   const depositStatusMeta = depositStatus ? DEPOSIT_LABELS[depositStatus] : null
   const paymentStatusMeta = paymentStatus ? PAYMENT_LABELS[paymentStatus] : null
-  const signUrl = `${APP_URL}/sign/${contract.token}`
-
   // Keep backward-compat alias
   const amount = depositAmount
 
@@ -184,7 +182,7 @@ export default function DepositModal({ contract, onClose }: Props) {
                       {copied === 'payment' ? <Check size={13} weight="bold" /> : <Copy size={13} />}
                       {copied === 'payment' ? 'Lien copié !' : 'Copier le lien'}
                     </button>
-                    <a href={`${signUrl}#paiement-reservation`} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                    <a href={`${APP_URL}/api/stripe/payment/redirect?token=${contract.token}`} target="_blank" rel="noopener noreferrer" style={viewLink}>
                       Voir →
                     </a>
                   </div>
@@ -271,7 +269,7 @@ export default function DepositModal({ contract, onClose }: Props) {
                       {copied === 'deposit' ? <Check size={13} weight="bold" /> : <Copy size={13} />}
                       {copied === 'deposit' ? 'Lien copié !' : 'Copier le lien'}
                     </button>
-                    <a href={`${signUrl}#depot-garantie`} target="_blank" rel="noopener noreferrer" style={viewLink}>
+                    <a href={`${APP_URL}/api/stripe/deposit/redirect?token=${contract.token}`} target="_blank" rel="noopener noreferrer" style={viewLink}>
                       Voir →
                     </a>
                   </div>
