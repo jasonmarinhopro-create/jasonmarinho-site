@@ -236,14 +236,27 @@ type BailleurProfile = {
   bic: string | null
 }
 
+type LogementOption = {
+  id: string
+  nom: string
+  adresse: string
+  description: string | null
+  capacite_max: number
+  reglement_interieur: string | null
+  conditions_annulation: string | null
+  animaux_acceptes: boolean
+  fumeur_accepte: boolean
+}
+
 interface Props {
   voyageur: Voyageur
   sejours: Sejour[]
   isFlagged: boolean
   bailleur: BailleurProfile
+  logements?: LogementOption[]
 }
 
-export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur }: Props) {
+export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [] }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -985,6 +998,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
           sejour={contractSejour}
           voyageur={voyageur}
           bailleur={bailleur}
+          logements={logements}
           onClose={() => { setContractSejour(null); router.refresh() }}
           onSuccess={() => router.refresh()}
         />

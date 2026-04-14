@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     const guestName = `${contract.locataire_prenom} ${contract.locataire_nom}`
+    const propertyLabel = (contract.logement_nom as string | null) ?? contract.logement_adresse
     const contractUrl = `${APP_URL}/sign/${contract.token}`
     const paymentRedirectUrl = `${APP_URL}/api/stripe/payment/redirect?token=${contract.token}`
     const depositRedirectUrl = `${APP_URL}/api/stripe/deposit/redirect?token=${contract.token}`
@@ -128,7 +129,7 @@ export async function POST(request: NextRequest) {
           Bonjour <strong style="color:#f0ebe1;">${guestName}</strong>,
         </p>
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Votre contrat de location pour <strong style="color:#f0ebe1;">${contract.logement_adresse}</strong> a bien été signé.
+          Votre contrat de location pour <strong style="color:#f0ebe1;">${propertyLabel}</strong> a bien été signé.
           ${(hasPayment || hasCaution) ? `Il reste à effectuer le${hasPayment && hasCaution ? 's paiements suivants' : ' paiement suivant'} pour confirmer définitivement votre séjour :` : isVirement ? 'Voici les coordonnées bancaires pour effectuer votre règlement :' : ''}
         </p>
         ${(hasPayment || hasCaution) ? `
@@ -160,7 +161,7 @@ export async function POST(request: NextRequest) {
     const { error: emailErr } = await resend.emails.send({
       from: FROM_EMAIL,
       to: contract.locataire_email,
-      subject: `Rappel — Finalisez votre dossier pour ${contract.logement_adresse}`,
+      subject: `Rappel — Finalisez votre dossier pour ${propertyLabel}`,
       html: emailHtml,
     })
 

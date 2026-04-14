@@ -26,6 +26,8 @@ export type ContractData = {
   locataire_telephone?: string
 
   // Bien
+  logement_nom?: string
+  logement_id?: string
   logement_adresse: string
   logement_description?: string
   capacite_max: number
@@ -88,10 +90,11 @@ export async function createContract(data: ContractData): Promise<{
     const dateArr = new Date(data.date_arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
     const dateDep = new Date(data.date_depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 
+    const propertyLabel = data.logement_nom ?? data.logement_adresse
     await resend.emails.send({
       from: FROM_EMAIL,
       to: data.locataire_email,
-      subject: `Contrat de location à signer — ${data.logement_adresse}`,
+      subject: `Contrat de location à signer — ${propertyLabel}`,
       html: `
 <!DOCTYPE html>
 <html lang="fr">
@@ -101,7 +104,7 @@ export async function createContract(data: ContractData): Promise<{
     <div style="background:#132b22;border:1px solid #1e3d2f;border-radius:20px;overflow:hidden;">
       <div style="padding:32px 32px 24px;border-bottom:1px solid #1e3d2f;">
         <p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#FFD56B;font-weight:600;">Contrat de location</p>
-        <h1 style="margin:0;font-size:24px;font-weight:400;color:#f0ebe1;font-family:Georgia,serif;">À signer — ${data.logement_adresse}</h1>
+        <h1 style="margin:0;font-size:24px;font-weight:400;color:#f0ebe1;font-family:Georgia,serif;">À signer — ${propertyLabel}</h1>
       </div>
       <div style="padding:28px 32px;">
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
@@ -112,7 +115,8 @@ export async function createContract(data: ContractData): Promise<{
         </p>
         <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:18px 20px;margin:24px 0;">
           <p style="margin:0 0 6px;font-size:12px;color:#a5c4b0;text-transform:uppercase;letter-spacing:1px;">Logement</p>
-          <p style="margin:0;font-size:15px;color:#f0ebe1;font-weight:500;">${data.logement_adresse}</p>
+          <p style="margin:0;font-size:15px;color:#f0ebe1;font-weight:500;">${propertyLabel}</p>
+          ${data.logement_nom ? `<p style="margin:4px 0 0;font-size:12px;color:#6b9a7e;">${data.logement_adresse}</p>` : ''}
         </div>
         <a href="${signUrl}" style="display:block;text-align:center;background:#FFD56B;color:#0d1f1a;padding:16px 32px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:28px 0;">
           Lire et signer le contrat

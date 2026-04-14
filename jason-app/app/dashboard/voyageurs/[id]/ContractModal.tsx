@@ -32,10 +32,23 @@ type BailleurProfile = {
   email: string
 }
 
+export type LogementOption = {
+  id: string
+  nom: string
+  adresse: string
+  description: string | null
+  capacite_max: number
+  reglement_interieur: string | null
+  conditions_annulation: string | null
+  animaux_acceptes: boolean
+  fumeur_accepte: boolean
+}
+
 interface Props {
   sejour: Sejour
   voyageur: Voyageur
   bailleur: BailleurProfile
+  logements?: LogementOption[]
   onClose: () => void
   onSuccess: () => void
 }
@@ -53,12 +66,13 @@ const STEP_LABELS: Record<Step, string> = {
   done:      'Terminé',
 }
 
-export default function ContractModal({ sejour, voyageur, bailleur, onClose, onSuccess }: Props) {
+export default function ContractModal({ sejour, voyageur, bailleur, logements = [], onClose, onSuccess }: Props) {
   const [step, setStep] = useState<Step>('bailleur')
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState('')
   const [contractToken, setContractToken] = useState('')
   const [copied, setCopied] = useState(false)
+  const [selectedLogementId, setSelectedLogementId] = useState<string | null>(null)
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
   // Form state
@@ -77,6 +91,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
     locataire_telephone: voyageur.telephone ?? '',
 
     // Bien
+    logement_nom: '',
     logement_adresse: '',
     logement_description: '',
     capacite_max: 1,
@@ -102,6 +117,26 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
 
   function set(field: string, value: string | number | boolean) {
     setForm(f => ({ ...f, [field]: value }))
+  }
+
+  function selectLogement(l: LogementOption) {
+    setSelectedLogementId(l.id)
+    setForm(f => ({
+      ...f,
+      logement_nom: l.nom,
+      logement_adresse: l.adresse,
+      logement_description: l.description ?? '',
+      capacite_max: l.capacite_max,
+      conditions_annulation: l.conditions_annulation ?? f.conditions_annulation,
+      reglement_interieur: l.reglement_interieur ?? f.reglement_interieur,
+      animaux_acceptes: l.animaux_acceptes,
+      fumeur_accepte: l.fumeur_accepte,
+    }))
+  }
+
+  function clearLogement() {
+    setSelectedLogementId(null)
+    setForm(f => ({ ...f, logement_nom: '', logement_adresse: '', logement_description: '', capacite_max: 1 }))
   }
 
   function nextStep() {
@@ -156,6 +191,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
       locataire_nom: form.locataire_nom.trim(),
       locataire_email: form.locataire_email.trim() || undefined,
       locataire_telephone: form.locataire_telephone.trim() || undefined,
+      logement_nom: form.logement_nom.trim() || undefined,
+      logement_id: selectedLogementId ?? undefined,
       logement_adresse: form.logement_adresse.trim(),
       logement_description: form.logement_description.trim() || undefined,
       capacite_max: form.capacite_max,
@@ -266,7 +303,57 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
           {step === 'bien' && (
             <>
               <p style={stepHint}>Description du logement mis en location.</p>
-              <Field label="Adresse complète du logement *" value={form.logement_adresse} onChange={v => set('logement_adresse', v)} placeholder="12 rue de la Paix, 75001 Paris" />
+
+              {/* Sélecteur de logement enregistré */}
+              {logements.length > 0 && (
+                <div style={{ marginBottom: '4px' }}>
+                  <p style={{ ...fieldLabel, marginBottom: '8px' }}>Choisir un logement enregistré</p>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
+                    {logements.map(l => (
+                      <button
+                        key={l.id}
+                        type="button"
+                        onClick={() => selectedLogementId === l.id ? clearLogement() : selectLogement(l)}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: '12px',
+                          padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
+                          textAlign: 'left' as const, fontFamily: 'inherit',
+                          background: selectedLogementId === l.id ? 'rgba(52,211,153,0.1)' : 'var(--surface)',
+                          border: `1px solid ${selectedLogementId === l.id ? 'rgba(52,211,153,0.35)' : 'var(--border)'}`,
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        <div style={{
+                          width: '32px', height: '32px', flexShrink: 0,
+                          background: selectedLogementId === l.id ? 'rgba(52,211,153,0.15)' : 'var(--surface-2)',
+                          border: '1px solid var(--border)', borderRadius: '8px',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          {selectedLogementId === l.id
+                            ? <Check size={14} color="#34D399" weight="bold" />
+                            : <span style={{ fontSize: '14px' }}>🏠</span>
+                          }
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ margin: 0, fontSize: '14px', fontWeight: 500, color: selectedLogementId === l.id ? '#34D399' : 'var(--text)' }}>
+                            {l.nom}
+                          </p>
+                          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>
+                            {l.adresse}
+                          </p>
+                        </div>
+                        <span style={{ fontSize: '11px', color: 'var(--text-3)', flexShrink: 0 }}>{l.capacite_max} pers.</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div style={{ height: '1px', background: 'var(--border)', margin: '14px 0 2px' }} />
+                </div>
+              )}
+
+              {!selectedLogementId && (
+                <Field label="Nom du logement (optionnel)" value={form.logement_nom} onChange={v => set('logement_nom', v)} placeholder="Villa les Pins, Appartement Paris…" />
+              )}
+              <Field label={`${logements.length > 0 && !selectedLogementId ? 'Ou saisir l\'adresse manuellement *' : 'Adresse complète du logement *'}`} value={form.logement_adresse} onChange={v => set('logement_adresse', v)} placeholder="12 rue de la Paix, 75001 Paris" />
               <Field label="Description (type, superficie, équipements)" value={form.logement_description} onChange={v => set('logement_description', v)} placeholder="Studio de 25m², 1 pièce, cuisine équipée, Wi-Fi" />
               <div style={row}>
                 <div style={{ flex: 1 }}>
