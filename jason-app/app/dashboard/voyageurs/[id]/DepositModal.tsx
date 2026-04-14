@@ -309,7 +309,7 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
           )}
 
           {/* ── Virement bancaire ────────────────────────────────────────── */}
-          {hostIban && (
+          {hostIban && !contract.stripe_payment_enabled && (
             <div style={{ marginBottom: '20px' }}>
               <p style={sectionLabel}>
                 <Bank size={13} weight="bold" />
