@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { X, LockKey, LockKeyOpen, Warning, CurrencyEur, Copy, Check, PaperPlaneTilt } from '@phosphor-icons/react'
+import { X, LockKey, LockKeyOpen, Warning, CurrencyEur, Copy, Check, PaperPlaneTilt, Bank } from '@phosphor-icons/react'
 import { useRouter } from 'next/navigation'
 
 type DepositStatus = 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
@@ -15,6 +15,7 @@ interface Contract {
   locataire_nom: string
   montant_loyer: number | null
   montant_caution: number | null
+  modalites_paiement: string | null
   stripe_payment_enabled: boolean
   stripe_payment_status: PaymentStatus
   stripe_deposit_status: DepositStatus
@@ -22,6 +23,8 @@ interface Contract {
 
 interface Props {
   contract: Contract
+  hostIban: string | null
+  hostBic: string | null
   onClose: () => void
 }
 
@@ -42,13 +45,13 @@ const PAYMENT_LABELS: Record<string, { label: string; color: string; bg: string 
   failed:   { label: 'Échec paiement',          color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
 }
 
-export default function DepositModal({ contract, onClose }: Props) {
+export default function DepositModal({ contract, hostIban, hostBic, onClose }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [action, setAction] = useState<'capture' | 'release' | null>(null)
   const [error, setError] = useState('')
   const [done, setDone] = useState<'captured' | 'released' | null>(null)
-  const [copied, setCopied] = useState<'payment' | 'deposit' | null>(null)
+  const [copied, setCopied] = useState<'payment' | 'deposit' | 'iban' | 'bic' | null>(null)
   const [resending, setResending] = useState(false)
   const [resent, setResent] = useState(false)
 
@@ -77,6 +80,33 @@ export default function DepositModal({ contract, onClose }: Props) {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url).then(() => {
         setCopied(type)
+        setTimeout(() => setCopied(null), 2000)
+      }).catch(doFallback)
+    } else {
+      doFallback()
+    }
+  }
+
+  function copyText(text: string, field: 'iban' | 'bic') {
+    const doFallback = () => {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.style.position = 'fixed'
+      ta.style.left = '-9999px'
+      document.body.appendChild(ta)
+      ta.focus()
+      ta.select()
+      try {
+        document.execCommand('copy')
+        setCopied(field)
+        setTimeout(() => setCopied(null), 2000)
+      } finally {
+        document.body.removeChild(ta)
+      }
+    }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        setCopied(field)
         setTimeout(() => setCopied(null), 2000)
       }).catch(doFallback)
     } else {
@@ -278,8 +308,25 @@ export default function DepositModal({ contract, onClose }: Props) {
             </div>
           )}
 
+          {/* ── Virement bancaire ────────────────────────────────────────── */}
+          {hostIban && (
+            <div style={{ marginBottom: '20px' }}>
+              <p style={sectionLabel}>
+                <Bank size={13} weight="bold" />
+                Coordonnées bancaires (virement)
+              </p>
+              <div style={ibanBox}>
+                <IbanField label="IBAN" value={hostIban} field="iban" copied={copied} onCopy={copyText} />
+                {hostBic && <IbanField label="BIC / SWIFT" value={hostBic} field="bic" copied={copied} onCopy={copyText} />}
+              </div>
+              <p style={{ ...hint, marginTop: '8px', marginBottom: 0 }}>
+                Le voyageur peut effectuer le virement directement vers ce compte.
+              </p>
+            </div>
+          )}
+
           {/* Pas de paiements configurés */}
-          {!contract.stripe_payment_enabled && depositAmount <= 0 && (
+          {!contract.stripe_payment_enabled && depositAmount <= 0 && !hostIban && (
             <p style={hint}>Aucun paiement en ligne configuré pour ce contrat.</p>
           )}
 
@@ -448,4 +495,56 @@ const resendBtn: React.CSSProperties = {
   borderRadius: '12px',
   fontSize: '13px', fontWeight: 500, color: '#34D399',
   cursor: 'pointer',
+}
+
+const ibanBox: React.CSSProperties = {
+  display: 'flex', flexDirection: 'column', gap: '2px',
+}
+
+// ─── IbanField helper ────────────────────────────────────────────────────────
+
+function IbanField({
+  label, value, field, copied, onCopy,
+}: {
+  label: string
+  value: string
+  field: 'iban' | 'bic'
+  copied: string | null
+  onCopy: (text: string, field: 'iban' | 'bic') => void
+}) {
+  const isCopied = copied === field
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
+      padding: '10px 14px',
+      background: 'rgba(99,91,255,0.08)',
+      borderRadius: '10px',
+    }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.8px', textTransform: 'uppercase', color: '#8b84e8', margin: '0 0 3px' }}>
+          {label}
+        </p>
+        <p style={{ fontSize: '13px', color: '#f0ebe1', margin: 0, fontFamily: 'monospace', letterSpacing: '0.5px', wordBreak: 'break-all' }}>
+          {value}
+        </p>
+      </div>
+      <button
+        onClick={() => onCopy(value, field)}
+        style={{
+          flexShrink: 0,
+          display: 'inline-flex', alignItems: 'center', gap: '5px',
+          padding: '5px 12px', borderRadius: '8px',
+          background: isCopied ? 'rgba(52,211,153,0.15)' : 'rgba(99,91,255,0.2)',
+          border: isCopied ? '1px solid rgba(52,211,153,0.3)' : '1px solid rgba(99,91,255,0.35)',
+          fontSize: '12px', fontWeight: 600,
+          color: isCopied ? '#34D399' : '#a29bfe',
+          cursor: 'pointer',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {isCopied ? <Check size={11} weight="bold" /> : <Copy size={11} />}
+        {isCopied ? 'Copié' : 'Copier'}
+      </button>
+    </div>
+  )
 }

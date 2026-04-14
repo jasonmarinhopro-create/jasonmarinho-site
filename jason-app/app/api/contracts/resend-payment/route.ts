@@ -64,12 +64,43 @@ export async function POST(request: NextRequest) {
       contract.stripe_deposit_status !== 'held' &&
       contract.stripe_deposit_status !== 'captured'
 
-    if (!hasPayment && !hasCaution) {
+    const isVirement = typeof contract.modalites_paiement === 'string' &&
+      contract.modalites_paiement.toLowerCase().includes('virement')
+
+    // Pour les contrats virement bancaire, on peut toujours renvoyer les coordonnées IBAN
+    let hostIban: string | null = null
+    let hostBic: string | null = null
+    if (isVirement) {
+      const { data: hostProfile } = await db
+        .from('profiles')
+        .select('iban, bic')
+        .eq('id', contract.user_id)
+        .single()
+      hostIban = hostProfile?.iban ?? null
+      hostBic = hostProfile?.bic ?? null
+    }
+
+    if (!hasPayment && !hasCaution && !isVirement) {
       return NextResponse.json({ error: 'Tous les paiements ont déjà été effectués.' }, { status: 400 })
     }
 
     const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
     const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
+
+    // Bloc virement bancaire
+    const ibanBlock = (isVirement && hostIban) ? `
+        <div style="background:rgba(99,91,255,0.08);border:1px solid rgba(99,91,255,0.25);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
+          <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#a29bfe;text-transform:uppercase;letter-spacing:1px;">Coordonnées bancaires — Virement</p>
+          <p style="margin:0 0 16px;font-size:14px;color:#a5c4b0;line-height:1.6;">Effectuez votre virement avec les coordonnées ci-dessous :</p>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">IBAN</td><td style="padding:8px 0;font-size:13px;color:#f0ebe1;font-family:monospace;letter-spacing:0.5px;">${hostIban}</td></tr>
+            ${hostBic ? `<tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">BIC / SWIFT</td><td style="padding:8px 0;font-size:13px;color:#f0ebe1;font-family:monospace;">${hostBic}</td></tr>` : ''}
+            <tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">Bénéficiaire</td><td style="padding:8px 0;font-size:13px;color:#f0ebe1;">${contract.bailleur_prenom} ${contract.bailleur_nom}</td></tr>
+            ${Number(contract.montant_loyer) > 0 ? `<tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">Montant</td><td style="padding:8px 0;font-size:15px;color:#FFD56B;font-weight:700;">${loyerFormatted} €</td></tr>` : ''}
+            <tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">Référence</td><td style="padding:8px 0;font-size:13px;color:#f0ebe1;font-family:monospace;">${contract.logement_adresse.slice(0, 30).replace(/[^a-zA-Z0-9 ]/g, '').trim()}</td></tr>
+          </table>
+          <p style="margin:14px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">Indiquez bien la référence pour que le propriétaire identifie votre paiement. Prévenez-le une fois le virement effectué.</p>
+        </div>` : ''
 
     const emailHtml = `
 <!DOCTYPE html>
@@ -88,8 +119,9 @@ export async function POST(request: NextRequest) {
         </p>
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
           Votre contrat de location pour <strong style="color:#f0ebe1;">${contract.logement_adresse}</strong> a bien été signé.
-          Il reste à effectuer le${hasPayment && hasCaution ? 's paiements suivants' : ' paiement suivant'} pour confirmer définitivement votre séjour :
+          ${(hasPayment || hasCaution) ? `Il reste à effectuer le${hasPayment && hasCaution ? 's paiements suivants' : ' paiement suivant'} pour confirmer définitivement votre séjour :` : isVirement ? 'Voici les coordonnées bancaires pour effectuer votre règlement :' : ''}
         </p>
+        ${(hasPayment || hasCaution) ? `
         <div style="background:#0a2018;border:1px solid rgba(255,213,107,0.25);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
           <p style="margin:0 0 18px;font-size:14px;color:#a5c4b0;line-height:1.6;">Cliquez sur le bouton correspondant pour effectuer votre paiement en ligne :</p>
           ${hasPayment ? `
@@ -101,7 +133,8 @@ export async function POST(request: NextRequest) {
             Régler la caution — ${cautionFormatted} € →
           </a>` : ''}
           ${hasCaution ? `<p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">La caution est bloquée sur votre carte mais non débitée — elle est libérée après votre séjour si aucun dommage n'est constaté.</p>` : ''}
-        </div>
+        </div>` : ''}
+        ${ibanBlock}
         <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 20px;">
           Accéder au contrat signé
         </a>

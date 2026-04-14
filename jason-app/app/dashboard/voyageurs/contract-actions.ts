@@ -149,6 +149,7 @@ export async function getContractsBySejour(sejourId: string): Promise<{
     locataire_nom: string
     montant_loyer: number | null
     montant_caution: number | null
+    modalites_paiement: string | null
     stripe_payment_enabled: boolean
     stripe_payment_status: string | null
     stripe_deposit_status: string | null
@@ -162,7 +163,7 @@ export async function getContractsBySejour(sejourId: string): Promise<{
 
   const { data, error } = await supabase
     .from('contracts')
-    .select('id, token, statut, signature_date, signature_image, created_at, locataire_prenom, locataire_nom, montant_loyer, montant_caution, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status, stripe_deposit_payment_intent_id')
+    .select('id, token, statut, signature_date, signature_image, created_at, locataire_prenom, locataire_nom, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status, stripe_deposit_payment_intent_id')
     .eq('sejour_id', sejourId)
     .eq('user_id', session.user.id)
     .order('created_at', { ascending: false })
