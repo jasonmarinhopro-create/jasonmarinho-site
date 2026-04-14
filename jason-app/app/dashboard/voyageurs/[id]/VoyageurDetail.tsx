@@ -394,6 +394,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const [editSejour, setEditSejour] = useState<Sejour | null>(null)
   const [sejourForm, setSejourForm] = useState<Omit<SejourData, 'voyageur_id'>>(EMPTY_SEJOUR)
   const [sejourError, setSejourError] = useState('')
+  const [manualLogement, setManualLogement] = useState(false)
 
   const initials = `${voyageur.prenom[0]}${voyageur.nom[0]}`.toUpperCase()
   const color = avatarColor(voyageur.prenom + voyageur.nom)
@@ -438,10 +439,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     setSejourForm(EMPTY_SEJOUR)
     setSejourError('')
     setEditSejour(null)
+    setManualLogement(false)
     setSejourModal('add')
   }
 
   function openEditSejour(s: Sejour) {
+    // En édition : si la valeur actuelle ne correspond à aucun logement enregistré, activer le mode manuel
+    setManualLogement(logements.length === 0 || !logements.some(l => l.nom === s.logement))
     setSejourForm({
       logement: s.logement ?? '',
       date_arrivee: s.date_arrivee,
@@ -1025,10 +1029,52 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             <form onSubmit={handleSejourSubmit} style={s.form}>
               <div style={s.field}>
                 <label style={s.label}>Logement</label>
-                <div style={s.inputWrap}>
-                  <House size={15} color="var(--text-muted)" />
-                  <input style={s.input} value={sejourForm.logement ?? ''} onChange={e => setSejourForm(f => ({ ...f, logement: e.target.value }))} placeholder="Studio Paris 11e" />
-                </div>
+                {logements.length > 0 && !manualLogement ? (
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
+                    <div style={s.inputWrap}>
+                      <House size={15} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                      <select
+                        style={{ ...s.input, cursor: 'pointer' }}
+                        value={sejourForm.logement ?? ''}
+                        onChange={e => {
+                          if (e.target.value === '__manual__') {
+                            setManualLogement(true)
+                            setSejourForm(f => ({ ...f, logement: '' }))
+                          } else {
+                            setSejourForm(f => ({ ...f, logement: e.target.value }))
+                          }
+                        }}
+                      >
+                        <option value="">— Choisir un logement —</option>
+                        {logements.map(l => (
+                          <option key={l.id} value={l.nom}>{l.nom}</option>
+                        ))}
+                        <option value="__manual__">— Saisir manuellement —</option>
+                      </select>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
+                    <div style={s.inputWrap}>
+                      <House size={15} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                      <input
+                        style={s.input}
+                        value={sejourForm.logement ?? ''}
+                        onChange={e => setSejourForm(f => ({ ...f, logement: e.target.value }))}
+                        placeholder="Studio Paris 11e"
+                      />
+                    </div>
+                    {logements.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => { setManualLogement(false); setSejourForm(f => ({ ...f, logement: '' })) }}
+                        style={{ fontSize: '12px', color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' as const, padding: '0' }}
+                      >
+                        ← Choisir parmi mes logements
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
               <div style={s.formRow}>
                 <div style={s.field}>
