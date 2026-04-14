@@ -54,6 +54,7 @@ type DepositContract = {
   locataire_nom: string
   montant_loyer: number | null
   montant_caution: number | null
+  modalites_paiement: string | null
   stripe_payment_enabled: boolean
   stripe_payment_status: 'pending' | 'paid' | 'refunded' | 'failed' | null
   stripe_deposit_status: 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
@@ -231,6 +232,8 @@ type BailleurProfile = {
   prenom: string
   nom: string
   email: string
+  iban: string | null
+  bic: string | null
 }
 
 interface Props {
@@ -991,6 +994,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur 
       {depositContract && (
         <DepositModal
           contract={depositContract}
+          hostIban={bailleur.iban}
+          hostBic={bailleur.bic}
           onClose={() => setDepositContract(null)}
         />
       )}
