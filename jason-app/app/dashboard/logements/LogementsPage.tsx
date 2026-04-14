@@ -14,6 +14,7 @@ type Logement = {
   id: string
   nom: string
   adresse: string
+  telephone: string | null
   description: string | null
   capacite_max: number
   reglement_interieur: string | null
@@ -30,6 +31,7 @@ function emptyForm(): LogementData {
   return {
     nom: '',
     adresse: '',
+    telephone: '',
     description: '',
     capacite_max: 1,
     reglement_interieur: DEFAULT_REGLEMENT,
@@ -65,6 +67,7 @@ export default function LogementsPage({ logements: initial }: Props) {
     setForm({
       nom: l.nom,
       adresse: l.adresse,
+      telephone: l.telephone ?? '',
       description: l.description ?? '',
       capacite_max: l.capacite_max,
       reglement_interieur: l.reglement_interieur ?? DEFAULT_REGLEMENT,
@@ -229,6 +232,9 @@ export default function LogementsPage({ logements: initial }: Props) {
                 <Field label="Adresse complète *" value={form.adresse} onChange={v => set('adresse', v)} placeholder="12 rue de la Paix, 75001 Paris" />
               </div>
               <div style={fieldRow}>
+                <Field label="Téléphone du logement" value={form.telephone ?? ''} onChange={v => set('telephone', v)} placeholder="+33 6 12 34 56 78" type="tel" />
+              </div>
+              <div style={fieldRow}>
                 <Field label="Description (type, superficie, équipements)" value={form.description ?? ''} onChange={v => set('description', v)} placeholder="Studio de 25m², cuisine équipée, Wi-Fi, vue mer…" />
               </div>
               <div style={fieldRow}>
@@ -287,11 +293,11 @@ export default function LogementsPage({ logements: initial }: Props) {
 
 // ─── Field helpers ────────────────────────────────────────────────────────────
 
-function Field({ label: lbl, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+function Field({ label: lbl, value, onChange, placeholder, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string }) {
   return (
     <div style={{ flex: 1 }}>
       <label style={label}>{lbl}</label>
-      <input style={input} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />
+      <input style={input} type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />
     </div>
   )
 }

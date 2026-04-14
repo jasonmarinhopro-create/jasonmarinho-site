@@ -1030,28 +1030,48 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               <div style={s.field}>
                 <label style={s.label}>Logement</label>
                 {logements.length > 0 && !manualLogement ? (
+                  /* Sélecteur carte style */
                   <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
-                    <div style={s.inputWrap}>
-                      <House size={15} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-                      <select
-                        style={{ ...s.input, cursor: 'pointer' }}
-                        value={sejourForm.logement ?? ''}
-                        onChange={e => {
-                          if (e.target.value === '__manual__') {
-                            setManualLogement(true)
-                            setSejourForm(f => ({ ...f, logement: '' }))
-                          } else {
-                            setSejourForm(f => ({ ...f, logement: e.target.value }))
-                          }
-                        }}
-                      >
-                        <option value="">— Choisir un logement —</option>
-                        {logements.map(l => (
-                          <option key={l.id} value={l.nom}>{l.nom}</option>
-                        ))}
-                        <option value="__manual__">— Saisir manuellement —</option>
-                      </select>
-                    </div>
+                    {logements.map(l => {
+                      const isSel = sejourForm.logement === l.nom
+                      return (
+                        <button
+                          key={l.id}
+                          type="button"
+                          onClick={() => setSejourForm(f => ({ ...f, logement: isSel ? '' : l.nom }))}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: '10px',
+                            padding: '9px 12px', borderRadius: '10px', cursor: 'pointer',
+                            textAlign: 'left' as const, fontFamily: 'inherit',
+                            background: isSel ? 'rgba(52,211,153,0.1)' : 'var(--surface)',
+                            border: `1px solid ${isSel ? 'rgba(52,211,153,0.35)' : 'var(--border)'}`,
+                            transition: 'all 0.15s',
+                          }}
+                        >
+                          <div style={{
+                            width: '28px', height: '28px', flexShrink: 0, borderRadius: '7px',
+                            background: isSel ? 'rgba(52,211,153,0.15)' : 'var(--surface-2)',
+                            border: '1px solid var(--border)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            {isSel
+                              ? <Check size={13} color="#34D399" weight="bold" />
+                              : <House size={13} color="var(--text-muted)" />
+                            }
+                          </div>
+                          <span style={{ flex: 1, fontSize: '13px', fontWeight: isSel ? 600 : 400, color: isSel ? '#34D399' : 'var(--text)' }}>
+                            {l.nom}
+                          </span>
+                        </button>
+                      )
+                    })}
+                    <button
+                      type="button"
+                      onClick={() => { setManualLogement(true); setSejourForm(f => ({ ...f, logement: '' })) }}
+                      style={{ fontSize: '12px', color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' as const, padding: '4px 0 0' }}
+                    >
+                      + Saisir manuellement
+                    </button>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>

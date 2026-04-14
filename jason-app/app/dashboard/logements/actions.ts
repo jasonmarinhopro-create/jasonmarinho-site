@@ -7,6 +7,7 @@ import { getProfile } from '@/lib/queries/profile'
 export type LogementData = {
   nom: string
   adresse: string
+  telephone?: string
   description?: string
   capacite_max: number
   reglement_interieur?: string
