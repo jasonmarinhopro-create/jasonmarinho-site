@@ -78,10 +78,6 @@ export async function GET(request: NextRequest) {
         ],
         payment_intent_data: {
           capture_method: 'manual',
-          // Demande une autorisation étendue (jusqu'à 30 jours) si la carte le supporte
-          payment_method_options: {
-            card: { request_extended_authorization: 'if_available' },
-          },
           description: `Caution contrat ${contract.id.slice(0, 8).toUpperCase()}`,
           metadata: { contract_id: contract.id, token },
         },

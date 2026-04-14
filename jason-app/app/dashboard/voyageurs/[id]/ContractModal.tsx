@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { X, FileText, Check, Copy, Envelope } from '@phosphor-icons/react'
+import { useState, useTransition, useRef, useEffect } from 'react'
+import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock } from '@phosphor-icons/react'
 import { createContract, type ContractData } from '../contract-actions'
 
 const DEFAULT_ANNULATION =
@@ -77,7 +77,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
     locataire_telephone: voyageur.telephone ?? '',
 
     // Bien
-    logement_adresse: sejour.logement ?? '',
+    logement_adresse: '',
     logement_description: '',
     capacite_max: 1,
 
@@ -271,21 +271,21 @@ export default function ContractModal({ sejour, voyageur, bailleur, onClose, onS
               <div style={row}>
                 <div style={{ flex: 1 }}>
                   <label style={fieldLabel}>Arrivée</label>
-                  <input style={inputStyle} type="date" value={form.date_arrivee} onChange={e => set('date_arrivee', e.target.value)} />
+                  <CalendarInput value={form.date_arrivee} onChange={v => set('date_arrivee', v)} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <label style={fieldLabel}>Heure arrivée</label>
-                  <input style={inputStyle} type="time" value={form.heure_arrivee} onChange={e => set('heure_arrivee', e.target.value)} />
+                  <TimePickerInput value={form.heure_arrivee} onChange={v => set('heure_arrivee', v)} />
                 </div>
               </div>
               <div style={row}>
                 <div style={{ flex: 1 }}>
                   <label style={fieldLabel}>Départ</label>
-                  <input style={inputStyle} type="date" value={form.date_depart} onChange={e => set('date_depart', e.target.value)} />
+                  <CalendarInput value={form.date_depart} onChange={v => set('date_depart', v)} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <label style={fieldLabel}>Heure départ</label>
-                  <input style={inputStyle} type="time" value={form.heure_depart} onChange={e => set('heure_depart', e.target.value)} />
+                  <TimePickerInput value={form.heure_depart} onChange={v => set('heure_depart', v)} />
                 </div>
               </div>
               <div>
@@ -522,6 +522,224 @@ function ToggleField({
       />
       <span style={{ fontSize: '14px', color: 'var(--text-2, #a5c4b0)' }}>{label}</span>
     </label>
+  )
+}
+
+// ─── CalendarInput ────────────────────────────────────────────────────────────
+
+function CalendarInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const [viewDate, setViewDate] = useState(() => {
+    if (value) return new Date(value + 'T12:00:00')
+    return new Date()
+  })
+  const [popupPos, setPopupPos] = useState<{ top: number; left: number; width: number } | null>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const popupRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (value) setViewDate(new Date(value + 'T12:00:00'))
+  }, [value])
+
+  useEffect(() => {
+    if (!open) return
+    function handleClick(e: MouseEvent) {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
+        popupRef.current && !popupRef.current.contains(e.target as Node)
+      ) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  function handleOpen() {
+    if (!open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      setPopupPos({ top: rect.bottom + 6, left: rect.left, width: Math.max(rect.width, 280) })
+    }
+    setOpen(o => !o)
+  }
+
+  const selectedDate = value ? new Date(value + 'T12:00:00') : null
+  const year = viewDate.getFullYear()
+  const month = viewDate.getMonth()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const firstDay = (() => { const d = new Date(year, month, 1).getDay(); return (d + 6) % 7 })()
+  const monthName = viewDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+  const today = new Date(); today.setHours(0, 0, 0, 0)
+  const displayValue = selectedDate
+    ? selectedDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+    : 'Choisir une date'
+  const DAYS = ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di']
+
+  function selectDay(day: number) {
+    const d = new Date(year, month, day)
+    onChange(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
+    setOpen(false)
+  }
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={handleOpen}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
+          background: 'var(--surface)',
+          border: `1px solid ${open ? '#4a7260' : 'var(--border)'}`,
+          borderRadius: '10px', padding: '10px 12px',
+          fontSize: '14px', color: selectedDate ? 'var(--text)' : 'var(--text-muted)',
+          cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+          transition: 'border-color 0.15s', boxSizing: 'border-box',
+        }}
+      >
+        <CalendarBlank size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+        <span style={{ flex: 1 }}>{displayValue}</span>
+        <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginLeft: '4px' }}>▼</span>
+      </button>
+
+      {open && popupPos && (
+        <div
+          ref={popupRef}
+          style={{
+            position: 'fixed', top: popupPos.top, left: popupPos.left,
+            zIndex: 9999, minWidth: popupPos.width,
+            background: 'var(--bg-2, #0f2018)', border: '1px solid #2a5040',
+            borderRadius: '16px', padding: '14px 14px 10px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))} style={calNavBtnStyle}>‹</button>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text, #f0ebe1)', textTransform: 'capitalize' as const }}>
+              {monthName}
+            </span>
+            <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))} style={calNavBtnStyle}>›</button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '2px' }}>
+            {DAYS.map(d => (
+              <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 600, color: '#4a7260', padding: '3px 0', letterSpacing: '0.5px' }}>{d}</div>
+            ))}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '2px' }}>
+            {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} style={{ height: '34px' }} />)}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1
+              const d = new Date(year, month, day); d.setHours(0, 0, 0, 0)
+              const isSel = selectedDate ? d.getTime() === selectedDate.getTime() : false
+              const isToday2 = d.getTime() === today.getTime()
+              return (
+                <button key={day} type="button" onClick={() => selectDay(day)} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  height: '34px', borderRadius: '8px', border: 'none',
+                  fontSize: '13px', fontWeight: isSel ? 700 : 400,
+                  background: isSel ? 'rgba(255,213,107,0.18)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
+                  color: isSel ? '#FFD56B' : isToday2 ? '#34D399' : '#a5c4b0',
+                  cursor: 'pointer',
+                  outline: isSel ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
+                  transition: 'background 0.1s',
+                }}>{day}</button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+const calNavBtnStyle: React.CSSProperties = {
+  background: 'rgba(255,255,255,0.05)', border: '1px solid #1e3d2f',
+  borderRadius: '8px', color: '#a5c4b0', fontSize: '18px',
+  width: '32px', height: '32px',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  cursor: 'pointer', lineHeight: '1',
+}
+
+// ─── TimePickerInput ──────────────────────────────────────────────────────────
+
+function TimePickerInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const [popupPos, setPopupPos] = useState<{ top: number; left: number; width: number } | null>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const popupRef = useRef<HTMLDivElement>(null)
+
+  const times: string[] = []
+  for (let h = 6; h <= 23; h++) {
+    times.push(`${String(h).padStart(2, '0')}:00`)
+    if (h < 23) times.push(`${String(h).padStart(2, '0')}:30`)
+  }
+
+  useEffect(() => {
+    if (!open) return
+    function handleClick(e: MouseEvent) {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
+        popupRef.current && !popupRef.current.contains(e.target as Node)
+      ) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  function handleOpen() {
+    if (!open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      setPopupPos({ top: rect.bottom + 6, left: rect.left, width: Math.max(rect.width, 220) })
+    }
+    setOpen(o => !o)
+  }
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={handleOpen}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
+          background: 'var(--surface)',
+          border: `1px solid ${open ? '#4a7260' : 'var(--border)'}`,
+          borderRadius: '10px', padding: '10px 12px',
+          fontSize: '14px', color: value ? 'var(--text)' : 'var(--text-muted)',
+          cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+          transition: 'border-color 0.15s', boxSizing: 'border-box',
+        }}
+      >
+        <Clock size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+        <span style={{ flex: 1 }}>{value || 'Choisir une heure'}</span>
+        <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginLeft: '4px' }}>▼</span>
+      </button>
+
+      {open && popupPos && (
+        <div
+          ref={popupRef}
+          style={{
+            position: 'fixed', top: popupPos.top, left: popupPos.left,
+            zIndex: 9999, width: popupPos.width,
+            background: 'var(--bg-2, #0f2018)', border: '1px solid #2a5040',
+            borderRadius: '16px', padding: '12px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
+          }}
+        >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px', maxHeight: '220px', overflowY: 'auto' }}>
+            {times.map(t => (
+              <button key={t} type="button" onClick={() => { onChange(t); setOpen(false) }} style={{
+                padding: '8px 4px', borderRadius: '8px', border: 'none',
+                fontSize: '13px', fontWeight: value === t ? 700 : 400,
+                background: value === t ? 'rgba(255,213,107,0.18)' : 'transparent',
+                color: value === t ? '#FFD56B' : '#a5c4b0',
+                cursor: 'pointer',
+                outline: value === t ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
+                transition: 'background 0.1s',
+              }}>{t}</button>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
