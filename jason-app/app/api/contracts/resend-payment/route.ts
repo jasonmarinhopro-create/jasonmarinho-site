@@ -87,19 +87,29 @@ export async function POST(request: NextRequest) {
     const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
     const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
 
+    // Génère une ligne de coordonnées bancaires "tap-to-select" pour l'email
+    function ibanRow(label: string, value: string, mono = false, highlight = false) {
+      return `
+        <div style="margin-bottom:6px;">
+          <p style="margin:0 0 2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8b84e8;">${label}</p>
+          <div style="background:${highlight ? 'rgba(255,213,107,0.12)' : 'rgba(255,255,255,0.06)'};border:1px solid ${highlight ? 'rgba(255,213,107,0.3)' : 'rgba(255,255,255,0.1)'};border-radius:8px;padding:10px 14px;cursor:text;">
+            <p style="margin:0;font-size:${highlight ? '18px' : '14px'};font-weight:${highlight ? '700' : '400'};color:${highlight ? '#FFD56B' : '#f0ebe1'};font-family:${mono ? 'Courier New,Courier,monospace' : 'inherit'};letter-spacing:${mono ? '0.5px' : 'normal'};word-break:break-all;user-select:all;-webkit-user-select:all;">${value}</p>
+          </div>
+        </div>`
+    }
+    const ibanRef = contract.logement_adresse.slice(0, 30).replace(/[^a-zA-Z0-9 ]/g, '').trim()
+
     // Bloc virement bancaire
     const ibanBlock = (isVirement && hostIban) ? `
-        <div style="background:rgba(99,91,255,0.08);border:1px solid rgba(99,91,255,0.25);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
-          <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#a29bfe;text-transform:uppercase;letter-spacing:1px;">Coordonnées bancaires — Virement</p>
-          <p style="margin:0 0 16px;font-size:14px;color:#a5c4b0;line-height:1.6;">Effectuez votre virement avec les coordonnées ci-dessous :</p>
-          <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">IBAN</td><td style="padding:8px 0;font-size:13px;color:#f0ebe1;font-family:monospace;letter-spacing:0.5px;">${hostIban}</td></tr>
-            ${hostBic ? `<tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">BIC / SWIFT</td><td style="padding:8px 0;font-size:13px;color:#f0ebe1;font-family:monospace;">${hostBic}</td></tr>` : ''}
-            <tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">Bénéficiaire</td><td style="padding:8px 0;font-size:13px;color:#f0ebe1;">${contract.bailleur_prenom} ${contract.bailleur_nom}</td></tr>
-            ${Number(contract.montant_loyer) > 0 ? `<tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">Montant</td><td style="padding:8px 0;font-size:15px;color:#FFD56B;font-weight:700;">${loyerFormatted} €</td></tr>` : ''}
-            <tr><td style="padding:8px 0;font-size:12px;color:#8b84e8;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;">Référence</td><td style="padding:8px 0;font-size:13px;color:#f0ebe1;font-family:monospace;">${contract.logement_adresse.slice(0, 30).replace(/[^a-zA-Z0-9 ]/g, '').trim()}</td></tr>
-          </table>
-          <p style="margin:14px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">Indiquez bien la référence pour que le propriétaire identifie votre paiement. Prévenez-le une fois le virement effectué.</p>
+        <div style="background:rgba(99,91,255,0.06);border:1px solid rgba(99,91,255,0.3);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
+          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#a29bfe;text-transform:uppercase;letter-spacing:1px;">Virement bancaire</p>
+          <p style="margin:0 0 16px;font-size:13px;color:#a5c4b0;line-height:1.6;">Appuyez sur chaque champ pour le sélectionner, puis copiez-le :</p>
+          ${ibanRow('IBAN', hostIban, true)}
+          ${hostBic ? ibanRow('BIC / SWIFT', hostBic, true) : ''}
+          ${ibanRow('Bénéficiaire', `${contract.bailleur_prenom} ${contract.bailleur_nom}`)}
+          ${Number(contract.montant_loyer) > 0 ? ibanRow('Montant à virer', `${loyerFormatted} €`, false, true) : ''}
+          ${ibanRow('Référence', ibanRef, true)}
+          <p style="margin:14px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">Indiquez bien la référence dans le libellé de votre virement. Prévenez le propriétaire une fois le virement effectué.</p>
         </div>` : ''
 
     const emailHtml = `

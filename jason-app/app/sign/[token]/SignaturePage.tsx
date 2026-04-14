@@ -123,11 +123,16 @@ export default function SignaturePage({ token, locataireName }: Props) {
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error ?? 'Une erreur est survenue.')
+        // Afficher l'erreur détaillée si disponible (code d'erreur pour debug)
+        const detail = data.debug ? ` [${data.debug}]` : ''
+        setError((data.error ?? 'Une erreur est survenue.') + detail)
       } else {
         setSuccess(true)
-        // Recharger la page pour afficher le contrat signé avec la signature
-        setTimeout(() => window.location.reload(), 2000)
+        // Navigation forcée (pas de reload simple) pour garantir un rendu serveur frais
+        // sans cache CDN/navigateur
+        setTimeout(() => {
+          window.location.replace(window.location.pathname)
+        }, 2500)
       }
     } catch {
       setError('Erreur réseau. Veuillez réessayer.')
