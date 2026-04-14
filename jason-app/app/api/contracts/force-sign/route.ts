@@ -16,10 +16,10 @@ function createServiceClient() {
 // alors que le séjour est déjà marqué 'signe' (récupération en cas de bug)
 export async function POST(request: NextRequest) {
   try {
-    // Vérifier que l'hôte est authentifié
+    // Vérifier que l'hôte est authentifié (getUser valide le token côté serveur Supabase)
     const supabase = await createAuthClient()
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (!user || authError) {
       return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
     }
 
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       .from('contracts')
       .select('id, statut, sejour_id, token, user_id, locataire_prenom, locataire_nom, logement_adresse')
       .eq('id', contract_id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .single()
 
     if (fetchErr || !contract) {
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         statut: 'signe',
         signature_date: signDateIso,
         signature_ip: 'sync-manuel',
-        signature_user_agent: `Force-sync by host ${session.user.id}`,
+        signature_user_agent: `Force-sync by host ${user.id}`,
       })
       .eq('id', contract_id)
       .select('id, statut')

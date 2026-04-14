@@ -20,10 +20,10 @@ const FROM_EMAIL = 'contrats@jasonmarinho.com'
 // Renvoie l'email de paiement au voyageur
 export async function POST(request: NextRequest) {
   try {
-    // Vérifier l'authentification de l'hôte
+    // Vérifier l'authentification de l'hôte (getUser valide le token côté serveur Supabase)
     const supabase = await createAuthClient()
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (!user || authError) {
       return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
     }
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       .from('contracts')
       .select('*')
       .eq('id', contract_id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .single()
 
     if (fetchErr || !contract) {
