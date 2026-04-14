@@ -65,11 +65,20 @@ export async function POST(request: NextRequest) {
       }
 
       // Pré-autorisation confirmée (caution retenue sur la carte)
+      // Fiable même si checkout.session.completed est manqué
       case 'payment_intent.amount_capturable_updated': {
         const pi = event.data.object as Stripe.PaymentIntent
         const contractId = pi.metadata?.contract_id
         if (!contractId) break
-        // Mise à jour si besoin (déjà géré côté API capture)
+        // Passer en 'held' seulement si ce n'est pas déjà capturé/libéré
+        await db
+          .from('contracts')
+          .update({
+            stripe_deposit_payment_intent_id: pi.id,
+            stripe_deposit_status: 'held',
+          })
+          .eq('id', contractId)
+          .in('stripe_deposit_status', ['pending', null])
         break
       }
 
