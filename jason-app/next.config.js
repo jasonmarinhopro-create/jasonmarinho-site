@@ -22,13 +22,15 @@ const nextConfig = {
         ],
       },
       {
-        // Page de signature contrat (accessible sans auth)
+        // Page de signature contrat (accessible sans auth) — no-store obligatoire
+        // pour que le statut du contrat soit toujours frais après signature
         source: '/sign/:path*',
         headers: [
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'X-XSS-Protection', value: '1; mode=block' },
+          { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate' },
         ],
       },
       {

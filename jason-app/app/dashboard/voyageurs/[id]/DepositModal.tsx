@@ -392,7 +392,7 @@ const tag: React.CSSProperties = {
 const title: React.CSSProperties = {
   fontFamily: 'Fraunces, Georgia, serif',
   fontSize: '18px', fontWeight: 400,
-  color: 'var(--text, #f0ebe1)', margin: 0,
+  color: 'var(--text)', margin: 0,
 }
 
 const closeBtn: React.CSSProperties = {
@@ -408,27 +408,27 @@ const sectionLabel: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '6px',
   fontSize: '11px', fontWeight: 600, letterSpacing: '1px',
   textTransform: 'uppercase' as const,
-  color: '#6b9a7e', margin: '0 0 10px',
+  color: 'var(--text-2)', margin: '0 0 10px',
 }
 
 const amountBox: React.CSSProperties = {
-  background: 'rgba(99,91,255,0.08)',
-  border: '1px solid rgba(99,91,255,0.2)',
+  background: 'var(--surface-2)',
+  border: '1px solid var(--border-2)',
   borderRadius: '12px', padding: '14px 16px', marginBottom: '16px',
 }
 
 const amountLabel: React.CSSProperties = {
   fontSize: '11px', fontWeight: 600, letterSpacing: '1px',
-  textTransform: 'uppercase', color: '#a29bfe', margin: '0 0 4px',
+  textTransform: 'uppercase', color: 'var(--text-2)', margin: '0 0 4px',
 }
 
 const amountValue: React.CSSProperties = {
-  fontSize: '28px', fontWeight: 700, color: '#f0ebe1', margin: 0,
+  fontSize: '28px', fontWeight: 700, color: 'var(--text)', margin: 0,
   fontVariantNumeric: 'tabular-nums',
 }
 
 const hint: React.CSSProperties = {
-  fontSize: '13px', color: '#a5c4b0', lineHeight: 1.6, margin: '0 0 12px',
+  fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, margin: '0 0 12px',
 }
 
 const captureBtn: React.CSSProperties = {
@@ -452,7 +452,7 @@ const releaseBtn: React.CSSProperties = {
 }
 
 const legal: React.CSSProperties = {
-  fontSize: '11px', color: '#4a7260', lineHeight: 1.6, margin: 0,
+  fontSize: '11px', color: 'var(--text-3)', lineHeight: 1.6, margin: 0,
 }
 
 const successBox: React.CSSProperties = {
@@ -483,7 +483,7 @@ const copyBtn: React.CSSProperties = {
 }
 
 const viewLink: React.CSSProperties = {
-  fontSize: '13px', color: '#6b9a7e',
+  fontSize: '13px', color: 'var(--text-3)',
   textDecoration: 'none', display: 'inline-block',
 }
 
@@ -517,14 +517,15 @@ function IbanField({
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
       padding: '10px 14px',
-      background: 'rgba(99,91,255,0.08)',
+      background: 'var(--surface)',
+      border: '1px solid var(--border)',
       borderRadius: '10px',
     }}>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.8px', textTransform: 'uppercase', color: '#8b84e8', margin: '0 0 3px' }}>
+        <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-2)', margin: '0 0 3px' }}>
           {label}
         </p>
-        <p style={{ fontSize: '13px', color: '#f0ebe1', margin: 0, fontFamily: 'monospace', letterSpacing: '0.5px', wordBreak: 'break-all' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text)', margin: 0, fontFamily: 'monospace', letterSpacing: '0.5px', wordBreak: 'break-all' }}>
           {value}
         </p>
       </div>
