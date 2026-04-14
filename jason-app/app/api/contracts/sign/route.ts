@@ -2,20 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 
-// Service role client — pour le fetch du contrat (lecture seule)
+// Service role — bypass RLS complet (lecture + écriture)
+// Nécessaire car le locataire signe sans session authentifiée
 function createServiceClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  )
-}
-
-// Client anon — pour l'appel RPC sign_contract (SECURITY DEFINER, ne dépend pas du service role)
-function createAnonClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     { auth: { persistSession: false } }
   )
 }
@@ -51,53 +43,83 @@ export async function POST(request: NextRequest) {
       ?? 'inconnue'
     const userAgent = request.headers.get('user-agent') ?? 'inconnu'
 
-    // ── Étape 1 : Signer via la fonction SECURITY DEFINER (clé anon, toujours disponible) ──
-    // Cette fonction valide le token, met à jour contracts ET sejours en une seule transaction
-    const anonClient = createAnonClient()
-    const { data: rpcResult, error: rpcError } = await anonClient.rpc('sign_contract', {
-      p_token: token,
-      p_signature_image: signature_image,
-      p_signature_ip: ip,
-      p_signature_user_agent: userAgent,
-      p_app_url: APP_URL,
-    })
+    const db = createServiceClient()
 
-    if (rpcError) {
-      console.error('[contracts/sign] RPC error:', rpcError)
-      return NextResponse.json({ error: 'Erreur lors de l\'enregistrement de la signature. Veuillez réessayer.' }, { status: 500 })
-    }
-
-    const result = rpcResult as { success?: boolean; error?: string; already_signed?: boolean; contract_id?: string }
-
-    if (result?.error) {
-      if (result.already_signed) {
-        // Contrat déjà signé → retourner succès (idempotent)
-        return NextResponse.json({ success: true, already_signed: true })
-      }
-      return NextResponse.json({ error: result.error }, { status: 409 })
-    }
-
-    if (!result?.success) {
-      return NextResponse.json({ error: 'Signature non enregistrée. Veuillez réessayer.' }, { status: 500 })
-    }
-
-    // ── Étape 2 : Récupérer le contrat pour les emails (service role ou anon selon dispo) ──
-    const serviceOrAnonClient = process.env.SUPABASE_SERVICE_ROLE_KEY
-      ? createServiceClient()
-      : anonClient
-
-    const { data: contract } = await serviceOrAnonClient
+    // ── Étape 1 : Récupérer et valider le contrat ────────────────────────────
+    const { data: contract, error: fetchError } = await db
       .from('contracts')
-      .select('*')
+      .select('id, statut, sejour_id, token_expires_at, locataire_email, bailleur_email, ' +
+              'locataire_prenom, locataire_nom, bailleur_prenom, bailleur_nom, ' +
+              'logement_adresse, montant_loyer, montant_caution, stripe_payment_enabled')
       .eq('token', token)
       .single()
 
-    if (!contract) {
-      // Signing a réussi mais on ne peut pas envoyer les emails — ce n'est pas critique
-      return NextResponse.json({ success: true })
+    if (fetchError || !contract) {
+      console.error('[sign] Contract not found for token:', token, fetchError?.message)
+      return NextResponse.json({ error: 'Contrat introuvable.' }, { status: 404 })
     }
 
-    // ── Étape 3 : Emails de confirmation ──
+    // Idempotent : contrat déjà signé
+    if (contract.statut === 'signe') {
+      return NextResponse.json({ success: true, already_signed: true })
+    }
+
+    if (contract.statut === 'annule') {
+      return NextResponse.json({ error: 'Ce contrat a été annulé.' }, { status: 409 })
+    }
+
+    if (contract.statut !== 'en_attente') {
+      return NextResponse.json({ error: 'Contrat non signable.' }, { status: 409 })
+    }
+
+    if (new Date(contract.token_expires_at) < new Date()) {
+      return NextResponse.json({ error: 'Ce lien de signature a expiré. Contactez le propriétaire.' }, { status: 410 })
+    }
+
+    // ── Étape 2 : Enregistrer la signature (service role → bypass RLS) ───────
+    const now = new Date().toISOString()
+    const today = now.split('T')[0]
+
+    const { data: updated, error: updateError } = await db
+      .from('contracts')
+      .update({
+        statut: 'signe',
+        signature_date: now,
+        signature_ip: ip,
+        signature_user_agent: userAgent,
+        signature_image: signature_image,
+      })
+      .eq('id', contract.id)
+      .eq('statut', 'en_attente')   // verrou optimiste : évite la double-signature
+      .select('id')
+      .single()
+
+    if (updateError || !updated) {
+      console.error('[sign] Update contracts failed:', updateError)
+      return NextResponse.json(
+        { error: 'Erreur lors de l\'enregistrement de la signature. Veuillez réessayer.' },
+        { status: 500 }
+      )
+    }
+
+    // ── Étape 3 : Synchroniser le séjour ─────────────────────────────────────
+    if (contract.sejour_id) {
+      const { error: sejourError } = await db
+        .from('sejours')
+        .update({
+          contrat_statut: 'signe',
+          contrat_date_signature: today,
+          contrat_lien: `${APP_URL}/sign/${token}`,
+        })
+        .eq('id', contract.sejour_id)
+
+      if (sejourError) {
+        // Non bloquant — la signature a réussi, on log juste l'erreur
+        console.error('[sign] Sejour sync failed:', sejourError)
+      }
+    }
+
+    // ── Étape 4 : Emails de confirmation ──────────────────────────────────────
     const guestName = `${contract.locataire_prenom} ${contract.locataire_nom}`
     const hostName = `${contract.bailleur_prenom} ${contract.bailleur_nom}`
     const signDate = new Date().toLocaleDateString('fr-FR', {
@@ -114,7 +136,7 @@ export async function POST(request: NextRequest) {
     const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
     const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
 
-    // Email voyageur : inclut les boutons de paiement + caution
+    // Email voyageur
     const guestEmailHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -163,7 +185,7 @@ export async function POST(request: NextRequest) {
 </body>
 </html>`
 
-    // Email hôte : notification de signature + lien tableau de bord
+    // Email hôte
     const hostEmailHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -208,23 +230,21 @@ export async function POST(request: NextRequest) {
 </body>
 </html>`
 
-    // Email au locataire
     if (contract.locataire_email) {
       await resend.emails.send({
         from: FROM_EMAIL,
         to: contract.locataire_email,
         subject: `Contrat signé — finalisez votre dossier pour ${contract.logement_adresse}`,
         html: guestEmailHtml,
-      }).catch(() => null)
+      }).catch(e => console.error('[sign] Guest email failed:', e))
     }
 
-    // Email à l'hôte
     await resend.emails.send({
       from: FROM_EMAIL,
       to: contract.bailleur_email,
       subject: `${guestName} a signé le contrat — ${contract.logement_adresse}`,
       html: hostEmailHtml,
-    }).catch(() => null)
+    }).catch(e => console.error('[sign] Host email failed:', e))
 
     return NextResponse.json({ success: true })
   } catch (err) {
