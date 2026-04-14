@@ -24,6 +24,7 @@ ALTER TABLE logements ADD COLUMN IF NOT EXISTS telephone TEXT;
 -- 2. RLS : chaque hôte gère uniquement ses propres logements
 ALTER TABLE logements ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users manage their own logements" ON logements;
 CREATE POLICY "Users manage their own logements"
   ON logements FOR ALL
   USING (auth.uid() = user_id);
