@@ -11,11 +11,15 @@ CREATE TABLE IF NOT EXISTS logements (
   capacite_max         INTEGER     NOT NULL DEFAULT 1,
   reglement_interieur  TEXT,
   conditions_annulation TEXT,
+  telephone            TEXT,
   animaux_acceptes     BOOLEAN     NOT NULL DEFAULT FALSE,
   fumeur_accepte       BOOLEAN     NOT NULL DEFAULT FALSE,
   created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at           TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Si la table existait déjà avant cette version, ajouter le champ telephone
+ALTER TABLE logements ADD COLUMN IF NOT EXISTS telephone TEXT;
 
 -- 2. RLS : chaque hôte gère uniquement ses propres logements
 ALTER TABLE logements ENABLE ROW LEVEL SECURITY;

@@ -36,6 +36,7 @@ export type LogementOption = {
   id: string
   nom: string
   adresse: string
+  telephone: string | null
   description: string | null
   capacite_max: number
   reglement_interieur: string | null
@@ -72,16 +73,20 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
   const [error, setError] = useState('')
   const [contractToken, setContractToken] = useState('')
   const [copied, setCopied] = useState(false)
-  const [selectedLogementId, setSelectedLogementId] = useState<string | null>(null)
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
-  // Form state
+  // Auto-sélectionner le logement correspondant au séjour
+  const initialLogement = logements.find(l => l.nom === sejour.logement) ?? null
+
+  const [selectedLogementId, setSelectedLogementId] = useState<string | null>(initialLogement?.id ?? null)
+
+  // Form state — pré-rempli depuis le logement si disponible
   const [form, setForm] = useState({
     // Bailleur
     bailleur_prenom: bailleur.prenom,
     bailleur_nom: bailleur.nom,
     bailleur_email: bailleur.email,
-    bailleur_telephone: '',
+    bailleur_telephone: initialLogement?.telephone ?? '',
     bailleur_adresse: '',
 
     // Locataire
@@ -90,11 +95,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     locataire_email: voyageur.email ?? '',
     locataire_telephone: voyageur.telephone ?? '',
 
-    // Bien
-    logement_nom: '',
-    logement_adresse: '',
-    logement_description: '',
-    capacite_max: 1,
+    // Bien — pré-rempli depuis la fiche logement si elle correspond
+    logement_nom: initialLogement?.nom ?? '',
+    logement_adresse: initialLogement?.adresse ?? '',
+    logement_description: initialLogement?.description ?? '',
+    capacite_max: initialLogement?.capacite_max ?? 1,
 
     // Séjour
     date_arrivee: sejour.date_arrivee,
@@ -108,11 +113,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     modalites_paiement: 'Virement bancaire',
     stripe_payment_enabled: false,
 
-    // Clauses
-    conditions_annulation: DEFAULT_ANNULATION,
-    reglement_interieur: DEFAULT_REGLEMENT,
-    animaux_acceptes: false,
-    fumeur_accepte: false,
+    // Clauses — pré-remplies depuis la fiche logement si disponible
+    conditions_annulation: initialLogement?.conditions_annulation ?? DEFAULT_ANNULATION,
+    reglement_interieur: initialLogement?.reglement_interieur ?? DEFAULT_REGLEMENT,
+    animaux_acceptes: initialLogement?.animaux_acceptes ?? false,
+    fumeur_accepte: initialLogement?.fumeur_accepte ?? false,
   })
 
   function set(field: string, value: string | number | boolean) {
@@ -127,6 +132,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       logement_adresse: l.adresse,
       logement_description: l.description ?? '',
       capacite_max: l.capacite_max,
+      bailleur_telephone: l.telephone ?? f.bailleur_telephone,
       conditions_annulation: l.conditions_annulation ?? f.conditions_annulation,
       reglement_interieur: l.reglement_interieur ?? f.reglement_interieur,
       animaux_acceptes: l.animaux_acceptes,
@@ -304,56 +310,78 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
             <>
               <p style={stepHint}>Description du logement mis en location.</p>
 
-              {/* Sélecteur de logement enregistré */}
-              {logements.length > 0 && (
-                <div style={{ marginBottom: '4px' }}>
-                  <p style={{ ...fieldLabel, marginBottom: '8px' }}>Choisir un logement enregistré</p>
-                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
-                    {logements.map(l => (
-                      <button
-                        key={l.id}
-                        type="button"
-                        onClick={() => selectedLogementId === l.id ? clearLogement() : selectLogement(l)}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: '12px',
-                          padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
-                          textAlign: 'left' as const, fontFamily: 'inherit',
-                          background: selectedLogementId === l.id ? 'rgba(52,211,153,0.1)' : 'var(--surface)',
-                          border: `1px solid ${selectedLogementId === l.id ? 'rgba(52,211,153,0.35)' : 'var(--border)'}`,
-                          transition: 'all 0.15s',
-                        }}
-                      >
-                        <div style={{
-                          width: '32px', height: '32px', flexShrink: 0,
-                          background: selectedLogementId === l.id ? 'rgba(52,211,153,0.15)' : 'var(--surface-2)',
-                          border: '1px solid var(--border)', borderRadius: '8px',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          {selectedLogementId === l.id
-                            ? <Check size={14} color="#34D399" weight="bold" />
-                            : <span style={{ fontSize: '14px' }}>🏠</span>
-                          }
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ margin: 0, fontSize: '14px', fontWeight: 500, color: selectedLogementId === l.id ? '#34D399' : 'var(--text)' }}>
-                            {l.nom}
-                          </p>
-                          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>
-                            {l.adresse}
-                          </p>
-                        </div>
-                        <span style={{ fontSize: '11px', color: 'var(--text-3)', flexShrink: 0 }}>{l.capacite_max} pers.</span>
-                      </button>
-                    ))}
+              {/* Logement déjà sélectionné → carte récap + bouton changer */}
+              {selectedLogementId ? (
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '12px 14px', borderRadius: '12px',
+                  background: 'rgba(52,211,153,0.08)',
+                  border: '1px solid rgba(52,211,153,0.25)',
+                  marginBottom: '4px',
+                }}>
+                  <div style={{
+                    width: '34px', height: '34px', flexShrink: 0,
+                    background: 'rgba(52,211,153,0.15)', borderRadius: '9px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Check size={16} color="#34D399" weight="bold" />
                   </div>
-                  <div style={{ height: '1px', background: 'var(--border)', margin: '14px 0 2px' }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#34D399' }}>{form.logement_nom}</p>
+                    <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{form.logement_adresse}</p>
+                  </div>
+                  {logements.length > 1 && (
+                    <button type="button" onClick={clearLogement} style={{
+                      flexShrink: 0, fontSize: '12px', color: 'var(--text-3)',
+                      background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px',
+                    }}>Changer</button>
+                  )}
                 </div>
+              ) : (
+                /* Sélecteur de logements enregistrés */
+                logements.length > 0 && (
+                  <div style={{ marginBottom: '4px' }}>
+                    <p style={{ ...fieldLabel, marginBottom: '8px' }}>Choisir un logement enregistré</p>
+                    <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
+                      {logements.map(l => (
+                        <button
+                          key={l.id}
+                          type="button"
+                          onClick={() => selectLogement(l)}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: '12px',
+                            padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
+                            textAlign: 'left' as const, fontFamily: 'inherit',
+                            background: 'var(--surface)', border: '1px solid var(--border)',
+                            transition: 'all 0.15s',
+                          }}
+                        >
+                          <div style={{
+                            width: '32px', height: '32px', flexShrink: 0,
+                            background: 'var(--surface-2)', border: '1px solid var(--border)',
+                            borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            <span style={{ fontSize: '14px' }}>🏠</span>
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: 0, fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>{l.nom}</p>
+                            <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{l.adresse}</p>
+                          </div>
+                          <span style={{ fontSize: '11px', color: 'var(--text-3)', flexShrink: 0 }}>{l.capacite_max} pers.</span>
+                        </button>
+                      ))}
+                    </div>
+                    <div style={{ height: '1px', background: 'var(--border)', margin: '14px 0 2px' }} />
+                    <Field label="Ou saisir manuellement" value={form.logement_nom} onChange={v => set('logement_nom', v)} placeholder="Villa les Pins, Appartement Paris…" />
+                  </div>
+                )
               )}
 
-              {!selectedLogementId && (
+              {/* Champs toujours éditables */}
+              {!selectedLogementId && logements.length === 0 && (
                 <Field label="Nom du logement (optionnel)" value={form.logement_nom} onChange={v => set('logement_nom', v)} placeholder="Villa les Pins, Appartement Paris…" />
               )}
-              <Field label={`${logements.length > 0 && !selectedLogementId ? 'Ou saisir l\'adresse manuellement *' : 'Adresse complète du logement *'}`} value={form.logement_adresse} onChange={v => set('logement_adresse', v)} placeholder="12 rue de la Paix, 75001 Paris" />
+              <Field label="Adresse complète du logement *" value={form.logement_adresse} onChange={v => set('logement_adresse', v)} placeholder="12 rue de la Paix, 75001 Paris" />
               <Field label="Description (type, superficie, équipements)" value={form.logement_description} onChange={v => set('logement_description', v)} placeholder="Studio de 25m², 1 pièce, cuisine équipée, Wi-Fi" />
               <div style={row}>
                 <div style={{ flex: 1 }}>
