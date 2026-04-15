@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   token: string
@@ -9,14 +10,24 @@ interface Props {
 }
 
 export default function SignaturePage({ token, locataireName }: Props) {
+  const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [isDrawing, setIsDrawing] = useState(false)
   const [hasSignature, setHasSignature] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [alreadySigned, setAlreadySigned] = useState(false)
   const lastPos = useRef<{ x: number; y: number } | null>(null)
+
+  // Cleanup fallback timer on unmount (router.refresh unmounts this component)
+  useEffect(() => {
+    return () => {
+      if (fallbackTimerRef.current) clearTimeout(fallbackTimerRef.current)
+    }
+  }, [])
 
   // Setup canvas
   useEffect(() => {
@@ -126,19 +137,40 @@ export default function SignaturePage({ token, locataireName }: Props) {
         // Afficher l'erreur détaillée si disponible (code d'erreur pour debug)
         const detail = data.debug ? ` [${data.debug}]` : ''
         setError((data.error ?? 'Une erreur est survenue.') + detail)
+      } else if (data.already_signed) {
+        // Contrat déjà signé (idempotent) — rafraîchir pour afficher l'état signé
+        setAlreadySigned(true)
+        router.refresh()
+        fallbackTimerRef.current = setTimeout(() => {
+          window.location.href = window.location.pathname + '?t=' + Date.now()
+        }, 2000)
       } else {
         setSuccess(true)
-        // Navigation forcée (pas de reload simple) pour garantir un rendu serveur frais
-        // sans cache CDN/navigateur
-        setTimeout(() => {
-          window.location.replace(window.location.pathname)
-        }, 2500)
+        // router.refresh() demande au serveur de re-rendre le composant avec les données fraîches
+        // (statut='signe' en DB) — remplace le formulaire par le bloc signé sans rechargement complet.
+        // Le fallback avec timestamp bust le cache CDN/navigateur au cas où le refresh échoue.
+        router.refresh()
+        fallbackTimerRef.current = setTimeout(() => {
+          window.location.href = window.location.pathname + '?t=' + Date.now()
+        }, 3000)
       }
     } catch {
       setError('Erreur réseau. Veuillez réessayer.')
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (alreadySigned) {
+    return (
+      <div style={successBox}>
+        <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
+        <h2 style={successTitle}>Ce contrat est déjà signé</h2>
+        <p style={successText}>
+          La page va se mettre à jour pour afficher le contrat signé…
+        </p>
+      </div>
+    )
   }
 
   if (success) {
@@ -151,7 +183,7 @@ export default function SignaturePage({ token, locataireName }: Props) {
           Un email de confirmation a été envoyé à toutes les parties.
         </p>
         <p style={successMeta}>
-          La page va se recharger automatiquement pour vous permettre de finaliser votre dossier
+          La page va se mettre à jour automatiquement pour vous permettre de finaliser votre dossier
           (paiement de la réservation et/ou du dépôt de garantie si requis).
         </p>
         <button
