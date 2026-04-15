@@ -102,12 +102,37 @@ export default function LogementsPage({ logements: initial }: Props) {
       if (modal === 'create') {
         const res = await createLogement(form)
         if (res.error) { setError(res.error); return }
-        router.refresh()
+        // Mise à jour immédiate de l'état local sans attendre router.refresh()
+        const newLogement: Logement = {
+          id: res.id!,
+          nom: form.nom,
+          adresse: form.adresse,
+          telephone: form.telephone ?? null,
+          description: form.description ?? null,
+          capacite_max: form.capacite_max,
+          reglement_interieur: form.reglement_interieur ?? null,
+          conditions_annulation: form.conditions_annulation ?? null,
+          animaux_acceptes: form.animaux_acceptes,
+          fumeur_accepte: form.fumeur_accepte,
+        }
+        setLogements(prev => [newLogement, ...prev])
         setSuccess('Logement créé !')
       } else if (modal === 'edit' && editing) {
         const res = await updateLogement(editing.id, form)
         if (res.error) { setError(res.error); return }
-        router.refresh()
+        // Mise à jour immédiate de la fiche modifiée dans la liste
+        setLogements(prev => prev.map(l => l.id === editing.id ? {
+          ...l,
+          nom: form.nom,
+          adresse: form.adresse,
+          telephone: form.telephone ?? null,
+          description: form.description ?? null,
+          capacite_max: form.capacite_max,
+          reglement_interieur: form.reglement_interieur ?? null,
+          conditions_annulation: form.conditions_annulation ?? null,
+          animaux_acceptes: form.animaux_acceptes,
+          fumeur_accepte: form.fumeur_accepte,
+        } : l))
         setSuccess('Modifications enregistrées !')
       }
       closeModal()
