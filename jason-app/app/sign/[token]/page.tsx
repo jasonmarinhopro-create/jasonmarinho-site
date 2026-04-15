@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { unstable_noStore as noStore } from 'next/cache'
 import { notFound } from 'next/navigation'
 import SignaturePage from './SignaturePage'
 import PrintButton from './PrintButton'
@@ -13,7 +14,14 @@ function createServiceClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
+    {
+      auth: { persistSession: false },
+      // Force Next.js à ne jamais mettre en cache les requêtes du SDK Supabase
+      global: {
+        fetch: (url: RequestInfo | URL, init?: RequestInit) =>
+          fetch(url, { ...init, cache: 'no-store' }),
+      },
+    }
   )
 }
 
@@ -44,6 +52,10 @@ export default async function SignPage({
   params: Promise<{ token: string }>
   searchParams: Promise<{ deposit?: string; payment?: string }>
 }) {
+  // Désactive TOUT le data cache Next.js pour cette page — critique pour avoir
+  // le statut de signature à jour immédiatement après la signature
+  noStore()
+
   const { token } = await params
   const { deposit: depositParam, payment: paymentParam } = await searchParams
   const supabase = createServiceClient()

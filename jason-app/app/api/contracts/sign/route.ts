@@ -8,7 +8,13 @@ function createServiceClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
+    {
+      auth: { persistSession: false },
+      global: {
+        fetch: (url: RequestInfo | URL, init?: RequestInit) =>
+          fetch(url, { ...init, cache: 'no-store' }),
+      },
+    }
   )
 }
 
@@ -102,8 +108,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Erreur lors de l\'enregistrement de la signature. Veuillez réessayer.',
-          // Code d'erreur non sensible pour aider au diagnostic (pas de message complet en prod)
           debug: updateError?.code ?? 'NO_ROWS_UPDATED',
+        },
+        { status: 500 }
+      )
+    }
+
+    // ── Vérification immédiate : confirmer que le statut est bien 'signe' en DB ─
+    const { data: verify } = await db
+      .from('contracts')
+      .select('statut')
+      .eq('id', contract.id)
+      .single()
+
+    if (verify?.statut !== 'signe') {
+      console.error('[sign] Post-update verification failed — statut in DB:', verify?.statut)
+      return NextResponse.json(
+        {
+          error: 'La mise à jour du contrat n\'a pas pu être confirmée. Veuillez réessayer.',
+          debug: `VERIFY_FAILED:statut=${verify?.statut}`,
         },
         { status: 500 }
       )
