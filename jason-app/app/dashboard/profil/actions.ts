@@ -47,3 +47,25 @@ export async function saveIban(iban: string, bic: string): Promise<{ error?: str
 
   return {}
 }
+
+export async function saveAdresse(adresse: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session) return { error: 'Non authentifié.' }
+
+  const { error } = await supabase
+    .from('profiles')
+    .upsert({
+      id: session.user.id,
+      email: session.user.email ?? '',
+      adresse: adresse.trim() || null,
+      updated_at: new Date().toISOString(),
+    })
+
+  if (error) return { error: `Erreur: ${error.message}` }
+
+  revalidatePath('/dashboard', 'layout')
+
+  return {}
+}

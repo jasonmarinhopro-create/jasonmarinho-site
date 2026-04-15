@@ -234,12 +234,14 @@ type BailleurProfile = {
   email: string
   iban: string | null
   bic: string | null
+  adresse?: string | null
 }
 
 type LogementOption = {
   id: string
   nom: string
   adresse: string
+  telephone: string | null
   description: string | null
   capacite_max: number
   reglement_interieur: string | null
