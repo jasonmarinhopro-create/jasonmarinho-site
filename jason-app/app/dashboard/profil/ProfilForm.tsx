@@ -3,8 +3,8 @@
 import { useState, useTransition, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { saveProfileName, saveIban } from './actions'
-import { Check, User, EnvelopeSimple, PencilSimple, Warning, Lock, Eye, EyeSlash, CreditCard, Bank } from '@phosphor-icons/react'
+import { saveProfileName, saveIban, saveAdresse } from './actions'
+import { Check, User, EnvelopeSimple, PencilSimple, Warning, Lock, Eye, EyeSlash, CreditCard, Bank, MapPin } from '@phosphor-icons/react'
 
 interface Props {
   initialFullName: string
@@ -13,9 +13,10 @@ interface Props {
   stripeComplete: boolean
   initialIban?: string
   initialBic?: string
+  initialAdresse?: string
 }
 
-export default function ProfilForm({ initialFullName, email, stripeAccountId, stripeComplete, initialIban = '', initialBic = '' }: Props) {
+export default function ProfilForm({ initialFullName, email, stripeAccountId, stripeComplete, initialIban = '', initialBic = '', initialAdresse = '' }: Props) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -55,6 +56,13 @@ export default function ProfilForm({ initialFullName, email, stripeAccountId, st
   const [ibanPending, startIbanTransition] = useTransition()
   const [ibanSaved, setIbanSaved] = useState(false)
   const [ibanError, setIbanError] = useState('')
+
+  // Adresse bailleur
+  const [editAdresse, setEditAdresse] = useState(false)
+  const [adresseValue, setAdresseValue] = useState(initialAdresse)
+  const [adressePending, startAdresseTransition] = useTransition()
+  const [adresseSaved, setAdresseSaved] = useState(false)
+  const [adresseError, setAdresseError] = useState('')
 
   async function handleStripeConnect() {
     setStripeLoading(true)
@@ -144,6 +152,23 @@ export default function ProfilForm({ initialFullName, email, stripeAccountId, st
     setBicValue(initialBic)
     setIbanError('')
     setEditIban(false)
+  }
+
+  function handleAdresseSave() {
+    setAdresseError('')
+    startAdresseTransition(async () => {
+      const result = await saveAdresse(adresseValue)
+      if (result.error) { setAdresseError(result.error); return }
+      setAdresseSaved(true)
+      setEditAdresse(false)
+      setTimeout(() => setAdresseSaved(false), 2500)
+    })
+  }
+
+  function handleAdresseCancel() {
+    setAdresseValue(initialAdresse)
+    setAdresseError('')
+    setEditAdresse(false)
   }
 
   return (
@@ -358,6 +383,60 @@ export default function ProfilForm({ initialFullName, email, stripeAccountId, st
 
       <div style={styles.divider} />
 
+      {/* Adresse bailleur */}
+      <div style={styles.field}>
+        <label style={styles.label}>
+          <MapPin size={15} />
+          Adresse (bailleur)
+        </label>
+        <p style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.6, marginBottom: '12px', marginTop: '-2px' }}>
+          Votre adresse de correspondance légale — apparaîtra dans vos contrats de location. Pour une conciergerie, indiquez le siège social.
+        </p>
+
+        {adresseSaved && (
+          <div style={{ ...stripeBanner('success'), marginBottom: '12px' }}>
+            <Check size={14} weight="bold" />
+            Adresse enregistrée — elle sera pré-remplie dans vos contrats.
+          </div>
+        )}
+
+        {editAdresse ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <input
+              type="text"
+              value={adresseValue}
+              onChange={e => setAdresseValue(e.target.value)}
+              style={{ ...styles.input, width: '100%', boxSizing: 'border-box' }}
+              placeholder="12 rue de la Paix, 75001 Paris"
+              autoFocus
+            />
+            {adresseError && <div style={styles.errorBox}><Warning size={14} />{adresseError}</div>}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button onClick={handleAdresseSave} disabled={adressePending} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                {adressePending ? 'Sauvegarde...' : 'Enregistrer'}
+              </button>
+              <button onClick={handleAdresseCancel} style={styles.cancelBtn}>Annuler</button>
+            </div>
+          </div>
+        ) : adresseValue ? (
+          <div style={styles.valueRow}>
+            <span style={styles.value}>{adresseValue}</span>
+            <button onClick={() => setEditAdresse(true)} style={styles.editBtn}>
+              <PencilSimple size={14} />
+              Modifier
+            </button>
+          </div>
+        ) : (
+          <div>
+            <button onClick={() => setEditAdresse(true)} style={adresseBtn}>
+              Ajouter mon adresse →
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div style={styles.divider} />
+
       {/* Mot de passe */}
       <div style={styles.field}>
         <label style={styles.label}>
@@ -458,6 +537,15 @@ const ibanBtn: React.CSSProperties = {
   borderRadius: '10px', padding: '10px 18px',
   fontSize: '13px', fontWeight: 600,
   color: '#34D399', cursor: 'pointer',
+}
+
+const adresseBtn: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  background: 'rgba(255,213,107,0.08)',
+  border: '1px solid rgba(255,213,107,0.25)',
+  borderRadius: '10px', padding: '10px 18px',
+  fontSize: '13px', fontWeight: 600,
+  color: '#FFD56B', cursor: 'pointer',
 }
 
 function stripeBanner(type: 'success' | 'pending' | 'error'): React.CSSProperties {

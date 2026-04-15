@@ -46,19 +46,20 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   // Découpe full_name si prenom/nom ne sont pas définis explicitement
   const fullNameParts = ((meta.full_name ?? '') as string).trim().split(' ')
 
-  // IBAN/BIC depuis la table profiles
+  // IBAN/BIC/adresse depuis la table profiles
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('iban, bic')
+    .select('iban, bic, adresse')
     .eq('id', profile.userId)
     .single()
 
   const bailleur = {
-    prenom: ((meta.prenom ?? meta.first_name ?? fullNameParts[0] ?? '') as string),
-    nom:    ((meta.nom ?? meta.last_name ?? (fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '')) as string),
-    email:  user?.email ?? '',
-    iban:   profileData?.iban ?? null,
-    bic:    profileData?.bic ?? null,
+    prenom:  ((meta.prenom ?? meta.first_name ?? fullNameParts[0] ?? '') as string),
+    nom:     ((meta.nom ?? meta.last_name ?? (fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '')) as string),
+    email:   user?.email ?? '',
+    iban:    profileData?.iban ?? null,
+    bic:     profileData?.bic ?? null,
+    adresse: profileData?.adresse ?? null,
   }
 
   // Fiches logements de l'hôte (pour pré-remplir les contrats)

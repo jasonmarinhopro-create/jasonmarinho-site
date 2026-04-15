@@ -30,6 +30,7 @@ type BailleurProfile = {
   prenom: string
   nom: string
   email: string
+  adresse?: string | null
 }
 
 export type LogementOption = {
@@ -87,7 +88,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     bailleur_nom: bailleur.nom,
     bailleur_email: bailleur.email,
     bailleur_telephone: initialLogement?.telephone ?? '',
-    bailleur_adresse: '',
+    bailleur_adresse: bailleur.adresse ?? '',
 
     // Locataire
     locataire_prenom: voyageur.prenom,

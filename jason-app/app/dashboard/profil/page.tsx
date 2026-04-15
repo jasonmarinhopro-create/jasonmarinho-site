@@ -13,7 +13,7 @@ export default async function ProfilPage() {
 
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('full_name, plan, stripe_account_id, stripe_onboarding_complete, iban, bic')
+    .select('full_name, plan, stripe_account_id, stripe_onboarding_complete, iban, bic, adresse')
     .eq('id', userId)
     .maybeSingle()
 
@@ -23,6 +23,7 @@ export default async function ProfilPage() {
   const stripeComplete = profileData?.stripe_onboarding_complete ?? false
   const iban = profileData?.iban ?? ''
   const bic = profileData?.bic ?? ''
+  const adresse = profileData?.adresse ?? ''
 
   return (
     <>
@@ -45,6 +46,7 @@ export default async function ProfilPage() {
             stripeComplete={stripeComplete}
             initialIban={iban}
             initialBic={bic}
+            initialAdresse={adresse}
           />
 
           {plan === 'driing' && (
