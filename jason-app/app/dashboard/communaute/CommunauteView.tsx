@@ -57,7 +57,8 @@ export default function CommunauteView({
   const [activeCategory, setCategory]   = useState<string | null>(null)
   const [activeRegion, setRegion]       = useState<string | null>(null)
   const [featuredOpen, setFeaturedOpen] = useState(true)
-  const [memberships, setMemberships]   = useState(initialMemberships)
+  const [memberships, setMemberships]     = useState(initialMemberships)
+  const [showDismissed, setShowDismissed] = useState(false)
   const [, startTransition] = useTransition()
 
   const joinedGroups = useMemo(
@@ -81,7 +82,7 @@ export default function CommunauteView({
       ? SUPER_CATEGORIES.find(c => c.id === activeCategory)?.tags ?? []
       : []
     return groups.filter(g => {
-      if (memberships[g.id] === 'dismissed') return false
+      if (!showDismissed && memberships[g.id] === 'dismissed') return false
       if (platformFilter !== 'all' && g.platform !== platformFilter) return false
       if (activeRegion && !parseTags(g.tag).includes(activeRegion)) return false
       if (!activeRegion && catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
@@ -93,7 +94,7 @@ export default function CommunauteView({
         parseTags(g.tag).join(' ').toLowerCase().includes(q)
       )
     })
-  }, [groups, search, platformFilter, activeCategory, activeRegion, memberships])
+  }, [groups, search, platformFilter, activeCategory, activeRegion, memberships, showDismissed])
 
   const grouped: Record<string, Group[]> = {}
   filtered.forEach(g => {
@@ -137,11 +138,17 @@ export default function CommunauteView({
 
     return (
       <div
-        style={{
-          ...(featured ? s.featuredCard : s.card),
-        }}
+        style={featured ? s.featuredCard : s.card}
         className={featured ? undefined : 'glass-card'}
       >
+        {/* Badge masqué */}
+        {isDismissed && (
+          <div style={s.dismissedBadge}>
+            <EyeSlash size={10} />
+            Masqué
+          </div>
+        )}
+
         {/* Icon + name + tags */}
         <div style={s.cardTop}>
           <div style={{
@@ -416,6 +423,9 @@ export default function CommunauteView({
           <span style={{ fontSize: '13px', color: 'var(--text-3)', flex: 1 }}>
             {dismissedCount} groupe{dismissedCount > 1 ? 's' : ''} masqué{dismissedCount > 1 ? 's' : ''}
           </span>
+          <button onClick={() => setShowDismissed(v => !v)} style={s.showHiddenBtn}>
+            {showDismissed ? 'Masquer' : 'Voir'}
+          </button>
           <button
             onClick={() => {
               setMemberships(prev => {
@@ -660,6 +670,15 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', color: 'var(--text-muted)', background: 'none',
     border: '1px solid var(--border)', padding: '5px 10px',
     borderRadius: '7px', cursor: 'pointer',
+  },
+
+  /* Badge masqué sur la carte */
+  dismissedBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.3px',
+    color: 'var(--text-muted)', background: 'var(--surface)',
+    border: '1px solid var(--border)', borderRadius: '6px',
+    padding: '2px 7px', alignSelf: 'flex-start',
   },
 
   /* Dismissed bar */
