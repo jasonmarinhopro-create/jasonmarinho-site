@@ -199,13 +199,20 @@ export default function CommunauteView({
           {isDismissed ? (
             <button onClick={() => restore(g.id)} style={s.restoreBtn}>Restaurer</button>
           ) : (
-            <button
-              onClick={() => toggleJoined(g.id)}
-              style={{ ...s.statusBtn, ...(isJoined ? s.statusBtnOn : {}) }}
-            >
-              <Check size={12} weight={isJoined ? 'bold' : 'regular'} />
-              {isJoined ? "J'y suis" : "J'y suis ?"}
-            </button>
+            <>
+              <button
+                onClick={() => toggleJoined(g.id)}
+                style={{ ...s.statusBtn, ...(isJoined ? s.statusBtnOn : {}) }}
+              >
+                <Check size={12} weight={isJoined ? 'bold' : 'regular'} />
+                {isJoined ? "J'y suis" : "J'y suis ?"}
+              </button>
+              {!isJoined && (
+                <button onClick={() => dismiss(g.id)} style={s.dismissBtn} title="Pas intéressé">
+                  <X size={11} />
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
