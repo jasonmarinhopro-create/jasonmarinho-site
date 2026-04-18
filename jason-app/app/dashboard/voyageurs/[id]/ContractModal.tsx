@@ -31,6 +31,7 @@ type BailleurProfile = {
   nom: string
   email: string
   adresse?: string | null
+  stripeReady?: boolean
 }
 
 export type LogementOption = {
@@ -112,6 +113,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     // Financier — pré-rempli selon les méthodes de paiement du logement
     montant_loyer: sejour.montant ?? 0,
     montant_caution: 0,
+    methodes_keys: initialLogement?.methodes_paiement ?? 'virement',
     ...(() => {
       const labels: Record<string, string> = {
         virement: 'Virement bancaire', stripe: 'Paiement en ligne (Stripe)',
@@ -170,6 +172,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       reglement_interieur: l.reglement_interieur ?? f.reglement_interieur,
       animaux_acceptes: l.animaux_acceptes,
       fumeur_accepte: l.fumeur_accepte,
+      methodes_keys: l.methodes_paiement ?? 'virement',
       ...paymentFields,
     }))
   }
@@ -471,34 +474,65 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 </div>
               </div>
               <div>
-                <label style={fieldLabel}>Modalités de paiement</label>
-                <select
-                  style={inputStyle}
-                  value={form.modalites_paiement}
-                  onChange={e => set('modalites_paiement', e.target.value)}
-                >
-                  <option>Virement bancaire</option>
-                  <option>Espèces</option>
-                  <option>Chèque</option>
-                  <option>Airbnb / Booking (plateforme)</option>
-                  <option>PayPal</option>
-                  <option>Carte bancaire</option>
-                  <option>Paiement en ligne (Stripe)</option>
-                </select>
+                <label style={fieldLabel}>Méthodes de paiement acceptées</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginTop: '4px' }}>
+                  {([
+                    { value: 'virement', label: '🏦 Virement bancaire',     disabled: false },
+                    { value: 'stripe',   label: '💳 Stripe (en ligne)',      disabled: !bailleur.stripeReady },
+                    { value: 'especes',  label: '💵 Espèces',               disabled: false },
+                    { value: 'cheque',   label: '📄 Chèque',                disabled: false },
+                    { value: 'paypal',   label: '🅿️ PayPal',               disabled: false },
+                    { value: 'airbnb',   label: '🏠 Airbnb / Booking',      disabled: false },
+                    { value: 'carte',    label: '💳 Carte bancaire (TPE)',   disabled: false },
+                  ] as { value: string; label: string; disabled: boolean }[]).map(opt => {
+                    const LABELS: Record<string, string> = {
+                      virement: 'Virement bancaire', stripe: 'Paiement en ligne (Stripe)',
+                      especes: 'Espèces', cheque: 'Chèque', paypal: 'PayPal',
+                      airbnb: 'Airbnb / Booking (plateforme)', carte: 'Carte bancaire',
+                    }
+                    const keys = form.methodes_keys.split(',').map(s => s.trim()).filter(Boolean)
+                    const checked = keys.includes(opt.value)
+                    const isDisabled = opt.disabled
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        disabled={isDisabled}
+                        title={isDisabled ? 'Connectez votre compte Stripe dans les paramètres pour activer cette option' : undefined}
+                        onClick={() => {
+                          const next = checked ? keys.filter(v => v !== opt.value) : [...keys, opt.value]
+                          const nextKeys = next.length ? next : ['virement']
+                          const nextStripe = nextKeys.includes('stripe')
+                          const nextModalites = nextKeys.map(k => LABELS[k] ?? k).join(', ')
+                          setForm(f => ({ ...f, methodes_keys: nextKeys.join(','), stripe_payment_enabled: nextStripe, modalites_paiement: nextModalites }))
+                        }}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '5px',
+                          padding: '7px 13px', borderRadius: '10px', cursor: isDisabled ? 'not-allowed' : 'pointer',
+                          fontSize: '13px', fontWeight: checked ? 600 : 400, border: 'none',
+                          background: isDisabled
+                            ? 'rgba(165,196,176,0.05)'
+                            : checked ? 'rgba(52,211,153,0.12)' : 'var(--surface)',
+                          outline: isDisabled
+                            ? '1px solid rgba(165,196,176,0.1)'
+                            : checked ? '1px solid rgba(52,211,153,0.4)' : '1px solid var(--border)',
+                          color: isDisabled ? 'rgba(165,196,176,0.3)' : checked ? '#34D399' : 'var(--text-2)',
+                          transition: 'all 0.15s',
+                          opacity: isDisabled ? 0.6 : 1,
+                        }}
+                      >
+                        {opt.label}
+                        {isDisabled && <span style={{ fontSize: '10px', marginLeft: '2px' }}>🔒</span>}
+                      </button>
+                    )
+                  })}
+                </div>
+                {!bailleur.stripeReady && (
+                  <p style={{ margin: '8px 0 0', fontSize: '11px', color: '#6b9a7e', lineHeight: 1.5 }}>
+                    🔒 Stripe non configuré — connectez votre compte dans <strong>Paramètres → Paiements</strong> pour l&apos;activer.
+                  </p>
+                )}
               </div>
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', cursor: 'pointer', marginTop: '4px' }}>
-                <input
-                  type="checkbox"
-                  checked={form.stripe_payment_enabled}
-                  onChange={e => set('stripe_payment_enabled', e.target.checked)}
-                  style={{ marginTop: '2px', flexShrink: 0, width: '16px', height: '16px', cursor: 'pointer', accentColor: '#34D399' }}
-                />
-                <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6 }}>
-                  <strong style={{ color: 'var(--text)', display: 'block', marginBottom: '2px' }}>Payer la réservation en ligne via Stripe</strong>
-                  Le voyageur pourra régler le loyer directement après la signature, depuis son téléphone ou ordinateur.
-                  Nécessite que votre compte Stripe soit connecté dans les paramètres.
-                </span>
-              </label>
             </>
           )}
 

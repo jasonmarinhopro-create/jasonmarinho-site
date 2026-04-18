@@ -235,6 +235,7 @@ type BailleurProfile = {
   iban: string | null
   bic: string | null
   adresse?: string | null
+  stripeReady?: boolean
 }
 
 type LogementOption = {

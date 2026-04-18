@@ -49,17 +49,18 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   // IBAN/BIC/adresse depuis la table profiles
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('iban, bic, adresse')
+    .select('iban, bic, adresse, stripe_account_id, stripe_onboarding_complete')
     .eq('id', profile.userId)
     .single()
 
   const bailleur = {
-    prenom:  ((meta.prenom ?? meta.first_name ?? fullNameParts[0] ?? '') as string),
-    nom:     ((meta.nom ?? meta.last_name ?? (fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '')) as string),
-    email:   user?.email ?? '',
-    iban:    profileData?.iban ?? null,
-    bic:     profileData?.bic ?? null,
-    adresse: profileData?.adresse ?? null,
+    prenom:      ((meta.prenom ?? meta.first_name ?? fullNameParts[0] ?? '') as string),
+    nom:         ((meta.nom ?? meta.last_name ?? (fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '')) as string),
+    email:       user?.email ?? '',
+    iban:        profileData?.iban ?? null,
+    bic:         profileData?.bic ?? null,
+    adresse:     profileData?.adresse ?? null,
+    stripeReady: !!(profileData?.stripe_account_id && profileData?.stripe_onboarding_complete),
   }
 
   // Fiches logements de l'hôte (pour pré-remplir les contrats)
