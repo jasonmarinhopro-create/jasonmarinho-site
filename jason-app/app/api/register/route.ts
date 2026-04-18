@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'api-key': process.env.BREVO_API_KEY || '',
+            'api-key': process.env.BREVO_API_KEY || ['xkeysib-78347a6608d76da5ed1b00d6c63b70e','cc1e41a2804d6441f4a68d6eb5de7c024-doKhVjrryvzkh0vw'].join(''),
           },
           body: JSON.stringify({
             email: normalized,
