@@ -269,39 +269,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const [depositContract, setDepositContract] = useState<DepositContract | null>(null)
   const [depositLoading, setDepositLoading] = useState<string | null>(null) // sejourId en cours de chargement
 
-  // Signature modal
-  const [signatureModal, setSignatureModal] = useState<{ image: string; name: string; date: string } | null>(null)
-  const [signatureLoading, setSignatureLoading] = useState<string | null>(null)
-
-  // Force-sync modal (quand le séjour est "signé" mais le contrat DB est encore en_attente)
-  const [forceSyncModal, setForceSyncModal] = useState<{ contractId: string; name: string } | null>(null)
-  const [forceSyncing, setForceSyncing] = useState(false)
-  const [forceSyncDone, setForceSyncDone] = useState(false)
-
-  async function openSignatureModal(sejourId: string) {
-    setSignatureLoading(sejourId)
-    try {
-      const { getContractsBySejour } = await import('../contract-actions')
-      const res = await getContractsBySejour(sejourId)
-      const signed = res.contracts?.find(c => c.statut === 'signe')
-      if (signed) {
-        setSignatureModal({
-          image: signed.signature_image ?? '',
-          name: `${signed.locataire_prenom} ${signed.locataire_nom}`,
-          date: signed.signature_date ?? '',
-        })
-      } else {
-        // Aucun contrat signé trouvé — incohérence de données, proposer la synchronisation
-        const pending = res.contracts?.[0]
-        if (pending) {
-          setForceSyncModal({ contractId: pending.id, name: `${pending.locataire_prenom} ${pending.locataire_nom}` })
-        }
-      }
-    } finally {
-      setSignatureLoading(null)
-    }
-  }
-
   async function openDepositModal(sejourId: string) {
     setDepositLoading(sejourId)
     try {
@@ -318,25 +285,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       }
     } finally {
       setDepositLoading(null)
-    }
-  }
-
-  async function handleForceSync() {
-    if (!forceSyncModal) return
-    setForceSyncing(true)
-    try {
-      const res = await fetch('/api/contracts/force-sign', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contract_id: forceSyncModal.contractId }),
-      })
-      if (res.ok) {
-        setForceSyncDone(true)
-        // Recharger la page après 1.5s pour afficher le nouvel état
-        setTimeout(() => window.location.reload(), 1500)
-      }
-    } finally {
-      setForceSyncing(false)
     }
   }
 
@@ -781,16 +729,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </button>
                   {sj.contrat_statut === 'signe' && (
                     <button
-                      onClick={() => openSignatureModal(sj.id)}
-                      disabled={signatureLoading === sj.id}
-                      style={s.signatureBtn}
-                      title="Voir la signature du voyageur"
-                    >
-                      {signatureLoading === sj.id ? '…' : 'Signature'}
-                    </button>
-                  )}
-                  {sj.contrat_statut === 'signe' && (
-                    <button
                       onClick={() => openDepositModal(sj.id)}
                       disabled={depositLoading === sj.id}
                       style={s.depositBtn}
@@ -908,92 +846,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 </div>
               </form>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* Signature modal */}
-      {signatureModal && (
-        <div style={s.overlay} onClick={() => setSignatureModal(null)}>
-          <div style={s.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={s.modalHeader}>
-              <h3 style={s.modalTitle}>Signature du voyageur</h3>
-              <button onClick={() => setSignatureModal(null)} style={s.modalClose}><X size={18} /></button>
-            </div>
-            <div style={{ padding: '24px', textAlign: 'center' as const }}>
-              <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase' as const, letterSpacing: '1px' }}>Signé par</p>
-              <p style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', margin: '0 0 4px' }}>{signatureModal.name}</p>
-              {signatureModal.date && (
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '0 0 20px' }}>
-                  Le {new Date(signatureModal.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                </p>
-              )}
-              {signatureModal.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={signatureModal.image}
-                  alt="Signature du voyageur"
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '160px',
-                    objectFit: 'contain',
-                    borderRadius: '10px',
-                    border: '1px solid rgba(52,211,153,0.2)',
-                    padding: '12px',
-                    background: '#ffffff',
-                  }}
-                />
-              ) : (
-                <p style={{ color: 'var(--text-muted)', fontSize: '14px', padding: '20px', border: '1px dashed var(--border)', borderRadius: '10px', margin: 0 }}>
-                  Aucune image de signature enregistrée pour ce contrat.
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Force-sync modal — incohérence contrat/séjour */}
-      {forceSyncModal && (
-        <div style={s.overlay} onClick={() => { if (!forceSyncing) setForceSyncModal(null) }}>
-          <div style={s.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={s.modalHeader}>
-              <h3 style={{ ...s.modalTitle, color: '#FFD56B' }}>⚠️ Synchronisation requise</h3>
-              <button onClick={() => setForceSyncModal(null)} style={s.modalClose} disabled={forceSyncing}><X size={18} /></button>
-            </div>
-            <div style={{ padding: '20px 24px 24px' }}>
-              {forceSyncDone ? (
-                <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                  <p style={{ fontSize: '24px', marginBottom: '8px' }}>✅</p>
-                  <p style={{ fontSize: '14px', color: '#34D399', fontWeight: 600, margin: 0 }}>Contrat synchronisé !</p>
-                  <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '6px 0 0' }}>La page va se recharger…</p>
-                </div>
-              ) : (
-                <>
-                  <p style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: 1.6, margin: '0 0 16px' }}>
-                    Le séjour de <strong style={{ color: 'var(--text)' }}>{forceSyncModal.name}</strong> est marqué <em>Signé</em> dans le tableau de bord,
-                    mais le contrat associé est encore en attente dans la base de données.
-                  </p>
-                  <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6, margin: '0 0 20px' }}>
-                    Cliquez sur <strong>Synchroniser</strong> pour mettre à jour le statut du contrat et débloquer la signature et les paiements.
-                  </p>
-                  <button
-                    onClick={handleForceSync}
-                    disabled={forceSyncing}
-                    style={{
-                      width: '100%', padding: '13px',
-                      background: 'rgba(255,213,107,0.15)',
-                      border: '1px solid rgba(255,213,107,0.35)',
-                      borderRadius: '12px',
-                      fontSize: '14px', fontWeight: 600, color: '#FFD56B',
-                      cursor: forceSyncing ? 'not-allowed' : 'pointer',
-                    }}
-                  >
-                    {forceSyncing ? 'Synchronisation…' : 'Synchroniser le contrat'}
-                  </button>
-                </>
-              )}
-            </div>
           </div>
         </div>
       )}
@@ -1278,13 +1130,6 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)',
     borderRadius: '8px', padding: '5px 11px',
     fontSize: '12px', fontWeight: 500, color: '#FFD56B',
-    cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
-  },
-  signatureBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.25)',
-    borderRadius: '8px', padding: '5px 11px',
-    fontSize: '12px', fontWeight: 500, color: '#34D399',
     cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
   },
   depositBtn: {
