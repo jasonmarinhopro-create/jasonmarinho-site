@@ -198,15 +198,18 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
                 <p style={{ ...amountLabel, color: '#FFD56B' }}>Loyer total</p>
                 <p style={amountValue}>{paymentAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
               </div>
-              {paymentStatusMeta ? (
-                <div style={{ background: paymentStatusMeta.bg, borderRadius: '10px', padding: '10px 14px' }}>
+              {paymentStatusMeta && (
+                <div style={{ background: paymentStatusMeta.bg, borderRadius: '10px', padding: '10px 14px', marginBottom: '10px' }}>
                   <p style={{ margin: 0, fontSize: '14px', color: paymentStatusMeta.color, fontWeight: 500 }}>
                     {paymentStatusMeta.label}
                   </p>
                 </div>
-              ) : (
+              )}
+              {paymentStatus !== 'paid' && paymentStatus !== 'refunded' && paymentStatus !== 'failed' && (
                 <div>
-                  <p style={hint}>Le paiement en ligne n&apos;a pas encore été effectué par le locataire.</p>
+                  {!paymentStatusMeta && (
+                    <p style={hint}>Le paiement en ligne n&apos;a pas encore été effectué par le locataire.</p>
+                  )}
                   <div style={linkRow}>
                     <button onClick={() => copyLink('payment')} style={copyBtn}>
                       {copied === 'payment' ? <Check size={13} weight="bold" /> : <Copy size={13} />}

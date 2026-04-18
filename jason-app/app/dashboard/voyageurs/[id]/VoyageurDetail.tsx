@@ -248,6 +248,7 @@ type LogementOption = {
   conditions_annulation: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
+  methodes_paiement?: string | null
 }
 
 interface Props {

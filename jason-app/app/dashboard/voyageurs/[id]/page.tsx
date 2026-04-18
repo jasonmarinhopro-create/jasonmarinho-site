@@ -65,7 +65,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   // Fiches logements de l'hôte (pour pré-remplir les contrats)
   const { data: logements } = await supabase
     .from('logements')
-    .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte')
+    .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte, methodes_paiement')
     .eq('user_id', profile.userId)
     .order('created_at', { ascending: false })
 

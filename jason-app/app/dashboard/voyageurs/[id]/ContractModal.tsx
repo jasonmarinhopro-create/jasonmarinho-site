@@ -44,6 +44,7 @@ export type LogementOption = {
   conditions_annulation: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
+  methodes_paiement?: string | null
 }
 
 interface Props {
@@ -108,11 +109,13 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     heure_arrivee: '16:00',
     heure_depart: '11:00',
 
-    // Financier
+    // Financier — pré-rempli selon les méthodes de paiement du logement
     montant_loyer: sejour.montant ?? 0,
     montant_caution: 0,
-    modalites_paiement: 'Virement bancaire',
-    stripe_payment_enabled: false,
+    modalites_paiement: initialLogement?.methodes_paiement === 'stripe' ? 'Paiement en ligne (Stripe)'
+      : initialLogement?.methodes_paiement === 'les_deux' ? 'Paiement en ligne (Stripe) ou virement bancaire'
+      : 'Virement bancaire',
+    stripe_payment_enabled: initialLogement?.methodes_paiement === 'stripe' || initialLogement?.methodes_paiement === 'les_deux',
 
     // Clauses — pré-remplies depuis la fiche logement si disponible
     conditions_annulation: initialLogement?.conditions_annulation ?? DEFAULT_ANNULATION,
@@ -125,8 +128,15 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     setForm(f => ({ ...f, [field]: value }))
   }
 
+  function paymentFieldsFromLogement(methodes: string | null | undefined) {
+    if (methodes === 'stripe') return { stripe_payment_enabled: true, modalites_paiement: 'Paiement en ligne (Stripe)' }
+    if (methodes === 'les_deux') return { stripe_payment_enabled: true, modalites_paiement: 'Paiement en ligne (Stripe) ou virement bancaire' }
+    return { stripe_payment_enabled: false, modalites_paiement: 'Virement bancaire' }
+  }
+
   function selectLogement(l: LogementOption) {
     setSelectedLogementId(l.id)
+    const paymentFields = paymentFieldsFromLogement(l.methodes_paiement)
     setForm(f => ({
       ...f,
       logement_nom: l.nom,
@@ -138,6 +148,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       reglement_interieur: l.reglement_interieur ?? f.reglement_interieur,
       animaux_acceptes: l.animaux_acceptes,
       fumeur_accepte: l.fumeur_accepte,
+      ...paymentFields,
     }))
   }
 

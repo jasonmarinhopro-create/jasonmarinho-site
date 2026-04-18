@@ -101,18 +101,18 @@ export default async function SignPage({
     : badge
 
   return (
-    <div style={page}>
-      <div style={container}>
+    <div style={page} className="print-page">
+      <div style={container} className="print-container">
         {/* Header */}
         <div style={header}>
-          <span style={badgeStyle}>
+          <span style={badgeStyle} className="no-print">
             {cancelled ? 'Annulé' : alreadySigned ? 'Signé ✓' : expired ? 'Expiré' : 'En attente de signature'}
           </span>
-          <h1 style={title}>
+          <h1 style={title} className="print-title">
             Contrat de location<br />
             <em style={{ color: '#FFD56B', fontStyle: 'normal' }}>saisonnière</em>
           </h1>
-          <p style={subtitle}>
+          <p style={subtitle} className="print-subtitle">
             Établi conformément au Code civil (Art. 1366) et au Code du tourisme (L324-1).<br />
             Signature électronique valide selon le règlement eIDAS (UE) 910/2014.
           </p>
@@ -120,7 +120,7 @@ export default async function SignPage({
 
         {/* Status banners */}
         {alreadySigned && (
-          <div style={successBanner}>
+          <div style={successBanner} className="no-print">
             <span style={{ fontSize: '20px' }}>✅</span>
             <div>
               <strong>Ce contrat a été signé électroniquement</strong>
@@ -131,7 +131,7 @@ export default async function SignPage({
           </div>
         )}
         {expired && !alreadySigned && (
-          <div style={warningBanner}>
+          <div style={warningBanner} className="no-print">
             <span style={{ fontSize: '20px' }}>⏰</span>
             <div>
               <strong>Ce lien de signature a expiré</strong>
@@ -142,7 +142,7 @@ export default async function SignPage({
           </div>
         )}
         {cancelled && (
-          <div style={warningBanner}>
+          <div style={warningBanner} className="no-print">
             <span style={{ fontSize: '20px' }}>❌</span>
             <div><strong>Ce contrat a été annulé.</strong></div>
           </div>
@@ -311,12 +311,14 @@ export default async function SignPage({
 
         {/* Signature canvas (si non signé) */}
         {!alreadySigned && !expired && !cancelled && (
-          <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
+          <div className="no-print">
+            <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
+          </div>
         )}
 
         {/* ── Paiements ── */}
         {alreadySigned && (paymentEnabled || hasDeposit || hostIban) && (
-          <div style={paymentsBlock}>
+          <div style={paymentsBlock} className="no-print">
             <p style={paymentsTitle}>Finaliser votre dossier</p>
 
             {/* Stripe pas encore configuré par le bailleur */}
@@ -376,7 +378,7 @@ export default async function SignPage({
 
         {/* Signature du locataire — affichée en bas du contrat */}
         {alreadySigned && (
-          <div style={signedBlock}>
+          <div style={signedBlock} className="print-signature">
             <div style={signedLeft}>
               <p style={signedLabel}>Signé par</p>
               <p style={signedName}>{contract.locataire_prenom} {contract.locataire_nom}</p>
@@ -394,7 +396,7 @@ export default async function SignPage({
         )}
 
         {/* Footer légal */}
-        <div style={footerLegal}>
+        <div style={footerLegal} className="print-footer">
           <p>
             Contrat établi via <a href="https://jasonmarinho.com" style={{ color: '#4a7260' }}>jasonmarinho.com</a>
             {' — '}Conforme au Code civil, au Code du tourisme et au règlement eIDAS (UE) 910/2014.
@@ -405,21 +407,52 @@ export default async function SignPage({
         </div>
 
         {/* Print button (visible only on screen, not print) */}
-        {alreadySigned && <PrintButton />}
+        {alreadySigned && <div className="no-print"><PrintButton /></div>}
       </div>
 
       <style>{`
         @media print {
-          body { background: white !important; color: #111 !important; }
+          @page { size: A4 portrait; margin: 20mm 15mm; }
+
+          body { background: white !important; color: #111 !important;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
           .no-print { display: none !important; }
-          .contract-print { border: 1px solid #ddd !important; }
+
+          .print-page { background: white !important; padding: 0 !important; min-height: auto !important; }
+          .print-container { max-width: 100% !important; margin: 0 !important; }
+
+          .print-title { font-family: Georgia, serif !important; font-size: 20px !important;
+            color: #111 !important; margin-bottom: 4px !important; }
+          .print-title em { color: #111 !important; font-style: italic !important; }
+          .print-subtitle { font-size: 10px !important; color: #555 !important; margin-bottom: 10px !important; }
+
+          .contract-print { background: white !important; border: 1px solid #ccc !important;
+            border-radius: 4px !important; overflow: visible !important; margin-bottom: 10px !important; }
+          .contract-print * { background: transparent !important; color: #111 !important;
+            border-color: #ccc !important; }
+          .contract-print section { padding: 12px 16px !important; break-inside: avoid; }
+          .contract-print h2 { font-size: 11px !important; font-weight: 700 !important;
+            text-transform: uppercase !important; letter-spacing: 0.5px !important;
+            border-bottom: 1px solid #ddd !important; padding-bottom: 5px !important;
+            margin-bottom: 8px !important; }
+          .contract-print p { font-size: 11px !important; line-height: 1.6 !important;
+            margin: 0 0 5px !important; }
+          .contract-print strong { color: #000 !important; }
+          .contract-print div[style*="height: 1px"] { background: #ddd !important; }
+
+          .print-signature { background: white !important; border: 1px solid #ccc !important;
+            border-radius: 4px !important; padding: 14px 18px !important;
+            margin-bottom: 10px !important; break-inside: avoid; }
+          .print-signature * { color: #111 !important; background: transparent !important; }
+          .print-signature img { border: 1px solid #ccc !important; background: white !important; }
+
+          .print-footer { color: #555 !important; border-top: 1px solid #ccc !important;
+            font-size: 10px !important; padding-top: 8px !important; margin-top: 6px !important; }
+          .print-footer a { color: #555 !important; }
         }
         @media (prefers-color-scheme: light) {
-          :root {
-            --text: #1a1a1a;
-            --text-muted: #666;
-            --bg: #f8f8f8;
-          }
+          :root { --text: #1a1a1a; --text-muted: #666; --bg: #f8f8f8; }
         }
       `}</style>
     </div>
