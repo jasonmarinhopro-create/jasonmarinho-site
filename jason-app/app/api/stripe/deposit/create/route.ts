@@ -77,13 +77,6 @@ export async function POST(request: NextRequest) {
         ],
         payment_intent_data: {
           capture_method: 'manual', // Pré-autorisation — pas de débit immédiat
-          // Demande une autorisation étendue (jusqu'à 30 jours) si la carte le supporte
-          // Par défaut Stripe expire l'autorisation après 7 jours
-          payment_method_options: {
-            card: {
-              request_extended_authorization: 'if_available',
-            },
-          },
           description: `Caution contrat ${contract.id.slice(0, 8).toUpperCase()}`,
           metadata: { contract_id: contract.id },
         },
