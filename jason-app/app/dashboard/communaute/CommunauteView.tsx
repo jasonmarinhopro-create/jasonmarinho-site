@@ -55,6 +55,7 @@ export default function CommunauteView({
   const [search, setSearch]             = useState('')
   const [platformFilter, setPlatform]   = useState<'all' | 'facebook' | 'whatsapp'>('all')
   const [activeCategory, setCategory]   = useState<string | null>(null)
+  const [activeRegion, setRegion]       = useState<string | null>(null)
   const [featuredOpen, setFeaturedOpen] = useState(true)
   const [memberships, setMemberships]   = useState(initialMemberships)
   const [showDismissed, setShowDismissed] = useState(false)
@@ -67,6 +68,14 @@ export default function CommunauteView({
   const totalReach = joinedGroups.reduce((sum, g) => sum + (g.members_count || 0), 0)
   const dismissedCount = groups.filter(g => memberships[g.id] === 'dismissed').length
 
+  // Régions présentes dans les données (pour le sous-filtre)
+  const availableRegions = useMemo(() => {
+    const regionTags = SUPER_CATEGORIES.find(c => c.id === 'regions')?.tags ?? []
+    const set = new Set<string>()
+    groups.forEach(g => parseTags(g.tag).forEach(t => { if (regionTags.includes(t as never)) set.add(t) }))
+    return [...set].sort()
+  }, [groups])
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase()
     const catTags = activeCategory
@@ -75,7 +84,8 @@ export default function CommunauteView({
     return groups.filter(g => {
       if (!showDismissed && memberships[g.id] === 'dismissed') return false
       if (platformFilter !== 'all' && g.platform !== platformFilter) return false
-      if (catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
+      if (activeRegion && !parseTags(g.tag).includes(activeRegion)) return false
+      if (!activeRegion && catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
       if (!q) return true
       return (
         g.name.toLowerCase().includes(q) ||
@@ -84,7 +94,7 @@ export default function CommunauteView({
         parseTags(g.tag).join(' ').toLowerCase().includes(q)
       )
     })
-  }, [groups, search, platformFilter, activeCategory, memberships, showDismissed])
+  }, [groups, search, platformFilter, activeCategory, activeRegion, memberships, showDismissed])
 
   const grouped: Record<string, Group[]> = {}
   filtered.forEach(g => {
@@ -95,7 +105,7 @@ export default function CommunauteView({
 
   const featuredGroups  = grouped[FEATURED_CATEGORY] ?? []
   const otherCategories = Object.entries(grouped).filter(([c]) => c !== FEATURED_CATEGORY)
-  const isFiltering     = search !== '' || platformFilter !== 'all' || activeCategory !== null
+  const isFiltering = search !== '' || platformFilter !== 'all' || activeCategory !== null || activeRegion !== null
 
   function toggleJoined(groupId: string) {
     const next: MemberStatus | null = memberships[groupId] === 'joined' ? null : 'joined'
@@ -118,7 +128,7 @@ export default function CommunauteView({
     if (userId) startTransition(() => { setGroupMembership(groupId, null) })
   }
 
-  function clearFilters() { setSearch(''); setPlatform('all'); setCategory(null) }
+  function clearFilters() { setSearch(''); setPlatform('all'); setCategory(null); setRegion(null) }
 
   function renderCard(g: Group, featured = false) {
     const isJoined    = memberships[g.id] === 'joined'
@@ -306,6 +316,24 @@ export default function CommunauteView({
             ))}
           </div>
         </div>
+
+        {/* Sous-filtre régions — visible seulement quand "Régions" est sélectionné */}
+        {activeCategory === 'regions' && availableRegions.length > 0 && (
+          <div style={s.filterLine}>
+            <span style={{ ...s.filterLbl, color: 'var(--text-muted)' }}>Région</span>
+            <div style={s.tagsScroll}>
+              {availableRegions.map(r => (
+                <button
+                  key={r}
+                  onClick={() => setRegion(activeRegion === r ? null : r)}
+                  style={{ ...s.chip, ...(activeRegion === r ? s.chipOn : {}), flexShrink: 0 }}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {isFiltering && (
           <button onClick={clearFilters} style={s.resetLink}>
