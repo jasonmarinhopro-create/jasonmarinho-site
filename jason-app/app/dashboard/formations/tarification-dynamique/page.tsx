@@ -18,14 +18,16 @@ export default async function FormationPage() {
   const formationId = formation?.id ?? null
 
   let initialProgress: number | null = null
+  let initialCompletedLessons: number[] = []
   if (formationId && profile?.userId) {
     const { data: uf } = await supabase
       .from('user_formations')
-      .select('progress')
+      .select('progress, completed_lessons')
       .eq('user_id', profile.userId)
       .eq('formation_id', formationId)
       .maybeSingle()
     initialProgress = uf?.progress ?? null
+    initialCompletedLessons = (uf?.completed_lessons as number[]) ?? []
   }
 
   const formationContent = await getFormationDbContent(formationId, TARIFICATION_DYNAMIQUE_FORMATION)
@@ -37,6 +39,7 @@ export default async function FormationPage() {
         formation={formationContent}
         formationId={formationId}
         initialProgress={initialProgress}
+        initialCompletedLessons={initialCompletedLessons}
       />
     </>
   )
