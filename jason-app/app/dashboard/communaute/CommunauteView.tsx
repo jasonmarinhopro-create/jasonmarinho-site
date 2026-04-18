@@ -58,7 +58,6 @@ export default function CommunauteView({
   const [activeRegion, setRegion]       = useState<string | null>(null)
   const [featuredOpen, setFeaturedOpen] = useState(true)
   const [memberships, setMemberships]   = useState(initialMemberships)
-  const [showDismissed, setShowDismissed] = useState(false)
   const [, startTransition] = useTransition()
 
   const joinedGroups = useMemo(
@@ -82,7 +81,7 @@ export default function CommunauteView({
       ? SUPER_CATEGORIES.find(c => c.id === activeCategory)?.tags ?? []
       : []
     return groups.filter(g => {
-      if (!showDismissed && memberships[g.id] === 'dismissed') return false
+      if (memberships[g.id] === 'dismissed') return false
       if (platformFilter !== 'all' && g.platform !== platformFilter) return false
       if (activeRegion && !parseTags(g.tag).includes(activeRegion)) return false
       if (!activeRegion && catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
@@ -94,7 +93,7 @@ export default function CommunauteView({
         parseTags(g.tag).join(' ').toLowerCase().includes(q)
       )
     })
-  }, [groups, search, platformFilter, activeCategory, activeRegion, memberships, showDismissed])
+  }, [groups, search, platformFilter, activeCategory, activeRegion, memberships])
 
   const grouped: Record<string, Group[]> = {}
   filtered.forEach(g => {
@@ -140,8 +139,6 @@ export default function CommunauteView({
       <div
         style={{
           ...(featured ? s.featuredCard : s.card),
-          opacity: isDismissed ? 0.45 : 1,
-          transition: 'opacity 0.2s',
         }}
         className={featured ? undefined : 'glass-card'}
       >
@@ -419,9 +416,6 @@ export default function CommunauteView({
           <span style={{ fontSize: '13px', color: 'var(--text-3)', flex: 1 }}>
             {dismissedCount} groupe{dismissedCount > 1 ? 's' : ''} masqué{dismissedCount > 1 ? 's' : ''}
           </span>
-          <button onClick={() => setShowDismissed(v => !v)} style={s.showHiddenBtn}>
-            {showDismissed ? 'Masquer' : 'Voir'}
-          </button>
           <button
             onClick={() => {
               setMemberships(prev => {
