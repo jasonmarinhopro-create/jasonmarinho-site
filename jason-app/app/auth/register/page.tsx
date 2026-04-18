@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isDriingMember, setIsDriingMember] = useState(false)
+  const [newsletterConsent, setNewsletterConsent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -30,7 +31,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName, isDriingMember }),
+        body: JSON.stringify({ email, password, fullName, isDriingMember, newsletterConsent }),
       })
 
       const data = await res.json()
@@ -152,6 +153,17 @@ export default function RegisterPage() {
             )}
           </div>
 
+          {/* Newsletter consent */}
+          <label style={styles.consentLabel}>
+            <input
+              type="checkbox"
+              checked={newsletterConsent}
+              onChange={e => setNewsletterConsent(e.target.checked)}
+              style={styles.checkbox}
+            />
+            <span>Je souhaite recevoir les conseils et ressources LCD de Jason Marinho par email.</span>
+          </label>
+
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" className="btn-primary" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}>
@@ -257,5 +269,15 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.6,
     margin: 0,
     paddingLeft: '26px',
+  },
+  consentLabel: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '10px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    color: 'var(--text-3)',
+    userSelect: 'none' as const,
+    lineHeight: 1.55,
   },
 }

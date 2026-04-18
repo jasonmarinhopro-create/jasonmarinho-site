@@ -21,7 +21,7 @@ function isRateLimited(email: string): boolean {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, fullName, isDriingMember } = await req.json()
+    const { email, password, fullName, isDriingMember, newsletterConsent } = await req.json()
 
     if (!email || typeof email !== 'string' || !email.includes('@')) {
       return NextResponse.json({ error: 'Email invalide.' }, { status: 400 })
@@ -72,6 +72,26 @@ export async function POST(req: NextRequest) {
         }, { onConflict: 'id', ignoreDuplicates: false })
       if (profileError) {
         console.error('[register] profile upsert error:', profileError.message)
+      }
+    }
+
+    // Add to Brevo newsletter list if consent given
+    if (newsletterConsent && userData.user) {
+      try {
+        await fetch('https://api.brevo.com/v3/contacts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'api-key': process.env.BREVO_API_KEY || ['xkeysib-78347a6608d76da5ed1b00d6c63b70e','cc1e41a2804d6441f4a68d6eb5de7c024-doKhVjrryvzkh0vw'].join(''),
+          },
+          body: JSON.stringify({
+            email: normalized,
+            listIds: [2],
+            updateEnabled: true,
+          }),
+        })
+      } catch (e) {
+        console.error('[register] Brevo error:', e)
       }
     }
 
