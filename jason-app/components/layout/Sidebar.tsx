@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
-  FacebookLogo, CaretDown, Sparkle, House, ChartBar,
+  FacebookLogo, CaretDown, Sparkle, House, ChartBar, CalendarBlank,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -35,6 +35,7 @@ const navGroups = [
       { href: '/dashboard/logements',   label: 'Mes Logements',     icon: House },
       { href: '/dashboard/voyageurs',   label: 'Mes Voyageurs',     icon: Users },
       { href: '/dashboard/revenus',     label: 'Revenus',           icon: ChartBar },
+      { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
     ],
   },
   {
