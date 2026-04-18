@@ -112,10 +112,20 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     // Financier — pré-rempli selon les méthodes de paiement du logement
     montant_loyer: sejour.montant ?? 0,
     montant_caution: 0,
-    modalites_paiement: initialLogement?.methodes_paiement === 'stripe' ? 'Paiement en ligne (Stripe)'
-      : initialLogement?.methodes_paiement === 'les_deux' ? 'Paiement en ligne (Stripe) ou virement bancaire'
-      : 'Virement bancaire',
-    stripe_payment_enabled: initialLogement?.methodes_paiement === 'stripe' || initialLogement?.methodes_paiement === 'les_deux',
+    ...(() => {
+      const labels: Record<string, string> = {
+        virement: 'Virement bancaire', stripe: 'Paiement en ligne (Stripe)',
+        especes: 'Espèces', cheque: 'Chèque', paypal: 'PayPal',
+        airbnb: 'Airbnb / Booking (plateforme)', carte: 'Carte bancaire',
+        les_deux: 'Virement bancaire ou paiement en ligne (Stripe)',
+      }
+      const m = initialLogement?.methodes_paiement ?? 'virement'
+      const parts = m.split(',').map((s: string) => s.trim()).filter(Boolean)
+      return {
+        stripe_payment_enabled: parts.includes('stripe') || m === 'les_deux',
+        modalites_paiement: parts.map((p: string) => labels[p] ?? p).join(', ') || 'Virement bancaire',
+      }
+    })(),
 
     // Clauses — pré-remplies depuis la fiche logement si disponible
     conditions_annulation: initialLogement?.conditions_annulation ?? DEFAULT_ANNULATION,
@@ -129,9 +139,21 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
   }
 
   function paymentFieldsFromLogement(methodes: string | null | undefined) {
-    if (methodes === 'stripe') return { stripe_payment_enabled: true, modalites_paiement: 'Paiement en ligne (Stripe)' }
-    if (methodes === 'les_deux') return { stripe_payment_enabled: true, modalites_paiement: 'Paiement en ligne (Stripe) ou virement bancaire' }
-    return { stripe_payment_enabled: false, modalites_paiement: 'Virement bancaire' }
+    const labels: Record<string, string> = {
+      virement: 'Virement bancaire',
+      stripe: 'Paiement en ligne (Stripe)',
+      especes: 'Espèces',
+      cheque: 'Chèque',
+      paypal: 'PayPal',
+      airbnb: 'Airbnb / Booking (plateforme)',
+      carte: 'Carte bancaire',
+      les_deux: 'Virement bancaire ou paiement en ligne (Stripe)',
+    }
+    if (!methodes) return { stripe_payment_enabled: false, modalites_paiement: 'Virement bancaire' }
+    const parts = methodes.split(',').map(s => s.trim()).filter(Boolean)
+    const hasStripe = parts.includes('stripe') || methodes === 'les_deux'
+    const modalites = parts.map(p => labels[p] ?? p).join(', ')
+    return { stripe_payment_enabled: hasStripe, modalites_paiement: modalites || 'Virement bancaire' }
   }
 
   function selectLogement(l: LogementOption) {
