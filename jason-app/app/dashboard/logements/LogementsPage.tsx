@@ -21,6 +21,7 @@ type Logement = {
   conditions_annulation: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
+  methodes_paiement: string | null
 }
 
 interface Props {
@@ -38,6 +39,7 @@ function emptyForm(): LogementData {
     conditions_annulation: DEFAULT_ANNULATION,
     animaux_acceptes: false,
     fumeur_accepte: false,
+    methodes_paiement: 'virement',
   }
 }
 
@@ -74,6 +76,7 @@ export default function LogementsPage({ logements: initial }: Props) {
       conditions_annulation: l.conditions_annulation ?? DEFAULT_ANNULATION,
       animaux_acceptes: l.animaux_acceptes,
       fumeur_accepte: l.fumeur_accepte,
+      methodes_paiement: l.methodes_paiement ?? 'virement',
     })
     setEditing(l)
     setError('')
@@ -114,6 +117,7 @@ export default function LogementsPage({ logements: initial }: Props) {
           conditions_annulation: form.conditions_annulation ?? null,
           animaux_acceptes: form.animaux_acceptes,
           fumeur_accepte: form.fumeur_accepte,
+          methodes_paiement: form.methodes_paiement ?? 'virement',
         }
         setLogements(prev => [newLogement, ...prev])
         setSuccess('Logement créé !')
@@ -132,6 +136,7 @@ export default function LogementsPage({ logements: initial }: Props) {
           conditions_annulation: form.conditions_annulation ?? null,
           animaux_acceptes: form.animaux_acceptes,
           fumeur_accepte: form.fumeur_accepte,
+          methodes_paiement: form.methodes_paiement ?? 'virement',
         } : l))
         setSuccess('Modifications enregistrées !')
       }
@@ -210,6 +215,9 @@ export default function LogementsPage({ logements: initial }: Props) {
                   <span style={chip}>{l.capacite_max} pers.</span>
                   {l.animaux_acceptes && <span style={chip}>Animaux ✓</span>}
                   {l.fumeur_accepte && <span style={chip}>Fumeur ✓</span>}
+                  <span style={{ ...chip, background: 'rgba(162,155,254,0.08)', border: '1px solid rgba(162,155,254,0.2)', color: '#a29bfe' }}>
+                    {l.methodes_paiement === 'stripe' ? '💳 Stripe' : l.methodes_paiement === 'les_deux' ? '💳 + 🏦 Les deux' : '🏦 Virement'}
+                  </span>
                 </div>
                 {l.description && (
                   <p style={cardDesc}>{l.description.slice(0, 80)}{l.description.length > 80 ? '…' : ''}</p>
@@ -290,6 +298,37 @@ export default function LogementsPage({ logements: initial }: Props) {
               <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' as const }}>
                 <Toggle label="Animaux admis" value={form.animaux_acceptes} onChange={v => set('animaux_acceptes', v)} />
                 <Toggle label="Tabac autorisé" value={form.fumeur_accepte} onChange={v => set('fumeur_accepte', v)} />
+              </div>
+              <div style={fieldRow}>
+                <label style={label}>Méthodes de paiement acceptées</label>
+                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '8px' }}>
+                  {[
+                    { value: 'virement', label: 'Virement bancaire uniquement', desc: 'Le voyageur paie par virement (IBAN affiché dans le contrat).' },
+                    { value: 'stripe',   label: 'Paiement en ligne (Stripe) uniquement', desc: 'Le voyageur paie par carte bancaire via Stripe après signature.' },
+                    { value: 'les_deux', label: 'Les deux (virement + Stripe)', desc: 'Le voyageur choisit entre virement bancaire ou paiement Stripe.' },
+                  ].map(opt => (
+                    <label key={opt.value} style={{
+                      display: 'flex', alignItems: 'flex-start', gap: '10px',
+                      padding: '10px 12px', borderRadius: '10px', cursor: 'pointer',
+                      background: form.methodes_paiement === opt.value ? 'rgba(52,211,153,0.08)' : 'var(--surface)',
+                      border: `1px solid ${form.methodes_paiement === opt.value ? 'rgba(52,211,153,0.3)' : 'var(--border)'}`,
+                      transition: 'all 0.15s',
+                    }}>
+                      <input
+                        type="radio"
+                        name="methodes_paiement"
+                        value={opt.value}
+                        checked={form.methodes_paiement === opt.value}
+                        onChange={() => set('methodes_paiement', opt.value)}
+                        style={{ marginTop: '3px', accentColor: '#34D399', flexShrink: 0 }}
+                      />
+                      <div>
+                        <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: form.methodes_paiement === opt.value ? '#34D399' : 'var(--text)' }}>{opt.label}</p>
+                        <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5 }}>{opt.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
               </div>
               {error && (
                 <div style={errorBox}>

@@ -14,6 +14,7 @@ export type LogementData = {
   conditions_annulation?: string
   animaux_acceptes: boolean
   fumeur_accepte: boolean
+  methodes_paiement?: string
 }
 
 export type Logement = LogementData & {
