@@ -3,15 +3,16 @@
 import { useState, useMemo, useTransition } from 'react'
 import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
-  CalendarBlank, Clock, X, House, ArrowRight,
+  CalendarBlank, Clock, X, ArrowRight,
 } from '@phosphor-icons/react'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent } from './actions'
-import type { ContractEvent } from './page'
+import type { ContractEvent, IcalFeed, IcalEvent } from './page'
 
 export interface CalEvent {
   id: string
   title: string
   date: string
+  end_date: string | null
   start_time: string | null
   end_time: string | null
   description: string | null
@@ -21,6 +22,10 @@ export interface CalEvent {
 interface Props {
   events: CalEvent[]
   contractEvents: ContractEvent[]
+  icalFeeds: IcalFeed[]
+  icalEvents: IcalEvent[]
+  icalToken: string | null
+  appUrl: string
 }
 
 const CAT = {
@@ -34,7 +39,7 @@ const CAT = {
 
 type CatKey = keyof typeof CAT
 
-const DAYS_FR = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+const DAYS_FR   = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 const MONTHS_FR = [
   'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
   'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
@@ -48,13 +53,12 @@ function todayString() {
 }
 
 function buildCalendarDays(year: number, month: number) {
-  const firstDay = new Date(year, month, 1)
+  const firstDay    = new Date(year, month, 1)
   const daysInMonth = new Date(year, month + 1, 0).getDate()
-  let startDow = firstDay.getDay() - 1 // Mon=0 … Sun=6
+  let startDow = firstDay.getDay() - 1
   if (startDow < 0) startDow = 6
 
   const cells: { date: string; day: number; inMonth: boolean }[] = []
-
   for (let i = startDow; i > 0; i--) {
     const d = new Date(year, month, 1 - i)
     cells.push({ date: toStr(d.getFullYear(), d.getMonth(), d.getDate()), day: d.getDate(), inMonth: false })
@@ -79,66 +83,174 @@ function formatDayLong(dateStr: string) {
   })
 }
 
-function fmtTime(t: string) { return t.slice(0, 5) }
+function fmtDate(dateStr: string) {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+}
 
+function fmtTime(t: string) { return t.slice(0, 5) }
 function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1) }
 
-// ─── Component ─────────────────────────────────────────────────────────────
+// ─── TimeSelect ─────────────────────────────────────────────────────────────
 
-export default function CalendrierView({ events: initial, contractEvents }: Props) {
+const HOURS = Array.from({ length: 24 }, (_, i) => pad2(i))
+const MINS  = ['00', '15', '30', '45']
+
+function TimeSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const parts = value ? value.split(':') : ['', '']
+  const hVal  = parts[0] ?? ''
+  const mVal  = parts[1]?.slice(0, 2) ?? ''
+
+  function update(newH: string, newM: string) {
+    if (!newH && !newM) { onChange(''); return }
+    onChange(`${newH || '00'}:${newM || '00'}`)
+  }
+
+  return (
+    <div style={{ display: 'flex', gap: '3px', alignItems: 'center', flex: 1 }}>
+      <div style={ts.wrap}>
+        <select
+          value={hVal}
+          onChange={e => update(e.target.value, mVal)}
+          style={ts.sel}
+        >
+          <option value="">hh</option>
+          {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
+        </select>
+      </div>
+      <span style={ts.colon}>:</span>
+      <div style={ts.wrap}>
+        <select
+          value={mVal}
+          onChange={e => update(hVal, e.target.value)}
+          style={ts.sel}
+        >
+          <option value="">mm</option>
+          {MINS.map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
+      </div>
+    </div>
+  )
+}
+
+const ts: Record<string, React.CSSProperties> = {
+  wrap: {
+    position: 'relative',
+    flex: 1,
+    display: 'flex',
+  },
+  sel: {
+    flex: 1,
+    padding: '7px 8px',
+    fontSize: '13px',
+    fontWeight: 500,
+    borderRadius: '8px',
+    border: '1px solid var(--border-2)',
+    background: 'var(--surface)',
+    color: 'var(--text)',
+    cursor: 'pointer',
+    appearance: 'none' as const,
+    WebkitAppearance: 'none' as const,
+    textAlign: 'center',
+    outline: 'none',
+    width: '100%',
+  },
+  colon: {
+    color: 'var(--text-muted)',
+    fontSize: '14px',
+    fontWeight: 700,
+    lineHeight: 1,
+    flexShrink: 0,
+    userSelect: 'none',
+  },
+}
+
+// ─── Component ───────────────────────────────────────────────────────────────
+
+export default function CalendrierView({
+  events: initial,
+  contractEvents,
+}: Props) {
   const TODAY = todayString()
-  const now = new Date()
+  const now   = new Date()
 
-  const [year, setYear]     = useState(now.getFullYear())
-  const [month, setMonth]   = useState(now.getMonth())
+  const [year,     setYear]     = useState(now.getFullYear())
+  const [month,    setMonth]    = useState(now.getMonth())
   const [selected, setSelected] = useState(TODAY)
-  const [events, setEvents] = useState<CalEvent[]>(initial)
+  const [events,   setEvents]   = useState<CalEvent[]>(initial)
   const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing]   = useState<CalEvent | null>(null)
+  const [editing,  setEditing]  = useState<CalEvent | null>(null)
   const [isPending, startT]     = useTransition()
 
   // form fields
-  const [fTitle, setFTitle] = useState('')
-  const [fStart, setFStart] = useState('')
-  const [fEnd,   setFEnd]   = useState('')
-  const [fCat,   setFCat]   = useState<CatKey>('note')
-  const [fDesc,  setFDesc]  = useState('')
+  const [fTitle,   setFTitle]   = useState('')
+  const [fStart,   setFStart]   = useState('')
+  const [fEnd,     setFEnd]     = useState('')
+  const [fCat,     setFCat]     = useState<CatKey>('note')
+  const [fDesc,    setFDesc]    = useState('')
+  const [fMulti,   setFMulti]   = useState(false)
+  const [fEndDate, setFEndDate] = useState('')
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
 
-  // ── event index by date
+  // ── event index by date — multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
     const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[] }> = {}
+
     events.forEach(e => {
-      ;(m[e.date] ??= { custom: [], contracts: [] }).custom.push(e)
+      const startD = e.date
+      const endD   = e.end_date ?? e.date
+      const [sy, sm, sd] = startD.split('-').map(Number)
+      const [ey, em, ed] = endD.split('-').map(Number)
+      const cur    = new Date(sy, sm - 1, sd)
+      const endDt  = new Date(ey, em - 1, ed)
+      while (cur <= endDt) {
+        const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
+        ;(m[ds] ??= { custom: [], contracts: [] }).custom.push(e)
+        cur.setDate(cur.getDate() + 1)
+      }
     })
+
     contractEvents.forEach(c => {
       ;(m[c.date] ??= { custom: [], contracts: [] }).contracts.push(c)
     })
     return m
   }, [events, contractEvents])
 
-  // ── selected day merged events
+  // ── selected day merged events (deduplicated by id)
   const selectedAll = useMemo(() => {
-    const day = byDate[selected] ?? { custom: [], contracts: [] }
+    const day  = byDate[selected] ?? { custom: [], contracts: [] }
+    const seen = new Set<string>()
     type Merged = CalEvent & { isContract?: boolean }
-    const list: Merged[] = [
-      ...day.contracts.map(c => ({
-        id: c.id, title: c.title, date: c.date,
-        start_time: null, end_time: null,
-        description: c.logement_nom,
-        category: c.type,
-        isContract: true,
-      })),
-      ...day.custom,
-    ]
+    const list: Merged[] = []
+
+    day.contracts.forEach(c => {
+      if (!seen.has(c.id)) {
+        seen.add(c.id)
+        list.push({
+          id: c.id, title: c.title, date: c.date, end_date: null,
+          start_time: null, end_time: null,
+          description: c.logement_nom,
+          category: c.type,
+          isContract: true,
+        })
+      }
+    })
+
+    day.custom.forEach(e => {
+      if (!seen.has(e.id)) {
+        seen.add(e.id)
+        list.push(e)
+      }
+    })
+
     return list.sort((a, b) =>
       (a.start_time ?? '99:99').localeCompare(b.start_time ?? '99:99')
     )
   }, [byDate, selected])
 
-  // ── upcoming (next 7 days, for mini strip)
+  // ── upcoming (next 14 days)
   const upcoming = useMemo(() => {
     const t = new Date(); t.setHours(0, 0, 0, 0)
     const end = new Date(t); end.setDate(t.getDate() + 14)
@@ -154,7 +266,7 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
       .slice(0, 6)
   }, [events, contractEvents])
 
-  // ── month navigation
+  // ── month nav
   function prevMonth() {
     if (month === 0) { setYear(y => y - 1); setMonth(11) }
     else setMonth(m => m - 1)
@@ -171,7 +283,9 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
   // ── form helpers
   function openAdd() {
     setEditing(null)
-    setFTitle(''); setFStart(''); setFEnd(''); setFCat('note'); setFDesc('')
+    setFTitle(''); setFStart(''); setFEnd('')
+    setFCat('note'); setFDesc('')
+    setFMulti(false); setFEndDate('')
     setShowForm(true)
   }
   function openEdit(ev: CalEvent) {
@@ -181,6 +295,9 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
     setFEnd(ev.end_time ?? '')
     setFCat((ev.category as CatKey) || 'note')
     setFDesc(ev.description ?? '')
+    const hasMulti = !!ev.end_date && ev.end_date !== ev.date
+    setFMulti(hasMulti)
+    setFEndDate(ev.end_date ?? '')
     setShowForm(true)
   }
   function cancelForm() { setShowForm(false); setEditing(null) }
@@ -190,10 +307,11 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
     startT(async () => {
       if (editing) {
         const res = await updateCalendarEvent(editing.id, {
-          title: fTitle.trim(),
+          title:      fTitle.trim(),
+          end_date:   fMulti && fEndDate ? fEndDate : null,
           start_time: fStart || null,
-          end_time: fEnd || null,
-          category: fCat,
+          end_time:   fEnd   || null,
+          category:   fCat,
           description: fDesc.trim() || null,
         })
         if (!res.error && res.event) {
@@ -201,11 +319,12 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
         }
       } else {
         const res = await createCalendarEvent({
-          title: fTitle.trim(),
-          date: selected,
+          title:      fTitle.trim(),
+          date:       selected,
+          end_date:   fMulti && fEndDate ? fEndDate : null,
           start_time: fStart || null,
-          end_time: fEnd || null,
-          category: fCat,
+          end_time:   fEnd   || null,
+          category:   fCat,
           description: fDesc.trim() || null,
         })
         if (!res.error && res.event) {
@@ -237,6 +356,10 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
         .icon-btn { transition: all 0.12s; cursor: pointer; }
         .icon-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; }
         .today-num { background: var(--accent-text); color: var(--bg); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
+        .time-sel:hover { border-color: var(--border-2) !important; }
+        .time-sel:focus { border-color: var(--accent-text) !important; outline: none; box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 0,76,63), 0.12); }
+        .multi-toggle { transition: all 0.15s; cursor: pointer; }
+        .multi-toggle:hover { background: var(--surface-2) !important; }
         @media (max-width: 800px) {
           .cal-layout { flex-direction: column !important; }
           .cal-side   { width: 100% !important; border-left: none !important; border-top: 1px solid var(--border) !important; max-height: 50vh; overflow-y: auto; }
@@ -292,26 +415,24 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
 
         {/* Calendar grid */}
         <div style={s.gridWrap}>
-          {/* Day headers */}
           <div style={s.dayHeaders}>
-            {DAYS_FR.map(d => (
-              <div key={d} style={s.dayHeader}>{d}</div>
-            ))}
+            {DAYS_FR.map(d => <div key={d} style={s.dayHeader}>{d}</div>)}
           </div>
-
-          {/* Grid */}
           <div style={s.grid}>
             {cells.map(({ date, day, inMonth }) => {
-              const isToday    = date === TODAY
-              const isSel      = date === selected
-              const dayEvents  = byDate[date]
-              const allEvts    = [
+              const isToday   = date === TODAY
+              const isSel     = date === selected
+              const dayEvents = byDate[date]
+              const allEvts   = [
                 ...(dayEvents?.contracts ?? []).map(c => ({ id: c.id, category: c.type, title: c.title })),
                 ...(dayEvents?.custom ?? []).map(e => ({ id: e.id, category: e.category, title: e.title })),
               ]
-              const visible    = allEvts.slice(0, 2)
-              const extra      = allEvts.length - visible.length
-              const isWeekend  = (() => { const dow = new Date(date).getDay(); return dow === 0 || dow === 6 })()
+              // deduplicate (multi-day events appear once per cell)
+              const seen = new Set<string>()
+              const uniq = allEvts.filter(e => { if (seen.has(e.id)) return false; seen.add(e.id); return true })
+              const visible  = uniq.slice(0, 2)
+              const extra    = uniq.length - visible.length
+              const isWeekend = (() => { const dow = new Date(date).getDay(); return dow === 0 || dow === 6 })()
 
               return (
                 <div
@@ -338,15 +459,15 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
                       ? <span className="today-num">{day}</span>
                       : <span style={{ ...s.dayNum, color: isWeekend && inMonth ? 'var(--text-muted)' : 'var(--text-2)' }}>{day}</span>
                     }
-                    {allEvts.length > 0 && (
+                    {uniq.length > 0 && (
                       <span style={s.dotRow}>
-                        {allEvts.slice(0, 3).map((e, i) => (
-                          <span key={i} style={{
+                        {uniq.slice(0, 3).map((e, i) => (
+                          <span key={`${e.id}-${i}`} style={{
                             ...s.dot,
                             background: CAT[e.category as CatKey]?.color ?? CAT.note.color,
                           }} />
                         ))}
-                        {allEvts.length > 3 && <span style={{ ...s.dot, background: 'var(--text-muted)' }} />}
+                        {uniq.length > 3 && <span style={{ ...s.dot, background: 'var(--text-muted)' }} />}
                       </span>
                     )}
                   </div>
@@ -359,9 +480,7 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
                         </div>
                       )
                     })}
-                    {extra > 0 && (
-                      <span style={s.extraChip}>+{extra}</span>
-                    )}
+                    {extra > 0 && <span style={s.extraChip}>+{extra}</span>}
                   </div>
                 </div>
               )
@@ -371,22 +490,15 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
 
         {/* ── Side panel */}
         <div className="cal-side" style={s.side}>
-          {/* Day header */}
           <div style={s.sideHead}>
             <div style={s.sideHeadLeft}>
               <div style={s.sideDow}>{capitalize(formatDayLong(selected).split(' ')[0])}</div>
               <div style={s.sideDate}>{formatDayLong(selected).split(' ').slice(1).join(' ')}</div>
             </div>
-            {!showForm && (
-              <button onClick={openAdd} style={s.addDayBtn} className="icon-btn" title="Ajouter">
-                <Plus size={15} weight="bold" />
-              </button>
-            )}
-            {showForm && (
-              <button onClick={cancelForm} style={s.addDayBtn} className="icon-btn" title="Fermer">
-                <X size={15} />
-              </button>
-            )}
+            {!showForm
+              ? <button onClick={openAdd} style={s.addDayBtn} className="icon-btn" title="Ajouter"><Plus size={15} weight="bold" /></button>
+              : <button onClick={cancelForm} style={s.addDayBtn} className="icon-btn" title="Fermer"><X size={15} /></button>
+            }
           </div>
 
           {/* ── Form */}
@@ -402,25 +514,44 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
                 style={s.fInput}
               />
 
+              {/* Time row */}
               <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                <Clock size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                <input
-                  type="time"
-                  value={fStart}
-                  onChange={e => setFStart(e.target.value)}
-                  className="input-field"
-                  style={s.fTime}
-                />
-                <ArrowRight size={13} style={{ color: 'var(--text-3)', flexShrink: 0 }} />
-                <input
-                  type="time"
-                  value={fEnd}
-                  onChange={e => setFEnd(e.target.value)}
-                  className="input-field"
-                  style={s.fTime}
-                />
+                <Clock size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                <TimeSelect value={fStart} onChange={setFStart} />
+                <ArrowRight size={12} style={{ color: 'var(--text-3)', flexShrink: 0 }} />
+                <TimeSelect value={fEnd} onChange={setFEnd} />
               </div>
 
+              {/* Multi-day toggle */}
+              <button
+                className="multi-toggle"
+                onClick={() => { setFMulti(v => !v); if (!fEndDate) setFEndDate(selected) }}
+                style={{
+                  ...s.multiToggle,
+                  background: fMulti ? 'rgba(96,165,250,0.1)' : 'var(--surface)',
+                  border: `1.5px solid ${fMulti ? 'rgba(96,165,250,0.4)' : 'var(--border)'}`,
+                  color: fMulti ? '#60a5fa' : 'var(--text-3)',
+                }}
+              >
+                <span style={s.multiDot} />
+                Plusieurs jours
+              </button>
+
+              {fMulti && (
+                <div style={s.multiRow}>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', flexShrink: 0 }}>Jusqu'au</span>
+                  <input
+                    type="date"
+                    value={fEndDate}
+                    min={editing ? editing.date : selected}
+                    onChange={e => setFEndDate(e.target.value)}
+                    className="input-field"
+                    style={s.fDateInput}
+                  />
+                </div>
+              )}
+
+              {/* Category chips */}
               <div style={s.catRow}>
                 {(Object.entries(CAT) as [CatKey, (typeof CAT)[CatKey]][]).map(([key, cfg]) => (
                   <button
@@ -449,9 +580,7 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
               />
 
               <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                <button className="btn-ghost" onClick={cancelForm} style={s.fCancel}>
-                  Annuler
-                </button>
+                <button className="btn-ghost" onClick={cancelForm} style={s.fCancel}>Annuler</button>
                 <button
                   className="btn-primary"
                   onClick={handleSave}
@@ -479,16 +608,14 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
                 </div>
               ) : (
                 selectedAll.map((ev: any) => {
-                  const cat = CAT[ev.category as CatKey] ?? CAT.note
+                  const cat        = CAT[ev.category as CatKey] ?? CAT.note
                   const isContract = !!ev.isContract
+                  const isMulti    = !!ev.end_date && ev.end_date !== ev.date
                   return (
                     <div
                       key={ev.id}
                       className="evt-row"
-                      style={{
-                        ...s.evtCard,
-                        borderLeft: `3px solid ${cat.color}`,
-                      }}
+                      style={{ ...s.evtCard, borderLeft: `3px solid ${cat.color}` }}
                     >
                       <div style={s.evtCardTop}>
                         <span style={s.evtTitle}>{ev.title}</span>
@@ -498,20 +625,10 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
                           )}
                           {!isContract && (
                             <>
-                              <button
-                                className="icon-btn"
-                                onClick={() => openEdit(ev as CalEvent)}
-                                style={s.iconBtn}
-                                title="Modifier"
-                              >
+                              <button className="icon-btn" onClick={() => openEdit(ev as CalEvent)} style={s.iconBtn} title="Modifier">
                                 <PencilSimple size={12} />
                               </button>
-                              <button
-                                className="icon-btn"
-                                onClick={() => handleDelete(ev.id)}
-                                style={{ ...s.iconBtn, color: 'var(--error, #f87171)' }}
-                                title="Supprimer"
-                              >
+                              <button className="icon-btn" onClick={() => handleDelete(ev.id)} style={{ ...s.iconBtn, color: 'var(--error, #f87171)' }} title="Supprimer">
                                 <Trash size={12} />
                               </button>
                             </>
@@ -519,7 +636,12 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
+                        {isMulti && (
+                          <span style={s.spanBadge}>
+                            {fmtDate(ev.date)} → {fmtDate(ev.end_date)}
+                          </span>
+                        )}
                         {ev.start_time && (
                           <span style={s.evtTime}>
                             <Clock size={11} />
@@ -544,7 +666,7 @@ export default function CalendrierView({ events: initial, contractEvents }: Prop
   )
 }
 
-// ─── Styles ────────────────────────────────────────────────────────────────
+// ─── Styles ──────────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
   root: {
@@ -554,8 +676,6 @@ const s: Record<string, React.CSSProperties> = {
     gap: '16px',
     minHeight: 0,
   },
-
-  // top bar
   topBar: {
     display: 'flex',
     alignItems: 'center',
@@ -563,11 +683,7 @@ const s: Record<string, React.CSSProperties> = {
     gap: '16px',
     flexWrap: 'wrap',
   },
-  monthNav: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  },
+  monthNav: { display: 'flex', alignItems: 'center', gap: '10px' },
   monthTitle: {
     fontSize: '22px',
     fontWeight: 600,
@@ -579,12 +695,9 @@ const s: Record<string, React.CSSProperties> = {
     textAlign: 'center',
   },
   navBtn: {
-    width: '34px',
-    height: '34px',
+    width: '34px', height: '34px',
     padding: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
     borderRadius: '9px',
     border: '1px solid var(--border-2)',
     background: 'var(--surface)',
@@ -603,324 +716,185 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
   },
   addBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '7px',
+    display: 'flex', alignItems: 'center', gap: '7px',
     padding: '9px 18px',
-    fontSize: '13px',
-    fontWeight: 600,
+    fontSize: '13px', fontWeight: 600,
     borderRadius: '10px',
     border: 'none',
     cursor: 'pointer',
   },
-
-  // upcoming strip
-  strip: {
-    display: 'flex',
-    gap: '6px',
-    flexWrap: 'wrap',
-    padding: '0',
-  },
+  strip: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
   stripChip: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
+    display: 'flex', alignItems: 'center', gap: '6px',
     padding: '5px 12px',
     borderRadius: '100px',
     border: '1px solid',
     background: 'var(--surface)',
     cursor: 'pointer',
-    textDecoration: 'none',
     maxWidth: '200px',
     overflow: 'hidden',
     transition: 'all 0.12s',
   },
-
-  // layout
   layout: {
     display: 'flex',
-    gap: '0',
     background: 'var(--card-bg)',
     border: '1px solid var(--border)',
     borderRadius: '16px',
     overflow: 'hidden',
     minHeight: '560px',
   },
-
-  // grid
-  gridWrap: {
-    flex: 1,
-    minWidth: 0,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  dayHeaders: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(7, 1fr)',
-    borderBottom: '1px solid var(--border)',
-  },
+  gridWrap: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' },
+  dayHeaders: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid var(--border)' },
   dayHeader: {
     padding: '10px 8px',
     textAlign: 'center',
-    fontSize: '11px',
-    fontWeight: 600,
+    fontSize: '11px', fontWeight: 600,
     letterSpacing: '0.7px',
     textTransform: 'uppercase',
     color: 'var(--text-muted)',
   },
-  grid: {
-    flex: 1,
-    display: 'grid',
-    gridTemplateColumns: 'repeat(7, 1fr)',
-    gap: '0',
-  },
+  grid: { flex: 1, display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' },
   cell: {
     minHeight: '92px',
     padding: '8px',
     borderRight: '1px solid var(--border)',
     borderBottom: '1px solid var(--border)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
+    display: 'flex', flexDirection: 'column', gap: '4px',
     outlineOffset: '-1px',
   },
   cellTop: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     marginBottom: '2px',
   },
-  dayNum: {
-    fontSize: '13px',
-    fontWeight: 500,
-    lineHeight: 1,
-  },
-  dotRow: {
-    display: 'flex',
-    gap: '2px',
-    alignItems: 'center',
-  },
-  dot: {
-    width: '5px',
-    height: '5px',
-    borderRadius: '50%',
-    flexShrink: 0,
-  },
-  pillWrap: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2px',
-  },
+  dayNum: { fontSize: '13px', fontWeight: 500, lineHeight: 1 },
+  dotRow: { display: 'flex', gap: '2px', alignItems: 'center' },
+  dot: { width: '5px', height: '5px', borderRadius: '50%', flexShrink: 0 },
+  pillWrap: { display: 'flex', flexDirection: 'column', gap: '2px' },
   pill: {
-    display: 'flex',
-    alignItems: 'center',
+    display: 'flex', alignItems: 'center',
     padding: '2px 6px 2px 5px',
-    borderRadius: '4px',
-    borderLeft: '2.5px solid',
+    borderRadius: '4px', borderLeft: '2.5px solid',
     overflow: 'hidden',
   },
   pillText: {
-    fontSize: '11px',
-    fontWeight: 500,
-    color: 'var(--text-2)',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    maxWidth: '100%',
+    fontSize: '11px', fontWeight: 500, color: 'var(--text-2)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%',
   },
-  extraChip: {
-    fontSize: '10px',
-    fontWeight: 600,
-    color: 'var(--text-muted)',
-    padding: '1px 4px',
-  },
+  extraChip: { fontSize: '10px', fontWeight: 600, color: 'var(--text-muted)', padding: '1px 4px' },
 
-  // side panel
+  // side
   side: {
-    width: '290px',
-    flexShrink: 0,
+    width: '290px', flexShrink: 0,
     borderLeft: '1px solid var(--border)',
-    display: 'flex',
-    flexDirection: 'column',
+    display: 'flex', flexDirection: 'column',
     overflowY: 'auto',
   },
   sideHead: {
     padding: '18px 18px 14px',
     borderBottom: '1px solid var(--border)',
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: '8px',
-    position: 'sticky',
-    top: 0,
-    background: 'var(--card-bg)',
-    zIndex: 1,
+    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px',
+    position: 'sticky', top: 0,
+    background: 'var(--card-bg)', zIndex: 1,
   },
-  sideHeadLeft: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1px',
-  },
+  sideHeadLeft: { display: 'flex', flexDirection: 'column', gap: '1px' },
   sideDow: {
-    fontSize: '16px',
-    fontWeight: 600,
-    color: 'var(--text)',
+    fontSize: '16px', fontWeight: 600, color: 'var(--text)',
     fontFamily: 'Fraunces, serif',
-    textTransform: 'capitalize',
-    letterSpacing: '-0.2px',
+    textTransform: 'capitalize', letterSpacing: '-0.2px',
   },
-  sideDate: {
-    fontSize: '13px',
-    color: 'var(--text-muted)',
-    textTransform: 'capitalize',
-  },
+  sideDate: { fontSize: '13px', color: 'var(--text-muted)', textTransform: 'capitalize' },
   addDayBtn: {
-    width: '30px',
-    height: '30px',
+    width: '30px', height: '30px',
     borderRadius: '8px',
     border: '1px solid var(--border-2)',
     background: 'var(--surface)',
     color: 'var(--text-2)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    flexShrink: 0,
-    padding: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', flexShrink: 0, padding: 0,
   },
 
   // form
   form: {
     padding: '16px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
+    display: 'flex', flexDirection: 'column', gap: '10px',
     borderBottom: '1px solid var(--border)',
   },
   fInput: {
-    width: '100%',
-    padding: '10px 12px',
-    fontSize: '14px',
-    fontWeight: 500,
-    borderRadius: '10px',
+    width: '100%', padding: '10px 12px',
+    fontSize: '14px', fontWeight: 500, borderRadius: '10px',
   },
-  fTime: {
-    flex: 1,
-    padding: '8px 10px',
-    fontSize: '13px',
+  multiToggle: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+    padding: '7px 12px',
     borderRadius: '8px',
-  },
-  catRow: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '5px',
-  },
-  catChip: {
-    padding: '4px 11px',
-    borderRadius: '100px',
-    fontSize: '12px',
-    fontWeight: 500,
+    fontSize: '12px', fontWeight: 500,
     cursor: 'pointer',
-  },
-  fTextarea: {
-    width: '100%',
-    padding: '10px 12px',
-    fontSize: '13px',
-    borderRadius: '10px',
-    resize: 'vertical',
-    minHeight: '72px',
-  },
-  fCancel: {
-    padding: '8px 14px',
-    fontSize: '13px',
-  },
-  fSave: {
-    padding: '8px 18px',
-    fontSize: '13px',
-    border: 'none',
-    cursor: 'pointer',
-    borderRadius: '9px',
-  },
-
-  // events
-  evtList: {
-    padding: '12px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    flex: 1,
-  },
-  evtCard: {
-    padding: '12px 14px',
-    borderRadius: '10px',
-    border: '1px solid var(--border)',
-    background: 'var(--surface)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-  },
-  evtCardTop: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: '8px',
-  },
-  evtTitle: {
-    fontSize: '13px',
-    fontWeight: 600,
-    color: 'var(--text)',
-    lineHeight: 1.35,
-  },
-  evtTime: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    fontSize: '12px',
-    color: 'var(--text-muted)',
-    fontWeight: 500,
-  },
-  catLabel: {
-    fontSize: '11px',
-    fontWeight: 600,
-    letterSpacing: '0.4px',
-    textTransform: 'uppercase',
-  },
-  evtDesc: {
-    fontSize: '12px',
-    color: 'var(--text-2)',
-    margin: '2px 0 0',
-    lineHeight: 1.5,
-  },
-  autoBadge: {
-    fontSize: '10px',
-    fontWeight: 700,
-    letterSpacing: '0.5px',
-    padding: '2px 7px',
-    borderRadius: '100px',
-    flexShrink: 0,
     alignSelf: 'flex-start',
   },
-  iconBtn: {
-    width: '26px',
-    height: '26px',
-    borderRadius: '7px',
-    border: '1px solid var(--border)',
-    background: 'var(--surface)',
-    color: 'var(--text-3)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    padding: 0,
+  multiDot: {
+    width: '7px', height: '7px',
+    borderRadius: '2px',
+    background: 'currentColor',
     flexShrink: 0,
   },
+  multiRow: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+  },
+  fDateInput: {
+    flex: 1, padding: '7px 10px',
+    fontSize: '13px', borderRadius: '8px',
+  },
+  catRow: { display: 'flex', flexWrap: 'wrap', gap: '5px' },
+  catChip: {
+    padding: '4px 11px', borderRadius: '100px',
+    fontSize: '12px', fontWeight: 500, cursor: 'pointer',
+  },
+  fTextarea: {
+    width: '100%', padding: '10px 12px',
+    fontSize: '13px', borderRadius: '10px',
+    resize: 'vertical', minHeight: '72px',
+  },
+  fCancel: { padding: '8px 14px', fontSize: '13px' },
+  fSave:   { padding: '8px 18px', fontSize: '13px', border: 'none', cursor: 'pointer', borderRadius: '9px' },
+
+  // events
+  evtList: { padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 },
+  evtCard: {
+    padding: '12px 14px', borderRadius: '10px',
+    border: '1px solid var(--border)',
+    background: 'var(--surface)',
+    display: 'flex', flexDirection: 'column', gap: '5px',
+  },
+  evtCardTop: {
+    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px',
+  },
+  evtTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.35 },
+  spanBadge: {
+    fontSize: '11px', fontWeight: 500,
+    color: '#60a5fa',
+    background: 'rgba(96,165,250,0.1)',
+    padding: '2px 8px', borderRadius: '100px',
+  },
+  evtTime: {
+    display: 'flex', alignItems: 'center', gap: '4px',
+    fontSize: '12px', color: 'var(--text-muted)', fontWeight: 500,
+  },
+  catLabel: { fontSize: '11px', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' },
+  evtDesc: { fontSize: '12px', color: 'var(--text-2)', margin: '2px 0 0', lineHeight: 1.5 },
+  autoBadge: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+    padding: '2px 7px', borderRadius: '100px', flexShrink: 0, alignSelf: 'flex-start',
+  },
+  iconBtn: {
+    width: '26px', height: '26px', borderRadius: '7px',
+    border: '1px solid var(--border)',
+    background: 'var(--surface)', color: 'var(--text-3)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', padding: 0, flexShrink: 0,
+  },
   emptyState: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    padding: '32px 16px',
-    textAlign: 'center',
+    display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center',
+    flex: 1, padding: '32px 16px', textAlign: 'center',
   },
 }
