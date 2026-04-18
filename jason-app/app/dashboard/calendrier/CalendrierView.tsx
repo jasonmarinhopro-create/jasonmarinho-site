@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useMemo, useTransition } from 'react'
+import { useState, useMemo, useTransition, useRef, useEffect } from 'react'
 import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
-  CalendarBlank, Clock, X, ArrowRight,
+  CalendarBlank, Clock, X,
 } from '@phosphor-icons/react'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent } from './actions'
+import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import type { ContractEvent, IcalFeed, IcalEvent } from './page'
 
 export interface CalEvent {
@@ -91,80 +92,6 @@ function fmtDate(dateStr: string) {
 function fmtTime(t: string) { return t.slice(0, 5) }
 function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1) }
 
-// ─── TimeSelect ─────────────────────────────────────────────────────────────
-
-const HOURS = Array.from({ length: 24 }, (_, i) => pad2(i))
-const MINS  = ['00', '15', '30', '45']
-
-function TimeSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const parts = value ? value.split(':') : ['', '']
-  const hVal  = parts[0] ?? ''
-  const mVal  = parts[1]?.slice(0, 2) ?? ''
-
-  function update(newH: string, newM: string) {
-    if (!newH && !newM) { onChange(''); return }
-    onChange(`${newH || '00'}:${newM || '00'}`)
-  }
-
-  return (
-    <div style={{ display: 'flex', gap: '3px', alignItems: 'center', flex: 1 }}>
-      <div style={ts.wrap}>
-        <select
-          value={hVal}
-          onChange={e => update(e.target.value, mVal)}
-          style={ts.sel}
-        >
-          <option value="">hh</option>
-          {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
-        </select>
-      </div>
-      <span style={ts.colon}>:</span>
-      <div style={ts.wrap}>
-        <select
-          value={mVal}
-          onChange={e => update(hVal, e.target.value)}
-          style={ts.sel}
-        >
-          <option value="">mm</option>
-          {MINS.map(m => <option key={m} value={m}>{m}</option>)}
-        </select>
-      </div>
-    </div>
-  )
-}
-
-const ts: Record<string, React.CSSProperties> = {
-  wrap: {
-    position: 'relative',
-    flex: 1,
-    display: 'flex',
-  },
-  sel: {
-    flex: 1,
-    padding: '7px 8px',
-    fontSize: '13px',
-    fontWeight: 500,
-    borderRadius: '8px',
-    border: '1px solid var(--border-2)',
-    background: 'var(--surface)',
-    color: 'var(--text)',
-    cursor: 'pointer',
-    appearance: 'none' as const,
-    WebkitAppearance: 'none' as const,
-    textAlign: 'center',
-    outline: 'none',
-    width: '100%',
-  },
-  colon: {
-    color: 'var(--text-muted)',
-    fontSize: '14px',
-    fontWeight: 700,
-    lineHeight: 1,
-    flexShrink: 0,
-    userSelect: 'none',
-  },
-}
-
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function CalendrierView({
@@ -190,6 +117,11 @@ export default function CalendrierView({
   const [fDesc,    setFDesc]    = useState('')
   const [fMulti,   setFMulti]   = useState(false)
   const [fEndDate, setFEndDate] = useState('')
+
+  // ── drag-to-create
+  const dragState  = useRef<{ start: string; cur: string } | null>(null)
+  const [dragRange, setDragRange] = useState<{ start: string; end: string } | null>(null)
+  const openAddRef = useRef<(endDate?: string) => void>(null!)
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -281,13 +213,41 @@ export default function CalendrierView({
   }
 
   // ── form helpers
-  function openAdd() {
+  function openAdd(endDate?: string) {
     setEditing(null)
     setFTitle(''); setFStart(''); setFEnd('')
     setFCat('note'); setFDesc('')
-    setFMulti(false); setFEndDate('')
+    setFMulti(!!endDate); setFEndDate(endDate ?? '')
     setShowForm(true)
   }
+  // Keep ref current so the drag useEffect can always call the latest version
+  openAddRef.current = openAdd
+
+  // Document-level mouseup finishes a drag
+  useEffect(() => {
+    function onUp() {
+      if (!dragState.current) return
+      const { start, cur } = dragState.current
+      dragState.current = null
+      setDragRange(null)
+
+      if (start === cur) {
+        // Simple click — just select the day
+        setSelected(start)
+        return
+      }
+
+      // Multi-day drag — open form pre-filled
+      const [s, e] = start <= cur ? [start, cur] : [cur, start]
+      setSelected(s)
+      setYear(Number(s.slice(0, 4)))
+      setMonth(Number(s.slice(5, 7)) - 1)
+      openAddRef.current(e)
+    }
+    document.addEventListener('mouseup', onUp)
+    return () => document.removeEventListener('mouseup', onUp)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   function openEdit(ev: CalEvent) {
     setEditing(ev)
     setFTitle(ev.title)
@@ -434,24 +394,42 @@ export default function CalendrierView({
               const extra    = uniq.length - visible.length
               const isWeekend = (() => { const dow = new Date(date).getDay(); return dow === 0 || dow === 6 })()
 
+              const isInDrag = !!(dragRange && date >= dragRange.start && date <= dragRange.end)
+
               return (
                 <div
                   key={date}
                   className={`cal-cell${isSel ? ' cal-cell-sel' : ''}`}
-                  onClick={() => setSelected(date)}
+                  onMouseDown={e => {
+                    e.preventDefault()
+                    dragState.current = { start: date, cur: date }
+                    setDragRange(null)
+                  }}
+                  onMouseEnter={() => {
+                    if (!dragState.current) return
+                    dragState.current.cur = date
+                    const { start, cur } = dragState.current
+                    const [s2, e2] = start <= cur ? [start, cur] : [cur, start]
+                    setDragRange({ start: s2, end: e2 })
+                  }}
                   style={{
                     ...s.cell,
                     opacity: inMonth ? 1 : 0.28,
-                    background: isSel
-                      ? 'var(--surface)'
-                      : isWeekend && inMonth
-                        ? 'rgba(255,255,255,0.015)'
-                        : 'var(--bg)',
-                    outline: isSel
-                      ? '1.5px solid var(--border-2)'
-                      : isToday && inMonth
-                        ? '1.5px solid var(--accent-text)'
-                        : '1.5px solid transparent',
+                    userSelect: 'none',
+                    background: isInDrag
+                      ? 'rgba(96,165,250,0.12)'
+                      : isSel
+                        ? 'var(--surface)'
+                        : isWeekend && inMonth
+                          ? 'rgba(255,255,255,0.015)'
+                          : 'var(--bg)',
+                    outline: isInDrag
+                      ? '1.5px solid rgba(96,165,250,0.4)'
+                      : isSel
+                        ? '1.5px solid var(--border-2)'
+                        : isToday && inMonth
+                          ? '1.5px solid var(--accent-text)'
+                          : '1.5px solid transparent',
                   }}
                 >
                   <div style={s.cellTop}>
@@ -516,10 +494,9 @@ export default function CalendrierView({
 
               {/* Time row */}
               <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                <Clock size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                <TimeSelect value={fStart} onChange={setFStart} />
-                <ArrowRight size={12} style={{ color: 'var(--text-3)', flexShrink: 0 }} />
-                <TimeSelect value={fEnd} onChange={setFEnd} />
+                <TimePickerInput value={fStart} onChange={setFStart} placeholder="Début" />
+                <span style={{ color: 'var(--text-muted)', fontSize: '12px', flexShrink: 0 }}>→</span>
+                <TimePickerInput value={fEnd} onChange={setFEnd} placeholder="Fin" />
               </div>
 
               {/* Multi-day toggle */}
@@ -539,14 +516,11 @@ export default function CalendrierView({
 
               {fMulti && (
                 <div style={s.multiRow}>
-                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', flexShrink: 0 }}>Jusqu'au</span>
-                  <input
-                    type="date"
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap' }}>Jusqu'au</span>
+                  <CalendarInput
                     value={fEndDate}
-                    min={editing ? editing.date : selected}
-                    onChange={e => setFEndDate(e.target.value)}
-                    className="input-field"
-                    style={s.fDateInput}
+                    onChange={setFEndDate}
+                    placeholder="Date de fin"
                   />
                 </div>
               )}
