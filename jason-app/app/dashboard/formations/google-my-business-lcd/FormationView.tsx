@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
@@ -76,6 +76,28 @@ export default function FormationView({
     ? formation.modules.find(m => m.id === activeLesson.moduleId)
     : null
 
+  // Ref sur la zone de contenu principale — pour remonter en haut au changement de leçon
+  const mainRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (!activeLesson) return
+    // Desktop : scroll dans le panneau main (overflow: auto)
+    if (mainRef.current) mainRef.current.scrollTop = 0
+    // Mobile : scroll de la fenêtre
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [activeLesson?.lessonId])
+
+  // Leçon suivante pour le bouton "Suivante →"
+  const allLessonsFlat = formation.modules.flatMap(m =>
+    m.lessons.map(l => ({ moduleId: m.id, lessonId: l.id }))
+  )
+  const currentFlatIdx = activeLesson
+    ? allLessonsFlat.findIndex(l => l.lessonId === activeLesson.lessonId)
+    : -1
+  const nextLesson = currentFlatIdx !== -1 && currentFlatIdx < allLessonsFlat.length - 1
+    ? allLessonsFlat[currentFlatIdx + 1]
+    : null
+
   function toggleModule(id: number) {
     setOpenModules(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
@@ -84,6 +106,7 @@ export default function FormationView({
 
   function selectLesson(moduleId: number, lessonId: number) {
     setActiveLesson({ moduleId, lessonId })
+    setOpenModules(prev => prev.includes(moduleId) ? prev : [...prev, moduleId])
     if (isMobile) setNavOpen(false)
   }
 
@@ -207,8 +230,8 @@ export default function FormationView({
   function formatInline(text: string): string {
     return text
       .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:var(--text);font-weight:600">$1</strong>')
-      .replace(/\*([^*]+)\*/g, '<em style="color:#FFD56B;font-style:italic">$1</em>')
-      .replace(/`([^`]+)`/g, '<code style="background:var(--border);padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;color:#FFD56B">$1</code>')
+      .replace(/\*([^*]+)\*/g, '<em style="color:var(--accent-text);font-style:italic">$1</em>')
+      .replace(/`([^`]+)`/g, '<code style="background:var(--border);padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;color:var(--accent-text)">$1</code>')
   }
 
   // ── Sidebar nav content (shared between desktop sidebar and mobile drawer)
@@ -333,7 +356,7 @@ export default function FormationView({
       )}
 
       {/* ── CONTENU PRINCIPAL ── */}
-      <main style={{ ...styles.main, ...(isMobile ? styles.mainMobile : {}) }}>
+      <main ref={mainRef} style={{ ...styles.main, ...(isMobile ? styles.mainMobile : {}) }}>
         {!activeLesson ? (
           /* Overview */
           <div style={{ ...styles.overview, ...(isMobile ? styles.overviewMobile : {}) }}>
@@ -412,12 +435,29 @@ export default function FormationView({
               {currentLesson && renderContent(currentLesson.content)}
             </div>
 
-            <div style={styles.lessonActions}>
+            <div style={{ ...styles.lessonActions, flexDirection: isMobile ? 'column' : 'row' }}>
               {completedLessons.includes(currentLesson!.id) ? (
-                <div style={styles.doneMsg}>
-                  <CheckCircle size={18} color="#34D399" weight="fill" />
-                  Leçon terminée
-                </div>
+                <>
+                  <div style={styles.doneMsg}>
+                    <CheckCircle size={18} color="#34D399" weight="fill" />
+                    Leçon terminée
+                  </div>
+                  {nextLesson ? (
+                    <button
+                      className="btn-primary"
+                      onClick={() => selectLesson(nextLesson.moduleId, nextLesson.lessonId)}
+                      style={{ fontSize: '14px', padding: '12px 24px', width: isMobile ? '100%' : 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                      Leçon suivante
+                      <ArrowLeft size={15} style={{ transform: 'rotate(180deg)' }} />
+                    </button>
+                  ) : (
+                    <div style={{ ...styles.doneMsg, color: '#FFD56B' }}>
+                      <CheckCircle size={18} color="#FFD56B" weight="fill" />
+                      Formation terminée !
+                    </div>
+                  )}
+                </>
               ) : (
                 <button
                   className="btn-primary"
