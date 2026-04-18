@@ -6,7 +6,7 @@ import {
   Star, MagnifyingGlass, CaretDown, CaretUp, X,
   Check, EyeSlash, WifiHigh,
 } from '@phosphor-icons/react'
-import { setGroupMembership } from './actions'
+import { setGroupMembership, restoreAllDismissed } from './actions'
 
 interface Group {
   id: string
@@ -55,6 +55,7 @@ export default function CommunauteView({
   const [search, setSearch]             = useState('')
   const [platformFilter, setPlatform]   = useState<'all' | 'facebook' | 'whatsapp'>('all')
   const [activeCategory, setCategory]   = useState<string | null>(null)
+  const [activeRegion, setRegion]       = useState<string | null>(null)
   const [featuredOpen, setFeaturedOpen] = useState(true)
   const [memberships, setMemberships]   = useState(initialMemberships)
   const [showDismissed, setShowDismissed] = useState(false)
@@ -67,6 +68,14 @@ export default function CommunauteView({
   const totalReach = joinedGroups.reduce((sum, g) => sum + (g.members_count || 0), 0)
   const dismissedCount = groups.filter(g => memberships[g.id] === 'dismissed').length
 
+  // Régions présentes dans les données (pour le sous-filtre)
+  const availableRegions = useMemo(() => {
+    const regionTags = SUPER_CATEGORIES.find(c => c.id === 'regions')?.tags ?? []
+    const set = new Set<string>()
+    groups.forEach(g => parseTags(g.tag).forEach(t => { if (regionTags.includes(t as never)) set.add(t) }))
+    return [...set].sort()
+  }, [groups])
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase()
     const catTags = activeCategory
@@ -75,7 +84,8 @@ export default function CommunauteView({
     return groups.filter(g => {
       if (!showDismissed && memberships[g.id] === 'dismissed') return false
       if (platformFilter !== 'all' && g.platform !== platformFilter) return false
-      if (catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
+      if (activeRegion && !parseTags(g.tag).includes(activeRegion)) return false
+      if (!activeRegion && catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
       if (!q) return true
       return (
         g.name.toLowerCase().includes(q) ||
@@ -84,7 +94,7 @@ export default function CommunauteView({
         parseTags(g.tag).join(' ').toLowerCase().includes(q)
       )
     })
-  }, [groups, search, platformFilter, activeCategory, memberships, showDismissed])
+  }, [groups, search, platformFilter, activeCategory, activeRegion, memberships, showDismissed])
 
   const grouped: Record<string, Group[]> = {}
   filtered.forEach(g => {
@@ -95,7 +105,7 @@ export default function CommunauteView({
 
   const featuredGroups  = grouped[FEATURED_CATEGORY] ?? []
   const otherCategories = Object.entries(grouped).filter(([c]) => c !== FEATURED_CATEGORY)
-  const isFiltering     = search !== '' || platformFilter !== 'all' || activeCategory !== null
+  const isFiltering = search !== '' || platformFilter !== 'all' || activeCategory !== null || activeRegion !== null
 
   function toggleJoined(groupId: string) {
     const next: MemberStatus | null = memberships[groupId] === 'joined' ? null : 'joined'
@@ -118,7 +128,7 @@ export default function CommunauteView({
     if (userId) startTransition(() => { setGroupMembership(groupId, null) })
   }
 
-  function clearFilters() { setSearch(''); setPlatform('all'); setCategory(null) }
+  function clearFilters() { setSearch(''); setPlatform('all'); setCategory(null); setRegion(null) }
 
   function renderCard(g: Group, featured = false) {
     const isJoined    = memberships[g.id] === 'joined'
@@ -186,23 +196,16 @@ export default function CommunauteView({
           >
             Rejoindre <ArrowUpRight size={12} />
           </a>
-          {!isDismissed ? (
-            <>
-              <button
-                onClick={() => toggleJoined(g.id)}
-                style={{ ...s.statusBtn, ...(isJoined ? s.statusBtnOn : {}) }}
-              >
-                <Check size={12} weight={isJoined ? 'bold' : 'regular'} />
-                {isJoined ? "J'y suis" : "J'y suis ?"}
-              </button>
-              {!isJoined && (
-                <button onClick={() => dismiss(g.id)} style={s.dismissBtn} title="Pas intéressé">
-                  <X size={11} />
-                </button>
-              )}
-            </>
-          ) : (
+          {isDismissed ? (
             <button onClick={() => restore(g.id)} style={s.restoreBtn}>Restaurer</button>
+          ) : (
+            <button
+              onClick={() => toggleJoined(g.id)}
+              style={{ ...s.statusBtn, ...(isJoined ? s.statusBtnOn : {}) }}
+            >
+              <Check size={12} weight={isJoined ? 'bold' : 'regular'} />
+              {isJoined ? "J'y suis" : "J'y suis ?"}
+            </button>
           )}
         </div>
       </div>
@@ -314,6 +317,24 @@ export default function CommunauteView({
           </div>
         </div>
 
+        {/* Sous-filtre régions — visible seulement quand "Régions" est sélectionné */}
+        {activeCategory === 'regions' && availableRegions.length > 0 && (
+          <div style={s.filterLine}>
+            <span style={{ ...s.filterLbl, color: 'var(--text-muted)' }}>Région</span>
+            <div style={s.tagsScroll}>
+              {availableRegions.map(r => (
+                <button
+                  key={r}
+                  onClick={() => setRegion(activeRegion === r ? null : r)}
+                  style={{ ...s.chip, ...(activeRegion === r ? s.chipOn : {}), flexShrink: 0 }}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {isFiltering && (
           <button onClick={clearFilters} style={s.resetLink}>
             <X size={10} /> Effacer les filtres
@@ -388,11 +409,25 @@ export default function CommunauteView({
       {dismissedCount > 0 && (
         <div style={s.dismissedBar}>
           <EyeSlash size={14} color="var(--text-muted)" />
-          <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>
+          <span style={{ fontSize: '13px', color: 'var(--text-3)', flex: 1 }}>
             {dismissedCount} groupe{dismissedCount > 1 ? 's' : ''} masqué{dismissedCount > 1 ? 's' : ''}
           </span>
           <button onClick={() => setShowDismissed(v => !v)} style={s.showHiddenBtn}>
             {showDismissed ? 'Masquer' : 'Voir'}
+          </button>
+          <button
+            onClick={() => {
+              setMemberships(prev => {
+                const u = { ...prev }
+                Object.keys(u).forEach(k => { if (u[k] === 'dismissed') delete u[k] })
+                return u
+              })
+              setShowDismissed(false)
+              if (userId) startTransition(() => { restoreAllDismissed() })
+            }}
+            style={s.restoreAllBtn}
+          >
+            Tout restaurer
           </button>
         </div>
       )}
@@ -636,5 +671,10 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', color: 'var(--accent-text)', background: 'none',
     border: '1px solid rgba(255,213,107,0.2)', padding: '4px 10px',
     borderRadius: '6px', cursor: 'pointer',
+  },
+  restoreAllBtn: {
+    fontSize: '12px', color: '#34D399', background: 'rgba(52,211,153,0.08)',
+    border: '1px solid rgba(52,211,153,0.2)', padding: '4px 12px',
+    borderRadius: '6px', cursor: 'pointer', fontWeight: 500,
   },
 }

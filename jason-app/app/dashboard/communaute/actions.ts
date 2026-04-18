@@ -28,3 +28,19 @@ export async function setGroupMembership(groupId: string, status: 'joined' | 'di
   revalidatePath('/dashboard/communaute')
   return { success: true }
 }
+
+export async function restoreAllDismissed() {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  const { error } = await supabase
+    .from('user_community_memberships')
+    .delete()
+    .eq('user_id', session.user.id)
+    .eq('status', 'dismissed')
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/communaute')
+  return { success: true }
+}
