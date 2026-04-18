@@ -23,6 +23,13 @@ type MemberStatus = 'joined' | 'dismissed'
 
 const FEATURED_CATEGORY = 'Groupes Jason & Driing'
 
+const SUPER_CATEGORIES = [
+  { id: 'hotes',          label: 'Hôtes LCD',      tags: ['Hôtes LCD', 'Gîtes', 'Investisseurs', 'Animaux'] },
+  { id: 'voyageurs',      label: 'Voyageurs',       tags: ['Voyageurs'] },
+  { id: 'conciergeries',  label: 'Conciergeries',   tags: ['Conciergeries'] },
+  { id: 'regions',        label: 'Régions',         tags: ['Alpes', 'Auvergne', 'Belgique', 'Bourgogne', 'Bretagne', 'Corse', 'Hauts-de-France', 'Île-de-France', 'Montagne', 'Normandie', 'Occitanie', 'PACA', 'Plage', 'Pyrénées', 'Réunion', 'Ski'] },
+] as const
+
 function parseTags(tag: string | null): string[] {
   if (!tag) return []
   return tag.split(',').map(t => t.trim()).filter(Boolean)
@@ -45,19 +52,13 @@ export default function CommunauteView({
   userId: string | null
   initialMemberships: Record<string, MemberStatus>
 }) {
-  const [search, setSearch]           = useState('')
-  const [platformFilter, setPlatform] = useState<'all' | 'facebook' | 'whatsapp'>('all')
-  const [activeTag, setActiveTag]     = useState<string | null>(null)
+  const [search, setSearch]             = useState('')
+  const [platformFilter, setPlatform]   = useState<'all' | 'facebook' | 'whatsapp'>('all')
+  const [activeCategory, setCategory]   = useState<string | null>(null)
   const [featuredOpen, setFeaturedOpen] = useState(true)
-  const [memberships, setMemberships] = useState(initialMemberships)
+  const [memberships, setMemberships]   = useState(initialMemberships)
   const [showDismissed, setShowDismissed] = useState(false)
   const [, startTransition] = useTransition()
-
-  const allTags = useMemo(() => {
-    const set = new Set<string>()
-    groups.forEach(g => parseTags(g.tag).forEach(t => set.add(t)))
-    return [...set].sort()
-  }, [groups])
 
   const joinedGroups = useMemo(
     () => groups.filter(g => memberships[g.id] === 'joined'),
@@ -68,10 +69,13 @@ export default function CommunauteView({
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase()
+    const catTags = activeCategory
+      ? SUPER_CATEGORIES.find(c => c.id === activeCategory)?.tags ?? []
+      : []
     return groups.filter(g => {
       if (!showDismissed && memberships[g.id] === 'dismissed') return false
       if (platformFilter !== 'all' && g.platform !== platformFilter) return false
-      if (activeTag && !parseTags(g.tag).includes(activeTag)) return false
+      if (catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
       if (!q) return true
       return (
         g.name.toLowerCase().includes(q) ||
@@ -80,7 +84,7 @@ export default function CommunauteView({
         parseTags(g.tag).join(' ').toLowerCase().includes(q)
       )
     })
-  }, [groups, search, platformFilter, activeTag, memberships, showDismissed])
+  }, [groups, search, platformFilter, activeCategory, memberships, showDismissed])
 
   const grouped: Record<string, Group[]> = {}
   filtered.forEach(g => {
@@ -91,7 +95,7 @@ export default function CommunauteView({
 
   const featuredGroups  = grouped[FEATURED_CATEGORY] ?? []
   const otherCategories = Object.entries(grouped).filter(([c]) => c !== FEATURED_CATEGORY)
-  const isFiltering     = search !== '' || platformFilter !== 'all' || activeTag !== null
+  const isFiltering     = search !== '' || platformFilter !== 'all' || activeCategory !== null
 
   function toggleJoined(groupId: string) {
     const next: MemberStatus | null = memberships[groupId] === 'joined' ? null : 'joined'
@@ -114,7 +118,7 @@ export default function CommunauteView({
     if (userId) startTransition(() => { setGroupMembership(groupId, null) })
   }
 
-  function clearFilters() { setSearch(''); setPlatform('all'); setActiveTag(null) }
+  function clearFilters() { setSearch(''); setPlatform('all'); setCategory(null) }
 
   function renderCard(g: Group, featured = false) {
     const isJoined    = memberships[g.id] === 'joined'
@@ -294,29 +298,21 @@ export default function CommunauteView({
           </div>
         </div>
 
-        {/* Thèmes — scroll horizontal sur une seule ligne */}
-        {allTags.length > 0 && (
-          <div style={s.filterLine}>
-            <span style={s.filterLbl}>Thème</span>
-            <div style={s.tagsScroll}>
+        {/* Catégories : 4 groupes larges */}
+        <div style={s.filterLine}>
+          <span style={s.filterLbl}>Catégorie</span>
+          <div style={s.chipRow}>
+            {SUPER_CATEGORIES.map(cat => (
               <button
-                onClick={() => setActiveTag(null)}
-                style={{ ...s.chip, ...(activeTag === null ? s.chipOn : {}), flexShrink: 0 }}
+                key={cat.id}
+                onClick={() => setCategory(activeCategory === cat.id ? null : cat.id)}
+                style={{ ...s.chip, ...(activeCategory === cat.id ? s.chipTag : {}) }}
               >
-                Tous
+                {cat.label}
               </button>
-              {allTags.map(t => (
-                <button
-                  key={t}
-                  onClick={() => setActiveTag(activeTag === t ? null : t)}
-                  style={{ ...s.chip, ...(activeTag === t ? s.chipTag : {}), flexShrink: 0 }}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
+            ))}
           </div>
-        )}
+        </div>
 
         {isFiltering && (
           <button onClick={clearFilters} style={s.resetLink}>
