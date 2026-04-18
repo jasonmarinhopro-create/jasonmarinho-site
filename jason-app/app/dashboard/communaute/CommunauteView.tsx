@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useTransition } from 'react'
 import {
   ArrowUpRight, UsersThree, FacebookLogo, WhatsappLogo,
-  Tag, Star, MagnifyingGlass, CaretDown, CaretUp, X,
+  Star, MagnifyingGlass, CaretDown, CaretUp, X,
+  Check, EyeSlash, WifiHigh,
 } from '@phosphor-icons/react'
+import { setGroupMembership } from './actions'
 
 interface Group {
   id: string
@@ -17,43 +19,68 @@ interface Group {
   tag: string | null
 }
 
+type MemberStatus = 'joined' | 'dismissed'
+
 const FEATURED_CATEGORY = 'Groupes Jason & Driing'
 
-/** Le champ `tag` accepte des valeurs séparées par virgule : "Bretagne, Normandie" */
 function parseTags(tag: string | null): string[] {
   if (!tag) return []
   return tag.split(',').map(t => t.trim()).filter(Boolean)
 }
 
-export default function CommunauteView({ groups }: { groups: Group[] }) {
-  const [search, setSearch]             = useState('')
-  const [platformFilter, setPlatform]   = useState<'all' | 'facebook' | 'whatsapp'>('all')
-  const [activeTag, setActiveTag]       = useState<string | null>(null)
-  const [featuredOpen, setFeaturedOpen] = useState(true)
+function fmtNum(n: number): string {
+  if (n >= 1000) {
+    const k = n / 1000
+    return `${k % 1 === 0 ? k : k.toFixed(1).replace('.', ',')}k`
+  }
+  return n.toLocaleString('fr-FR')
+}
 
-  // Tous les tags uniques pour les chips de filtre
+export default function CommunauteView({
+  groups,
+  userId,
+  initialMemberships,
+}: {
+  groups: Group[]
+  userId: string | null
+  initialMemberships: Record<string, MemberStatus>
+}) {
+  const [search, setSearch]           = useState('')
+  const [platformFilter, setPlatform] = useState<'all' | 'facebook' | 'whatsapp'>('all')
+  const [activeTag, setActiveTag]     = useState<string | null>(null)
+  const [featuredOpen, setFeaturedOpen] = useState(true)
+  const [memberships, setMemberships] = useState(initialMemberships)
+  const [showDismissed, setShowDismissed] = useState(false)
+  const [, startTransition] = useTransition()
+
   const allTags = useMemo(() => {
     const set = new Set<string>()
     groups.forEach(g => parseTags(g.tag).forEach(t => set.add(t)))
     return [...set].sort()
   }, [groups])
 
-  // Groupes filtrés
+  const joinedGroups = useMemo(
+    () => groups.filter(g => memberships[g.id] === 'joined'),
+    [groups, memberships]
+  )
+  const totalReach = joinedGroups.reduce((sum, g) => sum + (g.members_count || 0), 0)
+  const dismissedCount = groups.filter(g => memberships[g.id] === 'dismissed').length
+
   const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim()
+    const q = search.toLowerCase()
     return groups.filter(g => {
+      if (!showDismissed && memberships[g.id] === 'dismissed') return false
       if (platformFilter !== 'all' && g.platform !== platformFilter) return false
       if (activeTag && !parseTags(g.tag).includes(activeTag)) return false
       if (!q) return true
-      const tagsStr = parseTags(g.tag).join(' ').toLowerCase()
       return (
         g.name.toLowerCase().includes(q) ||
         g.description.toLowerCase().includes(q) ||
         g.category.toLowerCase().includes(q) ||
-        tagsStr.includes(q)
+        parseTags(g.tag).join(' ').toLowerCase().includes(q)
       )
     })
-  }, [groups, search, platformFilter, activeTag])
+  }, [groups, search, platformFilter, activeTag, memberships, showDismissed])
 
   const grouped: Record<string, Group[]> = {}
   filtered.forEach(g => {
@@ -62,20 +89,126 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
     grouped[cat].push(g)
   })
 
-  const featuredGroups   = grouped[FEATURED_CATEGORY] ?? []
-  const otherCategories  = Object.entries(grouped).filter(([cat]) => cat !== FEATURED_CATEGORY)
-  const isFiltering      = search !== '' || platformFilter !== 'all' || activeTag !== null
+  const featuredGroups  = grouped[FEATURED_CATEGORY] ?? []
+  const otherCategories = Object.entries(grouped).filter(([c]) => c !== FEATURED_CATEGORY)
+  const isFiltering     = search !== '' || platformFilter !== 'all' || activeTag !== null
 
-  function clearFilters() {
-    setSearch('')
-    setPlatform('all')
-    setActiveTag(null)
+  function toggleJoined(groupId: string) {
+    const next: MemberStatus | null = memberships[groupId] === 'joined' ? null : 'joined'
+    setMemberships(prev => {
+      const u = { ...prev }
+      if (next === null) delete u[groupId]
+      else u[groupId] = next
+      return u
+    })
+    if (userId) startTransition(() => { setGroupMembership(groupId, next) })
+  }
+
+  function dismiss(groupId: string) {
+    setMemberships(prev => ({ ...prev, [groupId]: 'dismissed' }))
+    if (userId) startTransition(() => { setGroupMembership(groupId, 'dismissed') })
+  }
+
+  function restore(groupId: string) {
+    setMemberships(prev => { const u = { ...prev }; delete u[groupId]; return u })
+    if (userId) startTransition(() => { setGroupMembership(groupId, null) })
+  }
+
+  function clearFilters() { setSearch(''); setPlatform('all'); setActiveTag(null) }
+
+  function renderCard(g: Group, featured = false) {
+    const isJoined    = memberships[g.id] === 'joined'
+    const isDismissed = memberships[g.id] === 'dismissed'
+    const tags        = parseTags(g.tag)
+    const isFb        = g.platform === 'facebook'
+
+    return (
+      <div
+        style={{
+          ...(featured ? s.featuredCard : s.card),
+          opacity: isDismissed ? 0.45 : 1,
+          transition: 'opacity 0.2s',
+        }}
+        className={featured ? undefined : 'glass-card'}
+      >
+        {/* Icon + name + tags */}
+        <div style={s.cardTop}>
+          <div style={{
+            ...s.platformIcon,
+            background: featured ? 'rgba(255,213,107,0.08)' : isFb ? 'rgba(147,197,253,0.08)' : 'rgba(37,211,102,0.08)',
+            border: `1px solid ${featured ? 'rgba(255,213,107,0.18)' : isFb ? 'rgba(147,197,253,0.15)' : 'rgba(37,211,102,0.15)'}`,
+          }}>
+            {isFb
+              ? <FacebookLogo size={18} color={featured ? 'var(--accent-text)' : '#93C5FD'} weight="fill" />
+              : <WhatsappLogo size={18} color="#25D366" weight="fill" />}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h3 style={featured ? s.featuredName : s.groupName}>{g.name}</h3>
+            {tags.length > 0 && (
+              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '5px' }}>
+                {tags.map(t => (
+                  <span key={t} style={featured ? s.tagPill : s.inlineTag}>{t}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Description */}
+        {g.description && <p style={s.desc}>{g.description}</p>}
+
+        {/* Member count */}
+        {g.members_count > 0 && (
+          <div style={s.statRow}>
+            <span style={s.statBubble}>
+              <UsersThree size={13} color="var(--accent-text)" weight="fill" />
+              <strong style={s.statNum}>{fmtNum(g.members_count)}</strong>
+              <span style={s.statLbl}>membres</span>
+            </span>
+            {isJoined && (
+              <span style={s.reachBadge}>
+                <WifiHigh size={11} weight="fill" />
+                Portée active
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Actions */}
+        <div style={s.actions}>
+          <a
+            href={g.url} target="_blank" rel="noopener noreferrer"
+            style={{ ...s.joinLink, ...(featured ? s.joinLinkFeatured : {}) }}
+          >
+            Rejoindre <ArrowUpRight size={12} />
+          </a>
+          {!isDismissed ? (
+            <>
+              <button
+                onClick={() => toggleJoined(g.id)}
+                style={{ ...s.statusBtn, ...(isJoined ? s.statusBtnOn : {}) }}
+              >
+                <Check size={12} weight={isJoined ? 'bold' : 'regular'} />
+                {isJoined ? "J'y suis" : "J'y suis ?"}
+              </button>
+              {!isJoined && (
+                <button onClick={() => dismiss(g.id)} style={s.dismissBtn} title="Pas intéressé">
+                  <X size={11} />
+                </button>
+              )}
+            </>
+          ) : (
+            <button onClick={() => restore(g.id)} style={s.restoreBtn}>Restaurer</button>
+          )}
+        </div>
+      </div>
+    )
   }
 
   return (
     <div style={s.page}>
 
-      {/* ── Intro ── */}
+      {/* Intro */}
       <div style={s.intro} className="fade-up">
         <h2 style={s.pageTitle}>
           La <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>communauté</em> LCD
@@ -85,81 +218,134 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
         </p>
       </div>
 
-      {/* ── Recherche + filtres ── */}
-      <div style={s.searchBlock} className="fade-up">
-        <div style={s.searchWrap}>
-          <MagnifyingGlass size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+      {/* Stats banner — visible quand au moins 1 groupe rejoint */}
+      {joinedGroups.length > 0 && (
+        <div style={s.banner} className="fade-up">
+          <div style={s.bannerStat}>
+            <WifiHigh size={20} color="#FFD56B" weight="fill" />
+            <div>
+              <div style={s.bannerLbl}>Portée totale</div>
+              <div style={s.bannerVal}>
+                {fmtNum(totalReach)} <span style={s.bannerSub}>membres potentiels</span>
+              </div>
+            </div>
+          </div>
+          <div style={s.bannerDiv} />
+          <div style={s.bannerStat}>
+            <UsersThree size={20} color="var(--accent-text)" weight="fill" />
+            <div>
+              <div style={s.bannerLbl}>Groupes rejoints</div>
+              <div style={s.bannerVal}>
+                {joinedGroups.length} <span style={s.bannerSub}>groupe{joinedGroups.length > 1 ? 's' : ''}</span>
+              </div>
+            </div>
+          </div>
+          {groups.filter(g => !memberships[g.id]).length > 0 && (
+            <>
+              <div style={s.bannerDiv} />
+              <div style={s.bannerStat}>
+                <UsersThree size={20} color="var(--text-3)" />
+                <div>
+                  <div style={s.bannerLbl}>Non rejoints</div>
+                  <div style={{ ...s.bannerVal, color: 'var(--text-2)' }}>
+                    {groups.filter(g => !memberships[g.id]).length}{' '}
+                    <span style={s.bannerSub}>groupes</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Filtres */}
+      <div style={s.filtersWrap} className="fade-up">
+        {/* Recherche */}
+        <div style={s.searchRow}>
+          <MagnifyingGlass size={15} color="var(--text-muted)" style={{ flexShrink: 0 }} />
           <input
-            type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Rechercher par ville, région, thème…"
+            placeholder="Rechercher un groupe…"
             style={s.searchInput}
           />
           {search && (
             <button onClick={() => setSearch('')} style={s.clearBtn} aria-label="Effacer">
-              <X size={12} />
+              <X size={11} />
             </button>
           )}
         </div>
 
-        <div style={s.filterRow}>
-          {/* Plateforme */}
-          <button onClick={() => setPlatform('all')} style={{ ...s.chip, ...(platformFilter === 'all' ? s.chipActive : {}) }}>
-            Tous
-          </button>
-          <button onClick={() => setPlatform('facebook')} style={{ ...s.chip, ...(platformFilter === 'facebook' ? s.chipActive : {}) }}>
-            <FacebookLogo size={11} weight="fill" /> Facebook
-          </button>
-          <button onClick={() => setPlatform('whatsapp')} style={{ ...s.chip, ...(platformFilter === 'whatsapp' ? s.chipActive : {}) }}>
-            <WhatsappLogo size={11} weight="fill" /> WhatsApp
-          </button>
-
-          {/* Séparateur + tags dynamiques */}
-          {allTags.length > 0 && <span style={s.chipDivider} />}
-          {allTags.map(t => (
-            <button
-              key={t}
-              onClick={() => setActiveTag(activeTag === t ? null : t)}
-              style={{ ...s.chip, ...(activeTag === t ? s.chipTag : {}) }}
-            >
-              <Tag size={10} /> {t}
-            </button>
-          ))}
-
-          {/* Reset si filtre actif */}
-          {isFiltering && (
-            <button onClick={clearFilters} style={s.chipReset}>
-              <X size={10} /> Effacer
-            </button>
-          )}
+        {/* Plateforme */}
+        <div style={s.filterLine}>
+          <span style={s.filterLbl}>Plateforme</span>
+          <div style={s.chipRow}>
+            {(['all', 'facebook', 'whatsapp'] as const).map(p => (
+              <button
+                key={p}
+                onClick={() => setPlatform(p)}
+                style={{ ...s.chip, ...(platformFilter === p ? s.chipOn : {}) }}
+              >
+                {p === 'facebook' && <FacebookLogo size={11} weight="fill" />}
+                {p === 'whatsapp' && <WhatsappLogo size={11} weight="fill" />}
+                {p === 'all' ? 'Tous' : p === 'facebook' ? 'Facebook' : 'WhatsApp'}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {/* Thèmes — scroll horizontal sur une seule ligne */}
+        {allTags.length > 0 && (
+          <div style={s.filterLine}>
+            <span style={s.filterLbl}>Thème</span>
+            <div style={s.tagsScroll}>
+              <button
+                onClick={() => setActiveTag(null)}
+                style={{ ...s.chip, ...(activeTag === null ? s.chipOn : {}), flexShrink: 0 }}
+              >
+                Tous
+              </button>
+              {allTags.map(t => (
+                <button
+                  key={t}
+                  onClick={() => setActiveTag(activeTag === t ? null : t)}
+                  style={{ ...s.chip, ...(activeTag === t ? s.chipTag : {}), flexShrink: 0 }}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {isFiltering && (
+          <button onClick={clearFilters} style={s.resetLink}>
+            <X size={10} /> Effacer les filtres
+          </button>
+        )}
       </div>
 
-      {/* ── Aucun résultat ── */}
+      {/* Aucun résultat */}
       {filtered.length === 0 && isFiltering && (
-        <div style={s.emptySearch} className="fade-up">
-          <MagnifyingGlass size={30} color="var(--text-muted)" />
+        <div style={s.empty} className="fade-up">
+          <MagnifyingGlass size={28} color="var(--text-muted)" />
           <p>Aucun groupe ne correspond à votre recherche.</p>
           <button onClick={clearFilters} style={s.resetBtn}>Effacer les filtres</button>
         </div>
       )}
 
-      {/* ── Section mise en avant : Groupes Jason & Driing ── */}
+      {/* Section Jason & Driing */}
       {featuredGroups.length > 0 && (
         <div style={s.featuredSection} className="fade-up">
-          {/* Header avec badge + bouton réduire */}
-          <div style={s.featuredHeaderRow}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', flex: 1 }}>
+          <div style={s.featuredHeader}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span style={s.featuredBadge}>
                 <Star size={11} weight="fill" />
                 {FEATURED_CATEGORY}
               </span>
-              {!featuredOpen && (
-                <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>
-                  {featuredGroups.length} groupe{featuredGroups.length > 1 ? 's' : ''}
-                </span>
-              )}
+              <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>
+                {featuredGroups.length} groupe{featuredGroups.length > 1 ? 's' : ''}
+              </span>
             </div>
             <button onClick={() => setFeaturedOpen(v => !v)} style={s.collapseBtn}>
               {featuredOpen ? <CaretUp size={12} /> : <CaretDown size={12} />}
@@ -167,36 +353,15 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
             </button>
           </div>
 
-          {/* Contenu dépliable */}
           {featuredOpen && (
             <>
-              <p style={s.featuredSubtitle}>
+              <p style={s.featuredSub}>
                 Nos groupes officiels — rejoignez la communauté et partagez vos logements directement
               </p>
               <div className="dash-grid-2">
                 {featuredGroups.map((g, i) => (
-                  <div key={g.id} style={s.featuredCard} className={`fade-up d${i + 1}`}>
-                    <div style={s.featuredCardTop}>
-                      <div style={s.featuredIconWrap}>
-                        <FacebookLogo size={20} color="#FFD56B" weight="fill" />
-                      </div>
-                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                        {parseTags(g.tag).map(t => (
-                          <span key={t} style={s.tagPill}>{t}</span>
-                        ))}
-                      </div>
-                    </div>
-                    <h3 style={s.featuredName}>{g.name}</h3>
-                    <p style={s.featuredDesc}>{g.description}</p>
-                    <a
-                      href={g.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-primary"
-                      style={{ fontSize: '13px', padding: '9px 18px', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px', alignSelf: 'flex-start' }}
-                    >
-                      Rejoindre <ArrowUpRight size={13} />
-                    </a>
+                  <div key={g.id} className={`fade-up d${i + 1}`}>
+                    {renderCard(g, true)}
                   </div>
                 ))}
               </div>
@@ -205,72 +370,42 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
         </div>
       )}
 
-      {/* ── Autres catégories ── */}
+      {/* Autres catégories */}
       {otherCategories.map(([category, catGroups]) => (
-        <div key={category} style={s.sectionBlock} className="fade-up">
+        <div key={category} style={s.section} className="fade-up">
           <div style={s.sectionLabel}>
             <UsersThree size={14} />
             {category}
             <span style={s.sectionCount}>{catGroups.length}</span>
           </div>
-
           <div className="dash-grid-2">
-            {catGroups.map((g, i) => {
-              const isFb = g.platform === 'facebook'
-              const tags = parseTags(g.tag)
-              return (
-                <div key={g.id} style={s.card} className={`glass-card fade-up d${i + 1}`}>
-                  <div style={s.cardHead}>
-                    <div style={{
-                      ...s.platformIcon,
-                      background: isFb ? 'rgba(147,197,253,0.08)' : 'rgba(37,211,102,0.08)',
-                      border: `1px solid ${isFb ? 'rgba(147,197,253,0.15)' : 'rgba(37,211,102,0.15)'}`,
-                    }}>
-                      {isFb
-                        ? <FacebookLogo size={20} color="#93C5FD" weight="fill" />
-                        : <WhatsappLogo size={20} color="#25D366" weight="fill" />}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <h3 style={s.groupName}>{g.name}</h3>
-                      {g.members_count > 0 && (
-                        <div style={s.memberCount}>
-                          <UsersThree size={12} />
-                          {g.members_count.toLocaleString('fr-FR')} membres
-                        </div>
-                      )}
-                    </div>
-                    <a
-                      href={g.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-ghost"
-                      style={{ fontSize: '12px', padding: '7px 14px', flexShrink: 0 }}
-                    >
-                      Rejoindre <ArrowUpRight size={13} />
-                    </a>
-                  </div>
-                  {g.description && <p style={s.desc}>{g.description}</p>}
-                  {tags.length > 0 && (
-                    <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-                      {tags.map(t => (
-                        <span key={t} style={s.inlineTag}>
-                          <Tag size={9} /> {t}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+            {catGroups.map((g, i) => (
+              <div key={g.id} className={`fade-up d${i + 1}`}>
+                {renderCard(g)}
+              </div>
+            ))}
           </div>
         </div>
       ))}
 
-      {/* ── État vide (aucun groupe en base) ── */}
+      {/* Groupes masqués */}
+      {dismissedCount > 0 && (
+        <div style={s.dismissedBar}>
+          <EyeSlash size={14} color="var(--text-muted)" />
+          <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>
+            {dismissedCount} groupe{dismissedCount > 1 ? 's' : ''} masqué{dismissedCount > 1 ? 's' : ''}
+          </span>
+          <button onClick={() => setShowDismissed(v => !v)} style={s.showHiddenBtn}>
+            {showDismissed ? 'Masquer' : 'Voir'}
+          </button>
+        </div>
+      )}
+
+      {/* État vide */}
       {groups.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-3)', fontSize: '14px' }}>
+        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-3)' }}>
           <UsersThree size={36} color="var(--text-muted)" />
-          <p style={{ marginTop: '12px' }}>Aucun groupe disponible pour l'instant.</p>
+          <p style={{ marginTop: '12px', fontSize: '14px' }}>Aucun groupe disponible pour l'instant.</p>
         </div>
       )}
     </div>
@@ -279,18 +414,33 @@ export default function CommunauteView({ groups }: { groups: Group[] }) {
 
 /* ─────────────────────── Styles ─────────────────────── */
 const s: Record<string, React.CSSProperties> = {
-  page:      { padding: 'clamp(20px,3vw,44px)', width: '100%' },
-  intro:     { marginBottom: '28px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
-  pageDesc:  { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6 },
+  page:     { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  intro:    { marginBottom: '28px' },
+  pageTitle: {
+    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
+    fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
+  },
+  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6 },
 
-  /* Recherche */
-  searchBlock: { marginBottom: '36px' },
-  searchWrap: {
+  /* Stats banner */
+  banner: {
+    display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap',
+    padding: '18px 22px', borderRadius: '16px', marginBottom: '32px',
+    background: 'linear-gradient(135deg, rgba(255,213,107,0.07) 0%, rgba(0,76,63,0.07) 100%)',
+    border: '1px solid rgba(255,213,107,0.18)',
+  },
+  bannerStat: { display: 'flex', alignItems: 'center', gap: '12px' },
+  bannerDiv:  { width: '1px', height: '36px', background: 'var(--border)', flexShrink: 0 },
+  bannerLbl:  { fontSize: '11px', color: 'var(--text-3)', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const },
+  bannerVal:  { fontSize: '20px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.2, marginTop: '2px' },
+  bannerSub:  { fontSize: '13px', fontWeight: 400, color: 'var(--text-2)' },
+
+  /* Filtres */
+  filtersWrap: { marginBottom: '36px', display: 'flex', flexDirection: 'column' as const, gap: '10px' },
+  searchRow: {
     display: 'flex', alignItems: 'center', gap: '10px',
-    padding: '11px 16px', borderRadius: '12px',
+    padding: '10px 14px', borderRadius: '12px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    marginBottom: '12px',
   },
   searchInput: {
     flex: 1, background: 'transparent', border: 'none', outline: 'none',
@@ -298,21 +448,30 @@ const s: Record<string, React.CSSProperties> = {
   } as React.CSSProperties,
   clearBtn: {
     background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border)',
-    borderRadius: '6px', width: '22px', height: '22px',
+    borderRadius: '6px', width: '20px', height: '20px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-muted)', flexShrink: 0,
   },
-
-  /* Filtres */
-  filterRow: { display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' },
+  filterLine: { display: 'flex', alignItems: 'center', gap: '10px' },
+  filterLbl: {
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const, color: 'var(--text-3)',
+    flexShrink: 0, minWidth: '72px',
+  },
+  chipRow:  { display: 'flex', gap: '6px', flexWrap: 'wrap' as const },
+  tagsScroll: {
+    display: 'flex', gap: '6px',
+    overflowX: 'auto', paddingBottom: '4px',
+    scrollbarWidth: 'none',
+  } as React.CSSProperties,
   chip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 12px', borderRadius: '999px', cursor: 'pointer',
     fontSize: '12px', fontWeight: 500, fontFamily: 'Outfit, sans-serif',
     background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
-    color: 'var(--text-3)',
+    color: 'var(--text-3)', whiteSpace: 'nowrap' as const,
   },
-  chipActive: {
+  chipOn: {
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)',
     color: 'var(--accent-text)',
   },
@@ -320,36 +479,32 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(147,197,253,0.1)', border: '1px solid rgba(147,197,253,0.25)',
     color: 'rgba(147,197,253,0.85)',
   },
-  chipReset: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    padding: '5px 11px', borderRadius: '999px', cursor: 'pointer',
+  resetLink: {
+    alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '5px 12px', borderRadius: '999px', cursor: 'pointer',
     fontSize: '12px', fontWeight: 500, fontFamily: 'Outfit, sans-serif',
-    background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.18)',
+    background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.15)',
     color: 'rgba(239,68,68,0.7)',
   },
-  chipDivider: {
-    display: 'inline-block', width: '1px', height: '16px',
-    background: 'var(--border)', flexShrink: 0, margin: '0 2px',
-  },
 
-  /* Aucun résultat */
-  emptySearch: {
+  /* Empty */
+  empty: {
     textAlign: 'center', padding: '48px 0', color: 'var(--text-3)',
-    fontSize: '14px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
+    fontSize: '14px', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '10px',
   },
   resetBtn: {
-    padding: '8px 18px', borderRadius: '10px',
+    padding: '8px 18px', borderRadius: '10px', cursor: 'pointer',
     background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)',
-    color: 'var(--accent-text)', fontSize: '13px', cursor: 'pointer',
+    color: 'var(--accent-text)', fontSize: '13px',
   },
 
-  /* Section featured */
+  /* Featured section */
   featuredSection: {
     marginBottom: '40px', padding: '22px 24px', borderRadius: '20px',
     background: 'linear-gradient(135deg, rgba(255,213,107,0.05) 0%, rgba(255,213,107,0.02) 100%)',
     border: '1px solid rgba(255,213,107,0.15)',
   },
-  featuredHeaderRow: {
+  featuredHeader: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     gap: '12px', marginBottom: '6px',
   },
@@ -357,7 +512,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '4px 11px', borderRadius: '999px',
     background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.25)',
-    color: 'var(--accent-text)', fontSize: '12px', fontWeight: 600, letterSpacing: '0.3px',
+    color: 'var(--accent-text)', fontSize: '12px', fontWeight: 600,
   },
   collapseBtn: {
     display: 'flex', alignItems: 'center', gap: '5px',
@@ -365,52 +520,125 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
     color: 'var(--text-muted)', fontSize: '12px', cursor: 'pointer', flexShrink: 0,
   },
-  featuredSubtitle: {
+  featuredSub: {
     fontSize: '13px', color: 'var(--text-3)', fontWeight: 300,
     marginBottom: '20px', marginTop: '4px',
   },
   featuredCard: {
-    padding: '20px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '10px', minHeight: '165px',
+    padding: '18px', borderRadius: '14px',
+    display: 'flex', flexDirection: 'column' as const, gap: '10px',
     background: 'rgba(255,213,107,0.03)', border: '1px solid rgba(255,213,107,0.1)',
+    height: '100%',
   },
-  featuredCardTop:  { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' },
-  featuredIconWrap: {
-    width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
-    background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.18)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  featuredName: {
+    fontFamily: 'Fraunces, serif', fontSize: '15px', fontWeight: 400,
+    color: 'var(--text)', margin: 0,
   },
   tagPill: {
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.4px',
-    color: 'rgba(255,213,107,0.7)', background: 'rgba(255,213,107,0.07)',
-    border: '1px solid rgba(255,213,107,0.14)', borderRadius: '100px', padding: '2px 9px',
+    color: 'var(--accent-text)', background: 'rgba(0,76,63,0.08)',
+    border: '1px solid var(--border)', borderRadius: '100px', padding: '2px 8px',
   },
-  featuredName: { fontFamily: 'Fraunces, serif', fontSize: '16px', fontWeight: 400, color: 'var(--text)', margin: 0 },
-  featuredDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, flex: 1, margin: 0 },
 
-  /* Sections régulières */
-  sectionBlock: { marginBottom: '36px' },
+  /* Other sections */
+  section:      { marginBottom: '36px' },
   sectionLabel: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '12px', fontWeight: 600, letterSpacing: '0.7px',
-    textTransform: 'uppercase', color: 'var(--text-3)', marginBottom: '18px',
+    textTransform: 'uppercase' as const, color: 'var(--text-3)', marginBottom: '18px',
   },
   sectionCount: {
-    fontSize: '10px', fontWeight: 600, padding: '1px 7px', borderRadius: '100px',
+    fontSize: '10px', padding: '1px 7px', borderRadius: '100px',
     background: 'rgba(255,255,255,0.06)', color: 'var(--text-muted)',
   },
-  card:         { padding: '20px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px' },
-  cardHead:     { display: 'flex', alignItems: 'flex-start', gap: '12px' },
+  card: {
+    padding: '18px', borderRadius: '16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '10px', height: '100%',
+  },
+
+  /* Shared card elements */
+  cardTop: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
   platformIcon: {
-    width: '42px', height: '42px', borderRadius: '11px', flexShrink: 0,
+    width: '38px', height: '38px', borderRadius: '10px', flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  groupName:    { fontFamily: 'Fraunces, serif', fontSize: '15px', fontWeight: 400, color: 'var(--text)', margin: 0 },
-  memberCount:  { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--text-3)', marginTop: '3px' },
+  groupName: {
+    fontFamily: 'Fraunces, serif', fontSize: '15px', fontWeight: 400,
+    color: 'var(--text)', margin: 0,
+  },
   inlineTag: {
     display: 'inline-flex', alignItems: 'center', gap: '3px',
     fontSize: '10px', fontWeight: 500, padding: '2px 7px', borderRadius: '100px',
     background: 'rgba(147,197,253,0.07)', border: '1px solid rgba(147,197,253,0.14)',
     color: 'rgba(147,197,253,0.65)',
   },
-  desc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, margin: 0 },
+  desc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, margin: 0, flex: 1 },
+
+  /* Stats row */
+  statRow: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
+  statBubble: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '5px 11px', borderRadius: '8px',
+    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+    fontSize: '12px', color: 'var(--text-2)',
+  },
+  statNum: { fontWeight: 700, fontSize: '14px', color: 'var(--text)' },
+  statLbl: { color: 'var(--text-3)', fontSize: '12px' },
+  reachBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    fontSize: '11px', fontWeight: 500, color: '#34D399',
+    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)',
+    padding: '3px 9px', borderRadius: '100px',
+  },
+
+  /* Card actions */
+  actions: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    marginTop: 'auto', flexWrap: 'wrap' as const, paddingTop: '4px',
+  },
+  joinLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '7px 14px', borderRadius: '8px', textDecoration: 'none',
+    fontSize: '12px', fontWeight: 600,
+    background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border)',
+    color: 'var(--text-2)',
+  },
+  joinLinkFeatured: {
+    background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.25)',
+    color: 'var(--accent-text)',
+  },
+  statusBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '7px 14px', borderRadius: '8px', cursor: 'pointer',
+    fontSize: '12px', fontWeight: 500,
+    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+    color: 'var(--text-3)',
+  },
+  statusBtnOn: {
+    background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)',
+    color: '#34D399',
+  },
+  dismissBtn: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: '30px', height: '30px', borderRadius: '8px', cursor: 'pointer',
+    background: 'none', border: '1px solid var(--border)', color: 'var(--text-muted)',
+    flexShrink: 0,
+  },
+  restoreBtn: {
+    fontSize: '11px', color: 'var(--text-muted)', background: 'none',
+    border: '1px solid var(--border)', padding: '5px 10px',
+    borderRadius: '7px', cursor: 'pointer',
+  },
+
+  /* Dismissed bar */
+  dismissedBar: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '12px 16px', borderRadius: '10px', marginTop: '8px',
+    background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)',
+  },
+  showHiddenBtn: {
+    fontSize: '12px', color: 'var(--accent-text)', background: 'none',
+    border: '1px solid rgba(255,213,107,0.2)', padding: '4px 10px',
+    borderRadius: '6px', cursor: 'pointer',
+  },
 }
