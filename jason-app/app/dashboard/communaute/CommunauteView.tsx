@@ -6,7 +6,7 @@ import {
   Star, MagnifyingGlass, CaretDown, CaretUp, X,
   Check, EyeSlash, WifiHigh,
 } from '@phosphor-icons/react'
-import { setGroupMembership } from './actions'
+import { setGroupMembership, restoreAllDismissed } from './actions'
 
 interface Group {
   id: string
@@ -186,23 +186,16 @@ export default function CommunauteView({
           >
             Rejoindre <ArrowUpRight size={12} />
           </a>
-          {!isDismissed ? (
-            <>
-              <button
-                onClick={() => toggleJoined(g.id)}
-                style={{ ...s.statusBtn, ...(isJoined ? s.statusBtnOn : {}) }}
-              >
-                <Check size={12} weight={isJoined ? 'bold' : 'regular'} />
-                {isJoined ? "J'y suis" : "J'y suis ?"}
-              </button>
-              {!isJoined && (
-                <button onClick={() => dismiss(g.id)} style={s.dismissBtn} title="Pas intéressé">
-                  <X size={11} />
-                </button>
-              )}
-            </>
-          ) : (
+          {isDismissed ? (
             <button onClick={() => restore(g.id)} style={s.restoreBtn}>Restaurer</button>
+          ) : (
+            <button
+              onClick={() => toggleJoined(g.id)}
+              style={{ ...s.statusBtn, ...(isJoined ? s.statusBtnOn : {}) }}
+            >
+              <Check size={12} weight={isJoined ? 'bold' : 'regular'} />
+              {isJoined ? "J'y suis" : "J'y suis ?"}
+            </button>
           )}
         </div>
       </div>
@@ -388,11 +381,25 @@ export default function CommunauteView({
       {dismissedCount > 0 && (
         <div style={s.dismissedBar}>
           <EyeSlash size={14} color="var(--text-muted)" />
-          <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>
+          <span style={{ fontSize: '13px', color: 'var(--text-3)', flex: 1 }}>
             {dismissedCount} groupe{dismissedCount > 1 ? 's' : ''} masqué{dismissedCount > 1 ? 's' : ''}
           </span>
           <button onClick={() => setShowDismissed(v => !v)} style={s.showHiddenBtn}>
             {showDismissed ? 'Masquer' : 'Voir'}
+          </button>
+          <button
+            onClick={() => {
+              setMemberships(prev => {
+                const u = { ...prev }
+                Object.keys(u).forEach(k => { if (u[k] === 'dismissed') delete u[k] })
+                return u
+              })
+              setShowDismissed(false)
+              if (userId) startTransition(() => { restoreAllDismissed() })
+            }}
+            style={s.restoreAllBtn}
+          >
+            Tout restaurer
           </button>
         </div>
       )}
@@ -636,5 +643,10 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', color: 'var(--accent-text)', background: 'none',
     border: '1px solid rgba(255,213,107,0.2)', padding: '4px 10px',
     borderRadius: '6px', cursor: 'pointer',
+  },
+  restoreAllBtn: {
+    fontSize: '12px', color: '#34D399', background: 'rgba(52,211,153,0.08)',
+    border: '1px solid rgba(52,211,153,0.2)', padding: '4px 12px',
+    borderRadius: '6px', cursor: 'pointer', fontWeight: 500,
   },
 }
