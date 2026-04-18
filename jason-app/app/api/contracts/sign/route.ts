@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
 // Service role — bypass RLS complet (lecture + écriture)
@@ -75,6 +76,16 @@ export async function POST(request: NextRequest) {
 
     if (contract.statut === 'annule') {
       return NextResponse.json({ error: 'Ce contrat a été annulé.' }, { status: 409 })
+    }
+
+    // Sécurité : le bailleur ne peut pas signer à la place de son locataire
+    const authClient = await createAuthClient()
+    const { data: { user: authUser } } = await authClient.auth.getUser()
+    if (authUser && authUser.id === contract.user_id) {
+      return NextResponse.json(
+        { error: 'Le propriétaire ne peut pas signer à la place du locataire.' },
+        { status: 403 }
+      )
     }
 
     if (contract.statut !== 'en_attente') {

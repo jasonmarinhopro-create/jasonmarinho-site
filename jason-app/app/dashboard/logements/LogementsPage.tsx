@@ -216,7 +216,12 @@ export default function LogementsPage({ logements: initial }: Props) {
                   {l.animaux_acceptes && <span style={chip}>Animaux ✓</span>}
                   {l.fumeur_accepte && <span style={chip}>Fumeur ✓</span>}
                   <span style={{ ...chip, background: 'rgba(162,155,254,0.08)', border: '1px solid rgba(162,155,254,0.2)', color: '#a29bfe' }}>
-                    {l.methodes_paiement === 'stripe' ? '💳 Stripe' : l.methodes_paiement === 'les_deux' ? '💳 + 🏦 Les deux' : '🏦 Virement'}
+                    {(() => {
+                      const m = l.methodes_paiement ?? 'virement'
+                      const parts = m.split(',').map(s => s.trim())
+                      const icons: Record<string, string> = { virement: '🏦', stripe: '💳', especes: '💵', cheque: '📄', paypal: '🅿️', airbnb: '🏠', carte: '💳' }
+                      return parts.map(p => icons[p] ?? p).join(' ')
+                    })()}
                   </span>
                 </div>
                 {l.description && (
@@ -301,34 +306,46 @@ export default function LogementsPage({ logements: initial }: Props) {
               </div>
               <div style={fieldRow}>
                 <label style={label}>Méthodes de paiement acceptées</label>
-                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '8px' }}>
-                  {[
-                    { value: 'virement', label: 'Virement bancaire uniquement', desc: 'Le voyageur paie par virement (IBAN affiché dans le contrat).' },
-                    { value: 'stripe',   label: 'Paiement en ligne (Stripe) uniquement', desc: 'Le voyageur paie par carte bancaire via Stripe après signature.' },
-                    { value: 'les_deux', label: 'Les deux (virement + Stripe)', desc: 'Le voyageur choisit entre virement bancaire ou paiement Stripe.' },
-                  ].map(opt => (
-                    <label key={opt.value} style={{
-                      display: 'flex', alignItems: 'flex-start', gap: '10px',
-                      padding: '10px 12px', borderRadius: '10px', cursor: 'pointer',
-                      background: form.methodes_paiement === opt.value ? 'rgba(52,211,153,0.08)' : 'var(--surface)',
-                      border: `1px solid ${form.methodes_paiement === opt.value ? 'rgba(52,211,153,0.3)' : 'var(--border)'}`,
-                      transition: 'all 0.15s',
-                    }}>
-                      <input
-                        type="radio"
-                        name="methodes_paiement"
-                        value={opt.value}
-                        checked={form.methodes_paiement === opt.value}
-                        onChange={() => set('methodes_paiement', opt.value)}
-                        style={{ marginTop: '3px', accentColor: '#34D399', flexShrink: 0 }}
-                      />
-                      <div>
-                        <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: form.methodes_paiement === opt.value ? '#34D399' : 'var(--text)' }}>{opt.label}</p>
-                        <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5 }}>{opt.desc}</p>
-                      </div>
-                    </label>
-                  ))}
+                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '8px' }}>
+                  {([
+                    { value: 'virement', label: '🏦 Virement bancaire' },
+                    { value: 'stripe',   label: '💳 Paiement Stripe (en ligne)' },
+                    { value: 'especes',  label: '💵 Espèces' },
+                    { value: 'cheque',   label: '📄 Chèque' },
+                    { value: 'paypal',   label: '🅿️ PayPal' },
+                    { value: 'airbnb',   label: '🏠 Airbnb / Booking' },
+                    { value: 'carte',    label: '💳 Carte bancaire (TPE)' },
+                  ] as { value: string; label: string }[]).map(opt => {
+                    const selected = (form.methodes_paiement ?? 'virement').split(',').map(s => s.trim())
+                    const checked = selected.includes(opt.value)
+                    const toggle = () => {
+                      const next = checked ? selected.filter(v => v !== opt.value) : [...selected, opt.value]
+                      set('methodes_paiement', next.length ? next.join(',') : 'virement')
+                    }
+                    return (
+                      <label key={opt.value} style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '7px',
+                        padding: '7px 12px', borderRadius: '10px', cursor: 'pointer',
+                        background: checked ? 'rgba(52,211,153,0.1)' : 'var(--surface)',
+                        border: `1px solid ${checked ? 'rgba(52,211,153,0.35)' : 'var(--border)'}`,
+                        fontSize: '13px', fontWeight: checked ? 600 : 400,
+                        color: checked ? '#34D399' : 'var(--text-2)',
+                        transition: 'all 0.15s', userSelect: 'none' as const,
+                      }}>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={toggle}
+                          style={{ display: 'none' }}
+                        />
+                        {opt.label}
+                      </label>
+                    )
+                  })}
                 </div>
+                <p style={{ margin: '6px 0 0', fontSize: '11px', color: 'var(--text-3)' }}>
+                  Sélectionnez tous les modes acceptés — ils seront proposés dans le contrat.
+                </p>
               </div>
               {error && (
                 <div style={errorBox}>

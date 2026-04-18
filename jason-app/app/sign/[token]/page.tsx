@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore } from 'next/cache'
 import { notFound } from 'next/navigation'
 import SignaturePage from './SignaturePage'
@@ -67,6 +68,11 @@ export default async function SignPage({
     .single()
 
   if (error || !contract) return notFound()
+
+  // Vérifier si le visiteur est le bailleur (propriétaire) — il ne doit pas pouvoir signer
+  const authClient = await createAuthClient()
+  const { data: { user: authUser } } = await authClient.auth.getUser()
+  const isViewerBailleur = !!(authUser && authUser.id === contract.user_id)
 
   const expired = new Date(contract.token_expires_at) < new Date()
   const alreadySigned = contract.statut === 'signe'
@@ -232,9 +238,19 @@ export default async function SignPage({
                 <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>remboursé sous 30 jours après l&apos;état des lieux</p>
               </div>
             </div>
-            <p style={{ ...contractText, marginTop: '12px' }}>
-              <strong>Modalités de paiement&nbsp;:</strong> {contract.modalites_paiement}
+            <p style={{ ...contractText, marginTop: '12px', marginBottom: '8px' }}>
+              <strong>Modalités de paiement&nbsp;:</strong>
             </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {(contract.modalites_paiement ?? 'Virement bancaire').split(/,\s*|\s*\/\s*|\s*ou\s*/i).map((m: string, i: number) => (
+                <span key={i} style={{
+                  display: 'inline-block',
+                  background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)',
+                  borderRadius: '8px', padding: '4px 10px',
+                  fontSize: '12px', color: '#FFD56B', fontWeight: 500,
+                }}>{m.trim()}</span>
+              ))}
+            </div>
           </section>
 
           <div style={divider} />
@@ -312,28 +328,26 @@ export default async function SignPage({
         {/* Signature canvas (si non signé) */}
         {!alreadySigned && !expired && !cancelled && (
           <div className="no-print">
-            <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
-          </div>
-        )}
-
-        {/* ── Paiements ── */}
-        {alreadySigned && (paymentEnabled || hasDeposit || hostIban) && (
-          <div style={paymentsBlock} className="no-print">
-            <p style={paymentsTitle}>Finaliser votre dossier</p>
-
-            {/* Stripe pas encore configuré par le bailleur */}
-            {(paymentEnabled || hasDeposit) && !stripeReady && !hostIban && (
+            {isViewerBailleur ? (
               <div style={warningBanner}>
-                <span style={{ fontSize: '20px' }}>⏳</span>
+                <span style={{ fontSize: '20px' }}>🔒</span>
                 <div>
-                  <strong>Paiement en ligne bientôt disponible</strong>
+                  <strong>Vous êtes le propriétaire-bailleur</strong>
                   <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.85 }}>
-                    Le propriétaire finalise la configuration de son compte de paiement.
-                    Revenez dans quelques instants ou contactez-le directement.
+                    Ce lien est destiné à votre locataire pour qu&apos;il signe. Transmettez-le par email ou message.
                   </p>
                 </div>
               </div>
+            ) : (
+              <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
             )}
+          </div>
+        )}
+
+        {/* ── Paiements (uniquement si actionnable : Stripe prêt ou IBAN configuré) ── */}
+        {alreadySigned && ((paymentEnabled && stripeReady) || (hasDeposit && stripeReady) || hostIban) && (
+          <div style={paymentsBlock} className="no-print">
+            <p style={paymentsTitle}>Finaliser votre dossier</p>
 
             {/* Sections Stripe (uniquement si compte prêt) */}
             {stripeReady && (
