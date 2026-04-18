@@ -35,10 +35,12 @@ export default function FormationView({
   formation,
   formationId,
   initialProgress,
+  initialCompletedLessons,
 }: {
   formation: Formation
   formationId?: string | null
   initialProgress?: number | null
+  initialCompletedLessons?: number[]
 }) {
   const totalLessons = formation.modules.reduce((a, m) => a + m.lessons.length, 0)
   const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
@@ -53,8 +55,11 @@ export default function FormationView({
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  // Restore completed lessons from saved progress (approximate: first N lessons)
+  // Restaurer les leçons complétées depuis la DB (IDs exacts) ou par pourcentage (fallback)
   const restoredLessons = (() => {
+    if (initialCompletedLessons && initialCompletedLessons.length > 0) {
+      return initialCompletedLessons
+    }
     if (!initialProgress || initialProgress <= 0) return []
     const count = Math.round((initialProgress / 100) * totalLessons)
     return formation.modules.flatMap(m => m.lessons.map(l => l.id)).slice(0, count)
@@ -90,7 +95,7 @@ export default function FormationView({
 
     if (formationId) {
       const newProgress = Math.round((updated.length / totalLessons) * 100)
-      updateFormationProgress(formationId, newProgress)
+      updateFormationProgress(formationId, newProgress, updated)
     }
 
     // Auto-advance to next lesson
