@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import Stripe from 'stripe'
+import { planFromPriceId } from '@/lib/constants/stripe-plans'
 
 function serviceClient() {
   return createClient(
@@ -105,6 +106,63 @@ export async function POST(request: NextRequest) {
             .update({ stripe_onboarding_complete: true })
             .eq('stripe_account_id', account.id)
         }
+        break
+      }
+
+      // Abonnement plateforme créé
+      case 'customer.subscription.created': {
+        const sub = event.data.object as Stripe.Subscription
+        const userId = sub.metadata?.user_id
+        if (!userId) break
+        const priceId = sub.items.data[0]?.price?.id ?? ''
+        await db.from('profiles').update({
+          plan: planFromPriceId(priceId),
+          stripe_subscription_id: sub.id,
+          stripe_subscription_status: sub.status,
+          stripe_price_id: priceId,
+        }).eq('id', userId)
+        break
+      }
+
+      // Abonnement mis à jour (upgrade, downgrade, renouvellement)
+      case 'customer.subscription.updated': {
+        const sub = event.data.object as Stripe.Subscription
+        const userId = sub.metadata?.user_id
+        if (!userId) break
+        const priceId = sub.items.data[0]?.price?.id ?? ''
+        const plan = sub.status === 'active' ? planFromPriceId(priceId) : 'decouverte'
+        await db.from('profiles').update({
+          plan,
+          stripe_subscription_status: sub.status,
+          stripe_price_id: priceId,
+        }).eq('id', userId)
+        break
+      }
+
+      // Abonnement résilié
+      case 'customer.subscription.deleted': {
+        const sub = event.data.object as Stripe.Subscription
+        const userId = sub.metadata?.user_id
+        if (!userId) break
+        await db.from('profiles').update({
+          plan: 'decouverte',
+          stripe_subscription_id: null,
+          stripe_subscription_status: 'canceled',
+          stripe_price_id: null,
+        }).eq('id', userId)
+        break
+      }
+
+      // Paiement échoué → passe en past_due
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object as Stripe.Invoice
+        const subId = typeof invoice.subscription === 'string'
+          ? invoice.subscription
+          : invoice.subscription?.id
+        if (!subId) break
+        await db.from('profiles').update({
+          stripe_subscription_status: 'past_due',
+        }).eq('stripe_subscription_id', subId)
         break
       }
     }

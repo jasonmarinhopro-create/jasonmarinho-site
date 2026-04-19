@@ -1,11 +1,6 @@
 import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 
-/**
- * Fetches the current user's profile.
- * Wrapped in React cache() so multiple calls within the same server request
- * (e.g. layout + page) execute only ONE Supabase roundtrip.
- */
 export const getProfile = cache(async () => {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
@@ -13,7 +8,7 @@ export const getProfile = cache(async () => {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, role, driing_status, plan')
+    .select('full_name, role, driing_status, plan, stripe_subscription_id, stripe_subscription_status, stripe_customer_id')
     .eq('id', session.user.id)
     .single()
 
@@ -22,6 +17,9 @@ export const getProfile = cache(async () => {
     full_name: profile?.full_name ?? null,
     role: (profile?.role ?? 'user') as 'user' | 'driing' | 'admin',
     driing_status: (profile?.driing_status ?? 'none') as 'none' | 'pending' | 'confirmed',
-    plan: (profile?.plan ?? 'decouverte') as 'decouverte' | 'driing',
+    plan: (profile?.plan ?? 'decouverte') as 'decouverte' | 'standard' | 'driing',
+    stripe_subscription_id: profile?.stripe_subscription_id ?? null,
+    stripe_subscription_status: profile?.stripe_subscription_status ?? null,
+    stripe_customer_id: profile?.stripe_customer_id ?? null,
   }
 })

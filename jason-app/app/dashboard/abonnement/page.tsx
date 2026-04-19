@@ -1,8 +1,11 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
-import { Check, Wrench, Star, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle } from '@phosphor-icons/react/dist/ssr'
 import DriingRequestForm from './DriingRequestForm'
+import SubscribeButton from './SubscribeButton'
+import ManageButton from './ManageButton'
+import { STRIPE_PLANS } from '@/lib/constants/stripe-plans'
 
 const DECOUVERTE_FEATURES = [
   'Guide LCD, actualités & gabarits (FR + EN)',
@@ -29,7 +32,11 @@ const DRIING_FEATURES = [
   'Accès anticipé aux nouveautés',
 ]
 
-export default async function AbonnementPage() {
+export default async function AbonnementPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ subscription?: string }>
+}) {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const userEmail = session?.user?.email ?? ''
@@ -40,6 +47,10 @@ export default async function AbonnementPage() {
   const isStandard = plan === 'standard'
   const isDecouverte = !isDriing && !isStandard
   const driingStatus = profile?.driing_status ?? 'none'
+  const hasSubscription = isStandard || isDriing
+
+  const params = await searchParams
+  const subscriptionResult = params.subscription // 'success' | 'cancel' | undefined
 
   return (
     <>
@@ -52,6 +63,19 @@ export default async function AbonnementPage() {
           </h2>
           <p style={styles.pageDesc}>Des offres adaptées à chaque étape de votre activité.</p>
         </div>
+
+        {subscriptionResult === 'success' && (
+          <div style={styles.alertSuccess} className="fade-up">
+            <CheckCircle size={18} color="#34D399" weight="fill" />
+            Abonnement activé — bienvenue dans le plan Standard !
+          </div>
+        )}
+        {subscriptionResult === 'cancel' && (
+          <div style={styles.alertInfo} className="fade-up">
+            <XCircle size={18} color="var(--text-muted)" weight="fill" />
+            Paiement annulé. Tu peux réessayer à tout moment.
+          </div>
+        )}
 
         <div style={styles.mainGrid} className="abo-grid">
 
@@ -160,9 +184,7 @@ export default async function AbonnementPage() {
                       </div>
                     ))}
                   </div>
-                  <a href="https://jasonmarinho.com/tarifs/" target="_blank" rel="noopener" style={styles.ctaStandard}>
-                    Voir l&apos;offre Standard <ArrowRight size={14} weight="bold" />
-                  </a>
+                  <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard — 4,98 €/mois" />
                   <p style={styles.smallNote}>Prix HT bloqué à vie tant que l&apos;abonnement est actif. Résiliable à tout moment.</p>
                 </div>
               </>
@@ -196,6 +218,20 @@ export default async function AbonnementPage() {
               </>
             )}
 
+            {/* Gérer abonnement — Standard actif */}
+            {isStandard && (
+              <>
+                <div style={styles.sectionLabel} className="fade-up">
+                  <Wrench size={12} />
+                  Gérer mon abonnement
+                </div>
+                <div style={styles.manageCard} className="fade-up d1">
+                  <p style={styles.planDesc}>Modifie, mets en pause ou résilie ton abonnement depuis le portail Stripe.</p>
+                  <ManageButton />
+                </div>
+              </>
+            )}
+
             {/* Driing actif — gestion */}
             {isDriing && (
               <>
@@ -204,7 +240,7 @@ export default async function AbonnementPage() {
                   Gérer mon accès
                 </div>
                 <div style={styles.manageCard} className="fade-up d1">
-                  <p style={styles.planDesc}>Pour gérer ou résilier ton abonnement Driing, rends-toi sur l&apos;espace Driing ou contacte le support.</p>
+                  <p style={styles.planDesc}>Pour gérer ton abonnement Driing, contacte le support ou rends-toi sur l&apos;espace Driing.</p>
                   <a href="mailto:contact@jasonmarinho.com" style={styles.ctaManage}>
                     Contacter le support <ArrowRight size={13} weight="bold" />
                   </a>
@@ -292,4 +328,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '16px', padding: '24px',
   },
   ctaManage: { display: 'inline-flex', alignItems: 'center', gap: '7px', color: 'var(--text-2)', fontSize: '13px', fontWeight: 500, textDecoration: 'none' },
+
+  alertSuccess: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: 500, color: '#34D399', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: '12px', padding: '14px 18px', marginBottom: '24px' },
+  alertInfo: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: 400, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '14px 18px', marginBottom: '24px' },
 }
