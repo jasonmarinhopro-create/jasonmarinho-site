@@ -55,33 +55,52 @@
     .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--y);animation:pulse 2s infinite}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-    /* Filters */
-    .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(0,76,63,.1)}
-    .f-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:7px 14px;border-radius:100px;border:1px solid rgba(0,76,63,.12);background:#fff;color:var(--tl);cursor:pointer;transition:all .15s;font-family:'Outfit',sans-serif;white-space:nowrap}
-    .f-btn:hover{border-color:rgba(0,76,63,.3);color:var(--td)}
-    .f-btn.active{background:var(--g);color:#fff;border-color:var(--g)}
-    .f-count{font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;background:rgba(0,76,63,.08);color:var(--tl)}
-    .f-btn.active .f-count{background:rgba(255,255,255,.2);color:rgba(255,255,255,.8)}
+    /* Steps */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;position:relative}
+    .steps::before{content:"";position:absolute;top:28px;left:calc(16.66% + 20px);right:calc(16.66% + 20px);height:1px;background:linear-gradient(90deg,rgba(0,76,63,.15),rgba(0,76,63,.08));z-index:0}
+    .step{background:#fff;border:1px solid rgba(0,76,63,.09);border-radius:16px;padding:28px 24px;position:relative;z-index:1}
+    .step-n{width:40px;height:40px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#fff;margin-bottom:20px;font-family:'Fraunces',serif}
+    .step h3{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:400;color:var(--td);margin:0 0 8px}
+    .step p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
 
-    /* News grid */
-    .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
-    .news-card{background:#fff;border:1px solid rgba(0,76,63,.09);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px;transition:box-shadow .2s,transform .2s;text-decoration:none;color:inherit}
-    .news-card:hover{box-shadow:0 8px 32px rgba(0,76,63,.09);transform:translateY(-2px)}
-    .nc-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-    .nc-cat{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid;white-space:nowrap}
-    .nc-date{font-size:12px;color:var(--tl);font-weight:400}
-    .nc-title{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.4;margin:0}
-    .nc-summary{font-size:13px;color:var(--tm);line-height:1.65;margin:0;flex:1}
-    .nc-source{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--tl);margin-top:auto;transition:color .15s}
-    .news-card:hover .nc-source{color:var(--g)}
+    /* Theme cards */
+    .themes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .theme-card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:24px;transition:box-shadow .2s,transform .2s}
+    .theme-card:hover{box-shadow:0 6px 24px rgba(0,76,63,.09);transform:translateY(-2px)}
+    .theme-ic{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+    .theme-card h3{font-family:'Fraunces',serif;font-size:1.05rem;margin:0 0 6px;font-weight:400;color:var(--td)}
+    .theme-card p{font-size:13.5px;line-height:1.65;color:var(--tm);margin:0}
 
-    /* No results */
-    .no-results{grid-column:1/-1;text-align:center;padding:48px;font-size:15px;color:var(--tl)}
+    /* FAQ */
+    .faq{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+    .faq-item{border:1px solid rgba(0,76,63,.1);border-radius:12px;overflow:hidden}
+    .faq-q{padding:17px 20px;font-weight:600;font-size:14.5px;color:var(--td);cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:#fff;user-select:none}
+    .faq-q:hover{background:rgba(0,76,63,.02)}
+    .faq-a{padding:0 20px 16px;font-size:14px;line-height:1.75;color:var(--tm);display:none}
+    .faq-item.open .faq-a{display:block} .faq-item.open .faq-ic{transform:rotate(180deg)}
+    .faq-ic{transition:transform .2s;color:var(--tl);font-size:13px}
+
+    /* Two col */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
+
+    /* Mock news card */
+    .mock-wrap{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(0,76,63,.06)}
+    .mock-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(0,76,63,.07)}
+    .mock-ttl{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--td)}
+    .mock-sub{font-size:11px;color:var(--tl);margin-top:2px}
+    .mock-badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:100px;background:rgba(0,76,63,.08);color:var(--g)}
+    .mock-news{padding:14px 0;border-bottom:1px solid rgba(0,76,63,.05)}
+    .mock-news:last-child{border-bottom:none}
+    .mock-news-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .mock-cat{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:100px}
+    .mock-date{font-size:10px;color:var(--tl)}
+    .mock-news-ttl{font-family:'Fraunces',serif;font-size:13px;font-weight:500;color:var(--td);margin:0 0 4px;line-height:1.4}
+    .mock-news-src{font-size:10px;color:var(--tl)}
 
     /* CTA */
     .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,52px);text-align:center}
 
-    @media(max-width:560px){.news-grid{grid-template-columns:1fr}}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}.steps{grid-template-columns:1fr}.steps::before{display:none}.themes-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -104,142 +123,123 @@
 <section class="sec">
   <div class="s-in">
 
-    <!-- Filter bar -->
-    <div class="filter-bar" id="filterBar">
-      <button class="f-btn active" data-cat="all" onclick="filterNews(this)">Tout <span class="f-count">12</span></button>
-      <button class="f-btn" data-cat="reglementation" onclick="filterNews(this)">Réglementation <span class="f-count">4</span></button>
-      <button class="f-btn" data-cat="fiscalite" onclick="filterNews(this)">Fiscalité <span class="f-count">2</span></button>
-      <button class="f-btn" data-cat="plateformes" onclick="filterNews(this)">Plateformes <span class="f-count">1</span></button>
-      <button class="f-btn" data-cat="gites" onclick="filterNews(this)">Gîtes & Meublés <span class="f-count">1</span></button>
-      <button class="f-btn" data-cat="communes" onclick="filterNews(this)">Communes <span class="f-count">1</span></button>
-      <button class="f-btn" data-cat="reservation-directe" onclick="filterNews(this)">Réserv. directe <span class="f-count">1</span></button>
-      <button class="f-btn" data-cat="conciergerie" onclick="filterNews(this)">Conciergeries <span class="f-count">1</span></button>
-      <button class="f-btn" data-cat="outils" onclick="filterNews(this)">Outils <span class="f-count">1</span></button>
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="lbl dk">Comment ça marche</div>
+      <h2 class="h2">Une veille LCD <em>faite pour toi</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:560px;line-height:1.75">Tu n'as plus besoin de passer des heures à chercher. On surveille, on trie, on résume — tu reçois l'essentiel.</p>
     </div>
 
-    <!-- Grid -->
-    <div class="news-grid" id="newsGrid">
+    <div class="steps" style="margin-top:0">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>On surveille pour toi</h3>
+        <p>Sources officielles (service-public.fr, ecologie.gouv.fr), cabinets spécialisés, presse immobilière… On couvre ce qui touche directement les hôtes LCD.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>On trie et on résume</h3>
+        <p>Chaque actu est catégorisée (réglementation, fiscalité, plateformes…) et résumée en quelques lignes claires. Pas de jargon juridique.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>Tu accèdes aux sources</h3>
+        <p>Chaque actu garde un lien direct vers l'article source. Tu peux creuser si tu veux — ou te contenter du résumé si tu es pressé.</p>
+      </div>
+    </div>
 
-      <a class="news-card" data-cat="reglementation" href="https://www.avantio.com/fr/blog/location-saisonniere-obligation-proprietaire/" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#2563eb;background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2)">Réglementation</span>
-          <span class="nc-date">15 avr. 2026</span>
+  </div>
+</section>
+
+<!-- THÈMES -->
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:36px">
+      <div class="lbl dk">Ce qu'on couvre</div>
+      <h2 class="h2">Toutes les thématiques <em>qui t'impactent</em></h2>
+    </div>
+    <div class="themes-grid">
+      <div class="theme-card"><div class="theme-ic" style="color:#2563eb;background:rgba(59,130,246,.08)"><i class="ph ph-gavel"></i></div><h3>Réglementation</h3><p>Loi Le Meur, numéro d'enregistrement, DPE, plafonds de location… Tout ce qui change dans le cadre légal.</p></div>
+      <div class="theme-card"><div class="theme-ic" style="color:#059669;background:rgba(52,211,153,.08)"><i class="ph ph-receipt"></i></div><h3>Fiscalité</h3><p>Micro-BIC, régime réel, LMNP, LMP, seuils et abattements. Les évolutions qui touchent ta déclaration.</p></div>
+      <div class="theme-card"><div class="theme-ic" style="color:#d97706;background:rgba(251,146,60,.08)"><i class="ph ph-globe"></i></div><h3>Plateformes OTA</h3><p>Airbnb, Booking, Abritel… Nouvelles obligations, transmissions aux impôts, changements de commissions.</p></div>
+      <div class="theme-card"><div class="theme-ic" style="color:#b45309;background:rgba(245,158,11,.08)"><i class="ph ph-house"></i></div><h3>Marché & tendances</h3><p>Chiffres clés du secteur, évolution de la demande, saisonnalité, performances par région.</p></div>
+      <div class="theme-card"><div class="theme-ic" style="color:#475569;background:rgba(100,116,139,.08)"><i class="ph ph-buildings"></i></div><h3>Communes & villes</h3><p>Les décisions locales qui impactent tes biens : quota 90 jours, changements d'usage, autorisations.</p></div>
+      <div class="theme-card"><div class="theme-ic" style="color:#6d28d9;background:rgba(167,139,250,.08)"><i class="ph ph-lightning"></i></div><h3>Outils & tech</h3><p>Tarification dynamique, serrures connectées, channel managers — ce qui fait gagner du temps aux hôtes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- APERÇU DE L'ESPACE MEMBRES -->
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Dans ton espace membres</div>
+        <h2 class="h2">Les actus, <em>à portée de clic</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Dès que tu te connectes, tu accèdes à toutes les actus LCD classées par thématique. Une interface épurée, sans pop-ups ni distractions.</p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">Filtre par thématique</strong>Tu ne veux voir que la fiscalité ? Un clic. Juste la réglementation ? Un autre clic.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">Lien direct vers la source</strong>Chaque actu renvoie vers l'article original pour vérifier ou creuser.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">Mise à jour régulière</strong>On ajoute les nouvelles actus au fur et à mesure qu'elles sortent.</div>
         </div>
-        <h2 class="nc-title">Téléservice national d'enregistrement obligatoire dès le 20 mai 2026</h2>
-        <p class="nc-summary">Toutes les mairies doivent avoir mis en place une procédure d'enregistrement avant le 20 mai 2026. Chaque bien se voit attribuer un numéro unique à 13 caractères qui doit figurer sur toutes les annonces, sous peine d'une amende pouvant atteindre 10 000 €.</p>
-        <span class="nc-source">avantio.com <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="communes" href="https://notaires-office.fr/mise-a-jour-du-guide-pratique-de-la-reglementation-des-meubles-de-tourisme/" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#475569;background:rgba(100,116,139,.08);border-color:rgba(100,116,139,.2)">Communes & Villes</span>
-          <span class="nc-date">14 avr. 2026</span>
+      </div>
+      <div>
+        <div class="mock-wrap">
+          <div class="mock-head">
+            <div><div class="mock-ttl">Actualités LCD</div><div class="mock-sub">12 articles · mis à jour récemment</div></div>
+            <span class="mock-badge">3 nouveaux</span>
+          </div>
+          <div class="mock-news">
+            <div class="mock-news-meta"><span class="mock-cat" style="color:#2563eb;background:rgba(59,130,246,.1)">Réglementation</span><span class="mock-date">il y a 4 j</span></div>
+            <p class="mock-news-ttl">Téléservice national d'enregistrement obligatoire dès mai 2026</p>
+            <span class="mock-news-src">avantio.com ↗</span>
+          </div>
+          <div class="mock-news">
+            <div class="mock-news-meta"><span class="mock-cat" style="color:#059669;background:rgba(52,211,153,.1)">Fiscalité</span><span class="mock-date">il y a 2 sem</span></div>
+            <p class="mock-news-ttl">Micro-BIC 2026 : abattement réduit à 30 % pour les meublés non classés</p>
+            <span class="mock-news-src">jedeclaremonmeuble.com ↗</span>
+          </div>
+          <div class="mock-news">
+            <div class="mock-news-meta"><span class="mock-cat" style="color:#d97706;background:rgba(251,146,60,.1)">Plateformes</span><span class="mock-date">il y a 1 mois</span></div>
+            <p class="mock-news-ttl">Airbnb et Booking obligés de déclarer tes revenus aux impôts</p>
+            <span class="mock-news-src">liwango.com ↗</span>
+          </div>
         </div>
-        <h2 class="nc-title">Numéro d'enregistrement : un système national centralisé pour tous les meublés</h2>
-        <p class="nc-summary">Un téléservice national centralise désormais toutes les déclarations de meublés de tourisme. Le numéro attribué à chaque bien doit obligatoirement apparaître sur toutes tes annonces en ligne, quelle que soit la plateforme utilisée.</p>
-        <span class="nc-source">notaires-office.fr <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:12px 0 0">Illustration — vue réelle dans l'espace membres</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <a class="news-card" data-cat="gites" href="https://www.pole-implantation-tourisme.org/tendances-2026-gites-chambres-hotes-france/" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#b45309;background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2)">Gîtes & Meublés</span>
-          <span class="nc-date">12 avr. 2026</span>
+<!-- FAQ -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Questions fréquentes</div>
+        <h2 class="h2">Ce que tu <em>veux savoir</em></h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q">Les sources sont-elles vérifiées ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. On privilégie les sources officielles (service-public.fr, ecologie.gouv.fr, legifrance), les cabinets d'experts-comptables spécialisés LCD, et la presse immobilière reconnue. Chaque actu garde un lien direct vers la source originale.</div>
         </div>
-        <h2 class="nc-title">Gîtes de France : +4 % de nuitées, le tourisme rural confirme sa dynamique</h2>
-        <p class="nc-summary">Le réseau Gîtes de France enregistre plus de 28 millions de nuitées, en hausse de 4 % par rapport à l'année précédente. Le tourisme rural attire une clientèle croissante, notamment en avant et arrière-saison.</p>
-        <span class="nc-source">pole-implantation-tourisme.org <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="reglementation" href="https://www.epsilium.fr/reforme-airbnb-2026-ce-qui-change-pour-les-proprietaires/" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#2563eb;background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2)">Réglementation</span>
-          <span class="nc-date">10 avr. 2026</span>
+        <div class="faq-item">
+          <div class="faq-q">À quelle fréquence les actus sont ajoutées ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Dès qu'une information importante tombe. On ne publie pas pour publier — on sélectionne ce qui a vraiment un impact pour les hôtes LCD. En moyenne, plusieurs actus par semaine.</div>
         </div>
-        <h2 class="nc-title">Loi Le Meur : les communes peuvent abaisser le plafond à 90 jours par an</h2>
-        <p class="nc-summary">Depuis janvier 2025, les conseils municipaux peuvent réduire la durée maximale de location d'une résidence principale de 120 à 90 jours par an. Plusieurs grandes villes ont déjà adopté cette mesure.</p>
-        <span class="nc-source">epsilium.fr <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="reglementation" href="https://www.loftely.com/blog/actualites/reglementation-locations-saisonnieres-2026.html" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#2563eb;background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2)">Réglementation</span>
-          <span class="nc-date">8 avr. 2026</span>
+        <div class="faq-item">
+          <div class="faq-q">Est-ce que je peux suggérer une actu ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui, avec plaisir. Depuis ton espace membres, utilise le formulaire de contact pour nous signaler un sujet ou un article qui t'a interpellé. On étudie chaque suggestion.</div>
         </div>
-        <h2 class="nc-title">Règlement européen sur la transparence des locations : en vigueur en mai 2026</h2>
-        <p class="nc-summary">Airbnb, Booking et les autres plateformes seront tenues de transmettre les données de leurs hôtes aux autorités fiscales et aux collectivités locales. Un contrôle renforcé à partir de mai 2026.</p>
-        <span class="nc-source">loftely.com <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="reservation-directe" href="https://www.moncercleimmo.com/blog-articles/location-courte-duree-comment-te-demarquer" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#059669;background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2)">Réserv. directe</span>
-          <span class="nc-date">6 avr. 2026</span>
+        <div class="faq-item">
+          <div class="faq-q">C'est gratuit ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. L'accès aux actualités LCD est inclus dans l'espace membres gratuit. Crée ton compte, connecte-toi, et tu y accèdes immédiatement.</div>
         </div>
-        <h2 class="nc-title">Réservation directe : comment réduire ta dépendance aux OTA en 2026</h2>
-        <p class="nc-summary">Face à la montée des commissions, de plus en plus d'hôtes misent sur la réservation directe. Site personnel, liste de diffusion, réseaux sociaux : des stratégies concrètes pour fidéliser tes voyageurs et préserver ta marge.</p>
-        <span class="nc-source">moncercleimmo.com <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="fiscalite" href="https://www.jedeclaremonmeuble.com/lmnp-2026/" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#059669;background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2)">Fiscalité</span>
-          <span class="nc-date">5 avr. 2026</span>
+        <div class="faq-item">
+          <div class="faq-q">Est-ce que c'est un conseil juridique ou fiscal ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Non. On informe et on résume, mais chaque situation est unique. Pour une décision fiscale ou juridique précise, on te recommande toujours de consulter un expert-comptable ou un avocat spécialisé.</div>
         </div>
-        <h2 class="nc-title">Micro-BIC 2026 : abattement réduit à 30 % pour les meublés non classés</h2>
-        <p class="nc-summary">Depuis le 1er janvier 2025, les revenus issus de la location de meublés non classés ne bénéficient plus que d'un abattement de 30 %, contre 50 % auparavant. Le seuil de revenus passe de 77 700 € à 15 000 € par an.</p>
-        <span class="nc-source">jedeclaremonmeuble.com <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="conciergerie" href="https://toploc.com/blog/hotes/tarifs-conciergerie-location-saisonniere" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#7c3aed;background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)">Conciergeries</span>
-          <span class="nc-date">1 avr. 2026</span>
-        </div>
-        <h2 class="nc-title">Conciergeries : tarifs entre 17 % et 25 % des loyers selon les villes</h2>
-        <p class="nc-summary">Le tarif moyen d'une conciergerie de location saisonnière oscille entre 17 % et 25 % HT des loyers perçus. Les destinations côtières et à forte demande se situent en haut de la fourchette. Comparer les offres locales reste essentiel avant de déléguer.</p>
-        <span class="nc-source">toploc.com <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="fiscalite" href="https://blog.maslow.immo/lmnp-2026/" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#059669;background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2)">Fiscalité</span>
-          <span class="nc-date">28 mars 2026</span>
-        </div>
-        <h2 class="nc-title">LMNP : les amortissements réintégrés dans le calcul de la plus-value à la revente</h2>
-        <p class="nc-summary">La loi de finances 2025 modifie le traitement fiscal des amortissements en LMNP : à la revente d'un bien, les amortissements déduits seront réintégrés dans le calcul de la plus-value imposable. Un changement significatif pour les investisseurs en location meublée.</p>
-        <span class="nc-source">maslow.immo <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="reglementation" href="https://www.ecologie.gouv.fr/politiques-publiques/location-touristique-meublee" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#2563eb;background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2)">Réglementation</span>
-          <span class="nc-date">20 mars 2026</span>
-        </div>
-        <h2 class="nc-title">DPE : les meublés de tourisme soumis aux mêmes règles que la location classique</h2>
-        <p class="nc-summary">Les meublés de tourisme seront progressivement soumis aux mêmes obligations de performance énergétique que les locations à l'année. À l'horizon 2034, seuls les logements classés A à D pourront être proposés en location courte durée.</p>
-        <span class="nc-source">ecologie.gouv.fr <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="plateformes" href="https://www.liwango.com/fr/blog/fiscalite-location-courte-duree" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#d97706;background:rgba(251,146,60,.08);border-color:rgba(251,146,60,.2)">Plateformes OTA</span>
-          <span class="nc-date">15 mars 2026</span>
-        </div>
-        <h2 class="nc-title">Airbnb et Booking obligés de déclarer tes revenus aux impôts</h2>
-        <p class="nc-summary">Les plateformes de location courte durée transmettent depuis 2024 les revenus de leurs hôtes directement à l'administration fiscale. En 2026, les contrôles se renforcent : les revenus non déclarés exposent les hôtes à des redressements.</p>
-        <span class="nc-source">liwango.com <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
-      <a class="news-card" data-cat="outils" href="https://coliveo.fr/etude-de-marche-location-saisonniere-en-france-en-2025/" target="_blank" rel="noopener noreferrer">
-        <div class="nc-meta">
-          <span class="nc-cat" style="color:#6d28d9;background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.2)">Outils & Tech</span>
-          <span class="nc-date">10 mars 2026</span>
-        </div>
-        <h2 class="nc-title">Tarification dynamique : les outils d'optimisation de prix accessibles à tous</h2>
-        <p class="nc-summary">La tarification dynamique se démocratise. Des outils comme PriceLabs ou Beyond Pricing ajustent automatiquement tes prix selon la demande, les événements locaux et la concurrence. Les hôtes qui les utilisent constatent en moyenne +15 % de revenus.</p>
-        <span class="nc-source">coliveo.fr <i class="ph ph-arrow-up-right" style="font-size:12px"></i></span>
-      </a>
-
+      </div>
     </div>
   </div>
 </section>
@@ -262,34 +262,9 @@
 <script src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 <script>
-function filterNews(btn) {
-  var cat = btn.getAttribute('data-cat');
-  // Update active button
-  document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  // Show/hide cards
-  var cards = document.querySelectorAll('.news-card');
-  var visible = 0;
-  cards.forEach(function(card){
-    var show = cat === 'all' || card.getAttribute('data-cat') === cat;
-    card.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
-  // No results
-  var nr = document.getElementById('noResults');
-  if (visible === 0) {
-    if (!nr) {
-      nr = document.createElement('p');
-      nr.id = 'noResults';
-      nr.className = 'no-results';
-      nr.textContent = 'Aucun article dans cette catégorie pour le moment.';
-      document.getElementById('newsGrid').appendChild(nr);
-    }
-    nr.style.display = '';
-  } else if (nr) {
-    nr.style.display = 'none';
-  }
-}
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){q.closest('.faq-item').classList.toggle('open');});
+});
 </script>
 </body>
 </html>
