@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Medal, Lightbulb, ChartLineUp, Rocket } from '@phosphor-icons/react/dist/ssr'
+import { Medal, ChatCircle, Sparkle, Rocket } from '@phosphor-icons/react/dist/ssr'
 import TipForm from './TipForm'
 
 export const metadata: Metadata = {
@@ -8,10 +8,26 @@ export const metadata: Metadata = {
 }
 
 const PERKS = [
-  { icon: Medal, label: 'Badge Contributeur', desc: 'Un badge affiché sur ton profil — visible par la communauté.' },
-  { icon: Lightbulb, label: 'Propose des fonctionnalités', desc: 'Dis-nous ce qui t\'aiderait le plus. Les idées des contributeurs passent en priorité.' },
-  { icon: Rocket, label: 'On avance ensemble', desc: 'Tu ne finances pas juste un outil — tu co-construis la plateforme avec nous.' },
-  { icon: ChartLineUp, label: 'Infrastructure & nouveautés', desc: 'Serveur, emails, formations, gabarits — chaque euro va directement au produit.' },
+  {
+    icon: Medal,
+    label: 'Badge Contributeur permanent',
+    desc: 'Un badge affiché sur ton profil, visible dans la communauté et sur la page publique des contributeurs.',
+  },
+  {
+    icon: ChatCircle,
+    label: 'Accès direct à Jason',
+    desc: 'Un canal privé pour poser tes questions directement, partager tes retours et suivre les coulisses de la plateforme.',
+  },
+  {
+    icon: Sparkle,
+    label: 'Tes idées en priorité',
+    desc: 'Les demandes de fonctionnalités des contributeurs passent avant toutes les autres. Tu orientes la roadmap.',
+  },
+  {
+    icon: Rocket,
+    label: 'Accès anticipé aux nouveautés',
+    desc: 'Tu testes chaque nouvelle fonctionnalité en avant-première, avant le déploiement public.',
+  },
 ]
 
 export default async function SoutenirPage({
@@ -32,8 +48,8 @@ export default async function SoutenirPage({
         </h1>
         <p style={s.heroSub}>
           Tu veux aller plus loin que le plan Standard ? En contribuant librement,
-          tu rejoins ceux qui font avancer la plateforme — propose des fonctionnalités,
-          influence les priorités, et reçois un badge Contributeur sur ton profil.
+          tu rejoins ceux qui co-construisent la plateforme. Propose des fonctionnalités,
+          influence les priorités et reçois un badge Contributeur sur ton profil.
         </p>
       </section>
 
@@ -45,10 +61,10 @@ export default async function SoutenirPage({
             <h2 style={s.merciTitle}>Merci, vraiment.</h2>
             <p style={s.merciText}>
               Ta contribution est reçue. Ton badge Contributeur sera ajouté à ton profil
-              sous 24h. N'hésite pas à nous envoyer tes idées — tu fais maintenant partie
-              de ceux qui orientent la plateforme.
+              sous 24h et tu recevras un accès au canal privé. N&apos;hésite pas à partager
+              tes idées directement.
             </p>
-            <a href="/" style={s.merciBtn}>Retour à l'accueil</a>
+            <a href="/" style={s.merciBtn}>Retour à l&apos;accueil</a>
           </div>
         </section>
       )}
@@ -81,9 +97,8 @@ export default async function SoutenirPage({
 
             <div style={s.note}>
               <p style={s.noteText}>
-                Aucune obligation, aucun engagement. Le montant est libre — même 2,98 € fait
-                la différence. Cette page existe pour ceux qui veulent construire quelque chose
-                avec nous, pas juste utiliser un outil.
+                Aucune obligation, aucun engagement. Le montant est libre, même 1 € fait la différence.
+                Cette page existe pour ceux qui veulent construire quelque chose avec nous, pas juste utiliser un outil.
               </p>
             </div>
           </div>
