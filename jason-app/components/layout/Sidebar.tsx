@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
-  FacebookLogo, CaretDown, Sparkle, House, ChartBar, CalendarBlank,
+  FacebookLogo, CaretDown, House, ChartBar, CalendarBlank, PenNib,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -25,6 +25,7 @@ const navGroups = [
       { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap },
       { href: '/dashboard/guide',        label: 'Guide LCD',   icon: BookOpen },
       { href: '/dashboard/actualites',   label: 'Actualités',  icon: Newspaper },
+      { href: '/dashboard/blog',         label: 'Blog',        icon: PenNib },
     ],
   },
   {
@@ -56,6 +57,7 @@ const adminContent = [
   { href: '/dashboard/admin/formations', label: 'Formations', Icon: GraduationCap },
   { href: '/dashboard/admin/gabarits',   label: 'Gabarits',   Icon: FileText },
   { href: '/dashboard/admin/actualites', label: 'Actualités', Icon: Newspaper },
+  { href: '/dashboard/admin/blog',       label: 'Blog',       Icon: PenNib },
   { href: '/dashboard/admin/communaute', label: 'Communauté', Icon: FacebookLogo },
   { href: '/dashboard/admin/guides',     label: 'Guide LCD',  Icon: BookOpen },
 ]
