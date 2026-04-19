@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import { Medal, ChatCircle, Sparkle, Rocket } from '@phosphor-icons/react/dist/ssr'
 import TipForm from './TipForm'
+import BackButton from './BackButton'
+import SuggestionsBoard from './SuggestionsBoard'
 
 export const metadata: Metadata = {
   title: 'Contribuer — jasonmarinho.com',
@@ -11,22 +13,34 @@ const PERKS = [
   {
     icon: Medal,
     label: 'Badge Contributeur permanent',
-    desc: 'Un badge affiché sur ton profil, visible dans la communauté et sur la page publique des contributeurs.',
+    desc: 'Affiché sur ton profil et visible dans toute la communauté.',
+    color: '#FFD56B',
+    glow: 'rgba(255,213,107,0.15)',
+    border: 'rgba(255,213,107,0.2)',
   },
   {
     icon: ChatCircle,
     label: 'Accès direct à Jason',
-    desc: 'Un canal privé pour poser tes questions directement, partager tes retours et suivre les coulisses de la plateforme.',
+    desc: 'Un canal privé pour tes questions, retours et coulisses de la plateforme.',
+    color: '#34d399',
+    glow: 'rgba(52,211,153,0.12)',
+    border: 'rgba(52,211,153,0.2)',
   },
   {
     icon: Sparkle,
     label: 'Tes idées en priorité',
-    desc: 'Les demandes de fonctionnalités des contributeurs passent avant toutes les autres. Tu orientes la roadmap.',
+    desc: 'Tes demandes de fonctionnalités passent avant tout le monde. Tu orientes la roadmap.',
+    color: '#a78bfa',
+    glow: 'rgba(167,139,250,0.12)',
+    border: 'rgba(167,139,250,0.2)',
   },
   {
     icon: Rocket,
     label: 'Accès anticipé aux nouveautés',
-    desc: 'Tu testes chaque nouvelle fonctionnalité en avant-première, avant le déploiement public.',
+    desc: 'Tu testes chaque nouvelle fonctionnalité en avant-première.',
+    color: '#60a5fa',
+    glow: 'rgba(96,165,250,0.12)',
+    border: 'rgba(96,165,250,0.2)',
   },
 ]
 
@@ -40,16 +54,19 @@ export default async function SoutenirPage({
 
   return (
     <div style={s.root}>
+
+      {/* Back button */}
+      <div style={s.topBar}>
+        <BackButton />
+      </div>
+
       {/* Hero */}
       <section style={s.hero}>
         <div style={s.heroBadge}>Contributeur</div>
-        <h1 style={s.heroTitle}>
-          On construit ça ensemble
-        </h1>
+        <h1 style={s.heroTitle}>On construit ça ensemble</h1>
         <p style={s.heroSub}>
-          Tu veux aller plus loin que le plan Standard ? En contribuant librement,
-          tu rejoins ceux qui co-construisent la plateforme. Propose des fonctionnalités,
-          influence les priorités et reçois un badge Contributeur sur ton profil.
+          En contribuant librement, tu rejoins ceux qui co-construisent la plateforme.
+          Propose des fonctionnalités, influence les priorités et reçois un badge Contributeur sur ton profil.
         </p>
       </section>
 
@@ -61,49 +78,73 @@ export default async function SoutenirPage({
             <h2 style={s.merciTitle}>Merci, vraiment.</h2>
             <p style={s.merciText}>
               Ta contribution est reçue. Ton badge Contributeur sera ajouté à ton profil
-              sous 24h et tu recevras un accès au canal privé. N&apos;hésite pas à partager
-              tes idées directement.
+              sous 24h et tu recevras un accès au canal privé.
             </p>
-            <a href="/" style={s.merciBtn}>Retour à l&apos;accueil</a>
+            <BackButton label="Retour à l'accueil" style={s.merciBtn} />
           </div>
         </section>
       )}
 
-      {/* Form + uses */}
       {!merci && (
-        <section style={s.main} className="soutenir-main">
-          {/* Left — form */}
-          <div style={s.formCol}>
-            <div style={s.formCard}>
-              <p style={s.formIntro}>Choisis un montant ou saisis le tien.</p>
-              <TipForm />
-            </div>
-          </div>
-
-          {/* Right — what it funds */}
-          <div style={s.usesCol}>
-            <h2 style={s.usesTitle}>Ce que tu obtiens</h2>
-            <div style={s.usesList}>
-              {PERKS.map(({ icon: Icon, label, desc }) => (
-                <div key={label} style={s.useItem}>
-                  <div style={s.useIcon}><Icon size={20} weight="duotone" /></div>
-                  <div>
-                    <div style={s.useLabel}>{label}</div>
-                    <div style={s.useDesc}>{desc}</div>
+        <>
+          {/* PERKS — 2x2 visual grid */}
+          <section style={s.perksSection}>
+            <p style={s.perksLabel}>Ce que tu obtiens</p>
+            <div style={s.perksGrid} className="soutenir-perks-grid">
+              {PERKS.map(({ icon: Icon, label, desc, color, glow, border }) => (
+                <div
+                  key={label}
+                  style={{ ...s.perkCard, background: glow, borderColor: border }}
+                >
+                  <div style={{ ...s.perkIcon, color, borderColor: border, boxShadow: `0 0 20px ${glow}` }}>
+                    <Icon size={22} weight="duotone" />
                   </div>
+                  <div style={{ ...s.perkLabel, color }}>{label}</div>
+                  <div style={s.perkDesc}>{desc}</div>
                 </div>
               ))}
             </div>
+          </section>
 
-            <div style={s.note}>
-              <p style={s.noteText}>
-                Aucune obligation, aucun engagement. Le montant est libre, même 1 € fait la différence.
-                Cette page existe pour ceux qui veulent construire quelque chose avec nous, pas juste utiliser un outil.
-              </p>
+          {/* Form — centered, prominent */}
+          <section style={s.formSection}>
+            <div style={s.formCard}>
+              <h2 style={s.formTitle}>Choisis ton montant</h2>
+              <p style={s.formSub}>Aucune obligation. Même 1 € fait la différence.</p>
+              <TipForm />
             </div>
-          </div>
-        </section>
+          </section>
+
+          {/* Ideas & Voting */}
+          <section style={s.ideasSection}>
+            <div style={s.ideasInner}>
+              <div style={s.ideasHead}>
+                <h2 style={s.ideasTitle}>
+                  Vote & propose des idées
+                </h2>
+                <p style={s.ideasSub}>
+                  Tu as une idée pour améliorer la plateforme ? Soumets-la. Les contributeurs votent, les meilleures idées passent en priorité.
+                </p>
+              </div>
+              <SuggestionsBoard />
+            </div>
+          </section>
+        </>
       )}
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg) } }
+        .soutenir-perks-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+        }
+        @media (max-width: 600px) {
+          .soutenir-perks-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </div>
   )
 }
@@ -114,13 +155,19 @@ const s: Record<string, React.CSSProperties> = {
     background: 'linear-gradient(160deg, #001a13 0%, #002820 50%, #001a13 100%)',
     color: '#fff',
     fontFamily: 'Inter, system-ui, sans-serif',
-    padding: '0 0 80px',
+    paddingBottom: '80px',
+  },
+
+  topBar: {
+    padding: '24px 32px 0',
+    maxWidth: '800px',
+    margin: '0 auto',
   },
 
   hero: {
-    maxWidth: '680px',
+    maxWidth: '640px',
     margin: '0 auto',
-    padding: '80px 24px 48px',
+    padding: '48px 24px 40px',
     textAlign: 'center',
   },
   heroBadge: {
@@ -130,136 +177,93 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(255,213,107,0.12)',
     border: '1px solid rgba(255,213,107,0.3)',
     color: '#FFD56B',
-    fontSize: '11px',
-    fontWeight: 600,
-    letterSpacing: '0.8px',
-    textTransform: 'uppercase',
-    marginBottom: '20px',
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.8px',
+    textTransform: 'uppercase', marginBottom: '20px',
   },
   heroTitle: {
     fontFamily: 'Fraunces, serif',
-    fontSize: 'clamp(36px, 6vw, 56px)',
-    fontWeight: 400,
-    lineHeight: 1.1,
-    margin: '0 0 20px',
-    color: '#fff',
+    fontSize: 'clamp(34px, 6vw, 52px)',
+    fontWeight: 400, lineHeight: 1.1,
+    margin: '0 0 20px', color: '#fff',
   },
   heroSub: {
-    fontSize: '16px',
-    lineHeight: 1.7,
-    color: 'rgba(255,255,255,0.55)',
+    fontSize: '16px', lineHeight: 1.7,
+    color: 'rgba(255,255,255,0.5)',
     margin: 0,
-    maxWidth: '520px',
-    marginInline: 'auto',
   },
 
-  merciWrap: {
-    maxWidth: '480px',
-    margin: '0 auto',
-    padding: '0 24px',
-  },
+  merciWrap: { maxWidth: '480px', margin: '0 auto', padding: '0 24px' },
   merciCard: {
     background: 'rgba(255,255,255,0.04)',
     border: '1px solid rgba(255,213,107,0.2)',
-    borderRadius: '20px',
-    padding: '48px 32px',
-    textAlign: 'center',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '16px',
+    borderRadius: '20px', padding: '48px 32px',
+    textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px',
   },
   merciEmoji: { fontSize: '40px' },
-  merciTitle: {
-    fontFamily: 'Fraunces, serif',
-    fontSize: '32px',
-    fontWeight: 400,
-    margin: 0,
-    color: '#FFD56B',
-  },
-  merciText: {
-    fontSize: '15px',
-    lineHeight: 1.7,
-    color: 'rgba(255,255,255,0.6)',
-    margin: 0,
-  },
+  merciTitle: { fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 400, margin: 0, color: '#FFD56B' },
+  merciText: { fontSize: '15px', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)', margin: 0 },
   merciBtn: {
-    display: 'inline-block',
-    marginTop: '8px',
-    padding: '12px 24px',
-    background: '#FFD56B',
-    color: '#002820',
-    borderRadius: '10px',
-    fontWeight: 700,
-    fontSize: '14px',
-    textDecoration: 'none',
-    letterSpacing: '0.2px',
+    display: 'inline-block', marginTop: '8px', padding: '12px 24px',
+    background: '#FFD56B', color: '#002820',
+    borderRadius: '10px', fontWeight: 700, fontSize: '14px', textDecoration: 'none',
   },
 
-  main: {
-    maxWidth: '960px',
-    margin: '0 auto',
-    padding: '0 24px',
+  perksSection: {
+    maxWidth: '800px', margin: '0 auto',
+    padding: '0 24px 48px',
   },
+  perksLabel: {
+    fontSize: '11px', fontWeight: 700, letterSpacing: '1px',
+    textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)',
+    marginBottom: '16px', margin: '0 0 16px',
+  },
+  perksGrid: {},
+  perkCard: {
+    borderRadius: '16px', border: '1px solid',
+    padding: '24px',
+    display: 'flex', flexDirection: 'column', gap: '10px',
+    transition: 'transform .2s',
+  },
+  perkIcon: {
+    width: '48px', height: '48px', borderRadius: '12px',
+    border: '1px solid',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'rgba(0,0,0,0.2)', flexShrink: 0,
+  },
+  perkLabel: { fontSize: '15px', fontWeight: 700, lineHeight: 1.3 },
+  perkDesc: { fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 },
 
-  formCol: {},
+  formSection: {
+    maxWidth: '560px', margin: '0 auto',
+    padding: '0 24px 64px',
+  },
   formCard: {
     background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '20px',
-    padding: '32px',
+    borderRadius: '24px', padding: '36px',
+    display: 'flex', flexDirection: 'column', gap: '8px',
   },
-  formIntro: {
-    fontSize: '13px',
-    color: 'rgba(255,255,255,0.4)',
-    margin: '0 0 24px',
-    letterSpacing: '0.3px',
+  formTitle: {
+    fontFamily: 'Fraunces, serif', fontSize: '24px',
+    fontWeight: 400, color: '#fff', margin: '0 0 4px',
+  },
+  formSub: {
+    fontSize: '13px', color: 'rgba(255,255,255,0.35)',
+    margin: '0 0 20px',
   },
 
-  usesCol: {
-    paddingTop: '4px',
+  ideasSection: {
+    borderTop: '1px solid rgba(255,255,255,0.06)',
+    padding: '64px 24px 0',
   },
-  usesTitle: {
-    fontFamily: 'Fraunces, serif',
-    fontSize: '24px',
-    fontWeight: 400,
-    margin: '0 0 24px',
-    color: '#fff',
+  ideasInner: { maxWidth: '800px', margin: '0 auto' },
+  ideasHead: { textAlign: 'center', marginBottom: '40px' },
+  ideasTitle: {
+    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,4vw,36px)',
+    fontWeight: 400, color: '#fff', margin: '0 0 12px',
   },
-  usesList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    marginBottom: '32px',
-  },
-  useItem: {
-    display: 'flex',
-    gap: '16px',
-    alignItems: 'flex-start',
-  },
-  useIcon: {
-    flexShrink: 0,
-    width: '40px',
-    height: '40px',
-    borderRadius: '10px',
-    background: 'rgba(255,213,107,0.1)',
-    border: '1px solid rgba(255,213,107,0.15)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#FFD56B',
-  },
-  useLabel: { fontSize: '14px', fontWeight: 600, color: '#fff', marginBottom: '4px' },
-  useDesc: { fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 },
-
-  note: {
-    borderTop: '1px solid rgba(255,255,255,0.07)',
-    paddingTop: '24px',
-  },
-  noteText: {
-    fontSize: '12px',
-    color: 'rgba(255,255,255,0.3)',
-    lineHeight: 1.7,
-    margin: 0,
+  ideasSub: {
+    fontSize: '15px', color: 'rgba(255,255,255,0.45)',
+    lineHeight: 1.7, margin: 0, maxWidth: '520px', marginInline: 'auto',
   },
 }
