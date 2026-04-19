@@ -331,7 +331,7 @@ export default function CalendrierView({
 
   // ── render
   return (
-    <div style={s.root}>
+    <div className="cal-root" style={s.root}>
       <style>{`
         .cal-cell { transition: background 0.12s; cursor: pointer; }
         .cal-cell:hover { background: var(--surface-2) !important; }
@@ -347,17 +347,29 @@ export default function CalendrierView({
         .time-sel:focus { border-color: var(--accent-text) !important; outline: none; box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 0,76,63), 0.12); }
         .multi-toggle { transition: all 0.15s; cursor: pointer; }
         .multi-toggle:hover { background: var(--surface-2) !important; }
-        @media (max-width: 800px) {
+        @media (max-width: 900px) {
           .cal-layout { flex-direction: column !important; }
-          .cal-side   { width: 100% !important; border-left: none !important; border-top: 1px solid var(--border) !important; max-height: 50vh; overflow-y: auto; }
+          .cal-side   { width: 100% !important; border-left: none !important; border-top: 1px solid var(--border) !important; max-height: none !important; }
+        }
+        @media (max-width: 640px) {
+          .cal-root    { padding: 10px 10px 20px !important; gap: 8px !important; }
+          .cal-topbar  { gap: 6px !important; }
+          .cal-strip   { display: none !important; }
+          .cal-cell    { min-height: 46px !important; padding: 3px !important; }
+          .cal-pill-wrap { display: none !important; }
+          .cal-day-header { padding: 5px 2px !important; font-size: 9px !important; letter-spacing: 0 !important; }
+          .cal-date-row { grid-template-columns: 1fr !important; }
+          .cal-row-arrow { display: none !important; }
+          .cal-add-text  { display: none !important; }
+          .cal-month-title { font-size: 16px !important; min-width: unset !important; }
         }
       `}</style>
 
       {/* ── Top bar */}
-      <div style={s.topBar}>
+      <div className="cal-topbar" style={s.topBar}>
         <div style={s.monthNav}>
           <button className="btn-ghost" onClick={prevMonth} style={s.navBtn}><CaretLeft size={15} /></button>
-          <h2 style={s.monthTitle}>
+          <h2 className="cal-month-title" style={s.monthTitle}>
             {MONTHS_FR[month]}&nbsp;
             <span style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: '18px' }}>{year}</span>
           </h2>
@@ -368,14 +380,14 @@ export default function CalendrierView({
           <button className="btn-ghost" onClick={goToday} style={s.todayBtn}>Aujourd'hui</button>
           <button className="btn-primary" onClick={openAdd} style={s.addBtn}>
             <Plus size={15} weight="bold" />
-            Événement
+            <span className="cal-add-text">Événement</span>
           </button>
         </div>
       </div>
 
       {/* ── Upcoming strip */}
       {upcoming.length > 0 && (
-        <div style={s.strip}>
+        <div className="cal-strip" style={s.strip}>
           {upcoming.map((ev, i) => {
             const cat = CAT[ev.category as CatKey] ?? CAT.note
             const [yy, mm, dd] = ev.date.split('-').map(Number)
@@ -403,7 +415,7 @@ export default function CalendrierView({
         {/* Calendar grid */}
         <div style={s.gridWrap}>
           <div style={s.dayHeaders}>
-            {DAYS_FR.map(d => <div key={d} style={s.dayHeader}>{d}</div>)}
+            {DAYS_FR.map(d => <div key={d} className="cal-day-header" style={s.dayHeader}>{d}</div>)}
           </div>
           {/* Week rows */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -468,7 +480,7 @@ export default function CalendrierView({
                         {/* Spacer for day num + bars */}
                         <div style={{ height: BAR_TOP + spacer + 4 }} />
                         {/* Single-day pills */}
-                        <div style={s.pillWrap}>
+                        <div className="cal-pill-wrap" style={s.pillWrap}>
                           {visible.map(e => {
                             const c = CAT[e.category as CatKey] ?? CAT.note
                             return <div key={e.id} style={{ ...s.pill, borderLeftColor: c.color, background: c.bg }}><span style={s.pillText}>{e.title}</span></div>
@@ -538,14 +550,14 @@ export default function CalendrierView({
               />
 
               {/* Date row */}
-              <div style={s.dateRow}>
+              <div className="cal-date-row" style={s.dateRow}>
                 <CalendarInput
                   value={fStartDate}
                   onChange={v => { setFStartDate(v); if (fEndDate < v) setFEndDate(v) }}
                   placeholder="Date début"
                   disabled={!!editing}
                 />
-                <span style={s.rowArrow}>→</span>
+                <span className="cal-row-arrow" style={s.rowArrow}>→</span>
                 <CalendarInput
                   value={fEndDate}
                   onChange={setFEndDate}
@@ -554,9 +566,9 @@ export default function CalendrierView({
               </div>
 
               {/* Time row */}
-              <div style={s.dateRow}>
+              <div className="cal-date-row" style={s.dateRow}>
                 <TimePickerInput value={fStart} onChange={setFStart} placeholder="Heure début" />
-                <span style={s.rowArrow}>→</span>
+                <span className="cal-row-arrow" style={s.rowArrow}>→</span>
                 <TimePickerInput value={fEnd} onChange={setFEnd} placeholder="Heure fin" />
               </div>
 
