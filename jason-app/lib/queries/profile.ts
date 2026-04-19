@@ -12,12 +12,16 @@ export const getProfile = cache(async () => {
     .eq('id', session.user.id)
     .single()
 
+  const resolvedPlan = profile?.role === 'admin'
+    ? 'driing'
+    : (profile?.plan ?? 'decouverte')
+
   return {
     userId: session.user.id,
     full_name: profile?.full_name ?? null,
     role: (profile?.role ?? 'user') as 'user' | 'driing' | 'admin',
     driing_status: (profile?.driing_status ?? 'none') as 'none' | 'pending' | 'confirmed',
-    plan: (profile?.plan ?? 'decouverte') as 'decouverte' | 'standard' | 'driing',
+    plan: resolvedPlan as 'decouverte' | 'standard' | 'driing',
     stripe_subscription_id: profile?.stripe_subscription_id ?? null,
     stripe_subscription_status: profile?.stripe_subscription_status ?? null,
     stripe_customer_id: profile?.stripe_customer_id ?? null,
