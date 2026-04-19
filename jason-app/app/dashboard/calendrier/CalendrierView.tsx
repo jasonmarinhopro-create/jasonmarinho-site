@@ -355,6 +355,17 @@ export default function CalendrierView({
     startT(async () => { await updateContractChecklist(contractId, key, newVal) })
   }
 
+  function handlePhaseToggle(contractId: string, phase: 'avant' | 'pendant' | 'apres', checkAll: boolean) {
+    const items = CHECKLIST_ITEMS.filter(i => i.phase === phase)
+    const current = contractChecklists[contractId] ?? {}
+    const updated = { ...current }
+    items.forEach(i => { updated[i.key] = checkAll })
+    setContractChecklists(prev => ({ ...prev, [contractId]: updated }))
+    startT(async () => {
+      for (const item of items) await updateContractChecklist(contractId, item.key, checkAll)
+    })
+  }
+
   function openEdit(ev: CalEvent) {
     setEditing(ev)
     setFTitle(ev.title)
@@ -469,42 +480,67 @@ export default function CalendrierView({
         <div style={{
           background: 'var(--card-bg)', border: '1px solid var(--border)',
           borderRadius: '12px', padding: '10px 14px',
-          display: 'flex', flexDirection: 'column',
+          display: 'flex', flexDirection: 'column', gap: '8px',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: urgentAlerts.length > 0 ? '6px' : 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '10px', fontWeight: 700, color: urgentAlerts.length > 0 ? 'var(--text-2)' : '#10b981', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
               {urgentAlerts.length > 0 ? `À traiter · ${urgentAlerts.length} action${urgentAlerts.length > 1 ? 's' : ''}` : '✓ Tout est en ordre'}
             </span>
-            {urgentAlerts.length > 0 && (
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: urgentAlerts[0].color, flexShrink: 0 }} />
-            )}
           </div>
-          {urgentAlerts.map((alert, i) => (
-            <button
-              key={i}
-              type="button"
-              className="icon-btn"
-              onClick={() => {
-                const d = alert.navigateDate
-                setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
-                setSelectedContract(alert.contractRef); setShowForm(false)
-              }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '5px 4px', background: 'none', border: 'none',
-                cursor: 'pointer', textAlign: 'left', width: '100%',
-                borderTop: i === 0 ? '1px solid var(--border)' : 'none',
-                borderBottom: i < urgentAlerts.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
-              }}
-            >
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: alert.color, flexShrink: 0 }} />
-              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-2)', flexShrink: 0 }}>{alert.logement}</span>
-              <span style={{ fontSize: '12px', color: 'var(--text-muted)', flexShrink: 0 }}>·</span>
-              <span style={{ fontSize: '12px', color: 'var(--text-2)', flex: 1 }}>{alert.label}</span>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{alert.daysInfo}</span>
-              <span style={{ color: 'var(--text-muted)', fontSize: '11px', flexShrink: 0 }}>›</span>
-            </button>
-          ))}
+          {urgentAlerts.length > 0 && (() => {
+            const GROUPS = [
+              { color: '#ef4444', bg: 'rgba(239,68,68,0.08)',  label: 'Critique' },
+              { color: '#f97316', bg: 'rgba(249,115,22,0.08)', label: 'Urgent' },
+              { color: '#eab308', bg: 'rgba(234,179,8,0.08)',  label: 'Important' },
+              { color: '#3b82f6', bg: 'rgba(59,130,246,0.08)', label: 'À faire' },
+            ]
+            return (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+                {GROUPS.map(group => {
+                  const groupItems = urgentAlerts.filter(a => a.color === group.color)
+                  return (
+                    <div key={group.color} style={{
+                      borderRadius: '8px', border: `1px solid ${group.color}30`,
+                      background: group.bg, padding: '8px 10px',
+                      opacity: groupItems.length === 0 ? 0.35 : 1,
+                      display: 'flex', flexDirection: 'column', gap: '4px',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '4px' }}>
+                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: group.color, flexShrink: 0 }} />
+                        <span style={{ fontSize: '10px', fontWeight: 700, color: group.color, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{group.label}</span>
+                        {groupItems.length > 0 && (
+                          <span style={{ marginLeft: 'auto', fontSize: '10px', fontWeight: 700, color: group.color }}>{groupItems.length}</span>
+                        )}
+                      </div>
+                      {groupItems.length === 0 ? (
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>—</span>
+                      ) : groupItems.map((alert, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          className="icon-btn"
+                          onClick={() => {
+                            const d = alert.navigateDate
+                            setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
+                            setSelectedContract(alert.contractRef); setShowForm(false)
+                          }}
+                          style={{
+                            display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                            padding: '4px 6px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px',
+                            border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%',
+                          }}
+                        >
+                          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-2)', lineHeight: 1.3 }}>{alert.logement}</span>
+                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.3 }}>{alert.label}</span>
+                          <span style={{ fontSize: '10px', color: group.color, lineHeight: 1.3, marginTop: '1px' }}>{alert.daysInfo}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })()}
         </div>
       )}
 
@@ -759,9 +795,20 @@ export default function CalendrierView({
                 {/* Checklist by phase */}
                 {phases.map(({ key: phase, label }) => {
                   const items = CHECKLIST_ITEMS.filter(i => i.phase === phase)
+                  const allChecked = items.every(i => !!cl[i.key])
                   return (
                     <div key={phase}>
-                      <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>{label}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                        <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</span>
+                        <button
+                          type="button"
+                          className="icon-btn"
+                          onClick={() => handlePhaseToggle(selectedContract.contractId, phase, !allChecked)}
+                          style={{ fontSize: '10px', color: allChecked ? '#ef4444' : '#10b981', fontWeight: 600, padding: '2px 6px', borderRadius: '4px', border: `1px solid ${allChecked ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, background: allChecked ? 'rgba(239,68,68,0.08)' : 'rgba(16,185,129,0.08)', cursor: 'pointer' }}
+                        >
+                          {allChecked ? 'Tout décocher' : 'Tout cocher'}
+                        </button>
+                      </div>
                       {items.map(item => {
                         const checked = !!cl[item.key]
                         return (
