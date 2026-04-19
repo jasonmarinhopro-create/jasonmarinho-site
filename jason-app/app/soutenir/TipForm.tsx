@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { ArrowRight, CircleNotch } from '@phosphor-icons/react'
 
 const PRESETS = [
-  { label: '2,98 €', amount: 298, desc: 'Un petit geste' },
-  { label: '5,98 €', amount: 598, desc: 'Merci sincèrement' },
-  { label: '9,98 €', amount: 998, desc: 'Tu assures vraiment' },
+  { label: '2,98 €', amount: 298 },
+  { label: '5,98 €', amount: 598 },
+  { label: '9,98 €', amount: 998 },
 ]
 
 export default function TipForm() {
@@ -55,7 +55,6 @@ export default function TipForm() {
             style={{ ...s.preset, ...(selected === p.amount && !custom ? s.presetActive : {}) }}
           >
             <span style={s.presetAmount}>{p.label}</span>
-            <span style={s.presetDesc}>{p.desc}</span>
           </button>
         ))}
       </div>
@@ -104,8 +103,8 @@ const s: Record<string, React.CSSProperties> = {
 
   presets: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' },
   preset: {
-    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-    padding: '16px 8px', borderRadius: '14px', cursor: 'pointer', transition: 'all .15s',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '18px 8px', borderRadius: '14px', cursor: 'pointer', transition: 'all .15s',
     background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
     fontFamily: 'inherit',
   },
@@ -113,7 +112,6 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.4)',
   },
   presetAmount: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: '#fff' },
-  presetDesc: { fontSize: '11px', color: 'rgba(255,255,255,0.45)', fontWeight: 300 },
 
   customWrap: { display: 'flex', flexDirection: 'column', gap: '8px' },
   customLabel: { fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.5px', textTransform: 'uppercase' },
