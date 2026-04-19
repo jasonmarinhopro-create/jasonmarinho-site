@@ -5,7 +5,7 @@ import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
   CalendarBlank, Clock, X,
 } from '@phosphor-icons/react'
-import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent } from './actions'
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import type { ContractEvent, IcalFeed, IcalEvent } from './page'
 
@@ -29,16 +29,36 @@ interface Props {
   appUrl: string
 }
 
-const CAT = {
-  arrivee:   { label: 'Arrivée',   color: '#10b981', bg: 'rgba(16,185,129,0.13)' },
-  depart:    { label: 'Départ',    color: '#60a5fa', bg: 'rgba(96,165,250,0.13)' },
-  entretien: { label: 'Entretien', color: '#fb923c', bg: 'rgba(251,146,60,0.13)' },
-  admin:     { label: 'Admin',     color: '#a78bfa', bg: 'rgba(167,139,250,0.13)' },
-  rdv:       { label: 'RDV',       color: '#FFD56B', bg: 'rgba(255,213,107,0.13)' },
-  note:      { label: 'Note',      color: '#94a3b8', bg: 'rgba(148,163,184,0.13)' },
-} as const
+const CAT: Record<string, { label: string; color: string; bg: string }> = {
+  arrivee:   { label: 'Arrivée',     color: '#10b981', bg: 'rgba(16,185,129,0.13)' },
+  depart:    { label: 'Départ',      color: '#60a5fa', bg: 'rgba(96,165,250,0.13)' },
+  menage:    { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)' },
+  rdv:       { label: 'RDV',         color: '#FFD56B', bg: 'rgba(255,213,107,0.13)' },
+  tache:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)' },
+  note:      { label: 'Note',        color: '#94a3b8', bg: 'rgba(148,163,184,0.13)' },
+  // Legacy aliases (display only, not shown in pickers)
+  entretien: { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)' },
+  admin:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)' },
+}
 
-type CatKey = keyof typeof CAT
+type CatKey = 'arrivee' | 'depart' | 'menage' | 'rdv' | 'tache' | 'note'
+const PICKER_CATS: CatKey[] = ['menage', 'rdv', 'tache', 'note']
+
+const CHECKLIST_ITEMS: Array<{ key: string; label: string; phase: 'avant' | 'pendant' | 'apres' }> = [
+  { key: 'contrat_envoye',        label: 'Contrat envoyé',                 phase: 'avant' },
+  { key: 'contrat_signe',         label: 'Contrat signé',                  phase: 'avant' },
+  { key: 'acompte_recu',          label: 'Acompte reçu',                   phase: 'avant' },
+  { key: 'solde_recu',            label: 'Solde reçu',                     phase: 'avant' },
+  { key: 'caution_recue',         label: 'Caution reçue',                  phase: 'avant' },
+  { key: 'identite_verifiee',     label: "Pièce d'identité vérifiée",      phase: 'avant' },
+  { key: 'instructions_envoyees', label: "Instructions d'arrivée envoyées", phase: 'avant' },
+  { key: 'menage_planifie',       label: 'Ménage planifié',                phase: 'avant' },
+  { key: 'checkin_effectue',      label: 'Check-in effectué',              phase: 'pendant' },
+  { key: 'checkout_effectue',     label: 'Check-out effectué',             phase: 'apres' },
+  { key: 'etat_des_lieux',        label: 'État des lieux de sortie',       phase: 'apres' },
+  { key: 'caution_restituee',     label: 'Caution restituée',              phase: 'apres' },
+  { key: 'avis_demande',          label: 'Avis demandé',                   phase: 'apres' },
+]
 
 const DAYS_FR   = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 const MONTHS_FR = [
@@ -125,6 +145,12 @@ export default function CalendrierView({
   const quickRef   = useRef<HTMLDivElement>(null)
   const [qTitle, setQTitle] = useState('')
   const [qCat,   setQCat]   = useState<CatKey>('note')
+
+  // ── checklist state (contractId → { key: boolean })
+  const [contractChecklists, setContractChecklists] = useState<Record<string, Record<string, boolean>>>(() =>
+    Object.fromEntries(contractEvents.map(ev => [ev.contractId, ev.checklist_status ?? {}]))
+  )
+  const [selectedContract, setSelectedContract] = useState<import('./page').ContractEvent | null>(null)
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -221,6 +247,35 @@ export default function CalendrierView({
       .filter(n => { if (seen.has(n)) return false; seen.add(n); return true })
   }, [contractEvents])
 
+  // ── smart alerts (computed from contract dates + checklist state)
+  const smartAlerts = useMemo(() => {
+    const alerts: Record<string, Array<{ color: string; label: string }>> = {}
+    const today = todayString()
+    function add(date: string, color: string, label: string) {
+      ;(alerts[date] ??= []).push({ color, label })
+    }
+    function diff(from: string, to: string) {
+      return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
+    }
+    const seen = new Set<string>()
+    contractEvents.forEach(ev => {
+      if (seen.has(ev.contractId)) return
+      seen.add(ev.contractId)
+      const cl = contractChecklists[ev.contractId] ?? {}
+      const arr = ev.date_arrivee, dep = ev.date_depart
+      const dta = diff(today, arr)
+      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        add(arr, '#ef4444', 'Contrat non signé')
+      if (dta >= 0 && dta <= 3 && !cl.solde_recu)            add(arr, '#f97316', 'Solde non reçu')
+      if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) add(arr, '#eab308', 'Instructions non envoyées')
+      if (dep) {
+        const dtd = diff(dep, today)
+        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande)        add(dep, '#3b82f6', 'Avis non demandé')
+        if (dta >= -1 && dta <= 0 && !cl.menage_planifie)    add(dep, '#64748b', 'Ménage non planifié')
+      }
+    })
+    return alerts
+  }, [contractEvents, contractChecklists])
+
   // ── upcoming (next 14 days)
   const upcoming = useMemo(() => {
     const t = new Date(); t.setHours(0, 0, 0, 0)
@@ -311,6 +366,13 @@ export default function CalendrierView({
       if (!res.error && res.event) setEvents(prev => [...prev, res.event as CalEvent])
       setQuickCreate(null)
     })
+  }
+
+  function handleChecklistToggle(contractId: string, key: string) {
+    const current = contractChecklists[contractId] ?? {}
+    const newVal  = !current[key]
+    setContractChecklists(prev => ({ ...prev, [contractId]: { ...current, [key]: newVal } }))
+    startT(async () => { await updateContractChecklist(contractId, key, newVal) })
   }
 
   function openEdit(ev: CalEvent) {
@@ -479,9 +541,10 @@ export default function CalendrierView({
                     const slots     = Math.max(0, 2 - nBars)
                     const visible   = pillItems.slice(0, slots)
                     const extra     = pillItems.length - visible.length
-                    const isWeekend = (() => { const d = new Date(date).getDay(); return d === 0 || d === 6 })()
-                    const isInDrag  = !!(dragRange && date >= dragRange.start && date <= dragRange.end)
-                    const spacer    = nBars > 0 ? BAR_TOP + nBars * (BAR_H + BAR_GAP) - BAR_TOP + 4 : 0
+                    const isWeekend    = (() => { const d = new Date(date).getDay(); return d === 0 || d === 6 })()
+                    const isInDrag     = !!(dragRange && date >= dragRange.start && date <= dragRange.end)
+                    const spacer       = nBars > 0 ? BAR_TOP + nBars * (BAR_H + BAR_GAP) - BAR_TOP + 4 : 0
+                    const alertsForDay = inMonth ? (smartAlerts[date] ?? []) : []
 
                     return (
                       <div
@@ -507,9 +570,12 @@ export default function CalendrierView({
                             ? <span className="today-num">{day}</span>
                             : <span style={{ ...s.dayNum, color: isWeekend && inMonth ? 'var(--text-muted)' : 'var(--text-2)' }}>{day}</span>
                           }
-                          {uniqDots.length > 0 && (
+                          {(uniqDots.length > 0 || alertsForDay.length > 0) && (
                             <span style={s.dotRow}>
-                              {uniqDots.slice(0, 3).map((e, i) => <span key={`${e.id}-${i}`} style={{ ...s.dot, background: CAT[e.category as CatKey]?.color ?? CAT.note.color }} />)}
+                              {alertsForDay.slice(0, 1).map((a, i) => (
+                                <span key={`alert-${i}`} style={{ width: 6, height: 6, borderRadius: '50%', border: `1.5px solid ${a.color}`, flexShrink: 0, background: 'transparent' }} title={a.label} />
+                              ))}
+                              {uniqDots.slice(0, 3).map((e, i) => <span key={`${e.id}-${i}`} style={{ ...s.dot, background: CAT[e.category]?.color ?? CAT.note.color }} />)}
                               {uniqDots.length > 3 && <span style={{ ...s.dot, background: 'var(--text-muted)' }} />}
                             </span>
                           )}
@@ -519,7 +585,7 @@ export default function CalendrierView({
                         {/* Single-day pills */}
                         <div className="cal-pill-wrap" style={s.pillWrap}>
                           {visible.map(e => {
-                            const c = CAT[e.category as CatKey] ?? CAT.note
+                            const c = CAT[e.category] ?? CAT.note
                             return <div key={e.id} style={{ ...s.pill, borderLeftColor: c.color, background: c.bg }}><span style={s.pillText}>{e.title}</span></div>
                           })}
                           {extra > 0 && <span style={s.extraChip}>+{extra}</span>}
@@ -567,9 +633,9 @@ export default function CalendrierView({
               <div style={s.sideDow}>{capitalize(formatDayLong(selected).split(' ')[0])}</div>
               <div style={s.sideDate}>{formatDayLong(selected).split(' ').slice(1).join(' ')}</div>
             </div>
-            {!showForm
+            {!showForm && !selectedContract
               ? <button onClick={openAdd} style={s.addDayBtn} className="icon-btn" title="Ajouter"><Plus size={15} weight="bold" /></button>
-              : <button onClick={cancelForm} style={s.addDayBtn} className="icon-btn" title="Fermer"><X size={15} /></button>
+              : <button onClick={() => { cancelForm(); setSelectedContract(null) }} style={s.addDayBtn} className="icon-btn" title="Fermer"><X size={15} /></button>
             }
           </div>
 
@@ -611,7 +677,9 @@ export default function CalendrierView({
 
               {/* Category chips */}
               <div style={s.catRow}>
-                {(Object.entries(CAT) as [CatKey, (typeof CAT)[CatKey]][]).map(([key, cfg]) => (
+                {PICKER_CATS.map(key => {
+                  const cfg = CAT[key]
+                  return (
                   <button
                     key={key}
                     className="cat-chip"
@@ -625,7 +693,8 @@ export default function CalendrierView({
                   >
                     {cfg.label}
                   </button>
-                ))}
+                  )
+                })}
               </div>
 
               <textarea
@@ -651,8 +720,88 @@ export default function CalendrierView({
             </div>
           )}
 
+          {/* ── Checklist panel (contract event selected) */}
+          {!showForm && selectedContract && (() => {
+            const cl = contractChecklists[selectedContract.contractId] ?? {}
+            const done = CHECKLIST_ITEMS.filter(i => cl[i.key]).length
+            const total = CHECKLIST_ITEMS.length
+            const pct = Math.round((done / total) * 100)
+            const cat = CAT[selectedContract.type] ?? CAT.note
+            const phases = [
+              { key: 'avant',   label: 'Avant l\'arrivée' },
+              { key: 'pendant', label: 'Pendant le séjour' },
+              { key: 'apres',   label: 'Après le départ' },
+            ] as const
+            return (
+              <div style={{ padding: '14px 16px', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {/* Contract header */}
+                <div style={{ padding: '12px', borderRadius: '10px', background: cat.bg, border: `1px solid ${cat.color}30` }}>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: cat.color, marginBottom: '2px' }}>
+                    {selectedContract.logement_nom ?? 'Logement'}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                    {cat.label} · {fmtDate(selectedContract.date_arrivee)}
+                    {selectedContract.date_depart && ` → ${fmtDate(selectedContract.date_depart)}`}
+                  </div>
+                </div>
+
+                {/* Progress bar */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '11px', color: 'var(--text-muted)' }}>
+                    <span>Suivi opérationnel</span>
+                    <span style={{ fontWeight: 600, color: pct === 100 ? '#10b981' : pct > 50 ? '#eab308' : '#ef4444' }}>{done}/{total}</span>
+                  </div>
+                  <div style={{ height: '5px', borderRadius: '3px', background: 'var(--surface)', overflow: 'hidden' }}>
+                    <div style={{ height: '100%', borderRadius: '3px', width: `${pct}%`, background: pct === 100 ? '#10b981' : pct > 50 ? '#eab308' : '#ef4444', transition: 'width 0.3s' }} />
+                  </div>
+                </div>
+
+                {/* Checklist by phase */}
+                {phases.map(({ key: phase, label }) => {
+                  const items = CHECKLIST_ITEMS.filter(i => i.phase === phase)
+                  return (
+                    <div key={phase}>
+                      <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>{label}</div>
+                      {items.map(item => {
+                        const checked = !!cl[item.key]
+                        return (
+                          <button
+                            key={item.key}
+                            type="button"
+                            onClick={() => handleChecklistToggle(selectedContract.contractId, item.key)}
+                            style={{
+                              display: 'flex', alignItems: 'center', gap: '9px',
+                              width: '100%', padding: '6px 4px',
+                              background: 'none', border: 'none', cursor: 'pointer',
+                              textAlign: 'left', borderRadius: '6px',
+                              transition: 'background 0.1s',
+                            }}
+                            className="icon-btn"
+                          >
+                            <span style={{
+                              width: 16, height: 16, borderRadius: '4px', flexShrink: 0,
+                              border: `1.5px solid ${checked ? '#10b981' : 'var(--border-2)'}`,
+                              background: checked ? '#10b981' : 'transparent',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              transition: 'all 0.15s',
+                            }}>
+                              {checked && <span style={{ color: '#fff', fontSize: '10px', lineHeight: 1 }}>✓</span>}
+                            </span>
+                            <span style={{ fontSize: '12px', color: checked ? 'var(--text-muted)' : 'var(--text-2)', textDecoration: checked ? 'line-through' : 'none', flex: 1 }}>
+                              {item.label}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })()}
+
           {/* ── Events list */}
-          {!showForm && (
+          {!showForm && !selectedContract && (
             <div style={s.evtList}>
               {selectedAll.length === 0 ? (
                 <div style={s.emptyState}>
@@ -666,20 +815,25 @@ export default function CalendrierView({
                 </div>
               ) : (
                 selectedAll.map((ev: any) => {
-                  const cat        = CAT[ev.category as CatKey] ?? CAT.note
+                  const cat        = CAT[ev.category] ?? CAT.note
                   const isContract = !!ev.isContract
                   const isMulti    = !!ev.end_date && ev.end_date !== ev.date
+                  const origContract = isContract ? contractEvents.find(c => c.id === ev.id) : null
+                  const clDone = origContract ? CHECKLIST_ITEMS.filter(i => (contractChecklists[origContract.contractId] ?? {})[i.key]).length : 0
                   return (
                     <div
                       key={ev.id}
                       className="evt-row"
-                      style={{ ...s.evtCard, borderLeft: `3px solid ${cat.color}` }}
+                      onClick={isContract && origContract ? () => setSelectedContract(origContract) : undefined}
+                      style={{ ...s.evtCard, borderLeft: `3px solid ${cat.color}`, cursor: isContract ? 'pointer' : 'default' }}
                     >
                       <div style={s.evtCardTop}>
                         <span style={s.evtTitle}>{ev.title}</span>
-                        <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+                        <div style={{ display: 'flex', gap: '4px', flexShrink: 0, alignItems: 'center' }}>
                           {isContract && (
-                            <span style={{ ...s.autoBadge, color: cat.color, background: cat.bg }}>AUTO</span>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: clDone === CHECKLIST_ITEMS.length ? '#10b981' : clDone > 0 ? '#eab308' : 'var(--text-muted)', background: 'var(--surface)', padding: '2px 7px', borderRadius: '100px' }}>
+                              {clDone}/{CHECKLIST_ITEMS.length}
+                            </span>
                           )}
                           {!isContract && (
                             <>
@@ -720,7 +874,7 @@ export default function CalendrierView({
           )}
 
           {/* ── Logements legend */}
-          {logements.length > 0 && (
+          {!selectedContract && logements.length > 0 && (
             <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)', marginTop: 'auto' }}>
               <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
                 Logements
@@ -735,19 +889,24 @@ export default function CalendrierView({
           )}
 
           {/* ── Event types legend */}
-          <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)' }}>
-            <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
-              Types d'événements
+          {!selectedContract && (
+            <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
+                Types d'événements
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px' }}>
+                {PICKER_CATS.concat(['arrivee', 'depart'] as CatKey[]).map(key => {
+                  const cfg = CAT[key]
+                  return (
+                    <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-2)' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: cfg.color, flexShrink: 0 }} />
+                      {cfg.label}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px' }}>
-              {(Object.entries(CAT) as [CatKey, (typeof CAT)[CatKey]][]).map(([key, cfg]) => (
-                <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-2)' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: cfg.color, flexShrink: 0 }} />
-                  {cfg.label}
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -784,19 +943,22 @@ export default function CalendrierView({
 
           {/* Category chips */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-            {(Object.entries(CAT) as [CatKey, (typeof CAT)[CatKey]][]).map(([key, cfg]) => (
-              <button
-                key={key} type="button" className="cat-chip"
-                onClick={() => setQCat(key)}
-                style={{
-                  padding: '4px 11px', borderRadius: '100px',
-                  fontSize: '12px', fontWeight: 500, cursor: 'pointer',
-                  border: `1.5px solid ${qCat === key ? cfg.color : 'transparent'}`,
-                  background: qCat === key ? cfg.bg : 'var(--surface)',
-                  color: qCat === key ? cfg.color : 'var(--text-3)',
-                }}
-              >{cfg.label}</button>
-            ))}
+            {PICKER_CATS.map(key => {
+              const cfg = CAT[key]
+              return (
+                <button
+                  key={key} type="button" className="cat-chip"
+                  onClick={() => setQCat(key)}
+                  style={{
+                    padding: '4px 11px', borderRadius: '100px',
+                    fontSize: '12px', fontWeight: 500, cursor: 'pointer',
+                    border: `1.5px solid ${qCat === key ? cfg.color : 'transparent'}`,
+                    background: qCat === key ? cfg.bg : 'var(--surface)',
+                    color: qCat === key ? cfg.color : 'var(--text-3)',
+                  }}
+                >{cfg.label}</button>
+              )
+            })}
           </div>
 
           {/* Actions */}
