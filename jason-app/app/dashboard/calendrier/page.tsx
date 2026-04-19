@@ -5,10 +5,14 @@ import CalendrierView from './CalendrierView'
 
 export interface ContractEvent {
   id: string
+  contractId: string
   title: string
   date: string
   type: 'arrivee' | 'depart'
   logement_nom: string | null
+  date_arrivee: string
+  date_depart: string | null
+  checklist_status: Record<string, boolean>
 }
 
 export interface IcalFeed {
@@ -51,7 +55,7 @@ export default async function CalendrierPage() {
       .order('start_time'),
     supabase
       .from('contracts')
-      .select('id, logement_nom, date_arrivee, date_depart, statut')
+      .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status')
       .eq('user_id', userId)
       .neq('statut', 'annule'),
     supabase
@@ -72,8 +76,21 @@ export default async function CalendrierPage() {
 
   const contractEvents: ContractEvent[] = []
   contracts?.forEach(c => {
-    if (c.date_arrivee) contractEvents.push({ id: `arr-${c.id}`, title: `Arrivée · ${c.logement_nom ?? 'Logement'}`, date: c.date_arrivee, type: 'arrivee', logement_nom: c.logement_nom })
-    if (c.date_depart)  contractEvents.push({ id: `dep-${c.id}`, title: `Départ · ${c.logement_nom ?? 'Logement'}`,  date: c.date_depart,  type: 'depart',  logement_nom: c.logement_nom })
+    const cl = (c.checklist_status as Record<string, boolean>) ?? {}
+    if (c.date_arrivee) contractEvents.push({
+      id: `arr-${c.id}`, contractId: c.id,
+      title: `Arrivée · ${c.logement_nom ?? 'Logement'}`,
+      date: c.date_arrivee, type: 'arrivee', logement_nom: c.logement_nom,
+      date_arrivee: c.date_arrivee, date_depart: c.date_depart ?? null,
+      checklist_status: cl,
+    })
+    if (c.date_depart) contractEvents.push({
+      id: `dep-${c.id}`, contractId: c.id,
+      title: `Départ · ${c.logement_nom ?? 'Logement'}`,
+      date: c.date_depart!, type: 'depart', logement_nom: c.logement_nom,
+      date_arrivee: c.date_arrivee ?? '', date_depart: c.date_depart ?? null,
+      checklist_status: cl,
+    })
   })
 
   const icalEvents: IcalEvent[] = (icalEventsRaw ?? []).map((e: any) => ({

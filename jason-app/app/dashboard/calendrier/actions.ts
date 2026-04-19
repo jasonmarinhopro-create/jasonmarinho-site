@@ -58,6 +58,34 @@ export async function updateCalendarEvent(id: string, input: EventUpdate) {
   return { event: data }
 }
 
+export async function updateContractChecklist(
+  contractId: string,
+  key: string,
+  value: boolean,
+) {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  const { data, error } = await supabase
+    .from('contracts')
+    .select('checklist_status')
+    .eq('id', contractId)
+    .eq('user_id', session.user.id)
+    .single()
+
+  if (error) return { error: error.message }
+
+  const current = (data.checklist_status as Record<string, boolean>) ?? {}
+  const { error: updateError } = await supabase
+    .from('contracts')
+    .update({ checklist_status: { ...current, [key]: value } })
+    .eq('id', contractId)
+    .eq('user_id', session.user.id)
+
+  return { error: updateError?.message }
+}
+
 export async function deleteCalendarEvent(id: string) {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
