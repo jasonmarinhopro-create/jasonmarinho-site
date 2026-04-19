@@ -30,6 +30,8 @@ interface Props {
   formations: Formation[]
   progressMap: Record<string, number>
   comingSoon: ComingSoon[]
+  unlockedSlugs: string[] | null // null = tout accessible (Standard+)
+  plan: string
 }
 
 const levelLabel: Record<string, string> = {
@@ -68,7 +70,10 @@ type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
 type StatusFilter = 'all' | 'enrolled' | 'not_enrolled' | 'done'
 type CategoryFilter = 'all' | 'visibilite' | 'revenus' | 'gestion' | 'reglementation' | 'amenagement'
 
-export default function FormationsGrid({ formations, progressMap, comingSoon }: Props) {
+export default function FormationsGrid({ formations, progressMap, comingSoon, unlockedSlugs, plan }: Props) {
+  const isDecouverte = plan === 'decouverte'
+  const slotsUsed = unlockedSlugs?.length ?? 0
+  const slotsMax = 2
   const [search, setSearch] = useState('')
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
@@ -114,6 +119,12 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
           <span style={{ ...styles.statChip, background: 'rgba(99,214,131,0.08)', color: '#63D683', border: '1px solid rgba(99,214,131,0.15)' }}>
             <CheckCircle size={13} weight="fill" />
             {enrolledCount} commencée{enrolledCount !== 1 ? 's' : ''}
+          </span>
+        )}
+        {isDecouverte && (
+          <span style={{ ...styles.statChip, background: 'rgba(255,213,107,0.08)', color: 'var(--accent-text)', border: '1px solid rgba(255,213,107,0.2)' }}>
+            <Lock size={13} weight="fill" />
+            {slotsUsed}/{slotsMax} accès gratuits utilisés
           </span>
         )}
       </div>
@@ -208,33 +219,42 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
           const progress = progressMap[f.id] ?? null
           const enrolled = progress !== null
           const done = progress === 100
+          const isLocked = unlockedSlugs !== null && slotsUsed >= slotsMax && !unlockedSlugs.includes(f.slug)
 
           return (
-            <div key={f.id} style={styles.card} className={`glass-card fade-up d${(i % 6) + 1}`}>
+            <div key={f.id} style={{ ...styles.card, ...(isLocked ? styles.cardLocked : {}) }} className={`glass-card fade-up d${(i % 6) + 1}`}>
               <div style={styles.cardHeader}>
-                <div style={styles.cardIcon}>
-                  <GraduationCap size={28} color="#FFD56B" weight="fill" />
+                <div style={{ ...styles.cardIcon, ...(isLocked ? { opacity: 0.5 } : {}) }}>
+                  {isLocked
+                    ? <Lock size={24} color="var(--text-muted)" weight="duotone" />
+                    : <GraduationCap size={28} color="#FFD56B" weight="fill" />
+                  }
                 </div>
                 <div style={styles.cardBadges}>
                   {SLUG_CATEGORY[f.slug] && (
                     <span style={styles.categoryBadge}>{categoryLabel[SLUG_CATEGORY[f.slug]]}</span>
                   )}
-                  <span className="badge badge-yellow">{levelLabel[f.level] ?? f.level}</span>
-                  <span className="badge badge-green">Disponible</span>
-                  {done && <span className="badge badge-green">Terminé ✓</span>}
+                  {isLocked
+                    ? <span style={styles.lockedBadge}>Standard</span>
+                    : <>
+                        <span className="badge badge-yellow">{levelLabel[f.level] ?? f.level}</span>
+                        <span className="badge badge-green">Disponible</span>
+                        {done && <span className="badge badge-green">Terminé ✓</span>}
+                      </>
+                  }
                 </div>
               </div>
 
-              <h3 style={styles.cardTitle}>{f.title}</h3>
-              <p style={styles.cardDesc}>{f.description}</p>
+              <h3 style={{ ...styles.cardTitle, ...(isLocked ? { color: 'var(--text-3)' } : {}) }}>{f.title}</h3>
+              <p style={{ ...styles.cardDesc, ...(isLocked ? { color: 'var(--text-muted)' } : {}) }}>{f.description}</p>
 
               <div style={styles.meta}>
-                <span style={styles.metaItem}><Clock size={13} /> {f.duration}</span>
-                <span style={styles.metaItem}><BookOpen size={13} /> {f.modules_count} modules</span>
-                <span style={styles.metaItem}><CheckCircle size={13} /> {f.lessons_count} leçons</span>
+                <span style={{ ...styles.metaItem, ...(isLocked ? { opacity: 0.4 } : {}) }}><Clock size={13} /> {f.duration}</span>
+                <span style={{ ...styles.metaItem, ...(isLocked ? { opacity: 0.4 } : {}) }}><BookOpen size={13} /> {f.modules_count} modules</span>
+                <span style={{ ...styles.metaItem, ...(isLocked ? { opacity: 0.4 } : {}) }}><CheckCircle size={13} /> {f.lessons_count} leçons</span>
               </div>
 
-              {enrolled && (
+              {enrolled && !isLocked && (
                 <div style={styles.progressArea}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                     <span style={styles.progressLabel}>Progression</span>
@@ -247,9 +267,14 @@ export default function FormationsGrid({ formations, progressMap, comingSoon }: 
               )}
 
               <div style={styles.cardFooter}>
-                <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
-                  {done ? 'Revoir' : enrolled ? 'Continuer' : 'Commencer'} <ArrowRight size={14} weight="bold" />
-                </Link>
+                {isLocked
+                  ? <Link href="/dashboard/abonnement" style={styles.lockedBtn}>
+                      <Lock size={13} /> Passer en Standard
+                    </Link>
+                  : <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                      {done ? 'Revoir' : enrolled ? 'Continuer' : 'Commencer'} <ArrowRight size={14} weight="bold" />
+                    </Link>
+                }
               </div>
             </div>
           )
@@ -364,6 +389,13 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 0,
   },
   card: { padding: 'clamp(18px,3vw,28px)', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0' },
+  cardLocked: { opacity: 0.65, filter: 'grayscale(0.2)' },
+  lockedBadge: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.6px',
+    padding: '3px 10px', borderRadius: '100px',
+    background: 'rgba(255,213,107,0.1)', color: '#FFD56B',
+    border: '1px solid rgba(255,213,107,0.25)',
+  },
   comingSoonCard: {
     padding: 'clamp(18px,3vw,28px)', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0',
     background: 'var(--surface)', border: '1px solid var(--border)', opacity: 0.7,

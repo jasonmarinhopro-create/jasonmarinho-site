@@ -4,6 +4,8 @@ import FormationView from '../google-my-business-lcd/FormationView'
 import { CREER_CONCIERGERIE_FORMATION } from './content'
 import { createClient } from '@/lib/supabase/server'
 import { getFormationDbContent } from '@/lib/queries/formation-db-content'
+import { checkFormationAccess } from '@/lib/queries/formation-access'
+import PlanGate from '@/components/ui/PlanGate'
 
 export default async function FormationPage() {
   const profile = await getProfile()
@@ -16,6 +18,19 @@ export default async function FormationPage() {
     .single()
 
   const formationId = formation?.id ?? null
+
+  const plan = profile?.plan ?? 'decouverte'
+  if (formationId && profile?.userId) {
+    const { allowed } = await checkFormationAccess(supabase, profile.userId, formationId, plan)
+    if (!allowed) {
+      return (
+        <>
+          <Header title="Formation" userName={profile?.full_name ?? undefined} />
+          <PlanGate feature="formations" />
+        </>
+      )
+    }
+  }
 
   let initialProgress: number | null = null
   let initialCompletedLessons: number[] = []

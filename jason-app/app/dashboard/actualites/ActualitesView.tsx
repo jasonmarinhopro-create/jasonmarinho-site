@@ -35,7 +35,7 @@ function getDomain(url: string | null) {
   try { return new URL(url).hostname.replace('www.', '') } catch { return null }
 }
 
-export default function ActualitesView({ articles }: { articles: Actualite[] }) {
+export default function ActualitesView({ articles, isDecouverte = false, totalCount = 0 }: { articles: Actualite[]; isDecouverte?: boolean; totalCount?: number }) {
   const [activeFilter, setActiveFilter] = useState('all')
 
   const filtered = activeFilter === 'all'
@@ -144,6 +144,21 @@ export default function ActualitesView({ articles }: { articles: Actualite[] }) 
               Aucun article dans cette catégorie pour le moment.
             </div>
           )}
+
+          {/* Découverte gate — shown after the 3 free articles */}
+          {isDecouverte && totalCount > articles.length && (
+            <div style={s.gate} className="fade-up">
+              <div style={s.gateInner}>
+                <p style={s.gateCount}>
+                  + {totalCount - articles.length} article{totalCount - articles.length > 1 ? 's' : ''} disponibles en Standard
+                </p>
+                <p style={s.gateDesc}>Accède à toutes les actualités LCD en passant en Standard Membre Fondateur.</p>
+                <a href="/dashboard/abonnement" style={s.gateCta}>
+                  Passer en Standard — 1,98 €/mois
+                </a>
+              </div>
+            </div>
+          )}
         </>
       )}
 
@@ -187,4 +202,17 @@ const s: Record<string, React.CSSProperties> = {
   sourceLink: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 400, marginTop: '4px', alignSelf: 'flex-start' },
 
   noResults: { padding: '32px', textAlign: 'center' as const, fontSize: '14px', color: 'var(--text-muted)', borderRadius: '16px' },
+  gate: { marginTop: '24px' },
+  gateInner: {
+    padding: '28px 32px', borderRadius: '16px',
+    background: 'var(--surface)', border: '1px solid rgba(255,213,107,0.15)',
+    textAlign: 'center' as const, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '10px',
+  },
+  gateCount: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', margin: 0 },
+  gateDesc: { fontSize: '13px', color: 'var(--text-2)', margin: 0 },
+  gateCta: {
+    display: 'inline-block', marginTop: '4px', padding: '10px 20px',
+    background: 'var(--accent)', color: '#002820',
+    borderRadius: '10px', fontWeight: 700, fontSize: '13px', textDecoration: 'none',
+  },
 }
