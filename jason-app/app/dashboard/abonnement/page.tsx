@@ -1,28 +1,32 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
-import { Check, Wrench, Star } from '@phosphor-icons/react/dist/ssr'
+import { Check, Wrench, Star, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import DriingRequestForm from './DriingRequestForm'
 
 const DECOUVERTE_FEATURES = [
-  'Accès à la communauté & groupes Facebook',
-  'Formations de base (Google My Business...)',
-  'Conseils sécurité voyageurs',
-  'Accès aux ressources publiques',
+  'Guide LCD, actualités & gabarits (FR + EN)',
+  'Guide fiscalité 2026',
+  'Sécurité voyageur (consultation + signalement)',
+  '2 formations d\'introduction',
+  'Calendrier + journal des revenus',
+  '1 logement — voyageurs illimités',
+  'Communauté (noms des groupes) + partenaires',
+]
+
+const STANDARD_FEATURES = [
+  'Logements illimités',
+  'Contrats illimités + PDF + paiement Stripe',
+  '14 formations complètes',
+  'Communauté complète + partenaires exclusifs',
+  'Support prioritaire',
 ]
 
 const DRIING_FEATURES = [
-  'Toutes les formations incluses',
-  'Communauté privée Driing',
-  'Accès prioritaire aux nouveaux contenus',
-  'Offres partenaires exclusives',
-  'Support dédié',
-]
-
-const CONSTRUCTION_PLANS = [
-  { id: 'hote',   name: 'Hôte',   description: 'Tous les outils pour piloter et développer votre activité en location directe.' },
-  { id: 'pro',    name: 'Pro',    description: 'Accompagnement personnalisé pour passer au niveau supérieur.', highlighted: true },
-  { id: 'agence', name: 'Agence', description: 'Pour les conciergeries multi-propriétés avec une équipe.' },
+  'Tout le plan Standard inclus',
+  'Badge Membre Driing dans l\'app',
+  'Support prioritaire + Q&A en direct',
+  'Accès anticipé aux nouveautés',
 ]
 
 export default async function AbonnementPage() {
@@ -33,6 +37,8 @@ export default async function AbonnementPage() {
   const profile = await getProfile()
   const plan = profile?.plan ?? 'decouverte'
   const isDriing = plan === 'driing'
+  const isStandard = plan === 'standard'
+  const isDecouverte = !isDriing && !isStandard
   const driingStatus = profile?.driing_status ?? 'none'
 
   return (
@@ -44,28 +50,26 @@ export default async function AbonnementPage() {
           <h2 style={styles.pageTitle}>
             Votre <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>abonnement</em>
           </h2>
-          <p style={styles.pageDesc}>
-            Des offres adaptées à chaque étape de votre activité.
-          </p>
+          <p style={styles.pageDesc}>Des offres adaptées à chaque étape de votre activité.</p>
         </div>
 
         <div style={styles.mainGrid} className="abo-grid">
+
           {/* LEFT — plan actuel */}
           <div style={styles.leftCol}>
-            {isDriing ? (
+
+            {isDriing && (
               <div style={styles.driingBanner} className="glass-card fade-up">
                 <div style={styles.driingGlow} />
-                <div style={{ ...styles.currentPlan, color: 'var(--accent-text)' }}>
-                  <div style={{ ...styles.currentDot, background: 'var(--accent-text)' }} />
+                <div style={{ ...styles.planLabel, color: 'var(--accent-text)' }}>
+                  <div style={{ ...styles.dot, background: 'var(--accent-text)' }} />
                   Plan actuel
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ ...styles.currentName, color: 'var(--accent-text)' }}>Membre Driing</div>
-                  <Star size={20} color="#FFD56B" weight="fill" />
+                  <div style={{ ...styles.planName, color: 'var(--accent-text)' }}>Membre Driing</div>
+                  <Star size={18} color="#FFD56B" weight="fill" />
                 </div>
-                <p style={styles.currentDesc}>
-                  Accès complet à la plateforme, aux formations exclusives et à la communauté privée Driing.
-                </p>
+                <p style={styles.planDesc}>Accès complet à la plateforme, aux formations et à la communauté privée Driing.</p>
                 <div style={styles.featureList}>
                   {DRIING_FEATURES.map(f => (
                     <div key={f} style={styles.featureItem}>
@@ -74,18 +78,46 @@ export default async function AbonnementPage() {
                     </div>
                   ))}
                 </div>
-                <button disabled style={styles.ctaDriing}>Offre actuelle</button>
+                <p style={styles.smallNote}>
+                  Si tu résilies Driing, ton accès revient automatiquement sur le plan Découverte.
+                </p>
               </div>
-            ) : (
-              <div style={styles.currentBanner} className="glass-card fade-up">
-                <div style={styles.currentPlan}>
-                  <div style={styles.currentDot} />
+            )}
+
+            {isStandard && (
+              <div style={styles.standardBanner} className="glass-card fade-up">
+                <div style={styles.planLabel}>
+                  <div style={styles.dot} />
                   Plan actuel
                 </div>
-                <div style={styles.currentName}>Découverte</div>
-                <p style={styles.currentDesc}>
-                  Accès gratuit à la plateforme et à la communauté. Commence ici, monte en gamme quand tu es prêt.
-                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
+                  <div style={styles.planName}>Standard</div>
+                  <div style={styles.fmPill}><span style={styles.fmDot} />Founding Member</div>
+                </div>
+                <div style={styles.priceRow}>
+                  <span style={styles.price}>4,98 €</span>
+                  <span style={styles.priceLabel}> / mois HT</span>
+                </div>
+                <p style={styles.planDesc}>Tous les outils pour piloter ton activité LCD.</p>
+                <div style={styles.featureList}>
+                  {STANDARD_FEATURES.map(f => (
+                    <div key={f} style={styles.featureItem}>
+                      <Check size={13} color="#34D399" weight="bold" />
+                      {f}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {isDecouverte && (
+              <div style={styles.currentBanner} className="glass-card fade-up">
+                <div style={styles.planLabel}>
+                  <div style={styles.dot} />
+                  Plan actuel
+                </div>
+                <div style={styles.planName}>Découverte</div>
+                <p style={styles.planDesc}>Accès gratuit à la plateforme et à la communauté. Monte en gamme quand tu es prêt.</p>
                 <div style={styles.featureList}>
                   {DECOUVERTE_FEATURES.map(f => (
                     <div key={f} style={styles.featureItem}>
@@ -94,27 +126,59 @@ export default async function AbonnementPage() {
                     </div>
                   ))}
                 </div>
-                <button disabled style={styles.ctaCurrent}>Offre actuelle</button>
               </div>
             )}
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT — upgrades */}
           <div style={styles.rightCol}>
 
-            {/* Membre Driing — visible seulement si l'utilisateur est en Découverte */}
+            {/* Standard upgrade — visible seulement en Découverte */}
+            {isDecouverte && (
+              <>
+                <div style={styles.sectionLabel} className="fade-up">
+                  <Star size={12} weight="fill" />
+                  Passer en Standard
+                </div>
+                <div style={styles.upgradeCard} className="fade-up d1">
+                  <div style={styles.upgradeGlow} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
+                    <div style={styles.upgradeName}>Standard</div>
+                    <div style={styles.fmPill}><span style={styles.fmDot} />Founding Member</div>
+                  </div>
+                  <div style={styles.priceRow}>
+                    <span style={styles.price}>4,98 €</span>
+                    <span style={styles.priceLabel}> / mois HT</span>
+                    <span style={styles.priceStrike}>8,98 €</span>
+                  </div>
+                  <p style={styles.planDesc}>Logements illimités, contrats, paiement en ligne et formations complètes.</p>
+                  <div style={styles.featureList}>
+                    {STANDARD_FEATURES.map(f => (
+                      <div key={f} style={styles.featureItem}>
+                        <Check size={13} color="#34D399" weight="bold" />
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                  <a href="https://jasonmarinho.com/tarifs/" target="_blank" rel="noopener" style={styles.ctaStandard}>
+                    Voir l&apos;offre Standard <ArrowRight size={14} weight="bold" />
+                  </a>
+                  <p style={styles.smallNote}>Prix HT bloqué à vie tant que l&apos;abonnement est actif. Résiliable à tout moment.</p>
+                </div>
+              </>
+            )}
+
+            {/* Driing — visible si non Driing */}
             {!isDriing && (
               <>
-                <div style={styles.upgradeLabel} className="fade-up">
-                  <Star size={13} weight="fill" />
-                  Passez au niveau supérieur
+                <div style={{ ...styles.sectionLabel, marginTop: isDecouverte ? '8px' : 0 }} className="fade-up">
+                  <Star size={12} color="#FFD56B" weight="fill" />
+                  Inclus avec Driing
                 </div>
-                <div style={styles.driingRow} className="fade-up d1">
+                <div style={styles.driingRow} className="fade-up d2">
                   <div style={styles.driingRowGlow} />
-                  <div style={styles.driingRowName}>Membre Driing</div>
-                  <p style={styles.planDesc}>
-                    Accès complet aux formations, à la communauté privée et aux contenus exclusifs.
-                  </p>
+                  <div style={{ ...styles.upgradeName, color: 'var(--accent-text)' }}>Membre Driing</div>
+                  <p style={styles.planDesc}>Tu es client Driing ? Toute la plateforme est incluse sans surcoût — aucun paiement séparé.</p>
                   <div style={styles.perks} className="abo-perks">
                     {DRIING_FEATURES.map(p => (
                       <span key={p} style={styles.perk}>
@@ -132,35 +196,22 @@ export default async function AbonnementPage() {
               </>
             )}
 
-            <div style={{ ...styles.comingLabel, marginTop: isDriing ? 0 : '8px' }} className="fade-up">
-              <Wrench size={13} />
-              Prochaines offres — en construction
-            </div>
-
-            <div style={styles.plansList}>
-              {CONSTRUCTION_PLANS.map((p, i) => (
-                <div
-                  key={p.id}
-                  style={{ ...styles.planRow, ...(p.highlighted ? styles.planRowHighlighted : {}) }}
-                  className={`fade-up d${i + 1}`}
-                >
-                  <div style={styles.planRowLeft}>
-                    <div style={styles.planName}>{p.name}</div>
-                    <span style={styles.planDesc}>{p.description}</span>
-                  </div>
-                  <div style={styles.planRowRight}>
-                    <div style={styles.ctaLocked}>
-                      <Wrench size={12} />
-                      En construction
-                    </div>
-                  </div>
+            {/* Driing actif — gestion */}
+            {isDriing && (
+              <>
+                <div style={styles.sectionLabel} className="fade-up">
+                  <Wrench size={12} />
+                  Gérer mon accès
                 </div>
-              ))}
-            </div>
+                <div style={styles.manageCard} className="fade-up d1">
+                  <p style={styles.planDesc}>Pour gérer ou résilier ton abonnement Driing, rends-toi sur l&apos;espace Driing ou contacte le support.</p>
+                  <a href="mailto:contact@jasonmarinho.com" style={styles.ctaManage}>
+                    Contacter le support <ArrowRight size={13} weight="bold" />
+                  </a>
+                </div>
+              </>
+            )}
 
-            <p style={styles.note} className="fade-up">
-              Tu seras notifié dès qu'une nouvelle offre est disponible. Les tarifs seront communiqués au lancement.
-            </p>
           </div>
         </div>
       </div>
@@ -177,21 +228,33 @@ const styles: Record<string, React.CSSProperties> = {
   leftCol: {},
   rightCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
 
-  /* Découverte */
+  planLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: '#34D399' },
+  dot: { width: '7px', height: '7px', borderRadius: '50%', background: '#34D399' },
+  planName: { fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 400, color: 'var(--text)' },
+  planDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.6, margin: 0 },
+  featureList: { display: 'flex', flexDirection: 'column', gap: '10px' },
+  featureItem: { display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', fontWeight: 300, color: 'var(--text-2)' },
+  smallNote: { fontSize: '12px', fontWeight: 300, color: 'var(--text-muted)', lineHeight: 1.65, borderTop: '1px solid var(--border)', paddingTop: '12px', marginTop: '4px' },
+
+  priceRow: { display: 'flex', alignItems: 'baseline', gap: '4px', flexWrap: 'wrap' },
+  price: { fontFamily: 'Fraunces, serif', fontSize: '28px', fontWeight: 600, color: 'var(--text)' },
+  priceLabel: { fontSize: '13px', color: 'var(--text-muted)' },
+  priceStrike: { fontSize: '12px', color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: '4px' },
+
+  fmPill: { display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.25)', color: '#a07500', fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px', padding: '3px 9px', borderRadius: '100px' },
+  fmDot: { width: '4px', height: '4px', borderRadius: '50%', background: '#d4a400', flexShrink: 0 },
+
+  /* Current plan cards */
   currentBanner: {
     padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px',
     background: 'linear-gradient(135deg, rgba(52,211,153,0.08) 0%, rgba(52,211,153,0.03) 100%)',
     border: '1px solid rgba(52,211,153,0.2)', borderRadius: '20px',
   },
-  currentPlan: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: '#34D399' },
-  currentDot: { width: '7px', height: '7px', borderRadius: '50%', background: '#34D399' },
-  currentName: { fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 400, color: 'var(--text)' },
-  currentDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.6 },
-  featureList: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  featureItem: { display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', fontWeight: 300, color: 'var(--text-2)' },
-  ctaCurrent: { padding: '11px 16px', borderRadius: '10px', background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)', color: 'rgba(52,211,153,0.5)', fontSize: '14px', fontWeight: 500, cursor: 'not-allowed', textAlign: 'center' as const, marginTop: '4px' },
-
-  /* Driing plan actuel */
+  standardBanner: {
+    padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px',
+    background: 'linear-gradient(135deg, rgba(0,76,63,0.12) 0%, rgba(0,76,63,0.04) 100%)',
+    border: '1px solid rgba(0,76,63,0.25)', borderRadius: '20px',
+  },
   driingBanner: {
     position: 'relative', overflow: 'hidden', padding: '32px',
     display: 'flex', flexDirection: 'column', gap: '16px',
@@ -199,10 +262,20 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(255,213,107,0.3)', borderRadius: '20px',
   },
   driingGlow: { position: 'absolute', top: '-60px', right: '-60px', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,213,107,0.15) 0%, transparent 70%)', pointerEvents: 'none' },
-  ctaDriing: { padding: '11px 16px', borderRadius: '10px', background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)', color: 'rgba(255,213,107,0.6)', fontSize: '14px', fontWeight: 500, cursor: 'not-allowed', textAlign: 'center' as const, marginTop: '4px' },
 
-  /* Upgrade Driing row */
-  upgradeLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: 'rgba(255,213,107,0.6)' },
+  /* Right column */
+  sectionLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--text-muted)' },
+
+  upgradeCard: {
+    position: 'relative', overflow: 'hidden',
+    display: 'flex', flexDirection: 'column', gap: '14px',
+    background: 'linear-gradient(135deg, rgba(0,76,63,0.1) 0%, rgba(0,76,63,0.04) 100%)',
+    border: '1px solid rgba(0,76,63,0.2)', borderRadius: '16px', padding: '24px',
+  },
+  upgradeGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(52,211,153,0.06) 0%, transparent 70%)', pointerEvents: 'none' },
+  upgradeName: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)' },
+  ctaStandard: { display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.25)', color: '#34D399', fontSize: '13px', fontWeight: 600, padding: '11px 18px', borderRadius: '10px', textDecoration: 'none', transition: 'all .2s', marginTop: '4px' },
+
   driingRow: {
     position: 'relative', overflow: 'hidden',
     display: 'flex', flexDirection: 'column', gap: '14px',
@@ -210,20 +283,13 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '16px', padding: '24px',
   },
   driingRowGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,213,107,0.08) 0%, transparent 70%)', pointerEvents: 'none' },
-  driingRowName: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--accent-text)' },
-  planDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.5, margin: 0 },
-  perks: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px' },
+  perks: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
   perk: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'var(--text-2)' },
 
-  /* En construction */
-  comingLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' },
-  plansList: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  planRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '22px 24px', opacity: 0.55 },
-  planRowHighlighted: { border: '1px dashed rgba(255,213,107,0.12)' },
-  planRowLeft: { flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' },
-  planName: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text-2)' },
-  planRowRight: { flexShrink: 0 },
-  ctaLocked: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 14px', whiteSpace: 'nowrap' as const },
-
-  note: { fontSize: '12px', fontWeight: 300, color: 'var(--text-muted)', lineHeight: 1.7 },
+  manageCard: {
+    display: 'flex', flexDirection: 'column', gap: '14px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '16px', padding: '24px',
+  },
+  ctaManage: { display: 'inline-flex', alignItems: 'center', gap: '7px', color: 'var(--text-2)', fontSize: '13px', fontWeight: 500, textDecoration: 'none' },
 }
