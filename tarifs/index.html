@@ -56,8 +56,41 @@
     .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff}
     .hero-brd span{font-size:11px}
 
+    /* Billing toggle */
+    .bill-toggle{display:inline-flex;background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:100px;padding:4px;gap:2px;margin:24px 0 0;position:relative}
+    .bill-btn{background:none;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--tm);padding:9px 20px;border-radius:100px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+    .bill-btn.active{background:var(--g);color:#fff}
+    .bill-save{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:var(--y);color:var(--gd);letter-spacing:.3px}
+    .bill-btn.active .bill-save{background:rgba(255,213,107,.25);color:var(--y)}
+
+    /* Featured ribbon */
+    .pc-ribbon{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--y);color:var(--gd);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 14px;border-radius:100px;white-space:nowrap;box-shadow:0 4px 16px rgba(255,213,107,.4)}
+
     /* Pricing grid */
     .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:40px;align-items:start}
+    .pc-standard{border:2px solid var(--g);position:relative;box-shadow:0 10px 40px rgba(0,76,63,.1)}
+    .pc-price-alt{font-size:12px;color:var(--tl);margin-top:4px;display:block}
+    .pc-price-slash{font-size:13px;color:var(--tl);text-decoration:line-through;margin-right:6px;display:none}
+    .bill-annual .pc-price-slash{display:inline}
+    .pc-alumni{font-size:12px;color:var(--tl);background:rgba(0,76,63,.04);padding:10px 14px;border-radius:10px;margin-top:10px;line-height:1.55}
+    .pc-alumni strong{color:var(--g);display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+
+    /* Comparison table */
+    .cmp-wrap{margin-top:60px;background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:20px;overflow:hidden}
+    .cmp-ttl{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:400;color:var(--td);padding:24px 28px;border-bottom:1px solid rgba(0,76,63,.08);margin:0}
+    .cmp-table{width:100%;border-collapse:collapse}
+    .cmp-table th,.cmp-table td{padding:14px 20px;text-align:left;border-bottom:1px solid rgba(0,76,63,.06);font-size:13.5px}
+    .cmp-table th{font-family:'Outfit',sans-serif;font-weight:600;color:var(--td);font-size:12px;text-transform:uppercase;letter-spacing:.5px;background:rgba(0,76,63,.02)}
+    .cmp-table th:first-child{width:40%;color:var(--tm);text-transform:none;font-size:13px;letter-spacing:0}
+    .cmp-table td{color:var(--tm)}
+    .cmp-table td:not(:first-child){text-align:center}
+    .cmp-table tr:last-child td{border-bottom:none}
+    .cmp-table tr:hover td{background:rgba(0,76,63,.015)}
+    .cmp-yes{color:var(--g);font-weight:600;font-size:16px}
+    .cmp-no{color:rgba(0,76,63,.25);font-size:16px}
+    .cmp-txt{font-size:12px;color:var(--tm);font-weight:500}
+    .cmp-section-label{font-weight:600;color:var(--td);background:rgba(0,76,63,.04)!important;text-transform:uppercase;font-size:11px;letter-spacing:.6px}
+    @media(max-width:640px){.cmp-table th,.cmp-table td{padding:10px 12px;font-size:12px}.cmp-wrap{overflow-x:auto}}
 
     /* Base card */
     .pc{border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:24px;background:#fff;border:1px solid rgba(0,76,63,.1)}
@@ -145,26 +178,31 @@
     </div>
     <div class="lbl">Accès &amp; Tarifs</div>
     <h1 class="h1">Un accès adapté<br>à <em>chaque étape</em></h1>
-    <p class="sub">Commence gratuitement, évolue à ton rythme. Pas d'abonnement caché, pas de surprise.</p>
+    <p class="sub">Commence gratuitement, passe en Standard quand tu en as besoin. Inclus gratuitement pour les clients Driing. Résiliation possible à tout moment.</p>
   </div>
 </header>
 
 <!-- PRICING -->
-<section class="sec cr">
+<section class="sec cr" id="pricing">
   <div class="s-in">
-    <div style="text-align:center;margin-bottom:8px">
+    <div style="text-align:center">
       <div class="lbl dk">Offres</div>
       <h2 class="h2">Choisis ton <em>niveau d'accès</em></h2>
+      <p style="font-size:15px;color:var(--tm);margin:8px auto 0;max-width:520px;line-height:1.7">Pas d'engagement, pas de frais cachés. Tu peux résilier à tout moment.</p>
+      <div class="bill-toggle" role="tablist">
+        <button class="bill-btn active" data-bill="month" onclick="setBilling('month')">Mensuel</button>
+        <button class="bill-btn" data-bill="year" onclick="setBilling('year')">Annuel <span class="bill-save">-20%</span></button>
+      </div>
     </div>
 
-    <div class="price-grid">
+    <div class="price-grid" id="priceGrid">
 
-      <!-- Découverte -->
+      <!-- Free -->
       <div class="pc pc-decouverte">
         <div style="display:flex;flex-direction:column;gap:12px">
           <div class="pc-badge free">Gratuit</div>
           <p class="pc-name">Découverte</p>
-          <p class="pc-desc">Pour explorer la plateforme, accéder aux ressources gratuites et rejoindre la communauté sans engagement.</p>
+          <p class="pc-desc">Pour tester la plateforme et accéder aux ressources essentielles. Parfait pour un premier logement ou pour se lancer en LCD.</p>
         </div>
         <div class="pc-price-wrap">
           <span class="pc-price">0 €</span>
@@ -172,59 +210,115 @@
         </div>
         <div class="pc-divider"></div>
         <ul class="pc-list">
-          <li><i class="ph-bold ph-check"></i>Accès à la plateforme</li>
-          <li><i class="ph-bold ph-check"></i>Blog &amp; articles LCD</li>
-          <li><i class="ph-bold ph-check"></i>Ressources gratuites</li>
-          <li><i class="ph-bold ph-check"></i>Communauté de base</li>
-          <li><i class="ph-bold ph-check"></i>Aperçu des formations</li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">1 logement</strong></li>
+          <li><i class="ph-bold ph-check"></i>3 contrats par an</li>
+          <li><i class="ph-bold ph-check"></i>Guide LCD complet (lecture)</li>
+          <li><i class="ph-bold ph-check"></i>Actualités LCD (lecture)</li>
+          <li><i class="ph-bold ph-check"></i>Gabarits de messages (FR)</li>
+          <li><i class="ph-bold ph-check"></i>Consultation Sécurité voyageur</li>
+          <li><i class="ph-bold ph-check"></i>Guide fiscalité 2026</li>
         </ul>
-        <a href="https://app.jasonmarinho.com/auth/register" class="btn-g">Créer un compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-g">Commencer gratuitement <i class="ph-bold ph-arrow-right"></i></a>
       </div>
 
-      <!-- Membre Driing -->
+      <!-- Standard (featured) -->
+      <div class="pc pc-standard" style="border-color:var(--g);background:#fff">
+        <div class="pc-ribbon">Le plus choisi</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="pc-badge" style="background:rgba(0,76,63,.1);color:var(--g)">Standard</div>
+          <p class="pc-name">Hôte actif</p>
+          <p class="pc-desc">Tous les outils pour gérer ton activité LCD : calendrier, check-lists, revenus, paiement en ligne, contrats illimités.</p>
+        </div>
+        <div class="pc-price-wrap" style="flex-wrap:wrap">
+          <span class="pc-price-slash">9,90 €</span>
+          <span class="pc-price" data-price-month="7,98" data-price-year="6,58">7,98 €</span>
+          <span class="pc-price-label">/ mois <span class="bill-annual-only" style="display:none">· facturé 79 €/an</span></span>
+        </div>
+        <div class="pc-divider"></div>
+        <ul class="pc-list">
+          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">Logements illimités</strong></li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">Contrats illimités + paiement Stripe</strong></li>
+          <li><i class="ph-bold ph-check"></i>Calendrier + check-list par séjour</li>
+          <li><i class="ph-bold ph-check"></i>Suivi des revenus + journal</li>
+          <li><i class="ph-bold ph-check"></i>Gabarits FR + EN</li>
+          <li><i class="ph-bold ph-check"></i>Sécurité : signaler + témoigner</li>
+          <li><i class="ph-bold ph-check"></i>14 formations complètes</li>
+          <li><i class="ph-bold ph-check"></i>Communauté + partenaires exclusifs</li>
+        </ul>
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Passer en Standard <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+
+      <!-- Driing Member -->
       <div class="pc pc-driing">
         <div style="display:flex;flex-direction:column;gap:12px">
           <div class="pc-badge driing"><span class="pc-dot"></span>Membre Driing</div>
           <p class="pc-name" style="color:#fff">Driing</p>
-          <p class="pc-desc">Tu es client Driing ? Cet accès est inclus. Profite de contenus exclusifs et d'avantages réservés aux hôtes de la plateforme, sans frais supplémentaires.</p>
+          <p class="pc-desc">Tu es client Driing ? Toute la plateforme est incluse. Aucun surcoût, aucun abonnement supplémentaire.</p>
         </div>
         <div class="pc-price-wrap">
-          <span class="pc-price" style="font-size:1.6rem;color:var(--y)">Inclus</span>
-          <span class="pc-price-label">avec ton compte Driing</span>
+          <span class="pc-price" style="font-size:2rem;color:var(--y)">Inclus</span>
+          <span class="pc-price-label">avec ton abonnement Driing</span>
         </div>
         <div class="pc-divider"></div>
         <ul class="pc-list">
-          <li><i class="ph-bold ph-check"></i>Tout le plan Découverte</li>
-          <li><i class="ph-bold ph-check"></i>Accès aux formations à tarif préférentiel</li>
-          <li><i class="ph-bold ph-check"></i>Contenus exclusifs membres Driing</li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:#fff">Tout le plan Standard</strong></li>
+          <li><i class="ph-bold ph-check"></i>Badge Driing Member dans l'app</li>
+          <li><i class="ph-bold ph-check"></i>Avantages partenaires exclusifs</li>
           <li><i class="ph-bold ph-check"></i>Support prioritaire</li>
           <li><i class="ph-bold ph-check"></i>Sessions Q&amp;A en direct</li>
+          <li><i class="ph-bold ph-check"></i>Accès anticipé aux nouveautés</li>
         </ul>
-        <a href="/pour-qui/membres-driing" class="btn-ol">En savoir plus sur Driing <i class="ph-bold ph-arrow-right"></i></a>
-      </div>
-
-      <!-- À venir -->
-      <div class="pc pc-soon">
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div class="pc-badge soon">Bientôt</div>
-          <p class="pc-name">Accompagnement</p>
-          <p class="pc-desc">Un accès complet avec suivi personnalisé, sessions individuelles et accès illimité à toutes les formations actuelles et futures.</p>
+        <a href="/pour-qui/membres-driing" class="btn-ol">Découvrir Driing <i class="ph-bold ph-arrow-right"></i></a>
+        <div class="pc-alumni" style="background:rgba(255,213,107,.08);color:rgba(255,255,255,.6)">
+          <strong style="color:var(--y)">Ancien client Driing ?</strong>
+          Garde ton accès à la plateforme pour 2,98 €/mois après résiliation de ton abonnement Driing.
         </div>
-        <div class="pc-price-wrap">
-          <span class="pc-price" style="font-size:1.4rem">En préparation</span>
-        </div>
-        <div class="pc-divider"></div>
-        <ul class="pc-list">
-          <li><i class="ph ph-clock"></i>Accès illimité à toutes les formations</li>
-          <li><i class="ph ph-clock"></i>Suivi personnalisé avec Jason</li>
-          <li><i class="ph ph-clock"></i>Sessions 1:1 mensuelles</li>
-          <li><i class="ph ph-clock"></i>Audit de ton activité LCD</li>
-          <li><i class="ph ph-clock"></i>Accès en avant-première aux nouveautés</li>
-        </ul>
-        <a href="/contact" class="btn-g" style="opacity:.6;pointer-events:none;cursor:default">Disponible prochainement</a>
       </div>
 
     </div>
+
+    <!-- Comparison table -->
+    <div class="cmp-wrap">
+      <h3 class="cmp-ttl">Compare <em style="color:var(--g);font-style:italic">en détail</em></h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Fonctionnalité</th>
+            <th>Découverte</th>
+            <th>Standard</th>
+            <th>Driing</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="cmp-section-label" colspan="4">Gestion de ton activité</td></tr>
+          <tr><td>Logements</td><td><span class="cmp-txt">1</span></td><td><span class="cmp-txt">Illimités</span></td><td><span class="cmp-txt">Illimités</span></td></tr>
+          <tr><td>Contrats</td><td><span class="cmp-txt">3/an</span></td><td><span class="cmp-txt">Illimités</span></td><td><span class="cmp-txt">Illimités</span></td></tr>
+          <tr><td>Paiement en ligne Stripe</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Calendrier + check-list par séjour</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Suivi des revenus + journal paiements</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Guide fiscalité 2026</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+
+          <tr><td class="cmp-section-label" colspan="4">Voyageurs & sécurité</td></tr>
+          <tr><td>Fiches voyageurs illimitées</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Consultation Sécurité voyageur</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Signaler un incident / témoigner</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+
+          <tr><td class="cmp-section-label" colspan="4">Contenus & formation</td></tr>
+          <tr><td>Guide LCD (consultation)</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Actualités LCD</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Gabarits de messages</td><td><span class="cmp-txt">FR</span></td><td><span class="cmp-txt">FR + EN</span></td><td><span class="cmp-txt">FR + EN</span></td></tr>
+          <tr><td>Formations</td><td><span class="cmp-txt">2 d'intro</span></td><td><span class="cmp-txt">14 complètes</span></td><td><span class="cmp-txt">14 complètes</span></td></tr>
+          <tr><td>Accès communauté + partenaires</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+
+          <tr><td class="cmp-section-label" colspan="4">Exclusivité Driing</td></tr>
+          <tr><td>Badge Driing Member dans l'app</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Avantages partenaires exclusifs Driing</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Support prioritaire</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Sessions Q&amp;A en direct</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </section>
 
@@ -242,20 +336,32 @@
         <div class="lbl dk">FAQ</div>
         <div class="faq">
           <div class="faq-item">
-            <div class="faq-q">Le plan Découverte est-il vraiment gratuit ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-            <div class="faq-a">Oui, totalement gratuit et sans limite de durée. Aucune carte bancaire demandée pour créer ton compte Découverte.</div>
+            <div class="faq-q">Le plan Découverte est-il vraiment gratuit à vie ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+            <div class="faq-a">Oui. Aucune carte bancaire demandée à l'inscription, aucune limite de durée. Tu restes en Découverte aussi longtemps que tu veux — parfait si tu gères 1 logement occasionnellement.</div>
           </div>
           <div class="faq-item">
-            <div class="faq-q">Comment accéder aux avantages Membre Driing ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-            <div class="faq-a">Si tu es déjà client Driing, l'accès est automatiquement inclus — aucun paiement supplémentaire. Tu bénéficies de contenus et avantages exclusifs directement depuis la plateforme.</div>
+            <div class="faq-q">Puis-je passer du Free au Standard à tout moment ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+            <div class="faq-a">Oui. Tu peux upgrader directement depuis ton espace membres. Le changement est immédiat, et si tu choisis l'annuel, tu économises 20 % par rapport au mensuel.</div>
           </div>
           <div class="faq-item">
-            <div class="faq-q">Pendant combien de temps ai-je accès aux formations achetées ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-            <div class="faq-a">L'accès est à vie. Tu peux consulter les modules quand tu veux, autant de fois que tu veux, et recevoir les mises à jour sans surcoût.</div>
+            <div class="faq-q">Standard : puis-je annuler et revenir en Free ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+            <div class="faq-a">Oui, à tout moment depuis ton espace membres. Aucun engagement. Tu gardes l'accès Standard jusqu'à la fin de la période payée, puis tu bascules automatiquement en Découverte.</div>
           </div>
           <div class="faq-item">
-            <div class="faq-q">Puis-je acheter une formation avec le plan Découverte ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-            <div class="faq-a">Oui. Depuis ton compte Découverte, tu peux accéder aux formations individuelles et les acheter à la carte directement depuis la plateforme.</div>
+            <div class="faq-q">Comment fonctionne l'accès Membre Driing ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+            <div class="faq-a">Si tu es client Driing, toute la plateforme (équivalent Standard + avantages exclusifs) est incluse. Aucun paiement séparé. Si tu résilies Driing, tu peux garder l'accès pour 2,98 €/mois en tant qu'ancien membre.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Mensuel ou annuel : quelle différence concrète ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+            <div class="faq-a">En annuel, tu paies 79 €/an au lieu de 95,76 € (12 × 7,98 €), soit environ 17 € d'économie. Tu peux résilier quand tu veux mais sans remboursement au prorata.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Les formations sont-elles incluses ou à payer en plus ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+            <div class="faq-a">Les 14 formations complètes sont incluses dans les plans Standard et Driing. En Découverte, tu as accès à 2 formations d'introduction. L'accès reste à vie tant que ton abonnement est actif.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Je suis déjà inscrit : que se passe-t-il pour moi ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+            <div class="faq-a">Ton compte bascule automatiquement en Découverte. Tu gardes l'accès à toutes les ressources gratuites (guide LCD, actualités, gabarits FR, guide fiscalité). Pour débloquer les outils de gestion complets, tu peux passer en Standard quand tu le souhaites.</div>
           </div>
         </div>
       </div>
@@ -286,6 +392,20 @@ document.querySelectorAll('.faq-q').forEach(function(q){
     q.closest('.faq-item').classList.toggle('open');
   });
 });
+
+function setBilling(mode){
+  document.querySelectorAll('.bill-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-bill') === mode);
+  });
+  var grid = document.getElementById('priceGrid');
+  grid.classList.toggle('bill-annual', mode === 'year');
+  document.querySelectorAll('[data-price-month]').forEach(function(el){
+    el.textContent = (mode === 'year' ? el.getAttribute('data-price-year') : el.getAttribute('data-price-month')) + ' €';
+  });
+  document.querySelectorAll('.bill-annual-only').forEach(function(el){
+    el.style.display = mode === 'year' ? '' : 'none';
+  });
+}
 </script>
 </body>
 </html>
