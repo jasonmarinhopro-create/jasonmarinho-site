@@ -115,8 +115,8 @@ export default function CalendrierView({
   const [fEnd,     setFEnd]     = useState('')
   const [fCat,     setFCat]     = useState<CatKey>('note')
   const [fDesc,    setFDesc]    = useState('')
-  const [fMulti,   setFMulti]   = useState(false)
-  const [fEndDate, setFEndDate] = useState('')
+  const [fStartDate, setFStartDate] = useState('')
+  const [fEndDate,   setFEndDate]   = useState('')
 
   // ── drag-to-create
   const dragState  = useRef<{ start: string; cur: string } | null>(null)
@@ -125,6 +125,33 @@ export default function CalendrierView({
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
+
+  // ── group into week rows
+  const weeks = useMemo(() => {
+    const rows = []
+    for (let i = 0; i < cells.length; i += 7) rows.push(cells.slice(i, i + 7))
+    return rows
+  }, [cells])
+
+  // ── multi-day spans per week row
+  function computeSpans(weekCells: typeof cells) {
+    const ws = weekCells[0].date
+    const we = weekCells[6].date
+    const seen = new Set<string>()
+    return events
+      .filter(e => e.end_date && e.end_date !== e.date && e.date <= we && e.end_date >= ws)
+      .map(e => {
+        if (seen.has(e.id)) return null
+        seen.add(e.id)
+        const ss = e.date >= ws ? e.date : ws
+        const se = e.end_date! <= we ? e.end_date! : we
+        const sc = weekCells.findIndex(c => c.date === ss)
+        const ec = weekCells.findIndex(c => c.date === se)
+        return { event: e, startCol: sc < 0 ? 0 : sc, endCol: ec < 0 ? 6 : ec,
+                 isStart: e.date >= ws, isEnd: e.end_date! <= we }
+      })
+      .filter(Boolean) as Array<{ event: CalEvent; startCol: number; endCol: number; isStart: boolean; isEnd: boolean }>
+  }
 
   // ── event index by date — multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
@@ -217,7 +244,8 @@ export default function CalendrierView({
     setEditing(null)
     setFTitle(''); setFStart(''); setFEnd('')
     setFCat('note'); setFDesc('')
-    setFMulti(!!endDate); setFEndDate(endDate ?? '')
+    setFStartDate(selected)
+    setFEndDate(endDate ?? selected)
     setShowForm(true)
   }
   // Keep ref current so the drag useEffect can always call the latest version
@@ -255,9 +283,8 @@ export default function CalendrierView({
     setFEnd(ev.end_time ?? '')
     setFCat((ev.category as CatKey) || 'note')
     setFDesc(ev.description ?? '')
-    const hasMulti = !!ev.end_date && ev.end_date !== ev.date
-    setFMulti(hasMulti)
-    setFEndDate(ev.end_date ?? '')
+    setFStartDate(ev.date)
+    setFEndDate(ev.end_date ?? ev.date)
     setShowForm(true)
   }
   function cancelForm() { setShowForm(false); setEditing(null) }
@@ -268,7 +295,7 @@ export default function CalendrierView({
       if (editing) {
         const res = await updateCalendarEvent(editing.id, {
           title:      fTitle.trim(),
-          end_date:   fMulti && fEndDate ? fEndDate : null,
+          end_date:   fEndDate && fEndDate !== editing.date ? fEndDate : null,
           start_time: fStart || null,
           end_time:   fEnd   || null,
           category:   fCat,
@@ -280,8 +307,8 @@ export default function CalendrierView({
       } else {
         const res = await createCalendarEvent({
           title:      fTitle.trim(),
-          date:       selected,
-          end_date:   fMulti && fEndDate ? fEndDate : null,
+          date:       fStartDate || selected,
+          end_date:   fEndDate && fEndDate !== (fStartDate || selected) ? fEndDate : null,
           start_time: fStart || null,
           end_time:   fEnd   || null,
           category:   fCat,
@@ -378,88 +405,106 @@ export default function CalendrierView({
           <div style={s.dayHeaders}>
             {DAYS_FR.map(d => <div key={d} style={s.dayHeader}>{d}</div>)}
           </div>
-          <div style={s.grid}>
-            {cells.map(({ date, day, inMonth }) => {
-              const isToday   = date === TODAY
-              const isSel     = date === selected
-              const dayEvents = byDate[date]
-              const allEvts   = [
-                ...(dayEvents?.contracts ?? []).map(c => ({ id: c.id, category: c.type, title: c.title })),
-                ...(dayEvents?.custom ?? []).map(e => ({ id: e.id, category: e.category, title: e.title })),
-              ]
-              // deduplicate (multi-day events appear once per cell)
-              const seen = new Set<string>()
-              const uniq = allEvts.filter(e => { if (seen.has(e.id)) return false; seen.add(e.id); return true })
-              const visible  = uniq.slice(0, 2)
-              const extra    = uniq.length - visible.length
-              const isWeekend = (() => { const dow = new Date(date).getDay(); return dow === 0 || dow === 6 })()
-
-              const isInDrag = !!(dragRange && date >= dragRange.start && date <= dragRange.end)
+          {/* Week rows */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {weeks.map((weekCells, wi) => {
+              const spans   = computeSpans(weekCells)
+              const BAR_H   = 18
+              const BAR_GAP = 3
+              const BAR_TOP = 32
+              const nBars   = Math.min(spans.length, 2)
 
               return (
-                <div
-                  key={date}
-                  className={`cal-cell${isSel ? ' cal-cell-sel' : ''}`}
-                  onMouseDown={e => {
-                    e.preventDefault()
-                    dragState.current = { start: date, cur: date }
-                    setDragRange(null)
-                  }}
-                  onMouseEnter={() => {
-                    if (!dragState.current) return
-                    dragState.current.cur = date
-                    const { start, cur } = dragState.current
-                    const [s2, e2] = start <= cur ? [start, cur] : [cur, start]
-                    setDragRange({ start: s2, end: e2 })
-                  }}
-                  style={{
-                    ...s.cell,
-                    opacity: inMonth ? 1 : 0.28,
-                    userSelect: 'none',
-                    background: isInDrag
-                      ? 'rgba(96,165,250,0.12)'
-                      : isSel
-                        ? 'var(--surface)'
-                        : isWeekend && inMonth
-                          ? 'rgba(255,255,255,0.015)'
-                          : 'var(--bg)',
-                    outline: isInDrag
-                      ? '1.5px solid rgba(96,165,250,0.4)'
-                      : isSel
-                        ? '1.5px solid var(--border-2)'
-                        : isToday && inMonth
-                          ? '1.5px solid var(--accent-text)'
-                          : '1.5px solid transparent',
-                  }}
-                >
-                  <div style={s.cellTop}>
-                    {isToday && inMonth
-                      ? <span className="today-num">{day}</span>
-                      : <span style={{ ...s.dayNum, color: isWeekend && inMonth ? 'var(--text-muted)' : 'var(--text-2)' }}>{day}</span>
-                    }
-                    {uniq.length > 0 && (
-                      <span style={s.dotRow}>
-                        {uniq.slice(0, 3).map((e, i) => (
-                          <span key={`${e.id}-${i}`} style={{
-                            ...s.dot,
-                            background: CAT[e.category as CatKey]?.color ?? CAT.note.color,
-                          }} />
-                        ))}
-                        {uniq.length > 3 && <span style={{ ...s.dot, background: 'var(--text-muted)' }} />}
-                      </span>
-                    )}
-                  </div>
-                  <div style={s.pillWrap}>
-                    {visible.map(e => {
-                      const c = CAT[e.category as CatKey] ?? CAT.note
-                      return (
-                        <div key={e.id} style={{ ...s.pill, borderLeftColor: c.color, background: c.bg }}>
-                          <span style={s.pillText}>{e.title}</span>
+                <div key={wi} style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', flex: 1 }}>
+                  {/* Day cells */}
+                  {weekCells.map(({ date, day, inMonth }) => {
+                    const isToday   = date === TODAY
+                    const isSel     = date === selected
+                    const dd        = byDate[date]
+                    const contracts = (dd?.contracts ?? []).map(c => ({ id: c.id, category: c.type, title: c.title }))
+                    const singles   = (dd?.custom ?? []).filter(e => !e.end_date || e.end_date === e.date).map(e => ({ id: e.id, category: e.category, title: e.title }))
+                    const allDots   = [...contracts, ...singles, ...(dd?.custom ?? []).filter(e => e.end_date && e.end_date !== e.date).map(e => ({ id: e.id, category: e.category, title: '' }))]
+                    const seenD     = new Set<string>()
+                    const uniqDots  = allDots.filter(e => { if (seenD.has(e.id)) return false; seenD.add(e.id); return true })
+                    const pillItems = [...contracts, ...singles]
+                    const slots     = Math.max(0, 2 - nBars)
+                    const visible   = pillItems.slice(0, slots)
+                    const extra     = pillItems.length - visible.length
+                    const isWeekend = (() => { const d = new Date(date).getDay(); return d === 0 || d === 6 })()
+                    const isInDrag  = !!(dragRange && date >= dragRange.start && date <= dragRange.end)
+                    const spacer    = nBars > 0 ? BAR_TOP + nBars * (BAR_H + BAR_GAP) - BAR_TOP + 4 : 0
+
+                    return (
+                      <div
+                        key={date}
+                        className={`cal-cell${isSel ? ' cal-cell-sel' : ''}`}
+                        onMouseDown={e => { e.preventDefault(); dragState.current = { start: date, cur: date }; setDragRange(null) }}
+                        onMouseEnter={() => {
+                          if (!dragState.current) return
+                          dragState.current.cur = date
+                          const { start, cur } = dragState.current
+                          const [s2, e2] = start <= cur ? [start, cur] : [cur, start]
+                          setDragRange({ start: s2, end: e2 })
+                        }}
+                        style={{
+                          ...s.cell, opacity: inMonth ? 1 : 0.28, userSelect: 'none', position: 'relative',
+                          background: isInDrag ? 'rgba(96,165,250,0.12)' : isSel ? 'var(--surface)' : isWeekend && inMonth ? 'rgba(255,255,255,0.015)' : 'var(--bg)',
+                          outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : isSel ? '1.5px solid var(--border-2)' : isToday && inMonth ? '1.5px solid var(--accent-text)' : '1.5px solid transparent',
+                        }}
+                      >
+                        {/* Day number — always at top */}
+                        <div style={{ position: 'absolute', top: 8, left: 8, right: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          {isToday && inMonth
+                            ? <span className="today-num">{day}</span>
+                            : <span style={{ ...s.dayNum, color: isWeekend && inMonth ? 'var(--text-muted)' : 'var(--text-2)' }}>{day}</span>
+                          }
+                          {uniqDots.length > 0 && (
+                            <span style={s.dotRow}>
+                              {uniqDots.slice(0, 3).map((e, i) => <span key={`${e.id}-${i}`} style={{ ...s.dot, background: CAT[e.category as CatKey]?.color ?? CAT.note.color }} />)}
+                              {uniqDots.length > 3 && <span style={{ ...s.dot, background: 'var(--text-muted)' }} />}
+                            </span>
+                          )}
                         </div>
-                      )
-                    })}
-                    {extra > 0 && <span style={s.extraChip}>+{extra}</span>}
-                  </div>
+                        {/* Spacer for day num + bars */}
+                        <div style={{ height: BAR_TOP + spacer + 4 }} />
+                        {/* Single-day pills */}
+                        <div style={s.pillWrap}>
+                          {visible.map(e => {
+                            const c = CAT[e.category as CatKey] ?? CAT.note
+                            return <div key={e.id} style={{ ...s.pill, borderLeftColor: c.color, background: c.bg }}><span style={s.pillText}>{e.title}</span></div>
+                          })}
+                          {extra > 0 && <span style={s.extraChip}>+{extra}</span>}
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                  {/* Multi-day bars */}
+                  {spans.slice(0, 2).map((span, si) => {
+                    const cat   = CAT[span.event.category as CatKey] ?? CAT.note
+                    const left  = `calc(${(span.startCol / 7) * 100}% + 2px)`
+                    const width = `calc(${((span.endCol - span.startCol + 1) / 7) * 100}% - 4px)`
+                    const top   = BAR_TOP + si * (BAR_H + BAR_GAP)
+                    const br    = `${span.isStart ? 4 : 0}px ${span.isEnd ? 4 : 0}px ${span.isEnd ? 4 : 0}px ${span.isStart ? 4 : 0}px`
+                    return (
+                      <div
+                        key={span.event.id}
+                        onClick={() => { setSelected(span.event.date); setYear(Number(span.event.date.slice(0,4))); setMonth(Number(span.event.date.slice(5,7))-1) }}
+                        style={{
+                          position: 'absolute', top, left, width, height: BAR_H, zIndex: 2,
+                          background: cat.bg,
+                          borderLeft: span.isStart ? `2.5px solid ${cat.color}` : 'none',
+                          borderRadius: br,
+                          display: 'flex', alignItems: 'center',
+                          padding: '0 6px', fontSize: '11px', fontWeight: 500,
+                          color: 'var(--text-2)', overflow: 'hidden', cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {span.isStart && span.event.title}
+                      </div>
+                    )
+                  })}
                 </div>
               )
             })}
@@ -492,38 +537,28 @@ export default function CalendrierView({
                 style={s.fInput}
               />
 
-              {/* Time row */}
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                <TimePickerInput value={fStart} onChange={setFStart} placeholder="Début" />
-                <span style={{ color: 'var(--text-muted)', fontSize: '12px', flexShrink: 0 }}>→</span>
-                <TimePickerInput value={fEnd} onChange={setFEnd} placeholder="Fin" />
+              {/* Date row */}
+              <div style={s.dateRow}>
+                <CalendarInput
+                  value={fStartDate}
+                  onChange={v => { setFStartDate(v); if (fEndDate < v) setFEndDate(v) }}
+                  placeholder="Date début"
+                  disabled={!!editing}
+                />
+                <span style={s.rowArrow}>→</span>
+                <CalendarInput
+                  value={fEndDate}
+                  onChange={setFEndDate}
+                  placeholder="Date fin"
+                />
               </div>
 
-              {/* Multi-day toggle */}
-              <button
-                className="multi-toggle"
-                onClick={() => { setFMulti(v => !v); if (!fEndDate) setFEndDate(selected) }}
-                style={{
-                  ...s.multiToggle,
-                  background: fMulti ? 'rgba(96,165,250,0.1)' : 'var(--surface)',
-                  border: `1.5px solid ${fMulti ? 'rgba(96,165,250,0.4)' : 'var(--border)'}`,
-                  color: fMulti ? '#60a5fa' : 'var(--text-3)',
-                }}
-              >
-                <span style={s.multiDot} />
-                Plusieurs jours
-              </button>
-
-              {fMulti && (
-                <div style={s.multiRow}>
-                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap' }}>Jusqu'au</span>
-                  <CalendarInput
-                    value={fEndDate}
-                    onChange={setFEndDate}
-                    placeholder="Date de fin"
-                  />
-                </div>
-              )}
+              {/* Time row */}
+              <div style={s.dateRow}>
+                <TimePickerInput value={fStart} onChange={setFStart} placeholder="Heure début" />
+                <span style={s.rowArrow}>→</span>
+                <TimePickerInput value={fEnd} onChange={setFEnd} placeholder="Heure fin" />
+              </div>
 
               {/* Category chips */}
               <div style={s.catRow}>
@@ -797,26 +832,13 @@ const s: Record<string, React.CSSProperties> = {
     width: '100%', padding: '10px 12px',
     fontSize: '14px', fontWeight: 500, borderRadius: '10px',
   },
-  multiToggle: {
-    display: 'flex', alignItems: 'center', gap: '7px',
-    padding: '7px 12px',
-    borderRadius: '8px',
-    fontSize: '12px', fontWeight: 500,
-    cursor: 'pointer',
-    alignSelf: 'flex-start',
+  dateRow: {
+    display: 'grid', gridTemplateColumns: '1fr auto 1fr',
+    gap: '4px', alignItems: 'center',
   },
-  multiDot: {
-    width: '7px', height: '7px',
-    borderRadius: '2px',
-    background: 'currentColor',
-    flexShrink: 0,
-  },
-  multiRow: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-  },
-  fDateInput: {
-    flex: 1, padding: '7px 10px',
-    fontSize: '13px', borderRadius: '8px',
+  rowArrow: {
+    color: 'var(--text-muted)', fontSize: '12px',
+    flexShrink: 0, textAlign: 'center',
   },
   catRow: { display: 'flex', flexWrap: 'wrap', gap: '5px' },
   catChip: {
