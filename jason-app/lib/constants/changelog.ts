@@ -10,6 +10,20 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    id: 'actualites-lcd-page-apr-2026',
+    date: '2026-04-19',
+    tag: 'nouveau',
+    title: 'Actualités LCD — 12 articles pour rester informé',
+    description: 'Une nouvelle section "Actualités" est disponible dans ton espace. Elle rassemble les infos importantes du moment : nouvelles obligations, changements fiscaux, évolutions des plateformes… Le tout trié et résumé pour toi, avec un lien direct vers la source.',
+  },
+  {
+    id: 'revenus-guide-fiscalite-apr-2026',
+    date: '2026-04-19',
+    tag: 'nouveau',
+    title: 'Revenus — guide fiscalité 2026 intégré',
+    description: 'Un guide clair sur les régimes fiscaux est maintenant accessible directement depuis la page Revenus. Tu y retrouves les seuils 2026 (micro-BIC, régime réel, LMP) expliqués simplement, avec ce que ça change concrètement pour toi selon tes revenus. Pas de jargon — juste l\'essentiel.',
+  },
+  {
     id: 'revenus-journal-paiements-apr-2026',
     date: '2026-04-19',
     tag: 'nouveau',

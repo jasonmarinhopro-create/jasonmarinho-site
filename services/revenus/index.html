@@ -117,6 +117,34 @@
     .chart-bar-wrap{flex:1;width:100%;display:flex;align-items:flex-end}
     .chart-bar{width:100%;background:var(--y);border-radius:4px 4px 2px 2px;min-height:2px}
     .chart-lbl{font-size:10px;color:var(--tl);text-transform:capitalize}
+
+    /* Fiscalité section */
+    .seuils-strip{display:flex;gap:0;background:#fff;border:1px solid rgba(0,76,63,.09);border-radius:14px;padding:20px 24px;flex-wrap:wrap;row-gap:16px;margin-bottom:28px}
+    .seuil-pill{display:flex;flex-direction:column;gap:3px;flex:1;min-width:100px}
+    .seuil-sep{width:1px;background:rgba(0,76,63,.1);margin:0 20px;align-self:stretch;flex-shrink:0}
+    .seuil-lbl{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--tl)}
+    .seuil-seuil{font-size:13px;font-weight:600;color:var(--td)}
+    .seuil-pct{font-size:15px;font-weight:700}
+    .regime-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+    .regime-card{border:1px solid;border-radius:14px;padding:20px 18px}
+    .regime-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.06)}
+    .rc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+    .rc-name{font-family:'Fraunces',serif;font-size:14px;font-weight:600;display:block}
+    .rc-sub{font-size:11px;color:var(--tl);display:block;margin-top:1px}
+    .rc-pct{font-size:17px;font-weight:700;line-height:1;text-align:right}
+    .rc-seuil{font-size:10px;color:var(--tl);text-align:right}
+    .rc-who{font-size:13px;color:var(--tm);line-height:1.6;margin:0 0 10px}
+    .rc-av{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px}
+    .rc-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
+    .rc-txt{font-size:12px;color:var(--tm);line-height:1.55}
+    .lmp-box{background:#fff7e6;border:1px solid rgba(245,158,11,.25);border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;margin-bottom:20px}
+    .lmp-icon{width:32px;height:32px;background:rgba(245,158,11,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+    .lmp-body{font-size:13px;color:var(--tm);line-height:1.65}
+    .lmp-body strong{color:var(--td);display:block;margin-bottom:3px;font-size:14px}
+    .fisc-src{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--tl);margin-top:4px}
+    .fisc-src a{color:var(--g);text-decoration:none;font-weight:500}
+    .fisc-src a:hover{text-decoration:underline}
+    @media(max-width:768px){.regime-grid{grid-template-columns:1fr}.seuils-strip{gap:12px}}
   </style>
 </head>
 <body>
@@ -337,6 +365,94 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- FISCALITÉ 2026 -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:32px">
+      <div class="lbl dk">Fiscalité 2026</div>
+      <h2 class="h2">Quel régime s'applique <em>à ta situation&nbsp;?</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:560px;line-height:1.75">Les règles ont changé avec la loi Le Meur. Voici ce que tout hôte doit savoir avant de déclarer ses revenus de location meublée — sans le jargon comptable.</p>
+    </div>
+
+    <!-- Seuils 2026 -->
+    <div class="seuils-strip">
+      <div class="seuil-pill">
+        <span class="seuil-lbl">Meublé non classé</span>
+        <span class="seuil-seuil">Revenus &lt; 15 000 €/an</span>
+        <span class="seuil-pct" style="color:#3b82f6">Abattement 30 %</span>
+      </div>
+      <div class="seuil-sep"></div>
+      <div class="seuil-pill">
+        <span class="seuil-lbl">Meublé classé ★</span>
+        <span class="seuil-seuil">Revenus &lt; 83 600 €/an</span>
+        <span class="seuil-pct" style="color:#059669">Abattement 50 %</span>
+      </div>
+      <div class="seuil-sep"></div>
+      <div class="seuil-pill">
+        <span class="seuil-lbl">Chambres d'hôtes</span>
+        <span class="seuil-seuil">Revenus &lt; 188 700 €/an</span>
+        <span class="seuil-pct" style="color:#7c3aed">Abattement 71 %</span>
+      </div>
+      <div class="seuil-sep"></div>
+      <div class="seuil-pill">
+        <span class="seuil-lbl">Passage en LMP si</span>
+        <span class="seuil-seuil">&gt; 23 000 €/an</span>
+        <span class="seuil-pct" style="color:#d97706">+ 50 % revenus foyer</span>
+      </div>
+    </div>
+
+    <!-- 3 régimes -->
+    <div class="regime-grid">
+      <div class="regime-card" style="border-color:rgba(59,130,246,.2);background:rgba(59,130,246,.03)">
+        <div class="rc-top">
+          <div><span class="rc-name" style="color:#2563eb">Micro-BIC</span><span class="rc-sub">Meublé non classé</span></div>
+          <div><div class="rc-pct" style="color:#2563eb">30 %</div><div class="rc-seuil">seuil 15 000 €</div></div>
+        </div>
+        <p class="rc-who">Tu loues sur Airbnb ou Booking sans classement officiel et tes revenus restent sous 15 000 €/an.</p>
+        <div class="rc-av"><div class="rc-dot" style="background:#059669"></div><span class="rc-txt">Abattement automatique à la déclaration — aucune compta à tenir.</span></div>
+        <div class="rc-av"><div class="rc-dot" style="background:#ef4444"></div><span class="rc-txt" style="color:var(--tl)">Si tes charges réelles dépassent 30 %, passe au régime réel pour payer moins.</span></div>
+      </div>
+
+      <div class="regime-card" style="border-color:rgba(5,150,105,.2);background:rgba(5,150,105,.03)">
+        <div class="rc-top">
+          <div><span class="rc-name" style="color:#059669">Micro-BIC</span><span class="rc-sub">Meublé classé / Ch. d'hôtes</span></div>
+          <div><div class="rc-pct" style="color:#059669">50–71 %</div><div class="rc-seuil">seuil 83 600 €</div></div>
+        </div>
+        <p class="rc-who">Ton logement a un classement tourisme (étoiles) ou tu gères des chambres d'hôtes.</p>
+        <div class="rc-av"><div class="rc-dot" style="background:#059669"></div><span class="rc-txt">50 % d'abattement (classé) ou 71 % (ch. d'hôtes) — un classement peut diviser ta base imposable par deux.</span></div>
+        <div class="rc-av"><div class="rc-dot" style="background:#ef4444"></div><span class="rc-txt" style="color:var(--tl)">Le classement demande une démarche officielle auprès d'un organisme agréé.</span></div>
+      </div>
+
+      <div class="regime-card" style="border-color:rgba(217,119,6,.2);background:rgba(217,119,6,.03)">
+        <div class="rc-top">
+          <div><span class="rc-name" style="color:#b45309">Régime réel</span><span class="rc-sub">LMNP — toutes catégories</span></div>
+          <div><div class="rc-pct" style="color:#b45309;font-size:13px;line-height:1.2;text-align:right">Charges<br>réelles</div></div>
+        </div>
+        <p class="rc-who">Tes charges (crédit, travaux, assurances, frais de gestion…) dépassent l'abattement forfaitaire, ou tes revenus dépassent les seuils micro-BIC.</p>
+        <div class="rc-av"><div class="rc-dot" style="background:#059669"></div><span class="rc-txt">Déduction de toutes les charges + amortissement du bien. Résultat souvent nul → peu ou pas d'impôt.</span></div>
+        <div class="rc-av"><div class="rc-dot" style="background:#ef4444"></div><span class="rc-txt" style="color:var(--tl)">Depuis 2025 : les amortissements déduits sont réintégrés dans le calcul de la plus-value à la revente.</span></div>
+      </div>
+    </div>
+
+    <!-- LMP callout -->
+    <div class="lmp-box">
+      <div class="lmp-icon"><i class="ph ph-warning" style="color:#d97706"></i></div>
+      <div class="lmp-body">
+        <strong>Tu risques de passer en LMP sans le savoir ?</strong>
+        Dès que tes revenus locatifs dépassent 23 000 €/an <em>et</em> représentent plus de 50 % des revenus de ton foyer, tu bascules automatiquement au statut LMP (Loueur Meublé Professionnel). Cela déclenche des cotisations sociales (~30 % du bénéfice) — mais aussi des avantages : déficits déductibles du revenu global et exonération de plus-value après 5 ans d'activité.
+      </div>
+    </div>
+
+    <p class="fisc-src">
+      <i class="ph ph-info" style="font-size:13px;flex-shrink:0"></i>
+      Guide informatif basé sur la réglementation en vigueur en 2026 —
+      <a href="https://www.service-public.fr/particuliers/vosdroits/F32744" target="_blank" rel="noopener">service-public.fr</a>,
+      <a href="https://lmnp.ai/fiscalite-lmnp" target="_blank" rel="noopener">lmnp.ai</a>.
+      Consulte un expert-comptable pour ta situation personnelle.
+    </p>
   </div>
 </section>
 
