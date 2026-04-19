@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
   Envelope, Phone, Note, CalendarBlank, House,
-  CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText,
+  CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
 } from '@phosphor-icons/react'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
 import { reportGuest } from '../../securite/actions'
@@ -258,9 +258,11 @@ interface Props {
   isFlagged: boolean
   bailleur: BailleurProfile
   logements?: LogementOption[]
+  plan?: string
 }
 
-export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [] }: Props) {
+export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [], plan = 'decouverte' }: Props) {
+  const isDecouverte = plan === 'decouverte'
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -720,6 +722,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </div>
                 </div>
                 <div className="sejour-actions">
+                  {isDecouverte ? (
+                    <a href="/dashboard/abonnement" style={{ ...s.contractBtn, opacity: 0.6, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }} title="Contrats disponibles en Standard">
+                      <Lock size={13} /> Standard
+                    </a>
+                  ) : (
                   <button
                     onClick={() => handleContractClick(sj)}
                     style={s.contractBtn}
@@ -729,6 +736,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     <FileText size={13} weight="fill" />
                     {contractLoading === sj.id ? '…' : sj.contrat_statut === 'nouveau' ? 'Créer contrat' : 'Voir contrat'}
                   </button>
+                  )}
                   {sj.contrat_statut === 'signe' && (
                     <button
                       onClick={() => openDepositModal(sj.id)}

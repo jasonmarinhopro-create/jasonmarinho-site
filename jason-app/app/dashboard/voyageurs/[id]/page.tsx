@@ -79,6 +79,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
         isFlagged={isFlagged}
         bailleur={bailleur}
         logements={(logements ?? []) as any[]}
+        plan={profile.plan ?? 'decouverte'}
       />
     </>
   )

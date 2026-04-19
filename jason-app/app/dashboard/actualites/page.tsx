@@ -15,11 +15,16 @@ export interface Actualite {
   created_at: string
 }
 
+const FREE_ARTICLES_LIMIT = 3
+
 export default async function ActualitesPage() {
   const [profile, supabase] = await Promise.all([
     getProfile(),
     createClient(),
   ])
+
+  const plan = profile?.plan ?? 'decouverte'
+  const isDecouverte = plan === 'decouverte'
 
   const { data: articles } = await supabase
     .from('actualites')
@@ -27,10 +32,20 @@ export default async function ActualitesPage() {
     .eq('is_published', true)
     .order('published_at', { ascending: false, nullsFirst: false })
 
+  const visibleArticles = isDecouverte
+    ? (articles ?? []).slice(0, FREE_ARTICLES_LIMIT)
+    : (articles ?? [])
+
+  const totalCount = (articles ?? []).length
+
   return (
     <>
       <Header title="Actualités" userName={profile?.full_name ?? undefined} />
-      <ActualitesView articles={articles ?? []} />
+      <ActualitesView
+        articles={visibleArticles}
+        isDecouverte={isDecouverte}
+        totalCount={totalCount}
+      />
     </>
   )
 }

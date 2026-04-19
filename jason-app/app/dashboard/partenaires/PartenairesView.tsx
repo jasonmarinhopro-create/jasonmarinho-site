@@ -14,7 +14,8 @@ interface Partner {
   category: string
 }
 
-export default function PartenairesView({ additionalPartners = [] }: { additionalPartners?: Partner[] }) {
+export default function PartenairesView({ additionalPartners = [], plan = 'decouverte' }: { additionalPartners?: Partner[]; plan?: string }) {
+  const isDecouverte = plan === 'decouverte'
   return (
     <div style={styles.page}>
       {/* Intro */}
@@ -108,8 +109,13 @@ export default function PartenairesView({ additionalPartners = [] }: { additiona
                 <div style={styles.advantageBox}>
                   <span style={styles.advantageLabel}>Avantage membres</span>
                   <span style={styles.advantageText}>{p.advantage}</span>
-                  {p.promo_code && (
+                  {p.promo_code && !isDecouverte && (
                     <span style={styles.promoCode}>{p.promo_code}</span>
+                  )}
+                  {p.promo_code && isDecouverte && (
+                    <a href="/dashboard/abonnement" style={styles.promoLocked}>
+                      🔒 Code promo — Standard
+                    </a>
                   )}
                 </div>
                 <div style={styles.serviceLink}>
@@ -275,6 +281,11 @@ const styles: Record<string, React.CSSProperties> = {
   promoCode: {
     fontSize: '12px', fontWeight: 700, color: 'var(--accent-text)',
     fontFamily: 'monospace', letterSpacing: '1px', marginTop: '2px',
+  },
+  promoLocked: {
+    fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)',
+    marginTop: '4px', textDecoration: 'none', display: 'block',
+    opacity: 0.7,
   },
 
   // Suggest section

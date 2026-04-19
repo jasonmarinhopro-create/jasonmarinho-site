@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import FormationsSuggestForm from './FormationsSuggestForm'
 import FormationsGrid from './FormationsGrid'
+import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
 
 // Toutes les formations disponibles avec une page dashboard
 const ACTIVE_SLUGS = [
@@ -30,9 +31,12 @@ export default async function FormationsPage() {
   const supabase = await createClient()
   const userId = profile?.userId ?? ''
 
-  const [{ data: formations }, { data: userFormations }] = await Promise.all([
+  const plan = profile?.plan ?? 'decouverte'
+
+  const [{ data: formations }, { data: userFormations }, unlockedSlugs] = await Promise.all([
     supabase.from('formations').select('*').in('slug', ACTIVE_SLUGS).eq('is_published', true).order('created_at', { ascending: true }),
     supabase.from('user_formations').select('*').eq('user_id', userId),
+    getUnlockedFormationSlugs(supabase, userId, plan),
   ])
 
   const progressMap = Object.fromEntries(
@@ -54,6 +58,8 @@ export default async function FormationsPage() {
             formations={formations ?? []}
             progressMap={progressMap}
             comingSoon={COMING_SOON}
+            unlockedSlugs={unlockedSlugs}
+            plan={plan}
           />
         </div>
 

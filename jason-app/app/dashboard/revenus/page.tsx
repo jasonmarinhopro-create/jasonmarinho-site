@@ -2,9 +2,21 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import RevenusView from './RevenusView'
+import PlanGate from '@/components/ui/PlanGate'
 
 export default async function RevenusPage() {
   const profile = await getProfile()
+  const plan = profile?.plan ?? 'decouverte'
+
+  if (plan === 'decouverte') {
+    return (
+      <>
+        <Header title="Revenus" userName={profile?.full_name ?? undefined} />
+        <PlanGate feature="revenus" />
+      </>
+    )
+  }
+
   const supabase = await createClient()
   const userId = profile?.userId ?? ''
 

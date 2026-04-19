@@ -116,10 +116,10 @@ export default async function AbonnementPage({
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
                   <div style={styles.planName}>Standard</div>
-                  <div style={styles.fmPill}><span style={styles.fmDot} />Founding Member</div>
+                  <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>
                 </div>
                 <div style={styles.priceRow}>
-                  <span style={styles.price}>4,98 €</span>
+                  <span style={styles.price}>1,98 €</span>
                   <span style={styles.priceLabel}> / mois HT</span>
                 </div>
                 <p style={styles.planDesc}>Tous les outils pour piloter ton activité LCD.</p>
@@ -168,12 +168,12 @@ export default async function AbonnementPage({
                   <div style={styles.upgradeGlow} />
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
                     <div style={styles.upgradeName}>Standard</div>
-                    <div style={styles.fmPill}><span style={styles.fmDot} />Founding Member</div>
+                    <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>
                   </div>
                   <div style={styles.priceRow}>
-                    <span style={styles.price}>4,98 €</span>
+                    <span style={styles.price}>1,98 €</span>
                     <span style={styles.priceLabel}> / mois HT</span>
-                    <span style={styles.priceStrike}>8,98 €</span>
+                    <span style={styles.priceStrike}>3,98 €</span>
                   </div>
                   <p style={styles.planDesc}>Logements illimités, contrats, paiement en ligne et formations complètes.</p>
                   <div style={styles.featureList}>
@@ -184,7 +184,7 @@ export default async function AbonnementPage({
                       </div>
                     ))}
                   </div>
-                  <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard — 4,98 €/mois" />
+                  <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard — 1,98 €/mois" />
                   <p style={styles.smallNote}>Prix HT bloqué à vie tant que l&apos;abonnement est actif. Résiliable à tout moment.</p>
                 </div>
               </>
@@ -250,6 +250,18 @@ export default async function AbonnementPage({
 
           </div>
         </div>
+
+        {/* Soutenir */}
+        <div style={styles.kofi} className="fade-up">
+          <div style={{ flex: 1 }}>
+            <p style={styles.kofiTitle}>Soutenir la plateforme</p>
+            <p style={styles.kofiDesc}>Contribution libre — aucune obligation, aucune contrepartie.</p>
+          </div>
+          <a href="/soutenir" style={styles.kofiBtn}>
+            Contribuer →
+          </a>
+        </div>
+
       </div>
     </>
   )
@@ -331,4 +343,9 @@ const styles: Record<string, React.CSSProperties> = {
 
   alertSuccess: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: 500, color: '#34D399', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: '12px', padding: '14px 18px', marginBottom: '24px' },
   alertInfo: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: 400, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '14px 18px', marginBottom: '24px' },
+
+  kofi: { display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, marginTop: '40px', padding: '20px 24px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px' },
+  kofiTitle: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', margin: '0 0 2px' },
+  kofiDesc: { fontSize: '12px', fontWeight: 300, color: 'var(--text-muted)', margin: 0 },
+  kofiBtn: { display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--primary)', color: '#002820', fontSize: '13px', fontWeight: 600, padding: '10px 18px', borderRadius: '10px', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 },
 }

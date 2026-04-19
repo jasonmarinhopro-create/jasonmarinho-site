@@ -6,6 +6,7 @@ import PartenairesView from './PartenairesView'
 export default async function PartenairesPage() {
   const profile = await getProfile()
   const supabase = await createClient()
+  const plan = profile?.plan ?? 'decouverte'
 
   // Partenaires additionnels hors Driing (actifs dans la DB)
   const { data: additionalPartners } = await supabase
@@ -17,7 +18,7 @@ export default async function PartenairesPage() {
   return (
     <>
       <Header title="Partenaires" userName={profile?.full_name ?? undefined} />
-      <PartenairesView additionalPartners={additionalPartners ?? []} />
+      <PartenairesView additionalPartners={additionalPartners ?? []} plan={plan} />
     </>
   )
 }

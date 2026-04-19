@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
-import { STRIPE_PLANS } from '@/lib/constants/stripe-plans'
+import { STRIPE_PLANS, ALL_VALID_PRICE_IDS } from '@/lib/constants/stripe-plans'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -15,7 +15,6 @@ function adminClient() {
   )
 }
 
-const VALID_PRICE_IDS = new Set(Object.values(STRIPE_PLANS).filter(Boolean))
 
 // POST /api/stripe/subscribe/create
 // Body: { priceId: string }
@@ -28,7 +27,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}))
   const { priceId } = body as { priceId?: string }
 
-  if (!priceId || !VALID_PRICE_IDS.has(priceId)) {
+  if (!priceId || !ALL_VALID_PRICE_IDS.has(priceId)) {
     return NextResponse.json({ error: 'Plan invalide.' }, { status: 400 })
   }
 
