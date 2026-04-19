@@ -54,6 +54,8 @@ export const CHANGELOG: ChangelogEntry[] = [
   {
     id: 'actualites-lcd-page-apr-2026',
     date: '2026-04-19',
+    tag: 'nouveau',
+    title: 'Actualités LCD — nouvelle section',
     description: 'Une nouvelle section "Actualités" est disponible dans ton espace. Elle rassemble les infos importantes du moment : nouvelles obligations, changements fiscaux, évolutions des plateformes… Le tout trié et résumé pour toi, avec un lien direct vers la source.',
   },
   {

@@ -9,6 +9,12 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
 
+// ── greeting based on Paris time
+function getGreeting() {
+  const h = parseInt(new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).format(new Date()))
+  return h >= 18 || h < 5 ? 'Bonsoir' : 'Bonjour'
+}
+
 // ── date helpers (server-side, no timezone issues)
 function todayStr() {
   const t = new Date()
@@ -140,10 +146,9 @@ export default async function DashboardPage() {
         {/* ── Welcome */}
         <section style={s.welcome} className="fade-up dash-welcome">
           <div>
-            <p style={s.welcomeSub}>Bonjour,</p>
+            <p style={s.welcomeSub}>{getGreeting()}{firstName ? `, ${firstName}` : ''}</p>
             <h2 style={s.welcomeTitle}>
-              Bienvenue{firstName ? ', ' : ''}
-              <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>{firstName}</em>
+              Bienvenue sur la plateforme
             </h2>
             <p style={s.welcomeDesc}>
               {actionsCount > 0
