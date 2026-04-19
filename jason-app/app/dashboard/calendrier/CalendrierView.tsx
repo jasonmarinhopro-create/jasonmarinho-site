@@ -457,7 +457,7 @@ export default function CalendrierView({
 
         <div style={{ display: 'flex', gap: '8px' }}>
           <button className="btn-ghost" onClick={goToday} style={s.todayBtn}>Aujourd'hui</button>
-          <button className="btn-primary" onClick={openAdd} style={s.addBtn}>
+          <button className="btn-primary" onClick={() => openAdd()} style={s.addBtn}>
             <Plus size={15} weight="bold" />
             <span className="cal-add-text">Événement</span>
           </button>
@@ -634,7 +634,7 @@ export default function CalendrierView({
               <div style={s.sideDate}>{formatDayLong(selected).split(' ').slice(1).join(' ')}</div>
             </div>
             {!showForm && !selectedContract
-              ? <button onClick={openAdd} style={s.addDayBtn} className="icon-btn" title="Ajouter"><Plus size={15} weight="bold" /></button>
+              ? <button onClick={() => openAdd()} style={s.addDayBtn} className="icon-btn" title="Ajouter"><Plus size={15} weight="bold" /></button>
               : <button onClick={() => { cancelForm(); setSelectedContract(null) }} style={s.addDayBtn} className="icon-btn" title="Fermer"><X size={15} /></button>
             }
           </div>
@@ -809,7 +809,7 @@ export default function CalendrierView({
                   <p style={{ color: 'var(--text-muted)', fontSize: '13px', margin: '0 0 12px' }}>
                     Aucun événement ce jour
                   </p>
-                  <button className="btn-ghost" onClick={openAdd} style={{ fontSize: '13px', padding: '7px 16px' }}>
+                  <button className="btn-ghost" onClick={() => openAdd()} style={{ fontSize: '13px', padding: '7px 16px' }}>
                     + Ajouter
                   </button>
                 </div>
