@@ -116,10 +116,10 @@ export default async function AbonnementPage({
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
                   <div style={styles.planName}>Standard</div>
-                  <div style={styles.fmPill}><span style={styles.fmDot} />Founding Member</div>
+                  <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>
                 </div>
                 <div style={styles.priceRow}>
-                  <span style={styles.price}>4,98 €</span>
+                  <span style={styles.price}>1,98 €</span>
                   <span style={styles.priceLabel}> / mois HT</span>
                 </div>
                 <p style={styles.planDesc}>Tous les outils pour piloter ton activité LCD.</p>
@@ -168,12 +168,12 @@ export default async function AbonnementPage({
                   <div style={styles.upgradeGlow} />
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
                     <div style={styles.upgradeName}>Standard</div>
-                    <div style={styles.fmPill}><span style={styles.fmDot} />Founding Member</div>
+                    <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>
                   </div>
                   <div style={styles.priceRow}>
-                    <span style={styles.price}>4,98 €</span>
+                    <span style={styles.price}>1,98 €</span>
                     <span style={styles.priceLabel}> / mois HT</span>
-                    <span style={styles.priceStrike}>8,98 €</span>
+                    <span style={styles.priceStrike}>3,98 €</span>
                   </div>
                   <p style={styles.planDesc}>Logements illimités, contrats, paiement en ligne et formations complètes.</p>
                   <div style={styles.featureList}>
@@ -184,7 +184,7 @@ export default async function AbonnementPage({
                       </div>
                     ))}
                   </div>
-                  <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard — 4,98 €/mois" />
+                  <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard — 1,98 €/mois" />
                   <p style={styles.smallNote}>Prix HT bloqué à vie tant que l&apos;abonnement est actif. Résiliable à tout moment.</p>
                 </div>
               </>
