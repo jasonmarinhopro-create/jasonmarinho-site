@@ -10,6 +10,48 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    id: 'dashboard-resume-operationnel-apr-2026',
+    date: '2026-04-19',
+    tag: 'amélioration',
+    title: 'Tableau de bord — résumé opérationnel du jour',
+    description: 'La page d\'accueil affiche maintenant un vrai résumé de ton activité : séjours actifs, arrivées dans les 7 prochains jours et actions requises (contrats non signés, paiements en attente). Les stats formations ont été remplacées par ces indicateurs opérationnels, bien plus utiles au quotidien.',
+  },
+  {
+    id: 'calendrier-4-blocs-priorite-apr-2026',
+    date: '2026-04-19',
+    tag: 'amélioration',
+    title: 'Calendrier — section "À traiter" en 4 blocs de priorité',
+    description: 'La liste d\'alertes est remplacée par 4 blocs colorés : Critique, Urgent, Important, À faire. Chaque bloc regroupe les actions de même niveau avec le nom du logement et le timing. Les blocs sans action passent en transparence.',
+  },
+  {
+    id: 'calendrier-checklist-sejour-apr-2026',
+    date: '2026-04-19',
+    tag: 'nouveau',
+    title: 'Calendrier — check-list opérationnelle par séjour',
+    description: '13 étapes réparties en 3 phases (Avant l\'arrivée, Pendant le séjour, Après le départ) pour chaque contrat. Un bouton "Tout cocher / Tout décocher" par phase permet de valider d\'un coup. La progression est affichée en temps réel et synchronisée avec la base de données.',
+  },
+  {
+    id: 'calendrier-alertes-intelligentes-apr-2026',
+    date: '2026-04-19',
+    tag: 'nouveau',
+    title: 'Calendrier — alertes intelligentes sur les dates',
+    description: 'Des points colorés apparaissent sur les cases du calendrier pour signaler les actions non faites : contrat non signé (J-7), solde non reçu (J-3), instructions non envoyées (J-2), avis non demandé (J+3 après départ). Clique sur l\'alerte pour naviguer directement au séjour concerné.',
+  },
+  {
+    id: 'calendrier-categories-refonte-apr-2026',
+    date: '2026-04-19',
+    tag: 'amélioration',
+    title: 'Calendrier — refonte des catégories d\'événements',
+    description: '"Entretien" renommé en "Ménage", "Admin" renommé en "Tâche", catégorie "Note" supprimée. Les anciens événements sont migrés automatiquement. Le sélecteur affiche désormais Ménage, RDV et Tâche.',
+  },
+  {
+    id: 'calendrier-bug-date-apr-2026',
+    date: '2026-04-19',
+    tag: 'correction',
+    title: 'Calendrier — correction de la saisie de date de fin',
+    description: 'Cliquer sur "Ajouter un événement" affichait "Invalid Date" dans le champ date de fin. Corrigé : la date de la journée sélectionnée est maintenant correctement pré-remplie à l\'ouverture du formulaire.',
+  },
+  {
     id: 'voyageur-signalement-temoignage-apr-2026',
     date: '2026-04-12',
     tag: 'nouveau',
