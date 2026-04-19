@@ -10,10 +10,50 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
-    id: 'actualites-lcd-page-apr-2026',
+    id: 'plan-gating-apr-2026',
+    date: '2026-04-19',
+    tag: 'important',
+    title: 'Accès par plan — Découverte, Standard, Driing',
+    description: 'La plateforme adapte maintenant ce que tu vois selon ton plan. En Découverte : 2 formations au choix, actualités récentes, accès à la communauté et aux gabarits. En Standard : 14 formations complètes, journal des revenus, contrats illimités + Stripe, codes promo partenaires. Tout est automatique — rien à configurer.',
+  },
+  {
+    id: 'abonnement-stripe-apr-2026',
+    date: '2026-04-19',
+    tag: 'important',
+    title: 'Abonnements Standard & Membre Driing — paiement Stripe',
+    description: 'Tu peux maintenant souscrire au plan Standard directement depuis ton espace (1,98 €/mois Membre Fondateur, prix bloqué à vie). Le plan Membre Driing est disponible à 0,98 €/mois pour les clients Driing actifs. Paiement sécurisé via Stripe, résiliation à tout moment depuis le portail.',
+  },
+  {
+    id: 'tarifs-membre-fondateur-apr-2026',
+    date: '2026-04-19',
+    tag: 'important',
+    title: 'Tarif Membre Fondateur — 1,98 €/mois à vie',
+    description: 'Les premiers membres bénéficient d\'un prix bloqué à 1,98 €/mois (ou 19,98 €/an) tant que leur abonnement reste actif. Le tarif public passera à 3,98 €/mois à la fin de la phase lancement. C\'est le bon moment.',
+  },
+  {
+    id: 'formations-2-choix-apr-2026',
+    date: '2026-04-19',
+    tag: 'amélioration',
+    title: 'Formations — 2 formations au choix en Découverte',
+    description: 'Les membres en Découverte peuvent maintenant choisir librement 2 formations parmi les 14 disponibles. Commence par celles qui t\'intéressent le plus — elles restent accessibles à vie. Passe en Standard pour tout débloquer.',
+  },
+  {
+    id: 'soutenir-page-apr-2026',
     date: '2026-04-19',
     tag: 'nouveau',
-    title: 'Actualités LCD — 12 articles pour rester informé',
+    title: 'Page "Soutenir" — contribuer librement à la plateforme',
+    description: 'Une page dédiée permet de soutenir librement le développement de la plateforme, sans obligation. Contribution libre à partir de 2,98 €, paiement sécurisé via Stripe. Accessible depuis la page tarifs et le menu.',
+  },
+  {
+    id: 'abonnement-dashboard-refonte-apr-2026',
+    date: '2026-04-19',
+    tag: 'amélioration',
+    title: 'Dashboard Abonnement — refonte complète',
+    description: 'La page Abonnement a été entièrement repensée : plan actuel bien visible, liste des fonctionnalités par plan, CTA vers Stripe pour upgrader ou gérer son abonnement, section Driing avec formulaire de demande. Plus clair, plus complet.',
+  },
+  {
+    id: 'actualites-lcd-page-apr-2026',
+    date: '2026-04-19',
     description: 'Une nouvelle section "Actualités" est disponible dans ton espace. Elle rassemble les infos importantes du moment : nouvelles obligations, changements fiscaux, évolutions des plateformes… Le tout trié et résumé pour toi, avec un lien direct vers la source.',
   },
   {
