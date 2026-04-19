@@ -42,7 +42,13 @@ const CAT: Record<string, { label: string; color: string; bg: string }> = {
 }
 
 type CatKey = 'arrivee' | 'depart' | 'menage' | 'rdv' | 'tache' | 'note'
-const PICKER_CATS: CatKey[] = ['menage', 'rdv', 'tache', 'note']
+const PICKER_CATS: CatKey[] = ['menage', 'rdv', 'tache']
+
+function catToDisplay(c: string): CatKey {
+  if (c === 'entretien') return 'menage'
+  if (c === 'admin')     return 'tache'
+  return (c as CatKey) || 'menage'
+}
 
 const CHECKLIST_ITEMS: Array<{ key: string; label: string; phase: 'avant' | 'pendant' | 'apres' }> = [
   { key: 'contrat_envoye',        label: 'Contrat envoyé',                 phase: 'avant' },
@@ -133,7 +139,7 @@ export default function CalendrierView({
   const [fTitle,   setFTitle]   = useState('')
   const [fStart,   setFStart]   = useState('')
   const [fEnd,     setFEnd]     = useState('')
-  const [fCat,     setFCat]     = useState<CatKey>('note')
+  const [fCat,     setFCat]     = useState<CatKey>('menage')
   const [fDesc,    setFDesc]    = useState('')
   const [fStartDate, setFStartDate] = useState('')
   const [fEndDate,   setFEndDate]   = useState('')
@@ -322,7 +328,7 @@ export default function CalendrierView({
   function openAdd(endDate?: string) {
     setEditing(null)
     setFTitle(''); setFStart(''); setFEnd('')
-    setFCat('note'); setFDesc('')
+    setFCat('menage'); setFDesc('')
     setFStartDate(selected)
     setFEndDate(endDate ?? selected)
     setShowForm(true)
@@ -340,7 +346,7 @@ export default function CalendrierView({
       setYear(Number(s.slice(0, 4)))
       setMonth(Number(s.slice(5, 7)) - 1)
       setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
-      setFCat('note'); setFDesc('')
+      setFCat('menage'); setFDesc('')
       setFStartDate(s); setFEndDate(e)
       setShowForm(true)
     }
@@ -371,7 +377,7 @@ export default function CalendrierView({
     setFTitle(ev.title)
     setFStart(ev.start_time ?? '')
     setFEnd(ev.end_time ?? '')
-    setFCat((ev.category as CatKey) || 'note')
+    setFCat(catToDisplay(ev.category))
     setFDesc(ev.description ?? '')
     setFStartDate(ev.date)
     setFEndDate(ev.end_date ?? ev.date)
