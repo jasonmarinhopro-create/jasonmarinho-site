@@ -4,6 +4,7 @@ import { useState, useMemo, useTransition } from 'react'
 import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
   House, Plus, Trash, X, Check,
+  Info, Warning, ArrowRight, Scales,
 } from '@phosphor-icons/react'
 import { createRevenusEntry, deleteRevenusEntry } from './actions'
 
@@ -451,6 +452,8 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
         }
       </section>
 
+      <FiscaliteSection annuel={kpis.cetteAnneeEnc} />
+
       <style>{`
         .kpi-icon-green  { color: #16a34a; }
         .kpi-icon-yellow { color: var(--accent-text); }
@@ -464,6 +467,8 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
           .tx-meta { display: none !important; }
           .tx-guest { display: none !important; }
         }
+        .fisc-card { transition: border-color 0.15s, background 0.15s; }
+        .fisc-card:hover { border-color: rgba(0,76,63,0.5) !important; }
       `}</style>
     </main>
   )
@@ -484,6 +489,175 @@ function KpiCard({ icon, label, value, colorClass, sub }: {
       </div>
     </div>
   )
+}
+
+// ── FiscaliteSection ─────────────────────────────────────────────────────────
+
+const REGIMES = [
+  {
+    key: 'micro-nc',
+    label: 'Micro-BIC',
+    sublabel: 'Meublé non classé',
+    color: '#60a5fa',
+    bg: 'rgba(96,165,250,0.07)',
+    border: 'rgba(96,165,250,0.2)',
+    seuil: '15 000 €',
+    abattement: '30 %',
+    forWho: 'Tu loues sur Airbnb ou Booking sans classement officiel, et tes revenus restent sous 15 000 €/an.',
+    avantage: 'Zéro compta — abattement automatique à la déclaration.',
+    attention: 'Si tes charges réelles dépassent 30 % de tes loyers, le régime réel sera plus avantageux.',
+  },
+  {
+    key: 'micro-cl',
+    label: 'Micro-BIC',
+    sublabel: 'Meublé classé / Ch. d\'hôtes',
+    color: '#34d399',
+    bg: 'rgba(52,211,153,0.07)',
+    border: 'rgba(52,211,153,0.2)',
+    seuil: '83 600 €',
+    abattement: '50 % — 71 %',
+    forWho: 'Ton logement a obtenu un classement tourisme (étoiles) ou tu gères des chambres d\'hôtes.',
+    avantage: 'Abattement de 50 % (classé) ou 71 % (chambres d\'hôtes) — un classement peut diviser ta base imposable par deux.',
+    attention: 'Le classement implique une démarche officielle auprès d\'un organisme agréé.',
+  },
+  {
+    key: 'reel',
+    label: 'Régime réel',
+    sublabel: 'LMNP — toutes catégories',
+    color: '#f59e0b',
+    bg: 'rgba(245,158,11,0.07)',
+    border: 'rgba(245,158,11,0.2)',
+    seuil: 'Sans plafond',
+    abattement: 'Charges réelles + amortissements',
+    forWho: 'Tes charges (crédit, travaux, assurances, frais de gestion…) dépassent l\'abattement forfaitaire, ou tes revenus dépassent les seuils micro-BIC.',
+    avantage: 'Déduction de toutes les charges + amortissement du bien → résultat souvent nul, peu ou pas d\'impôt.',
+    attention: 'Depuis 2025 : les amortissements déduits sont réintégrés dans le calcul de la plus-value à la revente.',
+  },
+]
+
+function FiscaliteSection({ annuel }: { annuel: number }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <section style={sf.wrap}>
+      {/* Header */}
+      <div style={sf.header}>
+        <div style={sf.headerLeft}>
+          <div style={sf.iconWrap}>
+            <Scales size={18} weight="fill" style={{ color: 'var(--accent-text)' }} />
+          </div>
+          <div>
+            <h2 style={sf.title}>Fiscalité 2026</h2>
+            <p style={sf.subtitle}>Quel régime s'applique à tes revenus de location meublée ?</p>
+          </div>
+        </div>
+        <button onClick={() => setOpen(v => !v)} style={sf.toggleBtn} className="fisc-toggle">
+          {open ? 'Réduire' : 'Voir le guide'}
+          <ArrowRight size={13} weight="bold" style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }} />
+        </button>
+      </div>
+
+      {/* Seuils strip — always visible */}
+      <div style={sf.seuilsStrip}>
+        <SeuilPill label="Non classé" seuil="< 15 000 €" pct="30 %" color="#60a5fa" />
+        <SeuilPill label="Classé ★"   seuil="< 83 600 €" pct="50 %" color="#34d399" />
+        <SeuilPill label="Ch. d'hôtes" seuil="< 188 700 €" pct="71 %" color="#a78bfa" />
+        <div style={sf.seuilSep} />
+        <SeuilPill label="LMP si"      seuil="> 23 000 €" pct="+ 50 % revenus" color="#fb923c" />
+      </div>
+
+      {/* Alert si revenus annuels proches des seuils */}
+      {annuel >= 12000 && annuel < 15500 && (
+        <div style={{ ...sf.alert, borderColor: 'rgba(96,165,250,0.3)', background: 'rgba(96,165,250,0.07)' }}>
+          <Info size={14} style={{ color: '#60a5fa', flexShrink: 0 }} />
+          <span>Tes revenus cette année approchent le seuil micro-BIC non classé (15 000 €). Si tu le dépasses, tu bascules automatiquement au régime réel ou micro-BIC classé.</span>
+        </div>
+      )}
+      {annuel >= 20000 && annuel < 25000 && (
+        <div style={{ ...sf.alert, borderColor: 'rgba(251,146,60,0.3)', background: 'rgba(251,146,60,0.07)' }}>
+          <Warning size={14} style={{ color: '#fb923c', flexShrink: 0 }} />
+          <span>Tes revenus approchent le seuil LMP (23 000 €). Si tes revenus locatifs dépassent 50 % de tes revenus du foyer, le passage au statut LMP est automatique — avec des cotisations sociales à la clé.</span>
+        </div>
+      )}
+
+      {/* Expandable regime cards */}
+      {open && (
+        <div style={sf.grid}>
+          {REGIMES.map(r => (
+            <div key={r.key} style={{ ...sf.card, borderColor: r.border, background: r.bg }} className="fisc-card">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div>
+                  <span style={{ ...sf.regimeLabel, color: r.color }}>{r.label}</span>
+                  <span style={sf.regimeSub}>{r.sublabel}</span>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ ...sf.bigPct, color: r.color }}>{r.abattement}</div>
+                  <div style={sf.seuilLabel}>seuil {r.seuil}</div>
+                </div>
+              </div>
+              <p style={sf.forWho}>{r.forWho}</p>
+              <div style={sf.avBlock}>
+                <span style={{ ...sf.avDot, background: r.color }} />
+                <span style={sf.avText}>{r.avantage}</span>
+              </div>
+              <div style={{ ...sf.avBlock, marginTop: '4px' }}>
+                <span style={{ ...sf.avDot, background: '#ef4444' }} />
+                <span style={{ ...sf.avText, color: 'var(--text-muted)' }}>{r.attention}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Disclaimer */}
+      <p style={sf.disclaimer}>
+        <Info size={12} style={{ flexShrink: 0 }} />
+        Guide informatif basé sur la réglementation en vigueur en 2026 —&nbsp;
+        <a href="https://www.service-public.fr/particuliers/vosdroits/F32744" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>service-public.fr</a>
+        ,&nbsp;
+        <a href="https://lmnp.ai/fiscalite-lmnp" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>lmnp.ai</a>.
+        {' '}Consulte un expert-comptable pour ta situation personnelle.
+      </p>
+    </section>
+  )
+}
+
+function SeuilPill({ label, seuil, pct, color }: { label: string; seuil: string; pct: string; color: string }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', flex: 1, minWidth: '90px' }}>
+      <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.4px', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{label}</span>
+      <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-2)', whiteSpace: 'nowrap' }}>{seuil}</span>
+      <span style={{ fontSize: '12px', fontWeight: 700, color }}>{pct}</span>
+    </div>
+  )
+}
+
+const sf: Record<string, React.CSSProperties> = {
+  wrap:        { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' },
+  header:      { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' },
+  headerLeft:  { display: 'flex', alignItems: 'flex-start', gap: '12px' },
+  iconWrap:    { width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0,76,63,0.2)', border: '1px solid rgba(0,76,63,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  title:       { fontSize: '16px', fontWeight: 600, color: 'var(--text)', margin: 0 },
+  subtitle:    { fontSize: '13px', color: 'var(--text-muted)', margin: '2px 0 0 0' },
+  toggleBtn:   { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, padding: '7px 14px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', cursor: 'pointer', flexShrink: 0, fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s' },
+
+  seuilsStrip: { display: 'flex', gap: '0', background: 'var(--surface)', borderRadius: '12px', padding: '14px 18px', flexWrap: 'wrap', rowGap: '12px' },
+  seuilSep:    { width: '1px', background: 'var(--border)', margin: '0 16px', flexShrink: 0, alignSelf: 'stretch' },
+
+  alert:       { display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '12px 14px', borderRadius: '10px', border: '1px solid', fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55 },
+
+  grid:        { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px' },
+  card:        { border: '1px solid', borderRadius: '14px', padding: '18px' },
+  regimeLabel: { display: 'block', fontSize: '14px', fontWeight: 700, letterSpacing: '-0.2px' },
+  regimeSub:   { display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginTop: '1px' },
+  bigPct:      { fontSize: '16px', fontWeight: 700, letterSpacing: '-0.4px' },
+  seuilLabel:  { fontSize: '10px', color: 'var(--text-muted)', textAlign: 'right' },
+  forWho:      { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, margin: '0 0 10px 0' },
+  avBlock:     { display: 'flex', alignItems: 'flex-start', gap: '8px' },
+  avDot:       { width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0, marginTop: '5px' },
+  avText:      { fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.55 },
+
+  disclaimer:  { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.6 },
 }
 
 // ── styles ───────────────────────────────────────────────────────────────────
