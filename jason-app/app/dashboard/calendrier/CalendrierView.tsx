@@ -118,10 +118,13 @@ export default function CalendrierView({
   const [fStartDate, setFStartDate] = useState('')
   const [fEndDate,   setFEndDate]   = useState('')
 
-  // ── drag-to-create
-  const dragState  = useRef<{ start: string; cur: string } | null>(null)
+  // ── drag-to-create / quick create
+  const dragState  = useRef<{ start: string; cur: string; startRect: DOMRect } | null>(null)
   const [dragRange, setDragRange] = useState<{ start: string; end: string } | null>(null)
-  const openAddRef = useRef<(endDate?: string) => void>(null!)
+  const [quickCreate, setQuickCreate] = useState<{ date: string; endDate: string; top: number; left: number } | null>(null)
+  const quickRef   = useRef<HTMLDivElement>(null)
+  const [qTitle, setQTitle] = useState('')
+  const [qCat,   setQCat]   = useState<CatKey>('note')
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -209,6 +212,15 @@ export default function CalendrierView({
     )
   }, [byDate, selected])
 
+  const LOGEMENT_COLORS = ['#10b981','#60a5fa','#f59e0b','#a78bfa','#fb923c','#f472b6']
+  const logements = useMemo(() => {
+    const seen = new Set<string>()
+    return contractEvents
+      .filter(c => c.logement_nom)
+      .map(c => c.logement_nom!)
+      .filter(n => { if (seen.has(n)) return false; seen.add(n); return true })
+  }, [contractEvents])
+
   // ── upcoming (next 14 days)
   const upcoming = useMemo(() => {
     const t = new Date(); t.setHours(0, 0, 0, 0)
@@ -248,34 +260,59 @@ export default function CalendrierView({
     setFEndDate(endDate ?? selected)
     setShowForm(true)
   }
-  // Keep ref current so the drag useEffect can always call the latest version
-  openAddRef.current = openAdd
-
-  // Document-level mouseup finishes a drag
+  // Document-level mouseup — single click or drag → quick create popup
   useEffect(() => {
     function onUp() {
       if (!dragState.current) return
-      const { start, cur } = dragState.current
+      const { start, cur, startRect } = dragState.current
       dragState.current = null
       setDragRange(null)
 
-      if (start === cur) {
-        // Simple click — just select the day
-        setSelected(start)
-        return
+      const [date, endDate] = start <= cur ? [start, cur] : [cur, start]
+      setSelected(date)
+      if (start !== cur) {
+        setYear(Number(date.slice(0, 4)))
+        setMonth(Number(date.slice(5, 7)) - 1)
       }
 
-      // Multi-day drag — open form pre-filled
-      const [s, e] = start <= cur ? [start, cur] : [cur, start]
-      setSelected(s)
-      setYear(Number(s.slice(0, 4)))
-      setMonth(Number(s.slice(5, 7)) - 1)
-      openAddRef.current(e)
+      const W = 300, H = 230
+      let left = startRect.left
+      let top  = startRect.bottom + 4
+      if (left + W > window.innerWidth  - 12) left = window.innerWidth  - W - 12
+      if (top  + H > window.innerHeight - 12) top  = startRect.top - H - 4
+      setQTitle('')
+      setQCat('note')
+      setQuickCreate({ date, endDate, top, left })
     }
     document.addEventListener('mouseup', onUp)
     return () => document.removeEventListener('mouseup', onUp)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  useEffect(() => {
+    if (!quickCreate) return
+    function onDown(e: MouseEvent) {
+      if (quickRef.current && !quickRef.current.contains(e.target as Node)) setQuickCreate(null)
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [quickCreate])
+
+  function handleQuickSave() {
+    if (!qTitle.trim() || !quickCreate) return
+    startT(async () => {
+      const res = await createCalendarEvent({
+        title:       qTitle.trim(),
+        date:        quickCreate.date,
+        end_date:    quickCreate.endDate !== quickCreate.date ? quickCreate.endDate : null,
+        start_time:  null,
+        end_time:    null,
+        category:    qCat,
+        description: null,
+      })
+      if (!res.error && res.event) setEvents(prev => [...prev, res.event as CalEvent])
+      setQuickCreate(null)
+    })
+  }
+
   function openEdit(ev: CalEvent) {
     setEditing(ev)
     setFTitle(ev.title)
@@ -450,7 +487,7 @@ export default function CalendrierView({
                       <div
                         key={date}
                         className={`cal-cell${isSel ? ' cal-cell-sel' : ''}`}
-                        onMouseDown={e => { e.preventDefault(); dragState.current = { start: date, cur: date }; setDragRange(null) }}
+                        onMouseDown={e => { e.preventDefault(); setQuickCreate(null); dragState.current = { start: date, cur: date, startRect: (e.currentTarget as HTMLElement).getBoundingClientRect() }; setDragRange(null) }}
                         onMouseEnter={() => {
                           if (!dragState.current) return
                           dragState.current.cur = date
@@ -681,8 +718,116 @@ export default function CalendrierView({
               )}
             </div>
           )}
+
+          {/* ── Logements legend */}
+          {logements.length > 0 && (
+            <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)', marginTop: 'auto' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
+                Logements
+              </div>
+              {logements.map((nom, i) => (
+                <div key={nom} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '3px 0', fontSize: '12px', color: 'var(--text-2)' }}>
+                  <span style={{ width: '10px', height: '10px', borderRadius: '3px', background: LOGEMENT_COLORS[i % LOGEMENT_COLORS.length], flexShrink: 0 }} />
+                  {nom}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── Event types legend */}
+          <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)' }}>
+            <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
+              Types d'événements
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px' }}>
+              {(Object.entries(CAT) as [CatKey, (typeof CAT)[CatKey]][]).map(([key, cfg]) => (
+                <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-2)' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: cfg.color, flexShrink: 0 }} />
+                  {cfg.label}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* ── Quick Create Popup */}
+      {quickCreate && (
+        <div ref={quickRef} style={{
+          position: 'fixed', top: quickCreate.top, left: quickCreate.left,
+          zIndex: 10000, width: '300px',
+          background: 'var(--card-bg)',
+          border: '1px solid var(--border-2)',
+          borderRadius: '16px', padding: '16px',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.75)',
+          display: 'flex', flexDirection: 'column', gap: '12px',
+        }}>
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.2px' }}>
+              {fmtDate(quickCreate.date)}
+              {quickCreate.endDate !== quickCreate.date && <> → {fmtDate(quickCreate.endDate)}</>}
+            </span>
+            <button type="button" onClick={() => setQuickCreate(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '16px', lineHeight: 1, padding: '2px 4px' }}>✕</button>
+          </div>
+
+          {/* Title */}
+          <input
+            autoFocus
+            placeholder="Ajouter un titre…"
+            value={qTitle}
+            onChange={e => setQTitle(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') handleQuickSave() }}
+            className="input-field"
+            style={{ width: '100%', padding: '10px 12px', fontSize: '14px', fontWeight: 500, borderRadius: '10px', boxSizing: 'border-box' }}
+          />
+
+          {/* Category chips */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+            {(Object.entries(CAT) as [CatKey, (typeof CAT)[CatKey]][]).map(([key, cfg]) => (
+              <button
+                key={key} type="button" className="cat-chip"
+                onClick={() => setQCat(key)}
+                style={{
+                  padding: '4px 11px', borderRadius: '100px',
+                  fontSize: '12px', fontWeight: 500, cursor: 'pointer',
+                  border: `1.5px solid ${qCat === key ? cfg.color : 'transparent'}`,
+                  background: qCat === key ? cfg.bg : 'var(--surface)',
+                  color: qCat === key ? cfg.color : 'var(--text-3)',
+                }}
+              >{cfg.label}</button>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'space-between' }}>
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => {
+                const qc = quickCreate
+                setQuickCreate(null)
+                setEditing(null); setFTitle(qTitle); setFCat(qCat)
+                setFStart(''); setFEnd(''); setFDesc('')
+                setFStartDate(qc.date); setFEndDate(qc.endDate)
+                setShowForm(true)
+              }}
+              style={{ padding: '8px 12px', fontSize: '12px' }}
+            >
+              Plus d'options
+            </button>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={handleQuickSave}
+              disabled={!qTitle.trim() || isPending}
+              style={{ padding: '8px 18px', fontSize: '13px', border: 'none', cursor: 'pointer', borderRadius: '9px', opacity: !qTitle.trim() || isPending ? 0.5 : 1 }}
+            >
+              Enregistrer
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
