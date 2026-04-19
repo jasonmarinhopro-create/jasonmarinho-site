@@ -721,3 +721,17 @@ a { color: inherit; }
   .actu-filter-row::-webkit-scrollbar { display: none; }
 }
 
+
+/* Soutenir page — responsive grid */
+.soutenir-main {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 680px) {
+  .soutenir-main {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+}

@@ -55,7 +55,7 @@ export default async function SoutenirPage({
 
       {/* Form + uses */}
       {!merci && (
-        <section style={s.main}>
+        <section style={s.main} className="soutenir-main">
           {/* Left — form */}
           <div style={s.formCol}>
             <div style={s.formCard}>
@@ -185,10 +185,6 @@ const s: Record<string, React.CSSProperties> = {
     maxWidth: '960px',
     margin: '0 auto',
     padding: '0 24px',
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)',
-    gap: '40px',
-    alignItems: 'start',
   },
 
   formCol: {},
