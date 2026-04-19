@@ -138,13 +138,9 @@ export default function CalendrierView({
   const [fStartDate, setFStartDate] = useState('')
   const [fEndDate,   setFEndDate]   = useState('')
 
-  // ── drag-to-create / quick create
-  const dragState  = useRef<{ start: string; cur: string; startRect: DOMRect } | null>(null)
+  // ── drag-to-create
+  const dragState  = useRef<{ start: string; cur: string } | null>(null)
   const [dragRange, setDragRange] = useState<{ start: string; end: string } | null>(null)
-  const [quickCreate, setQuickCreate] = useState<{ date: string; endDate: string; top: number; left: number } | null>(null)
-  const quickRef   = useRef<HTMLDivElement>(null)
-  const [qTitle, setQTitle] = useState('')
-  const [qCat,   setQCat]   = useState<CatKey>('note')
 
   // ── checklist state (contractId → { key: boolean })
   const [contractChecklists, setContractChecklists] = useState<Record<string, Record<string, boolean>>>(() =>
@@ -276,21 +272,37 @@ export default function CalendrierView({
     return alerts
   }, [contractEvents, contractChecklists])
 
-  // ── upcoming (next 14 days)
-  const upcoming = useMemo(() => {
-    const t = new Date(); t.setHours(0, 0, 0, 0)
-    const end = new Date(t); end.setDate(t.getDate() + 14)
-    const todayIso = toStr(t.getFullYear(), t.getMonth(), t.getDate())
-    const endIso   = toStr(end.getFullYear(), end.getMonth(), end.getDate())
-    const all: Array<{ date: string; title: string; category: string }> = [
-      ...contractEvents.map(c => ({ date: c.date, title: c.title, category: c.type })),
-      ...events.map(e => ({ date: e.date, title: e.title, category: e.category })),
-    ]
-    return all
-      .filter(e => e.date >= todayIso && e.date <= endIso)
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .slice(0, 6)
-  }, [events, contractEvents])
+  // ── urgent alerts (flat list for the "À traiter" dashboard section)
+  const urgentAlerts = useMemo(() => {
+    const today = todayString()
+    function diff(from: string, to: string) {
+      return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
+    }
+    type Item = { color: string; label: string; logement: string; daysInfo: string; navigateDate: string; contractRef: import('./page').ContractEvent }
+    const items: Item[] = []
+    const seen = new Set<string>()
+    contractEvents.forEach(ev => {
+      if (seen.has(ev.contractId)) return
+      seen.add(ev.contractId)
+      const cl   = contractChecklists[ev.contractId] ?? {}
+      const nom  = ev.logement_nom ?? 'Logement'
+      const arr  = ev.date_arrivee, dep = ev.date_depart
+      const dta  = diff(today, arr)
+      const arrRef = contractEvents.find(e => e.contractId === ev.contractId && e.type === 'arrivee') ?? ev
+      const depRef = dep ? (contractEvents.find(e => e.contractId === ev.contractId && e.type === 'depart') ?? ev) : ev
+      function arrInfo(d: number) { return d === 0 ? "Arrivée aujourd'hui" : d === 1 ? 'Arrivée demain' : `Arrivée J-${d}` }
+      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        items.push({ color: '#ef4444', label: 'Contrat non signé',      logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
+      if (dta >= 0 && dta <= 3 && !cl.solde_recu)            items.push({ color: '#f97316', label: 'Solde non reçu',          logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
+      if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) items.push({ color: '#eab308', label: 'Instructions non envoyées', logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
+      if (dep) {
+        const dtd = diff(dep, today)
+        const di  = dtd === 1 ? 'Départ hier' : `Départ il y a ${dtd}j`
+        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande) items.push({ color: '#3b82f6', label: 'Avis non demandé', logement: nom, daysInfo: di, navigateDate: dep, contractRef: depRef })
+      }
+    })
+    const pri: Record<string, number> = { '#ef4444': 0, '#f97316': 1, '#eab308': 2, '#3b82f6': 3 }
+    return items.sort((a, b) => (pri[a.color] ?? 9) - (pri[b.color] ?? 9))
+  }, [contractEvents, contractChecklists])
 
   // ── month nav
   function prevMonth() {
@@ -315,58 +327,26 @@ export default function CalendrierView({
     setFEndDate(endDate ?? selected)
     setShowForm(true)
   }
-  // Document-level mouseup — single click or drag → quick create popup
+  // Document-level mouseup — click selects day, drag opens form with date range
   useEffect(() => {
     function onUp() {
       if (!dragState.current) return
-      const { start, cur, startRect } = dragState.current
+      const { start, cur } = dragState.current
       dragState.current = null
       setDragRange(null)
-
-      const [date, endDate] = start <= cur ? [start, cur] : [cur, start]
-      setSelected(date)
-      if (start !== cur) {
-        setYear(Number(date.slice(0, 4)))
-        setMonth(Number(date.slice(5, 7)) - 1)
-      }
-
-      const W = 300, H = 230
-      let left = startRect.left
-      let top  = startRect.bottom + 4
-      if (left + W > window.innerWidth  - 12) left = window.innerWidth  - W - 12
-      if (top  + H > window.innerHeight - 12) top  = startRect.top - H - 4
-      setQTitle('')
-      setQCat('note')
-      setQuickCreate({ date, endDate, top, left })
+      if (start === cur) { setSelected(start); return }
+      const [s, e] = start <= cur ? [start, cur] : [cur, start]
+      setSelected(s)
+      setYear(Number(s.slice(0, 4)))
+      setMonth(Number(s.slice(5, 7)) - 1)
+      setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
+      setFCat('note'); setFDesc('')
+      setFStartDate(s); setFEndDate(e)
+      setShowForm(true)
     }
     document.addEventListener('mouseup', onUp)
     return () => document.removeEventListener('mouseup', onUp)
   }, [])
-  useEffect(() => {
-    if (!quickCreate) return
-    function onDown(e: MouseEvent) {
-      if (quickRef.current && !quickRef.current.contains(e.target as Node)) setQuickCreate(null)
-    }
-    document.addEventListener('mousedown', onDown)
-    return () => document.removeEventListener('mousedown', onDown)
-  }, [quickCreate])
-
-  function handleQuickSave() {
-    if (!qTitle.trim() || !quickCreate) return
-    startT(async () => {
-      const res = await createCalendarEvent({
-        title:       qTitle.trim(),
-        date:        quickCreate.date,
-        end_date:    quickCreate.endDate !== quickCreate.date ? quickCreate.endDate : null,
-        start_time:  null,
-        end_time:    null,
-        category:    qCat,
-        description: null,
-      })
-      if (!res.error && res.event) setEvents(prev => [...prev, res.event as CalEvent])
-      setQuickCreate(null)
-    })
-  }
 
   function handleChecklistToggle(contractId: string, key: string) {
     const current = contractChecklists[contractId] ?? {}
@@ -453,7 +433,7 @@ export default function CalendrierView({
         @media (max-width: 640px) {
           .cal-root    { padding: 10px 10px 20px !important; gap: 8px !important; }
           .cal-topbar  { gap: 6px !important; }
-          .cal-strip   { display: none !important; }
+          .cal-alerts  { display: none !important; }
           .cal-cell    { min-height: 46px !important; padding: 3px !important; }
           .cal-pill-wrap { display: none !important; }
           .cal-day-header { padding: 5px 2px !important; font-size: 9px !important; letter-spacing: 0 !important; }
@@ -484,27 +464,47 @@ export default function CalendrierView({
         </div>
       </div>
 
-      {/* ── Upcoming strip */}
-      {upcoming.length > 0 && (
-        <div className="cal-strip" style={s.strip}>
-          {upcoming.map((ev, i) => {
-            const cat = CAT[ev.category as CatKey] ?? CAT.note
-            const [yy, mm, dd] = ev.date.split('-').map(Number)
-            const label = new Date(yy, mm - 1, dd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-            return (
-              <button
-                key={`${ev.date}-${i}`}
-                onClick={() => { setSelected(ev.date); setYear(yy); setMonth(mm - 1) }}
-                style={{ ...s.stripChip, borderColor: `${cat.color}40` }}
-              >
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: cat.color, flexShrink: 0 }} />
-                <span style={{ color: 'var(--text-muted)', fontSize: '11px', flexShrink: 0 }}>{label}</span>
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-2)', fontSize: '12px' }}>
-                  {ev.title}
-                </span>
-              </button>
-            )
-          })}
+      {/* ── Actions à traiter */}
+      {contractEvents.length > 0 && (
+        <div style={{
+          background: 'var(--card-bg)', border: '1px solid var(--border)',
+          borderRadius: '12px', padding: '10px 14px',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: urgentAlerts.length > 0 ? '6px' : 0 }}>
+            <span style={{ fontSize: '10px', fontWeight: 700, color: urgentAlerts.length > 0 ? 'var(--text-2)' : '#10b981', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+              {urgentAlerts.length > 0 ? `À traiter · ${urgentAlerts.length} action${urgentAlerts.length > 1 ? 's' : ''}` : '✓ Tout est en ordre'}
+            </span>
+            {urgentAlerts.length > 0 && (
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: urgentAlerts[0].color, flexShrink: 0 }} />
+            )}
+          </div>
+          {urgentAlerts.map((alert, i) => (
+            <button
+              key={i}
+              type="button"
+              className="icon-btn"
+              onClick={() => {
+                const d = alert.navigateDate
+                setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
+                setSelectedContract(alert.contractRef); setShowForm(false)
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '5px 4px', background: 'none', border: 'none',
+                cursor: 'pointer', textAlign: 'left', width: '100%',
+                borderTop: i === 0 ? '1px solid var(--border)' : 'none',
+                borderBottom: i < urgentAlerts.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+              }}
+            >
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: alert.color, flexShrink: 0 }} />
+              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-2)', flexShrink: 0 }}>{alert.logement}</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', flexShrink: 0 }}>·</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-2)', flex: 1 }}>{alert.label}</span>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{alert.daysInfo}</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '11px', flexShrink: 0 }}>›</span>
+            </button>
+          ))}
         </div>
       )}
 
@@ -550,7 +550,7 @@ export default function CalendrierView({
                       <div
                         key={date}
                         className={`cal-cell${isSel ? ' cal-cell-sel' : ''}`}
-                        onMouseDown={e => { e.preventDefault(); setQuickCreate(null); dragState.current = { start: date, cur: date, startRect: (e.currentTarget as HTMLElement).getBoundingClientRect() }; setDragRange(null) }}
+                        onMouseDown={e => { e.preventDefault(); dragState.current = { start: date, cur: date }; setDragRange(null) }}
                         onMouseEnter={() => {
                           if (!dragState.current) return
                           dragState.current.cur = date
@@ -910,86 +910,6 @@ export default function CalendrierView({
         </div>
       </div>
 
-      {/* ── Quick Create Popup */}
-      {quickCreate && (
-        <div ref={quickRef} style={{
-          position: 'fixed', top: quickCreate.top, left: quickCreate.left,
-          zIndex: 10000, width: '300px',
-          background: 'var(--card-bg)',
-          border: '1px solid var(--border-2)',
-          borderRadius: '16px', padding: '16px',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.75)',
-          display: 'flex', flexDirection: 'column', gap: '12px',
-        }}>
-          {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.2px' }}>
-              {fmtDate(quickCreate.date)}
-              {quickCreate.endDate !== quickCreate.date && <> → {fmtDate(quickCreate.endDate)}</>}
-            </span>
-            <button type="button" onClick={() => setQuickCreate(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '16px', lineHeight: 1, padding: '2px 4px' }}>✕</button>
-          </div>
-
-          {/* Title */}
-          <input
-            autoFocus
-            placeholder="Ajouter un titre…"
-            value={qTitle}
-            onChange={e => setQTitle(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') handleQuickSave() }}
-            className="input-field"
-            style={{ width: '100%', padding: '10px 12px', fontSize: '14px', fontWeight: 500, borderRadius: '10px', boxSizing: 'border-box' }}
-          />
-
-          {/* Category chips */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-            {PICKER_CATS.map(key => {
-              const cfg = CAT[key]
-              return (
-                <button
-                  key={key} type="button" className="cat-chip"
-                  onClick={() => setQCat(key)}
-                  style={{
-                    padding: '4px 11px', borderRadius: '100px',
-                    fontSize: '12px', fontWeight: 500, cursor: 'pointer',
-                    border: `1.5px solid ${qCat === key ? cfg.color : 'transparent'}`,
-                    background: qCat === key ? cfg.bg : 'var(--surface)',
-                    color: qCat === key ? cfg.color : 'var(--text-3)',
-                  }}
-                >{cfg.label}</button>
-              )
-            })}
-          </div>
-
-          {/* Actions */}
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'space-between' }}>
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => {
-                const qc = quickCreate
-                setQuickCreate(null)
-                setEditing(null); setFTitle(qTitle); setFCat(qCat)
-                setFStart(''); setFEnd(''); setFDesc('')
-                setFStartDate(qc.date); setFEndDate(qc.endDate)
-                setShowForm(true)
-              }}
-              style={{ padding: '8px 12px', fontSize: '12px' }}
-            >
-              Plus d'options
-            </button>
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={handleQuickSave}
-              disabled={!qTitle.trim() || isPending}
-              style={{ padding: '8px 18px', fontSize: '13px', border: 'none', cursor: 'pointer', borderRadius: '9px', opacity: !qTitle.trim() || isPending ? 0.5 : 1 }}
-            >
-              Enregistrer
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
@@ -1050,18 +970,6 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '10px',
     border: 'none',
     cursor: 'pointer',
-  },
-  strip: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
-  stripChip: {
-    display: 'flex', alignItems: 'center', gap: '6px',
-    padding: '5px 12px',
-    borderRadius: '100px',
-    border: '1px solid',
-    background: 'var(--surface)',
-    cursor: 'pointer',
-    maxWidth: '200px',
-    overflow: 'hidden',
-    transition: 'all 0.12s',
   },
   layout: {
     display: 'flex',
