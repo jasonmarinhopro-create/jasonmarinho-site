@@ -251,15 +251,14 @@ export default async function AbonnementPage({
           </div>
         </div>
 
-        {/* Ko-fi tip jar */}
+        {/* Soutenir */}
         <div style={styles.kofi} className="fade-up">
-          <span style={{ fontSize: '20px' }}>☕</span>
           <div style={{ flex: 1 }}>
-            <p style={styles.kofiTitle}>Tu veux soutenir un peu plus ?</p>
-            <p style={styles.kofiDesc}>C&apos;est totalement libre — aucune obligation, aucune contrepartie.</p>
+            <p style={styles.kofiTitle}>Soutenir la plateforme</p>
+            <p style={styles.kofiDesc}>Contribution libre — aucune obligation, aucune contrepartie.</p>
           </div>
-          <a href="https://ko-fi.com/jasonmarinho" target="_blank" rel="noopener" style={styles.kofiBtn}>
-            M&apos;offrir un café
+          <a href="/soutenir" style={styles.kofiBtn}>
+            Contribuer →
           </a>
         </div>
 
@@ -348,5 +347,5 @@ const styles: Record<string, React.CSSProperties> = {
   kofi: { display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, marginTop: '40px', padding: '20px 24px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px' },
   kofiTitle: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', margin: '0 0 2px' },
   kofiDesc: { fontSize: '12px', fontWeight: 300, color: 'var(--text-muted)', margin: 0 },
-  kofiBtn: { display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#FF5E5B', color: '#fff', fontSize: '13px', fontWeight: 600, padding: '10px 18px', borderRadius: '10px', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 },
+  kofiBtn: { display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--primary)', color: '#002820', fontSize: '13px', fontWeight: 600, padding: '10px 18px', borderRadius: '10px', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 },
 }
