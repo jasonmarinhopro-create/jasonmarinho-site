@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendrier & check-list par séjour | Jason Marinho</title>
+  <meta name="description" content="Un calendrier conçu pour les hôtes : check-list par séjour, rappels automatiques avant l'arrivée, suivi des départs et tâches opérationnelles. Tout ce qu'il faut pour ne rien oublier.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/calendrier/">
+  <meta property="og:title" content="Calendrier & check-list par séjour | Jason Marinho">
+  <meta property="og:description" content="Un calendrier conçu pour les hôtes : check-list par séjour, rappels automatiques, suivi des arrivées et départs.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/calendrier/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/webp" href="/favicon-jason.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(64px,8vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+
+    /* Typo */
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .sub{font-size:clamp(15px,1.4vw,17px);line-height:1.75;color:rgba(255,255,255,.55);margin:0 0 32px;max-width:560px}
+    .sub.dk{color:var(--tm)}
+
+    /* Buttons */
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,213,107,.25)}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
+
+    /* Hero */
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,110px) 0 clamp(56px,7vw,80px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:28px}
+    .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff}
+    .hero-brd span{font-size:11px}
+
+    /* Steps */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;position:relative}
+    .steps::before{content:"";position:absolute;top:28px;left:calc(16.66% + 20px);right:calc(16.66% + 20px);height:1px;background:linear-gradient(90deg,rgba(0,76,63,.15),rgba(0,76,63,.08));z-index:0}
+    .step{background:#fff;border:1px solid rgba(0,76,63,.09);border-radius:16px;padding:28px 24px;position:relative;z-index:1}
+    .step-n{width:40px;height:40px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#fff;margin-bottom:20px;font-family:'Fraunces',serif;flex-shrink:0}
+    .step h3{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:400;color:var(--td);margin:0 0 8px}
+    .step p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+
+    /* Cards */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:36px}
+    .card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:26px;transition:box-shadow .2s,transform .2s}
+    .card:hover{box-shadow:0 6px 24px rgba(0,76,63,.09);transform:translateY(-2px)}
+    .card-ic{width:44px;height:44px;border-radius:11px;background:rgba(0,76,63,.08);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:22px;margin-bottom:16px}
+    .card h3{font-family:'Fraunces',serif;font-size:1.05rem;margin:0 0 8px;font-weight:400;color:var(--td)}
+    .card p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+
+    /* FAQ */
+    .faq{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+    .faq-item{border:1px solid rgba(0,76,63,.1);border-radius:12px;overflow:hidden}
+    .faq-q{padding:17px 20px;font-weight:600;font-size:14.5px;color:var(--td);cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:#fff;user-select:none}
+    .faq-q:hover{background:rgba(0,76,63,.02)}
+    .faq-a{padding:0 20px 16px;font-size:14px;line-height:1.75;color:var(--tm);display:none}
+    .faq-item.open .faq-a{display:block} .faq-item.open .faq-ic{transform:rotate(180deg)}
+    .faq-ic{transition:transform .2s;color:var(--tl);font-size:13px}
+
+    /* Two col */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}.steps{grid-template-columns:1fr}.steps::before{display:none}}
+    @media(max-width:560px){.cards{grid-template-columns:1fr}}
+
+    /* CTA */
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,52px);text-align:center}
+
+    /* Mock checklist */
+    .mock-card{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(0,76,63,.06)}
+    .mock-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(0,76,63,.07);margin-bottom:14px}
+    .mock-title{font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:600}
+    .mock-sub{font-size:12px;color:var(--tl);margin-top:2px}
+    .mock-pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;background:rgba(0,76,63,.08);color:var(--g)}
+    .mock-phase{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tl);margin:14px 0 8px;display:flex;justify-content:space-between;align-items:center}
+    .mock-phase-btn{font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;background:rgba(16,185,129,.1);color:#10a67a;border:1px solid rgba(16,185,129,.2)}
+    .mock-row{display:flex;align-items:center;gap:10px;padding:7px 0}
+    .mock-chk{width:16px;height:16px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff}
+    .mock-chk.on{background:#10a67a;border:1.5px solid #10a67a}
+    .mock-chk.off{background:transparent;border:1.5px solid rgba(0,76,63,.15)}
+    .mock-lbl{font-size:13px;color:var(--td)}
+    .mock-lbl.done{color:var(--tl);text-decoration:line-through}
+    .mock-bar{height:5px;background:rgba(0,76,63,.06);border-radius:3px;overflow:hidden;margin-top:6px}
+    .mock-fill{height:100%;background:linear-gradient(90deg,#10a67a,#4ade80);border-radius:3px}
+
+    /* Mock alerts */
+    .alert-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+    .alert-blk{border-radius:8px;padding:10px;border:1px solid;display:flex;flex-direction:column;gap:6px}
+    .alert-blk.crit{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.2)}
+    .alert-blk.urg{background:rgba(249,115,22,.06);border-color:rgba(249,115,22,.2)}
+    .alert-blk.imp{background:rgba(234,179,8,.06);border-color:rgba(234,179,8,.2)}
+    .alert-blk.dflt{background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.2)}
+    .alert-hd{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+    .alert-blk.crit .alert-hd{color:#ef4444}
+    .alert-blk.urg .alert-hd{color:#f97316}
+    .alert-blk.imp .alert-hd{color:#eab308}
+    .alert-blk.dflt .alert-hd{color:#3b82f6}
+    .alert-dt{width:6px;height:6px;border-radius:50%}
+    .alert-blk.crit .alert-dt{background:#ef4444}
+    .alert-blk.urg .alert-dt{background:#f97316}
+    .alert-blk.imp .alert-dt{background:#eab308}
+    .alert-blk.dflt .alert-dt{background:#3b82f6}
+    .alert-content{font-size:11px;color:var(--tm);line-height:1.4;background:rgba(0,0,0,.03);padding:5px 7px;border-radius:5px}
+    .alert-content strong{color:var(--td);font-size:11px;display:block;font-weight:600}
+  </style>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd">
+      <a href="/">Accueil</a><span>›</span><a href="/services/calendrier">Services</a><span>›</span><span>Calendrier & check-list</span>
+    </div>
+    <div class="lbl">Organisation & suivi</div>
+    <h1 class="h1">Plus jamais un séjour<br><em>à moitié préparé</em></h1>
+    <p class="sub">Un calendrier pensé pour les hôtes : chaque séjour a sa propre check-list, les oublis sont signalés automatiquement et tu vois d'un coup d'œil ce qu'il reste à traiter.</p>
+    <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Essayer le calendrier <i class="ph-bold ph-arrow-right"></i></a>
+  </div>
+</header>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Fonctionnement</div>
+      <h2 class="h2">Une routine <em>enfin tenue</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:520px;line-height:1.7">Fini les post-it collés partout et les rappels manqués. Tout est centralisé au même endroit.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>Ajoute un séjour</h3>
+        <p>Crée ton contrat ou laisse-le se synchroniser depuis tes iCal Airbnb, Booking, etc. Le séjour s'affiche automatiquement sur ton calendrier.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>Suis la check-list</h3>
+        <p>13 étapes prédéfinies à cocher au fil du temps : contrat signé, solde reçu, ménage planifié, check-in effectué, avis demandé…</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>Laisse-toi guider</h3>
+        <p>Les rappels s'affichent automatiquement avant l'arrivée et après le départ. Tu ne cours plus après les infos, elles viennent à toi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECK-LIST EN DÉTAIL -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Check-list par séjour</div>
+        <h2 class="h2">Trois phases, <em>aucun oubli</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Chaque séjour est découpé en trois moments clés. Tu valides une étape d'un clic — ou tu coches tout d'un coup quand tout est fait.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">Avant l'arrivée</strong>Contrat, acompte, solde, caution, instructions, ménage planifié…</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">Pendant le séjour</strong>Check-in effectué, suivi voyageur.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">Après le départ</strong>Check-out, état des lieux, restitution caution, demande d'avis.</div>
+        </div>
+        <p style="font-size:14px;color:var(--tl);margin-top:20px;line-height:1.7">Une barre de progression te montre à tout moment où tu en es.</p>
+      </div>
+      <div>
+        <div class="mock-card">
+          <div class="mock-head">
+            <div>
+              <div class="mock-title">Villa du Soleil</div>
+              <div class="mock-sub">Arrivée · 20 avr. → 26 avr.</div>
+            </div>
+            <div class="mock-pill">6/13</div>
+          </div>
+          <div class="mock-bar"><div class="mock-fill" style="width:46%"></div></div>
+          <div class="mock-phase">Avant l'arrivée <span class="mock-phase-btn">Tout cocher</span></div>
+          <div class="mock-row"><span class="mock-chk on">✓</span><span class="mock-lbl done">Contrat envoyé</span></div>
+          <div class="mock-row"><span class="mock-chk on">✓</span><span class="mock-lbl done">Contrat signé</span></div>
+          <div class="mock-row"><span class="mock-chk on">✓</span><span class="mock-lbl done">Acompte reçu</span></div>
+          <div class="mock-row"><span class="mock-chk off"></span><span class="mock-lbl">Solde reçu</span></div>
+          <div class="mock-row"><span class="mock-chk off"></span><span class="mock-lbl">Instructions d'arrivée envoyées</span></div>
+          <div class="mock-phase" style="margin-top:10px">Après le départ</div>
+          <div class="mock-row"><span class="mock-chk off"></span><span class="mock-lbl">Avis demandé</span></div>
+        </div>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:12px 0 0">Illustration — vue réelle dans l'espace membres</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALERTES INTELLIGENTES -->
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div style="background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(0,76,63,.06)">
+          <div style="font-size:11px;font-weight:700;color:var(--tl);letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px">À traiter · 4 actions</div>
+          <div class="alert-grid">
+            <div class="alert-blk crit">
+              <div class="alert-hd"><span class="alert-dt"></span>Critique <span style="margin-left:auto;color:#ef4444">2</span></div>
+              <div class="alert-content"><strong>Villa du Soleil</strong>Contrat non signé<br><span style="color:#ef4444">Arrivée demain</span></div>
+              <div class="alert-content"><strong>Gens Ficelo</strong>Contrat non signé<br><span style="color:#ef4444">Arrivée J-4</span></div>
+            </div>
+            <div class="alert-blk urg">
+              <div class="alert-hd"><span class="alert-dt"></span>Urgent <span style="margin-left:auto;color:#f97316">1</span></div>
+              <div class="alert-content"><strong>Villa du Soleil</strong>Solde non reçu<br><span style="color:#f97316">Arrivée demain</span></div>
+            </div>
+            <div class="alert-blk imp">
+              <div class="alert-hd"><span class="alert-dt"></span>Important <span style="margin-left:auto;color:#eab308">1</span></div>
+              <div class="alert-content"><strong>Villa du Soleil</strong>Instructions non envoyées<br><span style="color:#eab308">Arrivée demain</span></div>
+            </div>
+            <div class="alert-blk dflt" style="opacity:.4">
+              <div class="alert-hd"><span class="alert-dt"></span>À faire</div>
+              <div style="font-size:11px;color:var(--tl);padding:5px 7px">—</div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:12px 0 0">Illustration — tableau d'alertes réel</p>
+      </div>
+      <div>
+        <div class="lbl dk">Alertes intelligentes</div>
+        <h2 class="h2">Le calendrier <em>te prévient</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Quand une étape clé approche et qu'elle n'est pas cochée, l'alerte apparaît automatiquement. Tout est classé par priorité : critique, urgent, important, à faire.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">J-7 :</strong> Contrat pas encore signé ? Tu es prévenu.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">J-3 :</strong> Solde non reçu ? Une alerte orange s'allume.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">J-2 :</strong> Instructions d'arrivée manquantes ? Rappel jaune.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">J+3 :</strong> Avis pas encore demandé ? Rappel bleu.</div>
+        </div>
+        <p style="font-size:14px;color:var(--tl);margin-top:20px;line-height:1.7">Un clic sur l'alerte t'emmène directement au séjour concerné.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI C'EST UTILE -->
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:36px">
+      <div class="lbl dk">Pourquoi l'utiliser</div>
+      <h2 class="h2">Ce que ça t'apporte <em>au quotidien</em></h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-calendar-check"></i></div>
+        <h3>Tout au même endroit</h3>
+        <p>Tes séjours, tes check-lists, tes rappels, tes tâches ménage et RDV — dans un seul calendrier. Fini l'éparpillement.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-bell-ringing"></i></div>
+        <h3>Zéro oubli</h3>
+        <p>Les rappels apparaissent au bon moment, classés par priorité. Tu traites les critiques d'abord, le reste en second.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-plugs-connected"></i></div>
+        <h3>Synchro Airbnb & Booking</h3>
+        <p>Importe tes calendriers iCal depuis tes plateformes. Un seul coup d'œil pour voir toutes tes réservations.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-chart-line-up"></i></div>
+        <h3>Une progression visible</h3>
+        <p>Une barre de progression par séjour. Tu vois en un instant ce qui est fait et ce qu'il reste.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-house-simple"></i></div>
+        <h3>Multi-logements</h3>
+        <p>Que tu gères 1 ou 10 biens, chaque séjour est attaché au bon logement avec son propre suivi.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-lightning"></i></div>
+        <h3>Rapide à utiliser</h3>
+        <p>Valide une phase entière d'un clic avec "Tout cocher". Le calendrier s'adapte à ton rythme, pas l'inverse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Questions fréquentes</div>
+        <h2 class="h2">Ce que tu <em>veux savoir</em></h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q">Le calendrier se synchronise-t-il avec Airbnb et Booking ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. Tu peux ajouter tes flux iCal Airbnb, Booking.com, Vrbo ou n'importe quelle plateforme qui fournit un lien iCal. Les réservations apparaissent automatiquement avec la couleur du logement.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Puis-je personnaliser la check-list ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Pour l'instant la check-list propose 13 étapes pensées pour couvrir l'ensemble des moments clés d'un séjour LCD. La personnalisation arrivera dans une prochaine mise à jour.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Est-ce que je reçois des notifications par email ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Les alertes s'affichent directement dans ton espace membres et sur la page d'accueil. Les notifications email font partie des prochaines évolutions.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Les données sont-elles sauvegardées automatiquement ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. Chaque case cochée est sauvegardée instantanément. Tu peux fermer ton navigateur et retrouver l'état exact au prochain passage.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Combien ça coûte ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Le calendrier fait partie de l'espace membres gratuit. Crée ton compte et commence directement à l'utiliser.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec dk">
+  <div class="s-in">
+    <div class="cta-ban">
+      <div class="lbl">Gagner du temps</div>
+      <h2 class="h2 lt" style="max-width:460px;margin:0 auto 14px">Tes séjours, ton rythme,<br><em>zéro oubli</em></h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.45);margin:0 0 28px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.7">Accès gratuit au calendrier et à la check-list depuis ton espace membres.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/contact" class="btn-ol">Poser une question</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+<script>
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){q.closest('.faq-item').classList.toggle('open');});
+});
+</script>
+</body>
+</html>

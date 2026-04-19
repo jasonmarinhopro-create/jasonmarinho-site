@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suivi des revenus & paiements | Jason Marinho</title>
+  <meta name="description" content="Un journal des paiements pour hôtes LCD : virements, espèces, chèques et paiements en ligne réunis au même endroit. Vois ce qui est encaissé et ce qui est en attente.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/revenus/">
+  <meta property="og:title" content="Suivi des revenus & paiements | Jason Marinho">
+  <meta property="og:description" content="Un journal des paiements pour hôtes LCD : virements, espèces, chèques et paiements en ligne réunis au même endroit.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/revenus/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/webp" href="/favicon-jason.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(64px,8vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+
+    /* Typo */
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .sub{font-size:clamp(15px,1.4vw,17px);line-height:1.75;color:rgba(255,255,255,.55);margin:0 0 32px;max-width:560px}
+    .sub.dk{color:var(--tm)}
+
+    /* Buttons */
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,213,107,.25)}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
+
+    /* Hero */
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,110px) 0 clamp(56px,7vw,80px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:28px}
+    .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff}
+    .hero-brd span{font-size:11px}
+
+    /* Steps */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;position:relative}
+    .steps::before{content:"";position:absolute;top:28px;left:calc(16.66% + 20px);right:calc(16.66% + 20px);height:1px;background:linear-gradient(90deg,rgba(0,76,63,.15),rgba(0,76,63,.08));z-index:0}
+    .step{background:#fff;border:1px solid rgba(0,76,63,.09);border-radius:16px;padding:28px 24px;position:relative;z-index:1}
+    .step-n{width:40px;height:40px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#fff;margin-bottom:20px;font-family:'Fraunces',serif;flex-shrink:0}
+    .step h3{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:400;color:var(--td);margin:0 0 8px}
+    .step p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+
+    /* Cards */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:36px}
+    .card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:26px;transition:box-shadow .2s,transform .2s}
+    .card:hover{box-shadow:0 6px 24px rgba(0,76,63,.09);transform:translateY(-2px)}
+    .card-ic{width:44px;height:44px;border-radius:11px;background:rgba(0,76,63,.08);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:22px;margin-bottom:16px}
+    .card h3{font-family:'Fraunces',serif;font-size:1.05rem;margin:0 0 8px;font-weight:400;color:var(--td)}
+    .card p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+
+    /* FAQ */
+    .faq{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+    .faq-item{border:1px solid rgba(0,76,63,.1);border-radius:12px;overflow:hidden}
+    .faq-q{padding:17px 20px;font-weight:600;font-size:14.5px;color:var(--td);cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:#fff;user-select:none}
+    .faq-q:hover{background:rgba(0,76,63,.02)}
+    .faq-a{padding:0 20px 16px;font-size:14px;line-height:1.75;color:var(--tm);display:none}
+    .faq-item.open .faq-a{display:block} .faq-item.open .faq-ic{transform:rotate(180deg)}
+    .faq-ic{transition:transform .2s;color:var(--tl);font-size:13px}
+
+    /* Two col */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}.steps{grid-template-columns:1fr}.steps::before{display:none}}
+    @media(max-width:560px){.cards{grid-template-columns:1fr}}
+
+    /* CTA */
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,52px);text-align:center}
+
+    /* KPI mock */
+    .kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+    .kpi-mini{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:12px;padding:12px 14px}
+    .kpi-mini-lbl{font-size:10px;color:var(--tl);font-weight:600;letter-spacing:.3px;margin-bottom:4px}
+    .kpi-mini-val{font-size:16px;font-weight:700;color:var(--td);letter-spacing:-.3px}
+
+    /* Mock payment journal */
+    .pay-card{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,76,63,.06)}
+    .pay-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid rgba(0,76,63,.07);margin-bottom:12px}
+    .pay-title{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--td)}
+    .pay-sub{font-size:11px;color:var(--tl);margin-top:2px}
+    .pay-add{background:rgba(0,76,63,.1);color:var(--g);font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:4px}
+    .pay-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(0,76,63,.05)}
+    .pay-row:last-child{border-bottom:none}
+    .pay-date{font-size:11px;color:var(--tl);font-weight:500;min-width:42px}
+    .pay-info{flex:1;min-width:0}
+    .pay-log{font-size:12px;font-weight:600;color:var(--td);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .pay-mode{font-size:10px;color:var(--tl)}
+    .pay-amt{font-size:13px;font-weight:700;color:var(--td)}
+    .pay-badge{font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px}
+    .pay-badge.ok{background:rgba(74,222,128,.12);color:#16a34a}
+    .pay-badge.wait{background:rgba(255,213,107,.18);color:#a07500}
+
+    /* Mock chart */
+    .chart-mock{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:12px;padding:18px;margin-top:12px}
+    .chart-ttl{font-size:12px;color:var(--tl);font-weight:600;margin-bottom:12px}
+    .chart-bars{display:flex;align-items:flex-end;gap:6px;height:80px}
+    .chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+    .chart-bar-wrap{flex:1;width:100%;display:flex;align-items:flex-end}
+    .chart-bar{width:100%;background:var(--y);border-radius:4px 4px 2px 2px;min-height:2px}
+    .chart-lbl{font-size:10px;color:var(--tl);text-transform:capitalize}
+  </style>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd">
+      <a href="/">Accueil</a><span>›</span><a href="/services/revenus">Services</a><span>›</span><span>Suivi des revenus</span>
+    </div>
+    <div class="lbl">Finances & comptabilité</div>
+    <h1 class="h1">Tes paiements, au clair,<br><em>au même endroit</em></h1>
+    <p class="sub">Virements, espèces, chèques, paiements en ligne… Enregistre chaque encaissement, vois ce qui reste en attente et suis ta performance mois par mois.</p>
+    <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Suivre mes revenus <i class="ph-bold ph-arrow-right"></i></a>
+  </div>
+</header>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Fonctionnement</div>
+      <h2 class="h2">Un seul endroit pour <em>tout suivre</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:520px;line-height:1.7">Peu importe le mode de paiement, tu retrouves tout dans ton journal. Sans tableur Excel à tenir à la main.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>Enregistre un paiement</h3>
+        <p>Un voyageur t'a fait un virement ? Tu as reçu du liquide ? Un chèque ? Ajoute l'encaissement en 5 secondes avec le logement, le montant et la date.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>Laisse le reste se remplir</h3>
+        <p>Les paiements en ligne s'ajoutent automatiquement depuis tes contrats. Tu ne saisis qu'une seule fois, au bon moment.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>Suis ta performance</h3>
+        <p>Ce mois, cette année, moyenne mensuelle, répartition par logement… Tu visualises l'état de ta LCD d'un coup d'œil.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNAL EN DÉTAIL -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Journal des paiements</div>
+        <h2 class="h2">Tout ce qui <em>entre et sort</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Chaque encaissement est tracé : date, logement, voyageur, montant, mode de paiement et statut. Tu filtres par "encaissé" ou "en attente" en un clic.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">Paiements manuels</strong>Virement, espèces, chèque ou autre — saisis en 5 secondes avec note optionnelle.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">Paiements en ligne</strong>Les contrats signés et payés en ligne s'ajoutent automatiquement au journal.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td);display:block">En attente</strong>Les réservations à venir dont le paiement n'a pas encore été encaissé restent visibles dans une liste distincte.</div>
+        </div>
+      </div>
+      <div>
+        <div class="pay-card">
+          <div class="pay-head">
+            <div>
+              <div class="pay-title">Journal des paiements</div>
+              <div class="pay-sub">Avril 2026</div>
+            </div>
+            <span class="pay-add"><i class="ph-bold ph-plus" style="font-size:10px"></i>Ajouter</span>
+          </div>
+          <div class="pay-row">
+            <div class="pay-date">18 avr.</div>
+            <div class="pay-info"><span class="pay-log">Villa du Soleil</span><span class="pay-mode">Loyer · Virement</span></div>
+            <span class="pay-amt">1 200 €</span>
+            <span class="pay-badge ok">✓ Encaissé</span>
+          </div>
+          <div class="pay-row">
+            <div class="pay-date">15 avr.</div>
+            <div class="pay-info"><span class="pay-log">Gens Ficelo</span><span class="pay-mode">Caution · Espèces</span></div>
+            <span class="pay-amt">300 €</span>
+            <span class="pay-badge ok">✓ Encaissé</span>
+          </div>
+          <div class="pay-row">
+            <div class="pay-date">23 avr.</div>
+            <div class="pay-info"><span class="pay-log">Gens Ficelo</span><span class="pay-mode">Loyer · Stripe</span></div>
+            <span class="pay-amt">850 €</span>
+            <span class="pay-badge wait">⏳ Attente</span>
+          </div>
+          <div class="pay-row">
+            <div class="pay-date">10 avr.</div>
+            <div class="pay-info"><span class="pay-log">Villa du Soleil</span><span class="pay-mode">Frais ménage · Chèque</span></div>
+            <span class="pay-amt">60 €</span>
+            <span class="pay-badge ok">✓ Encaissé</span>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:12px 0 0">Illustration — vue réelle dans l'espace membres</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="kpi-row">
+          <div class="kpi-mini">
+            <div class="kpi-mini-lbl">Ce mois</div>
+            <div class="kpi-mini-val">1 560 €</div>
+          </div>
+          <div class="kpi-mini">
+            <div class="kpi-mini-lbl">En attente</div>
+            <div class="kpi-mini-val">850 €</div>
+          </div>
+          <div class="kpi-mini">
+            <div class="kpi-mini-lbl">Cette année</div>
+            <div class="kpi-mini-val">8 420 €</div>
+          </div>
+        </div>
+        <div class="chart-mock">
+          <div class="chart-ttl">Revenus encaissés · 6 derniers mois</div>
+          <div class="chart-bars">
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:35%"></div></div><span class="chart-lbl">Nov.</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:55%"></div></div><span class="chart-lbl">Déc.</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:42%"></div></div><span class="chart-lbl">Janv.</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:70%"></div></div><span class="chart-lbl">Févr.</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:85%"></div></div><span class="chart-lbl">Mars</span></div>
+            <div class="chart-col"><div class="chart-bar-wrap"><div class="chart-bar" style="height:95%"></div></div><span class="chart-lbl">Avr.</span></div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:12px 0 0">Illustration — KPIs et graphique réels</p>
+      </div>
+      <div>
+        <div class="lbl dk">Vue d'ensemble</div>
+        <h2 class="h2">Tes chiffres, <em>à jour</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Plus besoin de ressortir ton tableur pour savoir où tu en es. Dès que tu enregistres un paiement, les totaux se mettent à jour.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Ce mois encaissé</strong> — total de ce qui est réellement rentré ce mois-ci.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">En attente</strong> — ce que tu dois encore recevoir pour les réservations à venir.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Cette année</strong> — cumul de toutes tes recettes depuis le 1er janvier.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Par logement</strong> — répartition visuelle entre tes biens, pour voir qui performe.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI C'EST UTILE -->
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:36px">
+      <div class="lbl dk">Pourquoi l'utiliser</div>
+      <h2 class="h2">Ce que ça t'apporte <em>concrètement</em></h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-currency-eur"></i></div>
+        <h3>Tous les modes acceptés</h3>
+        <p>Virement, espèces, chèque, paiement en ligne… Pas besoin d'un outil différent pour chaque mode. Tout dans le même journal.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-chart-pie-slice"></i></div>
+        <h3>Une vue par logement</h3>
+        <p>Tu vois instantanément quel bien génère quoi. Pratique quand tu gères plusieurs logements ou quand tu dois rendre des comptes à un propriétaire.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-file-text"></i></div>
+        <h3>Traçabilité totale</h3>
+        <p>Date, logement, voyageur, mode de paiement, note — chaque encaissement est documenté. Parfait pour ta comptabilité et ta déclaration fiscale.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-clock-countdown"></i></div>
+        <h3>Les paiements en attente</h3>
+        <p>Tu sais à tout moment ce qui reste à encaisser. Fini les "j'ai oublié de relancer ce voyageur pour le solde".</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-trend-up"></i></div>
+        <h3>Une tendance visible</h3>
+        <p>Le graphique des 6 derniers mois te montre si ton activité progresse, stagne ou baisse. Des décisions plus claires.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-lightning"></i></div>
+        <h3>Saisie en 5 secondes</h3>
+        <p>Nom du logement pré-rempli, date du jour par défaut, raccourcis sur les modes de paiement. Pas de friction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Questions fréquentes</div>
+        <h2 class="h2">Ce que tu <em>veux savoir</em></h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q">Est-ce que je peux enregistrer des paiements en espèces ou par chèque ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. Tu choisis le mode de paiement (virement, espèces, chèque ou autre) au moment de la saisie. Tout est tracé dans le même journal.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Les paiements en ligne sont-ils ajoutés automatiquement ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. Si tu as activé le paiement en ligne sur un contrat, l'encaissement apparaît automatiquement dans ton journal dès qu'il est validé.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Puis-je utiliser le journal pour ma déclaration fiscale ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Le journal garde une trace précise de tous tes encaissements avec date, montant et logement. C'est un excellent point de départ pour ta compta. Pour la déclaration elle-même, je te recommande toujours un expert-comptable selon ton statut.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Puis-je supprimer une entrée si je me suis trompé ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. Les paiements saisis manuellement peuvent être supprimés à tout moment. Les paiements venant de contrats en ligne sont liés au contrat correspondant.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Combien ça coûte ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Le suivi des revenus fait partie de l'espace membres gratuit. Tu commences à l'utiliser dès ton inscription.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec dk">
+  <div class="s-in">
+    <div class="cta-ban">
+      <div class="lbl">Reprendre le contrôle</div>
+      <h2 class="h2 lt" style="max-width:460px;margin:0 auto 14px">Fini les tableurs Excel,<br><em>bonjour la clarté</em></h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.45);margin:0 0 28px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.7">Accès gratuit au journal des paiements depuis ton espace membres.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/contact" class="btn-ol">Poser une question</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+<script>
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){q.closest('.faq-item').classList.toggle('open');});
+});
+</script>
+</body>
+</html>
