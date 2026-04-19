@@ -48,14 +48,16 @@ const navGroups = [
 ]
 
 const adminMain = [
-  { href: '/dashboard/admin',         label: 'Administration', Icon: Gear },
-  { href: '/dashboard/admin/membres', label: 'Membres',        Icon: UsersThree },
+  { href: '/dashboard/admin',         label: 'Vue d\'ensemble', Icon: Gear },
+  { href: '/dashboard/admin/membres', label: 'Membres',         Icon: UsersThree },
 ]
 
 const adminContent = [
-  { href: '/dashboard/admin/gabarits',   label: 'Gabarits',   Icon: FileText },
   { href: '/dashboard/admin/formations', label: 'Formations', Icon: GraduationCap },
+  { href: '/dashboard/admin/gabarits',   label: 'Gabarits',   Icon: FileText },
+  { href: '/dashboard/admin/actualites', label: 'Actualités', Icon: Newspaper },
   { href: '/dashboard/admin/communaute', label: 'Communauté', Icon: FacebookLogo },
+  { href: '/dashboard/admin/guides',     label: 'Guide LCD',  Icon: BookOpen },
 ]
 
 interface SidebarProps {

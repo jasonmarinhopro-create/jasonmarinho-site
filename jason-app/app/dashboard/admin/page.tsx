@@ -26,6 +26,7 @@ export default async function AdminPage() {
   const [
     { count: totalUsers },
     { count: driingMembers },
+    { count: standardMembers },
     { count: newThisMonth },
     { count: templatesCount },
     { count: formationsCount },
@@ -39,6 +40,7 @@ export default async function AdminPage() {
   ] = await Promise.all([
     supabase.from('profiles').select('*', { count: 'exact', head: true }),
     supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'standard'),
     supabase.from('profiles').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()),
     supabase.from('templates').select('*', { count: 'exact', head: true }),
     supabase.from('formations').select('*', { count: 'exact', head: true }).eq('is_published', true),
@@ -73,6 +75,7 @@ export default async function AdminPage() {
           stats={{
             totalUsers: totalUsers ?? 0,
             driingMembers: driingMembers ?? 0,
+            standardMembers: standardMembers ?? 0,
             newThisMonth: newThisMonth ?? 0,
             pendingDriing: pendingDriing?.length ?? 0,
             pendingReports: reports?.filter(r => !r.is_validated).length ?? 0,

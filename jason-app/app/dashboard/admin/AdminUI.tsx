@@ -3,10 +3,11 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import {
-  Users, Lightning, Warning, CheckCircle, XCircle, Trash,
-  Check, X, ArrowClockwise, TrendUp, FileText, GraduationCap,
-  UsersThree, ArrowRight, Bell, UsersFour, CalendarBlank, Trophy,
-  BookOpen, Newspaper,
+  Users, Warning, CheckCircle, XCircle, Trash,
+  Check, X, ArrowClockwise, FileText, GraduationCap,
+  UsersThree, ArrowRight, UsersFour, CalendarBlank, Trophy,
+  BookOpen, Newspaper, Crown, ShieldStar, TrendUp, Lightning,
+  Sparkle, Circle,
 } from '@phosphor-icons/react'
 import {
   confirmDriingMember, rejectDriingMember,
@@ -25,7 +26,7 @@ interface Suggestion {
   id: string; type: 'formation' | 'partner'; message: string; user_email: string | null; created_at: string
 }
 interface Stats {
-  totalUsers: number; driingMembers: number; newThisMonth: number
+  totalUsers: number; driingMembers: number; standardMembers: number; newThisMonth: number
   pendingDriing: number; pendingReports: number; suggestions: number
   templatesCount: number; formationsCount: number; groupsCount: number
   totalVoyageurs: number; totalSejours: number
@@ -34,6 +35,9 @@ interface Stats {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+function formatDateLong() {
+  return new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 export default function AdminUI({ pendingDriing, reports, suggestions, stats }: {
@@ -57,6 +61,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
 
   const pendingReportsCount = reports.filter(r => !r.is_validated).length
   const totalAlerts = stats.pendingDriing + pendingReportsCount
+  const decouverte = stats.totalUsers - stats.standardMembers - stats.driingMembers
 
   const tabs = [
     { key: 'driing' as const,      label: 'Membres Driing', count: stats.pendingDriing },
@@ -67,87 +72,118 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
   return (
     <div style={s.wrap}>
 
-      {/* ── Titre ── */}
-      <div style={s.pageIntro} className="fade-up">
-        <h2 style={s.pageTitle}>
-          Administration
-        </h2>
-        <p style={s.pageDesc}>Gère les membres, le contenu et les demandes en attente.</p>
-      </div>
-
-      {/* ── Stats ── */}
-      <div style={s.statsGrid} className="fade-up">
-        <div style={s.statCard}>
-          <div style={{ ...s.statIcon, color: '#93C5FD', background: 'rgba(147,197,253,0.12)' }}>
-            <TrendUp size={18} />
+      {/* ── Bannière admin ── */}
+      <div style={s.hero}>
+        <div style={s.heroGlow} />
+        <div style={s.heroContent}>
+          <div style={s.heroBadge}>
+            <ShieldStar size={11} weight="fill" />
+            Espace privé · Accès restreint
           </div>
-          <div>
-            <div style={{ ...s.statValue, color: '#93C5FD' }}>+{stats.newThisMonth}</div>
-            <div style={s.statLabel}>ce mois</div>
-          </div>
+          <h1 style={s.heroTitle}>Administration</h1>
+          <p style={s.heroSub}>{formatDateLong()}</p>
         </div>
-        <div style={s.statCard}>
-          <div style={{ ...s.statIcon, color: 'var(--text-2)', background: 'var(--border)' }}>
-            <Users size={18} />
-          </div>
-          <div>
-            <div style={s.statValue}>{stats.totalUsers}</div>
-            <div style={s.statLabel}>membres total</div>
-          </div>
-        </div>
-        <div style={s.statCard}>
-          <div style={{ ...s.statIcon, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.12)' }}>
-            <Lightning size={18} />
-          </div>
-          <div>
-            <div style={{ ...s.statValue, color: 'var(--accent-text)' }}>{stats.driingMembers}</div>
-            <div style={s.statLabel}>membres Driing</div>
-          </div>
+        <div style={s.heroCrown}>
+          <Crown size={40} weight="duotone" style={{ color: 'rgba(167,139,250,0.25)' }} />
         </div>
         {totalAlerts > 0 && (
-          <div style={{ ...s.statCard, borderColor: 'rgba(251,146,60,0.25)' }}>
-            <div style={{ ...s.statIcon, color: '#fb923c', background: 'rgba(251,146,60,0.12)' }}>
-              <Bell size={18} />
-            </div>
-            <div>
-              <div style={{ ...s.statValue, color: '#fb923c' }}>{totalAlerts}</div>
-              <div style={s.statLabel}>action{totalAlerts > 1 ? 's' : ''} requise{totalAlerts > 1 ? 's' : ''}</div>
-            </div>
+          <div style={s.heroAlert}>
+            <Warning size={14} weight="fill" />
+            {totalAlerts} action{totalAlerts > 1 ? 's' : ''} en attente
           </div>
         )}
       </div>
 
-      {/* ── Insights plateforme ── */}
+      {/* ── Répartition membres ── */}
       <div className="fade-up">
-        <div style={s.sectionLabel}>Activité globale</div>
-        <div style={s.insightsGrid}>
-          <div style={s.insightCard}>
-            <div style={{ ...s.insightIcon, color: '#93C5FD', background: 'rgba(147,197,253,0.12)' }}>
-              <UsersFour size={18} />
+        <div style={s.sectionLabel}>
+          <TrendUp size={13} />
+          Membres · répartition par plan
+        </div>
+        <div style={s.plansGrid}>
+          <div style={s.planCard}>
+            <div style={s.planTop}>
+              <span style={{ ...s.planDot, background: '#6b7280' }} />
+              <span style={s.planName}>Découverte</span>
+              <span style={s.planCount}>{decouverte < 0 ? 0 : decouverte}</span>
             </div>
-            <div style={s.insightBody}>
-              <div style={{ ...s.insightValue, color: '#93C5FD' }}>{stats.totalVoyageurs}</div>
-              <div style={s.insightLabel}>voyageurs enregistrés</div>
+            <div style={s.planBar}>
+              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((Math.max(0,decouverte) / stats.totalUsers) * 100) : 0}%`, background: '#6b7280' }} />
             </div>
           </div>
-          <div style={s.insightCard}>
-            <div style={{ ...s.insightIcon, color: '#34D399', background: 'rgba(52,211,153,0.12)' }}>
-              <CalendarBlank size={18} />
+          <div style={{ ...s.planCard, borderColor: 'rgba(255,213,107,0.25)' }}>
+            <div style={s.planTop}>
+              <span style={{ ...s.planDot, background: '#FFD56B' }} />
+              <span style={s.planName}>Standard</span>
+              <span style={{ ...s.planCount, color: '#FFD56B' }}>{stats.standardMembers}</span>
             </div>
-            <div style={s.insightBody}>
-              <div style={{ ...s.insightValue, color: '#34D399' }}>{stats.totalSejours}</div>
-              <div style={s.insightLabel}>séjours au total</div>
+            <div style={s.planBar}>
+              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((stats.standardMembers / stats.totalUsers) * 100) : 0}%`, background: '#FFD56B' }} />
+            </div>
+          </div>
+          <div style={{ ...s.planCard, borderColor: 'rgba(167,139,250,0.25)' }}>
+            <div style={s.planTop}>
+              <span style={{ ...s.planDot, background: '#a78bfa' }} />
+              <span style={s.planName}>Driing</span>
+              <span style={{ ...s.planCount, color: '#a78bfa' }}>{stats.driingMembers}</span>
+            </div>
+            <div style={s.planBar}>
+              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((stats.driingMembers / stats.totalUsers) * 100) : 0}%`, background: '#a78bfa' }} />
+            </div>
+          </div>
+          <div style={{ ...s.planCard, borderColor: 'rgba(99,214,131,0.2)' }}>
+            <div style={s.planTop}>
+              <Sparkle size={12} color="#63D683" weight="fill" />
+              <span style={s.planName}>Nouveaux ce mois</span>
+              <span style={{ ...s.planCount, color: '#63D683' }}>+{stats.newThisMonth}</span>
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
+              {stats.totalUsers} membres au total
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Activité plateforme ── */}
+      <div className="fade-up">
+        <div style={s.sectionLabel}>
+          <Lightning size={13} />
+          Activité plateforme
+        </div>
+        <div style={s.activityRow}>
+          <div style={s.actCard}>
+            <div style={{ ...s.actIcon, color: '#93C5FD', background: 'rgba(147,197,253,0.12)' }}>
+              <UsersFour size={20} weight="duotone" />
+            </div>
+            <div>
+              <div style={{ ...s.actVal, color: '#93C5FD' }}>{stats.totalVoyageurs}</div>
+              <div style={s.actLbl}>voyageurs</div>
+            </div>
+          </div>
+          <div style={s.actCard}>
+            <div style={{ ...s.actIcon, color: '#34D399', background: 'rgba(52,211,153,0.12)' }}>
+              <CalendarBlank size={20} weight="duotone" />
+            </div>
+            <div>
+              <div style={{ ...s.actVal, color: '#34D399' }}>{stats.totalSejours}</div>
+              <div style={s.actLbl}>séjours</div>
             </div>
           </div>
           {stats.topFormation && (
-            <div style={{ ...s.insightCard, flex: '2 1 280px' }}>
-              <div style={{ ...s.insightIcon, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.12)' }}>
-                <Trophy size={18} />
+            <div style={{ ...s.actCard, flex: '2 1 220px' }}>
+              <div style={{ ...s.actIcon, color: '#FFD56B', background: 'rgba(255,213,107,0.12)' }}>
+                <Trophy size={20} weight="duotone" />
               </div>
-              <div style={s.insightBody}>
-                <div style={s.insightTopLabel}>Formation la plus commencée</div>
-                <div style={s.insightTopTitle}>{stats.topFormation.title}</div>
-                <div style={s.insightLabel}>{stats.topFormation.count} inscrit{stats.topFormation.count > 1 ? 's' : ''}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '2px' }}>
+                  Formation la plus commencée
+                </div>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: '#FFD56B', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {stats.topFormation.title}
+                </div>
+                <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '2px' }}>
+                  {stats.topFormation.count} inscription{stats.topFormation.count > 1 ? 's' : ''}
+                </div>
               </div>
             </div>
           )}
@@ -156,85 +192,47 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
 
       {/* ── Gestion du contenu ── */}
       <div className="fade-up">
-        <div style={s.sectionLabel}>Gestion du contenu</div>
+        <div style={s.sectionLabel}>
+          <FileText size={13} />
+          Gestion du contenu
+        </div>
         <div style={s.contentGrid}>
-          <Link href="/dashboard/admin/membres" style={s.contentCard}>
-            <div style={{ ...s.contentCardIcon, color: 'var(--text-2)', background: 'var(--border)' }}>
-              <UsersThree size={22} />
-            </div>
-            <div style={s.contentCardBody}>
-              <div style={s.contentCardTitle}>Membres</div>
-              <div style={s.contentCardDesc}>{stats.totalUsers} inscrits · {stats.driingMembers} Driing</div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-          </Link>
-
-          <Link href="/dashboard/admin/gabarits" style={s.contentCard}>
-            <div style={{ ...s.contentCardIcon, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.1)' }}>
-              <FileText size={22} />
-            </div>
-            <div style={s.contentCardBody}>
-              <div style={s.contentCardTitle}>Gabarits</div>
-              <div style={s.contentCardDesc}>{stats.templatesCount} gabarit{stats.templatesCount > 1 ? 's' : ''} publiés</div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-          </Link>
-
-          <Link href="/dashboard/admin/formations" style={s.contentCard}>
-            <div style={{ ...s.contentCardIcon, color: '#34D399', background: 'rgba(52,211,153,0.1)' }}>
-              <GraduationCap size={22} />
-            </div>
-            <div style={s.contentCardBody}>
-              <div style={s.contentCardTitle}>Formations</div>
-              <div style={s.contentCardDesc}>{stats.formationsCount} formation{stats.formationsCount > 1 ? 's' : ''} publiée{stats.formationsCount > 1 ? 's' : ''}</div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-          </Link>
-
-          <Link href="/dashboard/admin/communaute" style={s.contentCard}>
-            <div style={{ ...s.contentCardIcon, color: '#93C5FD', background: 'rgba(147,197,253,0.1)' }}>
-              <UsersThree size={22} />
-            </div>
-            <div style={s.contentCardBody}>
-              <div style={s.contentCardTitle}>Communauté</div>
-              <div style={s.contentCardDesc}>{stats.groupsCount} groupe{stats.groupsCount > 1 ? 's' : ''} en base</div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-          </Link>
-
-          <Link href="/dashboard/admin/guides" style={s.contentCard}>
-            <div style={{ ...s.contentCardIcon, color: '#a78bfa', background: 'rgba(167,139,250,0.1)' }}>
-              <BookOpen size={22} />
-            </div>
-            <div style={s.contentCardBody}>
-              <div style={s.contentCardTitle}>Guide LCD</div>
-              <div style={s.contentCardDesc}>Structure & profils de navigation</div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-          </Link>
-
-          <Link href="/dashboard/admin/actualites" style={s.contentCard}>
-            <div style={{ ...s.contentCardIcon, color: '#f472b6', background: 'rgba(244,114,182,0.1)' }}>
-              <Newspaper size={22} />
-            </div>
-            <div style={s.contentCardBody}>
-              <div style={s.contentCardTitle}>Actualités</div>
-              <div style={s.contentCardDesc}>Fil d&apos;actualités LCD</div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-          </Link>
+          {[
+            { href: '/dashboard/admin/membres',    icon: UsersThree,    color: '#a78bfa', bg: 'rgba(167,139,250,0.1)',  title: 'Membres',     desc: `${stats.totalUsers} inscrits · ${stats.driingMembers} Driing` },
+            { href: '/dashboard/admin/gabarits',   icon: FileText,      color: '#FFD56B', bg: 'rgba(255,213,107,0.1)', title: 'Gabarits',    desc: `${stats.templatesCount} gabarit${stats.templatesCount !== 1 ? 's' : ''}` },
+            { href: '/dashboard/admin/formations', icon: GraduationCap, color: '#34D399', bg: 'rgba(52,211,153,0.1)',  title: 'Formations',  desc: `${stats.formationsCount} publiée${stats.formationsCount !== 1 ? 's' : ''}` },
+            { href: '/dashboard/admin/actualites', icon: Newspaper,     color: '#f472b6', bg: 'rgba(244,114,182,0.1)', title: 'Actualités',  desc: 'Fil LCD' },
+            { href: '/dashboard/admin/communaute', icon: UsersThree,    color: '#93C5FD', bg: 'rgba(147,197,253,0.1)', title: 'Communauté',  desc: `${stats.groupsCount} groupe${stats.groupsCount !== 1 ? 's' : ''}` },
+            { href: '/dashboard/admin/guides',     icon: BookOpen,      color: '#fb923c', bg: 'rgba(251,146,60,0.1)',  title: 'Guide LCD',   desc: 'Profils & fiches' },
+          ].map(({ href, icon: Icon, color, bg, title, desc }) => (
+            <Link key={href} href={href} style={s.contentCard} className="admin-content-card">
+              <div style={{ ...s.contentIcon, color, background: bg, border: `1px solid ${color}20` }}>
+                <Icon size={22} weight="duotone" />
+              </div>
+              <div style={s.contentBody}>
+                <div style={s.contentTitle}>{title}</div>
+                <div style={s.contentDesc}>{desc}</div>
+              </div>
+              <ArrowRight size={15} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+            </Link>
+          ))}
         </div>
       </div>
 
       {/* ── Actions en attente ── */}
       <div className="fade-up">
         <div style={s.sectionLabel}>
+          <Warning size={13} style={{ color: totalAlerts > 0 ? '#fb923c' : 'var(--text-muted)' }} />
           Actions en attente
-          {totalAlerts > 0 && <span style={s.alertDot}>{totalAlerts}</span>}
+          {totalAlerts > 0 && (
+            <span style={s.alertBadge}>{totalAlerts}</span>
+          )}
         </div>
+
         <div style={s.tabBar}>
           {tabs.map(t => (
             <button key={t.key} onClick={() => setTab(t.key)} style={{ ...s.tab, ...(tab === t.key ? s.tabActive : {}) }}>
+              {t.count > 0 && <Circle size={7} weight="fill" style={{ color: '#fb923c', flexShrink: 0 }} />}
               {t.label}
               {t.count > 0 && (
                 <span style={{ ...s.tabBadge, ...(tab === t.key ? s.tabBadgeActive : {}) }}>{t.count}</span>
@@ -245,17 +243,17 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
 
         {/* Driing */}
         {tab === 'driing' && (
-          <Section title="Demandes membres Driing" empty={pendingDriing.length === 0} emptyMsg="Aucune demande en attente.">
+          <Section title="Demandes Membre Driing" empty={pendingDriing.length === 0} emptyMsg="Aucune demande en attente.">
             {pendingDriing.map(u => (
               <div key={u.id} className="admin-item">
                 <div className="admin-item-head">
-                  <div>
+                  <div style={s.itemAvatar}>{(u.full_name || u.email).slice(0, 1).toUpperCase()}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={s.cellPrimary}>{u.full_name || '—'}</div>
-                    <div style={s.cellSub}>{u.email}</div>
+                    <div style={s.cellSub}>{u.email} · {formatDate(u.created_at)}</div>
                   </div>
-                  <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c' }}>En attente</span>
+                  <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c', border: '1px solid rgba(251,146,60,.2)' }}>En attente</span>
                 </div>
-                <div style={s.cellSub}>Inscrit le {formatDate(u.created_at)}</div>
                 <div className="admin-item-foot">
                   {feedback?.id === u.id
                     ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
@@ -275,17 +273,17 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
 
         {/* Reports */}
         {tab === 'reports' && (
-          <Section title={`${reports.length} signalement${reports.length > 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
+          <Section title={`${reports.length} signalement${reports.length !== 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
             {reports.map(r => (
               <div key={r.id} className="admin-item">
                 <div className="admin-item-head">
-                  <div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={s.cellPrimary}>{r.name || r.identifier}</div>
                     <div style={s.cellSub}>{r.identifier_type} · {r.identifier}</div>
                   </div>
-                  <div className="admin-item-badges">
-                    <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: '#f87171' }}>{r.incident_type}</span>
-                    <span style={{ ...s.badge, ...(r.is_validated ? { background: 'rgba(52,211,153,.1)', color: '#34D399' } : { background: 'rgba(251,146,60,.1)', color: '#fb923c' }) }}>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: '#f87171', border: '1px solid rgba(248,113,113,.2)' }}>{r.incident_type}</span>
+                    <span style={{ ...s.badge, ...(r.is_validated ? { background: 'rgba(52,211,153,.1)', color: '#34D399', border: '1px solid rgba(52,211,153,.2)' } : { background: 'rgba(251,146,60,.1)', color: '#fb923c', border: '1px solid rgba(251,146,60,.2)' }) }}>
                       {r.is_validated ? 'Validé' : 'En attente'}
                     </span>
                   </div>
@@ -317,12 +315,12 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
             {suggestions.map(sg => (
               <div key={sg.id} className="admin-item">
                 <div className="admin-item-head">
-                  <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'rgba(255,213,107,.1)', color: 'var(--accent-text)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD' }) }}>
+                  <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'rgba(255,213,107,.1)', color: '#FFD56B', border: '1px solid rgba(255,213,107,.2)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD', border: '1px solid rgba(147,197,253,.2)' }) }}>
                     {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
                   </span>
-                  <div style={{ ...s.cellSub, whiteSpace: 'normal', overflow: 'visible', textOverflow: 'unset' }}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>
+                  <div style={{ ...s.cellSub, marginLeft: 'auto' }}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>
                 </div>
-                <div style={{ ...s.cellPrimary, whiteSpace: 'normal', overflow: 'visible', textOverflow: 'unset' }}>{sg.message}</div>
+                <div style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55, marginTop: '4px' }}>{sg.message}</div>
                 <div className="admin-item-foot">
                   {feedback?.id === sg.id
                     ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
@@ -334,6 +332,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
           </Section>
         )}
       </div>
+
     </div>
   )
 }
@@ -343,7 +342,10 @@ function Section({ title, children, empty, emptyMsg }: { title: string; children
   return (
     <div style={s.section}>
       <div style={s.sectionSubTitle}>{title}</div>
-      {empty ? <div style={s.empty}>{emptyMsg}</div> : <div style={s.table}>{children}</div>}
+      {empty
+        ? <div style={s.empty}>{emptyMsg}</div>
+        : <div style={s.table}>{children}</div>
+      }
     </div>
   )
 }
@@ -351,10 +353,11 @@ function ActionBtn({ label, icon, color, loading, onClick }: { label: string; ic
   return (
     <button onClick={onClick} disabled={loading} style={{
       display: 'inline-flex', alignItems: 'center', gap: '5px',
-      padding: '6px 12px', borderRadius: '7px', fontSize: '12px', fontWeight: 500,
+      padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
       cursor: loading ? 'not-allowed' : 'pointer',
-      background: `${color}14`, color, border: `1px solid ${color}30`,
+      background: `${color}14`, color, border: `1px solid ${color}25`,
       opacity: loading ? 0.5 : 1, fontFamily: 'Outfit, sans-serif',
+      transition: 'all 0.15s',
     }}>
       {loading ? <ArrowClockwise size={12} style={{ animation: 'spin 1s linear infinite' }} /> : icon}
       {label}
@@ -364,7 +367,7 @@ function ActionBtn({ label, icon, color, loading, onClick }: { label: string; ic
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
   const color = type === 'ok' ? '#34D399' : '#f87171'
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '7px', fontSize: '12px', fontWeight: 500, color, background: `${color}14`, border: `1px solid ${color}30` }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, color, background: `${color}14`, border: `1px solid ${color}25` }}>
       {type === 'ok' ? <CheckCircle size={13} weight="fill" /> : <XCircle size={13} weight="fill" />}
       {msg}
     </div>
@@ -372,71 +375,172 @@ function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { display: 'flex', flexDirection: 'column', gap: '32px' },
+  wrap: { display: 'flex', flexDirection: 'column', gap: '36px' },
 
-  pageIntro: { marginBottom: '-8px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-3)' },
-
-  statsGrid: { display: 'flex', gap: '14px', flexWrap: 'wrap' },
-  statCard: {
-    display: 'flex', alignItems: 'center', gap: '14px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '16px 20px', flex: '1 1 160px',
+  // Admin hero banner
+  hero: {
+    position: 'relative',
+    background: 'linear-gradient(135deg, rgba(167,139,250,0.1) 0%, rgba(255,213,107,0.04) 60%, rgba(167,139,250,0.06) 100%)',
+    border: '1px solid rgba(167,139,250,0.2)',
+    borderRadius: '20px',
+    padding: 'clamp(24px,3vw,36px) clamp(24px,4vw,40px)',
+    overflow: 'hidden',
   },
-  statIcon: { width: '36px', height: '36px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  statValue: { fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.1 },
-  statLabel: { fontSize: '12px', color: 'var(--text-3)', marginTop: '3px' },
+  heroGlow: {
+    position: 'absolute', top: '-60px', right: '-60px',
+    width: '220px', height: '220px', borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 70%)',
+    pointerEvents: 'none',
+  },
+  heroContent: { position: 'relative', zIndex: 1 },
+  heroBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase' as const,
+    color: '#a78bfa',
+    background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.25)',
+    borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
+  },
+  heroTitle: {
+    fontFamily: 'Fraunces, serif',
+    fontSize: 'clamp(28px,3vw,42px)',
+    fontWeight: 400,
+    color: 'var(--text)',
+    margin: '0 0 8px',
+    lineHeight: 1.1,
+  },
+  heroSub: {
+    fontSize: '13px',
+    color: 'var(--text-muted)',
+    margin: 0,
+    textTransform: 'capitalize' as const,
+  },
+  heroCrown: {
+    position: 'absolute', right: 'clamp(20px,4vw,44px)', top: '50%',
+    transform: 'translateY(-50%)', pointerEvents: 'none',
+  },
+  heroAlert: {
+    position: 'absolute', top: '16px', right: '16px',
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '11px', fontWeight: 700,
+    color: '#fb923c',
+    background: 'rgba(251,146,60,0.12)', border: '1px solid rgba(251,146,60,0.25)',
+    borderRadius: '999px', padding: '4px 10px',
+  },
 
+  // Plan distribution
   sectionLabel: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' as const,
+    display: 'flex', alignItems: 'center', gap: '7px',
+    fontSize: '11px', fontWeight: 700, letterSpacing: '0.9px', textTransform: 'uppercase' as const,
     color: 'var(--text-muted)', marginBottom: '14px',
   },
-  alertDot: {
+  plansGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px,1fr))', gap: '12px',
+  },
+  planCard: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px 18px',
+    display: 'flex', flexDirection: 'column', gap: '8px',
+  },
+  planTop: { display: 'flex', alignItems: 'center', gap: '8px' },
+  planDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
+  planName: { fontSize: '13px', color: 'var(--text-2)', flex: 1 },
+  planCount: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)', lineHeight: 1 },
+  planBar: { height: '3px', borderRadius: '2px', background: 'var(--border)', overflow: 'hidden' },
+  planFill: { height: '100%', borderRadius: '2px', transition: 'width 0.6s ease', minWidth: '4px' },
+
+  // Activity row
+  activityRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },
+  actCard: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px 20px', flex: '1 1 140px',
+  },
+  actIcon: {
+    width: '40px', height: '40px', borderRadius: '11px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  actVal: { fontFamily: 'Fraunces, serif', fontSize: '26px', fontWeight: 400, color: 'var(--text)', lineHeight: 1 },
+  actLbl: { fontSize: '12px', color: 'var(--text-3)', marginTop: '3px' },
+
+  // Content grid
+  contentGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px,1fr))', gap: '10px',
+  },
+  contentCard: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px 18px',
+    textDecoration: 'none', transition: 'border-color 0.18s, background 0.18s',
+  },
+  contentIcon: {
+    width: '42px', height: '42px', borderRadius: '11px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  contentBody: { flex: 1, minWidth: 0 },
+  contentTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
+  contentDesc: { fontSize: '12px', color: 'var(--text-3)' },
+
+  // Tabs
+  alertBadge: {
     background: 'rgba(251,146,60,0.15)', color: '#fb923c',
     border: '1px solid rgba(251,146,60,0.25)',
     borderRadius: '100px', padding: '1px 8px',
     fontSize: '11px', fontWeight: 700,
   },
-
-  contentGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '12px' },
-  contentCard: {
-    display: 'flex', alignItems: 'center', gap: '14px',
-    background: 'var(--surface)', border: '1px solid var(--surface-2)',
-    borderRadius: '14px', padding: '18px 20px',
-    textDecoration: 'none', transition: 'border-color 0.18s, background 0.18s',
-  },
-  contentCardIcon: { width: '42px', height: '42px', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  contentCardBody: { flex: 1, minWidth: 0 },
-  contentCardTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
-  contentCardDesc: { fontSize: '12px', color: 'var(--text-3)' },
-
-  tabBar: { display: 'flex', gap: '4px', background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '12px', padding: '4px', marginBottom: '16px', overflowX: 'auto' as const },
-  tab: { display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 500, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer' },
-  tabActive: { background: 'var(--surface-2)', color: 'var(--text)' },
-  tabBadge: { fontSize: '11px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-3)', padding: '1px 7px', borderRadius: '100px' },
-  tabBadgeActive: { background: 'rgba(255,213,107,0.15)', color: 'var(--accent-text)' },
-
-  section: { display: 'flex', flexDirection: 'column', gap: '0' },
-  sectionSubTitle: { fontSize: '11px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', padding: '0 0 10px' },
-  table: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', overflow: 'hidden' },
-  empty: { background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '14px', padding: '40px', textAlign: 'center' as const, fontSize: '14px', color: 'var(--text-muted)' },
-  cellPrimary: { fontSize: '14px', fontWeight: 500, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
-  cellSub: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
-  description: { fontSize: '13px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, marginTop: '2px' },
-  badge: { display: 'inline-block', fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px', letterSpacing: '0.3px', whiteSpace: 'nowrap' as const },
-
-  insightsGrid: { display: 'flex', gap: '14px', flexWrap: 'wrap' as const },
-  insightCard: {
-    display: 'flex', alignItems: 'center', gap: '14px',
+  tabBar: {
+    display: 'flex', gap: '4px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '16px 20px', flex: '1 1 160px',
+    borderRadius: '12px', padding: '4px', marginBottom: '16px', overflowX: 'auto' as const,
   },
-  insightIcon: { width: '36px', height: '36px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  insightBody: { flex: 1, minWidth: 0 },
-  insightValue: { fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.1 },
-  insightLabel: { fontSize: '12px', color: 'var(--text-3)', marginTop: '3px' },
-  insightTopLabel: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '4px' },
-  insightTopTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--accent-text)', lineHeight: 1.35 },
+  tab: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+    padding: '9px 18px', borderRadius: '9px',
+    fontSize: '13px', fontWeight: 500, color: 'var(--text-3)',
+    background: 'none', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' as const,
+  },
+  tabActive: { background: 'var(--surface-2)', color: 'var(--text)' },
+  tabBadge: {
+    fontSize: '11px', fontWeight: 700,
+    background: 'var(--border)', color: 'var(--text-3)',
+    padding: '1px 7px', borderRadius: '100px',
+  },
+  tabBadgeActive: { background: 'rgba(251,146,60,0.15)', color: '#fb923c' },
+
+  // Items
+  section: { display: 'flex', flexDirection: 'column', gap: '0' },
+  sectionSubTitle: {
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.8px', textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)', padding: '0 0 10px',
+  },
+  table: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', overflow: 'hidden',
+  },
+  empty: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '40px',
+    textAlign: 'center' as const, fontSize: '14px', color: 'var(--text-muted)',
+  },
+  itemAvatar: {
+    width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+    background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.2)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '14px', fontWeight: 700, color: '#a78bfa', fontFamily: 'Fraunces, serif',
+  },
+  cellPrimary: {
+    fontSize: '14px', fontWeight: 500, color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  cellSub: {
+    fontSize: '12px', color: 'var(--text-3)', marginTop: '2px',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  description: {
+    fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5, marginTop: '4px',
+  },
+  badge: {
+    display: 'inline-block', fontSize: '11px', fontWeight: 600,
+    padding: '3px 10px', borderRadius: '100px', letterSpacing: '0.3px',
+    whiteSpace: 'nowrap' as const,
+  },
 }
