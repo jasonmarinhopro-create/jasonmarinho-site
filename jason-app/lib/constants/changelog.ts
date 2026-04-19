@@ -51,9 +51,9 @@ export const CHANGELOG: ChangelogEntry[] = [
     title: 'Dashboard Abonnement — refonte complète',
     description: 'La page Abonnement a été entièrement repensée : plan actuel bien visible, liste des fonctionnalités par plan, CTA vers Stripe pour upgrader ou gérer son abonnement, section Driing avec formulaire de demande. Plus clair, plus complet.',
   },
+  {
+    id: 'actualites-lcd-page-apr-2026',
     date: '2026-04-19',
-    tag: 'nouveau',
-    title: 'Actualités LCD — 12 articles pour rester informé',
     description: 'Une nouvelle section "Actualités" est disponible dans ton espace. Elle rassemble les infos importantes du moment : nouvelles obligations, changements fiscaux, évolutions des plateformes… Le tout trié et résumé pour toi, avec un lien direct vers la source.',
   },
   {
