@@ -448,16 +448,25 @@ export default function CalendrierView({
           .cal-side   { width: 100% !important; border-left: none !important; border-top: 1px solid var(--border) !important; max-height: none !important; }
         }
         @media (max-width: 640px) {
-          .cal-root    { padding: 10px 10px 20px !important; gap: 8px !important; }
-          .cal-topbar  { gap: 6px !important; }
-          .cal-alerts  { display: none !important; }
-          .cal-cell    { min-height: 46px !important; padding: 3px !important; }
-          .cal-pill-wrap { display: none !important; }
-          .cal-day-header { padding: 5px 2px !important; font-size: 9px !important; letter-spacing: 0 !important; }
-          .cal-date-row { grid-template-columns: 1fr !important; }
-          .cal-row-arrow { display: none !important; }
-          .cal-add-text  { display: none !important; }
+          .cal-root        { padding: 8px 8px 24px !important; gap: 8px !important; }
+          .cal-topbar      { gap: 6px !important; }
+          .cal-cell        { min-height: 54px !important; padding: 4px !important; }
+          .cal-pill-wrap   { display: none !important; }
+          .cal-day-header  { padding: 6px 2px !important; font-size: 9px !important; letter-spacing: 0 !important; }
+          .cal-date-row    { grid-template-columns: 1fr !important; }
+          .cal-row-arrow   { display: none !important; }
+          .cal-add-text    { display: none !important; }
           .cal-month-title { font-size: 16px !important; min-width: unset !important; }
+          .cal-layout      { min-height: 0 !important; }
+          .cal-side-head   { padding: 10px 14px 8px !important; }
+          /* Alert grid — horizontal scroll on mobile */
+          .cal-alert-grid  { display: flex !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; gap: 8px !important; }
+          .cal-alert-grid::-webkit-scrollbar { display: none; }
+          .cal-alert-col   { min-width: 128px !important; flex-shrink: 0 !important; }
+          /* Hide legend sections on mobile */
+          .cal-legend      { display: none !important; }
+          /* Alert section compact */
+          .cal-alert-wrap  { padding: 8px 10px !important; }
         }
       `}</style>
 
@@ -483,7 +492,7 @@ export default function CalendrierView({
 
       {/* ── Actions à traiter */}
       {contractEvents.length > 0 && (
-        <div style={{
+        <div className="cal-alert-wrap" style={{
           background: 'var(--card-bg)', border: '1px solid var(--border)',
           borderRadius: '12px', padding: '10px 14px',
           display: 'flex', flexDirection: 'column', gap: '8px',
@@ -501,11 +510,11 @@ export default function CalendrierView({
               { color: '#3b82f6', bg: 'rgba(59,130,246,0.08)', label: 'À faire' },
             ]
             return (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+              <div className="cal-alert-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
                 {GROUPS.map(group => {
                   const groupItems = urgentAlerts.filter(a => a.color === group.color)
                   return (
-                    <div key={group.color} style={{
+                    <div key={group.color} className="cal-alert-col" style={{
                       borderRadius: '8px', border: `1px solid ${group.color}30`,
                       background: group.bg, padding: '8px 10px',
                       opacity: groupItems.length === 0 ? 0.35 : 1,
@@ -670,7 +679,7 @@ export default function CalendrierView({
 
         {/* ── Side panel */}
         <div className="cal-side" style={s.side}>
-          <div style={s.sideHead}>
+          <div className="cal-side-head" style={s.sideHead}>
             <div style={s.sideHeadLeft}>
               <div style={s.sideDow}>{capitalize(formatDayLong(selected).split(' ')[0])}</div>
               <div style={s.sideDate}>{formatDayLong(selected).split(' ').slice(1).join(' ')}</div>
@@ -928,7 +937,7 @@ export default function CalendrierView({
 
           {/* ── Logements legend */}
           {!selectedContract && logements.length > 0 && (
-            <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)', marginTop: 'auto' }}>
+            <div className="cal-legend" style={{ padding: '14px 16px', borderTop: '1px solid var(--border)', marginTop: 'auto' }}>
               <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
                 Logements
               </div>
@@ -943,7 +952,7 @@ export default function CalendrierView({
 
           {/* ── Event types legend */}
           {!selectedContract && (
-            <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)' }}>
+            <div className="cal-legend" style={{ padding: '14px 16px', borderTop: '1px solid var(--border)' }}>
               <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
                 Types d'événements
               </div>
