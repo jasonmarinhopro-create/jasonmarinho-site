@@ -75,6 +75,18 @@
     .pc-alumni{font-size:12px;color:var(--tl);background:rgba(0,76,63,.04);padding:10px 14px;border-radius:10px;margin-top:10px;line-height:1.55}
     .pc-alumni strong{color:var(--g);display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
 
+    /* Founding Member pill */
+    .fm-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,213,107,.12);border:1px solid rgba(255,213,107,.3);color:#a07500;font-size:11px;font-weight:600;padding:5px 10px;border-radius:100px;letter-spacing:.3px;margin-bottom:6px}
+    .fm-dot{width:5px;height:5px;border-radius:50%;background:#d4a400;flex-shrink:0}
+    .fm-note{font-size:12px;color:var(--tm);background:rgba(255,213,107,.08);border:1px solid rgba(255,213,107,.2);padding:10px 14px;border-radius:10px;margin-top:10px;line-height:1.55}
+    .fm-note strong{color:#a07500;display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+
+    /* Legal mentions */
+    .legal-note{margin-top:40px;padding:20px 24px;background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:12px;font-size:12.5px;color:var(--tm);line-height:1.75}
+    .legal-note strong{color:var(--td)}
+    .legal-note a{color:var(--g);text-decoration:none;font-weight:500}
+    .legal-note a:hover{text-decoration:underline}
+
     /* Comparison table */
     .cmp-wrap{margin-top:60px;background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:20px;overflow:hidden}
     .cmp-ttl{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:400;color:var(--td);padding:24px 28px;border-bottom:1px solid rgba(0,76,63,.08);margin:0}
@@ -225,12 +237,13 @@
       <div class="pc pc-standard" style="border-color:var(--g);background:#fff">
         <div class="pc-ribbon">Le plus choisi</div>
         <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="fm-pill"><span class="fm-dot"></span>Founding Member — prix à vie</div>
           <div class="pc-badge" style="background:rgba(0,76,63,.1);color:var(--g)">Standard</div>
           <p class="pc-name">Hôte actif</p>
           <p class="pc-desc">Tous les outils pour gérer ton activité LCD : calendrier, check-lists, revenus, paiement en ligne, contrats illimités.</p>
         </div>
         <div class="pc-price-wrap" style="flex-wrap:wrap">
-          <span class="pc-price-slash">9,90 €</span>
+          <span class="pc-price-slash">9,98 €</span>
           <span class="pc-price" data-price-month="7,98" data-price-year="6,58">7,98 €</span>
           <span class="pc-price-label">/ mois <span class="bill-annual-only" style="display:none">· facturé 79 €/an</span></span>
         </div>
@@ -246,6 +259,10 @@
           <li><i class="ph-bold ph-check"></i>Communauté + partenaires exclusifs</li>
         </ul>
         <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Passer en Standard <i class="ph-bold ph-arrow-right"></i></a>
+        <div class="fm-note">
+          <strong>Pourquoi Founding Member ?</strong>
+          Tu bloques 7,98 €/mois (ou 79 €/an) à vie, tant que ton abonnement reste actif. Le tarif public passera à 9,98 €/mois dès qu'on sortira de la phase lancement.
+        </div>
       </div>
 
       <!-- Driing Member -->
@@ -317,6 +334,11 @@
           <tr><td>Sessions Q&amp;A en direct</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Legal mentions -->
+    <div class="legal-note">
+      <strong>Informations légales :</strong> tous les prix sont indiqués en euros, <strong>TVA non applicable — article 293 B du CGI</strong> (Jason Marinho, EI en franchise en base de TVA). Le paiement est sécurisé via Stripe. Abonnement à durée indéterminée avec renouvellement tacite (art. L215-1 du Code de la consommation) — tu peux résilier à tout moment depuis ton espace membres. Garantie satisfait ou remboursé 30 jours sur le Plan Standard. En souscrivant, tu peux renoncer expressément à ton droit de rétractation de 14 jours pour accéder immédiatement aux contenus (art. L221-28 du Code de la consommation). Aucun remboursement au prorata en cas de résiliation. Pour plus de détails : consulter les <a href="/cgvu">CGV/CGU</a> et les <a href="/mentions-legales">mentions légales</a>.
     </div>
 
   </div>
