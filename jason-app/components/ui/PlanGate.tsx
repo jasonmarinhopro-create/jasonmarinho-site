@@ -51,11 +51,11 @@ export default function PlanGate({ title, description, feature = 'formations' }:
           <p style={s.desc}>{displayDesc}</p>
 
           <div style={s.actions}>
-            <Link href="/abonnement" style={s.cta}>
+            <Link href="/dashboard/abonnement" style={s.cta}>
               Passer en Standard — 1,98 €/mois
               <ArrowRight size={14} weight="bold" />
             </Link>
-            <Link href="/abonnement" style={s.secondary}>
+            <Link href="/dashboard/abonnement" style={s.secondary}>
               Voir les offres
             </Link>
           </div>

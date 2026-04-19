@@ -1,17 +1,17 @@
 import { Metadata } from 'next'
-import { Heart, House, ChartLineUp, Users } from '@phosphor-icons/react/dist/ssr'
+import { Medal, Lightbulb, ChartLineUp, Rocket } from '@phosphor-icons/react/dist/ssr'
 import TipForm from './TipForm'
 
 export const metadata: Metadata = {
-  title: 'Soutenir la plateforme — jasonmarinho.com',
-  description: 'Contribuer librement au développement de la plateforme pour les hôtes LCD.',
+  title: 'Contribuer — jasonmarinho.com',
+  description: 'Soutiens le développement de la plateforme, propose des fonctionnalités et obtiens un badge Contributeur.',
 }
 
-const USES = [
-  { icon: Heart, label: 'Serveur & hébergement', desc: 'Vercel, Supabase, emails — garder la plateforme gratuite pour tous.' },
-  { icon: House, label: 'Nouveaux outils LCD', desc: 'Contrats, gabarits, calendrier — continuer à développer ce qui vous manque.' },
-  { icon: ChartLineUp, label: 'Formations & guides', desc: 'Fiscalité, annonces, pricing — maintenir du contenu à jour chaque année.' },
-  { icon: Users, label: 'Communauté', desc: 'Modération, mises à jour, support — rester disponible pour les membres.' },
+const PERKS = [
+  { icon: Medal, label: 'Badge Contributeur', desc: 'Un badge affiché sur ton profil — visible par la communauté.' },
+  { icon: Lightbulb, label: 'Propose des fonctionnalités', desc: 'Dis-nous ce qui t\'aiderait le plus. Les idées des contributeurs passent en priorité.' },
+  { icon: Rocket, label: 'On avance ensemble', desc: 'Tu ne finances pas juste un outil — tu co-construis la plateforme avec nous.' },
+  { icon: ChartLineUp, label: 'Infrastructure & nouveautés', desc: 'Serveur, emails, formations, gabarits — chaque euro va directement au produit.' },
 ]
 
 export default async function SoutenirPage({
@@ -26,14 +26,14 @@ export default async function SoutenirPage({
     <div style={s.root}>
       {/* Hero */}
       <section style={s.hero}>
-        <div style={s.heroBadge}>Contribution libre</div>
+        <div style={s.heroBadge}>Contributeur</div>
         <h1 style={s.heroTitle}>
-          Soutenir la plateforme
+          On construit ça ensemble
         </h1>
         <p style={s.heroSub}>
-          La plateforme est gratuite pour tous les hôtes LCD. Si elle vous a été utile,
-          vous pouvez contribuer librement — chaque euro va directement aux frais d'infrastructure
-          et au développement de nouveaux outils.
+          Tu veux aller plus loin que le plan Standard ? En contribuant librement,
+          tu rejoins ceux qui font avancer la plateforme — propose des fonctionnalités,
+          influence les priorités, et reçois un badge Contributeur sur ton profil.
         </p>
       </section>
 
@@ -42,10 +42,11 @@ export default async function SoutenirPage({
         <section style={s.merciWrap}>
           <div style={s.merciCard}>
             <span style={s.merciEmoji}>🙌</span>
-            <h2 style={s.merciTitle}>Merci beaucoup.</h2>
+            <h2 style={s.merciTitle}>Merci, vraiment.</h2>
             <p style={s.merciText}>
-              Ta contribution est reçue. Elle va directement financer l'infrastructure
-              et les prochains outils pour les hôtes LCD. C'est vraiment apprécié.
+              Ta contribution est reçue. Ton badge Contributeur sera ajouté à ton profil
+              sous 24h. N'hésite pas à nous envoyer tes idées — tu fais maintenant partie
+              de ceux qui orientent la plateforme.
             </p>
             <a href="/" style={s.merciBtn}>Retour à l'accueil</a>
           </div>
@@ -65,9 +66,9 @@ export default async function SoutenirPage({
 
           {/* Right — what it funds */}
           <div style={s.usesCol}>
-            <h2 style={s.usesTitle}>À quoi ça sert ?</h2>
+            <h2 style={s.usesTitle}>Ce que tu obtiens</h2>
             <div style={s.usesList}>
-              {USES.map(({ icon: Icon, label, desc }) => (
+              {PERKS.map(({ icon: Icon, label, desc }) => (
                 <div key={label} style={s.useItem}>
                   <div style={s.useIcon}><Icon size={20} weight="duotone" /></div>
                   <div>
@@ -80,8 +81,9 @@ export default async function SoutenirPage({
 
             <div style={s.note}>
               <p style={s.noteText}>
-                Aucune obligation. La plateforme reste accessible en Découverte gratuitement,
-                pour toujours. Cette page existe pour ceux qui veulent aller plus loin.
+                Aucune obligation, aucun engagement. Le montant est libre — même 2,98 € fait
+                la différence. Cette page existe pour ceux qui veulent construire quelque chose
+                avec nous, pas juste utiliser un outil.
               </p>
             </div>
           </div>
