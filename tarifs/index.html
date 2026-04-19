@@ -81,6 +81,21 @@
     .fm-note{font-size:12px;color:var(--tm);background:rgba(255,213,107,.08);border:1px solid rgba(255,213,107,.2);padding:10px 14px;border-radius:10px;margin-top:10px;line-height:1.55}
     .fm-note strong{color:#a07500;display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
 
+    /* Alumni bonus section */
+    .alumni-block{margin-top:56px;background:linear-gradient(135deg,#002820 0%,var(--gd) 100%);border-radius:20px;padding:clamp(32px,5vw,48px);position:relative;overflow:hidden}
+    .alumni-block::before{content:"";position:absolute;top:-80px;right:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(255,213,107,.1),transparent 70%);pointer-events:none}
+    .alumni-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+    .alumni-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,213,107,.12);border:1px solid rgba(255,213,107,.28);color:var(--y);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px}
+    .alumni-ttl{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.6vw,2rem);font-weight:400;color:#fff;margin:0;letter-spacing:-.02em;line-height:1.2}
+    .alumni-ttl em{color:var(--y);font-style:italic;font-weight:300}
+    .alumni-sub{font-size:15px;color:rgba(255,255,255,.6);line-height:1.7;margin:0 0 24px;max-width:640px}
+    .alumni-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:24px}
+    .alumni-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,213,107,.12);border-radius:12px;padding:16px 18px;display:flex;gap:10px;align-items:flex-start}
+    .alumni-item-ic{color:var(--y);font-size:18px;flex-shrink:0;margin-top:2px}
+    .alumni-item-txt{font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.6}
+    .alumni-item-txt strong{color:#fff;display:block;margin-bottom:2px;font-weight:600}
+    .alumni-cond{font-size:12px;color:rgba(255,213,107,.55);background:rgba(255,213,107,.05);border-left:2px solid rgba(255,213,107,.3);padding:10px 14px;border-radius:0 8px 8px 0;line-height:1.65}
+
     /* Legal mentions */
     .legal-note{margin-top:40px;padding:20px 24px;background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:12px;font-size:12.5px;color:var(--tm);line-height:1.75}
     .legal-note strong{color:var(--td)}
@@ -214,7 +229,7 @@
         <div style="display:flex;flex-direction:column;gap:12px">
           <div class="pc-badge free">Gratuit</div>
           <p class="pc-name">Découverte</p>
-          <p class="pc-desc">Pour tester la plateforme et accéder aux ressources essentielles. Parfait pour un premier logement ou pour se lancer en LCD.</p>
+          <p class="pc-desc">Pour t'informer, te former, organiser ton activité sans rien payer. Aucune carte bancaire demandée, accès à vie.</p>
         </div>
         <div class="pc-price-wrap">
           <span class="pc-price">0 €</span>
@@ -222,13 +237,16 @@
         </div>
         <div class="pc-divider"></div>
         <ul class="pc-list">
-          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">1 logement</strong></li>
-          <li><i class="ph-bold ph-check"></i>3 contrats par an</li>
-          <li><i class="ph-bold ph-check"></i>Guide LCD complet (lecture)</li>
-          <li><i class="ph-bold ph-check"></i>Actualités LCD (lecture)</li>
-          <li><i class="ph-bold ph-check"></i>Gabarits de messages (FR)</li>
-          <li><i class="ph-bold ph-check"></i>Consultation Sécurité voyageur</li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">Tous les contenus en lecture</strong></li>
+          <li><i class="ph-bold ph-check"></i>Guide LCD complet</li>
+          <li><i class="ph-bold ph-check"></i>Actualités LCD</li>
+          <li><i class="ph-bold ph-check"></i>Gabarits de messages (FR + EN)</li>
           <li><i class="ph-bold ph-check"></i>Guide fiscalité 2026</li>
+          <li><i class="ph-bold ph-check"></i>Consultation & signalement Sécurité voyageur</li>
+          <li><i class="ph-bold ph-check"></i>2 formations d'introduction</li>
+          <li><i class="ph-bold ph-check"></i>Calendrier + journal revenus</li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">1 logement</strong></li>
+          <li><i class="ph-bold ph-check"></i>Voyageurs illimités (infos de base)</li>
         </ul>
         <a href="https://app.jasonmarinho.com/auth/register" class="btn-g">Commencer gratuitement <i class="ph-bold ph-arrow-right"></i></a>
       </div>
@@ -287,8 +305,8 @@
         </ul>
         <a href="/pour-qui/membres-driing" class="btn-ol">Découvrir Driing <i class="ph-bold ph-arrow-right"></i></a>
         <div class="pc-alumni" style="background:rgba(255,213,107,.08);color:rgba(255,255,255,.6)">
-          <strong style="color:var(--y)">Ancien client Driing ?</strong>
-          Garde ton accès à la plateforme pour 2,98 €/mois après résiliation de ton abonnement Driing.
+          <strong style="color:var(--y)">Ancien client Driing&nbsp;?</strong>
+          Tu gardes un accès gratuit enrichi à vie — <a href="#alumni-bonus" style="color:var(--y);text-decoration:underline">voir tes bonus alumni ↓</a>
         </div>
       </div>
 
@@ -302,38 +320,74 @@
           <tr>
             <th>Fonctionnalité</th>
             <th>Découverte</th>
+            <th>Membre Driing (ex)</th>
             <th>Standard</th>
-            <th>Driing</th>
+            <th>Driing actif</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td class="cmp-section-label" colspan="4">Gestion de ton activité</td></tr>
-          <tr><td>Logements</td><td><span class="cmp-txt">1</span></td><td><span class="cmp-txt">Illimités</span></td><td><span class="cmp-txt">Illimités</span></td></tr>
-          <tr><td>Contrats</td><td><span class="cmp-txt">3/an</span></td><td><span class="cmp-txt">Illimités</span></td><td><span class="cmp-txt">Illimités</span></td></tr>
-          <tr><td>Paiement en ligne Stripe</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Calendrier + check-list par séjour</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Suivi des revenus + journal paiements</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Guide fiscalité 2026</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td class="cmp-section-label" colspan="5">Gestion de ton activité</td></tr>
+          <tr><td>Logements</td><td><span class="cmp-txt">1</span></td><td><span class="cmp-txt">3</span></td><td><span class="cmp-txt">Illimités</span></td><td><span class="cmp-txt">Illimités</span></td></tr>
+          <tr><td>Voyageurs (infos de base)</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Voyageurs avec documents (pièce d'identité)</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Calendrier + check-list par séjour</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Journal des revenus (saisie manuelle)</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Contrats (création + PDF + envoi email)</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-txt">Illimités</span></td><td><span class="cmp-txt">Illimités</span></td></tr>
+          <tr><td>Paiement en ligne Stripe</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Guide fiscalité 2026</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
 
-          <tr><td class="cmp-section-label" colspan="4">Voyageurs & sécurité</td></tr>
-          <tr><td>Fiches voyageurs illimitées</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Consultation Sécurité voyageur</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Signaler un incident / témoigner</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td class="cmp-section-label" colspan="5">Sécurité voyageur</td></tr>
+          <tr><td>Consultation Sécurité voyageur</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Signaler un incident / témoigner</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
 
-          <tr><td class="cmp-section-label" colspan="4">Contenus & formation</td></tr>
-          <tr><td>Guide LCD (consultation)</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Actualités LCD</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Gabarits de messages</td><td><span class="cmp-txt">FR</span></td><td><span class="cmp-txt">FR + EN</span></td><td><span class="cmp-txt">FR + EN</span></td></tr>
-          <tr><td>Formations</td><td><span class="cmp-txt">2 d'intro</span></td><td><span class="cmp-txt">14 complètes</span></td><td><span class="cmp-txt">14 complètes</span></td></tr>
-          <tr><td>Accès communauté + partenaires</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td class="cmp-section-label" colspan="5">Contenus & formation</td></tr>
+          <tr><td>Guide LCD (consultation)</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Actualités LCD</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Gabarits de messages (FR + EN)</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Formations</td><td><span class="cmp-txt">2 d'intro</span></td><td><span class="cmp-txt">14 complètes</span></td><td><span class="cmp-txt">14 complètes</span></td><td><span class="cmp-txt">14 complètes</span></td></tr>
+          <tr><td>Accès communauté (lecture)</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Partenaires exclusifs Driing</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
 
-          <tr><td class="cmp-section-label" colspan="4">Exclusivité Driing</td></tr>
-          <tr><td>Badge Driing Member dans l'app</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Avantages partenaires exclusifs Driing</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Support prioritaire</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Sessions Q&amp;A en direct</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td class="cmp-section-label" colspan="5">Badges & support</td></tr>
+          <tr><td>Badge Membre Driing dans l'app</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
+          <tr><td>Support</td><td><span class="cmp-txt">FAQ</span></td><td><span class="cmp-txt">Email</span></td><td><span class="cmp-txt">Email</span></td><td><span class="cmp-txt">Prioritaire</span></td></tr>
+          <tr><td>Sessions Q&amp;A en direct</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Bonus Alumni Driing -->
+    <div class="alumni-block" id="alumni-bonus">
+      <div class="alumni-head">
+        <span class="alumni-badge"><span class="pc-dot"></span>Bonus Alumni</span>
+        <h3 class="alumni-ttl">Tu étais client Driing&nbsp;? <em>Merci d'avoir été là.</em></h3>
+      </div>
+      <p class="alumni-sub">Quand tu résilies ton abonnement Driing, tu ne perds pas tout. On garde une version enrichie du plan Découverte, <strong style="color:#fff">100 % gratuite à vie</strong>, en reconnaissance de la confiance que tu nous as accordée.</p>
+
+      <div class="alumni-list">
+        <div class="alumni-item">
+          <i class="ph-bold ph-stack alumni-item-ic"></i>
+          <span class="alumni-item-txt"><strong>3 logements</strong> au lieu de 1</span>
+        </div>
+        <div class="alumni-item">
+          <i class="ph-bold ph-video alumni-item-ic"></i>
+          <span class="alumni-item-txt"><strong>14 formations complètes</strong> — tu gardes l'accès que tu avais avec Driing</span>
+        </div>
+        <div class="alumni-item">
+          <i class="ph-bold ph-users-three alumni-item-ic"></i>
+          <span class="alumni-item-txt"><strong>Communauté</strong> (lecture) — tu restes connecté avec les autres hôtes</span>
+        </div>
+        <div class="alumni-item">
+          <i class="ph-bold ph-identification-card alumni-item-ic"></i>
+          <span class="alumni-item-txt"><strong>Voyageurs avec documents</strong> — upload de pièce d'identité autorisé</span>
+        </div>
+        <div class="alumni-item">
+          <i class="ph-bold ph-seal-check alumni-item-ic"></i>
+          <span class="alumni-item-txt"><strong>Badge Membre Driing</strong> visible dans ton espace — tu restes de la famille</span>
+        </div>
+      </div>
+
+      <p class="alumni-cond"><strong style="color:var(--y)">Condition d'éligibilité :</strong> avoir eu un abonnement Driing actif pendant au moins <strong>6 mois continus</strong>. Le statut Alumni s'active automatiquement dès ta résiliation Driing, sans démarche de ta part. Pour débloquer contrats, Stripe et uploads illimités, tu peux à tout moment passer en Standard à 4,98 € HT/mois (tarif Founding Member verrouillé à vie).</p>
     </div>
 
     <!-- Legal mentions -->
@@ -371,7 +425,7 @@
           </div>
           <div class="faq-item">
             <div class="faq-q">Comment fonctionne l'accès Membre Driing ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-            <div class="faq-a">Si tu es client Driing, toute la plateforme (équivalent Standard + avantages exclusifs) est incluse. Aucun paiement séparé. Si tu résilies Driing, tu peux garder l'accès pour 2,98 €/mois en tant qu'ancien membre.</div>
+            <div class="faq-a">Si tu es client Driing, toute la plateforme (équivalent Standard + avantages exclusifs) est incluse. Aucun paiement séparé. Si tu résilies Driing après au moins 6 mois d'abonnement actif, tu restes <strong>Membre Driing</strong> avec un accès gratuit enrichi à vie : 3 logements, 14 formations, voyageurs avec documents et accès communauté. Tu gardes aussi le badge Membre Driing dans l'app — tu fais toujours partie de la famille.</div>
           </div>
           <div class="faq-item">
             <div class="faq-q">Mensuel ou annuel : quelle différence concrète ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
@@ -387,7 +441,11 @@
           </div>
           <div class="faq-item">
             <div class="faq-q">Je suis déjà inscrit : que se passe-t-il pour moi ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-            <div class="faq-a">Ton compte bascule automatiquement en Découverte. Tu gardes l'accès à toutes les ressources gratuites (guide LCD, actualités, gabarits FR, guide fiscalité). Pour débloquer les outils de gestion complets, tu peux passer en Standard quand tu le souhaites.</div>
+            <div class="faq-a">Ton compte bascule automatiquement en Découverte. Tu gardes l'accès à toutes les ressources gratuites (guide LCD, actualités, gabarits FR, guide fiscalité). Pour débloquer contrats, paiement en ligne et uploads illimités, tu peux passer en Standard quand tu le souhaites.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Pourquoi les contrats et le paiement Stripe sont réservés au Standard ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+            <div class="faq-a">Chaque contrat créé génère un PDF et un email envoyé au voyageur — ce sont des actions qui ont un coût réel (stockage + envoi). Garder ces fonctions dans le Standard permet de maintenir le plan Découverte réellement gratuit et viable dans la durée, sans limite artificielle sur la lecture des contenus.</div>
           </div>
         </div>
       </div>
