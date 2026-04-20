@@ -191,6 +191,21 @@ export async function changeUserPlan(userId: string, plan: string) {
   return { success: true }
 }
 
+export async function toggleContributor(userId: string, value: boolean) {
+  const { error } = await getAdminClient()
+  if (error) return { error }
+
+  const { error: updateError } = await getServiceClient()
+    .from('profiles')
+    .update({ is_contributor: value })
+    .eq('id', userId)
+
+  if (updateError) return { error: updateError.message }
+
+  revalidatePath('/dashboard/admin/membres')
+  return { success: true }
+}
+
 export async function deleteUser(userId: string) {
   const { error, supabase: _ } = await getAdminClient()
   if (error) return { error }

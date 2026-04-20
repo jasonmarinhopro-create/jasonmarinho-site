@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <ThemeProvider>
       <div style={styles.layout}>
         {/* Sidebar rendered ONCE in layout — persiste entre les navigations sans re-mount */}
-        <Sidebar isAdmin={profile?.role === 'admin'} />
+        <Sidebar isAdmin={profile?.role === 'admin'} isContributor={profile?.is_contributor ?? false} />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={null}>
             {children}

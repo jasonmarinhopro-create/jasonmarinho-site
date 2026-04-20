@@ -2,7 +2,6 @@ import { Metadata } from 'next'
 import { Medal, ChatCircle, Sparkle, Rocket } from '@phosphor-icons/react/dist/ssr'
 import TipForm from './TipForm'
 import BackButton from './BackButton'
-import SuggestionsBoard from './SuggestionsBoard'
 
 export const metadata: Metadata = {
   title: 'Contribuer — jasonmarinho.com',
@@ -115,18 +114,16 @@ export default async function SoutenirPage({
             </div>
           </section>
 
-          {/* Ideas & Voting */}
+          {/* Appel à rejoindre l'espace contributeurs */}
           <section style={s.ideasSection}>
             <div style={s.ideasInner}>
               <div style={s.ideasHead}>
-                <h2 style={s.ideasTitle}>
-                  Vote & propose des idées
-                </h2>
+                <h2 style={s.ideasTitle}>Un espace rien que pour toi</h2>
                 <p style={s.ideasSub}>
-                  Tu as une idée pour améliorer la plateforme ? Soumets-la. Les contributeurs votent, les meilleures idées passent en priorité.
+                  Après ta contribution, Jason active ton accès à l&apos;espace Contributeurs dans ton dashboard —
+                  un endroit pour voter et proposer les fonctionnalités qui te tiennent à cœur.
                 </p>
               </div>
-              <SuggestionsBoard />
             </div>
           </section>
         </>

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, Handshake, FileText,
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
-  FacebookLogo, CaretDown, House, ChartBar, CalendarBlank,
+  FacebookLogo, CaretDown, House, ChartBar, CalendarBlank, Heart,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -64,9 +64,10 @@ interface SidebarProps {
   mobileOpen?: boolean
   onClose?: () => void
   isAdmin?: boolean
+  isContributor?: boolean
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -146,6 +147,25 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin }: SidebarProps) 
               </div>
             </div>
           ))}
+
+          {/* Lien Contributeurs — visible pour tous, badge selon statut */}
+          <Link
+            href="/dashboard/contributeurs"
+            onClick={onClose}
+            style={{
+              ...styles.navItem,
+              ...(pathname === '/dashboard/contributeurs' ? styles.navItemActive : {}),
+              marginTop: '2px',
+            }}
+          >
+            <Heart size={18} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? '#f472b6' : undefined }} />
+            <span style={{ flex: 1 }}>Contributeurs</span>
+            {isContributor
+              ? <span style={styles.contributeurBadge}>✦</span>
+              : <span style={styles.contributeurLock}>Rejoindre</span>
+            }
+            {pathname === '/dashboard/contributeurs' && <div style={styles.activeDot} />}
+          </Link>
 
           {/* Section admin — visible uniquement pour Jason */}
           {isAdmin && (
@@ -315,6 +335,16 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '12px', color: 'var(--text-muted)',
     textDecoration: 'none',
     transition: 'color 0.18s',
+  },
+  contributeurBadge: {
+    fontSize: '10px', color: '#f472b6', fontWeight: 700,
+  },
+  contributeurLock: {
+    fontSize: '9px', fontWeight: 600, letterSpacing: '0.4px',
+    color: 'rgba(255,213,107,0.6)',
+    background: 'rgba(255,213,107,0.08)',
+    border: '1px solid rgba(255,213,107,0.15)',
+    borderRadius: '999px', padding: '2px 7px',
   },
   signOut: {
     display: 'flex', alignItems: 'center', gap: '8px',

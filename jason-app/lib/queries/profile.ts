@@ -14,7 +14,7 @@ export async function getProfile() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id')
+    .select('full_name, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id, is_contributor')
     .eq('id', session.user.id)
     .maybeSingle()
 
@@ -29,5 +29,6 @@ export async function getProfile() {
     stripe_subscription_id: profile?.stripe_subscription_id ?? null,
     stripe_subscription_status: profile?.stripe_subscription_status ?? null,
     stripe_customer_id: profile?.stripe_customer_id ?? null,
+    is_contributor: (isAdmin ? true : (profile?.is_contributor ?? false)),
   }
 }
