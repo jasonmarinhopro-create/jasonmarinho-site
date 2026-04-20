@@ -400,12 +400,10 @@ function Toggle({ label: lbl, value, onChange }: { label: string; value: boolean
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
 const page: React.CSSProperties = {
-  minHeight: '100vh', padding: '32px 24px',
+  padding: 'clamp(20px,3vw,44px)', maxWidth: '960px',
 }
 
-const container: React.CSSProperties = {
-  maxWidth: '900px', margin: '0 auto',
-}
+const container: React.CSSProperties = {}
 
 const headerRow: React.CSSProperties = {
   display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
@@ -423,7 +421,7 @@ const pageSubtitle: React.CSSProperties = {
 
 const addBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '7px',
-  background: '#34D399', color: '#0a1a14',
+  background: 'linear-gradient(135deg, #FFD56B 0%, #f59e0b 100%)', color: '#1a1a0e',
   border: 'none', borderRadius: '12px',
   padding: '10px 18px', fontSize: '14px', fontWeight: 600,
   cursor: 'pointer', flexShrink: 0,
@@ -431,9 +429,9 @@ const addBtn: React.CSSProperties = {
 
 const addBtnAlt: React.CSSProperties = {
   ...addBtn,
-  background: 'rgba(52,211,153,0.12)',
-  border: '1px solid rgba(52,211,153,0.25)',
-  color: '#34D399',
+  background: 'rgba(255,213,107,0.10)',
+  border: '1px solid rgba(255,213,107,0.25)',
+  color: '#FFD56B',
 }
 
 const successBanner: React.CSSProperties = {
