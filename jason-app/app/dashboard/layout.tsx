@@ -1,16 +1,12 @@
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
-import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/layout/Sidebar'
 import { getProfile } from '@/lib/queries/profile'
 import { ThemeProvider } from '@/components/ThemeProvider'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
   const profile = await getProfile()
+  if (!profile) redirect('/auth/login')
 
   return (
     <ThemeProvider>
