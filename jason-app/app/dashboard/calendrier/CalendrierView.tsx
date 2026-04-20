@@ -428,6 +428,14 @@ export default function CalendrierView({
   // ── render
   return (
     <div className="cal-root" style={s.root}>
+      {/* Page heading */}
+      <div>
+        <h1 style={s.pageTitle}>
+          Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
+        </h1>
+        <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
+      </div>
+
       <style>{`
         .cal-cell { transition: background 0.12s; cursor: pointer; }
         .cal-cell:hover { background: var(--surface-2) !important; }
@@ -979,8 +987,10 @@ export default function CalendrierView({
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px' },
+  pageSub:   { fontSize: '14px', color: 'var(--text-2)', margin: 0 },
   root: {
-    padding: '20px 24px 32px',
+    padding: 'clamp(20px,3vw,40px) clamp(20px,3vw,40px) 32px',
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',

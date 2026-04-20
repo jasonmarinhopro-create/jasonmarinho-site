@@ -160,7 +160,9 @@ export default function LogementsPage({ logements: initial }: Props) {
         {/* Header */}
         <div style={headerRow}>
           <div>
-            <h1 style={pageTitle}>Mes logements</h1>
+            <h1 style={pageTitle}>
+              Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>logements</em>
+            </h1>
             <p style={pageSubtitle}>
               Créez des fiches pour chacun de vos biens — elles pré-rempliront automatiquement les contrats.
             </p>
@@ -411,8 +413,8 @@ const headerRow: React.CSSProperties = {
 }
 
 const pageTitle: React.CSSProperties = {
-  fontFamily: 'Fraunces, Georgia, serif',
-  fontSize: '26px', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px',
+  fontFamily: 'Fraunces, serif',
+  fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px',
 }
 
 const pageSubtitle: React.CSSProperties = {
