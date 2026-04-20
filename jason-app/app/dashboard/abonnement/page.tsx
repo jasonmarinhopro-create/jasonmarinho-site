@@ -281,17 +281,6 @@ export default async function AbonnementPage({
           </>)}</div>
         </div>
 
-        {/* Soutenir */}
-        <div style={styles.kofi} className="fade-up">
-          <div style={{ flex: 1 }}>
-            <p style={styles.kofiTitle}>Soutenir la plateforme</p>
-            <p style={styles.kofiDesc}>Contribution libre — aucune obligation, aucune contrepartie.</p>
-          </div>
-          <a href="/soutenir" style={styles.kofiBtn}>
-            Contribuer →
-          </a>
-        </div>
-
       </div>
     </>
   )
