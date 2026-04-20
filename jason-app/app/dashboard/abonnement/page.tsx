@@ -1,7 +1,7 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
-import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle } from '@phosphor-icons/react/dist/ssr'
+import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle, ShieldStar, Crown } from '@phosphor-icons/react/dist/ssr'
 import DriingRequestForm from './DriingRequestForm'
 import SubscribeButton from './SubscribeButton'
 import ManageButton from './ManageButton'
@@ -42,10 +42,11 @@ export default async function AbonnementPage({
   const userEmail = session?.user?.email ?? ''
 
   const profile = await getProfile()
+  const isAdmin = profile?.role === 'admin'
   const plan = profile?.plan ?? 'decouverte'
-  const isDriing = plan === 'driing'
-  const isStandard = plan === 'standard'
-  const isDecouverte = !isDriing && !isStandard
+  const isDriing = !isAdmin && plan === 'driing'
+  const isStandard = !isAdmin && plan === 'standard'
+  const isDecouverte = !isAdmin && !isDriing && !isStandard
   const driingStatus = profile?.driing_status ?? 'none'
   const hasSubscription = isStandard || isDriing
 
@@ -81,6 +82,35 @@ export default async function AbonnementPage({
 
           {/* LEFT — plan actuel */}
           <div style={styles.leftCol}>
+
+            {/* ── Plan Administrateur — visible uniquement pour Jason ── */}
+            {isAdmin && (
+              <div style={styles.adminBanner} className="glass-card fade-up">
+                <div style={styles.adminGlow} />
+                <div style={{ ...styles.planLabel, color: '#c084fc' }}>
+                  <div style={{ ...styles.dot, background: '#c084fc' }} />
+                  Plan actuel
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ ...styles.planName, color: '#c084fc' }}>Administrateur</div>
+                  <Crown size={20} color="#c084fc" weight="fill" />
+                </div>
+                <p style={styles.planDesc}>Accès complet à la plateforme, à toutes les fonctionnalités membres et au panneau d&apos;administration.</p>
+                <div style={styles.featureList}>
+                  {[
+                    'Accès illimité à tout le contenu',
+                    'Panel admin — membres, contenu, stats',
+                    'Accès anticipé à toutes les nouveautés',
+                    'Aucun abonnement requis',
+                  ].map(f => (
+                    <div key={f} style={styles.featureItem}>
+                      <ShieldStar size={13} color="#c084fc" weight="fill" />
+                      {f}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {isDriing && (
               <div style={styles.driingBanner} className="glass-card fade-up">
@@ -154,8 +184,9 @@ export default async function AbonnementPage({
             )}
           </div>
 
-          {/* RIGHT — upgrades */}
+          {/* RIGHT — upgrades (masqué pour l'admin) */}
           <div style={styles.rightCol}>
+          {!isAdmin && (<>
 
             {/* Standard upgrade — visible seulement en Découverte */}
             {isDecouverte && (
@@ -247,8 +278,7 @@ export default async function AbonnementPage({
                 </div>
               </>
             )}
-
-          </div>
+          </>)}</div>
         </div>
 
         {/* Soutenir */}
@@ -291,6 +321,20 @@ const styles: Record<string, React.CSSProperties> = {
 
   fmPill: { display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.25)', color: '#a07500', fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px', padding: '3px 9px', borderRadius: '100px' },
   fmDot: { width: '4px', height: '4px', borderRadius: '50%', background: '#d4a400', flexShrink: 0 },
+
+  /* Admin banner */
+  adminBanner: {
+    position: 'relative', overflow: 'hidden', padding: '32px',
+    display: 'flex', flexDirection: 'column', gap: '16px',
+    background: 'linear-gradient(135deg, rgba(192,132,252,0.10) 0%, rgba(192,132,252,0.03) 100%)',
+    border: '1px solid rgba(192,132,252,0.3)', borderRadius: '20px',
+  },
+  adminGlow: {
+    position: 'absolute', top: '-60px', right: '-60px',
+    width: '220px', height: '220px', borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(192,132,252,0.18) 0%, transparent 70%)',
+    pointerEvents: 'none',
+  },
 
   /* Current plan cards */
   currentBanner: {
