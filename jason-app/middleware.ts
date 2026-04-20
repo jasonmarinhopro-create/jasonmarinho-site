@@ -27,10 +27,10 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // getSession() reads the JWT from the cookie locally (no network call to Supabase).
-  // This avoids redirect loops caused by getUser()'s network request failing in the edge runtime.
-  const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user ?? null
+  // getUser() validates the JWT with the Supabase Auth server AND refreshes it if expired,
+  // then writes the new token back via cookies.set above. Without this, an expired JWT causes
+  // all RLS-protected server-side queries to silently return null (role defaults to 'user').
+  const { data: { user } } = await supabase.auth.getUser()
 
   // Redirect unauthenticated users from /dashboard to login
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
