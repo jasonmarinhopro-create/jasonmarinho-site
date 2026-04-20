@@ -4,13 +4,13 @@ import { createClient } from '@/lib/supabase/server'
 export async function getProfile() {
   noStore()
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return null
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('full_name, role, driing_status, plan, stripe_subscription_id, stripe_subscription_status, stripe_customer_id')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .maybeSingle()
 
   const resolvedPlan = profile?.role === 'admin'
@@ -18,7 +18,7 @@ export async function getProfile() {
     : (profile?.plan ?? 'decouverte')
 
   return {
-    userId: session.user.id,
+    userId: user.id,
     full_name: profile?.full_name ?? null,
     role: (profile?.role ?? 'user') as 'user' | 'driing' | 'admin',
     driing_status: (profile?.driing_status ?? 'none') as 'none' | 'pending' | 'confirmed',

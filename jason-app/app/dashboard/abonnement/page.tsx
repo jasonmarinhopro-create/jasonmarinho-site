@@ -38,8 +38,8 @@ export default async function AbonnementPage({
   searchParams: Promise<{ subscription?: string }>
 }) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  const userEmail = session?.user?.email ?? ''
+  const { data: { user } } = await supabase.auth.getUser()
+  const userEmail = user?.email ?? ''
 
   const profile = await getProfile()
   const isAdmin = profile?.role === 'admin'
