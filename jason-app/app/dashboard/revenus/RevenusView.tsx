@@ -260,6 +260,14 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
   return (
     <main style={s.main}>
 
+      {/* Page heading */}
+      <div style={s.pageHead}>
+        <h1 style={s.pageTitle}>
+          Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>revenus</em>
+        </h1>
+        <p style={s.pageSub}>Suivi de tes encaissements, paiements en attente et fiscalité.</p>
+      </div>
+
       {/* KPI cards */}
       <div style={s.kpiGrid}>
         <KpiCard icon={<CurrencyEur size={20} weight="fill" />} label="Ce mois encaissé"  value={fmt(kpis.cesMoisEnc)}    colorClass="green"  />
@@ -663,7 +671,10 @@ const sf: Record<string, React.CSSProperties> = {
 // ── styles ───────────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  main:     { padding: '24px', maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '20px' },
+  main:     { padding: 'clamp(20px,3vw,40px)', maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '20px' },
+  pageHead: { marginBottom: '4px' },
+  pageTitle:{ fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px' },
+  pageSub:  { fontSize: '14px', color: 'var(--text-2)', margin: 0 },
 
   kpiGrid:  { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' },
   kpiCard:  { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '14px', padding: '18px 20px', display: 'flex', alignItems: 'flex-start', gap: '14px' },
