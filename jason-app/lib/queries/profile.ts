@@ -26,7 +26,7 @@ export const getProfile = cache(async () => {
 
   return {
     userId: session.user.id,
-    full_name: profile?.full_name ?? null,
+    full_name: profile?.full_name ?? (session.user.user_metadata?.full_name as string | undefined) ?? null,
     role: (isAdmin ? 'admin' : 'user') as 'user' | 'driing' | 'admin',
     driing_status: (profile?.driing_status ?? 'none') as 'none' | 'pending' | 'confirmed',
     plan: resolvedPlan as 'decouverte' | 'standard' | 'driing',
