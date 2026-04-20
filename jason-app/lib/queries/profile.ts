@@ -1,7 +1,9 @@
 import { cache } from 'react'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 export const getProfile = cache(async () => {
+  noStore() // empêche Next.js de mettre en cache la requête Supabase entre les requêtes
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return null
