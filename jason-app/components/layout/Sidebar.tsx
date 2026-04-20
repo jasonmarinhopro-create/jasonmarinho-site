@@ -158,7 +158,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
               marginTop: '2px',
             }}
           >
-            <Heart size={18} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? '#f472b6' : undefined }} />
+            <Heart size={18} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? '#FFD56B' : undefined }} />
             <span style={{ flex: 1 }}>Contributeurs</span>
             {isContributor
               ? <span style={styles.contributeurBadge}>✦</span>
@@ -337,7 +337,7 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'color 0.18s',
   },
   contributeurBadge: {
-    fontSize: '10px', color: '#f472b6', fontWeight: 700,
+    fontSize: '10px', color: '#FFD56B', fontWeight: 700,
   },
   contributeurLock: {
     fontSize: '9px', fontWeight: 600, letterSpacing: '0.4px',

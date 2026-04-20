@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import Sidebar from '@/components/layout/Sidebar'
 import { getProfile } from '@/lib/queries/profile'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import DashboardLoading from './loading'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const profile = await getProfile()
@@ -14,7 +15,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         {/* Sidebar rendered ONCE in layout — persiste entre les navigations sans re-mount */}
         <Sidebar isAdmin={profile?.role === 'admin'} isContributor={profile?.is_contributor ?? false} />
         <main style={styles.main} className="dash-main">
-          <Suspense fallback={null}>
+          <Suspense fallback={<DashboardLoading />}>
             {children}
           </Suspense>
         </main>
