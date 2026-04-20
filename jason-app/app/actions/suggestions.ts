@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
@@ -47,7 +47,7 @@ export async function saveSuggestion(
     ? '💡 Nouvelle suggestion de formation'
     : '🤝 Nouvelle suggestion de partenaire'
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
     subject,

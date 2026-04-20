@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 const FROM_EMAIL = 'contrats@jasonmarinho.com'
 
@@ -91,7 +91,7 @@ export async function createContract(data: ContractData): Promise<{
     const dateDep = new Date(data.date_depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 
     const propertyLabel = data.logement_nom ?? data.logement_adresse
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM_EMAIL,
       to: data.locataire_email,
       subject: `Contrat de location à signer — ${propertyLabel}`,

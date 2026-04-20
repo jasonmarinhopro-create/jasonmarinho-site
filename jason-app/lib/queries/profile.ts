@@ -1,9 +1,12 @@
+import { cache } from 'react'
 import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
-export async function getProfile() {
+// cache() deduplicates calls within the same request — layout + page both call this
+// but only 1 DB round-trip happens. noStore() inside still prevents Next.js page caching.
+export const getProfile = cache(async () => {
   noStore()
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
@@ -18,7 +21,8 @@ export async function getProfile() {
     .eq('id', session.user.id)
     .maybeSingle()
 
-  const resolvedPlan = isAdmin ? 'driing' : (profile?.plan ?? 'decouverte')
+  const isDriingMember = profile?.plan === 'driing' || profile?.driing_status === 'confirmed'
+  const resolvedPlan = isAdmin ? 'driing' : (isDriingMember ? 'driing' : (profile?.plan ?? 'decouverte'))
 
   return {
     userId: session.user.id,
@@ -31,4 +35,4 @@ export async function getProfile() {
     stripe_customer_id: profile?.stripe_customer_id ?? null,
     is_contributor: (isAdmin ? true : (profile?.is_contributor ?? false)),
   }
-}
+})

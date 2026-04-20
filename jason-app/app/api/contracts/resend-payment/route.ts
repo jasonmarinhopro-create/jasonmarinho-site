@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
+export const dynamic = 'force-dynamic'
+
 function createServiceClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,7 +13,7 @@ function createServiceClient() {
   )
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 const FROM_EMAIL = 'contrats@jasonmarinho.com'
 
@@ -158,7 +160,7 @@ export async function POST(request: NextRequest) {
 </body>
 </html>`
 
-    const { error: emailErr } = await resend.emails.send({
+    const { error: emailErr } = await getResend().emails.send({
       from: FROM_EMAIL,
       to: contract.locataire_email,
       subject: `Rappel — Finalisez votre dossier pour ${propertyLabel}`,

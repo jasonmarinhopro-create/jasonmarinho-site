@@ -2,7 +2,9 @@ import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+export const dynamic = 'force-dynamic'
+
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
 // Simple in-memory rate limiter: max 3 requests per email per 15 min
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
@@ -111,7 +113,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Send branded confirmation email via Resend
-    const { error: resendError } = await resend.emails.send({
+    const { error: resendError } = await getResend().emails.send({
       from: 'Jason Marinho <noreply@jasonmarinho.com>',
       to: normalized,
       subject: 'Confirme ton adresse email ✉️',
