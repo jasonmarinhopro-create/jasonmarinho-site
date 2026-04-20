@@ -8,7 +8,7 @@ import {
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
 } from '@phosphor-icons/react'
-import { changeUserPlan, deleteUser, deleteAllBots, getMemberDetails } from '../actions'
+import { changeUserPlan, deleteUser, deleteAllBots, getMemberDetails, toggleContributor } from '../actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface UserFormation {
@@ -25,6 +25,7 @@ interface Member {
   role: string
   driing_status: string
   plan: string
+  is_contributor: boolean
   created_at: string
   user_formations: UserFormation[]
 }
@@ -244,6 +245,21 @@ export default function MembresUI({ members }: { members: Member[] }) {
                       {m.role === 'admin' && (
                         <span style={{ ...s.badge, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
                       )}
+                      <button
+                        disabled={isPending || m.role === 'admin'}
+                        onClick={() => action(m.id, () => toggleContributor(m.id, !m.is_contributor), m.is_contributor ? 'Contributeur retiré' : 'Contributeur activé')}
+                        title={m.is_contributor ? 'Retirer le badge contributeur' : 'Marquer comme contributeur'}
+                        style={{
+                          ...s.badge,
+                          background: m.is_contributor ? 'rgba(244,114,182,0.12)' : 'var(--border)',
+                          color: m.is_contributor ? '#f472b6' : 'var(--text-3)',
+                          border: m.is_contributor ? '1px solid rgba(244,114,182,0.25)' : '1px solid transparent',
+                          cursor: m.role === 'admin' ? 'default' : 'pointer',
+                          opacity: m.role === 'admin' ? 0.4 : 1,
+                        }}
+                      >
+                        ✦ {m.is_contributor ? 'Contributeur' : '+Contributeur'}
+                      </button>
                     </div>
                   </div>
                 </div>

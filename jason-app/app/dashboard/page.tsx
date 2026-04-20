@@ -146,9 +146,9 @@ export default async function DashboardPage() {
         {/* ── Welcome */}
         <section style={s.welcome} className="fade-up dash-welcome">
           <div>
-            <p style={s.welcomeSub}>{getGreeting()}{firstName ? `, ${firstName}` : ''}</p>
+            <p style={s.welcomeSub}>Bienvenue sur la plateforme</p>
             <h2 style={s.welcomeTitle}>
-              Bienvenue sur la plateforme
+              {getGreeting()}{firstName ? `, ${firstName}` : ''}
             </h2>
             <p style={s.welcomeDesc}>
               {actionsCount > 0
