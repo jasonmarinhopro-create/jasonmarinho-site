@@ -10,6 +10,34 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    id: 'soutenir-idees-vote-apr-2026',
+    date: '2026-04-20',
+    tag: 'nouveau',
+    title: 'Vote & idées — propose des fonctionnalités',
+    description: 'Une nouvelle section "Vote & propose des idées" est disponible sur la page Contributeur. Tu peux soumettre tes idées en une phrase et voter pour celles des autres membres. Les idées les plus votées passent en priorité dans la roadmap. Les statuts (proposée, planifiée, réalisée) sont mis à jour au fil du temps.',
+  },
+  {
+    id: 'soutenir-refonte-v2-apr-2026',
+    date: '2026-04-20',
+    tag: 'amélioration',
+    title: 'Page Contributeur — refonte complète',
+    description: 'La page Contributeur a été entièrement repensée : bouton retour, montant libre sans suggestions imposées, avantages affichés en cartes visuelles colorées (badge permanent, accès direct, idées en priorité, accès anticipé), et nouvelle section vote d\'idées. Plus de barrière à la contribution, tu mets ce que tu veux.',
+  },
+  {
+    id: 'calendrier-mobile-apr-2026',
+    date: '2026-04-20',
+    tag: 'amélioration',
+    title: 'Calendrier — affichage mobile amélioré',
+    description: 'Le panneau d\'alertes du calendrier est maintenant scrollable horizontalement sur mobile. Les colonnes ont une largeur minimale pour rester lisibles, et la légende se masque pour libérer de l\'espace. Plus pratique pour gérer tes séjours depuis ton téléphone.',
+  },
+  {
+    id: 'accueil-greeting-apr-2026',
+    date: '2026-04-20',
+    tag: 'amélioration',
+    title: 'Accueil — Bonjour / Bonsoir selon l\'heure',
+    description: 'La page d\'accueil te salue maintenant avec "Bonjour" ou "Bonsoir" selon l\'heure de Paris. Un détail, mais ça compte.',
+  },
+  {
     id: 'plan-gating-apr-2026',
     date: '2026-04-19',
     tag: 'important',
