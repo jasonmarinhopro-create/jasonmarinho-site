@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
+export const dynamic = 'force-dynamic'
+
+
+
 // Service role — bypass RLS complet (lecture + écriture)
 // Nécessaire car le locataire signe sans session authentifiée
 function createServiceClient() {
@@ -19,7 +23,7 @@ function createServiceClient() {
   )
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 const FROM_EMAIL = 'contrats@jasonmarinho.com'
 
@@ -316,7 +320,7 @@ export async function POST(request: NextRequest) {
 </html>`
 
     if (contract.locataire_email) {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: FROM_EMAIL,
         to: contract.locataire_email,
         subject: `Contrat signé — finalisez votre dossier pour ${propertyLabel}`,
@@ -324,7 +328,7 @@ export async function POST(request: NextRequest) {
       }).catch(e => console.error('[sign] Guest email failed:', e))
     }
 
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM_EMAIL,
       to: contract.bailleur_email,
       subject: `${guestName} a signé le contrat — ${propertyLabel}`,

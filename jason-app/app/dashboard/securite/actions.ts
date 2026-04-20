@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
@@ -110,7 +110,7 @@ export async function reportGuest(formData: {
     nameVal ? `<li><strong>Nom complet :</strong> ${nameVal}</li>` : '',
   ].filter(Boolean).join('')
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
     subject: `🚨 Nouveau signalement voyageur — ${incident_type}`,
@@ -167,7 +167,7 @@ export async function requestDeletion(params: {
   const requesterEmail = requesterProfile?.email ?? session.user.email ?? 'inconnu'
   const requesterName = requesterProfile?.full_name ?? requesterEmail
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
     subject: `🔒 Demande RGPD — Suppression d'une fiche voyageur`,

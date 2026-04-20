@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
 function getServiceClient() {
@@ -33,7 +33,7 @@ async function getAdminClient() {
 
 async function sendDriingConfirmationEmail(userEmail: string, userName: string | null) {
   const name = userName ?? userEmail
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM_EMAIL,
     to: userEmail,
     subject: '⭐ Bienvenue dans la communauté Membre Driing !',

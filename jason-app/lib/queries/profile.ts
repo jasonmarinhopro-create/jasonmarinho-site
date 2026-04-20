@@ -35,4 +35,4 @@ export const getProfile = cache(async () => {
     stripe_customer_id: profile?.stripe_customer_id ?? null,
     is_contributor: (isAdmin ? true : (profile?.is_contributor ?? false)),
   }
-}
+})
