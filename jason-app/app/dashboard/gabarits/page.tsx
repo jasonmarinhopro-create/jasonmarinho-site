@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   Copy, Check, MagnifyingGlass, Heart, PencilSimple, X,
-  CalendarCheck, House, SunHorizon, ArrowRight,
+  CalendarCheck, House, SunHorizon, ArrowRight, UsersThree,
 } from '@phosphor-icons/react'
 import type { Template, UserTemplateCustomization } from '@/types'
 import Header from '@/components/layout/Header'
@@ -46,8 +46,11 @@ const CATEGORY_LABELS: Record<string, string> = {
   conciergerie: 'Conciergerie',
   saisonnier:   'Saisonnier',
   airbnb:       'Airbnb',
+  facebook:     'Groupe Facebook',
   autre:        'Autre',
 }
+
+const FACEBOOK_CONFIG = { label: 'Groupes Facebook', color: '#818CF8', icon: UsersThree }
 
 const SECTION_CONFIG: Record<TimingBucket, { label: string; color: string; icon: React.ElementType }> = {
   'avant-arrivee':  { label: "Avant l'arrivée",   color: '#FFD56B', icon: CalendarCheck },
@@ -75,7 +78,7 @@ function extractVariables(text: string): string[] {
   return [...new Set(matches)]
 }
 
-type FilterKey = 'all' | 'favorites' | TimingBucket
+type FilterKey = 'all' | 'favorites' | TimingBucket | 'facebook'
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -235,6 +238,7 @@ export default function GabaritsPage() {
     if (activeFilter === 'avant-arrivee')  return getTimingBucket(t) === 'avant-arrivee' && matchesSearch
     if (activeFilter === 'pendant-sejour') return getTimingBucket(t) === 'pendant-sejour' && matchesSearch
     if (activeFilter === 'apres-depart')   return getTimingBucket(t) === 'apres-depart' && matchesSearch
+    if (activeFilter === 'facebook')       return t.category === 'facebook' && matchesSearch
     return matchesSearch
   })
 
@@ -254,8 +258,12 @@ export default function GabaritsPage() {
     return acc
   }, {} as Record<TimingBucket, Template[]>)
 
+  const facebookTemplates = filtered.filter(t => t.category === 'facebook')
+  const allFacebookTemplates = templates.filter(t => t.category === 'facebook')
+
   const isFavoritesView = activeFilter === 'favorites'
-  const isSingleSection = activeFilter !== 'all' && activeFilter !== 'favorites'
+  const isFacebookView  = activeFilter === 'facebook'
+  const isSingleSection = !['all', 'favorites', 'facebook'].includes(activeFilter)
 
   return (
     <>
@@ -289,6 +297,7 @@ export default function GabaritsPage() {
             { key: 'avant-arrivee',  label: "Avant l'arrivée",  color: '#FFD56B' },
             { key: 'pendant-sejour', label: 'Pendant le séjour', color: '#60BEFF' },
             { key: 'apres-depart',   label: 'Après le départ',   color: '#F97583' },
+            { key: 'facebook',       label: 'Groupes Facebook',  color: '#818CF8', count: allFacebookTemplates.length > 0 ? allFacebookTemplates.length : undefined },
           ] as { key: FilterKey; label: string; count?: number; color?: string }[]).map(f => (
             <button
               key={f.key}
@@ -371,6 +380,36 @@ export default function GabaritsPage() {
           </div>
         )}
 
+        {/* ── Vue Groupes Facebook ── */}
+        {isFacebookView && (
+          <div className="fade-up d1">
+            {facebookTemplates.length === 0 ? (
+              <div style={s.empty}>
+                <UsersThree size={40} color="var(--text-muted)" />
+                <p style={s.emptyText}>Aucun gabarit Facebook{search ? ` pour "${search}"` : ''}.</p>
+              </div>
+            ) : (
+              <>
+                <SectionHeader Icon={FACEBOOK_CONFIG.icon} label={FACEBOOK_CONFIG.label} color={FACEBOOK_CONFIG.color} count={facebookTemplates.length} />
+                <div style={s.grid}>
+                  {facebookTemplates.map(t => (
+                    <TemplateCard
+                      key={t.id} template={t}
+                      isFav={favorites.has(t.id)}
+                      customization={customizations[t.id]}
+                      copied={copied}
+                      bucket={null}
+                      onCopy={copyTemplate}
+                      onFavorite={toggleFavorite}
+                      onCustomize={openCustomize}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         {/* ── Vue section unique (filtre actif) ── */}
         {isSingleSection && (
           <div className="fade-up d1">
@@ -439,7 +478,43 @@ export default function GabaritsPage() {
               )
             })}
 
-            {filtered.length === 0 && (
+            {/* ── Section Groupes Facebook ── */}
+            {(() => {
+              const fbItems = allFacebookTemplates.filter(t =>
+                !search || t.title.toLowerCase().includes(search.toLowerCase()) || t.content.toLowerCase().includes(search.toLowerCase())
+              )
+              if (!fbItems.length) return null
+              const Icon = FACEBOOK_CONFIG.icon
+              const shown = fbItems.slice(0, INITIAL_SHOW)
+              const remaining = fbItems.length - INITIAL_SHOW
+              return (
+                <div key="facebook">
+                  <SectionHeader Icon={Icon} label={FACEBOOK_CONFIG.label} color={FACEBOOK_CONFIG.color} count={fbItems.length} />
+                  <div style={s.grid}>
+                    {shown.map(t => (
+                      <TemplateCard
+                        key={t.id} template={t}
+                        isFav={favorites.has(t.id)}
+                        customization={customizations[t.id]}
+                        copied={copied}
+                        bucket={null}
+                        onCopy={copyTemplate}
+                        onFavorite={toggleFavorite}
+                        onCustomize={openCustomize}
+                      />
+                    ))}
+                  </div>
+                  {remaining > 0 && (
+                    <button onClick={() => setActiveFilter('facebook')} style={s.seeMoreBtn}>
+                      <ArrowRight size={14} color={FACEBOOK_CONFIG.color} />
+                      <span>Voir les {remaining} autres gabarits &ldquo;{FACEBOOK_CONFIG.label}&rdquo;</span>
+                    </button>
+                  )}
+                </div>
+              )
+            })()}
+
+            {filtered.length === 0 && allFacebookTemplates.length === 0 && (
               <div style={s.empty}>
                 <MagnifyingGlass size={36} color="var(--text-muted)" />
                 <p style={s.emptyText}>Aucun gabarit pour &ldquo;{search}&rdquo;.</p>
@@ -769,14 +844,12 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'Outfit, sans-serif', fontSize: '13px', fontWeight: 300,
     color: 'var(--text-2)', lineHeight: 1.75,
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-    maxHeight: '130px', overflow: 'hidden',
-    margin: 0,
+    maxHeight: '200px', overflowY: 'auto',
+    margin: 0, paddingRight: '4px',
+    scrollbarWidth: 'thin',
+    scrollbarColor: 'var(--border) transparent',
   },
-  contentFade: {
-    position: 'absolute', bottom: 0, left: 0, right: 0, height: '48px',
-    background: 'linear-gradient(to bottom, transparent, var(--surface))',
-    pointerEvents: 'none',
-  },
+  contentFade: { display: 'none' },
   notePreview: {
     padding: '8px 12px', borderRadius: '8px',
     background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
