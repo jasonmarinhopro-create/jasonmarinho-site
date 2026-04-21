@@ -498,7 +498,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', fontWeight: 500, color: 'var(--text-3)',
     background: 'none', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' as const,
   },
-  tabActive: { background: 'var(--surface-2)', color: 'var(--text)' },
+  tabActive: { background: 'rgba(255,255,255,0.12)', color: 'var(--text)' },
   tabBadge: {
     fontSize: '11px', fontWeight: 700,
     background: 'var(--border)', color: 'var(--text-3)',

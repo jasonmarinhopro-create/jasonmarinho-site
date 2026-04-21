@@ -317,7 +317,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   filterBtn: {
     padding: '6px 12px', borderRadius: '8px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
+    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
     color: 'var(--text-3)', fontSize: '12px', fontWeight: 400,
     cursor: 'pointer', transition: 'all 0.15s',
   },

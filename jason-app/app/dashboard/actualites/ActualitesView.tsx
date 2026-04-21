@@ -190,7 +190,7 @@ const s: Record<string, React.CSSProperties> = {
 
   filters: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' },
   filterRow: { display: 'flex', gap: '6px', flexWrap: 'wrap' as const },
-  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '100px', fontSize: '12px', fontWeight: 500, color: 'var(--text-3)', background: 'var(--surface)', border: '1px solid var(--border)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const },
+  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '100px', fontSize: '12px', fontWeight: 500, color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const },
   filterCount: { fontSize: '10px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px' },
 
   card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px' },
