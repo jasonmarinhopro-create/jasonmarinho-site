@@ -4,347 +4,236 @@ import { useState, useTransition, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Robot, Trash, ArrowClockwise, CheckCircle, XCircle, MagnifyingGlass,
-  GraduationCap, Lightning, Users, X,
+  GraduationCap, Lightning, Users, X, Heart,
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
+  Crown, Star, TextAa,
 } from '@phosphor-icons/react'
-import { changeUserPlan, deleteUser, deleteAllBots, getMemberDetails, toggleContributor } from '../actions'
+import {
+  changeUserPlan, deleteUser, deleteAllBots,
+  getMemberDetails, toggleContributor, updateMemberName,
+} from '../actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
+
 interface UserFormation {
-  id: string
-  progress: number
-  enrolled_at: string
+  id: string; progress: number; enrolled_at: string
   formation: { id: string; title: string; slug: string } | null
 }
 
 interface Member {
-  id: string
-  email: string
-  full_name: string | null
-  role: string
-  driing_status: string
-  plan: string
-  is_contributor: boolean
-  created_at: string
+  id: string; email: string; full_name: string | null
+  role: string; driing_status: string; plan: string
+  is_contributor: boolean; created_at: string
   user_formations: UserFormation[]
 }
 
 interface MemberDetails {
-  voyageurs: number
-  favorites: number
-  customizations: number
-  signalements: number
-  suggestions: number
-  sejours: number
+  voyageurs: number; favorites: number; customizations: number
+  signalements: number; suggestions: number; sejours: number
 }
 
-const PLANS = [
-  { value: 'decouverte', label: 'Découverte',    color: 'var(--text-3)', bg: 'var(--border)' },
-  { value: 'driing',     label: 'Membre Driing', color: 'var(--accent-text)', bg: 'rgba(255,213,107,0.10)' },
-] as const
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
-// ── Helpers ─────────────────────────────────────────────────────────────────
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fr-FR', {
-    day: '2-digit', month: 'short', year: 'numeric',
-  })
+  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+function initials(name: string | null, email: string) {
+  if (name) return name.split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)
+  return email[0].toUpperCase()
+}
+
+function toTitleCase(s: string) {
+  return s.replace(/\S+/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase())
 }
 
 function isBotLike(name: string | null, email: string): boolean {
   if (name && name.length > 8 && !name.includes(' ') && /[A-Z]/.test(name) && /[a-z]/.test(name)) return true
-  const local = email.split('@')[0]
-  const parts = local.split('.')
+  const parts = email.split('@')[0].split('.')
   if (parts.length >= 4 && parts.every(p => p.length <= 3)) return true
   return false
 }
 
-// ── Main component ──────────────────────────────────────────────────────────
+// Hash-based avatar color so every member gets a consistent unique color
+const PALETTE = [
+  { bg: 'rgba(255,213,107,0.14)', border: 'rgba(255,213,107,0.32)', text: '#FFD56B' },
+  { bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.28)',  text: '#34D399' },
+  { bg: 'rgba(96,190,255,0.12)',  border: 'rgba(96,190,255,0.28)',  text: '#60BEFF' },
+  { bg: 'rgba(249,117,131,0.12)', border: 'rgba(249,117,131,0.28)', text: '#F97583' },
+  { bg: 'rgba(192,132,252,0.12)', border: 'rgba(192,132,252,0.28)', text: '#C084FC' },
+  { bg: 'rgba(251,146,60,0.12)',  border: 'rgba(251,146,60,0.28)',  text: '#FB923C' },
+]
+function palette(str: string) {
+  let h = 0; for (const c of str) h = (h + c.charCodeAt(0)) % PALETTE.length
+  return PALETTE[h]
+}
+
+const PLANS = [
+  { value: 'decouverte', label: 'Découverte' },
+  { value: 'driing',     label: 'Membre Driing' },
+] as const
+
+// ── Main component ────────────────────────────────────────────────────────────
+
 export default function MembresUI({ members }: { members: Member[] }) {
   const router = useRouter()
-  const [search, setSearch] = useState('')
+  const [search, setSearch]       = useState('')
   const [filterPlan, setFilterPlan] = useState<string>('all')
   const [isPending, startTransition] = useTransition()
-  const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
-  const [botsFeedback, setBotsFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
+  const [feedback, setFeedback]   = useState<{ id: string; type: 'ok'|'err'; msg: string } | null>(null)
+  const [botsFeedback, setBotsFeedback] = useState<{ type: 'ok'|'err'; msg: string } | null>(null)
 
-  // Member detail panel
+  // Side panel
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
-  const [memberDetails, setMemberDetails] = useState<MemberDetails | null>(null)
+  const [memberDetails, setMemberDetails]   = useState<MemberDetails | null>(null)
   const [detailsLoading, setDetailsLoading] = useState(false)
 
-  // Close panel on Escape
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setSelectedMember(null)
-    }
-    if (selectedMember) document.addEventListener('keydown', onKey)
+    if (!selectedMember) return
+    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') setSelectedMember(null) }
+    document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [selectedMember])
 
   async function openPanel(member: Member) {
-    setSelectedMember(member)
-    setMemberDetails(null)
-    setDetailsLoading(true)
+    setSelectedMember(member); setMemberDetails(null); setDetailsLoading(true)
     const result = await getMemberDetails(member.id)
     if (!('error' in result)) setMemberDetails(result as MemberDetails)
     setDetailsLoading(false)
   }
 
-  function notify(id: string, type: 'ok' | 'err', msg: string) {
-    setFeedback({ id, type, msg })
-    setTimeout(() => setFeedback(null), 3000)
+  function notify(id: string, type: 'ok'|'err', msg: string) {
+    setFeedback({ id, type, msg }); setTimeout(() => setFeedback(null), 3000)
+  }
+
+  function action(id: string, fn: () => Promise<{ error?: string | null }>, msg: string) {
+    startTransition(async () => {
+      const res = await fn()
+      if (res?.error) notify(id, 'err', String(res.error))
+      else { notify(id, 'ok', msg); router.refresh() }
+    })
   }
 
   function handleDeleteAllBots() {
     if (!confirm(`Supprimer définitivement ${totalBots} bot(s) suspect(s) ?`)) return
     startTransition(async () => {
       const res = await deleteAllBots()
-      if (res?.error) {
-        setBotsFeedback({ type: 'err', msg: String(res.error) })
-      } else {
-        setBotsFeedback({ type: 'ok', msg: `${(res as { deleted: number }).deleted} bot(s) supprimé(s)` })
-      }
+      if (res?.error) setBotsFeedback({ type: 'err', msg: String(res.error) })
+      else setBotsFeedback({ type: 'ok', msg: `${(res as { deleted: number }).deleted} supprimé(s)` })
       setTimeout(() => setBotsFeedback(null), 3000)
-    })
-  }
-
-  function action(id: string, fn: () => Promise<{ error?: string | null }>, successMsg: string) {
-    startTransition(async () => {
-      const res = await fn()
-      if (res?.error) notify(id, 'err', String(res.error))
-      else notify(id, 'ok', successMsg)
+      router.refresh()
     })
   }
 
   const filtered = members.filter(m => {
-    const matchSearch = !search ||
-      m.email.toLowerCase().includes(search.toLowerCase()) ||
-      (m.full_name ?? '').toLowerCase().includes(search.toLowerCase())
-    const matchPlan = filterPlan === 'all' || m.plan === filterPlan
-    return matchSearch && matchPlan
+    const q = search.toLowerCase()
+    return (
+      (!search || m.email.toLowerCase().includes(q) || (m.full_name ?? '').toLowerCase().includes(q)) &&
+      (filterPlan === 'all' || m.plan === filterPlan)
+    )
   })
 
-  const totalBots = members.filter(m => isBotLike(m.full_name, m.email)).length
+  const totalBots   = members.filter(m => isBotLike(m.full_name, m.email)).length
   const totalDriing = members.filter(m => m.plan === 'driing').length
+  const totalContrib = members.filter(m => m.is_contributor).length
 
   return (
     <div style={s.wrap}>
 
       {/* ── Stats ── */}
       <div style={s.statsRow}>
-        <div style={s.stat}>
-          <Users size={18} style={{ color: 'var(--text-3)' }} />
-          <span style={s.statNum}>{members.length}</span>
-          <span style={s.statLabel}>membres</span>
-        </div>
-        <div style={s.statDiv} />
-        <div style={s.stat}>
-          <Lightning size={18} style={{ color: 'var(--accent-text)' }} />
-          <span style={{ ...s.statNum, color: 'var(--accent-text)' }}>{totalDriing}</span>
-          <span style={s.statLabel}>Driing</span>
-        </div>
-        <div style={s.statDiv} />
-        <div style={s.stat}>
-          <Robot size={18} style={{ color: totalBots > 0 ? '#f87171' : 'var(--text-muted)' }} />
-          <span style={{ ...s.statNum, color: totalBots > 0 ? '#f87171' : 'var(--text-3)' }}>{totalBots}</span>
-          <span style={s.statLabel}>bots suspects</span>
-          {totalBots > 0 && (
-            botsFeedback ? (
-              <FeedbackPill type={botsFeedback.type} msg={botsFeedback.msg} />
-            ) : (
-              <button
-                disabled={isPending}
-                onClick={handleDeleteAllBots}
-                style={s.deleteAllBotsBtn}
-                title="Supprimer tous les bots suspects"
-              >
-                {isPending
-                  ? <ArrowClockwise size={12} style={{ animation: 'spin 1s linear infinite' }} />
-                  : <Trash size={12} />
-                }
-                Delete AllBots
-              </button>
-            )
-          )}
-        </div>
+        {[
+          { icon: <Users size={16} />,     value: members.length, label: 'membres',      color: 'var(--text-2)' },
+          { icon: <Lightning size={16} />, value: totalDriing,    label: 'Driing',       color: '#FFD56B' },
+          { icon: <Heart size={16} />,     value: totalContrib,   label: 'contributeurs', color: '#F472B6' },
+        ].map(({ icon, value, label, color }) => (
+          <div key={label} style={s.statChip}>
+            <span style={{ color, lineHeight: 1 }}>{icon}</span>
+            <span style={{ ...s.statNum, color }}>{value}</span>
+            <span style={s.statLabel}>{label}</span>
+          </div>
+        ))}
+
+        <div style={{ flex: 1 }} />
+
+        {totalBots > 0 && (
+          botsFeedback ? (
+            <FeedbackPill type={botsFeedback.type} msg={botsFeedback.msg} />
+          ) : (
+            <button disabled={isPending} onClick={handleDeleteAllBots} style={s.deleteBotsBtn}>
+              <Robot size={13} />
+              {totalBots} bots suspects — nettoyer
+            </button>
+          )
+        )}
       </div>
 
       {/* ── Filters ── */}
       <div style={s.filtersRow}>
         <div style={s.searchWrap}>
-          <MagnifyingGlass size={15} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+          <MagnifyingGlass size={14} color="var(--text-muted)" />
           <input
-            type="search"
-            placeholder="Nom ou email…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
+            type="search" placeholder="Nom ou email…"
+            value={search} onChange={e => setSearch(e.target.value)}
             style={s.searchInput}
           />
+          {search && (
+            <button onClick={() => setSearch('')} style={s.clearBtn}><X size={13} /></button>
+          )}
         </div>
-        <div style={s.filterBtns}>
+
+        <div style={s.planTabs}>
           {[
-            { value: 'all',        label: 'Tous' },
-            { value: 'decouverte', label: 'Découverte' },
-            { value: 'driing',     label: 'Membre Driing' },
+            { v: 'all',        l: 'Tous',         count: members.length },
+            { v: 'decouverte', l: 'Découverte',    count: members.filter(m => m.plan !== 'driing').length },
+            { v: 'driing',     l: 'Membre Driing', count: totalDriing },
           ].map(f => (
             <button
-              key={f.value}
-              onClick={() => setFilterPlan(f.value)}
-              style={{
-                ...s.filterBtn,
-                ...(filterPlan === f.value ? s.filterBtnActive : {}),
-              }}
+              key={f.v}
+              onClick={() => setFilterPlan(f.v)}
+              style={{ ...s.planTab, ...(filterPlan === f.v ? s.planTabActive : {}) }}
             >
-              {f.label}
+              {f.l}
+              <span style={{
+                ...s.tabCount,
+                background: filterPlan === f.v ? 'rgba(255,213,107,0.18)' : 'var(--border)',
+                color: filterPlan === f.v ? '#FFD56B' : 'var(--text-muted)',
+              }}>{f.count}</span>
             </button>
           ))}
         </div>
-        <span style={s.resultCount}>{filtered.length} résultat{filtered.length > 1 ? 's' : ''}</span>
       </div>
 
-      {/* ── Table ── */}
-      <div style={s.table}>
-        {/* Header row */}
-        <div style={s.tableHead} className="mem-table-head">
-          <div style={{ flex: 3 }}>Membre</div>
-          <div style={{ flex: 2 }}>Plan</div>
-          <div style={{ flex: 1, textAlign: 'center' as const }}>Formations</div>
-          <div style={{ flex: 2 }}>Inscrit le</div>
-          <div style={{ flex: 1 }} />
+      {/* ── Cards grid ── */}
+      {filtered.length === 0 ? (
+        <div style={s.empty}>
+          <MagnifyingGlass size={32} color="var(--text-muted)" />
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: 0 }}>
+            Aucun membre pour &ldquo;{search}&rdquo;.
+          </p>
         </div>
+      ) : (
+        <div style={s.grid}>
+          {filtered.map(m => (
+            <MemberCard
+              key={m.id} member={m}
+              isPending={isPending}
+              feedback={feedback?.id === m.id ? feedback : null}
+              onOpenPanel={openPanel}
+              onChangePlan={(plan) => action(m.id, () => changeUserPlan(m.id, plan), 'Plan mis à jour')}
+              onToggleContrib={() => action(m.id, () => toggleContributor(m.id, !m.is_contributor), m.is_contributor ? 'Contributeur retiré' : 'Contributeur activé')}
+              onDelete={() => {
+                if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
+                action(m.id, () => deleteUser(m.id), 'Supprimé')
+              }}
+              onSaveName={(name) => action(m.id, () => updateMemberName(m.id, name), 'Nom mis à jour')}
+            />
+          ))}
+        </div>
+      )}
 
-        {filtered.length === 0 ? (
-          <div style={s.empty}>Aucun membre trouvé.</div>
-        ) : (
-          filtered.map(m => {
-            const suspect = isBotLike(m.full_name, m.email)
-            const formations = m.user_formations?.length ?? 0
-            const planCfg = PLANS.find(p => p.value === (m.plan || 'decouverte')) ?? PLANS[0]
-            const initials = m.full_name
-              ? m.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-              : m.email[0].toUpperCase()
-
-            return (
-              <div key={m.id} className={`mem-row${suspect ? ' mem-row-suspect' : ''}`}>
-
-                {/* Avatar + nom — cliquable pour ouvrir le profil */}
-                <div
-                  className="mem-c-main"
-                  onClick={() => openPanel(m)}
-                  style={{ cursor: 'pointer' }}
-                  title="Voir le profil"
-                >
-                  <div style={{ ...s.avatar, ...(suspect ? { borderColor: 'rgba(248,113,113,0.3)' } : {}) }}>
-                    <span style={s.avatarText}>{initials}</span>
-                  </div>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                      <span style={s.name}>{m.full_name || m.email.split('@')[0]}</span>
-                      {suspect && <Robot size={13} style={{ color: '#f87171', flexShrink: 0 }} />}
-                      {m.role === 'admin' && (
-                        <span style={{ ...s.badge, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
-                      )}
-                      <button
-                        disabled={isPending || m.role === 'admin'}
-                        onClick={() => action(m.id, () => toggleContributor(m.id, !m.is_contributor), m.is_contributor ? 'Contributeur retiré' : 'Contributeur activé')}
-                        title={m.is_contributor ? 'Retirer le badge contributeur' : 'Marquer comme contributeur'}
-                        style={{
-                          ...s.badge,
-                          background: m.is_contributor ? 'rgba(244,114,182,0.12)' : 'var(--border)',
-                          color: m.is_contributor ? '#f472b6' : 'var(--text-3)',
-                          border: m.is_contributor ? '1px solid rgba(244,114,182,0.25)' : '1px solid transparent',
-                          cursor: m.role === 'admin' ? 'default' : 'pointer',
-                          opacity: m.role === 'admin' ? 0.4 : 1,
-                        }}
-                      >
-                        ✦ {m.is_contributor ? 'Contributeur' : '+Contributeur'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Plan selector */}
-                <div className="mem-c-plan">
-                  {feedback?.id === m.id && feedback.type === 'ok' ? (
-                    <FeedbackPill type="ok" msg={feedback.msg} />
-                  ) : feedback?.id === m.id && feedback.type === 'err' ? (
-                    <FeedbackPill type="err" msg={feedback.msg} />
-                  ) : (
-                    <select
-                      value={m.plan || 'decouverte'}
-                      disabled={isPending || m.role === 'admin'}
-                      onChange={e => action(m.id, () => changeUserPlan(m.id, e.target.value), 'Plan mis à jour')}
-                      style={{
-                        background: planCfg.bg, color: planCfg.color,
-                        border: `1px solid ${planCfg.color}30`,
-                        borderRadius: '8px', padding: '6px 10px',
-                        fontSize: '12px', fontWeight: 600,
-                        cursor: (isPending || m.role === 'admin') ? 'not-allowed' : 'pointer',
-                        outline: 'none', fontFamily: 'Outfit, sans-serif',
-                        opacity: m.role === 'admin' ? 0.4 : 1,
-                      }}
-                    >
-                      {PLANS.map(p => (
-                        <option key={p.value} value={p.value} style={{ background: '#040d0b', color: 'var(--text)' }}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-
-                {/* Formations count badge */}
-                <div className="mem-c-form">
-                  {formations > 0 ? (
-                    <button
-                      onClick={() => openPanel(m)}
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '5px',
-                        color: '#34D399', fontSize: '13px', fontWeight: 500,
-                        background: 'rgba(52,211,153,0.06)',
-                        border: '1px solid rgba(52,211,153,0.2)',
-                        borderRadius: '7px', padding: '4px 10px', cursor: 'pointer',
-                      }}
-                      title="Voir le profil"
-                    >
-                      <GraduationCap size={13} />
-                      {formations}
-                    </button>
-                  ) : (
-                    <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>—</span>
-                  )}
-                </div>
-
-                {/* Date */}
-                <div className="mem-c-date">{formatDate(m.created_at)}</div>
-
-                {/* Delete */}
-                <div className="mem-c-del">
-                  {m.role !== 'admin' && (
-                    <button
-                      disabled={isPending}
-                      onClick={() => {
-                        if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
-                        action(m.id, () => deleteUser(m.id), 'Utilisateur supprimé')
-                      }}
-                      style={s.deleteBtn}
-                      title="Supprimer"
-                    >
-                      {isPending
-                        ? <ArrowClockwise size={14} style={{ animation: 'spin 1s linear infinite' }} />
-                        : <Trash size={14} />
-                      }
-                    </button>
-                  )}
-                </div>
-              </div>
-            )
-          })
-        )}
-      </div>
-
-      {/* ── Member Detail Panel ── */}
+      {/* ── Side panel ── */}
       <MemberDetailPanel
         member={selectedMember}
         details={memberDetails}
@@ -355,16 +244,203 @@ export default function MembresUI({ members }: { members: Member[] }) {
   )
 }
 
-// ── Member Detail Panel ──────────────────────────────────────────────────────
-interface MemberDetailPanelProps {
-  member: Member | null
-  details: MemberDetails | null
-  loading: boolean
-  onClose: () => void
+// ── Member Card ───────────────────────────────────────────────────────────────
+
+interface MemberCardProps {
+  member: Member
+  isPending: boolean
+  feedback: { type: 'ok'|'err'; msg: string } | null
+  onOpenPanel: (m: Member) => void
+  onChangePlan: (plan: string) => void
+  onToggleContrib: () => void
+  onDelete: () => void
+  onSaveName: (name: string) => void
 }
 
-function MemberDetailPanel({ member, details, loading, onClose }: MemberDetailPanelProps) {
+function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan, onToggleContrib, onDelete, onSaveName }: MemberCardProps) {
+  const pal      = palette(m.full_name || m.email)
+  const ini      = initials(m.full_name, m.email)
+  const isAdmin  = m.role === 'admin'
+  const isDriing = m.plan === 'driing'
+  const suspect  = isBotLike(m.full_name, m.email)
+  const formations = m.user_formations?.length ?? 0
+
+  // Inline name editing
+  const [editingName, setEditingName] = useState(false)
+  const [nameValue, setNameValue]     = useState(m.full_name || '')
+  const [displayName, setDisplayName] = useState(m.full_name || '')
+  const nameInputRef = useRef<HTMLInputElement>(null)
+
+  function startEdit() {
+    setNameValue(displayName)
+    setEditingName(true)
+    setTimeout(() => nameInputRef.current?.focus(), 10)
+  }
+  function cancelEdit() { setEditingName(false); setNameValue(displayName) }
+  function applyTitleCase() { setNameValue(prev => toTitleCase(prev)) }
+  function saveName() {
+    const trimmed = nameValue.trim()
+    setEditingName(false)
+    if (!trimmed || trimmed === (m.full_name || '')) return
+    setDisplayName(trimmed)
+    onSaveName(trimmed)
+  }
+
+  const planColor = isDriing ? '#FFD56B' : isAdmin ? '#C084FC' : 'var(--text-3)'
+  const planBg    = isDriing ? 'rgba(255,213,107,0.12)' : isAdmin ? 'rgba(192,132,252,0.1)' : 'var(--border)'
+  const planLabel = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : 'Découverte'
+
+  return (
+    <div style={{ ...s.card, ...(suspect ? { borderColor: 'rgba(248,113,113,0.25)' } : {}) }}>
+
+      {/* ── Identity ── */}
+      <div style={s.cardTop}>
+        {/* Avatar */}
+        <div style={{ ...s.avatar, background: pal.bg, border: `1.5px solid ${suspect ? 'rgba(248,113,113,0.35)' : pal.border}` }}>
+          <span style={{ ...s.avatarText, color: suspect ? '#f87171' : pal.text }}>
+            {suspect ? <Robot size={18} /> : ini}
+          </span>
+        </div>
+
+        {/* Name + email + date */}
+        <div style={s.identity}>
+          {editingName ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <input
+                ref={nameInputRef}
+                value={nameValue}
+                onChange={e => setNameValue(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') saveName(); if (e.key === 'Escape') cancelEdit() }}
+                onBlur={saveName}
+                style={s.nameInput}
+              />
+              <button
+                onMouseDown={e => { e.preventDefault(); applyTitleCase() }}
+                style={s.titleCaseBtn} title="Normaliser la casse (Title Case)"
+              >
+                <TextAa size={13} />
+              </button>
+            </div>
+          ) : (
+            <div style={s.nameRow}>
+              <span style={s.name}>{displayName || m.email.split('@')[0]}</span>
+              {!isAdmin && (
+                <button onClick={startEdit} style={s.editNameBtn} title="Modifier le nom">
+                  <PencilSimple size={11} />
+                </button>
+              )}
+            </div>
+          )}
+          <span style={s.email}>{m.email}</span>
+          <span style={s.joinDate}>Inscrit le {formatDate(m.created_at)}</span>
+        </div>
+
+        {/* Plan badge — top right */}
+        <div style={{ ...s.planBadge, background: planBg, color: planColor, border: `1px solid ${planColor}30` }}>
+          {isAdmin ? <Crown size={11} weight="fill" /> : isDriing ? <Star size={11} weight="fill" /> : null}
+          {planLabel}
+        </div>
+      </div>
+
+      {/* ── Chips row ── */}
+      <div style={s.chipsRow}>
+        {m.is_contributor && (
+          <span style={s.contribChip}><Heart size={10} weight="fill" /> Contributeur</span>
+        )}
+        {formations > 0 && (
+          <button onClick={() => onOpenPanel(m)} style={s.formChip} title="Voir les formations">
+            <GraduationCap size={11} />
+            {formations} formation{formations > 1 ? 's' : ''}
+          </button>
+        )}
+        {formations === 0 && !m.is_contributor && (
+          <span style={s.emptyChip}>Aucune formation commencée</span>
+        )}
+      </div>
+
+      {/* ── Separator ── */}
+      <div style={s.sep} />
+
+      {/* ── Actions ── */}
+      <div style={s.actions}>
+        {/* Feedback overlay */}
+        {feedback ? (
+          <FeedbackPill type={feedback.type} msg={feedback.msg} />
+        ) : (
+          <>
+            {/* Plan selector */}
+            {!isAdmin && (
+              <select
+                value={m.plan || 'decouverte'}
+                disabled={isPending}
+                onChange={e => onChangePlan(e.target.value)}
+                style={s.planSelect}
+              >
+                {PLANS.map(p => (
+                  <option key={p.value} value={p.value} style={{ background: '#040d0b' }}>
+                    {p.label}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* Contributor toggle */}
+            {!isAdmin && (
+              <button
+                disabled={isPending}
+                onClick={onToggleContrib}
+                style={{
+                  ...s.actionBtn,
+                  ...(m.is_contributor
+                    ? { background: 'rgba(244,114,182,0.1)', borderColor: 'rgba(244,114,182,0.25)', color: '#f472b6' }
+                    : {}
+                  ),
+                }}
+                title={m.is_contributor ? 'Retirer le badge contributeur' : 'Marquer comme contributeur'}
+              >
+                <Heart size={13} weight={m.is_contributor ? 'fill' : 'regular'} />
+              </button>
+            )}
+
+            {/* View activity */}
+            <button onClick={() => onOpenPanel(m)} style={{ ...s.actionBtn, marginLeft: 'auto' }} title="Voir l'activité">
+              <Users size={13} />
+            </button>
+
+            {/* Full profile */}
+            <a href={`/dashboard/admin/membres/${m.id}`} style={s.actionBtn} title="Fiche complète">
+              <ArrowSquareOut size={13} />
+            </a>
+
+            {/* Delete */}
+            {!isAdmin && (
+              <button
+                disabled={isPending}
+                onClick={onDelete}
+                style={{ ...s.actionBtn, ...s.actionBtnDanger }}
+                title="Supprimer"
+              >
+                <Trash size={13} />
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── Side panel ────────────────────────────────────────────────────────────────
+
+interface PanelProps {
+  member: Member | null; details: MemberDetails | null
+  loading: boolean; onClose: () => void
+}
+
+function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
   const open = !!member
+  const pal  = member ? palette(member.full_name || member.email) : PALETTE[0]
+  const ini  = member ? initials(member.full_name, member.email) : '?'
 
   const planDisplay: Record<string, { label: string; color: string; bg: string }> = {
     driing:     { label: 'Membre Driing', color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
@@ -372,52 +448,36 @@ function MemberDetailPanel({ member, details, loading, onClose }: MemberDetailPa
   }
   const planCfg = planDisplay[member?.plan ?? 'decouverte'] ?? planDisplay.decouverte
 
-  const initials = member?.full_name
-    ? member.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-    : member?.email?.[0]?.toUpperCase() ?? '?'
-
   const statTiles = details ? [
-    { icon: <UsersFour size={15} />, value: details.voyageurs,      label: 'Voyageurs',          color: '#93C5FD' },
-    { icon: <CalendarBlank size={15} />, value: details.sejours,    label: 'Séjours',             color: '#34D399' },
-    { icon: <BookmarkSimple size={15} />, value: details.favorites, label: 'Gabarits favoris',    color: '#FFD56B' },
-    { icon: <PencilSimple size={15} />, value: details.customizations, label: 'Gabarits perso.',  color: '#C084FC' },
-    { icon: <Flag size={15} />, value: details.signalements,        label: 'Signalements',        color: '#f87171' },
-    { icon: <Lightbulb size={15} />, value: details.suggestions,    label: 'Suggestions',         color: '#FB923C' },
+    { icon: <UsersFour size={14} />,    value: details.voyageurs,      label: 'Voyageurs',       color: '#93C5FD' },
+    { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: '#34D399' },
+    { icon: <BookmarkSimple size={14} />, value: details.favorites,    label: 'Gabarits favoris', color: '#FFD56B' },
+    { icon: <PencilSimple size={14} />, value: details.customizations, label: 'Gabarits perso',   color: '#C084FC' },
+    { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: '#f87171' },
+    { icon: <Lightbulb size={14} />,     value: details.suggestions,   label: 'Suggestions',      color: '#FB923C' },
   ] : []
 
   return (
     <>
-      {/* Overlay */}
       <div
         onClick={onClose}
         style={{
-          position: 'fixed', inset: 0,
-          background: 'rgba(0,0,0,0.4)',
-          backdropFilter: 'blur(2px)',
-          zIndex: 150,
-          opacity: open ? 1 : 0,
-          pointerEvents: open ? 'auto' : 'none',
-          transition: 'opacity 0.25s ease',
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
+          backdropFilter: 'blur(3px)', zIndex: 150,
+          opacity: open ? 1 : 0, pointerEvents: open ? 'auto' : 'none',
+          transition: 'opacity 0.25s',
         }}
-        aria-hidden="true"
       />
-
-      {/* Panel */}
       <div
+        role="dialog" aria-modal="true"
         onClick={e => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Profil du membre"
         style={{
-          position: 'fixed',
-          top: 0, right: 0, bottom: 0,
-          width: 'min(400px, 94vw)',
+          position: 'fixed', top: 0, right: 0, bottom: 0,
+          width: 'min(420px, 94vw)',
           background: 'var(--bg-2)',
           borderLeft: '1px solid var(--border-2)',
-          boxShadow: '-24px 0 64px rgba(0,0,0,0.4)',
-          zIndex: 160,
-          display: 'flex',
-          flexDirection: 'column',
+          boxShadow: '-24px 0 64px rgba(0,0,0,0.45)',
+          zIndex: 160, display: 'flex', flexDirection: 'column',
           transform: open ? 'translateX(0)' : 'translateX(100%)',
           transition: 'transform 0.3s cubic-bezier(0.32,0,0.15,1)',
           overflowY: 'hidden',
@@ -425,136 +485,107 @@ function MemberDetailPanel({ member, details, loading, onClose }: MemberDetailPa
       >
         {/* Header */}
         <div style={ps.header}>
-          <div style={ps.headerRow}>
-            <span style={ps.headerTitle}>Profil membre</span>
-            <button onClick={onClose} style={ps.closeBtn} aria-label="Fermer">
-              <X size={18} weight="bold" />
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <span style={ps.headerTitle}>Activité membre</span>
+            <button onClick={onClose} style={ps.closeBtn}><X size={18} weight="bold" /></button>
           </div>
           {member && (
-            <a
-              href={`/dashboard/admin/membres/${member.id}`}
-              style={ps.viewFullBtn}
-              title="Ouvrir la fiche complète"
-            >
-              <ArrowSquareOut size={13} />
-              Voir la fiche complète
+            <a href={`/dashboard/admin/membres/${member.id}`} style={ps.viewFullBtn}>
+              <ArrowSquareOut size={13} /> Voir la fiche complète
             </a>
           )}
         </div>
 
-        {/* Divider */}
         <div style={ps.divider} />
 
-        {/* Scrollable content */}
         <div style={ps.body}>
           {member && (
             <>
-              {/* Member identity */}
+              {/* Identity */}
               <div style={ps.identityBlock}>
-                <div style={ps.bigAvatar}>
-                  <span style={ps.bigAvatarText}>{initials}</span>
+                <div style={{ ...ps.bigAvatar, background: pal.bg, border: `2px solid ${pal.border}` }}>
+                  <span style={{ ...ps.bigAvatarText, color: pal.text }}>{ini}</span>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={ps.memberName}>{member.full_name || '—'}</div>
                   <div style={ps.memberEmail}>{member.email}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '6px', marginTop: '8px', flexWrap: 'wrap' }}>
                     <span style={{ ...ps.planPill, background: planCfg.bg, color: planCfg.color }}>
                       {planCfg.label}
                     </span>
                     {member.role === 'admin' && (
                       <span style={{ ...ps.planPill, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
                     )}
+                    {member.is_contributor && (
+                      <span style={{ ...ps.planPill, background: 'rgba(244,114,182,0.1)', color: '#f472b6' }}>Contributeur</span>
+                    )}
                   </div>
-                  <div style={ps.memberSince}>
-                    Membre depuis le {formatDate(member.created_at)}
-                  </div>
+                  <div style={ps.memberSince}>Membre depuis le {formatDate(member.created_at)}</div>
                 </div>
               </div>
 
               <div style={ps.divider} />
 
-              {/* Activity stats */}
+              {/* Stats */}
               <div style={ps.section}>
                 <div style={ps.sectionLabel}>Activité sur la plateforme</div>
-
                 {loading ? (
-                  <div style={ps.loadingWrap}>
-                    <SpinnerGap size={20} style={{ color: 'var(--accent-text)', animation: 'spin 0.8s linear infinite' }} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 0' }}>
+                    <SpinnerGap size={18} color="var(--accent-text)" style={{ animation: 'spin 0.8s linear infinite' }} />
                     <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>Chargement…</span>
                   </div>
                 ) : details ? (
                   <div style={ps.statsGrid}>
                     {statTiles.map(tile => (
-                      <div key={tile.label} style={{ ...ps.statTile, borderColor: `${tile.color}25`, background: `${tile.color}08` }}>
-                        <span style={{ color: tile.color, lineHeight: 1 }}>{tile.icon}</span>
-                        <span style={{ ...ps.statTileNum, color: tile.value > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
+                      <div key={tile.label} style={{ ...ps.statTile, borderColor: `${tile.color}22`, background: `${tile.color}08` }}>
+                        <span style={{ color: tile.color }}>{tile.icon}</span>
+                        <span style={{ ...ps.statNum, color: tile.value > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
                           {tile.value}
                         </span>
-                        <span style={ps.statTileLabel}>{tile.label}</span>
+                        <span style={ps.statLabel}>{tile.label}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '12px 0' }}>
-                    Impossible de charger les données.
-                  </div>
+                  <p style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '12px 0' }}>Impossible de charger.</p>
                 )}
               </div>
 
               {/* Formations */}
-              {member.user_formations?.length > 0 && (
-                <>
-                  <div style={ps.divider} />
-                  <div style={ps.section}>
-                    <div style={ps.sectionLabel}>Formations ({member.user_formations.length})</div>
-                    <div style={ps.formationsList}>
-                      {member.user_formations.map(uf => (
-                        <div key={uf.id} style={ps.formationItem}>
-                          <GraduationCap size={14} style={{ color: '#34D399', flexShrink: 0, marginTop: '2px' }} />
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={ps.formationTitle}>{uf.formation?.title ?? 'Formation inconnue'}</div>
-                            <div style={ps.formationMeta}>
-                              Inscrit le {formatDate(uf.enrolled_at)}
-                              {uf.progress === 100 && (
-                                <span style={{ marginLeft: '8px', fontSize: '10px', fontWeight: 600,
-                                  color: '#34D399', background: 'rgba(52,211,153,0.12)',
-                                  padding: '2px 6px', borderRadius: '100px' }}>
-                                  Terminée
-                                </span>
-                              )}
+              <div style={ps.divider} />
+              <div style={ps.section}>
+                <div style={ps.sectionLabel}>Formations ({member.user_formations?.length ?? 0})</div>
+                {(member.user_formations?.length ?? 0) === 0 ? (
+                  <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Aucune formation commencée.</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    {member.user_formations.map(uf => (
+                      <div key={uf.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                        <GraduationCap size={14} color="#34D399" style={{ flexShrink: 0, marginTop: '2px' }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {uf.formation?.title ?? 'Formation inconnue'}
+                          </div>
+                          <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            Inscrit le {formatDate(uf.enrolled_at)}
+                            {uf.progress === 100 && (
+                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#34D399', background: 'rgba(52,211,153,0.12)', padding: '1px 6px', borderRadius: '100px' }}>
+                                Terminée
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ flex: 1, height: '4px', background: 'var(--border)', borderRadius: '100px', overflow: 'hidden' }}>
+                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? '#34D399' : '#FFD56B', transition: 'width 0.3s' }} />
                             </div>
-                            <div style={ps.progressWrap}>
-                              <div style={ps.progressBar}>
-                                <div style={{
-                                  height: '100%', borderRadius: '100px',
-                                  width: `${uf.progress}%`,
-                                  background: uf.progress === 100 ? '#34D399' : 'var(--accent-text)',
-                                  transition: 'width 0.3s',
-                                }} />
-                              </div>
-                              <span style={ps.progressPct}>{uf.progress}%</span>
-                            </div>
+                            <span style={{ fontSize: '11px', color: 'var(--text-3)', width: '30px', textAlign: 'right' }}>{uf.progress}%</span>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                </>
-              )}
-
-              {/* No formations */}
-              {member.user_formations?.length === 0 && (
-                <>
-                  <div style={ps.divider} />
-                  <div style={{ ...ps.section, padding: '20px 24px' }}>
-                    <div style={ps.sectionLabel}>Formations</div>
-                    <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-                      Aucune formation commencée.
-                    </span>
-                  </div>
-                </>
-              )}
+                )}
+              </div>
             </>
           )}
         </div>
@@ -563,134 +594,192 @@ function MemberDetailPanel({ member, details, loading, onClose }: MemberDetailPa
   )
 }
 
-// ── Sub-components ──────────────────────────────────────────────────────────
-function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
-  const color = type === 'ok' ? '#34D399' : '#f87171'
+// ── FeedbackPill ──────────────────────────────────────────────────────────────
+
+function FeedbackPill({ type, msg }: { type: 'ok'|'err'; msg: string }) {
+  const c = type === 'ok' ? '#34D399' : '#f87171'
   return (
-    <div style={{
-      display: 'inline-flex', alignItems: 'center', gap: '5px',
-      padding: '5px 10px', borderRadius: '7px',
-      fontSize: '12px', fontWeight: 500, color,
-      background: `${color}14`, border: `1px solid ${color}30`,
-    }}>
-      {type === 'ok'
-        ? <CheckCircle size={12} weight="fill" />
-        : <XCircle size={12} weight="fill" />}
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 10px', borderRadius: '7px', fontSize: '12px', fontWeight: 500, color: c, background: `${c}14`, border: `1px solid ${c}28` }}>
+      {type === 'ok' ? <CheckCircle size={12} weight="fill" /> : <XCircle size={12} weight="fill" />}
       {msg}
     </div>
   )
 }
 
-// ── Styles ──────────────────────────────────────────────────────────────────
+// ── Styles ────────────────────────────────────────────────────────────────────
+
 const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '20px' },
 
+  // Stats
   statsRow: {
-    display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap',
-    background: 'var(--surface)',
-    border: '1px solid var(--surface-2)',
-    borderRadius: '14px', padding: '16px 24px',
+    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '14px 20px',
   },
-  stat: { display: 'flex', alignItems: 'center', gap: '8px' },
-  statNum: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)' },
+  statChip: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+    padding: '6px 12px', borderRadius: '10px',
+    background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+  },
+  statNum:   { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400 },
   statLabel: { fontSize: '12px', color: 'var(--text-3)' },
-  statDiv: { width: '1px', height: '28px', background: 'var(--border)' },
-
-  filtersRow: {
-    display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap',
+  deleteBotsBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)',
+    borderRadius: '9px', padding: '7px 13px',
+    color: '#f87171', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
+    fontFamily: 'Outfit, sans-serif',
   },
+
+  // Filters
+  filtersRow: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
   searchWrap: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: '10px', padding: '8px 14px',
-    flex: '1 1 180px', minWidth: 0,
+    display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 200px', minWidth: 0,
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '9px 14px',
   },
   searchInput: {
     background: 'none', border: 'none', outline: 'none',
-    fontSize: '13px', color: 'var(--text)', width: '100%',
+    fontSize: '13px', color: 'var(--text)', width: '100%', fontFamily: 'Outfit, sans-serif',
   },
-  filterBtns: { display: 'flex', gap: '4px' },
-  filterBtn: {
-    padding: '7px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 500,
+  clearBtn: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'var(--text-3)', display: 'flex', padding: '2px',
+  },
+  planTabs: { display: 'flex', gap: '4px' },
+  planTab: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+    padding: '7px 14px', borderRadius: '9px', fontSize: '12px', fontWeight: 500,
     background: 'none', border: '1px solid var(--border)',
-    color: 'var(--text-3)', cursor: 'pointer', transition: 'all 0.15s',
+    color: 'var(--text-3)', cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
+    transition: 'all 0.15s',
   },
-  filterBtnActive: {
-    background: 'rgba(255,213,107,0.08)',
+  planTabActive: {
+    background: 'rgba(255,213,107,0.07)',
     border: '1px solid rgba(255,213,107,0.2)',
     color: 'var(--accent-text)',
   },
-  resultCount: { fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto' },
-
-  table: {
-    background: 'var(--surface)',
-    border: '1px solid var(--surface-2)',
-    borderRadius: '14px', overflow: 'hidden',
+  tabCount: {
+    fontSize: '10px', fontWeight: 700, padding: '1px 7px',
+    borderRadius: '100px', lineHeight: '16px',
   },
-  tableHead: {
-    display: 'flex', alignItems: 'center', gap: '16px',
-    padding: '10px 20px',
-    fontSize: '10px', fontWeight: 600, letterSpacing: '1px',
-    textTransform: 'uppercase' as const,
-    color: 'var(--text-muted)',
-    borderBottom: '1px solid var(--border)',
+
+  // Grid
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gap: '14px',
   },
   empty: {
-    padding: '48px', textAlign: 'center' as const,
-    fontSize: '14px', color: 'var(--text-muted)',
+    padding: '60px 0', display: 'flex', flexDirection: 'column',
+    alignItems: 'center', gap: '12px',
   },
 
+  // Card
+  card: {
+    display: 'flex', flexDirection: 'column', gap: '0',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '18px', overflow: 'hidden',
+    transition: 'box-shadow 0.2s, border-color 0.2s',
+  },
+  cardTop: {
+    display: 'flex', alignItems: 'flex-start', gap: '13px',
+    padding: '18px 18px 14px',
+  },
   avatar: {
-    width: '36px', height: '36px', flexShrink: 0,
-    background: 'rgba(0,76,63,0.5)',
-    border: '1px solid rgba(255,213,107,0.15)',
-    borderRadius: '50%',
+    width: '48px', height: '48px', flexShrink: 0,
+    borderRadius: '14px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   avatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '13px', fontWeight: 600, color: 'var(--accent-text)',
+    fontFamily: 'Fraunces, serif', fontSize: '16px', fontWeight: 600,
   },
+  identity: { flex: 1, minWidth: 0 },
+  nameRow: { display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' },
   name: {
-    fontSize: '14px', fontWeight: 500, color: 'var(--text)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+    fontSize: '15px', fontWeight: 600, color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+  },
+  editNameBtn: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'var(--text-muted)', display: 'flex', padding: '2px',
+    opacity: 0.6, transition: 'opacity 0.15s', flexShrink: 0,
+  },
+  nameInput: {
+    background: 'rgba(0,0,0,0.25)', border: '1px solid var(--accent-text)',
+    borderRadius: '6px', padding: '3px 8px',
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+    outline: 'none', fontFamily: 'Outfit, sans-serif', width: '100%',
+  },
+  titleCaseBtn: {
+    background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.25)',
+    borderRadius: '6px', padding: '4px 7px', cursor: 'pointer',
+    color: '#FFD56B', display: 'flex', alignItems: 'center', flexShrink: 0,
   },
   email: {
-    fontSize: '12px', color: 'var(--text-3)', marginTop: '1px',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+    fontSize: '12px', color: 'var(--text-3)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   },
-  badge: {
-    fontSize: '10px', fontWeight: 600, padding: '2px 7px',
-    borderRadius: '100px', whiteSpace: 'nowrap' as const, flexShrink: 0,
-  },
-  deleteBtn: {
-    background: 'rgba(248,113,113,0.06)',
-    border: '1px solid rgba(248,113,113,0.15)',
-    borderRadius: '8px', padding: '7px',
-    color: '#f87171', cursor: 'pointer',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.15s',
-  },
-  deleteAllBotsBtn: {
+  joinDate: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px' },
+  planBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'rgba(248,113,113,0.08)',
-    border: '1px solid rgba(248,113,113,0.25)',
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px',
+    padding: '4px 10px', borderRadius: '100px', flexShrink: 0, whiteSpace: 'nowrap',
+  },
+
+  // Chips
+  chipsRow: {
+    display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap',
+    padding: '0 18px 14px',
+  },
+  contribChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
+    background: 'rgba(244,114,182,0.1)', color: '#f472b6',
+    border: '1px solid rgba(244,114,182,0.22)',
+  },
+  formChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
+    background: 'rgba(52,211,153,0.08)', color: '#34D399',
+    border: '1px solid rgba(52,211,153,0.2)', cursor: 'pointer',
+  },
+  emptyChip: {
+    fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic',
+  },
+
+  sep: { height: '1px', background: 'var(--border)', margin: '0 0' },
+
+  // Actions
+  actions: {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    padding: '12px 14px',
+  },
+  planSelect: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '8px', padding: '5px 10px',
-    color: '#f87171', cursor: 'pointer',
-    fontSize: '11px', fontWeight: 600,
-    fontFamily: 'Outfit, sans-serif',
-    transition: 'all 0.15s', marginLeft: '8px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text-2)',
+    cursor: 'pointer', outline: 'none', fontFamily: 'Outfit, sans-serif',
+  },
+  actionBtn: {
+    width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', color: 'var(--text-3)', transition: 'all 0.15s',
+    textDecoration: 'none',
+  },
+  actionBtnDanger: {
+    background: 'rgba(248,113,113,0.06)',
+    border: '1px solid rgba(248,113,113,0.18)',
+    color: '#f87171',
   },
 }
 
-// Panel-specific styles
+// Panel styles
 const ps: Record<string, React.CSSProperties> = {
-  header: { padding: '20px 24px 18px', flexShrink: 0 },
-  headerRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' },
-  headerTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: '18px',
-    fontWeight: 400, color: 'var(--text)', letterSpacing: '-0.3px',
-  },
+  header: { padding: '20px 22px 16px', flexShrink: 0 },
+  headerTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)' },
   closeBtn: {
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '8px', width: '32px', height: '32px',
@@ -698,93 +787,34 @@ const ps: Record<string, React.CSSProperties> = {
     cursor: 'pointer', color: 'var(--text-3)',
   },
   viewFullBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
     background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)',
-    borderRadius: '8px', padding: '7px 12px',
+    borderRadius: '9px', padding: '8px 14px',
     fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)',
-    textDecoration: 'none', cursor: 'pointer',
-    transition: 'all 0.15s', width: '100%', justifyContent: 'center' as const,
-    boxSizing: 'border-box' as const,
+    textDecoration: 'none', width: '100%', boxSizing: 'border-box',
   },
   divider: { height: '1px', background: 'var(--border)', flexShrink: 0 },
   body: {
     flex: 1, overflowY: 'auto',
-    scrollbarWidth: 'thin',
-    scrollbarColor: 'var(--border) transparent',
+    scrollbarWidth: 'thin', scrollbarColor: 'var(--border) transparent',
   } as React.CSSProperties,
 
-  identityBlock: {
-    padding: '20px 24px',
-    display: 'flex', alignItems: 'flex-start', gap: '14px',
-  },
+  identityBlock: { padding: '20px 22px', display: 'flex', alignItems: 'flex-start', gap: '14px' },
   bigAvatar: {
-    width: '52px', height: '52px', flexShrink: 0,
-    background: 'rgba(0,76,63,0.5)',
-    border: '1.5px solid rgba(255,213,107,0.25)',
-    borderRadius: '50%',
+    width: '54px', height: '54px', flexShrink: 0, borderRadius: '16px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  bigAvatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 600, color: 'var(--accent-text)',
-  },
-  memberName: {
-    fontSize: '16px', fontWeight: 600, color: 'var(--text)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  memberEmail: {
-    fontSize: '12px', color: 'var(--text-3)', marginTop: '2px',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  memberSince: {
-    fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic',
-  },
-  planPill: {
-    fontSize: '11px', fontWeight: 600,
-    padding: '3px 9px', borderRadius: '100px',
-  },
+  bigAvatarText: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 600 },
+  memberName: { fontSize: '16px', fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  memberEmail: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  memberSince: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' },
+  planPill: { fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px' },
 
-  section: { padding: '18px 24px' },
-  sectionLabel: {
-    fontSize: '10px', fontWeight: 700, letterSpacing: '1px',
-    textTransform: 'uppercase' as const,
-    color: 'var(--text-muted)', marginBottom: '14px',
-  },
+  section: { padding: '18px 22px' },
+  sectionLabel: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '14px' },
 
-  loadingWrap: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    padding: '16px 0',
-  },
-  statsGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px',
-  },
-  statTile: {
-    display: 'flex', flexDirection: 'column', gap: '4px',
-    padding: '12px',
-    border: '1px solid',
-    borderRadius: '10px',
-  },
-  statTileNum: {
-    fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, lineHeight: 1,
-  },
-  statTileLabel: {
-    fontSize: '10px', color: 'var(--text-3)', lineHeight: '1.3',
-  },
-
-  formationsList: { display: 'flex', flexDirection: 'column', gap: '14px' },
-  formationItem: { display: 'flex', alignItems: 'flex-start', gap: '10px' },
-  formationTitle: {
-    fontSize: '13px', fontWeight: 500, color: 'var(--text)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-    marginBottom: '2px',
-  },
-  formationMeta: {
-    fontSize: '11px', color: 'var(--text-3)',
-    display: 'flex', alignItems: 'center', marginBottom: '6px',
-  },
-  progressWrap: { display: 'flex', alignItems: 'center', gap: '8px' },
-  progressBar: {
-    flex: 1, height: '4px', background: 'var(--border)',
-    borderRadius: '100px', overflow: 'hidden',
-  },
-  progressPct: { fontSize: '11px', color: 'var(--text-3)', width: '30px', textAlign: 'right' as const },
+  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' },
+  statTile: { display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px', border: '1px solid', borderRadius: '10px' },
+  statNum: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, lineHeight: 1 },
+  statLabel: { fontSize: '10px', color: 'var(--text-3)', lineHeight: 1.3 },
 }

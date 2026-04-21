@@ -312,6 +312,21 @@ export async function getFullMemberProfile(memberId: string) {
   }
 }
 
+export async function updateMemberName(memberId: string, fullName: string) {
+  const { error } = await getAdminClient()
+  if (error) return { error }
+
+  const adminClient = getServiceClient()
+  const { error: updateError } = await adminClient
+    .from('profiles')
+    .update({ full_name: fullName.trim() || null })
+    .eq('id', memberId)
+
+  if (updateError) return { error: updateError.message }
+  revalidatePath('/dashboard/admin/membres')
+  return { success: true }
+}
+
 export async function updateAdminNotes(memberId: string, notes: string) {
   const { error } = await getAdminClient()
   if (error) return { error }
