@@ -54,9 +54,11 @@ export default async function AbonnementPage({
   const params = await searchParams
   const subscriptionResult = params.subscription // 'success' | 'cancel' | undefined
 
+  const planLabel = isAdmin ? 'Administrateur' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
+
   return (
     <>
-      <Header title="Abonnement" userName={profile?.full_name ?? undefined} />
+      <Header title="Abonnement" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
 
       <div style={styles.page}>
         <div style={styles.intro} className="fade-up">
