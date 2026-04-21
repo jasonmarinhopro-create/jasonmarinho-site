@@ -353,7 +353,7 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
         {/* Inline add form */}
         {showForm && (
           <div style={s.addForm}>
-            <div style={s.formGrid}>
+            <div className="rev-form-grid">
               <div style={s.formField}>
                 <label style={s.formLabel}>Logement *</label>
                 <input
@@ -647,7 +647,7 @@ const sf: Record<string, React.CSSProperties> = {
   iconWrap:    { width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0,76,63,0.2)', border: '1px solid rgba(0,76,63,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   title:       { fontSize: '16px', fontWeight: 600, color: 'var(--text)', margin: 0 },
   subtitle:    { fontSize: '13px', color: 'var(--text-muted)', margin: '2px 0 0 0' },
-  toggleBtn:   { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, padding: '7px 14px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', cursor: 'pointer', flexShrink: 0, fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s' },
+  toggleBtn:   { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, padding: '7px 14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.06)', color: 'var(--text-2)', cursor: 'pointer', flexShrink: 0, fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s' },
 
   seuilsStrip: { display: 'flex', gap: '0', background: 'var(--surface)', borderRadius: '12px', padding: '14px 18px', flexWrap: 'wrap', rowGap: '12px' },
   seuilSep:    { width: '1px', background: 'var(--border)', margin: '0 16px', flexShrink: 0, alignSelf: 'stretch' },
@@ -709,13 +709,12 @@ const s: Record<string, React.CSSProperties> = {
   actionBtnCancel:{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)', color: 'var(--text-muted)' },
 
   addForm:  { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '18px', marginBottom: '16px' },
-  formGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' },
   formField:{ display: 'flex', flexDirection: 'column', gap: '5px' },
   formLabel:{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.4px' },
   formInput:{ fontSize: '13px', padding: '8px 10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontFamily: 'Outfit, sans-serif', width: '100%', boxSizing: 'border-box' },
 
   filterRow:{ display: 'flex', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' },
-  filterBtn:{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: 500, padding: '5px 12px', borderRadius: '100px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s' },
+  filterBtn:{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: 500, padding: '5px 12px', borderRadius: '100px', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s' },
   filterBtnActive:{ background: 'rgba(0,76,63,0.2)', border: '1px solid rgba(0,76,63,0.4)', color: 'var(--accent-text)' },
   filterCount:{ fontSize: '10px', fontWeight: 600, padding: '1px 5px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)' },
 

@@ -197,7 +197,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '12.5px', fontWeight: 500, padding: '7px 14px',
     borderRadius: '100px', cursor: 'pointer',
-    background: 'var(--surface)', border: '1px solid var(--border)',
+    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
     color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
     transition: 'all 0.18s',
   },
