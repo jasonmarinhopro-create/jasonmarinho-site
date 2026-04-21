@@ -3,6 +3,9 @@ import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import CommunauteView from './CommunauteView'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function CommunautePage() {
   const profile = await getProfile()
   const supabase = await createClient()
