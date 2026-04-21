@@ -440,6 +440,44 @@ export default function GabaritsPage() {
         {/* ── Vue Tous (groupée avec aperçu) ── */}
         {activeFilter === 'all' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }} className="fade-up d1">
+
+            {/* ── Section Groupes Facebook — en premier ── */}
+            {(() => {
+              const fbItems = allFacebookTemplates.filter(t =>
+                !search || t.title.toLowerCase().includes(search.toLowerCase()) || t.content.toLowerCase().includes(search.toLowerCase())
+              )
+              if (!fbItems.length) return null
+              const Icon = FACEBOOK_CONFIG.icon
+              const shown = fbItems.slice(0, INITIAL_SHOW)
+              const remaining = fbItems.length - INITIAL_SHOW
+              return (
+                <div key="facebook">
+                  <SectionHeader Icon={Icon} label={FACEBOOK_CONFIG.label} color={FACEBOOK_CONFIG.color} count={fbItems.length} />
+                  <div style={s.grid}>
+                    {shown.map(t => (
+                      <TemplateCard
+                        key={t.id} template={t}
+                        isFav={favorites.has(t.id)}
+                        customization={customizations[t.id]}
+                        copied={copied}
+                        bucket={null}
+                        onCopy={copyTemplate}
+                        onFavorite={toggleFavorite}
+                        onCustomize={openCustomize}
+                      />
+                    ))}
+                  </div>
+                  {remaining > 0 && (
+                    <button onClick={() => setActiveFilter('facebook')} style={s.seeMoreBtn}>
+                      <ArrowRight size={14} color={FACEBOOK_CONFIG.color} />
+                      <span>Voir les {remaining} autres gabarits &ldquo;{FACEBOOK_CONFIG.label}&rdquo;</span>
+                    </button>
+                  )}
+                </div>
+              )
+            })()}
+
+            {/* ── Sections par timing ── */}
             {TIMING_ORDER.map(bucket => {
               const items = templatesByBucket[bucket]
               if (!items.length) return null
@@ -477,42 +515,6 @@ export default function GabaritsPage() {
                 </div>
               )
             })}
-
-            {/* ── Section Groupes Facebook ── */}
-            {(() => {
-              const fbItems = allFacebookTemplates.filter(t =>
-                !search || t.title.toLowerCase().includes(search.toLowerCase()) || t.content.toLowerCase().includes(search.toLowerCase())
-              )
-              if (!fbItems.length) return null
-              const Icon = FACEBOOK_CONFIG.icon
-              const shown = fbItems.slice(0, INITIAL_SHOW)
-              const remaining = fbItems.length - INITIAL_SHOW
-              return (
-                <div key="facebook">
-                  <SectionHeader Icon={Icon} label={FACEBOOK_CONFIG.label} color={FACEBOOK_CONFIG.color} count={fbItems.length} />
-                  <div style={s.grid}>
-                    {shown.map(t => (
-                      <TemplateCard
-                        key={t.id} template={t}
-                        isFav={favorites.has(t.id)}
-                        customization={customizations[t.id]}
-                        copied={copied}
-                        bucket={null}
-                        onCopy={copyTemplate}
-                        onFavorite={toggleFavorite}
-                        onCustomize={openCustomize}
-                      />
-                    ))}
-                  </div>
-                  {remaining > 0 && (
-                    <button onClick={() => setActiveFilter('facebook')} style={s.seeMoreBtn}>
-                      <ArrowRight size={14} color={FACEBOOK_CONFIG.color} />
-                      <span>Voir les {remaining} autres gabarits &ldquo;{FACEBOOK_CONFIG.label}&rdquo;</span>
-                    </button>
-                  )}
-                </div>
-              )
-            })()}
 
             {filtered.length === 0 && allFacebookTemplates.length === 0 && (
               <div style={s.empty}>
