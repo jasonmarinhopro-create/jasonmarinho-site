@@ -62,18 +62,19 @@ export default function CommunauteView({
   const [, startTransition] = useTransition()
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Restart animations synchronously before first paint so fade-up elements
-  // are never stuck at opacity:0 during client-side navigation (React 18 issue).
+  // Force all fade-up elements visible after every render.
+  // animation-fill-mode:both sets opacity:0 before the animation fires;
+  // React 18 client-side navigation can prevent animations from firing → black screen.
+  // Running with no deps array ensures new elements from state changes (e.g. "Voir" click) are also fixed.
   useLayoutEffect(() => {
     const container = containerRef.current
     if (!container) return
-    const els = container.querySelectorAll<HTMLElement>('.fade-up')
-    els.forEach(el => {
-      el.style.animationName = 'none'
-      void el.offsetWidth
-      el.style.animationName = ''
+    container.querySelectorAll<HTMLElement>('.fade-up').forEach(el => {
+      el.style.animation = 'none'
+      el.style.opacity = '1'
+      el.style.transform = 'none'
     })
-  }, [])
+  })
 
   const joinedGroups = useMemo(
     () => groups.filter(g => memberships[g.id] === 'joined'),
@@ -238,7 +239,7 @@ export default function CommunauteView({
   }
 
   return (
-    <div ref={containerRef} style={s.page}>
+    <div ref={containerRef} style={s.page} className="communaute-no-fade">
 
       {/* Intro */}
       <div style={s.intro} className="fade-up">
