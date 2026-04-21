@@ -282,22 +282,6 @@ export default async function AbonnementPage({
                 </div>
               </>
             )}
-
-            {/* Driing actif — gestion */}
-            {isDriing && (
-              <>
-                <div style={styles.sectionLabel} className="fade-up">
-                  <Wrench size={12} />
-                  Gérer mon accès
-                </div>
-                <div style={styles.manageCard} className="fade-up d1">
-                  <p style={styles.planDesc}>Pour gérer ton abonnement Driing, contacte le support ou rends-toi sur l&apos;espace Driing.</p>
-                  <a href="mailto:contact@jasonmarinho.com" style={styles.ctaManage}>
-                    Contacter le support <ArrowRight size={13} weight="bold" />
-                  </a>
-                </div>
-              </>
-            )}
           </>)}</div>
         </div>
 

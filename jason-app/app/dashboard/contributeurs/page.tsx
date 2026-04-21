@@ -2,23 +2,24 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import MurDesBatisseurs, { type ContributorTile } from '@/components/MurDesBatisseurs'
-import CoulissesJason, { type CoulissesPost } from '@/components/CoulissesJason'
-import Roadmap from '@/components/Roadmap'
-import { Heart, ArrowRight, Star, ChatCircle, Rocket, Medal } from '@phosphor-icons/react/dist/ssr'
+import Roadmap, { type RoadmapItemData, type RoadmapCommentData } from '@/components/Roadmap'
+import { Heart, ArrowRight, Star, ChatCircle, Rocket, Medal, Lightbulb, CheckCircle } from '@phosphor-icons/react/dist/ssr'
 
-export const metadata = { title: 'Contributeurs — Jason Marinho' }
+export const dynamic   = 'force-dynamic'
+export const revalidate = 0
+export const metadata  = { title: 'Contributeurs — Jason Marinho' }
 
 export default async function ContributeursPage() {
-  const profile = await getProfile()
+  const profile      = await getProfile()
   const isContributor = profile?.is_contributor ?? false
   const isAdmin       = profile?.role === 'admin'
   const planLabel     = isAdmin ? 'Administrateur'
-    : profile?.plan === 'driing' ? 'Membre Driing'
-    : profile?.plan === 'standard' ? 'Standard'
+    : profile?.plan === 'driing'    ? 'Membre Driing'
+    : profile?.plan === 'standard'  ? 'Standard'
     : 'Découverte'
 
   /* ── Non-contributeur : teasing ── */
-  if (!isContributor) {
+  if (!isContributor && !isAdmin) {
     return (
       <>
         <Header title="Contributeurs" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
@@ -45,7 +46,7 @@ export default async function ContributeursPage() {
               {[
                 { icon: Medal,      color: '#FFD56B', label: 'Badge Contributeur permanent sur ton profil' },
                 { icon: Star,       color: '#a78bfa', label: 'Tes idées rejoignent la roadmap officielle' },
-                { icon: ChatCircle, color: '#34d399', label: 'Accès aux coulisses exclusives de la plateforme' },
+                { icon: ChatCircle, color: '#34d399', label: 'Espace discussion exclusif pour les bâtisseurs' },
                 { icon: Rocket,     color: '#60a5fa', label: 'Accès anticipé à chaque nouveauté' },
               ].map(({ icon: Icon, color, label }) => (
                 <div key={label} style={{ ...s.perk, borderColor: `${color}22` }}>
@@ -71,18 +72,32 @@ export default async function ContributeursPage() {
 
   /* ── Contributeur : espace complet ── */
   const supabase = await createClient()
+  const userId   = profile?.userId ?? null
 
-  const [contributorsRes, coulissesRes] = await Promise.all([
+  const [contributorsRes, roadmapRes, commentsRes, allVotesRes, userVotesRes] = await Promise.all([
     supabase
       .from('profiles')
       .select('id, full_name, created_at')
       .eq('is_contributor', true)
       .order('created_at', { ascending: true }),
+
     supabase
-      .from('coulisses_posts')
-      .select('id, content, created_at')
-      .order('created_at', { ascending: false })
-      .limit(20),
+      .from('roadmap_items')
+      .select('id, title, description, status, author_id, author_name, created_at')
+      .order('created_at', { ascending: false }),
+
+    supabase
+      .from('roadmap_comments')
+      .select('id, item_id, author_id, author_name, content, created_at')
+      .order('created_at', { ascending: true }),
+
+    supabase
+      .from('roadmap_votes')
+      .select('item_id'),
+
+    userId
+      ? supabase.from('roadmap_votes').select('item_id').eq('user_id', userId)
+      : Promise.resolve({ data: [] as { item_id: string }[], error: null }),
   ])
 
   const contributors: ContributorTile[] = (contributorsRes.data ?? []).map(c => ({
@@ -91,12 +106,16 @@ export default async function ContributeursPage() {
     created_at: c.created_at,
   }))
 
-  const coulissesPosts: CoulissesPost[] = (coulissesRes.data ?? []).map(p => ({
-    id:         p.id,
-    content:    p.content,
-    created_at: p.created_at,
-  }))
+  const roadmapItems  = (roadmapRes.data  ?? []) as RoadmapItemData[]
+  const comments      = (commentsRes.data ?? []) as RoadmapCommentData[]
+  const userVotesList = (userVotesRes.data ?? []).map(v => v.item_id)
 
+  const voteCounts: Record<string, number> = {}
+  ;(allVotesRes.data ?? []).forEach(v => {
+    voteCounts[v.item_id] = (voteCounts[v.item_id] ?? 0) + 1
+  })
+
+  const doneCount = roadmapItems.filter(i => i.status === 'done').length
   const firstName = profile?.full_name?.split(/\s+/)[0] ?? 'ami(e)'
 
   return (
@@ -116,7 +135,7 @@ export default async function ContributeursPage() {
           </h1>
           <p style={s.introDesc}>
             Tu fais partie des personnes qui construisent la plateforme avec moi.
-            Propose tes idées, découvre les coulisses, vote sur ce qu&apos;on construit ensemble.
+            Propose tes idées, vote sur celles des autres, commente et échange.
           </p>
         </div>
 
@@ -125,14 +144,37 @@ export default async function ContributeursPage() {
           <MurDesBatisseurs contributors={contributors} />
         </section>
 
-        {/* ── Les Coulisses ── */}
-        <section style={s.section} className="fade-up">
-          <CoulissesJason initialPosts={coulissesPosts} isAdmin={isAdmin} />
-        </section>
+        {/* ── Stats : remplace Les Coulisses ── */}
+        <div style={s.statsRow} className="fade-up">
+          <div style={s.statItem}>
+            <Heart size={15} color="#FFD56B" weight="fill" />
+            <span style={{ ...s.statNum, color: '#FFD56B' }}>{contributors.length}</span>
+            <span style={s.statLabel}>bâtisseur{contributors.length > 1 ? 's' : ''}</span>
+          </div>
+          <div style={s.statDiv} />
+          <div style={s.statItem}>
+            <Lightbulb size={15} color="#60a5fa" weight="fill" />
+            <span style={{ ...s.statNum, color: '#60a5fa' }}>{roadmapItems.length}</span>
+            <span style={s.statLabel}>idée{roadmapItems.length > 1 ? 's' : ''} soumise{roadmapItems.length > 1 ? 's' : ''}</span>
+          </div>
+          <div style={s.statDiv} />
+          <div style={s.statItem}>
+            <CheckCircle size={15} color="#34d399" weight="fill" />
+            <span style={{ ...s.statNum, color: '#34d399' }}>{doneCount}</span>
+            <span style={s.statLabel}>fonctionnalité{doneCount > 1 ? 's' : ''} livrée{doneCount > 1 ? 's' : ''}</span>
+          </div>
+        </div>
 
         {/* ── Roadmap ── */}
-        <section style={{ ...s.section, ...s.roadmapSection }} className="fade-up">
-          <Roadmap />
+        <section style={s.section} className="fade-up">
+          <Roadmap
+            items={roadmapItems}
+            comments={comments}
+            voteCounts={voteCounts}
+            userVotes={userVotesList}
+            userId={userId}
+            isAdmin={isAdmin}
+          />
         </section>
 
       </div>
@@ -141,11 +183,7 @@ export default async function ContributeursPage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: {
-    padding: 'clamp(20px,3vw,44px)',
-    width: '100%',
-    maxWidth: '960px',
-  },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '960px' },
 
   /* ── Teasing ── */
   teasing: {
@@ -166,8 +204,7 @@ const s: Record<string, React.CSSProperties> = {
   teasingBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: '#FFD56B',
-    background: 'rgba(255,213,107,0.1)',
+    color: '#FFD56B', background: 'rgba(255,213,107,0.1)',
     border: '1px solid rgba(255,213,107,0.2)',
     borderRadius: '999px', padding: '5px 14px',
   },
@@ -175,16 +212,11 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(20px,3vw,28px)',
     fontWeight: 400, lineHeight: 1.35, color: 'var(--text)', margin: 0,
   },
-  teasingDesc: {
-    fontSize: '14px', lineHeight: 1.7,
-    color: 'var(--text-2)', margin: 0, maxWidth: '440px',
-  },
-  perksGrid:  { display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', textAlign: 'left' },
+  teasingDesc: { fontSize: '14px', lineHeight: 1.7, color: 'var(--text-2)', margin: 0, maxWidth: '440px' },
+  perksGrid:   { display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', textAlign: 'left' },
   perk: {
     display: 'flex', alignItems: 'center', gap: '12px',
-    padding: '11px 14px',
-    background: 'var(--surface)', border: '1px solid',
-    borderRadius: '12px',
+    padding: '11px 14px', background: 'var(--surface)', border: '1px solid', borderRadius: '12px',
   },
   perkLabel: { fontSize: '13px', color: 'var(--text-2)', fontWeight: 400 },
   cta: {
@@ -198,7 +230,7 @@ const s: Record<string, React.CSSProperties> = {
   teasingNote: { fontSize: '12px', color: 'var(--text-muted)', margin: 0 },
 
   /* ── Contributor view ── */
-  intro:       { marginBottom: '10px' },
+  intro:      { marginBottom: '10px' },
   introBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
@@ -210,19 +242,29 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'Fraunces, serif', fontSize: 'clamp(24px,3vw,34px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '10px', marginTop: 0,
   },
-  introDesc: {
-    fontSize: '14px', lineHeight: 1.7,
-    color: 'var(--text-2)', maxWidth: '520px', margin: 0,
-  },
+  introDesc: { fontSize: '14px', lineHeight: 1.7, color: 'var(--text-2)', maxWidth: '520px', margin: 0 },
 
   section: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: '20px',
-    padding: 'clamp(20px,3vw,28px)',
-    marginTop: '16px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '20px', padding: 'clamp(20px,3vw,28px)', marginTop: '16px',
   },
-  roadmapSection: {
-    marginTop: '16px',
+
+  /* ── Stats row ── */
+  statsRow: {
+    display: 'flex', alignItems: 'center', gap: '0',
+    marginTop: '16px', borderRadius: '16px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    padding: '16px 24px', flexWrap: 'wrap' as const,
+  },
+  statItem: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    flex: 1, minWidth: '120px',
+  },
+  statNum:   { fontSize: '20px', fontWeight: 700 },
+  statLabel: { fontSize: '12px', color: 'var(--text-3)', fontWeight: 400 },
+  statDiv: {
+    width: '1px', height: '32px',
+    background: 'var(--border)', flexShrink: 0,
+    margin: '0 20px',
   },
 }
