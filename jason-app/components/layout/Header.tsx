@@ -80,16 +80,19 @@ export default function Header({ title, userName: initialUserName, currentPlan =
       if (!session) return
       supabase
         .from('profiles')
-        .select('full_name, role, plan')
+        .select('full_name, plan, driing_status')
         .eq('id', session.user.id)
         .maybeSingle()
         .then(({ data }) => {
           if (data?.full_name) setUserName(data.full_name)
-          if (data?.role === 'admin') {
+          const email = session.user.email ?? ''
+          if (email === 'djason.marinho@gmail.com') {
             setResolvedPlan('Administrateur')
             setIsAdmin(true)
-          } else if (data?.plan === 'driing') {
+          } else if (data?.plan === 'driing' || data?.driing_status === 'confirmed') {
             setResolvedPlan('Membre Driing')
+          } else if (data?.plan === 'standard') {
+            setResolvedPlan('Standard')
           } else {
             setResolvedPlan('Découverte')
           }
@@ -119,12 +122,10 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     : '?'
 
   const planColors: Record<string, { bg: string; color: string; dot: string }> = {
-    'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'var(--text-3)', dot: '#6b7280' },
-    'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B', dot: '#FFD56B' },
-    'Hôte':          { bg: 'rgba(99,214,131,0.12)',  color: '#34D399', dot: '#34D399' },
-    'Pro':           { bg: 'rgba(255,213,107,0.12)', color: '#FFD56B', dot: '#FFD56B' },
-    'Agence':        { bg: 'rgba(147,197,253,0.12)', color: '#93C5FD', dot: '#93C5FD' },
-    'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC', dot: '#C084FC' },
+    'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'var(--text-3)',  dot: '#6b7280' },
+    'Standard':      { bg: 'rgba(52,211,153,0.12)',  color: '#34D399',       dot: '#34D399' },
+    'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B',       dot: '#FFD56B' },
+    'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC',       dot: '#C084FC' },
   }
   const plan = planColors[resolvedPlan] ?? planColors['Découverte']
 
