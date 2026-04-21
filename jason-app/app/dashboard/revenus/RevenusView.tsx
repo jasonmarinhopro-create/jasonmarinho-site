@@ -353,7 +353,7 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
         {/* Inline add form */}
         {showForm && (
           <div style={s.addForm}>
-            <div style={s.formGrid}>
+            <div className="rev-form-grid">
               <div style={s.formField}>
                 <label style={s.formLabel}>Logement *</label>
                 <input
@@ -709,7 +709,6 @@ const s: Record<string, React.CSSProperties> = {
   actionBtnCancel:{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)', color: 'var(--text-muted)' },
 
   addForm:  { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '18px', marginBottom: '16px' },
-  formGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' },
   formField:{ display: 'flex', flexDirection: 'column', gap: '5px' },
   formLabel:{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.4px' },
   formInput:{ fontSize: '13px', padding: '8px 10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontFamily: 'Outfit, sans-serif', width: '100%', boxSizing: 'border-box' },

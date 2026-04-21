@@ -263,7 +263,7 @@ export default function CommunauteView({
               </div>
             </div>
           </div>
-          <div style={s.bannerDiv} />
+          <div style={s.bannerDiv} className="communaute-banner-div" />
           <div style={s.bannerStat}>
             <UsersThree size={20} color="var(--accent-text)" weight="fill" />
             <div>
@@ -275,7 +275,7 @@ export default function CommunauteView({
           </div>
           {groups.filter(g => !memberships[g.id]).length > 0 && (
             <>
-              <div style={s.bannerDiv} />
+              <div style={s.bannerDiv} className="communaute-banner-div" />
               <div style={s.bannerStat}>
                 <UsersThree size={20} color="var(--text-3)" />
                 <div>
@@ -328,8 +328,8 @@ export default function CommunauteView({
         </div>
 
         {/* Catégories : 4 groupes larges */}
-        <div style={s.filterLine}>
-          <span style={s.filterLbl}>Catégorie</span>
+        <div style={s.filterLine} className="communaute-filter-line">
+          <span style={s.filterLbl} className="filter-lbl">Catégorie</span>
           <div style={s.chipRow}>
             {SUPER_CATEGORIES.map(cat => (
               <button
@@ -345,8 +345,8 @@ export default function CommunauteView({
 
         {/* Sous-filtre régions — visible seulement quand "Régions" est sélectionné */}
         {activeCategory === 'regions' && availableRegions.length > 0 && (
-          <div style={s.filterLine}>
-            <span style={{ ...s.filterLbl, color: 'var(--text-muted)' }}>Région</span>
+          <div style={s.filterLine} className="communaute-filter-line">
+            <span style={{ ...s.filterLbl, color: 'var(--text-muted)' }} className="filter-lbl">Région</span>
             <div style={s.tagsScroll}>
               {availableRegions.map(r => (
                 <button
@@ -525,7 +525,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 12px', borderRadius: '999px', cursor: 'pointer',
     fontSize: '12px', fontWeight: 500, fontFamily: 'Outfit, sans-serif',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
     color: 'var(--text-3)', whiteSpace: 'nowrap' as const,
   },
   chipOn: {

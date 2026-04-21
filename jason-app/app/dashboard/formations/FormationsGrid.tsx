@@ -343,7 +343,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '9px 14px',
-    width: '100%', maxWidth: '360px',
+    width: '100%', maxWidth: 'min(360px, 100%)',
   },
   searchInput: {
     background: 'transparent', border: 'none', outline: 'none',
