@@ -1,13 +1,16 @@
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
-import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle, ShieldStar, Crown } from '@phosphor-icons/react/dist/ssr'
 import DriingRequestForm from './DriingRequestForm'
 import SubscribeButton from './SubscribeButton'
 import ManageButton from './ManageButton'
 import { STRIPE_PLANS } from '@/lib/constants/stripe-plans'
+
+const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
 const DECOUVERTE_FEATURES = [
   'Guide LCD, actualités & gabarits (FR + EN)',
@@ -40,27 +43,39 @@ export default async function AbonnementPage({
   searchParams: Promise<{ subscription?: string }>
 }) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const userEmail = user?.email ?? ''
 
-  const profile = await getProfile()
-  const isAdmin = profile?.role === 'admin'
-  const plan = profile?.plan ?? 'decouverte'
-  const driingStatus = profile?.driing_status ?? 'none'
-  // Treat as Driing if plan resolved to driing OR if driing_status is confirmed (DB not yet synced)
-  const isDriing = !isAdmin && (plan === 'driing' || driingStatus === 'confirmed')
-  const isStandard = !isAdmin && !isDriing && plan === 'standard'
+  // getUser() valide le token auprès de Supabase Auth — jamais de données stales
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) redirect('/auth/login')
+
+  // Requête directe — sans passer par React.cache() ni getProfile()
+  // Garantit une lecture fraîche à chaque chargement de cette page
+  const { data: profileData } = await supabase
+    .from('profiles')
+    .select('full_name, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id')
+    .eq('id', user.id)
+    .single()
+
+  const userEmail = user.email ?? ''
+  const isAdmin   = user.email === ADMIN_EMAIL
+
+  const plan        = profileData?.plan        ?? 'decouverte'
+  const driingStatus = profileData?.driing_status ?? 'none'
+
+  // Driing si le plan DB est 'driing' OU si driing_status est 'confirmed' (double sécurité)
+  const isDriing    = !isAdmin && (plan === 'driing' || driingStatus === 'confirmed')
+  const isStandard  = !isAdmin && !isDriing && plan === 'standard'
   const isDecouverte = !isAdmin && !isDriing && !isStandard
-  const hasSubscription = isStandard || isDriing
 
   const params = await searchParams
-  const subscriptionResult = params.subscription // 'success' | 'cancel' | undefined
+  const subscriptionResult = params.subscription
 
   const planLabel = isAdmin ? 'Administrateur' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
+  const fullName  = profileData?.full_name ?? undefined
 
   return (
     <>
-      <Header title="Abonnement" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
+      <Header title="Abonnement" userName={fullName} currentPlan={planLabel} />
 
       <div style={styles.page}>
         <div style={styles.intro} className="fade-up">
