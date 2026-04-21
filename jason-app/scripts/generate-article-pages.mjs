@@ -171,12 +171,17 @@ function buildPage(fm, all) {
 <meta property="og:description" content="${d}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://jasonmarinho.com/blog/${fm.slug}">
+<meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
 ${CSS}
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"${t}","description":"${d}","author":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"},"publisher":{"@type":"Organization","name":"Jason Marinho","url":"https://jasonmarinho.com"},"datePublished":"${fm.date}","dateModified":"${fm.date}","url":"https://jasonmarinho.com/blog/${fm.slug}","articleSection":"${esc(fm.category)}","keywords":"${esc(kw)}","inLanguage":"fr-FR","mainEntityOfPage":{"@type":"WebPage","@id":"https://jasonmarinho.com/blog/${fm.slug}"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"${t}","description":"${d}","image":"https://jasonmarinho.com/couverture-jason.webp","author":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"},"publisher":{"@type":"Organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp"}},"datePublished":"${fm.date}","dateModified":"${fm.date}","url":"https://jasonmarinho.com/blog/${fm.slug}","articleSection":"${esc(fm.category)}","keywords":"${esc(kw)}","inLanguage":"fr-FR","mainEntityOfPage":{"@type":"WebPage","@id":"https://jasonmarinho.com/blog/${fm.slug}"}}</script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
 </head>
