@@ -1,61 +1,172 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Lightbulb, Rocket, CheckCircle, Plus, ArrowUp, SpinnerGap, X } from '@phosphor-icons/react'
+import { useState, useTransition } from 'react'
+import {
+  Lightbulb, Clock, Rocket, CheckCircle,
+  ArrowFatUp, ChatCircle, Plus, X, SpinnerGap, Trash,
+} from '@phosphor-icons/react'
+import {
+  submitRoadmapIdea,
+  voteRoadmapItem,
+  addRoadmapComment,
+  updateRoadmapStatus,
+  deleteRoadmapItem,
+} from '@/app/dashboard/contributeurs/roadmap-actions'
 
-interface RoadmapItem {
+export interface RoadmapItemData {
   id: string
   title: string
   description: string | null
   status: 'suggestion' | 'planned' | 'in_progress' | 'done'
+  author_id: string | null
   author_name: string | null
-  upvotes: number
   created_at: string
 }
 
-const COLUMNS: { key: RoadmapItem['status']; label: string; icon: React.ElementType; color: string; bg: string }[] = [
-  { key: 'suggestion',  label: 'Idées proposées', icon: Lightbulb,    color: '#FFD56B', bg: 'rgba(255,213,107,0.08)' },
-  { key: 'planned',     label: 'Prévu',           icon: Lightbulb,    color: '#60a5fa', bg: 'rgba(96,165,250,0.08)' },
-  { key: 'in_progress', label: 'En cours',        icon: Rocket,       color: '#a78bfa', bg: 'rgba(167,139,250,0.08)' },
-  { key: 'done',        label: 'Terminé',         icon: CheckCircle,  color: '#34d399', bg: 'rgba(52,211,153,0.08)' },
+export interface RoadmapCommentData {
+  id: string
+  item_id: string
+  author_id: string | null
+  author_name: string | null
+  content: string
+  created_at: string
+}
+
+const STATUS_CONFIG = {
+  suggestion:  { label: 'Idée',     icon: Lightbulb,   color: '#FFD56B', bg: 'rgba(255,213,107,0.1)',  border: 'rgba(255,213,107,0.25)' },
+  planned:     { label: 'Prévu',    icon: Clock,       color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',   border: 'rgba(96,165,250,0.25)' },
+  in_progress: { label: 'En cours', icon: Rocket,      color: '#a78bfa', bg: 'rgba(167,139,250,0.1)',  border: 'rgba(167,139,250,0.25)' },
+  done:        { label: 'Terminé',  icon: CheckCircle, color: '#34d399', bg: 'rgba(52,211,153,0.1)',   border: 'rgba(52,211,153,0.25)' },
+} as const
+
+type StatusKey = keyof typeof STATUS_CONFIG
+
+const FILTERS: { key: StatusKey | 'all'; label: string }[] = [
+  { key: 'all',         label: 'Tout' },
+  { key: 'suggestion',  label: 'Idées' },
+  { key: 'planned',     label: 'Prévu' },
+  { key: 'in_progress', label: 'En cours' },
+  { key: 'done',        label: 'Terminé' },
 ]
 
-export default function Roadmap() {
-  const [items, setItems] = useState<RoadmapItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [fTitle, setFTitle] = useState('')
-  const [fDesc, setFDesc] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [voted, setVoted] = useState<Set<string>>(new Set())
+function timeAgo(iso: string): string {
+  const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
+  if (diff < 60)      return "À l'instant"
+  if (diff < 3600)    return `Il y a ${Math.floor(diff / 60)} min`
+  if (diff < 86400)   return `Il y a ${Math.floor(diff / 3600)}h`
+  if (diff < 604800)  return `Il y a ${Math.floor(diff / 86400)}j`
+  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+}
 
-  useEffect(() => {
-    fetch('/api/roadmap')
-      .then(r => r.json())
-      .then(d => { setItems(d.items ?? []); setLoading(false) })
-      .catch(() => setLoading(false))
-  }, [])
+function avatarColor(name: string): string {
+  const PALETTE = ['#FFD56B', '#60a5fa', '#a78bfa', '#34d399', '#f87171', '#fb923c']
+  let h = 0
+  for (const c of name) h = (h + c.charCodeAt(0)) % PALETTE.length
+  return PALETTE[h]
+}
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!fTitle.trim()) return
-    setSubmitting(true)
-    setError(null)
-    const res = await fetch('/api/roadmap', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: fTitle, description: fDesc }),
+export default function Roadmap({
+  items: initialItems,
+  comments: initialComments,
+  voteCounts: initialVoteCounts,
+  userVotes: initialUserVotes,
+  userId,
+  isAdmin,
+}: {
+  items: RoadmapItemData[]
+  comments: RoadmapCommentData[]
+  voteCounts: Record<string, number>
+  userVotes: string[]
+  userId: string | null
+  isAdmin: boolean
+}) {
+  const [filter, setFilter]               = useState<StatusKey | 'all'>('all')
+  const [items, setItems]                 = useState(initialItems)
+  const [allComments, setAllComments]     = useState(initialComments)
+  const [voteCounts, setVoteCounts]       = useState(initialVoteCounts)
+  const [userVotes, setUserVotes]         = useState(new Set(initialUserVotes))
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
+  const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({})
+  const [submittingComment, setSubmittingComment] = useState<string | null>(null)
+  const [showForm, setShowForm]           = useState(false)
+  const [formTitle, setFormTitle]         = useState('')
+  const [formDesc, setFormDesc]           = useState('')
+  const [submitting, setSubmitting]       = useState(false)
+  const [formError, setFormError]         = useState<string | null>(null)
+  const [, startTransition]               = useTransition()
+
+  const filtered = (filter === 'all' ? items : items.filter(i => i.status === filter))
+    .slice()
+    .sort((a, b) => {
+      const diff = (voteCounts[b.id] ?? 0) - (voteCounts[a.id] ?? 0)
+      return diff !== 0 ? diff : new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
-    const data = await res.json()
-    if (data.error) { setError(data.error); setSubmitting(false); return }
-    setItems(prev => [data.item, ...prev])
-    setFTitle(''); setFDesc(''); setShowForm(false)
+
+  const counts: Record<string, number> = { all: items.length }
+  items.forEach(i => { counts[i.status] = (counts[i.status] ?? 0) + 1 })
+
+  function getItemComments(itemId: string) {
+    return allComments.filter(c => c.item_id === itemId)
+  }
+
+  function toggleExpand(itemId: string) {
+    setExpandedItems(prev => {
+      const next = new Set(prev)
+      if (next.has(itemId)) next.delete(itemId)
+      else next.add(itemId)
+      return next
+    })
+  }
+
+  function handleVote(itemId: string) {
+    if (!userId) return
+    const alreadyVoted = userVotes.has(itemId)
+    setUserVotes(prev => {
+      const next = new Set(prev)
+      if (alreadyVoted) next.delete(itemId); else next.add(itemId)
+      return next
+    })
+    setVoteCounts(prev => ({
+      ...prev,
+      [itemId]: Math.max(0, (prev[itemId] ?? 0) + (alreadyVoted ? -1 : 1)),
+    }))
+    startTransition(() => { voteRoadmapItem(itemId) })
+  }
+
+  async function handleSubmitIdea(e: React.FormEvent) {
+    e.preventDefault()
+    if (!formTitle.trim()) return
+    setSubmitting(true); setFormError(null)
+    const result = await submitRoadmapIdea(formTitle, formDesc)
+    if (result?.error) { setFormError(result.error); setSubmitting(false); return }
+    if (result?.data) {
+      setItems(prev => [result.data as RoadmapItemData, ...prev])
+      setFormTitle(''); setFormDesc(''); setShowForm(false)
+    }
     setSubmitting(false)
   }
 
-  const byStatus = (status: RoadmapItem['status']) =>
-    items.filter(i => i.status === status)
+  async function handleSubmitComment(itemId: string) {
+    const content = (commentDrafts[itemId] ?? '').trim()
+    if (!content) return
+    setSubmittingComment(itemId)
+    const result = await addRoadmapComment(itemId, content)
+    if (result?.data) {
+      setAllComments(prev => [...prev, result.data as RoadmapCommentData])
+      setCommentDrafts(prev => ({ ...prev, [itemId]: '' }))
+    }
+    setSubmittingComment(null)
+  }
+
+  function handleStatusChange(itemId: string, newStatus: StatusKey) {
+    setItems(prev => prev.map(i => i.id === itemId ? { ...i, status: newStatus } : i))
+    startTransition(() => { updateRoadmapStatus(itemId, newStatus) })
+  }
+
+  function handleDelete(itemId: string) {
+    setItems(prev => prev.filter(i => i.id !== itemId))
+    startTransition(() => { deleteRoadmapItem(itemId) })
+  }
 
   return (
     <div style={s.wrap}>
@@ -63,191 +174,412 @@ export default function Roadmap() {
       {/* Header */}
       <div style={s.head}>
         <div>
-          <h3 style={s.title}>Roadmap</h3>
-          <p style={s.sub}>Ce qui est prévu, ce qui est en train d&apos;être construit — avec vos idées.</p>
+          <div style={s.headTitle}>
+            <Rocket size={15} color="#a78bfa" weight="fill" />
+            Roadmap
+          </div>
+          <p style={s.headSub}>Vos idées, nos priorités — construisons ensemble.</p>
         </div>
-        <button onClick={() => setShowForm(v => !v)} style={{ ...s.addBtn, ...(showForm ? s.addBtnCancel : {}) }}>
+        <button
+          onClick={() => setShowForm(v => !v)}
+          style={{ ...s.addBtn, ...(showForm ? s.addBtnCancel : {}) }}
+        >
           {showForm ? <X size={13} weight="bold" /> : <Plus size={13} weight="bold" />}
-          {showForm ? 'Annuler' : 'Proposer une idée'}
+          {showForm ? 'Annuler' : 'Proposer'}
         </button>
       </div>
 
-      {/* Suggestion form */}
+      {/* Submit form */}
       {showForm && (
-        <form onSubmit={handleSubmit} style={s.form}>
+        <form onSubmit={handleSubmitIdea} style={s.form}>
           <input
-            value={fTitle}
-            onChange={e => setFTitle(e.target.value)}
-            placeholder="Une idée, une fonctionnalité, une amélioration…"
+            value={formTitle}
+            onChange={e => setFormTitle(e.target.value)}
+            placeholder="Une fonctionnalité, une amélioration, une idée…"
             style={s.formInput}
             className="input-field"
             maxLength={200}
             required
+            autoFocus
           />
           <textarea
-            value={fDesc}
-            onChange={e => setFDesc(e.target.value)}
-            placeholder="Détaille ton idée si besoin (optionnel)"
-            style={{ ...s.formInput, height: '72px', resize: 'vertical' }}
+            value={formDesc}
+            onChange={e => setFormDesc(e.target.value)}
+            placeholder="Quelques détails si besoin (optionnel)"
+            style={{ ...s.formInput, height: '68px', resize: 'vertical' as const }}
             className="input-field"
-            maxLength={800}
+            maxLength={600}
           />
-          {error && <p style={s.errMsg}>{error}</p>}
-          <button type="submit" disabled={submitting || !fTitle.trim()} style={s.submitBtn}>
+          {formError && <p style={s.errMsg}>{formError}</p>}
+          <button type="submit" disabled={submitting || !formTitle.trim()} style={s.submitBtn}>
             {submitting
-              ? <SpinnerGap size={14} style={{ animation: 'spin 1s linear infinite' }} />
-              : <Plus size={14} weight="bold" />
-            }
-            Soumettre
+              ? <SpinnerGap size={13} style={{ animation: 'spin 1s linear infinite' }} />
+              : <Plus size={13} weight="bold" />}
+            Soumettre l&apos;idée
           </button>
         </form>
       )}
 
-      {/* Columns */}
-      {loading ? (
-        <div style={s.loadWrap}>
-          <SpinnerGap size={22} style={{ animation: 'spin 1s linear infinite', color: '#FFD56B' }} />
-        </div>
-      ) : (
-        <div style={s.columns}>
-          {COLUMNS.map(col => {
-            const colItems = byStatus(col.key)
-            const Icon = col.icon
-            return (
-              <div key={col.key} style={{ ...s.col, background: col.bg, borderColor: `${col.color}22` }}>
-                <div style={s.colHead}>
-                  <Icon size={14} color={col.color} weight="fill" />
-                  <span style={{ ...s.colTitle, color: col.color }}>{col.label}</span>
-                  <span style={{ ...s.colCount, color: col.color }}>{colItems.length}</span>
-                </div>
+      {/* Filter chips */}
+      <div style={s.filters}>
+        {FILTERS.map(f => (
+          <button
+            key={f.key}
+            onClick={() => setFilter(f.key)}
+            style={{ ...s.chip, ...(filter === f.key ? s.chipActive : {}) }}
+          >
+            {f.label}
+            {(counts[f.key] ?? 0) > 0 && (
+              <span style={{ ...s.chipBadge, ...(filter === f.key ? s.chipBadgeActive : {}) }}>
+                {counts[f.key]}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
 
-                {colItems.length === 0 ? (
-                  <p style={s.empty}>
-                    {col.key === 'suggestion'
-                      ? 'Aucune idée pour l\'instant — sois le premier !'
-                      : 'Rien ici pour l\'instant.'}
-                  </p>
-                ) : (
-                  <div style={s.cardList}>
-                    {colItems.map(item => (
-                      <div key={item.id} style={s.card}>
-                        <div style={s.cardTitle}>{item.title}</div>
-                        {item.description && (
-                          <p style={s.cardDesc}>{item.description}</p>
-                        )}
-                        <div style={s.cardFoot}>
-                          {item.author_name && (
-                            <span style={s.cardAuthor}>{item.author_name}</span>
-                          )}
-                          <button
-                            onClick={() => setVoted(v => new Set([...v, item.id]))}
-                            disabled={voted.has(item.id)}
-                            style={{ ...s.voteBtn, ...(voted.has(item.id) ? s.votedBtn : {}) }}
-                            title="Voter pour cette idée"
-                          >
-                            <ArrowUp size={11} weight="bold" />
-                            {item.upvotes + (voted.has(item.id) ? 1 : 0)}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )
-          })}
+      {/* Empty state */}
+      {filtered.length === 0 && (
+        <div style={s.empty}>
+          <Lightbulb size={28} color="var(--text-muted)" weight="duotone" />
+          <p style={{ fontSize: '14px', color: 'var(--text-3)', margin: 0 }}>
+            {filter === 'all'
+              ? "Aucune idée pour l'instant — sois le premier !"
+              : "Rien dans cette catégorie pour l'instant."}
+          </p>
+          {filter === 'all' && (
+            <button onClick={() => setShowForm(true)} style={s.emptyBtn}>
+              <Plus size={12} weight="bold" />
+              Proposer la première idée
+            </button>
+          )}
         </div>
       )}
+
+      {/* Items feed */}
+      <div style={s.feed}>
+        {filtered.map(item => {
+          const cfg        = STATUS_CONFIG[item.status]
+          const Icon       = cfg.icon
+          const votes      = voteCounts[item.id] ?? 0
+          const voted      = userVotes.has(item.id)
+          const comments   = getItemComments(item.id)
+          const open       = expandedItems.has(item.id)
+
+          return (
+            <div key={item.id} style={s.card}>
+              <div style={s.cardRow}>
+
+                {/* Vote button — left column */}
+                <button
+                  onClick={() => handleVote(item.id)}
+                  disabled={!userId}
+                  style={{
+                    ...s.voteBtn,
+                    background: voted ? `${cfg.color}18` : 'rgba(255,255,255,0.04)',
+                    border:     voted ? `1px solid ${cfg.color}40` : '1px solid var(--border)',
+                    color:      voted ? cfg.color : 'var(--text-3)',
+                  }}
+                  title={voted ? 'Retirer mon vote' : 'Voter'}
+                >
+                  <ArrowFatUp size={16} weight={voted ? 'fill' : 'regular'} />
+                  <span style={{ ...s.voteCount, color: voted ? cfg.color : 'var(--text-2)' }}>
+                    {votes}
+                  </span>
+                </button>
+
+                {/* Content */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={s.cardTop}>
+                    <span style={{ ...s.statusPill, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}>
+                      <Icon size={10} weight="fill" />
+                      {cfg.label}
+                    </span>
+
+                    {/* Admin status selector */}
+                    {isAdmin && (
+                      <select
+                        value={item.status}
+                        onChange={e => handleStatusChange(item.id, e.target.value as StatusKey)}
+                        style={s.statusSelect}
+                      >
+                        {(Object.keys(STATUS_CONFIG) as StatusKey[]).map(k => (
+                          <option key={k} value={k}>{STATUS_CONFIG[k].label}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+
+                  <h4 style={s.cardTitle}>{item.title}</h4>
+                  {item.description && (
+                    <p style={s.cardDesc}>{item.description}</p>
+                  )}
+
+                  <div style={s.cardFoot}>
+                    {item.author_name && (
+                      <span style={s.author}>{item.author_name}</span>
+                    )}
+                    <span style={s.date}>{timeAgo(item.created_at)}</span>
+                    <div style={{ flex: 1 }} />
+
+                    {/* Comment toggle */}
+                    <button
+                      onClick={() => toggleExpand(item.id)}
+                      style={{ ...s.commentBtn, ...(open ? s.commentBtnOpen : {}) }}
+                    >
+                      <ChatCircle size={13} weight={open ? 'fill' : 'regular'} />
+                      {comments.length > 0 && <span>{comments.length}</span>}
+                      {open ? 'Masquer' : 'Commenter'}
+                    </button>
+
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        style={s.deleteBtn}
+                        title="Supprimer"
+                      >
+                        <Trash size={12} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Comments panel */}
+              {open && (
+                <div style={s.commentsPanel}>
+                  {comments.length > 0 && (
+                    <div style={s.commentList}>
+                      {comments.map(c => {
+                        const initials = (c.author_name ?? 'A').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+                        const color    = avatarColor(c.author_name ?? 'A')
+                        return (
+                          <div key={c.id} style={s.comment}>
+                            <div style={{ ...s.commentAvatar, background: `${color}18`, color, border: `1px solid ${color}30` }}>
+                              {initials}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={s.commentMeta}>
+                                <span style={s.commentAuthor}>{c.author_name ?? 'Anonyme'}</span>
+                                <span style={s.commentDate}>{timeAgo(c.created_at)}</span>
+                              </div>
+                              <p style={s.commentText}>{c.content}</p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {userId ? (
+                    <div style={s.commentFormRow}>
+                      <input
+                        value={commentDrafts[item.id] ?? ''}
+                        onChange={e => setCommentDrafts(prev => ({ ...prev, [item.id]: e.target.value }))}
+                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmitComment(item.id) } }}
+                        placeholder="Ajouter un commentaire…"
+                        style={s.commentInput}
+                        className="input-field"
+                        maxLength={400}
+                      />
+                      <button
+                        onClick={() => handleSubmitComment(item.id)}
+                        disabled={!(commentDrafts[item.id] ?? '').trim() || submittingComment === item.id}
+                        style={s.commentSubmit}
+                      >
+                        {submittingComment === item.id
+                          ? <SpinnerGap size={12} style={{ animation: 'spin 1s linear infinite' }} />
+                          : 'Envoyer'
+                        }
+                      </button>
+                    </div>
+                  ) : (
+                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>
+                      Connecte-toi pour commenter.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
 
+/* ─────────────────────── Styles ─────────────────────── */
 const s: Record<string, React.CSSProperties> = {
-  wrap: { display: 'flex', flexDirection: 'column', gap: '20px' },
+  wrap: { display: 'flex', flexDirection: 'column', gap: '16px' },
+
   head: {
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-    gap: '16px', flexWrap: 'wrap',
+    gap: '12px', flexWrap: 'wrap',
   },
-  title: { fontSize: '17px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' },
-  sub:   { fontSize: '13px', color: 'var(--text-2)', margin: 0 },
+  headTitle: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    fontSize: '16px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px',
+  },
+  headSub:   { fontSize: '13px', color: 'var(--text-2)', margin: 0 },
 
   addBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '13px', fontWeight: 600,
-    background: 'rgba(255,213,107,0.12)', color: '#FFD56B',
-    border: '1px solid rgba(255,213,107,0.25)',
-    borderRadius: '10px', padding: '8px 16px',
-    cursor: 'pointer', flexShrink: 0,
-    transition: 'background 0.15s',
+    background: 'rgba(167,139,250,0.1)', color: '#a78bfa',
+    border: '1px solid rgba(167,139,250,0.25)',
+    borderRadius: '10px', padding: '8px 16px', cursor: 'pointer', flexShrink: 0,
   },
   addBtnCancel: {
-    background: 'var(--border)', color: 'var(--text-3)', borderColor: 'transparent',
+    background: 'rgba(255,255,255,0.04)', color: 'var(--text-3)',
+    border: '1px solid var(--border)',
   },
 
   form: {
     display: 'flex', flexDirection: 'column', gap: '10px',
-    background: 'var(--surface)',
-    border: '1px solid rgba(255,213,107,0.15)',
+    background: 'rgba(167,139,250,0.04)',
+    border: '1px solid rgba(167,139,250,0.18)',
     borderRadius: '14px', padding: '16px',
   },
-  formInput: {
-    width: '100%', fontSize: '13px',
-    padding: '10px 12px', borderRadius: '9px',
-    boxSizing: 'border-box',
-  },
+  formInput: { width: '100%', fontSize: '13px', boxSizing: 'border-box' as const },
   errMsg:    { fontSize: '12px', color: '#f87171', margin: 0 },
   submitBtn: {
     alignSelf: 'flex-start',
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '13px', fontWeight: 700,
-    background: 'linear-gradient(135deg, #FFD56B 0%, #f59e0b 100%)',
-    color: '#1a1a0e', border: 'none', borderRadius: '9px',
+    background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
+    color: '#fff', border: 'none', borderRadius: '9px',
     padding: '9px 20px', cursor: 'pointer',
   },
 
-  loadWrap:   { display: 'flex', justifyContent: 'center', padding: '40px 0' },
+  filters: { display: 'flex', gap: '6px', flexWrap: 'wrap' as const },
+  chip: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', fontWeight: 500,
+    padding: '6px 14px', borderRadius: '999px', cursor: 'pointer',
+    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+    color: 'var(--text-3)',
+  },
+  chipActive: {
+    background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.3)',
+    color: '#a78bfa',
+  },
+  chipBadge: {
+    fontSize: '10px', fontWeight: 700, padding: '1px 6px', borderRadius: '999px',
+    background: 'rgba(255,255,255,0.08)', color: 'var(--text-muted)',
+  },
+  chipBadgeActive: {
+    background: 'rgba(167,139,250,0.15)', color: '#a78bfa',
+  },
 
-  columns: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '12px',
+  empty: {
+    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px',
+    padding: '40px 20px', textAlign: 'center',
+    border: '1px dashed var(--border)', borderRadius: '14px',
   },
-  col: {
-    border: '1px solid',
-    borderRadius: '14px', padding: '14px',
-    display: 'flex', flexDirection: 'column', gap: '10px',
+  emptyBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', fontWeight: 600, color: '#a78bfa',
+    background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)',
+    borderRadius: '8px', padding: '7px 14px', cursor: 'pointer',
   },
-  colHead: {
-    display: 'flex', alignItems: 'center', gap: '7px',
-  },
-  colTitle: { fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', flex: 1 },
-  colCount: {
-    fontSize: '11px', fontWeight: 700,
-    background: 'rgba(255,255,255,0.06)',
-    borderRadius: '999px', padding: '1px 7px',
-  },
-  empty: { fontSize: '12px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 },
 
-  cardList: { display: 'flex', flexDirection: 'column', gap: '8px' },
+  feed: { display: 'flex', flexDirection: 'column', gap: '10px' },
+
   card: {
-    background: 'var(--nav-bg)',
+    background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '10px', padding: '10px 12px',
-    display: 'flex', flexDirection: 'column', gap: '6px',
+    borderRadius: '14px',
+    overflow: 'hidden',
+    transition: 'border-color 0.15s',
   },
-  cardTitle: { fontSize: '13px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.3 },
-  cardDesc:  { fontSize: '12px', color: 'var(--text-2)', margin: 0, lineHeight: 1.4 },
-  cardFoot:  { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginTop: '2px' },
-  cardAuthor:{ fontSize: '11px', color: 'var(--text-muted)' },
+
+  cardRow: { display: 'flex', gap: '14px', padding: '16px' },
+
   voteBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '11px', fontWeight: 600,
-    color: 'var(--text-3)', background: 'var(--border)',
-    border: 'none', borderRadius: '999px', padding: '3px 8px',
-    cursor: 'pointer', transition: 'all 0.15s',
+    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px',
+    width: '48px', minHeight: '52px', borderRadius: '12px',
+    cursor: 'pointer', flexShrink: 0, padding: '8px 0',
+    transition: 'all 0.15s',
   },
-  votedBtn: {
-    color: '#FFD56B', background: 'rgba(255,213,107,0.12)',
-    cursor: 'default',
+  voteCount: { fontSize: '13px', fontWeight: 700 },
+
+  cardTop: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '7px', flexWrap: 'wrap' as const },
+
+  statusPill: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px',
+    padding: '3px 9px', borderRadius: '999px',
+  },
+
+  statusSelect: {
+    fontSize: '11px', background: 'var(--surface-2)',
+    border: '1px solid var(--border)', borderRadius: '6px',
+    color: 'var(--text-2)', padding: '2px 6px', cursor: 'pointer',
+  } as React.CSSProperties,
+
+  cardTitle: {
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+    margin: '0 0 5px', lineHeight: 1.4,
+  },
+  cardDesc: {
+    fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6,
+    margin: '0 0 10px', fontWeight: 300,
+  },
+
+  cardFoot: {
+    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+  },
+  author:  { fontSize: '12px', fontWeight: 500, color: 'var(--text-2)' },
+  date:    { fontSize: '11px', color: 'var(--text-muted)' },
+
+  commentBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text-3)',
+    background: 'none', border: '1px solid var(--border)',
+    borderRadius: '7px', padding: '4px 10px', cursor: 'pointer',
+    transition: 'all 0.15s',
+  },
+  commentBtnOpen: {
+    color: '#a78bfa', background: 'rgba(167,139,250,0.08)',
+    border: '1px solid rgba(167,139,250,0.25)',
+  },
+  deleteBtn: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: '26px', height: '26px', borderRadius: '6px', cursor: 'pointer',
+    color: 'var(--text-muted)', background: 'none',
+    border: '1px solid var(--border)', flexShrink: 0,
+  },
+
+  commentsPanel: {
+    borderTop: '1px solid var(--border)',
+    padding: '14px 16px',
+    background: 'rgba(167,139,250,0.03)',
+    display: 'flex', flexDirection: 'column', gap: '12px',
+  },
+
+  commentList: { display: 'flex', flexDirection: 'column', gap: '12px' },
+
+  comment: { display: 'flex', gap: '10px', alignItems: 'flex-start' },
+
+  commentAvatar: {
+    width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '10px', fontWeight: 700,
+  },
+
+  commentMeta: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' },
+  commentAuthor: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' },
+  commentDate:   { fontSize: '11px', color: 'var(--text-muted)' },
+  commentText:   { fontSize: '13px', color: 'var(--text-2)', margin: 0, lineHeight: 1.6 },
+
+  commentFormRow: { display: 'flex', gap: '8px', alignItems: 'center' },
+  commentInput:   { flex: 1, fontSize: '13px', height: '36px' },
+  commentSubmit: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
+    padding: '7px 16px', borderRadius: '8px', cursor: 'pointer',
+    fontSize: '12px', fontWeight: 600,
+    background: 'rgba(167,139,250,0.15)', border: '1px solid rgba(167,139,250,0.3)',
+    color: '#a78bfa', flexShrink: 0,
+    whiteSpace: 'nowrap' as const,
   },
 }

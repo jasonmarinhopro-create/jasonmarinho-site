@@ -14,13 +14,13 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('is_contributor, full_name')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single()
 
   if (!profile?.is_contributor) {
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       title,
       description: description || null,
       status: 'suggestion',
-      author_id: session.user.id,
+      author_id: user.id,
       author_name: profile.full_name ?? 'Contributeur',
     })
     .select('id, title, description, status, author_name, upvotes, created_at')
