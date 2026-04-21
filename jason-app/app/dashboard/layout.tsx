@@ -4,6 +4,7 @@ import Sidebar from '@/components/layout/Sidebar'
 import { getProfile } from '@/lib/queries/profile'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import DashboardLoading from './loading'
+import FeedbackWidget from '@/components/FeedbackWidget'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const profile = await getProfile()
@@ -19,6 +20,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             {children}
           </Suspense>
         </main>
+        <FeedbackWidget />
       </div>
     </ThemeProvider>
   )

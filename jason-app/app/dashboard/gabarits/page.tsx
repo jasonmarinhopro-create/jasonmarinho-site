@@ -293,11 +293,11 @@ export default function GabaritsPage() {
         <div style={s.nav} className="fade-up d1">
           {([
             { key: 'all',            label: 'Tous les gabarits' },
-            { key: 'favorites',      label: '♡ Mes favoris',    count: favorites.size },
-            { key: 'avant-arrivee',  label: "Avant l'arrivée",  color: '#FFD56B' },
-            { key: 'pendant-sejour', label: 'Pendant le séjour', color: '#60BEFF' },
-            { key: 'apres-depart',   label: 'Après le départ',   color: '#F97583' },
-            { key: 'facebook',       label: 'Groupes Facebook',  color: '#818CF8', count: allFacebookTemplates.length > 0 ? allFacebookTemplates.length : undefined },
+            { key: 'favorites',      label: '♡ Mes favoris',    count: favorites.size,    color: undefined },
+            { key: 'avant-arrivee',  label: "Avant l'arrivée",  color: '#FFD56B', count: templates.filter(t => getTimingBucket(t) === 'avant-arrivee').length  || undefined },
+            { key: 'pendant-sejour', label: 'Pendant le séjour', color: '#60BEFF', count: templates.filter(t => getTimingBucket(t) === 'pendant-sejour').length || undefined },
+            { key: 'apres-depart',   label: 'Après le départ',   color: '#F97583', count: templates.filter(t => getTimingBucket(t) === 'apres-depart').length   || undefined },
+            { key: 'facebook',       label: 'Groupes Facebook',  color: '#818CF8', count: allFacebookTemplates.length || undefined },
           ] as { key: FilterKey; label: string; count?: number; color?: string }[]).map(f => (
             <button
               key={f.key}
@@ -313,7 +313,11 @@ export default function GabaritsPage() {
             >
               {f.label}
               {f.count !== undefined && f.count > 0 && (
-                <span style={{ ...s.navCount, background: 'rgba(255,213,107,0.2)', color: '#FFD56B' }}>{f.count}</span>
+                <span style={{
+                  ...s.navCount,
+                  background: f.color ? `${f.color}20` : 'rgba(255,213,107,0.2)',
+                  color: f.color ?? '#FFD56B',
+                }}>{f.count}</span>
               )}
             </button>
           ))}
