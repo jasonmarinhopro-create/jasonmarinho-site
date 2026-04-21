@@ -4,9 +4,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
   CalendarBlank, Warning, CurrencyEur, House, UsersThree,
-  ArrowRight, BookOpen, FileText, Handshake, Newspaper,
+  ArrowRight, Newspaper,
 } from '@phosphor-icons/react/dist/ssr'
-import { CHANGELOG, type ChangelogEntry } from '@/lib/constants/changelog'
 
 function getGreeting() {
   const h = parseInt(new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).format(new Date()))
@@ -49,6 +48,7 @@ export default async function DashboardPage() {
   const [
     { data: contracts },
     { count: logCount },
+    { data: latestNews },
   ] = await Promise.all([
     supabase
       .from('contracts')
@@ -60,6 +60,12 @@ export default async function DashboardPage() {
       .from('logements')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId),
+    supabase
+      .from('actualites')
+      .select('id, title, summary, source_url, category, published_at, created_at')
+      .eq('is_published', true)
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .limit(3),
   ])
 
   const firstName  = profile?.full_name?.split(/\s+/)[0] ?? ''
@@ -292,81 +298,25 @@ export default async function DashboardPage() {
           </section>
         )}
 
-        {/* ── Accès rapides ────────────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d3">
-          <div style={s.sectionHead}>
-            <h3 style={s.sectionTitle}>Accès rapides</h3>
-          </div>
-          <div style={s.quickGrid}>
-            <QuickLink
-              href="/dashboard/logements"
-              icon={<House size={22} weight="fill" color="#60a5fa" />}
-              label="Mes logements"
-              stat={logements > 0 ? `${logements} logement${pl(logements)} enregistré${pl(logements)}` : 'Ajouter un logement'}
-              accent="#60a5fa"
-            />
-            <QuickLink
-              href="/dashboard/calendrier"
-              icon={<CalendarBlank size={22} weight="fill" color="#34d399" />}
-              label="Calendrier"
-              stat={weekArrivals.length > 0 ? `${weekArrivals.length} arrivée${pl(weekArrivals.length)} dans les 7 jours` : activeStays.length > 0 ? `${activeStays.length} séjour${pl(activeStays.length)} en cours` : 'Aucun séjour actif'}
-              accent="#34d399"
-            />
-            <QuickLink
-              href="/dashboard/voyageurs"
-              icon={<UsersThree size={22} weight="fill" color="#a78bfa" />}
-              label="Mes voyageurs"
-              stat={voyageursAnnee > 0 ? `${voyageursAnnee} séjour${pl(voyageursAnnee)} en ${yearPfx}` : 'Aucun séjour enregistré'}
-              accent="#a78bfa"
-            />
-            <QuickLink
-              href="/dashboard/revenus"
-              icon={<CurrencyEur size={22} weight="fill" color="#FFD56B" />}
-              label="Revenus"
-              stat={revenusThisMonth > 0 ? `${fmtEur(revenusThisMonth)} encaissés ce mois` : 'Suivi financier'}
-              accent="#FFD56B"
-            />
-            <QuickLink
-              href="/dashboard/gabarits"
-              icon={<FileText size={22} weight="fill" color="#f97316" />}
-              label="Gabarits"
-              stat="Messages prêts à l'emploi"
-              accent="#f97316"
-            />
-            <QuickLink
-              href="/dashboard/partenaires"
-              icon={<Handshake size={22} weight="fill" color="#6EE7B7" />}
-              label="Partenaires"
-              stat="Offres exclusives négociées"
-              accent="#6EE7B7"
-            />
-            <QuickLink
-              href="/dashboard/guide"
-              icon={<BookOpen size={22} weight="fill" color="#94a3b8" />}
-              label="Guide LCD"
-              stat="Ressources & bonnes pratiques"
-              accent="#94a3b8"
-            />
-          </div>
-        </section>
-
-        {/* ── Dernières nouveautés ─────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d4">
-          <div style={s.sectionHead}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
-              <h3 style={s.sectionTitle}>Dernières nouveautés</h3>
+        {/* ── Actualités du secteur ───────────────────────────────────── */}
+        {(latestNews ?? []).length > 0 && (
+          <section style={s.section} className="fade-up d3">
+            <div style={s.sectionHead}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
+                <h3 style={s.sectionTitle}>Actualités du secteur</h3>
+              </div>
+              <Link href="/dashboard/actualites" style={s.seeAll}>
+                Tout voir <ArrowRight size={12} weight="bold" />
+              </Link>
             </div>
-            <Link href="/dashboard/nouveautes" style={s.seeAll}>
-              Tout voir <ArrowRight size={12} weight="bold" />
-            </Link>
-          </div>
-          <div style={s.newsGrid}>
-            {CHANGELOG.slice(0, 3).map(entry => (
-              <NewsCard key={entry.id} entry={entry} />
-            ))}
-          </div>
-        </section>
+            <div style={s.newsGrid}>
+              {(latestNews ?? []).map(article => (
+                <NewsCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
 
       </div>
     </>
@@ -395,32 +345,18 @@ function KpiCard({ href, icon, color, label, value, sub }: {
   )
 }
 
-function QuickLink({ href, icon, label, stat, accent }: {
-  href: string; icon: React.ReactNode; label: string; stat: string; accent: string
-}) {
-  return (
-    <Link href={href} style={{ textDecoration: 'none' }}>
-      <div style={{ ...s.quickCard, borderColor: accent + '28' }} className="glass-card">
-        <div style={s.quickLeft}>
-          <div style={{ ...s.quickIcon, background: accent + '15', border: `1px solid ${accent}28` }}>
-            {icon}
-          </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={s.quickLabel}>{label}</div>
-            <div style={s.quickStat}>{stat}</div>
-          </div>
-        </div>
-        <ArrowRight size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-      </div>
-    </Link>
-  )
-}
-
-const TAG_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
-  nouveau:      { bg: 'rgba(52,211,153,0.12)',  color: '#34d399', label: 'Nouveau' },
-  amélioration: { bg: 'rgba(96,165,250,0.12)',  color: '#60a5fa', label: 'Amélioration' },
-  correction:   { bg: 'rgba(249,115,22,0.12)',  color: '#f97316', label: 'Correction' },
-  important:    { bg: 'rgba(255,213,107,0.13)', color: '#FFD56B', label: 'Important' },
+const CATEGORY_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
+  reglementation:      { bg: 'rgba(96,165,250,0.12)',  color: '#60a5fa', label: 'Réglementation' },
+  fiscalite:           { bg: 'rgba(52,211,153,0.12)',  color: '#34d399', label: 'Fiscalité' },
+  gites:               { bg: 'rgba(245,158,11,0.12)',  color: '#f59e0b', label: 'Gîtes & Meublés' },
+  'chambres-hotes':    { bg: 'rgba(236,72,153,0.12)',  color: '#ec4899', label: "Chambres d'hôtes" },
+  conciergerie:        { bg: 'rgba(139,92,246,0.12)',  color: '#8b5cf6', label: 'Conciergeries' },
+  'reservation-directe': { bg: 'rgba(16,185,129,0.12)', color: '#10b981', label: 'Réserv. directe' },
+  marche:              { bg: 'rgba(244,114,182,0.12)', color: '#f472b6', label: 'Marché' },
+  communes:            { bg: 'rgba(100,116,139,0.12)', color: '#64748b', label: 'Communes' },
+  plateformes:         { bg: 'rgba(251,146,60,0.12)',  color: '#fb923c', label: 'Plateformes OTA' },
+  outils:              { bg: 'rgba(167,139,250,0.12)', color: '#a78bfa', label: 'Outils & Tech' },
+  general:             { bg: 'rgba(148,163,184,0.12)', color: '#94a3b8', label: 'Général' },
 }
 
 const NEWS_MONTHS = ['jan.','fév.','mar.','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.']
@@ -429,27 +365,40 @@ function fmtNewsDate(d: string) {
   return `${parseInt(day)} ${NEWS_MONTHS[parseInt(m) - 1]} ${y}`
 }
 
-function NewsCard({ entry }: { entry: ChangelogEntry }) {
-  const tc = TAG_CONFIG[entry.tag] ?? TAG_CONFIG.nouveau
-  const shortDesc = entry.description.length > 110
-    ? entry.description.slice(0, 110).trimEnd() + '…'
-    : entry.description
+interface NewsArticle {
+  id: string; title: string; summary: string
+  source_url: string | null; category: string
+  published_at: string | null; created_at: string
+}
+
+function NewsCard({ article }: { article: NewsArticle }) {
+  const tc = CATEGORY_CONFIG[article.category] ?? CATEGORY_CONFIG.general
+  const dateStr = article.published_at ?? article.created_at
+  const shortDesc = article.summary.length > 110
+    ? article.summary.slice(0, 110).trimEnd() + '…'
+    : article.summary
+  const href = article.source_url ?? '/dashboard/actualites'
 
   return (
-    <Link href="/dashboard/nouveautes" style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
+    <a
+      href={href}
+      target={article.source_url ? '_blank' : undefined}
+      rel={article.source_url ? 'noopener noreferrer' : undefined}
+      style={{ textDecoration: 'none', height: '100%', display: 'block' }}
+    >
       <div style={{ ...s.newsCard, borderLeftColor: tc.color }} className="glass-card">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
           <div style={{ ...s.newsTag, background: tc.bg, color: tc.color }}>{tc.label}</div>
-          <span style={s.newsDate}>{fmtNewsDate(entry.date)}</span>
+          <span style={s.newsDate}>{fmtNewsDate(dateStr.slice(0, 10))}</span>
         </div>
-        <div style={s.newsTitle}>{entry.title}</div>
+        <div style={s.newsTitle}>{article.title}</div>
         <div style={s.newsDesc}>{shortDesc}</div>
         <div style={s.newsFooter}>
-          <span style={s.newsReadMore}>Lire la suite</span>
+          <span style={s.newsReadMore}>{article.source_url ? 'Lire l\'article' : 'Voir toutes les actualités'}</span>
           <ArrowRight size={11} color={tc.color} />
         </div>
       </div>
-    </Link>
+    </a>
   )
 }
 
@@ -510,19 +459,6 @@ const s: Record<string, React.CSSProperties> = {
   stayMeta:    { fontSize: '11px', color: 'var(--text-muted)' },
   actionRow:   { display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid var(--border)', cursor: 'pointer' },
   dot:         { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
-
-  // Quick links
-  quickGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px' },
-  quickCard: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px',
-    padding: '18px 20px', borderRadius: '16px',
-    border: '1px solid', transition: 'transform 0.15s, box-shadow 0.15s',
-    height: '100%',
-  },
-  quickLeft:  { display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 },
-  quickIcon:  { width: '44px', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  quickLabel: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
-  quickStat:  { fontSize: '12px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
 
   // News
   newsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' },
