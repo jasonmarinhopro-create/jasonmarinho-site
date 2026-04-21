@@ -44,10 +44,11 @@ export default async function AbonnementPage({
   const profile = await getProfile()
   const isAdmin = profile?.role === 'admin'
   const plan = profile?.plan ?? 'decouverte'
-  const isDriing = !isAdmin && plan === 'driing'
-  const isStandard = !isAdmin && plan === 'standard'
-  const isDecouverte = !isAdmin && !isDriing && !isStandard
   const driingStatus = profile?.driing_status ?? 'none'
+  // Treat as Driing if plan resolved to driing OR if driing_status is confirmed (DB not yet synced)
+  const isDriing = !isAdmin && (plan === 'driing' || driingStatus === 'confirmed')
+  const isStandard = !isAdmin && !isDriing && plan === 'standard'
+  const isDecouverte = !isAdmin && !isDriing && !isStandard
   const hasSubscription = isStandard || isDriing
 
   const params = await searchParams
