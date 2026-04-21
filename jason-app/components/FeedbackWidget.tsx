@@ -168,13 +168,15 @@ const s: Record<string, React.CSSProperties> = {
 
   panel: {
     width: '300px',
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
+    background: 'rgba(8, 22, 18, 0.97)',
+    border: '1px solid rgba(255,255,255,0.12)',
     borderRadius: '16px',
-    boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+    boxShadow: '0 16px 48px rgba(0,0,0,0.6)',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
   },
 
   panelHeader: {
@@ -182,7 +184,7 @@ const s: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '14px 16px 10px',
-    borderBottom: '1px solid var(--border)',
+    borderBottom: '1px solid rgba(255,255,255,0.1)',
   },
   panelTitle: {
     fontSize: '13px',
@@ -213,13 +215,13 @@ const s: Record<string, React.CSSProperties> = {
   textarea: {
     margin: '0 14px',
     width: 'calc(100% - 28px)',
-    background: 'rgba(0,0,0,0.2)',
-    border: '1px solid var(--border)',
+    background: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(255,255,255,0.12)',
     borderRadius: '10px',
     padding: '10px 12px',
     fontFamily: 'Outfit, sans-serif',
-    fontSize: '13px',
-    color: 'var(--text)',
+    fontSize: '16px',
+    color: '#fff',
     outline: 'none',
     resize: 'none',
     lineHeight: 1.6,

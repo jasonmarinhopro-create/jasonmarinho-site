@@ -80,8 +80,11 @@ export default function ActualitesView({ articles, isDecouverte = false, totalCo
           {/* Filters */}
           {visibleCats.length > 2 && (
             <div style={s.filters} className="fade-up d1">
-              <Funnel size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-              <div style={s.filterRow} className="actu-filter-row">
+              <div style={s.filterHeader}>
+                <Funnel size={13} color="var(--text-muted)" />
+                <span style={s.filterLabel}>Filtrer</span>
+              </div>
+              <div style={s.filterScroll} className="actu-filter-scroll">
                 {visibleCats.map(cat => (
                   <button
                     key={cat.value}
@@ -89,12 +92,12 @@ export default function ActualitesView({ articles, isDecouverte = false, totalCo
                     style={{
                       ...s.filterBtn,
                       ...(activeFilter === cat.value
-                        ? { color: cat.color, background: cat.bg, borderColor: `${cat.color}30` }
+                        ? { color: cat.color, background: cat.bg, borderColor: `${cat.color}30`, fontWeight: 600 }
                         : {}),
                     }}
                   >
                     {cat.label}
-                    {cat.value !== 'all' && (
+                    {cat.value !== 'all' && articles.filter(a => a.category === cat.value).length > 0 && (
                       <span style={s.filterCount}>
                         {articles.filter(a => a.category === cat.value).length}
                       </span>
@@ -171,6 +174,15 @@ export default function ActualitesView({ articles, isDecouverte = false, totalCo
         .actu-source-link:hover {
           color: var(--text-2) !important;
         }
+        .actu-filter-scroll::-webkit-scrollbar { display: none; }
+        .actu-filter-scroll {
+          -webkit-overflow-scrolling: touch;
+          scroll-snap-type: x proximity;
+          position: relative;
+        }
+        .actu-filter-scroll button {
+          scroll-snap-align: start;
+        }
       `}</style>
     </div>
   )
@@ -188,10 +200,17 @@ const s: Record<string, React.CSSProperties> = {
   emptyLabel: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.8px' },
   emptyDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.7, maxWidth: '400px' },
 
-  filters: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' },
-  filterRow: { display: 'flex', gap: '6px', flexWrap: 'wrap' as const },
-  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '100px', fontSize: '12px', fontWeight: 500, color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const },
-  filterCount: { fontSize: '10px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px' },
+  filters: { marginBottom: '24px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  filterHeader: { display: 'flex', alignItems: 'center', gap: '6px' },
+  filterLabel: { fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.5px', textTransform: 'uppercase' as const },
+  filterScroll: {
+    display: 'flex', gap: '6px',
+    overflowX: 'auto' as const,
+    paddingBottom: '4px',
+    scrollbarWidth: 'none' as const,
+  } as React.CSSProperties,
+  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 13px', borderRadius: '100px', fontSize: '12.5px', fontWeight: 500, color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const, flexShrink: 0 },
+  filterCount: { fontSize: '10px', fontWeight: 700, background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px', lineHeight: '1.4' },
 
   card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px' },
   cardMeta: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' as const },

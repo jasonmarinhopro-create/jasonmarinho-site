@@ -421,7 +421,7 @@ const pageSubtitle: React.CSSProperties = {
 
 const addBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '7px',
-  background: 'linear-gradient(135deg, #FFD56B 0%, #f59e0b 100%)', color: '#1a1a0e',
+  background: '#FFD56B', color: '#003329',
   border: 'none', borderRadius: '12px',
   padding: '10px 18px', fontSize: '14px', fontWeight: 600,
   cursor: 'pointer', flexShrink: 0,
