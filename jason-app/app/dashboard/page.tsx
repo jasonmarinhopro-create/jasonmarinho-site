@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
   CalendarBlank, Warning, CurrencyEur, House, UsersThree,
-  ArrowRight, BookOpen, FileText, Handshake, Newspaper,
+  ArrowRight, Newspaper,
 } from '@phosphor-icons/react/dist/ssr'
 
 function getGreeting() {
@@ -298,67 +298,9 @@ export default async function DashboardPage() {
           </section>
         )}
 
-        {/* ── Accès rapides ────────────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d3">
-          <div style={s.sectionHead}>
-            <h3 style={s.sectionTitle}>Accès rapides</h3>
-          </div>
-          <div style={s.quickGrid}>
-            <QuickLink
-              href="/dashboard/logements"
-              icon={<House size={22} weight="fill" color="#60a5fa" />}
-              label="Mes logements"
-              stat={logements > 0 ? `${logements} logement${pl(logements)} enregistré${pl(logements)}` : 'Ajouter un logement'}
-              accent="#60a5fa"
-            />
-            <QuickLink
-              href="/dashboard/calendrier"
-              icon={<CalendarBlank size={22} weight="fill" color="#34d399" />}
-              label="Calendrier"
-              stat={weekArrivals.length > 0 ? `${weekArrivals.length} arrivée${pl(weekArrivals.length)} dans les 7 jours` : activeStays.length > 0 ? `${activeStays.length} séjour${pl(activeStays.length)} en cours` : 'Aucun séjour actif'}
-              accent="#34d399"
-            />
-            <QuickLink
-              href="/dashboard/voyageurs"
-              icon={<UsersThree size={22} weight="fill" color="#a78bfa" />}
-              label="Mes voyageurs"
-              stat={voyageursAnnee > 0 ? `${voyageursAnnee} séjour${pl(voyageursAnnee)} en ${yearPfx}` : 'Aucun séjour enregistré'}
-              accent="#a78bfa"
-            />
-            <QuickLink
-              href="/dashboard/revenus"
-              icon={<CurrencyEur size={22} weight="fill" color="#FFD56B" />}
-              label="Revenus"
-              stat={revenusThisMonth > 0 ? `${fmtEur(revenusThisMonth)} encaissés ce mois` : 'Suivi financier'}
-              accent="#FFD56B"
-            />
-            <QuickLink
-              href="/dashboard/gabarits"
-              icon={<FileText size={22} weight="fill" color="#f97316" />}
-              label="Gabarits"
-              stat="Messages prêts à l'emploi"
-              accent="#f97316"
-            />
-            <QuickLink
-              href="/dashboard/partenaires"
-              icon={<Handshake size={22} weight="fill" color="#6EE7B7" />}
-              label="Partenaires"
-              stat="Offres exclusives négociées"
-              accent="#6EE7B7"
-            />
-            <QuickLink
-              href="/dashboard/guide"
-              icon={<BookOpen size={22} weight="fill" color="#94a3b8" />}
-              label="Guide LCD"
-              stat="Ressources & bonnes pratiques"
-              accent="#94a3b8"
-            />
-          </div>
-        </section>
-
         {/* ── Actualités du secteur ───────────────────────────────────── */}
         {(latestNews ?? []).length > 0 && (
-          <section style={s.section} className="fade-up d4">
+          <section style={s.section} className="fade-up d3">
             <div style={s.sectionHead}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
@@ -398,27 +340,6 @@ function KpiCard({ href, icon, color, label, value, sub }: {
           <span style={{ ...s.kpiValue, color }}>{value}</span>
           <span style={s.kpiSub}>{sub}</span>
         </div>
-      </div>
-    </Link>
-  )
-}
-
-function QuickLink({ href, icon, label, stat, accent }: {
-  href: string; icon: React.ReactNode; label: string; stat: string; accent: string
-}) {
-  return (
-    <Link href={href} style={{ textDecoration: 'none' }}>
-      <div style={{ ...s.quickCard, borderColor: accent + '28' }} className="glass-card">
-        <div style={s.quickLeft}>
-          <div style={{ ...s.quickIcon, background: accent + '15', border: `1px solid ${accent}28` }}>
-            {icon}
-          </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={s.quickLabel}>{label}</div>
-            <div style={s.quickStat}>{stat}</div>
-          </div>
-        </div>
-        <ArrowRight size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
       </div>
     </Link>
   )
@@ -538,19 +459,6 @@ const s: Record<string, React.CSSProperties> = {
   stayMeta:    { fontSize: '11px', color: 'var(--text-muted)' },
   actionRow:   { display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid var(--border)', cursor: 'pointer' },
   dot:         { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
-
-  // Quick links
-  quickGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px' },
-  quickCard: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px',
-    padding: '18px 20px', borderRadius: '16px',
-    border: '1px solid', transition: 'transform 0.15s, box-shadow 0.15s',
-    height: '100%',
-  },
-  quickLeft:  { display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 },
-  quickIcon:  { width: '44px', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  quickLabel: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
-  quickStat:  { fontSize: '12px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
 
   // News
   newsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' },
