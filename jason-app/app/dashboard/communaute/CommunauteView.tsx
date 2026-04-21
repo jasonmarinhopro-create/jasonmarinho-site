@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useTransition, useEffect, useRef } from 'react'
+import { useState, useMemo, useTransition, useLayoutEffect, useRef } from 'react'
 import {
   ArrowUpRight, UsersThree, FacebookLogo, WhatsappLogo,
   Star, MagnifyingGlass, CaretDown, CaretUp, X,
@@ -62,23 +62,17 @@ export default function CommunauteView({
   const [, startTransition] = useTransition()
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Safety net: if CSS animations fail to fire during client-side navigation
-  // (React 18 concurrent mode timing issue), force elements visible after max
-  // animation duration (0.32s max delay + 0.5s duration + margin = 900ms)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const container = containerRef.current
-      if (!container) return
-      const els = container.querySelectorAll<HTMLElement>('.fade-up')
-      els.forEach(el => {
-        if (parseFloat(window.getComputedStyle(el).opacity) < 0.5) {
-          el.style.opacity = '1'
-          el.style.transform = 'none'
-          el.style.animation = 'none'
-        }
-      })
-    }, 900)
-    return () => clearTimeout(timer)
+  // Restart animations synchronously before first paint so fade-up elements
+  // are never stuck at opacity:0 during client-side navigation (React 18 issue).
+  useLayoutEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+    const els = container.querySelectorAll<HTMLElement>('.fade-up')
+    els.forEach(el => {
+      el.style.animationName = 'none'
+      void el.offsetWidth
+      el.style.animationName = ''
+    })
   }, [])
 
   const joinedGroups = useMemo(
