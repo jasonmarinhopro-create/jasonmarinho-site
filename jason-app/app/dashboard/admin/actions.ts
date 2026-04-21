@@ -188,6 +188,8 @@ export async function changeUserPlan(userId: string, plan: string) {
 
   revalidatePath('/dashboard/admin')
   revalidatePath('/dashboard/admin/membres')
+  revalidatePath('/dashboard/abonnement')
+  revalidatePath('/dashboard')
   return { success: true }
 }
 

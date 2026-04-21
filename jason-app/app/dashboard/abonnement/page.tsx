@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'

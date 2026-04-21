@@ -6,7 +6,6 @@ import {
   CalendarBlank, Warning, CurrencyEur, House, UsersThree,
   ArrowRight, BookOpen, FileText, Handshake, Newspaper,
 } from '@phosphor-icons/react/dist/ssr'
-import { CHANGELOG, type ChangelogEntry } from '@/lib/constants/changelog'
 
 function getGreeting() {
   const h = parseInt(new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).format(new Date()))
@@ -49,6 +48,7 @@ export default async function DashboardPage() {
   const [
     { data: contracts },
     { count: logCount },
+    { data: latestNews },
   ] = await Promise.all([
     supabase
       .from('contracts')
@@ -60,6 +60,12 @@ export default async function DashboardPage() {
       .from('logements')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId),
+    supabase
+      .from('actualites')
+      .select('id, title, summary, source_url, category, published_at, created_at')
+      .eq('is_published', true)
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .limit(3),
   ])
 
   const firstName  = profile?.full_name?.split(/\s+/)[0] ?? ''
@@ -350,23 +356,25 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* ── Dernières nouveautés ─────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d4">
-          <div style={s.sectionHead}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
-              <h3 style={s.sectionTitle}>Dernières nouveautés</h3>
+        {/* ── Actualités du secteur ───────────────────────────────────── */}
+        {(latestNews ?? []).length > 0 && (
+          <section style={s.section} className="fade-up d4">
+            <div style={s.sectionHead}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
+                <h3 style={s.sectionTitle}>Actualités du secteur</h3>
+              </div>
+              <Link href="/dashboard/actualites" style={s.seeAll}>
+                Tout voir <ArrowRight size={12} weight="bold" />
+              </Link>
             </div>
-            <Link href="/dashboard/nouveautes" style={s.seeAll}>
-              Tout voir <ArrowRight size={12} weight="bold" />
-            </Link>
-          </div>
-          <div style={s.newsGrid}>
-            {CHANGELOG.slice(0, 3).map(entry => (
-              <NewsCard key={entry.id} entry={entry} />
-            ))}
-          </div>
-        </section>
+            <div style={s.newsGrid}>
+              {(latestNews ?? []).map(article => (
+                <NewsCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
 
       </div>
     </>
@@ -416,11 +424,18 @@ function QuickLink({ href, icon, label, stat, accent }: {
   )
 }
 
-const TAG_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
-  nouveau:      { bg: 'rgba(52,211,153,0.12)',  color: '#34d399', label: 'Nouveau' },
-  amélioration: { bg: 'rgba(96,165,250,0.12)',  color: '#60a5fa', label: 'Amélioration' },
-  correction:   { bg: 'rgba(249,115,22,0.12)',  color: '#f97316', label: 'Correction' },
-  important:    { bg: 'rgba(255,213,107,0.13)', color: '#FFD56B', label: 'Important' },
+const CATEGORY_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
+  reglementation:      { bg: 'rgba(96,165,250,0.12)',  color: '#60a5fa', label: 'Réglementation' },
+  fiscalite:           { bg: 'rgba(52,211,153,0.12)',  color: '#34d399', label: 'Fiscalité' },
+  gites:               { bg: 'rgba(245,158,11,0.12)',  color: '#f59e0b', label: 'Gîtes & Meublés' },
+  'chambres-hotes':    { bg: 'rgba(236,72,153,0.12)',  color: '#ec4899', label: "Chambres d'hôtes" },
+  conciergerie:        { bg: 'rgba(139,92,246,0.12)',  color: '#8b5cf6', label: 'Conciergeries' },
+  'reservation-directe': { bg: 'rgba(16,185,129,0.12)', color: '#10b981', label: 'Réserv. directe' },
+  marche:              { bg: 'rgba(244,114,182,0.12)', color: '#f472b6', label: 'Marché' },
+  communes:            { bg: 'rgba(100,116,139,0.12)', color: '#64748b', label: 'Communes' },
+  plateformes:         { bg: 'rgba(251,146,60,0.12)',  color: '#fb923c', label: 'Plateformes OTA' },
+  outils:              { bg: 'rgba(167,139,250,0.12)', color: '#a78bfa', label: 'Outils & Tech' },
+  general:             { bg: 'rgba(148,163,184,0.12)', color: '#94a3b8', label: 'Général' },
 }
 
 const NEWS_MONTHS = ['jan.','fév.','mar.','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.']
@@ -429,27 +444,40 @@ function fmtNewsDate(d: string) {
   return `${parseInt(day)} ${NEWS_MONTHS[parseInt(m) - 1]} ${y}`
 }
 
-function NewsCard({ entry }: { entry: ChangelogEntry }) {
-  const tc = TAG_CONFIG[entry.tag] ?? TAG_CONFIG.nouveau
-  const shortDesc = entry.description.length > 110
-    ? entry.description.slice(0, 110).trimEnd() + '…'
-    : entry.description
+interface NewsArticle {
+  id: string; title: string; summary: string
+  source_url: string | null; category: string
+  published_at: string | null; created_at: string
+}
+
+function NewsCard({ article }: { article: NewsArticle }) {
+  const tc = CATEGORY_CONFIG[article.category] ?? CATEGORY_CONFIG.general
+  const dateStr = article.published_at ?? article.created_at
+  const shortDesc = article.summary.length > 110
+    ? article.summary.slice(0, 110).trimEnd() + '…'
+    : article.summary
+  const href = article.source_url ?? '/dashboard/actualites'
 
   return (
-    <Link href="/dashboard/nouveautes" style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
+    <a
+      href={href}
+      target={article.source_url ? '_blank' : undefined}
+      rel={article.source_url ? 'noopener noreferrer' : undefined}
+      style={{ textDecoration: 'none', height: '100%', display: 'block' }}
+    >
       <div style={{ ...s.newsCard, borderLeftColor: tc.color }} className="glass-card">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
           <div style={{ ...s.newsTag, background: tc.bg, color: tc.color }}>{tc.label}</div>
-          <span style={s.newsDate}>{fmtNewsDate(entry.date)}</span>
+          <span style={s.newsDate}>{fmtNewsDate(dateStr.slice(0, 10))}</span>
         </div>
-        <div style={s.newsTitle}>{entry.title}</div>
+        <div style={s.newsTitle}>{article.title}</div>
         <div style={s.newsDesc}>{shortDesc}</div>
         <div style={s.newsFooter}>
-          <span style={s.newsReadMore}>Lire la suite</span>
+          <span style={s.newsReadMore}>{article.source_url ? 'Lire l\'article' : 'Voir toutes les actualités'}</span>
           <ArrowRight size={11} color={tc.color} />
         </div>
       </div>
-    </Link>
+    </a>
   )
 }
 
