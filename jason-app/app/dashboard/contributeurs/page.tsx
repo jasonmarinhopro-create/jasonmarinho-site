@@ -12,12 +12,16 @@ export default async function ContributeursPage() {
   const profile = await getProfile()
   const isContributor = profile?.is_contributor ?? false
   const isAdmin       = profile?.role === 'admin'
+  const planLabel     = isAdmin ? 'Administrateur'
+    : profile?.plan === 'driing' ? 'Membre Driing'
+    : profile?.plan === 'standard' ? 'Standard'
+    : 'Découverte'
 
   /* ── Non-contributeur : teasing ── */
   if (!isContributor) {
     return (
       <>
-        <Header title="Contributeurs" userName={profile?.full_name ?? undefined} />
+        <Header title="Contributeurs" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
         <div style={s.page}>
           <div style={s.teasing}>
             <div style={s.teasingGlow} />
@@ -97,7 +101,7 @@ export default async function ContributeursPage() {
 
   return (
     <>
-      <Header title="Contributeurs" userName={profile?.full_name ?? undefined} />
+      <Header title="Contributeurs" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
       <div style={s.page}>
 
         {/* ── Intro ── */}

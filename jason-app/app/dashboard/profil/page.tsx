@@ -25,9 +25,14 @@ export default async function ProfilPage() {
   const bic = profileData?.bic ?? ''
   const adresse = profileData?.adresse ?? ''
 
+  const planLabel = profile?.role === 'admin' ? 'Administrateur'
+    : profile?.plan === 'driing' ? 'Membre Driing'
+    : profile?.plan === 'standard' ? 'Standard'
+    : 'Découverte'
+
   return (
     <>
-      <Header title="Mon profil" userName={fullName || undefined} />
+      <Header title="Mon profil" userName={fullName || undefined} currentPlan={planLabel} />
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }} className="dash-page">
         <div style={{ marginBottom: '32px' }} className="fade-up">
           <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' }}>

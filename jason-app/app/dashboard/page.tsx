@@ -106,9 +106,14 @@ export default async function DashboardPage() {
     activeStays.length > 0 || weekArrivals.length > 0 || weekDepartures.length > 0 ||
     unsignedContracts.length > 0 || pendingPayments.length > 0
 
+  const planLabel = profile?.role === 'admin' ? 'Administrateur'
+    : profile?.plan === 'driing' ? 'Membre Driing'
+    : profile?.plan === 'standard' ? 'Standard'
+    : 'Découverte'
+
   return (
     <>
-      <Header title="Accueil" userName={profile?.full_name ?? undefined} />
+      <Header title="Accueil" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
       <div style={s.page} className="dash-page">
 
         {/* ── Welcome ─────────────────────────────────────────────────── */}
