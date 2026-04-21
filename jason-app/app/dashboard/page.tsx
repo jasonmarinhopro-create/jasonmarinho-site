@@ -4,8 +4,9 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
   CalendarBlank, Warning, CurrencyEur, House, UsersThree,
-  ArrowRight, BookOpen, FileText, Handshake,
+  ArrowRight, BookOpen, FileText, Handshake, Newspaper,
 } from '@phosphor-icons/react/dist/ssr'
+import { CHANGELOG, type ChangelogEntry } from '@/lib/constants/changelog'
 
 function getGreeting() {
   const h = parseInt(new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).format(new Date()))
@@ -293,57 +294,77 @@ export default async function DashboardPage() {
 
         {/* ── Accès rapides ────────────────────────────────────────────── */}
         <section style={s.section} className="fade-up d3">
-          <h3 style={s.sectionTitle}>Accès rapides</h3>
+          <div style={s.sectionHead}>
+            <h3 style={s.sectionTitle}>Accès rapides</h3>
+          </div>
           <div style={s.quickGrid}>
             <QuickLink
               href="/dashboard/logements"
-              icon={<House size={20} weight="fill" color="#60a5fa" />}
+              icon={<House size={22} weight="fill" color="#60a5fa" />}
               label="Mes logements"
               stat={logements > 0 ? `${logements} logement${pl(logements)} enregistré${pl(logements)}` : 'Ajouter un logement'}
               accent="#60a5fa"
             />
             <QuickLink
               href="/dashboard/calendrier"
-              icon={<CalendarBlank size={20} weight="fill" color="#34d399" />}
+              icon={<CalendarBlank size={22} weight="fill" color="#34d399" />}
               label="Calendrier"
               stat={weekArrivals.length > 0 ? `${weekArrivals.length} arrivée${pl(weekArrivals.length)} dans les 7 jours` : activeStays.length > 0 ? `${activeStays.length} séjour${pl(activeStays.length)} en cours` : 'Aucun séjour actif'}
               accent="#34d399"
             />
             <QuickLink
               href="/dashboard/voyageurs"
-              icon={<UsersThree size={20} weight="fill" color="#a78bfa" />}
+              icon={<UsersThree size={22} weight="fill" color="#a78bfa" />}
               label="Mes voyageurs"
               stat={voyageursAnnee > 0 ? `${voyageursAnnee} séjour${pl(voyageursAnnee)} en ${yearPfx}` : 'Aucun séjour enregistré'}
               accent="#a78bfa"
             />
             <QuickLink
               href="/dashboard/revenus"
-              icon={<CurrencyEur size={20} weight="fill" color="#FFD56B" />}
+              icon={<CurrencyEur size={22} weight="fill" color="#FFD56B" />}
               label="Revenus"
               stat={revenusThisMonth > 0 ? `${fmtEur(revenusThisMonth)} encaissés ce mois` : 'Suivi financier'}
               accent="#FFD56B"
             />
             <QuickLink
               href="/dashboard/gabarits"
-              icon={<FileText size={20} weight="fill" color="#f97316" />}
+              icon={<FileText size={22} weight="fill" color="#f97316" />}
               label="Gabarits"
               stat="Messages prêts à l'emploi"
               accent="#f97316"
             />
             <QuickLink
               href="/dashboard/partenaires"
-              icon={<Handshake size={20} weight="fill" color="#6EE7B7" />}
+              icon={<Handshake size={22} weight="fill" color="#6EE7B7" />}
               label="Partenaires"
               stat="Offres exclusives négociées"
               accent="#6EE7B7"
             />
             <QuickLink
               href="/dashboard/guide"
-              icon={<BookOpen size={20} weight="fill" color="#94a3b8" />}
+              icon={<BookOpen size={22} weight="fill" color="#94a3b8" />}
               label="Guide LCD"
               stat="Ressources & bonnes pratiques"
               accent="#94a3b8"
             />
+          </div>
+        </section>
+
+        {/* ── Dernières nouveautés ─────────────────────────────────────── */}
+        <section style={s.section} className="fade-up d4">
+          <div style={s.sectionHead}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
+              <h3 style={s.sectionTitle}>Dernières nouveautés</h3>
+            </div>
+            <Link href="/dashboard/nouveautes" style={s.seeAll}>
+              Tout voir <ArrowRight size={12} weight="bold" />
+            </Link>
+          </div>
+          <div style={s.newsGrid}>
+            {CHANGELOG.slice(0, 3).map(entry => (
+              <NewsCard key={entry.id} entry={entry} />
+            ))}
           </div>
         </section>
 
@@ -379,9 +400,9 @@ function QuickLink({ href, icon, label, stat, accent }: {
 }) {
   return (
     <Link href={href} style={{ textDecoration: 'none' }}>
-      <div style={{ ...s.quickCard, borderColor: accent + '22' }} className="glass-card">
+      <div style={{ ...s.quickCard, borderColor: accent + '28' }} className="glass-card">
         <div style={s.quickLeft}>
-          <div style={{ ...s.quickIcon, background: accent + '15', border: `1px solid ${accent}25` }}>
+          <div style={{ ...s.quickIcon, background: accent + '15', border: `1px solid ${accent}28` }}>
             {icon}
           </div>
           <div style={{ minWidth: 0 }}>
@@ -390,6 +411,43 @@ function QuickLink({ href, icon, label, stat, accent }: {
           </div>
         </div>
         <ArrowRight size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+      </div>
+    </Link>
+  )
+}
+
+const TAG_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
+  nouveau:      { bg: 'rgba(52,211,153,0.12)',  color: '#34d399', label: 'Nouveau' },
+  amélioration: { bg: 'rgba(96,165,250,0.12)',  color: '#60a5fa', label: 'Amélioration' },
+  correction:   { bg: 'rgba(249,115,22,0.12)',  color: '#f97316', label: 'Correction' },
+  important:    { bg: 'rgba(255,213,107,0.13)', color: '#FFD56B', label: 'Important' },
+}
+
+const NEWS_MONTHS = ['jan.','fév.','mar.','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.']
+function fmtNewsDate(d: string) {
+  const [y, m, day] = d.split('-')
+  return `${parseInt(day)} ${NEWS_MONTHS[parseInt(m) - 1]} ${y}`
+}
+
+function NewsCard({ entry }: { entry: ChangelogEntry }) {
+  const tc = TAG_CONFIG[entry.tag] ?? TAG_CONFIG.nouveau
+  const shortDesc = entry.description.length > 110
+    ? entry.description.slice(0, 110).trimEnd() + '…'
+    : entry.description
+
+  return (
+    <Link href="/dashboard/nouveautes" style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
+      <div style={{ ...s.newsCard, borderLeftColor: tc.color }} className="glass-card">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+          <div style={{ ...s.newsTag, background: tc.bg, color: tc.color }}>{tc.label}</div>
+          <span style={s.newsDate}>{fmtNewsDate(entry.date)}</span>
+        </div>
+        <div style={s.newsTitle}>{entry.title}</div>
+        <div style={s.newsDesc}>{shortDesc}</div>
+        <div style={s.newsFooter}>
+          <span style={s.newsReadMore}>Lire la suite</span>
+          <ArrowRight size={11} color={tc.color} />
+        </div>
       </div>
     </Link>
   )
@@ -416,7 +474,9 @@ const s: Record<string, React.CSSProperties> = {
   statDivider:  { width: '1px', height: '44px', background: 'var(--border)' },
 
   section:      { marginBottom: '28px' },
-  sectionTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', marginBottom: '14px' },
+  sectionTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', margin: 0 },
+  sectionHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' },
+  seeAll:       { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500 },
 
   // KPI strip
   kpiStrip: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' },
@@ -452,14 +512,36 @@ const s: Record<string, React.CSSProperties> = {
   dot:         { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
 
   // Quick links
-  quickGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '10px' },
+  quickGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px' },
   quickCard: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
-    padding: '14px 16px', borderRadius: '14px',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px',
+    padding: '18px 20px', borderRadius: '16px',
     border: '1px solid', transition: 'transform 0.15s, box-shadow 0.15s',
+    height: '100%',
   },
-  quickLeft:  { display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 },
-  quickIcon:  { width: '38px', height: '38px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  quickLabel: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' },
+  quickLeft:  { display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 },
+  quickIcon:  { width: '44px', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  quickLabel: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
   quickStat:  { fontSize: '12px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+
+  // News
+  newsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' },
+  newsCard: {
+    display: 'flex', flexDirection: 'column', gap: '10px',
+    padding: '20px 22px', borderRadius: '16px',
+    border: '1px solid var(--border)', borderLeft: '3px solid',
+    background: 'var(--surface)',
+    transition: 'transform 0.15s, box-shadow 0.15s',
+    height: '100%',
+  },
+  newsTag: {
+    display: 'inline-flex', width: 'fit-content',
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const,
+    padding: '3px 9px', borderRadius: '100px',
+  },
+  newsDate:     { fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const },
+  newsTitle:    { fontSize: '14px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.4 },
+  newsDesc:     { fontSize: '12px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, flex: 1 },
+  newsFooter:   { display: 'flex', alignItems: 'center', gap: '5px', marginTop: '4px' },
+  newsReadMore: { fontSize: '11px', fontWeight: 500, color: 'var(--accent-text)' },
 }
