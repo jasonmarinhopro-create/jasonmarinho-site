@@ -223,6 +223,13 @@ em { font-style: italic; color: var(--accent); }
 .fade-up.d3 { animation-delay: 0.24s; }
 .fade-up.d4 { animation-delay: 0.32s; }
 
+/* Communauté page: bypass fade-up entirely (React 18 client-nav timing issue) */
+.communaute-no-fade .fade-up {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 /* ── PROGRESS BAR ── */
 .progress-bar {
   height: 6px; background: var(--surface-2); border-radius: 100px; overflow: hidden;
