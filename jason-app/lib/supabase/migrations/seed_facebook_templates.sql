@@ -1,4 +1,14 @@
--- Gabarits "Groupe Facebook" : messages chaleureux pour partager son annonce Driing
+-- Étape 1 : mettre à jour la contrainte de catégorie pour inclure 'facebook'
+-- et toutes les catégories déjà utilisées en production
+ALTER TABLE public.templates DROP CONSTRAINT IF EXISTS templates_category_check;
+ALTER TABLE public.templates ADD CONSTRAINT templates_category_check
+  CHECK (category IN (
+    'airbnb', 'checkin', 'checkout', 'avis', 'bienvenue', 'autre',
+    'confirmation', 'securite', 'upsell', 'probleme', 'extra',
+    'conciergerie', 'saisonnier', 'facebook'
+  ));
+
+-- Étape 2 : insérer les gabarits "Groupe Facebook"
 -- Variable clé : [LIEN_ANNONCE_DRIING] — l'hôte remplace par l'URL de son annonce
 
 INSERT INTO public.templates (title, content, category, copy_count) VALUES
