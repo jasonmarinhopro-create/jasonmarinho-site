@@ -57,6 +57,7 @@ const CATEGORIES = [
   { value: 'conciergerie', label: 'Conciergerie',   color: '#f472b6', bg: 'rgba(244,114,182,0.12)' },
   { value: 'saisonnier',   label: 'Saisonnier',     color: '#fbbf24', bg: 'rgba(251,191,36,0.12)'  },
   { value: 'airbnb',       label: 'Airbnb',         color: '#ff6b72', bg: 'rgba(255,107,114,0.12)' },
+  { value: 'facebook',     label: 'Groupe Facebook', color: '#818cf8', bg: 'rgba(129,140,248,0.12)' },
   { value: 'autre',        label: 'Autre',          color: '#64748b', bg: 'rgba(100,116,139,0.1)'  },
 ]
 
