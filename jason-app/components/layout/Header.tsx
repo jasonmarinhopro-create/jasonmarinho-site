@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
   Question, CaretDown, ArrowUpRight, Sun, Moon, Star
@@ -14,6 +14,13 @@ import { useTheme } from '@/components/ThemeProvider'
 import { CHANGELOG } from '@/lib/constants/changelog'
 
 const STORAGE_KEY = 'jm_notif_read'
+
+const PLAN_COLORS: Record<string, { bg: string; color: string; dot: string }> = {
+  'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'var(--text-3)',  dot: '#6b7280' },
+  'Standard':      { bg: 'rgba(52,211,153,0.12)',  color: '#34D399',       dot: '#34D399' },
+  'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B',       dot: '#FFD56B' },
+  'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC',       dot: '#C084FC' },
+}
 
 function getReadIds(): Set<string> {
   if (typeof window === 'undefined') return new Set()
@@ -117,17 +124,12 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     router.push('/auth/login')
   }
 
-  const initials = userName
-    ? userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-    : '?'
+  const initials = useMemo(
+    () => userName ? userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '?',
+    [userName]
+  )
 
-  const planColors: Record<string, { bg: string; color: string; dot: string }> = {
-    'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'var(--text-3)',  dot: '#6b7280' },
-    'Standard':      { bg: 'rgba(52,211,153,0.12)',  color: '#34D399',       dot: '#34D399' },
-    'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B',       dot: '#FFD56B' },
-    'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC',       dot: '#C084FC' },
-  }
-  const plan = planColors[resolvedPlan] ?? planColors['Découverte']
+  const plan = PLAN_COLORS[resolvedPlan] ?? PLAN_COLORS['Découverte']
 
   return (
     <>
