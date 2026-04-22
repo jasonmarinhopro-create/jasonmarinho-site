@@ -88,7 +88,12 @@ INSERT INTO public.formations (slug, title, description, duration, modules_count
   ('creer-conciergerie-lcd',
    'Créer et développer sa conciergerie LCD',
    'Comment lancer, structurer et développer une activité de conciergerie rentable — de la prospection des premiers clients à la gestion d''une équipe.',
-   '3h00', 6, 14, 'intermediaire', true)
+   '3h00', 6, 14, 'intermediaire', true),
+
+  ('fiscalite-statut-conciergerie-tourisme',
+   'Fiscalité et meilleur statut pour une conciergerie de tourisme',
+   'BIC ou BNC, micro ou réel, EURL ou SASU : tout ce qu''un gérant de conciergerie doit savoir pour choisir le bon statut, payer le bon impôt et déduire les bonnes charges — sans laisser d''argent sur la table.',
+   '2h30', 5, 10, 'intermediaire', true)
 
 ON CONFLICT (slug) DO UPDATE
   SET
