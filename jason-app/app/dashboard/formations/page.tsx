@@ -21,6 +21,7 @@ const ACTIVE_SLUGS = [
   'ecrire-avis-repondre-voyageurs',
   'decorer-amenager-logement-lcd',
   'creer-conciergerie-lcd',
+  'fiscalite-statut-conciergerie-tourisme',
 ]
 
 // Formations à venir — hardcodées, pas encore en DB
