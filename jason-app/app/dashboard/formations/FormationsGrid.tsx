@@ -53,9 +53,10 @@ const SLUG_CATEGORY: Record<string, string> = {
   'gerer-lcd-automatisation': 'gestion',
   'livret-accueil-digital': 'gestion',
   'securiser-reservations-eviter-mauvais-voyageurs': 'gestion',
+  'decorer-amenager-logement-lcd': 'gestion',
   'fiscalite-reglementation-lcd-france-2026': 'reglementation',
-  'decorer-amenager-logement-lcd': 'amenagement',
-  'creer-conciergerie-lcd': 'amenagement',
+  'fiscalite-statut-conciergerie-tourisme': 'reglementation',
+  'creer-conciergerie-lcd': 'conciergerie',
 }
 
 const categoryLabel: Record<string, string> = {
@@ -63,12 +64,12 @@ const categoryLabel: Record<string, string> = {
   revenus: 'Revenus & Tarification',
   gestion: 'Gestion & Automatisation',
   reglementation: 'Réglementation',
-  amenagement: 'Aménagement & Conciergerie',
+  conciergerie: 'Conciergerie',
 }
 
 type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
 type StatusFilter = 'all' | 'enrolled' | 'not_enrolled' | 'done'
-type CategoryFilter = 'all' | 'visibilite' | 'revenus' | 'gestion' | 'reglementation' | 'amenagement'
+type CategoryFilter = 'all' | 'visibilite' | 'revenus' | 'gestion' | 'reglementation' | 'conciergerie'
 
 export default function FormationsGrid({ formations, progressMap, comingSoon, unlockedSlugs, plan }: Props) {
   const isDecouverte = plan === 'decouverte'
@@ -149,7 +150,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
         {/* Category filter — scrollable row on mobile */}
         <div style={styles.filterScrollRow} className="filter-scroll-row">
           <span style={styles.filterLabel}><Funnel size={12} /> Thème</span>
-          {(['all', 'visibilite', 'revenus', 'gestion', 'reglementation', 'amenagement'] as CategoryFilter[]).map(v => (
+          {(['all', 'visibilite', 'revenus', 'gestion', 'reglementation', 'conciergerie'] as CategoryFilter[]).map(v => (
             <button
               key={v}
               onClick={() => setCategoryFilter(v)}
