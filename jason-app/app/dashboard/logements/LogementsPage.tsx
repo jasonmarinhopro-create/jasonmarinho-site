@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Plus, X, House, PencilSimple, Trash, Warning, Check } from '@phosphor-icons/react'
+import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock } from '@phosphor-icons/react'
 import { useRouter } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 
@@ -22,6 +22,11 @@ type Logement = {
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement: string | null
+  heure_arrivee: string | null
+  heure_depart: string | null
+  code_acces: string | null
+  wifi_nom: string | null
+  wifi_mdp: string | null
 }
 
 interface Props {
@@ -40,6 +45,11 @@ function emptyForm(): LogementData {
     animaux_acceptes: false,
     fumeur_accepte: false,
     methodes_paiement: 'virement',
+    heure_arrivee: '15:00',
+    heure_depart: '11:00',
+    code_acces: '',
+    wifi_nom: '',
+    wifi_mdp: '',
   }
 }
 
@@ -77,6 +87,11 @@ export default function LogementsPage({ logements: initial }: Props) {
       animaux_acceptes: l.animaux_acceptes,
       fumeur_accepte: l.fumeur_accepte,
       methodes_paiement: l.methodes_paiement ?? 'virement',
+      heure_arrivee: l.heure_arrivee ?? '15:00',
+      heure_depart: l.heure_depart ?? '11:00',
+      code_acces: l.code_acces ?? '',
+      wifi_nom: l.wifi_nom ?? '',
+      wifi_mdp: l.wifi_mdp ?? '',
     })
     setEditing(l)
     setError('')
@@ -118,6 +133,11 @@ export default function LogementsPage({ logements: initial }: Props) {
           animaux_acceptes: form.animaux_acceptes,
           fumeur_accepte: form.fumeur_accepte,
           methodes_paiement: form.methodes_paiement ?? 'virement',
+          heure_arrivee: form.heure_arrivee ?? null,
+          heure_depart: form.heure_depart ?? null,
+          code_acces: form.code_acces ?? null,
+          wifi_nom: form.wifi_nom ?? null,
+          wifi_mdp: form.wifi_mdp ?? null,
         }
         setLogements(prev => [newLogement, ...prev])
         setSuccess('Logement créé !')
@@ -137,6 +157,11 @@ export default function LogementsPage({ logements: initial }: Props) {
           animaux_acceptes: form.animaux_acceptes,
           fumeur_accepte: form.fumeur_accepte,
           methodes_paiement: form.methodes_paiement ?? 'virement',
+          heure_arrivee: form.heure_arrivee ?? null,
+          heure_depart: form.heure_depart ?? null,
+          code_acces: form.code_acces ?? null,
+          wifi_nom: form.wifi_nom ?? null,
+          wifi_mdp: form.wifi_mdp ?? null,
         } : l))
         setSuccess('Modifications enregistrées !')
       }
@@ -226,6 +251,29 @@ export default function LogementsPage({ logements: initial }: Props) {
                     })()}
                   </span>
                 </div>
+
+                {/* Infos pratiques */}
+                {(l.heure_arrivee || l.heure_depart || l.wifi_nom || l.code_acces) && (
+                  <div style={practicalRow}>
+                    {(l.heure_arrivee || l.heure_depart) && (
+                      <div style={practicalItem}>
+                        <Clock size={12} color="#60BEFF" />
+                        <span style={practicalText}>
+                          {l.heure_arrivee && <>Arrivée {l.heure_arrivee}</>}
+                          {l.heure_arrivee && l.heure_depart && ' · '}
+                          {l.heure_depart && <>Départ {l.heure_depart}</>}
+                        </span>
+                      </div>
+                    )}
+                    {l.wifi_nom && (
+                      <CopyChip icon={<WifiHigh size={12} color="#34D399" />} label={l.wifi_nom} value={`${l.wifi_nom}${l.wifi_mdp ? ` / ${l.wifi_mdp}` : ''}`} />
+                    )}
+                    {l.code_acces && (
+                      <CopyChip icon={<Key size={12} color="#FFD56B" />} label={l.code_acces} value={l.code_acces} />
+                    )}
+                  </div>
+                )}
+
                 {l.description && (
                   <p style={cardDesc}>{l.description.slice(0, 80)}{l.description.length > 80 ? '…' : ''}</p>
                 )}
@@ -285,6 +333,36 @@ export default function LogementsPage({ logements: initial }: Props) {
                   value={form.capacite_max}
                   onChange={e => set('capacite_max', parseInt(e.target.value) || 1)}
                 />
+              </div>
+              {/* ── Informations pratiques ── */}
+              <div style={sectionDivider}>
+                <span style={sectionLabel}>Informations pratiques</span>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '120px' }}>
+                  <label style={label}>Heure d&apos;arrivée</label>
+                  <input style={input} type="time" value={form.heure_arrivee ?? ''} onChange={e => set('heure_arrivee', e.target.value)} />
+                </div>
+                <div style={{ flex: 1, minWidth: '120px' }}>
+                  <label style={label}>Heure de départ</label>
+                  <input style={input} type="time" value={form.heure_depart ?? ''} onChange={e => set('heure_depart', e.target.value)} />
+                </div>
+              </div>
+              <div style={fieldRow}>
+                <Field label="Code d'accès (porte, boîte à clés…)" value={form.code_acces ?? ''} onChange={v => set('code_acces', v)} placeholder="1234# ou A2B9" />
+              </div>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '140px' }}>
+                  <Field label="Nom du réseau Wi-Fi" value={form.wifi_nom ?? ''} onChange={v => set('wifi_nom', v)} placeholder="MonWifi_5G" />
+                </div>
+                <div style={{ flex: 1, minWidth: '140px' }}>
+                  <Field label="Mot de passe Wi-Fi" value={form.wifi_mdp ?? ''} onChange={v => set('wifi_mdp', v)} placeholder="motdepasse123" />
+                </div>
+              </div>
+
+              {/* ── Conditions & règlement ── */}
+              <div style={sectionDivider}>
+                <span style={sectionLabel}>Conditions & règlement</span>
               </div>
               <div style={fieldRow}>
                 <label style={label}>Conditions d&apos;annulation</label>
@@ -371,6 +449,27 @@ export default function LogementsPage({ logements: initial }: Props) {
         </div>
       )}
     </div>
+  )
+}
+
+// ─── CopyChip ─────────────────────────────────────────────────────────────────
+
+function CopyChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  const [copied, setCopied] = useState(false)
+  async function handleCopy(e: React.MouseEvent) {
+    e.stopPropagation()
+    await navigator.clipboard.writeText(value)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1800)
+  }
+  return (
+    <button onClick={handleCopy} style={copyChipStyle} title={`Copier : ${value}`}>
+      {copied ? <Check size={11} color="#34D399" weight="bold" /> : icon}
+      <span style={{ fontSize: '11px', maxWidth: '90px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>
+        {copied ? 'Copié !' : label}
+      </span>
+      <Copy size={10} style={{ opacity: 0.5, flexShrink: 0 }} />
+    </button>
   )
 }
 
@@ -633,4 +732,38 @@ const saveBtn: React.CSSProperties = {
   background: '#34D399', color: '#0a1a14',
   border: 'none', borderRadius: '12px',
   padding: '10px 20px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
+}
+
+// ─── Practical info styles ────────────────────────────────────────────────────
+
+const practicalRow: React.CSSProperties = {
+  display: 'flex', flexWrap: 'wrap', gap: '6px', paddingTop: '4px',
+}
+
+const practicalItem: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '5px',
+  background: 'rgba(96,190,255,0.07)', border: '1px solid rgba(96,190,255,0.15)',
+  borderRadius: '7px', padding: '4px 9px',
+}
+
+const practicalText: React.CSSProperties = {
+  fontSize: '11px', color: '#60BEFF', fontWeight: 500,
+}
+
+const copyChipStyle: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '5px',
+  background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
+  borderRadius: '7px', padding: '4px 9px',
+  cursor: 'pointer', color: 'var(--text-2)', transition: 'all 0.15s',
+}
+
+const sectionDivider: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '10px',
+  borderTop: '1px solid var(--border)', paddingTop: '14px', marginTop: '4px',
+}
+
+const sectionLabel: React.CSSProperties = {
+  fontSize: '11px', fontWeight: 600, letterSpacing: '0.8px',
+  textTransform: 'uppercase', color: 'var(--text-muted)',
+  whiteSpace: 'nowrap',
 }
