@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
+import { logger } from '@/lib/logger'
+const log = logger('api/stripe/deposit/release')
 
 function serviceClient() {
   return createServiceClient(
@@ -67,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('[stripe/deposit/release]', err)
+    log.error('unexpected', err)
     return NextResponse.json({ error: 'Erreur lors de la libération.' }, { status: 500 })
   }
 }

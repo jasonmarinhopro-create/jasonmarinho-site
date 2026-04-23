@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
+import { logger } from '@/lib/logger'
+const log = logger('api/stripe/connect/return')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -40,7 +42,7 @@ export async function GET(request: NextRequest) {
     const status = isComplete ? 'success' : 'pending'
     return NextResponse.redirect(`${APP_URL}/dashboard/profil?stripe=${status}`)
   } catch (err) {
-    console.error('[stripe/connect/return]', err)
+    log.error('unexpected', err)
     return NextResponse.redirect(`${APP_URL}/dashboard/profil?stripe=error`)
   }
 }

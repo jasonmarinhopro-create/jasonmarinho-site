@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
+import { logger } from '@/lib/logger'
+const log = logger('api/stripe/payment/create')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -106,7 +108,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (err) {
-    console.error('[stripe/payment/create]', err)
+    log.error('unexpected', err)
     return NextResponse.json({ error: 'Erreur lors de la création du paiement.' }, { status: 500 })
   }
 }

@@ -4,9 +4,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { buildEmail, emailBtn, emailP, emailNote } from '@/lib/email/template'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, normalizeEmail } from '@/lib/security/validate'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
+const log = logger('api/send-reset-email')
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
 export async function POST(req: NextRequest) {
@@ -48,7 +50,7 @@ export async function POST(req: NextRequest) {
     })
 
     if (error || !data?.properties?.action_link) {
-      console.error('[reset-email] generateLink error:', error?.message, '| data:', JSON.stringify(data))
+      log.error('generateLink', { msg: error?.message, data })
       return NextResponse.json({ success: true })
     }
 
@@ -69,13 +71,13 @@ export async function POST(req: NextRequest) {
     })
 
     if (resendError) {
-      console.error('[reset-email] Resend error:', resendError)
+      log.error('resend', resendError)
       return NextResponse.json({ error: 'Erreur envoi email.' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
   } catch (e) {
-    console.error('[reset-email] Unexpected error:', e)
+    log.error('unexpected', { err: String(e) })
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }

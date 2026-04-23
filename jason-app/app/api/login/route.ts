@@ -3,6 +3,9 @@ import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
+import { logger } from '@/lib/logger'
+
+const log = logger('api/login')
 
 export async function POST(req: NextRequest) {
   try {
@@ -51,7 +54,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (e) {
-    console.error('[login] error:', e)
+    log.error('unexpected', { err: String(e) })
     return NextResponse.json({ error: 'INVALID_CREDENTIALS' }, { status: 500 })
   }
 }

@@ -4,8 +4,11 @@ import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
+
+const log = logger('api/contracts/sign')
 
 type ContractRow = {
   id: string
@@ -94,7 +97,7 @@ export async function POST(request: NextRequest) {
     const contract = contractRaw as ContractRow | null
 
     if (fetchError || !contract) {
-      console.error('[sign] Contract not found for token:', token, fetchError?.message, fetchError?.code)
+      log.warn('contractNotFound', { code: fetchError?.code, msg: fetchError?.message })
       return NextResponse.json(
         { error: 'Contrat introuvable.', debug: fetchError?.code ?? 'NOT_FOUND' },
         { status: 404 }
@@ -147,7 +150,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (updateError || !updated) {
-      console.error('[sign] Update contracts failed:', updateError)
+      log.error('updateContract', { code: updateError?.code })
       return NextResponse.json(
         {
           error: 'Erreur lors de l\'enregistrement de la signature. Veuillez réessayer.',
@@ -165,7 +168,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (verify?.statut !== 'signe') {
-      console.error('[sign] Post-update verification failed — statut in DB:', verify?.statut)
+      log.error('verifyFailed', { statut: verify?.statut })
       return NextResponse.json(
         {
           error: 'La mise à jour du contrat n\'a pas pu être confirmée. Veuillez réessayer.',
@@ -188,7 +191,7 @@ export async function POST(request: NextRequest) {
 
       if (sejourError) {
         // Non bloquant — la signature a réussi, on log juste l'erreur
-        console.error('[sign] Sejour sync failed:', sejourError)
+        log.warn('sejourSync', { err: sejourError })
       }
     }
 
@@ -302,7 +305,7 @@ export async function POST(request: NextRequest) {
         to: contract.locataire_email,
         subject: `Contrat signé — finalisez votre dossier pour ${propertyLabel}`,
         html: guestEmailHtml,
-      }).catch(e => console.error('[sign] Guest email failed:', e))
+      }).catch(e => log.warn('guestEmail', { err: String(e) }))
     }
 
     await getResend().emails.send({
@@ -310,11 +313,11 @@ export async function POST(request: NextRequest) {
       to: contract.bailleur_email,
       subject: `${guestName} a signé le contrat — ${propertyLabel}`,
       html: hostEmailHtml,
-    }).catch(e => console.error('[sign] Host email failed:', e))
+    }).catch(e => log.warn('hostEmail', { err: String(e) }))
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('[contracts/sign]', err)
+    log.error('unexpected', { err: String(err) })
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }

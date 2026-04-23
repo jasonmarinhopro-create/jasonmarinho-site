@@ -4,9 +4,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { buildEmail, emailBtn, emailP, emailNote, escHtml } from '@/lib/email/template'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
+const log = logger('api/register')
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
 export async function POST(req: NextRequest) {
@@ -53,7 +55,7 @@ export async function POST(req: NextRequest) {
       if (createError.message.toLowerCase().includes('already registered') || createError.message.toLowerCase().includes('already been registered') || createError.message.includes('already exists')) {
         return NextResponse.json({ error: 'Un compte existe déjà avec cet email.' }, { status: 409 })
       }
-      console.error('[register] createUser error:', createError.message)
+      log.error('createUser', { msg: createError.message })
       return NextResponse.json({ error: 'Erreur lors de la création du compte.' }, { status: 500 })
     }
 
@@ -68,7 +70,7 @@ export async function POST(req: NextRequest) {
           driing_status: isDriingMember ? 'pending' : 'none',
         }, { onConflict: 'id', ignoreDuplicates: false })
       if (profileError) {
-        console.error('[register] profile upsert error:', profileError.message)
+        log.warn('profileUpsert', { msg: profileError.message })
       }
     }
 
@@ -88,7 +90,7 @@ export async function POST(req: NextRequest) {
           }),
         })
       } catch (e) {
-        console.error('[register] Brevo error:', e)
+        log.warn('brevo', { err: String(e) })
       }
     }
 
@@ -103,7 +105,7 @@ export async function POST(req: NextRequest) {
     })
 
     if (linkError || !linkData?.properties?.action_link) {
-      console.error('[register] generateLink error:', linkError?.message)
+      log.error('generateLink', { msg: linkError?.message })
       // User was created, just couldn't send email — let them know
       return NextResponse.json({ success: true, emailSent: false })
     }
@@ -126,13 +128,13 @@ export async function POST(req: NextRequest) {
     })
 
     if (resendError) {
-      console.error('[register] Resend error:', resendError)
+      log.error('resend', resendError)
       return NextResponse.json({ success: true, emailSent: false })
     }
 
     return NextResponse.json({ success: true, emailSent: true })
   } catch (e) {
-    console.error('[register] Unexpected error:', e)
+    log.error('unexpected', { err: String(e) })
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }

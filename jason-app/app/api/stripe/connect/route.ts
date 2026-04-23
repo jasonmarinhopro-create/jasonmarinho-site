@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
+import { logger } from '@/lib/logger'
+const log = logger('api/stripe/connect')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -72,7 +74,7 @@ export async function POST() {
     return NextResponse.json({ url: accountLink.url })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    console.error('[stripe/connect POST]', message, err)
+    log.error('unexpected', { message, err: String(err) })
     return NextResponse.json({ error: `Erreur lors de la création du compte Stripe : ${message}` }, { status: 500 })
   }
 }
@@ -115,7 +117,7 @@ export async function GET() {
       charges_enabled: account.charges_enabled,
     })
   } catch (err) {
-    console.error('[stripe/connect GET]', err)
+    log.error('unexpected', err)
     return NextResponse.json({ error: 'Erreur Stripe.' }, { status: 500 })
   }
 }

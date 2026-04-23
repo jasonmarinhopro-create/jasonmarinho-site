@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import Stripe from 'stripe'
 import { planFromPriceId } from '@/lib/constants/stripe-plans'
+import { logger } from '@/lib/logger'
+const log = logger('api/stripe/webhooks')
 
 function serviceClient() {
   return createClient(
@@ -26,7 +28,7 @@ export async function POST(request: NextRequest) {
   try {
     event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET)
   } catch (err) {
-    console.error('[stripe/webhooks] Signature invalide:', err)
+    log.error('invalidSignature', { err: String(err) })
     return NextResponse.json({ error: 'Signature invalide.' }, { status: 400 })
   }
 
@@ -167,7 +169,7 @@ export async function POST(request: NextRequest) {
       }
     }
   } catch (err) {
-    console.error('[stripe/webhooks] Traitement:', err)
+    log.error('unexpected', { err: String(err) })
   }
 
   return NextResponse.json({ received: true })
