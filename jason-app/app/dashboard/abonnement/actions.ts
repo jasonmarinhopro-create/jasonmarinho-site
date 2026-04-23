@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { revalidatePath } from 'next/cache'
+import { buildEmail, emailInfoBlock, emailBtn, emailP, escHtml } from '@/lib/email/template'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
@@ -61,19 +62,18 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
-    subject: `⭐ Demande Membre Driing — ${userName}`,
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #d97706;">⭐ Nouvelle demande Membre Driing</h2>
-        <div style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 16px; margin: 16px 0;">
-          <p style="margin: 0 0 8px;"><strong>Utilisateur :</strong> ${userName} (${userEmail})</p>
-          <p style="margin: 0;"><strong>E-mail Driing fourni :</strong> ${driingEmail}</p>
-        </div>
-        <p style="color: #666; font-size: 13px;">
-          À valider dans le panel admin : <a href="https://app.jasonmarinho.com/dashboard/admin/membres">Panel Admin</a>
-        </p>
-      </div>
-    `,
+    subject: `Nouvelle demande Membre Driing — ${userName}`,
+    html: buildEmail({
+      title: 'Nouvelle demande Membre Driing',
+      body: `
+        ${emailP('Un utilisateur a soumis une demande d\'adhésion Membre Driing.')}
+        ${emailInfoBlock([
+          { label: 'Utilisateur', value: escHtml(`${userName} (${userEmail})`) },
+          { label: 'E-mail Driing fourni', value: escHtml(driingEmail) },
+        ])}
+        ${emailBtn('https://app.jasonmarinho.com/dashboard/admin/membres', 'Valider dans le panel admin', 'primary')}
+      `,
+    }),
   }).catch(() => {})
 
   return { success: true }
