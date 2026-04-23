@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 const nextConfig = {
+  compress: true,
+  poweredByHeader: false,
+
+  experimental: {
+    optimizePackageImports: ['@phosphor-icons/react'],
+  },
+
   async redirects() {
     return [
       { source: '/cgv', destination: 'https://jasonmarinho.com/cgvu', permanent: true },
@@ -23,7 +34,6 @@ const nextConfig = {
       },
       {
         // Page de signature contrat (accessible sans auth) — no-store obligatoire
-        // pour que le statut du contrat soit toujours frais après signature
         source: '/sign/:path*',
         headers: [
           { key: 'X-Frame-Options', value: 'DENY' },
@@ -52,12 +62,6 @@ const nextConfig = {
     ]
   },
 
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
@@ -66,4 +70,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+module.exports = withBundleAnalyzer(nextConfig)

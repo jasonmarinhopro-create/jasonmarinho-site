@@ -89,7 +89,7 @@ function GroupForm({ initial, existingCategories, onSubmit, onCancel, submitLabe
           <label style={s.label}>Lien d'invitation *</label>
           <input name="url" required type="url" defaultValue={initial?.url ?? ''} style={s.input} placeholder="https://..." />
         </div>
-        <div style={s.formGrid} style2={{ gridTemplateColumns: '1fr 1fr' }}>
+        <div style={{ ...s.formGrid, gridTemplateColumns: '1fr 1fr' }}>
           <div style={s.formGroup}>
             <label style={s.label}>Membres</label>
             <input name="members_count" type="number" min="0" defaultValue={initial?.members_count ?? 0} style={s.input} />

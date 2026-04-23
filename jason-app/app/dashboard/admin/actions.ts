@@ -1,10 +1,11 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailP } from '@/lib/email/template'
+import { CACHE_TAGS } from '@/lib/queries/cache'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
@@ -200,7 +201,9 @@ export async function toggleContributor(userId: string, value: boolean) {
 
   if (updateError) return { error: updateError.message }
 
+  revalidateTag(CACHE_TAGS.CONTRIBUTORS)
   revalidatePath('/dashboard/admin/membres')
+  revalidatePath('/dashboard/contributeurs')
   return { success: true }
 }
 

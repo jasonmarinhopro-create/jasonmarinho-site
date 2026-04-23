@@ -11,23 +11,42 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
 
   const supabase = await createClient()
 
-  const { data: voyageur } = await supabase
-    .from('voyageurs')
-    .select('*')
-    .eq('id', id)
-    .eq('user_id', profile.userId)
-    .single()
+  // Phase A : toutes les queries indépendantes en parallèle
+  const [voyageurRes, sejoursRes, authRes, profileDataRes, logementsRes] = await Promise.all([
+    supabase
+      .from('voyageurs')
+      .select('id, prenom, nom, email, telephone, notes, created_at')
+      .eq('id', id)
+      .eq('user_id', profile.userId)
+      .single(),
+    supabase
+      .from('sejours')
+      .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien')
+      .eq('voyageur_id', id)
+      .eq('user_id', profile.userId)
+      .order('date_arrivee', { ascending: false }),
+    supabase.auth.getUser(),
+    supabase
+      .from('profiles')
+      .select('iban, bic, adresse, stripe_account_id, stripe_onboarding_complete')
+      .eq('id', profile.userId)
+      .single(),
+    supabase
+      .from('logements')
+      .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte, methodes_paiement')
+      .eq('user_id', profile.userId)
+      .order('created_at', { ascending: false }),
+  ])
 
+  const voyageur = voyageurRes.data
   if (!voyageur) notFound()
 
-  const { data: sejours } = await supabase
-    .from('sejours')
-    .select('*')
-    .eq('voyageur_id', id)
-    .eq('user_id', profile.userId)
-    .order('date_arrivee', { ascending: false })
+  const sejours = sejoursRes.data
+  const user = authRes.data.user
+  const profileData = profileDataRes.data
+  const logements = logementsRes.data
 
-  // Vérifier si signalé
+  // Phase B : reported query dépend de voyageur.email / voyageur.telephone
   const identifiers = [voyageur.email?.toLowerCase(), voyageur.telephone].filter(Boolean) as string[]
   let isFlagged = false
   if (identifiers.length > 0) {
@@ -41,17 +60,8 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   }
 
   // Profil bailleur (depuis les métadonnées utilisateur Supabase Auth)
-  const { data: { user } } = await supabase.auth.getUser()
   const meta = user?.user_metadata ?? {}
-  // Découpe full_name si prenom/nom ne sont pas définis explicitement
   const fullNameParts = ((meta.full_name ?? '') as string).trim().split(' ')
-
-  // IBAN/BIC/adresse depuis la table profiles
-  const { data: profileData } = await supabase
-    .from('profiles')
-    .select('iban, bic, adresse, stripe_account_id, stripe_onboarding_complete')
-    .eq('id', profile.userId)
-    .single()
 
   const bailleur = {
     prenom:      ((meta.prenom ?? meta.first_name ?? fullNameParts[0] ?? '') as string),
@@ -62,13 +72,6 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
     adresse:     profileData?.adresse ?? null,
     stripeReady: !!(profileData?.stripe_account_id && profileData?.stripe_onboarding_complete),
   }
-
-  // Fiches logements de l'hôte (pour pré-remplir les contrats)
-  const { data: logements } = await supabase
-    .from('logements')
-    .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte, methodes_paiement')
-    .eq('user_id', profile.userId)
-    .order('created_at', { ascending: false })
 
   return (
     <>

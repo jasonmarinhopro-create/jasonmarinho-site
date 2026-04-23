@@ -271,7 +271,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
   // Deposit modal
   const [depositContract, setDepositContract] = useState<DepositContract | null>(null)
-  const [depositLoading, setDepositLoading] = useState<string | null>(null) // sejourId en cours de chargement
+  const [depositLoading, setDepositLoading] = useState<string | null>(null)
+  const [forceSyncModal, setForceSyncModal] = useState<{ contractId: string; name: string } | null>(null)
 
   async function openDepositModal(sejourId: string) {
     setDepositLoading(sejourId)

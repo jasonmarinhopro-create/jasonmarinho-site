@@ -1,7 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/queries/cache'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
@@ -33,6 +34,7 @@ export async function submitRoadmapIdea(title: string, description: string) {
     .single()
 
   if (error) return { error: error.message }
+  revalidateTag(CACHE_TAGS.ROADMAP_ITEMS)
   revalidatePath('/dashboard/contributeurs')
   return { data: data! }
 }
@@ -57,6 +59,7 @@ export async function voteRoadmapItem(itemId: string) {
       .insert({ user_id: user.id, item_id: itemId })
   }
 
+  revalidateTag(CACHE_TAGS.ROADMAP_VOTES)
   return { success: true }
 }
 
@@ -83,6 +86,7 @@ export async function addRoadmapComment(itemId: string, content: string) {
     .single()
 
   if (error) return { error: error.message }
+  revalidateTag(CACHE_TAGS.ROADMAP_COMMENTS)
   return { data: data! }
 }
 
@@ -100,6 +104,7 @@ export async function updateRoadmapStatus(itemId: string, status: string) {
     .eq('id', itemId)
 
   if (error) return { error: error.message }
+  revalidateTag(CACHE_TAGS.ROADMAP_ITEMS)
   revalidatePath('/dashboard/contributeurs')
   return { success: true }
 }
@@ -115,6 +120,9 @@ export async function deleteRoadmapItem(itemId: string) {
     .eq('id', itemId)
 
   if (error) return { error: error.message }
+  revalidateTag(CACHE_TAGS.ROADMAP_ITEMS)
+  revalidateTag(CACHE_TAGS.ROADMAP_COMMENTS)
+  revalidateTag(CACHE_TAGS.ROADMAP_VOTES)
   revalidatePath('/dashboard/contributeurs')
   return { success: true }
 }

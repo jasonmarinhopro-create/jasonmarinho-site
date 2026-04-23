@@ -9,12 +9,12 @@ export default async function GabaritsPage() {
   const userId = profile?.userId ?? null
 
   const [{ data: templates }, { data: favData }, { data: custData }] = await Promise.all([
-    supabase.from('templates').select('*').order('category').order('title'),
+    supabase.from('templates').select('id, title, content, corps_en, category, timing, variante, variables, tags, copy_count, created_at').order('category').order('title'),
     userId
       ? supabase.from('user_template_favorites').select('template_id').eq('user_id', userId)
       : Promise.resolve({ data: [] as { template_id: string }[] }),
     userId
-      ? supabase.from('user_template_customizations').select('*').eq('user_id', userId)
+      ? supabase.from('user_template_customizations').select('id, user_id, template_id, title, content, notes, timing_label, created_at, updated_at').eq('user_id', userId)
       : Promise.resolve({ data: [] as UserTemplateCustomization[] }),
   ])
 
