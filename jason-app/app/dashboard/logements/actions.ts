@@ -15,6 +15,11 @@ export type LogementData = {
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement?: string
+  heure_arrivee?: string
+  heure_depart?: string
+  code_acces?: string
+  wifi_nom?: string
+  wifi_mdp?: string
 }
 
 export type Logement = LogementData & {
