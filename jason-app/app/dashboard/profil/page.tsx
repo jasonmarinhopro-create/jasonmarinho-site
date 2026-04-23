@@ -4,20 +4,19 @@ import Header from '@/components/layout/Header'
 import ProfilForm from './ProfilForm'
 
 export default async function ProfilPage() {
-  const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const [profile, supabase] = await Promise.all([getProfile(), createClient()])
+  const userId = profile?.userId ?? ''
+
+  const [{ data: { session } }, { data: profileData }] = await Promise.all([
+    supabase.auth.getSession(),
+    supabase.from('profiles')
+      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse')
+      .eq('id', userId)
+      .maybeSingle(),
+  ])
 
   const email = session?.user?.email ?? ''
-  const userId = session?.user?.id ?? ''
-
-  const profile = await getProfile()
   const fullName = profile?.full_name ?? ''
-
-  const { data: profileData } = await supabase
-    .from('profiles')
-    .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse')
-    .eq('id', userId)
-    .maybeSingle()
 
   const stripeAccountId = profileData?.stripe_account_id ?? null
   const stripeComplete = profileData?.stripe_onboarding_complete ?? false

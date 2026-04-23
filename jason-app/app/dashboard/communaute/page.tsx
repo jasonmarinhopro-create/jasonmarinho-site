@@ -7,28 +7,23 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export default async function CommunautePage() {
-  const profile = await getProfile()
-  const supabase = await createClient()
+  const [profile, supabase] = await Promise.all([getProfile(), createClient()])
 
-  const { data: groups } = await supabase
-    .from('community_groups')
-    .select('id, name, platform, description, members_count, url, category, tag')
-    .order('category')
-    .order('sort_order')
-    .order('name')
+  const [{ data: groups }, { data: mems }] = await Promise.all([
+    supabase.from('community_groups')
+      .select('id, name, platform, description, members_count, url, category, tag')
+      .order('category')
+      .order('sort_order')
+      .order('name'),
+    profile?.userId
+      ? supabase.from('user_community_memberships').select('group_id, status').eq('user_id', profile.userId)
+      : Promise.resolve({ data: [] as { group_id: string; status: string }[] }),
+  ])
 
-  let memberships: Record<string, 'joined' | 'dismissed'> = {}
-  if (profile?.userId) {
-    const { data: mems } = await supabase
-      .from('user_community_memberships')
-      .select('group_id, status')
-      .eq('user_id', profile.userId)
-    if (mems) {
-      mems.forEach(m => {
-        memberships[m.group_id] = m.status as 'joined' | 'dismissed'
-      })
-    }
-  }
+  const memberships: Record<string, 'joined' | 'dismissed'> = {}
+  ;(mems ?? []).forEach(m => {
+    memberships[m.group_id] = m.status as 'joined' | 'dismissed'
+  })
 
   return (
     <>
