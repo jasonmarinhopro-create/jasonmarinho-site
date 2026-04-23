@@ -18,7 +18,7 @@ const PROFILES: {
   desc: string
   color: string
   bg: string
-  Icon: React.ComponentType<{ size: number; weight: 'fill'; style?: React.CSSProperties }>
+  Icon: React.ElementType
 }[] = [
   { id: 'gites',        label: 'Gîtes',               desc: 'Logement entier · EI ou SASU',           color: '#d97706', bg: 'rgba(245,158,11,0.12)',   Icon: HouseLine },
   { id: 'chambres',     label: "Chambres d'hôtes",     desc: 'PDJ obligatoire · Présence propriétaire', color: '#db2777', bg: 'rgba(236,72,153,0.12)',   Icon: Coffee },
@@ -30,7 +30,7 @@ const GUIDE_CARDS: {
   id: string
   profile: ProfileId
   title: string
-  Icon: React.ComponentType<{ size: number; weight: 'fill'; style?: React.CSSProperties }>
+  Icon: React.ElementType
   color: string
   bg: string
 }[] = [

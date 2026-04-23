@@ -13,7 +13,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
 
   const { data: voyageur } = await supabase
     .from('voyageurs')
-    .select('*')
+    .select('id, prenom, nom, email, telephone, notes, created_at')
     .eq('id', id)
     .eq('user_id', profile.userId)
     .single()
@@ -22,7 +22,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
 
   const { data: sejours } = await supabase
     .from('sejours')
-    .select('*')
+    .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien')
     .eq('voyageur_id', id)
     .eq('user_id', profile.userId)
     .order('date_arrivee', { ascending: false })

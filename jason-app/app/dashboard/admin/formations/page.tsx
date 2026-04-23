@@ -32,7 +32,7 @@ export default async function AdminFormationsPage() {
 
   const { data: formations } = await adminClient
     .from('formations')
-    .select('*')
+    .select('id, title, slug, description, level, duration, modules_count, lessons_count, is_published, created_at')
     .order('created_at', { ascending: false })
 
   // Get enrollment counts per formation

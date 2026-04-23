@@ -6,7 +6,25 @@ import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from
 
 export const dynamic = 'force-dynamic'
 
-
+type ContractRow = {
+  id: string
+  statut: string
+  sejour_id: string | null
+  user_id: string | null
+  token_expires_at: string | null
+  locataire_email: string | null
+  bailleur_email: string
+  locataire_prenom: string
+  locataire_nom: string
+  bailleur_prenom: string
+  bailleur_nom: string
+  logement_nom?: string | null
+  logement_adresse: string
+  montant_loyer: number | null
+  montant_caution: number | null
+  modalites_paiement: string | null
+  stripe_payment_enabled: boolean | null
+}
 
 // Service role — bypass RLS complet (lecture + écriture)
 // Nécessaire car le locataire signe sans session authentifiée
@@ -58,13 +76,15 @@ export async function POST(request: NextRequest) {
     const db = createServiceClient()
 
     // ── Étape 1 : Récupérer et valider le contrat ────────────────────────────
-    const { data: contract, error: fetchError } = await db
+    const { data: contractRaw, error: fetchError } = await db
       .from('contracts')
       .select('id, statut, sejour_id, user_id, token_expires_at, locataire_email, bailleur_email, ' +
               'locataire_prenom, locataire_nom, bailleur_prenom, bailleur_nom, ' +
               'logement_adresse, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled')
       .eq('token', token)
       .single()
+
+    const contract = contractRaw as ContractRow | null
 
     if (fetchError || !contract) {
       console.error('[sign] Contract not found for token:', token, fetchError?.message, fetchError?.code)
@@ -97,7 +117,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Contrat non signable.' }, { status: 409 })
     }
 
-    if (new Date(contract.token_expires_at) < new Date()) {
+    if (!contract.token_expires_at || new Date(contract.token_expires_at) < new Date()) {
       return NextResponse.json({ error: 'Ce lien de signature a expiré. Contactez le propriétaire.' }, { status: 410 })
     }
 

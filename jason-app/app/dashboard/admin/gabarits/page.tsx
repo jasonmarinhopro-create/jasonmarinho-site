@@ -20,7 +20,7 @@ export default async function AdminGabaritsPage() {
 
   const { data: templates } = await supabase
     .from('templates')
-    .select('*')
+    .select('id, title, content, category, timing, variante, corps_en, tags, copy_count, created_at')
     .order('created_at', { ascending: false })
 
   return (

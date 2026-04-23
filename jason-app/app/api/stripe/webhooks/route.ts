@@ -155,10 +155,10 @@ export async function POST(request: NextRequest) {
 
       // Paiement échoué → passe en past_due
       case 'invoice.payment_failed': {
-        const invoice = event.data.object as Stripe.Invoice
+        const invoice = event.data.object as Stripe.Invoice & { subscription?: string | Stripe.Subscription | null }
         const subId = typeof invoice.subscription === 'string'
           ? invoice.subscription
-          : invoice.subscription?.id
+          : (invoice.subscription as Stripe.Subscription | null | undefined)?.id
         if (!subId) break
         await db.from('profiles').update({
           stripe_subscription_status: 'past_due',

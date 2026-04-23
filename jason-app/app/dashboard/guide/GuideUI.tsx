@@ -258,7 +258,7 @@ function GuideCardItem({ card }: { card: GuideCard }) {
   )
 }
 
-const FILTER_TABS: { id: ProfileFilter; label: string; Icon: React.ComponentType<{ size: number; weight: 'fill' }> | null }[] = [
+const FILTER_TABS: { id: ProfileFilter; label: string; Icon: React.ElementType | null }[] = [
   { id: 'all',          label: 'Tous les profils',    Icon: null },
   { id: 'gites',        label: 'Gîtes',               Icon: HouseLine },
   { id: 'chambres',     label: "Chambres d'hôtes",    Icon: Coffee },
