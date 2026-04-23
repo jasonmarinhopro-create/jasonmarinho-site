@@ -403,6 +403,7 @@ export default async function SignPage({
               <img
                 src={contract.signature_image}
                 alt="Signature"
+                loading="lazy"
                 style={signatureImg}
               />
             )}

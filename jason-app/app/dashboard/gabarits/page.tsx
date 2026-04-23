@@ -1,8 +1,14 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
-import GabaritsClient from './GabaritsClient'
+import dynamic from 'next/dynamic'
+import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 import type { Template, UserTemplateCustomization } from '@/types'
+
+const GabaritsClient = dynamic(() => import('./GabaritsClient'), {
+  ssr: false,
+  loading: () => <DashboardSkeleton />,
+})
 
 export default async function GabaritsPage() {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
