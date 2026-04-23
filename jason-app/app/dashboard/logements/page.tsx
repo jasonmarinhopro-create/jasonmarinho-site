@@ -9,7 +9,7 @@ export default async function LogementsServerPage() {
 
   const { data: logements } = await supabase
     .from('logements')
-    .select('id, nom, adresse')
+    .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte, methodes_paiement')
     .eq('user_id', profile.userId)
     .order('created_at', { ascending: false })
 
