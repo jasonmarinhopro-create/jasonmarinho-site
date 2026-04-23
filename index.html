@@ -723,18 +723,7 @@ function subscriberBrevo(e) {
   }
   btn.textContent = 'Envoi...';
   btn.disabled = true;
-  fetch('https://api.brevo.com/v3/contacts', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'api-key': ['xkeysib-78347a6608d76da5ed1b00d6c63b70e','cc1e41a2804d6441f4a68d6eb5de7c024-doKhVjrryvzkh0vw'].join('')
-    },
-    body: JSON.stringify({
-      email: email,
-      listIds: [2],
-      updateEnabled: true
-    })
-  }).then(function(r) {
+  fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r) {
     if (r.ok || r.status === 204) {
       msg.textContent = '\u2713 Bienvenue ! Vérifie ta boîte mail.';
       msg.style.color = '#FFD56B';
