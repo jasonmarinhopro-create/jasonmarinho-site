@@ -9,8 +9,10 @@ import {
 } from '@phosphor-icons/react'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
 import { reportGuest } from '../../securite/actions'
-import ContractModal from './ContractModal'
-import DepositModal from './DepositModal'
+import dynamic from 'next/dynamic'
+
+const ContractModal = dynamic(() => import('./ContractModal'), { ssr: false })
+const DepositModal  = dynamic(() => import('./DepositModal'),  { ssr: false })
 
 const INCIDENT_TYPES = [
   'Dégradation du logement',

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
+import { logger } from '@/lib/logger'
+const log = logger('api/contracts/resend-payment')
 
 export const dynamic = 'force-dynamic'
 
@@ -168,13 +170,13 @@ export async function POST(request: NextRequest) {
     })
 
     if (emailErr) {
-      console.error('[resend-payment] Email error:', emailErr)
+      log.error('emailSend', { err: String(emailErr) })
       return NextResponse.json({ error: 'Erreur lors de l\'envoi de l\'email.' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('[contracts/resend-payment]', err)
+    log.error('unexpected', err)
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }

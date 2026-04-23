@@ -2,8 +2,14 @@ import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import Header from '@/components/layout/Header'
-import FormationEditor from './FormationEditor'
+import dynamic from 'next/dynamic'
+import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 import { FORMATION_CONTENT_MAP } from './contentMap'
+
+const FormationEditor = dynamic(() => import('./FormationEditor'), {
+  ssr: false,
+  loading: () => <DashboardSkeleton />,
+})
 
 function getServiceClient() {
   return createServiceClient(

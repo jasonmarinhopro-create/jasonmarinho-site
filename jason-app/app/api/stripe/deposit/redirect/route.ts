@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
+import { logger } from '@/lib/logger'
+const log = logger('api/stripe/deposit/redirect')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -106,7 +108,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.redirect(session.url!)
   } catch (err) {
-    console.error('[stripe/deposit/redirect]', err)
+    log.error('unexpected', err)
     return NextResponse.redirect(`${APP_URL}/sign/${token}?deposit=error`)
   }
 }

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
+const log = logger('api/contracts/force-sign')
 
 function createServiceClient() {
   return createClient(
@@ -70,7 +72,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (updateErr || !updated) {
-      console.error('[force-sign] Update contracts failed:', updateErr)
+      log.error('updateContract', { code: updateErr?.code })
       return NextResponse.json({ error: 'Impossible de mettre à jour le contrat.' }, { status: 500 })
     }
 
@@ -89,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('[contracts/force-sign]', err)
+    log.error('unexpected', err)
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }

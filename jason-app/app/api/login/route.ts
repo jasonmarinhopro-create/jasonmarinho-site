@@ -1,13 +1,29 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
+import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
+import { logger } from '@/lib/logger'
+
+const log = logger('api/login')
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = getClientIp(req)
+    const ipLimit = rateLimit('login:ip', ip, 10, 60_000)
+    if (!ipLimit.allowed) {
+      return NextResponse.json({ error: 'TOO_MANY_REQUESTS' }, { status: 429 })
+    }
+
     const { email, password } = await req.json()
 
-    if (!email || !password) {
+    if (!isEmail(email) || !isPassword(password)) {
       return NextResponse.json({ error: 'INVALID_CREDENTIALS' }, { status: 400 })
+    }
+
+    const emailLimit = rateLimit('login:email', normalizeEmail(email), 5, 15 * 60_000)
+    if (!emailLimit.allowed) {
+      return NextResponse.json({ error: 'TOO_MANY_REQUESTS' }, { status: 429 })
     }
 
     const cookieStore = await cookies()
@@ -38,7 +54,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (e) {
-    console.error('[login] error:', e)
+    log.error('unexpected', { err: String(e) })
     return NextResponse.json({ error: 'INVALID_CREDENTIALS' }, { status: 500 })
   }
 }
