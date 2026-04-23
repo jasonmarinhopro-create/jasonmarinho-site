@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
+import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml } from '@/lib/email/template'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
@@ -113,33 +114,25 @@ export async function reportGuest(formData: {
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
-    subject: `🚨 Nouveau signalement voyageur — ${incident_type}`,
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #dc2626;">🚨 Nouveau signalement à modérer</h2>
-
-        <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin: 16px 0;">
-          <p style="margin: 0 0 8px; font-weight: 600; color: #dc2626;">Type d'incident : ${incident_type}</p>
-          <p style="margin: 0; font-size: 14px; color: #333; line-height: 1.6;">${description.trim()}</p>
+    subject: `Nouveau signalement — ${incident_type}`,
+    html: buildEmail({
+      title: 'Signalement voyageur à modérer',
+      body: `
+        ${emailInfoBlock([
+          { label: 'Type d\'incident', value: escHtml(incident_type) },
+          { label: 'Signalé par', value: escHtml(`${reporterName} (${reporterEmail})`) },
+          ...(emailVal ? [{ label: 'E-mail signalé', value: escHtml(emailVal) }] : []),
+          ...(phoneVal ? [{ label: 'Téléphone signalé', value: escHtml(phoneVal) }] : []),
+          ...(nameVal ? [{ label: 'Nom signalé', value: escHtml(nameVal) }] : []),
+        ], '#F97583')}
+        <div style="background:#0a1a13;border:1px solid #1a3328;border-radius:10px;padding:16px 18px;margin:0 0 20px;">
+          <p style="margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">DESCRIPTION</p>
+          <p style="margin:0;font-size:14px;line-height:1.7;color:#e8ede8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${escHtml(description.trim())}</p>
         </div>
-
-        <div style="margin: 16px 0;">
-          <p style="font-weight: 600; margin-bottom: 8px; color: #333;">Coordonnées signalées :</p>
-          <ul style="margin: 0; padding-left: 20px; color: #555;">
-            ${identifiersHtml}
-          </ul>
-        </div>
-
-        <p style="color: #666; font-size: 13px; margin-top: 16px;">
-          <strong>Signalé par :</strong> ${reporterName} (${reporterEmail})
-        </p>
-
-        <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">
-          Ce signalement est en attente de modération sur jasonmarinho.com.<br>
-          Une fois validé, il sera visible par la communauté.
-        </p>
-      </div>
-    `,
+        ${emailBtn('https://app.jasonmarinho.com/dashboard/admin', 'Modérer le signalement', 'primary')}
+        ${emailNote('Ce signalement est en attente de validation. Une fois approuvé, il sera visible par la communauté.')}
+      `,
+    }),
   }).catch(() => {
     // Ne pas bloquer si l'email échoue
   })
@@ -170,28 +163,20 @@ export async function requestDeletion(params: {
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
-    subject: `🔒 Demande RGPD — Suppression d'une fiche voyageur`,
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #2563eb;">🔒 Demande de suppression (droit à l'effacement — RGPD Art. 17)</h2>
-
-        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px; margin: 16px 0;">
-          <p style="margin: 0 0 8px; font-weight: 600; color: #1d4ed8;">Fiche concernée</p>
-          <p style="margin: 0; font-size: 14px; color: #333;">ID : <code>${entry_id}</code></p>
-          <p style="margin: 4px 0 0; font-size: 14px; color: #333;">Identifiant : <strong>${identifier}</strong></p>
-          ${reason ? `<p style="margin: 8px 0 0; font-size: 14px; color: #555;">Motif : ${reason}</p>` : ''}
-        </div>
-
-        <p style="color: #666; font-size: 13px;">
-          <strong>Demandé par :</strong> ${requesterName} (${requesterEmail})
-        </p>
-
-        <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">
-          Conformément au RGPD (Art. 17), cette demande doit être traitée dans un délai raisonnable.<br>
-          Connecte-toi à Supabase pour supprimer ou anonymiser la fiche concernée.
-        </p>
-      </div>
-    `,
+    subject: `Demande de suppression RGPD — Art. 17`,
+    html: buildEmail({
+      title: 'Demande d\'effacement (RGPD)',
+      body: `
+        ${emailP('Une demande de suppression de fiche a été soumise conformément à l\'article 17 du RGPD (droit à l\'effacement).')}
+        ${emailInfoBlock([
+          { label: 'Demandé par', value: escHtml(`${requesterName} (${requesterEmail})`) },
+          { label: 'ID de la fiche', value: escHtml(entry_id) },
+          { label: 'Identifiant signalé', value: escHtml(identifier) },
+          ...(reason ? [{ label: 'Motif', value: escHtml(reason) }] : []),
+        ], '#60BEFF')}
+        ${emailNote('Conformément au RGPD (Art. 17), cette demande doit être traitée dans un délai raisonnable. Connecte-toi à Supabase pour supprimer ou anonymiser la fiche concernée.')}
+      `,
+    }),
   }).catch(() => {})
 
   return { success: true }

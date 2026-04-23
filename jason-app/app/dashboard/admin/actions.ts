@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { buildEmail, emailBtn, emailP } from '@/lib/email/template'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
@@ -32,36 +33,29 @@ async function getAdminClient() {
 }
 
 async function sendDriingConfirmationEmail(userEmail: string, userName: string | null) {
-  const name = userName ?? userEmail
+  const name = userName ?? 'toi'
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: userEmail,
-    subject: '⭐ Bienvenue dans la communauté Membre Driing !',
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #040d0b; color: #f0f4ff; border-radius: 16px;">
-        <h1 style="font-size: 28px; color: #FFD56B; margin-bottom: 8px;">Bienvenue, ${name} !</h1>
-        <p style="font-size: 16px; color: rgba(240,244,255,0.7); line-height: 1.7; margin-bottom: 24px;">
-          Ton adhésion en tant que <strong style="color: #FFD56B;">Membre Driing</strong> vient d'être confirmée.
-          Tu as maintenant accès à l'ensemble des ressources exclusives de la plateforme.
-        </p>
-        <div style="background: rgba(255,213,107,0.08); border: 1px solid rgba(255,213,107,0.2); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-          <p style="margin: 0 0 12px; font-weight: 600; color: #FFD56B;">Ce qui t'attend :</p>
-          <ul style="margin: 0; padding-left: 20px; color: rgba(240,244,255,0.7); line-height: 2;">
-            <li>Toutes les formations incluses</li>
-            <li>Communauté privée Driing</li>
-            <li>Accès prioritaire aux nouveaux contenus</li>
-            <li>Offres partenaires exclusives</li>
-            <li>Support dédié</li>
-          </ul>
+    subject: 'Ton accès Membre Driing est confirmé',
+    html: buildEmail({
+      title: `Bienvenue, ${name}`,
+      preview: 'Ton adhésion Membre Driing est validée. Toutes les formations sont maintenant accessibles.',
+      body: `
+        ${emailP('Ton adhésion en tant que <strong style="color:#FFD56B;">Membre Driing</strong> vient d\'être confirmée. Tu as maintenant accès à l\'ensemble des ressources de la plateforme.')}
+        <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #FFD56B;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
+          <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:#FFD56B;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:0.3px;">INCLUS DANS TON ABONNEMENT</p>
+          <p style="margin:0;font-size:14px;color:#7a9e8a;line-height:2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+            Toutes les formations en accès illimité<br/>
+            Communauté privée Driing<br/>
+            Nouveaux contenus en accès prioritaire<br/>
+            Offres partenaires exclusives<br/>
+            Support dédié
+          </p>
         </div>
-        <a href="https://app.jasonmarinho.com/dashboard" style="display: inline-block; background: rgba(255,213,107,0.15); border: 1px solid rgba(255,213,107,0.3); color: #FFD56B; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600;">
-          Accéder à mon espace →
-        </a>
-        <p style="margin-top: 32px; font-size: 12px; color: rgba(240,244,255,0.25);">
-          — L'équipe Jason Marinho
-        </p>
-      </div>
-    `,
+        ${emailBtn('https://app.jasonmarinho.com/dashboard', 'Accéder à mon espace', 'primary')}
+      `,
+    }),
   }).catch(() => {})
 }
 

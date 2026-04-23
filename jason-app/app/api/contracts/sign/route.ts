@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
+import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
 
 export const dynamic = 'force-dynamic'
 
@@ -199,125 +200,74 @@ export async function POST(request: NextRequest) {
     const propertyLabel = (contract.logement_nom as string | null) ?? contract.logement_adresse
     const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
 
-    // Génère une ligne de coordonnées bancaires "tap-to-select" pour l'email
-    function ibanRow(label: string, value: string, mono = false, highlight = false) {
-      return `
-        <div style="margin-bottom:6px;">
-          <p style="margin:0 0 2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8b84e8;">${label}</p>
-          <div style="background:${highlight ? 'rgba(255,213,107,0.12)' : 'rgba(255,255,255,0.06)'};border:1px solid ${highlight ? 'rgba(255,213,107,0.3)' : 'rgba(255,255,255,0.1)'};border-radius:8px;padding:10px 14px;cursor:text;">
-            <p style="margin:0;font-size:${highlight ? '18px' : '14px'};font-weight:${highlight ? '700' : '400'};color:${highlight ? '#FFD56B' : '#f0ebe1'};font-family:${mono ? 'Courier New,Courier,monospace' : 'inherit'};letter-spacing:${mono ? '0.5px' : 'normal'};word-break:break-all;user-select:all;-webkit-user-select:all;">${value}</p>
-          </div>
-        </div>`
-    }
     const ibanRef = contract.logement_adresse.slice(0, 30).replace(/[^a-zA-Z0-9 ]/g, '').trim()
 
-    // Bloc virement bancaire pour l'email voyageur
     const ibanEmailBlock = (isVirement && hostIban) ? `
-        <div style="background:rgba(99,91,255,0.06);border:1px solid rgba(99,91,255,0.3);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
-          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#a29bfe;text-transform:uppercase;letter-spacing:1px;">Virement bancaire</p>
-          <p style="margin:0 0 16px;font-size:13px;color:#a5c4b0;line-height:1.6;">Appuyez sur chaque champ pour le sélectionner, puis copiez-le :</p>
-          ${ibanRow('IBAN', hostIban, true)}
-          ${hostBic ? ibanRow('BIC / SWIFT', hostBic, true) : ''}
-          ${ibanRow('Bénéficiaire', `${contract.bailleur_prenom} ${contract.bailleur_nom}`)}
-          ${Number(contract.montant_loyer) > 0 ? ibanRow('Montant à virer', `${loyerFormatted} €`, false, true) : ''}
-          ${ibanRow('Référence', ibanRef, true)}
-          <p style="margin:14px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">Indiquez bien la référence dans le libellé de votre virement. Prévenez le propriétaire une fois le virement effectué.</p>
-        </div>` : ''
+      <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #a29bfe;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
+        <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">VIREMENT BANCAIRE</p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">IBAN</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;word-break:break-all;">${escHtml(hostIban)}</td></tr>
+          ${hostBic ? `<tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">BIC</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;">${escHtml(hostBic)}</td></tr>` : ''}
+          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">Bénéficiaire</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${escHtml(`${contract.bailleur_prenom} ${contract.bailleur_nom}`)}</td></tr>
+          ${Number(contract.montant_loyer) > 0 ? `<tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">Montant</td><td style="padding:4px 0;font-size:14px;color:#FFD56B;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${loyerFormatted} €</td></tr>` : ''}
+          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">Référence</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;">${escHtml(ibanRef)}</td></tr>
+        </table>
+        <p style="margin:12px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Indiquez la référence dans le libellé du virement. Prévenez le propriétaire une fois le virement effectué.</p>
+      </div>` : ''
+
+    const stripeBlock = (hasPayment || hasCaution) ? `
+      <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #FFD56B;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
+        <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">FINALISER LE DOSSIER</p>
+        ${hasPayment ? `<a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:#FFD56B;color:#0a0f0d;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Payer la réservation — ${loyerFormatted} €</a>` : ''}
+        ${hasCaution ? `<a href="${depositRedirectUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1a3328;color:#e8ede8;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Régler la caution — ${cautionFormatted} €</a>` : ''}
+        ${hasCaution ? `<p style="margin:10px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">La caution est bloquée sur votre carte et libérée après votre séjour si aucun dommage n'est constaté.</p>` : ''}
+      </div>` : ''
+
+    const eidas = 'Ce contrat constitue une signature électronique simple au sens du règlement eIDAS (UE) 910/2014 et de l\'article 1366 du Code civil français.'
 
     // Email voyageur
-    const guestEmailHtml = `
-<!DOCTYPE html>
-<html lang="fr">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#0d1f1a;font-family:'Helvetica Neue',Arial,sans-serif;">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
-    <div style="background:#132b22;border:1px solid #1e3d2f;border-radius:20px;overflow:hidden;">
-      <div style="padding:32px 32px 24px;border-bottom:1px solid #1e3d2f;">
-        <p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#34D399;font-weight:600;">Contrat signé</p>
-        <h1 style="margin:0;font-size:24px;font-weight:400;color:#f0ebe1;font-family:Georgia,serif;">Signature confirmée</h1>
-      </div>
-      <div style="padding:28px 32px;">
-        <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Bonjour <strong style="color:#f0ebe1;">${guestName}</strong>,
-        </p>
-        <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Votre contrat de location pour <strong style="color:#f0ebe1;">${propertyLabel}</strong> a bien été signé le <strong style="color:#f0ebe1;">${signDate}</strong>.
-        </p>
-        <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:18px 20px;margin:0 0 24px;">
-          <p style="margin:0 0 4px;font-size:11px;color:#6b9a7e;text-transform:uppercase;letter-spacing:1px;">Référence signature</p>
-          <p style="margin:0;font-size:12px;color:#a5c4b0;word-break:break-all;">Signé le ${signDate} depuis l'adresse IP ${ip}</p>
-        </div>
-        ${(hasPayment || hasCaution) ? `
-        <div style="background:#0a2018;border:1px solid rgba(255,213,107,0.25);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
-          <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#FFD56B;text-transform:uppercase;letter-spacing:1px;">Étape suivante — Finalisez votre dossier</p>
-          <p style="margin:0 0 18px;font-size:14px;color:#a5c4b0;line-height:1.6;">Pour confirmer définitivement votre séjour, effectuez le(s) paiement(s) ci-dessous :</p>
-          ${hasPayment ? `
-          <a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:rgba(255,213,107,0.18);border:1px solid rgba(255,213,107,0.4);color:#FFD56B;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
-            Payer la réservation — ${loyerFormatted} € →
-          </a>` : ''}
-          ${hasCaution ? `
-          <a href="${depositRedirectUrl}" style="display:block;text-align:center;background:rgba(99,91,255,0.2);border:1px solid rgba(99,91,255,0.4);color:#a29bfe;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
-            Régler la caution — ${cautionFormatted} € →
-          </a>` : ''}
-          <p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">La caution est bloquée sur votre carte mais non débitée — elle est libérée après votre séjour si aucun dommage n'est constaté.</p>
-        </div>` : ''}
+    const guestEmailHtml = buildEmail({
+      title: 'Votre contrat est signé',
+      preview: `Signature confirmée pour ${propertyLabel}.`,
+      body: `
+        ${emailP(`Bonjour <strong style="color:#e8ede8;">${escHtml(guestName)}</strong>,`)}
+        ${emailP(`Votre contrat de location pour <strong style="color:#e8ede8;">${escHtml(propertyLabel)}</strong> a été signé le <strong style="color:#e8ede8;">${escHtml(signDate)}</strong>.`)}
+        ${emailInfoBlock([
+          { label: 'Logement', value: escHtml(propertyLabel) },
+          { label: 'Signé le', value: escHtml(signDate) },
+          { label: 'Adresse IP', value: escHtml(ip) },
+        ], '#34D399')}
+        ${stripeBlock}
         ${ibanEmailBlock}
-        <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 20px;">
-          Accéder au contrat signé
-        </a>
-        <p style="color:#6b9a7e;font-size:12px;line-height:1.6;margin:0;">
-          Ce contrat constitue une signature électronique simple valide selon le règlement eIDAS (UE) 910/2014 et l'article 1366 du Code civil français.
-        </p>
-      </div>
-    </div>
-  </div>
-</body>
-</html>`
+        ${emailBtn(contractUrl, 'Accéder au contrat signé', 'green')}
+        ${emailNote(eidas)}
+      `,
+    })
 
     // Email hôte
-    const hostEmailHtml = `
-<!DOCTYPE html>
-<html lang="fr">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#0d1f1a;font-family:'Helvetica Neue',Arial,sans-serif;">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
-    <div style="background:#132b22;border:1px solid #1e3d2f;border-radius:20px;overflow:hidden;">
-      <div style="padding:32px 32px 24px;border-bottom:1px solid #1e3d2f;">
-        <p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#34D399;font-weight:600;">Contrat signé</p>
-        <h1 style="margin:0;font-size:24px;font-weight:400;color:#f0ebe1;font-family:Georgia,serif;">Signature confirmée</h1>
-      </div>
-      <div style="padding:28px 32px;">
-        <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Bonjour <strong style="color:#f0ebe1;">${hostName}</strong>,
-        </p>
-        <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          <strong style="color:#f0ebe1;">${guestName}</strong> a signé électroniquement le contrat de location pour <strong style="color:#f0ebe1;">${propertyLabel}</strong> le <strong style="color:#f0ebe1;">${signDate}</strong>.
-        </p>
-        <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:18px 20px;margin:0 0 24px;">
-          <p style="margin:0 0 4px;font-size:11px;color:#6b9a7e;text-transform:uppercase;letter-spacing:1px;">Référence signature</p>
-          <p style="margin:0;font-size:12px;color:#a5c4b0;word-break:break-all;">Signé le ${signDate} depuis l'adresse IP ${ip}</p>
-        </div>
-        ${(hasPayment || hasCaution) ? `
-        <div style="background:#0d1f1a;border:1px solid #1e3d2f;border-radius:12px;padding:16px 20px;margin:0 0 24px;">
-          <p style="margin:0 0 6px;font-size:12px;color:#6b9a7e;text-transform:uppercase;letter-spacing:1px;">Paiements attendus du locataire</p>
-          ${hasPayment ? `<p style="margin:0 0 4px;font-size:14px;color:#FFD56B;font-weight:600;">Réservation : ${loyerFormatted} €</p>` : ''}
-          ${hasCaution ? `<p style="margin:0;font-size:14px;color:#a29bfe;font-weight:600;">Caution : ${cautionFormatted} €</p>` : ''}
-          <p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">Un email de rappel a été envoyé à ${contract.locataire_prenom} avec les liens de paiement. Suivez les paiements depuis votre tableau de bord.</p>
-        </div>` : ''}
-        <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 12px;">
-          Voir le contrat signé
-        </a>
-        <a href="${dashboardUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1e3d2f;color:#a5c4b0;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 20px;">
-          Tableau de bord
-        </a>
-        <p style="color:#6b9a7e;font-size:12px;line-height:1.6;margin:0;">
-          Ce contrat constitue une signature électronique simple valide selon le règlement eIDAS (UE) 910/2014 et l'article 1366 du Code civil français.
-        </p>
-      </div>
-    </div>
-  </div>
-</body>
-</html>`
+    const hostPaymentsBlock = (hasPayment || hasCaution) ? emailInfoBlock([
+      ...(hasPayment ? [{ label: 'Réservation', value: `${loyerFormatted} €` }] : []),
+      ...(hasCaution ? [{ label: 'Caution', value: `${cautionFormatted} €` }] : []),
+      { label: 'Locataire', value: escHtml(contract.locataire_prenom) },
+    ]) : ''
+
+    const hostEmailHtml = buildEmail({
+      title: 'Contrat signé par le locataire',
+      preview: `${guestName} a signé le contrat pour ${propertyLabel}.`,
+      body: `
+        ${emailP(`Bonjour <strong style="color:#e8ede8;">${escHtml(hostName)}</strong>,`)}
+        ${emailP(`<strong style="color:#e8ede8;">${escHtml(guestName)}</strong> a signé électroniquement le contrat pour <strong style="color:#e8ede8;">${escHtml(propertyLabel)}</strong> le <strong style="color:#e8ede8;">${escHtml(signDate)}</strong>.`)}
+        ${emailInfoBlock([
+          { label: 'Logement', value: escHtml(propertyLabel) },
+          { label: 'Signé le', value: escHtml(signDate) },
+          { label: 'Adresse IP', value: escHtml(ip) },
+        ], '#34D399')}
+        ${hostPaymentsBlock}
+        ${emailBtn(contractUrl, 'Voir le contrat signé', 'green')}
+        ${emailBtn(dashboardUrl, 'Tableau de bord', 'secondary')}
+        ${emailNote(eidas)}
+      `,
+    })
 
     if (contract.locataire_email) {
       await getResend().emails.send({
