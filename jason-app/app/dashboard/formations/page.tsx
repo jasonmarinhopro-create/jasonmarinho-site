@@ -34,7 +34,7 @@ export default async function FormationsPage() {
   const plan = profile?.plan ?? 'decouverte'
 
   const [{ data: formations }, { data: userFormations }, unlockedSlugs] = await Promise.all([
-    supabase.from('formations').select('id, slug, title, description, modules_count, lessons_count').in('slug', ACTIVE_SLUGS).eq('is_published', true).order('created_at', { ascending: true }),
+    supabase.from('formations').select('id, slug, title, description, duration, level, modules_count, lessons_count').in('slug', ACTIVE_SLUGS).eq('is_published', true).order('created_at', { ascending: true }),
     supabase.from('user_formations').select('formation_id, progress').eq('user_id', userId),
     getUnlockedFormationSlugs(supabase, userId, plan),
   ])

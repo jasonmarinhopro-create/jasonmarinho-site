@@ -494,199 +494,228 @@ export default function GabaritsClient({
   )
 }
 
-// ── SectionHeader ─────────────────────────────────────────────────────────────
+// ── Section header ────────────────────────────────────────────────────────────
+
 function SectionHeader({ Icon, label, color, count }: {
   Icon: React.ElementType; label: string; color: string; count: number
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-      <div style={{ width: 30, height: 30, borderRadius: 8, background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <Icon size={16} color={color} weight="duotone" />
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
+      <div style={{
+        width: '32px', height: '32px', borderRadius: '9px', flexShrink: 0,
+        background: `${color}18`, border: `1px solid ${color}30`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <Icon size={16} color={color} weight="fill" />
       </div>
-      <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text-1)', letterSpacing: '-0.2px' }}>{label}</h3>
-      <span style={{ marginLeft: 4, fontSize: 12, fontWeight: 600, color, background: `${color}18`, borderRadius: 20, padding: '2px 9px' }}>{count}</span>
+      <span style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)' }}>
+        {label}
+      </span>
+      <span style={{
+        fontSize: '11px', fontWeight: 600, color, background: `${color}14`,
+        border: `1px solid ${color}25`, borderRadius: '100px', padding: '2px 10px', marginLeft: '2px',
+      }}>
+        {count}
+      </span>
     </div>
   )
 }
 
-// ── TemplateCard ──────────────────────────────────────────────────────────────
+// ── Template card ─────────────────────────────────────────────────────────────
+
 interface TemplateCardProps {
   template:      Template
   isFav:         boolean
   customization: UserTemplateCustomization | undefined
   copied:        string | null
   bucket:        TimingBucket | null
-  onCopy:        (t: Template, e: React.MouseEvent, lang?: 'fr' | 'en') => void
+  onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
   onFavorite:    (id: string, e: React.MouseEvent) => void
   onCustomize:   (t: Template) => void
 }
 
 function TemplateCard({ template: t, isFav, customization, copied, bucket, onCopy, onFavorite, onCustomize }: TemplateCardProps) {
-  const [showEn, setShowEn] = useState(false)
-  const displayContent = showEn
+  const [lang, setLang] = useState<'fr' | 'en'>('fr')
+  const hasEN = !!t.corps_en
+  const accentColor = bucket ? SECTION_CONFIG[bucket].color : 'var(--text-muted)'
+  const copiedKey = t.id + lang
+  const isCopied = copied === copiedKey
+
+  const displayContent = lang === 'en'
     ? (t.corps_en ?? t.content)
     : (customization?.content ?? t.content)
-  const displayTitle = showEn ? t.title : (customization?.title ?? t.title)
-  const variables = extractVariables(displayContent)
-  const isCustomized = !!customization
-  const copiedKey = t.id + (showEn ? 'en' : 'fr')
-  const bucketCfg = bucket ? SECTION_CONFIG[bucket] : null
+  const displayTitle = customization?.title ?? t.title
+  const categoryLabel = CATEGORY_LABELS[t.category] ?? t.category
 
   return (
-    <div style={s.card} onClick={() => onCustomize(t)}>
-      <div style={s.cardTop}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, flex: 1, minWidth: 0 }}>
-          {bucketCfg && (
-            <div style={{ width: 24, height: 24, borderRadius: 6, background: `${bucketCfg.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-              <bucketCfg.icon size={13} color={bucketCfg.color} weight="duotone" />
-            </div>
+    <div style={{ ...s.card, borderLeftColor: accentColor }}>
+      {/* Header */}
+      <div style={s.cardHead}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flex: 1, minWidth: 0 }}>
+          <span style={{ ...s.catChip, background: `${accentColor}14`, color: accentColor, border: `1px solid ${accentColor}28` }}>
+            {categoryLabel}
+          </span>
+          {customization && (
+            <span style={s.customChip}>Personnalisé</span>
           )}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-              <span style={s.cardTitle}>{displayTitle}</span>
-              {isCustomized && <span style={s.customBadge}>Personnalisé</span>}
-            </div>
-            {t.category && (
-              <span style={s.catBadge}>{CATEGORY_LABELS[t.category] ?? t.category}</span>
-            )}
-          </div>
         </div>
-        <button
-          onClick={e => onFavorite(t.id, e)}
-          style={{ ...s.iconBtn, color: isFav ? '#F97583' : 'var(--text-muted)' }}
-          title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-        >
-          <Heart size={16} weight={isFav ? 'fill' : 'regular'} />
-        </button>
+        <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+          <button
+            onClick={e => onFavorite(t.id, e)}
+            style={{ ...s.iconBtn, ...(isFav ? s.iconBtnFavActive : {}) }}
+            title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+          >
+            <Heart size={14} weight={isFav ? 'fill' : 'regular'} color={isFav ? '#FFD56B' : undefined} />
+          </button>
+          <button
+            onClick={() => onCustomize(t)}
+            style={{ ...s.iconBtn, ...(customization ? s.iconBtnCustomActive : {}) }}
+            title="Personnaliser"
+          >
+            <PencilSimple size={14} weight={customization ? 'fill' : 'regular'} />
+          </button>
+        </div>
       </div>
 
-      <p style={s.cardBody}>{displayContent.slice(0, 160)}{displayContent.length > 160 ? '…' : ''}</p>
+      {/* Titre */}
+      <div style={s.cardTitle}>{displayTitle}</div>
 
-      {variables.length > 0 && (
-        <div style={s.varRow}>
-          {variables.slice(0, 4).map(v => (
-            <span key={v} style={s.varChip}>{v}</span>
-          ))}
-          {variables.length > 4 && <span style={s.varChip}>+{variables.length - 4}</span>}
+      {/* Contenu */}
+      <div style={s.contentWrap}>
+        <pre style={s.content}>{displayContent}</pre>
+        <div style={s.contentFade} />
+      </div>
+
+      {/* Note privée */}
+      {customization?.notes && lang === 'fr' && (
+        <div style={s.notePreview}>
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+            📎 {customization.notes}
+          </span>
         </div>
       )}
 
-      <div style={s.cardActions} onClick={e => e.stopPropagation()}>
-        {t.corps_en && (
-          <button
-            onClick={() => setShowEn(p => !p)}
-            style={{ ...s.langBtn, ...(showEn ? s.langBtnActive : {}) }}
-          >
-            {showEn ? 'FR' : 'EN'}
-          </button>
+      {/* Footer : copier */}
+      <div style={s.cardFooter}>
+        {hasEN && (
+          <div style={s.langToggle}>
+            <button
+              onClick={() => setLang('fr')}
+              style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}
+            >FR</button>
+            <button
+              onClick={() => setLang('en')}
+              style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActiveEN : {}) }}
+            >EN</button>
+          </div>
         )}
-        <button onClick={e => onCustomize(t)} style={s.editBtn} title="Personnaliser">
-          <PencilSimple size={13} />
-        </button>
         <button
-          onClick={e => onCopy(t, e, showEn ? 'en' : 'fr')}
-          style={{ ...s.copyBtn, ...(copied === copiedKey ? s.copyBtnDone : {}) }}
+          onClick={e => onCopy(t, e, lang)}
+          style={{
+            ...s.copyBtn,
+            ...(isCopied ? s.copyBtnDone : { borderColor: `${accentColor}35`, color: accentColor }),
+            flex: hasEN ? undefined : 1,
+          }}
         >
-          {copied === copiedKey
-            ? <><Check size={13} weight="bold" /> Copié</>
-            : <><Copy size={13} /> Copier</>}
+          {isCopied
+            ? <><Check size={14} weight="bold" /> Copié !</>
+            : <><Copy size={14} /> {lang === 'en' ? 'Copy in English' : 'Copier le message'}</>
+          }
         </button>
       </div>
     </div>
   )
 }
 
-// ── CustomizeModal ────────────────────────────────────────────────────────────
+// ── Modal personnalisation ────────────────────────────────────────────────────
+
 interface CustomizeModalProps {
-  template:       Template
-  existing:       UserTemplateCustomization | undefined
-  title:          string
-  content:        string
-  notes:          string
-  timing:         string
-  saving:         boolean
-  deleting:       boolean
-  onTitleChange:  (v: string) => void
-  onContentChange:(v: string) => void
-  onNotesChange:  (v: string) => void
-  onTimingChange: (v: string) => void
-  onSave:         () => void
-  onDelete:       () => void
-  onReset:        () => void
-  onClose:        () => void
+  template: Template; existing?: UserTemplateCustomization
+  title: string; content: string; notes: string; timing: string
+  saving: boolean; deleting: boolean
+  onTitleChange: (v: string) => void; onContentChange: (v: string) => void
+  onNotesChange: (v: string) => void; onTimingChange: (v: string) => void
+  onSave: () => void; onDelete: () => void; onReset: () => void; onClose: () => void
 }
 
 function CustomizeModal({
-  template: t, existing, title, content, notes, timing,
+  template, existing, title, content, notes, timing,
   saving, deleting,
   onTitleChange, onContentChange, onNotesChange, onTimingChange,
   onSave, onDelete, onReset, onClose,
 }: CustomizeModalProps) {
   const variables = extractVariables(content)
+  const categoryLabel = CATEGORY_LABELS[template.category] ?? template.category
 
   return (
-    <div style={s.backdrop} onClick={onClose}>
+    <div style={s.overlay} onClick={onClose}>
       <div style={s.modal} onClick={e => e.stopPropagation()}>
         <div style={s.modalHeader}>
-          <h3 style={s.modalTitle}>Personnaliser le gabarit</h3>
-          <button onClick={onClose} style={s.iconBtn}><X size={16} /></button>
+          <div>
+            <div style={{ marginBottom: '4px' }}>
+              <span className="badge badge-blue">{categoryLabel}</span>
+            </div>
+            <h3 style={s.modalTitle}>Personnaliser le gabarit</h3>
+          </div>
+          <button onClick={onClose} style={s.closeBtn}><X size={18} /></button>
         </div>
 
         <div style={s.modalBody}>
-          <label style={s.label}>Titre</label>
-          <input
-            style={s.input}
-            value={title}
-            onChange={e => onTitleChange(e.target.value)}
-            placeholder={t.title}
-          />
+          <div style={s.fieldGroup}>
+            <label style={s.label}>Titre (ton nom)</label>
+            <input value={title} onChange={e => onTitleChange(e.target.value)} placeholder={template.title} style={s.input} />
+          </div>
 
-          <label style={s.label}>Contenu</label>
-          <textarea
-            style={{ ...s.input, ...s.textarea }}
-            value={content}
-            onChange={e => onContentChange(e.target.value)}
-            placeholder={t.content}
-            rows={8}
-          />
+          <div style={s.fieldGroup}>
+            <label style={s.label}>
+              Quand envoyer ?
+              <span style={{ color: 'var(--text-muted)', fontWeight: 400, textTransform: 'none', marginLeft: '6px' }}>(libre, ex: J-2 avant arrivée)</span>
+            </label>
+            <input value={timing} onChange={e => onTimingChange(e.target.value)} placeholder="Ex: J-2 avant arrivée…" style={s.input} />
+            <div style={s.timingBtns}>
+              {TIMING_SHORTCUTS.map(sc => (
+                <button key={sc} onClick={() => onTimingChange(sc)}
+                  style={{ ...s.timingBtn, ...(timing === sc ? s.timingBtnActive : {}) }}>{sc}</button>
+              ))}
+              {timing && <button onClick={() => onTimingChange('')} style={{ ...s.timingBtn, color: 'var(--text-muted)' }}>Effacer</button>}
+            </div>
+          </div>
 
           {variables.length > 0 && (
-            <div style={s.varRow}>
-              {variables.map(v => <span key={v} style={s.varChip}>{v}</span>)}
+            <div style={s.fieldGroup}>
+              <label style={s.label}>Variables à remplacer</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                {variables.map(v => <span key={v} style={s.varChip}>{v}</span>)}
+              </div>
             </div>
           )}
 
-          <label style={s.label}>Étiquette d&apos;envoi (optionnel)</label>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-            {TIMING_SHORTCUTS.map(ts => (
-              <button
-                key={ts}
-                onClick={() => onTimingChange(timing === ts ? '' : ts)}
-                style={{ ...s.timingChip, ...(timing === ts ? s.timingChipActive : {}) }}
-              >{ts}</button>
-            ))}
+          <div style={s.fieldGroup}>
+            <label style={s.label}>Mon message</label>
+            <textarea value={content} onChange={e => onContentChange(e.target.value)} style={s.textarea} rows={10} />
           </div>
 
-          <label style={s.label}>Notes privées (optionnel)</label>
-          <textarea
-            style={{ ...s.input, ...s.textarea }}
-            value={notes}
-            onChange={e => onNotesChange(e.target.value)}
-            placeholder="Rappels, contexte, utilisation…"
-            rows={3}
-          />
+          <div style={s.fieldGroup}>
+            <label style={s.label}>Notes privées <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optionnel)</span></label>
+            <textarea value={notes} onChange={e => onNotesChange(e.target.value)} placeholder="Ex: À envoyer 48h avant via Airbnb" style={{ ...s.textarea, minHeight: '64px' }} rows={3} />
+          </div>
         </div>
 
         <div style={s.modalFooter}>
-          {existing && (
-            <button onClick={onDelete} disabled={deleting} style={s.deleteBtn}>
-              {deleting ? 'Suppression…' : 'Supprimer ma version'}
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {existing && (
+              <button onClick={onDelete} style={s.deleteBtnSmall} disabled={deleting}>
+                {deleting ? '...' : 'Supprimer ma version'}
+              </button>
+            )}
+            <button onClick={onReset} style={s.ghostBtn}>Réinitialiser</button>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={onClose} style={s.cancelBtn}>Annuler</button>
+            <button onClick={onSave} style={s.saveBtn} disabled={saving}>
+              {saving ? 'Enregistrement…' : 'Enregistrer ma version'}
             </button>
-          )}
-          <button onClick={onReset} style={s.ghostBtn}>Réinitialiser</button>
-          <button onClick={onSave} disabled={saving} style={s.saveBtn}>
-            {saving ? 'Enregistrement…' : 'Enregistrer'}
-          </button>
+          </div>
         </div>
       </div>
     </div>
@@ -694,63 +723,194 @@ function CustomizeModal({
 }
 
 // ── Styles ────────────────────────────────────────────────────────────────────
+
 const s: Record<string, React.CSSProperties> = {
-  page:        { display: 'flex', flexDirection: 'column', gap: 0, paddingBottom: 80 },
-  intro:       { marginBottom: 28 },
-  pageTitle:   { margin: 0, fontSize: 26, fontWeight: 700, color: 'var(--text-1)', letterSpacing: '-0.5px' },
-  pageDesc:    { marginTop: 8, marginBottom: 0, fontSize: 14, color: 'var(--text-3)', lineHeight: 1.6 },
+  page:      { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  intro:     { marginBottom: '32px' },
+  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  pageDesc:  { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.65 },
 
-  nav:         { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 20 },
-  navBtn:      { display: 'flex', alignItems: 'center', gap: 6, padding: '7px 13px', borderRadius: 20, fontSize: 13, fontWeight: 500, cursor: 'pointer', border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-2)', transition: 'all .15s' },
-  navCount:    { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 20, height: 18, borderRadius: 10, fontSize: 11, fontWeight: 700, padding: '0 5px' },
+  nav: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' },
+  navBtn: {
+    fontSize: '13px', fontWeight: 500, padding: '8px 16px',
+    borderRadius: '100px', cursor: 'pointer',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
+    transition: 'all 0.18s', display: 'flex', alignItems: 'center', gap: '6px',
+    whiteSpace: 'nowrap',
+  },
+  navCount: { fontSize: '10px', fontWeight: 700, borderRadius: '100px', padding: '1px 7px' },
 
-  searchWrap:  { display: 'flex', alignItems: 'center', gap: 8, background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '0 12px', height: 40, marginBottom: 32 },
-  searchInput: { flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 14, color: 'var(--text-1)' },
-  clearSearch: { background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', padding: 0 },
+  searchWrap: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '12px', padding: '11px 16px',
+    maxWidth: '480px', width: '100%', marginBottom: '32px',
+  },
+  searchInput: {
+    background: 'none', border: 'none', outline: 'none',
+    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)', width: '100%',
+  },
+  clearSearch: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', display: 'flex', padding: '2px' },
 
-  grid:        { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '16px' },
 
-  card:        { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 14, padding: '16px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 0, transition: 'border-color .15s, transform .1s', position: 'relative' },
-  cardTop:     { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 10 },
-  cardTitle:   { fontSize: 13, fontWeight: 600, color: 'var(--text-1)', lineHeight: 1.4 },
-  cardBody:    { fontSize: 13, color: 'var(--text-3)', lineHeight: 1.55, margin: '0 0 10px', flex: 1 },
-  cardActions: { display: 'flex', gap: 6, alignItems: 'center', marginTop: 'auto', paddingTop: 4 },
+  card: {
+    display: 'flex', flexDirection: 'column', gap: '14px',
+    padding: '22px 22px 18px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderLeft: '3px solid', borderRadius: '16px',
+    transition: 'box-shadow 0.18s',
+  },
+  cardHead:  { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' },
+  catChip:   { fontSize: '11px', fontWeight: 600, padding: '3px 10px', borderRadius: '100px', letterSpacing: '0.2px' },
+  customChip: {
+    fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '100px',
+    background: 'rgba(255,213,107,0.12)', color: '#FFD56B', border: '1px solid rgba(255,213,107,0.25)',
+  },
+  cardTitle: { fontSize: '16px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.35 },
 
-  catBadge:    { display: 'inline-block', marginTop: 3, fontSize: 11, color: 'var(--text-muted)', background: 'var(--bg-subtle)', borderRadius: 6, padding: '1px 6px' },
-  customBadge: { fontSize: 10, fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase' as const, color: '#60BEFF', background: 'rgba(96,190,255,0.12)', borderRadius: 6, padding: '2px 6px' },
+  iconBtn: {
+    width: '28px', height: '28px', borderRadius: '7px',
+    background: 'transparent', border: '1px solid var(--border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', color: 'var(--text-3)', transition: 'all 0.15s', flexShrink: 0,
+  },
+  iconBtnFavActive:    { background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.28)', color: '#FFD56B' },
+  iconBtnCustomActive: { background: 'rgba(96,190,255,0.08)', border: '1px solid rgba(96,190,255,0.25)', color: '#60BEFF' },
 
-  varRow:      { display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 10 },
-  varChip:     { fontSize: 11, color: '#FFD56B', background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.2)', borderRadius: 6, padding: '1px 6px' },
+  contentWrap: { position: 'relative' },
+  content: {
+    fontFamily: 'Outfit, sans-serif', fontSize: '13px', fontWeight: 300,
+    color: 'var(--text-2)', lineHeight: 1.75,
+    whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+    maxHeight: '200px', overflowY: 'auto',
+    margin: 0, paddingRight: '4px',
+    scrollbarWidth: 'thin',
+    scrollbarColor: 'var(--border) transparent',
+  },
+  contentFade: { display: 'none' },
+  notePreview: {
+    padding: '8px 12px', borderRadius: '8px',
+    background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+  },
 
-  iconBtn:     { background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, borderRadius: 6, color: 'var(--text-muted)', transition: 'color .15s' },
-  editBtn:     { display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, padding: '5px 10px', borderRadius: 8, background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-3)', cursor: 'pointer' },
-  copyBtn:     { display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600, padding: '5px 12px', borderRadius: 8, background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.25)', color: '#FFD56B', cursor: 'pointer', transition: 'all .15s', marginLeft: 'auto' },
-  copyBtnDone: { background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.3)', color: '#34D399' },
-  langBtn:     { fontSize: 11, fontWeight: 700, padding: '4px 8px', borderRadius: 7, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer' },
-  langBtnActive: { background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)', color: '#FFD56B' },
+  cardFooter: { display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' },
+  langToggle: {
+    display: 'flex', borderRadius: '8px', overflow: 'hidden',
+    border: '1px solid var(--border)', flexShrink: 0,
+  },
+  langBtn: {
+    fontSize: '11px', fontWeight: 700, padding: '0 10px', height: '32px',
+    background: 'var(--surface)', border: 'none', cursor: 'pointer',
+    color: 'var(--text-3)', fontFamily: 'Outfit, sans-serif',
+    letterSpacing: '0.4px', transition: 'all 0.15s',
+  },
+  langBtnActive:   { background: 'rgba(255,213,107,0.15)', color: '#FFD56B' },
+  langBtnActiveEN: { background: 'rgba(129,140,248,0.15)', color: '#818cf8' },
 
-  seeMoreBtn:  { display: 'flex', alignItems: 'center', gap: 6, marginTop: 14, padding: '7px 14px', borderRadius: 10, background: 'transparent', border: '1px solid var(--border)', fontSize: 12, color: 'var(--text-3)', cursor: 'pointer' },
+  copyBtn: {
+    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+    padding: '9px 16px', borderRadius: '10px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid',
+    fontSize: '13px', fontWeight: 600, fontFamily: 'Outfit, sans-serif',
+    transition: 'all 0.18s',
+  },
+  copyBtnDone: {
+    background: 'rgba(52,211,153,0.1)', borderColor: 'rgba(52,211,153,0.3)', color: '#34D399',
+  },
 
-  empty:       { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '60px 0', color: 'var(--text-muted)' },
-  emptyText:   { margin: 0, fontSize: 14, color: 'var(--text-3)', textAlign: 'center' as const },
-  ghostBtn:    { background: 'transparent', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px', fontSize: 13, color: 'var(--text-3)', cursor: 'pointer' },
+  seeMoreBtn: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    marginTop: '14px', padding: '10px 18px',
+    background: 'transparent', border: '1px solid var(--border)',
+    borderRadius: '10px', cursor: 'pointer',
+    fontSize: '13px', fontWeight: 500, color: 'var(--text-2)',
+    fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+  },
 
-  toast:       { position: 'fixed' as const, bottom: 28, left: '50%', transform: 'translateX(-50%)', background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '10px 18px', fontSize: 13, fontWeight: 500, color: 'var(--text-1)', display: 'flex', alignItems: 'center', gap: 7, boxShadow: '0 8px 24px rgba(0,0,0,0.18)', zIndex: 9999, whiteSpace: 'nowrap' as const },
+  empty:     { textAlign: 'center', padding: '60px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' },
+  emptyText: { fontSize: '14px', color: 'var(--text-3)', margin: 0 },
 
-  backdrop:    { position: 'fixed' as const, inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 },
-  modal:       { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 18, width: '100%', maxWidth: 560, maxHeight: '88vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
-  modalHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 20px 14px', borderBottom: '1px solid var(--border)' },
-  modalTitle:  { margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-1)' },
-  modalBody:   { padding: '18px 20px', overflowY: 'auto' as const, flex: 1, display: 'flex', flexDirection: 'column', gap: 4 },
-  modalFooter: { display: 'flex', gap: 8, padding: '14px 20px', borderTop: '1px solid var(--border)', justifyContent: 'flex-end' },
+  toast: {
+    position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
+    background: 'rgba(0,30,20,0.96)', border: '1px solid rgba(52,211,153,0.2)',
+    borderRadius: '10px', padding: '10px 18px',
+    display: 'flex', alignItems: 'center', gap: '8px',
+    fontSize: '13px', fontWeight: 500, color: 'var(--text)',
+    zIndex: 1000, backdropFilter: 'blur(12px)',
+    animation: 'fadeUp 0.3s ease', whiteSpace: 'nowrap',
+  },
 
-  label:       { fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 4, marginTop: 8, letterSpacing: '0.2px' },
-  input:       { width: '100%', background: 'var(--bg-subtle)', border: '1px solid var(--border)', borderRadius: 9, padding: '9px 12px', fontSize: 13, color: 'var(--text-1)', outline: 'none', boxSizing: 'border-box' as const },
-  textarea:    { resize: 'vertical' as const, fontFamily: 'inherit', lineHeight: 1.55 },
+  overlay: {
+    position: 'fixed', inset: 0, zIndex: 900,
+    background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
+  },
+  modal: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '20px', width: '100%', maxWidth: '640px',
+    maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+  },
+  modalHeader: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+    padding: '22px 24px 16px', borderBottom: '1px solid var(--border)', flexShrink: 0,
+  },
+  modalTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)' },
+  closeBtn: {
+    width: '32px', height: '32px', borderRadius: '8px',
+    background: 'var(--border)', border: 'none', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)', flexShrink: 0,
+  },
+  modalBody:   { padding: '20px 24px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' },
+  modalFooter: {
+    padding: '16px 24px', borderTop: '1px solid var(--border)',
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, flexWrap: 'wrap', gap: '8px',
+  },
 
-  timingChip:      { fontSize: 12, padding: '5px 11px', borderRadius: 20, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-3)', cursor: 'pointer' },
-  timingChipActive:{ background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.35)', color: '#FFD56B' },
+  fieldGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
+  label: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' },
+  input: {
+    background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '10px 14px',
+    fontFamily: 'Outfit, sans-serif', fontSize: '13.5px', color: 'var(--text)', outline: 'none', width: '100%',
+  },
+  textarea: {
+    background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '12px 14px',
+    fontFamily: 'Outfit, sans-serif', fontSize: '12.5px', color: 'var(--text-2)',
+    outline: 'none', width: '100%', resize: 'vertical', minHeight: '200px', lineHeight: 1.7,
+  },
 
-  saveBtn:     { padding: '8px 18px', borderRadius: 9, background: '#FFD56B', border: 'none', fontSize: 13, fontWeight: 700, color: '#0a0a0a', cursor: 'pointer' },
-  deleteBtn:   { padding: '8px 14px', borderRadius: 9, background: 'rgba(249,117,131,0.12)', border: '1px solid rgba(249,117,131,0.3)', fontSize: 13, color: '#F97583', cursor: 'pointer', marginRight: 'auto' },
+  timingBtns: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+  timingBtn: {
+    fontSize: '12px', fontWeight: 500, padding: '6px 13px', borderRadius: '100px', cursor: 'pointer',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+  },
+  timingBtnActive: { background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.3)', color: '#FFD56B' },
+
+  varChip: {
+    fontSize: '11px', fontWeight: 500, padding: '3px 9px', borderRadius: '6px',
+    background: 'rgba(96,190,255,0.1)', border: '1px solid rgba(96,190,255,0.2)', color: '#60BEFF', fontFamily: 'monospace',
+  },
+
+  saveBtn: {
+    fontSize: '13px', fontWeight: 600, padding: '9px 20px', borderRadius: '10px', cursor: 'pointer',
+    background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.3)',
+    color: '#FFD56B', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+  },
+  cancelBtn: {
+    fontSize: '13px', fontWeight: 500, padding: '9px 16px', borderRadius: '10px', cursor: 'pointer',
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
+  },
+  ghostBtn: {
+    fontSize: '12px', fontWeight: 500, padding: '7px 13px', borderRadius: '8px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-3)', fontFamily: 'Outfit, sans-serif',
+  },
+  deleteBtnSmall: {
+    fontSize: '12px', fontWeight: 500, padding: '7px 13px', borderRadius: '8px', cursor: 'pointer',
+    background: 'rgba(249,117,131,0.08)', border: '1px solid rgba(249,117,131,0.25)',
+    color: '#F97583', fontFamily: 'Outfit, sans-serif',
+  },
 }
