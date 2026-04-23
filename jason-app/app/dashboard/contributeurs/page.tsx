@@ -1,12 +1,17 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
+import {
+  getCachedContributors,
+  getCachedRoadmapItems,
+  getCachedRoadmapComments,
+  getCachedRoadmapVotes,
+} from '@/lib/queries/cache'
 import Header from '@/components/layout/Header'
 import MurDesBatisseurs, { type ContributorTile } from '@/components/MurDesBatisseurs'
 import Roadmap, { type RoadmapItemData, type RoadmapCommentData } from '@/components/Roadmap'
 import { Heart, ArrowRight, Star, ChatCircle, Rocket, Medal, Lightbulb, CheckCircle } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic   = 'force-dynamic'
-export const revalidate = 0
 export const metadata  = { title: 'Contributeurs — Jason Marinho' }
 
 export default async function ContributeursPage() {
@@ -74,44 +79,28 @@ export default async function ContributeursPage() {
   const supabase = await createClient()
   const userId   = profile?.userId ?? null
 
-  const [contributorsRes, roadmapRes, commentsRes, allVotesRes, userVotesRes] = await Promise.all([
-    supabase
-      .from('profiles')
-      .select('id, full_name, created_at')
-      .eq('is_contributor', true)
-      .order('created_at', { ascending: true }),
-
-    supabase
-      .from('roadmap_items')
-      .select('id, title, description, status, author_id, author_name, created_at')
-      .order('created_at', { ascending: false }),
-
-    supabase
-      .from('roadmap_comments')
-      .select('id, item_id, author_id, author_name, content, created_at')
-      .order('created_at', { ascending: true }),
-
-    supabase
-      .from('roadmap_votes')
-      .select('item_id'),
-
+  const [contributorsData, roadmapData, commentsData, allVotesData, userVotesRes] = await Promise.all([
+    getCachedContributors(),
+    getCachedRoadmapItems(),
+    getCachedRoadmapComments(),
+    getCachedRoadmapVotes(),
     userId
       ? supabase.from('roadmap_votes').select('item_id').eq('user_id', userId)
       : Promise.resolve({ data: [] as { item_id: string }[], error: null }),
   ])
 
-  const contributors: ContributorTile[] = (contributorsRes.data ?? []).map(c => ({
+  const contributors: ContributorTile[] = contributorsData.map(c => ({
     userId:     c.id,
     full_name:  c.full_name,
     created_at: c.created_at,
   }))
 
-  const roadmapItems  = (roadmapRes.data  ?? []) as RoadmapItemData[]
-  const comments      = (commentsRes.data ?? []) as RoadmapCommentData[]
+  const roadmapItems  = roadmapData  as RoadmapItemData[]
+  const comments      = commentsData as RoadmapCommentData[]
   const userVotesList = (userVotesRes.data ?? []).map(v => v.item_id)
 
   const voteCounts: Record<string, number> = {}
-  ;(allVotesRes.data ?? []).forEach(v => {
+  allVotesData.forEach(v => {
     voteCounts[v.item_id] = (voteCounts[v.item_id] ?? 0) + 1
   })
 

@@ -2,7 +2,8 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/queries/cache'
 
 function getServiceClient() {
   return createSupabaseAdmin(
@@ -22,6 +23,7 @@ async function assertAdmin() {
 }
 
 function revalidate() {
+  revalidateTag(CACHE_TAGS.COMMUNITY_GROUPS)
   revalidatePath('/dashboard/admin/communaute')
   revalidatePath('/dashboard/communaute')
   revalidatePath('/dashboard')
