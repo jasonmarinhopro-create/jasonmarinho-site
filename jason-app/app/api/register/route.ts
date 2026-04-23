@@ -2,40 +2,34 @@ import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { buildEmail, emailBtn, emailP, emailNote, escHtml } from '@/lib/email/template'
+import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
+import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
 
 export const dynamic = 'force-dynamic'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
-// Simple in-memory rate limiter: max 3 requests per email per 15 min
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-
-function isRateLimited(email: string): boolean {
-  const now = Date.now()
-  const entry = rateLimitMap.get(email)
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(email, { count: 1, resetAt: now + 15 * 60 * 1000 })
-    return false
-  }
-  if (entry.count >= 3) return true
-  entry.count++
-  return false
-}
-
 export async function POST(req: NextRequest) {
   try {
+    const ip = getClientIp(req)
+    const ipLimit = rateLimit('register:ip', ip, 10, 60 * 60_000)
+    if (!ipLimit.allowed) {
+      return NextResponse.json({ error: 'Trop de tentatives. Réessaye plus tard.' }, { status: 429 })
+    }
+
     const { email, password, fullName, isDriingMember, newsletterConsent } = await req.json()
 
-    if (!email || typeof email !== 'string' || !email.includes('@')) {
+    if (!isEmail(email)) {
       return NextResponse.json({ error: 'Email invalide.' }, { status: 400 })
     }
-    if (!password || typeof password !== 'string' || password.length < 8) {
+    if (!isPassword(password)) {
       return NextResponse.json({ error: 'Mot de passe trop court.' }, { status: 400 })
     }
 
-    const normalized = email.toLowerCase().trim()
+    const normalized = normalizeEmail(email)
 
-    if (isRateLimited(normalized)) {
+    const emailLimit = rateLimit('register:email', normalized, 3, 15 * 60_000)
+    if (!emailLimit.allowed) {
       return NextResponse.json(
         { error: 'Trop de tentatives. Attends 15 minutes.' },
         { status: 429 }
@@ -79,13 +73,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Add to Brevo newsletter list if consent given
-    if (newsletterConsent && userData.user) {
+    if (newsletterConsent && userData.user && process.env.BREVO_API_KEY) {
       try {
         await fetch('https://api.brevo.com/v3/contacts', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'api-key': process.env.BREVO_API_KEY || ['xkeysib-78347a6608d76da5ed1b00d6c63b70e','cc1e41a2804d6441f4a68d6eb5de7c024-doKhVjrryvzkh0vw'].join(''),
+            'api-key': process.env.BREVO_API_KEY,
           },
           body: JSON.stringify({
             email: normalized,

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
+import { isUuid } from '@/lib/security/validate'
 
 export const runtime = 'edge'
 
@@ -12,10 +14,18 @@ function getClient() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => ({}))
-  const id = body.id as string
+  const ip = getClientIp(req)
+  const limit = rateLimit('ideas:vote', ip, 30, 60_000)
+  if (!limit.allowed) {
+    return NextResponse.json({ error: 'Trop de votes. Réessaye dans 1 minute.' }, { status: 429 })
+  }
 
-  if (!id) return NextResponse.json({ error: 'id manquant' }, { status: 400 })
+  const body = await req.json().catch(() => ({}))
+  const id = body.id
+
+  if (!isUuid(id)) {
+    return NextResponse.json({ error: 'id invalide' }, { status: 400 })
+  }
 
   const supabase = getClient()
   const { error } = await supabase.rpc('increment_idea_votes', { idea_id: id })

@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
+import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
@@ -50,10 +51,16 @@ const FROM_EMAIL = 'contrats@jasonmarinho.com'
 // Body: { token, signature_image }
 export async function POST(request: NextRequest) {
   try {
+    const ipForLimit = getClientIp(request)
+    const limit = rateLimit('contracts:sign', ipForLimit, 10, 60_000)
+    if (!limit.allowed) {
+      return NextResponse.json({ error: 'Trop de tentatives. Réessaye dans 1 minute.' }, { status: 429 })
+    }
+
     const body = await request.json()
     const { token, signature_image } = body
 
-    if (!token || typeof token !== 'string') {
+    if (!token || typeof token !== 'string' || token.length < 16 || token.length > 256) {
       return NextResponse.json({ error: 'Token manquant.' }, { status: 400 })
     }
     if (!signature_image || typeof signature_image !== 'string') {
@@ -315,10 +322,16 @@ export async function POST(request: NextRequest) {
 // GET /api/contracts/sign?token=xxx
 // Retourne les données du contrat pour la page de signature (sans données sensibles)
 export async function GET(request: NextRequest) {
+  const ip = getClientIp(request)
+  const limit = rateLimit('contracts:sign:read', ip, 60, 60_000)
+  if (!limit.allowed) {
+    return NextResponse.json({ error: 'Trop de requêtes.' }, { status: 429 })
+  }
+
   const { searchParams } = new URL(request.url)
   const token = searchParams.get('token')
 
-  if (!token) {
+  if (!token || token.length < 16 || token.length > 256) {
     return NextResponse.json({ error: 'Token manquant.' }, { status: 400 })
   }
 

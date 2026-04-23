@@ -2,37 +2,31 @@ import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { buildEmail, emailBtn, emailP, emailNote } from '@/lib/email/template'
+import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
+import { isEmail, normalizeEmail } from '@/lib/security/validate'
 
 export const dynamic = 'force-dynamic'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
-// Simple in-memory rate limiter: max 3 requests per email per 15 min
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-
-function isRateLimited(email: string): boolean {
-  const now = Date.now()
-  const entry = rateLimitMap.get(email)
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(email, { count: 1, resetAt: now + 15 * 60 * 1000 })
-    return false
-  }
-  if (entry.count >= 3) return true
-  entry.count++
-  return false
-}
-
 export async function POST(req: NextRequest) {
   try {
+    const ip = getClientIp(req)
+    const ipLimit = rateLimit('reset:ip', ip, 10, 60 * 60_000)
+    if (!ipLimit.allowed) {
+      return NextResponse.json({ error: 'Trop de tentatives. Réessaye plus tard.' }, { status: 429 })
+    }
+
     const { email } = await req.json()
 
-    if (!email || typeof email !== 'string' || !email.includes('@')) {
+    if (!isEmail(email)) {
       return NextResponse.json({ error: 'Email invalide.' }, { status: 400 })
     }
 
-    const normalized = email.toLowerCase().trim()
+    const normalized = normalizeEmail(email)
 
-    if (isRateLimited(normalized)) {
+    const emailLimit = rateLimit('reset:email', normalized, 3, 15 * 60_000)
+    if (!emailLimit.allowed) {
       return NextResponse.json(
         { error: 'Trop de tentatives. Attends 15 minutes.' },
         { status: 429 }
