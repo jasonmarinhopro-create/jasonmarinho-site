@@ -28,15 +28,14 @@ const ACTIVE_SLUGS = [
 const COMING_SOON: never[] = []
 
 export default async function FormationsPage() {
-  const profile = await getProfile()
-  const supabase = await createClient()
+  const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   const userId = profile?.userId ?? ''
 
   const plan = profile?.plan ?? 'decouverte'
 
   const [{ data: formations }, { data: userFormations }, unlockedSlugs] = await Promise.all([
-    supabase.from('formations').select('*').in('slug', ACTIVE_SLUGS).eq('is_published', true).order('created_at', { ascending: true }),
-    supabase.from('user_formations').select('*').eq('user_id', userId),
+    supabase.from('formations').select('id, slug, title, description, modules_count, lessons_count').in('slug', ACTIVE_SLUGS).eq('is_published', true).order('created_at', { ascending: true }),
+    supabase.from('user_formations').select('formation_id, progress').eq('user_id', userId),
     getUnlockedFormationSlugs(supabase, userId, plan),
   ])
 
@@ -56,7 +55,7 @@ export default async function FormationsPage() {
 
         <div style={styles.section} className="fade-up d1">
           <FormationsGrid
-            formations={formations ?? []}
+            formations={(formations ?? []) as import('@/types').Formation[]}
             progressMap={progressMap}
             comingSoon={COMING_SOON}
             unlockedSlugs={unlockedSlugs}

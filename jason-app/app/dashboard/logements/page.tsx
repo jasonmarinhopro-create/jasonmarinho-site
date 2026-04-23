@@ -4,13 +4,12 @@ import Header from '@/components/layout/Header'
 import LogementsPage from './LogementsPage'
 
 export default async function LogementsServerPage() {
-  const profile = await getProfile()
+  const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   if (!profile) return null
 
-  const supabase = await createClient()
   const { data: logements } = await supabase
     .from('logements')
-    .select('*')
+    .select('id, nom, adresse')
     .eq('user_id', profile.userId)
     .order('created_at', { ascending: false })
 
