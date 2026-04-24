@@ -53,6 +53,7 @@ export const getCachedRoadmapItems = unstable_cache(
       .from('roadmap_items')
       .select('id, title, description, status, author_id, author_name, created_at')
       .order('created_at', { ascending: false })
+      .limit(200)
     return data ?? []
   },
   ['roadmap-items-v1'],
@@ -66,6 +67,7 @@ export const getCachedRoadmapComments = unstable_cache(
       .from('roadmap_comments')
       .select('id, item_id, author_id, author_name, content, created_at')
       .order('created_at', { ascending: true })
+      .limit(500)
     return data ?? []
   },
   ['roadmap-comments-v1'],
