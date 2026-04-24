@@ -30,8 +30,7 @@ ON CONFLICT (slug) DO UPDATE
       modules_count = EXCLUDED.modules_count,
       lessons_count = EXCLUDED.lessons_count,
       level         = EXCLUDED.level,
-      is_published  = EXCLUDED.is_published,
-      updated_at    = now();
+      is_published  = EXCLUDED.is_published;
 
 -- ─────────────────────────────────────────────────────────────
 -- Note : les objectifs et le contenu des 14 leçons sont gérés
