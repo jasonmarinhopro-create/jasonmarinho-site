@@ -1097,7 +1097,116 @@ Après CM bien configuré : 10 min/jour, zéro double-booking, tarification diff
       title: 'Paiements, annulations et litiges Booking',
       duration: '20 min',
       lessons: [
-        { id: 14, title: 'Les pièges paiement (no-show, caution, virement) et comment se protéger', duration: '20 min', content: `_Contenu à venir en sous-étape 5h_` },
+        { id: 14, title: 'Les pièges paiement (no-show, caution, virement) et comment se protéger', duration: '20 min', content: `## Les 4 pièges Booking qui coûtent cher si tu n'y es pas préparé
+
+Booking a des règles contractuelles **différentes d'Airbnb** sur les paiements, cautions, annulations et litiges. Un hôte qui applique ses réflexes Airbnb se fait avoir. Voici les 4 pièges principaux et les parades.
+
+### Piège 1 — Le no-show non géré
+
+**Scénario** : voyageur a réservé et payé (ou son compte est garanti), mais il ne se présente pas. Tu attends 3 h. Il ne vient pas. Que faire ?
+
+**Règle Booking** : tu as **24 h après l'heure prévue de check-in** pour **déclarer le no-show dans l'extranet** (bouton "Signaler un problème"). Au-delà, tu perds le droit de facturer la nuitée.
+
+**Conséquence si tu ne déclares pas** :
+
+- Tu n'encaisses rien (le voyageur peut réclamer un remboursement auprès de Booking)
+- Tu ne peux pas relouer la nuit (la réservation reste officiellement active)
+- Ton score de fiabilité baisse (mauvaise gestion signalée)
+
+**Bonne pratique** : si à 23 h le voyageur n'est pas arrivé (ou sans contact), déclare le no-show **le soir même** via l'app mobile. Booking te contactera pour confirmer.
+
+### Piège 2 — La caution (dépôt de garantie)
+
+Booking **ne gère pas nativement les cautions** comme Airbnb (qui a AirCover).
+
+Tu as 3 options :
+
+**Option A — Demander la caution en direct au check-in**
+- Règle : jamais par virement (délai), privilégier carte bancaire pré-autorisation ou cash.
+- Mention obligatoire : doit être dans ta description Booking ET dans l'email de confirmation automatique.
+- Montant standard : 200-500 € selon logement.
+- Relâche la caution dans les 48 h après check-out.
+
+**Option B — Utiliser SwikLy ou Youka (services tiers)**
+- Le voyageur entre une empreinte CB sur la plateforme. Tu ne prélèves que si dégât.
+- Coût : 1-2 €/caution pour toi, 0 € pour le voyageur.
+- Avantage : pas de friction au check-in.
+
+**Option C — Ne pas prendre de caution**
+- Acceptable pour logement basique, petit prix, voyageur business.
+- Tu couvres les petits dégâts toi-même dans ta marge.
+
+**Ce qu'il faut éviter** : prélever 500 € de caution sur carte **sans annoncer** dans la description et sans accord explicite. Le voyageur peut ouvrir un litige gagnant et tu es bloqué dans Booking.
+
+### Piège 3 — Le virement bancaire Booking (B2B "Payments by Booking.com")
+
+**Règle Booking** : selon le type de contrat, 2 scénarios :
+
+**Scénario A — Encaissement direct par l'hôte** (typique en France jusqu'à 2023)
+
+Le voyageur te paie directement à l'arrivée (carte, cash, virement). Booking prend sa commission (~15 %) en fin de mois via facture. C'est le modèle historique.
+
+**Scénario B — Payments by Booking.com** (nouveau standard depuis 2024)
+
+Le voyageur paie à Booking au moment de la réservation. Booking verse à l'hôte **après le check-in** via virement bancaire. La commission est déjà déduite.
+
+Les 2 scénarios existent en parallèle. **Par défaut, Booking te pousse vers le scénario B** (Payments), qui leur donne plus de contrôle.
+
+**Avantages Scénario B** :
+- Tu es payé même si le voyageur est insolvable
+- Moins de gestion côté hôte
+- Voyageurs paient en plus de devises
+
+**Inconvénients Scénario B** :
+- Tu reçois l'argent avec **15 à 45 jours de délai** (variable selon ton IBAN et ton pays)
+- Tu ne peux pas demander de caution avant le check-in
+- Les litiges sont arbitrés par Booking, pas par toi
+
+**Mon conseil** : pour un hôte qui commence sur Booking, **rester en Scénario A** (encaissement direct) permet de garder le contrôle. Basculer en Scénario B seulement quand tu as plusieurs années d'historique Booking positif.
+
+### Piège 4 — Les annulations voyageur tardives
+
+Booking ne protège PAS l'hôte contre les annulations **autorisées par la politique d'annulation que tu as choisie**. Si tu as choisi "Souple" (gratuit jusqu'à 5 j avant), le voyageur peut annuler à J-5 sans frais. Tu ne peux rien réclamer.
+
+**Par contre**, pour les annulations hors politique, Booking a une procédure :
+
+1. Voyageur annule après la date butoir → frais d'annulation dus (selon ta politique)
+2. Booking prélève automatiquement les frais sur le moyen de paiement du voyageur (si Scénario B)
+3. En Scénario A, tu factures toi-même le voyageur. Si le voyageur refuse, Booking peut se rétracter sur ta requête (preuve à l'appui).
+
+**Action de protection** : dans ta description et tes messages de confirmation, **répète la politique d'annulation en clair**. Exemple : "Annulation gratuite jusqu'au [date J-5]. Après cette date, 50 % de la réservation sera facturée." Le voyageur ne peut pas prétendre ne pas avoir vu.
+
+### Les 3 litiges les plus fréquents et comment les gérer
+
+**Litige 1 — "Les photos ne correspondaient pas"**
+- Protection : photos récentes (< 6 mois), prises avec lumière naturelle, pas de retouche excessive, équipements visibles = équipements cochés
+- En cas de litige : envoie à Booking les photos datées + description détaillée + 3-5 avis récents qui confirment la description
+
+**Litige 2 — "L'équipement X ne fonctionnait pas"**
+- Protection : test tous tes équipements avant chaque voyageur (checklist ménage)
+- En cas de litige : si avéré, propose un geste commercial (réduction, nuit gratuite future). Si non avéré, preuve photo + témoin ménage
+
+**Litige 3 — "Propreté insuffisante"**
+- Protection : photo de chaque pièce post-ménage avant chaque arrivée (ceinture + bretelles)
+- En cas de litige : tu présentes les photos horodatées. C'est ton meilleur atout.
+
+### Check-list anti-litiges
+
+☐ Politique d'annulation répétée dans description + email confirmation
+☐ Photos datées de moins de 6 mois
+☐ Caution expliquée dans la description (si tu en prends)
+☐ Checklist ménage photo à chaque arrivée
+☐ Message d'accueil automatique avec règles clarifiées
+☐ No-show déclaré immédiatement si > 3 h sans contact
+☐ Tous les messages conservés dans l'extranet (pas en SMS)
+
+### Clôture de la formation
+
+Tu viens de terminer les 7 modules et 14 leçons de cette formation. Tu as maintenant **toutes les briques nécessaires** pour transformer Booking.com en canal rentable, complémentaire d'Airbnb, résilient aux pièges algorithmiques et juridiques.
+
+**Prochaine étape recommandée** : applique **1 action par semaine** à partir du Module 2 (fiche complète), puis Module 4 (signaux classement), puis Module 5 (description IA). Compte 6 à 8 semaines pour atteindre un plateau de performance.
+
+Des questions ? Le support Jason Marinho est là pour répondre. Bonne mise en pratique !` },
       ],
     },
   ],
