@@ -80,32 +80,12 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     saveReadIds(all)
   }, [])
 
-  // Fetch profile client-side — garantit nom + rôle à jour sur toutes les pages
+  // Admin detection via currentPlan prop (passé depuis server component via getProfile).
+  // Supprimé : le refetch client-side qui refaisait 1 round-trip Supabase à chaque page.
+  // getProfile() est déjà cached() par request côté serveur.
   useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return
-      supabase
-        .from('profiles')
-        .select('full_name, plan, driing_status')
-        .eq('id', session.user.id)
-        .maybeSingle()
-        .then(({ data }) => {
-          if (data?.full_name) setUserName(data.full_name)
-          const email = session.user.email ?? ''
-          if (email === 'djason.marinho@gmail.com') {
-            setResolvedPlan('Administrateur')
-            setIsAdmin(true)
-          } else if (data?.plan === 'driing' || data?.driing_status === 'confirmed') {
-            setResolvedPlan('Membre Driing')
-          } else if (data?.plan === 'standard') {
-            setResolvedPlan('Standard')
-          } else {
-            setResolvedPlan('Découverte')
-          }
-        })
-    })
-  }, [])
+    if (currentPlan === 'Administrateur') setIsAdmin(true)
+  }, [currentPlan])
 
   // Close dropdown on outside click
   useEffect(() => {
