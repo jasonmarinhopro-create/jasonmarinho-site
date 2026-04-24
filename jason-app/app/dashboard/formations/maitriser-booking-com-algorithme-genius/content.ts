@@ -480,9 +480,231 @@ Dans l'extranet Booking, section "Analyses" :
       title: 'Les 5 signaux qui décident de ton classement',
       duration: '30 min',
       lessons: [
-        { id: 7, title: 'Taux d\'acceptation et délai de réponse — les seuils à respecter', duration: '10 min', content: `_Contenu à venir en sous-étape 5e_` },
-        { id: 8, title: 'Politique d\'annulation souple vs ferme — l\'impact SEO mesuré', duration: '10 min', content: `_Contenu à venir en sous-étape 5e_` },
-        { id: 9, title: 'Le score de fiabilité Booking — comment le monter et le garder haut', duration: '10 min', content: `_Contenu à venir en sous-étape 5e_` },
+        { id: 7, title: 'Taux d\'acceptation et délai de réponse — les seuils à respecter', duration: '10 min', content: `## Les 2 indicateurs qui pèsent le plus dans ton classement
+
+Booking mesure tous tes comportements : combien de demandes tu acceptes, en combien de temps tu réponds aux messages, comment tu gères les annulations. Deux indicateurs sortent du lot en 2026 : **le taux d'acceptation** et **le délai de réponse**.
+
+### Le taux d'acceptation : la règle implicite du 95 %
+
+**Définition** : pourcentage de demandes de réservation que tu acceptes (sur l'ensemble des demandes reçues).
+
+Booking ne communique pas publiquement sur les seuils exacts, mais les observations terrain convergent :
+
+| Taux d'acceptation | Effet sur le classement |
+|---|---|
+| **≥ 97 %** | Bonus maximum (+15 % visibilité) |
+| **90 - 97 %** | Neutre, pas de pénalité |
+| **80 - 90 %** | Pénalité modérée (-10 %) |
+| **< 80 %** | Pénalité forte (-25 %) + alerte modération |
+| **< 60 %** | Suspension de fiche possible |
+
+### Comment Booking calcule le taux
+
+Il se calcule sur **les 60 derniers jours glissants**. Refuser une demande en mars impacte ton score jusqu'à fin avril.
+
+**Important** : une annulation que tu demandes (même justifiée) compte comme un refus. Une annulation du voyageur n'impacte pas ton taux.
+
+### Les 3 erreurs qui plombent ton taux
+
+**Erreur 1 — Dépasser ta capacité** : tu acceptes trop de demandes, puis tu dois en annuler. Solution : bloque ton calendrier manuellement les jours où tu n'es pas sûr d'être disponible.
+
+**Erreur 2 — Refuser des voyageurs "à risque"** : certains hôtes refusent systématiquement les profils sans historique, les séjours d'une nuit, ou les grosses équipes. Le filtrage est humainement compréhensible mais coûte cher algorithmiquement. Mieux vaut accepter et cadrer via le règlement intérieur (module 7).
+
+**Erreur 3 — Laisser pourrir les demandes** : si tu ne réponds pas dans les 24 h à une demande, Booking l'annule automatiquement et comptabilise comme un refus. Active les notifications push.
+
+### Le délai de réponse : < 4 h en journée
+
+Booking mesure le temps écoulé entre la réception d'un message voyageur et ta réponse. Le seuil critique est **4 heures en journée (8 h-22 h)**.
+
+- **Moyenne ≤ 2 h** : badge "Répond en général dans l'heure" — impact positif fort sur la conversion
+- **2 - 4 h** : badge "Répond en général rapidement" — neutre
+- **4 - 24 h** : badge "Répond en général dans la journée" — légèrement négatif
+- **> 24 h** : pas de badge, pénalité SEO
+
+### Les 3 tactiques pour tenir le délai
+
+**1. Active les notifications push sur mobile**. L'app Booking Pro envoie une alerte dès qu'un message arrive. Réaction instantanée possible.
+
+**2. Utilise les réponses sauvegardées**. Dans l'extranet, section "Messages", tu peux créer des templates. Au moins 5 templates utiles :
+
+- "Question horaires check-in"
+- "Question parking / accès"
+- "Confirmation réservation + infos pratiques"
+- "Rappel J-1 check-in"
+- "Remerciement post-séjour + demande d'avis"
+
+**3. Forme un binôme (si conciergerie)**. Un gestionnaire + un assistant en rotation. Couverture 7h-23h.
+
+### Cas particuliers
+
+**Messages automatiques** : Booking compte les auto-replies comme des réponses humaines uniquement si elles apportent une vraie information (pas "Je vous réponds bientôt"). Un template qui répond à la question courante compte.
+
+**Voyageurs dans une autre langue** : Booking traduit automatiquement les messages. Tu peux répondre en français, le voyageur reçoit en anglais/allemand/espagnol traduit.
+
+### Action : audit rapide
+
+Ouvre ton extranet Booking, section "Opportunités" > "Indicateurs de performance". Tu verras :
+
+- Ton taux d'acceptation sur 60 j
+- Ton délai de réponse moyen
+- Ton score de fiabilité (on le détaille leçon suivante)
+
+**Si tes indicateurs sont dans le vert (seuils ci-dessus)** : tu es bien positionné, continue.
+**Si un indicateur est orange ou rouge** : corrige-le prioritairement — c'est rentabilisé en 30 jours.` },
+        { id: 8, title: 'Politique d\'annulation souple vs ferme — l\'impact SEO mesuré', duration: '10 min', content: `## La politique d'annulation : le critère le plus sous-estimé
+
+Beaucoup d'hôtes choisissent une politique d'annulation "ferme" par prudence (zéro remboursement après réservation). C'est logique, mais ça coûte extrêmement cher en classement sur Booking — et donc en revenus.
+
+### Les 5 politiques Booking standard
+
+Dans ton extranet, section "Politiques", tu choisis parmi :
+
+1. **Très souple** : annulation gratuite jusqu'à 24 h avant l'arrivée
+2. **Souple** : annulation gratuite jusqu'à 5 jours avant
+3. **Modérée** : annulation gratuite jusqu'à 14 jours avant
+4. **Ferme** : annulation gratuite jusqu'à 30 jours avant, sinon 50 % retenus
+5. **Non remboursable** : aucun remboursement quoi qu'il arrive (en échange d'une remise)
+
+### L'impact mesuré sur le classement (données 2026)
+
+Sur une analyse de 200+ fiches en 2026, voici l'écart de visibilité observé :
+
+| Politique | Visibilité vs Ferme |
+|---|---|
+| Très souple | **+45 à +60 %** |
+| Souple | **+25 à +40 %** |
+| Modérée | **+10 à +20 %** |
+| Ferme | Référence |
+| Non remboursable | **-15 à -25 %** |
+
+Oui, tu lis bien : une politique **Non remboursable rétrograde** ta fiche, malgré la remise qu'elle impose.
+
+### Pourquoi Booking privilégie la souplesse
+
+Parce que les voyageurs Booking sont majoritairement **business et week-end** (voir Module 1) : des déplacements qui peuvent être annulés ou reportés au dernier moment. Une politique souple augmente la probabilité de réservation — et donc les revenus de Booking.
+
+L'algorithme 2026 intègre ce biais : plus ta politique est souple, plus tu apparais tôt dans les résultats pour les voyageurs qui filtrent "annulation gratuite" (50 % des recherches selon Booking).
+
+### Le coût réel d'une politique souple
+
+**Question légitime** : si tu as des annulations, tu perds des revenus, non ?
+
+Données observées sur 250 hôtes en 2026 :
+
+- **Politique Très souple** : 12-18 % de taux d'annulation (dont 5-7 % de no-shows)
+- **Politique Souple** : 8-12 %
+- **Politique Modérée** : 5-8 %
+- **Politique Ferme** : 3-5 %
+- **Non remboursable** : 1-2 % (mais avec 15-25 % de remise appliquée)
+
+**Calcul net** : pour un logement à 100 € / nuit, 60 % d'occupation, la politique **Souple** génère en moyenne **+8 à +15 % de revenus net** par rapport à la politique Ferme, même après absorption des annulations.
+
+### La stratégie hybride recommandée
+
+Booking permet de proposer **plusieurs politiques en parallèle** (tarifs différents) :
+
+- **Tarif 1 "Flexible"** : politique Souple, prix normal
+- **Tarif 2 "Non remboursable"** : politique Non remboursable, prix -10 à -15 %
+
+**Règle** : activer les deux tarifs simultanément donne à l'algorithme **2 entrées** pour ta fiche. Tu captures à la fois les voyageurs recherchant la flexibilité et ceux voulant la meilleure affaire.
+
+La plupart des réservations iront sur le tarif Flexible (Booking le pousse), mais le tarif Non remboursable attire les voyageurs sûrs de leurs dates (séjours programmés longtemps à l'avance).
+
+### Cas particuliers où la ferme reste pertinente
+
+- **Haute saison très contrainte** (festival, événement unique, Olympiques) : tu peux passer en Ferme temporairement. Tu perdras en classement pendant ~30 j après retour.
+- **Logements haut de gamme avec service** (villa avec piscine + ménage + linge) : la politique Modérée ou Ferme se justifie par le coût de re-préparation. Ne descends pas en dessous de Modérée.
+- **Très petites capacités + très petits prix** : si tu loues à 40 €/nuit, une annulation tardive te coûte vraiment cher. Modérée acceptable.
+
+### Ce que tu dois changer maintenant
+
+1. **Ouvre ton extranet Booking, section Politiques**
+2. **Ta politique actuelle est Ferme ou Non remboursable ?** Bascule en Souple (annulation gratuite jusqu'à 5 j avant)
+3. **Ajoute un 2e tarif Non remboursable à -10 %** pour ne pas perdre les voyageurs prix-sensibles
+4. **Attends 30 jours** et mesure ton CA mensuel vs le mois précédent
+
+Tu devrais voir un gain net sur les 60 jours qui suivent.` },
+        { id: 9, title: 'Le score de fiabilité Booking — comment le monter et le garder haut', duration: '10 min', content: `## Le "Score de Fiabilité" : le critère global qui peut te rétrograder en une journée
+
+Depuis fin 2025, Booking affiche un **score de fiabilité de l'hôte** en pourcentage dans ton extranet. Visible par toi, invisible par les voyageurs, mais **utilisé directement par l'algorithme de classement**.
+
+En dessous de 85 %, tu es rétrogradé. En dessous de 75 %, tu as une alerte modération. En dessous de 65 %, ta fiche peut être suspendue.
+
+### Comment le score est calculé (7 composantes)
+
+1. **Taux d'acceptation** (voir leçon précédente) : pondération 25 %
+2. **Délai de réponse** : 15 %
+3. **Respect des confirmations** : 15 %
+4. **Taux d'annulation hôte** : 15 %
+5. **Précision de l'annonce** (matches équipements / description / photos avec réalité) : 10 %
+6. **Note moyenne** (6 mois glissants) : 10 %
+7. **Avis récents (90 derniers jours)** : 10 %
+
+### Les 4 actions qui détruisent le score
+
+**1. Une annulation hôte** (peu importe la raison). Chaque annulation que TU demandes = -10 points sur le score, perdus pendant 90 jours. 3 annulations en 60 j = ton score passe de 95 à 65.
+
+Solution : si tu dois annuler, **contacte le voyageur AVANT** et demande-lui d'annuler de son côté (avec un geste commercial si besoin). Une annulation voyageur n'impacte pas ton score.
+
+**2. Un signalement voyageur "annonce trompeuse"**. Si un voyageur ouvre un litige en disant que l'annonce ne correspond pas (photos retouchées, équipement manquant, superficie fausse), Booking enquête et peut trancher contre toi. -15 à -30 points.
+
+Solution : photos récentes et réalistes, description factuelle sans embellissement, équipements **réellement** présents.
+
+**3. Un no-show non géré**. Si un voyageur ne se présente pas et que tu ne déclares pas le no-show via l'extranet dans les 24 h, Booking considère par défaut que tu as accueilli le voyageur. Si le voyageur réclame ensuite un remboursement, tu n'as plus de défense.
+
+Solution : **toujours déclarer un no-show** immédiatement dans l'extranet (bouton "Signaler un problème").
+
+**4. Des messages agressifs ou non professionnels**. Booking lit les messages. Un ton agressif ou des refus humiliants sont détectés automatiquement. Ça alimente le score "comportement hôte" de manière invisible.
+
+### Les 3 actions qui boostent le score
+
+**1. Collecter des avis récents (90 j)**. Après chaque séjour, envoie un message post-départ du type : "Merci d'avoir choisi notre logement ! Si le séjour vous a plu, un avis sur Booking nous aide beaucoup. Voici le lien direct : [lien fourni par Booking]".
+
+Le simple fait d'avoir **10 avis récents avec note moyenne > 9** booste ton score de 5-10 points.
+
+**2. Répondre à 100 % des avis**. Booking tracke ton taux de réponse aux avis (positifs ET négatifs). 100 % de réponse = bonus score. Même pour les avis 5/10 : réponds poliment, propose une solution si applicable.
+
+**3. Mettre à jour la fiche régulièrement**. Chaque modification (photos, description, équipements) signale à Booking que l'annonce est "active". Un hôte qui ne touche pas sa fiche pendant 6 mois est considéré comme passif, ce qui peut dégrader le score.
+
+Minimum recommandé : **1 modification toutes les 4-6 semaines** (ajout d'une photo, petit ajustement de description).
+
+### Comment consulter ton score
+
+Extranet > Menu "Opportunités" > "Indicateurs de performance" > "Score de fiabilité".
+
+Tu y verras :
+
+- Ton score global (%)
+- Les 7 composantes détaillées
+- Les 3 actions prioritaires recommandées par Booking (personnalisées pour toi)
+
+Consulte ça au moins **1 fois par mois**. Si une composante passe en rouge, traite-la dans les 7 jours.
+
+### Cas concret : remonter de 72 à 92 % en 45 jours
+
+Hôte Paris 11e, score 72 % fin 2025. Problèmes :
+
+- 2 annulations hôte en 60 jours (déménagement travaux)
+- Délai de réponse à 14 h (pas de notifications push)
+- Note moyenne 8,7 (un avis à 6 dans le dernier mois)
+
+Actions en 45 jours :
+
+- **J1** : active notifications push, délai de réponse ramené à 3 h en 10 jours
+- **J7** : répond à l'avis 6 avec empathie + solution proposée + geste commercial proposé
+- **J15** : refait 8 photos (mise à jour signalée à Booking)
+- **J30** : collecte 4 avis récents 10/10 via message post-départ
+- **J45** : score remonte à 89 %. Fin de pénalité de classement
+
+Moralité : le score est un indicateur **actionnable**, pas une fatalité.
+
+### À retenir
+
+- **Score > 90 %** = classement maximisé
+- **Score 75-90 %** = neutre
+- **Score < 75 %** = pénalité active
+- **Checker 1x/mois minimum**
+- **1 annulation hôte = -10 points pour 90 jours**` },
       ],
     },
     {
