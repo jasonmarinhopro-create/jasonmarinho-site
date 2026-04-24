@@ -101,6 +101,39 @@ img{max-width:100%;height:auto}
 .btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
 .btn-ol:hover{background:var(--g);color:#fff}
 
+/* ── SERVICE CARDS (grille auto-fit 3 cols desktop) ── */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.svc-card{display:flex;flex-direction:column;gap:12px;background:var(--w);border:1px solid var(--bd);border-radius:16px;padding:24px;text-decoration:none;color:inherit;transition:transform .22s,box-shadow .22s,border-color .22s;position:relative}
+.svc-card:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
+.svc-card.featured{border-color:rgba(255,213,107,.28);background:linear-gradient(180deg,rgba(255,213,107,.05),var(--w) 45%)}
+.svc-card.featured:hover{border-color:rgba(255,213,107,.55);box-shadow:0 14px 36px rgba(255,213,107,.14)}
+.svc-card.dark{background:var(--gd);border-color:rgba(255,213,107,.12)}
+.svc-card.dark .svc-t{color:#fff}
+.svc-card.dark .svc-d{color:rgba(255,255,255,.5)}
+.svc-card.dark .svc-go{color:var(--y)}
+.svc-card.dark:hover{border-color:rgba(255,213,107,.3);box-shadow:0 14px 36px rgba(0,0,0,.3)}
+.svc-ico{width:44px;height:44px;border-radius:12px;background:var(--cr);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .22s}
+.svc-ico i{font-size:20px;color:var(--g);line-height:1;transition:color .22s}
+.svc-card:hover .svc-ico{background:var(--g)}
+.svc-card:hover .svc-ico i{color:var(--y)}
+.svc-card.featured .svc-ico{background:rgba(255,213,107,.16)}
+.svc-card.featured .svc-ico i{color:#b8913a}
+.svc-card.featured:hover .svc-ico{background:var(--y)}
+.svc-card.featured:hover .svc-ico i{color:var(--gd)}
+.svc-card.dark .svc-ico{background:rgba(255,213,107,.12)}
+.svc-card.dark .svc-ico i{color:var(--y)}
+.svc-kind{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol)}
+.svc-card.dark .svc-kind{color:rgba(255,213,107,.7)}
+.svc-t{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.2px}
+.svc-d{font-size:13.5px;font-weight:300;color:var(--tm);line-height:1.6;flex:1}
+.svc-go{font-size:13px;font-weight:600;color:var(--g);display:inline-flex;align-items:center;gap:5px;margin-top:4px;transition:gap .2s}
+.svc-card:hover .svc-go{gap:9px}
+.svc-go i{font-size:12px}
+.svc-badge{position:absolute;top:20px;right:20px;font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#b8913a;background:rgba(255,213,107,.16);border:1px solid rgba(255,213,107,.3);padding:4px 8px;border-radius:100px}
+
+/* Grille 2 cols responsive */
+@media(max-width:760px){.svc-grid{grid-template-columns:1fr}}
+
 /* ── ANIM ── */
 @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
@@ -133,7 +166,51 @@ img{max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- Sections à venir (4b, 4c, 4d) -->
+<!-- OUTILS -->
+<section class="sec wh" id="outils">
+  <div class="s-in">
+    <div style="max-width:700px;margin-bottom:44px" class="rv">
+      <div class="lbl">Outils gratuits</div>
+      <h2 class="h2">Les outils qu'un hôte <em>utilise au quotidien</em></h2>
+      <p class="sub">Quatre outils opérationnels pour gérer tes séjours, piloter tes revenus, sécuriser tes réservations et gagner du temps sur la communication voyageur. Tous accessibles gratuitement depuis ton espace membre.</p>
+    </div>
+    <div class="svc-grid">
+
+      <a href="/services/calendrier" class="svc-card rv d1">
+        <div class="svc-ico"><i class="ph-bold ph-calendar-check"></i></div>
+        <div class="svc-kind">Outil</div>
+        <div class="svc-t">Calendrier & check-list par séjour</div>
+        <div class="svc-d">Synchronise tes flux iCal Airbnb, Booking et autres plateformes, et suis chaque séjour avec une check-list en 13 étapes pour ne rien oublier avant, pendant et après.</div>
+        <span class="svc-go">Ouvrir l'outil <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+
+      <a href="/services/revenus" class="svc-card rv d2">
+        <div class="svc-ico"><i class="ph-bold ph-chart-line-up"></i></div>
+        <div class="svc-kind">Outil</div>
+        <div class="svc-t">Suivi des revenus & paiements</div>
+        <div class="svc-d">Un journal centralisé des virements, espèces, chèques et paiements en ligne : vois ce qui est encaissé, ce qui est en attente, et compare tes revenus mois après mois.</div>
+        <span class="svc-go">Ouvrir l'outil <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+
+      <a href="/services/securite" class="svc-card rv d3">
+        <div class="svc-ico"><i class="ph-bold ph-shield-check"></i></div>
+        <div class="svc-kind">Outil</div>
+        <div class="svc-t">Vérification voyageurs</div>
+        <div class="svc-d">Un doute sur une demande de réservation ? Consulte la base communautaire pour savoir si le voyageur a déjà eu un signalement ou si tout s'est toujours bien passé ailleurs.</div>
+        <span class="svc-go">Consulter la base <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+
+      <a href="/ressources/gabarits-messages" class="svc-card rv d4">
+        <div class="svc-ico"><i class="ph-bold ph-chat-text"></i></div>
+        <div class="svc-kind">Outil</div>
+        <div class="svc-t">Gabarits de messages</div>
+        <div class="svc-d">Modèles de messages Airbnb, Booking et direct prêts à copier-coller : confirmation, rappel check-in, accueil, check-out, demande d'avis, réponses aux avis négatifs.</div>
+        <span class="svc-go">Télécharger les modèles <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+
+    </div>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <script src="/footer.js"></script>
