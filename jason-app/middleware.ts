@@ -27,34 +27,44 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // getUser() validates the JWT with the Supabase Auth server AND refreshes it if expired,
-  // then writes the new token back via cookies.set above. Without this, an expired JWT causes
-  // all RLS-protected server-side queries to silently return null (role defaults to 'user').
-  const { data: { user } } = await supabase.auth.getUser()
-
-  // Redirect unauthenticated users from /dashboard to login
-  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/auth/login'
-    return NextResponse.redirect(url)
-  }
+  // Optimisation : getSession() décode la JWT localement (pas de round-trip Supabase).
+  // Suffisant pour la logique de redirection sur / et /auth/*.
+  // Pour /dashboard/* on appelle getUser() ensuite qui valide + refresh la JWT
+  // (indispensable pour ne pas avoir d'expired JWT sur les queries RLS).
+  const path = request.nextUrl.pathname
 
   // Always allow access to reset-password page (needs unauthenticated access with token)
-  if (request.nextUrl.pathname === '/auth/reset-password') {
+  if (path === '/auth/reset-password') {
     return supabaseResponse
   }
 
-  // Redirect authenticated users away from auth pages
-  if (user && request.nextUrl.pathname.startsWith('/auth')) {
+  // Pour les routes /dashboard/*, on fait getUser() (valide + refresh la JWT).
+  // getUser() writes new tokens via cookies.set — nécessaire pour ne pas casser
+  // les queries RLS server-side avec une JWT expirée.
+  if (path.startsWith('/dashboard')) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/auth/login'
+      return NextResponse.redirect(url)
+    }
+    return supabaseResponse
+  }
+
+  // Pour / et /auth/*, getSession() suffit (pas de query RLS derrière à protéger).
+  // Gain : −50 à −100 ms sur les pages login/register/reset-password.
+  const { data: { session } } = await supabase.auth.getSession()
+  const isAuthed = !!session
+
+  if (isAuthed && path.startsWith('/auth')) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 
-  // Redirect root to dashboard
-  if (request.nextUrl.pathname === '/') {
+  if (path === '/') {
     const url = request.nextUrl.clone()
-    url.pathname = user ? '/dashboard' : '/auth/login'
+    url.pathname = isAuthed ? '/dashboard' : '/auth/login'
     return NextResponse.redirect(url)
   }
 
