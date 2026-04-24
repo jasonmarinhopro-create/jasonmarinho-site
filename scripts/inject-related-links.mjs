@@ -41,7 +41,7 @@ const TARGETS = {
   'res:guides':           { href: '/services/guides-lcd',     label: 'Guides LCD',                 desc: 'Guides complets pour chaque thématique LCD importante.',        icon: 'ph-books',            kind: 'Ressource' },
   'res:communaute':       { href: '/services/communaute',     label: 'Communauté LCD',             desc: 'Groupes Facebook privés pour échanger entre hôtes.',           icon: 'ph-users-four',       kind: 'Ressource' },
   'res:partenaires':      { href: '/services/partenaires',    label: 'Partenaires exclusifs',      desc: 'Outils et assurances avec conditions négociées pour les membres.', icon: 'ph-handshake',     kind: 'Ressource' },
-  'res:formations':       { href: '/services/formations',     label: 'Toutes les formations',      desc: '15 formations pour développer ton activité LCD.',               icon: 'ph-graduation-cap',   kind: 'Ressource' },
+  'res:formations':       { href: '/services/formations',     label: 'Toutes les formations',      desc: '16 formations pour développer ton activité LCD.',               icon: 'ph-graduation-cap',   kind: 'Ressource' },
 };
 
 // Pages à enrichir : slug local → { title, subtitle, related[], beforeSelector }
