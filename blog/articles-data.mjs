@@ -53,6 +53,16 @@ export const articles = [
   { slug: 'check-in-location-courte-duree-boite-a-cles-serrure-connectee', categorySlug: 'automatisation', date: '2026-03-25', readTime: 7, title: 'Check-in en LCD : accueil en personne, boîte à clés ou serrure connectée ?' },
   { slug: 'assurance-location-courte-duree-airbnb-couverture',     categorySlug: 'reglementation', date: '2026-03-25', readTime: 8,  title: 'Assurance en location courte durée : ce que couvre vraiment Airbnb (et ce qu\'il ne couvre pas)' },
   { slug: 'basse-saison-location-courte-duree-strategies-reservations', categorySlug: 'revenus',   date: '2026-03-25', readTime: 8,  title: 'Basse saison en LCD : 7 stratégies concrètes pour remplir ton calendrier' },
+  { slug: 'tva-location-courte-duree-2026', categorySlug: 'fiscalite', date: '2026-04-24', readTime: 8, title: 'TVA en location courte durée : qui est concerné en 2026 et comment se préparer' },
+  { slug: 'dpe-location-courte-duree-obligations-2025-2034', categorySlug: 'reglementation', date: '2026-04-24', readTime: 7, title: 'DPE en location courte durée : ce qui est déjà interdit et l\'horizon 2034 que tu ne peux pas ignorer' },
+  { slug: 'algorithme-airbnb-2026-criteres-classement', categorySlug: 'visibilite', date: '2026-04-24', readTime: 8, title: 'Algorithme Airbnb 2026 : les 4 critères qui décident vraiment de ton classement' },
+  { slug: 'workation-lcd-logement-equiper-louer-cher-hors-saison', categorySlug: 'revenus', date: '2026-04-24', readTime: 7, title: 'Workation en LCD : les 5 équipements qui te permettent de louer 30 % plus cher hors saison' },
+  { slug: 'sejours-longs-lcd-strategie-revenus-basse-saison', categorySlug: 'revenus', date: '2026-04-24', readTime: 7, title: 'Séjours longs en LCD : la stratégie complète pour booster ton taux d\'occupation de 15 % en basse saison' },
+  { slug: 'chatgpt-booking-com-impact-hotes-lcd', categorySlug: 'visibilite', date: '2026-04-24', readTime: 7, title: 'Booking.com x ChatGPT : ce que l\'intégration IA change concrètement pour ton annonce' },
+  { slug: 'photos-airbnb-computer-vision-ia-optimiser', categorySlug: 'visibilite', date: '2026-04-24', readTime: 7, title: 'Photos Airbnb et Computer Vision : comment l\'IA juge tes images et ce qu\'il faut changer' },
+  { slug: 'hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls', categorySlug: 'automatisation', date: '2026-04-24', readTime: 7, title: 'Hospitable intègre la tarification dynamique : la fin des outils de pricing séparés pour les petits hôtes ?' },
+  { slug: 'cybevasion-rachetee-holidu-impact-hotes-alternatives', categorySlug: 'revenus', date: '2026-04-24', readTime: 6, title: 'Cybevasion rachetée par Holidu : ce que ça change pour les hôtes et les meilleures alternatives' },
+  { slug: 'numero-enregistrement-lcd-20-mai-2026-demarches', categorySlug: 'reglementation', date: '2026-04-24', readTime: 6, title: 'Numéro d\'enregistrement LCD obligatoire dès le 20 mai 2026 : les démarches à faire maintenant' },
 ]
 
 export const CATEGORIES = {
