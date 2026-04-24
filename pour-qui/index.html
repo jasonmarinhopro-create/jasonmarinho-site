@@ -153,11 +153,15 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .btn-ol:hover{background:var(--g);color:#fff}
 
 /* ── AUDIENCE CARDS ── */
-.aud-g{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.aud-card{background:var(--w);border:1px solid var(--bd);border-radius:20px;padding:clamp(28px,3vw,40px);position:relative;transition:box-shadow .25s,transform .25s}
-.aud-card:hover{box-shadow:0 16px 48px rgba(0,76,63,.1);transform:translateY(-3px)}
+.aud-g{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.aud-card{display:block;background:var(--w);border:1px solid var(--bd);border-radius:20px;padding:clamp(28px,3vw,40px);position:relative;transition:box-shadow .25s,transform .25s,border-color .25s;text-decoration:none;color:inherit}
+.aud-card:hover{box-shadow:0 16px 48px rgba(0,76,63,.1);transform:translateY(-3px);border-color:rgba(0,76,63,.18)}
 .aud-card.featured{border-color:rgba(255,213,107,.3);background:var(--w);box-shadow:0 4px 20px rgba(255,213,107,.08)}
-.aud-card.featured:hover{box-shadow:0 16px 48px rgba(255,213,107,.15);transform:translateY(-3px)}
+.aud-card.featured:hover{box-shadow:0 16px 48px rgba(255,213,107,.15);transform:translateY(-3px);border-color:rgba(255,213,107,.55)}
+.aud-go{font-size:14px;font-weight:600;color:var(--g);display:inline-flex;align-items:center;gap:6px;transition:gap .2s}
+.aud-card:hover .aud-go{gap:10px}
+.aud-go i{font-size:13px}
+.aud-card.featured .aud-go{color:#b8913a}
 .aud-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,213,107,.15);border:1px solid rgba(255,213,107,.3);color:#b8913a;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:20px}
 .aud-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
 .aud-ico i{font-size:26px}
@@ -208,20 +212,18 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .rv.in{opacity:1;transform:translateY(0)}
-.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
   .n-links,.n-right{display:none}
   .hbg{display:flex}
   .aud-g{grid-template-columns:1fr 1fr}
-  .aud-g .aud-card:last-child{grid-column:1/-1}
   .ft-g{grid-template-columns:1fr 1fr;gap:32px}
   .blog-cta{padding:32px}
 }
 @media(max-width:640px){
   .aud-g{grid-template-columns:1fr}
-  .aud-g .aud-card:last-child{grid-column:auto}
   .blog-cta{flex-direction:column;align-items:flex-start;padding:28px 24px}
   .ft-g{grid-template-columns:1fr;gap:28px}
   .ft-desc{max-width:100%}
@@ -251,78 +253,99 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <!-- AUDIENCE CARDS -->
 <section class="sec wh" id="audiences">
   <div class="s-in">
-    <div style="max-width:600px;margin-bottom:52px" class="rv">
+    <div style="max-width:640px;margin-bottom:52px" class="rv">
       <div class="lbl">Profils</div>
-      <h2 class="h2">Ce site est <em>fait pour toi</em></h2>
-      <p class="sub">Trois profils principaux bénéficient des formations et ressources disponibles ici.</p>
+      <h2 class="h2">Quatre profils d'hôtes, <em>quatre parcours</em></h2>
+      <p class="sub">Que tu gères une chambre d'hôtes, un gîte, une conciergerie multi-biens ou que tu sois déjà membre Driing, chaque profil a ses formations, outils et ressources dédiés.</p>
     </div>
     <div class="aud-g">
 
-      <!-- Card 1 — Hôtes -->
-      <div class="aud-card rv d1">
+      <!-- Card 1 — Chambres d'hôtes -->
+      <a href="/pour-qui/chambres-dhotes" class="aud-card rv d1">
         <div class="aud-ico green">
           <i class="ph-bold ph-house-line"></i>
         </div>
-        <div class="aud-t">Hôtes indépendants</div>
-        <div class="aud-sub">Chambres d'hôtes, gîtes, appartements</div>
-        <p class="aud-d">Tu gères ton bien toi-même et tu veux maximiser tes revenus sans y passer tout ton temps. Les formations et gabarits sont faits pour être directement applicables, même si tu démarres.</p>
+        <div class="aud-t">Chambres d'hôtes</div>
+        <div class="aud-sub">Petite capacité, accueil personnalisé</div>
+        <p class="aud-d">Tu gères une ou plusieurs chambres d'hôtes en direct : l'hospitalité est ton métier, l'expérience voyageur ton ADN. Les ressources ciblées maximisent tes avis 5 étoiles et ta visibilité locale.</p>
         <ul class="aud-list">
           <li>
             <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Optimiser ta visibilité sur Airbnb
+            Optimiser ton annonce Airbnb & ta fiche Google
           </li>
           <li>
             <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Automatiser les messages voyageurs
+            Décorer et aménager pour convertir plus
           </li>
           <li>
             <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Comprendre la tarification dynamique
+            Automatiser les messages et le livret d'accueil
           </li>
         </ul>
-        <a href="/services/formations" class="btn-ol">
-          Voir les formations <i class="ph-bold ph-arrow-right"></i>
-        </a>
-      </div>
+        <span class="aud-go">Voir les ressources chambres d'hôtes <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
 
-      <!-- Card 2 — Conciergeries -->
-      <div class="aud-card rv d2">
+      <!-- Card 2 — Gîtes -->
+      <a href="/pour-qui/gites" class="aud-card rv d2">
+        <div class="aud-ico green">
+          <i class="ph-bold ph-tree-evergreen"></i>
+        </div>
+        <div class="aud-t">Gîtes</div>
+        <div class="aud-sub">Campagne, mer, montagne — tourisme saisonnier</div>
+        <p class="aud-d">Tu loues un gîte rural ou saisonnier : la visibilité locale, la tarification adaptée à la saison et le charme de ton bien sont les clés. Les ressources sont pensées pour les zones hors métropole.</p>
+        <ul class="aud-list">
+          <li>
+            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
+            Se faire référencer sur Google Maps
+          </li>
+          <li>
+            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
+            Tarification saisonnière et basse saison
+          </li>
+          <li>
+            <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
+            Réservation directe sans commission
+          </li>
+        </ul>
+        <span class="aud-go">Voir les ressources gîtes <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+
+      <!-- Card 3 — Conciergeries -->
+      <a href="/pour-qui/conciergeries" class="aud-card rv d3">
         <div class="aud-ico green">
           <i class="ph-bold ph-briefcase"></i>
         </div>
         <div class="aud-t">Conciergeries</div>
-        <div class="aud-sub">Gestion locative multi-biens</div>
-        <p class="aud-d">Tu gères les biens de plusieurs propriétaires et tu as besoin de process reproductibles, d'outils fiables et de formations pour ton équipe.</p>
+        <div class="aud-sub">Gestion locative multi-biens, pros LCD</div>
+        <p class="aud-d">Tu gères les biens de plusieurs propriétaires : conformité 2026, process reproductibles et outils multi-logements. Les formations couvrent le statut juridique, la fiscalité et la protection des mandats.</p>
         <ul class="aud-list">
           <li>
             <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Standardiser les process de ton équipe
+            Créer et structurer sa conciergerie
           </li>
           <li>
             <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Sélectionner les bons outils PMS
+            Fiscalité, statut, loi Le Meur 2026
           </li>
           <li>
             <span class="aud-chk green"><i class="ph-bold ph-check"></i></span>
-            Développer ton acquisition client
+            Automatisation multi-biens et tarification
           </li>
         </ul>
-        <a href="/services/formations" class="btn-ol">
-          Voir les formations <i class="ph-bold ph-arrow-right"></i>
-        </a>
-      </div>
+        <span class="aud-go">Voir les ressources conciergeries <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
 
-      <!-- Card 3 — Membres Jason Marinho (featured) -->
-      <div class="aud-card featured rv d3">
+      <!-- Card 4 — Membres Driing (featured) -->
+      <a href="/pour-qui/membres-driing" class="aud-card featured rv d4">
         <div class="aud-badge">
           <i class="ph-bold ph-star"></i> Avantagé
         </div>
         <div class="aud-ico yellow">
           <i class="ph-bold ph-lightning"></i>
         </div>
-        <div class="aud-t">Membres Jason Marinho</div>
-        <div class="aud-sub">Plateforme de réservation directe</div>
-        <p class="aud-d">En tant que membre de la plateforme, tu accèdes à des ressources en priorité et à des conditions préférentielles sur les formations et partenaires. La communauté Driing est au cœur de ce projet.</p>
+        <div class="aud-t">Membres Driing</div>
+        <div class="aud-sub">Réservation directe sans commission</div>
+        <p class="aud-d">Tu es déjà inscrit sur Driing, la plateforme de réservation directe sans commission. Accède à tes avantages exclusifs : contenus prioritaires, partenaires négociés, support direct de Jason.</p>
         <ul class="aud-list">
           <li>
             <span class="aud-chk yellow"><i class="ph-bold ph-check"></i></span>
@@ -334,13 +357,11 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           </li>
           <li>
             <span class="aud-chk yellow"><i class="ph-bold ph-check"></i></span>
-            Support direct de Jason
+            Support direct et mises à jour dédiées
           </li>
         </ul>
-        <a href="https://driing.co" target="_blank" rel="noopener" class="btn-p" style="background:var(--y);color:var(--gd)">
-          Rejoindre Driing <i class="ph-bold ph-arrow-square-out"></i>
-        </a>
-      </div>
+        <span class="aud-go">Voir mes avantages Driing <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
 
     </div>
   </div>
