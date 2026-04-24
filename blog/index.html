@@ -394,15 +394,16 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 
     <!-- Filtres catégories -->
     <div class="blog-cats" role="navigation" aria-label="Catégories d'articles">
-      <a href="/blog" class="blog-cat active" data-filter="all" onclick="return filterCat(event,this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="blog-cat-count">11</span></a>
-      <a href="/blog#revenus" class="blog-cat" data-filter="revenus" onclick="return filterCat(event,this,'revenus')"><i class="ph-bold ph-trending-up"></i> Revenus <span class="blog-cat-count">2</span></a>
-      <a href="/blog#visibilite" class="blog-cat" data-filter="visibilite" onclick="return filterCat(event,this,'visibilite')"><i class="ph-bold ph-eye"></i> Visibilité <span class="blog-cat-count">2</span></a>
-      <a href="/blog#automatisation" class="blog-cat" data-filter="automatisation" onclick="return filterCat(event,this,'automatisation')"><i class="ph-bold ph-lightning"></i> Automatisation <span class="blog-cat-count">2</span></a>
-      <a href="/blog#experience" class="blog-cat" data-filter="experience" onclick="return filterCat(event,this,'experience')"><i class="ph-bold ph-star"></i> Expérience <span class="blog-cat-count">2</span></a>
+      <a href="/blog" class="blog-cat active" data-filter="all" onclick="return filterCat(event,this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="blog-cat-count">52</span></a>
+      <a href="/blog#revenus" class="blog-cat" data-filter="revenus" onclick="return filterCat(event,this,'revenus')"><i class="ph-bold ph-trending-up"></i> Revenus <span class="blog-cat-count">15</span></a>
+      <a href="/blog#visibilite" class="blog-cat" data-filter="visibilite" onclick="return filterCat(event,this,'visibilite')"><i class="ph-bold ph-eye"></i> Visibilité <span class="blog-cat-count">10</span></a>
+      <a href="/blog#experience" class="blog-cat" data-filter="experience" onclick="return filterCat(event,this,'experience')"><i class="ph-bold ph-star"></i> Expérience <span class="blog-cat-count">8</span></a>
+      <a href="/blog#ressources" class="blog-cat" data-filter="ressources" onclick="return filterCat(event,this,'ressources')"><i class="ph-bold ph-books"></i> Ressources <span class="blog-cat-count">6</span></a>
+      <a href="/blog#automatisation" class="blog-cat" data-filter="automatisation" onclick="return filterCat(event,this,'automatisation')"><i class="ph-bold ph-lightning"></i> Automatisation <span class="blog-cat-count">5</span></a>
+      <a href="/blog#reglementation" class="blog-cat" data-filter="reglementation" onclick="return filterCat(event,this,'reglementation')"><i class="ph-bold ph-scales"></i> Réglementation <span class="blog-cat-count">3</span></a>
+      <a href="/blog#conciergerie" class="blog-cat" data-filter="conciergerie" onclick="return filterCat(event,this,'conciergerie')"><i class="ph-bold ph-key"></i> Conciergerie <span class="blog-cat-count">3</span></a>
       <a href="/blog#fiscalite" class="blog-cat" data-filter="fiscalite" onclick="return filterCat(event,this,'fiscalite')"><i class="ph-bold ph-receipt"></i> Fiscalité <span class="blog-cat-count">1</span></a>
-      <a href="/blog#conciergerie" class="blog-cat" data-filter="conciergerie" onclick="return filterCat(event,this,'conciergerie')"><i class="ph-bold ph-key"></i> Conciergerie <span class="blog-cat-count">1</span></a>
       <a href="/blog#driing" class="blog-cat" data-filter="driing" onclick="return filterCat(event,this,'driing')"><i class="ph-bold ph-waves"></i> Driing <span class="blog-cat-count">1</span></a>
-      <a href="/blog#reglementation" class="blog-cat" data-filter="reglementation" onclick="return filterCat(event,this,'reglementation')"><i class="ph-bold ph-scales"></i> Réglementation <span class="blog-cat-count">1</span></a>
     </div>
   </div>
 </section>
@@ -436,7 +437,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <!-- Titre grille -->
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:28px">
       <h2 id="articles-heading" style="font-family:'Fraunces',serif;font-size:clamp(20px,2.2vw,26px);font-weight:400;color:var(--td);letter-spacing:-.2px">Tous les articles</h2>
-      <span id="articles-count" style="color:var(--tl);font-size:14px;font-weight:300">51 ressources gratuites</span>
+      <span id="articles-count" style="color:var(--tl);font-size:14px;font-weight:300">52 ressources gratuites</span>
     </div>
 
     <!-- Grille articles -->
@@ -1131,7 +1132,7 @@ function applyFilters() {
   var articles = document.querySelectorAll('#articles-grid article');
   var feat = document.getElementById('driing-featured-wrap');
   var shown = 0;
-  var catLabel = {all:'Tous les articles',revenus:'Revenus',visibilite:'Visibilité',automatisation:'Automatisation',experience:'Expérience voyageur',fiscalite:'Fiscalité',conciergerie:'Conciergerie',driing:'Driing',reglementation:'Réglementation'};
+  var catLabel = {all:'Tous les articles',revenus:'Revenus',visibilite:'Visibilité',automatisation:'Automatisation',experience:'Expérience voyageur',ressources:'Ressources',fiscalite:'Fiscalité',conciergerie:'Conciergerie',driing:'Driing',reglementation:'Réglementation'};
 
   // Handle featured Driing article visibility
   if (feat) {
