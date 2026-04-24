@@ -87,25 +87,31 @@ const FORMATIONS = {
     short: '45 % des hôtes perdent 15 à 25 % de revenus sur leur prix : corrige-le.',
     icon: 'ph-chart-line-up',
   },
+  'maitriser-booking-com-algorithme-genius': {
+    title: 'Maîtriser Booking.com',
+    short: 'Algorithme, Genius 2026 et visibilité IA — la 2e plateforme LCD enfin décryptée.',
+    icon: 'ph-globe',
+  },
 };
 
 // Relations sémantiques : chaque formation renvoie vers 3 formations complémentaires
 const RELATIONS = {
-  'annonce-directe':                          ['google-my-business-lcd', 'reseaux-sociaux-lcd', 'tarification-dynamique'],
+  'annonce-directe':                          ['google-my-business-lcd', 'maitriser-booking-com-algorithme-genius', 'tarification-dynamique'],
   'creer-conciergerie-lcd':                   ['fiscalite-statut-conciergerie-tourisme', 'gerer-lcd-automatisation', 'mettre-le-bon-prix-lcd'],
   'decorer-amenager-logement-lcd':            ['optimiser-annonce-airbnb', 'livret-accueil-digital', 'ecrire-avis-repondre-voyageurs'],
   'ecrire-avis-repondre-voyageurs':           ['livret-accueil-digital', 'optimiser-annonce-airbnb', 'securiser-reservations-eviter-mauvais-voyageurs'],
   'fiscalite-reglementation-lcd-france-2026': ['fiscalite-statut-conciergerie-tourisme', 'creer-conciergerie-lcd', 'gerer-lcd-automatisation'],
   'fiscalite-statut-conciergerie-tourisme':   ['creer-conciergerie-lcd', 'fiscalite-reglementation-lcd-france-2026', 'gerer-lcd-automatisation'],
   'gerer-lcd-automatisation':                 ['tarification-dynamique', 'livret-accueil-digital', 'securiser-reservations-eviter-mauvais-voyageurs'],
-  'google-my-business-lcd':                   ['annonce-directe', 'reseaux-sociaux-lcd', 'optimiser-annonce-airbnb'],
-  'lcd-basse-saison':                         ['tarification-dynamique', 'mettre-le-bon-prix-lcd', 'annonce-directe'],
+  'google-my-business-lcd':                   ['maitriser-booking-com-algorithme-genius', 'annonce-directe', 'optimiser-annonce-airbnb'],
+  'lcd-basse-saison':                         ['tarification-dynamique', 'mettre-le-bon-prix-lcd', 'maitriser-booking-com-algorithme-genius'],
   'livret-accueil-digital':                   ['ecrire-avis-repondre-voyageurs', 'gerer-lcd-automatisation', 'decorer-amenager-logement-lcd'],
   'mettre-le-bon-prix-lcd':                   ['tarification-dynamique', 'lcd-basse-saison', 'gerer-lcd-automatisation'],
-  'optimiser-annonce-airbnb':                 ['google-my-business-lcd', 'ecrire-avis-repondre-voyageurs', 'tarification-dynamique'],
+  'optimiser-annonce-airbnb':                 ['google-my-business-lcd', 'maitriser-booking-com-algorithme-genius', 'ecrire-avis-repondre-voyageurs'],
   'reseaux-sociaux-lcd':                      ['annonce-directe', 'google-my-business-lcd', 'optimiser-annonce-airbnb'],
   'securiser-reservations-eviter-mauvais-voyageurs': ['ecrire-avis-repondre-voyageurs', 'gerer-lcd-automatisation', 'livret-accueil-digital'],
-  'tarification-dynamique':                   ['mettre-le-bon-prix-lcd', 'lcd-basse-saison', 'gerer-lcd-automatisation'],
+  'tarification-dynamique':                   ['mettre-le-bon-prix-lcd', 'maitriser-booking-com-algorithme-genius', 'gerer-lcd-automatisation'],
+  'maitriser-booking-com-algorithme-genius':  ['optimiser-annonce-airbnb', 'google-my-business-lcd', 'tarification-dynamique'],
 };
 
 const MARKER_START = '<!-- RELATED-FORMATIONS:START -->';
