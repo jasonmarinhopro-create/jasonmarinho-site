@@ -712,8 +712,192 @@ Moralité : le score est un indicateur **actionnable**, pas une fatalité.
       title: 'Visibilité IA — ChatGPT x Booking.com',
       duration: '25 min',
       lessons: [
-        { id: 10, title: 'Comment ChatGPT sélectionne les annonces depuis octobre 2025', duration: '13 min', content: `_Contenu à venir en sous-étape 5f_` },
-        { id: 11, title: 'Structurer ta description pour être lisible par l\'IA (données factuelles)', duration: '12 min', content: `_Contenu à venir en sous-étape 5f_` },
+        { id: 10, title: 'Comment ChatGPT sélectionne les annonces depuis octobre 2025', duration: '13 min', content: `## L'intégration ChatGPT × Booking.com : un nouveau canal de découverte
+
+Depuis octobre 2025, OpenAI et Booking.com ont noué un partenariat technique : les utilisateurs de ChatGPT peuvent désormais **planifier et réserver un hébergement directement dans la conversation**, sans jamais ouvrir le site Booking.com.
+
+Le déploiement est progressif (Europe en priorité), mais à fin 2025, ~15 % des réservations Booking en France passent déjà par cette interface. Ça grimpe rapidement.
+
+### Comment ça fonctionne côté voyageur
+
+Le voyageur écrit dans ChatGPT : *"Je cherche un appartement calme à Bordeaux pour 4 nuits en juin, avec un espace de travail, budget 100 € la nuit."*
+
+ChatGPT :
+
+1. Extrait les critères : lieu (Bordeaux), dates (juin), durée (4 nuits), capacité (non précisée → 2 par défaut), équipements (espace de travail), budget (≤ 100 €)
+2. Interroge l'API Booking avec ces critères
+3. Récupère les 20-30 meilleures fiches candidates
+4. **Re-classe les fiches via son propre modèle** selon la "description textuelle la plus pertinente"
+5. Propose les 3-5 meilleures au voyageur avec un résumé en langage naturel
+6. Le voyageur clique → réservation finalisée en 1 clic dans ChatGPT
+
+### Ce que ChatGPT "regarde" dans ta fiche
+
+C'est la grosse différence avec l'algorithme Booking natif. ChatGPT ne pondère pas Genius ou les photos — il lit **uniquement du texte** :
+
+- **Titre de la fiche**
+- **Description courte**
+- **Description longue**
+- **Liste texte des équipements**
+- **Notes et avis récents** (top 10 avis)
+- **Politique d'annulation** (formulation exacte)
+
+Tout ce qui est visuel (photos, badges, icônes) n'est pas pris en compte par l'IA dans sa sélection initiale.
+
+### Les 4 critères que ChatGPT privilégie
+
+**1. La spécificité factuelle**. ChatGPT préfère une fiche qui dit "fibre 450 Mb/s, bureau 120 cm de large avec lampe orientable" à une fiche qui dit "bon wifi, espace de travail".
+
+**2. La cohérence entre critères demandés et critères présents**. Si le voyageur demande "espace de travail" et que ton annonce ne mentionne pas ce terme (même si tu as un bureau), tu seras ignoré. L'IA lit littéralement.
+
+**3. Les avis récents pertinents**. Si le voyageur demande "calme", ChatGPT scan tes avis récents. Un avis qui dit "Très bon emplacement, calme la nuit" te fait remonter. Un avis qui mentionne "un peu bruyant les soirs de week-end" te pénalise fortement.
+
+**4. La politique d'annulation explicite**. Les voyageurs ChatGPT demandent souvent "annulation gratuite possible ?". Si tu as une politique flexible ET que c'est clairement écrit dans la fiche, tu es priorisé.
+
+### Ce que ChatGPT ne "voit" pas
+
+- **Les photos** (il connaît juste leur présence, pas leur contenu visuel)
+- **Le programme Genius** (il n'a aucun bonus pour Genius 15 ou 20 %)
+- **La note moyenne globale** (il regarde les avis récents individuels)
+- **Le classement Booking natif** (il re-classe selon son propre modèle)
+
+**Conséquence** : une fiche mal classée sur Booking peut être parfaitement classée sur ChatGPT si sa description est excellente. Et inversement.
+
+### Deux canaux, deux optimisations complémentaires
+
+| Canal | Critère dominant |
+|---|---|
+| **Booking natif** | Photos + Genius + politique annulation + avis agrégés |
+| **ChatGPT x Booking** | Description texte + avis spécifiques + équipements détaillés |
+
+**Ton travail** : optimiser les deux. La bonne nouvelle : améliorer ta description pour ChatGPT améliore aussi ta conversion sur Booking natif (les voyageurs lisent). Il n'y a pas de conflit.
+
+### Test simple : ta fiche passe-t-elle le crible ChatGPT ?
+
+Ouvre ChatGPT. Pose une question type pour ton marché :
+
+*"Je cherche un appartement à [ta ville] pour [ton profil idéal]. Peux-tu m'en recommander 3 sur Booking avec leurs atouts ?"*
+
+Si ta fiche n'apparaît pas parmi les 3 recommandées, **c'est un signal qu'il faut retravailler ta description** (Module 5 leçon 2).
+
+Si elle apparaît mais avec un résumé qui ne te plaît pas ("appartement au centre, prix moyen"), c'est que ton texte ne met pas assez en avant tes vrais atouts.
+
+### À retenir
+
+- ChatGPT × Booking = ~15 % des réservations en Europe fin 2025, en forte croissance
+- L'IA lit **du texte uniquement**, pas de photos
+- Les 4 critères : spécificité factuelle, cohérence, avis récents, annulation explicite
+- Optimiser pour ChatGPT est **complémentaire** de Booking natif (pas de conflit)
+- Test ta fiche via une requête ChatGPT sur ton marché` },
+        { id: 11, title: 'Structurer ta description pour être lisible par l\'IA (données factuelles)', duration: '12 min', content: `## Écrire une description LCD pour une IA (et pour les humains en même temps)
+
+Une description optimisée pour ChatGPT × Booking est **aussi** une meilleure description pour un humain. Factuelle, spécifique, structurée. Voici la méthode.
+
+### Principe 1 — Remplacer chaque adjectif par un chiffre
+
+**À éviter** :
+- "Superbe vue"
+- "Très lumineux"
+- "Grand salon"
+- "Wifi rapide"
+- "Équipement moderne"
+
+**À privilégier** :
+- "Vue dégagée sur le Rhône depuis la fenêtre du salon (3e étage)"
+- "Salon orienté sud-est, lumière naturelle du matin au milieu d'après-midi"
+- "Salon 28 m² avec canapé 3 places et table pour 6 personnes"
+- "Fibre 450 Mb/s (débit mesuré Speedtest avril 2026, certificat Orange)"
+- "Cuisine équipée : plaque induction 4 feux, four combiné micro-ondes, lave-vaisselle 12 couverts, cafetière Nespresso, grille-pain, bouilloire"
+
+L'IA **matche les chiffres avec les requêtes**. Un voyageur qui demande "salon > 20 m²" ne verra pas ta fiche si tu écris juste "grand salon".
+
+### Principe 2 — Énumérer exhaustivement
+
+Chaque équipement et chaque atout doit être **nommé explicitement**, pas supposé.
+
+Un voyageur demande "fer à repasser". Si tu as un fer mais que tu ne le cites pas dans la description (même si tu l'as coché dans les équipements), l'IA considère que tu ne l'as pas à 60 %.
+
+**Règle** : à la fin de ta description, inclus une section "Équipements détaillés" qui énumère tout, même les basiques :
+
+"Salon : canapé convertible (couchage BZ 140×190), TV Samsung 55", Netflix, Disney+, bibliothèque (100+ livres).
+Cuisine : lave-vaisselle, four combiné, plaque induction 4 feux, Nespresso, grille-pain, bouilloire, vaisselle 8 personnes, couteaux chef, cocotte Le Creuset, huile/sel/poivre/sucre/café de bienvenue.
+Chambre 1 : lit double 160×200, matelas mémoire de forme 2024, 2 oreillers + 2 traversins, linge de lit changé avant chaque arrivée.
+Salle de bain : douche à l'italienne, 4 serviettes fournies, savon Marseille, shampoing, gel douche, sèche-cheveux Dyson.
+Extérieur : balcon 4 m² orienté sud, table + 2 chaises, plantes aromatiques.
+Pratique : fer à repasser + table, machine à laver + lessive, étendoir, aspirateur, balai.
+Wifi : fibre 450 Mb/s, débit mesuré Speedtest 04/2026, SSID et mot de passe affichés à l'entrée."
+
+Oui c'est long. Oui ça convertit. Et oui, l'IA te remonte.
+
+### Principe 3 — Utiliser les sous-titres sémantiques
+
+L'IA reconnaît les sous-titres (ligne en gras, ou avec majuscules) comme **des signaux forts**. Une description avec sections nommées est mieux comprise qu'un bloc de texte unique.
+
+Template de sections à reprendre dans ta description longue :
+
+**🏠 Le logement**
+Description pièce par pièce avec superficies, capacités, vues.
+
+**📍 L'emplacement**
+Quartier nommé, distances précises à 3-5 points d'intérêt (en minutes à pied / en voiture / en transport).
+
+**🚶 Accès et transports**
+Arrêts tram/métro/bus les plus proches avec noms et temps de marche. Parking avec conditions.
+
+**🛌 Couchages**
+Nombre exact de lits, taille, qualité matelas, literie changée entre chaque séjour.
+
+**💻 Travailler depuis le logement**
+Critique si tu vises les voyageurs business Booking : bureau (dimensions), chaise, prise secteur, lumière, débit internet mesuré.
+
+**☀️ Bien-être et détente**
+Terrasse, vue, environnement sonore (calme / animé), équipements détente.
+
+**✅ Équipements détaillés**
+La grande liste (voir Principe 2).
+
+**ℹ️ Bon à savoir**
+Règles, particularités, accès poubelles, marché local.
+
+### Principe 4 — Soigner l'amorce (premiers 200 caractères)
+
+L'IA accorde un poids fort aux **200 premiers caractères** de la description. C'est ce qu'elle utilise pour générer le résumé qu'elle présentera au voyageur.
+
+Amorce type qui fonctionne :
+
+"Appartement 70 m² au 3e étage avec ascenseur, dans un immeuble haussmannien du centre historique de Lyon. Terrasse de 8 m² orientée sud, vue sur la cour intérieure, très calme. Accueille jusqu'à 4 personnes."
+
+**En 2 phrases**, tu as : surface, étage, accessibilité, style, localisation, extérieur, orientation, environnement sonore, capacité. Et tout est factuel.
+
+### Principe 5 — Les avis deviennent ta 2e description
+
+ChatGPT lit tes avis récents (90 derniers jours) et **extrait des éléments qu'il intègre dans sa recommandation**. Si un voyageur a laissé "L'appartement est exactement comme sur les photos, très calme même en week-end", ce signal est fort.
+
+Pour stimuler ce type d'avis :
+
+- Dans ton message post-séjour, suggère explicitement : "Si tu as apprécié le calme de l'appartement ou l'espace de travail, n'hésite pas à le mentionner dans ton avis — c'est précieux pour les futurs voyageurs."
+- Ne demande **jamais** un avis orienté "5 étoiles" (Booking pénalise la sollicitation biaisée)
+
+### Test et itération
+
+Une fois ta description réécrite selon ces 5 principes :
+
+1. Attends 48 h pour la propagation
+2. Fais un test ChatGPT avec 3 requêtes différentes (tes profils voyageurs cibles)
+3. Note si tu apparais, et dans quel ordre
+4. Si tu n'apparais pas, **identifie le mot-clé manquant** dans ta description (généralement le critère le plus spécifique de la requête)
+5. Ajuste et recommence 48 h plus tard
+
+La plupart des hôtes voient leurs performances ChatGPT tripler après 2-3 itérations. C'est rapide.
+
+### À retenir
+
+- Remplace les adjectifs par des chiffres
+- Énumère tout, même les basiques
+- Utilise des sous-titres sémantiques
+- Soigne les 200 premiers caractères
+- Les avis récents comptent autant que la description
+- Teste via ChatGPT sur ton marché` },
       ],
     },
     {
