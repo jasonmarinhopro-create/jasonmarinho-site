@@ -180,6 +180,26 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .aud-chk.yellow{background:rgba(255,213,107,.15)}
 .aud-chk.yellow i{font-size:11px;color:#b8913a}
 
+/* ── DÉTAILS PAR PROFIL ── */
+.det-g{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(20px,3vw,32px)}
+.det-card{background:var(--w);border:1px solid var(--bd);border-radius:18px;padding:clamp(24px,3vw,34px);transition:box-shadow .25s,border-color .25s}
+.det-card:hover{box-shadow:0 10px 32px rgba(0,76,63,.06);border-color:rgba(0,76,63,.14)}
+.det-card.featured{border-color:rgba(255,213,107,.25);background:linear-gradient(180deg,rgba(255,213,107,.04),var(--w) 40%)}
+.det-h{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.det-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.det-ico.green{background:rgba(0,76,63,.08)}
+.det-ico.green i{color:var(--g);font-size:19px}
+.det-ico.yellow{background:rgba(255,213,107,.16)}
+.det-ico.yellow i{color:#b8913a;font-size:19px}
+.det-t{font-family:'Fraunces',serif;font-size:22px;font-weight:400;color:var(--td);letter-spacing:-.3px;margin:0}
+.det-p{font-size:14.5px;font-weight:300;color:var(--tm);line-height:1.75;margin-bottom:18px}
+.det-p a{color:var(--g);text-decoration:underline;text-decoration-color:rgba(0,76,63,.22);text-underline-offset:2px;font-weight:500;transition:text-decoration-color .2s}
+.det-p a:hover{text-decoration-color:var(--g)}
+.det-links{display:flex;flex-wrap:wrap;gap:7px}
+.det-l{font-size:12px;font-weight:500;color:var(--g);background:var(--cr);border:1px solid var(--bd);padding:6px 12px;border-radius:100px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.det-l i{font-size:11px}
+.det-l:hover{background:var(--g);color:#fff;border-color:var(--g)}
+
 /* ── BLOG CTA ── */
 .blog-cta{background:var(--cr);border:1px solid var(--bd);border-radius:18px;padding:40px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
 .blog-cta-text .lbl{margin-bottom:8px}
@@ -221,6 +241,9 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .aud-g{grid-template-columns:1fr 1fr}
   .ft-g{grid-template-columns:1fr 1fr;gap:32px}
   .blog-cta{padding:32px}
+}
+@media(max-width:820px){
+  .det-g{grid-template-columns:1fr}
 }
 @media(max-width:640px){
   .aud-g{grid-template-columns:1fr}
@@ -367,8 +390,73 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   </div>
 </section>
 
+<!-- DÉTAILS PAR PROFIL -->
+<section class="sec cr" id="details">
+  <div class="s-in">
+    <div style="max-width:700px;margin-bottom:48px" class="rv">
+      <div class="lbl">Approfondir</div>
+      <h2 class="h2">Ce que chaque profil <em>trouve ici</em></h2>
+      <p class="sub">Un aperçu du parcours recommandé selon ton activité en location courte durée. Chaque profil a ses propres enjeux : visibilité, tarification, compliance, fidélisation. Voici comment les formations et outils s'adaptent.</p>
+    </div>
+    <div class="det-g">
+
+      <article class="det-card rv d1">
+        <div class="det-h">
+          <div class="det-ico green"><i class="ph-bold ph-house-line"></i></div>
+          <h3 class="det-t">Chambres d'hôtes : soigner l'expérience</h3>
+        </div>
+        <p class="det-p">En chambre d'hôtes, chaque voyageur est un ambassadeur potentiel. Les avis 5 étoiles et la visibilité locale sur Google sont tes deux leviers majeurs. Commence par <a href="/services/formations/google-my-business-lcd">optimiser ta fiche Google My Business</a> pour attirer les voyageurs qui cherchent ta région, puis structure l'accueil avec un <a href="/services/formations/livret-accueil-digital">livret d'accueil digital</a> qui réduit de 80 % les questions répétitives. La décoration et l'aménagement font le reste — une ambiance soignée génère 20 à 30 % de réservations supplémentaires.</p>
+        <div class="det-links">
+          <a href="/pour-qui/chambres-dhotes" class="det-l"><i class="ph-bold ph-arrow-right"></i> Toutes les ressources chambres d'hôtes</a>
+          <a href="/services/calendrier" class="det-l">Calendrier hôte</a>
+          <a href="/services/formations/decorer-amenager-logement-lcd" class="det-l">Décorer & aménager</a>
+        </div>
+      </article>
+
+      <article class="det-card rv d2">
+        <div class="det-h">
+          <div class="det-ico green"><i class="ph-bold ph-tree-evergreen"></i></div>
+          <h3 class="det-t">Gîtes : saisonnalité et rentabilité</h3>
+        </div>
+        <p class="det-p">Un gîte en zone rurale ou touristique vit au rythme des saisons. Les enjeux prioritaires sont la <a href="/services/formations/mettre-le-bon-prix-lcd">tarification adaptée aux périodes</a> et la capacité à <a href="/services/formations/lcd-basse-saison">remplir en basse saison</a> via de nouvelles cibles (workation, familles, couples). La visibilité locale reste clé : <a href="/services/formations/google-my-business-lcd">Google Maps + GMB</a> changent la donne pour un gîte éloigné des centres. Le canal direct (site + réservation sans commission) sécurise les revenus long terme.</p>
+        <div class="det-links">
+          <a href="/pour-qui/gites" class="det-l"><i class="ph-bold ph-arrow-right"></i> Toutes les ressources gîtes</a>
+          <a href="/services/revenus" class="det-l">Suivi des revenus</a>
+          <a href="/services/formations/annonce-directe" class="det-l">Réservation directe</a>
+        </div>
+      </article>
+
+      <article class="det-card rv d3">
+        <div class="det-h">
+          <div class="det-ico green"><i class="ph-bold ph-briefcase"></i></div>
+          <h3 class="det-t">Conciergeries : structurer le pro</h3>
+        </div>
+        <p class="det-p">Une conciergerie gère plusieurs biens pour plusieurs propriétaires — donc plusieurs contrats, plusieurs statuts fiscaux, plusieurs niveaux de compliance. La loi Le Meur 2026 et le <a href="/blog/numero-enregistrement-lcd-20-mai-2026-demarches/">numéro d'enregistrement national</a> imposent un cadre strict. Les formations couvrent le <a href="/services/formations/creer-conciergerie-lcd">choix du statut juridique (EI, SASU, EURL)</a>, la <a href="/services/formations/fiscalite-reglementation-lcd-france-2026">fiscalité 2026</a> et la <a href="/services/formations/gerer-lcd-automatisation">standardisation des process</a>. La <a href="/services/securite">vérification des voyageurs</a> est indispensable en multi-biens.</p>
+        <div class="det-links">
+          <a href="/pour-qui/conciergeries" class="det-l"><i class="ph-bold ph-arrow-right"></i> Toutes les ressources conciergeries</a>
+          <a href="/services/formations/tarification-dynamique" class="det-l">Tarification dynamique</a>
+          <a href="/services/formations/securiser-reservations-eviter-mauvais-voyageurs" class="det-l">Sécurité réservations</a>
+        </div>
+      </article>
+
+      <article class="det-card featured rv d4">
+        <div class="det-h">
+          <div class="det-ico yellow"><i class="ph-bold ph-lightning"></i></div>
+          <h3 class="det-t">Membres Driing : avantages exclusifs</h3>
+        </div>
+        <p class="det-p">Driing est la plateforme de réservation directe sans commission que j'ai co-fondée. En tant que membre, tu accèdes à des ressources prioritaires et à des conditions négociées chez les <a href="/services/partenaires">partenaires LCD</a> (PMS, assurances, channel managers). Les outils gratuits comme le <a href="/services/calendrier">calendrier et check-list</a> ou le <a href="/services/revenus">suivi des revenus</a> sont pensés pour compléter ton espace Driing. Support direct de Jason sur tes questions terrain.</p>
+        <div class="det-links">
+          <a href="/pour-qui/membres-driing" class="det-l"><i class="ph-bold ph-arrow-right"></i> Voir mes avantages Driing</a>
+          <a href="https://driing.co" target="_blank" rel="noopener" class="det-l">Rejoindre Driing <i class="ph-bold ph-arrow-square-out"></i></a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
 <!-- PAS SÛR DE TE RECONNAÎTRE -->
-<section class="sec cr">
+<section class="sec wh">
   <div class="s-in">
     <div class="blog-cta rv">
       <div class="blog-cta-text">
