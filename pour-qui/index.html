@@ -55,6 +55,55 @@
   ]
 }
 </script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Est-ce que le site s'adresse aux débutants en location courte durée ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui, la majorité des formations comme optimiser son annonce Airbnb ou Google My Business pour la LCD partent des bases. Chaque formation précise son niveau (débutant, intermédiaire, avancé). Les outils gratuits comme le calendrier & check-list et les gabarits de messages sont directement utilisables même sans expérience préalable." }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelle est la différence entre gîte et chambre d'hôtes fiscalement ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Les deux relèvent des BIC (micro ou réel), mais les chambres d'hôtes classées bénéficient d'un abattement fiscal spécifique et doivent fournir le petit-déjeuner. Les gîtes sont soumis aux plafonds classiques du meublé de tourisme, avec des abattements différents selon le classement (étoiles). La formation Fiscalité & réglementation 2026 détaille les deux régimes et l'impact de la loi Le Meur." }
+    },
+    {
+      "@type": "Question",
+      "name": "Les formations sont-elles adaptées aux conciergeries multi-biens ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Absolument. Plusieurs formations sont conçues spécifiquement pour les conciergeries : créer sa conciergerie LCD (statut juridique, carte G, prospection), fiscalité & statut conciergerie (BIC/BNC, EURL/SASU) et automatisation multi-biens. Une page dédiée Conciergeries liste les ressources triées pour ce profil." }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment devenir membre Driing et quels sont les avantages ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Driing est la plateforme de réservation directe sans commission co-fondée par Jason Marinho. L'inscription se fait gratuitement sur driing.co. Les membres accèdent à des formations en priorité, à des partenaires négociés (PMS, assurances, channel managers) et à un support direct." }
+    },
+    {
+      "@type": "Question",
+      "name": "Faut-il un statut juridique spécifique pour louer en courte durée ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Pour louer quelques nuits en résidence principale (≤120 jours par an, bientôt réduits à 90 dans certaines communes), aucun statut n'est obligatoire au démarrage — tu déclares tes revenus en BIC. Au-delà, ou pour un meublé de tourisme dédié, le statut LMNP est le plus courant. Pour une conciergerie, il faut une structure (EI, EURL, SASU)." }
+    },
+    {
+      "@type": "Question",
+      "name": "Combien de temps pour rentabiliser une formation LCD ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Les formations les plus rapidement rentables sont Tarification dynamique et Optimiser son annonce Airbnb : gains de 10 à 25 % des revenus en quelques semaines pour les hôtes qui appliquent. GMB et Annonce directe prennent 1 à 3 mois avant de générer du trafic organique significatif." }
+    },
+    {
+      "@type": "Question",
+      "name": "Les outils calendrier, suivi des revenus et sécurité sont-ils gratuits ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui. Le calendrier & check-list, le suivi des revenus et la base de vérification voyageurs sont inclus dans l'espace membre gratuit. Les gabarits de messages aussi. Les formations premium restent payantes mais les membres Driing bénéficient de conditions préférentielles." }
+    },
+    {
+      "@type": "Question",
+      "name": "Est-ce que Jason Marinho répond personnellement aux questions ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui. Toutes les questions envoyées depuis le formulaire de contact ou le support Driing reçoivent une réponse personnelle — pas un bot, pas une FAQ générique. Les membres Driing ont un accès prioritaire via leur espace. La communauté LCD (groupes Facebook) est aussi un endroit où les questions sont traitées collectivement." }
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
@@ -199,6 +248,22 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .det-l{font-size:12px;font-weight:500;color:var(--g);background:var(--cr);border:1px solid var(--bd);padding:6px 12px;border-radius:100px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
 .det-l i{font-size:11px}
 .det-l:hover{background:var(--g);color:#fff;border-color:var(--g)}
+
+/* ── FAQ ── */
+.faq{max-width:780px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--bd)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;cursor:pointer;user-select:none;font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);letter-spacing:-.2px;transition:color .2s;line-height:1.4;background:none;border:none;width:100%;text-align:left}
+.faq-q:hover,.faq-q:focus-visible{color:var(--g);outline:none}
+.faq-icon{flex-shrink:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--g);background:var(--cr);transition:transform .25s,background .2s}
+.faq-item.open .faq-icon{transform:rotate(180deg);background:var(--g);color:#fff}
+.faq-icon i{font-size:13px}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .32s ease,padding .32s ease;font-size:14.5px;font-weight:300;color:var(--tm);line-height:1.75}
+.faq-a-inner{padding:0}
+.faq-item.open .faq-a{max-height:720px}
+.faq-item.open .faq-a-inner{padding:0 0 24px}
+.faq-a a{color:var(--g);text-decoration:underline;text-decoration-color:rgba(0,76,63,.28);text-underline-offset:2px;font-weight:500;transition:text-decoration-color .2s}
+.faq-a a:hover{text-decoration-color:var(--g)}
 
 /* ── BLOG CTA ── */
 .blog-cta{background:var(--cr);border:1px solid var(--bd);border-radius:18px;padding:40px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
@@ -455,8 +520,102 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="sec wh" id="faq">
+  <div class="s-in">
+    <div style="max-width:680px;margin:0 auto 48px;text-align:center" class="rv">
+      <div class="lbl ct">FAQ</div>
+      <h2 class="h2 ct">Les questions <em>qu'on me pose</em></h2>
+      <p class="sub ct">Les réponses aux questions les plus fréquentes sur les formations LCD, les outils disponibles et le fonctionnement selon ton profil d'hôte.</p>
+    </div>
+    <div class="faq rv">
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Est-ce que le site s'adresse aux débutants en location courte durée ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Oui, la majorité des formations comme <a href="/services/formations/optimiser-annonce-airbnb">optimiser son annonce Airbnb</a> ou <a href="/services/formations/google-my-business-lcd">Google My Business pour la LCD</a> partent des bases. Chaque formation précise son niveau (débutant, intermédiaire, avancé). Les outils gratuits comme le <a href="/services/calendrier">calendrier & check-list</a> et les <a href="/ressources/gabarits-messages">gabarits de messages</a> sont directement utilisables même sans expérience préalable.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Quelle est la différence entre gîte et chambre d'hôtes fiscalement ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Les deux relèvent des BIC (micro ou réel), mais les chambres d'hôtes classées bénéficient d'un abattement fiscal spécifique et doivent fournir le petit-déjeuner. Les gîtes sont soumis aux plafonds classiques du meublé de tourisme, avec des abattements différents selon le classement (étoiles). La formation <a href="/services/formations/fiscalite-reglementation-lcd-france-2026">Fiscalité & réglementation 2026</a> détaille les deux régimes et l'impact de la loi Le Meur.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Les formations sont-elles adaptées aux conciergeries multi-biens ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Absolument. Plusieurs formations sont conçues spécifiquement pour les conciergeries : <a href="/services/formations/creer-conciergerie-lcd">créer sa conciergerie LCD</a> (statut juridique, carte G, prospection), <a href="/services/formations/fiscalite-statut-conciergerie-tourisme">fiscalité & statut conciergerie</a> (BIC/BNC, EURL/SASU) et <a href="/services/formations/gerer-lcd-automatisation">automatisation multi-biens</a>. Voir aussi la page dédiée <a href="/pour-qui/conciergeries">Conciergeries</a> avec les ressources triées.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Comment devenir membre Driing et quels sont les avantages ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Driing est la plateforme de réservation directe sans commission que j'ai co-fondée. L'inscription se fait gratuitement sur <a href="https://driing.co" target="_blank" rel="noopener">driing.co</a>. Les membres accèdent à des formations en priorité, à des <a href="/services/partenaires">partenaires négociés</a> (PMS, assurances, channel managers) et à un support direct. La page <a href="/pour-qui/membres-driing">Membres Driing</a> détaille tous les avantages.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Faut-il un statut juridique spécifique pour louer en courte durée ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Pour louer quelques nuits en résidence principale (≤120 jours/an, bientôt réduits à 90 dans certaines communes), aucun statut n'est obligatoire au démarrage — tu déclares tes revenus en BIC. Au-delà, ou pour un meublé de tourisme dédié, le statut LMNP est le plus courant. Pour une conciergerie, il faut une structure (EI, EURL, SASU). Voir <a href="/services/formations/fiscalite-reglementation-lcd-france-2026">Fiscalité LCD 2026</a>.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Combien de temps pour rentabiliser une formation LCD ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Les formations les plus rapidement rentables sont <a href="/services/formations/tarification-dynamique">Tarification dynamique</a> et <a href="/services/formations/optimiser-annonce-airbnb">Optimiser son annonce Airbnb</a> : gains de 10 à 25 % des revenus en quelques semaines pour les hôtes qui appliquent. <a href="/services/formations/google-my-business-lcd">GMB</a> et <a href="/services/formations/annonce-directe">Annonce directe</a> prennent 1 à 3 mois avant de générer du trafic organique significatif.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Les outils calendrier, suivi des revenus et sécurité sont-ils gratuits ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Oui. Le <a href="/services/calendrier">calendrier & check-list</a>, le <a href="/services/revenus">suivi des revenus</a> et la <a href="/services/securite">base de vérification voyageurs</a> sont inclus dans l'espace membre gratuit. Les <a href="/ressources/gabarits-messages">gabarits de messages</a> aussi. Les formations premium restent payantes mais les membres Driing bénéficient de conditions préférentielles.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Est-ce que Jason Marinho répond personnellement aux questions ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Oui. Toutes les questions envoyées depuis le <a href="/contact">formulaire de contact</a> ou le support Driing reçoivent une réponse personnelle — pas un bot, pas une FAQ générique. Les membres Driing ont un accès prioritaire via leur espace. La <a href="/services/communaute">communauté LCD</a> (groupes Facebook) est aussi un endroit où les questions sont traitées collectivement.
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- PAS SÛR DE TE RECONNAÎTRE -->
-<section class="sec wh">
+<section class="sec cr">
   <div class="s-in">
     <div class="blog-cta rv">
       <div class="blog-cta-text">
@@ -480,6 +639,16 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
 document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
+
+/* FAQ accordion */
+document.querySelectorAll('.faq-q').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var item = btn.closest('.faq-item');
+    var wasOpen = item.classList.contains('open');
+    item.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(!wasOpen));
+  });
+});
 </script>
 <script src="/cookie-banner.js" defer></script>
 </body>
