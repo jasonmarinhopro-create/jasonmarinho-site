@@ -1,6 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
 import Header from '@/components/layout/Header'
-import FormationView from './FormationView'
+import FormationView from '@/components/formations/FormationView'
 import { GMB_FORMATION } from './content'
 import { createClient } from '@/lib/supabase/server'
 import { getFormationDbContent } from '@/lib/queries/formation-db-content'
