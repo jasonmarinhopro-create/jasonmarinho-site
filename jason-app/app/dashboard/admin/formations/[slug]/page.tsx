@@ -43,7 +43,7 @@ export default async function AdminFormationEditorPage({ params }: PageProps) {
   // Fetch formation metadata
   const { data: formation } = await adminClient
     .from('formations')
-    .select('*')
+    .select('id, title')
     .eq('slug', slug)
     .single()
 
