@@ -45,6 +45,45 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Les outils calendrier, suivi des revenus et vérification voyageurs sont-ils gratuits ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui. Le calendrier & check-list par séjour, le suivi des revenus & paiements et la base de vérification voyageurs sont inclus dans l'espace membre gratuit. Les gabarits de messages le sont également. Seules les formations premium restent payantes — avec des conditions préférentielles pour les membres Driing." }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment accéder à un outil ou à une formation ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Il suffit de créer un compte gratuit sur app.jasonmarinho.com. Une fois connecté, tu as accès à tous les outils gratuits en un clic. Les formations s'achètent à l'unité depuis leur page dédiée, avec un accès à vie, pas d'abonnement." }
+    },
+    {
+      "@type": "Question",
+      "name": "Faut-il être membre Driing pour utiliser les services ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Non. Tous les outils et ressources sont accessibles sans être membre Driing. Le statut 'membre Driing' apporte uniquement des avantages supplémentaires : accès prioritaire aux nouveautés, conditions négociées chez les partenaires, et support direct." }
+    },
+    {
+      "@type": "Question",
+      "name": "Les services sont-ils adaptés à tous les profils d'hôtes LCD ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui — avec des parcours différenciés selon le profil. La page Pour qui liste les ressources triées pour chaque profil : chambres d'hôtes, gîtes, conciergeries et membres Driing. Chaque profil a ses priorités : visibilité locale, saisonnalité, compliance multi-biens, fidélisation." }
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi tous ces outils sont-ils gratuits ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Parce que le modèle tient sur trois leviers : Driing (la plateforme de réservation directe co-fondée par Jason), les formations premium à l'unité, et les partenariats transparents. Les outils gratuits rendent service aux hôtes LCD et créent une vraie communauté autour de Driing." }
+    },
+    {
+      "@type": "Question",
+      "name": "Est-ce que Jason répond personnellement aux questions techniques ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui. Les questions envoyées depuis le formulaire de contact ou depuis Driing reçoivent une réponse personnelle, généralement sous 24 à 48 heures. Les membres Driing ont une priorité. Pour les questions génériques, la communauté LCD (groupes Facebook) est souvent le plus rapide." }
+    }
+  ]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
@@ -140,6 +179,22 @@ img{max-width:100%;height:auto}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .rv.in{opacity:1;transform:translateY(0)}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}
+
+/* ── FAQ ── */
+.faq{max-width:780px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--bd)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;cursor:pointer;user-select:none;font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);letter-spacing:-.2px;transition:color .2s;line-height:1.4;background:none;border:none;width:100%;text-align:left}
+.faq-q:hover,.faq-q:focus-visible{color:var(--g);outline:none}
+.faq-icon{flex-shrink:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--g);background:var(--cr);transition:transform .25s,background .2s}
+.faq-item.open .faq-icon{transform:rotate(180deg);background:var(--g);color:#fff}
+.faq-icon i{font-size:13px}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .32s ease,padding .32s ease;font-size:14.5px;font-weight:300;color:var(--tm);line-height:1.75}
+.faq-a-inner{padding:0}
+.faq-item.open .faq-a{max-height:720px}
+.faq-item.open .faq-a-inner{padding:0 0 24px}
+.faq-a a{color:var(--g);text-decoration:underline;text-decoration-color:rgba(0,76,63,.28);text-underline-offset:2px;font-weight:500;transition:text-decoration-color .2s}
+.faq-a a:hover{text-decoration-color:var(--g)}
 </style>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
@@ -313,6 +368,80 @@ img{max-width:100%;height:auto}
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="sec cr" id="faq">
+  <div class="s-in">
+    <div style="max-width:680px;margin:0 auto 44px;text-align:center" class="rv">
+      <div class="lbl ct">FAQ</div>
+      <h2 class="h2 ct">Les questions <em>qu'on me pose</em></h2>
+      <p class="sub ct">Les réponses aux questions fréquentes sur les services, les outils et la façon dont tout s'articule pour un hôte en location courte durée.</p>
+    </div>
+    <div class="faq rv">
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Les outils calendrier, suivi des revenus et vérification voyageurs sont-ils gratuits ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Oui. Le <a href="/services/calendrier">calendrier & check-list par séjour</a>, le <a href="/services/revenus">suivi des revenus & paiements</a> et la <a href="/services/securite">base de vérification voyageurs</a> sont inclus dans l'espace membre gratuit. Les <a href="/ressources/gabarits-messages">gabarits de messages</a> le sont également. Seules les formations premium restent payantes — avec des conditions préférentielles pour les membres Driing.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Comment accéder à un outil ou à une formation ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Il suffit de créer un compte gratuit sur <a href="https://app.jasonmarinho.com/auth/register" target="_blank" rel="noopener">app.jasonmarinho.com</a>. Une fois connecté, tu as accès à tous les outils gratuits en un clic. Les formations s'achètent à l'unité depuis leur page dédiée, avec un accès à vie, pas d'abonnement.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Faut-il être membre Driing pour utiliser les services ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Non. Tous les outils et ressources sont accessibles sans être membre Driing. Le statut 'membre Driing' apporte uniquement des <strong>avantages supplémentaires</strong> : accès prioritaire aux nouveautés, conditions négociées chez les <a href="/services/partenaires">partenaires</a>, et support direct. Voir <a href="/pour-qui/membres-driing">Membres Driing</a> pour le détail des avantages.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Les services sont-ils adaptés à tous les profils d'hôtes LCD ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Oui — avec des parcours différenciés selon le profil. La page <a href="/pour-qui">Pour qui</a> liste les ressources triées pour chaque profil : <a href="/pour-qui/chambres-dhotes">chambres d'hôtes</a>, <a href="/pour-qui/gites">gîtes</a>, <a href="/pour-qui/conciergeries">conciergeries</a> et <a href="/pour-qui/membres-driing">membres Driing</a>. Chaque profil a ses priorités : visibilité locale, saisonnalité, compliance multi-biens, fidélisation.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Pourquoi tous ces outils sont-ils gratuits ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Parce que le modèle tient sur trois leviers : Driing (la plateforme de réservation directe que j'ai co-fondée), les <a href="/services/formations">formations premium</a> à l'unité, et les partenariats transparents. Les outils gratuits rendent service aux hôtes LCD et créent une vraie communauté autour de Driing, ce qui est cohérent avec notre mission : réduire la dépendance aux OTA et leurs commissions.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Est-ce que Jason répond personnellement aux questions techniques ?</span>
+          <span class="faq-icon"><i class="ph-bold ph-caret-down"></i></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Oui. Les questions envoyées depuis le <a href="/contact">formulaire de contact</a> ou depuis Driing reçoivent une réponse personnelle, généralement sous 24 à 48 heures. Les membres Driing ont une priorité. Pour les questions génériques, la <a href="/services/communaute">communauté LCD</a> (groupes Facebook) est souvent le plus rapide.
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <script src="/footer.js"></script>
 
@@ -321,6 +450,16 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
 document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
+
+/* FAQ accordion */
+document.querySelectorAll('.faq-q').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var item = btn.closest('.faq-item');
+    var wasOpen = item.classList.contains('open');
+    item.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(!wasOpen));
+  });
+});
 </script>
 <script src="/cookie-banner.js" defer></script>
 </body>
