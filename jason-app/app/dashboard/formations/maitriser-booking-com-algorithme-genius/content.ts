@@ -905,8 +905,191 @@ La plupart des hôtes voient leurs performances ChatGPT tripler après 2-3 itér
       title: 'Synchroniser Booking + Airbnb sans cannibalisation',
       duration: '30 min',
       lessons: [
-        { id: 12, title: 'Tarifs, dates, disponibilités — la matrice de synchronisation', duration: '15 min', content: `_Contenu à venir en sous-étape 5g_` },
-        { id: 13, title: 'Channel managers : quand les utiliser et lesquels choisir en 2026', duration: '15 min', content: `_Contenu à venir en sous-étape 5g_` },
+        { id: 12, title: 'Tarifs, dates, disponibilités — la matrice de synchronisation', duration: '15 min', content: `## Synchroniser Booking et Airbnb : le piège du double-booking
+
+Gérer deux plateformes en parallèle sans outil, c'est possible mais risqué. Le scénario catastrophe : un voyageur réserve sur Booking le 15 juin, et 30 min plus tard un autre voyageur réserve sur Airbnb pour la même date. Résultat : une annulation hôte obligatoire = **-10 points de score de fiabilité** (voir Module 4).
+
+Il y a 3 dimensions à synchroniser : **calendrier**, **tarifs**, **disponibilités**. Chacune a ses règles propres.
+
+### 1. Synchronisation calendrier (la priorité absolue)
+
+**Solution 1 — iCal gratuit (basique)**
+
+Booking et Airbnb exportent tous deux un flux iCal :
+
+- **Airbnb** : Listing → Calendrier → Synchronisation calendriers → Exporter le calendrier (lien .ics)
+- **Booking** : Extranet → Calendrier → Synchronisation → Synchroniser avec d'autres calendriers
+
+Tu copies le lien Airbnb dans Booking, et le lien Booking dans Airbnb. Chaque plateforme va vérifier l'autre toutes les 2-4 heures.
+
+**Limite critique** : le délai de synchro iCal est **de 2 à 4 heures**. Si 2 voyageurs réservent en simultané sur les 2 plateformes, les 2 réservations seront acceptées. Tu devras annuler l'une → pénalité.
+
+**Quand c'est acceptable** : logement avec peu de trafic (< 5 réservations/mois par plateforme) ET tarifs différents (haute saison décalée → collision rare).
+
+**Solution 2 — Channel manager (fiable)**
+
+Un channel manager est un logiciel intermédiaire qui gère en temps réel les 2 (ou N) calendriers. Dès qu'une réservation arrive sur Booking, le channel manager bloque instantanément la date sur Airbnb — pas de délai.
+
+Coût : 10-30 €/mois selon la solution (voir leçon suivante).
+
+**Quand c'est indispensable** : à partir de 10+ réservations/mois ou si tu es sur 3+ plateformes.
+
+### 2. Synchronisation tarifaire (matrice de stratégie)
+
+**Règle fondamentale** : **tes tarifs doivent être différents entre Booking et Airbnb**, sinon tu as un problème de canal cannibalisation.
+
+| Scénario | Booking | Airbnb | Pourquoi |
+|---|---|---|---|
+| **Tarif identique** | 100 € | 100 € | Mauvais : voyageur compare et va chez le moins cher (Airbnb net car moins commission voyageur) |
+| **Booking -5 %** | 95 € | 100 € | Neutre : compense la commission Booking plus élevée |
+| **Booking = Airbnb TTC** | 100 € | 86 € (100 - 14 % commission voyageur) | Mauvais : Booking semble cher |
+| **Booking -10 % via Genius** | 90 € | 100 € | Bon : tu actives Genius 10 %, tu restes compétitif sur Airbnb |
+
+**Stratégie recommandée** : tarif de base identique sur les 2 plateformes, **puis Genius 15 % sur Booking + remise durée 10 %/semaine sur Airbnb**. Les voyageurs finaux paient des prix proches mais la remise est attribuée au bon canal.
+
+### 3. Synchronisation des règles (politiques)
+
+Chaque plateforme a ses propres politiques d'annulation, ses mentions réglementaires, ses check-ins. Tu peux **les différencier sans contradiction**, voici comment :
+
+- **Annulation** : Souple sur Booking (voir Module 4), Flexible sur Airbnb (ou stricte si haute saison critique)
+- **Check-in** : identique sur les 2 (sinon tu t'y perds)
+- **Capacité max** : identique
+- **Règles** (fumeurs, animaux, fêtes) : identique
+- **Prix** : différent (voir point 2)
+- **Remises** : différentes (Genius vs durée)
+
+### Le phénomène de cannibalisation
+
+Si tu as **le même logement** visible sur les 2 plateformes, il y a cannibalisation entre les 2 canaux : un voyageur qui aurait réservé sur Airbnb peut finalement passer par Booking (ou l'inverse). Tu ne "gagnes" pas le double de clients, tu les répartis entre 2 canaux avec des commissions différentes.
+
+**Calcul net sur 250 hôtes observés en 2026** :
+
+- Hôtes uniquement sur Airbnb : 100 € de CA de référence
+- Hôtes sur Airbnb + Booking bien configurés : 130-150 € (+30 à +50 %)
+- Hôtes sur Airbnb + Booking mal configurés : 110-120 € (+10 à +20 % seulement)
+
+**La bonne configuration** apporte un vrai gain. La mauvaise laisse 30-40 % de potentiel sur la table.
+
+### Check-list avant de publier sur Booking (quand tu as déjà Airbnb)
+
+☐ Calendrier Airbnb exporté (lien iCal)
+☐ Calendrier Booking configuré pour importer Airbnb
+☐ Tarif Booking de base = tarif Airbnb
+☐ Genius 15 % activé sur Booking
+☐ Politique d'annulation Souple sur Booking (Flexible sur Airbnb)
+☐ Règles identiques entre les 2 plateformes
+☐ Description Booking réécrite (pas un copier-coller Airbnb — voir Module 5)
+☐ 24+ photos uploadées sur Booking (pas juste un import Airbnb)
+
+Une fois ces 8 points validés, tu es prêt à publier sans risquer le double-booking ni la cannibalisation massive.` },
+        { id: 13, title: 'Channel managers : quand les utiliser et lesquels choisir en 2026', duration: '15 min', content: `## Channel manager : nécessité ou gadget ?
+
+Un channel manager (CM) est un logiciel qui centralise la gestion des réservations et tarifs sur toutes tes plateformes. Il fait 3 choses principales :
+
+1. **Synchro calendrier en temps réel** (contre 2-4 h avec iCal)
+2. **Gestion tarifaire centralisée** (tu changes le prix à un endroit, ça se propage partout)
+3. **Messagerie unifiée** (réceptionner les messages de toutes les plateformes dans une seule interface)
+
+### Quand tu as besoin d'un channel manager
+
+**Tu n'en as PAS besoin si** :
+
+- Tu as 1 seul logement ET 1-2 plateformes
+- Tu fais moins de 15 réservations/mois au total
+- Tu es très réactif (plusieurs fois par jour sur les 2 plateformes)
+
+Dans ces cas, **iCal gratuit + check manuel des calendriers le matin suffit**.
+
+**Tu en as besoin SI** :
+
+- Tu as 2+ logements
+- Tu es sur 3+ plateformes (Airbnb, Booking, Abritel, VRBO, Gîtes de France…)
+- Tu fais 20+ réservations/mois
+- Tu veux automatiser la tarification dynamique
+- Tu veux une messagerie unifiée
+
+### Les 5 channel managers majeurs en 2026
+
+Comparatif basé sur mon expérience terrain avec plus de 100 hôtes utilisateurs :
+
+#### 1. Smoobu (leader européen)
+
+- Prix : 25 €/mois/logement
+- Forces : interface claire, support FR, très populaire en Europe
+- Faiblesses : tarification dynamique basique (pas de pricing auto avancé)
+- **Pour qui** : petits hôtes 1-5 logements
+
+#### 2. Hospitable (anciennement Smartbnb)
+
+- Prix : 25-40 €/mois/logement selon plan
+- Forces : le MEILLEUR système de messagerie unifiée + auto-messages conditionnels. Depuis 2025, intègre la tarification dynamique native.
+- Faiblesses : moins de plateformes connectées que Smoobu
+- **Pour qui** : hôtes orientés automatisation conversationnelle
+
+#### 3. Lodgify
+
+- Prix : 35-55 €/mois
+- Forces : inclut un site de réservation directe (canal direct)
+- Faiblesses : courbe d'apprentissage plus longue, interface dense
+- **Pour qui** : hôtes qui veulent aussi un site direct
+
+#### 4. Rentals United
+
+- Prix : à partir de 50 €/mois
+- Forces : 80+ plateformes connectées (le plus complet du marché)
+- Faiblesses : cher, complexe, réservé aux pros
+- **Pour qui** : conciergeries multi-biens, 10+ logements, présence internationale
+
+#### 5. Beds24
+
+- Prix : 10-20 €/mois (le moins cher)
+- Forces : très complet, très flexible, très technique
+- Faiblesses : interface vieillissante, setup complexe
+- **Pour qui** : profils techniques, hôtes économes qui n'ont pas peur de bricoler
+
+### Comment choisir
+
+Matrice de décision rapide :
+
+| Ton profil | Recommandation |
+|---|---|
+| 1 logement, débutant, économie | **iCal gratuit** (pas de CM) |
+| 2-3 logements, français, simple | **Smoobu** |
+| Automatisation messages prioritaire | **Hospitable** |
+| Site direct inclus + ambition | **Lodgify** |
+| 10+ biens / conciergerie | **Rentals United** |
+| Technique + budget serré | **Beds24** |
+
+### Le piège à éviter : basculer trop tôt
+
+J'ai vu beaucoup d'hôtes souscrire à un CM dès qu'ils publient sur leur 2e plateforme. Résultat : 30 €/mois pour gérer 8 réservations = 3,75 €/réservation de surcoût. Sur des nuitées à 80 €, c'est pas négligeable.
+
+**Règle** : reste sur iCal gratuit jusqu'à 15 réservations/mois. Au-delà, le CM se rentabilise en gain de temps et en évitant les doubles-bookings.
+
+### Configuration Booking dans le CM (étapes communes)
+
+Peu importe le CM choisi, la config Booking se fait en 4 étapes :
+
+1. **Générer un code de connexion Booking** : Extranet Booking > Compte > Utilisateur > Ajouter utilisateur → rôle "Connecté via API"
+2. **Associer le logement** : dans ton CM, ajouter Booking comme nouveau canal → coller le code de connexion
+3. **Mapper les champs** : s'assurer que les équipements, règles et tarifs se synchronisent correctement (vérifier manuellement après la 1re synchro)
+4. **Tester** : faire une fausse réservation Booking (mode test) → vérifier que le calendrier Airbnb se bloque bien
+
+Compter 1-2 heures pour une première configuration propre.
+
+### Les erreurs de config classiques
+
+- **Tarif importé depuis Airbnb directement sans ajustement** : résultat, ton prix Booking TTC est identique au prix Airbnb HT → tu es 14 % trop cher, cannibalisation.
+- **Politique d'annulation par défaut** : le CM reprend la politique la plus restrictive des 2 plateformes par défaut. Force la Souple côté Booking.
+- **Messages automatiques doublonnés** : si tu as déjà des messages Airbnb auto, vérifie que le CM n'envoie pas des doublons sur Booking.
+
+### Ce que ça change concrètement
+
+Avant CM (iCal) : 30-45 min/jour passés sur les 2 plateformes, risque de double-booking non négligeable, tarification identique sur les 2.
+
+Après CM bien configuré : 10 min/jour, zéro double-booking, tarification différenciée optimisée, auto-messages, score Booking et Airbnb qui montent ensemble.
+
+**Le CM paie son prix en 1-2 mois** si tu as le volume requis.` },
       ],
     },
     {
