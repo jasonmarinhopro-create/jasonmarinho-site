@@ -143,9 +143,9 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '10px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  logoText: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 600, color: 'var(--text)' },
+  logoText: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 600, color: 'var(--text)' },
   title: {
-    fontFamily: 'Fraunces, serif', fontSize: '28px', fontWeight: 400,
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', fontWeight: 400,
     color: 'var(--text)', letterSpacing: '-0.5px', marginBottom: '6px',
   },
   subtitle: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', marginBottom: '32px' },

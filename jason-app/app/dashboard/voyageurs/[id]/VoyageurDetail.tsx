@@ -1046,12 +1046,12 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   bigAvatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 600, color: '#fff',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 600, color: '#fff',
   },
   profileInfo: { flex: 1, minWidth: 0 },
   profileNameRow: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' },
   profileName: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(20px,2.5vw,28px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px,2.5vw,28px)',
     fontWeight: 400, color: 'var(--text)', margin: 0,
   },
   profileEditForm: { display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' },
@@ -1170,7 +1170,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '20px 24px 16px', borderBottom: '1px solid var(--border)',
   },
   modalTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: '18px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px',
     fontWeight: 400, color: 'var(--text)',
   },
   modalClose: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', padding: '4px' },

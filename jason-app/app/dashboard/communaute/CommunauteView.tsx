@@ -474,7 +474,7 @@ const s: Record<string, React.CSSProperties> = {
   page:     { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro:    { marginBottom: '28px' },
   pageTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
   },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6 },
@@ -501,7 +501,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   searchInput: {
     flex: 1, background: 'transparent', border: 'none', outline: 'none',
-    color: 'var(--text)', fontSize: '14px', fontFamily: 'Outfit, sans-serif',
+    color: 'var(--text)', fontSize: '14px', fontFamily: 'var(--font-outfit), sans-serif',
   } as React.CSSProperties,
   clearBtn: {
     background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border)',
@@ -524,7 +524,7 @@ const s: Record<string, React.CSSProperties> = {
   chip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 12px', borderRadius: '999px', cursor: 'pointer',
-    fontSize: '12px', fontWeight: 500, fontFamily: 'Outfit, sans-serif',
+    fontSize: '12px', fontWeight: 500, fontFamily: 'var(--font-outfit), sans-serif',
     background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
     color: 'var(--text-3)', whiteSpace: 'nowrap' as const,
   },
@@ -539,7 +539,7 @@ const s: Record<string, React.CSSProperties> = {
   resetLink: {
     alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 12px', borderRadius: '999px', cursor: 'pointer',
-    fontSize: '12px', fontWeight: 500, fontFamily: 'Outfit, sans-serif',
+    fontSize: '12px', fontWeight: 500, fontFamily: 'var(--font-outfit), sans-serif',
     background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.15)',
     color: 'rgba(239,68,68,0.7)',
   },
@@ -588,7 +588,7 @@ const s: Record<string, React.CSSProperties> = {
     height: '100%',
   },
   featuredName: {
-    fontFamily: 'Fraunces, serif', fontSize: '15px', fontWeight: 400,
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', fontWeight: 400,
     color: 'var(--text)', margin: 0,
   },
   tagPill: {
@@ -620,7 +620,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   groupName: {
-    fontFamily: 'Fraunces, serif', fontSize: '15px', fontWeight: 400,
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', fontWeight: 400,
     color: 'var(--text)', margin: 0,
   },
   inlineTag: {

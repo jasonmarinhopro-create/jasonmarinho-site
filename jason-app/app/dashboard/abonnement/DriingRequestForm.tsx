@@ -135,7 +135,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '9px 18px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)',
     color: 'var(--accent-text)', fontSize: '13px', fontWeight: 600,
-    cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
   },
   btnBecome: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -150,7 +150,7 @@ const s: Record<string, React.CSSProperties> = {
     width: '100%', boxSizing: 'border-box',
     background: 'var(--border)', border: '1px solid rgba(255,213,107,0.25)',
     borderRadius: '10px', padding: '10px 14px 10px 38px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)', outline: 'none',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)', outline: 'none',
   },
   errorBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
@@ -163,11 +163,11 @@ const s: Record<string, React.CSSProperties> = {
     padding: '10px 20px', borderRadius: '10px',
     background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.3)',
     color: 'var(--accent-text)', fontSize: '13px', fontWeight: 600,
-    cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
   },
   btnCancel: {
     fontSize: '13px', fontWeight: 400, color: 'var(--text-3)',
-    background: 'none', border: 'none', cursor: 'pointer', padding: '6px', fontFamily: 'Outfit, sans-serif',
+    background: 'none', border: 'none', cursor: 'pointer', padding: '6px', fontFamily: 'var(--font-outfit), sans-serif',
   },
   notClient: { fontSize: '12px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 },
   link: {

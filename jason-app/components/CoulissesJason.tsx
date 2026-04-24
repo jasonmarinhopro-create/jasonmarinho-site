@@ -240,7 +240,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'linear-gradient(135deg, rgba(255,213,107,0.2) 0%, rgba(255,213,107,0.08) 100%)',
     border: '1px solid rgba(255,213,107,0.25)',
     fontSize: '10px', fontWeight: 800, color: '#FFD56B',
-    fontFamily: 'Fraunces, serif',
+    fontFamily: 'var(--font-fraunces), serif',
   },
   entryText: {
     fontSize: '14px', lineHeight: 1.7,

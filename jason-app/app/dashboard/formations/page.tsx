@@ -89,7 +89,7 @@ export default async function FormationsPage() {
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(16px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '28px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(24px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   pageDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6 },
   section: { marginBottom: '32px' },
   suggestSection: { marginTop: '8px' },
@@ -99,6 +99,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   suggestLeft: { display: 'flex', alignItems: 'flex-start', gap: '14px', flex: 1, minWidth: '220px' },
   suggestEmoji: { fontSize: '26px', flexShrink: 0, marginTop: '3px' },
-  suggestTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(17px,2vw,20px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px', lineHeight: 1.3 },
+  suggestTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(17px,2vw,20px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px', lineHeight: 1.3 },
   suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6 },
 }

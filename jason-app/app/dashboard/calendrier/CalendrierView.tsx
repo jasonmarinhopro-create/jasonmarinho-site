@@ -987,7 +987,7 @@ export default function CalendrierView({
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px' },
+  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px' },
   pageSub:   { fontSize: '14px', color: 'var(--text-2)', margin: 0 },
   root: {
     padding: 'clamp(20px,3vw,40px) clamp(20px,3vw,40px) 32px',
@@ -1010,7 +1010,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text)',
     margin: 0,
     letterSpacing: '-0.4px',
-    fontFamily: 'Fraunces, serif',
+    fontFamily: 'var(--font-fraunces), serif',
     minWidth: '220px',
     textAlign: 'center',
   },
@@ -1107,7 +1107,7 @@ const s: Record<string, React.CSSProperties> = {
   sideHeadLeft: { display: 'flex', flexDirection: 'column', gap: '1px' },
   sideDow: {
     fontSize: '16px', fontWeight: 600, color: 'var(--text)',
-    fontFamily: 'Fraunces, serif',
+    fontFamily: 'var(--font-fraunces), serif',
     textTransform: 'capitalize', letterSpacing: '-0.2px',
   },
   sideDate: { fontSize: '13px', color: 'var(--text-muted)', textTransform: 'capitalize' },

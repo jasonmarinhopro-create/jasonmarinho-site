@@ -262,7 +262,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   logoText: {
-    fontFamily: 'Fraunces, serif', fontSize: '15px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '15px',
     fontWeight: 600, color: 'var(--text)', flex: 1,
   },
   closeBtn: {

@@ -198,7 +198,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '999px', padding: '5px 14px',
   },
   teasingTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(20px,3vw,28px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px,3vw,28px)',
     fontWeight: 400, lineHeight: 1.35, color: 'var(--text)', margin: 0,
   },
   teasingDesc: { fontSize: '14px', lineHeight: 1.7, color: 'var(--text-2)', margin: 0, maxWidth: '440px' },
@@ -228,7 +228,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
   introTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(24px,3vw,34px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,3vw,34px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '10px', marginTop: 0,
   },
   introDesc: { fontSize: '14px', lineHeight: 1.7, color: 'var(--text-2)', maxWidth: '520px', margin: 0 },

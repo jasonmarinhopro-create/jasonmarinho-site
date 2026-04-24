@@ -508,7 +508,7 @@ function SectionHeader({ Icon, label, color, count }: {
       }}>
         <Icon size={16} color={color} weight="fill" />
       </div>
-      <span style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)' }}>
+      <span style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)' }}>
         {label}
       </span>
       <span style={{
@@ -727,7 +727,7 @@ function CustomizeModal({
 const s: Record<string, React.CSSProperties> = {
   page:      { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro:     { marginBottom: '32px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   pageDesc:  { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.65 },
 
   nav: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' },
@@ -735,7 +735,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', fontWeight: 500, padding: '8px 16px',
     borderRadius: '100px', cursor: 'pointer',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
+    color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.18s', display: 'flex', alignItems: 'center', gap: '6px',
     whiteSpace: 'nowrap',
   },
@@ -749,7 +749,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   searchInput: {
     background: 'none', border: 'none', outline: 'none',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)', width: '100%',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)', width: '100%',
   },
   clearSearch: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', display: 'flex', padding: '2px' },
 
@@ -781,7 +781,7 @@ const s: Record<string, React.CSSProperties> = {
 
   contentWrap: { position: 'relative' },
   content: {
-    fontFamily: 'Outfit, sans-serif', fontSize: '13px', fontWeight: 300,
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '13px', fontWeight: 300,
     color: 'var(--text-2)', lineHeight: 1.75,
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
     maxHeight: '200px', overflowY: 'auto',
@@ -803,7 +803,7 @@ const s: Record<string, React.CSSProperties> = {
   langBtn: {
     fontSize: '11px', fontWeight: 700, padding: '0 10px', height: '32px',
     background: 'var(--surface)', border: 'none', cursor: 'pointer',
-    color: 'var(--text-3)', fontFamily: 'Outfit, sans-serif',
+    color: 'var(--text-3)', fontFamily: 'var(--font-outfit), sans-serif',
     letterSpacing: '0.4px', transition: 'all 0.15s',
   },
   langBtnActive:   { background: 'rgba(255,213,107,0.15)', color: '#FFD56B' },
@@ -813,7 +813,7 @@ const s: Record<string, React.CSSProperties> = {
     flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
     padding: '9px 16px', borderRadius: '10px', cursor: 'pointer',
     background: 'transparent', border: '1px solid',
-    fontSize: '13px', fontWeight: 600, fontFamily: 'Outfit, sans-serif',
+    fontSize: '13px', fontWeight: 600, fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.18s',
   },
   copyBtnDone: {
@@ -826,7 +826,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'transparent', border: '1px solid var(--border)',
     borderRadius: '10px', cursor: 'pointer',
     fontSize: '13px', fontWeight: 500, color: 'var(--text-2)',
-    fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
 
   empty:     { textAlign: 'center', padding: '60px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' },
@@ -856,7 +856,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
     padding: '22px 24px 16px', borderBottom: '1px solid var(--border)', flexShrink: 0,
   },
-  modalTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)' },
+  modalTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)' },
   closeBtn: {
     width: '32px', height: '32px', borderRadius: '8px',
     background: 'var(--border)', border: 'none', cursor: 'pointer',
@@ -873,12 +873,12 @@ const s: Record<string, React.CSSProperties> = {
   input: {
     background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '13.5px', color: 'var(--text)', outline: 'none', width: '100%',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '13.5px', color: 'var(--text)', outline: 'none', width: '100%',
   },
   textarea: {
     background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '12px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '12.5px', color: 'var(--text-2)',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '12.5px', color: 'var(--text-2)',
     outline: 'none', width: '100%', resize: 'vertical', minHeight: '200px', lineHeight: 1.7,
   },
 
@@ -886,7 +886,7 @@ const s: Record<string, React.CSSProperties> = {
   timingBtn: {
     fontSize: '12px', fontWeight: 500, padding: '6px 13px', borderRadius: '100px', cursor: 'pointer',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+    color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
   timingBtnActive: { background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.3)', color: '#FFD56B' },
 
@@ -898,19 +898,19 @@ const s: Record<string, React.CSSProperties> = {
   saveBtn: {
     fontSize: '13px', fontWeight: 600, padding: '9px 20px', borderRadius: '10px', cursor: 'pointer',
     background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.3)',
-    color: '#FFD56B', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+    color: '#FFD56B', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
   cancelBtn: {
     fontSize: '13px', fontWeight: 500, padding: '9px 16px', borderRadius: '10px', cursor: 'pointer',
-    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif',
   },
   ghostBtn: {
     fontSize: '12px', fontWeight: 500, padding: '7px 13px', borderRadius: '8px', cursor: 'pointer',
-    background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-3)', fontFamily: 'Outfit, sans-serif',
+    background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-3)', fontFamily: 'var(--font-outfit), sans-serif',
   },
   deleteBtnSmall: {
     fontSize: '12px', fontWeight: 500, padding: '7px 13px', borderRadius: '8px', cursor: 'pointer',
     background: 'rgba(249,117,131,0.08)', border: '1px solid rgba(249,117,131,0.25)',
-    color: '#F97583', fontFamily: 'Outfit, sans-serif',
+    color: '#F97583', fontFamily: 'var(--font-outfit), sans-serif',
   },
 }

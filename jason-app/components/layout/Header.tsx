@@ -329,7 +329,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '8px',
   },
   title: {
-    fontFamily: 'Fraunces, serif', fontSize: '18px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px',
     fontWeight: 400, color: 'var(--text)', letterSpacing: '-0.3px',
   },
   right: { display: 'flex', alignItems: 'center', gap: '8px' },
@@ -376,7 +376,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   avatarInitial: {
-    fontFamily: 'Fraunces, serif', fontSize: '12px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '12px',
     fontWeight: 600, color: 'var(--nav-active-color)',
   },
   profileName: {
@@ -410,7 +410,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   dropAvatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '15px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '15px',
     fontWeight: 600, color: 'var(--nav-active-color)',
   },
   dropName: {

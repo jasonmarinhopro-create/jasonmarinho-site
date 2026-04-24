@@ -421,7 +421,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '4px 10px', borderRadius: '100px',
     background: 'var(--border)', color: 'var(--text-muted)', border: '1px solid var(--border)',
   },
-  cardTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(16px,2vw,18px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1.3, marginBottom: '10px' },
+  cardTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(16px,2vw,18px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1.3, marginBottom: '10px' },
   cardDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, marginBottom: '16px', flex: 1 },
   meta: { display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '18px' },
   metaItem: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--text-3)' },

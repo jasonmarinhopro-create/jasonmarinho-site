@@ -127,7 +127,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   tileInitials: {
     fontSize: '20px', fontWeight: 700, lineHeight: 1,
-    fontFamily: 'Fraunces, serif',
+    fontFamily: 'var(--font-fraunces), serif',
   },
   tileName: {
     fontSize: '11px', color: 'var(--text-2)', fontWeight: 500,

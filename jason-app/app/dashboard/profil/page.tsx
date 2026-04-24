@@ -34,7 +34,7 @@ export default async function ProfilPage() {
       <Header title="Mon profil" userName={fullName || undefined} currentPlan={planLabel} />
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }} className="dash-page">
         <div style={{ marginBottom: '32px' }} className="fade-up">
-          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' }}>
+          <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' }}>
             Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>profil</em>
           </h2>
           <p style={{ fontSize: '15px', fontWeight: 300, color: 'var(--text-2)' }}>

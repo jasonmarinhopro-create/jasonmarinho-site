@@ -206,7 +206,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 500, padding: '6px 4px',
     background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
     borderRadius: '8px', cursor: 'pointer',
-    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
+    color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.15s',
   },
 
@@ -217,7 +217,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(255,255,255,0.12)',
     borderRadius: '10px',
     padding: '10px 12px',
-    fontFamily: 'Outfit, sans-serif',
+    fontFamily: 'var(--font-outfit), sans-serif',
     fontSize: '16px',
     color: '#fff',
     outline: 'none',
@@ -246,7 +246,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px',
     fontWeight: 600,
     color: 'var(--text-2)',
-    fontFamily: 'Outfit, sans-serif',
+    fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.15s',
   },
 

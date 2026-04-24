@@ -599,7 +599,7 @@ const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '32px' },
   pageTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
   },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '540px', lineHeight: 1.6 },
@@ -611,7 +611,7 @@ const styles: Record<string, React.CSSProperties> = {
   card: { padding: '28px', borderRadius: '20px' },
   cardTitle: {
     display: 'flex', alignItems: 'center', gap: '10px',
-    fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400,
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400,
     color: 'var(--text)', marginBottom: '10px',
   },
   cardDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '24px' },
@@ -621,7 +621,7 @@ const styles: Record<string, React.CSSProperties> = {
   input: {
     flex: 1, background: 'var(--bg-2)', border: '1px solid var(--border-2)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', width: '100%',
   },
   errorMsg: { fontSize: '13px', color: '#F87171', marginTop: '4px', lineHeight: 1.5 },
@@ -702,25 +702,25 @@ const styles: Record<string, React.CSSProperties> = {
   select: {
     width: '100%', background: 'var(--bg-2)', border: '1px solid var(--border-2)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', appearance: 'none' as const,
   },
   selectPositive: {
     width: '100%', background: 'var(--bg-2)', border: '1px solid rgba(52,211,153,0.25)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', appearance: 'none' as const,
   },
   textarea: {
     width: '100%', background: 'var(--bg-2)', border: '1px solid var(--border-2)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', resize: 'vertical' as const, minHeight: '100px',
   },
   textareaPositive: {
     width: '100%', background: 'var(--bg-2)', border: '1px solid rgba(52,211,153,0.25)',
     borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', resize: 'vertical' as const, minHeight: '100px',
   },
 
@@ -754,7 +754,7 @@ const styles: Record<string, React.CSSProperties> = {
   positiveBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '8px',
     background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.3)',
-    color: '#34D399', fontFamily: 'Outfit, sans-serif', fontSize: '14px', fontWeight: 600,
+    color: '#34D399', fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', fontWeight: 600,
     padding: '11px 22px', borderRadius: '10px', cursor: 'pointer',
     whiteSpace: 'nowrap' as const,
   },
@@ -764,7 +764,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   tipsHeader: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' },
-  tipsTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)' },
+  tipsTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)' },
   tipsList: { display: 'flex', flexDirection: 'column', gap: '10px' },
   tip: {
     display: 'flex', alignItems: 'flex-start', gap: '14px',

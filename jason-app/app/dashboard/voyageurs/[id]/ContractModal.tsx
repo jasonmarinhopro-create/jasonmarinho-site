@@ -955,7 +955,7 @@ const modalTag: React.CSSProperties = {
 }
 
 const modalTitle: React.CSSProperties = {
-  fontFamily: 'Fraunces, Georgia, serif',
+  fontFamily: 'var(--font-fraunces), Georgia, serif',
   fontSize: '20px', fontWeight: 400,
   color: 'var(--text, #f0ebe1)', margin: 0,
 }

@@ -195,7 +195,7 @@ export default async function AdminGuidesPage() {
 
 const s: Record<string, React.CSSProperties> = {
   intro: { marginBottom: '28px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(24px,3vw,36px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
+  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,3vw,36px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
   pageDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.65, maxWidth: '680px' },
 
   actions: { display: 'flex', gap: '12px', marginBottom: '36px', flexWrap: 'wrap' as const },

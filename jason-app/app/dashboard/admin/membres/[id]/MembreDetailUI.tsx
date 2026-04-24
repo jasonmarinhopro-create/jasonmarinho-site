@@ -191,7 +191,7 @@ export default function MembreDetailUI({ profile, formations, stats }: Props) {
                 borderRadius: '10px', padding: '8px 12px',
                 fontSize: '13px', fontWeight: 600,
                 cursor: (isPending || profile.role === 'admin') ? 'not-allowed' : 'pointer',
-                outline: 'none', fontFamily: 'Outfit, sans-serif',
+                outline: 'none', fontFamily: 'var(--font-outfit), sans-serif',
                 opacity: profile.role === 'admin' ? 0.4 : 1,
               }}
             >
@@ -275,7 +275,7 @@ export default function MembreDetailUI({ profile, formations, stats }: Props) {
             <div key={tile.label} style={{ ...s.statTile, borderColor: `${tile.color}25`, background: `${tile.color}08` }}>
               <span style={{ color: tile.color }}>{tile.icon}</span>
               <span style={{
-                fontFamily: 'Fraunces, serif', fontSize: '26px', fontWeight: 400,
+                fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 400,
                 color: tile.value > 0 ? 'var(--text)' : 'var(--text-muted)', lineHeight: 1,
               }}>
                 {tile.value}
@@ -379,7 +379,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     background: 'none', border: 'none', cursor: 'pointer',
     fontSize: '13px', color: 'var(--text-3)', padding: '4px 0',
-    transition: 'color 0.15s', fontFamily: 'Outfit, sans-serif',
+    transition: 'color 0.15s', fontFamily: 'var(--font-outfit), sans-serif',
   },
 
   profileCard: {
@@ -393,14 +393,14 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   bigAvatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 600, color: 'var(--accent-text)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 600, color: 'var(--accent-text)',
   },
   profileInfo: { flex: 1, minWidth: 0 },
   profileNameRow: {
     display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px',
   },
   profileName: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(20px,2.5vw,28px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px,2.5vw,28px)',
     fontWeight: 400, color: 'var(--text)', margin: 0,
   },
   emailLink: {
@@ -437,7 +437,7 @@ const s: Record<string, React.CSSProperties> = {
   editBtn: {
     display: 'flex', alignItems: 'center', gap: '5px',
     background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'Outfit, sans-serif',
+    fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'color 0.15s',
   },
 
@@ -446,7 +446,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--bg)', border: '1px solid var(--border)',
     borderRadius: '12px', padding: '14px 16px',
     fontSize: '14px', color: 'var(--text)', lineHeight: '1.7',
-    fontFamily: 'Outfit, sans-serif', resize: 'vertical',
+    fontFamily: 'var(--font-outfit), sans-serif', resize: 'vertical',
     outline: 'none',
   } as React.CSSProperties,
   notesText: {
@@ -459,7 +459,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px dashed var(--border)',
     borderRadius: '10px', padding: '10px 16px',
     fontSize: '13px', color: 'var(--text-muted)', cursor: 'pointer',
-    fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
   savedBanner: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
@@ -471,14 +471,14 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.25)',
     borderRadius: '10px', padding: '8px 16px',
     fontSize: '13px', fontWeight: 600, color: 'var(--accent-text)',
-    cursor: 'pointer', fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
   ghostBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     background: 'none', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '8px 14px',
     fontSize: '13px', color: 'var(--text-3)', cursor: 'pointer',
-    fontFamily: 'Outfit, sans-serif', transition: 'all 0.15s',
+    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
 
   statsGrid: {

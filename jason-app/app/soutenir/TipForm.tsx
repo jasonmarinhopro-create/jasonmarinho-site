@@ -90,7 +90,7 @@ const s: Record<string, React.CSSProperties> = {
     color: '#FFD56B',
   },
   inputRow:    { display: 'flex', alignItems: 'center', gap: '10px' },
-  prefix:      { fontSize: '20px', color: 'rgba(255,255,255,0.25)', fontFamily: 'Fraunces,serif', flexShrink: 0 },
+  prefix:      { fontSize: '20px', color: 'rgba(255,255,255,0.25)', fontFamily: 'var(--font-fraunces), serif', flexShrink: 0 },
   input:       {
     flex: 1, padding: '14px 16px',
     background: 'rgba(255,255,255,0.04)',

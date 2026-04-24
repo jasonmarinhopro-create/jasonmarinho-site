@@ -356,7 +356,7 @@ function ActionBtn({ label, icon, color, loading, onClick }: { label: string; ic
       padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
       cursor: loading ? 'not-allowed' : 'pointer',
       background: `${color}14`, color, border: `1px solid ${color}25`,
-      opacity: loading ? 0.5 : 1, fontFamily: 'Outfit, sans-serif',
+      opacity: loading ? 0.5 : 1, fontFamily: 'var(--font-outfit), sans-serif',
       transition: 'all 0.15s',
     }}>
       {loading ? <ArrowClockwise size={12} style={{ animation: 'spin 1s linear infinite' }} /> : icon}
@@ -401,7 +401,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
   heroTitle: {
-    fontFamily: 'Fraunces, serif',
+    fontFamily: 'var(--font-fraunces), serif',
     fontSize: 'clamp(28px,3vw,42px)',
     fontWeight: 400,
     color: 'var(--text)',
@@ -444,7 +444,7 @@ const s: Record<string, React.CSSProperties> = {
   planTop: { display: 'flex', alignItems: 'center', gap: '8px' },
   planDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
   planName: { fontSize: '13px', color: 'var(--text-2)', flex: 1 },
-  planCount: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)', lineHeight: 1 },
+  planCount: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)', lineHeight: 1 },
   planBar: { height: '3px', borderRadius: '2px', background: 'var(--border)', overflow: 'hidden' },
   planFill: { height: '100%', borderRadius: '2px', transition: 'width 0.6s ease', minWidth: '4px' },
 
@@ -459,7 +459,7 @@ const s: Record<string, React.CSSProperties> = {
     width: '40px', height: '40px', borderRadius: '11px',
     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
   },
-  actVal: { fontFamily: 'Fraunces, serif', fontSize: '26px', fontWeight: 400, color: 'var(--text)', lineHeight: 1 },
+  actVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 400, color: 'var(--text)', lineHeight: 1 },
   actLbl: { fontSize: '12px', color: 'var(--text-3)', marginTop: '3px' },
 
   // Content grid
@@ -525,7 +525,7 @@ const s: Record<string, React.CSSProperties> = {
     width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
     background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.2)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '14px', fontWeight: 700, color: '#a78bfa', fontFamily: 'Fraunces, serif',
+    fontSize: '14px', fontWeight: 700, color: '#a78bfa', fontFamily: 'var(--font-fraunces), serif',
   },
   cellPrimary: {
     fontSize: '14px', fontWeight: 500, color: 'var(--text)',

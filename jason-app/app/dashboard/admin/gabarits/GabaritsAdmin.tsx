@@ -277,7 +277,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
       {/* ── Header ── */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
-          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 500, color: 'var(--text)', marginBottom: '5px' }}>
+          <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 500, color: 'var(--text)', marginBottom: '5px' }}>
             Gabarits de messages
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-3)' }}>

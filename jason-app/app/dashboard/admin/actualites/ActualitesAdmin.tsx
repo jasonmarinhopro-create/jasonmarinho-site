@@ -363,12 +363,12 @@ const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '24px' },
 
   pageIntro: {},
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(24px,3vw,36px)', fontWeight: 400, color: 'var(--text)', marginBottom: '6px' },
+  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,3vw,36px)', fontWeight: 400, color: 'var(--text)', marginBottom: '6px' },
   pageDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-3)' },
 
   statsBar: { display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const },
   statChip: { display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '8px 14px' },
-  statNum: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, lineHeight: 1 },
+  statNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400, lineHeight: 1 },
   statLbl: { fontSize: '12px', color: 'var(--text-3)' },
   addBtn: { marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '9px 16px', borderRadius: '10px', fontSize: '13px', fontWeight: 600, background: 'var(--yellow)', color: 'var(--green-deep)', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' as const },
 
@@ -378,7 +378,7 @@ const s: Record<string, React.CSSProperties> = {
   group: { display: 'flex', flexDirection: 'column', gap: '6px' },
   label: { fontSize: '12px', fontWeight: 500, color: 'var(--text-2)' },
   opt: { fontWeight: 300, color: 'var(--text-muted)' },
-  input: { background: 'var(--surface)', border: '1px solid var(--border-2)', borderRadius: '10px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)', fontFamily: 'Outfit, sans-serif', outline: 'none', width: '100%' },
+  input: { background: 'var(--surface)', border: '1px solid var(--border-2)', borderRadius: '10px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)', fontFamily: 'var(--font-outfit), sans-serif', outline: 'none', width: '100%' },
   publishRow: { display: 'flex', alignItems: 'center' },
   publishLabel: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 400, color: 'var(--text-2)', cursor: 'pointer' },
   formActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end', paddingTop: '4px' },
@@ -403,7 +403,7 @@ const s: Record<string, React.CSSProperties> = {
   itemActions: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
   iconBtn: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '30px', height: '30px', borderRadius: '8px', background: 'var(--surface-2)', border: '1px solid var(--border)', cursor: 'pointer', transition: 'background 0.15s' },
 
-  itemTitle: { fontFamily: 'Fraunces, serif', fontSize: '16px', fontWeight: 400, color: 'var(--text)', margin: '0 0 8px', lineHeight: 1.4 },
+  itemTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '16px', fontWeight: 400, color: 'var(--text)', margin: '0 0 8px', lineHeight: 1.4 },
   itemSummary: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6, margin: '0 0 10px' },
   itemSource: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--text-muted)', textDecoration: 'none' },
 }

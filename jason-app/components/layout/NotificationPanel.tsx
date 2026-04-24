@@ -176,7 +176,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
   },
   title: {
-    fontFamily: 'Fraunces, serif',
+    fontFamily: 'var(--font-fraunces), serif',
     fontSize: '16px', fontWeight: 400,
     color: 'var(--text)', letterSpacing: '-0.3px',
   },
@@ -190,7 +190,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'none', border: '1px solid var(--border)',
     borderRadius: '6px', padding: '4px 9px',
     fontSize: '11px', fontWeight: 500, color: 'var(--text-3)',
-    cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
   },
   closeBtn: {
     background: 'var(--surface)', border: '1px solid var(--border)',
@@ -250,6 +250,6 @@ const s: Record<string, React.CSSProperties> = {
     textDecoration: 'none',
     width: '100%', justifyContent: 'center' as const,
     transition: 'background 0.15s',
-    fontFamily: 'Outfit, sans-serif',
+    fontFamily: 'var(--font-outfit), sans-serif',
   },
 }

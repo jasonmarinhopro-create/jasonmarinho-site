@@ -196,7 +196,7 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>
+          <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>
             Groupes communautaires
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-3)' }}>
@@ -388,7 +388,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
     borderRadius: '9px', padding: '9px 12px', color: 'var(--text)', fontSize: '13px',
     outline: 'none', width: '100%', boxSizing: 'border-box',
-    fontFamily: 'Outfit, sans-serif',
+    fontFamily: 'var(--font-outfit), sans-serif',
   } as React.CSSProperties,
   submitBtn: {
     padding: '10px 20px', borderRadius: '10px',

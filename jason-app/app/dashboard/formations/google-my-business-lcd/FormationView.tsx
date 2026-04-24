@@ -630,7 +630,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   overviewBadge: { marginBottom: '20px' },
   overviewTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(24px,3vw,42px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,3vw,42px)',
     fontWeight: 400, color: 'var(--text)', lineHeight: 1.15,
     marginBottom: '16px',
   },
@@ -704,7 +704,7 @@ const styles: Record<string, React.CSSProperties> = {
 // Lesson content styles
 const s: Record<string, React.CSSProperties> = {
   h2: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(20px,2.5vw,30px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px,2.5vw,30px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '20px', marginTop: '8px',
     lineHeight: 1.2,
   },

@@ -103,7 +103,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
     <div>
       {/* Header */}
       <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '12px' }}>
+        <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '12px' }}>
           Gestion des formations
         </h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>

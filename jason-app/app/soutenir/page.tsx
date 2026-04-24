@@ -215,7 +215,7 @@ const s: Record<string, React.CSSProperties> = {
     textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '18px',
   },
   merciIcon:  { fontSize: '36px', color: '#FFD56B', fontWeight: 700 },
-  merciTitle: { fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 400, margin: 0, color: '#FFD56B' },
+  merciTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '32px', fontWeight: 400, margin: 0, color: '#FFD56B' },
   merciText:  { fontSize: '15px', lineHeight: 1.7, color: 'rgba(255,255,255,0.55)', margin: 0, maxWidth: '360px' },
   merciBtn:   {
     display: 'inline-flex', alignItems: 'center', gap: '8px',
@@ -234,7 +234,7 @@ const s: Record<string, React.CSSProperties> = {
     textTransform: 'uppercase', marginBottom: '24px',
   },
   heroTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(38px,6vw,60px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(38px,6vw,60px)',
     fontWeight: 400, lineHeight: 1.1, margin: '0 0 22px', color: '#fff',
   },
   heroAccent: { color: '#FFD56B', fontStyle: 'italic' },
@@ -253,7 +253,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(255,213,107,0.2)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  jasonInitials: { fontFamily: 'Fraunces, serif', fontSize: '18px', color: '#FFD56B', fontWeight: 400 },
+  jasonInitials: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', color: '#FFD56B', fontWeight: 400 },
   jasonText:     { flex: 1 },
   jasonQuote:    { fontSize: '15px', lineHeight: 1.8, color: 'rgba(255,255,255,0.6)', margin: '0 0 12px', fontStyle: 'italic' },
   jasonQuote2:   { fontSize: '14px', lineHeight: 1.7, color: 'rgba(255,255,255,0.45)', margin: '0 0 16px' },
@@ -284,7 +284,7 @@ const s: Record<string, React.CSSProperties> = {
   transparencyHead: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '22px' },
   transparencyGrid: { display: 'flex', gap: '32px', flexWrap: 'wrap' as const },
   transparencyItem: { display: 'flex', alignItems: 'flex-start', gap: '14px', flex: '1', minWidth: '180px' },
-  transparencyPct:  { fontFamily: 'Fraunces, serif', fontSize: '28px', color: '#FFD56B', fontWeight: 400, flexShrink: 0, lineHeight: 1 },
+  transparencyPct:  { fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', color: '#FFD56B', fontWeight: 400, flexShrink: 0, lineHeight: 1 },
   transparencyLabel:{ fontSize: '13px', fontWeight: 700, color: '#fff', margin: '0 0 4px' },
   transparencyDesc: { fontSize: '12px', color: 'rgba(255,255,255,0.35)', margin: 0, lineHeight: 1.5 },
 
@@ -296,7 +296,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column', gap: '10px',
   },
   formHead:  { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2px' },
-  formTitle: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: '#fff', margin: 0 },
+  formTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, color: '#fff', margin: 0 },
   formSub:   { fontSize: '13px', color: 'rgba(255,255,255,0.35)', margin: '0 0 8px', lineHeight: 1.6 },
 
   /* ── Note finale ── */
