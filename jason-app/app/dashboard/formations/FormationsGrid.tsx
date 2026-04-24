@@ -57,6 +57,7 @@ const SLUG_CATEGORY: Record<string, string> = {
   'fiscalite-reglementation-lcd-france-2026': 'reglementation',
   'fiscalite-statut-conciergerie-tourisme': 'reglementation',
   'creer-conciergerie-lcd': 'conciergerie',
+  'maitriser-booking-com-algorithme-genius': 'visibilite',
 }
 
 const categoryLabel: Record<string, string> = {
