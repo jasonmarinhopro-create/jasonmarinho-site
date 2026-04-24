@@ -115,7 +115,7 @@ function buildSection(page) {
     const t = TARGETS[key];
     if (!t) { console.warn(`    ⚠  unknown target ${key}`); return ''; }
     return `      <a href="${t.href}" class="rel-card">
-        <div class="rel-ico"><i class="ph-light ${t.icon}"></i></div>
+        <div class="rel-ico"><i class="ph ${t.icon}"></i></div>
         <div class="rel-body">
           <div class="rel-kind">${t.kind}</div>
           <div class="rel-title">${t.label}</div>
@@ -129,11 +129,13 @@ function buildSection(page) {
 <section class="sec cr rel-sec">
   <style>
     .rel-sec .rel-head{text-align:center;margin-bottom:36px}
+    .rel-sec .rel-head .lbl{color:var(--ol,#556B2F)!important}
+    .rel-sec .rel-head .h2{color:var(--td)}
     .rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto}
     .rel-card{display:flex;flex-direction:column;gap:12px;background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:22px;text-decoration:none;color:inherit;transition:transform .22s,box-shadow .22s,border-color .22s}
     .rel-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
     .rel-ico{width:42px;height:42px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .rel-ico i{font-size:20px;color:var(--g)}
+    .rel-ico i{font-size:22px;color:var(--g);line-height:1}
     .rel-card:hover .rel-ico{background:var(--g)}
     .rel-card:hover .rel-ico i{color:var(--y)}
     .rel-body{display:flex;flex-direction:column;gap:6px;flex:1}
