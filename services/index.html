@@ -180,6 +180,15 @@ img{max-width:100%;height:auto}
 .rv.in{opacity:1;transform:translateY(0)}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}
 
+/* ── CTA FINAL ── */
+.cta-s{background:var(--g);padding:clamp(64px,8vw,88px) clamp(16px,5vw,60px);text-align:center;position:relative;overflow:hidden}
+.cta-gw{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:640px;height:300px;background:radial-gradient(ellipse,rgba(255,213,107,.06) 0%,transparent 65%);pointer-events:none}
+.cta-in{max-width:560px;margin:0 auto;position:relative;z-index:2}
+.cta-in .sub{color:rgba(255,255,255,.46);margin-bottom:28px;text-align:center;margin-left:auto;margin-right:auto}
+.cta-in .h2{color:#fff;margin-bottom:14px}
+.cta-in .h2 em{color:var(--y)}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
 /* ── FAQ ── */
 .faq{max-width:780px;margin:0 auto}
 .faq-item{border-bottom:1px solid var(--bd)}
@@ -438,6 +447,20 @@ img{max-width:100%;height:auto}
         </div></div>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-s">
+  <div class="cta-gw"></div>
+  <div class="cta-in rv">
+    <div class="lbl lt ct">Une question ?</div>
+    <h2 class="h2">Besoin d'un service spécifique ou d'un <em>conseil personnalisé</em> ?</h2>
+    <p class="sub">Si tu hésites entre plusieurs formations, si un outil ne fonctionne pas comme prévu, ou si ton cas est particulier : envoie-moi un message, je réponds personnellement.</p>
+    <div class="cta-btns">
+      <a href="/contact" class="btn-p">Contacter Jason <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="/pour-qui" class="btn-g">Voir les profils <i class="ph-bold ph-arrow-right"></i></a>
     </div>
   </div>
 </section>
