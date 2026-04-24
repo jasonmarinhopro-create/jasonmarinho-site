@@ -315,6 +315,60 @@ body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflo
 </section>
 
 <!-- CTA BANNER -->
+<!-- RELATED-FORMATIONS:START -->
+<section class="sec cr rel-sec">
+  <style>
+    .rel-sec .rel-head{text-align:center;margin-bottom:36px}
+    .rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto}
+    .rel-card{display:flex;flex-direction:column;gap:14px;background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:22px;text-decoration:none;color:inherit;transition:transform .22s,box-shadow .22s,border-color .22s}
+    .rel-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
+    .rel-ico{width:42px;height:42px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .rel-ico i{font-size:20px;color:var(--g)}
+    .rel-card:hover .rel-ico{background:var(--g)}
+    .rel-card:hover .rel-ico i{color:var(--y)}
+    .rel-body{display:flex;flex-direction:column;gap:8px;flex:1}
+    .rel-title{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.2px}
+    .rel-desc{font-size:13px;font-weight:300;color:var(--tm);line-height:1.55;flex:1}
+    .rel-cta{font-size:13px;font-weight:600;color:var(--g);display:flex;align-items:center;gap:6px;margin-top:4px}
+    .rel-cta i{font-size:12px}
+    @media(max-width:900px){.rel-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.rel-grid{grid-template-columns:1fr}}
+  </style>
+  <div class="s-in">
+    <div class="rel-head rv">
+      <div class="lbl">Formations liées</div>
+      <h2 class="h2" style="margin-bottom:0">Continue avec <em>ces formations</em></h2>
+    </div>
+    <div class="rel-grid rv">
+      <a href="/services/formations/tarification-dynamique" class="rel-card">
+        <div class="rel-ico"><i class="ph-light ph-chart-line-up"></i></div>
+        <div class="rel-body">
+          <div class="rel-title">Tarification dynamique</div>
+          <div class="rel-desc">45 % des hôtes perdent 15 à 25 % de revenus sur leur prix : corrige-le.</div>
+          <div class="rel-cta">Voir la formation <i class="ph-bold ph-arrow-right"></i></div>
+        </div>
+      </a>
+      <a href="/services/formations/lcd-basse-saison" class="rel-card">
+        <div class="rel-ico"><i class="ph-light ph-snowflake"></i></div>
+        <div class="rel-body">
+          <div class="rel-title">Développer la LCD en basse saison</div>
+          <div class="rel-desc">Tarification, cibles, partenariats locaux pour remplir hors saison.</div>
+          <div class="rel-cta">Voir la formation <i class="ph-bold ph-arrow-right"></i></div>
+        </div>
+      </a>
+      <a href="/services/formations/gerer-lcd-automatisation" class="rel-card">
+        <div class="rel-ico"><i class="ph-light ph-lightning"></i></div>
+        <div class="rel-body">
+          <div class="rel-title">Gérer sa LCD par automatisation</div>
+          <div class="rel-desc">Messages, accès, ménage, tarification : 12 h/semaine gagnées.</div>
+          <div class="rel-cta">Voir la formation <i class="ph-bold ph-arrow-right"></i></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- RELATED-FORMATIONS:END -->
+
 <section class="cta-s">
   <div class="cta-gw"></div>
   <div class="cta-in rv">
