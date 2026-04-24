@@ -82,11 +82,6 @@
     <priority>0.9</priority>
   </url>
 
-  <url>
-    <loc>https://jasonmarinho.com/services/groupes-facebook/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
 
   <url>
     <loc>https://jasonmarinho.com/services/securite/</loc>
