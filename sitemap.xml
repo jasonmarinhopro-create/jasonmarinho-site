@@ -103,6 +103,12 @@
 
   <!-- ── Ressources ── -->
   <url>
+    <loc>https://jasonmarinho.com/ressources</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
     <loc>https://jasonmarinho.com/ressources/gabarits-messages/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>

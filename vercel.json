@@ -2,9 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/formations", "destination": "/services/formations", "permanent": true },
-    { "source": "/formations/google-my-business-lcd", "destination": "/services/formations/google-my-business-lcd", "permanent": true },
-    { "source": "/formations/annonce-directe", "destination": "/services/formations/annonce-directe", "permanent": true },
+    { "source": "/formations/:path*", "destination": "/services/formations/:path*", "permanent": true },
     { "source": "/services/groupes-facebook", "destination": "/services/communaute", "permanent": true }
   ]
 }
