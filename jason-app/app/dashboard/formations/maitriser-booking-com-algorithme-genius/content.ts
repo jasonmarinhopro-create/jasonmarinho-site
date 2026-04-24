@@ -143,8 +143,165 @@ La bonne nouvelle ? Cette check-list est **la même pour Booking et Airbnb**. Tu
       title: 'Construire une fiche Booking qui convertit',
       duration: '30 min',
       lessons: [
-        { id: 3, title: 'Les 8 sections obligatoires pour passer le filtre qualité 2026', duration: '15 min', content: `_Contenu à venir en sous-étape 5c_` },
-        { id: 4, title: 'Photos, titre et description — les règles Booking (différentes d\'Airbnb)', duration: '15 min', content: `_Contenu à venir en sous-étape 5c_` },
+        { id: 3, title: 'Les 8 sections obligatoires pour passer le filtre qualité 2026', duration: '15 min', content: `## Le filtre qualité Booking en 2026 : plus strict qu'on ne le pense
+
+Booking.com a renforcé son filtre qualité en 2025. Les fiches incomplètes ou mal remplies ne sont plus rétrogradées — elles ne sont **plus affichées du tout** dans les résultats pour 40 % des recherches. Passer ce filtre n'est pas une option, c'est le préalable à toute stratégie.
+
+Voici les 8 sections à remplir méticuleusement avant de publier.
+
+### 1. Informations générales et localisation
+
+- **Nom de l'établissement** : nom clair (ex. "Appartement Le Canal — Hyper-centre Nantes"). Évite les mots-clés bourrés ou les emojis qui sont détectés comme spam.
+- **Type de propriété** : choisis le bon type (appartement, maison, studio, loft…). Le type influence l'algorithme de matching avec les voyageurs.
+- **Adresse complète** : Booking vérifie l'adresse via Google Maps. Une erreur = suspension automatique.
+- **Coordonnées GPS exactes** : indispensable pour Google Maps + recherche "à proximité".
+
+### 2. Photos (24 minimum)
+
+Booking recommande officiellement **24 photos minimum** en 2026 (contre 10 en 2023). En dessous, ta fiche est marquée "incomplet".
+
+Règles :
+
+- **Format paysage** (horizontal) — les photos portrait sont dégradées
+- **Résolution ≥ 1920 × 1080** (full HD)
+- **Lumière naturelle**, pas de flash
+- **Une photo par pièce** minimum (salon, chambres, cuisine, SdB, entrée, extérieur)
+- **Photo de couverture** : la plus impactante, pas de vue extérieure seule
+
+### 3. Description (2 parties obligatoires)
+
+- **Description courte** (résumé) : 300-500 caractères, ce que voit le voyageur en un coup d'œil
+- **Description longue** (détaillée) : 1500-2500 caractères, avec sections structurées
+
+On reviendra sur les règles exactes dans la leçon suivante.
+
+### 4. Équipements (les 30 qui comptent)
+
+Booking a une liste de ~100 équipements cochables. Les 30 qui influencent le plus ton classement sont :
+
+- Wi-Fi (avec débit mesuré)
+- Climatisation / chauffage
+- Cuisine équipée (détail des appareils)
+- Machine à laver
+- Parking (gratuit / payant)
+- Accessibilité PMR (si applicable)
+- Animaux acceptés
+- Enfants acceptés
+- Terrasse / balcon / jardin
+
+**Règle clé** : ne coche que ce que tu as réellement. Les erreurs signalées par les voyageurs font chuter ton score qualité.
+
+### 5. Politique de prix et d'annulation
+
+- **Politique d'annulation** : sélectionne parmi les 5 modèles Booking (très souple, souple, modérée, ferme, non remboursable). On détaillera l'impact SEO dans le Module 4.
+- **Frais additionnels** : taxe de séjour (pré-remplie selon ta commune), frais de ménage (à paramétrer), caution éventuelle.
+- **Petit-déjeuner** : inclus / option / non disponible.
+
+### 6. Check-in / check-out
+
+- **Horaires d'arrivée** (ex. 15h-22h) et de départ (ex. 8h-11h)
+- **Mode de remise des clés** (self check-in via boîte à clé, accueil personnel, serrure connectée)
+- **Check-in flexible** : active-le si possible. C'est un signal fort pour l'audience business de Booking.
+
+### 7. Règlement intérieur
+
+- **Fumeurs / non-fumeurs**
+- **Fêtes autorisées ou non**
+- **Nombre de visiteurs supplémentaires autorisés**
+- **Âge minimum du locataire**
+
+Sois restrictif mais clair. Booking pénalise les règlements trop vagues.
+
+### 8. Informations réglementaires (2026)
+
+C'est la section la plus récente, ajoutée fin 2024 :
+
+- **Numéro d'enregistrement LCD** (obligatoire au 20 mai 2026)
+- **DPE** (classe + date du diagnostic)
+- **SIRET** (si applicable)
+- **Statut TVA** (assujetti / non-assujetti)
+- **Plafond annuel de nuitées** (si résidence principale)
+
+### Check-list de publication
+
+Une fiche Booking prête à être indexée coche **chacune** de ces 8 sections à 100 %. En dessous de 90 % de complétion, tu es hors du top 50 % des résultats pour la plupart des requêtes.
+
+**Temps estimé la première fois : 2 à 3 heures** pour remplir proprement. C'est l'investissement initial qui conditionne 90 % de ton ROI Booking.` },
+        { id: 4, title: 'Photos, titre et description — les règles Booking (différentes d\'Airbnb)', duration: '15 min', content: `## Pourquoi ta description Airbnb va flopper sur Booking
+
+Tu peux copier-coller ton annonce Airbnb sur Booking — je l'ai vu faire des dizaines de fois. Résultat : la fiche est techniquement publiée, mais elle sous-performe systématiquement. Parce que les deux plateformes ne lisent pas les mêmes signaux.
+
+### Le titre : court, factuel, localisé
+
+**Règles Airbnb** : titre punchy avec émotion ("Nid douillet face à l'océan — terrasse & vue", 40-50 caractères).
+
+**Règles Booking** :
+
+- Longueur : **60-80 caractères** (plus long car affichage différent)
+- Structure : **type de bien + localisation + atout fort**
+- Exemple : "Appartement 60 m² — Hyper-centre Bordeaux avec parking"
+- **Pas d'émotion ou d'emoji** : Booking les filtre comme spam
+
+**Test** : prends 5 titres de concurrents en top position sur ton marché. Remarque la structure. C'est quasi toujours : TYPE + LIEU + BÉNÉFICE.
+
+### La description courte (résumé)
+
+300-500 caractères. C'est ce que le voyageur lit en premier après le titre.
+
+Structure gagnante Booking :
+
+1. **Phrase 1 — Qui tu accueilles** : "Cet appartement lumineux accueille jusqu'à 4 voyageurs en couple, en famille ou en déplacement pro."
+2. **Phrase 2 — Le lieu** : "Situé à 3 min à pied de la place Pey-Berland, cœur historique de Bordeaux."
+3. **Phrase 3 — L'atout unique** : "Parking privé gratuit inclus, rare dans ce quartier piéton."
+4. **Phrase 4 — La promesse** : "Check-in autonome 24/7, wifi fibre 500 Mb/s, ménage inclus."
+
+Le ton est **factuel**, pas lyrique. Booking est lu par des voyageurs en mode comparaison, pas en mode rêverie.
+
+### La description longue
+
+1500-2500 caractères. Divisée en sections. **Les sous-titres sont lus par l'algorithme** pour matcher les requêtes voyageurs.
+
+Sections à inclure **dans cet ordre** :
+
+1. **Le logement** (taille, pièces, capacité)
+2. **Le quartier** (nom précis, ambiance, commerces)
+3. **Accès** (transports, gare, aéroport, parking)
+4. **Équipements** (répéter les principaux en texte, pas juste cocher)
+5. **Bien-être & détente** (si applicable)
+6. **Pratique** (check-in, ménage, linge)
+7. **Bon à savoir** (règles, particularités)
+
+**Erreur fréquente** : copier-coller une description Airbnb qui commence par un storytelling personnel ("C'est en 2019 que j'ai acheté cet appartement…"). Sur Booking, c'est contre-productif. Le voyageur cherche du concret.
+
+### Les photos : l'algorithme Computer Vision de Booking
+
+Booking applique sa propre analyse Computer Vision depuis 2024. Ce qu'elle détecte :
+
+- **La première photo** doit montrer le **logement dans son ensemble** (salon ou pièce principale). Pas une terrasse seule, pas un détail.
+- **Les 5 premières photos** définissent 80 % du taux de clic. Elles doivent couvrir : salon, chambre principale, cuisine, SdB, un élément différenciant.
+- **Chaque équipement coché doit avoir une photo associée** (parking, machine à laver, terrasse, jacuzzi…). Les équipements sans photo perdent leur poids algorithmique.
+- **Les photos trop sombres** (moins de 60 % de luminosité moyenne) sont rétrogradées automatiquement.
+
+### La hiérarchie des photos : règle des 3 tiers
+
+Divise ton upload en 3 tiers :
+
+1. **Tier 1 (photos 1-8)** : l'essentiel. Chaque pièce principale, vue d'ensemble.
+2. **Tier 2 (photos 9-16)** : les détails. Cuisine équipée de près, salle de bain, terrasse, extérieur.
+3. **Tier 3 (photos 17-24+)** : le plus. Atmosphère, quartier, éclairage soir.
+
+Pourquoi c'est différent d'Airbnb ? Parce que le voyageur Booking fait une comparaison rapide — il a souvent 5-10 fiches ouvertes en onglets. Tes 8 premières photos doivent tout dire.
+
+### Check-list avant publication
+
+☐ Titre : type + lieu + atout, 60-80 caractères
+☐ Description courte : 4 phrases structurées, factuelles
+☐ Description longue : 7 sections ordonnées, 2000 caractères
+☐ 24 photos minimum, format paysage, ≥ Full HD
+☐ Première photo = vue d'ensemble
+☐ Chaque équipement clé a une photo associée
+
+**Temps estimé** : 1-2 heures pour réécrire titre + description, 30 min pour réorganiser les photos. C'est le plus gros ROI de cette formation.` },
       ],
     },
     {
