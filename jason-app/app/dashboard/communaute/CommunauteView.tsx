@@ -504,7 +504,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text)', fontSize: '14px', fontFamily: 'var(--font-outfit), sans-serif',
   } as React.CSSProperties,
   clearBtn: {
-    background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '6px', width: '20px', height: '20px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-muted)', flexShrink: 0,
@@ -525,7 +525,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 12px', borderRadius: '999px', cursor: 'pointer',
     fontSize: '12px', fontWeight: 500, fontFamily: 'var(--font-outfit), sans-serif',
-    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
     color: 'var(--text-3)', whiteSpace: 'nowrap' as const,
   },
   chipOn: {
@@ -574,7 +574,7 @@ const s: Record<string, React.CSSProperties> = {
   collapseBtn: {
     display: 'flex', alignItems: 'center', gap: '5px',
     padding: '5px 12px', borderRadius: '8px',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-muted)', fontSize: '12px', cursor: 'pointer', flexShrink: 0,
   },
   featuredSub: {
@@ -606,7 +606,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sectionCount: {
     fontSize: '10px', padding: '1px 7px', borderRadius: '100px',
-    background: 'rgba(255,255,255,0.06)', color: 'var(--text-muted)',
+    background: 'var(--surface)', color: 'var(--text-muted)',
   },
   card: {
     padding: '18px', borderRadius: '16px',
@@ -636,7 +636,7 @@ const s: Record<string, React.CSSProperties> = {
   statBubble: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 11px', borderRadius: '8px',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     fontSize: '12px', color: 'var(--text-2)',
   },
   statNum: { fontWeight: 700, fontSize: '14px', color: 'var(--text)' },
@@ -657,7 +657,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '7px 14px', borderRadius: '8px', textDecoration: 'none',
     fontSize: '12px', fontWeight: 600,
-    background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-2)',
   },
   joinLinkFeatured: {
@@ -668,7 +668,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '7px 14px', borderRadius: '8px', cursor: 'pointer',
     fontSize: '12px', fontWeight: 500,
-    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-3)',
   },
   statusBtnOn: {
@@ -700,7 +700,7 @@ const s: Record<string, React.CSSProperties> = {
   dismissedBar: {
     display: 'flex', alignItems: 'center', gap: '10px',
     padding: '12px 16px', borderRadius: '10px', marginTop: '8px',
-    background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
   },
   showHiddenBtn: {
     fontSize: '12px', color: 'var(--accent-text)', background: 'none',
