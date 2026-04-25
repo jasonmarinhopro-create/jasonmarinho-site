@@ -113,6 +113,13 @@ export const articles = [
   { slug: 'last-minute-vs-early-booking-strategie-2026', categorySlug: 'revenus', date: '2026-04-25', readTime: 5, title: 'Last-minute vs early booking : la stratégie de remises temporelles en 2026' },
   { slug: 'refacturer-degat-voyageur-airbnb-procedure', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Refacturer un dégât voyageur : procédure Airbnb, Booking et direct (2026)' },
   { slug: 'prix-min-max-airbnb-fourchette-tarifaire', categorySlug: 'revenus', date: '2026-04-25', readTime: 5, title: 'Prix min / prix max Airbnb : la fourchette tarifaire qui maximise ton revenu' },
+  { slug: 'accueillir-famille-enfants-airbnb-equipement', categorySlug: 'experience', date: '2026-04-25', readTime: 5, title: 'Accueillir une famille avec enfants en LCD : 15 équipements qui font la différence' },
+  { slug: 'accueillir-voyageur-business-lcd-essentiels', categorySlug: 'experience', date: '2026-04-25', readTime: 5, title: 'Accueillir un voyageur business : les 10 essentiels qui boostent ton ADR' },
+  { slug: 'chambres-hotes-vs-meuble-tourisme-differences', categorySlug: 'experience', date: '2026-04-25', readTime: 6, title: 'Chambres d\'hôtes vs meublé de tourisme : 7 différences que les hôtes ignorent' },
+  { slug: 'signaletique-interieure-lcd-reduit-questions', categorySlug: 'experience', date: '2026-04-25', readTime: 4, title: 'Signalétique intérieure LCD : réduire les questions voyageurs de 50 %' },
+  { slug: 'logiciels-conciergerie-comparatif-2026', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Logiciels conciergerie LCD : comparatif des 5 PMS leaders en 2026' },
+  { slug: 'scaler-conciergerie-5-30-mandats-process', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Scaler une conciergerie de 5 à 30 mandats : les process à mettre en place' },
+  { slug: 'sortir-mauvais-client-conciergerie-procedure', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 5, title: 'Sortir un mauvais client de conciergerie : la procédure en 5 étapes' },
 ]
 
 export const CATEGORIES = {
