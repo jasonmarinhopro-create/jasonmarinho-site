@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { buildEmail, emailBtn, emailP, emailNote, escHtml } from '@/lib/email/template'
+import { buildEmail, emailBtn, emailP, emailNote, emailInfoBlock, escHtml } from '@/lib/email/template'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
@@ -72,6 +72,33 @@ export async function POST(req: NextRequest) {
       if (profileError) {
         log.warn('profileUpsert', { msg: profileError.message })
       }
+    }
+
+    // Notify Jason of new signup (fire-and-forget)
+    if (userData.user) {
+      const dateStr = new Date().toLocaleString('fr-FR', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris',
+      })
+      void getResend().emails.send({
+        from: 'Jason Marinho <noreply@jasonmarinho.com>',
+        to: 'contact@jasonmarinho.com',
+        subject: `Nouvelle inscription — ${fullName || normalized}`,
+        html: buildEmail({
+          title: 'Une nouvelle personne vient de rejoindre !',
+          preview: `${fullName || normalized} vient de créer un compte sur ta plateforme.`,
+          body: `
+            ${emailP(`<strong style="color:#e8ede8;">Bonne nouvelle !</strong> Une nouvelle personne vient de rejoindre ta communauté. C'est la preuve que ton travail attire et convainc — continue comme ça, tu construis quelque chose de solide.`)}
+            ${emailInfoBlock([
+              { label: 'Prénom / Nom', value: escHtml(fullName || '—') },
+              { label: 'Email', value: escHtml(normalized) },
+              { label: 'Membre Driing', value: isDriingMember ? 'Oui ✓' : 'Non' },
+              { label: 'Inscription le', value: escHtml(dateStr) },
+            ])}
+            ${emailBtn(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/admin/membres`, 'Voir les membres', 'secondary')}
+          `,
+        }),
+      }).catch(() => { /* never fail the registration */ })
     }
 
     // Add to Brevo newsletter list if consent given
