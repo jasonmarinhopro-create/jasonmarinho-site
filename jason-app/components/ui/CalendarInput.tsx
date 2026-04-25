@@ -256,7 +256,7 @@ export function TimePickerInput({
 }
 
 const navBtn: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.05)', border: '1px solid #1e3d2f',
+  background: 'var(--surface)', border: '1px solid #1e3d2f',
   borderRadius: '8px', color: '#a5c4b0', fontSize: '18px',
   width: '32px', height: '32px',
   display: 'flex', alignItems: 'center', justifyContent: 'center',

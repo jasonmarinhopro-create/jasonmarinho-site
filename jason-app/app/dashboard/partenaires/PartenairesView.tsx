@@ -154,7 +154,7 @@ const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1400px' },
   intro: { marginBottom: '28px' },
   pageTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
   },
   pageDesc: {
@@ -191,7 +191,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   featuredName: {
-    fontFamily: 'Fraunces, serif', fontSize: '22px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px',
     fontWeight: 400, color: 'var(--text)',
   },
   featuredTagline: {
@@ -254,7 +254,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   additionalName: {
     fontSize: '16px', fontWeight: 600, color: 'var(--text)',
-    fontFamily: 'Fraunces, serif',
+    fontFamily: 'var(--font-fraunces), serif',
   },
   categoryPill: {
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.4px',
@@ -296,6 +296,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   suggestLeft: { display: 'flex', alignItems: 'flex-start', gap: '16px', flex: 1, minWidth: '260px' },
   suggestEmoji: { flexShrink: 0, marginTop: '3px' },
-  suggestTitle: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)', marginBottom: '8px', lineHeight: 1.3 },
+  suggestTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)', marginBottom: '8px', lineHeight: 1.3 },
   suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6 },
 }

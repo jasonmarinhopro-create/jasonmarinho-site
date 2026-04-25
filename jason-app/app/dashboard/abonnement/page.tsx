@@ -292,7 +292,7 @@ export default async function AbonnementPage({
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: '36px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
+  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.6 },
   mainGrid: { gap: '28px' },
   leftCol: {},
@@ -300,14 +300,14 @@ const styles: Record<string, React.CSSProperties> = {
 
   planLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: '#34D399' },
   dot: { width: '7px', height: '7px', borderRadius: '50%', background: '#34D399' },
-  planName: { fontFamily: 'Fraunces, serif', fontSize: '32px', fontWeight: 400, color: 'var(--text)' },
+  planName: { fontFamily: 'var(--font-fraunces), serif', fontSize: '32px', fontWeight: 400, color: 'var(--text)' },
   planDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.6, margin: 0 },
   featureList: { display: 'flex', flexDirection: 'column', gap: '10px' },
   featureItem: { display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', fontWeight: 300, color: 'var(--text-2)' },
   smallNote: { fontSize: '12px', fontWeight: 300, color: 'var(--text-muted)', lineHeight: 1.65, borderTop: '1px solid var(--border)', paddingTop: '12px', marginTop: '4px' },
 
   priceRow: { display: 'flex', alignItems: 'baseline', gap: '4px', flexWrap: 'wrap' },
-  price: { fontFamily: 'Fraunces, serif', fontSize: '28px', fontWeight: 600, color: 'var(--text)' },
+  price: { fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', fontWeight: 600, color: 'var(--text)' },
   priceLabel: { fontSize: '13px', color: 'var(--text-muted)' },
   priceStrike: { fontSize: '12px', color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: '4px' },
 
@@ -357,7 +357,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(0,76,63,0.2)', borderRadius: '16px', padding: '24px',
   },
   upgradeGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(52,211,153,0.06) 0%, transparent 70%)', pointerEvents: 'none' },
-  upgradeName: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)' },
+  upgradeName: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)' },
   ctaStandard: { display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.25)', color: '#34D399', fontSize: '13px', fontWeight: 600, padding: '11px 18px', borderRadius: '10px', textDecoration: 'none', transition: 'all .2s', marginTop: '4px' },
 
   driingRow: {

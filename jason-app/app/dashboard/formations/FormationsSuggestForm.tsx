@@ -68,7 +68,7 @@ const styles: Record<string, React.CSSProperties> = {
   textarea: {
     background: 'var(--border)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '12px 14px',
-    fontFamily: 'Outfit, sans-serif', fontSize: '14px', color: 'var(--text)',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', resize: 'vertical' as const,
   },
   error: { fontSize: '13px', color: '#F87171' },

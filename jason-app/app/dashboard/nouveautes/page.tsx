@@ -179,7 +179,7 @@ const s: Record<string, React.CSSProperties> = {
   page:     { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '900px' },
   intro:    { marginBottom: '28px' },
   pageTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '8px',
   },
   pageDesc:  { fontSize: '15px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.6, marginBottom: '16px' },
@@ -197,13 +197,13 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '12.5px', fontWeight: 500, padding: '7px 14px',
     borderRadius: '100px', cursor: 'pointer',
-    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-    color: 'var(--text-2)', fontFamily: 'Outfit, sans-serif',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
+    color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.18s',
   },
   filterCount: {
     fontSize: '10px', fontWeight: 600, padding: '1px 6px', borderRadius: '100px',
-    background: 'rgba(255,255,255,0.06)', color: 'var(--text-muted)',
+    background: 'var(--surface)', color: 'var(--text-muted)',
   },
 
   card:      { padding: '20px 22px', borderRadius: '16px' },

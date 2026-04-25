@@ -276,7 +276,7 @@ export default function Roadmap({
                   disabled={!userId}
                   style={{
                     ...s.voteBtn,
-                    background: voted ? `${cfg.color}18` : 'rgba(255,255,255,0.04)',
+                    background: voted ? `${cfg.color}18` : 'var(--surface)',
                     border:     voted ? `1px solid ${cfg.color}40` : '1px solid var(--border)',
                     color:      voted ? cfg.color : 'var(--text-3)',
                   }}
@@ -430,7 +430,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '10px', padding: '8px 16px', cursor: 'pointer', flexShrink: 0,
   },
   addBtnCancel: {
-    background: 'rgba(255,255,255,0.04)', color: 'var(--text-3)',
+    background: 'var(--surface)', color: 'var(--text-3)',
     border: '1px solid var(--border)',
   },
 
@@ -456,7 +456,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '12px', fontWeight: 500,
     padding: '6px 14px', borderRadius: '999px', cursor: 'pointer',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-3)',
   },
   chipActive: {
@@ -465,7 +465,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   chipBadge: {
     fontSize: '10px', fontWeight: 700, padding: '1px 6px', borderRadius: '999px',
-    background: 'rgba(255,255,255,0.08)', color: 'var(--text-muted)',
+    background: 'var(--border)', color: 'var(--text-muted)',
   },
   chipBadgeActive: {
     background: 'rgba(167,139,250,0.15)', color: '#a78bfa',

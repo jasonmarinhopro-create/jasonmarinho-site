@@ -393,7 +393,7 @@ const tag: React.CSSProperties = {
 }
 
 const title: React.CSSProperties = {
-  fontFamily: 'Fraunces, Georgia, serif',
+  fontFamily: 'var(--font-fraunces), Georgia, serif',
   fontSize: '18px', fontWeight: 400,
   color: 'var(--text)', margin: 0,
 }

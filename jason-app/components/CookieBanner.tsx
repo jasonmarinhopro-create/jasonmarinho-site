@@ -60,7 +60,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   banner: {
     background: 'rgba(14, 22, 19, 0.95)',
-    border: '1px solid rgba(255,255,255,0.12)',
+    border: '1px solid var(--border-2)',
     borderRadius: '16px',
     padding: '20px 24px',
     backdropFilter: 'blur(24px)',
@@ -98,7 +98,7 @@ const styles: Record<string, React.CSSProperties> = {
   btnRefuse: {
     padding: '9px 18px',
     borderRadius: '10px',
-    border: '1px solid rgba(255,255,255,0.12)',
+    border: '1px solid var(--border-2)',
     background: 'transparent',
     color: 'rgba(240,244,255,0.55)',
     fontSize: '13px',

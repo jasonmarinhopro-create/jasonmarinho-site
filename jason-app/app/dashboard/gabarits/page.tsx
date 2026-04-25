@@ -15,7 +15,7 @@ export default async function GabaritsPage() {
   const userId = profile?.userId ?? null
 
   const [{ data: templates }, { data: favData }, { data: custData }] = await Promise.all([
-    supabase.from('templates').select('id, title, content, corps_en, category, timing, variante, variables, tags, copy_count, created_at').order('category').order('title'),
+    supabase.from('templates').select('id, title, content, corps_en, category, timing, variante, variables, tags, copy_count, created_at').order('category').order('title').limit(500),
     userId
       ? supabase.from('user_template_favorites').select('template_id').eq('user_id', userId)
       : Promise.resolve({ data: [] as { template_id: string }[] }),

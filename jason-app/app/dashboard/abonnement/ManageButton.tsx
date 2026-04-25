@@ -28,7 +28,7 @@ export default function ManageButton() {
 
 const btnStyle: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '7px',
-  background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)',
+  background: 'var(--surface)', border: '1px solid var(--border-2)',
   color: 'var(--text-2)', fontSize: '13px', fontWeight: 500,
   padding: '10px 16px', borderRadius: '10px', cursor: 'pointer',
   fontFamily: 'inherit', transition: 'all .2s',

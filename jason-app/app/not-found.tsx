@@ -78,12 +78,12 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '8px',
   },
   code: {
-    fontFamily: 'Fraunces, serif', fontSize: '72px', fontWeight: 300,
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '72px', fontWeight: 300,
     color: 'rgba(240,244,255,0.08)', letterSpacing: '12px', lineHeight: 1,
     marginBottom: '-16px',
   },
   title: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px, 4vw, 36px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px, 4vw, 36px)',
     fontWeight: 400, color: '#f0f4ff', lineHeight: 1.25,
   },
   desc: {

@@ -14,6 +14,7 @@ export default async function VoyageursPage() {
     .select('id, prenom, nom, email, telephone, notes, created_at, updated_at, sejours(id, date_arrivee, date_depart)')
     .eq('user_id', profile.userId)
     .order('updated_at', { ascending: false })
+    .limit(500)
 
   // Table manquante → affiche quand même la vue (état vide avec message clair)
   if (error && error.code !== '42P01') console.error('[voyageurs]', error.message)

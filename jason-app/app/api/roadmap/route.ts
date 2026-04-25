@@ -7,6 +7,7 @@ export async function GET() {
     .from('roadmap_items')
     .select('id, title, description, status, author_name, upvotes, created_at')
     .order('created_at', { ascending: false })
+    .limit(200)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ items: data ?? [] })

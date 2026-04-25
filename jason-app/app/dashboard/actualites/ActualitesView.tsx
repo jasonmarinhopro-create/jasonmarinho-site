@@ -192,7 +192,7 @@ const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
 
   intro: { marginBottom: '28px', maxWidth: '600px' },
-  pageTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
+  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.7 },
 
   emptyWrap: { padding: '48px 32px', borderRadius: '18px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', textAlign: 'center' as const, maxWidth: '520px' },
@@ -209,14 +209,14 @@ const s: Record<string, React.CSSProperties> = {
     paddingBottom: '4px',
     scrollbarWidth: 'none' as const,
   } as React.CSSProperties,
-  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 13px', borderRadius: '100px', fontSize: '12.5px', fontWeight: 500, color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const, flexShrink: 0 },
-  filterCount: { fontSize: '10px', fontWeight: 700, background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px', lineHeight: '1.4' },
+  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 13px', borderRadius: '100px', fontSize: '12.5px', fontWeight: 500, color: 'var(--text-3)', background: 'var(--surface)', border: '1px solid var(--border-2)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const, flexShrink: 0 },
+  filterCount: { fontSize: '10px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px', lineHeight: '1.4' },
 
   card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px' },
   cardMeta: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' as const },
   catBadge: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const, padding: '3px 8px', borderRadius: '100px', border: '1px solid' },
   dateLabel: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: 300 },
-  cardTitle: { fontFamily: 'Fraunces, serif', fontSize: '17px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.4, margin: 0 },
+  cardTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.4, margin: 0 },
   cardSummary: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, margin: 0 },
   sourceLink: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 400, marginTop: '4px', alignSelf: 'flex-start' },
 

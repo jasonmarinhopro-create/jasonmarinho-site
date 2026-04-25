@@ -620,16 +620,16 @@ const s: Record<string, React.CSSProperties> = {
   statChip: {
     display: 'flex', alignItems: 'center', gap: '7px',
     padding: '6px 12px', borderRadius: '10px',
-    background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
   },
-  statNum:   { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 400 },
+  statNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400 },
   statLabel: { fontSize: '12px', color: 'var(--text-3)' },
   deleteBotsBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '9px', padding: '7px 13px',
     color: '#f87171', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
-    fontFamily: 'Outfit, sans-serif',
+    fontFamily: 'var(--font-outfit), sans-serif',
   },
 
   // Filters
@@ -641,7 +641,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   searchInput: {
     background: 'none', border: 'none', outline: 'none',
-    fontSize: '13px', color: 'var(--text)', width: '100%', fontFamily: 'Outfit, sans-serif',
+    fontSize: '13px', color: 'var(--text)', width: '100%', fontFamily: 'var(--font-outfit), sans-serif',
   },
   clearBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
@@ -652,7 +652,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '7px',
     padding: '7px 14px', borderRadius: '9px', fontSize: '12px', fontWeight: 500,
     background: 'none', border: '1px solid var(--border)',
-    color: 'var(--text-3)', cursor: 'pointer', fontFamily: 'Outfit, sans-serif',
+    color: 'var(--text-3)', cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.15s',
   },
   planTabActive: {
@@ -693,7 +693,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   avatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '16px', fontWeight: 600,
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '16px', fontWeight: 600,
   },
   identity: { flex: 1, minWidth: 0 },
   nameRow: { display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' },
@@ -710,7 +710,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(0,0,0,0.25)', border: '1px solid var(--accent-text)',
     borderRadius: '6px', padding: '3px 8px',
     fontSize: '14px', fontWeight: 600, color: 'var(--text)',
-    outline: 'none', fontFamily: 'Outfit, sans-serif', width: '100%',
+    outline: 'none', fontFamily: 'var(--font-outfit), sans-serif', width: '100%',
   },
   titleCaseBtn: {
     background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.25)',
@@ -760,7 +760,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '8px', padding: '5px 10px',
     fontSize: '12px', fontWeight: 500, color: 'var(--text-2)',
-    cursor: 'pointer', outline: 'none', fontFamily: 'Outfit, sans-serif',
+    cursor: 'pointer', outline: 'none', fontFamily: 'var(--font-outfit), sans-serif',
   },
   actionBtn: {
     width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
@@ -779,7 +779,7 @@ const s: Record<string, React.CSSProperties> = {
 // Panel styles
 const ps: Record<string, React.CSSProperties> = {
   header: { padding: '20px 22px 16px', flexShrink: 0 },
-  headerTitle: { fontFamily: 'Fraunces, serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)' },
+  headerTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)' },
   closeBtn: {
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '8px', width: '32px', height: '32px',
@@ -804,7 +804,7 @@ const ps: Record<string, React.CSSProperties> = {
     width: '54px', height: '54px', flexShrink: 0, borderRadius: '16px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  bigAvatarText: { fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 600 },
+  bigAvatarText: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 600 },
   memberName: { fontSize: '16px', fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   memberEmail: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   memberSince: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' },
@@ -815,6 +815,6 @@ const ps: Record<string, React.CSSProperties> = {
 
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' },
   statTile: { display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px', border: '1px solid', borderRadius: '10px' },
-  statNum: { fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 400, lineHeight: 1 },
+  statNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, lineHeight: 1 },
   statLabel: { fontSize: '10px', color: 'var(--text-3)', lineHeight: 1.3 },
 }

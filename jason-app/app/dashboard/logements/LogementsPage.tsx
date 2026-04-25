@@ -510,7 +510,7 @@ const headerRow: React.CSSProperties = {
 }
 
 const pageTitle: React.CSSProperties = {
-  fontFamily: 'Fraunces, serif',
+  fontFamily: 'var(--font-fraunces), serif',
   fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px',
 }
 
@@ -557,7 +557,7 @@ const emptyIcon: React.CSSProperties = {
 }
 
 const emptyTitle: React.CSSProperties = {
-  fontFamily: 'Fraunces, Georgia, serif',
+  fontFamily: 'var(--font-fraunces), Georgia, serif',
   fontSize: '20px', fontWeight: 400, color: 'var(--text)', margin: '0 0 8px',
 }
 
@@ -605,7 +605,7 @@ const iconBtn: React.CSSProperties = {
 }
 
 const cardName: React.CSSProperties = {
-  fontFamily: 'Fraunces, Georgia, serif',
+  fontFamily: 'var(--font-fraunces), Georgia, serif',
   fontSize: '17px', fontWeight: 400, color: 'var(--text)', margin: 0,
 }
 
@@ -675,7 +675,7 @@ const modalTag: React.CSSProperties = {
 }
 
 const modalTitle: React.CSSProperties = {
-  fontFamily: 'Fraunces, Georgia, serif',
+  fontFamily: 'var(--font-fraunces), Georgia, serif',
   fontSize: '20px', fontWeight: 400, color: 'var(--text)', margin: 0,
 }
 

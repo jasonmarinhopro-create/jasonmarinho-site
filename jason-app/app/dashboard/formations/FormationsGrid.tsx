@@ -372,7 +372,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   filterBtn: {
     padding: '6px 12px', borderRadius: '8px',
-    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
     color: 'var(--text-3)', fontSize: '12px', fontWeight: 400,
     cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
   },
@@ -421,7 +421,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '4px 10px', borderRadius: '100px',
     background: 'var(--border)', color: 'var(--text-muted)', border: '1px solid var(--border)',
   },
-  cardTitle: { fontFamily: 'Fraunces, serif', fontSize: 'clamp(16px,2vw,18px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1.3, marginBottom: '10px' },
+  cardTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(16px,2vw,18px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1.3, marginBottom: '10px' },
   cardDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, marginBottom: '16px', flex: 1 },
   meta: { display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '18px' },
   metaItem: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--text-3)' },

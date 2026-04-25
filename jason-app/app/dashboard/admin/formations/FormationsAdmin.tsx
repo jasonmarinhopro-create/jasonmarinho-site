@@ -103,7 +103,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
     <div>
       {/* Header */}
       <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '12px' }}>
+        <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '12px' }}>
           Gestion des formations
         </h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
@@ -317,7 +317,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   filterBtn: {
     padding: '6px 12px', borderRadius: '8px',
-    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
     color: 'var(--text-3)', fontSize: '12px', fontWeight: 400,
     cursor: 'pointer', transition: 'all 0.15s',
   },

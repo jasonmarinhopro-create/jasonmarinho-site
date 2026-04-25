@@ -16,7 +16,7 @@ import { CHANGELOG } from '@/lib/constants/changelog'
 const STORAGE_KEY = 'jm_notif_read'
 
 const PLAN_COLORS: Record<string, { bg: string; color: string; dot: string }> = {
-  'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'var(--text-3)',  dot: '#6b7280' },
+  'Découverte':    { bg: 'var(--border)', color: 'var(--text-3)',  dot: '#6b7280' },
   'Standard':      { bg: 'rgba(52,211,153,0.12)',  color: '#34D399',       dot: '#34D399' },
   'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B',       dot: '#FFD56B' },
   'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC',       dot: '#C084FC' },
@@ -80,32 +80,12 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     saveReadIds(all)
   }, [])
 
-  // Fetch profile client-side — garantit nom + rôle à jour sur toutes les pages
+  // Admin detection via currentPlan prop (passé depuis server component via getProfile).
+  // Supprimé : le refetch client-side qui refaisait 1 round-trip Supabase à chaque page.
+  // getProfile() est déjà cached() par request côté serveur.
   useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return
-      supabase
-        .from('profiles')
-        .select('full_name, plan, driing_status')
-        .eq('id', session.user.id)
-        .maybeSingle()
-        .then(({ data }) => {
-          if (data?.full_name) setUserName(data.full_name)
-          const email = session.user.email ?? ''
-          if (email === 'djason.marinho@gmail.com') {
-            setResolvedPlan('Administrateur')
-            setIsAdmin(true)
-          } else if (data?.plan === 'driing' || data?.driing_status === 'confirmed') {
-            setResolvedPlan('Membre Driing')
-          } else if (data?.plan === 'standard') {
-            setResolvedPlan('Standard')
-          } else {
-            setResolvedPlan('Découverte')
-          }
-        })
-    })
-  }, [])
+    if (currentPlan === 'Administrateur') setIsAdmin(true)
+  }, [currentPlan])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -329,7 +309,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '8px',
   },
   title: {
-    fontFamily: 'Fraunces, serif', fontSize: '18px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px',
     fontWeight: 400, color: 'var(--text)', letterSpacing: '-0.3px',
   },
   right: { display: 'flex', alignItems: 'center', gap: '8px' },
@@ -376,7 +356,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   avatarInitial: {
-    fontFamily: 'Fraunces, serif', fontSize: '12px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '12px',
     fontWeight: 600, color: 'var(--nav-active-color)',
   },
   profileName: {
@@ -410,7 +390,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   dropAvatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '15px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '15px',
     fontWeight: 600, color: 'var(--nav-active-color)',
   },
   dropName: {

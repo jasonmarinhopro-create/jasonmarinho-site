@@ -47,9 +47,9 @@ export default async function AdminPage() {
     supabase.from('community_groups').select('*', { count: 'exact', head: true }),
     supabase.from('voyageurs').select('*', { count: 'exact', head: true }),
     supabase.from('sejours').select('*', { count: 'exact', head: true }),
-    supabase.from('profiles').select('id, email, full_name, created_at, driing_status').eq('driing_status', 'pending').order('created_at', { ascending: false }),
-    supabase.from('reported_guests').select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reported_at, description').order('reported_at', { ascending: false }),
-    supabase.from('suggestions').select('id, type, message, user_email, created_at').order('created_at', { ascending: false }),
+    supabase.from('profiles').select('id, email, full_name, created_at, driing_status').eq('driing_status', 'pending').order('created_at', { ascending: false }).limit(100),
+    supabase.from('reported_guests').select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reported_at, description').order('reported_at', { ascending: false }).limit(100),
+    supabase.from('suggestions').select('id, type, message, user_email, created_at').order('created_at', { ascending: false }).limit(100),
     supabase.from('user_formations').select('formation_id, formations(title)'),
   ])
 

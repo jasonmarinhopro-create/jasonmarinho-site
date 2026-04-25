@@ -110,7 +110,7 @@ const s: Record<string, React.CSSProperties> = {
     width: 'fit-content',
   },
   title: {
-    fontFamily: 'Fraunces, serif',
+    fontFamily: 'var(--font-fraunces), serif',
     fontSize: '20px',
     fontWeight: 400,
     color: 'var(--text)',

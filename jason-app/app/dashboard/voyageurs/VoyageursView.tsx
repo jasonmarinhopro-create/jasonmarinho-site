@@ -346,7 +346,7 @@ const s: Record<string, React.CSSProperties> = {
     gap: '16px', flexWrap: 'wrap', marginBottom: '28px',
   },
   pageTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: 'clamp(26px,3vw,38px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '4px',
   },
   pageDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-3)' },
@@ -399,7 +399,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   avatarText: {
-    fontFamily: 'Fraunces, serif', fontSize: '14px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '14px',
     fontWeight: 600, color: '#fff',
   },
   info: { flex: 1, minWidth: 0 },
@@ -449,7 +449,7 @@ const s: Record<string, React.CSSProperties> = {
     borderBottom: '1px solid var(--border)',
   },
   modalTitle: {
-    fontFamily: 'Fraunces, serif', fontSize: '18px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px',
     fontWeight: 400, color: 'var(--text)',
   },
   modalClose: {

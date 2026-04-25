@@ -277,7 +277,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
       {/* ── Header ── */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
-          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '22px', fontWeight: 500, color: 'var(--text)', marginBottom: '5px' }}>
+          <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 500, color: 'var(--text)', marginBottom: '5px' }}>
             Gabarits de messages
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-3)' }}>
@@ -599,16 +599,16 @@ const s: Record<string, React.CSSProperties> = {
   },
   cancelBtn: {
     padding: '10px 18px', borderRadius: '10px',
-    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
     color: 'var(--text-3)', fontSize: '14px', cursor: 'pointer',
   },
   toggleBtn: {
     display: 'flex', alignItems: 'center', gap: '6px',
     padding: '5px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, cursor: 'pointer',
-    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', color: 'var(--text-3)',
+    background: 'var(--surface)', border: '1px solid var(--border-2)', color: 'var(--text-3)',
   },
   iconBtn: {
-    background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
+    background: 'var(--border)', border: '1px solid var(--border-2)',
     borderRadius: '7px', width: '28px', height: '28px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-2)',
