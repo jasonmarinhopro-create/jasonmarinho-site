@@ -4,9 +4,10 @@ import { useState, useMemo, useTransition } from 'react'
 import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
   House, Plus, Trash, X, Check,
-  Info, Warning, ArrowRight, Scales,
+  Info, Warning, ArrowRight, Scales, Upload,
 } from '@phosphor-icons/react'
 import { createRevenusEntry, deleteRevenusEntry } from './actions'
+import ImportCSVModal from './ImportCSVModal'
 
 // ── types ────────────────────────────────────────────────────────────────────
 
@@ -89,6 +90,7 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
 
   const [entries, setEntries]   = useState<RevenusEntry[]>(initialEntries)
   const [showForm, setShowForm] = useState(false)
+  const [showImport, setShowImport] = useState(false)
   const [filter, setFilter]     = useState<'all' | 'encaisse' | 'attente'>('all')
   const [, startT]              = useTransition()
 
@@ -341,13 +343,23 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
               Encaissements Stripe, virements, espèces — tout en un seul endroit
             </p>
           </div>
-          <button
-            onClick={() => setShowForm(v => !v)}
-            style={{ ...s.actionBtn, ...(showForm ? s.actionBtnCancel : {}) }}
-          >
-            {showForm ? <X size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
-            {showForm ? 'Annuler' : 'Ajouter'}
-          </button>
+          <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setShowImport(true)}
+              style={{ ...s.actionBtn, ...s.actionBtnSecondary }}
+              title="Importer un CSV Airbnb ou Booking.com"
+            >
+              <Upload size={14} weight="bold" />
+              Importer CSV
+            </button>
+            <button
+              onClick={() => setShowForm(v => !v)}
+              style={{ ...s.actionBtn, ...(showForm ? s.actionBtnCancel : {}) }}
+            >
+              {showForm ? <X size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
+              {showForm ? 'Annuler' : 'Ajouter'}
+            </button>
+          </div>
         </div>
 
         {/* Inline add form */}
@@ -461,6 +473,16 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
       </section>
 
       <FiscaliteSection annuel={kpis.cetteAnneeEnc} />
+
+      <ImportCSVModal
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        onImported={() => {
+          // Server action triggered revalidatePath; rely on Next router refresh
+          // Simplest UX: full reload to repopulate from server (entries fetched in page.tsx)
+          if (typeof window !== 'undefined') window.location.reload()
+        }}
+      />
 
       <style>{`
         .kpi-icon-green  { color: #16a34a; }
@@ -707,6 +729,7 @@ const s: Record<string, React.CSSProperties> = {
   journalHead:{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '16px' },
   actionBtn:  { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--accent)', background: 'rgba(0,76,63,0.2)', color: 'var(--accent-text)', cursor: 'pointer', flexShrink: 0, fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s' },
   actionBtnCancel:{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-muted)' },
+  actionBtnSecondary:{ background: 'var(--surface)', border: '1px solid var(--border-2)', color: 'var(--text-2)' },
 
   addForm:  { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '18px', marginBottom: '16px' },
   formField:{ display: 'flex', flexDirection: 'column', gap: '5px' },
