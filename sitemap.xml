@@ -506,4 +506,34 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/description-airbnb-500-caracteres-convertit-2026/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/photo-couverture-airbnb-7-criteres-algo-computer-vision/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/mots-cles-titre-annonce-airbnb-eviter-spam-detection/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/gmb-questions-reponses-hotes-lcd-optimiser/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/statistiques-annonce-airbnb-4-kpis-essentiels/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

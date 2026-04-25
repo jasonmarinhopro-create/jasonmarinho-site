@@ -63,6 +63,11 @@ export const articles = [
   { slug: 'hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls', categorySlug: 'automatisation', date: '2026-04-24', readTime: 7, title: 'Hospitable intègre la tarification dynamique : la fin des outils de pricing séparés pour les petits hôtes ?' },
   { slug: 'cybevasion-rachetee-holidu-impact-hotes-alternatives', categorySlug: 'revenus', date: '2026-04-24', readTime: 6, title: 'Cybevasion rachetée par Holidu : ce que ça change pour les hôtes et les meilleures alternatives' },
   { slug: 'numero-enregistrement-lcd-20-mai-2026-demarches', categorySlug: 'reglementation', date: '2026-04-24', readTime: 6, title: 'Numéro d\'enregistrement LCD obligatoire dès le 20 mai 2026 : les démarches à faire maintenant' },
+  { slug: 'description-airbnb-500-caracteres-convertit-2026', categorySlug: 'visibilite', date: '2026-04-25', readTime: 6, title: 'Description Airbnb : les 500 premiers caractères qui décident de la réservation' },
+  { slug: 'photo-couverture-airbnb-7-criteres-algo-computer-vision', categorySlug: 'visibilite', date: '2026-04-25', readTime: 6, title: 'Photo de couverture Airbnb : les 7 critères de l\'algo Computer Vision en 2026' },
+  { slug: 'mots-cles-titre-annonce-airbnb-eviter-spam-detection', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Titre Airbnb 2026 : 9 mots-clés à éviter qui déclenchent le filtre anti-spam' },
+  { slug: 'gmb-questions-reponses-hotes-lcd-optimiser', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Google My Business : la section Questions/Réponses sous-utilisée par 90% des hôtes LCD' },
+  { slug: 'statistiques-annonce-airbnb-4-kpis-essentiels', categorySlug: 'visibilite', date: '2026-04-25', readTime: 6, title: 'Statistiques Airbnb : les 4 KPIs essentiels que les hôtes ignorent' },
 ]
 
 export const CATEGORIES = {
