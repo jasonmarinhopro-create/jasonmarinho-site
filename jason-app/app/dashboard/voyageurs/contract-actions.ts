@@ -194,3 +194,31 @@ export async function getBailleurProfile(): Promise<{
     email:  user.email ?? '',
   }
 }
+
+// ─── Récupérer la checklist d'un séjour ──────────────────────────────────────
+
+export async function getChecklistBySejour(sejourId: string): Promise<{
+  contractId?: string
+  checklist?: Record<string, boolean>
+  error?: string
+}> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié.' }
+
+  const { data, error } = await supabase
+    .from('contracts')
+    .select('id, checklist_status')
+    .eq('sejour_id', sejourId)
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error) return { error: error.message }
+  if (!data) return {}
+  return {
+    contractId: data.id,
+    checklist: (data.checklist_status as Record<string, boolean>) ?? {},
+  }
+}
