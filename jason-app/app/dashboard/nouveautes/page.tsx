@@ -197,13 +197,13 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '12.5px', fontWeight: 500, padding: '7px 14px',
     borderRadius: '100px', cursor: 'pointer',
-    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
     color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.18s',
   },
   filterCount: {
     fontSize: '10px', fontWeight: 600, padding: '1px 6px', borderRadius: '100px',
-    background: 'rgba(255,255,255,0.06)', color: 'var(--text-muted)',
+    background: 'var(--surface)', color: 'var(--text-muted)',
   },
 
   card:      { padding: '20px 22px', borderRadius: '16px' },

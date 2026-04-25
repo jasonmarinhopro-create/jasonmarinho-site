@@ -68,7 +68,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
         background: 'var(--bg-2)',
         border: '1px solid var(--border-2)',
         borderRadius: '16px',
-        boxShadow: '0 16px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04)',
+        boxShadow: '0 16px 48px rgba(0,0,0,0.35), 0 0 0 1px var(--surface)',
         zIndex: 160,
         display: 'flex',
         flexDirection: 'column',

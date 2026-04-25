@@ -792,7 +792,7 @@ const s: Record<string, React.CSSProperties> = {
   contentFade: { display: 'none' },
   notePreview: {
     padding: '8px 12px', borderRadius: '8px',
-    background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
   },
 
   cardFooter: { display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' },

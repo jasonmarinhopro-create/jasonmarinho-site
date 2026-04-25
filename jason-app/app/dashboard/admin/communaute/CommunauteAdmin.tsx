@@ -409,7 +409,7 @@ const s: Record<string, React.CSSProperties> = {
   categoryLabel: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)', letterSpacing: '0.5px' },
   categoryCount: {
     fontSize: '10px', fontWeight: 600,
-    background: 'rgba(255,255,255,0.06)', color: 'var(--text-muted)',
+    background: 'var(--surface)', color: 'var(--text-muted)',
     borderRadius: '100px', padding: '1px 7px',
   },
   tagPill: {

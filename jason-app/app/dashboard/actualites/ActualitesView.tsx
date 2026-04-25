@@ -209,8 +209,8 @@ const s: Record<string, React.CSSProperties> = {
     paddingBottom: '4px',
     scrollbarWidth: 'none' as const,
   } as React.CSSProperties,
-  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 13px', borderRadius: '100px', fontSize: '12.5px', fontWeight: 500, color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const, flexShrink: 0 },
-  filterCount: { fontSize: '10px', fontWeight: 700, background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px', lineHeight: '1.4' },
+  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 13px', borderRadius: '100px', fontSize: '12.5px', fontWeight: 500, color: 'var(--text-3)', background: 'var(--surface)', border: '1px solid var(--border-2)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const, flexShrink: 0 },
+  filterCount: { fontSize: '10px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px', lineHeight: '1.4' },
 
   card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px' },
   cardMeta: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' as const },

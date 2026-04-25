@@ -382,11 +382,11 @@ const s: Record<string, React.CSSProperties> = {
   publishRow: { display: 'flex', alignItems: 'center' },
   publishLabel: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 400, color: 'var(--text-2)', cursor: 'pointer' },
   formActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end', paddingTop: '4px' },
-  cancelBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, background: 'rgba(255,255,255,0.06)', color: 'var(--text-3)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer' },
+  cancelBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, background: 'var(--surface)', color: 'var(--text-3)', border: '1px solid var(--border-2)', cursor: 'pointer' },
   submitBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '8px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: 'var(--yellow)', color: 'var(--green-deep)', border: 'none', cursor: 'pointer' },
 
   filterRow: { display: 'flex', gap: '6px', flexWrap: 'wrap' as const },
-  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 12px', borderRadius: '100px', fontSize: '12px', fontWeight: 500, color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'all 0.15s' },
+  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 12px', borderRadius: '100px', fontSize: '12px', fontWeight: 500, color: 'var(--text-3)', background: 'var(--surface)', border: '1px solid var(--border-2)', cursor: 'pointer', transition: 'all 0.15s' },
 
   empty: { padding: '40px 24px', textAlign: 'center' as const, fontSize: '14px', color: 'var(--text-muted)', borderRadius: '16px' },
   list: { display: 'flex', flexDirection: 'column', gap: '12px' },

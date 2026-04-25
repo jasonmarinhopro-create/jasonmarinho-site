@@ -16,7 +16,7 @@ import { CHANGELOG } from '@/lib/constants/changelog'
 const STORAGE_KEY = 'jm_notif_read'
 
 const PLAN_COLORS: Record<string, { bg: string; color: string; dot: string }> = {
-  'Découverte':    { bg: 'rgba(255,255,255,0.08)', color: 'var(--text-3)',  dot: '#6b7280' },
+  'Découverte':    { bg: 'var(--border)', color: 'var(--text-3)',  dot: '#6b7280' },
   'Standard':      { bg: 'rgba(52,211,153,0.12)',  color: '#34D399',       dot: '#34D399' },
   'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B',       dot: '#FFD56B' },
   'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC',       dot: '#C084FC' },

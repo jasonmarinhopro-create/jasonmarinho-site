@@ -619,7 +619,7 @@ export default function CalendrierView({
                         }}
                         style={{
                           ...s.cell, opacity: inMonth ? 1 : 0.28, userSelect: 'none', position: 'relative',
-                          background: isInDrag ? 'rgba(96,165,250,0.12)' : isSel ? 'var(--surface)' : isWeekend && inMonth ? 'rgba(255,255,255,0.015)' : 'var(--bg)',
+                          background: isInDrag ? 'rgba(96,165,250,0.12)' : isSel ? 'var(--surface)' : isWeekend && inMonth ? 'var(--surface)' : 'var(--bg)',
                           outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : isSel ? '1.5px solid var(--border-2)' : isToday && inMonth ? '1.5px solid var(--accent-text)' : '1.5px solid transparent',
                         }}
                       >

@@ -620,7 +620,7 @@ const s: Record<string, React.CSSProperties> = {
   statChip: {
     display: 'flex', alignItems: 'center', gap: '7px',
     padding: '6px 12px', borderRadius: '10px',
-    background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
   },
   statNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400 },
   statLabel: { fontSize: '12px', color: 'var(--text-3)' },

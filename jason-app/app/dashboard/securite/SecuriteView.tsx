@@ -272,7 +272,7 @@ export default function SecuriteView() {
                       </div>
 
                       {/* RGPD deletion requests */}
-                      <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--surface)' }}>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px' }}>
                           RGPD — Droit à l'effacement (Art. 17)
                         </div>

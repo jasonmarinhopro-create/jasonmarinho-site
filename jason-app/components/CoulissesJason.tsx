@@ -205,7 +205,7 @@ const s: Record<string, React.CSSProperties> = {
 
   empty: {
     padding: '24px', textAlign: 'center',
-    background: 'rgba(255,255,255,0.02)',
+    background: 'var(--surface)',
     border: '1px dashed var(--border)',
     borderRadius: '14px',
   },
