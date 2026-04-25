@@ -79,6 +79,14 @@ export const articles = [
   { slug: 'make-zapier-workflow-airbnb-no-code-debutant', categorySlug: 'automatisation', date: '2026-04-25', readTime: 6, title: 'Make ou Zapier pour Airbnb : automatiser ses flows en no-code' },
   { slug: 'capteurs-iot-lcd-bruit-temperature-utile-ou-pas', categorySlug: 'automatisation', date: '2026-04-25', readTime: 6, title: 'Capteurs IoT pour LCD : bruit, température, ouverture — utile ou gadget ?' },
   { slug: 'messagerie-unifiee-3-plateformes-tester', categorySlug: 'automatisation', date: '2026-04-25', readTime: 5, title: 'Messagerie unifiée Airbnb + Booking + direct : 3 outils à tester en 2026' },
+  { slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail', categorySlug: 'fiscalite', date: '2026-04-25', readTime: 6, title: 'TVA et petit-déjeuner en LCD : pourquoi le seuil 37 500 € t\'arrive plus vite que prévu' },
+  { slug: 'lmnp-vs-lmp-changement-2026-impact', categorySlug: 'fiscalite', date: '2026-04-25', readTime: 7, title: 'LMNP ou LMP en 2026 : ce qui change pour les hôtes Airbnb français' },
+  { slug: 'regime-reel-vs-micro-bic-decision-2026', categorySlug: 'fiscalite', date: '2026-04-25', readTime: 6, title: 'Micro-BIC ou régime réel en LCD : la décision avec calculs en 2026' },
+  { slug: 'taxe-sejour-lcd-comment-collecter', categorySlug: 'fiscalite', date: '2026-04-25', readTime: 5, title: 'Taxe de séjour en LCD : comment la collecter sans erreur en 2026' },
+  { slug: 'assurance-lcd-5-garanties-indispensables-2026', categorySlug: 'reglementation', date: '2026-04-25', readTime: 6, title: 'Assurance LCD : les 5 garanties indispensables en 2026 (et celles inutiles)' },
+  { slug: 'bail-mobilite-vs-courte-duree-differences', categorySlug: 'reglementation', date: '2026-04-25', readTime: 6, title: 'Bail mobilité vs location courte durée : les vraies différences pour un hôte' },
+  { slug: 'numero-enregistrement-lcd-obtenir-etapes-pratiques', categorySlug: 'reglementation', date: '2026-04-25', readTime: 5, title: 'Numéro d\'enregistrement LCD : 8 étapes pratiques pour l\'obtenir avant mai 2026' },
+  { slug: 'travaux-energetiques-lcd-aides-maprimerenov-2026', categorySlug: 'reglementation', date: '2026-04-25', readTime: 7, title: 'Travaux énergétiques en LCD : MaPrimeRénov 2026 et autres aides pour ton DPE' },
 ]
 
 export const CATEGORIES = {
