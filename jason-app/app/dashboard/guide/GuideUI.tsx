@@ -343,7 +343,7 @@ export default function GuideUI() {
           </p>
         </div>
         <Link
-          href="https://jasonmarinho.fr/blog/driing-plateforme-vacances-sans-commissions"
+          href="https://jasonmarinho.com/blog/driing-plateforme-vacances-sans-commissions"
           target="_blank"
           rel="noopener noreferrer"
           className="btn-primary"
