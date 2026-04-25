@@ -776,4 +776,34 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/saisonnalite-tarif-region-france-lcd-2026/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/airdna-mode-emploi-hote-lcd-debutant/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/last-minute-vs-early-booking-strategie-2026/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/refacturer-degat-voyageur-airbnb-procedure/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/prix-min-max-airbnb-fourchette-tarifaire/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

@@ -108,6 +108,11 @@ export const articles = [
   { slug: 'profil-hote-airbnb-bio-photo-confiance', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Profil hôte Airbnb : photo et bio qui inspirent confiance et augmentent les réservations' },
   { slug: 'optimiser-annonce-booking-com-2026-classement', categorySlug: 'visibilite', date: '2026-04-25', readTime: 7, title: 'Optimiser son annonce Booking.com en 2026 : 9 leviers de classement' },
   { slug: 'recherches-voyageurs-airbnb-tendances-emergentes-2026', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Recherches voyageurs Airbnb 2026 : 5 tendances émergentes à capter' },
+  { slug: 'saisonnalite-tarif-region-france-lcd-2026', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Saisonnalité LCD par région française : la grille tarifaire 2026' },
+  { slug: 'airdna-mode-emploi-hote-lcd-debutant', categorySlug: 'revenus', date: '2026-04-25', readTime: 5, title: 'AirDNA mode d\'emploi : utiliser les data marché pour optimiser ton tarif LCD' },
+  { slug: 'last-minute-vs-early-booking-strategie-2026', categorySlug: 'revenus', date: '2026-04-25', readTime: 5, title: 'Last-minute vs early booking : la stratégie de remises temporelles en 2026' },
+  { slug: 'refacturer-degat-voyageur-airbnb-procedure', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Refacturer un dégât voyageur : procédure Airbnb, Booking et direct (2026)' },
+  { slug: 'prix-min-max-airbnb-fourchette-tarifaire', categorySlug: 'revenus', date: '2026-04-25', readTime: 5, title: 'Prix min / prix max Airbnb : la fourchette tarifaire qui maximise ton revenu' },
 ]
 
 export const CATEGORIES = {
