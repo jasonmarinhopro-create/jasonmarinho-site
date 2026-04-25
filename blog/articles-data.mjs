@@ -68,6 +68,12 @@ export const articles = [
   { slug: 'mots-cles-titre-annonce-airbnb-eviter-spam-detection', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Titre Airbnb 2026 : 9 mots-clés à éviter qui déclenchent le filtre anti-spam' },
   { slug: 'gmb-questions-reponses-hotes-lcd-optimiser', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Google My Business : la section Questions/Réponses sous-utilisée par 90% des hôtes LCD' },
   { slug: 'statistiques-annonce-airbnb-4-kpis-essentiels', categorySlug: 'visibilite', date: '2026-04-25', readTime: 6, title: 'Statistiques Airbnb : les 4 KPIs essentiels que les hôtes ignorent' },
+  { slug: 'point-mort-lcd-calcul-rentabilite-hote', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Calculer son point mort en location courte durée : la méthode en 4 lignes' },
+  { slug: 'frais-menage-airbnb-combien-facturer-2026', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Frais de ménage Airbnb : combien facturer en 2026 sans pénaliser ses réservations' },
+  { slug: 'tarif-hebdomadaire-vs-nuitee-quand-preferer', categorySlug: 'revenus', date: '2026-04-25', readTime: 5, title: 'Tarif hebdomadaire vs nuitée : quand préférer chaque modèle (avec calculs)' },
+  { slug: 'budget-annuel-hote-lcd-grille-couts', categorySlug: 'revenus', date: '2026-04-25', readTime: 7, title: 'Budget annuel d\'un hôte LCD : la grille de coûts complète pour anticiper' },
+  { slug: 'diversifier-revenus-lcd-au-dela-nuitees', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Diversifier ses revenus LCD : 7 sources au-delà du tarif nuitée' },
+  { slug: 'marge-nette-par-nuitee-suivi-precis', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Marge nette par nuitée : le seul KPI qui compte vraiment en LCD' },
 ]
 
 export const CATEGORIES = {

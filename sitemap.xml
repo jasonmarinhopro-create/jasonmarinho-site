@@ -536,4 +536,40 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/point-mort-lcd-calcul-rentabilite-hote/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/frais-menage-airbnb-combien-facturer-2026/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/tarif-hebdomadaire-vs-nuitee-quand-preferer/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/budget-annuel-hote-lcd-grille-couts/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/diversifier-revenus-lcd-au-dela-nuitees/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/marge-nette-par-nuitee-suivi-precis/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
