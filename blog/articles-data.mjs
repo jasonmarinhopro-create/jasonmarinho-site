@@ -120,6 +120,12 @@ export const articles = [
   { slug: 'logiciels-conciergerie-comparatif-2026', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Logiciels conciergerie LCD : comparatif des 5 PMS leaders en 2026' },
   { slug: 'scaler-conciergerie-5-30-mandats-process', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Scaler une conciergerie de 5 à 30 mandats : les process à mettre en place' },
   { slug: 'sortir-mauvais-client-conciergerie-procedure', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 5, title: 'Sortir un mauvais client de conciergerie : la procédure en 5 étapes' },
+  { slug: 'erp-classement-meuble-tourisme-lcd', categorySlug: 'reglementation', date: '2026-04-25', readTime: 5, title: 'ERP et meublé de tourisme classé : faut-il faire les démarches en 2026 ?' },
+  { slug: 'rgpd-donnees-voyageurs-airbnb-conformite', categorySlug: 'reglementation', date: '2026-04-25', readTime: 5, title: 'RGPD et données voyageurs : conformité hôte LCD en 2026' },
+  { slug: 'droits-voisins-lcd-copropriete-litiges', categorySlug: 'reglementation', date: '2026-04-25', readTime: 5, title: 'Droits des voisins en LCD : éviter et gérer les litiges en copropriété' },
+  { slug: 'stripe-paiement-direct-lcd-mise-en-place', categorySlug: 'automatisation', date: '2026-04-25', readTime: 5, title: 'Stripe pour la réservation directe LCD : mise en place et paramétrage 2026' },
+  { slug: 'integration-calendrier-perso-airbnb-google', categorySlug: 'automatisation', date: '2026-04-25', readTime: 4, title: 'Intégrer ton calendrier Airbnb dans Google Calendar perso : 5 minutes' },
+  { slug: 'scripts-check-out-automatique-lcd', categorySlug: 'automatisation', date: '2026-04-25', readTime: 5, title: 'Scripts de check-out automatiques : 6 messages à programmer pour zéro friction' },
 ]
 
 export const CATEGORIES = {
