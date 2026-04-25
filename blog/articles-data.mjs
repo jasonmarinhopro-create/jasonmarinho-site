@@ -103,6 +103,11 @@ export const articles = [
   { slug: 'inventaire-logement-airbnb-modele-photos', categorySlug: 'ressources', date: '2026-04-25', readTime: 5, title: 'Inventaire logement Airbnb : le modèle photo qui te protège des litiges' },
   { slug: 'guide-fiscal-debutant-hote-airbnb-2026', categorySlug: 'ressources', date: '2026-04-25', readTime: 6, title: 'Guide fiscal débutant 2026 : déclarer ses revenus Airbnb sans erreur' },
   { slug: 'formulaire-fiche-police-lcd-obligatoire', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: 'Fiche de police LCD : remplir et conserver le formulaire obligatoire' },
+  { slug: 'seo-local-hote-lcd-google-maps-visibilite', categorySlug: 'visibilite', date: '2026-04-25', readTime: 6, title: 'SEO local pour hôte LCD : ressortir sur Google Maps en 2026' },
+  { slug: 'instagram-reels-tiktok-lcd-attirer-voyageurs', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Instagram Reels & TikTok pour LCD : 6 formats vidéo qui convertissent' },
+  { slug: 'profil-hote-airbnb-bio-photo-confiance', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Profil hôte Airbnb : photo et bio qui inspirent confiance et augmentent les réservations' },
+  { slug: 'optimiser-annonce-booking-com-2026-classement', categorySlug: 'visibilite', date: '2026-04-25', readTime: 7, title: 'Optimiser son annonce Booking.com en 2026 : 9 leviers de classement' },
+  { slug: 'recherches-voyageurs-airbnb-tendances-emergentes-2026', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Recherches voyageurs Airbnb 2026 : 5 tendances émergentes à capter' },
 ]
 
 export const CATEGORIES = {
