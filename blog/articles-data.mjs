@@ -126,6 +126,13 @@ export const articles = [
   { slug: 'stripe-paiement-direct-lcd-mise-en-place', categorySlug: 'automatisation', date: '2026-04-25', readTime: 5, title: 'Stripe pour la réservation directe LCD : mise en place et paramétrage 2026' },
   { slug: 'integration-calendrier-perso-airbnb-google', categorySlug: 'automatisation', date: '2026-04-25', readTime: 4, title: 'Intégrer ton calendrier Airbnb dans Google Calendar perso : 5 minutes' },
   { slug: 'scripts-check-out-automatique-lcd', categorySlug: 'automatisation', date: '2026-04-25', readTime: 5, title: 'Scripts de check-out automatiques : 6 messages à programmer pour zéro friction' },
+  { slug: 'blog-hote-lcd-strategie-trafic-organique', categorySlug: 'visibilite', date: '2026-04-25', readTime: 6, title: 'Blog d\'hôte LCD : la stratégie pour générer du trafic organique en 2026' },
+  { slug: 'partenariats-locaux-hotes-lcd-restaurants-activites', categorySlug: 'experience', date: '2026-04-25', readTime: 5, title: 'Partenariats locaux LCD : 7 types à mettre en place pour booster les avis' },
+  { slug: 'programme-parrainage-voyageurs-fidelisation-lcd', categorySlug: 'visibilite', date: '2026-04-25', readTime: 4, title: 'Programme de parrainage voyageurs LCD : fidéliser et acquérir gratuitement' },
+  { slug: 'email-marketing-newsletter-hote-lcd', categorySlug: 'visibilite', date: '2026-04-25', readTime: 5, title: 'Email marketing pour hôte LCD : newsletter qui fait revenir tes voyageurs' },
+  { slug: 'photos-avant-apres-home-staging-lcd', categorySlug: 'experience', date: '2026-04-25', readTime: 5, title: 'Photos avant-après home staging LCD : 5 transformations à 200 €' },
+  { slug: 'banque-objets-utiles-laisser-voyageur-lcd', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: '15 objets utiles à laisser à tes voyageurs LCD : kit oubli, dépannage, plaisir' },
+  { slug: 'modele-email-post-sejour-fideliser-voyageur', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: 'Email post-séjour Airbnb : 4 modèles testés pour avoir 5★ et fidéliser' },
 ]
 
 export const CATEGORIES = {

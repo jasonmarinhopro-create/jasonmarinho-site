@@ -884,4 +884,46 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/blog-hote-lcd-strategie-trafic-organique/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/partenariats-locaux-hotes-lcd-restaurants-activites/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/programme-parrainage-voyageurs-fidelisation-lcd/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/email-marketing-newsletter-hote-lcd/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/photos-avant-apres-home-staging-lcd/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/banque-objets-utiles-laisser-voyageur-lcd/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/modele-email-post-sejour-fideliser-voyageur/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
