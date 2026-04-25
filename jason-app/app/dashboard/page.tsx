@@ -93,6 +93,20 @@ export default async function DashboardPage() {
     getCachedCommunityGroups(),
   ])
 
+  // Memberships fetched separately (depends on userId, can't be cached globally)
+  const { data: joinedMemberships } = userId
+    ? await supabase
+        .from('user_community_memberships')
+        .select('group_id')
+        .eq('user_id', userId)
+        .eq('status', 'joined')
+    : { data: [] as { group_id: string }[] }
+
+  const joinedIds    = new Set((joinedMemberships ?? []).map(m => m.group_id))
+  const joinedGroups = communityGroups.filter(g => joinedIds.has(g.id))
+  const totalReach   = joinedGroups.reduce((acc, g) => acc + (g.members_count ?? 0), 0)
+  const joinedCount  = joinedGroups.length
+
   const firstName  = profile?.full_name?.split(/\s+/)[0] ?? ''
   const allC       = contracts ?? []
   const logements  = logCount ?? 0
@@ -140,7 +154,6 @@ export default async function DashboardPage() {
 
   const revenusThisMois = contratsThisMois + entriesThisSum
   const revenusPrevMois = contratsPrevMois + entriesPrevSum
-  const totalReach = communityGroups.reduce((acc, g) => acc + (g.members_count ?? 0), 0)
 
   const enAttente = allC
     .filter(c => (c.montant_loyer ?? 0) > 0 && !isPaid(c))
@@ -213,6 +226,8 @@ export default async function DashboardPage() {
             revenusThisMois={revenusThisMois}
             revenusPrevMois={revenusPrevMois}
             totalReach={totalReach}
+            joinedCount={joinedCount}
+            totalGroupCount={communityGroups.length}
             urgentCount={actionsCount}
             today={today}
           />

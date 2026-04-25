@@ -11,6 +11,8 @@ interface Props {
   revenusThisMois: number
   revenusPrevMois: number
   totalReach: number
+  joinedCount: number
+  totalGroupCount: number
   urgentCount: number
   today: string
 }
@@ -32,7 +34,8 @@ function fmtReach(n: number) {
 }
 
 export default function EtatDesLieux({
-  prochainSejour, revenusThisMois, revenusPrevMois, totalReach, urgentCount, today,
+  prochainSejour, revenusThisMois, revenusPrevMois,
+  totalReach, joinedCount, totalGroupCount, urgentCount, today,
 }: Props) {
   // Prochain séjour
   let sejLabel = 'Aucun séjour prévu'
@@ -102,7 +105,11 @@ export default function EtatDesLieux({
             <span style={{ ...s.val, color: '#a78bfa' }}>
               {totalReach > 0 ? fmtReach(totalReach) : '—'}
             </span>
-            <span style={s.sub}>membres potentiels · groupes Facebook</span>
+            <span style={s.sub}>
+              {joinedCount > 0
+                ? `${joinedCount} groupe${joinedCount > 1 ? 's' : ''} rejoints sur ${totalGroupCount}`
+                : `Rejoins des groupes pour voir ta portée`}
+            </span>
           </div>
         </div>
       </Link>

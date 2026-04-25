@@ -6,8 +6,10 @@ import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
   Envelope, Phone, Note, CalendarBlank, House,
   CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
+  ListChecks, CheckSquare, Square,
 } from '@phosphor-icons/react'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
+import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
 import dynamic from 'next/dynamic'
 
@@ -84,6 +86,38 @@ const CONTRAT_LABELS: Record<string, { label: string; color: string; bg: string 
   non_requis:  { label: 'Non requis',  color: 'var(--text-muted)', bg: 'var(--surface-2)' },
   nouveau:     { label: 'Nouveau',     color: '#7EB8F7', bg: 'rgba(126,184,247,0.12)' },
 }
+
+const CHECKLIST_PHASES = [
+  {
+    label: "Avant l'arrivée",
+    items: [
+      { key: 'contrat_envoye',       label: 'Contrat envoyé' },
+      { key: 'contrat_signe',        label: 'Contrat signé' },
+      { key: 'acompte_recu',         label: 'Acompte reçu' },
+      { key: 'solde_recu',           label: 'Solde reçu' },
+      { key: 'caution_recue',        label: 'Caution reçue' },
+      { key: 'identite_verifiee',    label: "Pièce d'identité vérifiée" },
+      { key: 'instructions_envoyees',label: "Instructions d'arrivée envoyées" },
+      { key: 'menage_planifie',      label: 'Ménage planifié' },
+    ],
+  },
+  {
+    label: 'Pendant le séjour',
+    items: [
+      { key: 'checkin_effectue', label: 'Check-in effectué' },
+    ],
+  },
+  {
+    label: 'Après le départ',
+    items: [
+      { key: 'checkout_effectue',  label: 'Check-out effectué' },
+      { key: 'etat_des_lieux',     label: 'État des lieux de sortie' },
+      { key: 'caution_restituee',  label: 'Caution restituée' },
+      { key: 'avis_demande',       label: 'Avis demandé' },
+    ],
+  },
+]
+const CL_TOTAL = CHECKLIST_PHASES.flatMap(p => p.items).length
 
 const EMPTY_SEJOUR: Omit<SejourData, 'voyageur_id'> = {
   logement: '', date_arrivee: '', date_depart: '',
@@ -352,6 +386,41 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const [sejourForm, setSejourForm] = useState<Omit<SejourData, 'voyageur_id'>>(EMPTY_SEJOUR)
   const [sejourError, setSejourError] = useState('')
   const [manualLogement, setManualLogement] = useState(false)
+
+  // Checklist panel
+  const [expandedSejourId, setExpandedSejourId] = useState<string | null>(null)
+  const [checklistData, setChecklistData] = useState<
+    Record<string, { contractId: string; items: Record<string, boolean> } | null>
+  >({})
+  const [checklistLoading, setChecklistLoading] = useState<string | null>(null)
+
+  async function toggleChecklist(sejourId: string) {
+    if (expandedSejourId === sejourId) { setExpandedSejourId(null); return }
+    setExpandedSejourId(sejourId)
+    if (checklistData[sejourId] !== undefined) return
+    setChecklistLoading(sejourId)
+    try {
+      const { getChecklistBySejour } = await import('../contract-actions')
+      const res = await getChecklistBySejour(sejourId)
+      setChecklistData(prev => ({
+        ...prev,
+        [sejourId]: res.contractId
+          ? { contractId: res.contractId, items: res.checklist ?? {} }
+          : null,
+      }))
+    } finally {
+      setChecklistLoading(null)
+    }
+  }
+
+  async function handleChecklistToggle(sejourId: string, contractId: string, key: string, value: boolean) {
+    setChecklistData(prev => {
+      const entry = prev[sejourId]
+      if (!entry) return prev
+      return { ...prev, [sejourId]: { ...entry, items: { ...entry.items, [key]: value } } }
+    })
+    await updateContractChecklist(contractId, key, value)
+  }
 
   const initials = `${voyageur.prenom[0]}${voyageur.nom[0]}`.toUpperCase()
   const color = avatarColor(voyageur.prenom + voyageur.nom)
@@ -698,8 +767,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           {sejours.map(sj => {
             const ct = CONTRAT_LABELS[sj.contrat_statut]
             const n = nights(sj.date_arrivee, sj.date_depart)
+            const isExpanded = expandedSejourId === sj.id
+            const cl = checklistData[sj.id]
+            const doneCount = cl ? Object.values(cl.items).filter(Boolean).length : 0
+            const pct = cl ? Math.round((doneCount / CL_TOTAL) * 100) : 0
             return (
-              <div key={sj.id} style={s.sejourRow} className="sejour-row-mobile">
+              <div key={sj.id}>
+              <div style={s.sejourRow} className="sejour-row-mobile">
                 <div style={s.sejourLeft}>
                   <div style={s.sejourDates}>
                     {formatDate(sj.date_arrivee)} → {formatDate(sj.date_depart)}
@@ -756,7 +830,81 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   <button onClick={() => handleDeleteSejour(sj.id)} style={{ ...s.sejourActionBtn, color: '#ef4444' }} title="Supprimer">
                     <X size={14} />
                   </button>
+                  <button
+                    onClick={() => toggleChecklist(sj.id)}
+                    disabled={checklistLoading === sj.id}
+                    style={{ ...s.checklistBtn, ...(isExpanded ? s.checklistBtnActive : {}) }}
+                    title="Checklist du séjour"
+                  >
+                    <ListChecks size={13} />
+                    {checklistLoading === sj.id ? '…' : (
+                      cl ? `${doneCount}/${CL_TOTAL}` : 'Checklist'
+                    )}
+                  </button>
                 </div>
+              </div>
+
+              {/* ── Checklist panel ────────────────────────────── */}
+              {isExpanded && (
+                <div style={s.clPanel}>
+                  {cl === undefined && (
+                    <p style={s.clEmpty}>Chargement…</p>
+                  )}
+                  {cl === null && (
+                    <p style={s.clEmpty}>Aucun contrat associé à ce séjour — crée d&apos;abord un contrat pour accéder à la checklist.</p>
+                  )}
+                  {cl && (() => {
+                    const barColor = pct === 100 ? '#10b981' : pct >= 50 ? '#eab308' : '#f97316'
+                    return (
+                      <>
+                        {/* Progress bar */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                          <div style={{ flex: 1, height: '5px', background: 'var(--border)', borderRadius: '10px', overflow: 'hidden' }}>
+                            <div style={{ height: '100%', width: `${pct}%`, background: barColor, borderRadius: '10px', transition: 'width 0.3s' }} />
+                          </div>
+                          <span style={{ fontSize: '12px', fontWeight: 600, color: barColor, whiteSpace: 'nowrap' }}>
+                            {doneCount}/{CL_TOTAL} complétés
+                          </span>
+                        </div>
+
+                        {/* Phases */}
+                        {CHECKLIST_PHASES.map(phase => {
+                          const phaseDone = phase.items.filter(it => cl.items[it.key]).length
+                          return (
+                            <div key={phase.label} style={{ marginBottom: '14px' }}>
+                              <div style={s.clPhaseLabel}>
+                                {phase.label}
+                                <span style={{ ...s.clPhaseBadge, color: phaseDone === phase.items.length ? '#10b981' : 'var(--text-muted)' }}>
+                                  {phaseDone}/{phase.items.length}
+                                </span>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                {phase.items.map(it => {
+                                  const checked = !!cl.items[it.key]
+                                  return (
+                                    <button
+                                      key={it.key}
+                                      onClick={() => handleChecklistToggle(sj.id, cl.contractId, it.key, !checked)}
+                                      style={{ ...s.clItem, ...(checked ? s.clItemDone : {}) }}
+                                    >
+                                      {checked
+                                        ? <CheckSquare size={15} color="#10b981" weight="fill" style={{ flexShrink: 0 }} />
+                                        : <Square size={15} color="var(--text-muted)" style={{ flexShrink: 0 }} />}
+                                      <span style={{ textDecoration: checked ? 'line-through' : 'none', color: checked ? 'var(--text-muted)' : 'var(--text-2)' }}>
+                                        {it.label}
+                                      </span>
+                                    </button>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </>
+                    )
+                  })()}
+                </div>
+              )}
               </div>
             )
           })}
@@ -1152,6 +1300,35 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 500, color: '#a29bfe',
     cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
   },
+  checklistBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)',
+    borderRadius: '8px', padding: '5px 11px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)',
+    cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
+  },
+  checklistBtnActive: {
+    background: 'rgba(16,185,129,0.18)', borderColor: 'rgba(16,185,129,0.45)', color: '#10b981',
+  },
+  clPanel: {
+    margin: '0 0 8px 0', padding: '18px 20px',
+    background: 'rgba(0,76,63,0.06)', border: '1px solid rgba(16,185,129,0.12)',
+    borderTop: 'none', borderRadius: '0 0 12px 12px',
+  },
+  clEmpty: { fontSize: '13px', color: 'var(--text-muted)', margin: 0, fontStyle: 'italic' },
+  clPhaseLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const,
+    color: 'var(--text-3)', marginBottom: '6px',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+  },
+  clPhaseBadge: { fontSize: '10px', fontWeight: 600 },
+  clItem: {
+    display: 'flex', alignItems: 'center', gap: '9px', width: '100%',
+    background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' as const,
+    padding: '5px 6px', borderRadius: '7px', transition: 'background 0.12s',
+    fontSize: '13px',
+  },
+  clItemDone: { background: 'rgba(16,185,129,0.06)' },
 
   /* Modal */
   overlay: {
