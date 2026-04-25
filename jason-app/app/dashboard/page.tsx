@@ -8,6 +8,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
+import { getCachedCommunityGroups } from '@/lib/queries/cache'
 
 function getGreeting() {
   const h = parseInt(new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).format(new Date()))
@@ -59,6 +60,7 @@ export default async function DashboardPage() {
     { data: latestNews },
     { data: entriesThisMois },
     { data: entriesPrevMois },
+    communityGroups,
   ] = await Promise.all([
     supabase
       .from('contracts')
@@ -88,6 +90,7 @@ export default async function DashboardPage() {
       .eq('user_id', userId)
       .gte('date_paiement', `${prevMPfx}-01`)
       .lt('date_paiement', `${monthPfx}-01`),
+    getCachedCommunityGroups(),
   ])
 
   const firstName  = profile?.full_name?.split(/\s+/)[0] ?? ''
@@ -137,6 +140,7 @@ export default async function DashboardPage() {
 
   const revenusThisMois = contratsThisMois + entriesThisSum
   const revenusPrevMois = contratsPrevMois + entriesPrevSum
+  const totalReach = communityGroups.reduce((acc, g) => acc + (g.members_count ?? 0), 0)
 
   const enAttente = allC
     .filter(c => (c.montant_loyer ?? 0) > 0 && !isPaid(c))
@@ -208,7 +212,7 @@ export default async function DashboardPage() {
             prochainSejour={prochainSejour}
             revenusThisMois={revenusThisMois}
             revenusPrevMois={revenusPrevMois}
-            avisMovyen={profile?.avis_moyen ?? null}
+            totalReach={totalReach}
             urgentCount={actionsCount}
             today={today}
           />
