@@ -23,13 +23,6 @@ export default async function SoutenirPage({
     <div style={s.root}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg) } }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:none } }
-        .fu { animation: fadeUp .5s ease both }
-        .fu-1 { animation-delay:.05s }
-        .fu-2 { animation-delay:.12s }
-        .fu-3 { animation-delay:.20s }
-        .fu-4 { animation-delay:.28s }
-        .fu-5 { animation-delay:.36s }
         .perk-card:hover { transform: translateY(-2px); }
         @media (max-width: 700px) {
           .perks-grid { grid-template-columns: 1fr !important; }
@@ -45,7 +38,7 @@ export default async function SoutenirPage({
 
       {merci ? (
         /* ── État merci ── */
-        <section style={s.merciWrap} className="fu">
+        <section style={s.merciWrap}>
           <div style={s.merciCard}>
             <div style={s.merciIcon}>✦</div>
             <h1 style={s.merciTitle}>Bienvenue dans le cercle.</h1>
@@ -62,7 +55,7 @@ export default async function SoutenirPage({
         <>
 
           {/* ── Hero ── */}
-          <section style={s.hero} className="fu fu-1">
+          <section style={s.hero}>
             <div style={s.heroBadge}>
               <Heart size={11} weight="fill" />
               Membres fondateurs
@@ -78,7 +71,7 @@ export default async function SoutenirPage({
           </section>
 
           {/* ── Message de Jason ── */}
-          <section style={s.jasonSection} className="fu fu-2">
+          <section style={s.jasonSection}>
             <div style={{ ...s.twoCol } as React.CSSProperties} className="two-col">
               <div style={s.jasonAvatar}>
                 <span style={s.jasonInitials}>JM</span>
@@ -101,7 +94,7 @@ export default async function SoutenirPage({
           </section>
 
           {/* ── Ce que tu obtiens ── */}
-          <section style={s.perksSection} className="fu fu-3">
+          <section style={s.perksSection}>
             <p style={s.sectionLabel}>Ton accès exclusif</p>
             <div style={s.perksGrid} className="perks-grid">
               {[
@@ -142,11 +135,11 @@ export default async function SoutenirPage({
           </section>
 
           {/* ── Transparence ── */}
-          <section style={s.transparencySection} className="fu fu-3">
+          <section style={s.transparencySection}>
             <div style={s.transparencyInner}>
               <div style={s.transparencyHead}>
                 <ChartLineUp size={18} color="#FFD56B" weight="duotone" />
-                <p style={s.sectionLabel} className={{ margin: 0 } as any}>À quoi sert ta contribution ?</p>
+                <p style={s.sectionLabel}>À quoi sert ta contribution ?</p>
               </div>
               <div style={s.transparencyGrid}>
                 {[
@@ -167,7 +160,7 @@ export default async function SoutenirPage({
           </section>
 
           {/* ── Formulaire ── */}
-          <section style={s.formSection} className="fu fu-4">
+          <section style={s.formSection}>
             <div style={s.formCard}>
               <div style={s.formHead}>
                 <Lightbulb size={18} color="#FFD56B" weight="duotone" />
@@ -182,7 +175,7 @@ export default async function SoutenirPage({
           </section>
 
           {/* ── Note finale ── */}
-          <section style={s.finalNote} className="fu fu-5">
+          <section style={s.finalNote}>
             <p style={s.finalText}>
               Tu peux contribuer une seule fois. Il n&apos;y a pas d&apos;abonnement contributeur,
               pas de renouvellement automatique, pas de pression.
