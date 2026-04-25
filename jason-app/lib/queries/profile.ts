@@ -17,7 +17,7 @@ export const getProfile = cache(async () => {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id, is_contributor')
+    .select('full_name, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id, is_contributor, avis_moyen')
     .eq('id', user.id)
     .maybeSingle()
 
@@ -34,5 +34,6 @@ export const getProfile = cache(async () => {
     stripe_subscription_status: profile?.stripe_subscription_status ?? null,
     stripe_customer_id: profile?.stripe_customer_id ?? null,
     is_contributor: (isAdmin ? true : (profile?.is_contributor ?? false)),
+    avis_moyen: (profile?.avis_moyen ?? null) as number | null,
   }
 })

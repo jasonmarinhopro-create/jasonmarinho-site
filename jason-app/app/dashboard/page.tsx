@@ -6,6 +6,8 @@ import {
   CalendarBlank, Warning, CurrencyEur, House, UsersThree,
   ArrowRight, Newspaper,
 } from '@phosphor-icons/react/dist/ssr'
+import EtatDesLieux from './EtatDesLieux'
+import ActionUrgente from './ActionUrgente'
 
 function getGreeting() {
   const h = parseInt(new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).format(new Date()))
@@ -34,6 +36,11 @@ function fmtEur(n: number) {
   if (n >= 1000) return `${(n / 1000).toFixed(n % 1000 < 100 ? 1 : 0)} k€`
   return `${n} €`
 }
+function monthPrefix(offset = 0) {
+  const d = new Date()
+  d.setMonth(d.getMonth() + offset)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+}
 
 export default async function DashboardPage() {
   const profile  = await getProfile()
@@ -42,17 +49,20 @@ export default async function DashboardPage() {
   const now      = new Date()
   const today    = todayStr()
   const in7      = addDays(today, 7)
-  const monthPfx = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  const monthPfx = monthPrefix(0)
+  const prevMPfx = monthPrefix(-1)
   const yearPfx  = String(now.getFullYear())
 
   const [
     { data: contracts },
     { count: logCount },
     { data: latestNews },
+    { data: entriesThisMois },
+    { data: entriesPrevMois },
   ] = await Promise.all([
     supabase
       .from('contracts')
-      .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, montant_loyer, stripe_payment_status, stripe_payment_enabled')
+      .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, montant_loyer, stripe_payment_status, stripe_payment_enabled, locataire_prenom, locataire_nom')
       .eq('user_id', userId)
       .neq('statut', 'annule')
       .order('date_arrivee'),
@@ -66,6 +76,18 @@ export default async function DashboardPage() {
       .eq('is_published', true)
       .order('published_at', { ascending: false, nullsFirst: false })
       .limit(3),
+    supabase
+      .from('revenus_entries')
+      .select('montant')
+      .eq('user_id', userId)
+      .gte('date_paiement', `${monthPfx}-01`)
+      .lt('date_paiement', `${monthPrefix(1)}-01`),
+    supabase
+      .from('revenus_entries')
+      .select('montant')
+      .eq('user_id', userId)
+      .gte('date_paiement', `${prevMPfx}-01`)
+      .lt('date_paiement', `${monthPfx}-01`),
   ])
 
   const firstName  = profile?.full_name?.split(/\s+/)[0] ?? ''
@@ -99,15 +121,33 @@ export default async function DashboardPage() {
   const isPaid = (c: typeof allC[0]) =>
     c.stripe_payment_status === 'paid' || (!c.stripe_payment_enabled && c.statut === 'signe')
 
-  const revenusThisMonth = allC
+  // Revenus contrats ce mois
+  const contratsThisMois = allC
     .filter(c => c.date_arrivee?.startsWith(monthPfx) && isPaid(c))
     .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
+
+  // Revenus contrats mois précédent
+  const contratsPrevMois = allC
+    .filter(c => c.date_arrivee?.startsWith(prevMPfx) && isPaid(c))
+    .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
+
+  // Revenus manuels (entries) ce mois + mois précédent
+  const entriesThisSum = (entriesThisMois ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
+  const entriesPrevSum = (entriesPrevMois ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
+
+  const revenusThisMois = contratsThisMois + entriesThisSum
+  const revenusPrevMois = contratsPrevMois + entriesPrevSum
 
   const enAttente = allC
     .filter(c => (c.montant_loyer ?? 0) > 0 && !isPaid(c))
     .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
 
   const voyageursAnnee = allC.filter(c => c.date_arrivee?.startsWith(yearPfx)).length
+
+  // ── Prochain séjour
+  const prochainSejour = allC
+    .filter(c => c.date_arrivee > today)
+    .sort((a, b) => a.date_arrivee.localeCompare(b.date_arrivee))[0] ?? null
 
   const hasOpData =
     activeStays.length > 0 || weekArrivals.length > 0 || weekDepartures.length > 0 ||
@@ -162,15 +202,30 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* ── KPI strip ───────────────────────────────────────────────── */}
+        {/* ── État des lieux — 4 métriques ─────────────────────────────── */}
         <section style={s.section} className="fade-up d1">
+          <EtatDesLieux
+            prochainSejour={prochainSejour}
+            revenusThisMois={revenusThisMois}
+            revenusPrevMois={revenusPrevMois}
+            avisMovyen={profile?.avis_moyen ?? null}
+            urgentCount={actionsCount}
+            today={today}
+          />
+        </section>
+
+        {/* ── Action urgente ───────────────────────────────────────────── */}
+        <section style={s.section} className="fade-up d2">
+          <ActionUrgente
+            unsignedContracts={unsignedContracts}
+            pendingPayments={pendingPayments}
+            today={today}
+          />
+        </section>
+
+        {/* ── KPI strip secondaire ─────────────────────────────────────── */}
+        <section style={s.section} className="fade-up d3">
           <div style={s.kpiStrip}>
-            <KpiCard
-              href="/dashboard/revenus"
-              icon={<CurrencyEur size={18} weight="fill" />}
-              color="#10b981" label="Revenus ce mois"
-              value={fmtEur(revenusThisMonth)} sub="encaissés"
-            />
             <KpiCard
               href="/dashboard/revenus"
               icon={<CurrencyEur size={18} weight="fill" />}
@@ -194,7 +249,7 @@ export default async function DashboardPage() {
 
         {/* ── Résumé opérationnel ──────────────────────────────────────── */}
         {hasOpData && (
-          <section style={s.section} className="fade-up d2">
+          <section style={s.section} className="fade-up d3">
             <div style={s.opGrid}>
 
               {(activeStays.length > 0 || weekArrivals.length > 0 || weekDepartures.length > 0) && (
@@ -427,7 +482,7 @@ const s: Record<string, React.CSSProperties> = {
   sectionHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' },
   seeAll:       { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500, padding: '5px 10px', borderRadius: '8px', background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)', transition: 'background 0.15s, border-color 0.15s' },
 
-  // KPI strip
+  // KPI strip (secondary)
   kpiStrip: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' },
   kpiCard: {
     display: 'flex', alignItems: 'center', gap: '14px',
