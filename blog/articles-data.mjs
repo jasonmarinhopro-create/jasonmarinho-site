@@ -74,6 +74,11 @@ export const articles = [
   { slug: 'budget-annuel-hote-lcd-grille-couts', categorySlug: 'revenus', date: '2026-04-25', readTime: 7, title: 'Budget annuel d\'un hôte LCD : la grille de coûts complète pour anticiper' },
   { slug: 'diversifier-revenus-lcd-au-dela-nuitees', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Diversifier ses revenus LCD : 7 sources au-delà du tarif nuitée' },
   { slug: 'marge-nette-par-nuitee-suivi-precis', categorySlug: 'revenus', date: '2026-04-25', readTime: 6, title: 'Marge nette par nuitée : le seul KPI qui compte vraiment en LCD' },
+  { slug: 'serrure-connectee-igloohome-nuki-comparatif-2026', categorySlug: 'automatisation', date: '2026-04-25', readTime: 6, title: 'Serrure connectée LCD : Igloohome vs Nuki vs Master Lock — comparatif 2026' },
+  { slug: 'automatiser-caution-swikly-youka-test-terrain', categorySlug: 'automatisation', date: '2026-04-25', readTime: 5, title: 'Automatiser sa caution LCD : SwikLy vs Youka vs solution maison' },
+  { slug: 'make-zapier-workflow-airbnb-no-code-debutant', categorySlug: 'automatisation', date: '2026-04-25', readTime: 6, title: 'Make ou Zapier pour Airbnb : automatiser ses flows en no-code' },
+  { slug: 'capteurs-iot-lcd-bruit-temperature-utile-ou-pas', categorySlug: 'automatisation', date: '2026-04-25', readTime: 6, title: 'Capteurs IoT pour LCD : bruit, température, ouverture — utile ou gadget ?' },
+  { slug: 'messagerie-unifiee-3-plateformes-tester', categorySlug: 'automatisation', date: '2026-04-25', readTime: 5, title: 'Messagerie unifiée Airbnb + Booking + direct : 3 outils à tester en 2026' },
 ]
 
 export const CATEGORIES = {
