@@ -87,6 +87,15 @@ export const articles = [
   { slug: 'bail-mobilite-vs-courte-duree-differences', categorySlug: 'reglementation', date: '2026-04-25', readTime: 6, title: 'Bail mobilité vs location courte durée : les vraies différences pour un hôte' },
   { slug: 'numero-enregistrement-lcd-obtenir-etapes-pratiques', categorySlug: 'reglementation', date: '2026-04-25', readTime: 5, title: 'Numéro d\'enregistrement LCD : 8 étapes pratiques pour l\'obtenir avant mai 2026' },
   { slug: 'travaux-energetiques-lcd-aides-maprimerenov-2026', categorySlug: 'reglementation', date: '2026-04-25', readTime: 7, title: 'Travaux énergétiques en LCD : MaPrimeRénov 2026 et autres aides pour ton DPE' },
+  { slug: 'welcome-bag-lcd-12-idees-marquantes-budget', categorySlug: 'experience', date: '2026-04-25', readTime: 5, title: 'Welcome bag LCD : 12 idées qui marquent les voyageurs (avec budget)' },
+  { slug: 'check-in-tardif-4-solutions-sans-cles', categorySlug: 'experience', date: '2026-04-25', readTime: 5, title: 'Check-in tardif Airbnb : 4 solutions sans clé ni présence physique' },
+  { slug: 'communiquer-voyageurs-etrangers-5-regles-multilingue', categorySlug: 'experience', date: '2026-04-25', readTime: 5, title: 'Communiquer avec des voyageurs étrangers en LCD : 5 règles qui changent les avis' },
+  { slug: 'recuperer-mauvais-avis-airbnb-methode-5-etapes', categorySlug: 'experience', date: '2026-04-25', readTime: 6, title: 'Récupérer un mauvais avis Airbnb : la méthode en 5 étapes pour limiter les dégâts' },
+  { slug: 'bruit-reglement-interieur-lcd-efficace', categorySlug: 'experience', date: '2026-04-25', readTime: 5, title: 'Bruit voyageur : le règlement intérieur LCD qui fait baisser les plaintes de 70 %' },
+  { slug: 'prospection-conciergerie-trouver-premier-mandat', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Conciergerie LCD : 7 stratégies pour décrocher ton premier mandat' },
+  { slug: 'tarif-conciergerie-lcd-grille-marche-2026', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 5, title: 'Tarif conciergerie LCD 2026 : la grille du marché par zone et prestation' },
+  { slug: 'equipe-menage-conciergerie-recruter-fideliser', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Équipe ménage conciergerie : recruter, former, fidéliser en 2026' },
+  { slug: 'contrat-mandat-conciergerie-lcd-modele-clauses', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Contrat de mandat conciergerie LCD : les 8 clauses indispensables en 2026' },
 ]
 
 export const CATEGORIES = {
