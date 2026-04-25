@@ -6,7 +6,7 @@ import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
   CaretDown, CaretRight, Star, Check, List, X,
 } from '@phosphor-icons/react'
-import { enrollInFormation, updateFormationProgress } from '../actions'
+import { enrollInFormation, updateFormationProgress } from '@/app/dashboard/formations/actions'
 
 interface Lesson {
   id: number
