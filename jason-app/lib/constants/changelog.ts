@@ -10,6 +10,41 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    id: 'formation-booking-com-apr-2026',
+    date: '2026-04-25',
+    tag: 'nouveau',
+    title: 'Nouvelle formation : Maîtriser Booking.com',
+    description: 'La 16e formation est en ligne — entièrement dédiée à Booking.com : algorithme 2026, programme Genius, intégration ChatGPT pour tes annonces, et stratégie de prix. 7 modules, 14 leçons complètes. Accessible depuis le catalogue formations.',
+  },
+  {
+    id: 'blog-132-articles-apr-2026',
+    date: '2026-04-25',
+    tag: 'nouveau',
+    title: 'Blog LCD — 70 nouveaux articles publiés',
+    description: 'Le blog passe à 132 articles sur la location courte durée. Nouveaux sujets : fiscalité 2026, réglementation (Loi Le Meur), tarification dynamique, automatisation, conciergerie, expérience voyageurs, Airbnb vs Booking, DPE, algorithme Airbnb 2026… Retrouve tout sur jasonmarinho.com/blog.',
+  },
+  {
+    id: 'hub-services-apr-2026',
+    date: '2026-04-25',
+    tag: 'nouveau',
+    title: 'Hub Services — tous les outils en un endroit',
+    description: 'Une nouvelle page /services centralise l\'ensemble des ressources disponibles : outils gratuits (calculateur, simulateur fiscal, contrat type…), formations, guides et ressources. Plus besoin de chercher — tout est là.',
+  },
+  {
+    id: 'pour-qui-profils-apr-2026',
+    date: '2026-04-25',
+    tag: 'amélioration',
+    title: 'Pages "Pour qui" — ressources par profil',
+    description: 'Les pages profil (gîtes, chambres d\'hôtes, conciergeries, membres Driing) ont été enrichies avec des formations recommandées spécifiques à chaque activité, des ressources ciblées et une FAQ adaptée. Retrouve ce qui te concerne directement sur jasonmarinho.com/pour-qui.',
+  },
+  {
+    id: 'dashboard-perf-lightmode-apr-2026',
+    date: '2026-04-25',
+    tag: 'amélioration',
+    title: 'Dashboard — chargement plus rapide, mode clair corrigé',
+    description: 'Plusieurs optimisations ont été appliquées : chargement initial réduit de 30-40 %, police optimisée (Fraunces + Outfit via next/font), et mode clair entièrement corrigé — plus aucun fond blanc illisible. Le dashboard est maintenant fluide sur mobile comme sur desktop.',
+  },
+  {
     id: 'soutenir-idees-vote-apr-2026',
     date: '2026-04-20',
     tag: 'nouveau',
@@ -182,7 +217,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     date: '2026-04-01',
     tag: 'amélioration',
     title: '14 formations disponibles + filtres avancés',
-    description: 'Le catalogue atteint 14 formations avec de nouveaux filtres par thème et par niveau.',
+    description: 'Le catalogue atteint 14 formations (maintenant 16) avec de nouveaux filtres par thème et par niveau.',
   },
   {
     id: 'theme-toggle-mar-2026',
