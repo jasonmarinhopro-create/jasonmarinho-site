@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import { CalendarBlank, CurrencyEur, Star, Lightning } from '@phosphor-icons/react/dist/ssr'
-import NoteMoyenne from './NoteMoyenne'
+import { CalendarBlank, CurrencyEur, UsersThree, Lightning } from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
   prochainSejour: {
@@ -11,7 +10,7 @@ interface Props {
   } | null
   revenusThisMois: number
   revenusPrevMois: number
-  avisMovyen: number | null
+  totalReach: number
   urgentCount: number
   today: string
 }
@@ -26,8 +25,14 @@ function fmtEur(n: number) {
   return `${n} €`
 }
 
+function fmtReach(n: number) {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')} M`
+  if (n >= 1_000)     return `${Math.round(n / 1_000)} k`
+  return String(n)
+}
+
 export default function EtatDesLieux({
-  prochainSejour, revenusThisMois, revenusPrevMois, avisMovyen, urgentCount, today,
+  prochainSejour, revenusThisMois, revenusPrevMois, totalReach, urgentCount, today,
 }: Props) {
   // Prochain séjour
   let sejLabel = 'Aucun séjour prévu'
@@ -86,17 +91,21 @@ export default function EtatDesLieux({
         </div>
       </Link>
 
-      {/* 3 — Note actuelle */}
-      <div style={s.card}>
-        <div style={{ ...s.icon, color: '#f59e0b', background: '#f59e0b18', border: '1px solid #f59e0b30' }}>
-          <Star size={18} weight="fill" />
+      {/* 3 — Communauté LCD */}
+      <Link href="/dashboard/communaute" style={{ textDecoration: 'none' }}>
+        <div style={s.card} className="kpi-hover">
+          <div style={{ ...s.icon, color: '#a78bfa', background: '#a78bfa18', border: '1px solid #a78bfa30' }}>
+            <UsersThree size={18} weight="fill" />
+          </div>
+          <div style={s.body}>
+            <span style={s.lbl}>Communauté LCD</span>
+            <span style={{ ...s.val, color: '#a78bfa' }}>
+              {totalReach > 0 ? fmtReach(totalReach) : '—'}
+            </span>
+            <span style={s.sub}>membres potentiels · groupes Facebook</span>
+          </div>
         </div>
-        <div style={s.body}>
-          <span style={s.lbl}>Note actuelle</span>
-          <NoteMoyenne initial={avisMovyen} />
-          <span style={s.sub}>Airbnb / Booking · cliquer pour modifier</span>
-        </div>
-      </div>
+      </Link>
 
       {/* 4 — Action urgente */}
       <div style={{ ...s.card, cursor: urgentCount > 0 ? 'pointer' : 'default' }}>
