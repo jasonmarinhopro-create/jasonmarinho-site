@@ -133,7 +133,7 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 
 /* ── MARQUEE ── */
 .mq{background:var(--g);border-top:1px solid rgba(255,213,107,.06);border-bottom:1px solid rgba(255,213,107,.06);padding:13px 0;overflow:hidden}
-.mq-t{display:flex;white-space:nowrap;animation:mq 30s linear infinite;width:max-content}
+.mq-t{display:flex;white-space:nowrap;width:max-content;will-change:transform}
 .mq-i{display:flex;align-items:center;gap:26px;padding:0 26px;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(255,213,107,.35)}
 .mq-d{width:3px;height:3px;background:rgba(255,213,107,.2);border-radius:50%;flex-shrink:0}
 
@@ -264,7 +264,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 /* ── ANIM ── */
 @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(var(--mq-tx,-50%))}}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .rv.in{opacity:1;transform:translateY(0)}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
@@ -368,6 +368,18 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <div class="mq-i" aria-hidden="true">Airbnb<div class="mq-d"></div>Booking.com<div class="mq-d"></div>Tarification Dynamique<div class="mq-d"></div>Réservation Directe<div class="mq-d"></div>Automatisation<div class="mq-d"></div>Conciergerie Pro<div class="mq-d"></div>Driing<div class="mq-d"></div>LCD France<div class="mq-d"></div></div>
   </div>
 </div>
+<script>
+(function(){
+  var t=document.querySelector('.mq-t'),i=document.querySelector('.mq-i');
+  if(!t||!i)return;
+  function go(){
+    var w=i.getBoundingClientRect().width;
+    t.style.setProperty('--mq-tx','-'+w+'px');
+    t.style.animation='mq 30s linear infinite';
+  }
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(go);}else{go();}
+})();
+</script>
 
 <!-- TRUST BAR -->
 <div class="trust">
