@@ -96,6 +96,13 @@ export const articles = [
   { slug: 'tarif-conciergerie-lcd-grille-marche-2026', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 5, title: 'Tarif conciergerie LCD 2026 : la grille du marché par zone et prestation' },
   { slug: 'equipe-menage-conciergerie-recruter-fideliser', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Équipe ménage conciergerie : recruter, former, fidéliser en 2026' },
   { slug: 'contrat-mandat-conciergerie-lcd-modele-clauses', categorySlug: 'conciergerie', date: '2026-04-25', readTime: 6, title: 'Contrat de mandat conciergerie LCD : les 8 clauses indispensables en 2026' },
+  { slug: 'outils-gratuits-indispensables-demarrer-lcd-2026', categorySlug: 'ressources', date: '2026-04-25', readTime: 6, title: 'Outils gratuits indispensables pour démarrer en LCD en 2026 : la liste complète' },
+  { slug: 'checklist-preparation-logement-avant-1ere-reservation', categorySlug: 'ressources', date: '2026-04-25', readTime: 7, title: 'Checklist préparation logement LCD : 47 points avant ta 1ère réservation' },
+  { slug: 'top-7-erreurs-nouveaux-hotes-lcd-eviter', categorySlug: 'ressources', date: '2026-04-25', readTime: 6, title: 'Top 7 des erreurs des nouveaux hôtes LCD (et comment les éviter)' },
+  { slug: 'trousse-premier-secours-lcd-equipement-obligatoire', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: 'Trousse de premier secours LCD : la liste obligatoire et les bonus à ajouter' },
+  { slug: 'inventaire-logement-airbnb-modele-photos', categorySlug: 'ressources', date: '2026-04-25', readTime: 5, title: 'Inventaire logement Airbnb : le modèle photo qui te protège des litiges' },
+  { slug: 'guide-fiscal-debutant-hote-airbnb-2026', categorySlug: 'ressources', date: '2026-04-25', readTime: 6, title: 'Guide fiscal débutant 2026 : déclarer ses revenus Airbnb sans erreur' },
+  { slug: 'formulaire-fiche-police-lcd-obligatoire', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: 'Fiche de police LCD : remplir et conserver le formulaire obligatoire' },
 ]
 
 export const CATEGORIES = {
