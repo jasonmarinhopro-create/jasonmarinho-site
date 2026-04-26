@@ -8,6 +8,7 @@ import {
 import Link from 'next/link'
 import Sidebar from './Sidebar'
 import NotificationPanel from './NotificationPanel'
+import ChezNousNotifBell from './ChezNousNotifBell'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
@@ -182,6 +183,9 @@ export default function Header({ title, userName: initialUserName, currentPlan =
               </span>
             )}
           </button>
+
+          {/* Chez Nous notifications */}
+          <ChezNousNotifBell />
 
           {/* Profile dropdown */}
           <div ref={dropdownRef} style={styles.dropdownWrap}>

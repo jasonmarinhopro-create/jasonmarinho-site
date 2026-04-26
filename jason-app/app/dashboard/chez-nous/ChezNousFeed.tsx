@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil } from '@phosphor-icons/react'
+import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
@@ -36,6 +36,14 @@ type Author = {
 
 type Sort = 'recent' | 'popular' | 'unanswered'
 
+type TopMember = {
+  id: string
+  full_name: string | null
+  pseudo: string | null
+  is_contributor: boolean
+  score: number
+}
+
 type Props = {
   posts: Post[]
   authorsMap: Record<string, Author>
@@ -44,9 +52,11 @@ type Props = {
   currentCategory: CategoryId | 'all'
   currentSort: Sort
   stats: { totalPosts: number; totalReplies: number; totalMembers: number }
+  topMembers: TopMember[]
+  catCounts: Record<string, number>
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, stats }: Props) {
+export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, stats, topMembers, catCounts }: Props) {
   const [showForm, setShowForm] = useState(false)
 
   return (
@@ -88,33 +98,162 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
         ))}
       </div>
 
-      {/* Tri + Bouton */}
-      <div style={s.toolbar}>
-        <div style={s.sortRow}>
-          <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     icon={Clock} label="Récent" />
-          <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    icon={Fire}  label="Populaire" />
-          <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} icon={Question} label="Sans réponse" />
+      {/* Layout 2-col desktop */}
+      <div style={s.layout}>
+        {/* Colonne principale */}
+        <div style={s.mainCol}>
+          {/* Tri + Bouton */}
+          <div style={s.toolbar}>
+            <div style={s.sortRow}>
+              <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     icon={Clock} label="Récent" />
+              <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    icon={Fire}  label="Populaire" />
+              <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} icon={Question} label="Sans réponse" />
+            </div>
+            <button onClick={() => setShowForm(v => !v)} style={s.newBtn}>
+              <Plus size={15} weight="bold" />
+              {showForm ? 'Annuler' : 'Nouvelle discussion'}
+            </button>
+          </div>
+
+          {showForm && (
+            <NewPostForm onSuccess={() => setShowForm(false)} defaultCategory={currentCategory === 'all' ? 'autres' : currentCategory} />
+          )}
+
+          {/* Feed */}
+          <div style={s.feed}>
+            {posts.length === 0 ? (
+              <EmptyState category={currentCategory} sort={currentSort} onNew={() => setShowForm(true)} />
+            ) : (
+              posts.map(post => (
+                <PostRow key={post.id} post={post} author={authorsMap[post.author_id]} />
+              ))
+            )}
+          </div>
         </div>
-        <button onClick={() => setShowForm(s => !s)} style={s.newBtn}>
-          <Plus size={15} weight="bold" />
-          {showForm ? 'Annuler' : 'Nouvelle discussion'}
-        </button>
-      </div>
 
-      {showForm && (
-        <NewPostForm onSuccess={() => setShowForm(false)} defaultCategory={currentCategory === 'all' ? 'autres' : currentCategory} />
-      )}
-
-      {/* Feed */}
-      <div style={s.feed}>
-        {posts.length === 0 ? (
-          <EmptyState category={currentCategory} sort={currentSort} onNew={() => setShowForm(true)} />
-        ) : (
-          posts.map(post => (
-            <PostRow key={post.id} post={post} author={authorsMap[post.author_id]} />
-          ))
-        )}
+        {/* Aside */}
+        <aside style={s.aside}>
+          <StatsCard stats={stats} />
+          <TopMembersCard members={topMembers} />
+          <CategoriesCard counts={catCounts} currentCategory={currentCategory} currentSort={currentSort} />
+          <TipCard />
+        </aside>
       </div>
+    </div>
+  )
+}
+
+// ─── Aside cards ─────────────────────────────────────────────────────
+
+function StatsCard({ stats }: { stats: { totalPosts: number; totalReplies: number; totalMembers: number } }) {
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <Sparkle size={14} color="#ffd56b" weight="fill" />
+        <span style={s.asideTitle}>La communauté</span>
+      </div>
+      <div style={s.statsList}>
+        <div style={s.statRow2}>
+          <span style={s.statValue}>{stats.totalMembers}</span>
+          <span style={s.statLabel}>membre{stats.totalMembers > 1 ? 's' : ''}</span>
+        </div>
+        <div style={s.statRow2}>
+          <span style={s.statValue}>{stats.totalPosts}</span>
+          <span style={s.statLabel}>discussion{stats.totalPosts > 1 ? 's' : ''}</span>
+        </div>
+        <div style={s.statRow2}>
+          <span style={s.statValue}>{stats.totalReplies}</span>
+          <span style={s.statLabel}>réponse{stats.totalReplies > 1 ? 's' : ''}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function TopMembersCard({ members }: { members: TopMember[] }) {
+  if (members.length === 0) return null
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <Trophy size={14} color="#fb923c" weight="fill" />
+        <span style={s.asideTitle}>Membres actifs · 30 j</span>
+      </div>
+      <div style={s.membersList}>
+        {members.map((m, i) => {
+          const av = colorFromId(m.id)
+          const initials = displayInitials({ pseudo: m.pseudo, full_name: m.full_name })
+          const name = displayName({ pseudo: m.pseudo, full_name: m.full_name })
+          return (
+            <Link key={m.id} href={`/dashboard/chez-nous/membre/${m.id}`} style={s.memberRow}>
+              <span style={s.memberRank}>{i + 1}</span>
+              <span style={{ ...s.memberAvatar, background: av.bg, color: av.text }}>{initials}</span>
+              <span style={s.memberName}>
+                {name}
+                {m.is_contributor && <span style={s.contribDotMini} />}
+              </span>
+              <span style={s.memberScore}>{m.score} pts</span>
+            </Link>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function CategoriesCard({ counts, currentCategory, currentSort }: {
+  counts: Record<string, number>
+  currentCategory: CategoryId | 'all'
+  currentSort: Sort
+}) {
+  const total = Object.values(counts).reduce((a, b) => a + b, 0)
+  if (total === 0) return null
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <Users size={14} color="#a78bfa" weight="fill" />
+        <span style={s.asideTitle}>Catégories</span>
+      </div>
+      <div style={s.catList}>
+        {CATEGORY_ORDER.map(cid => {
+          const count = counts[cid] ?? 0
+          const cat = CATEGORIES[cid]
+          const params = new URLSearchParams()
+          params.set('cat', cid)
+          if (currentSort !== 'recent') params.set('sort', currentSort)
+          const active = currentCategory === cid
+          return (
+            <Link
+              key={cid}
+              href={`/dashboard/chez-nous?${params}`}
+              style={{
+                ...s.catItem,
+                background: active ? cat.bg : 'transparent',
+                borderColor: active ? `${cat.color}55` : 'transparent',
+              }}
+            >
+              <span style={{ ...s.catDot, background: cat.color }} />
+              <span style={s.catItemLabel}>{cat.short}</span>
+              <span style={s.catItemCount}>{count}</span>
+            </Link>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function TipCard() {
+  return (
+    <div style={{ ...s.asideCard, background: 'rgba(255,213,107,0.04)', borderColor: 'rgba(255,213,107,0.18)' }}>
+      <div style={s.asideHead}>
+        <Sparkle size={14} color="#ffd56b" weight="fill" />
+        <span style={s.asideTitle}>Pour bien démarrer</span>
+      </div>
+      <ul style={s.tipList}>
+        <li style={s.tipItem}>Un titre précis vaut mieux qu'un long message</li>
+        <li style={s.tipItem}>Donne du contexte : ville, plateforme, situation</li>
+        <li style={s.tipItem}>Réponds aux autres — c'est ce qui fait vivre Chez Nous</li>
+      </ul>
     </div>
   )
 }
@@ -336,7 +475,105 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 // ─── Styles ───────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '900px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+
+  layout: {
+    display: 'flex', gap: '24px',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+  mainCol: {
+    flex: '1 1 600px', minWidth: 0,
+    display: 'flex', flexDirection: 'column', gap: '14px',
+  },
+  aside: {
+    flex: '0 0 300px',
+    display: 'flex', flexDirection: 'column', gap: '14px',
+    position: 'sticky', top: '20px',
+  },
+  asideCard: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px',
+    display: 'flex', flexDirection: 'column', gap: '12px',
+  },
+  asideHead: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+  },
+  asideTitle: {
+    fontSize: '12px', fontWeight: 700, textTransform: 'uppercase' as const,
+    letterSpacing: '0.6px', color: 'var(--text-2)',
+  },
+
+  statsList: {
+    display: 'flex', flexDirection: 'column', gap: '10px',
+  },
+  statRow2: {
+    display: 'flex', alignItems: 'baseline', gap: '8px',
+  },
+  statValue: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '22px', fontWeight: 400, color: 'var(--text)', lineHeight: 1,
+  },
+  statLabel: {
+    fontSize: '12px', color: 'var(--text-2)',
+  },
+
+  membersList: {
+    display: 'flex', flexDirection: 'column', gap: '6px',
+  },
+  memberRow: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '6px 8px', borderRadius: '8px',
+    textDecoration: 'none', color: 'inherit',
+  },
+  memberRank: {
+    fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700,
+    minWidth: '16px', textAlign: 'center',
+  },
+  memberAvatar: {
+    width: '28px', height: '28px', borderRadius: '50%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '11px', fontWeight: 700, lineHeight: 1,
+    fontFamily: 'var(--font-fraunces), serif',
+    flexShrink: 0,
+  },
+  memberName: {
+    flex: 1, minWidth: 0,
+    fontSize: '12.5px', color: 'var(--text-2)', fontWeight: 500,
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  contribDotMini: {
+    width: '5px', height: '5px', borderRadius: '50%',
+    background: '#ffd56b', display: 'inline-block', flexShrink: 0,
+  },
+  memberScore: {
+    fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600,
+    background: 'var(--bg)', padding: '2px 6px', borderRadius: '999px',
+    flexShrink: 0,
+  },
+
+  catList: {
+    display: 'flex', flexDirection: 'column', gap: '2px',
+  },
+  catItem: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '7px 10px', borderRadius: '8px',
+    textDecoration: 'none', color: 'inherit',
+    border: '1px solid',
+  },
+  catDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
+  catItemLabel: { flex: 1, fontSize: '12px', color: 'var(--text-2)', fontWeight: 500 },
+  catItemCount: {
+    fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600,
+    background: 'var(--bg)', padding: '2px 7px', borderRadius: '999px',
+  },
+
+  tipList: { margin: 0, paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '6px' },
+  tipItem: {
+    fontSize: '12px', lineHeight: 1.5, color: 'var(--text-2)',
+  },
+
 
   hero: { marginBottom: '24px' },
   heroBadge: {
