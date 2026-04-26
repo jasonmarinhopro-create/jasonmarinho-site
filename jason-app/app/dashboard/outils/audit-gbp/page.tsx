@@ -3,7 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import AuditWizard from './AuditWizard'
-import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning, FileCsv } from '@phosphor-icons/react/dist/ssr'
+import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning, FileCsv, MapPin } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic  = 'force-dynamic'
 export const metadata = { title: 'Audit GBP — Jason Marinho' }
@@ -99,24 +99,45 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
           </div>
         </div>
 
-        {/* ── Mode Express (CSV) — uniquement si pas de session en cours ── */}
+        {/* ── Modes Express — uniquement si pas de session en cours ── */}
         {!initialSession && (
-          <Link href="/dashboard/outils/audit-gbp/import-csv" style={s.expressCard} className="fade-up">
-            <div style={s.expressIcon}>
-              <Lightning size={20} color="#FFD56B" weight="fill" />
-            </div>
-            <div style={s.expressBody}>
-              <div style={s.expressBadge}>
-                <FileCsv size={11} weight="fill" /> Audit Express · ~5 min
+          <div style={s.expressGrid} className="fade-up">
+            {/* URL Maps (recommandé) */}
+            <Link href="/dashboard/outils/audit-gbp/import-url" style={{ ...s.expressCard, ...s.expressCardGreen }}>
+              <div style={{ ...s.expressIcon, background: 'rgba(52,211,153,0.12)' }}>
+                <MapPin size={20} color="#34d399" weight="fill" />
               </div>
-              <div style={s.expressTitle}>Importe ton fichier CSV Google</div>
-              <div style={s.expressDesc}>
-                Exporte tes infos en 2 clics depuis Google Business Profile,
-                et on pré-remplit 7 questions automatiquement.
+              <div style={s.expressBody}>
+                <div style={{ ...s.expressBadge, color: '#34d399' }}>
+                  <Lightning size={11} weight="fill" /> Audit Express · 30 sec
+                </div>
+                <div style={s.expressTitle}>Coller mon URL Google Maps</div>
+                <div style={s.expressDesc}>
+                  Le plus rapide. On récupère 9 infos officielles via l'API Google
+                  (note, avis, horaires…) et on pré-remplit l'audit.
+                </div>
               </div>
-            </div>
-            <ArrowRight size={16} color="#FFD56B" weight="bold" />
-          </Link>
+              <ArrowRight size={16} color="#34d399" weight="bold" />
+            </Link>
+
+            {/* CSV (alternative) */}
+            <Link href="/dashboard/outils/audit-gbp/import-csv" style={s.expressCard}>
+              <div style={s.expressIcon}>
+                <FileCsv size={20} color="#FFD56B" weight="fill" />
+              </div>
+              <div style={s.expressBody}>
+                <div style={s.expressBadge}>
+                  <Lightning size={11} weight="fill" /> Alternative · ~5 min
+                </div>
+                <div style={s.expressTitle}>Importer mon CSV Google</div>
+                <div style={s.expressDesc}>
+                  Si tu gères plusieurs fiches : exporte le CSV depuis ta console
+                  Google Business pour pré-remplir 7 questions.
+                </div>
+              </div>
+              <ArrowRight size={16} color="#FFD56B" weight="bold" />
+            </Link>
+          </div>
         )}
 
         {/* ── Wizard ── */}
@@ -226,7 +247,13 @@ const s: Record<string, React.CSSProperties> = {
     marginBottom: '20px',
   },
 
-  /* Mode Express */
+  /* Mode Express grid (2 cartes) */
+  expressGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '12px',
+    marginBottom: '16px',
+  },
   expressCard: {
     display: 'flex', alignItems: 'center', gap: '16px',
     padding: '18px 20px',
@@ -234,8 +261,11 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(255,213,107,0.22)',
     borderRadius: '14px',
     textDecoration: 'none',
-    marginBottom: '16px',
     transition: 'border-color 0.15s, transform 0.15s',
+  },
+  expressCardGreen: {
+    background: 'linear-gradient(135deg, rgba(52,211,153,0.08), rgba(52,211,153,0.03))',
+    border: '1px solid rgba(52,211,153,0.25)',
   },
   expressIcon: {
     width: '40px', height: '40px', borderRadius: '10px',
