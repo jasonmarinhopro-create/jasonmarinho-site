@@ -9,7 +9,7 @@ import { computeBadges, type BadgeId } from '@/lib/badges'
 export const dynamic  = 'force-dynamic'
 export const metadata = { title: 'Chez Nous — Jason Marinho' }
 
-type SearchParams = { cat?: string; sort?: string }
+type SearchParams = { cat?: string; sort?: string; q?: string }
 
 export default async function ChezNousPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const profile = await getProfile()
@@ -18,6 +18,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   const sp       = await searchParams
   const supabase = await createClient()
   const sort     = (sp.sort as 'recent' | 'popular' | 'unanswered') ?? 'recent'
+  const q        = sp.q?.trim() ?? ''
 
   // Posts (avec filtres)
   let query = supabase
@@ -31,6 +32,12 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   else                            query = query.order('last_reply_at', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
 
   if (sp.cat && sp.cat !== 'all') query = query.eq('category', sp.cat)
+
+  if (q) {
+    // Échappe les % et _ pour ILIKE, puis cherche dans titre OU body
+    const escaped = q.replace(/[\\%_]/g, '\\$&')
+    query = query.or(`title.ilike.%${escaped}%,body.ilike.%${escaped}%`)
+  }
 
   const { data: postsRaw } = await query
   const posts = postsRaw ?? []
@@ -161,6 +168,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
         isAdmin={profile.role === 'admin'}
         currentCategory={(sp.cat as CategoryId | 'all') ?? 'all'}
         currentSort={sort}
+        currentSearch={q}
         stats={{
           totalPosts:   totalPosts ?? 0,
           totalReplies: totalReplies ?? 0,
