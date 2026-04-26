@@ -17,9 +17,14 @@ const PILLAR_ICONS = [
   { Icon: Sparkle,            label: 'Attributs', color: '#f472b6' },
 ]
 
-export default async function AuditGbpPage() {
+interface PageProps {
+  searchParams: Promise<{ session?: string }>
+}
+
+export default async function AuditGbpPage({ searchParams }: PageProps) {
   const profile = await getProfile()
   const supabase = await createClient()
+  const { session: requestedSessionId } = await searchParams
 
   // Récupère les 3 derniers audits du user
   const { data: pastAudits } = await supabase
@@ -28,6 +33,33 @@ export default async function AuditGbpPage() {
     .eq('user_id', profile?.userId ?? '')
     .order('started_at', { ascending: false })
     .limit(3)
+
+  // Si un session id est demandé (reprise de brouillon), on le charge
+  let initialSession: {
+    sessionId: string
+    businessName: string
+    city: string
+    answers: Record<string, unknown>
+  } | undefined
+
+  if (requestedSessionId && profile?.userId) {
+    const { data: draft } = await supabase
+      .from('audit_gbp_sessions')
+      .select('id, business_name, city, answers, completed_at')
+      .eq('id', requestedSessionId)
+      .eq('user_id', profile.userId)
+      .is('completed_at', null)  // sécurité : on ne reprend pas un audit déjà terminé
+      .maybeSingle()
+
+    if (draft) {
+      initialSession = {
+        sessionId: draft.id,
+        businessName: draft.business_name ?? '',
+        city: draft.city ?? '',
+        answers: (draft.answers ?? {}) as Record<string, unknown>,
+      }
+    }
+  }
 
   return (
     <>
@@ -69,7 +101,7 @@ export default async function AuditGbpPage() {
 
         {/* ── Wizard ── */}
         <div style={s.section} className="fade-up">
-          <AuditWizard userId={profile?.userId ?? null} />
+          <AuditWizard userId={profile?.userId ?? null} initialSession={initialSession} />
         </div>
 
         {/* ── Historique des audits ── */}
@@ -80,7 +112,9 @@ export default async function AuditGbpPage() {
               {pastAudits.map(a => (
                 <Link
                   key={a.id}
-                  href={`/dashboard/outils/audit-gbp/resultats/${a.id}`}
+                  href={a.completed_at
+                    ? `/dashboard/outils/audit-gbp/resultats/${a.id}`
+                    : `/dashboard/outils/audit-gbp?session=${a.id}`}
                   style={s.historyItem}
                 >
                   <div style={s.historyItemLeft}>

@@ -6,18 +6,39 @@ import { ArrowRight, ArrowLeft, CheckCircle, Sparkle } from '@phosphor-icons/rea
 import { PILLARS, QUESTIONS, type AnswerValue, type PillarId } from '@/lib/audit-gbp/questions'
 import { startAuditSession, updateAuditMeta, saveAuditAnswers, completeAudit } from './actions'
 
-interface Props {
-  userId: string | null
+interface InitialSession {
+  sessionId: string
+  businessName: string
+  city: string
+  answers: Record<string, unknown>
 }
 
-export default function AuditWizard({ userId }: Props) {
+interface Props {
+  userId: string | null
+  initialSession?: InitialSession
+}
+
+export default function AuditWizard({ userId, initialSession }: Props) {
   const router = useRouter()
-  const [started, setStarted] = useState(false)
-  const [sessionId, setSessionId] = useState<string | null>(null)
-  const [businessName, setBusinessName] = useState('')
-  const [city, setCity] = useState('')
-  const [pillarIdx, setPillarIdx] = useState(0)
-  const [answers, setAnswers] = useState<Record<string, AnswerValue>>({})
+
+  // Si un brouillon est passé, on saute l'intro et on positionne sur le 1er pilier non complet.
+  const initAnswers = (initialSession?.answers ?? {}) as Record<string, AnswerValue>
+  const initPillarIdx = initialSession
+    ? (() => {
+        for (let i = 0; i < PILLARS.length; i++) {
+          const qs = QUESTIONS.filter(q => q.pillar === PILLARS[i].id)
+          if (qs.some(q => initAnswers[q.id] === undefined)) return i
+        }
+        return PILLARS.length - 1
+      })()
+    : 0
+
+  const [started, setStarted] = useState(!!initialSession)
+  const [sessionId, setSessionId] = useState<string | null>(initialSession?.sessionId ?? null)
+  const [businessName, setBusinessName] = useState(initialSession?.businessName ?? '')
+  const [city, setCity] = useState(initialSession?.city ?? '')
+  const [pillarIdx, setPillarIdx] = useState(initPillarIdx)
+  const [answers, setAnswers] = useState<Record<string, AnswerValue>>(initAnswers)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
