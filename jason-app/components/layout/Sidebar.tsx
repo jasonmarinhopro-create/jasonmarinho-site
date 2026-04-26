@@ -131,7 +131,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
               <JmLogo size={20} />
             </div>
             <span style={styles.logoText}>
-              Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em>
+              Jason <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Marinho</em>
             </span>
           </a>
           {onClose && (

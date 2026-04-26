@@ -816,3 +816,16 @@ a { color: inherit; }
   flex-wrap: wrap;
   margin-top: 4px;
 }
+
+/* ── CHEZ NOUS — Rich text (markdown léger) ── */
+.cn-rich { line-height: 1.65; }
+.cn-rich strong { color: var(--text); font-weight: 600; }
+.cn-rich em { font-style: italic; }
+.cn-link {
+  color: #ffd56b;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 213, 107, 0.4);
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+.cn-link:hover { text-decoration-color: #ffd56b; }

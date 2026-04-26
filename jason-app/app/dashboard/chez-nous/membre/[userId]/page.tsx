@@ -162,7 +162,7 @@ export default async function MembrePage({ params }: Props) {
 
         {(posts ?? []).length === 0 && (replies ?? []).length === 0 && (
           <div style={s.empty}>
-            <House size={26} color="#ffd56b" weight="duotone" />
+            <House size={26} color="var(--accent-text)" weight="duotone" />
             <p style={{ margin: '8px 0 0', fontSize: '13px', color: 'var(--text-2)' }}>
               {isMe ? 'Tu n\'as pas encore participé.' : 'Pas encore de participation publique.'}
             </p>
@@ -210,7 +210,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   contribTag: {
     fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const,
-    letterSpacing: '0.5px', color: '#ffd56b',
+    letterSpacing: '0.5px', color: 'var(--accent-text)',
     background: 'rgba(255,213,107,0.12)', padding: '3px 8px', borderRadius: '6px',
   },
   adminTag: {
@@ -220,7 +220,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   since: { fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' },
   editLink: {
-    display: 'inline-block', fontSize: '12px', color: '#ffd56b',
+    display: 'inline-block', fontSize: '12px', color: 'var(--accent-text)',
     marginTop: '6px', textDecoration: 'none',
   },
   bio: {

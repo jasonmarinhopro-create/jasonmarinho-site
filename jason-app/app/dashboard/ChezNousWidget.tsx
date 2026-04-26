@@ -30,7 +30,7 @@ export default function ChezNousWidget({
     return (
       <div style={s.empty}>
         <div style={s.emptyHead}>
-          <House size={16} color="#ffd56b" weight="fill" />
+          <House size={16} color="var(--accent-text)" weight="fill" />
           <h3 style={s.title}>Chez Nous</h3>
         </div>
         <p style={s.emptyText}>
@@ -47,7 +47,7 @@ export default function ChezNousWidget({
     <div style={s.widget}>
       <div style={s.head}>
         <div style={s.headLeft}>
-          <House size={16} color="#ffd56b" weight="fill" />
+          <House size={16} color="var(--accent-text)" weight="fill" />
           <h3 style={s.title}>Chez Nous</h3>
           <span style={s.count}>{totalPosts}</span>
         </div>
@@ -121,14 +121,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   seeAll: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', color: '#ffd56b', textDecoration: 'none', fontWeight: 500,
+    fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500,
     padding: '5px 10px', borderRadius: '8px',
     background: 'rgba(255,213,107,0.08)',
     border: '1px solid rgba(255,213,107,0.18)',
   },
   cta: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', color: '#ffd56b', textDecoration: 'none', fontWeight: 600,
+    fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600,
     padding: '7px 14px', borderRadius: '8px',
     background: 'rgba(255,213,107,0.08)',
     border: '1px solid rgba(255,213,107,0.18)',

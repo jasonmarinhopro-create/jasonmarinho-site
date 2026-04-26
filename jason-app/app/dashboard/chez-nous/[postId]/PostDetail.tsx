@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -10,6 +10,8 @@ import {
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
+import RichText from '@/components/chez-nous/RichText'
+import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import {
   createReply, deletePost, deleteReply, togglePinPost, toggleLockPost,
   updatePost, updateReply, togglePostVote,
@@ -121,7 +123,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
             {cat.short}
           </span>
           {post.pinned && (
-            <span style={{ ...s.flag, color: '#ffd56b', background: 'rgba(255,213,107,0.12)' }}>
+            <span style={{ ...s.flag, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.12)' }}>
               <PushPin size={11} weight="fill" /> Épinglé
             </span>
           )}
@@ -166,7 +168,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
               <div style={s.actions}>
                 <button onClick={onVote} disabled={pending} style={{
                   ...s.voteBtn,
-                  color: voted ? '#ffd56b' : 'var(--text-2)',
+                  color: voted ? 'var(--accent-text)' : 'var(--text-2)',
                   background: voted ? 'rgba(255,213,107,0.10)' : 'transparent',
                   borderColor: voted ? 'rgba(255,213,107,0.3)' : 'var(--border)',
                 }} title={voted ? 'Retirer mon vote' : 'Marquer utile'}>
@@ -196,18 +198,14 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
               </div>
             </div>
 
-            <div style={s.postBody}>
-              {post.body.split('\n').map((line, i) => (
-                <p key={i} style={{ margin: '0 0 8px' }}>{line || ' '}</p>
-              ))}
-            </div>
+            <RichText text={post.body} style={s.postBody} />
           </>
         )}
       </article>
 
       {/* Réponses */}
       <div style={s.repliesHead}>
-        <ChatCircle size={14} color="#ffd56b" weight="fill" />
+        <ChatCircle size={14} color="var(--accent-text)" weight="fill" />
         <span>{replies.length} réponse{replies.length > 1 ? 's' : ''}</span>
       </div>
 
@@ -349,6 +347,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
   const [body, setBody] = useState(post.body)
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
+  const taRef = useRef<HTMLTextAreaElement>(null!)
 
   const submit = () => {
     setError(null)
@@ -367,7 +366,8 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
         ))}
       </select>
       <input type="text" value={title} onChange={e => setTitle(e.target.value)} maxLength={200} style={s.input} />
-      <textarea value={body} onChange={e => setBody(e.target.value)} rows={8} maxLength={8000} style={s.textarea} />
+      <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
+      <textarea ref={taRef} value={body} onChange={e => setBody(e.target.value)} rows={8} maxLength={8000} style={s.textarea} />
       {error && <p style={s.error}>{error}</p>}
       <div style={s.formActions}>
         <button onClick={onCancel} style={s.btnGhost} disabled={pending}>Annuler</button>
@@ -398,6 +398,7 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
   const [editing, setEditing] = useState(false)
   const [body, setBody] = useState(reply.body)
   const [pending, startTransition] = useTransition()
+  const taRef = useRef<HTMLTextAreaElement>(null!)
 
   const onDelete = () => {
     if (!confirm('Supprimer cette réponse ?')) return
@@ -454,7 +455,8 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
         </div>
         {editing ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '6px' }}>
-            <textarea value={body} onChange={e => setBody(e.target.value)} rows={4} maxLength={4000} style={s.textarea} />
+            <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
+            <textarea ref={taRef} value={body} onChange={e => setBody(e.target.value)} rows={4} maxLength={4000} style={s.textarea} />
             <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
               <button onClick={() => { setBody(reply.body); setEditing(false) }} style={s.btnGhostSmall} disabled={pending}>
                 <X size={11} /> Annuler
@@ -465,11 +467,7 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
             </div>
           </div>
         ) : (
-          <div style={s.replyBody}>
-            {reply.body.split('\n').map((line, i) => (
-              <p key={i} style={{ margin: '0 0 6px' }}>{line || ' '}</p>
-            ))}
-          </div>
+          <RichText text={reply.body} style={s.replyBody} />
         )}
       </div>
     </div>
@@ -483,6 +481,7 @@ function ReplyForm({ postId }: { postId: string }) {
   const [body, setBody] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
+  const taRef = useRef<HTMLTextAreaElement>(null!)
 
   const submit = () => {
     setError(null)
@@ -500,7 +499,9 @@ function ReplyForm({ postId }: { postId: string }) {
   return (
     <div style={s.replyForm}>
       <label style={s.label}>Ta réponse</label>
+      <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
       <textarea
+        ref={taRef}
         value={body} onChange={e => setBody(e.target.value)}
         placeholder="Réponds, partage ton expérience, propose une piste…"
         style={s.textarea} rows={5} maxLength={4000}
@@ -527,7 +528,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   mainCol: { flex: '1 1 600px', minWidth: 0 },
   aside: {
-    flex: '0 0 300px',
+    flex: '0 1 300px',
+    minWidth: '260px',
     display: 'flex', flexDirection: 'column', gap: '14px',
     position: 'sticky', top: '20px',
   },
@@ -561,7 +563,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   asideBadges: { display: 'flex', flexWrap: 'wrap', gap: '4px' },
   asideLink: {
-    fontSize: '12px', color: '#ffd56b', fontWeight: 600,
+    fontSize: '12px', color: 'var(--accent-text)', fontWeight: 600,
     textDecoration: 'none',
   },
   statsList: { display: 'flex', flexDirection: 'column', gap: '8px' },
@@ -627,7 +629,7 @@ const s: Record<string, React.CSSProperties> = {
   editedTag: { fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' },
   contribDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#ffd56b', display: 'inline-block',
+    background: 'var(--accent-text)', display: 'inline-block',
   },
   adminTag: {
     fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,

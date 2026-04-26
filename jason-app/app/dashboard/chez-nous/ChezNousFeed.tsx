@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users } from '@phosphor-icons/react'
+import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
+import { stripMarkdown } from '@/lib/chez-nous/markdown'
+import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import { createPost, togglePostVote } from './actions'
 
 type Post = {
@@ -51,12 +53,13 @@ type Props = {
   isAdmin: boolean
   currentCategory: CategoryId | 'all'
   currentSort: Sort
+  currentSearch: string
   stats: { totalPosts: number; totalReplies: number; totalMembers: number }
   topMembers: TopMember[]
   catCounts: Record<string, number>
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, stats, topMembers, catCounts }: Props) {
+export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, catCounts }: Props) {
   const [showForm, setShowForm] = useState(false)
 
   return (
@@ -64,11 +67,11 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
       {/* Hero */}
       <div style={s.hero}>
         <div style={s.heroBadge}>
-          <House size={13} color="#ffd56b" weight="fill" />
+          <House size={13} color="var(--accent-text)" weight="fill" />
           Chez Nous · Communauté ouverte
         </div>
         <h1 style={s.heroTitle}>
-          Bienvenue <em style={{ color: '#ffd56b', fontStyle: 'italic' }}>Chez Nous</em>
+          Bienvenue <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Chez Nous</em>
         </h1>
         <p style={s.heroDesc}>
           L'espace pour échanger, demander un coup de main, partager ce qui marche.
@@ -86,7 +89,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
 
       {/* Catégories */}
       <div style={s.catRow}>
-        <CategoryChip id="all" label="Tout" color="#ffd56b" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} />
+        <CategoryChip id="all" label="Tout" color="var(--accent-text)" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} search={currentSearch} />
         {CATEGORY_ORDER.map(cid => (
           <CategoryChip
             key={cid} id={cid}
@@ -94,6 +97,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
             color={CATEGORIES[cid].color} bg={CATEGORIES[cid].bg}
             active={currentCategory === cid}
             sort={currentSort}
+            search={currentSearch}
           />
         ))}
       </div>
@@ -102,12 +106,15 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
       <div style={s.layout}>
         {/* Colonne principale */}
         <div style={s.mainCol}>
+          {/* Recherche */}
+          <SearchBar initial={currentSearch} cat={currentCategory} sort={currentSort} />
+
           {/* Tri + Bouton */}
           <div style={s.toolbar}>
             <div style={s.sortRow}>
-              <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     icon={Clock} label="Récent" />
-              <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    icon={Fire}  label="Populaire" />
-              <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} icon={Question} label="Sans réponse" />
+              <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     search={currentSearch} icon={Clock} label="Récent" />
+              <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    search={currentSearch} icon={Fire}  label="Populaire" />
+              <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="Sans réponse" />
             </div>
             <button onClick={() => setShowForm(v => !v)} style={s.newBtn}>
               <Plus size={15} weight="bold" />
@@ -122,7 +129,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
           {/* Feed */}
           <div style={s.feed}>
             {posts.length === 0 ? (
-              <EmptyState category={currentCategory} sort={currentSort} onNew={() => setShowForm(true)} />
+              <EmptyState category={currentCategory} sort={currentSort} search={currentSearch} onNew={() => setShowForm(true)} />
             ) : (
               posts.map(post => (
                 <PostRow key={post.id} post={post} author={authorsMap[post.author_id]} />
@@ -149,7 +156,7 @@ function StatsCard({ stats }: { stats: { totalPosts: number; totalReplies: numbe
   return (
     <div style={s.asideCard}>
       <div style={s.asideHead}>
-        <Sparkle size={14} color="#ffd56b" weight="fill" />
+        <Sparkle size={14} color="var(--accent-text)" weight="fill" />
         <span style={s.asideTitle}>La communauté</span>
       </div>
       <div style={s.statsList}>
@@ -246,7 +253,7 @@ function TipCard() {
   return (
     <div style={{ ...s.asideCard, background: 'rgba(255,213,107,0.04)', borderColor: 'rgba(255,213,107,0.18)' }}>
       <div style={s.asideHead}>
-        <Sparkle size={14} color="#ffd56b" weight="fill" />
+        <Sparkle size={14} color="var(--accent-text)" weight="fill" />
         <span style={s.asideTitle}>Pour bien démarrer</span>
       </div>
       <ul style={s.tipList}>
@@ -292,7 +299,7 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
         disabled={pending}
         style={{
           ...s.voteCol,
-          color: voted ? '#ffd56b' : 'var(--text-muted)',
+          color: voted ? 'var(--accent-text)' : 'var(--text-muted)',
           background: voted ? 'rgba(255,213,107,0.10)' : 'transparent',
           borderColor: voted ? 'rgba(255,213,107,0.3)' : 'var(--border)',
         }}
@@ -311,12 +318,12 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
       <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postBody}>
         <div style={s.postMeta}>
           <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>{cat.short}</span>
-          {post.pinned && <PushPin size={12} color="#ffd56b" weight="fill" />}
+          {post.pinned && <PushPin size={12} color="var(--accent-text)" weight="fill" />}
           {post.locked && <Lock size={12} color="#94a3b8" weight="fill" />}
           {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
         </div>
         <h3 style={s.postTitle}>{post.title}</h3>
-        <p style={s.postExcerpt}>{post.body.slice(0, 180)}{post.body.length > 180 ? '…' : ''}</p>
+        <p style={s.postExcerpt}>{(() => { const stripped = stripMarkdown(post.body); return stripped.slice(0, 180) + (stripped.length > 180 ? '…' : '') })()}</p>
         <div style={s.postFoot}>
           <span style={s.postFootName}>
             {name}
@@ -343,12 +350,13 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
 
 // ─── Sub components ───────────────────────────────────────────────────
 
-function CategoryChip({ id, label, color, bg, active, sort }: {
-  id: string; label: string; color: string; bg: string; active: boolean; sort: Sort
+function CategoryChip({ id, label, color, bg, active, sort, search }: {
+  id: string; label: string; color: string; bg: string; active: boolean; sort: Sort; search: string
 }) {
   const params = new URLSearchParams()
   if (id !== 'all')        params.set('cat', id)
   if (sort !== 'recent')   params.set('sort', sort)
+  if (search)              params.set('q', search)
   const href = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
   return (
     <Link href={href} style={{ ...s.catLink, color, background: active ? bg : 'transparent', borderColor: active ? `${color}55` : 'var(--border)' }}>
@@ -357,12 +365,13 @@ function CategoryChip({ id, label, color, bg, active, sort }: {
   )
 }
 
-function SortChip({ cat, sort, active, icon: Icon, label }: {
-  cat: CategoryId | 'all'; sort: Sort; active: boolean; icon: React.ElementType; label: string
+function SortChip({ cat, sort, active, search, icon: Icon, label }: {
+  cat: CategoryId | 'all'; sort: Sort; active: boolean; search: string; icon: React.ElementType; label: string
 }) {
   const params = new URLSearchParams()
   if (cat !== 'all')      params.set('cat', cat)
   if (sort !== 'recent')  params.set('sort', sort)
+  if (search)             params.set('q', search)
   const href = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
   return (
     <Link href={href} style={{
@@ -377,11 +386,20 @@ function SortChip({ cat, sort, active, icon: Icon, label }: {
   )
 }
 
-function EmptyState({ category, sort, onNew }: { category: CategoryId | 'all'; sort: Sort; onNew: () => void }) {
+function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 'all'; sort: Sort; search: string; onNew: () => void }) {
+  if (search) {
+    return (
+      <div style={s.empty}>
+        <MagnifyingGlass size={28} color="var(--accent-text)" weight="duotone" />
+        <p style={s.emptyTitle}>Aucun résultat pour « {search} »</p>
+        <p style={s.emptyDesc}>Essaie d'autres mots-clés, ou retire les filtres pour voir toutes les discussions.</p>
+      </div>
+    )
+  }
   if (sort === 'unanswered') {
     return (
       <div style={s.empty}>
-        <Question size={28} color="#ffd56b" weight="duotone" />
+        <Question size={28} color="var(--accent-text)" weight="duotone" />
         <p style={s.emptyTitle}>Aucune discussion sans réponse</p>
         <p style={s.emptyDesc}>Tout a été pris en charge — bravo la communauté !</p>
       </div>
@@ -389,7 +407,7 @@ function EmptyState({ category, sort, onNew }: { category: CategoryId | 'all'; s
   }
   return (
     <div style={s.empty}>
-      <ChatCircle size={28} color="#ffd56b" weight="duotone" />
+      <ChatCircle size={28} color="var(--accent-text)" weight="duotone" />
       <p style={s.emptyTitle}>
         {category !== 'all'
           ? `Aucune discussion dans ${CATEGORIES[category].short}`
@@ -406,6 +424,50 @@ function EmptyState({ category, sort, onNew }: { category: CategoryId | 'all'; s
   )
 }
 
+// ─── Search bar ───────────────────────────────────────────────────────
+
+function SearchBar({ initial, cat, sort }: { initial: string; cat: CategoryId | 'all'; sort: Sort }) {
+  const router = useRouter()
+  const [value, setValue] = useState(initial)
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const params = new URLSearchParams()
+    if (cat !== 'all')      params.set('cat', cat)
+    if (sort !== 'recent')  params.set('sort', sort)
+    if (value.trim())       params.set('q', value.trim())
+    const url = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
+    router.push(url)
+  }
+
+  const clear = () => {
+    setValue('')
+    const params = new URLSearchParams()
+    if (cat !== 'all')      params.set('cat', cat)
+    if (sort !== 'recent')  params.set('sort', sort)
+    const url = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
+    router.push(url)
+  }
+
+  return (
+    <form onSubmit={submit} style={s.searchBar}>
+      <MagnifyingGlass size={14} color="var(--text-muted)" />
+      <input
+        type="search"
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        placeholder="Rechercher dans Chez Nous…"
+        style={s.searchInput}
+      />
+      {(value || initial) && (
+        <button type="button" onClick={clear} style={s.searchClearBtn} title="Effacer">
+          <X size={12} weight="bold" />
+        </button>
+      )}
+    </form>
+  )
+}
+
 function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; defaultCategory: CategoryId }) {
   const [category, setCategory] = useState<CategoryId>(defaultCategory)
   const [title, setTitle] = useState('')
@@ -413,6 +475,7 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
   const router = useRouter()
+  const taRef = useRef<HTMLTextAreaElement>(null!)
 
   const submit = () => {
     setError(null)
@@ -452,7 +515,9 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 
       <div style={s.formField}>
         <label style={s.label}>Message</label>
+        <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
         <textarea
+          ref={taRef}
           value={body} onChange={e => setBody(e.target.value)}
           placeholder="Détaille ton contexte, ce que tu as déjà essayé, ce que tu cherches…"
           style={s.textarea} rows={6} maxLength={8000}
@@ -487,7 +552,8 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column', gap: '14px',
   },
   aside: {
-    flex: '0 0 300px',
+    flex: '0 1 300px',
+    minWidth: '260px',
     display: 'flex', flexDirection: 'column', gap: '14px',
     position: 'sticky', top: '20px',
   },
@@ -545,7 +611,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   contribDotMini: {
     width: '5px', height: '5px', borderRadius: '50%',
-    background: '#ffd56b', display: 'inline-block', flexShrink: 0,
+    background: 'var(--accent-text)', display: 'inline-block', flexShrink: 0,
   },
   memberScore: {
     fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600,
@@ -579,7 +645,7 @@ const s: Record<string, React.CSSProperties> = {
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: '#ffd56b', background: 'rgba(255,213,107,0.08)',
+    color: 'var(--accent-text)', background: 'rgba(255,213,107,0.08)',
     border: '1px solid rgba(255,213,107,0.18)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
@@ -609,6 +675,24 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s',
   },
 
+  searchBar: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '8px 12px',
+    marginBottom: '12px',
+  },
+  searchInput: {
+    flex: 1, minWidth: 0,
+    background: 'transparent', border: 'none', outline: 'none',
+    color: 'var(--text)', fontSize: '13px', fontFamily: 'inherit',
+  },
+  searchClearBtn: {
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    color: 'var(--text-muted)', cursor: 'pointer',
+    width: '22px', height: '22px', borderRadius: '6px',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
   toolbar: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     gap: '10px', marginBottom: '14px', flexWrap: 'wrap',
@@ -755,7 +839,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   contribDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#ffd56b', display: 'inline-block',
+    background: 'var(--accent-text)', display: 'inline-block',
   },
   adminTag: {
     fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,
