@@ -31,6 +31,8 @@ interface Member {
 interface MemberDetails {
   voyageurs: number; favorites: number; customizations: number
   signalements: number; suggestions: number; sejours: number
+  communityGroupsCount: number; communityTotalReach: number
+  auditsCount: number; auditsCompleted: number
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -455,7 +457,16 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
     { icon: <PencilSimple size={14} />, value: details.customizations, label: 'Gabarits perso',   color: '#C084FC' },
     { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: '#f87171' },
     { icon: <Lightbulb size={14} />,     value: details.suggestions,   label: 'Suggestions',      color: '#FB923C' },
+    { icon: <UsersFour size={14} />,    value: details.communityGroupsCount, label: 'Groupes FB',  color: '#60A5FA' },
+    { icon: <MagnifyingGlass size={14} />, value: details.auditsCount,        label: 'Audits GBP',  color: '#A78BFA' },
   ] : []
+
+  // Format reach (245 000 → "245 k")
+  function fmtReach(n: number): string {
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')} M`
+    if (n >= 1_000) return `${Math.round(n / 1_000)} k`
+    return String(n)
+  }
 
   return (
     <>
@@ -535,17 +546,59 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                     <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>Chargement…</span>
                   </div>
                 ) : details ? (
-                  <div style={ps.statsGrid}>
-                    {statTiles.map(tile => (
-                      <div key={tile.label} style={{ ...ps.statTile, borderColor: `${tile.color}22`, background: `${tile.color}08` }}>
-                        <span style={{ color: tile.color }}>{tile.icon}</span>
-                        <span style={{ ...ps.statNum, color: tile.value > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
-                          {tile.value}
-                        </span>
-                        <span style={ps.statLabel}>{tile.label}</span>
+                  <>
+                    <div style={ps.statsGrid}>
+                      {statTiles.map(tile => (
+                        <div key={tile.label} style={{ ...ps.statTile, borderColor: `${tile.color}22`, background: `${tile.color}08` }}>
+                          <span style={{ color: tile.color }}>{tile.icon}</span>
+                          <span style={{ ...ps.statNum, color: tile.value > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
+                            {tile.value}
+                          </span>
+                          <span style={ps.statLabel}>{tile.label}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Récap visuel rapide */}
+                    {(details.communityGroupsCount > 0 || details.auditsCount > 0) && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px' }}>
+                        {details.communityGroupsCount > 0 && (
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: '10px',
+                            padding: '10px 12px', borderRadius: '10px',
+                            background: 'rgba(96,165,250,0.06)',
+                            border: '1px solid rgba(96,165,250,0.18)',
+                          }}>
+                            <UsersFour size={14} color="#60A5FA" weight="fill" />
+                            <span style={{ flex: 1, fontSize: '12.5px', color: 'var(--text)' }}>
+                              <strong>{details.communityGroupsCount}</strong> groupe{details.communityGroupsCount > 1 ? 's' : ''} Facebook rejoint{details.communityGroupsCount > 1 ? 's' : ''}
+                            </span>
+                            {details.communityTotalReach > 0 && (
+                              <span style={{ fontSize: '11px', fontWeight: 600, color: '#60A5FA' }}>
+                                Portée {fmtReach(details.communityTotalReach)}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {details.auditsCount > 0 && (
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: '10px',
+                            padding: '10px 12px', borderRadius: '10px',
+                            background: 'rgba(167,139,250,0.06)',
+                            border: '1px solid rgba(167,139,250,0.18)',
+                          }}>
+                            <MagnifyingGlass size={14} color="#A78BFA" weight="fill" />
+                            <span style={{ flex: 1, fontSize: '12.5px', color: 'var(--text)' }}>
+                              <strong>{details.auditsCount}</strong> audit{details.auditsCount > 1 ? 's' : ''} GBP
+                              {details.auditsCompleted > 0 && (
+                                <span style={{ color: 'var(--text-3)' }}> · {details.auditsCompleted} complété{details.auditsCompleted > 1 ? 's' : ''}</span>
+                              )}
+                            </span>
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                    )}
+                  </>
                 ) : (
                   <p style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '12px 0' }}>Impossible de charger.</p>
                 )}

@@ -240,6 +240,9 @@ export async function getMemberDetails(memberId: string) {
     { count: signalementsCount },
     { count: suggestionsCount },
     { count: sejoursCount },
+    { data: memberships },
+    { count: auditsCount },
+    { count: auditsCompletedCount },
   ] = await Promise.all([
     adminClient.from('voyageurs').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
     adminClient.from('user_template_favorites').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
@@ -247,7 +250,21 @@ export async function getMemberDetails(memberId: string) {
     adminClient.from('reported_guests').select('*', { count: 'exact', head: true }).eq('reporter_id', memberId),
     adminClient.from('suggestions').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
     adminClient.from('sejours').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('user_community_memberships').select('group_id').eq('user_id', memberId).eq('status', 'joined'),
+    adminClient.from('audit_gbp_sessions').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('audit_gbp_sessions').select('*', { count: 'exact', head: true }).eq('user_id', memberId).not('completed_at', 'is', null),
   ])
+
+  // Calcule la portée totale via une 2e requête (la jointure native fail sans FK)
+  const groupIds = (memberships ?? []).map(m => m.group_id)
+  let totalReach = 0
+  if (groupIds.length > 0) {
+    const { data: groups } = await adminClient
+      .from('community_groups')
+      .select('member_count')
+      .in('id', groupIds)
+    totalReach = (groups ?? []).reduce((sum, g) => sum + (g.member_count ?? 0), 0)
+  }
 
   return {
     voyageurs: voyageursCount ?? 0,
@@ -256,6 +273,10 @@ export async function getMemberDetails(memberId: string) {
     signalements: signalementsCount ?? 0,
     suggestions: suggestionsCount ?? 0,
     sejours: sejoursCount ?? 0,
+    communityGroupsCount: groupIds.length,
+    communityTotalReach: totalReach,
+    auditsCount: auditsCount ?? 0,
+    auditsCompleted: auditsCompletedCount ?? 0,
   }
 }
 
@@ -293,10 +314,10 @@ export async function getFullMemberProfile(memberId: string) {
     adminClient.from('reported_guests').select('*', { count: 'exact', head: true }).eq('reporter_id', memberId),
     adminClient.from('suggestions').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
     adminClient.from('sejours').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
-    // ─── Communauté Facebook : groupes rejoints + portée ───
+    // ─── Communauté Facebook : groupes rejoints (sans jointure pour éviter FK manquante) ───
     adminClient
       .from('user_community_memberships')
-      .select('group_id, status, group:community_groups(id, name, member_count)')
+      .select('group_id')
       .eq('user_id', memberId)
       .eq('status', 'joined'),
     // ─── Audits GBP : sessions complétées + brouillons ───
@@ -310,16 +331,20 @@ export async function getFullMemberProfile(memberId: string) {
 
   if (!memberProfile) return { error: 'Membre introuvable' }
 
-  // Normalise et calcule la portée totale des groupes rejoints
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const joinedGroups = (communityMemberships ?? []).map((m: any) => {
-    const g = Array.isArray(m.group) ? m.group[0] : m.group
-    return {
-      id: g?.id ?? m.group_id,
-      name: (g?.name as string) ?? null,
-      member_count: (g?.member_count as number) ?? 0,
-    }
-  })
+  // Récupère les détails des groupes rejoints en 2e requête (jointure native peu fiable sans FK)
+  const groupIds = (communityMemberships ?? []).map(m => m.group_id)
+  let joinedGroups: { id: string; name: string | null; member_count: number }[] = []
+  if (groupIds.length > 0) {
+    const { data: groupsData } = await adminClient
+      .from('community_groups')
+      .select('id, name, member_count')
+      .in('id', groupIds)
+    joinedGroups = (groupsData ?? []).map(g => ({
+      id: g.id as string,
+      name: (g.name as string) ?? null,
+      member_count: (g.member_count as number) ?? 0,
+    }))
+  }
   const totalReach = joinedGroups.reduce((sum, g) => sum + (g.member_count ?? 0), 0)
 
   // Audits : split complétés vs brouillons
