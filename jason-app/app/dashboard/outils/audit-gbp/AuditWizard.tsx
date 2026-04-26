@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, ArrowLeft, CheckCircle, Sparkle } from '@phosphor-icons/react'
 import { PILLARS, QUESTIONS, type AnswerValue, type PillarId } from '@/lib/audit-gbp/questions'
-import { startAuditSession, saveAuditAnswers, completeAudit } from './actions'
+import { startAuditSession, updateAuditMeta, saveAuditAnswers, completeAudit } from './actions'
 
 interface Props {
   userId: string | null
@@ -79,6 +79,20 @@ export default function AuditWizard({ userId }: Props) {
           onClick={() => {
             setError(null)
             startTransition(async () => {
+              // Si une session existe déjà (l'utilisateur est revenu en arrière), on update.
+              // Sinon, on crée une nouvelle session.
+              if (sessionId) {
+                const res = await updateAuditMeta(sessionId, {
+                  businessName: businessName.trim() || undefined,
+                  city: city.trim() || undefined,
+                })
+                if (res.error) {
+                  setError(res.error)
+                  return
+                }
+                setStarted(true)
+                return
+              }
               const res = await startAuditSession({
                 businessName: businessName.trim() || undefined,
                 city: city.trim() || undefined,
@@ -93,7 +107,7 @@ export default function AuditWizard({ userId }: Props) {
           }}
           style={s.btnStart}
         >
-          {isPending ? 'Préparation…' : 'Démarrer l\'audit'}
+          {isPending ? 'Préparation…' : (sessionId ? 'Reprendre l\'audit' : 'Démarrer l\'audit')}
           <ArrowRight size={15} weight="bold" />
         </button>
       </div>
@@ -208,11 +222,22 @@ export default function AuditWizard({ userId }: Props) {
       <div style={s.nav}>
         <button
           type="button"
-          onClick={() => setPillarIdx(i => Math.max(0, i - 1))}
-          disabled={pillarIdx === 0 || isPending}
-          style={{ ...s.btnGhost, opacity: pillarIdx === 0 ? 0.4 : 1 }}
+          onClick={() => {
+            // À l'étape 1 → retour à l'écran intro (modifier nom/ville)
+            // Sinon → pilier précédent
+            if (pillarIdx === 0) {
+              setStarted(false)
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+              return
+            }
+            setPillarIdx(i => Math.max(0, i - 1))
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+          disabled={isPending}
+          style={s.btnGhost}
         >
-          <ArrowLeft size={14} weight="bold" /> Précédent
+          <ArrowLeft size={14} weight="bold" />
+          {pillarIdx === 0 ? 'Modifier le nom' : 'Précédent'}
         </button>
 
         <button
