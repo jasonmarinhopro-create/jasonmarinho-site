@@ -182,43 +182,49 @@ export default async function ContributeursPage() {
           </p>
         </div>
 
-        {/* ── Mur des Bâtisseurs ── */}
-        <section style={s.section} className="fade-up">
-          <MurDesBatisseurs contributors={contributors} />
-        </section>
+        {/* ── Layout 2 colonnes desktop ── */}
+        <div style={s.layout}>
 
-        {/* ── Stats : remplace Les Coulisses ── */}
-        <div style={s.statsRow} className="fade-up">
-          <div style={s.statItem}>
-            <Heart size={15} color="#FFD56B" weight="fill" />
-            <span style={{ ...s.statNum, color: '#FFD56B' }}>{contributors.length}</span>
-            <span style={s.statLabel}>bâtisseur{contributors.length > 1 ? 's' : ''}</span>
+          {/* Colonne principale : Roadmap */}
+          <div style={s.mainCol}>
+            <section style={s.section} className="fade-up">
+              <Roadmap
+                items={roadmapItems}
+                comments={comments}
+                voteCounts={voteCounts}
+                userVotes={userVotesList}
+                userId={userId}
+                isAdmin={isAdmin}
+              />
+            </section>
           </div>
-          <div style={s.statDiv} />
-          <div style={s.statItem}>
-            <Lightbulb size={15} color="#60a5fa" weight="fill" />
-            <span style={{ ...s.statNum, color: '#60a5fa' }}>{roadmapItems.length}</span>
-            <span style={s.statLabel}>idée{roadmapItems.length > 1 ? 's' : ''} soumise{roadmapItems.length > 1 ? 's' : ''}</span>
-          </div>
-          <div style={s.statDiv} />
-          <div style={s.statItem}>
-            <CheckCircle size={15} color="#34d399" weight="fill" />
-            <span style={{ ...s.statNum, color: '#34d399' }}>{doneCount}</span>
-            <span style={s.statLabel}>fonctionnalité{doneCount > 1 ? 's' : ''} livrée{doneCount > 1 ? 's' : ''}</span>
-          </div>
+
+          {/* Aside : Mur des Bâtisseurs + Stats */}
+          <aside style={s.asideCol}>
+            <section style={s.section} className="fade-up">
+              <MurDesBatisseurs contributors={contributors} />
+            </section>
+
+            <div style={s.statsRow} className="fade-up">
+              <div style={s.statItem}>
+                <Heart size={15} color="#FFD56B" weight="fill" />
+                <span style={{ ...s.statNum, color: '#FFD56B' }}>{contributors.length}</span>
+                <span style={s.statLabel}>bâtisseur{contributors.length > 1 ? 's' : ''}</span>
+              </div>
+              <div style={s.statItem}>
+                <Lightbulb size={15} color="#60a5fa" weight="fill" />
+                <span style={{ ...s.statNum, color: '#60a5fa' }}>{roadmapItems.length}</span>
+                <span style={s.statLabel}>idée{roadmapItems.length > 1 ? 's' : ''}</span>
+              </div>
+              <div style={s.statItem}>
+                <CheckCircle size={15} color="#34d399" weight="fill" />
+                <span style={{ ...s.statNum, color: '#34d399' }}>{doneCount}</span>
+                <span style={s.statLabel}>livrée{doneCount > 1 ? 's' : ''}</span>
+              </div>
+            </div>
+          </aside>
+
         </div>
-
-        {/* ── Roadmap ── */}
-        <section style={s.section} className="fade-up">
-          <Roadmap
-            items={roadmapItems}
-            comments={comments}
-            voteCounts={voteCounts}
-            userVotes={userVotesList}
-            userId={userId}
-            isAdmin={isAdmin}
-          />
-        </section>
 
       </div>
     </>
@@ -226,7 +232,10 @@ export default async function ContributeursPage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '960px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  layout: { display: 'flex', gap: '24px', flexWrap: 'wrap' as const, alignItems: 'flex-start', marginTop: '20px' },
+  mainCol: { flex: '1 1 600px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: '16px' },
+  asideCol: { flex: '0 0 340px', display: 'flex', flexDirection: 'column' as const, gap: '16px', position: 'sticky' as const, top: '20px' },
 
   /* ── Teasing ── */
   teasing: {
@@ -360,22 +369,16 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '20px', padding: 'clamp(20px,3vw,28px)', marginTop: '16px',
   },
 
-  /* ── Stats row ── */
+  /* ── Stats row (vertical dans l'aside) ── */
   statsRow: {
-    display: 'flex', alignItems: 'center', gap: '0',
-    marginTop: '16px', borderRadius: '16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '14px',
+    borderRadius: '16px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    padding: '16px 24px', flexWrap: 'wrap' as const,
+    padding: '18px',
   },
   statItem: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    flex: 1, minWidth: '120px',
+    display: 'flex', alignItems: 'center', gap: '10px',
   },
-  statNum:   { fontSize: '20px', fontWeight: 700 },
+  statNum:   { fontSize: '20px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif' },
   statLabel: { fontSize: '12px', color: 'var(--text-3)', fontWeight: 400 },
-  statDiv: {
-    width: '1px', height: '32px',
-    background: 'var(--border)', flexShrink: 0,
-    margin: '0 20px',
-  },
 }

@@ -218,7 +218,7 @@ function ScoreRing({ pct, color }: { pct: number; color: string }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '960px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
 
   back: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',

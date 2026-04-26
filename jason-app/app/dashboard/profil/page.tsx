@@ -49,26 +49,30 @@ export default async function ProfilPage() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '600px' }}>
-          <ProfilForm
-            initialFullName={fullName}
-            email={email}
-            stripeAccountId={stripeAccountId}
-            stripeComplete={stripeComplete}
-            initialIban={iban}
-            initialBic={bic}
-            initialAdresse={adresse}
-          />
-          <ChezNousIdentity
-            initialPseudo={pseudo}
-            initialBio={bio}
-            firstName={fullName.split(/\s+/)[0] ?? ''}
-            initialPrivacy={{
-              show_logements: privacyShowLogements,
-              show_platforms: privacyShowPlatforms,
-              show_city:      privacyShowCity,
-            }}
-          />
+        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+          <div style={{ flex: '1 1 480px', minWidth: 0, maxWidth: '720px' }}>
+            <ProfilForm
+              initialFullName={fullName}
+              email={email}
+              stripeAccountId={stripeAccountId}
+              stripeComplete={stripeComplete}
+              initialIban={iban}
+              initialBic={bic}
+              initialAdresse={adresse}
+            />
+          </div>
+          <div style={{ flex: '1 1 380px', minWidth: 0, maxWidth: '520px' }}>
+            <ChezNousIdentity
+              initialPseudo={pseudo}
+              initialBio={bio}
+              firstName={fullName.split(/\s+/)[0] ?? ''}
+              initialPrivacy={{
+                show_logements: privacyShowLogements,
+                show_platforms: privacyShowPlatforms,
+                show_city:      privacyShowCity,
+              }}
+            />
+          </div>
         </div>
       </div>
     </>

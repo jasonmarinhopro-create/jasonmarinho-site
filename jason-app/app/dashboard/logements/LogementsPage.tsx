@@ -499,7 +499,7 @@ function Toggle({ label: lbl, value, onChange }: { label: string; value: boolean
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
 const page: React.CSSProperties = {
-  padding: 'clamp(20px,3vw,44px)', maxWidth: '960px',
+  padding: 'clamp(20px,3vw,44px)', width: '100%',
 }
 
 const container: React.CSSProperties = {}
