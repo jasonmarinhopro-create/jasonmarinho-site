@@ -183,7 +183,7 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '820px' },
+  page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%', maxWidth: '820px' },
   back: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '12px', color: 'var(--text-muted)',
@@ -191,14 +191,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   card: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '18px', padding: '24px',
+    borderRadius: '18px', padding: 'clamp(16px, 3vw, 24px)',
     display: 'flex', flexDirection: 'column', gap: '18px',
   },
-  cardTop: { display: 'flex', alignItems: 'center', gap: '16px' },
+  cardTop: { display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' as const },
   avatarLg: {
-    width: '64px', height: '64px', borderRadius: '50%',
+    width: 'clamp(52px, 12vw, 64px)', height: 'clamp(52px, 12vw, 64px)', borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '22px', fontWeight: 700, lineHeight: 1,
+    fontSize: 'clamp(18px, 5vw, 22px)', fontWeight: 700, lineHeight: 1,
     fontFamily: 'var(--font-fraunces), serif',
     flexShrink: 0,
   },
@@ -243,22 +243,22 @@ const s: Record<string, React.CSSProperties> = {
   },
   statsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
     gap: '10px',
   },
   stat: {
     background: 'var(--bg)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '14px',
+    borderRadius: '12px', padding: '12px',
     display: 'flex', flexDirection: 'column', gap: '4px',
     alignItems: 'flex-start',
   },
   statValue: {
-    fontSize: '22px', fontWeight: 700, color: 'var(--text)',
+    fontSize: 'clamp(18px, 4.5vw, 22px)', fontWeight: 700, color: 'var(--text)',
     fontFamily: 'var(--font-fraunces), serif', lineHeight: 1,
   },
   statLabel: { fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500 },
 
-  section: { marginTop: '24px' },
+  section: { marginTop: 'clamp(16px, 3vw, 24px)' },
   sectionTitle: {
     fontFamily: 'var(--font-fraunces), serif',
     fontSize: '18px', fontWeight: 400, color: 'var(--text)',
