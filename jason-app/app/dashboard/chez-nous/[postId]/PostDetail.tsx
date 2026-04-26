@@ -5,16 +5,20 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, ChatCircle, PushPin, Lock, Trash, LockOpen,
-  ArrowFatUp, Pencil, X, Check,
+  ArrowFatUp, Pencil, X, Check, CheckCircle,
 } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
+import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import RichText from '@/components/chez-nous/RichText'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
+import ReportButton from '@/components/chez-nous/ReportButton'
+import ImageGrid from '@/components/chez-nous/ImageGrid'
+import ImageUploader from '@/components/chez-nous/ImageUploader'
 import {
   createReply, deletePost, deleteReply, togglePinPost, toggleLockPost,
-  updatePost, updateReply, togglePostVote,
+  updatePost, updateReply, togglePostVote, acceptReply,
 } from '../actions'
 
 type Author = {
@@ -24,6 +28,7 @@ type Author = {
   is_contributor: boolean
   created_at: string | null
   badges: BadgeId[]
+  proStats: ProStats | null
 }
 
 type Post = {
@@ -39,6 +44,8 @@ type Post = {
   created_at: string
   edited_at: string | null
   has_voted: boolean
+  accepted_reply_id: string | null
+  images: string[]
 }
 
 type Reply = {
@@ -122,6 +129,11 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
           <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>
             {cat.short}
           </span>
+          {post.accepted_reply_id && (
+            <span style={{ ...s.flag, color: '#10b981', background: 'rgba(16,185,129,0.12)' }}>
+              <CheckCircle size={11} weight="fill" /> Résolu
+            </span>
+          )}
           {post.pinned && (
             <span style={{ ...s.flag, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.12)' }}>
               <PushPin size={11} weight="fill" /> Épinglé
@@ -154,6 +166,9 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
                   <span style={s.authorDate}>{formatRelative(post.created_at)}</span>
                   {post.edited_at && <span style={s.editedTag}>· modifié</span>}
                 </div>
+                {author?.proStats && formatProStats(author.proStats) && (
+                  <div style={s.proStatsTxt}>{formatProStats(author.proStats)}</div>
+                )}
                 {(author?.badges ?? []).length > 0 && (
                   <div style={s.badgeStrip}>
                     {(author?.badges ?? []).slice(0, 4).map(bid => (
@@ -195,10 +210,14 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
                     <Trash size={13} />
                   </button>
                 )}
+                {post.author_id !== currentUserId && (
+                  <ReportButton postId={post.id} />
+                )}
               </div>
             </div>
 
             <RichText text={post.body} style={s.postBody} />
+            {post.images.length > 0 && <ImageGrid images={post.images} />}
           </>
         )}
       </article>
@@ -217,13 +236,21 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
             </p>
           </div>
         ) : (
-          replies.map(reply => {
+          // Trie : la réponse acceptée d'abord, puis ordre chronologique
+          [...replies].sort((a, b) => {
+            if (a.id === post.accepted_reply_id) return -1
+            if (b.id === post.accepted_reply_id) return 1
+            return a.created_at.localeCompare(b.created_at)
+          }).map(reply => {
             const ra        = usersMap[reply.author_id]
             const rav       = colorFromId(reply.author_id)
             const rinitials = ra ? displayInitials({ pseudo: ra.pseudo, full_name: ra.full_name }) : '?'
             const rname     = ra ? displayName({ pseudo: ra.pseudo, full_name: ra.full_name }) : 'Anonyme'
             const canDelReply  = isAdmin || reply.author_id === currentUserId
             const canEditReply = reply.author_id === currentUserId
+            const isAccepted   = reply.id === post.accepted_reply_id
+            const canAccept    = post.author_id === currentUserId
+            const isOwnReply   = reply.author_id === post.author_id  // pas la peine de marquer sa propre reply
 
             return (
               <ReplyBlock
@@ -235,10 +262,14 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
                 authorInitials={rinitials}
                 avatarColor={rav}
                 badges={ra?.badges ?? []}
+                proStats={ra?.proStats ?? null}
                 isContributor={ra?.is_contributor ?? false}
                 isAdminAuthor={ra?.role === 'admin'}
                 canDelete={canDelReply}
                 canEdit={canEditReply}
+                canReport={reply.author_id !== currentUserId}
+                isAccepted={isAccepted}
+                canAccept={canAccept && !isOwnReply}
               />
             )
           })
@@ -345,6 +376,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
   const [category, setCategory] = useState<CategoryId>(post.category)
   const [title, setTitle] = useState(post.title)
   const [body, setBody] = useState(post.body)
+  const [images, setImages] = useState<string[]>(post.images)
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
   const taRef = useRef<HTMLTextAreaElement>(null!)
@@ -352,7 +384,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
   const submit = () => {
     setError(null)
     startTransition(async () => {
-      const res = await updatePost({ postId: post.id, title, body, category })
+      const res = await updatePost({ postId: post.id, title, body, category, images })
       if (res.ok) onSaved()
       else setError(res.error ?? 'Erreur')
     })
@@ -368,6 +400,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
       <input type="text" value={title} onChange={e => setTitle(e.target.value)} maxLength={200} style={s.input} />
       <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
       <textarea ref={taRef} value={body} onChange={e => setBody(e.target.value)} rows={8} maxLength={8000} style={s.textarea} />
+      <ImageUploader value={images} onChange={setImages} max={3} />
       {error && <p style={s.error}>{error}</p>}
       <div style={s.formActions}>
         <button onClick={onCancel} style={s.btnGhost} disabled={pending}>Annuler</button>
@@ -381,7 +414,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
 
 // ─── Reply block ────────────────────────────────────────────────────
 
-function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avatarColor, badges, isContributor, isAdminAuthor, canDelete, canEdit }: {
+function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avatarColor, badges, proStats, isContributor, isAdminAuthor, canDelete, canEdit, canReport, isAccepted, canAccept }: {
   reply: Reply
   postId: string
   authorId: string
@@ -389,16 +422,29 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
   authorInitials: string
   avatarColor: { bg: string; text: string }
   badges: BadgeId[]
+  proStats: ProStats | null
   isContributor: boolean
   isAdminAuthor: boolean
   canDelete: boolean
   canEdit: boolean
+  canReport: boolean
+  isAccepted: boolean
+  canAccept: boolean
 }) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [body, setBody] = useState(reply.body)
   const [pending, startTransition] = useTransition()
   const taRef = useRef<HTMLTextAreaElement>(null!)
+
+  const onAccept = () => {
+    startTransition(async () => {
+      // Si déjà acceptée, on retire l'acceptation (toggle)
+      const res = await acceptReply(postId, isAccepted ? null : reply.id)
+      if (res.ok) router.refresh()
+      else alert(res.error)
+    })
+  }
 
   const onDelete = () => {
     if (!confirm('Supprimer cette réponse ?')) return
@@ -422,17 +468,29 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
   }
 
   return (
-    <div style={s.replyCard}>
+    <div style={{
+      ...s.replyCard,
+      borderColor: isAccepted ? 'rgba(52,211,153,0.4)' : 'var(--border)',
+      background:  isAccepted ? 'rgba(52,211,153,0.05)' : 'var(--surface)',
+    }}>
       <Link href={`/dashboard/chez-nous/membre/${authorId}`} style={{ ...s.avatar, background: avatarColor.bg, color: avatarColor.text }}>
         {authorInitials}
       </Link>
       <div style={{ flex: 1, minWidth: 0 }}>
+        {isAccepted && (
+          <div style={s.acceptedBadge}>
+            <CheckCircle size={13} weight="fill" /> Réponse acceptée par l'auteur
+          </div>
+        )}
         <div style={s.replyMeta}>
           <Link href={`/dashboard/chez-nous/membre/${authorId}`} style={s.authorNameLink}>
             {authorName}
             {isContributor && <span style={s.contribDot} />}
             {isAdminAuthor && <span style={s.adminTag}>admin</span>}
           </Link>
+          {proStats && formatProStats(proStats) && (
+            <span style={s.proStatsPill}>{formatProStats(proStats)}</span>
+          )}
           {badges.slice(0, 3).map(bid => (
             <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
               {BADGES[bid].label}
@@ -441,6 +499,25 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
           <span style={s.authorDate}>{formatRelative(reply.created_at)}</span>
           {reply.edited_at && <span style={s.editedTag}>· modifié</span>}
           <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px' }}>
+            {canAccept && (
+              <button
+                onClick={onAccept}
+                disabled={pending}
+                style={{
+                  ...s.actionBtnSmall,
+                  color: isAccepted ? '#10b981' : 'var(--text-muted)',
+                  background: isAccepted ? 'rgba(16,185,129,0.10)' : 'transparent',
+                  border: '1px solid ' + (isAccepted ? 'rgba(16,185,129,0.3)' : 'var(--border)'),
+                  borderRadius: '6px',
+                  padding: '3px 7px',
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                }}
+                title={isAccepted ? 'Retirer l\'acceptation' : 'Marquer comme réponse'}
+              >
+                <CheckCircle size={11} weight={isAccepted ? 'fill' : 'regular'} />
+                <span style={{ fontSize: '11px', fontWeight: 600 }}>{isAccepted ? 'Acceptée' : 'Accepter'}</span>
+              </button>
+            )}
             {canEdit && !editing && (
               <button onClick={() => setEditing(true)} style={s.actionBtnSmall} title="Modifier">
                 <Pencil size={12} />
@@ -451,6 +528,7 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
                 <Trash size={12} />
               </button>
             )}
+            {canReport && <ReportButton replyId={reply.id} />}
           </div>
         </div>
         {editing ? (
@@ -676,6 +754,27 @@ const s: Record<string, React.CSSProperties> = {
   },
   repliesList: { display: 'flex', flexDirection: 'column', gap: '10px' },
 
+  proStatsTxt: {
+    fontSize: '11px', color: 'var(--text-muted)',
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    padding: '2px 8px', borderRadius: '999px',
+    display: 'inline-block', width: 'fit-content',
+  },
+  proStatsPill: {
+    fontSize: '11px', color: 'var(--text-muted)',
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    padding: '1px 7px', borderRadius: '999px',
+  },
+  acceptedBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 700, letterSpacing: '0.4px',
+    color: '#10b981',
+    background: 'rgba(16,185,129,0.12)',
+    border: '1px solid rgba(16,185,129,0.3)',
+    padding: '3px 8px', borderRadius: '999px',
+    marginBottom: '6px',
+    textTransform: 'uppercase' as const,
+  },
   replyCard: {
     display: 'flex', gap: '12px',
     background: 'var(--surface)', border: '1px solid var(--border)',
