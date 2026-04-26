@@ -1,4 +1,4 @@
-export type CategoryId = 'reglementation' | 'voyageurs' | 'optimisation' | 'entraide' | 'cas' | 'autres'
+export type CategoryId = 'bienvenue' | 'reglementation' | 'voyageurs' | 'optimisation' | 'entraide' | 'cas' | 'autres'
 
 export type Category = {
   id: CategoryId
@@ -10,6 +10,11 @@ export type Category = {
 }
 
 export const CATEGORIES: Record<CategoryId, Category> = {
+  bienvenue: {
+    id: 'bienvenue', label: 'Bienvenue', short: 'Bienvenue',
+    color: '#34d399', bg: 'rgba(52,211,153,0.14)',
+    description: 'Présente-toi en 2 lignes — qui tu es, où, depuis combien de temps',
+  },
   reglementation: {
     id: 'reglementation', label: 'Réglementation & Fiscal', short: 'Régl. & Fiscal',
     color: '#fb923c', bg: 'rgba(251,146,60,0.14)',
@@ -42,7 +47,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
   },
 }
 
-export const CATEGORY_ORDER: CategoryId[] = ['reglementation', 'voyageurs', 'optimisation', 'entraide', 'cas', 'autres']
+export const CATEGORY_ORDER: CategoryId[] = ['bienvenue', 'reglementation', 'voyageurs', 'optimisation', 'entraide', 'cas', 'autres']
 
 export function isValidCategory(c: string): c is CategoryId {
   return c in CATEGORIES

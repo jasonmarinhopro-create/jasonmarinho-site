@@ -1,4 +1,4 @@
-export type BadgeId = 'pionnier' | 'visionnaire' | 'batisseur' | 'auditeur' | 'forme' | 'connecte'
+export type BadgeId = 'pionnier' | 'visionnaire' | 'batisseur' | 'auditeur' | 'forme' | 'connecte' | 'premier_message'
 
 export type Badge = {
   id: BadgeId
@@ -15,6 +15,7 @@ export const BADGES: Record<BadgeId, Badge> = {
   auditeur:    { id: 'auditeur',    label: '🔍', color: '#60a5fa', bg: 'rgba(96,165,250,0.18)',  title: 'Auditeur GBP — a réalisé un audit' },
   forme:       { id: 'forme',       label: '🎓', color: '#fb923c', bg: 'rgba(251,146,60,0.18)',  title: 'Formé — inscrit à une formation' },
   connecte:    { id: 'connecte',    label: '🌐', color: '#f472b6', bg: 'rgba(244,114,182,0.18)', title: 'Connecté — membre d\'une communauté FB' },
+  premier_message: { id: 'premier_message', label: '👋', color: '#10b981', bg: 'rgba(16,185,129,0.18)', title: 'Premier message — a posté Chez Nous' },
 }
 
 export type ContributorBadges = Record<string, BadgeId[]>
@@ -27,9 +28,10 @@ export function computeBadges(params: {
   auditCompletedIds: Set<string>
   formationIds: Set<string>
   communityIds: Set<string>
+  chezNousAuthorIds?: Set<string>
 }): ContributorBadges {
   const { contributorIds, createdAts, voteCountByUser, ideaAuthorIds,
-          auditCompletedIds, formationIds, communityIds } = params
+          auditCompletedIds, formationIds, communityIds, chezNousAuthorIds } = params
 
   const sorted = [...contributorIds].sort((a, b) =>
     (createdAts[a] ?? '').localeCompare(createdAts[b] ?? ''))
@@ -38,12 +40,13 @@ export function computeBadges(params: {
   const result: ContributorBadges = {}
   for (const uid of contributorIds) {
     const b: BadgeId[] = []
-    if (pioneers.has(uid))                   b.push('pionnier')
-    if (ideaAuthorIds.has(uid))              b.push('visionnaire')
-    if ((voteCountByUser[uid] ?? 0) >= 3)   b.push('batisseur')
-    if (auditCompletedIds.has(uid))          b.push('auditeur')
-    if (formationIds.has(uid))               b.push('forme')
-    if (communityIds.has(uid))               b.push('connecte')
+    if (pioneers.has(uid))                                b.push('pionnier')
+    if (chezNousAuthorIds && chezNousAuthorIds.has(uid))  b.push('premier_message')
+    if (ideaAuthorIds.has(uid))                           b.push('visionnaire')
+    if ((voteCountByUser[uid] ?? 0) >= 3)                b.push('batisseur')
+    if (auditCompletedIds.has(uid))                       b.push('auditeur')
+    if (formationIds.has(uid))                            b.push('forme')
+    if (communityIds.has(uid))                            b.push('connecte')
     result[uid] = b
   }
   return result

@@ -3,6 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import ChezNousFeed from './ChezNousFeed'
+import WelcomeModal from '@/components/chez-nous/WelcomeModal'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 import { computeBadges, type BadgeId } from '@/lib/badges'
 import { getBulkProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
@@ -18,13 +19,21 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
 
   const sp       = await searchParams
   const supabase = await createClient()
+
+  // Onboarding : si jamais vu le tour
+  const { data: meProfile } = await supabase
+    .from('profiles')
+    .select('chez_nous_onboarded_at')
+    .eq('id', profile.userId)
+    .maybeSingle()
+  const showWelcome = !meProfile?.chez_nous_onboarded_at
   const sort     = (sp.sort as 'recent' | 'popular' | 'unanswered' | 'unresolved') ?? 'recent'
   const q        = sp.q?.trim() ?? ''
 
   // Posts (avec filtres)
   let query = supabase
     .from('chez_nous_posts')
-    .select('id, author_id, category, title, body, pinned, locked, reply_count, vote_count, last_reply_at, created_at, edited_at, accepted_reply_id')
+    .select('id, author_id, category, title, body, pinned, locked, reply_count, vote_count, last_reply_at, created_at, edited_at, accepted_reply_id, images')
     .order('pinned', { ascending: false })
     .limit(50)
 
@@ -97,6 +106,8 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     auditCompletedIds: new Set((auditsData as Array<{ user_id: string }> | null ?? []).map(a => a.user_id)),
     formationIds:      new Set((formationsData as Array<{ user_id: string }> | null ?? []).map(f => f.user_id)),
     communityIds:      new Set((communityData as Array<{ user_id: string }> | null ?? []).map(c => c.user_id)),
+    // Tous les auteurs présents dans les posts du feed ont posté Chez Nous
+    chezNousAuthorIds: new Set(authorIds),
   })
 
   const myVotedSet = new Set((userVotesData as Array<{ post_id: string }> | null ?? []).map(v => v.post_id))
@@ -162,6 +173,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   return (
     <>
       <Header title="Chez Nous" userName={profile.full_name ?? undefined} />
+      {showWelcome && <WelcomeModal />}
       <ChezNousFeed
         posts={posts.map(p => ({
           id:            p.id,
@@ -178,6 +190,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
           edited_at:     p.edited_at,
           has_voted:     myVotedSet.has(p.id),
           is_resolved:   !!p.accepted_reply_id,
+          image_count:   Array.isArray(p.images) ? p.images.length : 0,
         }))}
         authorsMap={authorsMap}
         currentUserId={profile.userId}

@@ -14,6 +14,8 @@ import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import RichText from '@/components/chez-nous/RichText'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import ReportButton from '@/components/chez-nous/ReportButton'
+import ImageGrid from '@/components/chez-nous/ImageGrid'
+import ImageUploader from '@/components/chez-nous/ImageUploader'
 import {
   createReply, deletePost, deleteReply, togglePinPost, toggleLockPost,
   updatePost, updateReply, togglePostVote, acceptReply,
@@ -43,6 +45,7 @@ type Post = {
   edited_at: string | null
   has_voted: boolean
   accepted_reply_id: string | null
+  images: string[]
 }
 
 type Reply = {
@@ -214,6 +217,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
             </div>
 
             <RichText text={post.body} style={s.postBody} />
+            {post.images.length > 0 && <ImageGrid images={post.images} />}
           </>
         )}
       </article>
@@ -372,6 +376,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
   const [category, setCategory] = useState<CategoryId>(post.category)
   const [title, setTitle] = useState(post.title)
   const [body, setBody] = useState(post.body)
+  const [images, setImages] = useState<string[]>(post.images)
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
   const taRef = useRef<HTMLTextAreaElement>(null!)
@@ -379,7 +384,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
   const submit = () => {
     setError(null)
     startTransition(async () => {
-      const res = await updatePost({ postId: post.id, title, body, category })
+      const res = await updatePost({ postId: post.id, title, body, category, images })
       if (res.ok) onSaved()
       else setError(res.error ?? 'Erreur')
     })
@@ -395,6 +400,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
       <input type="text" value={title} onChange={e => setTitle(e.target.value)} maxLength={200} style={s.input} />
       <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
       <textarea ref={taRef} value={body} onChange={e => setBody(e.target.value)} rows={8} maxLength={8000} style={s.textarea} />
+      <ImageUploader value={images} onChange={setImages} max={3} />
       {error && <p style={s.error}>{error}</p>}
       <div style={s.formActions}>
         <button onClick={onCancel} style={s.btnGhost} disabled={pending}>Annuler</button>

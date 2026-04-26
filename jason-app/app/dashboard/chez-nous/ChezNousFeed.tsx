@@ -3,13 +3,14 @@
 import { useState, useTransition, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle } from '@phosphor-icons/react'
+import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ImageSquare } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
 import { stripMarkdown } from '@/lib/chez-nous/markdown'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
+import ImageUploader from '@/components/chez-nous/ImageUploader'
 import { createPost, togglePostVote } from './actions'
 
 type Post = {
@@ -27,6 +28,7 @@ type Post = {
   edited_at: string | null
   has_voted: boolean
   is_resolved: boolean
+  image_count: number
 }
 
 type Author = {
@@ -354,6 +356,15 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
             <ChatCircle size={11} weight="fill" />
             {post.reply_count}
           </span>
+          {post.image_count > 0 && (
+            <>
+              <span style={s.postFootDot}>·</span>
+              <span style={s.postReplies} title={`${post.image_count} image${post.image_count > 1 ? 's' : ''}`}>
+                <ImageSquare size={11} weight="fill" />
+                {post.image_count}
+              </span>
+            </>
+          )}
         </div>
       </Link>
     </div>
@@ -484,6 +495,7 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
   const [category, setCategory] = useState<CategoryId>(defaultCategory)
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const [images, setImages] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
   const router = useRouter()
@@ -492,9 +504,9 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
   const submit = () => {
     setError(null)
     startTransition(async () => {
-      const res = await createPost({ category, title, body })
+      const res = await createPost({ category, title, body, images })
       if (res.ok) {
-        setTitle(''); setBody('')
+        setTitle(''); setBody(''); setImages([])
         onSuccess()
         router.push(`/dashboard/chez-nous/${res.postId}`)
       } else {
@@ -535,6 +547,11 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
           style={s.textarea} rows={6} maxLength={8000}
         />
         <p style={s.helper}>{body.length}/8000</p>
+      </div>
+
+      <div style={s.formField}>
+        <label style={s.label}>Images (optionnel)</label>
+        <ImageUploader value={images} onChange={setImages} max={3} />
       </div>
 
       {error && <p style={s.error}>{error}</p>}

@@ -18,15 +18,26 @@ async function isAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userI
 
 // ─── POSTS ────────────────────────────────────────────────────────────────
 
+const MAX_IMAGES_PER_POST = 3
+
+function validateImages(images: string[] | undefined): string[] {
+  if (!Array.isArray(images)) return []
+  return images
+    .filter(u => typeof u === 'string' && /^https:\/\/[^\s]+\.(jpe?g|png|webp)(\?.*)?$/i.test(u))
+    .slice(0, MAX_IMAGES_PER_POST)
+}
+
 export async function createPost(input: {
   category: string
   title: string
   body: string
+  images?: string[]
 }): Promise<{ ok: true; postId: string } | { ok: false; error: string }> {
   const { supabase, userId } = await requireAuth()
 
-  const title = input.title.trim()
-  const body  = input.body.trim()
+  const title  = input.title.trim()
+  const body   = input.body.trim()
+  const images = validateImages(input.images)
 
   if (!isValidCategory(input.category)) return { ok: false, error: 'Catégorie invalide' }
   if (title.length < 3 || title.length > 200)   return { ok: false, error: 'Le titre doit faire entre 3 et 200 caractères' }
@@ -34,7 +45,7 @@ export async function createPost(input: {
 
   const { data, error } = await supabase
     .from('chez_nous_posts')
-    .insert({ author_id: userId, category: input.category as CategoryId, title, body })
+    .insert({ author_id: userId, category: input.category as CategoryId, title, body, images })
     .select('id')
     .single()
 
@@ -110,11 +121,13 @@ export async function updatePost(input: {
   title: string
   body: string
   category: string
+  images?: string[]
 }): Promise<{ ok: boolean; error?: string }> {
   const { supabase } = await requireAuth()
 
-  const title = input.title.trim()
-  const body  = input.body.trim()
+  const title  = input.title.trim()
+  const body   = input.body.trim()
+  const images = validateImages(input.images)
 
   if (!isValidCategory(input.category)) return { ok: false, error: 'Catégorie invalide' }
   if (title.length < 3 || title.length > 200)  return { ok: false, error: 'Titre 3-200 car.' }
@@ -122,13 +135,41 @@ export async function updatePost(input: {
 
   const { error } = await supabase
     .from('chez_nous_posts')
-    .update({ title, body, category: input.category, edited_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+    .update({ title, body, category: input.category, images, edited_at: new Date().toISOString(), updated_at: new Date().toISOString() })
     .eq('id', input.postId)
 
   if (error) return { ok: false, error: error.message }
   revalidatePath(`/dashboard/chez-nous/${input.postId}`)
   revalidatePath('/dashboard/chez-nous')
   return { ok: true }
+}
+
+// ─── IMAGE UPLOAD ─────────────────────────────────────────────────────────
+
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024 // 5 MB
+const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp']
+
+export async function uploadPostImage(formData: FormData): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+  const { supabase, userId } = await requireAuth()
+
+  const file = formData.get('file')
+  if (!(file instanceof File)) return { ok: false, error: 'Fichier invalide' }
+
+  if (file.size === 0)            return { ok: false, error: 'Fichier vide' }
+  if (file.size > MAX_IMAGE_BYTES) return { ok: false, error: 'Image trop lourde (max 5 Mo)' }
+  if (!ALLOWED_MIMES.includes(file.type)) return { ok: false, error: 'Format non supporté (JPEG, PNG ou WebP)' }
+
+  const ext = file.type === 'image/jpeg' ? 'jpg' : file.type === 'image/png' ? 'png' : 'webp'
+  const path = `${userId}/${crypto.randomUUID()}.${ext}`
+
+  const { error: upErr } = await supabase.storage
+    .from('chez-nous-images')
+    .upload(path, file, { contentType: file.type, cacheControl: '31536000' })
+
+  if (upErr) return { ok: false, error: upErr.message }
+
+  const { data: urlData } = supabase.storage.from('chez-nous-images').getPublicUrl(path)
+  return { ok: true, url: urlData.publicUrl }
 }
 
 export async function updateReply(input: {
@@ -147,6 +188,17 @@ export async function updateReply(input: {
 
   if (error) return { ok: false, error: error.message }
   revalidatePath(`/dashboard/chez-nous/${input.postId}`)
+  return { ok: true }
+}
+
+// ─── ONBOARDING ───────────────────────────────────────────────────────────
+
+export async function markChezNousOnboarded(): Promise<{ ok: boolean }> {
+  const { supabase, userId } = await requireAuth()
+  await supabase
+    .from('profiles')
+    .update({ chez_nous_onboarded_at: new Date().toISOString() })
+    .eq('id', userId)
   return { ok: true }
 }
 
