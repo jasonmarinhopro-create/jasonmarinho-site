@@ -104,6 +104,39 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   const { count: totalReplies } = await supabase.from('chez_nous_replies').select('*', { count: 'exact', head: true })
   const { count: totalMembers } = await supabase.from('profiles').select('*', { count: 'exact', head: true })
 
+  // Top contributors derniers 30 jours (post = 2pts, réponse = 1pt)
+  const since30d = new Date(Date.now() - 30 * 86400000).toISOString()
+  const [{ data: recentPostsForRank }, { data: recentRepliesForRank }] = await Promise.all([
+    supabase.from('chez_nous_posts').select('author_id').gte('created_at', since30d),
+    supabase.from('chez_nous_replies').select('author_id').gte('created_at', since30d),
+  ])
+  const activityScore: Record<string, number> = {}
+  ;(recentPostsForRank ?? []).forEach(p => { activityScore[p.author_id] = (activityScore[p.author_id] ?? 0) + 2 })
+  ;(recentRepliesForRank ?? []).forEach(r => { activityScore[r.author_id] = (activityScore[r.author_id] ?? 0) + 1 })
+  const topMemberIds = Object.entries(activityScore)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5)
+    .map(([id]) => id)
+  const { data: topMembersData } = topMemberIds.length
+    ? await supabase.from('profiles').select('id, full_name, pseudo, is_contributor').in('id', topMemberIds)
+    : { data: [] }
+  const topMembers = topMemberIds
+    .map(id => {
+      const m = (topMembersData ?? []).find(p => p.id === id)
+      if (!m) return null
+      return {
+        id, full_name: m.full_name, pseudo: m.pseudo,
+        is_contributor: m.is_contributor ?? false,
+        score: activityScore[id] ?? 0,
+      }
+    })
+    .filter((m): m is NonNullable<typeof m> => m !== null)
+
+  // Compteurs par catégorie
+  const { data: catCountsRaw } = await supabase.from('chez_nous_posts').select('category')
+  const catCounts: Record<string, number> = {}
+  ;(catCountsRaw ?? []).forEach(c => { catCounts[c.category] = (catCounts[c.category] ?? 0) + 1 })
+
   return (
     <>
       <Header title="Chez Nous" userName={profile.full_name ?? undefined} />
@@ -133,6 +166,8 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
           totalReplies: totalReplies ?? 0,
           totalMembers: totalMembers ?? 0,
         }}
+        topMembers={topMembers}
+        catCounts={catCounts}
       />
     </>
   )

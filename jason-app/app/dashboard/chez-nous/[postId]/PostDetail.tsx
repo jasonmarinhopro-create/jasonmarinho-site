@@ -111,6 +111,9 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
         <ArrowLeft size={14} weight="bold" /> Retour à Chez Nous
       </Link>
 
+      <div style={s.layout}>
+        <div style={s.mainCol}>
+
       {/* Post principal */}
       <article style={s.postBlock}>
         <div style={s.postHead}>
@@ -245,6 +248,95 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
       </div>
 
       {!post.locked && <ReplyForm postId={post.id} />}
+        </div>
+
+        {/* Aside auteur */}
+        <aside style={s.aside}>
+          <AuthorAside
+            authorId={post.author_id}
+            name={name}
+            initials={initials}
+            avatarColor={av}
+            isContributor={author?.is_contributor ?? false}
+            isAdmin={author?.role === 'admin'}
+            createdAt={author?.created_at ?? null}
+            badges={author?.badges ?? []}
+          />
+          <PostInfoAside post={post} replyCount={replies.length} />
+        </aside>
+      </div>
+    </div>
+  )
+}
+
+// ─── Author aside card ──────────────────────────────────────────────
+
+function AuthorAside({ authorId, name, initials, avatarColor, isContributor, isAdmin, createdAt, badges }: {
+  authorId: string
+  name: string
+  initials: string
+  avatarColor: { bg: string; text: string }
+  isContributor: boolean
+  isAdmin: boolean
+  createdAt: string | null
+  badges: BadgeId[]
+}) {
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <span style={s.asideTitle}>À propos de l'auteur</span>
+      </div>
+      <Link href={`/dashboard/chez-nous/membre/${authorId}`} style={s.authorAsideRow}>
+        <div style={{ ...s.avatarLg, background: avatarColor.bg, color: avatarColor.text }}>{initials}</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={s.authorNameLg}>
+            {name}
+            {isContributor && <span style={s.contribDot} />}
+          </div>
+          {isAdmin && <span style={s.adminTag}>admin</span>}
+          {createdAt && (
+            <div style={s.authorSince}>
+              Membre depuis {new Date(createdAt).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}
+            </div>
+          )}
+        </div>
+      </Link>
+      {badges.length > 0 && (
+        <div style={s.asideBadges}>
+          {badges.map(bid => (
+            <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
+              {BADGES[bid].label}
+            </span>
+          ))}
+        </div>
+      )}
+      <Link href={`/dashboard/chez-nous/membre/${authorId}`} style={s.asideLink}>
+        Voir le profil →
+      </Link>
+    </div>
+  )
+}
+
+function PostInfoAside({ post, replyCount }: { post: Post; replyCount: number }) {
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <span style={s.asideTitle}>Cette discussion</span>
+      </div>
+      <div style={s.statsList}>
+        <div style={s.statRow2}>
+          <span style={s.statValue}>{post.vote_count}</span>
+          <span style={s.statLabel}>vote{post.vote_count > 1 ? 's' : ''} utile{post.vote_count > 1 ? 's' : ''}</span>
+        </div>
+        <div style={s.statRow2}>
+          <span style={s.statValue}>{replyCount}</span>
+          <span style={s.statLabel}>réponse{replyCount > 1 ? 's' : ''}</span>
+        </div>
+        <div style={s.statRow2}>
+          <span style={s.statValueSmall}>{formatRelative(post.created_at)}</span>
+          <span style={s.statLabel}>créée</span>
+        </div>
+      </div>
     </div>
   )
 }
@@ -427,7 +519,62 @@ function ReplyForm({ postId }: { postId: string }) {
 // ─── Styles ────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '820px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+
+  layout: {
+    display: 'flex', gap: '24px',
+    flexWrap: 'wrap', alignItems: 'flex-start',
+  },
+  mainCol: { flex: '1 1 600px', minWidth: 0 },
+  aside: {
+    flex: '0 0 300px',
+    display: 'flex', flexDirection: 'column', gap: '14px',
+    position: 'sticky', top: '20px',
+  },
+  asideCard: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px',
+    display: 'flex', flexDirection: 'column', gap: '12px',
+  },
+  asideHead: { display: 'flex', alignItems: 'center', gap: '7px' },
+  asideTitle: {
+    fontSize: '12px', fontWeight: 700, textTransform: 'uppercase' as const,
+    letterSpacing: '0.6px', color: 'var(--text-2)',
+  },
+  authorAsideRow: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    textDecoration: 'none', color: 'inherit',
+  },
+  avatarLg: {
+    width: '48px', height: '48px', borderRadius: '50%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '17px', fontWeight: 700, lineHeight: 1,
+    fontFamily: 'var(--font-fraunces), serif',
+    flexShrink: 0,
+  },
+  authorNameLg: {
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+  },
+  authorSince: {
+    fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px',
+  },
+  asideBadges: { display: 'flex', flexWrap: 'wrap', gap: '4px' },
+  asideLink: {
+    fontSize: '12px', color: '#ffd56b', fontWeight: 600,
+    textDecoration: 'none',
+  },
+  statsList: { display: 'flex', flexDirection: 'column', gap: '8px' },
+  statRow2: { display: 'flex', alignItems: 'baseline', gap: '8px' },
+  statValue: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '20px', fontWeight: 400, color: 'var(--text)', lineHeight: 1,
+  },
+  statValueSmall: {
+    fontSize: '13px', color: 'var(--text)', fontWeight: 600,
+  },
+  statLabel: { fontSize: '11px', color: 'var(--text-2)' },
+
 
   back: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
