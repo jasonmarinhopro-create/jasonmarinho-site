@@ -540,10 +540,10 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 // ─── Styles ───────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%' },
 
   layout: {
-    display: 'flex', gap: '24px',
+    display: 'flex', gap: 'clamp(14px, 2vw, 24px)',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
   },
@@ -559,7 +559,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   asideCard: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '16px',
+    borderRadius: '14px', padding: 'clamp(14px, 2.5vw, 18px)',
     display: 'flex', flexDirection: 'column', gap: '12px',
   },
   asideHead: {
@@ -571,14 +571,12 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   statsList: {
-    display: 'flex', flexDirection: 'column', gap: '10px',
+    display: 'flex', flexDirection: 'column', gap: '8px',
   },
-  statRow2: {
-    display: 'flex', alignItems: 'baseline', gap: '8px',
-  },
+  statRow2: { display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' },
   statValue: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '22px', fontWeight: 400, color: 'var(--text)', lineHeight: 1,
+    fontSize: 'clamp(17px, 4vw, 22px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1,
   },
   statLabel: {
     fontSize: '12px', color: 'var(--text-2)',
@@ -641,7 +639,7 @@ const s: Record<string, React.CSSProperties> = {
   },
 
 
-  hero: { marginBottom: '24px' },
+  hero: { marginBottom: 'clamp(16px, 3vw, 24px)' },
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
@@ -660,7 +658,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   statRow: {
     display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
-    fontSize: '12px', color: 'var(--text-muted)', marginTop: '14px',
+    fontSize: '12px', color: 'var(--text-muted)', marginTop: '12px',
   },
   statSep:  { opacity: 0.5 },
 

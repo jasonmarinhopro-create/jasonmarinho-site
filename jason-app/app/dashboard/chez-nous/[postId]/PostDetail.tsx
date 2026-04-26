@@ -520,10 +520,10 @@ function ReplyForm({ postId }: { postId: string }) {
 // ─── Styles ────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%' },
 
   layout: {
-    display: 'flex', gap: '24px',
+    display: 'flex', gap: 'clamp(14px, 2vw, 24px)',
     flexWrap: 'wrap', alignItems: 'flex-start',
   },
   mainCol: { flex: '1 1 600px', minWidth: 0 },
@@ -535,7 +535,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   asideCard: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '16px',
+    borderRadius: '14px', padding: 'clamp(14px, 2.5vw, 18px)',
     display: 'flex', flexDirection: 'column', gap: '12px',
   },
   asideHead: { display: 'flex', alignItems: 'center', gap: '7px' },
@@ -567,10 +567,10 @@ const s: Record<string, React.CSSProperties> = {
     textDecoration: 'none',
   },
   statsList: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  statRow2: { display: 'flex', alignItems: 'baseline', gap: '8px' },
+  statRow2: { display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' },
   statValue: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '20px', fontWeight: 400, color: 'var(--text)', lineHeight: 1,
+    fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1,
   },
   statValueSmall: {
     fontSize: '13px', color: 'var(--text)', fontWeight: 600,
@@ -586,7 +586,7 @@ const s: Record<string, React.CSSProperties> = {
 
   postBlock: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '16px', padding: '24px',
+    borderRadius: '16px', padding: 'clamp(16px, 3vw, 24px)',
   },
   postHead: {
     display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px',

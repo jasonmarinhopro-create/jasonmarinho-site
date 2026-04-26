@@ -140,7 +140,7 @@ function NotifRow({ notif, post, actor, actorId }: {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '760px' },
+  page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%', maxWidth: '760px' },
 
   back: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
