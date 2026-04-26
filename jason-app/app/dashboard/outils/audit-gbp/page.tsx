@@ -3,7 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import AuditWizard from './AuditWizard'
-import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning, FileCsv } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic  = 'force-dynamic'
 export const metadata = { title: 'Audit GBP — Jason Marinho' }
@@ -98,6 +98,26 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
             <span>Score sur 100</span>
           </div>
         </div>
+
+        {/* ── Mode Express (CSV) — uniquement si pas de session en cours ── */}
+        {!initialSession && (
+          <Link href="/dashboard/outils/audit-gbp/import-csv" style={s.expressCard} className="fade-up">
+            <div style={s.expressIcon}>
+              <Lightning size={20} color="#FFD56B" weight="fill" />
+            </div>
+            <div style={s.expressBody}>
+              <div style={s.expressBadge}>
+                <FileCsv size={11} weight="fill" /> Audit Express · ~5 min
+              </div>
+              <div style={s.expressTitle}>Importe ton fichier CSV Google</div>
+              <div style={s.expressDesc}>
+                Exporte tes infos en 2 clics depuis Google Business Profile,
+                et on pré-remplit 7 questions automatiquement.
+              </div>
+            </div>
+            <ArrowRight size={16} color="#FFD56B" weight="bold" />
+          </Link>
+        )}
 
         {/* ── Wizard ── */}
         <div style={s.section} className="fade-up">
@@ -204,6 +224,39 @@ const s: Record<string, React.CSSProperties> = {
 
   section: {
     marginBottom: '20px',
+  },
+
+  /* Mode Express */
+  expressCard: {
+    display: 'flex', alignItems: 'center', gap: '16px',
+    padding: '18px 20px',
+    background: 'linear-gradient(135deg, rgba(255,213,107,0.08), rgba(255,213,107,0.03))',
+    border: '1px solid rgba(255,213,107,0.22)',
+    borderRadius: '14px',
+    textDecoration: 'none',
+    marginBottom: '16px',
+    transition: 'border-color 0.15s, transform 0.15s',
+  },
+  expressIcon: {
+    width: '40px', height: '40px', borderRadius: '10px',
+    background: 'rgba(255,213,107,0.12)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  expressBody: { flex: 1, minWidth: 0 },
+  expressBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '10.5px', fontWeight: 700,
+    letterSpacing: '0.7px', textTransform: 'uppercase' as const,
+    color: '#FFD56B', marginBottom: '4px',
+  },
+  expressTitle: {
+    fontSize: '14.5px', fontWeight: 600,
+    color: 'var(--text)', marginBottom: '3px',
+  },
+  expressDesc: {
+    fontSize: '12.5px', color: 'var(--text-2)',
+    lineHeight: 1.55,
   },
 
   /* Historique */
