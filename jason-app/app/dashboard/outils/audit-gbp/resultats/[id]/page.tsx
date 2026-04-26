@@ -320,10 +320,11 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', fontWeight: 700,
     flexShrink: 0,
   },
-  actionContent: { flex: 1 },
+  actionContent: { flex: 1, minWidth: 0 },
   actionHead: {
     display: 'flex', alignItems: 'center', gap: '10px',
     marginBottom: '4px',
+    flexWrap: 'wrap' as const,
   },
   actionPillar: {
     fontSize: '10.5px', fontWeight: 700,

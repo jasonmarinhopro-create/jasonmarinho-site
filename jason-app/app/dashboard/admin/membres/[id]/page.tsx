@@ -38,6 +38,8 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
           profile={result.profile}
           formations={formations}
           stats={result.stats}
+          community={result.community}
+          audits={result.audits}
         />
       </div>
     </>
