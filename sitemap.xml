@@ -107,6 +107,18 @@
     <priority>0.7</priority>
   </url>
 
+  <url>
+    <loc>https://jasonmarinho.com/services/audit-gbp/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/services/chez-nous/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ── Ressources ── -->
   <url>
     <loc>https://jasonmarinho.com/ressources</loc>
