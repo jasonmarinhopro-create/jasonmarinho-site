@@ -44,7 +44,7 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
       <div style={s.head}>
         <div>
           <h1 style={s.title}>
-            <BellRinging size={20} color="#ffd56b" weight="fill" style={{ verticalAlign: 'middle', marginRight: '8px' }} />
+            <BellRinging size={20} color="var(--accent-text)" weight="fill" style={{ verticalAlign: 'middle', marginRight: '8px' }} />
             Notifications
           </h1>
           <p style={s.subtitle}>
@@ -62,7 +62,7 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
 
       {notifs.length === 0 ? (
         <div style={s.empty}>
-          <ChatCircleDots size={32} color="#ffd56b" weight="duotone" />
+          <ChatCircleDots size={32} color="var(--accent-text)" weight="duotone" />
           <p style={s.emptyTitle}>Aucune notification</p>
           <p style={s.emptyDesc}>
             Tu seras prévenu ici quand quelqu'un répondra à un de tes posts dans Chez Nous.
@@ -201,6 +201,6 @@ const s: Record<string, React.CSSProperties> = {
   time: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' },
   unreadDot: {
     width: '8px', height: '8px', borderRadius: '50%',
-    background: '#ffd56b', flexShrink: 0,
+    background: 'var(--accent-text)', flexShrink: 0,
   },
 }

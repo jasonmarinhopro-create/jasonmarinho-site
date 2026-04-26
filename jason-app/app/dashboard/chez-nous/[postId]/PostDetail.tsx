@@ -123,7 +123,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
             {cat.short}
           </span>
           {post.pinned && (
-            <span style={{ ...s.flag, color: '#ffd56b', background: 'rgba(255,213,107,0.12)' }}>
+            <span style={{ ...s.flag, color: 'var(--accent-text)', background: 'rgba(255,213,107,0.12)' }}>
               <PushPin size={11} weight="fill" /> Épinglé
             </span>
           )}
@@ -168,7 +168,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
               <div style={s.actions}>
                 <button onClick={onVote} disabled={pending} style={{
                   ...s.voteBtn,
-                  color: voted ? '#ffd56b' : 'var(--text-2)',
+                  color: voted ? 'var(--accent-text)' : 'var(--text-2)',
                   background: voted ? 'rgba(255,213,107,0.10)' : 'transparent',
                   borderColor: voted ? 'rgba(255,213,107,0.3)' : 'var(--border)',
                 }} title={voted ? 'Retirer mon vote' : 'Marquer utile'}>
@@ -205,7 +205,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
 
       {/* Réponses */}
       <div style={s.repliesHead}>
-        <ChatCircle size={14} color="#ffd56b" weight="fill" />
+        <ChatCircle size={14} color="var(--accent-text)" weight="fill" />
         <span>{replies.length} réponse{replies.length > 1 ? 's' : ''}</span>
       </div>
 
@@ -563,7 +563,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   asideBadges: { display: 'flex', flexWrap: 'wrap', gap: '4px' },
   asideLink: {
-    fontSize: '12px', color: '#ffd56b', fontWeight: 600,
+    fontSize: '12px', color: 'var(--accent-text)', fontWeight: 600,
     textDecoration: 'none',
   },
   statsList: { display: 'flex', flexDirection: 'column', gap: '8px' },
@@ -629,7 +629,7 @@ const s: Record<string, React.CSSProperties> = {
   editedTag: { fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' },
   contribDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#ffd56b', display: 'inline-block',
+    background: 'var(--accent-text)', display: 'inline-block',
   },
   adminTag: {
     fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,

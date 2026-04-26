@@ -49,7 +49,7 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
     <section style={s.card}>
       <div style={s.head}>
         <div style={s.headIcon}>
-          <House size={15} color="#ffd56b" weight="fill" />
+          <House size={15} color="var(--accent-text)" weight="fill" />
         </div>
         <div>
           <h3 style={s.title}>Mon identité Chez Nous</h3>
@@ -68,7 +68,7 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
           maxLength={30}
         />
         <p style={s.helper}>
-          Si vide, ton prénom est utilisé. Tu apparaîtras comme <strong style={{ color: '#ffd56b' }}>{displayed}</strong>.
+          Si vide, ton prénom est utilisé. Tu apparaîtras comme <strong style={{ color: 'var(--accent-text)' }}>{displayed}</strong>.
         </p>
       </div>
 

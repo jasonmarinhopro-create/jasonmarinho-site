@@ -67,11 +67,11 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
       {/* Hero */}
       <div style={s.hero}>
         <div style={s.heroBadge}>
-          <House size={13} color="#ffd56b" weight="fill" />
+          <House size={13} color="var(--accent-text)" weight="fill" />
           Chez Nous · Communauté ouverte
         </div>
         <h1 style={s.heroTitle}>
-          Bienvenue <em style={{ color: '#ffd56b', fontStyle: 'italic' }}>Chez Nous</em>
+          Bienvenue <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Chez Nous</em>
         </h1>
         <p style={s.heroDesc}>
           L'espace pour échanger, demander un coup de main, partager ce qui marche.
@@ -89,7 +89,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
 
       {/* Catégories */}
       <div style={s.catRow}>
-        <CategoryChip id="all" label="Tout" color="#ffd56b" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} search={currentSearch} />
+        <CategoryChip id="all" label="Tout" color="var(--accent-text)" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} search={currentSearch} />
         {CATEGORY_ORDER.map(cid => (
           <CategoryChip
             key={cid} id={cid}
@@ -156,7 +156,7 @@ function StatsCard({ stats }: { stats: { totalPosts: number; totalReplies: numbe
   return (
     <div style={s.asideCard}>
       <div style={s.asideHead}>
-        <Sparkle size={14} color="#ffd56b" weight="fill" />
+        <Sparkle size={14} color="var(--accent-text)" weight="fill" />
         <span style={s.asideTitle}>La communauté</span>
       </div>
       <div style={s.statsList}>
@@ -253,7 +253,7 @@ function TipCard() {
   return (
     <div style={{ ...s.asideCard, background: 'rgba(255,213,107,0.04)', borderColor: 'rgba(255,213,107,0.18)' }}>
       <div style={s.asideHead}>
-        <Sparkle size={14} color="#ffd56b" weight="fill" />
+        <Sparkle size={14} color="var(--accent-text)" weight="fill" />
         <span style={s.asideTitle}>Pour bien démarrer</span>
       </div>
       <ul style={s.tipList}>
@@ -299,7 +299,7 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
         disabled={pending}
         style={{
           ...s.voteCol,
-          color: voted ? '#ffd56b' : 'var(--text-muted)',
+          color: voted ? 'var(--accent-text)' : 'var(--text-muted)',
           background: voted ? 'rgba(255,213,107,0.10)' : 'transparent',
           borderColor: voted ? 'rgba(255,213,107,0.3)' : 'var(--border)',
         }}
@@ -318,7 +318,7 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
       <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postBody}>
         <div style={s.postMeta}>
           <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>{cat.short}</span>
-          {post.pinned && <PushPin size={12} color="#ffd56b" weight="fill" />}
+          {post.pinned && <PushPin size={12} color="var(--accent-text)" weight="fill" />}
           {post.locked && <Lock size={12} color="#94a3b8" weight="fill" />}
           {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
         </div>
@@ -390,7 +390,7 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
   if (search) {
     return (
       <div style={s.empty}>
-        <MagnifyingGlass size={28} color="#ffd56b" weight="duotone" />
+        <MagnifyingGlass size={28} color="var(--accent-text)" weight="duotone" />
         <p style={s.emptyTitle}>Aucun résultat pour « {search} »</p>
         <p style={s.emptyDesc}>Essaie d'autres mots-clés, ou retire les filtres pour voir toutes les discussions.</p>
       </div>
@@ -399,7 +399,7 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
   if (sort === 'unanswered') {
     return (
       <div style={s.empty}>
-        <Question size={28} color="#ffd56b" weight="duotone" />
+        <Question size={28} color="var(--accent-text)" weight="duotone" />
         <p style={s.emptyTitle}>Aucune discussion sans réponse</p>
         <p style={s.emptyDesc}>Tout a été pris en charge — bravo la communauté !</p>
       </div>
@@ -407,7 +407,7 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
   }
   return (
     <div style={s.empty}>
-      <ChatCircle size={28} color="#ffd56b" weight="duotone" />
+      <ChatCircle size={28} color="var(--accent-text)" weight="duotone" />
       <p style={s.emptyTitle}>
         {category !== 'all'
           ? `Aucune discussion dans ${CATEGORIES[category].short}`
@@ -611,7 +611,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   contribDotMini: {
     width: '5px', height: '5px', borderRadius: '50%',
-    background: '#ffd56b', display: 'inline-block', flexShrink: 0,
+    background: 'var(--accent-text)', display: 'inline-block', flexShrink: 0,
   },
   memberScore: {
     fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600,
@@ -645,7 +645,7 @@ const s: Record<string, React.CSSProperties> = {
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: '#ffd56b', background: 'rgba(255,213,107,0.08)',
+    color: 'var(--accent-text)', background: 'rgba(255,213,107,0.08)',
     border: '1px solid rgba(255,213,107,0.18)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
@@ -839,7 +839,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   contribDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#ffd56b', display: 'inline-block',
+    background: 'var(--accent-text)', display: 'inline-block',
   },
   adminTag: {
     fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,
