@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chez Nous · La communauté ouverte des hôtes LCD | Jason Marinho</title>
+  <meta name="description" content="Chez Nous : l'espace gratuit pour échanger entre hôtes de location courte durée. Réglementation, voyageurs, optimisation, entraide locale. Sans détour, entre pros.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/chez-nous/">
+  <meta property="og:title" content="Chez Nous · La communauté ouverte des hôtes LCD">
+  <meta property="og:description" content="Espace gratuit pour échanger entre hôtes LCD. Réglementation, voyageurs, optimisation, entraide. Sans détour, entre pros.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/chez-nous/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/webp" href="/favicon-jason.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(64px,8vw,104px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.6);margin:0 0 32px;max-width:560px}
+    .sub.dk{color:var(--tm)} .sub.mx{max-width:680px}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,213,107,.25)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.1);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,120px) 0 clamp(56px,7vw,90px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:32px}
+    .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff} .hero-brd span{font-size:11px}
+    .meta-row{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+    .meta-bd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.5);background:rgba(255,255,255,.06);border-radius:7px;padding:6px 12px}
+    .meta-bd i{color:rgba(255,213,107,.5)}
+    .pill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:24px}
+    .pill-card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:8px}
+    .pill-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-bottom:6px}
+    .pill-card h4{margin:0 0 2px;font-size:15px;font-weight:600;color:var(--td)}
+    .pill-card p{margin:0;font-size:13px;color:var(--tl);line-height:1.5}
+    .ck-list{list-style:none;padding:0;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+    .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5;color:var(--tm)}
+    .ck-list li .chk{margin-top:2px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,56px);text-align:center}
+    .steps{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+    .step{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:18px}
+    .step-n{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:300;color:var(--g);font-style:italic;flex-shrink:0;width:40px;text-align:center}
+    .step-t{flex:1}
+    .step h4{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--td)}
+    .step p{margin:0;font-size:13.5px;color:var(--tm);line-height:1.55}
+    .quote{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:28px;margin-top:24px}
+    .quote p{font-family:'Fraunces',serif;font-size:18px;line-height:1.55;color:var(--td);margin:0 0 12px;font-style:italic}
+    .quote .quote-by{font-size:13px;color:var(--tl)}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:28px}
+    .feat{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;padding:22px}
+    .feat-ic{width:36px;height:36px;border-radius:10px;background:rgba(0,76,63,.08);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:18px;margin-bottom:14px}
+    .feat h4{margin:0 0 6px;font-size:14px;font-weight:600;color:var(--td)}
+    .feat p{margin:0;font-size:13px;color:var(--tl);line-height:1.55}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Chez Nous - Communauté ouverte des hôtes LCD","description":"Espace gratuit pour échanger entre hôtes de location courte durée. Réglementation, voyageurs, optimisation, entraide locale.","url":"https://jasonmarinho.com/services/chez-nous/","creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><span>Chez Nous</span>
+    </div>
+    <div class="lbl">Communauté ouverte · 100% gratuit</div>
+    <h1 class="h1">Chez Nous,<br>la communauté <em>des hôtes LCD</em></h1>
+    <p class="sub">L'espace pour échanger, demander un coup de main, partager ce qui marche. Entre hôtes de location courte durée, sans détour. Pro, direct, et sans bla-bla.</p>
+    <div class="meta-row">
+      <div class="meta-bd"><i class="ph ph-users-three"></i> Ouvert à tous</div>
+      <div class="meta-bd"><i class="ph ph-tag"></i> 6 catégories</div>
+      <div class="meta-bd"><i class="ph ph-shield-check"></i> Modération active</div>
+      <div class="meta-bd"><i class="ph ph-currency-eur"></i> 100% gratuit</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+      <a href="https://app.jasonmarinho.com/dashboard/chez-nous" class="btn-p">Rejoindre Chez Nous <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">Créer un compte gratuit</a>
+    </div>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Pourquoi cet espace</div>
+        <h2 class="h2">Être hôte LCD,<br><em>c'est souvent solitaire</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Tu gères un studio, un T2, peut-être plusieurs logements. Tu jongles avec les voyageurs, les plateformes, la fiscalité, la mairie. Et quand un truc cloche — un voyageur qui refuse de partir, un score Airbnb qui chute, une nouvelle réglementation locale — tu te retrouves seul devant Google.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 24px">Chez Nous, c'est l'inverse. Un espace où des hôtes pros discutent vrai entre eux. Pas un Facebook group de plus, pas un Discord. Un endroit pensé pour les questions opérationnelles, les retours d'expérience, les partages d'astuces qui font gagner du temps et de l'argent.</p>
+        <ul class="ck-list">
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Échanges directs entre hôtes LCD vérifiés</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>6 catégories thématiques claires</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Profil pro auto-généré (badges, ancienneté)</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Recherche, votes utiles, mise en forme</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Notifications quand on te répond</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Modéré pour rester pro et sans niaiserie</li>
+        </ul>
+      </div>
+      <div>
+        <div style="background:linear-gradient(135deg,#001a11,#002d22);border-radius:20px;padding:28px;border:1px solid rgba(255,213,107,.1)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,213,107,.1);display:flex;align-items:center;justify-content:center"><i class="ph ph-house" style="font-size:24px;color:var(--y)"></i></div>
+            <div>
+              <div style="font-weight:600;color:#fff;font-size:15px">Chez Nous</div>
+              <div style="font-size:12px;color:rgba(255,213,107,.5)">Communauté ouverte des hôtes LCD</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:rgba(255,255,255,.6)">Accès</span>
+              <span style="font-size:13px;color:#fff;font-weight:500">Tous les inscrits</span>
+            </div>
+            <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:rgba(255,255,255,.6)">Format</span>
+              <span style="font-size:13px;color:#fff;font-weight:500">Forum thématique</span>
+            </div>
+            <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:rgba(255,255,255,.6)">Catégories</span>
+              <span style="font-size:13px;color:#fff;font-weight:500">6 thématiques</span>
+            </div>
+            <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:rgba(255,255,255,.6)">Prix</span>
+              <span style="font-size:13px;color:var(--y);font-weight:500">Gratuit</span>
+            </div>
+          </div>
+          <a href="https://app.jasonmarinho.com/dashboard/chez-nous" class="btn-p" style="width:100%;justify-content:center;margin-top:20px">Rejoindre <i class="ph-bold ph-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Les 6 catégories</div>
+    <h2 class="h2">Des thématiques claires,<br>pour des <em>réponses précises</em></h2>
+    <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 12px;max-width:680px">Chaque discussion est rangée dans une catégorie pour que les bonnes infos remontent vite et que les bons hôtes se croisent.</p>
+    <div class="pill-grid">
+      <div class="pill-card">
+        <div class="pill-ic" style="background:rgba(251,146,60,.1);color:#f97316"><i class="ph ph-scales"></i></div>
+        <h4>Réglementation &amp; Fiscal</h4>
+        <p>Lois, mairies, taxe de séjour, micro-BIC, déclarations, classement meublé tourisme.</p>
+      </div>
+      <div class="pill-card">
+        <div class="pill-ic" style="background:rgba(244,114,182,.1);color:#ec4899"><i class="ph ph-users"></i></div>
+        <h4>Voyageurs</h4>
+        <p>Gestion, sécurité, litiges, check-in/out, cautions, voyageurs difficiles.</p>
+      </div>
+      <div class="pill-card">
+        <div class="pill-ic" style="background:rgba(96,165,250,.1);color:#60a5fa"><i class="ph ph-megaphone"></i></div>
+        <h4>Annonces &amp; Optimisation</h4>
+        <p>Airbnb, Booking, photos, prix, taux d'occupation, score, algorithme.</p>
+      </div>
+      <div class="pill-card">
+        <div class="pill-ic" style="background:rgba(52,211,153,.1);color:#10b981"><i class="ph ph-handshake"></i></div>
+        <h4>Entraide locale</h4>
+        <p>Plombier, ménage, dépannage, contacts par ville, urgences.</p>
+      </div>
+      <div class="pill-card">
+        <div class="pill-ic" style="background:rgba(167,139,250,.1);color:#a78bfa"><i class="ph ph-chart-line"></i></div>
+        <h4>Études de cas &amp; Retours</h4>
+        <p>Ce qui marche (ou pas), chiffres réels, expériences partagées.</p>
+      </div>
+      <div class="pill-card">
+        <div class="pill-ic" style="background:rgba(148,163,184,.1);color:#64748b"><i class="ph ph-dots-three-circle"></i></div>
+        <h4>Autres</h4>
+        <p>Tout ce qui ne rentre pas ailleurs — outils, immobilier, divers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="lbl dk">Ce que tu as à disposition</div>
+    <h2 class="h2">Une communauté <em>vraiment équipée</em></h2>
+    <div class="features-grid">
+      <div class="feat">
+        <div class="feat-ic"><i class="ph ph-trophy"></i></div>
+        <h4>Badges automatiques</h4>
+        <p>Pionnier, Bâtisseur, Auditeur, Visionnaire — tu reçois des badges selon ton activité réelle sur la plateforme.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><i class="ph ph-arrow-fat-up"></i></div>
+        <h4>Votes utiles</h4>
+        <p>Les meilleures réponses remontent. Pas de likes émojis, juste un vote « utile » qui surface le bon contenu.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><i class="ph ph-magnifying-glass"></i></div>
+        <h4>Recherche full-text</h4>
+        <p>Trouve immédiatement les discussions qui parlent de ton sujet. Combinable avec catégorie et tri.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><i class="ph ph-bell-ringing"></i></div>
+        <h4>Notifications</h4>
+        <p>On te prévient quand quelqu'un répond à un de tes posts. Pas de spam, juste l'essentiel.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><i class="ph ph-text-b"></i></div>
+        <h4>Mise en forme</h4>
+        <p>Gras, italique, liens — pour des messages lisibles. Ta mise en forme est préservée à l'affichage.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><i class="ph ph-user-circle"></i></div>
+        <h4>Profil pro</h4>
+        <p>Pseudo libre, bio, badges visibles, stats d'activité. Tu choisis ce que tu montres aux autres.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">L'esprit de la maison</div>
+    <h2 class="h2">Pro et bienveillant,<br><em>sans niaiserie</em></h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Les hôtes LCD sont des gérants d'entreprise. Ils veulent du concret, pas du chaleureux pour le chaleureux. Chez Nous, le ton est direct, pro, factuel — sans tomber dans la froideur d'un Slack d'entreprise.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px"><strong style="color:var(--td)">Ce qu'on accueille</strong> : questions précises, retours d'expérience chiffrés, demandes d'aide, coups de pouce locaux, partages de bonnes pratiques.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0">
+          <strong style="color:var(--td)">Ce qu'on filtre</strong> : auto-promo déguisée, citations motivantes, débats stériles, hors-sujet pur.
+        </p>
+      </div>
+      <div>
+        <div class="quote">
+          <p>« Voyageur qui refuse de partir à 11h, je tente quoi avant la police ? »</p>
+          <div class="quote-by">— Type de question idéal Chez Nous</div>
+        </div>
+        <div class="quote">
+          <p>« Mon process check-in qui a divisé par 3 les casses caution. »</p>
+          <div class="quote-by">— Type de partage idéal Chez Nous</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="lbl dk">Comment ça marche</div>
+    <h2 class="h2">3 étapes pour <em>rejoindre</em></h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">01</div>
+        <div class="step-t">
+          <h4>Crée ton compte gratuit</h4>
+          <p>Inscription en 30 secondes. Aucune carte bancaire. Tu accèdes immédiatement à Chez Nous depuis ton dashboard.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <div class="step-t">
+          <h4>Configure ton identité</h4>
+          <p>Pseudo libre (ou ton prénom), bio courte, choix de confidentialité. Ton profil se nourrit ensuite automatiquement de ton activité.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <div class="step-t">
+          <h4>Pose ta première question — ou réponds-en une</h4>
+          <p>Choisis une catégorie, sois précis dans ton titre, donne du contexte. Ou parcours les discussions pour aider quelqu'un.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec dk">
+  <div class="s-in">
+    <div class="cta-ban">
+      <div class="lbl">Rejoindre maintenant</div>
+      <h2 class="h2 lt" style="max-width:520px;margin:0 auto 16px">Bienvenue <em>Chez Nous</em></h2>
+      <p class="sub" style="margin:0 auto 32px;text-align:center;max-width:440px">Gratuit, sans engagement. L'espace où on parle vrai entre hôtes LCD.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer un compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="https://app.jasonmarinho.com/dashboard/chez-nous" class="btn-ol">Découvrir Chez Nous</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+</body></html>
