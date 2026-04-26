@@ -2,6 +2,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import ProfilForm from './ProfilForm'
+import ChezNousIdentity from './ChezNousIdentity'
 
 export default async function ProfilPage() {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
@@ -10,7 +11,7 @@ export default async function ProfilPage() {
   const [{ data: { session } }, { data: profileData }] = await Promise.all([
     supabase.auth.getSession(),
     supabase.from('profiles')
-      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse')
+      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city')
       .eq('id', userId)
       .maybeSingle(),
   ])
@@ -23,6 +24,12 @@ export default async function ProfilPage() {
   const iban = profileData?.iban ?? ''
   const bic = profileData?.bic ?? ''
   const adresse = profileData?.adresse ?? ''
+
+  const pseudo                = profileData?.pseudo ?? ''
+  const bio                   = profileData?.bio ?? ''
+  const privacyShowLogements  = profileData?.privacy_show_logements ?? true
+  const privacyShowPlatforms  = profileData?.privacy_show_platforms ?? true
+  const privacyShowCity       = profileData?.privacy_show_city ?? true
 
   const planLabel = profile?.role === 'admin' ? 'Administrateur'
     : profile?.plan === 'driing' ? 'Membre Driing'
@@ -51,6 +58,16 @@ export default async function ProfilPage() {
             initialIban={iban}
             initialBic={bic}
             initialAdresse={adresse}
+          />
+          <ChezNousIdentity
+            initialPseudo={pseudo}
+            initialBio={bio}
+            firstName={fullName.split(/\s+/)[0] ?? ''}
+            initialPrivacy={{
+              show_logements: privacyShowLogements,
+              show_platforms: privacyShowPlatforms,
+              show_city:      privacyShowCity,
+            }}
           />
         </div>
       </div>
