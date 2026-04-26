@@ -66,6 +66,22 @@ export async function saveAuditAnswers(sessionId: string, answers: AnswersPayloa
   return { ok: undefined }
 }
 
+export async function deleteAuditSession(sessionId: string): Promise<ActionResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
+
+  const { error } = await supabase
+    .from('audit_gbp_sessions')
+    .delete()
+    .eq('id', sessionId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/outils/audit-gbp')
+  return { ok: undefined }
+}
+
 export async function completeAudit(sessionId: string, answers: Record<string, AnswerValue>): Promise<ActionResult<{ sessionId: string }>> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

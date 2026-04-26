@@ -44,7 +44,7 @@ export default async function ImportUrlPage() {
               <div style={s.stepTitle}>Va sur Google Maps</div>
               <div style={s.stepDesc}>
                 Ouvre <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" style={s.link}>google.com/maps<ArrowSquareOut size={11} weight="bold" style={{ marginLeft: 3 }} /></a> et
-                tape le nom de ton logement.
+                tape le nom de ton logement pour ouvrir ta fiche.
               </div>
             </div>
           </div>
@@ -52,10 +52,11 @@ export default async function ImportUrlPage() {
           <div style={s.step}>
             <div style={s.stepNum}>2</div>
             <div style={s.stepBody}>
-              <div style={s.stepTitle}>Clique sur "Partager"</div>
+              <div style={s.stepTitle}>Copie l'URL depuis la barre d'adresse</div>
               <div style={s.stepDesc}>
-                Sur ta fiche, clique sur le bouton <strong>Partager</strong> (icône flèche).
-                Une fenêtre s'ouvre avec un lien à copier.
+                Une fois ta fiche ouverte, regarde la <strong>barre d'adresse du navigateur</strong> en
+                haut. Sélectionne-la entièrement (Ctrl/Cmd+A) et copie (Ctrl/Cmd+C). L'URL doit
+                commencer par <code style={s.code}>https://www.google.com/maps/place/...</code>
               </div>
             </div>
           </div>
@@ -63,10 +64,12 @@ export default async function ImportUrlPage() {
           <div style={s.step}>
             <div style={s.stepNum}>3</div>
             <div style={s.stepBody}>
-              <div style={s.stepTitle}>Copie le lien et colle-le ci-dessous</div>
+              <div style={s.stepTitle}>Colle-la dans le champ ci-dessous</div>
               <div style={s.stepDesc}>
-                Tous les formats sont acceptés : <code style={s.code}>share.google/...</code>,{' '}
-                <code style={s.code}>maps.google.com/...</code>, <code style={s.code}>maps.app.goo.gl/...</code>
+                <strong>⚠️ Important</strong> : n'utilise pas le bouton "Partager" de Google Maps,
+                il génère un lien raccourci (<code style={s.code}>share.google/...</code>) qui
+                n'est pas accepté par l'API officielle. Toujours copier l'URL longue depuis
+                la barre d'adresse.
               </div>
             </div>
           </div>

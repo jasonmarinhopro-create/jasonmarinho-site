@@ -148,7 +148,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
             type="url"
             value={gbpUrl}
             onChange={e => setGbpUrl(e.target.value)}
-            placeholder="https://maps.google.com/... ou https://share.google/..."
+            placeholder="https://www.google.com/maps/place/Ton-Logement/..."
             style={s.input}
           />
           <span style={s.labelHint}>
