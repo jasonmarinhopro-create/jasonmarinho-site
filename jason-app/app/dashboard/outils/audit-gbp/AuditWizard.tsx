@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, ArrowLeft, CheckCircle, Sparkle, Lightning, ArrowSquareOut } from '@phosphor-icons/react'
+import { ArrowRight, ArrowLeft, CheckCircle, Sparkle, Lightning, ArrowSquareOut, FloppyDisk } from '@phosphor-icons/react'
 import { PILLARS, QUESTIONS, getOptimalAnswer, type AnswerValue, type PillarId } from '@/lib/audit-gbp/questions'
 import { startAuditSession, updateAuditMeta, saveAuditAnswers, completeAudit } from './actions'
 
@@ -65,6 +65,8 @@ export default function AuditWizard({ userId, initialSession }: Props) {
   const [prefilledKeys] = useState<Set<string>>(initPrefilledKeys)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
+  const isFirstRender = useRef(true)
 
   const currentPillar = PILLARS[pillarIdx]
   const pillarQuestions = QUESTIONS.filter(q => q.pillar === currentPillar?.id)
@@ -74,6 +76,29 @@ export default function AuditWizard({ userId, initialSession }: Props) {
   const hasCsvImport = prefilledKeys.size > 0
   const allAnswered = pillarQuestions.every(q => answers[q.id] !== undefined)
   const isLastPillar = pillarIdx === PILLARS.length - 1
+
+  // ─── Auto-save (débouncé 1s) ───
+  // Sauvegarde silencieuse à chaque modification d'une réponse pour éviter
+  // toute perte de travail si l'utilisateur quitte sans cliquer "Suivant".
+  useEffect(() => {
+    if (!sessionId || !started) return
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    setAutoSaveStatus('saving')
+    const timeoutId = setTimeout(async () => {
+      const payload: Record<string, AnswerValue | string[] | string> = { ...answers }
+      if (hasCsvImport) payload.__prefilled_keys = Array.from(prefilledKeys)
+      if (gbpUrl) payload.__gbp_url = gbpUrl
+      const res = await saveAuditAnswers(sessionId, payload)
+      if (!res.error) setAutoSaveStatus('saved')
+      else setAutoSaveStatus('idle')
+    }, 800)
+
+    return () => clearTimeout(timeoutId)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answers, gbpUrl])
 
   if (!userId) {
     return (
@@ -198,7 +223,18 @@ export default function AuditWizard({ userId, initialSession }: Props) {
         <span style={s.progressStep}>
           Étape {pillarIdx + 1}/{PILLARS.length} · {currentPillar?.label}
         </span>
-        <span style={s.progressPct}>{answered}/{totalQuestions} questions</span>
+        <span style={s.progressRight}>
+          {autoSaveStatus !== 'idle' && (
+            <span style={{
+              ...s.autoSave,
+              color: autoSaveStatus === 'saving' ? 'var(--text-muted)' : '#34d399',
+            }}>
+              <FloppyDisk size={11} weight={autoSaveStatus === 'saved' ? 'fill' : 'regular'} />
+              {autoSaveStatus === 'saving' ? 'Enregistrement…' : 'Sauvegardé'}
+            </span>
+          )}
+          <span style={s.progressPct}>{answered}/{totalQuestions} questions</span>
+        </span>
       </div>
 
       {/* En-tête du pilier */}
@@ -466,6 +502,15 @@ const s: Record<string, React.CSSProperties> = {
   },
   progressStep: { color: 'var(--text-2)' },
   progressPct: {},
+  progressRight: {
+    display: 'inline-flex', alignItems: 'center', gap: '12px',
+  },
+  autoSave: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    fontSize: '10px', fontWeight: 500,
+    textTransform: 'none' as const, letterSpacing: 0,
+    transition: 'color 0.15s, opacity 0.3s',
+  },
 
   pillarHeader: {
     display: 'flex', alignItems: 'center', gap: '14px',

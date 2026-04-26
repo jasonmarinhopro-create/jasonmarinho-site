@@ -153,25 +153,51 @@ export async function getPlaceDetails(placeId: string, apiKey: string): Promise<
 }
 
 // ─── Orchestration : URL → Place Details ───
+// Stratégie en cascade :
+//   1. Résoudre les redirections (best effort)
+//   2. Place ID direct → fetch
+//   3. Nom extrait de l'URL → searchText
+//   4. URL elle-même comme texte de recherche → searchText
+//   5. Erreur claire si rien ne fonctionne
 export async function fetchPlaceFromMapsUrl(rawUrl: string, apiKey: string): Promise<PlaceDetails> {
-  // 1. Résout les redirections (share.google, goo.gl, etc.)
   const resolved = await resolveMapsUrl(rawUrl)
 
-  // 2. Tente d'extraire un place_id direct
+  // 1. place_id direct ?
   const directId = extractPlaceIdFromUrl(resolved)
   if (directId && directId.startsWith('ChIJ')) {
-    // Vrai place_id Google → on fetch directement
     return getPlaceDetails(directId, apiKey)
   }
 
-  // 3. Sinon : extrait le nom et fait une recherche textuelle
+  // 2. Nom extrait du path /maps/place/Nom ?
   const name = extractBusinessNameFromUrl(resolved)
-  if (!name) {
-    throw new Error("Impossible d'extraire le nom de l'établissement depuis l'URL.")
+  if (name) {
+    const placeId = await searchPlaceByText(name, apiKey)
+    if (placeId) return getPlaceDetails(placeId, apiKey)
   }
-  const placeId = await searchPlaceByText(name, apiKey)
-  if (!placeId) {
-    throw new Error("Aucun établissement trouvé pour cette URL.")
+
+  // 3. Fallback : utilise l'URL elle-même comme texte de recherche
+  //    Places API searchText est suffisamment robuste pour parser des URL
+  //    et identifier le lieu correspondant dans la plupart des cas.
+  try {
+    const placeId = await searchPlaceByText(resolved, apiKey)
+    if (placeId) return getPlaceDetails(placeId, apiKey)
+  } catch {
+    // ignore — on essaie un dernier fallback ci-dessous
   }
-  return getPlaceDetails(placeId, apiKey)
+
+  // 4. Dernier recours : URL brute (cas où la résolution a échoué)
+  if (resolved !== rawUrl) {
+    try {
+      const placeId = await searchPlaceByText(rawUrl, apiKey)
+      if (placeId) return getPlaceDetails(placeId, apiKey)
+    } catch {
+      // ignore
+    }
+  }
+
+  throw new Error(
+    "Impossible de trouver l'établissement. " +
+    "Va sur Google Maps, ouvre ta fiche, copie le lien depuis le bouton Partager, et réessaie. " +
+    "Évite les liens raccourcis comme share.google si possible."
+  )
 }

@@ -99,6 +99,25 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
           </div>
         </div>
 
+        {/* ── Bandeau de reprise (si session en cours) ── */}
+        {initialSession && (
+          <div style={s.resumeBanner} className="fade-up">
+            <div style={s.resumeIcon}>
+              <Clock size={18} color="#60a5fa" weight="fill" />
+            </div>
+            <div style={s.resumeBody}>
+              <div style={s.resumeTitle}>Tu reprends ton audit</div>
+              <div style={s.resumeDesc}>
+                Tes réponses précédentes sont chargées — continue là où tu t'étais
+                arrêté. Tes modifications sont auto-sauvegardées.
+              </div>
+            </div>
+            <Link href="/dashboard/outils/audit-gbp" style={s.resumeReset}>
+              Recommencer
+            </Link>
+          </div>
+        )}
+
         {/* ── Modes Express — uniquement si pas de session en cours ── */}
         {!initialSession && (
           <div style={s.expressGrid} className="fade-up">
@@ -245,6 +264,40 @@ const s: Record<string, React.CSSProperties> = {
 
   section: {
     marginBottom: '20px',
+  },
+
+  /* Bandeau de reprise */
+  resumeBanner: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    padding: '14px 18px',
+    background: 'rgba(96,165,250,0.05)',
+    border: '1px solid rgba(96,165,250,0.18)',
+    borderRadius: '12px', marginBottom: '16px',
+  },
+  resumeIcon: {
+    width: '36px', height: '36px', borderRadius: '10px',
+    background: 'rgba(96,165,250,0.12)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  resumeBody: { flex: 1, minWidth: 0 },
+  resumeTitle: {
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+    marginBottom: '2px',
+  },
+  resumeDesc: {
+    fontSize: '12px', color: 'var(--text-2)',
+    lineHeight: 1.5,
+  },
+  resumeReset: {
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--bg-2, rgba(255,255,255,0.02))',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    padding: '7px 12px',
+    textDecoration: 'none',
+    flexShrink: 0,
   },
 
   /* Mode Express grid (2 cartes) */
