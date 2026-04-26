@@ -249,6 +249,9 @@ const styles: Record<string, React.CSSProperties> = {
   sidebar: {
     position: 'fixed', top: 0, left: 0, bottom: 0,
     width: 'var(--sidebar-w)',
+    // Sur iOS Safari, 100vh inclut la barre d'URL même quand elle masque le contenu.
+    // 100dvh (dynamic viewport height) s'ajuste correctement.
+    height: '100dvh',
     background: 'var(--nav-bg)',
     borderRight: '1px solid var(--nav-border)',
     display: 'flex', flexDirection: 'column',

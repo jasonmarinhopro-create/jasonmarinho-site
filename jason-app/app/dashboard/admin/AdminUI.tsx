@@ -178,7 +178,14 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
                 <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '2px' }}>
                   Formation la plus commencée
                 </div>
-                <div style={{ fontSize: '14px', fontWeight: 600, color: '#FFD56B', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{
+                  fontSize: '14px', fontWeight: 600, color: '#FFD56B', lineHeight: 1.3,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical' as const,
+                  overflow: 'hidden',
+                  wordBreak: 'break-word',
+                }} title={stats.topFormation.title}>
                   {stats.topFormation.title}
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '2px' }}>

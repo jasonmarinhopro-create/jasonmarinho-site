@@ -53,7 +53,8 @@ export default async function AdminPage() {
     supabase.from('user_formations').select('formation_id, formations(title)'),
   ])
 
-  // Formation la plus commencée
+  // Formation la plus commencée — tri par count desc puis titre alphabétique
+  // (tiebreaker déterministe : sans ça, l'ordre des Object.values dépend de l'insertion).
   const formationCounts: Record<string, { title: string; count: number }> = {}
   for (const uf of formationEnrollments ?? []) {
     const fid = uf.formation_id as string
@@ -62,7 +63,10 @@ export default async function AdminPage() {
     if (!formationCounts[fid]) formationCounts[fid] = { title, count: 0 }
     formationCounts[fid].count++
   }
-  const topFormation = Object.values(formationCounts).sort((a, b) => b.count - a.count)[0] ?? null
+  const topFormation = Object.values(formationCounts).sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count
+    return a.title.localeCompare(b.title, 'fr')  // tiebreaker alphabétique FR
+  })[0] ?? null
 
   return (
     <>
