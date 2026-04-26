@@ -29,10 +29,8 @@ const navGroups = [
     ],
   },
   {
-    label: 'Services',
+    label: 'Gestion',
     items: [
-      { href: '/dashboard/gabarits',    label: 'Gabarits',          icon: FileText },
-      { href: '/dashboard/securite',    label: 'Sécurité Voyageur', icon: ShieldCheck },
       { href: '/dashboard/logements',   label: 'Mes Logements',     icon: House },
       { href: '/dashboard/voyageurs',   label: 'Mes Voyageurs',     icon: Users },
       { href: '/dashboard/revenus',     label: 'Revenus',           icon: ChartBar },
@@ -42,7 +40,9 @@ const navGroups = [
   {
     label: 'Outils',
     items: [
-      { href: '/dashboard/outils/audit-gbp', label: 'Audit GBP', icon: MagnifyingGlass },
+      { href: '/dashboard/outils/audit-gbp', label: 'Audit GBP',         icon: MagnifyingGlass },
+      { href: '/dashboard/gabarits',          label: 'Gabarits',          icon: FileText },
+      { href: '/dashboard/securite',          label: 'Sécurité Voyageur', icon: ShieldCheck },
     ],
   },
   {

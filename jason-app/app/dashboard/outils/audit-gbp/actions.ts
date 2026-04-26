@@ -29,6 +29,24 @@ export async function startAuditSession(meta?: { businessName?: string; city?: s
   return { ok: { sessionId: data.id } }
 }
 
+export async function updateAuditMeta(sessionId: string, meta: { businessName?: string; city?: string }): Promise<ActionResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
+
+  const { error } = await supabase
+    .from('audit_gbp_sessions')
+    .update({
+      business_name: meta.businessName ?? null,
+      city: meta.city ?? null,
+    })
+    .eq('id', sessionId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+  return { ok: undefined }
+}
+
 export async function saveAuditAnswers(sessionId: string, answers: Record<string, AnswerValue>): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
