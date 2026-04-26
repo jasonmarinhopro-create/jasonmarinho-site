@@ -2,12 +2,31 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapPin, CheckCircle, XCircle, ArrowRight, Star, Warning } from '@phosphor-icons/react'
+import { MapPin, CheckCircle, XCircle, ArrowRight, Star, Warning, Info } from '@phosphor-icons/react'
 import { previewMapsUrl, startAuditFromMapsUrl } from '../place-actions'
 import type { PlacesImportResult } from '@/lib/audit-gbp/places-mapper'
 
 interface Props {
   userId: string | null
+}
+
+// Détecte les URL non supportées ou à risque avant l'appel serveur
+function getUrlWarning(url: string): { level: 'block' | 'warn'; message: string } | null {
+  const trimmed = url.trim().toLowerCase()
+  if (!trimmed) return null
+  if (trimmed.includes('share.google/')) {
+    return {
+      level: 'block',
+      message: 'Ce lien raccourci n\'est pas supporté. Va sur Google Maps, ouvre ta fiche, et copie l\'URL longue depuis la barre d\'adresse (commence par https://www.google.com/maps/place/...).',
+    }
+  }
+  if (trimmed.includes('maps.app.goo.gl/') || trimmed.includes('goo.gl/maps/')) {
+    return {
+      level: 'warn',
+      message: 'Ce lien raccourci risque de ne pas fonctionner. Préfère copier l\'URL longue depuis la barre d\'adresse de Google Maps.',
+    }
+  }
+  return null
 }
 
 export default function ImportUrlForm({ userId }: Props) {
@@ -16,6 +35,7 @@ export default function ImportUrlForm({ userId }: Props) {
   const [result, setResult] = useState<PlacesImportResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const urlWarning = getUrlWarning(url)
 
   if (!userId) {
     return <div style={s.gate}>Connecte-toi pour utiliser cette fonctionnalité.</div>
@@ -53,12 +73,12 @@ export default function ImportUrlForm({ userId }: Props) {
       {!result && (
         <div style={s.formBlock}>
           <label style={s.label}>
-            <span style={s.labelText}>URL Google Maps de ta fiche</span>
+            <span style={s.labelText}>URL Google Maps de ta fiche (URL longue)</span>
             <input
               type="url"
               value={url}
               onChange={e => setUrl(e.target.value)}
-              placeholder="https://share.google/... ou https://maps.google.com/..."
+              placeholder="https://www.google.com/maps/place/Ton-Logement/..."
               style={s.input}
               disabled={isPending}
               onKeyDown={e => {
@@ -70,6 +90,15 @@ export default function ImportUrlForm({ userId }: Props) {
             />
           </label>
 
+          {urlWarning && !error && (
+            <div style={urlWarning.level === 'block' ? s.error : s.warning}>
+              {urlWarning.level === 'block'
+                ? <Warning size={14} weight="fill" />
+                : <Info size={14} weight="fill" />}
+              {urlWarning.message}
+            </div>
+          )}
+
           {error && (
             <div style={s.error}>
               <Warning size={14} weight="fill" /> {error}
@@ -79,10 +108,10 @@ export default function ImportUrlForm({ userId }: Props) {
           <button
             type="button"
             onClick={onPreview}
-            disabled={!url.trim() || isPending}
+            disabled={!url.trim() || isPending || urlWarning?.level === 'block'}
             style={{
               ...s.btnPrimary,
-              ...((!url.trim() || isPending) ? s.btnDisabled : {}),
+              ...((!url.trim() || isPending || urlWarning?.level === 'block') ? s.btnDisabled : {}),
             }}
           >
             <MapPin size={15} weight="fill" />
@@ -211,11 +240,20 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   error: {
-    display: 'flex', alignItems: 'center', gap: '8px',
+    display: 'flex', alignItems: 'flex-start', gap: '8px',
     padding: '11px 14px',
     background: 'rgba(239,68,68,0.08)',
     color: '#ef4444', fontSize: '13px',
     borderRadius: '10px', marginTop: '10px', marginBottom: '14px',
+    lineHeight: 1.55,
+  },
+  warning: {
+    display: 'flex', alignItems: 'flex-start', gap: '8px',
+    padding: '11px 14px',
+    background: 'rgba(251,146,60,0.08)',
+    color: '#fb923c', fontSize: '13px',
+    borderRadius: '10px', marginTop: '10px', marginBottom: '14px',
+    lineHeight: 1.55,
   },
 
   preview: {

@@ -197,7 +197,8 @@ export async function fetchPlaceFromMapsUrl(rawUrl: string, apiKey: string): Pro
 
   throw new Error(
     "Impossible de trouver l'établissement. " +
-    "Va sur Google Maps, ouvre ta fiche, copie le lien depuis le bouton Partager, et réessaie. " +
-    "Évite les liens raccourcis comme share.google si possible."
+    "Va sur Google Maps, ouvre ta fiche, et copie l'URL longue depuis la barre d'adresse " +
+    "(elle commence par https://www.google.com/maps/place/...). " +
+    "N'utilise pas le bouton Partager : il génère un lien raccourci non supporté."
   )
 }

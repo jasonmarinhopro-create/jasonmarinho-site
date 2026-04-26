@@ -3,6 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import AuditWizard from './AuditWizard'
+import AuditHistory, { type PastAudit } from './AuditHistory'
 import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning, FileCsv, MapPin } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic  = 'force-dynamic'
@@ -166,43 +167,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
 
         {/* ── Historique des audits ── */}
         {pastAudits && pastAudits.length > 0 && (
-          <div style={s.history} className="fade-up">
-            <h2 style={s.historyTitle}>Tes audits précédents</h2>
-            <div style={s.historyList}>
-              {pastAudits.map(a => (
-                <Link
-                  key={a.id}
-                  href={a.completed_at
-                    ? `/dashboard/outils/audit-gbp/resultats/${a.id}`
-                    : `/dashboard/outils/audit-gbp?session=${a.id}`}
-                  style={s.historyItem}
-                >
-                  <div style={s.historyItemLeft}>
-                    <span style={s.historyDate}>
-                      {new Date(a.started_at).toLocaleDateString('fr-FR', {
-                        day: '2-digit', month: 'long', year: 'numeric',
-                      })}
-                    </span>
-                    {a.business_name && <span style={s.historyName}>{a.business_name}</span>}
-                  </div>
-                  <div style={s.historyRight}>
-                    {a.completed_at ? (
-                      <span style={{
-                        ...s.historyScore,
-                        background: scoreColor(a.score_global ?? 0) + '18',
-                        color: scoreColor(a.score_global ?? 0),
-                      }}>
-                        {a.score_global}/100
-                      </span>
-                    ) : (
-                      <span style={s.historyDraft}>Brouillon</span>
-                    )}
-                    <ArrowRight size={14} color="var(--text-muted)" weight="bold" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
+          <AuditHistory audits={pastAudits as PastAudit[]} />
         )}
 
       </div>
