@@ -274,6 +274,8 @@ export async function getFullMemberProfile(memberId: string) {
     { count: signalementsCount },
     { count: suggestionsCount },
     { count: sejoursCount },
+    { data: communityMemberships },
+    { data: audits },
   ] = await Promise.all([
     adminClient
       .from('profiles')
@@ -291,9 +293,40 @@ export async function getFullMemberProfile(memberId: string) {
     adminClient.from('reported_guests').select('*', { count: 'exact', head: true }).eq('reporter_id', memberId),
     adminClient.from('suggestions').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
     adminClient.from('sejours').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    // ─── Communauté Facebook : groupes rejoints + portée ───
+    adminClient
+      .from('user_community_memberships')
+      .select('group_id, status, group:community_groups(id, name, member_count)')
+      .eq('user_id', memberId)
+      .eq('status', 'joined'),
+    // ─── Audits GBP : sessions complétées + brouillons ───
+    adminClient
+      .from('audit_gbp_sessions')
+      .select('id, business_name, started_at, completed_at, score_global')
+      .eq('user_id', memberId)
+      .order('started_at', { ascending: false })
+      .limit(5),
   ])
 
   if (!memberProfile) return { error: 'Membre introuvable' }
+
+  // Normalise et calcule la portée totale des groupes rejoints
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const joinedGroups = (communityMemberships ?? []).map((m: any) => {
+    const g = Array.isArray(m.group) ? m.group[0] : m.group
+    return {
+      id: g?.id ?? m.group_id,
+      name: (g?.name as string) ?? null,
+      member_count: (g?.member_count as number) ?? 0,
+    }
+  })
+  const totalReach = joinedGroups.reduce((sum, g) => sum + (g.member_count ?? 0), 0)
+
+  // Audits : split complétés vs brouillons
+  const auditsData = audits ?? []
+  const completedAudits = auditsData.filter(a => a.completed_at)
+  const draftAudits = auditsData.filter(a => !a.completed_at)
+  const bestScore = completedAudits.reduce((max, a) => Math.max(max, a.score_global ?? 0), 0)
 
   return {
     profile: memberProfile,
@@ -305,7 +338,14 @@ export async function getFullMemberProfile(memberId: string) {
       signalements: signalementsCount ?? 0,
       suggestions: suggestionsCount ?? 0,
       sejours: sejoursCount ?? 0,
+      communityGroupsCount: joinedGroups.length,
+      communityTotalReach: totalReach,
+      auditsCount: auditsData.length,
+      auditsCompleted: completedAudits.length,
+      auditsBestScore: bestScore,
     },
+    community: { joinedGroups },
+    audits: auditsData,
   }
 }
 

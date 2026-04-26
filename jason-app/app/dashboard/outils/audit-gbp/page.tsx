@@ -238,6 +238,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(96,165,250,0.05)',
     border: '1px solid rgba(96,165,250,0.18)',
     borderRadius: '12px', marginBottom: '16px',
+    flexWrap: 'wrap' as const,
   },
   resumeIcon: {
     width: '36px', height: '36px', borderRadius: '10px',

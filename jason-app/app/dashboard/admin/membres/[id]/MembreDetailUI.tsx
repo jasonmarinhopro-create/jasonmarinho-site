@@ -6,7 +6,7 @@ import {
   ArrowLeft, GraduationCap, UsersFour, CalendarBlank,
   BookmarkSimple, PencilSimple, Flag, Lightbulb, Lightning,
   Pencil, Check, X, Note, SpinnerGap, EnvelopeSimple,
-  ArrowClockwise,
+  ArrowClockwise, FacebookLogo, MagnifyingGlass, Trophy,
 } from '@phosphor-icons/react'
 import { updateAdminNotes, changeUserPlan } from '../../actions'
 
@@ -43,12 +43,33 @@ interface MemberStats {
   customizations: number
   signalements: number
   suggestions: number
+  communityGroupsCount: number
+  communityTotalReach: number
+  auditsCount: number
+  auditsCompleted: number
+  auditsBestScore: number
+}
+
+interface CommunityGroup {
+  id: string
+  name: string | null
+  member_count: number
+}
+
+interface AuditSession {
+  id: string
+  business_name: string | null
+  started_at: string
+  completed_at: string | null
+  score_global: number | null
 }
 
 interface Props {
   profile: MemberProfile
   formations: UserFormation[]
   stats: MemberStats
+  community?: { joinedGroups: CommunityGroup[] }
+  audits?: AuditSession[]
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -69,8 +90,14 @@ const PLAN_CFG: Record<string, { label: string; color: string; bg: string }> = {
   decouverte: { label: 'Découverte',    color: 'var(--text-3)', bg: 'var(--surface-2)' },
 }
 
+function formatReach(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')} M`
+  if (n >= 1_000) return `${Math.round(n / 1_000)} k`
+  return String(n)
+}
+
 // ── Main component ──────────────────────────────────────────────────────────
-export default function MembreDetailUI({ profile, formations, stats }: Props) {
+export default function MembreDetailUI({ profile, formations, stats, community, audits }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -133,7 +160,12 @@ export default function MembreDetailUI({ profile, formations, stats }: Props) {
     { icon: <PencilSimple size={16} />, value: stats.customizations, label: 'Gabarits perso.', color: '#C084FC' },
     { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: '#f87171' },
     { icon: <Lightbulb size={16} />, value: stats.suggestions,    label: 'Suggestions',      color: '#FB923C' },
+    { icon: <FacebookLogo size={16} />, value: stats.communityGroupsCount, label: 'Groupes FB rejoints', color: '#60A5FA' },
+    { icon: <MagnifyingGlass size={16} />, value: stats.auditsCount, label: 'Audits GBP', color: '#A78BFA' },
   ]
+
+  const joinedGroups = community?.joinedGroups ?? []
+  const auditList = audits ?? []
 
   return (
     <div style={s.page}>
@@ -284,6 +316,87 @@ export default function MembreDetailUI({ profile, formations, stats }: Props) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── Communauté Facebook ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>
+            <FacebookLogo size={16} color="#60A5FA" weight="fill" />
+            Communauté Facebook ({stats.communityGroupsCount} groupe{stats.communityGroupsCount > 1 ? 's' : ''})
+          </div>
+          {stats.communityTotalReach > 0 && (
+            <span style={{ ...s.pill, background: 'rgba(96,165,250,0.1)', color: '#60A5FA' }}>
+              <Lightning size={11} weight="fill" />
+              Portée {formatReach(stats.communityTotalReach)} membres
+            </span>
+          )}
+        </div>
+        {joinedGroups.length === 0 ? (
+          <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '14px 0' }}>
+            N'a rejoint aucun groupe Facebook pour le moment.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {joinedGroups.map(g => (
+              <div key={g.id} style={s.commItem}>
+                <FacebookLogo size={14} color="#60A5FA" weight="fill" />
+                <span style={{ flex: 1, fontSize: '13.5px', color: 'var(--text)' }}>
+                  {g.name ?? 'Groupe sans nom'}
+                </span>
+                <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
+                  {formatReach(g.member_count ?? 0)} membres
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Audits GBP ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>
+            <MagnifyingGlass size={16} color="#A78BFA" weight="fill" />
+            Audits GBP ({stats.auditsCount} dont {stats.auditsCompleted} complété{stats.auditsCompleted > 1 ? 's' : ''})
+          </div>
+          {stats.auditsBestScore > 0 && (
+            <span style={{ ...s.pill, background: 'rgba(167,139,250,0.1)', color: '#A78BFA' }}>
+              <Trophy size={11} weight="fill" />
+              Meilleur score : {stats.auditsBestScore}/100
+            </span>
+          )}
+        </div>
+        {auditList.length === 0 ? (
+          <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '14px 0' }}>
+            N'a pas encore lancé d'audit GBP.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {auditList.map(a => (
+              <div key={a.id} style={s.commItem}>
+                <MagnifyingGlass size={14} color="#A78BFA" weight="fill" />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '13px', color: 'var(--text)' }}>
+                    {a.business_name ?? 'Sans nom'}
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' }}>
+                    {formatDateShort(a.started_at)}
+                  </div>
+                </div>
+                {a.completed_at ? (
+                  <span style={{ ...s.pill, background: 'rgba(167,139,250,0.12)', color: '#A78BFA' }}>
+                    {a.score_global}/100
+                  </span>
+                ) : (
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                    Brouillon
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Formations ── */}
@@ -482,12 +595,19 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   statsGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px',
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '10px',
   },
   statTile: {
     display: 'flex', flexDirection: 'column', gap: '5px',
     padding: '14px 12px', border: '1px solid',
     borderRadius: '12px',
+  },
+  commItem: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '10px 12px',
+    background: 'var(--surface-2, rgba(255,255,255,0.02))',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
   },
 
   formationsList: { display: 'flex', flexDirection: 'column', gap: '16px' },
