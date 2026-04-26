@@ -693,7 +693,7 @@ const sf: Record<string, React.CSSProperties> = {
 // ── styles ───────────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  main:     { padding: 'clamp(20px,3vw,40px)', maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '20px' },
+  main:     { padding: 'clamp(20px,3vw,40px)', width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' },
   pageHead: { marginBottom: '4px' },
   pageTitle:{ fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px' },
   pageSub:  { fontSize: '14px', color: 'var(--text-2)', margin: 0 },

@@ -183,7 +183,7 @@ function scoreColor(score: number): string {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '960px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
 
   hero: {
     background: 'var(--surface)',

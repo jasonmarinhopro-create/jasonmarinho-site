@@ -340,7 +340,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '900px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   toolbar: {
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
     gap: '16px', flexWrap: 'wrap', marginBottom: '28px',
