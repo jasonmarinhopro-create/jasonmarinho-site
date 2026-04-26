@@ -47,9 +47,9 @@ export async function updateAuditMeta(sessionId: string, meta: { businessName?: 
   return { ok: undefined }
 }
 
-// On accepte aussi des meta-clés (commençant par __) qui peuvent être string[].
+// On accepte aussi des meta-clés (commençant par __) qui peuvent être string[] ou string.
 // Les helpers de scoring filtrent par question.id donc ces clés sont ignorées.
-type AnswersPayload = Record<string, AnswerValue | string[]>
+type AnswersPayload = Record<string, AnswerValue | string[] | string>
 
 export async function saveAuditAnswers(sessionId: string, answers: AnswersPayload): Promise<ActionResult> {
   const supabase = await createClient()

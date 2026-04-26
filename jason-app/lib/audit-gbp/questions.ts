@@ -358,6 +358,21 @@ export const QUESTIONS: Question[] = [
 
 // ─── HELPERS DE SCORING ───
 
+// Renvoie la valeur "optimale" (qui donne le score max) pour une question donnée.
+// Utilisé pour le mode rapide : pré-cocher les meilleures réponses puis l'user vérifie.
+export function getOptimalAnswer(question: Question): AnswerValue | null {
+  if (question.type === 'boolean') return true
+  if (question.type === 'choice' && question.options) {
+    const best = question.options.find(o => o.score === question.maxScore)
+    return best ? best.value : null
+  }
+  if (question.type === 'number_bucket' && question.buckets) {
+    const best = question.buckets.find(b => b.score === question.maxScore)
+    return best ? best.min : null
+  }
+  return null
+}
+
 export function getQuestionScore(question: Question, value: AnswerValue): number {
   if (question.type === 'boolean') {
     return value === true ? question.maxScore : 0
