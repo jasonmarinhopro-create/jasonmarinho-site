@@ -3,11 +3,12 @@
 import { useState, useTransition, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X } from '@phosphor-icons/react'
+import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
 import { stripMarkdown } from '@/lib/chez-nous/markdown'
+import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import { createPost, togglePostVote } from './actions'
 
@@ -25,6 +26,7 @@ type Post = {
   created_at: string
   edited_at: string | null
   has_voted: boolean
+  is_resolved: boolean
 }
 
 type Author = {
@@ -34,9 +36,10 @@ type Author = {
   is_contributor: boolean
   created_at: string | null
   badges: BadgeId[]
+  proStats: ProStats | null
 }
 
-type Sort = 'recent' | 'popular' | 'unanswered'
+type Sort = 'recent' | 'popular' | 'unanswered' | 'unresolved'
 
 type TopMember = {
   id: string
@@ -115,6 +118,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
               <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     search={currentSearch} icon={Clock} label="Récent" />
               <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    search={currentSearch} icon={Fire}  label="Populaire" />
               <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="Sans réponse" />
+              <SortChip cat={currentCategory} sort="unresolved" active={currentSort === 'unresolved'} search={currentSearch} icon={CheckCircle} label="Non résolu" />
             </div>
             <button onClick={() => setShowForm(v => !v)} style={s.newBtn}>
               <Plus size={15} weight="bold" />
@@ -318,6 +322,11 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
       <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postBody}>
         <div style={s.postMeta}>
           <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>{cat.short}</span>
+          {post.is_resolved && (
+            <span style={s.resolvedChip}>
+              <CheckCircle size={11} weight="fill" /> Résolu
+            </span>
+          )}
           {post.pinned && <PushPin size={12} color="var(--accent-text)" weight="fill" />}
           {post.locked && <Lock size={12} color="#94a3b8" weight="fill" />}
           {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
@@ -330,6 +339,9 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
             {author?.is_contributor && <span style={s.contribDot} title="Contributeur" />}
             {author?.role === 'admin' && <span style={s.adminTag}>admin</span>}
           </span>
+          {author?.proStats && formatProStats(author.proStats) && (
+            <span style={s.proStatsTxt}>{formatProStats(author.proStats)}</span>
+          )}
           {(author?.badges ?? []).slice(0, 3).map(bid => (
             <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
               {BADGES[bid].label}
@@ -807,6 +819,14 @@ const s: Record<string, React.CSSProperties> = {
     textDecoration: 'none', color: 'inherit',
   },
   postMeta: { display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' },
+  resolvedChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '3px',
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase' as const,
+    color: '#10b981',
+    background: 'rgba(16,185,129,0.10)',
+    border: '1px solid rgba(16,185,129,0.25)',
+    padding: '2px 7px', borderRadius: '999px',
+  },
   catChip: {
     fontSize: '10px', fontWeight: 700,
     letterSpacing: '0.4px', textTransform: 'uppercase' as const,
@@ -830,6 +850,11 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '6px',
     fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px',
     flexWrap: 'wrap' as const,
+  },
+  proStatsTxt: {
+    fontSize: '11px', color: 'var(--text-muted)',
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    padding: '1px 7px', borderRadius: '999px',
   },
   postFootName: {
     color: 'var(--text-2)', fontWeight: 500,

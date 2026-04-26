@@ -150,6 +150,86 @@ export async function updateReply(input: {
   return { ok: true }
 }
 
+// ─── REPORTS ──────────────────────────────────────────────────────────────
+
+const REPORT_REASONS = ['off_topic', 'spam', 'aggressive', 'other'] as const
+
+export async function reportContent(input: {
+  postId?: string | null
+  replyId?: string | null
+  reason: string
+  message?: string | null
+}): Promise<{ ok: boolean; error?: string }> {
+  const { supabase, userId } = await requireAuth()
+
+  if (!input.postId && !input.replyId) return { ok: false, error: 'Cible manquante' }
+  if (!REPORT_REASONS.includes(input.reason as typeof REPORT_REASONS[number])) {
+    return { ok: false, error: 'Raison invalide' }
+  }
+
+  const message = input.message?.trim().slice(0, 500) || null
+
+  const { error } = await supabase.from('chez_nous_reports').insert({
+    reporter_id: userId,
+    post_id:     input.postId ?? null,
+    reply_id:    input.replyId ?? null,
+    reason:      input.reason,
+    message,
+  })
+
+  if (error) return { ok: false, error: error.message }
+
+  // Notification admin (fire-and-forget)
+  const { sendAdminEmail } = await import('@/lib/email/admin')
+  void sendAdminEmail({
+    subject: `[Chez Nous] Signalement : ${input.reason}`,
+    text:
+      `Un membre a signalé un contenu Chez Nous.\n\n` +
+      `Raison : ${input.reason}\n` +
+      (message ? `Message : ${message}\n` : '') +
+      (input.postId ? `Post : https://app.jasonmarinho.com/dashboard/chez-nous/${input.postId}\n` : '') +
+      (input.replyId ? `Reply ID : ${input.replyId}\n` : ''),
+  })
+
+  return { ok: true }
+}
+
+// ─── ACCEPTED REPLY ───────────────────────────────────────────────────────
+
+export async function acceptReply(postId: string, replyId: string | null): Promise<{ ok: boolean; error?: string }> {
+  const { supabase, userId } = await requireAuth()
+
+  // Vérifier que c'est bien l'auteur du post
+  const { data: post } = await supabase
+    .from('chez_nous_posts')
+    .select('author_id')
+    .eq('id', postId)
+    .maybeSingle()
+
+  if (!post)                       return { ok: false, error: 'Post introuvable' }
+  if (post.author_id !== userId)   return { ok: false, error: 'Seul l\'auteur du post peut accepter une réponse' }
+
+  // Si replyId, vérifier qu'il appartient bien au post
+  if (replyId) {
+    const { data: reply } = await supabase
+      .from('chez_nous_replies')
+      .select('post_id')
+      .eq('id', replyId)
+      .maybeSingle()
+    if (!reply || reply.post_id !== postId) return { ok: false, error: 'Réponse invalide' }
+  }
+
+  const { error } = await supabase
+    .from('chez_nous_posts')
+    .update({ accepted_reply_id: replyId })
+    .eq('id', postId)
+
+  if (error) return { ok: false, error: error.message }
+  revalidatePath(`/dashboard/chez-nous/${postId}`)
+  revalidatePath('/dashboard/chez-nous')
+  return { ok: true }
+}
+
 // ─── VOTES ────────────────────────────────────────────────────────────────
 
 export async function togglePostVote(postId: string, hasVoted: boolean): Promise<{ ok: boolean; voted?: boolean; error?: string }> {

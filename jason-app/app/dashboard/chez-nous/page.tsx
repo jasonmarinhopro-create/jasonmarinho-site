@@ -5,6 +5,7 @@ import Header from '@/components/layout/Header'
 import ChezNousFeed from './ChezNousFeed'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 import { computeBadges, type BadgeId } from '@/lib/badges'
+import { getBulkProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 
 export const dynamic  = 'force-dynamic'
 export const metadata = { title: 'Chez Nous — Jason Marinho' }
@@ -17,18 +18,19 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
 
   const sp       = await searchParams
   const supabase = await createClient()
-  const sort     = (sp.sort as 'recent' | 'popular' | 'unanswered') ?? 'recent'
+  const sort     = (sp.sort as 'recent' | 'popular' | 'unanswered' | 'unresolved') ?? 'recent'
   const q        = sp.q?.trim() ?? ''
 
   // Posts (avec filtres)
   let query = supabase
     .from('chez_nous_posts')
-    .select('id, author_id, category, title, body, pinned, locked, reply_count, vote_count, last_reply_at, created_at, edited_at')
+    .select('id, author_id, category, title, body, pinned, locked, reply_count, vote_count, last_reply_at, created_at, edited_at, accepted_reply_id')
     .order('pinned', { ascending: false })
     .limit(50)
 
   if (sort === 'popular')         query = query.order('vote_count', { ascending: false }).order('created_at', { ascending: false })
   else if (sort === 'unanswered') query = query.eq('reply_count', 0).order('created_at', { ascending: false })
+  else if (sort === 'unresolved') query = query.is('accepted_reply_id', null).order('last_reply_at', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
   else                            query = query.order('last_reply_at', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
 
   if (sp.cat && sp.cat !== 'all') query = query.eq('category', sp.cat)
@@ -42,14 +44,25 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   const { data: postsRaw } = await query
   const posts = postsRaw ?? []
 
-  // Auteurs en bulk
+  // Auteurs en bulk (avec privacy flags pour computer les pro stats)
   const authorIds = Array.from(new Set(posts.map(p => p.author_id)))
   const { data: authorsData } = authorIds.length
     ? await supabase
         .from('profiles')
-        .select('id, full_name, pseudo, role, is_contributor, created_at')
+        .select('id, full_name, pseudo, role, is_contributor, created_at, privacy_show_logements, privacy_show_city')
         .in('id', authorIds)
     : { data: [] }
+
+  // Pro stats compactes (logements, ville, ancienneté)
+  const proStatsByUser = await getBulkProStats(
+    supabase,
+    (authorsData ?? []).map(a => ({
+      id: a.id,
+      created_at: a.created_at,
+      privacy_show_logements: a.privacy_show_logements,
+      privacy_show_city: a.privacy_show_city,
+    })),
+  )
 
   // Données pour calculer les badges des auteurs
   const [
@@ -95,6 +108,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     is_contributor: boolean
     created_at: string | null
     badges: BadgeId[]
+    proStats: ProStats | null
   }> = {}
   ;(authorsData ?? []).forEach(a => {
     authorsMap[a.id] = {
@@ -104,6 +118,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
       is_contributor: a.is_contributor ?? false,
       created_at: a.created_at,
       badges: badgesByUser[a.id] ?? [],
+      proStats: proStatsByUser[a.id] ?? null,
     }
   })
 
@@ -162,6 +177,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
           created_at:    p.created_at,
           edited_at:     p.edited_at,
           has_voted:     myVotedSet.has(p.id),
+          is_resolved:   !!p.accepted_reply_id,
         }))}
         authorsMap={authorsMap}
         currentUserId={profile.userId}
