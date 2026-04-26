@@ -3,10 +3,17 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ChatCircle, PushPin, Lock, Trash, LockOpen } from '@phosphor-icons/react'
-import { CATEGORIES, type CategoryId } from '@/lib/chez-nous/categories'
+import {
+  ArrowLeft, ChatCircle, PushPin, Lock, Trash, LockOpen,
+  ArrowFatUp, Pencil, X, Check,
+} from '@phosphor-icons/react'
+import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
-import { createReply, deletePost, deleteReply, togglePinPost, toggleLockPost } from '../actions'
+import { BADGES, type BadgeId } from '@/lib/badges'
+import {
+  createReply, deletePost, deleteReply, togglePinPost, toggleLockPost,
+  updatePost, updateReply, togglePostVote,
+} from '../actions'
 
 type Author = {
   full_name: string | null
@@ -14,6 +21,7 @@ type Author = {
   role: string | null
   is_contributor: boolean
   created_at: string | null
+  badges: BadgeId[]
 }
 
 type Post = {
@@ -25,7 +33,10 @@ type Post = {
   pinned: boolean
   locked: boolean
   reply_count: number
+  vote_count: number
   created_at: string
+  edited_at: string | null
+  has_voted: boolean
 }
 
 type Reply = {
@@ -33,6 +44,7 @@ type Reply = {
   author_id: string
   body: string
   created_at: string
+  edited_at: string | null
 }
 
 type Props = {
@@ -52,9 +64,13 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
   const name     = author ? displayName({ pseudo: author.pseudo, full_name: author.full_name }) : 'Anonyme'
 
   const canModerate = isAdmin
+  const canEdit     = post.author_id === currentUserId
   const canDelete   = isAdmin || post.author_id === currentUserId
 
   const [pending, startTransition] = useTransition()
+  const [editing, setEditing] = useState(false)
+  const [voted, setVoted] = useState(post.has_voted)
+  const [voteCount, setVoteCount] = useState(post.vote_count)
 
   const onDelete = () => {
     if (!confirm('Supprimer cette discussion ?')) return
@@ -79,6 +95,16 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
     })
   }
 
+  const onVote = () => {
+    const wasVoted = voted
+    setVoted(!wasVoted)
+    setVoteCount(c => c + (wasVoted ? -1 : 1))
+    startTransition(async () => {
+      await togglePostVote(post.id, wasVoted)
+      router.refresh()
+    })
+  }
+
   return (
     <div style={s.page}>
       <Link href="/dashboard/chez-nous" style={s.back}>
@@ -92,7 +118,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
             {cat.short}
           </span>
           {post.pinned && (
-            <span style={{ ...s.flag, color: '#FFD56B', background: 'rgba(255,213,107,0.12)' }}>
+            <span style={{ ...s.flag, color: '#ffd56b', background: 'rgba(255,213,107,0.12)' }}>
               <PushPin size={11} weight="fill" /> Épinglé
             </span>
           )}
@@ -103,49 +129,82 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
           )}
         </div>
 
-        <h1 style={s.postTitle}>{post.title}</h1>
+        {editing ? (
+          <EditPostForm post={post} onCancel={() => setEditing(false)} onSaved={() => { setEditing(false); router.refresh() }} />
+        ) : (
+          <>
+            <h1 style={s.postTitle}>{post.title}</h1>
 
-        <div style={s.authorRow}>
-          <div style={{ ...s.avatar, background: av.bg, color: av.text }}>{initials}</div>
-          <div style={s.authorInfo}>
-            <span style={s.authorName}>
-              {name}
-              {author?.is_contributor && <span style={s.contribDot} title="Contributeur" />}
-              {author?.role === 'admin' && <span style={s.adminTag}>admin</span>}
-            </span>
-            <span style={s.authorDate}>{formatRelative(post.created_at)}</span>
-          </div>
+            <div style={s.authorRow}>
+              <Link href={`/dashboard/chez-nous/membre/${post.author_id}`} style={{ ...s.avatar, background: av.bg, color: av.text }}>
+                {initials}
+              </Link>
+              <div style={s.authorInfo}>
+                <Link href={`/dashboard/chez-nous/membre/${post.author_id}`} style={s.authorNameLink}>
+                  {name}
+                  {author?.is_contributor && <span style={s.contribDot} title="Contributeur" />}
+                  {author?.role === 'admin' && <span style={s.adminTag}>admin</span>}
+                </Link>
+                <div style={s.dateRow}>
+                  <span style={s.authorDate}>{formatRelative(post.created_at)}</span>
+                  {post.edited_at && <span style={s.editedTag}>· modifié</span>}
+                </div>
+                {(author?.badges ?? []).length > 0 && (
+                  <div style={s.badgeStrip}>
+                    {(author?.badges ?? []).slice(0, 4).map(bid => (
+                      <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
+                        {BADGES[bid].label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-          {/* Actions */}
-          <div style={s.actions}>
-            {canModerate && (
-              <>
-                <button onClick={onTogglePin} style={s.actionBtn} disabled={pending} title={post.pinned ? 'Désépingler' : 'Épingler'}>
-                  <PushPin size={13} weight={post.pinned ? 'fill' : 'regular'} />
+              <div style={s.actions}>
+                <button onClick={onVote} disabled={pending} style={{
+                  ...s.voteBtn,
+                  color: voted ? '#ffd56b' : 'var(--text-2)',
+                  background: voted ? 'rgba(255,213,107,0.10)' : 'transparent',
+                  borderColor: voted ? 'rgba(255,213,107,0.3)' : 'var(--border)',
+                }} title={voted ? 'Retirer mon vote' : 'Marquer utile'}>
+                  <ArrowFatUp size={13} weight={voted ? 'fill' : 'regular'} />
+                  <span style={{ fontSize: '12px', fontWeight: 700 }}>{voteCount}</span>
                 </button>
-                <button onClick={onToggleLock} style={s.actionBtn} disabled={pending} title={post.locked ? 'Déverrouiller' : 'Verrouiller'}>
-                  {post.locked ? <LockOpen size={13} /> : <Lock size={13} />}
-                </button>
-              </>
-            )}
-            {canDelete && (
-              <button onClick={onDelete} style={{ ...s.actionBtn, color: '#fb7185' }} disabled={pending} title="Supprimer">
-                <Trash size={13} />
-              </button>
-            )}
-          </div>
-        </div>
+                {canEdit && (
+                  <button onClick={() => setEditing(true)} style={s.actionBtn} title="Modifier">
+                    <Pencil size={13} />
+                  </button>
+                )}
+                {canModerate && (
+                  <>
+                    <button onClick={onTogglePin} style={s.actionBtn} disabled={pending} title={post.pinned ? 'Désépingler' : 'Épingler'}>
+                      <PushPin size={13} weight={post.pinned ? 'fill' : 'regular'} />
+                    </button>
+                    <button onClick={onToggleLock} style={s.actionBtn} disabled={pending} title={post.locked ? 'Déverrouiller' : 'Verrouiller'}>
+                      {post.locked ? <LockOpen size={13} /> : <Lock size={13} />}
+                    </button>
+                  </>
+                )}
+                {canDelete && (
+                  <button onClick={onDelete} style={{ ...s.actionBtn, color: '#fb7185' }} disabled={pending} title="Supprimer">
+                    <Trash size={13} />
+                  </button>
+                )}
+              </div>
+            </div>
 
-        <div style={s.postBody}>
-          {post.body.split('\n').map((line, i) => (
-            <p key={i} style={{ margin: '0 0 8px' }}>{line || ' '}</p>
-          ))}
-        </div>
+            <div style={s.postBody}>
+              {post.body.split('\n').map((line, i) => (
+                <p key={i} style={{ margin: '0 0 8px' }}>{line || ' '}</p>
+              ))}
+            </div>
+          </>
+        )}
       </article>
 
       {/* Réponses */}
       <div style={s.repliesHead}>
-        <ChatCircle size={14} color="#FFD56B" weight="fill" />
+        <ChatCircle size={14} color="#ffd56b" weight="fill" />
         <span>{replies.length} réponse{replies.length > 1 ? 's' : ''}</span>
       </div>
 
@@ -158,48 +217,94 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
           </div>
         ) : (
           replies.map(reply => {
-            const ra  = usersMap[reply.author_id]
-            const rav = colorFromId(reply.author_id)
+            const ra        = usersMap[reply.author_id]
+            const rav       = colorFromId(reply.author_id)
             const rinitials = ra ? displayInitials({ pseudo: ra.pseudo, full_name: ra.full_name }) : '?'
             const rname     = ra ? displayName({ pseudo: ra.pseudo, full_name: ra.full_name }) : 'Anonyme'
-            const canDelReply = isAdmin || reply.author_id === currentUserId
+            const canDelReply  = isAdmin || reply.author_id === currentUserId
+            const canEditReply = reply.author_id === currentUserId
 
             return (
               <ReplyBlock
                 key={reply.id}
                 reply={reply}
                 postId={post.id}
+                authorId={reply.author_id}
                 authorName={rname}
                 authorInitials={rinitials}
                 avatarColor={rav}
+                badges={ra?.badges ?? []}
                 isContributor={ra?.is_contributor ?? false}
                 isAdminAuthor={ra?.role === 'admin'}
                 canDelete={canDelReply}
+                canEdit={canEditReply}
               />
             )
           })
         )}
       </div>
 
-      {/* Form réponse */}
       {!post.locked && <ReplyForm postId={post.id} />}
     </div>
   )
 }
 
-// ─── Reply block ────────────────────────────────────────────────────────
+// ─── Edit post form ─────────────────────────────────────────────────
 
-function ReplyBlock({ reply, postId, authorName, authorInitials, avatarColor, isContributor, isAdminAuthor, canDelete }: {
+function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () => void; onSaved: () => void }) {
+  const [category, setCategory] = useState<CategoryId>(post.category)
+  const [title, setTitle] = useState(post.title)
+  const [body, setBody] = useState(post.body)
+  const [error, setError] = useState<string | null>(null)
+  const [pending, startTransition] = useTransition()
+
+  const submit = () => {
+    setError(null)
+    startTransition(async () => {
+      const res = await updatePost({ postId: post.id, title, body, category })
+      if (res.ok) onSaved()
+      else setError(res.error ?? 'Erreur')
+    })
+  }
+
+  return (
+    <div style={s.editForm}>
+      <select value={category} onChange={e => setCategory(e.target.value as CategoryId)} style={s.select}>
+        {CATEGORY_ORDER.map(cid => (
+          <option key={cid} value={cid}>{CATEGORIES[cid].label}</option>
+        ))}
+      </select>
+      <input type="text" value={title} onChange={e => setTitle(e.target.value)} maxLength={200} style={s.input} />
+      <textarea value={body} onChange={e => setBody(e.target.value)} rows={8} maxLength={8000} style={s.textarea} />
+      {error && <p style={s.error}>{error}</p>}
+      <div style={s.formActions}>
+        <button onClick={onCancel} style={s.btnGhost} disabled={pending}>Annuler</button>
+        <button onClick={submit} style={s.btnPrimary} disabled={pending}>
+          {pending ? 'Enregistrement…' : 'Enregistrer'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ─── Reply block ────────────────────────────────────────────────────
+
+function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avatarColor, badges, isContributor, isAdminAuthor, canDelete, canEdit }: {
   reply: Reply
   postId: string
+  authorId: string
   authorName: string
   authorInitials: string
   avatarColor: { bg: string; text: string }
+  badges: BadgeId[]
   isContributor: boolean
   isAdminAuthor: boolean
   canDelete: boolean
+  canEdit: boolean
 }) {
   const router = useRouter()
+  const [editing, setEditing] = useState(false)
+  const [body, setBody] = useState(reply.body)
   const [pending, startTransition] = useTransition()
 
   const onDelete = () => {
@@ -211,36 +316,75 @@ function ReplyBlock({ reply, postId, authorName, authorInitials, avatarColor, is
     })
   }
 
+  const onSave = () => {
+    startTransition(async () => {
+      const res = await updateReply({ replyId: reply.id, postId, body })
+      if (res.ok) {
+        setEditing(false)
+        router.refresh()
+      } else {
+        alert(res.error)
+      }
+    })
+  }
+
   return (
     <div style={s.replyCard}>
-      <div style={{ ...s.avatar, background: avatarColor.bg, color: avatarColor.text }}>
+      <Link href={`/dashboard/chez-nous/membre/${authorId}`} style={{ ...s.avatar, background: avatarColor.bg, color: avatarColor.text }}>
         {authorInitials}
-      </div>
+      </Link>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={s.replyMeta}>
-          <span style={s.authorName}>
+          <Link href={`/dashboard/chez-nous/membre/${authorId}`} style={s.authorNameLink}>
             {authorName}
             {isContributor && <span style={s.contribDot} />}
             {isAdminAuthor && <span style={s.adminTag}>admin</span>}
-          </span>
-          <span style={s.authorDate}>{formatRelative(reply.created_at)}</span>
-          {canDelete && (
-            <button onClick={onDelete} style={{ ...s.actionBtnSmall, color: '#fb7185' }} disabled={pending}>
-              <Trash size={12} />
-            </button>
-          )}
-        </div>
-        <div style={s.replyBody}>
-          {reply.body.split('\n').map((line, i) => (
-            <p key={i} style={{ margin: '0 0 6px' }}>{line || ' '}</p>
+          </Link>
+          {badges.slice(0, 3).map(bid => (
+            <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
+              {BADGES[bid].label}
+            </span>
           ))}
+          <span style={s.authorDate}>{formatRelative(reply.created_at)}</span>
+          {reply.edited_at && <span style={s.editedTag}>· modifié</span>}
+          <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px' }}>
+            {canEdit && !editing && (
+              <button onClick={() => setEditing(true)} style={s.actionBtnSmall} title="Modifier">
+                <Pencil size={12} />
+              </button>
+            )}
+            {canDelete && (
+              <button onClick={onDelete} style={{ ...s.actionBtnSmall, color: '#fb7185' }} disabled={pending}>
+                <Trash size={12} />
+              </button>
+            )}
+          </div>
         </div>
+        {editing ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '6px' }}>
+            <textarea value={body} onChange={e => setBody(e.target.value)} rows={4} maxLength={4000} style={s.textarea} />
+            <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+              <button onClick={() => { setBody(reply.body); setEditing(false) }} style={s.btnGhostSmall} disabled={pending}>
+                <X size={11} /> Annuler
+              </button>
+              <button onClick={onSave} style={s.btnPrimarySmall} disabled={pending || !body.trim()}>
+                <Check size={11} /> {pending ? '…' : 'Enregistrer'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div style={s.replyBody}>
+            {reply.body.split('\n').map((line, i) => (
+              <p key={i} style={{ margin: '0 0 6px' }}>{line || ' '}</p>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-// ─── Reply form ─────────────────────────────────────────────────────────
+// ─── Reply form ────────────────────────────────────────────────────
 
 function ReplyForm({ postId }: { postId: string }) {
   const router = useRouter()
@@ -265,12 +409,9 @@ function ReplyForm({ postId }: { postId: string }) {
     <div style={s.replyForm}>
       <label style={s.label}>Ta réponse</label>
       <textarea
-        value={body}
-        onChange={e => setBody(e.target.value)}
+        value={body} onChange={e => setBody(e.target.value)}
         placeholder="Réponds, partage ton expérience, propose une piste…"
-        style={s.textarea}
-        rows={5}
-        maxLength={4000}
+        style={s.textarea} rows={5} maxLength={4000}
       />
       <p style={s.helper}>{body.length}/4000</p>
       {error && <p style={s.error}>{error}</p>}
@@ -283,7 +424,7 @@ function ReplyForm({ postId }: { postId: string }) {
   )
 }
 
-// ─── Styles ─────────────────────────────────────────────────────────────
+// ─── Styles ────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '820px' },
@@ -318,32 +459,46 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text)', margin: '4px 0 16px', lineHeight: 1.3,
   },
   authorRow: {
-    display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px',
+    display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '16px',
     paddingBottom: '14px', borderBottom: '1px solid var(--border)',
   },
   avatar: {
-    width: '36px', height: '36px', borderRadius: '50%',
+    width: '40px', height: '40px', borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '13px', fontWeight: 700, lineHeight: 1,
+    fontSize: '14px', fontWeight: 700, lineHeight: 1,
     fontFamily: 'var(--font-fraunces), serif',
-    flexShrink: 0,
+    flexShrink: 0, textDecoration: 'none',
   },
-  authorInfo: { display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 },
-  authorName: {
+  authorInfo: { display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 },
+  authorNameLink: {
     fontSize: '13px', fontWeight: 600, color: 'var(--text)',
     display: 'inline-flex', alignItems: 'center', gap: '6px',
+    textDecoration: 'none',
   },
+  dateRow: { display: 'flex', alignItems: 'center', gap: '5px' },
   authorDate: { fontSize: '11px', color: 'var(--text-muted)' },
+  editedTag: { fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' },
   contribDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#FFD56B', display: 'inline-block',
+    background: '#ffd56b', display: 'inline-block',
   },
   adminTag: {
     fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,
     letterSpacing: '0.5px', color: '#fb7185',
     background: 'rgba(251,113,133,0.12)', padding: '1px 6px', borderRadius: '4px',
   },
-  actions: { display: 'flex', gap: '4px' },
+  badgeStrip: { display: 'flex', flexWrap: 'wrap', gap: '3px', marginTop: '2px' },
+  miniBadge: {
+    fontSize: '11px', lineHeight: 1, padding: '2px 4px', borderRadius: '5px',
+  },
+  actions: { display: 'flex', gap: '4px', flexWrap: 'wrap', justifyContent: 'flex-end' },
+  voteBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'transparent', border: '1px solid',
+    borderRadius: '8px', padding: '5px 10px',
+    cursor: 'pointer',
+    transition: 'background 0.15s, color 0.15s, border-color 0.15s',
+  },
   actionBtn: {
     background: 'transparent', border: '1px solid var(--border)',
     color: 'var(--text-2)', borderRadius: '6px',
@@ -354,11 +509,15 @@ const s: Record<string, React.CSSProperties> = {
   actionBtnSmall: {
     background: 'transparent', border: 'none',
     color: 'var(--text-muted)', cursor: 'pointer',
-    padding: '2px 5px', marginLeft: 'auto',
+    padding: '2px 5px',
   },
   postBody: {
     fontSize: '14px', lineHeight: 1.7, color: 'var(--text-2)',
     whiteSpace: 'pre-wrap',
+  },
+
+  editForm: {
+    display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px',
   },
 
   repliesHead: {
@@ -394,6 +553,16 @@ const s: Record<string, React.CSSProperties> = {
   },
   label: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' },
   helper: { fontSize: '11px', color: 'var(--text-muted)', margin: 0 },
+  select: {
+    background: 'var(--bg)', color: 'var(--text)',
+    border: '1px solid var(--border)', borderRadius: '8px',
+    padding: '9px 12px', fontSize: '13px',
+  },
+  input: {
+    background: 'var(--bg)', color: 'var(--text)',
+    border: '1px solid var(--border)', borderRadius: '8px',
+    padding: '10px 12px', fontSize: '14px',
+  },
   textarea: {
     background: 'var(--bg)', color: 'var(--text)',
     border: '1px solid var(--border)', borderRadius: '8px',
@@ -406,10 +575,27 @@ const s: Record<string, React.CSSProperties> = {
     padding: '6px 10px', borderRadius: '6px',
     border: '1px solid rgba(251,113,133,0.2)',
   },
-  formActions: { display: 'flex', justifyContent: 'flex-end', marginTop: '4px' },
+  formActions: { display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '4px' },
+  btnGhost: {
+    background: 'transparent', color: 'var(--text-2)',
+    border: '1px solid var(--border)', borderRadius: '8px',
+    padding: '8px 16px', fontSize: '13px', cursor: 'pointer',
+  },
+  btnGhostSmall: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    background: 'transparent', color: 'var(--text-2)',
+    border: '1px solid var(--border)', borderRadius: '6px',
+    padding: '5px 10px', fontSize: '12px', cursor: 'pointer',
+  },
   btnPrimary: {
-    background: '#FFD56B', color: '#1a1a0e',
+    background: '#ffd56b', color: '#1a1a0e',
     border: 'none', borderRadius: '8px',
     padding: '9px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+  },
+  btnPrimarySmall: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    background: '#ffd56b', color: '#1a1a0e',
+    border: 'none', borderRadius: '6px',
+    padding: '5px 12px', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
   },
 }

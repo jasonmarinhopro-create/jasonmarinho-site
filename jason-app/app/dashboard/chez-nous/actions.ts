@@ -105,6 +105,77 @@ export async function deleteReply(replyId: string, postId: string): Promise<{ ok
   return { ok: true }
 }
 
+export async function updatePost(input: {
+  postId: string
+  title: string
+  body: string
+  category: string
+}): Promise<{ ok: boolean; error?: string }> {
+  const { supabase } = await requireAuth()
+
+  const title = input.title.trim()
+  const body  = input.body.trim()
+
+  if (!isValidCategory(input.category)) return { ok: false, error: 'Catégorie invalide' }
+  if (title.length < 3 || title.length > 200)  return { ok: false, error: 'Titre 3-200 car.' }
+  if (body.length < 1 || body.length > 8000)   return { ok: false, error: 'Message 1-8000 car.' }
+
+  const { error } = await supabase
+    .from('chez_nous_posts')
+    .update({ title, body, category: input.category, edited_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+    .eq('id', input.postId)
+
+  if (error) return { ok: false, error: error.message }
+  revalidatePath(`/dashboard/chez-nous/${input.postId}`)
+  revalidatePath('/dashboard/chez-nous')
+  return { ok: true }
+}
+
+export async function updateReply(input: {
+  replyId: string
+  postId: string
+  body: string
+}): Promise<{ ok: boolean; error?: string }> {
+  const { supabase } = await requireAuth()
+  const body = input.body.trim()
+  if (body.length < 1 || body.length > 4000) return { ok: false, error: 'Réponse 1-4000 car.' }
+
+  const { error } = await supabase
+    .from('chez_nous_replies')
+    .update({ body, edited_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+    .eq('id', input.replyId)
+
+  if (error) return { ok: false, error: error.message }
+  revalidatePath(`/dashboard/chez-nous/${input.postId}`)
+  return { ok: true }
+}
+
+// ─── VOTES ────────────────────────────────────────────────────────────────
+
+export async function togglePostVote(postId: string, hasVoted: boolean): Promise<{ ok: boolean; voted?: boolean; error?: string }> {
+  const { supabase, userId } = await requireAuth()
+
+  if (hasVoted) {
+    const { error } = await supabase
+      .from('chez_nous_post_votes')
+      .delete()
+      .eq('post_id', postId)
+      .eq('user_id', userId)
+    if (error) return { ok: false, error: error.message }
+    revalidatePath('/dashboard/chez-nous')
+    revalidatePath(`/dashboard/chez-nous/${postId}`)
+    return { ok: true, voted: false }
+  } else {
+    const { error } = await supabase
+      .from('chez_nous_post_votes')
+      .insert({ post_id: postId, user_id: userId })
+    if (error && !error.message.includes('duplicate')) return { ok: false, error: error.message }
+    revalidatePath('/dashboard/chez-nous')
+    revalidatePath(`/dashboard/chez-nous/${postId}`)
+    return { ok: true, voted: true }
+  }
+}
+
 // ─── PROFILE ──────────────────────────────────────────────────────────────
 
 export async function updateProfilePseudo(input: {
