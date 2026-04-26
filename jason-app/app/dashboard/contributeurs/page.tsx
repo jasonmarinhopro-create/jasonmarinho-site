@@ -9,7 +9,7 @@ import {
 import Header from '@/components/layout/Header'
 import MurDesBatisseurs, { type ContributorTile } from '@/components/MurDesBatisseurs'
 import Roadmap, { type RoadmapItemData, type RoadmapCommentData } from '@/components/Roadmap'
-import { Heart, ArrowRight, Star, ChatCircle, Rocket, Medal, Lightbulb, CheckCircle } from '@phosphor-icons/react/dist/ssr'
+import { Heart, ArrowRight, Star, ChatCircle, Rocket, Medal, Lightbulb, CheckCircle, Camera, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic   = 'force-dynamic'
 export const metadata  = { title: 'Contributeurs — Jason Marinho' }
@@ -69,6 +69,60 @@ export default async function ContributeursPage() {
             <p style={s.teasingNote}>
               Contribution libre — même 1 € suffit · Accès activé sous 24h
             </p>
+
+            {/* ── Séparateur ── */}
+            <div style={s.orDivider}>
+              <span style={s.orLine} />
+              <span style={s.orText}>ou</span>
+              <span style={s.orLine} />
+            </div>
+
+            {/* ── Alternative avis Google ── */}
+            <div style={s.reviewBlock}>
+              <div style={s.reviewHeader}>
+                <div style={s.reviewStars}>
+                  {[0,1,2,3,4].map(i => (
+                    <Star key={i} size={16} color="#FFD56B" weight="fill" />
+                  ))}
+                </div>
+                <span style={s.reviewTitle}>Laisse un avis Google, c'est gratuit 🙌</span>
+              </div>
+              <p style={s.reviewDesc}>
+                Tu apprécies la plateforme et tu veux soutenir le projet sans sortir ta carte ?
+                Ton avis Google me fait vraiment chaud au cœur — et il aide d'autres hôtes à découvrir la communauté.
+                C'est tout aussi précieux qu'une contribution financière.
+              </p>
+
+              <div style={s.reviewSteps}>
+                {[
+                  { icon: Star,          color: '#FFD56B', text: 'Laisse un avis 5 étoiles sur Google' },
+                  { icon: Camera,        color: '#a78bfa', text: 'Prends une capture d\'écran de ton avis publié' },
+                  { icon: EnvelopeSimple,color: '#34d399', text: 'Envoie-la à contact@jasonmarinho.com avec ton prénom' },
+                ].map(({ icon: Icon, color, text }, i) => (
+                  <div key={i} style={s.reviewStep}>
+                    <div style={{ ...s.reviewStepNum, background: `${color}18`, color }}>
+                      <Icon size={14} weight="fill" />
+                    </div>
+                    <span style={s.reviewStepText}>{text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <a
+                href="https://g.page/r/CcLzE7IbhS5_EAE/review"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={s.reviewCta}
+              >
+                <Star size={15} weight="fill" />
+                Écrire mon avis Google
+                <ArrowRight size={14} weight="bold" />
+              </a>
+
+              <p style={s.reviewNote}>
+                Je t'active manuellement en contributeur dès réception — hâte de lire tes retours ! 🚀
+              </p>
+            </div>
           </div>
         </div>
       </>
@@ -217,6 +271,74 @@ const s: Record<string, React.CSSProperties> = {
     marginTop: '4px',
   },
   teasingNote: { fontSize: '12px', color: 'var(--text-muted)', margin: 0 },
+
+  /* ── Séparateur ou ── */
+  orDivider: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    width: '100%', margin: '4px 0',
+  },
+  orLine: {
+    flex: 1, height: '1px',
+    background: 'rgba(255,255,255,0.08)',
+    display: 'block',
+  },
+  orText: {
+    fontSize: '11px', fontWeight: 500,
+    color: 'var(--text-muted)', textTransform: 'uppercase' as const,
+    letterSpacing: '1px', flexShrink: 0,
+  },
+
+  /* ── Bloc avis Google ── */
+  reviewBlock: {
+    width: '100%',
+    background: 'rgba(255,213,107,0.04)',
+    border: '1px solid rgba(255,213,107,0.14)',
+    borderRadius: '16px',
+    padding: '20px',
+    display: 'flex', flexDirection: 'column' as const, gap: '14px',
+    textAlign: 'left' as const,
+  },
+  reviewHeader: {
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  reviewStars: {
+    display: 'flex', gap: '2px',
+  },
+  reviewTitle: {
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+    lineHeight: 1.4,
+  },
+  reviewDesc: {
+    fontSize: '13px', lineHeight: 1.7,
+    color: 'var(--text-2)', margin: 0,
+  },
+  reviewSteps: {
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+  },
+  reviewStep: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+  },
+  reviewStepNum: {
+    width: '28px', height: '28px', borderRadius: '8px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  reviewStepText: {
+    fontSize: '13px', color: 'var(--text-2)', fontWeight: 400,
+  },
+  reviewCta: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    background: 'rgba(255,213,107,0.12)',
+    border: '1px solid rgba(255,213,107,0.25)',
+    color: '#FFD56B', fontWeight: 600, fontSize: '13px',
+    padding: '10px 18px', borderRadius: '10px',
+    textDecoration: 'none', alignSelf: 'flex-start' as const,
+    transition: 'background 0.15s',
+  },
+  reviewNote: {
+    fontSize: '12px', color: 'var(--text-muted)',
+    margin: 0, lineHeight: 1.5,
+  },
 
   /* ── Contributor view ── */
   intro:      { marginBottom: '10px' },
