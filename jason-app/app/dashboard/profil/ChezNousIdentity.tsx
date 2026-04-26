@@ -49,7 +49,7 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
     <section style={s.card}>
       <div style={s.head}>
         <div style={s.headIcon}>
-          <House size={15} color="#FFD56B" weight="fill" />
+          <House size={15} color="#ffd56b" weight="fill" />
         </div>
         <div>
           <h3 style={s.title}>Mon identité Chez Nous</h3>
@@ -68,7 +68,7 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
           maxLength={30}
         />
         <p style={s.helper}>
-          Si vide, ton prénom est utilisé. Tu apparaîtras comme <strong style={{ color: '#FFD56B' }}>{displayed}</strong>.
+          Si vide, ton prénom est utilisé. Tu apparaîtras comme <strong style={{ color: '#ffd56b' }}>{displayed}</strong>.
         </p>
       </div>
 
@@ -213,7 +213,7 @@ const s: Record<string, React.CSSProperties> = {
     color: '#34d399', fontSize: '12px', fontWeight: 600,
   },
   btn: {
-    background: '#FFD56B', color: '#1a1a0e',
+    background: '#ffd56b', color: '#1a1a0e',
     border: 'none', borderRadius: '8px',
     padding: '9px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
   },

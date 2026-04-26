@@ -3,10 +3,11 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { House, Plus, ChatCircle, PushPin, Lock } from '@phosphor-icons/react'
+import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
-import { createPost } from './actions'
+import { BADGES, type BadgeId } from '@/lib/badges'
+import { createPost, togglePostVote } from './actions'
 
 type Post = {
   id: string
@@ -17,8 +18,11 @@ type Post = {
   pinned: boolean
   locked: boolean
   reply_count: number
+  vote_count: number
   last_reply_at: string | null
   created_at: string
+  edited_at: string | null
+  has_voted: boolean
 }
 
 type Author = {
@@ -27,7 +31,10 @@ type Author = {
   role: string | null
   is_contributor: boolean
   created_at: string | null
+  badges: BadgeId[]
 }
+
+type Sort = 'recent' | 'popular' | 'unanswered'
 
 type Props = {
   posts: Post[]
@@ -35,10 +42,11 @@ type Props = {
   currentUserId: string
   isAdmin: boolean
   currentCategory: CategoryId | 'all'
-  stats: { totalPosts: number; totalReplies: number }
+  currentSort: Sort
+  stats: { totalPosts: number; totalReplies: number; totalMembers: number }
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentCategory, stats }: Props) {
+export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, stats }: Props) {
   const [showForm, setShowForm] = useState(false)
 
   return (
@@ -46,11 +54,11 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, stats
       {/* Hero */}
       <div style={s.hero}>
         <div style={s.heroBadge}>
-          <House size={13} color="#FFD56B" weight="fill" />
+          <House size={13} color="#ffd56b" weight="fill" />
           Chez Nous · Communauté ouverte
         </div>
         <h1 style={s.heroTitle}>
-          Bienvenue <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Chez Nous</em>
+          Bienvenue <em style={{ color: '#ffd56b', fontStyle: 'italic' }}>Chez Nous</em>
         </h1>
         <p style={s.heroDesc}>
           L'espace pour échanger, demander un coup de main, partager ce qui marche.
@@ -58,42 +66,41 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, stats
         </p>
 
         <div style={s.statRow}>
-          <span style={s.statItem}><strong style={{ color: 'var(--text)' }}>{stats.totalPosts}</strong> discussion{stats.totalPosts > 1 ? 's' : ''}</span>
+          <span><strong style={{ color: 'var(--text)' }}>{stats.totalPosts}</strong> discussion{stats.totalPosts > 1 ? 's' : ''}</span>
           <span style={s.statSep}>·</span>
-          <span style={s.statItem}><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> réponse{stats.totalReplies > 1 ? 's' : ''}</span>
+          <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> réponse{stats.totalReplies > 1 ? 's' : ''}</span>
+          <span style={s.statSep}>·</span>
+          <span><strong style={{ color: 'var(--text)' }}>{stats.totalMembers}</strong> membre{stats.totalMembers > 1 ? 's' : ''}</span>
         </div>
       </div>
 
       {/* Catégories */}
       <div style={s.catRow}>
-        <CategoryChip
-          id="all"
-          label="Tout"
-          color="#FFD56B"
-          bg="rgba(255,213,107,0.14)"
-          active={currentCategory === 'all'}
-        />
+        <CategoryChip id="all" label="Tout" color="#ffd56b" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} />
         {CATEGORY_ORDER.map(cid => (
           <CategoryChip
-            key={cid}
-            id={cid}
+            key={cid} id={cid}
             label={CATEGORIES[cid].short}
-            color={CATEGORIES[cid].color}
-            bg={CATEGORIES[cid].bg}
+            color={CATEGORIES[cid].color} bg={CATEGORIES[cid].bg}
             active={currentCategory === cid}
+            sort={currentSort}
           />
         ))}
       </div>
 
-      {/* Bouton nouveau post */}
-      <div style={s.actionsRow}>
+      {/* Tri + Bouton */}
+      <div style={s.toolbar}>
+        <div style={s.sortRow}>
+          <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     icon={Clock} label="Récent" />
+          <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    icon={Fire}  label="Populaire" />
+          <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} icon={Question} label="Sans réponse" />
+        </div>
         <button onClick={() => setShowForm(s => !s)} style={s.newBtn}>
           <Plus size={15} weight="bold" />
           {showForm ? 'Annuler' : 'Nouvelle discussion'}
         </button>
       </div>
 
-      {/* Form création */}
       {showForm && (
         <NewPostForm onSuccess={() => setShowForm(false)} defaultCategory={currentCategory === 'all' ? 'autres' : currentCategory} />
       )}
@@ -101,78 +108,162 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, stats
       {/* Feed */}
       <div style={s.feed}>
         {posts.length === 0 ? (
-          <div style={s.empty}>
-            <ChatCircle size={28} color="#FFD56B" weight="duotone" />
-            <p style={s.emptyTitle}>Aucune discussion {currentCategory !== 'all' ? 'dans cette catégorie' : 'pour le moment'}</p>
-            <p style={s.emptyDesc}>Sois le premier à lancer le sujet — un problème, une astuce, un retour.</p>
-          </div>
+          <EmptyState category={currentCategory} sort={currentSort} onNew={() => setShowForm(true)} />
         ) : (
-          posts.map(post => {
-            const author = authorsMap[post.author_id]
-            const cat    = CATEGORIES[post.category]
-            const av     = author ? colorFromId(post.author_id) : { bg: 'rgba(148,163,184,0.18)', text: '#94a3b8' }
-            const initials = author ? displayInitials({ pseudo: author.pseudo, full_name: author.full_name }) : '?'
-            const name     = author ? displayName({ pseudo: author.pseudo, full_name: author.full_name }) : 'Anonyme'
-
-            return (
-              <Link key={post.id} href={`/dashboard/chez-nous/${post.id}`} style={s.postCard}>
-                {/* Avatar */}
-                <div style={{ ...s.avatar, background: av.bg, color: av.text }}>
-                  {initials}
-                </div>
-
-                {/* Contenu */}
-                <div style={s.postBody}>
-                  <div style={s.postMeta}>
-                    <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>
-                      {cat.short}
-                    </span>
-                    {post.pinned && <PushPin size={12} color="#FFD56B" weight="fill" />}
-                    {post.locked && <Lock size={12} color="#94a3b8" weight="fill" />}
-                  </div>
-                  <h3 style={s.postTitle}>{post.title}</h3>
-                  <p style={s.postExcerpt}>{post.body.slice(0, 180)}{post.body.length > 180 ? '…' : ''}</p>
-                  <div style={s.postFoot}>
-                    <span style={s.postFootName}>
-                      {name}
-                      {author?.is_contributor && <span style={s.contribDot} title="Contributeur" />}
-                    </span>
-                    <span style={s.postFootDot}>·</span>
-                    <span>{formatRelative(post.last_reply_at ?? post.created_at)}</span>
-                    <span style={s.postFootDot}>·</span>
-                    <span style={s.postReplies}>
-                      <ChatCircle size={11} weight="fill" />
-                      {post.reply_count}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            )
-          })
+          posts.map(post => (
+            <PostRow key={post.id} post={post} author={authorsMap[post.author_id]} />
+          ))
         )}
       </div>
     </div>
   )
 }
 
-// ─── Sous-composants ──────────────────────────────────────────────────────
+// ─── Post row ─────────────────────────────────────────────────────────
 
-function CategoryChip({ id, label, color, bg, active }: {
-  id: string; label: string; color: string; bg: string; active: boolean
-}) {
-  const href = id === 'all' ? '/dashboard/chez-nous' : `/dashboard/chez-nous?cat=${id}`
+function PostRow({ post, author }: { post: Post; author?: Author }) {
+  const router = useRouter()
+  const [pending, startTransition] = useTransition()
+  const [voted, setVoted] = useState(post.has_voted)
+  const [count, setCount] = useState(post.vote_count)
+
+  const av       = colorFromId(post.author_id)
+  const initials = author ? displayInitials({ pseudo: author.pseudo, full_name: author.full_name }) : '?'
+  const name     = author ? displayName({ pseudo: author.pseudo, full_name: author.full_name }) : 'Anonyme'
+  const cat      = CATEGORIES[post.category]
+
+  const onVote = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const wasVoted = voted
+    setVoted(!wasVoted)
+    setCount(c => c + (wasVoted ? -1 : 1))
+    startTransition(async () => {
+      await togglePostVote(post.id, wasVoted)
+      router.refresh()
+    })
+  }
+
   return (
-    <Link
-      href={href}
-      style={{
-        ...s.catLink,
-        color,
-        background: active ? bg : 'transparent',
-        borderColor: active ? `${color}55` : 'var(--border)',
-      }}
-    >
+    <div style={s.postCard}>
+      {/* Vote */}
+      <button
+        type="button"
+        onClick={onVote}
+        disabled={pending}
+        style={{
+          ...s.voteCol,
+          color: voted ? '#ffd56b' : 'var(--text-muted)',
+          background: voted ? 'rgba(255,213,107,0.10)' : 'transparent',
+          borderColor: voted ? 'rgba(255,213,107,0.3)' : 'var(--border)',
+        }}
+        title={voted ? 'Retirer mon vote' : 'Marquer utile'}
+      >
+        <ArrowFatUp size={14} weight={voted ? 'fill' : 'regular'} />
+        <span style={s.voteCount}>{count}</span>
+      </button>
+
+      {/* Avatar (cliquable → profil) */}
+      <Link href={`/dashboard/chez-nous/membre/${post.author_id}`} style={{ ...s.avatar, background: av.bg, color: av.text }} title={name}>
+        {initials}
+      </Link>
+
+      {/* Contenu */}
+      <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postBody}>
+        <div style={s.postMeta}>
+          <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>{cat.short}</span>
+          {post.pinned && <PushPin size={12} color="#ffd56b" weight="fill" />}
+          {post.locked && <Lock size={12} color="#94a3b8" weight="fill" />}
+          {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
+        </div>
+        <h3 style={s.postTitle}>{post.title}</h3>
+        <p style={s.postExcerpt}>{post.body.slice(0, 180)}{post.body.length > 180 ? '…' : ''}</p>
+        <div style={s.postFoot}>
+          <span style={s.postFootName}>
+            {name}
+            {author?.is_contributor && <span style={s.contribDot} title="Contributeur" />}
+            {author?.role === 'admin' && <span style={s.adminTag}>admin</span>}
+          </span>
+          {(author?.badges ?? []).slice(0, 3).map(bid => (
+            <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
+              {BADGES[bid].label}
+            </span>
+          ))}
+          <span style={s.postFootDot}>·</span>
+          <span>{formatRelative(post.last_reply_at ?? post.created_at)}</span>
+          <span style={s.postFootDot}>·</span>
+          <span style={s.postReplies}>
+            <ChatCircle size={11} weight="fill" />
+            {post.reply_count}
+          </span>
+        </div>
+      </Link>
+    </div>
+  )
+}
+
+// ─── Sub components ───────────────────────────────────────────────────
+
+function CategoryChip({ id, label, color, bg, active, sort }: {
+  id: string; label: string; color: string; bg: string; active: boolean; sort: Sort
+}) {
+  const params = new URLSearchParams()
+  if (id !== 'all')        params.set('cat', id)
+  if (sort !== 'recent')   params.set('sort', sort)
+  const href = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
+  return (
+    <Link href={href} style={{ ...s.catLink, color, background: active ? bg : 'transparent', borderColor: active ? `${color}55` : 'var(--border)' }}>
       {label}
     </Link>
+  )
+}
+
+function SortChip({ cat, sort, active, icon: Icon, label }: {
+  cat: CategoryId | 'all'; sort: Sort; active: boolean; icon: React.ElementType; label: string
+}) {
+  const params = new URLSearchParams()
+  if (cat !== 'all')      params.set('cat', cat)
+  if (sort !== 'recent')  params.set('sort', sort)
+  const href = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
+  return (
+    <Link href={href} style={{
+      ...s.sortChip,
+      color: active ? 'var(--text)' : 'var(--text-muted)',
+      background: active ? 'var(--surface)' : 'transparent',
+      borderColor: active ? 'var(--border)' : 'transparent',
+    }}>
+      <Icon size={12} weight={active ? 'fill' : 'regular'} />
+      {label}
+    </Link>
+  )
+}
+
+function EmptyState({ category, sort, onNew }: { category: CategoryId | 'all'; sort: Sort; onNew: () => void }) {
+  if (sort === 'unanswered') {
+    return (
+      <div style={s.empty}>
+        <Question size={28} color="#ffd56b" weight="duotone" />
+        <p style={s.emptyTitle}>Aucune discussion sans réponse</p>
+        <p style={s.emptyDesc}>Tout a été pris en charge — bravo la communauté !</p>
+      </div>
+    )
+  }
+  return (
+    <div style={s.empty}>
+      <ChatCircle size={28} color="#ffd56b" weight="duotone" />
+      <p style={s.emptyTitle}>
+        {category !== 'all'
+          ? `Aucune discussion dans ${CATEGORIES[category].short}`
+          : 'La conversation va commencer ici'}
+      </p>
+      <p style={s.emptyDesc}>
+        Lance le premier sujet — un problème, une astuce, un retour sur une situation.
+        C'est ce qui donne vie à Chez Nous.
+      </p>
+      <button onClick={onNew} style={s.emptyBtn}>
+        <Plus size={13} weight="bold" /> Lancer une discussion
+      </button>
+    </div>
   )
 }
 
@@ -213,12 +304,9 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
       <div style={s.formField}>
         <label style={s.label}>Titre</label>
         <input
-          type="text"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
+          type="text" value={title} onChange={e => setTitle(e.target.value)}
           placeholder="Un sujet précis et clair…"
-          style={s.input}
-          maxLength={200}
+          style={s.input} maxLength={200}
         />
         <p style={s.helper}>{title.length}/200 — pose ta question ou ton sujet en une phrase</p>
       </div>
@@ -226,12 +314,9 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
       <div style={s.formField}>
         <label style={s.label}>Message</label>
         <textarea
-          value={body}
-          onChange={e => setBody(e.target.value)}
+          value={body} onChange={e => setBody(e.target.value)}
           placeholder="Détaille ton contexte, ce que tu as déjà essayé, ce que tu cherches…"
-          style={s.textarea}
-          rows={6}
-          maxLength={8000}
+          style={s.textarea} rows={6} maxLength={8000}
         />
         <p style={s.helper}>{body.length}/8000</p>
       </div>
@@ -248,7 +333,7 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
   )
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────
+// ─── Styles ───────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '900px' },
@@ -257,7 +342,7 @@ const s: Record<string, React.CSSProperties> = {
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: '#FFD56B', background: 'rgba(255,213,107,0.08)',
+    color: '#ffd56b', background: 'rgba(255,213,107,0.08)',
     border: '1px solid rgba(255,213,107,0.18)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
@@ -271,15 +356,14 @@ const s: Record<string, React.CSSProperties> = {
     maxWidth: '560px', margin: 0,
   },
   statRow: {
-    display: 'flex', alignItems: 'center', gap: '10px',
+    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
     fontSize: '12px', color: 'var(--text-muted)', marginTop: '14px',
   },
-  statItem: {},
   statSep:  { opacity: 0.5 },
 
   catRow: {
     display: 'flex', flexWrap: 'wrap', gap: '8px',
-    marginBottom: '16px',
+    marginBottom: '14px',
   },
   catLink: {
     fontSize: '12px', fontWeight: 600,
@@ -288,13 +372,25 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s',
   },
 
-  actionsRow: {
-    display: 'flex', justifyContent: 'flex-end', marginBottom: '12px',
+  toolbar: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    gap: '10px', marginBottom: '14px', flexWrap: 'wrap',
+  },
+  sortRow: {
+    display: 'flex', gap: '4px',
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '3px',
+  },
+  sortChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 600,
+    padding: '5px 10px', borderRadius: '7px',
+    border: '1px solid', textDecoration: 'none',
   },
   newBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
-    background: 'linear-gradient(135deg, #FFD56B 0%, #f59e0b 100%)',
-    color: '#1a1a0e', fontWeight: 700, fontSize: '13px',
+    background: '#ffd56b', color: '#1a1a0e',
+    fontWeight: 700, fontSize: '13px',
     padding: '9px 18px', borderRadius: '10px',
     border: 'none', cursor: 'pointer',
     boxShadow: '0 4px 12px rgba(255,213,107,0.18)',
@@ -338,45 +434,69 @@ const s: Record<string, React.CSSProperties> = {
     padding: '8px 16px', fontSize: '13px', cursor: 'pointer',
   },
   btnPrimary: {
-    background: '#FFD56B', color: '#1a1a0e',
+    background: '#ffd56b', color: '#1a1a0e',
     border: 'none', borderRadius: '8px',
     padding: '9px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
   },
 
   feed: { display: 'flex', flexDirection: 'column', gap: '10px' },
+
   empty: {
     background: 'var(--surface)', border: '1px dashed var(--border)',
-    borderRadius: '14px', padding: '36px 20px',
+    borderRadius: '14px', padding: '40px 24px',
     textAlign: 'center',
     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
   },
-  emptyTitle: {
-    fontSize: '14px', fontWeight: 600, color: 'var(--text)', margin: '6px 0 0',
-  },
-  emptyDesc: {
-    fontSize: '13px', color: 'var(--text-muted)', margin: 0, maxWidth: '380px',
+  emptyTitle: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', margin: '8px 0 0' },
+  emptyDesc:  { fontSize: '13px', color: 'var(--text-muted)', margin: '0 auto', maxWidth: '380px', lineHeight: 1.6 },
+  emptyBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: '#ffd56b', color: '#1a1a0e',
+    fontWeight: 700, fontSize: '13px',
+    padding: '8px 16px', borderRadius: '10px',
+    border: 'none', cursor: 'pointer', marginTop: '10px',
   },
 
   postCard: {
-    display: 'flex', gap: '14px',
+    display: 'flex', gap: '12px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '16px',
-    textDecoration: 'none', color: 'inherit',
-    transition: 'border-color 0.15s, transform 0.15s',
+    borderRadius: '14px', padding: '14px 16px',
+    transition: 'border-color 0.15s',
+    alignItems: 'flex-start',
   },
+  voteCol: {
+    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+    gap: '2px',
+    minWidth: '44px', minHeight: '54px',
+    background: 'transparent', border: '1px solid',
+    borderRadius: '10px', cursor: 'pointer',
+    transition: 'background 0.15s, color 0.15s, border-color 0.15s',
+    flexShrink: 0,
+  },
+  voteCount: { fontSize: '12px', fontWeight: 700, lineHeight: 1 },
+
   avatar: {
     width: '40px', height: '40px', borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontSize: '14px', fontWeight: 700, lineHeight: 1,
     fontFamily: 'var(--font-fraunces), serif',
-    flexShrink: 0,
+    flexShrink: 0, textDecoration: 'none',
   },
-  postBody: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '5px' },
-  postMeta: { display: 'flex', alignItems: 'center', gap: '6px' },
+  postBody: {
+    flex: 1, minWidth: 0,
+    display: 'flex', flexDirection: 'column', gap: '5px',
+    textDecoration: 'none', color: 'inherit',
+  },
+  postMeta: { display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' },
   catChip: {
     fontSize: '10px', fontWeight: 700,
     letterSpacing: '0.4px', textTransform: 'uppercase' as const,
     padding: '2px 8px', borderRadius: '999px',
+  },
+  editedTag: {
+    display: 'inline-flex', alignItems: 'center', gap: '3px',
+    fontSize: '10px', color: 'var(--text-muted)',
+    fontStyle: 'italic',
   },
   postTitle: {
     fontSize: '15px', fontWeight: 600, color: 'var(--text)',
@@ -385,14 +505,11 @@ const s: Record<string, React.CSSProperties> = {
   postExcerpt: {
     fontSize: '13px', color: 'var(--text-2)',
     margin: 0, lineHeight: 1.6,
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical' as const,
-    overflow: 'hidden',
+    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
   },
   postFoot: {
     display: 'flex', alignItems: 'center', gap: '6px',
-    fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px',
+    fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px',
     flexWrap: 'wrap' as const,
   },
   postFootName: {
@@ -401,10 +518,17 @@ const s: Record<string, React.CSSProperties> = {
   },
   contribDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#FFD56B', display: 'inline-block',
+    background: '#ffd56b', display: 'inline-block',
+  },
+  adminTag: {
+    fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,
+    letterSpacing: '0.5px', color: '#fb7185',
+    background: 'rgba(251,113,133,0.12)', padding: '1px 5px', borderRadius: '4px',
+  },
+  miniBadge: {
+    fontSize: '11px', lineHeight: 1, padding: '2px 4px',
+    borderRadius: '5px',
   },
   postFootDot: { opacity: 0.5 },
-  postReplies: {
-    display: 'inline-flex', alignItems: 'center', gap: '3px',
-  },
+  postReplies: { display: 'inline-flex', alignItems: 'center', gap: '3px' },
 }

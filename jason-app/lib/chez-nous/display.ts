@@ -22,7 +22,7 @@ export function displayInitials(m: MemberDisplay): string {
 }
 
 const COLORS = [
-  { bg: 'rgba(255,213,107,0.18)', text: '#FFD56B' },
+  { bg: 'rgba(255,213,107,0.18)', text: '#ffd56b' },
   { bg: 'rgba(167,139,250,0.16)', text: '#a78bfa' },
   { bg: 'rgba(96,165,250,0.16)',  text: '#60a5fa' },
   { bg: 'rgba(52,211,153,0.16)',  text: '#34d399' },

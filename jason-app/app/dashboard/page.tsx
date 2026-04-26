@@ -8,7 +8,9 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
+import ChezNousWidget from './ChezNousWidget'
 import { getCachedCommunityGroups } from '@/lib/queries/cache'
+import type { CategoryId } from '@/lib/chez-nous/categories'
 
 function getGreeting() {
   const h = parseInt(new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).format(new Date()))
@@ -101,6 +103,23 @@ export default async function DashboardPage() {
         .eq('user_id', userId)
         .eq('status', 'joined')
     : { data: [] as { group_id: string }[] }
+
+  // ── Chez Nous : 3 dernières discussions actives + total
+  const [{ data: cnPosts }, { count: cnTotal }] = await Promise.all([
+    supabase
+      .from('chez_nous_posts')
+      .select('id, author_id, category, title, reply_count, vote_count, last_reply_at, created_at')
+      .order('last_reply_at', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false })
+      .limit(3),
+    supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }),
+  ])
+  const cnAuthorIds = Array.from(new Set((cnPosts ?? []).map(p => p.author_id)))
+  const { data: cnAuthorsData } = cnAuthorIds.length
+    ? await supabase.from('profiles').select('id, full_name, pseudo').in('id', cnAuthorIds)
+    : { data: [] }
+  const cnAuthors: Record<string, { full_name: string | null; pseudo: string | null }> = {}
+  ;(cnAuthorsData ?? []).forEach(a => { cnAuthors[a.id] = { full_name: a.full_name, pseudo: a.pseudo } })
 
   const joinedIds    = new Set((joinedMemberships ?? []).map(m => m.group_id))
   const joinedGroups = communityGroups.filter(g => joinedIds.has(g.id))
@@ -371,6 +390,24 @@ export default async function DashboardPage() {
             </div>
           </section>
         )}
+
+        {/* ── Chez Nous ───────────────────────────────────────────────── */}
+        <section style={s.section} className="fade-up d3">
+          <ChezNousWidget
+            posts={(cnPosts ?? []).map(p => ({
+              id: p.id,
+              author_id: p.author_id,
+              category: p.category as CategoryId,
+              title: p.title,
+              reply_count: p.reply_count,
+              vote_count: p.vote_count ?? 0,
+              last_reply_at: p.last_reply_at,
+              created_at: p.created_at,
+            }))}
+            authors={cnAuthors}
+            totalPosts={cnTotal ?? 0}
+          />
+        </section>
 
         {/* ── Actualités du secteur ───────────────────────────────────── */}
         {(latestNews ?? []).length > 0 && (
