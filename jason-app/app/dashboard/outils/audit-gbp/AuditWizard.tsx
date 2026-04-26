@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, ArrowLeft, CheckCircle, Sparkle } from '@phosphor-icons/react'
+import { ArrowRight, ArrowLeft, CheckCircle, Sparkle, Lightning } from '@phosphor-icons/react'
 import { PILLARS, QUESTIONS, type AnswerValue, type PillarId } from '@/lib/audit-gbp/questions'
 import { startAuditSession, updateAuditMeta, saveAuditAnswers, completeAudit } from './actions'
 
@@ -18,11 +18,29 @@ interface Props {
   initialSession?: InitialSession
 }
 
+// Sépare les vraies réponses des meta-clés (commençant par __)
+function splitAnswers(raw: Record<string, unknown>): {
+  answers: Record<string, AnswerValue>
+  prefilledKeys: Set<string>
+} {
+  const answers: Record<string, AnswerValue> = {}
+  let prefilledKeys = new Set<string>()
+  for (const [k, v] of Object.entries(raw)) {
+    if (k === '__prefilled_keys' && Array.isArray(v)) {
+      prefilledKeys = new Set(v as string[])
+    } else if (!k.startsWith('__') && (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean')) {
+      answers[k] = v as AnswerValue
+    }
+  }
+  return { answers, prefilledKeys }
+}
+
 export default function AuditWizard({ userId, initialSession }: Props) {
   const router = useRouter()
 
   // Si un brouillon est passé, on saute l'intro et on positionne sur le 1er pilier non complet.
-  const initAnswers = (initialSession?.answers ?? {}) as Record<string, AnswerValue>
+  const { answers: initAnswers, prefilledKeys: initPrefilledKeys } = splitAnswers(initialSession?.answers ?? {})
+
   const initPillarIdx = initialSession
     ? (() => {
         for (let i = 0; i < PILLARS.length; i++) {
@@ -39,14 +57,16 @@ export default function AuditWizard({ userId, initialSession }: Props) {
   const [city, setCity] = useState(initialSession?.city ?? '')
   const [pillarIdx, setPillarIdx] = useState(initPillarIdx)
   const [answers, setAnswers] = useState<Record<string, AnswerValue>>(initAnswers)
+  const [prefilledKeys] = useState<Set<string>>(initPrefilledKeys)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const currentPillar = PILLARS[pillarIdx]
   const pillarQuestions = QUESTIONS.filter(q => q.pillar === currentPillar?.id)
   const totalQuestions = QUESTIONS.length
-  const answered = Object.keys(answers).length
+  const answered = Object.keys(answers).filter(k => !k.startsWith('__')).length
   const progress = Math.round((answered / totalQuestions) * 100)
+  const hasCsvImport = prefilledKeys.size > 0
   const allAnswered = pillarQuestions.every(q => answers[q.id] !== undefined)
   const isLastPillar = pillarIdx === PILLARS.length - 1
 
@@ -138,6 +158,17 @@ export default function AuditWizard({ userId, initialSession }: Props) {
   // ─── Wizard principal ───
   return (
     <div style={s.wizard}>
+      {/* Bandeau "Audit Express importé" */}
+      {hasCsvImport && (
+        <div style={s.csvBanner}>
+          <Lightning size={16} color="#FFD56B" weight="fill" />
+          <div>
+            <strong style={{ color: 'var(--text)' }}>{prefilledKeys.size} réponse{prefilledKeys.size > 1 ? 's' : ''} pré-remplie{prefilledKeys.size > 1 ? 's' : ''} depuis ton CSV.</strong> Les
+            questions concernées sont marquées <span style={s.csvBadgeMini}>Auto</span> — vérifie qu'elles sont correctes.
+          </div>
+        </div>
+      )}
+
       {/* Barre de progression */}
       <div style={s.progressBar}>
         <div style={{ ...s.progressFill, width: `${progress}%` }} />
@@ -165,9 +196,17 @@ export default function AuditWizard({ userId, initialSession }: Props) {
       <div style={s.questions}>
         {pillarQuestions.map(q => {
           const value = answers[q.id]
+          const isPrefilled = prefilledKeys.has(q.id)
           return (
             <div key={q.id} style={s.qBlock}>
-              <div style={s.qLabel}>{q.label}</div>
+              <div style={s.qLabelRow}>
+                <div style={s.qLabel}>{q.label}</div>
+                {isPrefilled && (
+                  <span style={s.qBadgePrefilled}>
+                    <Lightning size={10} weight="fill" /> Auto
+                  </span>
+                )}
+              </div>
               {q.help && <div style={s.qHelp}>{q.help}</div>}
 
               {q.type === 'boolean' && (
@@ -271,7 +310,11 @@ export default function AuditWizard({ userId, initialSession }: Props) {
             // Sauvegarde intermédiaire
             startTransition(async () => {
               if (!isLastPillar) {
-                const res = await saveAuditAnswers(sessionId, answers)
+                // On réinjecte les prefilled_keys pour qu'ils survivent à la navigation
+                const payload = hasCsvImport
+                  ? { ...answers, __prefilled_keys: Array.from(prefilledKeys) }
+                  : answers
+                const res = await saveAuditAnswers(sessionId, payload)
                 if (res.error) {
                   setError(res.error)
                   return
@@ -392,14 +435,52 @@ const s: Record<string, React.CSSProperties> = {
     paddingBottom: '18px',
     borderBottom: '1px solid var(--border)',
   },
+  qLabelRow: {
+    display: 'flex', alignItems: 'flex-start', gap: '10px',
+    marginBottom: '4px',
+  },
   qLabel: {
-    fontSize: '14px', fontWeight: 500, color: 'var(--text)',
-    lineHeight: 1.5, marginBottom: '4px',
+    flex: 1, fontSize: '14px', fontWeight: 500, color: 'var(--text)',
+    lineHeight: 1.5,
+  },
+  qBadgePrefilled: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    fontSize: '10px', fontWeight: 700,
+    letterSpacing: '0.5px', textTransform: 'uppercase' as const,
+    color: '#FFD56B',
+    background: 'rgba(255,213,107,0.1)',
+    border: '1px solid rgba(255,213,107,0.25)',
+    borderRadius: '6px',
+    padding: '3px 7px',
+    flexShrink: 0,
+    marginTop: '1px',
   },
   qHelp: {
     fontSize: '12px', color: 'var(--text-3)',
     lineHeight: 1.5, marginBottom: '10px',
     fontStyle: 'italic' as const,
+  },
+
+  /* Bannière CSV import */
+  csvBanner: {
+    display: 'flex', alignItems: 'flex-start', gap: '10px',
+    padding: '12px 14px',
+    background: 'rgba(255,213,107,0.06)',
+    border: '1px solid rgba(255,213,107,0.2)',
+    borderRadius: '10px',
+    fontSize: '12.5px', color: 'var(--text-2)',
+    lineHeight: 1.6, marginBottom: '16px',
+  },
+  csvBadgeMini: {
+    display: 'inline-block',
+    fontSize: '9.5px', fontWeight: 700,
+    color: '#FFD56B',
+    background: 'rgba(255,213,107,0.1)',
+    border: '1px solid rgba(255,213,107,0.25)',
+    borderRadius: '4px',
+    padding: '1px 5px',
+    margin: '0 2px',
+    letterSpacing: '0.4px',
   },
 
   choiceRow: { display: 'flex', gap: '8px', flexWrap: 'wrap' as const, marginTop: '8px' },

@@ -47,7 +47,11 @@ export async function updateAuditMeta(sessionId: string, meta: { businessName?: 
   return { ok: undefined }
 }
 
-export async function saveAuditAnswers(sessionId: string, answers: Record<string, AnswerValue>): Promise<ActionResult> {
+// On accepte aussi des meta-clés (commençant par __) qui peuvent être string[].
+// Les helpers de scoring filtrent par question.id donc ces clés sont ignorées.
+type AnswersPayload = Record<string, AnswerValue | string[]>
+
+export async function saveAuditAnswers(sessionId: string, answers: AnswersPayload): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié.' }
