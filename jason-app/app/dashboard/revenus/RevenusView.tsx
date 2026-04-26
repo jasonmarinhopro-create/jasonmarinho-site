@@ -726,7 +726,7 @@ const s: Record<string, React.CSSProperties> = {
   progressBg:{ height: '6px', background: 'var(--border)', borderRadius: '3px', overflow: 'hidden' },
   progressFill:{ height: '100%', background: 'linear-gradient(90deg, #004C3F, #16a34a)', borderRadius: '3px' },
 
-  journalHead:{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '16px' },
+  journalHead:{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '16px', flexWrap: 'wrap' },
   actionBtn:  { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--accent)', background: 'rgba(0,76,63,0.2)', color: 'var(--accent-text)', cursor: 'pointer', flexShrink: 0, fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s' },
   actionBtnCancel:{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-muted)' },
   actionBtnSecondary:{ background: 'var(--surface)', border: '1px solid var(--border-2)', color: 'var(--text-2)' },

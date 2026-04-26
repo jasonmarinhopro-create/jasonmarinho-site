@@ -80,11 +80,29 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     saveReadIds(all)
   }, [])
 
-  // Admin detection via currentPlan prop (passé depuis server component via getProfile).
-  // Supprimé : le refetch client-side qui refaisait 1 round-trip Supabase à chaque page.
-  // getProfile() est déjà cached() par request côté serveur.
+  // Admin detection : currentPlan === 'Administrateur' suffit sur les pages admin.
+  // Sur les autres pages (Revenus, Voyageurs…), le currentPlan vaut "Membre Driing"
+  // ou autre — il faut alors refetch côté client pour que l'admin voie sa section
+  // dans le menu mobile (la sidebar desktop reçoit déjà isAdmin via layout.tsx).
   useEffect(() => {
-    if (currentPlan === 'Administrateur') setIsAdmin(true)
+    if (currentPlan === 'Administrateur') {
+      setIsAdmin(true)
+      return
+    }
+    // Refetch léger pour les pages non-admin
+    let cancelled = false
+    ;(async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user || cancelled) return
+      const { data } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
+      if (!cancelled && data?.role === 'admin') setIsAdmin(true)
+    })()
+    return () => { cancelled = true }
   }, [currentPlan])
 
   // Close dropdown on outside click
