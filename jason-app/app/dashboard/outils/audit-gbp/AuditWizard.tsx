@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, ArrowLeft, CheckCircle, Sparkle, Lightning } from '@phosphor-icons/react'
-import { PILLARS, QUESTIONS, type AnswerValue, type PillarId } from '@/lib/audit-gbp/questions'
+import { ArrowRight, ArrowLeft, CheckCircle, Sparkle, Lightning, ArrowSquareOut } from '@phosphor-icons/react'
+import { PILLARS, QUESTIONS, getOptimalAnswer, type AnswerValue, type PillarId } from '@/lib/audit-gbp/questions'
 import { startAuditSession, updateAuditMeta, saveAuditAnswers, completeAudit } from './actions'
 
 interface InitialSession {
@@ -22,24 +22,28 @@ interface Props {
 function splitAnswers(raw: Record<string, unknown>): {
   answers: Record<string, AnswerValue>
   prefilledKeys: Set<string>
+  gbpUrl: string
 } {
   const answers: Record<string, AnswerValue> = {}
   let prefilledKeys = new Set<string>()
+  let gbpUrl = ''
   for (const [k, v] of Object.entries(raw)) {
     if (k === '__prefilled_keys' && Array.isArray(v)) {
       prefilledKeys = new Set(v as string[])
+    } else if (k === '__gbp_url' && typeof v === 'string') {
+      gbpUrl = v
     } else if (!k.startsWith('__') && (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean')) {
       answers[k] = v as AnswerValue
     }
   }
-  return { answers, prefilledKeys }
+  return { answers, prefilledKeys, gbpUrl }
 }
 
 export default function AuditWizard({ userId, initialSession }: Props) {
   const router = useRouter()
 
   // Si un brouillon est passé, on saute l'intro et on positionne sur le 1er pilier non complet.
-  const { answers: initAnswers, prefilledKeys: initPrefilledKeys } = splitAnswers(initialSession?.answers ?? {})
+  const { answers: initAnswers, prefilledKeys: initPrefilledKeys, gbpUrl: initGbpUrl } = splitAnswers(initialSession?.answers ?? {})
 
   const initPillarIdx = initialSession
     ? (() => {
@@ -55,6 +59,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
   const [sessionId, setSessionId] = useState<string | null>(initialSession?.sessionId ?? null)
   const [businessName, setBusinessName] = useState(initialSession?.businessName ?? '')
   const [city, setCity] = useState(initialSession?.city ?? '')
+  const [gbpUrl, setGbpUrl] = useState(initGbpUrl)
   const [pillarIdx, setPillarIdx] = useState(initPillarIdx)
   const [answers, setAnswers] = useState<Record<string, AnswerValue>>(initAnswers)
   const [prefilledKeys] = useState<Set<string>>(initPrefilledKeys)
@@ -111,6 +116,21 @@ export default function AuditWizard({ userId, initialSession }: Props) {
             />
           </label>
         </div>
+
+        <label style={{ ...s.label, marginTop: '12px' }}>
+          <span style={s.labelText}>URL Google Maps de ta fiche (optionnel — pour les raccourcis)</span>
+          <input
+            type="url"
+            value={gbpUrl}
+            onChange={e => setGbpUrl(e.target.value)}
+            placeholder="https://maps.google.com/... ou https://share.google/..."
+            style={s.input}
+          />
+          <span style={s.labelHint}>
+            Si tu colles ton URL ici, on te proposera un bouton pour ouvrir directement
+            ta fiche à chaque pilier — pratique pour vérifier en un clic.
+          </span>
+        </label>
 
         {error && <p style={s.error}>{error}</p>}
 
@@ -186,10 +206,43 @@ export default function AuditWizard({ userId, initialSession }: Props) {
         <div style={{ ...s.pillarIcon, background: `${currentPillar?.color}18`, color: currentPillar?.color }}>
           <Sparkle size={20} weight="fill" />
         </div>
-        <div>
+        <div style={{ flex: 1 }}>
           <h3 style={s.pillarTitle}>{currentPillar?.label}</h3>
           <p style={s.pillarDesc}>{currentPillar?.description}</p>
         </div>
+      </div>
+
+      {/* Boutons d'aide rapide */}
+      <div style={s.quickActions}>
+        <a
+          href={gbpUrl || 'https://business.google.com/dashboard'}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={s.quickActionLink}
+        >
+          <ArrowSquareOut size={13} weight="bold" />
+          Ouvrir ma fiche pour vérifier
+        </a>
+        <button
+          type="button"
+          onClick={() => {
+            // Pré-remplit toutes les questions non répondues du pilier courant avec la valeur optimale
+            setAnswers(prev => {
+              const next = { ...prev }
+              for (const q of pillarQuestions) {
+                if (next[q.id] === undefined) {
+                  const optimal = getOptimalAnswer(q)
+                  if (optimal !== null) next[q.id] = optimal
+                }
+              }
+              return next
+            })
+          }}
+          style={s.quickActionBtn}
+        >
+          <Lightning size={13} weight="fill" />
+          Pré-cocher au max
+        </button>
       </div>
 
       {/* Questions */}
@@ -310,10 +363,10 @@ export default function AuditWizard({ userId, initialSession }: Props) {
             // Sauvegarde intermédiaire
             startTransition(async () => {
               if (!isLastPillar) {
-                // On réinjecte les prefilled_keys pour qu'ils survivent à la navigation
-                const payload = hasCsvImport
-                  ? { ...answers, __prefilled_keys: Array.from(prefilledKeys) }
-                  : answers
+                // On réinjecte les meta-clés pour qu'elles survivent à la navigation
+                const payload: Record<string, AnswerValue | string[] | string> = { ...answers }
+                if (hasCsvImport) payload.__prefilled_keys = Array.from(prefilledKeys)
+                if (gbpUrl) payload.__gbp_url = gbpUrl
                 const res = await saveAuditAnswers(sessionId, payload)
                 if (res.error) {
                   setError(res.error)
@@ -376,6 +429,11 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '14px', color: 'var(--text)',
     fontFamily: 'inherit',
   },
+  labelHint: {
+    fontSize: '11.5px', color: 'var(--text-3)',
+    lineHeight: 1.5, marginTop: '4px',
+    fontStyle: 'italic' as const,
+  },
 
   btnStart: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
@@ -426,6 +484,34 @@ const s: Record<string, React.CSSProperties> = {
   },
   pillarDesc: {
     fontSize: '12px', color: 'var(--text-3)', margin: '2px 0 0',
+  },
+
+  /* Quick actions par pilier */
+  quickActions: {
+    display: 'flex', gap: '8px',
+    marginBottom: '18px', flexWrap: 'wrap' as const,
+  },
+  quickActionLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--bg-2, rgba(255,255,255,0.02))',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    padding: '7px 12px',
+    textDecoration: 'none',
+    transition: 'border-color 0.15s, color 0.15s',
+  },
+  quickActionBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', fontWeight: 600,
+    color: '#FFD56B',
+    background: 'rgba(255,213,107,0.08)',
+    border: '1px solid rgba(255,213,107,0.22)',
+    borderRadius: '8px',
+    padding: '7px 12px',
+    cursor: 'pointer', fontFamily: 'inherit',
+    transition: 'background 0.15s',
   },
 
   questions: {
