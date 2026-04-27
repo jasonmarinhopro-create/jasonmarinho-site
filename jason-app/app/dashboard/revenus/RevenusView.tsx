@@ -147,6 +147,11 @@ export default function RevenusView({
   const [showForm, setShowForm] = useState(false)
   const [showChargeForm, setShowChargeForm] = useState(false)
   const [showImport, setShowImport] = useState(false)
+
+  // Objectif annuel (déplacé tout en haut pour pouvoir l'utiliser dans chartData)
+  const [editingObjectif, setEditingObjectif] = useState(false)
+  const [objectifInput, setObjectifInput] = useState(objectifAnnuel?.toString() ?? '')
+  const [currentObjectif, setCurrentObjectif] = useState<number | null>(objectifAnnuel)
   const [filter, setFilter]     = useState<'all' | 'encaisse' | 'attente'>('all')
   const [logementFilter, setLogementFilter] = useState<string>('all')
   const [, startT]              = useTransition()
@@ -257,6 +262,17 @@ export default function RevenusView({
   function handleDeleteCharge(id: string) {
     setCharges(prev => prev.filter(c => c.id !== id))
     startT(async () => { await deleteCharge(id) })
+  }
+
+  // ── Objectif annuel handlers ───────────────────────────────────────
+  function saveObjectif() {
+    const v = parseFloat(objectifInput)
+    const valid = !isNaN(v) && v > 0
+    setCurrentObjectif(valid ? v : null)
+    setEditingObjectif(false)
+    startT(async () => {
+      await setObjectifAnnuel(valid ? v : null, thisYear)
+    })
   }
 
   // ── Charges stats (pour Phase 2 KPIs et la section dédiée) ──
@@ -408,10 +424,10 @@ export default function RevenusView({
   const chartMaxValue = useMemo(() => {
     return Math.max(
       ...chartData.flatMap(m => [m.encaisse + m.prevu, m.n1]),
-      objectifAnnuel ? objectifAnnuel / 12 : 0,
+      currentObjectif ? currentObjectif / 12 : 0,
       1,
     )
-  }, [chartData, objectifAnnuel])
+  }, [chartData, currentObjectif])
 
   // ── Logement stats ───────────────────────────────────────────────────────
 
@@ -579,6 +595,73 @@ export default function RevenusView({
         />
       </div>
 
+      {/* Objectif annuel — bandeau jauge */}
+      <div style={s.objectifBanner}>
+        {editingObjectif ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, width: '100%' }}>
+            <Target size={16} weight="fill" color="var(--accent-text)" />
+            <span style={s.objectifLabel}>Objectif CA {thisYear} :</span>
+            <input
+              type="number" min="0" step="100"
+              value={objectifInput}
+              onChange={e => setObjectifInput(e.target.value)}
+              placeholder="20 000"
+              autoFocus
+              style={{
+                padding: '6px 10px', fontSize: '13px',
+                width: '120px', fontFamily: 'inherit',
+                color: 'var(--text)', background: 'var(--bg-2)',
+                border: '1px solid var(--border)', borderRadius: '7px', outline: 'none',
+              }}
+            />
+            <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>€</span>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: '6px' }}>
+              <button onClick={() => { setEditingObjectif(false); setObjectifInput(currentObjectif?.toString() ?? '') }} style={s.objectifBtnGhost}>
+                Annuler
+              </button>
+              <button onClick={saveObjectif} style={s.objectifBtnSave}>
+                <Check size={12} weight="bold" /> Enregistrer
+              </button>
+            </div>
+          </div>
+        ) : currentObjectif ? (() => {
+          const pct = Math.min(100, Math.round((kpis.cetteAnneeEnc / currentObjectif) * 100))
+          const barColor = pct >= 100 ? '#10b981' : pct >= 70 ? 'var(--accent-text)' : pct >= 30 ? '#60a5fa' : 'var(--text-muted)'
+          return (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, width: '100%' }}>
+                <Target size={16} weight="fill" color="var(--accent-text)" />
+                <span style={s.objectifLabel}>Objectif {thisYear}</span>
+                <span style={{ ...s.objectifValue, color: barColor }}>
+                  {fmt(kpis.cetteAnneeEnc)} / {fmt(currentObjectif)} · {pct} %
+                </span>
+                <button onClick={() => { setObjectifInput(currentObjectif.toString()); setEditingObjectif(true) }} style={s.objectifBtnGhost}>
+                  Modifier
+                </button>
+                {pct >= 100 && (
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#10b981', marginLeft: 'auto' }}>
+                    🎉 Objectif atteint !
+                  </span>
+                )}
+              </div>
+              <div style={s.objectifBar}>
+                <div style={{ ...s.objectifBarFill, width: `${pct}%`, background: barColor }} />
+              </div>
+            </>
+          )
+        })() : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, width: '100%' }}>
+            <Target size={16} weight="fill" color="var(--text-muted)" />
+            <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
+              Définis un <strong>objectif annuel</strong> pour suivre ta progression mois par mois
+            </span>
+            <button onClick={() => setEditingObjectif(true)} style={{ ...s.objectifBtnSave, marginLeft: 'auto' }}>
+              <Plus size={12} weight="bold" /> Définir
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* Chart + logement stats */}
       <div style={s.twoCol}>
         <section style={s.card}>
@@ -608,8 +691,8 @@ export default function RevenusView({
           </div>
           <div style={{ ...s.chart, position: 'relative' as const }}>
             {/* Ligne d'objectif annuel */}
-            {objectifAnnuel && objectifAnnuel > 0 && (() => {
-              const monthlyTarget = objectifAnnuel / 12
+            {currentObjectif && currentObjectif > 0 && (() => {
+              const monthlyTarget = currentObjectif / 12
               const pct = (monthlyTarget / chartMaxValue) * 100
               if (pct < 5 || pct > 95) return null
               return (
@@ -1608,6 +1691,50 @@ const s: Record<string, React.CSSProperties> = {
   deleteBtn:{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '6px', border: 'none', background: 'none', color: 'var(--text-muted)', cursor: 'pointer', flexShrink: 0, padding: 0 },
 
   empty:    { fontSize: '14px', color: 'var(--text-muted)', textAlign: 'center', padding: '28px 0', margin: 0 },
+
+  // ─── Phase 8 — Objectif annuel ──────────────────────────────────
+  objectifBanner: {
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '12px',
+    padding: '12px 16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+    marginBottom: '16px',
+  },
+  objectifLabel: {
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--text-muted)',
+    letterSpacing: '0.3px',
+    textTransform: 'uppercase' as const,
+  },
+  objectifValue: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '14px', fontWeight: 600,
+  },
+  objectifBar: {
+    height: '8px',
+    background: 'var(--surface-2)',
+    borderRadius: '5px',
+    overflow: 'hidden' as const,
+  },
+  objectifBarFill: {
+    height: '100%',
+    borderRadius: '5px',
+    transition: 'width 0.4s',
+  },
+  objectifBtnSave: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '6px 12px', fontSize: '12px', fontWeight: 600,
+    color: 'var(--bg)', background: 'var(--accent-text)',
+    border: 'none', borderRadius: '7px',
+    cursor: 'pointer', fontFamily: 'inherit',
+  },
+  objectifBtnGhost: {
+    padding: '6px 10px', fontSize: '11.5px', fontWeight: 500,
+    color: 'var(--text-2)', background: 'transparent',
+    border: '1px solid var(--border)', borderRadius: '7px',
+    cursor: 'pointer', fontFamily: 'inherit',
+  },
 
   // ─── Phase 3 — Chart toggle ─────────────────────────────────────
   chartToggle: {
