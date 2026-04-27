@@ -33,13 +33,13 @@ export default async function ContributeursPage() {
             <div style={s.teasingGlow} />
 
             <div style={s.teasingBadge}>
-              <Heart size={14} color="#FFD56B" weight="fill" />
+              <Heart size={14} color="var(--accent-text)" weight="fill" />
               Espace Contributeurs
             </div>
 
             <h2 style={s.teasingTitle}>
               Un espace pour ceux qui souhaitent<br />
-              <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>soutenir et proposer des idées.</em>
+              <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>soutenir et proposer des idées.</em>
             </h2>
 
             <p style={s.teasingDesc}>
@@ -49,7 +49,7 @@ export default async function ContributeursPage() {
 
             <div style={s.perksGrid}>
               {[
-                { icon: Medal,      color: '#FFD56B', label: 'Badge Contributeur permanent sur ton profil' },
+                { icon: Medal,      color: 'var(--accent-text)', label: 'Badge Contributeur permanent sur ton profil' },
                 { icon: Star,       color: '#a78bfa', label: 'Tes idées rejoignent la roadmap officielle' },
                 { icon: ChatCircle, color: '#34d399', label: 'Espace discussion exclusif pour les bâtisseurs' },
                 { icon: Rocket,     color: '#60a5fa', label: 'Accès anticipé à chaque nouveauté' },
@@ -82,7 +82,7 @@ export default async function ContributeursPage() {
               <div style={s.reviewHeader}>
                 <div style={s.reviewStars}>
                   {[0,1,2,3,4].map(i => (
-                    <Star key={i} size={16} color="#FFD56B" weight="fill" />
+                    <Star key={i} size={16} color="var(--accent-text)" weight="fill" />
                   ))}
                 </div>
                 <span style={s.reviewTitle}>Laisse un avis Google, c'est gratuit 🙌</span>
@@ -95,7 +95,7 @@ export default async function ContributeursPage() {
 
               <div style={s.reviewSteps}>
                 {[
-                  { icon: Star,          color: '#FFD56B', text: 'Laisse un avis 5 étoiles sur Google' },
+                  { icon: Star,          color: 'var(--accent-text)', text: 'Laisse un avis 5 étoiles sur Google' },
                   { icon: Camera,        color: '#a78bfa', text: 'Prends une capture d\'écran de ton avis publié' },
                   { icon: EnvelopeSimple,color: '#34d399', text: 'Envoie-la à contact@jasonmarinho.com avec ton prénom' },
                 ].map(({ icon: Icon, color, text }, i) => (
@@ -114,7 +114,7 @@ export default async function ContributeursPage() {
                 rel="noopener noreferrer"
                 style={s.reviewCta}
               >
-                <Star size={15} weight="fill" />
+                <Star size={15} weight="fill" color="var(--accent-text)" />
                 Écrire mon avis Google
                 <ArrowRight size={14} weight="bold" />
               </a>
@@ -169,12 +169,12 @@ export default async function ContributeursPage() {
         {/* ── Intro ── */}
         <div style={s.intro} className="fade-up">
           <div style={s.introBadge}>
-            <Heart size={13} color="#FFD56B" weight="fill" />
+            <Heart size={13} color="var(--accent-text)" weight="fill" />
             Le Cercle · Espace exclusif
           </div>
           <h1 style={s.introTitle}>
             Bienvenue,{' '}
-            <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>{firstName}</em>
+            <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>{firstName}</em>
           </h1>
           <p style={s.introDesc}>
             Tu fais partie des personnes qui construisent la plateforme avec moi.
@@ -207,8 +207,8 @@ export default async function ContributeursPage() {
 
             <div style={s.statsRow} className="fade-up">
               <div style={s.statItem}>
-                <Heart size={15} color="#FFD56B" weight="fill" />
-                <span style={{ ...s.statNum, color: '#FFD56B' }}>{contributors.length}</span>
+                <Heart size={15} color="var(--accent-text)" weight="fill" />
+                <span style={{ ...s.statNum, color: 'var(--accent-text)' }}>{contributors.length}</span>
                 <span style={s.statLabel}>bâtisseur{contributors.length > 1 ? 's' : ''}</span>
               </div>
               <div style={s.statItem}>
@@ -241,8 +241,8 @@ const s: Record<string, React.CSSProperties> = {
   teasing: {
     position: 'relative', overflow: 'hidden',
     maxWidth: '560px', margin: '40px auto 0',
-    background: 'linear-gradient(135deg, rgba(255,213,107,0.07) 0%, rgba(255,213,107,0.02) 100%)',
-    border: '1px solid rgba(255,213,107,0.18)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '24px', padding: 'clamp(32px,5vw,56px)',
     display: 'flex', flexDirection: 'column', alignItems: 'center',
     gap: '20px', textAlign: 'center',
@@ -250,14 +250,14 @@ const s: Record<string, React.CSSProperties> = {
   teasingGlow: {
     position: 'absolute', top: '-80px', right: '-80px',
     width: '280px', height: '280px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(255,213,107,0.1) 0%, transparent 70%)',
+    background: 'radial-gradient(circle, var(--accent-bg-2) 0%, transparent 70%)',
     pointerEvents: 'none',
   },
   teasingBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: '#FFD56B', background: 'rgba(255,213,107,0.1)',
-    border: '1px solid rgba(255,213,107,0.2)',
+    color: 'var(--accent-text)', background: 'var(--accent-bg-2)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '999px', padding: '5px 14px',
   },
   teasingTitle: {
@@ -273,7 +273,7 @@ const s: Record<string, React.CSSProperties> = {
   perkLabel: { fontSize: '13px', color: 'var(--text-2)', fontWeight: 400 },
   cta: {
     display: 'inline-flex', alignItems: 'center', gap: '8px',
-    background: 'linear-gradient(135deg, #FFD56B 0%, #f59e0b 100%)',
+    background: '#ffd56b',
     color: '#1a1a0e', fontWeight: 700, fontSize: '14px',
     padding: '13px 26px', borderRadius: '12px',
     textDecoration: 'none', boxShadow: '0 8px 24px rgba(255,213,107,0.2)',
@@ -300,8 +300,8 @@ const s: Record<string, React.CSSProperties> = {
   /* ── Bloc avis Google ── */
   reviewBlock: {
     width: '100%',
-    background: 'rgba(255,213,107,0.04)',
-    border: '1px solid rgba(255,213,107,0.14)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '16px',
     padding: '20px',
     display: 'flex', flexDirection: 'column' as const, gap: '14px',
@@ -337,9 +337,9 @@ const s: Record<string, React.CSSProperties> = {
   },
   reviewCta: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
-    background: 'rgba(255,213,107,0.12)',
-    border: '1px solid rgba(255,213,107,0.25)',
-    color: '#FFD56B', fontWeight: 600, fontSize: '13px',
+    background: 'var(--accent-bg-2)',
+    border: '1px solid var(--accent-border-2)',
+    color: 'var(--accent-text)', fontWeight: 600, fontSize: '13px',
     padding: '10px 18px', borderRadius: '10px',
     textDecoration: 'none', alignSelf: 'flex-start' as const,
     transition: 'background 0.15s',
@@ -354,8 +354,8 @@ const s: Record<string, React.CSSProperties> = {
   introBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: '#FFD56B', background: 'rgba(255,213,107,0.08)',
-    border: '1px solid rgba(255,213,107,0.15)',
+    color: 'var(--accent-text)', background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
   introTitle: {

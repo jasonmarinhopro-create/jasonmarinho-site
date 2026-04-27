@@ -166,12 +166,13 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
               marginTop: '2px',
             }}
           >
-            <Heart size={18} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? '#FFD56B' : undefined }} />
+            <Heart size={18} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? 'var(--accent-text)' : undefined }} />
             <span style={{ flex: 1 }}>Contributeurs</span>
-            {isContributor
-              ? <span style={styles.contributeurBadge}>✦</span>
-              : <span style={styles.contributeurLock}>Rejoindre</span>
-            }
+            {pathname !== '/dashboard/contributeurs' && (
+              isContributor
+                ? <span style={styles.contributeurBadge}>✦</span>
+                : <span style={styles.contributeurLock}>Rejoindre</span>
+            )}
             {pathname === '/dashboard/contributeurs' && <div style={styles.activeDot} />}
           </Link>
 
@@ -348,14 +349,15 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'color 0.18s',
   },
   contributeurBadge: {
-    fontSize: '10px', color: '#FFD56B', fontWeight: 700,
+    fontSize: '10px', color: 'var(--accent-text)', fontWeight: 700,
   },
   contributeurLock: {
     fontSize: '9px', fontWeight: 600, letterSpacing: '0.4px',
-    color: 'rgba(255,213,107,0.6)',
-    background: 'rgba(255,213,107,0.08)',
-    border: '1px solid rgba(255,213,107,0.15)',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '999px', padding: '2px 7px',
+    opacity: 0.8,
   },
   signOut: {
     display: 'flex', alignItems: 'center', gap: '8px',
