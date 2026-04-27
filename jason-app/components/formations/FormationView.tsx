@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
   CaretDown, CaretRight, Star, Check, List, X,
-  BookmarkSimple, Note as NoteIcon,
+  BookmarkSimple, Note as NoteIcon, ArrowSquareOut, ArrowRight,
 } from '@phosphor-icons/react'
 import { enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark } from '@/app/dashboard/formations/actions'
 
@@ -40,6 +40,8 @@ export default function FormationView({
   initialNotes = {},
   initialBookmarks = [],
   formationSlug,
+  relatedArticles = [],
+  recommendedNext = [],
 }: {
   formation: Formation
   formationId?: string | null
@@ -48,6 +50,8 @@ export default function FormationView({
   initialNotes?: Record<string, string>
   initialBookmarks?: number[]
   formationSlug?: string
+  relatedArticles?: Array<{ label: string; slug: string }>
+  recommendedNext?: Array<{ slug: string; title: string; reason?: string }>
 }) {
   const totalLessons = formation.modules.reduce((a, m) => a + m.lessons.length, 0)
   const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
@@ -487,6 +491,33 @@ export default function FormationView({
             >
               Commencer la formation <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
             </button>
+
+            {/* Phase 4 — Continuer avec d'autres formations */}
+            {recommendedNext.length > 0 && (
+              <div style={styles.recoBlock}>
+                <h3 style={styles.recoTitle}>Continuer ton apprentissage</h3>
+                <p style={styles.recoDesc}>
+                  Ces formations complètent parfaitement celle-ci :
+                </p>
+                <div style={styles.recoList}>
+                  {recommendedNext.map(rec => (
+                    <Link
+                      key={rec.slug}
+                      href={`/dashboard/formations/${rec.slug}`}
+                      style={styles.recoCard}
+                    >
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={styles.recoCardTitle}>{rec.title}</div>
+                        {rec.reason && (
+                          <div style={styles.recoCardReason}>{rec.reason}</div>
+                        )}
+                      </div>
+                      <ArrowRight size={14} weight="bold" color="var(--accent-text)" style={{ flexShrink: 0 }} />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           /* Lesson content */
@@ -664,6 +695,28 @@ export default function FormationView({
                   >
                     <span style={styles.tocBullet}>·</span>
                     {t.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Phase 4 — Articles blog liés */}
+          {relatedArticles.length > 0 && (
+            <div style={{ ...styles.railSection, borderBottom: 'none' }}>
+              <div style={styles.railLabel}>📖 Approfondir</div>
+              <div style={styles.tocList}>
+                {relatedArticles.map(a => (
+                  <a
+                    key={a.slug}
+                    href={`https://jasonmarinho.com/blog/${a.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ ...styles.tocLink, alignItems: 'center' }}
+                  >
+                    <span style={styles.tocBullet}>·</span>
+                    <span style={{ flex: 1 }}>{a.label}</span>
+                    <ArrowSquareOut size={10} weight="bold" color="var(--text-muted)" />
                   </a>
                 ))}
               </div>
@@ -949,6 +1002,47 @@ const styles: Record<string, React.CSSProperties> = {
     resize: 'vertical' as const,
     minHeight: '90px',
     lineHeight: 1.5,
+  },
+
+  // ─── Phase 4 — Recommandations formations ──────────────────────
+  recoBlock: {
+    marginTop: '32px',
+    padding: '20px 24px',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '14px',
+  },
+  recoTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 500,
+    color: 'var(--text)',
+    margin: '0 0 4px',
+  },
+  recoDesc: {
+    fontSize: '13px', color: 'var(--text-2)',
+    margin: '0 0 14px', lineHeight: 1.5,
+  },
+  recoList: {
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+  },
+  recoCard: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '12px 14px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    textDecoration: 'none' as const,
+    color: 'var(--text-2)',
+  },
+  recoCardTitle: {
+    fontSize: '14px', fontWeight: 600,
+    color: 'var(--text)',
+    marginBottom: '2px',
+  },
+  recoCardReason: {
+    fontSize: '12px', fontWeight: 300,
+    color: 'var(--text-muted)',
+    lineHeight: 1.4,
   },
 
   // Overview

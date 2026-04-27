@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getFormationDbContent, type FormationContent } from '@/lib/queries/formation-db-content'
 import { checkFormationAccess } from '@/lib/queries/formation-access'
 import PlanGate from '@/components/ui/PlanGate'
+import { getFormationRelations } from '@/lib/formations/relations'
 
 /**
  * Builds the JSX for a formation dashboard page.
@@ -93,6 +94,24 @@ export async function buildFormationPage({
   // Contenu : DB override statique si présent, sinon fallback statique
   const formationContent = await getFormationDbContent(formationId, staticContent)
 
+  // Phase 4 — Relations : articles blog + formations recommandées
+  const relations = getFormationRelations(slug)
+
+  // Pour les formations recommandées, on récupère leur titre depuis la DB
+  let nextFormationsData: Array<{ slug: string; title: string; reason?: string }> = []
+  if (relations.recommendedNext.length > 0) {
+    const slugs = relations.recommendedNext.map(r => r.slug)
+    const { data: nexts } = await supabase
+      .from('formations')
+      .select('slug, title')
+      .in('slug', slugs)
+      .eq('is_published', true)
+    const titleBySlug = Object.fromEntries((nexts ?? []).map(n => [n.slug, n.title as string]))
+    nextFormationsData = relations.recommendedNext
+      .filter(r => titleBySlug[r.slug])
+      .map(r => ({ slug: r.slug, title: titleBySlug[r.slug], reason: r.reason }))
+  }
+
   return (
     <>
       <Header title={headerTitle} userName={profile?.full_name ?? undefined} />
@@ -104,6 +123,8 @@ export async function buildFormationPage({
         initialCompletedLessons={initialCompletedLessons}
         initialNotes={initialNotes}
         initialBookmarks={initialBookmarks}
+        relatedArticles={relations.articles}
+        recommendedNext={nextFormationsData}
       />
     </>
   )
