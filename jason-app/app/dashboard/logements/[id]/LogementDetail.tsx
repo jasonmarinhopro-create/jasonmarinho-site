@@ -654,6 +654,44 @@ export default function LogementDetail({ logement: l, sejours, contractsCount }:
         )}
       </div>
 
+      {/* Propriétaire (conciergerie) */}
+      {(l.proprietaire_nom || l.proprietaire_email || l.proprietaire_telephone || l.honoraires_pct != null) && (
+        <div style={s.section}>
+          <div style={s.sectionHeader}>
+            <h3 style={s.sectionTitle}>
+              <Users size={15} weight="fill" />
+              Propriétaire (conciergerie)
+            </h3>
+          </div>
+          <div style={s.detailRows}>
+            {l.proprietaire_nom && (
+              <div style={s.detailRow}>
+                <span style={s.detailKey}>Nom</span>
+                <span style={s.detailVal}>{l.proprietaire_nom}</span>
+              </div>
+            )}
+            {l.proprietaire_email && (
+              <div style={s.detailRow}>
+                <span style={s.detailKey}>Email</span>
+                <a href={`mailto:${l.proprietaire_email}`} style={{ ...s.detailVal, color: 'var(--accent-text)', textDecoration: 'none' as const }}>{l.proprietaire_email}</a>
+              </div>
+            )}
+            {l.proprietaire_telephone && (
+              <div style={s.detailRow}>
+                <span style={s.detailKey}>Téléphone</span>
+                <a href={`tel:${l.proprietaire_telephone}`} style={{ ...s.detailVal, color: 'var(--accent-text)', textDecoration: 'none' as const }}>{l.proprietaire_telephone}</a>
+              </div>
+            )}
+            {l.honoraires_pct != null && (
+              <div style={s.detailRow}>
+                <span style={s.detailKey}>Honoraires</span>
+                <span style={{ ...s.detailVal, color: '#a78bfa', fontWeight: 700 }}>{l.honoraires_pct}%</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Description */}
       {l.description && (
         <div style={s.section}>

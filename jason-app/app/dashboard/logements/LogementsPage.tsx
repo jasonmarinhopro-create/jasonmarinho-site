@@ -680,6 +680,16 @@ export default function LogementsPage({ logements: initial }: Props) {
                   </div>
                 )}
 
+                {l.proprietaire_nom && (
+                  <div style={proprietaireRow}>
+                    <span style={proprietaireBadge}>Propriétaire</span>
+                    <span style={proprietaireText}>
+                      {l.proprietaire_nom}
+                      {l.honoraires_pct != null && ` · ${l.honoraires_pct}% d'honoraires`}
+                    </span>
+                  </div>
+                )}
+
                 {l.description && (
                   <p style={cardDesc}>{l.description.slice(0, 80)}{l.description.length > 80 ? '…' : ''}</p>
                 )}
@@ -920,6 +930,34 @@ export default function LogementsPage({ logements: initial }: Props) {
                 </div>
                 <div style={{ flex: 1, minWidth: '140px' }}>
                   <Field label="Téléphone ménage" value={form.contact_menage_tel ?? ''} onChange={v => set('contact_menage_tel', v || null)} placeholder="+33 …" type="tel" />
+                </div>
+              </div>
+
+              {/* ── Propriétaire & honoraires (conciergerie) ── */}
+              <h4 style={sectionTitle}>Propriétaire (si conciergerie)</h4>
+              <p style={{ fontSize: '11px', color: 'var(--text-3)', margin: '-4px 0 4px' }}>
+                Renseigne ces champs uniquement si tu gères ce bien pour un propriétaire tiers.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <Field label="Nom du propriétaire" value={form.proprietaire_nom ?? ''} onChange={v => set('proprietaire_nom', v || null)} placeholder="M. Durand" />
+                </div>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <Field label="Email" value={form.proprietaire_email ?? ''} onChange={v => set('proprietaire_email', v || null)} placeholder="durand@example.com" />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <Field label="Téléphone" value={form.proprietaire_telephone ?? ''} onChange={v => set('proprietaire_telephone', v || null)} placeholder="+33 …" type="tel" />
+                </div>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <label style={label}>Honoraires (%)</label>
+                  <input
+                    style={input} type="number" min={0} max={100} step="0.01"
+                    value={form.honoraires_pct ?? ''}
+                    onChange={e => set('honoraires_pct', e.target.value ? parseFloat(e.target.value) : null)}
+                    placeholder="20"
+                  />
                 </div>
               </div>
 
@@ -1557,6 +1595,32 @@ const tableThumb: React.CSSProperties = {
   borderRadius: '7px',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   flexShrink: 0,
+}
+
+// ─── Phase 5 — propriétaire styles ─────────────────────────────────────────────
+
+const proprietaireRow: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '8px',
+  paddingTop: '6px',
+  borderTop: '1px dashed var(--border)',
+  marginTop: '2px',
+}
+
+const proprietaireBadge: React.CSSProperties = {
+  display: 'inline-block',
+  fontSize: '9px', fontWeight: 700, letterSpacing: '0.5px',
+  textTransform: 'uppercase' as const,
+  color: '#a78bfa',
+  background: 'rgba(167,139,250,0.10)',
+  border: '1px solid rgba(167,139,250,0.25)',
+  padding: '2px 7px', borderRadius: '6px',
+  flexShrink: 0,
+}
+
+const proprietaireText: React.CSSProperties = {
+  fontSize: '11.5px', fontWeight: 500,
+  color: 'var(--text-2)',
+  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
 }
 
 // ─── Phase 1 — nouveaux styles ─────────────────────────────────────────────────
