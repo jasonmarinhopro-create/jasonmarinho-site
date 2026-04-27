@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut } from '@phosphor-icons/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 
 const DEFAULT_ANNULATION =
@@ -139,6 +139,7 @@ function emptyForm(): LogementData {
 
 export default function LogementsPage({ logements: initial }: Props) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const [logements, setLogements] = useState<Logement[]>(initial)
   const [modal, setModal] = useState<'create' | 'edit' | null>(null)
@@ -147,6 +148,17 @@ export default function LogementsPage({ logements: initial }: Props) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+
+  // Si la page est ouverte avec ?edit=id (depuis le détail), ouvrir directement la modal d'édition
+  useEffect(() => {
+    const editId = searchParams.get('edit')
+    if (!editId) return
+    const target = logements.find(l => l.id === editId)
+    if (target) openEdit(target)
+    // Nettoyer l'URL pour ne pas réouvrir au refresh
+    router.replace('/dashboard/logements')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function set(field: string, value: string | number | boolean | null | string[]) {
     setForm(f => ({ ...f, [field]: value }))
@@ -346,7 +358,14 @@ export default function LogementsPage({ logements: initial }: Props) {
         {logements.length > 0 && (
           <div style={grid}>
             {logements.map(l => (
-              <div key={l.id} style={{ ...card, opacity: l.actif === false ? 0.65 : 1 }}>
+              <div
+                key={l.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => router.push(`/dashboard/logements/${l.id}`)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); router.push(`/dashboard/logements/${l.id}`) } }}
+                style={{ ...card, opacity: l.actif === false ? 0.65 : 1, cursor: 'pointer' }}
+              >
                 {/* Photo couverture si présente */}
                 {l.photo_couverture_url && (
                   <div style={cardCover}>
@@ -361,10 +380,16 @@ export default function LogementsPage({ logements: initial }: Props) {
                     <div style={cardIcon}><House size={18} color="var(--accent-text)" weight="fill" /></div>
                   ) : <span />}
                   <div style={cardActions}>
-                    <button onClick={() => openEdit(l)} style={iconBtn} title="Modifier">
+                    <button
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(l) }}
+                      style={iconBtn} title="Modifier"
+                    >
                       <PencilSimple size={14} />
                     </button>
-                    <button onClick={() => setDeleteConfirm(l.id)} style={iconBtn} title="Supprimer">
+                    <button
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
+                      style={iconBtn} title="Supprimer"
+                    >
                       <Trash size={14} />
                     </button>
                   </div>
