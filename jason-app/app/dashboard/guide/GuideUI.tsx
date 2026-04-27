@@ -6,6 +6,8 @@ import {
   HouseLine, Coffee, Buildings, Handshake,
   Scales, CurrencyEur, ClipboardText, Globe, Briefcase, FileText, Megaphone, ShieldCheck, Gavel,
   Warning, Info, CheckCircle, ArrowRight, BookOpen, ArrowUpRight,
+  Leaf, IdentificationBadge, UsersThree, Calculator, ForkKnife, Wheelchair,
+  UserGear, Target, ChartLineUp, MapPin, EnvelopeSimple, Star, Confetti,
 } from '@phosphor-icons/react'
 
 const BLOG_BASE = 'https://jasonmarinho.com/blog/'
@@ -102,6 +104,76 @@ const GUIDE_CARDS: GuideCard[] = [
       { label: 'Taxe de séjour : comment collecter', slug: 'taxe-sejour-lcd-comment-collecter' },
     ],
   },
+  {
+    id: 'gites-dpe',
+    profile: 'gites',
+    iconColor: '#22c55e', iconBg: 'rgba(34,197,94,0.12)',
+    icon: <Leaf size={22} weight="fill" />,
+    title: 'DPE & loi Climat — calendrier',
+    subtitle: 'Les passoires thermiques deviennent illouables',
+    rules: [
+      { type: 'warn', text: <><strong>2025</strong> : interdiction de louer les logements classés <strong>G</strong> (consommation &gt; 450 kWh/m²/an)</> },
+      { type: 'warn', text: <><strong>2028</strong> : interdiction des classés <strong>F</strong> · <strong>2034</strong> : interdiction des classés <strong>E</strong></> },
+      { type: 'info', text: <>La LCD est concernée comme la LLD — un DPE valide est <strong>obligatoire dès la mise en location</strong> et l&apos;étiquette doit figurer sur l&apos;annonce</> },
+      { type: 'ok',   text: <>Travaux éligibles à <strong>MaPrimeRénov&apos;</strong> et aux CEE — isolation, fenêtres, pompe à chaleur — bien avant les deadlines</> },
+    ],
+    articles: [
+      { label: 'Travaux énergétiques & MaPrimeRénov', slug: 'travaux-energetiques-lcd-aides-maprimerenov-2026' },
+    ],
+  },
+  {
+    id: 'gites-permis',
+    profile: 'gites',
+    iconColor: '#f97316', iconBg: 'rgba(249,115,22,0.12)',
+    icon: <IdentificationBadge size={22} weight="fill" />,
+    title: 'Permis de louer & changement d\'usage',
+    subtitle: 'Les pièges des grandes villes et zones tendues',
+    rules: [
+      { type: 'warn', text: <><strong>Paris, Lyon, Bordeaux, Annecy, Nice</strong>… : autorisation de changement d&apos;usage obligatoire pour les résidences secondaires — sinon amende jusqu&apos;à <strong>50 000 €</strong></> },
+      { type: 'warn', text: <><strong>Compensation</strong> exigée à Paris : transformer un local commercial en habitation pour pouvoir louer en LCD</> },
+      { type: 'info', text: <><strong>120 nuits/an</strong> max pour une résidence principale dans toute la France — quota suivi par les plateformes via le numéro d&apos;enregistrement</> },
+      { type: 'ok',   text: <>Vérifier auprès de la mairie avant l&apos;achat ou la mise en location — règles très variables d&apos;une commune à l&apos;autre</> },
+    ],
+    articles: [
+      { label: 'Réglementation LCD France 2026', slug: 'reglementation-lcd-france-2026' },
+    ],
+  },
+  {
+    id: 'gites-copropriete',
+    profile: 'gites',
+    iconColor: '#0ea5e9', iconBg: 'rgba(14,165,233,0.12)',
+    icon: <UsersThree size={22} weight="fill" />,
+    title: 'Copropriété, voisinage & règlement',
+    subtitle: 'Anticiper les conflits avant qu\'ils explosent',
+    rules: [
+      { type: 'warn', text: <>Le <strong>règlement de copropriété</strong> peut interdire la LCD (clause d&apos;habitation bourgeoise stricte) — vérifier avant l&apos;achat</> },
+      { type: 'info', text: <>Une majorité de copropriétaires peut interdire la LCD <strong>par vote en AG</strong> dans certaines conditions (loi ALUR + jurisprudences récentes)</> },
+      { type: 'ok',   text: <>Règlement intérieur clair (bruit, parties communes, horaires d&apos;arrivée) + concertation avec les voisins = la meilleure prévention</> },
+    ],
+    articles: [
+      { label: 'Droits voisins & litiges copropriété', slug: 'droits-voisins-lcd-copropriete-litiges' },
+      { label: 'Bruit & règlement intérieur efficace', slug: 'bruit-reglement-interieur-lcd-efficace' },
+    ],
+  },
+  {
+    id: 'gites-rentabilite',
+    profile: 'gites',
+    iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)',
+    icon: <Calculator size={22} weight="fill" />,
+    title: 'Calculer la rentabilité d\'un bien',
+    subtitle: 'Avant d\'acheter, mesurer le cash-flow réel',
+    rules: [
+      { type: 'info', text: <><strong>Revenu théorique</strong> = nuitée moyenne × taux d&apos;occupation × 365 — varier selon saisonnalité de la zone</> },
+      { type: 'warn', text: <>Coûts à intégrer : commissions plateformes (15 %), ménage, linge, énergie, abonnements, taxe foncière, assurance, mensualité crédit, provision travaux</> },
+      { type: 'ok',   text: <><strong>Point mort</strong> = nb de nuitées/an pour couvrir les charges fixes — au-delà, tout est marge</> },
+      { type: 'info', text: <>Outils utiles : <strong>AirDNA</strong> pour les benchmarks de zone, simulateur Driing pour le yield</> },
+    ],
+    articles: [
+      { label: 'Point mort LCD : calcul rentabilité', slug: 'point-mort-lcd-calcul-rentabilite-hote' },
+      { label: 'Budget annuel hôte : grille de coûts', slug: 'budget-annuel-hote-lcd-grille-couts' },
+      { label: 'AirDNA mode d\'emploi', slug: 'airdna-mode-emploi-hote-lcd-debutant' },
+    ],
+  },
 
   // ── CHAMBRES D'HÔTES ──
   {
@@ -158,6 +230,40 @@ const GUIDE_CARDS: GuideCard[] = [
       { label: 'GMB pour réservations directes', slug: 'google-my-business-reservations-directes-hotes-lcd' },
     ],
   },
+  {
+    id: 'chambres-haccp',
+    profile: 'chambres',
+    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    icon: <ForkKnife size={22} weight="fill" />,
+    title: 'HACCP & hygiène alimentaire (petit-déj)',
+    subtitle: 'Servir un petit-déjeuner = obligations sanitaires',
+    rules: [
+      { type: 'warn', text: <><strong>Déclaration auprès de la DDPP</strong> (CERFA 13984*06) obligatoire dès qu&apos;on sert des denrées</> },
+      { type: 'info', text: <>Application des principes <strong>HACCP</strong> : traçabilité des produits, chaîne du froid, dates de péremption, plan de nettoyage</> },
+      { type: 'ok',   text: <>Formation hygiène alimentaire <strong>conseillée</strong> — non obligatoire pour les chambres d&apos;hôtes mais recommandée pour limiter les risques</> },
+      { type: 'warn', text: <>Au-delà de <strong>37 500 € de CA petit-déj</strong> : <strong>TVA 10 %</strong> obligatoire — souvent ignoré</> },
+    ],
+    articles: [
+      { label: 'TVA petit-déjeuner détail', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
+    ],
+  },
+  {
+    id: 'chambres-erp-pmr',
+    profile: 'chambres',
+    iconColor: '#06b6d4', iconBg: 'rgba(6,182,212,0.12)',
+    icon: <Wheelchair size={22} weight="fill" />,
+    title: 'ERP & accessibilité PMR',
+    subtitle: 'Quand le logement devient un établissement',
+    rules: [
+      { type: 'warn', text: <>À partir de <strong>5 chambres</strong> ou <strong>15 personnes</strong>, l&apos;activité bascule en <strong>ERP de type O</strong> — règles de sécurité incendie strictes</> },
+      { type: 'info', text: <>ERP = visite de la commission sécurité, registre de sécurité, alarme, BAES, plan d&apos;évacuation</> },
+      { type: 'warn', text: <><strong>Accessibilité PMR</strong> obligatoire pour tout ERP : au moins 1 chambre adaptée + cheminement, sanitaires accessibles</> },
+      { type: 'ok',   text: <>Si tu es sous le seuil (4 chambres / &lt;15 pers.) : tu n&apos;es pas ERP, mais l&apos;accessibilité reste un argument commercial fort</> },
+    ],
+    articles: [
+      { label: 'ERP & classement meublé tourisme', slug: 'erp-classement-meuble-tourisme-lcd' },
+    ],
+  },
 
   // ── CONCIERGERIES ──
   {
@@ -210,6 +316,59 @@ const GUIDE_CARDS: GuideCard[] = [
     articles: [
       { label: 'Modèle contrat mandat conciergerie', slug: 'contrat-mandat-conciergerie-lcd-modele-clauses' },
       { label: 'Tarif conciergerie 2026', slug: 'tarif-conciergerie-lcd-grille-marche-2026' },
+    ],
+  },
+  {
+    id: 'conciergerie-equipe',
+    profile: 'conciergerie',
+    iconColor: '#ec4899', iconBg: 'rgba(236,72,153,0.12)',
+    icon: <UserGear size={22} weight="fill" />,
+    title: 'URSSAF, équipe ménage & sous-traitance',
+    subtitle: 'Recruter et déclarer correctement',
+    rules: [
+      { type: 'warn', text: <><strong>Salariat</strong> : contrat CDD/CDI, charges patronales (~42 %), gestion des congés et arrêts — sécurité juridique mais coût élevé</> },
+      { type: 'info', text: <><strong>Sous-traitance</strong> (auto-entrepreneur, micro) : facturation à la prestation, pas de lien de subordination — attention au risque de requalification</> },
+      { type: 'warn', text: <>Le risque de <strong>requalification en salariat déguisé</strong> est réel : éviter d&apos;imposer horaires fixes, exclusivité, matériel</> },
+      { type: 'ok',   text: <>Solution hybride : <strong>équipe noyau salariée</strong> (qualité, fidélité) + <strong>renforts indépendants</strong> en haute saison</> },
+    ],
+    articles: [
+      { label: 'Recruter et fidéliser une équipe ménage', slug: 'equipe-menage-conciergerie-recruter-fideliser' },
+    ],
+  },
+  {
+    id: 'conciergerie-prospection',
+    profile: 'conciergerie',
+    iconColor: '#10b981', iconBg: 'rgba(16,185,129,0.12)',
+    icon: <Target size={22} weight="fill" />,
+    title: 'Trouver son premier mandat',
+    subtitle: 'Décrocher la confiance avant la facture',
+    rules: [
+      { type: 'info', text: <>Cibler d&apos;abord les <strong>propriétaires en sous-performance</strong> sur Airbnb (annonces non optimisées, peu d&apos;avis, photos médiocres)</> },
+      { type: 'ok',   text: <>Outils gratuits : <strong>AirDNA, Inside Airbnb</strong> pour identifier les biens à fort potentiel inexploité dans ta zone</> },
+      { type: 'ok',   text: <>Approche : <strong>audit gratuit</strong> du bien (photos, annonce, prix) + démonstration chiffrée du gain potentiel</> },
+      { type: 'info', text: <>Réseaux pro : agences immo locales, gestionnaires de patrimoine, notaires — souvent prescripteurs de propriétaires investisseurs</> },
+    ],
+    articles: [
+      { label: 'Prospection : trouver le 1er mandat', slug: 'prospection-conciergerie-trouver-premier-mandat' },
+    ],
+  },
+  {
+    id: 'conciergerie-scaler',
+    profile: 'conciergerie',
+    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    icon: <ChartLineUp size={22} weight="fill" />,
+    title: 'Scaler de 5 à 30 mandats',
+    subtitle: 'Industrialiser sans casser la qualité',
+    rules: [
+      { type: 'warn', text: <>Goulot n°1 : la <strong>communication client</strong> — automatiser dès 10 mandats avec gabarits + scénarios (Make/Zapier)</> },
+      { type: 'ok',   text: <><strong>Channel manager</strong> indispensable : Smoobu, Lodgify, Hospitable, Beds24 — mutualise calendriers, prix, messages multi-plateformes</> },
+      { type: 'info', text: <><strong>Reporting mensuel automatisé</strong> par propriétaire : nuitées, CA, occupation, photos — c&apos;est ton meilleur argument de fidélisation</> },
+      { type: 'ok',   text: <>Onboarding standardisé : checklist d&apos;audit du bien, photos pro, mise en ligne, livret d&apos;accueil — 7 à 10 jours pour un nouveau bien</> },
+    ],
+    articles: [
+      { label: 'Scaler de 5 à 30 mandats', slug: 'scaler-conciergerie-5-30-mandats-process' },
+      { label: 'Logiciels conciergerie : comparatif', slug: 'logiciels-conciergerie-comparatif-2026' },
+      { label: 'Automatiser avec Make/Zapier', slug: 'make-zapier-workflow-airbnb-no-code-debutant' },
     ],
   },
 
@@ -268,6 +427,45 @@ const GUIDE_CARDS: GuideCard[] = [
       { label: 'GMB pour réservations directes', slug: 'google-my-business-reservations-directes-hotes-lcd' },
       { label: 'Email marketing hôte LCD', slug: 'email-marketing-newsletter-hote-lcd' },
       { label: 'Instagram pour hôtes LCD', slug: 'instagram-hotes-lcd-attirer-voyageurs-reservations-directes' },
+    ],
+  },
+  {
+    id: 'direct-seo-local',
+    profile: 'direct',
+    iconColor: '#0ea5e9', iconBg: 'rgba(14,165,233,0.12)',
+    icon: <MapPin size={22} weight="fill" />,
+    title: 'SEO local & Google Business Profile',
+    subtitle: 'Apparaître quand on cherche "gîte + ta ville"',
+    rules: [
+      { type: 'ok',   text: <><strong>Fiche Google Business</strong> bien remplie : photos, horaires, description, posts hebdomadaires — c&apos;est le canal n°1 pour le local</> },
+      { type: 'info', text: <><strong>Avis Google</strong> : objectif 4,7+/5 avec 30+ avis pour ranker dans les résultats locaux — solliciter chaque voyageur après le séjour</> },
+      { type: 'ok',   text: <>Mots-clés à cibler : "gîte + ville", "chambre d&apos;hôtes + région", "location vacances + lac/montagne/mer"</> },
+      { type: 'info', text: <>Site web propre + page dédiée par bien + balisage <strong>schema.org LocalBusiness</strong> pour amplifier la visibilité Google</> },
+    ],
+    articles: [
+      { label: 'SEO local : Google Maps visibilité', slug: 'seo-local-hote-lcd-google-maps-visibilite' },
+      { label: 'GMB : questions/réponses', slug: 'gmb-questions-reponses-hotes-lcd-optimiser' },
+      { label: 'GMB : formation contenu', slug: 'formation-google-my-business-lcd-contenu' },
+    ],
+  },
+  {
+    id: 'direct-fidelisation',
+    profile: 'direct',
+    iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)',
+    icon: <EnvelopeSimple size={22} weight="fill" />,
+    title: 'Fidéliser : email, parrainage, séjours longs',
+    subtitle: 'La résa directe se construit sur le temps long',
+    rules: [
+      { type: 'ok',   text: <><strong>Newsletter saisonnière</strong> : 4–6 envois/an aux anciens voyageurs — taux d&apos;ouverture moyen LCD = 35–45 %</> },
+      { type: 'info', text: <>Programme de <strong>parrainage</strong> : 5–10 % de réduction au parrain et au filleul — ROI très élevé sur fichier qualifié</> },
+      { type: 'ok',   text: <><strong>Diversifier les revenus</strong> : workation longue durée hors saison, séjours pros, événements privés — taux d&apos;occupation année lissé</> },
+      { type: 'info', text: <>Conserver les <strong>emails voyageurs</strong> dès la première résa (RGPD compliant) : c&apos;est ton actif le plus précieux pour la résa directe</> },
+    ],
+    articles: [
+      { label: 'Email marketing & newsletter', slug: 'email-marketing-newsletter-hote-lcd' },
+      { label: 'Programme parrainage voyageurs', slug: 'programme-parrainage-voyageurs-fidelisation-lcd' },
+      { label: 'Séjours longs hors saison', slug: 'sejours-longs-lcd-strategie-revenus-basse-saison' },
+      { label: 'Workation : louer cher hors saison', slug: 'workation-lcd-logement-equiper-louer-cher-hors-saison' },
     ],
   },
 ]
