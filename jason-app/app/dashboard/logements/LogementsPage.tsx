@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock } from '@phosphor-icons/react'
-import { useRouter } from 'next/navigation'
+import { useState, useTransition, useEffect, useMemo } from 'react'
+import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight } from '@phosphor-icons/react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 
 const DEFAULT_ANNULATION =
@@ -10,13 +10,70 @@ const DEFAULT_ANNULATION =
 const DEFAULT_REGLEMENT =
   `- Respecter le calme et la tranquillité du voisinage.\n- Interdiction de fumer à l'intérieur du logement.\n- Les animaux de compagnie ne sont pas admis sauf accord préalable du bailleur.\n- Toute fête ou rassemblement est interdit sans autorisation écrite du bailleur.\n- Le locataire s'engage à laisser le logement dans l'état dans lequel il l'a trouvé.`
 
+type TypeLogement = 'gite' | 'chambres-hotes' | 'appartement' | 'studio' | 'maison' | 'villa' | 'autre'
+
+const TYPE_LOGEMENT_LABELS: Record<TypeLogement, string> = {
+  'gite': 'Gîte',
+  'chambres-hotes': "Chambres d'hôtes",
+  'appartement': 'Appartement',
+  'studio': 'Studio',
+  'maison': 'Maison',
+  'villa': 'Villa',
+  'autre': 'Autre',
+}
+
+const EQUIPEMENTS: { slug: string; label: string; emoji: string }[] = [
+  { slug: 'wifi',           label: 'Wi-Fi',          emoji: '📶' },
+  { slug: 'parking',        label: 'Parking',        emoji: '🅿️' },
+  { slug: 'piscine',        label: 'Piscine',        emoji: '🏊' },
+  { slug: 'climatisation',  label: 'Climatisation',  emoji: '❄️' },
+  { slug: 'chauffage',      label: 'Chauffage',      emoji: '🔥' },
+  { slug: 'lave-linge',     label: 'Lave-linge',     emoji: '🧺' },
+  { slug: 'lave-vaisselle', label: 'Lave-vaisselle', emoji: '🍽️' },
+  { slug: 'tv',             label: 'TV',             emoji: '📺' },
+  { slug: 'jardin',         label: 'Jardin',         emoji: '🌳' },
+  { slug: 'terrasse',       label: 'Terrasse',       emoji: '🪑' },
+  { slug: 'balcon',         label: 'Balcon',         emoji: '🌿' },
+  { slug: 'pmr',            label: 'Accès PMR',      emoji: '♿' },
+  { slug: 'ascenseur',      label: 'Ascenseur',      emoji: '🛗' },
+  { slug: 'cheminee',       label: 'Cheminée',       emoji: '🪵' },
+  { slug: 'spa',            label: 'Spa / jacuzzi',  emoji: '🛁' },
+]
+
 type Logement = {
   id: string
   nom: string
   adresse: string
   telephone: string | null
   description: string | null
+  type_logement: TypeLogement | null
   capacite_max: number
+  surface_m2: number | null
+  nb_chambres: number | null
+  nb_lits: number | null
+  nb_sdb: number | null
+  numero_enregistrement: string | null
+  classement_etoiles: number | null
+  dpe: string | null
+  tarif_nuitee_moyen: number | null
+  frais_menage: number | null
+  caution: number | null
+  equipements: string[]
+  lien_airbnb: string | null
+  lien_booking: string | null
+  lien_gmb: string | null
+  lien_site_direct: string | null
+  photo_couverture_url: string | null
+  photos_urls: string[]
+  contact_urgence_nom: string | null
+  contact_urgence_tel: string | null
+  contact_menage_nom: string | null
+  contact_menage_tel: string | null
+  actif: boolean
+  proprietaire_nom: string | null
+  proprietaire_email: string | null
+  proprietaire_telephone: string | null
+  honoraires_pct: number | null
   reglement_interieur: string | null
   conditions_annulation: string | null
   animaux_acceptes: boolean
@@ -39,7 +96,34 @@ function emptyForm(): LogementData {
     adresse: '',
     telephone: '',
     description: '',
+    type_logement: null,
     capacite_max: 1,
+    surface_m2: null,
+    nb_chambres: null,
+    nb_lits: null,
+    nb_sdb: null,
+    numero_enregistrement: null,
+    classement_etoiles: null,
+    dpe: null,
+    tarif_nuitee_moyen: null,
+    frais_menage: null,
+    caution: null,
+    equipements: [],
+    lien_airbnb: null,
+    lien_booking: null,
+    lien_gmb: null,
+    lien_site_direct: null,
+    photo_couverture_url: null,
+    photos_urls: [],
+    contact_urgence_nom: null,
+    contact_urgence_tel: null,
+    contact_menage_nom: null,
+    contact_menage_tel: null,
+    actif: true,
+    proprietaire_nom: null,
+    proprietaire_email: null,
+    proprietaire_telephone: null,
+    honoraires_pct: null,
     reglement_interieur: DEFAULT_REGLEMENT,
     conditions_annulation: DEFAULT_ANNULATION,
     animaux_acceptes: false,
@@ -55,6 +139,7 @@ function emptyForm(): LogementData {
 
 export default function LogementsPage({ logements: initial }: Props) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const [logements, setLogements] = useState<Logement[]>(initial)
   const [modal, setModal] = useState<'create' | 'edit' | null>(null)
@@ -63,8 +148,47 @@ export default function LogementsPage({ logements: initial }: Props) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState<'all' | 'actifs' | 'en-pause' | string>('all') // string = type slug
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>(initial.length >= 5 ? 'table' : 'cards')
 
-  function set(field: string, value: string | number | boolean) {
+  // Si la page est ouverte avec ?edit=id (depuis le détail), ouvrir directement la modal d'édition
+  useEffect(() => {
+    const editId = searchParams.get('edit')
+    if (!editId) return
+    const target = logements.find(l => l.id === editId)
+    if (target) openEdit(target)
+    // Nettoyer l'URL pour ne pas réouvrir au refresh
+    router.replace('/dashboard/logements')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Liste filtrée
+  const filteredLogements = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return logements.filter(l => {
+      if (filter === 'actifs' && l.actif === false) return false
+      if (filter === 'en-pause' && l.actif !== false) return false
+      // filter par type
+      if (filter !== 'all' && filter !== 'actifs' && filter !== 'en-pause') {
+        if (l.type_logement !== filter) return false
+      }
+      if (q) {
+        const haystack = [l.nom, l.adresse, l.description ?? '', l.numero_enregistrement ?? ''].join(' ').toLowerCase()
+        if (!haystack.includes(q)) return false
+      }
+      return true
+    })
+  }, [logements, search, filter])
+
+  // Types présents dans la liste pour les chips de filtre dynamique
+  const typesPresent = useMemo(() => {
+    const set = new Set<string>()
+    logements.forEach(l => { if (l.type_logement) set.add(l.type_logement) })
+    return Array.from(set)
+  }, [logements])
+
+  function set(field: string, value: string | number | boolean | null | string[]) {
     setForm(f => ({ ...f, [field]: value }))
   }
 
@@ -81,7 +205,34 @@ export default function LogementsPage({ logements: initial }: Props) {
       adresse: l.adresse,
       telephone: l.telephone ?? '',
       description: l.description ?? '',
+      type_logement: l.type_logement,
       capacite_max: l.capacite_max,
+      surface_m2: l.surface_m2,
+      nb_chambres: l.nb_chambres,
+      nb_lits: l.nb_lits,
+      nb_sdb: l.nb_sdb,
+      numero_enregistrement: l.numero_enregistrement,
+      classement_etoiles: l.classement_etoiles,
+      dpe: l.dpe,
+      tarif_nuitee_moyen: l.tarif_nuitee_moyen,
+      frais_menage: l.frais_menage,
+      caution: l.caution,
+      equipements: l.equipements ?? [],
+      lien_airbnb: l.lien_airbnb,
+      lien_booking: l.lien_booking,
+      lien_gmb: l.lien_gmb,
+      lien_site_direct: l.lien_site_direct,
+      photo_couverture_url: l.photo_couverture_url,
+      photos_urls: l.photos_urls ?? [],
+      contact_urgence_nom: l.contact_urgence_nom,
+      contact_urgence_tel: l.contact_urgence_tel,
+      contact_menage_nom: l.contact_menage_nom,
+      contact_menage_tel: l.contact_menage_tel,
+      actif: l.actif ?? true,
+      proprietaire_nom: l.proprietaire_nom,
+      proprietaire_email: l.proprietaire_email,
+      proprietaire_telephone: l.proprietaire_telephone,
+      honoraires_pct: l.honoraires_pct,
       reglement_interieur: l.reglement_interieur ?? DEFAULT_REGLEMENT,
       conditions_annulation: l.conditions_annulation ?? DEFAULT_ANNULATION,
       animaux_acceptes: l.animaux_acceptes,
@@ -116,53 +267,64 @@ export default function LogementsPage({ logements: initial }: Props) {
     if (err) { setError(err); return }
     setError('')
 
+    function buildLogementFromForm(id: string): Logement {
+      return {
+        id,
+        nom: form.nom,
+        adresse: form.adresse,
+        telephone: form.telephone ?? null,
+        description: form.description ?? null,
+        type_logement: (form.type_logement as TypeLogement | null) ?? null,
+        capacite_max: form.capacite_max,
+        surface_m2: form.surface_m2 ?? null,
+        nb_chambres: form.nb_chambres ?? null,
+        nb_lits: form.nb_lits ?? null,
+        nb_sdb: form.nb_sdb ?? null,
+        numero_enregistrement: form.numero_enregistrement ?? null,
+        classement_etoiles: form.classement_etoiles ?? null,
+        dpe: form.dpe ?? null,
+        tarif_nuitee_moyen: form.tarif_nuitee_moyen ?? null,
+        frais_menage: form.frais_menage ?? null,
+        caution: form.caution ?? null,
+        equipements: form.equipements ?? [],
+        lien_airbnb: form.lien_airbnb ?? null,
+        lien_booking: form.lien_booking ?? null,
+        lien_gmb: form.lien_gmb ?? null,
+        lien_site_direct: form.lien_site_direct ?? null,
+        photo_couverture_url: form.photo_couverture_url ?? null,
+        photos_urls: form.photos_urls ?? [],
+        contact_urgence_nom: form.contact_urgence_nom ?? null,
+        contact_urgence_tel: form.contact_urgence_tel ?? null,
+        contact_menage_nom: form.contact_menage_nom ?? null,
+        contact_menage_tel: form.contact_menage_tel ?? null,
+        actif: form.actif ?? true,
+        proprietaire_nom: form.proprietaire_nom ?? null,
+        proprietaire_email: form.proprietaire_email ?? null,
+        proprietaire_telephone: form.proprietaire_telephone ?? null,
+        honoraires_pct: form.honoraires_pct ?? null,
+        reglement_interieur: form.reglement_interieur ?? null,
+        conditions_annulation: form.conditions_annulation ?? null,
+        animaux_acceptes: form.animaux_acceptes,
+        fumeur_accepte: form.fumeur_accepte,
+        methodes_paiement: form.methodes_paiement ?? 'virement',
+        heure_arrivee: form.heure_arrivee ?? null,
+        heure_depart: form.heure_depart ?? null,
+        code_acces: form.code_acces ?? null,
+        wifi_nom: form.wifi_nom ?? null,
+        wifi_mdp: form.wifi_mdp ?? null,
+      }
+    }
+
     startTransition(async () => {
       if (modal === 'create') {
         const res = await createLogement(form)
         if (res.error) { setError(res.error); return }
-        // Mise à jour immédiate de l'état local sans attendre router.refresh()
-        const newLogement: Logement = {
-          id: res.id!,
-          nom: form.nom,
-          adresse: form.adresse,
-          telephone: form.telephone ?? null,
-          description: form.description ?? null,
-          capacite_max: form.capacite_max,
-          reglement_interieur: form.reglement_interieur ?? null,
-          conditions_annulation: form.conditions_annulation ?? null,
-          animaux_acceptes: form.animaux_acceptes,
-          fumeur_accepte: form.fumeur_accepte,
-          methodes_paiement: form.methodes_paiement ?? 'virement',
-          heure_arrivee: form.heure_arrivee ?? null,
-          heure_depart: form.heure_depart ?? null,
-          code_acces: form.code_acces ?? null,
-          wifi_nom: form.wifi_nom ?? null,
-          wifi_mdp: form.wifi_mdp ?? null,
-        }
-        setLogements(prev => [newLogement, ...prev])
+        setLogements(prev => [buildLogementFromForm(res.id!), ...prev])
         setSuccess('Logement créé !')
       } else if (modal === 'edit' && editing) {
         const res = await updateLogement(editing.id, form)
         if (res.error) { setError(res.error); return }
-        // Mise à jour immédiate de la fiche modifiée dans la liste
-        setLogements(prev => prev.map(l => l.id === editing.id ? {
-          ...l,
-          nom: form.nom,
-          adresse: form.adresse,
-          telephone: form.telephone ?? null,
-          description: form.description ?? null,
-          capacite_max: form.capacite_max,
-          reglement_interieur: form.reglement_interieur ?? null,
-          conditions_annulation: form.conditions_annulation ?? null,
-          animaux_acceptes: form.animaux_acceptes,
-          fumeur_accepte: form.fumeur_accepte,
-          methodes_paiement: form.methodes_paiement ?? 'virement',
-          heure_arrivee: form.heure_arrivee ?? null,
-          heure_depart: form.heure_depart ?? null,
-          code_acces: form.code_acces ?? null,
-          wifi_nom: form.wifi_nom ?? null,
-          wifi_mdp: form.wifi_mdp ?? null,
-        } : l))
+        setLogements(prev => prev.map(l => l.id === editing.id ? buildLogementFromForm(editing.id) : l))
         setSuccess('Modifications enregistrées !')
       }
       closeModal()
@@ -205,6 +367,92 @@ export default function LogementsPage({ logements: initial }: Props) {
           </div>
         )}
 
+        {/* Filter bar (visible si > 0 logement) */}
+        {logements.length > 0 && (
+          <div style={filterBar}>
+            <div style={filterChips}>
+              <button
+                onClick={() => setFilter('all')}
+                style={{ ...filterChip, ...(filter === 'all' ? filterChipActive : {}) }}
+              >
+                Tous <span style={chipCount}>{logements.length}</span>
+              </button>
+              <button
+                onClick={() => setFilter('actifs')}
+                style={{ ...filterChip, ...(filter === 'actifs' ? filterChipActive : {}) }}
+              >
+                Actifs <span style={chipCount}>{logements.filter(l => l.actif !== false).length}</span>
+              </button>
+              {logements.some(l => l.actif === false) && (
+                <button
+                  onClick={() => setFilter('en-pause')}
+                  style={{ ...filterChip, ...(filter === 'en-pause' ? filterChipActive : {}) }}
+                >
+                  En pause <span style={chipCount}>{logements.filter(l => l.actif === false).length}</span>
+                </button>
+              )}
+              {typesPresent.length > 1 && typesPresent.map(t => (
+                <button
+                  key={t}
+                  onClick={() => setFilter(t)}
+                  style={{ ...filterChip, ...(filter === t ? filterChipActive : {}) }}
+                >
+                  {TYPE_LOGEMENT_LABELS[t as TypeLogement] ?? t}
+                </button>
+              ))}
+            </div>
+
+            <div style={filterRight}>
+              <div style={searchWrap}>
+                <span style={searchIcon}><MagnifyingGlass size={13} weight="bold" /></span>
+                <input
+                  type="text"
+                  placeholder="Rechercher un logement…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  style={searchInput}
+                />
+                {search && (
+                  <button onClick={() => setSearch('')} style={searchClear} aria-label="Effacer">×</button>
+                )}
+              </div>
+              <div style={viewToggle}>
+                <button
+                  onClick={() => setViewMode('cards')}
+                  style={{ ...viewBtn, ...(viewMode === 'cards' ? viewBtnActive : {}) }}
+                  title="Vue cards"
+                >
+                  <SquaresFour size={13} weight="fill" />
+                </button>
+                <button
+                  onClick={() => setViewMode('table')}
+                  style={{ ...viewBtn, ...(viewMode === 'table' ? viewBtnActive : {}) }}
+                  title="Vue tableau"
+                >
+                  <Rows size={13} weight="bold" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Hint si 1 seul logement */}
+        {logements.length === 1 && !search && filter === 'all' && (
+          <div
+            role="button" tabIndex={0}
+            onClick={() => router.push(`/dashboard/logements/${logements[0].id}`)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') router.push(`/dashboard/logements/${logements[0].id}`) }}
+            style={singleHint}
+          >
+            <House size={20} weight="fill" color="var(--accent-text)" />
+            <div style={{ flex: 1 }}>
+              <div style={singleHintTitle}>Découvre le dashboard de ton bien</div>
+              <div style={singleHintDesc}>Stats, prochains séjours, voyageurs récents, infos pratiques — tout est centralisé dans la fiche détaillée.</div>
+            </div>
+            <ArrowRight size={14} weight="bold" color="var(--accent-text)" />
+          </div>
+        )}
+
         {/* Empty state */}
         {logements.length === 0 && (
           <div style={emptyState}>
@@ -220,37 +468,195 @@ export default function LogementsPage({ logements: initial }: Props) {
           </div>
         )}
 
-        {/* Grid */}
-        {logements.length > 0 && (
+        {/* Empty filter state */}
+        {logements.length > 0 && filteredLogements.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)', fontSize: '13px' }}>
+            <p style={{ marginBottom: '12px' }}>Aucun logement ne correspond à ces filtres.</p>
+            <button
+              onClick={() => { setSearch(''); setFilter('all') }}
+              style={{ ...addBtnAlt, fontSize: '12px', padding: '7px 14px' }}
+            >
+              Réinitialiser les filtres
+            </button>
+          </div>
+        )}
+
+        {/* Vue Tableau */}
+        {filteredLogements.length > 0 && viewMode === 'table' && (
+          <div style={tableWrap}>
+            <table style={tableEl}>
+              <thead>
+                <tr>
+                  <th style={tableTh}>Nom</th>
+                  <th style={tableTh}>Type</th>
+                  <th style={tableTh}>Adresse</th>
+                  <th style={tableThNum}>Capacité</th>
+                  <th style={tableThNum}>Tarif/nuit</th>
+                  <th style={tableTh}>Statut</th>
+                  <th style={tableTh}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredLogements.map(l => (
+                  <tr
+                    key={l.id}
+                    onClick={() => router.push(`/dashboard/logements/${l.id}`)}
+                    style={{ ...tableRow, opacity: l.actif === false ? 0.6 : 1 }}
+                  >
+                    <td style={tableTd}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ ...tableThumb, background: l.photo_couverture_url ? `center/cover no-repeat url(${l.photo_couverture_url})` : 'var(--accent-bg)' }}>
+                          {!l.photo_couverture_url && <House size={14} weight="fill" color="var(--accent-text)" />}
+                        </div>
+                        <span style={{ fontWeight: 600, color: 'var(--text)' }}>{l.nom}</span>
+                      </div>
+                    </td>
+                    <td style={tableTd}>
+                      {l.type_logement ? TYPE_LOGEMENT_LABELS[l.type_logement] ?? l.type_logement : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                    </td>
+                    <td style={{ ...tableTd, color: 'var(--text-2)' }}>{l.adresse}</td>
+                    <td style={tableTdNum}>{l.capacite_max} pers.</td>
+                    <td style={tableTdNum}>{l.tarif_nuitee_moyen ? `${l.tarif_nuitee_moyen} €` : '—'}</td>
+                    <td style={tableTd}>
+                      {l.actif === false ? (
+                        <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>En pause</span>
+                      ) : (
+                        <span style={{ ...chip, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.25)', color: '#10b981' }}>Actif</span>
+                      )}
+                    </td>
+                    <td style={tableTd}>
+                      <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); openEdit(l) }}
+                          style={iconBtn} title="Modifier"
+                        >
+                          <PencilSimple size={13} />
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setDeleteConfirm(l.id) }}
+                          style={iconBtn} title="Supprimer"
+                        >
+                          <Trash size={13} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Vue Cards */}
+        {filteredLogements.length > 0 && viewMode === 'cards' && (
           <div style={grid}>
-            {logements.map(l => (
-              <div key={l.id} style={card}>
+            {filteredLogements.map(l => (
+              <div
+                key={l.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => router.push(`/dashboard/logements/${l.id}`)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); router.push(`/dashboard/logements/${l.id}`) } }}
+                style={{ ...card, opacity: l.actif === false ? 0.65 : 1, cursor: 'pointer' }}
+              >
+                {/* Photo couverture si présente */}
+                {l.photo_couverture_url && (
+                  <div style={cardCover}>
+                    <img src={l.photo_couverture_url} alt={l.nom} style={cardCoverImg} />
+                    {l.actif === false && (
+                      <span style={cardCoverBadge}>En pause</span>
+                    )}
+                  </div>
+                )}
                 <div style={cardTop}>
-                  <div style={cardIcon}><House size={18} color="#34D399" /></div>
+                  {!l.photo_couverture_url ? (
+                    <div style={cardIcon}><House size={18} color="var(--accent-text)" weight="fill" /></div>
+                  ) : <span />}
                   <div style={cardActions}>
-                    <button onClick={() => openEdit(l)} style={iconBtn} title="Modifier">
+                    <button
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(l) }}
+                      style={iconBtn} title="Modifier"
+                    >
                       <PencilSimple size={14} />
                     </button>
-                    <button onClick={() => setDeleteConfirm(l.id)} style={{ ...iconBtn, color: '#ef4444' }} title="Supprimer">
+                    <button
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
+                      style={iconBtn} title="Supprimer"
+                    >
                       <Trash size={14} />
                     </button>
                   </div>
                 </div>
+
+                {/* Type + statut */}
+                {(l.type_logement || l.classement_etoiles || l.actif === false) && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px', marginBottom: '4px' }}>
+                    {l.type_logement && (
+                      <span style={typeChip}>{TYPE_LOGEMENT_LABELS[l.type_logement] ?? l.type_logement}</span>
+                    )}
+                    {l.classement_etoiles !== null && l.classement_etoiles > 0 && (
+                      <span style={starChip}>
+                        {Array.from({ length: l.classement_etoiles }).map((_, i) => (
+                          <Star key={i} size={10} weight="fill" />
+                        ))}
+                      </span>
+                    )}
+                    {l.dpe && (
+                      <span style={{ ...dpeChip, background: dpeColor(l.dpe).bg, color: dpeColor(l.dpe).fg, borderColor: dpeColor(l.dpe).border }}>
+                        DPE {l.dpe}
+                      </span>
+                    )}
+                    {!l.actif && (
+                      <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>
+                        En pause
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 <h3 style={cardName}>{l.nom}</h3>
-                <p style={cardAddress}>{l.adresse}</p>
+                <p style={cardAddress}>
+                  <MapPin size={11} weight="fill" style={{ display: 'inline', marginRight: '4px', verticalAlign: '-1px', color: 'var(--text-muted)' }} />
+                  {l.adresse}
+                </p>
+
+                {/* Caractéristiques physiques */}
                 <div style={cardMeta}>
                   <span style={chip}>{l.capacite_max} pers.</span>
-                  {l.animaux_acceptes && <span style={chip}>Animaux ✓</span>}
-                  {l.fumeur_accepte && <span style={chip}>Fumeur ✓</span>}
-                  <span style={{ ...chip, background: 'rgba(162,155,254,0.08)', border: '1px solid rgba(162,155,254,0.2)', color: '#a29bfe' }}>
-                    {(() => {
-                      const m = l.methodes_paiement ?? 'virement'
-                      const parts = m.split(',').map(s => s.trim())
-                      const icons: Record<string, string> = { virement: '🏦', stripe: '💳', especes: '💵', cheque: '📄', paypal: '🅿️', airbnb: '🏠', carte: '💳' }
-                      return parts.map(p => icons[p] ?? p).join(' ')
-                    })()}
-                  </span>
+                  {l.surface_m2 && <span style={chip}>{l.surface_m2} m²</span>}
+                  {l.nb_chambres && <span style={chip}>{l.nb_chambres} ch.</span>}
+                  {l.nb_lits && <span style={chip}>{l.nb_lits} lit{l.nb_lits > 1 ? 's' : ''}</span>}
+                  {l.animaux_acceptes && <span style={chip}>🐾 Animaux</span>}
+                  {l.fumeur_accepte && <span style={chip}>🚬 Fumeur</span>}
                 </div>
+
+                {/* Tarifs */}
+                {(l.tarif_nuitee_moyen || l.frais_menage || l.caution) && (
+                  <div style={tarifRow}>
+                    {l.tarif_nuitee_moyen && (
+                      <span style={tarifChip}>
+                        <CurrencyEur size={11} weight="fill" />
+                        <strong>{l.tarif_nuitee_moyen}</strong> /nuit
+                      </span>
+                    )}
+                    {l.frais_menage && (
+                      <span style={tarifChip}>Ménage {l.frais_menage}€</span>
+                    )}
+                    {l.caution && (
+                      <span style={tarifChip}>Caution {l.caution}€</span>
+                    )}
+                  </div>
+                )}
+
+                {/* Liens annonces */}
+                {(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct) && (
+                  <div style={linksRow}>
+                    {l.lien_airbnb && <a href={l.lien_airbnb} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Airbnb">Airbnb <ArrowSquareOut size={9} /></a>}
+                    {l.lien_booking && <a href={l.lien_booking} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Booking">Booking <ArrowSquareOut size={9} /></a>}
+                    {l.lien_gmb && <a href={l.lien_gmb} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Google">Google <ArrowSquareOut size={9} /></a>}
+                    {l.lien_site_direct && <a href={l.lien_site_direct} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir le site">Site <ArrowSquareOut size={9} /></a>}
+                  </div>
+                )}
 
                 {/* Infos pratiques */}
                 {(l.heure_arrivee || l.heure_depart || l.wifi_nom || l.code_acces) && (
@@ -269,8 +675,18 @@ export default function LogementsPage({ logements: initial }: Props) {
                       <CopyChip icon={<WifiHigh size={12} color="#34D399" />} label={l.wifi_nom} value={`${l.wifi_nom}${l.wifi_mdp ? ` / ${l.wifi_mdp}` : ''}`} />
                     )}
                     {l.code_acces && (
-                      <CopyChip icon={<Key size={12} color="#FFD56B" />} label={l.code_acces} value={l.code_acces} />
+                      <CopyChip icon={<Key size={12} color="var(--accent-text)" />} label={l.code_acces} value={l.code_acces} />
                     )}
+                  </div>
+                )}
+
+                {l.proprietaire_nom && (
+                  <div style={proprietaireRow}>
+                    <span style={proprietaireBadge}>Propriétaire</span>
+                    <span style={proprietaireText}>
+                      {l.proprietaire_nom}
+                      {l.honoraires_pct != null && ` · ${l.honoraires_pct}% d'honoraires`}
+                    </span>
                   </div>
                 )}
 
@@ -317,6 +733,30 @@ export default function LogementsPage({ logements: initial }: Props) {
                 <Field label="Nom du logement *" value={form.nom} onChange={v => set('nom', v)} placeholder="Villa les Pins, Appartement Paris 11…" />
               </div>
               <div style={fieldRow}>
+                <label style={label}>Type de logement</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
+                  {(Object.entries(TYPE_LOGEMENT_LABELS) as [TypeLogement, string][]).map(([key, lbl]) => {
+                    const selected = form.type_logement === key
+                    return (
+                      <button
+                        key={key} type="button"
+                        onClick={() => set('type_logement', key)}
+                        style={{
+                          padding: '6px 12px', borderRadius: '100px',
+                          fontSize: '12px', fontWeight: 500,
+                          background: selected ? 'var(--accent-bg)' : 'var(--surface)',
+                          border: `1px solid ${selected ? 'var(--accent-border)' : 'var(--border)'}`,
+                          color: selected ? 'var(--accent-text)' : 'var(--text-2)',
+                          cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        {lbl}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+              <div style={fieldRow}>
                 <Field label="Adresse complète *" value={form.adresse} onChange={v => set('adresse', v)} placeholder="12 rue de la Paix, 75001 Paris" />
               </div>
               <div style={fieldRow}>
@@ -325,14 +765,205 @@ export default function LogementsPage({ logements: initial }: Props) {
               <div style={fieldRow}>
                 <Field label="Description (type, superficie, équipements)" value={form.description ?? ''} onChange={v => set('description', v)} placeholder="Studio de 25m², cuisine équipée, Wi-Fi, vue mer…" />
               </div>
+
+              {/* ── Caractéristiques physiques ── */}
+              <h4 style={sectionTitle}>Caractéristiques</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '10px' }}>
+                <div>
+                  <label style={label}>Capacité (pers.) *</label>
+                  <input style={input} type="number" min={1} max={30} value={form.capacite_max} onChange={e => set('capacite_max', parseInt(e.target.value) || 1)} />
+                </div>
+                <div>
+                  <label style={label}>Surface (m²)</label>
+                  <input style={input} type="number" min={0} value={form.surface_m2 ?? ''} onChange={e => set('surface_m2', e.target.value ? parseInt(e.target.value) : null)} placeholder="45" />
+                </div>
+                <div>
+                  <label style={label}>Chambres</label>
+                  <input style={input} type="number" min={0} value={form.nb_chambres ?? ''} onChange={e => set('nb_chambres', e.target.value ? parseInt(e.target.value) : null)} placeholder="2" />
+                </div>
+                <div>
+                  <label style={label}>Lits</label>
+                  <input style={input} type="number" min={0} value={form.nb_lits ?? ''} onChange={e => set('nb_lits', e.target.value ? parseInt(e.target.value) : null)} placeholder="3" />
+                </div>
+                <div>
+                  <label style={label}>Salles de bain</label>
+                  <input style={input} type="number" min={0} value={form.nb_sdb ?? ''} onChange={e => set('nb_sdb', e.target.value ? parseInt(e.target.value) : null)} placeholder="1" />
+                </div>
+              </div>
+
+              {/* ── Conformité légale ── */}
+              <h4 style={sectionTitle}>Conformité & classement</h4>
               <div style={fieldRow}>
-                <label style={label}>Capacité maximale (personnes) *</label>
-                <input
-                  style={input}
-                  type="number" min={1} max={30}
-                  value={form.capacite_max}
-                  onChange={e => set('capacite_max', parseInt(e.target.value) || 1)}
-                />
+                <Field label="Numéro d'enregistrement (Cerfa)" value={form.numero_enregistrement ?? ''} onChange={v => set('numero_enregistrement', v || null)} placeholder="Obligatoire dans certaines communes" />
+              </div>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <label style={label}>Classement Atout France</label>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    {[0, 1, 2, 3, 4, 5].map(n => {
+                      const selected = (form.classement_etoiles ?? 0) === n
+                      return (
+                        <button
+                          key={n} type="button"
+                          onClick={() => set('classement_etoiles', n === 0 ? null : n)}
+                          style={{
+                            flex: 1,
+                            padding: '8px 6px', borderRadius: '8px',
+                            background: selected ? 'rgba(245,158,11,0.14)' : 'var(--surface)',
+                            border: `1px solid ${selected ? 'rgba(245,158,11,0.40)' : 'var(--border)'}`,
+                            color: selected ? '#d97706' : 'var(--text-2)',
+                            fontSize: '12px', fontWeight: 600,
+                            cursor: 'pointer', fontFamily: 'inherit',
+                          }}
+                        >
+                          {n === 0 ? '—' : '★'.repeat(n)}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+                <div style={{ flex: 1, minWidth: '180px' }}>
+                  <label style={label}>DPE (étiquette énergie)</label>
+                  <div style={{ display: 'flex', gap: '3px' }}>
+                    {[null, 'A', 'B', 'C', 'D', 'E', 'F', 'G'].map(d => {
+                      const selected = form.dpe === d
+                      const dc = d ? dpeColor(d) : { bg: 'var(--surface)', fg: 'var(--text-2)', border: 'var(--border)' }
+                      return (
+                        <button
+                          key={d ?? 'none'} type="button"
+                          onClick={() => set('dpe', d)}
+                          style={{
+                            flex: 1, padding: '8px 0', borderRadius: '7px',
+                            background: selected ? dc.bg : 'var(--surface)',
+                            border: `1px solid ${selected ? dc.border : 'var(--border)'}`,
+                            color: selected ? dc.fg : 'var(--text-3)',
+                            fontSize: '12px', fontWeight: 700,
+                            cursor: 'pointer', fontFamily: 'inherit',
+                          }}
+                        >
+                          {d ?? '—'}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Tarifs ── */}
+              <h4 style={sectionTitle}>Tarifs (indicatifs)</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
+                <div>
+                  <label style={label}>Nuitée moyenne (€)</label>
+                  <input style={input} type="number" min={0} step="0.01" value={form.tarif_nuitee_moyen ?? ''} onChange={e => set('tarif_nuitee_moyen', e.target.value ? parseFloat(e.target.value) : null)} placeholder="120" />
+                </div>
+                <div>
+                  <label style={label}>Frais de ménage (€)</label>
+                  <input style={input} type="number" min={0} step="0.01" value={form.frais_menage ?? ''} onChange={e => set('frais_menage', e.target.value ? parseFloat(e.target.value) : null)} placeholder="50" />
+                </div>
+                <div>
+                  <label style={label}>Caution (€)</label>
+                  <input style={input} type="number" min={0} step="0.01" value={form.caution ?? ''} onChange={e => set('caution', e.target.value ? parseFloat(e.target.value) : null)} placeholder="500" />
+                </div>
+              </div>
+
+              {/* ── Équipements ── */}
+              <h4 style={sectionTitle}>Équipements</h4>
+              <div style={equipementGrid}>
+                {EQUIPEMENTS.map(eq => {
+                  const selected = (form.equipements ?? []).includes(eq.slug)
+                  const toggle = () => {
+                    const cur = form.equipements ?? []
+                    set('equipements', selected ? cur.filter(s => s !== eq.slug) : [...cur, eq.slug])
+                  }
+                  return (
+                    <button
+                      key={eq.slug} type="button" onClick={toggle}
+                      style={{
+                        ...equipementChip,
+                        background: selected ? 'var(--accent-bg)' : 'var(--surface)',
+                        border: `1px solid ${selected ? 'var(--accent-border)' : 'var(--border)'}`,
+                        color: selected ? 'var(--accent-text)' : 'var(--text-2)',
+                        fontWeight: selected ? 600 : 400,
+                      }}
+                    >
+                      <span>{eq.emoji}</span>
+                      {eq.label}
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* ── Liens annonces ── */}
+              <h4 style={sectionTitle}>Liens annonces externes</h4>
+              <div style={fieldRow}>
+                <Field label="🏠 URL Airbnb" value={form.lien_airbnb ?? ''} onChange={v => set('lien_airbnb', v || null)} placeholder="https://airbnb.fr/rooms/…" />
+              </div>
+              <div style={fieldRow}>
+                <Field label="🛎️ URL Booking.com" value={form.lien_booking ?? ''} onChange={v => set('lien_booking', v || null)} placeholder="https://booking.com/…" />
+              </div>
+              <div style={fieldRow}>
+                <Field label="📍 URL Google Business Profile" value={form.lien_gmb ?? ''} onChange={v => set('lien_gmb', v || null)} placeholder="https://maps.google.com/…" />
+              </div>
+              <div style={fieldRow}>
+                <Field label="🌐 Site direct / Driing" value={form.lien_site_direct ?? ''} onChange={v => set('lien_site_direct', v || null)} placeholder="https://…" />
+              </div>
+
+              {/* ── Photo ── */}
+              <h4 style={sectionTitle}>Photo de couverture</h4>
+              <div style={fieldRow}>
+                <Field label="URL de la photo" value={form.photo_couverture_url ?? ''} onChange={v => set('photo_couverture_url', v || null)} placeholder="https://…/photo.jpg" />
+              </div>
+
+              {/* ── Contacts utiles ── */}
+              <h4 style={sectionTitle}>Contacts utiles</h4>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '140px' }}>
+                  <Field label="Contact urgence (nom)" value={form.contact_urgence_nom ?? ''} onChange={v => set('contact_urgence_nom', v || null)} placeholder="Plombier 24h/24" />
+                </div>
+                <div style={{ flex: 1, minWidth: '140px' }}>
+                  <Field label="Téléphone urgence" value={form.contact_urgence_tel ?? ''} onChange={v => set('contact_urgence_tel', v || null)} placeholder="+33 …" type="tel" />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '140px' }}>
+                  <Field label="Ménage (nom)" value={form.contact_menage_nom ?? ''} onChange={v => set('contact_menage_nom', v || null)} placeholder="Marie" />
+                </div>
+                <div style={{ flex: 1, minWidth: '140px' }}>
+                  <Field label="Téléphone ménage" value={form.contact_menage_tel ?? ''} onChange={v => set('contact_menage_tel', v || null)} placeholder="+33 …" type="tel" />
+                </div>
+              </div>
+
+              {/* ── Propriétaire & honoraires (conciergerie) ── */}
+              <h4 style={sectionTitle}>Propriétaire (si conciergerie)</h4>
+              <p style={{ fontSize: '11px', color: 'var(--text-3)', margin: '-4px 0 4px' }}>
+                Renseigne ces champs uniquement si tu gères ce bien pour un propriétaire tiers.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <Field label="Nom du propriétaire" value={form.proprietaire_nom ?? ''} onChange={v => set('proprietaire_nom', v || null)} placeholder="M. Durand" />
+                </div>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <Field label="Email" value={form.proprietaire_email ?? ''} onChange={v => set('proprietaire_email', v || null)} placeholder="durand@example.com" />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <Field label="Téléphone" value={form.proprietaire_telephone ?? ''} onChange={v => set('proprietaire_telephone', v || null)} placeholder="+33 …" type="tel" />
+                </div>
+                <div style={{ flex: 1, minWidth: '160px' }}>
+                  <label style={label}>Honoraires (%)</label>
+                  <input
+                    style={input} type="number" min={0} max={100} step="0.01"
+                    value={form.honoraires_pct ?? ''}
+                    onChange={e => set('honoraires_pct', e.target.value ? parseFloat(e.target.value) : null)}
+                    placeholder="20"
+                  />
+                </div>
+              </div>
+
+              {/* ── Statut ── */}
+              <div style={{ marginTop: '8px' }}>
+                <Toggle label="Logement actif (visible dans les listes et stats)" value={form.actif ?? true} onChange={v => set('actif', v)} />
               </div>
               {/* ── Informations pratiques ── */}
               <div style={sectionDivider}>
@@ -473,6 +1104,21 @@ function CopyChip({ icon, label, value }: { icon: React.ReactNode; label: string
   )
 }
 
+// ─── DPE color helper ─────────────────────────────────────────────────────────
+
+function dpeColor(letter: string): { bg: string; fg: string; border: string } {
+  switch (letter) {
+    case 'A': return { bg: 'rgba(34,197,94,0.12)',  fg: '#16a34a', border: 'rgba(34,197,94,0.30)' }
+    case 'B': return { bg: 'rgba(132,204,22,0.12)', fg: '#65a30d', border: 'rgba(132,204,22,0.30)' }
+    case 'C': return { bg: 'rgba(234,179,8,0.12)',  fg: '#ca8a04', border: 'rgba(234,179,8,0.30)' }
+    case 'D': return { bg: 'rgba(245,158,11,0.12)', fg: '#d97706', border: 'rgba(245,158,11,0.30)' }
+    case 'E': return { bg: 'rgba(249,115,22,0.12)', fg: '#ea580c', border: 'rgba(249,115,22,0.30)' }
+    case 'F': return { bg: 'rgba(239,68,68,0.12)',  fg: '#dc2626', border: 'rgba(239,68,68,0.30)' }
+    case 'G': return { bg: 'rgba(127,29,29,0.18)',  fg: '#991b1b', border: 'rgba(127,29,29,0.40)' }
+    default:  return { bg: 'rgba(148,163,184,0.12)', fg: 'var(--text-muted)', border: 'rgba(148,163,184,0.25)' }
+  }
+}
+
 // ─── Field helpers ────────────────────────────────────────────────────────────
 
 function Field({ label: lbl, value, onChange, placeholder, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string }) {
@@ -520,7 +1166,7 @@ const pageSubtitle: React.CSSProperties = {
 
 const addBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '7px',
-  background: '#FFD56B', color: '#003329',
+  background: 'var(--accent-text)', color: 'var(--bg)',
   border: 'none', borderRadius: '12px',
   padding: '10px 18px', fontSize: '14px', fontWeight: 600,
   cursor: 'pointer', flexShrink: 0,
@@ -528,9 +1174,9 @@ const addBtn: React.CSSProperties = {
 
 const addBtnAlt: React.CSSProperties = {
   ...addBtn,
-  background: 'rgba(255,213,107,0.10)',
-  border: '1px solid rgba(255,213,107,0.25)',
-  color: '#FFD56B',
+  background: 'var(--accent-bg)',
+  border: '1px solid var(--accent-border)',
+  color: 'var(--accent-text)',
 }
 
 const successBanner: React.CSSProperties = {
@@ -766,4 +1412,315 @@ const sectionLabel: React.CSSProperties = {
   fontSize: '11px', fontWeight: 600, letterSpacing: '0.8px',
   textTransform: 'uppercase', color: 'var(--text-muted)',
   whiteSpace: 'nowrap',
+}
+
+// ─── Phase 3 — filtres, recherche, tableau ──────────────────────────────────
+
+const filterBar: React.CSSProperties = {
+  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+  gap: '12px', flexWrap: 'wrap' as const,
+  marginBottom: '16px',
+}
+
+const filterChips: React.CSSProperties = {
+  display: 'flex', flexWrap: 'wrap' as const, gap: '6px',
+}
+
+const filterChip: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  padding: '7px 14px',
+  fontSize: '12.5px', fontWeight: 500,
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
+  borderRadius: '100px',
+  color: 'var(--text-2)',
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+}
+
+const filterChipActive: React.CSSProperties = {
+  background: 'var(--accent-bg)',
+  borderColor: 'var(--accent-border)',
+  color: 'var(--accent-text)',
+}
+
+const chipCount: React.CSSProperties = {
+  fontSize: '11px', fontWeight: 700,
+  opacity: 0.7,
+}
+
+const filterRight: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '8px',
+}
+
+const searchWrap: React.CSSProperties = {
+  position: 'relative' as const,
+  width: '220px',
+}
+
+const searchIcon: React.CSSProperties = {
+  position: 'absolute' as const,
+  left: '12px', top: '50%',
+  transform: 'translateY(-50%)',
+  color: 'var(--text-muted)',
+  display: 'flex',
+  pointerEvents: 'none' as const,
+}
+
+const searchInput: React.CSSProperties = {
+  width: '100%',
+  padding: '8px 30px 8px 32px',
+  fontSize: '12.5px',
+  fontFamily: 'inherit',
+  color: 'var(--text)',
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
+  borderRadius: '9px',
+  outline: 'none',
+}
+
+const searchClear: React.CSSProperties = {
+  position: 'absolute' as const,
+  right: '6px', top: '50%',
+  transform: 'translateY(-50%)',
+  width: '20px', height: '20px',
+  borderRadius: '50%',
+  border: 'none',
+  background: 'var(--border)',
+  color: 'var(--text-2)',
+  fontSize: '14px',
+  cursor: 'pointer',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  lineHeight: 1,
+  fontFamily: 'inherit',
+}
+
+const viewToggle: React.CSSProperties = {
+  display: 'inline-flex', gap: '2px',
+  padding: '3px',
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
+  borderRadius: '9px',
+}
+
+const viewBtn: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  width: '28px', height: '28px',
+  background: 'transparent',
+  border: 'none',
+  borderRadius: '6px',
+  color: 'var(--text-muted)',
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+}
+
+const viewBtnActive: React.CSSProperties = {
+  background: 'var(--accent-bg)',
+  color: 'var(--accent-text)',
+}
+
+// Single-logement hint
+const singleHint: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '14px',
+  padding: '14px 18px',
+  background: 'var(--accent-bg)',
+  border: '1px dashed var(--accent-border-2)',
+  borderRadius: '12px',
+  cursor: 'pointer',
+  marginBottom: '16px',
+}
+
+const singleHintTitle: React.CSSProperties = {
+  fontSize: '13px', fontWeight: 600,
+  color: 'var(--text)',
+  marginBottom: '2px',
+}
+
+const singleHintDesc: React.CSSProperties = {
+  fontSize: '12px', fontWeight: 300,
+  color: 'var(--text-2)',
+  lineHeight: 1.5,
+}
+
+// Table
+const tableWrap: React.CSSProperties = {
+  overflowX: 'auto' as const,
+  background: 'var(--surface)',
+  border: '1px solid var(--border-2)',
+  borderRadius: '14px',
+}
+
+const tableEl: React.CSSProperties = {
+  width: '100%',
+  borderCollapse: 'collapse' as const,
+  fontSize: '13px',
+}
+
+const tableTh: React.CSSProperties = {
+  padding: '12px 14px',
+  textAlign: 'left' as const,
+  fontSize: '11px', fontWeight: 700, letterSpacing: '0.4px',
+  textTransform: 'uppercase' as const,
+  color: 'var(--text-muted)',
+  background: 'var(--bg-2)',
+  borderBottom: '1px solid var(--border-2)',
+}
+
+const tableThNum: React.CSSProperties = {
+  ...tableTh,
+  textAlign: 'right' as const,
+}
+
+const tableRow: React.CSSProperties = {
+  cursor: 'pointer',
+  borderBottom: '1px solid var(--border)',
+  transition: 'background 0.12s',
+}
+
+const tableTd: React.CSSProperties = {
+  padding: '12px 14px',
+  color: 'var(--text-2)',
+  fontWeight: 400,
+}
+
+const tableTdNum: React.CSSProperties = {
+  ...tableTd,
+  textAlign: 'right' as const,
+  fontWeight: 500,
+  color: 'var(--text)',
+}
+
+const tableThumb: React.CSSProperties = {
+  width: '32px', height: '32px',
+  borderRadius: '7px',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  flexShrink: 0,
+}
+
+// ─── Phase 5 — propriétaire styles ─────────────────────────────────────────────
+
+const proprietaireRow: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '8px',
+  paddingTop: '6px',
+  borderTop: '1px dashed var(--border)',
+  marginTop: '2px',
+}
+
+const proprietaireBadge: React.CSSProperties = {
+  display: 'inline-block',
+  fontSize: '9px', fontWeight: 700, letterSpacing: '0.5px',
+  textTransform: 'uppercase' as const,
+  color: '#a78bfa',
+  background: 'rgba(167,139,250,0.10)',
+  border: '1px solid rgba(167,139,250,0.25)',
+  padding: '2px 7px', borderRadius: '6px',
+  flexShrink: 0,
+}
+
+const proprietaireText: React.CSSProperties = {
+  fontSize: '11.5px', fontWeight: 500,
+  color: 'var(--text-2)',
+  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+}
+
+// ─── Phase 1 — nouveaux styles ─────────────────────────────────────────────────
+
+const cardCover: React.CSSProperties = {
+  position: 'relative' as const,
+  margin: '-20px -20px 4px',
+  height: '120px',
+  overflow: 'hidden' as const,
+  borderTopLeftRadius: '15px',
+  borderTopRightRadius: '15px',
+  background: 'var(--bg-2)',
+}
+
+const cardCoverImg: React.CSSProperties = {
+  width: '100%', height: '100%',
+  objectFit: 'cover' as const,
+  display: 'block',
+}
+
+const cardCoverBadge: React.CSSProperties = {
+  position: 'absolute' as const,
+  top: '10px', right: '10px',
+  background: 'rgba(0,0,0,0.65)', color: '#fff',
+  fontSize: '10px', fontWeight: 600,
+  padding: '3px 9px', borderRadius: '100px',
+  letterSpacing: '0.4px',
+}
+
+const typeChip: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center',
+  background: 'var(--accent-bg)', color: 'var(--accent-text)',
+  border: '1px solid var(--accent-border)',
+  borderRadius: '6px', padding: '3px 8px',
+  fontSize: '10px', fontWeight: 600, letterSpacing: '0.3px',
+  textTransform: 'uppercase' as const,
+}
+
+const starChip: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '1px',
+  background: 'rgba(245,158,11,0.10)', color: '#d97706',
+  border: '1px solid rgba(245,158,11,0.25)',
+  borderRadius: '6px', padding: '3px 6px',
+}
+
+const dpeChip: React.CSSProperties = {
+  display: 'inline-block',
+  border: '1px solid',
+  borderRadius: '6px', padding: '3px 8px',
+  fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px',
+}
+
+const tarifRow: React.CSSProperties = {
+  display: 'flex', flexWrap: 'wrap' as const, gap: '4px', paddingTop: '4px',
+}
+
+const tarifChip: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '3px',
+  background: 'rgba(16,185,129,0.08)', color: '#10b981',
+  border: '1px solid rgba(16,185,129,0.20)',
+  borderRadius: '6px', padding: '3px 8px',
+  fontSize: '11px', fontWeight: 500,
+}
+
+const linksRow: React.CSSProperties = {
+  display: 'flex', flexWrap: 'wrap' as const, gap: '4px', paddingTop: '4px',
+}
+
+const linkBtn: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '4px',
+  background: 'var(--surface)', color: 'var(--text-2)',
+  border: '1px solid var(--border)',
+  borderRadius: '6px', padding: '3px 8px',
+  fontSize: '11px', fontWeight: 500,
+  textDecoration: 'none' as const,
+  transition: 'all 0.15s',
+}
+
+// Modal — sections du formulaire enrichi
+const sectionTitle: React.CSSProperties = {
+  fontSize: '12px', fontWeight: 700, letterSpacing: '0.4px',
+  textTransform: 'uppercase' as const,
+  color: 'var(--accent-text)',
+  margin: '14px 0 8px',
+}
+
+const equipementGrid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+  gap: '6px',
+}
+
+const equipementChip: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  padding: '8px 10px',
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
+  borderRadius: '8px',
+  fontSize: '12px',
+  cursor: 'pointer',
+  userSelect: 'none' as const,
+  transition: 'all 0.15s',
 }

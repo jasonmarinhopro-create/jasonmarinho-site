@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useTransition } from 'react'
+import { useState, useMemo, useTransition, useEffect } from 'react'
 import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
   House, Plus, Trash, X, Check,
@@ -92,7 +92,16 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
   const [showForm, setShowForm] = useState(false)
   const [showImport, setShowImport] = useState(false)
   const [filter, setFilter]     = useState<'all' | 'encaisse' | 'attente'>('all')
+  const [logementFilter, setLogementFilter] = useState<string>('all')
   const [, startT]              = useTransition()
+
+  // Si la page est ouverte avec ?logement=X (depuis fiche détail), pré-filtrer
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const url = new URL(window.location.href)
+    const logementParam = url.searchParams.get('logement')
+    if (logementParam) setLogementFilter(logementParam)
+  }, [])
 
   // form fields
   const [fLogement, setFLogement] = useState('')
@@ -249,10 +258,12 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }, [contracts, entries])
 
-  const filteredTx = useMemo(() =>
-    filter === 'all' ? allTx : allTx.filter(tx => tx.statut === filter),
-    [allTx, filter],
-  )
+  const filteredTx = useMemo(() => {
+    let list = allTx
+    if (logementFilter !== 'all') list = list.filter(tx => tx.logement === logementFilter)
+    if (filter !== 'all') list = list.filter(tx => tx.statut === filter)
+    return list
+  }, [allTx, filter, logementFilter])
 
   const maxChart    = Math.max(...chartData.map(m => m.total), 1)
   const formValid   = fLogement.trim() && fMontant && parseFloat(fMontant) > 0 && fDate
@@ -424,18 +435,34 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
           </div>
         )}
 
-        {/* Filter tabs */}
-        <div style={s.filterRow}>
-          {(['all', 'encaisse', 'attente'] as const).map(f => {
-            const count = f === 'all' ? allTx.length : allTx.filter(t => t.statut === f).length
-            return (
-              <button key={f} onClick={() => setFilter(f)}
-                style={{ ...s.filterBtn, ...(filter === f ? s.filterBtnActive : {}) }}>
-                {f === 'all' ? 'Tout' : f === 'encaisse' ? 'Encaissé' : 'En attente'}
-                <span style={{ ...s.filterCount, ...(filter === f ? { color: 'var(--accent-text)' } : {}) }}>{count}</span>
-              </button>
-            )
-          })}
+        {/* Filter tabs + filtre par logement */}
+        <div style={{ ...s.filterRow, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const }}>
+            {(['all', 'encaisse', 'attente'] as const).map(f => {
+              const count = f === 'all' ? allTx.length : allTx.filter(t => t.statut === f).length
+              return (
+                <button key={f} onClick={() => setFilter(f)}
+                  style={{ ...s.filterBtn, ...(filter === f ? s.filterBtnActive : {}) }}>
+                  {f === 'all' ? 'Tout' : f === 'encaisse' ? 'Encaissé' : 'En attente'}
+                  <span style={{ ...s.filterCount, ...(filter === f ? { color: 'var(--accent-text)' } : {}) }}>{count}</span>
+                </button>
+              )
+            })}
+          </div>
+          {logementNoms.length > 1 && (
+            <select
+              value={logementFilter}
+              onChange={(e) => setLogementFilter(e.target.value)}
+              style={{
+                padding: '7px 12px', fontSize: '12.5px', fontFamily: 'inherit',
+                background: 'var(--surface)', color: 'var(--text-2)',
+                border: '1px solid var(--border)', borderRadius: '8px', cursor: 'pointer',
+              }}
+            >
+              <option value="all">Tous les logements</option>
+              {logementNoms.map(n => <option key={n} value={n}>{n}</option>)}
+            </select>
+          )}
         </div>
 
         {/* Transaction list */}

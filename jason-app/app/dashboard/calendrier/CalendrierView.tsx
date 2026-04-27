@@ -458,6 +458,17 @@ export default function CalendrierView({
   const [search, setSearch] = useState('')
   const [quickAdd, setQuickAdd] = useState('')
 
+  // Si la page est ouverte avec ?logement=X (depuis fiche détail), pré-remplir la recherche
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const url = new URL(window.location.href)
+    const logementParam = url.searchParams.get('logement')
+    if (logementParam) {
+      setSearch(logementParam)
+      setFilter('sejours')
+    }
+  }, [])
+
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
 
@@ -983,47 +994,90 @@ export default function CalendrierView({
         <h1 style={s.pageTitle}>
           Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
         </h1>
-        {(headerStats.activeToday + headerStats.arrToday + headerStats.depToday + headerStats.arrWeek + headerStats.depWeek + headerStats.menageWeek + headerStats.monthEvents) > 0 ? (
-          <div style={s.miniStats}>
-            <span style={s.miniStat}>
-              <span style={s.miniStatNum}>{headerStats.activeToday}</span>
-              <span style={s.miniStatLabel}>séjour{headerStats.activeToday > 1 ? 's' : ''} en cours</span>
-            </span>
-            <span style={s.miniStatSep}>·</span>
-            <span style={s.miniStat}>
-              <span style={s.miniStatLabel}>Cette semaine</span>
-              <span style={s.miniStatNum}>{headerStats.arrWeek}</span>
-              <span style={s.miniStatLabel}>arrivée{headerStats.arrWeek > 1 ? 's' : ''}</span>
-              <span style={s.miniStatNum}>·{headerStats.depWeek}</span>
-              <span style={s.miniStatLabel}>départ{headerStats.depWeek > 1 ? 's' : ''}</span>
-              {headerStats.menageWeek > 0 && (
-                <>
-                  <span style={s.miniStatNum}>·{headerStats.menageWeek}</span>
-                  <span style={s.miniStatLabel}>ménage{headerStats.menageWeek > 1 ? 's' : ''}</span>
-                </>
-              )}
-            </span>
-            <span style={s.miniStatSep}>·</span>
-            <span style={s.miniStat}>
-              <span style={s.miniStatLabel}>Ce mois</span>
-              <span style={s.miniStatNum}>{headerStats.monthEvents}</span>
-              <span style={s.miniStatLabel}>événement{headerStats.monthEvents > 1 ? 's' : ''}</span>
-            </span>
-            {headerStats.occupiedDays > 0 && (
-              <>
-                <span style={s.miniStatSep}>·</span>
-                <span style={s.miniStat} title={`${headerStats.occupiedDays}/${headerStats.monthDays} jours occupés`}>
-                  <span style={s.miniStatLabel}>Occupation</span>
-                  <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
-                    {headerStats.occupationPct}%
-                  </span>
+        {(() => {
+          const parts: React.ReactNode[] = []
+          if (headerStats.activeToday > 0) {
+            parts.push(
+              <span key="active" style={s.miniStat}>
+                <span style={s.miniStatNum}>{headerStats.activeToday}</span>
+                <span style={s.miniStatLabel}>séjour{headerStats.activeToday > 1 ? 's' : ''} en cours</span>
+              </span>
+            )
+          }
+          if (headerStats.arrToday > 0 || headerStats.depToday > 0) {
+            parts.push(
+              <span key="today" style={s.miniStat}>
+                <span style={s.miniStatLabel}>Aujourd&apos;hui</span>
+                {headerStats.arrToday > 0 && (
+                  <>
+                    <span style={s.miniStatNum}>{headerStats.arrToday}</span>
+                    <span style={s.miniStatLabel}>arrivée{headerStats.arrToday > 1 ? 's' : ''}</span>
+                  </>
+                )}
+                {headerStats.depToday > 0 && (
+                  <>
+                    <span style={s.miniStatNum}>{headerStats.depToday}</span>
+                    <span style={s.miniStatLabel}>départ{headerStats.depToday > 1 ? 's' : ''}</span>
+                  </>
+                )}
+              </span>
+            )
+          }
+          if (headerStats.arrWeek > 0 || headerStats.depWeek > 0 || headerStats.menageWeek > 0) {
+            parts.push(
+              <span key="week" style={s.miniStat}>
+                <span style={s.miniStatLabel}>Cette semaine</span>
+                {headerStats.arrWeek > 0 && (
+                  <>
+                    <span style={s.miniStatNum}>{headerStats.arrWeek}</span>
+                    <span style={s.miniStatLabel}>arrivée{headerStats.arrWeek > 1 ? 's' : ''}</span>
+                  </>
+                )}
+                {headerStats.depWeek > 0 && (
+                  <>
+                    <span style={s.miniStatNum}>{headerStats.depWeek}</span>
+                    <span style={s.miniStatLabel}>départ{headerStats.depWeek > 1 ? 's' : ''}</span>
+                  </>
+                )}
+                {headerStats.menageWeek > 0 && (
+                  <>
+                    <span style={s.miniStatNum}>{headerStats.menageWeek}</span>
+                    <span style={s.miniStatLabel}>ménage{headerStats.menageWeek > 1 ? 's' : ''}</span>
+                  </>
+                )}
+              </span>
+            )
+          }
+          if (headerStats.monthEvents > 0) {
+            parts.push(
+              <span key="month" style={s.miniStat}>
+                <span style={s.miniStatLabel}>Ce mois</span>
+                <span style={s.miniStatNum}>{headerStats.monthEvents}</span>
+                <span style={s.miniStatLabel}>événement{headerStats.monthEvents > 1 ? 's' : ''}</span>
+              </span>
+            )
+          }
+          if (headerStats.occupiedDays > 0) {
+            parts.push(
+              <span key="occ" style={s.miniStat} title={`${headerStats.occupiedDays}/${headerStats.monthDays} jours occupés`}>
+                <span style={s.miniStatLabel}>Occupation</span>
+                <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
+                  {headerStats.occupationPct}%
                 </span>
-              </>
-            )}
-          </div>
-        ) : (
-          <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
-        )}
+              </span>
+            )
+          }
+          if (parts.length === 0) {
+            return <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
+          }
+          // Intercale séparateurs entre sections
+          const withSeparators: React.ReactNode[] = []
+          parts.forEach((p, i) => {
+            if (i > 0) withSeparators.push(<span key={`sep-${i}`} style={s.miniStatSep}>·</span>)
+            withSeparators.push(p)
+          })
+          return <div style={s.miniStats}>{withSeparators}</div>
+        })()}
       </div>
 
       <style>{`
@@ -1356,10 +1410,10 @@ export default function CalendrierView({
                         }}
                         style={{
                           ...s.cell,
-                          opacity: !inMonth ? 0.28 : isPast ? 0.55 : 1,
+                          opacity: !inMonth ? 0.4 : isPast ? 0.6 : 1,
                           userSelect: 'none', position: 'relative',
-                          background: isInDrag ? 'rgba(96,165,250,0.12)' : isSel ? 'var(--surface)' : isWeekend && inMonth ? 'var(--surface)' : 'var(--bg)',
-                          outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : isSel ? '1.5px solid var(--border-2)' : isToday && inMonth ? '1.5px solid var(--accent-text)' : '1.5px solid transparent',
+                          background: isInDrag ? 'rgba(96,165,250,0.12)' : isSel ? 'var(--surface-2)' : isWeekend && inMonth ? 'var(--bg-2)' : 'transparent',
+                          outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : isSel ? '2px solid var(--accent-border)' : isToday && inMonth ? '2px solid var(--accent-text)' : '1.5px solid transparent',
                         }}
                       >
                         {/* Day number — always at top */}
@@ -1786,14 +1840,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   layout: {
     display: 'flex',
-    background: 'var(--card-bg)',
-    border: '1px solid var(--border)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border-2)',
     borderRadius: '16px',
     overflow: 'hidden',
     minHeight: '560px',
   },
   gridWrap: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' },
-  dayHeaders: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid var(--border)' },
+  dayHeaders: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid var(--border-2)', background: 'var(--bg-2)' },
   dayHeader: {
     padding: '10px 8px',
     textAlign: 'center',
@@ -1806,8 +1860,8 @@ const s: Record<string, React.CSSProperties> = {
   cell: {
     minHeight: '92px',
     padding: '8px',
-    borderRight: '1px solid var(--border)',
-    borderBottom: '1px solid var(--border)',
+    borderRight: '1px solid var(--border-2)',
+    borderBottom: '1px solid var(--border-2)',
     display: 'flex', flexDirection: 'column', gap: '4px',
     outlineOffset: '-1px',
   },
@@ -1843,7 +1897,7 @@ const s: Record<string, React.CSSProperties> = {
     borderBottom: '1px solid var(--border)',
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px',
     position: 'sticky', top: 0,
-    background: 'var(--card-bg)', zIndex: 1,
+    background: 'var(--surface)', zIndex: 1,
   },
   sideHeadLeft: { display: 'flex', flexDirection: 'column', gap: '1px' },
   sideDow: {
