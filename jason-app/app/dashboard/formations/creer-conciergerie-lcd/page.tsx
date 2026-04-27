@@ -1,5 +1,7 @@
-import { buildFormationPage } from '@/lib/queries/formation-page-data'
+import { buildFormationPage, buildFormationMetadataFromContent } from '@/lib/queries/formation-page-data'
 import { CREER_CONCIERGERIE_FORMATION } from './content'
+
+export const metadata = buildFormationMetadataFromContent('creer-conciergerie-lcd', CREER_CONCIERGERIE_FORMATION)
 
 export default async function Page() {
   return buildFormationPage({

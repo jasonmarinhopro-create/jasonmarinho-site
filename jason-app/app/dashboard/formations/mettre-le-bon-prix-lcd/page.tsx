@@ -1,5 +1,7 @@
-import { buildFormationPage } from '@/lib/queries/formation-page-data'
+import { buildFormationPage, buildFormationMetadataFromContent } from '@/lib/queries/formation-page-data'
 import { METTRE_BON_PRIX_FORMATION } from './content'
+
+export const metadata = buildFormationMetadataFromContent('mettre-le-bon-prix-lcd', METTRE_BON_PRIX_FORMATION)
 
 export default async function Page() {
   return buildFormationPage({

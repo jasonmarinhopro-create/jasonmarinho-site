@@ -6,6 +6,23 @@ import { getFormationDbContent, type FormationContent } from '@/lib/queries/form
 import { checkFormationAccess } from '@/lib/queries/formation-access'
 import PlanGate from '@/components/ui/PlanGate'
 import { getFormationRelations } from '@/lib/formations/relations'
+import { buildFormationMetadata, buildCourseSchema } from '@/lib/formations/seo'
+import type { Metadata } from 'next'
+
+/** Génère les Metadata Next.js pour une page formation */
+export function buildFormationMetadataFromContent(
+  slug: string,
+  content: { title: string; description: string; duration: string; level: string; modules?: Array<{ title: string }> }
+): Metadata {
+  return buildFormationMetadata({
+    slug,
+    title: content.title,
+    description: content.description,
+    duration: content.duration,
+    level: content.level,
+    modules: content.modules,
+  })
+}
 
 /**
  * Builds the JSX for a formation dashboard page.
@@ -112,9 +129,24 @@ export async function buildFormationPage({
       .map(r => ({ slug: r.slug, title: titleBySlug[r.slug], reason: r.reason }))
   }
 
+  // Phase 5 — JSON-LD Course schema
+  const courseJsonLd = buildCourseSchema({
+    slug,
+    title: formationContent.title,
+    description: formationContent.description,
+    duration: formationContent.duration,
+    level: formationContent.level,
+    modules: formationContent.modules?.map(m => ({ title: m.title })),
+  })
+
   return (
     <>
       <Header title={headerTitle} userName={profile?.full_name ?? undefined} />
+      {/* JSON-LD pour les moteurs de recherche / partage social */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: courseJsonLd }}
+      />
       <FormationView
         formation={formationContent}
         formationId={formationId}

@@ -1,5 +1,7 @@
-import { buildFormationPage } from '@/lib/queries/formation-page-data'
+import { buildFormationPage, buildFormationMetadataFromContent } from '@/lib/queries/formation-page-data'
 import { RESEAUX_SOCIAUX_FORMATION } from './content'
+
+export const metadata = buildFormationMetadataFromContent('reseaux-sociaux-lcd', RESEAUX_SOCIAUX_FORMATION)
 
 export default async function Page() {
   return buildFormationPage({

@@ -4,6 +4,25 @@ import Header from '@/components/layout/Header'
 import FormationsSuggestForm from './FormationsSuggestForm'
 import FormationsGrid from './FormationsGrid'
 import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Tes formations LCD — Jason Marinho',
+  description: 'Des parcours concrets pour optimiser ta location courte durée. Visibilité, revenus, fiscalité, conciergerie — accessibles à vie, à ton rythme.',
+  openGraph: {
+    type: 'website',
+    title: 'Formations LCD pour hôtes & conciergeries · Jason Marinho',
+    description: 'GMB, tarification dynamique, fiscalité 2026, créer sa conciergerie, optimiser son annonce Airbnb… 16 formations pratiques pour la location courte durée.',
+    siteName: 'Jason Marinho — Plateforme LCD',
+    locale: 'fr_FR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Formations LCD pour hôtes & conciergeries',
+    description: '16 formations pratiques pour la location courte durée.',
+  },
+  robots: { index: false, follow: false },
+}
 
 // Toutes les formations disponibles avec une page dashboard
 const ACTIVE_SLUGS = [
