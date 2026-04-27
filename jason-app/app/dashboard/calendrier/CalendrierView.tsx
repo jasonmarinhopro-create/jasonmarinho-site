@@ -123,6 +123,8 @@ function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1) }
 export default function CalendrierView({
   events: initial,
   contractEvents,
+  icalFeeds,
+  icalEvents,
 }: Props) {
   const TODAY = todayString()
   const now   = new Date()
@@ -153,6 +155,7 @@ export default function CalendrierView({
     Object.fromEntries(contractEvents.map(ev => [ev.contractId, ev.checklist_status ?? {}]))
   )
   const [selectedContract, setSelectedContract] = useState<import('./page').ContractEvent | null>(null)
+  const [showSources, setShowSources] = useState(false)
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -164,29 +167,74 @@ export default function CalendrierView({
     return rows
   }, [cells])
 
-  // ── multi-day spans per week row
-  function computeSpans(weekCells: typeof cells) {
+  // ── multi-day spans per week row (custom events + iCal events)
+  type SpanItem = {
+    id: string
+    title: string
+    color: string
+    bg: string
+    startCol: number
+    endCol: number
+    isStart: boolean
+    isEnd: boolean
+    isIcal: boolean
+    onClick: () => void
+  }
+  function computeSpans(weekCells: typeof cells): SpanItem[] {
     const ws = weekCells[0].date
     const we = weekCells[6].date
+    const out: SpanItem[] = []
     const seen = new Set<string>()
-    return events
+
+    events
       .filter(e => e.end_date && e.end_date !== e.date && e.date <= we && e.end_date >= ws)
-      .map(e => {
-        if (seen.has(e.id)) return null
+      .forEach(e => {
+        if (seen.has(e.id)) return
         seen.add(e.id)
         const ss = e.date >= ws ? e.date : ws
         const se = e.end_date! <= we ? e.end_date! : we
-        const sc = weekCells.findIndex(c => c.date === ss)
-        const ec = weekCells.findIndex(c => c.date === se)
-        return { event: e, startCol: sc < 0 ? 0 : sc, endCol: ec < 0 ? 6 : ec,
-                 isStart: e.date >= ws, isEnd: e.end_date! <= we }
+        const cat = CAT[e.category] ?? CAT.note
+        out.push({
+          id: e.id,
+          title: e.title,
+          color: cat.color,
+          bg: cat.bg,
+          startCol: weekCells.findIndex(c => c.date === ss),
+          endCol:   weekCells.findIndex(c => c.date === se),
+          isStart:  e.date >= ws,
+          isEnd:    e.end_date! <= we,
+          isIcal:   false,
+          onClick:  () => { setSelected(e.date); setYear(Number(e.date.slice(0,4))); setMonth(Number(e.date.slice(5,7))-1) },
+        })
       })
-      .filter(Boolean) as Array<{ event: CalEvent; startCol: number; endCol: number; isStart: boolean; isEnd: boolean }>
+
+    icalEvents
+      .filter(e => e.end_date && e.end_date !== e.start_date && e.start_date <= we && e.end_date >= ws)
+      .forEach(e => {
+        if (seen.has(`ical-${e.id}`)) return
+        seen.add(`ical-${e.id}`)
+        const ss = e.start_date >= ws ? e.start_date : ws
+        const se = e.end_date! <= we ? e.end_date! : we
+        out.push({
+          id: `ical-${e.id}`,
+          title: e.title,
+          color: e.feed_color,
+          bg:    `${e.feed_color}22`,
+          startCol: weekCells.findIndex(c => c.date === ss),
+          endCol:   weekCells.findIndex(c => c.date === se),
+          isStart:  e.start_date >= ws,
+          isEnd:    e.end_date! <= we,
+          isIcal:   true,
+          onClick:  () => { setSelected(e.start_date); setYear(Number(e.start_date.slice(0,4))); setMonth(Number(e.start_date.slice(5,7))-1) },
+        })
+      })
+
+    return out
   }
 
   // ── event index by date — multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
-    const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[] }> = {}
+    const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[] }> = {}
 
     events.forEach(e => {
       const startD = e.date
@@ -197,22 +245,37 @@ export default function CalendrierView({
       const endDt  = new Date(ey, em - 1, ed)
       while (cur <= endDt) {
         const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
-        ;(m[ds] ??= { custom: [], contracts: [] }).custom.push(e)
+        ;(m[ds] ??= { custom: [], contracts: [], ical: [] }).custom.push(e)
         cur.setDate(cur.getDate() + 1)
       }
     })
 
     contractEvents.forEach(c => {
-      ;(m[c.date] ??= { custom: [], contracts: [] }).contracts.push(c)
+      ;(m[c.date] ??= { custom: [], contracts: [], ical: [] }).contracts.push(c)
     })
+
+    icalEvents.forEach(e => {
+      const startD = e.start_date
+      const endD   = e.end_date ?? e.start_date
+      const [sy, sm, sd] = startD.split('-').map(Number)
+      const [ey, em, ed] = endD.split('-').map(Number)
+      const cur    = new Date(sy, sm - 1, sd)
+      const endDt  = new Date(ey, em - 1, ed)
+      while (cur <= endDt) {
+        const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
+        ;(m[ds] ??= { custom: [], contracts: [], ical: [] }).ical.push(e)
+        cur.setDate(cur.getDate() + 1)
+      }
+    })
+
     return m
-  }, [events, contractEvents])
+  }, [events, contractEvents, icalEvents])
 
   // ── selected day merged events (deduplicated by id)
+  type Merged = CalEvent & { isContract?: boolean; isIcal?: boolean; feedColor?: string; feedName?: string }
   const selectedAll = useMemo(() => {
-    const day  = byDate[selected] ?? { custom: [], contracts: [] }
+    const day  = byDate[selected] ?? { custom: [], contracts: [], ical: [] }
     const seen = new Set<string>()
-    type Merged = CalEvent & { isContract?: boolean }
     const list: Merged[] = []
 
     day.contracts.forEach(c => {
@@ -235,10 +298,31 @@ export default function CalendrierView({
       }
     })
 
+    day.ical.forEach(e => {
+      const key = `ical-${e.id}`
+      if (!seen.has(key)) {
+        seen.add(key)
+        const feed = icalFeeds.find(f => f.id === e.feed_id)
+        list.push({
+          id: key,
+          title: e.title,
+          date: e.start_date,
+          end_date: e.end_date,
+          start_time: e.start_time,
+          end_time: e.end_time,
+          description: e.description,
+          category: 'ical',
+          isIcal: true,
+          feedColor: e.feed_color,
+          feedName: feed?.name,
+        })
+      }
+    })
+
     return list.sort((a, b) =>
       (a.start_time ?? '99:99').localeCompare(b.start_time ?? '99:99')
     )
-  }, [byDate, selected])
+  }, [byDate, selected, icalFeeds])
 
   // ── header mini-stats : aujourd'hui / cette semaine / ce mois
   const headerStats = useMemo(() => {
@@ -636,6 +720,50 @@ export default function CalendrierView({
         </div>
       )}
 
+      {/* ── Sources synchronisées (iCal) — replié par défaut */}
+      {icalFeeds.length > 0 && (
+        <div style={s.sourcesWrap}>
+          <button
+            onClick={() => setShowSources(s => !s)}
+            style={s.sourcesToggle}
+            aria-expanded={showSources}
+          >
+            <span style={s.sourcesToggleLeft}>
+              <span style={s.sourcesDots}>
+                {icalFeeds.slice(0, 4).map(f => (
+                  <span key={f.id} style={{ ...s.sourcesDot, background: f.color }} />
+                ))}
+              </span>
+              <span style={s.sourcesLabel}>
+                {icalFeeds.length} source{icalFeeds.length > 1 ? 's' : ''} synchronisée{icalFeeds.length > 1 ? 's' : ''}
+                <span style={s.sourcesCount}> · {icalEvents.length} résa{icalEvents.length > 1 ? 's' : ''}</span>
+              </span>
+            </span>
+            <span style={{ ...s.sourcesChevron, transform: showSources ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+              <CaretRight size={12} weight="bold" />
+            </span>
+          </button>
+          {showSources && (
+            <div style={s.sourcesList}>
+              {icalFeeds.map(f => {
+                const count = icalEvents.filter(e => e.feed_id === f.id).length
+                const lastSync = f.last_synced
+                  ? new Date(f.last_synced).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+                  : 'jamais'
+                return (
+                  <div key={f.id} style={s.sourceItem}>
+                    <span style={{ ...s.sourcesDot, background: f.color }} />
+                    <span style={s.sourceName}>{f.name}</span>
+                    <span style={s.sourceCount}>{count} résa{count > 1 ? 's' : ''}</span>
+                    <span style={s.sourceSync}>· sync {lastSync}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ── Main layout */}
       <div className="cal-layout" style={s.layout}>
 
@@ -660,12 +788,16 @@ export default function CalendrierView({
                     const isToday   = date === TODAY
                     const isSel     = date === selected
                     const dd        = byDate[date]
-                    const contracts = (dd?.contracts ?? []).map(c => ({ id: c.id, category: c.type, title: c.title }))
-                    const singles   = (dd?.custom ?? []).filter(e => !e.end_date || e.end_date === e.date).map(e => ({ id: e.id, category: e.category, title: e.title }))
-                    const allDots   = [...contracts, ...singles, ...(dd?.custom ?? []).filter(e => e.end_date && e.end_date !== e.date).map(e => ({ id: e.id, category: e.category, title: '' }))]
+                    type DotLike = { id: string; color: string; title: string; isIcal?: boolean }
+                    const contracts: DotLike[] = (dd?.contracts ?? []).map(c => ({ id: c.id, color: (CAT[c.type] ?? CAT.note).color, title: c.title }))
+                    const singles:   DotLike[] = (dd?.custom ?? []).filter(e => !e.end_date || e.end_date === e.date).map(e => ({ id: e.id, color: (CAT[e.category] ?? CAT.note).color, title: e.title }))
+                    const icalSingles: DotLike[] = (dd?.ical ?? []).filter(e => !e.end_date || e.end_date === e.start_date).map(e => ({ id: `ical-${e.id}`, color: e.feed_color, title: e.title, isIcal: true }))
+                    const customMulti: DotLike[] = (dd?.custom ?? []).filter(e => e.end_date && e.end_date !== e.date).map(e => ({ id: e.id, color: (CAT[e.category] ?? CAT.note).color, title: '' }))
+                    const icalMulti:   DotLike[] = (dd?.ical ?? []).filter(e => e.end_date && e.end_date !== e.start_date).map(e => ({ id: `ical-${e.id}`, color: e.feed_color, title: '', isIcal: true }))
+                    const allDots   = [...contracts, ...singles, ...icalSingles, ...customMulti, ...icalMulti]
                     const seenD     = new Set<string>()
                     const uniqDots  = allDots.filter(e => { if (seenD.has(e.id)) return false; seenD.add(e.id); return true })
-                    const pillItems = [...contracts, ...singles]
+                    const pillItems = [...contracts, ...singles, ...icalSingles]
                     const slots     = Math.max(0, 2 - nBars)
                     const visible   = pillItems.slice(0, slots)
                     const extra     = pillItems.length - visible.length
@@ -703,7 +835,7 @@ export default function CalendrierView({
                               {alertsForDay.slice(0, 1).map((a, i) => (
                                 <span key={`alert-${i}`} style={{ width: 6, height: 6, borderRadius: '50%', border: `1.5px solid ${a.color}`, flexShrink: 0, background: 'transparent' }} title={a.label} />
                               ))}
-                              {uniqDots.slice(0, 3).map((e, i) => <span key={`${e.id}-${i}`} style={{ ...s.dot, background: CAT[e.category]?.color ?? CAT.note.color }} />)}
+                              {uniqDots.slice(0, 3).map((e, i) => <span key={`${e.id}-${i}`} style={{ ...s.dot, background: e.color }} />)}
                               {uniqDots.length > 3 && <span style={{ ...s.dot, background: 'var(--text-muted)' }} />}
                             </span>
                           )}
@@ -712,31 +844,32 @@ export default function CalendrierView({
                         <div style={{ height: BAR_TOP + spacer + 4 }} />
                         {/* Single-day pills */}
                         <div className="cal-pill-wrap" style={s.pillWrap}>
-                          {visible.map(e => {
-                            const c = CAT[e.category] ?? CAT.note
-                            return <div key={e.id} style={{ ...s.pill, borderLeftColor: c.color, background: c.bg }}><span style={s.pillText}>{e.title}</span></div>
-                          })}
+                          {visible.map(e => (
+                            <div key={e.id} style={{ ...s.pill, borderLeftColor: e.color, background: `${e.color}1f` }}>
+                              <span style={s.pillText}>{e.title}</span>
+                            </div>
+                          ))}
                           {extra > 0 && <span style={s.extraChip}>+{extra}</span>}
                         </div>
                       </div>
                     )
                   })}
 
-                  {/* Multi-day bars */}
+                  {/* Multi-day bars (custom + iCal) */}
                   {spans.slice(0, 2).map((span, si) => {
-                    const cat   = CAT[span.event.category as CatKey] ?? CAT.note
                     const left  = `calc(${(span.startCol / 7) * 100}% + 2px)`
                     const width = `calc(${((span.endCol - span.startCol + 1) / 7) * 100}% - 4px)`
                     const top   = BAR_TOP + si * (BAR_H + BAR_GAP)
                     const br    = `${span.isStart ? 4 : 0}px ${span.isEnd ? 4 : 0}px ${span.isEnd ? 4 : 0}px ${span.isStart ? 4 : 0}px`
                     return (
                       <div
-                        key={span.event.id}
-                        onClick={() => { setSelected(span.event.date); setYear(Number(span.event.date.slice(0,4))); setMonth(Number(span.event.date.slice(5,7))-1) }}
+                        key={span.id}
+                        onClick={span.onClick}
+                        title={span.title}
                         style={{
                           position: 'absolute', top, left, width, height: BAR_H, zIndex: 2,
-                          background: cat.bg,
-                          borderLeft: span.isStart ? `2.5px solid ${cat.color}` : 'none',
+                          background: span.bg,
+                          borderLeft: span.isStart ? `2.5px solid ${span.color}` : 'none',
                           borderRadius: br,
                           display: 'flex', alignItems: 'center',
                           padding: '0 6px', fontSize: '11px', fontWeight: 500,
@@ -744,7 +877,7 @@ export default function CalendrierView({
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        {span.isStart && span.event.title}
+                        {span.isStart && span.title}
                       </div>
                     )
                   })}
@@ -953,9 +1086,12 @@ export default function CalendrierView({
                   </button>
                 </div>
               ) : (
-                selectedAll.map((ev: any) => {
-                  const cat        = CAT[ev.category] ?? CAT.note
+                selectedAll.map((ev: Merged) => {
                   const isContract = !!ev.isContract
+                  const isIcal     = !!ev.isIcal
+                  const cat        = CAT[ev.category] ?? CAT.note
+                  const accent     = isIcal ? (ev.feedColor ?? '#94a3b8') : cat.color
+                  const label      = isIcal ? (ev.feedName ?? 'Calendrier externe') : cat.label
                   const isMulti    = !!ev.end_date && ev.end_date !== ev.date
                   const origContract = isContract ? contractEvents.find(c => c.id === ev.id) : null
                   const clDone = origContract ? CHECKLIST_ITEMS.filter(i => (contractChecklists[origContract.contractId] ?? {})[i.key]).length : 0
@@ -964,7 +1100,7 @@ export default function CalendrierView({
                       key={ev.id}
                       className="evt-row"
                       onClick={isContract && origContract ? () => setSelectedContract(origContract) : undefined}
-                      style={{ ...s.evtCard, borderLeft: `3px solid ${cat.color}`, cursor: isContract ? 'pointer' : 'default' }}
+                      style={{ ...s.evtCard, borderLeft: `3px solid ${accent}`, cursor: isContract ? 'pointer' : 'default' }}
                     >
                       <div style={s.evtCardTop}>
                         <span style={s.evtTitle}>{ev.title}</span>
@@ -974,12 +1110,17 @@ export default function CalendrierView({
                               {clDone}/{CHECKLIST_ITEMS.length}
                             </span>
                           )}
-                          {!isContract && (
+                          {isIcal && (
+                            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.4px', color: accent, background: `${accent}1f`, padding: '2px 7px', borderRadius: '100px', textTransform: 'uppercase' }}>
+                              Synchro
+                            </span>
+                          )}
+                          {!isContract && !isIcal && (
                             <>
                               <button className="icon-btn" onClick={() => openEdit(ev as CalEvent)} style={s.iconBtn} title="Modifier">
                                 <PencilSimple size={12} />
                               </button>
-                              <button className="icon-btn" onClick={() => handleDelete(ev.id)} style={{ ...s.iconBtn, color: 'var(--error, #f87171)' }} title="Supprimer">
+                              <button className="icon-btn" onClick={() => handleDelete(ev.id)} style={{ ...s.iconBtn, color: 'var(--text-3)' }} title="Supprimer">
                                 <Trash size={12} />
                               </button>
                             </>
@@ -988,7 +1129,7 @@ export default function CalendrierView({
                       </div>
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
-                        {isMulti && (
+                        {isMulti && ev.end_date && (
                           <span style={s.spanBadge}>
                             {fmtDate(ev.date)} → {fmtDate(ev.end_date)}
                           </span>
@@ -999,7 +1140,7 @@ export default function CalendrierView({
                             {fmtTime(ev.start_time)}{ev.end_time ? ` → ${fmtTime(ev.end_time)}` : ''}
                           </span>
                         )}
-                        <span style={{ ...s.catLabel, color: cat.color }}>{cat.label}</span>
+                        <span style={{ ...s.catLabel, color: accent }}>{label}</span>
                       </div>
 
                       {ev.description && (
@@ -1334,6 +1475,67 @@ const s: Record<string, React.CSSProperties> = {
     width: '8px', height: '8px', borderRadius: '50%',
     background: '#10b981',
     boxShadow: '0 0 0 4px rgba(16,185,129,0.18)',
+  },
+
+  // Sources synchronisées (iCal feeds)
+  sourcesWrap: {
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    overflow: 'hidden',
+  },
+  sourcesToggle: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    width: '100%',
+    padding: '8px 14px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    color: 'var(--text-2)',
+  },
+  sourcesToggleLeft: {
+    display: 'inline-flex', alignItems: 'center', gap: '10px',
+  },
+  sourcesDots: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+  },
+  sourcesDot: {
+    width: '8px', height: '8px', borderRadius: '50%',
+  },
+  sourcesLabel: {
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--text-2)',
+  },
+  sourcesCount: {
+    color: 'var(--text-muted)',
+    fontWeight: 400,
+  },
+  sourcesChevron: {
+    color: 'var(--text-muted)',
+    display: 'flex',
+    transition: 'transform 0.18s',
+  },
+  sourcesList: {
+    borderTop: '1px solid var(--border)',
+    padding: '10px 14px',
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  sourceItem: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    fontSize: '12px',
+  },
+  sourceName: {
+    fontWeight: 500,
+    color: 'var(--text-2)',
+  },
+  sourceCount: {
+    color: 'var(--text-3)',
+    marginLeft: 'auto',
+  },
+  sourceSync: {
+    color: 'var(--text-muted)',
+    fontSize: '11px',
   },
 
   // Mini-stats header
