@@ -479,12 +479,54 @@ export default function RevenusView({
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }, [contracts, entries])
 
+  // Phase 5 — search + sort
+  const [txSearch, setTxSearch] = useState('')
+  const [txSort, setTxSort] = useState<'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc'>('date-desc')
+
   const filteredTx = useMemo(() => {
     let list = allTx
     if (logementFilter !== 'all') list = list.filter(tx => tx.logement === logementFilter)
     if (filter !== 'all') list = list.filter(tx => tx.statut === filter)
+    const q = txSearch.trim().toLowerCase()
+    if (q) {
+      list = list.filter(tx =>
+        tx.logement.toLowerCase().includes(q) ||
+        (tx.guest ?? '').toLowerCase().includes(q) ||
+        tx.label.toLowerCase().includes(q)
+      )
+    }
+    list = [...list].sort((a, b) => {
+      switch (txSort) {
+        case 'date-asc':    return new Date(a.date).getTime() - new Date(b.date).getTime()
+        case 'amount-desc': return b.montant - a.montant
+        case 'amount-asc':  return a.montant - b.montant
+        default:            return new Date(b.date).getTime() - new Date(a.date).getTime()
+      }
+    })
     return list
-  }, [allTx, filter, logementFilter])
+  }, [allTx, filter, logementFilter, txSearch, txSort])
+
+  // Export CSV
+  function downloadCSV() {
+    const header = ['Date', 'Logement', 'Voyageur', 'Type', 'Mode', 'Statut', 'Montant']
+    const rows = filteredTx.map(tx => [
+      tx.date,
+      `"${(tx.logement || '').replace(/"/g, '""')}"`,
+      `"${(tx.guest ?? '').replace(/"/g, '""')}"`,
+      tx.label,
+      tx.mode,
+      tx.statut === 'encaisse' ? 'Encaissé' : 'Attente',
+      tx.montant.toString().replace('.', ','),
+    ])
+    const csv = [header.join(';'), ...rows.map(r => r.join(';'))].join('\n')
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `revenus-${thisYear}-${String(thisMonth + 1).padStart(2, '0')}.csv`
+    document.body.appendChild(a); a.click(); document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
 
   const maxChart    = Math.max(...chartData.map(m => m.total), 1)
   const formValid   = fLogement.trim() && fMontant && parseFloat(fMontant) > 0 && fDate
@@ -888,34 +930,96 @@ export default function RevenusView({
           </div>
         )}
 
-        {/* Filter tabs + filtre par logement */}
-        <div style={{ ...s.filterRow, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '8px' }}>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const }}>
-            {(['all', 'encaisse', 'attente'] as const).map(f => {
-              const count = f === 'all' ? allTx.length : allTx.filter(t => t.statut === f).length
-              return (
-                <button key={f} onClick={() => setFilter(f)}
-                  style={{ ...s.filterBtn, ...(filter === f ? s.filterBtnActive : {}) }}>
-                  {f === 'all' ? 'Tout' : f === 'encaisse' ? 'Encaissé' : 'En attente'}
-                  <span style={{ ...s.filterCount, ...(filter === f ? { color: 'var(--accent-text)' } : {}) }}>{count}</span>
-                </button>
-              )
-            })}
+        {/* Filter tabs + recherche + tri + export */}
+        <div style={{ ...s.filterRow, flexDirection: 'column' as const, alignItems: 'stretch', gap: '10px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '8px' }}>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const }}>
+              {(['all', 'encaisse', 'attente'] as const).map(f => {
+                const count = f === 'all' ? allTx.length : allTx.filter(t => t.statut === f).length
+                return (
+                  <button key={f} onClick={() => setFilter(f)}
+                    style={{ ...s.filterBtn, ...(filter === f ? s.filterBtnActive : {}) }}>
+                    {f === 'all' ? 'Tout' : f === 'encaisse' ? 'Encaissé' : 'En attente'}
+                    <span style={{ ...s.filterCount, ...(filter === f ? { color: 'var(--accent-text)' } : {}) }}>{count}</span>
+                  </button>
+                )
+              })}
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, alignItems: 'center' }}>
+              <select
+                value={txSort}
+                onChange={(e) => setTxSort(e.target.value as any)}
+                style={{
+                  padding: '7px 12px', fontSize: '12.5px', fontFamily: 'inherit',
+                  background: 'var(--surface)', color: 'var(--text-2)',
+                  border: '1px solid var(--border)', borderRadius: '8px', cursor: 'pointer',
+                }}
+              >
+                <option value="date-desc">Date ↓</option>
+                <option value="date-asc">Date ↑</option>
+                <option value="amount-desc">Montant ↓</option>
+                <option value="amount-asc">Montant ↑</option>
+              </select>
+              {logementNoms.length > 1 && (
+                <select
+                  value={logementFilter}
+                  onChange={(e) => setLogementFilter(e.target.value)}
+                  style={{
+                    padding: '7px 12px', fontSize: '12.5px', fontFamily: 'inherit',
+                    background: 'var(--surface)', color: 'var(--text-2)',
+                    border: '1px solid var(--border)', borderRadius: '8px', cursor: 'pointer',
+                  }}
+                >
+                  <option value="all">Tous les logements</option>
+                  {logementNoms.map(n => <option key={n} value={n}>{n}</option>)}
+                </select>
+              )}
+              <button
+                onClick={downloadCSV}
+                disabled={filteredTx.length === 0}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '5px',
+                  padding: '7px 12px', fontSize: '12.5px', fontWeight: 500,
+                  background: 'var(--surface)', color: 'var(--text-2)',
+                  border: '1px solid var(--border)', borderRadius: '8px',
+                  cursor: filteredTx.length > 0 ? 'pointer' : 'not-allowed',
+                  opacity: filteredTx.length > 0 ? 1 : 0.5,
+                  fontFamily: 'inherit',
+                }}
+                title="Exporter au format CSV"
+              >
+                📥 CSV
+              </button>
+            </div>
           </div>
-          {logementNoms.length > 1 && (
-            <select
-              value={logementFilter}
-              onChange={(e) => setLogementFilter(e.target.value)}
+          <div style={{ position: 'relative' as const }}>
+            <input
+              type="text"
+              placeholder="Rechercher dans le journal — logement, voyageur…"
+              value={txSearch}
+              onChange={(e) => setTxSearch(e.target.value)}
               style={{
-                padding: '7px 12px', fontSize: '12.5px', fontFamily: 'inherit',
-                background: 'var(--surface)', color: 'var(--text-2)',
-                border: '1px solid var(--border)', borderRadius: '8px', cursor: 'pointer',
+                width: '100%', boxSizing: 'border-box' as const,
+                padding: '8px 30px 8px 12px',
+                fontSize: '12.5px', fontFamily: 'inherit',
+                color: 'var(--text)',
+                background: 'var(--surface)',
+                border: '1px solid var(--border)', borderRadius: '8px',
+                outline: 'none',
               }}
-            >
-              <option value="all">Tous les logements</option>
-              {logementNoms.map(n => <option key={n} value={n}>{n}</option>)}
-            </select>
-          )}
+            />
+            {txSearch && (
+              <button onClick={() => setTxSearch('')} style={{
+                position: 'absolute' as const, right: '6px', top: '50%',
+                transform: 'translateY(-50%)',
+                width: '20px', height: '20px', borderRadius: '50%',
+                border: 'none', background: 'var(--border)',
+                color: 'var(--text-2)', fontSize: '14px', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1,
+                fontFamily: 'inherit',
+              }}>×</button>
+            )}
+          </div>
         </div>
 
         {/* Transaction list */}
