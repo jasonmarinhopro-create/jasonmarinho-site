@@ -11,7 +11,7 @@ export default async function VoyageursPage() {
 
   const { data: voyageurs, error } = await supabase
     .from('voyageurs')
-    .select('id, prenom, nom, email, telephone, notes, created_at, updated_at, sejours(id, date_arrivee, date_depart)')
+    .select('id, prenom, nom, email, telephone, notes, tags, source, bloque, id_verifie, note_privee, created_at, updated_at, sejours(id, date_arrivee, date_depart, montant)')
     .eq('user_id', profile.userId)
     .order('updated_at', { ascending: false })
     .limit(500)
@@ -21,8 +21,11 @@ export default async function VoyageursPage() {
 
   const list = (voyageurs ?? []) as Array<{
     id: string; prenom: string; nom: string; email: string | null
-    telephone: string | null; notes: string | null; created_at: string; updated_at: string
-    sejours: Array<{ id: string; date_arrivee: string; date_depart: string }>
+    telephone: string | null; notes: string | null
+    tags: string[] | null; source: string | null; bloque: boolean | null
+    id_verifie: boolean | null; note_privee: number | null
+    created_at: string; updated_at: string
+    sejours: Array<{ id: string; date_arrivee: string; date_depart: string; montant: number | null }>
     is_flagged: boolean
   }>
 

@@ -40,6 +40,34 @@ type Voyageur = {
   id: string; prenom: string; nom: string
   email: string | null; telephone: string | null
   notes: string | null; created_at: string
+  // Phase 1 — enrichi
+  tags?: string[] | null
+  source?: string | null
+  date_naissance?: string | null
+  nationalite?: string | null
+  adresse?: string | null
+  code_postal?: string | null
+  ville?: string | null
+  pays?: string | null
+  id_verifie?: boolean | null
+  id_url?: string | null
+  id_type?: string | null
+  preferences?: string[] | null
+  note_privee?: number | null
+  bloque?: boolean | null
+  bloque_motif?: string | null
+}
+
+const SOURCE_LABELS: Record<string, { label: string; emoji: string }> = {
+  airbnb:           { label: 'Airbnb',           emoji: '🏠' },
+  booking:          { label: 'Booking.com',      emoji: '🛎️' },
+  vrbo:             { label: 'Vrbo',             emoji: '🌴' },
+  abritel:          { label: 'Abritel',          emoji: '🏡' },
+  gites_de_france:  { label: 'Gîtes de France',  emoji: '🌳' },
+  driing:           { label: 'Driing',           emoji: '🔔' },
+  direct:           { label: 'Direct',           emoji: '📞' },
+  recommandation:   { label: 'Recommandation',   emoji: '💌' },
+  autre:            { label: 'Autre',            emoji: '✨' },
 }
 
 type Sejour = {
@@ -372,6 +400,62 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const [editingNotes, setEditingNotes] = useState(false)
   const [notes, setNotes] = useState(voyageur.notes ?? '')
 
+  // Phase 4 — états locaux pour tags, source, vérification, blocage, note privée
+  const [tags, setTags] = useState<string[]>(voyageur.tags ?? [])
+  const [tagInput, setTagInput] = useState('')
+  const [source, setSource] = useState<string | null>(voyageur.source ?? null)
+  const [idVerifie, setIdVerifie] = useState<boolean>(voyageur.id_verifie ?? false)
+  const [idType, setIdType] = useState<string | null>(voyageur.id_type ?? null)
+  const [idUrl, setIdUrl] = useState<string>(voyageur.id_url ?? '')
+  const [bloque, setBloque] = useState<boolean>(voyageur.bloque ?? false)
+  const [bloqueMotif, setBloqueMotif] = useState<string>(voyageur.bloque_motif ?? '')
+  const [showBlockDialog, setShowBlockDialog] = useState(false)
+  const [notePrivee, setNotePrivee] = useState<number | null>(voyageur.note_privee ?? null)
+
+  async function persistField(patch: Partial<VoyageurData>) {
+    startTransition(async () => {
+      await updateVoyageur(voyageur.id, {
+        prenom: voyageur.prenom, nom: voyageur.nom,
+        email: voyageur.email ?? undefined,
+        telephone: voyageur.telephone ?? undefined,
+        notes: voyageur.notes ?? undefined,
+        ...patch,
+      })
+    })
+  }
+
+  function handleAddTag(t: string) {
+    const cleaned = t.trim()
+    if (!cleaned || tags.includes(cleaned)) return
+    const next = [...tags, cleaned]
+    setTags(next); setTagInput('')
+    persistField({ tags: next })
+  }
+  function handleRemoveTag(t: string) {
+    const next = tags.filter(x => x !== t)
+    setTags(next)
+    persistField({ tags: next })
+  }
+  function handleSourceChange(s: string | null) {
+    setSource(s)
+    persistField({ source: s })
+  }
+  function handleNotePriveeChange(n: number | null) {
+    setNotePrivee(n)
+    persistField({ note_privee: n })
+  }
+  function handleBlockConfirm() {
+    setBloque(true); setShowBlockDialog(false)
+    persistField({ bloque: true, bloque_motif: bloqueMotif || null })
+  }
+  function handleUnblock() {
+    setBloque(false); setBloqueMotif('')
+    persistField({ bloque: false, bloque_motif: null })
+  }
+  function saveIdVerification() {
+    persistField({ id_verifie: idVerifie, id_type: idType, id_url: idUrl || null })
+  }
+
   // Report / Testimony modal
   const [reportModal, setReportModal] = useState<'report' | 'positive' | null>(null)
   const [reportForm, setReportForm] = useState({ incident_type: INCIDENT_TYPES[0], description: '' })
@@ -424,6 +508,127 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
   const initials = `${voyageur.prenom[0]}${voyageur.nom[0]}`.toUpperCase()
   const color = avatarColor(voyageur.prenom + voyageur.nom)
+
+  // ─── Stats voyageur (CA, séjours, durée moyenne, dernière venue, statut auto) ──
+  const todayISO = new Date().toISOString().slice(0, 10)
+  const stats = (() => {
+    const totalCA = sejours.reduce((sum, s) => sum + (s.montant ?? 0), 0)
+    const nbSejours = sejours.length
+    const totalNuits = sejours.reduce((sum, s) => sum + nights(s.date_arrivee, s.date_depart), 0)
+    const dureeMoyenne = nbSejours > 0 ? Math.round(totalNuits / nbSejours) : 0
+
+    // Dernière venue = date_depart la plus récente parmi les séjours passés
+    const past = sejours.filter(s => s.date_depart < todayISO).sort((a, b) => b.date_depart.localeCompare(a.date_depart))
+    const lastVisit = past[0]?.date_depart ?? null
+
+    // Prochain séjour à venir
+    const upcoming = sejours.filter(s => s.date_arrivee >= todayISO).sort((a, b) => a.date_arrivee.localeCompare(b.date_arrivee))
+    const nextStay = upcoming[0] ?? null
+
+    // Statut auto
+    let statut: { label: string; color: string; bg: string; border: string }
+    if (isFlagged) {
+      statut = { label: 'Signalé', color: '#ef4444', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.30)' }
+    } else if (totalCA >= 5000 || nbSejours >= 5) {
+      statut = { label: 'VIP', color: '#a78bfa', bg: 'rgba(167,139,250,0.10)', border: 'rgba(167,139,250,0.30)' }
+    } else if (nbSejours >= 4) {
+      statut = { label: 'Fidèle', color: '#10b981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' }
+    } else if (nbSejours >= 2) {
+      statut = { label: 'Récurrent', color: '#60a5fa', bg: 'rgba(96,165,250,0.10)', border: 'rgba(96,165,250,0.30)' }
+    } else {
+      statut = { label: 'Nouveau', color: 'var(--text-muted)', bg: 'var(--surface)', border: 'var(--border)' }
+    }
+
+    return { totalCA, nbSejours, dureeMoyenne, lastVisit, nextStay, statut }
+  })()
+
+  // ─── Logements fréquentés (pour bouton "Voir le logement") ──
+  const logementsFrequentes = (() => {
+    const counts = new Map<string, number>()
+    sejours.forEach(sj => {
+      if (sj.logement) counts.set(sj.logement, (counts.get(sj.logement) ?? 0) + 1)
+    })
+    const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1])
+    return sorted.map(([nom, count]) => ({ nom, count, logementId: logements.find(l => l.nom === nom)?.id }))
+  })()
+
+  // Date à utiliser pour le calendrier : prochain à venir, sinon dernier passé
+  const calendrierTargetDate = stats.nextStay?.date_arrivee ?? stats.lastVisit ?? null
+
+  // ─── Score de confiance (algorithmique) ──
+  const trustScore = (() => {
+    let score = 50 // base neutre
+    if (idVerifie) score += 25
+    if (sejours.length >= 2) score += 10
+    if (sejours.length >= 4) score += 15
+    if (notePrivee && notePrivee >= 4) score += 10
+    if (isFlagged) score -= 60
+    if (bloque) score -= 100
+    return Math.max(0, Math.min(100, score))
+  })()
+  const trustLabel =
+    trustScore >= 80 ? { label: 'Très fiable',  color: '#10b981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' } :
+    trustScore >= 60 ? { label: 'Fiable',        color: '#34d399', bg: 'rgba(52,211,153,0.10)', border: 'rgba(52,211,153,0.30)' } :
+    trustScore >= 40 ? { label: 'Neutre',        color: 'var(--text-2)', bg: 'var(--surface)',  border: 'var(--border)' } :
+    trustScore >= 20 ? { label: 'À surveiller',  color: '#f59e0b', bg: 'rgba(245,158,11,0.10)', border: 'rgba(245,158,11,0.30)' } :
+                       { label: 'Risque élevé',  color: '#ef4444', bg: 'rgba(239,68,68,0.10)',  border: 'rgba(239,68,68,0.30)' }
+
+  // ─── Timeline d'événements (calculée depuis séjours + contrat) ──
+  type TimelineEvent = { date: string; icon: string; label: string; subtitle?: string; tone: 'past' | 'today' | 'future' }
+  const timeline: TimelineEvent[] = (() => {
+    const events: TimelineEvent[] = []
+    sejours.forEach(sj => {
+      const tone = (d: string): TimelineEvent['tone'] =>
+        d < todayISO ? 'past' : d === todayISO ? 'today' : 'future'
+
+      // Création (contrat envoyé / signé)
+      if (sj.contrat_statut === 'signe' && sj.contrat_date_signature) {
+        events.push({
+          date: sj.contrat_date_signature,
+          icon: '✍️',
+          label: 'Contrat signé',
+          subtitle: sj.logement ?? undefined,
+          tone: tone(sj.contrat_date_signature),
+        })
+      } else if (sj.contrat_statut === 'en_attente') {
+        events.push({
+          date: sj.date_arrivee,
+          icon: '📨',
+          label: 'Contrat envoyé, en attente de signature',
+          subtitle: sj.logement ?? undefined,
+          tone: 'future',
+        })
+      }
+
+      // Arrivée
+      events.push({
+        date: sj.date_arrivee,
+        icon: '🛬',
+        label: 'Arrivée',
+        subtitle: sj.logement ? `${sj.logement}${sj.montant ? ` · ${sj.montant} €` : ''}` : undefined,
+        tone: tone(sj.date_arrivee),
+      })
+
+      // Départ
+      events.push({
+        date: sj.date_depart,
+        icon: '🛫',
+        label: 'Départ',
+        subtitle: `${nights(sj.date_arrivee, sj.date_depart)} nuit${nights(sj.date_arrivee, sj.date_depart) > 1 ? 's' : ''}`,
+        tone: tone(sj.date_depart),
+      })
+    })
+
+    // Ajout de la création du voyageur
+    events.push({
+      date: voyageur.created_at.slice(0, 10),
+      icon: '👤',
+      label: 'Voyageur ajouté',
+      tone: 'past',
+    })
+
+    return events.sort((a, b) => b.date.localeCompare(a.date))
+  })()
 
   function saveProfile() {
     if (!profileForm.prenom.trim() || !profileForm.nom.trim()) {
@@ -556,6 +761,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           flex-wrap: wrap;
           flex-shrink: 0;
         }
+        @media (max-width: 900px) {
+          .voyageur-layout {
+            grid-template-columns: 1fr !important;
+          }
+          .voyageur-left {
+            position: static !important;
+          }
+        }
         @media (max-width: 600px) {
           .sejour-row-mobile {
             flex-direction: column !important;
@@ -586,6 +799,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           </div>
         </div>
       )}
+
+      {/* Layout 2 colonnes (devient 1 col en < 900px) */}
+      <div className="voyageur-layout" style={s.layoutGrid}>
+        <div className="voyageur-left" style={s.leftColumn}>
 
       {/* Profile card */}
       <div style={s.profileCard} className="fade-up glass-card">
@@ -697,7 +914,158 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </button>
                 )}
               </div>
-              <div style={s.since}>Ajouté le {formatDate(voyageur.created_at)}</div>
+
+              {/* Quick actions communication */}
+              {(voyageur.email || voyageur.telephone) && (
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'center', marginTop: '4px' }}>
+                  {voyageur.email && (
+                    <a
+                      href={`mailto:${voyageur.email}?subject=${encodeURIComponent(`Bonjour ${voyageur.prenom}`)}`}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                        background: 'var(--accent-bg)', color: 'var(--accent-text)',
+                        border: '1px solid var(--accent-border)', borderRadius: '8px',
+                        textDecoration: 'none' as const,
+                      }}
+                    >
+                      <Envelope size={13} weight="fill" />
+                      Envoyer un email
+                    </a>
+                  )}
+                  {voyageur.telephone && (
+                    <a
+                      href={`sms:${voyageur.telephone}`}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                        background: 'var(--surface)', color: 'var(--text-2)',
+                        border: '1px solid var(--border)', borderRadius: '8px',
+                        textDecoration: 'none' as const,
+                      }}
+                    >
+                      <Phone size={13} weight="fill" />
+                      SMS
+                    </a>
+                  )}
+                </div>
+              )}
+
+              {/* Liens inter-modules (calendrier + logement) */}
+              {(calendrierTargetDate || logementsFrequentes.length > 0) && (
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'center', marginTop: '4px' }}>
+                  {calendrierTargetDate && (
+                    <a
+                      href={`/dashboard/calendrier`}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                        background: 'var(--surface)', color: 'var(--text-2)',
+                        border: '1px solid var(--border)', borderRadius: '8px',
+                        textDecoration: 'none' as const,
+                      }}
+                    >
+                      <CalendarBlank size={13} weight="fill" />
+                      Calendrier
+                    </a>
+                  )}
+                  {logementsFrequentes.length === 1 && logementsFrequentes[0].logementId && (
+                    <a
+                      href={`/dashboard/logements/${logementsFrequentes[0].logementId}`}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                        background: 'var(--surface)', color: 'var(--text-2)',
+                        border: '1px solid var(--border)', borderRadius: '8px',
+                        textDecoration: 'none' as const,
+                      }}
+                    >
+                      <House size={13} weight="fill" />
+                      {logementsFrequentes[0].nom}
+                    </a>
+                  )}
+                  {logementsFrequentes.length > 1 && (
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '5px',
+                      padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                      background: 'var(--surface)', color: 'var(--text-muted)',
+                      border: '1px solid var(--border)', borderRadius: '8px',
+                    }}>
+                      <House size={13} weight="fill" />
+                      {logementsFrequentes.length} logements visités
+                    </span>
+                  )}
+                </div>
+              )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' as const, justifyContent: 'center' }}>
+                <span style={{ ...s.statutBadge, color: stats.statut.color, background: stats.statut.bg, borderColor: stats.statut.border }}>
+                  {stats.statut.label}
+                </span>
+                {bloque && (
+                  <span style={{ ...s.statutBadge, color: '#94a3b8', background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.30)' }}>
+                    🚫 Bloqué
+                  </span>
+                )}
+                {source && SOURCE_LABELS[source] && (
+                  <span style={{ ...s.statutBadge, color: 'var(--text-2)', background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
+                    {SOURCE_LABELS[source].emoji} {SOURCE_LABELS[source].label}
+                  </span>
+                )}
+                <span style={s.since}>Ajouté le {formatDate(voyageur.created_at)}</span>
+              </div>
+
+              {/* Note privée (étoiles) */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', justifyContent: 'center' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.4px', textTransform: 'uppercase' as const }}>
+                  Note
+                </span>
+                <div style={{ display: 'flex', gap: '2px' }}>
+                  {[1, 2, 3, 4, 5].map(n => {
+                    const filled = (notePrivee ?? 0) >= n
+                    return (
+                      <button
+                        key={n} type="button"
+                        onClick={() => handleNotePriveeChange(notePrivee === n ? null : n)}
+                        style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px', display: 'flex' }}
+                        title={`${n} étoile${n > 1 ? 's' : ''}`}
+                      >
+                        <Star size={14} weight={filled ? 'fill' : 'regular'} color={filled ? '#fbbf24' : 'var(--text-muted)'} />
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Mini-stats voyageur */}
+              {sejours.length > 0 && (
+                <div style={s.voyageurStats}>
+                  <div style={s.voyageurStat}>
+                    <span style={s.voyageurStatLabel}>CA total</span>
+                    <span style={s.voyageurStatValue}>{stats.totalCA.toLocaleString('fr-FR')} €</span>
+                  </div>
+                  <div style={s.voyageurStat}>
+                    <span style={s.voyageurStatLabel}>Séjours</span>
+                    <span style={s.voyageurStatValue}>{stats.nbSejours}</span>
+                  </div>
+                  <div style={s.voyageurStat}>
+                    <span style={s.voyageurStatLabel}>Durée moyenne</span>
+                    <span style={s.voyageurStatValue}>{stats.dureeMoyenne}n.</span>
+                  </div>
+                  <div style={s.voyageurStat}>
+                    <span style={s.voyageurStatLabel}>Dernière venue</span>
+                    <span style={s.voyageurStatValue}>{stats.lastVisit ? formatDate(stats.lastVisit) : '—'}</span>
+                  </div>
+                  {stats.nextStay && (
+                    <div style={{ ...s.voyageurStat, gridColumn: 'span 2', background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
+                      <span style={{ ...s.voyageurStatLabel, color: 'var(--accent-text)' }}>Prochain séjour</span>
+                      <span style={{ ...s.voyageurStatValue, color: 'var(--accent-text)' }}>
+                        {formatDate(stats.nextStay.date_arrivee)}
+                        {stats.nextStay.logement && ` · ${stats.nextStay.logement}`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </>
           )}
         </div>
@@ -743,6 +1111,277 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           </p>
         )}
       </div>
+
+      {/* ── Tags ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>
+            🏷️ Tags
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px', marginBottom: '8px' }}>
+          {tags.length === 0 ? (
+            <em style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Aucun tag.</em>
+          ) : tags.map(t => (
+            <span key={t} style={{
+              display: 'inline-flex', alignItems: 'center', gap: '4px',
+              fontSize: '11.5px', fontWeight: 600,
+              padding: '4px 4px 4px 10px',
+              background: 'var(--accent-bg)', color: 'var(--accent-text)',
+              border: '1px solid var(--accent-border)', borderRadius: '100px',
+            }}>
+              {t}
+              <button
+                onClick={() => handleRemoveTag(t)}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: '0 2px', display: 'flex' }}
+                title="Retirer ce tag"
+              >
+                <X size={11} weight="bold" />
+              </button>
+            </span>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          <input
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddTag(tagInput) } }}
+            placeholder="Famille, Business, VIP, À fidéliser…"
+            style={{
+              flex: 1, padding: '7px 10px', fontSize: '12px',
+              fontFamily: 'inherit', color: 'var(--text)',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)', borderRadius: '8px', outline: 'none',
+            }}
+          />
+          <button
+            onClick={() => handleAddTag(tagInput)}
+            disabled={!tagInput.trim()}
+            style={{
+              padding: '7px 12px', fontSize: '12px', fontWeight: 600,
+              background: 'var(--accent-bg)', color: 'var(--accent-text)',
+              border: '1px solid var(--accent-border)', borderRadius: '8px',
+              cursor: tagInput.trim() ? 'pointer' : 'not-allowed',
+              opacity: tagInput.trim() ? 1 : 0.5, fontFamily: 'inherit',
+            }}
+          >
+            + Ajouter
+          </button>
+        </div>
+      </div>
+
+      {/* ── Source d'acquisition ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>
+            📍 Source d&apos;acquisition
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
+          {Object.entries(SOURCE_LABELS).map(([key, def]) => {
+            const selected = source === key
+            return (
+              <button
+                key={key}
+                onClick={() => handleSourceChange(selected ? null : key)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '5px',
+                  padding: '5px 10px',
+                  fontSize: '11.5px', fontWeight: 500,
+                  background: selected ? 'var(--accent-bg)' : 'var(--surface)',
+                  color: selected ? 'var(--accent-text)' : 'var(--text-2)',
+                  border: `1px solid ${selected ? 'var(--accent-border)' : 'var(--border)'}`,
+                  borderRadius: '100px',
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                <span>{def.emoji}</span>
+                {def.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── Vérification & sécurité ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>
+            🔒 Vérification & sécurité
+          </div>
+        </div>
+
+        {/* Score de confiance */}
+        <div style={{
+          padding: '12px 14px',
+          background: trustLabel.bg,
+          border: `1px solid ${trustLabel.border}`,
+          borderRadius: '10px',
+          marginBottom: '14px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '4px' }}>
+              Score de confiance
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+              <span style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', fontWeight: 500, color: trustLabel.color, lineHeight: 1 }}>
+                {trustScore}
+              </span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>/ 100</span>
+              <span style={{ marginLeft: '6px', fontSize: '11px', fontWeight: 600, color: trustLabel.color, letterSpacing: '0.3px' }}>
+                {trustLabel.label}
+              </span>
+            </div>
+          </div>
+          {/* Mini barre de progression */}
+          <div style={{ width: '70px', height: '6px', background: 'var(--surface-2)', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
+            <div style={{ width: `${trustScore}%`, height: '100%', background: trustLabel.color, transition: 'width 0.3s' }} />
+          </div>
+        </div>
+
+        {/* ID vérifiée */}
+        <div style={{ marginBottom: '12px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '8px' }}>
+            <input
+              type="checkbox"
+              checked={idVerifie}
+              onChange={(e) => { setIdVerifie(e.target.checked); persistField({ id_verifie: e.target.checked }) }}
+              style={{ width: '15px', height: '15px', accentColor: '#10b981' }}
+            />
+            <span style={{ fontSize: '13px', color: 'var(--text-2)', fontWeight: 500 }}>
+              Pièce d&apos;identité vérifiée
+            </span>
+            {idVerifie && <Check size={12} weight="bold" color="#10b981" />}
+          </label>
+
+          {idVerifie && (
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px', marginLeft: '23px' }}>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                {(['cni', 'passeport', 'permis', 'autre'] as const).map(t => {
+                  const sel = idType === t
+                  const labels = { cni: 'CNI', passeport: 'Passeport', permis: 'Permis', autre: 'Autre' }
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => { setIdType(t); persistField({ id_type: t }) }}
+                      style={{
+                        flex: 1,
+                        padding: '5px 8px',
+                        fontSize: '11px', fontWeight: 500,
+                        background: sel ? 'var(--accent-bg)' : 'var(--surface)',
+                        color: sel ? 'var(--accent-text)' : 'var(--text-2)',
+                        border: `1px solid ${sel ? 'var(--accent-border)' : 'var(--border)'}`,
+                        borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit',
+                      }}
+                    >
+                      {labels[t]}
+                    </button>
+                  )
+                })}
+              </div>
+              <input
+                value={idUrl}
+                onChange={(e) => setIdUrl(e.target.value)}
+                onBlur={saveIdVerification}
+                placeholder="URL de la pièce (optionnel)"
+                style={{
+                  padding: '7px 10px', fontSize: '12px',
+                  fontFamily: 'inherit', color: 'var(--text)',
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: '7px', outline: 'none',
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Blocage */}
+        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+          {!bloque ? (
+            <button
+              onClick={() => setShowBlockDialog(true)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                padding: '6px 12px',
+                fontSize: '12px', fontWeight: 500,
+                background: 'rgba(239,68,68,0.05)',
+                color: '#ef4444',
+                border: '1px solid rgba(239,68,68,0.20)',
+                borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              🚫 Bloquer ce voyageur
+            </button>
+          ) : (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 600, color: '#ef4444' }}>
+                  🚫 Voyageur bloqué
+                </span>
+              </div>
+              {bloqueMotif && (
+                <p style={{ fontSize: '12px', color: 'var(--text-2)', margin: '0 0 8px', lineHeight: 1.5 }}>
+                  Motif : {bloqueMotif}
+                </p>
+              )}
+              <button
+                onClick={handleUnblock}
+                style={{
+                  padding: '5px 10px',
+                  fontSize: '11.5px', fontWeight: 500,
+                  background: 'var(--surface)',
+                  color: 'var(--text-2)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                Débloquer
+              </button>
+            </div>
+          )}
+
+          {showBlockDialog && (
+            <div style={{ marginTop: '10px', padding: '12px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)', borderRadius: '10px' }}>
+              <p style={{ fontSize: '12px', color: 'var(--text-2)', margin: '0 0 8px', lineHeight: 1.5 }}>
+                Bloquer un voyageur ne supprime pas son historique mais l&apos;empêche d&apos;avoir de nouveaux séjours. Donnez un motif (optionnel) :
+              </p>
+              <textarea
+                value={bloqueMotif}
+                onChange={(e) => setBloqueMotif(e.target.value)}
+                placeholder="Dégradation, fraude, comportement inapproprié…"
+                rows={2}
+                style={{
+                  width: '100%', boxSizing: 'border-box' as const,
+                  padding: '7px 10px', fontSize: '12px',
+                  fontFamily: 'inherit', color: 'var(--text)',
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: '7px', outline: 'none',
+                  resize: 'vertical' as const, marginBottom: '8px',
+                }}
+              />
+              <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => { setShowBlockDialog(false); setBloqueMotif('') }}
+                  style={{ padding: '5px 10px', fontSize: '12px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleBlockConfirm}
+                  style={{ padding: '5px 12px', fontSize: '12px', fontWeight: 600, background: '#ef4444', color: '#fff', border: 'none', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                >
+                  Confirmer le blocage
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+        </div>
+        {/* ─── Colonne droite ─── */}
+        <div style={s.rightColumn}>
 
       {/* Séjours */}
       <div style={s.section} className="fade-up">
@@ -908,6 +1547,42 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               </div>
             )
           })}
+        </div>
+      </div>
+
+      {/* ── Timeline ── */}
+      {timeline.length > 0 && (
+        <div style={s.section} className="fade-up">
+          <div style={s.sectionHeader}>
+            <div style={s.sectionTitle}>
+              ⏱️ Historique chronologique
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0' }}>
+            {timeline.map((ev, i) => {
+              const opacity = ev.tone === 'past' ? 0.7 : 1
+              const accent = ev.tone === 'today' ? 'var(--accent-text)' : ev.tone === 'future' ? '#10b981' : 'var(--text-muted)'
+              return (
+                <div key={i} style={{ display: 'flex', gap: '12px', opacity, padding: '8px 0', borderBottom: i < timeline.length - 1 ? '1px dashed var(--border)' : 'none' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px', flexShrink: 0, position: 'relative' as const }}>
+                    <span style={{ fontSize: '18px', lineHeight: 1 }}>{ev.icon}</span>
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '11px', fontWeight: 600, color: accent, letterSpacing: '0.3px', textTransform: 'uppercase' as const, marginBottom: '2px' }}>
+                      {formatDate(ev.date)}
+                    </div>
+                    <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 500 }}>{ev.label}</div>
+                    {ev.subtitle && (
+                      <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '1px' }}>{ev.subtitle}</div>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
         </div>
       </div>
 
@@ -1171,7 +1846,50 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '860px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1320px', margin: '0 auto' },
+  layoutGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(320px, 420px) 1fr',
+    gap: '20px',
+    alignItems: 'flex-start',
+  },
+  leftColumn: {
+    display: 'flex', flexDirection: 'column' as const, gap: '16px',
+    position: 'sticky' as const, top: '20px',
+  },
+  rightColumn: {
+    display: 'flex', flexDirection: 'column' as const, gap: '16px',
+    minWidth: 0,
+  },
+
+  // Stats voyageur
+  voyageurStats: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '8px',
+    marginTop: '16px',
+    width: '100%',
+  },
+  voyageurStat: {
+    background: 'var(--surface-2)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '10px 12px',
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+  },
+  voyageurStatLabel: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const, color: 'var(--text-muted)',
+  },
+  voyageurStatValue: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 500, color: 'var(--text)',
+    lineHeight: 1.2,
+  },
+  statutBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 700, letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const,
+    padding: '4px 10px', borderRadius: '100px', border: '1px solid',
+  },
   backBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     background: 'none', border: 'none', cursor: 'pointer',
@@ -1186,25 +1904,26 @@ const s: Record<string, React.CSSProperties> = {
     marginBottom: '20px',
   },
   profileCard: {
-    display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap',
-    padding: '24px', borderRadius: '18px', marginBottom: '20px',
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '14px',
+    padding: '22px 20px', borderRadius: '18px',
+    textAlign: 'center' as const,
   },
   bigAvatar: {
-    width: '64px', height: '64px', borderRadius: '50%', flexShrink: 0,
+    width: '80px', height: '80px', borderRadius: '50%', flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   bigAvatarText: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 600, color: '#fff',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', fontWeight: 600, color: '#fff',
   },
-  profileInfo: { flex: 1, minWidth: 0 },
-  profileNameRow: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' },
+  profileInfo: { width: '100%', minWidth: 0, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '8px' },
+  profileNameRow: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const, justifyContent: 'center' },
   profileName: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px,2.5vw,28px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px',
     fontWeight: 400, color: 'var(--text)', margin: 0,
   },
-  profileEditForm: { display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' },
-  profileEditRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' },
-  contactList: { display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '6px' },
+  profileEditForm: { display: 'flex', flexDirection: 'column' as const, gap: '12px', width: '100%' },
+  profileEditRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },
+  contactList: { display: 'flex', flexWrap: 'wrap' as const, gap: '10px', justifyContent: 'center' },
   contactItem: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '13px', color: 'var(--text-2)', textDecoration: 'none',
