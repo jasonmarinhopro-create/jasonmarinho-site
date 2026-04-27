@@ -597,12 +597,72 @@ export default function CalendrierView({
       if (e.date >= monthStart && e.date <= monthEnd) customMonth++
     })
 
+    // Taux d'occupation : nombre de jours du mois où il y a au moins 1 séjour (contracts + iCal)
+    const monthDays = new Date(year, month + 1, 0).getDate()
+    const occupiedDays = new Set<string>()
+    function expandRange(s: string, e: string | null) {
+      const endD = e ?? s
+      const [sy, sm, sd] = s.split('-').map(Number)
+      const [ey, em, ed] = endD.split('-').map(Number)
+      const cur = new Date(sy, sm - 1, sd)
+      const endDt = new Date(ey, em - 1, ed)
+      while (cur <= endDt) {
+        const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
+        if (ds >= monthStart && ds <= monthEnd) occupiedDays.add(ds)
+        cur.setDate(cur.getDate() + 1)
+      }
+    }
+    contractEvents.forEach(c => {
+      if (c.type === 'arrivee') expandRange(c.date_arrivee, c.date_depart)
+    })
+    icalEvents.forEach(e => expandRange(e.start_date, e.end_date))
+    const occupationPct = Math.round((occupiedDays.size / monthDays) * 100)
+
     return {
       activeToday, arrToday, depToday,
       arrWeek, depWeek, menageWeek,
       monthEvents: monthEvents + customMonth,
+      occupationPct, occupiedDays: occupiedDays.size, monthDays,
     }
-  }, [contractEvents, events, year, month])
+  }, [contractEvents, events, icalEvents, year, month])
+
+  // ── Prochain événement à venir
+  const nextUpcoming = useMemo(() => {
+    const today = todayString()
+    type Up = { date: string; title: string; sub: string; color: string; daysAway: number; contract?: import('./page').ContractEvent }
+    const list: Up[] = []
+    function diff(from: string, to: string) {
+      return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
+    }
+    const seen = new Set<string>()
+    contractEvents.forEach(c => {
+      if (c.date < today) return
+      const key = `${c.contractId}-${c.type}`
+      if (seen.has(key)) return
+      seen.add(key)
+      const cat = CAT[c.type] ?? CAT.note
+      list.push({
+        date: c.date,
+        title: c.logement_nom ?? c.title,
+        sub: c.type === 'arrivee' ? 'Arrivée' : 'Départ',
+        color: cat.color,
+        daysAway: diff(today, c.date),
+        contract: c,
+      })
+    })
+    icalEvents.forEach(e => {
+      if (e.start_date < today) return
+      list.push({
+        date: e.start_date,
+        title: e.title,
+        sub: 'Synchro',
+        color: e.feed_color,
+        daysAway: diff(today, e.start_date),
+      })
+    })
+    list.sort((a, b) => a.date.localeCompare(b.date))
+    return list[0] ?? null
+  }, [contractEvents, icalEvents])
 
   const LOGEMENT_COLORS = ['#10b981','#60a5fa','#f59e0b','#a78bfa','#fb923c','#f472b6']
   const logements = useMemo(() => {
@@ -826,6 +886,17 @@ export default function CalendrierView({
               <span style={s.miniStatNum}>{headerStats.monthEvents}</span>
               <span style={s.miniStatLabel}>événement{headerStats.monthEvents > 1 ? 's' : ''}</span>
             </span>
+            {headerStats.occupiedDays > 0 && (
+              <>
+                <span style={s.miniStatSep}>·</span>
+                <span style={s.miniStat} title={`${headerStats.occupiedDays}/${headerStats.monthDays} jours occupés`}>
+                  <span style={s.miniStatLabel}>Occupation</span>
+                  <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
+                    {headerStats.occupationPct}%
+                  </span>
+                </span>
+              </>
+            )}
           </div>
         ) : (
           <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
@@ -1008,6 +1079,29 @@ export default function CalendrierView({
         </div>
       )}
 
+      {/* ── Prochain événement — bandeau highlight */}
+      {nextUpcoming && nextUpcoming.daysAway >= 0 && nextUpcoming.daysAway <= 30 && (
+        <button
+          onClick={() => {
+            const d = nextUpcoming.date
+            setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
+            if (nextUpcoming.contract) setSelectedContract(nextUpcoming.contract)
+          }}
+          style={{ ...s.nextWrap, borderLeftColor: nextUpcoming.color }}
+        >
+          <span style={s.nextLabel}>Prochain événement</span>
+          <span style={s.nextMain}>
+            <span style={s.nextTitle}>{nextUpcoming.title}</span>
+            <span style={s.nextSub}>· {nextUpcoming.sub}</span>
+          </span>
+          <span style={{ ...s.nextDays, color: nextUpcoming.color }}>
+            {nextUpcoming.daysAway === 0 ? "aujourd'hui"
+              : nextUpcoming.daysAway === 1 ? 'demain'
+              : `dans ${nextUpcoming.daysAway} jours`}
+          </span>
+        </button>
+      )}
+
       {/* ── Sources synchronisées (iCal) — replié par défaut */}
       {icalFeeds.length > 0 && (
         <div style={s.sourcesWrap}>
@@ -1077,8 +1171,19 @@ export default function CalendrierView({
                     const isToday   = date === TODAY
                     const isSel     = date === selected
                     const dd        = byDate[date]
-                    type DotLike = { id: string; color: string; title: string; isIcal?: boolean }
-                    const contracts: DotLike[] = (dd?.contracts ?? []).map(c => ({ id: c.id, color: (CAT[c.type] ?? CAT.note).color, title: c.title }))
+                    type DotLike = { id: string; color: string; title: string; isIcal?: boolean; progressColor?: string }
+                    const contracts: DotLike[] = (dd?.contracts ?? []).map(c => {
+                      const cl = contractChecklists[c.contractId] ?? {}
+                      let progressColor: string | undefined
+                      if (c.type === 'arrivee') {
+                        const avantItems = CHECKLIST_ITEMS.filter(i => i.phase === 'avant')
+                        const done = avantItems.filter(i => cl[i.key]).length
+                        if (done === avantItems.length) progressColor = '#10b981'
+                        else if (done > 0) progressColor = '#eab308'
+                        else progressColor = '#ef4444'
+                      }
+                      return { id: c.id, color: (CAT[c.type] ?? CAT.note).color, title: c.title, progressColor }
+                    })
                     const singles:   DotLike[] = (dd?.custom ?? []).filter(e => !e.end_date || e.end_date === e.date).map(e => ({ id: e.id, color: (CAT[e.category] ?? CAT.note).color, title: e.title }))
                     const icalSingles: DotLike[] = (dd?.ical ?? []).filter(e => !e.end_date || e.end_date === e.start_date).map(e => ({ id: `ical-${e.id}`, color: e.feed_color, title: e.title, isIcal: true }))
                     const customMulti: DotLike[] = (dd?.custom ?? []).filter(e => e.end_date && e.end_date !== e.date).map(e => ({ id: e.id, color: (CAT[e.category] ?? CAT.note).color, title: '' }))
@@ -1139,6 +1244,17 @@ export default function CalendrierView({
                           {visible.map(e => (
                             <div key={e.id} style={{ ...s.pill, borderLeftColor: e.color, background: `${e.color}1f` }}>
                               <span style={s.pillText}>{e.title}</span>
+                              {e.progressColor && (
+                                <span
+                                  style={{
+                                    width: '6px', height: '6px', borderRadius: '50%',
+                                    background: e.progressColor,
+                                    marginLeft: '4px', flexShrink: 0,
+                                    boxShadow: `0 0 0 1.5px ${e.progressColor}30`,
+                                  }}
+                                  title="Avancement de la checklist d'arrivée"
+                                />
+                              )}
                             </div>
                           ))}
                           {extra > 0 && <span style={s.extraChip}>+{extra}</span>}
@@ -1783,6 +1899,45 @@ const s: Record<string, React.CSSProperties> = {
     width: '8px', height: '8px', borderRadius: '50%',
     background: '#10b981',
     boxShadow: '0 0 0 4px rgba(16,185,129,0.18)',
+  },
+
+  // Prochain événement
+  nextWrap: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    flexWrap: 'wrap' as const,
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderLeft: '3px solid',
+    borderRadius: '12px',
+    padding: '10px 14px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    color: 'var(--text-2)',
+    textAlign: 'left' as const,
+    width: '100%',
+  },
+  nextLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+    flexShrink: 0,
+  },
+  nextMain: {
+    display: 'inline-flex', alignItems: 'baseline', gap: '6px',
+    flex: 1, minWidth: 0,
+  },
+  nextTitle: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  nextSub: {
+    fontSize: '12px', fontWeight: 400,
+    color: 'var(--text-muted)',
+  },
+  nextDays: {
+    fontSize: '12px', fontWeight: 600,
+    flexShrink: 0,
   },
 
   // View toggle
