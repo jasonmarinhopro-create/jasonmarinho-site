@@ -3,7 +3,7 @@
 import { useState, useMemo, useTransition, useRef, useEffect } from 'react'
 import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
-  CalendarBlank, Clock, X,
+  CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
 } from '@phosphor-icons/react'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
@@ -79,6 +79,104 @@ function todayString() {
   return toStr(t.getFullYear(), t.getMonth(), t.getDate())
 }
 
+// Parser "saisie rapide" : « Ménage Villa demain 10h » → { category, title, date, start_time }
+function parseQuickAdd(input: string, defaultDate: string): {
+  category: CatKey
+  title: string
+  date: string
+  start_time: string | null
+} | null {
+  const raw = input.trim()
+  if (!raw) return null
+
+  let category: CatKey = 'tache'
+  let cleaned = raw
+
+  const catPatterns: Array<{ regex: RegExp; cat: CatKey }> = [
+    { regex: /\bm[ée]nages?\b/i,                  cat: 'menage' },
+    { regex: /\b(rdv|rendez[\s-]?vous|appel|meeting)\b/i, cat: 'rdv' },
+    { regex: /\b(t[âa]che|todo)\b/i,              cat: 'tache' },
+    { regex: /\bnote\b/i,                         cat: 'note' as CatKey },
+  ]
+  for (const p of catPatterns) {
+    if (p.regex.test(cleaned)) {
+      category = p.cat
+      cleaned = cleaned.replace(p.regex, ' ')
+      break
+    }
+  }
+
+  // Date
+  let date = defaultDate
+  const today = new Date()
+  const dayMs = 86400000
+
+  if (/\baujourd'?hui\b/i.test(cleaned)) {
+    cleaned = cleaned.replace(/\baujourd'?hui\b/i, ' ')
+  } else if (/\bapr[èe]s[-\s]demain\b/i.test(cleaned)) {
+    const t = new Date(today.getTime() + 2 * dayMs)
+    date = toStr(t.getFullYear(), t.getMonth(), t.getDate())
+    cleaned = cleaned.replace(/\bapr[èe]s[-\s]demain\b/i, ' ')
+  } else if (/\bdemain\b/i.test(cleaned)) {
+    const t = new Date(today.getTime() + dayMs)
+    date = toStr(t.getFullYear(), t.getMonth(), t.getDate())
+    cleaned = cleaned.replace(/\bdemain\b/i, ' ')
+  }
+
+  const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
+  for (let i = 0; i < days.length; i++) {
+    const re = new RegExp(`\\b${days[i]}\\b`, 'i')
+    if (re.test(cleaned)) {
+      const cur = today.getDay()
+      let diffD = i - cur
+      if (diffD <= 0) diffD += 7
+      const t = new Date(today.getTime() + diffD * dayMs)
+      date = toStr(t.getFullYear(), t.getMonth(), t.getDate())
+      cleaned = cleaned.replace(re, ' ')
+      break
+    }
+  }
+
+  const plusMatch = cleaned.match(/\+(\d+)\s*j\b/i)
+  if (plusMatch) {
+    const n = parseInt(plusMatch[1], 10)
+    const t = new Date(today.getTime() + n * dayMs)
+    date = toStr(t.getFullYear(), t.getMonth(), t.getDate())
+    cleaned = cleaned.replace(plusMatch[0], ' ')
+  }
+
+  const dateMatch = cleaned.match(/\b(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?\b/)
+  if (dateMatch) {
+    const dd = parseInt(dateMatch[1], 10)
+    const mm = parseInt(dateMatch[2], 10) - 1
+    let yyyy = dateMatch[3] ? parseInt(dateMatch[3], 10) : today.getFullYear()
+    if (yyyy < 100) yyyy += 2000
+    if (dd >= 1 && dd <= 31 && mm >= 0 && mm <= 11) {
+      date = toStr(yyyy, mm, dd)
+      cleaned = cleaned.replace(dateMatch[0], ' ')
+    }
+  }
+
+  // Heure : 10h, 10h30, 10:30
+  let start_time: string | null = null
+  const timeMatch = cleaned.match(/\b(\d{1,2})\s*[h:]\s*(\d{2})?\b/i)
+  if (timeMatch) {
+    const h = parseInt(timeMatch[1], 10)
+    const mm = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0
+    if (h >= 0 && h < 24 && mm >= 0 && mm < 60) {
+      start_time = `${pad2(h)}:${pad2(mm)}`
+      cleaned = cleaned.replace(timeMatch[0], ' ')
+    }
+  }
+
+  // Préposition résiduelle "à"
+  cleaned = cleaned.replace(/\bà\b/gi, ' ')
+  cleaned = cleaned.replace(/\s+/g, ' ').trim()
+  const title = cleaned || 'Événement'
+
+  return { category, title, date, start_time }
+}
+
 function buildCalendarDays(year: number, month: number) {
   const firstDay    = new Date(year, month, 1)
   const daysInMonth = new Date(year, month + 1, 0).getDate()
@@ -118,11 +216,212 @@ function fmtDate(dateStr: string) {
 function fmtTime(t: string) { return t.slice(0, 5) }
 function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1) }
 
+// ─── Vue liste : événements chronologiques à venir ─────────────────────────
+
+interface ListViewProps {
+  byDate: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[] }>
+  contractEvents: ContractEvent[]
+  today: string
+  icalFeeds: IcalFeed[]
+  onSelect: (date: string, contract?: ContractEvent) => void
+}
+
+function ListView({ byDate, today, icalFeeds, onSelect }: ListViewProps) {
+  const dates = Object.keys(byDate).sort()
+  const upcoming = dates.filter(d => d >= today).slice(0, 60) // 60 prochains jours avec events
+  const past     = dates.filter(d => d < today).slice(-15)    // 15 derniers passés
+
+  function dayLabel(d: string) {
+    const [y, m, dd] = d.split('-').map(Number)
+    const date = new Date(y, m - 1, dd)
+    const diffDays = Math.round((new Date(d + 'T12:00').getTime() - new Date(today + 'T12:00').getTime()) / 86400000)
+    const main = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+    let rel = ''
+    if (diffDays === 0) rel = "Aujourd'hui"
+    else if (diffDays === 1) rel = 'Demain'
+    else if (diffDays === -1) rel = 'Hier'
+    else if (diffDays > 0) rel = `J+${diffDays}`
+    else rel = `J${diffDays}`
+    return { main: main.charAt(0).toUpperCase() + main.slice(1), rel, isPast: diffDays < 0, isToday: diffDays === 0 }
+  }
+
+  function renderDay(d: string) {
+    const day = byDate[d]
+    if (!day) return null
+    const { main, rel, isPast, isToday } = dayLabel(d)
+    const items: Array<{ id: string; title: string; color: string; subtitle?: string; onClick?: () => void; tag?: string }> = []
+    day.contracts.forEach(c => {
+      items.push({
+        id: c.id,
+        title: c.title,
+        color: (CAT[c.type] ?? CAT.note).color,
+        subtitle: c.logement_nom ?? undefined,
+        tag: 'Séjour',
+        onClick: () => onSelect(d, c),
+      })
+    })
+    day.ical.forEach(e => {
+      const feed = icalFeeds.find(f => f.id === e.feed_id)
+      items.push({
+        id: `ical-${e.id}`,
+        title: e.title,
+        color: e.feed_color,
+        subtitle: feed?.name ?? 'Synchro',
+        tag: 'Synchro',
+        onClick: () => onSelect(d),
+      })
+    })
+    day.custom.filter(e => !e.end_date || e.end_date === e.date).forEach(e => {
+      const cat = CAT[e.category] ?? CAT.note
+      items.push({
+        id: e.id,
+        title: e.title,
+        color: cat.color,
+        subtitle: e.start_time ? `${e.start_time.slice(0, 5)}${e.end_time ? ` → ${e.end_time.slice(0, 5)}` : ''}` : undefined,
+        tag: cat.label,
+        onClick: () => onSelect(d),
+      })
+    })
+    if (items.length === 0) return null
+
+    return (
+      <div key={d} style={{ ...lvs.dayBlock, opacity: isPast ? 0.55 : 1 }}>
+        <div style={lvs.dayHeader}>
+          <span style={lvs.dayMain}>{main}</span>
+          <span style={{ ...lvs.dayRel, color: isToday ? 'var(--accent-text)' : 'var(--text-muted)' }}>{rel}</span>
+        </div>
+        <div style={lvs.itemsList}>
+          {items.map(it => (
+            <button key={it.id} onClick={it.onClick} style={lvs.item}>
+              <span style={{ ...lvs.itemDot, background: it.color }} />
+              <span style={lvs.itemBody}>
+                <span style={lvs.itemTitle}>{it.title}</span>
+                {it.subtitle && <span style={lvs.itemSub}>{it.subtitle}</span>}
+              </span>
+              {it.tag && <span style={{ ...lvs.itemTag, color: it.color, background: `${it.color}1a` }}>{it.tag}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (upcoming.length === 0 && past.length === 0) {
+    return (
+      <div style={lvs.empty}>
+        <CalendarBlank size={32} weight="thin" color="var(--text-muted)" />
+        <div style={lvs.emptyTitle}>Aucun événement à afficher</div>
+        <div style={lvs.emptyDesc}>Ajuste les filtres ou ajoute un événement</div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={lvs.wrap}>
+      {upcoming.length > 0 && (
+        <div style={lvs.section}>
+          <div style={lvs.sectionLabel}>À venir</div>
+          {upcoming.map(renderDay)}
+        </div>
+      )}
+      {past.length > 0 && (
+        <div style={lvs.section}>
+          <div style={lvs.sectionLabel}>Récemment</div>
+          {past.reverse().map(renderDay)}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const lvs: Record<string, React.CSSProperties> = {
+  wrap: {
+    flex: 1, minWidth: 0,
+    overflowY: 'auto' as const,
+    padding: '12px 16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '20px',
+  },
+  empty: {
+    flex: 1,
+    display: 'flex', flexDirection: 'column' as const,
+    alignItems: 'center', justifyContent: 'center',
+    gap: '10px',
+    padding: '60px 20px',
+    textAlign: 'center' as const,
+  },
+  emptyTitle: { fontSize: '14px', color: 'var(--text-2)', fontWeight: 500 },
+  emptyDesc:  { fontSize: '12px', color: 'var(--text-muted)' },
+  section:    { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  sectionLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+    padding: '4px 0',
+  },
+  dayBlock: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    padding: '10px 0',
+    borderBottom: '1px solid var(--border)',
+  },
+  dayHeader: {
+    display: 'flex', alignItems: 'baseline', gap: '10px',
+    marginBottom: '6px',
+  },
+  dayMain: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '14px', fontWeight: 500,
+    color: 'var(--text)',
+    textTransform: 'capitalize' as const,
+  },
+  dayRel: {
+    fontSize: '11px', fontWeight: 500,
+  },
+  itemsList: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
+  item: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '8px 10px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '9px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left' as const,
+    width: '100%',
+    color: 'var(--text-2)',
+  },
+  itemDot: {
+    width: '8px', height: '8px', borderRadius: '50%',
+    flexShrink: 0,
+  },
+  itemBody: {
+    display: 'flex', flexDirection: 'column' as const, gap: '1px',
+    flex: 1, minWidth: 0,
+  },
+  itemTitle: {
+    fontSize: '13px', fontWeight: 500,
+    color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  itemSub: {
+    fontSize: '11px',
+    color: 'var(--text-muted)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  itemTag: {
+    fontSize: '10px', fontWeight: 600,
+    padding: '3px 8px', borderRadius: '100px',
+    flexShrink: 0,
+    letterSpacing: '0.3px',
+  },
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function CalendrierView({
   events: initial,
   contractEvents,
+  icalFeeds,
+  icalEvents,
 }: Props) {
   const TODAY = todayString()
   const now   = new Date()
@@ -153,6 +452,11 @@ export default function CalendrierView({
     Object.fromEntries(contractEvents.map(ev => [ev.contractId, ev.checklist_status ?? {}]))
   )
   const [selectedContract, setSelectedContract] = useState<import('./page').ContractEvent | null>(null)
+  const [showSources, setShowSources] = useState(false)
+  const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
+  const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
+  const [search, setSearch] = useState('')
+  const [quickAdd, setQuickAdd] = useState('')
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -164,31 +468,104 @@ export default function CalendrierView({
     return rows
   }, [cells])
 
-  // ── multi-day spans per week row
-  function computeSpans(weekCells: typeof cells) {
+  // ── multi-day spans per week row (custom events + iCal events)
+  type SpanItem = {
+    id: string
+    title: string
+    color: string
+    bg: string
+    startCol: number
+    endCol: number
+    isStart: boolean
+    isEnd: boolean
+    isIcal: boolean
+    onClick: () => void
+  }
+  function computeSpans(weekCells: typeof cells): SpanItem[] {
     const ws = weekCells[0].date
     const we = weekCells[6].date
+    const out: SpanItem[] = []
     const seen = new Set<string>()
-    return events
+
+    filteredEvents
       .filter(e => e.end_date && e.end_date !== e.date && e.date <= we && e.end_date >= ws)
-      .map(e => {
-        if (seen.has(e.id)) return null
+      .forEach(e => {
+        if (seen.has(e.id)) return
         seen.add(e.id)
         const ss = e.date >= ws ? e.date : ws
         const se = e.end_date! <= we ? e.end_date! : we
-        const sc = weekCells.findIndex(c => c.date === ss)
-        const ec = weekCells.findIndex(c => c.date === se)
-        return { event: e, startCol: sc < 0 ? 0 : sc, endCol: ec < 0 ? 6 : ec,
-                 isStart: e.date >= ws, isEnd: e.end_date! <= we }
+        const cat = CAT[e.category] ?? CAT.note
+        out.push({
+          id: e.id,
+          title: e.title,
+          color: cat.color,
+          bg: cat.bg,
+          startCol: weekCells.findIndex(c => c.date === ss),
+          endCol:   weekCells.findIndex(c => c.date === se),
+          isStart:  e.date >= ws,
+          isEnd:    e.end_date! <= we,
+          isIcal:   false,
+          onClick:  () => { setSelected(e.date); setYear(Number(e.date.slice(0,4))); setMonth(Number(e.date.slice(5,7))-1) },
+        })
       })
-      .filter(Boolean) as Array<{ event: CalEvent; startCol: number; endCol: number; isStart: boolean; isEnd: boolean }>
+
+    filteredIcalEvents
+      .filter(e => e.end_date && e.end_date !== e.start_date && e.start_date <= we && e.end_date >= ws)
+      .forEach(e => {
+        if (seen.has(`ical-${e.id}`)) return
+        seen.add(`ical-${e.id}`)
+        const ss = e.start_date >= ws ? e.start_date : ws
+        const se = e.end_date! <= we ? e.end_date! : we
+        out.push({
+          id: `ical-${e.id}`,
+          title: e.title,
+          color: e.feed_color,
+          bg:    `${e.feed_color}22`,
+          startCol: weekCells.findIndex(c => c.date === ss),
+          endCol:   weekCells.findIndex(c => c.date === se),
+          isStart:  e.start_date >= ws,
+          isEnd:    e.end_date! <= we,
+          isIcal:   true,
+          onClick:  () => { setSelected(e.start_date); setYear(Number(e.start_date.slice(0,4))); setMonth(Number(e.start_date.slice(5,7))-1) },
+        })
+      })
+
+    return out
   }
+
+  // ── search + filter helpers
+  const q = search.trim().toLowerCase()
+  const matchesSearch = (...texts: (string | null | undefined)[]) => {
+    if (!q) return true
+    return texts.some(t => (t ?? '').toLowerCase().includes(q))
+  }
+
+  const filteredEvents = useMemo(() => events.filter(e => {
+    const cat = catToDisplay(e.category)
+    if (filter === 'sejours' || filter === 'synchro') return false
+    if (filter === 'menages' && cat !== 'menage') return false
+    if (filter === 'rdv-tache' && cat !== 'rdv' && cat !== 'tache' && cat !== 'note') return false
+    if (q && !matchesSearch(e.title, e.description)) return false
+    return true
+  }), [events, filter, q])
+
+  const filteredContractEvents = useMemo(() => contractEvents.filter(c => {
+    if (filter === 'menages' || filter === 'rdv-tache' || filter === 'synchro') return false
+    if (q && !matchesSearch(c.title, c.logement_nom)) return false
+    return true
+  }), [contractEvents, filter, q])
+
+  const filteredIcalEvents = useMemo(() => icalEvents.filter(e => {
+    if (filter === 'menages' || filter === 'rdv-tache') return false
+    if (q && !matchesSearch(e.title, e.description)) return false
+    return true
+  }), [icalEvents, filter, q])
 
   // ── event index by date — multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
-    const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[] }> = {}
+    const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[] }> = {}
 
-    events.forEach(e => {
+    filteredEvents.forEach(e => {
       const startD = e.date
       const endD   = e.end_date ?? e.date
       const [sy, sm, sd] = startD.split('-').map(Number)
@@ -197,22 +574,37 @@ export default function CalendrierView({
       const endDt  = new Date(ey, em - 1, ed)
       while (cur <= endDt) {
         const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
-        ;(m[ds] ??= { custom: [], contracts: [] }).custom.push(e)
+        ;(m[ds] ??= { custom: [], contracts: [], ical: [] }).custom.push(e)
         cur.setDate(cur.getDate() + 1)
       }
     })
 
-    contractEvents.forEach(c => {
-      ;(m[c.date] ??= { custom: [], contracts: [] }).contracts.push(c)
+    filteredContractEvents.forEach(c => {
+      ;(m[c.date] ??= { custom: [], contracts: [], ical: [] }).contracts.push(c)
     })
+
+    filteredIcalEvents.forEach(e => {
+      const startD = e.start_date
+      const endD   = e.end_date ?? e.start_date
+      const [sy, sm, sd] = startD.split('-').map(Number)
+      const [ey, em, ed] = endD.split('-').map(Number)
+      const cur    = new Date(sy, sm - 1, sd)
+      const endDt  = new Date(ey, em - 1, ed)
+      while (cur <= endDt) {
+        const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
+        ;(m[ds] ??= { custom: [], contracts: [], ical: [] }).ical.push(e)
+        cur.setDate(cur.getDate() + 1)
+      }
+    })
+
     return m
-  }, [events, contractEvents])
+  }, [filteredEvents, filteredContractEvents, filteredIcalEvents])
 
   // ── selected day merged events (deduplicated by id)
+  type Merged = CalEvent & { isContract?: boolean; isIcal?: boolean; feedColor?: string; feedName?: string }
   const selectedAll = useMemo(() => {
-    const day  = byDate[selected] ?? { custom: [], contracts: [] }
+    const day  = byDate[selected] ?? { custom: [], contracts: [], ical: [] }
     const seen = new Set<string>()
-    type Merged = CalEvent & { isContract?: boolean }
     const list: Merged[] = []
 
     day.contracts.forEach(c => {
@@ -235,10 +627,141 @@ export default function CalendrierView({
       }
     })
 
+    day.ical.forEach(e => {
+      const key = `ical-${e.id}`
+      if (!seen.has(key)) {
+        seen.add(key)
+        const feed = icalFeeds.find(f => f.id === e.feed_id)
+        list.push({
+          id: key,
+          title: e.title,
+          date: e.start_date,
+          end_date: e.end_date,
+          start_time: e.start_time,
+          end_time: e.end_time,
+          description: e.description,
+          category: 'ical',
+          isIcal: true,
+          feedColor: e.feed_color,
+          feedName: feed?.name,
+        })
+      }
+    })
+
     return list.sort((a, b) =>
       (a.start_time ?? '99:99').localeCompare(b.start_time ?? '99:99')
     )
-  }, [byDate, selected])
+  }, [byDate, selected, icalFeeds])
+
+  // ── header mini-stats : aujourd'hui / cette semaine / ce mois
+  const headerStats = useMemo(() => {
+    const today = todayString()
+    function diff(from: string, to: string) {
+      return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
+    }
+    // bornes "cette semaine" (lundi → dimanche)
+    const t = new Date()
+    const dow = (t.getDay() + 6) % 7 // 0 = lundi
+    const monday = new Date(t.getFullYear(), t.getMonth(), t.getDate() - dow)
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6)
+    const weekStart = toStr(monday.getFullYear(), monday.getMonth(), monday.getDate())
+    const weekEnd   = toStr(sunday.getFullYear(), sunday.getMonth(), sunday.getDate())
+    const monthStart = toStr(year, month, 1)
+    const monthEnd   = toStr(year, month, new Date(year, month + 1, 0).getDate())
+
+    const seenIds = new Set<string>()
+    let activeToday = 0, arrToday = 0, depToday = 0
+    let arrWeek = 0, depWeek = 0
+    let monthEvents = 0
+
+    contractEvents.forEach(c => {
+      if (seenIds.has(c.contractId)) return
+      seenIds.add(c.contractId)
+      const a = c.date_arrivee
+      const d = c.date_depart
+      // séjour en cours aujourd'hui
+      if (a && (a <= today) && (!d || d >= today)) activeToday++
+      if (a === today) arrToday++
+      if (d === today) depToday++
+      if (a >= weekStart && a <= weekEnd) arrWeek++
+      if (d && d >= weekStart && d <= weekEnd) depWeek++
+      // évts du mois courant : arrivée OU départ tombant dans le mois
+      if ((a >= monthStart && a <= monthEnd) || (d && d >= monthStart && d <= monthEnd)) monthEvents++
+    })
+
+    let menageWeek = 0, customMonth = 0
+    events.forEach(e => {
+      const cat = catToDisplay(e.category)
+      if (cat === 'menage' && e.date >= weekStart && e.date <= weekEnd) menageWeek++
+      if (e.date >= monthStart && e.date <= monthEnd) customMonth++
+    })
+
+    // Taux d'occupation : nombre de jours du mois où il y a au moins 1 séjour (contracts + iCal)
+    const monthDays = new Date(year, month + 1, 0).getDate()
+    const occupiedDays = new Set<string>()
+    function expandRange(s: string, e: string | null) {
+      const endD = e ?? s
+      const [sy, sm, sd] = s.split('-').map(Number)
+      const [ey, em, ed] = endD.split('-').map(Number)
+      const cur = new Date(sy, sm - 1, sd)
+      const endDt = new Date(ey, em - 1, ed)
+      while (cur <= endDt) {
+        const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
+        if (ds >= monthStart && ds <= monthEnd) occupiedDays.add(ds)
+        cur.setDate(cur.getDate() + 1)
+      }
+    }
+    contractEvents.forEach(c => {
+      if (c.type === 'arrivee') expandRange(c.date_arrivee, c.date_depart)
+    })
+    icalEvents.forEach(e => expandRange(e.start_date, e.end_date))
+    const occupationPct = Math.round((occupiedDays.size / monthDays) * 100)
+
+    return {
+      activeToday, arrToday, depToday,
+      arrWeek, depWeek, menageWeek,
+      monthEvents: monthEvents + customMonth,
+      occupationPct, occupiedDays: occupiedDays.size, monthDays,
+    }
+  }, [contractEvents, events, icalEvents, year, month])
+
+  // ── Prochain événement à venir
+  const nextUpcoming = useMemo(() => {
+    const today = todayString()
+    type Up = { date: string; title: string; sub: string; color: string; daysAway: number; contract?: import('./page').ContractEvent }
+    const list: Up[] = []
+    function diff(from: string, to: string) {
+      return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
+    }
+    const seen = new Set<string>()
+    contractEvents.forEach(c => {
+      if (c.date < today) return
+      const key = `${c.contractId}-${c.type}`
+      if (seen.has(key)) return
+      seen.add(key)
+      const cat = CAT[c.type] ?? CAT.note
+      list.push({
+        date: c.date,
+        title: c.logement_nom ?? c.title,
+        sub: c.type === 'arrivee' ? 'Arrivée' : 'Départ',
+        color: cat.color,
+        daysAway: diff(today, c.date),
+        contract: c,
+      })
+    })
+    icalEvents.forEach(e => {
+      if (e.start_date < today) return
+      list.push({
+        date: e.start_date,
+        title: e.title,
+        sub: 'Synchro',
+        color: e.feed_color,
+        daysAway: diff(today, e.start_date),
+      })
+    })
+    list.sort((a, b) => a.date.localeCompare(b.date))
+    return list[0] ?? null
+  }, [contractEvents, icalEvents])
 
   const LOGEMENT_COLORS = ['#10b981','#60a5fa','#f59e0b','#a78bfa','#fb923c','#f472b6']
   const logements = useMemo(() => {
@@ -284,7 +807,11 @@ export default function CalendrierView({
     function diff(from: string, to: string) {
       return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
     }
-    type Item = { color: string; label: string; logement: string; daysInfo: string; navigateDate: string; contractRef: import('./page').ContractEvent }
+    type Item = {
+      color: string; label: string; logement: string; daysInfo: string;
+      navigateDate: string; contractRef: import('./page').ContractEvent;
+      contractId: string; checklistKey: string; priority: 0 | 1 | 2 | 3;
+    }
     const items: Item[] = []
     const seen = new Set<string>()
     contractEvents.forEach(ev => {
@@ -297,17 +824,16 @@ export default function CalendrierView({
       const arrRef = contractEvents.find(e => e.contractId === ev.contractId && e.type === 'arrivee') ?? ev
       const depRef = dep ? (contractEvents.find(e => e.contractId === ev.contractId && e.type === 'depart') ?? ev) : ev
       function arrInfo(d: number) { return d === 0 ? "Arrivée aujourd'hui" : d === 1 ? 'Arrivée demain' : `Arrivée J-${d}` }
-      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        items.push({ color: '#ef4444', label: 'Contrat non signé',      logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
-      if (dta >= 0 && dta <= 3 && !cl.solde_recu)            items.push({ color: '#f97316', label: 'Solde non reçu',          logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
-      if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) items.push({ color: '#eab308', label: 'Instructions non envoyées', logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
+      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        items.push({ color: '#ef4444', priority: 0, label: 'Contrat non signé',       logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'contrat_signe' })
+      if (dta >= 0 && dta <= 3 && !cl.solde_recu)            items.push({ color: '#f97316', priority: 1, label: 'Solde non reçu',           logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'solde_recu' })
+      if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) items.push({ color: '#eab308', priority: 2, label: 'Instructions non envoyées', logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'instructions_envoyees' })
       if (dep) {
         const dtd = diff(dep, today)
         const di  = dtd === 1 ? 'Départ hier' : `Départ il y a ${dtd}j`
-        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande) items.push({ color: '#3b82f6', label: 'Avis non demandé', logement: nom, daysInfo: di, navigateDate: dep, contractRef: depRef })
+        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande) items.push({ color: '#3b82f6', priority: 3, label: 'Avis non demandé', logement: nom, daysInfo: di, navigateDate: dep, contractRef: depRef, contractId: ev.contractId, checklistKey: 'avis_demande' })
       }
     })
-    const pri: Record<string, number> = { '#ef4444': 0, '#f97316': 1, '#eab308': 2, '#3b82f6': 3 }
-    return items.sort((a, b) => (pri[a.color] ?? 9) - (pri[b.color] ?? 9))
+    return items.sort((a, b) => a.priority - b.priority)
   }, [contractEvents, contractChecklists])
 
   // ── month nav
@@ -385,6 +911,30 @@ export default function CalendrierView({
   }
   function cancelForm() { setShowForm(false); setEditing(null) }
 
+  function handleQuickAdd() {
+    const parsed = parseQuickAdd(quickAdd, selected)
+    if (!parsed) return
+    startT(async () => {
+      const res = await createCalendarEvent({
+        title:      parsed.title,
+        date:       parsed.date,
+        end_date:   null,
+        start_time: parsed.start_time,
+        end_time:   null,
+        category:   parsed.category,
+        description: null,
+      })
+      if (!res.error && res.event) {
+        setEvents(prev => [...prev, res.event as CalEvent])
+        setQuickAdd('')
+        // Naviguer vers la date pour confirmer visuellement
+        setSelected(parsed.date)
+        setYear(Number(parsed.date.slice(0, 4)))
+        setMonth(Number(parsed.date.slice(5, 7)) - 1)
+      }
+    })
+  }
+
   function handleSave() {
     if (!fTitle.trim()) return
     startT(async () => {
@@ -428,12 +978,52 @@ export default function CalendrierView({
   // ── render
   return (
     <div className="cal-root" style={s.root}>
-      {/* Page heading */}
+      {/* Page heading + mini-stats */}
       <div>
         <h1 style={s.pageTitle}>
           Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
         </h1>
-        <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
+        {(headerStats.activeToday + headerStats.arrToday + headerStats.depToday + headerStats.arrWeek + headerStats.depWeek + headerStats.menageWeek + headerStats.monthEvents) > 0 ? (
+          <div style={s.miniStats}>
+            <span style={s.miniStat}>
+              <span style={s.miniStatNum}>{headerStats.activeToday}</span>
+              <span style={s.miniStatLabel}>séjour{headerStats.activeToday > 1 ? 's' : ''} en cours</span>
+            </span>
+            <span style={s.miniStatSep}>·</span>
+            <span style={s.miniStat}>
+              <span style={s.miniStatLabel}>Cette semaine</span>
+              <span style={s.miniStatNum}>{headerStats.arrWeek}</span>
+              <span style={s.miniStatLabel}>arrivée{headerStats.arrWeek > 1 ? 's' : ''}</span>
+              <span style={s.miniStatNum}>·{headerStats.depWeek}</span>
+              <span style={s.miniStatLabel}>départ{headerStats.depWeek > 1 ? 's' : ''}</span>
+              {headerStats.menageWeek > 0 && (
+                <>
+                  <span style={s.miniStatNum}>·{headerStats.menageWeek}</span>
+                  <span style={s.miniStatLabel}>ménage{headerStats.menageWeek > 1 ? 's' : ''}</span>
+                </>
+              )}
+            </span>
+            <span style={s.miniStatSep}>·</span>
+            <span style={s.miniStat}>
+              <span style={s.miniStatLabel}>Ce mois</span>
+              <span style={s.miniStatNum}>{headerStats.monthEvents}</span>
+              <span style={s.miniStatLabel}>événement{headerStats.monthEvents > 1 ? 's' : ''}</span>
+            </span>
+            {headerStats.occupiedDays > 0 && (
+              <>
+                <span style={s.miniStatSep}>·</span>
+                <span style={s.miniStat} title={`${headerStats.occupiedDays}/${headerStats.monthDays} jours occupés`}>
+                  <span style={s.miniStatLabel}>Occupation</span>
+                  <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
+                    {headerStats.occupationPct}%
+                  </span>
+                </span>
+              </>
+            )}
+          </div>
+        ) : (
+          <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
+        )}
       </div>
 
       <style>{`
@@ -489,7 +1079,26 @@ export default function CalendrierView({
           <button className="btn-ghost" onClick={nextMonth} style={s.navBtn}><CaretRight size={15} /></button>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const }}>
+          {/* View mode toggle */}
+          <div style={s.viewToggle}>
+            <button
+              onClick={() => setViewMode('month')}
+              style={{ ...s.viewBtn, ...(viewMode === 'month' ? s.viewBtnActive : {}) }}
+              title="Vue mois"
+            >
+              <CalendarIcon size={13} weight="fill" />
+              <span className="cal-view-text">Mois</span>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              style={{ ...s.viewBtn, ...(viewMode === 'list' ? s.viewBtnActive : {}) }}
+              title="Vue liste"
+            >
+              <ListBullets size={13} weight="bold" />
+              <span className="cal-view-text">Liste</span>
+            </button>
+          </div>
           <button className="btn-ghost" onClick={goToday} style={s.todayBtn}>Aujourd'hui</button>
           <button className="btn-primary" onClick={() => openAdd()} style={s.addBtn}>
             <Plus size={15} weight="bold" />
@@ -498,79 +1107,191 @@ export default function CalendrierView({
         </div>
       </div>
 
-      {/* ── Actions à traiter */}
-      {contractEvents.length > 0 && (
-        <div className="cal-alert-wrap" style={{
-          background: 'var(--surface)', border: '1px solid var(--border)',
-          borderRadius: '12px', padding: '10px 14px',
-          display: 'flex', flexDirection: 'column', gap: '8px',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '10px', fontWeight: 700, color: urgentAlerts.length > 0 ? 'var(--text-2)' : '#10b981', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
-              {urgentAlerts.length > 0 ? `À traiter · ${urgentAlerts.length} action${urgentAlerts.length > 1 ? 's' : ''}` : '✓ Tout est en ordre'}
+      {/* ── Filters + search */}
+      <div style={s.filterBar}>
+        <div style={s.filterChips}>
+          {([
+            { id: 'all',         label: 'Tout' },
+            { id: 'sejours',     label: 'Séjours' },
+            { id: 'menages',     label: 'Ménages' },
+            { id: 'rdv-tache',   label: 'RDV & tâches' },
+            { id: 'synchro',     label: 'Synchro' },
+          ] as const).map(f => (
+            <button
+              key={f.id}
+              onClick={() => setFilter(f.id)}
+              style={{
+                ...s.filterChip,
+                ...(filter === f.id ? s.filterChipActive : {}),
+              }}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        <div style={s.searchWrap}>
+          <span style={s.searchIcon}>
+            <MagnifyingGlass size={13} weight="bold" />
+          </span>
+          <input
+            type="text"
+            placeholder="Rechercher un logement, un voyageur…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={s.searchInput}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={s.searchClear} aria-label="Effacer">×</button>
+          )}
+        </div>
+      </div>
+
+      {/* ── Quick add */}
+      <div style={s.quickAddWrap}>
+        <span style={s.quickAddIcon}>⚡</span>
+        <input
+          type="text"
+          placeholder="Saisie rapide — ex : Ménage Villa demain 10h, RDV plombier vendredi 14h, +3j tâche révision tarifs…"
+          value={quickAdd}
+          onChange={(e) => setQuickAdd(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleQuickAdd() }}
+          style={s.quickAddInput}
+        />
+        {quickAdd && (
+          <button onClick={handleQuickAdd} style={s.quickAddBtn} disabled={isPending}>
+            Créer
+          </button>
+        )}
+      </div>
+
+      {/* ── Actions à traiter — liste compacte par priorité, avec actions inline */}
+      {contractEvents.length > 0 && urgentAlerts.length > 0 && (
+        <div style={s.alertList}>
+          <div style={s.alertHeader}>
+            <span style={s.alertHeaderLabel}>
+              À traiter
+              <span style={s.alertHeaderCount}>{urgentAlerts.length}</span>
             </span>
+            <span style={s.alertHeaderHint}>Clique pour voir · ✓ pour cocher</span>
           </div>
-          {urgentAlerts.length > 0 && (() => {
-            const GROUPS = [
-              { color: '#ef4444', bg: 'rgba(239,68,68,0.08)',  label: 'Critique' },
-              { color: '#f97316', bg: 'rgba(249,115,22,0.08)', label: 'Urgent' },
-              { color: '#eab308', bg: 'rgba(234,179,8,0.08)',  label: 'Important' },
-              { color: '#3b82f6', bg: 'rgba(59,130,246,0.08)', label: 'À faire' },
-            ]
-            return (
-              <div className="cal-alert-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
-                {GROUPS.map(group => {
-                  const groupItems = urgentAlerts.filter(a => a.color === group.color)
-                  return (
-                    <div key={group.color} className="cal-alert-col" style={{
-                      borderRadius: '8px', border: `1px solid ${group.color}30`,
-                      background: group.bg, padding: '8px 10px',
-                      opacity: groupItems.length === 0 ? 0.35 : 1,
-                      display: 'flex', flexDirection: 'column', gap: '4px',
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '4px' }}>
-                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: group.color, flexShrink: 0 }} />
-                        <span style={{ fontSize: '10px', fontWeight: 700, color: group.color, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{group.label}</span>
-                        {groupItems.length > 0 && (
-                          <span style={{ marginLeft: 'auto', fontSize: '10px', fontWeight: 700, color: group.color }}>{groupItems.length}</span>
-                        )}
-                      </div>
-                      {groupItems.length === 0 ? (
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>—</span>
-                      ) : groupItems.map((alert, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          className="icon-btn"
-                          onClick={() => {
-                            const d = alert.navigateDate
-                            setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
-                            setSelectedContract(alert.contractRef); setShowForm(false)
-                          }}
-                          style={{
-                            display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                            padding: '4px 6px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px',
-                            border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%',
-                          }}
-                        >
-                          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-2)', lineHeight: 1.3 }}>{alert.logement}</span>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.3 }}>{alert.label}</span>
-                          <span style={{ fontSize: '10px', color: group.color, lineHeight: 1.3, marginTop: '1px' }}>{alert.daysInfo}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )
-                })}
+          <div style={s.alertItems}>
+            {urgentAlerts.map((alert, i) => (
+              <div
+                key={`${alert.contractId}-${alert.checklistKey}-${i}`}
+                style={{
+                  ...s.alertItem,
+                  borderLeftColor: alert.color,
+                }}
+              >
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => {
+                    const d = alert.navigateDate
+                    setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
+                    setSelectedContract(alert.contractRef); setShowForm(false)
+                  }}
+                  style={s.alertItemMain}
+                >
+                  <span style={{ ...s.alertDot, background: alert.color }} />
+                  <span style={s.alertLogement}>{alert.logement}</span>
+                  <span style={s.alertSep}>·</span>
+                  <span style={s.alertLabel}>{alert.label}</span>
+                  <span style={{ ...s.alertDays, color: alert.color }}>{alert.daysInfo}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); handleChecklistToggle(alert.contractId, alert.checklistKey) }}
+                  style={s.alertCheckBtn}
+                  title={`Marquer "${alert.label}" comme fait`}
+                  aria-label="Marquer fait"
+                >
+                  ✓
+                </button>
               </div>
-            )
-          })()}
+            ))}
+          </div>
+        </div>
+      )}
+      {contractEvents.length > 0 && urgentAlerts.length === 0 && (
+        <div style={s.alertOk}>
+          <span style={s.alertOkDot} />
+          Tout est en ordre — aucune action en attente
+        </div>
+      )}
+
+      {/* ── Prochain événement — bandeau highlight */}
+      {nextUpcoming && nextUpcoming.daysAway >= 0 && nextUpcoming.daysAway <= 30 && (
+        <button
+          onClick={() => {
+            const d = nextUpcoming.date
+            setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
+            if (nextUpcoming.contract) setSelectedContract(nextUpcoming.contract)
+          }}
+          style={{ ...s.nextWrap, borderLeftColor: nextUpcoming.color }}
+        >
+          <span style={s.nextLabel}>Prochain événement</span>
+          <span style={s.nextMain}>
+            <span style={s.nextTitle}>{nextUpcoming.title}</span>
+            <span style={s.nextSub}>· {nextUpcoming.sub}</span>
+          </span>
+          <span style={{ ...s.nextDays, color: nextUpcoming.color }}>
+            {nextUpcoming.daysAway === 0 ? "aujourd'hui"
+              : nextUpcoming.daysAway === 1 ? 'demain'
+              : `dans ${nextUpcoming.daysAway} jours`}
+          </span>
+        </button>
+      )}
+
+      {/* ── Sources synchronisées (iCal) — replié par défaut */}
+      {icalFeeds.length > 0 && (
+        <div style={s.sourcesWrap}>
+          <button
+            onClick={() => setShowSources(s => !s)}
+            style={s.sourcesToggle}
+            aria-expanded={showSources}
+          >
+            <span style={s.sourcesToggleLeft}>
+              <span style={s.sourcesDots}>
+                {icalFeeds.slice(0, 4).map(f => (
+                  <span key={f.id} style={{ ...s.sourcesDot, background: f.color }} />
+                ))}
+              </span>
+              <span style={s.sourcesLabel}>
+                {icalFeeds.length} source{icalFeeds.length > 1 ? 's' : ''} synchronisée{icalFeeds.length > 1 ? 's' : ''}
+                <span style={s.sourcesCount}> · {icalEvents.length} résa{icalEvents.length > 1 ? 's' : ''}</span>
+              </span>
+            </span>
+            <span style={{ ...s.sourcesChevron, transform: showSources ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+              <CaretRight size={12} weight="bold" />
+            </span>
+          </button>
+          {showSources && (
+            <div style={s.sourcesList}>
+              {icalFeeds.map(f => {
+                const count = icalEvents.filter(e => e.feed_id === f.id).length
+                const lastSync = f.last_synced
+                  ? new Date(f.last_synced).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+                  : 'jamais'
+                return (
+                  <div key={f.id} style={s.sourceItem}>
+                    <span style={{ ...s.sourcesDot, background: f.color }} />
+                    <span style={s.sourceName}>{f.name}</span>
+                    <span style={s.sourceCount}>{count} résa{count > 1 ? 's' : ''}</span>
+                    <span style={s.sourceSync}>· sync {lastSync}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       )}
 
       {/* ── Main layout */}
       <div className="cal-layout" style={s.layout}>
 
-        {/* Calendar grid */}
+        {/* Calendar grid (vue mois) */}
+        {viewMode === 'month' && (
         <div style={s.gridWrap}>
           <div style={s.dayHeaders}>
             {DAYS_FR.map(d => <div key={d} className="cal-day-header" style={s.dayHeader}>{d}</div>)}
@@ -591,16 +1312,32 @@ export default function CalendrierView({
                     const isToday   = date === TODAY
                     const isSel     = date === selected
                     const dd        = byDate[date]
-                    const contracts = (dd?.contracts ?? []).map(c => ({ id: c.id, category: c.type, title: c.title }))
-                    const singles   = (dd?.custom ?? []).filter(e => !e.end_date || e.end_date === e.date).map(e => ({ id: e.id, category: e.category, title: e.title }))
-                    const allDots   = [...contracts, ...singles, ...(dd?.custom ?? []).filter(e => e.end_date && e.end_date !== e.date).map(e => ({ id: e.id, category: e.category, title: '' }))]
+                    type DotLike = { id: string; color: string; title: string; isIcal?: boolean; progressColor?: string }
+                    const contracts: DotLike[] = (dd?.contracts ?? []).map(c => {
+                      const cl = contractChecklists[c.contractId] ?? {}
+                      let progressColor: string | undefined
+                      if (c.type === 'arrivee') {
+                        const avantItems = CHECKLIST_ITEMS.filter(i => i.phase === 'avant')
+                        const done = avantItems.filter(i => cl[i.key]).length
+                        if (done === avantItems.length) progressColor = '#10b981'
+                        else if (done > 0) progressColor = '#eab308'
+                        else progressColor = '#ef4444'
+                      }
+                      return { id: c.id, color: (CAT[c.type] ?? CAT.note).color, title: c.title, progressColor }
+                    })
+                    const singles:   DotLike[] = (dd?.custom ?? []).filter(e => !e.end_date || e.end_date === e.date).map(e => ({ id: e.id, color: (CAT[e.category] ?? CAT.note).color, title: e.title }))
+                    const icalSingles: DotLike[] = (dd?.ical ?? []).filter(e => !e.end_date || e.end_date === e.start_date).map(e => ({ id: `ical-${e.id}`, color: e.feed_color, title: e.title, isIcal: true }))
+                    const customMulti: DotLike[] = (dd?.custom ?? []).filter(e => e.end_date && e.end_date !== e.date).map(e => ({ id: e.id, color: (CAT[e.category] ?? CAT.note).color, title: '' }))
+                    const icalMulti:   DotLike[] = (dd?.ical ?? []).filter(e => e.end_date && e.end_date !== e.start_date).map(e => ({ id: `ical-${e.id}`, color: e.feed_color, title: '', isIcal: true }))
+                    const allDots   = [...contracts, ...singles, ...icalSingles, ...customMulti, ...icalMulti]
                     const seenD     = new Set<string>()
                     const uniqDots  = allDots.filter(e => { if (seenD.has(e.id)) return false; seenD.add(e.id); return true })
-                    const pillItems = [...contracts, ...singles]
+                    const pillItems = [...contracts, ...singles, ...icalSingles]
                     const slots     = Math.max(0, 2 - nBars)
                     const visible   = pillItems.slice(0, slots)
                     const extra     = pillItems.length - visible.length
                     const isWeekend    = (() => { const d = new Date(date).getDay(); return d === 0 || d === 6 })()
+                    const isPast       = inMonth && date < TODAY
                     const isInDrag     = !!(dragRange && date >= dragRange.start && date <= dragRange.end)
                     const spacer       = nBars > 0 ? BAR_TOP + nBars * (BAR_H + BAR_GAP) - BAR_TOP + 4 : 0
                     const alertsForDay = inMonth ? (smartAlerts[date] ?? []) : []
@@ -618,7 +1355,9 @@ export default function CalendrierView({
                           setDragRange({ start: s2, end: e2 })
                         }}
                         style={{
-                          ...s.cell, opacity: inMonth ? 1 : 0.28, userSelect: 'none', position: 'relative',
+                          ...s.cell,
+                          opacity: !inMonth ? 0.28 : isPast ? 0.55 : 1,
+                          userSelect: 'none', position: 'relative',
                           background: isInDrag ? 'rgba(96,165,250,0.12)' : isSel ? 'var(--surface)' : isWeekend && inMonth ? 'var(--surface)' : 'var(--bg)',
                           outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : isSel ? '1.5px solid var(--border-2)' : isToday && inMonth ? '1.5px solid var(--accent-text)' : '1.5px solid transparent',
                         }}
@@ -634,7 +1373,7 @@ export default function CalendrierView({
                               {alertsForDay.slice(0, 1).map((a, i) => (
                                 <span key={`alert-${i}`} style={{ width: 6, height: 6, borderRadius: '50%', border: `1.5px solid ${a.color}`, flexShrink: 0, background: 'transparent' }} title={a.label} />
                               ))}
-                              {uniqDots.slice(0, 3).map((e, i) => <span key={`${e.id}-${i}`} style={{ ...s.dot, background: CAT[e.category]?.color ?? CAT.note.color }} />)}
+                              {uniqDots.slice(0, 3).map((e, i) => <span key={`${e.id}-${i}`} style={{ ...s.dot, background: e.color }} />)}
                               {uniqDots.length > 3 && <span style={{ ...s.dot, background: 'var(--text-muted)' }} />}
                             </span>
                           )}
@@ -643,31 +1382,43 @@ export default function CalendrierView({
                         <div style={{ height: BAR_TOP + spacer + 4 }} />
                         {/* Single-day pills */}
                         <div className="cal-pill-wrap" style={s.pillWrap}>
-                          {visible.map(e => {
-                            const c = CAT[e.category] ?? CAT.note
-                            return <div key={e.id} style={{ ...s.pill, borderLeftColor: c.color, background: c.bg }}><span style={s.pillText}>{e.title}</span></div>
-                          })}
+                          {visible.map(e => (
+                            <div key={e.id} style={{ ...s.pill, borderLeftColor: e.color, background: `${e.color}1f` }}>
+                              <span style={s.pillText}>{e.title}</span>
+                              {e.progressColor && (
+                                <span
+                                  style={{
+                                    width: '6px', height: '6px', borderRadius: '50%',
+                                    background: e.progressColor,
+                                    marginLeft: '4px', flexShrink: 0,
+                                    boxShadow: `0 0 0 1.5px ${e.progressColor}30`,
+                                  }}
+                                  title="Avancement de la checklist d'arrivée"
+                                />
+                              )}
+                            </div>
+                          ))}
                           {extra > 0 && <span style={s.extraChip}>+{extra}</span>}
                         </div>
                       </div>
                     )
                   })}
 
-                  {/* Multi-day bars */}
+                  {/* Multi-day bars (custom + iCal) */}
                   {spans.slice(0, 2).map((span, si) => {
-                    const cat   = CAT[span.event.category as CatKey] ?? CAT.note
                     const left  = `calc(${(span.startCol / 7) * 100}% + 2px)`
                     const width = `calc(${((span.endCol - span.startCol + 1) / 7) * 100}% - 4px)`
                     const top   = BAR_TOP + si * (BAR_H + BAR_GAP)
                     const br    = `${span.isStart ? 4 : 0}px ${span.isEnd ? 4 : 0}px ${span.isEnd ? 4 : 0}px ${span.isStart ? 4 : 0}px`
                     return (
                       <div
-                        key={span.event.id}
-                        onClick={() => { setSelected(span.event.date); setYear(Number(span.event.date.slice(0,4))); setMonth(Number(span.event.date.slice(5,7))-1) }}
+                        key={span.id}
+                        onClick={span.onClick}
+                        title={span.title}
                         style={{
                           position: 'absolute', top, left, width, height: BAR_H, zIndex: 2,
-                          background: cat.bg,
-                          borderLeft: span.isStart ? `2.5px solid ${cat.color}` : 'none',
+                          background: span.bg,
+                          borderLeft: span.isStart ? `2.5px solid ${span.color}` : 'none',
                           borderRadius: br,
                           display: 'flex', alignItems: 'center',
                           padding: '0 6px', fontSize: '11px', fontWeight: 500,
@@ -675,7 +1426,7 @@ export default function CalendrierView({
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        {span.isStart && span.event.title}
+                        {span.isStart && span.title}
                       </div>
                     )
                   })}
@@ -684,6 +1435,22 @@ export default function CalendrierView({
             })}
           </div>
         </div>
+        )}
+
+        {/* Vue liste — événements à venir, regroupés par date */}
+        {viewMode === 'list' && (
+          <ListView
+            byDate={byDate}
+            contractEvents={filteredContractEvents}
+            today={TODAY}
+            icalFeeds={icalFeeds}
+            onSelect={(d, contract) => {
+              setSelected(d)
+              setYear(Number(d.slice(0,4))); setMonth(Number(d.slice(5,7))-1)
+              if (contract) setSelectedContract(contract)
+            }}
+          />
+        )}
 
         {/* ── Side panel */}
         <div className="cal-side" style={s.side}>
@@ -884,9 +1651,12 @@ export default function CalendrierView({
                   </button>
                 </div>
               ) : (
-                selectedAll.map((ev: any) => {
-                  const cat        = CAT[ev.category] ?? CAT.note
+                selectedAll.map((ev: Merged) => {
                   const isContract = !!ev.isContract
+                  const isIcal     = !!ev.isIcal
+                  const cat        = CAT[ev.category] ?? CAT.note
+                  const accent     = isIcal ? (ev.feedColor ?? '#94a3b8') : cat.color
+                  const label      = isIcal ? (ev.feedName ?? 'Calendrier externe') : cat.label
                   const isMulti    = !!ev.end_date && ev.end_date !== ev.date
                   const origContract = isContract ? contractEvents.find(c => c.id === ev.id) : null
                   const clDone = origContract ? CHECKLIST_ITEMS.filter(i => (contractChecklists[origContract.contractId] ?? {})[i.key]).length : 0
@@ -895,7 +1665,7 @@ export default function CalendrierView({
                       key={ev.id}
                       className="evt-row"
                       onClick={isContract && origContract ? () => setSelectedContract(origContract) : undefined}
-                      style={{ ...s.evtCard, borderLeft: `3px solid ${cat.color}`, cursor: isContract ? 'pointer' : 'default' }}
+                      style={{ ...s.evtCard, borderLeft: `3px solid ${accent}`, cursor: isContract ? 'pointer' : 'default' }}
                     >
                       <div style={s.evtCardTop}>
                         <span style={s.evtTitle}>{ev.title}</span>
@@ -905,12 +1675,17 @@ export default function CalendrierView({
                               {clDone}/{CHECKLIST_ITEMS.length}
                             </span>
                           )}
-                          {!isContract && (
+                          {isIcal && (
+                            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.4px', color: accent, background: `${accent}1f`, padding: '2px 7px', borderRadius: '100px', textTransform: 'uppercase' }}>
+                              Synchro
+                            </span>
+                          )}
+                          {!isContract && !isIcal && (
                             <>
                               <button className="icon-btn" onClick={() => openEdit(ev as CalEvent)} style={s.iconBtn} title="Modifier">
                                 <PencilSimple size={12} />
                               </button>
-                              <button className="icon-btn" onClick={() => handleDelete(ev.id)} style={{ ...s.iconBtn, color: 'var(--error, #f87171)' }} title="Supprimer">
+                              <button className="icon-btn" onClick={() => handleDelete(ev.id)} style={{ ...s.iconBtn, color: 'var(--text-3)' }} title="Supprimer">
                                 <Trash size={12} />
                               </button>
                             </>
@@ -919,7 +1694,7 @@ export default function CalendrierView({
                       </div>
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
-                        {isMulti && (
+                        {isMulti && ev.end_date && (
                           <span style={s.spanBadge}>
                             {fmtDate(ev.date)} → {fmtDate(ev.end_date)}
                           </span>
@@ -930,7 +1705,7 @@ export default function CalendrierView({
                             {fmtTime(ev.start_time)}{ev.end_time ? ` → ${fmtTime(ev.end_time)}` : ''}
                           </span>
                         )}
-                        <span style={{ ...s.catLabel, color: cat.color }}>{cat.label}</span>
+                        <span style={{ ...s.catLabel, color: accent }}>{label}</span>
                       </div>
 
                       {ev.description && (
@@ -943,40 +1718,6 @@ export default function CalendrierView({
             </div>
           )}
 
-          {/* ── Logements legend */}
-          {!selectedContract && logements.length > 0 && (
-            <div className="cal-legend" style={{ padding: '14px 16px', borderTop: '1px solid var(--border)', marginTop: 'auto' }}>
-              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
-                Logements
-              </div>
-              {logements.map((nom, i) => (
-                <div key={nom} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '3px 0', fontSize: '12px', color: 'var(--text-2)' }}>
-                  <span style={{ width: '10px', height: '10px', borderRadius: '3px', background: LOGEMENT_COLORS[i % LOGEMENT_COLORS.length], flexShrink: 0 }} />
-                  {nom}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── Event types legend */}
-          {!selectedContract && (
-            <div className="cal-legend" style={{ padding: '14px 16px', borderTop: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
-                Types d'événements
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px' }}>
-                {PICKER_CATS.concat(['arrivee', 'depart'] as CatKey[]).map(key => {
-                  const cfg = CAT[key]
-                  return (
-                    <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-2)' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: cfg.color, flexShrink: 0 }} />
-                      {cfg.label}
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -1191,5 +1932,365 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column',
     alignItems: 'center', justifyContent: 'center',
     flex: 1, padding: '32px 16px', textAlign: 'center',
+  },
+
+  // À traiter — liste compacte
+  alertList: {
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    overflow: 'hidden',
+  },
+  alertHeader: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '8px 14px',
+    borderBottom: '1px solid var(--border)',
+    gap: '12px',
+  },
+  alertHeaderLabel: {
+    display: 'inline-flex', alignItems: 'center', gap: '8px',
+    fontSize: '11px', fontWeight: 700,
+    color: 'var(--text-2)',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.6px',
+  },
+  alertHeaderCount: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    minWidth: '18px', height: '18px', padding: '0 5px',
+    fontSize: '10px', fontWeight: 700,
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
+    borderRadius: '9px',
+  },
+  alertHeaderHint: {
+    fontSize: '10px', fontWeight: 400,
+    color: 'var(--text-muted)',
+  },
+  alertItems: {
+    display: 'flex', flexDirection: 'column' as const,
+  },
+  alertItem: {
+    display: 'flex', alignItems: 'stretch',
+    borderTop: '1px solid var(--border)',
+    borderLeft: '3px solid transparent',
+    transition: 'background 0.12s',
+  },
+  alertItemMain: {
+    flex: 1,
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '8px 12px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    textAlign: 'left' as const,
+    minWidth: 0,
+    color: 'var(--text-2)',
+    fontFamily: 'inherit',
+  },
+  alertDot: {
+    width: '7px', height: '7px', borderRadius: '50%',
+    flexShrink: 0,
+  },
+  alertLogement: {
+    fontSize: '12.5px', fontWeight: 600,
+    color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+    maxWidth: '180px',
+    flexShrink: 0,
+  },
+  alertSep: {
+    color: 'var(--text-muted)',
+    fontSize: '11px',
+    flexShrink: 0,
+  },
+  alertLabel: {
+    fontSize: '12px', fontWeight: 400,
+    color: 'var(--text-2)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+    flex: 1,
+    minWidth: 0,
+  },
+  alertDays: {
+    fontSize: '11px', fontWeight: 600,
+    flexShrink: 0,
+    marginLeft: 'auto',
+  },
+  alertCheckBtn: {
+    width: '36px',
+    background: 'transparent',
+    border: 'none',
+    borderLeft: '1px solid var(--border)',
+    color: '#10b981',
+    fontSize: '14px', fontWeight: 700,
+    cursor: 'pointer',
+    flexShrink: 0,
+    transition: 'all 0.12s',
+    fontFamily: 'inherit',
+  },
+  alertOk: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '10px 14px',
+    background: 'rgba(16,185,129,0.07)',
+    border: '1px solid rgba(16,185,129,0.22)',
+    borderRadius: '12px',
+    fontSize: '12px', fontWeight: 500,
+    color: '#10b981',
+  },
+  alertOkDot: {
+    width: '8px', height: '8px', borderRadius: '50%',
+    background: '#10b981',
+    boxShadow: '0 0 0 4px rgba(16,185,129,0.18)',
+  },
+
+  // Prochain événement
+  nextWrap: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    flexWrap: 'wrap' as const,
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderLeft: '3px solid',
+    borderRadius: '12px',
+    padding: '10px 14px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    color: 'var(--text-2)',
+    textAlign: 'left' as const,
+    width: '100%',
+  },
+  nextLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+    flexShrink: 0,
+  },
+  nextMain: {
+    display: 'inline-flex', alignItems: 'baseline', gap: '6px',
+    flex: 1, minWidth: 0,
+  },
+  nextTitle: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  nextSub: {
+    fontSize: '12px', fontWeight: 400,
+    color: 'var(--text-muted)',
+  },
+  nextDays: {
+    fontSize: '12px', fontWeight: 600,
+    flexShrink: 0,
+  },
+
+  // View toggle
+  viewToggle: {
+    display: 'inline-flex', alignItems: 'center', gap: '2px',
+    padding: '3px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '10px',
+  },
+  viewBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '6px 12px',
+    fontSize: '12.5px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '7px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    transition: 'all 0.15s',
+  },
+  viewBtnActive: {
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
+  },
+
+  // Filter bar
+  filterBar: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    flexWrap: 'wrap' as const,
+  },
+  filterChips: {
+    display: 'flex', gap: '6px', flexWrap: 'wrap' as const,
+  },
+  filterChip: {
+    padding: '6px 12px',
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '100px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    transition: 'all 0.15s',
+  },
+  filterChipActive: {
+    background: 'var(--accent-bg)',
+    borderColor: 'var(--accent-border)',
+    color: 'var(--accent-text)',
+  },
+  searchWrap: {
+    position: 'relative' as const,
+    flex: '1 1 220px',
+    minWidth: '180px',
+    maxWidth: '320px',
+  },
+  searchIcon: {
+    position: 'absolute' as const,
+    left: '12px', top: '50%',
+    transform: 'translateY(-50%)',
+    color: 'var(--text-muted)',
+    display: 'flex',
+    pointerEvents: 'none' as const,
+  },
+  searchInput: {
+    width: '100%',
+    padding: '8px 32px 8px 32px',
+    fontSize: '12.5px',
+    fontFamily: 'inherit',
+    color: 'var(--text)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '9px',
+    outline: 'none',
+  },
+  searchClear: {
+    position: 'absolute' as const,
+    right: '6px', top: '50%',
+    transform: 'translateY(-50%)',
+    width: '20px', height: '20px',
+    borderRadius: '50%',
+    border: 'none',
+    background: 'var(--border)',
+    color: 'var(--text-2)',
+    fontSize: '14px',
+    cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    lineHeight: 1,
+    fontFamily: 'inherit',
+  },
+
+  // Quick add
+  quickAddWrap: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '4px 6px 4px 14px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '11px',
+    transition: 'border-color 0.15s',
+  },
+  quickAddIcon: {
+    fontSize: '13px',
+    color: 'var(--accent-text)',
+    flexShrink: 0,
+  },
+  quickAddInput: {
+    flex: 1,
+    minWidth: 0,
+    padding: '8px 0',
+    fontSize: '12.5px',
+    fontFamily: 'inherit',
+    color: 'var(--text)',
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+  },
+  quickAddBtn: {
+    padding: '6px 14px',
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--bg)',
+    background: 'var(--accent-text)',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    flexShrink: 0,
+  },
+
+  // Sources synchronisées (iCal feeds)
+  sourcesWrap: {
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    overflow: 'hidden',
+  },
+  sourcesToggle: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    width: '100%',
+    padding: '8px 14px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    color: 'var(--text-2)',
+  },
+  sourcesToggleLeft: {
+    display: 'inline-flex', alignItems: 'center', gap: '10px',
+  },
+  sourcesDots: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+  },
+  sourcesDot: {
+    width: '8px', height: '8px', borderRadius: '50%',
+  },
+  sourcesLabel: {
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--text-2)',
+  },
+  sourcesCount: {
+    color: 'var(--text-muted)',
+    fontWeight: 400,
+  },
+  sourcesChevron: {
+    color: 'var(--text-muted)',
+    display: 'flex',
+    transition: 'transform 0.18s',
+  },
+  sourcesList: {
+    borderTop: '1px solid var(--border)',
+    padding: '10px 14px',
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  sourceItem: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    fontSize: '12px',
+  },
+  sourceName: {
+    fontWeight: 500,
+    color: 'var(--text-2)',
+  },
+  sourceCount: {
+    color: 'var(--text-3)',
+    marginLeft: 'auto',
+  },
+  sourceSync: {
+    color: 'var(--text-muted)',
+    fontSize: '11px',
+  },
+
+  // Mini-stats header
+  miniStats: {
+    display: 'flex', flexWrap: 'wrap' as const,
+    gap: '16px 24px',
+    marginTop: '10px',
+  },
+  miniStat: {
+    display: 'flex', alignItems: 'baseline', gap: '6px',
+    fontSize: '13px',
+    color: 'var(--text-2)',
+  },
+  miniStatNum: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 500,
+    color: 'var(--text)',
+  },
+  miniStatLabel: {
+    fontSize: '12px', fontWeight: 400,
+    color: 'var(--text-muted)',
+  },
+  miniStatSep: {
+    color: 'var(--border-2)',
+    margin: '0 4px',
   },
 }
