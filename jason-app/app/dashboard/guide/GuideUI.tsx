@@ -36,6 +36,8 @@ interface GuideCard {
   subtitle: string
   rules: Rule[]
   articles?: RelatedArticle[]
+  /** keywords additionnels pour la recherche (acronymes, synonymes) */
+  keywords?: string
 }
 
 const PROFILE_DEFS: Record<Exclude<ProfileFilter, 'all'>, {
@@ -680,8 +682,62 @@ const FILTER_TABS: { id: ProfileFilter; label: string; Icon: React.ElementType |
   { id: 'direct',       label: 'Réservation directe', Icon: Handshake },
 ]
 
+const GLOSSARY: { term: string; def: string }[] = [
+  { term: 'LCD', def: 'Location de Courte Durée — location meublée touristique de moins de 30 jours.' },
+  { term: 'LMNP', def: 'Loueur en Meublé Non Professionnel — statut fiscal pour la majorité des hôtes (revenus < 23 000 € OU < 50 % des revenus du foyer).' },
+  { term: 'LMP', def: 'Loueur en Meublé Professionnel — au-delà de 23 000 € de recettes ET > 50 % des revenus du foyer ; régime social et fiscal différent.' },
+  { term: 'EI', def: 'Entreprise Individuelle — création gratuite, régime travailleur non salarié, responsabilité illimitée par défaut.' },
+  { term: 'SASU', def: 'Société par Actions Simplifiée Unipersonnelle — assimilé-salarié, responsabilité limitée au capital, optimisation salaire/dividendes.' },
+  { term: 'Micro-BIC', def: 'Régime micro pour les Bénéfices Industriels et Commerciaux — abattement forfaitaire (30 %, 50 % ou 71 %) sans déduction réelle.' },
+  { term: 'Régime réel', def: 'Régime fiscal qui permet de déduire toutes les charges réelles (amortissement, intérêts, travaux) — souvent plus avantageux > 30 k€/an.' },
+  { term: 'Atout France', def: 'Organisme qui classe les meublés de tourisme de 1 à 5 étoiles ; classement valable 5 ans, donne accès à l\'abattement micro-BIC 71 %.' },
+  { term: 'Loi Le Meur', def: 'Loi de 2024 qui a aligné la fiscalité des meublés de tourisme non classés sur celle des LLD (abattement 30 %, plafond 15 000 €).' },
+  { term: 'Loi Hoguet', def: 'Loi de 1970 qui encadre les professionnels de l\'immobilier — s\'applique aux conciergeries qui encaissent les loyers pour le compte du propriétaire.' },
+  { term: 'ERP', def: 'Établissement Recevant du Public — règles de sécurité incendie strictes ; bascule à partir de 5 chambres ou 15 personnes en chambres d\'hôtes.' },
+  { term: 'RC Pro', def: 'Responsabilité Civile Professionnelle — couvre les dommages causés à un tiers dans l\'exercice de l\'activité ; obligatoire pour les conciergeries.' },
+  { term: 'DPE', def: 'Diagnostic de Performance Énergétique — classe le logement de A à G ; les G sont interdits à la location depuis 2025, F en 2028, E en 2034.' },
+  { term: 'HACCP', def: 'Hazard Analysis Critical Control Point — démarche d\'hygiène alimentaire applicable aux chambres d\'hôtes servant un petit-déjeuner.' },
+  { term: 'PMR', def: 'Personne à Mobilité Réduite — l\'accessibilité PMR est obligatoire pour les ERP (chambres d\'hôtes > 5 chambres).' },
+  { term: 'GMB', def: 'Google My Business (devenu Google Business Profile) — fiche gratuite indispensable pour la visibilité locale et la réservation directe.' },
+  { term: 'Channel manager', def: 'Logiciel qui synchronise calendriers, prix et messages entre Airbnb, Booking, Vrbo, Driing et site propre (Smoobu, Lodgify, Hospitable…).' },
+  { term: 'Aircover', def: 'Assurance dommages incluse par Airbnb pour les hôtes — couverture limitée, ne remplace pas une vraie assurance LCD.' },
+  { term: 'Cerfa 14004*04', def: 'Formulaire de déclaration en mairie pour la mise en location d\'un meublé de tourisme — obligatoire avant la 1ère location.' },
+]
+
+function Glossaire() {
+  const [open, setOpen] = useState(false)
+  return (
+    <div style={s.glossaireWrap} className="fade-up">
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={s.glossaireToggle}
+        aria-expanded={open}
+      >
+        <span style={s.glossaireToggleLeft}>
+          <BookOpen size={16} weight="fill" />
+          <span>Glossaire — {GLOSSARY.length} termes essentiels</span>
+        </span>
+        <span style={{ ...s.glossaireChevron, transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+          <ArrowRight size={14} weight="bold" />
+        </span>
+      </button>
+      {open && (
+        <div style={s.glossaireList}>
+          {GLOSSARY.map(g => (
+            <div key={g.term} style={s.glossaireItem}>
+              <div style={s.glossaireTerm}>{g.term}</div>
+              <div style={s.glossaireDef}>{g.def}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function GuideUI() {
   const [activeFilter, setActiveFilter] = useState<ProfileFilter>('all')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     const saved = localStorage.getItem('guide-filter') as ProfileFilter | null
@@ -695,9 +751,15 @@ export default function GuideUI() {
     localStorage.setItem('guide-filter', id)
   }
 
-  const visibleCards = activeFilter === 'all'
-    ? GUIDE_CARDS
-    : GUIDE_CARDS.filter(c => c.profile === activeFilter)
+  const q = search.trim().toLowerCase()
+  const visibleCards = GUIDE_CARDS.filter(c => {
+    if (activeFilter !== 'all' && c.profile !== activeFilter) return false
+    if (!q) return true
+    const haystack = [c.title, c.subtitle, c.keywords || '']
+      .join(' ')
+      .toLowerCase()
+    return haystack.includes(q)
+  })
 
   return (
     <div style={s.page}>
@@ -714,6 +776,61 @@ export default function GuideUI() {
         <p style={s.pageDesc}>
           Gîtes en EI ou SASU, chambres d&apos;hôtes, conciergeries, réservation directe — chaque activité a ses règles, sa fiscalité, ses obligations. Ici, on ne parle pas que d&apos;Airbnb.
         </p>
+      </div>
+
+      {/* Parcours guidés (visibles seulement si pas de recherche) */}
+      {!q && activeFilter === 'all' && (
+        <div style={s.parcoursWrap} className="fade-up d1">
+          <div style={s.parcoursLabel}>Par où commencer ?</div>
+          <div style={s.parcoursList}>
+            <button onClick={() => handleFilter('gites')} style={s.parcoursCard}>
+              <span style={{ ...s.parcoursIcon, background: 'rgba(245,158,11,0.14)', color: '#d97706' }}>
+                <HouseLine size={18} weight="fill" />
+              </span>
+              <div>
+                <div style={s.parcoursTitle}>Je débute en gîte</div>
+                <div style={s.parcoursDesc}>Statut, fiscalité, obligations légales</div>
+              </div>
+            </button>
+            <button onClick={() => handleFilter('direct')} style={s.parcoursCard}>
+              <span style={{ ...s.parcoursIcon, background: 'rgba(16,185,129,0.14)', color: '#059669' }}>
+                <Handshake size={18} weight="fill" />
+              </span>
+              <div>
+                <div style={s.parcoursTitle}>Je passe à la résa directe</div>
+                <div style={s.parcoursDesc}>Contrat, paiement, visibilité</div>
+              </div>
+            </button>
+            <button onClick={() => handleFilter('conciergerie')} style={s.parcoursCard}>
+              <span style={{ ...s.parcoursIcon, background: 'rgba(139,92,246,0.14)', color: '#7c3aed' }}>
+                <Buildings size={18} weight="fill" />
+              </span>
+              <div>
+                <div style={s.parcoursTitle}>Je structure ma conciergerie</div>
+                <div style={s.parcoursDesc}>Hoguet, équipe, mandats, scaling</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Recherche */}
+      <div style={s.searchWrap} className="fade-up d1">
+        <span style={s.searchIconWrap}>
+          <MagnifyingGlass size={15} weight="bold" />
+        </span>
+        <input
+          type="text"
+          placeholder="Rechercher dans le guide… (ex : DPE, Hoguet, RGPD)"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={s.searchInput}
+        />
+        {search && (
+          <button onClick={() => setSearch('')} style={s.searchClear} aria-label="Effacer">
+            ×
+          </button>
+        )}
       </div>
 
       {/* Filter tabs */}
@@ -743,11 +860,23 @@ export default function GuideUI() {
       </div>
 
       {/* Cards */}
-      <div className="dash-grid-2 fade-up d2" style={{ marginBottom: '32px' }}>
-        {visibleCards.map(card => (
-          <GuideCardItem key={card.id} card={card} />
-        ))}
-      </div>
+      {visibleCards.length > 0 ? (
+        <div className="dash-grid-2 fade-up d2" style={{ marginBottom: '32px' }}>
+          {visibleCards.map(card => (
+            <GuideCardItem key={card.id} card={card} />
+          ))}
+        </div>
+      ) : (
+        <div style={s.emptyState} className="fade-up">
+          <MagnifyingGlass size={28} color="var(--text-3)" weight="thin" />
+          <div style={s.emptyTitle}>Aucun résultat pour « {search} »</div>
+          <div style={s.emptyDesc}>Essaie un mot-clé plus court ou change de profil.</div>
+          <button onClick={() => setSearch('')} style={s.emptyBtn}>Effacer la recherche</button>
+        </div>
+      )}
+
+      {/* Glossaire */}
+      <Glossaire />
 
       {/* Driing banner */}
       <div style={s.banner} className="fade-up glass-card">
@@ -848,6 +977,164 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all 0.15s',
     alignSelf: 'flex-start' as const,
     maxWidth: '100%',
+  },
+
+  // Parcours guidés
+  parcoursWrap: { marginBottom: '20px' },
+  parcoursLabel: {
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-3)',
+    marginBottom: '10px',
+  },
+  parcoursList: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: '10px',
+  },
+  parcoursCard: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '14px 16px', borderRadius: '14px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    cursor: 'pointer',
+    textAlign: 'left' as const,
+    fontFamily: 'inherit',
+    transition: 'all 0.18s',
+  },
+  parcoursIcon: {
+    width: '36px', height: '36px', borderRadius: '10px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  parcoursTitle: {
+    fontSize: '13px', fontWeight: 500,
+    color: 'var(--text)',
+    marginBottom: '2px',
+  },
+  parcoursDesc: {
+    fontSize: '11px', fontWeight: 300,
+    color: 'var(--text-3)',
+    lineHeight: 1.4,
+  },
+
+  // Recherche
+  searchWrap: {
+    position: 'relative' as const,
+    marginBottom: '14px',
+    maxWidth: '520px',
+  },
+  searchIconWrap: {
+    position: 'absolute' as const,
+    left: '14px', top: '50%',
+    transform: 'translateY(-50%)',
+    color: 'var(--text-3)',
+    display: 'flex',
+    pointerEvents: 'none' as const,
+  },
+  searchInput: {
+    width: '100%',
+    padding: '11px 14px 11px 40px',
+    fontSize: '13px',
+    fontFamily: 'inherit',
+    color: 'var(--text)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    outline: 'none',
+    transition: 'border-color 0.15s',
+  },
+  searchClear: {
+    position: 'absolute' as const,
+    right: '8px', top: '50%',
+    transform: 'translateY(-50%)',
+    width: '24px', height: '24px',
+    borderRadius: '50%',
+    border: 'none',
+    background: 'var(--border)',
+    color: 'var(--text-2)',
+    fontSize: '16px',
+    cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    lineHeight: 1,
+  },
+
+  // Empty state
+  emptyState: {
+    display: 'flex', flexDirection: 'column' as const,
+    alignItems: 'center', textAlign: 'center' as const,
+    gap: '8px',
+    padding: '60px 20px',
+    marginBottom: '32px',
+  },
+  emptyTitle: {
+    fontSize: '15px', fontWeight: 500,
+    color: 'var(--text)',
+    marginTop: '8px',
+  },
+  emptyDesc: {
+    fontSize: '13px', fontWeight: 300,
+    color: 'var(--text-3)',
+  },
+  emptyBtn: {
+    marginTop: '12px',
+    padding: '8px 16px',
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+
+  // Glossaire
+  glossaireWrap: {
+    marginBottom: '24px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '16px',
+    overflow: 'hidden' as const,
+  },
+  glossaireToggle: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    width: '100%',
+    padding: '16px 20px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    color: 'var(--text)',
+    fontFamily: 'inherit',
+    fontSize: '14px', fontWeight: 500,
+  },
+  glossaireToggleLeft: {
+    display: 'inline-flex', alignItems: 'center', gap: '10px',
+    color: 'var(--text-2)',
+  },
+  glossaireChevron: {
+    color: 'var(--text-3)',
+    transition: 'transform 0.2s',
+    display: 'flex',
+  },
+  glossaireList: {
+    padding: '0 20px 18px',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: '14px 24px',
+    borderTop: '1px solid var(--border)',
+    paddingTop: '18px',
+  },
+  glossaireItem: { display: 'flex', flexDirection: 'column' as const, gap: '3px' },
+  glossaireTerm: {
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--accent-text)',
+    fontFamily: 'var(--font-fraunces), serif',
+    letterSpacing: '0.2px',
+  },
+  glossaireDef: {
+    fontSize: '12.5px', fontWeight: 300,
+    color: 'var(--text-2)',
+    lineHeight: 1.55,
   },
 
   banner: { display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' as const, padding: 'clamp(20px,3vw,32px)', borderRadius: '20px' },
