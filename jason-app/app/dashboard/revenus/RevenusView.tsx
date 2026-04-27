@@ -281,7 +281,9 @@ export default function RevenusView({
 
   const kpis = useMemo(() => {
     let cesMoisEnc = 0, enAttente = 0, cetteAnneeEnc = 0
+    let memeMoisN1 = 0, anneeN1 = 0
     const monthlyTotals: Record<string, number> = {}
+    const lastYear = thisYear - 1
 
     contracts.forEach(c => {
       const loyer = c.montant_loyer ?? 0; if (loyer <= 0) return
@@ -290,6 +292,9 @@ export default function RevenusView({
         if (d.getFullYear() === thisYear) {
           cetteAnneeEnc += loyer
           if (d.getMonth() === thisMonth) cesMoisEnc += loyer
+        } else if (d.getFullYear() === lastYear) {
+          anneeN1 += loyer
+          if (d.getMonth() === thisMonth) memeMoisN1 += loyer
         }
         const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
         monthlyTotals[k] = (monthlyTotals[k] ?? 0) + loyer
@@ -301,6 +306,9 @@ export default function RevenusView({
       if (d.getFullYear() === thisYear) {
         cetteAnneeEnc += e.montant
         if (d.getMonth() === thisMonth) cesMoisEnc += e.montant
+      } else if (d.getFullYear() === lastYear) {
+        anneeN1 += e.montant
+        if (d.getMonth() === thisMonth) memeMoisN1 += e.montant
       }
       const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
       monthlyTotals[k] = (monthlyTotals[k] ?? 0) + e.montant
@@ -311,8 +319,22 @@ export default function RevenusView({
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
     })
     const last6Sum = last6Keys.reduce((acc, k) => acc + (monthlyTotals[k] ?? 0), 0)
-    return { cesMoisEnc, enAttente, cetteAnneeEnc, moyMensuelle: last6Sum / 6 }
-  }, [contracts, entries, thisMonth, thisYear])
+
+    // Évolution N-1
+    const evolMois  = memeMoisN1 > 0 ? ((cesMoisEnc - memeMoisN1) / memeMoisN1) * 100 : null
+    const evolAnnee = anneeN1   > 0 ? ((cetteAnneeEnc - anneeN1)   / anneeN1)   * 100 : null
+
+    // Bénéfice net (revenus - charges)
+    const beneficeMois = cesMoisEnc - chargesStats.cesMois
+    const beneficeYTD  = cetteAnneeEnc - chargesStats.cetteAnnee
+
+    return {
+      cesMoisEnc, enAttente, cetteAnneeEnc,
+      moyMensuelle: last6Sum / 6,
+      memeMoisN1, anneeN1, evolMois, evolAnnee,
+      beneficeMois, beneficeYTD,
+    }
+  }, [contracts, entries, thisMonth, thisYear, chargesStats.cesMois, chargesStats.cetteAnnee])
 
   // ── Chart ───────────────────────────────────────────────────────────────
 
@@ -455,12 +477,52 @@ export default function RevenusView({
         </div>
       )}
 
-      {/* KPI cards */}
+      {/* KPI cards (6) */}
       <div style={s.kpiGrid}>
-        <KpiCard icon={<CurrencyEur size={20} weight="fill" />} label="Ce mois encaissé"  value={fmt(kpis.cesMoisEnc)}    colorClass="green"  />
-        <KpiCard icon={<Clock       size={20} weight="fill" />} label="En attente"         value={fmt(kpis.enAttente)}     colorClass="yellow" />
-        <KpiCard icon={<TrendUp     size={20} weight="fill" />} label="Cette année"        value={fmt(kpis.cetteAnneeEnc)} colorClass="accent" />
-        <KpiCard icon={<CalendarBlank size={20} weight="fill" />} label="Moy. mensuelle"   value={fmt(kpis.moyMensuelle)}  colorClass="muted"  sub="6 derniers mois" />
+        <KpiCard
+          icon={<CurrencyEur size={20} weight="fill" />}
+          label="Encaissé ce mois"
+          value={fmt(kpis.cesMoisEnc)}
+          colorClass="green"
+          sub={kpis.evolMois != null ? `${kpis.evolMois > 0 ? '+' : ''}${kpis.evolMois.toFixed(0)} % vs ${thisYear - 1}` : undefined}
+          subColor={kpis.evolMois != null ? (kpis.evolMois >= 0 ? '#10b981' : '#ef4444') : undefined}
+        />
+        <KpiCard
+          icon={<Receipt size={20} weight="fill" />}
+          label="Charges ce mois"
+          value={fmt(chargesStats.cesMois)}
+          colorClass="red"
+          sub={chargesStats.cesMois === 0 ? 'Aucune charge saisie' : undefined}
+        />
+        <KpiCard
+          icon={<TrendUp size={20} weight="fill" />}
+          label="Bénéfice net ce mois"
+          value={fmt(kpis.beneficeMois)}
+          colorClass={kpis.beneficeMois >= 0 ? 'accent' : 'red'}
+          sub="Encaissé − charges"
+        />
+        <KpiCard
+          icon={<Clock size={20} weight="fill" />}
+          label="En attente"
+          value={fmt(kpis.enAttente)}
+          colorClass="yellow"
+          sub={kpis.enAttente > 0 ? 'Paiements à recevoir' : 'Tout est encaissé'}
+        />
+        <KpiCard
+          icon={<CalendarBlank size={20} weight="fill" />}
+          label={`CA ${thisYear}`}
+          value={fmt(kpis.cetteAnneeEnc)}
+          colorClass="accent"
+          sub={kpis.evolAnnee != null ? `${kpis.evolAnnee > 0 ? '+' : ''}${kpis.evolAnnee.toFixed(0)} % vs ${thisYear - 1}` : undefined}
+          subColor={kpis.evolAnnee != null ? (kpis.evolAnnee >= 0 ? '#10b981' : '#ef4444') : undefined}
+        />
+        <KpiCard
+          icon={<ChartBar size={20} weight="fill" />}
+          label={`Bénéfice net ${thisYear}`}
+          value={fmt(kpis.beneficeYTD)}
+          colorClass={kpis.beneficeYTD >= 0 ? 'green' : 'red'}
+          sub={kpis.cetteAnneeEnc > 0 ? `Marge ${Math.round((kpis.beneficeYTD / kpis.cetteAnneeEnc) * 100)} %` : undefined}
+        />
       </div>
 
       {/* Chart + logement stats */}
@@ -860,6 +922,7 @@ export default function RevenusView({
         .kpi-icon-yellow { color: var(--accent-text); }
         .kpi-icon-accent { color: var(--accent-text); }
         .kpi-icon-muted  { color: var(--text-muted); }
+        .kpi-icon-red    { color: #ef4444; }
         .tx-row  { transition: background 0.1s; }
         .tx-row:hover { background: var(--surface) !important; border-radius: 10px; }
         .tx-del  { opacity: 0; transition: opacity 0.15s; }
@@ -877,8 +940,8 @@ export default function RevenusView({
 
 // ── KpiCard ──────────────────────────────────────────────────────────────────
 
-function KpiCard({ icon, label, value, colorClass, sub }: {
-  icon: React.ReactNode; label: string; value: string; colorClass: string; sub?: string
+function KpiCard({ icon, label, value, colorClass, sub, subColor }: {
+  icon: React.ReactNode; label: string; value: string; colorClass: string; sub?: string; subColor?: string
 }) {
   return (
     <div style={s.kpiCard}>
@@ -886,7 +949,7 @@ function KpiCard({ icon, label, value, colorClass, sub }: {
       <div style={s.kpiBody}>
         <span style={s.kpiLabel}>{label}</span>
         <span style={s.kpiValue}>{value}</span>
-        {sub && <span style={s.kpiSub}>{sub}</span>}
+        {sub && <span style={{ ...s.kpiSub, ...(subColor ? { color: subColor, fontWeight: 600 } : {}) }}>{sub}</span>}
       </div>
     </div>
   )
