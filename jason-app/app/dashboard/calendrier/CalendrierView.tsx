@@ -240,6 +240,56 @@ export default function CalendrierView({
     )
   }, [byDate, selected])
 
+  // ── header mini-stats : aujourd'hui / cette semaine / ce mois
+  const headerStats = useMemo(() => {
+    const today = todayString()
+    function diff(from: string, to: string) {
+      return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
+    }
+    // bornes "cette semaine" (lundi → dimanche)
+    const t = new Date()
+    const dow = (t.getDay() + 6) % 7 // 0 = lundi
+    const monday = new Date(t.getFullYear(), t.getMonth(), t.getDate() - dow)
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6)
+    const weekStart = toStr(monday.getFullYear(), monday.getMonth(), monday.getDate())
+    const weekEnd   = toStr(sunday.getFullYear(), sunday.getMonth(), sunday.getDate())
+    const monthStart = toStr(year, month, 1)
+    const monthEnd   = toStr(year, month, new Date(year, month + 1, 0).getDate())
+
+    const seenIds = new Set<string>()
+    let activeToday = 0, arrToday = 0, depToday = 0
+    let arrWeek = 0, depWeek = 0
+    let monthEvents = 0
+
+    contractEvents.forEach(c => {
+      if (seenIds.has(c.contractId)) return
+      seenIds.add(c.contractId)
+      const a = c.date_arrivee
+      const d = c.date_depart
+      // séjour en cours aujourd'hui
+      if (a && (a <= today) && (!d || d >= today)) activeToday++
+      if (a === today) arrToday++
+      if (d === today) depToday++
+      if (a >= weekStart && a <= weekEnd) arrWeek++
+      if (d && d >= weekStart && d <= weekEnd) depWeek++
+      // évts du mois courant : arrivée OU départ tombant dans le mois
+      if ((a >= monthStart && a <= monthEnd) || (d && d >= monthStart && d <= monthEnd)) monthEvents++
+    })
+
+    let menageWeek = 0, customMonth = 0
+    events.forEach(e => {
+      const cat = catToDisplay(e.category)
+      if (cat === 'menage' && e.date >= weekStart && e.date <= weekEnd) menageWeek++
+      if (e.date >= monthStart && e.date <= monthEnd) customMonth++
+    })
+
+    return {
+      activeToday, arrToday, depToday,
+      arrWeek, depWeek, menageWeek,
+      monthEvents: monthEvents + customMonth,
+    }
+  }, [contractEvents, events, year, month])
+
   const LOGEMENT_COLORS = ['#10b981','#60a5fa','#f59e0b','#a78bfa','#fb923c','#f472b6']
   const logements = useMemo(() => {
     const seen = new Set<string>()
@@ -284,7 +334,11 @@ export default function CalendrierView({
     function diff(from: string, to: string) {
       return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
     }
-    type Item = { color: string; label: string; logement: string; daysInfo: string; navigateDate: string; contractRef: import('./page').ContractEvent }
+    type Item = {
+      color: string; label: string; logement: string; daysInfo: string;
+      navigateDate: string; contractRef: import('./page').ContractEvent;
+      contractId: string; checklistKey: string; priority: 0 | 1 | 2 | 3;
+    }
     const items: Item[] = []
     const seen = new Set<string>()
     contractEvents.forEach(ev => {
@@ -297,17 +351,16 @@ export default function CalendrierView({
       const arrRef = contractEvents.find(e => e.contractId === ev.contractId && e.type === 'arrivee') ?? ev
       const depRef = dep ? (contractEvents.find(e => e.contractId === ev.contractId && e.type === 'depart') ?? ev) : ev
       function arrInfo(d: number) { return d === 0 ? "Arrivée aujourd'hui" : d === 1 ? 'Arrivée demain' : `Arrivée J-${d}` }
-      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        items.push({ color: '#ef4444', label: 'Contrat non signé',      logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
-      if (dta >= 0 && dta <= 3 && !cl.solde_recu)            items.push({ color: '#f97316', label: 'Solde non reçu',          logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
-      if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) items.push({ color: '#eab308', label: 'Instructions non envoyées', logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef })
+      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        items.push({ color: '#ef4444', priority: 0, label: 'Contrat non signé',       logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'contrat_signe' })
+      if (dta >= 0 && dta <= 3 && !cl.solde_recu)            items.push({ color: '#f97316', priority: 1, label: 'Solde non reçu',           logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'solde_recu' })
+      if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) items.push({ color: '#eab308', priority: 2, label: 'Instructions non envoyées', logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'instructions_envoyees' })
       if (dep) {
         const dtd = diff(dep, today)
         const di  = dtd === 1 ? 'Départ hier' : `Départ il y a ${dtd}j`
-        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande) items.push({ color: '#3b82f6', label: 'Avis non demandé', logement: nom, daysInfo: di, navigateDate: dep, contractRef: depRef })
+        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande) items.push({ color: '#3b82f6', priority: 3, label: 'Avis non demandé', logement: nom, daysInfo: di, navigateDate: dep, contractRef: depRef, contractId: ev.contractId, checklistKey: 'avis_demande' })
       }
     })
-    const pri: Record<string, number> = { '#ef4444': 0, '#f97316': 1, '#eab308': 2, '#3b82f6': 3 }
-    return items.sort((a, b) => (pri[a.color] ?? 9) - (pri[b.color] ?? 9))
+    return items.sort((a, b) => a.priority - b.priority)
   }, [contractEvents, contractChecklists])
 
   // ── month nav
@@ -428,12 +481,41 @@ export default function CalendrierView({
   // ── render
   return (
     <div className="cal-root" style={s.root}>
-      {/* Page heading */}
+      {/* Page heading + mini-stats */}
       <div>
         <h1 style={s.pageTitle}>
           Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
         </h1>
-        <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
+        {(headerStats.activeToday + headerStats.arrToday + headerStats.depToday + headerStats.arrWeek + headerStats.depWeek + headerStats.menageWeek + headerStats.monthEvents) > 0 ? (
+          <div style={s.miniStats}>
+            <span style={s.miniStat}>
+              <span style={s.miniStatNum}>{headerStats.activeToday}</span>
+              <span style={s.miniStatLabel}>séjour{headerStats.activeToday > 1 ? 's' : ''} en cours</span>
+            </span>
+            <span style={s.miniStatSep}>·</span>
+            <span style={s.miniStat}>
+              <span style={s.miniStatLabel}>Cette semaine</span>
+              <span style={s.miniStatNum}>{headerStats.arrWeek}</span>
+              <span style={s.miniStatLabel}>arrivée{headerStats.arrWeek > 1 ? 's' : ''}</span>
+              <span style={s.miniStatNum}>·{headerStats.depWeek}</span>
+              <span style={s.miniStatLabel}>départ{headerStats.depWeek > 1 ? 's' : ''}</span>
+              {headerStats.menageWeek > 0 && (
+                <>
+                  <span style={s.miniStatNum}>·{headerStats.menageWeek}</span>
+                  <span style={s.miniStatLabel}>ménage{headerStats.menageWeek > 1 ? 's' : ''}</span>
+                </>
+              )}
+            </span>
+            <span style={s.miniStatSep}>·</span>
+            <span style={s.miniStat}>
+              <span style={s.miniStatLabel}>Ce mois</span>
+              <span style={s.miniStatNum}>{headerStats.monthEvents}</span>
+              <span style={s.miniStatLabel}>événement{headerStats.monthEvents > 1 ? 's' : ''}</span>
+            </span>
+          </div>
+        ) : (
+          <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
+        )}
       </div>
 
       <style>{`
@@ -498,72 +580,59 @@ export default function CalendrierView({
         </div>
       </div>
 
-      {/* ── Actions à traiter */}
-      {contractEvents.length > 0 && (
-        <div className="cal-alert-wrap" style={{
-          background: 'var(--surface)', border: '1px solid var(--border)',
-          borderRadius: '12px', padding: '10px 14px',
-          display: 'flex', flexDirection: 'column', gap: '8px',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '10px', fontWeight: 700, color: urgentAlerts.length > 0 ? 'var(--text-2)' : '#10b981', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
-              {urgentAlerts.length > 0 ? `À traiter · ${urgentAlerts.length} action${urgentAlerts.length > 1 ? 's' : ''}` : '✓ Tout est en ordre'}
+      {/* ── Actions à traiter — liste compacte par priorité, avec actions inline */}
+      {contractEvents.length > 0 && urgentAlerts.length > 0 && (
+        <div style={s.alertList}>
+          <div style={s.alertHeader}>
+            <span style={s.alertHeaderLabel}>
+              À traiter
+              <span style={s.alertHeaderCount}>{urgentAlerts.length}</span>
             </span>
+            <span style={s.alertHeaderHint}>Clique pour voir · ✓ pour cocher</span>
           </div>
-          {urgentAlerts.length > 0 && (() => {
-            const GROUPS = [
-              { color: '#ef4444', bg: 'rgba(239,68,68,0.08)',  label: 'Critique' },
-              { color: '#f97316', bg: 'rgba(249,115,22,0.08)', label: 'Urgent' },
-              { color: '#eab308', bg: 'rgba(234,179,8,0.08)',  label: 'Important' },
-              { color: '#3b82f6', bg: 'rgba(59,130,246,0.08)', label: 'À faire' },
-            ]
-            return (
-              <div className="cal-alert-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
-                {GROUPS.map(group => {
-                  const groupItems = urgentAlerts.filter(a => a.color === group.color)
-                  return (
-                    <div key={group.color} className="cal-alert-col" style={{
-                      borderRadius: '8px', border: `1px solid ${group.color}30`,
-                      background: group.bg, padding: '8px 10px',
-                      opacity: groupItems.length === 0 ? 0.35 : 1,
-                      display: 'flex', flexDirection: 'column', gap: '4px',
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '4px' }}>
-                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: group.color, flexShrink: 0 }} />
-                        <span style={{ fontSize: '10px', fontWeight: 700, color: group.color, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{group.label}</span>
-                        {groupItems.length > 0 && (
-                          <span style={{ marginLeft: 'auto', fontSize: '10px', fontWeight: 700, color: group.color }}>{groupItems.length}</span>
-                        )}
-                      </div>
-                      {groupItems.length === 0 ? (
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>—</span>
-                      ) : groupItems.map((alert, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          className="icon-btn"
-                          onClick={() => {
-                            const d = alert.navigateDate
-                            setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
-                            setSelectedContract(alert.contractRef); setShowForm(false)
-                          }}
-                          style={{
-                            display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                            padding: '4px 6px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px',
-                            border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%',
-                          }}
-                        >
-                          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-2)', lineHeight: 1.3 }}>{alert.logement}</span>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.3 }}>{alert.label}</span>
-                          <span style={{ fontSize: '10px', color: group.color, lineHeight: 1.3, marginTop: '1px' }}>{alert.daysInfo}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )
-                })}
+          <div style={s.alertItems}>
+            {urgentAlerts.map((alert, i) => (
+              <div
+                key={`${alert.contractId}-${alert.checklistKey}-${i}`}
+                style={{
+                  ...s.alertItem,
+                  borderLeftColor: alert.color,
+                }}
+              >
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => {
+                    const d = alert.navigateDate
+                    setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
+                    setSelectedContract(alert.contractRef); setShowForm(false)
+                  }}
+                  style={s.alertItemMain}
+                >
+                  <span style={{ ...s.alertDot, background: alert.color }} />
+                  <span style={s.alertLogement}>{alert.logement}</span>
+                  <span style={s.alertSep}>·</span>
+                  <span style={s.alertLabel}>{alert.label}</span>
+                  <span style={{ ...s.alertDays, color: alert.color }}>{alert.daysInfo}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); handleChecklistToggle(alert.contractId, alert.checklistKey) }}
+                  style={s.alertCheckBtn}
+                  title={`Marquer "${alert.label}" comme fait`}
+                  aria-label="Marquer fait"
+                >
+                  ✓
+                </button>
               </div>
-            )
-          })()}
+            ))}
+          </div>
+        </div>
+      )}
+      {contractEvents.length > 0 && urgentAlerts.length === 0 && (
+        <div style={s.alertOk}>
+          <span style={s.alertOkDot} />
+          Tout est en ordre — aucune action en attente
         </div>
       )}
 
@@ -943,40 +1012,6 @@ export default function CalendrierView({
             </div>
           )}
 
-          {/* ── Logements legend */}
-          {!selectedContract && logements.length > 0 && (
-            <div className="cal-legend" style={{ padding: '14px 16px', borderTop: '1px solid var(--border)', marginTop: 'auto' }}>
-              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
-                Logements
-              </div>
-              {logements.map((nom, i) => (
-                <div key={nom} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '3px 0', fontSize: '12px', color: 'var(--text-2)' }}>
-                  <span style={{ width: '10px', height: '10px', borderRadius: '3px', background: LOGEMENT_COLORS[i % LOGEMENT_COLORS.length], flexShrink: 0 }} />
-                  {nom}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── Event types legend */}
-          {!selectedContract && (
-            <div className="cal-legend" style={{ padding: '14px 16px', borderTop: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>
-                Types d'événements
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px' }}>
-                {PICKER_CATS.concat(['arrivee', 'depart'] as CatKey[]).map(key => {
-                  const cfg = CAT[key]
-                  return (
-                    <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-2)' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: cfg.color, flexShrink: 0 }} />
-                      {cfg.label}
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -1191,5 +1226,138 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column',
     alignItems: 'center', justifyContent: 'center',
     flex: 1, padding: '32px 16px', textAlign: 'center',
+  },
+
+  // À traiter — liste compacte
+  alertList: {
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    overflow: 'hidden',
+  },
+  alertHeader: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '8px 14px',
+    borderBottom: '1px solid var(--border)',
+    gap: '12px',
+  },
+  alertHeaderLabel: {
+    display: 'inline-flex', alignItems: 'center', gap: '8px',
+    fontSize: '11px', fontWeight: 700,
+    color: 'var(--text-2)',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.6px',
+  },
+  alertHeaderCount: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    minWidth: '18px', height: '18px', padding: '0 5px',
+    fontSize: '10px', fontWeight: 700,
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
+    borderRadius: '9px',
+  },
+  alertHeaderHint: {
+    fontSize: '10px', fontWeight: 400,
+    color: 'var(--text-muted)',
+  },
+  alertItems: {
+    display: 'flex', flexDirection: 'column' as const,
+  },
+  alertItem: {
+    display: 'flex', alignItems: 'stretch',
+    borderTop: '1px solid var(--border)',
+    borderLeft: '3px solid transparent',
+    transition: 'background 0.12s',
+  },
+  alertItemMain: {
+    flex: 1,
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '8px 12px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    textAlign: 'left' as const,
+    minWidth: 0,
+    color: 'var(--text-2)',
+    fontFamily: 'inherit',
+  },
+  alertDot: {
+    width: '7px', height: '7px', borderRadius: '50%',
+    flexShrink: 0,
+  },
+  alertLogement: {
+    fontSize: '12.5px', fontWeight: 600,
+    color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+    maxWidth: '180px',
+    flexShrink: 0,
+  },
+  alertSep: {
+    color: 'var(--text-muted)',
+    fontSize: '11px',
+    flexShrink: 0,
+  },
+  alertLabel: {
+    fontSize: '12px', fontWeight: 400,
+    color: 'var(--text-2)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+    flex: 1,
+    minWidth: 0,
+  },
+  alertDays: {
+    fontSize: '11px', fontWeight: 600,
+    flexShrink: 0,
+    marginLeft: 'auto',
+  },
+  alertCheckBtn: {
+    width: '36px',
+    background: 'transparent',
+    border: 'none',
+    borderLeft: '1px solid var(--border)',
+    color: '#10b981',
+    fontSize: '14px', fontWeight: 700,
+    cursor: 'pointer',
+    flexShrink: 0,
+    transition: 'all 0.12s',
+    fontFamily: 'inherit',
+  },
+  alertOk: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '10px 14px',
+    background: 'rgba(16,185,129,0.07)',
+    border: '1px solid rgba(16,185,129,0.22)',
+    borderRadius: '12px',
+    fontSize: '12px', fontWeight: 500,
+    color: '#10b981',
+  },
+  alertOkDot: {
+    width: '8px', height: '8px', borderRadius: '50%',
+    background: '#10b981',
+    boxShadow: '0 0 0 4px rgba(16,185,129,0.18)',
+  },
+
+  // Mini-stats header
+  miniStats: {
+    display: 'flex', flexWrap: 'wrap' as const,
+    gap: '16px 24px',
+    marginTop: '10px',
+  },
+  miniStat: {
+    display: 'flex', alignItems: 'baseline', gap: '6px',
+    fontSize: '13px',
+    color: 'var(--text-2)',
+  },
+  miniStatNum: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 500,
+    color: 'var(--text)',
+  },
+  miniStatLabel: {
+    fontSize: '12px', fontWeight: 400,
+    color: 'var(--text-muted)',
+  },
+  miniStatSep: {
+    color: 'var(--border-2)',
+    margin: '0 4px',
   },
 }
