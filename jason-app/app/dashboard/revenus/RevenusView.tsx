@@ -462,6 +462,27 @@ export default function RevenusView({
       .sort((a, b) => (b.encaisse + b.pending) - (a.encaisse + a.pending))
   }, [contracts, entries, charges, logements])
 
+  // ─── Phase 9 — Honoraires conciergerie ─────────────────────────
+  const honorairesStats = useMemo(() => {
+    const items: Array<{ nom: string; logement_id: string | null; ca: number; pct: number; honoraires: number; netProprietaire: number }> = []
+    let totalHonoraires = 0
+    let totalCA = 0
+    logementStats.forEach(ls => {
+      const logement = logements.find(l => l.nom === ls.nom || l.id === ls.logement_id)
+      const pct = logement?.honoraires_pct ?? null
+      if (pct == null || pct <= 0) return
+      const honoraires = ls.encaisse * (pct / 100)
+      const netProprietaire = ls.encaisse - honoraires
+      items.push({
+        nom: ls.nom, logement_id: ls.logement_id,
+        ca: ls.encaisse, pct, honoraires, netProprietaire,
+      })
+      totalHonoraires += honoraires
+      totalCA += ls.encaisse
+    })
+    return { items, totalHonoraires, totalCA }
+  }, [logementStats, logements])
+
   // ── Unified transactions ─────────────────────────────────────────────────
 
   type Tx = {
@@ -878,6 +899,88 @@ export default function RevenusView({
           }
         </section>
       </div>
+
+      {/* ── Phase 9 — Honoraires conciergerie ─────────────────────── */}
+      {honorairesStats.items.length > 0 && (
+        <section style={s.card}>
+          <div style={s.journalHead}>
+            <div>
+              <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>
+                <Scales size={16} weight="fill" style={{ verticalAlign: 'middle', marginRight: '6px', color: '#a78bfa' }} />
+                Honoraires conciergerie
+              </h2>
+              <p style={{ ...s.cardSub, margin: 0 }}>
+                Calculé auto depuis le % d&apos;honoraires défini sur chaque logement
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const }}>
+              <span style={{
+                fontSize: '12px', fontWeight: 600,
+                padding: '6px 12px',
+                background: 'rgba(167,139,250,0.10)',
+                color: '#a78bfa',
+                border: '1px solid rgba(167,139,250,0.25)',
+                borderRadius: '8px',
+              }}>
+                Total : {fmt(honorairesStats.totalHonoraires)}
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '8px', marginTop: '12px' }}>
+            {honorairesStats.items.map(item => (
+              <div key={item.nom} style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '12px 14px',
+                background: 'var(--bg-2)',
+                border: '1px solid var(--border)',
+                borderRadius: '10px',
+                flexWrap: 'wrap' as const,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: '180px' }}>
+                  <House size={14} weight="fill" color="#a78bfa" style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{item.nom}</span>
+                  <span style={{
+                    fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px',
+                    padding: '2px 7px',
+                    background: 'rgba(167,139,250,0.10)',
+                    color: '#a78bfa',
+                    border: '1px solid rgba(167,139,250,0.25)',
+                    borderRadius: '100px',
+                  }}>
+                    {item.pct} %
+                  </span>
+                </div>
+                <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' as const }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px' }}>CA brut</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{fmt(item.ca)}</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px' }}>Honoraires</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#a78bfa' }}>{fmt(item.honoraires)}</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px' }}>Net propriétaire</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#10b981' }}>{fmt(item.netProprietaire)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{
+            fontSize: '11.5px', color: 'var(--text-muted)',
+            marginTop: '10px', lineHeight: 1.5,
+            padding: '10px 12px',
+            background: 'var(--surface-2)',
+            border: '1px dashed var(--border)',
+            borderRadius: '9px',
+          }}>
+            💡 Le % d&apos;honoraires se définit sur la fiche détail de chaque logement (section Propriétaire). Les honoraires sont calculés sur le CA brut encaissé. Pour exporter un rapport par propriétaire, contacte-nous (Phase 9b à venir).
+          </p>
+        </section>
+      )}
 
       {/* ── Journal des paiements */}
       <section style={s.card}>
