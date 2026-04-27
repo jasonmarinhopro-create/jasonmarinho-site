@@ -1039,7 +1039,7 @@ export default function RevenusView({
         )}
       </section>
 
-      <FiscaliteSection annuel={kpis.cetteAnneeEnc} />
+      <FiscaliteSection annuel={kpis.cetteAnneeEnc} chargesAnnee={chargesStats.cetteAnnee} />
 
       <ImportCSVModal
         open={showImport}
@@ -1133,7 +1133,84 @@ const REGIMES = [
   },
 ]
 
-function FiscaliteSection({ annuel }: { annuel: number }) {
+// Helper : prochaines échéances fiscales
+function nextFiscalDeadlines(): Array<{ label: string; date: string; description: string; type: 'urgent' | 'normal' }> {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = today.getMonth() // 0-11
+
+  const deadlines: Array<{ label: string; date: Date; description: string }> = []
+
+  // Déclaration BIC annuelle (mai)
+  const bicDate = new Date(year, 4, 20) // 20 mai
+  if (bicDate < today) bicDate.setFullYear(year + 1)
+  deadlines.push({
+    label: 'Déclaration BIC annuelle',
+    date: bicDate,
+    description: 'Formulaire 2042-C-PRO via impots.gouv.fr',
+  })
+
+  // Taxe de séjour trimestrielle
+  const trimMonth = [3, 6, 9, 0][Math.floor(month / 3)] // avr, juil, oct, jan
+  const trimDate = new Date(month === 11 || month === 10 || month === 9 ? year + 1 : year, trimMonth, 15)
+  while (trimDate <= today) trimDate.setMonth(trimDate.getMonth() + 3)
+  deadlines.push({
+    label: 'Reversement taxe de séjour',
+    date: trimDate,
+    description: 'À reverser à ta mairie (si tu encaisses en direct)',
+  })
+
+  // CFE — fin novembre
+  const cfeDate = new Date(year, 10, 30)
+  if (cfeDate < today) cfeDate.setFullYear(year + 1)
+  deadlines.push({
+    label: 'CFE (Cotisation Foncière des Entreprises)',
+    date: cfeDate,
+    description: 'Échéance impôt local des pros',
+  })
+
+  return deadlines
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .map(d => {
+      const days = Math.round((d.date.getTime() - today.getTime()) / 86400000)
+      return {
+        label: d.label,
+        date: d.date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
+        description: d.description,
+        type: days <= 30 ? 'urgent' as const : 'normal' as const,
+      }
+    })
+}
+
+function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; chargesAnnee?: number }) {
+  // Jauges seuils fiscaux
+  const SEUILS = [
+    { key: 'micro-nc',   label: 'Micro-BIC non classé', valeur: 15000,  color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
+    { key: 'micro-c',    label: 'Micro-BIC classé',     valeur: 77700,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+    { key: 'tva',        label: 'Franchise TVA (presta)', valeur: 36800, color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+  ]
+
+  // Calculatrice : recommandation auto
+  const taux = annuel > 0 ? chargesAnnee / annuel : 0
+  const recoMicro = annuel <= 15000 || (annuel <= 77700 && taux < 0.3)
+  // En micro-BIC non classé : 30% d'abattement → impôt sur 70% du CA
+  // En réel : impôt sur (CA - charges réelles)
+  const baseImposableMicroNC = annuel * 0.70
+  const baseImposableMicroC  = annuel * 0.29
+  const baseImposableReel    = Math.max(0, annuel - chargesAnnee)
+  const recommendation =
+    annuel === 0 ? null
+    : (annuel > 77700) ? { label: 'Régime réel obligatoire', detail: 'Tu dépasses le plafond micro-BIC. Le régime réel est imposé.' }
+    : (chargesAnnee >= annuel * 0.30 && chargesAnnee > 1000) ? {
+        label: 'Régime réel recommandé',
+        detail: `Tes charges représentent ${Math.round(taux * 100)} % de ton CA — le réel sera plus avantageux que le micro-BIC.`,
+      }
+    : annuel > 15000
+    ? { label: 'Micro-BIC classé recommandé', detail: 'Pense à faire classer ton meublé pour profiter du plafond 77 700 € + 71 % d\'abattement.' }
+    : { label: 'Micro-BIC non classé OK', detail: 'Le micro-BIC simplifie la déclaration. Si tes charges dépassent 30 %, le réel sera plus avantageux.' }
+
+  const deadlines = nextFiscalDeadlines()
+
   const [open, setOpen] = useState(false)
 
   return (
@@ -1163,6 +1240,85 @@ function FiscaliteSection({ annuel }: { annuel: number }) {
         <div style={sf.seuilSep} />
         <SeuilPill label="LMP si"      seuil="> 23 000 €" pct="+ 50 % revenus" color="#fb923c" />
       </div>
+
+      {/* Jauges progression vers les seuils fiscaux */}
+      {annuel > 0 && (
+        <div style={sf.jaugesGrid}>
+          {SEUILS.map(seuil => {
+            const pct = Math.min(100, Math.round((annuel / seuil.valeur) * 100))
+            const danger = pct >= 75
+            const warn = pct >= 50 && pct < 75
+            const fillColor = danger ? '#ef4444' : warn ? '#f59e0b' : seuil.color
+            return (
+              <div key={seuil.key} style={{ ...sf.jaugeCard, background: seuil.bg, borderColor: `${seuil.color}40` }}>
+                <div style={sf.jaugeHead}>
+                  <span style={sf.jaugeLabel}>{seuil.label}</span>
+                  <span style={{ ...sf.jaugeValue, color: fillColor }}>{pct} %</span>
+                </div>
+                <div style={sf.jaugeBar}>
+                  <div style={{ ...sf.jaugeBarFill, width: `${pct}%`, background: fillColor }} />
+                </div>
+                <div style={sf.jaugeFoot}>
+                  {fmt(annuel)} / {seuil.valeur.toLocaleString('fr-FR')} €
+                  {danger && ' · ⚠️ proche du plafond'}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Recommandation auto */}
+      {recommendation && (
+        <div style={sf.recoBox}>
+          <div style={sf.recoHeader}>
+            <span style={sf.recoLabel}>💡 Recommandation pour toi</span>
+            <span style={sf.recoTitle}>{recommendation.label}</span>
+          </div>
+          <p style={sf.recoDetail}>{recommendation.detail}</p>
+          <div style={sf.recoCalc}>
+            <div style={sf.recoCalcItem}>
+              <span style={sf.recoCalcLabel}>Micro-BIC NC (30 %)</span>
+              <span style={sf.recoCalcValue}>{fmt(baseImposableMicroNC)} imposable</span>
+            </div>
+            <div style={sf.recoCalcItem}>
+              <span style={sf.recoCalcLabel}>Micro-BIC ★ (71 %)</span>
+              <span style={sf.recoCalcValue}>{fmt(baseImposableMicroC)} imposable</span>
+            </div>
+            <div style={sf.recoCalcItem}>
+              <span style={sf.recoCalcLabel}>Réel (CA − charges)</span>
+              <span style={sf.recoCalcValue}>{fmt(baseImposableReel)} imposable</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Calendrier fiscal — prochaines échéances */}
+      {deadlines.length > 0 && (
+        <div style={sf.deadlinesBox}>
+          <div style={sf.deadlinesHeader}>
+            📅 Prochaines échéances fiscales
+          </div>
+          <div style={sf.deadlinesList}>
+            {deadlines.slice(0, 3).map((d, i) => (
+              <div key={i} style={sf.deadlineRow}>
+                <div style={{
+                  ...sf.deadlineBadge,
+                  background: d.type === 'urgent' ? 'rgba(239,68,68,0.10)' : 'var(--surface-2)',
+                  color: d.type === 'urgent' ? '#ef4444' : 'var(--text-2)',
+                  borderColor: d.type === 'urgent' ? 'rgba(239,68,68,0.30)' : 'var(--border)',
+                }}>
+                  {d.date}
+                </div>
+                <div style={sf.deadlineInfo}>
+                  <span style={sf.deadlineLabel}>{d.label}</span>
+                  <span style={sf.deadlineDesc}>{d.description}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Alert si revenus annuels proches des seuils */}
       {annuel >= 12000 && annuel < 15500 && (
@@ -1231,7 +1387,134 @@ function SeuilPill({ label, seuil, pct, color }: { label: string; seuil: string;
 }
 
 const sf: Record<string, React.CSSProperties> = {
-  wrap:        { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' },
+  wrap:        { background: 'var(--surface)', border: '1px solid var(--border-2)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' },
+
+  // ─── Phase 7 — jauges seuils, recommandation, calendrier fiscal ─
+  jaugesGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gap: '10px',
+  },
+  jaugeCard: {
+    border: '1px solid',
+    borderRadius: '12px',
+    padding: '12px 14px',
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  jaugeHead: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+  },
+  jaugeLabel: {
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.3px',
+    color: 'var(--text-2)',
+  },
+  jaugeValue: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '18px', fontWeight: 500,
+  },
+  jaugeBar: {
+    height: '6px',
+    background: 'var(--surface-2)',
+    borderRadius: '4px',
+    overflow: 'hidden' as const,
+  },
+  jaugeBarFill: {
+    height: '100%',
+    borderRadius: '4px',
+    transition: 'width 0.3s',
+  },
+  jaugeFoot: {
+    fontSize: '10.5px',
+    color: 'var(--text-muted)',
+    fontWeight: 500,
+  },
+
+  recoBox: {
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '12px',
+    padding: '14px 16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '10px',
+  },
+  recoHeader: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+  },
+  recoLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+  },
+  recoTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '15px', fontWeight: 500,
+    color: 'var(--accent-text)',
+  },
+  recoDetail: {
+    fontSize: '12.5px',
+    color: 'var(--text-2)',
+    lineHeight: 1.5,
+    margin: 0,
+  },
+  recoCalc: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+    gap: '6px',
+    paddingTop: '6px',
+    borderTop: '1px solid var(--accent-border)',
+  },
+  recoCalcItem: {
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+  },
+  recoCalcLabel: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.3px',
+    color: 'var(--text-muted)',
+    textTransform: 'uppercase' as const,
+  },
+  recoCalcValue: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+  },
+
+  deadlinesBox: {
+    background: 'var(--surface-2)',
+    border: '1px dashed var(--border-2)',
+    borderRadius: '12px',
+    padding: '14px 16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '10px',
+  },
+  deadlinesHeader: {
+    fontSize: '11px', fontWeight: 700, letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+  },
+  deadlinesList: {
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+  },
+  deadlineRow: {
+    display: 'flex', alignItems: 'flex-start', gap: '12px',
+  },
+  deadlineBadge: {
+    fontSize: '11px', fontWeight: 600,
+    padding: '4px 9px',
+    border: '1px solid',
+    borderRadius: '7px',
+    flexShrink: 0,
+    minWidth: '120px',
+    textAlign: 'center' as const,
+  },
+  deadlineInfo: {
+    flex: 1, minWidth: 0,
+    display: 'flex', flexDirection: 'column' as const, gap: '1px',
+  },
+  deadlineLabel: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+  },
+  deadlineDesc: {
+    fontSize: '11.5px', fontWeight: 300,
+    color: 'var(--text-muted)',
+    lineHeight: 1.4,
+  },
   header:      { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' },
   headerLeft:  { display: 'flex', alignItems: 'flex-start', gap: '12px' },
   iconWrap:    { width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0,76,63,0.2)', border: '1px solid rgba(0,76,63,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
