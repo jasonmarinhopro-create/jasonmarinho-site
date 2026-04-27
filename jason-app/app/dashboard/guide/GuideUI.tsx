@@ -5,8 +5,10 @@ import Link from 'next/link'
 import {
   HouseLine, Coffee, Buildings, Handshake,
   Scales, CurrencyEur, ClipboardText, Globe, Briefcase, FileText, Megaphone, ShieldCheck, Gavel,
-  Warning, Info, CheckCircle, ArrowRight,
+  Warning, Info, CheckCircle, ArrowRight, BookOpen, ArrowUpRight,
 } from '@phosphor-icons/react'
+
+const BLOG_BASE = 'https://jasonmarinho.com/blog/'
 
 type ProfileFilter = 'all' | 'gites' | 'chambres' | 'conciergerie' | 'direct'
 type RuleType = 'info' | 'ok' | 'warn'
@@ -14,6 +16,11 @@ type RuleType = 'info' | 'ok' | 'warn'
 interface Rule {
   type: RuleType
   text: React.ReactNode
+}
+
+interface RelatedArticle {
+  label: string
+  slug: string
 }
 
 interface GuideCard {
@@ -25,6 +32,7 @@ interface GuideCard {
   title: string
   subtitle: string
   rules: Rule[]
+  articles?: RelatedArticle[]
 }
 
 const PROFILE_DEFS: Record<Exclude<ProfileFilter, 'all'>, {
@@ -53,6 +61,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'info', text: <><strong>SASU</strong> : assimilé-salarié, responsabilité limitée au capital, optimisation salaire + dividendes possible — plus de charges fixes</> },
       { type: 'ok',   text: <>EI conseillée pour <strong>1–2 biens</strong>, SASU pertinente dès que les revenus dépassent 30–40 k€/an ou pour protéger son patrimoine</> },
     ],
+    articles: [
+      { label: 'Guide fiscal débutant 2026', slug: 'guide-fiscal-debutant-hote-airbnb-2026' },
+      { label: 'Réglementation LCD France 2026', slug: 'reglementation-lcd-france-2026' },
+    ],
   },
   {
     id: 'gites-fiscalite',
@@ -65,6 +77,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <><strong>Classé Atout France (1–5★)</strong> : micro-BIC abattement <strong>71 %</strong>, plafond 77 700 €/an</> },
       { type: 'warn', text: <><strong>Non classé depuis 2025</strong> : abattement tombé à <strong>30 %</strong>, plafond 15 000 €/an — fort impact si tu n&apos;es pas classé</> },
       { type: 'info', text: <>Régime <strong>réel simplifié</strong> : déduction charges réelles (amortissement, travaux, intérêts) — souvent plus avantageux au-delà de 30 k€</> },
+    ],
+    articles: [
+      { label: 'Micro-BIC abattement 2026', slug: 'micro-bic-abattement-2026-airbnb' },
+      { label: 'Réglementation LCD 2026', slug: 'reglementation-lcd-france-2026' },
     ],
   },
   {
@@ -79,6 +95,11 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'warn', text: <><strong>Numéro d&apos;enregistrement</strong> obligatoire dans les communes &gt; 200 000 hab. et communes touristiques — amende jusqu&apos;à 5 000 €</> },
       { type: 'info', text: <><strong>Résidence principale</strong> : 120 nuits/an max · <strong>Résidence secondaire ou dédiée</strong> : pas de plafond de nuits</> },
       { type: 'ok',   text: <>Taxe de séjour à collecter et reverser à la mairie si la plateforme ne le fait pas</> },
+    ],
+    articles: [
+      { label: 'Numéro d\'enregistrement : démarches', slug: 'numero-enregistrement-lcd-obtenir-etapes-pratiques' },
+      { label: 'Numéro d\'enregistrement 20 mai 2026', slug: 'numero-enregistrement-lcd-20-mai-2026-demarches' },
+      { label: 'Taxe de séjour : comment collecter', slug: 'taxe-sejour-lcd-comment-collecter' },
     ],
   },
 
@@ -96,6 +117,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'warn', text: <><strong>Propriétaire présent sur place</strong> obligatoirement — contrairement au gîte où tu peux être absent</> },
       { type: 'info', text: <>Ne pas appeler &ldquo;gîte&rdquo; une chambre d&apos;hôtes — la terminologie est encadrée par la loi</> },
     ],
+    articles: [
+      { label: 'TVA petit-déjeuner : seuil 37 500 €', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
+      { label: 'Réglementation LCD 2026', slug: 'reglementation-lcd-france-2026' },
+    ],
   },
   {
     id: 'chambres-fiscalite',
@@ -110,6 +135,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'warn', text: <>Classement <strong>Atout France (meublé de tourisme) interdit</strong> pour les chambres d&apos;hôtes — régime différent</> },
       { type: 'ok',   text: <>Labels possibles : <strong>Gîtes de France</strong> (épis) et <strong>Clévacances</strong> (clés) — recommandés pour le référencement et la fiscalité</> },
     ],
+    articles: [
+      { label: 'Guide fiscal débutant 2026', slug: 'guide-fiscal-debutant-hote-airbnb-2026' },
+      { label: 'TVA petit-déjeuner détail', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
+    ],
   },
   {
     id: 'chambres-plateformes',
@@ -123,6 +152,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <><strong>Réseau Gîtes de France</strong> : spécialisé chambres d&apos;hôtes, clientèle qualifiée — recommandé</> },
       { type: 'ok',   text: <><strong>Driing</strong> et site propre : réservation directe sans commission — fort potentiel pour fidéliser les voyageurs récurrents</> },
       { type: 'info', text: <><strong>Google My Business</strong> : levier visibilité locale essentiel pour les chambres d&apos;hôtes en zone rurale ou touristique</> },
+    ],
+    articles: [
+      { label: 'Airbnb vs Booking : comparatif', slug: 'airbnb-vs-booking-com-location-courte-duree' },
+      { label: 'GMB pour réservations directes', slug: 'google-my-business-reservations-directes-hotes-lcd' },
     ],
   },
 
@@ -139,6 +172,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <><strong>Le propriétaire encaisse directement</strong> (via Airbnb, Booking, virement) → Prestation de services classique → pas de carte pro requise</> },
       { type: 'info', text: <>La plupart des conciergeries évitent la loi Hoguet en structurant correctement le flux de paiement dès le départ</> },
     ],
+    articles: [
+      { label: 'Créer une conciergerie Airbnb', slug: 'creer-conciergerie-airbnb-2025' },
+      { label: 'Contrat de mandat conciergerie', slug: 'contrat-mandat-conciergerie-lcd-modele-clauses' },
+    ],
   },
   {
     id: 'conciergerie-statut',
@@ -153,6 +190,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'warn', text: <><strong>TVA 20 %</strong> obligatoire dès 36 800 € de CA — à intégrer dans ta tarification dès le départ</> },
       { type: 'info', text: <><strong>RC Pro obligatoire</strong> dans tous les cas — couvre les dommages causés lors des prestations</> },
     ],
+    articles: [
+      { label: 'Créer une conciergerie 2025', slug: 'creer-conciergerie-airbnb-2025' },
+      { label: 'Tarif conciergerie : grille marché', slug: 'tarif-conciergerie-lcd-grille-marche-2026' },
+    ],
   },
   {
     id: 'conciergerie-contrats',
@@ -165,6 +206,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'warn', text: <><strong>Contrat de mandat de gestion</strong> obligatoire avec chaque propriétaire — définit honoraires, périmètre, durée et conditions de résiliation</> },
       { type: 'info', text: <>Honoraires usuels : <strong>15–30 % des revenus bruts</strong> selon les services inclus (ménage, accueil, gestion messages, etc.)</> },
       { type: 'ok',   text: <>Distinguer les prestations incluses dans les honoraires et celles facturées en supplément (ménage, linge, réparations)</> },
+    ],
+    articles: [
+      { label: 'Modèle contrat mandat conciergerie', slug: 'contrat-mandat-conciergerie-lcd-modele-clauses' },
+      { label: 'Tarif conciergerie 2026', slug: 'tarif-conciergerie-lcd-grille-marche-2026' },
     ],
   },
 
@@ -181,6 +226,11 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'info', text: <>État des lieux <strong>recommandé</strong> (non obligatoire pour LCD &lt; 30 jours, mais utile en cas de litige)</> },
       { type: 'ok',   text: <><strong>Taxe de séjour à collecter toi-même</strong> et reverser à la mairie — montant selon commune et catégorie du logement</> },
     ],
+    articles: [
+      { label: 'Sécuriser le paiement réservation directe', slug: 'securiser-paiement-reservation-directe-sans-airbnb' },
+      { label: 'Stripe pour la résa directe', slug: 'stripe-paiement-direct-lcd-mise-en-place' },
+      { label: 'Taxe de séjour : collecter', slug: 'taxe-sejour-lcd-comment-collecter' },
+    ],
   },
   {
     id: 'direct-assurance',
@@ -195,6 +245,10 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <>Caution/dépôt de garantie : <strong>Swikly</strong> (digitale), virement, ou chèque — délai de restitution à préciser dans le contrat (usage : 7 jours)</> },
       { type: 'info', text: <>Assurance annulation voyageur : tu peux proposer Chapka, AXA Assistance — ça rassure et évite les litiges d&apos;annulation</> },
     ],
+    articles: [
+      { label: 'Assurance LCD : 5 garanties', slug: 'assurance-lcd-5-garanties-indispensables-2026' },
+      { label: 'Assurance LCD Airbnb détail', slug: 'assurance-location-courte-duree-airbnb-couverture' },
+    ],
   },
   {
     id: 'direct-visibilite',
@@ -208,6 +262,12 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <><strong>Driing</strong> : annonce directe sans commission, comparateur de prix intégré, voyageurs qualifiés</> },
       { type: 'ok',   text: <>Paiements : <strong>Stripe, SumUp, Driing ou virement bancaire</strong> — prévoir une solution sécurisée avant le premier séjour direct</> },
       { type: 'info', text: <>Construire une <strong>base de voyageurs fidèles</strong> (email, Instagram) : la réservation directe se développe sur le temps long</> },
+    ],
+    articles: [
+      { label: 'SEO local hôte LCD', slug: 'seo-local-hote-lcd-google-maps-visibilite' },
+      { label: 'GMB pour réservations directes', slug: 'google-my-business-reservations-directes-hotes-lcd' },
+      { label: 'Email marketing hôte LCD', slug: 'email-marketing-newsletter-hote-lcd' },
+      { label: 'Instagram pour hôtes LCD', slug: 'instagram-hotes-lcd-attirer-voyageurs-reservations-directes' },
     ],
   },
 ]
@@ -254,6 +314,29 @@ function GuideCardItem({ card }: { card: GuideCard }) {
           )
         })}
       </div>
+
+      {card.articles && card.articles.length > 0 && (
+        <div style={s.articlesBlock}>
+          <div style={s.articlesLabel}>
+            <BookOpen size={12} weight="fill" />
+            Approfondir
+          </div>
+          <div style={s.articlesList}>
+            {card.articles.map(a => (
+              <a
+                key={a.slug}
+                href={`${BLOG_BASE}${a.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={s.articleLink}
+              >
+                <span>{a.label}</span>
+                <ArrowUpRight size={11} weight="bold" />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -290,6 +373,10 @@ export default function GuideUI() {
 
       {/* Intro */}
       <div style={s.intro} className="fade-up">
+        <div style={s.updatedBadge}>
+          <span style={s.updatedDot} />
+          Mis à jour avril 2026
+        </div>
         <h2 style={s.pageTitle}>
           Guide <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
         </h2>
@@ -364,6 +451,22 @@ const s: Record<string, React.CSSProperties> = {
   pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.7 },
 
+  updatedBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    fontSize: '11px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    padding: '4px 10px', borderRadius: '100px',
+    marginBottom: '14px',
+    letterSpacing: '0.2px',
+  },
+  updatedDot: {
+    width: '6px', height: '6px', borderRadius: '50%',
+    background: '#10b981',
+    boxShadow: '0 0 0 3px rgba(16,185,129,0.18)',
+  },
+
   filterWrap: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginBottom: '28px' },
   filterTab: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
@@ -391,6 +494,30 @@ const s: Record<string, React.CSSProperties> = {
   rules: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   rule: { display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 12px', borderRadius: '9px' },
   ruleText: { fontSize: '12.5px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.55 },
+
+  articlesBlock: {
+    marginTop: '16px', paddingTop: '14px',
+    borderTop: '1px solid var(--border)',
+  },
+  articlesLabel: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-3)',
+    marginBottom: '8px',
+  },
+  articlesList: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+  },
+  articleLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', fontWeight: 400,
+    color: 'var(--text-2)', textDecoration: 'none',
+    padding: '5px 8px', borderRadius: '7px',
+    transition: 'all 0.15s',
+    alignSelf: 'flex-start' as const,
+    maxWidth: '100%',
+  },
 
   banner: { display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' as const, padding: 'clamp(20px,3vw,32px)', borderRadius: '20px' },
   bannerIcon: { width: '52px', height: '52px', borderRadius: '14px', flexShrink: 0, background: 'rgba(0,76,63,0.25)', border: '1px solid rgba(255,213,107,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
