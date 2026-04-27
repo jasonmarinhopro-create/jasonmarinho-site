@@ -165,6 +165,8 @@ export async function buildFormationPage({
         initialVotes={initialVotes}
         relatedArticles={relations.articles}
         recommendedNext={nextFormationsData}
+        currentUserId={profile?.userId ?? null}
+        currentUserName={profile?.full_name?.split(' ')[0] ?? null}
       />
     </>
   )

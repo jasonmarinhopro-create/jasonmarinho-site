@@ -8,6 +8,7 @@ import {
   BookmarkSimple, Note as NoteIcon, ArrowSquareOut, ArrowRight,
 } from '@phosphor-icons/react'
 import { enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark, voteLesson } from '@/app/dashboard/formations/actions'
+import LessonComments from './LessonComments'
 
 interface Lesson {
   id: number
@@ -43,6 +44,8 @@ export default function FormationView({
   formationSlug,
   relatedArticles = [],
   recommendedNext = [],
+  currentUserId,
+  currentUserName,
 }: {
   formation: Formation
   formationId?: string | null
@@ -54,6 +57,8 @@ export default function FormationView({
   formationSlug?: string
   relatedArticles?: Array<{ label: string; slug: string }>
   recommendedNext?: Array<{ slug: string; title: string; reason?: string }>
+  currentUserId?: string | null
+  currentUserName?: string | null
 }) {
   const totalLessons = formation.modules.reduce((a, m) => a + m.lessons.length, 0)
   const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
@@ -591,6 +596,16 @@ export default function FormationView({
                 </button>
               )}
             </div>
+
+            {/* Phase 8 — Q&A et commentaires */}
+            {formationId && currentLesson && (
+              <LessonComments
+                formationId={formationId}
+                lessonId={currentLesson.id}
+                currentUserId={currentUserId ?? null}
+                defaultDisplayName={currentUserName ?? undefined}
+              />
+            )}
           </div>
         )}
       </main>

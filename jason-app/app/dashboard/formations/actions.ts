@@ -159,6 +159,76 @@ export async function voteLesson(input: {
   return {}
 }
 
+// ─── Phase 8 — Q&A et commentaires par leçon ─────────────────
+
+export async function postLessonComment(input: {
+  formationId: string
+  lessonId: number
+  content: string
+  parentId?: string | null
+  displayName?: string
+}): Promise<{ error?: string; comment?: any }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  const trimmed = input.content.trim()
+  if (!trimmed) return { error: 'Le commentaire est vide' }
+  if (trimmed.length > 4000) return { error: 'Trop long (4000 max)' }
+
+  const { data, error } = await supabase
+    .from('lesson_comments')
+    .insert({
+      user_id: session.user.id,
+      formation_id: input.formationId,
+      lesson_id: input.lessonId,
+      content: trimmed,
+      parent_id: input.parentId ?? null,
+      display_name: input.displayName?.trim() || null,
+    })
+    .select()
+    .single()
+
+  if (error) return { error: error.message }
+  return { comment: data }
+}
+
+export async function deleteLessonComment(commentId: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  const { error } = await supabase
+    .from('lesson_comments')
+    .delete()
+    .eq('id', commentId)
+    .eq('user_id', session.user.id)
+  if (error) return { error: error.message }
+  return {}
+}
+
+export async function listLessonComments(formationId: string, lessonId: number): Promise<{
+  comments: Array<{
+    id: string
+    user_id: string
+    parent_id: string | null
+    content: string
+    display_name: string | null
+    author_role: string
+    created_at: string
+  }>
+}> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('lesson_comments')
+    .select('id, user_id, parent_id, content, display_name, author_role, created_at')
+    .eq('formation_id', formationId)
+    .eq('lesson_id', lessonId)
+    .eq('is_visible', true)
+    .order('created_at', { ascending: true })
+  return { comments: data ?? [] }
+}
+
 // ─── Phase 7 — Avis public par formation ──────────────────────
 
 export async function submitFormationReview(input: {
