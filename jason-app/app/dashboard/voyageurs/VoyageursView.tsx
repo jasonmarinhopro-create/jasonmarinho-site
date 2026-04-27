@@ -7,7 +7,7 @@ import {
   X, User, Envelope, Phone, Note,
   Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset,
 } from '@phosphor-icons/react'
-import { addVoyageur, updateVoyageur, deleteVoyageur, type VoyageurData } from './actions'
+import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
 
 type Sejour = { id: string; date_arrivee: string; date_depart: string; montant: number | null }
 type Voyageur = {
@@ -48,6 +48,8 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
   const [editTarget, setEditTarget] = useState<Voyageur | null>(null)
   const [form, setForm] = useState<VoyageurData>(EMPTY_FORM)
   const [formError, setFormError] = useState('')
+  const [signaleAlert, setSignaleAlert] = useState<{ count: number; motifs?: string[] } | null>(null)
+  const [allowDespiteSignal, setAllowDespiteSignal] = useState(false)
 
   // Filtres + tri + vue
   const [filter, setFilter] = useState<'all' | 'recurrents' | 'a-venir' | 'signales' | 'bloques'>('all')
@@ -116,7 +118,10 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
     setModal('edit')
   }
 
-  function closeModal() { setModal(null); setEditTarget(null) }
+  function closeModal() {
+    setModal(null); setEditTarget(null)
+    setSignaleAlert(null); setAllowDespiteSignal(false)
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -125,7 +130,17 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
       return
     }
     setFormError('')
+
     startTransition(async () => {
+      // Phase 7 — sécurité : si création, vérifier que email/tel ne sont pas signalés
+      if (modal === 'add' && !allowDespiteSignal && (form.email?.trim() || form.telephone?.trim())) {
+        const check = await checkVoyageurSignale({ email: form.email, telephone: form.telephone })
+        if (check.signale) {
+          setSignaleAlert({ count: check.count ?? 0, motifs: check.motifs })
+          return
+        }
+      }
+
       const data: VoyageurData = {
         prenom: form.prenom.trim(),
         nom: form.nom.trim(),
@@ -547,6 +562,48 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
               </div>
 
               {formError && <p style={s.error}>{formError}</p>}
+
+              {/* Phase 7 — alerte si email/tel signalé par la communauté */}
+              {signaleAlert && (
+                <div style={{
+                  padding: '14px 16px',
+                  background: 'rgba(239,68,68,0.06)',
+                  border: '1px solid rgba(239,68,68,0.25)',
+                  borderRadius: '11px',
+                  display: 'flex', flexDirection: 'column' as const, gap: '8px',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <Warning size={18} weight="fill" color="#ef4444" />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: '#ef4444', marginBottom: '4px' }}>
+                        ⚠️ Voyageur signalé par la communauté
+                      </div>
+                      <p style={{ fontSize: '12.5px', color: 'var(--text-2)', margin: 0, lineHeight: 1.5 }}>
+                        Cet email ou ce téléphone a été signalé <strong>{signaleAlert.count} fois</strong>.
+                        {signaleAlert.motifs && signaleAlert.motifs.length > 0 && (
+                          <> Motifs : <strong>{signaleAlert.motifs.join(', ')}</strong>.</>
+                        )} Vérifie soigneusement avant d&apos;accepter une réservation.
+                      </p>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                    <button
+                      type="button"
+                      onClick={() => setSignaleAlert(null)}
+                      style={{ padding: '6px 12px', fontSize: '12px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setAllowDespiteSignal(true); setSignaleAlert(null); document.querySelector('form')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })) }}
+                      style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 600, background: 'rgba(239,68,68,0.10)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.30)', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                    >
+                      Ajouter quand même
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div style={s.formActions}>
                 <button type="button" onClick={closeModal} className="btn-ghost">Annuler</button>

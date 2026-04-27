@@ -555,6 +555,24 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   // Date à utiliser pour le calendrier : prochain à venir, sinon dernier passé
   const calendrierTargetDate = stats.nextStay?.date_arrivee ?? stats.lastVisit ?? null
 
+  // ─── Score de confiance (algorithmique) ──
+  const trustScore = (() => {
+    let score = 50 // base neutre
+    if (idVerifie) score += 25
+    if (sejours.length >= 2) score += 10
+    if (sejours.length >= 4) score += 15
+    if (notePrivee && notePrivee >= 4) score += 10
+    if (isFlagged) score -= 60
+    if (bloque) score -= 100
+    return Math.max(0, Math.min(100, score))
+  })()
+  const trustLabel =
+    trustScore >= 80 ? { label: 'Très fiable',  color: '#10b981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' } :
+    trustScore >= 60 ? { label: 'Fiable',        color: '#34d399', bg: 'rgba(52,211,153,0.10)', border: 'rgba(52,211,153,0.30)' } :
+    trustScore >= 40 ? { label: 'Neutre',        color: 'var(--text-2)', bg: 'var(--surface)',  border: 'var(--border)' } :
+    trustScore >= 20 ? { label: 'À surveiller',  color: '#f59e0b', bg: 'rgba(245,158,11,0.10)', border: 'rgba(245,158,11,0.30)' } :
+                       { label: 'Risque élevé',  color: '#ef4444', bg: 'rgba(239,68,68,0.10)',  border: 'rgba(239,68,68,0.30)' }
+
   // ─── Timeline d'événements (calculée depuis séjours + contrat) ──
   type TimelineEvent = { date: string; icon: string; label: string; subtitle?: string; tone: 'past' | 'today' | 'future' }
   const timeline: TimelineEvent[] = (() => {
@@ -1190,6 +1208,35 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
             🔒 Vérification & sécurité
+          </div>
+        </div>
+
+        {/* Score de confiance */}
+        <div style={{
+          padding: '12px 14px',
+          background: trustLabel.bg,
+          border: `1px solid ${trustLabel.border}`,
+          borderRadius: '10px',
+          marginBottom: '14px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '4px' }}>
+              Score de confiance
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+              <span style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', fontWeight: 500, color: trustLabel.color, lineHeight: 1 }}>
+                {trustScore}
+              </span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>/ 100</span>
+              <span style={{ marginLeft: '6px', fontSize: '11px', fontWeight: 600, color: trustLabel.color, letterSpacing: '0.3px' }}>
+                {trustLabel.label}
+              </span>
+            </div>
+          </div>
+          {/* Mini barre de progression */}
+          <div style={{ width: '70px', height: '6px', background: 'var(--surface-2)', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
+            <div style={{ width: `${trustScore}%`, height: '100%', background: trustLabel.color, transition: 'width 0.3s' }} />
           </div>
         </div>
 

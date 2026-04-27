@@ -45,6 +45,33 @@ async function getSession() {
   return { supabase, session }
 }
 
+// ─── Check si un email/tel est signalé par la communauté ────────────────
+// Utilisé à la création d'un voyageur pour alerter le hôte avant ajout
+export async function checkVoyageurSignale(input: { email?: string; telephone?: string }): Promise<{
+  signale: boolean
+  count?: number
+  motifs?: string[]
+}> {
+  const { supabase, session } = await getSession()
+  if (!session) return { signale: false }
+
+  const identifiers: string[] = []
+  if (input.email?.trim()) identifiers.push(input.email.trim().toLowerCase())
+  if (input.telephone?.trim()) identifiers.push(input.telephone.trim())
+  if (identifiers.length === 0) return { signale: false }
+
+  const { data } = await supabase
+    .from('reported_guests')
+    .select('incident_type')
+    .in('identifier', identifiers)
+    .eq('is_validated', true)
+    .limit(10)
+
+  if (!data || data.length === 0) return { signale: false }
+  const motifs = Array.from(new Set(data.map((r: any) => r.incident_type as string).filter(Boolean)))
+  return { signale: true, count: data.length, motifs }
+}
+
 // ─── Voyageurs ────────────────────────────────────────────────────────────────
 
 export async function addVoyageur(data: VoyageurData): Promise<{ id?: string; error?: string }> {
