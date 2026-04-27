@@ -46,10 +46,14 @@ export default function FormationView({
   const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
   const [openModules, setOpenModules] = useState<number[]>([1])
   const [isMobile, setIsMobile] = useState(false)
+  const [isMidScreen, setIsMidScreen] = useState(false) // < 1100px : sidebar visible mais rail droite cachée
   const [navOpen, setNavOpen] = useState(false)
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
+    const check = () => {
+      setIsMobile(window.innerWidth < 768)
+      setIsMidScreen(window.innerWidth < 1100)
+    }
     check()
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
@@ -89,7 +93,7 @@ export default function FormationView({
 
   // Leçon suivante pour le bouton "Suivante →"
   const allLessonsFlat = formation.modules.flatMap(m =>
-    m.lessons.map(l => ({ moduleId: m.id, lessonId: l.id }))
+    m.lessons.map(l => ({ moduleId: m.id, lessonId: l.id, title: l.title }))
   )
   const currentFlatIdx = activeLesson
     ? allLessonsFlat.findIndex(l => l.lessonId === activeLesson.lessonId)
@@ -97,6 +101,29 @@ export default function FormationView({
   const nextLesson = currentFlatIdx !== -1 && currentFlatIdx < allLessonsFlat.length - 1
     ? allLessonsFlat[currentFlatIdx + 1]
     : null
+  const prevLesson = currentFlatIdx > 0 ? allLessonsFlat[currentFlatIdx - 1] : null
+
+  // ─── Phase 1 — TOC auto-générée depuis les H2 du markdown ──────
+  const toc = (() => {
+    if (!currentLesson) return [] as Array<{ id: string; title: string; level: 2 | 3 }>
+    const items: Array<{ id: string; title: string; level: 2 | 3 }> = []
+    const lines = currentLesson.content.split('\n')
+    const slugify = (s: string) => s.toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60)
+    for (const l of lines) {
+      if (l.startsWith('## ')) {
+        const t = l.slice(3).trim()
+        if (t) items.push({ id: `h-${slugify(t)}`, title: t, level: 2 })
+      } else if (l.startsWith('### ')) {
+        const t = l.slice(4).trim()
+        if (t) items.push({ id: `h-${slugify(t)}`, title: t, level: 3 })
+      }
+    }
+    return items
+  })()
 
   function toggleModule(id: number) {
     setOpenModules(prev =>
@@ -146,9 +173,13 @@ export default function FormationView({
       const line = lines[i]
 
       if (line.startsWith('## ')) {
-        elements.push(<h2 key={key++} style={s.h2}>{line.slice(3)}</h2>)
+        const t = line.slice(3).trim()
+        const id = `h-${t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)}`
+        elements.push(<h2 key={key++} id={id} style={s.h2}>{t}</h2>)
       } else if (line.startsWith('### ')) {
-        elements.push(<h3 key={key++} style={s.h3}>{line.slice(4)}</h3>)
+        const t = line.slice(4).trim()
+        const id = `h-${t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)}`
+        elements.push(<h3 key={key++} id={id} style={s.h3}>{t}</h3>)
       } else if (line.startsWith('**') && line.endsWith('**') && line.includes('—')) {
         elements.push(<p key={key++} style={s.boldLine} dangerouslySetInnerHTML={{ __html: formatInline(line) }} />)
       } else if (line.startsWith('| ')) {
@@ -472,6 +503,96 @@ export default function FormationView({
           </div>
         )}
       </main>
+
+      {/* ── Phase 1 : Rail droite (desktop large only, visible quand leçon active) ── */}
+      {!isMobile && !isMidScreen && activeLesson && (
+        <aside style={styles.rightRail}>
+          {/* Mini-progression */}
+          <div style={styles.railSection}>
+            <div style={styles.railLabel}>Progression</div>
+            <div style={styles.railProgressBar}>
+              <div style={{ ...styles.railProgressFill, width: `${progress}%` }} />
+            </div>
+            <div style={styles.railProgressText}>
+              <strong>{completedLessons.length}</strong> / {totalLessons} leçons · <strong>{progress}%</strong>
+            </div>
+          </div>
+
+          {/* Nav prev/next compact */}
+          <div style={styles.railSection}>
+            <div style={styles.railLabel}>Navigation</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {prevLesson && (
+                <button
+                  onClick={() => selectLesson(prevLesson.moduleId, prevLesson.lessonId)}
+                  style={styles.railNavBtn}
+                  title={prevLesson.title}
+                >
+                  <ArrowLeft size={12} weight="bold" />
+                  <span style={styles.railNavText}>{prevLesson.title}</span>
+                </button>
+              )}
+              {nextLesson && (
+                <button
+                  onClick={() => selectLesson(nextLesson.moduleId, nextLesson.lessonId)}
+                  style={{ ...styles.railNavBtn, background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' }}
+                  title={nextLesson.title}
+                >
+                  <span style={styles.railNavText}>{nextLesson.title}</span>
+                  <ArrowLeft size={12} weight="bold" style={{ transform: 'rotate(180deg)' }} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Bouton "Marquer terminé" raccourci */}
+          {currentLesson && !completedLessons.includes(currentLesson.id) && (
+            <div style={styles.railSection}>
+              <button
+                onClick={() => markComplete(currentLesson.id)}
+                style={styles.railDoneBtn}
+              >
+                <Check size={13} weight="bold" />
+                Marquer cette leçon terminée
+              </button>
+            </div>
+          )}
+          {currentLesson && completedLessons.includes(currentLesson.id) && (
+            <div style={styles.railSection}>
+              <div style={styles.railDoneMsg}>
+                <CheckCircle size={14} weight="fill" color="#10b981" />
+                Leçon terminée
+              </div>
+            </div>
+          )}
+
+          {/* TOC auto-générée */}
+          {toc.length > 0 && (
+            <div style={styles.railSection}>
+              <div style={styles.railLabel}>Sur cette page</div>
+              <div style={styles.tocList}>
+                {toc.map(t => (
+                  <a
+                    key={t.id}
+                    href={`#${t.id}`}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      const el = document.getElementById(t.id)
+                      if (el && mainRef.current) {
+                        mainRef.current.scrollTo({ top: el.offsetTop - 60, behavior: 'smooth' })
+                      }
+                    }}
+                    style={{ ...styles.tocLink, paddingLeft: t.level === 3 ? '16px' : '0' }}
+                  >
+                    <span style={styles.tocBullet}>·</span>
+                    {t.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+      )}
     </div>
   )
 }
@@ -616,8 +737,107 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   // ── Main area ──
-  main: { flex: 1, overflowY: 'auto' },
+  main: { flex: 1, overflowY: 'auto', minWidth: 0 },
   mainMobile: { overflowY: 'visible' },
+
+  // ─── Phase 1 — Rail droite ─────────────────────────────────────
+  rightRail: {
+    width: '260px', flexShrink: 0,
+    borderLeft: '1px solid var(--border)',
+    display: 'flex', flexDirection: 'column',
+    position: 'sticky', top: 'var(--header-h)',
+    height: 'calc(100svh - var(--header-h))',
+    overflowY: 'auto',
+    padding: '20px 16px',
+    gap: '20px',
+    background: 'var(--bg)',
+  },
+  railSection: {
+    display: 'flex', flexDirection: 'column',
+    gap: '8px',
+    paddingBottom: '16px',
+    borderBottom: '1px solid var(--border)',
+  },
+  railLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+  },
+  railProgressBar: {
+    height: '6px',
+    background: 'var(--surface-2)',
+    borderRadius: '4px',
+    overflow: 'hidden' as const,
+  },
+  railProgressFill: {
+    height: '100%',
+    background: 'linear-gradient(90deg, var(--accent-text), #34D399)',
+    borderRadius: '4px',
+    transition: 'width 0.4s',
+  },
+  railProgressText: {
+    fontSize: '12px',
+    color: 'var(--text-2)',
+    fontWeight: 400,
+  },
+  railNavBtn: {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    padding: '8px 10px',
+    fontSize: '11.5px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left' as const,
+  },
+  railNavText: {
+    flex: 1, minWidth: 0,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as const,
+    whiteSpace: 'nowrap' as const,
+  },
+  railDoneBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+    padding: '9px 14px',
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--bg)',
+    background: 'var(--accent-text)',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    width: '100%',
+  },
+  railDoneMsg: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '9px 14px',
+    fontSize: '12px', fontWeight: 600,
+    color: '#10b981',
+    background: 'rgba(16,185,129,0.08)',
+    border: '1px solid rgba(16,185,129,0.25)',
+    borderRadius: '8px',
+    justifyContent: 'center',
+  },
+  tocList: {
+    display: 'flex', flexDirection: 'column',
+    gap: '2px',
+  },
+  tocLink: {
+    display: 'flex', alignItems: 'flex-start', gap: '6px',
+    padding: '5px 8px',
+    fontSize: '12px',
+    color: 'var(--text-2)',
+    textDecoration: 'none' as const,
+    borderRadius: '6px',
+    lineHeight: 1.4,
+  },
+  tocBullet: {
+    color: 'var(--accent-text)',
+    fontWeight: 700,
+    flexShrink: 0,
+  },
 
   // Overview
   overview: {
