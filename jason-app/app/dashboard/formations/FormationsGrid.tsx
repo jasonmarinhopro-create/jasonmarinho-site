@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy } from '@phosphor-icons/react'
+import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy, Compass } from '@phosphor-icons/react'
 
 interface Formation {
   id: string
@@ -129,10 +129,18 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
             {slotsUsed}/{slotsMax} accès gratuits utilisés
           </span>
         )}
+        {/* Phase 9 — Lien vers les parcours */}
+        <Link
+          href="/dashboard/formations/parcours"
+          style={{ ...styles.statChip, background: 'rgba(96,165,250,0.08)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.20)', textDecoration: 'none' as const, marginLeft: 'auto' }}
+        >
+          <Compass size={13} weight="fill" />
+          Parcours d&apos;apprentissage
+        </Link>
         {/* Phase 6 — Liens vers mon profil & mes favoris */}
         <Link
           href="/dashboard/formations/profil-apprenant"
-          style={{ ...styles.statChip, background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)', textDecoration: 'none' as const, marginLeft: 'auto' }}
+          style={{ ...styles.statChip, background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)', textDecoration: 'none' as const }}
         >
           <Trophy size={13} weight="fill" />
           Mon profil apprenant
