@@ -5,8 +5,9 @@ import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
   House, Plus, Trash, X, Check,
   Info, Warning, ArrowRight, Scales, Upload,
+  Receipt, ChartBar, Target,
 } from '@phosphor-icons/react'
-import { createRevenusEntry, deleteRevenusEntry } from './actions'
+import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel } from './actions'
 import ImportCSVModal from './ImportCSVModal'
 
 // ── types ────────────────────────────────────────────────────────────────────
@@ -35,10 +36,31 @@ interface RevenusEntry {
   description: string | null
 }
 
+interface ChargeEntry {
+  id: string
+  logement_nom: string
+  logement_id: string | null
+  montant: number
+  date_charge: string
+  categorie: string
+  description: string | null
+  deductible: boolean
+}
+
+interface LogementMin {
+  id: string
+  nom: string
+  honoraires_pct: number | null
+}
+
 interface Props {
   contracts: Contract[]
   initialEntries: RevenusEntry[]
+  initialCharges?: ChargeEntry[]
   logementNoms: string[]
+  logements?: LogementMin[]
+  objectifAnnuel?: number | null
+  plan?: string
 }
 
 // ── constants ────────────────────────────────────────────────────────────────
@@ -83,13 +105,26 @@ function todayISO() {
 
 // ── component ────────────────────────────────────────────────────────────────
 
-export default function RevenusView({ contracts, initialEntries, logementNoms }: Props) {
+export default function RevenusView({
+  contracts,
+  initialEntries,
+  initialCharges = [],
+  logementNoms,
+  logements = [],
+  objectifAnnuel = null,
+  plan = 'standard',
+}: Props) {
+  const isStandard = plan === 'standard'
+  const isDriing = plan === 'driing'
+  // const isDecouverte = plan === 'decouverte' // bloqué en amont via PlanGate
   const now = new Date()
   const thisMonth = now.getMonth()
   const thisYear  = now.getFullYear()
 
   const [entries, setEntries]   = useState<RevenusEntry[]>(initialEntries)
+  const [charges, setCharges]   = useState<ChargeEntry[]>(initialCharges)
   const [showForm, setShowForm] = useState(false)
+  const [showChargeForm, setShowChargeForm] = useState(false)
   const [showImport, setShowImport] = useState(false)
   const [filter, setFilter]     = useState<'all' | 'encaisse' | 'attente'>('all')
   const [logementFilter, setLogementFilter] = useState<string>('all')
@@ -278,8 +313,53 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
         <h1 style={s.pageTitle}>
           Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>revenus</em>
         </h1>
-        <p style={s.pageSub}>Suivi de tes encaissements, paiements en attente et fiscalité.</p>
+        <p style={s.pageSub}>Suivi de tes encaissements, charges, bénéfice net et fiscalité.</p>
       </div>
+
+      {/* Empty state onboarding (3 étapes pour démarrer) */}
+      {contracts.length === 0 && entries.length === 0 && charges.length === 0 && (
+        <div style={s.onboardingCard} className="fade-up">
+          <div style={s.onboardingHeader}>
+            <span style={s.onboardingTag}>
+              <Info size={11} weight="fill" />
+              Premiers pas
+            </span>
+            <h2 style={s.onboardingTitle}>Démarre ton suivi de revenus en 3 étapes</h2>
+            <p style={s.onboardingDesc}>
+              Importe ton historique en CSV ou ajoute tes premières entrées manuellement. Toutes tes données restent privées et exportables à tout moment.
+            </p>
+          </div>
+          <div style={s.onboardingSteps}>
+            <button onClick={() => setShowImport(true)} style={s.onboardingStep}>
+              <span style={s.onboardingStepNum}>1</span>
+              <Upload size={20} weight="fill" color="var(--accent-text)" />
+              <div style={s.onboardingStepBody}>
+                <div style={s.onboardingStepTitle}>Importer un CSV</div>
+                <div style={s.onboardingStepDesc}>Airbnb, Booking — ton historique en 30 secondes</div>
+              </div>
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
+            </button>
+            <button onClick={() => setShowForm(true)} style={s.onboardingStep}>
+              <span style={s.onboardingStepNum}>2</span>
+              <Plus size={20} weight="bold" color="var(--accent-text)" />
+              <div style={s.onboardingStepBody}>
+                <div style={s.onboardingStepTitle}>Ajouter manuellement</div>
+                <div style={s.onboardingStepDesc}>Virement, espèces, chèque — saisie rapide</div>
+              </div>
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
+            </button>
+            <button onClick={() => setShowChargeForm(true)} style={s.onboardingStep}>
+              <span style={s.onboardingStepNum}>3</span>
+              <Receipt size={20} weight="fill" color="var(--accent-text)" />
+              <div style={s.onboardingStepBody}>
+                <div style={s.onboardingStepTitle}>Saisir tes charges</div>
+                <div style={s.onboardingStepDesc}>Ménage, énergie, assurance — pour ton bénéfice net</div>
+              </div>
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* KPI cards */}
       <div style={s.kpiGrid}>
@@ -784,4 +864,80 @@ const s: Record<string, React.CSSProperties> = {
   deleteBtn:{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '6px', border: 'none', background: 'none', color: 'var(--text-muted)', cursor: 'pointer', flexShrink: 0, padding: 0 },
 
   empty:    { fontSize: '14px', color: 'var(--text-muted)', textAlign: 'center', padding: '28px 0', margin: 0 },
+
+  // ─── Phase 1 — Onboarding empty state ──────────────────────────
+  onboardingCard: {
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '16px',
+    padding: 'clamp(20px, 3vw, 28px)',
+    marginBottom: '20px',
+    display: 'flex', flexDirection: 'column' as const, gap: '16px',
+  },
+  onboardingHeader: {
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  onboardingTag: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '100px',
+    padding: '3px 9px',
+    width: 'fit-content',
+  },
+  onboardingTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'clamp(18px, 2vw, 22px)',
+    fontWeight: 400,
+    color: 'var(--text)',
+    margin: '4px 0 0',
+  },
+  onboardingDesc: {
+    fontSize: '13px',
+    color: 'var(--text-2)',
+    lineHeight: 1.6,
+    margin: 0,
+  },
+  onboardingSteps: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+    gap: '10px',
+  },
+  onboardingStep: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '14px 16px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left' as const,
+    transition: 'all 0.15s',
+    width: '100%',
+  },
+  onboardingStepNum: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: '24px', height: '24px',
+    fontSize: '12px', fontWeight: 700,
+    background: 'var(--accent-text)',
+    color: 'var(--bg)',
+    borderRadius: '50%',
+    flexShrink: 0,
+  },
+  onboardingStepBody: {
+    flex: 1, minWidth: 0,
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+  },
+  onboardingStepTitle: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+  },
+  onboardingStepDesc: {
+    fontSize: '11.5px', fontWeight: 300,
+    color: 'var(--text-muted)',
+    lineHeight: 1.4,
+  },
 }

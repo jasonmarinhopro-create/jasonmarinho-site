@@ -23,7 +23,9 @@ export default async function RevenusPage() {
   const [
     { data: contracts },
     { data: entries },
+    { data: charges },
     { data: logements },
+    { data: objectif },
   ] = await Promise.all([
     supabase
       .from('contracts')
@@ -37,9 +39,19 @@ export default async function RevenusPage() {
       .eq('user_id', userId)
       .order('date_paiement', { ascending: false }),
     supabase
+      .from('revenus_charges')
+      .select('id, logement_nom, logement_id, montant, date_charge, categorie, description, deductible')
+      .eq('user_id', userId)
+      .order('date_charge', { ascending: false }),
+    supabase
       .from('logements')
-      .select('nom')
+      .select('id, nom, honoraires_pct')
       .eq('user_id', userId),
+    supabase
+      .from('revenus_objectifs')
+      .select('objectif_ca_annuel, annee')
+      .eq('user_id', userId)
+      .maybeSingle(),
   ])
 
   const logementNoms = [
@@ -55,7 +67,11 @@ export default async function RevenusPage() {
       <RevenusView
         contracts={contracts ?? []}
         initialEntries={entries ?? []}
+        initialCharges={(charges ?? []) as any[]}
         logementNoms={logementNoms}
+        logements={(logements ?? []) as any[]}
+        objectifAnnuel={objectif?.objectif_ca_annuel ?? null}
+        plan={plan}
       />
     </>
   )
