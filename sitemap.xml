@@ -4,24 +4,25 @@
   <!-- ── Pages principales ── -->
   <url>
     <loc>https://jasonmarinho.com/</loc>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/qui-suis-je/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/tarifs/</loc>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/contact/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -29,92 +30,99 @@
   <!-- ── Pour qui ── -->
   <url>
     <loc>https://jasonmarinho.com/pour-qui/</loc>
+    <lastmod>2026-03-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/pour-qui/chambres-dhotes/</loc>
+    <lastmod>2026-03-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/pour-qui/conciergeries/</loc>
+    <lastmod>2026-03-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/pour-qui/gites/</loc>
+    <lastmod>2026-03-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/pour-qui/membres-driing/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 
   <!-- ── Services / Formations ── -->
   <url>
     <loc>https://jasonmarinho.com/services</loc>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/formations/</loc>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/formations/maitriser-booking-com-algorithme-genius/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/formations/google-my-business-lcd/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/gmb/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/annonce-directe/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/acquisition-voyageurs/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-
-
   <url>
     <loc>https://jasonmarinho.com/services/securite/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/partenaires/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/audit-gbp/</loc>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/services/chez-nous/</loc>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -122,18 +130,19 @@
   <!-- ── Ressources ── -->
   <url>
     <loc>https://jasonmarinho.com/ressources</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/ressources/gabarits-messages/</loc>
+    <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/ressources/partenaires/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -141,813 +150,805 @@
   <!-- ── Blog ── -->
   <url>
     <loc>https://jasonmarinho.com/blog/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/optimiser-annonce-airbnb/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/tarification-dynamique-lcd/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/messages-airbnb-automatiser/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/google-my-business-hotes-lcd/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/reservation-directe-sans-commission/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/creer-conciergerie-airbnb-2025/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/obtenir-avis-5-etoiles-airbnb/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/location-courte-duree-impots-france/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/outils-gerer-location-courte-duree-2025/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/livret-accueil-digital-hotes-lcd/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/driing-plateforme-vacances-sans-commissions/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/reglementation-lcd-france-2026/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/airbnb-vs-booking-com-location-courte-duree/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/photographier-logement-location-courte-duree-smartphone/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/fixer-prix-minimum-airbnb-lcd/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/amenager-logement-location-courte-duree-petit-budget/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/appel-decouverte-jason-marinho-accompagnement-lcd/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/assurance-location-courte-duree-airbnb-couverture/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/attirer-teletravailleur-nomade-digital-location-courte-duree/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/base-voyageurs-fideles-location-directe-durable/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/basse-saison-location-courte-duree-strategies-reservations/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/booking-com-hotes-location-courte-duree-guide/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/chambres-hotes-plateforme-jason-marinho-ressources/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/check-in-location-courte-duree-boite-a-cles-serrure-connectee/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/checklist-menage-professionnelle-location-courte-duree/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/communaute-lcd-groupes-hotes-entraide-facebook/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/conciergerie-airbnb-faire-appel-choisir/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/conciergeries-lcd-ressources-plateforme-jason-marinho/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/declarer-activite-location-courte-duree-france-demarches/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/description-logement-convertit-reservation-directe/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/erreurs-debutant-location-courte-duree-premier-logement/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/fixer-prix-reservation-directe-location-courte-duree/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/formation-google-my-business-lcd-contenu/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/formations-lcd-disponibles-plateforme-jason-marinho/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/gabarits-messages-lcd-hotes-templates/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/gerer-mauvais-avis-airbnb-reponse-hote/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/gerer-voyageurs-difficiles-location-courte-duree/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/google-my-business-reservations-directes-hotes-lcd/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/instagram-hotes-lcd-attirer-voyageurs-reservations-directes/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/livret-accueil-digital-creer-location-courte-duree/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/location-directe-pourquoi-saffranchir-plateformes/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/mesurer-performance-canal-reservation-directe-kpi/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/partenaires-lcd-outils-valides-terrain-hotes/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/pms-logiciel-gestion-location-courte-duree-debutant/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/politique-annulation-location-directe-hote/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/pourquoi-creer-compte-plateforme-jason-marinho/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/premieres-reservations-directes-sans-audience-site-web/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/securiser-paiement-reservation-directe-sans-airbnb/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/site-reservation-directe-location-courte-duree/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/titre-annonce-airbnb-optimiser-clics-visibilite/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/verification-voyageurs-avant-accepter-reservation-lcd/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/tva-location-courte-duree-2026/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/dpe-location-courte-duree-obligations-2025-2034/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/algorithme-airbnb-2026-criteres-classement/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/workation-lcd-logement-equiper-louer-cher-hors-saison/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/sejours-longs-lcd-strategie-revenus-basse-saison/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/chatgpt-booking-com-impact-hotes-lcd/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/photos-airbnb-computer-vision-ia-optimiser/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/cybevasion-rachetee-holidu-impact-hotes-alternatives/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://jasonmarinho.com/blog/numero-enregistrement-lcd-20-mai-2026-demarches/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/description-airbnb-500-caracteres-convertit-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/photo-couverture-airbnb-7-criteres-algo-computer-vision/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/mots-cles-titre-annonce-airbnb-eviter-spam-detection/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/gmb-questions-reponses-hotes-lcd-optimiser/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/statistiques-annonce-airbnb-4-kpis-essentiels/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/point-mort-lcd-calcul-rentabilite-hote/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/frais-menage-airbnb-combien-facturer-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/tarif-hebdomadaire-vs-nuitee-quand-preferer/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/budget-annuel-hote-lcd-grille-couts/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/diversifier-revenus-lcd-au-dela-nuitees/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/marge-nette-par-nuitee-suivi-precis/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/serrure-connectee-igloohome-nuki-comparatif-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/automatiser-caution-swikly-youka-test-terrain/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/make-zapier-workflow-airbnb-no-code-debutant/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/capteurs-iot-lcd-bruit-temperature-utile-ou-pas/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/messagerie-unifiee-3-plateformes-tester/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/tva-petit-dejeuner-lcd-seuil-37500-2026-detail/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/lmnp-vs-lmp-changement-2026-impact/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/regime-reel-vs-micro-bic-decision-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/taxe-sejour-lcd-comment-collecter/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/assurance-lcd-5-garanties-indispensables-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/bail-mobilite-vs-courte-duree-differences/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/numero-enregistrement-lcd-obtenir-etapes-pratiques/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/travaux-energetiques-lcd-aides-maprimerenov-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/welcome-bag-lcd-12-idees-marquantes-budget/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/check-in-tardif-4-solutions-sans-cles/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/communiquer-voyageurs-etrangers-5-regles-multilingue/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/recuperer-mauvais-avis-airbnb-methode-5-etapes/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/bruit-reglement-interieur-lcd-efficace/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/prospection-conciergerie-trouver-premier-mandat/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/tarif-conciergerie-lcd-grille-marche-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/equipe-menage-conciergerie-recruter-fideliser/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/contrat-mandat-conciergerie-lcd-modele-clauses/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/outils-gratuits-indispensables-demarrer-lcd-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/checklist-preparation-logement-avant-1ere-reservation/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/top-7-erreurs-nouveaux-hotes-lcd-eviter/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/trousse-premier-secours-lcd-equipement-obligatoire/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/inventaire-logement-airbnb-modele-photos/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/guide-fiscal-debutant-hote-airbnb-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/formulaire-fiche-police-lcd-obligatoire/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/seo-local-hote-lcd-google-maps-visibilite/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/instagram-reels-tiktok-lcd-attirer-voyageurs/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/profil-hote-airbnb-bio-photo-confiance/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/optimiser-annonce-booking-com-2026-classement/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/recherches-voyageurs-airbnb-tendances-emergentes-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/saisonnalite-tarif-region-france-lcd-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/airdna-mode-emploi-hote-lcd-debutant/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/last-minute-vs-early-booking-strategie-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/refacturer-degat-voyageur-airbnb-procedure/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/prix-min-max-airbnb-fourchette-tarifaire/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/accueillir-famille-enfants-airbnb-equipement/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/accueillir-voyageur-business-lcd-essentiels/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/chambres-hotes-vs-meuble-tourisme-differences/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/signaletique-interieure-lcd-reduit-questions/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/logiciels-conciergerie-comparatif-2026/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/scaler-conciergerie-5-30-mandats-process/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/sortir-mauvais-client-conciergerie-procedure/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/erp-classement-meuble-tourisme-lcd/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/rgpd-donnees-voyageurs-airbnb-conformite/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/droits-voisins-lcd-copropriete-litiges/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/stripe-paiement-direct-lcd-mise-en-place/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/integration-calendrier-perso-airbnb-google/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/scripts-check-out-automatique-lcd/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/blog-hote-lcd-strategie-trafic-organique/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/partenariats-locaux-hotes-lcd-restaurants-activites/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/programme-parrainage-voyageurs-fidelisation-lcd/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/email-marketing-newsletter-hote-lcd/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/photos-avant-apres-home-staging-lcd/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/banque-objets-utiles-laisser-voyageur-lcd/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/modele-email-post-sejour-fideliser-voyageur/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://jasonmarinho.com/blog/micro-bic-abattement-2026-airbnb/</loc>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- ── Pour qui — membres Driing ── -->
   <url>
-    <loc>https://jasonmarinho.com/pour-qui/membres-driing/</loc>
+    <loc>https://jasonmarinho.com/blog/tva-location-courte-duree-2026/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/dpe-location-courte-duree-obligations-2025-2034/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/algorithme-airbnb-2026-criteres-classement/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/workation-lcd-logement-equiper-louer-cher-hors-saison/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/sejours-longs-lcd-strategie-revenus-basse-saison/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/chatgpt-booking-com-impact-hotes-lcd/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/photos-airbnb-computer-vision-ia-optimiser/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/cybevasion-rachetee-holidu-impact-hotes-alternatives/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/numero-enregistrement-lcd-20-mai-2026-demarches/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/airbnb-vs-booking-com-location-courte-duree/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/photographier-logement-location-courte-duree-smartphone/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/attirer-teletravailleur-nomade-digital-location-courte-duree/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/gerer-mauvais-avis-airbnb-reponse-hote/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/declarer-activite-location-courte-duree-france-demarches/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/gerer-voyageurs-difficiles-location-courte-duree/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/site-reservation-directe-location-courte-duree/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/conciergerie-airbnb-faire-appel-choisir/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/titre-annonce-airbnb-optimiser-clics-visibilite/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/livret-accueil-digital-creer-location-courte-duree/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/fixer-prix-minimum-airbnb-lcd/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/erreurs-debutant-location-courte-duree-premier-logement/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/location-directe-pourquoi-saffranchir-plateformes/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/premieres-reservations-directes-sans-audience-site-web/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/base-voyageurs-fideles-location-directe-durable/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/fixer-prix-reservation-directe-location-courte-duree/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/securiser-paiement-reservation-directe-sans-airbnb/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/instagram-hotes-lcd-attirer-voyageurs-reservations-directes/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/politique-annulation-location-directe-hote/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/description-logement-convertit-reservation-directe/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/google-my-business-reservations-directes-hotes-lcd/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/pms-logiciel-gestion-location-courte-duree-debutant/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/mesurer-performance-canal-reservation-directe-kpi/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/verification-voyageurs-avant-accepter-reservation-lcd/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/gabarits-messages-lcd-hotes-templates/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/communaute-lcd-groupes-hotes-entraide-facebook/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/partenaires-lcd-outils-valides-terrain-hotes/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/formation-google-my-business-lcd-contenu/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/chambres-hotes-plateforme-jason-marinho-ressources/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/conciergeries-lcd-ressources-plateforme-jason-marinho/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/formations-lcd-disponibles-plateforme-jason-marinho/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/pourquoi-creer-compte-plateforme-jason-marinho/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/checklist-menage-professionnelle-location-courte-duree/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/appel-decouverte-jason-marinho-accompagnement-lcd/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/amenager-logement-location-courte-duree-petit-budget/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/booking-com-hotes-location-courte-duree-guide/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/check-in-location-courte-duree-boite-a-cles-serrure-connectee/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/assurance-location-courte-duree-airbnb-couverture/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/basse-saison-location-courte-duree-strategies-reservations/</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/reglementation-lcd-france-2026/</loc>
+    <lastmod>2025-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/optimiser-annonce-airbnb/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/tarification-dynamique-lcd/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/messages-airbnb-automatiser/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/google-my-business-hotes-lcd/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/reservation-directe-sans-commission/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/creer-conciergerie-airbnb-2025/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/obtenir-avis-5-etoiles-airbnb/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/location-courte-duree-impots-france/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/outils-gerer-location-courte-duree-2025/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/livret-accueil-digital-hotes-lcd/</loc>
+    <lastmod>2025-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/driing-plateforme-vacances-sans-commissions/</loc>
+    <lastmod>2025-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

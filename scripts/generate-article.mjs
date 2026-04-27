@@ -434,7 +434,7 @@ function updateBlogIndex(art) {
 function updateSitemap(art) {
   const filePath = resolve(ROOT, 'sitemap.xml')
   let xml = readFileSync(filePath, 'utf8')
-  const entry = `\n  <url>\n    <loc>https://jasonmarinho.com/blog/${art.slug}/</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>`
+  const entry = `\n  <url>\n    <loc>https://jasonmarinho.com/blog/${art.slug}/</loc>\n    <lastmod>${art.date}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>`
   xml = xml.replace('</urlset>', entry + '\n</urlset>')
   writeFileSync(filePath, xml, 'utf8')
   console.log(`✓ sitemap.xml mis à jour`)

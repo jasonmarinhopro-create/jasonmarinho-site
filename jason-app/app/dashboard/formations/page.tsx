@@ -48,7 +48,7 @@ export default async function FormationsPage() {
     <>
       <Header title="Formations" userName={profile?.full_name ?? undefined} />
 
-      <div style={styles.page}>
+      <div style={styles.page} className="formations-no-fade">
         <div style={styles.intro} className="fade-up">
           <h2 style={styles.pageTitle}>Tes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>formations</em></h2>
           <p style={styles.pageDesc}>Des parcours concrets pour optimiser ta location courte durée. Accessibles à vie, à ton rythme.</p>

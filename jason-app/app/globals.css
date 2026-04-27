@@ -55,6 +55,12 @@
   /* Accent text — yellow on dark, forest green on light */
   --accent-text: #FFD56B;
 
+  /* Accent tinted backgrounds (yellow-tinted on dark) */
+  --accent-bg:        rgba(255,213,107,0.07);
+  --accent-bg-2:      rgba(255,213,107,0.12);
+  --accent-border:    rgba(255,213,107,0.18);
+  --accent-border-2:  rgba(255,213,107,0.25);
+
   /* Card shadow */
   --card-shadow:  none;
 
@@ -90,6 +96,12 @@
 
   /* Accent text — forest green on light bg */
   --accent-text: #004C3F;
+
+  /* Accent tinted backgrounds (green-tinted on light) */
+  --accent-bg:        rgba(0,76,63,0.06);
+  --accent-bg-2:      rgba(0,76,63,0.1);
+  --accent-border:    rgba(0,76,63,0.18);
+  --accent-border-2:  rgba(0,76,63,0.25);
 
   /* Card shadow */
   --card-shadow:  0 2px 16px rgba(0,76,63,0.07);
@@ -226,8 +238,9 @@ em { font-style: italic; color: var(--accent); }
 .fade-up.d3 { animation-delay: 0.24s; }
 .fade-up.d4 { animation-delay: 0.32s; }
 
-/* Communauté page: bypass fade-up entirely (React 18 client-nav timing issue) */
-.communaute-no-fade .fade-up {
+/* Pages avec bypass fade-up (React 18 client-nav timing issue) */
+.communaute-no-fade .fade-up,
+.formations-no-fade .fade-up {
   animation: none !important;
   opacity: 1 !important;
   transform: none !important;
