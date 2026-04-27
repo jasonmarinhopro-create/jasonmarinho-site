@@ -74,6 +74,27 @@ const TYPE_LABELS: Record<string, string> = {
 const MODE_OPTIONS = ['virement', 'especes', 'cheque', 'autre'] as const
 const TYPE_OPTIONS = ['loyer', 'caution', 'frais_menage', 'autre'] as const
 
+// ─── Charges ─────────────────────────────────────────────────────────────────
+
+const CHARGE_CATEGORIES: Array<{ slug: string; label: string; emoji: string; color: string }> = [
+  { slug: 'menage',                 label: 'Ménage',           emoji: '🧹', color: '#60a5fa' },
+  { slug: 'energie',                label: 'Énergie',          emoji: '⚡', color: '#f59e0b' },
+  { slug: 'commissions_plateforme', label: 'Commissions',      emoji: '💸', color: '#ef4444' },
+  { slug: 'taxe_fonciere',          label: 'Taxe foncière',    emoji: '🏛️', color: '#a78bfa' },
+  { slug: 'taxe_sejour',            label: 'Taxe de séjour',   emoji: '🛌', color: '#0ea5e9' },
+  { slug: 'assurance',              label: 'Assurance',        emoji: '🛡️', color: '#34d399' },
+  { slug: 'travaux',                label: 'Travaux',          emoji: '🔨', color: '#fb923c' },
+  { slug: 'equipement',             label: 'Équipement',       emoji: '🪑', color: '#22d3ee' },
+  { slug: 'abonnement',             label: 'Abonnement',       emoji: '📅', color: '#c084fc' },
+  { slug: 'comptabilite',           label: 'Comptabilité',     emoji: '📊', color: '#84cc16' },
+  { slug: 'banque',                 label: 'Banque',           emoji: '🏦', color: '#94a3b8' },
+  { slug: 'amortissement',          label: 'Amortissement',    emoji: '📉', color: '#f472b6' },
+  { slug: 'autre',                  label: 'Autre',            emoji: '✨', color: 'var(--text-muted)' },
+]
+
+const CHARGE_LABEL: Record<string, { label: string; emoji: string; color: string }> =
+  Object.fromEntries(CHARGE_CATEGORIES.map(c => [c.slug, c]))
+
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function isPaid(c: Contract): boolean {
@@ -138,13 +159,21 @@ export default function RevenusView({
     if (logementParam) setLogementFilter(logementParam)
   }, [])
 
-  // form fields
+  // form fields revenus
   const [fLogement, setFLogement] = useState('')
   const [fMontant,  setFMontant]  = useState('')
   const [fDate,     setFDate]     = useState(todayISO)
   const [fMode,     setFMode]     = useState<string>('virement')
   const [fType,     setFType]     = useState<string>('loyer')
   const [fDesc,     setFDesc]     = useState('')
+
+  // form fields charges
+  const [cLogement, setCLogement] = useState('')
+  const [cMontant,  setCMontant]  = useState('')
+  const [cDate,     setCDate]     = useState(todayISO)
+  const [cCat,      setCCat]      = useState<string>('menage')
+  const [cDesc,     setCDesc]     = useState('')
+  const [cDeductible, setCDeductible] = useState<boolean>(true)
 
   function resetForm() {
     setFLogement(''); setFMontant(''); setFDate(todayISO())
@@ -182,6 +211,71 @@ export default function RevenusView({
     setEntries(prev => prev.filter(e => e.id !== id))
     startT(async () => { await deleteRevenusEntry(id) })
   }
+
+  // ── Charges handlers ───────────────────────────────────────────────────
+
+  function resetChargeForm() {
+    setCLogement(''); setCMontant(''); setCDate(todayISO())
+    setCCat('menage'); setCDesc(''); setCDeductible(true)
+    setShowChargeForm(false)
+  }
+
+  function handleAddCharge() {
+    const montant = parseFloat(cMontant)
+    if (!cLogement.trim() || isNaN(montant) || montant <= 0 || !cDate) return
+    const matchedLogement = logements.find(l => l.nom === cLogement.trim())
+    const optimistic: ChargeEntry = {
+      id: 'tmp-' + Date.now(),
+      logement_nom: cLogement.trim(),
+      logement_id: matchedLogement?.id ?? null,
+      montant,
+      date_charge: cDate,
+      categorie: cCat,
+      description: cDesc.trim() || null,
+      deductible: cDeductible,
+    }
+    setCharges(prev => [optimistic, ...prev])
+    resetChargeForm()
+    startT(async () => {
+      const res = await createCharge({
+        logement_nom: optimistic.logement_nom,
+        logement_id: optimistic.logement_id,
+        montant: optimistic.montant,
+        date_charge: optimistic.date_charge,
+        categorie: optimistic.categorie,
+        description: optimistic.description,
+        deductible: optimistic.deductible,
+      })
+      if (res.error) {
+        setCharges(prev => prev.filter(c => c.id !== optimistic.id))
+      } else if (res.charge) {
+        setCharges(prev => prev.map(c => c.id === optimistic.id ? (res.charge as ChargeEntry) : c))
+      }
+    })
+  }
+
+  function handleDeleteCharge(id: string) {
+    setCharges(prev => prev.filter(c => c.id !== id))
+    startT(async () => { await deleteCharge(id) })
+  }
+
+  // ── Charges stats (pour Phase 2 KPIs et la section dédiée) ──
+  const chargesStats = useMemo(() => {
+    let cesMois = 0, cetteAnnee = 0
+    const byCategoryYTD: Record<string, number> = {}
+    charges.forEach(c => {
+      const d = new Date(c.date_charge)
+      if (d.getFullYear() === thisYear) {
+        cetteAnnee += c.montant
+        if (d.getMonth() === thisMonth) cesMois += c.montant
+        byCategoryYTD[c.categorie] = (byCategoryYTD[c.categorie] ?? 0) + c.montant
+      }
+    })
+    const byCategorySorted = Object.entries(byCategoryYTD)
+      .map(([cat, total]) => ({ cat, total, ...CHARGE_LABEL[cat] }))
+      .sort((a, b) => b.total - a.total)
+    return { cesMois, cetteAnnee, byCategorySorted }
+  }, [charges, thisMonth, thisYear])
 
   // ── KPIs ────────────────────────────────────────────────────────────────
 
@@ -579,6 +673,176 @@ export default function RevenusView({
         }
       </section>
 
+      {/* ── Charges & dépenses ─────────────────────────────────────── */}
+      <section style={s.card}>
+        <div style={s.journalHead}>
+          <div>
+            <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>
+              <Receipt size={16} weight="fill" style={{ verticalAlign: 'middle', marginRight: '6px', color: 'var(--accent-text)' }} />
+              Charges & dépenses
+            </h2>
+            <p style={{ ...s.cardSub, margin: 0 }}>
+              Ménage, énergie, commissions, taxes, assurance — pour calculer ton bénéfice net
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', flexShrink: 0, alignItems: 'center', flexWrap: 'wrap' as const }}>
+            {chargesStats.cetteAnnee > 0 && (
+              <span style={{
+                fontSize: '12px', fontWeight: 600,
+                padding: '6px 12px',
+                background: 'rgba(239,68,68,0.08)',
+                color: '#ef4444',
+                border: '1px solid rgba(239,68,68,0.20)',
+                borderRadius: '8px',
+              }}>
+                {fmt(chargesStats.cetteAnnee)} cette année
+              </span>
+            )}
+            <button
+              onClick={() => setShowChargeForm(v => !v)}
+              style={{ ...s.actionBtn, ...(showChargeForm ? s.actionBtnCancel : {}) }}
+            >
+              {showChargeForm ? <X size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
+              {showChargeForm ? 'Annuler' : 'Ajouter une charge'}
+            </button>
+          </div>
+        </div>
+
+        {/* Form ajout charge */}
+        {showChargeForm && (
+          <div style={s.addForm}>
+            <div className="rev-form-grid">
+              <div style={s.formField}>
+                <label style={s.formLabel}>Catégorie *</label>
+                <select value={cCat} onChange={e => setCCat(e.target.value)} style={s.formInput} className="input-field">
+                  {CHARGE_CATEGORIES.map(c => (
+                    <option key={c.slug} value={c.slug}>{c.emoji} {c.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={s.formField}>
+                <label style={s.formLabel}>Logement *</label>
+                <input
+                  list="log-list-charges" value={cLogement} onChange={e => setCLogement(e.target.value)}
+                  placeholder="Villa du Soleil" style={s.formInput} className="input-field"
+                />
+                <datalist id="log-list-charges">
+                  {logementNoms.map(n => <option key={n} value={n} />)}
+                </datalist>
+              </div>
+              <div style={s.formField}>
+                <label style={s.formLabel}>Montant (€) *</label>
+                <input
+                  type="number" min="0.01" step="0.01"
+                  value={cMontant} onChange={e => setCMontant(e.target.value)}
+                  placeholder="80" style={s.formInput} className="input-field"
+                />
+              </div>
+              <div style={s.formField}>
+                <label style={s.formLabel}>Date *</label>
+                <input
+                  type="date" value={cDate} onChange={e => setCDate(e.target.value)}
+                  style={s.formInput} className="input-field"
+                />
+              </div>
+              <div style={{ ...s.formField, gridColumn: 'span 2' }}>
+                <label style={s.formLabel}>Description (optionnel)</label>
+                <input
+                  value={cDesc} onChange={e => setCDesc(e.target.value)}
+                  placeholder="Ex : Marie, ménage 5h juin…" style={s.formInput} className="input-field"
+                />
+              </div>
+              <div style={{ ...s.formField, gridColumn: 'span 2' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox" checked={cDeductible}
+                    onChange={e => setCDeductible(e.target.checked)}
+                    style={{ width: '15px', height: '15px', accentColor: 'var(--accent-text)' }}
+                  />
+                  <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
+                    Charge déductible (régime réel)
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '12px' }}>
+              <button
+                onClick={handleAddCharge}
+                disabled={!cLogement.trim() || !cMontant || parseFloat(cMontant) <= 0 || !cDate}
+                style={{ ...s.actionBtn, opacity: (cLogement.trim() && cMontant && parseFloat(cMontant) > 0 && cDate) ? 1 : 0.45 }}
+              >
+                <Check size={14} weight="bold" />
+                Enregistrer la charge
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Répartition par catégorie (top 6) */}
+        {chargesStats.byCategorySorted.length > 0 && (
+          <div style={s.chargesCatGrid}>
+            {chargesStats.byCategorySorted.slice(0, 6).map(c => {
+              const pct = chargesStats.cetteAnnee > 0 ? (c.total / chargesStats.cetteAnnee) * 100 : 0
+              return (
+                <div key={c.cat} style={s.chargesCatItem}>
+                  <div style={s.chargesCatHead}>
+                    <span style={{ fontSize: '14px' }}>{c.emoji}</span>
+                    <span style={s.chargesCatLabel}>{c.label}</span>
+                    <span style={s.chargesCatAmount}>{fmt(c.total)}</span>
+                  </div>
+                  <div style={s.chargesCatBar}>
+                    <div style={{ ...s.chargesCatBarFill, width: `${pct}%`, background: c.color }} />
+                  </div>
+                  <span style={s.chargesCatPct}>{pct.toFixed(0)} % du total</span>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Liste des charges récentes */}
+        {charges.length === 0 ? (
+          <p style={s.empty}>Aucune charge enregistrée. Ajoute ta première dépense pour calculer ton bénéfice net.</p>
+        ) : (
+          <div style={{ ...s.txList, marginTop: '12px' }}>
+            {charges.slice(0, 12).map(c => {
+              const def = CHARGE_LABEL[c.categorie] ?? CHARGE_LABEL.autre
+              return (
+                <div key={c.id} style={s.txRow} className="tx-row">
+                  <div style={s.txDate}>{fmtDate(c.date_charge)}</div>
+                  <div style={s.txInfo}>
+                    <span style={s.txLogement}>
+                      <span style={{ marginRight: '4px' }}>{def.emoji}</span>
+                      {def.label}
+                    </span>
+                    <span style={s.txGuest}>{c.logement_nom}</span>
+                  </div>
+                  <div style={s.txMeta} className="tx-meta">
+                    {c.description && <span style={s.txMode}>{c.description}</span>}
+                  </div>
+                  <span style={{ ...s.txAmount, color: '#ef4444' }}>− {fmt(c.montant)}</span>
+                  <span style={{
+                    ...s.txBadge,
+                    background: c.deductible ? 'rgba(74,222,128,0.10)' : 'rgba(148,163,184,0.10)',
+                    color: c.deductible ? '#4ade80' : 'var(--text-muted)',
+                  }}>
+                    {c.deductible ? '✓ Déductible' : 'Non déduct.'}
+                  </span>
+                  <button onClick={() => handleDeleteCharge(c.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer">
+                    <Trash size={13} />
+                  </button>
+                </div>
+              )
+            })}
+            {charges.length > 12 && (
+              <p style={{ ...s.empty, padding: '12px 0' }}>
+                + {charges.length - 12} autres charges (export CSV à venir)
+              </p>
+            )}
+          </div>
+        )}
+      </section>
+
       <FiscaliteSection annuel={kpis.cetteAnneeEnc} />
 
       <ImportCSVModal
@@ -864,6 +1128,50 @@ const s: Record<string, React.CSSProperties> = {
   deleteBtn:{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '6px', border: 'none', background: 'none', color: 'var(--text-muted)', cursor: 'pointer', flexShrink: 0, padding: 0 },
 
   empty:    { fontSize: '14px', color: 'var(--text-muted)', textAlign: 'center', padding: '28px 0', margin: 0 },
+
+  // ─── Phase 4 — Charges & dépenses ──────────────────────────────
+  chargesCatGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gap: '10px',
+    margin: '14px 0 6px',
+  },
+  chargesCatItem: {
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    padding: '10px 12px',
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  chargesCatHead: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+  },
+  chargesCatLabel: {
+    flex: 1, minWidth: 0,
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--text)',
+    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
+  },
+  chargesCatAmount: {
+    fontSize: '12px', fontWeight: 700,
+    color: 'var(--text-2)',
+    flexShrink: 0,
+  },
+  chargesCatBar: {
+    height: '5px',
+    background: 'var(--surface-2)',
+    borderRadius: '3px',
+    overflow: 'hidden' as const,
+  },
+  chargesCatBarFill: {
+    height: '100%',
+    borderRadius: '3px',
+    transition: 'width 0.3s',
+  },
+  chargesCatPct: {
+    fontSize: '10px',
+    color: 'var(--text-muted)',
+  },
 
   // ─── Phase 1 — Onboarding empty state ──────────────────────────
   onboardingCard: {
