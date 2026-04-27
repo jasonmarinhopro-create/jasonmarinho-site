@@ -336,28 +336,82 @@ export default function RevenusView({
     }
   }, [contracts, entries, thisMonth, thisYear, chargesStats.cesMois, chargesStats.cetteAnnee])
 
-  // ── Chart ───────────────────────────────────────────────────────────────
+  // ── Chart (Phase 3 — enrichi) ────────────────────────────────────
+  const [chartRange, setChartRange] = useState<'6m' | '12m' | 'year'>('6m')
 
   const chartData = useMemo(() => {
-    return Array.from({ length: 6 }, (_, i) => {
-      const d     = new Date(thisYear, thisMonth - (5 - i), 1)
-      const key   = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-      const label = d.toLocaleDateString('fr-FR', { month: 'short' })
-      let total   = 0
+    // 6m : 6 derniers mois glissants
+    // 12m : 12 derniers mois glissants
+    // year : année courante (jan → déc)
+    const months: Array<{ key: string; label: string; date: Date; isCurrent: boolean; isPast: boolean; isFuture: boolean }> = []
+
+    const todayMonthKey = `${thisYear}-${String(thisMonth + 1).padStart(2, '0')}`
+    if (chartRange === 'year') {
+      for (let m = 0; m < 12; m++) {
+        const d = new Date(thisYear, m, 1)
+        const key = `${thisYear}-${String(m + 1).padStart(2, '0')}`
+        months.push({
+          key, date: d,
+          label: d.toLocaleDateString('fr-FR', { month: 'short' }),
+          isCurrent: key === todayMonthKey,
+          isPast: m < thisMonth,
+          isFuture: m > thisMonth,
+        })
+      }
+    } else {
+      const count = chartRange === '12m' ? 12 : 6
+      for (let i = count - 1; i >= 0; i--) {
+        const d = new Date(thisYear, thisMonth - i, 1)
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+        months.push({
+          key, date: d,
+          label: d.toLocaleDateString('fr-FR', { month: 'short' }),
+          isCurrent: key === todayMonthKey,
+          isPast: i > 0,
+          isFuture: false,
+        })
+      }
+    }
+
+    return months.map(month => {
+      const key = month.key
+      const yPart = key.slice(0, 4); const mPart = key.slice(5, 7)
+      const n1Key = `${parseInt(yPart, 10) - 1}-${mPart}`
+
+      let encaisse = 0
+      let prevu = 0
+      let n1 = 0
+
       contracts.forEach(c => {
-        if (!isPaid(c) || !c.date_arrivee) return
+        if (!c.date_arrivee) return
         const da = new Date(c.date_arrivee)
-        if (`${da.getFullYear()}-${String(da.getMonth() + 1).padStart(2, '0')}` === key)
-          total += c.montant_loyer ?? 0
+        const dKey = `${da.getFullYear()}-${String(da.getMonth() + 1).padStart(2, '0')}`
+        const loyer = c.montant_loyer ?? 0
+        if (dKey === key) {
+          if (isPaid(c)) encaisse += loyer
+          else if (isPending(c)) prevu += loyer
+        } else if (dKey === n1Key && isPaid(c)) {
+          n1 += loyer
+        }
       })
       entries.forEach(e => {
         const de = new Date(e.date_paiement)
-        if (`${de.getFullYear()}-${String(de.getMonth() + 1).padStart(2, '0')}` === key)
-          total += e.montant
+        const dKey = `${de.getFullYear()}-${String(de.getMonth() + 1).padStart(2, '0')}`
+        if (dKey === key) encaisse += e.montant
+        else if (dKey === n1Key) n1 += e.montant
       })
-      return { key, label, total }
+
+      return { ...month, encaisse, prevu, n1, total: encaisse + prevu }
     })
-  }, [contracts, entries, thisMonth, thisYear])
+  }, [contracts, entries, thisMonth, thisYear, chartRange])
+
+  const chartMaxValue = useMemo(() => {
+    return Math.max(
+      ...chartData.flatMap(m => [m.encaisse + m.prevu, m.n1]),
+      objectifAnnuel ? objectifAnnuel / 12 : 0,
+      1,
+    )
+  }, [chartData, objectifAnnuel])
 
   // ── Logement stats ───────────────────────────────────────────────────────
 
@@ -528,24 +582,104 @@ export default function RevenusView({
       {/* Chart + logement stats */}
       <div style={s.twoCol}>
         <section style={s.card}>
-          <h2 style={s.cardTitle}>Revenus encaissés</h2>
-          <p style={s.cardSub}>6 derniers mois</p>
-          <div style={s.chart}>
-            {chartData.map(month => (
-              <div key={month.key} style={s.chartCol}>
-                <div style={s.barWrap}>
-                  <div style={{
-                    ...s.bar,
-                    height: `${Math.max((month.total / maxChart) * 100, month.total > 0 ? 4 : 2)}%`,
-                    opacity: month.total === 0 ? 0.15 : 1,
-                  }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' as const, gap: '8px' }}>
+            <div>
+              <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>Revenus encaissés</h2>
+              <p style={{ ...s.cardSub, margin: 0 }}>
+                {chartRange === '6m' ? '6 derniers mois' : chartRange === '12m' ? '12 derniers mois' : `Année ${thisYear}`}
+                {' · '}vert : encaissé · cyan pointillé : prévu · trait gris : N−1
+              </p>
+            </div>
+            <div style={s.chartToggle}>
+              {([
+                { id: '6m', label: '6 mois' },
+                { id: '12m', label: '12 mois' },
+                { id: 'year', label: `${thisYear}` },
+              ] as const).map(opt => (
+                <button
+                  key={opt.id}
+                  onClick={() => setChartRange(opt.id)}
+                  style={{ ...s.chartToggleBtn, ...(chartRange === opt.id ? s.chartToggleBtnActive : {}) }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ ...s.chart, position: 'relative' as const }}>
+            {/* Ligne d'objectif annuel */}
+            {objectifAnnuel && objectifAnnuel > 0 && (() => {
+              const monthlyTarget = objectifAnnuel / 12
+              const pct = (monthlyTarget / chartMaxValue) * 100
+              if (pct < 5 || pct > 95) return null
+              return (
+                <div style={{
+                  position: 'absolute' as const, left: '8px', right: '8px',
+                  bottom: `calc(${pct}% + 28px)`,
+                  height: '1px',
+                  background: 'rgba(96,165,250,0.6)',
+                  borderTop: '1px dashed rgba(96,165,250,0.8)',
+                  zIndex: 1, pointerEvents: 'none' as const,
+                }}>
+                  <span style={{
+                    position: 'absolute' as const, right: 0, top: '-16px',
+                    fontSize: '10px', fontWeight: 600, color: '#60a5fa',
+                    letterSpacing: '0.3px',
+                  }}>
+                    🎯 {Math.round(monthlyTarget)} €/mois
+                  </span>
                 </div>
-                <span style={s.barAmount}>
-                  {month.total > 0 ? new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(month.total) : '–'}
-                </span>
-                <span style={s.barLabel}>{month.label}</span>
-              </div>
-            ))}
+              )
+            })()}
+
+            {chartData.map(month => {
+              const totalH = Math.max((month.encaisse / chartMaxValue) * 100, month.encaisse > 0 ? 4 : 2)
+              const prevuH = (month.prevu / chartMaxValue) * 100
+              const n1H = (month.n1 / chartMaxValue) * 100
+              return (
+                <div key={month.key} style={s.chartCol}>
+                  <div style={{ ...s.barWrap, position: 'relative' as const }}>
+                    {/* Marqueur N-1 (trait gris fin) */}
+                    {month.n1 > 0 && (
+                      <div style={{
+                        position: 'absolute' as const, left: '4px', right: '4px',
+                        bottom: `${n1H}%`,
+                        height: '2px',
+                        background: 'var(--text-muted)',
+                        opacity: 0.5,
+                        borderRadius: '1px',
+                      }} title={`N−1 : ${fmt(month.n1)}`} />
+                    )}
+                    {/* Bar encaissé */}
+                    <div style={{
+                      ...s.bar,
+                      height: `${totalH}%`,
+                      opacity: month.encaisse === 0 ? 0.15 : 1,
+                    }} />
+                    {/* Bar prévu (au-dessus, hachuré cyan) */}
+                    {month.prevu > 0 && (
+                      <div style={{
+                        position: 'absolute' as const,
+                        bottom: `${totalH}%`,
+                        left: 0, right: 0,
+                        height: `${prevuH}%`,
+                        background: 'repeating-linear-gradient(45deg, rgba(96,165,250,0.45) 0, rgba(96,165,250,0.45) 4px, rgba(96,165,250,0.20) 4px, rgba(96,165,250,0.20) 8px)',
+                        borderRadius: '3px 3px 0 0',
+                      }} title={`Prévu : ${fmt(month.prevu)}`} />
+                    )}
+                  </div>
+                  <span style={s.barAmount}>
+                    {month.total > 0
+                      ? new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(month.total)
+                      : '–'
+                    }
+                  </span>
+                  <span style={{ ...s.barLabel, fontWeight: month.isCurrent ? 700 : 500, color: month.isCurrent ? 'var(--accent-text)' : undefined }}>
+                    {month.label}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </section>
 
@@ -1191,6 +1325,30 @@ const s: Record<string, React.CSSProperties> = {
   deleteBtn:{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '6px', border: 'none', background: 'none', color: 'var(--text-muted)', cursor: 'pointer', flexShrink: 0, padding: 0 },
 
   empty:    { fontSize: '14px', color: 'var(--text-muted)', textAlign: 'center', padding: '28px 0', margin: 0 },
+
+  // ─── Phase 3 — Chart toggle ─────────────────────────────────────
+  chartToggle: {
+    display: 'inline-flex', gap: '2px',
+    padding: '3px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    flexShrink: 0,
+  },
+  chartToggleBtn: {
+    padding: '4px 10px',
+    fontSize: '11px', fontWeight: 600,
+    color: 'var(--text-muted)',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer', fontFamily: 'inherit',
+    transition: 'all 0.15s',
+  },
+  chartToggleBtnActive: {
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
+  },
 
   // ─── Phase 4 — Charges & dépenses ──────────────────────────────
   chargesCatGrid: {
