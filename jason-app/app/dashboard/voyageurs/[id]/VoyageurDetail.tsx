@@ -542,6 +542,19 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     return { totalCA, nbSejours, dureeMoyenne, lastVisit, nextStay, statut }
   })()
 
+  // ─── Logements fréquentés (pour bouton "Voir le logement") ──
+  const logementsFrequentes = (() => {
+    const counts = new Map<string, number>()
+    sejours.forEach(sj => {
+      if (sj.logement) counts.set(sj.logement, (counts.get(sj.logement) ?? 0) + 1)
+    })
+    const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1])
+    return sorted.map(([nom, count]) => ({ nom, count, logementId: logements.find(l => l.nom === nom)?.id }))
+  })()
+
+  // Date à utiliser pour le calendrier : prochain à venir, sinon dernier passé
+  const calendrierTargetDate = stats.nextStay?.date_arrivee ?? stats.lastVisit ?? null
+
   // ─── Timeline d'événements (calculée depuis séjours + contrat) ──
   type TimelineEvent = { date: string; icon: string; label: string; subtitle?: string; tone: 'past' | 'today' | 'future' }
   const timeline: TimelineEvent[] = (() => {
@@ -916,6 +929,53 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       <Phone size={13} weight="fill" />
                       SMS
                     </a>
+                  )}
+                </div>
+              )}
+
+              {/* Liens inter-modules (calendrier + logement) */}
+              {(calendrierTargetDate || logementsFrequentes.length > 0) && (
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'center', marginTop: '4px' }}>
+                  {calendrierTargetDate && (
+                    <a
+                      href={`/dashboard/calendrier`}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                        background: 'var(--surface)', color: 'var(--text-2)',
+                        border: '1px solid var(--border)', borderRadius: '8px',
+                        textDecoration: 'none' as const,
+                      }}
+                    >
+                      <CalendarBlank size={13} weight="fill" />
+                      Calendrier
+                    </a>
+                  )}
+                  {logementsFrequentes.length === 1 && logementsFrequentes[0].logementId && (
+                    <a
+                      href={`/dashboard/logements/${logementsFrequentes[0].logementId}`}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                        background: 'var(--surface)', color: 'var(--text-2)',
+                        border: '1px solid var(--border)', borderRadius: '8px',
+                        textDecoration: 'none' as const,
+                      }}
+                    >
+                      <House size={13} weight="fill" />
+                      {logementsFrequentes[0].nom}
+                    </a>
+                  )}
+                  {logementsFrequentes.length > 1 && (
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '5px',
+                      padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                      background: 'var(--surface)', color: 'var(--text-muted)',
+                      border: '1px solid var(--border)', borderRadius: '8px',
+                    }}>
+                      <House size={13} weight="fill" />
+                      {logementsFrequentes.length} logements visités
+                    </span>
                   )}
                 </div>
               )}
