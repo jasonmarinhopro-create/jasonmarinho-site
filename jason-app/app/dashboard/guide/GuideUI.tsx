@@ -3,16 +3,17 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
-  HouseLine, Coffee, Buildings, Handshake,
+  HouseLine, Coffee, Buildings, Handshake, Sparkle,
   Scales, CurrencyEur, ClipboardText, Globe, Briefcase, FileText, Megaphone, ShieldCheck, Gavel,
   Warning, Info, CheckCircle, ArrowRight, BookOpen, ArrowUpRight,
   Leaf, IdentificationBadge, UsersThree, Calculator, ForkKnife, Wheelchair,
   UserGear, Target, ChartLineUp, MapPin, EnvelopeSimple, Star, Confetti,
+  Lock, Stack, MagnifyingGlass, Receipt, ChatCircleText,
 } from '@phosphor-icons/react'
 
 const BLOG_BASE = 'https://jasonmarinho.com/blog/'
 
-type ProfileFilter = 'all' | 'gites' | 'chambres' | 'conciergerie' | 'direct'
+type ProfileFilter = 'all' | 'commun' | 'gites' | 'chambres' | 'conciergerie' | 'direct'
 type RuleType = 'info' | 'ok' | 'warn'
 
 interface Rule {
@@ -43,13 +44,144 @@ const PROFILE_DEFS: Record<Exclude<ProfileFilter, 'all'>, {
   color: string
   bg: string
 }> = {
-  gites:        { label: 'Gîtes · EI ou SASU',    icon: <HouseLine size={13} weight="fill" />, color: '#d97706', bg: 'rgba(245,158,11,0.12)' },
-  chambres:     { label: "Chambres d'hôtes",        icon: <Coffee    size={13} weight="fill" />, color: '#db2777', bg: 'rgba(236,72,153,0.12)' },
-  conciergerie: { label: 'Conciergeries',           icon: <Buildings size={13} weight="fill" />, color: '#7c3aed', bg: 'rgba(139,92,246,0.12)' },
-  direct:       { label: 'Réservation directe',     icon: <Handshake size={13} weight="fill" />, color: '#059669', bg: 'rgba(16,185,129,0.12)' },
+  commun:       { label: 'Essentiels · pour tous', icon: <Sparkle   size={13} weight="fill" />, color: '#0d9488', bg: 'rgba(13,148,136,0.12)' },
+  gites:        { label: 'Gîtes · EI ou SASU',     icon: <HouseLine size={13} weight="fill" />, color: '#d97706', bg: 'rgba(245,158,11,0.12)' },
+  chambres:     { label: "Chambres d'hôtes",       icon: <Coffee    size={13} weight="fill" />, color: '#db2777', bg: 'rgba(236,72,153,0.12)' },
+  conciergerie: { label: 'Conciergeries',          icon: <Buildings size={13} weight="fill" />, color: '#7c3aed', bg: 'rgba(139,92,246,0.12)' },
+  direct:       { label: 'Réservation directe',    icon: <Handshake size={13} weight="fill" />, color: '#059669', bg: 'rgba(16,185,129,0.12)' },
 }
 
 const GUIDE_CARDS: GuideCard[] = [
+  // ── ESSENTIELS · POUR TOUS ──
+  {
+    id: 'commun-taxe-sejour',
+    profile: 'commun',
+    iconColor: '#0d9488', iconBg: 'rgba(13,148,136,0.12)',
+    icon: <Receipt size={22} weight="fill" />,
+    title: 'Taxe de séjour : qui, combien, comment',
+    subtitle: 'L\'obligation que tout le monde a',
+    rules: [
+      { type: 'info', text: <>Tarif fixé par chaque commune : généralement <strong>0,20 €–5 € par nuit / personne</strong> selon classement et type d&apos;hébergement</> },
+      { type: 'ok',   text: <>Si tu loues sur Airbnb/Booking : <strong>la plateforme collecte et reverse</strong> automatiquement (à vérifier dans les paramètres)</> },
+      { type: 'warn', text: <>En réservation directe ou Driing : <strong>tu collectes toi-même</strong> et reverses à la mairie chaque trimestre/semestre</> },
+      { type: 'info', text: <>Exonérations possibles : enfants &lt; 18 ans, saisonniers, urgence relogement — vérifier le règlement local</> },
+    ],
+    articles: [
+      { label: 'Taxe de séjour : comment collecter', slug: 'taxe-sejour-lcd-comment-collecter' },
+    ],
+  },
+  {
+    id: 'commun-fiche-police',
+    profile: 'commun',
+    iconColor: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)',
+    icon: <ClipboardText size={22} weight="fill" />,
+    title: 'Fiche police & registre voyageurs',
+    subtitle: 'Souvent ignoré, parfois sanctionné',
+    rules: [
+      { type: 'warn', text: <><strong>Obligation légale</strong> pour tout hébergement touristique d&apos;établir une fiche d&apos;identité par voyageur étranger</> },
+      { type: 'info', text: <>Données : nom, prénom, date et lieu de naissance, nationalité, adresse, dates de séjour</> },
+      { type: 'warn', text: <>Conservation <strong>6 mois</strong> minimum, transmission à la police nationale ou gendarmerie sur demande — amende jusqu&apos;à <strong>1 500 €</strong></> },
+      { type: 'ok',   text: <>Le livret d&apos;accueil digital (Driing, Hospitable) peut collecter ces infos automatiquement à l&apos;arrivée</> },
+    ],
+    articles: [
+      { label: 'Formulaire fiche police obligatoire', slug: 'formulaire-fiche-police-lcd-obligatoire' },
+    ],
+  },
+  {
+    id: 'commun-rgpd',
+    profile: 'commun',
+    iconColor: '#6366f1', iconBg: 'rgba(99,102,241,0.12)',
+    icon: <Lock size={22} weight="fill" />,
+    title: 'RGPD : données voyageurs',
+    subtitle: 'Ce que tu peux stocker, comment, combien de temps',
+    rules: [
+      { type: 'info', text: <>Bases légales : <strong>contrat</strong> (réservation), <strong>obligation légale</strong> (fiche police), <strong>consentement</strong> (newsletter)</> },
+      { type: 'ok',   text: <>Données autorisées sans consentement : nom, mail, téléphone (résa) — <strong>pas de carte d&apos;identité ni passeport</strong> sauf obligation légale</> },
+      { type: 'warn', text: <>Durée de conservation à respecter : <strong>3 ans après le dernier séjour</strong> pour le marketing, 10 ans pour les justificatifs comptables</> },
+      { type: 'info', text: <>Mentions obligatoires : <strong>politique de confidentialité</strong> sur le site, droit d&apos;accès / suppression / portabilité</> },
+    ],
+    articles: [
+      { label: 'RGPD données voyageurs Airbnb', slug: 'rgpd-donnees-voyageurs-airbnb-conformite' },
+    ],
+  },
+  {
+    id: 'commun-pricing',
+    profile: 'commun',
+    iconColor: '#22c55e', iconBg: 'rgba(34,197,94,0.12)',
+    icon: <ChartLineUp size={22} weight="fill" />,
+    title: 'Pricing & saisonnalité',
+    subtitle: 'Le levier de revenu n°1, souvent négligé',
+    rules: [
+      { type: 'info', text: <><strong>Pricing dynamique</strong> = ajustement quotidien selon demande, jours de la semaine, événements locaux, météo</> },
+      { type: 'ok',   text: <>Outils gratuits : suivi manuel via Airbnb Smart Pricing — payants : <strong>PriceLabs, Beyond, Wheelhouse</strong> (~1 % du CA)</> },
+      { type: 'warn', text: <>Définir un <strong>prix plancher</strong> (point mort) et un <strong>prix plafond</strong> (haute demande) pour cadrer les algos</> },
+      { type: 'info', text: <>La saisonnalité varie énormément par région : station de ski, littoral, ville, campagne — benchmarks via AirDNA indispensable</> },
+    ],
+    articles: [
+      { label: 'Tarification dynamique LCD', slug: 'tarification-dynamique-lcd' },
+      { label: 'Saisonnalité par région 2026', slug: 'saisonnalite-tarif-region-france-lcd-2026' },
+      { label: 'Prix min/max : fourchette tarifaire', slug: 'prix-min-max-airbnb-fourchette-tarifaire' },
+      { label: 'Fixer son prix minimum', slug: 'fixer-prix-minimum-airbnb-lcd' },
+    ],
+  },
+  {
+    id: 'commun-channel-managers',
+    profile: 'commun',
+    iconColor: '#a855f7', iconBg: 'rgba(168,85,247,0.12)',
+    icon: <Stack size={22} weight="fill" />,
+    title: 'Channel managers & outils',
+    subtitle: 'Mutualiser calendriers, prix, messages',
+    rules: [
+      { type: 'info', text: <>Un <strong>channel manager</strong> centralise les annonces multi-plateformes (Airbnb, Booking, Vrbo, Driing, site propre)</> },
+      { type: 'ok',   text: <>Top du marché : <strong>Smoobu</strong> (entrée de gamme, ~25 €/mois), <strong>Lodgify</strong>, <strong>Hospitable</strong> (ex-Smartbnb), <strong>Beds24</strong>, <strong>Hostaway</strong></> },
+      { type: 'warn', text: <>Sans channel manager au-delà de 3 biens : risque de double-réservation et burnout administratif assuré</> },
+      { type: 'info', text: <>Synchronisation iCal : solution gratuite mais lente (15–60 min) — réservé aux petits volumes</> },
+    ],
+    articles: [
+      { label: 'Logiciels conciergerie : comparatif 2026', slug: 'logiciels-conciergerie-comparatif-2026' },
+      { label: 'Outils gratuits indispensables', slug: 'outils-gratuits-indispensables-demarrer-lcd-2026' },
+      { label: 'Synchronisation calendrier perso', slug: 'integration-calendrier-perso-airbnb-google' },
+    ],
+  },
+  {
+    id: 'commun-avis',
+    profile: 'commun',
+    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    icon: <Star size={22} weight="fill" />,
+    title: 'Avis & e-réputation',
+    subtitle: 'Le facteur de classement n°1 sur Airbnb',
+    rules: [
+      { type: 'ok',   text: <>Objectif réaliste : <strong>4,8/5 minimum</strong> sur Airbnb — en dessous, ranking en chute libre et taux de conversion qui s&apos;effondre</> },
+      { type: 'info', text: <>Les 5 critères : propreté, communication, arrivée, exactitude, emplacement — soigner les 4 premiers, tu maîtrises tout</> },
+      { type: 'warn', text: <>Mauvais avis : répondre <strong>publiquement, calmement, factuellement</strong> dans les 48h — un mauvais avis bien géré peut renforcer la confiance</> },
+      { type: 'ok',   text: <>Demander un avis <strong>au moment du check-out</strong> avec un message court : taux de retour x2 vs sans relance</> },
+    ],
+    articles: [
+      { label: 'Obtenir des avis 5 étoiles', slug: 'obtenir-avis-5-etoiles-airbnb' },
+      { label: 'Gérer un mauvais avis Airbnb', slug: 'gerer-mauvais-avis-airbnb-reponse-hote' },
+      { label: 'Récupérer après un mauvais avis', slug: 'recuperer-mauvais-avis-airbnb-methode-5-etapes' },
+    ],
+  },
+  {
+    id: 'commun-litiges',
+    profile: 'commun',
+    iconColor: '#ef4444', iconBg: 'rgba(239,68,68,0.12)',
+    icon: <Warning size={22} weight="fill" />,
+    title: 'Litiges, dégâts & dépôt de garantie',
+    subtitle: 'Anticiper et documenter, toujours',
+    rules: [
+      { type: 'ok',   text: <><strong>Vérifier les voyageurs</strong> avant d&apos;accepter : profil complet, avis antérieurs, motif du séjour</> },
+      { type: 'warn', text: <>En cas de dégât : photos avant/après, devis professionnel sous 14 jours, ouvrir un dossier <strong>Aircover Airbnb</strong> ou contacter ton assureur</> },
+      { type: 'info', text: <>Dépôt de garantie en direct : <strong>Swikly</strong> (digital, sans pré-débit) ou virement — montant 200–800 € selon valeur du bien</> },
+      { type: 'warn', text: <>Garder traces écrites : messages plateforme, emails, photos horodatées — sans preuves, pas de dédommagement</> },
+    ],
+    articles: [
+      { label: 'Vérifier un voyageur avant d\'accepter', slug: 'verification-voyageurs-avant-accepter-reservation-lcd' },
+      { label: 'Refacturer un dégât voyageur', slug: 'refacturer-degat-voyageur-airbnb-procedure' },
+      { label: 'Sortir un mauvais client (concierge)', slug: 'sortir-mauvais-client-conciergerie-procedure' },
+    ],
+  },
+
   // ── GÎTES ──
   {
     id: 'gites-statut',
@@ -541,6 +673,7 @@ function GuideCardItem({ card }: { card: GuideCard }) {
 
 const FILTER_TABS: { id: ProfileFilter; label: string; Icon: React.ElementType | null }[] = [
   { id: 'all',          label: 'Tous les profils',    Icon: null },
+  { id: 'commun',       label: 'Essentiels',          Icon: Sparkle },
   { id: 'gites',        label: 'Gîtes',               Icon: HouseLine },
   { id: 'chambres',     label: "Chambres d'hôtes",    Icon: Coffee },
   { id: 'conciergerie', label: 'Conciergeries',       Icon: Buildings },
@@ -552,7 +685,7 @@ export default function GuideUI() {
 
   useEffect(() => {
     const saved = localStorage.getItem('guide-filter') as ProfileFilter | null
-    if (saved && ['all', 'gites', 'chambres', 'conciergerie', 'direct'].includes(saved)) {
+    if (saved && ['all', 'commun', 'gites', 'chambres', 'conciergerie', 'direct'].includes(saved)) {
       setActiveFilter(saved)
     }
   }, [])
