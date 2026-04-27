@@ -938,4 +938,18 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <url>
+    <loc>https://jasonmarinho.com/blog/micro-bic-abattement-2026-airbnb/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ── Pour qui — membres Driing ── -->
+  <url>
+    <loc>https://jasonmarinho.com/pour-qui/membres-driing/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>

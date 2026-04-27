@@ -1,0 +1,106 @@
+# Jason Marinho
+
+> Plateforme de ressources et d'accompagnement pour les hôtes de location courte durée (LCD) en France. Jason Marinho aide les propriétaires Airbnb, Booking.com et chambres d'hôtes à optimiser leurs annonces, développer les réservations directes et piloter leur activité avec des outils concrets.
+
+Jason Marinho est un expert en location courte durée (LCD) basé en France. Il propose des formations, outils et contenus pratiques destinés aux hôtes indépendants, gérants de gîtes, chambres d'hôtes et conciergeries. La plateforme inclut un espace membre à l'adresse app.jasonmarinho.com avec des outils intégrés (audit Google Business Profile, suivi des revenus, tableau de voyageurs, Chez Nous).
+
+## Qui est Jason Marinho
+
+- [À propos](https://jasonmarinho.com/qui-suis-je/): Parcours, expertise et vision de Jason Marinho en LCD
+- [Appel découverte](https://jasonmarinho.com/contact/): Prise de contact et accompagnement personnalisé
+
+## Pour qui
+
+- [Propriétaires Airbnb / meublés de tourisme](https://jasonmarinho.com/pour-qui/): Hôtes indépendants cherchant à optimiser leur activité LCD
+- [Chambres d'hôtes](https://jasonmarinho.com/pour-qui/chambres-dhotes/): Ressources spécifiques pour les chambres d'hôtes
+- [Conciergeries](https://jasonmarinho.com/pour-qui/conciergeries/): Outils et formations pour les gestionnaires de biens en mandat
+- [Gîtes ruraux](https://jasonmarinho.com/pour-qui/gites/): Accompagnement pour les gîtes et locations saisonnières
+- [Membres Driing](https://jasonmarinho.com/pour-qui/membres-driing/): Ressources pour les hôtes utilisant la plateforme Driing
+
+## Services et formations
+
+- [Formations LCD](https://jasonmarinho.com/services/formations/): Catalogue de formations pour hôtes et conciergeries
+- [Formation Booking.com / Genius](https://jasonmarinho.com/services/formations/maitriser-booking-com-algorithme-genius/): Maîtriser l'algorithme Booking.com
+- [Formation Google My Business pour LCD](https://jasonmarinho.com/services/formations/google-my-business-lcd/): Optimiser sa fiche Google Business Profile
+- [Service GMB complet](https://jasonmarinho.com/services/gmb/): Gestion et optimisation de Google My Business pour hôtes
+- [Annonce directe](https://jasonmarinho.com/services/annonce-directe/): Créer et optimiser son canal de réservation directe
+- [Acquisition de voyageurs](https://jasonmarinho.com/services/acquisition-voyageurs/): Stratégies pour attirer plus de voyageurs
+- [Audit Google Business Profile](https://jasonmarinho.com/services/audit-gbp/): Outil d'audit GBP intégré à la plateforme — analyse la fiche Google des hôtes
+- [Chez Nous — forum hôtes LCD](https://jasonmarinho.com/services/chez-nous/): Forum privé réservé aux membres de la plateforme pour s'entraider entre hôtes
+- [Partenaires validés](https://jasonmarinho.com/services/partenaires/): Outils et partenaires recommandés par Jason
+- [Sécurité et protection](https://jasonmarinho.com/services/securite/): Ressources sur la sécurité en LCD
+
+## Ressources gratuites
+
+- [Gabarits de messages](https://jasonmarinho.com/ressources/gabarits-messages/): Templates de messages pour hôtes (check-in, check-out, relances...)
+- [Partenaires ressources](https://jasonmarinho.com/ressources/partenaires/): Liste de partenaires et outils recommandés
+
+## Blog — Sujets principaux
+
+Le blog de jasonmarinho.com couvre 5 grands thèmes pour les hôtes LCD :
+
+### Optimiser son annonce et ses revenus
+- [Optimiser son annonce Airbnb](https://jasonmarinho.com/blog/optimiser-annonce-airbnb/)
+- [Tarification dynamique LCD](https://jasonmarinho.com/blog/tarification-dynamique-lcd/)
+- [PriceLabs, Wheelhouse, Beyond — comparatif](https://jasonmarinho.com/blog/tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif/)
+- [Algorithme Airbnb 2026 — critères de classement](https://jasonmarinho.com/blog/algorithme-airbnb-2026-criteres-classement/)
+- [Titre d'annonce Airbnb — optimiser clics et visibilité](https://jasonmarinho.com/blog/titre-annonce-airbnb-optimiser-clics-visibilite/)
+- [Description 500 caractères Airbnb 2026](https://jasonmarinho.com/blog/description-airbnb-500-caracteres-convertit-2026/)
+- [Photos Airbnb et computer vision IA](https://jasonmarinho.com/blog/photos-airbnb-computer-vision-ia-optimiser/)
+- [Photo de couverture Airbnb — 7 critères algo](https://jasonmarinho.com/blog/photo-couverture-airbnb-7-criteres-algo-computer-vision/)
+- [Frais de ménage Airbnb — combien facturer 2026](https://jasonmarinho.com/blog/frais-menage-airbnb-combien-facturer-2026/)
+- [Budget annuel hôte LCD — grille de coûts](https://jasonmarinho.com/blog/budget-annuel-hote-lcd-grille-couts/)
+- [Marge nette par nuitée — suivi précis](https://jasonmarinho.com/blog/marge-nette-par-nuitee-suivi-precis/)
+- [Point mort LCD — calcul de rentabilité](https://jasonmarinho.com/blog/point-mort-lcd-calcul-rentabilite-hote/)
+
+### Réservations directes
+- [Réservation directe sans commission](https://jasonmarinho.com/blog/reservation-directe-sans-commission/)
+- [Pourquoi s'affranchir des plateformes](https://jasonmarinho.com/blog/location-directe-pourquoi-saffranchir-plateformes/)
+- [Premières réservations directes sans audience](https://jasonmarinho.com/blog/premieres-reservations-directes-sans-audience-site-web/)
+- [Créer un site de réservation directe](https://jasonmarinho.com/blog/site-reservation-directe-location-courte-duree/)
+- [Sécuriser les paiements sans Airbnb](https://jasonmarinho.com/blog/securiser-paiement-reservation-directe-sans-airbnb/)
+- [Google My Business pour réservations directes](https://jasonmarinho.com/blog/google-my-business-reservations-directes-hotes-lcd/)
+- [Instagram pour hôtes LCD](https://jasonmarinho.com/blog/instagram-hotes-lcd-attirer-voyageurs-reservations-directes/)
+- [Base de voyageurs fidèles](https://jasonmarinho.com/blog/base-voyageurs-fideles-location-directe-durable/)
+- [Mesurer la performance du canal direct](https://jasonmarinho.com/blog/mesurer-performance-canal-reservation-directe-kpi/)
+
+### Google My Business et visibilité locale
+- [Google My Business pour hôtes LCD](https://jasonmarinho.com/blog/google-my-business-hotes-lcd/)
+- [GMB — questions/réponses pour hôtes](https://jasonmarinho.com/blog/gmb-questions-reponses-hotes-lcd-optimiser/)
+- [Formation Google My Business LCD](https://jasonmarinho.com/blog/formation-google-my-business-lcd-contenu/)
+- [SEO local pour hôtes LCD](https://jasonmarinho.com/blog/seo-local-hote-lcd-google-maps-visibilite/)
+- [Driing — plateforme sans commissions](https://jasonmarinho.com/blog/driing-plateforme-vacances-sans-commissions/)
+
+### Fiscalité et réglementation
+- [Réglementation LCD France 2026](https://jasonmarinho.com/blog/reglementation-lcd-france-2026/)
+- [Micro-BIC abattement 2026 Airbnb](https://jasonmarinho.com/blog/micro-bic-abattement-2026-airbnb/)
+- [Guide fiscal débutant hôte Airbnb 2026](https://jasonmarinho.com/blog/guide-fiscal-debutant-hote-airbnb-2026/)
+- [LMNP vs LMP — changement 2026](https://jasonmarinho.com/blog/lmnp-vs-lmp-changement-2026-impact/)
+- [Régime réel vs micro-BIC — décision 2026](https://jasonmarinho.com/blog/regime-reel-vs-micro-bic-decision-2026/)
+- [TVA location courte durée 2026](https://jasonmarinho.com/blog/tva-location-courte-duree-2026/)
+- [TVA petit-déjeuner LCD seuil 37 500 € 2026](https://jasonmarinho.com/blog/tva-petit-dejeuner-lcd-seuil-37500-2026-detail/)
+- [DPE et obligations 2025–2034](https://jasonmarinho.com/blog/dpe-location-courte-duree-obligations-2025-2034/)
+- [Numéro d'enregistrement LCD — démarches](https://jasonmarinho.com/blog/numero-enregistrement-lcd-obtenir-etapes-pratiques/)
+- [Impôts location courte durée France](https://jasonmarinho.com/blog/location-courte-duree-impots-france/)
+- [Taxe de séjour — comment collecter](https://jasonmarinho.com/blog/taxe-sejour-lcd-comment-collecter/)
+
+### Outils, conciergerie et automatisation
+- [Automatiser ses messages Airbnb](https://jasonmarinho.com/blog/messages-airbnb-automatiser/)
+- [PMS logiciel de gestion LCD débutant](https://jasonmarinho.com/blog/pms-logiciel-gestion-location-courte-duree-debutant/)
+- [Hospitable — tarification dynamique incluse](https://jasonmarinho.com/blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls/)
+- [Make / Zapier — workflow no-code LCD](https://jasonmarinho.com/blog/make-zapier-workflow-airbnb-no-code-debutant/)
+- [Créer une conciergerie Airbnb 2025](https://jasonmarinho.com/blog/creer-conciergerie-airbnb-2025/)
+- [Tarif conciergerie LCD — grille de marché 2026](https://jasonmarinho.com/blog/tarif-conciergerie-lcd-grille-marche-2026/)
+- [Logiciels conciergerie — comparatif 2026](https://jasonmarinho.com/blog/logiciels-conciergerie-comparatif-2026/)
+
+## Pages légales
+
+- [Conditions générales](https://jasonmarinho.com/cgvu.html)
+- [Mentions légales](https://jasonmarinho.com/mentions-legales.html)
+- [Politique de confidentialité](https://jasonmarinho.com/politique-de-confidentialite.html)
+
+## Optional
+
+- [Détail des services Chez Nous](https://jasonmarinho.com/services/chez-nous/page.md)
+- [Détail du service Audit GBP](https://jasonmarinho.com/services/audit-gbp/page.md)
+- [Détail des formations](https://jasonmarinho.com/services/formations/page.md)
