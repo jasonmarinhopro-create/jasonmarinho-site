@@ -3,7 +3,7 @@
 import { useState, useMemo, useTransition, useRef, useEffect } from 'react'
 import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
-  CalendarBlank, Clock, X,
+  CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
 } from '@phosphor-icons/react'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
@@ -118,6 +118,205 @@ function fmtDate(dateStr: string) {
 function fmtTime(t: string) { return t.slice(0, 5) }
 function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1) }
 
+// ─── Vue liste : événements chronologiques à venir ─────────────────────────
+
+interface ListViewProps {
+  byDate: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[] }>
+  contractEvents: ContractEvent[]
+  today: string
+  icalFeeds: IcalFeed[]
+  onSelect: (date: string, contract?: ContractEvent) => void
+}
+
+function ListView({ byDate, today, icalFeeds, onSelect }: ListViewProps) {
+  const dates = Object.keys(byDate).sort()
+  const upcoming = dates.filter(d => d >= today).slice(0, 60) // 60 prochains jours avec events
+  const past     = dates.filter(d => d < today).slice(-15)    // 15 derniers passés
+
+  function dayLabel(d: string) {
+    const [y, m, dd] = d.split('-').map(Number)
+    const date = new Date(y, m - 1, dd)
+    const diffDays = Math.round((new Date(d + 'T12:00').getTime() - new Date(today + 'T12:00').getTime()) / 86400000)
+    const main = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+    let rel = ''
+    if (diffDays === 0) rel = "Aujourd'hui"
+    else if (diffDays === 1) rel = 'Demain'
+    else if (diffDays === -1) rel = 'Hier'
+    else if (diffDays > 0) rel = `J+${diffDays}`
+    else rel = `J${diffDays}`
+    return { main: main.charAt(0).toUpperCase() + main.slice(1), rel, isPast: diffDays < 0, isToday: diffDays === 0 }
+  }
+
+  function renderDay(d: string) {
+    const day = byDate[d]
+    if (!day) return null
+    const { main, rel, isPast, isToday } = dayLabel(d)
+    const items: Array<{ id: string; title: string; color: string; subtitle?: string; onClick?: () => void; tag?: string }> = []
+    day.contracts.forEach(c => {
+      items.push({
+        id: c.id,
+        title: c.title,
+        color: (CAT[c.type] ?? CAT.note).color,
+        subtitle: c.logement_nom ?? undefined,
+        tag: 'Séjour',
+        onClick: () => onSelect(d, c),
+      })
+    })
+    day.ical.forEach(e => {
+      const feed = icalFeeds.find(f => f.id === e.feed_id)
+      items.push({
+        id: `ical-${e.id}`,
+        title: e.title,
+        color: e.feed_color,
+        subtitle: feed?.name ?? 'Synchro',
+        tag: 'Synchro',
+        onClick: () => onSelect(d),
+      })
+    })
+    day.custom.filter(e => !e.end_date || e.end_date === e.date).forEach(e => {
+      const cat = CAT[e.category] ?? CAT.note
+      items.push({
+        id: e.id,
+        title: e.title,
+        color: cat.color,
+        subtitle: e.start_time ? `${e.start_time.slice(0, 5)}${e.end_time ? ` → ${e.end_time.slice(0, 5)}` : ''}` : undefined,
+        tag: cat.label,
+        onClick: () => onSelect(d),
+      })
+    })
+    if (items.length === 0) return null
+
+    return (
+      <div key={d} style={{ ...lvs.dayBlock, opacity: isPast ? 0.55 : 1 }}>
+        <div style={lvs.dayHeader}>
+          <span style={lvs.dayMain}>{main}</span>
+          <span style={{ ...lvs.dayRel, color: isToday ? 'var(--accent-text)' : 'var(--text-muted)' }}>{rel}</span>
+        </div>
+        <div style={lvs.itemsList}>
+          {items.map(it => (
+            <button key={it.id} onClick={it.onClick} style={lvs.item}>
+              <span style={{ ...lvs.itemDot, background: it.color }} />
+              <span style={lvs.itemBody}>
+                <span style={lvs.itemTitle}>{it.title}</span>
+                {it.subtitle && <span style={lvs.itemSub}>{it.subtitle}</span>}
+              </span>
+              {it.tag && <span style={{ ...lvs.itemTag, color: it.color, background: `${it.color}1a` }}>{it.tag}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (upcoming.length === 0 && past.length === 0) {
+    return (
+      <div style={lvs.empty}>
+        <CalendarBlank size={32} weight="thin" color="var(--text-muted)" />
+        <div style={lvs.emptyTitle}>Aucun événement à afficher</div>
+        <div style={lvs.emptyDesc}>Ajuste les filtres ou ajoute un événement</div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={lvs.wrap}>
+      {upcoming.length > 0 && (
+        <div style={lvs.section}>
+          <div style={lvs.sectionLabel}>À venir</div>
+          {upcoming.map(renderDay)}
+        </div>
+      )}
+      {past.length > 0 && (
+        <div style={lvs.section}>
+          <div style={lvs.sectionLabel}>Récemment</div>
+          {past.reverse().map(renderDay)}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const lvs: Record<string, React.CSSProperties> = {
+  wrap: {
+    flex: 1, minWidth: 0,
+    overflowY: 'auto' as const,
+    padding: '12px 16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '20px',
+  },
+  empty: {
+    flex: 1,
+    display: 'flex', flexDirection: 'column' as const,
+    alignItems: 'center', justifyContent: 'center',
+    gap: '10px',
+    padding: '60px 20px',
+    textAlign: 'center' as const,
+  },
+  emptyTitle: { fontSize: '14px', color: 'var(--text-2)', fontWeight: 500 },
+  emptyDesc:  { fontSize: '12px', color: 'var(--text-muted)' },
+  section:    { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  sectionLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+    padding: '4px 0',
+  },
+  dayBlock: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    padding: '10px 0',
+    borderBottom: '1px solid var(--border)',
+  },
+  dayHeader: {
+    display: 'flex', alignItems: 'baseline', gap: '10px',
+    marginBottom: '6px',
+  },
+  dayMain: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '14px', fontWeight: 500,
+    color: 'var(--text)',
+    textTransform: 'capitalize' as const,
+  },
+  dayRel: {
+    fontSize: '11px', fontWeight: 500,
+  },
+  itemsList: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
+  item: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '8px 10px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '9px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left' as const,
+    width: '100%',
+    color: 'var(--text-2)',
+  },
+  itemDot: {
+    width: '8px', height: '8px', borderRadius: '50%',
+    flexShrink: 0,
+  },
+  itemBody: {
+    display: 'flex', flexDirection: 'column' as const, gap: '1px',
+    flex: 1, minWidth: 0,
+  },
+  itemTitle: {
+    fontSize: '13px', fontWeight: 500,
+    color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  itemSub: {
+    fontSize: '11px',
+    color: 'var(--text-muted)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  itemTag: {
+    fontSize: '10px', fontWeight: 600,
+    padding: '3px 8px', borderRadius: '100px',
+    flexShrink: 0,
+    letterSpacing: '0.3px',
+  },
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function CalendrierView({
@@ -156,6 +355,9 @@ export default function CalendrierView({
   )
   const [selectedContract, setSelectedContract] = useState<import('./page').ContractEvent | null>(null)
   const [showSources, setShowSources] = useState(false)
+  const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
+  const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
+  const [search, setSearch] = useState('')
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -186,7 +388,7 @@ export default function CalendrierView({
     const out: SpanItem[] = []
     const seen = new Set<string>()
 
-    events
+    filteredEvents
       .filter(e => e.end_date && e.end_date !== e.date && e.date <= we && e.end_date >= ws)
       .forEach(e => {
         if (seen.has(e.id)) return
@@ -208,7 +410,7 @@ export default function CalendrierView({
         })
       })
 
-    icalEvents
+    filteredIcalEvents
       .filter(e => e.end_date && e.end_date !== e.start_date && e.start_date <= we && e.end_date >= ws)
       .forEach(e => {
         if (seen.has(`ical-${e.id}`)) return
@@ -232,11 +434,39 @@ export default function CalendrierView({
     return out
   }
 
+  // ── search + filter helpers
+  const q = search.trim().toLowerCase()
+  const matchesSearch = (...texts: (string | null | undefined)[]) => {
+    if (!q) return true
+    return texts.some(t => (t ?? '').toLowerCase().includes(q))
+  }
+
+  const filteredEvents = useMemo(() => events.filter(e => {
+    const cat = catToDisplay(e.category)
+    if (filter === 'sejours' || filter === 'synchro') return false
+    if (filter === 'menages' && cat !== 'menage') return false
+    if (filter === 'rdv-tache' && cat !== 'rdv' && cat !== 'tache' && cat !== 'note') return false
+    if (q && !matchesSearch(e.title, e.description)) return false
+    return true
+  }), [events, filter, q])
+
+  const filteredContractEvents = useMemo(() => contractEvents.filter(c => {
+    if (filter === 'menages' || filter === 'rdv-tache' || filter === 'synchro') return false
+    if (q && !matchesSearch(c.title, c.logement_nom)) return false
+    return true
+  }), [contractEvents, filter, q])
+
+  const filteredIcalEvents = useMemo(() => icalEvents.filter(e => {
+    if (filter === 'menages' || filter === 'rdv-tache') return false
+    if (q && !matchesSearch(e.title, e.description)) return false
+    return true
+  }), [icalEvents, filter, q])
+
   // ── event index by date — multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
     const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[] }> = {}
 
-    events.forEach(e => {
+    filteredEvents.forEach(e => {
       const startD = e.date
       const endD   = e.end_date ?? e.date
       const [sy, sm, sd] = startD.split('-').map(Number)
@@ -250,11 +480,11 @@ export default function CalendrierView({
       }
     })
 
-    contractEvents.forEach(c => {
+    filteredContractEvents.forEach(c => {
       ;(m[c.date] ??= { custom: [], contracts: [], ical: [] }).contracts.push(c)
     })
 
-    icalEvents.forEach(e => {
+    filteredIcalEvents.forEach(e => {
       const startD = e.start_date
       const endD   = e.end_date ?? e.start_date
       const [sy, sm, sd] = startD.split('-').map(Number)
@@ -269,7 +499,7 @@ export default function CalendrierView({
     })
 
     return m
-  }, [events, contractEvents, icalEvents])
+  }, [filteredEvents, filteredContractEvents, filteredIcalEvents])
 
   // ── selected day merged events (deduplicated by id)
   type Merged = CalEvent & { isContract?: boolean; isIcal?: boolean; feedColor?: string; feedName?: string }
@@ -655,12 +885,70 @@ export default function CalendrierView({
           <button className="btn-ghost" onClick={nextMonth} style={s.navBtn}><CaretRight size={15} /></button>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const }}>
+          {/* View mode toggle */}
+          <div style={s.viewToggle}>
+            <button
+              onClick={() => setViewMode('month')}
+              style={{ ...s.viewBtn, ...(viewMode === 'month' ? s.viewBtnActive : {}) }}
+              title="Vue mois"
+            >
+              <CalendarIcon size={13} weight="fill" />
+              <span className="cal-view-text">Mois</span>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              style={{ ...s.viewBtn, ...(viewMode === 'list' ? s.viewBtnActive : {}) }}
+              title="Vue liste"
+            >
+              <ListBullets size={13} weight="bold" />
+              <span className="cal-view-text">Liste</span>
+            </button>
+          </div>
           <button className="btn-ghost" onClick={goToday} style={s.todayBtn}>Aujourd'hui</button>
           <button className="btn-primary" onClick={() => openAdd()} style={s.addBtn}>
             <Plus size={15} weight="bold" />
             <span className="cal-add-text">Événement</span>
           </button>
+        </div>
+      </div>
+
+      {/* ── Filters + search */}
+      <div style={s.filterBar}>
+        <div style={s.filterChips}>
+          {([
+            { id: 'all',         label: 'Tout' },
+            { id: 'sejours',     label: 'Séjours' },
+            { id: 'menages',     label: 'Ménages' },
+            { id: 'rdv-tache',   label: 'RDV & tâches' },
+            { id: 'synchro',     label: 'Synchro' },
+          ] as const).map(f => (
+            <button
+              key={f.id}
+              onClick={() => setFilter(f.id)}
+              style={{
+                ...s.filterChip,
+                ...(filter === f.id ? s.filterChipActive : {}),
+              }}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        <div style={s.searchWrap}>
+          <span style={s.searchIcon}>
+            <MagnifyingGlass size={13} weight="bold" />
+          </span>
+          <input
+            type="text"
+            placeholder="Rechercher un logement, un voyageur…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={s.searchInput}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={s.searchClear} aria-label="Effacer">×</button>
+          )}
         </div>
       </div>
 
@@ -767,7 +1055,8 @@ export default function CalendrierView({
       {/* ── Main layout */}
       <div className="cal-layout" style={s.layout}>
 
-        {/* Calendar grid */}
+        {/* Calendar grid (vue mois) */}
+        {viewMode === 'month' && (
         <div style={s.gridWrap}>
           <div style={s.dayHeaders}>
             {DAYS_FR.map(d => <div key={d} className="cal-day-header" style={s.dayHeader}>{d}</div>)}
@@ -802,6 +1091,7 @@ export default function CalendrierView({
                     const visible   = pillItems.slice(0, slots)
                     const extra     = pillItems.length - visible.length
                     const isWeekend    = (() => { const d = new Date(date).getDay(); return d === 0 || d === 6 })()
+                    const isPast       = inMonth && date < TODAY
                     const isInDrag     = !!(dragRange && date >= dragRange.start && date <= dragRange.end)
                     const spacer       = nBars > 0 ? BAR_TOP + nBars * (BAR_H + BAR_GAP) - BAR_TOP + 4 : 0
                     const alertsForDay = inMonth ? (smartAlerts[date] ?? []) : []
@@ -819,7 +1109,9 @@ export default function CalendrierView({
                           setDragRange({ start: s2, end: e2 })
                         }}
                         style={{
-                          ...s.cell, opacity: inMonth ? 1 : 0.28, userSelect: 'none', position: 'relative',
+                          ...s.cell,
+                          opacity: !inMonth ? 0.28 : isPast ? 0.55 : 1,
+                          userSelect: 'none', position: 'relative',
                           background: isInDrag ? 'rgba(96,165,250,0.12)' : isSel ? 'var(--surface)' : isWeekend && inMonth ? 'var(--surface)' : 'var(--bg)',
                           outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : isSel ? '1.5px solid var(--border-2)' : isToday && inMonth ? '1.5px solid var(--accent-text)' : '1.5px solid transparent',
                         }}
@@ -886,6 +1178,22 @@ export default function CalendrierView({
             })}
           </div>
         </div>
+        )}
+
+        {/* Vue liste — événements à venir, regroupés par date */}
+        {viewMode === 'list' && (
+          <ListView
+            byDate={byDate}
+            contractEvents={filteredContractEvents}
+            today={TODAY}
+            icalFeeds={icalFeeds}
+            onSelect={(d, contract) => {
+              setSelected(d)
+              setYear(Number(d.slice(0,4))); setMonth(Number(d.slice(5,7))-1)
+              if (contract) setSelectedContract(contract)
+            }}
+          />
+        )}
 
         {/* ── Side panel */}
         <div className="cal-side" style={s.side}>
@@ -1475,6 +1783,96 @@ const s: Record<string, React.CSSProperties> = {
     width: '8px', height: '8px', borderRadius: '50%',
     background: '#10b981',
     boxShadow: '0 0 0 4px rgba(16,185,129,0.18)',
+  },
+
+  // View toggle
+  viewToggle: {
+    display: 'inline-flex', alignItems: 'center', gap: '2px',
+    padding: '3px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '10px',
+  },
+  viewBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '6px 12px',
+    fontSize: '12.5px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '7px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    transition: 'all 0.15s',
+  },
+  viewBtnActive: {
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
+  },
+
+  // Filter bar
+  filterBar: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    flexWrap: 'wrap' as const,
+  },
+  filterChips: {
+    display: 'flex', gap: '6px', flexWrap: 'wrap' as const,
+  },
+  filterChip: {
+    padding: '6px 12px',
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '100px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    transition: 'all 0.15s',
+  },
+  filterChipActive: {
+    background: 'var(--accent-bg)',
+    borderColor: 'var(--accent-border)',
+    color: 'var(--accent-text)',
+  },
+  searchWrap: {
+    position: 'relative' as const,
+    flex: '1 1 220px',
+    minWidth: '180px',
+    maxWidth: '320px',
+  },
+  searchIcon: {
+    position: 'absolute' as const,
+    left: '12px', top: '50%',
+    transform: 'translateY(-50%)',
+    color: 'var(--text-muted)',
+    display: 'flex',
+    pointerEvents: 'none' as const,
+  },
+  searchInput: {
+    width: '100%',
+    padding: '8px 32px 8px 32px',
+    fontSize: '12.5px',
+    fontFamily: 'inherit',
+    color: 'var(--text)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '9px',
+    outline: 'none',
+  },
+  searchClear: {
+    position: 'absolute' as const,
+    right: '6px', top: '50%',
+    transform: 'translateY(-50%)',
+    width: '20px', height: '20px',
+    borderRadius: '50%',
+    border: 'none',
+    background: 'var(--border)',
+    color: 'var(--text-2)',
+    fontSize: '14px',
+    cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    lineHeight: 1,
+    fontFamily: 'inherit',
   },
 
   // Sources synchronisées (iCal feeds)
