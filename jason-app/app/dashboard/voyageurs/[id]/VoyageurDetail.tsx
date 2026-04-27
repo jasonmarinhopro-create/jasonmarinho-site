@@ -542,6 +542,63 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     return { totalCA, nbSejours, dureeMoyenne, lastVisit, nextStay, statut }
   })()
 
+  // ─── Timeline d'événements (calculée depuis séjours + contrat) ──
+  type TimelineEvent = { date: string; icon: string; label: string; subtitle?: string; tone: 'past' | 'today' | 'future' }
+  const timeline: TimelineEvent[] = (() => {
+    const events: TimelineEvent[] = []
+    sejours.forEach(sj => {
+      const tone = (d: string): TimelineEvent['tone'] =>
+        d < todayISO ? 'past' : d === todayISO ? 'today' : 'future'
+
+      // Création (contrat envoyé / signé)
+      if (sj.contrat_statut === 'signe' && sj.contrat_date_signature) {
+        events.push({
+          date: sj.contrat_date_signature,
+          icon: '✍️',
+          label: 'Contrat signé',
+          subtitle: sj.logement ?? undefined,
+          tone: tone(sj.contrat_date_signature),
+        })
+      } else if (sj.contrat_statut === 'en_attente') {
+        events.push({
+          date: sj.date_arrivee,
+          icon: '📨',
+          label: 'Contrat envoyé, en attente de signature',
+          subtitle: sj.logement ?? undefined,
+          tone: 'future',
+        })
+      }
+
+      // Arrivée
+      events.push({
+        date: sj.date_arrivee,
+        icon: '🛬',
+        label: 'Arrivée',
+        subtitle: sj.logement ? `${sj.logement}${sj.montant ? ` · ${sj.montant} €` : ''}` : undefined,
+        tone: tone(sj.date_arrivee),
+      })
+
+      // Départ
+      events.push({
+        date: sj.date_depart,
+        icon: '🛫',
+        label: 'Départ',
+        subtitle: `${nights(sj.date_arrivee, sj.date_depart)} nuit${nights(sj.date_arrivee, sj.date_depart) > 1 ? 's' : ''}`,
+        tone: tone(sj.date_depart),
+      })
+    })
+
+    // Ajout de la création du voyageur
+    events.push({
+      date: voyageur.created_at.slice(0, 10),
+      icon: '👤',
+      label: 'Voyageur ajouté',
+      tone: 'past',
+    })
+
+    return events.sort((a, b) => b.date.localeCompare(a.date))
+  })()
+
   function saveProfile() {
     if (!profileForm.prenom.trim() || !profileForm.nom.trim()) {
       setProfileError('Prénom et nom sont obligatoires.')
@@ -826,6 +883,42 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </button>
                 )}
               </div>
+
+              {/* Quick actions communication */}
+              {(voyageur.email || voyageur.telephone) && (
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'center', marginTop: '4px' }}>
+                  {voyageur.email && (
+                    <a
+                      href={`mailto:${voyageur.email}?subject=${encodeURIComponent(`Bonjour ${voyageur.prenom}`)}`}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                        background: 'var(--accent-bg)', color: 'var(--accent-text)',
+                        border: '1px solid var(--accent-border)', borderRadius: '8px',
+                        textDecoration: 'none' as const,
+                      }}
+                    >
+                      <Envelope size={13} weight="fill" />
+                      Envoyer un email
+                    </a>
+                  )}
+                  {voyageur.telephone && (
+                    <a
+                      href={`sms:${voyageur.telephone}`}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '6px 12px', fontSize: '12px', fontWeight: 500,
+                        background: 'var(--surface)', color: 'var(--text-2)',
+                        border: '1px solid var(--border)', borderRadius: '8px',
+                        textDecoration: 'none' as const,
+                      }}
+                    >
+                      <Phone size={13} weight="fill" />
+                      SMS
+                    </a>
+                  )}
+                </div>
+              )}
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' as const, justifyContent: 'center' }}>
                 <span style={{ ...s.statutBadge, color: stats.statut.color, background: stats.statut.bg, borderColor: stats.statut.border }}>
                   {stats.statut.label}
@@ -1349,6 +1442,40 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           })}
         </div>
       </div>
+
+      {/* ── Timeline ── */}
+      {timeline.length > 0 && (
+        <div style={s.section} className="fade-up">
+          <div style={s.sectionHeader}>
+            <div style={s.sectionTitle}>
+              ⏱️ Historique chronologique
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0' }}>
+            {timeline.map((ev, i) => {
+              const opacity = ev.tone === 'past' ? 0.7 : 1
+              const accent = ev.tone === 'today' ? 'var(--accent-text)' : ev.tone === 'future' ? '#10b981' : 'var(--text-muted)'
+              return (
+                <div key={i} style={{ display: 'flex', gap: '12px', opacity, padding: '8px 0', borderBottom: i < timeline.length - 1 ? '1px dashed var(--border)' : 'none' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px', flexShrink: 0, position: 'relative' as const }}>
+                    <span style={{ fontSize: '18px', lineHeight: 1 }}>{ev.icon}</span>
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '11px', fontWeight: 600, color: accent, letterSpacing: '0.3px', textTransform: 'uppercase' as const, marginBottom: '2px' }}>
+                      {formatDate(ev.date)}
+                    </div>
+                    <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 500 }}>{ev.label}</div>
+                    {ev.subtitle && (
+                      <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '1px' }}>{ev.subtitle}</div>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
         </div>
       </div>
 
