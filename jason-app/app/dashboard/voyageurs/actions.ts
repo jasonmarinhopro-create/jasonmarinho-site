@@ -9,6 +9,23 @@ export type VoyageurData = {
   email?: string
   telephone?: string
   notes?: string
+
+  // Phase 1 — enrichissement
+  tags?: string[]
+  source?: string | null
+  date_naissance?: string | null
+  nationalite?: string | null
+  adresse?: string | null
+  code_postal?: string | null
+  ville?: string | null
+  pays?: string | null
+  id_verifie?: boolean
+  id_url?: string | null
+  id_type?: string | null
+  preferences?: string[]
+  note_privee?: number | null
+  bloque?: boolean
+  bloque_motif?: string | null
 }
 
 export type SejourData = {
