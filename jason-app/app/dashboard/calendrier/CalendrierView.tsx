@@ -79,6 +79,104 @@ function todayString() {
   return toStr(t.getFullYear(), t.getMonth(), t.getDate())
 }
 
+// Parser "saisie rapide" : « Ménage Villa demain 10h » → { category, title, date, start_time }
+function parseQuickAdd(input: string, defaultDate: string): {
+  category: CatKey
+  title: string
+  date: string
+  start_time: string | null
+} | null {
+  const raw = input.trim()
+  if (!raw) return null
+
+  let category: CatKey = 'tache'
+  let cleaned = raw
+
+  const catPatterns: Array<{ regex: RegExp; cat: CatKey }> = [
+    { regex: /\bm[ée]nages?\b/i,                  cat: 'menage' },
+    { regex: /\b(rdv|rendez[\s-]?vous|appel|meeting)\b/i, cat: 'rdv' },
+    { regex: /\b(t[âa]che|todo)\b/i,              cat: 'tache' },
+    { regex: /\bnote\b/i,                         cat: 'note' as CatKey },
+  ]
+  for (const p of catPatterns) {
+    if (p.regex.test(cleaned)) {
+      category = p.cat
+      cleaned = cleaned.replace(p.regex, ' ')
+      break
+    }
+  }
+
+  // Date
+  let date = defaultDate
+  const today = new Date()
+  const dayMs = 86400000
+
+  if (/\baujourd'?hui\b/i.test(cleaned)) {
+    cleaned = cleaned.replace(/\baujourd'?hui\b/i, ' ')
+  } else if (/\bapr[èe]s[-\s]demain\b/i.test(cleaned)) {
+    const t = new Date(today.getTime() + 2 * dayMs)
+    date = toStr(t.getFullYear(), t.getMonth(), t.getDate())
+    cleaned = cleaned.replace(/\bapr[èe]s[-\s]demain\b/i, ' ')
+  } else if (/\bdemain\b/i.test(cleaned)) {
+    const t = new Date(today.getTime() + dayMs)
+    date = toStr(t.getFullYear(), t.getMonth(), t.getDate())
+    cleaned = cleaned.replace(/\bdemain\b/i, ' ')
+  }
+
+  const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
+  for (let i = 0; i < days.length; i++) {
+    const re = new RegExp(`\\b${days[i]}\\b`, 'i')
+    if (re.test(cleaned)) {
+      const cur = today.getDay()
+      let diffD = i - cur
+      if (diffD <= 0) diffD += 7
+      const t = new Date(today.getTime() + diffD * dayMs)
+      date = toStr(t.getFullYear(), t.getMonth(), t.getDate())
+      cleaned = cleaned.replace(re, ' ')
+      break
+    }
+  }
+
+  const plusMatch = cleaned.match(/\+(\d+)\s*j\b/i)
+  if (plusMatch) {
+    const n = parseInt(plusMatch[1], 10)
+    const t = new Date(today.getTime() + n * dayMs)
+    date = toStr(t.getFullYear(), t.getMonth(), t.getDate())
+    cleaned = cleaned.replace(plusMatch[0], ' ')
+  }
+
+  const dateMatch = cleaned.match(/\b(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?\b/)
+  if (dateMatch) {
+    const dd = parseInt(dateMatch[1], 10)
+    const mm = parseInt(dateMatch[2], 10) - 1
+    let yyyy = dateMatch[3] ? parseInt(dateMatch[3], 10) : today.getFullYear()
+    if (yyyy < 100) yyyy += 2000
+    if (dd >= 1 && dd <= 31 && mm >= 0 && mm <= 11) {
+      date = toStr(yyyy, mm, dd)
+      cleaned = cleaned.replace(dateMatch[0], ' ')
+    }
+  }
+
+  // Heure : 10h, 10h30, 10:30
+  let start_time: string | null = null
+  const timeMatch = cleaned.match(/\b(\d{1,2})\s*[h:]\s*(\d{2})?\b/i)
+  if (timeMatch) {
+    const h = parseInt(timeMatch[1], 10)
+    const mm = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0
+    if (h >= 0 && h < 24 && mm >= 0 && mm < 60) {
+      start_time = `${pad2(h)}:${pad2(mm)}`
+      cleaned = cleaned.replace(timeMatch[0], ' ')
+    }
+  }
+
+  // Préposition résiduelle "à"
+  cleaned = cleaned.replace(/\bà\b/gi, ' ')
+  cleaned = cleaned.replace(/\s+/g, ' ').trim()
+  const title = cleaned || 'Événement'
+
+  return { category, title, date, start_time }
+}
+
 function buildCalendarDays(year: number, month: number) {
   const firstDay    = new Date(year, month, 1)
   const daysInMonth = new Date(year, month + 1, 0).getDate()
@@ -358,6 +456,7 @@ export default function CalendrierView({
   const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
   const [search, setSearch] = useState('')
+  const [quickAdd, setQuickAdd] = useState('')
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -812,6 +911,30 @@ export default function CalendrierView({
   }
   function cancelForm() { setShowForm(false); setEditing(null) }
 
+  function handleQuickAdd() {
+    const parsed = parseQuickAdd(quickAdd, selected)
+    if (!parsed) return
+    startT(async () => {
+      const res = await createCalendarEvent({
+        title:      parsed.title,
+        date:       parsed.date,
+        end_date:   null,
+        start_time: parsed.start_time,
+        end_time:   null,
+        category:   parsed.category,
+        description: null,
+      })
+      if (!res.error && res.event) {
+        setEvents(prev => [...prev, res.event as CalEvent])
+        setQuickAdd('')
+        // Naviguer vers la date pour confirmer visuellement
+        setSelected(parsed.date)
+        setYear(Number(parsed.date.slice(0, 4)))
+        setMonth(Number(parsed.date.slice(5, 7)) - 1)
+      }
+    })
+  }
+
   function handleSave() {
     if (!fTitle.trim()) return
     startT(async () => {
@@ -1021,6 +1144,24 @@ export default function CalendrierView({
             <button onClick={() => setSearch('')} style={s.searchClear} aria-label="Effacer">×</button>
           )}
         </div>
+      </div>
+
+      {/* ── Quick add */}
+      <div style={s.quickAddWrap}>
+        <span style={s.quickAddIcon}>⚡</span>
+        <input
+          type="text"
+          placeholder="Saisie rapide — ex : Ménage Villa demain 10h, RDV plombier vendredi 14h, +3j tâche révision tarifs…"
+          value={quickAdd}
+          onChange={(e) => setQuickAdd(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleQuickAdd() }}
+          style={s.quickAddInput}
+        />
+        {quickAdd && (
+          <button onClick={handleQuickAdd} style={s.quickAddBtn} disabled={isPending}>
+            Créer
+          </button>
+        )}
       </div>
 
       {/* ── Actions à traiter — liste compacte par priorité, avec actions inline */}
@@ -2028,6 +2169,43 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     lineHeight: 1,
     fontFamily: 'inherit',
+  },
+
+  // Quick add
+  quickAddWrap: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '4px 6px 4px 14px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '11px',
+    transition: 'border-color 0.15s',
+  },
+  quickAddIcon: {
+    fontSize: '13px',
+    color: 'var(--accent-text)',
+    flexShrink: 0,
+  },
+  quickAddInput: {
+    flex: 1,
+    minWidth: 0,
+    padding: '8px 0',
+    fontSize: '12.5px',
+    fontFamily: 'inherit',
+    color: 'var(--text)',
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+  },
+  quickAddBtn: {
+    padding: '6px 14px',
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--bg)',
+    background: 'var(--accent-text)',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    flexShrink: 0,
   },
 
   // Sources synchronisées (iCal feeds)
