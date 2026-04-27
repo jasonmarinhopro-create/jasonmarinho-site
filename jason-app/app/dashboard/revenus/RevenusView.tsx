@@ -432,21 +432,35 @@ export default function RevenusView({
   // ── Logement stats ───────────────────────────────────────────────────────
 
   const logementStats = useMemo(() => {
-    const stats: Record<string, { nom: string; encaisse: number; pending: number }> = {}
+    const stats: Record<string, { nom: string; encaisse: number; pending: number; charges: number; logement_id: string | null }> = {}
     contracts.forEach(c => {
       const nom = c.logement_nom ?? 'Sans nom'; const loyer = c.montant_loyer ?? 0
-      if (!stats[nom]) stats[nom] = { nom, encaisse: 0, pending: 0 }
+      if (!stats[nom]) stats[nom] = { nom, encaisse: 0, pending: 0, charges: 0, logement_id: c.logement_id ?? null }
       if (isPaid(c)) stats[nom].encaisse += loyer
       else if (isPending(c)) stats[nom].pending += loyer
     })
     entries.forEach(e => {
-      if (!stats[e.logement_nom]) stats[e.logement_nom] = { nom: e.logement_nom, encaisse: 0, pending: 0 }
+      if (!stats[e.logement_nom]) stats[e.logement_nom] = { nom: e.logement_nom, encaisse: 0, pending: 0, charges: 0, logement_id: null }
       stats[e.logement_nom].encaisse += e.montant
     })
+    charges.forEach(c => {
+      if (!stats[c.logement_nom]) stats[c.logement_nom] = { nom: c.logement_nom, encaisse: 0, pending: 0, charges: 0, logement_id: c.logement_id ?? null }
+      stats[c.logement_nom].charges += c.montant
+      if (!stats[c.logement_nom].logement_id && c.logement_id) {
+        stats[c.logement_nom].logement_id = c.logement_id
+      }
+    })
+    // Compléter logement_id manquants depuis la liste de logements
+    Object.values(stats).forEach(s => {
+      if (!s.logement_id) {
+        const match = logements.find(l => l.nom === s.nom)
+        if (match) s.logement_id = match.id
+      }
+    })
     return Object.values(stats)
-      .filter(s => s.encaisse > 0 || s.pending > 0)
+      .filter(s => s.encaisse > 0 || s.pending > 0 || s.charges > 0)
       .sort((a, b) => (b.encaisse + b.pending) - (a.encaisse + a.pending))
-  }, [contracts, entries])
+  }, [contracts, entries, charges, logements])
 
   // ── Unified transactions ─────────────────────────────────────────────────
 
@@ -810,13 +824,15 @@ export default function RevenusView({
 
         <section style={s.card}>
           <h2 style={s.cardTitle}>Par logement</h2>
-          <p style={s.cardSub}>Encaissé vs. en attente</p>
+          <p style={s.cardSub}>Encaissé · charges · marge nette</p>
           {logementStats.length === 0
             ? <p style={s.empty}>Aucune donnée</p>
             : <div style={s.logList}>
                 {logementStats.map(ls => {
                   const total = ls.encaisse + ls.pending
                   const pct   = total > 0 ? (ls.encaisse / total) * 100 : 0
+                  const marge = ls.encaisse - ls.charges
+                  const margePct = ls.encaisse > 0 ? (marge / ls.encaisse) * 100 : 0
                   return (
                     <div key={ls.nom} style={s.logRow}>
                       <div style={s.logHeader}>
@@ -832,6 +848,29 @@ export default function RevenusView({
                       <div style={s.progressBg}>
                         <div style={{ ...s.progressFill, width: `${pct}%` }} />
                       </div>
+                      {/* Charges + marge */}
+                      {(ls.charges > 0 || ls.encaisse > 0) && (
+                        <div style={{
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                          fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px', flexWrap: 'wrap' as const, gap: '6px',
+                        }}>
+                          <span>
+                            {ls.charges > 0 && <>Charges <strong style={{ color: '#ef4444' }}>−{fmt(ls.charges)}</strong></>}
+                            {ls.charges > 0 && ls.encaisse > 0 && ' · '}
+                            {ls.encaisse > 0 && (
+                              <>Marge <strong style={{ color: marge >= 0 ? '#10b981' : '#ef4444' }}>{fmt(marge)}</strong> ({margePct.toFixed(0)} %)</>
+                            )}
+                          </span>
+                          {ls.logement_id && (
+                            <a
+                              href={`/dashboard/logements/${ls.logement_id}`}
+                              style={{ fontSize: '11px', color: 'var(--accent-text)', textDecoration: 'none' as const, fontWeight: 500 }}
+                            >
+                              Fiche détail →
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )
                 })}
