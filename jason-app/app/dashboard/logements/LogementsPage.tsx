@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
-import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut } from '@phosphor-icons/react'
+import { useState, useTransition, useEffect, useMemo } from 'react'
+import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight } from '@phosphor-icons/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 
@@ -148,6 +148,9 @@ export default function LogementsPage({ logements: initial }: Props) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState<'all' | 'actifs' | 'en-pause' | string>('all') // string = type slug
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>(initial.length >= 5 ? 'table' : 'cards')
 
   // Si la page est ouverte avec ?edit=id (depuis le détail), ouvrir directement la modal d'édition
   useEffect(() => {
@@ -159,6 +162,31 @@ export default function LogementsPage({ logements: initial }: Props) {
     router.replace('/dashboard/logements')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Liste filtrée
+  const filteredLogements = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return logements.filter(l => {
+      if (filter === 'actifs' && l.actif === false) return false
+      if (filter === 'en-pause' && l.actif !== false) return false
+      // filter par type
+      if (filter !== 'all' && filter !== 'actifs' && filter !== 'en-pause') {
+        if (l.type_logement !== filter) return false
+      }
+      if (q) {
+        const haystack = [l.nom, l.adresse, l.description ?? '', l.numero_enregistrement ?? ''].join(' ').toLowerCase()
+        if (!haystack.includes(q)) return false
+      }
+      return true
+    })
+  }, [logements, search, filter])
+
+  // Types présents dans la liste pour les chips de filtre dynamique
+  const typesPresent = useMemo(() => {
+    const set = new Set<string>()
+    logements.forEach(l => { if (l.type_logement) set.add(l.type_logement) })
+    return Array.from(set)
+  }, [logements])
 
   function set(field: string, value: string | number | boolean | null | string[]) {
     setForm(f => ({ ...f, [field]: value }))
@@ -339,6 +367,92 @@ export default function LogementsPage({ logements: initial }: Props) {
           </div>
         )}
 
+        {/* Filter bar (visible si > 0 logement) */}
+        {logements.length > 0 && (
+          <div style={filterBar}>
+            <div style={filterChips}>
+              <button
+                onClick={() => setFilter('all')}
+                style={{ ...filterChip, ...(filter === 'all' ? filterChipActive : {}) }}
+              >
+                Tous <span style={chipCount}>{logements.length}</span>
+              </button>
+              <button
+                onClick={() => setFilter('actifs')}
+                style={{ ...filterChip, ...(filter === 'actifs' ? filterChipActive : {}) }}
+              >
+                Actifs <span style={chipCount}>{logements.filter(l => l.actif !== false).length}</span>
+              </button>
+              {logements.some(l => l.actif === false) && (
+                <button
+                  onClick={() => setFilter('en-pause')}
+                  style={{ ...filterChip, ...(filter === 'en-pause' ? filterChipActive : {}) }}
+                >
+                  En pause <span style={chipCount}>{logements.filter(l => l.actif === false).length}</span>
+                </button>
+              )}
+              {typesPresent.length > 1 && typesPresent.map(t => (
+                <button
+                  key={t}
+                  onClick={() => setFilter(t)}
+                  style={{ ...filterChip, ...(filter === t ? filterChipActive : {}) }}
+                >
+                  {TYPE_LOGEMENT_LABELS[t as TypeLogement] ?? t}
+                </button>
+              ))}
+            </div>
+
+            <div style={filterRight}>
+              <div style={searchWrap}>
+                <span style={searchIcon}><MagnifyingGlass size={13} weight="bold" /></span>
+                <input
+                  type="text"
+                  placeholder="Rechercher un logement…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  style={searchInput}
+                />
+                {search && (
+                  <button onClick={() => setSearch('')} style={searchClear} aria-label="Effacer">×</button>
+                )}
+              </div>
+              <div style={viewToggle}>
+                <button
+                  onClick={() => setViewMode('cards')}
+                  style={{ ...viewBtn, ...(viewMode === 'cards' ? viewBtnActive : {}) }}
+                  title="Vue cards"
+                >
+                  <SquaresFour size={13} weight="fill" />
+                </button>
+                <button
+                  onClick={() => setViewMode('table')}
+                  style={{ ...viewBtn, ...(viewMode === 'table' ? viewBtnActive : {}) }}
+                  title="Vue tableau"
+                >
+                  <Rows size={13} weight="bold" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Hint si 1 seul logement */}
+        {logements.length === 1 && !search && filter === 'all' && (
+          <div
+            role="button" tabIndex={0}
+            onClick={() => router.push(`/dashboard/logements/${logements[0].id}`)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') router.push(`/dashboard/logements/${logements[0].id}`) }}
+            style={singleHint}
+          >
+            <House size={20} weight="fill" color="var(--accent-text)" />
+            <div style={{ flex: 1 }}>
+              <div style={singleHintTitle}>Découvre le dashboard de ton bien</div>
+              <div style={singleHintDesc}>Stats, prochains séjours, voyageurs récents, infos pratiques — tout est centralisé dans la fiche détaillée.</div>
+            </div>
+            <ArrowRight size={14} weight="bold" color="var(--accent-text)" />
+          </div>
+        )}
+
         {/* Empty state */}
         {logements.length === 0 && (
           <div style={emptyState}>
@@ -354,10 +468,89 @@ export default function LogementsPage({ logements: initial }: Props) {
           </div>
         )}
 
-        {/* Grid */}
-        {logements.length > 0 && (
+        {/* Empty filter state */}
+        {logements.length > 0 && filteredLogements.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)', fontSize: '13px' }}>
+            <p style={{ marginBottom: '12px' }}>Aucun logement ne correspond à ces filtres.</p>
+            <button
+              onClick={() => { setSearch(''); setFilter('all') }}
+              style={{ ...addBtnAlt, fontSize: '12px', padding: '7px 14px' }}
+            >
+              Réinitialiser les filtres
+            </button>
+          </div>
+        )}
+
+        {/* Vue Tableau */}
+        {filteredLogements.length > 0 && viewMode === 'table' && (
+          <div style={tableWrap}>
+            <table style={tableEl}>
+              <thead>
+                <tr>
+                  <th style={tableTh}>Nom</th>
+                  <th style={tableTh}>Type</th>
+                  <th style={tableTh}>Adresse</th>
+                  <th style={tableThNum}>Capacité</th>
+                  <th style={tableThNum}>Tarif/nuit</th>
+                  <th style={tableTh}>Statut</th>
+                  <th style={tableTh}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredLogements.map(l => (
+                  <tr
+                    key={l.id}
+                    onClick={() => router.push(`/dashboard/logements/${l.id}`)}
+                    style={{ ...tableRow, opacity: l.actif === false ? 0.6 : 1 }}
+                  >
+                    <td style={tableTd}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ ...tableThumb, background: l.photo_couverture_url ? `center/cover no-repeat url(${l.photo_couverture_url})` : 'var(--accent-bg)' }}>
+                          {!l.photo_couverture_url && <House size={14} weight="fill" color="var(--accent-text)" />}
+                        </div>
+                        <span style={{ fontWeight: 600, color: 'var(--text)' }}>{l.nom}</span>
+                      </div>
+                    </td>
+                    <td style={tableTd}>
+                      {l.type_logement ? TYPE_LOGEMENT_LABELS[l.type_logement] ?? l.type_logement : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                    </td>
+                    <td style={{ ...tableTd, color: 'var(--text-2)' }}>{l.adresse}</td>
+                    <td style={tableTdNum}>{l.capacite_max} pers.</td>
+                    <td style={tableTdNum}>{l.tarif_nuitee_moyen ? `${l.tarif_nuitee_moyen} €` : '—'}</td>
+                    <td style={tableTd}>
+                      {l.actif === false ? (
+                        <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>En pause</span>
+                      ) : (
+                        <span style={{ ...chip, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.25)', color: '#10b981' }}>Actif</span>
+                      )}
+                    </td>
+                    <td style={tableTd}>
+                      <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); openEdit(l) }}
+                          style={iconBtn} title="Modifier"
+                        >
+                          <PencilSimple size={13} />
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setDeleteConfirm(l.id) }}
+                          style={iconBtn} title="Supprimer"
+                        >
+                          <Trash size={13} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Vue Cards */}
+        {filteredLogements.length > 0 && viewMode === 'cards' && (
           <div style={grid}>
-            {logements.map(l => (
+            {filteredLogements.map(l => (
               <div
                 key={l.id}
                 role="button"
@@ -1181,6 +1374,189 @@ const sectionLabel: React.CSSProperties = {
   fontSize: '11px', fontWeight: 600, letterSpacing: '0.8px',
   textTransform: 'uppercase', color: 'var(--text-muted)',
   whiteSpace: 'nowrap',
+}
+
+// ─── Phase 3 — filtres, recherche, tableau ──────────────────────────────────
+
+const filterBar: React.CSSProperties = {
+  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+  gap: '12px', flexWrap: 'wrap' as const,
+  marginBottom: '16px',
+}
+
+const filterChips: React.CSSProperties = {
+  display: 'flex', flexWrap: 'wrap' as const, gap: '6px',
+}
+
+const filterChip: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  padding: '7px 14px',
+  fontSize: '12.5px', fontWeight: 500,
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
+  borderRadius: '100px',
+  color: 'var(--text-2)',
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+}
+
+const filterChipActive: React.CSSProperties = {
+  background: 'var(--accent-bg)',
+  borderColor: 'var(--accent-border)',
+  color: 'var(--accent-text)',
+}
+
+const chipCount: React.CSSProperties = {
+  fontSize: '11px', fontWeight: 700,
+  opacity: 0.7,
+}
+
+const filterRight: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '8px',
+}
+
+const searchWrap: React.CSSProperties = {
+  position: 'relative' as const,
+  width: '220px',
+}
+
+const searchIcon: React.CSSProperties = {
+  position: 'absolute' as const,
+  left: '12px', top: '50%',
+  transform: 'translateY(-50%)',
+  color: 'var(--text-muted)',
+  display: 'flex',
+  pointerEvents: 'none' as const,
+}
+
+const searchInput: React.CSSProperties = {
+  width: '100%',
+  padding: '8px 30px 8px 32px',
+  fontSize: '12.5px',
+  fontFamily: 'inherit',
+  color: 'var(--text)',
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
+  borderRadius: '9px',
+  outline: 'none',
+}
+
+const searchClear: React.CSSProperties = {
+  position: 'absolute' as const,
+  right: '6px', top: '50%',
+  transform: 'translateY(-50%)',
+  width: '20px', height: '20px',
+  borderRadius: '50%',
+  border: 'none',
+  background: 'var(--border)',
+  color: 'var(--text-2)',
+  fontSize: '14px',
+  cursor: 'pointer',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  lineHeight: 1,
+  fontFamily: 'inherit',
+}
+
+const viewToggle: React.CSSProperties = {
+  display: 'inline-flex', gap: '2px',
+  padding: '3px',
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
+  borderRadius: '9px',
+}
+
+const viewBtn: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  width: '28px', height: '28px',
+  background: 'transparent',
+  border: 'none',
+  borderRadius: '6px',
+  color: 'var(--text-muted)',
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+}
+
+const viewBtnActive: React.CSSProperties = {
+  background: 'var(--accent-bg)',
+  color: 'var(--accent-text)',
+}
+
+// Single-logement hint
+const singleHint: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '14px',
+  padding: '14px 18px',
+  background: 'var(--accent-bg)',
+  border: '1px dashed var(--accent-border-2)',
+  borderRadius: '12px',
+  cursor: 'pointer',
+  marginBottom: '16px',
+}
+
+const singleHintTitle: React.CSSProperties = {
+  fontSize: '13px', fontWeight: 600,
+  color: 'var(--text)',
+  marginBottom: '2px',
+}
+
+const singleHintDesc: React.CSSProperties = {
+  fontSize: '12px', fontWeight: 300,
+  color: 'var(--text-2)',
+  lineHeight: 1.5,
+}
+
+// Table
+const tableWrap: React.CSSProperties = {
+  overflowX: 'auto' as const,
+  background: 'var(--surface)',
+  border: '1px solid var(--border-2)',
+  borderRadius: '14px',
+}
+
+const tableEl: React.CSSProperties = {
+  width: '100%',
+  borderCollapse: 'collapse' as const,
+  fontSize: '13px',
+}
+
+const tableTh: React.CSSProperties = {
+  padding: '12px 14px',
+  textAlign: 'left' as const,
+  fontSize: '11px', fontWeight: 700, letterSpacing: '0.4px',
+  textTransform: 'uppercase' as const,
+  color: 'var(--text-muted)',
+  background: 'var(--bg-2)',
+  borderBottom: '1px solid var(--border-2)',
+}
+
+const tableThNum: React.CSSProperties = {
+  ...tableTh,
+  textAlign: 'right' as const,
+}
+
+const tableRow: React.CSSProperties = {
+  cursor: 'pointer',
+  borderBottom: '1px solid var(--border)',
+  transition: 'background 0.12s',
+}
+
+const tableTd: React.CSSProperties = {
+  padding: '12px 14px',
+  color: 'var(--text-2)',
+  fontWeight: 400,
+}
+
+const tableTdNum: React.CSSProperties = {
+  ...tableTd,
+  textAlign: 'right' as const,
+  fontWeight: 500,
+  color: 'var(--text)',
+}
+
+const tableThumb: React.CSSProperties = {
+  width: '32px', height: '32px',
+  borderRadius: '7px',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  flexShrink: 0,
 }
 
 // ─── Phase 1 — nouveaux styles ─────────────────────────────────────────────────
