@@ -5,8 +5,9 @@ import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
   House, Plus, Trash, X, Check,
   Info, Warning, ArrowRight, Scales, Upload,
+  Receipt, ChartBar, Target,
 } from '@phosphor-icons/react'
-import { createRevenusEntry, deleteRevenusEntry } from './actions'
+import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel } from './actions'
 import ImportCSVModal from './ImportCSVModal'
 
 // ── types ────────────────────────────────────────────────────────────────────
@@ -35,10 +36,31 @@ interface RevenusEntry {
   description: string | null
 }
 
+interface ChargeEntry {
+  id: string
+  logement_nom: string
+  logement_id: string | null
+  montant: number
+  date_charge: string
+  categorie: string
+  description: string | null
+  deductible: boolean
+}
+
+interface LogementMin {
+  id: string
+  nom: string
+  honoraires_pct: number | null
+}
+
 interface Props {
   contracts: Contract[]
   initialEntries: RevenusEntry[]
+  initialCharges?: ChargeEntry[]
   logementNoms: string[]
+  logements?: LogementMin[]
+  objectifAnnuel?: number | null
+  plan?: string
 }
 
 // ── constants ────────────────────────────────────────────────────────────────
@@ -51,6 +73,27 @@ const TYPE_LABELS: Record<string, string> = {
 }
 const MODE_OPTIONS = ['virement', 'especes', 'cheque', 'autre'] as const
 const TYPE_OPTIONS = ['loyer', 'caution', 'frais_menage', 'autre'] as const
+
+// ─── Charges ─────────────────────────────────────────────────────────────────
+
+const CHARGE_CATEGORIES: Array<{ slug: string; label: string; emoji: string; color: string }> = [
+  { slug: 'menage',                 label: 'Ménage',           emoji: '🧹', color: '#60a5fa' },
+  { slug: 'energie',                label: 'Énergie',          emoji: '⚡', color: '#f59e0b' },
+  { slug: 'commissions_plateforme', label: 'Commissions',      emoji: '💸', color: '#ef4444' },
+  { slug: 'taxe_fonciere',          label: 'Taxe foncière',    emoji: '🏛️', color: '#a78bfa' },
+  { slug: 'taxe_sejour',            label: 'Taxe de séjour',   emoji: '🛌', color: '#0ea5e9' },
+  { slug: 'assurance',              label: 'Assurance',        emoji: '🛡️', color: '#34d399' },
+  { slug: 'travaux',                label: 'Travaux',          emoji: '🔨', color: '#fb923c' },
+  { slug: 'equipement',             label: 'Équipement',       emoji: '🪑', color: '#22d3ee' },
+  { slug: 'abonnement',             label: 'Abonnement',       emoji: '📅', color: '#c084fc' },
+  { slug: 'comptabilite',           label: 'Comptabilité',     emoji: '📊', color: '#84cc16' },
+  { slug: 'banque',                 label: 'Banque',           emoji: '🏦', color: '#94a3b8' },
+  { slug: 'amortissement',          label: 'Amortissement',    emoji: '📉', color: '#f472b6' },
+  { slug: 'autre',                  label: 'Autre',            emoji: '✨', color: 'var(--text-muted)' },
+]
+
+const CHARGE_LABEL: Record<string, { label: string; emoji: string; color: string }> =
+  Object.fromEntries(CHARGE_CATEGORIES.map(c => [c.slug, c]))
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -83,14 +126,32 @@ function todayISO() {
 
 // ── component ────────────────────────────────────────────────────────────────
 
-export default function RevenusView({ contracts, initialEntries, logementNoms }: Props) {
+export default function RevenusView({
+  contracts,
+  initialEntries,
+  initialCharges = [],
+  logementNoms,
+  logements = [],
+  objectifAnnuel = null,
+  plan = 'standard',
+}: Props) {
+  const isStandard = plan === 'standard'
+  const isDriing = plan === 'driing'
+  // const isDecouverte = plan === 'decouverte' // bloqué en amont via PlanGate
   const now = new Date()
   const thisMonth = now.getMonth()
   const thisYear  = now.getFullYear()
 
   const [entries, setEntries]   = useState<RevenusEntry[]>(initialEntries)
+  const [charges, setCharges]   = useState<ChargeEntry[]>(initialCharges)
   const [showForm, setShowForm] = useState(false)
+  const [showChargeForm, setShowChargeForm] = useState(false)
   const [showImport, setShowImport] = useState(false)
+
+  // Objectif annuel (déplacé tout en haut pour pouvoir l'utiliser dans chartData)
+  const [editingObjectif, setEditingObjectif] = useState(false)
+  const [objectifInput, setObjectifInput] = useState(objectifAnnuel?.toString() ?? '')
+  const [currentObjectif, setCurrentObjectif] = useState<number | null>(objectifAnnuel)
   const [filter, setFilter]     = useState<'all' | 'encaisse' | 'attente'>('all')
   const [logementFilter, setLogementFilter] = useState<string>('all')
   const [, startT]              = useTransition()
@@ -103,13 +164,21 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
     if (logementParam) setLogementFilter(logementParam)
   }, [])
 
-  // form fields
+  // form fields revenus
   const [fLogement, setFLogement] = useState('')
   const [fMontant,  setFMontant]  = useState('')
   const [fDate,     setFDate]     = useState(todayISO)
   const [fMode,     setFMode]     = useState<string>('virement')
   const [fType,     setFType]     = useState<string>('loyer')
   const [fDesc,     setFDesc]     = useState('')
+
+  // form fields charges
+  const [cLogement, setCLogement] = useState('')
+  const [cMontant,  setCMontant]  = useState('')
+  const [cDate,     setCDate]     = useState(todayISO)
+  const [cCat,      setCCat]      = useState<string>('menage')
+  const [cDesc,     setCDesc]     = useState('')
+  const [cDeductible, setCDeductible] = useState<boolean>(true)
 
   function resetForm() {
     setFLogement(''); setFMontant(''); setFDate(todayISO())
@@ -148,11 +217,89 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
     startT(async () => { await deleteRevenusEntry(id) })
   }
 
+  // ── Charges handlers ───────────────────────────────────────────────────
+
+  function resetChargeForm() {
+    setCLogement(''); setCMontant(''); setCDate(todayISO())
+    setCCat('menage'); setCDesc(''); setCDeductible(true)
+    setShowChargeForm(false)
+  }
+
+  function handleAddCharge() {
+    const montant = parseFloat(cMontant)
+    if (!cLogement.trim() || isNaN(montant) || montant <= 0 || !cDate) return
+    const matchedLogement = logements.find(l => l.nom === cLogement.trim())
+    const optimistic: ChargeEntry = {
+      id: 'tmp-' + Date.now(),
+      logement_nom: cLogement.trim(),
+      logement_id: matchedLogement?.id ?? null,
+      montant,
+      date_charge: cDate,
+      categorie: cCat,
+      description: cDesc.trim() || null,
+      deductible: cDeductible,
+    }
+    setCharges(prev => [optimistic, ...prev])
+    resetChargeForm()
+    startT(async () => {
+      const res = await createCharge({
+        logement_nom: optimistic.logement_nom,
+        logement_id: optimistic.logement_id,
+        montant: optimistic.montant,
+        date_charge: optimistic.date_charge,
+        categorie: optimistic.categorie,
+        description: optimistic.description,
+        deductible: optimistic.deductible,
+      })
+      if (res.error) {
+        setCharges(prev => prev.filter(c => c.id !== optimistic.id))
+      } else if (res.charge) {
+        setCharges(prev => prev.map(c => c.id === optimistic.id ? (res.charge as ChargeEntry) : c))
+      }
+    })
+  }
+
+  function handleDeleteCharge(id: string) {
+    setCharges(prev => prev.filter(c => c.id !== id))
+    startT(async () => { await deleteCharge(id) })
+  }
+
+  // ── Objectif annuel handlers ───────────────────────────────────────
+  function saveObjectif() {
+    const v = parseFloat(objectifInput)
+    const valid = !isNaN(v) && v > 0
+    setCurrentObjectif(valid ? v : null)
+    setEditingObjectif(false)
+    startT(async () => {
+      await setObjectifAnnuel(valid ? v : null, thisYear)
+    })
+  }
+
+  // ── Charges stats (pour Phase 2 KPIs et la section dédiée) ──
+  const chargesStats = useMemo(() => {
+    let cesMois = 0, cetteAnnee = 0
+    const byCategoryYTD: Record<string, number> = {}
+    charges.forEach(c => {
+      const d = new Date(c.date_charge)
+      if (d.getFullYear() === thisYear) {
+        cetteAnnee += c.montant
+        if (d.getMonth() === thisMonth) cesMois += c.montant
+        byCategoryYTD[c.categorie] = (byCategoryYTD[c.categorie] ?? 0) + c.montant
+      }
+    })
+    const byCategorySorted = Object.entries(byCategoryYTD)
+      .map(([cat, total]) => ({ cat, total, ...CHARGE_LABEL[cat] }))
+      .sort((a, b) => b.total - a.total)
+    return { cesMois, cetteAnnee, byCategorySorted }
+  }, [charges, thisMonth, thisYear])
+
   // ── KPIs ────────────────────────────────────────────────────────────────
 
   const kpis = useMemo(() => {
     let cesMoisEnc = 0, enAttente = 0, cetteAnneeEnc = 0
+    let memeMoisN1 = 0, anneeN1 = 0
     const monthlyTotals: Record<string, number> = {}
+    const lastYear = thisYear - 1
 
     contracts.forEach(c => {
       const loyer = c.montant_loyer ?? 0; if (loyer <= 0) return
@@ -161,6 +308,9 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
         if (d.getFullYear() === thisYear) {
           cetteAnneeEnc += loyer
           if (d.getMonth() === thisMonth) cesMoisEnc += loyer
+        } else if (d.getFullYear() === lastYear) {
+          anneeN1 += loyer
+          if (d.getMonth() === thisMonth) memeMoisN1 += loyer
         }
         const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
         monthlyTotals[k] = (monthlyTotals[k] ?? 0) + loyer
@@ -172,6 +322,9 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
       if (d.getFullYear() === thisYear) {
         cetteAnneeEnc += e.montant
         if (d.getMonth() === thisMonth) cesMoisEnc += e.montant
+      } else if (d.getFullYear() === lastYear) {
+        anneeN1 += e.montant
+        if (d.getMonth() === thisMonth) memeMoisN1 += e.montant
       }
       const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
       monthlyTotals[k] = (monthlyTotals[k] ?? 0) + e.montant
@@ -182,50 +335,153 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
     })
     const last6Sum = last6Keys.reduce((acc, k) => acc + (monthlyTotals[k] ?? 0), 0)
-    return { cesMoisEnc, enAttente, cetteAnneeEnc, moyMensuelle: last6Sum / 6 }
-  }, [contracts, entries, thisMonth, thisYear])
 
-  // ── Chart ───────────────────────────────────────────────────────────────
+    // Évolution N-1
+    const evolMois  = memeMoisN1 > 0 ? ((cesMoisEnc - memeMoisN1) / memeMoisN1) * 100 : null
+    const evolAnnee = anneeN1   > 0 ? ((cetteAnneeEnc - anneeN1)   / anneeN1)   * 100 : null
+
+    // Bénéfice net (revenus - charges)
+    const beneficeMois = cesMoisEnc - chargesStats.cesMois
+    const beneficeYTD  = cetteAnneeEnc - chargesStats.cetteAnnee
+
+    return {
+      cesMoisEnc, enAttente, cetteAnneeEnc,
+      moyMensuelle: last6Sum / 6,
+      memeMoisN1, anneeN1, evolMois, evolAnnee,
+      beneficeMois, beneficeYTD,
+    }
+  }, [contracts, entries, thisMonth, thisYear, chargesStats.cesMois, chargesStats.cetteAnnee])
+
+  // ── Chart (Phase 3 — enrichi) ────────────────────────────────────
+  const [chartRange, setChartRange] = useState<'6m' | '12m' | 'year'>('6m')
 
   const chartData = useMemo(() => {
-    return Array.from({ length: 6 }, (_, i) => {
-      const d     = new Date(thisYear, thisMonth - (5 - i), 1)
-      const key   = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-      const label = d.toLocaleDateString('fr-FR', { month: 'short' })
-      let total   = 0
+    // 6m : 6 derniers mois glissants
+    // 12m : 12 derniers mois glissants
+    // year : année courante (jan → déc)
+    const months: Array<{ key: string; label: string; date: Date; isCurrent: boolean; isPast: boolean; isFuture: boolean }> = []
+
+    const todayMonthKey = `${thisYear}-${String(thisMonth + 1).padStart(2, '0')}`
+    if (chartRange === 'year') {
+      for (let m = 0; m < 12; m++) {
+        const d = new Date(thisYear, m, 1)
+        const key = `${thisYear}-${String(m + 1).padStart(2, '0')}`
+        months.push({
+          key, date: d,
+          label: d.toLocaleDateString('fr-FR', { month: 'short' }),
+          isCurrent: key === todayMonthKey,
+          isPast: m < thisMonth,
+          isFuture: m > thisMonth,
+        })
+      }
+    } else {
+      const count = chartRange === '12m' ? 12 : 6
+      for (let i = count - 1; i >= 0; i--) {
+        const d = new Date(thisYear, thisMonth - i, 1)
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+        months.push({
+          key, date: d,
+          label: d.toLocaleDateString('fr-FR', { month: 'short' }),
+          isCurrent: key === todayMonthKey,
+          isPast: i > 0,
+          isFuture: false,
+        })
+      }
+    }
+
+    return months.map(month => {
+      const key = month.key
+      const yPart = key.slice(0, 4); const mPart = key.slice(5, 7)
+      const n1Key = `${parseInt(yPart, 10) - 1}-${mPart}`
+
+      let encaisse = 0
+      let prevu = 0
+      let n1 = 0
+
       contracts.forEach(c => {
-        if (!isPaid(c) || !c.date_arrivee) return
+        if (!c.date_arrivee) return
         const da = new Date(c.date_arrivee)
-        if (`${da.getFullYear()}-${String(da.getMonth() + 1).padStart(2, '0')}` === key)
-          total += c.montant_loyer ?? 0
+        const dKey = `${da.getFullYear()}-${String(da.getMonth() + 1).padStart(2, '0')}`
+        const loyer = c.montant_loyer ?? 0
+        if (dKey === key) {
+          if (isPaid(c)) encaisse += loyer
+          else if (isPending(c)) prevu += loyer
+        } else if (dKey === n1Key && isPaid(c)) {
+          n1 += loyer
+        }
       })
       entries.forEach(e => {
         const de = new Date(e.date_paiement)
-        if (`${de.getFullYear()}-${String(de.getMonth() + 1).padStart(2, '0')}` === key)
-          total += e.montant
+        const dKey = `${de.getFullYear()}-${String(de.getMonth() + 1).padStart(2, '0')}`
+        if (dKey === key) encaisse += e.montant
+        else if (dKey === n1Key) n1 += e.montant
       })
-      return { key, label, total }
+
+      return { ...month, encaisse, prevu, n1, total: encaisse + prevu }
     })
-  }, [contracts, entries, thisMonth, thisYear])
+  }, [contracts, entries, thisMonth, thisYear, chartRange])
+
+  const chartMaxValue = useMemo(() => {
+    return Math.max(
+      ...chartData.flatMap(m => [m.encaisse + m.prevu, m.n1]),
+      currentObjectif ? currentObjectif / 12 : 0,
+      1,
+    )
+  }, [chartData, currentObjectif])
 
   // ── Logement stats ───────────────────────────────────────────────────────
 
   const logementStats = useMemo(() => {
-    const stats: Record<string, { nom: string; encaisse: number; pending: number }> = {}
+    const stats: Record<string, { nom: string; encaisse: number; pending: number; charges: number; logement_id: string | null }> = {}
     contracts.forEach(c => {
       const nom = c.logement_nom ?? 'Sans nom'; const loyer = c.montant_loyer ?? 0
-      if (!stats[nom]) stats[nom] = { nom, encaisse: 0, pending: 0 }
+      if (!stats[nom]) stats[nom] = { nom, encaisse: 0, pending: 0, charges: 0, logement_id: c.logement_id ?? null }
       if (isPaid(c)) stats[nom].encaisse += loyer
       else if (isPending(c)) stats[nom].pending += loyer
     })
     entries.forEach(e => {
-      if (!stats[e.logement_nom]) stats[e.logement_nom] = { nom: e.logement_nom, encaisse: 0, pending: 0 }
+      if (!stats[e.logement_nom]) stats[e.logement_nom] = { nom: e.logement_nom, encaisse: 0, pending: 0, charges: 0, logement_id: null }
       stats[e.logement_nom].encaisse += e.montant
     })
+    charges.forEach(c => {
+      if (!stats[c.logement_nom]) stats[c.logement_nom] = { nom: c.logement_nom, encaisse: 0, pending: 0, charges: 0, logement_id: c.logement_id ?? null }
+      stats[c.logement_nom].charges += c.montant
+      if (!stats[c.logement_nom].logement_id && c.logement_id) {
+        stats[c.logement_nom].logement_id = c.logement_id
+      }
+    })
+    // Compléter logement_id manquants depuis la liste de logements
+    Object.values(stats).forEach(s => {
+      if (!s.logement_id) {
+        const match = logements.find(l => l.nom === s.nom)
+        if (match) s.logement_id = match.id
+      }
+    })
     return Object.values(stats)
-      .filter(s => s.encaisse > 0 || s.pending > 0)
+      .filter(s => s.encaisse > 0 || s.pending > 0 || s.charges > 0)
       .sort((a, b) => (b.encaisse + b.pending) - (a.encaisse + a.pending))
-  }, [contracts, entries])
+  }, [contracts, entries, charges, logements])
+
+  // ─── Phase 9 — Honoraires conciergerie ─────────────────────────
+  const honorairesStats = useMemo(() => {
+    const items: Array<{ nom: string; logement_id: string | null; ca: number; pct: number; honoraires: number; netProprietaire: number }> = []
+    let totalHonoraires = 0
+    let totalCA = 0
+    logementStats.forEach(ls => {
+      const logement = logements.find(l => l.nom === ls.nom || l.id === ls.logement_id)
+      const pct = logement?.honoraires_pct ?? null
+      if (pct == null || pct <= 0) return
+      const honoraires = ls.encaisse * (pct / 100)
+      const netProprietaire = ls.encaisse - honoraires
+      items.push({
+        nom: ls.nom, logement_id: ls.logement_id,
+        ca: ls.encaisse, pct, honoraires, netProprietaire,
+      })
+      totalHonoraires += honoraires
+      totalCA += ls.encaisse
+    })
+    return { items, totalHonoraires, totalCA }
+  }, [logementStats, logements])
 
   // ── Unified transactions ─────────────────────────────────────────────────
 
@@ -258,12 +514,54 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }, [contracts, entries])
 
+  // Phase 5 — search + sort
+  const [txSearch, setTxSearch] = useState('')
+  const [txSort, setTxSort] = useState<'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc'>('date-desc')
+
   const filteredTx = useMemo(() => {
     let list = allTx
     if (logementFilter !== 'all') list = list.filter(tx => tx.logement === logementFilter)
     if (filter !== 'all') list = list.filter(tx => tx.statut === filter)
+    const q = txSearch.trim().toLowerCase()
+    if (q) {
+      list = list.filter(tx =>
+        tx.logement.toLowerCase().includes(q) ||
+        (tx.guest ?? '').toLowerCase().includes(q) ||
+        tx.label.toLowerCase().includes(q)
+      )
+    }
+    list = [...list].sort((a, b) => {
+      switch (txSort) {
+        case 'date-asc':    return new Date(a.date).getTime() - new Date(b.date).getTime()
+        case 'amount-desc': return b.montant - a.montant
+        case 'amount-asc':  return a.montant - b.montant
+        default:            return new Date(b.date).getTime() - new Date(a.date).getTime()
+      }
+    })
     return list
-  }, [allTx, filter, logementFilter])
+  }, [allTx, filter, logementFilter, txSearch, txSort])
+
+  // Export CSV
+  function downloadCSV() {
+    const header = ['Date', 'Logement', 'Voyageur', 'Type', 'Mode', 'Statut', 'Montant']
+    const rows = filteredTx.map(tx => [
+      tx.date,
+      `"${(tx.logement || '').replace(/"/g, '""')}"`,
+      `"${(tx.guest ?? '').replace(/"/g, '""')}"`,
+      tx.label,
+      tx.mode,
+      tx.statut === 'encaisse' ? 'Encaissé' : 'Attente',
+      tx.montant.toString().replace('.', ','),
+    ])
+    const csv = [header.join(';'), ...rows.map(r => r.join(';'))].join('\n')
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `revenus-${thisYear}-${String(thisMonth + 1).padStart(2, '0')}.csv`
+    document.body.appendChild(a); a.click(); document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
 
   const maxChart    = Math.max(...chartData.map(m => m.total), 1)
   const formValid   = fLogement.trim() && fMontant && parseFloat(fMontant) > 0 && fDate
@@ -278,50 +576,284 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
         <h1 style={s.pageTitle}>
           Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>revenus</em>
         </h1>
-        <p style={s.pageSub}>Suivi de tes encaissements, paiements en attente et fiscalité.</p>
+        <p style={s.pageSub}>Suivi de tes encaissements, charges, bénéfice net et fiscalité.</p>
       </div>
 
-      {/* KPI cards */}
+      {/* Empty state onboarding (3 étapes pour démarrer) */}
+      {contracts.length === 0 && entries.length === 0 && charges.length === 0 && (
+        <div style={s.onboardingCard} className="fade-up">
+          <div style={s.onboardingHeader}>
+            <span style={s.onboardingTag}>
+              <Info size={11} weight="fill" />
+              Premiers pas
+            </span>
+            <h2 style={s.onboardingTitle}>Démarre ton suivi de revenus en 3 étapes</h2>
+            <p style={s.onboardingDesc}>
+              Importe ton historique en CSV ou ajoute tes premières entrées manuellement. Toutes tes données restent privées et exportables à tout moment.
+            </p>
+          </div>
+          <div style={s.onboardingSteps}>
+            <button onClick={() => setShowImport(true)} style={s.onboardingStep}>
+              <span style={s.onboardingStepNum}>1</span>
+              <Upload size={20} weight="fill" color="var(--accent-text)" />
+              <div style={s.onboardingStepBody}>
+                <div style={s.onboardingStepTitle}>Importer un CSV</div>
+                <div style={s.onboardingStepDesc}>Airbnb, Booking — ton historique en 30 secondes</div>
+              </div>
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
+            </button>
+            <button onClick={() => setShowForm(true)} style={s.onboardingStep}>
+              <span style={s.onboardingStepNum}>2</span>
+              <Plus size={20} weight="bold" color="var(--accent-text)" />
+              <div style={s.onboardingStepBody}>
+                <div style={s.onboardingStepTitle}>Ajouter manuellement</div>
+                <div style={s.onboardingStepDesc}>Virement, espèces, chèque — saisie rapide</div>
+              </div>
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
+            </button>
+            <button onClick={() => setShowChargeForm(true)} style={s.onboardingStep}>
+              <span style={s.onboardingStepNum}>3</span>
+              <Receipt size={20} weight="fill" color="var(--accent-text)" />
+              <div style={s.onboardingStepBody}>
+                <div style={s.onboardingStepTitle}>Saisir tes charges</div>
+                <div style={s.onboardingStepDesc}>Ménage, énergie, assurance — pour ton bénéfice net</div>
+              </div>
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* KPI cards (6) */}
       <div style={s.kpiGrid}>
-        <KpiCard icon={<CurrencyEur size={20} weight="fill" />} label="Ce mois encaissé"  value={fmt(kpis.cesMoisEnc)}    colorClass="green"  />
-        <KpiCard icon={<Clock       size={20} weight="fill" />} label="En attente"         value={fmt(kpis.enAttente)}     colorClass="yellow" />
-        <KpiCard icon={<TrendUp     size={20} weight="fill" />} label="Cette année"        value={fmt(kpis.cetteAnneeEnc)} colorClass="accent" />
-        <KpiCard icon={<CalendarBlank size={20} weight="fill" />} label="Moy. mensuelle"   value={fmt(kpis.moyMensuelle)}  colorClass="muted"  sub="6 derniers mois" />
+        <KpiCard
+          icon={<CurrencyEur size={20} weight="fill" />}
+          label="Encaissé ce mois"
+          value={fmt(kpis.cesMoisEnc)}
+          colorClass="green"
+          sub={kpis.evolMois != null ? `${kpis.evolMois > 0 ? '+' : ''}${kpis.evolMois.toFixed(0)} % vs ${thisYear - 1}` : undefined}
+          subColor={kpis.evolMois != null ? (kpis.evolMois >= 0 ? '#10b981' : '#ef4444') : undefined}
+        />
+        <KpiCard
+          icon={<Receipt size={20} weight="fill" />}
+          label="Charges ce mois"
+          value={fmt(chargesStats.cesMois)}
+          colorClass="red"
+          sub={chargesStats.cesMois === 0 ? 'Aucune charge saisie' : undefined}
+        />
+        <KpiCard
+          icon={<TrendUp size={20} weight="fill" />}
+          label="Bénéfice net ce mois"
+          value={fmt(kpis.beneficeMois)}
+          colorClass={kpis.beneficeMois >= 0 ? 'accent' : 'red'}
+          sub="Encaissé − charges"
+        />
+        <KpiCard
+          icon={<Clock size={20} weight="fill" />}
+          label="En attente"
+          value={fmt(kpis.enAttente)}
+          colorClass="yellow"
+          sub={kpis.enAttente > 0 ? 'Paiements à recevoir' : 'Tout est encaissé'}
+        />
+        <KpiCard
+          icon={<CalendarBlank size={20} weight="fill" />}
+          label={`CA ${thisYear}`}
+          value={fmt(kpis.cetteAnneeEnc)}
+          colorClass="accent"
+          sub={kpis.evolAnnee != null ? `${kpis.evolAnnee > 0 ? '+' : ''}${kpis.evolAnnee.toFixed(0)} % vs ${thisYear - 1}` : undefined}
+          subColor={kpis.evolAnnee != null ? (kpis.evolAnnee >= 0 ? '#10b981' : '#ef4444') : undefined}
+        />
+        <KpiCard
+          icon={<ChartBar size={20} weight="fill" />}
+          label={`Bénéfice net ${thisYear}`}
+          value={fmt(kpis.beneficeYTD)}
+          colorClass={kpis.beneficeYTD >= 0 ? 'green' : 'red'}
+          sub={kpis.cetteAnneeEnc > 0 ? `Marge ${Math.round((kpis.beneficeYTD / kpis.cetteAnneeEnc) * 100)} %` : undefined}
+        />
+      </div>
+
+      {/* Objectif annuel — bandeau jauge */}
+      <div style={s.objectifBanner}>
+        {editingObjectif ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, width: '100%' }}>
+            <Target size={16} weight="fill" color="var(--accent-text)" />
+            <span style={s.objectifLabel}>Objectif CA {thisYear} :</span>
+            <input
+              type="number" min="0" step="100"
+              value={objectifInput}
+              onChange={e => setObjectifInput(e.target.value)}
+              placeholder="20 000"
+              autoFocus
+              style={{
+                padding: '6px 10px', fontSize: '13px',
+                width: '120px', fontFamily: 'inherit',
+                color: 'var(--text)', background: 'var(--bg-2)',
+                border: '1px solid var(--border)', borderRadius: '7px', outline: 'none',
+              }}
+            />
+            <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>€</span>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: '6px' }}>
+              <button onClick={() => { setEditingObjectif(false); setObjectifInput(currentObjectif?.toString() ?? '') }} style={s.objectifBtnGhost}>
+                Annuler
+              </button>
+              <button onClick={saveObjectif} style={s.objectifBtnSave}>
+                <Check size={12} weight="bold" /> Enregistrer
+              </button>
+            </div>
+          </div>
+        ) : currentObjectif ? (() => {
+          const pct = Math.min(100, Math.round((kpis.cetteAnneeEnc / currentObjectif) * 100))
+          const barColor = pct >= 100 ? '#10b981' : pct >= 70 ? 'var(--accent-text)' : pct >= 30 ? '#60a5fa' : 'var(--text-muted)'
+          return (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, width: '100%' }}>
+                <Target size={16} weight="fill" color="var(--accent-text)" />
+                <span style={s.objectifLabel}>Objectif {thisYear}</span>
+                <span style={{ ...s.objectifValue, color: barColor }}>
+                  {fmt(kpis.cetteAnneeEnc)} / {fmt(currentObjectif)} · {pct} %
+                </span>
+                <button onClick={() => { setObjectifInput(currentObjectif.toString()); setEditingObjectif(true) }} style={s.objectifBtnGhost}>
+                  Modifier
+                </button>
+                {pct >= 100 && (
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#10b981', marginLeft: 'auto' }}>
+                    🎉 Objectif atteint !
+                  </span>
+                )}
+              </div>
+              <div style={s.objectifBar}>
+                <div style={{ ...s.objectifBarFill, width: `${pct}%`, background: barColor }} />
+              </div>
+            </>
+          )
+        })() : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, width: '100%' }}>
+            <Target size={16} weight="fill" color="var(--text-muted)" />
+            <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
+              Définis un <strong>objectif annuel</strong> pour suivre ta progression mois par mois
+            </span>
+            <button onClick={() => setEditingObjectif(true)} style={{ ...s.objectifBtnSave, marginLeft: 'auto' }}>
+              <Plus size={12} weight="bold" /> Définir
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Chart + logement stats */}
       <div style={s.twoCol}>
         <section style={s.card}>
-          <h2 style={s.cardTitle}>Revenus encaissés</h2>
-          <p style={s.cardSub}>6 derniers mois</p>
-          <div style={s.chart}>
-            {chartData.map(month => (
-              <div key={month.key} style={s.chartCol}>
-                <div style={s.barWrap}>
-                  <div style={{
-                    ...s.bar,
-                    height: `${Math.max((month.total / maxChart) * 100, month.total > 0 ? 4 : 2)}%`,
-                    opacity: month.total === 0 ? 0.15 : 1,
-                  }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' as const, gap: '8px' }}>
+            <div>
+              <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>Revenus encaissés</h2>
+              <p style={{ ...s.cardSub, margin: 0 }}>
+                {chartRange === '6m' ? '6 derniers mois' : chartRange === '12m' ? '12 derniers mois' : `Année ${thisYear}`}
+                {' · '}vert : encaissé · cyan pointillé : prévu · trait gris : N−1
+              </p>
+            </div>
+            <div style={s.chartToggle}>
+              {([
+                { id: '6m', label: '6 mois' },
+                { id: '12m', label: '12 mois' },
+                { id: 'year', label: `${thisYear}` },
+              ] as const).map(opt => (
+                <button
+                  key={opt.id}
+                  onClick={() => setChartRange(opt.id)}
+                  style={{ ...s.chartToggleBtn, ...(chartRange === opt.id ? s.chartToggleBtnActive : {}) }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ ...s.chart, position: 'relative' as const }}>
+            {/* Ligne d'objectif annuel */}
+            {currentObjectif && currentObjectif > 0 && (() => {
+              const monthlyTarget = currentObjectif / 12
+              const pct = (monthlyTarget / chartMaxValue) * 100
+              if (pct < 5 || pct > 95) return null
+              return (
+                <div style={{
+                  position: 'absolute' as const, left: '8px', right: '8px',
+                  bottom: `calc(${pct}% + 28px)`,
+                  height: '1px',
+                  background: 'rgba(96,165,250,0.6)',
+                  borderTop: '1px dashed rgba(96,165,250,0.8)',
+                  zIndex: 1, pointerEvents: 'none' as const,
+                }}>
+                  <span style={{
+                    position: 'absolute' as const, right: 0, top: '-16px',
+                    fontSize: '10px', fontWeight: 600, color: '#60a5fa',
+                    letterSpacing: '0.3px',
+                  }}>
+                    🎯 {Math.round(monthlyTarget)} €/mois
+                  </span>
                 </div>
-                <span style={s.barAmount}>
-                  {month.total > 0 ? new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(month.total) : '–'}
-                </span>
-                <span style={s.barLabel}>{month.label}</span>
-              </div>
-            ))}
+              )
+            })()}
+
+            {chartData.map(month => {
+              const totalH = Math.max((month.encaisse / chartMaxValue) * 100, month.encaisse > 0 ? 4 : 2)
+              const prevuH = (month.prevu / chartMaxValue) * 100
+              const n1H = (month.n1 / chartMaxValue) * 100
+              return (
+                <div key={month.key} style={s.chartCol}>
+                  <div style={{ ...s.barWrap, position: 'relative' as const }}>
+                    {/* Marqueur N-1 (trait gris fin) */}
+                    {month.n1 > 0 && (
+                      <div style={{
+                        position: 'absolute' as const, left: '4px', right: '4px',
+                        bottom: `${n1H}%`,
+                        height: '2px',
+                        background: 'var(--text-muted)',
+                        opacity: 0.5,
+                        borderRadius: '1px',
+                      }} title={`N−1 : ${fmt(month.n1)}`} />
+                    )}
+                    {/* Bar encaissé */}
+                    <div style={{
+                      ...s.bar,
+                      height: `${totalH}%`,
+                      opacity: month.encaisse === 0 ? 0.15 : 1,
+                    }} />
+                    {/* Bar prévu (au-dessus, hachuré cyan) */}
+                    {month.prevu > 0 && (
+                      <div style={{
+                        position: 'absolute' as const,
+                        bottom: `${totalH}%`,
+                        left: 0, right: 0,
+                        height: `${prevuH}%`,
+                        background: 'repeating-linear-gradient(45deg, rgba(96,165,250,0.45) 0, rgba(96,165,250,0.45) 4px, rgba(96,165,250,0.20) 4px, rgba(96,165,250,0.20) 8px)',
+                        borderRadius: '3px 3px 0 0',
+                      }} title={`Prévu : ${fmt(month.prevu)}`} />
+                    )}
+                  </div>
+                  <span style={s.barAmount}>
+                    {month.total > 0
+                      ? new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(month.total)
+                      : '–'
+                    }
+                  </span>
+                  <span style={{ ...s.barLabel, fontWeight: month.isCurrent ? 700 : 500, color: month.isCurrent ? 'var(--accent-text)' : undefined }}>
+                    {month.label}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </section>
 
         <section style={s.card}>
           <h2 style={s.cardTitle}>Par logement</h2>
-          <p style={s.cardSub}>Encaissé vs. en attente</p>
+          <p style={s.cardSub}>Encaissé · charges · marge nette</p>
           {logementStats.length === 0
             ? <p style={s.empty}>Aucune donnée</p>
             : <div style={s.logList}>
                 {logementStats.map(ls => {
                   const total = ls.encaisse + ls.pending
                   const pct   = total > 0 ? (ls.encaisse / total) * 100 : 0
+                  const marge = ls.encaisse - ls.charges
+                  const margePct = ls.encaisse > 0 ? (marge / ls.encaisse) * 100 : 0
                   return (
                     <div key={ls.nom} style={s.logRow}>
                       <div style={s.logHeader}>
@@ -337,6 +869,29 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
                       <div style={s.progressBg}>
                         <div style={{ ...s.progressFill, width: `${pct}%` }} />
                       </div>
+                      {/* Charges + marge */}
+                      {(ls.charges > 0 || ls.encaisse > 0) && (
+                        <div style={{
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                          fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px', flexWrap: 'wrap' as const, gap: '6px',
+                        }}>
+                          <span>
+                            {ls.charges > 0 && <>Charges <strong style={{ color: '#ef4444' }}>−{fmt(ls.charges)}</strong></>}
+                            {ls.charges > 0 && ls.encaisse > 0 && ' · '}
+                            {ls.encaisse > 0 && (
+                              <>Marge <strong style={{ color: marge >= 0 ? '#10b981' : '#ef4444' }}>{fmt(marge)}</strong> ({margePct.toFixed(0)} %)</>
+                            )}
+                          </span>
+                          {ls.logement_id && (
+                            <a
+                              href={`/dashboard/logements/${ls.logement_id}`}
+                              style={{ fontSize: '11px', color: 'var(--accent-text)', textDecoration: 'none' as const, fontWeight: 500 }}
+                            >
+                              Fiche détail →
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )
                 })}
@@ -344,6 +899,88 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
           }
         </section>
       </div>
+
+      {/* ── Phase 9 — Honoraires conciergerie ─────────────────────── */}
+      {honorairesStats.items.length > 0 && (
+        <section style={s.card}>
+          <div style={s.journalHead}>
+            <div>
+              <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>
+                <Scales size={16} weight="fill" style={{ verticalAlign: 'middle', marginRight: '6px', color: '#a78bfa' }} />
+                Honoraires conciergerie
+              </h2>
+              <p style={{ ...s.cardSub, margin: 0 }}>
+                Calculé auto depuis le % d&apos;honoraires défini sur chaque logement
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const }}>
+              <span style={{
+                fontSize: '12px', fontWeight: 600,
+                padding: '6px 12px',
+                background: 'rgba(167,139,250,0.10)',
+                color: '#a78bfa',
+                border: '1px solid rgba(167,139,250,0.25)',
+                borderRadius: '8px',
+              }}>
+                Total : {fmt(honorairesStats.totalHonoraires)}
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '8px', marginTop: '12px' }}>
+            {honorairesStats.items.map(item => (
+              <div key={item.nom} style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '12px 14px',
+                background: 'var(--bg-2)',
+                border: '1px solid var(--border)',
+                borderRadius: '10px',
+                flexWrap: 'wrap' as const,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: '180px' }}>
+                  <House size={14} weight="fill" color="#a78bfa" style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{item.nom}</span>
+                  <span style={{
+                    fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px',
+                    padding: '2px 7px',
+                    background: 'rgba(167,139,250,0.10)',
+                    color: '#a78bfa',
+                    border: '1px solid rgba(167,139,250,0.25)',
+                    borderRadius: '100px',
+                  }}>
+                    {item.pct} %
+                  </span>
+                </div>
+                <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' as const }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px' }}>CA brut</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{fmt(item.ca)}</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px' }}>Honoraires</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#a78bfa' }}>{fmt(item.honoraires)}</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px' }}>Net propriétaire</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#10b981' }}>{fmt(item.netProprietaire)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{
+            fontSize: '11.5px', color: 'var(--text-muted)',
+            marginTop: '10px', lineHeight: 1.5,
+            padding: '10px 12px',
+            background: 'var(--surface-2)',
+            border: '1px dashed var(--border)',
+            borderRadius: '9px',
+          }}>
+            💡 Le % d&apos;honoraires se définit sur la fiche détail de chaque logement (section Propriétaire). Les honoraires sont calculés sur le CA brut encaissé. Pour exporter un rapport par propriétaire, contacte-nous (Phase 9b à venir).
+          </p>
+        </section>
+      )}
 
       {/* ── Journal des paiements */}
       <section style={s.card}>
@@ -435,45 +1072,120 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
           </div>
         )}
 
-        {/* Filter tabs + filtre par logement */}
-        <div style={{ ...s.filterRow, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '8px' }}>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const }}>
-            {(['all', 'encaisse', 'attente'] as const).map(f => {
-              const count = f === 'all' ? allTx.length : allTx.filter(t => t.statut === f).length
-              return (
-                <button key={f} onClick={() => setFilter(f)}
-                  style={{ ...s.filterBtn, ...(filter === f ? s.filterBtnActive : {}) }}>
-                  {f === 'all' ? 'Tout' : f === 'encaisse' ? 'Encaissé' : 'En attente'}
-                  <span style={{ ...s.filterCount, ...(filter === f ? { color: 'var(--accent-text)' } : {}) }}>{count}</span>
-                </button>
-              )
-            })}
+        {/* Filter tabs + recherche + tri + export */}
+        <div style={{ ...s.filterRow, flexDirection: 'column' as const, alignItems: 'stretch', gap: '10px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '8px' }}>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const }}>
+              {(['all', 'encaisse', 'attente'] as const).map(f => {
+                const count = f === 'all' ? allTx.length : allTx.filter(t => t.statut === f).length
+                return (
+                  <button key={f} onClick={() => setFilter(f)}
+                    style={{ ...s.filterBtn, ...(filter === f ? s.filterBtnActive : {}) }}>
+                    {f === 'all' ? 'Tout' : f === 'encaisse' ? 'Encaissé' : 'En attente'}
+                    <span style={{ ...s.filterCount, ...(filter === f ? { color: 'var(--accent-text)' } : {}) }}>{count}</span>
+                  </button>
+                )
+              })}
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, alignItems: 'center' }}>
+              <select
+                value={txSort}
+                onChange={(e) => setTxSort(e.target.value as any)}
+                style={{
+                  padding: '7px 12px', fontSize: '12.5px', fontFamily: 'inherit',
+                  background: 'var(--surface)', color: 'var(--text-2)',
+                  border: '1px solid var(--border)', borderRadius: '8px', cursor: 'pointer',
+                }}
+              >
+                <option value="date-desc">Date ↓</option>
+                <option value="date-asc">Date ↑</option>
+                <option value="amount-desc">Montant ↓</option>
+                <option value="amount-asc">Montant ↑</option>
+              </select>
+              {logementNoms.length > 1 && (
+                <select
+                  value={logementFilter}
+                  onChange={(e) => setLogementFilter(e.target.value)}
+                  style={{
+                    padding: '7px 12px', fontSize: '12.5px', fontFamily: 'inherit',
+                    background: 'var(--surface)', color: 'var(--text-2)',
+                    border: '1px solid var(--border)', borderRadius: '8px', cursor: 'pointer',
+                  }}
+                >
+                  <option value="all">Tous les logements</option>
+                  {logementNoms.map(n => <option key={n} value={n}>{n}</option>)}
+                </select>
+              )}
+              <button
+                onClick={downloadCSV}
+                disabled={filteredTx.length === 0}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '5px',
+                  padding: '7px 12px', fontSize: '12.5px', fontWeight: 500,
+                  background: 'var(--surface)', color: 'var(--text-2)',
+                  border: '1px solid var(--border)', borderRadius: '8px',
+                  cursor: filteredTx.length > 0 ? 'pointer' : 'not-allowed',
+                  opacity: filteredTx.length > 0 ? 1 : 0.5,
+                  fontFamily: 'inherit',
+                }}
+                title="Exporter au format CSV"
+              >
+                📥 CSV
+              </button>
+            </div>
           </div>
-          {logementNoms.length > 1 && (
-            <select
-              value={logementFilter}
-              onChange={(e) => setLogementFilter(e.target.value)}
+          <div style={{ position: 'relative' as const }}>
+            <input
+              type="text"
+              placeholder="Rechercher dans le journal — logement, voyageur…"
+              value={txSearch}
+              onChange={(e) => setTxSearch(e.target.value)}
               style={{
-                padding: '7px 12px', fontSize: '12.5px', fontFamily: 'inherit',
-                background: 'var(--surface)', color: 'var(--text-2)',
-                border: '1px solid var(--border)', borderRadius: '8px', cursor: 'pointer',
+                width: '100%', boxSizing: 'border-box' as const,
+                padding: '8px 30px 8px 12px',
+                fontSize: '12.5px', fontFamily: 'inherit',
+                color: 'var(--text)',
+                background: 'var(--surface)',
+                border: '1px solid var(--border)', borderRadius: '8px',
+                outline: 'none',
               }}
-            >
-              <option value="all">Tous les logements</option>
-              {logementNoms.map(n => <option key={n} value={n}>{n}</option>)}
-            </select>
-          )}
+            />
+            {txSearch && (
+              <button onClick={() => setTxSearch('')} style={{
+                position: 'absolute' as const, right: '6px', top: '50%',
+                transform: 'translateY(-50%)',
+                width: '20px', height: '20px', borderRadius: '50%',
+                border: 'none', background: 'var(--border)',
+                color: 'var(--text-2)', fontSize: '14px', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1,
+                fontFamily: 'inherit',
+              }}>×</button>
+            )}
+          </div>
         </div>
 
         {/* Transaction list */}
         {filteredTx.length === 0
           ? <p style={s.empty}>Aucune transaction</p>
           : <div style={s.txList}>
-              {filteredTx.map(tx => (
+              {filteredTx.map(tx => {
+                const logementMatch = logements.find(l => l.nom === tx.logement)
+                return (
                 <div key={tx.id + tx.source} style={s.txRow} className="tx-row">
                   <div style={s.txDate}>{fmtDate(tx.date)}</div>
                   <div style={s.txInfo}>
-                    <span style={s.txLogement}>{tx.logement}</span>
+                    {logementMatch ? (
+                      <a
+                        href={`/dashboard/logements/${logementMatch.id}`}
+                        style={{ ...s.txLogement, color: 'var(--text)', textDecoration: 'none' as const, cursor: 'pointer' }}
+                        title="Voir la fiche du logement"
+                        onClick={e => e.stopPropagation()}
+                      >
+                        {tx.logement}
+                      </a>
+                    ) : (
+                      <span style={s.txLogement}>{tx.logement}</span>
+                    )}
                     {tx.guest && <span style={s.txGuest}>{tx.guest}</span>}
                   </div>
                   <div style={s.txMeta} className="tx-meta">
@@ -494,12 +1206,194 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
                     : <div style={{ width: '24px', flexShrink: 0 }} />
                   }
                 </div>
-              ))}
+                )
+              })}
             </div>
         }
       </section>
 
-      <FiscaliteSection annuel={kpis.cetteAnneeEnc} />
+      {/* ── Charges & dépenses ─────────────────────────────────────── */}
+      <section style={s.card}>
+        <div style={s.journalHead}>
+          <div>
+            <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>
+              <Receipt size={16} weight="fill" style={{ verticalAlign: 'middle', marginRight: '6px', color: 'var(--accent-text)' }} />
+              Charges & dépenses
+            </h2>
+            <p style={{ ...s.cardSub, margin: 0 }}>
+              Ménage, énergie, commissions, taxes, assurance — pour calculer ton bénéfice net
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', flexShrink: 0, alignItems: 'center', flexWrap: 'wrap' as const }}>
+            {chargesStats.cetteAnnee > 0 && (
+              <span style={{
+                fontSize: '12px', fontWeight: 600,
+                padding: '6px 12px',
+                background: 'rgba(239,68,68,0.08)',
+                color: '#ef4444',
+                border: '1px solid rgba(239,68,68,0.20)',
+                borderRadius: '8px',
+              }}>
+                {fmt(chargesStats.cetteAnnee)} cette année
+              </span>
+            )}
+            <button
+              onClick={() => setShowChargeForm(v => !v)}
+              style={{ ...s.actionBtn, ...(showChargeForm ? s.actionBtnCancel : {}) }}
+            >
+              {showChargeForm ? <X size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
+              {showChargeForm ? 'Annuler' : 'Ajouter une charge'}
+            </button>
+          </div>
+        </div>
+
+        {/* Form ajout charge */}
+        {showChargeForm && (
+          <div style={s.addForm}>
+            <div className="rev-form-grid">
+              <div style={s.formField}>
+                <label style={s.formLabel}>Catégorie *</label>
+                <select value={cCat} onChange={e => setCCat(e.target.value)} style={s.formInput} className="input-field">
+                  {CHARGE_CATEGORIES.map(c => (
+                    <option key={c.slug} value={c.slug}>{c.emoji} {c.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={s.formField}>
+                <label style={s.formLabel}>Logement *</label>
+                <input
+                  list="log-list-charges" value={cLogement} onChange={e => setCLogement(e.target.value)}
+                  placeholder="Villa du Soleil" style={s.formInput} className="input-field"
+                />
+                <datalist id="log-list-charges">
+                  {logementNoms.map(n => <option key={n} value={n} />)}
+                </datalist>
+              </div>
+              <div style={s.formField}>
+                <label style={s.formLabel}>Montant (€) *</label>
+                <input
+                  type="number" min="0.01" step="0.01"
+                  value={cMontant} onChange={e => setCMontant(e.target.value)}
+                  placeholder="80" style={s.formInput} className="input-field"
+                />
+              </div>
+              <div style={s.formField}>
+                <label style={s.formLabel}>Date *</label>
+                <input
+                  type="date" value={cDate} onChange={e => setCDate(e.target.value)}
+                  style={s.formInput} className="input-field"
+                />
+              </div>
+              <div style={{ ...s.formField, gridColumn: 'span 2' }}>
+                <label style={s.formLabel}>Description (optionnel)</label>
+                <input
+                  value={cDesc} onChange={e => setCDesc(e.target.value)}
+                  placeholder="Ex : Marie, ménage 5h juin…" style={s.formInput} className="input-field"
+                />
+              </div>
+              <div style={{ ...s.formField, gridColumn: 'span 2' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox" checked={cDeductible}
+                    onChange={e => setCDeductible(e.target.checked)}
+                    style={{ width: '15px', height: '15px', accentColor: 'var(--accent-text)' }}
+                  />
+                  <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
+                    Charge déductible (régime réel)
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '12px' }}>
+              <button
+                onClick={handleAddCharge}
+                disabled={!cLogement.trim() || !cMontant || parseFloat(cMontant) <= 0 || !cDate}
+                style={{ ...s.actionBtn, opacity: (cLogement.trim() && cMontant && parseFloat(cMontant) > 0 && cDate) ? 1 : 0.45 }}
+              >
+                <Check size={14} weight="bold" />
+                Enregistrer la charge
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Répartition par catégorie (top 6) */}
+        {chargesStats.byCategorySorted.length > 0 && (
+          <div style={s.chargesCatGrid}>
+            {chargesStats.byCategorySorted.slice(0, 6).map(c => {
+              const pct = chargesStats.cetteAnnee > 0 ? (c.total / chargesStats.cetteAnnee) * 100 : 0
+              return (
+                <div key={c.cat} style={s.chargesCatItem}>
+                  <div style={s.chargesCatHead}>
+                    <span style={{ fontSize: '14px' }}>{c.emoji}</span>
+                    <span style={s.chargesCatLabel}>{c.label}</span>
+                    <span style={s.chargesCatAmount}>{fmt(c.total)}</span>
+                  </div>
+                  <div style={s.chargesCatBar}>
+                    <div style={{ ...s.chargesCatBarFill, width: `${pct}%`, background: c.color }} />
+                  </div>
+                  <span style={s.chargesCatPct}>{pct.toFixed(0)} % du total</span>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Liste des charges récentes */}
+        {charges.length === 0 ? (
+          <p style={s.empty}>Aucune charge enregistrée. Ajoute ta première dépense pour calculer ton bénéfice net.</p>
+        ) : (
+          <div style={{ ...s.txList, marginTop: '12px' }}>
+            {charges.slice(0, 12).map(c => {
+              const def = CHARGE_LABEL[c.categorie] ?? CHARGE_LABEL.autre
+              const logementMatch = c.logement_id ? logements.find(l => l.id === c.logement_id) : logements.find(l => l.nom === c.logement_nom)
+              return (
+                <div key={c.id} style={s.txRow} className="tx-row">
+                  <div style={s.txDate}>{fmtDate(c.date_charge)}</div>
+                  <div style={s.txInfo}>
+                    <span style={s.txLogement}>
+                      <span style={{ marginRight: '4px' }}>{def.emoji}</span>
+                      {def.label}
+                    </span>
+                    {logementMatch ? (
+                      <a
+                        href={`/dashboard/logements/${logementMatch.id}`}
+                        style={{ ...s.txGuest, textDecoration: 'none' as const, cursor: 'pointer' }}
+                        onClick={e => e.stopPropagation()}
+                      >
+                        {c.logement_nom}
+                      </a>
+                    ) : (
+                      <span style={s.txGuest}>{c.logement_nom}</span>
+                    )}
+                  </div>
+                  <div style={s.txMeta} className="tx-meta">
+                    {c.description && <span style={s.txMode}>{c.description}</span>}
+                  </div>
+                  <span style={{ ...s.txAmount, color: '#ef4444' }}>− {fmt(c.montant)}</span>
+                  <span style={{
+                    ...s.txBadge,
+                    background: c.deductible ? 'rgba(74,222,128,0.10)' : 'rgba(148,163,184,0.10)',
+                    color: c.deductible ? '#4ade80' : 'var(--text-muted)',
+                  }}>
+                    {c.deductible ? '✓ Déductible' : 'Non déduct.'}
+                  </span>
+                  <button onClick={() => handleDeleteCharge(c.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer">
+                    <Trash size={13} />
+                  </button>
+                </div>
+              )
+            })}
+            {charges.length > 12 && (
+              <p style={{ ...s.empty, padding: '12px 0' }}>
+                + {charges.length - 12} autres charges (export CSV à venir)
+              </p>
+            )}
+          </div>
+        )}
+      </section>
+
+      <FiscaliteSection annuel={kpis.cetteAnneeEnc} chargesAnnee={chargesStats.cetteAnnee} />
 
       <ImportCSVModal
         open={showImport}
@@ -516,6 +1410,7 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
         .kpi-icon-yellow { color: var(--accent-text); }
         .kpi-icon-accent { color: var(--accent-text); }
         .kpi-icon-muted  { color: var(--text-muted); }
+        .kpi-icon-red    { color: #ef4444; }
         .tx-row  { transition: background 0.1s; }
         .tx-row:hover { background: var(--surface) !important; border-radius: 10px; }
         .tx-del  { opacity: 0; transition: opacity 0.15s; }
@@ -533,8 +1428,8 @@ export default function RevenusView({ contracts, initialEntries, logementNoms }:
 
 // ── KpiCard ──────────────────────────────────────────────────────────────────
 
-function KpiCard({ icon, label, value, colorClass, sub }: {
-  icon: React.ReactNode; label: string; value: string; colorClass: string; sub?: string
+function KpiCard({ icon, label, value, colorClass, sub, subColor }: {
+  icon: React.ReactNode; label: string; value: string; colorClass: string; sub?: string; subColor?: string
 }) {
   return (
     <div style={s.kpiCard}>
@@ -542,7 +1437,7 @@ function KpiCard({ icon, label, value, colorClass, sub }: {
       <div style={s.kpiBody}>
         <span style={s.kpiLabel}>{label}</span>
         <span style={s.kpiValue}>{value}</span>
-        {sub && <span style={s.kpiSub}>{sub}</span>}
+        {sub && <span style={{ ...s.kpiSub, ...(subColor ? { color: subColor, fontWeight: 600 } : {}) }}>{sub}</span>}
       </div>
     </div>
   )
@@ -592,7 +1487,84 @@ const REGIMES = [
   },
 ]
 
-function FiscaliteSection({ annuel }: { annuel: number }) {
+// Helper : prochaines échéances fiscales
+function nextFiscalDeadlines(): Array<{ label: string; date: string; description: string; type: 'urgent' | 'normal' }> {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = today.getMonth() // 0-11
+
+  const deadlines: Array<{ label: string; date: Date; description: string }> = []
+
+  // Déclaration BIC annuelle (mai)
+  const bicDate = new Date(year, 4, 20) // 20 mai
+  if (bicDate < today) bicDate.setFullYear(year + 1)
+  deadlines.push({
+    label: 'Déclaration BIC annuelle',
+    date: bicDate,
+    description: 'Formulaire 2042-C-PRO via impots.gouv.fr',
+  })
+
+  // Taxe de séjour trimestrielle
+  const trimMonth = [3, 6, 9, 0][Math.floor(month / 3)] // avr, juil, oct, jan
+  const trimDate = new Date(month === 11 || month === 10 || month === 9 ? year + 1 : year, trimMonth, 15)
+  while (trimDate <= today) trimDate.setMonth(trimDate.getMonth() + 3)
+  deadlines.push({
+    label: 'Reversement taxe de séjour',
+    date: trimDate,
+    description: 'À reverser à ta mairie (si tu encaisses en direct)',
+  })
+
+  // CFE — fin novembre
+  const cfeDate = new Date(year, 10, 30)
+  if (cfeDate < today) cfeDate.setFullYear(year + 1)
+  deadlines.push({
+    label: 'CFE (Cotisation Foncière des Entreprises)',
+    date: cfeDate,
+    description: 'Échéance impôt local des pros',
+  })
+
+  return deadlines
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .map(d => {
+      const days = Math.round((d.date.getTime() - today.getTime()) / 86400000)
+      return {
+        label: d.label,
+        date: d.date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
+        description: d.description,
+        type: days <= 30 ? 'urgent' as const : 'normal' as const,
+      }
+    })
+}
+
+function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; chargesAnnee?: number }) {
+  // Jauges seuils fiscaux
+  const SEUILS = [
+    { key: 'micro-nc',   label: 'Micro-BIC non classé', valeur: 15000,  color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
+    { key: 'micro-c',    label: 'Micro-BIC classé',     valeur: 77700,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+    { key: 'tva',        label: 'Franchise TVA (presta)', valeur: 36800, color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+  ]
+
+  // Calculatrice : recommandation auto
+  const taux = annuel > 0 ? chargesAnnee / annuel : 0
+  const recoMicro = annuel <= 15000 || (annuel <= 77700 && taux < 0.3)
+  // En micro-BIC non classé : 30% d'abattement → impôt sur 70% du CA
+  // En réel : impôt sur (CA - charges réelles)
+  const baseImposableMicroNC = annuel * 0.70
+  const baseImposableMicroC  = annuel * 0.29
+  const baseImposableReel    = Math.max(0, annuel - chargesAnnee)
+  const recommendation =
+    annuel === 0 ? null
+    : (annuel > 77700) ? { label: 'Régime réel obligatoire', detail: 'Tu dépasses le plafond micro-BIC. Le régime réel est imposé.' }
+    : (chargesAnnee >= annuel * 0.30 && chargesAnnee > 1000) ? {
+        label: 'Régime réel recommandé',
+        detail: `Tes charges représentent ${Math.round(taux * 100)} % de ton CA — le réel sera plus avantageux que le micro-BIC.`,
+      }
+    : annuel > 15000
+    ? { label: 'Micro-BIC classé recommandé', detail: 'Pense à faire classer ton meublé pour profiter du plafond 77 700 € + 71 % d\'abattement.' }
+    : { label: 'Micro-BIC non classé OK', detail: 'Le micro-BIC simplifie la déclaration. Si tes charges dépassent 30 %, le réel sera plus avantageux.' }
+
+  const deadlines = nextFiscalDeadlines()
+
   const [open, setOpen] = useState(false)
 
   return (
@@ -622,6 +1594,85 @@ function FiscaliteSection({ annuel }: { annuel: number }) {
         <div style={sf.seuilSep} />
         <SeuilPill label="LMP si"      seuil="> 23 000 €" pct="+ 50 % revenus" color="#fb923c" />
       </div>
+
+      {/* Jauges progression vers les seuils fiscaux */}
+      {annuel > 0 && (
+        <div style={sf.jaugesGrid}>
+          {SEUILS.map(seuil => {
+            const pct = Math.min(100, Math.round((annuel / seuil.valeur) * 100))
+            const danger = pct >= 75
+            const warn = pct >= 50 && pct < 75
+            const fillColor = danger ? '#ef4444' : warn ? '#f59e0b' : seuil.color
+            return (
+              <div key={seuil.key} style={{ ...sf.jaugeCard, background: seuil.bg, borderColor: `${seuil.color}40` }}>
+                <div style={sf.jaugeHead}>
+                  <span style={sf.jaugeLabel}>{seuil.label}</span>
+                  <span style={{ ...sf.jaugeValue, color: fillColor }}>{pct} %</span>
+                </div>
+                <div style={sf.jaugeBar}>
+                  <div style={{ ...sf.jaugeBarFill, width: `${pct}%`, background: fillColor }} />
+                </div>
+                <div style={sf.jaugeFoot}>
+                  {fmt(annuel)} / {seuil.valeur.toLocaleString('fr-FR')} €
+                  {danger && ' · ⚠️ proche du plafond'}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Recommandation auto */}
+      {recommendation && (
+        <div style={sf.recoBox}>
+          <div style={sf.recoHeader}>
+            <span style={sf.recoLabel}>💡 Recommandation pour toi</span>
+            <span style={sf.recoTitle}>{recommendation.label}</span>
+          </div>
+          <p style={sf.recoDetail}>{recommendation.detail}</p>
+          <div style={sf.recoCalc}>
+            <div style={sf.recoCalcItem}>
+              <span style={sf.recoCalcLabel}>Micro-BIC NC (30 %)</span>
+              <span style={sf.recoCalcValue}>{fmt(baseImposableMicroNC)} imposable</span>
+            </div>
+            <div style={sf.recoCalcItem}>
+              <span style={sf.recoCalcLabel}>Micro-BIC ★ (71 %)</span>
+              <span style={sf.recoCalcValue}>{fmt(baseImposableMicroC)} imposable</span>
+            </div>
+            <div style={sf.recoCalcItem}>
+              <span style={sf.recoCalcLabel}>Réel (CA − charges)</span>
+              <span style={sf.recoCalcValue}>{fmt(baseImposableReel)} imposable</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Calendrier fiscal — prochaines échéances */}
+      {deadlines.length > 0 && (
+        <div style={sf.deadlinesBox}>
+          <div style={sf.deadlinesHeader}>
+            📅 Prochaines échéances fiscales
+          </div>
+          <div style={sf.deadlinesList}>
+            {deadlines.slice(0, 3).map((d, i) => (
+              <div key={i} style={sf.deadlineRow}>
+                <div style={{
+                  ...sf.deadlineBadge,
+                  background: d.type === 'urgent' ? 'rgba(239,68,68,0.10)' : 'var(--surface-2)',
+                  color: d.type === 'urgent' ? '#ef4444' : 'var(--text-2)',
+                  borderColor: d.type === 'urgent' ? 'rgba(239,68,68,0.30)' : 'var(--border)',
+                }}>
+                  {d.date}
+                </div>
+                <div style={sf.deadlineInfo}>
+                  <span style={sf.deadlineLabel}>{d.label}</span>
+                  <span style={sf.deadlineDesc}>{d.description}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Alert si revenus annuels proches des seuils */}
       {annuel >= 12000 && annuel < 15500 && (
@@ -690,7 +1741,134 @@ function SeuilPill({ label, seuil, pct, color }: { label: string; seuil: string;
 }
 
 const sf: Record<string, React.CSSProperties> = {
-  wrap:        { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' },
+  wrap:        { background: 'var(--surface)', border: '1px solid var(--border-2)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' },
+
+  // ─── Phase 7 — jauges seuils, recommandation, calendrier fiscal ─
+  jaugesGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gap: '10px',
+  },
+  jaugeCard: {
+    border: '1px solid',
+    borderRadius: '12px',
+    padding: '12px 14px',
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  jaugeHead: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+  },
+  jaugeLabel: {
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.3px',
+    color: 'var(--text-2)',
+  },
+  jaugeValue: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '18px', fontWeight: 500,
+  },
+  jaugeBar: {
+    height: '6px',
+    background: 'var(--surface-2)',
+    borderRadius: '4px',
+    overflow: 'hidden' as const,
+  },
+  jaugeBarFill: {
+    height: '100%',
+    borderRadius: '4px',
+    transition: 'width 0.3s',
+  },
+  jaugeFoot: {
+    fontSize: '10.5px',
+    color: 'var(--text-muted)',
+    fontWeight: 500,
+  },
+
+  recoBox: {
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '12px',
+    padding: '14px 16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '10px',
+  },
+  recoHeader: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+  },
+  recoLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+  },
+  recoTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '15px', fontWeight: 500,
+    color: 'var(--accent-text)',
+  },
+  recoDetail: {
+    fontSize: '12.5px',
+    color: 'var(--text-2)',
+    lineHeight: 1.5,
+    margin: 0,
+  },
+  recoCalc: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+    gap: '6px',
+    paddingTop: '6px',
+    borderTop: '1px solid var(--accent-border)',
+  },
+  recoCalcItem: {
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+  },
+  recoCalcLabel: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.3px',
+    color: 'var(--text-muted)',
+    textTransform: 'uppercase' as const,
+  },
+  recoCalcValue: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+  },
+
+  deadlinesBox: {
+    background: 'var(--surface-2)',
+    border: '1px dashed var(--border-2)',
+    borderRadius: '12px',
+    padding: '14px 16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '10px',
+  },
+  deadlinesHeader: {
+    fontSize: '11px', fontWeight: 700, letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+  },
+  deadlinesList: {
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+  },
+  deadlineRow: {
+    display: 'flex', alignItems: 'flex-start', gap: '12px',
+  },
+  deadlineBadge: {
+    fontSize: '11px', fontWeight: 600,
+    padding: '4px 9px',
+    border: '1px solid',
+    borderRadius: '7px',
+    flexShrink: 0,
+    minWidth: '120px',
+    textAlign: 'center' as const,
+  },
+  deadlineInfo: {
+    flex: 1, minWidth: 0,
+    display: 'flex', flexDirection: 'column' as const, gap: '1px',
+  },
+  deadlineLabel: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+  },
+  deadlineDesc: {
+    fontSize: '11.5px', fontWeight: 300,
+    color: 'var(--text-muted)',
+    lineHeight: 1.4,
+  },
   header:      { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' },
   headerLeft:  { display: 'flex', alignItems: 'flex-start', gap: '12px' },
   iconWrap:    { width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0,76,63,0.2)', border: '1px solid rgba(0,76,63,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
@@ -784,4 +1962,192 @@ const s: Record<string, React.CSSProperties> = {
   deleteBtn:{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '6px', border: 'none', background: 'none', color: 'var(--text-muted)', cursor: 'pointer', flexShrink: 0, padding: 0 },
 
   empty:    { fontSize: '14px', color: 'var(--text-muted)', textAlign: 'center', padding: '28px 0', margin: 0 },
+
+  // ─── Phase 8 — Objectif annuel ──────────────────────────────────
+  objectifBanner: {
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '12px',
+    padding: '12px 16px',
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+    marginBottom: '16px',
+  },
+  objectifLabel: {
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--text-muted)',
+    letterSpacing: '0.3px',
+    textTransform: 'uppercase' as const,
+  },
+  objectifValue: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '14px', fontWeight: 600,
+  },
+  objectifBar: {
+    height: '8px',
+    background: 'var(--surface-2)',
+    borderRadius: '5px',
+    overflow: 'hidden' as const,
+  },
+  objectifBarFill: {
+    height: '100%',
+    borderRadius: '5px',
+    transition: 'width 0.4s',
+  },
+  objectifBtnSave: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '6px 12px', fontSize: '12px', fontWeight: 600,
+    color: 'var(--bg)', background: 'var(--accent-text)',
+    border: 'none', borderRadius: '7px',
+    cursor: 'pointer', fontFamily: 'inherit',
+  },
+  objectifBtnGhost: {
+    padding: '6px 10px', fontSize: '11.5px', fontWeight: 500,
+    color: 'var(--text-2)', background: 'transparent',
+    border: '1px solid var(--border)', borderRadius: '7px',
+    cursor: 'pointer', fontFamily: 'inherit',
+  },
+
+  // ─── Phase 3 — Chart toggle ─────────────────────────────────────
+  chartToggle: {
+    display: 'inline-flex', gap: '2px',
+    padding: '3px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    flexShrink: 0,
+  },
+  chartToggleBtn: {
+    padding: '4px 10px',
+    fontSize: '11px', fontWeight: 600,
+    color: 'var(--text-muted)',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer', fontFamily: 'inherit',
+    transition: 'all 0.15s',
+  },
+  chartToggleBtnActive: {
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
+  },
+
+  // ─── Phase 4 — Charges & dépenses ──────────────────────────────
+  chargesCatGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gap: '10px',
+    margin: '14px 0 6px',
+  },
+  chargesCatItem: {
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    padding: '10px 12px',
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  chargesCatHead: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+  },
+  chargesCatLabel: {
+    flex: 1, minWidth: 0,
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--text)',
+    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
+  },
+  chargesCatAmount: {
+    fontSize: '12px', fontWeight: 700,
+    color: 'var(--text-2)',
+    flexShrink: 0,
+  },
+  chargesCatBar: {
+    height: '5px',
+    background: 'var(--surface-2)',
+    borderRadius: '3px',
+    overflow: 'hidden' as const,
+  },
+  chargesCatBarFill: {
+    height: '100%',
+    borderRadius: '3px',
+    transition: 'width 0.3s',
+  },
+  chargesCatPct: {
+    fontSize: '10px',
+    color: 'var(--text-muted)',
+  },
+
+  // ─── Phase 1 — Onboarding empty state ──────────────────────────
+  onboardingCard: {
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '16px',
+    padding: 'clamp(20px, 3vw, 28px)',
+    marginBottom: '20px',
+    display: 'flex', flexDirection: 'column' as const, gap: '16px',
+  },
+  onboardingHeader: {
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+  },
+  onboardingTag: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '100px',
+    padding: '3px 9px',
+    width: 'fit-content',
+  },
+  onboardingTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'clamp(18px, 2vw, 22px)',
+    fontWeight: 400,
+    color: 'var(--text)',
+    margin: '4px 0 0',
+  },
+  onboardingDesc: {
+    fontSize: '13px',
+    color: 'var(--text-2)',
+    lineHeight: 1.6,
+    margin: 0,
+  },
+  onboardingSteps: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+    gap: '10px',
+  },
+  onboardingStep: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '14px 16px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left' as const,
+    transition: 'all 0.15s',
+    width: '100%',
+  },
+  onboardingStepNum: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: '24px', height: '24px',
+    fontSize: '12px', fontWeight: 700,
+    background: 'var(--accent-text)',
+    color: 'var(--bg)',
+    borderRadius: '50%',
+    flexShrink: 0,
+  },
+  onboardingStepBody: {
+    flex: 1, minWidth: 0,
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+  },
+  onboardingStepTitle: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+  },
+  onboardingStepDesc: {
+    fontSize: '11.5px', fontWeight: 300,
+    color: 'var(--text-muted)',
+    lineHeight: 1.4,
+  },
 }
