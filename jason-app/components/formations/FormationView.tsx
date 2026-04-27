@@ -7,7 +7,7 @@ import {
   CaretDown, CaretRight, Star, Check, List, X,
   BookmarkSimple, Note as NoteIcon, ArrowSquareOut, ArrowRight,
 } from '@phosphor-icons/react'
-import { enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark } from '@/app/dashboard/formations/actions'
+import { enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark, voteLesson } from '@/app/dashboard/formations/actions'
 
 interface Lesson {
   id: number
@@ -39,6 +39,7 @@ export default function FormationView({
   initialCompletedLessons,
   initialNotes = {},
   initialBookmarks = [],
+  initialVotes = {},
   formationSlug,
   relatedArticles = [],
   recommendedNext = [],
@@ -49,6 +50,7 @@ export default function FormationView({
   initialCompletedLessons?: number[]
   initialNotes?: Record<string, string>
   initialBookmarks?: number[]
+  initialVotes?: Record<string, 1 | -1>
   formationSlug?: string
   relatedArticles?: Array<{ label: string; slug: string }>
   recommendedNext?: Array<{ slug: string; title: string; reason?: string }>
@@ -97,6 +99,20 @@ export default function FormationView({
       setNoteSaved(true)
       setTimeout(() => setNoteSaved(false), 1600)
     }, 700)
+  }
+
+  // ─── Phase 7 — Votes utilité (👍/👎) ───────────────────────────
+  const [votes, setVotes] = useState<Record<string, 1 | -1>>(initialVotes)
+  function setLessonVote(lessonId: number, value: 1 | -1) {
+    const current = votes[String(lessonId)]
+    const next: 1 | -1 | 0 = current === value ? 0 : value
+    setVotes(prev => {
+      const out = { ...prev }
+      if (next === 0) delete out[String(lessonId)]
+      else out[String(lessonId)] = next
+      return out
+    })
+    if (formationId) voteLesson({ formationId, lessonId, vote: next }).catch(() => null)
   }
 
   // ─── Phase 3 — Bookmarks ───────────────────────────────────────
@@ -703,6 +719,35 @@ export default function FormationView({
             </div>
           )}
 
+          {/* Phase 7 — Notation utile/pas utile */}
+          {currentLesson && (
+            <div style={styles.railSection}>
+              <div style={styles.railLabel}>Cette leçon t&apos;a aidé ?</div>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  onClick={() => setLessonVote(currentLesson.id, 1)}
+                  style={{
+                    ...styles.railVoteBtn,
+                    ...(votes[String(currentLesson.id)] === 1 ? styles.railVoteBtnUp : {}),
+                  }}
+                  title="Utile"
+                >
+                  👍 Utile
+                </button>
+                <button
+                  onClick={() => setLessonVote(currentLesson.id, -1)}
+                  style={{
+                    ...styles.railVoteBtn,
+                    ...(votes[String(currentLesson.id)] === -1 ? styles.railVoteBtnDown : {}),
+                  }}
+                  title="Pas utile"
+                >
+                  👎 Améliorer
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Phase 4 — Articles blog liés */}
           {relatedArticles.length > 0 && (
             <div style={{ ...styles.railSection, borderBottom: 'none' }}>
@@ -1004,6 +1049,32 @@ const styles: Record<string, React.CSSProperties> = {
     resize: 'vertical' as const,
     minHeight: '90px',
     lineHeight: 1.5,
+  },
+
+  // ─── Phase 7 — Vote utile/pas utile ────────────────────────────
+  railVoteBtn: {
+    flex: 1,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
+    padding: '7px 8px',
+    fontSize: '11.5px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  railVoteBtnUp: {
+    background: 'rgba(16,185,129,0.10)',
+    color: '#10b981',
+    borderColor: 'rgba(16,185,129,0.30)',
+    fontWeight: 600,
+  },
+  railVoteBtnDown: {
+    background: 'rgba(239,68,68,0.08)',
+    color: '#ef4444',
+    borderColor: 'rgba(239,68,68,0.25)',
+    fontWeight: 600,
   },
 
   // ─── Phase 4 — Recommandations formations ──────────────────────

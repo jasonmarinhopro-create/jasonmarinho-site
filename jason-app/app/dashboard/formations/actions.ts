@@ -122,6 +122,77 @@ export async function getLessonBookmarks(formationId: string): Promise<number[]>
   return (data ?? []).map((b: any) => b.lesson_id as number)
 }
 
+// ─── Phase 7 — Notation par leçon (utile / pas utile) ─────────
+
+export async function voteLesson(input: {
+  formationId: string
+  lessonId: number
+  vote: 1 | -1 | 0 // 0 = retirer le vote
+}): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  if (input.vote === 0) {
+    const { error } = await supabase
+      .from('lesson_feedback')
+      .delete()
+      .eq('user_id', session.user.id)
+      .eq('formation_id', input.formationId)
+      .eq('lesson_id', input.lessonId)
+    if (error) return { error: error.message }
+    return {}
+  }
+
+  const { error } = await supabase
+    .from('lesson_feedback')
+    .upsert(
+      {
+        user_id: session.user.id,
+        formation_id: input.formationId,
+        lesson_id: input.lessonId,
+        vote: input.vote,
+      },
+      { onConflict: 'user_id,formation_id,lesson_id' }
+    )
+  if (error) return { error: error.message }
+  return {}
+}
+
+// ─── Phase 7 — Avis public par formation ──────────────────────
+
+export async function submitFormationReview(input: {
+  formationId: string
+  rating: number
+  comment?: string
+  displayName?: string
+  isPublic?: boolean
+}): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  if (input.rating < 1 || input.rating > 5) return { error: 'Note invalide (1 à 5)' }
+
+  const { error } = await supabase
+    .from('formation_reviews')
+    .upsert(
+      {
+        user_id: session.user.id,
+        formation_id: input.formationId,
+        rating: input.rating,
+        comment: input.comment?.trim() || null,
+        display_name: input.displayName?.trim() || null,
+        is_public: input.isPublic ?? true,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'user_id,formation_id' }
+    )
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/formations')
+  return {}
+}
+
 export async function updateFormationProgress(
   formationId: string,
   progress: number,

@@ -83,8 +83,9 @@ export async function buildFormationPage({
   let initialCompletedLessons: number[] = []
   let initialNotes: Record<string, string> = {}
   let initialBookmarks: number[] = []
+  let initialVotes: Record<string, 1 | -1> = {}
   if (formationId && profile?.userId) {
-    const [{ data: uf }, { data: notes }, { data: bookmarks }] = await Promise.all([
+    const [{ data: uf }, { data: notes }, { data: bookmarks }, { data: votes }] = await Promise.all([
       supabase
         .from('user_formations')
         .select('progress, completed_lessons')
@@ -101,11 +102,17 @@ export async function buildFormationPage({
         .select('lesson_id')
         .eq('user_id', profile.userId)
         .eq('formation_id', formationId),
+      supabase
+        .from('lesson_feedback')
+        .select('lesson_id, vote')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId),
     ])
     initialProgress = uf?.progress ?? null
     initialCompletedLessons = (uf?.completed_lessons as number[]) ?? []
     ;(notes ?? []).forEach((n: any) => { initialNotes[String(n.lesson_id)] = n.content as string })
     initialBookmarks = (bookmarks ?? []).map((b: any) => b.lesson_id as number)
+    ;(votes ?? []).forEach((v: any) => { initialVotes[String(v.lesson_id)] = v.vote as 1 | -1 })
   }
 
   // Contenu : DB override statique si présent, sinon fallback statique
@@ -155,6 +162,7 @@ export async function buildFormationPage({
         initialCompletedLessons={initialCompletedLessons}
         initialNotes={initialNotes}
         initialBookmarks={initialBookmarks}
+        initialVotes={initialVotes}
         relatedArticles={relations.articles}
         recommendedNext={nextFormationsData}
       />
