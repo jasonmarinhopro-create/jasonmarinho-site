@@ -164,7 +164,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   headIcon: {
     width: '32px', height: '32px', borderRadius: '8px',
-    background: 'rgba(255,213,107,0.1)',
+    background: 'var(--accent-bg)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
@@ -213,7 +213,7 @@ const s: Record<string, React.CSSProperties> = {
     color: '#34d399', fontSize: '12px', fontWeight: 600,
   },
   btn: {
-    background: '#ffd56b', color: '#1a1a0e',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '8px',
     padding: '9px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
   },

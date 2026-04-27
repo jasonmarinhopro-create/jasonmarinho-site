@@ -51,10 +51,10 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const FACEBOOK_CONFIG = { label: 'Groupes Facebook', color: '#818CF8', icon: UsersThree }
 
-const SECTION_CONFIG: Record<TimingBucket, { label: string; color: string; icon: React.ElementType }> = {
-  'avant-arrivee':  { label: "Avant l'arrivée",   color: '#FFD56B', icon: CalendarCheck },
-  'pendant-sejour': { label: 'Pendant le séjour',  color: '#60BEFF', icon: House },
-  'apres-depart':   { label: 'Après le départ',    color: '#F97583', icon: SunHorizon },
+const SECTION_CONFIG: Record<TimingBucket, { label: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
+  'avant-arrivee':  { label: "Avant l'arrivée",   color: 'var(--accent-text)', bg: 'var(--accent-bg)',            border: 'var(--accent-border)',          icon: CalendarCheck },
+  'pendant-sejour': { label: 'Pendant le séjour',  color: '#60BEFF', bg: 'rgba(96,190,255,0.14)', border: 'rgba(96,190,255,0.28)',  icon: House },
+  'apres-depart':   { label: 'Après le départ',    color: '#F97583', bg: 'rgba(249,117,131,0.14)',border: 'rgba(249,117,131,0.28)', icon: SunHorizon },
 }
 
 const TIMING_ORDER: TimingBucket[] = ['avant-arrivee', 'pendant-sejour', 'apres-depart']
@@ -275,20 +275,20 @@ export default function GabaritsClient({
         <div style={s.nav} className="fade-up d1">
           {([
             { key: 'all',            label: 'Tous les gabarits' },
-            { key: 'favorites',      label: '♡ Mes favoris',     count: favorites.size,    color: undefined },
-            { key: 'avant-arrivee',  label: "Avant l'arrivée",   color: '#FFD56B', count: templates.filter(t => getTimingBucket(t) === 'avant-arrivee').length  || undefined },
+            { key: 'favorites',      label: '♡ Mes favoris',     count: favorites.size },
+            { key: 'avant-arrivee',  label: "Avant l'arrivée",   bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)', count: templates.filter(t => getTimingBucket(t) === 'avant-arrivee').length  || undefined },
             { key: 'pendant-sejour', label: 'Pendant le séjour',  color: '#60BEFF', count: templates.filter(t => getTimingBucket(t) === 'pendant-sejour').length || undefined },
             { key: 'apres-depart',   label: 'Après le départ',    color: '#F97583', count: templates.filter(t => getTimingBucket(t) === 'apres-depart').length   || undefined },
             { key: 'facebook',       label: 'Groupes Facebook',   color: '#818CF8', count: allFacebookTemplates.length || undefined },
-          ] as { key: FilterKey; label: string; count?: number; color?: string }[]).map(f => (
+          ] as { key: FilterKey; label: string; count?: number; color?: string; bg?: string; borderColor?: string }[]).map(f => (
             <button
               key={f.key}
               onClick={() => { setActiveFilter(f.key); setSearch('') }}
               style={{
                 ...s.navBtn,
                 ...(activeFilter === f.key ? {
-                  background: f.color ? `${f.color}14` : 'rgba(255,213,107,0.1)',
-                  border: `1px solid ${f.color ?? '#FFD56B'}35`,
+                  background: f.bg ?? (f.color ? `${f.color}14` : 'var(--accent-bg)'),
+                  border: `1px solid ${f.borderColor ?? (f.color ? `${f.color}35` : 'var(--accent-border)')}`,
                   color: f.color ?? 'var(--accent-text)',
                 } : {}),
               }}
@@ -297,8 +297,8 @@ export default function GabaritsClient({
               {f.count !== undefined && f.count > 0 && (
                 <span style={{
                   ...s.navCount,
-                  background: f.color ? `${f.color}20` : 'rgba(255,213,107,0.2)',
-                  color: f.color ?? '#FFD56B',
+                  background: f.bg ?? (f.color ? `${f.color}20` : 'var(--accent-bg-2)'),
+                  color: f.color ?? 'var(--accent-text)',
                 }}>{f.count}</span>
               )}
             </button>
@@ -343,7 +343,7 @@ export default function GabaritsClient({
                   const Icon = cfg.icon
                   return (
                     <div key={bucket}>
-                      <SectionHeader Icon={Icon} label={cfg.label} color={cfg.color} count={items.length} />
+                      <SectionHeader Icon={Icon} label={cfg.label} color={cfg.color} bg={cfg.bg} border={cfg.border} count={items.length} />
                       <div style={s.grid}>
                         {items.map(t => (
                           <TemplateCard
@@ -496,14 +496,18 @@ export default function GabaritsClient({
 
 // ── Section header ────────────────────────────────────────────────────────────
 
-function SectionHeader({ Icon, label, color, count }: {
-  Icon: React.ElementType; label: string; color: string; count: number
+function SectionHeader({ Icon, label, color, bg, border, count }: {
+  Icon: React.ElementType; label: string; color: string; bg?: string; border?: string; count: number
 }) {
+  const iconBg  = bg     ?? `${color}18`
+  const iconBdr = border ?? `${color}30`
+  const cntBg   = bg     ?? `${color}14`
+  const cntBdr  = border ?? `${color}25`
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
       <div style={{
         width: '32px', height: '32px', borderRadius: '9px', flexShrink: 0,
-        background: `${color}18`, border: `1px solid ${color}30`,
+        background: iconBg, border: `1px solid ${iconBdr}`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <Icon size={16} color={color} weight="fill" />
@@ -512,8 +516,8 @@ function SectionHeader({ Icon, label, color, count }: {
         {label}
       </span>
       <span style={{
-        fontSize: '11px', fontWeight: 600, color, background: `${color}14`,
-        border: `1px solid ${color}25`, borderRadius: '100px', padding: '2px 10px', marginLeft: '2px',
+        fontSize: '11px', fontWeight: 600, color, background: cntBg,
+        border: `1px solid ${cntBdr}`, borderRadius: '100px', padding: '2px 10px', marginLeft: '2px',
       }}>
         {count}
       </span>
@@ -537,7 +541,10 @@ interface TemplateCardProps {
 function TemplateCard({ template: t, isFav, customization, copied, bucket, onCopy, onFavorite, onCustomize }: TemplateCardProps) {
   const [lang, setLang] = useState<'fr' | 'en'>('fr')
   const hasEN = !!t.corps_en
-  const accentColor = bucket ? SECTION_CONFIG[bucket].color : 'var(--text-muted)'
+  const cfg         = bucket ? SECTION_CONFIG[bucket] : null
+  const accentColor = cfg ? cfg.color : 'var(--text-muted)'
+  const accentBg    = cfg ? cfg.bg    : 'rgba(255,255,255,0.05)'
+  const accentBdr   = cfg ? cfg.border : 'rgba(255,255,255,0.1)'
   const copiedKey = t.id + lang
   const isCopied = copied === copiedKey
 
@@ -552,7 +559,7 @@ function TemplateCard({ template: t, isFav, customization, copied, bucket, onCop
       {/* Header */}
       <div style={s.cardHead}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flex: 1, minWidth: 0 }}>
-          <span style={{ ...s.catChip, background: `${accentColor}14`, color: accentColor, border: `1px solid ${accentColor}28` }}>
+          <span style={{ ...s.catChip, background: accentBg, color: accentColor, border: `1px solid ${accentBdr}` }}>
             {categoryLabel}
           </span>
           {customization && (
@@ -565,7 +572,7 @@ function TemplateCard({ template: t, isFav, customization, copied, bucket, onCop
             style={{ ...s.iconBtn, ...(isFav ? s.iconBtnFavActive : {}) }}
             title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
           >
-            <Heart size={14} weight={isFav ? 'fill' : 'regular'} color={isFav ? '#FFD56B' : undefined} />
+            <Heart size={14} weight={isFav ? 'fill' : 'regular'} color={isFav ? 'var(--accent-text)' : undefined} />
           </button>
           <button
             onClick={() => onCustomize(t)}
@@ -766,7 +773,7 @@ const s: Record<string, React.CSSProperties> = {
   catChip:   { fontSize: '11px', fontWeight: 600, padding: '3px 10px', borderRadius: '100px', letterSpacing: '0.2px' },
   customChip: {
     fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '100px',
-    background: 'rgba(255,213,107,0.12)', color: '#FFD56B', border: '1px solid rgba(255,213,107,0.25)',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)',
   },
   cardTitle: { fontSize: '16px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.35 },
 
@@ -776,7 +783,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-3)', transition: 'all 0.15s', flexShrink: 0,
   },
-  iconBtnFavActive:    { background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.28)', color: '#FFD56B' },
+  iconBtnFavActive:    { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
   iconBtnCustomActive: { background: 'rgba(96,190,255,0.08)', border: '1px solid rgba(96,190,255,0.25)', color: '#60BEFF' },
 
   contentWrap: { position: 'relative' },
@@ -806,7 +813,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text-3)', fontFamily: 'var(--font-outfit), sans-serif',
     letterSpacing: '0.4px', transition: 'all 0.15s',
   },
-  langBtnActive:   { background: 'rgba(255,213,107,0.15)', color: '#FFD56B' },
+  langBtnActive:   { background: 'var(--accent-bg-2)', color: 'var(--accent-text)' },
   langBtnActiveEN: { background: 'rgba(129,140,248,0.15)', color: '#818cf8' },
 
   copyBtn: {
@@ -888,7 +895,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
-  timingBtnActive: { background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.3)', color: '#FFD56B' },
+  timingBtnActive: { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
 
   varChip: {
     fontSize: '11px', fontWeight: 500, padding: '3px 9px', borderRadius: '6px',
@@ -897,8 +904,8 @@ const s: Record<string, React.CSSProperties> = {
 
   saveBtn: {
     fontSize: '13px', fontWeight: 600, padding: '9px 20px', borderRadius: '10px', cursor: 'pointer',
-    background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.3)',
-    color: '#FFD56B', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
+    background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
   cancelBtn: {
     fontSize: '13px', fontWeight: 500, padding: '9px 16px', borderRadius: '10px', cursor: 'pointer',

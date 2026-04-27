@@ -147,7 +147,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
       <div style={s.statsRow}>
         {[
           { icon: <Users size={16} />,     value: members.length, label: 'membres',      color: 'var(--text-2)' },
-          { icon: <Lightning size={16} />, value: totalDriing,    label: 'Driing',       color: '#FFD56B' },
+          { icon: <Lightning size={16} />, value: totalDriing,    label: 'Driing',       color: 'var(--accent-text)' },
           { icon: <Heart size={16} />,     value: totalContrib,   label: 'contributeurs', color: '#F472B6' },
         ].map(({ icon, value, label, color }) => (
           <div key={label} style={s.statChip}>
@@ -199,8 +199,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
               {f.l}
               <span style={{
                 ...s.tabCount,
-                background: filterPlan === f.v ? 'rgba(255,213,107,0.18)' : 'var(--border)',
-                color: filterPlan === f.v ? '#FFD56B' : 'var(--text-muted)',
+                background: filterPlan === f.v ? 'var(--accent-bg-2)' : 'var(--border)',
+                color: filterPlan === f.v ? 'var(--accent-text)' : 'var(--text-muted)',
               }}>{f.count}</span>
             </button>
           ))}
@@ -288,9 +288,10 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
     onSaveName(trimmed)
   }
 
-  const planColor = isDriing ? '#FFD56B' : isAdmin ? '#C084FC' : 'var(--text-3)'
-  const planBg    = isDriing ? 'rgba(255,213,107,0.12)' : isAdmin ? 'rgba(192,132,252,0.1)' : 'var(--border)'
-  const planLabel = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : 'Découverte'
+  const planColor  = isDriing ? 'var(--accent-text)' : isAdmin ? '#C084FC' : 'var(--text-3)'
+  const planBg     = isDriing ? 'var(--accent-bg)' : isAdmin ? 'rgba(192,132,252,0.1)' : 'var(--border)'
+  const planBorder = isDriing ? 'var(--accent-border)' : isAdmin ? 'rgba(192,132,252,0.35)' : 'var(--border)'
+  const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : 'Découverte'
 
   return (
     <div style={{ ...s.card, ...(suspect ? { borderColor: 'rgba(248,113,113,0.25)' } : {}) }}>
@@ -338,7 +339,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
         </div>
 
         {/* Plan badge — top right */}
-        <div style={{ ...s.planBadge, background: planBg, color: planColor, border: `1px solid ${planColor}30` }}>
+        <div style={{ ...s.planBadge, background: planBg, color: planColor, border: `1px solid ${planBorder}` }}>
           {isAdmin ? <Crown size={11} weight="fill" /> : isDriing ? <Star size={11} weight="fill" /> : null}
           {planLabel}
         </div>
@@ -445,7 +446,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
   const ini  = member ? initials(member.full_name, member.email) : '?'
 
   const planDisplay: Record<string, { label: string; color: string; bg: string }> = {
-    driing:     { label: 'Membre Driing', color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
+    driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)' },
     decouverte: { label: 'Découverte',    color: 'var(--text-3)', bg: 'var(--border)' },
   }
   const planCfg = planDisplay[member?.plan ?? 'decouverte'] ?? planDisplay.decouverte
@@ -453,7 +454,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
   const statTiles = details ? [
     { icon: <UsersFour size={14} />,    value: details.voyageurs,      label: 'Voyageurs',       color: '#93C5FD' },
     { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: '#34D399' },
-    { icon: <BookmarkSimple size={14} />, value: details.favorites,    label: 'Gabarits favoris', color: '#FFD56B' },
+    { icon: <BookmarkSimple size={14} />, value: details.favorites,    label: 'Gabarits favoris', color: 'var(--accent-text)' },
     { icon: <PencilSimple size={14} />, value: details.customizations, label: 'Gabarits perso',   color: '#C084FC' },
     { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: '#f87171' },
     { icon: <Lightbulb size={14} />,     value: details.suggestions,   label: 'Suggestions',      color: '#FB923C' },
@@ -629,7 +630,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <div style={{ flex: 1, height: '4px', background: 'var(--border)', borderRadius: '100px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? '#34D399' : '#FFD56B', transition: 'width 0.3s' }} />
+                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? '#34D399' : 'var(--accent-text)', transition: 'width 0.3s' }} />
                             </div>
                             <span style={{ fontSize: '11px', color: 'var(--text-3)', width: '30px', textAlign: 'right' }}>{uf.progress}%</span>
                           </div>
@@ -709,8 +710,8 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all 0.15s',
   },
   planTabActive: {
-    background: 'rgba(255,213,107,0.07)',
-    border: '1px solid rgba(255,213,107,0.2)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     color: 'var(--accent-text)',
   },
   tabCount: {
@@ -766,9 +767,9 @@ const s: Record<string, React.CSSProperties> = {
     outline: 'none', fontFamily: 'var(--font-outfit), sans-serif', width: '100%',
   },
   titleCaseBtn: {
-    background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.25)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     borderRadius: '6px', padding: '4px 7px', cursor: 'pointer',
-    color: '#FFD56B', display: 'flex', alignItems: 'center', flexShrink: 0,
+    color: 'var(--accent-text)', display: 'flex', alignItems: 'center', flexShrink: 0,
   },
   email: {
     fontSize: '12px', color: 'var(--text-3)',
@@ -841,7 +842,7 @@ const ps: Record<string, React.CSSProperties> = {
   },
   viewFullBtn: {
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-    background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     borderRadius: '9px', padding: '8px 14px',
     fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)',
     textDecoration: 'none', width: '100%', boxSizing: 'border-box',

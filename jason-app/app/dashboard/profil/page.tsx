@@ -61,7 +61,7 @@ export default async function ProfilPage() {
               initialAdresse={adresse}
             />
           </div>
-          <div style={{ flex: '1 1 380px', minWidth: 0, maxWidth: '520px' }}>
+          <div style={{ flex: '1 1 380px', minWidth: 0, maxWidth: '520px', position: 'sticky', top: '84px', alignSelf: 'flex-start' }}>
             <ChezNousIdentity
               initialPseudo={pseudo}
               initialBio={bio}
