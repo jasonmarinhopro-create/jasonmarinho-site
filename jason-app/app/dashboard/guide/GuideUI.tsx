@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Calculators from './Calculators'
 import {
   HouseLine, Coffee, Buildings, Handshake, Sparkle,
   Scales, CurrencyEur, ClipboardText, Globe, Briefcase, FileText, Megaphone, ShieldCheck, Gavel,
@@ -874,6 +875,9 @@ export default function GuideUI() {
           <button onClick={() => setSearch('')} style={s.emptyBtn}>Effacer la recherche</button>
         </div>
       )}
+
+      {/* Calculatrices interactives */}
+      <Calculators />
 
       {/* Glossaire */}
       <Glossaire />
