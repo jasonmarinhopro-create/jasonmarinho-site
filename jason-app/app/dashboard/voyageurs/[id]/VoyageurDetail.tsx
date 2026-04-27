@@ -425,6 +425,39 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const initials = `${voyageur.prenom[0]}${voyageur.nom[0]}`.toUpperCase()
   const color = avatarColor(voyageur.prenom + voyageur.nom)
 
+  // ─── Stats voyageur (CA, séjours, durée moyenne, dernière venue, statut auto) ──
+  const todayISO = new Date().toISOString().slice(0, 10)
+  const stats = (() => {
+    const totalCA = sejours.reduce((sum, s) => sum + (s.montant ?? 0), 0)
+    const nbSejours = sejours.length
+    const totalNuits = sejours.reduce((sum, s) => sum + nights(s.date_arrivee, s.date_depart), 0)
+    const dureeMoyenne = nbSejours > 0 ? Math.round(totalNuits / nbSejours) : 0
+
+    // Dernière venue = date_depart la plus récente parmi les séjours passés
+    const past = sejours.filter(s => s.date_depart < todayISO).sort((a, b) => b.date_depart.localeCompare(a.date_depart))
+    const lastVisit = past[0]?.date_depart ?? null
+
+    // Prochain séjour à venir
+    const upcoming = sejours.filter(s => s.date_arrivee >= todayISO).sort((a, b) => a.date_arrivee.localeCompare(b.date_arrivee))
+    const nextStay = upcoming[0] ?? null
+
+    // Statut auto
+    let statut: { label: string; color: string; bg: string; border: string }
+    if (isFlagged) {
+      statut = { label: 'Signalé', color: '#ef4444', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.30)' }
+    } else if (totalCA >= 5000 || nbSejours >= 5) {
+      statut = { label: 'VIP', color: '#a78bfa', bg: 'rgba(167,139,250,0.10)', border: 'rgba(167,139,250,0.30)' }
+    } else if (nbSejours >= 4) {
+      statut = { label: 'Fidèle', color: '#10b981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' }
+    } else if (nbSejours >= 2) {
+      statut = { label: 'Récurrent', color: '#60a5fa', bg: 'rgba(96,165,250,0.10)', border: 'rgba(96,165,250,0.30)' }
+    } else {
+      statut = { label: 'Nouveau', color: 'var(--text-muted)', bg: 'var(--surface)', border: 'var(--border)' }
+    }
+
+    return { totalCA, nbSejours, dureeMoyenne, lastVisit, nextStay, statut }
+  })()
+
   function saveProfile() {
     if (!profileForm.prenom.trim() || !profileForm.nom.trim()) {
       setProfileError('Prénom et nom sont obligatoires.')
@@ -556,6 +589,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           flex-wrap: wrap;
           flex-shrink: 0;
         }
+        @media (max-width: 900px) {
+          .voyageur-layout {
+            grid-template-columns: 1fr !important;
+          }
+          .voyageur-left {
+            position: static !important;
+          }
+        }
         @media (max-width: 600px) {
           .sejour-row-mobile {
             flex-direction: column !important;
@@ -586,6 +627,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           </div>
         </div>
       )}
+
+      {/* Layout 2 colonnes (devient 1 col en < 900px) */}
+      <div className="voyageur-layout" style={s.layoutGrid}>
+        <div className="voyageur-left" style={s.leftColumn}>
 
       {/* Profile card */}
       <div style={s.profileCard} className="fade-up glass-card">
@@ -697,7 +742,43 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </button>
                 )}
               </div>
-              <div style={s.since}>Ajouté le {formatDate(voyageur.created_at)}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' as const }}>
+                <span style={{ ...s.statutBadge, color: stats.statut.color, background: stats.statut.bg, borderColor: stats.statut.border }}>
+                  {stats.statut.label}
+                </span>
+                <span style={s.since}>Ajouté le {formatDate(voyageur.created_at)}</span>
+              </div>
+
+              {/* Mini-stats voyageur */}
+              {sejours.length > 0 && (
+                <div style={s.voyageurStats}>
+                  <div style={s.voyageurStat}>
+                    <span style={s.voyageurStatLabel}>CA total</span>
+                    <span style={s.voyageurStatValue}>{stats.totalCA.toLocaleString('fr-FR')} €</span>
+                  </div>
+                  <div style={s.voyageurStat}>
+                    <span style={s.voyageurStatLabel}>Séjours</span>
+                    <span style={s.voyageurStatValue}>{stats.nbSejours}</span>
+                  </div>
+                  <div style={s.voyageurStat}>
+                    <span style={s.voyageurStatLabel}>Durée moyenne</span>
+                    <span style={s.voyageurStatValue}>{stats.dureeMoyenne}n.</span>
+                  </div>
+                  <div style={s.voyageurStat}>
+                    <span style={s.voyageurStatLabel}>Dernière venue</span>
+                    <span style={s.voyageurStatValue}>{stats.lastVisit ? formatDate(stats.lastVisit) : '—'}</span>
+                  </div>
+                  {stats.nextStay && (
+                    <div style={{ ...s.voyageurStat, gridColumn: 'span 2', background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
+                      <span style={{ ...s.voyageurStatLabel, color: 'var(--accent-text)' }}>Prochain séjour</span>
+                      <span style={{ ...s.voyageurStatValue, color: 'var(--accent-text)' }}>
+                        {formatDate(stats.nextStay.date_arrivee)}
+                        {stats.nextStay.logement && ` · ${stats.nextStay.logement}`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </>
           )}
         </div>
@@ -743,6 +824,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           </p>
         )}
       </div>
+
+        </div>
+        {/* ─── Colonne droite ─── */}
+        <div style={s.rightColumn}>
 
       {/* Séjours */}
       <div style={s.section} className="fade-up">
@@ -908,6 +993,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               </div>
             )
           })}
+        </div>
+      </div>
         </div>
       </div>
 
@@ -1171,7 +1258,50 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '860px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1320px', margin: '0 auto' },
+  layoutGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(320px, 420px) 1fr',
+    gap: '20px',
+    alignItems: 'flex-start',
+  },
+  leftColumn: {
+    display: 'flex', flexDirection: 'column' as const, gap: '16px',
+    position: 'sticky' as const, top: '20px',
+  },
+  rightColumn: {
+    display: 'flex', flexDirection: 'column' as const, gap: '16px',
+    minWidth: 0,
+  },
+
+  // Stats voyageur
+  voyageurStats: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '8px',
+    marginTop: '16px',
+    width: '100%',
+  },
+  voyageurStat: {
+    background: 'var(--surface-2)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '10px 12px',
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+  },
+  voyageurStatLabel: {
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const, color: 'var(--text-muted)',
+  },
+  voyageurStatValue: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 500, color: 'var(--text)',
+    lineHeight: 1.2,
+  },
+  statutBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 700, letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const,
+    padding: '4px 10px', borderRadius: '100px', border: '1px solid',
+  },
   backBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     background: 'none', border: 'none', cursor: 'pointer',
@@ -1186,25 +1316,26 @@ const s: Record<string, React.CSSProperties> = {
     marginBottom: '20px',
   },
   profileCard: {
-    display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap',
-    padding: '24px', borderRadius: '18px', marginBottom: '20px',
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '14px',
+    padding: '22px 20px', borderRadius: '18px',
+    textAlign: 'center' as const,
   },
   bigAvatar: {
-    width: '64px', height: '64px', borderRadius: '50%', flexShrink: 0,
+    width: '80px', height: '80px', borderRadius: '50%', flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   bigAvatarText: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 600, color: '#fff',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', fontWeight: 600, color: '#fff',
   },
-  profileInfo: { flex: 1, minWidth: 0 },
-  profileNameRow: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' },
+  profileInfo: { width: '100%', minWidth: 0, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '8px' },
+  profileNameRow: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const, justifyContent: 'center' },
   profileName: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px,2.5vw,28px)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px',
     fontWeight: 400, color: 'var(--text)', margin: 0,
   },
-  profileEditForm: { display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' },
-  profileEditRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' },
-  contactList: { display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '6px' },
+  profileEditForm: { display: 'flex', flexDirection: 'column' as const, gap: '12px', width: '100%' },
+  profileEditRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },
+  contactList: { display: 'flex', flexWrap: 'wrap' as const, gap: '10px', justifyContent: 'center' },
   contactItem: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '13px', color: 'var(--text-2)', textDecoration: 'none',
