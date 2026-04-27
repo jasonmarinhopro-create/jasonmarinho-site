@@ -40,6 +40,34 @@ type Voyageur = {
   id: string; prenom: string; nom: string
   email: string | null; telephone: string | null
   notes: string | null; created_at: string
+  // Phase 1 — enrichi
+  tags?: string[] | null
+  source?: string | null
+  date_naissance?: string | null
+  nationalite?: string | null
+  adresse?: string | null
+  code_postal?: string | null
+  ville?: string | null
+  pays?: string | null
+  id_verifie?: boolean | null
+  id_url?: string | null
+  id_type?: string | null
+  preferences?: string[] | null
+  note_privee?: number | null
+  bloque?: boolean | null
+  bloque_motif?: string | null
+}
+
+const SOURCE_LABELS: Record<string, { label: string; emoji: string }> = {
+  airbnb:           { label: 'Airbnb',           emoji: '🏠' },
+  booking:          { label: 'Booking.com',      emoji: '🛎️' },
+  vrbo:             { label: 'Vrbo',             emoji: '🌴' },
+  abritel:          { label: 'Abritel',          emoji: '🏡' },
+  gites_de_france:  { label: 'Gîtes de France',  emoji: '🌳' },
+  driing:           { label: 'Driing',           emoji: '🔔' },
+  direct:           { label: 'Direct',           emoji: '📞' },
+  recommandation:   { label: 'Recommandation',   emoji: '💌' },
+  autre:            { label: 'Autre',            emoji: '✨' },
 }
 
 type Sejour = {
@@ -371,6 +399,62 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   // Notes inline edit
   const [editingNotes, setEditingNotes] = useState(false)
   const [notes, setNotes] = useState(voyageur.notes ?? '')
+
+  // Phase 4 — états locaux pour tags, source, vérification, blocage, note privée
+  const [tags, setTags] = useState<string[]>(voyageur.tags ?? [])
+  const [tagInput, setTagInput] = useState('')
+  const [source, setSource] = useState<string | null>(voyageur.source ?? null)
+  const [idVerifie, setIdVerifie] = useState<boolean>(voyageur.id_verifie ?? false)
+  const [idType, setIdType] = useState<string | null>(voyageur.id_type ?? null)
+  const [idUrl, setIdUrl] = useState<string>(voyageur.id_url ?? '')
+  const [bloque, setBloque] = useState<boolean>(voyageur.bloque ?? false)
+  const [bloqueMotif, setBloqueMotif] = useState<string>(voyageur.bloque_motif ?? '')
+  const [showBlockDialog, setShowBlockDialog] = useState(false)
+  const [notePrivee, setNotePrivee] = useState<number | null>(voyageur.note_privee ?? null)
+
+  async function persistField(patch: Partial<VoyageurData>) {
+    startTransition(async () => {
+      await updateVoyageur(voyageur.id, {
+        prenom: voyageur.prenom, nom: voyageur.nom,
+        email: voyageur.email ?? undefined,
+        telephone: voyageur.telephone ?? undefined,
+        notes: voyageur.notes ?? undefined,
+        ...patch,
+      })
+    })
+  }
+
+  function handleAddTag(t: string) {
+    const cleaned = t.trim()
+    if (!cleaned || tags.includes(cleaned)) return
+    const next = [...tags, cleaned]
+    setTags(next); setTagInput('')
+    persistField({ tags: next })
+  }
+  function handleRemoveTag(t: string) {
+    const next = tags.filter(x => x !== t)
+    setTags(next)
+    persistField({ tags: next })
+  }
+  function handleSourceChange(s: string | null) {
+    setSource(s)
+    persistField({ source: s })
+  }
+  function handleNotePriveeChange(n: number | null) {
+    setNotePrivee(n)
+    persistField({ note_privee: n })
+  }
+  function handleBlockConfirm() {
+    setBloque(true); setShowBlockDialog(false)
+    persistField({ bloque: true, bloque_motif: bloqueMotif || null })
+  }
+  function handleUnblock() {
+    setBloque(false); setBloqueMotif('')
+    persistField({ bloque: false, bloque_motif: null })
+  }
+  function saveIdVerification() {
+    persistField({ id_verifie: idVerifie, id_type: idType, id_url: idUrl || null })
+  }
 
   // Report / Testimony modal
   const [reportModal, setReportModal] = useState<'report' | 'positive' | null>(null)
@@ -742,11 +826,43 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </button>
                 )}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' as const }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' as const, justifyContent: 'center' }}>
                 <span style={{ ...s.statutBadge, color: stats.statut.color, background: stats.statut.bg, borderColor: stats.statut.border }}>
                   {stats.statut.label}
                 </span>
+                {bloque && (
+                  <span style={{ ...s.statutBadge, color: '#94a3b8', background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.30)' }}>
+                    🚫 Bloqué
+                  </span>
+                )}
+                {source && SOURCE_LABELS[source] && (
+                  <span style={{ ...s.statutBadge, color: 'var(--text-2)', background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
+                    {SOURCE_LABELS[source].emoji} {SOURCE_LABELS[source].label}
+                  </span>
+                )}
                 <span style={s.since}>Ajouté le {formatDate(voyageur.created_at)}</span>
+              </div>
+
+              {/* Note privée (étoiles) */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', justifyContent: 'center' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.4px', textTransform: 'uppercase' as const }}>
+                  Note
+                </span>
+                <div style={{ display: 'flex', gap: '2px' }}>
+                  {[1, 2, 3, 4, 5].map(n => {
+                    const filled = (notePrivee ?? 0) >= n
+                    return (
+                      <button
+                        key={n} type="button"
+                        onClick={() => handleNotePriveeChange(notePrivee === n ? null : n)}
+                        style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px', display: 'flex' }}
+                        title={`${n} étoile${n > 1 ? 's' : ''}`}
+                      >
+                        <Star size={14} weight={filled ? 'fill' : 'regular'} color={filled ? '#fbbf24' : 'var(--text-muted)'} />
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
 
               {/* Mini-stats voyageur */}
@@ -823,6 +939,244 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             {notes || <em style={{ color: 'var(--text-muted)' }}>Aucune note pour l&apos;instant.</em>}
           </p>
         )}
+      </div>
+
+      {/* ── Tags ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>
+            🏷️ Tags
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px', marginBottom: '8px' }}>
+          {tags.length === 0 ? (
+            <em style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Aucun tag.</em>
+          ) : tags.map(t => (
+            <span key={t} style={{
+              display: 'inline-flex', alignItems: 'center', gap: '4px',
+              fontSize: '11.5px', fontWeight: 600,
+              padding: '4px 4px 4px 10px',
+              background: 'var(--accent-bg)', color: 'var(--accent-text)',
+              border: '1px solid var(--accent-border)', borderRadius: '100px',
+            }}>
+              {t}
+              <button
+                onClick={() => handleRemoveTag(t)}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: '0 2px', display: 'flex' }}
+                title="Retirer ce tag"
+              >
+                <X size={11} weight="bold" />
+              </button>
+            </span>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          <input
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddTag(tagInput) } }}
+            placeholder="Famille, Business, VIP, À fidéliser…"
+            style={{
+              flex: 1, padding: '7px 10px', fontSize: '12px',
+              fontFamily: 'inherit', color: 'var(--text)',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)', borderRadius: '8px', outline: 'none',
+            }}
+          />
+          <button
+            onClick={() => handleAddTag(tagInput)}
+            disabled={!tagInput.trim()}
+            style={{
+              padding: '7px 12px', fontSize: '12px', fontWeight: 600,
+              background: 'var(--accent-bg)', color: 'var(--accent-text)',
+              border: '1px solid var(--accent-border)', borderRadius: '8px',
+              cursor: tagInput.trim() ? 'pointer' : 'not-allowed',
+              opacity: tagInput.trim() ? 1 : 0.5, fontFamily: 'inherit',
+            }}
+          >
+            + Ajouter
+          </button>
+        </div>
+      </div>
+
+      {/* ── Source d'acquisition ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>
+            📍 Source d&apos;acquisition
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
+          {Object.entries(SOURCE_LABELS).map(([key, def]) => {
+            const selected = source === key
+            return (
+              <button
+                key={key}
+                onClick={() => handleSourceChange(selected ? null : key)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '5px',
+                  padding: '5px 10px',
+                  fontSize: '11.5px', fontWeight: 500,
+                  background: selected ? 'var(--accent-bg)' : 'var(--surface)',
+                  color: selected ? 'var(--accent-text)' : 'var(--text-2)',
+                  border: `1px solid ${selected ? 'var(--accent-border)' : 'var(--border)'}`,
+                  borderRadius: '100px',
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                <span>{def.emoji}</span>
+                {def.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── Vérification & sécurité ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>
+            🔒 Vérification & sécurité
+          </div>
+        </div>
+
+        {/* ID vérifiée */}
+        <div style={{ marginBottom: '12px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '8px' }}>
+            <input
+              type="checkbox"
+              checked={idVerifie}
+              onChange={(e) => { setIdVerifie(e.target.checked); persistField({ id_verifie: e.target.checked }) }}
+              style={{ width: '15px', height: '15px', accentColor: '#10b981' }}
+            />
+            <span style={{ fontSize: '13px', color: 'var(--text-2)', fontWeight: 500 }}>
+              Pièce d&apos;identité vérifiée
+            </span>
+            {idVerifie && <Check size={12} weight="bold" color="#10b981" />}
+          </label>
+
+          {idVerifie && (
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px', marginLeft: '23px' }}>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                {(['cni', 'passeport', 'permis', 'autre'] as const).map(t => {
+                  const sel = idType === t
+                  const labels = { cni: 'CNI', passeport: 'Passeport', permis: 'Permis', autre: 'Autre' }
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => { setIdType(t); persistField({ id_type: t }) }}
+                      style={{
+                        flex: 1,
+                        padding: '5px 8px',
+                        fontSize: '11px', fontWeight: 500,
+                        background: sel ? 'var(--accent-bg)' : 'var(--surface)',
+                        color: sel ? 'var(--accent-text)' : 'var(--text-2)',
+                        border: `1px solid ${sel ? 'var(--accent-border)' : 'var(--border)'}`,
+                        borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit',
+                      }}
+                    >
+                      {labels[t]}
+                    </button>
+                  )
+                })}
+              </div>
+              <input
+                value={idUrl}
+                onChange={(e) => setIdUrl(e.target.value)}
+                onBlur={saveIdVerification}
+                placeholder="URL de la pièce (optionnel)"
+                style={{
+                  padding: '7px 10px', fontSize: '12px',
+                  fontFamily: 'inherit', color: 'var(--text)',
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: '7px', outline: 'none',
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Blocage */}
+        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+          {!bloque ? (
+            <button
+              onClick={() => setShowBlockDialog(true)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                padding: '6px 12px',
+                fontSize: '12px', fontWeight: 500,
+                background: 'rgba(239,68,68,0.05)',
+                color: '#ef4444',
+                border: '1px solid rgba(239,68,68,0.20)',
+                borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              🚫 Bloquer ce voyageur
+            </button>
+          ) : (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 600, color: '#ef4444' }}>
+                  🚫 Voyageur bloqué
+                </span>
+              </div>
+              {bloqueMotif && (
+                <p style={{ fontSize: '12px', color: 'var(--text-2)', margin: '0 0 8px', lineHeight: 1.5 }}>
+                  Motif : {bloqueMotif}
+                </p>
+              )}
+              <button
+                onClick={handleUnblock}
+                style={{
+                  padding: '5px 10px',
+                  fontSize: '11.5px', fontWeight: 500,
+                  background: 'var(--surface)',
+                  color: 'var(--text-2)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                Débloquer
+              </button>
+            </div>
+          )}
+
+          {showBlockDialog && (
+            <div style={{ marginTop: '10px', padding: '12px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)', borderRadius: '10px' }}>
+              <p style={{ fontSize: '12px', color: 'var(--text-2)', margin: '0 0 8px', lineHeight: 1.5 }}>
+                Bloquer un voyageur ne supprime pas son historique mais l&apos;empêche d&apos;avoir de nouveaux séjours. Donnez un motif (optionnel) :
+              </p>
+              <textarea
+                value={bloqueMotif}
+                onChange={(e) => setBloqueMotif(e.target.value)}
+                placeholder="Dégradation, fraude, comportement inapproprié…"
+                rows={2}
+                style={{
+                  width: '100%', boxSizing: 'border-box' as const,
+                  padding: '7px 10px', fontSize: '12px',
+                  fontFamily: 'inherit', color: 'var(--text)',
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: '7px', outline: 'none',
+                  resize: 'vertical' as const, marginBottom: '8px',
+                }}
+              />
+              <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => { setShowBlockDialog(false); setBloqueMotif('') }}
+                  style={{ padding: '5px 10px', fontSize: '12px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleBlockConfirm}
+                  style={{ padding: '5px 12px', fontSize: '12px', fontWeight: 600, background: '#ef4444', color: '#fff', border: 'none', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                >
+                  Confirmer le blocage
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
         </div>
