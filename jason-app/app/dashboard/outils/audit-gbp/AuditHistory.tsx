@@ -20,7 +20,7 @@ interface Props {
 
 function scoreColor(score: number): string {
   if (score >= 80) return '#34d399'
-  if (score >= 60) return '#FFD56B'
+  if (score >= 60) return '#d97706'
   if (score >= 40) return '#fb923c'
   return '#ef4444'
 }

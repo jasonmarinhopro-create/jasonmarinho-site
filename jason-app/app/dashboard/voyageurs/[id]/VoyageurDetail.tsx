@@ -82,7 +82,7 @@ function nights(arrivee: string, depart: string) {
 
 const CONTRAT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   signe:       { label: 'Signé',       color: '#34D399', bg: 'rgba(52,211,153,0.12)' },
-  en_attente:  { label: 'En attente',  color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
+  en_attente:  { label: 'En attente',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)' },
   non_requis:  { label: 'Non requis',  color: 'var(--text-muted)', bg: 'var(--surface-2)' },
   nouveau:     { label: 'Nouveau',     color: '#7EB8F7', bg: 'rgba(126,184,247,0.12)' },
 }
@@ -241,10 +241,10 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   height: '34px', borderRadius: '8px', border: 'none',
                   fontSize: '13px', fontWeight: isSel ? 700 : 400,
-                  background: isSel ? 'rgba(255,213,107,0.18)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
-                  color: isSel ? '#FFD56B' : isToday2 ? '#34D399' : '#a5c4b0',
+                  background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
+                  color: isSel ? 'var(--accent-text)' : isToday2 ? '#34D399' : '#a5c4b0',
                   cursor: 'pointer',
-                  outline: isSel ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
+                  outline: isSel ? '1.5px solid var(--accent-border)' : 'none',
                   transition: 'background 0.1s',
                 }}>{day}</button>
               )
@@ -1288,9 +1288,9 @@ const s: Record<string, React.CSSProperties> = {
   },
   contractBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.3)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     borderRadius: '8px', padding: '5px 11px',
-    fontSize: '12px', fontWeight: 500, color: '#FFD56B',
+    fontSize: '12px', fontWeight: 500, color: 'var(--accent-text)',
     cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
   },
   depositBtn: {

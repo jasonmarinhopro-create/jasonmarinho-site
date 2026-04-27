@@ -33,7 +33,7 @@ export interface RoadmapCommentData {
 }
 
 const STATUS_CONFIG = {
-  suggestion:  { label: 'Idée',     icon: Lightbulb,   color: '#FFD56B', bg: 'rgba(255,213,107,0.1)',  border: 'rgba(255,213,107,0.25)' },
+  suggestion:  { label: 'Idée',     icon: Lightbulb,   color: 'var(--accent-text)', bg: 'var(--accent-bg)',  border: 'var(--accent-border)' },
   planned:     { label: 'Prévu',    icon: Clock,       color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',   border: 'rgba(96,165,250,0.25)' },
   in_progress: { label: 'En cours', icon: Rocket,      color: '#a78bfa', bg: 'rgba(167,139,250,0.1)',  border: 'rgba(167,139,250,0.25)' },
   done:        { label: 'Terminé',  icon: CheckCircle, color: '#34d399', bg: 'rgba(52,211,153,0.1)',   border: 'rgba(52,211,153,0.25)' },
@@ -276,8 +276,8 @@ export default function Roadmap({
                   disabled={!userId}
                   style={{
                     ...s.voteBtn,
-                    background: voted ? `${cfg.color}18` : 'var(--surface)',
-                    border:     voted ? `1px solid ${cfg.color}40` : '1px solid var(--border)',
+                    background: voted ? cfg.bg : 'var(--surface)',
+                    border:     voted ? `1px solid ${cfg.border}` : '1px solid var(--border)',
                     color:      voted ? cfg.color : 'var(--text-3)',
                   }}
                   title={voted ? 'Retirer mon vote' : 'Voter'}

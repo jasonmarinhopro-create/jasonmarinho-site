@@ -171,7 +171,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
           </div>
           {stats.topFormation && (
             <div style={{ ...s.actCard, flex: '2 1 220px' }}>
-              <div style={{ ...s.actIcon, color: '#FFD56B', background: 'rgba(255,213,107,0.12)' }}>
+              <div style={{ ...s.actIcon, color: 'var(--accent-text)', background: 'var(--accent-bg-2)' }}>
                 <Trophy size={20} weight="duotone" />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -179,7 +179,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
                   Formation la plus commencée
                 </div>
                 <div style={{
-                  fontSize: '14px', fontWeight: 600, color: '#FFD56B', lineHeight: 1.3,
+                  fontSize: '14px', fontWeight: 600, color: 'var(--accent-text)', lineHeight: 1.3,
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: 'vertical' as const,
@@ -322,7 +322,7 @@ export default function AdminUI({ pendingDriing, reports, suggestions, stats }: 
             {suggestions.map(sg => (
               <div key={sg.id} className="admin-item">
                 <div className="admin-item-head">
-                  <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'rgba(255,213,107,.1)', color: '#FFD56B', border: '1px solid rgba(255,213,107,.2)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD', border: '1px solid rgba(147,197,253,.2)' }) }}>
+                  <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD', border: '1px solid rgba(147,197,253,.2)' }) }}>
                     {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
                   </span>
                   <div style={{ ...s.cellSub, marginLeft: 'auto' }}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>

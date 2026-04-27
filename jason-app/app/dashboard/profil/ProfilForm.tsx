@@ -503,7 +503,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   avatarSection: { display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '28px' },
   avatarWrap: { position: 'relative', width: '64px', height: '64px', flexShrink: 0, borderRadius: '50%', overflow: 'hidden' },
-  avatar: { width: '64px', height: '64px', background: 'rgba(0,76,63,0.5)', border: '2px solid rgba(255,213,107,0.25)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  avatar: { width: '64px', height: '64px', background: 'rgba(0,76,63,0.5)', border: '2px solid var(--accent-border)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 600, color: 'var(--accent-text)' },
   avatarName: { fontSize: '17px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
   avatarSub: { fontSize: '13px', color: 'var(--text-3)' },
@@ -514,7 +514,7 @@ const styles: Record<string, React.CSSProperties> = {
   value: { fontSize: '15px', color: 'var(--text)', fontWeight: 400 },
   editBtn: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, color: 'var(--text-3)', background: 'none', border: '1px solid var(--border)', borderRadius: '8px', padding: '6px 12px', cursor: 'pointer' },
   nameRow: { display: 'flex', gap: '10px', flexWrap: 'wrap' },
-  input: { flex: 1, minWidth: '140px', background: 'var(--border)', border: '1px solid rgba(255,213,107,0.3)', borderRadius: '10px', padding: '10px 14px', fontFamily: 'var(--font-outfit), sans-serif', fontSize: '15px', color: 'var(--text)', outline: 'none' },
+  input: { flex: 1, minWidth: '140px', background: 'var(--border)', border: '1px solid var(--accent-border-2)', borderRadius: '10px', padding: '10px 14px', fontFamily: 'var(--font-outfit), sans-serif', fontSize: '15px', color: 'var(--text)', outline: 'none' },
   cancelBtn: { fontSize: '13px', fontWeight: 400, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px' },
   errorBox: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#F87171', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.18)', borderRadius: '8px', padding: '10px 14px' },
   readOnly: { fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', background: 'var(--surface)', border: '1px solid var(--surface-2)', borderRadius: '6px', padding: '4px 10px' },
@@ -541,11 +541,11 @@ const ibanBtn: React.CSSProperties = {
 
 const adresseBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
-  background: 'rgba(255,213,107,0.08)',
-  border: '1px solid rgba(255,213,107,0.25)',
+  background: 'var(--accent-bg)',
+  border: '1px solid var(--accent-border)',
   borderRadius: '10px', padding: '10px 18px',
   fontSize: '13px', fontWeight: 600,
-  color: '#FFD56B', cursor: 'pointer',
+  color: 'var(--accent-text)', cursor: 'pointer',
 }
 
 function stripeBanner(type: 'success' | 'pending' | 'error'): React.CSSProperties {

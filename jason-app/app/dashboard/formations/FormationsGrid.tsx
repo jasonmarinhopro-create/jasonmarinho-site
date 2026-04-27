@@ -229,7 +229,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
                 <div style={{ ...styles.cardIcon, ...(isLocked ? { opacity: 0.5 } : {}) }}>
                   {isLocked
                     ? <Lock size={24} color="var(--text-muted)" weight="duotone" />
-                    : <GraduationCap size={28} color="#FFD56B" weight="fill" />
+                    : <GraduationCap size={28} color="var(--accent-text)" weight="fill" />
                   }
                 </div>
                 <div style={styles.cardBadges}>
@@ -395,8 +395,8 @@ const styles: Record<string, React.CSSProperties> = {
   lockedBadge: {
     fontSize: '10px', fontWeight: 600, letterSpacing: '0.6px',
     padding: '3px 10px', borderRadius: '100px',
-    background: 'rgba(255,213,107,0.1)', color: '#FFD56B',
-    border: '1px solid rgba(255,213,107,0.25)',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)',
+    border: '1px solid var(--accent-border)',
   },
   comingSoonCard: {
     padding: 'clamp(18px,3vw,28px)', borderRadius: '18px', display: 'flex', flexDirection: 'column', gap: '0',

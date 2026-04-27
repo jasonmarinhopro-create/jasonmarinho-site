@@ -206,7 +206,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
       {/* Bandeau "Audit Express importé" */}
       {hasCsvImport && (
         <div style={s.csvBanner}>
-          <Lightning size={16} color="#FFD56B" weight="fill" />
+          <Lightning size={16} color="var(--accent-text)" weight="fill" />
           <div>
             <strong style={{ color: 'var(--text)' }}>{prefilledKeys.size} réponse{prefilledKeys.size > 1 ? 's' : ''} pré-remplie{prefilledKeys.size > 1 ? 's' : ''} depuis ton CSV.</strong> Les
             questions concernées sont marquées <span style={s.csvBadgeMini}>Auto</span> — vérifie qu'elles sont correctes.
@@ -473,7 +473,7 @@ const s: Record<string, React.CSSProperties> = {
 
   btnStart: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
-    background: '#60a5fa', color: '#0a1628',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     fontWeight: 700, fontSize: '14px',
     padding: '11px 20px', borderRadius: '10px',
     border: 'none', cursor: 'pointer',
@@ -551,9 +551,9 @@ const s: Record<string, React.CSSProperties> = {
   quickActionBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '12px', fontWeight: 600,
-    color: '#FFD56B',
-    background: 'rgba(255,213,107,0.08)',
-    border: '1px solid rgba(255,213,107,0.22)',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '8px',
     padding: '7px 12px',
     cursor: 'pointer', fontFamily: 'inherit',
@@ -579,9 +579,9 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
     fontSize: '10px', fontWeight: 700,
     letterSpacing: '0.5px', textTransform: 'uppercase' as const,
-    color: '#FFD56B',
-    background: 'rgba(255,213,107,0.1)',
-    border: '1px solid rgba(255,213,107,0.25)',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '6px',
     padding: '3px 7px',
     flexShrink: 0,
@@ -597,8 +597,8 @@ const s: Record<string, React.CSSProperties> = {
   csvBanner: {
     display: 'flex', alignItems: 'flex-start', gap: '10px',
     padding: '12px 14px',
-    background: 'rgba(255,213,107,0.06)',
-    border: '1px solid rgba(255,213,107,0.2)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '10px',
     fontSize: '12.5px', color: 'var(--text-2)',
     lineHeight: 1.6, marginBottom: '16px',
@@ -606,9 +606,9 @@ const s: Record<string, React.CSSProperties> = {
   csvBadgeMini: {
     display: 'inline-block',
     fontSize: '9.5px', fontWeight: 700,
-    color: '#FFD56B',
-    background: 'rgba(255,213,107,0.1)',
-    border: '1px solid rgba(255,213,107,0.25)',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '4px',
     padding: '1px 5px',
     margin: '0 2px',

@@ -12,7 +12,7 @@ export const metadata = { title: 'Audit GBP — Jason Marinho' }
 const PILLAR_ICONS = [
   { Icon: IdentificationCard, label: 'Identité',  color: '#60a5fa' },
   { Icon: Camera,             label: 'Photos',    color: '#a78bfa' },
-  { Icon: Star,               label: 'Avis',      color: '#FFD56B' },
+  { Icon: Star,               label: 'Avis',      color: 'var(--accent-text)' },
   { Icon: Megaphone,          label: 'Posts',     color: '#34d399' },
   { Icon: ChatCircleDots,     label: 'Q&A',       color: '#fb923c' },
   { Icon: Sparkle,            label: 'Attributs', color: '#f472b6' },
@@ -143,7 +143,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
             {/* CSV (alternative) */}
             <Link href="/dashboard/outils/audit-gbp/import-csv" style={s.expressCard}>
               <div style={s.expressIcon}>
-                <FileCsv size={20} color="#FFD56B" weight="fill" />
+                <FileCsv size={20} color="var(--accent-text)" weight="fill" />
               </div>
               <div style={s.expressBody}>
                 <div style={s.expressBadge}>
@@ -155,7 +155,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
                   Google Business pour pré-remplir 7 questions.
                 </div>
               </div>
-              <ArrowRight size={16} color="#FFD56B" weight="bold" />
+              <ArrowRight size={16} color="var(--accent-text)" weight="bold" />
             </Link>
           </div>
         )}
@@ -177,7 +177,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
 
 function scoreColor(score: number): string {
   if (score >= 80) return '#34d399'
-  if (score >= 60) return '#FFD56B'
+  if (score >= 60) return '#d97706'
   if (score >= 40) return '#fb923c'
   return '#ef4444'
 }
@@ -276,8 +276,8 @@ const s: Record<string, React.CSSProperties> = {
   expressCard: {
     display: 'flex', alignItems: 'center', gap: '16px',
     padding: '18px 20px',
-    background: 'linear-gradient(135deg, rgba(255,213,107,0.08), rgba(255,213,107,0.03))',
-    border: '1px solid rgba(255,213,107,0.22)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '14px',
     textDecoration: 'none',
     transition: 'border-color 0.15s, transform 0.15s',
@@ -288,7 +288,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   expressIcon: {
     width: '40px', height: '40px', borderRadius: '10px',
-    background: 'rgba(255,213,107,0.12)',
+    background: 'var(--accent-bg-2)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
@@ -297,7 +297,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '10.5px', fontWeight: 700,
     letterSpacing: '0.7px', textTransform: 'uppercase' as const,
-    color: '#FFD56B', marginBottom: '4px',
+    color: 'var(--accent-text)', marginBottom: '4px',
   },
   expressTitle: {
     fontSize: '14.5px', fontWeight: 600,

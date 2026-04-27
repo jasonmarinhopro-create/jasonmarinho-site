@@ -29,16 +29,16 @@ interface Props {
   appUrl: string
 }
 
-const CAT: Record<string, { label: string; color: string; bg: string }> = {
-  arrivee:   { label: 'Arrivée',     color: '#10b981', bg: 'rgba(16,185,129,0.13)' },
-  depart:    { label: 'Départ',      color: '#60a5fa', bg: 'rgba(96,165,250,0.13)' },
-  menage:    { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)' },
-  rdv:       { label: 'RDV',         color: '#FFD56B', bg: 'rgba(255,213,107,0.13)' },
-  tache:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)' },
-  note:      { label: 'Note',        color: '#94a3b8', bg: 'rgba(148,163,184,0.13)' },
+const CAT: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  arrivee:   { label: 'Arrivée',     color: '#10b981', bg: 'rgba(16,185,129,0.13)',  border: 'rgba(16,185,129,0.30)' },
+  depart:    { label: 'Départ',      color: '#60a5fa', bg: 'rgba(96,165,250,0.13)',  border: 'rgba(96,165,250,0.30)' },
+  menage:    { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)',  border: 'rgba(251,146,60,0.30)' },
+  rdv:       { label: 'RDV',         color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', border: 'var(--accent-border)' },
+  tache:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.30)' },
+  note:      { label: 'Note',        color: '#94a3b8', bg: 'rgba(148,163,184,0.13)', border: 'rgba(148,163,184,0.30)' },
   // Legacy aliases (display only, not shown in pickers)
-  entretien: { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)' },
-  admin:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)' },
+  entretien: { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)',  border: 'rgba(251,146,60,0.30)' },
+  admin:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.30)' },
 }
 
 type CatKey = 'arrivee' | 'depart' | 'menage' | 'rdv' | 'tache' | 'note'
@@ -501,7 +501,7 @@ export default function CalendrierView({
       {/* ── Actions à traiter */}
       {contractEvents.length > 0 && (
         <div className="cal-alert-wrap" style={{
-          background: 'var(--card-bg)', border: '1px solid var(--border)',
+          background: 'var(--surface)', border: '1px solid var(--border)',
           borderRadius: '12px', padding: '10px 14px',
           display: 'flex', flexDirection: 'column', gap: '8px',
         }}>
@@ -794,7 +794,7 @@ export default function CalendrierView({
             return (
               <div style={{ padding: '14px 16px', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Contract header */}
-                <div style={{ padding: '12px', borderRadius: '10px', background: cat.bg, border: `1px solid ${cat.color}30` }}>
+                <div style={{ padding: '12px', borderRadius: '10px', background: cat.bg, border: `1px solid ${cat.border}` }}>
                   <div style={{ fontSize: '13px', fontWeight: 700, color: cat.color, marginBottom: '2px' }}>
                     {selectedContract.logement_nom ?? 'Logement'}
                   </div>
