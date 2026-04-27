@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getFormationDbContent, type FormationContent } from '@/lib/queries/formation-db-content'
 import { checkFormationAccess } from '@/lib/queries/formation-access'
 import PlanGate from '@/components/ui/PlanGate'
+import FormationLockedPreview from '@/components/formations/FormationLockedPreview'
 import { getFormationRelations } from '@/lib/formations/relations'
 import { buildFormationMetadata, buildCourseSchema } from '@/lib/formations/seo'
 import type { Metadata } from 'next'
@@ -69,10 +70,47 @@ export async function buildFormationPage({
   if (formationId && profile?.userId) {
     const { allowed } = await checkFormationAccess(supabase, profile.userId, formationId, plan)
     if (!allowed) {
+      // Phase 10 — Preview enrichi : sommaire + social proof + reviews
+      const [{ count: enrolledCount }, { count: completedCount }, { data: reviews }] = await Promise.all([
+        supabase
+          .from('user_formations')
+          .select('user_id', { count: 'exact', head: true })
+          .eq('formation_id', formationId),
+        supabase
+          .from('user_formations')
+          .select('user_id', { count: 'exact', head: true })
+          .eq('formation_id', formationId)
+          .eq('progress', 100),
+        supabase
+          .from('formation_reviews')
+          .select('rating, comment, display_name')
+          .eq('formation_id', formationId)
+          .eq('is_public', true)
+          .order('created_at', { ascending: false })
+          .limit(6),
+      ])
+
+      const reviewsList = (reviews ?? []) as Array<{ rating: number; comment: string | null; display_name: string | null }>
+      const averageRating = reviewsList.length > 0
+        ? reviewsList.reduce((sum, r) => sum + r.rating, 0) / reviewsList.length
+        : null
+
       return (
         <>
-          <Header title="Formation" userName={profile?.full_name ?? undefined} />
-          <PlanGate feature="formations" />
+          <Header title={headerTitle} userName={profile?.full_name ?? undefined} />
+          <FormationLockedPreview
+            formationTitle={staticContent.title}
+            formationDescription={staticContent.description}
+            formationDuration={staticContent.duration}
+            formationLevel={staticContent.level}
+            modules={staticContent.modules}
+            objectifs={staticContent.objectifs}
+            enrolledCount={enrolledCount ?? 0}
+            completedCount={completedCount ?? 0}
+            reviewsCount={reviewsList.length}
+            averageRating={averageRating}
+            reviews={reviewsList.filter(r => r.comment)}
+          />
         </>
       )
     }
