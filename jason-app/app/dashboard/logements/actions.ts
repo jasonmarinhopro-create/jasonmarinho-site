@@ -5,16 +5,66 @@ import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
 
 export type LogementData = {
+  // Identité
   nom: string
   adresse: string
   telephone?: string
   description?: string
+  type_logement?: string | null
   capacite_max: number
+
+  // Caractéristiques physiques
+  surface_m2?: number | null
+  nb_chambres?: number | null
+  nb_lits?: number | null
+  nb_sdb?: number | null
+
+  // Conformité & classement
+  numero_enregistrement?: string | null
+  classement_etoiles?: number | null
+  dpe?: string | null
+
+  // Tarifs
+  tarif_nuitee_moyen?: number | null
+  frais_menage?: number | null
+  caution?: number | null
+
+  // Équipements (slugs : wifi, parking, piscine, climatisation, lave-linge, lave-vaisselle, tv, jardin, terrasse, pmr, chauffage, ascenseur)
+  equipements?: string[]
+
+  // Liens annonces
+  lien_airbnb?: string | null
+  lien_booking?: string | null
+  lien_gmb?: string | null
+  lien_site_direct?: string | null
+
+  // Photos
+  photo_couverture_url?: string | null
+  photos_urls?: string[]
+
+  // Contacts utiles
+  contact_urgence_nom?: string | null
+  contact_urgence_tel?: string | null
+  contact_menage_nom?: string | null
+  contact_menage_tel?: string | null
+
+  // Statut
+  actif?: boolean
+
+  // Spécifique conciergerie
+  proprietaire_nom?: string | null
+  proprietaire_email?: string | null
+  proprietaire_telephone?: string | null
+  honoraires_pct?: number | null
+
+  // Conditions & règlement
   reglement_interieur?: string
   conditions_annulation?: string
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement?: string
+
+  // Infos pratiques
   heure_arrivee?: string
   heure_depart?: string
   code_acces?: string
