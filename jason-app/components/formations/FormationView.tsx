@@ -191,7 +191,9 @@ export default function FormationView({
 
     if (formationId) {
       const newProgress = Math.round((updated.length / totalLessons) * 100)
-      updateFormationProgress(formationId, newProgress, updated)
+      // Phase 6 — passer le lessonId nouvellement complétée pour logger la date
+      const isNewlyCompleted = !completedLessons.includes(lessonId)
+      updateFormationProgress(formationId, newProgress, updated, isNewlyCompleted ? lessonId : undefined)
     }
 
     // Auto-advance to next lesson

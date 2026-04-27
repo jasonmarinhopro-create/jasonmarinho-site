@@ -125,7 +125,8 @@ export async function getLessonBookmarks(formationId: string): Promise<number[]>
 export async function updateFormationProgress(
   formationId: string,
   progress: number,
-  completedLessons?: number[]
+  completedLessons?: number[],
+  newlyCompletedLessonId?: number, // Phase 6 — pour logger la date dans completion_log
 ) {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
@@ -145,6 +146,19 @@ export async function updateFormationProgress(
     )
 
   if (error) return { error: error.message }
+
+  // Phase 6 — Logger la complétion pour le streak/historique
+  if (newlyCompletedLessonId !== undefined) {
+    await supabase
+      .from('user_lesson_completion_log')
+      .insert({
+        user_id: session.user.id,
+        formation_id: formationId,
+        lesson_id: newlyCompletedLessonId,
+      })
+      .then(() => null, () => null) // Silently ignore log errors
+  }
+
   revalidatePath('/dashboard')
   return { success: true }
 }
