@@ -1168,11 +1168,24 @@ export default function RevenusView({
         {filteredTx.length === 0
           ? <p style={s.empty}>Aucune transaction</p>
           : <div style={s.txList}>
-              {filteredTx.map(tx => (
+              {filteredTx.map(tx => {
+                const logementMatch = logements.find(l => l.nom === tx.logement)
+                return (
                 <div key={tx.id + tx.source} style={s.txRow} className="tx-row">
                   <div style={s.txDate}>{fmtDate(tx.date)}</div>
                   <div style={s.txInfo}>
-                    <span style={s.txLogement}>{tx.logement}</span>
+                    {logementMatch ? (
+                      <a
+                        href={`/dashboard/logements/${logementMatch.id}`}
+                        style={{ ...s.txLogement, color: 'var(--text)', textDecoration: 'none' as const, cursor: 'pointer' }}
+                        title="Voir la fiche du logement"
+                        onClick={e => e.stopPropagation()}
+                      >
+                        {tx.logement}
+                      </a>
+                    ) : (
+                      <span style={s.txLogement}>{tx.logement}</span>
+                    )}
                     {tx.guest && <span style={s.txGuest}>{tx.guest}</span>}
                   </div>
                   <div style={s.txMeta} className="tx-meta">
@@ -1193,7 +1206,8 @@ export default function RevenusView({
                     : <div style={{ width: '24px', flexShrink: 0 }} />
                   }
                 </div>
-              ))}
+                )
+              })}
             </div>
         }
       </section>
@@ -1332,6 +1346,7 @@ export default function RevenusView({
           <div style={{ ...s.txList, marginTop: '12px' }}>
             {charges.slice(0, 12).map(c => {
               const def = CHARGE_LABEL[c.categorie] ?? CHARGE_LABEL.autre
+              const logementMatch = c.logement_id ? logements.find(l => l.id === c.logement_id) : logements.find(l => l.nom === c.logement_nom)
               return (
                 <div key={c.id} style={s.txRow} className="tx-row">
                   <div style={s.txDate}>{fmtDate(c.date_charge)}</div>
@@ -1340,7 +1355,17 @@ export default function RevenusView({
                       <span style={{ marginRight: '4px' }}>{def.emoji}</span>
                       {def.label}
                     </span>
-                    <span style={s.txGuest}>{c.logement_nom}</span>
+                    {logementMatch ? (
+                      <a
+                        href={`/dashboard/logements/${logementMatch.id}`}
+                        style={{ ...s.txGuest, textDecoration: 'none' as const, cursor: 'pointer' }}
+                        onClick={e => e.stopPropagation()}
+                      >
+                        {c.logement_nom}
+                      </a>
+                    ) : (
+                      <span style={s.txGuest}>{c.logement_nom}</span>
+                    )}
                   </div>
                   <div style={s.txMeta} className="tx-meta">
                     {c.description && <span style={s.txMode}>{c.description}</span>}
