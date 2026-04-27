@@ -63,15 +63,31 @@ export async function buildFormationPage({
   // Progress existant de l'utilisateur (si déjà inscrit)
   let initialProgress: number | null = null
   let initialCompletedLessons: number[] = []
+  let initialNotes: Record<string, string> = {}
+  let initialBookmarks: number[] = []
   if (formationId && profile?.userId) {
-    const { data: uf } = await supabase
-      .from('user_formations')
-      .select('progress, completed_lessons')
-      .eq('user_id', profile.userId)
-      .eq('formation_id', formationId)
-      .maybeSingle()
+    const [{ data: uf }, { data: notes }, { data: bookmarks }] = await Promise.all([
+      supabase
+        .from('user_formations')
+        .select('progress, completed_lessons')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId)
+        .maybeSingle(),
+      supabase
+        .from('user_lesson_notes')
+        .select('lesson_id, content')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId),
+      supabase
+        .from('user_lesson_bookmarks')
+        .select('lesson_id')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId),
+    ])
     initialProgress = uf?.progress ?? null
     initialCompletedLessons = (uf?.completed_lessons as number[]) ?? []
+    ;(notes ?? []).forEach((n: any) => { initialNotes[String(n.lesson_id)] = n.content as string })
+    initialBookmarks = (bookmarks ?? []).map((b: any) => b.lesson_id as number)
   }
 
   // Contenu : DB override statique si présent, sinon fallback statique
@@ -83,8 +99,11 @@ export async function buildFormationPage({
       <FormationView
         formation={formationContent}
         formationId={formationId}
+        formationSlug={slug}
         initialProgress={initialProgress}
         initialCompletedLessons={initialCompletedLessons}
+        initialNotes={initialNotes}
+        initialBookmarks={initialBookmarks}
       />
     </>
   )

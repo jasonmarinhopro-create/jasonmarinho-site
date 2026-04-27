@@ -5,8 +5,9 @@ import Link from 'next/link'
 import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
   CaretDown, CaretRight, Star, Check, List, X,
+  BookmarkSimple, Note as NoteIcon,
 } from '@phosphor-icons/react'
-import { enrollInFormation, updateFormationProgress } from '@/app/dashboard/formations/actions'
+import { enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark } from '@/app/dashboard/formations/actions'
 
 interface Lesson {
   id: number
@@ -36,11 +37,17 @@ export default function FormationView({
   formationId,
   initialProgress,
   initialCompletedLessons,
+  initialNotes = {},
+  initialBookmarks = [],
+  formationSlug,
 }: {
   formation: Formation
   formationId?: string | null
   initialProgress?: number | null
   initialCompletedLessons?: number[]
+  initialNotes?: Record<string, string>
+  initialBookmarks?: number[]
+  formationSlug?: string
 }) {
   const totalLessons = formation.modules.reduce((a, m) => a + m.lessons.length, 0)
   const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
@@ -69,6 +76,41 @@ export default function FormationView({
     return formation.modules.flatMap(m => m.lessons.map(l => l.id)).slice(0, count)
   })()
   const [completedLessons, setCompletedLessons] = useState<number[]>(restoredLessons)
+
+  // ─── Phase 2 — Notes personnelles ──────────────────────────────
+  const [notes, setNotes] = useState<Record<string, string>>(initialNotes)
+  const [noteSaved, setNoteSaved] = useState(false)
+  const noteTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  function updateNote(lessonId: number, content: string) {
+    setNotes(prev => ({ ...prev, [String(lessonId)]: content }))
+    setNoteSaved(false)
+    if (noteTimerRef.current) clearTimeout(noteTimerRef.current)
+    if (!formationId || !activeLesson) return
+    const moduleId = activeLesson.moduleId
+    noteTimerRef.current = setTimeout(async () => {
+      await saveLessonNote({ formationId, moduleId, lessonId, content })
+      setNoteSaved(true)
+      setTimeout(() => setNoteSaved(false), 1600)
+    }, 700)
+  }
+
+  // ─── Phase 3 — Bookmarks ───────────────────────────────────────
+  const [bookmarks, setBookmarks] = useState<number[]>(initialBookmarks)
+  function isBookmarked(lessonId: number) { return bookmarks.includes(lessonId) }
+  function toggleBookmark(lessonId: number, lessonTitle: string) {
+    const willAdd = !bookmarks.includes(lessonId)
+    setBookmarks(prev => willAdd ? [...prev, lessonId] : prev.filter(id => id !== lessonId))
+    if (!formationId || !formationSlug) return
+    toggleLessonBookmark({
+      formationId, formationSlug, formationTitle: formation.title,
+      moduleId: activeLesson?.moduleId ?? 0, lessonId, lessonTitle,
+      add: willAdd,
+    }).catch(() => {
+      // rollback en cas d'erreur
+      setBookmarks(prev => willAdd ? prev.filter(id => id !== lessonId) : [...prev, lessonId])
+    })
+  }
 
   const currentLesson = activeLesson
     ? formation.modules
@@ -545,24 +587,60 @@ export default function FormationView({
             </div>
           </div>
 
-          {/* Bouton "Marquer terminé" raccourci */}
-          {currentLesson && !completedLessons.includes(currentLesson.id) && (
+          {/* Actions rapides : terminé + favori */}
+          {currentLesson && (
             <div style={styles.railSection}>
+              {!completedLessons.includes(currentLesson.id) ? (
+                <button
+                  onClick={() => markComplete(currentLesson.id)}
+                  style={styles.railDoneBtn}
+                >
+                  <Check size={13} weight="bold" />
+                  Marquer cette leçon terminée
+                </button>
+              ) : (
+                <div style={styles.railDoneMsg}>
+                  <CheckCircle size={14} weight="fill" color="#10b981" />
+                  Leçon terminée
+                </div>
+              )}
               <button
-                onClick={() => markComplete(currentLesson.id)}
-                style={styles.railDoneBtn}
+                onClick={() => toggleBookmark(currentLesson.id, currentLesson.title)}
+                style={{
+                  ...styles.railBookmarkBtn,
+                  ...(isBookmarked(currentLesson.id) ? styles.railBookmarkBtnActive : {}),
+                }}
               >
-                <Check size={13} weight="bold" />
-                Marquer cette leçon terminée
+                <BookmarkSimple
+                  size={13}
+                  weight={isBookmarked(currentLesson.id) ? 'fill' : 'regular'}
+                />
+                {isBookmarked(currentLesson.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
               </button>
             </div>
           )}
-          {currentLesson && completedLessons.includes(currentLesson.id) && (
+
+          {/* Notes personnelles */}
+          {currentLesson && (
             <div style={styles.railSection}>
-              <div style={styles.railDoneMsg}>
-                <CheckCircle size={14} weight="fill" color="#10b981" />
-                Leçon terminée
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={styles.railLabel}>
+                  <NoteIcon size={11} weight="fill" style={{ verticalAlign: '-2px', marginRight: '4px' }} />
+                  Mes notes
+                </span>
+                {noteSaved && (
+                  <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 600 }}>
+                    ✓ Enregistré
+                  </span>
+                )}
               </div>
+              <textarea
+                placeholder="Note libre, idée à retenir, action à faire…"
+                value={notes[String(currentLesson.id)] ?? ''}
+                onChange={(e) => updateNote(currentLesson.id, e.target.value)}
+                rows={6}
+                style={styles.railNoteTextarea}
+              />
             </div>
           )}
 
@@ -837,6 +915,40 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--accent-text)',
     fontWeight: 700,
     flexShrink: 0,
+  },
+
+  // Phase 2 + 3
+  railBookmarkBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+    padding: '8px 12px',
+    fontSize: '11.5px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    width: '100%',
+    marginTop: '6px',
+  },
+  railBookmarkBtnActive: {
+    background: 'rgba(245,158,11,0.10)',
+    color: '#f59e0b',
+    borderColor: 'rgba(245,158,11,0.30)',
+    fontWeight: 600,
+  },
+  railNoteTextarea: {
+    width: '100%', boxSizing: 'border-box' as const,
+    padding: '9px 10px',
+    fontSize: '12px', fontFamily: 'inherit',
+    color: 'var(--text)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    outline: 'none',
+    resize: 'vertical' as const,
+    minHeight: '90px',
+    lineHeight: 1.5,
   },
 
   // Overview
