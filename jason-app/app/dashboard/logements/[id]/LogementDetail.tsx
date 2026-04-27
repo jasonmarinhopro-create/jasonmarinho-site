@@ -258,9 +258,17 @@ export default function LogementDetail({ logement: l, sejours, contractsCount }:
               <PencilSimple size={14} weight="bold" />
               Modifier la fiche
             </Link>
-            <Link href={`/dashboard/calendrier`} style={s.btnSecondary}>
+            <Link href="/dashboard/voyageurs" style={s.btnSecondary}>
+              <Users size={14} weight="bold" />
+              Nouveau séjour
+            </Link>
+            <Link href={`/dashboard/calendrier?logement=${encodeURIComponent(l.nom)}`} style={s.btnSecondary}>
               <CalendarIcon size={14} weight="bold" />
-              Voir le calendrier
+              Calendrier de ce bien
+            </Link>
+            <Link href={`/dashboard/revenus?logement=${encodeURIComponent(l.nom)}`} style={s.btnSecondary}>
+              <CurrencyEur size={14} weight="bold" />
+              Revenus de ce bien
             </Link>
           </div>
         </div>

@@ -458,6 +458,17 @@ export default function CalendrierView({
   const [search, setSearch] = useState('')
   const [quickAdd, setQuickAdd] = useState('')
 
+  // Si la page est ouverte avec ?logement=X (depuis fiche détail), pré-remplir la recherche
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const url = new URL(window.location.href)
+    const logementParam = url.searchParams.get('logement')
+    if (logementParam) {
+      setSearch(logementParam)
+      setFilter('sejours')
+    }
+  }, [])
+
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
 
