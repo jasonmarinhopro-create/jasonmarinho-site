@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Calculators from './Calculators'
+import ComparisonTable from './ComparisonTable'
+import Resources from './Resources'
 import {
   HouseLine, Coffee, Buildings, Handshake, Sparkle,
   Scales, CurrencyEur, ClipboardText, Globe, Briefcase, FileText, Megaphone, ShieldCheck, Gavel,
@@ -876,8 +878,14 @@ export default function GuideUI() {
         </div>
       )}
 
+      {/* Tableau comparatif des 4 profils */}
+      <ComparisonTable />
+
       {/* Calculatrices interactives */}
       <Calculators />
+
+      {/* Ressources & téléchargements */}
+      <Resources />
 
       {/* Glossaire */}
       <Glossaire />
