@@ -326,6 +326,95 @@ export default function AdminUI({
         </div>
       </div>
 
+      {/* ── Quick actions ── */}
+      <div className="fade-up">
+        <div style={s.sectionLabel}>
+          <Lightning size={13} />
+          Actions rapides
+        </div>
+        <div style={s.quickGrid}>
+          <Link href="/dashboard/admin/formations" style={s.quickCard}>
+            <GraduationCap size={16} weight="duotone" color="#34D399" />
+            <span style={s.quickLabel}>Nouvelle formation</span>
+          </Link>
+          <Link href="/dashboard/admin/gabarits" style={s.quickCard}>
+            <FileText size={16} weight="duotone" color="var(--accent-text)" />
+            <span style={s.quickLabel}>Nouveau gabarit</span>
+          </Link>
+          <Link href="/dashboard/admin/actualites" style={s.quickCard}>
+            <Newspaper size={16} weight="duotone" color="#f472b6" />
+            <span style={s.quickLabel}>Publier actualité</span>
+          </Link>
+          <Link href="/dashboard/admin/membres" style={s.quickCard}>
+            <UsersThree size={16} weight="duotone" color="#a78bfa" />
+            <span style={s.quickLabel}>Gérer membres</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Performance formations ── */}
+      {stats.formationsCount > 0 && (
+        <div className="fade-up">
+          <div style={s.sectionLabel}>
+            <Star size={13} />
+            Performance formations
+          </div>
+          <div style={s.perfRow}>
+            <div style={s.perfCard}>
+              <div style={s.perfNum}>{stats.completedFormations}</div>
+              <div style={s.perfLbl}>complétions totales</div>
+            </div>
+            {stats.topFormation && (
+              <div style={{ ...s.perfCard, flex: '2 1 240px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  Top formation
+                </div>
+                <div style={s.perfTitle} title={stats.topFormation.title}>{stats.topFormation.title}</div>
+                <div style={s.perfLbl}>{stats.topFormation.count} inscription{stats.topFormation.count > 1 ? 's' : ''}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── Fil d'activité récente ── */}
+      {recentSignups.length > 0 && (
+        <div className="fade-up">
+          <div style={s.sectionLabel}>
+            <UserPlus size={13} />
+            Derniers inscrits
+            <Link href="/dashboard/admin/membres" style={s.sectionLink}>
+              Voir tous <ArrowRight size={11} weight="bold" />
+            </Link>
+          </div>
+          <div style={s.recentList}>
+            {recentSignups.map(u => {
+              const planCfg = u.plan === 'driing'
+                ? { label: 'Driing', color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' }
+                : u.plan === 'standard'
+                ? { label: 'Standard', color: 'var(--accent-text)', bg: 'var(--accent-bg)' }
+                : { label: 'Découverte', color: 'var(--text-3)', bg: 'var(--border)' }
+              const initial = (u.full_name || u.email).slice(0, 1).toUpperCase()
+              return (
+                <Link key={u.id} href={`/dashboard/admin/membres/${u.id}`} style={s.recentItem}>
+                  <div style={s.recentAvatar}>{initial}</div>
+                  <div style={s.recentBody}>
+                    <div style={s.recentName}>{u.full_name || u.email.split('@')[0]}</div>
+                    <div style={s.recentEmail}>{u.email}</div>
+                  </div>
+                  <div style={s.recentRight}>
+                    <span style={{ ...s.recentPlan, color: planCfg.color, background: planCfg.bg }}>
+                      {planCfg.label}
+                    </span>
+                    <span style={s.recentDate}>{relativeDate(u.created_at)}</span>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
         </div>
         {/* ── Right column : actions en attente (sticky desktop) ── */}
         <aside style={isDesktop ? s.rightColSticky : s.rightCol}>
@@ -606,6 +695,68 @@ const s: Record<string, React.CSSProperties> = {
   kpiLabel: { fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.6px', marginBottom: '4px' },
   kpiValue: { fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', fontWeight: 400, lineHeight: 1.1, marginBottom: '3px' },
   kpiSub: { fontSize: '11.5px', color: 'var(--text-3)' },
+
+  // ── Quick actions ─────────────────────────────────────────────────────────
+  quickGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+    gap: '8px',
+  },
+  quickCard: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '12px 14px', borderRadius: '11px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    textDecoration: 'none' as const, color: 'var(--text-2)',
+    transition: 'border-color 0.15s, background 0.15s',
+    fontSize: '12.5px', fontWeight: 500,
+  },
+  quickLabel: { flex: 1 },
+
+  // ── Performance formations ────────────────────────────────────────────────
+  perfRow: { display: 'flex', gap: '10px', flexWrap: 'wrap' as const },
+  perfCard: {
+    flex: '1 1 140px',
+    padding: '14px 18px', borderRadius: '14px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+  },
+  perfNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', fontWeight: 400, color: 'var(--accent-text)', lineHeight: 1.1 },
+  perfLbl: { fontSize: '11.5px', color: 'var(--text-3)', marginTop: '3px' },
+  perfTitle: {
+    fontSize: '13.5px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.3,
+    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const,
+    overflow: 'hidden', wordBreak: 'break-word' as const,
+  },
+
+  // ── Fil d'activité récente ────────────────────────────────────────────────
+  sectionLink: {
+    marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '3px',
+    fontSize: '11px', fontWeight: 600, color: 'var(--accent-text)',
+    textDecoration: 'none' as const, textTransform: 'none' as const, letterSpacing: 0,
+  },
+  recentList: {
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '8px',
+  },
+  recentItem: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '10px 12px', borderRadius: '10px',
+    textDecoration: 'none' as const, color: 'inherit',
+    transition: 'background 0.15s',
+  },
+  recentAvatar: {
+    width: '34px', height: '34px', borderRadius: '10px', flexShrink: 0,
+    background: 'var(--accent-bg-2)', color: 'var(--accent-text)',
+    border: '1px solid var(--accent-border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '13px', fontWeight: 600,
+  },
+  recentBody: { flex: 1, minWidth: 0 },
+  recentName: { fontSize: '13px', fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
+  recentEmail: { fontSize: '11.5px', color: 'var(--text-3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, marginTop: '1px' },
+  recentRight: { display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end', gap: '4px', flexShrink: 0 },
+  recentPlan: { fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '100px', letterSpacing: '0.3px' },
+  recentDate: { fontSize: '10.5px', color: 'var(--text-muted)' },
 
   // ── Sparkline 12 mois ─────────────────────────────────────────────────────
   sparkWrap: {
