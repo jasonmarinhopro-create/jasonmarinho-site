@@ -24,7 +24,7 @@ export default async function CommunautePage() {
 
   return (
     <>
-      <Header title="Communauté" userName={profile?.full_name ?? undefined} />
+      <Header title="Groupes Facebook" userName={profile?.full_name ?? undefined} />
       <CommunauteView
         groups={groups}
         userId={profile?.userId ?? null}

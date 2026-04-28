@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useLayoutEffect, useRef } from 'react'
 import {
-  ArrowUpRight, UsersThree, FacebookLogo, WhatsappLogo,
+  ArrowUpRight, UsersThree, FacebookLogo,
   Star, MagnifyingGlass, CaretDown, CaretUp, X,
   Check, EyeSlash, WifiHigh,
 } from '@phosphor-icons/react'
@@ -53,7 +53,6 @@ export default function CommunauteView({
   initialMemberships: Record<string, MemberStatus>
 }) {
   const [search, setSearch]             = useState('')
-  const [platformFilter, setPlatform]   = useState<'all' | 'facebook' | 'whatsapp'>('all')
   const [activeCategory, setCategory]   = useState<string | null>(null)
   const [activeRegion, setRegion]       = useState<string | null>(null)
   const [featuredOpen, setFeaturedOpen] = useState(true)
@@ -97,8 +96,9 @@ export default function CommunauteView({
       ? SUPER_CATEGORIES.find(c => c.id === activeCategory)?.tags ?? []
       : []
     return groups.filter(g => {
+      // Facebook only — les groupes WhatsApp ne sont plus affichés
+      if (g.platform !== 'facebook') return false
       if (!showDismissed && memberships[g.id] === 'dismissed') return false
-      if (platformFilter !== 'all' && g.platform !== platformFilter) return false
       if (activeRegion && !parseTags(g.tag).includes(activeRegion)) return false
       if (!activeRegion && catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
       if (!q) return true
@@ -109,7 +109,7 @@ export default function CommunauteView({
         parseTags(g.tag).join(' ').toLowerCase().includes(q)
       )
     })
-  }, [groups, search, platformFilter, activeCategory, activeRegion, memberships, showDismissed])
+  }, [groups, search, activeCategory, activeRegion, memberships, showDismissed])
 
   const grouped: Record<string, Group[]> = {}
   filtered.forEach(g => {
@@ -120,7 +120,7 @@ export default function CommunauteView({
 
   const featuredGroups  = grouped[FEATURED_CATEGORY] ?? []
   const otherCategories = Object.entries(grouped).filter(([c]) => c !== FEATURED_CATEGORY)
-  const isFiltering = search !== '' || platformFilter !== 'all' || activeCategory !== null || activeRegion !== null
+  const isFiltering = search !== '' || activeCategory !== null || activeRegion !== null
 
   function toggleJoined(groupId: string) {
     const next: MemberStatus | null = memberships[groupId] === 'joined' ? null : 'joined'
@@ -143,13 +143,12 @@ export default function CommunauteView({
     if (userId) startTransition(() => { setGroupMembership(groupId, null) })
   }
 
-  function clearFilters() { setSearch(''); setPlatform('all'); setCategory(null); setRegion(null) }
+  function clearFilters() { setSearch(''); setCategory(null); setRegion(null) }
 
   function renderCard(g: Group, featured = false) {
     const isJoined    = memberships[g.id] === 'joined'
     const isDismissed = memberships[g.id] === 'dismissed'
     const tags        = parseTags(g.tag)
-    const isFb        = g.platform === 'facebook'
 
     return (
       <div
@@ -168,12 +167,10 @@ export default function CommunauteView({
         <div style={s.cardTop}>
           <div style={{
             ...s.platformIcon,
-            background: featured ? 'rgba(255,213,107,0.08)' : isFb ? 'rgba(147,197,253,0.08)' : 'rgba(37,211,102,0.08)',
-            border: `1px solid ${featured ? 'rgba(255,213,107,0.18)' : isFb ? 'rgba(147,197,253,0.15)' : 'rgba(37,211,102,0.15)'}`,
+            background: featured ? 'rgba(255,213,107,0.08)' : 'rgba(24,119,242,0.08)',
+            border: `1px solid ${featured ? 'rgba(255,213,107,0.18)' : 'rgba(24,119,242,0.18)'}`,
           }}>
-            {isFb
-              ? <FacebookLogo size={18} color={featured ? 'var(--accent-text)' : '#93C5FD'} weight="fill" />
-              : <WhatsappLogo size={18} color="#25D366" weight="fill" />}
+            <FacebookLogo size={18} color={featured ? 'var(--accent-text)' : '#1877F2'} weight="fill" />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <h3 style={featured ? s.featuredName : s.groupName}>{g.name}</h3>
@@ -244,10 +241,11 @@ export default function CommunauteView({
       {/* Intro */}
       <div style={s.intro} className="fade-up">
         <h2 style={s.pageTitle}>
-          La <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>communauté</em> LCD
+          Groupes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Facebook</em>
         </h2>
         <p style={s.pageDesc}>
-          Les meilleurs groupes pour échanger avec d'autres hôtes — et partager vos locations directement avec des voyageurs.
+          Étends ta visibilité commerciale en rejoignant les groupes où voyagent tes futurs clients.
+          Rejoins-en quelques-uns ciblés pour démultiplier ta portée — sans effort.
         </p>
       </div>
 
@@ -307,24 +305,6 @@ export default function CommunauteView({
               <X size={11} />
             </button>
           )}
-        </div>
-
-        {/* Plateforme */}
-        <div style={s.filterLine}>
-          <span style={s.filterLbl}>Plateforme</span>
-          <div style={s.chipRow}>
-            {(['all', 'facebook', 'whatsapp'] as const).map(p => (
-              <button
-                key={p}
-                onClick={() => setPlatform(p)}
-                style={{ ...s.chip, ...(platformFilter === p ? s.chipOn : {}) }}
-              >
-                {p === 'facebook' && <FacebookLogo size={11} weight="fill" />}
-                {p === 'whatsapp' && <WhatsappLogo size={11} weight="fill" />}
-                {p === 'all' ? 'Tous' : p === 'facebook' ? 'Facebook' : 'WhatsApp'}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Catégories : 4 groupes larges */}
