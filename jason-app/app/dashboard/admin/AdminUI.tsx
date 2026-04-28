@@ -190,6 +190,10 @@ export default function AdminUI({
       {/* ── Sparkline 12 mois ── */}
       <SignupsSparkline data={monthlySignupsChart} />
 
+      {/* ── Layout 2 colonnes desktop / stack mobile ── */}
+      <div style={isDesktop ? s.mainGrid : s.mainStack}>
+        <div style={s.leftCol}>
+
       {/* ── Répartition membres ── */}
       <div className="fade-up">
         <div style={s.sectionLabel}>
@@ -322,6 +326,10 @@ export default function AdminUI({
         </div>
       </div>
 
+        </div>
+        {/* ── Right column : actions en attente (sticky desktop) ── */}
+        <aside style={isDesktop ? s.rightColSticky : s.rightCol}>
+
       {/* ── Actions en attente ── */}
       <div className="fade-up">
         <div style={s.sectionLabel}>
@@ -436,6 +444,9 @@ export default function AdminUI({
         )}
       </div>
 
+        </aside>
+      </div>
+
     </div>
   )
 }
@@ -542,6 +553,39 @@ function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
 
 const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '32px' },
+
+  // ── Main 2-column layout ──────────────────────────────────────────────────
+  mainGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr) 380px',
+    gap: '32px',
+    alignItems: 'start',
+  },
+  mainStack: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '32px',
+  },
+  leftCol: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '32px',
+    minWidth: 0,
+  },
+  rightCol: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '20px',
+  },
+  rightColSticky: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '20px',
+    position: 'sticky' as const,
+    top: '24px',
+    maxHeight: 'calc(100vh - 48px)',
+    overflowY: 'auto' as const,
+  },
 
   // ── KPI Bar ───────────────────────────────────────────────────────────────
   kpiBar: {
