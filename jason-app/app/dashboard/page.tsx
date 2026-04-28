@@ -143,6 +143,10 @@ export default async function DashboardPage() {
     !activeStays.find(a => a.id === c.id) && !weekArrivals.find(a => a.id === c.id)
   )
 
+  // ── Aujourd'hui spécifiquement
+  const todayArrivals = allC.filter(c => c.date_arrivee === today)
+  const todayDepartures = allC.filter(c => c.date_depart === today)
+
   // ── Actions
   const unsignedContracts = allC.filter(c => {
     const cl = (c.checklist_status as Record<string, boolean>) ?? {}
@@ -199,42 +203,53 @@ export default async function DashboardPage() {
       <Header title="Accueil" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
       <div style={s.page} className="dash-page">
 
-        {/* ── Welcome ─────────────────────────────────────────────────── */}
+        {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
         <section style={s.welcome} className="fade-up dash-welcome">
-          <div>
-            <p style={s.welcomeSub}>Bienvenue sur la plateforme</p>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={s.welcomeSub}>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
             <h2 style={s.welcomeTitle}>
               {getGreeting()}{firstName ? `, ${firstName}` : ''}
             </h2>
             <p style={s.welcomeDesc}>
-              {actionsCount > 0
-                ? `${actionsCount} action${pl(actionsCount)} en attente${weekArrivals.length > 0 ? ` · ${weekArrivals.length} arrivée${pl(weekArrivals.length)} cette semaine` : ''}`
-                : weekArrivals.length > 0
-                ? `${weekArrivals.length} arrivée${pl(weekArrivals.length)} prévue${pl(weekArrivals.length)} cette semaine · Tout est en ordre`
-                : activeStays.length > 0
-                ? `${activeStays.length} séjour${pl(activeStays.length)} en cours · Tout est en ordre`
-                : 'Tableau de bord de ta location courte durée.'}
+              {(() => {
+                const ta = todayArrivals.length
+                const td = todayDepartures.length
+                const ac = activeStays.length
+                if (ta > 0 || td > 0) {
+                  const parts = []
+                  if (ta > 0) parts.push(`${ta} arrivée${pl(ta)} aujourd'hui`)
+                  if (td > 0) parts.push(`${td} départ${pl(td)} aujourd'hui`)
+                  if (actionsCount > 0) parts.push(`${actionsCount} action${pl(actionsCount)} à traiter`)
+                  return parts.join(' · ')
+                }
+                if (actionsCount > 0) {
+                  return `${actionsCount} action${pl(actionsCount)} à traiter${weekArrivals.length > 0 ? ` · ${weekArrivals.length} arrivée${pl(weekArrivals.length)} cette semaine` : ''}`
+                }
+                if (weekArrivals.length > 0) {
+                  return `Aucune arrivée aujourd'hui · ${weekArrivals.length} prévue${pl(weekArrivals.length)} cette semaine`
+                }
+                if (ac > 0) {
+                  return `${ac} séjour${pl(ac)} en cours · Tout est en ordre ✓`
+                }
+                return 'Aucun séjour prévu cette semaine. Profite de ce calme pour préparer la suite.'
+              })()}
             </p>
           </div>
           <div style={s.statsRow} className="dash-stats-row">
             <div style={s.stat}>
-              <span style={s.statVal}>{activeStays.length}</span>
-              <span style={s.statLbl}>Séjour{pl(activeStays.length)} actif{pl(activeStays.length, 's')}</span>
+              <span style={{ ...s.statVal, color: todayArrivals.length > 0 ? '#15803d' : 'var(--accent-text)' }}>{todayArrivals.length}</span>
+              <span style={s.statLbl}>Arrivée{pl(todayArrivals.length)} aujourd&apos;hui</span>
             </div>
             <div style={s.statDivider} />
             <div style={s.stat}>
-              <span style={s.statVal}>{weekArrivals.length}</span>
-              <span style={s.statLbl}>Arrivée{pl(weekArrivals.length)} J-7</span>
+              <span style={{ ...s.statVal, color: todayDepartures.length > 0 ? '#0369a1' : 'var(--accent-text)' }}>{todayDepartures.length}</span>
+              <span style={s.statLbl}>Départ{pl(todayDepartures.length)} aujourd&apos;hui</span>
             </div>
-            {actionsCount > 0 && (
-              <>
-                <div style={s.statDivider} />
-                <div style={s.stat}>
-                  <span style={{ ...s.statVal, color: '#ef4444' }}>{actionsCount}</span>
-                  <span style={s.statLbl}>Action{pl(actionsCount)} requise{pl(actionsCount, 's')}</span>
-                </div>
-              </>
-            )}
+            <div style={s.statDivider} />
+            <div style={s.stat}>
+              <span style={{ ...s.statVal, color: actionsCount > 0 ? '#dc2626' : 'var(--accent-text)' }}>{actionsCount}</span>
+              <span style={s.statLbl}>Action{pl(actionsCount)} à traiter</span>
+            </div>
           </div>
         </section>
 
