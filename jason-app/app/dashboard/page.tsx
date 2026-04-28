@@ -63,6 +63,8 @@ export default async function DashboardPage() {
     { data: latestNews },
     { data: entriesThisMois },
     { data: entriesPrevMois },
+    { data: entriesThisYear },
+    { data: objectifData },
     communityGroups,
   ] = await Promise.all([
     supabase
@@ -93,6 +95,17 @@ export default async function DashboardPage() {
       .eq('user_id', userId)
       .gte('date_paiement', `${prevMPfx}-01`)
       .lt('date_paiement', `${monthPfx}-01`),
+    supabase
+      .from('revenus_entries')
+      .select('montant')
+      .eq('user_id', userId)
+      .gte('date_paiement', `${yearPfx}-01-01`)
+      .lt('date_paiement', `${parseInt(yearPfx) + 1}-01-01`),
+    supabase
+      .from('revenus_objectifs')
+      .select('objectif_ca_annuel, annee')
+      .eq('user_id', userId)
+      .maybeSingle(),
     getCachedCommunityGroups(),
   ])
 
@@ -260,6 +273,22 @@ export default async function DashboardPage() {
     .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
 
   const voyageursAnnee = allC.filter(c => c.date_arrivee?.startsWith(yearPfx)).length
+
+  // ── Revenu annuel YTD + objectif
+  const contratsThisYear = allC
+    .filter(c => c.date_arrivee?.startsWith(yearPfx) && isPaid(c))
+    .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
+  const entriesThisYearSum = (entriesThisYear ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
+  const revenuYTD = contratsThisYear + entriesThisYearSum
+  const objectifAnnuel = objectifData?.objectif_ca_annuel ? Number(objectifData.objectif_ca_annuel) : null
+  const objectifPct = objectifAnnuel && objectifAnnuel > 0
+    ? Math.min(100, Math.round((revenuYTD / objectifAnnuel) * 100))
+    : null
+
+  // % attendu à cette date dans l'année (jour de l'année / 365)
+  const startOfYear = new Date(now.getFullYear(), 0, 1)
+  const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / 86_400_000) + 1
+  const expectedPct = Math.round((dayOfYear / 365) * 100)
 
   // ── Prochain séjour
   const prochainSejour = allC
@@ -579,6 +608,44 @@ export default async function DashboardPage() {
           </section>
         )}
 
+        {/* ── Objectif revenu annuel ──────────────────────────────────── */}
+        {objectifAnnuel !== null && objectifAnnuel > 0 && (
+          <section style={s.section} className="fade-up d3">
+            <Link href="/dashboard/revenus" style={s.objectifCard}>
+              <div style={s.objectifHead}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Trophy size={14} weight="fill" color="#15803d" />
+                  <span style={s.objectifLabel}>Objectif {yearPfx}</span>
+                </div>
+                <span style={s.objectifPct}>
+                  {objectifPct}% <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500 }}>vs {expectedPct}% attendu</span>
+                </span>
+              </div>
+              <div style={s.objectifBar}>
+                <div style={{
+                  ...s.objectifFill,
+                  width: `${objectifPct}%`,
+                  background: (objectifPct ?? 0) >= expectedPct
+                    ? 'linear-gradient(90deg, #15803d, #34d399)'
+                    : 'linear-gradient(90deg, #d97706, #f59e0b)',
+                }} />
+                {/* Repère du % attendu */}
+                <div style={{
+                  position: 'absolute', top: 0, bottom: 0,
+                  left: `${expectedPct}%`,
+                  width: '2px', background: 'var(--text-muted)', opacity: 0.5,
+                }} />
+              </div>
+              <div style={s.objectifMeta}>
+                <span><strong style={{ color: 'var(--text)' }}>{fmtEur(revenuYTD)}</strong> sur {fmtEur(objectifAnnuel)}</span>
+                <span style={{ color: (objectifPct ?? 0) >= expectedPct ? '#15803d' : '#d97706', fontWeight: 600 }}>
+                  {(objectifPct ?? 0) >= expectedPct ? '✓ Dans les temps' : `${expectedPct - (objectifPct ?? 0)} pts derrière`}
+                </span>
+              </div>
+            </Link>
+          </section>
+        )}
+
         {/* ── Pulse apprenant ─────────────────────────────────────────── */}
         {(learnerLevel || formationInProgressData) && (
           <section style={s.section} className="fade-up d3">
@@ -796,6 +863,30 @@ const s: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   quickLabel: { color: 'var(--text)', fontSize: '13px', fontWeight: 600, lineHeight: 1.2 },
+
+  // ── Objectif revenu annuel ───────────────────────────────────────────────
+  objectifCard: {
+    display: 'block', padding: '18px 22px', borderRadius: '14px',
+    background: 'var(--surface)', border: '1px solid rgba(21,128,61,0.32)',
+    textDecoration: 'none' as const, color: 'inherit',
+    transition: 'border-color 0.15s',
+  },
+  objectifHead: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    marginBottom: '12px', flexWrap: 'wrap' as const, gap: '8px',
+  },
+  objectifLabel: { fontSize: '12px', fontWeight: 700, color: 'var(--text)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
+  objectifPct: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, color: '#15803d', lineHeight: 1 },
+  objectifBar: {
+    position: 'relative' as const,
+    height: '10px', background: 'var(--surface-2)', borderRadius: '6px',
+    overflow: 'hidden' as const, marginBottom: '10px',
+  },
+  objectifFill: {
+    height: '100%', borderRadius: '6px',
+    transition: 'width 0.6s ease',
+  },
+  objectifMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--text-2)', flexWrap: 'wrap' as const, gap: '6px' },
 
   // ── Pulse apprenant ───────────────────────────────────────────────────────
   learnerCard: {
