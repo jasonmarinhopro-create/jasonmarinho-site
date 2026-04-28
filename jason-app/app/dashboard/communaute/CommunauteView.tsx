@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useLayoutEffect, useRef } from 'react'
 import {
-  ArrowUpRight, UsersThree, FacebookLogo, WhatsappLogo,
+  ArrowUpRight, UsersThree, FacebookLogo,
   Star, MagnifyingGlass, CaretDown, CaretUp, X,
   Check, EyeSlash, WifiHigh,
 } from '@phosphor-icons/react'
@@ -30,6 +30,42 @@ const SUPER_CATEGORIES = [
   { id: 'regions',        label: 'Régions',         tags: ['Alpes', 'Auvergne', 'Belgique', 'Bourgogne', 'Bretagne', 'Corse', 'Hauts-de-France', 'Île-de-France', 'Montagne', 'Normandie', 'Occitanie', 'PACA', 'Plage', 'Pyrénées', 'Réunion', 'Ski'] },
 ] as const
 
+// Mapping adresse (mots-clés) → tag région des groupes FB
+const REGION_KEYWORDS: Record<string, string[]> = {
+  'Île-de-France':   ['paris', 'île-de-france', 'ile-de-france', 'idf', ' 75', ' 77', ' 78', ' 91', ' 92', ' 93', ' 94', ' 95'],
+  'PACA':            ['paca', 'provence', 'marseille', 'nice', 'aix-en-provence', 'cannes', 'avignon', 'toulon', 'antibes', ' 13', ' 83', ' 84', ' 04', ' 05', ' 06'],
+  'Bretagne':        ['bretagne', 'rennes', 'brest', 'quimper', 'lorient', 'vannes', 'saint-malo', 'dinard', ' 22', ' 29', ' 35', ' 56'],
+  'Normandie':       ['normandie', 'rouen', 'caen', 'le havre', 'cherbourg', 'évreux', 'deauville', 'honfleur', ' 14', ' 27', ' 50', ' 61', ' 76'],
+  'Occitanie':       ['occitanie', 'toulouse', 'montpellier', 'nîmes', 'nimes', 'perpignan', 'narbonne', 'sète', ' 31', ' 34', ' 11', ' 66', ' 30', ' 81', ' 82', ' 09'],
+  'Hauts-de-France': ['hauts-de-france', 'lille', 'amiens', 'roubaix', 'tourcoing', 'arras', 'calais', ' 59', ' 62', ' 60', ' 02', ' 80'],
+  'Auvergne':        ['auvergne', 'clermont-ferrand', 'clermont', 'vichy', ' 63', ' 15', ' 43', ' 03'],
+  'Bourgogne':       ['bourgogne', 'dijon', 'beaune', 'nevers', 'mâcon', 'macon', 'auxerre', ' 21', ' 58', ' 71', ' 89'],
+  'Corse':           ['corse', 'ajaccio', 'bastia', 'porto-vecchio', 'calvi', 'bonifacio', ' 20', ' 2a', ' 2b'],
+  'Réunion':         ['réunion', 'reunion', 'saint-denis', 'saint-pierre', 'saint-paul', ' 974'],
+  'Belgique':        ['belgique', 'belgium', 'bruxelles', 'brussels', 'liège', 'anvers', 'antwerpen', 'gand', 'ghent', 'namur'],
+  'Alpes':           ['alpes', 'chamonix', 'megève', 'megeve', 'grenoble', 'annecy', 'savoie', 'isère', 'haute-savoie', 'tignes', 'val d\'isère', 'val d isere', 'val thorens', 'courchevel', ' 73', ' 74', ' 38'],
+  'Pyrénées':        ['pyrénées', 'pyrenees', 'pau', 'tarbes', 'lourdes', 'biarritz', ' 64', ' 65'],
+  'Montagne':        ['montagne', 'station de ski', 'massif', 'morzine', 'avoriaz', 'la plagne', 'les arcs', 'serre-chevalier'],
+  'Plage':           ['plage', 'côte d\'azur', 'cote d azur', 'arcachon', 'biarritz', 'la baule', 'cap d\'agde', 'cap ferret'],
+  'Ski':             ['ski', 'station', 'chamonix', 'megève', 'megeve', 'val thorens', 'courchevel', 'tignes', 'val d\'isère'],
+}
+
+function detectRegions(adresses: string[]): Set<string> {
+  const detected = new Set<string>()
+  for (const addr of adresses) {
+    const text = ' ' + addr.toLowerCase() + ' '
+    for (const [region, keywords] of Object.entries(REGION_KEYWORDS)) {
+      for (const kw of keywords) {
+        if (text.includes(kw.toLowerCase())) {
+          detected.add(region)
+          break
+        }
+      }
+    }
+  }
+  return detected
+}
+
 function parseTags(tag: string | null): string[] {
   if (!tag) return []
   return tag.split(',').map(t => t.trim()).filter(Boolean)
@@ -47,16 +83,17 @@ export default function CommunauteView({
   groups,
   userId,
   initialMemberships,
+  userAdresses,
 }: {
   groups: Group[]
   userId: string | null
   initialMemberships: Record<string, MemberStatus>
+  userAdresses: string[]
 }) {
   const [search, setSearch]             = useState('')
-  const [platformFilter, setPlatform]   = useState<'all' | 'facebook' | 'whatsapp'>('all')
   const [activeCategory, setCategory]   = useState<string | null>(null)
   const [activeRegion, setRegion]       = useState<string | null>(null)
-  const [featuredOpen, setFeaturedOpen] = useState(true)
+  const [featuredOpen, setFeaturedOpen] = useState(false)
   const [memberships, setMemberships]     = useState(initialMemberships)
   const [showDismissed, setShowDismissed] = useState(false)
   const [, startTransition] = useTransition()
@@ -83,6 +120,37 @@ export default function CommunauteView({
   const totalReach = joinedGroups.reduce((sum, g) => sum + (g.members_count || 0), 0)
   const dismissedCount = groups.filter(g => memberships[g.id] === 'dismissed').length
 
+  // Total possible (Facebook only, ni rejoint ni dismissed)
+  const fbGroups = groups.filter(g => g.platform === 'facebook')
+  const totalFbReach = fbGroups.reduce((sum, g) => sum + (g.members_count || 0), 0)
+  const coveragePct = totalFbReach > 0 ? Math.round((totalReach / totalFbReach) * 100) : 0
+  const unexploitedReach = fbGroups
+    .filter(g => !memberships[g.id])
+    .reduce((sum, g) => sum + (g.members_count || 0), 0)
+
+  // Régions détectées depuis les adresses des logements de l'utilisateur
+  const detectedRegions = useMemo(() => detectRegions(userAdresses), [userAdresses])
+
+  // "Pour toi" : top 4 groupes recommandés
+  // 1. Si régions détectées : groupes correspondants non rejoints / non dismissed
+  // 2. Sinon : top 4 groupes (par members_count) non rejoints, hors Driing
+  const recommendedGroups = useMemo(() => {
+    const candidates = fbGroups.filter(g =>
+      !memberships[g.id] && g.category !== FEATURED_CATEGORY
+    )
+    if (detectedRegions.size > 0) {
+      const matched = candidates.filter(g => {
+        const tags = parseTags(g.tag)
+        return tags.some(t => detectedRegions.has(t))
+      })
+      if (matched.length > 0) {
+        return matched.sort((a, b) => (b.members_count ?? 0) - (a.members_count ?? 0)).slice(0, 4)
+      }
+    }
+    // Fallback : top groupes
+    return candidates.sort((a, b) => (b.members_count ?? 0) - (a.members_count ?? 0)).slice(0, 4)
+  }, [fbGroups, memberships, detectedRegions])
+
   // Régions présentes dans les données (pour le sous-filtre)
   const availableRegions = useMemo(() => {
     const regionTags = SUPER_CATEGORIES.find(c => c.id === 'regions')?.tags ?? []
@@ -97,8 +165,9 @@ export default function CommunauteView({
       ? SUPER_CATEGORIES.find(c => c.id === activeCategory)?.tags ?? []
       : []
     return groups.filter(g => {
+      // Facebook only — les groupes WhatsApp ne sont plus affichés
+      if (g.platform !== 'facebook') return false
       if (!showDismissed && memberships[g.id] === 'dismissed') return false
-      if (platformFilter !== 'all' && g.platform !== platformFilter) return false
       if (activeRegion && !parseTags(g.tag).includes(activeRegion)) return false
       if (!activeRegion && catTags.length > 0 && !parseTags(g.tag).some(t => catTags.includes(t as never))) return false
       if (!q) return true
@@ -109,7 +178,7 @@ export default function CommunauteView({
         parseTags(g.tag).join(' ').toLowerCase().includes(q)
       )
     })
-  }, [groups, search, platformFilter, activeCategory, activeRegion, memberships, showDismissed])
+  }, [groups, search, activeCategory, activeRegion, memberships, showDismissed])
 
   const grouped: Record<string, Group[]> = {}
   filtered.forEach(g => {
@@ -120,7 +189,7 @@ export default function CommunauteView({
 
   const featuredGroups  = grouped[FEATURED_CATEGORY] ?? []
   const otherCategories = Object.entries(grouped).filter(([c]) => c !== FEATURED_CATEGORY)
-  const isFiltering = search !== '' || platformFilter !== 'all' || activeCategory !== null || activeRegion !== null
+  const isFiltering = search !== '' || activeCategory !== null || activeRegion !== null
 
   function toggleJoined(groupId: string) {
     const next: MemberStatus | null = memberships[groupId] === 'joined' ? null : 'joined'
@@ -143,13 +212,12 @@ export default function CommunauteView({
     if (userId) startTransition(() => { setGroupMembership(groupId, null) })
   }
 
-  function clearFilters() { setSearch(''); setPlatform('all'); setCategory(null); setRegion(null) }
+  function clearFilters() { setSearch(''); setCategory(null); setRegion(null) }
 
   function renderCard(g: Group, featured = false) {
     const isJoined    = memberships[g.id] === 'joined'
     const isDismissed = memberships[g.id] === 'dismissed'
     const tags        = parseTags(g.tag)
-    const isFb        = g.platform === 'facebook'
 
     return (
       <div
@@ -168,12 +236,10 @@ export default function CommunauteView({
         <div style={s.cardTop}>
           <div style={{
             ...s.platformIcon,
-            background: featured ? 'rgba(255,213,107,0.08)' : isFb ? 'rgba(147,197,253,0.08)' : 'rgba(37,211,102,0.08)',
-            border: `1px solid ${featured ? 'rgba(255,213,107,0.18)' : isFb ? 'rgba(147,197,253,0.15)' : 'rgba(37,211,102,0.15)'}`,
+            background: featured ? 'rgba(255,213,107,0.08)' : 'rgba(24,119,242,0.08)',
+            border: `1px solid ${featured ? 'rgba(255,213,107,0.18)' : 'rgba(24,119,242,0.18)'}`,
           }}>
-            {isFb
-              ? <FacebookLogo size={18} color={featured ? 'var(--accent-text)' : '#93C5FD'} weight="fill" />
-              : <WhatsappLogo size={18} color="#25D366" weight="fill" />}
+            <FacebookLogo size={18} color={featured ? 'var(--accent-text)' : '#1877F2'} weight="fill" />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <h3 style={featured ? s.featuredName : s.groupName}>{g.name}</h3>
@@ -244,50 +310,83 @@ export default function CommunauteView({
       {/* Intro */}
       <div style={s.intro} className="fade-up">
         <h2 style={s.pageTitle}>
-          La <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>communauté</em> LCD
+          Groupes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Facebook</em>
         </h2>
         <p style={s.pageDesc}>
-          Les meilleurs groupes pour échanger avec d'autres hôtes — et partager vos locations directement avec des voyageurs.
+          Étends ta visibilité commerciale en rejoignant les groupes où voyagent tes futurs clients.
+          Rejoins-en quelques-uns ciblés pour démultiplier ta portée — sans effort.
         </p>
       </div>
 
-      {/* Stats banner — visible quand au moins 1 groupe rejoint */}
-      {joinedGroups.length > 0 && (
-        <div style={s.banner} className="fade-up">
-          <div style={s.bannerStat}>
-            <WifiHigh size={20} color="#FFD56B" weight="fill" />
-            <div>
-              <div style={s.bannerLbl}>Portée totale</div>
-              <div style={s.bannerVal}>
-                {fmtNum(totalReach)} <span style={s.bannerSub}>membres potentiels</span>
-              </div>
+      {/* Stats banner — toujours visible */}
+      <div style={s.banner} className="fade-up">
+        <div style={s.bannerStat}>
+          <WifiHigh size={20} color="#15803d" weight="fill" />
+          <div>
+            <div style={s.bannerLbl}>Portée active</div>
+            <div style={{ ...s.bannerVal, color: '#15803d' }}>
+              {fmtNum(totalReach)} <span style={s.bannerSub}>voyageurs touchés</span>
             </div>
           </div>
-          <div style={s.bannerDiv} className="communaute-banner-div" />
-          <div style={s.bannerStat}>
-            <UsersThree size={20} color="var(--accent-text)" weight="fill" />
-            <div>
-              <div style={s.bannerLbl}>Groupes rejoints</div>
-              <div style={s.bannerVal}>
-                {joinedGroups.length} <span style={s.bannerSub}>groupe{joinedGroups.length > 1 ? 's' : ''}</span>
-              </div>
+        </div>
+        <div style={s.bannerDiv} className="communaute-banner-div" />
+        <div style={s.bannerStat}>
+          <UsersThree size={20} color="var(--accent-text)" weight="fill" />
+          <div>
+            <div style={s.bannerLbl}>Couverture</div>
+            <div style={s.bannerVal}>
+              {coveragePct}% <span style={s.bannerSub}>de la portée totale</span>
+            </div>
+            <div style={{ ...s.coverageBar, marginTop: '6px' }}>
+              <div style={{ ...s.coverageFill, width: `${coveragePct}%` }} />
             </div>
           </div>
-          {groups.filter(g => !memberships[g.id]).length > 0 && (
-            <>
-              <div style={s.bannerDiv} className="communaute-banner-div" />
-              <div style={s.bannerStat}>
-                <UsersThree size={20} color="var(--text-3)" />
-                <div>
-                  <div style={s.bannerLbl}>Non rejoints</div>
-                  <div style={{ ...s.bannerVal, color: 'var(--text-2)' }}>
-                    {groups.filter(g => !memberships[g.id]).length}{' '}
-                    <span style={s.bannerSub}>groupes</span>
-                  </div>
+        </div>
+        {unexploitedReach > 0 && (
+          <>
+            <div style={s.bannerDiv} className="communaute-banner-div" />
+            <div style={s.bannerStat}>
+              <UsersThree size={20} color="#d97706" weight="fill" />
+              <div>
+                <div style={s.bannerLbl}>Potentiel restant</div>
+                <div style={{ ...s.bannerVal, color: '#d97706' }}>
+                  +{fmtNum(unexploitedReach)} <span style={s.bannerSub}>voyageurs à atteindre</span>
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Pour toi : recommandations contextuelles */}
+      {recommendedGroups.length > 0 && !isFiltering && (
+        <div style={s.recommendedSection} className="fade-up">
+          <div style={s.recommendedHeader}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Star size={14} weight="fill" color="var(--accent-text)" />
+              <span style={s.recommendedLabel}>
+                {detectedRegions.size > 0 ? 'Recommandés pour toi' : 'À fort potentiel'}
+              </span>
+              {detectedRegions.size > 0 && (
+                <span style={s.recommendedRegions}>
+                  {Array.from(detectedRegions).slice(0, 3).join(' · ')}
+                </span>
+              )}
+            </div>
+            <span style={s.recommendedSub}>
+              {detectedRegions.size > 0
+                ? 'Détectés depuis tes logements'
+                : 'Les groupes les plus suivis que tu n\'as pas encore rejoints'
+              }
+            </span>
+          </div>
+          <div className="dash-grid-2">
+            {recommendedGroups.map(g => (
+              <div key={g.id}>
+                {renderCard(g, false)}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -307,24 +406,6 @@ export default function CommunauteView({
               <X size={11} />
             </button>
           )}
-        </div>
-
-        {/* Plateforme */}
-        <div style={s.filterLine}>
-          <span style={s.filterLbl}>Plateforme</span>
-          <div style={s.chipRow}>
-            {(['all', 'facebook', 'whatsapp'] as const).map(p => (
-              <button
-                key={p}
-                onClick={() => setPlatform(p)}
-                style={{ ...s.chip, ...(platformFilter === p ? s.chipOn : {}) }}
-              >
-                {p === 'facebook' && <FacebookLogo size={11} weight="fill" />}
-                {p === 'whatsapp' && <WhatsappLogo size={11} weight="fill" />}
-                {p === 'all' ? 'Tous' : p === 'facebook' ? 'Facebook' : 'WhatsApp'}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Catégories : 4 groupes larges */}
@@ -377,42 +458,6 @@ export default function CommunauteView({
         </div>
       )}
 
-      {/* Section Jason & Driing */}
-      {featuredGroups.length > 0 && (
-        <div style={s.featuredSection} className="fade-up">
-          <div style={s.featuredHeader}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={s.featuredBadge}>
-                <Star size={11} weight="fill" />
-                {FEATURED_CATEGORY}
-              </span>
-              <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>
-                {featuredGroups.length} groupe{featuredGroups.length > 1 ? 's' : ''}
-              </span>
-            </div>
-            <button onClick={() => setFeaturedOpen(v => !v)} style={s.collapseBtn}>
-              {featuredOpen ? <CaretUp size={12} /> : <CaretDown size={12} />}
-              {featuredOpen ? 'Réduire' : 'Voir'}
-            </button>
-          </div>
-
-          {featuredOpen && (
-            <>
-              <p style={s.featuredSub}>
-                Nos groupes officiels — rejoignez la communauté et partagez vos logements directement
-              </p>
-              <div className="dash-grid-2">
-                {featuredGroups.map((g, i) => (
-                  <div key={g.id} className={`fade-up d${i + 1}`}>
-                    {renderCard(g, true)}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
       {/* Autres catégories */}
       {otherCategories.map(([category, catGroups]) => (
         <div key={category} style={s.section} className="fade-up">
@@ -430,6 +475,35 @@ export default function CommunauteView({
           </div>
         </div>
       ))}
+
+      {/* Communauté Driing — section sobre en bas */}
+      {featuredGroups.length > 0 && (
+        <div style={s.section} className="fade-up">
+          <button
+            onClick={() => setFeaturedOpen(v => !v)}
+            style={s.driingHeader}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <UsersThree size={14} color="var(--text-2)" />
+              <span style={s.sectionLabelSober}>Communauté Driing</span>
+              <span style={s.sectionCount}>{featuredGroups.length}</span>
+            </div>
+            <span style={s.driingToggle}>
+              {featuredOpen ? <CaretUp size={11} /> : <CaretDown size={11} />}
+              {featuredOpen ? 'Réduire' : 'Voir'}
+            </span>
+          </button>
+          {featuredOpen && (
+            <div className="dash-grid-2" style={{ marginTop: '14px' }}>
+              {featuredGroups.map(g => (
+                <div key={g.id}>
+                  {renderCard(g, false)}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Groupes masqués */}
       {dismissedCount > 0 && (
@@ -491,6 +565,14 @@ const s: Record<string, React.CSSProperties> = {
   bannerLbl:  { fontSize: '11px', color: 'var(--text-3)', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const },
   bannerVal:  { fontSize: '20px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.2, marginTop: '2px' },
   bannerSub:  { fontSize: '13px', fontWeight: 400, color: 'var(--text-2)' },
+  coverageBar: {
+    height: '5px', background: 'var(--surface-2)', borderRadius: '3px',
+    overflow: 'hidden' as const, width: '100%', maxWidth: '180px',
+  },
+  coverageFill: {
+    height: '100%', background: 'linear-gradient(90deg, var(--accent-text), #15803d)',
+    borderRadius: '3px', transition: 'width 0.4s',
+  },
 
   /* Filtres */
   filtersWrap: { marginBottom: '36px', display: 'flex', flexDirection: 'column' as const, gap: '10px' },
@@ -597,6 +679,32 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid var(--border)', borderRadius: '100px', padding: '2px 8px',
   },
 
+  /* Pour toi recommendations */
+  recommendedSection: {
+    marginBottom: '36px',
+    padding: '20px 22px',
+    borderRadius: '16px',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+  },
+  recommendedHeader: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    marginBottom: '14px',
+  },
+  recommendedLabel: {
+    fontSize: '13px', fontWeight: 700, color: 'var(--accent-text)',
+    letterSpacing: '0.3px',
+  },
+  recommendedRegions: {
+    fontSize: '11.5px', fontWeight: 500, color: 'var(--text-2)',
+    padding: '2px 8px', borderRadius: '100px',
+    background: 'var(--accent-bg-2)',
+    border: '1px solid var(--accent-border-2)',
+  },
+  recommendedSub: {
+    fontSize: '12px', color: 'var(--text-2)', fontWeight: 400,
+  },
+
   /* Other sections */
   section:      { marginBottom: '36px' },
   sectionLabel: {
@@ -607,6 +715,20 @@ const s: Record<string, React.CSSProperties> = {
   sectionCount: {
     fontSize: '10px', padding: '1px 7px', borderRadius: '100px',
     background: 'var(--surface)', color: 'var(--text-muted)',
+  },
+  sectionLabelSober: {
+    fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const, color: 'var(--text-2)',
+  },
+  driingHeader: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    width: '100%', padding: '12px 14px', borderRadius: '10px',
+    background: 'var(--surface)', border: '1px dashed var(--border)',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  driingToggle: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text-3)',
   },
   card: {
     padding: '18px', borderRadius: '16px',
