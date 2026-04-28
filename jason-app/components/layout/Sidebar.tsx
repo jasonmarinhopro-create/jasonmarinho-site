@@ -7,7 +7,7 @@ import {
   HouseSimple, GraduationCap, Handshake, FileText,
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
   FacebookLogo, CaretDown, House, ChartBar, CalendarBlank, Heart,
-  MagnifyingGlass, ChatsCircle,
+  MagnifyingGlass, ChatsCircle, Globe,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -50,7 +50,7 @@ const navGroups = [
     items: [
       { href: '/dashboard/chez-nous',   label: 'Chez Nous',   icon: ChatsCircle },
       { href: '/dashboard/communaute',  label: 'Groupes FB',  icon: UsersThree },
-      { href: '/dashboard/partenaires', label: 'Partenaires', icon: Handshake },
+      { href: '/dashboard/partenaires', label: 'Écosystème', icon: Globe },
     ],
   },
 ]

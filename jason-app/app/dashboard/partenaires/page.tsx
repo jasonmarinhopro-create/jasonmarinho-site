@@ -17,7 +17,7 @@ export default async function PartenairesPage() {
 
   return (
     <>
-      <Header title="Partenaires" userName={profile?.full_name ?? undefined} />
+      <Header title="Écosystème LCD" userName={profile?.full_name ?? undefined} />
       <PartenairesView additionalPartners={additionalPartners ?? []} plan={plan} />
     </>
   )
