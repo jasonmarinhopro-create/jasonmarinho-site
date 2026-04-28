@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
   CalendarBlank, Warning, CurrencyEur, House, UsersThree,
-  ArrowRight, Newspaper,
+  ArrowRight, Newspaper, Plus, UserPlus, FileText, Flag, CalendarPlus,
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
@@ -250,6 +250,42 @@ export default async function DashboardPage() {
               <span style={{ ...s.statVal, color: actionsCount > 0 ? '#dc2626' : 'var(--accent-text)' }}>{actionsCount}</span>
               <span style={s.statLbl}>Action{pl(actionsCount)} à traiter</span>
             </div>
+          </div>
+        </section>
+
+        {/* ── Quick actions ────────────────────────────────────────────── */}
+        <section style={s.section} className="fade-up d1">
+          <div style={s.quickStrip}>
+            <Link href="/dashboard/calendrier" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#15803d', background: 'rgba(21,128,61,0.12)' }}>
+                <CalendarPlus size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Nouveau séjour</span>
+            </Link>
+            <Link href="/dashboard/voyageurs" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#0369a1', background: 'rgba(3,105,161,0.12)' }}>
+                <UserPlus size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Nouveau voyageur</span>
+            </Link>
+            <Link href="/dashboard/revenus" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#d97706', background: 'rgba(217,119,6,0.12)' }}>
+                <CurrencyEur size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Saisir un revenu</span>
+            </Link>
+            <Link href="/dashboard/securite" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#dc2626', background: 'rgba(220,38,38,0.12)' }}>
+                <Flag size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Signaler un voyageur</span>
+            </Link>
+            <Link href="/dashboard/calendrier" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#7c3aed', background: 'rgba(124,58,237,0.12)' }}>
+                <CalendarBlank size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Voir le calendrier</span>
+            </Link>
           </div>
         </section>
 
@@ -552,6 +588,25 @@ const s: Record<string, React.CSSProperties> = {
   sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', margin: 0 },
   sectionHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' },
   seeAll:       { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500, padding: '5px 10px', borderRadius: '8px', background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)', transition: 'background 0.15s, border-color 0.15s' },
+
+  // ── Quick actions ─────────────────────────────────────────────────────────
+  quickStrip: {
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '10px',
+  },
+  quickItem: {
+    display: 'flex', alignItems: 'center', gap: '11px',
+    padding: '13px 16px', borderRadius: '12px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    textDecoration: 'none' as const, color: 'var(--text-2)',
+    transition: 'border-color 0.15s, transform 0.15s, background 0.15s',
+    fontSize: '13px', fontWeight: 600,
+  },
+  quickIcon: {
+    width: '36px', height: '36px', borderRadius: '10px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  quickLabel: { color: 'var(--text)', fontSize: '13px', fontWeight: 600, lineHeight: 1.2 },
 
   // KPI strip (secondary)
   kpiStrip: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' },
