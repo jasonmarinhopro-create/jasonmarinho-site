@@ -229,13 +229,37 @@ export default async function DashboardPage() {
   const todayArrivals = allC.filter(c => c.date_arrivee === today)
   const todayDepartures = allC.filter(c => c.date_depart === today)
 
-  // ── Mini-calendrier 14 prochains jours
-  const next14Days = Array.from({ length: 14 }, (_, i) => {
-    const d = addDays(today, i)
-    const arr = allC.filter(c => c.date_arrivee === d).length
-    const dep = allC.filter(c => c.date_depart === d).length
-    return { date: d, arrivals: arr, departures: dep }
-  })
+  // ── Prochains événements (14 jours) : arrivées + départs fusionnés et triés
+  const in14 = addDays(today, 14)
+  type UpcomingEvent = { date: string; type: 'arrival' | 'departure'; contract: typeof allC[0] }
+  const upcomingEventsRaw: UpcomingEvent[] = []
+  for (const c of allC) {
+    if (c.date_arrivee && c.date_arrivee >= today && c.date_arrivee <= in14) {
+      upcomingEventsRaw.push({ date: c.date_arrivee, type: 'arrival', contract: c })
+    }
+    if (c.date_depart && c.date_depart >= today && c.date_depart <= in14) {
+      // Évite doublon si même contrat = arrivée et départ tombent dans la fenêtre
+      upcomingEventsRaw.push({ date: c.date_depart, type: 'departure', contract: c })
+    }
+  }
+  upcomingEventsRaw.sort((a, b) =>
+    a.date === b.date ? (a.type === 'arrival' ? -1 : 1) : a.date.localeCompare(b.date)
+  )
+  const upcomingEvents = upcomingEventsRaw.slice(0, 7)
+
+  // Date label relatif : 0=Aujourd'hui, 1=Demain, 2-6=jour, 7+=date
+  const DAYS_FR = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
+  function relDate(d: string) {
+    const diff = diffDays(today, d)
+    if (diff === 0) return "Aujourd'hui"
+    if (diff === 1) return 'Demain'
+    if (diff <= 6) {
+      const dt = new Date(d + 'T12:00:00')
+      const dayName = DAYS_FR[dt.getDay()]
+      return dayName.charAt(0).toUpperCase() + dayName.slice(1)
+    }
+    return fmtShort(d)
+  }
 
   // ── Actions
   const unsignedContracts = allC.filter(c => {
@@ -389,64 +413,59 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* ── Mini-calendrier 14 jours ─────────────────────────────────── */}
+        {/* ── Prochains événements 14 jours ─────────────────────────────── */}
         <section style={s.section} className="fade-up d1">
-          <Link href="/dashboard/calendrier" style={s.miniCalCard}>
-            <div style={s.miniCalHead}>
+          <div style={s.upcomingCard}>
+            <div style={s.upcomingHead}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <CalendarBlank size={14} weight="fill" color="var(--accent-text)" />
-                <span style={s.miniCalTitle}>Aperçu 2 semaines</span>
+                <span style={s.upcomingTitle}>Prochaines arrivées &amp; départs</span>
               </div>
-              <span style={s.miniCalLink}>
+              <Link href="/dashboard/calendrier" style={s.upcomingLink}>
                 Voir le calendrier <ArrowRight size={11} weight="bold" />
-              </span>
+              </Link>
             </div>
-            <div style={s.miniCalGrid}>
-              {next14Days.map((d, i) => {
-                const dt = new Date(d.date + 'T12:00:00')
-                const isToday = i === 0
-                const isWeekend = dt.getDay() === 0 || dt.getDay() === 6
-                const hasActivity = d.arrivals > 0 || d.departures > 0
-                return (
-                  <div
-                    key={d.date}
-                    style={{
-                      ...s.miniCalCell,
-                      ...(isToday ? s.miniCalCellToday : {}),
-                      ...(isWeekend && !isToday ? { background: 'var(--surface-2)' } : {}),
-                      ...(hasActivity && !isToday ? { borderColor: 'var(--accent-border-2)' } : {}),
-                    }}
-                    title={`${dt.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}${d.arrivals > 0 ? ` — ${d.arrivals} arrivée${d.arrivals > 1 ? 's' : ''}` : ''}${d.departures > 0 ? ` — ${d.departures} départ${d.departures > 1 ? 's' : ''}` : ''}`}
-                  >
-                    <div style={s.miniCalDow}>
-                      {dt.toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 3).replace('.', '')}
-                    </div>
-                    <div style={{ ...s.miniCalDay, color: isToday ? 'var(--accent-text)' : 'var(--text)' }}>
-                      {dt.getDate()}
-                    </div>
-                    <div style={s.miniCalDots}>
-                      {d.arrivals > 0 && (
-                        <span style={{ ...s.miniCalDot, background: '#15803d' }} title={`${d.arrivals} arrivée${d.arrivals > 1 ? 's' : ''}`} />
-                      )}
-                      {d.departures > 0 && (
-                        <span style={{ ...s.miniCalDot, background: '#0369a1' }} title={`${d.departures} départ${d.departures > 1 ? 's' : ''}`} />
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            <div style={s.miniCalLegend}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#15803d' }} />
-                <span style={{ fontSize: '11px', color: 'var(--text-2)' }}>Arrivée</span>
-              </span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0369a1' }} />
-                <span style={{ fontSize: '11px', color: 'var(--text-2)' }}>Départ</span>
-              </span>
-            </div>
-          </Link>
+
+            {upcomingEvents.length === 0 ? (
+              <div style={s.upcomingEmpty}>
+                <CalendarBlank size={22} weight="duotone" color="var(--text-muted)" />
+                <div>
+                  <div style={s.upcomingEmptyTitle}>Calendrier serein</div>
+                  <div style={s.upcomingEmptySub}>Aucune arrivée ou départ dans les 14 prochains jours.</div>
+                </div>
+              </div>
+            ) : (
+              <div style={s.upcomingList}>
+                {upcomingEvents.map((e, i) => {
+                  const c = e.contract
+                  const isArr = e.type === 'arrival'
+                  const color = isArr ? '#15803d' : '#0369a1'
+                  const bg = isArr ? 'rgba(21,128,61,0.10)' : 'rgba(3,105,161,0.10)'
+                  const traveler = [c.locataire_prenom, c.locataire_nom].filter(Boolean).join(' ')
+                  return (
+                    <Link key={`${c.id}_${e.type}_${i}`} href="/dashboard/calendrier" style={s.upcomingItem}>
+                      <div style={{ ...s.upcomingDot, background: bg, color }}>
+                        <CalendarBlank size={14} weight="fill" />
+                      </div>
+                      <div style={s.upcomingMain}>
+                        <div style={s.upcomingItemTop}>
+                          <span style={s.upcomingDate}>{relDate(e.date)}</span>
+                          <span style={{ ...s.upcomingType, color, background: bg }}>
+                            {isArr ? 'Arrivée' : 'Départ'}
+                          </span>
+                        </div>
+                        <div style={s.upcomingMainText}>
+                          {c.logement_nom ?? 'Logement'}
+                          {traveler && <span style={s.upcomingTraveler}> · {traveler}</span>}
+                        </div>
+                      </div>
+                      <ArrowRight size={12} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* ── État des lieux — 4 métriques ─────────────────────────────── */}
@@ -884,39 +903,52 @@ const s: Record<string, React.CSSProperties> = {
   },
   learnerProgressMeta: { fontSize: '11.5px', color: 'var(--text-2)', fontWeight: 500 },
 
-  // ── Mini-calendrier 14 jours ──────────────────────────────────────────────
-  miniCalCard: {
-    display: 'block', padding: '18px 20px', borderRadius: '14px',
+  // ── Prochains événements (14 jours) ───────────────────────────────────────
+  upcomingCard: {
+    padding: '18px 20px', borderRadius: '14px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    textDecoration: 'none' as const, transition: 'border-color 0.15s',
   },
-  miniCalHead: {
+  upcomingHead: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     marginBottom: '14px', flexWrap: 'wrap' as const, gap: '8px',
   },
-  miniCalTitle: { fontSize: '12px', fontWeight: 700, color: 'var(--text)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
-  miniCalLink: {
+  upcomingTitle: { fontSize: '12px', fontWeight: 700, color: 'var(--text)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
+  upcomingLink: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
     fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)',
+    textDecoration: 'none' as const,
   },
-  miniCalGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(14, minmax(0, 1fr))',
-    gap: '6px',
+  upcomingList: { display: 'flex', flexDirection: 'column' as const, gap: '6px' },
+  upcomingItem: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '12px 14px', borderRadius: '10px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    textDecoration: 'none' as const, color: 'inherit',
+    transition: 'border-color 0.15s, background 0.15s',
   },
-  miniCalCell: {
-    display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'space-between',
-    padding: '8px 4px', borderRadius: '8px',
-    background: 'var(--surface-2)', border: '1px solid var(--border)',
-    minHeight: '64px', minWidth: 0,
+  upcomingDot: {
+    width: '34px', height: '34px', borderRadius: '10px', flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  miniCalCellToday: {
-    background: 'var(--accent-bg)', border: '1.5px solid var(--accent-border-2)',
+  upcomingMain: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: '3px' },
+  upcomingItemTop: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
+  upcomingDate: { fontSize: '13px', fontWeight: 600, color: 'var(--text)' },
+  upcomingType: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px',
+    padding: '2px 8px', borderRadius: '100px', textTransform: 'uppercase' as const,
   },
-  miniCalDow: { fontSize: '9px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.4px' },
-  miniCalDay: { fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', fontWeight: 500, lineHeight: 1, marginTop: '3px' },
-  miniCalDots: { display: 'flex', gap: '2px', marginTop: '4px', minHeight: '7px' },
-  miniCalDot: { width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0 },
-  miniCalLegend: { display: 'flex', gap: '14px', marginTop: '12px' },
+  upcomingMainText: {
+    fontSize: '12.5px', color: 'var(--text-2)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  upcomingTraveler: { color: 'var(--text-muted)' },
+  upcomingEmpty: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    padding: '18px 16px', borderRadius: '10px',
+    background: 'var(--surface-2)', border: '1px dashed var(--border-2)',
+  },
+  upcomingEmptyTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' },
+  upcomingEmptySub: { fontSize: '12px', color: 'var(--text-2)', marginTop: '2px' },
 
   // Operational
   opGrid:      { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' },
