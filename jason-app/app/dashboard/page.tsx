@@ -3,8 +3,9 @@ import Header from '@/components/layout/Header'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
-  CalendarBlank, Warning, CurrencyEur, House, UsersThree,
-  ArrowRight, Newspaper,
+  CalendarBlank, Warning, CurrencyEur,
+  ArrowRight, Newspaper, UserPlus, Flag, CalendarPlus,
+  GraduationCap, Trophy, Flame,
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
@@ -62,6 +63,8 @@ export default async function DashboardPage() {
     { data: latestNews },
     { data: entriesThisMois },
     { data: entriesPrevMois },
+    { data: entriesThisYear },
+    { data: objectifData },
     communityGroups,
   ] = await Promise.all([
     supabase
@@ -92,6 +95,17 @@ export default async function DashboardPage() {
       .eq('user_id', userId)
       .gte('date_paiement', `${prevMPfx}-01`)
       .lt('date_paiement', `${monthPfx}-01`),
+    supabase
+      .from('revenus_entries')
+      .select('montant')
+      .eq('user_id', userId)
+      .gte('date_paiement', `${yearPfx}-01-01`)
+      .lt('date_paiement', `${parseInt(yearPfx) + 1}-01-01`),
+    supabase
+      .from('revenus_objectifs')
+      .select('objectif_ca_annuel, annee')
+      .eq('user_id', userId)
+      .maybeSingle(),
     getCachedCommunityGroups(),
   ])
 
@@ -103,6 +117,74 @@ export default async function DashboardPage() {
         .eq('user_id', userId)
         .eq('status', 'joined')
     : { data: [] as { group_id: string }[] }
+
+  // ── Pulse apprenant : formation en cours + streak + niveau
+  const [{ data: userFormationsLearn }, { data: completionLogLearn }] = userId
+    ? await Promise.all([
+        supabase
+          .from('user_formations')
+          .select('formation_id, progress, completed_lessons, formations(slug, title, lessons_count)')
+          .eq('user_id', userId),
+        supabase
+          .from('user_lesson_completion_log')
+          .select('completed_at')
+          .eq('user_id', userId)
+          .order('completed_at', { ascending: false })
+          .limit(500),
+      ])
+    : [{ data: [] }, { data: [] }]
+
+  const ufLearn = (userFormationsLearn ?? []) as Array<{
+    formation_id: string
+    progress: number
+    completed_lessons: number[] | null
+    formations: { slug: string; title: string; lessons_count: number } | { slug: string; title: string; lessons_count: number }[] | null
+  }>
+  const totalLessonsDone = ufLearn.reduce((sum, uf) => sum + ((uf.completed_lessons ?? [])?.length ?? 0), 0)
+  const formationsCompleted = ufLearn.filter(uf => uf.progress === 100).length
+  const formationInProgress = ufLearn
+    .filter(uf => uf.progress > 0 && uf.progress < 100)
+    .sort((a, b) => b.progress - a.progress)[0] ?? null
+
+  const learnerLevel =
+    totalLessonsDone === 0 ? null :
+    totalLessonsDone < 10 ? { label: 'Apprenti', color: '#2563eb' } :
+    totalLessonsDone < 30 ? { label: 'Praticien', color: '#15803d' } :
+    totalLessonsDone < 60 ? { label: 'Expert', color: 'var(--accent-text)' } :
+                            { label: 'Maître', color: '#7c3aed' }
+
+  const streakLearner = (() => {
+    if (!completionLogLearn || completionLogLearn.length === 0) return 0
+    const days = new Set<string>()
+    completionLogLearn.forEach((c: { completed_at: string }) => {
+      days.add(new Date(c.completed_at).toISOString().slice(0, 10))
+    })
+    let count = 0
+    const t = new Date()
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(t.getTime() - i * 86400000).toISOString().slice(0, 10)
+      if (days.has(d)) count++
+      else if (i === 0) continue
+      else break
+    }
+    return count
+  })()
+
+  const formationInProgressData = formationInProgress
+    ? (() => {
+        const f = Array.isArray(formationInProgress.formations)
+          ? formationInProgress.formations[0]
+          : formationInProgress.formations
+        if (!f) return null
+        return {
+          slug: f.slug,
+          title: f.title,
+          progress: formationInProgress.progress,
+          completedCount: (formationInProgress.completed_lessons ?? [])?.length ?? 0,
+          lessonsCount: f.lessons_count,
+        }
+      })()
+    : null
 
   // ── Chez Nous : 3 dernières discussions actives + total
   const [{ data: cnPosts }, { count: cnTotal }] = await Promise.all([
@@ -143,6 +225,18 @@ export default async function DashboardPage() {
     !activeStays.find(a => a.id === c.id) && !weekArrivals.find(a => a.id === c.id)
   )
 
+  // ── Aujourd'hui spécifiquement
+  const todayArrivals = allC.filter(c => c.date_arrivee === today)
+  const todayDepartures = allC.filter(c => c.date_depart === today)
+
+  // ── Mini-calendrier 14 prochains jours
+  const next14Days = Array.from({ length: 14 }, (_, i) => {
+    const d = addDays(today, i)
+    const arr = allC.filter(c => c.date_arrivee === d).length
+    const dep = allC.filter(c => c.date_depart === d).length
+    return { date: d, arrivals: arr, departures: dep }
+  })
+
   // ── Actions
   const unsignedContracts = allC.filter(c => {
     const cl = (c.checklist_status as Record<string, boolean>) ?? {}
@@ -174,11 +268,21 @@ export default async function DashboardPage() {
   const revenusThisMois = contratsThisMois + entriesThisSum
   const revenusPrevMois = contratsPrevMois + entriesPrevSum
 
-  const enAttente = allC
-    .filter(c => (c.montant_loyer ?? 0) > 0 && !isPaid(c))
+  // ── Revenu annuel YTD + objectif
+  const contratsThisYear = allC
+    .filter(c => c.date_arrivee?.startsWith(yearPfx) && isPaid(c))
     .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
+  const entriesThisYearSum = (entriesThisYear ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
+  const revenuYTD = contratsThisYear + entriesThisYearSum
+  const objectifAnnuel = objectifData?.objectif_ca_annuel ? Number(objectifData.objectif_ca_annuel) : null
+  const objectifPct = objectifAnnuel && objectifAnnuel > 0
+    ? Math.min(100, Math.round((revenuYTD / objectifAnnuel) * 100))
+    : null
 
-  const voyageursAnnee = allC.filter(c => c.date_arrivee?.startsWith(yearPfx)).length
+  // % attendu à cette date dans l'année (jour de l'année / 365)
+  const startOfYear = new Date(now.getFullYear(), 0, 1)
+  const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / 86_400_000) + 1
+  const expectedPct = Math.round((dayOfYear / 365) * 100)
 
   // ── Prochain séjour
   const prochainSejour = allC
@@ -199,43 +303,150 @@ export default async function DashboardPage() {
       <Header title="Accueil" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
       <div style={s.page} className="dash-page">
 
-        {/* ── Welcome ─────────────────────────────────────────────────── */}
+        {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
         <section style={s.welcome} className="fade-up dash-welcome">
-          <div>
-            <p style={s.welcomeSub}>Bienvenue sur la plateforme</p>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={s.welcomeSub}>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
             <h2 style={s.welcomeTitle}>
               {getGreeting()}{firstName ? `, ${firstName}` : ''}
             </h2>
             <p style={s.welcomeDesc}>
-              {actionsCount > 0
-                ? `${actionsCount} action${pl(actionsCount)} en attente${weekArrivals.length > 0 ? ` · ${weekArrivals.length} arrivée${pl(weekArrivals.length)} cette semaine` : ''}`
-                : weekArrivals.length > 0
-                ? `${weekArrivals.length} arrivée${pl(weekArrivals.length)} prévue${pl(weekArrivals.length)} cette semaine · Tout est en ordre`
-                : activeStays.length > 0
-                ? `${activeStays.length} séjour${pl(activeStays.length)} en cours · Tout est en ordre`
-                : 'Tableau de bord de ta location courte durée.'}
+              {(() => {
+                const ta = todayArrivals.length
+                const td = todayDepartures.length
+                const ac = activeStays.length
+                if (ta > 0 || td > 0) {
+                  const parts = []
+                  if (ta > 0) parts.push(`${ta} arrivée${pl(ta)} aujourd'hui`)
+                  if (td > 0) parts.push(`${td} départ${pl(td)} aujourd'hui`)
+                  if (actionsCount > 0) parts.push(`${actionsCount} action${pl(actionsCount)} à traiter`)
+                  return parts.join(' · ')
+                }
+                if (actionsCount > 0) {
+                  return `${actionsCount} action${pl(actionsCount)} à traiter${weekArrivals.length > 0 ? ` · ${weekArrivals.length} arrivée${pl(weekArrivals.length)} cette semaine` : ''}`
+                }
+                if (weekArrivals.length > 0) {
+                  return `Aucune arrivée aujourd'hui · ${weekArrivals.length} prévue${pl(weekArrivals.length)} cette semaine`
+                }
+                if (ac > 0) {
+                  return `${ac} séjour${pl(ac)} en cours · Tout est en ordre ✓`
+                }
+                return 'Aucun séjour prévu cette semaine. Profite de ce calme pour préparer la suite.'
+              })()}
             </p>
           </div>
           <div style={s.statsRow} className="dash-stats-row">
             <div style={s.stat}>
-              <span style={s.statVal}>{activeStays.length}</span>
-              <span style={s.statLbl}>Séjour{pl(activeStays.length)} actif{pl(activeStays.length, 's')}</span>
+              <span style={{ ...s.statVal, color: todayArrivals.length > 0 ? '#15803d' : 'var(--accent-text)' }}>{todayArrivals.length}</span>
+              <span style={s.statLbl}>Arrivée{pl(todayArrivals.length)} aujourd&apos;hui</span>
             </div>
             <div style={s.statDivider} />
             <div style={s.stat}>
-              <span style={s.statVal}>{weekArrivals.length}</span>
-              <span style={s.statLbl}>Arrivée{pl(weekArrivals.length)} J-7</span>
+              <span style={{ ...s.statVal, color: todayDepartures.length > 0 ? '#0369a1' : 'var(--accent-text)' }}>{todayDepartures.length}</span>
+              <span style={s.statLbl}>Départ{pl(todayDepartures.length)} aujourd&apos;hui</span>
             </div>
-            {actionsCount > 0 && (
-              <>
-                <div style={s.statDivider} />
-                <div style={s.stat}>
-                  <span style={{ ...s.statVal, color: '#ef4444' }}>{actionsCount}</span>
-                  <span style={s.statLbl}>Action{pl(actionsCount)} requise{pl(actionsCount, 's')}</span>
-                </div>
-              </>
-            )}
+            <div style={s.statDivider} />
+            <div style={s.stat}>
+              <span style={{ ...s.statVal, color: actionsCount > 0 ? '#dc2626' : 'var(--accent-text)' }}>{actionsCount}</span>
+              <span style={s.statLbl}>Action{pl(actionsCount)} à traiter</span>
+            </div>
           </div>
+        </section>
+
+        {/* ── Quick actions ────────────────────────────────────────────── */}
+        <section style={s.section} className="fade-up d1">
+          <div style={s.quickStrip}>
+            <Link href="/dashboard/calendrier" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#15803d', background: 'rgba(21,128,61,0.12)' }}>
+                <CalendarPlus size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Nouveau séjour</span>
+            </Link>
+            <Link href="/dashboard/voyageurs" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#0369a1', background: 'rgba(3,105,161,0.12)' }}>
+                <UserPlus size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Nouveau voyageur</span>
+            </Link>
+            <Link href="/dashboard/revenus" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#d97706', background: 'rgba(217,119,6,0.12)' }}>
+                <CurrencyEur size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Saisir un revenu</span>
+            </Link>
+            <Link href="/dashboard/securite" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#dc2626', background: 'rgba(220,38,38,0.12)' }}>
+                <Flag size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Signaler un voyageur</span>
+            </Link>
+            <Link href="/dashboard/calendrier" style={s.quickItem} className="quick-hover">
+              <span style={{ ...s.quickIcon, color: '#7c3aed', background: 'rgba(124,58,237,0.12)' }}>
+                <CalendarBlank size={18} weight="duotone" />
+              </span>
+              <span style={s.quickLabel}>Voir le calendrier</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* ── Mini-calendrier 14 jours ─────────────────────────────────── */}
+        <section style={s.section} className="fade-up d1">
+          <Link href="/dashboard/calendrier" style={s.miniCalCard}>
+            <div style={s.miniCalHead}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CalendarBlank size={14} weight="fill" color="var(--accent-text)" />
+                <span style={s.miniCalTitle}>Aperçu 2 semaines</span>
+              </div>
+              <span style={s.miniCalLink}>
+                Voir le calendrier <ArrowRight size={11} weight="bold" />
+              </span>
+            </div>
+            <div style={s.miniCalGrid}>
+              {next14Days.map((d, i) => {
+                const dt = new Date(d.date + 'T12:00:00')
+                const isToday = i === 0
+                const isWeekend = dt.getDay() === 0 || dt.getDay() === 6
+                const hasActivity = d.arrivals > 0 || d.departures > 0
+                return (
+                  <div
+                    key={d.date}
+                    style={{
+                      ...s.miniCalCell,
+                      ...(isToday ? s.miniCalCellToday : {}),
+                      ...(isWeekend && !isToday ? { background: 'var(--surface-2)' } : {}),
+                      ...(hasActivity && !isToday ? { borderColor: 'var(--accent-border-2)' } : {}),
+                    }}
+                    title={`${dt.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}${d.arrivals > 0 ? ` — ${d.arrivals} arrivée${d.arrivals > 1 ? 's' : ''}` : ''}${d.departures > 0 ? ` — ${d.departures} départ${d.departures > 1 ? 's' : ''}` : ''}`}
+                  >
+                    <div style={s.miniCalDow}>
+                      {dt.toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 3).replace('.', '')}
+                    </div>
+                    <div style={{ ...s.miniCalDay, color: isToday ? 'var(--accent-text)' : 'var(--text)' }}>
+                      {dt.getDate()}
+                    </div>
+                    <div style={s.miniCalDots}>
+                      {d.arrivals > 0 && (
+                        <span style={{ ...s.miniCalDot, background: '#15803d' }} title={`${d.arrivals} arrivée${d.arrivals > 1 ? 's' : ''}`} />
+                      )}
+                      {d.departures > 0 && (
+                        <span style={{ ...s.miniCalDot, background: '#0369a1' }} title={`${d.departures} départ${d.departures > 1 ? 's' : ''}`} />
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <div style={s.miniCalLegend}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#15803d' }} />
+                <span style={{ fontSize: '11px', color: 'var(--text-2)' }}>Arrivée</span>
+              </span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0369a1' }} />
+                <span style={{ fontSize: '11px', color: 'var(--text-2)' }}>Départ</span>
+              </span>
+            </div>
+          </Link>
         </section>
 
         {/* ── État des lieux — 4 métriques ─────────────────────────────── */}
@@ -259,30 +470,6 @@ export default async function DashboardPage() {
             pendingPayments={pendingPayments}
             today={today}
           />
-        </section>
-
-        {/* ── KPI strip secondaire ─────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d3">
-          <div style={s.kpiStrip}>
-            <KpiCard
-              href="/dashboard/revenus"
-              icon={<CurrencyEur size={18} weight="fill" />}
-              color="#f59e0b" label="En attente"
-              value={fmtEur(enAttente)} sub="paiements"
-            />
-            <KpiCard
-              href="/dashboard/logements"
-              icon={<House size={18} weight="fill" />}
-              color="#60a5fa" label="Logements"
-              value={String(logements)} sub={logements !== 1 ? 'actifs' : 'actif'}
-            />
-            <KpiCard
-              href="/dashboard/calendrier"
-              icon={<UsersThree size={18} weight="fill" />}
-              color="#a78bfa" label="Voyageurs"
-              value={String(voyageursAnnee)} sub={`en ${yearPfx}`}
-            />
-          </div>
         </section>
 
         {/* ── Résumé opérationnel ──────────────────────────────────────── */}
@@ -391,6 +578,96 @@ export default async function DashboardPage() {
           </section>
         )}
 
+        {/* ── Objectif revenu annuel ──────────────────────────────────── */}
+        {objectifAnnuel !== null && objectifAnnuel > 0 && (
+          <section style={s.section} className="fade-up d3">
+            <Link href="/dashboard/revenus" style={s.objectifCard}>
+              <div style={s.objectifHead}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Trophy size={14} weight="fill" color="#15803d" />
+                  <span style={s.objectifLabel}>Objectif {yearPfx}</span>
+                </div>
+                <span style={s.objectifPct}>
+                  {objectifPct}% <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500 }}>vs {expectedPct}% attendu</span>
+                </span>
+              </div>
+              <div style={s.objectifBar}>
+                <div style={{
+                  ...s.objectifFill,
+                  width: `${objectifPct}%`,
+                  background: (objectifPct ?? 0) >= expectedPct
+                    ? 'linear-gradient(90deg, #15803d, #34d399)'
+                    : 'linear-gradient(90deg, #d97706, #f59e0b)',
+                }} />
+                {/* Repère du % attendu */}
+                <div style={{
+                  position: 'absolute', top: 0, bottom: 0,
+                  left: `${expectedPct}%`,
+                  width: '2px', background: 'var(--text-muted)', opacity: 0.5,
+                }} />
+              </div>
+              <div style={s.objectifMeta}>
+                <span><strong style={{ color: 'var(--text)' }}>{fmtEur(revenuYTD)}</strong> sur {fmtEur(objectifAnnuel)}</span>
+                <span style={{ color: (objectifPct ?? 0) >= expectedPct ? '#15803d' : '#d97706', fontWeight: 600 }}>
+                  {(objectifPct ?? 0) >= expectedPct ? '✓ Dans les temps' : `${expectedPct - (objectifPct ?? 0)} pts derrière`}
+                </span>
+              </div>
+            </Link>
+          </section>
+        )}
+
+        {/* ── Pulse apprenant ─────────────────────────────────────────── */}
+        {(learnerLevel || formationInProgressData) && (
+          <section style={s.section} className="fade-up d3">
+            <Link href="/dashboard/formations/profil-apprenant" style={s.learnerCard}>
+              <div style={s.learnerLeft}>
+                <div style={s.learnerHead}>
+                  <GraduationCap size={14} weight="fill" color="var(--accent-text)" />
+                  <span style={s.learnerLabel}>Mon apprentissage</span>
+                </div>
+                <div style={s.learnerBadges}>
+                  {learnerLevel && (
+                    <span style={{ ...s.learnerLevel, color: learnerLevel.color, borderColor: `${learnerLevel.color}50`, background: `${learnerLevel.color}14` }}>
+                      <Trophy size={12} weight="fill" />
+                      {learnerLevel.label}
+                    </span>
+                  )}
+                  {streakLearner > 0 && (
+                    <span style={s.learnerStreak}>
+                      <Flame size={12} weight="fill" color="#dc2626" />
+                      <strong style={{ color: '#dc2626' }}>{streakLearner}</strong> jour{streakLearner > 1 ? 's' : ''}
+                    </span>
+                  )}
+                  <span style={s.learnerCount}>
+                    {totalLessonsDone} leçon{totalLessonsDone > 1 ? 's' : ''} · {formationsCompleted} formation{formationsCompleted > 1 ? 's' : ''} finie{formationsCompleted > 1 ? 's' : ''}
+                  </span>
+                </div>
+              </div>
+
+              {formationInProgressData ? (
+                <div style={s.learnerProgress}>
+                  <div style={s.learnerProgressLabel}>Continue</div>
+                  <div style={s.learnerProgressTitle}>{formationInProgressData.title}</div>
+                  <div style={s.learnerProgressBar}>
+                    <div style={{ ...s.learnerProgressFill, width: `${formationInProgressData.progress}%` }} />
+                  </div>
+                  <div style={s.learnerProgressMeta}>
+                    {formationInProgressData.progress}% · {formationInProgressData.completedCount}/{formationInProgressData.lessonsCount} leçons
+                  </div>
+                </div>
+              ) : (
+                <div style={s.learnerProgress}>
+                  <div style={s.learnerProgressLabel}>Suggestion</div>
+                  <div style={s.learnerProgressTitle}>Démarre une formation pour progresser</div>
+                  <div style={s.learnerProgressMeta}>16 formations disponibles dans le catalogue</div>
+                </div>
+              )}
+
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
+            </Link>
+          </section>
+        )}
+
         {/* ── Chez Nous ───────────────────────────────────────────────── */}
         <section style={s.section} className="fade-up d3">
           <ChezNousWidget
@@ -435,26 +712,6 @@ export default async function DashboardPage() {
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
-
-function KpiCard({ href, icon, color, label, value, sub }: {
-  href: string; icon: React.ReactNode; color: string
-  label: string; value: string; sub: string
-}) {
-  return (
-    <Link href={href} style={{ textDecoration: 'none' }}>
-      <div style={s.kpiCard} className="kpi-hover">
-        <div style={{ ...s.kpiIcon, color, background: color + '18', border: `1px solid ${color}35` }}>
-          {icon}
-        </div>
-        <div style={s.kpiBody}>
-          <span style={s.kpiLabel}>{label}</span>
-          <span style={{ ...s.kpiValue, color }}>{value}</span>
-          <span style={s.kpiSub}>{sub}</span>
-        </div>
-      </div>
-    </Link>
-  )
-}
 
 const CATEGORY_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
   reglementation:      { bg: 'rgba(96,165,250,0.12)',  color: '#60a5fa', label: 'Réglementation' },
@@ -538,23 +795,128 @@ const s: Record<string, React.CSSProperties> = {
   sectionHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' },
   seeAll:       { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500, padding: '5px 10px', borderRadius: '8px', background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)', transition: 'background 0.15s, border-color 0.15s' },
 
-  // KPI strip (secondary)
-  kpiStrip: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' },
-  kpiCard: {
-    display: 'flex', alignItems: 'center', gap: '14px',
-    padding: '18px 20px',
+  // ── Quick actions ─────────────────────────────────────────────────────────
+  quickStrip: {
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '10px',
+  },
+  quickItem: {
+    display: 'flex', alignItems: 'center', gap: '11px',
+    padding: '13px 16px', borderRadius: '12px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', transition: 'border-color 0.15s, transform 0.15s',
-    height: '100%',
+    textDecoration: 'none' as const, color: 'var(--text-2)',
+    transition: 'border-color 0.15s, transform 0.15s, background 0.15s',
+    fontSize: '13px', fontWeight: 600,
   },
-  kpiIcon: {
-    width: '40px', height: '40px', borderRadius: '10px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  quickIcon: {
+    width: '36px', height: '36px', borderRadius: '10px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
   },
-  kpiBody:  { display: 'flex', flexDirection: 'column', gap: '1px' },
-  kpiLabel: { fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.2px' },
-  kpiValue: { fontSize: '22px', fontWeight: 700, lineHeight: 1.15, letterSpacing: '-0.5px' },
-  kpiSub:   { fontSize: '11px', color: 'var(--text-3)' },
+  quickLabel: { color: 'var(--text)', fontSize: '13px', fontWeight: 600, lineHeight: 1.2 },
+
+  // ── Objectif revenu annuel ───────────────────────────────────────────────
+  objectifCard: {
+    display: 'block', padding: '18px 22px', borderRadius: '14px',
+    background: 'var(--surface)', border: '1px solid rgba(21,128,61,0.32)',
+    textDecoration: 'none' as const, color: 'inherit',
+    transition: 'border-color 0.15s',
+  },
+  objectifHead: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    marginBottom: '12px', flexWrap: 'wrap' as const, gap: '8px',
+  },
+  objectifLabel: { fontSize: '12px', fontWeight: 700, color: 'var(--text)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
+  objectifPct: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, color: '#15803d', lineHeight: 1 },
+  objectifBar: {
+    position: 'relative' as const,
+    height: '10px', background: 'var(--surface-2)', borderRadius: '6px',
+    overflow: 'hidden' as const, marginBottom: '10px',
+  },
+  objectifFill: {
+    height: '100%', borderRadius: '6px',
+    transition: 'width 0.6s ease',
+  },
+  objectifMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--text-2)', flexWrap: 'wrap' as const, gap: '6px' },
+
+  // ── Pulse apprenant ───────────────────────────────────────────────────────
+  learnerCard: {
+    display: 'flex', alignItems: 'center', gap: '20px',
+    padding: '18px 22px', borderRadius: '14px',
+    background: 'var(--surface)', border: '1px solid var(--accent-border)',
+    textDecoration: 'none' as const, color: 'inherit',
+    transition: 'border-color 0.15s, background 0.15s',
+    flexWrap: 'wrap' as const,
+  },
+  learnerLeft: { flex: 1, minWidth: '220px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  learnerHead: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+    fontSize: '11px', fontWeight: 700, color: 'var(--text-2)',
+    textTransform: 'uppercase' as const, letterSpacing: '0.6px',
+  },
+  learnerLabel: { color: 'var(--text-2)' },
+  learnerBadges: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
+  learnerLevel: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 700,
+    padding: '5px 11px', borderRadius: '100px',
+    border: '1px solid',
+  },
+  learnerStreak: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text)',
+    padding: '5px 11px', borderRadius: '100px',
+    background: 'rgba(220,38,38,0.10)', border: '1px solid rgba(220,38,38,0.25)',
+  },
+  learnerCount: { fontSize: '12px', color: 'var(--text-2)', fontWeight: 500 },
+  learnerProgress: {
+    flex: '1 1 280px', minWidth: '260px',
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    paddingLeft: '16px', borderLeft: '1px solid var(--border)',
+  },
+  learnerProgressLabel: { fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
+  learnerProgressTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.3 },
+  learnerProgressBar: {
+    height: '5px', background: 'var(--surface-2)', borderRadius: '3px',
+    overflow: 'hidden' as const, marginTop: '4px',
+  },
+  learnerProgressFill: {
+    height: '100%', background: 'linear-gradient(90deg, var(--accent-text), #15803d)', borderRadius: '3px',
+  },
+  learnerProgressMeta: { fontSize: '11.5px', color: 'var(--text-2)', fontWeight: 500 },
+
+  // ── Mini-calendrier 14 jours ──────────────────────────────────────────────
+  miniCalCard: {
+    display: 'block', padding: '18px 20px', borderRadius: '14px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    textDecoration: 'none' as const, transition: 'border-color 0.15s',
+  },
+  miniCalHead: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    marginBottom: '14px', flexWrap: 'wrap' as const, gap: '8px',
+  },
+  miniCalTitle: { fontSize: '12px', fontWeight: 700, color: 'var(--text)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
+  miniCalLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)',
+  },
+  miniCalGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(14, minmax(0, 1fr))',
+    gap: '6px',
+  },
+  miniCalCell: {
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'space-between',
+    padding: '8px 4px', borderRadius: '8px',
+    background: 'var(--surface-2)', border: '1px solid var(--border)',
+    minHeight: '64px', minWidth: 0,
+  },
+  miniCalCellToday: {
+    background: 'var(--accent-bg)', border: '1.5px solid var(--accent-border-2)',
+  },
+  miniCalDow: { fontSize: '9px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.4px' },
+  miniCalDay: { fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', fontWeight: 500, lineHeight: 1, marginTop: '3px' },
+  miniCalDots: { display: 'flex', gap: '2px', marginTop: '4px', minHeight: '7px' },
+  miniCalDot: { width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0 },
+  miniCalLegend: { display: 'flex', gap: '14px', marginTop: '12px' },
 
   // Operational
   opGrid:      { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' },
