@@ -30,6 +30,42 @@ const SUPER_CATEGORIES = [
   { id: 'regions',        label: 'Régions',         tags: ['Alpes', 'Auvergne', 'Belgique', 'Bourgogne', 'Bretagne', 'Corse', 'Hauts-de-France', 'Île-de-France', 'Montagne', 'Normandie', 'Occitanie', 'PACA', 'Plage', 'Pyrénées', 'Réunion', 'Ski'] },
 ] as const
 
+// Mapping adresse (mots-clés) → tag région des groupes FB
+const REGION_KEYWORDS: Record<string, string[]> = {
+  'Île-de-France':   ['paris', 'île-de-france', 'ile-de-france', 'idf', ' 75', ' 77', ' 78', ' 91', ' 92', ' 93', ' 94', ' 95'],
+  'PACA':            ['paca', 'provence', 'marseille', 'nice', 'aix-en-provence', 'cannes', 'avignon', 'toulon', 'antibes', ' 13', ' 83', ' 84', ' 04', ' 05', ' 06'],
+  'Bretagne':        ['bretagne', 'rennes', 'brest', 'quimper', 'lorient', 'vannes', 'saint-malo', 'dinard', ' 22', ' 29', ' 35', ' 56'],
+  'Normandie':       ['normandie', 'rouen', 'caen', 'le havre', 'cherbourg', 'évreux', 'deauville', 'honfleur', ' 14', ' 27', ' 50', ' 61', ' 76'],
+  'Occitanie':       ['occitanie', 'toulouse', 'montpellier', 'nîmes', 'nimes', 'perpignan', 'narbonne', 'sète', ' 31', ' 34', ' 11', ' 66', ' 30', ' 81', ' 82', ' 09'],
+  'Hauts-de-France': ['hauts-de-france', 'lille', 'amiens', 'roubaix', 'tourcoing', 'arras', 'calais', ' 59', ' 62', ' 60', ' 02', ' 80'],
+  'Auvergne':        ['auvergne', 'clermont-ferrand', 'clermont', 'vichy', ' 63', ' 15', ' 43', ' 03'],
+  'Bourgogne':       ['bourgogne', 'dijon', 'beaune', 'nevers', 'mâcon', 'macon', 'auxerre', ' 21', ' 58', ' 71', ' 89'],
+  'Corse':           ['corse', 'ajaccio', 'bastia', 'porto-vecchio', 'calvi', 'bonifacio', ' 20', ' 2a', ' 2b'],
+  'Réunion':         ['réunion', 'reunion', 'saint-denis', 'saint-pierre', 'saint-paul', ' 974'],
+  'Belgique':        ['belgique', 'belgium', 'bruxelles', 'brussels', 'liège', 'anvers', 'antwerpen', 'gand', 'ghent', 'namur'],
+  'Alpes':           ['alpes', 'chamonix', 'megève', 'megeve', 'grenoble', 'annecy', 'savoie', 'isère', 'haute-savoie', 'tignes', 'val d\'isère', 'val d isere', 'val thorens', 'courchevel', ' 73', ' 74', ' 38'],
+  'Pyrénées':        ['pyrénées', 'pyrenees', 'pau', 'tarbes', 'lourdes', 'biarritz', ' 64', ' 65'],
+  'Montagne':        ['montagne', 'station de ski', 'massif', 'morzine', 'avoriaz', 'la plagne', 'les arcs', 'serre-chevalier'],
+  'Plage':           ['plage', 'côte d\'azur', 'cote d azur', 'arcachon', 'biarritz', 'la baule', 'cap d\'agde', 'cap ferret'],
+  'Ski':             ['ski', 'station', 'chamonix', 'megève', 'megeve', 'val thorens', 'courchevel', 'tignes', 'val d\'isère'],
+}
+
+function detectRegions(adresses: string[]): Set<string> {
+  const detected = new Set<string>()
+  for (const addr of adresses) {
+    const text = ' ' + addr.toLowerCase() + ' '
+    for (const [region, keywords] of Object.entries(REGION_KEYWORDS)) {
+      for (const kw of keywords) {
+        if (text.includes(kw.toLowerCase())) {
+          detected.add(region)
+          break
+        }
+      }
+    }
+  }
+  return detected
+}
+
 function parseTags(tag: string | null): string[] {
   if (!tag) return []
   return tag.split(',').map(t => t.trim()).filter(Boolean)
@@ -47,10 +83,12 @@ export default function CommunauteView({
   groups,
   userId,
   initialMemberships,
+  userAdresses,
 }: {
   groups: Group[]
   userId: string | null
   initialMemberships: Record<string, MemberStatus>
+  userAdresses: string[]
 }) {
   const [search, setSearch]             = useState('')
   const [activeCategory, setCategory]   = useState<string | null>(null)
@@ -81,6 +119,37 @@ export default function CommunauteView({
   )
   const totalReach = joinedGroups.reduce((sum, g) => sum + (g.members_count || 0), 0)
   const dismissedCount = groups.filter(g => memberships[g.id] === 'dismissed').length
+
+  // Total possible (Facebook only, ni rejoint ni dismissed)
+  const fbGroups = groups.filter(g => g.platform === 'facebook')
+  const totalFbReach = fbGroups.reduce((sum, g) => sum + (g.members_count || 0), 0)
+  const coveragePct = totalFbReach > 0 ? Math.round((totalReach / totalFbReach) * 100) : 0
+  const unexploitedReach = fbGroups
+    .filter(g => !memberships[g.id])
+    .reduce((sum, g) => sum + (g.members_count || 0), 0)
+
+  // Régions détectées depuis les adresses des logements de l'utilisateur
+  const detectedRegions = useMemo(() => detectRegions(userAdresses), [userAdresses])
+
+  // "Pour toi" : top 4 groupes recommandés
+  // 1. Si régions détectées : groupes correspondants non rejoints / non dismissed
+  // 2. Sinon : top 4 groupes (par members_count) non rejoints, hors Driing
+  const recommendedGroups = useMemo(() => {
+    const candidates = fbGroups.filter(g =>
+      !memberships[g.id] && g.category !== FEATURED_CATEGORY
+    )
+    if (detectedRegions.size > 0) {
+      const matched = candidates.filter(g => {
+        const tags = parseTags(g.tag)
+        return tags.some(t => detectedRegions.has(t))
+      })
+      if (matched.length > 0) {
+        return matched.sort((a, b) => (b.members_count ?? 0) - (a.members_count ?? 0)).slice(0, 4)
+      }
+    }
+    // Fallback : top groupes
+    return candidates.sort((a, b) => (b.members_count ?? 0) - (a.members_count ?? 0)).slice(0, 4)
+  }, [fbGroups, memberships, detectedRegions])
 
   // Régions présentes dans les données (pour le sous-filtre)
   const availableRegions = useMemo(() => {
@@ -249,43 +318,75 @@ export default function CommunauteView({
         </p>
       </div>
 
-      {/* Stats banner — visible quand au moins 1 groupe rejoint */}
-      {joinedGroups.length > 0 && (
-        <div style={s.banner} className="fade-up">
-          <div style={s.bannerStat}>
-            <WifiHigh size={20} color="#FFD56B" weight="fill" />
-            <div>
-              <div style={s.bannerLbl}>Portée totale</div>
-              <div style={s.bannerVal}>
-                {fmtNum(totalReach)} <span style={s.bannerSub}>membres potentiels</span>
-              </div>
+      {/* Stats banner — toujours visible */}
+      <div style={s.banner} className="fade-up">
+        <div style={s.bannerStat}>
+          <WifiHigh size={20} color="#15803d" weight="fill" />
+          <div>
+            <div style={s.bannerLbl}>Portée active</div>
+            <div style={{ ...s.bannerVal, color: '#15803d' }}>
+              {fmtNum(totalReach)} <span style={s.bannerSub}>voyageurs touchés</span>
             </div>
           </div>
-          <div style={s.bannerDiv} className="communaute-banner-div" />
-          <div style={s.bannerStat}>
-            <UsersThree size={20} color="var(--accent-text)" weight="fill" />
-            <div>
-              <div style={s.bannerLbl}>Groupes rejoints</div>
-              <div style={s.bannerVal}>
-                {joinedGroups.length} <span style={s.bannerSub}>groupe{joinedGroups.length > 1 ? 's' : ''}</span>
-              </div>
+        </div>
+        <div style={s.bannerDiv} className="communaute-banner-div" />
+        <div style={s.bannerStat}>
+          <UsersThree size={20} color="var(--accent-text)" weight="fill" />
+          <div>
+            <div style={s.bannerLbl}>Couverture</div>
+            <div style={s.bannerVal}>
+              {coveragePct}% <span style={s.bannerSub}>de la portée totale</span>
+            </div>
+            <div style={{ ...s.coverageBar, marginTop: '6px' }}>
+              <div style={{ ...s.coverageFill, width: `${coveragePct}%` }} />
             </div>
           </div>
-          {groups.filter(g => !memberships[g.id]).length > 0 && (
-            <>
-              <div style={s.bannerDiv} className="communaute-banner-div" />
-              <div style={s.bannerStat}>
-                <UsersThree size={20} color="var(--text-3)" />
-                <div>
-                  <div style={s.bannerLbl}>Non rejoints</div>
-                  <div style={{ ...s.bannerVal, color: 'var(--text-2)' }}>
-                    {groups.filter(g => !memberships[g.id]).length}{' '}
-                    <span style={s.bannerSub}>groupes</span>
-                  </div>
+        </div>
+        {unexploitedReach > 0 && (
+          <>
+            <div style={s.bannerDiv} className="communaute-banner-div" />
+            <div style={s.bannerStat}>
+              <UsersThree size={20} color="#d97706" weight="fill" />
+              <div>
+                <div style={s.bannerLbl}>Potentiel restant</div>
+                <div style={{ ...s.bannerVal, color: '#d97706' }}>
+                  +{fmtNum(unexploitedReach)} <span style={s.bannerSub}>voyageurs à atteindre</span>
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Pour toi : recommandations contextuelles */}
+      {recommendedGroups.length > 0 && !isFiltering && (
+        <div style={s.recommendedSection} className="fade-up">
+          <div style={s.recommendedHeader}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Star size={14} weight="fill" color="var(--accent-text)" />
+              <span style={s.recommendedLabel}>
+                {detectedRegions.size > 0 ? 'Recommandés pour toi' : 'À fort potentiel'}
+              </span>
+              {detectedRegions.size > 0 && (
+                <span style={s.recommendedRegions}>
+                  {Array.from(detectedRegions).slice(0, 3).join(' · ')}
+                </span>
+              )}
+            </div>
+            <span style={s.recommendedSub}>
+              {detectedRegions.size > 0
+                ? 'Détectés depuis tes logements'
+                : 'Les groupes les plus suivis que tu n\'as pas encore rejoints'
+              }
+            </span>
+          </div>
+          <div className="dash-grid-2">
+            {recommendedGroups.map(g => (
+              <div key={g.id}>
+                {renderCard(g, false)}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -464,6 +565,14 @@ const s: Record<string, React.CSSProperties> = {
   bannerLbl:  { fontSize: '11px', color: 'var(--text-3)', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const },
   bannerVal:  { fontSize: '20px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.2, marginTop: '2px' },
   bannerSub:  { fontSize: '13px', fontWeight: 400, color: 'var(--text-2)' },
+  coverageBar: {
+    height: '5px', background: 'var(--surface-2)', borderRadius: '3px',
+    overflow: 'hidden' as const, width: '100%', maxWidth: '180px',
+  },
+  coverageFill: {
+    height: '100%', background: 'linear-gradient(90deg, var(--accent-text), #15803d)',
+    borderRadius: '3px', transition: 'width 0.4s',
+  },
 
   /* Filtres */
   filtersWrap: { marginBottom: '36px', display: 'flex', flexDirection: 'column' as const, gap: '10px' },
@@ -568,6 +677,32 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.4px',
     color: 'var(--accent-text)', background: 'rgba(0,76,63,0.08)',
     border: '1px solid var(--border)', borderRadius: '100px', padding: '2px 8px',
+  },
+
+  /* Pour toi recommendations */
+  recommendedSection: {
+    marginBottom: '36px',
+    padding: '20px 22px',
+    borderRadius: '16px',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+  },
+  recommendedHeader: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    marginBottom: '14px',
+  },
+  recommendedLabel: {
+    fontSize: '13px', fontWeight: 700, color: 'var(--accent-text)',
+    letterSpacing: '0.3px',
+  },
+  recommendedRegions: {
+    fontSize: '11.5px', fontWeight: 500, color: 'var(--text-2)',
+    padding: '2px 8px', borderRadius: '100px',
+    background: 'var(--accent-bg-2)',
+    border: '1px solid var(--accent-border-2)',
+  },
+  recommendedSub: {
+    fontSize: '12px', color: 'var(--text-2)', fontWeight: 400,
   },
 
   /* Other sections */
