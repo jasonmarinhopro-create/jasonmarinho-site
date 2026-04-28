@@ -7,7 +7,7 @@ import {
   GraduationCap, Lightning, Users, X, Heart,
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
-  Crown, Star, TextAa, CurrencyEur,
+  Crown, Star, TextAa, CurrencyEur, DownloadSimple,
 } from '@phosphor-icons/react'
 import {
   changeUserPlan, deleteUser, deleteAllBots,
@@ -118,6 +118,31 @@ export default function MembresUI({ members }: { members: Member[] }) {
     })
   }
 
+  function exportCsv() {
+    const planLabel = (p: string) =>
+      p === 'driing' ? 'Driing' : p === 'standard' ? 'Standard' : 'Découverte'
+    const escape = (v: string) => `"${(v ?? '').replace(/"/g, '""')}"`
+    const header = ['Nom', 'Email', 'Plan', 'Contributeur', 'Formations', 'Inscrit le']
+    const rows = filtered.map(m => [
+      m.full_name || '',
+      m.email,
+      planLabel(m.plan),
+      m.is_contributor ? 'Oui' : 'Non',
+      String(m.user_formations?.length ?? 0),
+      new Date(m.created_at).toISOString().slice(0, 10),
+    ].map(escape).join(','))
+    const csv = '﻿' + [header.join(','), ...rows].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    const stamp = new Date().toISOString().slice(0, 10)
+    const suffix = filterPlan === 'all' ? 'tous' : filterPlan
+    a.download = `membres-${suffix}-${stamp}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   function handleDeleteAllBots() {
     if (!confirm(`Supprimer définitivement ${totalBots} bot(s) suspect(s) ?`)) return
     startTransition(async () => {
@@ -166,6 +191,11 @@ export default function MembresUI({ members }: { members: Member[] }) {
         ))}
 
         <div style={{ flex: 1 }} />
+
+        <button onClick={exportCsv} style={s.exportBtn} title="Exporter la liste filtrée en CSV">
+          <DownloadSimple size={13} weight="bold" />
+          Exporter CSV
+        </button>
 
         {totalBots > 0 && (
           botsFeedback ? (
@@ -694,6 +724,13 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '9px', padding: '7px 13px',
     color: '#f87171', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  exportBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    borderRadius: '9px', padding: '7px 13px',
+    color: 'var(--accent-text)', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
     fontFamily: 'var(--font-outfit), sans-serif',
   },
 
