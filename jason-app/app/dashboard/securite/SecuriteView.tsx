@@ -4,8 +4,48 @@ import { useState, useTransition } from 'react'
 import {
   MagnifyingGlass, ShieldCheck, ShieldWarning, Warning,
   CheckCircle, Info, PaperPlaneRight, X, PhoneCall, Star, Trash,
+  Siren, Users, Handshake,
 } from '@phosphor-icons/react'
 import { searchGuest, reportGuest, requestDeletion } from './actions'
+
+const ARNAQUES = [
+  {
+    tag: 'Très actuelle',
+    tagColor: '#ef4444',
+    tagBg: 'rgba(239,68,68,0.1)',
+    icon: '💸',
+    title: 'Arnaque au surpaiement',
+    text: 'Le voyageur "vire par erreur" plus que le prix de la location et te demande de rembourser la différence. Quelques jours plus tard, son virement original est annulé — tu as remboursé de l\'argent qui n\'a jamais existé.',
+    signal: 'Signal : toute demande de remboursement d\'un "trop-perçu" = stop immédiat.',
+  },
+  {
+    tag: 'Classique n°1',
+    tagColor: '#f97316',
+    tagBg: 'rgba(249,115,22,0.1)',
+    icon: '📲',
+    title: 'Paiement hors plateforme',
+    text: 'Contact par WhatsApp ou email pour "éviter les frais" et payer directement. Une fois le virement fait, le voyageur disparaît et aucun recours n\'est possible.',
+    signal: 'Signal : tout contact qui demande à sortir du cadre de la plateforme.',
+  },
+  {
+    tag: 'En hausse 2025',
+    tagColor: '#f59e0b',
+    tagBg: 'rgba(245,158,11,0.1)',
+    icon: '📱',
+    title: 'Location via Instagram / réseaux',
+    text: 'DM Instagram ou Facebook proposant de "louer en direct sans commission". Faux profil, photos volées, virement demandé sans aucune garantie ni contrat.',
+    signal: 'Signal : toute réservation initiée hors d\'une plateforme sécurisée ou site propre certifié.',
+  },
+  {
+    tag: 'Courante',
+    tagColor: '#8b5cf6',
+    tagBg: 'rgba(139,92,246,0.1)',
+    icon: '🪳',
+    title: 'Faux dégât pour récupérer la caution',
+    text: 'Après le séjour, le voyageur prétend avoir trouvé des nuisibles, moisissures ou problèmes préexistants pour exiger un remboursement total de la caution, parfois avec de fausses photos.',
+    signal: 'Signal : état des lieux photo horodaté avant chaque arrivée — c\'est ton seul bouclier.',
+  },
+]
 
 const INCIDENT_TYPES = [
   'Dégradation du logement',
@@ -30,7 +70,7 @@ const POSITIVE_TYPES = [
 const TIPS = [
   {
     icon: '🔍',
-    title: 'Vérifie le profil Airbnb',
+    title: 'Vérifie le profil du voyageur',
     text: 'Un profil sans photo, sans avis et créé récemment est un signal d\'alerte. Demande toujours une raison du séjour.',
   },
   {
@@ -51,7 +91,7 @@ const TIPS = [
   {
     icon: '📸',
     title: 'Documente l\'état des lieux',
-    text: 'Photos horodatées avant chaque check-in. En cas de litige, c\'est ta principale preuve auprès d\'Airbnb ou en justice.',
+    text: 'Photos horodatées avant chaque check-in. En cas de litige, c\'est ta principale preuve auprès de la plateforme ou en justice.',
   },
   {
     icon: '🔒',
@@ -76,7 +116,13 @@ const incidentColor: Record<string, string> = {
 
 const POSITIVE_SET = new Set(POSITIVE_TYPES)
 
-export default function SecuriteView() {
+export default function SecuriteView({
+  totalNegative = 0,
+  totalPositive = 0,
+}: {
+  totalNegative?: number
+  totalPositive?: number
+}) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResult[] | null>(null)
   const [searchError, setSearchError] = useState('')
@@ -164,6 +210,26 @@ export default function SecuriteView() {
         <p style={styles.pageDesc}>
           Vérifie une demande de réservation douteuse ou signale un voyageur problématique à la communauté.
         </p>
+        {(totalNegative > 0 || totalPositive > 0) && (
+          <div style={styles.statsBar}>
+            <div style={styles.statItem}>
+              <Siren size={14} color="#f87171" weight="fill" />
+              <span style={{ color: '#f87171', fontWeight: 700 }}>{totalNegative}</span>
+              <span style={styles.statLabel}>signalement{totalNegative > 1 ? 's' : ''}</span>
+            </div>
+            <div style={styles.statDivider} />
+            <div style={styles.statItem}>
+              <Star size={14} color="#34d399" weight="fill" />
+              <span style={{ color: '#34d399', fontWeight: 700 }}>{totalPositive}</span>
+              <span style={styles.statLabel}>témoignage{totalPositive > 1 ? 's' : ''} positif{totalPositive > 1 ? 's' : ''}</span>
+            </div>
+            <div style={styles.statDivider} />
+            <div style={styles.statItem}>
+              <Users size={14} color="var(--text-muted)" weight="fill" />
+              <span style={styles.statLabel}>base communautaire · modérée</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div style={styles.grid} className="sec-grid">
@@ -207,8 +273,30 @@ export default function SecuriteView() {
                 {(() => {
                   const negResults = results.filter(r => !POSITIVE_SET.has(r.incident_type))
                   const posResults = results.filter(r => POSITIVE_SET.has(r.incident_type))
+                  const riskLevel = negResults.length === 0 ? 'none'
+                    : negResults.length === 1 ? 'low'
+                    : negResults.length <= 3 ? 'medium'
+                    : 'high'
+                  const riskConfig = {
+                    none:   { label: 'Aucun risque détecté',  color: '#34d399', bg: 'rgba(52,211,153,0.1)',  icon: '✅' },
+                    low:    { label: 'Risque modéré',          color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  icon: '⚠️' },
+                    medium: { label: 'Risque élevé',           color: '#f97316', bg: 'rgba(249,115,22,0.1)',  icon: '🔶' },
+                    high:   { label: 'Risque très élevé',      color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   icon: '🚨' },
+                  }[riskLevel]
+
                   return results.length === 0 ? null : (
                     <>
+                      {/* Score de risque global */}
+                      <div style={{ ...styles.riskBadge, background: riskConfig.bg, borderColor: riskConfig.color + '40' }}>
+                        <span style={{ fontSize: '16px' }}>{riskConfig.icon}</span>
+                        <div>
+                          <div style={{ fontSize: '13px', fontWeight: 700, color: riskConfig.color }}>{riskConfig.label}</div>
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '1px' }}>
+                            {negResults.length > 0 ? `${negResults.length} signalement${negResults.length > 1 ? 's' : ''} négatif${negResults.length > 1 ? 's' : ''}` : 'Aucun signalement négatif'}{posResults.length > 0 ? ` · ${posResults.length} témoignage${posResults.length > 1 ? 's' : ''} positif${posResults.length > 1 ? 's' : ''}` : ''}
+                          </div>
+                        </div>
+                      </div>
+
                       {negResults.length > 0 && (
                         <div>
                           <div style={styles.resultAlertHeader}>
@@ -583,6 +671,31 @@ export default function SecuriteView() {
             ))}
           </div>
 
+          {/* Arnaques du moment */}
+          <div style={styles.arnaquesWrap} className="fade-up">
+            <div style={styles.arnaquesHeader}>
+              <Siren size={16} color="#ef4444" weight="fill" />
+              <span style={styles.arnaquesTitle}>Arnaques du moment</span>
+            </div>
+            <p style={styles.arnaquesSubtitle}>Les escroqueries qui circulent en ce moment</p>
+            <div style={styles.arnaquesList}>
+              {ARNAQUES.map((a, i) => (
+                <div key={i} style={styles.arnaqueItem} className="glass-card">
+                  <div style={styles.arnaqueTop}>
+                    <span style={{ fontSize: '18px' }}>{a.icon}</span>
+                    <span style={{ ...styles.arnaqueTag, color: a.tagColor, background: a.tagBg }}>{a.tag}</span>
+                  </div>
+                  <div style={styles.arnaqueTitle}>{a.title}</div>
+                  <p style={styles.arnaqueText}>{a.text}</p>
+                  <div style={styles.arnaqueSignal}>
+                    <Warning size={11} color="#f59e0b" weight="fill" style={{ flexShrink: 0 }} />
+                    <span>{a.signal}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div style={styles.disclaimer} className="fade-up">
             <Info size={14} color="var(--text-muted)" style={{ flexShrink: 0, marginTop: '1px' }} />
             <p style={styles.disclaimerText}>
@@ -627,6 +740,12 @@ const styles: Record<string, React.CSSProperties> = {
   errorMsg: { fontSize: '13px', color: '#F87171', marginTop: '4px', lineHeight: 1.5 },
 
   resultsWrap: { marginTop: '20px', borderTop: '1px solid var(--border)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' },
+  riskBadge: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '14px 16px', borderRadius: '14px',
+    border: '1px solid',
+  },
+
   resultOk: {
     display: 'flex', alignItems: 'flex-start', gap: '14px',
     background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
@@ -761,6 +880,33 @@ const styles: Record<string, React.CSSProperties> = {
   resultItemPositive: {
     background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)',
     borderRadius: '12px', padding: '14px 16px', marginBottom: '10px',
+  },
+
+  statsBar: {
+    display: 'inline-flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const,
+    marginTop: '16px', padding: '10px 16px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '12px', fontSize: '13px',
+  },
+  statItem: { display: 'flex', alignItems: 'center', gap: '6px' },
+  statLabel: { fontSize: '12px', color: 'var(--text-muted)' },
+  statDivider: { width: '1px', height: '14px', background: 'var(--border-2)' },
+
+  arnaquesWrap: { marginTop: '8px' },
+  arnaquesHeader: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' },
+  arnaquesTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 400, color: 'var(--text)' },
+  arnaquesSubtitle: { fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px', marginTop: '2px' },
+  arnaquesList: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },
+  arnaqueItem: { padding: '14px 16px', borderRadius: '14px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  arnaqueTop: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' },
+  arnaqueTag: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase' as const, padding: '2px 8px', borderRadius: '100px' },
+  arnaqueTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.3 },
+  arnaqueText: { fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.6, margin: 0 },
+  arnaqueSignal: {
+    display: 'flex', alignItems: 'flex-start', gap: '6px',
+    fontSize: '11px', color: 'var(--text-3)', lineHeight: 1.5,
+    background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.12)',
+    borderRadius: '8px', padding: '8px 10px',
   },
 
   tipsHeader: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' },
