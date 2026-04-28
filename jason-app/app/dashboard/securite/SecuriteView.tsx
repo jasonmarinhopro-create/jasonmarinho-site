@@ -22,10 +22,10 @@ const ARNAQUES = [
     tag: 'En hausse 2025',
     tagColor: '#f59e0b',
     tagBg: 'rgba(245,158,11,0.1)',
-    icon: '📱',
-    title: 'Inconnus via DM Instagram / Facebook',
-    text: 'Un inconnu te contacte via réseaux sociaux pour "louer en direct". Faux profil, photos volées, virement demandé sur un compte sans garantie ni contrat. Différent d\'un voyageur qui revient et réserve via ton lien Driing ou site propre.',
-    signal: 'Signal : inconnu non identifié qui initie la démarche via DM, sans historique avec toi.',
+    icon: '💳',
+    title: 'Virement vers un inconnu sans contrat',
+    text: 'Quelqu\'un répond à ton post communauté (groupe, réseau social) et demande un virement direct sur son compte perso, sans passer par un système sécurisé. Poster dans les groupes pour avoir de la visibilité = excellent. Virer de l\'argent sans contrat ni lien Driing = arnaque.',
+    signal: 'Signal : paiement demandé hors Stripe/Driing/système sécurisé, vers un compte que tu ne connais pas.',
   },
   {
     tag: 'Courante',
@@ -81,7 +81,7 @@ const TIPS = [
   {
     icon: '💬',
     title: 'Méfie-toi des demandes inhabituelles',
-    text: 'Paiement en dehors de la plateforme, voyageur "trop pressé", discours incohérent sur le motif du séjour = signaux d\'alerte.',
+    text: 'Virement sur compte inconnu, voyageur "trop pressé", refus de passer par un lien Driing ou système sécurisé, discours incohérent = signaux d\'alerte. Réservation directe ≠ paiement non sécurisé.',
   },
   {
     icon: '📋',
