@@ -153,7 +153,7 @@ export async function changeUserPlan(userId: string, plan: string) {
   const { error } = await getAdminClient()
   if (error) return { error }
 
-  const validPlans = ['decouverte', 'driing']
+  const validPlans = ['decouverte', 'standard', 'driing']
   if (!validPlans.includes(plan)) return { error: 'Plan invalide' }
 
   const adminClient = getServiceClient()
@@ -166,10 +166,13 @@ export async function changeUserPlan(userId: string, plan: string) {
     .single()
 
   // Quand on passe en driing : confirme le statut + rôle
+  // Quand on passe en standard : pas de rôle spécial, reset driing_status
   // Quand on repasse en découverte : reset driing_status
   const extraFields = plan === 'driing'
     ? { role: 'driing', driing_status: 'confirmed' }
-    : { driing_status: 'none' }
+    : plan === 'standard'
+    ? { role: 'user', driing_status: 'none' }
+    : { role: 'user', driing_status: 'none' }
 
   const { error: updateError } = await adminClient
     .from('profiles')
