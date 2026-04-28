@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ImageSquare } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
+import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
+import { MapPin } from '@phosphor-icons/react'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
 import { stripMarkdown } from '@/lib/chez-nous/markdown'
@@ -78,9 +80,10 @@ type Props = {
   catCounts: Record<string, number>
   activity: ActivityEvent[]
   activityProfiles: Record<string, { full_name: string | null; pseudo: string | null }>
+  regionCounts: Record<string, number>
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts, activity, activityProfiles }: Props) {
+export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts, activity, activityProfiles, regionCounts }: Props) {
   const [showForm, setShowForm] = useState(false)
 
   return (
@@ -166,6 +169,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
         {/* Aside */}
         <aside style={s.aside}>
           <JasonNoteCard />
+          <FranceMapCard regionCounts={regionCounts} />
           <ActivityCard events={activity} profiles={activityProfiles} />
           <StatsCard stats={stats} />
           <TopMembersCard members={topMembers} />
@@ -196,6 +200,71 @@ function JasonNoteCard() {
         réponds quand tu peux à ceux qui débutent. C'est comme ça qu'on grandit ensemble.
       </p>
       <span style={s.jasonSign}>— Jason</span>
+    </div>
+  )
+}
+
+function FranceMapCard({ regionCounts }: { regionCounts: Record<string, number> }) {
+  const total = Object.values(regionCounts).reduce((a, b) => a + b, 0)
+  if (total === 0) return null
+
+  // Min/max pour normaliser la taille des bulles
+  const max = Math.max(...Object.values(regionCounts))
+
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <MapPin size={14} color="#fb7185" weight="fill" />
+        <span style={s.asideTitle}>On est partout en France</span>
+      </div>
+      <div style={s.mapWrap}>
+        <svg viewBox="0 0 100 110" style={s.mapSvg} aria-label="Répartition des hôtes en France">
+          {/* Silhouette simplifiée de la France métropolitaine */}
+          <path
+            d="M 28 10 Q 42 5, 55 8 Q 68 6, 78 14 Q 84 22, 80 32 Q 88 38, 86 48 Q 90 56, 84 64 Q 88 72, 80 82 Q 70 90, 56 92 Q 42 94, 30 88 Q 20 82, 18 70 Q 10 60, 14 48 Q 10 36, 18 26 Q 22 16, 28 10 Z"
+            fill="rgba(255,255,255,0.025)"
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth="0.5"
+          />
+          {/* Corse */}
+          <path
+            d="M 88 92 Q 92 90, 93 95 Q 92 100, 89 100 Q 87 96, 88 92 Z"
+            fill="rgba(255,255,255,0.025)"
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth="0.5"
+          />
+          {/* Bulles par région */}
+          {Object.entries(regionCounts).map(([region, count]) => {
+            const pos = REGION_POSITIONS[region]
+            if (!pos) return null
+            const size = 1.5 + (count / max) * 3.5
+            return (
+              <g key={region}>
+                <circle
+                  cx={pos.x} cy={pos.y} r={size + 1.5}
+                  fill="rgba(251,113,133,0.15)"
+                />
+                <circle
+                  cx={pos.x} cy={pos.y} r={size}
+                  fill="#fb7185"
+                />
+                <title>{`${region} : ${count} hôte${count > 1 ? 's' : ''}`}</title>
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+      <div style={s.regionLegend}>
+        {Object.entries(regionCounts)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 5)
+          .map(([region, count]) => (
+            <span key={region} style={s.regionLegendItem}>
+              <span style={s.regionLegendName}>{region}</span>
+              <span style={s.regionLegendCount}>{count}</span>
+            </span>
+          ))}
+      </div>
     </div>
   )
 }
@@ -708,6 +777,29 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%' },
+
+  mapWrap: {
+    width: '100%', display: 'flex', justifyContent: 'center',
+    padding: '4px 0',
+  },
+  mapSvg: {
+    width: '100%', maxWidth: '240px', height: 'auto',
+  },
+  regionLegend: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    paddingTop: '8px', borderTop: '1px solid var(--border)',
+  },
+  regionLegendItem: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    fontSize: '12px',
+  },
+  regionLegendName: { color: 'var(--text-2)' },
+  regionLegendCount: {
+    color: '#fb7185', fontWeight: 700,
+    background: 'rgba(251,113,133,0.12)',
+    padding: '1px 8px', borderRadius: '100px',
+    fontSize: '11px',
+  },
 
   activityList: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },
   activityRow: {

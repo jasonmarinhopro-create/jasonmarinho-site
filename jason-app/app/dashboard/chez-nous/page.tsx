@@ -7,6 +7,7 @@ import WelcomeModal from '@/components/chez-nous/WelcomeModal'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 import { computeBadges, type BadgeId } from '@/lib/badges'
 import { getBulkProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
+import { aggregateRegionsByMember } from '@/lib/chez-nous/regions'
 
 export const dynamic  = 'force-dynamic'
 export const metadata = { title: 'Chez Nous — Jason Marinho' }
@@ -251,6 +252,28 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   activityEvents.sort((a, b) => b.created_at.localeCompare(a.created_at))
   const activity = activityEvents.slice(0, 6)
 
+  // Régions des membres (carte de France) — uniquement profils ayant
+  // privacy_show_city != false, agrégé par membre (pas par logement)
+  const { data: allLogements } = await supabase
+    .from('logements')
+    .select('user_id, adresse')
+  const { data: privacyData } = await supabase
+    .from('profiles')
+    .select('id, privacy_show_city')
+
+  const allowedUserIds = new Set(
+    (privacyData ?? [])
+      .filter(p => p.privacy_show_city !== false)
+      .map(p => p.id),
+  )
+  const addressesByMember: Record<string, string[]> = {}
+  ;(allLogements ?? []).forEach((l: { user_id: string; adresse: string | null }) => {
+    if (!allowedUserIds.has(l.user_id) || !l.adresse) return
+    if (!addressesByMember[l.user_id]) addressesByMember[l.user_id] = []
+    addressesByMember[l.user_id].push(l.adresse)
+  })
+  const regionCounts = aggregateRegionsByMember(addressesByMember)
+
   return (
     <>
       <Header title="Chez Nous" userName={profile.full_name ?? undefined} />
@@ -289,6 +312,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
         catCounts={catCounts}
         activity={activity}
         activityProfiles={activityProfiles}
+        regionCounts={regionCounts}
       />
     </>
   )
