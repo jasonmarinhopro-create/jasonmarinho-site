@@ -30,7 +30,7 @@ const POSITIVE_TYPES = [
 const TIPS = [
   {
     icon: '🔍',
-    title: 'Vérifie le profil Airbnb',
+    title: 'Vérifie le profil du voyageur',
     text: 'Un profil sans photo, sans avis et créé récemment est un signal d\'alerte. Demande toujours une raison du séjour.',
   },
   {
@@ -51,7 +51,7 @@ const TIPS = [
   {
     icon: '📸',
     title: 'Documente l\'état des lieux',
-    text: 'Photos horodatées avant chaque check-in. En cas de litige, c\'est ta principale preuve auprès d\'Airbnb ou en justice.',
+    text: 'Photos horodatées avant chaque check-in. En cas de litige, c\'est ta principale preuve auprès de la plateforme ou en justice.',
   },
   {
     icon: '🔒',
