@@ -19,22 +19,13 @@ const ARNAQUES = [
     signal: 'Signal : toute demande de remboursement d\'un "trop-perçu" = stop immédiat.',
   },
   {
-    tag: 'Classique n°1',
-    tagColor: '#f97316',
-    tagBg: 'rgba(249,115,22,0.1)',
-    icon: '📲',
-    title: 'Paiement hors plateforme',
-    text: 'Contact par WhatsApp ou email pour "éviter les frais" et payer directement. Une fois le virement fait, le voyageur disparaît et aucun recours n\'est possible.',
-    signal: 'Signal : tout contact qui demande à sortir du cadre de la plateforme.',
-  },
-  {
     tag: 'En hausse 2025',
     tagColor: '#f59e0b',
     tagBg: 'rgba(245,158,11,0.1)',
     icon: '📱',
-    title: 'Location via Instagram / réseaux',
-    text: 'DM Instagram ou Facebook proposant de "louer en direct sans commission". Faux profil, photos volées, virement demandé sans aucune garantie ni contrat.',
-    signal: 'Signal : toute réservation initiée hors d\'une plateforme sécurisée ou site propre certifié.',
+    title: 'Inconnus via DM Instagram / Facebook',
+    text: 'Un inconnu te contacte via réseaux sociaux pour "louer en direct". Faux profil, photos volées, virement demandé sur un compte sans garantie ni contrat. Différent d\'un voyageur qui revient et réserve via ton lien Driing ou site propre.',
+    signal: 'Signal : inconnu non identifié qui initie la démarche via DM, sans historique avec toi.',
   },
   {
     tag: 'Courante',
@@ -44,6 +35,15 @@ const ARNAQUES = [
     title: 'Faux dégât pour récupérer la caution',
     text: 'Après le séjour, le voyageur prétend avoir trouvé des nuisibles, moisissures ou problèmes préexistants pour exiger un remboursement total de la caution, parfois avec de fausses photos.',
     signal: 'Signal : état des lieux photo horodaté avant chaque arrivée — c\'est ton seul bouclier.',
+  },
+  {
+    tag: 'Classique',
+    tagColor: '#f97316',
+    tagBg: 'rgba(249,115,22,0.1)',
+    icon: '🪪',
+    title: 'Usurpation d\'identité voyageur',
+    text: 'Profil créé récemment, photo de stock, identité volée. Le faux voyageur réserve, sous-loue ton bien à un tiers ou disparaît avec les clés. Airbnb a supprimé 2 millions de faux profils en 2023.',
+    signal: 'Signal : profil sans avis, créé il y a moins de 3 mois, photo floue ou trop parfaite.',
   },
 ]
 
@@ -152,6 +152,8 @@ export default function SecuriteView({
     description: '',
   })
 
+  const [arnaquesOpen, setArnaquesOpen] = useState(true)
+
   const [deletionRequestId, setDeletionRequestId] = useState<string | null>(null)
   const [isDeletionPending, startDeletion] = useTransition()
   const [deletionSuccess, setDeletionSuccess] = useState<string | null>(null)
@@ -228,6 +230,40 @@ export default function SecuriteView({
               <Users size={14} color="var(--text-muted)" weight="fill" />
               <span style={styles.statLabel}>base communautaire · modérée</span>
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Arnaques du moment — bandeau avant la grille */}
+      <div style={styles.alertBand} className="fade-up">
+        <button
+          onClick={() => setArnaquesOpen(o => !o)}
+          style={styles.alertBandHeader}
+          aria-expanded={arnaquesOpen}
+        >
+          <div style={styles.alertBandLeft}>
+            <Siren size={15} color="#ef4444" weight="fill" />
+            <span style={styles.alertBandTitle}>Arnaques du moment</span>
+            <span style={styles.alertBandSub}>4 escroqueries qui circulent en 2025-2026</span>
+          </div>
+          <span style={{ ...styles.alertBandChevron, transform: arnaquesOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}>›</span>
+        </button>
+        {arnaquesOpen && (
+          <div style={styles.alertBandGrid}>
+            {ARNAQUES.map((a, i) => (
+              <div key={i} style={styles.alertCard} className="glass-card">
+                <div style={styles.alertCardTop}>
+                  <span style={{ fontSize: '18px' }}>{a.icon}</span>
+                  <span style={{ ...styles.arnaqueTag, color: a.tagColor, background: a.tagBg }}>{a.tag}</span>
+                </div>
+                <div style={styles.arnaqueTitle}>{a.title}</div>
+                <p style={styles.arnaqueText}>{a.text}</p>
+                <div style={styles.arnaqueSignal}>
+                  <Warning size={11} color="#f59e0b" weight="fill" style={{ flexShrink: 0 }} />
+                  <span>{a.signal}</span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -671,31 +707,6 @@ export default function SecuriteView({
             ))}
           </div>
 
-          {/* Arnaques du moment */}
-          <div style={styles.arnaquesWrap} className="fade-up">
-            <div style={styles.arnaquesHeader}>
-              <Siren size={16} color="#ef4444" weight="fill" />
-              <span style={styles.arnaquesTitle}>Arnaques du moment</span>
-            </div>
-            <p style={styles.arnaquesSubtitle}>Les escroqueries qui circulent en ce moment</p>
-            <div style={styles.arnaquesList}>
-              {ARNAQUES.map((a, i) => (
-                <div key={i} style={styles.arnaqueItem} className="glass-card">
-                  <div style={styles.arnaqueTop}>
-                    <span style={{ fontSize: '18px' }}>{a.icon}</span>
-                    <span style={{ ...styles.arnaqueTag, color: a.tagColor, background: a.tagBg }}>{a.tag}</span>
-                  </div>
-                  <div style={styles.arnaqueTitle}>{a.title}</div>
-                  <p style={styles.arnaqueText}>{a.text}</p>
-                  <div style={styles.arnaqueSignal}>
-                    <Warning size={11} color="#f59e0b" weight="fill" style={{ flexShrink: 0 }} />
-                    <span>{a.signal}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           <div style={styles.disclaimer} className="fade-up">
             <Info size={14} color="var(--text-muted)" style={{ flexShrink: 0, marginTop: '1px' }} />
             <p style={styles.disclaimerText}>
@@ -881,6 +892,29 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)',
     borderRadius: '12px', padding: '14px 16px', marginBottom: '10px',
   },
+
+  alertBand: {
+    marginBottom: '24px',
+    background: 'var(--surface)',
+    border: '1px solid rgba(239,68,68,0.2)',
+    borderRadius: '16px',
+    overflow: 'hidden',
+  },
+  alertBandHeader: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
+    padding: '14px 18px', width: '100%', background: 'none', border: 'none',
+    cursor: 'pointer', textAlign: 'left' as const,
+  },
+  alertBandLeft: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const },
+  alertBandTitle: { fontSize: '14px', fontWeight: 600, color: '#ef4444' },
+  alertBandSub: { fontSize: '12px', color: 'var(--text-muted)' },
+  alertBandChevron: { fontSize: '20px', color: 'var(--text-muted)', transition: 'transform 0.2s', lineHeight: 1 },
+  alertBandGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: '12px', padding: '0 16px 16px',
+  },
+  alertCard: { padding: '14px', borderRadius: '12px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  alertCardTop: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
 
   statsBar: {
     display: 'inline-flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const,
