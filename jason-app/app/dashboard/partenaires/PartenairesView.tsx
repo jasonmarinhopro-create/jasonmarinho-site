@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { ArrowUpRight, Star, Buildings, Handshake, Sparkle } from '@phosphor-icons/react'
+import { useState, useTransition } from 'react'
+import { ArrowUpRight, Star, Buildings, Handshake, Sparkle, Heart, TrendUp } from '@phosphor-icons/react'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
 import { ECOSYSTEME_TOOLS, ECOSYSTEME_CATEGORIES, type EcosystemeTool } from '@/lib/constants/ecosysteme'
 import PartenaireSuggestForm from './PartenaireSuggestForm'
+import { toggleToolInterest } from './actions'
 
 interface Partner {
   id: string
@@ -19,12 +20,55 @@ interface Partner {
 export default function PartenairesView({
   additionalPartners = [],
   plan = 'decouverte',
+  interestCounts = {},
+  userVotedSlugs = [],
+  isAuthenticated = false,
 }: {
   additionalPartners?: Partner[]
   plan?: string
+  interestCounts?: Record<string, number>
+  userVotedSlugs?: string[]
+  isAuthenticated?: boolean
 }) {
   const isDecouverte = plan === 'decouverte'
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+
+  // Optimistic UI : copies locales mises à jour immédiatement au clic
+  const [counts, setCounts] = useState<Record<string, number>>(interestCounts)
+  const [voted, setVoted] = useState<Set<string>>(new Set(userVotedSlugs))
+  const [, startTransition] = useTransition()
+
+  function handleToggleInterest(slug: string, e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!isAuthenticated) return
+    const wasVoted = voted.has(slug)
+    // Optimistic update
+    setVoted(prev => {
+      const next = new Set(prev)
+      if (wasVoted) next.delete(slug); else next.add(slug)
+      return next
+    })
+    setCounts(prev => ({
+      ...prev,
+      [slug]: Math.max(0, (prev[slug] ?? 0) + (wasVoted ? -1 : 1)),
+    }))
+    startTransition(async () => {
+      const res = await toggleToolInterest(slug)
+      if (res.error) {
+        // Rollback en cas d'erreur
+        setVoted(prev => {
+          const next = new Set(prev)
+          if (wasVoted) next.add(slug); else next.delete(slug)
+          return next
+        })
+        setCounts(prev => ({
+          ...prev,
+          [slug]: Math.max(0, (prev[slug] ?? 0) + (wasVoted ? 1 : -1)),
+        }))
+      }
+    })
+  }
 
   // Outils avec partenariat (discount) — affichés en haut
   const partnered = ECOSYSTEME_TOOLS.filter(t => t.partnership === 'discount')
@@ -233,21 +277,47 @@ export default function PartenairesView({
               </div>
             </div>
             <div style={styles.catGrid} className="dash-grid-2">
-              {grouped[cat.id].map(t => (
-                <a
-                  key={t.slug}
-                  href={t.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={styles.toolCard}
-                >
-                  <div style={styles.toolHead}>
-                    <div style={styles.toolName}>{t.name}</div>
-                    <ArrowUpRight size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+              {grouped[cat.id].map(t => {
+                const count = counts[t.slug] ?? 0
+                const isVoted = voted.has(t.slug)
+                return (
+                  <div key={t.slug} style={styles.toolCard}>
+                    <a
+                      href={t.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={styles.toolLink}
+                    >
+                      <div style={styles.toolHead}>
+                        <div style={styles.toolName}>{t.name}</div>
+                        <ArrowUpRight size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                      </div>
+                      <p style={styles.toolDesc}>{t.description}</p>
+                    </a>
+                    <div style={styles.toolFooter}>
+                      <button
+                        onClick={(e) => handleToggleInterest(t.slug, e)}
+                        disabled={!isAuthenticated}
+                        style={{
+                          ...styles.interestBtn,
+                          ...(isVoted ? styles.interestBtnOn : {}),
+                          opacity: isAuthenticated ? 1 : 0.5,
+                          cursor: isAuthenticated ? 'pointer' : 'not-allowed',
+                        }}
+                        title={!isAuthenticated ? 'Connecte-toi pour voter' : isVoted ? 'Retirer mon intérêt' : 'M\'intéresse'}
+                      >
+                        <Heart size={12} weight={isVoted ? 'fill' : 'regular'} />
+                        {isVoted ? "Ça m'intéresse" : "M'intéresse"}
+                      </button>
+                      {count > 0 && (
+                        <span style={styles.interestCount}>
+                          {count} {count > 1 ? 'intéressés' : 'intéressé'}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <p style={styles.toolDesc}>{t.description}</p>
-                </a>
-              ))}
+                )
+              })}
             </div>
           </div>
         ))}
@@ -258,6 +328,70 @@ export default function PartenairesView({
           </div>
         )}
       </div>
+
+      {/* ── Top demandés par la communauté ── */}
+      {(() => {
+        const topRequested = catalog
+          .map(t => ({ tool: t, count: counts[t.slug] ?? 0 }))
+          .filter(({ count }) => count > 0)
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5)
+        if (topRequested.length === 0) return null
+        return (
+          <div style={styles.sectionWrap} className="fade-up">
+            <div style={styles.sectionLabel}>
+              <TrendUp size={13} weight="fill" color="var(--accent-text)" />
+              Top demandés par la communauté
+              <span style={styles.sectionCount}>{topRequested.length}</span>
+            </div>
+            <p style={styles.catalogDesc}>
+              Les outils les plus demandés par les membres pour un partenariat. Plus de votes = plus de chances qu&apos;on négocie une réduction.
+            </p>
+            <div style={styles.topGrid}>
+              {topRequested.map(({ tool, count }, i) => {
+                const cat = ECOSYSTEME_CATEGORIES.find(c => c.id === tool.category)
+                const isVoted = voted.has(tool.slug)
+                return (
+                  <div key={tool.slug} style={styles.topCard}>
+                    <div style={styles.topRank}>#{i + 1}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={styles.topName}>
+                        {tool.name}
+                        {cat && <span style={styles.topCat}>{cat.emoji} {cat.label}</span>}
+                      </div>
+                      <div style={styles.topMeta}>
+                        <span style={{ color: 'var(--accent-text)', fontWeight: 700 }}>{count}</span>
+                        {' '}membre{count > 1 ? 's' : ''} intéressé{count > 1 ? 's' : ''}
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => handleToggleInterest(tool.slug, e)}
+                      disabled={!isAuthenticated}
+                      style={{
+                        ...styles.interestBtn,
+                        ...(isVoted ? styles.interestBtnOn : {}),
+                        opacity: isAuthenticated ? 1 : 0.5,
+                        cursor: isAuthenticated ? 'pointer' : 'not-allowed',
+                      }}
+                    >
+                      <Heart size={12} weight={isVoted ? 'fill' : 'regular'} />
+                      {isVoted ? 'Voté' : 'Voter'}
+                    </button>
+                    <a
+                      href={tool.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={styles.topLink}
+                    >
+                      <ArrowUpRight size={13} weight="bold" />
+                    </a>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ── Suggérer un partenaire ── */}
       <div style={styles.suggestSection} className="fade-up d3">
@@ -464,13 +598,68 @@ const styles: Record<string, React.CSSProperties> = {
   toolCard: {
     padding: '14px 16px', borderRadius: '12px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    textDecoration: 'none' as const, color: 'var(--text-2)',
-    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+    color: 'var(--text-2)',
+    display: 'flex', flexDirection: 'column' as const, gap: '10px',
     transition: 'border-color 0.15s, transform 0.15s',
+  },
+  toolLink: {
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+    textDecoration: 'none' as const, color: 'inherit',
   },
   toolHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' },
   toolName: { fontSize: '14px', fontWeight: 600, color: 'var(--text)' },
   toolDesc: { fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.5, margin: 0 },
+  toolFooter: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    paddingTop: '8px', borderTop: '1px solid var(--border)',
+  },
+
+  /* ── Bouton M'intéresse ── */
+  interestBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '5px 11px', borderRadius: '100px',
+    fontSize: '11.5px', fontWeight: 600,
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    color: 'var(--text-2)',
+    fontFamily: 'var(--font-outfit), sans-serif',
+    transition: 'all 0.15s',
+  },
+  interestBtnOn: {
+    background: 'rgba(244,114,182,0.10)', color: '#db2777',
+    border: '1px solid rgba(244,114,182,0.32)',
+  },
+  interestCount: {
+    fontSize: '11px', color: 'var(--text-2)', fontWeight: 500,
+  },
+
+  /* ── Top demandés ── */
+  topGrid: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  topCard: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    padding: '14px 16px', borderRadius: '12px',
+    background: 'var(--surface)', border: '1px solid var(--accent-border)',
+  },
+  topRank: {
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500,
+    color: 'var(--accent-text)', minWidth: '32px',
+  },
+  topName: {
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+  },
+  topCat: {
+    fontSize: '11px', fontWeight: 500, color: 'var(--text-2)',
+    background: 'var(--surface-2)', padding: '1px 8px', borderRadius: '100px',
+  },
+  topMeta: {
+    fontSize: '12px', color: 'var(--text-2)', marginTop: '3px',
+  },
+  topLink: {
+    width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: 'var(--accent-text)', textDecoration: 'none' as const,
+  },
 
   empty: {
     padding: '32px', borderRadius: '14px',
