@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import {
   CalendarBlank, Warning, CurrencyEur, House, UsersThree,
   ArrowRight, Newspaper, Plus, UserPlus, FileText, Flag, CalendarPlus,
+  GraduationCap, Trophy, Flame,
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
@@ -103,6 +104,74 @@ export default async function DashboardPage() {
         .eq('user_id', userId)
         .eq('status', 'joined')
     : { data: [] as { group_id: string }[] }
+
+  // ── Pulse apprenant : formation en cours + streak + niveau
+  const [{ data: userFormationsLearn }, { data: completionLogLearn }] = userId
+    ? await Promise.all([
+        supabase
+          .from('user_formations')
+          .select('formation_id, progress, completed_lessons, formations(slug, title, lessons_count)')
+          .eq('user_id', userId),
+        supabase
+          .from('user_lesson_completion_log')
+          .select('completed_at')
+          .eq('user_id', userId)
+          .order('completed_at', { ascending: false })
+          .limit(500),
+      ])
+    : [{ data: [] }, { data: [] }]
+
+  const ufLearn = (userFormationsLearn ?? []) as Array<{
+    formation_id: string
+    progress: number
+    completed_lessons: number[] | null
+    formations: { slug: string; title: string; lessons_count: number } | { slug: string; title: string; lessons_count: number }[] | null
+  }>
+  const totalLessonsDone = ufLearn.reduce((sum, uf) => sum + ((uf.completed_lessons ?? [])?.length ?? 0), 0)
+  const formationsCompleted = ufLearn.filter(uf => uf.progress === 100).length
+  const formationInProgress = ufLearn
+    .filter(uf => uf.progress > 0 && uf.progress < 100)
+    .sort((a, b) => b.progress - a.progress)[0] ?? null
+
+  const learnerLevel =
+    totalLessonsDone === 0 ? null :
+    totalLessonsDone < 10 ? { label: 'Apprenti', color: '#2563eb' } :
+    totalLessonsDone < 30 ? { label: 'Praticien', color: '#15803d' } :
+    totalLessonsDone < 60 ? { label: 'Expert', color: 'var(--accent-text)' } :
+                            { label: 'Maître', color: '#7c3aed' }
+
+  const streakLearner = (() => {
+    if (!completionLogLearn || completionLogLearn.length === 0) return 0
+    const days = new Set<string>()
+    completionLogLearn.forEach((c: { completed_at: string }) => {
+      days.add(new Date(c.completed_at).toISOString().slice(0, 10))
+    })
+    let count = 0
+    const t = new Date()
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(t.getTime() - i * 86400000).toISOString().slice(0, 10)
+      if (days.has(d)) count++
+      else if (i === 0) continue
+      else break
+    }
+    return count
+  })()
+
+  const formationInProgressData = formationInProgress
+    ? (() => {
+        const f = Array.isArray(formationInProgress.formations)
+          ? formationInProgress.formations[0]
+          : formationInProgress.formations
+        if (!f) return null
+        return {
+          slug: f.slug,
+          title: f.title,
+          progress: formationInProgress.progress,
+          completedCount: (formationInProgress.completed_lessons ?? [])?.length ?? 0,
+          lessonsCount: f.lessons_count,
+        }
+      })()
+    : null
 
   // ── Chez Nous : 3 dernières discussions actives + total
   const [{ data: cnPosts }, { count: cnTotal }] = await Promise.all([
@@ -510,6 +579,58 @@ export default async function DashboardPage() {
           </section>
         )}
 
+        {/* ── Pulse apprenant ─────────────────────────────────────────── */}
+        {(learnerLevel || formationInProgressData) && (
+          <section style={s.section} className="fade-up d3">
+            <Link href="/dashboard/formations/profil-apprenant" style={s.learnerCard}>
+              <div style={s.learnerLeft}>
+                <div style={s.learnerHead}>
+                  <GraduationCap size={14} weight="fill" color="var(--accent-text)" />
+                  <span style={s.learnerLabel}>Mon apprentissage</span>
+                </div>
+                <div style={s.learnerBadges}>
+                  {learnerLevel && (
+                    <span style={{ ...s.learnerLevel, color: learnerLevel.color, borderColor: `${learnerLevel.color}50`, background: `${learnerLevel.color}14` }}>
+                      <Trophy size={12} weight="fill" />
+                      {learnerLevel.label}
+                    </span>
+                  )}
+                  {streakLearner > 0 && (
+                    <span style={s.learnerStreak}>
+                      <Flame size={12} weight="fill" color="#dc2626" />
+                      <strong style={{ color: '#dc2626' }}>{streakLearner}</strong> jour{streakLearner > 1 ? 's' : ''}
+                    </span>
+                  )}
+                  <span style={s.learnerCount}>
+                    {totalLessonsDone} leçon{totalLessonsDone > 1 ? 's' : ''} · {formationsCompleted} formation{formationsCompleted > 1 ? 's' : ''} finie{formationsCompleted > 1 ? 's' : ''}
+                  </span>
+                </div>
+              </div>
+
+              {formationInProgressData ? (
+                <div style={s.learnerProgress}>
+                  <div style={s.learnerProgressLabel}>Continue</div>
+                  <div style={s.learnerProgressTitle}>{formationInProgressData.title}</div>
+                  <div style={s.learnerProgressBar}>
+                    <div style={{ ...s.learnerProgressFill, width: `${formationInProgressData.progress}%` }} />
+                  </div>
+                  <div style={s.learnerProgressMeta}>
+                    {formationInProgressData.progress}% · {formationInProgressData.completedCount}/{formationInProgressData.lessonsCount} leçons
+                  </div>
+                </div>
+              ) : (
+                <div style={s.learnerProgress}>
+                  <div style={s.learnerProgressLabel}>Suggestion</div>
+                  <div style={s.learnerProgressTitle}>Démarre une formation pour progresser</div>
+                  <div style={s.learnerProgressMeta}>16 formations disponibles dans le catalogue</div>
+                </div>
+              )}
+
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
+            </Link>
+          </section>
+        )}
+
         {/* ── Chez Nous ───────────────────────────────────────────────── */}
         <section style={s.section} className="fade-up d3">
           <ChezNousWidget
@@ -675,6 +796,52 @@ const s: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   quickLabel: { color: 'var(--text)', fontSize: '13px', fontWeight: 600, lineHeight: 1.2 },
+
+  // ── Pulse apprenant ───────────────────────────────────────────────────────
+  learnerCard: {
+    display: 'flex', alignItems: 'center', gap: '20px',
+    padding: '18px 22px', borderRadius: '14px',
+    background: 'var(--surface)', border: '1px solid var(--accent-border)',
+    textDecoration: 'none' as const, color: 'inherit',
+    transition: 'border-color 0.15s, background 0.15s',
+    flexWrap: 'wrap' as const,
+  },
+  learnerLeft: { flex: 1, minWidth: '220px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  learnerHead: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+    fontSize: '11px', fontWeight: 700, color: 'var(--text-2)',
+    textTransform: 'uppercase' as const, letterSpacing: '0.6px',
+  },
+  learnerLabel: { color: 'var(--text-2)' },
+  learnerBadges: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
+  learnerLevel: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 700,
+    padding: '5px 11px', borderRadius: '100px',
+    border: '1px solid',
+  },
+  learnerStreak: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text)',
+    padding: '5px 11px', borderRadius: '100px',
+    background: 'rgba(220,38,38,0.10)', border: '1px solid rgba(220,38,38,0.25)',
+  },
+  learnerCount: { fontSize: '12px', color: 'var(--text-2)', fontWeight: 500 },
+  learnerProgress: {
+    flex: '1 1 280px', minWidth: '260px',
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    paddingLeft: '16px', borderLeft: '1px solid var(--border)',
+  },
+  learnerProgressLabel: { fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
+  learnerProgressTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.3 },
+  learnerProgressBar: {
+    height: '5px', background: 'var(--surface-2)', borderRadius: '3px',
+    overflow: 'hidden' as const, marginTop: '4px',
+  },
+  learnerProgressFill: {
+    height: '100%', background: 'linear-gradient(90deg, var(--accent-text), #15803d)', borderRadius: '3px',
+  },
+  learnerProgressMeta: { fontSize: '11.5px', color: 'var(--text-2)', fontWeight: 500 },
 
   // ── Mini-calendrier 14 jours ──────────────────────────────────────────────
   miniCalCard: {
