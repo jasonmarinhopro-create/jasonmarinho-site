@@ -55,7 +55,7 @@ export default function CommunauteView({
   const [search, setSearch]             = useState('')
   const [activeCategory, setCategory]   = useState<string | null>(null)
   const [activeRegion, setRegion]       = useState<string | null>(null)
-  const [featuredOpen, setFeaturedOpen] = useState(true)
+  const [featuredOpen, setFeaturedOpen] = useState(false)
   const [memberships, setMemberships]     = useState(initialMemberships)
   const [showDismissed, setShowDismissed] = useState(false)
   const [, startTransition] = useTransition()
@@ -357,42 +357,6 @@ export default function CommunauteView({
         </div>
       )}
 
-      {/* Section Jason & Driing */}
-      {featuredGroups.length > 0 && (
-        <div style={s.featuredSection} className="fade-up">
-          <div style={s.featuredHeader}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={s.featuredBadge}>
-                <Star size={11} weight="fill" />
-                {FEATURED_CATEGORY}
-              </span>
-              <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>
-                {featuredGroups.length} groupe{featuredGroups.length > 1 ? 's' : ''}
-              </span>
-            </div>
-            <button onClick={() => setFeaturedOpen(v => !v)} style={s.collapseBtn}>
-              {featuredOpen ? <CaretUp size={12} /> : <CaretDown size={12} />}
-              {featuredOpen ? 'Réduire' : 'Voir'}
-            </button>
-          </div>
-
-          {featuredOpen && (
-            <>
-              <p style={s.featuredSub}>
-                Nos groupes officiels — rejoignez la communauté et partagez vos logements directement
-              </p>
-              <div className="dash-grid-2">
-                {featuredGroups.map((g, i) => (
-                  <div key={g.id} className={`fade-up d${i + 1}`}>
-                    {renderCard(g, true)}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
       {/* Autres catégories */}
       {otherCategories.map(([category, catGroups]) => (
         <div key={category} style={s.section} className="fade-up">
@@ -410,6 +374,35 @@ export default function CommunauteView({
           </div>
         </div>
       ))}
+
+      {/* Communauté Driing — section sobre en bas */}
+      {featuredGroups.length > 0 && (
+        <div style={s.section} className="fade-up">
+          <button
+            onClick={() => setFeaturedOpen(v => !v)}
+            style={s.driingHeader}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <UsersThree size={14} color="var(--text-2)" />
+              <span style={s.sectionLabelSober}>Communauté Driing</span>
+              <span style={s.sectionCount}>{featuredGroups.length}</span>
+            </div>
+            <span style={s.driingToggle}>
+              {featuredOpen ? <CaretUp size={11} /> : <CaretDown size={11} />}
+              {featuredOpen ? 'Réduire' : 'Voir'}
+            </span>
+          </button>
+          {featuredOpen && (
+            <div className="dash-grid-2" style={{ marginTop: '14px' }}>
+              {featuredGroups.map(g => (
+                <div key={g.id}>
+                  {renderCard(g, false)}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Groupes masqués */}
       {dismissedCount > 0 && (
@@ -587,6 +580,20 @@ const s: Record<string, React.CSSProperties> = {
   sectionCount: {
     fontSize: '10px', padding: '1px 7px', borderRadius: '100px',
     background: 'var(--surface)', color: 'var(--text-muted)',
+  },
+  sectionLabelSober: {
+    fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const, color: 'var(--text-2)',
+  },
+  driingHeader: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    width: '100%', padding: '12px 14px', borderRadius: '10px',
+    background: 'var(--surface)', border: '1px dashed var(--border)',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  driingToggle: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text-3)',
   },
   card: {
     padding: '18px', borderRadius: '16px',
