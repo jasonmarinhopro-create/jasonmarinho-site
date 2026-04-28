@@ -159,6 +159,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
 
         {/* Aside */}
         <aside style={s.aside}>
+          <JasonNoteCard />
           <StatsCard stats={stats} />
           <TopMembersCard members={topMembers} />
           <CategoriesCard counts={catCounts} currentCategory={currentCategory} currentSort={currentSort} />
@@ -170,6 +171,27 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
 }
 
 // ─── Aside cards ─────────────────────────────────────────────────────
+
+function JasonNoteCard() {
+  return (
+    <div style={s.jasonCard}>
+      <div style={s.jasonHeader}>
+        <span style={s.jasonAvatar}>JM</span>
+        <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1px' }}>
+          <span style={s.jasonName}>Jason</span>
+          <span style={s.jasonRole}>Fondateur · veille sur la famille</span>
+        </div>
+      </div>
+      <p style={s.jasonMessage}>
+        Bienvenue Chez Nous. Cet espace n'a qu'une règle :
+        <strong style={{ color: 'var(--accent-text)' }}> on s'entraide</strong>.
+        Pose tes questions sans hésiter, partage ce que tu apprends, et surtout —
+        réponds quand tu peux à ceux qui débutent. C'est comme ça qu'on grandit ensemble.
+      </p>
+      <span style={s.jasonSign}>— Jason</span>
+    </div>
+  )
+}
 
 function StatsCard({ stats }: { stats: { totalPosts: number; totalReplies: number; totalMembers: number } }) {
   return (
@@ -627,6 +649,35 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%' },
+
+  jasonCard: {
+    background: 'linear-gradient(160deg, rgba(255,213,107,0.08), rgba(255,213,107,0.02))',
+    border: '1px solid rgba(255,213,107,0.22)',
+    borderRadius: '14px',
+    padding: 'clamp(14px, 2.5vw, 18px)',
+    display: 'flex', flexDirection: 'column' as const, gap: '12px',
+  },
+  jasonHeader: { display: 'flex', alignItems: 'center', gap: '10px' },
+  jasonAvatar: {
+    width: '36px', height: '36px', borderRadius: '50%',
+    background: 'rgba(255,213,107,0.18)', color: 'var(--accent-text)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '12px', fontWeight: 700, flexShrink: 0,
+    border: '1.5px solid rgba(255,213,107,0.35)',
+  },
+  jasonName: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '15px', fontWeight: 500, color: 'var(--text)',
+  },
+  jasonRole: { fontSize: '11px', color: 'var(--text-muted)' },
+  jasonMessage: {
+    fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.65, margin: 0,
+  },
+  jasonSign: {
+    fontSize: '12px', fontStyle: 'italic' as const,
+    color: 'var(--accent-text)', alignSelf: 'flex-end',
+    fontFamily: 'var(--font-fraunces), serif',
+  },
 
   newMembersBand: {
     display: 'flex', alignItems: 'center', gap: 'clamp(12px, 2vw, 24px)',
