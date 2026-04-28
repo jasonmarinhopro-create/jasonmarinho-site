@@ -47,7 +47,7 @@ export default async function MembresPage() {
   return (
     <>
       <Header title="Membres" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
-      <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '1200px' }}>
+      <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '1400px', width: '100%' }}>
         <MembresUI members={normalized} />
       </div>
     </>

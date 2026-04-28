@@ -1,5 +1,7 @@
-import { buildFormationPage } from '@/lib/queries/formation-page-data'
+import { buildFormationPage, buildFormationMetadataFromContent } from '@/lib/queries/formation-page-data'
 import { FISCALITE_CONCIERGERIE_FORMATION } from './content'
+
+export const metadata = buildFormationMetadataFromContent('fiscalite-statut-conciergerie-tourisme', FISCALITE_CONCIERGERIE_FORMATION)
 
 export default async function Page() {
   return buildFormationPage({

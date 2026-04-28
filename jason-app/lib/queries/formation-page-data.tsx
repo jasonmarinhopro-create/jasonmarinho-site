@@ -5,6 +5,25 @@ import { createClient } from '@/lib/supabase/server'
 import { getFormationDbContent, type FormationContent } from '@/lib/queries/formation-db-content'
 import { checkFormationAccess } from '@/lib/queries/formation-access'
 import PlanGate from '@/components/ui/PlanGate'
+import FormationLockedPreview from '@/components/formations/FormationLockedPreview'
+import { getFormationRelations } from '@/lib/formations/relations'
+import { buildFormationMetadata, buildCourseSchema } from '@/lib/formations/seo'
+import type { Metadata } from 'next'
+
+/** Génère les Metadata Next.js pour une page formation */
+export function buildFormationMetadataFromContent(
+  slug: string,
+  content: { title: string; description: string; duration: string; level: string; modules?: Array<{ title: string }> }
+): Metadata {
+  return buildFormationMetadata({
+    slug,
+    title: content.title,
+    description: content.description,
+    duration: content.duration,
+    level: content.level,
+    modules: content.modules,
+  })
+}
 
 /**
  * Builds the JSX for a formation dashboard page.
@@ -51,10 +70,47 @@ export async function buildFormationPage({
   if (formationId && profile?.userId) {
     const { allowed } = await checkFormationAccess(supabase, profile.userId, formationId, plan)
     if (!allowed) {
+      // Phase 10 — Preview enrichi : sommaire + social proof + reviews
+      const [{ count: enrolledCount }, { count: completedCount }, { data: reviews }] = await Promise.all([
+        supabase
+          .from('user_formations')
+          .select('user_id', { count: 'exact', head: true })
+          .eq('formation_id', formationId),
+        supabase
+          .from('user_formations')
+          .select('user_id', { count: 'exact', head: true })
+          .eq('formation_id', formationId)
+          .eq('progress', 100),
+        supabase
+          .from('formation_reviews')
+          .select('rating, comment, display_name')
+          .eq('formation_id', formationId)
+          .eq('is_public', true)
+          .order('created_at', { ascending: false })
+          .limit(6),
+      ])
+
+      const reviewsList = (reviews ?? []) as Array<{ rating: number; comment: string | null; display_name: string | null }>
+      const averageRating = reviewsList.length > 0
+        ? reviewsList.reduce((sum, r) => sum + r.rating, 0) / reviewsList.length
+        : null
+
       return (
         <>
-          <Header title="Formation" userName={profile?.full_name ?? undefined} />
-          <PlanGate feature="formations" />
+          <Header title={headerTitle} userName={profile?.full_name ?? undefined} />
+          <FormationLockedPreview
+            formationTitle={staticContent.title}
+            formationDescription={staticContent.description}
+            formationDuration={staticContent.duration}
+            formationLevel={staticContent.level}
+            modules={staticContent.modules}
+            objectifs={staticContent.objectifs}
+            enrolledCount={enrolledCount ?? 0}
+            completedCount={completedCount ?? 0}
+            reviewsCount={reviewsList.length}
+            averageRating={averageRating}
+            reviews={reviewsList.filter(r => r.comment)}
+          />
         </>
       )
     }
@@ -63,28 +119,92 @@ export async function buildFormationPage({
   // Progress existant de l'utilisateur (si déjà inscrit)
   let initialProgress: number | null = null
   let initialCompletedLessons: number[] = []
+  let initialNotes: Record<string, string> = {}
+  let initialBookmarks: number[] = []
+  let initialVotes: Record<string, 1 | -1> = {}
   if (formationId && profile?.userId) {
-    const { data: uf } = await supabase
-      .from('user_formations')
-      .select('progress, completed_lessons')
-      .eq('user_id', profile.userId)
-      .eq('formation_id', formationId)
-      .maybeSingle()
+    const [{ data: uf }, { data: notes }, { data: bookmarks }, { data: votes }] = await Promise.all([
+      supabase
+        .from('user_formations')
+        .select('progress, completed_lessons')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId)
+        .maybeSingle(),
+      supabase
+        .from('user_lesson_notes')
+        .select('lesson_id, content')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId),
+      supabase
+        .from('user_lesson_bookmarks')
+        .select('lesson_id')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId),
+      supabase
+        .from('lesson_feedback')
+        .select('lesson_id, vote')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId),
+    ])
     initialProgress = uf?.progress ?? null
     initialCompletedLessons = (uf?.completed_lessons as number[]) ?? []
+    ;(notes ?? []).forEach((n: any) => { initialNotes[String(n.lesson_id)] = n.content as string })
+    initialBookmarks = (bookmarks ?? []).map((b: any) => b.lesson_id as number)
+    ;(votes ?? []).forEach((v: any) => { initialVotes[String(v.lesson_id)] = v.vote as 1 | -1 })
   }
 
   // Contenu : DB override statique si présent, sinon fallback statique
   const formationContent = await getFormationDbContent(formationId, staticContent)
 
+  // Phase 4 — Relations : articles blog + formations recommandées
+  const relations = getFormationRelations(slug)
+
+  // Pour les formations recommandées, on récupère leur titre depuis la DB
+  let nextFormationsData: Array<{ slug: string; title: string; reason?: string }> = []
+  if (relations.recommendedNext.length > 0) {
+    const slugs = relations.recommendedNext.map(r => r.slug)
+    const { data: nexts } = await supabase
+      .from('formations')
+      .select('slug, title')
+      .in('slug', slugs)
+      .eq('is_published', true)
+    const titleBySlug = Object.fromEntries((nexts ?? []).map(n => [n.slug, n.title as string]))
+    nextFormationsData = relations.recommendedNext
+      .filter(r => titleBySlug[r.slug])
+      .map(r => ({ slug: r.slug, title: titleBySlug[r.slug], reason: r.reason }))
+  }
+
+  // Phase 5 — JSON-LD Course schema
+  const courseJsonLd = buildCourseSchema({
+    slug,
+    title: formationContent.title,
+    description: formationContent.description,
+    duration: formationContent.duration,
+    level: formationContent.level,
+    modules: formationContent.modules?.map(m => ({ title: m.title })),
+  })
+
   return (
     <>
       <Header title={headerTitle} userName={profile?.full_name ?? undefined} />
+      {/* JSON-LD pour les moteurs de recherche / partage social */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: courseJsonLd }}
+      />
       <FormationView
         formation={formationContent}
         formationId={formationId}
+        formationSlug={slug}
         initialProgress={initialProgress}
         initialCompletedLessons={initialCompletedLessons}
+        initialNotes={initialNotes}
+        initialBookmarks={initialBookmarks}
+        initialVotes={initialVotes}
+        relatedArticles={relations.articles}
+        recommendedNext={nextFormationsData}
+        currentUserId={profile?.userId ?? null}
+        currentUserName={profile?.full_name?.split(' ')[0] ?? null}
       />
     </>
   )

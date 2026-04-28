@@ -1,5 +1,7 @@
-import { buildFormationPage } from '@/lib/queries/formation-page-data'
+import { buildFormationPage, buildFormationMetadataFromContent } from '@/lib/queries/formation-page-data'
 import { GMB_FORMATION } from './content'
+
+export const metadata = buildFormationMetadataFromContent('google-my-business-lcd', GMB_FORMATION)
 
 export default async function Page() {
   return buildFormationPage({

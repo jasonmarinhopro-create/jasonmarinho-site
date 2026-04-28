@@ -23,6 +23,12 @@ export default async function AdminPage() {
   startOfMonth.setDate(1)
   startOfMonth.setHours(0, 0, 0, 0)
 
+  // 12 mois glissants pour la courbe de croissance
+  const twelveMonthsAgo = new Date()
+  twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 11)
+  twelveMonthsAgo.setDate(1)
+  twelveMonthsAgo.setHours(0, 0, 0, 0)
+
   const [
     { count: totalUsers },
     { count: driingMembers },
@@ -33,10 +39,13 @@ export default async function AdminPage() {
     { count: groupsCount },
     { count: totalVoyageurs },
     { count: totalSejours },
+    { count: completedFormations },
     { data: pendingDriing },
     { data: reports },
     { data: suggestions },
     { data: formationEnrollments },
+    { data: recentSignups },
+    { data: monthlySignups },
   ] = await Promise.all([
     supabase.from('profiles').select('*', { count: 'exact', head: true }),
     supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
@@ -47,10 +56,13 @@ export default async function AdminPage() {
     supabase.from('community_groups').select('*', { count: 'exact', head: true }),
     supabase.from('voyageurs').select('*', { count: 'exact', head: true }),
     supabase.from('sejours').select('*', { count: 'exact', head: true }),
+    supabase.from('user_formations').select('*', { count: 'exact', head: true }).eq('progress', 100),
     supabase.from('profiles').select('id, email, full_name, created_at, driing_status').eq('driing_status', 'pending').order('created_at', { ascending: false }).limit(100),
     supabase.from('reported_guests').select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reported_at, description').order('reported_at', { ascending: false }).limit(100),
     supabase.from('suggestions').select('id, type, message, user_email, created_at').order('created_at', { ascending: false }).limit(100),
     supabase.from('user_formations').select('formation_id, formations(title)'),
+    supabase.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
+    supabase.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
   ])
 
   // Formation la plus commencée — tri par count desc puis titre alphabétique
@@ -68,14 +80,39 @@ export default async function AdminPage() {
     return a.title.localeCompare(b.title, 'fr')  // tiebreaker alphabétique FR
   })[0] ?? null
 
+  // Build monthly signup counts for the last 12 months
+  const signupsPerMonth: Record<string, { total: number; paid: number }> = {}
+  for (let i = 0; i < 12; i++) {
+    const d = new Date()
+    d.setMonth(d.getMonth() - i)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    signupsPerMonth[key] = { total: 0, paid: 0 }
+  }
+  for (const s of monthlySignups ?? []) {
+    const d = new Date(s.created_at as string)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    if (key in signupsPerMonth) {
+      signupsPerMonth[key].total++
+      if (s.plan === 'standard' || s.plan === 'driing') signupsPerMonth[key].paid++
+    }
+  }
+  const monthlySignupsChart = Object.entries(signupsPerMonth)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, counts]) => ({ month, ...counts }))
+
+  // MRR estimé : Standard à 1,98 €/mois + Driing à 0,98 €/mois
+  const mrr = ((standardMembers ?? 0) * 1.98) + ((driingMembers ?? 0) * 0.98)
+
   return (
     <>
       <Header title="Administration" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
-      <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '1200px' }}>
+      <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '1400px', width: '100%' }}>
         <AdminUI
           pendingDriing={pendingDriing ?? []}
           reports={reports ?? []}
           suggestions={suggestions ?? []}
+          recentSignups={(recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>}
+          monthlySignupsChart={monthlySignupsChart}
           stats={{
             totalUsers: totalUsers ?? 0,
             driingMembers: driingMembers ?? 0,
@@ -90,6 +127,8 @@ export default async function AdminPage() {
             totalVoyageurs: totalVoyageurs ?? 0,
             totalSejours: totalSejours ?? 0,
             topFormation: topFormation,
+            mrr,
+            completedFormations: completedFormations ?? 0,
           }}
         />
       </div>

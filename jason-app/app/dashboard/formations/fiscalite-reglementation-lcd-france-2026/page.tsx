@@ -1,5 +1,7 @@
-import { buildFormationPage } from '@/lib/queries/formation-page-data'
+import { buildFormationPage, buildFormationMetadataFromContent } from '@/lib/queries/formation-page-data'
 import { FISCALITE_LCD_FORMATION } from './content'
+
+export const metadata = buildFormationMetadataFromContent('fiscalite-reglementation-lcd-france-2026', FISCALITE_LCD_FORMATION)
 
 export default async function Page() {
   return buildFormationPage({

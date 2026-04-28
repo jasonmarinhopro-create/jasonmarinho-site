@@ -5,8 +5,10 @@ import Link from 'next/link'
 import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
   CaretDown, CaretRight, Star, Check, List, X,
+  BookmarkSimple, Note as NoteIcon, ArrowSquareOut, ArrowRight,
 } from '@phosphor-icons/react'
-import { enrollInFormation, updateFormationProgress } from '@/app/dashboard/formations/actions'
+import { enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark, voteLesson } from '@/app/dashboard/formations/actions'
+import LessonComments from './LessonComments'
 
 interface Lesson {
   id: number
@@ -36,20 +38,40 @@ export default function FormationView({
   formationId,
   initialProgress,
   initialCompletedLessons,
+  initialNotes = {},
+  initialBookmarks = [],
+  initialVotes = {},
+  formationSlug,
+  relatedArticles = [],
+  recommendedNext = [],
+  currentUserId,
+  currentUserName,
 }: {
   formation: Formation
   formationId?: string | null
   initialProgress?: number | null
   initialCompletedLessons?: number[]
+  initialNotes?: Record<string, string>
+  initialBookmarks?: number[]
+  initialVotes?: Record<string, 1 | -1>
+  formationSlug?: string
+  relatedArticles?: Array<{ label: string; slug: string }>
+  recommendedNext?: Array<{ slug: string; title: string; reason?: string }>
+  currentUserId?: string | null
+  currentUserName?: string | null
 }) {
   const totalLessons = formation.modules.reduce((a, m) => a + m.lessons.length, 0)
   const [activeLesson, setActiveLesson] = useState<{ moduleId: number; lessonId: number } | null>(null)
   const [openModules, setOpenModules] = useState<number[]>([1])
   const [isMobile, setIsMobile] = useState(false)
+  const [isMidScreen, setIsMidScreen] = useState(false) // < 1100px : sidebar visible mais rail droite cachée
   const [navOpen, setNavOpen] = useState(false)
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
+    const check = () => {
+      setIsMobile(window.innerWidth < 768)
+      setIsMidScreen(window.innerWidth < 1100)
+    }
     check()
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
@@ -65,6 +87,55 @@ export default function FormationView({
     return formation.modules.flatMap(m => m.lessons.map(l => l.id)).slice(0, count)
   })()
   const [completedLessons, setCompletedLessons] = useState<number[]>(restoredLessons)
+
+  // ─── Phase 2 — Notes personnelles ──────────────────────────────
+  const [notes, setNotes] = useState<Record<string, string>>(initialNotes)
+  const [noteSaved, setNoteSaved] = useState(false)
+  const noteTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  function updateNote(lessonId: number, content: string) {
+    setNotes(prev => ({ ...prev, [String(lessonId)]: content }))
+    setNoteSaved(false)
+    if (noteTimerRef.current) clearTimeout(noteTimerRef.current)
+    if (!formationId || !activeLesson) return
+    const moduleId = activeLesson.moduleId
+    noteTimerRef.current = setTimeout(async () => {
+      await saveLessonNote({ formationId, moduleId, lessonId, content })
+      setNoteSaved(true)
+      setTimeout(() => setNoteSaved(false), 1600)
+    }, 700)
+  }
+
+  // ─── Phase 7 — Votes utilité (👍/👎) ───────────────────────────
+  const [votes, setVotes] = useState<Record<string, 1 | -1>>(initialVotes)
+  function setLessonVote(lessonId: number, value: 1 | -1) {
+    const current = votes[String(lessonId)]
+    const next: 1 | -1 | 0 = current === value ? 0 : value
+    setVotes(prev => {
+      const out = { ...prev }
+      if (next === 0) delete out[String(lessonId)]
+      else out[String(lessonId)] = next
+      return out
+    })
+    if (formationId) voteLesson({ formationId, lessonId, vote: next }).catch(() => null)
+  }
+
+  // ─── Phase 3 — Bookmarks ───────────────────────────────────────
+  const [bookmarks, setBookmarks] = useState<number[]>(initialBookmarks)
+  function isBookmarked(lessonId: number) { return bookmarks.includes(lessonId) }
+  function toggleBookmark(lessonId: number, lessonTitle: string) {
+    const willAdd = !bookmarks.includes(lessonId)
+    setBookmarks(prev => willAdd ? [...prev, lessonId] : prev.filter(id => id !== lessonId))
+    if (!formationId || !formationSlug) return
+    toggleLessonBookmark({
+      formationId, formationSlug, formationTitle: formation.title,
+      moduleId: activeLesson?.moduleId ?? 0, lessonId, lessonTitle,
+      add: willAdd,
+    }).catch(() => {
+      // rollback en cas d'erreur
+      setBookmarks(prev => willAdd ? prev.filter(id => id !== lessonId) : [...prev, lessonId])
+    })
+  }
 
   const currentLesson = activeLesson
     ? formation.modules
@@ -89,7 +160,7 @@ export default function FormationView({
 
   // Leçon suivante pour le bouton "Suivante →"
   const allLessonsFlat = formation.modules.flatMap(m =>
-    m.lessons.map(l => ({ moduleId: m.id, lessonId: l.id }))
+    m.lessons.map(l => ({ moduleId: m.id, lessonId: l.id, title: l.title }))
   )
   const currentFlatIdx = activeLesson
     ? allLessonsFlat.findIndex(l => l.lessonId === activeLesson.lessonId)
@@ -97,6 +168,29 @@ export default function FormationView({
   const nextLesson = currentFlatIdx !== -1 && currentFlatIdx < allLessonsFlat.length - 1
     ? allLessonsFlat[currentFlatIdx + 1]
     : null
+  const prevLesson = currentFlatIdx > 0 ? allLessonsFlat[currentFlatIdx - 1] : null
+
+  // ─── Phase 1 — TOC auto-générée depuis les H2 du markdown ──────
+  const toc = (() => {
+    if (!currentLesson) return [] as Array<{ id: string; title: string; level: 2 | 3 }>
+    const items: Array<{ id: string; title: string; level: 2 | 3 }> = []
+    const lines = currentLesson.content.split('\n')
+    const slugify = (s: string) => s.toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60)
+    for (const l of lines) {
+      if (l.startsWith('## ')) {
+        const t = l.slice(3).trim()
+        if (t) items.push({ id: `h-${slugify(t)}`, title: t, level: 2 })
+      } else if (l.startsWith('### ')) {
+        const t = l.slice(4).trim()
+        if (t) items.push({ id: `h-${slugify(t)}`, title: t, level: 3 })
+      }
+    }
+    return items
+  })()
 
   function toggleModule(id: number) {
     setOpenModules(prev =>
@@ -118,7 +212,9 @@ export default function FormationView({
 
     if (formationId) {
       const newProgress = Math.round((updated.length / totalLessons) * 100)
-      updateFormationProgress(formationId, newProgress, updated)
+      // Phase 6 — passer le lessonId nouvellement complétée pour logger la date
+      const isNewlyCompleted = !completedLessons.includes(lessonId)
+      updateFormationProgress(formationId, newProgress, updated, isNewlyCompleted ? lessonId : undefined)
     }
 
     // Auto-advance to next lesson
@@ -146,9 +242,13 @@ export default function FormationView({
       const line = lines[i]
 
       if (line.startsWith('## ')) {
-        elements.push(<h2 key={key++} style={s.h2}>{line.slice(3)}</h2>)
+        const t = line.slice(3).trim()
+        const id = `h-${t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)}`
+        elements.push(<h2 key={key++} id={id} style={s.h2}>{t}</h2>)
       } else if (line.startsWith('### ')) {
-        elements.push(<h3 key={key++} style={s.h3}>{line.slice(4)}</h3>)
+        const t = line.slice(4).trim()
+        const id = `h-${t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)}`
+        elements.push(<h3 key={key++} id={id} style={s.h3}>{t}</h3>)
       } else if (line.startsWith('**') && line.endsWith('**') && line.includes('—')) {
         elements.push(<p key={key++} style={s.boldLine} dangerouslySetInnerHTML={{ __html: formatInline(line) }} />)
       } else if (line.startsWith('| ')) {
@@ -414,6 +514,33 @@ export default function FormationView({
             >
               Commencer la formation <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
             </button>
+
+            {/* Phase 4 — Continuer avec d'autres formations */}
+            {recommendedNext.length > 0 && (
+              <div style={styles.recoBlock}>
+                <h3 style={styles.recoTitle}>Continuer ton apprentissage</h3>
+                <p style={styles.recoDesc}>
+                  Ces formations complètent parfaitement celle-ci :
+                </p>
+                <div style={styles.recoList}>
+                  {recommendedNext.map(rec => (
+                    <Link
+                      key={rec.slug}
+                      href={`/dashboard/formations/${rec.slug}`}
+                      style={styles.recoCard}
+                    >
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={styles.recoCardTitle}>{rec.title}</div>
+                        {rec.reason && (
+                          <div style={styles.recoCardReason}>{rec.reason}</div>
+                        )}
+                      </div>
+                      <ArrowRight size={14} weight="bold" color="var(--accent-text)" style={{ flexShrink: 0 }} />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           /* Lesson content */
@@ -469,9 +596,196 @@ export default function FormationView({
                 </button>
               )}
             </div>
+
+            {/* Phase 8 — Q&A et commentaires */}
+            {formationId && currentLesson && (
+              <LessonComments
+                formationId={formationId}
+                lessonId={currentLesson.id}
+                currentUserId={currentUserId ?? null}
+                defaultDisplayName={currentUserName ?? undefined}
+              />
+            )}
           </div>
         )}
       </main>
+
+      {/* ── Phase 1 : Rail droite (desktop large only, visible quand leçon active) ── */}
+      {!isMobile && !isMidScreen && activeLesson && (
+        <aside style={styles.rightRail}>
+          {/* Mini-progression */}
+          <div style={styles.railSection}>
+            <div style={styles.railLabel}>Progression</div>
+            <div style={styles.railProgressBar}>
+              <div style={{ ...styles.railProgressFill, width: `${progress}%` }} />
+            </div>
+            <div style={styles.railProgressText}>
+              <strong>{completedLessons.length}</strong> / {totalLessons} leçons · <strong>{progress}%</strong>
+            </div>
+          </div>
+
+          {/* Nav prev/next compact */}
+          <div style={styles.railSection}>
+            <div style={styles.railLabel}>Navigation</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {prevLesson && (
+                <button
+                  onClick={() => selectLesson(prevLesson.moduleId, prevLesson.lessonId)}
+                  style={styles.railNavBtn}
+                  title={prevLesson.title}
+                >
+                  <ArrowLeft size={12} weight="bold" />
+                  <span style={styles.railNavText}>{prevLesson.title}</span>
+                </button>
+              )}
+              {nextLesson && (
+                <button
+                  onClick={() => selectLesson(nextLesson.moduleId, nextLesson.lessonId)}
+                  style={{ ...styles.railNavBtn, background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' }}
+                  title={nextLesson.title}
+                >
+                  <span style={styles.railNavText}>{nextLesson.title}</span>
+                  <ArrowLeft size={12} weight="bold" style={{ transform: 'rotate(180deg)' }} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Actions rapides : terminé + favori */}
+          {currentLesson && (
+            <div style={styles.railSection}>
+              {!completedLessons.includes(currentLesson.id) ? (
+                <button
+                  onClick={() => markComplete(currentLesson.id)}
+                  style={styles.railDoneBtn}
+                >
+                  <Check size={13} weight="bold" />
+                  Marquer cette leçon terminée
+                </button>
+              ) : (
+                <div style={styles.railDoneMsg}>
+                  <CheckCircle size={14} weight="fill" color="#10b981" />
+                  Leçon terminée
+                </div>
+              )}
+              <button
+                onClick={() => toggleBookmark(currentLesson.id, currentLesson.title)}
+                style={{
+                  ...styles.railBookmarkBtn,
+                  ...(isBookmarked(currentLesson.id) ? styles.railBookmarkBtnActive : {}),
+                }}
+              >
+                <BookmarkSimple
+                  size={13}
+                  weight={isBookmarked(currentLesson.id) ? 'fill' : 'regular'}
+                />
+                {isBookmarked(currentLesson.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+              </button>
+            </div>
+          )}
+
+          {/* Notes personnelles */}
+          {currentLesson && (
+            <div style={styles.railSection}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={styles.railLabel}>
+                  <NoteIcon size={11} weight="fill" style={{ verticalAlign: '-2px', marginRight: '4px' }} />
+                  Mes notes
+                </span>
+                {noteSaved && (
+                  <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 600 }}>
+                    ✓ Enregistré
+                  </span>
+                )}
+              </div>
+              <textarea
+                placeholder="Note libre, idée à retenir, action à faire…"
+                value={notes[String(currentLesson.id)] ?? ''}
+                onChange={(e) => updateNote(currentLesson.id, e.target.value)}
+                rows={6}
+                style={styles.railNoteTextarea}
+              />
+            </div>
+          )}
+
+          {/* TOC auto-générée */}
+          {toc.length > 0 && (
+            <div style={styles.railSection}>
+              <div style={styles.railLabel}>Sur cette page</div>
+              <div style={styles.tocList}>
+                {toc.map(t => (
+                  <a
+                    key={t.id}
+                    href={`#${t.id}`}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      const el = document.getElementById(t.id)
+                      if (el && mainRef.current) {
+                        mainRef.current.scrollTo({ top: el.offsetTop - 60, behavior: 'smooth' })
+                      }
+                    }}
+                    style={{ ...styles.tocLink, paddingLeft: t.level === 3 ? '16px' : '0' }}
+                  >
+                    <span style={styles.tocBullet}>·</span>
+                    {t.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Phase 7 — Notation utile/pas utile */}
+          {currentLesson && (
+            <div style={styles.railSection}>
+              <div style={styles.railLabel}>Cette leçon t&apos;a aidé ?</div>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  onClick={() => setLessonVote(currentLesson.id, 1)}
+                  style={{
+                    ...styles.railVoteBtn,
+                    ...(votes[String(currentLesson.id)] === 1 ? styles.railVoteBtnUp : {}),
+                  }}
+                  title="Utile"
+                >
+                  👍 Utile
+                </button>
+                <button
+                  onClick={() => setLessonVote(currentLesson.id, -1)}
+                  style={{
+                    ...styles.railVoteBtn,
+                    ...(votes[String(currentLesson.id)] === -1 ? styles.railVoteBtnDown : {}),
+                  }}
+                  title="Pas utile"
+                >
+                  👎 Améliorer
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Phase 4 — Articles blog liés */}
+          {relatedArticles.length > 0 && (
+            <div style={{ ...styles.railSection, borderBottom: 'none' }}>
+              <div style={styles.railLabel}>📖 Approfondir</div>
+              <div style={styles.tocList}>
+                {relatedArticles.map(a => (
+                  <a
+                    key={a.slug}
+                    href={`https://jasonmarinho.com/blog/${a.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ ...styles.tocLink, alignItems: 'center' }}
+                  >
+                    <span style={styles.tocBullet}>·</span>
+                    <span style={{ flex: 1 }}>{a.label}</span>
+                    <ArrowSquareOut size={10} weight="bold" color="var(--text-muted)" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+      )}
     </div>
   )
 }
@@ -616,8 +930,208 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   // ── Main area ──
-  main: { flex: 1, overflowY: 'auto' },
+  main: { flex: 1, overflowY: 'auto', minWidth: 0 },
   mainMobile: { overflowY: 'visible' },
+
+  // ─── Phase 1 — Rail droite ─────────────────────────────────────
+  rightRail: {
+    width: '260px', flexShrink: 0,
+    borderLeft: '1px solid var(--border)',
+    display: 'flex', flexDirection: 'column',
+    position: 'sticky', top: 'var(--header-h)',
+    height: 'calc(100svh - var(--header-h))',
+    overflowY: 'auto',
+    padding: '20px 16px',
+    gap: '20px',
+    background: 'var(--bg)',
+  },
+  railSection: {
+    display: 'flex', flexDirection: 'column',
+    gap: '8px',
+    paddingBottom: '16px',
+    borderBottom: '1px solid var(--border)',
+  },
+  railLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)',
+  },
+  railProgressBar: {
+    height: '6px',
+    background: 'var(--surface-2)',
+    borderRadius: '4px',
+    overflow: 'hidden' as const,
+  },
+  railProgressFill: {
+    height: '100%',
+    background: 'linear-gradient(90deg, var(--accent-text), #34D399)',
+    borderRadius: '4px',
+    transition: 'width 0.4s',
+  },
+  railProgressText: {
+    fontSize: '12px',
+    color: 'var(--text-2)',
+    fontWeight: 400,
+  },
+  railNavBtn: {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    padding: '8px 10px',
+    fontSize: '11.5px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left' as const,
+  },
+  railNavText: {
+    flex: 1, minWidth: 0,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as const,
+    whiteSpace: 'nowrap' as const,
+  },
+  railDoneBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+    padding: '9px 14px',
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--bg)',
+    background: 'var(--accent-text)',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    width: '100%',
+  },
+  railDoneMsg: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '9px 14px',
+    fontSize: '12px', fontWeight: 600,
+    color: '#10b981',
+    background: 'rgba(16,185,129,0.08)',
+    border: '1px solid rgba(16,185,129,0.25)',
+    borderRadius: '8px',
+    justifyContent: 'center',
+  },
+  tocList: {
+    display: 'flex', flexDirection: 'column',
+    gap: '2px',
+  },
+  tocLink: {
+    display: 'flex', alignItems: 'flex-start', gap: '6px',
+    padding: '5px 8px',
+    fontSize: '12px',
+    color: 'var(--text-2)',
+    textDecoration: 'none' as const,
+    borderRadius: '6px',
+    lineHeight: 1.4,
+  },
+  tocBullet: {
+    color: 'var(--accent-text)',
+    fontWeight: 700,
+    flexShrink: 0,
+  },
+
+  // Phase 2 + 3
+  railBookmarkBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+    padding: '8px 12px',
+    fontSize: '11.5px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    width: '100%',
+    marginTop: '6px',
+  },
+  railBookmarkBtnActive: {
+    background: 'rgba(245,158,11,0.10)',
+    color: '#f59e0b',
+    borderColor: 'rgba(245,158,11,0.30)',
+    fontWeight: 600,
+  },
+  railNoteTextarea: {
+    width: '100%', boxSizing: 'border-box' as const,
+    padding: '9px 10px',
+    fontSize: '12px', fontFamily: 'inherit',
+    color: 'var(--text)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    outline: 'none',
+    resize: 'vertical' as const,
+    minHeight: '90px',
+    lineHeight: 1.5,
+  },
+
+  // ─── Phase 7 — Vote utile/pas utile ────────────────────────────
+  railVoteBtn: {
+    flex: 1,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
+    padding: '7px 8px',
+    fontSize: '11.5px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  railVoteBtnUp: {
+    background: 'rgba(16,185,129,0.10)',
+    color: '#10b981',
+    borderColor: 'rgba(16,185,129,0.30)',
+    fontWeight: 600,
+  },
+  railVoteBtnDown: {
+    background: 'rgba(239,68,68,0.08)',
+    color: '#ef4444',
+    borderColor: 'rgba(239,68,68,0.25)',
+    fontWeight: 600,
+  },
+
+  // ─── Phase 4 — Recommandations formations ──────────────────────
+  recoBlock: {
+    marginTop: '32px',
+    padding: '20px 24px',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '14px',
+  },
+  recoTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 500,
+    color: 'var(--text)',
+    margin: '0 0 4px',
+  },
+  recoDesc: {
+    fontSize: '13px', color: 'var(--text-2)',
+    margin: '0 0 14px', lineHeight: 1.5,
+  },
+  recoList: {
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+  },
+  recoCard: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '12px 14px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    textDecoration: 'none' as const,
+    color: 'var(--text-2)',
+  },
+  recoCardTitle: {
+    fontSize: '14px', fontWeight: 600,
+    color: 'var(--text)',
+    marginBottom: '2px',
+  },
+  recoCardReason: {
+    fontSize: '12px', fontWeight: 300,
+    color: 'var(--text-muted)',
+    lineHeight: 1.4,
+  },
 
   // Overview
   overview: {

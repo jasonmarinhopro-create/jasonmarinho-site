@@ -7,7 +7,7 @@ import {
   GraduationCap, Lightning, Users, X, Heart,
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
-  Crown, Star, TextAa,
+  Crown, Star, TextAa, CurrencyEur, DownloadSimple,
 } from '@phosphor-icons/react'
 import {
   changeUserPlan, deleteUser, deleteAllBots,
@@ -73,6 +73,7 @@ function palette(str: string) {
 
 const PLANS = [
   { value: 'decouverte', label: 'Découverte' },
+  { value: 'standard',   label: 'Standard' },
   { value: 'driing',     label: 'Membre Driing' },
 ] as const
 
@@ -117,6 +118,31 @@ export default function MembresUI({ members }: { members: Member[] }) {
     })
   }
 
+  function exportCsv() {
+    const planLabel = (p: string) =>
+      p === 'driing' ? 'Driing' : p === 'standard' ? 'Standard' : 'Découverte'
+    const escape = (v: string) => `"${(v ?? '').replace(/"/g, '""')}"`
+    const header = ['Nom', 'Email', 'Plan', 'Contributeur', 'Formations', 'Inscrit le']
+    const rows = filtered.map(m => [
+      m.full_name || '',
+      m.email,
+      planLabel(m.plan),
+      m.is_contributor ? 'Oui' : 'Non',
+      String(m.user_formations?.length ?? 0),
+      new Date(m.created_at).toISOString().slice(0, 10),
+    ].map(escape).join(','))
+    const csv = '﻿' + [header.join(','), ...rows].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    const stamp = new Date().toISOString().slice(0, 10)
+    const suffix = filterPlan === 'all' ? 'tous' : filterPlan
+    a.download = `membres-${suffix}-${stamp}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   function handleDeleteAllBots() {
     if (!confirm(`Supprimer définitivement ${totalBots} bot(s) suspect(s) ?`)) return
     startTransition(async () => {
@@ -130,15 +156,20 @@ export default function MembresUI({ members }: { members: Member[] }) {
 
   const filtered = members.filter(m => {
     const q = search.toLowerCase()
-    return (
-      (!search || m.email.toLowerCase().includes(q) || (m.full_name ?? '').toLowerCase().includes(q)) &&
-      (filterPlan === 'all' || m.plan === filterPlan)
-    )
+    const matchSearch = !search || m.email.toLowerCase().includes(q) || (m.full_name ?? '').toLowerCase().includes(q)
+    const matchPlan =
+      filterPlan === 'all' ||
+      (filterPlan === 'decouverte' && m.plan !== 'driing' && m.plan !== 'standard') ||
+      (filterPlan === 'standard'   && m.plan === 'standard') ||
+      (filterPlan === 'driing'     && m.plan === 'driing')
+    return matchSearch && matchPlan
   })
 
-  const totalBots   = members.filter(m => isBotLike(m.full_name, m.email)).length
-  const totalDriing = members.filter(m => m.plan === 'driing').length
-  const totalContrib = members.filter(m => m.is_contributor).length
+  const totalBots     = members.filter(m => isBotLike(m.full_name, m.email)).length
+  const totalDriing   = members.filter(m => m.plan === 'driing').length
+  const totalStandard = members.filter(m => m.plan === 'standard').length
+  const totalDecouv   = members.filter(m => m.plan !== 'driing' && m.plan !== 'standard').length
+  const totalContrib  = members.filter(m => m.is_contributor).length
 
   return (
     <div style={s.wrap}>
@@ -146,9 +177,11 @@ export default function MembresUI({ members }: { members: Member[] }) {
       {/* ── Stats ── */}
       <div style={s.statsRow}>
         {[
-          { icon: <Users size={16} />,     value: members.length, label: 'membres',      color: 'var(--text-2)' },
-          { icon: <Lightning size={16} />, value: totalDriing,    label: 'Driing',       color: 'var(--accent-text)' },
-          { icon: <Heart size={16} />,     value: totalContrib,   label: 'contributeurs', color: '#F472B6' },
+          { icon: <Users size={16} />,     value: members.length,    label: 'membres',     color: 'var(--text-2)' },
+          { icon: <Star size={16} weight="fill" />, value: totalStandard, label: 'Standard',    color: '#34D399' },
+          { icon: <Lightning size={16} weight="fill" />, value: totalDriing, label: 'Driing',  color: 'var(--accent-text)' },
+          { icon: <Heart size={16} weight="fill" />, value: totalContrib,  label: 'contributeurs', color: '#F472B6' },
+          { icon: <CurrencyEur size={16} />, value: `${(totalStandard * 1.98 + totalDriing * 0.98).toFixed(2)} €`, label: 'MRR estimé', color: '#34D399' },
         ].map(({ icon, value, label, color }) => (
           <div key={label} style={s.statChip}>
             <span style={{ color, lineHeight: 1 }}>{icon}</span>
@@ -158,6 +191,11 @@ export default function MembresUI({ members }: { members: Member[] }) {
         ))}
 
         <div style={{ flex: 1 }} />
+
+        <button onClick={exportCsv} style={s.exportBtn} title="Exporter la liste filtrée en CSV">
+          <DownloadSimple size={13} weight="bold" />
+          Exporter CSV
+        </button>
 
         {totalBots > 0 && (
           botsFeedback ? (
@@ -188,8 +226,9 @@ export default function MembresUI({ members }: { members: Member[] }) {
         <div style={s.planTabs}>
           {[
             { v: 'all',        l: 'Tous',         count: members.length },
-            { v: 'decouverte', l: 'Découverte',    count: members.filter(m => m.plan !== 'driing').length },
-            { v: 'driing',     l: 'Membre Driing', count: totalDriing },
+            { v: 'decouverte', l: 'Découverte',   count: totalDecouv },
+            { v: 'standard',   l: 'Standard',     count: totalStandard },
+            { v: 'driing',     l: 'Driing',       count: totalDriing },
           ].map(f => (
             <button
               key={f.v}
@@ -288,10 +327,11 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
     onSaveName(trimmed)
   }
 
-  const planColor  = isDriing ? 'var(--accent-text)' : isAdmin ? '#C084FC' : 'var(--text-3)'
-  const planBg     = isDriing ? 'var(--accent-bg)' : isAdmin ? 'rgba(192,132,252,0.1)' : 'var(--border)'
-  const planBorder = isDriing ? 'var(--accent-border)' : isAdmin ? 'rgba(192,132,252,0.35)' : 'var(--border)'
-  const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : 'Découverte'
+  const isStandard = m.plan === 'standard'
+  const planColor  = isAdmin ? '#C084FC' : isDriing ? 'var(--accent-text)' : isStandard ? '#34D399' : 'var(--text-3)'
+  const planBg     = isAdmin ? 'rgba(192,132,252,0.1)' : isDriing ? 'var(--accent-bg)' : isStandard ? 'rgba(52,211,153,0.1)' : 'var(--border)'
+  const planBorder = isAdmin ? 'rgba(192,132,252,0.35)' : isDriing ? 'var(--accent-border)' : isStandard ? 'rgba(52,211,153,0.32)' : 'var(--border)'
+  const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
 
   return (
     <div style={{ ...s.card, ...(suspect ? { borderColor: 'rgba(248,113,113,0.25)' } : {}) }}>
@@ -447,7 +487,8 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
 
   const planDisplay: Record<string, { label: string; color: string; bg: string }> = {
     driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)' },
-    decouverte: { label: 'Découverte',    color: 'var(--text-3)', bg: 'var(--border)' },
+    standard:   { label: 'Standard',      color: '#34D399',            bg: 'rgba(52,211,153,0.1)' },
+    decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--border)' },
   }
   const planCfg = planDisplay[member?.plan ?? 'decouverte'] ?? planDisplay.decouverte
 
@@ -685,6 +726,13 @@ const s: Record<string, React.CSSProperties> = {
     color: '#f87171', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
     fontFamily: 'var(--font-outfit), sans-serif',
   },
+  exportBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    borderRadius: '9px', padding: '7px 13px',
+    color: 'var(--accent-text)', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
 
   // Filters
   filtersRow: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
@@ -722,7 +770,7 @@ const s: Record<string, React.CSSProperties> = {
   // Grid
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
     gap: '14px',
   },
   empty: {
