@@ -132,9 +132,9 @@ export default function CommunauteView({
   const detectedRegions = useMemo(() => detectRegions(userAdresses), [userAdresses])
 
   // "Pour toi" : top 4 groupes recommandés
-  // 1. Si régions détectées : groupes correspondants non rejoints / non dismissed
-  // 2. Sinon : top 4 groupes (par members_count) non rejoints, hors Driing
-  const recommendedGroups = useMemo(() => {
+  // - Si régions détectées ET groupes correspondants → recos régionales
+  // - Sinon : top 4 groupes par membres (label honnête "Top groupes")
+  const recommended = useMemo(() => {
     const candidates = fbGroups.filter(g =>
       !memberships[g.id] && g.category !== FEATURED_CATEGORY
     )
@@ -144,12 +144,19 @@ export default function CommunauteView({
         return tags.some(t => detectedRegions.has(t))
       })
       if (matched.length > 0) {
-        return matched.sort((a, b) => (b.members_count ?? 0) - (a.members_count ?? 0)).slice(0, 4)
+        return {
+          groups: matched.sort((a, b) => (b.members_count ?? 0) - (a.members_count ?? 0)).slice(0, 4),
+          isRegional: true,
+        }
       }
     }
-    // Fallback : top groupes
-    return candidates.sort((a, b) => (b.members_count ?? 0) - (a.members_count ?? 0)).slice(0, 4)
+    return {
+      groups: candidates.sort((a, b) => (b.members_count ?? 0) - (a.members_count ?? 0)).slice(0, 4),
+      isRegional: false,
+    }
   }, [fbGroups, memberships, detectedRegions])
+  const recommendedGroups = recommended.groups
+  const isRegionalReco = recommended.isRegional
 
   // Régions présentes dans les données (pour le sous-filtre)
   const availableRegions = useMemo(() => {
@@ -358,24 +365,55 @@ export default function CommunauteView({
         )}
       </div>
 
+      {/* Communauté Driing — accordéon discret en haut */}
+      {featuredGroups.length > 0 && (
+        <div style={s.driingWrap} className="fade-up">
+          <button
+            onClick={() => setFeaturedOpen(v => !v)}
+            style={s.driingHeader}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Star size={13} weight="fill" color="var(--accent-text)" />
+              <span style={s.sectionLabelSober}>Communauté Driing</span>
+              <span style={s.sectionCount}>{featuredGroups.length}</span>
+            </div>
+            <span style={s.driingToggle}>
+              {featuredOpen ? <CaretUp size={11} /> : <CaretDown size={11} />}
+              {featuredOpen ? 'Réduire' : 'Voir'}
+            </span>
+          </button>
+          {featuredOpen && (
+            <div className="dash-grid-2" style={{ marginTop: '14px' }}>
+              {featuredGroups.map(g => (
+                <div key={g.id}>
+                  {renderCard(g, false)}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Pour toi : recommandations contextuelles */}
       {recommendedGroups.length > 0 && !isFiltering && (
         <div style={s.recommendedSection} className="fade-up">
           <div style={s.recommendedHeader}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <Star size={14} weight="fill" color="var(--accent-text)" />
               <span style={s.recommendedLabel}>
-                {detectedRegions.size > 0 ? 'Recommandés pour toi' : 'À fort potentiel'}
+                {isRegionalReco ? 'Recommandés pour toi' : 'À fort potentiel'}
               </span>
-              {detectedRegions.size > 0 && (
+              {isRegionalReco && (
                 <span style={s.recommendedRegions}>
                   {Array.from(detectedRegions).slice(0, 3).join(' · ')}
                 </span>
               )}
             </div>
             <span style={s.recommendedSub}>
-              {detectedRegions.size > 0
-                ? 'Détectés depuis tes logements'
+              {isRegionalReco
+                ? 'Détectés depuis l\'adresse de tes logements'
+                : detectedRegions.size > 0
+                ? `Aucun groupe pour ${Array.from(detectedRegions)[0]} pour le moment — voici les top groupes les plus suivis`
                 : 'Les groupes les plus suivis que tu n\'as pas encore rejoints'
               }
             </span>
@@ -475,35 +513,6 @@ export default function CommunauteView({
           </div>
         </div>
       ))}
-
-      {/* Communauté Driing — section sobre en bas */}
-      {featuredGroups.length > 0 && (
-        <div style={s.section} className="fade-up">
-          <button
-            onClick={() => setFeaturedOpen(v => !v)}
-            style={s.driingHeader}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <UsersThree size={14} color="var(--text-2)" />
-              <span style={s.sectionLabelSober}>Communauté Driing</span>
-              <span style={s.sectionCount}>{featuredGroups.length}</span>
-            </div>
-            <span style={s.driingToggle}>
-              {featuredOpen ? <CaretUp size={11} /> : <CaretDown size={11} />}
-              {featuredOpen ? 'Réduire' : 'Voir'}
-            </span>
-          </button>
-          {featuredOpen && (
-            <div className="dash-grid-2" style={{ marginTop: '14px' }}>
-              {featuredGroups.map(g => (
-                <div key={g.id}>
-                  {renderCard(g, false)}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Groupes masqués */}
       {dismissedCount > 0 && (
@@ -720,10 +729,11 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px',
     textTransform: 'uppercase' as const, color: 'var(--text-2)',
   },
+  driingWrap: { marginBottom: '24px' },
   driingHeader: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    width: '100%', padding: '12px 14px', borderRadius: '10px',
-    background: 'var(--surface)', border: '1px dashed var(--border)',
+    width: '100%', padding: '12px 16px', borderRadius: '10px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
   },
   driingToggle: {
