@@ -86,8 +86,8 @@ function formatDateShort(iso: string) {
 }
 
 const PLAN_CFG: Record<string, { label: string; color: string; bg: string; mrr: number }> = {
-  driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', mrr: 0.98 },
-  standard:   { label: 'Standard',      color: '#34D399',            bg: 'rgba(52,211,153,0.1)', mrr: 1.98 },
+  driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', mrr: 0 },
+  standard:   { label: 'Standard',      color: '#15803d',            bg: 'rgba(52,211,153,0.18)', mrr: 1.98 },
   decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--surface-2)',   mrr: 0 },
 }
 

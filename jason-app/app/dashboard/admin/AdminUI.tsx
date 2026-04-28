@@ -104,9 +104,10 @@ export default function AdminUI({
   const pendingReportsCount = reports.filter(r => !r.is_validated).length
   const totalAlerts = stats.pendingDriing + pendingReportsCount
   const decouverte = stats.totalUsers - stats.standardMembers - stats.driingMembers
-  const paidUsers = stats.standardMembers + stats.driingMembers
-  const conversionRate = stats.totalUsers > 0 ? (paidUsers / stats.totalUsers) * 100 : 0
-  const arpu = paidUsers > 0 ? stats.mrr / paidUsers : 0
+  // Seul Standard est payant ; Driing = gratuit pour les clients Driing existants
+  const payingUsers = stats.standardMembers
+  const conversionRate = stats.totalUsers > 0 ? (payingUsers / stats.totalUsers) * 100 : 0
+  const arpu = payingUsers > 0 ? stats.mrr / payingUsers : 0
   const arr = stats.mrr * 12
 
   const tabs = [
@@ -148,8 +149,8 @@ export default function AdminUI({
           </div>
           <div style={s.kpiBody}>
             <div style={s.kpiLabel}>MRR estimé</div>
-            <div style={{ ...s.kpiValue, color: '#34D399' }}>{formatEuro(stats.mrr)}</div>
-            <div style={s.kpiSub}>{paidUsers} membre{paidUsers > 1 ? 's' : ''} payant{paidUsers > 1 ? 's' : ''}</div>
+            <div style={{ ...s.kpiValue, color: '#15803d' }}>{formatEuro(stats.mrr)}</div>
+            <div style={s.kpiSub}>{payingUsers} Standard × 1,98 €</div>
           </div>
         </div>
 
@@ -171,7 +172,7 @@ export default function AdminUI({
           <div style={s.kpiBody}>
             <div style={s.kpiLabel}>Conversion</div>
             <div style={{ ...s.kpiValue, color: 'var(--accent-text)' }}>{conversionRate.toFixed(1)}%</div>
-            <div style={s.kpiSub}>{paidUsers}/{stats.totalUsers} payants</div>
+            <div style={s.kpiSub}>{payingUsers}/{stats.totalUsers} en Standard</div>
           </div>
         </div>
 
@@ -181,8 +182,8 @@ export default function AdminUI({
           </div>
           <div style={s.kpiBody}>
             <div style={s.kpiLabel}>ARPU</div>
-            <div style={{ ...s.kpiValue, color: '#60BEFF' }}>{formatEuro(arpu)}</div>
-            <div style={s.kpiSub}>par membre payant / mois</div>
+            <div style={{ ...s.kpiValue, color: '#0369a1' }}>{formatEuro(arpu)}</div>
+            <div style={s.kpiSub}>par membre Standard / mois</div>
           </div>
         </div>
       </div>
@@ -672,8 +673,6 @@ const s: Record<string, React.CSSProperties> = {
     gap: '20px',
     position: 'sticky' as const,
     top: '24px',
-    maxHeight: 'calc(100vh - 48px)',
-    overflowY: 'auto' as const,
   },
 
   // ── KPI Bar ───────────────────────────────────────────────────────────────

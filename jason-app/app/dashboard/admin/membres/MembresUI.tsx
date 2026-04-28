@@ -181,7 +181,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
           { icon: <Star size={16} weight="fill" />, value: totalStandard, label: 'Standard',    color: '#34D399' },
           { icon: <Lightning size={16} weight="fill" />, value: totalDriing, label: 'Driing',  color: 'var(--accent-text)' },
           { icon: <Heart size={16} weight="fill" />, value: totalContrib,  label: 'contributeurs', color: '#F472B6' },
-          { icon: <CurrencyEur size={16} />, value: `${(totalStandard * 1.98 + totalDriing * 0.98).toFixed(2)} €`, label: 'MRR estimé', color: '#34D399' },
+          { icon: <CurrencyEur size={16} />, value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR estimé', color: '#15803d' },
         ].map(({ icon, value, label, color }) => (
           <div key={label} style={s.statChip}>
             <span style={{ color, lineHeight: 1 }}>{icon}</span>

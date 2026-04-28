@@ -100,13 +100,13 @@ export default async function AdminPage() {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([month, counts]) => ({ month, ...counts }))
 
-  // MRR estimé : Standard à 1,98 €/mois + Driing à 0,98 €/mois
-  const mrr = ((standardMembers ?? 0) * 1.98) + ((driingMembers ?? 0) * 0.98)
+  // MRR estimé : seul le plan Standard contribue (Driing = gratuit pour les clients Driing)
+  const mrr = (standardMembers ?? 0) * 1.98
 
   return (
     <>
       <Header title="Administration" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
-      <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '1400px', width: '100%' }}>
+      <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
         <AdminUI
           pendingDriing={pendingDriing ?? []}
           reports={reports ?? []}
