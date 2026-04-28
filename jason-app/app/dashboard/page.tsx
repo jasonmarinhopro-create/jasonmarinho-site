@@ -3,8 +3,8 @@ import Header from '@/components/layout/Header'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
-  CalendarBlank, Warning, CurrencyEur, House, UsersThree,
-  ArrowRight, Newspaper, Plus, UserPlus, FileText, Flag, CalendarPlus,
+  CalendarBlank, Warning, CurrencyEur,
+  ArrowRight, Newspaper, UserPlus, Flag, CalendarPlus,
   GraduationCap, Trophy, Flame,
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
@@ -268,12 +268,6 @@ export default async function DashboardPage() {
   const revenusThisMois = contratsThisMois + entriesThisSum
   const revenusPrevMois = contratsPrevMois + entriesPrevSum
 
-  const enAttente = allC
-    .filter(c => (c.montant_loyer ?? 0) > 0 && !isPaid(c))
-    .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
-
-  const voyageursAnnee = allC.filter(c => c.date_arrivee?.startsWith(yearPfx)).length
-
   // ── Revenu annuel YTD + objectif
   const contratsThisYear = allC
     .filter(c => c.date_arrivee?.startsWith(yearPfx) && isPaid(c))
@@ -476,30 +470,6 @@ export default async function DashboardPage() {
             pendingPayments={pendingPayments}
             today={today}
           />
-        </section>
-
-        {/* ── KPI strip secondaire ─────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d3">
-          <div style={s.kpiStrip}>
-            <KpiCard
-              href="/dashboard/revenus"
-              icon={<CurrencyEur size={18} weight="fill" />}
-              color="#f59e0b" label="En attente"
-              value={fmtEur(enAttente)} sub="paiements"
-            />
-            <KpiCard
-              href="/dashboard/logements"
-              icon={<House size={18} weight="fill" />}
-              color="#60a5fa" label="Logements"
-              value={String(logements)} sub={logements !== 1 ? 'actifs' : 'actif'}
-            />
-            <KpiCard
-              href="/dashboard/calendrier"
-              icon={<UsersThree size={18} weight="fill" />}
-              color="#a78bfa" label="Voyageurs"
-              value={String(voyageursAnnee)} sub={`en ${yearPfx}`}
-            />
-          </div>
         </section>
 
         {/* ── Résumé opérationnel ──────────────────────────────────────── */}
@@ -743,26 +713,6 @@ export default async function DashboardPage() {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function KpiCard({ href, icon, color, label, value, sub }: {
-  href: string; icon: React.ReactNode; color: string
-  label: string; value: string; sub: string
-}) {
-  return (
-    <Link href={href} style={{ textDecoration: 'none' }}>
-      <div style={s.kpiCard} className="kpi-hover">
-        <div style={{ ...s.kpiIcon, color, background: color + '18', border: `1px solid ${color}35` }}>
-          {icon}
-        </div>
-        <div style={s.kpiBody}>
-          <span style={s.kpiLabel}>{label}</span>
-          <span style={{ ...s.kpiValue, color }}>{value}</span>
-          <span style={s.kpiSub}>{sub}</span>
-        </div>
-      </div>
-    </Link>
-  )
-}
-
 const CATEGORY_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
   reglementation:      { bg: 'rgba(96,165,250,0.12)',  color: '#60a5fa', label: 'Réglementation' },
   fiscalite:           { bg: 'rgba(52,211,153,0.12)',  color: '#34d399', label: 'Fiscalité' },
@@ -967,24 +917,6 @@ const s: Record<string, React.CSSProperties> = {
   miniCalDots: { display: 'flex', gap: '2px', marginTop: '4px', minHeight: '7px' },
   miniCalDot: { width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0 },
   miniCalLegend: { display: 'flex', gap: '14px', marginTop: '12px' },
-
-  // KPI strip (secondary)
-  kpiStrip: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' },
-  kpiCard: {
-    display: 'flex', alignItems: 'center', gap: '14px',
-    padding: '18px 20px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', transition: 'border-color 0.15s, transform 0.15s',
-    height: '100%',
-  },
-  kpiIcon: {
-    width: '40px', height: '40px', borderRadius: '10px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  kpiBody:  { display: 'flex', flexDirection: 'column', gap: '1px' },
-  kpiLabel: { fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.2px' },
-  kpiValue: { fontSize: '22px', fontWeight: 700, lineHeight: 1.15, letterSpacing: '-0.5px' },
-  kpiSub:   { fontSize: '11px', color: 'var(--text-3)' },
 
   // Operational
   opGrid:      { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' },
