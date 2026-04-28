@@ -177,11 +177,11 @@ export default function MembresUI({ members }: { members: Member[] }) {
       {/* ── Stats ── */}
       <div style={s.statsRow}>
         {[
-          { icon: <Users size={16} />,     value: members.length,    label: 'membres',     color: 'var(--text-2)' },
-          { icon: <Star size={16} weight="fill" />, value: totalStandard, label: 'Standard',    color: '#34D399' },
-          { icon: <Lightning size={16} weight="fill" />, value: totalDriing, label: 'Driing',  color: 'var(--accent-text)' },
-          { icon: <Heart size={16} weight="fill" />, value: totalContrib,  label: 'contributeurs', color: '#F472B6' },
-          { icon: <CurrencyEur size={16} />, value: `${(totalStandard * 1.98 + totalDriing * 0.98).toFixed(2)} €`, label: 'MRR estimé', color: '#34D399' },
+          { icon: <Users size={16} />,     value: members.length,    label: 'membres',     color: 'var(--text)' },
+          { icon: <Star size={16} weight="fill" />, value: totalStandard, label: 'Standard',    color: '#15803d' },
+          { icon: <Lightning size={16} weight="fill" />, value: totalDriing, label: 'Driing',  color: '#7c3aed' },
+          { icon: <Heart size={16} weight="fill" />, value: totalContrib,  label: 'contributeurs', color: '#db2777' },
+          { icon: <CurrencyEur size={16} />, value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR estimé', color: '#15803d' },
         ].map(({ icon, value, label, color }) => (
           <div key={label} style={s.statChip}>
             <span style={{ color, lineHeight: 1 }}>{icon}</span>
@@ -328,9 +328,9 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
   }
 
   const isStandard = m.plan === 'standard'
-  const planColor  = isAdmin ? '#C084FC' : isDriing ? 'var(--accent-text)' : isStandard ? '#34D399' : 'var(--text-3)'
-  const planBg     = isAdmin ? 'rgba(192,132,252,0.1)' : isDriing ? 'var(--accent-bg)' : isStandard ? 'rgba(52,211,153,0.1)' : 'var(--border)'
-  const planBorder = isAdmin ? 'rgba(192,132,252,0.35)' : isDriing ? 'var(--accent-border)' : isStandard ? 'rgba(52,211,153,0.32)' : 'var(--border)'
+  const planColor  = isAdmin ? '#7c3aed' : isDriing ? '#7c3aed' : isStandard ? '#15803d' : 'var(--text-2)'
+  const planBg     = isAdmin ? 'rgba(124,58,237,0.14)' : isDriing ? 'rgba(124,58,237,0.14)' : isStandard ? 'rgba(21,128,61,0.14)' : 'var(--border)'
+  const planBorder = isAdmin ? 'rgba(124,58,237,0.35)' : isDriing ? 'rgba(124,58,237,0.35)' : isStandard ? 'rgba(21,128,61,0.32)' : 'var(--border)'
   const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
 
   return (
@@ -486,9 +486,9 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
   const ini  = member ? initials(member.full_name, member.email) : '?'
 
   const planDisplay: Record<string, { label: string; color: string; bg: string }> = {
-    driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)' },
-    standard:   { label: 'Standard',      color: '#34D399',            bg: 'rgba(52,211,153,0.1)' },
-    decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--border)' },
+    driing:     { label: 'Membre Driing', color: '#7c3aed', bg: 'rgba(124,58,237,0.14)' },
+    standard:   { label: 'Standard',      color: '#15803d', bg: 'rgba(21,128,61,0.14)' },
+    decouverte: { label: 'Découverte',    color: 'var(--text-2)', bg: 'var(--border)' },
   }
   const planCfg = planDisplay[member?.plan ?? 'decouverte'] ?? planDisplay.decouverte
 
@@ -717,8 +717,8 @@ const s: Record<string, React.CSSProperties> = {
     padding: '6px 12px', borderRadius: '10px',
     background: 'var(--surface)', border: '1px solid var(--border)',
   },
-  statNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400 },
-  statLabel: { fontSize: '12px', color: 'var(--text-3)' },
+  statNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500 },
+  statLabel: { fontSize: '12px', color: 'var(--text-2)' },
   deleteBotsBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)',

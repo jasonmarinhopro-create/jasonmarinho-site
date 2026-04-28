@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, GraduationCap, UsersFour, CalendarBlank,
@@ -86,8 +86,8 @@ function formatDateShort(iso: string) {
 }
 
 const PLAN_CFG: Record<string, { label: string; color: string; bg: string; mrr: number }> = {
-  driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', mrr: 0.98 },
-  standard:   { label: 'Standard',      color: '#34D399',            bg: 'rgba(52,211,153,0.1)', mrr: 1.98 },
+  driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', mrr: 0 },
+  standard:   { label: 'Standard',      color: '#15803d',            bg: 'rgba(52,211,153,0.18)', mrr: 1.98 },
   decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--surface-2)',   mrr: 0 },
 }
 
@@ -110,6 +110,15 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
 
   // Plan change feedback
   const [planFeedback, setPlanFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
+
+  // Desktop detection for 2-column layout
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1100)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   const planCfg = PLAN_CFG[profile.plan ?? 'decouverte'] ?? PLAN_CFG.decouverte
 
@@ -241,6 +250,10 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
         </div>
       </div>
 
+      {/* ── 2-column desktop layout ── */}
+      <div style={isDesktop ? s.twoColGrid : s.singleCol}>
+        <div style={s.leftColumn}>
+
       {/* ── Coaching notes ── */}
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
@@ -300,6 +313,10 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
           </div>
         )}
       </div>
+
+        </div>
+        {/* ── Right column : stats + community + audits ── */}
+        <aside style={isDesktop ? s.rightColumnSticky : s.rightColumn}>
 
       {/* ── Activité stats ── */}
       <div style={s.section} className="fade-up">
@@ -406,7 +423,10 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
         )}
       </div>
 
-      {/* ── Formations ── */}
+        </aside>
+      </div>
+
+      {/* ── Formations (full-width) ── */}
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
@@ -494,6 +514,37 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
 // ── Styles ──────────────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
   page: { display: 'flex', flexDirection: 'column', gap: '16px' },
+
+  // 2-column desktop layout
+  twoColGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr) 380px',
+    gap: '20px',
+    alignItems: 'start',
+  },
+  singleCol: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '16px',
+  },
+  leftColumn: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '16px',
+    minWidth: 0,
+  },
+  rightColumn: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '16px',
+  },
+  rightColumnSticky: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '16px',
+    position: 'sticky' as const,
+    top: '20px',
+  },
 
   backBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',

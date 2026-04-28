@@ -33,7 +33,7 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
   return (
     <>
       <Header title="Fiche membre" userName={adminProfile?.full_name ?? ''} currentPlan="Administrateur" />
-      <div style={{ padding: 'clamp(20px,3vw,44px)', maxWidth: '860px' }}>
+      <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
         <MembreDetailUI
           profile={result.profile}
           formations={formations}
