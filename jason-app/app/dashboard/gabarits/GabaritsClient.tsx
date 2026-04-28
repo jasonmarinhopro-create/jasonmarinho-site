@@ -826,7 +826,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   clearSearch: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', display: 'flex', padding: '2px' },
 
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '16px' },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '16px' },
 
   card: {
     display: 'flex', flexDirection: 'column', gap: '14px',
