@@ -73,22 +73,22 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
       <div style={s.hero}>
         <div style={s.heroBadge}>
           <House size={13} color="var(--accent-text)" weight="fill" />
-          Chez Nous · Communauté ouverte
+          Chez Nous · entre hôtes LCD
         </div>
         <h1 style={s.heroTitle}>
           Bienvenue <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Chez Nous</em>
         </h1>
         <p style={s.heroDesc}>
-          L'espace pour échanger, demander un coup de main, partager ce qui marche.
-          Entre hôtes LCD, sans détour.
+          L'endroit où on s'entraide pour de vrai. Tu poses tes questions, tu partages tes réussites,
+          tu réponds quand tu peux. Sans détour, sans jugement.
         </p>
 
         <div style={s.statRow}>
-          <span><strong style={{ color: 'var(--text)' }}>{stats.totalPosts}</strong> discussion{stats.totalPosts > 1 ? 's' : ''}</span>
+          <span><strong style={{ color: 'var(--text)' }}>Vous êtes {stats.totalMembers}</strong> hôte{stats.totalMembers > 1 ? 's' : ''}</span>
           <span style={s.statSep}>·</span>
-          <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> réponse{stats.totalReplies > 1 ? 's' : ''}</span>
+          <span><strong style={{ color: 'var(--text)' }}>{stats.totalPosts}</strong> conversation{stats.totalPosts > 1 ? 's' : ''}</span>
           <span style={s.statSep}>·</span>
-          <span><strong style={{ color: 'var(--text)' }}>{stats.totalMembers}</strong> membre{stats.totalMembers > 1 ? 's' : ''}</span>
+          <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
       </div>
 
@@ -119,12 +119,12 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
             <div style={s.sortRow}>
               <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     search={currentSearch} icon={Clock} label="Récent" />
               <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    search={currentSearch} icon={Fire}  label="Populaire" />
-              <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="Sans réponse" />
-              <SortChip cat={currentCategory} sort="unresolved" active={currentSort === 'unresolved'} search={currentSearch} icon={CheckCircle} label="Non résolu" />
+              <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="À aider" />
+              <SortChip cat={currentCategory} sort="unresolved" active={currentSort === 'unresolved'} search={currentSearch} icon={CheckCircle} label="En suspens" />
             </div>
             <button onClick={() => setShowForm(v => !v)} style={s.newBtn}>
               <Plus size={15} weight="bold" />
-              {showForm ? 'Annuler' : 'Nouvelle discussion'}
+              {showForm ? 'Annuler' : 'Démarrer une conversation'}
             </button>
           </div>
 
@@ -163,20 +163,20 @@ function StatsCard({ stats }: { stats: { totalPosts: number; totalReplies: numbe
     <div style={s.asideCard}>
       <div style={s.asideHead}>
         <Sparkle size={14} color="var(--accent-text)" weight="fill" />
-        <span style={s.asideTitle}>La communauté</span>
+        <span style={s.asideTitle}>Notre famille LCD</span>
       </div>
       <div style={s.statsList}>
         <div style={s.statRow2}>
           <span style={s.statValue}>{stats.totalMembers}</span>
-          <span style={s.statLabel}>membre{stats.totalMembers > 1 ? 's' : ''}</span>
+          <span style={s.statLabel}>hôte{stats.totalMembers > 1 ? 's' : ''}</span>
         </div>
         <div style={s.statRow2}>
           <span style={s.statValue}>{stats.totalPosts}</span>
-          <span style={s.statLabel}>discussion{stats.totalPosts > 1 ? 's' : ''}</span>
+          <span style={s.statLabel}>conversation{stats.totalPosts > 1 ? 's' : ''}</span>
         </div>
         <div style={s.statRow2}>
           <span style={s.statValue}>{stats.totalReplies}</span>
-          <span style={s.statLabel}>réponse{stats.totalReplies > 1 ? 's' : ''}</span>
+          <span style={s.statLabel}>coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
       </div>
     </div>
@@ -189,7 +189,7 @@ function TopMembersCard({ members }: { members: TopMember[] }) {
     <div style={s.asideCard}>
       <div style={s.asideHead}>
         <Trophy size={14} color="#fb923c" weight="fill" />
-        <span style={s.asideTitle}>Membres actifs · 30 j</span>
+        <span style={s.asideTitle}>Ils ont aidé ce mois-ci</span>
       </div>
       <div style={s.membersList}>
         {members.map((m, i) => {
@@ -224,7 +224,7 @@ function CategoriesCard({ counts, currentCategory, currentSort }: {
     <div style={s.asideCard}>
       <div style={s.asideHead}>
         <Users size={14} color="#a78bfa" weight="fill" />
-        <span style={s.asideTitle}>Catégories</span>
+        <span style={s.asideTitle}>Sujets</span>
       </div>
       <div style={s.catList}>
         {CATEGORY_ORDER.map(cid => {
@@ -260,12 +260,12 @@ function TipCard() {
     <div style={{ ...s.asideCard, background: 'rgba(255,213,107,0.04)', borderColor: 'rgba(255,213,107,0.18)' }}>
       <div style={s.asideHead}>
         <Sparkle size={14} color="var(--accent-text)" weight="fill" />
-        <span style={s.asideTitle}>Pour bien démarrer</span>
+        <span style={s.asideTitle}>L'esprit Chez Nous</span>
       </div>
       <ul style={s.tipList}>
-        <li style={s.tipItem}>Un titre précis vaut mieux qu'un long message</li>
-        <li style={s.tipItem}>Donne du contexte : ville, plateforme, situation</li>
-        <li style={s.tipItem}>Réponds aux autres — c'est ce qui fait vivre Chez Nous</li>
+        <li style={s.tipItem}>Un titre clair, du contexte (ville, plateforme) — ça aide tout le monde</li>
+        <li style={s.tipItem}>Pas de jugement : on a tous débuté un jour</li>
+        <li style={s.tipItem}>Réponds quand tu peux — c'est ce qui fait vivre la famille</li>
       </ul>
     </div>
   )
@@ -414,8 +414,8 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
     return (
       <div style={s.empty}>
         <MagnifyingGlass size={28} color="var(--accent-text)" weight="duotone" />
-        <p style={s.emptyTitle}>Aucun résultat pour « {search} »</p>
-        <p style={s.emptyDesc}>Essaie d'autres mots-clés, ou retire les filtres pour voir toutes les discussions.</p>
+        <p style={s.emptyTitle}>Rien trouvé pour « {search} »</p>
+        <p style={s.emptyDesc}>Essaie d'autres mots, ou retire les filtres pour voir toutes les conversations.</p>
       </div>
     )
   }
@@ -423,8 +423,8 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
     return (
       <div style={s.empty}>
         <Question size={28} color="var(--accent-text)" weight="duotone" />
-        <p style={s.emptyTitle}>Aucune discussion sans réponse</p>
-        <p style={s.emptyDesc}>Tout a été pris en charge — bravo la communauté !</p>
+        <p style={s.emptyTitle}>Tout le monde a été aidé</p>
+        <p style={s.emptyDesc}>Aucune question en attente. Bravo la famille !</p>
       </div>
     )
   }
@@ -433,15 +433,16 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
       <ChatCircle size={28} color="var(--accent-text)" weight="duotone" />
       <p style={s.emptyTitle}>
         {category !== 'all'
-          ? `Aucune discussion dans ${CATEGORIES[category].short}`
-          : 'La conversation va commencer ici'}
+          ? `Personne n'a encore parlé de ${CATEGORIES[category].short}`
+          : "C'est calme aujourd'hui — brise la glace"}
       </p>
       <p style={s.emptyDesc}>
-        Lance le premier sujet — un problème, une astuce, un retour sur une situation.
-        C'est ce qui donne vie à Chez Nous.
+        {category !== 'all'
+          ? 'Sois le premier à lancer le sujet — quelqu\'un attend probablement la même réponse que toi.'
+          : 'Raconte d\'où tu viens, ce qui t\'a amené à la LCD, ou ce qui te bloque en ce moment. On est curieux de te lire.'}
       </p>
       <button onClick={onNew} style={s.emptyBtn}>
-        <Plus size={13} weight="bold" /> Lancer une discussion
+        <Plus size={13} weight="bold" /> Démarrer une conversation
       </button>
     </div>
   )
