@@ -60,6 +60,10 @@ type NewMember = {
   city: string | null
 }
 
+type ActivityEvent =
+  | { kind: 'reply'; id: string; created_at: string; replierId: string; postTitle: string; postAuthorId: string; postId: string }
+  | { kind: 'post'; id: string; created_at: string; authorId: string; title: string }
+
 type Props = {
   posts: Post[]
   authorsMap: Record<string, Author>
@@ -72,9 +76,11 @@ type Props = {
   topMembers: TopMember[]
   newMembers: NewMember[]
   catCounts: Record<string, number>
+  activity: ActivityEvent[]
+  activityProfiles: Record<string, { full_name: string | null; pseudo: string | null }>
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts }: Props) {
+export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts, activity, activityProfiles }: Props) {
   const [showForm, setShowForm] = useState(false)
 
   return (
@@ -160,6 +166,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
         {/* Aside */}
         <aside style={s.aside}>
           <JasonNoteCard />
+          <ActivityCard events={activity} profiles={activityProfiles} />
           <StatsCard stats={stats} />
           <TopMembersCard members={topMembers} />
           <CategoriesCard counts={catCounts} currentCategory={currentCategory} currentSort={currentSort} />
@@ -189,6 +196,58 @@ function JasonNoteCard() {
         réponds quand tu peux à ceux qui débutent. C'est comme ça qu'on grandit ensemble.
       </p>
       <span style={s.jasonSign}>— Jason</span>
+    </div>
+  )
+}
+
+function ActivityCard({
+  events, profiles,
+}: {
+  events: ActivityEvent[]
+  profiles: Record<string, { full_name: string | null; pseudo: string | null }>
+}) {
+  if (events.length === 0) return null
+  const nameOf = (id: string) => {
+    const p = profiles[id]
+    if (!p) return 'Quelqu\'un'
+    return displayName({ pseudo: p.pseudo, full_name: p.full_name })
+  }
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <ChatCircle size={14} color="#34d399" weight="fill" />
+        <span style={s.asideTitle}>Ça vit en ce moment</span>
+      </div>
+      <div style={s.activityList}>
+        {events.map(ev => {
+          const when = formatRelative(ev.created_at)
+          if (ev.kind === 'reply') {
+            const replier = nameOf(ev.replierId)
+            const author = nameOf(ev.postAuthorId)
+            return (
+              <Link key={`r-${ev.id}`} href={`/dashboard/chez-nous/${ev.postId}`} style={s.activityRow}>
+                <span style={s.activityDotReply} />
+                <div style={s.activityText}>
+                  <span><strong>{replier}</strong> a répondu à <strong>{author}</strong></span>
+                  <span style={s.activityTitle}>« {ev.postTitle.slice(0, 60)}{ev.postTitle.length > 60 ? '…' : ''} »</span>
+                  <span style={s.activityWhen}>{when}</span>
+                </div>
+              </Link>
+            )
+          }
+          const poster = nameOf(ev.authorId)
+          return (
+            <Link key={`p-${ev.id}`} href={`/dashboard/chez-nous/${ev.id}`} style={s.activityRow}>
+              <span style={s.activityDotPost} />
+              <div style={s.activityText}>
+                <span><strong>{poster}</strong> a lancé une conversation</span>
+                <span style={s.activityTitle}>« {ev.title.slice(0, 60)}{ev.title.length > 60 ? '…' : ''} »</span>
+                <span style={s.activityWhen}>{when}</span>
+              </div>
+            </Link>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -649,6 +708,30 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%' },
+
+  activityList: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },
+  activityRow: {
+    display: 'flex', alignItems: 'flex-start', gap: '10px',
+    padding: '8px 0', borderBottom: '1px solid var(--border)',
+    textDecoration: 'none' as const, color: 'var(--text-2)',
+    fontSize: '12.5px', lineHeight: 1.4,
+  },
+  activityDotReply: {
+    width: '6px', height: '6px', borderRadius: '50%',
+    background: '#34d399', flexShrink: 0, marginTop: '6px',
+    boxShadow: '0 0 0 3px rgba(52,211,153,0.18)',
+  },
+  activityDotPost: {
+    width: '6px', height: '6px', borderRadius: '50%',
+    background: 'var(--accent-text)', flexShrink: 0, marginTop: '6px',
+    boxShadow: '0 0 0 3px rgba(255,213,107,0.18)',
+  },
+  activityText: { display: 'flex', flexDirection: 'column' as const, gap: '2px', minWidth: 0, flex: 1 },
+  activityTitle: {
+    fontSize: '11.5px', color: 'var(--text-2)', fontStyle: 'italic' as const,
+    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
+  },
+  activityWhen: { fontSize: '10px', color: 'var(--text-muted)' },
 
   jasonCard: {
     background: 'linear-gradient(160deg, rgba(255,213,107,0.08), rgba(255,213,107,0.02))',

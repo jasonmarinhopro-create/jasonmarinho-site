@@ -195,6 +195,62 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   const catCounts: Record<string, number> = {}
   ;(catCountsRaw ?? []).forEach(c => { catCounts[c.category] = (catCounts[c.category] ?? 0) + 1 })
 
+  // Activité ambiante : derniers événements (posts + replies)
+  const [{ data: recentReplies }, { data: recentPosts }] = await Promise.all([
+    supabase
+      .from('chez_nous_replies')
+      .select('id, post_id, author_id, created_at, chez_nous_posts(title, author_id)')
+      .order('created_at', { ascending: false })
+      .limit(8),
+    supabase
+      .from('chez_nous_posts')
+      .select('id, author_id, title, created_at')
+      .order('created_at', { ascending: false })
+      .limit(5),
+  ])
+
+  // Mappe tous les auteurs nécessaires (replies + post auteur cible)
+  const activityUserIds = new Set<string>()
+  ;(recentReplies ?? []).forEach((r: { author_id: string; chez_nous_posts?: { author_id?: string } | { author_id?: string }[] | null }) => {
+    activityUserIds.add(r.author_id)
+    const cnp = Array.isArray(r.chez_nous_posts) ? r.chez_nous_posts[0] : r.chez_nous_posts
+    if (cnp?.author_id) activityUserIds.add(cnp.author_id)
+  })
+  ;(recentPosts ?? []).forEach(p => activityUserIds.add(p.author_id))
+
+  const { data: activityProfilesData } = activityUserIds.size
+    ? await supabase
+        .from('profiles')
+        .select('id, full_name, pseudo')
+        .in('id', Array.from(activityUserIds))
+    : { data: [] }
+  const activityProfiles: Record<string, { full_name: string | null; pseudo: string | null }> = {}
+  ;(activityProfilesData ?? []).forEach(p => {
+    activityProfiles[p.id] = { full_name: p.full_name, pseudo: p.pseudo }
+  })
+
+  type ActivityEvent =
+    | { kind: 'reply'; id: string; created_at: string; replierId: string; postTitle: string; postAuthorId: string; postId: string }
+    | { kind: 'post'; id: string; created_at: string; authorId: string; title: string }
+
+  const activityEvents: ActivityEvent[] = []
+  ;(recentReplies ?? []).forEach((r: { id: string; post_id: string; author_id: string; created_at: string; chez_nous_posts?: { title?: string; author_id?: string } | { title?: string; author_id?: string }[] | null }) => {
+    const cnp = Array.isArray(r.chez_nous_posts) ? r.chez_nous_posts[0] : r.chez_nous_posts
+    if (!cnp?.title || !cnp?.author_id) return
+    activityEvents.push({
+      kind: 'reply', id: r.id, created_at: r.created_at,
+      replierId: r.author_id, postTitle: cnp.title, postAuthorId: cnp.author_id, postId: r.post_id,
+    })
+  })
+  ;(recentPosts ?? []).forEach(p => {
+    activityEvents.push({
+      kind: 'post', id: p.id, created_at: p.created_at,
+      authorId: p.author_id, title: p.title,
+    })
+  })
+  activityEvents.sort((a, b) => b.created_at.localeCompare(a.created_at))
+  const activity = activityEvents.slice(0, 6)
+
   return (
     <>
       <Header title="Chez Nous" userName={profile.full_name ?? undefined} />
@@ -231,6 +287,8 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
         topMembers={topMembers}
         newMembers={newMembers}
         catCounts={catCounts}
+        activity={activity}
+        activityProfiles={activityProfiles}
       />
     </>
   )
