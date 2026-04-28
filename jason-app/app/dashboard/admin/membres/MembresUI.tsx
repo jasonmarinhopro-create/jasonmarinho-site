@@ -733,7 +733,7 @@ const s: Record<string, React.CSSProperties> = {
   // Grid
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
     gap: '14px',
   },
   empty: {

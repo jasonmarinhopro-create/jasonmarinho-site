@@ -85,9 +85,10 @@ function formatDateShort(iso: string) {
   })
 }
 
-const PLAN_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  driing:     { label: 'Membre Driing', color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
-  decouverte: { label: 'Découverte',    color: 'var(--text-3)', bg: 'var(--surface-2)' },
+const PLAN_CFG: Record<string, { label: string; color: string; bg: string; mrr: number }> = {
+  driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', mrr: 0.98 },
+  standard:   { label: 'Standard',      color: '#34D399',            bg: 'rgba(52,211,153,0.1)', mrr: 1.98 },
+  decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--surface-2)',   mrr: 0 },
 }
 
 function formatReach(n: number): string {
@@ -197,6 +198,11 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               <Lightning size={11} weight="fill" />
               {planCfg.label}
             </span>
+            {planCfg.mrr > 0 && (
+              <span style={{ ...s.pill, background: 'rgba(52,211,153,0.1)', color: '#34D399' }}>
+                + {planCfg.mrr.toFixed(2)} € / mois
+              </span>
+            )}
             <span style={s.memberSince}>Membre depuis le {formatDate(profile.created_at)}</span>
           </div>
         </div>
@@ -228,6 +234,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               }}
             >
               <option value="decouverte" style={{ background: '#040d0b', color: '#f0f4ff' }}>Découverte</option>
+              <option value="standard" style={{ background: '#040d0b', color: '#34D399' }}>Standard</option>
               <option value="driing" style={{ background: '#040d0b', color: '#FFD56B' }}>Membre Driing</option>
             </select>
           )}
