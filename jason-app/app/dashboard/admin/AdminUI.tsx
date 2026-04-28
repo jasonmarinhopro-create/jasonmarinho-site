@@ -131,7 +131,7 @@ export default function AdminUI({
           <p style={s.heroSub}>{formatDateLong()}</p>
         </div>
         <div style={s.heroCrown}>
-          <Crown size={40} weight="duotone" style={{ color: 'rgba(167,139,250,0.25)' }} />
+          <Crown size={42} weight="duotone" />
         </div>
         {totalAlerts > 0 && (
           <div style={s.heroAlert}>
@@ -143,8 +143,8 @@ export default function AdminUI({
 
       {/* ── Bandeau KPIs financiers ── */}
       <div style={s.kpiBar}>
-        <div style={s.kpiCard}>
-          <div style={{ ...s.kpiIcon, background: 'rgba(52,211,153,0.12)', color: '#34D399' }}>
+        <div style={{ ...s.kpiCard, borderColor: 'rgba(21,128,61,0.25)' }}>
+          <div style={{ ...s.kpiIcon, background: 'rgba(21,128,61,0.14)', color: '#15803d', border: '1px solid rgba(21,128,61,0.25)' }}>
             <CurrencyEur size={18} weight="duotone" />
           </div>
           <div style={s.kpiBody}>
@@ -154,19 +154,19 @@ export default function AdminUI({
           </div>
         </div>
 
-        <div style={s.kpiCard}>
-          <div style={{ ...s.kpiIcon, background: 'rgba(167,139,250,0.12)', color: '#a78bfa' }}>
+        <div style={{ ...s.kpiCard, borderColor: 'rgba(124,58,237,0.25)' }}>
+          <div style={{ ...s.kpiIcon, background: 'rgba(124,58,237,0.14)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.25)' }}>
             <ChartLineUp size={18} weight="duotone" />
           </div>
           <div style={s.kpiBody}>
             <div style={s.kpiLabel}>ARR projeté</div>
-            <div style={{ ...s.kpiValue, color: '#a78bfa' }}>{formatEuro(arr, 0)}</div>
+            <div style={{ ...s.kpiValue, color: '#7c3aed' }}>{formatEuro(arr, 0)}</div>
             <div style={s.kpiSub}>MRR × 12 mois</div>
           </div>
         </div>
 
-        <div style={s.kpiCard}>
-          <div style={{ ...s.kpiIcon, background: 'rgba(255,213,107,0.12)', color: 'var(--accent-text)' }}>
+        <div style={{ ...s.kpiCard, borderColor: 'var(--accent-border)' }}>
+          <div style={{ ...s.kpiIcon, background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' }}>
             <Percent size={18} weight="duotone" />
           </div>
           <div style={s.kpiBody}>
@@ -176,14 +176,14 @@ export default function AdminUI({
           </div>
         </div>
 
-        <div style={s.kpiCard}>
-          <div style={{ ...s.kpiIcon, background: 'rgba(96,190,255,0.12)', color: '#60BEFF' }}>
+        <div style={{ ...s.kpiCard, borderColor: 'rgba(3,105,161,0.25)' }}>
+          <div style={{ ...s.kpiIcon, background: 'rgba(3,105,161,0.14)', color: '#0369a1', border: '1px solid rgba(3,105,161,0.25)' }}>
             <UserPlus size={18} weight="duotone" />
           </div>
           <div style={s.kpiBody}>
             <div style={s.kpiLabel}>ARPU</div>
             <div style={{ ...s.kpiValue, color: '#0369a1' }}>{formatEuro(arpu)}</div>
-            <div style={s.kpiSub}>par membre Standard / mois</div>
+            <div style={s.kpiSub}>par Standard / mois</div>
           </div>
         </div>
       </div>
@@ -204,39 +204,39 @@ export default function AdminUI({
         <div style={s.plansGrid}>
           <div style={s.planCard}>
             <div style={s.planTop}>
-              <span style={{ ...s.planDot, background: '#6b7280' }} />
+              <span style={{ ...s.planDot, background: '#475569' }} />
               <span style={s.planName}>Découverte</span>
               <span style={s.planCount}>{decouverte < 0 ? 0 : decouverte}</span>
             </div>
             <div style={s.planBar}>
-              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((Math.max(0,decouverte) / stats.totalUsers) * 100) : 0}%`, background: '#6b7280' }} />
+              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((Math.max(0,decouverte) / stats.totalUsers) * 100) : 0}%`, background: '#475569' }} />
             </div>
           </div>
-          <div style={{ ...s.planCard, borderColor: 'rgba(255,213,107,0.25)' }}>
+          <div style={{ ...s.planCard, borderColor: 'rgba(21,128,61,0.32)', background: 'rgba(21,128,61,0.04)' }}>
             <div style={s.planTop}>
-              <span style={{ ...s.planDot, background: '#FFD56B' }} />
-              <span style={s.planName}>Standard</span>
-              <span style={{ ...s.planCount, color: '#FFD56B' }}>{stats.standardMembers}</span>
+              <span style={{ ...s.planDot, background: '#15803d' }} />
+              <span style={s.planName}>Standard <span style={{ fontSize: '10px', color: '#15803d', fontWeight: 700 }}>1,98 €</span></span>
+              <span style={{ ...s.planCount, color: '#15803d' }}>{stats.standardMembers}</span>
             </div>
             <div style={s.planBar}>
-              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((stats.standardMembers / stats.totalUsers) * 100) : 0}%`, background: '#FFD56B' }} />
+              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((stats.standardMembers / stats.totalUsers) * 100) : 0}%`, background: '#15803d' }} />
             </div>
           </div>
-          <div style={{ ...s.planCard, borderColor: 'rgba(167,139,250,0.25)' }}>
+          <div style={{ ...s.planCard, borderColor: 'rgba(124,58,237,0.32)', background: 'rgba(124,58,237,0.04)' }}>
             <div style={s.planTop}>
-              <span style={{ ...s.planDot, background: '#a78bfa' }} />
-              <span style={s.planName}>Driing</span>
-              <span style={{ ...s.planCount, color: '#a78bfa' }}>{stats.driingMembers}</span>
+              <span style={{ ...s.planDot, background: '#7c3aed' }} />
+              <span style={s.planName}>Driing <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 700 }}>gratuit</span></span>
+              <span style={{ ...s.planCount, color: '#7c3aed' }}>{stats.driingMembers}</span>
             </div>
             <div style={s.planBar}>
-              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((stats.driingMembers / stats.totalUsers) * 100) : 0}%`, background: '#a78bfa' }} />
+              <div style={{ ...s.planFill, width: `${stats.totalUsers > 0 ? Math.round((stats.driingMembers / stats.totalUsers) * 100) : 0}%`, background: '#7c3aed' }} />
             </div>
           </div>
-          <div style={{ ...s.planCard, borderColor: 'rgba(99,214,131,0.2)' }}>
+          <div style={{ ...s.planCard, borderColor: 'rgba(244,114,182,0.32)', background: 'rgba(244,114,182,0.04)' }}>
             <div style={s.planTop}>
-              <Sparkle size={12} color="#63D683" weight="fill" />
+              <Sparkle size={12} color="#db2777" weight="fill" />
               <span style={s.planName}>Nouveaux ce mois</span>
-              <span style={{ ...s.planCount, color: '#63D683' }}>+{stats.newThisMonth}</span>
+              <span style={{ ...s.planCount, color: '#db2777' }}>+{stats.newThisMonth}</span>
             </div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
               {stats.totalUsers} membres au total
@@ -391,10 +391,10 @@ export default function AdminUI({
           <div style={s.recentList}>
             {recentSignups.map(u => {
               const planCfg = u.plan === 'driing'
-                ? { label: 'Driing', color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' }
+                ? { label: 'Driing', color: '#7c3aed', bg: 'rgba(124,58,237,0.14)' }
                 : u.plan === 'standard'
-                ? { label: 'Standard', color: 'var(--accent-text)', bg: 'var(--accent-bg)' }
-                : { label: 'Découverte', color: 'var(--text-3)', bg: 'var(--border)' }
+                ? { label: 'Standard', color: '#15803d', bg: 'rgba(21,128,61,0.14)' }
+                : { label: 'Découverte', color: 'var(--text-2)', bg: 'var(--border)' }
               const initial = (u.full_name || u.email).slice(0, 1).toUpperCase()
               return (
                 <Link key={u.id} href={`/dashboard/admin/membres/${u.id}`} style={s.recentItem}>
@@ -691,9 +691,9 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
   },
   kpiBody: { flex: 1, minWidth: 0 },
-  kpiLabel: { fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.6px', marginBottom: '4px' },
-  kpiValue: { fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', fontWeight: 400, lineHeight: 1.1, marginBottom: '3px' },
-  kpiSub: { fontSize: '11.5px', color: 'var(--text-3)' },
+  kpiLabel: { fontSize: '11px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: '0.7px', marginBottom: '4px' },
+  kpiValue: { fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 500, lineHeight: 1.1, marginBottom: '3px' },
+  kpiSub: { fontSize: '11.5px', color: 'var(--text-2)', fontWeight: 500 },
 
   // ── Quick actions ─────────────────────────────────────────────────────────
   quickGrid: {
@@ -796,8 +796,8 @@ const s: Record<string, React.CSSProperties> = {
   // Admin hero banner
   hero: {
     position: 'relative',
-    background: 'linear-gradient(135deg, rgba(167,139,250,0.1) 0%, rgba(255,213,107,0.04) 60%, rgba(167,139,250,0.06) 100%)',
-    border: '1px solid rgba(167,139,250,0.2)',
+    background: 'linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(255,213,107,0.10) 60%, rgba(124,58,237,0.14) 100%)',
+    border: '1px solid rgba(124,58,237,0.32)',
     borderRadius: '20px',
     padding: 'clamp(24px,3vw,36px) clamp(24px,4vw,40px)',
     overflow: 'hidden',
@@ -805,15 +805,15 @@ const s: Record<string, React.CSSProperties> = {
   heroGlow: {
     position: 'absolute', top: '-60px', right: '-60px',
     width: '220px', height: '220px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 70%)',
+    background: 'radial-gradient(circle, rgba(124,58,237,0.22) 0%, transparent 70%)',
     pointerEvents: 'none',
   },
   heroContent: { position: 'relative', zIndex: 1 },
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase' as const,
-    color: '#a78bfa',
-    background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.25)',
+    color: '#7c3aed',
+    background: 'rgba(124,58,237,0.18)', border: '1px solid rgba(124,58,237,0.35)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
   heroTitle: {
@@ -833,6 +833,7 @@ const s: Record<string, React.CSSProperties> = {
   heroCrown: {
     position: 'absolute', right: 'clamp(20px,4vw,44px)', top: '50%',
     transform: 'translateY(-50%)', pointerEvents: 'none',
+    color: 'rgba(124,58,237,0.35)',
   },
   heroAlert: {
     position: 'absolute', top: '16px', right: '16px',
@@ -847,7 +848,7 @@ const s: Record<string, React.CSSProperties> = {
   sectionLabel: {
     display: 'flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.9px', textTransform: 'uppercase' as const,
-    color: 'var(--text-muted)', marginBottom: '14px',
+    color: 'var(--text-2)', marginBottom: '14px',
   },
   plansGrid: {
     display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px,1fr))', gap: '12px',
