@@ -51,6 +51,15 @@ type TopMember = {
   score: number
 }
 
+type NewMember = {
+  id: string
+  full_name: string | null
+  pseudo: string | null
+  is_contributor: boolean
+  created_at: string | null
+  city: string | null
+}
+
 type Props = {
   posts: Post[]
   authorsMap: Record<string, Author>
@@ -61,10 +70,11 @@ type Props = {
   currentSearch: string
   stats: { totalPosts: number; totalReplies: number; totalMembers: number }
   topMembers: TopMember[]
+  newMembers: NewMember[]
   catCounts: Record<string, number>
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, catCounts }: Props) {
+export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts }: Props) {
   const [showForm, setShowForm] = useState(false)
 
   return (
@@ -91,6 +101,9 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
           <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
       </div>
+
+      {/* Nouveaux membres */}
+      {newMembers.length > 0 && <NewMembersBand members={newMembers} />}
 
       {/* Catégories */}
       <div style={s.catRow}>
@@ -448,6 +461,49 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
   )
 }
 
+// ─── New members band ─────────────────────────────────────────────────
+
+function NewMembersBand({ members }: { members: NewMember[] }) {
+  const visible = members.slice(0, 5)
+  return (
+    <div style={s.newMembersBand}>
+      <div style={s.newMembersTextCol}>
+        <span style={s.newMembersLabel}>Nouveaux Chez Nous</span>
+        <span style={s.newMembersTitle}>Bienvenue à eux</span>
+      </div>
+      <div style={s.newMembersList}>
+        {visible.map(m => {
+          const av = colorFromId(m.id)
+          const initials = displayInitials({ pseudo: m.pseudo, full_name: m.full_name })
+          const name = displayName({ pseudo: m.pseudo, full_name: m.full_name })
+          return (
+            <Link
+              key={m.id}
+              href={`/dashboard/chez-nous/membre/${m.id}`}
+              style={s.newMemberCard}
+              title={`${name}${m.city ? ` · ${m.city}` : ''}`}
+            >
+              <span style={{ ...s.newMemberAvatar, background: av.bg, color: av.text }}>
+                {initials}
+              </span>
+              <div style={s.newMemberInfo}>
+                <span style={s.newMemberName}>
+                  {name}
+                  {m.is_contributor && <span style={s.contribDotMini} />}
+                </span>
+                {m.city && <span style={s.newMemberCity}>{m.city}</span>}
+                {m.created_at && (
+                  <span style={s.newMemberSince}>{formatRelative(m.created_at)}</span>
+                )}
+              </div>
+            </Link>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 // ─── Search bar ───────────────────────────────────────────────────────
 
 function SearchBar({ initial, cat, sort }: { initial: string; cat: CategoryId | 'all'; sort: Sort }) {
@@ -571,6 +627,55 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%' },
+
+  newMembersBand: {
+    display: 'flex', alignItems: 'center', gap: 'clamp(12px, 2vw, 24px)',
+    padding: 'clamp(12px, 2vw, 18px) clamp(14px, 2.5vw, 22px)',
+    margin: '0 0 18px',
+    background: 'linear-gradient(135deg, rgba(255,213,107,0.06), rgba(167,139,250,0.04))',
+    border: '1px solid rgba(255,213,107,0.18)',
+    borderRadius: '14px',
+    flexWrap: 'wrap' as const,
+  },
+  newMembersTextCol: {
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+    minWidth: '140px', flexShrink: 0,
+  },
+  newMembersLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const, color: 'var(--accent-text)',
+  },
+  newMembersTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 400, color: 'var(--text)',
+  },
+  newMembersList: {
+    display: 'flex', gap: '10px', alignItems: 'center',
+    flexWrap: 'wrap' as const, flex: '1 1 auto',
+  },
+  newMemberCard: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '8px 12px 8px 8px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '100px',
+    textDecoration: 'none' as const,
+    color: 'var(--text)',
+    transition: 'transform 0.15s, border-color 0.15s',
+  },
+  newMemberAvatar: {
+    width: '32px', height: '32px', borderRadius: '50%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '11px', fontWeight: 700, flexShrink: 0,
+  },
+  newMemberInfo: { display: 'flex', flexDirection: 'column' as const, gap: '0', minWidth: 0 },
+  newMemberName: {
+    fontSize: '13px', fontWeight: 600, color: 'var(--text)',
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    whiteSpace: 'nowrap' as const,
+  },
+  newMemberCity: { fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const },
+  newMemberSince: { fontSize: '10px', color: 'var(--text-3)', whiteSpace: 'nowrap' as const },
 
   layout: {
     display: 'flex', gap: 'clamp(14px, 2vw, 24px)',

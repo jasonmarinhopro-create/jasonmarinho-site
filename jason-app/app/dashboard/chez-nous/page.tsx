@@ -137,6 +137,31 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   const { count: totalReplies } = await supabase.from('chez_nous_replies').select('*', { count: 'exact', head: true })
   const { count: totalMembers } = await supabase.from('profiles').select('*', { count: 'exact', head: true })
 
+  // Nouveaux membres : les 5 derniers inscrits (hors moi-même)
+  const { data: newMembersData } = await supabase
+    .from('profiles')
+    .select('id, full_name, pseudo, is_contributor, created_at, privacy_show_city')
+    .neq('id', profile.userId)
+    .order('created_at', { ascending: false })
+    .limit(6)
+  const newMemberIds = (newMembersData ?? []).map(m => m.id)
+  const newMembersStats = await getBulkProStats(
+    supabase,
+    (newMembersData ?? []).map(m => ({
+      id: m.id, created_at: m.created_at,
+      privacy_show_logements: false, privacy_show_city: m.privacy_show_city,
+    })),
+  )
+  const newMembers = (newMembersData ?? []).map(m => ({
+    id: m.id,
+    full_name: m.full_name,
+    pseudo: m.pseudo,
+    is_contributor: m.is_contributor ?? false,
+    created_at: m.created_at,
+    city: newMembersStats[m.id]?.city ?? null,
+  }))
+  void newMemberIds
+
   // Top contributors derniers 30 jours (post = 2pts, réponse = 1pt)
   const since30d = new Date(Date.now() - 30 * 86400000).toISOString()
   const [{ data: recentPostsForRank }, { data: recentRepliesForRank }] = await Promise.all([
@@ -204,6 +229,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
           totalMembers: totalMembers ?? 0,
         }}
         topMembers={topMembers}
+        newMembers={newMembers}
         catCounts={catCounts}
       />
     </>
