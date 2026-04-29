@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Calculators from './Calculators'
 import ComparisonTable from './ComparisonTable'
 import Resources from './Resources'
 import {
@@ -941,8 +940,19 @@ export default function GuideUI() {
       {/* Tableau comparatif des 4 profils */}
       <ComparisonTable />
 
-      {/* Calculatrices interactives */}
-      <Calculators />
+      {/* Teaser : les simulateurs ont leur propre page */}
+      <Link href="/dashboard/outils/simulateurs" style={s.calcTeaser} className="fade-up glass-card">
+        <div style={s.calcTeaserIcon}>
+          <Calculator size={20} weight="fill" />
+        </div>
+        <div style={s.calcTeaserContent}>
+          <div style={s.calcTeaserTitle}>Outils de simulation</div>
+          <div style={s.calcTeaserDesc}>
+            Calcule ta fiscalité (micro-BIC), compare EI vs SASU, estime ta rentabilité et la taxe de séjour applicable.
+          </div>
+        </div>
+        <ArrowUpRight size={18} weight="bold" style={s.calcTeaserArrow} />
+      </Link>
 
       {/* Ressources & téléchargements */}
       <Resources />
@@ -978,6 +988,33 @@ export default function GuideUI() {
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+
+  calcTeaser: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    padding: 'clamp(16px, 2.5vw, 22px)',
+    borderRadius: '14px',
+    textDecoration: 'none', color: 'inherit',
+    marginBottom: '28px',
+    transition: 'transform 0.15s, border-color 0.15s',
+  },
+  calcTeaserIcon: {
+    width: '44px', height: '44px', borderRadius: '12px',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  calcTeaserContent: { flex: 1, minWidth: 0 },
+  calcTeaserTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '16px', fontWeight: 400, color: 'var(--text)',
+    marginBottom: '3px',
+  },
+  calcTeaserDesc: {
+    fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55,
+  },
+  calcTeaserArrow: {
+    color: 'var(--accent-text)', flexShrink: 0,
+  },
 
   intro: { marginBottom: '28px', maxWidth: '640px' },
   pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
