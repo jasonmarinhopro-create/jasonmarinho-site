@@ -129,28 +129,24 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
             {slotsUsed}/{slotsMax} accès gratuits utilisés
           </span>
         )}
-        {/* Phase 9 — Lien vers les parcours */}
-        <Link
-          href="/dashboard/formations/parcours"
-          style={{ ...styles.statChip, background: 'rgba(96,165,250,0.08)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.20)', textDecoration: 'none' as const, marginLeft: 'auto' }}
-        >
-          <Compass size={13} weight="fill" />
-          Parcours d&apos;apprentissage
+      </div>
+
+      {/* Navigation links — clearly distinct from stat chips */}
+      <div style={styles.navRow}>
+        <Link href="/dashboard/formations/parcours" style={{ ...styles.navLink, color: '#60a5fa', borderColor: 'rgba(96,165,250,0.25)', background: 'rgba(96,165,250,0.06)' }}>
+          <Compass size={16} weight="fill" style={{ flexShrink: 0 }} />
+          <span style={styles.navLinkText}>Parcours d&apos;apprentissage</span>
+          <ArrowRight size={14} weight="bold" style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.7 }} />
         </Link>
-        {/* Phase 6 — Liens vers mon profil & mes favoris */}
-        <Link
-          href="/dashboard/formations/profil-apprenant"
-          style={{ ...styles.statChip, background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)', textDecoration: 'none' as const }}
-        >
-          <Trophy size={13} weight="fill" />
-          Mon profil apprenant
+        <Link href="/dashboard/formations/profil-apprenant" style={{ ...styles.navLink, color: 'var(--accent-text)', borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' }}>
+          <Trophy size={16} weight="fill" style={{ flexShrink: 0 }} />
+          <span style={styles.navLinkText}>Mon profil apprenant</span>
+          <ArrowRight size={14} weight="bold" style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.7 }} />
         </Link>
-        <Link
-          href="/dashboard/formations/favoris"
-          style={{ ...styles.statChip, background: 'rgba(245,158,11,0.08)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.20)', textDecoration: 'none' as const }}
-        >
-          <BookmarkSimple size={13} weight="fill" />
-          Mes favoris
+        <Link href="/dashboard/formations/favoris" style={{ ...styles.navLink, color: '#f59e0b', borderColor: 'rgba(245,158,11,0.25)', background: 'rgba(245,158,11,0.06)' }}>
+          <BookmarkSimple size={16} weight="fill" style={{ flexShrink: 0 }} />
+          <span style={styles.navLinkText}>Mes favoris</span>
+          <ArrowRight size={14} weight="bold" style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.7 }} />
         </Link>
       </div>
 
@@ -353,12 +349,29 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  statsRow: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' },
+  statsRow: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' },
   statChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 12px', borderRadius: '100px',
     background: 'rgba(255,213,107,0.08)', color: 'var(--accent-text)',
     border: '1px solid rgba(255,213,107,0.15)', fontSize: '12px', fontWeight: 500,
+  },
+  navRow: {
+    display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px',
+  },
+  navLink: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    flex: '1 1 160px',
+    padding: '11px 14px',
+    borderRadius: '12px',
+    border: '1px solid',
+    textDecoration: 'none',
+    fontSize: '13px', fontWeight: 500,
+    cursor: 'pointer',
+    minWidth: 'min(160px, 100%)',
+  } as React.CSSProperties,
+  navLinkText: {
+    flex: 1, lineHeight: 1.3,
   },
   filtersWrap: {
     display: 'flex', flexDirection: 'column', gap: '8px',
