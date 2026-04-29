@@ -4,8 +4,19 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { ArrowRight, Eye, EyeSlash } from '@phosphor-icons/react'
+import {
+  ArrowRight, Eye, EyeSlash,
+  GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
+} from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
+
+const PERKS = [
+  { icon: GraduationCap, label: 'Formations vidéo sur la LCD' },
+  { icon: Calculator,    label: 'Simulateurs et outils exclusifs' },
+  { icon: ChatText,      label: "Gabarits de messages prêts à l'emploi" },
+  { icon: UsersThree,    label: 'Communauté de +500 hôtes actifs' },
+  { icon: Megaphone,     label: 'Veille et actualités LCD' },
+]
 
 const MAX_ATTEMPTS = 5
 const BLOCK_DURATION_MS = 10 * 60 * 1000
@@ -14,7 +25,6 @@ export default function LoginPage() {
   const supabase = createClient()
   const router = useRouter()
 
-  // Handle Supabase tokens redirected to this page
   useEffect(() => {
     const hash = window.location.hash
     const isRecovery = hash.includes('type=recovery')
@@ -22,12 +32,10 @@ export default function LoginPage() {
     if (!isRecovery && !isSignup) return
 
     if (isRecovery) {
-      // Pass the hash to reset-password so it can call setSession() directly with the JWT
       window.location.replace('/auth/reset-password' + hash)
       return
     }
 
-    // type=signup: email confirmed → wait for session then go to dashboard
     let redirected = false
     const redirect = () => {
       if (redirected) return
@@ -77,16 +85,13 @@ export default function LoginPage() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
-        if (
-          error.message.includes('Email not confirmed') ||
-          error.message.includes('email_not_confirmed')
-        ) {
+        if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
           isUnconfirmed = true
         } else {
           signInError = error
         }
       }
-    } catch (e) {
+    } catch {
       setError('Une erreur inattendue est survenue. Réessaie dans quelques instants.')
       setLoading(false)
       return
@@ -114,8 +119,6 @@ export default function LoginPage() {
       return
     }
 
-    // Full page reload pour que le serveur relise la session fraîche
-    // (router.push seul ne recharge pas les server components du layout)
     setLoading(false)
     window.location.replace('/dashboard')
   }
@@ -129,7 +132,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.resend({ type: 'signup', email })
     setResendLoading(false)
     if (error) {
-      setError('Impossible de renvoyer l\'email. Réessaie dans quelques minutes.')
+      setError("Impossible de renvoyer l'email. Réessaie dans quelques minutes.")
     } else {
       setResendSent(true)
     }
@@ -137,174 +140,283 @@ export default function LoginPage() {
 
   const isBlocked = blockedUntil !== null && Date.now() < blockedUntil
 
-  return (
-    <div style={styles.page}>
-      <div style={styles.bg1} />
-      <div style={styles.bg2} />
-
-      <div style={styles.card} className="fade-up">
-        <a href="https://jasonmarinho.com" style={styles.logo}>
-          <div style={styles.logoIcon}>
-            <JmLogo size={22} />
-          </div>
-          <span style={styles.logoText}>Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em></span>
+  const brandPanel = (
+    <div className="auth-brand" style={s.brand}>
+      <div style={s.brandInner}>
+        <a href="https://jasonmarinho.com" style={s.brandLogo}>
+          <div style={s.brandLogoIcon}><JmLogo size={20} /></div>
+          <span style={s.brandLogoText}>
+            Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em>
+          </span>
         </a>
 
-        <h1 style={styles.title}>Bon retour</h1>
-        <p style={styles.subtitle}>Connecte-toi à ton espace membre</p>
+        <div>
+          <h1 style={s.brandTitle}>Content de te revoir parmi nous.</h1>
+          <p style={s.brandDesc}>
+            Retrouve tes formations, outils et la communauté LCD — tout est là.
+          </p>
+        </div>
 
-        <form onSubmit={handleLogin} style={styles.form}>
-          <div style={styles.field}>
-            <label style={styles.label}>Email</label>
-            <input
-              type="email"
-              className="input-field"
-              placeholder="toi@email.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              disabled={isBlocked}
-            />
-          </div>
+        <ul style={s.perksList}>
+          {PERKS.map(({ icon: Icon, label }) => (
+            <li key={label} style={s.perkItem}>
+              <div style={s.perkIcon}><Icon size={15} weight="bold" color="#FFD56B" /></div>
+              <span>{label}</span>
+            </li>
+          ))}
+        </ul>
 
-          <div style={styles.field}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label style={styles.label}>Mot de passe</label>
-              <Link href="/auth/forgot-password" style={styles.forgotLink}>
-                Mot de passe oublié ?
-              </Link>
-            </div>
-            <div style={{ position: 'relative' }}>
+        <div style={s.quote}>
+          <p style={s.quoteText}>
+            "Mon objectif : te donner les meilleurs outils pour développer ton activité, honnêtement."
+          </p>
+          <p style={s.quoteAuthor}>— Jason Marinho</p>
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <div data-theme="light" className="auth-wrap" style={s.wrap}>
+      <style>{MEDIA_CSS}</style>
+      {brandPanel}
+
+      <div className="auth-form-side" style={s.formSide}>
+        {/* Mobile top bar */}
+        <div className="auth-mobile-bar" style={s.mobileBar}>
+          <a href="https://jasonmarinho.com" style={{ display: 'flex', alignItems: 'center', gap: '9px', textDecoration: 'none' }}>
+            <div style={s.brandLogoIcon}><JmLogo size={18} /></div>
+            <span style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '16px', fontWeight: 600, color: '#fff' }}>
+              Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em>
+            </span>
+          </a>
+        </div>
+
+        <div style={s.formCard} className="fade-up">
+          <h2 style={s.formTitle}>Bon retour</h2>
+          <p style={s.formSub}>Connecte-toi à ton espace membre</p>
+
+          <form onSubmit={handleLogin} style={s.form}>
+            <div style={s.field}>
+              <label style={s.label}>Adresse email</label>
               <input
-                type={showPassword ? 'text' : 'password'}
-                className="input-field"
-                placeholder="••••••••"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-                style={{ paddingRight: '44px' }}
-                disabled={isBlocked}
+                type="email" className="input-field" placeholder="toi@email.com"
+                value={email} onChange={e => setEmail(e.target.value)}
+                required autoComplete="email" disabled={isBlocked}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(v => !v)}
-                style={styles.eyeBtn}
-              >
-                {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
-              </button>
             </div>
-          </div>
 
-          {error && (
-            <div>
-              <p style={styles.error}>{error}</p>
-              {emailNotConfirmed && !resendSent && (
-                <button
-                  type="button"
-                  onClick={handleResendConfirmation}
-                  disabled={resendLoading}
-                  style={styles.resendBtn}
-                >
-                  {resendLoading ? 'Envoi...' : 'Renvoyer l\'email de confirmation'}
+            <div style={s.field}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label style={s.label}>Mot de passe</label>
+                <Link href="/auth/forgot-password" style={s.forgotLink}>
+                  Mot de passe oublié ?
+                </Link>
+              </div>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'} className="input-field"
+                  placeholder="••••••••"
+                  value={password} onChange={e => setPassword(e.target.value)}
+                  required autoComplete="current-password"
+                  style={{ paddingRight: '44px' }} disabled={isBlocked}
+                />
+                <button type="button" onClick={() => setShowPassword(v => !v)} style={s.eyeBtn}>
+                  {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
                 </button>
-              )}
-              {resendSent && (
-                <p style={styles.resendSuccess}>Email de confirmation renvoyé ! Vérifie ta boîte mail.</p>
-              )}
+              </div>
             </div>
-          )}
 
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={loading || isBlocked}
-            style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
-          >
-            {loading ? 'Connexion...' : 'Se connecter'}
-            {!loading && <ArrowRight size={16} weight="bold" />}
-          </button>
-        </form>
+            {error && (
+              <div>
+                <p style={s.errorBox}>{error}</p>
+                {emailNotConfirmed && !resendSent && (
+                  <button
+                    type="button" onClick={handleResendConfirmation}
+                    disabled={resendLoading} style={s.resendBtn}
+                  >
+                    {resendLoading ? 'Envoi...' : "Renvoyer l'email de confirmation"}
+                  </button>
+                )}
+                {resendSent && (
+                  <p style={s.resendSuccess}>Email de confirmation renvoyé ! Vérifie ta boîte mail.</p>
+                )}
+              </div>
+            )}
 
-        <p style={styles.footer}>
-          Pas encore de compte ?{' '}
-          <Link href="/auth/register" style={styles.link}>Créer un compte</Link>
-        </p>
+            <button
+              type="submit" className="btn-primary" disabled={loading || isBlocked}
+              style={{ width: '100%', justifyContent: 'center', marginTop: '4px' }}
+            >
+              {loading ? 'Connexion...' : 'Se connecter'}
+              {!loading && <ArrowRight size={16} weight="bold" />}
+            </button>
+          </form>
+
+          <p style={s.footerText}>
+            Pas encore de compte ?{' '}
+            <Link href="/auth/register" style={s.footerLink}>Créer un compte gratuit</Link>
+          </p>
+
+          <div style={s.trustRow}>
+            <ShieldCheck size={13} color="rgba(0,76,63,0.35)" weight="bold" />
+            <span style={s.trustText}>Données sécurisées · RGPD · Aucun partage avec des tiers</span>
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  page: {
+const MEDIA_CSS = `
+  .auth-brand { display: flex; }
+  .auth-mobile-bar { display: none !important; }
+  .auth-form-side { min-height: 100svh; }
+  @media (max-width: 767px) {
+    .auth-wrap { flex-direction: column !important; }
+    .auth-brand { display: none !important; }
+    .auth-mobile-bar { display: flex !important; }
+    .auth-form-side { min-height: auto !important; padding: 0 20px 48px !important; }
+  }
+`
+
+const s: Record<string, React.CSSProperties> = {
+  wrap: {
     minHeight: '100svh',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    padding: '24px 16px', position: 'relative', overflow: 'hidden',
+    display: 'flex',
+    background: '#fff',
   },
-  bg1: {
-    position: 'fixed', top: '-10%', right: '-10%',
-    width: '500px', height: '500px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(0,76,63,0.25) 0%, transparent 65%)',
-    pointerEvents: 'none',
+  brand: {
+    width: '42%',
+    minWidth: '360px',
+    background: '#004C3F',
+    padding: 'clamp(40px,6vh,72px) clamp(36px,4vw,64px)',
+    alignItems: 'flex-start',
+    flexShrink: 0,
+    position: 'relative',
+    overflow: 'hidden',
   },
-  bg2: {
-    position: 'fixed', bottom: '-10%', left: '-10%',
-    width: '400px', height: '400px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(255,213,107,0.06) 0%, transparent 65%)',
-    pointerEvents: 'none',
+  brandInner: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '40px',
+    maxWidth: '380px',
+    position: 'sticky',
+    top: '48px',
   },
-  card: {
-    width: '100%', maxWidth: '420px',
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: '20px', padding: '40px 36px',
-    backdropFilter: 'blur(20px)',
-    position: 'relative', zIndex: 2,
+  brandLogo: {
+    display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none',
   },
-  logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px', textDecoration: 'none' },
-  logoIcon: {
-    width: '36px', height: '36px',
-    background: 'rgba(0,76,63,0.5)',
-    border: '1px solid rgba(255,213,107,0.2)',
+  brandLogoIcon: {
+    width: '34px', height: '34px',
+    background: 'rgba(255,255,255,0.1)',
+    border: '1px solid rgba(255,213,107,0.25)',
     borderRadius: '10px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
   },
-  logoText: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 600, color: 'var(--text)' },
-  title: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', fontWeight: 400,
-    color: 'var(--text)', letterSpacing: '-0.5px', marginBottom: '6px',
+  brandLogoText: {
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 600, color: '#fff',
   },
-  subtitle: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', marginBottom: '32px' },
+  brandTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'clamp(22px,2.4vw,30px)', fontWeight: 400,
+    color: '#fff', lineHeight: 1.25, letterSpacing: '-0.5px', marginBottom: '14px',
+  },
+  brandDesc: {
+    fontSize: '15px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.65,
+  },
+  perksList: {
+    listStyle: 'none', padding: 0, margin: 0,
+    display: 'flex', flexDirection: 'column', gap: '13px',
+  },
+  perkItem: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    fontSize: '14px', color: 'rgba(255,255,255,0.72)',
+  },
+  perkIcon: {
+    width: '28px', height: '28px', borderRadius: '8px',
+    background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.18)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  quote: {
+    borderLeft: '2px solid rgba(255,213,107,0.3)',
+    paddingLeft: '18px',
+  },
+  quoteText: {
+    fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7,
+    marginBottom: '8px', fontStyle: 'italic',
+  },
+  quoteAuthor: {
+    fontSize: '12px', color: 'rgba(255,213,107,0.6)', fontWeight: 500,
+  },
+  // Form side
+  formSide: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 'clamp(40px,6vh,80px) clamp(24px,5vw,80px)',
+    background: '#fff',
+    overflowY: 'auto',
+  },
+  mobileBar: {
+    background: '#004C3F',
+    padding: '16px 20px',
+    marginLeft: '-20px',
+    marginRight: '-20px',
+    width: 'calc(100% + 40px)',
+    marginBottom: '36px',
+    alignItems: 'center',
+  } as React.CSSProperties,
+  formCard: {
+    width: '100%',
+    maxWidth: '440px',
+  },
+  formTitle: {
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 400,
+    color: '#0B1D0F', letterSpacing: '-0.4px', marginBottom: '6px',
+  },
+  formSub: {
+    fontSize: '14px', color: 'rgba(11,29,15,0.4)', marginBottom: '32px', fontWeight: 300,
+  },
   form: { display: 'flex', flexDirection: 'column', gap: '18px' },
   field: { display: 'flex', flexDirection: 'column', gap: '7px' },
-  label: { fontSize: '13px', fontWeight: 500, color: 'var(--text-2)' },
-  forgotLink: { fontSize: '12px', color: 'rgba(255,213,107,0.7)', textDecoration: 'none', fontWeight: 400 },
+  label: { fontSize: '13px', fontWeight: 500, color: 'rgba(11,29,15,0.55)' },
+  forgotLink: { fontSize: '12px', color: 'rgba(0,76,63,0.65)', textDecoration: 'none', fontWeight: 400 },
   eyeBtn: {
     position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
     background: 'none', border: 'none', cursor: 'pointer',
-    color: 'var(--text-2)', padding: '4px',
+    color: 'rgba(11,29,15,0.3)', padding: '4px',
     display: 'flex', alignItems: 'center',
   },
-  error: {
-    fontSize: '13px', color: '#F87171',
-    background: 'rgba(248,113,113,0.1)',
-    border: '1px solid rgba(248,113,113,0.2)',
+  errorBox: {
+    fontSize: '13px', color: '#DC2626',
+    background: 'rgba(220,38,38,0.05)',
+    border: '1px solid rgba(220,38,38,0.15)',
     borderRadius: '8px', padding: '10px 14px',
   },
   resendBtn: {
     marginTop: '8px', background: 'none',
-    border: '1px solid rgba(248,113,113,0.4)',
-    borderRadius: '8px', color: '#F87171',
+    border: '1px solid rgba(220,38,38,0.3)',
+    borderRadius: '8px', color: '#DC2626',
     fontSize: '12px', padding: '7px 12px',
     cursor: 'pointer', width: '100%',
   },
   resendSuccess: {
-    marginTop: '8px', fontSize: '13px', color: '#4ade80',
-    background: 'rgba(74,222,128,0.08)',
-    border: '1px solid rgba(74,222,128,0.2)',
+    marginTop: '8px', fontSize: '13px', color: '#059669',
+    background: 'rgba(5,150,105,0.06)',
+    border: '1px solid rgba(5,150,105,0.15)',
     borderRadius: '8px', padding: '10px 14px',
   },
-  footer: { marginTop: '24px', textAlign: 'center', fontSize: '13px', color: 'var(--text-3)' },
-  link: { color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
+  footerText: {
+    marginTop: '22px', textAlign: 'center', fontSize: '13px', color: 'rgba(11,29,15,0.38)',
+  },
+  footerLink: { color: '#004C3F', textDecoration: 'none', fontWeight: 500 },
+  trustRow: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+    marginTop: '14px',
+  },
+  trustText: { fontSize: '11px', color: 'rgba(11,29,15,0.28)', letterSpacing: '0.1px' },
 }
