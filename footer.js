@@ -66,7 +66,7 @@
             + '<li><a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a></li>'
             + '<li><a href="/services/chez-nous"><i class="ph ph-house"></i>Chez Nous (forum)</a></li>'
             + '<li><a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a></li>'
-            + '<li><a href="/services/partenaires"><i class="ph ph-globe"></i>Écosystème LCD</a></li>'
+            + '<li><a href="/services/ecosysteme"><i class="ph ph-globe"></i>Écosystème LCD</a></li>'
           + '</ul>'
         + '</div>'
         + '<div>'

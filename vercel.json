@@ -5,7 +5,8 @@
     { "source": "/formations/:path*", "destination": "/services/formations/:path*", "permanent": true },
     { "source": "/services/groupes-facebook", "destination": "/services/communaute", "permanent": true },
     { "source": "/ressources/gabarits-messages", "destination": "/services/gabarits-messages", "permanent": true },
-    { "source": "/ressources/partenaires", "destination": "/services/partenaires", "permanent": true },
-    { "source": "/ressources", "destination": "/services", "permanent": true }
+    { "source": "/ressources/partenaires", "destination": "/services/ecosysteme", "permanent": true },
+    { "source": "/ressources", "destination": "/services", "permanent": true },
+    { "source": "/services/partenaires", "destination": "/services/ecosysteme", "permanent": true }
   ]
 }

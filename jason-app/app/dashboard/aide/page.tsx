@@ -23,7 +23,7 @@ const helpCategories = [
     icon: Handshake,
     label: 'Offres partenaires',
     description: 'Activer vos avantages exclusifs avec Driing et nos partenaires',
-    href: '/dashboard/partenaires',
+    href: '/dashboard/ecosysteme',
   },
   {
     icon: UsersThree,
