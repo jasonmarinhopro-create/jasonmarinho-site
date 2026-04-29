@@ -7,6 +7,7 @@ import WelcomeModal from '@/components/chez-nous/WelcomeModal'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 import { computeBadges, type BadgeId } from '@/lib/badges'
 import { getBulkProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
+import { aggregateRegionsByMember } from '@/lib/chez-nous/regions'
 
 export const dynamic  = 'force-dynamic'
 export const metadata = { title: 'Chez Nous — Jason Marinho' }
@@ -137,6 +138,31 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   const { count: totalReplies } = await supabase.from('chez_nous_replies').select('*', { count: 'exact', head: true })
   const { count: totalMembers } = await supabase.from('profiles').select('*', { count: 'exact', head: true })
 
+  // Nouveaux membres : les 5 derniers inscrits (hors moi-même)
+  const { data: newMembersData } = await supabase
+    .from('profiles')
+    .select('id, full_name, pseudo, is_contributor, created_at, privacy_show_city')
+    .neq('id', profile.userId)
+    .order('created_at', { ascending: false })
+    .limit(6)
+  const newMemberIds = (newMembersData ?? []).map(m => m.id)
+  const newMembersStats = await getBulkProStats(
+    supabase,
+    (newMembersData ?? []).map(m => ({
+      id: m.id, created_at: m.created_at,
+      privacy_show_logements: false, privacy_show_city: m.privacy_show_city,
+    })),
+  )
+  const newMembers = (newMembersData ?? []).map(m => ({
+    id: m.id,
+    full_name: m.full_name,
+    pseudo: m.pseudo,
+    is_contributor: m.is_contributor ?? false,
+    created_at: m.created_at,
+    city: newMembersStats[m.id]?.city ?? null,
+  }))
+  void newMemberIds
+
   // Top contributors derniers 30 jours (post = 2pts, réponse = 1pt)
   const since30d = new Date(Date.now() - 30 * 86400000).toISOString()
   const [{ data: recentPostsForRank }, { data: recentRepliesForRank }] = await Promise.all([
@@ -169,6 +195,84 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   const { data: catCountsRaw } = await supabase.from('chez_nous_posts').select('category')
   const catCounts: Record<string, number> = {}
   ;(catCountsRaw ?? []).forEach(c => { catCounts[c.category] = (catCounts[c.category] ?? 0) + 1 })
+
+  // Activité ambiante : derniers événements (posts + replies)
+  const [{ data: recentReplies }, { data: recentPosts }] = await Promise.all([
+    supabase
+      .from('chez_nous_replies')
+      .select('id, post_id, author_id, created_at, chez_nous_posts(title, author_id)')
+      .order('created_at', { ascending: false })
+      .limit(8),
+    supabase
+      .from('chez_nous_posts')
+      .select('id, author_id, title, created_at')
+      .order('created_at', { ascending: false })
+      .limit(5),
+  ])
+
+  // Mappe tous les auteurs nécessaires (replies + post auteur cible)
+  const activityUserIds = new Set<string>()
+  ;(recentReplies ?? []).forEach((r: { author_id: string; chez_nous_posts?: { author_id?: string } | { author_id?: string }[] | null }) => {
+    activityUserIds.add(r.author_id)
+    const cnp = Array.isArray(r.chez_nous_posts) ? r.chez_nous_posts[0] : r.chez_nous_posts
+    if (cnp?.author_id) activityUserIds.add(cnp.author_id)
+  })
+  ;(recentPosts ?? []).forEach(p => activityUserIds.add(p.author_id))
+
+  const { data: activityProfilesData } = activityUserIds.size
+    ? await supabase
+        .from('profiles')
+        .select('id, full_name, pseudo')
+        .in('id', Array.from(activityUserIds))
+    : { data: [] }
+  const activityProfiles: Record<string, { full_name: string | null; pseudo: string | null }> = {}
+  ;(activityProfilesData ?? []).forEach(p => {
+    activityProfiles[p.id] = { full_name: p.full_name, pseudo: p.pseudo }
+  })
+
+  type ActivityEvent =
+    | { kind: 'reply'; id: string; created_at: string; replierId: string; postTitle: string; postAuthorId: string; postId: string }
+    | { kind: 'post'; id: string; created_at: string; authorId: string; title: string }
+
+  const activityEvents: ActivityEvent[] = []
+  ;(recentReplies ?? []).forEach((r: { id: string; post_id: string; author_id: string; created_at: string; chez_nous_posts?: { title?: string; author_id?: string } | { title?: string; author_id?: string }[] | null }) => {
+    const cnp = Array.isArray(r.chez_nous_posts) ? r.chez_nous_posts[0] : r.chez_nous_posts
+    if (!cnp?.title || !cnp?.author_id) return
+    activityEvents.push({
+      kind: 'reply', id: r.id, created_at: r.created_at,
+      replierId: r.author_id, postTitle: cnp.title, postAuthorId: cnp.author_id, postId: r.post_id,
+    })
+  })
+  ;(recentPosts ?? []).forEach(p => {
+    activityEvents.push({
+      kind: 'post', id: p.id, created_at: p.created_at,
+      authorId: p.author_id, title: p.title,
+    })
+  })
+  activityEvents.sort((a, b) => b.created_at.localeCompare(a.created_at))
+  const activity = activityEvents.slice(0, 6)
+
+  // Régions des membres (carte de France) — uniquement profils ayant
+  // privacy_show_city != false, agrégé par membre (pas par logement)
+  const { data: allLogements } = await supabase
+    .from('logements')
+    .select('user_id, adresse')
+  const { data: privacyData } = await supabase
+    .from('profiles')
+    .select('id, privacy_show_city')
+
+  const allowedUserIds = new Set(
+    (privacyData ?? [])
+      .filter(p => p.privacy_show_city !== false)
+      .map(p => p.id),
+  )
+  const addressesByMember: Record<string, string[]> = {}
+  ;(allLogements ?? []).forEach((l: { user_id: string; adresse: string | null }) => {
+    if (!allowedUserIds.has(l.user_id) || !l.adresse) return
+    if (!addressesByMember[l.user_id]) addressesByMember[l.user_id] = []
+    addressesByMember[l.user_id].push(l.adresse)
+  })
+  const regionCounts = aggregateRegionsByMember(addressesByMember)
 
   return (
     <>
@@ -204,7 +308,11 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
           totalMembers: totalMembers ?? 0,
         }}
         topMembers={topMembers}
+        newMembers={newMembers}
         catCounts={catCounts}
+        activity={activity}
+        activityProfiles={activityProfiles}
+        regionCounts={regionCounts}
       />
     </>
   )

@@ -45,11 +45,11 @@ const CATEGORY_LABELS: Record<string, string> = {
   conciergerie: 'Conciergerie',
   saisonnier:   'Saisonnier',
   airbnb:       'Airbnb',
-  facebook:     'Groupe Facebook',
+  facebook:     'Posts & annonces',
   autre:        'Autre',
 }
 
-const FACEBOOK_CONFIG = { label: 'Groupes Facebook', color: '#818CF8', icon: UsersThree }
+const FACEBOOK_CONFIG = { label: 'Posts & annonces', color: '#818CF8', icon: UsersThree }
 
 const SECTION_CONFIG: Record<TimingBucket, { label: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
   'avant-arrivee':  { label: "Avant l'arrivée",   color: 'var(--accent-text)', bg: 'var(--accent-bg)',            border: 'var(--accent-border)',          icon: CalendarCheck },
@@ -113,6 +113,10 @@ export default function GabaritsClient({
   const [savingModal, setSavingModal]         = useState(false)
   const [deletingCustom, setDeletingCustom]   = useState(false)
 
+  // ── Remplissage variables ─────────────────────────────────────────────────
+  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en' } | null>(null)
+  const [fillValues, setFillValues]           = useState<Record<string, string>>({})
+
   // ── Favoris ───────────────────────────────────────────────────────────────
   async function toggleFavorite(templateId: string, e: React.MouseEvent) {
     e.stopPropagation()
@@ -135,15 +139,40 @@ export default function GabaritsClient({
   // ── Copier ────────────────────────────────────────────────────────────────
   async function copyTemplate(t: Template, e: React.MouseEvent, lang: 'fr' | 'en' = 'fr') {
     e.stopPropagation()
-    const content = lang === 'en'
+    const raw = lang === 'en'
       ? (t.corps_en ?? t.content)
       : (customizations[t.id]?.content ?? t.content)
+    const vars = extractVariables(raw)
+    if (vars.length > 0) {
+      setFillTemplate({ t, lang })
+      setFillValues(Object.fromEntries(vars.map(v => [v, ''])))
+      return
+    }
+    await doCopy(t.id, raw, lang)
+  }
+
+  async function doCopy(id: string, content: string, lang: 'fr' | 'en') {
     await navigator.clipboard.writeText(content)
-    setCopied(t.id + lang)
+    setCopied(id + lang)
     setTimeout(() => setCopied(null), 2000)
     showToast('Copié dans le presse-papier !')
     const supabase = createClient()
-    try { await supabase.rpc('increment_copy_count', { template_id: t.id }) } catch {}
+    try { await supabase.rpc('increment_copy_count', { template_id: id }) } catch {}
+  }
+
+  async function copyWithFill() {
+    if (!fillTemplate) return
+    const { t, lang } = fillTemplate
+    const raw = lang === 'en'
+      ? (t.corps_en ?? t.content)
+      : (customizations[t.id]?.content ?? t.content)
+    let filled = raw
+    for (const [variable, value] of Object.entries(fillValues)) {
+      filled = filled.split(variable).join(value || variable)
+    }
+    await doCopy(t.id, filled, lang)
+    setFillTemplate(null)
+    setFillValues({})
   }
 
   // ── Modal personnalisation ────────────────────────────────────────────────
@@ -276,10 +305,10 @@ export default function GabaritsClient({
           {([
             { key: 'all',            label: 'Tous les gabarits' },
             { key: 'favorites',      label: '♡ Mes favoris',     count: favorites.size },
+            { key: 'facebook',       label: 'Posts & annonces',   color: '#818CF8', count: allFacebookTemplates.length || undefined },
             { key: 'avant-arrivee',  label: "Avant l'arrivée",   bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)', count: templates.filter(t => getTimingBucket(t) === 'avant-arrivee').length  || undefined },
             { key: 'pendant-sejour', label: 'Pendant le séjour',  color: '#60BEFF', count: templates.filter(t => getTimingBucket(t) === 'pendant-sejour').length || undefined },
             { key: 'apres-depart',   label: 'Après le départ',    color: '#F97583', count: templates.filter(t => getTimingBucket(t) === 'apres-depart').length   || undefined },
-            { key: 'facebook',       label: 'Groupes Facebook',   color: '#818CF8', count: allFacebookTemplates.length || undefined },
           ] as { key: FilterKey; label: string; count?: number; color?: string; bg?: string; borderColor?: string }[]).map(f => (
             <button
               key={f.key}
@@ -477,6 +506,43 @@ export default function GabaritsClient({
           </div>
         )}
       </div>
+
+      {/* Modal remplissage variables */}
+      {fillTemplate && (
+        <div style={s.overlay} onClick={() => setFillTemplate(null)}>
+          <div style={{ ...s.modal, maxWidth: '460px' }} onClick={e => e.stopPropagation()}>
+            <div style={s.modalHeader}>
+              <div>
+                <h3 style={s.modalTitle}>Remplir les variables</h3>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' }}>
+                  Personnalise ce message avant de le copier
+                </p>
+              </div>
+              <button onClick={() => setFillTemplate(null)} style={s.closeBtn}><X size={18} /></button>
+            </div>
+            <div style={{ ...s.modalBody, gap: '14px' }}>
+              {Object.keys(fillValues).map(variable => (
+                <div key={variable} style={s.fieldGroup}>
+                  <label style={s.label}>{variable}</label>
+                  <input
+                    value={fillValues[variable]}
+                    onChange={e => setFillValues(prev => ({ ...prev, [variable]: e.target.value }))}
+                    placeholder={`Remplace ${variable}`}
+                    style={s.input}
+                    autoFocus={Object.keys(fillValues)[0] === variable}
+                  />
+                </div>
+              ))}
+            </div>
+            <div style={s.modalFooter}>
+              <button onClick={() => setFillTemplate(null)} style={s.ghostBtn}>Annuler</button>
+              <button onClick={copyWithFill} className="btn-primary" style={{ fontSize: '13px', padding: '10px 20px' }}>
+                <Copy size={14} /> Copier le message
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal personnalisation */}
       {editingTemplate && (
@@ -760,7 +826,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   clearSearch: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', display: 'flex', padding: '2px' },
 
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '16px' },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '16px' },
 
   card: {
     display: 'flex', flexDirection: 'column', gap: '14px',

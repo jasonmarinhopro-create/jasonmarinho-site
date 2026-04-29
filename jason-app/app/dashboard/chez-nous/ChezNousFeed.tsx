@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ImageSquare } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
+import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
+import { MapPin } from '@phosphor-icons/react'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
 import { stripMarkdown } from '@/lib/chez-nous/markdown'
@@ -51,6 +53,19 @@ type TopMember = {
   score: number
 }
 
+type NewMember = {
+  id: string
+  full_name: string | null
+  pseudo: string | null
+  is_contributor: boolean
+  created_at: string | null
+  city: string | null
+}
+
+type ActivityEvent =
+  | { kind: 'reply'; id: string; created_at: string; replierId: string; postTitle: string; postAuthorId: string; postId: string }
+  | { kind: 'post'; id: string; created_at: string; authorId: string; title: string }
+
 type Props = {
   posts: Post[]
   authorsMap: Record<string, Author>
@@ -61,10 +76,14 @@ type Props = {
   currentSearch: string
   stats: { totalPosts: number; totalReplies: number; totalMembers: number }
   topMembers: TopMember[]
+  newMembers: NewMember[]
   catCounts: Record<string, number>
+  activity: ActivityEvent[]
+  activityProfiles: Record<string, { full_name: string | null; pseudo: string | null }>
+  regionCounts: Record<string, number>
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, catCounts }: Props) {
+export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts, activity, activityProfiles, regionCounts }: Props) {
   const [showForm, setShowForm] = useState(false)
 
   return (
@@ -73,24 +92,27 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
       <div style={s.hero}>
         <div style={s.heroBadge}>
           <House size={13} color="var(--accent-text)" weight="fill" />
-          Chez Nous · Communauté ouverte
+          Chez Nous · entre hôtes LCD
         </div>
         <h1 style={s.heroTitle}>
           Bienvenue <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Chez Nous</em>
         </h1>
         <p style={s.heroDesc}>
-          L'espace pour échanger, demander un coup de main, partager ce qui marche.
-          Entre hôtes LCD, sans détour.
+          L'endroit où on s'entraide pour de vrai. Tu poses tes questions, tu partages tes réussites,
+          tu réponds quand tu peux. Sans détour, sans jugement.
         </p>
 
         <div style={s.statRow}>
-          <span><strong style={{ color: 'var(--text)' }}>{stats.totalPosts}</strong> discussion{stats.totalPosts > 1 ? 's' : ''}</span>
+          <span><strong style={{ color: 'var(--text)' }}>Vous êtes {stats.totalMembers}</strong> hôte{stats.totalMembers > 1 ? 's' : ''}</span>
           <span style={s.statSep}>·</span>
-          <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> réponse{stats.totalReplies > 1 ? 's' : ''}</span>
+          <span><strong style={{ color: 'var(--text)' }}>{stats.totalPosts}</strong> conversation{stats.totalPosts > 1 ? 's' : ''}</span>
           <span style={s.statSep}>·</span>
-          <span><strong style={{ color: 'var(--text)' }}>{stats.totalMembers}</strong> membre{stats.totalMembers > 1 ? 's' : ''}</span>
+          <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
       </div>
+
+      {/* Nouveaux membres */}
+      {newMembers.length > 0 && <NewMembersBand members={newMembers} />}
 
       {/* Catégories */}
       <div style={s.catRow}>
@@ -119,12 +141,12 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
             <div style={s.sortRow}>
               <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     search={currentSearch} icon={Clock} label="Récent" />
               <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    search={currentSearch} icon={Fire}  label="Populaire" />
-              <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="Sans réponse" />
-              <SortChip cat={currentCategory} sort="unresolved" active={currentSort === 'unresolved'} search={currentSearch} icon={CheckCircle} label="Non résolu" />
+              <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="À aider" />
+              <SortChip cat={currentCategory} sort="unresolved" active={currentSort === 'unresolved'} search={currentSearch} icon={CheckCircle} label="En suspens" />
             </div>
             <button onClick={() => setShowForm(v => !v)} style={s.newBtn}>
               <Plus size={15} weight="bold" />
-              {showForm ? 'Annuler' : 'Nouvelle discussion'}
+              {showForm ? 'Annuler' : 'Démarrer une conversation'}
             </button>
           </div>
 
@@ -146,6 +168,9 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
 
         {/* Aside */}
         <aside style={s.aside}>
+          <JasonNoteCard />
+          <FranceMapCard regionCounts={regionCounts} />
+          <ActivityCard events={activity} profiles={activityProfiles} />
           <StatsCard stats={stats} />
           <TopMembersCard members={topMembers} />
           <CategoriesCard counts={catCounts} currentCategory={currentCategory} currentSort={currentSort} />
@@ -158,25 +183,163 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
 
 // ─── Aside cards ─────────────────────────────────────────────────────
 
+function JasonNoteCard() {
+  return (
+    <div style={s.jasonCard}>
+      <div style={s.jasonHeader}>
+        <span style={s.jasonAvatar}>JM</span>
+        <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1px' }}>
+          <span style={s.jasonName}>Jason</span>
+          <span style={s.jasonRole}>Fondateur · veille sur la famille</span>
+        </div>
+      </div>
+      <p style={s.jasonMessage}>
+        Bienvenue Chez Nous. Cet espace n'a qu'une règle :
+        <strong style={{ color: 'var(--accent-text)' }}> on s'entraide</strong>.
+        Pose tes questions sans hésiter, partage ce que tu apprends, et surtout —
+        réponds quand tu peux à ceux qui débutent. C'est comme ça qu'on grandit ensemble.
+      </p>
+      <span style={s.jasonSign}>— Jason</span>
+    </div>
+  )
+}
+
+function FranceMapCard({ regionCounts }: { regionCounts: Record<string, number> }) {
+  const total = Object.values(regionCounts).reduce((a, b) => a + b, 0)
+  if (total === 0) return null
+
+  // Min/max pour normaliser la taille des bulles
+  const max = Math.max(...Object.values(regionCounts))
+
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <MapPin size={14} color="#fb7185" weight="fill" />
+        <span style={s.asideTitle}>On est partout en France</span>
+      </div>
+      <div style={s.mapWrap}>
+        <svg viewBox="0 0 100 110" style={s.mapSvg} aria-label="Répartition des hôtes en France">
+          {/* Silhouette simplifiée de la France métropolitaine */}
+          <path
+            d="M 28 10 Q 42 5, 55 8 Q 68 6, 78 14 Q 84 22, 80 32 Q 88 38, 86 48 Q 90 56, 84 64 Q 88 72, 80 82 Q 70 90, 56 92 Q 42 94, 30 88 Q 20 82, 18 70 Q 10 60, 14 48 Q 10 36, 18 26 Q 22 16, 28 10 Z"
+            fill="rgba(255,255,255,0.025)"
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth="0.5"
+          />
+          {/* Corse */}
+          <path
+            d="M 88 92 Q 92 90, 93 95 Q 92 100, 89 100 Q 87 96, 88 92 Z"
+            fill="rgba(255,255,255,0.025)"
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth="0.5"
+          />
+          {/* Bulles par région */}
+          {Object.entries(regionCounts).map(([region, count]) => {
+            const pos = REGION_POSITIONS[region]
+            if (!pos) return null
+            const size = 1.5 + (count / max) * 3.5
+            return (
+              <g key={region}>
+                <circle
+                  cx={pos.x} cy={pos.y} r={size + 1.5}
+                  fill="rgba(251,113,133,0.15)"
+                />
+                <circle
+                  cx={pos.x} cy={pos.y} r={size}
+                  fill="#fb7185"
+                />
+                <title>{`${region} : ${count} hôte${count > 1 ? 's' : ''}`}</title>
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+      <div style={s.regionLegend}>
+        {Object.entries(regionCounts)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 5)
+          .map(([region, count]) => (
+            <span key={region} style={s.regionLegendItem}>
+              <span style={s.regionLegendName}>{region}</span>
+              <span style={s.regionLegendCount}>{count}</span>
+            </span>
+          ))}
+      </div>
+    </div>
+  )
+}
+
+function ActivityCard({
+  events, profiles,
+}: {
+  events: ActivityEvent[]
+  profiles: Record<string, { full_name: string | null; pseudo: string | null }>
+}) {
+  if (events.length === 0) return null
+  const nameOf = (id: string) => {
+    const p = profiles[id]
+    if (!p) return 'Quelqu\'un'
+    return displayName({ pseudo: p.pseudo, full_name: p.full_name })
+  }
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <ChatCircle size={14} color="#34d399" weight="fill" />
+        <span style={s.asideTitle}>Ça vit en ce moment</span>
+      </div>
+      <div style={s.activityList}>
+        {events.map(ev => {
+          const when = formatRelative(ev.created_at)
+          if (ev.kind === 'reply') {
+            const replier = nameOf(ev.replierId)
+            const author = nameOf(ev.postAuthorId)
+            return (
+              <Link key={`r-${ev.id}`} href={`/dashboard/chez-nous/${ev.postId}`} style={s.activityRow}>
+                <span style={s.activityDotReply} />
+                <div style={s.activityText}>
+                  <span><strong>{replier}</strong> a répondu à <strong>{author}</strong></span>
+                  <span style={s.activityTitle}>« {ev.postTitle.slice(0, 60)}{ev.postTitle.length > 60 ? '…' : ''} »</span>
+                  <span style={s.activityWhen}>{when}</span>
+                </div>
+              </Link>
+            )
+          }
+          const poster = nameOf(ev.authorId)
+          return (
+            <Link key={`p-${ev.id}`} href={`/dashboard/chez-nous/${ev.id}`} style={s.activityRow}>
+              <span style={s.activityDotPost} />
+              <div style={s.activityText}>
+                <span><strong>{poster}</strong> a lancé une conversation</span>
+                <span style={s.activityTitle}>« {ev.title.slice(0, 60)}{ev.title.length > 60 ? '…' : ''} »</span>
+                <span style={s.activityWhen}>{when}</span>
+              </div>
+            </Link>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function StatsCard({ stats }: { stats: { totalPosts: number; totalReplies: number; totalMembers: number } }) {
   return (
     <div style={s.asideCard}>
       <div style={s.asideHead}>
         <Sparkle size={14} color="var(--accent-text)" weight="fill" />
-        <span style={s.asideTitle}>La communauté</span>
+        <span style={s.asideTitle}>Notre famille LCD</span>
       </div>
       <div style={s.statsList}>
         <div style={s.statRow2}>
           <span style={s.statValue}>{stats.totalMembers}</span>
-          <span style={s.statLabel}>membre{stats.totalMembers > 1 ? 's' : ''}</span>
+          <span style={s.statLabel}>hôte{stats.totalMembers > 1 ? 's' : ''}</span>
         </div>
         <div style={s.statRow2}>
           <span style={s.statValue}>{stats.totalPosts}</span>
-          <span style={s.statLabel}>discussion{stats.totalPosts > 1 ? 's' : ''}</span>
+          <span style={s.statLabel}>conversation{stats.totalPosts > 1 ? 's' : ''}</span>
         </div>
         <div style={s.statRow2}>
           <span style={s.statValue}>{stats.totalReplies}</span>
-          <span style={s.statLabel}>réponse{stats.totalReplies > 1 ? 's' : ''}</span>
+          <span style={s.statLabel}>coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
       </div>
     </div>
@@ -189,7 +352,7 @@ function TopMembersCard({ members }: { members: TopMember[] }) {
     <div style={s.asideCard}>
       <div style={s.asideHead}>
         <Trophy size={14} color="#fb923c" weight="fill" />
-        <span style={s.asideTitle}>Membres actifs · 30 j</span>
+        <span style={s.asideTitle}>Ils ont aidé ce mois-ci</span>
       </div>
       <div style={s.membersList}>
         {members.map((m, i) => {
@@ -224,7 +387,7 @@ function CategoriesCard({ counts, currentCategory, currentSort }: {
     <div style={s.asideCard}>
       <div style={s.asideHead}>
         <Users size={14} color="#a78bfa" weight="fill" />
-        <span style={s.asideTitle}>Catégories</span>
+        <span style={s.asideTitle}>Sujets</span>
       </div>
       <div style={s.catList}>
         {CATEGORY_ORDER.map(cid => {
@@ -260,12 +423,12 @@ function TipCard() {
     <div style={{ ...s.asideCard, background: 'rgba(255,213,107,0.04)', borderColor: 'rgba(255,213,107,0.18)' }}>
       <div style={s.asideHead}>
         <Sparkle size={14} color="var(--accent-text)" weight="fill" />
-        <span style={s.asideTitle}>Pour bien démarrer</span>
+        <span style={s.asideTitle}>L'esprit Chez Nous</span>
       </div>
       <ul style={s.tipList}>
-        <li style={s.tipItem}>Un titre précis vaut mieux qu'un long message</li>
-        <li style={s.tipItem}>Donne du contexte : ville, plateforme, situation</li>
-        <li style={s.tipItem}>Réponds aux autres — c'est ce qui fait vivre Chez Nous</li>
+        <li style={s.tipItem}>Un titre clair, du contexte (ville, plateforme) — ça aide tout le monde</li>
+        <li style={s.tipItem}>Pas de jugement : on a tous débuté un jour</li>
+        <li style={s.tipItem}>Réponds quand tu peux — c'est ce qui fait vivre la famille</li>
       </ul>
     </div>
   )
@@ -414,8 +577,8 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
     return (
       <div style={s.empty}>
         <MagnifyingGlass size={28} color="var(--accent-text)" weight="duotone" />
-        <p style={s.emptyTitle}>Aucun résultat pour « {search} »</p>
-        <p style={s.emptyDesc}>Essaie d'autres mots-clés, ou retire les filtres pour voir toutes les discussions.</p>
+        <p style={s.emptyTitle}>Rien trouvé pour « {search} »</p>
+        <p style={s.emptyDesc}>Essaie d'autres mots, ou retire les filtres pour voir toutes les conversations.</p>
       </div>
     )
   }
@@ -423,8 +586,8 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
     return (
       <div style={s.empty}>
         <Question size={28} color="var(--accent-text)" weight="duotone" />
-        <p style={s.emptyTitle}>Aucune discussion sans réponse</p>
-        <p style={s.emptyDesc}>Tout a été pris en charge — bravo la communauté !</p>
+        <p style={s.emptyTitle}>Tout le monde a été aidé</p>
+        <p style={s.emptyDesc}>Aucune question en attente. Bravo la famille !</p>
       </div>
     )
   }
@@ -433,16 +596,60 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
       <ChatCircle size={28} color="var(--accent-text)" weight="duotone" />
       <p style={s.emptyTitle}>
         {category !== 'all'
-          ? `Aucune discussion dans ${CATEGORIES[category].short}`
-          : 'La conversation va commencer ici'}
+          ? `Personne n'a encore parlé de ${CATEGORIES[category].short}`
+          : "C'est calme aujourd'hui — brise la glace"}
       </p>
       <p style={s.emptyDesc}>
-        Lance le premier sujet — un problème, une astuce, un retour sur une situation.
-        C'est ce qui donne vie à Chez Nous.
+        {category !== 'all'
+          ? 'Sois le premier à lancer le sujet — quelqu\'un attend probablement la même réponse que toi.'
+          : 'Raconte d\'où tu viens, ce qui t\'a amené à la LCD, ou ce qui te bloque en ce moment. On est curieux de te lire.'}
       </p>
       <button onClick={onNew} style={s.emptyBtn}>
-        <Plus size={13} weight="bold" /> Lancer une discussion
+        <Plus size={13} weight="bold" /> Démarrer une conversation
       </button>
+    </div>
+  )
+}
+
+// ─── New members band ─────────────────────────────────────────────────
+
+function NewMembersBand({ members }: { members: NewMember[] }) {
+  const visible = members.slice(0, 5)
+  return (
+    <div style={s.newMembersBand}>
+      <div style={s.newMembersTextCol}>
+        <span style={s.newMembersLabel}>Nouveaux Chez Nous</span>
+        <span style={s.newMembersTitle}>Bienvenue à eux</span>
+      </div>
+      <div style={s.newMembersList}>
+        {visible.map(m => {
+          const av = colorFromId(m.id)
+          const initials = displayInitials({ pseudo: m.pseudo, full_name: m.full_name })
+          const name = displayName({ pseudo: m.pseudo, full_name: m.full_name })
+          return (
+            <Link
+              key={m.id}
+              href={`/dashboard/chez-nous/membre/${m.id}`}
+              style={s.newMemberCard}
+              title={`${name}${m.city ? ` · ${m.city}` : ''}`}
+            >
+              <span style={{ ...s.newMemberAvatar, background: av.bg, color: av.text }}>
+                {initials}
+              </span>
+              <div style={s.newMemberInfo}>
+                <span style={s.newMemberName}>
+                  {name}
+                  {m.is_contributor && <span style={s.contribDotMini} />}
+                </span>
+                {m.city && <span style={s.newMemberCity}>{m.city}</span>}
+                {m.created_at && (
+                  <span style={s.newMemberSince}>{formatRelative(m.created_at)}</span>
+                )}
+              </div>
+            </Link>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -570,6 +777,131 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%' },
+
+  mapWrap: {
+    width: '100%', display: 'flex', justifyContent: 'center',
+    padding: '4px 0',
+  },
+  mapSvg: {
+    width: '100%', maxWidth: '240px', height: 'auto',
+  },
+  regionLegend: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    paddingTop: '8px', borderTop: '1px solid var(--border)',
+  },
+  regionLegendItem: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    fontSize: '12px',
+  },
+  regionLegendName: { color: 'var(--text-2)' },
+  regionLegendCount: {
+    color: '#fb7185', fontWeight: 700,
+    background: 'rgba(251,113,133,0.12)',
+    padding: '1px 8px', borderRadius: '100px',
+    fontSize: '11px',
+  },
+
+  activityList: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },
+  activityRow: {
+    display: 'flex', alignItems: 'flex-start', gap: '10px',
+    padding: '8px 0', borderBottom: '1px solid var(--border)',
+    textDecoration: 'none' as const, color: 'var(--text-2)',
+    fontSize: '12.5px', lineHeight: 1.4,
+  },
+  activityDotReply: {
+    width: '6px', height: '6px', borderRadius: '50%',
+    background: '#34d399', flexShrink: 0, marginTop: '6px',
+    boxShadow: '0 0 0 3px rgba(52,211,153,0.18)',
+  },
+  activityDotPost: {
+    width: '6px', height: '6px', borderRadius: '50%',
+    background: 'var(--accent-text)', flexShrink: 0, marginTop: '6px',
+    boxShadow: '0 0 0 3px rgba(255,213,107,0.18)',
+  },
+  activityText: { display: 'flex', flexDirection: 'column' as const, gap: '2px', minWidth: 0, flex: 1 },
+  activityTitle: {
+    fontSize: '11.5px', color: 'var(--text-2)', fontStyle: 'italic' as const,
+    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
+  },
+  activityWhen: { fontSize: '10px', color: 'var(--text-muted)' },
+
+  jasonCard: {
+    background: 'linear-gradient(160deg, rgba(255,213,107,0.08), rgba(255,213,107,0.02))',
+    border: '1px solid rgba(255,213,107,0.22)',
+    borderRadius: '14px',
+    padding: 'clamp(14px, 2.5vw, 18px)',
+    display: 'flex', flexDirection: 'column' as const, gap: '12px',
+  },
+  jasonHeader: { display: 'flex', alignItems: 'center', gap: '10px' },
+  jasonAvatar: {
+    width: '36px', height: '36px', borderRadius: '50%',
+    background: 'rgba(255,213,107,0.18)', color: 'var(--accent-text)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '12px', fontWeight: 700, flexShrink: 0,
+    border: '1.5px solid rgba(255,213,107,0.35)',
+  },
+  jasonName: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '15px', fontWeight: 500, color: 'var(--text)',
+  },
+  jasonRole: { fontSize: '11px', color: 'var(--text-muted)' },
+  jasonMessage: {
+    fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.65, margin: 0,
+  },
+  jasonSign: {
+    fontSize: '12px', fontStyle: 'italic' as const,
+    color: 'var(--accent-text)', alignSelf: 'flex-end',
+    fontFamily: 'var(--font-fraunces), serif',
+  },
+
+  newMembersBand: {
+    display: 'flex', alignItems: 'center', gap: 'clamp(12px, 2vw, 24px)',
+    padding: 'clamp(12px, 2vw, 18px) clamp(14px, 2.5vw, 22px)',
+    margin: '0 0 18px',
+    background: 'linear-gradient(135deg, rgba(255,213,107,0.06), rgba(167,139,250,0.04))',
+    border: '1px solid rgba(255,213,107,0.18)',
+    borderRadius: '14px',
+    flexWrap: 'wrap' as const,
+  },
+  newMembersTextCol: {
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+    minWidth: '140px', flexShrink: 0,
+  },
+  newMembersLabel: {
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const, color: 'var(--accent-text)',
+  },
+  newMembersTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 400, color: 'var(--text)',
+  },
+  newMembersList: {
+    display: 'flex', gap: '10px', alignItems: 'center',
+    flexWrap: 'wrap' as const, flex: '1 1 auto',
+  },
+  newMemberCard: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '8px 12px 8px 8px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '100px',
+    textDecoration: 'none' as const,
+    color: 'var(--text)',
+    transition: 'transform 0.15s, border-color 0.15s',
+  },
+  newMemberAvatar: {
+    width: '32px', height: '32px', borderRadius: '50%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '11px', fontWeight: 700, flexShrink: 0,
+  },
+  newMemberInfo: { display: 'flex', flexDirection: 'column' as const, gap: '0', minWidth: 0 },
+  newMemberName: {
+    fontSize: '13px', fontWeight: 600, color: 'var(--text)',
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    whiteSpace: 'nowrap' as const,
+  },
+  newMemberCity: { fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const },
+  newMemberSince: { fontSize: '10px', color: 'var(--text-3)', whiteSpace: 'nowrap' as const },
 
   layout: {
     display: 'flex', gap: 'clamp(14px, 2vw, 24px)',
