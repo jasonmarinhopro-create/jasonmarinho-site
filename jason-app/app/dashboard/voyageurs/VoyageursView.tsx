@@ -169,6 +169,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
 
   return (
     <div style={s.page}>
+      <style>{MEDIA_CSS}</style>
       {/* Header toolbar */}
       <div style={s.toolbar} className="fade-up">
         <div>
@@ -191,7 +192,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
 
       {/* Stats globales */}
       {tableReady && voyageurs.length > 0 && (
-        <div style={s.statsGrid} className="fade-up">
+        <div style={s.statsGrid} className="fade-up voy-stats-grid">
           <div style={s.statCard}>
             <span style={{ ...s.statIcon, background: 'var(--accent-bg)' }}>
               <Users size={14} weight="fill" color="var(--accent-text)" />
@@ -338,7 +339,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                     key={v.id}
                     onClick={() => router.push(`/dashboard/voyageurs/${v.id}`)}
                     style={{ ...s.row, opacity: v.bloque ? 0.6 : 1 }}
-                    className="dash-help-row"
+                    className="dash-help-row voy-row"
                   >
                     {/* Avatar */}
                     <div style={{ ...s.avatar, background: color }}>
@@ -370,22 +371,41 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                         {v.email && v.telephone && <span style={s.dot}>·</span>}
                         {v.telephone && <span>{v.telephone}</span>}
                       </div>
+                      {/* Mobile-only compact meta row */}
+                      <div className="voy-meta-mobile" onClick={e => e.stopPropagation()}>
+                        <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
+                          {v.sejours.length} séjour{v.sejours.length !== 1 ? 's' : ''}
+                        </span>
+                        {ca > 0 && (
+                          <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 600 }}>
+                            · {ca.toLocaleString('fr-FR')} €
+                          </span>
+                        )}
+                        <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px' }}>
+                          <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
+                            <Note size={14} />
+                          </button>
+                          <button onClick={e => handleDelete(v.id, e)} style={s.actionBtn} title="Supprimer">
+                            <X size={14} />
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Stats */}
-                    <div style={s.stats}>
+                    {/* Stats — desktop only */}
+                    <div className="voy-stats" style={s.stats}>
                       <div style={s.statVal}>{v.sejours.length}</div>
                       <div style={s.statLabel}>séjour{v.sejours.length !== 1 ? 's' : ''}</div>
                     </div>
                     {ca > 0 && (
-                      <div style={s.stats}>
+                      <div className="voy-stats" style={s.stats}>
                         <div style={{ ...s.statVal, color: '#10b981' }}>{ca.toLocaleString('fr-FR')} €</div>
                         <div style={s.statLabel}>CA</div>
                       </div>
                     )}
 
-                    {/* Actions */}
-                    <div style={s.rowActions} onClick={e => e.stopPropagation()}>
+                    {/* Actions — desktop only */}
+                    <div className="voy-actions" style={s.rowActions} onClick={e => e.stopPropagation()}>
                       <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
                         <Note size={15} />
                       </button>
@@ -619,6 +639,30 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
   )
 }
 
+const MEDIA_CSS = `
+  .voy-stats { display: flex; }
+  .voy-actions { display: flex; }
+  .voy-meta-mobile { display: none; }
+  @media (max-width: 1023px) {
+    .voy-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+  @media (max-width: 767px) {
+    .voy-stats { display: none !important; }
+    .voy-actions { display: none !important; }
+    .voy-row { flex-wrap: wrap !important; }
+    .voy-meta-mobile {
+      display: flex !important;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      width: 100%;
+    }
+  }
+`
+
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   toolbar: {
@@ -761,7 +805,7 @@ const s: Record<string, React.CSSProperties> = {
   // ─── Phase 2 — stats globales, filtres, vue tableau ─────────────
   statsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
     gap: '10px',
     marginBottom: '16px',
   },

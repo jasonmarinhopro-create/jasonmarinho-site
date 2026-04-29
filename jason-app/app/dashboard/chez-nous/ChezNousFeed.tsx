@@ -88,6 +88,87 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
 
   return (
     <div style={s.page}>
+      <style>{`
+        /* Map silhouette: white in dark mode, dark green in light mode */
+        .cn-map-shape { fill: rgba(255,255,255,0.025); stroke: rgba(255,255,255,0.14); }
+        [data-theme="light"] .cn-map-shape { fill: rgba(0,76,63,0.07); stroke: rgba(0,76,63,0.28); }
+        @media (max-width: 1023px) {
+          .cn-aside { display: none !important; }
+          .cn-main-col { flex: 1 1 100% !important; }
+        }
+        @media (max-width: 767px) {
+          /* Category chips: horizontal scroll */
+          .cn-cat-row {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+            gap: 6px !important;
+          }
+          .cn-cat-row::-webkit-scrollbar { display: none; }
+          /* Sort chips: horizontal scroll */
+          .cn-sort-row {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .cn-sort-row::-webkit-scrollbar { display: none; }
+          /* Members band: vertical stack, list scrolls sideways as "stories" */
+          .cn-members-band {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 12px !important;
+            padding: 14px 16px !important;
+          }
+          .cn-members-text-col { min-width: 0 !important; }
+          .cn-members-list {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            gap: 8px !important;
+            padding-bottom: 4px;
+            align-items: flex-start !important;
+          }
+          .cn-members-list::-webkit-scrollbar { display: none; }
+          /* Member card → stories bubble */
+          .cn-member-card {
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 6px !important;
+            padding: 10px 8px !important;
+            border-radius: 14px !important;
+            min-width: 68px !important;
+            max-width: 76px !important;
+            flex-shrink: 0 !important;
+          }
+          .cn-member-avatar {
+            width: 44px !important;
+            height: 44px !important;
+            font-size: 15px !important;
+          }
+          .cn-member-info { align-items: center !important; text-align: center; }
+          .cn-member-name {
+            font-size: 11px !important;
+            white-space: normal !important;
+            text-align: center;
+            line-height: 1.3 !important;
+            max-width: 60px;
+            justify-content: center;
+          }
+          .cn-member-city  { display: none !important; }
+          .cn-member-since { font-size: 9px !important; }
+          /* Toolbar: wrap column on mobile */
+          .cn-toolbar {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 10px !important;
+          }
+          .cn-new-btn { width: 100% !important; justify-content: center !important; }
+        }
+      `}</style>
       {/* Hero */}
       <div style={s.hero}>
         <div style={s.heroBadge}>
@@ -115,7 +196,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
       {newMembers.length > 0 && <NewMembersBand members={newMembers} />}
 
       {/* Catégories */}
-      <div style={s.catRow}>
+      <div style={s.catRow} className="cn-cat-row">
         <CategoryChip id="all" label="Tout" color="var(--accent-text)" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} search={currentSearch} />
         {CATEGORY_ORDER.map(cid => (
           <CategoryChip
@@ -132,19 +213,19 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
       {/* Layout 2-col desktop */}
       <div style={s.layout}>
         {/* Colonne principale */}
-        <div style={s.mainCol}>
+        <div style={s.mainCol} className="cn-main-col">
           {/* Recherche */}
           <SearchBar initial={currentSearch} cat={currentCategory} sort={currentSort} />
 
           {/* Tri + Bouton */}
-          <div style={s.toolbar}>
-            <div style={s.sortRow}>
+          <div style={s.toolbar} className="cn-toolbar">
+            <div style={s.sortRow} className="cn-sort-row">
               <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     search={currentSearch} icon={Clock} label="Récent" />
               <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    search={currentSearch} icon={Fire}  label="Populaire" />
               <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="À aider" />
               <SortChip cat={currentCategory} sort="unresolved" active={currentSort === 'unresolved'} search={currentSearch} icon={CheckCircle} label="En suspens" />
             </div>
-            <button onClick={() => setShowForm(v => !v)} style={s.newBtn}>
+            <button onClick={() => setShowForm(v => !v)} style={s.newBtn} className="cn-new-btn">
               <Plus size={15} weight="bold" />
               {showForm ? 'Annuler' : 'Démarrer une conversation'}
             </button>
@@ -167,7 +248,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
         </div>
 
         {/* Aside */}
-        <aside style={s.aside}>
+        <aside style={s.aside} className="cn-aside">
           <JasonNoteCard />
           <FranceMapCard regionCounts={regionCounts} />
           <ActivityCard events={activity} profiles={activityProfiles} />
@@ -221,16 +302,14 @@ function FranceMapCard({ regionCounts }: { regionCounts: Record<string, number> 
         <svg viewBox="0 0 100 110" style={s.mapSvg} aria-label="Répartition des hôtes en France">
           {/* Silhouette simplifiée de la France métropolitaine */}
           <path
+            className="cn-map-shape"
             d="M 28 10 Q 42 5, 55 8 Q 68 6, 78 14 Q 84 22, 80 32 Q 88 38, 86 48 Q 90 56, 84 64 Q 88 72, 80 82 Q 70 90, 56 92 Q 42 94, 30 88 Q 20 82, 18 70 Q 10 60, 14 48 Q 10 36, 18 26 Q 22 16, 28 10 Z"
-            fill="rgba(255,255,255,0.025)"
-            stroke="rgba(255,255,255,0.12)"
             strokeWidth="0.5"
           />
           {/* Corse */}
           <path
+            className="cn-map-shape"
             d="M 88 92 Q 92 90, 93 95 Q 92 100, 89 100 Q 87 96, 88 92 Z"
-            fill="rgba(255,255,255,0.025)"
-            stroke="rgba(255,255,255,0.12)"
             strokeWidth="0.5"
           />
           {/* Bulles par région */}
@@ -616,12 +695,12 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
 function NewMembersBand({ members }: { members: NewMember[] }) {
   const visible = members.slice(0, 5)
   return (
-    <div style={s.newMembersBand}>
-      <div style={s.newMembersTextCol}>
+    <div style={s.newMembersBand} className="cn-members-band">
+      <div style={s.newMembersTextCol} className="cn-members-text-col">
         <span style={s.newMembersLabel}>Nouveaux Chez Nous</span>
         <span style={s.newMembersTitle}>Bienvenue à eux</span>
       </div>
-      <div style={s.newMembersList}>
+      <div style={s.newMembersList} className="cn-members-list">
         {visible.map(m => {
           const av = colorFromId(m.id)
           const initials = displayInitials({ pseudo: m.pseudo, full_name: m.full_name })
@@ -631,19 +710,20 @@ function NewMembersBand({ members }: { members: NewMember[] }) {
               key={m.id}
               href={`/dashboard/chez-nous/membre/${m.id}`}
               style={s.newMemberCard}
+              className="cn-member-card"
               title={`${name}${m.city ? ` · ${m.city}` : ''}`}
             >
-              <span style={{ ...s.newMemberAvatar, background: av.bg, color: av.text }}>
+              <span style={{ ...s.newMemberAvatar, background: av.bg, color: av.text }} className="cn-member-avatar">
                 {initials}
               </span>
-              <div style={s.newMemberInfo}>
-                <span style={s.newMemberName}>
+              <div style={s.newMemberInfo} className="cn-member-info">
+                <span style={s.newMemberName} className="cn-member-name">
                   {name}
                   {m.is_contributor && <span style={s.contribDotMini} />}
                 </span>
-                {m.city && <span style={s.newMemberCity}>{m.city}</span>}
+                {m.city && <span style={s.newMemberCity} className="cn-member-city">{m.city}</span>}
                 {m.created_at && (
-                  <span style={s.newMemberSince}>{formatRelative(m.created_at)}</span>
+                  <span style={s.newMemberSince} className="cn-member-since">{formatRelative(m.created_at)}</span>
                 )}
               </div>
             </Link>

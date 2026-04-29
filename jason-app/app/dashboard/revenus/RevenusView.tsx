@@ -1445,6 +1445,32 @@ function KpiCard({ icon, label, value, colorClass, sub, subColor }: {
 
 // ── FiscaliteSection ─────────────────────────────────────────────────────────
 
+const FISC_MEDIA_CSS = `
+  .fisc-seuil-sep { display: block; }
+  @media (max-width: 1023px) {
+    .fisc-jauges-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+  @media (max-width: 767px) {
+    .fisc-seuils-strip {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 16px !important;
+      row-gap: 16px !important;
+    }
+    .fisc-seuil-sep { display: none !important; }
+    .fisc-jauges-grid { grid-template-columns: 1fr !important; }
+    .fisc-reco-calc { grid-template-columns: 1fr !important; }
+    .fisc-disclaimer {
+      display: flex !important;
+      align-items: flex-start !important;
+      flex-wrap: nowrap !important;
+      gap: 6px !important;
+      line-height: 1.65 !important;
+    }
+  }
+`
+
+
 const REGIMES = [
   {
     key: 'micro-nc',
@@ -1569,6 +1595,7 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
 
   return (
     <section style={sf.wrap}>
+      <style>{FISC_MEDIA_CSS}</style>
       {/* Header */}
       <div style={sf.header}>
         <div style={sf.headerLeft}>
@@ -1587,17 +1614,17 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
       </div>
 
       {/* Seuils strip — always visible */}
-      <div style={sf.seuilsStrip}>
+      <div style={sf.seuilsStrip} className="fisc-seuils-strip">
         <SeuilPill label="Non classé" seuil="< 15 000 €" pct="30 %" color="#60a5fa" />
         <SeuilPill label="Classé ★"   seuil="< 83 600 €" pct="50 %" color="#34d399" />
         <SeuilPill label="Ch. d'hôtes" seuil="< 188 700 €" pct="71 %" color="#a78bfa" />
-        <div style={sf.seuilSep} />
+        <div style={sf.seuilSep} className="fisc-seuil-sep" />
         <SeuilPill label="LMP si"      seuil="> 23 000 €" pct="+ 50 % revenus" color="#fb923c" />
       </div>
 
       {/* Jauges progression vers les seuils fiscaux */}
       {annuel > 0 && (
-        <div style={sf.jaugesGrid}>
+        <div style={sf.jaugesGrid} className="fisc-jauges-grid">
           {SEUILS.map(seuil => {
             const pct = Math.min(100, Math.round((annuel / seuil.valeur) * 100))
             const danger = pct >= 75
@@ -1630,7 +1657,7 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
             <span style={sf.recoTitle}>{recommendation.label}</span>
           </div>
           <p style={sf.recoDetail}>{recommendation.detail}</p>
-          <div style={sf.recoCalc}>
+          <div style={sf.recoCalc} className="fisc-reco-calc">
             <div style={sf.recoCalcItem}>
               <span style={sf.recoCalcLabel}>Micro-BIC NC (30 %)</span>
               <span style={sf.recoCalcValue}>{fmt(baseImposableMicroNC)} imposable</span>
@@ -1718,13 +1745,15 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
       )}
 
       {/* Disclaimer */}
-      <p style={sf.disclaimer}>
-        <Info size={12} style={{ flexShrink: 0 }} />
-        Guide informatif basé sur la réglementation en vigueur en 2026 —&nbsp;
-        <a href="https://www.service-public.fr/particuliers/vosdroits/F32744" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>service-public.fr</a>
-        ,&nbsp;
-        <a href="https://lmnp.ai/fiscalite-lmnp" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>lmnp.ai</a>.
-        {' '}Consulte un expert-comptable pour ta situation personnelle.
+      <p style={sf.disclaimer} className="fisc-disclaimer">
+        <Info size={12} style={{ flexShrink: 0, marginTop: '1px' }} />
+        <span>
+          Guide informatif basé sur la réglementation en vigueur en 2026 —{' '}
+          <a href="https://www.service-public.fr/particuliers/vosdroits/F32744" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>service-public.fr</a>
+          {', '}
+          <a href="https://lmnp.ai/fiscalite-lmnp" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>lmnp.ai</a>.
+          {' '}Consulte un expert-comptable pour ta situation personnelle.
+        </span>
       </p>
     </section>
   )

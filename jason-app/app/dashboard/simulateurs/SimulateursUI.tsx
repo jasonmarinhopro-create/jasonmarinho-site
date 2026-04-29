@@ -84,8 +84,8 @@ function FiscalLCD() {
       </div>
 
       <div style={s.disclaimer}>
-        <Info size={11} weight="fill" />
-        Estimation pédagogique. Le régime <strong>réel simplifié</strong> peut être plus avantageux au-delà de 30 k€/an si tu as des charges (amortissement, intérêts, travaux). Consulte un expert-comptable.
+        <Info size={11} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
+        <span>Estimation pédagogique. Le régime <strong>réel simplifié</strong> peut être plus avantageux au-delà de 30 k€/an si tu as des charges (amortissement, intérêts, travaux). Consulte un expert-comptable.</span>
       </div>
     </div>
   )
@@ -175,8 +175,8 @@ function EIvsSASU() {
       </div>
 
       <div style={s.disclaimer}>
-        <Info size={11} weight="fill" />
-        Modèle simplifié. La SASU peut combiner salaire + dividendes. La protection sociale, la retraite et l&apos;ACRE ne sont pas modélisées. Consulte un expert-comptable.
+        <Info size={11} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
+        <span>Modèle simplifié. La SASU peut combiner salaire + dividendes. La protection sociale, la retraite et l&apos;ACRE ne sont pas modélisées. Consulte un expert-comptable.</span>
       </div>
     </div>
   )
@@ -415,8 +415,8 @@ function Rentabilite() {
       </div>
 
       <div style={s.disclaimer}>
-        <Info size={11} weight="fill" />
-        Estimation pour <strong>1 logement</strong>. Ne tient pas compte des impôts, taxes spécifiques (CFE, taxe foncière) ni travaux. Pour une vue complète, ajoute ~20-30 % de charges supplémentaires.
+        <Info size={11} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
+        <span>Estimation pour <strong>1 logement</strong>. Ne tient pas compte des impôts, taxes spécifiques (CFE, taxe foncière) ni travaux. Pour une vue complète, ajoute ~20-30 % de charges supplémentaires.</span>
       </div>
     </div>
   )
@@ -607,8 +607,8 @@ function TaxeSejour() {
       </div>
 
       <div style={s.disclaimer}>
-        <Info size={11} weight="fill" />
-        Tarifs <strong>indicatifs 2025</strong>. Chaque mairie fixe son barème — vérifie sur le site officiel <em>impots.gouv.fr</em> ou ta mairie. La taxe départementale (10 %) est additionnée automatiquement.
+        <Info size={11} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
+        <span>Tarifs <strong>indicatifs 2025</strong>. Chaque mairie fixe son barème — vérifie sur le site officiel <em>impots.gouv.fr</em> ou ta mairie. La taxe départementale (10 %) est additionnée automatiquement.</span>
       </div>
     </div>
   )
