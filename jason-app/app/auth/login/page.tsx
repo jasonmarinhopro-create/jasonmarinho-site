@@ -272,11 +272,22 @@ const MEDIA_CSS = `
   .auth-brand { display: flex; }
   .auth-mobile-bar { display: none !important; }
   .auth-form-side { min-height: 100svh; }
+  @media (max-width: 1023px) {
+    .auth-brand {
+      width: 38% !important;
+      min-width: 280px !important;
+      padding: clamp(32px,4vh,48px) clamp(24px,3vw,40px) !important;
+    }
+  }
   @media (max-width: 767px) {
     .auth-wrap { flex-direction: column !important; }
     .auth-brand { display: none !important; }
     .auth-mobile-bar { display: flex !important; }
-    .auth-form-side { min-height: auto !important; padding: 0 20px 48px !important; }
+    .auth-form-side {
+      min-height: auto !important;
+      padding: 0 20px 48px !important;
+      justify-content: flex-start !important;
+    }
   }
 `
 
@@ -362,6 +373,7 @@ const s: Record<string, React.CSSProperties> = {
     overflowY: 'auto',
   },
   mobileBar: {
+    display: 'flex',
     background: '#004C3F',
     padding: '16px 20px',
     marginLeft: '-20px',
