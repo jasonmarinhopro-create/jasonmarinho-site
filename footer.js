@@ -49,6 +49,7 @@
         + '<div>'
           + '<div class="ft-ct">Outils</div>'
           + '<ul class="ft-ls">'
+            + '<li><a href="/services/simulateurs"><i class="ph ph-calculator"></i>Simulateurs LCD</a></li>'
             + '<li><a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Audit Google Business</a></li>'
             + '<li><a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a></li>'
             + '<li><a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a></li>'

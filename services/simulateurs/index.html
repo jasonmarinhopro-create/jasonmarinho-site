@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulateurs LCD gratuits — Fiscalité, EI/SASU, rentabilité, taxe de séjour | Jason Marinho</title>
+  <meta name="description" content="4 simulateurs gratuits pour les hôtes LCD : fiscalité micro-BIC, comparaison EI vs SASU, rentabilité d'un logement, taxe de séjour par ville (top 30 France). Estime tout en quelques secondes.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/">
+  <meta property="og:title" content="Simulateurs LCD gratuits — Fiscalité, statuts, rentabilité, taxe de séjour">
+  <meta property="og:description" content="4 outils gratuits pour anticiper ton imposition, choisir entre EI et SASU, simuler ta rentabilité et calculer la taxe de séjour applicable.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/webp" href="/favicon-jason.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(64px,8vw,104px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.6);margin:0 0 32px;max-width:580px}
+    .sub.dk{color:var(--tm)} .sub.mx{max-width:680px}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,213,107,.25)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.1);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,120px) 0 clamp(56px,7vw,90px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px);position:relative}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:32px}
+    .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff} .hero-brd span{font-size:11px}
+    .meta-row{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+    .meta-bd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.5);background:rgba(255,255,255,.06);border-radius:7px;padding:6px 12px}
+    .meta-bd i{color:rgba(255,213,107,.5)}
+    .sim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:36px}
+    .sim-card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:18px;padding:28px;transition:box-shadow .2s,transform .2s;display:flex;flex-direction:column;gap:14px}
+    .sim-card:hover{box-shadow:0 12px 40px rgba(0,76,63,.1);transform:translateY(-3px)}
+    .sim-ic{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+    .sim-card h3{font-family:'Fraunces',serif;font-size:1.2rem;margin:0;font-weight:500;color:var(--td)}
+    .sim-card p{font-size:14px;line-height:1.7;color:var(--tm);margin:0;flex:1}
+    .sim-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+    .sim-tag{font-size:11px;font-weight:500;color:var(--g);background:rgba(0,76,63,.07);padding:4px 9px;border-radius:6px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    .ck-list{list-style:none;padding:0;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+    .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5;color:var(--tm)}
+    .ck-list li .chk{margin-top:2px}
+    .steps{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+    .step{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:18px}
+    .step-n{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:300;color:var(--g);font-style:italic;flex-shrink:0;width:40px;text-align:center}
+    .step-t{flex:1}
+    .step h4{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--td)}
+    .step p{margin:0;font-size:13.5px;color:var(--tm);line-height:1.55}
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,56px);text-align:center}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Simulateurs LCD pour Location Courte Durée","description":"Suite de 4 simulateurs gratuits pour hôtes LCD : fiscalité micro-BIC, EI vs SASU, rentabilité d'un logement, taxe de séjour par ville.","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><span>Simulateurs LCD</span>
+    </div>
+    <div class="lbl">Outils gratuits · 4 simulateurs</div>
+    <h1 class="h1">Simulateurs LCD<br><em>pour anticiper, comparer, décider</em></h1>
+    <p class="sub">Fiscalité micro-BIC, choix EI vs SASU, rentabilité d'un logement, taxe de séjour applicable. 4 outils gratuits pour ne plus piloter à l'aveugle.</p>
+    <div class="meta-row">
+      <div class="meta-bd"><i class="ph ph-currency-eur"></i> Fiscalité LCD</div>
+      <div class="meta-bd"><i class="ph ph-scales"></i> EI vs SASU</div>
+      <div class="meta-bd"><i class="ph ph-chart-line-up"></i> Rentabilité</div>
+      <div class="meta-bd"><i class="ph ph-map-pin"></i> Taxe de séjour</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+      <a href="https://app.jasonmarinho.com/dashboard/outils/simulateurs" class="btn-p">Accéder aux simulateurs <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">Créer un compte gratuit</a>
+    </div>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Pourquoi ces outils</div>
+        <h2 class="h2">Piloter ton activité LCD<br><em>sans deviner</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">La location courte durée, c'est un business. Et un business ça se pilote avec des chiffres : combien tu vas vraiment toucher, quel statut juridique te coûte le moins, est-ce que ton bien est rentable, combien tu dois facturer en taxe de séjour.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 24px">Ces 4 simulateurs te donnent les réponses en quelques secondes. Pas de blabla, juste des calculs concrets adaptés à la LCD française.</p>
+        <ul class="ck-list">
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>100% gratuit, sans inscription pour les premiers résultats</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Adapté à la fiscalité française 2025-2026</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Sauvegarde tes simulations en créant un compte</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Comparaisons et conseils contextuels</li>
+        </ul>
+      </div>
+      <div>
+        <div class="lbl dk">Les 4 simulateurs</div>
+        <h2 class="h2">Tout ce qu&apos;il te faut<br><em>en un seul endroit</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 24px">De la déclaration micro-BIC à la rentabilité d'un investissement locatif, en passant par le choix du statut juridique et la taxe de séjour à collecter — chaque outil est pensé pour répondre à une question précise des hôtes LCD.</p>
+        <a href="https://app.jasonmarinho.com/dashboard/outils/simulateurs" class="btn-g">Voir tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Catalogue</div>
+    <h2 class="h2">4 simulateurs, <em>4 questions essentielles</em></h2>
+    <div class="sim-grid">
+
+      <div class="sim-card">
+        <div class="sim-ic" style="background:rgba(0,76,63,.08);color:var(--g)"><i class="ph-fill ph-currency-eur"></i></div>
+        <h3>Fiscalité LCD (micro-BIC)</h3>
+        <p>Calcule ta base imposable selon ton chiffre d'affaires et le classement Atout France de ton logement. Identifie l'économie potentielle si tu te fais classer (abattement 71% au lieu de 30%) et vérifie si tu restes sous le plafond du micro.</p>
+        <div class="sim-tags">
+          <span class="sim-tag">CA jusqu&apos;à 100 k€</span>
+          <span class="sim-tag">Plafonds 15 k€ / 77,7 k€</span>
+          <span class="sim-tag">Abattement 30% / 71%</span>
+        </div>
+      </div>
+
+      <div class="sim-card">
+        <div class="sim-ic" style="background:rgba(167,139,250,.12);color:#7c3aed"><i class="ph-fill ph-scales"></i></div>
+        <h3>EI vs SASU</h3>
+        <p>Compare ce qu'il te reste réellement en poche selon ton statut juridique. EI au régime réel (cotisations TNS + IR) versus SASU 100% dividendes (IS + flat tax). Inclut la nuance protection sociale + retraite.</p>
+        <div class="sim-tags">
+          <span class="sim-tag">Bénéfice jusqu&apos;à 150 k€</span>
+          <span class="sim-tag">3 tranches IR (11/30/41%)</span>
+          <span class="sim-tag">Net en poche comparé</span>
+        </div>
+      </div>
+
+      <div class="sim-card">
+        <div class="sim-ic" style="background:rgba(52,211,153,.12);color:#059669"><i class="ph-fill ph-chart-line-up"></i></div>
+        <h3>Rentabilité d&apos;un logement</h3>
+        <p>Estime ton revenu net mensuel d'après le prix par nuit, le taux d'occupation, la commission plateforme et tes charges. Active le mode investissement pour calculer ton cash-flow après crédit, la rentabilité brute et la rentabilité nette.</p>
+        <div class="sim-tags">
+          <span class="sim-tag">Mode opérationnel</span>
+          <span class="sim-tag">Mode investissement</span>
+          <span class="sim-tag">Cash-flow + rentabilité</span>
+        </div>
+      </div>
+
+      <div class="sim-card">
+        <div class="sim-ic" style="background:rgba(251,113,133,.12);color:#e11d48"><i class="ph-fill ph-map-pin"></i></div>
+        <h3>Taxe de séjour</h3>
+        <p>Calcule la taxe de séjour à collecter sur tes voyageurs selon la ville (top 30 françaises), le classement de ton meublé, le nombre d'adultes et la durée du séjour. Compare avec d'autres villes touristiques.</p>
+        <div class="sim-tags">
+          <span class="sim-tag">30 villes FR</span>
+          <span class="sim-tag">Non classé / 1-2★ / 3★ / 4-5★</span>
+          <span class="sim-tag">Taxe départementale +10%</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div style="max-width:680px;margin:0 auto;text-align:center">
+      <div class="lbl dk">Comment ça marche</div>
+      <h2 class="h2">3 étapes, <em>aucune barrière</em></h2>
+    </div>
+    <div class="steps" style="max-width:720px;margin:32px auto 0">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-t">
+          <h4>Crée ton compte gratuit</h4>
+          <p>30 secondes pour t'inscrire — aucune carte bancaire requise. Tu accèdes immédiatement aux 4 simulateurs.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-t">
+          <h4>Choisis ton simulateur</h4>
+          <p>Fiscalité, statut, rentabilité ou taxe de séjour. Les 4 sont accessibles depuis la même page sous Outils &gt; Simulateurs.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-t">
+          <h4>Obtiens tes résultats instantanément</h4>
+          <p>Saisis tes valeurs, les résultats se calculent en temps réel. Compare des scénarios, ajuste les paramètres.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="cta-ban">
+      <h2 class="h2 lt" style="margin:0 auto 14px;max-width:600px;text-align:center">Prêt à <em>piloter ton activité</em> avec des chiffres clairs ?</h2>
+      <p style="font-size:15px;line-height:1.7;color:rgba(255,255,255,.65);margin:0 auto 28px;max-width:520px;text-align:center">Crée ton compte gratuit et accède aux 4 simulateurs, plus tous les autres outils LCD : audit GBP, gabarits de messages, vérification voyageurs, suivi des revenus.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="https://app.jasonmarinho.com/dashboard/outils/simulateurs" class="btn-ol">Accéder aux simulateurs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="/footer.js"></script>
+</body>
+</html>
