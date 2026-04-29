@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import CommunauteAdmin from './CommunauteAdmin'
 
 export const metadata = { title: 'Communauté — Admin — Jason Marinho' }
@@ -27,7 +26,6 @@ export default async function AdminCommunautePage() {
 
   return (
     <>
-      <Header title="Communauté" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
       <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '900px' }}>
         <CommunauteAdmin groups={groups ?? []} />
       </div>

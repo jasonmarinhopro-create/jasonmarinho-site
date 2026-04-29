@@ -4,6 +4,7 @@ import { stripe } from '@/lib/stripe/client'
 import Stripe from 'stripe'
 import { planFromPriceId } from '@/lib/constants/stripe-plans'
 import { logger } from '@/lib/logger'
+import { invalidateProfileCache } from '@/lib/queries/profile'
 const log = logger('api/stripe/webhooks')
 
 function serviceClient() {
@@ -103,10 +104,13 @@ export async function POST(request: NextRequest) {
       case 'account.updated': {
         const account = event.data.object as Stripe.Account
         if (account.details_submitted) {
-          await db
+          const { data } = await db
             .from('profiles')
             .update({ stripe_onboarding_complete: true })
             .eq('stripe_account_id', account.id)
+            .select('id')
+            .maybeSingle()
+          if (data?.id) invalidateProfileCache(data.id)
         }
         break
       }
@@ -123,6 +127,7 @@ export async function POST(request: NextRequest) {
           stripe_subscription_status: sub.status,
           stripe_price_id: priceId,
         }).eq('id', userId)
+        invalidateProfileCache(userId)
         break
       }
 
@@ -138,6 +143,7 @@ export async function POST(request: NextRequest) {
           stripe_subscription_status: sub.status,
           stripe_price_id: priceId,
         }).eq('id', userId)
+        invalidateProfileCache(userId)
         break
       }
 
@@ -152,6 +158,7 @@ export async function POST(request: NextRequest) {
           stripe_subscription_status: 'canceled',
           stripe_price_id: null,
         }).eq('id', userId)
+        invalidateProfileCache(userId)
         break
       }
 
@@ -162,9 +169,10 @@ export async function POST(request: NextRequest) {
           ? invoice.subscription
           : (invoice.subscription as Stripe.Subscription | null | undefined)?.id
         if (!subId) break
-        await db.from('profiles').update({
+        const { data } = await db.from('profiles').update({
           stripe_subscription_status: 'past_due',
-        }).eq('stripe_subscription_id', subId)
+        }).eq('stripe_subscription_id', subId).select('id').maybeSingle()
+        if (data?.id) invalidateProfileCache(data.id)
         break
       }
     }

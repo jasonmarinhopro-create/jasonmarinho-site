@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import ActualitesView from './ActualitesView'
 
 export const metadata = { title: 'Actualités LCD — Jason Marinho' }
@@ -16,6 +15,7 @@ export interface Actualite {
   deadline_date?: string | null
   is_pinned?: boolean | null
   regions?: string[] | null
+  read_time_minutes?: number | null
 }
 
 const FREE_ARTICLES_LIMIT = 3
@@ -70,7 +70,7 @@ export default async function ActualitesPage() {
   ] = await Promise.all([
     supabase
       .from('actualites')
-      .select('id, title, summary, source_url, category, published_at, created_at, deadline_date, is_pinned, regions')
+      .select('id, title, summary, source_url, category, published_at, created_at, deadline_date, is_pinned, regions, read_time_minutes')
       .eq('is_published', true)
       .order('is_pinned', { ascending: false, nullsFirst: false })
       .order('published_at', { ascending: false, nullsFirst: false }),
@@ -100,7 +100,6 @@ export default async function ActualitesPage() {
 
   return (
     <>
-      <Header title="Actualités" userName={profile?.full_name ?? undefined} />
       <ActualitesView
         articles={visibleArticles}
         isDecouverte={isDecouverte}

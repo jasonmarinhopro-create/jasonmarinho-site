@@ -16,6 +16,7 @@ interface Actualite {
   is_published: boolean
   published_at: string | null
   created_at: string
+  read_time_minutes: number | null
 }
 
 const CATEGORIES = [
@@ -116,6 +117,17 @@ function ActualiteForm({
             placeholder="https://..."
           />
         </div>
+      </div>
+
+      {/* Temps de lecture */}
+      <div style={s.group}>
+        <label style={s.label}>Temps de lecture <span style={s.opt}>(minutes, optionnel)</span></label>
+        <input
+          name="read_time_minutes" type="number" min="1" max="30"
+          defaultValue={defaultValues?.read_time_minutes ?? ''}
+          style={{ ...s.input, maxWidth: '120px' }}
+          placeholder="ex : 4"
+        />
       </div>
 
       {/* Publié */}

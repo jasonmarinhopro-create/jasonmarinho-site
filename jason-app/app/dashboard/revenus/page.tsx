@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import RevenusView from './RevenusView'
 import PlanGate from '@/components/ui/PlanGate'
 
@@ -11,7 +10,6 @@ export default async function RevenusPage() {
   if (plan === 'decouverte') {
     return (
       <>
-        <Header title="Revenus" userName={profile?.full_name ?? undefined} />
         <PlanGate feature="revenus" />
       </>
     )
@@ -63,7 +61,6 @@ export default async function RevenusPage() {
 
   return (
     <>
-      <Header title="Revenus" userName={profile?.full_name ?? undefined} />
       <RevenusView
         contracts={contracts ?? []}
         initialEntries={entries ?? []}

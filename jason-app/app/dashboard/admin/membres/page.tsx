@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
-import Header from '@/components/layout/Header'
 import MembresUI from './MembresUI'
 
 export const metadata = { title: 'Membres — Jason Marinho' }
@@ -46,7 +45,6 @@ export default async function MembresPage() {
 
   return (
     <>
-      <Header title="Membres" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
         <MembresUI members={normalized} />
       </div>

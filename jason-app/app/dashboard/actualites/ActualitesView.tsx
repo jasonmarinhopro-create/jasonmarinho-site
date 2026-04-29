@@ -38,10 +38,11 @@ function getDomain(url: string | null) {
   try { return new URL(url).hostname.replace('www.', '') } catch { return null }
 }
 
-// Estimation du temps de lecture : ~200 mots/min sur le résumé
-function readTime(summary: string) {
+// Estimation du temps de lecture : basé sur read_time_minutes en DB, sinon ~200 mots/min minimum 2 min
+function readTime(summary: string, minutes?: number | null) {
+  if (minutes && minutes > 0) return minutes
   const words = summary.trim().split(/\s+/).length
-  return Math.max(1, Math.round(words / 200))
+  return Math.max(2, Math.round(words / 200))
 }
 
 // Décompte jusqu'à la deadline
@@ -187,7 +188,7 @@ export default function ActualitesView({
     const isRead = reads.has(article.id)
     const isFav = favorites.has(article.id)
     const dl = article.deadline_date ? deadlineLabel(article.deadline_date) : null
-    const rt = readTime(article.summary)
+    const rt = readTime(article.summary, article.read_time_minutes)
 
     return (
       <div
@@ -507,6 +508,18 @@ export default function ActualitesView({
         }
         .actu-filter-scroll button {
           scroll-snap-align: start;
+        }
+        @media (max-width: 640px) {
+          .actu-filter-scroll {
+            flex-wrap: wrap !important;
+            overflow-x: visible !important;
+            gap: 6px !important;
+          }
+          .actu-filter-scroll button {
+            flex-shrink: 1 !important;
+            font-size: 12px !important;
+            padding: 6px 11px !important;
+          }
         }
       `}</style>
     </div>

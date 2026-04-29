@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import ProfilForm from './ProfilForm'
 import ChezNousIdentity from './ChezNousIdentity'
 
@@ -38,7 +37,6 @@ export default async function ProfilPage() {
 
   return (
     <>
-      <Header title="Mon profil" userName={fullName || undefined} currentPlan={planLabel} />
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }} className="dash-page">
         <div style={{ marginBottom: '32px' }} className="fade-up">
           <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' }}>

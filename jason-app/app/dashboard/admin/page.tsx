@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import AdminUI from './AdminUI'
 
 export const metadata = { title: 'Administration — Jason Marinho' }
@@ -105,7 +104,6 @@ export default async function AdminPage() {
 
   return (
     <>
-      <Header title="Administration" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
         <AdminUI
           pendingDriing={pendingDriing ?? []}

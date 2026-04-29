@@ -25,7 +25,9 @@ export const metadata: Metadata = {
   description: 'Formations, gabarits et ressources pour développer ton activité de location courte durée.',
   robots: 'noindex, nofollow',
   icons: {
-    icon: '/favicon-jason.webp',
+    icon: [{ url: '/favicon-jason.webp', type: 'image/webp' }],
+    shortcut: '/favicon-jason.webp',
+    apple: [{ url: '/favicon-jason.webp', sizes: '180x180', type: 'image/webp' }],
   },
 }
 

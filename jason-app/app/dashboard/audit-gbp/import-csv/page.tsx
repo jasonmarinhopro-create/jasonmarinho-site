@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { getProfile } from '@/lib/queries/profile'
-import Header from '@/components/layout/Header'
 import ImportCsvForm from './ImportCsvForm'
 import { ArrowLeft, FileCsv, Lightning, Info, Question, ArrowSquareOut } from '@phosphor-icons/react/dist/ssr'
 
@@ -12,7 +11,6 @@ export default async function ImportCsvPage() {
 
   return (
     <>
-      <Header title="Audit Express" userName={profile?.full_name ?? undefined} />
       <div style={s.page}>
 
         {/* Retour */}

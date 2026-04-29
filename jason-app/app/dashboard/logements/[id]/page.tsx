@@ -1,8 +1,8 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import { notFound } from 'next/navigation'
 import LogementDetail from './LogementDetail'
+import TitleSetter from '@/components/layout/TitleSetter'
 
 export default async function LogementDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -55,7 +55,7 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
 
   return (
     <>
-      <Header title={logement.nom ?? 'Logement'} userName={profile.full_name ?? undefined} />
+      <TitleSetter title={logement.nom ?? 'Logement'} />
       <LogementDetail
         logement={logement as any}
         sejours={sejoursList}

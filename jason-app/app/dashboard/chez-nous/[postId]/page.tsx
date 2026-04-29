@@ -1,7 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import PostDetail from './PostDetail'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 import { computeBadges, type BadgeId } from '@/lib/badges'
@@ -100,7 +99,6 @@ export default async function ChezNousPostPage({ params }: Props) {
 
   return (
     <>
-      <Header title="Chez Nous" userName={profile.full_name ?? undefined} />
       <PostDetail
         post={{
           id:          post.id,

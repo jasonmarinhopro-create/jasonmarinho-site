@@ -1,10 +1,10 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowRight, GraduationCap, Clock, CheckCircle, BookOpen, Compass } from '@phosphor-icons/react/dist/ssr'
 import { getParcoursBySlug, PARCOURS_LEVEL_LABELS } from '@/lib/formations/parcours'
+import TitleSetter from '@/components/layout/TitleSetter'
 
 export default async function ParcoursDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -40,7 +40,7 @@ export default async function ParcoursDetailPage({ params }: { params: Promise<{
 
   return (
     <>
-      <Header title={parcours.title} userName={profile.full_name ?? undefined} />
+      <TitleSetter title={parcours.title} />
       <div style={s.page}>
         <Link href="/dashboard/formations/parcours" style={s.backLink}>
           <ArrowLeft size={14} weight="bold" />

@@ -5,6 +5,7 @@ import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { revalidatePath } from 'next/cache'
 import { buildEmail, emailInfoBlock, emailBtn, emailP, escHtml } from '@/lib/email/template'
+import { invalidateProfileCache } from '@/lib/queries/profile'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
@@ -33,6 +34,7 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
       { auth: { autoRefreshToken: false, persistSession: false } },
     )
     await adminClient.from('profiles').update({ plan: 'driing', role: 'driing' }).eq('id', session.user.id)
+    invalidateProfileCache(session.user.id)
     revalidatePath('/dashboard/abonnement')
     return { success: true }
   }
@@ -53,6 +55,7 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
 
   if (updateError) return { error: `Erreur : ${updateError.message}` }
 
+  invalidateProfileCache(session.user.id)
   revalidatePath('/dashboard/abonnement')
 
   // Notification email à l'admin

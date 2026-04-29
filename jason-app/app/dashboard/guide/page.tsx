@@ -1,16 +1,11 @@
-import { getProfile } from '@/lib/queries/profile'
-import Header from '@/components/layout/Header'
 import GuideUI from './GuideUI'
+import GuideCards from './GuideCards'
 
 export const metadata = { title: 'Guide LCD — Jason Marinho' }
 
-export default async function GuidePage() {
-  const profile = await getProfile()
-
-  return (
-    <>
-      <Header title="Guide LCD" userName={profile?.full_name ?? undefined} />
-      <GuideUI />
-    </>
-  )
+export default function GuidePage() {
+  // GuideCards est rendu server-side (icônes + données via /dist/ssr) puis injecté
+  // comme React node dans GuideUI (client). Économise ~30 icônes Phosphor + 700 lignes
+  // de JSX dans le bundle client.
+  return <GuideUI guideCards={<GuideCards />} />
 }

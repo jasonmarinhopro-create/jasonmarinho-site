@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Sparkle, ArrowUp, Wrench, Star } from '@phosphor-icons/react'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
-import Header from '@/components/layout/Header'
 
 const TAG_CONFIG: Record<ChangelogTag, { label: string; color: string; bg: string; border: string }> = {
   nouveau:       { label: 'Nouveau',      color: '#63D683', bg: 'rgba(99,214,131,0.10)',  border: 'rgba(99,214,131,0.25)' },
@@ -44,7 +43,6 @@ export default function NouveautesPage() {
 
   return (
     <>
-      <Header title="Nouveautés" />
 
       <div style={s.page}>
         {/* Intro */}

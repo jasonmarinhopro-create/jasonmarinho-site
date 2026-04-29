@@ -1,10 +1,10 @@
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
-import Header from '@/components/layout/Header'
 import dynamic from 'next/dynamic'
 import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 import { FORMATION_CONTENT_MAP } from './contentMap'
+import TitleSetter from '@/components/layout/TitleSetter'
 
 const FormationEditor = dynamic(() => import('./FormationEditor'), {
   ssr: false,
@@ -81,7 +81,7 @@ export default async function AdminFormationEditorPage({ params }: PageProps) {
 
   return (
     <>
-      <Header title={`Éditer — ${formation.title}`} userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
+      <TitleSetter title={`Éditer — ${formation.title}`} />
       <FormationEditor
         formation={formation}
         dbModules={normalizedModules}

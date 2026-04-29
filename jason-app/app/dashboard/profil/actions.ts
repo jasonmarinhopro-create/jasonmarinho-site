@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { invalidateProfileCache } from '@/lib/queries/profile'
 
 export async function saveProfileName(fullName: string): Promise<{ error?: string }> {
   const supabase = await createClient()
@@ -20,6 +21,7 @@ export async function saveProfileName(fullName: string): Promise<{ error?: strin
 
   if (error) return { error: `Erreur: ${error.message}` }
 
+  invalidateProfileCache(session.user.id)
   revalidatePath('/dashboard', 'layout')
 
   return {}
@@ -43,6 +45,7 @@ export async function saveIban(iban: string, bic: string): Promise<{ error?: str
 
   if (error) return { error: `Erreur: ${error.message}` }
 
+  invalidateProfileCache(session.user.id)
   revalidatePath('/dashboard', 'layout')
 
   return {}
@@ -65,6 +68,7 @@ export async function saveAdresse(adresse: string): Promise<{ error?: string }> 
 
   if (error) return { error: `Erreur: ${error.message}` }
 
+  invalidateProfileCache(session.user.id)
   revalidatePath('/dashboard', 'layout')
 
   return {}

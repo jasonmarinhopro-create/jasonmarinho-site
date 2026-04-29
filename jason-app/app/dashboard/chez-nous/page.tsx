@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import ChezNousFeed from './ChezNousFeed'
 import WelcomeModal from '@/components/chez-nous/WelcomeModal'
 import type { CategoryId } from '@/lib/chez-nous/categories'
@@ -276,7 +275,6 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <Header title="Chez Nous" userName={profile.full_name ?? undefined} />
       {showWelcome && <WelcomeModal />}
       <ChezNousFeed
         posts={posts.map(p => ({

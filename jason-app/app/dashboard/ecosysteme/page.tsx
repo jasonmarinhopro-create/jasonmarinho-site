@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import PartenairesView from './PartenairesView'
 
 export default async function PartenairesPage() {
@@ -38,7 +37,6 @@ export default async function PartenairesPage() {
 
   return (
     <>
-      <Header title="Écosystème LCD" userName={profile?.full_name ?? undefined} />
       <PartenairesView
         additionalPartners={additionalPartners ?? []}
         plan={plan}

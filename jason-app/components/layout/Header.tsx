@@ -10,11 +10,70 @@ import Sidebar from './Sidebar'
 import NotificationPanel from './NotificationPanel'
 import ChezNousNotifBell from './ChezNousNotifBell'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
 import { CHANGELOG } from '@/lib/constants/changelog'
+import { subscribeDashboardTitle } from '@/lib/dashboard-title-store'
 
 const STORAGE_KEY = 'jm_notif_read'
+
+// Mapping pathname → titre du header (routes statiques)
+const PATH_TITLES: Record<string, string> = {
+  '/dashboard': 'Accueil',
+  '/dashboard/audit-gbp': 'Audit GBP',
+  '/dashboard/audit-gbp/import-url': 'Import URL',
+  '/dashboard/audit-gbp/import-csv': 'Audit Express',
+  '/dashboard/simulateurs': 'Simulateurs LCD',
+  '/dashboard/voyageurs': 'Mes Voyageurs',
+  '/dashboard/communaute': 'Groupes Facebook',
+  '/dashboard/securite': 'Sécurité',
+  '/dashboard/gabarits': 'Gabarits',
+  '/dashboard/aide': "Centre d'aide",
+  '/dashboard/revenus': 'Revenus',
+  '/dashboard/profil': 'Mon profil',
+  '/dashboard/abonnement': 'Abonnement',
+  '/dashboard/actualites': 'Actualités',
+  '/dashboard/actualites/favoris': 'Mes favoris',
+  '/dashboard/nouveautes': 'Nouveautés',
+  '/dashboard/chez-nous': 'Chez Nous',
+  '/dashboard/chez-nous/notifications': 'Notifications',
+  '/dashboard/logements': 'Mes Logements',
+  '/dashboard/calendrier': 'Calendrier',
+  '/dashboard/formations': 'Formations',
+  '/dashboard/formations/profil-apprenant': 'Mon profil apprenant',
+  '/dashboard/formations/favoris': 'Mes favoris',
+  '/dashboard/formations/parcours': "Parcours d'apprentissage",
+  '/dashboard/ecosysteme': 'Écosystème LCD',
+  '/dashboard/contributeurs': 'Contributeurs',
+  '/dashboard/guide': 'Guide LCD',
+  '/dashboard/admin': 'Administration',
+  '/dashboard/admin/membres': 'Membres',
+  '/dashboard/admin/communaute': 'Communauté',
+  '/dashboard/admin/gabarits': 'Gabarits',
+  '/dashboard/admin/actualites': 'Actualités',
+  '/dashboard/admin/formations': 'Formations',
+  '/dashboard/admin/guides': 'Guide LCD',
+}
+
+// Routes dynamiques : titre par défaut tant que TitleSetter n'a pas envoyé le titre spécifique
+const PATH_TITLE_PATTERNS: Array<[RegExp, string]> = [
+  [/^\/dashboard\/voyageurs\/[^/]+$/,                'Voyageur'],
+  [/^\/dashboard\/logements\/[^/]+$/,                'Logement'],
+  [/^\/dashboard\/formations\/parcours\/[^/]+$/,     'Parcours'],
+  [/^\/dashboard\/admin\/formations\/[^/]+$/,        'Édition formation'],
+  [/^\/dashboard\/admin\/membres\/[^/]+$/,           'Fiche membre'],
+  [/^\/dashboard\/audit-gbp\/resultats\/[^/]+$/,     'Audit GBP'],
+  [/^\/dashboard\/chez-nous\/membre\/[^/]+$/,        'Profil membre'],
+  [/^\/dashboard\/chez-nous\/[^/]+$/,                'Chez Nous'],
+]
+
+function resolveTitle(pathname: string): string {
+  if (PATH_TITLES[pathname]) return PATH_TITLES[pathname]
+  for (const [rx, label] of PATH_TITLE_PATTERNS) {
+    if (rx.test(pathname)) return label
+  }
+  return 'Mon espace'
+}
 
 const PLAN_COLORS: Record<string, { bg: string; color: string; dot: string }> = {
   'Découverte':    { bg: 'var(--border)', color: 'var(--text-3)',  dot: '#6b7280' },
@@ -38,22 +97,42 @@ function saveReadIds(ids: Set<string>) {
 }
 
 interface HeaderProps {
-  title: string
+  /** Optionnel : titre forcé. Si absent, dérivé du pathname (+ override via TitleSetter pour les routes dynamiques). */
+  title?: string
   userName?: string
   currentPlan?: string
+  /** Passé depuis le layout. Évite un useEffect qui refait 2 queries Supabase à chaque navigation. */
+  isAdmin?: boolean
 }
 
-export default function Header({ title, userName: initialUserName, currentPlan = 'Découverte' }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
   const [readIds, setReadIds] = useState<Set<string>>(new Set())
-  const [userName, setUserName] = useState(initialUserName ?? '')
-  const [resolvedPlan, setResolvedPlan] = useState(currentPlan)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [userName] = useState(initialUserName ?? '')
+  const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const pathname = usePathname()
   const { theme, toggleTheme } = useTheme()
+  const isAdmin = isAdminProp
+
+  // Titre final : prop forcée > store (TitleSetter) > mapping pathname
+  const title = titleOverrideProp ?? titleFromStore ?? resolveTitle(pathname ?? '')
+
+  // Plan affiché : si admin, toujours "Administrateur", sinon ce que la layout passe
+  const resolvedPlan = isAdmin ? 'Administrateur' : currentPlan
+
+  // Quand on change de page, on remet le store à null pour éviter d'afficher
+  // le titre dynamique de la page précédente le temps que la nouvelle page le set.
+  useEffect(() => { setTitleFromStore(null) }, [pathname])
+
+  // Subscribe au store de titre (utilisé par TitleSetter sur les pages dynamiques)
+  useEffect(() => {
+    const unsub = subscribeDashboardTitle((t) => setTitleFromStore(t))
+    return unsub
+  }, [])
 
   // Load read IDs from localStorage — lazy init prevents badge flash on navigation
   useEffect(() => {
@@ -80,31 +159,6 @@ export default function Header({ title, userName: initialUserName, currentPlan =
     setReadIds(all)
     saveReadIds(all)
   }, [])
-
-  // Admin detection : currentPlan === 'Administrateur' suffit sur les pages admin.
-  // Sur les autres pages (Revenus, Voyageurs…), le currentPlan vaut "Membre Driing"
-  // ou autre — il faut alors refetch côté client pour que l'admin voie sa section
-  // dans le menu mobile (la sidebar desktop reçoit déjà isAdmin via layout.tsx).
-  useEffect(() => {
-    if (currentPlan === 'Administrateur') {
-      setIsAdmin(true)
-      return
-    }
-    // Refetch léger pour les pages non-admin
-    let cancelled = false
-    ;(async () => {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user || cancelled) return
-      const { data } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle()
-      if (!cancelled && data?.role === 'admin') setIsAdmin(true)
-    })()
-    return () => { cancelled = true }
-  }, [currentPlan])
 
   // Close dropdown on outside click
   useEffect(() => {

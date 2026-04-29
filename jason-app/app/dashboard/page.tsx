@@ -1,5 +1,4 @@
 import { getProfile } from '@/lib/queries/profile'
-import Header from '@/components/layout/Header'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
@@ -324,7 +323,6 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <Header title="Accueil" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
       <div style={s.page} className="dash-page">
 
         {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
