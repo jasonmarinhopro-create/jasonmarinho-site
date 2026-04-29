@@ -5,7 +5,6 @@ import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import DashboardLoading from './loading'
-import FeedbackWidget from '@/components/FeedbackWidget'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
   if (role === 'admin') return 'Administrateur'
@@ -37,7 +36,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
             {children}
           </Suspense>
         </main>
-        <FeedbackWidget />
       </div>
     </ThemeProvider>
   )
