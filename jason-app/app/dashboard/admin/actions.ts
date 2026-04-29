@@ -6,6 +6,7 @@ import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailP } from '@/lib/email/template'
 import { CACHE_TAGS } from '@/lib/queries/cache'
+import { invalidateProfileCache } from '@/lib/queries/profile'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
@@ -85,6 +86,7 @@ export async function confirmDriingMember(userId: string) {
     await sendDriingConfirmationEmail(userProfile.email, userProfile.full_name)
   }
 
+  invalidateProfileCache(userId)
   revalidatePath('/dashboard/admin')
   revalidatePath('/dashboard/admin/membres')
   revalidatePath('/dashboard/abonnement')
@@ -103,6 +105,7 @@ export async function rejectDriingMember(userId: string) {
     .eq('id', userId)
 
   if (updateError) return { error: updateError.message }
+  invalidateProfileCache(userId)
   revalidatePath('/dashboard/admin')
   return { success: true }
 }
@@ -186,6 +189,7 @@ export async function changeUserPlan(userId: string, plan: string) {
     await sendDriingConfirmationEmail(userProfile.email, userProfile.full_name)
   }
 
+  invalidateProfileCache(userId)
   revalidatePath('/dashboard/admin')
   revalidatePath('/dashboard/admin/membres')
   revalidatePath('/dashboard/abonnement')
@@ -204,6 +208,7 @@ export async function toggleContributor(userId: string, value: boolean) {
 
   if (updateError) return { error: updateError.message }
 
+  invalidateProfileCache(userId)
   revalidateTag(CACHE_TAGS.CONTRIBUTORS)
   revalidatePath('/dashboard/admin/membres')
   revalidatePath('/dashboard/contributeurs')
@@ -388,6 +393,7 @@ export async function updateMemberName(memberId: string, fullName: string) {
     .eq('id', memberId)
 
   if (updateError) return { error: updateError.message }
+  invalidateProfileCache(memberId)
   revalidatePath('/dashboard/admin/membres')
   return { success: true }
 }
@@ -403,6 +409,7 @@ export async function updateAdminNotes(memberId: string, notes: string) {
     .eq('id', memberId)
 
   if (updateError) return { error: updateError.message }
+  // admin_notes n'est pas dans le cache profil, pas besoin d'invalider
   revalidatePath(`/dashboard/admin/membres/${memberId}`)
   revalidatePath('/dashboard/admin/membres')
   return { success: true }

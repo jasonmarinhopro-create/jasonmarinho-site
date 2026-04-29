@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { STRIPE_PLANS, ALL_VALID_PRICE_IDS } from '@/lib/constants/stripe-plans'
+import { invalidateProfileCache } from '@/lib/queries/profile'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -56,6 +57,7 @@ export async function POST(request: NextRequest) {
     })
     customerId = customer.id
     await db.from('profiles').update({ stripe_customer_id: customerId }).eq('id', session.user.id)
+    invalidateProfileCache(session.user.id)
   }
 
   const checkoutSession = await stripe.checkout.sessions.create({

@@ -1,6 +1,7 @@
-'use client'
+// Server component — pas d'interactivité, importe les icônes via /dist/ssr
+// pour éviter de polluer le bundle client.
 
-import { ArrowUpRight, Wrench, Bank, BookOpen } from '@phosphor-icons/react'
+import { ArrowUpRight, Wrench, Bank, BookOpen } from '@phosphor-icons/react/dist/ssr'
 
 interface Resource {
   label: string
