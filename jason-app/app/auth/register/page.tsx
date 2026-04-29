@@ -88,7 +88,7 @@ export default function RegisterPage() {
         <div>
           <h1 style={s.brandTitle}>L'espace des hôtes qui veulent aller plus loin.</h1>
           <p style={s.brandDesc}>
-            Formations, outils et communauté pour développer ton activité LCD — honnêtement.
+            Formations, outils et communauté pour développer ton activité LCD. Honnêtement.
           </p>
         </div>
 

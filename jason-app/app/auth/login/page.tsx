@@ -153,7 +153,7 @@ export default function LoginPage() {
         <div>
           <h1 style={s.brandTitle}>Content de te revoir parmi nous.</h1>
           <p style={s.brandDesc}>
-            Retrouve tes formations, outils et la communauté LCD — tout est là.
+            Retrouve tes formations, outils et la communauté LCD. Tout est là.
           </p>
         </div>
 
