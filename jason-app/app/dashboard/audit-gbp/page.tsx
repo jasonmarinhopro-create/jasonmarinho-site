@@ -113,7 +113,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
                 arrêté. Tes modifications sont auto-sauvegardées.
               </div>
             </div>
-            <Link href="/dashboard/outils/audit-gbp" style={s.resumeReset}>
+            <Link href="/dashboard/audit-gbp" style={s.resumeReset}>
               Recommencer
             </Link>
           </div>
@@ -123,7 +123,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
         {!initialSession && (
           <div style={s.expressGrid} className="fade-up">
             {/* URL Maps (recommandé) */}
-            <Link href="/dashboard/outils/audit-gbp/import-url" style={{ ...s.expressCard, ...s.expressCardGreen }}>
+            <Link href="/dashboard/audit-gbp/import-url" style={{ ...s.expressCard, ...s.expressCardGreen }}>
               <div style={{ ...s.expressIcon, background: 'rgba(52,211,153,0.12)' }}>
                 <MapPin size={20} color="#34d399" weight="fill" />
               </div>
@@ -141,7 +141,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
             </Link>
 
             {/* CSV (alternative) */}
-            <Link href="/dashboard/outils/audit-gbp/import-csv" style={s.expressCard}>
+            <Link href="/dashboard/audit-gbp/import-csv" style={s.expressCard}>
               <div style={s.expressIcon}>
                 <FileCsv size={20} color="var(--accent-text)" weight="fill" />
               </div>

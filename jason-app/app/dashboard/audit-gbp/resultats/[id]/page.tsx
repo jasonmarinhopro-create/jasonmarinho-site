@@ -35,7 +35,7 @@ export default async function AuditResultsPage({ params }: PageProps) {
 
   if (error || !session) notFound()
   if (!session.completed_at) {
-    redirect('/dashboard/outils/audit-gbp')
+    redirect('/dashboard/audit-gbp')
   }
 
   const answers = (session.answers ?? {}) as Record<string, AnswerValue>
@@ -50,7 +50,7 @@ export default async function AuditResultsPage({ params }: PageProps) {
       <div style={s.page}>
 
         {/* Retour */}
-        <Link href="/dashboard/outils/audit-gbp" style={s.back}>
+        <Link href="/dashboard/audit-gbp" style={s.back}>
           <ArrowLeft size={14} weight="bold" /> Retour à l'audit
         </Link>
 
@@ -162,7 +162,7 @@ export default async function AuditResultsPage({ params }: PageProps) {
 
         {/* Refaire l'audit */}
         <div style={s.redoBlock}>
-          <Link href="/dashboard/outils/audit-gbp" style={s.redoLink}>
+          <Link href="/dashboard/audit-gbp" style={s.redoLink}>
             Refaire un audit dans 3 mois
           </Link>
           <span style={s.redoNote}>

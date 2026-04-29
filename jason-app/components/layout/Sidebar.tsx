@@ -41,7 +41,7 @@ const navGroups = [
     label: 'Outils',
     items: [
       { href: '/dashboard/simulateurs',       label: 'Simulateurs',       icon: Calculator },
-      { href: '/dashboard/outils/audit-gbp',  label: 'Audit GBP',         icon: MagnifyingGlass },
+      { href: '/dashboard/audit-gbp',  label: 'Audit GBP',         icon: MagnifyingGlass },
       { href: '/dashboard/gabarits',          label: 'Gabarits',          icon: FileText },
       { href: '/dashboard/securite',          label: 'Sécurité Voyageur', icon: ShieldCheck },
     ],

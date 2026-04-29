@@ -79,7 +79,7 @@ export default function ImportCsvForm({ userId }: Props) {
         setError(save.error)
         return
       }
-      router.push(`/dashboard/outils/audit-gbp?session=${session.ok.sessionId}`)
+      router.push(`/dashboard/audit-gbp?session=${session.ok.sessionId}`)
     })
   }
 

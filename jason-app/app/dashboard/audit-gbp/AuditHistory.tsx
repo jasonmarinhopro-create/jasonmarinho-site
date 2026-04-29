@@ -51,8 +51,8 @@ export default function AuditHistory({ audits }: Props) {
       <div style={s.historyList}>
         {audits.map(a => {
           const targetUrl = a.completed_at
-            ? `/dashboard/outils/audit-gbp/resultats/${a.id}`
-            : `/dashboard/outils/audit-gbp?session=${a.id}`
+            ? `/dashboard/audit-gbp/resultats/${a.id}`
+            : `/dashboard/audit-gbp?session=${a.id}`
           const isConfirming = confirmingId === a.id
 
           return (

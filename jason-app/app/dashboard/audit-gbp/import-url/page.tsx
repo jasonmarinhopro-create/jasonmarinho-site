@@ -15,7 +15,7 @@ export default async function ImportUrlPage() {
       <Header title="Import URL" userName={profile?.full_name ?? undefined} />
       <div style={s.page}>
 
-        <Link href="/dashboard/outils/audit-gbp" style={s.back}>
+        <Link href="/dashboard/audit-gbp" style={s.back}>
           <ArrowLeft size={14} weight="bold" /> Retour à l'audit
         </Link>
 
