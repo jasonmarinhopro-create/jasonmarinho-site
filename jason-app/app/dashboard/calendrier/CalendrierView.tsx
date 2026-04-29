@@ -1076,7 +1076,7 @@ export default function CalendrierView({
             if (i > 0) withSeparators.push(<span key={`sep-${i}`} style={s.miniStatSep}>·</span>)
             withSeparators.push(p)
           })
-          return <div style={s.miniStats}>{withSeparators}</div>
+          return <div style={s.miniStats} className="cal-mini-stats">{withSeparators}</div>
         })()}
       </div>
 
@@ -1095,12 +1095,28 @@ export default function CalendrierView({
         .time-sel:focus { border-color: var(--accent-text) !important; outline: none; box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 0,76,63), 0.12); }
         .multi-toggle { transition: all 0.15s; cursor: pointer; }
         .multi-toggle:hover { background: var(--surface-2) !important; }
+        @media (max-width: 1023px) {
+          .cal-month-title { min-width: 180px !important; }
+        }
         @media (max-width: 900px) {
           .cal-layout { flex-direction: column !important; }
           .cal-side   { width: 100% !important; border-left: none !important; border-top: 1px solid var(--border) !important; max-height: none !important; }
         }
+        @media (max-width: 767px) {
+          /* Filter bar: chips scroll horizontally, search full-width below */
+          .cal-filter-bar   { flex-direction: column !important; align-items: stretch !important; gap: 8px !important; }
+          .cal-filter-chips { flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 0 !important; }
+          .cal-filter-chips::-webkit-scrollbar { display: none; }
+          .cal-search-wrap  { max-width: 100% !important; width: 100% !important; flex: none !important; min-width: 0 !important; }
+          /* Month nav: tighter */
+          .cal-month-title  { min-width: 140px !important; font-size: 17px !important; }
+          /* Mini-stats: tighter gaps */
+          .cal-mini-stats   { gap: 8px 14px !important; margin-top: 4px !important; }
+          /* Quick add: shorter placeholder via font-size reduction */
+          .cal-quick-wrap   { padding: 2px 4px 2px 12px !important; }
+        }
         @media (max-width: 640px) {
-          .cal-root        { padding: 8px 8px 24px !important; gap: 8px !important; }
+          .cal-root        { padding: 8px 8px 24px !important; gap: 10px !important; }
           .cal-topbar      { gap: 6px !important; }
           .cal-cell        { min-height: 54px !important; padding: 4px !important; }
           .cal-pill-wrap   { display: none !important; }
@@ -1108,7 +1124,7 @@ export default function CalendrierView({
           .cal-date-row    { grid-template-columns: 1fr !important; }
           .cal-row-arrow   { display: none !important; }
           .cal-add-text    { display: none !important; }
-          .cal-month-title { font-size: 16px !important; min-width: unset !important; }
+          .cal-month-title { font-size: 15px !important; min-width: 120px !important; }
           .cal-layout      { min-height: 0 !important; }
           .cal-side-head   { padding: 10px 14px 8px !important; }
           /* Alert grid — horizontal scroll on mobile */
@@ -1119,6 +1135,8 @@ export default function CalendrierView({
           .cal-legend      { display: none !important; }
           /* Alert section compact */
           .cal-alert-wrap  { padding: 8px 10px !important; }
+          /* Filter chips: shrink text slightly */
+          .cal-filter-chip { padding: 5px 10px !important; font-size: 11.5px !important; }
         }
       `}</style>
 
@@ -1162,8 +1180,8 @@ export default function CalendrierView({
       </div>
 
       {/* ── Filters + search */}
-      <div style={s.filterBar}>
-        <div style={s.filterChips}>
+      <div style={s.filterBar} className="cal-filter-bar">
+        <div style={s.filterChips} className="cal-filter-chips">
           {([
             { id: 'all',         label: 'Tout' },
             { id: 'sejours',     label: 'Séjours' },
@@ -1174,6 +1192,7 @@ export default function CalendrierView({
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
+              className="cal-filter-chip"
               style={{
                 ...s.filterChip,
                 ...(filter === f.id ? s.filterChipActive : {}),
@@ -1183,7 +1202,7 @@ export default function CalendrierView({
             </button>
           ))}
         </div>
-        <div style={s.searchWrap}>
+        <div style={s.searchWrap} className="cal-search-wrap">
           <span style={s.searchIcon}>
             <MagnifyingGlass size={13} weight="bold" />
           </span>
@@ -1201,7 +1220,7 @@ export default function CalendrierView({
       </div>
 
       {/* ── Quick add */}
-      <div style={s.quickAddWrap}>
+      <div style={s.quickAddWrap} className="cal-quick-wrap">
         <span style={s.quickAddIcon}>⚡</span>
         <input
           type="text"
