@@ -198,7 +198,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
       />
 
       <header style={styles.header} className="dash-header">
-        <div style={styles.left}>
+        <div style={styles.left} className="dash-header-left">
           <button
             onClick={() => setMobileOpen(true)}
             style={styles.menuBtn}
@@ -207,7 +207,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
           >
             <List size={22} />
           </button>
-          <h1 style={styles.title}>{title}</h1>
+          <h1 style={styles.title} className="dash-header-title">{title}</h1>
         </div>
 
         <div style={styles.right}>

@@ -393,6 +393,21 @@ a { color: inherit; }
   .dash-profile-name { display: none !important; }
 }
 
+/* Header title: truncate on mobile so it doesn't collide with right icons */
+@media (max-width: 767px) {
+  .dash-header-left {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .dash-header-title {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 16px !important;
+  }
+}
+
 /* Dropdown hover states */
 .dash-dropdown a:hover,
 .dash-dropdown button:hover {

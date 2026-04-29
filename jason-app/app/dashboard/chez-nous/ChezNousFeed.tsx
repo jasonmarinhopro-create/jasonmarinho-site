@@ -89,6 +89,9 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
   return (
     <div style={s.page}>
       <style>{`
+        /* Map silhouette: white in dark mode, dark green in light mode */
+        .cn-map-shape { fill: rgba(255,255,255,0.025); stroke: rgba(255,255,255,0.14); }
+        [data-theme="light"] .cn-map-shape { fill: rgba(0,76,63,0.07); stroke: rgba(0,76,63,0.28); }
         @media (max-width: 1023px) {
           .cn-aside { display: none !important; }
           .cn-main-col { flex: 1 1 100% !important; }
@@ -299,16 +302,14 @@ function FranceMapCard({ regionCounts }: { regionCounts: Record<string, number> 
         <svg viewBox="0 0 100 110" style={s.mapSvg} aria-label="Répartition des hôtes en France">
           {/* Silhouette simplifiée de la France métropolitaine */}
           <path
+            className="cn-map-shape"
             d="M 28 10 Q 42 5, 55 8 Q 68 6, 78 14 Q 84 22, 80 32 Q 88 38, 86 48 Q 90 56, 84 64 Q 88 72, 80 82 Q 70 90, 56 92 Q 42 94, 30 88 Q 20 82, 18 70 Q 10 60, 14 48 Q 10 36, 18 26 Q 22 16, 28 10 Z"
-            fill="rgba(255,255,255,0.025)"
-            stroke="rgba(255,255,255,0.12)"
             strokeWidth="0.5"
           />
           {/* Corse */}
           <path
+            className="cn-map-shape"
             d="M 88 92 Q 92 90, 93 95 Q 92 100, 89 100 Q 87 96, 88 92 Z"
-            fill="rgba(255,255,255,0.025)"
-            stroke="rgba(255,255,255,0.12)"
             strokeWidth="0.5"
           />
           {/* Bulles par région */}
