@@ -941,7 +941,7 @@ export default function GuideUI() {
       <ComparisonTable />
 
       {/* Teaser : les simulateurs ont leur propre page */}
-      <Link href="/dashboard/outils/simulateurs" style={s.calcTeaser} className="fade-up glass-card">
+      <Link href="/dashboard/simulateurs" style={s.calcTeaser} className="fade-up glass-card">
         <div style={s.calcTeaserIcon}>
           <Calculator size={20} weight="fill" />
         </div>
