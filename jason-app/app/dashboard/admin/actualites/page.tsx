@@ -20,7 +20,7 @@ export default async function AdminActualitesPage() {
 
   const { data: articles } = await supabase
     .from('actualites')
-    .select('id, title, summary, source_url, category, is_published, published_at, created_at')
+    .select('id, title, summary, source_url, category, is_published, published_at, created_at, read_time_minutes')
     .order('created_at', { ascending: false })
 
   return (

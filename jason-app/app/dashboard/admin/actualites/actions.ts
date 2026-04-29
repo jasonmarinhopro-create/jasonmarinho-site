@@ -30,11 +30,13 @@ export async function addActualite(formData: FormData) {
   const { error, adminClient } = await assertAdmin()
   if (error || !adminClient) return { success: false, error }
 
-  const title      = (formData.get('title') as string)?.trim()
-  const summary    = (formData.get('summary') as string)?.trim()
-  const source_url = (formData.get('source_url') as string)?.trim() || null
-  const category   = formData.get('category') as string
-  const published  = formData.get('is_published') === 'true'
+  const title              = (formData.get('title') as string)?.trim()
+  const summary            = (formData.get('summary') as string)?.trim()
+  const source_url         = (formData.get('source_url') as string)?.trim() || null
+  const category           = formData.get('category') as string
+  const published          = formData.get('is_published') === 'true'
+  const rtRaw              = formData.get('read_time_minutes') as string
+  const read_time_minutes  = rtRaw ? parseInt(rtRaw, 10) || null : null
 
   if (!title || !summary || !category) return { success: false, error: 'Champs manquants' }
 
@@ -45,6 +47,7 @@ export async function addActualite(formData: FormData) {
     category,
     is_published: published,
     published_at: published ? new Date().toISOString() : null,
+    read_time_minutes,
   })
 
   if (dbError) return { success: false, error: dbError.message }
@@ -57,11 +60,13 @@ export async function updateActualite(id: string, formData: FormData) {
   const { error, adminClient } = await assertAdmin()
   if (error || !adminClient) return { success: false, error }
 
-  const title      = (formData.get('title') as string)?.trim()
-  const summary    = (formData.get('summary') as string)?.trim()
-  const source_url = (formData.get('source_url') as string)?.trim() || null
-  const category   = formData.get('category') as string
-  const published  = formData.get('is_published') === 'true'
+  const title              = (formData.get('title') as string)?.trim()
+  const summary            = (formData.get('summary') as string)?.trim()
+  const source_url         = (formData.get('source_url') as string)?.trim() || null
+  const category           = formData.get('category') as string
+  const published          = formData.get('is_published') === 'true'
+  const rtRaw              = formData.get('read_time_minutes') as string
+  const read_time_minutes  = rtRaw ? parseInt(rtRaw, 10) || null : null
 
   if (!title || !summary || !category) return { success: false, error: 'Champs manquants' }
 
@@ -74,6 +79,7 @@ export async function updateActualite(id: string, formData: FormData) {
       category,
       is_published: published,
       published_at: published ? new Date().toISOString() : null,
+      read_time_minutes,
     })
     .eq('id', id)
 
