@@ -51,7 +51,7 @@ const navGroups = [
     items: [
       { href: '/dashboard/chez-nous',   label: 'Chez Nous',   icon: ChatsCircle },
       { href: '/dashboard/communaute',  label: 'Groupes FB',  icon: UsersThree },
-      { href: '/dashboard/partenaires', label: 'Écosystème', icon: Globe },
+      { href: '/dashboard/ecosysteme', label: 'Écosystème LCD', icon: Globe },
     ],
   },
 ]

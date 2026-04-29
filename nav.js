@@ -167,7 +167,7 @@
             + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
             + '<a href="/services/chez-nous"><i class="ph ph-house"></i>Chez Nous (forum)</a>'
             + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
-            + '<a href="/services/partenaires"><i class="ph ph-globe"></i>Écosystème LCD</a>'
+            + '<a href="/services/ecosysteme"><i class="ph ph-globe"></i>Écosystème LCD</a>'
           + '</div>'
         + '</div>'
       + '</li>'
@@ -227,7 +227,7 @@
         + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
         + '<a href="/services/chez-nous"><i class="ph ph-house"></i>Chez Nous (forum)</a>'
         + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
-        + '<a href="/services/partenaires"><i class="ph ph-globe"></i>Écosystème LCD</a>'
+        + '<a href="/services/ecosysteme"><i class="ph ph-globe"></i>Écosystème LCD</a>'
       + '</div>'
     + '</div>'
 

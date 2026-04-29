@@ -29,7 +29,7 @@ export async function toggleToolInterest(toolSlug: string) {
       .delete()
       .eq('id', existing.id)
     if (error) return { error: error.message }
-    revalidatePath('/dashboard/partenaires')
+    revalidatePath('/dashboard/ecosysteme')
     return { success: true, voted: false }
   }
 
@@ -37,6 +37,6 @@ export async function toggleToolInterest(toolSlug: string) {
     .from('tool_interests')
     .insert({ user_id: user.id, tool_slug: toolSlug })
   if (error) return { error: error.message }
-  revalidatePath('/dashboard/partenaires')
+  revalidatePath('/dashboard/ecosysteme')
   return { success: true, voted: true }
 }
