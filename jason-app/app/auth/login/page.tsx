@@ -11,10 +11,10 @@ import {
 import JmLogo from '@/components/JmLogo'
 
 const PERKS = [
-  { icon: GraduationCap, label: 'Formations vidéo sur la LCD' },
+  { icon: GraduationCap, label: 'Formations et guides LCD' },
   { icon: Calculator,    label: 'Simulateurs et outils exclusifs' },
   { icon: ChatText,      label: "Gabarits de messages prêts à l'emploi" },
-  { icon: UsersThree,    label: 'Communauté de +500 hôtes actifs' },
+  { icon: UsersThree,    label: "Communauté d'hôtes Chez Nous" },
   { icon: Megaphone,     label: 'Veille et actualités LCD' },
 ]
 
@@ -170,7 +170,7 @@ export default function LoginPage() {
           <p style={s.quoteText}>
             "Mon objectif : te donner les meilleurs outils pour développer ton activité, honnêtement."
           </p>
-          <p style={s.quoteAuthor}>— Jason Marinho</p>
+          <p style={s.quoteAuthor}>Jason Marinho</p>
         </div>
       </div>
     </div>
@@ -356,7 +356,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     padding: 'clamp(40px,6vh,80px) clamp(24px,5vw,80px)',
     background: '#fff',
     overflowY: 'auto',
