@@ -190,16 +190,16 @@ function JasonNoteCard() {
         <span style={s.jasonAvatar}>JM</span>
         <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1px' }}>
           <span style={s.jasonName}>Jason</span>
-          <span style={s.jasonRole}>Fondateur · veille sur la famille</span>
+          <span style={s.jasonRole}>Fondateur</span>
         </div>
       </div>
       <p style={s.jasonMessage}>
         Bienvenue Chez Nous. Cet espace n'a qu'une règle :
         <strong style={{ color: 'var(--accent-text)' }}> on s'entraide</strong>.
-        Pose tes questions sans hésiter, partage ce que tu apprends, et surtout —
+        Pose tes questions sans hésiter, partage ce que tu apprends, et surtout
         réponds quand tu peux à ceux qui débutent. C'est comme ça qu'on grandit ensemble.
       </p>
-      <span style={s.jasonSign}>— Jason</span>
+      <span style={s.jasonSign}>Jason</span>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ChatCircle, House } from '@phosphor-icons/react/dist/ssr'
+import { ArrowLeft, ChatCircle, House, PencilSimple } from '@phosphor-icons/react/dist/ssr'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
@@ -37,19 +37,24 @@ export default async function MembrePage({ params }: Props) {
       .select('id, category, title, body, reply_count, created_at')
       .eq('author_id', userId)
       .order('created_at', { ascending: false })
-      .limit(8),
+      .limit(10),
     supabase
       .from('chez_nous_replies')
       .select('id, post_id, body, created_at, chez_nous_posts(title)')
       .eq('author_id', userId)
       .order('created_at', { ascending: false })
-      .limit(8),
+      .limit(10),
   ])
 
   const av       = colorFromId(userId)
   const initials = displayInitials({ pseudo: member.pseudo, full_name: member.full_name })
   const name     = displayName({ pseudo: member.pseudo, full_name: member.full_name })
   const isMe     = profile.userId === userId
+  const hasActivity = (posts ?? []).length > 0 || (replies ?? []).length > 0
+
+  const memberSince = member.created_at
+    ? new Date(member.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+    : null
 
   return (
     <>
@@ -59,123 +64,155 @@ export default async function MembrePage({ params }: Props) {
           <ArrowLeft size={14} weight="bold" /> Retour Chez Nous
         </Link>
 
-        {/* Carte profil */}
-        <section style={s.card}>
-          <div style={s.cardTop}>
-            <div style={{ ...s.avatarLg, background: av.bg, color: av.text }}>{initials}</div>
-            <div style={{ flex: 1 }}>
-              <div style={s.nameRow}>
+        <div style={s.layout}>
+          {/* ── Colonne profil (sticky) ── */}
+          <aside style={s.profileCol}>
+            <div style={s.profileCard}>
+              {/* Avatar */}
+              <div style={s.avatarRing}>
+                <div style={{ ...s.avatarLg, background: av.bg, color: av.text }}>
+                  {initials}
+                </div>
+              </div>
+
+              {/* Nom + rôles */}
+              <div style={s.nameSection}>
                 <h1 style={s.name}>{name}</h1>
-                {member.is_contributor && (
-                  <span style={s.contribTag} title="Contributeur du projet">Contributeur</span>
-                )}
-                {member.role === 'admin' && <span style={s.adminTag}>admin</span>}
+                <div style={s.tagRow}>
+                  {member.is_contributor && (
+                    <span style={s.contribTag}>Contributeur</span>
+                  )}
+                  {member.role === 'admin' && (
+                    <span style={s.adminTag}>Admin</span>
+                  )}
+                </div>
               </div>
-              {member.created_at && (
-                <p style={s.since}>Membre depuis {new Date(member.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</p>
+
+              {memberSince && (
+                <p style={s.since}>Membre depuis {memberSince}</p>
               )}
-              {isMe && (
-                <Link href="/dashboard/profil" style={s.editLink}>Modifier mon profil →</Link>
+
+              {/* Bio */}
+              {member.bio && (
+                <p style={s.bio}>{member.bio}</p>
               )}
-            </div>
-          </div>
 
-          {member.bio && (
-            <p style={s.bio}>{member.bio}</p>
-          )}
-
-          {/* Badges */}
-          {stats.badges.length > 0 && (
-            <div style={s.badgeWrap}>
-              <span style={s.sectionLabel}>Distinctions</span>
-              <div style={s.badgeRow}>
-                {stats.badges.map(bid => (
-                  <span
-                    key={bid}
-                    style={{ ...s.badgeChip, color: BADGES[bid].color, background: BADGES[bid].bg, borderColor: `${BADGES[bid].color}44` }}
-                    title={BADGES[bid].title}
-                  >
-                    {BADGES[bid].label} {BADGES[bid].title.split(' — ')[0]}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Stats */}
-          <div style={s.statsGrid}>
-            <Stat label="Discussions" value={stats.postsCount} />
-            <Stat label="Réponses" value={stats.repliesCount} />
-            {stats.logementsCount !== null && <Stat label="Logements" value={stats.logementsCount} />}
-          </div>
-        </section>
-
-        {/* Posts récents */}
-        {(posts ?? []).length > 0 && (
-          <section style={s.section}>
-            <h2 style={s.sectionTitle}>Dernières discussions</h2>
-            <div style={s.list}>
-              {(posts ?? []).map(p => {
-                const cat = CATEGORIES[p.category as CategoryId]
-                return (
-                  <Link key={p.id} href={`/dashboard/chez-nous/${p.id}`} style={s.itemLink}>
-                    <div style={s.itemHead}>
-                      <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>
-                        {cat.short}
+              {/* Badges */}
+              {stats.badges.length > 0 && (
+                <div style={s.badgeSection}>
+                  <span style={s.microLabel}>Distinctions</span>
+                  <div style={s.badgeRow}>
+                    {stats.badges.map(bid => (
+                      <span
+                        key={bid}
+                        style={{ ...s.badgeChip, color: BADGES[bid].color, background: BADGES[bid].bg, borderColor: `${BADGES[bid].color}44` }}
+                        title={BADGES[bid].title}
+                      >
+                        {BADGES[bid].label} {BADGES[bid].title.split(' — ')[0]}
                       </span>
-                      <span style={s.itemDate}>{formatRelative(p.created_at)}</span>
-                    </div>
-                    <h3 style={s.itemTitle}>{p.title}</h3>
-                    <div style={s.itemFoot}>
-                      <ChatCircle size={11} weight="fill" />
-                      {p.reply_count} réponse{p.reply_count > 1 ? 's' : ''}
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          </section>
-        )}
+                    ))}
+                  </div>
+                </div>
+              )}
 
-        {/* Réponses récentes */}
-        {(replies ?? []).length > 0 && (
-          <section style={s.section}>
-            <h2 style={s.sectionTitle}>Dernières réponses</h2>
-            <div style={s.list}>
-              {(replies ?? []).map(r => {
-                const postTitle = (r.chez_nous_posts as unknown as { title: string } | { title: string }[] | null)
-                const title = Array.isArray(postTitle) ? (postTitle[0]?.title ?? '') : (postTitle?.title ?? '')
-                return (
-                  <Link key={r.id} href={`/dashboard/chez-nous/${r.post_id}`} style={s.itemLink}>
-                    <div style={s.itemHead}>
-                      <span style={s.replyOnLabel}>Sur</span>
-                      <span style={s.replyOnTitle}>{title}</span>
-                      <span style={s.itemDate}>{formatRelative(r.created_at)}</span>
-                    </div>
-                    <p style={s.replyExcerpt}>{r.body.slice(0, 200)}{r.body.length > 200 ? '…' : ''}</p>
-                  </Link>
-                )
-              })}
-            </div>
-          </section>
-        )}
+              {/* Stats */}
+              <div style={s.statsRow}>
+                <StatPill label="Discussions" value={stats.postsCount} />
+                <StatPill label="Réponses" value={stats.repliesCount} />
+                {stats.logementsCount !== null && (
+                  <StatPill label="Logements" value={stats.logementsCount} />
+                )}
+              </div>
 
-        {(posts ?? []).length === 0 && (replies ?? []).length === 0 && (
-          <div style={s.empty}>
-            <House size={26} color="var(--accent-text)" weight="duotone" />
-            <p style={{ margin: '8px 0 0', fontSize: '13px', color: 'var(--text-2)' }}>
-              {isMe ? 'Tu n\'as pas encore participé.' : 'Pas encore de participation publique.'}
-            </p>
-          </div>
-        )}
+              {isMe && (
+                <Link href="/dashboard/profil" style={s.editBtn}>
+                  <PencilSimple size={13} weight="bold" />
+                  Modifier mon profil
+                </Link>
+              )}
+            </div>
+          </aside>
+
+          {/* ── Colonne activité ── */}
+          <main style={s.activityCol}>
+            {!hasActivity ? (
+              <div style={s.empty}>
+                <House size={28} color="var(--accent-text)" weight="duotone" />
+                <p style={s.emptyTitle}>
+                  {isMe ? 'Tu n\'as pas encore participé' : 'Pas encore de contribution'}
+                </p>
+                <p style={s.emptyDesc}>
+                  {isMe
+                    ? 'Lance une conversation, pose une question — la famille est là pour toi.'
+                    : 'Ce membre n\'a pas encore posté ou répondu dans Chez Nous.'}
+                </p>
+                {isMe && (
+                  <Link href="/dashboard/chez-nous" style={s.emptyBtn}>
+                    Aller dans Chez Nous
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <>
+                {(posts ?? []).length > 0 && (
+                  <section style={s.section}>
+                    <h2 style={s.sectionTitle}>Discussions lancées</h2>
+                    <div style={s.list}>
+                      {(posts ?? []).map(p => {
+                        const cat = CATEGORIES[p.category as CategoryId]
+                        return (
+                          <Link key={p.id} href={`/dashboard/chez-nous/${p.id}`} style={s.itemLink}>
+                            <div style={s.itemHead}>
+                              <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>
+                                {cat.short}
+                              </span>
+                              <span style={s.itemDate}>{formatRelative(p.created_at)}</span>
+                            </div>
+                            <h3 style={s.itemTitle}>{p.title}</h3>
+                            <div style={s.itemFoot}>
+                              <ChatCircle size={11} weight="fill" />
+                              {p.reply_count} réponse{p.reply_count > 1 ? 's' : ''}
+                            </div>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  </section>
+                )}
+
+                {(replies ?? []).length > 0 && (
+                  <section style={s.section}>
+                    <h2 style={s.sectionTitle}>Réponses apportées</h2>
+                    <div style={s.list}>
+                      {(replies ?? []).map(r => {
+                        const postTitle = (r.chez_nous_posts as unknown as { title: string } | { title: string }[] | null)
+                        const title = Array.isArray(postTitle) ? (postTitle[0]?.title ?? '') : (postTitle?.title ?? '')
+                        return (
+                          <Link key={r.id} href={`/dashboard/chez-nous/${r.post_id}`} style={s.itemLink}>
+                            <div style={s.itemHead}>
+                              <span style={s.replyOnLabel}>Sur</span>
+                              <span style={s.replyOnTitle}>{title}</span>
+                              <span style={s.itemDate}>{formatRelative(r.created_at)}</span>
+                            </div>
+                            <p style={s.replyExcerpt}>{r.body.slice(0, 220)}{r.body.length > 220 ? '…' : ''}</p>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  </section>
+                )}
+              </>
+            )}
+          </main>
+        </div>
       </div>
     </>
   )
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function StatPill({ label, value }: { label: string; value: number }) {
   return (
-    <div style={s.stat}>
+    <div style={s.statPill}>
       <span style={s.statValue}>{value}</span>
       <span style={s.statLabel}>{label}</span>
     </div>
@@ -183,115 +220,177 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%', maxWidth: '820px' },
+  page: {
+    padding: 'clamp(14px, 3vw, 40px)',
+    width: '100%',
+  },
   back: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '12px', color: 'var(--text-muted)',
-    textDecoration: 'none', marginBottom: '16px',
+    textDecoration: 'none', marginBottom: '20px',
   },
-  card: {
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '18px', padding: 'clamp(16px, 3vw, 24px)',
-    display: 'flex', flexDirection: 'column', gap: '18px',
+
+  layout: {
+    display: 'flex',
+    gap: 'clamp(16px, 2.5vw, 32px)',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap' as const,
   },
-  cardTop: { display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' as const },
+
+  /* ── Left: profile card ── */
+  profileCol: {
+    flex: '0 0 clamp(260px, 26vw, 320px)',
+    position: 'sticky' as const,
+    top: '24px',
+  },
+  profileCard: {
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '20px',
+    padding: 'clamp(18px, 3vw, 28px)',
+    display: 'flex', flexDirection: 'column' as const, gap: '16px',
+  },
+  avatarRing: {
+    display: 'flex', justifyContent: 'center',
+    padding: '4px 0 0',
+  },
   avatarLg: {
-    width: 'clamp(52px, 12vw, 64px)', height: 'clamp(52px, 12vw, 64px)', borderRadius: '50%',
+    width: 'clamp(64px, 14vw, 80px)', height: 'clamp(64px, 14vw, 80px)', borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: 'clamp(18px, 5vw, 22px)', fontWeight: 700, lineHeight: 1,
+    fontSize: 'clamp(22px, 5vw, 28px)', fontWeight: 700, lineHeight: 1,
     fontFamily: 'var(--font-fraunces), serif',
     flexShrink: 0,
+    boxShadow: '0 0 0 3px var(--surface), 0 0 0 5px var(--border)',
   },
-  nameRow: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' },
+  nameSection: {
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '8px',
+    textAlign: 'center' as const,
+  },
   name: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 'clamp(20px,2.5vw,26px)', fontWeight: 400,
+    fontSize: 'clamp(20px, 2.5vw, 24px)', fontWeight: 400,
     color: 'var(--text)', margin: 0, lineHeight: 1.2,
   },
+  tagRow: { display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'center' },
   contribTag: {
     fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const,
     letterSpacing: '0.5px', color: 'var(--accent-text)',
-    background: 'rgba(255,213,107,0.12)', padding: '3px 8px', borderRadius: '6px',
+    background: 'rgba(255,213,107,0.12)', padding: '3px 9px', borderRadius: '6px',
   },
   adminTag: {
     fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const,
     letterSpacing: '0.5px', color: '#fb7185',
-    background: 'rgba(251,113,133,0.12)', padding: '3px 8px', borderRadius: '6px',
+    background: 'rgba(251,113,133,0.12)', padding: '3px 9px', borderRadius: '6px',
   },
-  since: { fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' },
-  editLink: {
-    display: 'inline-block', fontSize: '12px', color: 'var(--accent-text)',
-    marginTop: '6px', textDecoration: 'none',
+  since: {
+    fontSize: '12px', color: 'var(--text-muted)', margin: 0,
+    textAlign: 'center' as const,
   },
   bio: {
-    fontSize: '14px', lineHeight: 1.7, color: 'var(--text-2)',
-    margin: 0, padding: '14px',
+    fontSize: '13px', lineHeight: 1.65, color: 'var(--text-2)',
+    margin: 0, padding: '12px 14px',
     background: 'var(--bg)', border: '1px solid var(--border)',
     borderRadius: '12px',
   },
-  badgeWrap: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  sectionLabel: {
-    fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' as const,
+  badgeSection: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  microLabel: {
+    fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const,
     letterSpacing: '0.6px', color: 'var(--text-muted)',
   },
-  badgeRow: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+  badgeRow: { display: 'flex', flexWrap: 'wrap' as const, gap: '5px' },
   badgeChip: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
     fontSize: '11px', fontWeight: 600,
     padding: '4px 10px', borderRadius: '999px',
     border: '1px solid',
   },
-  statsGrid: {
+  statsRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
-    gap: '10px',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '8px',
   },
-  stat: {
+  statPill: {
     background: 'var(--bg)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '12px',
-    display: 'flex', flexDirection: 'column', gap: '4px',
-    alignItems: 'flex-start',
+    borderRadius: '12px', padding: '10px 8px',
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '3px',
   },
   statValue: {
-    fontSize: 'clamp(18px, 4.5vw, 22px)', fontWeight: 700, color: 'var(--text)',
+    fontSize: 'clamp(18px, 4vw, 22px)', fontWeight: 700, color: 'var(--text)',
     fontFamily: 'var(--font-fraunces), serif', lineHeight: 1,
   },
-  statLabel: { fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500 },
+  statLabel: { fontSize: '10px', color: 'var(--text-muted)', fontWeight: 500, textAlign: 'center' as const },
+  editBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+    width: '100%', padding: '9px 14px', borderRadius: '10px',
+    background: 'transparent', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontSize: '12px', fontWeight: 600,
+    textDecoration: 'none', textAlign: 'center' as const,
+  },
 
-  section: { marginTop: 'clamp(16px, 3vw, 24px)' },
+  /* ── Right: activity ── */
+  activityCol: {
+    flex: '1 1 400px', minWidth: 0,
+    display: 'flex', flexDirection: 'column' as const, gap: '24px',
+  },
+  section: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },
   sectionTitle: {
     fontFamily: 'var(--font-fraunces), serif',
     fontSize: '18px', fontWeight: 400, color: 'var(--text)',
-    margin: '0 0 12px',
+    margin: 0,
   },
-  list: { display: 'flex', flexDirection: 'column', gap: '8px' },
+  list: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   itemLink: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '12px 14px',
+    borderRadius: '14px', padding: '14px 16px',
     textDecoration: 'none', color: 'inherit',
-    display: 'flex', flexDirection: 'column', gap: '4px',
+    display: 'flex', flexDirection: 'column' as const, gap: '5px',
   },
-  itemHead: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' },
+  itemHead: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
   catChip: {
     fontSize: '10px', fontWeight: 700,
     letterSpacing: '0.4px', textTransform: 'uppercase' as const,
     padding: '2px 8px', borderRadius: '999px',
   },
   itemDate: { fontSize: '11px', color: 'var(--text-muted)', marginLeft: 'auto' },
-  itemTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', margin: '4px 0 0', lineHeight: 1.4 },
+  itemTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', margin: 0, lineHeight: 1.4 },
   itemFoot: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px',
+    fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px',
   },
-  replyOnLabel: { fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', fontWeight: 600 },
-  replyOnTitle: { fontSize: '13px', color: 'var(--text)', fontWeight: 600 },
+  replyOnLabel: {
+    fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const,
+    letterSpacing: '0.5px', fontWeight: 700,
+  },
+  replyOnTitle: {
+    fontSize: '13px', color: 'var(--text)', fontWeight: 600,
+    flex: 1, minWidth: 0,
+    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
+  },
   replyExcerpt: {
-    fontSize: '13px', lineHeight: 1.5, color: 'var(--text-2)', margin: '4px 0 0',
+    fontSize: '13px', lineHeight: 1.55, color: 'var(--text-2)', margin: 0,
     display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
   },
+
+  /* ── Empty state ── */
   empty: {
     background: 'var(--surface)', border: '1px dashed var(--border)',
-    borderRadius: '12px', padding: '28px', textAlign: 'center',
-    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    borderRadius: '16px', padding: 'clamp(32px, 6vw, 56px) 24px',
+    textAlign: 'center' as const,
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '8px',
+  },
+  emptyTitle: {
+    fontSize: '16px', fontWeight: 600, color: 'var(--text)',
+    margin: '6px 0 0', fontFamily: 'var(--font-fraunces), serif',
+  },
+  emptyDesc: {
+    fontSize: '13px', color: 'var(--text-muted)', margin: 0,
+    maxWidth: '340px', lineHeight: 1.6,
+  },
+  emptyBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: '#ffd56b', color: '#1a1a0e',
+    fontWeight: 700, fontSize: '13px',
+    padding: '9px 20px', borderRadius: '10px',
+    border: 'none', textDecoration: 'none', marginTop: '6px',
   },
 }
