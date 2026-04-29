@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
         src: '/favicon-jason.webp',
         sizes: 'any',
         type: 'image/webp',
-        purpose: 'any maskable',
+        purpose: 'maskable',
       },
     ],
   }
