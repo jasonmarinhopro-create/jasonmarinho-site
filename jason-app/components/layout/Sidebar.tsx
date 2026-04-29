@@ -7,7 +7,7 @@ import {
   HouseSimple, GraduationCap, Handshake, FileText,
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
   FacebookLogo, CaretDown, House, ChartBar, CalendarBlank, Heart,
-  MagnifyingGlass, ChatsCircle, Globe,
+  MagnifyingGlass, ChatsCircle, Globe, Calculator,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -40,7 +40,8 @@ const navGroups = [
   {
     label: 'Outils',
     items: [
-      { href: '/dashboard/outils/audit-gbp', label: 'Audit GBP',         icon: MagnifyingGlass },
+      { href: '/dashboard/outils/simulateurs', label: 'Simulateurs',       icon: Calculator },
+      { href: '/dashboard/outils/audit-gbp',  label: 'Audit GBP',         icon: MagnifyingGlass },
       { href: '/dashboard/gabarits',          label: 'Gabarits',          icon: FileText },
       { href: '/dashboard/securite',          label: 'Sécurité Voyageur', icon: ShieldCheck },
     ],
