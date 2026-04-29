@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { getProfile } from '@/lib/queries/profile'
-import Header from '@/components/layout/Header'
 import ImportUrlForm from './ImportUrlForm'
 import { ArrowLeft, MapPin, Lightning, Info, ArrowSquareOut } from '@phosphor-icons/react/dist/ssr'
 
@@ -12,7 +11,6 @@ export default async function ImportUrlPage() {
 
   return (
     <>
-      <Header title="Import URL" userName={profile?.full_name ?? undefined} />
       <div style={s.page}>
 
         <Link href="/dashboard/audit-gbp" style={s.back}>

@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Compass, GraduationCap, Clock } from '@phosphor-icons/react/dist/ssr'
 import { PARCOURS, PARCOURS_LEVEL_LABELS } from '@/lib/formations/parcours'
@@ -25,7 +24,6 @@ export default async function ParcoursListPage() {
 
   return (
     <>
-      <Header title="Parcours d'apprentissage" userName={profile.full_name ?? undefined} />
       <div style={s.page}>
         <Link href="/dashboard/formations" style={s.backLink}>
           <ArrowLeft size={14} weight="bold" />

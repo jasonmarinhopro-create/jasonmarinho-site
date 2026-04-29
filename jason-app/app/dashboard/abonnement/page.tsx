@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import Header from '@/components/layout/Header'
 import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle, ShieldStar, Crown } from '@phosphor-icons/react/dist/ssr'
 import DriingRequestForm from './DriingRequestForm'
 import SubscribeButton from './SubscribeButton'
@@ -74,7 +73,6 @@ export default async function AbonnementPage({
 
   return (
     <>
-      <Header title="Abonnement" userName={fullName} currentPlan={planLabel} />
 
       <div style={styles.page}>
         <div style={styles.intro} className="fade-up">

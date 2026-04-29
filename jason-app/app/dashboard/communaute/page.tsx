@@ -1,7 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import { getCachedCommunityGroups } from '@/lib/queries/cache'
-import Header from '@/components/layout/Header'
 import CommunauteView from './CommunauteView'
 
 export const dynamic = 'force-dynamic'
@@ -29,7 +28,6 @@ export default async function CommunautePage() {
 
   return (
     <>
-      <Header title="Groupes Facebook" userName={profile?.full_name ?? undefined} />
       <CommunauteView
         groups={groups}
         userId={profile?.userId ?? null}

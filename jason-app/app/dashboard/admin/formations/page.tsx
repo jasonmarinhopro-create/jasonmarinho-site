@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
-import Header from '@/components/layout/Header'
 import FormationsAdmin from './FormationsAdmin'
 
 export const metadata = { title: 'Formations — Admin — Jason Marinho' }
@@ -52,7 +51,6 @@ export default async function AdminFormationsPage() {
 
   return (
     <>
-      <Header title="Formations" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
       <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '900px' }}>
         <FormationsAdmin formations={formationsWithCounts} />
       </div>

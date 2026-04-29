@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import dynamic from 'next/dynamic'
 import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 import type { Template, UserTemplateCustomization } from '@/types'
@@ -28,7 +27,6 @@ export default async function GabaritsPage() {
 
   return (
     <>
-      <Header title="Gabarits" userName={profile?.full_name ?? undefined} />
       <GabaritsClient
         templates={(templates ?? []) as Template[]}
         initialFavorites={initialFavorites}

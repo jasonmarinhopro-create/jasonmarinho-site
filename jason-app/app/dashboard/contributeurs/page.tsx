@@ -6,7 +6,6 @@ import {
   getCachedRoadmapComments,
   getCachedRoadmapVotes,
 } from '@/lib/queries/cache'
-import Header from '@/components/layout/Header'
 import MurDesBatisseurs, { type ContributorTile } from '@/components/MurDesBatisseurs'
 import Roadmap, { type RoadmapItemData, type RoadmapCommentData } from '@/components/Roadmap'
 import { Heart, ArrowRight, Star, ChatCircle, Rocket, Medal, Lightbulb, CheckCircle, Camera, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
@@ -27,7 +26,6 @@ export default async function ContributeursPage() {
   if (!isContributor && !isAdmin) {
     return (
       <>
-        <Header title="Contributeurs" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
         <div style={s.page}>
           <div style={s.teasing}>
             <div style={s.teasingGlow} />
@@ -163,7 +161,6 @@ export default async function ContributeursPage() {
 
   return (
     <>
-      <Header title="Contributeurs" userName={profile?.full_name ?? undefined} currentPlan={planLabel} />
       <div style={s.page}>
 
         {/* ── Intro ── */}

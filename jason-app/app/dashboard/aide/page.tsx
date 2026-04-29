@@ -1,5 +1,4 @@
 import { getProfile } from '@/lib/queries/profile'
-import Header from '@/components/layout/Header'
 import Link from 'next/link'
 import {
   GraduationCap, FileText, Handshake, UsersThree,
@@ -57,7 +56,6 @@ export default async function AidePage() {
 
   return (
     <>
-      <Header title="Centre d'aide" userName={profile?.full_name ?? undefined} />
 
       <div style={styles.page}>
         <div style={styles.intro} className="fade-up">

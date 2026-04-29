@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import NotificationsView from './NotificationsView'
 
 export const dynamic  = 'force-dynamic'
@@ -41,7 +40,6 @@ export default async function NotificationsPage() {
 
   return (
     <>
-      <Header title="Notifications" userName={profile.full_name ?? undefined} />
       <NotificationsView
         notifs={notifs.map(n => ({
           id: n.id,

@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import VoyageursView from './VoyageursView'
 
 export default async function VoyageursPage() {
@@ -51,7 +50,6 @@ export default async function VoyageursPage() {
 
   return (
     <>
-      <Header title="Mes Voyageurs" userName={profile.full_name ?? undefined} />
       <VoyageursView voyageurs={list} tableReady={!error} />
     </>
   )

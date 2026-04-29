@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import ProfilApprenantUI from './ProfilApprenantUI'
 
 export default async function ProfilApprenantPage() {
@@ -88,7 +87,6 @@ export default async function ProfilApprenantPage() {
 
   return (
     <>
-      <Header title="Mon profil apprenant" userName={profile.full_name ?? undefined} />
       <ProfilApprenantUI
         formations={formations ?? []}
         enrolled={enrolled}

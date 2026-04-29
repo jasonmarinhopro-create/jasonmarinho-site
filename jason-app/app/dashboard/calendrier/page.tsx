@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import dynamic from 'next/dynamic'
 import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 
@@ -111,7 +110,6 @@ export default async function CalendrierPage() {
 
   return (
     <>
-      <Header title="Calendrier" userName={profile?.full_name ?? undefined} />
       <CalendrierView
         events={events ?? []}
         contractEvents={contractEvents}

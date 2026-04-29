@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import AuditWizard from './AuditWizard'
 import AuditHistory, { type PastAudit } from './AuditHistory'
 import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning, FileCsv, MapPin } from '@phosphor-icons/react/dist/ssr'
@@ -64,7 +63,6 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <Header title="Audit GBP" userName={profile?.full_name ?? undefined} />
       <div style={s.page}>
 
         {/* ── Hero ── */}

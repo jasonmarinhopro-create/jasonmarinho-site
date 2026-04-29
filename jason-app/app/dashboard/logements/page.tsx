@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import LogementsPage from './LogementsPage'
 
 export default async function LogementsServerPage() {
@@ -15,7 +14,6 @@ export default async function LogementsServerPage() {
 
   return (
     <>
-      <Header title="Mes Logements" userName={profile.full_name ?? undefined} />
       <LogementsPage logements={(logements ?? []) as any[]} />
     </>
   )

@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import Link from 'next/link'
 import { ArrowLeft, BookmarkSimple, ArrowUpRight, Newspaper } from '@phosphor-icons/react/dist/ssr'
 
@@ -47,7 +46,6 @@ export default async function FavorisActualitesPage() {
 
   return (
     <>
-      <Header title="Mes favoris" userName={profile.full_name ?? undefined} />
       <div style={s.page}>
         <Link href="/dashboard/actualites" style={s.backLink}>
           <ArrowLeft size={14} weight="bold" />

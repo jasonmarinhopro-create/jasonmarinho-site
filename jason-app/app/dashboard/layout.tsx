@@ -1,20 +1,37 @@
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import Sidebar from '@/components/layout/Sidebar'
+import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import DashboardLoading from './loading'
 import FeedbackWidget from '@/components/FeedbackWidget'
 
+function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
+  if (role === 'admin') return 'Administrateur'
+  if (plan === 'driing') return 'Membre Driing'
+  if (plan === 'standard') return 'Standard'
+  return 'Découverte'
+}
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
 
+  const isAdmin = profile.role === 'admin'
+  const planLabel = planToLabel(profile.plan, profile.role)
+
   return (
     <ThemeProvider>
       <div style={styles.layout}>
-        {/* Sidebar rendered ONCE in layout — persiste entre les navigations sans re-mount */}
-        <Sidebar isAdmin={profile?.role === 'admin'} isContributor={profile?.is_contributor ?? false} />
+        {/* Sidebar et Header rendus une seule fois dans le layout — pas de re-mount entre navigations.
+            Élimine le flicker du titre + économise 1 query Supabase par navigation. */}
+        <Sidebar isAdmin={isAdmin} isContributor={profile.is_contributor ?? false} />
+        <Header
+          userName={profile.full_name ?? undefined}
+          currentPlan={planLabel}
+          isAdmin={isAdmin}
+        />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>
             {children}
@@ -33,8 +50,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   main: {
     flex: 1,
-    minWidth: 0,          // empêche le flex item de dépasser son conteneur
-    overflowX: 'hidden',  // aucun scroll horizontal sur la zone de contenu
+    minWidth: 0,
+    overflowX: 'hidden',
     marginLeft: 'var(--sidebar-w)',
     paddingTop: 'var(--header-h)',
     minHeight: '100svh',

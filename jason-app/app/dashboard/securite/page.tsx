@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import SecuriteView from './SecuriteView'
 
 const POSITIVE_TYPES = [
@@ -32,7 +31,6 @@ export default async function SecuritePage() {
 
   return (
     <>
-      <Header title="Sécurité" userName={profile?.full_name ?? undefined} />
       <SecuriteView totalNegative={negative} totalPositive={positive} />
     </>
   )

@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { ArrowLeft, ChatCircle, House, PencilSimple } from '@phosphor-icons/react/dist/ssr'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { CATEGORIES, type CategoryId } from '@/lib/chez-nous/categories'
 import { getMemberStats, type MemberProfile } from '@/lib/chez-nous/member-stats'
@@ -58,7 +57,6 @@ export default async function MembrePage({ params }: Props) {
 
   return (
     <>
-      <Header title="Profil membre" userName={profile.full_name ?? undefined} />
       <div style={s.page}>
         <Link href="/dashboard/chez-nous" style={s.back}>
           <ArrowLeft size={14} weight="bold" /> Retour Chez Nous

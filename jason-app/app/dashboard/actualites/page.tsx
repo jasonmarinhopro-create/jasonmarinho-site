@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import ActualitesView from './ActualitesView'
 
 export const metadata = { title: 'Actualités LCD — Jason Marinho' }
@@ -101,7 +100,6 @@ export default async function ActualitesPage() {
 
   return (
     <>
-      <Header title="Actualités" userName={profile?.full_name ?? undefined} />
       <ActualitesView
         articles={visibleArticles}
         isDecouverte={isDecouverte}

@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import Link from 'next/link'
 import {
   HouseLine, Coffee, Buildings, Handshake,
@@ -79,7 +78,6 @@ export default async function AdminGuidesPage() {
 
   return (
     <>
-      <Header title="Guide LCD" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
       <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '960px' }}>
 
         {/* Intro */}

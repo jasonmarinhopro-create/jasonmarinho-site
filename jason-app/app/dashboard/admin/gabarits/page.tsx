@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import GabaritsAdmin from './GabaritsAdmin'
 
 export const metadata = { title: 'Gabarits — Admin — Jason Marinho' }
@@ -25,7 +24,6 @@ export default async function AdminGabaritsPage() {
 
   return (
     <>
-      <Header title="Gabarits" userName={profile?.full_name ?? ''} currentPlan="Administrateur" />
       <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '900px' }}>
         <GabaritsAdmin templates={templates ?? []} />
       </div>

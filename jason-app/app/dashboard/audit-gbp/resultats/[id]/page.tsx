@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import { ArrowLeft, ArrowRight, CheckCircle, Lightning, Trophy, Sparkle } from '@phosphor-icons/react/dist/ssr'
 import {
   PILLARS,
@@ -46,7 +45,6 @@ export default async function AuditResultsPage({ params }: PageProps) {
 
   return (
     <>
-      <Header title="Audit GBP" userName={profile?.full_name ?? undefined} />
       <div style={s.page}>
 
         {/* Retour */}

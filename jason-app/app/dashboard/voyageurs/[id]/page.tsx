@@ -1,9 +1,9 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import dynamic from 'next/dynamic'
 import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 import { notFound } from 'next/navigation'
+import TitleSetter from '@/components/layout/TitleSetter'
 
 const VoyageurDetail = dynamic(() => import('./VoyageurDetail'), {
   ssr: false,
@@ -81,7 +81,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
 
   return (
     <>
-      <Header title={`${voyageur.prenom} ${voyageur.nom}`} userName={profile.full_name ?? undefined} />
+      <TitleSetter title={`${voyageur.prenom ?? ''} ${voyageur.nom ?? ''}`.trim() || 'Voyageur'} />
       <VoyageurDetail
         voyageur={voyageur}
         sejours={sejours ?? []}

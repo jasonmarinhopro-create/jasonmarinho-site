@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import Header from '@/components/layout/Header'
 import FormationsSuggestForm from './FormationsSuggestForm'
 import FormationsGrid from './FormationsGrid'
 import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
@@ -65,7 +64,6 @@ export default async function FormationsPage() {
 
   return (
     <>
-      <Header title="Formations" userName={profile?.full_name ?? undefined} />
 
       <div style={styles.page} className="formations-no-fade">
         <div style={styles.intro} className="fade-up">
