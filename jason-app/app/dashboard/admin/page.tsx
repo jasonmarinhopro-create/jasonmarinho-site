@@ -93,7 +93,7 @@ export default async function AdminPage() {
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
     if (key in signupsPerMonth) {
       signupsPerMonth[key].total++
-      if (s.plan === 'standard' || s.plan === 'driing') signupsPerMonth[key].paid++
+      if (s.plan === 'standard') signupsPerMonth[key].paid++
     }
   }
   const monthlySignupsChart = Object.entries(signupsPerMonth)
