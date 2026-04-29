@@ -135,14 +135,8 @@
 
   <!-- ── Ressources ── -->
   <url>
-    <loc>https://jasonmarinho.com/ressources</loc>
-    <lastmod>2026-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://jasonmarinho.com/ressources/gabarits-messages/</loc>
-    <lastmod>2026-03-01</lastmod>
+    <loc>https://jasonmarinho.com/services/gabarits-messages/</loc>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
