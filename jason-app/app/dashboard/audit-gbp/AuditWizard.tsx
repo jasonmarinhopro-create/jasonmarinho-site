@@ -418,7 +418,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
                 setError(res.error ?? 'Erreur')
                 return
               }
-              router.push(`/dashboard/outils/audit-gbp/resultats/${res.ok.sessionId}`)
+              router.push(`/dashboard/audit-gbp/resultats/${res.ok.sessionId}`)
             })
           }}
           style={{

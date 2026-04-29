@@ -52,7 +52,7 @@ const TOOLS: Resource[] = [
   {
     label: 'Audit GBP',
     desc: 'Audit gratuit de ta fiche Google Business pour la résa directe',
-    href: '/dashboard/outils/audit-gbp',
+    href: '/dashboard/audit-gbp',
     external: false,
   },
   {

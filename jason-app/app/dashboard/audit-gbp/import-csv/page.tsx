@@ -16,7 +16,7 @@ export default async function ImportCsvPage() {
       <div style={s.page}>
 
         {/* Retour */}
-        <Link href="/dashboard/outils/audit-gbp" style={s.back}>
+        <Link href="/dashboard/audit-gbp" style={s.back}>
           <ArrowLeft size={14} weight="bold" /> Retour à l'audit
         </Link>
 
@@ -118,7 +118,7 @@ export default async function ImportCsvPage() {
             </p>
             <p style={{ ...s.faqP, marginTop: '12px' }}>
               Si rien de tout ça ne fonctionne, tu peux toujours{' '}
-              <Link href="/dashboard/outils/audit-gbp" style={s.link}>faire l'audit manuellement</Link> —
+              <Link href="/dashboard/audit-gbp" style={s.link}>faire l'audit manuellement</Link> —
               c'est plus long mais ça marche à 100%.
             </p>
           </div>

@@ -78,7 +78,7 @@ export async function deleteAuditSession(sessionId: string): Promise<ActionResul
     .eq('user_id', user.id)
 
   if (error) return { error: error.message }
-  revalidatePath('/dashboard/outils/audit-gbp')
+  revalidatePath('/dashboard/audit-gbp')
   return { ok: undefined }
 }
 
@@ -106,6 +106,6 @@ export async function completeAudit(sessionId: string, answers: Record<string, A
 
   if (error) return { error: error.message }
 
-  revalidatePath('/dashboard/outils/audit-gbp')
+  revalidatePath('/dashboard/audit-gbp')
   return { ok: { sessionId } }
 }

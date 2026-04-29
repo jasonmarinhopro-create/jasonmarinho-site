@@ -63,7 +63,7 @@ export default function ImportUrlForm({ userId }: Props) {
         setError(res.error ?? 'Erreur')
         return
       }
-      router.push(`/dashboard/outils/audit-gbp?session=${res.ok.sessionId}`)
+      router.push(`/dashboard/audit-gbp?session=${res.ok.sessionId}`)
     })
   }
 
