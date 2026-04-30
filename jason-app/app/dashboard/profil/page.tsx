@@ -45,14 +45,24 @@ export default async function ProfilPage() {
 
   const badge = PLAN_BADGE[planLabel] ?? PLAN_BADGE['Découverte']
 
+  // ── Calcul du taux de complétion ────────────────────────────────────────
+  const checks = [
+    { label: 'Nom complet',       done: !!fullName.trim() },
+    { label: 'Adresse bailleur',  done: !!pd?.adresse?.trim() },
+    { label: 'Encaissements (Stripe ou IBAN)', done: !!(pd?.stripe_onboarding_complete || pd?.iban?.trim()) },
+    { label: 'Pseudo Chez Nous',  done: !!pd?.pseudo?.trim() },
+    { label: 'Bio Chez Nous',     done: !!pd?.bio?.trim() },
+  ]
+  const completed = checks.filter(c => c.done).length
+  const percent   = Math.round((completed / checks.length) * 100)
+  const missing   = checks.filter(c => !c.done).map(c => c.label)
+
   return (
     <>
       <style>{`
         .profil-page {
           padding: clamp(20px,3vw,44px);
           width: 100%;
-          max-width: 1200px;
-          margin: 0 auto;
         }
         .profil-hero {
           display: flex;
@@ -70,12 +80,12 @@ export default async function ProfilPage() {
           content: '';
           position: absolute;
           top: -60px; right: -60px;
-          width: 200px; height: 200px;
+          width: 240px; height: 240px;
           background: radial-gradient(circle, var(--accent-bg) 0%, transparent 70%);
           pointer-events: none;
         }
         .profil-hero-av {
-          width: 80px; height: 80px;
+          width: 84px; height: 84px;
           border-radius: 50%;
           background: rgba(0,76,63,0.45);
           border: 2px solid var(--accent-border);
@@ -89,7 +99,7 @@ export default async function ProfilPage() {
         .profil-hero-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
         .profil-hero-name {
           font-family: var(--font-fraunces), serif;
-          font-size: clamp(20px,2.5vw,26px);
+          font-size: clamp(20px,2.5vw,28px);
           font-weight: 400; color: var(--text);
           margin: 0 0 4px;
           white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -111,6 +121,44 @@ export default async function ProfilPage() {
           background: var(--bg); border: 1px solid var(--border);
           padding: 4px 10px; border-radius: 100px;
         }
+
+        /* ── Progression ── */
+        .profil-progress {
+          flex: 0 0 280px;
+          position: relative; z-index: 1;
+          background: var(--bg);
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          padding: 14px 16px;
+        }
+        .profil-progress-head {
+          display: flex; align-items: center; justify-content: space-between;
+          margin-bottom: 8px;
+        }
+        .profil-progress-label {
+          font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+          text-transform: uppercase; color: var(--text-3);
+        }
+        .profil-progress-pct {
+          font-size: 14px; font-weight: 700;
+          font-family: var(--font-fraunces), serif;
+        }
+        .profil-progress-bar {
+          height: 6px; background: var(--border);
+          border-radius: 999px; overflow: hidden;
+          margin-bottom: 10px;
+        }
+        .profil-progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--accent-text), #FFD56B);
+          border-radius: 999px;
+          transition: width 0.4s ease;
+        }
+        .profil-progress-missing {
+          font-size: 11px; color: var(--text-muted); line-height: 1.5; margin: 0;
+        }
+
+        /* ── Sections grid ── */
         .profil-sections {
           column-count: 2;
           column-gap: 16px;
@@ -124,8 +172,16 @@ export default async function ProfilPage() {
           -webkit-column-break-inside: avoid;
         }
 
+        @media (min-width: 1500px) {
+          .profil-sections { column-count: 3; }
+        }
+        @media (max-width: 1100px) {
+          .profil-progress { flex-basis: 220px; }
+        }
         @media (max-width: 900px) {
           .profil-sections { column-count: 1; }
+          .profil-hero { flex-wrap: wrap; }
+          .profil-progress { flex: 1 1 100%; }
         }
         @media (max-width: 560px) {
           .profil-hero { flex-direction: column; align-items: flex-start; gap: 16px; }
@@ -155,6 +211,35 @@ export default async function ProfilPage() {
               )}
             </div>
           </div>
+
+          {/* ── Mini-card progression ── */}
+          <div className="profil-progress">
+            <div className="profil-progress-head">
+              <span className="profil-progress-label">Profil complété</span>
+              <span
+                className="profil-progress-pct"
+                style={{ color: percent === 100 ? '#34D399' : 'var(--accent-text)' }}
+              >
+                {percent}%
+              </span>
+            </div>
+            <div className="profil-progress-bar">
+              <div
+                className="profil-progress-fill"
+                style={{ width: `${percent}%` }}
+              />
+            </div>
+            {missing.length > 0 ? (
+              <p className="profil-progress-missing">
+                À compléter : <strong style={{ color: 'var(--text-2)' }}>{missing.slice(0, 2).join(', ')}</strong>
+                {missing.length > 2 && ` et ${missing.length - 2} autre${missing.length - 2 > 1 ? 's' : ''}`}
+              </p>
+            ) : (
+              <p className="profil-progress-missing" style={{ color: '#34D399' }}>
+                ✓ Tout est rempli, parfait !
+              </p>
+            )}
+          </div>
         </div>
 
         {/* ── Section cards ── */}
@@ -172,6 +257,7 @@ export default async function ProfilPage() {
             initialPseudo={pd?.pseudo ?? ''}
             initialBio={pd?.bio ?? ''}
             firstName={fullName.split(/\s+/)[0] ?? ''}
+            userId={userId}
             initialPrivacy={{
               show_logements: pd?.privacy_show_logements ?? true,
               show_platforms: pd?.privacy_show_platforms ?? true,

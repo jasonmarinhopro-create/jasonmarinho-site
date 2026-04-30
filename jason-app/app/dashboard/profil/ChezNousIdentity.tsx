@@ -1,13 +1,15 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { House, Check, Eye, EyeSlash } from '@phosphor-icons/react'
+import Link from 'next/link'
+import { House, Check, Eye, EyeSlash, ArrowSquareOut, UsersThree } from '@phosphor-icons/react'
 import { updateProfilePseudo } from '../chez-nous/actions'
 
 type Props = {
   initialPseudo: string
   initialBio: string
   firstName: string
+  userId: string
   initialPrivacy: {
     show_logements: boolean
     show_platforms: boolean
@@ -15,7 +17,7 @@ type Props = {
   }
 }
 
-export default function ChezNousIdentity({ initialPseudo, initialBio, firstName, initialPrivacy }: Props) {
+export default function ChezNousIdentity({ initialPseudo, initialBio, firstName, userId, initialPrivacy }: Props) {
   const [pseudo,  setPseudo]  = useState(initialPseudo)
   const [bio,     setBio]     = useState(initialBio)
   const [privacy, setPrivacy] = useState(initialPrivacy)
@@ -54,6 +56,19 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
       </div>
 
       <div style={s.body}>
+        {/* Bandeau explicatif Chez Nous */}
+        <Link href="/dashboard/chez-nous" style={s.infoBanner}>
+          <UsersThree size={18} weight="fill" color="#FFD56B" />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={s.infoTitle}>Qu&apos;est-ce que Chez Nous&nbsp;?</p>
+            <p style={s.infoDesc}>
+              Le réseau social privé des hôtes en location courte durée. Échange entre pairs,
+              entraide, partage d&apos;expériences.
+            </p>
+          </div>
+          <ArrowSquareOut size={14} color="var(--accent-text)" />
+        </Link>
+
         {/* Pseudo */}
         <div style={s.field}>
           <label style={s.label}>Pseudo (optionnel)</label>
@@ -101,14 +116,23 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
         {error && <p style={s.error}>{error}</p>}
 
         <div style={s.actions}>
-          {success && (
-            <span style={s.successMsg}>
-              <Check size={13} weight="bold" /> Enregistré
-            </span>
-          )}
-          <button onClick={submit} style={s.btn} disabled={pending}>
-            {pending ? 'Enregistrement…' : 'Enregistrer'}
-          </button>
+          <Link
+            href={`/dashboard/chez-nous/membre/${userId}`}
+            style={s.publicLink}
+            title="Voir comment ton profil apparaît aux autres membres"
+          >
+            <Eye size={13} /> Voir mon profil public
+          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {success && (
+              <span style={s.successMsg}>
+                <Check size={13} weight="bold" /> Enregistré
+              </span>
+            )}
+            <button onClick={submit} style={s.btn} disabled={pending}>
+              {pending ? 'Enregistrement…' : 'Enregistrer'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -190,11 +214,37 @@ const s: Record<string, React.CSSProperties> = {
     background: 'rgba(251,113,133,0.08)', padding: '8px 12px',
     borderRadius: '8px', border: '1px solid rgba(251,113,133,0.2)',
   },
-  actions: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px' },
+  actions: {
+    display: 'flex', alignItems: 'center',
+    justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap',
+  },
   successMsg: { display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#34d399', fontSize: '12px', fontWeight: 600 },
   btn: {
     background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '8px',
     padding: '9px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+  },
+  infoBanner: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '12px 14px', borderRadius: '12px',
+    background: 'rgba(255,213,107,0.06)',
+    border: '1px solid rgba(255,213,107,0.18)',
+    textDecoration: 'none', cursor: 'pointer',
+    transition: 'background 0.15s, border-color 0.15s',
+  },
+  infoTitle: {
+    margin: '0 0 2px', fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)',
+  },
+  infoDesc: {
+    margin: 0, fontSize: '11px', color: 'var(--text-3)',
+    lineHeight: 1.5,
+  },
+  publicLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text-2)',
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    borderRadius: '8px', padding: '7px 12px',
+    textDecoration: 'none', cursor: 'pointer',
   },
 }
