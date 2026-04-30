@@ -349,7 +349,7 @@ export default function ProfilForm({
         iconColor="var(--accent-text)"
         iconBg="var(--accent-bg)"
         title="Coordonnées légales"
-        description="Apparaît sur tes contrats de location — adresse du bailleur ou siège social"
+        description="Apparaît sur tes contrats de location. Adresse du bailleur ou siège social."
       >
         <FieldRow label="Adresse (bailleur)" icon={<MapPin size={12} />}>
           {adresseSaved && <div style={{ ...stripeBanner('success'), marginBottom: '10px' }}><Check size={13} weight="bold" /> Adresse enregistrée.</div>}
@@ -423,7 +423,7 @@ export default function ProfilForm({
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', background: 'rgba(99,91,255,0.07)', border: '1px solid rgba(99,91,255,0.18)', borderRadius: '8px', padding: '10px 12px', marginBottom: '12px' }}>
                 <span style={{ fontSize: '13px', flexShrink: 0 }}>ℹ️</span>
                 <p style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.6, margin: 0 }}>
-                  <strong style={{ color: 'var(--text-2)' }}>Commissions</strong> : 1,5 % + 0,25 € (UE) — 2,9 % + 0,25 € (hors UE). Déduit automatiquement.
+                  <strong style={{ color: 'var(--text-2)' }}>Commissions</strong> : 1,5 % + 0,25 € (UE) ou 2,9 % + 0,25 € (hors UE). Déduit automatiquement.
                 </p>
               </div>
               {stripeError && <div style={{ ...f.errorBox, marginBottom: '10px' }}><Warning size={13} />{stripeError}</div>}

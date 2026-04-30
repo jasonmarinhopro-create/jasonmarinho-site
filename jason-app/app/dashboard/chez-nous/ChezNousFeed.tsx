@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useRef } from 'react'
+import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ImageSquare, ShareNetwork, UserPlus } from '@phosphor-icons/react'
@@ -232,14 +232,6 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
           <span style={s.statSep}>·</span>
           <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
-
-        {/* Bouton inviter des amis */}
-        <div style={s.heroActions} className="cn-hero-actions">
-          <button onClick={() => setShowInvite(true)} style={s.heroInviteBtn}>
-            <UserPlus size={15} weight="fill" />
-            Inviter des amis hôtes
-          </button>
-        </div>
       </div>
 
       {/* Nouveaux membres */}
@@ -268,22 +260,31 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
           {/* Recherche */}
           <SearchBar initial={currentSearch} cat={currentCategory} sort={currentSort} />
 
-          {/* Tri + Bouton */}
-          <div style={s.toolbar} className="cn-toolbar">
+          {/* Composer (style Facebook) */}
+          <ComposerCard
+            firstName={currentUserName.split(/\s+/)[0] || ''}
+            initials={(currentUserName || 'JM').split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+            onOpen={() => setShowForm(true)}
+          />
+
+          {/* Tri */}
+          <div style={s.sortBar} className="cn-sort-bar">
             <div style={s.sortRow} className="cn-sort-row">
               <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     search={currentSearch} icon={Clock} label="Récent" />
               <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    search={currentSearch} icon={Fire}  label="Populaire" />
               <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="À aider" />
               <SortChip cat={currentCategory} sort="unresolved" active={currentSort === 'unresolved'} search={currentSearch} icon={CheckCircle} label="En suspens" />
             </div>
-            <button onClick={() => setShowForm(v => !v)} style={s.newBtn} className="cn-new-btn">
-              <Plus size={15} weight="bold" />
-              {showForm ? 'Annuler' : 'Démarrer une conversation'}
-            </button>
           </div>
 
+          {/* Modal de création de post */}
           {showForm && (
-            <NewPostForm onSuccess={() => setShowForm(false)} defaultCategory={currentCategory === 'all' ? 'autres' : currentCategory} />
+            <PostFormModal
+              onClose={() => setShowForm(false)}
+              defaultCategory={currentCategory === 'all' ? 'autres' : currentCategory}
+              firstName={currentUserName.split(/\s+/)[0] || ''}
+              initials={(currentUserName || 'JM').split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+            />
           )}
 
           {/* Feed */}
@@ -327,17 +328,95 @@ function InviteFriendsCard({ onClick }: { onClick: () => void }) {
   return (
     <div style={s.inviteCard}>
       <div style={s.inviteIconWrap}>
-        <ShareNetwork size={20} weight="fill" color="#FFD56B" />
+        <UserPlus size={20} weight="fill" color="var(--accent-text)" />
       </div>
       <h3 style={s.inviteTitle}>Invite des amis hôtes</h3>
       <p style={s.inviteDesc}>
-        Tu connais d'autres hôtes en LCD&nbsp;? Invite-les. Plus on est nombreux,
-        plus l'entraide est riche.
+        Tu connais d&apos;autres hôtes en LCD&nbsp;? Invite-les. Plus on est nombreux,
+        plus l&apos;entraide est riche.
       </p>
       <button onClick={onClick} style={s.inviteBtn}>
-        <UserPlus size={14} weight="fill" />
+        <ShareNetwork size={14} weight="fill" />
         Partager Chez Nous
       </button>
+    </div>
+  )
+}
+
+// ─── ComposerCard (Facebook-style "Exprimez-vous") ────────────────────
+function ComposerCard({ firstName, initials, onOpen }: {
+  firstName: string; initials: string; onOpen: () => void
+}) {
+  return (
+    <div style={s.composerCard}>
+      <div style={s.composerRow}>
+        <div style={s.composerAvatar}>{initials}</div>
+        <button onClick={onOpen} style={s.composerInput}>
+          {firstName ? `Exprime-toi, ${firstName}…` : 'Pose ta question, partage une expérience…'}
+        </button>
+      </div>
+      <div style={s.composerActions}>
+        <button onClick={onOpen} style={s.composerAction}>
+          <ImageSquare size={16} color="#34d399" weight="fill" />
+          <span>Photo</span>
+        </button>
+        <button onClick={onOpen} style={s.composerAction}>
+          <Question size={16} color="#fb923c" weight="fill" />
+          <span>Demander de l&apos;aide</span>
+        </button>
+        <button onClick={onOpen} style={s.composerAction}>
+          <Sparkle size={16} color="#a78bfa" weight="fill" />
+          <span>Partager une réussite</span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ─── PostFormModal (overlay Facebook-style) ─────────────────────────
+function PostFormModal({ onClose, defaultCategory, firstName, initials }: {
+  onClose: () => void; defaultCategory: CategoryId; firstName: string; initials: string
+}) {
+  // Lock scroll & escape key
+  useEffect(() => {
+    const original = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = original
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+
+  return (
+    <div
+      style={s.modalBackdrop}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="post-modal-title"
+    >
+      <div style={s.modalDialog} className="cn-modal-dialog">
+        <div style={s.modalHeader}>
+          <h2 id="post-modal-title" style={s.modalTitle}>Créer une publication</h2>
+          <button onClick={onClose} style={s.modalClose} aria-label="Fermer">
+            <X size={18} />
+          </button>
+        </div>
+
+        <div style={s.modalUser}>
+          <div style={s.composerAvatar}>{initials}</div>
+          <div>
+            <p style={s.modalUserName}>{firstName || 'Toi'}</p>
+            <p style={s.modalUserSub}>Visible par tous les membres Chez Nous</p>
+          </div>
+        </div>
+
+        <div style={s.modalBody}>
+          <NewPostForm onSuccess={onClose} defaultCategory={defaultCategory} />
+        </div>
+      </div>
     </div>
   )
 }
@@ -585,9 +664,9 @@ function TipCard() {
         <span style={s.asideTitle}>L'esprit Chez Nous</span>
       </div>
       <ul style={s.tipList}>
-        <li style={s.tipItem}>Un titre clair, du contexte (ville, plateforme) — ça aide tout le monde</li>
+        <li style={s.tipItem}>Un titre clair, du contexte (ville, plateforme), ça aide tout le monde</li>
         <li style={s.tipItem}>Pas de jugement : on a tous débuté un jour</li>
-        <li style={s.tipItem}>Réponds quand tu peux — c'est ce qui fait vivre la famille</li>
+        <li style={s.tipItem}>Réponds quand tu peux, c&apos;est ce qui fait vivre la famille</li>
       </ul>
     </div>
   )
@@ -768,11 +847,11 @@ function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 
       <p style={s.emptyTitle}>
         {category !== 'all'
           ? `Personne n'a encore parlé de ${CATEGORIES[category].short}`
-          : "C'est calme aujourd'hui — brise la glace"}
+          : "C'est calme aujourd'hui. Brise la glace !"}
       </p>
       <p style={s.emptyDesc}>
         {category !== 'all'
-          ? 'Sois le premier à lancer le sujet — quelqu\'un attend probablement la même réponse que toi.'
+          ? 'Sois le premier à lancer le sujet. Quelqu\'un attend probablement la même réponse que toi.'
           : 'Raconte d\'où tu viens, ce qui t\'a amené à la LCD, ou ce qui te bloque en ce moment. On est curieux de te lire.'}
       </p>
       <button onClick={onNew} style={s.emptyBtn}>
@@ -913,7 +992,7 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
           placeholder="Un sujet précis et clair…"
           style={s.input} maxLength={200}
         />
-        <p style={s.helper}>{title.length}/200 — pose ta question ou ton sujet en une phrase</p>
+        <p style={s.helper}>{title.length}/200 caractères. Pose ta question ou ton sujet en une phrase.</p>
       </div>
 
       <div style={s.formField}>
@@ -1211,8 +1290,8 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   inviteCard: {
-    background: 'linear-gradient(135deg, rgba(255,213,107,0.08), rgba(0,76,63,0.06))',
-    border: '1px solid rgba(255,213,107,0.18)',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '14px',
     padding: '16px',
     display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-start',
@@ -1220,7 +1299,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   inviteIconWrap: {
     width: '36px', height: '36px', borderRadius: '10px',
-    background: 'rgba(255,213,107,0.10)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     marginBottom: '4px',
   },
@@ -1234,10 +1314,108 @@ const s: Record<string, React.CSSProperties> = {
   },
   inviteBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: '#FFD56B', color: '#1a1a0e',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '9px',
-    padding: '7px 14px', fontSize: '12px', fontWeight: 700,
+    padding: '8px 14px', fontSize: '12px', fontWeight: 700,
     cursor: 'pointer', width: '100%', justifyContent: 'center',
+  },
+
+  // ─── Composer Facebook-style ───────────────────────────────────────
+  composerCard: {
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '14px',
+    padding: '12px',
+    marginBottom: '14px',
+  },
+  composerRow: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    paddingBottom: '12px',
+    borderBottom: '1px solid var(--border)',
+  },
+  composerAvatar: {
+    width: '40px', height: '40px', borderRadius: '50%',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '13px', fontWeight: 700, color: 'var(--accent-text)',
+    fontFamily: 'var(--font-fraunces), serif',
+    flexShrink: 0,
+  },
+  composerInput: {
+    flex: 1, textAlign: 'left' as const,
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    borderRadius: '999px', padding: '11px 18px',
+    fontSize: '14px', color: 'var(--text-3)',
+    cursor: 'pointer', fontFamily: 'inherit',
+    transition: 'background 0.15s, color 0.15s',
+  },
+  composerActions: {
+    display: 'flex', gap: '4px',
+    paddingTop: '10px',
+  },
+  composerAction: {
+    flex: 1,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+    background: 'transparent', border: 'none', borderRadius: '8px',
+    padding: '8px 6px', fontSize: '12.5px', fontWeight: 600,
+    color: 'var(--text-2)',
+    cursor: 'pointer', fontFamily: 'inherit',
+    transition: 'background 0.15s',
+  },
+
+  // ─── PostFormModal ─────────────────────────────────────────────────
+  modalBackdrop: {
+    position: 'fixed' as const, inset: 0, zIndex: 1000,
+    background: 'rgba(0,0,0,0.60)', backdropFilter: 'blur(4px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '16px',
+  },
+  modalDialog: {
+    position: 'relative' as const,
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '16px',
+    width: '100%', maxWidth: '560px',
+    maxHeight: '90vh',
+    display: 'flex', flexDirection: 'column' as const,
+    boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
+    overflow: 'hidden',
+  },
+  modalHeader: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '16px 20px',
+    borderBottom: '1px solid var(--border)',
+  },
+  modalTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '18px', fontWeight: 400,
+    color: 'var(--text)', margin: 0,
+  },
+  modalClose: {
+    width: '32px', height: '32px', borderRadius: '50%',
+    border: 'none', background: 'var(--bg)',
+    color: 'var(--text-2)', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  modalUser: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '14px 20px',
+    borderBottom: '1px solid var(--border)',
+  },
+  modalUserName: {
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)', margin: 0,
+  },
+  modalUserSub: {
+    fontSize: '11px', color: 'var(--text-muted)', margin: '2px 0 0',
+  },
+  modalBody: {
+    padding: '16px 20px',
+    overflowY: 'auto' as const,
+    flex: 1,
+  },
+
+  sortBar: {
+    marginBottom: '14px',
   },
 
   catRow: {

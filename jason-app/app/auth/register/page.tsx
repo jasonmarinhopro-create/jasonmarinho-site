@@ -153,7 +153,7 @@ function RegisterForm() {
       {brandPanel}
 
       <div className="auth-form-side" style={s.formSide}>
-        {/* Mobile top bar — visible only on small screens */}
+        {/* Mobile top bar : visible only on small screens */}
         <div className="auth-mobile-bar" style={s.mobileBar}>
           <a href="https://jasonmarinho.com" style={{ display: 'flex', alignItems: 'center', gap: '9px', textDecoration: 'none' }}>
             <div style={s.brandLogoIcon}><JmLogo size={18} /></div>
@@ -249,7 +249,7 @@ function RegisterForm() {
               />
               <span>
                 Je veux recevoir les conseils et ressources LCD de Jason par email.
-                <span style={s.consentNote}> Pas de spam — résiliable en 1 clic.</span>
+                <span style={s.consentNote}> Pas de spam, résiliable en 1 clic.</span>
               </span>
             </label>
 
