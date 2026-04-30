@@ -51,7 +51,8 @@ export default async function ProfilPage() {
         .profil-page {
           padding: clamp(20px,3vw,44px);
           width: 100%;
-          max-width: 800px;
+          max-width: 1200px;
+          margin: 0 auto;
         }
         .profil-hero {
           display: flex;
@@ -61,7 +62,7 @@ export default async function ProfilPage() {
           border: 1px solid var(--border);
           border-radius: 20px;
           padding: clamp(24px,3vw,36px);
-          margin-bottom: 24px;
+          margin-bottom: 20px;
           position: relative;
           overflow: hidden;
         }
@@ -110,8 +111,22 @@ export default async function ProfilPage() {
           background: var(--bg); border: 1px solid var(--border);
           padding: 4px 10px; border-radius: 100px;
         }
-        .profil-sections { display: flex; flex-direction: column; gap: 16px; }
+        .profil-sections {
+          column-count: 2;
+          column-gap: 16px;
+        }
+        .profil-sections > * {
+          display: block;
+          width: 100%;
+          margin-bottom: 16px;
+          break-inside: avoid;
+          page-break-inside: avoid;
+          -webkit-column-break-inside: avoid;
+        }
 
+        @media (max-width: 900px) {
+          .profil-sections { column-count: 1; }
+        }
         @media (max-width: 560px) {
           .profil-hero { flex-direction: column; align-items: flex-start; gap: 16px; }
           .profil-hero-av { width: 64px; height: 64px; font-size: 22px; }
