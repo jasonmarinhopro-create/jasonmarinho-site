@@ -70,6 +70,12 @@ export type LogementData = {
   code_acces?: string
   wifi_nom?: string
   wifi_mdp?: string
+
+  // Synchronisation calendrier (iCal)
+  ical_airbnb?:  string | null
+  ical_booking?: string | null
+  ical_vrbo?:    string | null
+  ical_autre?:   string | null
 }
 
 export type Logement = LogementData & {
