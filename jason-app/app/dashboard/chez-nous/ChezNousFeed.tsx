@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ImageSquare } from '@phosphor-icons/react'
+import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ImageSquare, ShareNetwork, UserPlus } from '@phosphor-icons/react'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
 import { MapPin } from '@phosphor-icons/react'
@@ -13,6 +13,7 @@ import { stripMarkdown } from '@/lib/chez-nous/markdown'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
+import InviteModal from '@/components/chez-nous/InviteModal'
 import { createPost, togglePostVote } from './actions'
 
 type Post = {
@@ -70,6 +71,7 @@ type Props = {
   posts: Post[]
   authorsMap: Record<string, Author>
   currentUserId: string
+  currentUserName: string
   isAdmin: boolean
   currentCategory: CategoryId | 'all'
   currentSort: Sort
@@ -83,8 +85,9 @@ type Props = {
   regionCounts: Record<string, number>
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts, activity, activityProfiles, regionCounts }: Props) {
-  const [showForm, setShowForm] = useState(false)
+export default function ChezNousFeed({ posts, authorsMap, currentUserId, currentUserName, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts, activity, activityProfiles, regionCounts }: Props) {
+  const [showForm,   setShowForm]   = useState(false)
+  const [showInvite, setShowInvite] = useState(false)
 
   return (
     <div style={s.page}>
@@ -92,21 +95,60 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
         /* Map silhouette: white in dark mode, dark green in light mode */
         .cn-map-shape { fill: rgba(255,255,255,0.025); stroke: rgba(255,255,255,0.14); }
         [data-theme="light"] .cn-map-shape { fill: rgba(0,76,63,0.07); stroke: rgba(0,76,63,0.28); }
+        /* Default category chip rendering (desktop) */
+        .cn-cat-emoji { font-size: 13px; line-height: 1; }
+        .cn-cat-label { font-weight: 600; }
         @media (max-width: 1023px) {
           .cn-aside { display: none !important; }
           .cn-main-col { flex: 1 1 100% !important; }
         }
         @media (max-width: 767px) {
-          /* Category chips: horizontal scroll */
+          /* Category chips: stories-style bubbles */
           .cn-cat-row {
             flex-wrap: nowrap !important;
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
-            padding-bottom: 2px;
-            gap: 6px !important;
+            padding: 4px 4px 8px;
+            gap: 4px !important;
+            margin: 0 -4px 14px !important;
           }
           .cn-cat-row::-webkit-scrollbar { display: none; }
+          .cn-cat-link {
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 6px !important;
+            background: transparent !important;
+            border: none !important;
+            padding: 4px !important;
+            min-width: 76px !important;
+            flex-shrink: 0 !important;
+            text-align: center;
+          }
+          .cn-cat-link .cn-cat-emoji {
+            display: flex; align-items: center; justify-content: center;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: var(--cat-bg);
+            border: 1.5px solid color-mix(in srgb, var(--cat-color) 28%, transparent);
+            font-size: 26px; line-height: 1;
+            transition: transform 0.15s, box-shadow 0.15s;
+          }
+          .cn-cat-link.cn-active .cn-cat-emoji {
+            box-shadow: 0 0 0 2.5px var(--cat-color);
+            transform: scale(1.04);
+          }
+          .cn-cat-link .cn-cat-label {
+            font-size: 11px !important;
+            font-weight: 600;
+            color: var(--text-2);
+            line-height: 1.2;
+            max-width: 70px;
+          }
+          .cn-cat-link.cn-active .cn-cat-label { color: var(--cat-color); }
+          /* Hero invite button on mobile: full width */
+          .cn-hero-actions { flex-direction: column !important; align-items: stretch !important; }
+          .cn-hero-actions > * { width: 100% !important; justify-content: center !important; }
           /* Sort chips: horizontal scroll */
           .cn-sort-row {
             flex-wrap: nowrap !important;
@@ -190,6 +232,14 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
           <span style={s.statSep}>·</span>
           <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
+
+        {/* Bouton inviter des amis */}
+        <div style={s.heroActions} className="cn-hero-actions">
+          <button onClick={() => setShowInvite(true)} style={s.heroInviteBtn}>
+            <UserPlus size={15} weight="fill" />
+            Inviter des amis hôtes
+          </button>
+        </div>
       </div>
 
       {/* Nouveaux membres */}
@@ -197,11 +247,12 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
 
       {/* Catégories */}
       <div style={s.catRow} className="cn-cat-row">
-        <CategoryChip id="all" label="Tout" color="var(--accent-text)" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} search={currentSearch} />
+        <CategoryChip id="all" label="Tout" emoji="✨" color="var(--accent-text)" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} search={currentSearch} />
         {CATEGORY_ORDER.map(cid => (
           <CategoryChip
             key={cid} id={cid}
             label={CATEGORIES[cid].short}
+            emoji={CATEGORIES[cid].emoji}
             color={CATEGORIES[cid].color} bg={CATEGORIES[cid].bg}
             active={currentCategory === cid}
             sort={currentSort}
@@ -250,6 +301,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
         {/* Aside */}
         <aside style={s.aside} className="cn-aside">
           <JasonNoteCard />
+          <InviteFriendsCard onClick={() => setShowInvite(true)} />
           <FranceMapCard regionCounts={regionCounts} />
           <ActivityCard events={activity} profiles={activityProfiles} />
           <StatsCard stats={stats} />
@@ -258,6 +310,34 @@ export default function ChezNousFeed({ posts, authorsMap, currentCategory, curre
           <TipCard />
         </aside>
       </div>
+
+      {/* Modal de partage / invitation */}
+      <InviteModal
+        open={showInvite}
+        onClose={() => setShowInvite(false)}
+        inviterName={currentUserName.split(/\s+/)[0] || 'Un hôte'}
+        inviterUserId={currentUserId}
+      />
+    </div>
+  )
+}
+
+// ─── InviteFriendsCard (sidebar) ───────────────────────────────────────
+function InviteFriendsCard({ onClick }: { onClick: () => void }) {
+  return (
+    <div style={s.inviteCard}>
+      <div style={s.inviteIconWrap}>
+        <ShareNetwork size={20} weight="fill" color="#FFD56B" />
+      </div>
+      <h3 style={s.inviteTitle}>Invite des amis hôtes</h3>
+      <p style={s.inviteDesc}>
+        Tu connais d'autres hôtes en LCD&nbsp;? Invite-les. Plus on est nombreux,
+        plus l'entraide est riche.
+      </p>
+      <button onClick={onClick} style={s.inviteBtn}>
+        <UserPlus size={14} weight="fill" />
+        Partager Chez Nous
+      </button>
     </div>
   )
 }
@@ -615,8 +695,8 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
 
 // ─── Sub components ───────────────────────────────────────────────────
 
-function CategoryChip({ id, label, color, bg, active, sort, search }: {
-  id: string; label: string; color: string; bg: string; active: boolean; sort: Sort; search: string
+function CategoryChip({ id, label, emoji, color, bg, active, sort, search }: {
+  id: string; label: string; emoji: string; color: string; bg: string; active: boolean; sort: Sort; search: string
 }) {
   const params = new URLSearchParams()
   if (id !== 'all')        params.set('cat', id)
@@ -624,8 +704,20 @@ function CategoryChip({ id, label, color, bg, active, sort, search }: {
   if (search)              params.set('q', search)
   const href = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
   return (
-    <Link href={href} style={{ ...s.catLink, color, background: active ? bg : 'transparent', borderColor: active ? `${color}55` : 'var(--border)' }}>
-      {label}
+    <Link
+      href={href}
+      className={`cn-cat-link${active ? ' cn-active' : ''}`}
+      style={{
+        ...s.catLink,
+        color,
+        background: active ? bg : 'transparent',
+        borderColor: active ? `${color}55` : 'var(--border)',
+        ['--cat-color' as string]: color,
+        ['--cat-bg' as string]:    bg,
+      }}
+    >
+      <span className="cn-cat-emoji" aria-hidden="true">{emoji}</span>
+      <span className="cn-cat-label">{label}</span>
     </Link>
   )
 }
@@ -1103,15 +1195,61 @@ const s: Record<string, React.CSSProperties> = {
   },
   statSep:  { opacity: 0.5 },
 
+  heroActions: {
+    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
+    marginTop: '16px',
+  },
+  heroInviteBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    background: 'rgba(255,213,107,0.10)',
+    border: '1px solid rgba(255,213,107,0.30)',
+    color: '#FFD56B',
+    fontSize: '13px', fontWeight: 600,
+    padding: '8px 14px', borderRadius: '10px',
+    cursor: 'pointer',
+    transition: 'background 0.15s',
+  },
+
+  inviteCard: {
+    background: 'linear-gradient(135deg, rgba(255,213,107,0.08), rgba(0,76,63,0.06))',
+    border: '1px solid rgba(255,213,107,0.18)',
+    borderRadius: '14px',
+    padding: '16px',
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-start',
+    gap: '8px',
+  },
+  inviteIconWrap: {
+    width: '36px', height: '36px', borderRadius: '10px',
+    background: 'rgba(255,213,107,0.10)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    marginBottom: '4px',
+  },
+  inviteTitle: {
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+    margin: 0,
+  },
+  inviteDesc: {
+    fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5,
+    margin: '0 0 4px',
+  },
+  inviteBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: '#FFD56B', color: '#1a1a0e',
+    border: 'none', borderRadius: '9px',
+    padding: '7px 14px', fontSize: '12px', fontWeight: 700,
+    cursor: 'pointer', width: '100%', justifyContent: 'center',
+  },
+
   catRow: {
     display: 'flex', flexWrap: 'wrap', gap: '8px',
     marginBottom: '14px',
   },
   catLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '12px', fontWeight: 600,
-    padding: '7px 14px', borderRadius: '999px',
+    padding: '7px 13px', borderRadius: '999px',
     border: '1px solid', textDecoration: 'none',
-    transition: 'background 0.15s',
+    transition: 'background 0.15s, border-color 0.15s',
   },
 
   searchBar: {

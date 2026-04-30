@@ -23,10 +23,11 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   // Onboarding : si jamais vu le tour
   const { data: meProfile } = await supabase
     .from('profiles')
-    .select('chez_nous_onboarded_at')
+    .select('chez_nous_onboarded_at, pseudo')
     .eq('id', profile.userId)
     .maybeSingle()
   const showWelcome = !meProfile?.chez_nous_onboarded_at
+  const currentUserName = (meProfile?.pseudo ?? profile.full_name ?? '').trim()
   const sort     = (sp.sort as 'recent' | 'popular' | 'unanswered' | 'unresolved') ?? 'recent'
   const q        = sp.q?.trim() ?? ''
 
@@ -296,6 +297,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
         }))}
         authorsMap={authorsMap}
         currentUserId={profile.userId}
+        currentUserName={currentUserName}
         isAdmin={profile.role === 'admin'}
         currentCategory={(sp.cat as CategoryId | 'all') ?? 'all'}
         currentSort={sort}

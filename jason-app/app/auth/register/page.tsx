@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import {
-  ArrowRight, Eye, EyeSlash, CheckCircle,
+  ArrowRight, Eye, EyeSlash, CheckCircle, UserPlus,
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
 } from '@phosphor-icons/react'
 import JmLogo from '@/components/JmLogo'
@@ -46,6 +47,12 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+
+  // Détection d'une invitation (?ref=USERID&from=NAME)
+  const searchParams = useSearchParams()
+  const inviterRef   = searchParams?.get('ref') ?? null
+  const inviterFrom  = searchParams?.get('from') ?? null
+  const isInvited    = !!inviterRef
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault()
@@ -149,6 +156,26 @@ export default function RegisterPage() {
         </div>
 
         <div style={s.formCard} className="fade-up">
+          {isInvited && (
+            <div style={s.inviteBanner}>
+              <div style={s.inviteBannerIcon}>
+                <UserPlus size={18} weight="fill" color="#FFD56B" />
+              </div>
+              <div>
+                <p style={s.inviteBannerTitle}>
+                  {inviterFrom
+                    ? <>👋 <strong>{inviterFrom}</strong> t&apos;invite à rejoindre</>
+                    : <>👋 Tu es invité(e) à rejoindre</>
+                  }{' '}<em style={{ color: '#004C3F', fontStyle: 'italic' }}>Chez Nous</em>
+                </p>
+                <p style={s.inviteBannerDesc}>
+                  La communauté privée des hôtes en location courte durée. Crée ton compte
+                  gratuit ci-dessous pour accéder à l&apos;entraide et au partage d&apos;expériences.
+                </p>
+              </div>
+            </div>
+          )}
+
           <h2 style={s.formTitle}>Créer mon compte</h2>
           <p style={s.formSub}>Accès gratuit · Prêt en 30 secondes</p>
 
@@ -431,4 +458,29 @@ const s: Record<string, React.CSSProperties> = {
     marginTop: '14px',
   },
   trustText: { fontSize: '11px', color: 'rgba(11,29,15,0.28)', letterSpacing: '0.1px' },
+
+  // Bandeau invitation (?ref=…)
+  inviteBanner: {
+    display: 'flex', alignItems: 'flex-start', gap: '12px',
+    background: 'linear-gradient(135deg, rgba(255,213,107,0.12), rgba(0,76,63,0.06))',
+    border: '1px solid rgba(255,213,107,0.35)',
+    borderRadius: '12px',
+    padding: '14px 16px',
+    marginBottom: '20px',
+  },
+  inviteBannerIcon: {
+    width: '34px', height: '34px', borderRadius: '50%',
+    background: 'rgba(255,213,107,0.15)',
+    border: '1px solid rgba(255,213,107,0.4)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  inviteBannerTitle: {
+    fontSize: '14px', color: '#0B1D0F', fontWeight: 500,
+    margin: '0 0 4px', lineHeight: 1.4,
+  },
+  inviteBannerDesc: {
+    fontSize: '12px', color: 'rgba(11,29,15,0.55)', lineHeight: 1.55,
+    margin: 0,
+  },
 }
