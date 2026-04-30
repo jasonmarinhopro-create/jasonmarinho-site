@@ -920,7 +920,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'center', marginTop: '4px' }}>
                   {voyageur.email && (
                     <a
-                      href={`mailto:${voyageur.email}?subject=${encodeURIComponent(`Bonjour ${voyageur.prenom}`)}`}
+                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(voyageur.email)}&su=${encodeURIComponent(`Bonjour ${voyageur.prenom}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '5px',
                         padding: '6px 12px', fontSize: '12px', fontWeight: 500,
@@ -928,6 +930,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                         border: '1px solid var(--accent-border)', borderRadius: '8px',
                         textDecoration: 'none' as const,
                       }}
+                      title="Ouvre Gmail dans un nouvel onglet"
                     >
                       <Envelope size={13} weight="fill" />
                       Envoyer un email
@@ -1846,7 +1849,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1320px', margin: '0 auto' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1600px', margin: '0 auto' },
   layoutGrid: {
     display: 'grid',
     gridTemplateColumns: 'minmax(320px, 420px) 1fr',
