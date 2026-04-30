@@ -84,6 +84,10 @@ type Logement = {
   code_acces: string | null
   wifi_nom: string | null
   wifi_mdp: string | null
+  ical_airbnb:  string | null
+  ical_booking: string | null
+  ical_vrbo:    string | null
+  ical_autre:   string | null
 }
 
 interface Props {
@@ -134,6 +138,10 @@ function emptyForm(): LogementData {
     code_acces: '',
     wifi_nom: '',
     wifi_mdp: '',
+    ical_airbnb:  null,
+    ical_booking: null,
+    ical_vrbo:    null,
+    ical_autre:   null,
   }
 }
 
@@ -243,6 +251,10 @@ export default function LogementsPage({ logements: initial }: Props) {
       code_acces: l.code_acces ?? '',
       wifi_nom: l.wifi_nom ?? '',
       wifi_mdp: l.wifi_mdp ?? '',
+      ical_airbnb:  l.ical_airbnb  ?? null,
+      ical_booking: l.ical_booking ?? null,
+      ical_vrbo:    l.ical_vrbo    ?? null,
+      ical_autre:   l.ical_autre   ?? null,
     })
     setEditing(l)
     setError('')
@@ -312,6 +324,10 @@ export default function LogementsPage({ logements: initial }: Props) {
         code_acces: form.code_acces ?? null,
         wifi_nom: form.wifi_nom ?? null,
         wifi_mdp: form.wifi_mdp ?? null,
+        ical_airbnb:  form.ical_airbnb  ?? null,
+        ical_booking: form.ical_booking ?? null,
+        ical_vrbo:    form.ical_vrbo    ?? null,
+        ical_autre:   form.ical_autre   ?? null,
       }
     }
 
@@ -906,6 +922,25 @@ export default function LogementsPage({ logements: initial }: Props) {
               </div>
               <div style={fieldRow}>
                 <Field label="🌐 Site direct / Driing" value={form.lien_site_direct ?? ''} onChange={v => set('lien_site_direct', v || null)} placeholder="https://…" />
+              </div>
+
+              {/* ── Synchronisation calendrier (iCal) ── */}
+              <h4 style={sectionTitle}>Synchronisation calendrier (iCal)</h4>
+              <p style={{ fontSize: '11px', color: 'var(--text-3)', margin: '-8px 0 10px', lineHeight: 1.6 }}>
+                Colle ici les liens iCal de chaque plateforme pour importer automatiquement tes réservations dans le calendrier.
+                Airbnb : <em>Calendrier → Exporter</em> · Booking : <em>Propriétés → Calendrier → Synchroniser</em>
+              </p>
+              <div style={fieldRow}>
+                <Field label="🏠 iCal Airbnb (.ics)" value={form.ical_airbnb ?? ''} onChange={v => set('ical_airbnb', v || null)} placeholder="https://www.airbnb.fr/calendar/ical/…" />
+              </div>
+              <div style={fieldRow}>
+                <Field label="🛎️ iCal Booking.com (.ics)" value={form.ical_booking ?? ''} onChange={v => set('ical_booking', v || null)} placeholder="https://ical.booking.com/v1/…" />
+              </div>
+              <div style={fieldRow}>
+                <Field label="🏡 iCal Vrbo / Abritel (.ics)" value={form.ical_vrbo ?? ''} onChange={v => set('ical_vrbo', v || null)} placeholder="https://www.vrbo.com/icalendar/…" />
+              </div>
+              <div style={fieldRow}>
+                <Field label="🔗 iCal autre plateforme" value={form.ical_autre ?? ''} onChange={v => set('ical_autre', v || null)} placeholder="https://…" />
               </div>
 
               {/* ── Photo ── */}
