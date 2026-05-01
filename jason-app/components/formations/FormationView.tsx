@@ -935,14 +935,14 @@ const styles: Record<string, React.CSSProperties> = {
 
   // ─── Phase 1 — Rail droite ─────────────────────────────────────
   rightRail: {
-    width: '260px', flexShrink: 0,
+    width: '320px', flexShrink: 0,
     borderLeft: '1px solid var(--border)',
     display: 'flex', flexDirection: 'column',
     position: 'sticky', top: 'var(--header-h)',
     height: 'calc(100svh - var(--header-h))',
     overflowY: 'auto',
-    padding: '20px 16px',
-    gap: '20px',
+    padding: '24px 20px',
+    gap: '24px',
     background: 'var(--bg)',
   },
   railSection: {
