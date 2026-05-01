@@ -69,7 +69,7 @@ export async function updateContractChecklist(
 
   const { data, error } = await supabase
     .from('contracts')
-    .select('checklist_status')
+    .select('checklist_status, sejour_id')
     .eq('id', contractId)
     .eq('user_id', session.user.id)
     .single()
@@ -82,6 +82,20 @@ export async function updateContractChecklist(
     .update({ checklist_status: { ...current, [key]: value } })
     .eq('id', contractId)
     .eq('user_id', session.user.id)
+
+  // Rafraîchir les deux vues qui affichent cette checklist (calendrier + voyageur)
+  revalidatePath('/dashboard/calendrier')
+  if (data.sejour_id) {
+    const { data: sejourRow } = await supabase
+      .from('sejours')
+      .select('voyageur_id')
+      .eq('id', data.sejour_id)
+      .eq('user_id', session.user.id)
+      .single()
+    if (sejourRow?.voyageur_id) {
+      revalidatePath(`/dashboard/voyageurs/${sejourRow.voyageur_id}`)
+    }
+  }
 
   return { error: updateError?.message }
 }

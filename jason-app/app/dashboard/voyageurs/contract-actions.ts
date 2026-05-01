@@ -63,12 +63,19 @@ export async function createContract(data: ContractData): Promise<{
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return { error: 'Non authentifié.' }
 
+  // Si on a un email locataire, l'email part automatiquement ; on coche
+  // alors "contrat_envoyé" sur la checklist. Sinon on laisse au manuel.
+  const initialChecklist = data.locataire_email
+    ? { contrat_envoye: true }
+    : {}
+
   const { data: row, error } = await supabase
     .from('contracts')
     .insert({
       ...data,
       user_id: session.user.id,
       statut: 'en_attente',
+      checklist_status: initialChecklist,
     })
     .select('id, token')
     .single()
@@ -116,6 +123,7 @@ export async function createContract(data: ContractData): Promise<{
   }
 
   revalidatePath(`/dashboard/voyageurs/${data.voyageur_id}`)
+  revalidatePath('/dashboard/calendrier')
   return { id: row.id, token: row.token }
 }
 

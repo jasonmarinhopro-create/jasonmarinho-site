@@ -28,6 +28,7 @@ type ContractRow = {
   montant_caution: number | null
   modalites_paiement: string | null
   stripe_payment_enabled: boolean | null
+  checklist_status: Record<string, boolean> | null
 }
 
 // Service role — bypass RLS complet (lecture + écriture)
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
       .from('contracts')
       .select('id, statut, sejour_id, user_id, token_expires_at, locataire_email, bailleur_email, ' +
               'locataire_prenom, locataire_nom, bailleur_prenom, bailleur_nom, ' +
-              'logement_adresse, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled')
+              'logement_adresse, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, checklist_status')
       .eq('token', token)
       .single()
 
@@ -135,6 +136,14 @@ export async function POST(request: NextRequest) {
     const now = new Date().toISOString()
     const today = now.split('T')[0]
 
+    // Merge checklist : marque "contrat_signe" comme fait (et "contrat_envoye"
+    // si pas déjà fait — au cas où le contrat aurait été créé sans email).
+    const mergedChecklist = {
+      ...(contract.checklist_status ?? {}),
+      contrat_envoye: true,
+      contrat_signe:  true,
+    }
+
     const { data: updated, error: updateError } = await db
       .from('contracts')
       .update({
@@ -143,6 +152,7 @@ export async function POST(request: NextRequest) {
         signature_ip: ip,
         signature_user_agent: userAgent,
         signature_image: signature_image,
+        checklist_status: mergedChecklist,
       })
       .eq('id', contract.id)
       .eq('statut', 'en_attente')   // verrou optimiste : évite la double-signature

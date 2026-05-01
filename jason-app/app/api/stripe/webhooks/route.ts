@@ -46,22 +46,32 @@ export async function POST(request: NextRequest) {
         const paymentIntentId = session.payment_intent as string
         const type = session.metadata?.type // 'loyer' | undefined (caution)
 
+        // Récupère la checklist actuelle pour merge
+        const { data: currentRow } = await db
+          .from('contracts')
+          .select('checklist_status')
+          .eq('id', contractId)
+          .single()
+        const currentChecklist = (currentRow?.checklist_status as Record<string, boolean>) ?? {}
+
         if (type === 'loyer') {
-          // Paiement immédiat du loyer
+          // Paiement immédiat du loyer → coche "Solde reçu" auto
           await db
             .from('contracts')
             .update({
               stripe_payment_intent_id: paymentIntentId,
               stripe_payment_status: 'paid',
+              checklist_status: { ...currentChecklist, solde_recu: true },
             })
             .eq('id', contractId)
         } else {
-          // Pré-autorisation caution (capture manuelle)
+          // Pré-autorisation caution (capture manuelle) → coche "Caution reçue"
           await db
             .from('contracts')
             .update({
               stripe_deposit_payment_intent_id: paymentIntentId,
               stripe_deposit_status: 'held',
+              checklist_status: { ...currentChecklist, caution_recue: true },
             })
             .eq('id', contractId)
         }
@@ -74,12 +84,20 @@ export async function POST(request: NextRequest) {
         const pi = event.data.object as Stripe.PaymentIntent
         const contractId = pi.metadata?.contract_id
         if (!contractId) break
+        // Récupère la checklist actuelle pour merge
+        const { data: currentRow } = await db
+          .from('contracts')
+          .select('checklist_status')
+          .eq('id', contractId)
+          .single()
+        const currentChecklist = (currentRow?.checklist_status as Record<string, boolean>) ?? {}
         // Passer en 'held' seulement si ce n'est pas déjà capturé/libéré
         await db
           .from('contracts')
           .update({
             stripe_deposit_payment_intent_id: pi.id,
             stripe_deposit_status: 'held',
+            checklist_status: { ...currentChecklist, caution_recue: true },
           })
           .eq('id', contractId)
           .in('stripe_deposit_status', ['pending', null])
