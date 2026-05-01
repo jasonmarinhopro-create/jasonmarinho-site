@@ -2550,5 +2550,785 @@ Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashbo
         },
       ],
     },
+    {
+      id: 5,
+      title: `Les avis et la médiation`,
+      duration: '25 min',
+      lessons: [
+        {
+          id: 1,
+          title: `Le voyageur menace de te mettre 1⭐ : que faire (et ne pas faire)`,
+          duration: '7 min',
+          content: `## La menace classique
+
+Tu reçois ce message après un litige :
+
+> *« Si vous prélevez la caution, je vous mets un avis 1 étoile et je préviens tous mes amis de ne pas réserver chez vous. »*
+
+**Réaction normale :**
+
+- Stress
+- Envie de céder pour éviter le bad buzz
+- Tentation de "négocier" pour préserver ta note
+
+> **Stop.** Ce moment est **critique**. Ce que tu fais (ou ne fais pas) dans les 30 minutes qui suivent va déterminer ta gestion des 12 prochains mois.
+
+---
+
+## Pourquoi céder est une (très) mauvaise idée
+
+### 1. Tu valides le chantage
+
+Le voyageur sait que ça **fonctionne**. Il le refera. Il en parlera à d'autres.
+
+> **Effet de réseau :** un voyageur qui te chante 1 fois est presque garanti de chanter d'autres hôtes après.
+
+### 2. Tu perds ton autorité
+
+Les futurs voyageurs te testent.
+Si tu cèdes une fois, tu cèderas toujours.
+
+### 3. Tu fragilises ta caution
+
+Si tu rembourses la caution malgré les dégâts, **tu as menti** à tes propres garanties contractuelles.
+
+> En cas de prochain litige, tu ne pourras plus invoquer la "rétention sur caution" sans paraître incohérent.
+
+### 4. Tu valides un précédent
+
+Si Airbnb voit que tu as remboursé sous menace, tu te crées un **historique défavorable**.
+
+---
+
+## La règle absolue : "le faire malgré tout"
+
+Quand un voyageur menace, **applique** quand même les pénalités. Sans hésitation.
+
+### Ta réponse type
+
+> *« Je comprends votre frustration. Cependant, ma décision repose sur des faits documentés (photos, devis professionnels) et sur le contrat que nous avons signé. La caution sera prélevée selon les justifications fournies.*
+>
+> *Vous restez libre de laisser un avis. Je m'engage à y répondre publiquement avec les éléments factuels du séjour.*
+>
+> *Cordialement. »*
+
+### Pourquoi ce message est puissant
+
+- Tu **reconnais** la frustration (humain).
+- Tu **rappelles** que tu te bases sur des **faits** (juste).
+- Tu **n'agresses** pas (professionnel).
+- Tu **annonces** la riposte sans menacer (ferme).
+
+---
+
+## Le mythe du "bad buzz" sur Airbnb
+
+Beaucoup d'hôtes ont peur qu'un avis 1⭐ ruine leur annonce.
+
+**Réalité :**
+
+### 1. Les voyageurs lisent **plusieurs** avis
+
+Sur 50 avis, 1 avis 1⭐ noyé dans 49 avis 5⭐ ne change pas la décision de réservation.
+
+### 2. Airbnb pondère les avis récents
+
+Les voyageurs voient surtout les **5-10 derniers avis**. Si tu en as 5⭐ après l'incident, l'effet du 1⭐ s'estompe rapidement.
+
+### 3. Une **réponse publique** bien rédigée transforme l'avis
+
+Cf. la prochaine leçon.
+
+> Un avis 1⭐ avec une **bonne réponse** vaut mieux qu'un avis 5⭐ obtenu sous chantage.
+
+---
+
+## La double évaluation Airbnb
+
+Sur Airbnb, **toi et le voyageur** évaluez l'un l'autre **en aveugle**.
+
+### Comment ça marche
+
+- Vous avez **14 jours** après le départ pour évaluer.
+- Les avis sont **publiés simultanément** quand les deux ont posté (ou à J+14).
+- **Aucun ne voit l'avis de l'autre** avant publication.
+
+### Stratégie
+
+> **Évalue toujours en premier**, **factuellement** et **sans représailles**.
+
+Pourquoi :
+
+- Si tu attends, le voyageur peut éditer son avis après avoir vu le tien.
+- Si tu écris factuellement, ton évaluation reste **publiable** quoi qu'il arrive.
+
+---
+
+## L'évaluation que tu écris sur le voyageur
+
+### Format type pour un voyageur problématique
+
+> *« [Prénom] et son groupe ont séjourné chez nous du [date] au [date].*
+>
+> *Plusieurs points ont été problématiques :*
+> *— Sur-occupation détectée (X personnes vs Y déclarées)*
+> *— Plainte du voisinage à [heure]*
+> *— [autres faits factuels]*
+>
+> *Le séjour s'est conclu avec [X €] de dégâts justifiés et facturés.*
+>
+> *Je recommande aux futurs hôtes la prudence, en particulier sur la vérification du nombre de personnes à l'arrivée et la mise en place d'une caution adéquate. »*
+
+### Ce qu'il faut **éviter** absolument
+
+- Insultes (Airbnb supprime l'avis)
+- Émotions (*« horrible voyageur »*, *« inadmissible »*)
+- Accusations non prouvées
+- Prénom complet du voyageur (RGPD)
+- Noms d'enfants
+
+> Reste **factuel**. Les futurs hôtes comprendront sans drame.
+
+---
+
+## Le piège du "voyageur qui s'excuse après ton message"
+
+Parfois, après une réponse ferme de ta part, le voyageur **s'excuse** :
+
+> *« Vous avez raison, je m'emporte. Je vais accepter la caution. Mais s'il vous plaît, ne me mettez pas un mauvais avis. »*
+
+### Que faire ?
+
+**3 options :**
+
+### Option A — Tu acceptes
+
+- Tu ne mets pas d'avis.
+- Le voyageur ne te met pas d'avis.
+- Tout le monde "perd" : tes futurs collègues hôtes ne sont pas avertis.
+
+### Option B — Tu écris un avis neutre
+
+- Tu écris un avis **factuel** mais **sans détails négatifs**.
+- Le voyageur peut respecter sa parole et ne pas te critiquer.
+
+### Option C — Tu écris l'avis honnête malgré les excuses
+
+- Tu protèges la communauté des hôtes.
+- Le voyageur peut se sentir trahi et critiquer.
+
+> **Recommandation :** option **B** dans 90 % des cas. Les excuses ont une valeur, et un voyageur qui apprend de son erreur ne mérite pas d'être détruit publiquement.
+
+---
+
+## Quand contacter le support Airbnb
+
+Le voyageur menace clairement et explicitement de te mettre un avis injustifié.
+
+### Procédure
+
+1. Va dans **"Aide"** → **"Contacter le support"**.
+2. Décris la situation (avec captures d'écran).
+3. Demande l'**enregistrement** de la menace.
+4. Si l'avis arrive, demande sa **suppression** pour violation des règles communautaires.
+
+> Airbnb supprime les avis "**de représailles**" quand la preuve est claire.
+
+---
+
+## Exercice — action immédiate
+
+1. **Crée un message-type** "réponse à menace de mauvais avis" dans tes Gabarits.
+2. **Crée un message-type** "évaluation voyageur factuel négatif".
+3. **Sauvegarde** la procédure de contact support Airbnb.
+4. **Décide** d'avance ta stratégie : tu cèderas-tu en cas de menace ? *(Indice : non.)*
+
+> Tu as le droit de **te protéger**. Le chantage n'est pas une stratégie commerciale, c'est de la lâcheté.`,
+        },
+        {
+          id: 2,
+          title: `Répondre publiquement à un avis injustifié sans s'enliser`,
+          duration: '6 min',
+          content: `## Tu as reçu un avis 1⭐. Et maintenant ?
+
+Il vient d'apparaître sur ton annonce. Tu le lis. Tu vois rouge.
+
+> **Stop.** Ne réponds pas tout de suite.
+
+Une réponse publique sur Airbnb est **définitive** et **visible par tous les futurs voyageurs pour toujours**.
+
+Tu as **30 jours** pour répondre. Prends-en au moins **24 heures**.
+
+---
+
+## Les 4 règles d'or de la réponse publique
+
+### Règle 1 — Ne jamais nier les faits
+
+Si le voyageur dit *« le wifi ne marchait pas »*, tu ne peux pas répondre *« le wifi marchait parfaitement »*.
+
+Même si c'est vrai.
+
+> Le futur voyageur n'a aucun moyen de savoir qui dit la vérité. Tu paraîtras défensif et peu fiable.
+
+À la place, **reconnais une partie** :
+
+> *« Je vous remercie pour votre retour. Pour le wifi, [explication factuelle : la box a effectivement été temporairement instable, j'ai contacté l'opérateur, etc.]. »*
+
+### Règle 2 — Ne jamais agresser
+
+Les futurs voyageurs te jugent **sur la forme** plus que sur le fond.
+
+> Si ton avis dit *« Sale, désorganisé, fuyez »* et que ta réponse dit *« Voyageur menteur et procédurier »*, **tu perds**. Le voyageur paraît honnête, toi paraît agressif.
+
+### Règle 3 — Privilégier les faits chiffrés
+
+> *« 47 photos d'état des lieux datées »*
+> *« Devis professionnel pour 230 € »*
+> *« 50 derniers avis avec note moyenne 4.9 »*
+
+Les chiffres **désamorcent** l'émotion de l'avis négatif.
+
+### Règle 4 — Conclure positivement
+
+Termine **toujours** par une phrase qui te recentre sur ton métier :
+
+> *« Je continue à accueillir avec attention chaque voyageur, et je reste disponible pour toute question avant réservation. »*
+
+---
+
+## Le format de réponse type
+
+Voici un canevas en **5 paragraphes** :
+
+### Paragraphe 1 — Remerciement et reconnaissance
+
+> *« Je remercie [Prénom] pour son retour. Je prends toujours au sérieux les commentaires de mes voyageurs. »*
+
+### Paragraphe 2 — Reconnaissance d'une partie
+
+> *« Je comprends que [aspect mentionné] a pu être perçu comme [perception du voyageur]. »*
+
+(Reconnais une partie de l'avis sans valider toutes les accusations.)
+
+### Paragraphe 3 — Les faits objectifs
+
+> *« Concernant [le point principal de critique], voici les faits :*
+> *— [fait 1 chiffré]*
+> *— [fait 2 chiffré]*
+> *— [fait 3 chiffré]* »
+
+### Paragraphe 4 — Ce que tu as fait pour résoudre
+
+> *« J'ai immédiatement [action prise pendant le séjour]. Le voyageur a été informé que [...]. »*
+
+### Paragraphe 5 — Conclusion vers les futurs voyageurs
+
+> *« Je reste disponible pour répondre à toute question avant réservation. Mon objectif est toujours d'offrir un séjour conforme à mes engagements. »*
+
+---
+
+## Exemple complet : réponse à un avis "sur-facturation caution"
+
+**Avis du voyageur (1⭐) :**
+
+> *« L'hôte a prélevé 350 € sur la caution pour des dégâts qui n'existaient pas. Photos truquées. Fuyez. »*
+
+**Réponse publique :**
+
+> *« Je remercie [Prénom] pour son retour, même si je conteste fermement les faits évoqués.*
+>
+> *Concernant la caution prélevée, voici les éléments factuels :*
+> *— L'inventaire d'arrivée a été signé par [Prénom] le [date], avec 47 photos partagées.*
+> *— Au départ, j'ai documenté avec 12 photos zoomées les dégâts constatés (drap brûlé par cigarette, oreiller taché, vaisselle cassée).*
+> *— Un devis professionnel d'un nettoyeur agréé a justifié les 350 € (dont 220 € de désinfection olfactive après détection de fumée).*
+>
+> *Le règlement intérieur signé par [Prénom] indique que le logement est non-fumeur. La caution a donc été prélevée conformément au contrat.*
+>
+> *Je suis transparent sur tous mes processus et je conserve l'ensemble de la documentation à disposition. Mon annonce affiche [50] avis avec une moyenne de [4.9]⭐, témoignage de la rigueur que j'applique chaque jour à mes voyageurs respectueux du logement.*
+>
+> *Je reste disponible pour toute question avant réservation. Bon voyage à venir ! »*
+
+### Pourquoi cette réponse fonctionne
+
+- **Factuelle** (chiffres, dates, devis).
+- **Non-agressive** (aucune insulte).
+- **Pédagogique** (rappelle le contrat).
+- **Conclusion positive** (referme le débat).
+
+---
+
+## Les 5 erreurs à ne JAMAIS commettre
+
+### Erreur 1 — Émotionnel
+
+> *« Cet avis est totalement injuste, je suis profondément blessé. »*
+
+→ Le futur voyageur lit ça : *« Hôte instable, susceptible. »*
+
+### Erreur 2 — Procédurier
+
+> *« Le voyageur a violé les articles 4, 7 et 12 du contrat. »*
+
+→ Trop juridique, ne parle pas aux humains.
+
+### Erreur 3 — Long
+
+> *« Voici dans le détail jour par jour ce qui s'est passé... [3 paragraphes] »*
+
+→ Personne ne lit. Le futur voyageur passe au suivant.
+
+### Erreur 4 — Vide
+
+> *« Désolé que vous n'ayez pas apprécié, à la prochaine ! »*
+
+→ Ne défend pas, valide implicitement la critique.
+
+### Erreur 5 — Représailles
+
+> *« Voyageur qui a fait la fête jusqu'à 4h, embarrassé d'avoir été pris. »*
+
+→ Tu paraîs vengeur, le voyageur paraît victime.
+
+---
+
+## Le test du "lecteur indifférent"
+
+Avant de poster, lis ta réponse en imaginant **un voyageur indifférent** qui ne connaît rien à la situation.
+
+Pose-toi 3 questions :
+
+1. **Est-ce que je passe pour un hôte calme et professionnel ?**
+2. **Est-ce que les faits sont compréhensibles en 30 secondes ?**
+3. **Est-ce que je donnerais envie de réserver après avoir lu ?**
+
+Si la réponse est non à une seule question, **réécris**.
+
+---
+
+## La longueur idéale
+
+- **Avis court (< 50 mots) :** réponse de 80-120 mots.
+- **Avis moyen (50-150 mots) :** réponse de 120-180 mots.
+- **Avis long (> 150 mots) :** réponse de 180-250 mots maximum.
+
+> Au-delà de 250 mots, tu **perds** ton lecteur.
+
+---
+
+## Exercice — action immédiate
+
+1. **Relis** tes 3 derniers avis négatifs (si tu en as) et leurs réponses.
+2. **Note** lesquelles auraient pu être améliorées avec ce canevas.
+3. **Réécris** une de tes anciennes réponses en utilisant la structure 5 paragraphes (en privé, pour la prochaine fois).
+4. **Sauvegarde le canevas** dans tes Gabarits pour gagner du temps lors du prochain avis difficile.
+
+> Une bonne réponse publique transforme un avis 1⭐ en **outil de vente** pour les voyageurs intelligents.`,
+        },
+        {
+          id: 3,
+          title: `Médiation Airbnb : déclencher quand et comment`,
+          duration: '6 min',
+          content: `## Quand la médiation est ton seul recours
+
+Tu as suivi toute la procédure :
+
+- Caution Stripe capturée.
+- Resolution Center ouvert.
+- Voyageur conteste tout.
+- Vous n'arrivez pas à un accord.
+
+> À ce stade, **AirCover (Airbnb)** prend le relais en mode médiateur.
+
+---
+
+## AirCover : ce qui est couvert et ce qui ne l'est pas
+
+### Ce qui est couvert
+
+- Dégâts au logement (jusqu'à 3 millions $)
+- Vol d'objets
+- Dégâts aux objets personnels (limites)
+- Annulations en dernière minute par voyageur (rare)
+
+### Ce qui n'est PAS couvert
+
+- Usure normale
+- Dégâts dus à des défauts du logement
+- Pertes financières (manque à gagner sans dégât)
+- Litiges sur la propreté ou conformité (= pas un dégât)
+
+> AirCover couvre les **dégâts physiques**, pas les insatisfactions subjectives.
+
+---
+
+## Procédure AirCover pas à pas
+
+### Étape 1 — Ouvrir un dossier
+
+Une fois que le voyageur conteste ta demande Resolution Center, Airbnb propose automatiquement de **transférer le dossier à AirCover**.
+
+Tu cliques sur **"Demander une indemnisation AirCover"** (ou similaire selon mise à jour Airbnb).
+
+> Si l'option n'apparaît pas, contacte le support Airbnb directement.
+
+### Étape 2 — Compléter le dossier
+
+AirCover demande **plus de preuves** que le Resolution Center :
+
+#### Preuves obligatoires
+
+- **Photos avant et après** (minimum 10 photos chacune).
+- **Vidéo d'inspection** (recommandée).
+- **Devis professionnels** (au moins 2 devis pour valider le prix moyen).
+- **Captures de la communication** avec le voyageur.
+- **EDL signé** (si tu en as un).
+
+#### Preuves optionnelles mais utiles
+
+- Témoignages voisins.
+- Logs de capteurs (Wi-Fi, bruit).
+- Procès-verbal de police.
+
+### Étape 3 — Attendre la décision
+
+Délai moyen : **7 à 21 jours**.
+
+Pendant ce temps :
+
+- Tu peux être sollicité pour **précisions** par AirCover.
+- Le voyageur peut être contacté indépendamment.
+- Aucune action de ta part n'est requise (sauf répondre vite si on te demande).
+
+### Étape 4 — La décision
+
+3 issues possibles :
+
+### Issue A — AirCover accepte (~50 % des cas)
+
+- Tu reçois le montant **directement** sur ton compte Airbnb.
+- Délai : 5-15 jours après acceptation.
+
+### Issue B — AirCover accepte partiellement (~30 % des cas)
+
+- Tu reçois une partie de la somme demandée.
+- Tu peux **contester** la décision (1 fois maximum).
+
+### Issue C — AirCover refuse (~20 % des cas)
+
+- Aucune indemnisation côté Airbnb.
+- Tu peux **contester** mais le taux de succès est faible (~10 %).
+- Tu dois te tourner vers ton **assurance PNO** ou la justice.
+
+---
+
+## Les 5 raisons les plus fréquentes de refus AirCover
+
+### Raison 1 — Preuve insuffisante
+
+Tu n'as pas de photos avant. Tu n'as pas de devis professionnel.
+
+> **Solution :** suis le Module 3 et constitue un dossier complet avant d'ouvrir AirCover.
+
+### Raison 2 — Demande hors délai
+
+Tu ouvres AirCover plus de 14 jours après le départ.
+
+> **Solution :** dashboard avec rappel automatique à J+10.
+
+### Raison 3 — Dégât jugé "wear and tear"
+
+AirCover juge que c'est de **l'usure normale**.
+
+> **Solution :** dans ta description, précise *« ce dégât n'est pas dans l'inventaire d'arrivée du [date], joint en photos »*.
+
+### Raison 4 — Pas de communication préalable
+
+Tu n'as **jamais** mentionné le dégât au voyageur avant d'ouvrir AirCover.
+
+> **Solution :** **toujours** un message au voyageur dans les 24 h post-départ.
+
+### Raison 5 — Avis négatif perçu comme représailles
+
+Tu as mis 1⭐ au voyageur, il conteste, AirCover suspecte que ta demande est de la vengeance.
+
+> **Solution :** demande AirCover **avant** d'écrire ton avis.
+
+---
+
+## La contestation d'une décision AirCover
+
+Si tu n'es pas d'accord avec la décision, tu peux contester **1 fois**.
+
+### Procédure
+
+1. **Réponds** à la décision dans le dossier ouvert.
+2. **Apporte de nouvelles preuves** (devis supplémentaire, témoignage, etc.).
+3. **Argumente** factuellement (pas émotionnellement).
+4. **Attends** une nouvelle décision (~7-14 jours).
+
+> Sans nouvelles preuves, la contestation a peu de chance d'aboutir.
+
+---
+
+## Le médiateur du tourisme : recours ultime
+
+Si tout échoue côté Airbnb, tu peux saisir le **médiateur du tourisme**.
+
+### Quand l'utiliser
+
+- Tu as épuisé les recours Airbnb.
+- Le montant est important (> 500 €).
+- Tu as un dossier solide.
+
+### Procédure
+
+1. Va sur le site du **Médiateur du Tourisme et du Voyage** (MTV).
+2. Remplis le formulaire en ligne.
+3. Joins ton dossier complet (photos, devis, contrats, communications).
+4. Le médiateur instruit en **60-90 jours**.
+5. Si médiation aboutie, le voyageur (ou Airbnb) doit te dédommager.
+
+> **Coût :** gratuit pour toi.
+> **Taux de réussite :** ~40 % en faveur de l'hôte sur les dossiers solides.
+
+---
+
+## Le timing optimal du recours
+
+| Étape | Délai recommandé |
+|---|---|
+| **Inspection post-départ** | J+0 à J+1 |
+| **Message voyageur** | J+1 |
+| **Capture caution Stripe** | J+2 à J+5 |
+| **Resolution Center Airbnb** | J+3 à J+7 |
+| **AirCover (si conflit)** | J+7 à J+13 |
+| **Médiateur du tourisme** | J+30 à J+60 |
+| **Justice** | Au-delà |
+
+> Plus tu es **rapide**, plus tu as de chances de récupérer.
+
+---
+
+## Exercice — action immédiate
+
+1. **Bookmark** : *www.mtv.travel* (Médiateur du Tourisme et du Voyage).
+2. **Crée un template** "demande AirCover" avec toutes les sections à remplir.
+3. **Configure** un rappel à J+10 pour ouvrir AirCover si litige en cours.
+4. **Vérifie** que tu as l'historique complet de tes 5 derniers séjours problématiques (preuves prêtes en cas de besoin futur).
+
+> AirCover indemnise **50 % à 60 %** des dossiers bien préparés.
+> Sans préparation, c'est **0 %**.`,
+        },
+        {
+          id: 4,
+          title: `Quand impliquer la justice (et quand laisser tomber)`,
+          duration: '6 min',
+          content: `## La justice : ton dernier recours
+
+Tu as épuisé toutes les voies amiables. Le voyageur t'a causé un préjudice **non récupéré** sur la plateforme.
+
+> Avant d'aller en justice, **fais l'analyse coût/bénéfice**.
+
+---
+
+## Le seuil critique
+
+| Préjudice | Recommandation |
+|---|---|
+| **< 500 €** | Laisse tomber |
+| **500 à 5000 €** | Médiateur du tourisme |
+| **5000 à 15000 €** | Tribunal de proximité (sans avocat) |
+| **> 15000 €** | Tribunal judiciaire (avec avocat) |
+
+### Pourquoi laisser tomber sous 500 €
+
+- **Coût en temps :** 20 à 50 heures (procédure, audience, déplacements).
+- **Coût émotionnel :** stress, doute, ressassement.
+- **Coût opportunité :** ces heures peuvent être consacrées à 5 nouveaux séjours rentables.
+- **Probabilité de récupération :** ~50 % seulement.
+
+> Sous 500 €, le **vrai coût** est supérieur au gain potentiel.
+
+---
+
+## Les 3 procédures principales
+
+### Procédure 1 — La conciliation (gratuit)
+
+Avant le procès, tu peux saisir un **conciliateur de justice** (gratuit).
+
+#### Comment ça marche
+
+- Tu prends rendez-vous au **tribunal de ton domicile**.
+- Le conciliateur reçoit toi + le voyageur (séparément ou ensemble).
+- Il propose une **médiation** sans pouvoir décisionnel.
+- Si accord, **PV de conciliation** signé = exécutoire.
+
+#### Avantages
+
+- **Gratuit**.
+- **Rapide** (1-3 mois).
+- Pas besoin d'avocat.
+
+#### Inconvénients
+
+- Le voyageur peut **refuser** de venir.
+- Si refus, tu dois passer en justice classique.
+
+### Procédure 2 — L'injonction de payer (~30-50 €)
+
+Procédure simplifiée pour **réclamer un montant chiffré**.
+
+#### Comment ça marche
+
+1. Tu envoies une **mise en demeure** au voyageur (recommandée AR).
+2. Sans paiement sous 8 jours, tu déposes une **requête en injonction de payer** auprès du tribunal.
+3. Le juge examine **uniquement sur dossier** (sans audience).
+4. Si dossier solide, le juge **ordonne** le paiement.
+5. Le voyageur a 30 jours pour faire **opposition** (sinon = exécutoire).
+
+#### Avantages
+
+- **Pas d'audience** (souvent gagné par défaut).
+- **Pas d'avocat** (sauf en cas d'opposition).
+- **Coût faible** (30-50 € de frais).
+
+#### Inconvénients
+
+- Inutile si le voyageur conteste = procédure classique.
+- Limité aux dettes chiffrées (pas pour préjudice moral).
+
+### Procédure 3 — Le tribunal de proximité (~30 € + frais d'huissier)
+
+Pour les litiges **5000 à 10000 €**.
+
+#### Comment ça marche
+
+1. Tu **assignes** le voyageur (par huissier).
+2. **Audience** au tribunal (toi + voyageur).
+3. Le juge **tranche** avec ou sans avocat.
+
+#### Avantages
+
+- **Pas obligatoire** d'avoir un avocat.
+- **Rapide** (3-6 mois).
+- Coût modéré.
+
+#### Inconvénients
+
+- Audience peut être **stressante**.
+- Frais d'huissier (~150 €) si voyageur résiste.
+- Tu dois te déplacer.
+
+---
+
+## Les conditions sine qua non pour gagner
+
+Pour avoir **une chance** de gagner :
+
+### 1. Documentation parfaite
+
+- 47 photos avant + 47 après.
+- Vidéo d'inspection.
+- Devis professionnels.
+- Communication écrite avec voyageur.
+- Contrat signé.
+
+> Sans ces 5 éléments, **n'engage pas de procès**. Tu perds.
+
+### 2. Identité du voyageur
+
+Tu dois connaître :
+
+- **Nom et prénom complets**.
+- **Adresse permanente** (pas l'adresse de séjour).
+- **Email** et **téléphone**.
+
+Sans ces infos, l'huissier ne peut pas signifier l'assignation, le procès n'existe pas.
+
+> **Réflexe :** demande systématiquement la **pièce d'identité** au voyageur (Module 1.L3).
+
+### 3. Préjudice chiffré et justifié
+
+- **Devis professionnel** signé et daté.
+- **Factures acquittées** si déjà réparé.
+- **Calcul détaillé** du préjudice.
+
+> "À la louche" = 0 chance.
+
+---
+
+## Les coûts cachés du procès
+
+### Temps
+
+- Préparation du dossier : 5-10 h.
+- Procédure (échanges, audience) : 10-20 h.
+- Total : **15 à 30 heures**.
+
+### Argent
+
+- Frais de greffe : 30-50 €.
+- Huissier (si assignation) : 150-300 €.
+- Avocat (si nécessaire) : 1500-5000 €.
+- Total : **30 € à 5000 €** selon procédure.
+
+### Émotionnel
+
+- Stress de l'audience.
+- Doute sur la décision.
+- Re-vivre les faits du litige.
+
+> Un procès est **éprouvant** même quand on gagne.
+
+---
+
+## Quand laisser tomber (le vrai courage)
+
+### Tu dois lâcher prise si
+
+- **Préjudice < 500 €** (rentabilité négative).
+- **Pas d'identité** complète du voyageur.
+- **Pas de documentation** solide.
+- **Voyageur à l'étranger** (procédure internationale = cauchemar).
+- **Préjudice émotionnel** sans préjudice financier (pas de dossier).
+
+### Comment intégrer la perte
+
+> *« J'ai perdu 300 €. C'est cher payé pour cette leçon. Je vais en tirer 3 améliorations dans mon process : [...] et passer à autre chose. »*
+
+C'est la **mentalité du pro**.
+
+> Mieux vaut perdre 300 € sereinement que gagner 300 € après 50 heures de stress.
+
+---
+
+## La vraie victoire : la prévention
+
+Plus tu fais cette formation, plus tu **préviens**.
+
+| Profil | Incidents/an | Préjudice/an |
+|---|---|---|
+| **Hôte non formé** | 5-8 | 1500-3000 € |
+| **Hôte formé "prévention"** | 1-2 | 100-500 € |
+| **Hôte formé + outils** | 0-1 | 0-100 € |
+
+> La justice, c'est pour **réparer** le passé.
+> La prévention, c'est pour **construire** un avenir serein.
+
+---
+
+## Exercice — action immédiate
+
+1. **Vérifie** que tu as toutes les **identités complètes** de tes voyageurs des 6 derniers mois.
+2. **Identifie** un conciliateur de justice près de chez toi (mairie ou tribunal).
+3. **Calcule** ton ROI personnel : combien d'heures vaut 1 € pour toi ?
+4. **Décide d'avance** ton seuil personnel : à partir de quel montant tu vas en justice ?
+
+> La meilleure procédure est celle qu'on **n'a pas besoin** de lancer.`,
+        },
+      ],
+    },
   ],
 }
