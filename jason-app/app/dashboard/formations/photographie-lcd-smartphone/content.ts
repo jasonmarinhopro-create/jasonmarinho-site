@@ -338,335 +338,201 @@ Garde cette liste — on s'en servira au **module 5**.`,
           id: 1,
           title: `Smartphone vs reflex : ce qui compte vraiment`,
           duration: '8 min',
-          content: `---
+          content: `## La (bonne) nouvelle : ton smartphone suffit
 
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-Smartphone vs reflex
-Ce qui compte vraiment en photo LCD
-────────────────────────────────────
+Si tu as acheté ton téléphone après 2020, tu as déjà un appareil photo qui **rivalise avec un reflex pro de 2015**.
 
----
+Voici ce que les smartphones modernes font mieux qu'un reflex pour la photo LCD :
 
-## La (bonne) nouvelle : ton smartphone suffit
-Si tu as acheté ton téléphone après 2020,
-tu as déjà un appareil photo qui rivalise
-avec un reflex pro de 2015.
+- **HDR automatique** — la photo équilibre seule les zones claires et sombres. Plus de fenêtres "brûlées".
+- **Mode portrait + mode nuit** — lumière faible gérée automatiquement.
+- **Stabilisation logicielle** — tu peux photographier sans trépied dans la plupart des conditions.
+- **Aperçu temps réel** — tu vois exactement ce que tu obtiens.
+- **Partage immédiat** — de la prise de vue à la publication sur Airbnb : 30 minutes max.
 
-Voici ce que les smartphones modernes font
-mieux qu'un reflex pour la photo LCD :
-
-→ HDR automatique
-  La photo équilibre seule
-  les zones claires et sombres.
-  Plus de fenêtres "brûlées".
-
-→ Mode portrait + mode nuit
-  Lumière faible gérée automatiquement.
-
-→ Stabilisation logicielle
-  Tu peux photographier sans trépied
-  dans la plupart des conditions.
-
-→ Aperçu temps réel
-  Tu vois exactement ce que tu obtiens.
-
-→ Partage immédiat
-  De la prise de vue à la publication
-  sur Airbnb : 30 minutes max.
-
-→ Conclusion : pour 95 % des hôtes LCD,
-  le smartphone est la **meilleure option**,
-  pas une option de repli.
+> **Conclusion :** pour 95 % des hôtes LCD, le smartphone est la **meilleure** option, pas une option de repli.
 
 ---
 
 ## Quand un reflex devient pertinent
-Il y a 2 cas où un appareil pro fait
-vraiment une différence :
 
-**1. Très grand espace (loft, gîte 200 m²+)**
-Un objectif ultra grand-angle (10-12 mm)
-permet de capturer une pièce entière
-sans déformation excessive.
-Les smartphones plafonnent vers 13-15 mm
-équivalent, ce qui est limite pour
-les très grands volumes.
+Il y a **2 cas** où un appareil pro fait vraiment une différence :
 
-**2. Très basse lumière sans aménagement**
-Cave aménagée, sous-sol, chambre sans fenêtre.
-Un capteur plein format gère mieux le bruit
-qu'un capteur smartphone.
+### 1. Très grand espace (loft, gîte 200 m²+)
 
-→ Dans 95 % des cas (logements urbains
-  ou maisons standards), tu n'es pas
-  dans ces 2 cas.
+Un objectif ultra grand-angle *(10-12 mm)* permet de capturer une pièce entière sans déformation excessive. Les smartphones plafonnent vers 13-15 mm équivalent, ce qui est limite pour les très grands volumes.
+
+### 2. Très basse lumière sans aménagement
+
+Cave aménagée, sous-sol, chambre sans fenêtre. Un capteur plein format gère mieux le bruit qu'un capteur smartphone.
+
+> Dans **95 % des cas** *(logements urbains ou maisons standards)*, tu n'es pas dans ces 2 cas.
 
 ---
 
-## Ce qui compte VRAIMENT en photo LCD
-Voici la hiérarchie d'impact, du plus important
-au moins important, sur la qualité finale :
+## Ce qui compte vraiment en photo LCD
 
-01. **Lumière naturelle** ............ 50 %
-    Plein soleil ? Gris ? Couchant ?
-    À 9h ou à 16h ?
+Voici la hiérarchie d'impact, du plus important au moins important, sur la qualité finale :
 
-02. **Composition et angle** ......... 25 %
-    Hauteur du téléphone, équilibre,
-    perspective.
+| Facteur | Poids |
+|---|---|
+| **Lumière naturelle** | 50 % |
+| **Composition et angle** | 25 % |
+| **Mise en scène** *(home staging)* | 15 % |
+| Réglages d'appareil *(HDR, expo)* | 7 % |
+| Matériel utilisé | 3 % |
 
-03. **Mise en scène (home staging)** . 15 %
-    Ce qu'il y a dans le cadre.
+> **75 %** de ta photo dépend de la **lumière** et de la **composition**. Ce qui ne coûte **rien**.
 
-04. **Réglages d'appareil** ..........  7 %
-    HDR, exposition, balance des blancs.
-
-05. **Matériel utilisé** .............  3 %
-    Smartphone récent, reflex, drone...
-
-→ 75 % de ta photo dépend de la lumière
-  et de la composition.
-  Ce qui ne coûte **rien**.
-
-→ 3 % seulement dépend de ton appareil.
-  C'est exactement pourquoi un smartphone
-  est largement suffisant.
+> **3 %** seulement dépend de ton appareil. C'est exactement pourquoi un smartphone est largement suffisant.
 
 ---
 
 ## Quel smartphone pour une photo LCD optimale
-Si tu te poses la question "dois-je changer
-de téléphone pour faire de meilleures photos ?",
-voici la réponse honnête :
 
-**iPhone 11 ou plus récent** → photo LCD parfaite
-**Samsung Galaxy S20+ ou plus récent** → idem
-**Google Pixel 5 ou plus récent** → excellent
-**Tout autre Android haut de gamme post-2020** → bon
+Si tu te poses la question *« dois-je changer de téléphone pour faire de meilleures photos ? »*, voici la réponse honnête :
 
-→ Si ton téléphone est dans cette liste,
-  ne le change pas. Concentre-toi sur
-  la lumière et la composition.
+- **iPhone 11** ou plus récent → photo LCD parfaite
+- **Samsung Galaxy S20+** ou plus récent → idem
+- **Google Pixel 5** ou plus récent → excellent
+- Tout autre **Android haut de gamme post-2020** → bon
 
-→ Si ton téléphone date d'avant 2019,
-  tu peux faire de bonnes photos,
-  mais pour 200-300 € d'un smartphone
-  d'occasion récent, tu auras un saut
-  qualitatif visible.
+> Si ton téléphone est dans cette liste, **ne le change pas**. Concentre-toi sur la lumière et la composition.
+
+> Si ton téléphone date d'**avant 2019**, tu peux faire de bonnes photos, mais pour 200-300 € d'un smartphone d'occasion récent, tu auras un saut qualitatif visible.
 
 ---
 
 ## Le mythe du "mode pro"
-Beaucoup d'apps photo proposent un "mode pro"
-avec ISO, vitesse, ouverture, balance des blancs
-en manuel.
 
-Sauf à être photographe formé,
-**n'utilise pas ce mode**.
+Beaucoup d'apps photo proposent un "mode pro" avec ISO, vitesse, ouverture, balance des blancs en manuel.
 
-L'auto de ton smartphone est calibré
-par des ingénieurs qui ont testé
-des millions de scènes. Tu feras
-presque toujours pire en manuel.
+Sauf à être photographe formé, **n'utilise pas ce mode**.
 
-→ Une seule exception : le réglage HDR.
-  Active-le toujours en photographie
-  de pièces avec fenêtres.
+> L'auto de ton smartphone est calibré par des ingénieurs qui ont testé des millions de scènes. Tu feras presque toujours **pire** en manuel.
+
+**Une seule exception :** le réglage **HDR**. Active-le toujours en photographie de pièces avec fenêtres.
 
 ---
 
-## Exercice
-**Avant la prochaine leçon :**
+## Exercice — avant la prochaine leçon
 
-01. Vérifie le modèle de ton téléphone
-    et la version de son OS (iOS ou Android).
-    Mets-le à jour si nécessaire.
+1. **Vérifie le modèle** de ton téléphone et la version de son OS *(iOS ou Android)*. Mets-le à jour si nécessaire.
+2. **Active le HDR automatique** :
+   - **iPhone :** Réglages → Appareil photo → HDR auto
+   - **Samsung :** App photo → Paramètres → HDR auto
+   - **Pixel :** App photo → Paramètres → HDR+ auto
+3. **Active la grille de composition** :
+   - **iPhone :** Réglages → Appareil photo → Grille
+   - **Android :** App photo → Paramètres → Grille
 
-02. Active le HDR automatique :
-    iPhone : Réglages → Appareil photo → HDR auto
-    Samsung : App photo → Paramètres → HDR auto
-    Pixel : App photo → Paramètres → HDR+ auto
-
-03. Active la grille de composition :
-    iPhone : Réglages → Appareil photo → Grille
-    Android : App photo → Paramètres → Grille
-
-C'est tout pour le matériel.
-On passe aux 3 accessoires utiles à 50 €.`,
+> C'est tout pour le matériel. On passe aux **3 accessoires utiles à 50 €**.`,
         },
         {
           id: 2,
           title: `3 accessoires utiles à moins de 50 €`,
           duration: '7 min',
-          content: `---
+          content: `## Accessoire 1 — Le mini-trépied *(15-25 €)*
 
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-3 accessoires utiles à moins de 50 €
-Et pourquoi tu n'as besoin de rien d'autre
-────────────────────────────────────
+Un petit trépied de table avec rotule inclinable. Hauteur 20-30 cm dépliée, se range dans une poche.
 
----
+### Pourquoi c'est utile
 
-## Accessoire 1 — Le mini-trépied (15-25 €)
-Un petit trépied de table avec rotule
-inclinable. Hauteur 20-30 cm dépliée,
-se range dans une poche.
+- Photo nette en basse lumière *(tôt le matin, fin de journée)*
+- Cadrage stable et identique entre 2 prises de vue
+- Te libère les mains pour ajuster la déco entre 2 photos
+- Idéal pour les photos à hauteur de table
 
-**Pourquoi c'est utile :**
-→ Photo nette en basse lumière
-  (tôt le matin, fin de journée)
-→ Cadrage stable et identique
-  entre 2 prises de vue
-→ Te libère les mains pour
-  ajuster la déco entre 2 photos
-→ Idéal pour les photos à hauteur de table
+### Quoi acheter
 
-**Quoi acheter :**
-Cherche "trépied flexible smartphone"
-ou "Joby GorillaPod Mobile" (~25 €).
-Pieds flexibles = tu peux le poser
-sur une rampe d'escalier, accrocher
-à une chaise, l'incliner partout.
+Cherche **"trépied flexible smartphone"** ou *"Joby GorillaPod Mobile"* *(~25 €)*. Pieds flexibles = tu peux le poser sur une rampe d'escalier, accrocher à une chaise, l'incliner partout.
 
-→ Ne dépense pas plus de 25 €.
-  Au-delà, c'est du gadget.
+> Ne dépense pas plus de **25 €**. Au-delà, c'est du gadget.
 
 ---
 
-## Accessoire 2 — La lentille grand-angle clipsable (20-30 €)
-Une petite lentille qui se clipse
-sur l'objectif de ton smartphone
-pour élargir le champ de vision.
+## Accessoire 2 — La lentille grand-angle clipsable *(20-30 €)*
 
-**Pourquoi c'est utile :**
-→ Capture une pièce entière
-  même si elle est petite
-→ Donne l'impression d'espace
-  (très important pour les studios
-   ou petits 1 chambre)
-→ Permet de photographier debout
-  sans avoir à reculer dans le couloir
+Une petite lentille qui se clipse sur l'objectif de ton smartphone pour élargir le champ de vision.
 
-**Attention :**
-→ Une lentille trop large déforme l'image
-  (effet "fisheye"). Choisis une
-  0.45x à 0.6x, pas en dessous.
-→ N'utilise pas la lentille pour
-  les portraits ou plans serrés
-  (pour les détails, l'objectif natif
-   est meilleur).
+### Pourquoi c'est utile
 
-**Quoi acheter :**
-Cherche "lentille grand-angle clip
-smartphone 0.45x". Marques honnêtes :
-APEXEL, Moment, Selvim. Compte 25 € max.
+- Capture une pièce entière même si elle est petite
+- Donne l'**impression d'espace** *(très important pour les studios ou petits 1 chambre)*
+- Permet de photographier debout sans avoir à reculer dans le couloir
 
-→ Si ton logement fait moins de 30 m²,
-  cette lentille est presque indispensable.
-→ Si ton logement fait plus de 60 m²,
-  elle est facultative (le mode photo
-  de ton téléphone est probablement
-  déjà assez large).
+### Attention
+
+- Une lentille **trop large** déforme l'image *(effet "fisheye")*. Choisis une **0.45x à 0.6x**, pas en dessous.
+- N'utilise pas la lentille pour les portraits ou plans serrés *(pour les détails, l'objectif natif est meilleur)*.
+
+### Quoi acheter
+
+Cherche **"lentille grand-angle clip smartphone 0.45x"**. Marques honnêtes : *APEXEL, Moment, Selvim*. Compte 25 € max.
+
+- Si ton logement fait **moins de 30 m²**, cette lentille est presque indispensable.
+- Si ton logement fait **plus de 60 m²**, elle est facultative *(le mode photo de ton téléphone est probablement déjà assez large)*.
 
 ---
 
-## Accessoire 3 — Le panneau réflecteur (10-15 €)
-Un disque pliable blanc ou doré
-qui réfléchit la lumière naturelle
-vers les zones sombres.
+## Accessoire 3 — Le panneau réflecteur *(10-15 €)*
 
-**Pourquoi c'est utile :**
-→ Adoucit les ombres dures
-  (visage caché du canapé,
-   coin sombre d'une cuisine)
-→ Apporte de la lumière chaude
-  dans une pièce trop bleue
-→ Remplace 100 % du flash
-  (qui est à proscrire absolument)
+Un disque pliable blanc ou doré qui réfléchit la lumière naturelle vers les zones sombres.
 
-**Quoi acheter :**
-"Réflecteur photo pliable 5 en 1"
-ou "réflecteur 60 cm". 12 € sur Amazon.
-Modèle 5 en 1 = blanc, doré, argenté,
-noir, translucide. Tu utiliseras
-surtout le blanc et le doré.
+### Pourquoi c'est utile
 
-**Comment l'utiliser :**
-→ Place-toi face à la fenêtre.
-→ Le réflecteur sur le côté opposé
-  à la lumière, à 1-2 mètres du sujet,
-  incliné vers la zone à éclairer.
-→ Demande à un proche de le tenir
-  pendant que tu prends la photo.
-→ Compare avant/après — magie.
+- Adoucit les ombres dures *(visage caché du canapé, coin sombre d'une cuisine)*
+- Apporte de la lumière chaude dans une pièce trop bleue
+- Remplace **100 % du flash** *(qui est à proscrire absolument)*
+
+### Quoi acheter
+
+**"Réflecteur photo pliable 5 en 1"** ou *"réflecteur 60 cm"*. 12 € sur Amazon. Le modèle 5 en 1 contient : *blanc, doré, argenté, noir, translucide*. Tu utiliseras surtout le **blanc** et le **doré**.
+
+### Comment l'utiliser
+
+1. Place-toi face à la fenêtre.
+2. Place le réflecteur sur le côté opposé à la lumière, à 1-2 mètres du sujet, incliné vers la zone à éclairer.
+3. Demande à un proche de le tenir pendant que tu prends la photo.
+4. Compare avant / après — *magie*.
 
 ---
 
-## Ce que tu n'achèteras PAS (et pourquoi)
-Les pièges que les fabricants
-vendent aux hôtes débutants :
+## Ce que tu n'achèteras pas *(et pourquoi)*
 
-**❌ Un drone**
-Joli pour 1 photo aérienne, mais inutile
-pour 95 % des annonces. Achat impulsif.
-Si tu veux une vue aérienne, fais-toi
-prêter un drone par un voisin
-ou paie 50 € à un freelance local.
+Les pièges que les fabricants vendent aux hôtes débutants :
 
-**❌ Une ringlight (lumière cercle)**
-Conçue pour le portrait, pas pour
-les pièces. Fait des reflets affreux
-sur les murs et les vitres.
-
-**❌ Un objectif macro pour smartphone**
-Sauf si tu fais des photos de moustiques.
-Aucune utilité en LCD.
-
-**❌ Un kit photo "spécial Airbnb" à 200 €**
-Marketing. Tu peux faire mieux avec
-les 3 accessoires ci-dessus.
-
-**❌ Un appareil photo argentique vintage**
-Vu chez certains hôtes esthètes.
-Très coûteux à développer, lent,
-imprévisible. Aucun intérêt opérationnel.
+- **Un drone** — joli pour 1 photo aérienne, mais inutile pour 95 % des annonces. Si tu veux une vue aérienne, fais-toi prêter un drone par un voisin ou paie 50 € à un freelance local.
+- **Une ringlight** *(lumière cercle)* — conçue pour le portrait, pas pour les pièces. Fait des reflets affreux sur les murs et les vitres.
+- **Un objectif macro** pour smartphone — sauf si tu fais des photos de moustiques. Aucune utilité en LCD.
+- **Un kit photo "spécial Airbnb" à 200 €** — marketing. Tu peux faire mieux avec les 3 accessoires ci-dessus.
+- **Un appareil argentique vintage** — très coûteux à développer, lent, imprévisible. Aucun intérêt opérationnel.
 
 ---
 
 ## Ton kit photo LCD complet
-Récap de ce que tu peux acheter
-pour démarrer :
 
-→ Mini-trépied flexible ........... 25 €
-→ Lentille grand-angle 0.45x ...... 25 €
-→ Réflecteur 5 en 1 60 cm ......... 12 €
-→ Total ........................... 62 €
+Récap de ce que tu peux acheter pour démarrer :
 
-→ Si budget serré : commence par le réflecteur
-  (12 €). C'est l'accessoire qui donne
-  le plus de différence visible immédiatement.
+| Accessoire | Prix |
+|---|---|
+| Mini-trépied flexible | 25 € |
+| Lentille grand-angle 0.45x | 25 € |
+| Réflecteur 5 en 1 60 cm | 12 € |
+| **Total** | **62 €** |
 
-→ Si tu n'achètes qu'une seule chose,
-  achète le réflecteur.
+> **Budget serré ?** Commence par le **réflecteur** *(12 €)*. C'est l'accessoire qui donne le plus de différence visible immédiatement.
+
+> Si tu n'achètes qu'**une seule** chose, achète le **réflecteur**.
 
 ---
 
-## Exercice
-**Avant le prochain module :**
+## Exercice — avant le prochain module
 
-Choisis ton kit (1 à 3 accessoires)
-selon ton budget et la taille de ton logement.
+1. **Choisis ton kit** *(1 à 3 accessoires)* selon ton budget et la taille de ton logement.
+2. **Commande** maintenant *(2-3 jours de livraison)* pour qu'ils soient là quand tu attaqueras les sessions photo du module 5.
 
-Commande tes accessoires maintenant
-(2-3 jours de livraison) pour qu'ils soient
-là quand tu attaqueras les sessions photo
-du module 5.
-
-Pendant l'attente, le module 3
-sera 100 % gratuit à mettre en pratique :
-préparer ton logement.`,
+> Pendant l'attente, le module 3 sera **100 % gratuit** à mettre en pratique : préparer ton logement.`,
         },
       ],
     },
