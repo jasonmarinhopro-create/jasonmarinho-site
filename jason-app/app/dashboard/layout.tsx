@@ -30,6 +30,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           userName={profile.full_name ?? undefined}
           currentPlan={planLabel}
           isAdmin={isAdmin}
+          userId={profile.userId}
         />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>

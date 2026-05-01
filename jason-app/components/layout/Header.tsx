@@ -103,9 +103,11 @@ interface HeaderProps {
   currentPlan?: string
   /** Passé depuis le layout. Évite un useEffect qui refait 2 queries Supabase à chaque navigation. */
   isAdmin?: boolean
+  /** Pour le lien "Mon profil Chez Nous" dans le dropdown */
+  userId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -301,6 +303,12 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                     <UserCircle size={15} />
                     Mon profil
                   </Link>
+                  {userId && (
+                    <Link href={`/dashboard/chez-nous/membre/${userId}`} style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
+                      <UserCircle size={15} weight="duotone" />
+                      Mon profil Chez Nous
+                    </Link>
+                  )}
                   <Link href="/dashboard/abonnement" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <CreditCard size={15} />
                     Mon abonnement

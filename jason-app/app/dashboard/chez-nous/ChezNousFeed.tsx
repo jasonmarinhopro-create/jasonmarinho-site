@@ -297,6 +297,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
             firstName={currentUserName.split(/\s+/)[0] || ''}
             initials={(currentUserName || 'JM').split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)}
             onOpen={() => setShowForm(true)}
+            userId={currentUserId}
           />
 
           {/* Tri */}
@@ -376,13 +377,19 @@ function InviteFriendsCard({ onClick }: { onClick: () => void }) {
 }
 
 // ─── ComposerCard (Facebook-style "Exprimez-vous") ────────────────────
-function ComposerCard({ firstName, initials, onOpen }: {
-  firstName: string; initials: string; onOpen: () => void
+function ComposerCard({ firstName, initials, onOpen, userId }: {
+  firstName: string; initials: string; onOpen: () => void; userId: string
 }) {
   return (
     <div style={s.composerCard}>
       <div style={s.composerRow}>
-        <div style={s.composerAvatar}>{initials}</div>
+        <Link
+          href={`/dashboard/chez-nous/membre/${userId}`}
+          style={{ ...s.composerAvatar, textDecoration: 'none', cursor: 'pointer' }}
+          title="Voir mon profil Chez Nous"
+        >
+          {initials}
+        </Link>
         <button onClick={onOpen} style={s.composerInput}>
           {firstName ? `Exprime-toi, ${firstName}…` : 'Pose ta question, partage une expérience…'}
         </button>

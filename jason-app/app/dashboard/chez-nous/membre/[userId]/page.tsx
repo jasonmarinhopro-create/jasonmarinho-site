@@ -10,6 +10,13 @@ import { BADGES } from '@/lib/badges'
 
 export const dynamic = 'force-dynamic'
 
+const PLATFORM_META: Record<string, { label: string; color: string; bg: string }> = {
+  airbnb:  { label: 'Airbnb',  color: '#FF5A5F', bg: 'rgba(255,90,95,0.10)' },
+  booking: { label: 'Booking', color: '#003580', bg: 'rgba(0,53,128,0.08)' },
+  gmb:     { label: 'Google',  color: '#34A853', bg: 'rgba(52,168,83,0.10)' },
+  direct:  { label: 'Direct',  color: '#7C3AED', bg: 'rgba(124,58,237,0.10)' },
+}
+
 type Props = { params: Promise<{ userId: string }> }
 
 export default async function MembrePage({ params }: Props) {
@@ -57,15 +64,37 @@ export default async function MembrePage({ params }: Props) {
 
   return (
     <>
-      <div style={s.page}>
+      <style>{`
+        /* Responsive : profil colonne pleine sur tablette/mobile */
+        @media (max-width: 1023px) {
+          .cn-member-layout    { flex-direction: column !important; }
+          .cn-member-profile   {
+            position: static !important;
+            flex: 1 1 100% !important;
+            width: 100% !important;
+          }
+          .cn-member-activity  { flex: 1 1 100% !important; width: 100% !important; }
+        }
+        @media (max-width: 640px) {
+          .cn-member-page      { padding: 12px !important; }
+          .cn-member-profile-card { padding: 18px !important; gap: 14px !important; }
+          .cn-member-name      { font-size: 22px !important; }
+          .cn-member-stats     { grid-template-columns: repeat(3, 1fr) !important; }
+          .cn-member-stat-pill { padding: 10px 6px !important; }
+          .cn-member-section-title { font-size: 16px !important; }
+          .cn-member-item      { padding: 12px !important; }
+        }
+      `}</style>
+
+      <div style={s.page} className="cn-member-page">
         <Link href="/dashboard/chez-nous" style={s.back}>
           <ArrowLeft size={14} weight="bold" /> Retour Chez Nous
         </Link>
 
-        <div style={s.layout}>
+        <div style={s.layout} className="cn-member-layout">
           {/* ── Colonne profil (sticky) ── */}
-          <aside style={s.profileCol}>
-            <div style={s.profileCard}>
+          <aside style={s.profileCol} className="cn-member-profile">
+            <div style={s.profileCard} className="cn-member-profile-card">
               {/* Avatar */}
               <div style={s.avatarRing}>
                 <div style={{ ...s.avatarLg, background: av.bg, color: av.text }}>
@@ -75,7 +104,7 @@ export default async function MembrePage({ params }: Props) {
 
               {/* Nom + rôles */}
               <div style={s.nameSection}>
-                <h1 style={s.name}>{name}</h1>
+                <h1 style={s.name} className="cn-member-name">{name}</h1>
                 <div style={s.tagRow}>
                   {member.is_contributor && (
                     <span style={s.contribTag}>Contributeur</span>
@@ -103,6 +132,8 @@ export default async function MembrePage({ params }: Props) {
                     {stats.badges.map(bid => (
                       <span
                         key={bid}
+                        className="cn-member-badge"
+                        data-badge-id={bid}
                         style={{ ...s.badgeChip, color: BADGES[bid].color, background: BADGES[bid].bg, borderColor: `${BADGES[bid].color}44` }}
                         title={BADGES[bid].title}
                       >
@@ -114,13 +145,63 @@ export default async function MembrePage({ params }: Props) {
               )}
 
               {/* Stats */}
-              <div style={s.statsRow}>
+              <div style={s.statsRow} className="cn-member-stats">
                 <StatPill label="Discussions" value={stats.postsCount} />
                 <StatPill label="Réponses" value={stats.repliesCount} />
                 {stats.logementsCount !== null && (
                   <StatPill label="Logements" value={stats.logementsCount} />
                 )}
               </div>
+
+              {/* Plateformes utilisées (si visibles) */}
+              {stats.platforms.length > 0 && (
+                <div style={s.badgeSection}>
+                  <span style={s.microLabel}>Plateformes utilisées</span>
+                  <div style={s.badgeRow}>
+                    {stats.platforms.map(p => {
+                      const meta = PLATFORM_META[p] ?? { label: p, color: 'var(--text-2)', bg: 'var(--surface-2)' }
+                      return (
+                        <span
+                          key={p}
+                          style={{ ...s.platChip, color: meta.color, background: meta.bg, borderColor: `${meta.color}33` }}
+                        >
+                          {meta.label}
+                        </span>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Top catégories où il/elle s'exprime */}
+              {stats.topCategories.length > 0 && (
+                <div style={s.badgeSection}>
+                  <span style={s.microLabel}>S&apos;exprime sur</span>
+                  <div style={s.badgeRow}>
+                    {stats.topCategories.map(({ category, count }) => {
+                      const cat = CATEGORIES[category as CategoryId]
+                      if (!cat) return null
+                      return (
+                        <span
+                          key={category}
+                          style={{ ...s.platChip, color: cat.color, background: cat.bg, borderColor: `${cat.color}33` }}
+                          title={`${count} post${count > 1 ? 's' : ''}`}
+                        >
+                          {cat.short} <span style={s.catCount}>{count}</span>
+                        </span>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Dernière activité */}
+              {stats.lastActiveAt && (
+                <p style={s.lastActive}>
+                  <span style={s.lastActiveDot} />
+                  Actif {formatRelative(stats.lastActiveAt)}
+                </p>
+              )}
 
               {isMe && (
                 <Link href="/dashboard/profil" style={s.editBtn}>
@@ -132,7 +213,7 @@ export default async function MembrePage({ params }: Props) {
           </aside>
 
           {/* ── Colonne activité ── */}
-          <main style={s.activityCol}>
+          <main style={s.activityCol} className="cn-member-activity">
             {!hasActivity ? (
               <div style={s.empty}>
                 <House size={28} color="var(--accent-text)" weight="duotone" />
@@ -154,7 +235,7 @@ export default async function MembrePage({ params }: Props) {
               <>
                 {(posts ?? []).length > 0 && (
                   <section style={s.section}>
-                    <h2 style={s.sectionTitle}>Discussions lancées</h2>
+                    <h2 style={s.sectionTitle} className="cn-member-section-title">Discussions lancées</h2>
                     <div style={s.list}>
                       {(posts ?? []).map(p => {
                         const cat = CATEGORIES[p.category as CategoryId]
@@ -180,7 +261,7 @@ export default async function MembrePage({ params }: Props) {
 
                 {(replies ?? []).length > 0 && (
                   <section style={s.section}>
-                    <h2 style={s.sectionTitle}>Réponses apportées</h2>
+                    <h2 style={s.sectionTitle} className="cn-member-section-title">Réponses apportées</h2>
                     <div style={s.list}>
                       {(replies ?? []).map(r => {
                         const postTitle = (r.chez_nous_posts as unknown as { title: string } | { title: string }[] | null)
@@ -210,7 +291,7 @@ export default async function MembrePage({ params }: Props) {
 
 function StatPill({ label, value }: { label: string; value: number }) {
   return (
-    <div style={s.statPill}>
+    <div style={s.statPill} className="cn-member-stat-pill">
       <span style={s.statValue}>{value}</span>
       <span style={s.statLabel}>{label}</span>
     </div>
@@ -390,5 +471,30 @@ const s: Record<string, React.CSSProperties> = {
     fontWeight: 700, fontSize: '13px',
     padding: '9px 20px', borderRadius: '10px',
     border: 'none', textDecoration: 'none', marginTop: '6px',
+  },
+
+  /* ── Plateformes & catégories ── */
+  platChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600,
+    padding: '4px 10px', borderRadius: '999px',
+    border: '1px solid',
+  },
+  catCount: {
+    fontSize: '10px', fontWeight: 700, opacity: 0.7,
+    background: 'rgba(0,0,0,0.06)',
+    padding: '1px 5px', borderRadius: '999px',
+  },
+
+  /* ── Last active ── */
+  lastActive: {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    fontSize: '11px', color: 'var(--text-muted)',
+    margin: 0,
+  },
+  lastActiveDot: {
+    width: '6px', height: '6px', borderRadius: '50%',
+    background: '#10b981',
+    boxShadow: '0 0 0 3px rgba(16,185,129,0.18)',
   },
 }
