@@ -237,7 +237,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si ton CTR est bon (> 6 %) mais ton taux de réservation faible, c'est ton offre globale qui pose problème (description, équipements cochés, politique d'annulation, avis). Le CTR mesure l'attrait au scroll, pas la promesse complète.</span></div>
 <h2 class="art-h2">3. Le taux de conversion (réservations)</h2>
 <p class="art-p">Le taux de conversion est le pourcentage de voyageurs qui réservent après avoir cliqué sur ta fiche. Calcul = réservations / clics. C'est le KPI le plus stratégique : il mesure si ta fiche tient ses promesses une fois cliquée.</p>
-<p class="art-p">Benchmark moyen : 5 à 12 %. Au-dessus de 10 %, ta fiche est très bien construite. En dessous de 5 %, les voyageurs cliquent puis abandonnent — soit ton prix est trop élevé pour ce que tu proposes, soit la description/photos ne tiennent pas la promesse de la vignette, soit tes avis ou ta politique freinent.</p>
+<p class="art-p">Benchmark moyen : 5 à 12 %. Au-dessus de 10 %, ta fiche est très bien construite. En dessous de 5 %, les voyageurs cliquent puis abandonnent, soit ton prix est trop élevé pour ce que tu proposes, soit la description/photos ne tiennent pas la promesse de la vignette, soit tes avis ou ta politique freinent.</p>
 <p class="art-p">Pour améliorer ce taux : optimiser la description longue, ajouter 5 photos additionnelles si tu en as moins de 25, vérifier que ta politique d'annulation est cohérente avec le marché, soigner tes 5 derniers avis (réponses publiques aux avis < 5★).</p>
 <h2 class="art-h2">4. Le taux d'acceptation et le délai de réponse</h2>
 <p class="art-p">Ces 2 indicateurs (groupés dans la section Performances → Hospitalité) impactent directement ton classement algorithmique. Le taux d'acceptation = réservations acceptées / demandes reçues. Le délai de réponse = temps moyen pour répondre aux messages.</p>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getFullMemberProfile } from '../../actions'
 import MembreDetailUI from './MembreDetailUI'
 
-export const metadata = { title: 'Fiche membre — Jason Marinho' }
+export const metadata = { title: 'Fiche membre, Jason Marinho' }
 
 export default async function MembreDetailPage({ params }: { params: { id: string } }) {
   const supabase = await createClient()

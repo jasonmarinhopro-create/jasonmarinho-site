@@ -11,7 +11,7 @@ description: "Smoobu, Lodgify, Hostaway, Beds24 : comparatif des PMS pour hôtes
 
 Quand on gère un ou deux logements en location courte durée, on peut s'en sortir avec Airbnb et un tableur. Mais dès que tu commences à recevoir plusieurs réservations par semaine, à jongler entre Airbnb, Booking.com et tes canaux directs, les risques de double réservation et les pertes de temps explosent.
 
-C'est là qu'intervient le **PMS** — Property Management System — le logiciel de gestion qui centralise tes réservations, synchronise tes calendriers, automatise tes messages et te donne une vue d'ensemble sur ton activité.
+C'est là qu'intervient le **PMS**, Property Management System, le logiciel de gestion qui centralise tes réservations, synchronise tes calendriers, automatise tes messages et te donne une vue d'ensemble sur ton activité.
 
 Problème : il en existe des dizaines, avec des prix et des fonctionnalités très différents. Voici comment choisir selon ton profil.
 
@@ -34,7 +34,7 @@ Certains PMS vont plus loin : gestion des ménages, rapports financiers, intégr
 À ce stade, tu n'as pas besoin d'un outil complexe ni coûteux. Tes priorités : éviter les doubles réservations, automatiser quelques messages de base, et avoir une vue claire sur ton planning.
 
 ### Smoobu ⭐ Recommandé pour débuter
-Smoobu est l'un des PMS les plus accessibles du marché français. Interface en français, prise en main rapide, et un **plan gratuit jusqu'à 1 logement** — idéal pour tester.
+Smoobu est l'un des PMS les plus accessibles du marché français. Interface en français, prise en main rapide, et un **plan gratuit jusqu'à 1 logement**, idéal pour tester.
 
 - **Prix** : gratuit (1 logement) → à partir de ~25 €/mois pour plusieurs logements
 - **Points forts** : simple, support en français, bon channel manager

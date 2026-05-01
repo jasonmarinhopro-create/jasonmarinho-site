@@ -1,7 +1,7 @@
 export const RESEAUX_SOCIAUX_FORMATION = {
   slug: 'reseaux-sociaux-lcd',
   title: 'Développer sa présence sur les réseaux sociaux pour attirer des voyageurs',
-  description: '81% des voyageurs utilisent Instagram pour chercher leur hébergement. Apprenez à créer une page qui attire, quel contenu publier, quand publier, et comment transformer vos abonnés en réservations directes via Driing — sans y passer des heures.',
+  description: '81% des voyageurs utilisent Instagram pour chercher leur hébergement. Apprenez à créer une page qui attire, quel contenu publier, quand publier, et comment transformer vos abonnés en réservations directes via Driing, sans y passer des heures.',
   duration: '1h45',
   level: 'Débutant',
   objectifs: [
@@ -78,20 +78,20 @@ INSTAGRAM / RÉSEAUX SOCIAUX
 ---
 
 ## Les 3 bénéfices concrets des réseaux sociaux
-BÉNÉFICE 1 — RÉSERVATIONS DIRECTES SANS COMMISSION
+BÉNÉFICE 1, RÉSERVATIONS DIRECTES SANS COMMISSION
 → Un abonné Instagram qui réserve via Driing
   = 0% de commission pour vous
 → Sur 10 abonnés engagés, 1 à 2
   réservent en direct dans l'année
 
-BÉNÉFICE 2 — PREUVE SOCIALE ET CRÉDIBILITÉ
+BÉNÉFICE 2, PREUVE SOCIALE ET CRÉDIBILITÉ
 → Un compte Instagram avec de belles photos
   et des avis voyageurs rassure les futurs clients
 → Un voyageur qui vous "trouve" sur Instagram
   et Airbnb vous perçoit comme plus professionnel
   et plus fiable qu'un hôte invisible en ligne
 
-BÉNÉFICE 3 — FIDÉLISATION ET BOUCHE-À-OREILLE
+BÉNÉFICE 3, FIDÉLISATION ET BOUCHE-À-OREILLE
 → Vos anciens voyageurs vous suivent.
 → Ils voient vos posts, pensent à vous
   quand ils planifient leur prochain voyage.
@@ -100,25 +100,25 @@ BÉNÉFICE 3 — FIDÉLISATION ET BOUCHE-À-OREILLE
 ---
 
 ## Quelle plateforme choisir ?
-INSTAGRAM — LA PRIORITÉ ABSOLUE
+INSTAGRAM, LA PRIORITÉ ABSOLUE
 → Plateforme visuelle = idéale pour les logements
 → Audience : 25-45 ans, voyageurs actifs
 → Fonctionnalités : posts, stories, reels,
   liens en bio, collaboration avec voyageurs
 → Temps requis : 30 min/semaine minimum
 
-FACEBOOK — COMPLÉMENTAIRE
+FACEBOOK, COMPLÉMENTAIRE
 → Plus adapté aux familles et seniors
 → Les groupes locaux = source de clients
   en basse saison
 → Partage automatique depuis Instagram
 
-PINTEREST — BONUS SI VOUS AVEZ DU TEMPS
+PINTEREST, BONUS SI VOUS AVEZ DU TEMPS
 → Trafic long terme vers votre lien Driing
 → Audience : planification de voyages
 → Vos photos de logement + recommandations locales
 
-TikTok — OPTIONNEL
+TikTok, OPTIONNEL
 → Pour les profils à l'aise en vidéo
 → Audience jeune, potentiel fort
   pour les logements atypiques
@@ -131,7 +131,7 @@ TikTok — OPTIONNEL
 
 
 ## Exercice
-**Exercice pratique :** Recherche maintenant sur Instagram le hashtag de ta ville suivi de "location" ou "airbnb" (ex : #locationparis, #airbnblyon). Regarde les comptes qui apparaissent. Lesquels semblent attirer des voyageurs ? Note 2-3 éléments qui t'inspirent — ce sont tes premiers benchmarks.
+**Exercice pratique :** Recherche maintenant sur Instagram le hashtag de ta ville suivi de "location" ou "airbnb" (ex : #locationparis, #airbnblyon). Regarde les comptes qui apparaissent. Lesquels semblent attirer des voyageurs ? Note 2-3 éléments qui t'inspirent, ce sont tes premiers benchmarks.
 
 ---`,
         },
@@ -211,26 +211,26 @@ Les 5 premiers posts définissent
 l'identité de votre compte.
 Ils restent visibles longtemps.
 
-POST 1 — LE POST DE PRÉSENTATION
+POST 1, LE POST DE PRÉSENTATION
 "Bienvenue sur le compte de [Nom logement] !
 Je suis [Prénom], votre hôte.
 Voici votre [type de logement] à [Ville]..."
 + Photo de la pièce principale
 
-POST 2 — VUE D'ENSEMBLE DU LOGEMENT
+POST 2, VUE D'ENSEMBLE DU LOGEMENT
 Carousel de 4-6 photos
 (salon, chambre, cuisine, salle de bain)
 + Description courte et chaleureuse
 
-POST 3 — L'HISTOIRE DE L'ENDROIT
+POST 3, L'HISTOIRE DE L'ENDROIT
 Ce qui rend votre logement ou votre quartier unique.
 Quelque chose de personnel et authentique.
 
-POST 4 — UNE RECOMMANDATION LOCALE
+POST 4, UNE RECOMMANDATION LOCALE
 Votre restaurant préféré, votre spot photo secret...
 + Lien en bio vers votre livret Driing
 
-POST 5 — UNE PHOTO ATMOSPHÉRIQUE
+POST 5, UNE PHOTO ATMOSPHÉRIQUE
 Ambiance de soirée, lumière du matin,
 quelque chose qui fait rêver.
 
@@ -238,7 +238,7 @@ quelque chose qui fait rêver.
 
 
 ## Exercice
-**Exercice pratique :** Crée maintenant votre compte Instagram dédié à ton logement. Passe-le en "Compte Professionnel" (Paramètres → Compte → Passer en compte professionnel). Rédige ta bio en 3 lignes avec le lien Driing. C'est ta page — la prochaine leçon t'apprend quoi y publier.
+**Exercice pratique :** Crée maintenant votre compte Instagram dédié à ton logement. Passe-le en "Compte Professionnel" (Paramètres → Compte → Passer en compte professionnel). Rédige ta bio en 3 lignes avec le lien Driing. C'est ta page, la prochaine leçon t'apprend quoi y publier.
 
 ---`,
         },
@@ -258,13 +258,13 @@ quelque chose qui fait rêver.
 MODULE 2 · LEÇON 1
 ────────────────────────────────────
 Les types de posts
-Ce qui fonctionne — et ce qui ennuie
+Ce qui fonctionne, et ce qui ennuie
 ────────────────────────────────────
 
 ---
 
 ## TYPE 1 : Les photos d'ambiance du logement
-C'est la base — mais ça doit être fait correctement.
+C'est la base, mais ça doit être fait correctement.
 
 CE QUI FONCTIONNE :
 → Lumière naturelle, intérieur mis en scène
@@ -344,7 +344,7 @@ EXEMPLES DE FORMATS :
 ---
 
 ## TYPES 4 ET 5 : Les coulisses et les offres
-TYPE 4 — LES COULISSES (behind the scenes)
+TYPE 4, LES COULISSES (behind the scenes)
 
 → "Voici comment je prépare le logement
    pour votre arrivée"
@@ -358,7 +358,7 @@ TYPE 4 — LES COULISSES (behind the scenes)
   Les voyageurs font plus confiance à un hôte
   qu'ils "connaissent" via les réseaux.
 
-TYPE 5 — LES OFFRES ET DISPONIBILITÉS
+TYPE 5, LES OFFRES ET DISPONIBILITÉS
 
 → "Le logement est libre ce weekend ! 🗓️"
 → "Offre de dernière minute : [Dates] disponibles"
@@ -534,7 +534,7 @@ via 3 mécanismes :
 ## La stratégie hashtags en 3 catégories
 STRUCTURE RECOMMANDÉE : 7 à 12 hashtags par post
 
-CATÉGORIE 1 — HASHTAGS LOCAUX (3-4)
+CATÉGORIE 1, HASHTAGS LOCAUX (3-4)
 Très importants pour toucher les voyageurs
 qui planifient un séjour dans votre zone.
 
@@ -543,7 +543,7 @@ Exemples :
 → #vacancescotedazur #locationbretagne
 → #[NomQuartier] #[NomVille]tourism
 
-CATÉGORIE 2 — HASHTAGS LCD / VOYAGE (3-4)
+CATÉGORIE 2, HASHTAGS LCD / VOYAGE (3-4)
 Pour toucher une audience plus large
 de voyageurs et hôtes LCD.
 
@@ -552,7 +552,7 @@ Exemples :
 → #voyagefrance #travelfrance
 → #weekendescape #sejournantes
 
-CATÉGORIE 3 — HASHTAGS NICHE (1-3)
+CATÉGORIE 3, HASHTAGS NICHE (1-3)
 Spécifiques à votre logement ou cible.
 
 Exemples :
@@ -586,7 +586,7 @@ POURQUOI C'EST IMPORTANT :
 
 → Variez les lieux taguées selon les posts.
   Ne taguez pas toujours exactement
-  la même adresse — variez avec le quartier,
+  la même adresse, variez avec le quartier,
   la ville, les attractions proches.
 
 ---
@@ -670,7 +670,7 @@ EXEMPLE DE PAGE LINKTREE POUR UN HÔTE :
 
 → Astuce : mettez votre lien Linktree
   dans votre bio Instagram, pas directement
-  le lien Driing — vous pouvez ainsi
+  le lien Driing, vous pouvez ainsi
   mettre à jour les liens sans changer
   votre bio Instagram.
 
@@ -795,7 +795,7 @@ Message de bienvenue simple et non intrusif :
 
 Merci de nous suivre 🙏
 Notre logement [Nom] est situé
-à [Ville] — idéal pour [cible principale].
+à [Ville], idéal pour [cible principale].
 
 Si vous planifiez un séjour,
 vous pouvez réserver directement ici
@@ -807,7 +807,7 @@ N'hésitez pas si vous avez des questions !"
 → À envoyer uniquement si le profil
   semble être un voyageur potentiel
   (pas à tous les nouveaux abonnés
-   automatiquement — risque de spam).
+   automatiquement, risque de spam).
 
 → Envoyé manuellement à 5-10 profils
   pertinents par semaine : quelques minutes,
@@ -817,7 +817,7 @@ N'hésitez pas si vous avez des questions !"
 
 
 ## Exercice
-**Exercice pratique :** Cette semaine : réponds à tous les commentaires de tes derniers posts, même anciens. Et regarde si tu as des DM non répondus — chacun peut être un prospect. Pour les nouveaux abonnés dont le profil ressemble à un voyageur potentiel : envoie le message de bienvenue de la slide 4 à 3 d'entre eux.
+**Exercice pratique :** Cette semaine : réponds à tous les commentaires de tes derniers posts, même anciens. Et regarde si tu as des DM non répondus, chacun peut être un prospect. Pour les nouveaux abonnés dont le profil ressemble à un voyageur potentiel : envoie le message de bienvenue de la slide 4 à 3 d'entre eux.
 
 ---`,
         },
@@ -843,7 +843,7 @@ Tout gérer sans y passer sa vie
 ---
 
 ## La semaine type en 30 minutes
-LUNDI — 10 MIN : CRÉATION
+LUNDI, 10 MIN : CRÉATION
 → Prenez 1-2 photos du logement
   ou du quartier
 → Rédigez la légende (2-3 lignes)
@@ -851,20 +851,20 @@ LUNDI — 10 MIN : CRÉATION
 → Programmez via Meta Business Suite
   pour mercredi ou jeudi
 
-MERCREDI — 5 MIN : ENGAGEMENT
+MERCREDI, 5 MIN : ENGAGEMENT
 → Répondez aux commentaires et DM
 → Likez et commentez 3-4 posts
   d'autres comptes de votre secteur
   (visibilité croisée)
 
-VENDREDI — 10 MIN : STORIES
+VENDREDI, 10 MIN : STORIES
 → 2-3 stories rapides :
   détail du logement,
   recommandation locale de la semaine,
   "Le logement est libre ce weekend ?"
   avec sticker lien Driing
 
-DIMANCHE — 5 MIN : ANALYSE
+DIMANCHE, 5 MIN : ANALYSE
 → Regardez vos statistiques Instagram
   (quels posts ont le mieux performé ?)
 → Notez 1 idée de contenu pour la semaine suivante

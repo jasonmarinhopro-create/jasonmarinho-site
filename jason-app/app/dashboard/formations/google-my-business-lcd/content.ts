@@ -23,7 +23,7 @@ export const GMB_FORMATION = {
           duration: '15 min',
           content: `## La confusion qui coûte cher à des centaines d'hôtes
 
-La première chose à comprendre — et que la plupart des formations ne disent pas — c'est qu'il existe **deux systèmes Google complètement différents** pour la LCD.
+La première chose à comprendre, et que la plupart des formations ne disent pas, c'est qu'il existe **deux systèmes Google complètement différents** pour la LCD.
 
 Les confondre, c'est créer une fiche qui peut être suspendue, ou rater complètement la bonne opportunité.
 
@@ -90,7 +90,7 @@ Statistique clé : **95% des vacanciers cherchent leur hébergement sur internet
 
 ### Les 3 piliers officiels du classement local
 
-**① Pertinence — Est-ce que ta fiche correspond à la recherche ?**
+**① Pertinence, Est-ce que ta fiche correspond à la recherche ?**
 
 Optimisé par :
 - Tes **catégories** (modules suivants)
@@ -100,14 +100,14 @@ Optimisé par :
 
 *Exemple :* si quelqu'un cherche "conciergerie Airbnb Bordeaux", avoir ces mots dans ta fiche booste ton score de pertinence.
 
-**② Distance — Quelle est ta proximité géographique ?**
+**② Distance, Quelle est ta proximité géographique ?**
 
 Tu ne contrôles pas ta localisation. Mais tu peux :
 - Vérifier que ton **adresse est précise** sur la carte (glisse le marqueur si nécessaire)
 - Définir une **zone de service** si tu couvres plusieurs villes
 - Créer des pages sur ton site par ville (ex : /conciergerie-bordeaux)
 
-**③ Notoriété — À quel point Google te fait confiance ?**
+**③ Notoriété, À quel point Google te fait confiance ?**
 
 C'est le facteur sur lequel tu as le plus d'impact :
 
@@ -145,20 +145,20 @@ Les modules qui suivent construisent chacun de ces résultats.`,
 
 ### Avant de commencer : checklist
 
-- [ ] Un compte Google professionnel (idéalement avec ton nom de domaine, ex: contact@ma-conciergerie.fr — réduit les risques de suspension)
+- [ ] Un compte Google professionnel (idéalement avec ton nom de domaine, ex: contact@ma-conciergerie.fr, réduit les risques de suspension)
 - [ ] Ton adresse physique exacte (bureau, local, ou adresse de gîte)
 - [ ] Ton numéro de téléphone direct
 - [ ] L'URL de ton site de réservation directe
 
-### Étape 1 — Accéder à Google Business Profile
+### Étape 1, Accéder à Google Business Profile
 
 Va sur **business.google.com** et connecte-toi.
 
 > ⚠️ Avant tout : tape ton nom ou adresse dans Google Maps pour vérifier qu'une fiche n'existe pas déjà. Google crée parfois des fiches automatiquement. Si c'est le cas, **revendique-la** plutôt que d'en créer une nouvelle.
 
-### Étape 2 — Saisir tes informations
+### Étape 2, Saisir tes informations
 
-**Nom d'établissement :** Ton vrai nom d'entreprise — sans mots-clés ajoutés.
+**Nom d'établissement :** Ton vrai nom d'entreprise, sans mots-clés ajoutés.
 
 ✅ "Conciergerie Azur Nice"
 ❌ "Conciergerie Airbnb Nice – Location Vacances Pas Cher"
@@ -169,7 +169,7 @@ Google suspend les fiches avec du keyword stuffing dans le nom.
 
 **Site web :** L'URL directe de ton site (pas de redirection bit.ly, pas de Linktree).
 
-### Étape 3 — La vérification (méthode 2025)
+### Étape 3, La vérification (méthode 2025)
 
 Google a largement **abandonné les cartes postales**. La méthode principale est désormais la **vidéo**.
 
@@ -188,9 +188,9 @@ Google a largement **abandonné les cartes postales**. La méthode principale es
 
 **Vérification instantanée :** Si ton site est déjà vérifié dans Google Search Console avec le même email, Google peut valider immédiatement.
 
-### Étape 4 — Pendant l'attente
+### Étape 4, Pendant l'attente
 
-La fiche n'est pas visible tant qu'elle n'est pas vérifiée. Mais tu peux déjà tout remplir pendant ce temps — les infos seront actives dès validation.
+La fiche n'est pas visible tant qu'elle n'est pas vérifiée. Mais tu peux déjà tout remplir pendant ce temps, les infos seront actives dès validation.
 
 **Ce qu'il ne faut jamais faire :**
 ❌ Mettre une boîte postale ou adresse domiciliation
@@ -225,7 +225,7 @@ La catégorie principale détermine dans quelles recherches tu apparais. C'est u
 
 ### Les règles d'or
 
-1. Google permet jusqu'à **9 catégories** (1 principale + 8 secondaires). Mais n'ajoute que celles vraiment pertinentes — trop de catégories non pertinentes peut nuire.
+1. Google permet jusqu'à **9 catégories** (1 principale + 8 secondaires). Mais n'ajoute que celles vraiment pertinentes, trop de catégories non pertinentes peut nuire.
 
 2. La catégorie principale est la plus importante pour le référencement. Elle détermine 80% de ta pertinence.
 
@@ -235,8 +235,8 @@ La catégorie principale détermine dans quelles recherches tu apparais. C'est u
 
 ### Les catégories à éviter absolument
 
-❌ **"Hôtel"** — tu n'en es pas un, risque de suspension
-❌ **"Agence immobilière"** pour un logement individuel — incompatible
+❌ **"Hôtel"**, tu n'en es pas un, risque de suspension
+❌ **"Agence immobilière"** pour un logement individuel, incompatible
 ❌ Des catégories non pertinentes pour paraître dans plus de recherches
 
 ### Les attributs : la mine d'or oubliée
@@ -254,7 +254,7 @@ Après les catégories, Google propose des **attributs** selon ton type d'activi
 - Langues parlées (Français, Anglais, Espagnol...)
 - Méthodes de paiement
 
-Un attribut "Animaux acceptés" coché te fait apparaître dans les recherches "location vacances chien accepté [ville]" — sans aucun autre effort.`,
+Un attribut "Animaux acceptés" coché te fait apparaître dans les recherches "location vacances chien accepté [ville]", sans aucun autre effort.`,
         },
       ],
     },
@@ -381,7 +381,7 @@ Ces réponses sont indexées par Google et renforcent ta pertinence locale.`,
     },
     {
       id: 4,
-      title: 'Photos — l\'arme qui fait cliquer',
+      title: 'Photos, l\'arme qui fait cliquer',
       duration: '20 min',
       lessons: [
         {
@@ -432,7 +432,7 @@ C'est la **première image** visible dans la carte Google. Elle doit :
 
 ✅ Photos prises en journée, lumière naturelle
 ✅ Logement rangé, staging soigné
-✅ Légèrement retouchées (luminosité, contraste) — mais réalistes
+✅ Légèrement retouchées (luminosité, contraste), mais réalistes
 ✅ Angles larges pour les pièces
 
 ❌ Photos sombres ou floues
@@ -446,7 +446,7 @@ Photos de toi ou ton équipe en action : remise de clés, état des lieux, accue
 
 ### Les photos de voyageurs (UGC)
 
-Google permet aux voyageurs d'ajouter des photos sur ta fiche. Tu ne peux pas les supprimer (sauf si inappropriées). C'est une raison supplémentaire d'offrir un logement impeccable — tes voyageurs deviennent tes photographes.
+Google permet aux voyageurs d'ajouter des photos sur ta fiche. Tu ne peux pas les supprimer (sauf si inappropriées). C'est une raison supplémentaire d'offrir un logement impeccable, tes voyageurs deviennent tes photographes.
 
 Encourage-les activement à partager leurs photos **directement sur Google** (pas seulement Instagram).
 
@@ -461,7 +461,7 @@ Objectif : **1 à 2 nouvelles photos par mois**. Google favorise les fiches acti
     },
     {
       id: 5,
-      title: 'Avis Google — ta réputation = ton business',
+      title: 'Avis Google, ta réputation = ton business',
       duration: '30 min',
       lessons: [
         {
@@ -474,7 +474,7 @@ Objectif : **1 à 2 nouvelles photos par mois**. Google favorise les fiches acti
 
 Les avis Airbnb restent enfermés dans Airbnb. Les avis Google, eux :
 - Apparaissent dans **tous les résultats Google** (Maps, Recherche, Assistant)
-- **T'appartiennent** — ils existent indépendamment de la plateforme
+- **T'appartiennent**, ils existent indépendamment de la plateforme
 - Influencent directement ton **classement dans le Local Pack**
 - Donnent confiance aux voyageurs qui ne te connaissent pas encore
 
@@ -508,13 +508,13 @@ Génère un QR code depuis ce lien (via qr-code-generator.com). Imprime-le sur :
 
 ### Templates de messages (à copier-coller)
 
-**SMS / WhatsApp — 24h après le départ :**
+**SMS / WhatsApp, 24h après le départ :**
 \`\`\`
 Bonjour [Prénom] 👋
 
 J'espère que ton séjour à [logement/ville] s'est bien passé !
 
-Si tu as eu une bonne expérience, un avis Google m'aiderait vraiment — ça prend 2 minutes et c'est une façon concrète de soutenir les hôtes indépendants 🙏
+Si tu as eu une bonne expérience, un avis Google m'aiderait vraiment, ça prend 2 minutes et c'est une façon concrète de soutenir les hôtes indépendants 🙏
 
 → [LIEN COURT GMB]
 
@@ -526,7 +526,7 @@ Merci beaucoup, et à bientôt peut-être !
 \`\`\`
 Bonjour [Prénom],
 
-Merci d'avoir choisi mon logement ! Si tu as apprécié ton séjour, je t'invite à laisser aussi un avis Google — très utile pour les hôtes indépendants.
+Merci d'avoir choisi mon logement ! Si tu as apprécié ton séjour, je t'invite à laisser aussi un avis Google, très utile pour les hôtes indépendants.
 
 [LIEN COURT GMB]
 
@@ -558,7 +558,7 @@ Merci sincèrement !
         },
         {
           id: 9,
-          title: 'Répondre aux avis — la stratégie qui booste le classement',
+          title: 'Répondre aux avis, la stratégie qui booste le classement',
           duration: '15 min',
           content: `## Répondre aux avis : obligatoire, pas facultatif
 
@@ -583,7 +583,7 @@ vous ait plu. C'est exactement l'expérience qu'on essaie
 d'offrir à chaque séjour.
 
 Au plaisir de vous accueillir à nouveau à [ville] !
-[Ton prénom] — [Nom établissement]
+[Ton prénom], [Nom établissement]
 \`\`\`
 
 > 💡 **Astuce SEO** : glisse naturellement le nom de ta ville dans les réponses. Ex : "Ravi que votre séjour en appartement à Lyon se soit si bien passé." Ces réponses sont indexées par Google.
@@ -650,7 +650,7 @@ Google autorise n'importe quel utilisateur à **suggérer des modifications** su
 
 ### Qu'est-ce qu'un Google Post ?
 
-Un mini-article publié directement sur ta fiche Google. Visible dans Google Maps et la recherche quand quelqu'un consulte ton profil — sans qu'il soit abonné à quoi que ce soit.
+Un mini-article publié directement sur ta fiche Google. Visible dans Google Maps et la recherche quand quelqu'un consulte ton profil, sans qu'il soit abonné à quoi que ce soit.
 
 > ⚠️ **Mise à jour 2024 importante :** La **messagerie directe** (chat) de Google Business Profile a été **supprimée en juillet 2024**. Les hôtes ne peuvent plus échanger de messages via GMB. Les demandes passent maintenant par le téléphone ou ton site web.
 
@@ -671,7 +671,7 @@ Un mini-article publié directement sur ta fiche Google. Visible dans Google Map
 
 ### Exemples de posts concrets
 
-**Post "Offre" — dernière minute :**
+**Post "Offre", dernière minute :**
 \`\`\`
 🌊 Appartement vue mer disponible ce week-end
 
@@ -682,7 +682,7 @@ plateforme.
 [Bouton : Réserver maintenant]
 \`\`\`
 
-**Post "Événement" — saison :**
+**Post "Événement", saison :**
 \`\`\`
 Été 2025 : notre villa Cannes disponible en juillet
 
@@ -693,7 +693,7 @@ Places limitées.
 [Bouton : Voir les disponibilités]
 \`\`\`
 
-**Post "Nouveauté" — amélioration :**
+**Post "Nouveauté", amélioration :**
 \`\`\`
 Nouveau : check-in tardif jusqu'à 23h
 
@@ -704,7 +704,7 @@ du centre de Lyon.
 [Bouton : Nous contacter]
 \`\`\`
 
-**Post "Local" — événement de ville :**
+**Post "Local", événement de ville :**
 \`\`\`
 Ce week-end à Bordeaux : marché des Capucins
 
@@ -734,7 +734,7 @@ appartements Saint-Pierre.
 
 ### L'opportunité que Airbnb ne veut pas que tu saches
 
-Airbnb et Vrbo refusent **délibérément** d'intégrer Google Vacation Rentals. Résultat : si tu passes par un channel manager partenaire GVR, tes disponibilités apparaissent dans Google **avant** les résultats Airbnb — pour **0% de commission**.
+Airbnb et Vrbo refusent **délibérément** d'intégrer Google Vacation Rentals. Résultat : si tu passes par un channel manager partenaire GVR, tes disponibilités apparaissent dans Google **avant** les résultats Airbnb, pour **0% de commission**.
 
 ### Comment ça fonctionne
 
@@ -795,7 +795,7 @@ Dans Google Business Profile → "Voir les statistiques" ou "Performance".
 
 ### Les 5 métriques à surveiller chaque mois
 
-**① Recherches — comment les gens te trouvent**
+**① Recherches, comment les gens te trouvent**
 - **Recherche directe** : quelqu'un a tapé ton nom ou adresse exacte
 - **Recherche découverte** : quelqu'un cherchait un type de logement et t'a trouvé
 
@@ -851,7 +851,7 @@ Une fiche non vérifiée est invisible. C'est l'erreur numéro 1 des débutants.
 
 **Erreurs de gestion :**
 
-**⑥ Fiche inactive — zéro posts, zéro nouvelles photos**
+**⑥ Fiche inactive, zéro posts, zéro nouvelles photos**
 Google défavorise les fiches sans activité. 1 post par semaine minimum.
 
 **⑦ Ne pas répondre aux avis**

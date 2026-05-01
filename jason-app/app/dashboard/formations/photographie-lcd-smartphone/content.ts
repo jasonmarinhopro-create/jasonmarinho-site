@@ -1,14 +1,14 @@
 export const PHOTOGRAPHIE_LCD_FORMATION = {
   slug: 'photographie-lcd-smartphone',
   title: 'Faire des photos qui font cliquer : la photographie LCD avec un smartphone',
-  description: `Les photos décident à elles seules de 60 % du clic et 40 % du prix qu'un voyageur est prêt à payer. Cette formation t'apprend à transformer ton annonce en quelques heures, avec ton seul smartphone — composition, lumière, mise en scène, retouche, mise en ligne. Aucun matériel pro requis.`,
+  description: `Les photos décident à elles seules de 60 % du clic et 40 % du prix qu'un voyageur est prêt à payer. Cette formation t'apprend à transformer ton annonce en quelques heures, avec ton seul smartphone, composition, lumière, mise en scène, retouche, mise en ligne. Aucun matériel pro requis.`,
   duration: '2h30',
   level: 'Débutant',
   objectifs: [
     `Comprendre pourquoi les photos sont le facteur n°1 de conversion en LCD`,
     `Maîtriser la composition et la lumière naturelle pour photographier ton logement`,
     `Préparer chaque pièce avec une logique "home staging" professionnelle`,
-    `Tirer le meilleur de ton smartphone — sans matériel coûteux`,
+    `Tirer le meilleur de ton smartphone, sans matériel coûteux`,
     `Photographier les pièces difficiles (salle de bain, petits espaces, contre-jour)`,
     `Retoucher tes photos en 5 minutes avec une app gratuite`,
     `Choisir, ordonner et tester tes photos pour maximiser tes réservations`,
@@ -59,7 +59,7 @@ Et le pire :
 
 > *Plus l'algorithme apprend que ton annonce ne convertit pas, moins il la montre.*
 
-Une mauvaise photo de couverture **ne stagne pas** — elle te fait descendre dans les résultats au fil du temps.
+Une mauvaise photo de couverture **ne stagne pas**, elle te fait descendre dans les résultats au fil du temps.
 
 ---
 
@@ -105,7 +105,7 @@ C'est le test que les designers Airbnb utilisent en interne quand ils auditent d
 
 ---
 
-## Exercice — avant la prochaine leçon
+## Exercice, avant la prochaine leçon
 
 1. **Va sur ton annonce** et applique le test de la miniature à 80 px sur ta photo de couverture actuelle. Note tes 3 réponses.
 2. **Note tes statistiques actuelles** :
@@ -129,7 +129,7 @@ Toutes les autres servent à confirmer ou à infirmer la promesse de la premièr
 
 - Sur **Airbnb**, 92 % des voyageurs ne regardent **que** la photo de couverture avant de décider s'ils cliquent.
 - Sur **Booking**, c'est 88 %.
-- Sur **Google** (résultats de recherche), c'est 100 % — il n'y en a qu'une.
+- Sur **Google** (résultats de recherche), c'est 100 %, il n'y en a qu'une.
 
 > Ta photo de couverture, c'est ton vendeur. *Si elle dort, ton annonce ne reçoit rien.*
 
@@ -217,7 +217,7 @@ Airbnb a publié les critères automatiques qui détectent une photo de couvertu
 
 ---
 
-## Exercice — action immédiate
+## Exercice, action immédiate
 
 1. **Liste les 3 photos** qui pourraient devenir ta nouvelle couverture *(un salon en grand-angle, ta plus belle vue, ton plus joli détail)*.
 2. Si tu n'en as **aucune** qui te plaise complètement, note-la en haut de ta liste de séances photo à refaire après cette formation.
@@ -240,7 +240,7 @@ C'est cette impression que les voyageurs ont.
 
 ---
 
-## Erreur 1 — La photo "constat d'huissier"
+## Erreur 1, La photo "constat d'huissier"
 
 Photo prise debout, au centre de la pièce, sans angle ni mise en scène.
 
@@ -252,7 +252,7 @@ Photo prise debout, au centre de la pièce, sans angle ni mise en scène.
 
 ---
 
-## Erreur 2 — La salle de bain au flash
+## Erreur 2, La salle de bain au flash
 
 La salle de bain est petite et sombre, donc tu utilises le flash de ton téléphone.
 
@@ -264,7 +264,7 @@ La salle de bain est petite et sombre, donc tu utilises le flash de ton téléph
 
 ---
 
-## Erreur 3 — La cuisine avec le bazar
+## Erreur 3, La cuisine avec le bazar
 
 Plan de travail avec micro-ondes, bouilloire, grille-pain, friteuse, coupe à fruits, chargeur, torchon, factures.
 
@@ -274,7 +274,7 @@ Plan de travail avec micro-ondes, bouilloire, grille-pain, friteuse, coupe à fr
 
 ---
 
-## Erreur 4 — Le contre-jour vers la fenêtre
+## Erreur 4, Le contre-jour vers la fenêtre
 
 Tu photographies une pièce avec la fenêtre en arrière-plan. La pièce est sous-exposée, la fenêtre brûle de blanc.
 
@@ -284,7 +284,7 @@ Tu photographies une pièce avec la fenêtre en arrière-plan. La pièce est sou
 
 ---
 
-## Erreur 5 — Le lit "défait par accident"
+## Erreur 5, Le lit "défait par accident"
 
 Tu photographies la chambre, mais le lit n'est pas vraiment fait. Drap qui dépasse, oreillers de travers, couette froissée.
 
@@ -294,7 +294,7 @@ Tu photographies la chambre, mais le lit n'est pas vraiment fait. Drap qui dépa
 
 ---
 
-## Erreur 6 — La photo verticale
+## Erreur 6, La photo verticale
 
 Tu prends ta photo en mode portrait parce que ton téléphone est plus pratique à tenir verticalement.
 
@@ -318,20 +318,20 @@ Compte les erreurs que tu as identifiées sur tes photos actuelles :
 
 ---
 
-## Exercice — avant le module 2
+## Exercice, avant le module 2
 
 1. **Fais un audit complet** de tes photos actuelles. Compte les erreurs que tu as relevées, photo par photo.
 2. **Choisis les 3 pièces** que tu vas refaire en priorité.
 
 > **Indice :** commence par la pièce de vie principale et la photo de couverture.
 
-Garde cette liste — on s'en servira au **module 5**.`,
+Garde cette liste, on s'en servira au **module 5**.`,
         },
       ],
     },
     {
       id: 2,
-      title: `Le bon matériel — ton smartphone suffit`,
+      title: `Le bon matériel, ton smartphone suffit`,
       duration: '15 min',
       lessons: [
         {
@@ -344,11 +344,11 @@ Si tu as acheté ton téléphone après 2020, tu as déjà un appareil photo qui
 
 Voici ce que les smartphones modernes font mieux qu'un reflex pour la photo LCD :
 
-- **HDR automatique** — la photo équilibre seule les zones claires et sombres. Plus de fenêtres "brûlées".
-- **Mode portrait + mode nuit** — lumière faible gérée automatiquement.
-- **Stabilisation logicielle** — tu peux photographier sans trépied dans la plupart des conditions.
-- **Aperçu temps réel** — tu vois exactement ce que tu obtiens.
-- **Partage immédiat** — de la prise de vue à la publication sur Airbnb : 30 minutes max.
+- **HDR automatique**, la photo équilibre seule les zones claires et sombres. Plus de fenêtres "brûlées".
+- **Mode portrait + mode nuit**, lumière faible gérée automatiquement.
+- **Stabilisation logicielle**, tu peux photographier sans trépied dans la plupart des conditions.
+- **Aperçu temps réel**, tu vois exactement ce que tu obtiens.
+- **Partage immédiat**, de la prise de vue à la publication sur Airbnb : 30 minutes max.
 
 > **Conclusion :** pour 95 % des hôtes LCD, le smartphone est la **meilleure** option, pas une option de repli.
 
@@ -415,7 +415,7 @@ Sauf à être photographe formé, **n'utilise pas ce mode**.
 
 ---
 
-## Exercice — avant la prochaine leçon
+## Exercice, avant la prochaine leçon
 
 1. **Vérifie le modèle** de ton téléphone et la version de son OS *(iOS ou Android)*. Mets-le à jour si nécessaire.
 2. **Active le HDR automatique** :
@@ -432,7 +432,7 @@ Sauf à être photographe formé, **n'utilise pas ce mode**.
           id: 2,
           title: `3 accessoires utiles à moins de 50 €`,
           duration: '7 min',
-          content: `## Accessoire 1 — Le mini-trépied *(15-25 €)*
+          content: `## Accessoire 1, Le mini-trépied *(15-25 €)*
 
 Un petit trépied de table avec rotule inclinable. Hauteur 20-30 cm dépliée, se range dans une poche.
 
@@ -451,7 +451,7 @@ Cherche **"trépied flexible smartphone"** ou *"Joby GorillaPod Mobile"* *(~25 �
 
 ---
 
-## Accessoire 2 — La lentille grand-angle clipsable *(20-30 €)*
+## Accessoire 2, La lentille grand-angle clipsable *(20-30 €)*
 
 Une petite lentille qui se clipse sur l'objectif de ton smartphone pour élargir le champ de vision.
 
@@ -475,7 +475,7 @@ Cherche **"lentille grand-angle clip smartphone 0.45x"**. Marques honnêtes : *A
 
 ---
 
-## Accessoire 3 — Le panneau réflecteur *(10-15 €)*
+## Accessoire 3, Le panneau réflecteur *(10-15 €)*
 
 Un disque pliable blanc ou doré qui réfléchit la lumière naturelle vers les zones sombres.
 
@@ -494,7 +494,7 @@ Un disque pliable blanc ou doré qui réfléchit la lumière naturelle vers les 
 1. Place-toi face à la fenêtre.
 2. Place le réflecteur sur le côté opposé à la lumière, à 1-2 mètres du sujet, incliné vers la zone à éclairer.
 3. Demande à un proche de le tenir pendant que tu prends la photo.
-4. Compare avant / après — *magie*.
+4. Compare avant / après, *magie*.
 
 ---
 
@@ -502,11 +502,11 @@ Un disque pliable blanc ou doré qui réfléchit la lumière naturelle vers les 
 
 Les pièges que les fabricants vendent aux hôtes débutants :
 
-- **Un drone** — joli pour 1 photo aérienne, mais inutile pour 95 % des annonces. Si tu veux une vue aérienne, fais-toi prêter un drone par un voisin ou paie 50 € à un freelance local.
-- **Une ringlight** *(lumière cercle)* — conçue pour le portrait, pas pour les pièces. Fait des reflets affreux sur les murs et les vitres.
-- **Un objectif macro** pour smartphone — sauf si tu fais des photos de moustiques. Aucune utilité en LCD.
-- **Un kit photo "spécial Airbnb" à 200 €** — marketing. Tu peux faire mieux avec les 3 accessoires ci-dessus.
-- **Un appareil argentique vintage** — très coûteux à développer, lent, imprévisible. Aucun intérêt opérationnel.
+- **Un drone**, joli pour 1 photo aérienne, mais inutile pour 95 % des annonces. Si tu veux une vue aérienne, fais-toi prêter un drone par un voisin ou paie 50 € à un freelance local.
+- **Une ringlight** *(lumière cercle)*, conçue pour le portrait, pas pour les pièces. Fait des reflets affreux sur les murs et les vitres.
+- **Un objectif macro** pour smartphone, sauf si tu fais des photos de moustiques. Aucune utilité en LCD.
+- **Un kit photo "spécial Airbnb" à 200 €**, marketing. Tu peux faire mieux avec les 3 accessoires ci-dessus.
+- **Un appareil argentique vintage**, très coûteux à développer, lent, imprévisible. Aucun intérêt opérationnel.
 
 ---
 
@@ -527,7 +527,7 @@ Récap de ce que tu peux acheter pour démarrer :
 
 ---
 
-## Exercice — avant le prochain module
+## Exercice, avant le prochain module
 
 1. **Choisis ton kit** *(1 à 3 accessoires)* selon ton budget et la taille de ton logement.
 2. **Commande** maintenant *(2-3 jours de livraison)* pour qu'ils soient là quand tu attaqueras les sessions photo du module 5.
@@ -543,7 +543,7 @@ Récap de ce que tu peux acheter pour démarrer :
       lessons: [
         {
           id: 1,
-          title: `Checklist home staging — 23 points à vérifier`,
+          title: `Checklist home staging, 23 points à vérifier`,
           duration: '12 min',
           content: `## Le secret des annonces qui font cliquer
 
@@ -615,12 +615,12 @@ Avant de prendre ta première photo :
 
 ---
 
-## Exercice — avant la prochaine leçon
+## Exercice, avant la prochaine leçon
 
 1. **Imprime cette checklist** *(ou note les 23 points sur ton téléphone)*.
 2. **Fais le tour** de ton logement, coche ce qui est OK, note ce qui manque.
 
-> Si tu coches **moins de 18 points sur 23**, tu sais déjà pourquoi tes photos sous-performent. Tu n'as même pas encore besoin de refaire les photos — **range** et **range encore** avant de cliquer.`,
+> Si tu coches **moins de 18 points sur 23**, tu sais déjà pourquoi tes photos sous-performent. Tu n'as même pas encore besoin de refaire les photos, **range** et **range encore** avant de cliquer.`,
         },
         {
           id: 2,
@@ -744,7 +744,7 @@ Si tu te souviens du **beau bouquet**, de la lumière qui entre, du livre ouvert
 
 ---
 
-## Exercice — action du jour
+## Exercice, action du jour
 
 1. **Prends une grande boîte** ou un grand sac.
 2. **Fais le tour** de ton logement, range tout ce qui est dans la liste *« à cacher »*.
@@ -754,7 +754,7 @@ Si tu te souviens du **beau bouquet**, de la lumière qui entre, du livre ouvert
         },
         {
           id: 3,
-          title: `Déco temporaire — 12 € pour transformer une pièce`,
+          title: `Déco temporaire, 12 € pour transformer une pièce`,
           duration: '8 min',
           content: `## Le principe : la déco "pour la photo"
 
@@ -791,7 +791,7 @@ Liste de courses ci-dessous, pièce par pièce.
 
 ### 3 citrons jaunes + 1 grenade
 
-- *Marché / Carrefour* — **3 €**
+- *Marché / Carrefour*, **3 €**
 - Dans une coupe en verre, ou sur planche à découper en bois
 
 ### Optionnel : bocal en verre rempli de pâtes ou de riz
@@ -807,14 +807,14 @@ Liste de courses ci-dessous, pièce par pièce.
 
 ### 1 plaid en lin ou jersey épais
 
-- *Action / Hema / Søstrene Grene* — **5 €**
+- *Action / Hema / Søstrene Grene*, **5 €**
 - Plié au pied du lit
 - Réutilisable comme couverture ou plaid de canapé après
 
 ### Optionnel : 1 plante en pot type Sansevieria
 
 - *(langue de belle-mère)*
-- *Botanic / Truffaut / Ikea* — **8-10 €** *(un peu plus cher)*
+- *Botanic / Truffaut / Ikea*, **8-10 €** *(un peu plus cher)*
 - Quasi increvable, très photogénique
 - Tu la gardes en permanence
 
@@ -826,13 +826,13 @@ Liste de courses ci-dessous, pièce par pièce.
 
 ### 3 serviettes blanches neuves de qualité moyenne
 
-- *Action / Lidl* — **3 €** pour les 3
+- *Action / Lidl*, **3 €** pour les 3
 - Pliées en 3 et empilées par taille
 - Réutilisables pour la prochaine session
 
 ### Optionnel : 1 distributeur de savon design en céramique
 
-- *Søstrene Grene / Action* — **3 €**
+- *Søstrene Grene / Action*, **3 €**
 - Remplace les bouteilles plastique type *"Carrefour Lavande Marine"*
 
 > **Total salle de bain : 3 €** *(6 € avec distributeur)*
@@ -890,7 +890,7 @@ Tous ces objets sont rentables :
 
 ---
 
-## Exercice — action de la semaine
+## Exercice, action de la semaine
 
 1. **Fais ta liste de courses** *(max 20 €)*.
 2. **Va faire les achats** avant ta séance photo.
@@ -902,7 +902,7 @@ Tous ces objets sont rentables :
     },
     {
       id: 4,
-      title: `Composition et lumière — les fondamentaux`,
+      title: `Composition et lumière, les fondamentaux`,
       duration: '35 min',
       lessons: [
         {
@@ -990,7 +990,7 @@ Au début, déplacer le sujet sur le tiers te semblera bizarre. Tu auras envie d
 
 ---
 
-## Exercice pratique — à faire maintenant
+## Exercice pratique, à faire maintenant
 
 1. **Active la grille** de composition sur ton smartphone *(si ce n'est pas déjà fait)*.
 2. **Prends 3 photos test** dans ton salon :
@@ -1103,7 +1103,7 @@ Avant ton jour J :
 3. **Calcule la meilleure heure** pour chaque pièce.
 4. **Crée un planning**.
 
-### Exemple — à Toulouse en mars
+### Exemple, à Toulouse en mars
 
 | Heure | Pièce | Orientation |
 |---|---|---|
@@ -1118,7 +1118,7 @@ Avant ton jour J :
 
 ---
 
-## Exercice — avant la séance photo
+## Exercice, avant la séance photo
 
 1. **Fais le tour** de ton logement avec une boussole *(ou Google Maps en satellite)*.
 2. **Note l'orientation** de chaque fenêtre.
@@ -1127,7 +1127,7 @@ Avant ton jour J :
         },
         {
           id: 3,
-          title: `Naturel vs flash — pourquoi le flash tue tes photos`,
+          title: `Naturel vs flash, pourquoi le flash tue tes photos`,
           duration: '8 min',
           content: `## La règle absolue de la photo LCD
 
@@ -1143,7 +1143,7 @@ Une photo prise au flash dans une pièce :
 - **Ombres dures** derrière les meubles
 - **Couleurs faussées** *(souvent verdâtres)*
 - Reflets disgracieux sur les surfaces brillantes
-- Ambiance *« scène de crime »* — pas magazine
+- Ambiance *« scène de crime »*, pas magazine
 
 ---
 
@@ -1205,7 +1205,7 @@ Vu au module 2. Fais entrer la lumière d'une pièce voisine ou d'une fenêtre p
 
 ## Le vrai problème : la dynamique de lumière
 
-La difficulté en photo de pièce, ce n'est pas *« trop sombre »* — c'est la **différence de lumière** entre l'intérieur *(sombre)* et la fenêtre *(très claire)*.
+La difficulté en photo de pièce, ce n'est pas *« trop sombre »*, c'est la **différence de lumière** entre l'intérieur *(sombre)* et la fenêtre *(très claire)*.
 
 Ton œil voit les deux sans problème. Ton appareil photo, lui, doit choisir :
 
@@ -1265,7 +1265,7 @@ Ton œil voit les deux sans problème. Ton appareil photo, lui, doit choisir :
 
 ---
 
-## Exercice — test pratique
+## Exercice, test pratique
 
 Choisis ta pièce la plus difficile en lumière *(souvent : salle de bain ou chambre nord)*.
 
@@ -1298,7 +1298,7 @@ Ils utilisent **3 hauteurs spécifiques** selon la pièce, et chacune crée un e
 
 ---
 
-## Hauteur 1 — Hauteur de table basse *(60-80 cm du sol)*
+## Hauteur 1, Hauteur de table basse *(60-80 cm du sol)*
 
 ### Pour quelles pièces
 
@@ -1321,7 +1321,7 @@ Ils utilisent **3 hauteurs spécifiques** selon la pièce, et chacune crée un e
 
 ---
 
-## Hauteur 2 — Hauteur de plan de travail *(90-100 cm)*
+## Hauteur 2, Hauteur de plan de travail *(90-100 cm)*
 
 ### Pour quelles pièces
 
@@ -1342,7 +1342,7 @@ Ils utilisent **3 hauteurs spécifiques** selon la pièce, et chacune crée un e
 
 ---
 
-## Hauteur 3 — Hauteur de poitrine *(130-140 cm)*
+## Hauteur 3, Hauteur de poitrine *(130-140 cm)*
 
 ### Pour quelles pièces
 
@@ -1449,7 +1449,7 @@ Astuce avancée pour les pièces **longues** :
 
 ---
 
-## Exercice — à faire dans ton logement
+## Exercice, à faire dans ton logement
 
 Pour chaque pièce, prends **2 photos comparatives** :
 
@@ -1472,7 +1472,7 @@ de ton logement.`,
       lessons: [
         {
           id: 1,
-          title: `Salon, cuisine, chambre — les angles types`,
+          title: `Salon, cuisine, chambre, les angles types`,
           duration: '12 min',
           content: `## Préparation avant chaque pièce
 
@@ -1491,7 +1491,7 @@ Avant chaque photo, exécute ce **mini-rituel** :
 
 ## Le salon
 
-### Angle 1 — La photo "principale du salon"
+### Angle 1, La photo "principale du salon"
 
 **Position :**
 - Coin opposé au canapé, à hauteur **70-80 cm**.
@@ -1508,7 +1508,7 @@ Avant chaque photo, exécute ce **mini-rituel** :
 - Les murs et plafond les **2/3** du haut.
 - *Aucun pied de meuble coupé.*
 
-### Angle 2 — Le détail "lifestyle" du salon
+### Angle 2, Le détail "lifestyle" du salon
 
 **Position :** devant la table basse, à 60 cm de hauteur. Distance : 1 à 1,5 m.
 
@@ -1516,7 +1516,7 @@ Avant chaque photo, exécute ce **mini-rituel** :
 
 **Cadrage :** mode portrait du téléphone activé pour flou d'arrière-plan *(« bokeh »)*. Photo en **mode paysage horizontal**.
 
-### Angle 3 — La perspective élargie *(optionnel)*
+### Angle 3, La perspective élargie *(optionnel)*
 
 **Position :** coin du salon, le plus reculé possible. Hauteur 80 cm, **lentille grand-angle** clipsée.
 
@@ -1531,7 +1531,7 @@ Avant chaque photo, exécute ce **mini-rituel** :
 
 ## La cuisine
 
-### Angle 1 — La photo principale de cuisine
+### Angle 1, La photo principale de cuisine
 
 **Position :** depuis la pièce voisine ou la porte. Hauteur **100 cm** *(plan de travail)*.
 
@@ -1541,9 +1541,9 @@ Avant chaque photo, exécute ce **mini-rituel** :
 - **Aucun** appareil électroménager visible *(sauf design)*.
 - Crédence **brillante, propre**.
 
-**Cadrage :** verre, mat, bois, métal — au moins **3 textures**. Évier dans le cadre seulement s'il est sec et brillant.
+**Cadrage :** verre, mat, bois, métal, au moins **3 textures**. Évier dans le cadre seulement s'il est sec et brillant.
 
-### Angle 2 — Détail cuisine "ambiance"
+### Angle 2, Détail cuisine "ambiance"
 
 **Position :** très proche du plan de travail *(40-60 cm de distance)*. Hauteur de plan de travail.
 
@@ -1553,7 +1553,7 @@ Avant chaque photo, exécute ce **mini-rituel** :
 
 > Cette photo ne montre pas la cuisine. Elle **suggère une expérience**. Très puissant pour les voyageurs qui choisissent un logement où ils cuisineront.
 
-### Angle 3 — La cuisine vue depuis le salon *(si ouverte)*
+### Angle 3, La cuisine vue depuis le salon *(si ouverte)*
 
 **Position :** depuis le salon, avec un meuble ou un canapé en premier plan. Hauteur 70-80 cm.
 
@@ -1565,7 +1565,7 @@ Avant chaque photo, exécute ce **mini-rituel** :
 
 ## La chambre
 
-### Angle 1 — La photo principale de chambre
+### Angle 1, La photo principale de chambre
 
 **Position :** depuis la **porte d'entrée** de la chambre. Hauteur 70-80 cm.
 
@@ -1576,7 +1576,7 @@ Avant chaque photo, exécute ce **mini-rituel** :
 
 **Cadrage :** tête de lit visible en entier, pieds du lit visibles, au moins 1 table de nuit dans le cadre.
 
-### Angle 2 — Le lit "magazine"
+### Angle 2, Le lit "magazine"
 
 **Position :** au pied du lit, à 60 cm de hauteur. Distance : 1,5 à 2 m du lit.
 
@@ -1588,7 +1588,7 @@ Avant chaque photo, exécute ce **mini-rituel** :
 
 **Cadrage :** mode paysage horizontal. Le bas du lit occupe le **tiers inférieur**. Le mur derrière *(avec tableau ou tête de lit design)* occupe les **2/3 supérieurs**.
 
-### Angle 3 — Le détail "réveil paisible"
+### Angle 3, Le détail "réveil paisible"
 
 **Position :** depuis la table de nuit, à 50-60 cm. Téléphone à hauteur de l'oreiller.
 
@@ -1614,7 +1614,7 @@ Pour chaque pièce de vie *(salon, cuisine, chambres)*, prends au moins **3 phot
 
 ---
 
-## Exercice — action immédiate
+## Exercice, action immédiate
 
 Pour chaque pièce, planifie tes **3 angles** sur une feuille avant la séance :
 
@@ -1627,7 +1627,7 @@ Pour chaque pièce, planifie tes **3 angles** sur une feuille avant la séance :
         },
         {
           id: 2,
-          title: `Salle de bain — la pièce la plus difficile`,
+          title: `Salle de bain, la pièce la plus difficile`,
           duration: '8 min',
           content: `## Pourquoi la salle de bain est si dure
 
@@ -1713,20 +1713,20 @@ Le miroir capte ton reflet, ton téléphone, ton trépied, et n'importe quel él
 
 Cas le plus difficile : SDB en **aveugle**, seulement éclairée au plafond.
 
-### Solution 1 — Porte ouverte sur pièce lumineuse
+### Solution 1, Porte ouverte sur pièce lumineuse
 
 - Ouvre la porte de la SDB sur le couloir ou la chambre voisine *(qui doit être ensoleillée)*.
 - Allume **tout** dans la SDB *(plafonnier, appliques, sous-miroir, miroir LED)*.
 - Mode **HDR + mode nuit** si besoin.
 - **Trépied obligatoire.**
 
-### Solution 2 — Éclairage temporaire
+### Solution 2, Éclairage temporaire
 
 - Apporte une lampe de chevet portable *(ou achète une LED sans fil 8-10 €)*.
 - Place-la **hors du cadre**, dirigée vers le mur pour éclairage **indirect**.
 - Photographie comme s'il y avait une fenêtre.
 
-### Solution 3 — Photo "détail" uniquement
+### Solution 3, Photo "détail" uniquement
 
 - Si la pièce est vraiment sombre et petite, **ne fais pas de photo d'ensemble**.
 - Fais 2-3 photos de **détails** seulement *(vasque, douche, robinetterie)*.
@@ -1759,7 +1759,7 @@ Si ta douche est moins glamour *(bac plastique standard, rideau de douche, flexi
 
 ---
 
-## Exercice — pour la séance photo
+## Exercice, pour la séance photo
 
 1. **Choisis ta stratégie** principale pour la SDB :
    - Stratégie 1 *(depuis le couloir)* ?
@@ -1773,7 +1773,7 @@ Si ta douche est moins glamour *(bac plastique standard, rideau de douche, flexi
         },
         {
           id: 3,
-          title: `Extérieurs — valoriser vues, terrasses et jardins`,
+          title: `Extérieurs, valoriser vues, terrasses et jardins`,
           duration: '8 min',
           content: `## Pourquoi les extérieurs convertissent
 
@@ -1924,7 +1924,7 @@ Les voyageurs adorent les photos qui leur montrent le **quartier** où ils dormi
 
 ---
 
-## Exercice — action de la séance
+## Exercice, action de la séance
 
 **Liste les 3 photos extérieures** que tu vas faire :
 
@@ -1937,7 +1937,7 @@ Les voyageurs adorent les photos qui leur montrent le **quartier** où ils dormi
         },
         {
           id: 4,
-          title: `Lifestyle shots — créer l'envie en 1 photo`,
+          title: `Lifestyle shots, créer l'envie en 1 photo`,
           duration: '7 min',
           content: `## La différence entre "logement" et "expérience"
 
@@ -2026,7 +2026,7 @@ Les **indices d'humanité** sont dans les détails : une tasse à moitié pleine
 
 ## Les règles de la fumée
 
-Une tasse fumante, une casserole qui fume, une bougie qui fume — ça crée du **mouvement** et de la *« vie »* dans une photo statique.
+Une tasse fumante, une casserole qui fume, une bougie qui fume, ça crée du **mouvement** et de la *« vie »* dans une photo statique.
 
 ### Comment capturer la fumée
 
@@ -2071,7 +2071,7 @@ Sur les 20-30 photos de ton annonce, voici la répartition optimale :
 
 ---
 
-## Exercice — à planifier pour ta séance
+## Exercice, à planifier pour ta séance
 
 **Choisis 3 des 7 lifestyle shots** qui correspondent à ton type de logement :
 
@@ -2092,7 +2092,7 @@ Sur les 20-30 photos de ton annonce, voici la répartition optimale :
       lessons: [
         {
           id: 1,
-          title: `Snapseed — les 5 réglages qui changent tout`,
+          title: `Snapseed, les 5 réglages qui changent tout`,
           duration: '6 min',
           content: `## Pourquoi Snapseed et pas autre chose
 
@@ -2243,7 +2243,7 @@ Très utile pour **fixer une zone problématique** sans toucher au reste.
 
 ---
 
-## Exercice — pratique
+## Exercice, pratique
 
 1. **Prends 3 photos** de ta meilleure pièce.
 2. **Applique les 5 réglages** Snapseed dans l'ordre.
@@ -2256,7 +2256,7 @@ Très utile pour **fixer une zone problématique** sans toucher au reste.
         },
         {
           id: 2,
-          title: `Choisir l'ordre des photos — les 5 premières secondes`,
+          title: `Choisir l'ordre des photos, les 5 premières secondes`,
           duration: '5 min',
           content: `## Pourquoi l'ordre est plus important que le nombre
 
@@ -2272,29 +2272,29 @@ Tu peux avoir **30 superbes photos**. Si la 1ère est mauvaise, le voyageur ne v
 
 ## L'ordre optimal pour Airbnb / Booking
 
-### Photo 1 — La couverture *(vue d'ensemble pièce de vie)*
+### Photo 1, La couverture *(vue d'ensemble pièce de vie)*
 
 - Salon ou cuisine en grand-angle.
 - Lumière chaude, déco *« lifestyle »*.
 - *Cf. module 1, leçon 2.*
 
-### Photo 2 — Le contre-coup d'œil
+### Photo 2, Le contre-coup d'œil
 
 - Une **autre vue** de la même pièce *(angle différent, perspective ou détail)*.
 - **Confirme** la promesse de la photo 1.
 
-### Photo 3 — La vue, l'extérieur ou la signature
+### Photo 3, La vue, l'extérieur ou la signature
 
 - La vue depuis la fenêtre.
 - La terrasse / le jardin.
 - Le **détail unique** du logement *(cuisine ouverte, mezzanine, cheminée)*.
 
-### Photo 4 — La chambre principale
+### Photo 4, La chambre principale
 
 - Lit *« magazine »*.
 - Lumière douce, peignoirs pliés ou plaid en valeur.
 
-### Photo 5 — La cuisine ou la salle de bain principale
+### Photo 5, La cuisine ou la salle de bain principale
 
 - Si la **cuisine** est forte → cuisine.
 - Si la **SDB** est design *(douche italienne, baignoire, vasque pierre)* → SDB.
@@ -2377,7 +2377,7 @@ Si tu hésites, retravaille la sélection. Réordonne, remplace 1 ou 2 photos pa
 
 ---
 
-## Exercice — action de mise en ligne
+## Exercice, action de mise en ligne
 
 1. Avant de publier tes nouvelles photos sur Airbnb, **écris ton ordre** sur papier *(photo 1, photo 2, etc.)* avec un bref descriptif de ce que chaque photo montre.
 2. **Si tu ne peux pas décrire chaque photo en 5 mots**, c'est qu'elle ne sait pas ce qu'elle vend. *Remplace-la.*
@@ -2385,7 +2385,7 @@ Si tu hésites, retravaille la sélection. Réordonne, remplace 1 ou 2 photos pa
         },
         {
           id: 3,
-          title: `Tester et mesurer — méthode A/B`,
+          title: `Tester et mesurer, méthode A/B`,
           duration: '4 min',
           content: `## La photo de couverture vaut un mois de tarif
 
@@ -2402,14 +2402,14 @@ Ce qu'on n'a pas dit :
 
 ## La méthode A/B en 4 étapes
 
-### Étape 1 — Sélectionne 2 photos candidates
+### Étape 1, Sélectionne 2 photos candidates
 
 Parmi tes meilleures photos, choisis-en 2 qui pourraient être la couverture :
 
 - **Photo A :** ton choix actuel *(par exemple : salon en grand-angle)*.
 - **Photo B :** alternative forte *(par exemple : terrasse en golden hour)*.
 
-### Étape 2 — Lance avec la photo A pendant 14 jours
+### Étape 2, Lance avec la photo A pendant 14 jours
 
 Note tes statistiques :
 
@@ -2419,13 +2419,13 @@ Note tes statistiques :
 
 > Calcule ton **taux de clic** = *(clics ÷ vues) × 100*.
 
-### Étape 3 — Switche pour la photo B pendant 14 jours
+### Étape 3, Switche pour la photo B pendant 14 jours
 
 Mêmes mesures, mêmes conditions.
 
 > **Ne fais aucun autre changement** *(titre, description, prix)*.
 
-### Étape 4 — Compare les 2 périodes
+### Étape 4, Compare les 2 périodes
 
 | Période | Vues | Clics | CTR |
 |---|---|---|---|
@@ -2508,7 +2508,7 @@ Mêmes mesures, mêmes conditions.
 
 ---
 
-## Exercice final — action sur 30 jours
+## Exercice final, action sur 30 jours
 
 ### Semaine 1
 
@@ -2544,11 +2544,11 @@ Tu sais maintenant :
 
 > La photographie LCD n'est plus un mystère pour toi. *C'est un savoir-faire que tu maîtrises.* Tes prochaines réservations vont le confirmer.
 
-Bonne séance — et prends ton temps.
+Bonne séance, et prends ton temps.
 
 > Tu as un retour à faire ou une question sur ton logement ? [Prends un appel avec Jason](/contact)
 
-**Formation Photographie LCD au Smartphone — fin.**`,
+**Formation Photographie LCD au Smartphone, fin.**`,
         },
       ],
     },

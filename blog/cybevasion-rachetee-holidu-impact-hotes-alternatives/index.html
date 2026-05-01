@@ -233,12 +233,12 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Concrètement pour les hôtes : l'interface Cybevasion a migré vers Holidu, les annonces ont été basculées, et le modèle de commission a évolué. Les anciens utilisateurs de Cybevasion rapportent une visibilité maintenue mais une interface moins intuitive et un support client moins réactif depuis la migration.</p>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu avais des annonces sur Cybevasion, vérifie que ta migration vers Holidu est complète et que tes photos, tarifs et calendrier sont bien synchronisés. Des données perdues lors de la migration ont été signalées par plusieurs hôtes français.</span></div>
 <h2 class="art-h2">2. Holidu vaut-il le coup en 2026 ?</h2>
-<p class="art-p">Holidu génère du trafic principalement sur les marchés allemand, autrichien et suisse — ce qui peut être un avantage pour les logements dans des zones touristiques prisées par ces marchés (Alpes, Provence, Côte d'Azur). En revanche, pour une location en milieu urbain ou sur des marchés à clientèle majoritairement française, son impact est plus limité.</p>
+<p class="art-p">Holidu génère du trafic principalement sur les marchés allemand, autrichien et suisse, ce qui peut être un avantage pour les logements dans des zones touristiques prisées par ces marchés (Alpes, Provence, Côte d'Azur). En revanche, pour une location en milieu urbain ou sur des marchés à clientèle majoritairement française, son impact est plus limité.</p>
 <ul class="art-ul"><li>Points forts : visibilité sur les marchés germaniques, agrégateur = présence sur plusieurs moteurs de recherche</li><li>Points faibles : commission plus élevée que les plateformes directes, moins de contrôle sur l'expérience voyageur</li><li>Profil idéal : logement en zone touristique avec clientèle internationale (Alpes, Bretagne, Sud de France)</li><li>Profil moins adapté : logement urbain à forte clientèle française avec bonne présence sur Airbnb/Booking</li></ul>
 <h2 class="art-h2">3. Les meilleures alternatives pour diversifier en 2026</h2>
 <p class="art-p">La dépendance à une seule plateforme est un risque stratégique. Les hôtes qui diversifient leurs sources de réservation obtiennent en moyenne 20 à 30 % de leur CA via des canaux alternatifs à Airbnb. Voici les plateformes les plus pertinentes selon le profil du logement :</p>
-<ul class="art-ul"><li>Abritel (VRBO en Europe) : forte clientèle familiale, séjours longs, marché américain et nord-européen — idéal pour villas et maisons</li><li>Gîtes de France : label qualité reconnu, clientèle française fidèle, particulièrement efficace en milieu rural et semi-rural</li><li>Clévacances : similaire à Gîtes de France, plus souple sur les critères, forte présence dans les DOM-TOM</li><li>Abritel : séjours familiaux, réservations directes privilégiées, commission compétitive vs Airbnb</li><li>Site de réservation directe (avec Google My Business + Booking Moteur) : zéro commission, fidélisation optimale</li></ul>
-<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>La réservation directe via ton propre site reste le canal le plus rentable — zéro commission plateforme. Combinée à Google My Business correctement configuré, elle peut représenter 10 à 20 % des réservations sans budget publicitaire.</span></div>
+<ul class="art-ul"><li>Abritel (VRBO en Europe) : forte clientèle familiale, séjours longs, marché américain et nord-européen, idéal pour villas et maisons</li><li>Gîtes de France : label qualité reconnu, clientèle française fidèle, particulièrement efficace en milieu rural et semi-rural</li><li>Clévacances : similaire à Gîtes de France, plus souple sur les critères, forte présence dans les DOM-TOM</li><li>Abritel : séjours familiaux, réservations directes privilégiées, commission compétitive vs Airbnb</li><li>Site de réservation directe (avec Google My Business + Booking Moteur) : zéro commission, fidélisation optimale</li></ul>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>La réservation directe via ton propre site reste le canal le plus rentable, zéro commission plateforme. Combinée à Google My Business correctement configuré, elle peut représenter 10 à 20 % des réservations sans budget publicitaire.</span></div>
 <h2 class="art-h2">4. Stratégie de distribution : comment choisir ses plateformes</h2>
 <p class="art-p">L'objectif n'est pas d'être présent partout, mais d'être présent aux bons endroits. Chaque plateforme supplémentaire ajoute de la gestion (synchronisation du calendrier, tarifs, messages). Sans channel manager, gérer plus de 3 plateformes simultanément devient rapidement chronophage.</p>
 <p class="art-p">Un channel manager (Smoobu, Lodgify, Rentals United) permet de centraliser la gestion et de synchroniser automatiquement le calendrier sur toutes les plateformes. Il devient rentable dès que tu es présent sur 3 plateformes ou plus, avec un coût mensuel généralement inférieur à la valeur d'une nuit de location.</p>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

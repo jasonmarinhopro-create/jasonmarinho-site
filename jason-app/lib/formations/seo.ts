@@ -1,4 +1,4 @@
-// Phase 5 — Helpers SEO pour les pages formation
+// Phase 5, Helpers SEO pour les pages formation
 // Génère metadata Next.js (title, description, OpenGraph, Twitter)
 // + structured data Course schema.org (JSON-LD)
 
@@ -24,7 +24,7 @@ interface FormationSeoInput {
 /** Génère les meta pour une page formation */
 export function buildFormationMetadata(input: FormationSeoInput): Metadata {
   const url = `${APP_URL}/dashboard/formations/${input.slug}`
-  const title = `${input.title} — Formation LCD · Jason Marinho`
+  const title = `${input.title}, Formation LCD · Jason Marinho`
   const description = input.description.slice(0, 200)
   const ogImage = input.ogImage ?? `${APP_URL}/og-formation-default.png`
 
@@ -37,7 +37,7 @@ export function buildFormationMetadata(input: FormationSeoInput): Metadata {
       url,
       title,
       description,
-      siteName: 'Jason Marinho — Plateforme LCD',
+      siteName: 'Jason Marinho, Plateforme LCD',
       images: [{ url: ogImage, width: 1200, height: 630, alt: input.title }],
       locale: 'fr_FR',
     },

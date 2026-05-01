@@ -7,7 +7,7 @@ import {
   ArrowRight, ArrowSquareOut, Newspaper,
 } from '@phosphor-icons/react/dist/ssr'
 
-export const metadata = { title: 'Guide LCD — Admin — Jason Marinho' }
+export const metadata = { title: 'Guide LCD, Admin, Jason Marinho' }
 
 type ProfileId = 'gites' | 'chambres' | 'conciergerie' | 'direct'
 
@@ -85,7 +85,7 @@ export default async function AdminGuidesPage() {
           <h2 style={s.pageTitle}>Guide LCD</h2>
           <p style={s.pageDesc}>
             Structure du Guide LCD par profil : 4 activités couvertes, 12 fiches de règles.
-            Le contenu est maintenu dans le code — les actualités par profil sont gérées via la section Actualités.
+            Le contenu est maintenu dans le code, les actualités par profil sont gérées via la section Actualités.
           </p>
         </div>
 

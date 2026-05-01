@@ -1,7 +1,7 @@
--- Phase 2 + 3 — Notes personnelles & favoris/bookmarks par leçon
+-- Phase 2 + 3, Notes personnelles & favoris/bookmarks par leçon
 -- Permet aux apprenants de prendre des notes sur chaque leçon et de bookmarker leurs leçons clés.
 
--- Notes : 1 note par (user, formation, lesson) — upsert
+-- Notes : 1 note par (user, formation, lesson), upsert
 CREATE TABLE IF NOT EXISTS user_lesson_notes (
   id              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id         UUID         NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,

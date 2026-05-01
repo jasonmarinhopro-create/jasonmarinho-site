@@ -34,7 +34,7 @@ export default function ChezNousWidget({
           <h3 style={s.title}>Chez Nous</h3>
         </div>
         <p style={s.emptyText}>
-          La communauté ouverte vient de naître — sois le premier à lancer une discussion entre hôtes.
+          La communauté ouverte vient de naître, sois le premier à lancer une discussion entre hôtes.
         </p>
         <Link href="/dashboard/chez-nous" style={s.cta}>
           Découvrir Chez Nous <ArrowRight size={12} weight="bold" />

@@ -11,7 +11,7 @@ description: "Comment définir une politique d'annulation claire pour tes réser
 
 C'est l'une des questions qui freinent le plus les hôtes au moment de se lancer dans la location directe : *"Et si le voyageur annule à la dernière minute ?"*
 
-Avec Airbnb ou Booking, la politique d'annulation est gérée par la plateforme — tu choisis parmi des options prédéfinies, et la plateforme s'occupe du remboursement. En direct, c'est à toi de définir les règles du jeu et de les appliquer.
+Avec Airbnb ou Booking, la politique d'annulation est gérée par la plateforme, tu choisis parmi des options prédéfinies, et la plateforme s'occupe du remboursement. En direct, c'est à toi de définir les règles du jeu et de les appliquer.
 
 Bonne nouvelle : c'est plus simple qu'il n'y paraît, et tu as plus de liberté qu'avec les plateformes.
 
@@ -104,7 +104,7 @@ Dès que l'annulation est confirmée, remets les dates en disponibilité sur tou
 
 Certains voyageurs hésitent à réserver en direct par peur de ne pas être couverts en cas d'imprévu (maladie, accident...). Sur Airbnb, la plateforme propose une assurance voyage optionnelle.
 
-En direct, tu peux recommander à tes voyageurs de souscrire leur propre assurance annulation voyage — elles sont peu chères (10 à 30 € pour un séjour), disponibles sur des sites comme Chapka, April ou Direct Assurance, et couvrent les imprévus légitimes.
+En direct, tu peux recommander à tes voyageurs de souscrire leur propre assurance annulation voyage, elles sont peu chères (10 à 30 € pour un séjour), disponibles sur des sites comme Chapka, April ou Direct Assurance, et couvrent les imprévus légitimes.
 
 Tu peux mentionner cette option dans ton contrat ou ton message de confirmation.
 
@@ -113,7 +113,7 @@ Tu peux mentionner cette option dans ton contrat ou ton message de confirmation.
 ## Ce qu'il faut retenir
 
 - Une politique d'annulation claire dans le contrat est la base de toute réservation directe sécurisée.
-- Commence avec une politique modérée si tu débutes en direct — l'équilibre protection/attractivité est optimal.
+- Commence avec une politique modérée si tu débutes en direct, l'équilibre protection/attractivité est optimal.
 - L'acompte (30 à 50 %) est ton meilleur outil contre les annulations de mauvaise foi.
-- En cas d'annulation, propose un report plutôt qu'une annulation sèche — ça fidélise.
+- En cas d'annulation, propose un report plutôt qu'une annulation sèche, ça fidélise.
 - Encourage tes voyageurs à souscrire une assurance annulation pour les couvrir côté imprévu.

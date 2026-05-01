@@ -25,7 +25,7 @@ Au total, la plateforme capte environ 18 à 21 % de la transaction.
 
 En location directe, cette somme disparaît. La question est : qui en profite ?
 
-**La réponse optimale : vous deux.** Le voyageur paie moins, toi tu gagnes plus. C'est le modèle gagnant-gagnant qui rend la réservation directe attractive pour tout le monde — et que [Driing](https://www.driing.co) a intégré dans son approche en affichant le comparatif de prix directement sur chaque annonce.
+**La réponse optimale : vous deux.** Le voyageur paie moins, toi tu gagnes plus. C'est le modèle gagnant-gagnant qui rend la réservation directe attractive pour tout le monde, et que [Driing](https://www.driing.co) a intégré dans son approche en affichant le comparatif de prix directement sur chaque annonce.
 
 ---
 
@@ -42,7 +42,7 @@ Pour la réservation directe, tu peux proposer **entre 100 € et 110 €**.
 - À 105 € en direct : le voyageur économise 10 €, toi tu gagnes 5 € de plus qu'Airbnb.
 - À 110 € en direct : le voyageur économise 5 €, toi tu gagnes 10 € de plus qu'Airbnb.
 
-**Le sweet spot se situe généralement entre 105 € et 108 €** — le voyageur économise assez pour que ça soit visible, et toi tu améliores ta marge.
+**Le sweet spot se situe généralement entre 105 € et 108 €**, le voyageur économise assez pour que ça soit visible, et toi tu améliores ta marge.
 
 ---
 
@@ -54,7 +54,7 @@ C'est pourquoi il faut **rendre la comparaison explicite**. Dans ton message ou 
 
 > *"Mon logement est disponible à 105 € la nuit en réservation directe. Le même logement sur Airbnb vous reviendrait à environ 118 € après frais de service. En réservant directement, vous économisez ~13 € par nuit, soit plus de 90 € sur une semaine."*
 
-Quand le voyageur voit concrètement combien il économise, la décision devient simple. C'est ce que fait Driing automatiquement sur chaque annonce — le comparatif de prix est affiché directement, sans que tu aies à l'expliquer toi-même.
+Quand le voyageur voit concrètement combien il économise, la décision devient simple. C'est ce que fait Driing automatiquement sur chaque annonce, le comparatif de prix est affiché directement, sans que tu aies à l'expliquer toi-même.
 
 ---
 
@@ -82,13 +82,13 @@ Pour les séjours d'une semaine ou plus, la remise peut être plus importante ca
 | 14–27 nuits | -15 à -20 % |
 | 28+ nuits | -20 à -30 % |
 
-Ces remises sont calculées sur ton tarif direct de base — elles restent rentables car tu n'as aucune commission à payer.
+Ces remises sont calculées sur ton tarif direct de base, elles restent rentables car tu n'as aucune commission à payer.
 
 ---
 
 ## Le cas particulier des voyageurs fidèles
 
-Pour les voyageurs qui reviennent (voir notre article sur la fidélisation), tu peux proposer un tarif encore plus attractif — typiquement -10 % supplémentaires par rapport à ton prix direct standard.
+Pour les voyageurs qui reviennent (voir notre article sur la fidélisation), tu peux proposer un tarif encore plus attractif, typiquement -10 % supplémentaires par rapport à ton prix direct standard.
 
 Là encore, le calcul est simple : même avec -10 %, tu gardes une marge supérieure à ce que tu aurais eu en passant par Airbnb ou Booking.
 
@@ -96,8 +96,8 @@ Là encore, le calcul est simple : même avec -10 %, tu gardes une marge supéri
 
 ## Ce qu'il faut retenir
 
-- La commission économisée en direct (15 à 20 %) se partage entre toi et le voyageur — c'est ce qui rend le canal direct attractif pour les deux.
+- La commission économisée en direct (15 à 20 %) se partage entre toi et le voyageur, c'est ce qui rend le canal direct attractif pour les deux.
 - Le sweet spot : un prix direct qui représente 5 à 8 % de moins que le prix total voyageur sur Airbnb.
-- Rends la comparaison visible et chiffrée — le voyageur ne fait pas le calcul seul.
+- Rends la comparaison visible et chiffrée, le voyageur ne fait pas le calcul seul.
 - Applique des remises dégressives pour les séjours longs, calculées sur ta marge directe.
-- Sur Driing, le comparatif de prix est affiché automatiquement — tu n'as pas à argumenter toi-même.
+- Sur Driing, le comparatif de prix est affiché automatiquement, tu n'as pas à argumenter toi-même.

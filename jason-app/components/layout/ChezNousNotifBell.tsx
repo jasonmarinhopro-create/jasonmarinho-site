@@ -35,7 +35,7 @@ export default function ChezNousNotifBell() {
     <Link
       href="/dashboard/chez-nous/notifications"
       style={s.btn}
-      aria-label={`Notifications Chez Nous${hydrated && count > 0 ? ` — ${count} non lue${count > 1 ? 's' : ''}` : ''}`}
+      aria-label={`Notifications Chez Nous${hydrated && count > 0 ? `, ${count} non lue${count > 1 ? 's' : ''}` : ''}`}
       title="Mes notifications Chez Nous"
     >
       <ChatCircleDots size={18} weight={hydrated && count > 0 ? 'fill' : 'regular'} />

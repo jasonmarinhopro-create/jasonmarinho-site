@@ -1,4 +1,4 @@
-// Vercel serverless function — proxy to Brevo for newsletter signup.
+// Vercel serverless function, proxy to Brevo for newsletter signup.
 // Keeps the API key server-side. The static site calls this endpoint from
 // /index.html and all blog pages via same-origin fetch.
 

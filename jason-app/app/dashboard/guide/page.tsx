@@ -1,7 +1,7 @@
 import GuideUI from './GuideUI'
 import GuideCards from './GuideCards'
 
-export const metadata = { title: 'Guide LCD — Jason Marinho' }
+export const metadata = { title: 'Guide LCD, Jason Marinho' }
 
 export default function GuidePage() {
   // GuideCards est rendu server-side (icônes + données via /dist/ssr) puis injecté

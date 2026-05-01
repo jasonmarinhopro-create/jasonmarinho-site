@@ -9,7 +9,7 @@ description: "Comment organiser l'arrivée de tes voyageurs en location courte d
 
 # Check-in en LCD : accueil en personne, boîte à clés ou serrure connectée ?
 
-L'arrivée du voyageur, c'est le premier contact physique avec ton logement. C'est souvent là que se joue la première impression — et parfois la note finale. Pourtant, beaucoup d'hôtes improvisent encore leur process de check-in sans avoir vraiment réfléchi à la meilleure option pour leur situation.
+L'arrivée du voyageur, c'est le premier contact physique avec ton logement. C'est souvent là que se joue la première impression, et parfois la note finale. Pourtant, beaucoup d'hôtes improvisent encore leur process de check-in sans avoir vraiment réfléchi à la meilleure option pour leur situation.
 
 Voici un tour d'horizon des trois méthodes, avec leurs avantages, inconvénients et cas d'usage idéaux.
 
@@ -22,7 +22,7 @@ C'est la méthode traditionnelle : tu es présent à l'arrivée du voyageur, tu 
 ### Les avantages
 - **Première impression humaine et chaleureuse** : les voyageurs qui apprécient le contact humain notent souvent mieux.
 - **Vérification immédiate** : tu peux constater l'état du logement et identifier d'éventuels problèmes sur place.
-- **Opportunité de créer un lien** : un hôte présent et disponible inspire confiance et peut orienter vers des expériences locales — ce qui joue sur les avis.
+- **Opportunité de créer un lien** : un hôte présent et disponible inspire confiance et peut orienter vers des expériences locales, ce qui joue sur les avis.
 
 ### Les inconvénients
 - **Contraignant** : tu es lié aux horaires d'arrivée du voyageur, qui peuvent changer à la dernière minute.
@@ -107,7 +107,7 @@ Si tu démarres avec un budget limité : **commence avec une boîte à clés Igl
 
 ## Et le livret d'accueil dans tout ça ?
 
-Quel que soit ton mode de check-in, le voyageur aura des questions : comment fonctionne le chauffage, où est le sèche-cheveux, quel restaurant recommandes-tu... Un **livret d'accueil digital** répond à toutes ces questions avant même qu'elles soient posées. [Driing](https://www.driing.co) propose un outil de livret d'accueil digital intégré à sa plateforme — pratique si tu reçois des réservations directes sans intermédiaire.
+Quel que soit ton mode de check-in, le voyageur aura des questions : comment fonctionne le chauffage, où est le sèche-cheveux, quel restaurant recommandes-tu... Un **livret d'accueil digital** répond à toutes ces questions avant même qu'elles soient posées. [Driing](https://www.driing.co) propose un outil de livret d'accueil digital intégré à sa plateforme, pratique si tu reçois des réservations directes sans intermédiaire.
 
 ---
 

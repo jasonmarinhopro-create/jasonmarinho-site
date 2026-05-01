@@ -237,9 +237,9 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Photographie en lumière naturelle de jour, en grand angle, avec horodatage automatique du téléphone activé. Les photos floues ou sombres ne servent pas en litige.</span></div>
 <h2 class="art-h2">3. Quand mettre à jour l'inventaire</h2>
 <p class="art-p">L'inventaire doit être à jour pour servir de preuve. Voici la fréquence minimale.</p>
-<ul class="art-ul"><li>Photos initiales : avant la 1ère réservation (zone par zone, ~30 min)</li><li>Mise à jour majeure : tous les 6 mois ou après un changement (nouveau mobilier, rénovation, etc.)</li><li>Mise à jour ciblée : avant chaque arrivée pour les zones sensibles (TV, appareils électroménager) — 5 min</li><li>Photo de "fin de séjour" : avant chaque ménage, prendre 3-5 photos rapides de l'état laissé par le voyageur (preuve si signalé après)</li></ul>
+<ul class="art-ul"><li>Photos initiales : avant la 1ère réservation (zone par zone, ~30 min)</li><li>Mise à jour majeure : tous les 6 mois ou après un changement (nouveau mobilier, rénovation, etc.)</li><li>Mise à jour ciblée : avant chaque arrivée pour les zones sensibles (TV, appareils électroménager), 5 min</li><li>Photo de "fin de séjour" : avant chaque ménage, prendre 3-5 photos rapides de l'état laissé par le voyageur (preuve si signalé après)</li></ul>
 <h2 class="art-h2">4. Stockage et présentation des preuves</h2>
-<p class="art-p">Les photos seules ne suffisent pas — elles doivent être organisées et accessibles rapidement en cas de litige.</p>
+<p class="art-p">Les photos seules ne suffisent pas, elles doivent être organisées et accessibles rapidement en cas de litige.</p>
 <ul class="art-ul"><li>Stockage : Google Photos avec albums datés ("Avril 2026 - inventaire complet"). Backup automatique cloud</li><li>Renommage : si possible, une numérotation par zone (Z1-cuisine-01.jpg, Z1-cuisine-02.jpg) pour navigation rapide</li><li>En cas de litige : crée un dossier PDF avec sélection de photos pertinentes + horodatage. À envoyer dans le litige Airbnb avec un texte explicatif court</li><li>Conservation : 3 ans minimum après le séjour concerné (durée de prescription standard)</li></ul>
 <p class="art-p">Avec ce système, tu gagnes 90 % des litiges où le voyageur réclame sans preuve. Tu peux aussi facturer plus facilement les vrais dégâts (caution prélevée, ou facture envoyée selon ton contrat).</p>
 <div class="art-cta-box"><p>Tu veux toutes les bonnes pratiques juridiques et opérationnelles LCD ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

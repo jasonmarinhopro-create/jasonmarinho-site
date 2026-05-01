@@ -19,7 +19,7 @@ export async function sendFeedback(type: string, message: string) {
   await getResend().emails.send({
     from: 'notifications@jasonmarinho.com',
     to:   'contact@jasonmarinho.com',
-    subject: `Feedback — ${typeLabel}`,
+    subject: `Feedback, ${typeLabel}`,
     html: buildEmail({
       title: typeLabel,
       body: `

@@ -21,7 +21,7 @@ function ResetPasswordForm() {
   const [sessionReady, setSessionReady] = useState(false)
 
   useEffect(() => {
-    // The #access_token in the URL is already a valid JWT — use setSession directly
+    // The #access_token in the URL is already a valid JWT, use setSession directly
     const hash = window.location.hash
     if (hash.includes('access_token') && hash.includes('type=recovery')) {
       const params = new URLSearchParams(hash.substring(1))

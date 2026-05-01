@@ -152,10 +152,10 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 </section>
 
 <div class="art-body">
-<p class="art-lead">La loi Le Meur, entrée en vigueur fin 2024, a redessiné les règles du jeu pour la location courte durée en France. En 2026, les obligations se renforcent encore. Voici ce que tu dois savoir pour rester en règle — et continuer à louer sereinement.</p>
+<p class="art-lead">La loi Le Meur, entrée en vigueur fin 2024, a redessiné les règles du jeu pour la location courte durée en France. En 2026, les obligations se renforcent encore. Voici ce que tu dois savoir pour rester en règle, et continuer à louer sereinement.</p>
 
 <h2 class="art-h2">Le numéro d'enregistrement : obligatoire partout</h2>
-<p class="art-p">Depuis la loi Le Meur (novembre 2024), l'enregistrement en mairie est obligatoire pour toute mise en location d'un meublé de tourisme, quelle que soit la commune — et plus seulement dans les villes de plus de 200 000 habitants.</p>
+<p class="art-p">Depuis la loi Le Meur (novembre 2024), l'enregistrement en mairie est obligatoire pour toute mise en location d'un meublé de tourisme, quelle que soit la commune, et plus seulement dans les villes de plus de 200 000 habitants.</p>
 <p class="art-p">Ce numéro à 13 chiffres doit figurer sur toutes tes annonces Airbnb, Booking, Abritel ou autre plateforme. Sans numéro affiché, la plateforme peut être contrainte de retirer ton annonce.</p>
 <div class="art-tip"><i class="ph ph-lightbulb"></i><span>La procédure est simple et gratuite sur le guichet numérique de ta mairie ou via le portail national <strong>enregistrement.entreprises.gouv.fr</strong>. Prévois 10 minutes maximum.</span></div>
 
@@ -241,7 +241,7 @@ const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.targ
 document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
 </script>
 <script>
-function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return;}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='\u2713 Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value='';}else{msg.textContent='Déjà inscrit ou erreur — réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';}btn.textContent="S'inscrire";btn.disabled=false;}).catch(function(){msg.textContent='Erreur réseau — réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false;});
+function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return;}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='\u2713 Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value='';}else{msg.textContent='Déjà inscrit ou erreur, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';}btn.textContent="S'inscrire";btn.disabled=false;}).catch(function(){msg.textContent='Erreur réseau, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false;});
 }
 </script>
 <script src="/cookie-banner.js" defer></script>

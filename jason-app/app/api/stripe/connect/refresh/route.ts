@@ -6,7 +6,7 @@ const log = logger('api/stripe/connect/refresh')
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
 // GET /api/stripe/connect/refresh?account_id=acct_xxx
-// Stripe redirige ici si le lien d'onboarding a expiré — on en génère un nouveau
+// Stripe redirige ici si le lien d'onboarding a expiré, on en génère un nouveau
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const accountId = searchParams.get('account_id')

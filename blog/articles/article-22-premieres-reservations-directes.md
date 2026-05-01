@@ -42,14 +42,14 @@ L'avantage spécifique de Driing : la plateforme affiche le prix de ton logement
 
 ## Méthode 3 : Place une carte de visite physique dans le logement
 
-C'est l'une des méthodes les plus sous-estimées et les plus efficaces. Les voyageurs qui séjournent chez toi sont ta meilleure audience — ils vivent l'expérience en direct.
+C'est l'une des méthodes les plus sous-estimées et les plus efficaces. Les voyageurs qui séjournent chez toi sont ta meilleure audience, ils vivent l'expérience en direct.
 
 Place dans le logement une carte ou un petit mot avec :
 - Ton contact direct (email ou téléphone)
 - Ton lien Driing ou ton site
 - Un argument simple : *"Pour votre prochain séjour ou pour recommander à vos proches, réservez directement et économisez les frais de plateforme"*
 
-Un QR code qui renvoie directement vers ton annonce Driing ou ton site est encore plus efficace — les voyageurs scannent facilement depuis leur smartphone.
+Un QR code qui renvoie directement vers ton annonce Driing ou ton site est encore plus efficace, les voyageurs scannent facilement depuis leur smartphone.
 
 **Coût :** quelques euros pour imprimer 100 cartes. Retour potentiel : des réservations directes pour des années.
 
@@ -66,13 +66,13 @@ Ce qu'il faut faire :
 - Ajoute le lien vers ton annonce Driing ou ton site dans la fiche
 - Invite tes anciens voyageurs à laisser un avis Google (différent de l'avis Airbnb)
 
-Les voyageurs qui passent par Google pour trouver un logement sont souvent plus enclins à réserver directement — ils ne sont pas dans le tunnel Airbnb.
+Les voyageurs qui passent par Google pour trouver un logement sont souvent plus enclins à réserver directement, ils ne sont pas dans le tunnel Airbnb.
 
 ---
 
 ## Méthode 5 : Exploite ton réseau personnel
 
-C'est la méthode la plus simple et la plus souvent ignorée par excès de pudeur. Parle de ton logement à ton entourage — famille, amis, collègues, anciens collègues.
+C'est la méthode la plus simple et la plus souvent ignorée par excès de pudeur. Parle de ton logement à ton entourage, famille, amis, collègues, anciens collègues.
 
 Les voyageurs qui passent par ton réseau ont un niveau de confiance très élevé. Ils réservent sans hésitation, traitent mieux le logement en moyenne et recommandent facilement à leur propre entourage.
 
@@ -95,7 +95,7 @@ Commence par une seule action. La plus rapide à mettre en place pour toi : dép
 
 ## Ce qu'il faut retenir
 
-- Tes premières réservations directes viendront de tes anciens voyageurs — ce sont tes meilleurs prospects.
+- Tes premières réservations directes viendront de tes anciens voyageurs, ce sont tes meilleurs prospects.
 - Driing est le canal le plus rapide à activer pour recevoir des réservations directes sans site.
 - Une carte de visite physique dans le logement travaille pour toi à chaque séjour, passivement.
 - Google My Business est un levier de trafic direct gratuit et largement sous-exploité par les hôtes LCD.

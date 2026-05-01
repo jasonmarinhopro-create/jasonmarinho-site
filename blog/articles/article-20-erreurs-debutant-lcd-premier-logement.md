@@ -11,7 +11,7 @@ description: "Mauvaise tarification, assurance oubliée, photos bâclées, règl
 
 Tout le monde fait des erreurs quand on démarre en location courte durée. Certaines sont sans conséquences. D'autres coûtent des centaines d'euros, des mauvais avis ou des problèmes avec l'administration.
 
-Après avoir accompagné des centaines d'hôtes dans leur lancement LCD, voici les 10 erreurs les plus fréquentes — et surtout comment les éviter avant même d'accueillir ton premier voyageur.
+Après avoir accompagné des centaines d'hôtes dans leur lancement LCD, voici les 10 erreurs les plus fréquentes, et surtout comment les éviter avant même d'accueillir ton premier voyageur.
 
 ---
 
@@ -25,9 +25,9 @@ Avant toute publication, calcule ton seuil de rentabilité réel : charges fixes
 
 ## Erreur n°2 : Publier avec des photos de mauvaise qualité
 
-Les photos sont ta première impression. Un voyageur qui compare 15 logements clique sur les photos — pas sur le texte. Des photos sombres, mal cadrées ou prises avec un vieux smartphone peuvent ruiner une annonce qui serait pourtant excellente en vrai.
+Les photos sont ta première impression. Un voyageur qui compare 15 logements clique sur les photos, pas sur le texte. Des photos sombres, mal cadrées ou prises avec un vieux smartphone peuvent ruiner une annonce qui serait pourtant excellente en vrai.
 
-Pas besoin d'un photographe professionnel. Mais tu as besoin de lumière naturelle, d'un logement bien rangé et mis en scène, et d'un minimum de soin dans le cadrage. Prends le temps de bien faire les photos avant de publier — tu n'auras pas de deuxième chance de faire une première impression.
+Pas besoin d'un photographe professionnel. Mais tu as besoin de lumière naturelle, d'un logement bien rangé et mis en scène, et d'un minimum de soin dans le cadrage. Prends le temps de bien faire les photos avant de publier, tu n'auras pas de deuxième chance de faire une première impression.
 
 ---
 
@@ -41,7 +41,7 @@ AirCover d'Airbnb est une protection complémentaire, pas une assurance habitati
 
 ## Erreur n°4 : Ne pas déclarer son activité en mairie
 
-Dans la plupart des communes françaises, la déclaration de meublé de tourisme en mairie est obligatoire avant la première location. L'amende en cas de contrôle peut aller jusqu'à 5 000 €. La démarche prend 15 minutes en ligne — il n'y a aucune raison de s'en passer.
+Dans la plupart des communes françaises, la déclaration de meublé de tourisme en mairie est obligatoire avant la première location. L'amende en cas de contrôle peut aller jusqu'à 5 000 €. La démarche prend 15 minutes en ligne, il n'y a aucune raison de s'en passer.
 
 Si ta commune exige un numéro d'enregistrement, il doit figurer sur toutes tes annonces (Airbnb, Booking, [Driing](https://www.driing.co)...).
 
@@ -65,7 +65,7 @@ Rédige un règlement simple, précis, non-agressif, et rends-le visible dans l'
 
 ## Erreur n°7 : Ne pas automatiser les messages dès le départ
 
-Répondre manuellement à chaque message voyageur — demande de réservation, confirmation, instructions d'arrivée, message de bienvenue, rappel de check-out, demande d'avis — prend énormément de temps cumulé.
+Répondre manuellement à chaque message voyageur, demande de réservation, confirmation, instructions d'arrivée, message de bienvenue, rappel de check-out, demande d'avis, prend énormément de temps cumulé.
 
 Dès le début, configure des messages automatiques pour les étapes récurrentes. Airbnb propose un outil basique dans les paramètres. Un PMS comme Smoobu permet d'aller plus loin. Chaque message automatisé est du temps récupéré.
 
@@ -81,7 +81,7 @@ Dès les premières semaines, explore d'autres canaux. Booking.com pour la visib
 
 ## Erreur n°9 : Ne pas documenter l'état du logement avant le premier séjour
 
-Photos du logement avant chaque arrivée, c'est ta protection en cas de litige. Beaucoup de nouveaux hôtes ne commencent à prendre ces photos systématiquement qu'après leur premier problème — souvent trop tard.
+Photos du logement avant chaque arrivée, c'est ta protection en cas de litige. Beaucoup de nouveaux hôtes ne commencent à prendre ces photos systématiquement qu'après leur premier problème, souvent trop tard.
 
 Dès ta première rotation, documente chaque pièce avec des photos datées. Stocke-les de façon organisée (par date de check-out). Si un voyageur conteste, tu as la preuve.
 
@@ -97,7 +97,7 @@ C'est une activité qui devient progressivement moins chronophage à mesure que 
 
 ## Le bon état d'esprit pour démarrer
 
-Lancer un logement en LCD, c'est lancer une petite entreprise. Comme toute entreprise, les premiers mois sont ceux où on apprend le plus vite — y compris de ses erreurs. L'important, c'est d'en faire le moins possible dès le début et de t'appuyer sur des ressources sérieuses pour éviter de réinventer la roue.
+Lancer un logement en LCD, c'est lancer une petite entreprise. Comme toute entreprise, les premiers mois sont ceux où on apprend le plus vite, y compris de ses erreurs. L'important, c'est d'en faire le moins possible dès le début et de t'appuyer sur des ressources sérieuses pour éviter de réinventer la roue.
 
 C'est exactement pour ça que cette plateforme existe : te donner les bases solides, les bons outils et un accompagnement humain pour que ton lancement se passe dans les meilleures conditions possibles.
 
@@ -105,9 +105,9 @@ C'est exactement pour ça que cette plateforme existe : te donner les bases soli
 
 ## Ce qu'il faut retenir
 
-- Calcule ton prix minimum avant de publier — jamais après.
+- Calcule ton prix minimum avant de publier, jamais après.
 - Photos soignées + assurance LCD + déclaration en mairie = les 3 non-négociables avant le premier séjour.
 - Commence avec 1 nuit minimum pour accumuler des avis rapidement.
-- Automatise tes messages dès le premier jour — pas quand tu seras débordé.
+- Automatise tes messages dès le premier jour, pas quand tu seras débordé.
 - Diversifie tes canaux : Airbnb + Booking + Driing avec un channel manager.
 - Documente l'état du logement à chaque rotation, systématiquement.

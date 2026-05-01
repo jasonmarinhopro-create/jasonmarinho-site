@@ -138,13 +138,13 @@ PHASE 3 (mois 2-3)
 
 
 ## Exercice
-**Exercice pratique :** Fais l'audit de tes tâches LCD maintenant. Remplis le tableau de la slide 4 honnêtement. Note ton total hebdomadaire. Identifie ta tâche la plus chronophage — c'est là que tu commences dans les leçons suivantes.
+**Exercice pratique :** Fais l'audit de tes tâches LCD maintenant. Remplis le tableau de la slide 4 honnêtement. Note ton total hebdomadaire. Identifie ta tâche la plus chronophage, c'est là que tu commences dans les leçons suivantes.
 
 ---`,
         },
         {
           id: 2,
-          title: 'Les outils : channel manager, PMS — comment choisir ?',
+          title: 'Les outils : channel manager, PMS, comment choisir ?',
           duration: '13 min',
           content: `---
 
@@ -183,7 +183,7 @@ PMS (Property Management System)
 ---
 
 ## Les outils recommandés selon votre profil
-PROFIL 1 — HÔTE SOLO 1-3 LOGEMENTS
+PROFIL 1, HÔTE SOLO 1-3 LOGEMENTS
 → Smoobu (français, intuitif, 20-30€/mois)
   Channel manager + messagerie basique
 → Beds24 (plus technique, très complet,
@@ -191,12 +191,12 @@ PROFIL 1 — HÔTE SOLO 1-3 LOGEMENTS
 → Driing (channel manager + réservation
   directe intégrée, solution française)
 
-PROFIL 2 — HÔTE 3-10 LOGEMENTS
+PROFIL 2, HÔTE 3-10 LOGEMENTS
 → Smoobu ou Superhote
   (PMS français, support en français)
 → Hospitable.com (messagerie IA avancée)
 
-PROFIL 3 — CONCIERGERIE 10+ LOGEMENTS
+PROFIL 3, CONCIERGERIE 10+ LOGEMENTS
 → Superhote (leader conciergeries France)
 → Hostaway (international, très complet)
 → Loftely (gestion tâches + conciergerie)
@@ -239,7 +239,7 @@ LES ERREURS D'OUTIL LES PLUS FRÉQUENTES :
 
 
 ## Exercice
-**Exercice pratique :** Identifie ton profil (1, 2 ou 3) et note les 2 outils recommandés pour toi. Inscris-toi à un essai gratuit de l'un d'eux cette semaine. Pas besoin de tout configurer maintenant — juste explorer l'interface. La prise en main progressive est toujours meilleure que la migration totale précipitée.
+**Exercice pratique :** Identifie ton profil (1, 2 ou 3) et note les 2 outils recommandés pour toi. Inscris-toi à un essai gratuit de l'un d'eux cette semaine. Pas besoin de tout configurer maintenant, juste explorer l'interface. La prise en main progressive est toujours meilleure que la migration totale précipitée.
 
 ---`,
         },
@@ -288,38 +288,38 @@ Variables à utiliser :
 ---
 
 ## Les 7 messages du parcours voyageur
-MESSAGE 1 — CONFIRMATION IMMÉDIATE
+MESSAGE 1, CONFIRMATION IMMÉDIATE
 Timing : dès la confirmation de réservation
 Contenu : remerciement + résumé de la réservation
           + prochaines étapes
 
-MESSAGE 2 — PRISE DE CONTACT J-7
+MESSAGE 2, PRISE DE CONTACT J-7
 Timing : 7 jours avant l'arrivée
 Contenu : "Votre séjour approche !"
           + demande d'heure d'arrivée estimée
           + lien livret Driing
 
-MESSAGE 3 — INSTRUCTIONS ARRIVÉE J-1
+MESSAGE 3, INSTRUCTIONS ARRIVÉE J-1
 Timing : la veille de l'arrivée
 Contenu : code d'accès + instructions détaillées
           + lien livret + numéro d'urgence
 
-MESSAGE 4 — BIENVENUE JOUR J
+MESSAGE 4, BIENVENUE JOUR J
 Timing : à l'heure de check-in estimée
 Contenu : message chaleureux + "tout va bien ?"
           + rappel du livret
 
-MESSAGE 5 — MI-SÉJOUR (séjours > 3 nuits)
+MESSAGE 5, MI-SÉJOUR (séjours > 3 nuits)
 Timing : milieu du séjour
 Contenu : "Tout se passe bien ?"
           + proposition d'aide si besoin
 
-MESSAGE 6 — RAPPEL DÉPART J-1
+MESSAGE 6, RAPPEL DÉPART J-1
 Timing : la veille du départ
 Contenu : heure de départ + instructions
           + que faire des clés
 
-MESSAGE 7 — CHECK-OUT ET AVIS
+MESSAGE 7, CHECK-OUT ET AVIS
 Timing : le jour du départ (après l'heure de checkout)
 Contenu : remerciement + invitation à l'avis
           + lien réservation directe Driing
@@ -412,25 +412,25 @@ Objectif : > 90% de réponses, < 1h de délai.
 
 Le problème :
 → Les voyageurs posent des questions
-  à toute heure — y compris à 23h
+  à toute heure, y compris à 23h
   ou à 7h du matin.
 → Répondre manuellement à toutes les heures
   = épuisement garanti.
 
 La solution en 3 niveaux :
 
-NIVEAU 1 — LES MESSAGES AUTOMATIQUES
+NIVEAU 1, LES MESSAGES AUTOMATIQUES
 (couvrent 70-80% des questions)
 → Si votre message J-1 est complet,
   la plupart des questions n'arrivent pas.
 
-NIVEAU 2 — LE LIVRET DRIING 24H/24
+NIVEAU 2, LE LIVRET DRIING 24H/24
 → Le voyageur trouve lui-même
   la réponse à 3h du matin.
 → Zéro message entrant sur les sujets
   couverts par le livret.
 
-NIVEAU 3 — LE MESSAGE D'ACCUSÉ DE RÉCEPTION
+NIVEAU 3, LE MESSAGE D'ACCUSÉ DE RÉCEPTION
 → Pour les questions résiduelles :
   un accusé de réception automatique
   qui dit "Je lis votre message
@@ -548,7 +548,7 @@ APRÈS (accès autonome) :
 ---
 
 ## Les 3 solutions d'accès autonome
-SOLUTION 1 — LA BOÎTE À CLÉS (budget : 30-80€)
+SOLUTION 1, LA BOÎTE À CLÉS (budget : 30-80€)
 → Coffre à code fixé au mur ou à la rambarde
 → Vous y déposez la clé
 → Vous communiquez le code au voyageur
@@ -559,7 +559,7 @@ SOLUTION 1 — LA BOÎTE À CLÉS (budget : 30-80€)
 Recommandée pour : hôtes débutants,
 logements sans connexion Wi-Fi stable
 
-SOLUTION 2 — SERRURE CONNECTÉE (budget : 100-250€)
+SOLUTION 2, SERRURE CONNECTÉE (budget : 100-250€)
 → Code unique généré par voyageur
 → Code valable uniquement pendant le séjour
 → Code envoyé automatiquement par votre PMS
@@ -572,7 +572,7 @@ Marques : Nuki (fiable, compatible Europe),
 Igloohome (fonctionne sans Wi-Fi),
 Yale, Masterlok
 
-SOLUTION 3 — INTERPHONE CONNECTÉ (immeubles)
+SOLUTION 3, INTERPHONE CONNECTÉ (immeubles)
 → Pour les logements avec interphone
 → Application mobile pour ouvrir à distance
 → Solution si remplacement de serrure impossible
@@ -654,24 +654,24 @@ Avec automatisation :
 ---
 
 ## Les outils de coordination ménage
-OPTION 1 — GOOGLE CALENDAR PARTAGÉ (gratuit)
+OPTION 1, GOOGLE CALENDAR PARTAGÉ (gratuit)
 → Créez un calendrier partagé avec votre ménage
 → Chaque réservation = événement visible
 → Simple mais manuel : vous créez l'événement
 
-OPTION 2 — VOTRE PMS (si vous en avez un)
+OPTION 2, VOTRE PMS (si vous en avez un)
 → Superhote, Smoobu, Hostaway intègrent
   tous la gestion des équipes de ménage
 → Notification automatique à chaque réservation
 → Application mobile pour votre prestataire
 
-OPTION 3 — BREEZEWAY OU PROPERLY
+OPTION 3, BREEZEWAY OU PROPERLY
 → Outils spécialisés gestion des tâches LCD
 → Checklist de ménage avec photos
 → Confirmation visuelle que c'est fait
 → À partir de 30€/mois pour plusieurs logements
 
-OPTION 4 — WHATSAPP + CALENDRIER PARTAGÉ (simple)
+OPTION 4, WHATSAPP + CALENDRIER PARTAGÉ (simple)
 → Pour 1-2 logements et 1 prestataire :
   Partagez votre calendrier Airbnb
   en format iCal avec votre prestataire.
@@ -721,7 +721,7 @@ VÉRIFICATION FINALE
 
 
 ## Exercice
-**Exercice pratique :** Crée la checklist ménage de ton logement avec les éléments de la slide 4, adaptée à ta configuration. Partage-la avec ton prestataire cette semaine. Et crée un calendrier Google partagé avec lui si ce n'est pas déjà fait — c'est la solution gratuite la plus rapide à mettre en place pour la coordination.
+**Exercice pratique :** Crée la checklist ménage de ton logement avec les éléments de la slide 4, adaptée à ta configuration. Partage-la avec ton prestataire cette semaine. Et crée un calendrier Google partagé avec lui si ce n'est pas déjà fait, c'est la solution gratuite la plus rapide à mettre en place pour la coordination.
 
 ---`,
         },
@@ -886,18 +886,18 @@ Vous n'avez pas besoin d'un reporting complexe.
 ## Le Google Sheet de pilotage (gratuit et suffisant)
 Créez un Google Sheet avec ces onglets :
 
-ONGLET 1 — RÉSERVATIONS
+ONGLET 1, RÉSERVATIONS
 Mois | Plateforme | Nuits | Revenus bruts
 | Commission | Net | Source
 
-ONGLET 2 — PERFORMANCE
+ONGLET 2, PERFORMANCE
 Mois | Taux occupation | RevPAN | Note moyenne
 | Temps gestion | % direct
 
-ONGLET 3 — DÉPENSES
+ONGLET 3, DÉPENSES
 Catégorie | Date | Montant | Récurrent ?
 
-ONGLET 4 — CONTACTS VOYAGEURS
+ONGLET 4, CONTACTS VOYAGEURS
 (voir formation Réservation directe)
 
 → 15 minutes par semaine pour mettre à jour.
@@ -944,7 +944,7 @@ une action immédiate :
 
 
 ## Exercice
-**Exercice pratique :** Crée ton Google Sheet de pilotage maintenant avec les 4 onglets. Remplis-le avec les données de tes 3 derniers mois. Ça prend 20 minutes. Ce tableau devient votre tableau de bord permanent — 15 minutes par semaine pour le maintenir à jour.
+**Exercice pratique :** Crée ton Google Sheet de pilotage maintenant avec les 4 onglets. Remplis-le avec les données de tes 3 derniers mois. Ça prend 20 minutes. Ce tableau devient votre tableau de bord permanent, 15 minutes par semaine pour le maintenir à jour.
 
 ---`,
         },
@@ -967,24 +967,24 @@ UN SYSTÈME BIEN AUTOMATISÉ
 + UNE ROUTINE HEBDOMADAIRE CLAIRE
 = LCD gérée en 2 à 3h/semaine
 
-LUNDI MATIN — 30 MIN
+LUNDI MATIN, 30 MIN
 → Relire les messages de la semaine
   que l'automatisation n'a pas couverts
 → Répondre aux avis en attente
 → Vérifier les métriques du tableau de bord
 
-MERCREDI — 15 MIN
+MERCREDI, 15 MIN
 → Vérifier le calendrier des 2 prochaines semaines
 → S'assurer que les accès et ménages
   sont bien planifiés
 → Ajuster les prix si nécessaire
 
-VENDREDI — 15 MIN
+VENDREDI, 15 MIN
 → Vérifier les réservations du weekend entrant
 → Confirmer la coordination ménage weekend
 → S'assurer qu'aucun message urgent n'est en attente
 
-FIN DU MOIS — 30 MIN
+FIN DU MOIS, 30 MIN
 → Mise à jour du tableau de bord
 → Analyse des métriques du mois
 → 1 action d'amélioration identifiée
@@ -1058,39 +1058,39 @@ De zéro automatisation à système complet
 ---
 
 ## Le plan semaine par semaine
-SEMAINE 1 — ACCÈS AUTONOME
+SEMAINE 1, ACCÈS AUTONOME
 □ Commander boîte à clés ou serrure connectée
 □ Configurer le code
 □ Tester avec un proche
 
-SEMAINE 2 — MESSAGES AUTOMATIQUES
+SEMAINE 2, MESSAGES AUTOMATIQUES
 □ Rédiger les 7 messages du parcours voyageur
 □ Les configurer dans Airbnb ou votre PMS
 □ Tester sur une réservation réelle
 
-SEMAINE 3 — COORDINATION MÉNAGE
+SEMAINE 3, COORDINATION MÉNAGE
 □ Créer la checklist ménage
 □ Partager le calendrier avec le prestataire
 □ Configurer la tâche automatique dans le PMS
    (si applicable)
 
-SEMAINE 4 — CHANNEL MANAGER
+SEMAINE 4, CHANNEL MANAGER
 □ Si multi-plateformes : choisir et configurer
    un channel manager
 □ Synchroniser Airbnb, Booking, Driing
 
-SEMAINE 5 — TARIFICATION DYNAMIQUE
+SEMAINE 5, TARIFICATION DYNAMIQUE
 □ Activer la tarification intelligente Airbnb
    ou configurer Pricelabs
 □ Définir prix minimum et maximum
 □ Vérifier les résultats après 7 jours
 
-SEMAINE 6-7 — TABLEAU DE BORD
+SEMAINE 6-7, TABLEAU DE BORD
 □ Créer le Google Sheet de pilotage
 □ Mettre à jour avec les données des 3 mois passés
 □ Établir la routine hebdomadaire
 
-SEMAINE 8 — BILAN
+SEMAINE 8, BILAN
 □ Mesurer le temps gagné (nouveau total)
 □ Identifier ce qui reste à améliorer
 □ 1 action pour le mois suivant
@@ -1135,7 +1135,7 @@ Des questions sur votre configuration ?
 ## Exercice
 **L'action finale de la formation :**
 
-Imprimez le plan sur 8 semaines. Donnez une date à chaque semaine à partir d'aujourd'hui. Commencez par la semaine 1 cette semaine — commandez votre boîte à clés ou identifiez votre solution d'accès autonome. C'est la seule action qui change vraiment le quotidien d'un hôte LCD, et elle coûte moins de 50€.
+Imprimez le plan sur 8 semaines. Donnez une date à chaque semaine à partir d'aujourd'hui. Commencez par la semaine 1 cette semaine, commandez votre boîte à clés ou identifiez votre solution d'accès autonome. C'est la seule action qui change vraiment le quotidien d'un hôte LCD, et elle coûte moins de 50€.
 
 Formation suivante :`,
         },

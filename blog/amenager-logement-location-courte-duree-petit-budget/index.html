@@ -45,16 +45,16 @@
 </section>
 <div class="art-body">
 <p class="art-lead">On voit souvent des logements LCD magnifiquement décorés sur les réseaux sociaux et on se dit qu'il faut dépenser des milliers d'euros pour être compétitif. C'est faux.</p>
-<p class="art-p">Les hôtes qui ont les meilleures notes ne sont pas forcément ceux qui ont les logements les plus chers à l'aménagement. Ce sont ceux qui ont <strong>priorisé les bons investissements</strong> — les éléments qui impactent réellement les avis voyageurs et la qualité des photos d'annonce.</p>
+<p class="art-p">Les hôtes qui ont les meilleures notes ne sont pas forcément ceux qui ont les logements les plus chers à l'aménagement. Ce sont ceux qui ont <strong>priorisé les bons investissements</strong>, les éléments qui impactent réellement les avis voyageurs et la qualité des photos d'annonce.</p>
 <p class="art-p">Voici comment aménager efficacement, même avec un budget serré.</p>
 <h2 class="art-h2">La règle des 3 priorités</h2>
 <p class="art-p">Avant d'acheter quoi que ce soit, pose-toi cette question : est-ce que cet achat améliore <strong>le confort</strong>, <strong>les photos</strong> ou <strong>l'expérience</strong> du voyageur ?</p>
 <p class="art-p">Si la réponse est non aux trois, ce n'est probablement pas une priorité pour la LCD.</p>
 <p class="art-p">Les 3 postes où investir en premier :</p>
 <ul class="art-ul">
-<li><strong>La literie</strong> — c'est la nuit que tu vends</li>
-<li><strong>La salle de bain</strong> — c'est ce que les voyageurs regardent en premier</li>
-<li><strong>La lumière</strong> — c'est ce qui fait la différence sur les photos</li>
+<li><strong>La literie</strong>, c'est la nuit que tu vends</li>
+<li><strong>La salle de bain</strong>, c'est ce que les voyageurs regardent en premier</li>
+<li><strong>La lumière</strong>, c'est ce qui fait la différence sur les photos</li>
 </ul>
 <p class="art-p">Tout le reste peut attendre ou être résolu avec de la débrouille.</p>
 <h2 class="art-h2">La literie : ne pas rogner ici</h2>
@@ -90,7 +90,7 @@
 <li><strong>Ajoute des lampes d'appoint</strong> dans le salon et la chambre : une lampe de chevet et un lampadaire suffisent à changer complètement l'ambiance d'une pièce.</li>
 <li><strong>Utilise des rideaux translucides</strong> plutôt qu'opaques dans les pièces de vie : ils laissent entrer la lumière naturelle tout en préservant l'intimité.</li>
 </ul>
-<p class="art-p">Un appartement bien éclairé paraît plus grand, plus propre et plus accueillant — même sans aucune décoration.</p>
+<p class="art-p">Un appartement bien éclairé paraît plus grand, plus propre et plus accueillant, même sans aucune décoration.</p>
 <h2 class="art-h2">Les éléments déco à fort impact visuel</h2>
 <p class="art-p">Une fois les bases en place, quelques éléments déco bien choisis font la différence sur les photos sans coûter cher.</p>
 <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:24px 0 10px;letter-spacing:-.2px">Le trio gagnant :</h3>
@@ -121,7 +121,7 @@
 </tbody></table></div>
 <p class="art-p">Ces fourchettes incluent literie, linge de bain, petits électroménagers et déco de base. Le mobilier principal (lit, canapé, table) est en sus si le logement est vide.</p>
 <h2 class="art-h2">Et une fois le logement prêt ?</h2>
-<p class="art-p">Un beau logement bien aménagé mérite d'être bien présenté. Si tu veux aller au-delà des plateformes classiques et proposer des réservations directes sans commission, <strong><a href="https://www.driing.co" style="color:var(--g);font-weight:500">Driing</a></strong> te permet de créer une annonce avec tes propres photos, et de recevoir des réservations directement de voyageurs — sans que 15 à 20 % de tes revenus partent en frais de plateforme.</p>
+<p class="art-p">Un beau logement bien aménagé mérite d'être bien présenté. Si tu veux aller au-delà des plateformes classiques et proposer des réservations directes sans commission, <strong><a href="https://www.driing.co" style="color:var(--g);font-weight:500">Driing</a></strong> te permet de créer une annonce avec tes propres photos, et de recevoir des réservations directement de voyageurs, sans que 15 à 20 % de tes revenus partent en frais de plateforme.</p>
 <p class="art-p">L'aménagement que tu vas faire, autant qu'il soit valorisé à sa juste valeur dans tes prix.</p>
 <h2 class="art-h2">Ce qu'il faut retenir</h2>
 <ul class="art-ul">
@@ -159,7 +159,7 @@
 <script src="/footer.js"></script>
 <script>
 const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
-function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='✓ Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value=''}else{msg.textContent='Déjà inscrit ou erreur — réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block'}btn.textContent="S'inscrire";btn.disabled=false}).catch(function(){msg.textContent='Erreur réseau — réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false})}
+function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='✓ Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value=''}else{msg.textContent='Déjà inscrit ou erreur, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block'}btn.textContent="S'inscrire";btn.disabled=false}).catch(function(){msg.textContent='Erreur réseau, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false})}
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
 document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
 </script>

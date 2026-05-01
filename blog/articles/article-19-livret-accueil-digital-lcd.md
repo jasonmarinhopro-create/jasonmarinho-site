@@ -19,7 +19,7 @@ Un livret d'accueil digital bien conçu répond à toutes ces questions avant m�
 
 ## Qu'est-ce qu'un livret d'accueil digital ?
 
-C'est une page web ou une application accessible depuis le smartphone du voyageur — via un lien ou un QR code — qui centralise toutes les informations dont il a besoin pendant son séjour.
+C'est une page web ou une application accessible depuis le smartphone du voyageur, via un lien ou un QR code, qui centralise toutes les informations dont il a besoin pendant son séjour.
 
 Contrairement au classeur papier laissé sur la table (que personne ne lit vraiment), le livret digital est :
 - **Accessible à tout moment** depuis le téléphone du voyageur
@@ -69,7 +69,7 @@ C'est souvent la partie que les voyageurs apprécient le plus. Tes "bons plans" 
 
 ## Les outils pour créer ton livret digital
 
-### Driing — livret d'accueil intégré ⭐
+### Driing, livret d'accueil intégré ⭐
 Si tu es déjà hôte sur [Driing](https://www.driing.co), la plateforme propose un outil de livret d'accueil digital directement intégré. Tu crées ton livret une fois, tu le personnalises avec tes infos, et tu partages le lien à chaque voyageur. Pas besoin de souscrire un outil tiers.
 
 ### Hostfully Guidebooks

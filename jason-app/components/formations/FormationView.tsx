@@ -88,7 +88,7 @@ export default function FormationView({
   })()
   const [completedLessons, setCompletedLessons] = useState<number[]>(restoredLessons)
 
-  // ─── Phase 2 — Notes personnelles ──────────────────────────────
+  // ─── Phase 2, Notes personnelles ──────────────────────────────
   const [notes, setNotes] = useState<Record<string, string>>(initialNotes)
   const [noteSaved, setNoteSaved] = useState(false)
   const noteTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -106,7 +106,7 @@ export default function FormationView({
     }, 700)
   }
 
-  // ─── Phase 7 — Votes utilité (👍/👎) ───────────────────────────
+  // ─── Phase 7, Votes utilité (👍/👎) ───────────────────────────
   const [votes, setVotes] = useState<Record<string, 1 | -1>>(initialVotes)
   function setLessonVote(lessonId: number, value: 1 | -1) {
     const current = votes[String(lessonId)]
@@ -120,7 +120,7 @@ export default function FormationView({
     if (formationId) voteLesson({ formationId, lessonId, vote: next }).catch(() => null)
   }
 
-  // ─── Phase 3 — Bookmarks ───────────────────────────────────────
+  // ─── Phase 3, Bookmarks ───────────────────────────────────────
   const [bookmarks, setBookmarks] = useState<number[]>(initialBookmarks)
   function isBookmarked(lessonId: number) { return bookmarks.includes(lessonId) }
   function toggleBookmark(lessonId: number, lessonTitle: string) {
@@ -147,7 +147,7 @@ export default function FormationView({
     ? formation.modules.find(m => m.id === activeLesson.moduleId)
     : null
 
-  // Ref sur la zone de contenu principale — pour remonter en haut au changement de leçon
+  // Ref sur la zone de contenu principale, pour remonter en haut au changement de leçon
   const mainRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -170,7 +170,7 @@ export default function FormationView({
     : null
   const prevLesson = currentFlatIdx > 0 ? allLessonsFlat[currentFlatIdx - 1] : null
 
-  // ─── Phase 1 — TOC auto-générée depuis les H2 du markdown ──────
+  // ─── Phase 1, TOC auto-générée depuis les H2 du markdown ──────
   const toc = (() => {
     if (!currentLesson) return [] as Array<{ id: string; title: string; level: 2 | 3 }>
     const items: Array<{ id: string; title: string; level: 2 | 3 }> = []
@@ -212,7 +212,7 @@ export default function FormationView({
 
     if (formationId) {
       const newProgress = Math.round((updated.length / totalLessons) * 100)
-      // Phase 6 — passer le lessonId nouvellement complétée pour logger la date
+      // Phase 6, passer le lessonId nouvellement complétée pour logger la date
       const isNewlyCompleted = !completedLessons.includes(lessonId)
       updateFormationProgress(formationId, newProgress, updated, isNewlyCompleted ? lessonId : undefined)
     }
@@ -249,7 +249,7 @@ export default function FormationView({
         const t = line.slice(4).trim()
         const id = `h-${t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)}`
         elements.push(<h3 key={key++} id={id} style={s.h3}>{t}</h3>)
-      } else if (line.startsWith('**') && line.endsWith('**') && line.includes('—')) {
+      } else if (line.startsWith('**') && line.endsWith('**') && line.includes('-')) {
         elements.push(<p key={key++} style={s.boldLine} dangerouslySetInnerHTML={{ __html: formatInline(line) }} />)
       } else if (line.startsWith('| ')) {
         const tableLines: string[] = []
@@ -515,7 +515,7 @@ export default function FormationView({
               Commencer la formation <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
             </button>
 
-            {/* Phase 4 — Continuer avec d'autres formations */}
+            {/* Phase 4, Continuer avec d'autres formations */}
             {recommendedNext.length > 0 && (
               <div style={styles.recoBlock}>
                 <h3 style={styles.recoTitle}>Continuer ton apprentissage</h3>
@@ -546,7 +546,7 @@ export default function FormationView({
           /* Lesson content */
           <div style={{ ...styles.lessonContent, ...(isMobile ? styles.lessonContentMobile : {}) }}>
             <div style={styles.lessonBreadcrumb}>
-              <span style={styles.breadcrumbModule}>Module {currentModule?.id} — {currentModule?.title}</span>
+              <span style={styles.breadcrumbModule}>Module {currentModule?.id}, {currentModule?.title}</span>
               <span style={styles.breadcrumbSep}>›</span>
               <span style={styles.breadcrumbLesson}>{currentLesson?.title}</span>
             </div>
@@ -597,7 +597,7 @@ export default function FormationView({
               )}
             </div>
 
-            {/* Phase 8 — Q&A et commentaires */}
+            {/* Phase 8, Q&A et commentaires */}
             {formationId && currentLesson && (
               <LessonComments
                 formationId={formationId}
@@ -739,7 +739,7 @@ export default function FormationView({
             </div>
           )}
 
-          {/* Phase 7 — Notation utile/pas utile */}
+          {/* Phase 7, Notation utile/pas utile */}
           {currentLesson && (
             <div style={styles.railSection}>
               <div style={styles.railLabel}>Cette leçon t&apos;a aidé ?</div>
@@ -768,7 +768,7 @@ export default function FormationView({
             </div>
           )}
 
-          {/* Phase 4 — Articles blog liés */}
+          {/* Phase 4, Articles blog liés */}
           {relatedArticles.length > 0 && (
             <div style={{ ...styles.railSection, borderBottom: 'none' }}>
               <div style={styles.railLabel}>📖 Approfondir</div>
@@ -938,7 +938,7 @@ const styles: Record<string, React.CSSProperties> = {
   main: { flex: 1, overflowY: 'auto', minWidth: 0 },
   mainMobile: { overflowY: 'visible' },
 
-  // ─── Phase 1 — Rail droite ─────────────────────────────────────
+  // ─── Phase 1, Rail droite ─────────────────────────────────────
   rightRail: {
     width: '320px', flexShrink: 0,
     borderLeft: '1px solid var(--border)',
@@ -1071,7 +1071,7 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.5,
   },
 
-  // ─── Phase 7 — Vote utile/pas utile ────────────────────────────
+  // ─── Phase 7, Vote utile/pas utile ────────────────────────────
   railVoteBtn: {
     flex: 1,
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
@@ -1097,7 +1097,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
   },
 
-  // ─── Phase 4 — Recommandations formations ──────────────────────
+  // ─── Phase 4, Recommandations formations ──────────────────────
   recoBlock: {
     marginTop: '32px',
     padding: '20px 24px',

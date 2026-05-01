@@ -241,7 +241,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si ton taux d'occupation est < 60 %, augmente tes remises pour attirer des séjours longs. Si > 80 %, baisse les remises pour ne pas saturer ton calendrier à des prix faibles.</span></div>
 <h2 class="art-h2">4. Les pièges à éviter avec les remises</h2>
 <p class="art-p">Trois erreurs reviennent régulièrement et grignotent la marge sans amélioration de l'occupation.</p>
-<ul class="art-ul"><li>Cumul de remises : remise semaine 15 % + early booking 10 % + last-minute 10 % = -32 % cumulé. Vérifie que tes remises ne s'additionnent pas par accident</li><li>Remise mois trop forte : à -40 %, certains voyageurs voient ton logement comme "low-cost" et baissent leurs attentes — risque d'avis moins bons</li><li>Garder une remise constante toute l'année : en haute saison, tu n'as pas besoin de remise. Désactive-la les 3 mois de pic, réactive en basse saison</li></ul>
+<ul class="art-ul"><li>Cumul de remises : remise semaine 15 % + early booking 10 % + last-minute 10 % = -32 % cumulé. Vérifie que tes remises ne s'additionnent pas par accident</li><li>Remise mois trop forte : à -40 %, certains voyageurs voient ton logement comme "low-cost" et baissent leurs attentes, risque d'avis moins bons</li><li>Garder une remise constante toute l'année : en haute saison, tu n'as pas besoin de remise. Désactive-la les 3 mois de pic, réactive en basse saison</li></ul>
 <div class="art-cta-box"><p>Tu veux mettre en place une stratégie tarifaire LCD complète, saisonnière et rentable ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
 
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

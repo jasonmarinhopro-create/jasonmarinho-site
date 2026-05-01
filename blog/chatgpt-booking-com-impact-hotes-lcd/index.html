@@ -237,7 +237,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <ul class="art-ul"><li>Surface du logement et nombre de pièces explicitement mentionnés</li><li>Type de connexion internet (fibre, débit réel, non juste "Wifi disponible")</li><li>Équipements listés avec précision (pas "bien équipé" mais "lave-vaisselle, lave-linge, machine à café Nespresso")</li><li>Localisation décrite : distance des transports, quartier, niveau de calme</li><li>Politique d'annulation et conditions de réservation claires</li></ul>
 <h2 class="art-h2">3. Les 4 optimisations concrètes à faire sur ton annonce Booking</h2>
 <p class="art-p">Pour être sélectionné par une IA en 2026, ton annonce doit répondre aux questions avant qu'elles soient posées. Voici les 4 points les plus impactants :</p>
-<ul class="art-ul"><li>Réécris ta description en phrases courtes et factuelles — évite les formules comme "superbe vue", préfère "vue dégagée sur le Rhône depuis le salon"</li><li>Liste chaque équipement individuellement dans la section dédiée — ne laisse aucun appareil sans mention</li><li>Ajoute le débit internet mesuré (pas estimé) avec l'opérateur dans la description</li><li>Décris l'espace de travail s'il existe : "bureau avec chaise ergonomique, prise secteur et lumière naturelle"</li></ul>
+<ul class="art-ul"><li>Réécris ta description en phrases courtes et factuelles, évite les formules comme "superbe vue", préfère "vue dégagée sur le Rhône depuis le salon"</li><li>Liste chaque équipement individuellement dans la section dédiée, ne laisse aucun appareil sans mention</li><li>Ajoute le débit internet mesuré (pas estimé) avec l'opérateur dans la description</li><li>Décris l'espace de travail s'il existe : "bureau avec chaise ergonomique, prise secteur et lumière naturelle"</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Teste ton annonce en la collant dans ChatGPT et en posant la question : "Ce logement convient-il à un télétravailleur pour 10 jours ?" La réponse de l'IA te montre exactement ce qu'elle comprend (et ce qui lui manque) pour recommander ton bien.</span></div>
 <h2 class="art-h2">4. Les nouvelles attentes voyageurs 2026 selon l'étude Booking</h2>
 <p class="art-p">Booking.com a interrogé plus de 29 000 voyageurs pour identifier les tendances 2026. Deux données sont particulièrement utiles pour les hôtes LCD : 80 % des voyageurs veulent des hébergements proposant des accès à des soins bien-être ou des expériences locales, et 68 % choisissent leur destination en fonction des expériences disponibles à proximité.</p>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

@@ -229,14 +229,14 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-body">
 <p class="art-lead">Tu reçois 5-10 messages voyageurs par séjour ? La plupart sont évitables avec une bonne signalétique intérieure. Notes, étiquettes, panneaux d'information : ces petits affichages réduisent les questions de 50 % et améliorent les avis. Voici les 12 affichages essentiels.</p>
 <h2 class="art-h2">1. À l'entrée du logement (3 affichages)</h2>
-<ul class="art-ul"><li>Mot de bienvenue avec wifi (SSID + mot de passe en gros caractères) — encadré stylé sur la table d'entrée</li><li>Plan du logement avec numérotation des pièces — utile si plus de 4 pièces</li><li>Liste des "essentiels" du séjour : code wifi, code porte sortie, contact urgence — 1 page A5 plastifiée</li></ul>
+<ul class="art-ul"><li>Mot de bienvenue avec wifi (SSID + mot de passe en gros caractères), encadré stylé sur la table d'entrée</li><li>Plan du logement avec numérotation des pièces, utile si plus de 4 pièces</li><li>Liste des "essentiels" du séjour : code wifi, code porte sortie, contact urgence, 1 page A5 plastifiée</li></ul>
 <h2 class="art-h2">2. Dans la cuisine (3 affichages)</h2>
-<ul class="art-ul"><li>Notice cafetière (Nespresso, machine à expresso) — souvent les voyageurs cassent par mauvaise utilisation</li><li>Notice lave-vaisselle (où sont les tablettes, programmes, déchargement)</li><li>Liste des produits inclus (huile, sel, poivre, café) avec lieu de stockage</li></ul>
+<ul class="art-ul"><li>Notice cafetière (Nespresso, machine à expresso), souvent les voyageurs cassent par mauvaise utilisation</li><li>Notice lave-vaisselle (où sont les tablettes, programmes, déchargement)</li><li>Liste des produits inclus (huile, sel, poivre, café) avec lieu de stockage</li></ul>
 <h2 class="art-h2">3. Dans la salle de bain et chambre</h2>
-<ul class="art-ul"><li>Notice douche/baignoire (chaud/froid, pression d'eau capricieuse) — une carte plastifiée près du robinet</li><li>Notice machine à laver si fournie</li><li>Notice chauffage par chambre (radiateur, climatisation réversible) — ce sont les questions les plus fréquentes</li><li>Notice télévision (chaînes, télécommandes, abonnements Netflix accessibles)</li></ul>
+<ul class="art-ul"><li>Notice douche/baignoire (chaud/froid, pression d'eau capricieuse), une carte plastifiée près du robinet</li><li>Notice machine à laver si fournie</li><li>Notice chauffage par chambre (radiateur, climatisation réversible), ce sont les questions les plus fréquentes</li><li>Notice télévision (chaînes, télécommandes, abonnements Netflix accessibles)</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Pour les notices, utilise des photos étapes-par-étapes (téléphone) plutôt que des explications textuelles. 70 % des voyageurs ne lisent pas un texte de plus de 3 lignes mais regardent une photo.</span></div>
 <h2 class="art-h2">4. Sécurité, urgences, sortie (3 affichages)</h2>
-<ul class="art-ul"><li>Numéros d'urgence (15, 17, 18, 112, ton numéro) — affiché à plusieurs endroits</li><li>Plan d'évacuation incendie + emplacement extincteur</li><li>Procédure check-out (clé, ménage, lumière, fenêtres, électroménager) — 1 page A4 affichée près de la porte</li></ul>
+<ul class="art-ul"><li>Numéros d'urgence (15, 17, 18, 112, ton numéro), affiché à plusieurs endroits</li><li>Plan d'évacuation incendie + emplacement extincteur</li><li>Procédure check-out (clé, ménage, lumière, fenêtres, électroménager), 1 page A4 affichée près de la porte</li></ul>
 <p class="art-p">Combine ces 12 affichages avec un livret d'accueil digital (via QR code) pour avoir le meilleur des deux mondes : info immédiate visible + détails complets dans le livret. Tes voyageurs te poseront 3-5 questions au lieu de 10, ton délai de réponse moyen baisse, ton score de réactivité monte.</p>
 <div class="art-cta-box"><p>Tu veux créer un livret d'accueil digital qui réduit les questions ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
@@ -293,14 +293,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

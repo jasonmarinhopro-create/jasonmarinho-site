@@ -1,5 +1,5 @@
 -- ─────────────────────────────────────────────────────────────────────
--- Migration : Chez Nous Phase 5b — Onboarding + catégorie Bienvenue
+-- Migration : Chez Nous Phase 5b, Onboarding + catégorie Bienvenue
 -- Date : 2026-04-26
 -- ─────────────────────────────────────────────────────────────────────
 

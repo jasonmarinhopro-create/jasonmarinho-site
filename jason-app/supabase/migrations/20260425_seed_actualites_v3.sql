@@ -1,9 +1,9 @@
--- Seed nouvelles actualités LCD — semaine du 21 au 25 avril 2026
+-- Seed nouvelles actualités LCD, semaine du 21 au 25 avril 2026
 INSERT INTO public.actualites (title, summary, source_url, category, published_at, is_published) VALUES
 
 (
   'Téléservice national d''enregistrement : J-30 avant le 20 mai',
-  'Tous les meublés de tourisme doivent être enregistrés via le téléservice national unique avant le 20 mai 2026 — y compris les résidences principales louées en courte durée. À défaut, l''amende administrative atteint 10 000 € (et 20 000 € pour un faux numéro). Les plateformes retireront automatiquement les annonces sans numéro valide passé cette date.',
+  'Tous les meublés de tourisme doivent être enregistrés via le téléservice national unique avant le 20 mai 2026, y compris les résidences principales louées en courte durée. À défaut, l''amende administrative atteint 10 000 € (et 20 000 € pour un faux numéro). Les plateformes retireront automatiquement les annonces sans numéro valide passé cette date.',
   'https://habyl.com/blog/loi-le-meur-2026-enregistrement-meubles-tourisme/',
   'reglementation',
   '2026-04-21 00:00:00+00',
@@ -21,7 +21,7 @@ INSERT INTO public.actualites (title, summary, source_url, category, published_a
 
 (
   'Copropriétés : la majorité des 2/3 suffit pour interdire la location courte durée',
-  'Depuis la loi Le Meur, une simple majorité des 2/3 des voix en assemblée générale permet désormais d''inscrire l''interdiction des meublés de tourisme dans le règlement de copropriété (avant : unanimité). Plusieurs grandes villes voient leurs copros voter ces interdictions au printemps 2026 — un risque concret pour les hôtes en immeuble collectif.',
+  'Depuis la loi Le Meur, une simple majorité des 2/3 des voix en assemblée générale permet désormais d''inscrire l''interdiction des meublés de tourisme dans le règlement de copropriété (avant : unanimité). Plusieurs grandes villes voient leurs copros voter ces interdictions au printemps 2026, un risque concret pour les hôtes en immeuble collectif.',
   'https://www.juritravail.com/Actualite/locations-airbnb-que-prevoit-la-nouvelle-loi-2024-loi-le-meur/Id/377834',
   'reglementation',
   '2026-04-23 00:00:00+00',

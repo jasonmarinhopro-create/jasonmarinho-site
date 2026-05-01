@@ -65,7 +65,7 @@ export default function EtatDesLieux({
 
   return (
     <div style={s.grid}>
-      {/* 1 — Prochain séjour */}
+      {/* 1, Prochain séjour */}
       <Link href="/dashboard/calendrier" style={{ textDecoration: 'none' }}>
         <div style={s.card} className="kpi-hover">
           <div style={{ ...s.icon, color: sejColor, background: sejColor + '18', border: `1px solid ${sejColor}30` }}>
@@ -79,7 +79,7 @@ export default function EtatDesLieux({
         </div>
       </Link>
 
-      {/* 2 — Revenu du mois */}
+      {/* 2, Revenu du mois */}
       <Link href="/dashboard/revenus" style={{ textDecoration: 'none' }}>
         <div style={s.card} className="kpi-hover">
           <div style={{ ...s.icon, color: '#10b981', background: '#10b98118', border: '1px solid #10b98130' }}>
@@ -94,7 +94,7 @@ export default function EtatDesLieux({
         </div>
       </Link>
 
-      {/* 3 — Communauté LCD */}
+      {/* 3, Communauté LCD */}
       <Link href="/dashboard/communaute" style={{ textDecoration: 'none' }}>
         <div style={s.card} className="kpi-hover">
           <div style={{ ...s.icon, color: '#a78bfa', background: '#a78bfa18', border: '1px solid #a78bfa30' }}>
@@ -103,7 +103,7 @@ export default function EtatDesLieux({
           <div style={s.body}>
             <span style={s.lbl}>Communauté LCD</span>
             <span style={{ ...s.val, color: '#a78bfa' }}>
-              {totalReach > 0 ? fmtReach(totalReach) : '—'}
+              {totalReach > 0 ? fmtReach(totalReach) : '-'}
             </span>
             <span style={s.sub}>
               {joinedCount > 0
@@ -114,7 +114,7 @@ export default function EtatDesLieux({
         </div>
       </Link>
 
-      {/* 4 — Action urgente */}
+      {/* 4, Action urgente */}
       <div style={{ ...s.card, cursor: urgentCount > 0 ? 'pointer' : 'default' }}>
         <div style={{ ...s.icon, color: urgColor, background: urgColor + '18', border: `1px solid ${urgColor}30` }}>
           <Lightning size={18} weight="fill" />

@@ -84,8 +84,8 @@ export async function GET(request: NextRequest) {
               currency: 'eur',
               unit_amount: amountCents,
               product_data: {
-                name: `Réservation — ${contract.logement_adresse}`,
-                description: `${n} nuit${n > 1 ? 's' : ''} — du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}`,
+                name: `Réservation, ${contract.logement_adresse}`,
+                description: `${n} nuit${n > 1 ? 's' : ''}, du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}`,
               },
             },
             quantity: 1,

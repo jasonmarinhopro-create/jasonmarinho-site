@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import NotificationsView from './NotificationsView'
 
 export const dynamic  = 'force-dynamic'
-export const metadata = { title: 'Notifications Chez Nous — Jason Marinho' }
+export const metadata = { title: 'Notifications Chez Nous, Jason Marinho' }
 
 export default async function NotificationsPage() {
   const profile = await getProfile()

@@ -21,7 +21,7 @@ const nextConfig = {
   },
 
   async headers() {
-    // Content-Security-Policy — pragmatic for Next.js 14 + Stripe + Supabase + Vercel
+    // Content-Security-Policy, pragmatic for Next.js 14 + Stripe + Supabase + Vercel
     // 'unsafe-inline' is required for Next.js inline bootstrap scripts & inline styles.
     // For stricter CSP later, migrate to nonce-based script-src via middleware.
     const csp = [
@@ -54,7 +54,7 @@ const nextConfig = {
         ],
       },
       {
-        // Page de signature contrat (accessible sans auth) — no-store obligatoire
+        // Page de signature contrat (accessible sans auth), no-store obligatoire
         source: '/sign/:path*',
         headers: [
           { key: 'Content-Security-Policy', value: csp },

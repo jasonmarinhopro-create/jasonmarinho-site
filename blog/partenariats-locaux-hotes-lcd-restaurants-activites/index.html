@@ -230,15 +230,15 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-lead">Tisser des partenariats avec les commerçants locaux a un double avantage : tu enrichis l'expérience de tes voyageurs (avis 5★ en hausse) ET tu gagnes parfois une commission. Voici 7 types de partenariats à mettre en place dès le démarrage.</p>
 <h2 class="art-h2">1. Restaurants et bars à proximité</h2>
 <p class="art-p">Le partenariat le plus simple. Tu recommandes 2-3 restaurants à tes voyageurs, et le restaurateur te reverse une commission ou un avantage.</p>
-<ul class="art-ul"><li>Modèle 1 : commission sur addition voyageur (5-10 %). Le voyageur mentionne ton nom, le resto te paie</li><li>Modèle 2 : repas gratuit pour toi (1x/mois) en échange de la mise en avant. Plus simple à formaliser</li><li>Modèle 3 : code de réduction voyageur (-10 %) — pas de commission mais expérience voyageur valorisée</li><li>Cible : 2-3 restos différents (gastro, bistrot, ambiance) à 5-10 min à pied</li></ul>
+<ul class="art-ul"><li>Modèle 1 : commission sur addition voyageur (5-10 %). Le voyageur mentionne ton nom, le resto te paie</li><li>Modèle 2 : repas gratuit pour toi (1x/mois) en échange de la mise en avant. Plus simple à formaliser</li><li>Modèle 3 : code de réduction voyageur (-10 %), pas de commission mais expérience voyageur valorisée</li><li>Cible : 2-3 restos différents (gastro, bistrot, ambiance) à 5-10 min à pied</li></ul>
 <h2 class="art-h2">2. Visites guidées et activités locales</h2>
 <p class="art-p">Les voyageurs cherchent des activités. Tu peux te positionner comme intermédiaire de confiance.</p>
 <ul class="art-ul"><li>Plateformes affiliation : Get Your Guide, Civitatis, Klook (commissions 8-15 %)</li><li>Partenariats directs avec guides locaux indépendants (commissions 15-25 %)</li><li>Bons d'achat exclusifs : -10 % sur les visites pour tes voyageurs (avantage compétitif)</li><li>Inclusion dans le livret d'accueil avec photos et descriptions courtes</li></ul>
 <h2 class="art-h2">3. Boulangerie / petit-déjeuner livré</h2>
 <p class="art-p">Une boulangerie partenaire qui livre les petits-déjeuners aux voyageurs sur demande = service haut de gamme.</p>
-<ul class="art-ul"><li>Tu négocies un menu petit-déj pré-fait (croissant, pain au chocolat, baguette, beurre, confiture, jus, café) à un prix négocié</li><li>Tu factures au voyageur en supplément (15-25 € le kit pour 2 personnes)</li><li>Tu prends ta marge (3-5 € par kit) ou tu prends une commission (15-20 %)</li><li>Booster d'avis exceptionnel — c'est le détail qui marque</li></ul>
+<ul class="art-ul"><li>Tu négocies un menu petit-déj pré-fait (croissant, pain au chocolat, baguette, beurre, confiture, jus, café) à un prix négocié</li><li>Tu factures au voyageur en supplément (15-25 € le kit pour 2 personnes)</li><li>Tu prends ta marge (3-5 € par kit) ou tu prends une commission (15-20 %)</li><li>Booster d'avis exceptionnel, c'est le détail qui marque</li></ul>
 <h2 class="art-h2">4. Autres partenariats : 4 idées</h2>
-<ul class="art-ul"><li>Loueur de vélos électriques (commission 10-20 % sur location voyageur)</li><li>Spa ou massage à domicile (commission 15-25 %)</li><li>Photographe événement (mariage local, séance famille en vacances) — souvent valorisé sur logements premium</li><li>Gardien d'animaux pour les voyageurs qui ont leur chien — pas de commission mais service à valeur</li></ul>
+<ul class="art-ul"><li>Loueur de vélos électriques (commission 10-20 % sur location voyageur)</li><li>Spa ou massage à domicile (commission 15-25 %)</li><li>Photographe événement (mariage local, séance famille en vacances), souvent valorisé sur logements premium</li><li>Gardien d'animaux pour les voyageurs qui ont leur chien, pas de commission mais service à valeur</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Avant de signer un partenariat, teste-le toi-même. Va dans le restaurant, fait la visite, essaie le service. Tu ne recommandes que ce qui mérite. Tes voyageurs te le rendront en avis et fidélisation.</span></div>
 <h2 class="art-h2">5. Comment formaliser et gérer les partenariats</h2>
 <p class="art-p">Les partenariats LCD restent souvent informels. Mais quelques bonnes pratiques.</p>
@@ -298,14 +298,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

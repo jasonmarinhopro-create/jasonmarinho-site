@@ -15,7 +15,7 @@ const ARNAQUES = [
     tagBg: 'rgba(239,68,68,0.1)',
     icon: '💸',
     title: 'Arnaque au surpaiement',
-    text: 'Le voyageur "vire par erreur" plus que le prix de la location et te demande de rembourser la différence. Quelques jours plus tard, son virement original est annulé — tu as remboursé de l\'argent qui n\'a jamais existé.',
+    text: 'Le voyageur "vire par erreur" plus que le prix de la location et te demande de rembourser la différence. Quelques jours plus tard, son virement original est annulé, tu as remboursé de l\'argent qui n\'a jamais existé.',
     signal: 'Signal : toute demande de remboursement d\'un "trop-perçu" = stop immédiat.',
   },
   {
@@ -34,7 +34,7 @@ const ARNAQUES = [
     icon: '📸',
     title: 'Faux dégât pour récupérer la caution',
     text: 'Après le séjour, le voyageur prétend avoir trouvé des nuisibles, moisissures ou problèmes préexistants pour exiger un remboursement total de la caution, parfois avec de fausses photos.',
-    signal: 'Signal : état des lieux photo horodaté avant chaque arrivée — c\'est ton seul bouclier.',
+    signal: 'Signal : état des lieux photo horodaté avant chaque arrivée, c\'est ton seul bouclier.',
   },
   {
     tag: 'Classique',
@@ -234,7 +234,7 @@ export default function SecuriteView({
         )}
       </div>
 
-      {/* Arnaques du moment — bandeau avant la grille */}
+      {/* Arnaques du moment, bandeau avant la grille */}
       <div style={styles.alertBand} className="fade-up">
         <button
           onClick={() => setArnaquesOpen(o => !o)}
@@ -398,7 +398,7 @@ export default function SecuriteView({
                       {/* RGPD deletion requests */}
                       <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--surface)' }}>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                          RGPD — Droit à l'effacement (Art. 17)
+                          RGPD, Droit à l'effacement (Art. 17)
                         </div>
                         {results.map(r => (
                           <div key={r.id} style={{ marginBottom: '6px' }}>
@@ -447,7 +447,7 @@ export default function SecuriteView({
                       <div>
                         <div style={styles.resultOkTitle}>Aucun signalement trouvé</div>
                         <div style={styles.resultOkDesc}>
-                          Ce voyageur n'apparaît pas dans notre base communautaire. Cela ne garantit pas l'absence de risque — restez vigilant et fiez-vous à votre instinct.
+                          Ce voyageur n'apparaît pas dans notre base communautaire. Cela ne garantit pas l'absence de risque, restez vigilant et fiez-vous à votre instinct.
                         </div>
                       </div>
                     </div>
@@ -677,19 +677,19 @@ export default function SecuriteView({
           {reportSuccess && (
             <div style={styles.successBanner} className="fade-up">
               <CheckCircle size={18} color="#34D399" weight="fill" />
-              Signalement reçu — il sera examiné avant publication. Merci pour la communauté.
+              Signalement reçu, il sera examiné avant publication. Merci pour la communauté.
             </div>
           )}
 
           {positiveSuccess && (
             <div style={styles.positiveBanner} className="fade-up">
               <Star size={18} color="#34D399" weight="fill" />
-              Témoignage reçu — il sera examiné avant publication. Merci pour la communauté !
+              Témoignage reçu, il sera examiné avant publication. Merci pour la communauté !
             </div>
           )}
         </div>
 
-        {/* RIGHT COLUMN — Tips */}
+        {/* RIGHT COLUMN, Tips */}
         <div style={styles.rightCol}>
           <div style={styles.tipsHeader} className="fade-up d1">
             <ShieldCheck size={18} color="#FFD56B" weight="fill" />

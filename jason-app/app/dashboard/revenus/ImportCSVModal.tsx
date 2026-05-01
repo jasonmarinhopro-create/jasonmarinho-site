@@ -276,7 +276,7 @@ export default function ImportCSVModal({ open, onClose, onImported }: Props) {
           date_paiement: r.date_paiement!,
           mode_paiement: platform === 'booking' ? 'virement' : 'stripe',
           type_paiement: 'loyer',
-          description: r.voyageur ? `Import ${platformLabel} — ${r.voyageur}` : `Import ${platformLabel}`,
+          description: r.voyageur ? `Import ${platformLabel}, ${r.voyageur}` : `Import ${platformLabel}`,
         })),
       )
 
@@ -320,7 +320,7 @@ export default function ImportCSVModal({ open, onClose, onImported }: Props) {
           </button>
         </div>
 
-        {/* Empty state — file picker */}
+        {/* Empty state, file picker */}
         {rows.length === 0 && !feedback && (
           <>
             <div style={s.dropZone} onClick={() => inputRef.current?.click()}>

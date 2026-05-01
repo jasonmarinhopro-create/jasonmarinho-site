@@ -8,7 +8,7 @@ export const SECURISER_RESERVATIONS_FORMATION = {
     `Reconnaître les signaux d'alarme avant d'accepter une réservation`,
     `Mettre en place une procédure de vérification d'identité légale et efficace`,
     'Configurer son règlement intérieur comme premier rempart de protection',
-    `Comprendre ce que couvre AirCover — et ce qu'il ne couvre pas`,
+    `Comprendre ce que couvre AirCover, et ce qu'il ne couvre pas`,
     'Gérer un incident pendant ou après le séjour',
     'Utiliser le service de vérification voyageurs de Jason Marinho',
   ],
@@ -145,7 +145,7 @@ Ce que cette question fait :
 
 
 ## Exercice
-**Exercice pratique :** Crée un gabarit de message de pré-réservation dans tes outils. Utilise la structure de la slide 5. Envoie-le à chaque nouvelle réservation Booking, et à toute réservation Airbnb qui présente au moins 2 signaux d'alarme. Note les réponses — ou les absences de réponse.
+**Exercice pratique :** Crée un gabarit de message de pré-réservation dans tes outils. Utilise la structure de la slide 5. Envoie-le à chaque nouvelle réservation Booking, et à toute réservation Airbnb qui présente au moins 2 signaux d'alarme. Note les réponses, ou les absences de réponse.
 
 ---`,
         },
@@ -165,8 +165,8 @@ Anticiper plutôt que subir
 
 ## Le voyageur local : le profil le plus risqué
 Statistiquement, les voyageurs locaux
-— ceux qui habitent à moins de 30 km
-du logement — représentent le profil
+- ceux qui habitent à moins de 30 km
+du logement, représentent le profil
 le plus problématique en LCD.
 
 Pourquoi :
@@ -396,7 +396,7 @@ Ce que le service vérifie :
 
 
 ## Exercice
-**Exercice pratique :** Prends ta dernière réservation acceptée. Passe-la à travers la grille de scoring de la slide 3. Quel score obtient-elle ? Refais l'exercice avec une réservation passée qui s'est mal passée — le score était-il révélateur ? Cette rétroactivité aide à calibrer ton instinct.
+**Exercice pratique :** Prends ta dernière réservation acceptée. Passe-la à travers la grille de scoring de la slide 3. Quel score obtient-elle ? Refais l'exercice avec une réservation passée qui s'est mal passée, le score était-il révélateur ? Cette rétroactivité aide à calibrer ton instinct.
 
 ---`,
         },
@@ -416,7 +416,7 @@ Ce que le service vérifie :
 MODULE 2 · LEÇON 1
 ────────────────────────────────────
 Le cadre légal
-Ce que la loi vous oblige à faire — et ce qu'elle vous permet
+Ce que la loi vous oblige à faire, et ce qu'elle vous permet
 ────────────────────────────────────
 
 ---
@@ -510,22 +510,22 @@ Format de stockage recommandé :
 ## Comment intégrer la vérification dans votre processus
 Procédure en 4 étapes :
 
-ÉTAPE 1 — Dans le règlement intérieur
+ÉTAPE 1, Dans le règlement intérieur
 Mentionnez l'obligation de vérification
 d'identité avant check-in.
 
-ÉTAPE 2 — Dans le message de check-in (J-1)
+ÉTAPE 2, Dans le message de check-in (J-1)
 "Conformément à notre règlement,
 merci de nous envoyer une copie
 de votre pièce d'identité via
 la messagerie de la plateforme."
 
-ÉTAPE 3 — Vérification et archivage
+ÉTAPE 3, Vérification et archivage
 → Vérifiez que le nom correspond
   à celui de la réservation.
 → Archivez de façon sécurisée.
 
-ÉTAPE 4 — Que faire si le voyageur refuse
+ÉTAPE 4, Que faire si le voyageur refuse
 → Vous êtes en droit de refuser le check-in.
 → Sur Airbnb : contactez le support
   en expliquant le refus de vérification.
@@ -646,11 +646,11 @@ appliquons à toutes nos réservations."
 Si un voyageur refuse de verser la caution
 que vous avez indiquée dans votre règlement :
 
-OPTION 1 — Négocier
+OPTION 1, Négocier
 → Proposez une caution réduite
   si le voyageur semble de bonne foi.
 
-OPTION 2 — Annuler
+OPTION 2, Annuler
 → Contactez la plateforme.
 → Sur Airbnb : "Le voyageur ne respecte pas
   mon règlement intérieur" → annulation
@@ -691,7 +691,7 @@ Ce que signifie un refus de caution :
 MODULE 3 · LEÇON 1
 ────────────────────────────────────
 AirCover pour les hôtes
-La protection réelle — sans les illusions
+La protection réelle, sans les illusions
 ────────────────────────────────────
 
 ---
@@ -763,13 +763,13 @@ trop tard :
 Si un dommage survient, respectez
 scrupuleusement cette procédure :
 
-ÉTAPE 1 — Dans les 14 jours après le départ
+ÉTAPE 1, Dans les 14 jours après le départ
 → Documentez TOUT : photos, vidéos,
   devis de réparation.
 → Contactez Airbnb via l'outil
   "Signaler un dommage" dans la réservation.
 
-ÉTAPE 2 — Contactez d'abord le voyageur
+ÉTAPE 2, Contactez d'abord le voyageur
 → Airbnb exige que vous tentiez
   de résoudre le litige avec le voyageur
   AVANT d'impliquer AirCover.
@@ -777,13 +777,13 @@ scrupuleusement cette procédure :
   avec vos photos et le montant estimé.
 → Délai : 72h pour une réponse.
 
-ÉTAPE 3 — Impliquer AirCover
+ÉTAPE 3, Impliquer AirCover
 → Si le voyageur refuse ou ne répond pas :
   escaladez vers le support Airbnb.
 → Joignez toutes vos preuves.
 → Délai de traitement : 5 à 15 jours ouvrés.
 
-ÉTAPE 4 — Accepter ou contester la décision
+ÉTAPE 4, Accepter ou contester la décision
 → Si Airbnb propose un montant insuffisant :
   vous pouvez contester avec des preuves
   supplémentaires (devis d'artisan).
@@ -898,25 +898,25 @@ Ce que vous devez avoir en place :
 ## Les 5 règles d'or de la sécurité LCD toutes plateformes
 Quelles que soient les plateformes utilisées :
 
-RÈGLE 1 — Tout par écrit, tout dans la messagerie
+RÈGLE 1, Tout par écrit, tout dans la messagerie
 Chaque accord, chaque exception,
 chaque décision → dans les messages
 de la plateforme. Jamais verbalement.
 
-RÈGLE 2 — Photos horodatées avant chaque séjour
+RÈGLE 2, Photos horodatées avant chaque séjour
 Toutes les pièces, tous les équipements.
 C'est votre seule vraie protection en cas de litige.
 
-RÈGLE 3 — Caution systématique
+RÈGLE 3, Caution systématique
 Même pour les voyageurs connus.
 La caution n'est pas une marque de méfiance,
 c'est une formalité professionnelle.
 
-RÈGLE 4 — Règlement intérieur précis et signé
+RÈGLE 4, Règlement intérieur précis et signé
 Tout ce qui n'est pas écrit n'existe pas
 en cas de litige.
 
-RÈGLE 5 — Ne jamais faire d'exception à vos règles
+RÈGLE 5, Ne jamais faire d'exception à vos règles
 Un voyageur qui demande une exception
 (pas de caution, payer en dehors,
 accueillir quelqu'un à sa place...)
@@ -926,7 +926,7 @@ est souvent celui qui posera problème.
 
 
 ## Exercice
-**Exercice pratique :** Évalue maintenant ta protection actuelle sur une échelle de 1 à 5 pour chaque règle d'or. Pour chaque règle notée ≤ 3, note l'action corrective à prendre cette semaine. Pas tout en même temps — une amélioration par semaine pendant 5 semaines suffit à avoir un système solide.
+**Exercice pratique :** Évalue maintenant ta protection actuelle sur une échelle de 1 à 5 pour chaque règle d'or. Pour chaque règle notée ≤ 3, note l'action corrective à prendre cette semaine. Pas tout en même temps, une amélioration par semaine pendant 5 semaines suffit à avoir un système solide.
 
 ---`,
         },
@@ -952,7 +952,7 @@ Calme, rapidité, traçabilité
 ---
 
 ## Les 3 types d'incidents pendant le séjour
-TYPE 1 — DÉGRADATION OU CASSE
+TYPE 1, DÉGRADATION OU CASSE
 → Le voyageur vous le signale lui-même.
 → Ou vous le constatez lors d'un passage.
 → Action : documenter en photos,
@@ -960,7 +960,7 @@ TYPE 1 — DÉGRADATION OU CASSE
   par message plateforme, déclencher
   le processus caution/AirCover.
 
-TYPE 2 — NUISANCES (BRUIT, FÊTE)
+TYPE 2, NUISANCES (BRUIT, FÊTE)
 → Signalement de voisin ou
   constat direct.
 → Action IMMÉDIATE : contacter
@@ -972,7 +972,7 @@ TYPE 2 — NUISANCES (BRUIT, FÊTE)
   pour assistance urgente.
 → Garder TOUT en écrit.
 
-TYPE 3 — URGENCE (INCENDIE, FUITE, BLESSURE)
+TYPE 3, URGENCE (INCENDIE, FUITE, BLESSURE)
 → Sécurité d'abord : 15 (SAMU),
   18 (pompiers), 17 (police).
 → Puis contacter Airbnb assistance 24h/24.
@@ -1010,7 +1010,7 @@ Cordialement,
 
 
 ## Exercice
-**Exercice pratique :** Crée un gabarit "Incident nuisances" dans tes outils de messagerie avec le message de la slide 3 adapté à ton logement. Tu ne l'utiliseras peut-être jamais — mais le jour où tu en auras besoin, ne pas avoir à le rédiger à chaud sous le stress sera précieux.
+**Exercice pratique :** Crée un gabarit "Incident nuisances" dans tes outils de messagerie avec le message de la slide 3 adapté à ton logement. Tu ne l'utiliseras peut-être jamais, mais le jour où tu en auras besoin, ne pas avoir à le rédiger à chaud sous le stress sera précieux.
 
 ---`,
         },
@@ -1094,7 +1094,7 @@ Cordialement,
 
 
 ## Exercice
-**Exercice pratique :** Crée un gabarit "Dommage post-séjour" dans tes outils avec la structure de la slide 3. Et rappelle-toi : la règle des 14 jours. Configure un rappel dans ton calendrier pour J+13 après chaque check-out — si quelque chose a été constaté et pas encore traité, c'est ton dernier délai.
+**Exercice pratique :** Crée un gabarit "Dommage post-séjour" dans tes outils avec la structure de la slide 3. Et rappelle-toi : la règle des 14 jours. Configure un rappel dans ton calendrier pour J+13 après chaque check-out, si quelque chose a été constaté et pas encore traité, c'est ton dernier délai.
 
 ---`,
         },
@@ -1113,7 +1113,7 @@ De la prévention à la gestion des incidents
 ---
 
 ## Les 3 niveaux de protection
-NIVEAU 1 — PRÉVENTION (avant le séjour)
+NIVEAU 1, PRÉVENTION (avant le séjour)
 → Règlement intérieur précis et publié
 → Vérification du profil voyageur
 → Message de pré-réservation
@@ -1121,13 +1121,13 @@ NIVEAU 1 — PRÉVENTION (avant le séjour)
 → Dépôt de garantie configuré
 → Photos pré-arrivée systématiques
 
-NIVEAU 2 — SURVEILLANCE (pendant le séjour)
+NIVEAU 2, SURVEILLANCE (pendant le séjour)
 → Message de check-in avec rappel des règles
 → Disponibilité pour les incidents
 → Capteur de bruit si logement à risque
   (Minut, NoiseAware)
 
-NIVEAU 3 — RÉPARATION (après le séjour)
+NIVEAU 3, RÉPARATION (après le séjour)
 → Inspection dans les 2h après le départ
 → Photos post-séjour comparées
   aux photos pré-arrivée
@@ -1183,7 +1183,7 @@ MODULE 2
 
 MODULE 3
 □ Comprendre ce que couvre AirCover
-  — et ce qu'il ne couvre pas
+ , et ce qu'il ne couvre pas
 □ Protéger ses réservations Booking
   et directes sans filet de sécurité plateforme
 

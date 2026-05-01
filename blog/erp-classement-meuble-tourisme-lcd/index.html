@@ -233,7 +233,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <h2 class="art-h2">2. Procédure et coût</h2>
 <p class="art-p">La démarche est simple mais à anticiper.</p>
 <ul class="art-ul"><li>Choisir un organisme évaluateur agréé : Atout France, Gîtes de France, Clévacances</li><li>Coût : 200-400 € selon l'organisme et la taille du logement</li><li>Dossier : grille de classement à remplir (équipements, services, accessibilité)</li><li>Visite de l'évaluateur : 1-2 h pour vérifier les critères. Note attribuée selon barème</li><li>Validité : 5 ans, renouvelable</li><li>Délai : 4-8 semaines entre la demande et la décision</li></ul>
-<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Avant de demander le classement, étudie les grilles publiques d'Atout France pour évaluer ton niveau probable. Inutile de viser 5 étoiles si tu as 3 étoiles atteignables — la 5 étoiles a des contraintes énormes (concierge 24/7, restaurant, etc.).</span></div>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Avant de demander le classement, étudie les grilles publiques d'Atout France pour évaluer ton niveau probable. Inutile de viser 5 étoiles si tu as 3 étoiles atteignables, la 5 étoiles a des contraintes énormes (concierge 24/7, restaurant, etc.).</span></div>
 <h2 class="art-h2">3. Implications ERP</h2>
 <p class="art-p">Une partie des meublés classés deviennent ERP (Établissement Recevant du Public). Cela ajoute des obligations.</p>
 <ul class="art-ul"><li>ERP applicable : généralement chambres d'hôtes 5 chambres+, gros gîtes (15+ pers), meublés étoilés > X capacité</li><li>Obligations ERP : commission sécurité, signalisation incendie renforcée, accessibilité PMR (sous conditions)</li><li>Coût mise aux normes : 0-5 000 € selon la taille et l'état actuel</li><li>À vérifier auprès de ta mairie : un agent te dit si ton classement t'amène au statut ERP</li></ul>
@@ -295,14 +295,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

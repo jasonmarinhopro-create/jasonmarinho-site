@@ -1,4 +1,4 @@
-// Phase 4 — Mapping formation slug → articles blog liés + formations recommandées
+// Phase 4, Mapping formation slug → articles blog liés + formations recommandées
 // Permet d'enrichir l'expérience apprenant en croisant avec le contenu blog
 // et de proposer une suite logique d'apprentissage.
 
@@ -35,7 +35,7 @@ const RELATIONS: Record<string, FormationRelations> = {
   },
   'annonce-directe': {
     articles: [
-      { label: 'Driing — alternative directe à Airbnb', slug: 'driing-plateforme-vacances-sans-commissions' },
+      { label: 'Driing, alternative directe à Airbnb', slug: 'driing-plateforme-vacances-sans-commissions' },
       { label: 'Sécuriser le paiement résa directe', slug: 'securiser-paiement-reservation-directe-sans-airbnb' },
       { label: 'Stripe pour la résa directe', slug: 'stripe-paiement-direct-lcd-mise-en-place' },
       { label: 'Email marketing & newsletter', slug: 'email-marketing-newsletter-hote-lcd' },

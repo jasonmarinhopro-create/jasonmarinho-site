@@ -85,18 +85,18 @@ sur les moindres imperfections.
 ---
 
 ## Les 3 niveaux d'impact de la décoration
-NIVEAU 1 — L'IMPACT SUR LES PHOTOS
+NIVEAU 1, L'IMPACT SUR LES PHOTOS
 → Un logement bien décoré se photographie
   mieux et génère plus de clics.
 → Impact direct sur le taux d'occupation.
 
-NIVEAU 2 — L'IMPACT SUR L'EXPÉRIENCE
+NIVEAU 2, L'IMPACT SUR L'EXPÉRIENCE
 → Les voyageurs se souviennent de comment
   ils se sont sentis, pas de la surface
   ou du nombre de prises électriques.
 → Impact direct sur la note "rapport qualité/prix".
 
-NIVEAU 3 — L'IMPACT SUR LA DIFFÉRENCIATION
+NIVEAU 3, L'IMPACT SUR LA DIFFÉRENCIATION
 → Sur un marché saturé, la décoration
   est ce qui fait qu'un voyageur choisit
   votre logement plutôt qu'un similaire
@@ -174,7 +174,7 @@ Source : Centre de ressources Airbnb
 
 → Gardez une touche personnelle
   via la décoration (un tableau,
-  un objet local...) — pas via
+  un objet local...), pas via
   des traces de votre vie quotidienne.
 
 ---
@@ -314,7 +314,7 @@ COULEURS À ÉVITER :
 
 ## La lumière : le facteur le plus sous-estimé
 La lumière transforme un logement ordinaire
-en logement mémorable — ou l'inverse.
+en logement mémorable, ou l'inverse.
 
 LUMIÈRE NATURELLE (à maximiser)
 → Rideaux légers qui laissent passer la lumière
@@ -397,7 +397,7 @@ touchent en premier.
 Le matelas peut être parfait.
 Si les draps grattent ou si le plaid
 est synthétique et inconfortable,
-c'est ce que les voyageurs ressentent —
+c'est ce que les voyageurs ressentent -
 et c'est ce qu'ils écrivent dans leurs avis.
 
 Les textiles impactent directement :
@@ -691,7 +691,7 @@ CE QUI FAIT VRAIMENT LA DIFFÉRENCE :
 
 
 ## Exercice
-**Exercice pratique :** Ouvre les placards de ta cuisine. Est-ce qu'il y a assez de vaisselle pour le nombre maximum de voyageurs ? Les poêles et casseroles sont-elles en bon état ? Si tu trouves des éléments défaillants, achète les remplacements cette semaine — cuisine bien équipée = avis bien notés, systématiquement.
+**Exercice pratique :** Ouvre les placards de ta cuisine. Est-ce qu'il y a assez de vaisselle pour le nombre maximum de voyageurs ? Les poêles et casseroles sont-elles en bon état ? Si tu trouves des éléments défaillants, achète les remplacements cette semaine, cuisine bien équipée = avis bien notés, systématiquement.
 
 ---`,
         },
@@ -898,7 +898,7 @@ Investir aux bons endroits
 ## Le principe du retour sur avis
 En LCD, chaque investissement déco
 doit être évalué selon son retour
-sur expérience voyageur — pas sur
+sur expérience voyageur, pas sur
 son retour purement financier.
 
 La question à se poser :
@@ -925,27 +925,27 @@ Exemples :
 ---
 
 ## Où investir et dans quel ordre
-PRIORITÉ 1 — LITERIE ET TEXTILES (impact immédiat sur les avis)
+PRIORITÉ 1, LITERIE ET TEXTILES (impact immédiat sur les avis)
 Budget moyen : 200 à 400€
 → Surmatelas si matelas passable
 → Draps blancs de qualité
 → Serviettes blanches neuves
 → Oreillers confortables
 
-PRIORITÉ 2 — CUISINE (impact sur "précision" et "rapport qualité/prix")
+PRIORITÉ 2, CUISINE (impact sur "précision" et "rapport qualité/prix")
 Budget moyen : 100 à 200€
 → Remplacement poêles/casseroles défaillantes
 → Cafetière + café fourni
 → Compléter la vaisselle manquante
 
-PRIORITÉ 3 — SALLE DE BAIN (impact sur "propreté")
+PRIORITÉ 3, SALLE DE BAIN (impact sur "propreté")
 Budget moyen : 30 à 80€
 → Joint de douche si jauni
 → Produits d'accueil
 → Serviettes si pas fait en priorité 1
 → Tapis de bain
 
-PRIORITÉ 4 — DÉCORATION ET EFFET WAOUH
+PRIORITÉ 4, DÉCORATION ET EFFET WAOUH
 Budget moyen : 50 à 150€
 → Coussins et plaid cohérents
 → Plantes (vraies ou artificielles)
@@ -1098,7 +1098,7 @@ MODULE 4
 
 → Un logement bien décoré et aménagé
   peut générer 20 à 30% de réservations
-  supplémentaires — sans changer
+  supplémentaires, sans changer
   de logement ni de prix.
 
 Des questions sur votre logement spécifique ?
@@ -1110,7 +1110,7 @@ Des questions sur votre logement spécifique ?
 ## Exercice
 **L'action finale de la formation :**
 
-Fais l'audit complet de la slide 2 maintenant. Cochez ce qui est déjà en place. Pour chaque case non cochée : notez l'action et son coût estimé. Rangez les actions dans les 3 catégories (immédiat / fort / moyen terme). Votre logement ne se transforme pas en un jour — mais une action par semaine pendant 2 mois suffit à le rendre mémorable.
+Fais l'audit complet de la slide 2 maintenant. Cochez ce qui est déjà en place. Pour chaque case non cochée : notez l'action et son coût estimé. Rangez les actions dans les 3 catégories (immédiat / fort / moyen terme). Votre logement ne se transforme pas en un jour, mais une action par semaine pendant 2 mois suffit à le rendre mémorable.
 
 Formation suivante :`,
         },

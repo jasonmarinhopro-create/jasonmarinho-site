@@ -9,9 +9,9 @@ description: "La checklist ménage complète pour ne rien oublier entre deux sé
 
 # Checklist ménage professionnelle pour hôte LCD (+ gabarit à télécharger)
 
-Le ménage entre deux séjours, c'est souvent là que tout se joue. Un oubli — une serviette tachée, un réfrigérateur avec des restes du voyageur précédent, une poubelle non vidée — et c'est une note 4 étoiles au lieu de 5. Répété plusieurs fois, ça détruit ton classement.
+Le ménage entre deux séjours, c'est souvent là que tout se joue. Un oubli, une serviette tachée, un réfrigérateur avec des restes du voyageur précédent, une poubelle non vidée, et c'est une note 4 étoiles au lieu de 5. Répété plusieurs fois, ça détruit ton classement.
 
-Les hôtes qui ont des notes constamment élevées ne sont pas ceux qui font un meilleur ménage au sens large — ce sont ceux qui ont un **process systématique**. Une checklist que tout le monde suit, à chaque rotation, sans exception.
+Les hôtes qui ont des notes constamment élevées ne sont pas ceux qui font un meilleur ménage au sens large, ce sont ceux qui ont un **process systématique**. Une checklist que tout le monde suit, à chaque rotation, sans exception.
 
 Voici la checklist complète, pièce par pièce, avec le gabarit prêt à donner à ton équipe.
 
@@ -135,13 +135,13 @@ C'est la touche qui fait la différence entre un logement "propre" et un logemen
 
 Si tu externalises le ménage, imprime ou partage cette checklist dans une version simplifiée à cocher. Tu peux aussi utiliser des outils comme **Breezeway** ou **Properly** pour envoyer les checklists digitalement à ton équipe, avec photo à l'appui.
 
-> 💡 **Tip Driing** : Si tu accueilles des voyageurs via [Driing](https://www.driing.co), tu as un contact direct avec eux sans intermédiaire. C'est le bon moment pour demander leurs horaires exacts d'arrivée et organiser ton ménage efficacement — sans dépendre d'un algorithme pour communiquer.
+> 💡 **Tip Driing** : Si tu accueilles des voyageurs via [Driing](https://www.driing.co), tu as un contact direct avec eux sans intermédiaire. C'est le bon moment pour demander leurs horaires exacts d'arrivée et organiser ton ménage efficacement, sans dépendre d'un algorithme pour communiquer.
 
 ---
 
 ## Ce qu'il faut retenir
 
 - Une checklist systématique est la seule façon d'avoir des standards constants, surtout si tu délègues.
-- La cuisine et la salle de bain sont les pièces les plus impactantes sur les avis — sois irréprochable.
+- La cuisine et la salle de bain sont les pièces les plus impactantes sur les avis, sois irréprochable.
 - Les vérifications techniques à chaque rotation évitent 80 % des avis négatifs liés aux équipements.
 - Prends des photos du logement prêt avant chaque arrivée : c'est ta protection en cas de litige.

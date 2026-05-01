@@ -14,7 +14,7 @@ CREATE POLICY "Public read formations"
   FOR SELECT
   USING (is_published = true);
 
--- Politique de lecture admin (via service role — pas de restriction)
+-- Politique de lecture admin (via service role, pas de restriction)
 -- Le service role bypasse toujours le RLS, pas besoin de policy supplémentaire.
 
 -- ── 3. Insérer toutes les formations (upsert) ───────────────
@@ -27,17 +27,17 @@ INSERT INTO public.formations (slug, title, description, duration, modules_count
 
   ('annonce-directe',
    'Développer sa réservation directe et s''affranchir des plateformes',
-   'Génère des réservations directes sans commission. Construis ton canal direct de A à Z — site, trafic qualifié, conversion et fidélisation — pour ne plus jamais dépendre d''Airbnb.',
+   'Génère des réservations directes sans commission. Construis ton canal direct de A à Z, site, trafic qualifié, conversion et fidélisation, pour ne plus jamais dépendre d''Airbnb.',
    '4h30', 6, 14, 'debutant', true),
 
   ('tarification-dynamique',
    'Comprendre et utiliser la tarification dynamique',
-   '45% des hôtes sous-évaluent ou surévaluent leur logement, perdant 15 à 25% de revenus. Tarif de base, prix minimum, saisonnalité, événements locaux, outils : la méthode complète pour mettre le bon prix — automatiquement.',
+   '45% des hôtes sous-évaluent ou surévaluent leur logement, perdant 15 à 25% de revenus. Tarif de base, prix minimum, saisonnalité, événements locaux, outils : la méthode complète pour mettre le bon prix, automatiquement.',
    '2h00', 4, 10, 'intermediaire', true),
 
   ('securiser-reservations-eviter-mauvais-voyageurs',
    'Sécuriser ses réservations et éviter les mauvais voyageurs',
-   'Comment identifier, filtrer et gérer les voyageurs problématiques avant qu''ils arrivent — sans sacrifier ton taux de conversion.',
+   'Comment identifier, filtrer et gérer les voyageurs problématiques avant qu''ils arrivent, sans sacrifier ton taux de conversion.',
    '2h00', 4, 10, 'intermediaire', true),
 
   ('reseaux-sociaux-lcd',
@@ -52,7 +52,7 @@ INSERT INTO public.formations (slug, title, description, duration, modules_count
 
   ('mettre-le-bon-prix-lcd',
    'Mettre le bon prix en location courte durée',
-   'Comment fixer un prix qui remplit ton calendrier tout en maximisant tes revenus — sans outil payant, en partant de tes coûts réels.',
+   'Comment fixer un prix qui remplit ton calendrier tout en maximisant tes revenus, sans outil payant, en partant de tes coûts réels.',
    '2h30', 5, 12, 'debutant', true),
 
   ('livret-accueil-digital',
@@ -87,12 +87,12 @@ INSERT INTO public.formations (slug, title, description, duration, modules_count
 
   ('creer-conciergerie-lcd',
    'Créer et développer sa conciergerie LCD',
-   'Comment lancer, structurer et développer une activité de conciergerie rentable — de la prospection des premiers clients à la gestion d''une équipe.',
+   'Comment lancer, structurer et développer une activité de conciergerie rentable, de la prospection des premiers clients à la gestion d''une équipe.',
    '3h00', 6, 14, 'intermediaire', true),
 
   ('fiscalite-statut-conciergerie-tourisme',
    'Fiscalité et meilleur statut pour une conciergerie de tourisme',
-   'BIC ou BNC, micro ou réel, EURL ou SASU : tout ce qu''un gérant de conciergerie doit savoir pour choisir le bon statut, payer le bon impôt et déduire les bonnes charges — sans laisser d''argent sur la table.',
+   'BIC ou BNC, micro ou réel, EURL ou SASU : tout ce qu''un gérant de conciergerie doit savoir pour choisir le bon statut, payer le bon impôt et déduire les bonnes charges, sans laisser d''argent sur la table.',
    '2h30', 5, 10, 'intermediaire', true)
 
 ON CONFLICT (slug) DO UPDATE

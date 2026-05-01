@@ -9,7 +9,7 @@ description: "Lumière, angles, mise en scène : comment prendre des photos d'an
 
 # Comment photographier son logement LCD soi-même (sans matériel pro)
 
-Les photos de ton annonce, c'est 80 % de ta conversion. Un voyageur qui compare deux logements similaires va presque toujours cliquer sur celui dont les photos donnent le plus envie — même si l'autre est objectivement meilleur.
+Les photos de ton annonce, c'est 80 % de ta conversion. Un voyageur qui compare deux logements similaires va presque toujours cliquer sur celui dont les photos donnent le plus envie, même si l'autre est objectivement meilleur.
 
 Beaucoup d'hôtes pensent qu'il faut un photographe professionnel pour avoir de belles photos. Ce n'est pas vrai. Avec un bon smartphone, quelques réglages et une vraie mise en scène, tu peux obtenir des photos très convaincantes sans dépenser un centime.
 
@@ -23,7 +23,7 @@ Avant tout autre considération, la lumière fait la différence entre une photo
 
 **Ce qu'il faut faire :**
 - Prends tes photos en **pleine journée**, quand la lumière naturelle est maximale
-- **Ouvre tous les rideaux et volets** — même si ça expose des imperfections, la lumière vaut toujours plus que le caché
+- **Ouvre tous les rideaux et volets**, même si ça expose des imperfections, la lumière vaut toujours plus que le caché
 - **Éteins les lumières artificielles** si elles créent une teinte jaunâtre (sauf si tu as des ampoules blanc chaud bien calibrées)
 - **Évite les contre-jours** : ne te mets pas dos à une fenêtre quand tu prends une pièce. La lumière doit venir de côté ou éclairer le sujet
 
@@ -39,7 +39,7 @@ La mise en scène (staging) est ce qui sépare les photos d'annonce mémorables 
 
 **Dans toutes les pièces :**
 - [ ] Ranger absolument tout ce qui traîne (câbles, objets du quotidien, sacs...)
-- [ ] Nettoyer les surfaces à la perfection — les photos révèlent tout
+- [ ] Nettoyer les surfaces à la perfection, les photos révèlent tout
 - [ ] Retirer les objets personnels (photos de famille, médicaments, courrier...)
 - [ ] Ajouter une touche de vie : un livre ouvert, un bouquet de fleurs, une bougie
 
@@ -73,10 +73,10 @@ Pour les pièces de vie, place-toi dans un coin de la pièce et filme vers le co
 Prends tes photos à **hauteur de poitrine** (environ 1,20–1,40 m), jamais au ras du sol ni trop haut. C'est la hauteur à laquelle un voyageur regarde naturellement une pièce.
 
 ### L'horizontalité
-Ton téléphone doit être parfaitement horizontal. Active la grille d'aide à la composition dans les réglages de l'appareil photo — les lignes t'aideront à aligner les murs et les meubles parfaitement.
+Ton téléphone doit être parfaitement horizontal. Active la grille d'aide à la composition dans les réglages de l'appareil photo, les lignes t'aideront à aligner les murs et les meubles parfaitement.
 
 ### Les photos en mode portrait vs paysage
-**Toujours en mode paysage (horizontal)** pour les pièces. Airbnb et Booking affichent les photos en format horizontal — une photo en portrait sera mal recadrée.
+**Toujours en mode paysage (horizontal)** pour les pièces. Airbnb et Booking affichent les photos en format horizontal, une photo en portrait sera mal recadrée.
 
 ---
 
@@ -97,7 +97,7 @@ Pose ton téléphone sur une surface stable ou un petit trépied (~15 € sur Am
 
 ## La retouche : juste ce qu'il faut
 
-Une légère retouche peut transformer une bonne photo en excellente photo. Reste subtil — les photos trop retouchées déçoivent les voyageurs à l'arrivée.
+Une légère retouche peut transformer une bonne photo en excellente photo. Reste subtil, les photos trop retouchées déçoivent les voyageurs à l'arrivée.
 
 **Les réglages à ajuster (dans l'ordre) :**
 1. **Luminosité** : augmente légèrement si la photo est sombre
@@ -131,16 +131,16 @@ Vise **au moins 20 photos** pour une annonce complète. Les algorithmes Airbnb e
 
 ## Et si tu veux quand même faire appel à un pro ?
 
-Si après tout ça tu préfères déléguer, Airbnb proposait (selon les villes) un service de photographe à tarif réduit. Sinon, des photographes indépendants spécialisés LCD facturent entre 100 et 200 € la séance — un investissement qui se rentabilise rapidement si ça améliore ton taux de conversion.
+Si après tout ça tu préfères déléguer, Airbnb proposait (selon les villes) un service de photographe à tarif réduit. Sinon, des photographes indépendants spécialisés LCD facturent entre 100 et 200 € la séance, un investissement qui se rentabilise rapidement si ça améliore ton taux de conversion.
 
-> 💡 **Tip :** Si tu crées une annonce sur [Driing](https://www.driing.co) pour recevoir des réservations directes sans commission, tes photos doivent être encore plus soignées — les voyageurs qui réservent en direct accordent davantage d'importance aux visuels qu'aux avis pour décider de contacter un hôte.
+> 💡 **Tip :** Si tu crées une annonce sur [Driing](https://www.driing.co) pour recevoir des réservations directes sans commission, tes photos doivent être encore plus soignées, les voyageurs qui réservent en direct accordent davantage d'importance aux visuels qu'aux avis pour décider de contacter un hôte.
 
 ---
 
 ## Ce qu'il faut retenir
 
 - La lumière naturelle en journée est l'ingrédient numéro 1 d'une bonne photo LCD.
-- La mise en scène compte autant que la prise de vue — range, nettoie, et ajoute une touche de vie.
+- La mise en scène compte autant que la prise de vue, range, nettoie, et ajoute une touche de vie.
 - L'angle coin + hauteur de poitrine + photo horizontale : c'est la formule de base pour chaque pièce.
-- Une retouche légère suffit : luminosité, contraste, chaleur — pas plus.
+- Une retouche légère suffit : luminosité, contraste, chaleur, pas plus.
 - Vise 20 photos minimum, bien ordonnées, pour maximiser ta visibilité sur les plateformes.

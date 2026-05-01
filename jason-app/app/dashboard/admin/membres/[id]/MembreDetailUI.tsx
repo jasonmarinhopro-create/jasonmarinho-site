@@ -193,7 +193,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
         </div>
         <div style={s.profileInfo}>
           <div style={s.profileNameRow}>
-            <h1 style={s.profileName}>{profile.full_name || '—'}</h1>
+            <h1 style={s.profileName}>{profile.full_name || '-'}</h1>
             {profile.role === 'admin' && (
               <span style={{ ...s.pill, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
             )}
@@ -260,7 +260,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
           <div style={s.sectionTitle}>
             <Note size={16} color="var(--accent-text)" />
             Notes de coaching
-            <span style={s.sectionSubtitle}>Privé — visible uniquement par toi</span>
+            <span style={s.sectionSubtitle}>Privé, visible uniquement par toi</span>
           </div>
           {!editingNotes && (
             <button onClick={() => setEditingNotes(true)} style={s.editBtn}>

@@ -1,4 +1,4 @@
-// Phase 9 — Parcours d'apprentissage thématiques
+// Phase 9, Parcours d'apprentissage thématiques
 // Combine plusieurs formations dans un ordre logique pour atteindre un objectif business.
 
 export interface Parcours {
@@ -62,7 +62,7 @@ export const PARCOURS: Parcours[] = [
     slug: 'visibilite-directe',
     emoji: '📍',
     title: 'Booster ta visibilité hors plateformes',
-    description: 'Construis ton canal direct : Google Business, réseaux sociaux, site web, avis Google — réduis ta dépendance Airbnb.',
+    description: 'Construis ton canal direct : Google Business, réseaux sociaux, site web, avis Google, réduis ta dépendance Airbnb.',
     duration: '~9h',
     level: 'intermediaire',
     forWho: 'Tu veux moins dépendre d\'Airbnb et générer des résas directes.',

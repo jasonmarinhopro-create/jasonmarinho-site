@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       subject: 'Réinitialise ton mot de passe',
       html: buildEmail({
         title: 'Réinitialise ton mot de passe',
-        preview: 'Un lien pour choisir un nouveau mot de passe — valable 1 heure.',
+        preview: 'Un lien pour choisir un nouveau mot de passe, valable 1 heure.',
         body: `
           ${emailP('Nous avons reçu une demande de réinitialisation du mot de passe associé à ce compte.')}
           ${emailP('Clique sur le bouton ci-dessous pour choisir un nouveau mot de passe. Ce lien est valable <strong style="color:#FFD56B;">1&nbsp;heure</strong>.')}

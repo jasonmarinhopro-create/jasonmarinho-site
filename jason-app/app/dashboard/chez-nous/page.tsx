@@ -9,7 +9,7 @@ import { getBulkProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import { aggregateRegionsByMember } from '@/lib/chez-nous/regions'
 
 export const dynamic  = 'force-dynamic'
-export const metadata = { title: 'Chez Nous — Jason Marinho' }
+export const metadata = { title: 'Chez Nous, Jason Marinho' }
 
 type SearchParams = { cat?: string; sort?: string; q?: string }
 
@@ -252,7 +252,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   activityEvents.sort((a, b) => b.created_at.localeCompare(a.created_at))
   const activity = activityEvents.slice(0, 6)
 
-  // Régions des membres (carte de France) — uniquement profils ayant
+  // Régions des membres (carte de France), uniquement profils ayant
   // privacy_show_city != false, agrégé par membre (pas par logement)
   const { data: allLogements } = await supabase
     .from('logements')

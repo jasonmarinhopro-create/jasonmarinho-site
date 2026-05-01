@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
-const PROFILE_CACHE_TTL_SECONDS = 300 // 5 min — invalidé via tag à chaque mutation
+const PROFILE_CACHE_TTL_SECONDS = 300 // 5 min, invalidé via tag à chaque mutation
 
 function getServiceClient() {
   return createServiceClient(
@@ -14,7 +14,7 @@ function getServiceClient() {
   )
 }
 
-/** Tag pour le cache profil d'un utilisateur — utilisé pour l'invalidation. */
+/** Tag pour le cache profil d'un utilisateur, utilisé pour l'invalidation. */
 export function profileCacheTag(userId: string) {
   return `user-profile-${userId}`
 }
@@ -28,7 +28,7 @@ export function invalidateProfileCache(userId: string) {
   revalidateTag(profileCacheTag(userId))
 }
 
-// Lookup direct profil par userId — service role pour pouvoir s'exécuter
+// Lookup direct profil par userId, service role pour pouvoir s'exécuter
 // hors contexte de requête (unstable_cache n'a pas accès aux cookies).
 async function fetchProfileData(userId: string) {
   const supabase = getServiceClient()

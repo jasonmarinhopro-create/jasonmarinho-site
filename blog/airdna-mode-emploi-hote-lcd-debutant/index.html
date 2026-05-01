@@ -230,14 +230,14 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-lead">AirDNA est l'outil de référence pour analyser le marché LCD. Il agrège les données Airbnb et VRBO de ta zone : tarifs, occupations, équipements, classements. Bien utilisé, il t'évite de tarifer à l'aveugle. Voici le guide pratique pour démarrer.</p>
 <h2 class="art-h2">1. Que voit-on sur AirDNA</h2>
 <p class="art-p">AirDNA scrape les annonces publiques d'Airbnb et VRBO et calcule des indicateurs marché par zone. Pour une rue, un quartier, une ville, tu peux voir.</p>
-<ul class="art-ul"><li>Tarif moyen / médian / percentile par taille de logement</li><li>Taux d'occupation moyen sur 12 mois glissants</li><li>RevPAR (revenu par logement disponible) — KPI central</li><li>Saisonnalité graphique mois par mois</li><li>Évolution sur 1-3 ans (tendance hausse ou baisse)</li><li>Top performers (annonces les mieux notées et les plus rentables)</li></ul>
+<ul class="art-ul"><li>Tarif moyen / médian / percentile par taille de logement</li><li>Taux d'occupation moyen sur 12 mois glissants</li><li>RevPAR (revenu par logement disponible), KPI central</li><li>Saisonnalité graphique mois par mois</li><li>Évolution sur 1-3 ans (tendance hausse ou baisse)</li><li>Top performers (annonces les mieux notées et les plus rentables)</li></ul>
 <h2 class="art-h2">2. Comment l'utiliser pour fixer ton tarif</h2>
 <p class="art-p">Avant de paramétrer ton premier tarif Airbnb, fais cette analyse en 30 minutes.</p>
 <ul class="art-ul"><li>Étape 1 : entre l'adresse de ton logement et applique les filtres exacts (T2, 4 personnes, équipements clés)</li><li>Étape 2 : note les tarifs médian/percentile 75 pour ton type de logement, ta zone, sur 12 mois</li><li>Étape 3 : positionne ton tarif initial à 5-10 % EN-DESSOUS du médian pour démarrer (volume avant marge)</li><li>Étape 4 : après 3 mois et 5+ avis, monte au médian</li><li>Étape 5 : après 12 mois et 25+ avis, vise le percentile 75 si ton logement et tes avis le justifient</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>AirDNA propose un essai gratuit limité avant abonnement. Pour un audit ponctuel (lancement d'un nouveau logement), l'essai gratuit suffit. L'abonnement est utile si tu fais 3+ logements ou si tu fais de la conciergerie.</span></div>
 <h2 class="art-h2">3. Identifier la concurrence directe</h2>
 <p class="art-p">AirDNA permet d'identifier tes 5-10 concurrents directs (même type de logement, même quartier). Étudie-les pour comprendre ce qui marche.</p>
-<ul class="art-ul"><li>Annonces top performer : photo de couverture, titre, description — quels patterns reviennent ?</li><li>Équipements cochés : que coches-tu vs eux ?</li><li>Note moyenne et nombre d'avis : leur écart vs toi</li><li>Politique d'annulation : Stricte/Modérée/Souple</li><li>Politique tarifaire : remise hebdo/mensuelle, early booking, last-minute</li></ul>
+<ul class="art-ul"><li>Annonces top performer : photo de couverture, titre, description, quels patterns reviennent ?</li><li>Équipements cochés : que coches-tu vs eux ?</li><li>Note moyenne et nombre d'avis : leur écart vs toi</li><li>Politique d'annulation : Stricte/Modérée/Souple</li><li>Politique tarifaire : remise hebdo/mensuelle, early booking, last-minute</li></ul>
 <h2 class="art-h2">4. Limites et alternatives</h2>
 <p class="art-p">AirDNA n'est pas parfait. Voici les limites à connaître + alternatives.</p>
 <ul class="art-ul"><li>Données estimées via scraping : ~10-15 % de marge d'erreur sur certains chiffres</li><li>Pas de Booking.com inclus (uniquement Airbnb + VRBO)</li><li>Coût : 39-79 €/mois selon la zone et le plan. Cher pour 1-2 logements</li><li>Alternative gratuite : recherche Airbnb manuelle + Excel. Long mais gratuit</li><li>Alternative payante : Mashvisor (US-centré), PriceLabs (intègre données AirDNA dans son pricing tool)</li></ul>
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

@@ -230,10 +230,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-lead">Les voyageurs business représentent 25 % du marché LCD français. Ils paient 25-40 % plus cher que les voyageurs loisir, restent moins longtemps mais réservent plus régulièrement. Voici les 10 essentiels pour positionner ton logement sur ce segment lucratif.</p>
 <h2 class="art-h2">1. Le wifi : critère #1 absolu</h2>
 <p class="art-p">Pour un voyageur business, le wifi est non négociable. C'est le critère qui élimine 100 % de la concurrence si tu es bon, ou qui te disqualifie si tu es mauvais.</p>
-<ul class="art-ul"><li>Fibre 200 Mb/s minimum (idéal 500 Mb/s+)</li><li>Test Speedtest récent (1 mois max) à afficher sur la fiche</li><li>Couverture wifi dans toutes les pièces (vérifier avec une app comme WiFi Analyzer)</li><li>Mot de passe affiché à plusieurs endroits (entrée, salon, bureau)</li><li>Backup 4G : routeur 4G de secours en cas de panne fibre — 30-50 € one-shot, fait toute la différence</li></ul>
+<ul class="art-ul"><li>Fibre 200 Mb/s minimum (idéal 500 Mb/s+)</li><li>Test Speedtest récent (1 mois max) à afficher sur la fiche</li><li>Couverture wifi dans toutes les pièces (vérifier avec une app comme WiFi Analyzer)</li><li>Mot de passe affiché à plusieurs endroits (entrée, salon, bureau)</li><li>Backup 4G : routeur 4G de secours en cas de panne fibre, 30-50 € one-shot, fait toute la différence</li></ul>
 <h2 class="art-h2">2. L'espace de travail</h2>
 <p class="art-p">Le bureau dédié est le 2e critère majeur. Sans lui, le voyageur business cherchera ailleurs même si le reste est impeccable.</p>
-<ul class="art-ul"><li>Bureau de minimum 80 cm de large (idéal 120 cm) — 80 € chez IKEA</li><li>Chaise ergonomique (pas la chaise de salle à manger) — 100-200 €</li><li>Lampe de bureau orientable LED — 30 €</li><li>Multiprise avec USB et USB-C — 25 €</li><li>Si possible : grand écran externe disponible (27 pouces) ou possibilité de brancher son écran via HDMI/USB-C — 150 € one-shot</li></ul>
+<ul class="art-ul"><li>Bureau de minimum 80 cm de large (idéal 120 cm), 80 € chez IKEA</li><li>Chaise ergonomique (pas la chaise de salle à manger), 100-200 €</li><li>Lampe de bureau orientable LED, 30 €</li><li>Multiprise avec USB et USB-C, 25 €</li><li>Si possible : grand écran externe disponible (27 pouces) ou possibilité de brancher son écran via HDMI/USB-C, 150 € one-shot</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Dans la photo de couverture ou les 3 premières photos, montre l'espace de travail clairement. Beaucoup de voyageurs business cherchent visuellement ce setup avant même de lire la description.</span></div>
 <h2 class="art-h2">3. Check-in flexible et autonome</h2>
 <p class="art-p">Le voyageur business arrive à des horaires variables et tardifs. Un check-in flexible 24/7 est différenciant.</p>
@@ -295,14 +295,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

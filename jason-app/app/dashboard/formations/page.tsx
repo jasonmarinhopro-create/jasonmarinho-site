@@ -6,13 +6,13 @@ import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Tes formations LCD — Jason Marinho',
-  description: 'Des parcours concrets pour optimiser ta location courte durée. Visibilité, revenus, fiscalité, conciergerie — accessibles à vie, à ton rythme.',
+  title: 'Tes formations LCD, Jason Marinho',
+  description: 'Des parcours concrets pour optimiser ta location courte durée. Visibilité, revenus, fiscalité, conciergerie, accessibles à vie, à ton rythme.',
   openGraph: {
     type: 'website',
     title: 'Formations LCD pour hôtes & conciergeries · Jason Marinho',
     description: 'GMB, tarification dynamique, fiscalité 2026, créer sa conciergerie, optimiser son annonce Airbnb… 16 formations pratiques pour la location courte durée.',
-    siteName: 'Jason Marinho — Plateforme LCD',
+    siteName: 'Jason Marinho, Plateforme LCD',
     locale: 'fr_FR',
   },
   twitter: {
@@ -45,7 +45,7 @@ const ACTIVE_SLUGS = [
   'gerer-incidents-litiges-lcd',
 ]
 
-// Formations à venir — hardcodées, pas encore en DB
+// Formations à venir, hardcodées, pas encore en DB
 const COMING_SOON: never[] = []
 
 export default async function FormationsPage() {
@@ -96,7 +96,7 @@ export default async function FormationsPage() {
                   Tu voudrais une formation sur un autre sujet ?
                 </h3>
                 <p style={styles.suggestDesc}>
-                  Dis-nous ce qui t'aiderait le plus dans ton activité — on construit les prochaines formations en fonction de tes besoins.
+                  Dis-nous ce qui t'aiderait le plus dans ton activité, on construit les prochaines formations en fonction de tes besoins.
                 </p>
               </div>
             </div>

@@ -13,19 +13,19 @@ const COPY: Record<string, { title: string; description: string }> = {
     description: 'Passe en Standard pour débloquer les 14 formations complètes, à vie et à ton rythme.',
   },
   revenus: {
-    title: 'Journal des revenus — Standard',
+    title: 'Journal des revenus, Standard',
     description: 'Le suivi détaillé de tes revenus et contrats est réservé aux membres Standard et Driing.',
   },
   contrats: {
-    title: 'Contrats & paiement — Standard',
+    title: 'Contrats & paiement, Standard',
     description: 'La création de contrats, les PDF et le paiement Stripe sont réservés aux membres Standard et Driing.',
   },
   partenaires: {
-    title: 'Offre exclusive — Standard',
+    title: 'Offre exclusive, Standard',
     description: 'Les codes promo et avantages exclusifs des partenaires sont réservés aux membres Standard et Driing.',
   },
   actualites: {
-    title: 'Toutes les actualités — Standard',
+    title: 'Toutes les actualités, Standard',
     description: 'Accède à l\'intégralité des actualités LCD en passant en Standard.',
   },
 }
@@ -52,7 +52,7 @@ export default function PlanGate({ title, description, feature = 'formations' }:
 
           <div style={s.actions}>
             <Link href="/dashboard/abonnement" style={s.cta}>
-              Passer en Standard — 1,98 €/mois
+              Passer en Standard, 1,98 €/mois
               <ArrowRight size={14} weight="bold" />
             </Link>
             <Link href="/dashboard/abonnement" style={s.secondary}>

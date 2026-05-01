@@ -1,5 +1,5 @@
 // Catalogue des outils & services de la LCD (Location Courte Durée)
-// Liste informative — Jason peut négocier des partenariats sur ces outils
+// Liste informative, Jason peut négocier des partenariats sur ces outils
 // et l'indique via le champ partnership.
 
 export type Partnership = 'none' | 'discount' | 'featured'
@@ -134,7 +134,7 @@ export const ECOSYSTEME_TOOLS: EcosystemeTool[] = [
   },
   {
     slug: 'sma-bnb',
-    name: 'SMA BTP — Garantie LCD',
+    name: 'SMA BTP, Garantie LCD',
     description: 'Assurance multirisque dédiée à la location saisonnière (vol, dégâts, RC).',
     url: 'https://www.groupe-sma.fr/',
     category: 'assurances',
@@ -222,7 +222,7 @@ export const ECOSYSTEME_TOOLS: EcosystemeTool[] = [
   // ── Site de réservation directe ─────────────────────────────────────────
   {
     slug: 'driing-site',
-    name: 'Driing — Plateforme de réservation',
+    name: 'Driing, Plateforme de réservation',
     description: 'Plateforme propre de réservation directe sans commission. Inclus avec ton compte Driing.',
     url: 'https://www.driing.co/',
     category: 'site-direct',

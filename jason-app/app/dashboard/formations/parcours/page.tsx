@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Compass, GraduationCap, Clock } from '@phosphor-
 import { PARCOURS, PARCOURS_LEVEL_LABELS } from '@/lib/formations/parcours'
 
 export const metadata = {
-  title: 'Parcours d\'apprentissage LCD — Jason Marinho',
+  title: 'Parcours d\'apprentissage LCD, Jason Marinho',
   description: '5 parcours thématiques pour atteindre tes objectifs : démarrer, maximiser revenus, devenir conciergerie, visibilité directe, conformité.',
 }
 

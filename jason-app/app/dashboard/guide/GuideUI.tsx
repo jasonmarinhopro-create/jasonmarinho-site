@@ -9,7 +9,7 @@ import {
   ArrowRight, ArrowUpRight, BookOpen, Calculator, MagnifyingGlass,
 } from '@phosphor-icons/react'
 
-// Type local — la data + le rendu des cards vivent dans GuideCards.tsx (server)
+// Type local, la data + le rendu des cards vivent dans GuideCards.tsx (server)
 type ProfileFilter = 'all' | 'commun' | 'gites' | 'chambres' | 'conciergerie' | 'direct'
 
 // Couleurs uniquement (sans icônes) pour le rendu des filter tabs.
@@ -32,25 +32,25 @@ const FILTER_TABS: { id: ProfileFilter; label: string; Icon: React.ElementType |
 ]
 
 const GLOSSARY: { term: string; def: string }[] = [
-  { term: 'LCD', def: 'Location de Courte Durée — location meublée touristique de moins de 30 jours.' },
-  { term: 'LMNP', def: 'Loueur en Meublé Non Professionnel — statut fiscal pour la majorité des hôtes (revenus < 23 000 € OU < 50 % des revenus du foyer).' },
-  { term: 'LMP', def: 'Loueur en Meublé Professionnel — au-delà de 23 000 € de recettes ET > 50 % des revenus du foyer ; régime social et fiscal différent.' },
-  { term: 'EI', def: 'Entreprise Individuelle — création gratuite, régime travailleur non salarié, responsabilité illimitée par défaut.' },
-  { term: 'SASU', def: 'Société par Actions Simplifiée Unipersonnelle — assimilé-salarié, responsabilité limitée au capital, optimisation salaire/dividendes.' },
-  { term: 'Micro-BIC', def: 'Régime micro pour les Bénéfices Industriels et Commerciaux — abattement forfaitaire (30 %, 50 % ou 71 %) sans déduction réelle.' },
-  { term: 'Régime réel', def: 'Régime fiscal qui permet de déduire toutes les charges réelles (amortissement, intérêts, travaux) — souvent plus avantageux > 30 k€/an.' },
+  { term: 'LCD', def: 'Location de Courte Durée, location meublée touristique de moins de 30 jours.' },
+  { term: 'LMNP', def: 'Loueur en Meublé Non Professionnel, statut fiscal pour la majorité des hôtes (revenus < 23 000 € OU < 50 % des revenus du foyer).' },
+  { term: 'LMP', def: 'Loueur en Meublé Professionnel, au-delà de 23 000 € de recettes ET > 50 % des revenus du foyer ; régime social et fiscal différent.' },
+  { term: 'EI', def: 'Entreprise Individuelle, création gratuite, régime travailleur non salarié, responsabilité illimitée par défaut.' },
+  { term: 'SASU', def: 'Société par Actions Simplifiée Unipersonnelle, assimilé-salarié, responsabilité limitée au capital, optimisation salaire/dividendes.' },
+  { term: 'Micro-BIC', def: 'Régime micro pour les Bénéfices Industriels et Commerciaux, abattement forfaitaire (30 %, 50 % ou 71 %) sans déduction réelle.' },
+  { term: 'Régime réel', def: 'Régime fiscal qui permet de déduire toutes les charges réelles (amortissement, intérêts, travaux), souvent plus avantageux > 30 k€/an.' },
   { term: 'Atout France', def: 'Organisme qui classe les meublés de tourisme de 1 à 5 étoiles ; classement valable 5 ans, donne accès à l\'abattement micro-BIC 71 %.' },
   { term: 'Loi Le Meur', def: 'Loi de 2024 qui a aligné la fiscalité des meublés de tourisme non classés sur celle des LLD (abattement 30 %, plafond 15 000 €).' },
-  { term: 'Loi Hoguet', def: 'Loi de 1970 qui encadre les professionnels de l\'immobilier — s\'applique aux conciergeries qui encaissent les loyers pour le compte du propriétaire.' },
-  { term: 'ERP', def: 'Établissement Recevant du Public — règles de sécurité incendie strictes ; bascule à partir de 5 chambres ou 15 personnes en chambres d\'hôtes.' },
-  { term: 'RC Pro', def: 'Responsabilité Civile Professionnelle — couvre les dommages causés à un tiers dans l\'exercice de l\'activité ; obligatoire pour les conciergeries.' },
-  { term: 'DPE', def: 'Diagnostic de Performance Énergétique — classe le logement de A à G ; les G sont interdits à la location depuis 2025, F en 2028, E en 2034.' },
-  { term: 'HACCP', def: 'Hazard Analysis Critical Control Point — démarche d\'hygiène alimentaire applicable aux chambres d\'hôtes servant un petit-déjeuner.' },
-  { term: 'PMR', def: 'Personne à Mobilité Réduite — l\'accessibilité PMR est obligatoire pour les ERP (chambres d\'hôtes > 5 chambres).' },
-  { term: 'GMB', def: 'Google My Business (devenu Google Business Profile) — fiche gratuite indispensable pour la visibilité locale et la réservation directe.' },
+  { term: 'Loi Hoguet', def: 'Loi de 1970 qui encadre les professionnels de l\'immobilier, s\'applique aux conciergeries qui encaissent les loyers pour le compte du propriétaire.' },
+  { term: 'ERP', def: 'Établissement Recevant du Public, règles de sécurité incendie strictes ; bascule à partir de 5 chambres ou 15 personnes en chambres d\'hôtes.' },
+  { term: 'RC Pro', def: 'Responsabilité Civile Professionnelle, couvre les dommages causés à un tiers dans l\'exercice de l\'activité ; obligatoire pour les conciergeries.' },
+  { term: 'DPE', def: 'Diagnostic de Performance Énergétique, classe le logement de A à G ; les G sont interdits à la location depuis 2025, F en 2028, E en 2034.' },
+  { term: 'HACCP', def: 'Hazard Analysis Critical Control Point, démarche d\'hygiène alimentaire applicable aux chambres d\'hôtes servant un petit-déjeuner.' },
+  { term: 'PMR', def: 'Personne à Mobilité Réduite, l\'accessibilité PMR est obligatoire pour les ERP (chambres d\'hôtes > 5 chambres).' },
+  { term: 'GMB', def: 'Google My Business (devenu Google Business Profile), fiche gratuite indispensable pour la visibilité locale et la réservation directe.' },
   { term: 'Channel manager', def: 'Logiciel qui synchronise calendriers, prix et messages entre Airbnb, Booking, Vrbo, Driing et site propre (Smoobu, Lodgify, Hospitable…).' },
-  { term: 'Aircover', def: 'Assurance dommages incluse par Airbnb pour les hôtes — couverture limitée, ne remplace pas une vraie assurance LCD.' },
-  { term: 'Cerfa 14004*04', def: 'Formulaire de déclaration en mairie pour la mise en location d\'un meublé de tourisme — obligatoire avant la 1ère location.' },
+  { term: 'Aircover', def: 'Assurance dommages incluse par Airbnb pour les hôtes, couverture limitée, ne remplace pas une vraie assurance LCD.' },
+  { term: 'Cerfa 14004*04', def: 'Formulaire de déclaration en mairie pour la mise en location d\'un meublé de tourisme, obligatoire avant la 1ère location.' },
 ]
 
 function Glossaire() {
@@ -64,7 +64,7 @@ function Glossaire() {
       >
         <span style={s.glossaireToggleLeft}>
           <BookOpen size={16} weight="fill" />
-          <span>Glossaire — {GLOSSARY.length} termes essentiels</span>
+          <span>Glossaire, {GLOSSARY.length} termes essentiels</span>
         </span>
         <span style={{ ...s.glossaireChevron, transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>
           <ArrowRight size={14} weight="bold" />
@@ -85,7 +85,7 @@ function Glossaire() {
 }
 
 interface GuideUIProps {
-  /** Cards rendues côté serveur (GuideCards.tsx) — passées depuis page.tsx */
+  /** Cards rendues côté serveur (GuideCards.tsx), passées depuis page.tsx */
   guideCards: React.ReactNode
 }
 
@@ -142,7 +142,7 @@ export default function GuideUI({ guideCards }: GuideUIProps) {
           Guide <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
         </h2>
         <p style={s.pageDesc}>
-          Gîtes en EI ou SASU, chambres d&apos;hôtes, conciergeries, réservation directe — chaque activité a ses règles, sa fiscalité, ses obligations. Ici, on ne parle pas que d&apos;Airbnb.
+          Gîtes en EI ou SASU, chambres d&apos;hôtes, conciergeries, réservation directe, chaque activité a ses règles, sa fiscalité, ses obligations. Ici, on ne parle pas que d&apos;Airbnb.
         </p>
       </div>
 
@@ -227,7 +227,7 @@ export default function GuideUI({ guideCards }: GuideUIProps) {
         })}
       </div>
 
-      {/* Cards — rendues server-side, filtrées via DOM data-attributes */}
+      {/* Cards, rendues server-side, filtrées via DOM data-attributes */}
       <div ref={cardsContainerRef}>
         {guideCards}
       </div>
@@ -272,7 +272,7 @@ export default function GuideUI({ guideCards }: GuideUIProps) {
         <div style={s.bannerText}>
           <h3 style={s.bannerTitle}>Tu connais Driing ?</h3>
           <p style={s.bannerDesc}>
-            La plateforme de réservation sans commissions pour hôtes LCD — alternative directe à Airbnb.
+            La plateforme de réservation sans commissions pour hôtes LCD, alternative directe à Airbnb.
           </p>
         </div>
         <Link

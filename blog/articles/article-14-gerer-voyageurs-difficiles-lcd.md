@@ -18,7 +18,7 @@ Voici comment prévenir au maximum les problèmes, et comment les gérer efficac
 ## La prévention : le meilleur investissement
 
 ### Un règlement intérieur clair et signé
-Le règlement intérieur est ta première ligne de défense. Il doit être court, clair, non-agressif — mais sans ambiguïté sur les points importants.
+Le règlement intérieur est ta première ligne de défense. Il doit être court, clair, non-agressif, mais sans ambiguïté sur les points importants.
 
 Ce qu'il doit couvrir :
 - **Fêtes et rassemblements** : interdits ou limités à un certain nombre de personnes
@@ -53,7 +53,7 @@ Un voyageur qui hésite, répond de façon évasive ou n'a pas de réponse clair
 C'est la hantise de beaucoup d'hôtes. Quelques mesures préventives :
 
 - **Active l'outil anti-fête d'Airbnb** : il limite les réservations de dernière minute de locaux le weekend.
-- **Installe un détecteur de bruit** (Minut, NoiseAware) : il t'alerte si le niveau sonore dépasse un seuil sans enregistrer les conversations — légal, discret, dissuasif.
+- **Installe un détecteur de bruit** (Minut, NoiseAware) : il t'alerte si le niveau sonore dépasse un seuil sans enregistrer les conversations, légal, discret, dissuasif.
 - **Pas de boîte à clés visible pendant les weekends** dans les zones à risque : oblige à un check-in en personne.
 
 Si tu découvres qu'une fête est en cours :
@@ -75,7 +75,7 @@ Pour les réservations hors Airbnb (via [Driing](https://www.driing.co) ou en di
 ### Le voyageur qui refuse de partir
 C'est rare mais ça arrive. Si un voyageur refuse de quitter le logement à l'heure du check-out :
 1. Contacte Airbnb ou Booking support immédiatement
-2. Ne jamais essayer de faire partir le voyageur de force — risque légal
+2. Ne jamais essayer de faire partir le voyageur de force, risque légal
 3. Si la situation dégénère, contacter la police (le voyageur est en violation de contrat)
 
 ### Le voyageur qui se plaint de tout
@@ -84,7 +84,7 @@ Certains voyageurs cherchent un remboursement ou une compensation dès leur arri
 - Propose des solutions concrètes sans promettre de remboursement immédiat
 - Documente chaque échange
 
-La messagerie de la plateforme est ta meilleure protection légale — ne passe jamais sur WhatsApp ou SMS pour les échanges litigieux.
+La messagerie de la plateforme est ta meilleure protection légale, ne passe jamais sur WhatsApp ou SMS pour les échanges litigieux.
 
 ---
 
@@ -104,6 +104,6 @@ Et si malgré tout tu reçois un mauvais avis, rappelle-toi : ta réponse publiq
 
 - Un règlement intérieur clair et un profil voyageur vérifié sont tes meilleures préventions.
 - Un détecteur de bruit (Minut, NoiseAware) dissuade les fêtes sans espionner tes voyageurs.
-- Documente l'état du logement avec photos avant chaque check-in — c'est indispensable pour les litiges.
+- Documente l'état du logement avec photos avant chaque check-in, c'est indispensable pour les litiges.
 - Pour les réservations directes (Driing, direct), utilise une caution digitale (Swikly, Superhog).
 - Tous les échanges litigieux doivent rester sur la messagerie de la plateforme pour conserver une traçabilité.

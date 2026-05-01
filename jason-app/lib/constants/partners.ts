@@ -13,7 +13,7 @@ export const DRIING_SERVICES = [
     icon: BookOpen,
     name: 'Livret d\'accueil digital',
     tagline: 'Expérience voyageur premium',
-    desc: 'Créez un livret d\'accueil interactif partageable par lien ou QR code — instructions d\'arrivée, Wi-Fi, recommandations locales.',
+    desc: 'Créez un livret d\'accueil interactif partageable par lien ou QR code, instructions d\'arrivée, Wi-Fi, recommandations locales.',
     url: 'https://www.driing.co/livret-daccueil-digital',
     color: '#93C5FD',
   },

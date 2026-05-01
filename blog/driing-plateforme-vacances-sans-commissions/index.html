@@ -478,7 +478,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 
 <h2 class="art-h2">Mon implication personnelle dans Driing</h2>
 <p class="art-p">Je suis co-fondateur de Driing. Ce projet est né de mes années d’expérience dans la location courte durée et d’une frustration partagée par des milliers d’hôtes : pourquoi accepter de payer des commissions énormes à des intermédiaires alors que la technologie permet de s’en passer ?</p>
-<p class="art-p">Driing, c’est ma réponse concrète à ce problème. Une plateforme conçue par des hôtes, pour des hôtes — et pour des voyageurs qui méritent un prix juste.</p>
+<p class="art-p">Driing, c’est ma réponse concrète à ce problème. Une plateforme conçue par des hôtes, pour des hôtes, et pour des voyageurs qui méritent un prix juste.</p>
 
 <div class="art-cta-box">
   <p>Que tu sois hôte ou voyageur, rejoins Driing et découvre la location de vacances sans commissions.</p>
@@ -552,14 +552,14 @@ function subscriberBrevo(e) {
       msg.style.display = 'block';
       document.getElementById('brevo-email').value = '';
     } else {
-      msg.textContent = 'Déjà inscrit ou erreur — réessaie.';
+      msg.textContent = 'Déjà inscrit ou erreur, réessaie.';
       msg.style.color = 'rgba(255,255,255,.6)';
       msg.style.display = 'block';
     }
     btn.textContent = "S'inscrire";
     btn.disabled = false;
   }).catch(function() {
-    msg.textContent = 'Erreur réseau — réessaie.';
+    msg.textContent = 'Erreur réseau, réessaie.';
     msg.style.color = 'rgba(255,255,255,.6)';
     msg.style.display = 'block';
     btn.textContent = "S'inscrire";

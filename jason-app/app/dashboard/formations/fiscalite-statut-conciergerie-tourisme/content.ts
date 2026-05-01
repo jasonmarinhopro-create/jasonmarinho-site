@@ -1,7 +1,7 @@
 export const FISCALITE_CONCIERGERIE_FORMATION = {
   slug: 'fiscalite-statut-conciergerie-tourisme',
   title: 'Fiscalité et meilleur statut pour une conciergerie',
-  description: `BIC ou BNC, micro ou réel, EURL ou SASU : tout ce qu'un gérant de conciergerie doit savoir pour choisir le bon statut, payer le bon impôt, déduire les bonnes charges — et ne pas laisser d'argent sur la table.`,
+  description: `BIC ou BNC, micro ou réel, EURL ou SASU : tout ce qu'un gérant de conciergerie doit savoir pour choisir le bon statut, payer le bon impôt, déduire les bonnes charges, et ne pas laisser d'argent sur la table.`,
   duration: '2h30',
   level: 'Intermédiaire',
   objectifs: [
@@ -46,17 +46,17 @@ Une conciergerie de tourisme relève des **Bénéfices Industriels et Commerciau
 
 Lors de ta création d'activité, l'INSEE t'attribue un **code APE**. Pour une conciergerie :
 
-### 9609Z — Autres services personnels
+### 9609Z, Autres services personnels
 
 - Le **plus courant** pour une conciergerie multi-services.
 - Ménage, check-in/out, coordination logistique.
 
-### 7990Z — Autres services de réservation
+### 7990Z, Autres services de réservation
 
 - Pour les conciergeries orientées **gestion d'expériences**.
 - Réservations, activités touristiques.
 
-### 8299Z — Activités de soutien aux entreprises
+### 8299Z, Activités de soutien aux entreprises
 
 - Pour les conciergeries **B2B** ou corporate.
 
@@ -106,7 +106,7 @@ S'il n'est pas adapté à ton activité réelle de conciergerie, tu peux demande
         },
         {
           id: 2,
-          title: 'TVA conciergerie — taux, seuils et obligations 2025-2026',
+          title: 'TVA conciergerie, taux, seuils et obligations 2025-2026',
           duration: '15 min',
           content: `## Le taux applicable : 20 %
 
@@ -190,18 +190,18 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 2. Es-tu en **franchise** ?
 3. Vas-tu **dépasser 37 500 €** cette année ?
 
-> Si tu approches du seuil, **anticipe** avec ton comptable le passage à la TVA — la transition est à **planifier**, pas à subir.`,
+> Si tu approches du seuil, **anticipe** avec ton comptable le passage à la TVA, la transition est à **planifier**, pas à subir.`,
         },
       ],
     },
     {
       id: 2,
-      title: 'Choisir son statut — le comparatif complet',
+      title: 'Choisir son statut, le comparatif complet',
       duration: '40 min',
       lessons: [
         {
           id: 11,
-          title: 'Auto-entrepreneur / micro-BIC — pour qui, jusqu\'où ?',
+          title: 'Auto-entrepreneur / micro-BIC, pour qui, jusqu\'où ?',
           duration: '20 min',
           content: `## Ce que le régime micro-BIC offre vraiment
 
@@ -300,11 +300,11 @@ Cotisations calculées sur le **CA**, pas sur le **bénéfice réel** → droits
 2. **Divise ce total par ton CA.**
 3. Si le résultat **dépasse 50 %**, le régime réel te permettrait de payer **moins d'impôts**.
 
-> Note ce ratio — il guidera ta décision de statut.`,
+> Note ce ratio, il guidera ta décision de statut.`,
         },
         {
           id: 12,
-          title: 'EI réel, EURL, SASU — quand franchir le cap ?',
+          title: 'EI réel, EURL, SASU, quand franchir le cap ?',
           duration: '20 min',
           content: `## L'Entreprise Individuelle au régime réel *(EI réel)*
 
@@ -329,7 +329,7 @@ Même statut solo qu'en micro, mais avec **déduction des charges réelles** au 
 
 ---
 
-## L'EURL — La société unipersonnelle classique
+## L'EURL, La société unipersonnelle classique
 
 ### Ce que c'est
 
@@ -353,11 +353,11 @@ Une **SARL à associé unique**. Tu es gérant majoritaire = **TNS**.
 - **Création** : 500 à 1 500 €
 - **Expert-comptable** : 800 à 1 500 €/an *(quasi-obligatoire)*
 
-> **Recommandé pour : CA 60 000 — 100 000 €/an.**
+> **Recommandé pour : CA 60 000, 100 000 €/an.**
 
 ---
 
-## La SASU — La société par actions simplifiée unipersonnelle
+## La SASU, La société par actions simplifiée unipersonnelle
 
 ### Ce que c'est
 
@@ -393,7 +393,7 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 | Débute, CA < 30 000 € | **Auto-entrepreneur / micro-BIC** |
 | Activité établie, charges < 50 % CA | **Micro-BIC** maintenu |
 | Charges > 50 % CA, CA < 77 700 € | **EI au réel** |
-| CA 60 000 — 100 000 €, croissance | **EURL / IS** |
+| CA 60 000, 100 000 €, croissance | **EURL / IS** |
 | CA > 100 000 €, bénéfices solides | **SASU / IS** |
 | S'associer prévu | **SAS** *(pluripersonnel)* |
 
@@ -430,7 +430,7 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
       lessons: [
         {
           id: 21,
-          title: 'Cotisations TNS vs assimilé salarié — le vrai coût',
+          title: 'Cotisations TNS vs assimilé salarié, le vrai coût',
           duration: '20 min',
           content: `## Le régime TNS *(Travailleur Non Salarié)*
 
@@ -440,11 +440,11 @@ Les cotisations TNS sont calculées sur la **rémunération nette** *(après cha
 
 | Poste | Taux approximatif |
 |---|---|
-| Maladie-maternité | 6,5 — 8,5 % |
+| Maladie-maternité | 6,5, 8,5 % |
 | Retraite de base | 17,75 % |
 | Retraite complémentaire | 7 % |
 | Invalidité-décès | 1,3 % |
-| Allocations familiales | 0 — 3,1 % |
+| Allocations familiales | 0, 3,1 % |
 | CSG/CRDS | 9,7 % |
 | **TOTAL** | **~40 à 45 %** |
 
@@ -474,12 +474,12 @@ Les cotisations sont calculées sur le **salaire brut**.
 
 Si la SASU génère **80 000 € de bénéfice** :
 
-### ❌ Option 1 — Tout en salaire
+### ❌ Option 1, Tout en salaire
 
 - Charges sociales très élevées.
 - Non rentable au-delà d'un certain seuil.
 
-### ✅ Option 2 — Salaire minimal + dividendes
+### ✅ Option 2, Salaire minimal + dividendes
 
 - **Salaire** : 1 500 €/mois brut *(sécurité sociale de base)*.
 - **Dividendes** : reste des bénéfices après IS.
@@ -522,9 +522,9 @@ Si la SASU génère **80 000 € de bénéfice** :
         },
         {
           id: 22,
-          title: "IS ou IR — choisir son régime d'imposition",
+          title: "IS ou IR, choisir son régime d'imposition",
           duration: '20 min',
-          content: `## L'Impôt sur le Revenu *(IR)* — le régime par défaut
+          content: `## L'Impôt sur le Revenu *(IR)*, le régime par défaut
 
 > **Applicable en** : micro-BIC, EI réel, EURL sans option IS.
 
@@ -532,10 +532,10 @@ Si la SASU génère **80 000 € de bénéfice** :
 
 | Tranche | Taux |
 |---|---|
-| 0 — 11 294 € | 0 % |
-| 11 294 — 28 797 € | 11 % |
-| 28 797 — 82 341 € | 30 % |
-| 82 341 — 177 106 € | 41 % |
+| 0, 11 294 € | 0 % |
+| 11 294, 28 797 € | 11 % |
+| 28 797, 82 341 € | 30 % |
+| 82 341, 177 106 € | 41 % |
 | > 177 106 € | 45 % |
 
 > Les bénéfices de ton entreprise **s'ajoutent** à tes autres revenus du foyer fiscal.
@@ -552,7 +552,7 @@ Si la SASU génère **80 000 € de bénéfice** :
 
 ---
 
-## L'Impôt sur les Sociétés *(IS)* — l'option société
+## L'Impôt sur les Sociétés *(IS)*, l'option société
 
 > **Applicable en** : EURL avec option IS, SASU *(automatique)*.
 
@@ -577,9 +577,9 @@ Si la SASU génère **80 000 € de bénéfice** :
 
 ---
 
-## Comparatif chiffré — bénéfice 60 000 €
+## Comparatif chiffré, bénéfice 60 000 €
 
-### Scénario 1 — EURL à l'IR *(célibataire sans autre revenu)*
+### Scénario 1, EURL à l'IR *(célibataire sans autre revenu)*
 
 | Étape | Montant |
 |---|---|
@@ -590,7 +590,7 @@ Si la SASU génère **80 000 € de bénéfice** :
 | **Charge totale** | **~30 800 €** |
 | **Net en poche** | **~29 200 €** |
 
-### Scénario 2 — SASU à l'IS *(salaire 18 000 € net + dividendes)*
+### Scénario 2, SASU à l'IS *(salaire 18 000 € net + dividendes)*
 
 | Étape | Montant |
 |---|---|
@@ -743,7 +743,7 @@ Pour être déductible, une charge doit être :
 2. **Vérifie** si chacune est justifiée par facture.
 3. **Calcule leur total annuel projeté.**
 
-> Si ce total dépasse **50 % de ton CA**, le passage au régime réel te permettrait de payer **moins** — note-le comme priorité.`,
+> Si ce total dépasse **50 % de ton CA**, le passage au régime réel te permettrait de payer **moins**, note-le comme priorité.`,
         },
         {
           id: 32,
@@ -775,7 +775,7 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 
 ---
 
-## Provisions fiscales mensuelles — une habitude de gérant
+## Provisions fiscales mensuelles, une habitude de gérant
 
 > Ne pas provisionner ses impôts = **mauvaise surprise** en fin d'année.
 
@@ -794,7 +794,7 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 - **Acomptes IS trimestriels** : 4 versements *(mars, juin, sept, déc)*.
 - Base de calcul : bénéfice N-1 × taux IS applicable.
 
-> La trésorerie IS reste en **société** — ne la confonds pas avec tes liquidités.
+> La trésorerie IS reste en **société**, ne la confonds pas avec tes liquidités.
 
 ---
 
@@ -804,7 +804,7 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 |---|---|
 | **Janvier** | Clôture comptable N-1 avec le comptable. Préparation de la liasse fiscale. |
 | **Mars** | 1er acompte IS *(si SASU/EURL IS)*. |
-| **Avril — Mai** | Déclaration annuelle de revenus *(formulaire 2042)*. Auto-entrepreneur : déclaration CA. |
+| **Avril, Mai** | Déclaration annuelle de revenus *(formulaire 2042)*. Auto-entrepreneur : déclaration CA. |
 | **Juin** | 2ème acompte IS. |
 | **Septembre** | 3ème acompte IS. |
 | **Décembre** | 4ème acompte IS. **CFE à payer avant le 15 décembre.** |
@@ -818,10 +818,10 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 
 ## Les outils recommandés
 
-- **Indy** — comptabilité automatisée pour indépendants
-- **Pennylane** — idéal EURL/SASU avec un expert-comptable
-- **Impots.gouv.fr** — agenda fiscal personnalisé dans l'espace pro
-- **Net-entreprises.fr** — cotisations et déclarations URSSAF
+- **Indy**, comptabilité automatisée pour indépendants
+- **Pennylane**, idéal EURL/SASU avec un expert-comptable
+- **Impots.gouv.fr**, agenda fiscal personnalisé dans l'espace pro
+- **Net-entreprises.fr**, cotisations et déclarations URSSAF
 
 ---
 
@@ -843,7 +843,7 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
       lessons: [
         {
           id: 41,
-          title: 'La loi Le Meur — ce qui change pour les conciergeries',
+          title: 'La loi Le Meur, ce qui change pour les conciergeries',
           duration: '15 min',
           content: `## La loi Le Meur en bref
 
@@ -853,7 +853,7 @@ Promulguée le **19 novembre 2024** *(n° 2024-1039)*, la loi Le Meur **encadre 
 
 ---
 
-## Mesure 1 — Numéro d'enregistrement obligatoire
+## Mesure 1, Numéro d'enregistrement obligatoire
 
 ### Pour les propriétaires
 
@@ -870,7 +870,7 @@ Toute location de courte durée devra être enregistrée auprès de la **commune
 
 ---
 
-## Mesure 2 — DPE progressif obligatoire
+## Mesure 2, DPE progressif obligatoire
 
 ### Pour les propriétaires
 
@@ -888,7 +888,7 @@ Toute location de courte durée devra être enregistrée auprès de la **commune
 
 ---
 
-## Mesure 3 — Limitation à 90 jours *(résidences principales)*
+## Mesure 3, Limitation à 90 jours *(résidences principales)*
 
 ### Pour les propriétaires
 
@@ -901,7 +901,7 @@ La location d'une **résidence principale** reste limitée à **90 nuits/an** *(
 
 ---
 
-## Mesure 4 — Pouvoirs renforcés des communes
+## Mesure 4, Pouvoirs renforcés des communes
 
 Les communes peuvent désormais :
 
@@ -937,11 +937,11 @@ Les communes peuvent désormais :
         },
         {
           id: 42,
-          title: "Guide de décision — 5 profils et plan d'action",
+          title: "Guide de décision, 5 profils et plan d'action",
           duration: '15 min',
           content: `## Les 5 profils type d'une conciergerie
 
-### Profil 1 — Démarrage *(CA < 30 000 €/an)*
+### Profil 1, Démarrage *(CA < 30 000 €/an)*
 
 > **Statut optimal :** Auto-entrepreneur / micro-BIC.
 
@@ -949,14 +949,14 @@ Les communes peuvent désormais :
 - Cotisations **~22 % du CA**, pas de TVA.
 - Focus sur le développement commercial.
 
-### Profil 2 — En croissance *(CA 30 000 — 55 000 €/an)*
+### Profil 2, En croissance *(CA 30 000, 55 000 €/an)*
 
 > **Statut optimal :** Micro-BIC si charges < 50 % CA. **Ou EI au réel** si charges > 50 % CA.
 
 - Vérifie ton ratio **charges/CA** chaque trimestre.
 - Commence à travailler avec un comptable.
 
-### Profil 3 — Établi *(CA 55 000 — 83 600 €/an)*
+### Profil 3, Établi *(CA 55 000, 83 600 €/an)*
 
 > **Statut optimal :** EURL à l'IS.
 
@@ -964,7 +964,7 @@ Les communes peuvent désormais :
 - Protection du patrimoine pro/perso.
 - Comptable **rentabilisé** dès la 1ère année.
 
-### Profil 4 — Fort CA *(CA 83 600 — 150 000 €/an)*
+### Profil 4, Fort CA *(CA 83 600, 150 000 €/an)*
 
 > **Statut optimal :** EURL ou SASU à l'IS.
 
@@ -972,7 +972,7 @@ Les communes peuvent désormais :
 - **SASU** si stratégie dividendes souhaitée.
 - **EURL** si gestion plus simple privilégiée.
 
-### Profil 5 — Croissance forte *(CA > 150 000 €/an)*
+### Profil 5, Croissance forte *(CA > 150 000 €/an)*
 
 > **Statut optimal :** SASU à l'IS + stratégie dividendes.
 
@@ -984,27 +984,27 @@ Les communes peuvent désormais :
 
 ## Les 5 erreurs fiscales les plus fréquentes
 
-### Erreur 1 — Confondre abattement propriétaire et abattement conciergerie
+### Erreur 1, Confondre abattement propriétaire et abattement conciergerie
 
 - Tu n'es **pas concerné** par les 30 % des meublés non classés.
 - Ton abattement reste **50 %** *(services BIC)*.
 
-### Erreur 2 — Ne pas provisionner les cotisations URSSAF
+### Erreur 2, Ne pas provisionner les cotisations URSSAF
 
 - En auto-entrepreneur, les cotisations **arrivent dans l'année**.
 - **Réserve 25-28 %** de chaque encaissement dès le premier jour.
 
-### Erreur 3 — Rester en micro quand le réel est plus avantageux
+### Erreur 3, Rester en micro quand le réel est plus avantageux
 
 - Si charges réelles > 50 % du CA, tu paies **trop d'impôts**.
 - **Recalcule ce ratio** chaque année.
 
-### Erreur 4 — Oublier la CFE la 2ème année
+### Erreur 4, Oublier la CFE la 2ème année
 
 - La 1ère année est **exonérée**, la 2ème **non**.
 - **Anticipe 200-2 000 €** selon ta commune.
 
-### Erreur 5 — Passer en SASU trop tôt
+### Erreur 5, Passer en SASU trop tôt
 
 - Les frais comptables et la complexité ne se justifient qu'à partir d'environ **60 000 € de bénéfice annuel**.
 
@@ -1012,7 +1012,7 @@ Les communes peuvent désormais :
 
 ## Plan d'action en 3 étapes
 
-### Étape 1 — Diagnostiquer *(cette semaine)*
+### Étape 1, Diagnostiquer *(cette semaine)*
 
 - ☐ Calcule ton **CA des 12 derniers mois**.
 - ☐ Calcule tes **charges réelles totales**.
@@ -1020,14 +1020,14 @@ Les communes peuvent désormais :
 - ☐ Situe-toi dans les **5 profils** ci-dessus.
 - ☐ Vérifie ton **code APE** sur inpi.fr.
 
-### Étape 2 — Décider *(dans le mois)*
+### Étape 2, Décider *(dans le mois)*
 
 - ☐ Compare ton impôt actuel vs le statut optimal identifié.
 - ☐ Si l'écart dépasse **2 000 €/an** : consulte un expert-comptable.
 - ☐ Prends une décision **IS vs IR** pour l'exercice en cours.
 - ☐ Vérifie la **date de clôture** pour optimiser le timing fiscal.
 
-### Étape 3 — Structurer *(dans les 3 mois)*
+### Étape 3, Structurer *(dans les 3 mois)*
 
 - ☐ Mets en place les **provisions fiscales mensuelles**.
 - ☐ Ouvre un **compte bancaire pro** dédié si ce n'est pas fait.
@@ -1040,11 +1040,11 @@ Les communes peuvent désormais :
 
 ## Ressources officielles
 
-- **bofip.impots.gouv.fr** — doctrine fiscale officielle française
-- **urssaf.fr** — cotisations, simulateurs, déclarations
-- **impots.gouv.fr** — simulateur IR/IS et espace professionnel
-- **inpi.fr** — guichet unique de création d'entreprise
-- **service-public.fr** — textes officiels loi Le Meur
+- **bofip.impots.gouv.fr**, doctrine fiscale officielle française
+- **urssaf.fr**, cotisations, simulateurs, déclarations
+- **impots.gouv.fr**, simulateur IR/IS et espace professionnel
+- **inpi.fr**, guichet unique de création d'entreprise
+- **service-public.fr**, textes officiels loi Le Meur
 
 ---
 

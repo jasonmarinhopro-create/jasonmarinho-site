@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Pour les routes /dashboard/*, on fait getUser() (valide + refresh la JWT).
-  // getUser() writes new tokens via cookies.set — nécessaire pour ne pas casser
+  // getUser() writes new tokens via cookies.set, nécessaire pour ne pas casser
   // les queries RLS server-side avec une JWT expirée.
   if (path.startsWith('/dashboard')) {
     const { data: { user } } = await supabase.auth.getUser()
@@ -72,6 +72,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // /sign/* routes are public (no auth required — voyageur signature page)
+  // /sign/* routes are public (no auth required, voyageur signature page)
   matcher: ['/', '/dashboard/:path*', '/auth/:path*'],
 }

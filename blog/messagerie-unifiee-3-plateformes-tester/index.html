@@ -227,17 +227,17 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </section>
 
 <div class="art-body">
-<p class="art-lead">Quand tu publies sur Airbnb + Booking + ton site direct, tu jongles entre 3 boîtes de messages. Au-delà de 30 réservations/mois, tu rates des messages et ton délai de réponse explose — pénalisé par les algorithmes. La messagerie unifiée résout cette friction. Voici les 3 outils qui marchent vraiment en 2026.</p>
+<p class="art-lead">Quand tu publies sur Airbnb + Booking + ton site direct, tu jongles entre 3 boîtes de messages. Au-delà de 30 réservations/mois, tu rates des messages et ton délai de réponse explose, pénalisé par les algorithmes. La messagerie unifiée résout cette friction. Voici les 3 outils qui marchent vraiment en 2026.</p>
 <h2 class="art-h2">1. Pourquoi unifier sa messagerie devient incontournable</h2>
-<p class="art-p">Airbnb impose un délai de réponse < 1 h pour le badge "Répond rapidement". Booking pénalise les délais > 4 h en journée. Si tu jongles entre 3 plateformes via 3 apps différentes, tu vas inévitablement laisser passer un message — et perdre en classement sur les deux plateformes en même temps.</p>
+<p class="art-p">Airbnb impose un délai de réponse < 1 h pour le badge "Répond rapidement". Booking pénalise les délais > 4 h en journée. Si tu jongles entre 3 plateformes via 3 apps différentes, tu vas inévitablement laisser passer un message, et perdre en classement sur les deux plateformes en même temps.</p>
 <p class="art-p">Une messagerie unifiée centralise les 3 conversations dans une seule interface, avec notifications consolidées. Bonus : la plupart des outils proposent des templates et auto-replies conditionnels qui répondent aux questions courantes sans intervention.</p>
-<h2 class="art-h2">2. Hospitable — le leader du segment</h2>
+<h2 class="art-h2">2. Hospitable, le leader du segment</h2>
 <p class="art-p">Hospitable (anciennement Smartbnb) est probablement le PMS le plus utilisé pour la messagerie LCD. Il connecte Airbnb, Booking, VRBO et d'autres dans une inbox unique. Le killer feature : les "AI replies" qui pré-rédigent une réponse en utilisant ton historique pour que tu valides en 1 clic.</p>
 <ul class="art-ul"><li>Tarif : 25-40 €/mois/logement selon plan</li><li>Auto-replies conditionnels : OUI (variables comme nom voyageur, dates, équipements)</li><li>AI assist : OUI, suggestions ChatGPT-like calibrées</li><li>Multi-langue : OUI (traduction automatique des messages voyageurs étrangers)</li><li>Idéal pour : 1-10 logements, hôtes orientés automation</li></ul>
-<h2 class="art-h2">3. Smoobu — l'option européenne complète</h2>
+<h2 class="art-h2">3. Smoobu, l'option européenne complète</h2>
 <p class="art-p">Smoobu (allemand) est très utilisé en Europe et propose un système de messagerie intégré dans son channel manager. Moins puissant qu'Hospitable côté AI mais plus complet côté gestion globale (réservations, calendrier, paiements).</p>
 <ul class="art-ul"><li>Tarif : 25 €/mois/logement, plan basic incluant la messagerie</li><li>Auto-replies : OUI mais plus basiques (templates statiques)</li><li>AI assist : NON</li><li>Multi-langue : OUI</li><li>Idéal pour : hôtes français qui veulent un PMS européen complet sans complexité</li></ul>
-<h2 class="art-h2">4. Lodgify — pour les hôtes qui ont aussi un site direct</h2>
+<h2 class="art-h2">4. Lodgify, pour les hôtes qui ont aussi un site direct</h2>
 <p class="art-p">Lodgify cible les hôtes qui veulent un site de réservation directe ET une messagerie unifiée. Inclut un constructeur de site WordPress-like, un channel manager et une boîte de messagerie centralisée.</p>
 <ul class="art-ul"><li>Tarif : 35-55 €/mois selon plan</li><li>Auto-replies : OUI</li><li>Site direct inclus : OUI (avec moteur de réservation)</li><li>Messagerie multi-plateformes : OUI mais moins fluide qu'Hospitable</li><li>Idéal pour : hôtes qui veulent UN outil pour TOUT (site + plateformes + messagerie)</li></ul>
 <p class="art-p">Si tu utilises déjà Driing pour ton canal direct, mieux vaut prendre Hospitable ou Smoobu pour la messagerie et garder Driing pour le direct. Lodgify a son propre site qui peut entrer en concurrence avec Driing si tu en as déjà un.</p>
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

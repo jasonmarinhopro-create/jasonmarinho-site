@@ -9,7 +9,7 @@ description: "Groupes Facebook d'hôtes, partage de prestataires, signalement de
 
 # Communauté LCD : pourquoi les meilleurs hôtes ne travaillent pas seuls
 
-Il y a deux types d'hôtes en LCD. Ceux qui gèrent tout seuls dans leur coin — qui cherchent sur Google quand ils ont un problème, qui tâtonnent sur la réglementation, qui n'ont personne à appeler quand un voyageur tourne mal. Et ceux qui font partie d'une communauté active — qui posent une question et ont une réponse en moins d'une heure, souvent de quelqu'un qui a vécu exactement la même situation.
+Il y a deux types d'hôtes en LCD. Ceux qui gèrent tout seuls dans leur coin, qui cherchent sur Google quand ils ont un problème, qui tâtonnent sur la réglementation, qui n'ont personne à appeler quand un voyageur tourne mal. Et ceux qui font partie d'une communauté active, qui posent une question et ont une réponse en moins d'une heure, souvent de quelqu'un qui a vécu exactement la même situation.
 
 La différence entre les deux, c'est rarement le talent ou l'expérience. C'est le réseau.
 
@@ -25,11 +25,11 @@ Ces questions, tu ne vas pas les résoudre avec un article de blog générique. 
 
 ### Un accès à des prestataires de confiance
 
-Trouver un agent de ménage fiable, un photographe immobilier, un plombier réactif dans ta zone — c'est souvent l'une des missions les plus chronophages en LCD. Dans une communauté d'hôtes, d'autres membres ont déjà testé des prestataires dans ta région et peuvent te recommander directement quelqu'un de sérieux.
+Trouver un agent de ménage fiable, un photographe immobilier, un plombier réactif dans ta zone, c'est souvent l'une des missions les plus chronophages en LCD. Dans une communauté d'hôtes, d'autres membres ont déjà testé des prestataires dans ta région et peuvent te recommander directement quelqu'un de sérieux.
 
 ### Un réseau pour la réservation directe
 
-Les communautés LCD sont aussi un levier de réservation directe sous-estimé. Des groupes Facebook regroupent des voyageurs qui cherchent activement des logements sans passer par les plateformes. Publier au bon endroit, au bon moment, peut générer des réservations sans commission — mais encore faut-il savoir où et comment.
+Les communautés LCD sont aussi un levier de réservation directe sous-estimé. Des groupes Facebook regroupent des voyageurs qui cherchent activement des logements sans passer par les plateformes. Publier au bon endroit, au bon moment, peut générer des réservations sans commission, mais encore faut-il savoir où et comment.
 
 ---
 
@@ -39,7 +39,7 @@ La plateforme Jason Marinho propose un accès organisé à une sélection de gro
 
 **Les groupes officiels gérés par Jason et Driing :**
 
-Le **groupe principal Jason Marinho** est l'espace central de la communauté. Questions directes à Jason, partage de ressources, retours d'expérience, annonces en avant-première. Jason répond personnellement — pas une équipe, pas un assistant.
+Le **groupe principal Jason Marinho** est l'espace central de la communauté. Questions directes à Jason, partage de ressources, retours d'expérience, annonces en avant-première. Jason répond personnellement, pas une équipe, pas un assistant.
 
 Le **groupe Driing Hôtes** est réservé aux hôtes présents sur [Driing](https://www.driing.co). Astuces pour maximiser les réservations directes, retours d'expérience et nouveautés de la plateforme en exclusivité.
 
@@ -47,11 +47,11 @@ Le **groupe Driing Hôtes** est réservé aux hôtes présents sur [Driing](http
 
 Des dizaines de groupes Facebook régionaux (Île-de-France, PACA, Bretagne et plus) regroupent des voyageurs qui cherchent activement des logements. La plateforme te donne accès à la liste complète, organisée par région et par profil de voyageur (familles, week-end, digital nomads...).
 
-Des groupes dédiés à la **réservation sans commission** permettent de capter des voyageurs directement, sans frais de plateforme — en complément de [Driing](https://www.driing.co).
+Des groupes dédiés à la **réservation sans commission** permettent de capter des voyageurs directement, sans frais de plateforme, en complément de [Driing](https://www.driing.co).
 
 **Les groupes d'entraide entre hôtes :**
 
-Optimisation d'annonce, tarification, automatisation, gestion des voyageurs difficiles, prestataires recommandés, questions juridiques et fiscales — des groupes spécialisés couvrent chaque aspect du métier d'hôte. Des milliers de membres actifs, des réponses rapides, des retours terrain.
+Optimisation d'annonce, tarification, automatisation, gestion des voyageurs difficiles, prestataires recommandés, questions juridiques et fiscales, des groupes spécialisés couvrent chaque aspect du métier d'hôte. Des milliers de membres actifs, des réponses rapides, des retours terrain.
 
 ---
 
@@ -59,9 +59,9 @@ Optimisation d'annonce, tarification, automatisation, gestion des voyageurs diff
 
 Facebook n'est pas parfait, mais c'est là que se passent les vraies conversations entre hôtes LCD en France. Quelques raisons objectives :
 
-- Tout le monde l'a déjà — pas d'application à installer, pas de nouvelle plateforme à apprendre
+- Tout le monde l'a déjà, pas d'application à installer, pas de nouvelle plateforme à apprendre
 - Les notifications arrivent en temps réel sur ton téléphone
-- L'historique des discussions est consultable — une question a souvent déjà été posée et répondue
+- L'historique des discussions est consultable, une question a souvent déjà été posée et répondue
 - La masse critique est là : des dizaines de milliers d'hôtes français actifs
 
 Les forums déserts et les Discord vides, c'est une promesse de communauté. Facebook, c'est une communauté qui existe déjà.
@@ -70,7 +70,7 @@ Les forums déserts et les Discord vides, c'est une promesse de communauté. Fac
 
 ## Comment rejoindre
 
-L'accès à la liste complète des groupes — officiels et sélectionnés — est disponible depuis ton espace membre. C'est gratuit.
+L'accès à la liste complète des groupes, officiels et sélectionnés, est disponible depuis ton espace membre. C'est gratuit.
 
 [Crée ton compte](https://app.jasonmarinho.com/auth/register), connecte-toi, et tu as immédiatement accès à :
 - La liste organisée de tous les groupes recommandés

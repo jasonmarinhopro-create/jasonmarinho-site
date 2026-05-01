@@ -232,10 +232,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Demander une caution en cash ou par chèque au check-in crée 3 problèmes : friction au moment de l'arrivée (mauvaise première impression), pas de couverture si check-in autonome (tu n'es pas là pour récupérer le chèque), et complexité de remboursement post-séjour.</p>
 <p class="art-p">Les solutions de caution dématérialisée résolvent ces 3 points : le voyageur autorise un prélèvement potentiel sur sa carte avant l'arrivée, tu ne prélèves QUE en cas de dégât réel, et le remboursement est automatique 48 h après le check-out s'il n'y a pas de réclamation.</p>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Sur Airbnb, tu peux mentionner ta caution (jusqu'à 1 000 €) dans la description. Sur Booking, tu peux la facturer directement à l'arrivée. Sur réservation directe (Driing, GMB), tu paramètres au check-out.</span></div>
-<h2 class="art-h2">2. SwikLy — le pure-player français</h2>
+<h2 class="art-h2">2. SwikLy, le pure-player français</h2>
 <p class="art-p">SwikLy (basé en France, RGPD friendly) est la solution la plus utilisée par les hôtes LCD français. Le voyageur reçoit un email avec un lien pour autoriser une empreinte CB. Si dégât, tu prélèves directement depuis ton dashboard. Si pas de problème, tu cliques sur "libérer" et le voyageur récupère sa caution sous 24 h.</p>
 <ul class="art-ul"><li>Tarif : 1,90 € par caution + 1 % du montant prélevé (uniquement si dégât)</li><li>Cautions de 50 à 5 000 €</li><li>Email automatique au voyageur 48 h avant check-in</li><li>Pas d'intégration directe Airbnb : tu envoies le lien manuellement (ou via auto-message)</li><li>Très utilisé en France, peu de friction côté voyageur (interface en français)</li></ul>
-<h2 class="art-h2">3. Youka — l'option intégrée Airbnb</h2>
+<h2 class="art-h2">3. Youka, l'option intégrée Airbnb</h2>
 <p class="art-p">Youka est plus récent mais propose une intégration directe avec Airbnb (via API). Le lien est envoyé automatiquement après réservation, sans intervention de ta part. Si tu cherches du "set & forget", c'est l'option.</p>
 <ul class="art-ul"><li>Tarif : 2,50 € par caution + 1,5 % en cas de prélèvement</li><li>Intégration Airbnb native : lien envoyé automatiquement</li><li>Cautions de 100 à 3 000 €</li><li>Dashboard plus moderne que SwikLy</li><li>Inconvénient : disponible en France uniquement, voyageurs étrangers peuvent avoir des erreurs sur certaines cartes</li></ul>
 <h2 class="art-h2">4. La solution maison : pre-auth via Stripe</h2>
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

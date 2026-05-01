@@ -234,7 +234,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Pose tes propres questions depuis un compte Google différent du tien (compte d'ami, voyageur récent qui te le permet). Réponds depuis ton compte propriétaire pour avoir l'icône "Réponse du propriétaire" qui rassure les visiteurs.</span></div>
 <h2 class="art-h2">2. Les 8 questions à pré-remplir absolument</h2>
 <p class="art-p">Une fiche GMB qui a 5 à 10 Q&A pré-remplies a 30 % plus de chances d'être cliquée que celle qui en a 0 (étude SEMrush 2025). Voici les 8 questions à ajouter en priorité.</p>
-<ul class="art-ul"><li>"Quelles sont les heures de check-in et check-out ?" — utile + capture la requête "horaires"</li><li>"Y a-t-il un parking ?" — question #1 des voyageurs en ville, à répondre précisément</li><li>"Le wifi est-il inclus ?" — répondre avec le débit pour le matching IA</li><li>"Acceptez-vous les animaux ?" — capture la requête "Airbnb pet friendly"</li><li>"Avez-vous des équipements pour bébé ?" — capture les recherches familiales</li><li>"Le logement est-il accessible aux PMR ?" — important + matching de niche</li><li>"À quelle distance êtes-vous de [point d'intérêt local] ?" — booste le SEO local</li><li>"Quel est le mode de réservation ?" — guide le voyageur vers ton canal direct</li></ul>
+<ul class="art-ul"><li>"Quelles sont les heures de check-in et check-out ?", utile + capture la requête "horaires"</li><li>"Y a-t-il un parking ?", question #1 des voyageurs en ville, à répondre précisément</li><li>"Le wifi est-il inclus ?", répondre avec le débit pour le matching IA</li><li>"Acceptez-vous les animaux ?", capture la requête "Airbnb pet friendly"</li><li>"Avez-vous des équipements pour bébé ?", capture les recherches familiales</li><li>"Le logement est-il accessible aux PMR ?", important + matching de niche</li><li>"À quelle distance êtes-vous de [point d'intérêt local] ?", booste le SEO local</li><li>"Quel est le mode de réservation ?", guide le voyageur vers ton canal direct</li></ul>
 <h2 class="art-h2">3. Comment formuler tes réponses pour qu'elles ressortent</h2>
 <p class="art-p">Une réponse Q&A optimisée fait 2 à 4 phrases. Elle commence par la réponse directe, puis ajoute une donnée factuelle, et termine par un CTA discret. Ne pas faire de roman, ne pas mettre d'émojis (Google les filtre), répondre à la question posée sans dériver.</p>
 <ul class="art-ul"><li>Mauvaise réponse : "Oui bien sûr ! Le wifi est inclus, n'hésitez pas à demander si vous avez des questions :)"</li><li>Bonne réponse : "Oui, wifi fibre 450 Mb/s inclus dans toutes nos chambres. Le SSID et le mot de passe sont affichés à l'arrivée. Test de débit récent disponible sur demande."</li><li>Bonne réponse : "Le check-in est de 16h à 21h, check-out avant 11h. Check-in autonome possible 24/7 sur demande via boîte à clé sécurisée. Précisez votre heure d'arrivée à la réservation."</li></ul>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

@@ -1,4 +1,4 @@
--- Manual payment entries — complements auto Stripe payments from contracts
+-- Manual payment entries, complements auto Stripe payments from contracts
 CREATE TABLE IF NOT EXISTS public.revenus_entries (
   id              uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id         uuid        REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,

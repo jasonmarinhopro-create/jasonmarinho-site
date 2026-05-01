@@ -234,7 +234,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Ce numéro est différent du numéro de déclaration communale que tu as peut-être déjà. Même si ta commune t'a attribué un numéro local, tu devras obtenir le numéro national via le téléservice d'État dès mai 2026.</span></div>
 <h2 class="art-h2">2. Comment obtenir ton numéro d'enregistrement</h2>
 <p class="art-p">Le téléservice de déclaration est accessible sur le portail du Ministère du Logement. La procédure demande les informations suivantes : adresse complète du logement, DPE en cours de validité, nombre de pièces et de couchages, et identité du propriétaire ou mandataire.</p>
-<ul class="art-ul"><li>Accéder au téléservice sur le portail officiel service-public.fr rubrique "Meublés de tourisme"</li><li>Renseigner l'adresse du logement et ton identité (numéro de SIRET si tu as une activité déclarée)</li><li>Uploader le DPE valide du logement (obligatoire pour compléter la déclaration)</li><li>Obtenir le numéro d'enregistrement immédiatement après validation — il est permanent tant que les informations ne changent pas</li><li>Ajouter ce numéro dans les paramètres de chaque plateforme (Airbnb, Booking, Abritel) dans la section "Informations légales"</li></ul>
+<ul class="art-ul"><li>Accéder au téléservice sur le portail officiel service-public.fr rubrique "Meublés de tourisme"</li><li>Renseigner l'adresse du logement et ton identité (numéro de SIRET si tu as une activité déclarée)</li><li>Uploader le DPE valide du logement (obligatoire pour compléter la déclaration)</li><li>Obtenir le numéro d'enregistrement immédiatement après validation, il est permanent tant que les informations ne changent pas</li><li>Ajouter ce numéro dans les paramètres de chaque plateforme (Airbnb, Booking, Abritel) dans la section "Informations légales"</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si ton DPE date de plus de 10 ans ou n'existe pas encore, commande-le dès maintenant. Les diagnostiqueurs sont de plus en plus chargés et les délais s'allongent. Sans DPE valide, tu ne peux pas compléter la déclaration.</span></div>
 <h2 class="art-h2">3. Sanctions et contrôle : ce qui se passe si tu n'es pas en règle</h2>
 <p class="art-p">À partir du 20 mai 2026, louer sans numéro d'enregistrement ou afficher un numéro erroné expose à des amendes administratives pouvant aller jusqu'à 5 000 € par annonce non conforme. Les plateformes ont l'obligation de signaler les annonces sans numéro valide aux autorités compétentes et de les retirer après mise en demeure.</p>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

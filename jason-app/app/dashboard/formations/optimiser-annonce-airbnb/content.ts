@@ -1,7 +1,7 @@
 export const OPTIMISER_ANNONCE_FORMATION = {
   slug: 'optimiser-annonce-airbnb',
   title: 'Optimiser son annonce Airbnb : photos, titre, description, algorithme',
-  description: `L'algorithme Airbnb a changé de logique en 2026. Découvrez comment remonter dans les résultats, rédiger un titre qui convertit, des photos qui font cliquer et une description qui vend — sans changer votre logement.`,
+  description: `L'algorithme Airbnb a changé de logique en 2026. Découvrez comment remonter dans les résultats, rédiger un titre qui convertit, des photos qui font cliquer et une description qui vend, sans changer votre logement.`,
   duration: '2h30',
   level: 'Débutant',
   objectifs: [
@@ -27,7 +27,7 @@ export const OPTIMISER_ANNONCE_FORMATION = {
 MODULE 1 · LEÇON 1
 ────────────────────────────────────
 L'algorithme Airbnb 2026
-Ce qui a changé — et pourquoi ça change tout
+Ce qui a changé, et pourquoi ça change tout
 ────────────────────────────────────
 
 ---
@@ -154,7 +154,7 @@ En dessous de 4,7 : visibilité impactée.
 
 
 ## Exercice
-**Exercice pratique :** Ouvre maintenant tes statistiques Airbnb. Note tes 5 métriques clés : CTR, taux de conversion, taux de réponse, taux d'acceptation, note moyenne. Identifie la métrique la plus faible — c'est là que tu concentres tes efforts dans les leçons suivantes.
+**Exercice pratique :** Ouvre maintenant tes statistiques Airbnb. Note tes 5 métriques clés : CTR, taux de conversion, taux de réponse, taux d'acceptation, note moyenne. Identifie la métrique la plus faible, c'est là que tu concentres tes efforts dans les leçons suivantes.
 
 ---`,
         },
@@ -233,7 +233,7 @@ plutôt qu'un minimum global.
 ## Erreur 3 : Les filtres manquants
 Les voyageurs filtrent leurs recherches.
 Si votre annonce ne coche pas les filtres,
-elle n'apparaît pas — même si elle est parfaite.
+elle n'apparaît pas, même si elle est parfaite.
 
 Les filtres les plus utilisés en France :
 
@@ -469,7 +469,7 @@ un parcours logique :
 
 Photos 1-3 : Vue d'ensemble du logement
             (salon, espace de vie, vue générale)
-Photos 4-6 : Chambre(s) — ce que les voyageurs
+Photos 4-6 : Chambre(s), ce que les voyageurs
             regardent en priorité
 Photos 7-9 : Cuisine équipée
 Photos 10-12 : Salle de bain
@@ -481,7 +481,7 @@ Photos 21+ : Quartier, environnement proche
 → Ne commencez jamais par les pièces secondaires.
 → Finissez toujours sur un détail chaleureux
   ou une vue attrayante.
-→ L'ordre crée une histoire — racontez-la bien.
+→ L'ordre crée une histoire, racontez-la bien.
 
 ---
 
@@ -548,7 +548,7 @@ lave-vaisselle, machine à café Nespresso"
 
 
 ## Exercice
-**Exercice pratique :** Compte tes photos actuelles. Si tu en as moins de 20 : planifie une session photo cette semaine. Si tu en as plus de 20 : réorganise-les selon l'ordre recommandé en slide 3. Et ajoute des légendes à tes 5 meilleures photos — ça prend 10 minutes et améliore ton référencement interne Airbnb.
+**Exercice pratique :** Compte tes photos actuelles. Si tu en as moins de 20 : planifie une session photo cette semaine. Si tu en as plus de 20 : réorganise-les selon l'ordre recommandé en slide 3. Et ajoute des légendes à tes 5 meilleures photos, ça prend 10 minutes et améliore ton référencement interne Airbnb.
 
 ---`,
         },
@@ -597,7 +597,7 @@ Et ce que les voyageurs cherchent :
   (informatif mais pas vendeur)
 
 → Mais : "Votre base lyonnaise à 2 min
-  de la gare — idéal pros et weekends"
+  de la gare, idéal pros et weekends"
   (contexte + cible + bénéfice)
 
 ---
@@ -652,7 +652,7 @@ MOTS À ÉVITER :
 → Les emojis en excès (1 max, en début)
 → Les points d'exclamation
 
-ASTUCE : Le · (point médian) ou — (tiret)
+ASTUCE : Le · (point médian) ou, (tiret)
 comme séparateur rend un titre plus lisible
 qu'une virgule ou un espace.
 
@@ -660,7 +660,7 @@ qu'une virgule ou un espace.
 
 
 ## Exercice
-**Exercice pratique :** Réécris ton titre avec la formule en 3 éléments. Identité + Localisation précise + Bénéfice. Écris 3 versions différentes. Choisis celle qui répond le mieux à la question : "En 3 secondes, est-ce que ce titre me dit qui accueille ce logement et pourquoi je devrais cliquer ?" Publie-la maintenant — les changements de titre n'impactent pas négativement le classement.
+**Exercice pratique :** Réécris ton titre avec la formule en 3 éléments. Identité + Localisation précise + Bénéfice. Écris 3 versions différentes. Choisis celle qui répond le mieux à la question : "En 3 secondes, est-ce que ce titre me dit qui accueille ce logement et pourquoi je devrais cliquer ?" Publie-la maintenant, les changements de titre n'impactent pas négativement le classement.
 
 ---`,
         },
@@ -737,7 +737,7 @@ Séjours groupe bienvenue"
 
 
 ## Exercice
-**Exercice pratique :** Regarde tes 10 dernières réservations. Quelle est la cible dominante ? Télétravailleur, couple, famille, pro ? Adapte ton titre pour parler directement à cette cible. Si tu changes de cible selon la saison — note dans ton calendrier la date à laquelle tu changeras de titre (avril pour l'été, octobre pour l'hiver).
+**Exercice pratique :** Regarde tes 10 dernières réservations. Quelle est la cible dominante ? Télétravailleur, couple, famille, pro ? Adapte ton titre pour parler directement à cette cible. Si tu changes de cible selon la saison, note dans ton calendrier la date à laquelle tu changeras de titre (avril pour l'été, octobre pour l'hiver).
 
 ---`,
         },
@@ -789,24 +789,24 @@ Ce que ça devrait dire :
 ---
 
 ## La structure en 4 parties
-PARTIE 1 — L'ACCROCHE (2-3 lignes)
+PARTIE 1, L'ACCROCHE (2-3 lignes)
 Vendez l'expérience, pas les mètres carrés.
 → "Votre refuge parisien à 5 minutes
    du Marais. Un appartement lumineux
    où vous vous sentirez chez vous
    dès la première heure."
 
-PARTIE 2 — LE LOGEMENT (3-4 lignes)
+PARTIE 2, LE LOGEMENT (3-4 lignes)
 Les caractéristiques qui comptent
 pour votre cible principale.
 → Équipements clés + spécificités
   + ce qui est différent de la concurrence
 
-PARTIE 3 — LE QUARTIER (2-3 lignes)
+PARTIE 3, LE QUARTIER (2-3 lignes)
 Pourquoi VOTRE quartier est le bon choix.
 → Adresses locales + transport + ambiance
 
-PARTIE 4 — VOUS EN TANT QU'HÔTE (1-2 lignes)
+PARTIE 4, VOUS EN TANT QU'HÔTE (1-2 lignes)
 Votre promesse personnelle.
 → "Je réponds à toutes les questions
    en moins d'une heure et je vous
@@ -824,14 +824,14 @@ MOTS QUI CONVERTISSENT :
 → "Nous mettons à votre disposition..."
 
 MOTS QUI REFROIDISSENT :
-→ "Petit" (même si c'est vrai — dites "cosy")
+→ "Petit" (même si c'est vrai, dites "cosy")
 → "Sans ascenseur" en début de description
   (mettez-le dans "À savoir" pas dans la desc)
 → "Interdit de fumer / d'animaux"
   en description (c'est dans le règlement)
 → "Disponible à partir de..." (calendrier = ailleurs)
 → "N'hésitez pas à me contacter"
-  (trop passif — dites "Je suis joignable...")
+  (trop passif, dites "Je suis joignable...")
 
 → Chaque mot doit projeter le voyageur
   dans une expérience positive.
@@ -841,7 +841,7 @@ MOTS QUI REFROIDISSENT :
 
 
 ## Exercice
-**Exercice pratique :** Réécris les 3 premières lignes de ta description selon la structure de la slide 3. Commence par l'expérience, pas par la surface. Montre-les à quelqu'un qui ne connaît pas ton logement — est-ce qu'il a envie d'y aller ? Si oui : publie. Si non : retravaille l'accroche.
+**Exercice pratique :** Réécris les 3 premières lignes de ta description selon la structure de la slide 3. Commence par l'expérience, pas par la surface. Montre-les à quelqu'un qui ne connaît pas ton logement, est-ce qu'il a envie d'y aller ? Si oui : publie. Si non : retravaille l'accroche.
 
 ---`,
         },
@@ -991,29 +991,29 @@ L'équilibre à trouver :
 → Chaque règle restrictive doit avoir
   une vraie justification.
 → Les voyageurs lisent votre règlement
-  AVANT de réserver — un règlement
+  AVANT de réserver, un règlement
   trop long ou trop sévère fait fuir
   les bons voyageurs autant que les mauvais.
 
 ---
 
 ## Structure d'un règlement efficace
-SECTION 1 — RÈGLES ESSENTIELLES (3-5 règles max)
+SECTION 1, RÈGLES ESSENTIELLES (3-5 règles max)
 Celles qui protègent vraiment votre logement :
 → Silence après [heure]
 → Pas de fête / rassemblement non déclaré
 → Nombre d'occupants maximum respecté
 → Pas de fumée à l'intérieur
 
-SECTION 2 — ÉQUIPEMENTS
+SECTION 2, ÉQUIPEMENTS
 → Règles d'utilisation si spécifique
   (cheminée, jacuzzi, barbecue...)
 
-SECTION 3 — CHECK-IN ET CHECK-OUT
+SECTION 3, CHECK-IN ET CHECK-OUT
 → Horaires et procédure
 → Que faire des clés au départ
 
-SECTION 4 — RÈGLES SUPPLÉMENTAIRES
+SECTION 4, RÈGLES SUPPLÉMENTAIRES
 → Tout ce qui est spécifique
   à votre logement et votre situation
 
@@ -1194,7 +1194,7 @@ Les causes de perte les plus fréquentes :
 
 
 ## Exercice
-**Exercice pratique :** Des 5 habitudes listées, laquelle n'est pas encore en place ? Mets-la en place cette semaine. Une seule habitude à la fois — mais de façon permanente. C'est la différence entre un hôte qui maintient son badge et celui qui le perd au bout de 3 mois.
+**Exercice pratique :** Des 5 habitudes listées, laquelle n'est pas encore en place ? Mets-la en place cette semaine. Une seule habitude à la fois, mais de façon permanente. C'est la différence entre un hôte qui maintient son badge et celui qui le perd au bout de 3 mois.
 
 ---`,
         },
@@ -1300,7 +1300,7 @@ Des questions sur votre annonce spécifique ?
 ## Exercice
 **L'action finale de la formation :**
 
-Choisissez 3 actions dans la liste "Impact immédiat" et faites-les maintenant — avant de fermer cette formation. Bloquez 2 heures dans votre agenda cette semaine pour les actions "Impact fort". Et planifiez les actions "Impact moyen terme" dans le mois à venir.
+Choisissez 3 actions dans la liste "Impact immédiat" et faites-les maintenant, avant de fermer cette formation. Bloquez 2 heures dans votre agenda cette semaine pour les actions "Impact fort". Et planifiez les actions "Impact moyen terme" dans le mois à venir.
 
 L'annonce parfaite ne se crée pas en un jour. Mais une annonce significativement meilleure se crée en une semaine d'actions régulières.
 

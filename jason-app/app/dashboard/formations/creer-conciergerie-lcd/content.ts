@@ -154,21 +154,21 @@ Valider son territoire avant d'investir
 ---
 
 ## Les 3 types de zones qui fonctionnent
-ZONE TYPE 1 — TOURISTIQUE
+ZONE TYPE 1, TOURISTIQUE
 Littoral, montagne, villes historiques,
 destinations de week-end.
 → Forte saisonnalité (pics été/hiver)
 → Revenus élevés en haute saison
 → Gestion plus simple (même type de voyageur)
 
-ZONE TYPE 2 — URBAINE / AFFAIRES
+ZONE TYPE 2, URBAINE / AFFAIRES
 Grandes villes, zones d'activité,
 près des gares et aéroports.
 → Demande toute l'année (pro + loisirs)
 → Taux d'occupation plus stable
 → Moins de saisonnalité à gérer
 
-ZONE TYPE 3 — MIXTE
+ZONE TYPE 3, MIXTE
 Villes moyennes avec flux pro ET touristique.
 → Le meilleur équilibre
 → Revenus lissés sur l'année
@@ -178,26 +178,26 @@ Villes moyennes avec flux pro ET touristique.
 ---
 
 ## Comment évaluer la demande dans ta zone
-ÉTAPE 1 — Analyser Airbnb
+ÉTAPE 1, Analyser Airbnb
 → Cherche les logements de ta zone
 → Regarde les calendriers des concurrents
   (sont-ils souvent réservés ?)
 → Vérifie les prix pratiqués et les notes
 
-ÉTAPE 2 — Chercher les propriétaires qui gèrent seuls
+ÉTAPE 2, Chercher les propriétaires qui gèrent seuls
 → Repère les annonces Airbnb bien notées
   dans ta zone (ce sont tes cibles)
 → Les propriétaires qui gèrent tout seuls
   sont tes prospects les plus qualifiés
 
-ÉTAPE 3 — Vérifier la concurrence
+ÉTAPE 3, Vérifier la concurrence
 → Combien de conciergeries existent
   déjà dans ta zone ?
 → Est-ce qu'elles sont bien visibles ?
   (site, avis Google, Driing...)
 → Y a-t-il de la place pour toi ?
 
-ÉTAPE 4 — Estimer le potentiel
+ÉTAPE 4, Estimer le potentiel
 → Si 100 logements actifs et 2 conciergeries
   seulement → marché largement ouvert
 → Si 50 logements et 5 conciergeries
@@ -309,14 +309,14 @@ SAS / SARL
 ---
 
 ## La recommandation selon ton profil
-TU TESTES — DÉMARRAGE PRUDENT
+TU TESTES, DÉMARRAGE PRUDENT
 → Micro-entreprise
 → Avantage : zéro risque financier,
   création immédiate
 → Limite : pas de déduction de charges,
   plafond à 77 700€
 
-TU ES DÉCIDÉ — LANCEMENT SÉRIEUX
+TU ES DÉCIDÉ, LANCEMENT SÉRIEUX
 → SASU ou EURL
 → Avantage : charges déductibles,
   responsabilité limitée, pas de plafond
@@ -392,7 +392,7 @@ MODULE 2 · LEÇON 2
 ────────────────────────────────────
 La Carte G
 Le point juridique que personne n'explique
-clairement — mais qui peut tout changer
+clairement, mais qui peut tout changer
 ────────────────────────────────────
 
 ---
@@ -430,14 +430,14 @@ La question centrale : est-ce que tu
 ENCAISSES des loyers pour le compte
 du propriétaire ?
 
-CAS 1 — TU ENCAISSES pour lui
+CAS 1, TU ENCAISSES pour lui
 (Les voyageurs te paient, tu reverses
 au propriétaire moins ta commission)
 → Carte G OBLIGATOIRE
 → Tu exerces une activité de gestion
   immobilière réglementée
 
-CAS 2 — TU NE FAIS QUE COORDONNER
+CAS 2, TU NE FAIS QUE COORDONNER
 (Les plateformes paient directement
 le propriétaire, toi tu perçois ta
 commission directement de la plateforme
@@ -451,7 +451,7 @@ ou du propriétaire EN PLUS)
 ---
 
 ## Les 3 solutions légales sans Carte G
-SOLUTION 1 — LE STATUT DE CO-HÔTE AIRBNB
+SOLUTION 1, LE STATUT DE CO-HÔTE AIRBNB
 Airbnb permet au propriétaire de te désigner
 comme "co-hôte" sur son compte.
 → Les paiements partent directement
@@ -461,7 +461,7 @@ comme "co-hôte" sur son compte.
 → Tu n'encaisses jamais de loyers
 → Pas de Carte G requise selon ce montage
 
-SOLUTION 2 — REJOINDRE UN RÉSEAU D'INDÉPENDANTS
+SOLUTION 2, REJOINDRE UN RÉSEAU D'INDÉPENDANTS
 Certains réseaux de conciergeries permettent
 à des indépendants d'opérer sous leur
 carte G collective.
@@ -469,7 +469,7 @@ carte G collective.
 → Tu paies une redevance ou un partage de CA
 → Moins d'indépendance mais plus de sécurité
 
-SOLUTION 3 — OBTENIR LA CARTE G
+SOLUTION 3, OBTENIR LA CARTE G
 → Si tu as le diplôme ou l'expérience requise :
   fais la demande à la CCI de ta région
 → Si non : formation Bac+3 en immobilier
@@ -610,17 +610,17 @@ Ce que ça apporte à ta conciergerie :
 ---
 
 ## Les 3 erreurs de positionnement à éviter
-ERREUR 1 — Vouloir tout faire pour tous
+ERREUR 1, Vouloir tout faire pour tous
 → Une conciergerie "généraliste" est
   difficile à recommander.
   Les propriétaires cherchent des spécialistes.
 
-ERREUR 2 — S'aligner sur les concurrents
+ERREUR 2, S'aligner sur les concurrents
 → Copier l'offre d'une conciergerie existante
   te met en concurrence directe.
   Trouve ce qu'ils ne font pas.
 
-ERREUR 3 — Sous-estimer l'importance des photos
+ERREUR 3, Sous-estimer l'importance des photos
 → Sur Airbnb et Booking, les photos font 80%
   de la décision de réservation.
   Une conciergerie qui intègre des photos pro
@@ -631,7 +631,7 @@ ERREUR 3 — Sous-estimer l'importance des photos
 
 
 ## Exercice
-**Exercice pratique :** Rédige en 3 phrases ton positionnement : "Je suis une conciergerie spécialisée dans [type de logements] pour [type de propriétaires] dans [zone géographique]. Je me différencie par [1 ou 2 éléments clés]. Mon client idéal est [portrait précis]." Garde ces 3 phrases sous la main — elles guideront toute ta communication.
+**Exercice pratique :** Rédige en 3 phrases ton positionnement : "Je suis une conciergerie spécialisée dans [type de logements] pour [type de propriétaires] dans [zone géographique]. Je me différencie par [1 ou 2 éléments clés]. Mon client idéal est [portrait précis]." Garde ces 3 phrases sous la main, elles guideront toute ta communication.
 
 ---`,
         },
@@ -650,20 +650,20 @@ L'équilibre entre attractivité et rentabilité
 ---
 
 ## Les modèles tarifaires possibles
-MODÈLE 1 — COMMISSION PURE (le plus courant)
+MODÈLE 1, COMMISSION PURE (le plus courant)
 → Tu prélèves X% des revenus bruts
 → Avantage : tu es aligné avec
   les intérêts du propriétaire
 → Risque : tes revenus fluctuent
   avec le taux d'occupation
 
-MODÈLE 2 — FORFAIT MENSUEL
+MODÈLE 2, FORFAIT MENSUEL
 → X€ par logement par mois
 → Avantage : revenus prévisibles
 → Risque : perte si logement sous-loué,
   gain si sur-loué
 
-MODÈLE 3 — HYBRIDE (recommandé)
+MODÈLE 3, HYBRIDE (recommandé)
 → Forfait de base + commission
 → Exemple : 100€/mois + 10% de commission
 → Sécurise ton plancher de revenus
@@ -778,7 +778,7 @@ C'est le canal le plus efficace pour débuter.
 LES PROPRIÉTAIRES QUI GÈRENT SEULS
 sont tes cibles les plus qualifiées.
 Ils connaissent la LCD, ils ont déjà
-fait le travail de mise en ligne —
+fait le travail de mise en ligne -
 ils ont juste besoin de déléguer.
 
 Comment les identifier :
@@ -797,7 +797,7 @@ Comment les approcher :
 
 "Bonjour, je développe une conciergerie
 dans la région. Votre logement est
-très bien noté — est-ce que vous gérez
+très bien noté, est-ce que vous gérez
 tout vous-même ? J'aimerais échanger."
 
 ---
@@ -842,7 +842,7 @@ driing.co/conciergeries-location-courte-duree-france
 
 En t'y inscrivant, tu es visible auprès
 des propriétaires qui cherchent activement
-une conciergerie — des prospects chauds.
+une conciergerie, des prospects chauds.
 
 FORMULE STANDARD : Gratuite
 → Présence sur la carte interactive
@@ -866,7 +866,7 @@ Inscription : driing.co/inscription-conciergerie
 ---
 
 ## Canaux 4 et 5 : Contenu local et bouche à oreille
-CANAL 4 — CONTENU LOCAL (Instagram / LinkedIn)
+CANAL 4, CONTENU LOCAL (Instagram / LinkedIn)
 
 Instagram : montre ton travail
 → Photos de logements gérés (avec accord)
@@ -879,7 +879,7 @@ LinkedIn : cible les investisseurs pro
 → Cas concrets de propriétaires satisfaits
 → Partage d'expertise sur la gestion
 
-CANAL 5 — LE BOUCHE À OREILLE ACTIF
+CANAL 5, LE BOUCHE À OREILLE ACTIF
 
 Chaque propriétaire satisfait est
 un ambassadeur potentiel.
@@ -897,7 +897,7 @@ en LCD, je serai ravi d'échanger avec eux."
 
 
 ## Exercice
-**Exercice pratique :** Inscris-toi maintenant sur l'annuaire Driing : **driing.co/inscription-conciergerie**. Utilise le code **JASON2** pour bénéficier de 2 mois offerts sur le Profil Plus. C'est ta première présence en ligne professionnelle — et ça te prend 20 minutes.
+**Exercice pratique :** Inscris-toi maintenant sur l'annuaire Driing : **driing.co/inscription-conciergerie**. Utilise le code **JASON2** pour bénéficier de 2 mois offerts sur le Profil Plus. C'est ta première présence en ligne professionnelle, et ça te prend 20 minutes.
 
 ---`,
         },
@@ -940,7 +940,7 @@ Il cherche 3 choses :
 ---
 
 ## La structure d'un premier rendez-vous qui signe
-15 PREMIÈRES MINUTES — Écouter, pas parler
+15 PREMIÈRES MINUTES, Écouter, pas parler
 
 → "Depuis combien de temps vous louez ?"
 → "Comment ça se passe aujourd'hui ?"
@@ -949,7 +949,7 @@ Il cherche 3 choses :
 
 → Note TOUT. Tu t'en serviras ensuite.
 
-15 MINUTES SUIVANTES — Répondre à CE qu'il a dit
+15 MINUTES SUIVANTES, Répondre à CE qu'il a dit
 
 → Ne présente pas tes services en général.
 → Réponds précisément aux problèmes
@@ -959,7 +959,7 @@ Il cherche 3 choses :
   vous posent problème. Voilà comment
   je gère ça..."
 
-15 DERNIÈRES MINUTES — Montrer concrètement
+15 DERNIÈRES MINUTES, Montrer concrètement
 
 → Montre ton profil Driing si déjà créé
 → Montre un exemple de livret d'accueil digital
@@ -1266,7 +1266,7 @@ La régularité compte plus que le format.
 ## Le moment où tout bascule
 La plupart des conciergeries abandonnent
 dans les 3 premiers mois. Pas parce que
-le modèle ne fonctionne pas — parce qu'elles
+le modèle ne fonctionne pas, parce qu'elles
 manquent de patience.
 
 La courbe de croissance réelle d'une conciergerie :
@@ -1293,7 +1293,7 @@ Au-delà de 12 mois : Scalabilité
 
 
 ## Exercice
-**Exercice pratique :** Crée un template de rapport mensuel maintenant — avant même d'avoir ton premier propriétaire. Ça t'oblige à réfléchir aux données que tu vas suivre. Et quand tu auras ton premier mandat, tu l'enverras dès le premier mois.
+**Exercice pratique :** Crée un template de rapport mensuel maintenant, avant même d'avoir ton premier propriétaire. Ça t'oblige à réfléchir aux données que tu vas suivre. Et quand tu auras ton premier mandat, tu l'enverras dès le premier mois.
 
 ---`,
         },
@@ -1463,20 +1463,20 @@ Une conciergerie qui scale repose sur 3 piliers :
 ---
 
 ## Les 3 premières choses à déléguer
-DÉLÉGATION 1 — LE MÉNAGE (priorité absolue)
+DÉLÉGATION 1, LE MÉNAGE (priorité absolue)
 → Trouve 2 à 3 agents de ménage fiables
   dans ta zone dès le départ
 → Forme-les à tes standards
 → Avec une checklist précise
 → Tu supervises, tu n'exécutes pas
 
-DÉLÉGATION 2 — LES CHECK-INS PHYSIQUES
+DÉLÉGATION 2, LES CHECK-INS PHYSIQUES
 → Si tu fais de l'accueil en personne,
   c'est chronophage. Automatise avec
   des serrures connectées ou boîtes à clés.
 → Ou forme un "key holder" local de confiance.
 
-DÉLÉGATION 3 — LA COMMUNICATION ROUTINE
+DÉLÉGATION 3, LA COMMUNICATION ROUTINE
 → Les gabarits de messages prêts à l'emploi
   disponibles sur la plateforme Jason Marinho
   te font gagner 30 minutes par logement
@@ -1555,27 +1555,27 @@ Avec ces 3 chiffres, tu as un plan. Il ne reste plus qu'à l'exécuter.
 
 ---
 
-# RÉCAPITULATIF — Le plan de lancement en 30 jours
+# RÉCAPITULATIF, Le plan de lancement en 30 jours
 
-SEMAINE 1 — FONDATIONS
+SEMAINE 1, FONDATIONS
 □ Choisir et créer son statut juridique (inpi.fr)
 □ Ouvrir un compte bancaire professionnel
 □ Faire valider son contrat de gestion par un avocat
 □ Souscrire une RC Pro
 
-SEMAINE 2 — PRÉSENCE EN LIGNE
+SEMAINE 2, PRÉSENCE EN LIGNE
 □ S'inscrire sur l'annuaire Driing (code JASON2)
 □ Remplir son profil Driing complètement
 □ Créer ou optimiser ses profils LinkedIn et Instagram
 □ Créer un livret d'accueil digital Driing
 
-SEMAINE 3 — PROSPECTION
+SEMAINE 3, PROSPECTION
 □ Identifier 20 propriétaires cibles sur Airbnb
 □ Contacter les 10 premiers via messagerie Airbnb
 □ Contacter 3 agences immobilières locales
 □ Activer son réseau personnel
 
-SEMAINE 4 — PREMIERS RENDEZ-VOUS
+SEMAINE 4, PREMIERS RENDEZ-VOUS
 □ Conduire ses premiers rendez-vous propriétaires
 □ Envoyer ses premiers contrats
 □ Signer son premier mandat
@@ -1583,7 +1583,7 @@ SEMAINE 4 — PREMIERS RENDEZ-VOUS
 
 ---
 
-# ANNEXE — Ressources utiles
+# ANNEXE, Ressources utiles
 
 IMMATRICULATION
 → inpi.fr (guichet unique)

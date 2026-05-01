@@ -4,7 +4,7 @@ import ImportUrlForm from './ImportUrlForm'
 import { ArrowLeft, MapPin, Lightning, Info, ArrowSquareOut } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic  = 'force-dynamic'
-export const metadata = { title: 'Audit Express — Import URL — Jason Marinho' }
+export const metadata = { title: 'Audit Express, Import URL, Jason Marinho' }
 
 export default async function ImportUrlPage() {
   const profile = await getProfile()

@@ -151,7 +151,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
       {/* Divider */}
       <div style={s.divider} />
 
-      {/* Footer — "En savoir plus" */}
+      {/* Footer, "En savoir plus" */}
       <div style={s.footer}>
         <Link
           href="/dashboard/nouveautes"

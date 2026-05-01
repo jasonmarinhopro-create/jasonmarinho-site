@@ -9,7 +9,7 @@ description: "Commissions, types de voyageurs, visibilité, flexibilité : compa
 
 # Airbnb vs Booking.com : lequel choisir pour ton logement LCD ?
 
-Quand on débute en location courte durée, la question revient presque toujours : faut-il être sur Airbnb, sur Booking.com, ou sur les deux ? Ces deux plateformes dominent le marché mondial, mais elles ne s'adressent pas aux mêmes profils d'hôtes ni aux mêmes voyageurs. Choisir la bonne plateforme — ou la bonne combinaison — peut faire une vraie différence sur ton taux d'occupation et tes revenus.
+Quand on débute en location courte durée, la question revient presque toujours : faut-il être sur Airbnb, sur Booking.com, ou sur les deux ? Ces deux plateformes dominent le marché mondial, mais elles ne s'adressent pas aux mêmes profils d'hôtes ni aux mêmes voyageurs. Choisir la bonne plateforme, ou la bonne combinaison, peut faire une vraie différence sur ton taux d'occupation et tes revenus.
 
 Voici un comparatif concret, basé sur l'expérience terrain, pour t'aider à décider.
 
@@ -25,7 +25,7 @@ Airbnb applique un modèle dit "split fee" :
 En pratique, ça veut dire que tes prix affichés sont perçus par les voyageurs avec une majoration significative. C'est un frein à la conversion, mais tu contrôles mieux ta marge nette.
 
 ### Booking.com
-Booking fonctionne différemment : **c'est toi, l'hôte, qui paies toute la commission** — entre **15 % et 18 %** selon ta région et ta catégorie de logement. Le voyageur, lui, ne paie aucun frais de service visible.
+Booking fonctionne différemment : **c'est toi, l'hôte, qui paies toute la commission**, entre **15 % et 18 %** selon ta région et ta catégorie de logement. Le voyageur, lui, ne paie aucun frais de service visible.
 
 Résultat : les prix affichés sur Booking.com paraissent moins chers pour le voyageur, ce qui peut améliorer la conversion. Mais ta marge nette est plus réduite si tu ne l'intègres pas dans ton prix de base.
 
@@ -54,7 +54,7 @@ Les séjours sont parfois plus longs, et la sensibilité au prix est souvent plu
 ### Airbnb : un algorithme qui récompense l'engagement
 Airbnb classe ses annonces en fonction de nombreux critères : taux de réponse, taux d'acceptation, qualité des avis, complétude du profil, activité récente. Un hôte réactif et bien noté remonte naturellement dans les résultats.
 
-La bonne nouvelle : tu peux agir dessus rapidement. Quelques optimisations bien placées — titre accrocheur, photos de qualité, prix compétitif en période creuse — peuvent faire bouger ton classement en quelques semaines.
+La bonne nouvelle : tu peux agir dessus rapidement. Quelques optimisations bien placées, titre accrocheur, photos de qualité, prix compétitif en période creuse, peuvent faire bouger ton classement en quelques semaines.
 
 ### Booking.com : le volume avant tout
 Booking accorde beaucoup d'importance au **taux de commission que tu proposes**, à la disponibilité de ton calendrier et aux notes de tes clients. Les hébergements qui offrent des conditions d'annulation flexibles et un prix attractif sont systématiquement mis en avant.
@@ -72,7 +72,7 @@ Booking.com pousse fortement les conditions "annulation gratuite" pour améliore
 
 ### Gestion des paiements
 - **Airbnb** encaisse pour toi et te vire 24h après le check-in. Simple, sécurisé.
-- **Booking.com** te laisse souvent encaisser toi-même (selon la configuration). Plus de contrôle, mais plus de gestion administrative — notamment pour les remboursements en cas d'annulation.
+- **Booking.com** te laisse souvent encaisser toi-même (selon la configuration). Plus de contrôle, mais plus de gestion administrative, notamment pour les remboursements en cas d'annulation.
 
 ---
 
@@ -94,9 +94,9 @@ Booking.com pousse fortement les conditions "annulation gratuite" pour améliore
 
 C'est exactement ce que propose **[Driing](https://www.driing.co)**, la plateforme de réservation sans commission co-fondée par Jason Marinho. Le principe est simple : les voyageurs réservent directement avec toi, sans intermédiaire, sans frais cachés. Ce que le voyageur paie, c'est exactement ce que tu encaisses.
 
-Contrairement à Airbnb ou Booking, Driing affiche aussi les prix pratiqués sur les autres plateformes — ce qui rassure les voyageurs sur la transparence et l'équité du prix. En moyenne, les séjours réservés via Driing coûtent 17 à 20 % moins cher pour le voyageur, tout en étant plus rentables pour toi.
+Contrairement à Airbnb ou Booking, Driing affiche aussi les prix pratiqués sur les autres plateformes, ce qui rassure les voyageurs sur la transparence et l'équité du prix. En moyenne, les séjours réservés via Driing coûtent 17 à 20 % moins cher pour le voyageur, tout en étant plus rentables pour toi.
 
-Driing ne remplace pas forcément Airbnb ou Booking — les deux peuvent coexister avec un channel manager — mais c'est un levier puissant pour réduire ta dépendance aux plateformes et maximiser tes marges sur les réservations directes.
+Driing ne remplace pas forcément Airbnb ou Booking, les deux peuvent coexister avec un channel manager, mais c'est un levier puissant pour réduire ta dépendance aux plateformes et maximiser tes marges sur les réservations directes.
 
 ---
 

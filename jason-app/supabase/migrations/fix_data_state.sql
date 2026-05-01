@@ -14,7 +14,7 @@ SET is_active = false
 WHERE slug IN ('swikly', 'hospitable', 'pricelabs', 'maif', 'smily');
 
 -- ── 2. FORMATIONS ───────────────────────────────────────────
--- Seules 2 formations sont disponibles — les autres sont en construction.
+-- Seules 2 formations sont disponibles, les autres sont en construction.
 -- Décommenter et ajuster les slugs selon vos formations réelles.
 --
 -- Exemple : dépublier les formations en construction

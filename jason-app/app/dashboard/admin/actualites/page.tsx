@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ActualitesAdmin from './ActualitesAdmin'
 
-export const metadata = { title: 'Actualités — Admin — Jason Marinho' }
+export const metadata = { title: 'Actualités, Admin, Jason Marinho' }
 
 export default async function AdminActualitesPage() {
   const supabase = await createClient()

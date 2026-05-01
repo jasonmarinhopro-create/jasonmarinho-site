@@ -23,7 +23,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <ThemeProvider>
       <div style={styles.layout}>
-        {/* Sidebar et Header rendus une seule fois dans le layout — pas de re-mount entre navigations.
+        {/* Sidebar et Header rendus une seule fois dans le layout, pas de re-mount entre navigations.
             Élimine le flicker du titre + économise 1 query Supabase par navigation. */}
         <Sidebar isAdmin={isAdmin} isContributor={profile.is_contributor ?? false} />
         <Header

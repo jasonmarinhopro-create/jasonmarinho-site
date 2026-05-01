@@ -178,7 +178,7 @@ export default function Roadmap({
             <Rocket size={15} color="#a78bfa" weight="fill" />
             Roadmap
           </div>
-          <p style={s.headSub}>Vos idées, nos priorités — construisons ensemble.</p>
+          <p style={s.headSub}>Vos idées, nos priorités, construisons ensemble.</p>
         </div>
         <button
           onClick={() => setShowForm(v => !v)}
@@ -244,7 +244,7 @@ export default function Roadmap({
           <Lightbulb size={28} color="var(--text-muted)" weight="duotone" />
           <p style={{ fontSize: '14px', color: 'var(--text-3)', margin: 0 }}>
             {filter === 'all'
-              ? "Aucune idée pour l'instant — sois le premier !"
+              ? "Aucune idée pour l'instant, sois le premier !"
               : "Rien dans cette catégorie pour l'instant."}
           </p>
           {filter === 'all' && (
@@ -270,7 +270,7 @@ export default function Roadmap({
             <div key={item.id} style={s.card}>
               <div style={s.cardRow}>
 
-                {/* Vote button — left column */}
+                {/* Vote button, left column */}
                 <button
                   onClick={() => handleVote(item.id)}
                   disabled={!userId}

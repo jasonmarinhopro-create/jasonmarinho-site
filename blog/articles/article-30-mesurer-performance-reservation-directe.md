@@ -34,7 +34,7 @@ Taux de réservation directe = (Nuits louées en direct ÷ Total des nuits loué
 
 ## Indicateur 2 : Le revenu net par canal
 
-C'est le chiffre le plus important — et celui que la plupart des hôtes ne calculent pas.
+C'est le chiffre le plus important, et celui que la plupart des hôtes ne calculent pas.
 
 **Calcul :**
 ```
@@ -56,7 +56,7 @@ Même avec un prix légèrement plus bas en direct, le revenu net peut être sup
 
 ## Indicateur 3 : Le coût d'acquisition par réservation directe
 
-Développer un canal direct a un coût — en temps et parfois en argent (outil de site, newsletter, publicité...). Le coût d'acquisition te dit combien chaque réservation directe te "coûte" à générer.
+Développer un canal direct a un coût, en temps et parfois en argent (outil de site, newsletter, publicité...). Le coût d'acquisition te dit combien chaque réservation directe te "coûte" à générer.
 
 **Calcul :**
 ```
@@ -131,8 +131,8 @@ Rempli chaque mois en 10 minutes, ce tableau devient en quelques mois une mine d
 
 ## Ce qu'il faut retenir
 
-- Le taux de réservation directe est ton indicateur de progression — vise 20 à 30 % après 6 mois.
+- Le taux de réservation directe est ton indicateur de progression, vise 20 à 30 % après 6 mois.
 - Le revenu net par canal montre que le direct est souvent plus rentable que Booking même à prix équivalent.
 - Le coût d'acquisition par réservation directe valide (ou non) le retour sur investissement de ta stratégie.
 - Un taux de conversion inférieur à 20 % sur tes contacts directs signale un problème à corriger.
-- Demande à chaque voyageur direct comment il t'a trouvé — c'est la donnée la plus utile pour optimiser tes actions.
+- Demande à chaque voyageur direct comment il t'a trouvé, c'est la donnée la plus utile pour optimiser tes actions.

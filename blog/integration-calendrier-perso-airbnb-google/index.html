@@ -232,7 +232,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Avoir tout dans un seul calendrier change la vie quand tu es hôte LCD.</p>
 <ul class="art-ul"><li>Vue 360° : tes réservations + ton emploi perso dans une seule vue</li><li>Notifications : Google Calendar te notifie 24 h avant chaque check-in/check-out</li><li>Partage : ton équipe ménage peut voir le calendrier en lecture seule (très utile)</li><li>Mobile : Google Calendar app sur ton téléphone = consultation rapide partout</li><li>Intégration : autres apps (Slack, Trello, Notion) peuvent lire Google Calendar pour automatiser</li></ul>
 <h2 class="art-h2">2. Étapes d'intégration</h2>
-<ul class="art-ul"><li>Étape 1 — Sur Airbnb : Calendrier → Synchronisation calendriers → Exporter calendrier. Copier le lien iCal</li><li>Étape 2 — Sur Google Calendar : Autres calendriers → "+" → À partir de l'URL → coller le lien iCal Airbnb</li><li>Étape 3 — Renommer le calendrier importé en "Airbnb [nom logement]"</li><li>Étape 4 — Choisir une couleur (rouge pour Airbnb, bleu pour perso) pour distinguer visuellement</li><li>Étape 5 — Vérifier 5 min plus tard que les réservations apparaissent. Mise à jour toutes les 24 h</li></ul>
+<ul class="art-ul"><li>Étape 1, Sur Airbnb : Calendrier → Synchronisation calendriers → Exporter calendrier. Copier le lien iCal</li><li>Étape 2, Sur Google Calendar : Autres calendriers → "+" → À partir de l'URL → coller le lien iCal Airbnb</li><li>Étape 3, Renommer le calendrier importé en "Airbnb [nom logement]"</li><li>Étape 4, Choisir une couleur (rouge pour Airbnb, bleu pour perso) pour distinguer visuellement</li><li>Étape 5, Vérifier 5 min plus tard que les réservations apparaissent. Mise à jour toutes les 24 h</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu as plusieurs logements, fais ça pour chacun avec une couleur différente. Tu vois en un coup d'œil tous tes biens dans une seule timeline.</span></div>
 <h2 class="art-h2">3. Faire pareil avec Booking.com</h2>
 <p class="art-p">Booking permet aussi l'export iCal. Procédure similaire.</p>
@@ -295,14 +295,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

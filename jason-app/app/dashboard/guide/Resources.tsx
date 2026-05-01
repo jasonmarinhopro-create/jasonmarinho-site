@@ -1,4 +1,4 @@
-// Server component — pas d'interactivité, importe les icônes via /dist/ssr
+// Server component, pas d'interactivité, importe les icônes via /dist/ssr
 // pour éviter de polluer le bundle client.
 
 import { ArrowUpRight, Wrench, Bank, BookOpen } from '@phosphor-icons/react/dist/ssr'
@@ -12,7 +12,7 @@ interface Resource {
 
 const OFFICIAL: Resource[] = [
   {
-    label: 'Cerfa 14004*04 — Déclaration en mairie',
+    label: 'Cerfa 14004*04, Déclaration en mairie',
     desc: 'Formulaire obligatoire avant la 1ère location d\'un meublé de tourisme',
     href: 'https://www.service-public.fr/particuliers/vosdroits/R14321',
     external: true,
@@ -30,7 +30,7 @@ const OFFICIAL: Resource[] = [
     external: true,
   },
   {
-    label: 'Cerfa 13984 — Déclaration DDPP',
+    label: 'Cerfa 13984, Déclaration DDPP',
     desc: 'Hygiène alimentaire pour les chambres d\'hôtes servant un petit-déj',
     href: 'https://www.formulaires.service-public.fr/gf/cerfa_13984.do',
     external: true,
@@ -43,7 +43,7 @@ const OFFICIAL: Resource[] = [
   },
   {
     label: 'Réglementation chambres d\'hôtes',
-    desc: 'Service Public — règles spécifiques',
+    desc: 'Service Public, règles spécifiques',
     href: 'https://www.service-public.fr/particuliers/vosdroits/F31376',
     external: true,
   },

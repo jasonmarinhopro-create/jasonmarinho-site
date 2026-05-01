@@ -21,7 +21,7 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
 
   if (logementError || !logement) notFound()
 
-  // Séjours rattachés (matching par nom — logement_id n'existe pas encore sur sejours)
+  // Séjours rattachés (matching par nom, logement_id n'existe pas encore sur sejours)
   const { data: sejours } = await supabase
     .from('sejours')
     .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien, voyageurs(id, prenom, nom, email, telephone)')
@@ -36,7 +36,7 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
     .eq('user_id', profile.userId)
     .eq('logement_id', id)
 
-  // Supabase retourne voyageurs sous forme d'array (relation 1-1) — on aplatit
+  // Supabase retourne voyageurs sous forme d'array (relation 1-1), on aplatit
   const sejoursList = ((sejours ?? []) as any[]).map(s => ({
     ...s,
     voyageurs: Array.isArray(s.voyageurs) ? (s.voyageurs[0] ?? null) : (s.voyageurs ?? null),

@@ -52,7 +52,7 @@ export function aggregateRegionsByMember(
   return counts
 }
 
-/** Approximative SVG positions (% of viewBox 100x110) for each region — used by the map */
+/** Approximative SVG positions (% of viewBox 100x110) for each region, used by the map */
 export const REGION_POSITIONS: Record<string, { x: number; y: number }> = {
   'Île-de-France':    { x: 50, y: 30 },
   'PACA':             { x: 70, y: 80 },

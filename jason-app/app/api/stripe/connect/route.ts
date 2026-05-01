@@ -35,7 +35,7 @@ export async function POST() {
           transfers: { requested: true },
         },
         business_type: 'individual',
-        // MCC 7011 — Hébergement hôtelier (hôtels, motels, résidences)
+        // MCC 7011, Hébergement hôtelier (hôtels, motels, résidences)
         // Requis pour que Visa et Amex accordent l'autorisation étendue (30 jours)
         // sur les pré-autorisations de caution, sans frais supplémentaires.
         business_profile: {

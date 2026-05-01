@@ -1,4 +1,4 @@
--- Phase 6 — Log temporel des complétions de leçons
+-- Phase 6, Log temporel des complétions de leçons
 -- Permet de calculer le streak (jours consécutifs d'apprentissage) et l'historique d'activité.
 --
 -- 1 ligne = 1 leçon marquée terminée à un instant T.

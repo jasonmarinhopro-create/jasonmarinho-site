@@ -236,7 +236,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Booking n'a PAS de système d'AirCover équivalent. La procédure est manuelle et dépend de ton modèle de paiement.</p>
 <ul class="art-ul"><li>Si "Payments by Booking" (Booking encaisse) : tu peux demander le prélèvement de la caution voyageur via "Frais supplémentaires" dans l'extranet. Booking valide ou non</li><li>Si encaissement direct : tu factures directement le voyageur. S'il refuse, tu utilises ta caution (SwikLy, Youka) si tu en avais une</li><li>Étape 1 : prendre photos du dégât avec horodatage immédiat</li><li>Étape 2 : envoyer email au voyageur avec photos + estimation du coût + délai de paiement (7 jours)</li><li>Étape 3 : si paiement OK = clos. Si refus, Booking peut médiateur si tu as activé "Payments". Sinon = procédure légale (rare)</li><li>En pratique : Booking médiation moins favorable à l'hôte qu'Airbnb. Mieux vaut avoir une caution préventive sur Booking</li></ul>
 <h2 class="art-h2">3. Procédure réservation directe</h2>
-<p class="art-p">Sur les réservations en direct (via Driing, GMB, ton site), tu es 100 % autonome — donc plus de pouvoir, mais aussi plus de responsabilité.</p>
+<p class="art-p">Sur les réservations en direct (via Driing, GMB, ton site), tu es 100 % autonome, donc plus de pouvoir, mais aussi plus de responsabilité.</p>
 <ul class="art-ul"><li>Avoir une caution active : SwikLy ou Youka prennent une empreinte CB avant arrivée</li><li>En cas de dégât : tu prélèves directement depuis ton dashboard SwikLy/Youka (sous 48 h)</li><li>Justificatifs requis : photos avant/après + facture/devis</li><li>Si voyageur conteste : il a recours auprès de la plateforme de caution (SwikLy/Youka médieront avec photos)</li><li>Avantage : pas de délai de validation plateforme (vs Airbnb 3-5 jours d'arbitrage)</li></ul>
 <h2 class="art-h2">4. Les pièges à éviter dans tous les cas</h2>
 <p class="art-p">Quel que soit le canal, ces 5 erreurs sabordent ta réclamation.</p>
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

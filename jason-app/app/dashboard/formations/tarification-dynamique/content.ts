@@ -1,7 +1,7 @@
 export const TARIFICATION_DYNAMIQUE_FORMATION = {
   slug: 'tarification-dynamique',
   title: 'Comprendre et utiliser la tarification dynamique',
-  description: '45% des hôtes sous-évaluent ou surévaluent leur logement, perdant 15 à 25% de revenus. Tarif de base, prix minimum, saisonnalité, événements locaux, outils : la méthode complète pour mettre le bon prix — automatiquement.',
+  description: '45% des hôtes sous-évaluent ou surévaluent leur logement, perdant 15 à 25% de revenus. Tarif de base, prix minimum, saisonnalité, événements locaux, outils : la méthode complète pour mettre le bon prix, automatiquement.',
   duration: '2h00',
   level: 'Intermédiaire',
   objectifs: [
@@ -100,7 +100,7 @@ TAUX D'OCCUPATION
 → Cible : 65-75% en moyenne annuelle
 → Si < 60% : prix trop élevés
   ou annonce peu visible
-→ Si > 85% : vous laissez de l'argent —
+→ Si > 85% : vous laissez de l'argent -
   vos prix sont trop bas
 
 ADR (Average Daily Rate)
@@ -163,7 +163,7 @@ Les deux chiffres à calculer avant tout
 
 ## Le prix minimum : votre plancher absolu
 Le prix minimum est le prix en dessous duquel
-vous ne louez JAMAIS — même la veille pour demain.
+vous ne louez JAMAIS, même la veille pour demain.
 
 C'est le seul chiffre non négociable
 de toute votre stratégie.
@@ -199,18 +199,18 @@ une nuit ordinaire, en dehors des
 
 COMMENT LE FIXER :
 
-ÉTAPE 1 — Analyser la concurrence locale
+ÉTAPE 1, Analyser la concurrence locale
 → Cherchez 5 logements comparables
   sur Airbnb (même zone, même taille,
   même niveau d'équipement)
 → Notez leur prix moyen sur un jour ordinaire
 
-ÉTAPE 2 — Se positionner par rapport à eux
+ÉTAPE 2, Se positionner par rapport à eux
 → Moins d'avis que la concurrence : -10 à -15%
 → Autant d'avis et qualité similaire : prix identique
 → Note supérieure et équipements premium : +10 à +20%
 
-ÉTAPE 3 — Vérifier par rapport à votre prix minimum
+ÉTAPE 3, Vérifier par rapport à votre prix minimum
 → Votre prix de base doit être
   au moins 20-30% au-dessus de votre minimum.
 → Si ce n'est pas le cas :
@@ -442,7 +442,7 @@ PRIX MINIMUM (non négociable)
 → Le chiffre que vous avez calculé
   dans la leçon précédente.
 → L'outil ne descendra jamais en dessous.
-→ Vérifiez-le soigneusement — certains outils
+→ Vérifiez-le soigneusement, certains outils
   proposent un minimum par défaut trop bas.
 
 PRIX DE BASE
@@ -486,12 +486,12 @@ Vacances de Pâques, Toussaint)
 
 → La plupart des outils proposent un calendrier
   saisonnier où vous définissez ces règles
-  une seule fois — elles s'appliquent automatiquement.
+  une seule fois, elles s'appliquent automatiquement.
 
 ---
 
 ## ÉTAPES 4 ET 5 : Événements locaux et suivi
-ÉTAPE 4 — LES ÉVÉNEMENTS LOCAUX
+ÉTAPE 4, LES ÉVÉNEMENTS LOCAUX
 
 → Pricelabs et Beyond intègrent une base
   de données d'événements locaux
@@ -511,7 +511,7 @@ Comment ajouter un événement manuellement :
 → L'outil maintient cette majoration
   en plus de sa tarification dynamique
 
-ÉTAPE 5 — SUIVI ET AJUSTEMENTS
+ÉTAPE 5, SUIVI ET AJUSTEMENTS
 → Ne configurez pas et n'oubliez pas.
 → Regardez les résultats chaque semaine
   les 2 premiers mois.
@@ -629,7 +629,7 @@ DERNIÈRE MINUTE (J-3 à J-7)
 
 
 ## Exercice
-**Exercice pratique :** Regarde ton calendrier des 3 prochains mois. Identifie les nuits orphelines actuelles — des nuits vides entre deux réservations. Si ton outil de pricing ne les gère pas automatiquement, configurez dès maintenant un minimum de 1 nuit pour ces dates spécifiques. Chaque nuit orpheline récupérée = revenu pur.
+**Exercice pratique :** Regarde ton calendrier des 3 prochains mois. Identifie les nuits orphelines actuelles, des nuits vides entre deux réservations. Si ton outil de pricing ne les gère pas automatiquement, configurez dès maintenant un minimum de 1 nuit pour ces dates spécifiques. Chaque nuit orpheline récupérée = revenu pur.
 
 ---`,
         },
@@ -873,25 +873,25 @@ Piloter sa stratégie avec les bons chiffres
 Une fois par mois, 15 minutes suffisent
 pour évaluer votre stratégie tarifaire.
 
-CHIFFRE 1 — TAUX D'OCCUPATION
+CHIFFRE 1, TAUX D'OCCUPATION
 Cible : 65-75% annuel
 → Si < 60% 2 mois de suite :
   baissez le prix de base de 10%
 → Si > 85% 2 mois de suite :
   montez le prix de base de 10-15%
 
-CHIFFRE 2 — ADR (revenu moyen par nuit louée)
+CHIFFRE 2, ADR (revenu moyen par nuit louée)
 → En hausse = vous vendez mieux
 → En baisse alors que l'occupation monte :
   vous bradez trop
 
-CHIFFRE 3 — REVPAN
+CHIFFRE 3, REVPAN
 → Le plus important : doit toujours croître
 → Si stable ou en baisse malgré
   un bon taux d'occupation :
   vos prix sont trop bas
 
-CHIFFRE 4 — FENÊTRE DE RÉSERVATION MOYENNE
+CHIFFRE 4, FENÊTRE DE RÉSERVATION MOYENNE
 → Combien de jours à l'avance vos voyageurs
   réservent-ils en moyenne ?
 → Si elle raccourcit : marché qui réserve
@@ -1078,27 +1078,27 @@ De la théorie à la pratique en 4 semaines
 ---
 
 ## Le plan sur 4 semaines
-SEMAINE 1 — LES FONDATIONS
+SEMAINE 1, LES FONDATIONS
 □ Calculer son prix minimum
 □ Identifier son prix de base
   (benchmarking 5 concurrents)
 □ Activer la tarification intelligente Airbnb
    OU s'inscrire à l'essai Pricelabs/Beyond
 
-SEMAINE 2 — CONFIGURATION
+SEMAINE 2, CONFIGURATION
 □ Connecter ses plateformes à l'outil
 □ Configurer prix minimum + prix de base
 □ Activer les remises last-minute
 □ Activer la règle des nuits orphelines
 
-SEMAINE 3 — STRATÉGIE AVANCÉE
+SEMAINE 3, STRATÉGIE AVANCÉE
 □ Identifier les 5 événements locaux
   des 3 prochains mois
 □ Configurer les majorations manuelles
 □ Mettre en place les règles saisonnières
   (durée minimum par période)
 
-SEMAINE 4 — SUIVI
+SEMAINE 4, SUIVI
 □ Créer l'onglet "Tarification" dans
   le Google Sheet de pilotage
 □ Comparer les métriques avant/après
@@ -1133,7 +1133,7 @@ RÉSULTATS RÉALISTES EN 6 MOIS :
 
 → Vous louez plus cher en haute demande
   ET vous remplissez mieux en basse demande
-  — simultanément.
+ , simultanément.
 
 ---
 
@@ -1177,7 +1177,7 @@ Des questions sur votre stratégie tarifaire ?
 ## Exercice
 **L'action finale de la formation :**
 
-Une seule action aujourd'hui : calcule ton prix minimum exact avec la formule du module 1. C'est le chiffre le plus important de toute cette formation. Configurez-le dans votre outil de pricing — ou dans les paramètres Airbnb si vous n'avez pas encore d'outil spécialisé.
+Une seule action aujourd'hui : calcule ton prix minimum exact avec la formule du module 1. C'est le chiffre le plus important de toute cette formation. Configurez-le dans votre outil de pricing, ou dans les paramètres Airbnb si vous n'avez pas encore d'outil spécialisé.
 
 Tout le reste peut attendre demain.
 Ce chiffre, non.

@@ -229,7 +229,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-body">
 <p class="art-lead">Depuis janvier 2025, les logements classés F ou G ne peuvent plus être loués en courte durée. Et ce n'est qu'un premier palier : une obligation ≥E s'applique déjà aux nouvelles autorisations de changement d'usage, et en 2034, tout bien en LCD devra atteindre la note D. Ce calendrier concerne directement des centaines de milliers de logements français.</p>
 <h2 class="art-h2">1. Ce qui est déjà en vigueur depuis 2025</h2>
-<p class="art-p">Depuis le 1er janvier 2025, les logements classés F ou G au DPE ne peuvent plus faire l'objet d'une nouvelle mise en location courte durée. Si tu louais déjà avec ce classement avant cette date, une période transitoire peut s'appliquer selon ta commune — mais elle est limitée dans le temps.</p>
+<p class="art-p">Depuis le 1er janvier 2025, les logements classés F ou G au DPE ne peuvent plus faire l'objet d'une nouvelle mise en location courte durée. Si tu louais déjà avec ce classement avant cette date, une période transitoire peut s'appliquer selon ta commune, mais elle est limitée dans le temps.</p>
 <p class="art-p">Par ailleurs, toute nouvelle demande d'autorisation de changement d'usage (pour un logement qui n'était pas déjà en LCD) est conditionnée à un DPE attestant d'une note minimale E. Pas de DPE E ou mieux, pas d'autorisation.</p>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si ton DPE date de plus de 10 ans, il n'est plus valable. Fais-le refaire : les méthodes de calcul ont évolué et certains logements obtiennent un meilleur résultat avec la nouvelle méthode 3CL.</span></div>
 <h2 class="art-h2">2. Le calendrier complet des obligations à connaître</h2>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

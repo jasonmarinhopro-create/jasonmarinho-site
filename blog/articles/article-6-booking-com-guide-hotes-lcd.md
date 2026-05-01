@@ -9,7 +9,7 @@ description: "Commission, visibilité, paiements, litiges : le guide complet pou
 
 # Booking.com pour les hôtes LCD : tout ce qu'il faut savoir avant de s'inscrire
 
-Booking.com est la plateforme de réservation la plus visitée au monde, avec plus de 500 millions de visites par mois. Pourtant, beaucoup d'hôtes LCD français hésitent à s'y inscrire — souvent par méconnaissance de son fonctionnement ou par peur de la commission.
+Booking.com est la plateforme de réservation la plus visitée au monde, avec plus de 500 millions de visites par mois. Pourtant, beaucoup d'hôtes LCD français hésitent à s'y inscrire, souvent par méconnaissance de son fonctionnement ou par peur de la commission.
 
 Voici ce qu'il faut vraiment savoir avant de créer ton annonce.
 
@@ -34,7 +34,7 @@ Ce taux peut varier selon :
 ## Les avantages concrets de Booking.com pour un hôte LCD
 
 ### Une visibilité internationale massive
-Booking.com distribue tes annonces sur un réseau de sites partenaires (Kayak, Agoda, Priceline...) automatiquement. Pour un hôte qui veut capter des voyageurs étrangers — notamment européens et asiatiques — c'est difficile à égaler.
+Booking.com distribue tes annonces sur un réseau de sites partenaires (Kayak, Agoda, Priceline...) automatiquement. Pour un hôte qui veut capter des voyageurs étrangers, notamment européens et asiatiques, c'est difficile à égaler.
 
 ### Des voyageurs différents d'Airbnb
 Le profil Booking est souvent plus pragmatique : voyageurs d'affaires, familles qui comparent les prix, seniors habitués aux réservations d'hôtel. Si ton logement est situé dans une zone d'activité professionnelle ou une ville de passage, Booking peut remplir des nuits qu'Airbnb ne remplit pas.
@@ -43,14 +43,14 @@ Le profil Booking est souvent plus pragmatique : voyageurs d'affaires, familles 
 Selon ta configuration, tu peux choisir de faire encaisser Booking (qui te reverse après check-in) ou d'encaisser directement le voyageur à l'arrivée. Cette flexibilité est appréciable pour les hôtes qui préfèrent gérer leur trésorerie eux-mêmes.
 
 ### Le programme Genius
-En atteignant certains seuils de réservations et d'avis, tu accèdes au programme Genius — qui augmente ta visibilité dans les résultats en échange de réductions. C'est un levier intéressant une fois établi, mais à utiliser prudemment si tes marges sont serrées.
+En atteignant certains seuils de réservations et d'avis, tu accèdes au programme Genius, qui augmente ta visibilité dans les résultats en échange de réductions. C'est un levier intéressant une fois établi, mais à utiliser prudemment si tes marges sont serrées.
 
 ---
 
 ## Les pièges à éviter
 
 ### La commission mal intégrée dans les prix
-C'est l'erreur numéro un. Si tu mets le même prix sur Booking que sur Airbnb, tu gagneras 12 à 15 % de moins par nuit sur Booking. Tu dois **majorer tes prix de base d'au moins 15 %** sur Booking pour que ta marge nette soit équivalente — ou utiliser un channel manager qui gère ça automatiquement.
+C'est l'erreur numéro un. Si tu mets le même prix sur Booking que sur Airbnb, tu gagneras 12 à 15 % de moins par nuit sur Booking. Tu dois **majorer tes prix de base d'au moins 15 %** sur Booking pour que ta marge nette soit équivalente, ou utiliser un channel manager qui gère ça automatiquement.
 
 ### Les conditions d'annulation trop souples
 Booking pousse fortement les politiques "annulation gratuite jusqu'à 24h avant". Si tu les acceptes, tu auras plus de visibilité mais aussi plus d'annulations de dernière minute. Trouve le juste milieu selon ta stratégie.
@@ -67,10 +67,10 @@ Si tu gères ton calendrier manuellement sur plusieurs plateformes, le risque de
 
 **Les éléments qui font la différence :**
 
-- **Catégorie de bien correcte** : ne te déclare pas en "hôtel" si tu es un appartement — ça fausse les attentes des voyageurs.
+- **Catégorie de bien correcte** : ne te déclare pas en "hôtel" si tu es un appartement, ça fausse les attentes des voyageurs.
 - **Photos de qualité** : au moins 15–20 photos, bien éclairées, qui montrent chaque pièce.
 - **Équipements bien cochés** : Booking filtre beaucoup par équipements (parking, Wi-Fi, cuisine équipée...). Plus tu en coches, plus tu apparais dans les résultats filtrés.
-- **Description précise** : les voyageurs Booking lisent moins que sur Airbnb — sois clair et factuel.
+- **Description précise** : les voyageurs Booking lisent moins que sur Airbnb, sois clair et factuel.
 - **Politique d'annulation adaptée** : commence avec une politique modérée et ajuste selon tes retours.
 
 ---
@@ -89,7 +89,7 @@ La stratégie optimale : **être présent sur les trois** avec un channel manage
 
 ## Ce qu'il faut retenir
 
-- Booking.com prend 15 à 18 % de commission — intègre-le dans tes prix dès le départ.
+- Booking.com prend 15 à 18 % de commission, intègre-le dans tes prix dès le départ.
 - C'est une source de visibilité puissante, surtout pour les voyageurs internationaux et d'affaires.
 - Sans channel manager, le risque de double réservation est trop élevé si tu es sur plusieurs canaux.
 - Complète ton mix de distribution avec Driing pour capter des réservations directes sans commission.

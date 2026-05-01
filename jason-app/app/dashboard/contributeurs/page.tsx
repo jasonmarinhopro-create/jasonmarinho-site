@@ -11,7 +11,7 @@ import Roadmap, { type RoadmapItemData, type RoadmapCommentData } from '@/compon
 import { Heart, ArrowRight, Star, ChatCircle, Rocket, Medal, Lightbulb, CheckCircle, Camera, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic   = 'force-dynamic'
-export const metadata  = { title: 'Contributeurs — Jason Marinho' }
+export const metadata  = { title: 'Contributeurs, Jason Marinho' }
 
 export default async function ContributeursPage() {
   const profile      = await getProfile()
@@ -65,7 +65,7 @@ export default async function ContributeursPage() {
             </a>
 
             <p style={s.teasingNote}>
-              Contribution libre — même 1 € suffit · Accès activé sous 24h
+              Contribution libre, même 1 € suffit · Accès activé sous 24h
             </p>
 
             {/* ── Séparateur ── */}
@@ -87,7 +87,7 @@ export default async function ContributeursPage() {
               </div>
               <p style={s.reviewDesc}>
                 Tu apprécies la plateforme et tu veux soutenir le projet sans sortir ta carte ?
-                Ton avis Google me fait vraiment chaud au cœur — et il aide d'autres hôtes à découvrir la communauté.
+                Ton avis Google me fait vraiment chaud au cœur, et il aide d'autres hôtes à découvrir la communauté.
                 C'est tout aussi précieux qu'une contribution financière.
               </p>
 
@@ -118,7 +118,7 @@ export default async function ContributeursPage() {
               </a>
 
               <p style={s.reviewNote}>
-                Je t'active manuellement en contributeur dès réception — hâte de lire tes retours ! 🚀
+                Je t'active manuellement en contributeur dès réception, hâte de lire tes retours ! 🚀
               </p>
             </div>
           </div>

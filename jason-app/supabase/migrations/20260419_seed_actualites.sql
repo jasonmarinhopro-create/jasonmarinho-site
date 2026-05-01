@@ -59,7 +59,7 @@ INSERT INTO public.actualites (title, summary, source_url, category, published_a
 
 (
   'Micro-BIC 2026 : abattement réduit à 30 % pour les meublés non classés',
-  'Depuis le 1er janvier 2025, les revenus issus de la location de meublés non classés ne bénéficient plus que d''un abattement de 30 % dans le cadre du micro-BIC, contre 50 % auparavant. Le seuil de revenus passe de 77 700 € à 15 000 € par an — un changement qui concerne la plupart des hôtes occasionnels.',
+  'Depuis le 1er janvier 2025, les revenus issus de la location de meublés non classés ne bénéficient plus que d''un abattement de 30 % dans le cadre du micro-BIC, contre 50 % auparavant. Le seuil de revenus passe de 77 700 € à 15 000 € par an, un changement qui concerne la plupart des hôtes occasionnels.',
   'https://www.jedeclaremonmeuble.com/lmnp-2026/',
   'fiscalite',
   '2026-04-05 00:00:00+00',

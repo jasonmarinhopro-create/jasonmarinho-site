@@ -60,7 +60,7 @@ function GroupForm({ initial, existingCategories, onSubmit, onCancel, submitLabe
           <label style={s.label}>
             Catégorie *
             <span style={{ fontWeight: 400, color: 'var(--text-muted)', textTransform: 'none', marginLeft: '6px' }}>
-              (libre — ex: Groupes régionaux, Ski…)
+              (libre, ex: Groupes régionaux, Ski…)
             </span>
           </label>
           <input
@@ -80,7 +80,7 @@ function GroupForm({ initial, existingCategories, onSubmit, onCancel, submitLabe
             Tags / Secteurs
             <span style={{ fontWeight: 400, color: 'var(--text-muted)', textTransform: 'none', marginLeft: '6px' }}>(séparés par virgule)</span>
           </label>
-          <input name="tag" defaultValue={initial?.tag ?? ''} style={s.input} placeholder="Ex: Bretagne, Normandie — ou: Ski, Montagne" />
+          <input name="tag" defaultValue={initial?.tag ?? ''} style={s.input} placeholder="Ex: Bretagne, Normandie, ou: Ski, Montagne" />
         </div>
       </div>
 

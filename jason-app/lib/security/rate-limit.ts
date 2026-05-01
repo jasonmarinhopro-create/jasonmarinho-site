@@ -53,7 +53,7 @@ export function rateLimit(
   return { allowed: true, remaining: max - entry.count, resetAt: entry.resetAt }
 }
 
-/** Extract client IP from the request — best effort behind proxies. */
+/** Extract client IP from the request, best effort behind proxies. */
 export function getClientIp(req: Request | { headers: Headers }): string {
   const h = req.headers
   return (

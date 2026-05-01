@@ -21,7 +21,7 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: 'Mon espace — Jason Marinho',
+  title: 'Mon espace, Jason Marinho',
   description: 'Formations, gabarits et ressources pour développer ton activité de location courte durée.',
   robots: 'noindex, nofollow',
   icons: {

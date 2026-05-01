@@ -19,15 +19,15 @@ Les gabarits de messages règlent ce problème une bonne fois pour toutes.
 
 ## Ce qu'un bon gabarit change concrètement
 
-Un gabarit bien rédigé n'est pas un message robotique. C'est un message **chaleureux, complet et professionnel** — avec des variables clairement indiquées ([Prénom], [Code d'accès], [Heure de check-in]...) que tu remplaces en 30 secondes avant d'envoyer.
+Un gabarit bien rédigé n'est pas un message robotique. C'est un message **chaleureux, complet et professionnel**, avec des variables clairement indiquées ([Prénom], [Code d'accès], [Heure de check-in]...) que tu remplaces en 30 secondes avant d'envoyer.
 
 Le résultat : chaque voyageur reçoit un message qui semble écrit pour lui. Toi, tu ne repars pas de zéro à chaque fois.
 
 Les bénéfices concrets :
-- **Tu gagnes du temps** — 5 minutes par réservation au lieu de 45
-- **Tu nerates rien** — le gabarit check-in contient toujours le code Wi-Fi, l'adresse, les horaires, le numéro d'urgence
-- **La qualité est constante** — même ton meilleur message improvisé n'est pas toujours à la hauteur quand tu es fatigué ou pressé
-- **Tu gères les problèmes sans stress** — avoir un gabarit "Wi-Fi en panne" ou "plainte ménage" sous la main, ça change tout quand ça arrive à 22h
+- **Tu gagnes du temps**, 5 minutes par réservation au lieu de 45
+- **Tu nerates rien**, le gabarit check-in contient toujours le code Wi-Fi, l'adresse, les horaires, le numéro d'urgence
+- **La qualité est constante**, même ton meilleur message improvisé n'est pas toujours à la hauteur quand tu es fatigué ou pressé
+- **Tu gères les problèmes sans stress**, avoir un gabarit "Wi-Fi en panne" ou "plainte ménage" sous la main, ça change tout quand ça arrive à 22h
 
 ---
 
@@ -48,7 +48,7 @@ Envoyé le jour de l'arrivée. Rappels pratiques, recommandations locales, conta
 Rappel des règles de départ, heure limite, procédure. Évite les oublis, les litiges et les mauvaises surprises.
 
 **Demande d'avis** (6 variantes)
-Le timing et la formulation font toute la différence. Calibrés pour maximiser les réponses sans paraître insistant — avec une version J+1, J+3 et une relance douce.
+Le timing et la formulation font toute la différence. Calibrés pour maximiser les réponses sans paraître insistant, avec une version J+1, J+3 et une relance douce.
 
 **Gestion des problèmes** (12+ variantes)
 Wi-Fi en panne, problème de ménage, dégradation, retard, plainte voyageur, demande de compensation... Des réponses professionnelles pour chaque situation difficile.
@@ -59,7 +59,7 @@ Wi-Fi en panne, problème de ménage, dégradation, retard, plainte voyageur, de
 
 Tous les gabarits sont écrits pour fonctionner quelle que soit la plateforme : Airbnb, Booking.com, [Driing](https://www.driing.co) ou réservation directe. Les variables sont clairement indiquées pour une adaptation en moins de 30 secondes.
 
-Ils sont disponibles en **français et en anglais** — utile si tu accueilles des voyageurs internationaux.
+Ils sont disponibles en **français et en anglais**, utile si tu accueilles des voyageurs internationaux.
 
 Si tu utilises un PMS comme Hospitable, Smartbnb ou Smoobu, les gabarits sont optimisés pour être importés directement dans ces outils et être envoyés automatiquement au bon moment.
 
@@ -69,12 +69,12 @@ Si tu utilises un PMS comme Hospitable, Smartbnb ou Smoobu, les gabarits sont op
 
 L'accès aux gabarits est **gratuit**. Il suffit de créer un compte sur la plateforme :
 
-1. [Crée ton compte gratuitement](https://app.jasonmarinho.com/auth/register) — sans carte bancaire
+1. [Crée ton compte gratuitement](https://app.jasonmarinho.com/auth/register), sans carte bancaire
 2. Connecte-toi à ton espace membre
 3. Accède aux gabarits, filtre par catégorie ou situation
 4. Copie, personnalise les variables, envoie
 
-Tous les gabarits ont été rédigés par Jason à partir de ses propres hébergements, puis affinés avec les retours de 250+ hôtes accompagnés. Ce ne sont pas des templates génériques — ce sont des messages qui ont fonctionné sur des séjours réels.
+Tous les gabarits ont été rédigés par Jason à partir de ses propres hébergements, puis affinés avec les retours de 250+ hôtes accompagnés. Ce ne sont pas des templates génériques, ce sont des messages qui ont fonctionné sur des séjours réels.
 
 ---
 
@@ -83,4 +83,4 @@ Tous les gabarits ont été rédigés par Jason à partir de ses propres héberg
 - 45 minutes par jour en messages voyageurs, ça représente plus de 270 heures par an. Les gabarits ramènent ça à 5 minutes.
 - 50+ templates couvrent toutes les situations : du premier message de confirmation à la gestion d'une plainte à 22h.
 - Disponibles en français et en anglais, compatibles Airbnb, Booking, Driing et réservation directe.
-- Accès gratuit depuis la page [Gabarits de messages](/ressources/gabarits-messages) — [crée ton compte](https://app.jasonmarinho.com/auth/register) et récupère tes premières heures cette semaine.
+- Accès gratuit depuis la page [Gabarits de messages](/ressources/gabarits-messages), [crée ton compte](https://app.jasonmarinho.com/auth/register) et récupère tes premières heures cette semaine.

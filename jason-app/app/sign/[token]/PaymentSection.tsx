@@ -113,7 +113,7 @@ function PayButton({ loading, onClick, amount }: { loading: boolean; onClick: ()
     >
       {loading
         ? 'Redirection vers Stripe…'
-        : `Payer la réservation — ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € →`}
+        : `Payer la réservation, ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € →`}
     </button>
   )
 }

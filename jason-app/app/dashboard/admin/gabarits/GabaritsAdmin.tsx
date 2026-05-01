@@ -120,7 +120,7 @@ function TemplateForm({
 
       {/* Contenu FR */}
       <div style={{ ...s.group, marginBottom: '10px' }}>
-        <label style={s.label}>Contenu — Français *</label>
+        <label style={s.label}>Contenu, Français *</label>
         <textarea
           name="content"
           required

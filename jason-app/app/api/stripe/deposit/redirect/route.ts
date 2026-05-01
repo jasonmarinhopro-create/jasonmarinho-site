@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
               currency: 'eur',
               unit_amount: amountCents,
               product_data: {
-                name: `Dépôt de garantie — ${contract.logement_adresse}`,
+                name: `Dépôt de garantie, ${contract.logement_adresse}`,
                 description: `Caution pour le séjour du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}. Cette somme est bloquée sur votre carte mais ne sera prélevée qu'en cas de dommages constatés.`,
               },
             },

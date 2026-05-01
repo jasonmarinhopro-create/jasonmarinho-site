@@ -70,7 +70,7 @@ export async function buildFormationPage({
   if (formationId && profile?.userId) {
     const { allowed } = await checkFormationAccess(supabase, profile.userId, formationId, plan)
     if (!allowed) {
-      // Phase 10 — Preview enrichi : sommaire + social proof + reviews
+      // Phase 10, Preview enrichi : sommaire + social proof + reviews
       const [{ count: enrolledCount }, { count: completedCount }, { data: reviews }] = await Promise.all([
         supabase
           .from('user_formations')
@@ -156,7 +156,7 @@ export async function buildFormationPage({
   // Contenu : DB override statique si présent, sinon fallback statique
   const formationContent = await getFormationDbContent(formationId, staticContent)
 
-  // Phase 4 — Relations : articles blog + formations recommandées
+  // Phase 4, Relations : articles blog + formations recommandées
   const relations = getFormationRelations(slug)
 
   // Pour les formations recommandées, on récupère leur titre depuis la DB
@@ -174,7 +174,7 @@ export async function buildFormationPage({
       .map(r => ({ slug: r.slug, title: titleBySlug[r.slug], reason: r.reason }))
   }
 
-  // Phase 5 — JSON-LD Course schema
+  // Phase 5, JSON-LD Course schema
   const courseJsonLd = buildCourseSchema({
     slug,
     title: formationContent.title,

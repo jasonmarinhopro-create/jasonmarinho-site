@@ -11,7 +11,7 @@ description: "Comment maintenir un taux d'occupation correct en basse saison : t
 
 La basse saison, c'est le vrai test pour un hôte LCD. En juillet-août, n'importe quel logement bien placé se loue. En janvier ou en novembre, c'est une autre histoire. Pourtant, certains hôtes maintiennent un taux d'occupation de 70 % ou plus toute l'année. Comment font-ils ?
 
-Voici 7 stratégies éprouvées — classées par facilité de mise en place — pour remplir ton calendrier même en période creuse.
+Voici 7 stratégies éprouvées, classées par facilité de mise en place, pour remplir ton calendrier même en période creuse.
 
 ---
 
@@ -35,7 +35,7 @@ Les voyageurs de loisirs partent en basse saison, mais les voyageurs d'affaires,
 **Comment les attirer :**
 - Mets en avant le bureau ou l'espace de travail dans tes photos et ta description
 - Mentionne explicitement le Wi-Fi haut débit avec le débit réel (ex : "fibre 500 Mbps")
-- Propose une option check-in tôt / check-out tardif — les pros apprécient la flexibilité
+- Propose une option check-in tôt / check-out tardif, les pros apprécient la flexibilité
 - Configure Booking.com Business : un programme dédié aux voyageurs professionnels avec une visibilité accrue sur ce segment
 - Inscris ton logement sur des plateformes spécialisées B2B comme Homelike ou Kora
 
@@ -48,13 +48,13 @@ La basse saison ne signifie pas nécessairement baisser ton prix de façon unifo
 **Ce qu'il faut faire :**
 - Utilise un outil de tarification dynamique (Pricelabs, Wheelhouse, Beyond) qui ajuste tes prix automatiquement selon l'offre et la demande locales
 - Ne baisse pas en dessous de ton prix minimum calculé (voir notre article sur [comment fixer son prix minimum](/blog/fixer-prix-minimum-airbnb-lcd))
-- Propose des réductions pour les séjours longs (7 nuits, 28 nuits) — ça attire les télétravailleurs et les personnes en déplacement professionnel prolongé
+- Propose des réductions pour les séjours longs (7 nuits, 28 nuits), ça attire les télétravailleurs et les personnes en déplacement professionnel prolongé
 
 ---
 
 ## 4. Active les séjours de moyenne durée (1 à 3 mois)
 
-La "medium-term rental" est l'un des segments qui a le plus explosé depuis le télétravail. Des professionnels, des expatriés en mission, des étudiants en stage cherchent des logements pour 4 à 12 semaines — meublés, tout compris, sans les contraintes d'un bail classique.
+La "medium-term rental" est l'un des segments qui a le plus explosé depuis le télétravail. Des professionnels, des expatriés en mission, des étudiants en stage cherchent des logements pour 4 à 12 semaines, meublés, tout compris, sans les contraintes d'un bail classique.
 
 **Comment te positionner :**
 - Propose un tarif mensuel réduit (souvent 20–30 % de remise sur le tarif nuitée)
@@ -71,7 +71,7 @@ Si tu n'es que sur Airbnb, tu passes à côté d'une partie du marché. En basse
 **Les canaux à activer en priorité :**
 - **Booking.com** : clientèle internationale et d'affaires, forte visibilité en hiver
 - **Vrbo / Abritel** : très fort sur les familles et les séjours plus longs
-- **[Driing](https://www.driing.co)** : réservations directes sans commission — idéal pour les voyageurs qui reviennent ou qui te connaissent via tes autres canaux. Chaque réservation via Driing est une réservation à 100 % pour toi, sans frais de plateforme
+- **[Driing](https://www.driing.co)** : réservations directes sans commission, idéal pour les voyageurs qui reviennent ou qui te connaissent via tes autres canaux. Chaque réservation via Driing est une réservation à 100 % pour toi, sans frais de plateforme
 
 Un channel manager (Smoobu, Hostaway...) synchronise tout automatiquement pour éviter les doubles réservations.
 
@@ -79,7 +79,7 @@ Un channel manager (Smoobu, Hostaway...) synchronise tout automatiquement pour �
 
 ## 6. Travaille ton référencement local
 
-En haute saison, les plateformes font le travail. En basse saison, les voyageurs cherchent plus activement — et parfois directement sur Google. C'est là que ton référencement local peut faire la différence.
+En haute saison, les plateformes font le travail. En basse saison, les voyageurs cherchent plus activement, et parfois directement sur Google. C'est là que ton référencement local peut faire la différence.
 
 **Ce qu'il faut faire :**
 - Optimise ta fiche Google My Business (voir notre formation [Google My Business pour la LCD](/formations))
@@ -90,12 +90,12 @@ En haute saison, les plateformes font le travail. En basse saison, les voyageurs
 
 ## 7. Construis une base de voyageurs fidèles
 
-Un voyageur qui a passé un excellent séjour chez toi peut revenir — et même te recommander à son entourage. En basse saison, ces réservations directes sont particulièrement précieuses car elles n'engendrent aucun frais de plateforme.
+Un voyageur qui a passé un excellent séjour chez toi peut revenir, et même te recommander à son entourage. En basse saison, ces réservations directes sont particulièrement précieuses car elles n'engendrent aucun frais de plateforme.
 
 **Comment fidéliser :**
 - Envoie un message de suivi quelques semaines après le séjour (possible via Airbnb ou directement par email si tu as le contact)
 - Propose un code promo pour une prochaine réservation directe via [Driing](https://www.driing.co)
-- Crée une newsletter légère pour tes anciens voyageurs — une fois par trimestre suffit — avec des offres basse saison
+- Crée une newsletter légère pour tes anciens voyageurs, une fois par trimestre suffit, avec des offres basse saison
 
 Un voyageur fidèle vaut bien plus qu'un nouveau voyageur à acquérir : il n'y a pas de commission, pas de frais d'acquisition, et il laisse souvent de meilleurs avis.
 
@@ -104,7 +104,7 @@ Un voyageur fidèle vaut bien plus qu'un nouveau voyageur à acquérir : il n'y 
 ## Ce qu'il faut retenir
 
 - Adapte ton séjour minimum à la saison : descendre à 1 nuit en basse saison peut tout changer.
-- La clientèle d'affaires voyage toute l'année — configure-toi pour l'accueillir.
+- La clientèle d'affaires voyage toute l'année, configure-toi pour l'accueillir.
 - La tarification dynamique est indispensable pour coller à la demande réelle, même en période creuse.
 - Multiplie tes canaux de distribution avec un channel manager : Airbnb, Booking, Driing et au moins un canal spécialisé.
 - Fidélise tes anciens voyageurs pour générer des réservations directes sans frais en basse saison.

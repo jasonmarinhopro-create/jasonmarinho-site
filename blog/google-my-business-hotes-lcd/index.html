@@ -377,7 +377,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <h2 class="art-h2">Qu’est-ce que Google My Business ?</h2>
 <p class="art-p">GMB (rebaptisé Google Business Profile) est le profil qui apparaît dans Google Maps et dans les résultats de recherche locaux. Il affiche ton logement, tes photos, ton numéro de téléphone, ton site web et les avis de tes voyageurs.</p>
 <h2 class="art-h2">Comment créer ta fiche en 10 minutes</h2>
-<ul class="art-ul"><li>Va sur business.google.com et clique sur « Gérer maintenant »</li><li>Entre le nom de ton logement (ex : « Appartement Jason — Centre de Lyon »)</li><li>Sélectionne la catégorie « Location de vacances »</li><li>Ajoute l’adresse exacte (tu peux masquer l’adresse précise pour ta vie privée)</li><li>Valide par courrier ou téléphone</li><li>Complète toutes les sections : photos, description, horaires, site web</li></ul>
+<ul class="art-ul"><li>Va sur business.google.com et clique sur « Gérer maintenant »</li><li>Entre le nom de ton logement (ex : « Appartement Jason, Centre de Lyon »)</li><li>Sélectionne la catégorie « Location de vacances »</li><li>Ajoute l’adresse exacte (tu peux masquer l’adresse précise pour ta vie privée)</li><li>Valide par courrier ou téléphone</li><li>Complète toutes les sections : photos, description, horaires, site web</li></ul>
 <h2 class="art-h2">Les photos : la clé du référencement local</h2>
 <p class="art-p">Les fiches GMB avec plus de 20 photos reçoivent 35 % plus de clics. Ajoute tes meilleures photos Airbnb, des photos de quartier et des photos des points d’intérêt proches.</p>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Utilise la fonctionnalité « Publications » de GMB comme un mini-réseau social : poste des photos saisonnières, des offres spéciales ou des événements locaux. C’est gratuit et ça améliore ton référencement.</span></div>
@@ -439,14 +439,14 @@ function subscriberBrevo(e) {
       msg.style.display = 'block';
       document.getElementById('brevo-email').value = '';
     } else {
-      msg.textContent = 'Déjà inscrit ou erreur — réessaie.';
+      msg.textContent = 'Déjà inscrit ou erreur, réessaie.';
       msg.style.color = 'rgba(255,255,255,.6)';
       msg.style.display = 'block';
     }
     btn.textContent = "S'inscrire";
     btn.disabled = false;
   }).catch(function() {
-    msg.textContent = 'Erreur réseau — réessaie.';
+    msg.textContent = 'Erreur réseau, réessaie.';
     msg.style.color = 'rgba(255,255,255,.6)';
     msg.style.display = 'block';
     btn.textContent = "S'inscrire";

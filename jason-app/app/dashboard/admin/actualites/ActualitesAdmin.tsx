@@ -80,7 +80,7 @@ function ActualiteForm({
           name="title" required
           defaultValue={defaultValues?.title ?? ''}
           style={s.input}
-          placeholder="Ex: Loi Le Meur 2025 — Ce qui change pour les hôtes"
+          placeholder="Ex: Loi Le Meur 2025, Ce qui change pour les hôtes"
         />
       </div>
 

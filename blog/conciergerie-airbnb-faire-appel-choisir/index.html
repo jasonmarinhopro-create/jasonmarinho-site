@@ -75,7 +75,7 @@
 </ul>
 <h2 class="art-h2">Quand faire appel à une conciergerie est rentable ?</h2>
 <p class="art-p">Faire appel à une conciergerie est rentable quand <strong>le coût de ton temps dépasse ce que tu paies</strong>.</p>
-<p class="art-p">Si tu passes 3h par semaine à gérer ton logement et que ton taux horaire professionnel est de 50 €, ça représente 600 € par mois de temps valorisé. Si la conciergerie coûte 360 €, tu es gagnant — même sans compter le stress évité.</p>
+<p class="art-p">Si tu passes 3h par semaine à gérer ton logement et que ton taux horaire professionnel est de 50 €, ça représente 600 € par mois de temps valorisé. Si la conciergerie coûte 360 €, tu es gagnant, même sans compter le stress évité.</p>
 <p class="art-p">C'est aussi pertinent si :</p>
 <ul class="art-ul">
 <li>Tu habites loin de ton logement (impossibilité de gérer les urgences)</li>
@@ -85,7 +85,7 @@
 </ul>
 <h2 class="art-h2">Comment bien choisir sa conciergerie</h2>
 <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:24px 0 10px;letter-spacing:-.2px">1. Vérifie les avis d'autres propriétaires (pas des voyageurs)</h3>
-<p class="art-p">Les avis Google d'une conciergerie sont souvent laissés par des voyageurs — pas par des propriétaires. Cherche des témoignages de propriétaires sur des forums LCD France, des groupes Facebook, ou demande directement des références.</p>
+<p class="art-p">Les avis Google d'une conciergerie sont souvent laissés par des voyageurs, pas par des propriétaires. Cherche des témoignages de propriétaires sur des forums LCD France, des groupes Facebook, ou demande directement des références.</p>
 <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:24px 0 10px;letter-spacing:-.2px">2. Demande un contrat détaillé</h3>
 <p class="art-p">Avant de signer, assure-toi que le contrat précise :</p>
 <ul class="art-ul">
@@ -114,7 +114,7 @@
 <li><strong>Déléguer uniquement le check-in</strong> : utile si les arrivées tardives sont ton principal problème</li>
 <li><strong>Automatiser avec un PMS</strong> : Smoobu, Hostaway ou Beds24 peuvent remplacer 70 % du travail de gestion sans commission</li>
 </ul>
-<p class="art-p">La conciergerie complète est la solution maximale — mais elle n'est pas toujours nécessaire. Évalue précisément quelle partie de la gestion te coûte le plus de temps et d'énergie avant de décider.</p>
+<p class="art-p">La conciergerie complète est la solution maximale, mais elle n'est pas toujours nécessaire. Évalue précisément quelle partie de la gestion te coûte le plus de temps et d'énergie avant de décider.</p>
 <h2 class="art-h2">Ce qu'il faut retenir</h2>
 <ul class="art-ul">
 <li>Une conciergerie prend en charge tout ou partie de ta gestion LCD en échange d'une commission de 15 à 30 %.</li>
@@ -151,7 +151,7 @@
 <script src="/footer.js"></script>
 <script>
 const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
-function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='✓ Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value=''}else{msg.textContent='Déjà inscrit ou erreur — réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block'}btn.textContent="S'inscrire";btn.disabled=false}).catch(function(){msg.textContent='Erreur réseau — réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false})}
+function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='✓ Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value=''}else{msg.textContent='Déjà inscrit ou erreur, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block'}btn.textContent="S'inscrire";btn.disabled=false}).catch(function(){msg.textContent='Erreur réseau, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false})}
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
 document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
 </script>

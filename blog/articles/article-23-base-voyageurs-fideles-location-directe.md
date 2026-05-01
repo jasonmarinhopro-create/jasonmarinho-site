@@ -9,7 +9,7 @@ description: "Un voyageur fidèle vaut dix voyageurs de passage. Comment constru
 
 # Construire une base de voyageurs fidèles : la clé de la location directe durable
 
-Les plateformes comme Airbnb et Booking ont un modèle très simple : chaque voyageur est un nouveau client à acquérir, et elles facturent pour ça. Toi, tu paies une commission à chaque réservation — même si le voyageur était déjà venu chez toi l'année dernière.
+Les plateformes comme Airbnb et Booking ont un modèle très simple : chaque voyageur est un nouveau client à acquérir, et elles facturent pour ça. Toi, tu paies une commission à chaque réservation, même si le voyageur était déjà venu chez toi l'année dernière.
 
 C'est absurde. Et pourtant, la majorité des hôtes l'acceptent sans questionner.
 
@@ -39,13 +39,13 @@ C'est la base. Sans adresse email ou numéro de téléphone, impossible de maint
 - **Via le livret d'accueil digital** : inclus un formulaire d'inscription à ta newsletter ou à ton programme de fidélité. Simple, non intrusif.
 - **Via un QR code dans le logement** : renvoie vers une page d'inscription à tes offres exclusives.
 - **Via un message de fin de séjour** : *"Si tu veux être informé de mes disponibilités et bénéficier d'un tarif fidélité, laisse-moi ton email."*
-- **Via Driing** : sur [Driing](https://www.driing.co), la communication directe est possible dès le premier échange — tu as accès à un canal direct avec le voyageur sans passer par une messagerie de plateforme fermée.
+- **Via Driing** : sur [Driing](https://www.driing.co), la communication directe est possible dès le premier échange, tu as accès à un canal direct avec le voyageur sans passer par une messagerie de plateforme fermée.
 
 **Important :** respecte le RGPD. Ne collecte que les emails des voyageurs qui ont explicitement accepté d'être contactés. Un simple opt-in suffit.
 
 ---
 
-## Étape 2 : Le message de fin de séjour — l'étape clé
+## Étape 2 : Le message de fin de séjour, l'étape clé
 
 La plupart des hôtes envoient un message de check-out standard et passent à la réservation suivante. C'est une opportunité manquée.
 
@@ -55,7 +55,7 @@ Le message de fin de séjour est le moment idéal pour :
 3. Proposer de garder le contact pour un futur séjour direct
 
 **Exemple de message :**
-> *"Merci [Prénom] d'avoir séjourné chez moi, j'espère que tout s'est passé comme vous le souhaitiez ! Si jamais tu reviens dans la région ou si tu connais quelqu'un qui cherche un logement, n'hésite pas à me contacter directement — je propose un tarif fidélité pour les réservations sans plateforme. Tu trouveras mon annonce directe ici : [lien Driing]. À bientôt !"*
+> *"Merci [Prénom] d'avoir séjourné chez moi, j'espère que tout s'est passé comme vous le souhaitiez ! Si jamais tu reviens dans la région ou si tu connais quelqu'un qui cherche un logement, n'hésite pas à me contacter directement, je propose un tarif fidélité pour les réservations sans plateforme. Tu trouveras mon annonce directe ici : [lien Driing]. À bientôt !"*
 
 Court, sincère, sans pression. Et pourtant, c'est ce message qui génère des réservations directes 6 mois ou un an plus tard.
 
@@ -88,7 +88,7 @@ Une newsletter ne signifie pas envoyer des emails tous les jours. Pour un hôte 
 - Une nouveauté dans ton logement (rénovation, nouvelle déco, nouvel équipement)
 - Un bon plan local (événement, festival, nouveau restaurant)
 
-Le ton doit être personnel et chaleureux, pas commercial. Tu n'es pas une agence de voyages — tu es un hôte qui entretient une relation avec des personnes qu'il a accueillies.
+Le ton doit être personnel et chaleureux, pas commercial. Tu n'es pas une agence de voyages, tu es un hôte qui entretient une relation avec des personnes qu'il a accueillies.
 
 Des outils simples comme Mailchimp (gratuit jusqu'à 500 contacts) ou Brevo permettent d'envoyer ces emails facilement, avec un lien de désabonnement conforme au RGPD.
 

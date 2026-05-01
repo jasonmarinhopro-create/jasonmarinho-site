@@ -31,7 +31,7 @@ type ContractRow = {
   checklist_status: Record<string, boolean> | null
 }
 
-// Service role — bypass RLS complet (lecture + écriture)
+// Service role, bypass RLS complet (lecture + écriture)
 // Nécessaire car le locataire signe sans session authentifiée
 function createServiceClient() {
   return createClient(
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
     const today = now.split('T')[0]
 
     // Merge checklist : marque "contrat_signe" comme fait (et "contrat_envoye"
-    // si pas déjà fait — au cas où le contrat aurait été créé sans email).
+    // si pas déjà fait, au cas où le contrat aurait été créé sans email).
     const mergedChecklist = {
       ...(contract.checklist_status ?? {}),
       contrat_envoye: true,
@@ -200,7 +200,7 @@ export async function POST(request: NextRequest) {
         .eq('id', contract.sejour_id)
 
       if (sejourError) {
-        // Non bloquant — la signature a réussi, on log juste l'erreur
+        // Non bloquant, la signature a réussi, on log juste l'erreur
         log.warn('sejourSync', { err: sejourError })
       }
     }
@@ -258,8 +258,8 @@ export async function POST(request: NextRequest) {
     const stripeBlock = (hasPayment || hasCaution) ? `
       <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #FFD56B;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
         <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">FINALISER LE DOSSIER</p>
-        ${hasPayment ? `<a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:#FFD56B;color:#0a0f0d;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Payer la réservation — ${loyerFormatted} €</a>` : ''}
-        ${hasCaution ? `<a href="${depositRedirectUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1a3328;color:#e8ede8;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Régler la caution — ${cautionFormatted} €</a>` : ''}
+        ${hasPayment ? `<a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:#FFD56B;color:#0a0f0d;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Payer la réservation, ${loyerFormatted} €</a>` : ''}
+        ${hasCaution ? `<a href="${depositRedirectUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1a3328;color:#e8ede8;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Régler la caution, ${cautionFormatted} €</a>` : ''}
         ${hasCaution ? `<p style="margin:10px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">La caution est bloquée sur votre carte et libérée après votre séjour si aucun dommage n'est constaté.</p>` : ''}
       </div>` : ''
 
@@ -313,7 +313,7 @@ export async function POST(request: NextRequest) {
       await getResend().emails.send({
         from: FROM_EMAIL,
         to: contract.locataire_email,
-        subject: `Contrat signé — finalisez votre dossier pour ${propertyLabel}`,
+        subject: `Contrat signé, finalisez votre dossier pour ${propertyLabel}`,
         html: guestEmailHtml,
       }).catch(e => log.warn('guestEmail', { err: String(e) }))
     }
@@ -321,7 +321,7 @@ export async function POST(request: NextRequest) {
     await getResend().emails.send({
       from: FROM_EMAIL,
       to: contract.bailleur_email,
-      subject: `${guestName} a signé le contrat — ${propertyLabel}`,
+      subject: `${guestName} a signé le contrat, ${propertyLabel}`,
       html: hostEmailHtml,
     }).catch(e => log.warn('hostEmail', { err: String(e) }))
 

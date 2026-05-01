@@ -45,7 +45,7 @@ export const QUESTIONS: Question[] = [
     id: 'category_main',
     pillar: 'identite',
     label: 'Quelle est ta catégorie principale sur Google Business Profile ?',
-    help: 'Tu la trouves en haut de ta fiche dans la console GBP. Choisis celle qui correspond exactement à ton activité — c\'est le critère le plus fort pour apparaître dans les bonnes recherches.',
+    help: 'Tu la trouves en haut de ta fiche dans la console GBP. Choisis celle qui correspond exactement à ton activité, c\'est le critère le plus fort pour apparaître dans les bonnes recherches.',
     type: 'choice',
     weight: 5,
     maxScore: 5,
@@ -83,7 +83,7 @@ export const QUESTIONS: Question[] = [
     id: 'description_filled',
     pillar: 'identite',
     label: 'Ta description fait-elle au moins 500 caractères et inclut-elle 3 mots-clés (ville, type de bien, équipements) ?',
-    help: 'La description GBP fait jusqu\'à 750 caractères. C\'est ton seul espace texte libre — chaque mot-clé compte pour le référencement local.',
+    help: 'La description GBP fait jusqu\'à 750 caractères. C\'est ton seul espace texte libre, chaque mot-clé compte pour le référencement local.',
     type: 'boolean',
     weight: 4,
     maxScore: 4,
@@ -107,7 +107,7 @@ export const QUESTIONS: Question[] = [
     type: 'boolean',
     weight: 3,
     maxScore: 3,
-    actionIfMissing: 'Ajoute un téléphone et un lien web. Si tu n\'as pas de site, mets ta page Driing, ton lien Airbnb personnel ou ta page Facebook — le voyageur a besoin d\'un point de contact pour passer à l\'action.',
+    actionIfMissing: 'Ajoute un téléphone et un lien web. Si tu n\'as pas de site, mets ta page Driing, ton lien Airbnb personnel ou ta page Facebook, le voyageur a besoin d\'un point de contact pour passer à l\'action.',
   },
 
   // ─── PILIER 2 : PHOTOS ───
@@ -142,7 +142,7 @@ export const QUESTIONS: Question[] = [
     type: 'boolean',
     weight: 2,
     maxScore: 2,
-    actionIfMissing: 'Ajoute un logo carré (256×256px min) — soit ton logo si tu en as un, soit une photo représentative cohérente avec ton branding.',
+    actionIfMissing: 'Ajoute un logo carré (256×256px min), soit ton logo si tu en as un, soit une photo représentative cohérente avec ton branding.',
   },
   {
     id: 'photos_freshness',
@@ -158,7 +158,7 @@ export const QUESTIONS: Question[] = [
       { value: 'over_90',  label: 'Il y a plus de 3 mois',            score: 1 },
       { value: 'never',    label: 'Jamais ou je ne sais pas',         score: 0 },
     ],
-    actionIfMissing: 'Publie au moins 1 nouvelle photo par mois — Google booste les fiches actives. Profite des saisons pour varier (jardin l\'été, feu de cheminée l\'hiver).',
+    actionIfMissing: 'Publie au moins 1 nouvelle photo par mois, Google booste les fiches actives. Profite des saisons pour varier (jardin l\'été, feu de cheminée l\'hiver).',
   },
   {
     id: 'photos_renamed',
@@ -264,7 +264,7 @@ export const QUESTIONS: Question[] = [
     type: 'boolean',
     weight: 3,
     maxScore: 3,
-    actionIfMissing: 'Les posts expirent visuellement après 7 jours. Programme un rappel mensuel pour publier — sinon ta fiche paraît inactive.',
+    actionIfMissing: 'Les posts expirent visuellement après 7 jours. Programme un rappel mensuel pour publier, sinon ta fiche paraît inactive.',
   },
 
   // ─── PILIER 5 : Q&A ───
@@ -297,7 +297,7 @@ export const QUESTIONS: Question[] = [
       { value: 'inactive',label: 'Activée mais je ne regarde pas', score: 1 },
       { value: 'off',     label: 'Désactivée',                  score: 0 },
     ],
-    actionIfMissing: 'Active la messagerie et configure les notifs sur ton téléphone. Google pénalise les fiches qui ne répondent pas en moins de 24h — ou désactive complètement si tu ne peux pas suivre.',
+    actionIfMissing: 'Active la messagerie et configure les notifs sur ton téléphone. Google pénalise les fiches qui ne répondent pas en moins de 24h, ou désactive complètement si tu ne peux pas suivre.',
   },
 
   // ─── PILIER 6 : ATTRIBUTS ───

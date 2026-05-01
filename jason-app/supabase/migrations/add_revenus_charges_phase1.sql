@@ -1,4 +1,4 @@
--- Phase 1 — Module charges & dépenses pour Revenus
+-- Phase 1, Module charges & dépenses pour Revenus
 -- Permet de tracker toutes les charges déductibles ou non d'un hôte LCD
 -- (ménage, énergie, plateformes, taxe foncière, assurance, travaux, etc.)
 -- Indispensable pour calculer le bénéfice net et choisir entre micro-BIC et réel.
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS revenus_charges (
   description   TEXT          DEFAULT NULL,
   deductible    BOOLEAN       DEFAULT TRUE,
 
-  -- Récurrence (préparation Phase 4b — pas implémenté tout de suite)
+  -- Récurrence (préparation Phase 4b, pas implémenté tout de suite)
   recurrente    BOOLEAN       DEFAULT FALSE,
 
   -- Audit

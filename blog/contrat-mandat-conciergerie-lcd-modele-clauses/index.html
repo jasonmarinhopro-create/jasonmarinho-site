@@ -235,7 +235,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Précise comment ta rémunération est calculée, quand elle est facturée, et comment elle est encaissée.</p>
 <ul class="art-ul"><li>Pourcentage exact (ex. 22 % du CA TTC voyageur)</li><li>Base de calcul : CA TTC encaissé (avant ou après commission plateforme)</li><li>Mode d'encaissement : prélèvement direct sur le compte voyageur via plateforme, ou facturation mensuelle au propriétaire</li><li>TVA : préciser si le pourcentage est TTC (intègre la TVA) ou HT (TVA en plus)</li><li>Frais ménage : facturés au voyageur séparément ou inclus dans ta commission (à définir)</li><li>Date de paiement : J+5 du mois suivant, par virement automatique</li></ul>
 <h2 class="art-h2">3. Clauses 3-4 : Durée et fin du mandat</h2>
-<p class="art-p">Ces 2 clauses cadrent la sortie du contrat — souvent le moment le plus tendu.</p>
+<p class="art-p">Ces 2 clauses cadrent la sortie du contrat, souvent le moment le plus tendu.</p>
 <ul class="art-ul"><li>Clause 3 - Durée : engagement minimum (3-12 mois) puis tacite reconduction. Préavis de résiliation 1-3 mois selon le contrat</li><li>Clause 4 - Fin de mandat : restitution des accès (compte Airbnb, codes, clés), traitement des réservations en cours (qui assure le check-out ?), bilan financier, photos du logement à la sortie pour preuve d'état</li><li>Clause 5 - Litiges : médiation amiable avant procédure judiciaire. Tribunal compétent (généralement celui du siège de la conciergerie)</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Inclus une clause de "non-débauchage" : le propriétaire ne peut pas embaucher tes salariés ménage ou ton équipe pendant 6-12 mois après la fin du mandat. Sinon, certains propriétaires apprennent ton organisation puis te remplacent par tes propres employés.</span></div>
 <h2 class="art-h2">4. Clauses 6-8 : Responsabilités et propriété</h2>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

@@ -15,11 +15,11 @@ La réservation directe, c'est le moyen de récupérer cette marge tout en garda
 
 ---
 
-## Option 1 : Driing — la solution la plus rapide à mettre en place
+## Option 1 : Driing, la solution la plus rapide à mettre en place
 
 Si tu veux commencer à recevoir des réservations directes sans créer un site de zéro, **[Driing](https://www.driing.co)** est la solution la plus immédiate.
 
-Tu crées une annonce sur Driing comme tu le ferais sur Airbnb : photos, description, prix, disponibilités. Les voyageurs peuvent te contacter directement, réserver sans intermédiaire, et tu encaisses 100 % du montant — sans frais de commission.
+Tu crées une annonce sur Driing comme tu le ferais sur Airbnb : photos, description, prix, disponibilités. Les voyageurs peuvent te contacter directement, réserver sans intermédiaire, et tu encaisses 100 % du montant, sans frais de commission.
 
 **Ce que ça inclut :**
 - Annonce vérifiée et mise en ligne sur la plateforme
@@ -33,7 +33,7 @@ Tu crées une annonce sur Driing comme tu le ferais sur Airbnb : photos, descrip
 
 ## Option 2 : Un site avec moteur de réservation intégré (Lodgify, Hostfully, Hospitable)
 
-Si tu veux un site à ton nom — avec ton URL, ta marque, ton identité — plusieurs outils permettent de créer un site de réservation en quelques heures, sans coder.
+Si tu veux un site à ton nom, avec ton URL, ta marque, ton identité, plusieurs outils permettent de créer un site de réservation en quelques heures, sans coder.
 
 ### Lodgify ⭐ Recommandé pour débuter
 Lodgify est l'un des plus accessibles. Tu choisis un template, tu personnalises les couleurs et les textes, tu ajoutes tes photos et ton calendrier. Le site inclut un moteur de réservation avec paiement en ligne.
@@ -59,7 +59,7 @@ Hospitable propose maintenant un site de réservation directe en plus de son out
 Si tu n'as pas besoin d'un système de réservation en ligne automatisé, une simple landing page peut suffire. Elle présente ton logement, ses points forts, et invite les voyageurs à te contacter directement par email ou téléphone.
 
 **Avantage :** gratuit ou presque (Carrd, Notion, Google Sites...).
-**Inconvénient :** le voyageur doit te contacter puis attendre ta réponse — moins fluide qu'une réservation instantanée.
+**Inconvénient :** le voyageur doit te contacter puis attendre ta réponse, moins fluide qu'une réservation instantanée.
 
 Cette option convient bien si tu combines avec Driing : la landing page pour te présenter, Driing pour la réservation sans commission.
 
@@ -79,15 +79,15 @@ Si tu veux un contrôle total et que tu es à l'aise avec les CMS, WordPress ave
 
 Que tu choisisse Driing, Lodgify ou une landing page, certains éléments sont non négociables pour convertir un visiteur en réservation :
 
-**1. Des photos de qualité** — encore plus importantes que sur Airbnb, car il n'y a pas d'algorithme pour compenser.
+**1. Des photos de qualité**, encore plus importantes que sur Airbnb, car il n'y a pas d'algorithme pour compenser.
 
-**2. Un prix visible et compétitif** — le voyageur doit comprendre immédiatement qu'il économise par rapport à Airbnb ou Booking.
+**2. Un prix visible et compétitif**, le voyageur doit comprendre immédiatement qu'il économise par rapport à Airbnb ou Booking.
 
-**3. La preuve sociale** — tes avis Airbnb, des témoignages, le nombre de séjours... Ça rassure un voyageur qui te découvre sans passer par une plateforme connue.
+**3. La preuve sociale**, tes avis Airbnb, des témoignages, le nombre de séjours... Ça rassure un voyageur qui te découvre sans passer par une plateforme connue.
 
-**4. Un processus de réservation simple** — le moins d'étapes possible entre "j'ai envie de réserver" et "c'est confirmé".
+**4. Un processus de réservation simple**, le moins d'étapes possible entre "j'ai envie de réserver" et "c'est confirmé".
 
-**5. Une politique d'annulation claire** — sans la protection d'une grande plateforme, le voyageur a besoin d'être rassuré sur ce qui se passe si son voyage tombe à l'eau.
+**5. Une politique d'annulation claire**, sans la protection d'une grande plateforme, le voyageur a besoin d'être rassuré sur ce qui se passe si son voyage tombe à l'eau.
 
 ---
 
@@ -124,4 +124,4 @@ Et c'est sans compter que les voyageurs directs reviennent plus souvent, recomma
 - Si tu veux ton propre site à ta marque, Lodgify est la solution la plus accessible.
 - Un site sans trafic ne sert à rien : Google My Business, réseaux sociaux et email post-séjour sont tes principaux leviers d'acquisition.
 - Même 20–30 % de réservations directes représentent plusieurs centaines d'euros économisés par an.
-- La réservation directe ne remplace pas les plateformes — elle les complète et réduit ta dépendance à elles.
+- La réservation directe ne remplace pas les plateformes, elle les complète et réduit ta dépendance à elles.

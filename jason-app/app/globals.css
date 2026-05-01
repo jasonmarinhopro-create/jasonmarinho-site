@@ -52,7 +52,7 @@
   --nav-active-color: #63D683;
   --nav-admin-color: rgba(99,214,131,0.55);
 
-  /* Accent text — yellow on dark, forest green on light */
+  /* Accent text, yellow on dark, forest green on light */
   --accent-text: #FFD56B;
 
   /* Accent tinted backgrounds (yellow-tinted on dark) */
@@ -94,7 +94,7 @@
   --nav-active-color: #005A4A;
   --nav-admin-color: rgba(0,76,63,0.65);
 
-  /* Accent text — forest green on light bg */
+  /* Accent text, forest green on light bg */
   --accent-text: #004C3F;
 
   /* Accent tinted backgrounds (green-tinted on light) */
@@ -110,7 +110,7 @@
   --autofill-bg:  #ffffff;
   --autofill-text: #0B1D0F;
 
-  /* Status — more saturated on light bg */
+  /* Status, more saturated on light bg */
   --success:      #059669;
   --error:        #DC2626;
 }
@@ -220,7 +220,7 @@ em { font-style: italic; color: var(--accent); }
 
 /* ── GLOBAL FORM ELEMENTS COLOR SCHEME (cross-browser / Windows fix) ── */
 /* Without this, Windows browsers render inputs with system light colors  */
-/* even when the app is in dark mode — causing white text on white bg.   */
+/* even when the app is in dark mode, causing white text on white bg.   */
 [data-theme="dark"] input,
 [data-theme="dark"] select,
 [data-theme="dark"] textarea { color-scheme: dark; }
@@ -371,7 +371,7 @@ a { color: inherit; }
 
 /* ── PAGE-SPECIFIC RESPONSIVE GRIDS ── */
 
-/* Sécurité — search + tips side by side, stack on mobile */
+/* Sécurité, search + tips side by side, stack on mobile */
 .sec-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
@@ -382,7 +382,7 @@ a { color: inherit; }
   .sec-grid { grid-template-columns: 1fr !important; }
 }
 
-/* Abonnement — plan card + plans list, stack on mobile */
+/* Abonnement, plan card + plans list, stack on mobile */
 .abo-grid {
   display: grid;
   grid-template-columns: minmax(280px, 380px) 1fr;
@@ -393,13 +393,13 @@ a { color: inherit; }
   .abo-grid { grid-template-columns: 1fr !important; }
 }
 
-/* Sécurité — search input row: stack vertically on very small screens */
+/* Sécurité, search input row: stack vertically on very small screens */
 @media (max-width: 480px) {
   .sec-input-row { flex-direction: column !important; align-items: stretch !important; }
   .sec-input-row .btn-primary { justify-content: center; }
 }
 
-/* Abonnement — plan features grid wraps on mobile */
+/* Abonnement, plan features grid wraps on mobile */
 @media (max-width: 640px) {
   .abo-perks { flex-direction: column !important; }
 }
@@ -414,7 +414,7 @@ a { color: inherit; }
   .driing-services-grid { grid-template-columns: 1fr !important; }
 }
 
-/* Profile name in header — hide on very small screens */
+/* Profile name in header, hide on very small screens */
 @media (max-width: 480px) {
   .dash-profile-name { display: none !important; }
 }
@@ -452,7 +452,7 @@ a { color: inherit; }
   height: 100vh;
   height: -webkit-fill-available;
   height: 100dvh;
-  /* Force un nouveau layer GPU — corrige les bugs de scroll/overflow iOS */
+  /* Force un nouveau layer GPU, corrige les bugs de scroll/overflow iOS */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
@@ -469,10 +469,10 @@ a { color: inherit; }
 .dash-menu-btn { display: none; }
 .dash-close-btn { display: none; }
 
-/* Hide Header's mobile Sidebar on desktop — layout already renders its own */
+/* Hide Header's mobile Sidebar on desktop, layout already renders its own */
 .dash-mobile-sidebar-wrap { display: none; }
 
-/* Services grid — 3 cols desktop, 2 tablet, 1 mobile */
+/* Services grid, 3 cols desktop, 2 tablet, 1 mobile */
 .dash-services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -524,7 +524,7 @@ a { color: inherit; }
     padding: 16px !important;
   }
 
-  /* Welcome card — stack text + stats vertically */
+  /* Welcome card, stack text + stats vertically */
   .dash-welcome {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -532,7 +532,7 @@ a { color: inherit; }
     gap: 20px !important;
   }
 
-  /* Stats row — horizontal, left-aligned */
+  /* Stats row, horizontal, left-aligned */
   .dash-stats-row {
     gap: 20px !important;
   }
@@ -643,7 +643,7 @@ a { color: inherit; }
 /* Hide desktop column headers on mobile */
 .mem-table-head { display: none !important; }
 
-/* Mobile card layout — CSS grid */
+/* Mobile card layout, CSS grid */
 .mem-row {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -665,7 +665,7 @@ a { color: inherit; }
 .mem-c-date { grid-area: date; font-size: 13px; color: var(--text-3); display: flex; align-items: center; }
 .mem-c-del  { grid-area: del;  display: flex; align-items: flex-start; justify-content: flex-end; }
 
-/* Expand section — formations detail */
+/* Expand section, formations detail */
 .mem-expand {
   padding: 12px 16px;
   background: rgba(52,211,153,0.03);
@@ -780,8 +780,21 @@ a { color: inherit; }
   .filter-search-wrap { max-width: 100% !important; }
 }
 
+/* Hero "Parcours d'apprentissage", layout mobile empilé */
+@media (max-width: 640px) {
+  .formations-parcours-hero {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+  }
+  .formations-parcours-hero .formations-parcours-cta {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────
-   GUIDE LCD — Profile selector + priority grid
+   GUIDE LCD, Profile selector + priority grid
 ───────────────────────────────────────────────────────────── */
 
 /* Profile selector : 3 cards horizontally */
@@ -821,7 +834,7 @@ a { color: inherit; }
   }
 }
 
-/* Admin guides — profiles grid responsive */
+/* Admin guides, profiles grid responsive */
 .admin-profiles-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -834,7 +847,7 @@ a { color: inherit; }
   }
 }
 
-/* Actualités filter row — scrollable on mobile */
+/* Actualités filter row, scrollable on mobile */
 @media (max-width: 640px) {
   .actu-filter-row {
     flex-wrap: nowrap !important;
@@ -848,7 +861,7 @@ a { color: inherit; }
 }
 
 
-/* Soutenir page — responsive grid */
+/* Soutenir page, responsive grid */
 .soutenir-main {
   display: grid;
   grid-template-columns: minmax(0,1fr) minmax(0,1fr);
@@ -862,7 +875,7 @@ a { color: inherit; }
   }
 }
 
-/* Admin content cards — hover */
+/* Admin content cards, hover */
 .admin-content-card:hover {
   border-color: rgba(167,139,250,0.3) !important;
   background: var(--surface-2) !important;
@@ -891,7 +904,7 @@ a { color: inherit; }
   margin-top: 4px;
 }
 
-/* ── CHEZ NOUS — Rich text (markdown léger) ── */
+/* ── CHEZ NOUS, Rich text (markdown léger) ── */
 .cn-rich { line-height: 1.65; }
 .cn-rich strong { color: var(--text); font-weight: 600; }
 .cn-rich em { font-style: italic; }

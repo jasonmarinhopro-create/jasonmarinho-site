@@ -81,7 +81,7 @@ export default async function AdminFormationEditorPage({ params }: PageProps) {
 
   return (
     <>
-      <TitleSetter title={`Éditer — ${formation.title}`} />
+      <TitleSetter title={`Éditer, ${formation.title}`} />
       <FormationEditor
         formation={formation}
         dbModules={normalizedModules}

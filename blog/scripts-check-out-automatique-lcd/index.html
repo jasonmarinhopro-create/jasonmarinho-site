@@ -232,10 +232,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Programmé via Hospitable, Smoobu ou Make : envoyé 24 h avant le check-out.</p>
 <p class="art-p">Contenu : "Bonjour {prénom}, j'espère que ton séjour s'est bien passé ! Petit rappel pour ton check-out demain : départ avant {heure_checkout}. Avant de partir, merci de penser à : ranger vaisselle dans le lave-vaisselle, fermer les volets, déposer les clés dans la boîte. Belle continuation et n'hésite pas si questions !"</p>
 <h2 class="art-h2">2. Messages 2 et 3 : Procédure check-out + remerciement</h2>
-<ul class="art-ul"><li>Message 2 : à 9h le jour du check-out (rappel + lien procédure détaillée du livret d'accueil)</li><li>Message 3 : 1 h après le check-out planifié (remerciement + question rétention) — "Merci pour ton séjour ! J'espère qu'il a été parfait. Quel a été ton moment préféré ? "</li></ul>
+<ul class="art-ul"><li>Message 2 : à 9h le jour du check-out (rappel + lien procédure détaillée du livret d'accueil)</li><li>Message 3 : 1 h après le check-out planifié (remerciement + question rétention), "Merci pour ton séjour ! J'espère qu'il a été parfait. Quel a été ton moment préféré ? "</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Le message à 1 h post-checkout est crucial. Le voyageur a encore le souvenir frais et vif. Sa réponse te donne souvent un futur témoignage. Si la réponse est positive, c'est le moment idéal pour demander l'avis Airbnb.</span></div>
 <h2 class="art-h2">3. Messages 4 et 5 : Sollicitation avis (à H+24 et H+72)</h2>
-<ul class="art-ul"><li>Message 4 (H+24) : "Bonjour {prénom}, on espère que tu es bien rentré ! Si tu as un instant, un avis sur Airbnb nous aiderait beaucoup. Voici le lien direct : {lien_avis}. Bonne continuation !"</li><li>Message 5 (H+72) : si pas d'avis encore, relance courte. "Coucou ! Tu n'as pas eu le temps de laisser un avis, normal — voici à nouveau le lien rapide : {lien_avis}. Merci d'avance !"</li><li>Au-delà de 7 jours sans avis : ne plus relancer (Airbnb ferme la fenêtre d'avis à J+14)</li></ul>
+<ul class="art-ul"><li>Message 4 (H+24) : "Bonjour {prénom}, on espère que tu es bien rentré ! Si tu as un instant, un avis sur Airbnb nous aiderait beaucoup. Voici le lien direct : {lien_avis}. Bonne continuation !"</li><li>Message 5 (H+72) : si pas d'avis encore, relance courte. "Coucou ! Tu n'as pas eu le temps de laisser un avis, normal, voici à nouveau le lien rapide : {lien_avis}. Merci d'avance !"</li><li>Au-delà de 7 jours sans avis : ne plus relancer (Airbnb ferme la fenêtre d'avis à J+14)</li></ul>
 <h2 class="art-h2">4. Message 6 : Fidélisation longue durée</h2>
 <p class="art-p">Le message #6 est envoyé 30-60 jours après le check-out, en ouverture de la prochaine saison ou pour fidéliser.</p>
 <ul class="art-ul"><li>Contenu : "Bonjour {prénom} ! On pense à toi. Notre logement à {ville} est dispo pour {prochaine_saison}. Si tu veux revenir, on a une offre fidèle de -10 % sur la réservation directe (lien direct sans Airbnb). Belle journée !"</li><li>Astuce : ne PAS envoyer ça via Airbnb (Airbnb pénalise la sollicitation hors plateforme). Envoyer par SMS ou email collecté avec son consentement RGPD</li><li>Stocker les emails voyageurs avec leur permission dans un CRM léger (Notion, Brevo, MailChimp gratuit)</li><li>Taux de retour fidèle : 5-15 % selon la qualité du séjour, soit 50-150 € de marge nette par voyageur fidélisé/an</li></ul>
@@ -294,14 +294,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

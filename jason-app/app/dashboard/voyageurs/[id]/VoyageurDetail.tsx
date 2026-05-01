@@ -41,7 +41,7 @@ type Voyageur = {
   id: string; prenom: string; nom: string
   email: string | null; telephone: string | null
   notes: string | null; created_at: string
-  // Phase 1 — enrichi
+  // Phase 1, enrichi
   tags?: string[] | null
   source?: string | null
   date_naissance?: string | null
@@ -383,7 +383,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         setContractLoading(null)
       }
     }
-    // No contract yet — open creation modal
+    // No contract yet, open creation modal
     setContractSejour(sj)
   }
 
@@ -401,7 +401,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const [editingNotes, setEditingNotes] = useState(false)
   const [notes, setNotes] = useState(voyageur.notes ?? '')
 
-  // Phase 4 — états locaux pour tags, source, vérification, blocage, note privée
+  // Phase 4, états locaux pour tags, source, vérification, blocage, note privée
   const [tags, setTags] = useState<string[]>(voyageur.tags ?? [])
   const [tagInput, setTagInput] = useState('')
   const [source, setSource] = useState<string | null>(voyageur.source ?? null)
@@ -1061,7 +1061,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </div>
                   <div style={s.voyageurStat}>
                     <span style={s.voyageurStatLabel}>Dernière venue</span>
-                    <span style={s.voyageurStatValue}>{stats.lastVisit ? formatDate(stats.lastVisit) : '—'}</span>
+                    <span style={s.voyageurStatValue}>{stats.lastVisit ? formatDate(stats.lastVisit) : '-'}</span>
                   </div>
                   {stats.nextStay && (
                     <div style={{ ...s.voyageurStat, gridColumn: 'span 2', background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
@@ -1518,7 +1518,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     <p style={s.clEmpty}>Chargement…</p>
                   )}
                   {cl === null && (
-                    <p style={s.clEmpty}>Aucun contrat associé à ce séjour — crée d&apos;abord un contrat pour accéder à la checklist.</p>
+                    <p style={s.clEmpty}>Aucun contrat associé à ce séjour, crée d&apos;abord un contrat pour accéder à la checklist.</p>
                   )}
                   {cl && (() => {
                     const barColor = pct === 100 ? '#10b981' : pct >= 50 ? '#eab308' : '#f97316'
