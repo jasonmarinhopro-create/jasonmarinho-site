@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useTransition } from 'react'
 import Link from 'next/link'
-import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy, Compass } from '@phosphor-icons/react'
+import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy, Compass, Heart } from '@phosphor-icons/react'
+import { toggleFormationFavorite } from './actions'
 
 interface Formation {
   id: string
@@ -32,6 +33,7 @@ interface Props {
   comingSoon: ComingSoon[]
   unlockedSlugs: string[] | null // null = tout accessible (Standard+)
   plan: string
+  initialFavoriteIds?: string[]
 }
 
 const levelLabel: Record<string, string> = {
@@ -74,7 +76,7 @@ type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
 type StatusFilter = 'all' | 'enrolled' | 'not_enrolled' | 'done'
 type CategoryFilter = 'all' | 'visibilite' | 'revenus' | 'gestion' | 'reglementation' | 'conciergerie'
 
-export default function FormationsGrid({ formations, progressMap, comingSoon, unlockedSlugs, plan }: Props) {
+export default function FormationsGrid({ formations, progressMap, comingSoon, unlockedSlugs, plan, initialFavoriteIds = [] }: Props) {
   const isDecouverte = plan === 'decouverte'
   const slotsUsed = unlockedSlugs?.length ?? 0
   const slotsMax = 2
@@ -82,6 +84,27 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
+  const [favorites, setFavorites] = useState<Set<string>>(new Set(initialFavoriteIds))
+  const [, startTransition] = useTransition()
+
+  function handleToggleFavorite(f: Formation) {
+    const isFav = favorites.has(f.id)
+    // Optimistic update
+    setFavorites(prev => {
+      const next = new Set(prev)
+      if (isFav) next.delete(f.id)
+      else next.add(f.id)
+      return next
+    })
+    startTransition(async () => {
+      await toggleFormationFavorite({
+        formationId: f.id,
+        formationSlug: f.slug,
+        formationTitle: f.title,
+        add: !isFav,
+      })
+    })
+  }
 
   const filtered = useMemo(() => {
     return formations.filter(f => {
@@ -113,7 +136,22 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 
   return (
     <div>
-      {/* Stats */}
+      {/* Hero — Parcours d'apprentissage mis en avant */}
+      <Link href="/dashboard/formations/parcours" style={styles.parcoursHero} className="formations-parcours-hero">
+        <div style={styles.parcoursHeroIcon}>
+          <Compass size={28} weight="fill" />
+        </div>
+        <div style={styles.parcoursHeroBody}>
+          <div style={styles.parcoursHeroLabel}>Parcours d&apos;apprentissage</div>
+          <div style={styles.parcoursHeroTitle}>Suis un parcours structuré, étape par étape</div>
+          <div style={styles.parcoursHeroDesc}>Une progression pensée pour passer de débutant à expert LCD — sans te demander quoi faire ensuite.</div>
+        </div>
+        <div style={styles.parcoursHeroCta}>
+          Commencer <ArrowRight size={16} weight="bold" />
+        </div>
+      </Link>
+
+      {/* Stats + Profil apprenant + Favoris (sous le parcours, secondaires) */}
       <div style={styles.statsRow}>
         <span style={styles.statChip}>
           <GraduationCap size={13} weight="fill" />
@@ -125,6 +163,12 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
             {enrolledCount} commencée{enrolledCount !== 1 ? 's' : ''}
           </span>
         )}
+        {favorites.size > 0 && (
+          <span style={{ ...styles.statChip, background: 'rgba(244,63,94,0.08)', color: '#f43f5e', border: '1px solid rgba(244,63,94,0.18)' }}>
+            <Heart size={13} weight="fill" />
+            {favorites.size} en favori{favorites.size !== 1 ? 's' : ''}
+          </span>
+        )}
         {isDecouverte && (
           <span style={{ ...styles.statChip, background: 'rgba(255,213,107,0.08)', color: 'var(--accent-text)', border: '1px solid rgba(255,213,107,0.2)' }}>
             <Lock size={13} weight="fill" />
@@ -133,20 +177,15 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
         )}
       </div>
 
-      {/* Navigation links — clearly distinct from stat chips */}
+      {/* Navigation secondaire : profil apprenant + favoris */}
       <div style={styles.navRow}>
-        <Link href="/dashboard/formations/parcours" style={{ ...styles.navLink, color: '#60a5fa', borderColor: 'rgba(96,165,250,0.25)', background: 'rgba(96,165,250,0.06)' }}>
-          <Compass size={16} weight="fill" style={{ flexShrink: 0 }} />
-          <span style={styles.navLinkText}>Parcours d&apos;apprentissage</span>
-          <ArrowRight size={14} weight="bold" style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.7 }} />
-        </Link>
         <Link href="/dashboard/formations/profil-apprenant" style={{ ...styles.navLink, color: 'var(--accent-text)', borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' }}>
           <Trophy size={16} weight="fill" style={{ flexShrink: 0 }} />
           <span style={styles.navLinkText}>Mon profil apprenant</span>
           <ArrowRight size={14} weight="bold" style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.7 }} />
         </Link>
-        <Link href="/dashboard/formations/favoris" style={{ ...styles.navLink, color: '#f59e0b', borderColor: 'rgba(245,158,11,0.25)', background: 'rgba(245,158,11,0.06)' }}>
-          <BookmarkSimple size={16} weight="fill" style={{ flexShrink: 0 }} />
+        <Link href="/dashboard/formations/favoris" style={{ ...styles.navLink, color: '#f43f5e', borderColor: 'rgba(244,63,94,0.25)', background: 'rgba(244,63,94,0.06)' }}>
+          <Heart size={16} weight="fill" style={{ flexShrink: 0 }} />
           <span style={styles.navLinkText}>Mes favoris</span>
           <ArrowRight size={14} weight="bold" style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.7 }} />
         </Link>
@@ -244,8 +283,24 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
           const done = progress === 100
           const isLocked = unlockedSlugs !== null && slotsUsed >= slotsMax && !unlockedSlugs.includes(f.slug)
 
+          const isFav = favorites.has(f.id)
           return (
-            <div key={f.id} style={{ ...styles.card, ...(isLocked ? styles.cardLocked : {}) }} className={`glass-card fade-up d${(i % 6) + 1}`}>
+            <div key={f.id} style={{ ...styles.card, ...(isLocked ? styles.cardLocked : {}), position: 'relative' }} className={`glass-card fade-up d${(i % 6) + 1}`}>
+              {/* Bouton cœur favoris */}
+              {!isLocked && (
+                <button
+                  onClick={() => handleToggleFavorite(f)}
+                  style={{
+                    ...styles.heartBtn,
+                    ...(isFav ? styles.heartBtnActive : {}),
+                  }}
+                  aria-label={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                  title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                >
+                  <Heart size={18} weight={isFav ? 'fill' : 'regular'} />
+                </button>
+              )}
+
               <div style={styles.cardHeader}>
                 <div style={{ ...styles.cardIcon, ...(isLocked ? { opacity: 0.5 } : {}) }}>
                   {isLocked
@@ -253,7 +308,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
                     : <GraduationCap size={28} color="var(--accent-text)" weight="fill" />
                   }
                 </div>
-                <div style={styles.cardBadges}>
+                <div style={{ ...styles.cardBadges, paddingRight: isLocked ? 0 : 38 }}>
                   {SLUG_CATEGORY[f.slug] && (
                     <span style={styles.categoryBadge}>{categoryLabel[SLUG_CATEGORY[f.slug]]}</span>
                   )}
@@ -351,7 +406,71 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 }
 
 const styles: Record<string, React.CSSProperties> = {
+  // Hero parcours d'apprentissage — mis en avant en haut
+  parcoursHero: {
+    display: 'flex', alignItems: 'center', gap: '20px',
+    padding: 'clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px)',
+    background: 'linear-gradient(135deg, rgba(96,165,250,0.12), rgba(96,165,250,0.04))',
+    border: '1px solid rgba(96,165,250,0.28)',
+    borderRadius: '16px',
+    textDecoration: 'none',
+    color: 'var(--text)',
+    marginBottom: '20px',
+    transition: 'transform 0.18s, box-shadow 0.18s, border-color 0.18s',
+    position: 'relative',
+    overflow: 'hidden',
+  } as React.CSSProperties,
+  parcoursHeroIcon: {
+    width: '56px', height: '56px', borderRadius: '14px',
+    background: 'rgba(96,165,250,0.18)',
+    color: '#60a5fa',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  parcoursHeroBody: { flex: 1, minWidth: 0 },
+  parcoursHeroLabel: {
+    fontSize: '11px', fontWeight: 700, letterSpacing: '0.8px',
+    textTransform: 'uppercase' as const, color: '#60a5fa',
+    marginBottom: '4px',
+  },
+  parcoursHeroTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'clamp(17px, 2.2vw, 22px)', fontWeight: 500,
+    color: 'var(--text)', lineHeight: 1.25, marginBottom: '4px',
+  },
+  parcoursHeroDesc: {
+    fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5,
+  },
+  parcoursHeroCta: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '9px 16px', borderRadius: '10px',
+    background: '#60a5fa', color: '#fff',
+    fontSize: '13px', fontWeight: 600,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+  } as React.CSSProperties,
+
   statsRow: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' },
+  // Bouton cœur favoris — top-right de la card
+  heartBtn: {
+    position: 'absolute',
+    top: '14px', right: '14px',
+    width: '36px', height: '36px',
+    borderRadius: '50%',
+    background: 'var(--surface-2)',
+    border: '1px solid var(--border)',
+    color: 'var(--text-muted)',
+    cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'all 0.15s',
+    zIndex: 2,
+    padding: 0,
+  } as React.CSSProperties,
+  heartBtnActive: {
+    background: 'rgba(244,63,94,0.12)',
+    border: '1px solid rgba(244,63,94,0.4)',
+    color: '#f43f5e',
+  },
   statChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 12px', borderRadius: '100px',

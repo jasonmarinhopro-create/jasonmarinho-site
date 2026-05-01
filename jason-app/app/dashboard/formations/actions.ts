@@ -303,3 +303,44 @@ export async function updateFormationProgress(
   revalidatePath('/dashboard')
   return { success: true }
 }
+
+// ─── Favoris au niveau FORMATION ────────────────────────────────
+
+export async function toggleFormationFavorite(input: {
+  formationId: string
+  formationSlug: string
+  formationTitle: string
+  add: boolean
+}): Promise<{ error?: string; favorited?: boolean }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  if (input.add) {
+    const { error } = await supabase
+      .from('user_formation_favorites')
+      .upsert(
+        {
+          user_id: session.user.id,
+          formation_id: input.formationId,
+          formation_slug: input.formationSlug,
+          formation_title: input.formationTitle,
+        },
+        { onConflict: 'user_id,formation_id', ignoreDuplicates: true }
+      )
+    if (error) return { error: error.message }
+    revalidatePath('/dashboard/formations')
+    revalidatePath('/dashboard/formations/favoris')
+    return { favorited: true }
+  } else {
+    const { error } = await supabase
+      .from('user_formation_favorites')
+      .delete()
+      .eq('user_id', session.user.id)
+      .eq('formation_id', input.formationId)
+    if (error) return { error: error.message }
+    revalidatePath('/dashboard/formations')
+    revalidatePath('/dashboard/formations/favoris')
+    return { favorited: false }
+  }
+}
