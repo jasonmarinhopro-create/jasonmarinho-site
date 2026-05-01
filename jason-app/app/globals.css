@@ -159,6 +159,32 @@ em { font-style: italic; color: var(--accent); }
 [data-theme="light"] .btn-primary { background: var(--green); color: #ffffff; }
 [data-theme="light"] .btn-primary:hover { background: var(--green-mid); box-shadow: 0 8px 24px rgba(0,76,63,0.2); }
 
+/* ── Badges Chez Nous : contraste optimisé en mode clair ── */
+[data-theme="light"] .cn-member-badge {
+  font-weight: 700 !important;
+}
+[data-theme="light"] .cn-member-badge[data-badge-id="pionnier"] {
+  color: #92400E !important; background: #FEF3C7 !important; border-color: #F59E0B !important;
+}
+[data-theme="light"] .cn-member-badge[data-badge-id="visionnaire"] {
+  color: #5B21B6 !important; background: #EDE9FE !important; border-color: #A78BFA !important;
+}
+[data-theme="light"] .cn-member-badge[data-badge-id="batisseur"] {
+  color: #065F46 !important; background: #D1FAE5 !important; border-color: #34D399 !important;
+}
+[data-theme="light"] .cn-member-badge[data-badge-id="auditeur"] {
+  color: #1E40AF !important; background: #DBEAFE !important; border-color: #60A5FA !important;
+}
+[data-theme="light"] .cn-member-badge[data-badge-id="forme"] {
+  color: #9A3412 !important; background: #FED7AA !important; border-color: #FB923C !important;
+}
+[data-theme="light"] .cn-member-badge[data-badge-id="connecte"] {
+  color: #9D174D !important; background: #FCE7F3 !important; border-color: #F472B6 !important;
+}
+[data-theme="light"] .cn-member-badge[data-badge-id="premier_message"] {
+  color: #065F46 !important; background: #D1FAE5 !important; border-color: #10B981 !important;
+}
+
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 8px;
   background: transparent; color: var(--text-2);
