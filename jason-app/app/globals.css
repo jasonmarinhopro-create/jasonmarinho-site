@@ -422,7 +422,23 @@ a { color: inherit; }
 
 /* ── DASHBOARD RESPONSIVE ── */
 .dash-sidebar {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Hauteur avec fallbacks pour tous les navigateurs incl. iOS Safari < 15.4 */
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100dvh;
+  /* Force un nouveau layer GPU — corrige les bugs de scroll/overflow iOS */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.dash-sidebar > nav {
+  /* iOS Safari : flex + overflow auto exige min-height: 0 sur le child
+     ET une hauteur définie pour le parent (déjà fait sur .dash-sidebar) */
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  /* GPU layer : améliore le scroll inertiel iOS */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .dash-menu-btn { display: none; }
 .dash-close-btn { display: none; }
@@ -452,10 +468,11 @@ a { color: inherit; }
 
 @media (max-width: 768px) {
   .dash-sidebar {
-    transform: translateX(-100%);
+    /* translate3d garde le layer GPU + slide */
+    transform: translate3d(-100%, 0, 0);
   }
   .dash-sidebar.open {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   .dash-menu-btn {
     display: flex !important;
