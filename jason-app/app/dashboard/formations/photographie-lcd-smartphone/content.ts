@@ -23,441 +23,309 @@ export const PHOTOGRAPHIE_LCD_FORMATION = {
           id: 1,
           title: `Pourquoi 60 % du clic se joue en 2 secondes`,
           duration: '7 min',
-          content: `---
+          content: `## Le voyageur ne lit pas, il scanne
 
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-Pourquoi 60 % du clic se joue en 2 secondes
-La science (sous-estimée) du regard voyageur
-────────────────────────────────────
+Quand un voyageur cherche un logement, il fait défiler des dizaines d'annonces en quelques minutes.
 
----
+Sur Airbnb, le temps moyen passé à décider de cliquer ou non sur une annonce est de **1,7 seconde**.
 
-## Le voyageur ne lit pas, il scanne
-Quand un voyageur cherche un logement,
-il fait défiler des dizaines d'annonces
-en quelques minutes.
-
-Sur Airbnb, le temps moyen passé
-à décider de cliquer ou non sur une annonce
-est de **1,7 seconde**.
-
-→ 1,7 seconde pour gagner ce voyageur
-  ou le perdre à jamais.
+> 1,7 seconde pour gagner ce voyageur ou le perdre à jamais.
 
 Pendant ces 1,7 seconde, il regarde :
 
-01. La photo de couverture (95 % de l'attention)
-02. Le prix par nuit
-03. Les étoiles et le nombre d'avis
-04. (Et seulement après) le titre
+1. **La photo de couverture** (95 % de l'attention)
+2. Le **prix par nuit**
+3. Les **étoiles** et le nombre d'avis
+4. *(Et seulement après)* le titre
 
-Le titre vient en **dernier**.
-La description ? Il ne la lira pas
-si la photo ne l'a pas convaincu.
+Le titre vient en **dernier**. La description ? Il ne la lira pas si la photo ne l'a pas convaincu.
 
-→ Conclusion : ta photo de couverture
-  fait à elle seule 60 % du travail.
+> **Conclusion :** ta photo de couverture fait à elle seule 60 % du travail.
 
 ---
 
 ## Les chiffres qu'Airbnb ne crie pas
-Une étude interne Airbnb publiée en 2022
-a mesuré l'impact d'une photo professionnelle
-sur les annonces ayant moins de 5 réservations :
 
-→ +24 % de réservations
-→ +26 % de revenu mensuel
-→ +9 % de prix moyen accepté
-→ Vitesse de réservation x 2
+Une étude interne Airbnb publiée en 2022 a mesuré l'impact d'une photo professionnelle sur les annonces ayant moins de 5 réservations :
 
-Une photo médiocre te coûte
-chaque mois plus que tu ne le penses.
+- **+24 %** de réservations
+- **+26 %** de revenu mensuel
+- **+9 %** de prix moyen accepté
+- Vitesse de réservation **x 2**
+
+Une photo médiocre te coûte chaque mois plus que tu ne le penses.
 
 Et le pire :
-**plus l'algorithme apprend que ton annonce
-ne convertit pas, moins il la montre.**
 
-→ Une mauvaise photo de couverture
-  ne stagne pas — elle te fait descendre
-  dans les résultats au fil du temps.
+> *Plus l'algorithme apprend que ton annonce ne convertit pas, moins il la montre.*
+
+Une mauvaise photo de couverture **ne stagne pas** — elle te fait descendre dans les résultats au fil du temps.
 
 ---
 
 ## Pourquoi tes photos actuelles ne convertissent pas
-La majorité des annonces LCD souffrent
-de 4 problèmes invisibles à leur propriétaire :
 
-01. **Lumière froide ou jaune**
-    Photos prises au flash ou ampoule LED.
-    Rend la pièce clinique ou triste.
+La majorité des annonces LCD souffrent de **4 problèmes invisibles** à leur propriétaire :
 
-02. **Pièce vide ou trop chargée**
-    Soit on voit du parquet et un canapé,
-    soit on voit le bazar quotidien.
-    Aucun des deux ne fait rêver.
+### 1. Lumière froide ou jaune
 
-03. **Mauvais angle**
-    Photo prise debout, à hauteur d'yeux.
-    L'œil humain ne perçoit pas l'espace.
+Photos prises au flash ou sous ampoule LED. Rend la pièce clinique ou triste.
 
-04. **Couverture pas optimisée**
-    La photo qui doit gagner le clic
-    n'est pas la première de la liste.
+### 2. Pièce vide ou trop chargée
 
-→ Ces 4 erreurs sont gratuites à corriger.
-  Aucune n'exige du matériel pro.
-  Toutes sont dans cette formation.
+Soit on voit du parquet et un canapé, soit on voit le bazar quotidien. Aucun des deux ne fait rêver.
+
+### 3. Mauvais angle
+
+Photo prise debout, à hauteur d'yeux. L'œil humain ne perçoit pas l'espace.
+
+### 4. Couverture pas optimisée
+
+La photo qui doit gagner le clic n'est **pas** la première de la liste.
+
+> Ces 4 erreurs sont **gratuites** à corriger. Aucune n'exige du matériel pro. Toutes sont dans cette formation.
 
 ---
 
 ## Le test de la "miniature à 80 px"
-Voici un test que tu peux faire en 30 secondes,
-qui te dira immédiatement si ta photo de couverture
-est efficace ou pas.
 
-→ Ouvre ton annonce sur ton téléphone
-  Réduis l'image (zoom out) jusqu'à ce que
-  la photo ne fasse plus que la taille
-  de l'icône d'une app (~80 pixels).
+Voici un test que tu peux faire en **30 secondes**, qui te dira immédiatement si ta photo de couverture est efficace ou pas.
 
-Pose-toi 3 questions :
+**La méthode :** ouvre ton annonce sur ton téléphone, réduis l'image (zoom out) jusqu'à ce que la photo ne fasse plus que la taille de l'icône d'une app (~80 pixels).
 
-→ Est-ce que je comprends ce que c'est ?
-  (logement, intérieur, vue, quelle pièce)
+Puis pose-toi **3 questions** :
 
-→ Est-ce que c'est lumineux ?
-  (sombre = invisible dans la grille)
+1. **Est-ce que je comprends ce que c'est ?** *(logement, intérieur, vue, quelle pièce)*
+2. **Est-ce que c'est lumineux ?** *(sombre = invisible dans la grille)*
+3. **Est-ce que ça donne envie ?** *(réaction émotionnelle en 1 seconde)*
 
-→ Est-ce que ça donne envie ?
-  (réaction émotionnelle en 1 seconde)
+> Si la réponse est *« non »* à une seule question, ta photo de couverture **doit être refaite**.
 
-Si la réponse est "non" à une seule question,
-ta photo de couverture **doit être refaite**.
-
-C'est le test que les designers Airbnb
-utilisent en interne quand ils auditent
-des annonces sous-performantes.
+C'est le test que les designers Airbnb utilisent en interne quand ils auditent des annonces sous-performantes.
 
 ---
 
-## Exercice
-**Avant la prochaine leçon :**
+## Exercice — avant la prochaine leçon
 
-Va sur ton annonce, applique le test
-de la miniature à 80 px sur ta photo
-de couverture actuelle. Note tes 3 réponses.
+1. **Va sur ton annonce** et applique le test de la miniature à 80 px sur ta photo de couverture actuelle. Note tes 3 réponses.
+2. **Note tes statistiques actuelles** :
+   - Nombre de vues / mois
+   - Nombre de réservations / mois
+   - Taux de conversion *(réservations ÷ vues × 100)*
 
-Note aussi tes statistiques actuelles :
-→ Nombre de vues / mois
-→ Nombre de réservations / mois
-→ Taux de conversion (réservations ÷ vues × 100)
-
-Ce sont les 3 chiffres que cette formation
-va faire bouger.`,
+> Ce sont les 3 chiffres que cette formation va faire **bouger**.`,
         },
         {
           id: 2,
           title: `La photo de couverture : ton seul prospect en 1 image`,
           duration: '7 min',
-          content: `---
+          content: `## Une seule photo a un job particulier
 
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-La photo de couverture
-Ton seul prospect en 1 image
-────────────────────────────────────
+Sur les 20 ou 30 photos de ton annonce, **une seule** travaille vraiment.
 
----
+C'est la **photo de couverture**.
 
-## Une seule photo a un job particulier
-Sur les 20 ou 30 photos de ton annonce,
-**une seule** travaille vraiment.
+Toutes les autres servent à confirmer ou à infirmer la promesse de la première. Mais c'est la première qui fait le clic.
 
-C'est la photo de couverture.
+- Sur **Airbnb**, 92 % des voyageurs ne regardent **que** la photo de couverture avant de décider s'ils cliquent.
+- Sur **Booking**, c'est 88 %.
+- Sur **Google** (résultats de recherche), c'est 100 % — il n'y en a qu'une.
 
-Toutes les autres servent à confirmer
-ou à infirmer la promesse de la première.
-Mais c'est la première qui fait le clic.
-
-→ Sur Airbnb, 92 % des voyageurs
-  ne regardent que la photo de couverture
-  avant de décider s'ils cliquent.
-
-→ Sur Booking, c'est 88 %.
-
-→ Sur Google (résultats de recherche),
-  c'est 100 % — il n'y en a qu'une.
-
-Ta photo de couverture, c'est ton vendeur.
-Si elle dort, ton annonce ne reçoit rien.
+> Ta photo de couverture, c'est ton vendeur. *Si elle dort, ton annonce ne reçoit rien.*
 
 ---
 
 ## Les 3 critères d'une photo de couverture qui convertit
-Après avoir audité plus de 4 000 annonces LCD,
-les meilleures photos de couverture
-respectent toutes les 3 mêmes critères :
 
-01. **Une promesse claire**
-    Le voyageur comprend en 1 seconde
-    le type d'expérience : urbain, nature,
-    chic, familial, romantique...
+Après avoir audité plus de 4 000 annonces LCD, les meilleures photos de couverture respectent toutes les **3 mêmes critères** :
 
-02. **Une lumière naturelle douce**
-    Lumière chaude (matin ou fin d'après-midi),
-    pas de flash, pas d'ombres dures.
+### 1. Une promesse claire
 
-03. **Un angle large**
-    L'œil voit l'espace en entier.
-    Composition équilibrée, pas centrée
-    sur un seul meuble.
+Le voyageur comprend en 1 seconde le type d'expérience : urbain, nature, chic, familial, romantique…
 
-→ Manque l'un des 3 ?
-  Ta photo travaille à 50 %.
+### 2. Une lumière naturelle douce
+
+Lumière chaude (matin ou fin d'après-midi), **pas de flash**, pas d'ombres dures.
+
+### 3. Un angle large
+
+L'œil voit l'espace en entier. Composition équilibrée, pas centrée sur un seul meuble.
+
+> Manque l'un des 3 ? Ta photo travaille à **50 %**.
 
 ---
 
 ## Quel type de photo choisir en couverture
-Selon ton logement, le bon choix change :
 
-**LOGEMENT URBAIN STANDARD**
-→ Salon ou cuisine en grand-angle
-  Doit montrer la pièce de vie
-  où le voyageur va passer du temps.
+Selon ton logement, le bon choix change.
 
-**APPARTEMENT AVEC VUE**
-→ La vue, photographiée depuis l'intérieur
-  Voir la fenêtre + le canapé devant
-  Ne pas mettre la vue seule, ça ressemble
-  à une carte postale, pas à un logement.
+### Logement urbain standard
 
-**MAISON DE CAMPAGNE / GÎTE**
-→ La façade extérieure ou le jardin
-  En fin d'après-midi, avec lumière chaude.
-  Le voyageur veut voir où il va arriver.
+Salon ou cuisine en grand-angle. Doit montrer la pièce de vie où le voyageur va passer du temps.
 
-**LOGEMENT DESIGN OU LOFT**
-→ Un détail signature : une bibliothèque,
-  une cuisine ouverte, une déco unique.
-  Mise en scène pour rappeler un magazine.
+### Appartement avec vue
 
-**GÎTE FAMILIAL**
-→ Une chambre lumineuse OU le jardin
-  avec table extérieure dressée.
-  Image qui évoque un moment partagé.
+La vue, photographiée **depuis l'intérieur**. Voir la fenêtre + le canapé devant.
 
-→ Règle d'or : ne mets jamais la salle de bain
-  ou les chambres côte à côte en couverture.
-  Trop intime, pas vendeur.
+> Ne mets pas la vue seule, ça ressemble à une carte postale, pas à un logement.
+
+### Maison de campagne / gîte
+
+La façade extérieure ou le jardin, **en fin d'après-midi** avec lumière chaude. Le voyageur veut voir où il va arriver.
+
+### Logement design ou loft
+
+Un détail signature : une bibliothèque, une cuisine ouverte, une déco unique. Mise en scène pour rappeler un magazine.
+
+### Gîte familial
+
+Une chambre lumineuse OU le jardin avec **table extérieure dressée**. Image qui évoque un moment partagé.
+
+> **Règle d'or :** ne mets jamais la salle de bain ou les chambres côte à côte en couverture. Trop intime, pas vendeur.
 
 ---
 
 ## L'erreur que 70 % des hôtes commettent
+
 **Mettre une photo de la chambre principale en couverture.**
 
-C'est tentant : la chambre est jolie,
-le lit fait, les coussins en place.
+C'est tentant : la chambre est jolie, le lit fait, les coussins en place.
 
 Mais voici le problème :
-→ Une chambre en miniature ressemble
-  à une chambre d'hôtel low-cost.
-→ Le voyageur ne se projette pas
-  dans le lit d'un inconnu.
-→ La couverture doit montrer
-  la pièce de vie, pas la pièce intime.
 
-→ La chambre, c'est la photo n°4 ou n°5.
-  Jamais la couverture.
+- Une chambre en miniature ressemble à une chambre **d'hôtel low-cost**.
+- Le voyageur ne se projette pas dans le lit d'un inconnu.
+- La couverture doit montrer la **pièce de vie**, pas la pièce intime.
+
+> La chambre, c'est la photo n°4 ou n°5. **Jamais** la couverture.
 
 ---
 
 ## Test : ta photo passe-t-elle le filtre Airbnb ?
-Airbnb a publié les critères automatiques
-qui détectent une photo de couverture "à risque" :
 
-→ Photo verticale (portrait) → -30 % de clics
-→ Photo avec un humain → -15 % de clics
-→ Photo avec du texte ajouté → -25 % de clics
-→ Photo très sombre (luminosité < 40 %) → -50 % de clics
-→ Photo de l'extérieur sous la pluie → -40 % de clics
+Airbnb a publié les critères automatiques qui détectent une photo de couverture "à risque" :
 
-Vérifie ta couverture actuelle.
-Si elle a UN seul de ces défauts,
-le simple fait de la remplacer
-augmentera tes vues immédiatement.
+| Défaut | Impact sur les clics |
+|---|---|
+| Photo verticale (portrait) | **-30 %** |
+| Photo avec un humain | -15 % |
+| Photo avec du texte ajouté | -25 % |
+| Photo très sombre (luminosité < 40 %) | **-50 %** |
+| Photo de l'extérieur sous la pluie | -40 % |
+
+> Vérifie ta couverture actuelle. Si elle a **un seul** de ces défauts, le simple fait de la remplacer augmentera tes vues immédiatement.
 
 ---
 
-## Exercice
-**Action immédiate :**
+## Exercice — action immédiate
 
-Liste les 3 photos qui pourraient devenir
-ta nouvelle couverture (un salon en grand-angle,
-ta plus belle vue, ton plus joli détail).
+1. **Liste les 3 photos** qui pourraient devenir ta nouvelle couverture *(un salon en grand-angle, ta plus belle vue, ton plus joli détail)*.
+2. Si tu n'en as **aucune** qui te plaise complètement, note-la en haut de ta liste de séances photo à refaire après cette formation.
 
-Si tu n'en as aucune qui te plaise complètement,
-note-la en haut de ta liste de séances photo
-à refaire après cette formation.
-
-Une couverture moyenne te coûte chaque jour.`,
+> Une couverture moyenne te coûte **chaque jour**.`,
         },
         {
           id: 3,
           title: `Audit photo : repérer ce qui tue tes conversions`,
           duration: '6 min',
-          content: `---
+          content: `## Le mode audit : regarder son annonce comme un étranger
 
-MODULE 1 · LEÇON 3
-────────────────────────────────────
-Audit photo
-Les 6 erreurs qui tuent tes conversions
-────────────────────────────────────
+Avant de refaire des photos, il faut savoir **ce qui ne va pas** dans celles que tu as.
 
----
+Le piège : tu vois ton logement tous les jours. Tu ne vois **plus** ses défauts.
 
-## Le mode audit : regarder son annonce comme un étranger
-Avant de refaire des photos,
-il faut savoir ce qui ne va pas
-dans celles que tu as.
-
-Le piège : tu vois ton logement
-tous les jours. Tu ne vois plus ses défauts.
-
-→ Méthode : ouvre ton annonce dans
-  une fenêtre privée (Ctrl+Shift+N).
-  Imagine que tu cherches un logement.
-  Note ta première impression brute.
+> **Méthode :** ouvre ton annonce dans une fenêtre privée *(Ctrl+Shift+N)*. Imagine que tu cherches un logement. Note ta première impression brute.
 
 C'est cette impression que les voyageurs ont.
 
 ---
 
 ## Erreur 1 — La photo "constat d'huissier"
-Photo prise debout, au centre de la pièce,
-sans angle ni mise en scène.
 
-Tu vois : un canapé centré, un mur derrière,
-une table basse vide, un sol.
+Photo prise debout, au centre de la pièce, sans angle ni mise en scène.
 
-Effet voyageur : "Une pièce vide. Triste."
+**Ce que tu vois :** un canapé centré, un mur derrière, une table basse vide, un sol.
 
-→ Correction : descends à hauteur de table basse,
-  cadre légèrement décalé, ajoute 2-3 objets
-  vivants (livre ouvert, plaid, bouquet).
+**Effet voyageur :** *« Une pièce vide. Triste. »*
+
+> **Correction :** descends à hauteur de table basse, cadre légèrement décalé, ajoute 2-3 objets vivants *(livre ouvert, plaid, bouquet)*.
 
 ---
 
 ## Erreur 2 — La salle de bain au flash
-La salle de bain est petite et sombre,
-donc tu utilises le flash de ton téléphone.
 
-Résultat : reflets sur le miroir,
-ombres dures, ambiance morgue.
+La salle de bain est petite et sombre, donc tu utilises le flash de ton téléphone.
 
-Effet voyageur : "Ça a l'air vieillot et sale."
+**Résultat :** reflets sur le miroir, ombres dures, ambiance morgue.
 
-→ Correction : ouvre la porte de la salle de bain
-  pendant la séance, photographie depuis le couloir
-  ou depuis l'angle opposé. Lumière naturelle
-  filtrée par la porte ouverte = ambiance douce.
+**Effet voyageur :** *« Ça a l'air vieillot et sale. »*
+
+> **Correction :** ouvre la porte de la salle de bain pendant la séance, photographie depuis le couloir ou depuis l'angle opposé. Lumière naturelle filtrée par la porte ouverte = ambiance douce.
 
 ---
 
 ## Erreur 3 — La cuisine avec le bazar
-Plan de travail avec micro-ondes, bouilloire,
-grille-pain, friteuse, coupe à fruits, chargeur,
-torchon, factures.
 
-Effet voyageur : "Ça a l'air encombré.
-Je vais cuisiner sur 20 cm carré."
+Plan de travail avec micro-ondes, bouilloire, grille-pain, friteuse, coupe à fruits, chargeur, torchon, factures.
 
-→ Correction : range tout sauf 1 ou 2 objets
-  bien choisis (cafetière design + bouquet
-  dans un vase, par exemple). Le reste va
-  dans un placard pendant la séance.
+**Effet voyageur :** *« Ça a l'air encombré. Je vais cuisiner sur 20 cm carré. »*
+
+> **Correction :** range tout sauf 1 ou 2 objets bien choisis *(cafetière design + bouquet dans un vase, par exemple)*. Le reste va dans un placard pendant la séance.
 
 ---
 
 ## Erreur 4 — Le contre-jour vers la fenêtre
-Tu photographies une pièce avec la fenêtre
-en arrière-plan. La pièce est sous-exposée,
-la fenêtre brûle de blanc.
 
-Effet voyageur : "Photo amateur.
-Je ne vois rien de la pièce."
+Tu photographies une pièce avec la fenêtre en arrière-plan. La pièce est sous-exposée, la fenêtre brûle de blanc.
 
-→ Correction : photographie en te plaçant
-  côté fenêtre, vers l'intérieur de la pièce.
-  La lumière entre par derrière toi, éclaire
-  la pièce, la photo devient lumineuse et nette.
+**Effet voyageur :** *« Photo amateur. Je ne vois rien de la pièce. »*
+
+> **Correction :** photographie en te plaçant **côté fenêtre**, vers l'intérieur de la pièce. La lumière entre par derrière toi, éclaire la pièce, la photo devient lumineuse et nette.
 
 ---
 
 ## Erreur 5 — Le lit "défait par accident"
-Tu photographies la chambre, mais le lit
-n'est pas vraiment fait. Drap qui dépasse,
-oreillers de travers, couette froissée.
 
-Effet voyageur : "Ils ne font même pas le lit
-pour la photo. Comment sera-t-il à mon arrivée ?"
+Tu photographies la chambre, mais le lit n'est pas vraiment fait. Drap qui dépasse, oreillers de travers, couette froissée.
 
-→ Correction : fais le lit comme dans un hôtel.
-  Drap tendu, couette pliée à mi-lit, 4 oreillers
-  empilés, 1 plaid au pied du lit. Ça prend
-  3 minutes et ça change tout.
+**Effet voyageur :** *« Ils ne font même pas le lit pour la photo. Comment sera-t-il à mon arrivée ? »*
+
+> **Correction :** fais le lit comme dans un hôtel. Drap tendu, couette pliée à mi-lit, 4 oreillers empilés, 1 plaid au pied du lit. *Ça prend 3 minutes et ça change tout.*
 
 ---
 
 ## Erreur 6 — La photo verticale
-Tu prends ta photo en mode portrait
-parce que ton téléphone est plus pratique
-à tenir verticalement.
 
-Sur Airbnb, la grille affiche
-des photos paysage. Une photo verticale
-sera **rognée par défaut**, ou affichée
-avec des bordures noires sur les côtés.
+Tu prends ta photo en mode portrait parce que ton téléphone est plus pratique à tenir verticalement.
 
-→ Correction : TOUTES les photos de ton annonce
-  doivent être en mode paysage. Bascule ton
-  téléphone en horizontal avant chaque cliché.
+Sur Airbnb, la grille affiche des photos **paysage**. Une photo verticale sera **rognée par défaut**, ou affichée avec des bordures noires sur les côtés.
+
+> **Correction :** **toutes** les photos de ton annonce doivent être en mode paysage. Bascule ton téléphone en horizontal avant chaque cliché.
 
 ---
 
 ## Le scoring rapide de ton annonce
-Compte les erreurs que tu as identifiées
-sur tes photos actuelles.
 
-→ 0 ou 1 erreur :
-  Bonne base, on va peaufiner.
+Compte les erreurs que tu as identifiées sur tes photos actuelles :
 
-→ 2 à 3 erreurs :
-  Refonte partielle. Quelques pièces à reprendre.
+| Score | Verdict |
+|---|---|
+| **0 ou 1 erreur** | Bonne base, on va peaufiner. |
+| **2 à 3 erreurs** | Refonte partielle. Quelques pièces à reprendre. |
+| **4 ou plus** | Refonte complète recommandée. Tu vas adorer le résultat. |
 
-→ 4 ou plus :
-  Refonte complète recommandée.
-  Tu vas adorer le résultat de cette formation.
-
-→ La majorité des hôtes en début de formation
-  ont 4 ou 5 erreurs sur les 6.
-  Ce n'est pas grave : c'est exactement
-  pourquoi tu es ici.
+> La majorité des hôtes en début de formation ont **4 ou 5 erreurs sur les 6**. Ce n'est pas grave : c'est exactement *pourquoi tu es ici*.
 
 ---
 
-## Exercice
-**Avant le module 2 :**
+## Exercice — avant le module 2
 
-Fais un audit complet de tes photos actuelles.
-Compte les erreurs que tu as relevées,
-photo par photo.
+1. **Fais un audit complet** de tes photos actuelles. Compte les erreurs que tu as relevées, photo par photo.
+2. **Choisis les 3 pièces** que tu vas refaire en priorité.
 
-Choisis les 3 pièces que tu vas refaire
-en priorité. (Indice : commence par la pièce
-de vie principale et la photo de couverture.)
+> **Indice :** commence par la pièce de vie principale et la photo de couverture.
 
-Garde cette liste — on s'en servira au module 5.`,
+Garde cette liste — on s'en servira au **module 5**.`,
         },
       ],
     },
