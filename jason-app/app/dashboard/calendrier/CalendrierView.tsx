@@ -551,6 +551,37 @@ export default function CalendrierView({
         })
       })
 
+    // Séjours contrats : barre continue de l'arrivée jusqu'au départ
+    const seenContracts = new Set<string>()
+    filteredContractEvents
+      .filter(c => c.date_arrivee && c.date_depart && c.date_arrivee !== c.date_depart)
+      .filter(c => c.date_arrivee <= we && c.date_depart! >= ws)
+      .forEach(c => {
+        if (seenContracts.has(c.contractId)) return
+        seenContracts.add(c.contractId)
+        const ss = c.date_arrivee >= ws ? c.date_arrivee : ws
+        const se = c.date_depart! <= we ? c.date_depart! : we
+        const arrCat = CAT.arrivee
+        out.push({
+          id: `contract-${c.contractId}`,
+          title: c.logement_nom ?? 'Séjour',
+          color: arrCat.color,
+          bg:    arrCat.bg,
+          startCol: weekCells.findIndex(c2 => c2.date === ss),
+          endCol:   weekCells.findIndex(c2 => c2.date === se),
+          isStart:  c.date_arrivee >= ws,
+          isEnd:    c.date_depart! <= we,
+          isIcal:   false,
+          onClick:  () => {
+            setSelected(c.date_arrivee)
+            setYear(Number(c.date_arrivee.slice(0, 4)))
+            setMonth(Number(c.date_arrivee.slice(5, 7)) - 1)
+            const arrEv = contractEvents.find(e => e.contractId === c.contractId && e.type === 'arrivee')
+            if (arrEv) setSelectedContract(arrEv)
+          },
+        })
+      })
+
     return out
   }
 
