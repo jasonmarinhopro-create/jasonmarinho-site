@@ -251,20 +251,16 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
 
 const styles: Record<string, React.CSSProperties> = {
   sidebar: {
-    position: 'fixed', top: 0, left: 0, bottom: 0,
+    position: 'fixed', top: 0, left: 0,
     width: 'var(--sidebar-w)',
-    // iOS Safari : 100vh inclut la barre URL, 100dvh s'ajuste,
-    // mais en plus on borne avec bottom: 0 + height: 100% pour que
-    // ça tienne quand la barre URL apparait/disparait.
-    height: '100dvh',
-    maxHeight: '100dvh',
     background: 'var(--nav-bg)',
     borderRight: '1px solid var(--nav-border)',
     display: 'flex', flexDirection: 'column',
     zIndex: 99,
     backdropFilter: 'blur(20px)',
-    transition: 'background 0.25s ease, border-color 0.25s ease',
+    transition: 'background 0.25s ease, border-color 0.25s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     overscrollBehavior: 'contain',
+    // height géré dans globals.css avec fallbacks (100vh / -webkit-fill-available / 100dvh)
   },
   logoWrap: {
     display: 'flex', alignItems: 'center', gap: '10px',
@@ -288,12 +284,14 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center', justifyContent: 'center',
   },
   nav: {
-    flex: 1, padding: '12px 12px',
+    flex: '1 1 0',
+    padding: '12px 12px',
     display: 'flex', flexDirection: 'column', gap: '0',
     overflowY: 'auto',
     minHeight: 0,
     WebkitOverflowScrolling: 'touch',
     overscrollBehavior: 'contain',
+    // hauteur explicite en fallback iOS via la classe CSS
   },
   sectionLabel: {
     fontSize: '10px', fontWeight: 600, letterSpacing: '0.9px',
