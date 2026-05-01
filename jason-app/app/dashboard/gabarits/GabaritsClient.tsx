@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
   Copy, Check, MagnifyingGlass, Heart, PencilSimple, X,
@@ -104,6 +105,16 @@ export default function GabaritsClient({
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
   const [copied, setCopied]             = useState<string | null>(null)
   const [toast, setToast]               = useState<string | null>(null)
+
+  // ── Auto-filtre depuis ?cat= (lien depuis le calendrier) ─────────────
+  const searchParams = useSearchParams()
+  useEffect(() => {
+    const cat = searchParams?.get('cat')
+    if (!cat) return
+    const bucket = CATEGORY_TO_TIMING[cat]
+    if (bucket) setActiveFilter(bucket)
+    else if (cat === 'facebook') setActiveFilter('facebook')
+  }, [searchParams])
 
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
   const [modalTitle, setModalTitle]           = useState('')

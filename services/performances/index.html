@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performances LCD : taux d'occupation et revenus par logement | Jason Marinho</title>
+  <meta name="description" content="Pilote ta location courte durée : taux d'occupation, revenus mensuels, comparateur de logements, sources de réservation. Sache quand baisser tes prix.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/performances/">
+  <meta property="og:title" content="Performances LCD : pilote ton activité | Jason Marinho">
+  <meta property="og:description" content="Taux d'occupation, revenus, comparateur de logements. Toutes tes stats LCD au même endroit.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/performances/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/webp" href="/favicon-jason.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(64px,8vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .sub{font-size:clamp(15px,1.4vw,17px);line-height:1.75;color:rgba(255,255,255,.55);margin:0 0 32px;max-width:560px}
+
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,213,107,.25)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
+
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,110px) 0 clamp(56px,7vw,80px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:28px}
+    .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff}
+    .hero-brd span{font-size:11px}
+
+    /* KPI mock */
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:36px}
+    .kpi{background:#fff;border:1px solid rgba(0,76,63,.09);border-radius:14px;padding:18px}
+    .kpi-lbl{font-size:10px;font-weight:700;color:var(--tl);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+    .kpi-val{font-size:1.6rem;font-family:'Fraunces',serif;color:var(--td);font-weight:400;line-height:1}
+    .kpi-delta{font-size:12px;color:#10a67a;margin-top:6px;font-weight:600}
+    .kpi-delta.dn{color:#ef4444}
+    @media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+
+    /* Bar mock */
+    .bars{display:flex;align-items:flex-end;gap:6px;height:140px;padding:8px 0;border-top:1px solid rgba(0,76,63,.06);border-bottom:1px solid rgba(0,76,63,.06);margin-top:14px}
+    .bar{flex:1;border-radius:5px 5px 0 0;display:flex;align-items:flex-end;justify-content:center;color:#fff;font-size:9px;font-weight:600;padding-bottom:4px;background:#10a67a}
+    .bar.mid{background:#FACC15;color:var(--td)}
+    .bar.low{background:#F87171}
+    .bar-x{display:flex;gap:6px;margin-top:4px;font-size:10px;color:var(--tl)}
+    .bar-x span{flex:1;text-align:center}
+
+    /* Table mock */
+    .tab{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
+    .tab th{text-align:left;padding:10px 8px;font-size:10px;color:var(--tl);text-transform:uppercase;letter-spacing:.6px;font-weight:600;border-bottom:1px solid rgba(0,76,63,.08)}
+    .tab td{padding:10px 8px;border-bottom:1px solid rgba(0,76,63,.05);color:var(--tm)}
+    .tab td.nm{color:var(--td);font-weight:600}
+    .pill{display:inline-block;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700}
+    .pill.hi{background:rgba(16,166,122,.12);color:#10a67a}
+    .pill.md{background:rgba(250,204,21,.18);color:#a16207}
+    .pill.lo{background:rgba(239,68,68,.12);color:#ef4444}
+
+    /* Steps */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;position:relative}
+    .steps::before{content:"";position:absolute;top:28px;left:calc(16.66% + 20px);right:calc(16.66% + 20px);height:1px;background:linear-gradient(90deg,rgba(0,76,63,.15),rgba(0,76,63,.08));z-index:0}
+    .step{background:#fff;border:1px solid rgba(0,76,63,.09);border-radius:16px;padding:28px 24px;position:relative;z-index:1}
+    .step-n{width:40px;height:40px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#fff;margin-bottom:20px;font-family:'Fraunces',serif;flex-shrink:0}
+    .step h3{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:400;color:var(--td);margin:0 0 8px}
+    .step p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+    @media(max-width:768px){.steps{grid-template-columns:1fr}.steps::before{display:none}}
+
+    /* Cards features */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:36px}
+    .card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:26px;transition:box-shadow .2s,transform .2s}
+    .card:hover{box-shadow:0 6px 24px rgba(0,76,63,.09);transform:translateY(-2px)}
+    .card-ic{width:44px;height:44px;border-radius:11px;background:rgba(0,76,63,.08);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:22px;margin-bottom:16px}
+    .card h3{font-family:'Fraunces',serif;font-size:1.05rem;margin:0 0 8px;font-weight:400;color:var(--td)}
+    .card p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+
+    /* Two col */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+
+    /* Mock card */
+    .mock-card{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(0,76,63,.06)}
+    .mock-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(0,76,63,.07);margin-bottom:14px}
+    .mock-title{font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:600}
+    .mock-sub{font-size:12px;color:var(--tl);margin-top:2px}
+
+    /* FAQ */
+    .faq{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+    .faq-item{border:1px solid rgba(0,76,63,.1);border-radius:12px;overflow:hidden}
+    .faq-q{padding:17px 20px;font-weight:600;font-size:14.5px;color:var(--td);cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:#fff;user-select:none}
+    .faq-q:hover{background:rgba(0,76,63,.02)}
+    .faq-a{padding:0 20px 16px;font-size:14px;line-height:1.75;color:var(--tm);display:none}
+    .faq-item.open .faq-a{display:block} .faq-item.open .faq-ic{transform:rotate(180deg)}
+    .faq-ic{transition:transform .2s;color:var(--tl);font-size:13px}
+
+    /* CTA */
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,52px);text-align:center}
+  </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Performances LCD",
+  "url": "https://jasonmarinho.com/services/performances",
+  "description": "Tableau de bord de pilotage pour hôtes LCD : taux d'occupation, revenus, comparateur de logements.",
+  "inLanguage": "fr-FR",
+  "isPartOf": { "@type": "WebSite", "name": "Jason Marinho", "url": "https://jasonmarinho.com" },
+  "provider": { "@type": "Person", "name": "Jason Marinho", "url": "https://jasonmarinho.com" },
+  "serviceType": "Outil LCD gratuit",
+  "areaServed": "France"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://jasonmarinho.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://jasonmarinho.com/services" },
+    { "@type": "ListItem", "position": 3, "name": "Performances", "item": "https://jasonmarinho.com/services/performances" }
+  ]
+}
+</script>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd">
+      <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><span>Performances</span>
+    </div>
+    <div class="lbl">Pilotage & statistiques</div>
+    <h1 class="h1">Sache quand baisser<br><em>tes prix</em></h1>
+    <p class="sub">Taux d'occupation, revenus, comparateur de logements, sources de réservation. Toutes les stats qu'il te faut pour piloter ta LCD comme un pro — sans tableau Excel.</p>
+    <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Voir mes performances <i class="ph-bold ph-arrow-right"></i></a>
+  </div>
+</header>
+
+<!-- KPIs MOCK -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Vue d'ensemble</div>
+      <h2 class="h2">Tes chiffres clés <em>au premier coup d'œil</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:560px;line-height:1.7">Quatre indicateurs essentiels qui te disent en 3 secondes si ton mois est bon, et comment tu te situes par rapport au précédent.</p>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-lbl">Taux d'occupation</div>
+        <div class="kpi-val">78 %</div>
+        <div class="kpi-delta">↑ +12 % vs mois -1</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Revenu</div>
+        <div class="kpi-val">4 280 €</div>
+        <div class="kpi-delta">↑ +8 % vs mois -1</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Prix moy. / nuit</div>
+        <div class="kpi-val">142 €</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Nb séjours</div>
+        <div class="kpi-val">9</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--tl);text-align:center;margin:14px 0 0">Illustration — vue réelle dans l'espace membres</p>
+  </div>
+</section>
+
+<!-- 3 STEPS -->
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Comment ça marche</div>
+      <h2 class="h2">Pas de saisie, <em>pas de tableur</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:520px;line-height:1.7">Tes stats se calculent automatiquement à partir de tes séjours et logements existants. Rien à faire de plus.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>Tes séjours sont déjà là</h3>
+        <p>Si tu utilises le calendrier ou les contrats, tes séjours alimentent automatiquement tes performances.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>Filtre selon ton besoin</h3>
+        <p>Vue ce mois, 3 mois, 6 mois, 12 mois ou année complète. Par logement ou tous logements confondus.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>Décide en connaissance de cause</h3>
+        <p>Tu vois tout de suite quel logement sous-performe et où ajuster tes prix ou ta visibilité.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BAR CHART MOCK -->
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Évolution mensuelle</div>
+        <h2 class="h2">Ta saisonnalité <em>en couleurs</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Vert quand tu cartonnes (>70 %), jaune quand c'est correct (40-70 %), rouge quand il faut bouger (<40 %). Tu identifies tes mois faibles d'un seul regard.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Vert :</strong> rythme optimal, pense à monter tes prix.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Jaune :</strong> rythme correct, marge de progression.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Rouge :</strong> alerte, baisse les prix ou lance une promo.</div>
+        </div>
+      </div>
+      <div>
+        <div class="mock-card">
+          <div class="mock-head">
+            <div>
+              <div class="mock-title">Taux d'occupation</div>
+              <div class="mock-sub">12 derniers mois</div>
+            </div>
+          </div>
+          <div class="bars">
+            <div class="bar low" style="height:25%">25</div>
+            <div class="bar mid" style="height:42%">42</div>
+            <div class="bar mid" style="height:55%">55</div>
+            <div class="bar" style="height:78%">78</div>
+            <div class="bar" style="height:88%">88</div>
+            <div class="bar" style="height:92%">92</div>
+            <div class="bar" style="height:95%">95</div>
+            <div class="bar" style="height:80%">80</div>
+            <div class="bar mid" style="height:60%">60</div>
+            <div class="bar mid" style="height:50%">50</div>
+            <div class="bar low" style="height:30%">30</div>
+            <div class="bar low" style="height:35%">35</div>
+          </div>
+          <div class="bar-x">
+            <span>jan</span><span>fév</span><span>mar</span><span>avr</span><span>mai</span><span>juin</span>
+            <span>juil</span><span>aoû</span><span>sep</span><span>oct</span><span>nov</span><span>déc</span>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:12px 0 0">Illustration — graphique réel dans l'espace membres</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARATEUR LOGEMENTS -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="mock-card">
+          <div class="mock-head">
+            <div>
+              <div class="mock-title">Mes logements</div>
+              <div class="mock-sub">Triés par revenu — 12 mois</div>
+            </div>
+          </div>
+          <table class="tab">
+            <thead>
+              <tr><th>Logement</th><th style="text-align:right">Occ.</th><th style="text-align:right">Revenu</th><th style="text-align:right">€/nuit</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="nm">Villa du Soleil</td><td style="text-align:right"><span class="pill hi">82 %</span></td><td style="text-align:right">28 400 €</td><td style="text-align:right">142 €</td></tr>
+              <tr><td class="nm">Studio Centre</td><td style="text-align:right"><span class="pill hi">76 %</span></td><td style="text-align:right">14 200 €</td><td style="text-align:right">95 €</td></tr>
+              <tr><td class="nm">Cabane des Pins</td><td style="text-align:right"><span class="pill md">52 %</span></td><td style="text-align:right">9 800 €</td><td style="text-align:right">110 €</td></tr>
+              <tr><td class="nm">Appart Plage</td><td style="text-align:right"><span class="pill lo">34 %</span></td><td style="text-align:right">5 600 €</td><td style="text-align:right">125 €</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:12px 0 0">Illustration — comparateur réel dans l'espace membres</p>
+      </div>
+      <div>
+        <div class="lbl dk">Comparateur</div>
+        <h2 class="h2">Sache quel logement <em>marche le mieux</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Quand tu en gères plusieurs, c'est dur de savoir lequel performe vraiment. Le comparateur te le dit en une seconde — et sur quelle métrique.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Taux d'occupation</strong> par logement avec code couleur.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Revenu et prix moyen</strong> pour chaque bien.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Durée moyenne de séjour</strong> et délai d'anticipation.</div>
+          <div style="font-size:14px;color:var(--tm);line-height:1.7"><strong style="color:var(--td)">Tri</strong> par n'importe quelle colonne.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARDS POURQUOI -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:36px">
+      <div class="lbl dk">Tout ce que tu auras</div>
+      <h2 class="h2">Le tableau de bord <em>complet</em></h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-chart-line-up"></i></div>
+        <h3>Taux d'occupation</h3>
+        <p>Calculé automatiquement par logement, par mois, par période. Avec delta vs période précédente.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-currency-eur"></i></div>
+        <h3>Revenus mensuels</h3>
+        <p>Évolution sur 12 mois. Tu vois tout de suite tes mois forts et tes mois creux.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-bed"></i></div>
+        <h3>Prix moyen / nuit</h3>
+        <p>Calculé sur tes séjours réels — pas un prix affiché. Pour savoir ton vrai rendement.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-house"></i></div>
+        <h3>Comparateur logements</h3>
+        <p>Quel bien rapporte le plus ? Lequel sous-performe ? Réponse instantanée dans un tableau trié.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-chart-pie-slice"></i></div>
+        <h3>Répartition revenus</h3>
+        <p>Donut visuel pour voir quelle part de tes revenus vient de quel logement.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-globe"></i></div>
+        <h3>Sources de réservation</h3>
+        <p>Airbnb, Booking, direct, bouche à oreille — d'où viennent vraiment tes voyageurs.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-clock-counter-clockwise"></i></div>
+        <h3>Anticipation moyenne</h3>
+        <p>Combien de jours en avance les voyageurs réservent. Pour savoir quand ouvrir tes calendriers.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-trophy"></i></div>
+        <h3>Insights automatiques</h3>
+        <p>Top performer du mois, logement en baisse, durée trop courte… des conseils contextualisés.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-download-simple"></i></div>
+        <h3>Export CSV</h3>
+        <p>Récupère tes stats au format tableur pour les partager avec ton comptable ou ton conjoint.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Questions fréquentes</div>
+        <h2 class="h2">Ce que tu <em>veux savoir</em></h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q">Comment sont calculés mes taux d'occupation ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Le taux d'occupation = nuits réservées / nuits disponibles sur la période. On utilise tes séjours existants (saisis manuellement ou synchronisés via iCal Airbnb / Booking).</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Faut-il saisir mes données quelque part ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Non. Si tu as déjà créé tes logements et tes séjours dans le dashboard, les performances sont calculées automatiquement. Aucune ressaisie.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Puis-je comparer plusieurs logements entre eux ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui, c'est même l'un des points forts. Le comparateur trie tes logements par revenu, par occupation ou par prix moyen, avec un code couleur pour repérer les sous-performants.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Puis-je exporter mes stats ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui, tu peux exporter le tableau comparateur au format CSV en un clic — pratique pour ton comptable ou pour archiver.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Combien ça coûte ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">L'accès à la section Performances est inclus dans l'espace membres gratuit. Crée ton compte et utilise-la directement.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec dk">
+  <div class="s-in">
+    <div class="cta-ban">
+      <div class="lbl">Pilote ta LCD</div>
+      <h2 class="h2 lt" style="max-width:480px;margin:0 auto 14px">Arrête de naviguer<br><em>au feeling</em></h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.45);margin:0 0 28px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.7">Accès gratuit aux Performances depuis ton espace membres.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/contact" class="btn-ol">Poser une question</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+<script>
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){q.closest('.faq-item').classList.toggle('open');});
+});
+</script>
+</body>
+</html>
