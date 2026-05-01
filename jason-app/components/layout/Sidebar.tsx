@@ -253,15 +253,18 @@ const styles: Record<string, React.CSSProperties> = {
   sidebar: {
     position: 'fixed', top: 0, left: 0, bottom: 0,
     width: 'var(--sidebar-w)',
-    // Sur iOS Safari, 100vh inclut la barre d'URL même quand elle masque le contenu.
-    // 100dvh (dynamic viewport height) s'ajuste correctement.
+    // iOS Safari : 100vh inclut la barre URL, 100dvh s'ajuste,
+    // mais en plus on borne avec bottom: 0 + height: 100% pour que
+    // ça tienne quand la barre URL apparait/disparait.
     height: '100dvh',
+    maxHeight: '100dvh',
     background: 'var(--nav-bg)',
     borderRight: '1px solid var(--nav-border)',
     display: 'flex', flexDirection: 'column',
     zIndex: 99,
     backdropFilter: 'blur(20px)',
     transition: 'background 0.25s ease, border-color 0.25s ease',
+    overscrollBehavior: 'contain',
   },
   logoWrap: {
     display: 'flex', alignItems: 'center', gap: '10px',
@@ -288,6 +291,9 @@ const styles: Record<string, React.CSSProperties> = {
     flex: 1, padding: '12px 12px',
     display: 'flex', flexDirection: 'column', gap: '0',
     overflowY: 'auto',
+    minHeight: 0,
+    WebkitOverflowScrolling: 'touch',
+    overscrollBehavior: 'contain',
   },
   sectionLabel: {
     fontSize: '10px', fontWeight: 600, letterSpacing: '0.9px',
@@ -338,7 +344,9 @@ const styles: Record<string, React.CSSProperties> = {
   },
   sideFooter: {
     padding: '12px',
+    paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
     display: 'flex', flexDirection: 'column', gap: '4px',
+    flexShrink: 0,
   },
   footerDivider: {
     height: '1px', background: 'var(--nav-border)', margin: '0 0 4px',
