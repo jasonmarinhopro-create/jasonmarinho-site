@@ -545,518 +545,358 @@ Récap de ce que tu peux acheter pour démarrer :
           id: 1,
           title: `Checklist home staging — 23 points à vérifier`,
           duration: '12 min',
-          content: `---
+          content: `## Le secret des annonces qui font cliquer
 
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-Checklist home staging
-23 points à cocher avant la séance photo
-────────────────────────────────────
+Les meilleures annonces LCD ne sont pas mieux **photographiées**. Elles sont mieux **préparées**.
 
----
+Un magazine de déco ne photographie jamais un salon "tel quel". Le décorateur passe **30 minutes** à arranger chaque détail avant le premier cliché.
 
-## Le secret des annonces qui font cliquer
-Les meilleures annonces LCD ne sont pas
-mieux photographiées.
-Elles sont mieux **préparées**.
+> La même règle s'applique à ton logement. **30 minutes de préparation** = 1 heure de retouche en moins = des photos qui **semblent pro**.
 
-Un magazine de déco ne photographie jamais
-un salon "tel quel". Le décorateur passe
-30 minutes à arranger chaque détail
-avant le premier cliché.
-
-→ La même règle s'applique à ton logement.
-  30 minutes de préparation
-  = 1 heure de retouche en moins
-  = des photos qui semblent pro.
-
-Voici ta checklist exhaustive,
-pièce par pièce.
+Voici ta checklist exhaustive, pièce par pièce.
 
 ---
 
-## ENTRÉE / COULOIR (3 points)
-01. Range chaussures, manteaux, sacs.
-    Si tu en gardes, choisis 2 paires
-    élégantes alignées au sol.
+## Entrée / couloir *(3 points)*
 
-02. Décolle tout post-it, magnet,
-    facture, calendrier.
-    L'entrée doit respirer le neuf.
-
-03. Allume toutes les lampes
-    (même en plein jour).
-    Ambiance chaude.
+1. **Range chaussures, manteaux, sacs.** Si tu en gardes, choisis 2 paires élégantes alignées au sol.
+2. **Décolle tout post-it, magnet, facture, calendrier.** L'entrée doit respirer le neuf.
+3. **Allume toutes les lampes** *(même en plein jour)*. Ambiance chaude.
 
 ---
 
-## SALON (6 points)
-04. Plaide tendu sur le canapé,
-    ou plié en 2 sur l'accoudoir.
+## Salon *(6 points)*
 
-05. Coussins regonflés, alignés.
-    Mix de 2-3 textures (lin + velours
-    + tricot, par exemple).
-
-06. Table basse :
-    1 livre épais (déco ou voyage)
-    + 1 plante OU 1 bougie
-    + 1 plateau cuisine si tu en as.
-    PAS de télécommandes, PAS de chargeurs.
-
-07. Plantes :
-    Si tu en as une morte ou jaunie,
-    enlève-la. Mieux : pas de plante
-    qu'une plante triste.
-
-08. Tapis aspiré, droit, sans pli.
-
-09. Tableaux : alignés, droits.
-    Si l'un d'eux est démodé ou trop
-    personnel (photo de famille),
-    enlève-le pour la séance.
+4. **Plaid** tendu sur le canapé, ou plié en 2 sur l'accoudoir.
+5. **Coussins** regonflés, alignés. Mix de 2-3 textures *(lin + velours + tricot, par exemple)*.
+6. **Table basse** : 1 livre épais *(déco ou voyage)* + 1 plante OU 1 bougie + 1 plateau cuisine si tu en as. **Pas** de télécommandes, **pas** de chargeurs.
+7. **Plantes** : si tu en as une morte ou jaunie, enlève-la. Mieux : pas de plante qu'une plante triste.
+8. **Tapis** aspiré, droit, sans pli.
+9. **Tableaux** : alignés, droits. Si l'un d'eux est démodé ou trop personnel *(photo de famille)*, enlève-le pour la séance.
 
 ---
 
-## CUISINE (5 points)
-10. Plan de travail vide à 95 %.
-    Garde au max : machine à café,
-    bouilloire si design, 1 coupe à fruits.
-    Cache : friteuse, blender, micro-ondes
-    (si possible), torchons, épices,
-    chargeurs, factures.
+## Cuisine *(5 points)*
 
-11. Évier vide, brillant, sec.
-    Pas une seule éponge visible.
-
-12. Frigo libre de tout magnet,
-    photo, post-it.
-
-13. Crédence essuyée :
-    pas de tache, pas de gouttelette.
-
-14. 1 ou 2 objets "lifestyle" :
-    bouquet dans un pichet,
-    planche à découper avec citron coupé,
-    bocal en verre rempli de pâtes...
+10. **Plan de travail vide à 95 %.** Garde au max : machine à café, bouilloire si design, 1 coupe à fruits. **Cache** : friteuse, blender, micro-ondes *(si possible)*, torchons, épices, chargeurs, factures.
+11. **Évier vide**, brillant, sec. Pas une seule éponge visible.
+12. **Frigo** libre de tout magnet, photo, post-it.
+13. **Crédence essuyée** : pas de tache, pas de gouttelette.
+14. **1 ou 2 objets "lifestyle"** : bouquet dans un pichet, planche à découper avec citron coupé, bocal en verre rempli de pâtes…
 
 ---
 
-## CHAMBRE (4 points)
-15. Lit fait façon hôtel :
-    drap tendu, couette pliée à mi-lit,
-    4 oreillers empilés (2 + 2),
-    1 plaid au pied du lit.
+## Chambre *(4 points)*
 
-16. Tables de nuit : 1 livre +
-    1 lampe allumée + 1 verre d'eau
-    OU 1 bouquet. Rien d'autre.
-
-17. Aucun vêtement visible.
-    Range chaussures sous le lit
-    OU dans le placard fermé.
-
-18. Rideaux ouverts, lumière
-    naturelle qui entre.
+15. **Lit fait façon hôtel** : drap tendu, couette pliée à mi-lit, 4 oreillers empilés *(2 + 2)*, 1 plaid au pied du lit.
+16. **Tables de nuit** : 1 livre + 1 lampe allumée + 1 verre d'eau OU 1 bouquet. *Rien d'autre.*
+17. **Aucun vêtement visible.** Range chaussures sous le lit OU dans le placard fermé.
+18. **Rideaux ouverts**, lumière naturelle qui entre.
 
 ---
 
-## SALLE DE BAIN (5 points)
-19. Vasque vide :
-    pas de brosse à dents, pas de tube,
-    pas de produit. Garde max 1 distributeur
-    de savon design + 1 plante.
+## Salle de bain *(5 points)*
 
-20. Tapis de bain neuf, plié.
-    Serviettes pliées comme dans un hôtel
-    (3 plis), empilées par taille.
-
-21. Miroir parfaitement propre :
-    pas de trace, pas de gouttelette.
-
-22. Toilettes lunette baissée,
-    abattant baissé. Toujours.
-
-23. Allume toutes les lumières,
-    ouvre la fenêtre s'il y en a une.
+19. **Vasque vide** : pas de brosse à dents, pas de tube, pas de produit. Garde max 1 distributeur de savon design + 1 plante.
+20. **Tapis de bain** neuf, plié. **Serviettes** pliées comme dans un hôtel *(3 plis)*, empilées par taille.
+21. **Miroir** parfaitement propre : pas de trace, pas de gouttelette.
+22. **Toilettes** lunette baissée, abattant baissé. *Toujours.*
+23. **Allume toutes les lumières**, ouvre la fenêtre s'il y en a une.
 
 ---
 
-## DERNIER COUP D'ŒIL (5 minutes)
+## Dernier coup d'œil *(5 minutes)*
+
 Avant de prendre ta première photo :
 
-→ Marche dans tout le logement.
-  Note tout ce qui crée une dissonance :
-  fil qui dépasse, cadre de travers,
-  rideau froissé, abattant relevé,
-  lampe éteinte.
-
-→ Tu trouveras 5 à 10 détails
-  que tu n'avais pas vus.
-
-→ Fixe chacun de ces détails.
-  C'est exactement ce que les voyageurs
-  remarquent (inconsciemment) sur tes photos.
+1. **Marche dans tout le logement.** Note tout ce qui crée une dissonance : fil qui dépasse, cadre de travers, rideau froissé, abattant relevé, lampe éteinte.
+2. Tu trouveras **5 à 10 détails** que tu n'avais pas vus.
+3. **Fixe chacun** de ces détails. C'est exactement ce que les voyageurs remarquent *(inconsciemment)* sur tes photos.
 
 ---
 
-## Exercice
-**Avant la prochaine leçon :**
+## Exercice — avant la prochaine leçon
 
-Imprime cette checklist (ou note les 23 points
-sur ton téléphone). Fais le tour de ton logement,
-coche ce qui est OK, note ce qui manque.
+1. **Imprime cette checklist** *(ou note les 23 points sur ton téléphone)*.
+2. **Fais le tour** de ton logement, coche ce qui est OK, note ce qui manque.
 
-Si tu coches moins de 18 points sur 23,
-tu sais déjà pourquoi tes photos
-sous-performent. Tu n'as même pas encore
-besoin de refaire les photos —
-range et range encore avant de cliquer.`,
+> Si tu coches **moins de 18 points sur 23**, tu sais déjà pourquoi tes photos sous-performent. Tu n'as même pas encore besoin de refaire les photos — **range** et **range encore** avant de cliquer.`,
         },
         {
           id: 2,
           title: `Le rangement façon "magazine"`,
           duration: '10 min',
-          content: `---
+          content: `## La règle d'or : *« moins, mais mieux »*
 
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-Le rangement façon "magazine"
-Ce qu'on cache, ce qu'on met en valeur
-────────────────────────────────────
+Une pièce parfaitement rangée n'est pas une pièce **vide**. C'est une pièce où chaque objet visible a été **choisi** pour être là.
 
----
+Les magazines de déco l'ont théorisé en **3 catégories** d'objets pour chaque pièce :
 
-## La règle d'or : "moins, mais mieux"
-Une pièce parfaitement rangée n'est pas
-une pièce vide. C'est une pièce où chaque
-objet visible a été choisi pour être là.
+### 1. Les indispensables fonctionnels
 
-Les magazines de déco l'ont théorisé en
-3 catégories d'objets pour chaque pièce :
+Canapé, table, lit, chaises. *Rien à faire avec eux, ils sont là, point.*
 
-01. **Les indispensables fonctionnels**
-    Canapé, table, lit, chaises.
-    Rien à faire avec eux,
-    ils sont là, point.
+### 2. Les "stars" décoratives
 
-02. **Les "stars" décoratives**
-    1 à 3 objets par pièce qui
-    captent le regard et donnent
-    une personnalité au lieu.
-    (Une plante haute, un tableau,
-    une suspension design...)
+1 à 3 objets par pièce qui captent le regard et donnent une personnalité au lieu *(une plante haute, un tableau, une suspension design…)*.
 
-03. **Les "supports" lifestyle**
-    1 à 2 objets vivants qui
-    suggèrent une vie quotidienne :
-    livre ouvert, tasse de café,
-    plaid froissé volontairement.
+### 3. Les "supports" lifestyle
 
-→ Tout le reste = à cacher
-  pendant la séance photo.
+1 à 2 objets vivants qui suggèrent une vie quotidienne : livre ouvert, tasse de café, plaid froissé volontairement.
+
+> **Tout le reste = à cacher** pendant la séance photo.
 
 ---
 
-## Ce qu'on cache TOUJOURS
-Liste exhaustive des objets
-à faire disparaître :
+## Ce qu'on cache toujours
 
-**TECHNOLOGIE**
-→ Câbles et chargeurs
-→ Box internet, modem (cache derrière le canapé)
-→ Télécommandes (tiroir)
-→ Chargeurs muraux qui dépassent
-→ Power strip / multiprise
+Liste exhaustive des objets à faire disparaître :
 
-**HYGIÈNE**
-→ Brosse à dents, dentifrice
-→ Savons, shampoings entamés
-→ Serviette qui sèche
-→ Sac de linge sale
-→ Poubelle salle de bain
+### Technologie
 
-**PERSONNEL**
-→ Photos de famille
-→ Médicaments
-→ Tickets de caisse
-→ Lettres, factures, papiers
-→ Vêtements (TOUS)
+- Câbles et chargeurs
+- Box internet, modem *(cache derrière le canapé)*
+- Télécommandes *(tiroir)*
+- Chargeurs muraux qui dépassent
+- Power strip / multiprise
 
-**CUISINE EXCESSIVE**
-→ Friteuse, blender (sauf si design)
-→ Sopalin, papier toilette
-→ Éponges, gants ménagers
-→ Tubes de sauce
-→ Boîtes de céréales
-→ Bouteilles d'huile (sauf si jolies)
+### Hygiène
 
-→ Méthode : prends une grande boîte
-  ou un grand sac. Fais le tour des pièces
-  et ramasse tout ce qui est dans cette liste.
-  Range la boîte dans le placard ou la cave
-  pendant la séance.
+- Brosse à dents, dentifrice
+- Savons, shampoings entamés
+- Serviette qui sèche
+- Sac de linge sale
+- Poubelle salle de bain
 
-→ Bonus : c'est exactement ce que tu devras faire
-  avant chaque arrivée voyageur de toute façon.
+### Personnel
+
+- Photos de famille
+- Médicaments
+- Tickets de caisse
+- Lettres, factures, papiers
+- **Vêtements** *(tous)*
+
+### Cuisine excessive
+
+- Friteuse, blender *(sauf si design)*
+- Sopalin, papier toilette
+- Éponges, gants ménagers
+- Tubes de sauce
+- Boîtes de céréales
+- Bouteilles d'huile *(sauf si jolies)*
+
+> **Méthode :** prends une grande boîte ou un grand sac. Fais le tour des pièces et ramasse tout ce qui est dans cette liste. Range la boîte dans le placard ou la cave pendant la séance.
+
+> **Bonus :** c'est exactement ce que tu devras faire **avant chaque arrivée** voyageur de toute façon.
 
 ---
 
 ## Ce qu'on met en valeur
-À l'inverse, ce sont les objets que
-tu vas mettre EN PLUS :
 
-**SUR LES TABLES**
-→ Bougies (allumées, parfumées)
-→ Bouquets de fleurs fraîches
-  (tulipes, eucalyptus, branches d'olivier)
-→ Coupes de fruits (citrons,
-  oranges, grenades = très photogéniques)
-→ Livres de design / voyage
-  (en bibliothèque ou empilés sur table basse)
+À l'inverse, ce sont les objets que tu vas mettre **en plus** :
 
-**SUR LES CANAPÉS / LITS**
-→ Plaids texturés (lin, laine, velours)
-→ Coussins en sets de 3 textures différentes
-→ Drap brodé / dentelle si tu en as
+### Sur les tables
 
-**DANS LA CUISINE**
-→ Bouteille d'huile d'olive design
-→ Planche à découper en bois posée sur le plan
-→ Bocaux en verre transparents
-  remplis (pâtes, riz, café)
-→ Une seule grosse plante (basilic,
-  romarin) sur le rebord de fenêtre
+- **Bougies** *(allumées, parfumées)*
+- **Bouquets** de fleurs fraîches *(tulipes, eucalyptus, branches d'olivier)*
+- **Coupes de fruits** *(citrons, oranges, grenades = très photogéniques)*
+- **Livres** de design / voyage *(en bibliothèque ou empilés sur table basse)*
 
-**EN DÉCO MURALE**
-→ Affiches encadrées (photos noir et blanc,
-  abstraits, voyage)
-→ Miroir rond ou oval
-  (apporte de la lumière)
-→ Étagères ouvertes avec livres + objets
+### Sur les canapés / lits
 
-→ Si tu n'as rien de tout ça,
-  la prochaine leçon te montre comment
-  transformer ta pièce avec 12 € d'achats.
+- **Plaids texturés** *(lin, laine, velours)*
+- **Coussins** en sets de 3 textures différentes
+- **Drap brodé / dentelle** si tu en as
+
+### Dans la cuisine
+
+- **Bouteille d'huile d'olive** design
+- **Planche à découper** en bois posée sur le plan
+- **Bocaux en verre** transparents remplis *(pâtes, riz, café)*
+- Une seule **grosse plante** *(basilic, romarin)* sur le rebord de fenêtre
+
+### En déco murale
+
+- **Affiches encadrées** *(photos noir et blanc, abstraits, voyage)*
+- **Miroir rond** ou oval *(apporte de la lumière)*
+- **Étagères ouvertes** avec livres + objets
+
+> Si tu n'as rien de tout ça, la prochaine leçon te montre comment transformer ta pièce avec **12 € d'achats**.
 
 ---
 
 ## Le test du "regard étranger"
-Avant de prendre la photo,
-fais ce test :
 
-01. Ferme les yeux.
-02. Imagine que tu entres dans cette pièce
-    pour la première fois.
-03. Ouvre les yeux et regarde 2 secondes.
-04. Ferme les yeux à nouveau.
+Avant de prendre la photo, fais ce test :
 
-→ De quoi te souviens-tu ?
+1. **Ferme les yeux.**
+2. **Imagine** que tu entres dans cette pièce pour la première fois.
+3. **Ouvre les yeux** et regarde 2 secondes.
+4. **Ferme les yeux** à nouveau.
 
-Si tu te souviens des câbles qui traînent,
-de la prise apparente, du tas de courrier...
-ces détails sont dans ta photo aussi.
+> *De quoi te souviens-tu ?*
 
-Si tu te souviens du beau bouquet,
-de la lumière qui entre, du livre ouvert,
-du plaid texturé...
-ta photo va être bonne.
+Si tu te souviens des **câbles qui traînent**, de la prise apparente, du tas de courrier… *ces détails sont dans ta photo aussi*.
 
-→ Ce test te permet de valider
-  la mise en scène avant la photo.
-  Refais-le pour chaque pièce.
+Si tu te souviens du **beau bouquet**, de la lumière qui entre, du livre ouvert, du plaid texturé… *ta photo va être bonne*.
+
+> Ce test te permet de **valider** la mise en scène avant la photo. Refais-le pour chaque pièce.
 
 ---
 
-## Exercice
-**Action du jour :**
+## Exercice — action du jour
 
-Prends une grande boîte ou un grand sac.
-Fais le tour de ton logement, range
-tout ce qui est dans la liste "à cacher".
+1. **Prends une grande boîte** ou un grand sac.
+2. **Fais le tour** de ton logement, range tout ce qui est dans la liste *« à cacher »*.
+3. **Mesure le temps** que ça t'a pris. La prochaine fois qu'un voyageur arrive, tu sauras combien de temps prévoir.
 
-Mesure le temps que ça t'a pris.
-La prochaine fois qu'un voyageur arrive,
-tu sauras combien de temps prévoir.
-
-(Indice : la première fois, c'est lent.
-À partir de la 3ème, ça devient un réflexe
-de 10 minutes.)`,
+> **Indice :** la première fois, c'est lent. À partir de la 3ème, ça devient un réflexe de **10 minutes**.`,
         },
         {
           id: 3,
           title: `Déco temporaire — 12 € pour transformer une pièce`,
           duration: '8 min',
-          content: `---
+          content: `## Le principe : la déco "pour la photo"
 
-MODULE 3 · LEÇON 3
-────────────────────────────────────
-Déco temporaire — 12 € malins
-Transformer une pièce sans rénover
-────────────────────────────────────
+Tu n'as pas besoin de refaire toute ta déco. Tu as besoin de la déco visible **pendant les 1,7 seconde où le voyageur regarde**.
 
----
+Cette déco peut être achetée juste pour la séance photo, et rangée ensuite.
 
-## Le principe : la déco "pour la photo"
-Tu n'as pas besoin de refaire toute ta déco.
-Tu as besoin de la déco visible **pendant
-les 1,7 seconde où le voyageur regarde**.
+> **Coût total :** moins de 15 €.
 
-Cette déco peut être achetée juste pour
-la séance photo, et rangée ensuite.
-Coût total : moins de 15 €.
-
-→ Liste de courses ci-dessous,
-  pièce par pièce.
+Liste de courses ci-dessous, pièce par pièce.
 
 ---
 
-## Pour le salon (3-4 €)
-**1 bouquet de tulipes blanches ou roses**
-→ Carrefour / Lidl / Picard fleurs
-→ 2,50 € à 4 €
-→ Dure 5-7 jours
-→ Effet immédiat sur table basse
+## Pour le salon *(3-4 €)*
 
-**Optionnel : 1 livre design seconde main**
-→ Emmaüs / Vinted / brocante
-→ 3 € max
-→ Réutilisable à l'infini
+### 1 bouquet de tulipes blanches ou roses
 
-**Total salon : 6 €**
+- *Carrefour / Lidl / Picard fleurs*
+- **2,50 € à 4 €**
+- Dure 5-7 jours
+- Effet immédiat sur table basse
 
----
+### Optionnel : 1 livre design seconde main
 
-## Pour la cuisine (3 €)
-**3 citrons jaunes + 1 grenade**
-→ Marché / Carrefour
-→ 3 €
-→ Dans une coupe en verre,
-  ou sur planche à découper en bois
+- *Emmaüs / Vinted / brocante*
+- **3 € max**
+- Réutilisable à l'infini
 
-**Optionnel : bocal en verre rempli
-de pâtes ou de riz**
-→ Si tu n'en as pas, 2 € chez Action
-→ Réutilisable
-
-**Total cuisine : 3 € (5 € avec bocal)**
+> **Total salon : 6 €**
 
 ---
 
-## Pour la chambre (4-5 €)
-**1 plaid en lin ou jersey épais**
-→ Action / Hema / Søstrene Grene
-→ 5 €
-→ Plié au pied du lit
-→ Réutilisable comme couverture
-  ou plaid de canapé après
+## Pour la cuisine *(3 €)*
 
-**Optionnel : 1 plante en pot
-type Sansevieria (langue de belle-mère)**
-→ Botanic / Truffaut / Ikea
-→ 8-10 € (un peu plus cher)
-→ Quasi increvable, très photogénique
-→ Tu la gardes en permanence
+### 3 citrons jaunes + 1 grenade
 
-**Total chambre : 5 € (15 € avec plante)**
+- *Marché / Carrefour* — **3 €**
+- Dans une coupe en verre, ou sur planche à découper en bois
+
+### Optionnel : bocal en verre rempli de pâtes ou de riz
+
+- Si tu n'en as pas, **2 €** chez Action
+- Réutilisable
+
+> **Total cuisine : 3 €** *(5 € avec bocal)*
 
 ---
 
-## Pour la salle de bain (3 €)
-**3 serviettes blanches neuves
-de qualité moyenne**
-→ Action / Lidl / Tati
-→ 3 € pour les 3
-→ Pliées en 3 et empilées par taille
-→ Réutilisables pour la prochaine session
+## Pour la chambre *(4-5 €)*
 
-**Optionnel : 1 distributeur de savon
-design en céramique**
-→ Søstrene Grene / Action
-→ 3 €
-→ Remplace les bouteilles plastique
-  type "Carrefour Lavande Marine"
+### 1 plaid en lin ou jersey épais
 
-**Total salle de bain : 3 € (6 € avec distributeur)**
+- *Action / Hema / Søstrene Grene* — **5 €**
+- Plié au pied du lit
+- Réutilisable comme couverture ou plaid de canapé après
+
+### Optionnel : 1 plante en pot type Sansevieria
+
+- *(langue de belle-mère)*
+- *Botanic / Truffaut / Ikea* — **8-10 €** *(un peu plus cher)*
+- Quasi increvable, très photogénique
+- Tu la gardes en permanence
+
+> **Total chambre : 5 €** *(15 € avec plante)*
+
+---
+
+## Pour la salle de bain *(3 €)*
+
+### 3 serviettes blanches neuves de qualité moyenne
+
+- *Action / Lidl* — **3 €** pour les 3
+- Pliées en 3 et empilées par taille
+- Réutilisables pour la prochaine session
+
+### Optionnel : 1 distributeur de savon design en céramique
+
+- *Søstrene Grene / Action* — **3 €**
+- Remplace les bouteilles plastique type *"Carrefour Lavande Marine"*
+
+> **Total salle de bain : 3 €** *(6 € avec distributeur)*
 
 ---
 
 ## Total séance complète
-**Minimum :** 17 € pour avoir tous
-les "supports lifestyle" évoqués
-dans la leçon précédente.
 
-**Confort :** 30 € si tu prends aussi
-les options (livre, bocaux, plante,
-distributeur).
+| Niveau | Coût |
+|---|---|
+| **Minimum** *(supports lifestyle de base)* | 17 € |
+| **Confort** *(avec options : livre, bocaux, plante, distributeur)* | 30 € |
 
-→ Pour comparer : 1 photographe pro
-  facture 250 à 500 € la séance.
+> **Comparaison :** 1 photographe pro facture **250 à 500 €** la séance.
 
-→ Tu obtiens 80 % du résultat
-  pour 5 % du prix.
+> Tu obtiens **80 % du résultat** pour **5 % du prix**.
 
 ---
 
 ## La règle des "3 textures"
-Pour qu'une pièce semble riche
-sur photo, il faut au moins 3 textures
-différentes visibles dans le cadre :
 
-→ **Lisse :** verre, céramique, miroir
-→ **Doux :** velours, lin, jersey
-→ **Brut :** bois, rotin, paille
-→ **Mat :** béton, plâtre, terre cuite
-→ **Brillant :** chrome, laiton, marbre
+Pour qu'une pièce semble **riche** sur photo, il faut au moins **3 textures différentes** visibles dans le cadre :
 
-**Exemple cuisine :**
-→ Plan de travail (mat) + planche en bois (brut)
-  + bouteille en verre (lisse) + torchon en lin (doux)
+- **Lisse :** verre, céramique, miroir
+- **Doux :** velours, lin, jersey
+- **Brut :** bois, rotin, paille
+- **Mat :** béton, plâtre, terre cuite
+- **Brillant :** chrome, laiton, marbre
 
-**Exemple salon :**
-→ Sol parquet (brut) + tapis (doux)
-  + table basse en verre (lisse)
-  + plaid en velours (doux)
-  + livre en cuir (brut)
+### Exemple cuisine
 
-→ Si une pièce manque de textures sur ta photo,
-  c'est qu'elle manque d'objets ou que
-  les objets sont trop similaires.
+> Plan de travail *(mat)* + planche en bois *(brut)* + bouteille en verre *(lisse)* + torchon en lin *(doux)*.
+
+### Exemple salon
+
+> Sol parquet *(brut)* + tapis *(doux)* + table basse en verre *(lisse)* + plaid en velours *(doux)* + livre en cuir *(brut)*.
+
+> Si une pièce **manque de textures** sur ta photo, c'est qu'elle manque d'objets ou que les objets sont trop similaires.
 
 ---
 
 ## Ce que tu vas garder après la séance
+
 Tous ces objets sont rentables :
 
-→ Le bouquet : tu le mets dans ta cuisine
-  pour ton propre usage cette semaine.
-→ Les fruits : tu les manges.
-→ Le plaid : il reste pour les voyageurs.
-→ La plante : elle reste pour le décor permanent.
-→ Les serviettes : ton stock voyageur.
-→ Les bocaux : rangement cuisine.
-→ Le livre : objet déco définitif.
+- **Le bouquet** : tu le mets dans ta cuisine pour ton propre usage cette semaine.
+- **Les fruits** : tu les manges.
+- **Le plaid** : il reste pour les voyageurs.
+- **La plante** : elle reste pour le décor permanent.
+- **Les serviettes** : ton stock voyageur.
+- **Les bocaux** : rangement cuisine.
+- **Le livre** : objet déco définitif.
 
-→ Quasiment rien n'est "perdu".
-  Tu améliores aussi le quotidien
-  de tes vrais voyageurs.
+> Quasiment rien n'est *"perdu"*. Tu améliores aussi le **quotidien** de tes vrais voyageurs.
 
 ---
 
-## Exercice
-**Action de la semaine :**
+## Exercice — action de la semaine
 
-Fais ta liste de courses (max 20 €).
-Va faire les achats avant ta séance photo.
+1. **Fais ta liste de courses** *(max 20 €)*.
+2. **Va faire les achats** avant ta séance photo.
+3. Si tu n'as pas le temps maintenant, note tout sur ton téléphone et programme ta séance shopping pour ce week-end.
 
-Si tu n'as pas le temps maintenant,
-note tout sur ton téléphone et programme
-ta séance shopping pour ce week-end.
-
-→ Bonus : prends quelqu'un avec toi.
-  Une 2ème paire d'yeux te dira si tu choisis
-  bien tes éléments déco. Souvent, on tombe
-  sur du "trop perso" sans s'en rendre compte.`,
+> **Bonus :** prends quelqu'un avec toi. Une 2ème paire d'yeux te dira si tu choisis bien tes éléments déco. Souvent, on tombe sur du *"trop perso"* sans s'en rendre compte.`,
         },
       ],
     },
