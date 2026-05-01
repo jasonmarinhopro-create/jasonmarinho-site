@@ -1027,5 +1027,573 @@ Quand un voyageur viole une règle, suis toujours ces 3 étapes :
         },
       ],
     },
+    {
+      id: 3,
+      title: `L'état des lieux qui te protège`,
+      duration: '20 min',
+      lessons: [
+        {
+          id: 1,
+          title: `L'inventaire photo : la méthode 47 photos`,
+          duration: '7 min',
+          content: `## Pourquoi 47 photos exactement
+
+47, ce n'est pas un chiffre rond par hasard.
+
+C'est le **nombre minimum** de photos qu'il faut pour couvrir un T2 / T3 standard de manière à pouvoir prouver, en justice ou en médiation Airbnb, l'état exact du logement à un instant T.
+
+> Le voyageur qui te dit *« cette tache était déjà là »* perd toute crédibilité face à 47 photos datées et géolocalisées montrant le contraire.
+
+---
+
+## La règle d'or : photos avant CHAQUE arrivée
+
+L'inventaire photo doit être :
+
+- **Daté automatiquement** par ton smartphone (vérifie que la date EXIF est activée).
+- **Géolocalisé** (active le GPS pendant la prise).
+- **Pris en lumière naturelle** (les photos sombres sont peu probantes).
+- **Cadré large** : on doit voir l'ensemble de la pièce, pas un détail isolé.
+
+Tu **dois** refaire l'inventaire **avant chaque arrivée**. Pas une fois pour toutes.
+
+> Une photo qui date de 6 mois ne prouve rien sur l'état avant l'arrivée du voyageur actuel.
+
+---
+
+## La répartition des 47 photos
+
+Voici la grille type pour un T2 (60 m²) :
+
+### Entrée et couloir (3 photos)
+
+1. Vue d'ensemble depuis la porte d'entrée
+2. Mur d'entrée + porte
+3. Sol du couloir + plinthes
+
+### Salon (8 photos)
+
+4. Vue large depuis la porte
+5. Vue inverse (depuis le canapé)
+6. Canapé en gros plan (assise + dossier + accoudoirs)
+7. Table basse + dessus
+8. Tapis (s'il y en a)
+9. Mur télé / bibliothèque
+10. Sol parquet ou carrelage
+11. Plafond (rares fissures, taches d'humidité)
+
+### Cuisine (10 photos)
+
+12. Vue d'ensemble
+13. Plan de travail entier (vide)
+14. Évier + robinetterie
+15. Plaque de cuisson
+16. Four + porte four ouverte
+17. Frigo intérieur ouvert
+18. Frigo extérieur (état général)
+19. Crédence (taches éventuelles)
+20. Sol cuisine
+21. Placards intérieurs (au moins 2 angles)
+
+### Salle de bain (8 photos)
+
+22. Vue d'ensemble
+23. Vasque + miroir
+24. Robinetterie (joints, calcaire)
+25. Douche / baignoire entier
+26. Joints douche (zoom)
+27. WC (cuvette + abattant)
+28. Sol carrelage
+29. Plafond (humidité, moisissures)
+
+### Chambre principale (8 photos)
+
+30. Vue d'ensemble
+31. Lit fait + literie (drap blanc)
+32. Tête de lit (taches, traces)
+33. Placards / dressing intérieur
+34. Tables de nuit
+35. Fenêtre + rideaux
+36. Sol chambre
+37. Plafond
+
+### Autres pièces (5 photos)
+
+38. 2ème chambre / bureau (vue large + lit/bureau)
+39. Balcon / terrasse (vue large + sol)
+40. Buanderie / lave-linge (si applicable)
+41. Cave / garage (si applicable)
+42. Couloir secondaire
+
+### Détails à risque (5 photos)
+
+43. Tableau électrique
+44. Compteur d'eau
+45. Compteur électrique
+46. Robinet d'arrêt général
+47. Chauffe-eau / chaudière
+
+---
+
+## Comment classer ces 47 photos
+
+### Sur ton smartphone
+
+Crée un dossier dédié par séjour, par exemple :
+
+> **Logement-NomVoyageur-DateArrivée** → *T2-Bastille-Martin-2026-04-15*
+
+### Dans ton dashboard
+
+Si tu utilises le dashboard, lie ces photos directement à la **fiche incident** ou au **séjour** correspondant.
+
+> En cas de litige, tu pourras les sortir en 10 secondes au lieu de fouiller dans 5000 photos.
+
+---
+
+## La technique du "vlog d'inspection"
+
+Encore plus puissant que les photos statiques : la **vidéo d'inspection**.
+
+### Comment faire
+
+1. Pose ton smartphone à hauteur de poitrine.
+2. Active le mode vidéo.
+3. Marche dans tout le logement, pièce par pièce, en filmant chaque mur, sol, plafond, mobilier.
+4. Énonce à voix haute la date et le logement (*« 15 avril 2026, T2 rue de la Roquette, état des lieux avant arrivée Martin »*).
+5. Cadre les zones à risque en gros plan (joints, taches, etc.).
+
+### Durée idéale
+
+- **T1 / studio :** 2-3 minutes
+- **T2 :** 4-5 minutes
+- **T3+ :** 7-10 minutes
+
+### Avantages vs photos
+
+- **Impossible à contester** (tu vois la continuité spatiale).
+- **Plus rapide** à faire (5 min vs 20 min de photos).
+- **Plus convaincant** en cas de procès.
+
+> Une vidéo d'inspection vaut **47 photos**.
+
+---
+
+## Les zones que personne ne photographie (et qui posent problème)
+
+Voici les **5 zones oubliées** qui causent 80 % des litiges :
+
+1. **Le dessous du lit** — tu y trouves souvent des taches anciennes, des moisissures, des restes du voyageur précédent.
+
+2. **L'arrière du canapé** — chouchous, miettes, taches qui ne sont visibles qu'en déplaçant le meuble.
+
+3. **L'intérieur des placards** — taches, moisissures, traces d'insectes.
+
+4. **Les joints de douche** — moisissures qui s'aggravent au fil du temps.
+
+5. **Les rebords de fenêtres** — taches d'humidité, peinture écaillée.
+
+> Ajoute systématiquement ces 5 zones à ton inventaire des 47 photos.
+
+---
+
+## Que faire des photos après le séjour
+
+### Si tout va bien
+
+- Garde-les **6 mois** dans un dossier "archive".
+- Au-delà, supprime pour respecter le RGPD (sauf si litige en cours).
+
+### Si litige
+
+- Garde-les **2 ans minimum** (délai de prescription des litiges contractuels).
+- Stocke en sécurité : **3 emplacements** (smartphone, cloud, disque dur externe).
+
+> Une preuve qui n'existe plus, c'est comme si elle n'avait jamais existé.
+
+---
+
+## Exercice — action immédiate
+
+1. **Refais l'inventaire** de ton logement principal aujourd'hui (ou demain matin si lumière insuffisante).
+2. **Compte tes photos** : tu devrais en avoir au moins 47.
+3. **Filme une vidéo** d'inspection en complément.
+4. **Stocke** dans ton dashboard ou un dossier dédié sur ton smartphone.
+5. **Programme** la refonte de cet inventaire **avant chaque arrivée**.
+
+> 47 photos + 1 vidéo, c'est 7 minutes de travail.
+> Et c'est ce qui te fait gagner 500 € de caution prélevée sans contestation.`,
+        },
+        {
+          id: 2,
+          title: `L'état des lieux d'arrivée : ce qui te protège juridiquement`,
+          duration: '7 min',
+          content: `## Pourquoi un EDL d'arrivée formel
+
+Tu as tes 47 photos avant l'arrivée. Mais ça ne suffit pas pour gagner en justice.
+
+Il te faut **un acte signé** par le voyageur qui dit :
+
+> *« Je reconnais avoir trouvé le logement dans l'état décrit ci-dessous. Je m'engage à le restituer dans le même état. »*
+
+C'est **l'état des lieux d'arrivée**.
+
+---
+
+## Les 3 méthodes d'EDL
+
+### Méthode 1 — L'EDL papier traditionnel
+
+- Document de 4-6 pages avec liste exhaustive (mobilier, équipements, état général).
+- Signé par toi et le voyageur à l'arrivée.
+- Conservé en double exemplaire (un pour chaque partie).
+
+**Pour :** valeur juridique maximale.
+**Contre :** lent (30 minutes minimum), friction d'arrivée, papier à conserver.
+
+### Méthode 2 — L'EDL numérique signé
+
+- Document PDF généré automatiquement avec photos.
+- Envoyé au voyageur 24 h après l'arrivée.
+- Signé électroniquement (eIDAS).
+- Stocké dans le dashboard.
+
+**Pour :** rapide, traçable, modernisé.
+**Contre :** nécessite un outil dédié (le dashboard le propose).
+
+### Méthode 3 — L'EDL "validation tacite"
+
+- Tu envoies un message au voyageur dans les 4 heures suivant l'arrivée.
+- Tu joins **3-5 photos** des zones sensibles.
+- Tu demandes : *« Pouvez-vous me confirmer que tout est conforme ? Si vous voyez quelque chose qui n'est pas OK, signalez-le maintenant. »*
+- L'absence de réponse négative dans les 24 h vaut acceptation tacite.
+
+**Pour :** zéro friction d'arrivée.
+**Contre :** valeur juridique légèrement plus faible (mais suffisante pour 95 % des cas).
+
+> Pour 95 % des séjours, **méthode 3** suffit.
+> Pour les séjours long terme ou à forte caution (> 1500 €), **méthode 2** recommandée.
+
+---
+
+## Le message-type "validation tacite"
+
+À envoyer dans les 4 h après l'arrivée :
+
+> *« Bienvenue [Prénom] !*
+>
+> *Pour formaliser votre arrivée, je vous joins quelques photos prises ce matin avant votre arrivée. Pouvez-vous me confirmer que le logement est conforme à ces photos ?*
+>
+> *Si vous remarquez quelque chose qui ne va pas (tache, dégât, équipement manquant), signalez-le moi maintenant. Sans réponse de votre part dans les 24 h, l'état des lieux sera considéré comme accepté.*
+>
+> *Bon séjour ! »*
+
+### Ce qui rend ce message juridiquement solide
+
+- **Tu fournis la preuve** (photos) au moment où c'est encore vérifiable.
+- **Tu donnes au voyageur** la possibilité de contester (clause de bonne foi).
+- **Tu fixes un délai** (24 h, raisonnable et accepté en jurisprudence).
+
+> Si le voyageur ne répond pas et conteste 3 jours après, sa contestation est **irrecevable**.
+
+---
+
+## Ce que doit contenir un EDL formel
+
+Si tu choisis la méthode 1 ou 2, le document doit comporter :
+
+### Identification
+
+- Nom et prénom du bailleur
+- Nom et prénom du locataire
+- Adresse exacte du logement
+- Date et heure précises de l'EDL
+
+### Mobilier et équipements
+
+Liste pièce par pièce, avec **3 colonnes** :
+
+| Élément | État | Observations |
+|---|---|---|
+| Canapé 3 places | Bon | Tache mineure assise droite |
+| Table basse | Très bon | Aucune |
+| Lit 160 | Bon | Drap blanc impeccable |
+
+### Compteurs
+
+- Index électricité au début / à la fin
+- Index eau au début / à la fin
+- Index gaz si applicable
+
+### Photos jointes
+
+- Une photo par pièce minimum
+- Une photo par équipement à risque
+
+### Signatures
+
+- Bailleur (toi)
+- Locataire (le voyageur)
+- Date et heure
+
+---
+
+## L'état des lieux contradictoire (cas particulier)
+
+Pour les **séjours longs** (> 1 mois) ou les **situations sensibles** (pré-litige), tu peux faire un EDL **contradictoire** :
+
+- Tu te déplaces avec le voyageur dans tout le logement.
+- Vous notez ensemble chaque détail.
+- Vous signez ensemble le document.
+
+**Avantage :** valeur juridique **maximale** (équivalent EDL notaire).
+
+**Inconvénient :** chronophage (1 à 2 heures).
+
+> Réservé aux cas où tu sens que le voyageur va poser problème.
+
+---
+
+## L'état des lieux par huissier
+
+En dernier recours, tu peux faire intervenir un **huissier de justice**.
+
+### Quand l'utiliser
+
+- Voyageur qui refuse de signer un EDL standard.
+- Logement de grande valeur (> 5000 €/mois de loyer).
+- Pré-contentieux probable.
+
+### Coût
+
+- 200 à 400 € l'EDL.
+- Récupérable sur la caution si dégâts (clause à intégrer au contrat).
+
+### Procédure
+
+1. Tu contactes un huissier 48 h avant.
+2. Il vient à l'arrivée du voyageur (ou avant).
+3. Il établit un **acte authentique** signé par lui seul (le voyageur peut être présent ou non).
+4. L'acte a la même valeur qu'un jugement.
+
+> **Effet psychologique :** un voyageur qui voit un huissier au check-in se tient mieux pendant tout le séjour.
+
+---
+
+## Les pièges à éviter
+
+### Piège 1 — L'EDL "à la va-vite"
+
+*« Je signe, on fera l'EDL plus tard. »*
+
+→ **NON.** Pas d'EDL signé = pas d'EDL valable.
+Si le voyageur ne veut pas signer, tu refuses l'arrivée. Point.
+
+### Piège 2 — L'EDL "verbal"
+
+*« Tout est en ordre ? Oui, parfait. »*
+
+→ **NON.** L'oral n'a aucune valeur juridique.
+Toujours par écrit.
+
+### Piège 3 — L'EDL "incomplet"
+
+Tu listes les pièces principales mais tu zappes la cuisine ou la cave.
+
+→ **NON.** Tout ce qui n'est pas dans l'EDL = absent du contrat.
+Si un dégât survient sur un élément non listé, **tu ne peux rien réclamer**.
+
+### Piège 4 — L'EDL "trop détaillé"
+
+Tu listes chaque casserole, chaque cuillère, chaque coussin.
+
+→ Moyen. C'est valide juridiquement, mais ça crée une friction massive et un voyageur agacé.
+Garde le détail pour le **mobilier de valeur** (> 100 €) et les **équipements à risque**.
+
+---
+
+## Exercice — action immédiate
+
+1. **Choisis ta méthode** d'EDL (la 3 par défaut).
+2. **Prépare ton message-type** "validation tacite" et stocke-le dans tes Gabarits.
+3. **Vérifie le RIB** des compteurs intelligents si tu les utilises (Linky, capteurs eau).
+4. **Programme l'envoi** automatique du message dans les 4 h post-arrivée.
+5. Pour les **séjours sensibles**, prévois un EDL formel (méthode 1 ou 2).
+
+> Un EDL bien fait te sauve **9 fois sur 10** d'un litige.
+> Un EDL bâclé te coûte la totalité de la caution.`,
+        },
+        {
+          id: 3,
+          title: `L'état des lieux de sortie en 10 minutes sans le voyageur`,
+          duration: '6 min',
+          content: `## Le mythe de l'EDL de sortie en présence du voyageur
+
+Beaucoup d'hôtes pensent qu'il faut être présent **avec le voyageur** au moment du départ pour faire un EDL de sortie.
+
+C'est **faux**, voire contre-productif :
+
+- Le voyageur veut partir vite (avion, train, autre engagement).
+- Tu n'as pas le temps de vérifier en détail.
+- Le voyageur conteste tout en direct, négociations stériles.
+- Si tu trouves un dégât, conflit immédiat.
+
+> La méthode professionnelle : **EDL après le départ, sans le voyageur**, en 10 minutes chrono.
+
+---
+
+## La méthode 10 minutes
+
+### Étape 1 — Récupération des clés (1 min)
+
+- Le voyageur dépose les clés dans la boîte aux lettres / lockbox / chez le concierge.
+- Tu confirmes par message la bonne réception.
+
+### Étape 2 — Inspection rapide (5 min)
+
+Avec ton smartphone et le **mode vidéo** :
+
+1. Ouvre la porte du logement.
+2. Filme en marchant **dans le même ordre** que l'EDL d'arrivée.
+3. **Compare visuellement** chaque pièce avec l'état d'avant.
+4. Énonce à voix haute la date (*« 19 avril 2026, sortie Martin, 11h45 »*).
+5. Zoom sur tout ce qui paraît anormal.
+
+### Étape 3 — Photos des dégâts (3 min)
+
+Pour chaque élément non conforme :
+
+- **Photo large** (pour situer dans la pièce).
+- **Photo zoomée** (pour le détail).
+- **Photo avec un objet de référence** (pièce de monnaie pour la taille, mètre ruban pour la dimension).
+
+### Étape 4 — Compteurs (1 min)
+
+- Photo des index : électricité, eau, gaz.
+- Tu mesures la consommation du séjour.
+
+> En 10 minutes, tu as **toutes les preuves** nécessaires pour décider de la suite.
+
+---
+
+## Quand prélever la caution Stripe
+
+Tu as **3 cas** au sortir de l'inspection :
+
+### Cas A — Logement parfait
+
+- 0 dégât, ménage OK, comptage normal.
+- **Libère la caution Stripe immédiatement** (ou dans les 24 h).
+- Envoie un message au voyageur : *« Logement parfait, caution libérée. Merci pour ce séjour ! »*
+
+### Cas B — Dégâts mineurs (< 100 €)
+
+Linge taché, vaisselle cassée, électroménager mal nettoyé.
+
+- **Capture la caution Stripe** pour le montant exact.
+- Envoie au voyageur les photos + le devis / facture.
+- *« Suite à l'état des lieux, j'ai relevé [X dégâts]. Je prélève [Y €] sur la caution. Le solde de [Z €] vous est restitué. »*
+- Restitue le solde dans les 7 jours.
+
+### Cas C — Dégâts importants (> 100 €) ou contestables
+
+- **Capture la caution complète** dans les 7 jours (limite Stripe).
+- Documente très précisément (photos, devis pro, factures).
+- Prépare un **dossier complet** (cf. Module 4) à envoyer à Airbnb / Booking si dispute.
+
+> Plus le montant est élevé, plus la documentation doit être complète.
+
+---
+
+## Le piège du "voyageur qui veut être présent au check-out"
+
+Certains voyageurs **insistent** pour être présents au check-out.
+
+### Pourquoi ils insistent
+
+- Ils veulent **te dissuader** de prélever (effet de présence physique).
+- Ils veulent **négocier en direct** des dégâts qu'ils savent avoir causés.
+- Ils veulent **témoigner** que "tout était parfait".
+
+### Comment refuser poliment
+
+> *« Pour fluidifier votre départ, je préfère faire l'EDL de sortie après votre départ. Je vous enverrai les photos et le rapport dans les 24 h. Vous aurez tout le temps de réagir si quelque chose ne va pas. »*
+
+→ **80 % des voyageurs acceptent.**
+
+→ Les 20 % qui résistent veulent vraiment te mettre la pression. **Maintiens ta position.**
+
+---
+
+## La méthode "ménage = inspection"
+
+Si tu fais le ménage toi-même, profite-en.
+
+Si tu utilises une **société de ménage**, demande-leur de :
+
+1. **Photographier** chaque pièce avant de commencer.
+2. **Signaler** par message tout dégât trouvé.
+3. **Photographier** les dégâts en gros plan.
+4. **Te transmettre** le rapport sous 1 h après leur intervention.
+
+### Brief type pour ta société de ménage
+
+> *« Bonjour, voici les consignes de signalement :*
+> *— Photo de chaque pièce avant ménage*
+> *— Photo de toute tache, casse, ou anomalie*
+> *— SMS si dégât > 50 € (tu te déplaces)*
+> *— Rapport WhatsApp avec photos sous 1 h après intervention*
+> *Merci ! »*
+
+→ Ton équipe ménage devient ton **système d'alerte précoce**.
+
+---
+
+## Le rapport de sortie au voyageur
+
+Si tu prélèves la caution, envoie un **rapport structuré** :
+
+### Format type
+
+> *« Bonjour [Prénom],*
+>
+> *Suite à votre départ, voici le rapport d'état des lieux :*
+>
+> *✓ Tout est conforme sur l'ensemble du logement, SAUF les éléments suivants :*
+>
+> *1. **Linge taché** — Drap housse 160x200 + 2 oreillers. Photos jointes. Devis remplacement : 65 €.*
+>
+> *2. **Verre cassé** — 2 verres à vin manquants (sur les 6 fournis). Coût : 18 €.*
+>
+> *Total prélevé sur la caution : 83 €. Solde de [montant] € restitué dans les 24 h.*
+>
+> *Je reste disponible si vous avez des questions ou des contestations à formuler. Sans retour de votre part dans les 7 jours, le prélèvement sera considéré comme accepté.*
+>
+> *Cordialement, [Ton nom] »*
+
+### Pourquoi ce format
+
+- **Factuel** : tu cites les dégâts, pas tes émotions.
+- **Justifié** : tu fournis les preuves (photos) et les coûts (devis).
+- **Ouvert** : tu laisses au voyageur la possibilité de contester.
+- **Limité dans le temps** : tu fixes un délai (7 jours), au-delà c'est validé.
+
+> Avec ce format, **80 % des voyageurs acceptent sans broncher.**
+> Les 20 % qui contestent vont au Module 4.
+
+---
+
+## Exercice — action immédiate
+
+1. **Crée le message-type "validation départ parfait"** dans tes Gabarits.
+2. **Crée le message-type "rapport de sortie avec prélèvement"** dans tes Gabarits.
+3. **Brief ta société de ménage** sur le protocole de signalement (si tu en as une).
+4. **Prépare le matériel** pour l'inspection : smartphone chargé, mode vidéo, lockbox vérifiée.
+5. **Fixe une routine** : EDL de sortie systématique dans les 2 h après le départ.
+
+> Une routine de sortie en 10 minutes = **0 stress** + **100 % de prélèvements justifiés**.`,
+        },
+      ],
+    },
   ],
 }
