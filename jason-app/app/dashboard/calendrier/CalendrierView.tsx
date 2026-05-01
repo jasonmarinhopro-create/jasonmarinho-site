@@ -1121,6 +1121,31 @@ export default function CalendrierView({
         })()}
       </div>
 
+      {/* Vue compacte mobile : 2 KPIs essentiels seulement */}
+      <div className="cal-mobile-kpis">
+        {(() => {
+          const arrivals = headerStats.arrToday + headerStats.depToday
+          const occ = headerStats.occupationPct
+          const occColor = occ >= 70 ? '#10b981' : occ >= 40 ? 'var(--accent-text)' : 'var(--text-2)'
+          return (
+            <>
+              <div style={s.mobKpi}>
+                <span style={s.mobKpiNum}>{arrivals}</span>
+                <span style={s.mobKpiLabel}>aujourd&apos;hui</span>
+              </div>
+              <div style={s.mobKpi}>
+                <span style={{ ...s.mobKpiNum, color: occColor }}>{occ}%</span>
+                <span style={s.mobKpiLabel}>occupation</span>
+              </div>
+              <div style={s.mobKpi}>
+                <span style={s.mobKpiNum}>{headerStats.arrWeek + headerStats.depWeek}</span>
+                <span style={s.mobKpiLabel}>cette semaine</span>
+              </div>
+            </>
+          )
+        })()}
+      </div>
+
       <style>{`
         .cal-cell { transition: background 0.12s; cursor: pointer; }
         .cal-cell:hover { background: var(--surface-2) !important; }
@@ -1143,6 +1168,8 @@ export default function CalendrierView({
           .cal-layout { flex-direction: column !important; }
           .cal-side   { width: 100% !important; border-left: none !important; border-top: 1px solid var(--border) !important; max-height: none !important; }
         }
+        /* Vue KPIs mobile : cachée sur desktop */
+        .cal-mobile-kpis { display: none; }
         @media (max-width: 767px) {
           /* Filter bar: chips scroll horizontally, search full-width below */
           .cal-filter-bar   { flex-direction: column !important; align-items: stretch !important; gap: 8px !important; }
@@ -1151,10 +1178,18 @@ export default function CalendrierView({
           .cal-search-wrap  { max-width: 100% !important; width: 100% !important; flex: none !important; min-width: 0 !important; }
           /* Month nav: tighter */
           .cal-month-title  { min-width: 140px !important; font-size: 17px !important; }
-          /* Mini-stats: tighter gaps */
-          .cal-mini-stats   { gap: 8px 14px !important; margin-top: 4px !important; }
-          /* Quick add: shorter placeholder via font-size reduction */
-          .cal-quick-wrap   { padding: 2px 4px 2px 12px !important; }
+          /* Mini-stats verbeuses : cachées sur mobile, remplacées par cal-mobile-kpis */
+          .cal-mini-stats   { display: none !important; }
+          .cal-mobile-kpis  {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+          }
+          /* Saisie rapide cachée sur mobile (saisie clavier pénible, le bouton + suffit) */
+          .cal-quick-wrap   { display: none !important; }
+          /* Bandeau "Tout est en ordre" plus discret sur mobile */
+          .cal-alert-ok     { padding: 8px 12px !important; font-size: 11.5px !important; }
         }
         @media (max-width: 640px) {
           .cal-root        { padding: 8px 8px 24px !important; gap: 10px !important; }
@@ -1343,7 +1378,7 @@ export default function CalendrierView({
         </div>
       )}
       {contractEvents.length > 0 && urgentAlerts.length === 0 && (
-        <div style={s.alertOk}>
+        <div style={s.alertOk} className="cal-alert-ok">
           <span style={s.alertOkDot} />
           Tout est en ordre — aucune action en attente
         </div>
@@ -2435,5 +2470,28 @@ const s: Record<string, React.CSSProperties> = {
   miniStatSep: {
     color: 'var(--border-2)',
     margin: '0 4px',
+  },
+  // ── KPIs compacts mobile (3 cartes) ──
+  mobKpi: {
+    display: 'flex', flexDirection: 'column' as const,
+    alignItems: 'flex-start',
+    gap: 2,
+    padding: '10px 12px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: 12,
+  },
+  mobKpiNum: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 20, fontWeight: 600,
+    color: 'var(--text)',
+    lineHeight: 1,
+  },
+  mobKpiLabel: {
+    fontSize: 10.5,
+    color: 'var(--text-3)',
+    textTransform: 'uppercase' as const,
+    letterSpacing: 0.6,
+    fontWeight: 500,
   },
 }
