@@ -1595,5 +1595,960 @@ Si tu prélèves la caution, envoie un **rapport structuré** :
         },
       ],
     },
+    {
+      id: 4,
+      title: `Après le séjour : réclamer les dégâts`,
+      duration: '35 min',
+      lessons: [
+        {
+          id: 1,
+          title: `Identifier et chiffrer un dégât (avec ou sans assurance)`,
+          duration: '7 min',
+          content: `## Les 4 types de dégâts en LCD
+
+Tout dégât appartient à l'une de ces 4 catégories. La procédure de chiffrage diffère pour chacune.
+
+### 1. Dégât superficiel
+
+- Tache sur tissu, drap, serviette
+- Verre cassé, vaisselle ébréchée
+- Petite éraflure sur meuble
+
+**Coût type :** 15 à 100 €.
+**Source de chiffrage :** facture de remplacement ou prix neuf.
+
+### 2. Dégât moyen
+
+- Tache profonde sur canapé / matelas
+- Brûlure de cigarette
+- Trou dans un mur (poignée de porte)
+
+**Coût type :** 100 à 500 €.
+**Source de chiffrage :** devis professionnel (peintre, tapissier, nettoyeur).
+
+### 3. Dégât lourd
+
+- Inondation (douche, évier, machine)
+- Vol d'équipement
+- Bris de fenêtre, porte, mobilier de valeur
+
+**Coût type :** 500 à 5000 €.
+**Source de chiffrage :** devis pro + intervention assurance.
+
+### 4. Sinistre majeur
+
+- Incendie
+- Cambriolage
+- Vandalisme intégral
+
+**Coût type :** > 5000 €.
+**Source de chiffrage :** expert d'assurance + déclaration auprès du procureur.
+
+> Plus le dégât est grave, plus la **documentation** doit être rigoureuse.
+
+---
+
+## Comment chiffrer correctement
+
+### Règle d'or : 3 sources
+
+Pour tout dégât > 100 €, fournis **3 sources de chiffrage** :
+
+1. **Une photo** datée, géolocalisée, en gros plan
+2. **Un devis professionnel** récent (< 30 jours) ou une facture
+3. **Une référence de prix neuf** (lien Amazon / Ikea / site fabricant)
+
+> Avec 3 sources, ton chiffrage est **incontestable** par le voyageur, par Airbnb, et même par un juge.
+
+### Le piège du "prix d'achat"
+
+Beaucoup d'hôtes facturent le **prix d'achat** original.
+
+**Erreur.**
+
+- Si l'objet a 3 ans, sa valeur a **diminué**.
+- Le voyageur peut contester en disant *« vous me facturez un canapé neuf alors qu'il était usé »*.
+- Airbnb peut refuser le remboursement total.
+
+### La méthode "prix de remplacement"
+
+Tu factures **le coût pour remettre dans l'état d'avant**.
+
+**Exemple :**
+
+- Drap housse 160x200 acheté 50 € il y a 2 ans.
+- Tache de vin profonde irrécupérable.
+- Tu factures **le prix d'un drap équivalent neuf** (~50 €).
+
+> Tu n'as pas à amortir : c'est le voyageur qui a causé la perte.
+
+### La méthode "vétusté" (pour mobilier > 100 €)
+
+Pour les objets de **valeur**, tu peux appliquer une décote de vétusté :
+
+| Âge | Valeur récupérable |
+|---|---|
+| < 1 an | 100 % |
+| 1 à 3 ans | 80 % |
+| 3 à 5 ans | 60 % |
+| 5 à 10 ans | 40 % |
+| > 10 ans | 20 % |
+
+**Exemple :**
+
+- Canapé acheté 1500 € il y a 4 ans.
+- Tache irrécupérable.
+- Vétusté à 4 ans = 60 %.
+- Tu factures **900 €** (1500 × 60 %).
+
+> La vétusté est **toujours en ta faveur** : si tu factures la valeur de remplacement (1500 €), Airbnb peut refuser. Si tu appliques la vétusté (900 €), Airbnb valide presque toujours.
+
+---
+
+## Avec assurance : le réflexe à adopter
+
+### PNO (Propriétaire Non Occupant)
+
+C'est ton assurance habitation pour LCD.
+
+**Ce qu'elle couvre :**
+
+- Dégâts importants (> 1500 € en moyenne)
+- Incendie, dégât des eaux, vol
+- Responsabilité civile
+
+**Ce qu'elle NE couvre PAS :**
+
+- Petits dégâts (vaisselle, linge taché)
+- Usure normale
+- Dégâts intentionnels du voyageur (sauf assurances spécifiques)
+
+### GLI ou Loyers Impayés
+
+Couvre les **impayés** (rare en LCD) et certaines dégradations.
+
+### Procédure assurance type
+
+1. **Déclare** le sinistre dans les **5 jours** ouvrables.
+2. **Fournis** photos, devis, témoignages.
+3. **Garde** tout en l'état (ne nettoie pas, ne répare pas avant la visite expert).
+4. **Récupère** le dédommagement sous 30-90 jours selon assurance.
+
+> L'assurance est lente, **n'attends pas** pour faire le ménage si tu as un autre voyageur dans 48 h. Documente d'abord, nettoie ensuite.
+
+---
+
+## Sans assurance : la stratégie "caution + AirCover"
+
+Pour les dégâts non couverts par l'assurance :
+
+### Niveau 1 — La caution Stripe
+
+- Couvre 95 % des dégâts moyens (< 1000 €).
+- Capture immédiate dans les 7 jours.
+
+### Niveau 2 — AirCover (Airbnb)
+
+- Backup pour les dégâts > caution.
+- Indemnité jusqu'à 3 millions $ (en théorie).
+- Procédure dans Module 4 leçon 2.
+
+### Niveau 3 — Demande au voyageur (rare)
+
+- Si dégâts > caution + AirCover refuse.
+- Tu envoies une **mise en demeure** au voyageur.
+- Si refus, tu vas en justice (procédure rare en LCD).
+
+---
+
+## Les pièges du chiffrage
+
+### Piège 1 — Surévaluer
+
+> *« Le voyageur a tout cassé, je facture 2000 € pour la vaisselle. »*
+
+**Conséquence :** Airbnb refuse, tu n'obtiens rien (même les 200 € justifiés).
+
+> Reste **précis et raisonnable** : tu obtiens 100 % au lieu de 0 %.
+
+### Piège 2 — Oublier des dégâts
+
+Tu remarques un dégât 3 jours après le départ.
+
+**Mauvaise nouvelle :**
+
+- Tu ne peux plus facturer.
+- Ta crédibilité est compromise.
+
+> Inspection **dans les 2 h** suivant le départ. Documentation complète. Tu n'as qu'**une chance**.
+
+### Piège 3 — Facturer la vétusté pré-existante
+
+Tu factures un parquet rayé alors qu'il était déjà rayé avant.
+
+**Conséquence :** le voyageur te montre l'EDL d'arrivée (où le rayage est noté).
+Tu perds en crédibilité, le voyageur conteste tout.
+
+> Compare **toujours** avec l'EDL d'arrivée avant de facturer.
+
+---
+
+## Exercice — action immédiate
+
+1. **Vérifie** ton assurance PNO : que couvre-t-elle exactement en LCD ?
+2. **Crée un tableau** de chiffrage type pour ton logement (linge, vaisselle, électroménager, mobilier) avec prix neuf récents.
+3. **Sauvegarde** ce tableau dans ton dashboard.
+4. **Identifie** un nettoyeur professionnel et obtiens un **devis type** pour des prestations courantes (désinfection cigarette, nettoyage tache canapé, désincrustation joint douche).
+
+> Avoir tes prix sous la main = chiffrage en 5 minutes au lieu de 1 heure.`,
+        },
+        {
+          id: 2,
+          title: `Réclamer la caution sur Airbnb : la procédure officielle 2026`,
+          duration: '8 min',
+          content: `## Le mythe de la "caution Airbnb"
+
+**Airbnb ne prélève pas de caution** au sens classique du terme.
+
+Ce que beaucoup d'hôtes appellent "caution Airbnb" est en fait l'un de ces 2 mécanismes :
+
+### 1. La pré-autorisation Airbnb (rare)
+
+- Airbnb peut bloquer 100 à 300 $ sur la carte du voyageur 48 h avant l'arrivée.
+- C'est **automatique** et **invisible** pour la plupart des séjours.
+- Tu n'as **aucun contrôle** sur cette pré-autorisation.
+
+### 2. Le Resolution Center
+
+- Outil pour réclamer un dédommagement après le séjour.
+- Le voyageur doit accepter ou contester.
+- Si conflit, AirCover prend le relais.
+
+> En réalité, **ta vraie caution = ta caution Stripe** (cf. Module 1.L2).
+> Le Resolution Center Airbnb est un **complément**, pas un remplacement.
+
+---
+
+## Le Resolution Center : procédure pas à pas
+
+### Étape 1 — Accéder au Resolution Center
+
+1. Connecte-toi sur Airbnb.
+2. Va dans **"Voyages"** ou **"Réservations passées"**.
+3. Trouve la réservation concernée.
+4. Click sur **"Demander de l'argent"** ou **"Resolution Center"**.
+
+### Étape 2 — Choisir le motif
+
+Airbnb propose plusieurs motifs préconfigurés :
+
+- **Dégâts au logement** (tache, casse, dégradation)
+- **Frais de nettoyage supplémentaires**
+- **Vol d'objets**
+- **Dommages à un voisin / autre logement**
+- **Frais médicaux** (rare)
+- **Autre**
+
+> Choisis le motif **le plus précis** possible. C'est important pour AirCover.
+
+### Étape 3 — Décrire les faits
+
+Texte recommandé (300-500 mots) :
+
+> *« Suite au séjour de [Voyageur] du [date arrivée] au [date départ], j'ai constaté les dégâts suivants au logement [adresse] :*
+>
+> *1. [Description précise du dégât 1] — coût : [X €]*
+> *2. [Description précise du dégât 2] — coût : [Y €]*
+> *3. [Description précise du dégât 3] — coût : [Z €]*
+>
+> *Ces dégâts n'étaient pas présents lors de l'arrivée du voyageur, comme le démontrent les photos d'état des lieux jointes (datées du [date]).*
+>
+> *Total réclamé : [montant total] €.*
+>
+> *Pièces jointes : photos avant / après, devis professionnel, captures de la communication avec le voyageur. »*
+
+### Étape 4 — Joindre les preuves
+
+Airbnb permet de joindre :
+
+- **10 photos maximum** (formats JPG, PNG).
+- **3 documents** (PDF : devis, factures).
+- **Captures d'écran** des messages voyageur.
+
+### Étape 5 — Envoyer la demande
+
+Click sur **"Envoyer"**.
+
+> Le voyageur a alors **72 heures** pour accepter, partiellement accepter, ou refuser.
+
+---
+
+## Les 3 issues possibles
+
+### Issue 1 — Le voyageur accepte
+
+- Tu reçois le montant **directement sur ton compte** Airbnb.
+- Délai : 3-7 jours après acceptation.
+
+> **Taux d'acceptation moyen :** 35 % des cas.
+
+### Issue 2 — Le voyageur conteste
+
+- Tu reçois une notification **"contestation"**.
+- Tu as 72 h pour répondre.
+- Si pas d'accord, c'est **AirCover** qui prend le relais.
+
+> Cf. la prochaine leçon pour la procédure AirCover.
+
+### Issue 3 — Le voyageur ne répond pas
+
+- Au bout de 72 h sans réponse, c'est **comme un refus**.
+- AirCover prend le relais automatiquement.
+
+---
+
+## Le délai critique : 14 jours
+
+**Important :** Airbnb impose un délai de **14 jours après le départ** du voyageur pour ouvrir une demande de dédommagement.
+
+- Au-delà, ta demande **n'est plus recevable**.
+- Pas de dérogation.
+
+> Réflexe : ouvre ta demande dans les **48 h** après le départ. Tu auras le temps de compléter ensuite.
+
+---
+
+## Les motifs de refus fréquents (et comment les éviter)
+
+### Motif 1 — Photos insuffisantes
+
+Le plus courant. Airbnb refuse car :
+
+- Tu n'as **pas de photo "avant"** (état d'arrivée).
+- Tes photos sont **floues** ou **mal cadrées**.
+- Pas de **date EXIF** sur les photos.
+
+> **Solution :** suis le Module 3 (47 photos + EDL d'arrivée).
+
+### Motif 2 — Chiffrage non justifié
+
+Tu réclames 500 € mais tu ne fournis qu'un devis approximatif ou pas de devis du tout.
+
+> **Solution :** **devis professionnel daté** systématique pour tout dégât > 100 €.
+
+### Motif 3 — Communication absente avec le voyageur
+
+Tu n'as **jamais** mentionné le dégât au voyageur avant la demande Resolution Center.
+
+> **Solution :** **toujours** envoyer un message au voyageur dans les 24 h après le départ avec photos et chiffrage. Avant d'ouvrir la demande Airbnb.
+
+### Motif 4 — Dégât "wear and tear"
+
+Airbnb refuse en jugeant que c'est de **l'usure normale**.
+
+> **Solution :** dans ta description, précise *« ce dégât n'est pas une usure normale, voici les photos avant ce séjour »*.
+
+### Motif 5 — Demande hors délai
+
+Tu ouvres la demande 16 jours après le départ.
+
+> **Solution :** dashboard avec **rappel automatique** à J+10 pour ouvrir la demande Airbnb.
+
+---
+
+## La bonne séquence après le départ
+
+| Jour | Action |
+|---|---|
+| **J+0** (départ) | Inspection 10 min + photos |
+| **J+1** | Message au voyageur avec photos + chiffrage |
+| **J+2-3** | Capture caution Stripe (si applicable) |
+| **J+5** | Si voyageur conteste : ouverture Resolution Center Airbnb |
+| **J+10** | Si voyageur ne répond pas : ouverture Resolution Center Airbnb |
+| **J+14** | Deadline absolue Resolution Center |
+
+> **Ne jamais** rater le délai des 14 jours.
+
+---
+
+## Exercice — action immédiate
+
+1. **Bookmark** le lien Resolution Center Airbnb : *Compte → Voyages → Réservation → Resolution Center*.
+2. **Crée un message-type** "ouverture Resolution Center" dans tes Gabarits.
+3. **Configure une alerte** dashboard à J+10 pour chaque séjour problématique.
+4. **Vérifie ton processus** : as-tu toujours les 47 photos + l'EDL d'arrivée signé ? Sinon, c'est ta priorité avant tout litige.
+
+> Une demande Resolution Center bien préparée = **80 % d'acceptation** ou indemnisation AirCover.
+> Une demande bâclée = **0 €** et avis 1⭐.`,
+        },
+        {
+          id: 3,
+          title: `Réclamer la caution sur Booking.com : la procédure officielle`,
+          duration: '7 min',
+          content: `## Booking.com vs Airbnb : la grande différence
+
+Sur Airbnb, tu as **AirCover** (assurance plateforme) et le **Resolution Center**.
+
+Sur Booking, **rien de tout ça**.
+
+> Booking n'est qu'un **canal de réservation**. La gestion des litiges, dégâts, cautions est **100 % à ta charge**.
+
+C'est plus contraignant, mais aussi plus **flexible** : tu n'as pas à respecter les 14 jours d'Airbnb, tu peux contester sur 1 an.
+
+---
+
+## La caution sur Booking : ton seul recours
+
+### Avant l'arrivée
+
+Tu as **3 options** :
+
+1. **Pré-autorisation Stripe** (recommandé, cf. Module 1.L2).
+2. **Booking Damage Deposit** (option Booking, peu fiable).
+3. **Caution physique** (chèque, espèces) à l'arrivée.
+
+> Booking propose une option "Damage deposit" mais elle est **peu utilisée** par les voyageurs et **mal gérée** par Booking. Préfère ta caution Stripe.
+
+### Pendant le séjour
+
+Booking ne fait **aucune** intermédiation. Tu es seul·e avec ton voyageur.
+
+### Après le séjour
+
+Tu factures **directement** sur ta caution Stripe ou tu envoies une **demande de paiement** au voyageur.
+
+---
+
+## La procédure de réclamation Booking
+
+### Étape 1 — Documenter (identique à Airbnb)
+
+- Photos avant / après
+- Devis pro
+- Captures de la communication
+
+### Étape 2 — Contacter le voyageur directement
+
+Sur Booking, tu peux contacter le voyageur **par mail** via :
+
+1. Connecte-toi sur **Booking Extranet** (l'interface hôte).
+2. Va dans **"Réservations" → "Réservation concernée"**.
+3. Click sur **"Contacter le client"**.
+4. Booking te révèle l'adresse mail du voyageur (différent d'Airbnb qui anonymise).
+
+> **Astuce :** sur Booking, tu as l'**email réel** du voyageur. Conserve-le pour toute correspondance hors plateforme.
+
+### Étape 3 — Le mail de réclamation
+
+Format type :
+
+> *Objet : Suite au séjour du [date] - Dégâts constatés*
+>
+> *Bonjour [Prénom],*
+>
+> *Je reviens vers vous suite à votre séjour à [logement] du [date] au [date].*
+>
+> *Lors de l'inspection post-départ, j'ai constaté les dégâts suivants :*
+>
+> *1. [Dégât 1] — [montant €]*
+> *2. [Dégât 2] — [montant €]*
+>
+> *Total : [X €].*
+>
+> *Vous trouverez en pièce jointe :*
+> *— Photos avant votre arrivée (datées du [date])*
+> *— Photos après votre départ*
+> *— Devis professionnel*
+>
+> *Conformément au contrat de location signé à votre arrivée, je prélève cette somme sur la caution déposée. Je reste disponible pour toute question.*
+>
+> *Cordialement, [Nom]*
+
+### Étape 4 — Capture de la caution
+
+- **Si caution Stripe** : capture sous 7 jours (limite Stripe).
+- **Si caution chèque** : encaisse à la banque.
+- **Si caution virement** : tu envoies au voyageur un mail de "non-restitution" et tu gardes la somme.
+
+### Étape 5 — Si le voyageur conteste
+
+Tu as **3 leviers** :
+
+1. **Contester** par mail avec preuves.
+2. **Saisir** un médiateur (cf. Module 5).
+3. **Aller** en justice (rarement nécessaire en LCD).
+
+---
+
+## Le rôle (limité) du support Booking
+
+### Quand contacter Booking
+
+**Pour :**
+
+- Voyageur qui te menace
+- Voyageur qui ne répond pas
+- Mauvais avis manifestement injustifié
+
+**Contre (Booking ne fait rien pour) :**
+
+- Réclamer un montant au voyageur
+- Capturer une caution
+- Indemniser des dégâts
+
+### Comment contacter
+
+Via l'**Extranet** : *"Aide" → "Contacter le support"*.
+
+Ou directement : **+33 1 57 32 92 39** (numéro hôte).
+
+---
+
+## La grande différence : pas d'AirCover
+
+Sur Booking, **aucune assurance plateforme**.
+
+### Conséquence
+
+- Si ta caution ne suffit pas, tu n'as **aucun recours** côté Booking.
+- Ton seul recours : **assurance PNO** (cf. Module 4.L1) ou **justice**.
+
+### Stratégie
+
+- **Ne baisse pas la caution** sur Booking (au contraire, mets 1.5x ce que tu fais sur Airbnb).
+- **Vérifie que ton assurance PNO** couvre les dégâts LCD.
+- **Sois plus sélectif** sur les voyageurs Booking (notation, vérification d'identité).
+
+---
+
+## Le piège du "voyageur pro" sur Booking
+
+Booking a une clientèle plus **professionnelle** qu'Airbnb (40 % de voyages d'affaires vs 15 % chez Airbnb).
+
+### Avantages
+
+- Voyageurs souvent plus respectueux.
+- Moins de fêtes / soirées.
+- Paiement par CB d'entreprise (récupération facile).
+
+### Inconvénients
+
+- Voyageurs plus **exigeants** sur les standards.
+- Réclamations plus **détaillées** et techniques.
+- Note qui peut **chuter rapidement** si imperfection.
+
+> Sur Booking, vise la **rigueur opérationnelle** plutôt que le "style chaleureux".
+
+---
+
+## La double protection : Booking + Stripe + PNO
+
+Pour un séjour Booking, ton schéma de protection optimal :
+
+1. **Caution Stripe** : 1.5x le standard Airbnb (ex: 450 € au lieu de 300 €).
+2. **Contrat signé** par le voyageur (méthode 2 du Module 3.L2).
+3. **Assurance PNO** active et adaptée à la LCD.
+4. **47 photos + vidéo** d'inspection avant arrivée.
+5. **EDL "validation tacite"** signé numériquement.
+
+> Avec ce schéma, tu es protégé à **99 %** sur Booking.
+
+---
+
+## Exercice — action immédiate
+
+1. **Vérifie** que tu as l'**email direct** des voyageurs Booking (et pas seulement le canal interne).
+2. **Augmente** ta caution Stripe à **1.5x** pour les réservations Booking.
+3. **Vérifie** ton contrat PNO : couverture LCD active ?
+4. **Crée un message-type** "réclamation Booking" pour gagner du temps.
+5. **Bookmark** : *admin.booking.com* (Extranet) + numéro support hôte.
+
+> Sur Booking, ta sécurité c'est **toi**.
+> Plus tu te prépares, moins tu te fais piéger.`,
+        },
+        {
+          id: 4,
+          title: `La caution Stripe / virement direct : comment encaisser`,
+          duration: '7 min',
+          content: `## Stripe : la procédure de capture en 5 minutes
+
+Tu as utilisé une **pré-autorisation Stripe** comme caution (Module 1.L2). Voici comment l'encaisser proprement.
+
+### Avant la capture
+
+Vérifie :
+
+- ✅ Le délai n'est pas dépassé (**7 jours** max après création de la pré-autorisation).
+- ✅ Tu as photographié les dégâts.
+- ✅ Tu as informé le voyageur par écrit.
+- ✅ Le montant à capturer est **justifié** par devis ou facture.
+
+### Étape 1 — Connexion Stripe
+
+1. Va sur **stripe.com/login**.
+2. Section **"Paiements"**.
+3. Trouve la pré-autorisation du voyageur (par nom ou date).
+
+> Sur le dashboard Jason Marinho, tu peux capturer directement depuis la fiche voyageur, sans passer par Stripe.
+
+### Étape 2 — Décide du montant
+
+Stripe permet de capturer :
+
+- **Le montant total** (= la totalité de la caution).
+- **Un montant partiel** (≤ caution totale).
+- **Aucun montant** (libération complète).
+
+> Si tu captures un montant partiel, le **solde** est libéré automatiquement vers le voyageur.
+
+### Étape 3 — Capture
+
+1. Click sur **"Capturer"**.
+2. Saisis le montant exact en € (en centimes : 8500 pour 85 €).
+3. Confirme.
+
+> La somme arrive sur ton compte Stripe sous **2-7 jours**, virée vers ta banque selon ta config.
+
+### Étape 4 — Notifier le voyageur
+
+Stripe envoie automatiquement un **email de notification** au voyageur :
+
+> *« Une charge de [montant] € a été appliquée sur votre carte... »*
+
+Tu peux compléter avec ton propre message (cf. Module 3.L3) pour expliquer les dégâts.
+
+---
+
+## Les 3 cas particuliers Stripe
+
+### Cas 1 — Le voyageur dispute (chargeback)
+
+Le voyageur signale le prélèvement à sa banque comme **non autorisé**.
+
+**Procédure :**
+
+1. Stripe te notifie sous **3-7 jours**.
+2. Tu as **7 jours** pour répondre avec preuves (contrat signé, photos, devis).
+3. Stripe transmet à la banque émettrice.
+4. La banque tranche sous **30-60 jours**.
+
+**Taux de victoire :** ~70 % avec preuves complètes, ~10 % sans preuves.
+
+> **Réflexe :** garde **toutes les preuves** organisées. Une seule chargeback peut te coûter le séjour entier + 15 € de frais Stripe.
+
+### Cas 2 — La pré-autorisation a expiré
+
+Tu as oublié de capturer dans les 7 jours.
+
+**Conséquence :** la caution est **automatiquement libérée**.
+
+> Pas de récupération possible côté Stripe. Tu dois passer par AirCover (Airbnb) ou demande directe (Booking).
+
+### Cas 3 — La carte est rejetée
+
+Au moment de la capture, la carte du voyageur est expirée ou bloquée.
+
+**Conséquence :** la capture **échoue**.
+
+> Tu dois alors envoyer un **lien de paiement** au voyageur, ou passer par AirCover.
+
+---
+
+## Le virement bancaire : la procédure
+
+Si tu as choisi le **virement** comme caution (cf. Module 1.L2) :
+
+### Avant l'arrivée
+
+Le voyageur t'a viré la caution. **Tu l'as sur ton compte**.
+
+### Après le départ
+
+Tu **gardes** ce que tu factures, tu **rembourses** le solde.
+
+**Procédure :**
+
+1. Calcule le solde à rembourser (caution - dégâts = solde).
+2. Fais un **virement** au voyageur dans les 7 jours.
+3. Envoie un **récapitulatif** par mail.
+
+> Avantage : tu as l'argent **physiquement**. Pas de risque de chargeback.
+> Inconvénient : tu dois **rembourser manuellement** chaque caution. Erreurs fréquentes.
+
+### Si le voyageur conteste
+
+- Il peut t'envoyer une **mise en demeure** par recommandé.
+- Tu réponds par recommandé avec **toutes tes preuves**.
+- Si désaccord persiste, **médiation** ou **justice** (cf. Module 5).
+
+> En pratique, **5 % seulement** des voyageurs vont en justice pour < 500 €. Ils abandonnent avant.
+
+---
+
+## Le chèque non encaissé : la procédure
+
+Si tu as choisi le **chèque** comme caution :
+
+### Si tout va bien
+
+Tu **rends** le chèque au voyageur lors du check-out (ou par la poste).
+
+### Si dégât < montant du chèque
+
+Tu **encaisses** le chèque à la banque.
+
+> **Attention :** le chèque a une **validité d'1 an et 8 jours**. Encaisse rapidement après le départ pour éviter qu'il soit annulé.
+
+### Si dégât > montant du chèque
+
+- Encaisse le chèque (couvre une partie).
+- Demande au voyageur le complément (mail + mise en demeure).
+- Si refus : assurance PNO ou justice.
+
+### Si chèque sans provision
+
+- La banque te le retourne avec mention "défaut de provision".
+- Tu paies des frais bancaires (5-15 €).
+- Tu as 2 recours :
+  1. **Représenter** le chèque 30 jours plus tard (souvent suffit).
+  2. **Mettre en demeure** le voyageur.
+
+---
+
+## Le tableau récapitulatif des frais
+
+Selon le mode de caution, voici les **frais cachés** :
+
+| Mode | Frais hôte | Délai d'argent en main |
+|---|---|---|
+| **Stripe capture** | 1,5 % du montant | 2-7 jours |
+| **Stripe chargeback** | 15 € + risque de perte | 30-60 jours |
+| **Virement bancaire** | 0 € | Immédiat (déjà sur compte) |
+| **Chèque encaissé** | 0 € | 5-10 jours |
+| **Chèque sans provision** | 5-15 € + délai | 30+ jours |
+
+> **Conclusion :** Stripe est le plus rapide mais avec frais. Le virement est gratuit mais demande du suivi manuel. Le chèque est gratuit mais long.
+
+---
+
+## Exercice — action immédiate
+
+1. **Vérifie** ton compte Stripe : as-tu bien activé les pré-autorisations ?
+2. **Prépare** ta procédure de capture (étapes 1-4 ci-dessus) sur ton smartphone.
+3. **Configure** un rappel automatique à J+5 pour capturer (avant le délai des 7 jours).
+4. **Sauvegarde** ton dossier "preuves" pour chaque séjour problématique (chargeback Stripe peut survenir 60 jours après).
+
+> La capture Stripe en **5 minutes** = caution récupérée.
+> La capture oubliée = caution perdue à jamais.`,
+        },
+        {
+          id: 5,
+          title: `Les preuves à conserver (photos, dates, devis, témoignages)`,
+          duration: '6 min',
+          content: `## Pourquoi la preuve est ton seul atout
+
+En cas de litige, tu **n'as pas** la parole du voyageur de ton côté.
+
+Tu n'as que **les preuves**.
+
+> Une preuve solide = 100 % de chance de gagner.
+> Une preuve faible = 0 %.
+
+Voici les **5 catégories** de preuves à constituer pour chaque séjour problématique.
+
+---
+
+## Catégorie 1 — Les preuves visuelles
+
+### Photos avant l'arrivée
+
+- **47 photos minimum** (Module 3.L1).
+- Toutes datées + géolocalisées.
+- Stockées dans un dossier dédié.
+
+### Photos après le départ
+
+- **Mêmes angles** que les photos avant.
+- Photos de chaque dégât en gros plan + plan large.
+- Photos avec **objet de référence** (mètre, pièce de monnaie).
+
+### Vidéo d'inspection
+
+- Une avant l'arrivée (Module 3.L1).
+- Une après le départ (Module 3.L3).
+- Avec **commentaire vocal** : date, heure, logement.
+
+> Une vidéo vaut **mille photos** en justice.
+
+---
+
+## Catégorie 2 — Les preuves textuelles
+
+### Communications avec le voyageur
+
+- **Captures Airbnb** : plate-forme, par message, datées.
+- **Captures Booking** : extranet, par email, datées.
+- **SMS** : exportés en PDF.
+- **WhatsApp** : exportés (chat → 3 points → exporter).
+
+> **Capture toujours** la conversation **complète** (pas juste les messages qui t'arrangent). Un juge ou un médiateur veut voir le contexte.
+
+### Mails
+
+- Conserve dans une **boîte mail dédiée** (ex: dossier "LCD-Litiges").
+- Imprime en **PDF** pour archive.
+
+### Mises en demeure (si applicable)
+
+- Envoyées en **recommandé avec accusé de réception**.
+- Conserve l'**accusé** comme preuve d'envoi.
+
+---
+
+## Catégorie 3 — Les preuves financières
+
+### Devis professionnels
+
+Pour chaque dégât > 100 €, fais établir un **devis daté** par un professionnel.
+
+**Exemples :**
+
+- Tapissier (canapé taché)
+- Peintre (mur abîmé)
+- Plombier (dégât des eaux)
+- Nettoyeur spécialisé (désinfection)
+
+> Le devis doit comporter : SIRET du professionnel, date, description précise du travail, montant HT et TTC.
+
+### Factures
+
+Si tu as déjà fait réparer, conserve la **facture acquittée**.
+
+> **Astuce :** demande à ton professionnel un **double des factures** datées du jour des travaux. Ça permet de prouver que tu as réparé "juste après le départ" et pas 3 mois plus tard.
+
+### Factures de remplacement
+
+Pour le mobilier / équipement remplacé :
+
+- Capture d'écran du **panier en ligne** (au moment de la commande).
+- **Confirmation de commande** par mail.
+- **Bon de livraison**.
+
+> 3 sources qui pointent vers le même montant = preuve incontestable.
+
+---
+
+## Catégorie 4 — Les preuves humaines
+
+### Témoignages voisins
+
+Si un voisin a vécu une nuisance (bruit, fête, comportement) :
+
+- Demande-lui de **mettre par écrit** son témoignage (mail, SMS).
+- **Conserve** son numéro et son nom complet.
+- En cas de procès, il pourra **témoigner**.
+
+### Témoignages de professionnels
+
+- **Femme/homme de ménage** qui a constaté les dégâts.
+- **Voisin** qui a appelé la police.
+- **Concierge** qui a vu des inconnus entrer.
+
+> Un témoignage écrit + signé + daté + photocopie de la pièce d'identité = **valeur juridique forte**.
+
+### Procès-verbal de police
+
+Si la police est intervenue :
+
+- Demande la **main courante** ou le **PV**.
+- Disponible auprès du **commissariat** d'intervention dans les 30 jours.
+- Document officiel avec valeur **incontestable**.
+
+---
+
+## Catégorie 5 — Les preuves objectives
+
+### Index des compteurs
+
+- **Photo des compteurs** (eau, électricité, gaz) avant et après le séjour.
+- Date EXIF visible.
+- Permet de prouver une **sur-consommation** (sur-occupation, fenêtres ouvertes, etc.).
+
+### Capteurs et données
+
+Si tu as des capteurs connectés :
+
+- **Logs Wi-Fi** : nombre d'appareils connectés (preuve de sur-occupation).
+- **Capteurs de bruit** (Minut, NoiseAware) : enregistrements horodatés (preuve de fête).
+- **Capteurs température** : peut prouver fenêtres ouvertes en chauffage à fond.
+
+> Ces données sont **acceptées en justice** comme preuves objectives.
+
+### Contrat signé électroniquement
+
+- Récupère le **PDF signé** dans ton dashboard ou ta plateforme de signature.
+- Le **certificat de signature électronique** prouve l'authenticité.
+- Acceptation eIDAS = pleinement valable en justice européenne.
+
+---
+
+## L'archivage : 3 emplacements
+
+Pour ne **jamais perdre** une preuve :
+
+### Emplacement 1 — Dashboard / cloud principal
+
+- Tous les éléments du séjour stockés dans la fiche voyageur.
+- Accessible en quelques clics.
+
+### Emplacement 2 — Cloud secondaire
+
+- Google Drive, iCloud, Dropbox.
+- Backup automatique.
+
+### Emplacement 3 — Disque dur externe
+
+- Backup mensuel sur un disque externe.
+- Permet de récupérer si l'un des clouds tombe.
+
+> **3 emplacements, 0 perte.**
+
+---
+
+## Le tableau de bord "preuves"
+
+Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashboard avec :
+
+| Élément | OK |
+|---|---|
+| ☐ 47 photos avant | |
+| ☐ 47 photos après | |
+| ☐ Vidéo d'inspection | |
+| ☐ Captures conversations | |
+| ☐ Devis professionnels | |
+| ☐ Factures | |
+| ☐ Témoignages | |
+| ☐ Index compteurs | |
+| ☐ Logs capteurs | |
+| ☐ Contrat signé | |
+
+> Si tu as **8/10** et plus, tu es prêt pour AirCover, médiation, ou justice.
+> Si tu as **< 5/10**, tu vas perdre. Documente plus.
+
+---
+
+## Exercice — action immédiate
+
+1. **Crée une boîte mail dédiée** "LCD-Litiges-[Année]".
+2. **Configure 3 emplacements** d'archivage pour tes preuves.
+3. **Récupère** les coordonnées de **5 voisins de confiance** (témoins potentiels).
+4. **Identifie 3 professionnels** locaux pour devis rapides (tapissier, peintre, plombier).
+5. **Crée une checklist** des 10 preuves à constituer pour chaque litige.
+
+> Une bonne archive te sauve **chaque litige**.
+> Une mauvaise archive te coûte **chaque litige**.`,
+        },
+      ],
+    },
   ],
 }
