@@ -503,5 +503,529 @@ Questions 5, 6, 7 + envoi du contrat + lien de caution Stripe
         },
       ],
     },
+    {
+      id: 2,
+      title: `Pendant le séjour : détecter les signaux`,
+      duration: '25 min',
+      lessons: [
+        {
+          id: 1,
+          title: `Les 8 alertes silencieuses qui annoncent un problème`,
+          duration: '9 min',
+          content: `## Pourquoi les signaux sont silencieux
+
+Quand un voyageur cause un problème, il **prévient rarement**. À l'inverse, il essaie souvent de **masquer** ce qui se passe pour ne pas se faire facturer ou expulser.
+
+> Ta mission pendant le séjour, c'est de **lire entre les lignes** et de réagir AVANT que la situation devienne irrécupérable.
+
+Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
+
+---
+
+## Signal 1 — Le silence radio total
+
+**Ce qui se passe :** le voyageur ne répond plus à tes messages après l'arrivée.
+
+**Pourquoi c'est suspect :** un voyageur normal répond rapidement, ne serait-ce que par politesse.
+
+**Ce que ça peut cacher :**
+
+- Une fête organisée (le voyageur évite de répondre pour ne pas être pris en flagrant délit).
+- Un dégât en cours (il préfère ignorer pour repousser la conversation).
+- Une sous-location (le vrai locataire n'est pas là, les "remplaçants" évitent le contact).
+
+**Comment réagir :** envoie un message neutre type *« Tout va bien chez vous ? Tout est OK pour le wifi / chauffage ? »*. Si pas de réponse en 6 h, **passe sur place ou envoie quelqu'un**.
+
+---
+
+## Signal 2 — Les bruits du quartier
+
+**Ce qui se passe :** un voisin t'écrit ou t'appelle pour signaler du bruit, des odeurs, du va-et-vient.
+
+**Pourquoi c'est sérieux :** pour qu'un voisin se manifeste, il faut que le problème dépasse largement le seuil normal.
+
+**Ce que ça révèle :**
+
+- 80 % du temps, c'est une fête.
+- 15 % du temps, ce sont des dégâts (déménagement nocturne, cambriolage interne).
+- 5 % du temps, c'est un voisin susceptible.
+
+**Comment réagir :** documente l'heure et la nature du signalement par écrit (SMS du voisin, mail). C'est ta preuve future.
+
+---
+
+## Signal 3 — La consommation anormale
+
+**Ce qui se passe :** tu as accès à ton compteur intelligent (Linky, eau) ou à un capteur, et tu vois une consommation anormale.
+
+**Indicateurs précis :**
+
+- Consommation d'eau **> 200 L/jour/personne** = douches multiples ou fuite ou déménagement.
+- Consommation électrique **> 50 % de la moyenne** = climatisation oubliée fenêtres ouvertes ou sur-occupation.
+- Pic de bruit Wi-Fi (> 20 appareils connectés) = invités non déclarés.
+
+**Comment réagir :** fais une "visite courtoise" sous prétexte (récupérer un colis, vérifier le chauffage, etc.).
+
+---
+
+## Signal 4 — Les photos d'arrivée bizarres
+
+**Ce qui se passe :** tu demandes au voyageur d'envoyer une photo de l'état des lieux à son arrivée. Sa photo est :
+
+- Floue
+- Cadrée bizarrement (un seul angle)
+- Montre des zones différentes de celles que tu attends
+
+**Pourquoi c'est suspect :** un voyageur honnête prend des photos claires et complètes.
+
+**Comment réagir :** redemande des photos précises (*« Pouvez-vous me prendre la salle de bain et la cuisine ? J'ai besoin pour la conformité. »*).
+
+---
+
+## Signal 5 — Les demandes de "sortie tardive" répétées
+
+**Ce qui se passe :** le voyageur demande de partir 2 h, 4 h, 6 h après l'heure prévue.
+
+**Pourquoi c'est suspect :** un voyageur normal demande 1 h max. Au-delà, ce sont souvent des stratégies pour :
+
+- Décaler l'état des lieux (te fatiguer pour que tu valides plus vite).
+- Faire le ménage de leur traîne (vrai sujet : qu'ont-ils à cacher ?).
+- Échapper à l'inventaire de sortie.
+
+**Comment réagir :** *« Désolé, ce n'est pas possible. Le ménage doit commencer à 11h pour le voyageur suivant. Sortie au plus tard à 11h. »* Pas de négociation.
+
+---
+
+## Signal 6 — Le ton qui dégrade
+
+**Ce qui se passe :** les premiers messages étaient cordiaux, puis ça devient sec, puis carrément hostile.
+
+**Pourquoi c'est sérieux :** un voyageur qui devient agressif se prépare souvent à :
+
+- Demander un remboursement abusif.
+- Te menacer d'un mauvais avis.
+- Cacher un dégât.
+
+**Comment réagir :** **garde absolument tout par écrit** (Airbnb chat, SMS). Évite le téléphone (pas de preuve). Reste poli et factuel : *« Je comprends votre frustration. Pour avancer, pouvez-vous me préciser le problème exact ? »*
+
+---
+
+## Signal 7 — Les messages le soir tard
+
+**Ce qui se passe :** le voyageur t'écrit après 22 h, surtout après 1 h du matin.
+
+**Pourquoi c'est suspect :** la majorité des messages tardifs concernent des situations qui se sont dégradées dans la soirée (fête, dispute, panique).
+
+**Comment réagir :** **ne réponds pas dans la nuit** (sauf urgence vitale). Réponds le lendemain matin avec une question factuelle. La nuit, tu ne penses pas clairement.
+
+---
+
+## Signal 8 — Le règlement en plusieurs fois sans demande
+
+**Ce qui se passe :** le voyageur te propose spontanément de payer une partie en cash ou de virer "un petit supplément".
+
+**Pourquoi c'est suspect :** un voyageur honnête paye le tarif affiché. Une proposition de paiement parallèle est souvent :
+
+- Un "achat" tacite de tolérance (*« je paye plus, vous fermez les yeux sur le bruit »*).
+- Une tentative d'éviter la traçabilité (Airbnb / impôts).
+
+**Comment réagir :** *« Tout paiement passe par la plateforme officielle pour des raisons de conformité. Si vous avez un besoin spécifique, dites-moi. »* Refuse poliment mais fermement.
+
+---
+
+## La grille de vigilance
+
+> Si tu détectes **2 signaux ou plus** en simultané, tu es en **alerte rouge**.
+
+Les actions à enclencher :
+
+1. **Documenter** par écrit toute communication (Airbnb chat, SMS, mails du voisinage).
+2. **Visiter** le logement sous prétexte cordial (livraison de courrier, vérification chauffage).
+3. **Photographier** discrètement l'état général sans entrer dans une posture accusatrice.
+4. **Préparer** ta caution Stripe pour capture rapide après le départ.
+5. **Anticiper** la rédaction de l'avis ouvert/fermé (cf. Module 5).
+
+> La détection précoce **divise par 3** le coût moyen d'un incident.
+
+---
+
+## Exercice — action immédiate
+
+1. **Note les 8 signaux** sur une fiche à garder près de ton téléphone.
+2. **Demande à 3 voisins** de confiance leur numéro pour qu'ils puissent te signaler des bruits.
+3. **Configure des alertes** sur ton compteur intelligent (notifications de consommation anormale).
+4. Lors du prochain séjour, **applique le scoring de vigilance** systématiquement.
+
+> Un hôte attentif détecte un problème **24 h avant** un hôte distrait.`,
+        },
+        {
+          id: 2,
+          title: `La plainte voisin : réagir sans escalader`,
+          duration: '8 min',
+          content: `## Le scénario classique
+
+Tu reçois ce message à 23h47 :
+
+> *« Bonsoir, je suis votre voisin du 2ème. Vos locataires font la fête depuis 21h, c'est insupportable. Je vais appeler la police si ça continue. »*
+
+**Ce qui se passe dans ta tête :**
+
+- Panique
+- Envie de virer immédiatement les voyageurs
+- Envie d'appeler les voyageurs pour engueuler
+- Peur de la police, de la copropriété, des futurs avis
+
+> **Stop.** Ce n'est pas le moment de réagir à chaud. C'est le moment de suivre une **procédure froide**.
+
+---
+
+## Étape 1 — Remercier le voisin (30 secondes)
+
+Réponds **immédiatement** au voisin :
+
+> *« Merci de m'avoir prévenu. Je m'occupe de la situation tout de suite. Je vous tiens au courant. »*
+
+Pourquoi c'est important :
+
+- Le voisin sait qu'il est entendu → il **n'appelle pas la police**.
+- Tu gagnes du temps pour agir (15-30 min en moyenne).
+- Tu transformes un voisin hostile en **témoin allié**.
+
+**Évite à tout prix :**
+
+- Justifier (*« mes voyageurs sont calmes d'habitude »*) → effet inverse.
+- Promettre (*« ça ne se reproduira plus »*) → tu ne maîtrises rien encore.
+- Te défausser (*« c'est Airbnb, je n'y peux rien »*) → tu perds en crédibilité.
+
+---
+
+## Étape 2 — Contacter le voyageur (2 minutes)
+
+Envoie un message **direct, ferme, sans accusation** :
+
+> *« Bonsoir, votre voisin du 2ème me contacte pour des nuisances sonores. Je dois vous demander de baisser immédiatement le bruit (musique, voix, fenêtres ouvertes). Si vous avez des invités, ils doivent partir maintenant. Je vous remercie de votre coopération. »*
+
+**Ce que tu fais :**
+
+- Tu cites une **source précise** (le voisin du 2ème) → impossible de nier.
+- Tu donnes des **actions concrètes** (baisser musique, fermer fenêtres, faire partir invités).
+- Tu nommes le **risque implicite** (la situation peut dégénérer).
+
+**Évite :**
+
+- Menacer (*« ou je vous expulse »*) → escalade.
+- Insulter (*« c'est inacceptable »*) → ils se braquent.
+- Trop parler → plus tu écris, moins le message porte.
+
+---
+
+## Étape 3 — Vérifier 30 minutes plus tard
+
+Renvoie un message au voisin :
+
+> *« J'ai contacté mes voyageurs, est-ce que la situation s'est calmée ? »*
+
+3 cas possibles :
+
+### Cas A — Le voisin dit que c'est calmé
+
+Bonne nouvelle. **Documente** la conversation entière.
+
+> *« Parfait, merci d'avoir signalé. N'hésitez pas si ça reprend. »*
+
+→ Note dans ton dashboard la date, l'heure, les acteurs.
+
+### Cas B — Le voisin dit que ça continue
+
+Procédure plus dure.
+
+→ Renvoie au voyageur :
+
+> *« Vous n'avez pas baissé le bruit comme demandé. Je vous demande à présent de cesser immédiatement toute nuisance, sous peine d'application des pénalités prévues au contrat. La police peut être appelée par les voisins. »*
+
+→ Préviens le voisin que tu as relancé.
+
+### Cas C — Le voisin a appelé la police
+
+C'est sérieux mais pas catastrophique.
+
+- Reste **chez toi**. Ne va PAS sur place pendant l'intervention.
+- Attends le rapport / PV au lendemain.
+- Prends contact avec la copropriété sous 24 h.
+
+---
+
+## Étape 4 — Le lendemain matin
+
+### Reprends contact avec le voyageur
+
+> *« Bonjour, je tenais à faire un point sur l'incident d'hier soir. Pouvez-vous me confirmer que tout est en ordre ce matin ? »*
+
+Cette message a 2 objectifs :
+
+1. **Forcer une réponse** (en cas d'avis négatif futur, tu auras la trace).
+2. **Tester le ton** du voyageur (s'il est défensif, prépare-toi à un litige).
+
+### Consigne tout par écrit
+
+Note dans ton dashboard (ou un cahier dédié) :
+
+- Date et heure de l'incident
+- Nom du voisin qui a signalé
+- Tes actions (messages envoyés, appels)
+- Réponse du voyageur
+- État de la situation finale
+
+> Cette documentation sera ton **bouclier** si le voyageur se plaint ensuite à Airbnb.
+
+---
+
+## Étape 5 — Si la fête continue malgré tes messages
+
+C'est le scénario le plus rare mais le plus grave. Tu as **3 options** :
+
+1. **Aller sur place toi-même** (si tu habites à proximité).
+2. **Envoyer une personne mandatée** (un voisin de confiance, un agent de sécurité).
+3. **Appeler le voyageur** par téléphone (en dernier recours).
+
+### Si tu vas sur place
+
+- **Ne montre aucune agressivité** (tu es seul·e contre un groupe potentiellement éméché).
+- Reste **dehors**. Sonne, attends.
+- Présente-toi : *« Je suis le propriétaire. Je viens parce que la situation a été signalée. Je vous demande à tous de partir maintenant, sauf les personnes inscrites sur la réservation. »*
+- **Filme discrètement** (preuve juridique, attention au cadre légal de la captation).
+- Si refus, **appelle la police** toi-même. Mieux que d'attendre que le voisin le fasse.
+
+---
+
+## Le contrat te protège-t-il vraiment ?
+
+Si ton contrat (cf. M1.L1) inclut une **clause anti-fête**, tu peux :
+
+- Justifier juridiquement la rupture du séjour si la fête persiste.
+- Prélever sur la caution une **pénalité contractuelle** (souvent 200-500 €).
+- Signaler à Airbnb avec preuve écrite (clause + messages + témoignage voisin).
+
+**Sans clause spécifique :**
+
+- Tu peux toujours résilier le séjour pour "trouble manifeste à l'ordre".
+- Mais Airbnb peut refuser la pénalité.
+- Tu es plus exposé en cas de procès.
+
+---
+
+## Exercice — action immédiate
+
+1. **Crée une fiche-réflexe** "plainte voisin" avec les 5 étapes ci-dessus, garde-la sur ton téléphone.
+2. **Récupère le numéro** de 3 voisins de confiance pour qu'ils te signalent en direct.
+3. **Vérifie ton contrat** : as-tu une clause anti-fête / nuisances ? Sinon, ajoute-la.
+4. **Note dans ton dashboard** chaque plainte, même mineure. Ça te sert à long terme.
+
+> Une plainte voisin bien gérée = **0 conséquence**.
+> Mal gérée = avis 1⭐, signalement copropriété, voire perte de l'autorisation municipale.`,
+        },
+        {
+          id: 3,
+          title: `Le voyageur qui ne respecte pas les règles : que faire en direct`,
+          duration: '8 min',
+          content: `## Les 5 règles les plus violées
+
+Voici les règles que les voyageurs **enfreignent le plus**, par ordre de fréquence :
+
+1. **Sur-occupation** (plus de personnes que sur la réservation)
+2. **Animaux non déclarés**
+3. **Fumée** dans le logement (cigarette, herbe, vape)
+4. **Fêtes / soirées** (bruit, invités)
+5. **Utilisation commerciale** (shoot photo, vidéo, événement)
+
+Pour chaque cas, il y a une **procédure spécifique** que voici.
+
+---
+
+## Cas 1 — Sur-occupation
+
+### Comment tu le détectes
+
+- Un voisin signale beaucoup de va-et-vient.
+- Tu vois plus de personnes sur les photos / vidéos d'arrivée.
+- Tu reçois plus de Wi-Fi connecté que prévu.
+- Caméra extérieure (légale) qui montre l'arrivée de plus de monde.
+
+### La marche à suivre
+
+**Étape 1 :** envoie un message factuel.
+
+> *« Je remarque que vous semblez être plus nombreux que les X personnes déclarées sur la réservation. Pouvez-vous me confirmer le nombre exact actuellement dans le logement ? »*
+
+**Étape 2 :** selon la réponse :
+
+- **Aveu** (*« on est X+2 »*) → applique le supplément contractuel (50 €/personne/nuit en moyenne) et fais payer via Airbnb (resolution center).
+- **Déni** (*« non on est X »*) → demande **photo de groupe** dans le salon. S'il refuse, c'est un aveu implicite.
+- **Hostilité** → consigne, attends le départ, applique sur la caution.
+
+### La pénalité contractuelle
+
+Ton contrat doit prévoir :
+
+> *« Tout dépassement de la capacité maximale autorisée entraîne un supplément de 50 €/personne/nuit, prélevé sur la caution. »*
+
+Avec cette clause, tu prélèves **sans demander l'autorisation**.
+
+---
+
+## Cas 2 — Animaux non déclarés
+
+### Comment tu le détectes
+
+- Photos sur les réseaux sociaux du voyageur avec son chien dans ton logement.
+- Voisin qui voit / entend un animal.
+- Au départ : poils, griffures, odeurs.
+
+### La marche à suivre pendant le séjour
+
+> *« Bonjour, j'ai eu un signalement concernant la présence d'un animal dans le logement. Mon assurance et mon contrat n'autorisent pas les animaux. Pouvez-vous m'expliquer ? »*
+
+**Réponse fréquente :** *« Oh c'est juste un petit chien, il ne fait rien. »*
+
+**Réagis :**
+
+> *« Je comprends, mais ce n'est pas une question de comportement, c'est une question d'assurance. Je vais devoir appliquer la pénalité contractuelle de 100 € + frais de désinfection (80 €). Le total sera prélevé sur la caution. »*
+
+### Si découverte au départ
+
+Documente :
+
+- **Photos** des poils, griffures, odeurs.
+- **Devis** du nettoyeur spécialisé (désinfection).
+- **Facture** de remplacement si literie tachée.
+
+**Total moyen prélevable :** 200 à 400 €.
+
+---
+
+## Cas 3 — Fumée dans le logement
+
+### Comment tu le détectes
+
+- Odeur persistante à l'arrivée du ménage.
+- Cendres dans une coupelle, sur le balcon, dans les WC.
+- Brûlures sur tissu, bois, plastique.
+- Photos sur réseaux sociaux du voyageur.
+
+### Pendant le séjour
+
+> *« Bonsoir, j'ai eu un signalement concernant une odeur de cigarette dans le logement / sur le balcon. Le contrat indique que le logement est non-fumeur. Pouvez-vous me confirmer que personne ne fume à l'intérieur ? »*
+
+→ Si aveu, demande l'arrêt immédiat.
+
+### Au départ — la procédure de facturation
+
+1. **Photos** des indices : cendres, brûlures, tissus tachés.
+2. **Devis** d'une entreprise spécialisée en désinfection olfactive (200-400 €).
+3. **Coût de remplacement** des textiles imprégnés (rideaux, oreillers, literie).
+4. **Manque à gagner** si tu dois bloquer un séjour pour aérer.
+
+**Total moyen prélevable :** 300 à 800 €.
+
+> La fumée de cannabis est **plus difficile** à éliminer (3 à 5 fois plus cher que la cigarette). Mentionne-le dans le devis.
+
+---
+
+## Cas 4 — Fêtes et soirées
+
+C'est le cas le plus stressant. Vois la **leçon précédente** pour la procédure plainte voisin.
+
+### Le test rapide pendant le séjour
+
+Si tu soupçonnes une fête :
+
+> *« Je vois qu'il y a beaucoup de monde aux fenêtres / qu'il y a du bruit signalé / que la consommation est élevée. Pouvez-vous me confirmer le nombre de personnes actuellement dans le logement ? »*
+
+**Réponse honnête** = quelques amis le temps d'un dîner.
+
+**Réponse évasive** = tu sais.
+
+### La règle d'or
+
+> Une fête **non autorisée** = expulsion immédiate.
+> Tu n'as pas besoin de la permission d'Airbnb pour mettre fin au séjour pour trouble manifeste.
+
+Procédure :
+
+1. Va sur place (ou envoie quelqu'un de fiable).
+2. Demande aux personnes non inscrites de partir.
+3. Si refus, appelle la police.
+4. Au lendemain, signale à Airbnb avec ta documentation (messages, photos, témoignage voisin).
+5. Réclame le remboursement intégral du séjour + dégâts.
+
+---
+
+## Cas 5 — Utilisation commerciale (shoot photo, événement, location bureau)
+
+### Comment tu le détectes
+
+- Camions de production qui arrivent au logement.
+- Présence d'équipements (éclairage, caméras).
+- Le voyageur a posté sur Instagram avec ton logement en décor d'un shoot.
+- Plusieurs personnes "professionnelles" dans le logement.
+
+### Pourquoi c'est un problème
+
+- Ton assurance habitation **ne couvre pas** un usage professionnel.
+- Ta copropriété peut **interdire** explicitement l'usage commercial.
+- Tu n'es **pas autorisé** à louer pour des tournages sans déclaration commerciale.
+
+### La marche à suivre
+
+> *« J'ai vu / on m'a signalé une activité professionnelle dans le logement. Mon assurance et mon règlement ne permettent pas l'usage commercial. Je dois vous demander d'arrêter immédiatement. Toute production professionnelle nécessite un contrat séparé et un tarif spécifique (généralement 5 à 10 fois le tarif nuit). »*
+
+### Le tarif "tournage" si tu veux capitaliser
+
+Si tu veux ouvrir cette possibilité comme business secondaire :
+
+- **Studio simple :** 500 € la demi-journée.
+- **Maison entière :** 1500-3000 €/jour.
+- Avec contrat spécifique : usage commercial, droit à l'image du logement, assurance professionnelle production.
+
+> Beaucoup d'hôtes refusent. C'est légitime. Mais c'est aussi un canal de revenus 5x supérieur si tu sais le facturer.
+
+---
+
+## Le principe général : "Documenter, demander, appliquer"
+
+Quand un voyageur viole une règle, suis toujours ces 3 étapes :
+
+### 1. Documenter
+
+- Photos, captures d'écran, messages, témoignages.
+- Tout par écrit, jamais d'oral.
+- Conserve **tout** dans ton dashboard (fiche incident).
+
+### 2. Demander
+
+- Message courtois mais ferme.
+- Cite la règle violée (le contrat).
+- Demande **une action immédiate**.
+
+### 3. Appliquer
+
+- Si la règle continue d'être violée, applique la pénalité.
+- Sur la caution, dans le délai légal.
+- Avec preuves consolidées.
+
+---
+
+## Exercice — action immédiate
+
+1. **Liste les 5 règles** les plus importantes pour ton logement.
+2. **Vérifie** que chaque règle a une **pénalité chiffrée** dans ton contrat.
+3. **Crée 5 messages-types** (un par cas) à coller en cas de violation.
+4. **Anticipe** : où sont les caméras autorisées ? Qui sont tes voisins-alliés ?
+
+> Un hôte qui applique systématiquement les pénalités contractuelles est **rarement** retesté.
+> Un hôte qui ferme les yeux sur la première infraction est **toujours** retesté.`,
+        },
+      ],
+    },
   ],
 }
