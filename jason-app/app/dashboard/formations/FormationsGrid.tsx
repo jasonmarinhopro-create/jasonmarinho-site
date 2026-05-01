@@ -59,6 +59,7 @@ const SLUG_CATEGORY: Record<string, string> = {
   'creer-conciergerie-lcd': 'conciergerie',
   'maitriser-booking-com-algorithme-genius': 'visibilite',
   'photographie-lcd-smartphone': 'visibilite',
+  'gerer-incidents-litiges-lcd': 'gestion',
 }
 
 const categoryLabel: Record<string, string> = {
