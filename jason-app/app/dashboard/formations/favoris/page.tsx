@@ -137,7 +137,7 @@ export default async function FavorisPage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '900px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   backLink: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '13px', fontWeight: 500, color: 'var(--text-2)',
@@ -186,8 +186,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   formationsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '10px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gap: '12px',
   },
   formationCard: {
     display: 'flex', alignItems: 'center', gap: '12px',

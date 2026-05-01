@@ -720,8 +720,13 @@ export default function FormationView({
                     onClick={(e) => {
                       e.preventDefault()
                       const el = document.getElementById(t.id)
-                      if (el && mainRef.current) {
-                        mainRef.current.scrollTo({ top: el.offsetTop - 60, behavior: 'smooth' })
+                      const main = mainRef.current
+                      if (el && main) {
+                        // Calcule la position relative à la zone scrollable principale
+                        const elRect = el.getBoundingClientRect()
+                        const mainRect = main.getBoundingClientRect()
+                        const targetScroll = main.scrollTop + (elRect.top - mainRect.top) - 24
+                        main.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' })
                       }
                     }}
                     style={{ ...styles.tocLink, paddingLeft: t.level === 3 ? '16px' : '0' }}

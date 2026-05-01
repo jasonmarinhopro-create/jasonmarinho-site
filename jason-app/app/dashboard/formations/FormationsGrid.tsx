@@ -285,22 +285,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 
           const isFav = favorites.has(f.id)
           return (
-            <div key={f.id} style={{ ...styles.card, ...(isLocked ? styles.cardLocked : {}), position: 'relative' }} className={`glass-card fade-up d${(i % 6) + 1}`}>
-              {/* Bouton cœur favoris */}
-              {!isLocked && (
-                <button
-                  onClick={() => handleToggleFavorite(f)}
-                  style={{
-                    ...styles.heartBtn,
-                    ...(isFav ? styles.heartBtnActive : {}),
-                  }}
-                  aria-label={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                  title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                >
-                  <Heart size={18} weight={isFav ? 'fill' : 'regular'} />
-                </button>
-              )}
-
+            <div key={f.id} style={{ ...styles.card, ...(isLocked ? styles.cardLocked : {}) }} className={`glass-card fade-up d${(i % 6) + 1}`}>
               <div style={styles.cardHeader}>
                 <div style={{ ...styles.cardIcon, ...(isLocked ? { opacity: 0.5 } : {}) }}>
                   {isLocked
@@ -308,7 +293,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
                     : <GraduationCap size={28} color="var(--accent-text)" weight="fill" />
                   }
                 </div>
-                <div style={{ ...styles.cardBadges, paddingRight: isLocked ? 0 : 38 }}>
+                <div style={styles.cardBadges}>
                   {SLUG_CATEGORY[f.slug] && (
                     <span style={styles.categoryBadge}>{categoryLabel[SLUG_CATEGORY[f.slug]]}</span>
                   )}
@@ -349,9 +334,22 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
                   ? <Link href="/dashboard/abonnement" style={styles.lockedBtn}>
                       <Lock size={13} /> Passer en Standard
                     </Link>
-                  : <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
-                      {done ? 'Revoir' : enrolled ? 'Continuer' : 'Commencer'} <ArrowRight size={14} weight="bold" />
-                    </Link>
+                  : <div style={styles.cardFooterRow}>
+                      <Link href={`/dashboard/formations/${f.slug}`} className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                        {done ? 'Revoir' : enrolled ? 'Continuer' : 'Commencer'} <ArrowRight size={14} weight="bold" />
+                      </Link>
+                      <button
+                        onClick={() => handleToggleFavorite(f)}
+                        style={{
+                          ...styles.heartBtn,
+                          ...(isFav ? styles.heartBtnActive : {}),
+                        }}
+                        aria-label={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                        title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                      >
+                        <Heart size={18} weight={isFav ? 'fill' : 'regular'} />
+                      </button>
+                    </div>
                 }
               </div>
             </div>
@@ -451,25 +449,27 @@ const styles: Record<string, React.CSSProperties> = {
   } as React.CSSProperties,
 
   statsRow: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' },
-  // Bouton cœur favoris — top-right de la card
+  // Bouton cœur favoris — dans le footer à côté du bouton CTA
   heartBtn: {
-    position: 'absolute',
-    top: '14px', right: '14px',
-    width: '36px', height: '36px',
-    borderRadius: '50%',
-    background: 'var(--surface-2)',
+    width: '40px', height: '40px',
+    borderRadius: '10px',
+    background: 'var(--surface)',
     border: '1px solid var(--border)',
     color: 'var(--text-muted)',
     cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.15s',
-    zIndex: 2,
     padding: 0,
+    flexShrink: 0,
   } as React.CSSProperties,
   heartBtnActive: {
     background: 'rgba(244,63,94,0.12)',
     border: '1px solid rgba(244,63,94,0.4)',
     color: '#f43f5e',
+  },
+  cardFooterRow: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    justifyContent: 'space-between',
   },
   statChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
