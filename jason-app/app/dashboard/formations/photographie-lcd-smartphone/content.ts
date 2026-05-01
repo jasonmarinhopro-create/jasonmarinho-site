@@ -2094,639 +2094,461 @@ Sur les 20-30 photos de ton annonce, voici la répartition optimale :
           id: 1,
           title: `Snapseed — les 5 réglages qui changent tout`,
           duration: '6 min',
-          content: `---
+          content: `## Pourquoi Snapseed et pas autre chose
 
-MODULE 6 · LEÇON 1
-────────────────────────────────────
-Snapseed
-Les 5 réglages qui changent tout
-────────────────────────────────────
-
----
-
-## Pourquoi Snapseed et pas autre chose
 Tu peux retoucher tes photos LCD avec :
-→ Lightroom Mobile (gratuit, complexe)
-→ VSCO (très tendance, payant pour le bon)
-→ Apple Photos (iOS, basique)
-→ Google Photos (Android, basique)
-→ **Snapseed** (gratuit, simple, efficace)
 
-→ Choisis Snapseed pour 3 raisons :
+- **Lightroom Mobile** *(gratuit, complexe)*
+- **VSCO** *(très tendance, payant pour le bon)*
+- **Apple Photos** *(iOS, basique)*
+- **Google Photos** *(Android, basique)*
+- **Snapseed** *(gratuit, simple, efficace)*
 
-01. **Gratuit, sans pub, sans abonnement.**
-    Développé par Google, plus de 100 millions
-    de téléchargements.
+> **Choisis Snapseed** pour 3 raisons :
 
-02. **Interface intuitive.**
-    Tu peux retoucher une photo en 90 secondes
-    sans tutoriel.
+1. **Gratuit, sans pub, sans abonnement.** Développé par Google, plus de 100 millions de téléchargements.
+2. **Interface intuitive.** Tu peux retoucher une photo en 90 secondes sans tutoriel.
+3. **Suffit à 95 % des besoins LCD.** Tu n'as pas besoin de Lightroom pour des photos d'intérieur.
 
-03. **Suffit à 95 % des besoins LCD.**
-    Tu n'as pas besoin de Lightroom
-    pour des photos d'intérieur.
-
-→ Télécharge Snapseed maintenant
-  (App Store ou Google Play).
+> Télécharge **Snapseed** maintenant *(App Store ou Google Play)*.
 
 ---
 
 ## L'erreur à éviter : sur-retoucher
-Avant de plonger dans les réglages,
-règle d'or absolue :
 
-→ **Une retouche réussie est invisible.**
+Avant de plonger dans les réglages, **règle d'or absolue** :
 
-Le voyageur ne doit pas se dire
-"cette photo est retouchée".
+> Une retouche **réussie est invisible**.
 
-Il doit se dire :
-"cette pièce est lumineuse, accueillante".
+Le voyageur ne doit pas se dire *« cette photo est retouchée »*.
 
-→ Si ta photo a l'air "filtrée Instagram"
-  (saturée, contrastée, dramatique),
-  tu as raté la retouche.
+Il doit se dire : *« cette pièce est lumineuse, accueillante »*.
 
-→ Si ta photo a l'air naturelle mais
-  "mieux qu'avant", tu as réussi.
+- ❌ Si ta photo a l'air *« filtrée Instagram »* *(saturée, contrastée, dramatique)*, tu as raté la retouche.
+- ✅ Si ta photo a l'air **naturelle mais "mieux qu'avant"**, tu as réussi.
 
 ---
 
 ## Les 5 réglages dans Snapseed
-Ouvre une photo dans Snapseed.
-Va dans **Outils** → **Réglages**.
 
-Tu verras 7 réglages disponibles.
-Tu n'en utiliseras que 5,
-toujours dans cet ordre :
+Ouvre une photo dans Snapseed. Va dans **Outils** → **Réglages**.
+
+Tu verras 7 réglages disponibles. Tu n'en utiliseras que **5**, toujours **dans cet ordre** :
 
 ---
 
-## 01. LUMINOSITÉ
+### 1. Luminosité
+
 **Pour quoi :** éclaircir une photo trop sombre.
 
-**Réglage typique en LCD :** +10 à +20.
+**Réglage typique en LCD :** **+10 à +20**.
 
-**Comment :**
-→ Glisse vers la droite.
-→ Arrête-toi quand la pièce est lumineuse
-  mais que les fenêtres ne brûlent pas.
+**Comment :** glisse vers la droite. *Arrête-toi quand la pièce est lumineuse mais que les fenêtres ne brûlent pas.*
 
-**Piège à éviter :**
-→ +40 ou plus = photo plate, sans matière.
-  La lumière paraît "fake".
+> **Piège à éviter :** +40 ou plus = photo plate, sans matière. La lumière paraît *« fake »*.
 
 ---
 
-## 02. AMBIANCE
-**Pour quoi :** ce réglage magique
-combine lumière et contraste de façon douce.
-C'est le plus utile pour les photos d'intérieur.
+### 2. Ambiance
 
-**Réglage typique en LCD :** +20 à +35.
+**Pour quoi :** ce réglage **magique** combine lumière et contraste de façon douce. C'est le **plus utile** pour les photos d'intérieur.
 
-**Comment :**
-→ Glisse vers la droite.
-→ Tu verras les ombres se révéler
-  et les détails apparaître,
-  sans que la photo paraisse retouchée.
+**Réglage typique en LCD :** **+20 à +35**.
 
-**Effet visible :**
-→ Le bois prend du grain, les tissus
-  prennent de la matière, la pièce
-  paraît "plus vraie".
+**Comment :** glisse vers la droite. Tu verras les ombres se révéler et les détails apparaître, *sans que la photo paraisse retouchée*.
+
+> **Effet visible :** le bois prend du grain, les tissus prennent de la matière, la pièce paraît *« plus vraie »*.
 
 ---
 
-## 03. OMBRES
-**Pour quoi :** éclaircir uniquement
-les zones très sombres (sous les meubles,
-coins de pièce).
+### 3. Ombres
 
-**Réglage typique en LCD :** +20 à +40.
+**Pour quoi :** éclaircir **uniquement** les zones très sombres *(sous les meubles, coins de pièce)*.
 
-**Comment :**
-→ Glisse vers la droite.
-→ Les zones sombres s'éclairent,
-  les zones déjà lumineuses ne bougent pas.
+**Réglage typique en LCD :** **+20 à +40**.
 
-**Piège :**
-→ Au-delà de +50, l'image devient
-  "lavée" (effet HDR exagéré).
-  Donne un look bizarre.
+**Comment :** glisse vers la droite. Les zones sombres s'éclairent, les zones déjà lumineuses ne bougent pas.
+
+> **Piège :** au-delà de **+50**, l'image devient *« lavée »* *(effet HDR exagéré)*. Donne un look bizarre.
 
 ---
 
-## 04. HAUTES LUMIÈRES
-**Pour quoi :** réduire l'éclat
-des fenêtres ou des spots qui brûlent.
+### 4. Hautes lumières
 
-**Réglage typique en LCD :** -20 à -40.
+**Pour quoi :** réduire l'éclat des **fenêtres** ou des **spots** qui brûlent.
 
-**Comment :**
-→ Glisse vers la **gauche** (négatif).
-→ Les zones très claires sont assombries
-  juste assez pour redevenir lisibles.
+**Réglage typique en LCD :** **-20 à -40**.
 
-**Effet visible :**
-→ La fenêtre brûlée redevient lumineuse
-  mais on voit la vue derrière.
-→ Les meubles blancs reprennent du relief.
+**Comment :** glisse vers la **gauche** *(négatif)*. Les zones très claires sont assombries juste assez pour redevenir lisibles.
+
+> **Effet visible :** la fenêtre brûlée redevient lumineuse mais on voit la vue derrière. Les meubles blancs reprennent du relief.
 
 ---
 
-## 05. CHALEUR (BALANCE DES BLANCS)
-**Pour quoi :** corriger une photo
-qui paraît trop bleue ou trop jaune.
+### 5. Chaleur *(balance des blancs)*
+
+**Pour quoi :** corriger une photo qui paraît trop **bleue** ou trop **jaune**.
 
 **Réglage typique en LCD :**
-→ +5 à +15 si la photo est trop froide
-  (tendance bleue : pièce nordique
-   ou jour très nuageux).
-→ -5 à -10 si la photo est trop chaude
-  (tendance jaune : ampoules à filament,
-   pièce très éclairée par le soleil).
 
-**Comment :**
-→ Glisse vers la droite (plus chaud)
-  ou la gauche (plus froid).
-→ Vise une photo qui paraît "naturelle",
-  pas franchement bleue ni franchement jaune.
+- **+5 à +15** si la photo est trop **froide** *(tendance bleue : pièce nordique ou jour très nuageux)*.
+- **-5 à -10** si la photo est trop **chaude** *(tendance jaune : ampoules à filament, pièce très éclairée par le soleil)*.
 
-**Piège :**
-→ Une chaleur excessive (+20 ou plus)
-  donne un effet "Instagram filtre vintage".
-  Mauvais en LCD.
+**Comment :** glisse vers la droite *(plus chaud)* ou la gauche *(plus froid)*. Vise une photo qui paraît **naturelle**.
+
+> **Piège :** une chaleur excessive *(+20 ou plus)* donne un effet *« Instagram filtre vintage »*. **Mauvais** en LCD.
 
 ---
 
 ## L'ordre d'application
-Toujours dans cet ordre :
 
-01. Luminosité (+15)
-02. Ambiance (+25)
-03. Ombres (+30)
-04. Hautes lumières (-25)
-05. Chaleur (+10 ou -5 selon photo)
+**Toujours** dans cet ordre :
 
-→ Valide les réglages
-  (case à cocher en bas à droite).
+| Étape | Réglage | Valeur typique |
+|---|---|---|
+| 1 | Luminosité | +15 |
+| 2 | Ambiance | +25 |
+| 3 | Ombres | +30 |
+| 4 | Hautes lumières | -25 |
+| 5 | Chaleur | +10 *(ou -5 selon photo)* |
 
-→ Vérifie la photo zoom 100 %
-  (pour repérer un défaut éventuel).
+Puis :
 
-→ Exporte (Save → Save a copy).
+- **Valide** les réglages *(case à cocher en bas à droite)*.
+- **Vérifie** la photo en zoom 100 % *(pour repérer un défaut éventuel)*.
+- **Exporte** *(Save → Save a copy)*.
 
-**Temps total : 60 à 90 secondes par photo.**
+> **Temps total : 60 à 90 secondes** par photo.
 
-→ Pour 20 photos d'annonce : 30-40 minutes.
+> Pour 20 photos d'annonce : **30-40 minutes**.
 
 ---
 
 ## Snapseed : la fonction "Retouche sélective"
-Outil bonus très puissant si tu veux
-aller plus loin :
 
-→ Outils → Retouche sélective.
+Outil bonus très puissant si tu veux aller plus loin :
 
-→ Pose un point sur une zone précise
-  (un mur sombre, un meuble en clair-obscur).
+1. **Outils → Retouche sélective.**
+2. **Pose un point** sur une zone précise *(un mur sombre, un meuble en clair-obscur)*.
+3. Sur ce point, tu peux régler **luminosité, contraste et saturation** *uniquement pour cette zone*.
 
-→ Sur ce point, tu peux régler luminosité,
-  contraste et saturation **uniquement
-  pour cette zone**.
+### Exemple
 
-**Exemple :**
-→ Cuisine bien exposée mais le coin du frigo
-  est dans l'ombre.
-→ Pose un point sur le frigo.
-→ Augmente la luminosité de +30 sur ce point.
-→ Le reste de la photo reste inchangé.
+> Cuisine bien exposée mais le **coin du frigo** est dans l'ombre.
+> 1. Pose un point sur le frigo.
+> 2. Augmente la luminosité de **+30** sur ce point.
+> 3. Le reste de la photo reste inchangé.
 
-→ Très utile pour fixer une zone problématique
-  sans toucher au reste.
+Très utile pour **fixer une zone problématique** sans toucher au reste.
 
 ---
 
-## Exercice
-**Pratique :**
+## Exercice — pratique
 
-Prends 3 photos de ta meilleure pièce,
-applique les 5 réglages Snapseed
-dans l'ordre.
+1. **Prends 3 photos** de ta meilleure pièce.
+2. **Applique les 5 réglages** Snapseed dans l'ordre.
+3. **Compare avant / après**. Note si tu vois bien la différence.
 
-Compare avant/après.
-Note si tu vois bien la différence.
+- Si la différence est **trop forte** → réduis tes valeurs *(-30 % de chaque réglage)*.
+- Si la différence est **invisible** → tu n'as pas assez retouché.
 
-→ Si la différence est trop forte,
-  réduis tes valeurs (-30 % de chaque réglage).
-→ Si la différence est invisible,
-  tu n'as pas assez retouché.
-
-L'objectif : la photo "naturelle, mais mieux".`,
+> **L'objectif :** la photo *« naturelle, mais mieux »*.`,
         },
         {
           id: 2,
           title: `Choisir l'ordre des photos — les 5 premières secondes`,
           duration: '5 min',
-          content: `---
+          content: `## Pourquoi l'ordre est plus important que le nombre
 
-MODULE 6 · LEÇON 2
-────────────────────────────────────
-Choisir l'ordre des photos
-Les 5 premières secondes du voyageur
-────────────────────────────────────
+Tu peux avoir **30 superbes photos**. Si la 1ère est mauvaise, le voyageur ne verra jamais les 29 autres.
 
----
+- Sur **Airbnb**, un voyageur scrolle en moyenne **5 photos** avant de décider : cliquer sur *« Réserver »* ou retourner aux résultats.
+- Sur **Booking**, il scrolle **3 photos**.
+- Sur ton **site direct**, c'est entre **2 et 4**.
 
-## Pourquoi l'ordre est plus important que le nombre
-Tu peux avoir 30 superbes photos.
-Si la 1ère est mauvaise, le voyageur
-ne verra jamais les 29 autres.
-
-→ Sur Airbnb, un voyageur scrolle en moyenne
-  **5 photos** avant de décider :
-  cliquer sur "Réserver" ou retourner
-  aux résultats.
-
-→ Sur Booking, il scrolle 3 photos.
-
-→ Sur ton site direct, c'est entre 2 et 4.
-
-→ Donc tes 5 premières photos
-  ont 95 % du poids de conversion.
+> Donc tes **5 premières photos** ont **95 % du poids** de conversion.
 
 ---
 
 ## L'ordre optimal pour Airbnb / Booking
-**Photo 1 — La couverture (vue d'ensemble pièce de vie)**
-→ Salon ou cuisine en grand-angle.
-→ Lumière chaude, déco "lifestyle".
-→ Cf. module 1, leçon 2.
 
-**Photo 2 — Le contre-coup d'œil**
-→ Une autre vue de la même pièce
-  (angle différent, perspective ou détail).
-→ Confirme la promesse de la photo 1.
+### Photo 1 — La couverture *(vue d'ensemble pièce de vie)*
 
-**Photo 3 — La vue, l'extérieur ou la signature**
-→ La vue depuis la fenêtre.
-→ La terrasse / le jardin.
-→ Le détail unique du logement
-  (cuisine ouverte, mezzanine, cheminée).
+- Salon ou cuisine en grand-angle.
+- Lumière chaude, déco *« lifestyle »*.
+- *Cf. module 1, leçon 2.*
 
-**Photo 4 — La chambre principale**
-→ Lit "magazine".
-→ Lumière douce, peignoirs pliés ou plaid en valeur.
+### Photo 2 — Le contre-coup d'œil
 
-**Photo 5 — La cuisine ou la salle de bain principale**
-→ Si la cuisine est forte → cuisine.
-→ Si la SDB est design (douche italienne,
-  baignoire, vasque pierre) → SDB.
+- Une **autre vue** de la même pièce *(angle différent, perspective ou détail)*.
+- **Confirme** la promesse de la photo 1.
 
-→ À ce stade, le voyageur a décidé
-  s'il continue ou pas.
+### Photo 3 — La vue, l'extérieur ou la signature
+
+- La vue depuis la fenêtre.
+- La terrasse / le jardin.
+- Le **détail unique** du logement *(cuisine ouverte, mezzanine, cheminée)*.
+
+### Photo 4 — La chambre principale
+
+- Lit *« magazine »*.
+- Lumière douce, peignoirs pliés ou plaid en valeur.
+
+### Photo 5 — La cuisine ou la salle de bain principale
+
+- Si la **cuisine** est forte → cuisine.
+- Si la **SDB** est design *(douche italienne, baignoire, vasque pierre)* → SDB.
+
+> À ce stade, le voyageur a **décidé** s'il continue ou pas.
 
 ---
 
 ## Photos 6 à 15 : approfondissement
-Le voyageur intéressé continue à scroller.
-Ces photos confirment la promesse globale :
 
-→ Photo 6 : 2e chambre (si applicable).
-→ Photo 7 : salle de bain principale (ou 2e si déjà mise).
-→ Photo 8 : coin repas / table à manger.
-→ Photo 9 : terrasse / extérieur (autre angle).
-→ Photo 10 : 1 lifestyle shot fort
-  (petit-déjeuner sur la table, livre + canapé).
-→ Photos 11-15 : pièces secondaires
-  (couloir, entrée, dressing, bureau).
+Le voyageur intéressé continue à scroller. Ces photos **confirment** la promesse globale :
+
+- **Photo 6 :** 2e chambre *(si applicable)*.
+- **Photo 7 :** salle de bain principale *(ou 2e si déjà mise)*.
+- **Photo 8 :** coin repas / table à manger.
+- **Photo 9 :** terrasse / extérieur *(autre angle)*.
+- **Photo 10 :** 1 lifestyle shot fort *(petit-déjeuner sur la table, livre + canapé)*.
+- **Photos 11-15 :** pièces secondaires *(couloir, entrée, dressing, bureau)*.
 
 ---
 
 ## Photos 16 à 25 : preuves et détails
-À ce stade, le voyageur veut être rassuré.
-Photos qui répondent à ses questions
-muettes :
 
-→ Photo 16-18 : équipements importants
-  (cafetière design, parking privé,
-   piscine, jacuzzi, BBQ).
+À ce stade, le voyageur veut **être rassuré**. Photos qui répondent à ses questions muettes :
 
-→ Photo 19-21 : zones moins photogéniques
-  mais nécessaires (placard, dressing,
-  buanderie si présente).
+- **Photo 16-18 :** équipements importants *(cafetière design, parking privé, piscine, jacuzzi, BBQ)*.
+- **Photo 19-21 :** zones moins photogéniques mais nécessaires *(placard, dressing, buanderie si présente)*.
+- **Photo 22-25 :** photos de quartier *(rue, façade extérieure, parking, commerce le plus proche)*.
 
-→ Photo 22-25 : photos de quartier
-  (rue, façade extérieure, parking,
-   commerce le plus proche).
-
-→ Tu peux t'arrêter à 20-25 photos.
-  Au-delà, l'attention chute.
+> Tu peux t'arrêter à **20-25 photos**. Au-delà, l'attention chute.
 
 ---
 
 ## Combien de photos exactement
+
 Le minimum et le maximum, par plateforme :
 
 | Plateforme | Min | Optimal | Max |
 |---|---|---|---|
-| Airbnb | 8 | 18-25 | 50 |
-| Booking | 10 | 15-20 | 50 |
-| Vrbo | 10 | 20-25 | 50 |
-| Site direct | 5 | 10-15 | 25 |
+| **Airbnb** | 8 | 18-25 | 50 |
+| **Booking** | 10 | 15-20 | 50 |
+| **Vrbo** | 10 | 20-25 | 50 |
+| **Site direct** | 5 | 10-15 | 25 |
 
-**Règle :**
-→ Privilégie 20 photos excellentes
-  à 40 photos moyennes.
+> **Règle :** privilégie **20 photos excellentes** à 40 photos moyennes.
 
-→ Une photo médiocre dilue les autres
-  (effet "il y a une mauvaise photo,
-  donc le logement n'est pas si beau").
+Une photo médiocre **dilue** les autres *(effet : « il y a une mauvaise photo, donc le logement n'est pas si beau »)*.
 
 ---
 
 ## Le piège des photos répétitives
-Erreur fréquente : 4 photos quasi-identiques
-de la même pièce (même angle, peu de différence).
 
-→ L'algorithme Airbnb détecte les doublons
-  et **pénalise** ton annonce.
+Erreur fréquente : **4 photos quasi-identiques** de la même pièce *(même angle, peu de différence)*.
 
-→ Le voyageur a l'impression que tu manques
-  de matériel (peu de pièces ou peu d'angles
-  différents).
+- L'algorithme Airbnb détecte les **doublons** et **pénalise** ton annonce.
+- Le voyageur a l'impression que tu manques de matériel *(peu de pièces ou peu d'angles différents)*.
 
-**Règle :**
-→ Maximum 3 photos par pièce, et chacune
-  doit montrer un angle ou un détail
-  distinct.
+> **Règle :** maximum **3 photos par pièce**, et chacune doit montrer un angle ou un détail **distinct**.
 
-→ Salon : 1 d'ensemble + 1 lifestyle + 1 détail = 3.
-→ Cuisine : 1 d'ensemble + 1 nature morte = 2.
-→ Chambre : 1 d'ensemble + 1 détail "magazine" = 2.
+### Exemple
 
-→ Total cohérent pour un T2 :
-  18 à 22 photos bien choisies.
+- **Salon :** 1 d'ensemble + 1 lifestyle + 1 détail = **3**.
+- **Cuisine :** 1 d'ensemble + 1 nature morte = **2**.
+- **Chambre :** 1 d'ensemble + 1 détail *« magazine »* = **2**.
+
+> **Total cohérent pour un T2 : 18 à 22 photos** bien choisies.
 
 ---
 
 ## Le test des "miniatures alignées"
-Avant de publier, ouvre tes 5 premières
-photos en grille (ex: 5 colonnes).
 
-→ Recule à 1 mètre de l'écran et regarde 5 secondes.
+Avant de publier, ouvre tes **5 premières photos** en grille *(ex : 5 colonnes)*.
 
-→ Pose-toi la question :
-  "Est-ce que je veux y aller ?"
+1. **Recule** à 1 mètre de l'écran et regarde 5 secondes.
+2. **Pose-toi la question :** *« Est-ce que je veux y aller ? »*
 
-→ Si tu hésites, retravaille la sélection.
-  Réordonne, remplace 1 ou 2 photos
-  par d'autres plus fortes.
+Si tu hésites, retravaille la sélection. Réordonne, remplace 1 ou 2 photos par d'autres plus fortes.
 
-→ C'est le test final que les agences
-  Airbnb appliquent à leurs annonces premium.
+> C'est le **test final** que les agences Airbnb appliquent à leurs annonces premium.
 
 ---
 
-## Exercice
-**Action de mise en ligne :**
+## Exercice — action de mise en ligne
 
-Avant de publier tes nouvelles photos
-sur Airbnb, écris ton ordre sur papier
-(photo 1, photo 2, etc.) avec un bref
-descriptif de ce que chaque photo montre.
-
-→ Si tu ne peux pas décrire chaque photo
-  en 5 mots, c'est qu'elle ne sait pas
-  ce qu'elle vend. Remplace-la.
-
-Charge tes photos dans l'ordre exact.
-Ne laisse pas Airbnb les ré-ordonner
-automatiquement.`,
+1. Avant de publier tes nouvelles photos sur Airbnb, **écris ton ordre** sur papier *(photo 1, photo 2, etc.)* avec un bref descriptif de ce que chaque photo montre.
+2. **Si tu ne peux pas décrire chaque photo en 5 mots**, c'est qu'elle ne sait pas ce qu'elle vend. *Remplace-la.*
+3. **Charge tes photos** dans l'ordre exact. *Ne laisse pas Airbnb les ré-ordonner automatiquement.*`,
         },
         {
           id: 3,
           title: `Tester et mesurer — méthode A/B`,
           duration: '4 min',
-          content: `---
+          content: `## La photo de couverture vaut un mois de tarif
 
-MODULE 6 · LEÇON 3
-────────────────────────────────────
-Tester et mesurer
-La méthode A/B pour ta photo de couverture
-────────────────────────────────────
-
----
-
-## La photo de couverture vaut un mois de tarif
-On l'a vu au module 1 : ta photo de couverture
-fait 60 % du clic.
+On l'a vu au module 1 : ta photo de couverture fait **60 % du clic**.
 
 Ce qu'on n'a pas dit :
-→ Une mauvaise couverture peut diviser
-  ton CA mensuel par 2.
-→ Une couverture excellente peut le multiplier
-  par 1,5 à 2.
 
-→ Donc tester ta couverture, méthodiquement,
-  est l'action la plus rentable de toute
-  ta gestion d'annonce.
+- Une **mauvaise couverture** peut diviser ton CA mensuel **par 2**.
+- Une **couverture excellente** peut le multiplier **par 1,5 à 2**.
+
+> Donc tester ta couverture, **méthodiquement**, est l'action **la plus rentable** de toute ta gestion d'annonce.
 
 ---
 
 ## La méthode A/B en 4 étapes
-**Étape 1 — Sélectionne 2 photos candidates**
 
-Parmi tes meilleures photos, choisis-en 2
-qui pourraient être la couverture :
-→ Photo A : ton choix actuel
-  (par exemple : salon en grand-angle).
-→ Photo B : alternative forte
-  (par exemple : terrasse en golden hour).
+### Étape 1 — Sélectionne 2 photos candidates
 
-**Étape 2 — Lance avec la photo A
-pendant 14 jours**
+Parmi tes meilleures photos, choisis-en 2 qui pourraient être la couverture :
+
+- **Photo A :** ton choix actuel *(par exemple : salon en grand-angle)*.
+- **Photo B :** alternative forte *(par exemple : terrasse en golden hour)*.
+
+### Étape 2 — Lance avec la photo A pendant 14 jours
 
 Note tes statistiques :
-→ Nombre de vues / jour.
-→ Nombre de clics sur l'annonce.
-→ Nombre de demandes / réservations.
 
-→ Calcule ton "taux de clic"
-  = (clics ÷ vues) × 100.
+- Nombre de **vues / jour**.
+- Nombre de **clics** sur l'annonce.
+- Nombre de **demandes / réservations**.
 
-**Étape 3 — Switche pour la photo B
-pendant 14 jours**
+> Calcule ton **taux de clic** = *(clics ÷ vues) × 100*.
+
+### Étape 3 — Switche pour la photo B pendant 14 jours
 
 Mêmes mesures, mêmes conditions.
 
-→ Ne fais aucun autre changement
-  (titre, description, prix).
+> **Ne fais aucun autre changement** *(titre, description, prix)*.
 
-**Étape 4 — Compare les 2 périodes**
+### Étape 4 — Compare les 2 périodes
 
-→ Photo A : 1000 vues, 30 clics → 3 % CTR.
-→ Photo B : 1000 vues, 50 clics → 5 % CTR.
+| Période | Vues | Clics | CTR |
+|---|---|---|---|
+| **Photo A** | 1000 | 30 | 3 % |
+| **Photo B** | 1000 | 50 | **5 %** |
 
-→ Photo B est 67 % plus efficace.
-  Garde-la.
+> Photo B est **67 % plus efficace**. *Garde-la.*
 
 ---
 
 ## Où trouver tes statistiques
-**Sur Airbnb :**
-→ Hôte → Performance → Vues
-  (mensuel, hebdomadaire).
-→ Performance → Annonce
-  → Taux de conversion.
 
-**Sur Booking :**
-→ Extranet → Statistiques → Visibilité.
-→ Tu vois "Taux de clic" et "Taux de conversion".
+### Sur Airbnb
 
-**Sur ton site direct :**
-→ Google Analytics, Plausible, Fathom.
-→ Mesure le taux de rebond et le temps passé.
+- Hôte → **Performance** → Vues *(mensuel, hebdomadaire)*.
+- Performance → **Annonce** → Taux de conversion.
+
+### Sur Booking
+
+- **Extranet** → Statistiques → Visibilité.
+- Tu vois *« Taux de clic »* et *« Taux de conversion »*.
+
+### Sur ton site direct
+
+- **Google Analytics**, Plausible, Fathom.
+- Mesure le **taux de rebond** et le **temps passé**.
 
 ---
 
 ## Quand tester
-**Tu DEVRAIS tester ta couverture si :**
-→ Tu n'as jamais testé (la majorité des hôtes).
-→ Ton taux de clic est < 3 % (en dessous
-  de la moyenne Airbnb).
-→ Tu as des nouvelles photos depuis cette formation.
-→ Ton activité a baissé sans raison apparente.
 
-**Tu peux NE PAS tester si :**
-→ Ta couverture cartonne déjà
-  (CTR > 5 %, calendrier rempli).
-→ Tu n'as qu'une seule photo possible
-  (très petit logement, peu d'options).
+### ✅ Tu DEVRAIS tester ta couverture si
+
+- Tu n'as **jamais testé** *(la majorité des hôtes)*.
+- Ton **taux de clic est < 3 %** *(en dessous de la moyenne Airbnb)*.
+- Tu as **des nouvelles photos** depuis cette formation.
+- Ton activité a **baissé** sans raison apparente.
+
+### ❌ Tu peux NE PAS tester si
+
+- Ta couverture **cartonne déjà** *(CTR > 5 %, calendrier rempli)*.
+- Tu n'as **qu'une seule photo** possible *(très petit logement, peu d'options)*.
 
 ---
 
 ## Méthode avancée : tester aussi les photos 2-5
-Ce n'est pas que la photo 1 qui compte.
-Si la couverture séduit mais que la photo 2
-décevoit, le voyageur quitte.
 
-→ Au bout de 1 mois, regarde tes statistiques :
-  combien de gens ont commencé à scroller,
-  combien sont allés jusqu'à la photo 5,
-  combien ont demandé.
+**Ce n'est pas que la photo 1 qui compte.** Si la couverture séduit mais que la photo 2 décevoit, le voyageur quitte.
 
-→ Si beaucoup commencent mais peu vont
-  jusqu'au bout, ta photo 2 ou 3 est faible.
-  Remplace-la.
-
-→ Re-test 14 jours.
+1. Au bout de 1 mois, regarde tes statistiques : combien de gens ont **commencé à scroller**, combien sont allés **jusqu'à la photo 5**, combien ont **demandé**.
+2. Si beaucoup commencent mais peu vont jusqu'au bout, ta **photo 2 ou 3 est faible**. Remplace-la.
+3. **Re-test 14 jours.**
 
 ---
 
 ## Fréquence de test recommandée
-**Couverture :** 1 fois par trimestre
-si performances stables, sinon quand tu vois
-une baisse.
 
-**Ordre des photos :** ré-évalue tous les 6 mois.
+| Élément | Fréquence |
+|---|---|
+| **Couverture** | 1x par trimestre si stable, sinon quand baisse |
+| **Ordre des photos** | Ré-évalue tous les 6 mois |
+| **Refonte complète** | Tous les 12 mois ou après changements significatifs *(nouveau meuble, peinture)* |
 
-**Refonte complète :** tous les 12 mois,
-ou quand tu as fait des changements significatifs
-au logement (nouveau meuble, peinture, etc.).
-
-→ La photographie LCD n'est pas "set and forget".
-  C'est un actif que tu rafraîchis.
+> La photographie LCD n'est pas *« set and forget »*. *C'est un actif que tu rafraîchis.*
 
 ---
 
 ## Le repère de qualité Airbnb
-À titre indicatif, voici ce qu'Airbnb considère
-comme un bon taux de clic (CTR) :
 
-→ < 2 % : annonce en difficulté,
-  refonte recommandée.
+À titre indicatif, voici ce qu'Airbnb considère comme un bon taux de clic *(CTR)* :
 
-→ 2 à 4 % : moyenne du marché,
-  améliorations possibles.
+| CTR | Verdict |
+|---|---|
+| **< 2 %** | Annonce en difficulté, **refonte recommandée**. |
+| **2 à 4 %** | Moyenne du marché, améliorations possibles. |
+| **4 à 6 %** | Bonne annonce. Optimisations marginales. |
+| **> 6 %** | **Annonce premium.** Tu peux monter ton prix de 5-10 % et tester l'impact. |
 
-→ 4 à 6 % : bonne annonce.
-  Optimisations marginales.
-
-→ > 6 % : annonce premium.
-  Tu peux te permettre de monter ton prix
-  de 5-10 % et tester l'impact.
-
-→ La majorité des hôtes formés stagnent
-  entre 2 et 4 %. La formation que tu
-  viens de suivre vise à te placer
-  dans la zone 5-7 %.
+> La majorité des hôtes formés stagnent entre **2 et 4 %**. La formation que tu viens de suivre vise à te placer dans la zone **5-7 %**.
 
 ---
 
-## Exercice final
-**Action sur 30 jours après la formation :**
+## Exercice final — action sur 30 jours
 
-Semaine 1 :
-→ Refais tes photos en suivant la formation.
+### Semaine 1
 
-Semaine 2 :
-→ Mets-les en ligne dans le bon ordre.
-→ Note ta nouvelle photo de couverture.
-→ Note tes stats actuelles (avant le test).
+- **Refais tes photos** en suivant la formation.
 
-Semaines 3-4 :
-→ Mesure l'impact des nouvelles photos.
-→ Compare avec la même période
-  l'année précédente (si données dispo).
+### Semaine 2
 
-Si à 30 jours ton CTR est passé de 3 %
-à 5 %+, tu as multiplié tes réservations
-par 1,5 sans changer un seul autre paramètre.
+- **Mets-les en ligne** dans le bon ordre.
+- **Note** ta nouvelle photo de couverture.
+- **Note tes stats** actuelles *(avant le test)*.
 
-→ Bienvenue dans le club des annonces
-  qui font cliquer.
+### Semaines 3-4
+
+- **Mesure l'impact** des nouvelles photos.
+- **Compare** avec la même période l'année précédente *(si données dispo)*.
+
+> Si à 30 jours ton CTR est passé de **3 % à 5 %+**, tu as multiplié tes réservations **par 1,5** sans changer un seul autre paramètre.
+
+> *Bienvenue dans le club des annonces qui font cliquer.*
 
 ---
 
 ## Récap de toute la formation
+
 Tu sais maintenant :
 
-01. Pourquoi la photo est ton vendeur n°1
-    et comment l'auditer.
+1. **Pourquoi la photo est ton vendeur n°1** et comment l'auditer.
+2. **Comment utiliser ton smartphone** et quels accessoires acheter *(62 € max)*.
+3. **Comment préparer chaque pièce** avec 23 points de checklist et 12 € de déco temporaire.
+4. **La règle des tiers**, l'orientation, la lumière naturelle vs flash, et les angles qui agrandissent.
+5. **Comment photographier** le salon, la cuisine, les chambres, la salle de bain *(la plus dure)*, les extérieurs, et les lifestyle shots.
+6. **Comment retoucher** en 90 secondes avec Snapseed, ordonner tes photos, et tester en A/B ta couverture.
 
-02. Comment utiliser ton smartphone et
-    quels accessoires acheter (62 € max).
-
-03. Comment préparer chaque pièce
-    avec 23 points de checklist
-    et 12 € de déco temporaire.
-
-04. La règle des tiers, l'orientation,
-    la lumière naturelle vs flash,
-    et les angles qui agrandissent.
-
-05. Comment photographier le salon, la cuisine,
-    les chambres, la salle de bain (la plus dure),
-    les extérieurs, et les lifestyle shots.
-
-06. Comment retoucher en 90 secondes
-    avec Snapseed, ordonner tes photos,
-    et tester en A/B ta couverture.
-
-→ La photographie LCD n'est plus un mystère
-  pour toi.
-→ C'est un savoir-faire que tu maîtrises.
-→ Tes prochaines réservations vont le confirmer.
+> La photographie LCD n'est plus un mystère pour toi. *C'est un savoir-faire que tu maîtrises.* Tes prochaines réservations vont le confirmer.
 
 Bonne séance — et prends ton temps.
 
-Tu as un retour à faire ou une question
-sur ton logement ? [Prends un appel
-avec Jason](/contact)
+> Tu as un retour à faire ou une question sur ton logement ? [Prends un appel avec Jason](/contact)
 
-Formation Photographie LCD au Smartphone — fin.`,
+**Formation Photographie LCD au Smartphone — fin.**`,
         },
       ],
     },
