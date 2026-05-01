@@ -54,15 +54,17 @@ export default async function FormationsPage() {
 
   const plan = profile?.plan ?? 'decouverte'
 
-  const [{ data: formations }, { data: userFormations }, unlockedSlugs] = await Promise.all([
+  const [{ data: formations }, { data: userFormations }, { data: favorites }, unlockedSlugs] = await Promise.all([
     supabase.from('formations').select('id, slug, title, description, duration, level, modules_count, lessons_count').in('slug', ACTIVE_SLUGS).eq('is_published', true).order('created_at', { ascending: true }),
     supabase.from('user_formations').select('formation_id, progress').eq('user_id', userId),
+    supabase.from('user_formation_favorites').select('formation_id').eq('user_id', userId),
     getUnlockedFormationSlugs(supabase, userId, plan),
   ])
 
   const progressMap = Object.fromEntries(
     (userFormations ?? []).map(uf => [uf.formation_id, uf.progress])
   )
+  const favoriteIds = new Set((favorites ?? []).map((f: { formation_id: string }) => f.formation_id))
 
   return (
     <>
@@ -80,6 +82,7 @@ export default async function FormationsPage() {
             comingSoon={COMING_SOON}
             unlockedSlugs={unlockedSlugs}
             plan={plan}
+            initialFavoriteIds={Array.from(favoriteIds) as string[]}
           />
         </div>
 
