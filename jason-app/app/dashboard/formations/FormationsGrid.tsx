@@ -58,6 +58,7 @@ const SLUG_CATEGORY: Record<string, string> = {
   'fiscalite-statut-conciergerie-tourisme': 'reglementation',
   'creer-conciergerie-lcd': 'conciergerie',
   'maitriser-booking-com-algorithme-genius': 'visibilite',
+  'photographie-lcd-smartphone': 'visibilite',
 }
 
 const categoryLabel: Record<string, string> = {

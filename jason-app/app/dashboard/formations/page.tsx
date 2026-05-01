@@ -41,6 +41,7 @@ const ACTIVE_SLUGS = [
   'creer-conciergerie-lcd',
   'fiscalite-statut-conciergerie-tourisme',
   'maitriser-booking-com-algorithme-genius',
+  'photographie-lcd-smartphone',
 ]
 
 // Formations à venir — hardcodées, pas encore en DB
