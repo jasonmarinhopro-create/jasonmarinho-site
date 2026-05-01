@@ -23,201 +23,174 @@ export const FISCALITE_CONCIERGERIE_FORMATION = {
           id: 1,
           title: 'BIC ou BNC ? La réalité fiscale d\'une conciergerie',
           duration: '15 min',
-          content: `---
+          content: `## La réponse directe : BIC
 
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-BIC ou BNC ?
-La réalité fiscale d'une conciergerie
-────────────────────────────────────
+Une conciergerie de tourisme relève des **Bénéfices Industriels et Commerciaux (BIC)**, conformément à l'**article 34 du CGI**.
 
----
+### Pourquoi BIC et pas BNC ?
 
-## La réponse directe : BIC
+- La conciergerie vend des **prestations de services** à caractère commercial.
+- Elle ne requiert **pas de qualification intellectuelle réglementée**.
+- Elle n'est pas une **profession libérale**.
 
-Une conciergerie de tourisme relève des
-**Bénéfices Industriels et Commerciaux (BIC)**,
-conformément à l'article 34 du CGI.
+### Ce qui distingue BIC et BNC
 
-Pourquoi BIC et pas BNC ?
-→ La conciergerie vend des PRESTATIONS DE SERVICES
-  à caractère commercial
-→ Elle ne requiert pas de qualification
-  intellectuelle réglementée
-→ Elle n'est pas une profession libérale
+- **BIC** → activité commerciale, artisanale, industrielle
+- **BNC** → professions libérales *(médecin, avocat, expert-comptable)*
 
-Ce qui distingue BIC / BNC :
-BIC → activité commerciale, artisanale, industrielle
-BNC → professions libérales (médecin, avocat, expert-comptable)
-
-Une conciergerie = BIC. Sans exception.
+> **Une conciergerie = BIC. Sans exception.**
 
 ---
 
 ## Les codes APE/NAF de la conciergerie
 
-Lors de ta création d'activité, l'INSEE
-t'attribue un code APE. Pour une conciergerie :
+Lors de ta création d'activité, l'INSEE t'attribue un **code APE**. Pour une conciergerie :
 
-**9609Z** — Autres services personnels
-→ Le plus courant pour une conciergerie multi-services
-→ Ménage, check-in/out, coordination logistique
+### 9609Z — Autres services personnels
 
-**7990Z** — Autres services de réservation
-→ Pour les conciergeries orientées gestion d'expériences
-→ Réservations, activités touristiques
+- Le **plus courant** pour une conciergerie multi-services.
+- Ménage, check-in/out, coordination logistique.
 
-**8299Z** — Activités de soutien aux entreprises
-→ Pour les conciergeries B2B ou corporate
+### 7990Z — Autres services de réservation
 
-⚠️ Le code APE n'a pas d'impact fiscal direct,
-mais il conditionne certaines aides et
-certaines conventions collectives.
+- Pour les conciergeries orientées **gestion d'expériences**.
+- Réservations, activités touristiques.
 
-La nouvelle nomenclature NAF 2025
-entrera en vigueur au 1er janvier 2027.
+### 8299Z — Activités de soutien aux entreprises
+
+- Pour les conciergeries **B2B** ou corporate.
+
+> ⚠️ Le code APE n'a **pas d'impact fiscal direct**, mais il conditionne certaines **aides** et certaines **conventions collectives**.
+
+> La nouvelle nomenclature **NAF 2025** entrera en vigueur au 1er janvier **2027**.
 
 ---
 
 ## Ce que ça change concrètement pour toi
 
-La conciergerie facture SES SERVICES aux propriétaires.
-Ce ne sont pas des revenus locatifs.
+La conciergerie facture **ses services** aux propriétaires. *Ce ne sont pas des revenus locatifs.*
 
-→ Tu n'es pas soumis aux règles des LMNP
-→ Tu n'es pas concerné par l'abattement 71%
-  des locations meublées classées
-→ Tu n'es pas impacté par la baisse d'abattement
-  micro-BIC pour les meublés non classés (30%)
+- Tu n'es **pas soumis** aux règles des LMNP.
+- Tu n'es **pas concerné** par l'abattement 71 % des locations meublées classées.
+- Tu n'es **pas impacté** par la baisse d'abattement micro-BIC pour les meublés non classés *(30 %)*.
 
-Ces règles concernent les PROPRIÉTAIRES.
-Toi tu es un PRESTATAIRE DE SERVICE.
+> Ces règles concernent les **propriétaires**. Toi tu es un **prestataire de service**.
 
-Ton abattement micro-BIC : **50%** (services BIC)
-Ton plafond micro : **77 700€ en 2025**, 83 600€ en 2026-2028
+### Tes paramètres micro-BIC
 
-C'est un avantage par rapport aux propriétaires
-qui voient leur abattement baisser à 30%.
+- **Abattement micro-BIC :** 50 % *(services BIC)*
+- **Plafond micro :** 77 700 € en 2025, **83 600 €** en 2026-2028
+
+> C'est un **avantage** par rapport aux propriétaires qui voient leur abattement baisser à 30 %.
 
 ---
 
 ## Résumé
 
 | Critère | Propriétaire LCD | Conciergerie |
-|---------|----------------|--------------|
-| Catégorie | BIC (loyers) | BIC (services) |
-| Abattement micro 2025 | 30% (non classé) / 50% (classé) | **50%** |
-| Plafond micro 2025 | 15 000€ / 77 700€ | **77 700€** |
-| Impacté loi Le Meur fiscalement | Oui | **Non directement** |
+|---|---|---|
+| **Catégorie** | BIC *(loyers)* | BIC *(services)* |
+| **Abattement micro 2025** | 30 % *(non classé)* / 50 % *(classé)* | **50 %** |
+| **Plafond micro 2025** | 15 000 € / 77 700 € | **77 700 €** |
+| **Impacté loi Le Meur fiscalement** | Oui | **Non directement** |
 
 ---
 
-## Exercice
-**Exercice pratique :** Va sur ton avis URSSAF ou ton extrait Kbis et vérifie ton code APE. S'il n'est pas adapté à ton activité réelle de conciergerie, tu peux demander sa modification via le guichet unique inpi.fr. Un mauvais code APE peut te priver d'aides sectorielles.
+## Exercice pratique
 
----`,
+> Va sur ton **avis URSSAF** ou ton **extrait Kbis** et vérifie ton **code APE**.
+
+S'il n'est pas adapté à ton activité réelle de conciergerie, tu peux demander sa modification via le **guichet unique** *(inpi.fr)*.
+
+> Un mauvais code APE peut te priver **d'aides sectorielles**.`,
         },
         {
           id: 2,
           title: 'TVA conciergerie — taux, seuils et obligations 2025-2026',
           duration: '15 min',
-          content: `---
+          content: `## Le taux applicable : 20 %
 
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-TVA conciergerie
-Taux, seuils et obligations 2025-2026
-────────────────────────────────────
+Les prestations d'une conciergerie sont soumises au **taux normal de TVA : 20 %**.
 
----
+### Pourquoi 20 % et pas 10 % ?
 
-## Le taux applicable : 20%
+- Le taux de **10 %** s'applique aux services **para-hôteliers** rendus **directement aux voyageurs** *(petit-déjeuner, nettoyage régulier, réception…)*.
+- La conciergerie facture ses services **au propriétaire** = prestations de services commerciaux = **20 %**.
 
-Les prestations d'une conciergerie sont soumises
-au **taux normal de TVA : 20%**.
+> ⚠️ **Attention à la confusion fréquente.** Si tu fournis **toi-même** des services para-hôteliers directement aux voyageurs *(dans le cadre d'un contrat de sous-location ou colocation touristique)*, le taux de **10 %** peut s'appliquer. Dans ce cas spécifique, consulte un expert-comptable.
 
-Pourquoi 20% et pas 10% ?
-→ Le taux de 10% s'applique aux services para-hôteliers
-  rendus DIRECTEMENT aux voyageurs
-  (petit-déjeuner, nettoyage régulier, réception...)
-→ La conciergerie facture ses services AU PROPRIÉTAIRE
-  = prestations de services commerciaux = 20%
-
-**⚠️ Attention à la confusion fréquente :**
-Si tu fournis toi-même des services para-hôteliers
-directement aux voyageurs (dans le cadre d'un contrat
-de sous-location ou colocation touristique),
-le taux de 10% peut s'appliquer.
-Dans ce cas spécifique : consulte un expert-comptable.
-(Source : BOFiP mise à jour 26/03/2025)
+*Source : BOFiP mise à jour 26/03/2025*
 
 ---
 
-## Les seuils de franchise en base TVA (2025)
+## Les seuils de franchise en base TVA *(2025)*
 
-Tant que ton CA reste sous ces seuils,
-tu n'es PAS obligé de facturer la TVA :
+Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TVA :
 
-**Seuil principal :** 37 500€ de CA HT/an
-**Seuil de tolérance :** 41 250€
+| Seuil | Montant |
+|---|---|
+| **Seuil principal** | 37 500 € de CA HT/an |
+| **Seuil de tolérance** | 41 250 € |
 
-→ En dessous de 37 500€ : franchise en base,
-  tu mentionnes "TVA non applicable - art. 293 B du CGI"
-→ Entre 37 500€ et 41 250€ : franchise maintenue
-  si c'est un premier dépassement
-→ Au-dessus de 41 250€ : TVA obligatoire dès le 1er jour
-  du mois de dépassement
+### Règles selon ton CA
 
-**Réforme TVA à 25 000€ : SUSPENDUE**
-L'article 32 de la LFI 2025 prévoyait d'abaisser
-le seuil à 25 000€ au 1er mars 2025.
-Cette réforme a été officiellement suspendue
-le 30 avril 2025 par le Ministère de l'Économie.
-Les seuils actuels (37 500€) restent valables.
+- **En dessous de 37 500 €** → franchise en base. Tu mentionnes *« TVA non applicable - art. 293 B du CGI »*.
+- **Entre 37 500 € et 41 250 €** → franchise maintenue si c'est un **premier dépassement**.
+- **Au-dessus de 41 250 €** → TVA obligatoire dès le **1er jour du mois de dépassement**.
+
+### Réforme TVA à 25 000 € : SUSPENDUE
+
+> L'article 32 de la LFI 2025 prévoyait d'abaisser le seuil à 25 000 € au 1er mars 2025. **Cette réforme a été officiellement suspendue le 30 avril 2025** par le Ministère de l'Économie.
+
+*Les seuils actuels (37 500 €) restent valables.*
 
 ---
 
 ## Une fois assujetti à la TVA : tes obligations
 
-**Facturer la TVA :**
-→ Tes factures aux propriétaires incluent 20% de TVA
-→ Mention obligatoire : taux, montant HT, montant TVA, TTC
+### Facturer la TVA
 
-**Déclarer et reverser la TVA :**
-→ Déclaration CA3 mensuelle ou trimestrielle selon ton CA
-→ Tu reverses la TVA collectée moins la TVA déductible
-  sur tes achats professionnels
+- Tes factures aux propriétaires incluent **20 % de TVA**.
+- **Mention obligatoire** : taux, montant HT, montant TVA, TTC.
 
-**Récupérer la TVA sur tes achats :**
-→ Logiciels, téléphone pro, véhicule pro, fournitures...
-→ C'est un avantage réel : tu récupères la TVA
-  sur toutes tes dépenses professionnelles
+### Déclarer et reverser la TVA
+
+- **Déclaration CA3** mensuelle ou trimestrielle selon ton CA.
+- Tu reverses la **TVA collectée** moins la **TVA déductible** sur tes achats professionnels.
+
+### Récupérer la TVA sur tes achats
+
+- Logiciels, téléphone pro, véhicule pro, fournitures…
+- C'est un **avantage réel** : tu récupères la TVA sur toutes tes dépenses professionnelles.
 
 ---
 
 ## Franchise ou TVA : qu'est-ce qui est préférable ?
 
-**Avec la franchise (CA < 37 500€) :**
-✓ Pas de paperasse TVA
-✓ Prix compétitifs car pas de TVA en sus
-✗ Pas de récupération de TVA sur tes achats
+### ✅ Avec la franchise *(CA < 37 500 €)*
 
-**Avec la TVA (CA > 37 500€) :**
-✓ Tu récupères la TVA sur TOUS tes achats pro
-✓ Crédibilité auprès des propriétaires pro
-✗ Obligations déclaratives supplémentaires
-✗ Prix de 20% plus élevés (si clientèle non-assujettie)
+- ✓ Pas de paperasse TVA
+- ✓ Prix compétitifs *(car pas de TVA en sus)*
+- ✗ Pas de récupération de TVA sur tes achats
 
-→ Pour une conciergerie dont les propriétaires
-  sont souvent non-assujettis à la TVA,
-  la franchise est souvent préférable tant qu'elle s'applique.
+### ✅ Avec la TVA *(CA > 37 500 €)*
+
+- ✓ Tu récupères la TVA sur **tous** tes achats pro
+- ✓ Crédibilité auprès des propriétaires pro
+- ✗ Obligations déclaratives supplémentaires
+- ✗ Prix de 20 % plus élevés *(si clientèle non-assujettie)*
+
+> Pour une conciergerie dont les propriétaires sont souvent **non-assujettis à la TVA**, la franchise est souvent préférable tant qu'elle s'applique.
 
 ---
 
-## Exercice
-**Exercice pratique :** Calcule ton CA HT des 12 derniers mois. Es-tu en franchise ? Vas-tu dépasser 37 500€ cette année ? Si tu approches du seuil, anticipe avec ton comptable le passage à la TVA — la transition est à planifier, pas à subir.
+## Exercice pratique
 
----`,
+1. **Calcule ton CA HT** des 12 derniers mois.
+2. Es-tu en **franchise** ?
+3. Vas-tu **dépasser 37 500 €** cette année ?
+
+> Si tu approches du seuil, **anticipe** avec ton comptable le passage à la TVA — la transition est à **planifier**, pas à subir.`,
         },
       ],
     },
@@ -230,233 +203,223 @@ Les seuils actuels (37 500€) restent valables.
           id: 11,
           title: 'Auto-entrepreneur / micro-BIC — pour qui, jusqu\'où ?',
           duration: '20 min',
-          content: `---
+          content: `## Ce que le régime micro-BIC offre vraiment
 
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-Auto-entrepreneur / Micro-BIC
-Pour qui, jusqu'où ?
-────────────────────────────────────
+Le micro-BIC est le **régime par défaut** quand tu crées en auto-entrepreneur.
 
----
+### L'abattement forfaitaire
 
-## Ce que le régime micro-BIC offre vraiment
+L'administration fiscale applique **automatiquement** un abattement de **50 %** sur ton CA. *Tu es imposé sur la moitié de ce que tu gagnes.*
 
-Le micro-BIC est le régime par défaut
-quand tu crées en auto-entrepreneur.
+> **Exemple :**
+> - CA annuel : **60 000 €**
+> - Base imposable : 60 000 × 50 % = **30 000 €**
+>
+> *(sans avoir à justifier une seule facture)*
 
-**L'abattement forfaitaire :**
-L'administration fiscale applique automatiquement
-un abattement de **50%** sur ton CA.
-Tu es imposé sur la moitié de ce que tu gagnes.
+### Les plafonds 2025-2026
 
-Exemple :
-CA annuel : 60 000€
-Base imposable : 60 000 × 50% = **30 000€**
-(sans avoir à justifier une seule facture)
+- **2025** : **77 700 €** de CA annuel maximum
+- **2026-2028** : **83 600 €** *(nouveaux seuils confirmés)*
 
-**Les plafonds 2025-2026 :**
-→ 2025 : **77 700€** de CA annuel maximum
-→ 2026-2028 : **83 600€** (nouveaux seuils confirmés)
-
-Si tu dépasses 2 années consécutives :
-sortie automatique du micro, passage au réel.
+> Si tu dépasses **2 années consécutives**, sortie automatique du micro, passage au **réel**.
 
 ---
 
-## Les cotisations sociales en micro-BIC (2025)
+## Les cotisations sociales en micro-BIC *(2025)*
 
-En auto-entrepreneur, tu paies sur ton CA,
-pas sur ton bénéfice :
+En auto-entrepreneur, tu paies sur ton **CA**, pas sur ton **bénéfice** :
 
 | Poste | Taux 2025 |
-|-------|-----------|
-| Cotisations sociales (services BIC) | 21,2% |
-| CFP (formation professionnelle) | 0,3% |
-| Total global | **~22-24% du CA** |
+|---|---|
+| **Cotisations sociales** *(services BIC)* | 21,2 % |
+| **CFP** *(formation professionnelle)* | 0,3 % |
+| **Total global** | **~22-24 % du CA** |
 
-**ACRE (1ère année) :**
-50% de réduction → environ **10-12% du CA**
-Demande à faire à la création sur net-entreprises.fr
+### ACRE *(1ère année)*
 
-**Évolution 2026 :**
-Les taux augmentent d'environ 1 point au 1er janvier 2026
-pour renforcer les droits à la retraite.
-Prévoir ~24-26% du CA dès 2026.
+- **50 % de réduction** → environ **10-12 % du CA**.
+- Demande à faire à la création sur *net-entreprises.fr*.
+
+### Évolution 2026
+
+> Les taux augmentent d'environ **1 point au 1er janvier 2026** pour renforcer les droits à la retraite. *Prévoir ~24-26 % du CA dès 2026.*
 
 ---
 
 ## Le versement libératoire de l'IR
 
-Option disponible si ton revenu fiscal de référence
-de l'année N-2 est inférieur à **27 478€** (1 part, 2025).
+Option disponible si ton **revenu fiscal de référence** de l'année N-2 est inférieur à **27 478 €** *(1 part, 2025)*.
 
-Avec le versement libératoire :
-→ Tu paies l'impôt en même temps que les cotisations
-→ Taux fixe : **1,7% du CA** pour les services BIC
-→ Simple mais potentiellement moins avantageux
-  si tu as peu d'autres revenus
+### ✅ Avec le versement libératoire
 
-Sans versement libératoire :
-→ Bénéfice imposable (CA × 50%) intégré dans la
-  déclaration de revenus du foyer fiscal
-→ Barème progressif (0%, 11%, 30%, 41%, 45%)
+- Tu paies l'impôt en même temps que les cotisations.
+- **Taux fixe** : 1,7 % du CA pour les services BIC.
+- Simple mais potentiellement **moins avantageux** si tu as peu d'autres revenus.
+
+### ❌ Sans versement libératoire
+
+- Bénéfice imposable *(CA × 50 %)* intégré dans la déclaration de revenus du foyer fiscal.
+- **Barème progressif** : 0 %, 11 %, 30 %, 41 %, 45 %.
 
 ---
 
 ## Quand le micro-BIC est optimal
 
-✓ **CA inférieur à 55 000€/an**
-✓ **Charges réelles inférieures à 50% du CA**
-  (si charges > 50%, le réel devient plus avantageux)
-✓ **Activité en démarrage** : tester sans formalisme
-✓ **Pas de besoin de protection du patrimoine**
-  (pas de séparation biens pro/perso)
-✓ **Pas d'investissements lourds** à amortir
+- ✓ **CA inférieur à 55 000 €/an**
+- ✓ **Charges réelles inférieures à 50 % du CA** *(si charges > 50 %, le réel devient plus avantageux)*
+- ✓ **Activité en démarrage** : tester sans formalisme
+- ✓ **Pas de besoin de protection** du patrimoine *(pas de séparation biens pro/perso)*
+- ✓ **Pas d'investissements lourds** à amortir
 
 ---
 
 ## Les limites à connaître
 
-✗ **Pas de déduction des charges réelles**
-  Si tu achètes un véhicule, du matériel, tu sous-traites...
-  tu ne peux rien déduire individuellement
+### ❌ Pas de déduction des charges réelles
 
-✗ **Plafond bloquant**
-  Si ton activité décolle à 90 000€, tu DOIS sortir du micro
+Si tu achètes un véhicule, du matériel, tu sous-traites… *tu ne peux rien déduire individuellement.*
 
-✗ **Responsabilité personnelle**
-  Ton patrimoine personnel n'est pas séparé
-  de ton patrimoine professionnel (sauf domicile principal)
+### ❌ Plafond bloquant
 
-✗ **Retraite plus faible**
-  Cotisations calculées sur le CA, pas sur le bénéfice réel
-  → droits à la retraite proportionnellement plus bas
+Si ton activité décolle à **90 000 €**, tu **dois** sortir du micro.
+
+### ❌ Responsabilité personnelle
+
+Ton patrimoine personnel n'est **pas séparé** de ton patrimoine professionnel *(sauf domicile principal)*.
+
+### ❌ Retraite plus faible
+
+Cotisations calculées sur le **CA**, pas sur le **bénéfice réel** → droits à la retraite proportionnellement plus bas.
 
 ---
 
-## Exercice
-**Exercice pratique :** Calcule tes charges professionnelles réelles annuelles (déplacements, logiciels, téléphone, sous-traitance ménage, assurance RC Pro...). Divise ce total par ton CA. Si le résultat dépasse 50%, le régime réel te permettrait de payer moins d'impôts. Note ce ratio — il guidera ta décision de statut.
+## Exercice pratique
 
----`,
+1. **Calcule tes charges professionnelles réelles** annuelles *(déplacements, logiciels, téléphone, sous-traitance ménage, assurance RC Pro…)*.
+2. **Divise ce total par ton CA.**
+3. Si le résultat **dépasse 50 %**, le régime réel te permettrait de payer **moins d'impôts**.
+
+> Note ce ratio — il guidera ta décision de statut.`,
         },
         {
           id: 12,
           title: 'EI réel, EURL, SASU — quand franchir le cap ?',
           duration: '20 min',
-          content: `---
+          content: `## L'Entreprise Individuelle au régime réel *(EI réel)*
 
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-EI réel, EURL, SASU
-Quand et pourquoi franchir le cap ?
-────────────────────────────────────
+### Ce que c'est
 
----
+Même statut solo qu'en micro, mais avec **déduction des charges réelles** au lieu de l'abattement forfaitaire.
 
-## L'Entreprise Individuelle au régime réel (EI réel)
+### Quand c'est pertinent
 
-**Ce que c'est :**
-Même statut solo qu'en micro, mais avec déduction
-des charges réelles au lieu de l'abattement forfaitaire.
+- Tes **charges réelles dépassent 50 %** du CA.
+- Tu as des **investissements à amortir**.
+- Tu veux rester simple sans créer de société.
 
-**Quand c'est pertinent :**
-→ Tes charges réelles dépassent 50% du CA
-→ Tu as des investissements à amortir
-→ Tu veux rester simple sans créer de société
+### Protection du patrimoine depuis 2022
 
-**Protection du patrimoine depuis 2022 :**
-La réforme de 2022 a intégré l'EIRL dans l'EI.
-Ton patrimoine professionnel est automatiquement
-séparé de ton patrimoine personnel. Avancée majeure.
+> La réforme de 2022 a intégré l'EIRL dans l'EI. Ton patrimoine professionnel est **automatiquement séparé** de ton patrimoine personnel. *Avancée majeure.*
 
-**Cotisations sociales (TNS) :**
-→ ~40 à 45% de ta rémunération nette
-→ Cotisations minimales : ~1 200€/an même sans revenu
+### Cotisations sociales *(TNS)*
+
+- **~40 à 45 %** de ta rémunération nette.
+- Cotisations **minimales** : ~1 200 €/an *(même sans revenu)*.
 
 ---
 
 ## L'EURL — La société unipersonnelle classique
 
-**Ce que c'est :**
-Une SARL à associé unique. Tu es gérant majoritaire = TNS.
+### Ce que c'est
 
-**Avantages :**
-✓ Séparation complète patrimoine pro/perso
-✓ Déduction de toutes les charges
-✓ Option IS possible (voir module 3)
-✓ Structure crédible pour les propriétaires professionnels
+Une **SARL à associé unique**. Tu es gérant majoritaire = **TNS**.
 
-**Cotisations :**
-→ TNS : ~40-45% de ta rémunération nette
-→ Cotisations sur dividendes au-delà de 10% du capital social
-→ Cotisations minimales : ~1 200€/an
+### Avantages
 
-**Coûts de création et gestion :**
-→ Création : 500 à 1 500€
-→ Expert-comptable : 800 à 1 500€/an (quasi-obligatoire)
+- ✓ **Séparation complète** patrimoine pro/perso
+- ✓ Déduction de **toutes** les charges
+- ✓ **Option IS** possible *(voir module 3)*
+- ✓ Structure **crédible** pour les propriétaires professionnels
 
-**Recommandé pour : CA 60 000 — 100 000€/an**
+### Cotisations
+
+- **TNS** : ~40-45 % de ta rémunération nette
+- Cotisations sur **dividendes** au-delà de 10 % du capital social
+- Cotisations **minimales** : ~1 200 €/an
+
+### Coûts de création et gestion
+
+- **Création** : 500 à 1 500 €
+- **Expert-comptable** : 800 à 1 500 €/an *(quasi-obligatoire)*
+
+> **Recommandé pour : CA 60 000 — 100 000 €/an.**
 
 ---
 
 ## La SASU — La société par actions simplifiée unipersonnelle
 
-**Ce que c'est :**
-Une SAS à associé unique. Tu es président = assimilé salarié.
+### Ce que c'est
 
-**L'avantage clé : les dividendes sans charges sociales**
-→ Les dividendes versés par une SASU ne supportent
-  PAS de cotisations sociales
-→ Seule la flat tax de 30% s'applique
-  (12,8% IR + 17,2% prélèvements sociaux)
-→ Optimisation puissante quand les bénéfices sont élevés
+Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 
-**Cotisations si tu te verses un salaire :**
-→ Charges patronales : ~54% du salaire brut
-→ Charges salariales : ~28% du salaire brut
-→ Total : environ 82% du salaire net
-→ MAIS : si tu ne te verses pas de salaire = 0€ de cotisations
+### L'avantage clé : les dividendes sans charges sociales
 
-**La stratégie SASU :**
-Salaire minimal pour les droits sociaux de base
-+ dividendes pour le reste = optimisation maximale
+- Les dividendes versés par une SASU **ne supportent pas** de cotisations sociales.
+- Seule la **flat tax de 30 %** s'applique *(12,8 % IR + 17,2 % prélèvements sociaux)*.
 
-**Recommandé pour : CA > 100 000€ avec bons bénéfices**
+> Optimisation **puissante** quand les bénéfices sont élevés.
+
+### Cotisations si tu te verses un salaire
+
+- **Charges patronales** : ~54 % du salaire brut
+- **Charges salariales** : ~28 % du salaire brut
+- **Total** : environ 82 % du salaire net
+
+> **MAIS :** si tu ne te verses pas de salaire = **0 €** de cotisations.
+
+### La stratégie SASU
+
+> **Salaire minimal** pour les droits sociaux de base **+ dividendes** pour le reste = optimisation maximale.
+
+**Recommandé pour : CA > 100 000 € avec bons bénéfices.**
 
 ---
 
 ## Le tableau de décision rapide
 
 | Profil | Statut recommandé |
-|--------|------------------|
-| Débute, CA < 30 000€ | Auto-entrepreneur / micro-BIC |
-| Activité établie, charges < 50% CA | Micro-BIC maintenu |
-| Charges > 50% CA, CA < 77 700€ | EI au réel |
-| CA 60 000 — 100 000€, croissance | EURL/IS |
-| CA > 100 000€, bénéfices solides | SASU/IS |
-| S'associer prévu | SAS (pluripersonnel) |
+|---|---|
+| Débute, CA < 30 000 € | **Auto-entrepreneur / micro-BIC** |
+| Activité établie, charges < 50 % CA | **Micro-BIC** maintenu |
+| Charges > 50 % CA, CA < 77 700 € | **EI au réel** |
+| CA 60 000 — 100 000 €, croissance | **EURL / IS** |
+| CA > 100 000 €, bénéfices solides | **SASU / IS** |
+| S'associer prévu | **SAS** *(pluripersonnel)* |
 
 ---
 
 ## Les coûts comparés sur 1 an
 
 | Statut | Création | Gestion annuelle |
-|--------|----------|-----------------|
-| Auto-entrepreneur | Gratuit | ~0€ (déclarations en ligne) |
-| EI au réel | Gratuit | ~500-800€ (comptable) |
-| EURL | 500-1 500€ | 1 200-2 000€ (comptable) |
-| SASU | 500-1 500€ | 1 500-2 500€ (comptable) |
+|---|---|---|
+| **Auto-entrepreneur** | Gratuit | ~0 € *(déclarations en ligne)* |
+| **EI au réel** | Gratuit | ~500-800 € *(comptable)* |
+| **EURL** | 500-1 500 € | 1 200-2 000 € *(comptable)* |
+| **SASU** | 500-1 500 € | 1 500-2 500 € *(comptable)* |
 
-→ La différence de coût se justifie rapidement
-  dès que l'optimisation fiscale dépasse ces montants.
+> La différence de coût se justifie **rapidement** dès que l'optimisation fiscale dépasse ces montants.
 
 ---
 
-## Exercice
-**Exercice pratique :** Situe-toi dans le tableau de décision. Quel est ton CA actuel ou projeté à 12 mois ? Quelles sont tes charges réelles ? Le statut actuel est-il encore optimal ? Si tu identifies un écart, note les 2 prochaines étapes concrètes (ex : "consulter un expert-comptable" + "simuler EURL vs micro").
+## Exercice pratique
 
----`,
+1. **Situe-toi** dans le tableau de décision.
+2. Quel est ton CA actuel ou projeté à **12 mois** ?
+3. Quelles sont tes **charges réelles** ?
+4. Le statut actuel est-il encore **optimal** ?
+
+> Si tu identifies un écart, note les **2 prochaines étapes concrètes** *(ex : « consulter un expert-comptable » + « simuler EURL vs micro »)*.`,
         },
       ],
     },
