@@ -909,766 +909,558 @@ Tous ces objets sont rentables :
           id: 1,
           title: `La règle des tiers en 2 minutes`,
           duration: '8 min',
-          content: `---
+          content: `## Pourquoi cette règle change tout
 
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-La règle des tiers en 2 minutes
-La seule règle de composition à connaître
-────────────────────────────────────
+Si tu n'apprends qu'**une seule** notion technique de cette formation, c'est **celle-ci**.
 
----
+La règle des tiers est la base de toute photographie professionnelle **depuis 200 ans**. Elle marche parce qu'elle reproduit la façon naturelle dont l'œil humain scanne une image.
 
-## Pourquoi cette règle change tout
-Si tu n'apprends qu'une seule notion technique
-de cette formation, c'est celle-ci.
+> Une photo composée avec la règle des tiers retient l'attention **2x plus longtemps** qu'une photo centrée.
 
-La règle des tiers est la base de toute
-photographie professionnelle depuis 200 ans.
-Elle marche parce qu'elle reproduit la façon
-naturelle dont l'œil humain scanne une image.
-
-→ Une photo composée avec la règle des tiers
-  retient l'attention 2x plus longtemps
-  qu'une photo centrée.
-
-→ Sur Airbnb, ça se traduit par 20-30 %
-  de clics supplémentaires.
+> Sur Airbnb, ça se traduit par **20-30 %** de clics supplémentaires.
 
 ---
 
 ## En quoi ça consiste exactement
-Imagine ta photo divisée en 9 cases égales
-par 2 lignes verticales et 2 lignes horizontales,
-soit une grille 3 x 3.
 
-Les 4 points où les lignes se croisent
-sont les **points forts** de l'image.
+Imagine ta photo divisée en **9 cases égales** par 2 lignes verticales et 2 lignes horizontales, soit une **grille 3 x 3**.
 
-→ Tu places le sujet principal de ta photo
-  sur l'un de ces 4 points (pas au centre).
+Les **4 points** où les lignes se croisent sont les **points forts** de l'image.
 
-→ Ton œil le verra en premier,
-  naturellement, sans effort.
+- Tu places le **sujet principal** de ta photo sur l'un de ces 4 points *(pas au centre)*.
+- Ton œil le verra en premier, naturellement, **sans effort**.
 
 ---
 
 ## Activer la grille sur ton smartphone
-Ton téléphone affiche cette grille
-en superposition pendant la prise de vue,
-si tu l'actives :
 
-**iPhone :**
-Réglages → Appareil photo → Grille (ON)
+Ton téléphone affiche cette grille en superposition pendant la prise de vue, si tu l'actives :
 
-**Samsung Galaxy :**
-App photo → roue dentée (Paramètres)
-→ Lignes de grille → 3x3
+- **iPhone :** Réglages → Appareil photo → Grille *(ON)*
+- **Samsung Galaxy :** App photo → roue dentée *(Paramètres)* → Lignes de grille → 3x3
+- **Google Pixel :** App photo → Paramètres → Grille → 3x3
 
-**Google Pixel :**
-App photo → Paramètres → Grille → 3x3
-
-→ Active la grille **maintenant**.
-  Tu ne reviendras plus en arrière.
+> Active la grille **maintenant**. Tu ne reviendras plus en arrière.
 
 ---
 
 ## Les 3 applications concrètes en LCD
 
-**01. Salon : le canapé sur 1/3 de la photo**
+### 1. Salon : le canapé sur 1/3 de la photo
 
-Mauvais cadrage :
-→ Canapé centré, mur derrière au milieu.
-  Photo "constat d'huissier".
+- ❌ **Mauvais cadrage** : canapé centré, mur derrière au milieu. Photo *"constat d'huissier"*.
+- ✅ **Bon cadrage** : canapé sur le tiers gauche ou droit. L'autre côté laisse voir une fenêtre, une plante, une bibliothèque. *La photo respire.*
 
-Bon cadrage :
-→ Canapé sur le tiers gauche ou droit.
-  L'autre côté laisse voir une fenêtre,
-  une plante, une bibliothèque.
-  La photo respire.
+### 2. Cuisine : la perspective sur 1/3
 
----
+- ❌ **Mauvais cadrage** : photographier de face le plan de travail, toute la cuisine dans le cadre, rien ne se détache.
+- ✅ **Bon cadrage** : photographier en biais, le plan de travail qui file en diagonale vers le 1/3 droit. *La pièce semble plus grande, plus dynamique.*
 
-**02. Cuisine : la perspective sur 1/3**
+### 3. Chambre : le lit sur 2/3, la fenêtre sur 1/3
 
-Mauvais cadrage :
-→ Photographier de face le plan de travail,
-  toute la cuisine dans le cadre,
-  rien ne se détache.
-
-Bon cadrage :
-→ Photographier en biais, le plan de travail
-  qui file en diagonale vers le 1/3 droit.
-  La pièce semble plus grande, plus dynamique.
-
----
-
-**03. Chambre : le lit sur 2/3, la fenêtre sur 1/3**
-
-Mauvais cadrage :
-→ Lit centré, fenêtre coupée sur le côté.
-  Composition statique.
-
-Bon cadrage :
-→ Lit qui occupe 2/3 du cadre (côté gauche),
-  fenêtre lumineuse sur le tiers droit.
-  La lumière entre, l'œil voyage du lit
-  vers la lumière. Ambiance.
+- ❌ **Mauvais cadrage** : lit centré, fenêtre coupée sur le côté. Composition statique.
+- ✅ **Bon cadrage** : lit qui occupe 2/3 du cadre *(côté gauche)*, fenêtre lumineuse sur le tiers droit. *La lumière entre, l'œil voyage du lit vers la lumière. Ambiance.*
 
 ---
 
 ## L'horizon sur la ligne du tiers
-Pour les photos avec un horizon visible
-(vue depuis une fenêtre, terrasse, jardin) :
 
-→ **Ne place jamais l'horizon au centre.**
-  Photo coupée en 2 = effet "carte postale ratée".
+Pour les photos avec un horizon visible *(vue depuis une fenêtre, terrasse, jardin)* :
 
-→ Choix 1 : horizon sur la ligne
-  inférieure (1/3 de ciel, 2/3 de paysage)
-  → Met le paysage en valeur.
+> **Ne place jamais l'horizon au centre.** Photo coupée en 2 = effet *« carte postale ratée »*.
 
-→ Choix 2 : horizon sur la ligne
-  supérieure (2/3 de ciel, 1/3 de paysage)
-  → Met le ciel en valeur (couchant, nuages).
+Tu as **2 choix** :
+
+1. **Horizon sur la ligne inférieure** *(1/3 de ciel, 2/3 de paysage)* → met le **paysage** en valeur.
+2. **Horizon sur la ligne supérieure** *(2/3 de ciel, 1/3 de paysage)* → met le **ciel** en valeur *(couchant, nuages)*.
 
 ---
 
 ## L'erreur que tout le monde fait au début
-Quand tu débutes, ton instinct te dit :
-"Je vais centrer le canapé pour que la photo
-soit équilibrée."
 
-Cet instinct est faux.
+Quand tu débutes, ton instinct te dit : *« Je vais centrer le canapé pour que la photo soit équilibrée. »*
 
-Une photo centrée est **statique**.
-Une photo composée est **vivante**.
+**Cet instinct est faux.**
 
-Au début, déplacer le sujet sur le tiers
-te semblera bizarre. Tu auras envie
-de recadrer pour le ramener au milieu.
+> Une photo centrée est **statique**. Une photo composée est **vivante**.
 
-→ Résiste pendant 10 photos.
-  Au bout de 10 essais, ton œil
-  se calibre et tu ne voudras plus
-  jamais centrer.
+Au début, déplacer le sujet sur le tiers te semblera bizarre. Tu auras envie de recadrer pour le ramener au milieu.
+
+> **Résiste pendant 10 photos.** Au bout de 10 essais, ton œil se calibre et tu ne voudras plus jamais centrer.
 
 ---
 
-## Exercice pratique
-**À faire maintenant :**
+## Exercice pratique — à faire maintenant
 
-Active la grille de composition sur ton smartphone
-(si ce n'est pas déjà fait).
+1. **Active la grille** de composition sur ton smartphone *(si ce n'est pas déjà fait)*.
+2. **Prends 3 photos test** dans ton salon :
+   - La même scène, **centrée**
+   - La même scène, sujet sur **tiers gauche**
+   - La même scène, sujet sur **tiers droit**
+3. **Compare les 3** sur ton écran. Note laquelle te fait le plus envie d'entrer dans la pièce.
 
-Prends 3 photos test dans ton salon :
-→ La même scène, centrée
-→ La même scène, sujet sur tiers gauche
-→ La même scène, sujet sur tiers droit
-
-Compare les 3 sur ton écran.
-Note laquelle te fait le plus envie d'entrer
-dans la pièce.
-
-→ Spoiler : ce sera celle où tu as appliqué
-  la règle des tiers.`,
+> **Spoiler :** ce sera celle où tu as appliqué la règle des tiers.`,
         },
         {
           id: 2,
           title: `La meilleure heure pour chaque pièce`,
           duration: '10 min',
-          content: `---
+          content: `## La lumière naturelle est gratuite et imbattable
 
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-La meilleure heure pour chaque pièce
-Comment l'orientation et l'heure changent tout
-────────────────────────────────────
+Une pièce photographiée à la **mauvaise heure** peut sembler triste, sombre, jaune ou bleue.
 
----
+La même pièce photographiée à la **bonne heure** semble lumineuse, accueillante, chaude.
 
-## La lumière naturelle est gratuite et imbattable
-Une pièce photographiée à la mauvaise heure
-peut sembler triste, sombre, jaune ou bleue.
+> **Aucune retouche** ne récupère une mauvaise lumière de départ.
 
-La même pièce photographiée à la bonne heure
-semble lumineuse, accueillante, chaude.
-
-→ Aucune retouche ne récupère
-  une mauvaise lumière de départ.
-
-→ La bonne heure de prise de vue
-  fait 50 % du résultat final.
+> La bonne heure de prise de vue fait **50 % du résultat final**.
 
 ---
 
 ## Identifier l'orientation de chaque pièce
-Avant ta séance, pour chaque pièce,
-tu dois savoir où sont les fenêtres.
-Plus précisément :
 
-→ **Plein nord :** lumière froide et constante,
-  jamais directe. Idéal pour photos
-  régulières toute la journée.
+Avant ta séance, pour chaque pièce, tu dois savoir où sont les fenêtres.
 
-→ **Plein sud :** lumière chaude et directe.
-  Risque de contre-jours violents.
-  Heures à éviter : 11h-14h en été.
+| Orientation | Type de lumière |
+|---|---|
+| **Plein nord** | Froide et constante, jamais directe. *Idéal pour photos régulières toute la journée.* |
+| **Plein sud** | Chaude et directe. **Risque de contre-jours violents** *(à éviter 11h-14h en été)*. |
+| **Est** | Chaude le matin *(7h-10h)*, douce le reste de la journée. |
+| **Ouest** | Neutre le matin, chaude et orangée en fin d'après-midi *(16h-19h selon saison)*. |
 
-→ **Est :** lumière chaude le matin (7h-10h),
-  douce le reste de la journée.
+### Comment savoir l'orientation de tes pièces
 
-→ **Ouest :** lumière neutre le matin,
-  chaude et orangée en fin d'après-midi
-  (16h-19h selon saison).
-
-**Comment savoir l'orientation de tes pièces :**
-
-→ Sur Google Maps, tape ton adresse,
-  passe en mode satellite, et observe
-  les ombres au sol. Le nord est en haut.
-  Reporte les murs et fenêtres mentalement.
-
-→ Ou : ouvre l'app Boussole de ton téléphone
-  et pointe vers chaque fenêtre.
+- Sur **Google Maps**, tape ton adresse, passe en mode satellite, observe les ombres au sol. *Le nord est en haut.*
+- Ou ouvre l'app **Boussole** de ton téléphone et pointe vers chaque fenêtre.
 
 ---
 
 ## La meilleure heure, pièce par pièce
 
-**SALON / SALLE À MANGER**
-→ Si fenêtres à l'est : 9h-10h
-→ Si fenêtres au sud : 10h-11h ou 16h-17h
-→ Si fenêtres à l'ouest : 16h-18h
-→ Si fenêtres au nord : 11h-15h
-  (le plus tranquille, lumière douce)
+### Salon / salle à manger
 
-**CUISINE**
-→ Préfère un jour légèrement nuageux.
-  La cuisine a souvent des surfaces
-  réfléchissantes (plan de travail, inox)
-  qui captent les reflets durs en plein soleil.
-→ Heure idéale : 14h-16h
-  (lumière haute, pas d'ombres marquées)
+- Si fenêtres à l'**est** : 9h-10h
+- Si fenêtres au **sud** : 10h-11h ou 16h-17h
+- Si fenêtres à l'**ouest** : 16h-18h
+- Si fenêtres au **nord** : 11h-15h *(le plus tranquille, lumière douce)*
 
-**CHAMBRE**
-→ Le matin, avec rideaux ouverts,
-  juste après le lever du soleil :
-  ambiance "réveil paisible".
-→ Si fenêtres à l'ouest : fin de journée,
-  ambiance "soir cosy".
-→ Évite midi : trop de lumière dure.
+### Cuisine
 
-**SALLE DE BAIN**
-→ Le plus difficile (souvent peu de fenêtres).
-→ Si fenêtre : entre 11h et 15h
-  (la lumière haute pénètre mieux).
-→ Si pas de fenêtre : voir leçon 3 (alternative).
+> Préfère un jour **légèrement nuageux**. La cuisine a souvent des surfaces réfléchissantes *(plan de travail, inox)* qui captent les reflets durs en plein soleil.
 
-**EXTÉRIEUR / TERRASSE / JARDIN**
-→ "Golden hour" : 1h après le lever
-  ou 1h avant le coucher du soleil.
-→ Lumière chaude, longue, dorée.
-→ Ombres douces et étirées.
-→ C'est l'heure des photos magazine.
+**Heure idéale :** 14h-16h *(lumière haute, pas d'ombres marquées)*.
+
+### Chambre
+
+- Le **matin**, rideaux ouverts, juste après le lever du soleil → ambiance *« réveil paisible »*.
+- Si fenêtres à l'**ouest** : fin de journée → ambiance *« soir cosy »*.
+- **Évite midi** : trop de lumière dure.
+
+### Salle de bain
+
+- Le plus difficile *(souvent peu de fenêtres)*.
+- Si fenêtre : entre **11h et 15h** *(la lumière haute pénètre mieux)*.
+- Si pas de fenêtre : voir la prochaine leçon.
+
+### Extérieur / terrasse / jardin
+
+> **Golden hour** : 1h après le lever ou 1h avant le coucher du soleil.
+
+Lumière chaude, longue, dorée. Ombres douces et étirées. *C'est l'heure des photos magazine.*
 
 ---
 
 ## Le mythe de la "lumière parfaite"
-Beaucoup d'hôtes attendent "le bon moment"
-qui ne vient jamais.
 
-Vérité utile :
-→ Une lumière "OK" un jour gris
-  vaut mieux qu'aucune lumière du tout.
+Beaucoup d'hôtes attendent *« le bon moment »* qui ne vient jamais.
 
-→ Les jours nuageux sont en fait excellents
-  pour les pièces difficiles
-  (salle de bain, espaces étroits) :
-  pas d'ombres dures, lumière diffuse,
-  meilleure restitution des couleurs.
+**Vérité utile :**
 
-→ Si ton planning ne te permet pas d'attendre
-  la golden hour, photographie un jour
-  de ciel voilé entre 11h et 15h.
-  Tu auras 80 % du résultat optimal.
+- Une lumière *« OK »* un jour gris vaut mieux qu'**aucune** lumière du tout.
+- Les jours **nuageux** sont en fait excellents pour les pièces difficiles *(salle de bain, espaces étroits)* : pas d'ombres dures, lumière diffuse, meilleure restitution des couleurs.
+
+> Si ton planning ne te permet pas d'attendre la golden hour, photographie un jour de **ciel voilé entre 11h et 15h**. Tu auras **80 %** du résultat optimal.
 
 ---
 
 ## La règle "fenêtres ouvertes, lumières allumées"
+
 Pendant ta séance photo, peu importe l'heure :
 
-→ **Tous les rideaux ouverts.**
-  Voilages laissés (douce diffusion).
-  Rideaux épais tirés à fond.
-
-→ **Toutes les lampes allumées,
-  même en plein jour.**
-  Crée des "points chauds" jaunes
-  dans les coins, ambiance cosy.
-
-→ **Toutes les portes intérieures ouvertes
-  vers la pièce photographiée.**
-  Donne de la profondeur, l'œil voyage
-  d'une pièce à l'autre.
-
-→ **Aucune lumière artificielle dans le cadre
-  qui pointe vers l'objectif.**
-  Pas de reflets parasites.
+- **Tous les rideaux ouverts.** Voilages laissés *(douce diffusion)*. Rideaux épais tirés à fond.
+- **Toutes les lampes allumées**, même en plein jour. Crée des *« points chauds »* jaunes dans les coins, ambiance cosy.
+- **Toutes les portes intérieures ouvertes** vers la pièce photographiée. Donne de la profondeur, l'œil voyage d'une pièce à l'autre.
+- **Aucune lumière artificielle dans le cadre** qui pointe vers l'objectif. Pas de reflets parasites.
 
 ---
 
 ## Planifier ta séance
+
 Avant ton jour J :
 
-01. Liste les pièces à photographier
-    (5 à 8 typiquement).
+1. **Liste les pièces** à photographier *(5 à 8 typiquement)*.
+2. **Note l'orientation** de chaque fenêtre.
+3. **Calcule la meilleure heure** pour chaque pièce.
+4. **Crée un planning**.
 
-02. Note l'orientation de chaque fenêtre.
+### Exemple — à Toulouse en mars
 
-03. Calcule la meilleure heure
-    pour chaque pièce.
+| Heure | Pièce | Orientation |
+|---|---|---|
+| 9h30 | Cuisine | Est |
+| 10h30 | Salon | Sud-est |
+| 11h30 | Salle de bain | Nord |
+| 13h00 | Chambre 1 | Sud-ouest |
+| 14h30 | Chambre 2 | Nord |
+| 16h00 | Terrasse | Ouest *(golden hour)* |
 
-04. Crée un planning :
-    par exemple, à Toulouse en mars :
-    9h30 → cuisine (est)
-    10h30 → salon (sud-est)
-    11h30 → salle de bain (nord)
-    13h00 → chambre 1 (sud-ouest)
-    14h30 → chambre 2 (nord)
-    16h00 → terrasse (ouest, golden hour)
-
-→ Une bonne séance LCD dure 3 à 4 heures.
-  Pas plus. Au-delà, l'attention baisse
-  et la qualité chute.
+> Une bonne séance LCD dure **3 à 4 heures**. Pas plus. Au-delà, l'attention baisse et la qualité chute.
 
 ---
 
-## Exercice
-**Avant la séance photo :**
+## Exercice — avant la séance photo
 
-Fais le tour de ton logement avec une boussole
-(ou Google Maps en satellite).
-Note l'orientation de chaque fenêtre.
-
-Crée le planning de ta séance avec les
-horaires optimaux pour chaque pièce.
-
-Partage ce planning avec quelqu'un
-(conjoint, ami, voyageur de la maison)
-si tu as besoin d'aide pour tenir
-les angles ou les réflecteurs.`,
+1. **Fais le tour** de ton logement avec une boussole *(ou Google Maps en satellite)*.
+2. **Note l'orientation** de chaque fenêtre.
+3. **Crée le planning** de ta séance avec les horaires optimaux pour chaque pièce.
+4. **Partage ce planning** avec quelqu'un *(conjoint, ami)* si tu as besoin d'aide pour tenir les angles ou les réflecteurs.`,
         },
         {
           id: 3,
           title: `Naturel vs flash — pourquoi le flash tue tes photos`,
           duration: '8 min',
-          content: `---
+          content: `## La règle absolue de la photo LCD
 
-MODULE 4 · LEÇON 3
-────────────────────────────────────
-Naturel vs flash
-Pourquoi le flash tue tes photos LCD
-────────────────────────────────────
+> **Tu n'utiliseras JAMAIS le flash de ton smartphone pour une photo LCD.**
 
----
+C'est **non négociable**.
 
-## La règle absolue de la photo LCD
-**Tu n'utiliseras JAMAIS le flash
-de ton smartphone pour une photo LCD.**
+Si tu retiens une seule règle de cette formation, c'est celle-ci.
 
-C'est non négociable.
+Une photo prise au flash dans une pièce :
 
-Si tu retiens une seule règle de cette formation,
-c'est celle-ci.
-
-→ Une photo prise au flash dans une pièce :
-  - Plate (zéro relief)
-  - Ombres dures derrière les meubles
-  - Couleurs faussées (souvent verdâtres)
-  - Reflets disgracieux sur les surfaces brillantes
-  - Ambiance "scène de crime" — pas magazine
+- **Plate** *(zéro relief)*
+- **Ombres dures** derrière les meubles
+- **Couleurs faussées** *(souvent verdâtres)*
+- Reflets disgracieux sur les surfaces brillantes
+- Ambiance *« scène de crime »* — pas magazine
 
 ---
 
 ## Pourquoi le flash ne marche pas en photo de pièce
-Le flash de ton téléphone est conçu
-pour photographier des **personnes**
-à 1-2 mètres en lumière faible.
 
-Il n'est pas conçu pour :
-→ Éclairer un volume entier
-  (une pièce de 20 m² par exemple).
-→ Restituer des couleurs naturelles
-  sur des matières comme le bois, le tissu.
-→ Capturer la profondeur d'un espace.
+Le flash de ton téléphone est conçu pour photographier des **personnes** à 1-2 mètres en lumière faible.
 
-→ Le flash écrase tout. Il efface
-  les ombres douces qui donnent du relief
-  et de la "vérité" à un espace.
+Il n'est **pas conçu** pour :
+
+- Éclairer un volume entier *(une pièce de 20 m² par exemple)*
+- Restituer des couleurs naturelles sur des matières comme le bois, le tissu
+- Capturer la profondeur d'un espace
+
+> Le flash **écrase tout**. Il efface les ombres douces qui donnent du relief et de la "vérité" à un espace.
 
 ---
 
 ## L'alternative quand il fait sombre
-Si une pièce manque cruellement de lumière,
-voici les options dans l'ordre :
 
-**01. Attends le bon moment**
-→ Reviens à la pièce 2 heures plus tard
-  ou un autre jour à un autre moment.
-→ La lumière naturelle est gratuite.
+Si une pièce manque cruellement de lumière, voici les options **dans l'ordre** :
 
-**02. Allume tout ce qui s'allume**
-→ Toutes les lampes du logement.
-→ Les LED des meubles si tu en as.
-→ Les bougies (effet ambiance, joli sur photo).
+### 1. Attends le bon moment
 
-**03. Active le mode HDR**
-→ iPhone et Android moderne ont un mode HDR
-  qui combine 3 photos d'expositions différentes
-  en 1 seule.
-→ La photo finale a des hautes lumières
-  bien gérées ET des ombres détaillées.
-→ Activé par défaut sur la plupart des téléphones.
+- Reviens à la pièce 2 heures plus tard ou un autre jour à un autre moment.
+- *La lumière naturelle est gratuite.*
 
-**04. Active le mode Nuit**
-→ iPhone : se déclenche automatiquement
-  quand la lumière est faible.
-→ Android : "Mode Nuit" dans l'app photo.
-→ Le téléphone prend plusieurs photos
-  en quelques secondes, les empile,
-  réduit le bruit. Résultat très propre.
+### 2. Allume tout ce qui s'allume
 
-**05. Utilise un trépied**
-→ Permet de poser le téléphone et de prendre
-  une photo à exposition longue (1 sec).
-→ La pièce s'éclaire naturellement
-  même en faible lumière.
-→ Indispensable pour les chambres
-  sans fenêtres ou les caves aménagées.
+- Toutes les lampes du logement.
+- Les LED des meubles si tu en as.
+- Les bougies *(effet ambiance, joli sur photo)*.
 
-**06. Utilise le réflecteur**
-→ Vu au module 2.
-→ Fais entrer la lumière d'une pièce voisine
-  ou d'une fenêtre proche en la réfléchissant.
+### 3. Active le mode HDR
 
-→ Ces 6 options combinées permettent
-  de bien photographier 99 % des pièces,
-  sans jamais utiliser le flash.
+iPhone et Android moderne ont un mode **HDR** qui combine 3 photos d'expositions différentes en 1 seule.
+
+> La photo finale a des **hautes lumières** bien gérées **ET** des ombres détaillées.
+
+### 4. Active le mode Nuit
+
+- **iPhone :** se déclenche automatiquement quand la lumière est faible.
+- **Android :** *« Mode Nuit »* dans l'app photo.
+
+Le téléphone prend plusieurs photos en quelques secondes, les empile, réduit le bruit. *Résultat très propre.*
+
+### 5. Utilise un trépied
+
+- Permet de poser le téléphone et de prendre une photo à **exposition longue** *(1 sec)*.
+- La pièce s'éclaire naturellement même en faible lumière.
+- **Indispensable** pour les chambres sans fenêtres ou les caves aménagées.
+
+### 6. Utilise le réflecteur
+
+Vu au module 2. Fais entrer la lumière d'une pièce voisine ou d'une fenêtre proche en la réfléchissant.
+
+> Ces 6 options combinées permettent de bien photographier **99 % des pièces** sans jamais utiliser le flash.
 
 ---
 
 ## Le vrai problème : la dynamique de lumière
-La difficulté en photo de pièce, ce n'est pas
-"trop sombre" — c'est la **différence de lumière**
-entre l'intérieur (sombre) et la fenêtre (très claire).
 
-Ton œil voit les deux sans problème.
-Ton appareil photo, lui, doit choisir :
-→ S'il expose pour la pièce, la fenêtre brûle (toute blanche).
-→ S'il expose pour la fenêtre, la pièce devient noire.
+La difficulté en photo de pièce, ce n'est pas *« trop sombre »* — c'est la **différence de lumière** entre l'intérieur *(sombre)* et la fenêtre *(très claire)*.
 
-**Solutions :**
+Ton œil voit les deux sans problème. Ton appareil photo, lui, doit choisir :
 
-**HDR automatique** (le plus simple)
-→ Combine plusieurs expositions en 1 photo.
-→ Active toujours le HDR auto, jamais désactivé.
+- S'il expose pour la **pièce**, la fenêtre brûle *(toute blanche)*.
+- S'il expose pour la **fenêtre**, la pièce devient noire.
 
-**Exposer pour les ombres** (intermédiaire)
-→ Touche la zone sombre de ta pièce sur l'écran
-  pour que l'appareil expose pour cette zone.
-→ La fenêtre brûle un peu, mais la pièce est lumineuse.
-→ Acceptable si la fenêtre n'a pas de vue importante.
+### Solutions
 
-**Photo au crépuscule** (avancé)
-→ Photographie 30 min après le coucher du soleil.
-→ La lumière extérieure est presque égale
-  à la lumière intérieure.
-→ Plus aucun contraste violent.
-→ Lampes allumées = pièce dorée
-  + ciel bleu profond derrière les fenêtres.
-→ C'est l'heure préférée des photographes immobiliers.
+#### HDR automatique *(le plus simple)*
+
+- Combine plusieurs expositions en 1 photo.
+- **Active toujours** le HDR auto, jamais désactivé.
+
+#### Exposer pour les ombres *(intermédiaire)*
+
+- Touche la **zone sombre** de ta pièce sur l'écran pour que l'appareil expose pour cette zone.
+- La fenêtre brûle un peu, mais la pièce est lumineuse.
+- Acceptable si la fenêtre n'a pas de vue importante.
+
+#### Photo au crépuscule *(avancé)*
+
+- Photographie **30 min après le coucher** du soleil.
+- La lumière extérieure est presque égale à la lumière intérieure.
+- Plus aucun contraste violent.
+- Lampes allumées = pièce dorée + ciel bleu profond derrière les fenêtres.
+
+> C'est **l'heure préférée des photographes immobiliers**.
 
 ---
 
 ## Exemple concret : la cuisine en contre-jour
-Cas typique : ta cuisine a une fenêtre au fond.
-Tu te places devant, tu prends la photo.
 
-**Problème :** la fenêtre brûle, la pièce est sombre,
-la photo est ratée.
+**Cas typique :** ta cuisine a une fenêtre au fond. Tu te places devant, tu prends la photo.
 
-**Solution étape par étape :**
+**Problème :** la fenêtre brûle, la pièce est sombre, la photo est ratée.
 
-01. Active le HDR.
+### Solution étape par étape
 
-02. Tire les rideaux à moitié,
-    voilage seulement, pour adoucir
-    la lumière extérieure.
+1. **Active le HDR.**
+2. **Tire les rideaux à moitié**, voilage seulement, pour adoucir la lumière extérieure.
+3. **Allume toutes les lampes** de la cuisine.
+4. **Touche sur l'écran** la zone du plan de travail *(zone sombre)* pour exposer là-dessus.
+5. **Recule au maximum** dans le couloir ou la pièce voisine.
+6. **Prends la photo.**
 
-03. Allume toutes les lampes de la cuisine.
-
-04. Touche sur l'écran la zone du plan de travail
-    (zone sombre) pour exposer là-dessus.
-
-05. Recule au maximum dans le couloir
-    ou la pièce voisine.
-
-06. Prends la photo.
-
-→ Résultat : pièce lumineuse, fenêtre
-  qui ne brûle pas, contraste équilibré.
+> **Résultat :** pièce lumineuse, fenêtre qui ne brûle pas, contraste équilibré.
 
 ---
 
-## Récap des 5 commandements
-01. Pas de flash, jamais.
-02. HDR activé en permanence.
-03. Toutes les lampes allumées.
-04. Tous les rideaux ouverts (avec voilage).
-05. Si trop sombre : trépied + mode nuit.
+## Récap : les 5 commandements
+
+1. **Pas de flash**, jamais.
+2. **HDR activé** en permanence.
+3. **Toutes les lampes allumées**.
+4. **Tous les rideaux ouverts** *(avec voilage)*.
+5. **Si trop sombre :** trépied + mode nuit.
 
 ---
 
-## Exercice
-**Test pratique :**
+## Exercice — test pratique
 
-Choisis ta pièce la plus difficile en lumière
-(souvent : salle de bain ou chambre nord).
+Choisis ta pièce la plus difficile en lumière *(souvent : salle de bain ou chambre nord)*.
 
-Prends 4 versions de la même photo :
-→ A : avec flash (pour comparaison)
-→ B : sans flash, lumières éteintes
-→ C : sans flash, toutes lampes allumées + HDR
-→ D : sans flash, lampes allumées, HDR,
-      téléphone posé sur trépied (mode nuit)
+**Prends 4 versions** de la même photo :
 
-Compare les 4. Note celle qui fait le plus
-envie d'entrer dans la pièce.
+| Version | Conditions |
+|---|---|
+| **A** | Avec flash *(pour comparaison)* |
+| **B** | Sans flash, lumières éteintes |
+| **C** | Sans flash, toutes lampes allumées + HDR |
+| **D** | Sans flash, lampes allumées, HDR, téléphone posé sur trépied *(mode nuit)* |
 
-(Indice : ce sera presque toujours la D.)`,
+Compare les 4. Note celle qui fait le plus envie d'entrer dans la pièce.
+
+> **Indice :** ce sera presque toujours la **D**.`,
         },
         {
           id: 4,
           title: `Les angles qui agrandissent l'espace`,
           duration: '9 min',
-          content: `---
+          content: `## Pourquoi tes pièces semblent toutes petites
 
-MODULE 4 · LEÇON 4
-────────────────────────────────────
-Les angles qui agrandissent l'espace
-Hauteur, recul, perspective : la magie
-────────────────────────────────────
+Quand tu photographies **debout, à hauteur d'yeux**, ton appareil voit la pièce comme tu la vois : *plate, sans profondeur, ennuyeuse*.
 
----
+Les agences immobilières et photographes pro **n'utilisent jamais** cette hauteur.
 
-## Pourquoi tes pièces semblent toutes petites
-Quand tu photographies debout, à hauteur d'yeux,
-ton appareil voit la pièce comme tu la vois :
-plate, sans profondeur, ennuyeuse.
+Ils utilisent **3 hauteurs spécifiques** selon la pièce, et chacune crée un effet d'agrandissement différent.
 
-Les agences immobilières et photographes pro
-n'utilisent jamais cette hauteur.
-
-Ils utilisent **3 hauteurs spécifiques**
-selon la pièce, et chacune crée un effet
-d'agrandissement différent.
-
-→ Une bonne hauteur = +20 à 40 % de surface
-  perçue dans la même pièce.
+> Une bonne hauteur = **+20 à 40 %** de surface perçue dans la même pièce.
 
 ---
 
-## Hauteur 1 — Hauteur de table basse (60-80 cm du sol)
-**Pour quelles pièces :**
-→ Salon (la plus importante)
-→ Chambre
-→ Salle à manger
+## Hauteur 1 — Hauteur de table basse *(60-80 cm du sol)*
 
-**Effet visuel :**
-→ Le canapé / lit semble plus imposant
-  et accueillant.
-→ Le plafond paraît plus haut.
-→ La pièce semble plus profonde.
+### Pour quelles pièces
 
-**Comment faire pratiquement :**
-→ Pose ton téléphone sur ton mini-trépied
-  posé sur la table basse.
-→ Ou tiens-toi accroupi avec
-  le téléphone à hauteur de tes coudes.
+- **Salon** *(la plus importante)*
+- **Chambre**
+- **Salle à manger**
 
-→ Test : si tu vois beaucoup de plafond
-  sur ta photo, tu es trop bas.
-  Si tu vois beaucoup de sol, tu es trop haut.
-  Le bon équilibre : 1/3 sol, 2/3 mur+plafond.
+### Effet visuel
+
+- Le canapé / lit semble plus **imposant et accueillant**.
+- Le plafond paraît plus **haut**.
+- La pièce semble plus **profonde**.
+
+### Comment faire pratiquement
+
+- Pose ton téléphone sur ton **mini-trépied** posé sur la table basse.
+- Ou tiens-toi **accroupi** avec le téléphone à hauteur de tes coudes.
+
+> **Test :** si tu vois beaucoup de **plafond** sur ta photo, tu es trop bas. Si tu vois beaucoup de **sol**, tu es trop haut. Le bon équilibre : **1/3 sol, 2/3 mur + plafond**.
 
 ---
 
-## Hauteur 2 — Hauteur de plan de travail (90-100 cm)
-**Pour quelles pièces :**
-→ Cuisine
-→ Salle de bain
-→ Bureau / coin travail
+## Hauteur 2 — Hauteur de plan de travail *(90-100 cm)*
 
-**Effet visuel :**
-→ Le plan de travail paraît plus profond.
-→ L'œil suit naturellement la perspective.
-→ Les meubles hauts ne sont pas écrasés.
+### Pour quelles pièces
 
-**Comment faire :**
-→ Pose ton téléphone directement sur le plan
-  de travail, ou utilise le trépied.
-→ Tiens-toi à 1-2 mètres de la zone à photographier.
+- **Cuisine**
+- **Salle de bain**
+- **Bureau** / coin travail
+
+### Effet visuel
+
+- Le plan de travail paraît plus **profond**.
+- L'œil suit naturellement la **perspective**.
+- Les meubles hauts ne sont pas **écrasés**.
+
+### Comment faire
+
+- Pose ton téléphone **directement sur le plan de travail**, ou utilise le trépied.
+- Tiens-toi à **1-2 mètres** de la zone à photographier.
 
 ---
 
-## Hauteur 3 — Hauteur de poitrine (130-140 cm)
-**Pour quelles pièces :**
-→ Hall d'entrée
-→ Couloir
-→ Pièce vue d'en haut
+## Hauteur 3 — Hauteur de poitrine *(130-140 cm)*
 
-**Effet visuel :**
-→ Le sol paraît plus large.
-→ La perspective fuit naturellement.
+### Pour quelles pièces
 
-**Quand l'utiliser :**
-→ Quand tu veux montrer la circulation
-  entre les pièces.
-→ Quand tu veux donner une vue "d'arrivée"
-  dans le logement.
+- **Hall d'entrée**
+- **Couloir**
+- Pièce vue d'en haut
+
+### Effet visuel
+
+- Le sol paraît plus **large**.
+- La perspective fuit **naturellement**.
+
+### Quand l'utiliser
+
+- Quand tu veux montrer la **circulation** entre les pièces.
+- Quand tu veux donner une vue *« d'arrivée »* dans le logement.
 
 ---
 
 ## La règle du recul maximal
-Indépendamment de la hauteur, la deuxième règle
-qui agrandit visuellement une pièce :
 
-**Recule au maximum.**
+Indépendamment de la hauteur, la deuxième règle qui agrandit visuellement une pièce :
 
-→ Photographie le salon depuis le couloir
-  d'entrée si possible, pas depuis le milieu
-  du salon.
+> **Recule au maximum.**
 
-→ Photographie la cuisine depuis la pièce
-  voisine, à travers la porte ouverte.
+- Photographie le **salon** depuis le couloir d'entrée si possible, pas depuis le milieu du salon.
+- Photographie la **cuisine** depuis la pièce voisine, à travers la porte ouverte.
+- Photographie la **chambre** depuis la salle de bain *(si attenante)* ou depuis la porte d'entrée.
 
-→ Photographie la chambre depuis la
-  salle de bain (si attenante) ou
-  depuis la porte d'entrée.
+> Plus tu recules, plus tu vois de la pièce **ET** tu donnes l'impression que la pièce continue au-delà.
 
-→ Plus tu recules, plus tu vois de la pièce
-  ET tu donnes l'impression que la pièce
-  continue au-delà.
+### Limite physique
 
-**Limite physique :**
-→ Si tu recules autant que possible et que
-  ce n'est pas assez large, tu dois utiliser
-  ta lentille grand-angle clipsable.
-→ C'est exactement pour ça qu'on l'a achetée.
+Si tu recules autant que possible et que ce n'est pas assez large, tu dois utiliser ta **lentille grand-angle clipsable**. *C'est exactement pour ça qu'on l'a achetée.*
 
 ---
 
 ## La perspective "fuyante"
-Pour donner une impression de profondeur
-maximale, il faut que des **lignes** filent
-vers un point dans la photo.
 
-Lignes naturelles dans une pièce :
-→ Les lattes de parquet
-→ Les jointures du carrelage
-→ Le bord d'un canapé
-→ La table à manger
-→ Le plan de travail de cuisine
+Pour donner une impression de **profondeur maximale**, il faut que des **lignes** filent vers un point dans la photo.
 
-**Technique :**
-→ Place-toi à un coin de la pièce.
-→ Photographie en biais, vers le coin opposé.
-→ Les lignes du sol filent vers ce coin.
-→ Effet : l'œil voyage, la pièce semble
-  plus grande.
+### Lignes naturelles dans une pièce
 
-**Évite à l'inverse :**
-→ Photographier face à un mur (pièce écrasée).
-→ Photographier centré sur un meuble (statique).
+- Les lattes de **parquet**
+- Les jointures du **carrelage**
+- Le bord d'un **canapé**
+- La **table à manger**
+- Le plan de travail de **cuisine**
+
+### Technique
+
+1. **Place-toi à un coin** de la pièce.
+2. **Photographie en biais**, vers le coin opposé.
+3. Les lignes du sol filent vers ce coin.
+
+> **Effet :** l'œil voyage, la pièce semble plus grande.
+
+### Évite à l'inverse
+
+- ❌ Photographier **face à un mur** *(pièce écrasée)*.
+- ❌ Photographier **centré sur un meuble** *(statique)*.
 
 ---
 
 ## Le piège du grand-angle excessif
-La lentille clipsable agrandit, c'est génial.
-Mais attention :
 
-→ Une lentille trop large (0.3x ou moins)
-  déforme l'image en "fisheye" (effet bombé).
+La lentille clipsable agrandit, c'est génial. **Mais attention** :
 
-→ Les meubles aux bords paraissent étirés.
+- Une lentille **trop large** *(0.3x ou moins)* déforme l'image en *"fisheye"* *(effet bombé)*.
+- Les meubles aux bords paraissent **étirés**.
+- Le voyageur sent qu'il y a tromperie → mauvaise première impression → mauvais avis → mauvais score Airbnb.
 
-→ Le voyageur sent qu'il y a tromperie
-  → mauvaise première impression
-  → mauvais avis quand il arrive
-  → mauvais score Airbnb.
+> **Choisis 0.45x à 0.6x maximum.**
 
-**Choisis 0.45x à 0.6x maximum.**
-
-→ Si tu utilises 0.45x, place les meubles
-  importants au centre du cadre, pas aux bords
-  (pour éviter la déformation visible).
-
-→ Si tu utilises 0.6x, tu peux placer
-  partout sans souci.
+- Si tu utilises **0.45x**, place les meubles importants au **centre** du cadre, pas aux bords *(pour éviter la déformation visible)*.
+- Si tu utilises **0.6x**, tu peux placer partout sans souci.
 
 ---
 
 ## La technique du "panorama 1.5"
-Astuce avancée pour les pièces longues :
 
-→ Au lieu de prendre 1 photo en grand-angle,
-  prends **un panorama** mais bouge très lentement.
+Astuce avancée pour les pièces **longues** :
 
-→ Ton smartphone a un mode "Pano" dans l'app photo.
+1. Au lieu de prendre 1 photo en grand-angle, prends **un panorama** mais bouge très lentement.
+2. Ton smartphone a un mode *« Pano »* dans l'app photo.
+3. Résultat : une photo de **7000 x 2000 px** qui montre toute la pièce sans déformation.
+4. Tu recadres ensuite pour garder le centre *(~5000 x 2000)* → photo paysage de qualité.
 
-→ Le résultat : une photo de 7000 x 2000 px
-  qui montre toute la pièce sans déformation.
-
-→ Tu recadres ensuite pour garder le centre
-  (~5000 x 2000) → photo paysage de qualité.
-
-→ C'est la technique préférée des
-  photographes d'intérieur pour les pièces
-  longues type "loft".
+> C'est la technique préférée des **photographes d'intérieur** pour les pièces longues type *"loft"*.
 
 ---
 
 ## Récap pratique : quelle hauteur, quelle pièce
+
 | Pièce | Hauteur | Recul |
-|-------|---------|-------|
-| Salon | 60-80 cm | Maximum, depuis l'entrée |
-| Salle à manger | 80 cm | À l'autre bout de la pièce |
-| Chambre | 70-80 cm | Depuis la porte |
-| Cuisine | 90-100 cm | Depuis la pièce voisine |
-| Salle de bain | 90 cm | Depuis le couloir |
-| Hall d'entrée | 130-140 cm | Depuis 2 pas en arrière |
-| Terrasse | 90 cm | Depuis le mur de la maison |
+|---|---|---|
+| **Salon** | 60-80 cm | Maximum, depuis l'entrée |
+| **Salle à manger** | 80 cm | À l'autre bout de la pièce |
+| **Chambre** | 70-80 cm | Depuis la porte |
+| **Cuisine** | 90-100 cm | Depuis la pièce voisine |
+| **Salle de bain** | 90 cm | Depuis le couloir |
+| **Hall d'entrée** | 130-140 cm | Depuis 2 pas en arrière |
+| **Terrasse** | 90 cm | Depuis le mur de la maison |
 
 ---
 
-## Exercice
-**À faire dans ton logement :**
+## Exercice — à faire dans ton logement
 
-Pour chaque pièce, prends 2 photos comparatives :
-→ Photo A : debout, à hauteur d'yeux,
-  au centre de la pièce.
-→ Photo B : à la hauteur recommandée du tableau,
-  reculé au maximum.
+Pour chaque pièce, prends **2 photos comparatives** :
+
+- **Photo A :** debout, à hauteur d'yeux, au centre de la pièce.
+- **Photo B :** à la hauteur recommandée du tableau, reculé au maximum.
 
 Compare les 2 photos côte à côte.
 
-→ Tu vas être bluffé par la différence.
-→ La photo B paraîtra parfois 30 % plus grande
-  alors que c'est la même pièce.
+> Tu vas être **bluffé** par la différence. La photo B paraîtra parfois **30 % plus grande** alors que c'est la même pièce.
 
-C'est ce gain "gratuit" que tu vas appliquer
-dans le module 5 sur chaque pièce
+C'est ce gain *« gratuit »* que tu vas appliquer dans le module 5 sur chaque pièce
 de ton logement.`,
         },
       ],
