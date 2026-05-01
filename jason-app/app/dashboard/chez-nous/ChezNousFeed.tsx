@@ -98,9 +98,31 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
         /* Default category chip rendering (desktop) */
         .cn-cat-emoji { font-size: 13px; line-height: 1; }
         .cn-cat-label { font-weight: 600; }
+        /* Bouton invitation mobile (caché sur desktop car la sidebar fait le job) */
+        .cn-mobile-invite { display: none; }
         @media (max-width: 1023px) {
           .cn-aside { display: none !important; }
           .cn-main-col { flex: 1 1 100% !important; }
+          .cn-mobile-invite {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 11px 18px;
+            border-radius: 999px;
+            background: var(--accent-text);
+            color: var(--bg);
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            width: 100%;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+          }
+          .cn-mobile-invite:active { transform: scale(0.98); }
         }
         @media (max-width: 767px) {
           /* Category chips: stories-style bubbles */
@@ -232,6 +254,16 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
           <span style={s.statSep}>·</span>
           <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
+
+        {/* Bouton Partager — visible mobile uniquement (la sidebar fait déjà le job desktop) */}
+        <button
+          type="button"
+          className="cn-mobile-invite"
+          onClick={() => setShowInvite(true)}
+        >
+          <UserPlus size={16} weight="fill" />
+          <span>Inviter des amis hôtes</span>
+        </button>
       </div>
 
       {/* Nouveaux membres */}

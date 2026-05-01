@@ -184,8 +184,30 @@ export default async function ProfilPage() {
           .profil-progress { flex: 1 1 100%; }
         }
         @media (max-width: 560px) {
-          .profil-hero { flex-direction: column; align-items: flex-start; gap: 16px; }
-          .profil-hero-av { width: 64px; height: 64px; font-size: 22px; }
+          .profil-hero {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 16px;
+            padding: 20px;
+          }
+          .profil-hero-av {
+            width: 64px; height: 64px; font-size: 22px;
+            align-self: flex-start;
+          }
+          .profil-hero-info { width: 100%; }
+          .profil-hero-name { font-size: 22px; white-space: normal; }
+          .profil-hero-email { font-size: 13px; white-space: normal; }
+
+          /* Mobile : carte progression épurée, pas de bordure interne, séparateur léger */
+          .profil-progress {
+            background: transparent;
+            border: none;
+            border-top: 1px solid var(--border);
+            border-radius: 0;
+            padding: 14px 0 0;
+            margin-top: 4px;
+          }
+          .profil-progress-bar { margin-bottom: 8px; }
         }
       `}</style>
 
