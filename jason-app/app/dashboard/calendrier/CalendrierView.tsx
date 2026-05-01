@@ -1,13 +1,23 @@
 'use client'
 
 import { useState, useMemo, useTransition, useRef, useEffect } from 'react'
+import Link from 'next/link'
 import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
+  ChatText,
 } from '@phosphor-icons/react'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import type { ContractEvent, IcalFeed, IcalEvent } from './page'
+
+// ── Mapping checklist key → catégorie de gabarit pertinente
+const CHECKLIST_TO_GABARIT: Record<string, { cat: string; label: string }> = {
+  contrat_signe:         { cat: 'confirmation', label: 'Relance contrat' },
+  solde_recu:            { cat: 'confirmation', label: 'Relance paiement' },
+  instructions_envoyees: { cat: 'checkin',      label: "Instructions d'arrivée" },
+  avis_demande:          { cat: 'avis',         label: "Demande d'avis" },
+}
 
 export interface CalEvent {
   id: string
@@ -1272,6 +1282,21 @@ export default function CalendrierView({
                   <span style={s.alertLabel}>{alert.label}</span>
                   <span style={{ ...s.alertDays, color: alert.color }}>{alert.daysInfo}</span>
                 </button>
+                {(() => {
+                  const tpl = CHECKLIST_TO_GABARIT[alert.checklistKey]
+                  if (!tpl) return null
+                  return (
+                    <Link
+                      href={`/dashboard/gabarits?cat=${tpl.cat}`}
+                      onClick={e => e.stopPropagation()}
+                      style={s.alertGabaritBtn}
+                      title={`Ouvrir gabarit : ${tpl.label}`}
+                    >
+                      <ChatText size={12} weight="bold" />
+                      Gabarit
+                    </Link>
+                  )
+                })()}
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handleChecklistToggle(alert.contractId, alert.checklistKey) }}
@@ -2099,6 +2124,20 @@ const s: Record<string, React.CSSProperties> = {
     flexShrink: 0,
     transition: 'all 0.12s',
     fontFamily: 'inherit',
+  },
+  alertGabaritBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    padding: '4px 10px',
+    background: 'var(--accent-bg-2)',
+    border: '1px solid var(--accent-border-2)',
+    borderRadius: '999px',
+    color: 'var(--accent-text)',
+    fontSize: '11px', fontWeight: 600,
+    textDecoration: 'none',
+    cursor: 'pointer',
+    flexShrink: 0,
+    fontFamily: 'inherit',
+    marginRight: '6px',
   },
   alertOk: {
     display: 'flex', alignItems: 'center', gap: '10px',

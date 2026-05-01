@@ -6,11 +6,12 @@ import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
   Envelope, Phone, Note, CalendarBlank, House,
   CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
-  ListChecks, CheckSquare, Square,
+  ListChecks, CheckSquare, Square, Bandaids,
 } from '@phosphor-icons/react'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
+import IncidentsPanel from './IncidentsPanel'
 import dynamic from 'next/dynamic'
 
 const ContractModal = dynamic(() => import('./ContractModal'), { ssr: false })
@@ -477,6 +478,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     Record<string, { contractId: string; items: Record<string, boolean> } | null>
   >({})
   const [checklistLoading, setChecklistLoading] = useState<string | null>(null)
+
+  // Incidents panel
+  const [expandedIncidentsSejourId, setExpandedIncidentsSejourId] = useState<string | null>(null)
+  const [incidentCounts, setIncidentCounts] = useState<Record<string, { open: number; total: number }>>({})
 
   async function toggleChecklist(sejourId: string) {
     if (expandedSejourId === sejourId) { setExpandedSejourId(null); return }
@@ -1483,6 +1488,26 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       cl ? `${doneCount}/${CL_TOTAL}` : 'Checklist'
                     )}
                   </button>
+                  {(() => {
+                    const incExpanded = expandedIncidentsSejourId === sj.id
+                    const counts = incidentCounts[sj.id]
+                    const hasOpen = (counts?.open ?? 0) > 0
+                    const total = counts?.total ?? 0
+                    return (
+                      <button
+                        onClick={() => setExpandedIncidentsSejourId(incExpanded ? null : sj.id)}
+                        style={{
+                          ...s.checklistBtn,
+                          ...(incExpanded ? s.checklistBtnActive : {}),
+                          ...(hasOpen ? { color: '#F87171', borderColor: 'rgba(248,113,113,0.4)' } : {}),
+                        }}
+                        title="Incidents du séjour"
+                      >
+                        <Bandaids size={13} />
+                        {total > 0 ? `Incidents · ${total}` : 'Incidents'}
+                      </button>
+                    )
+                  })()}
                 </div>
               </div>
 
@@ -1547,6 +1572,16 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   })()}
                 </div>
               )}
+
+              {/* ── Incidents panel ────────────────────────────── */}
+              <IncidentsPanel
+                sejourId={sj.id}
+                voyageurId={voyageur.id}
+                open={expandedIncidentsSejourId === sj.id}
+                onCountChange={(open, total) => {
+                  setIncidentCounts(prev => ({ ...prev, [sj.id]: { open, total } }))
+                }}
+              />
               </div>
             )
           })}
