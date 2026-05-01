@@ -1474,869 +1474,614 @@ de ton logement.`,
           id: 1,
           title: `Salon, cuisine, chambre — les angles types`,
           duration: '12 min',
-          content: `---
+          content: `## Préparation avant chaque pièce
 
-MODULE 5 · LEÇON 1
-────────────────────────────────────
-Salon, cuisine, chambre
-Les 3 pièces de vie : angles types
-────────────────────────────────────
+Avant chaque photo, exécute ce **mini-rituel** :
 
----
+1. **Range et fais le home staging** *(cf. module 3, checklist 23 points)*.
+2. **Allume toutes les lampes.**
+3. **Ouvre tous les rideaux.**
+4. **Vérifie l'heure** *(cf. module 4, leçon 2)*.
+5. **Active grille + HDR** sur ton téléphone.
+6. **Place ton mini-trépied** à la bonne hauteur.
 
-## Préparation avant chaque pièce
-Avant chaque photo, exécute ce mini-rituel :
-
-01. Range et fais le home staging
-    (cf. module 3, checklist 23 points).
-
-02. Allume toutes les lampes.
-
-03. Ouvre tous les rideaux.
-
-04. Vérifie l'heure (cf. module 4, leçon 2).
-
-05. Active grille + HDR sur ton téléphone.
-
-06. Place ton mini-trépied à la bonne hauteur.
-
-→ Sans ces 6 étapes, ne déclenche pas.
-  Tu auras une photo correcte mais jamais
-  une photo qui fait cliquer.
+> Sans ces 6 étapes, **ne déclenche pas**. Tu auras une photo correcte mais jamais une photo qui fait cliquer.
 
 ---
 
-## LE SALON
+## Le salon
 
-**Angle 1 — La photo "principale du salon"**
+### Angle 1 — La photo "principale du salon"
 
-Position :
-→ Coin opposé au canapé, à hauteur 70-80 cm.
-→ Recule au maximum (depuis l'entrée
-  ou depuis le couloir).
+**Position :**
+- Coin opposé au canapé, à hauteur **70-80 cm**.
+- Recule au maximum *(depuis l'entrée ou le couloir)*.
 
-Composition :
-→ Canapé sur le tiers gauche ou droit.
-→ Au-dessus du canapé : tableau ou bibliothèque
-  bien visible.
-→ Sol parquet/tapis qui file vers le coin opposé
-  (lignes de fuite).
-→ Au moins 1 plante ou bouquet visible.
+**Composition :**
+- Canapé sur le **tiers gauche ou droit**.
+- Au-dessus du canapé : tableau ou bibliothèque bien visible.
+- Sol parquet / tapis qui **file vers le coin opposé** *(lignes de fuite)*.
+- Au moins **1 plante ou bouquet** visible.
 
-Cadrage :
-→ Le sol occupe 1/3 du bas.
-→ Les murs et plafond les 2/3 du haut.
-→ Aucun pied de meuble coupé.
+**Cadrage :**
+- Le sol occupe **1/3** du bas.
+- Les murs et plafond les **2/3** du haut.
+- *Aucun pied de meuble coupé.*
 
----
+### Angle 2 — Le détail "lifestyle" du salon
 
-**Angle 2 — Le détail "lifestyle" du salon**
+**Position :** devant la table basse, à 60 cm de hauteur. Distance : 1 à 1,5 m.
 
-Position :
-→ Devant la table basse, à 60 cm de hauteur.
-→ Distance : 1 à 1,5 m de la table basse.
+**Composition :** sur la table basse : 1 livre déco ouvert, 1 tasse de café, 1 plante, 1 bougie. Canapé légèrement visible en arrière-plan, flou *(mode portrait)*.
 
-Composition :
-→ Sur la table basse : 1 livre déco ouvert,
-  1 tasse de café, 1 plante, 1 bougie.
-→ Canapé légèrement visible en arrière-plan,
-  flou (mode portrait du smartphone).
+**Cadrage :** mode portrait du téléphone activé pour flou d'arrière-plan *(« bokeh »)*. Photo en **mode paysage horizontal**.
 
-Cadrage :
-→ Mode portrait du téléphone activé pour flou
-  d'arrière-plan ("bokeh").
-→ Photo en mode paysage horizontal.
+### Angle 3 — La perspective élargie *(optionnel)*
+
+**Position :** coin du salon, le plus reculé possible. Hauteur 80 cm, **lentille grand-angle** clipsée.
+
+**Composition :**
+- Tu vois **2 murs** *(en biais)*, pas un seul.
+- Le canapé occupe **1/3 latéral**.
+- La fenêtre ou une autre ouverture *(porte, baie, escalier)* occupe l'autre tiers.
+
+> La pièce paraît *« infinie »* car les 2 murs sont visibles.
 
 ---
 
-**Angle 3 — La perspective élargie (optionnel)**
+## La cuisine
 
-Position :
-→ Coin du salon, le plus reculé possible.
-→ Hauteur 80 cm, lentille grand-angle clipsée.
+### Angle 1 — La photo principale de cuisine
 
-Composition :
-→ Tu vois 2 murs (en biais), pas un seul.
-→ Le canapé occupe 1/3 latéral.
-→ La fenêtre ou une autre ouverture
-  (porte, baie, escalier) occupe l'autre tiers.
+**Position :** depuis la pièce voisine ou la porte. Hauteur **100 cm** *(plan de travail)*.
 
-Cadrage :
-→ Pas de meuble coupé.
-→ La pièce paraît "infinie" car les 2 murs visibles.
+**Composition :**
+- Le plan de travail **file en diagonale** vers un point de fuite.
+- Détails posés : 1 planche en bois, 1 bouquet, coupe de citrons.
+- **Aucun** appareil électroménager visible *(sauf design)*.
+- Crédence **brillante, propre**.
 
----
+**Cadrage :** verre, mat, bois, métal — au moins **3 textures**. Évier dans le cadre seulement s'il est sec et brillant.
 
-## LA CUISINE
+### Angle 2 — Détail cuisine "ambiance"
 
-**Angle 1 — La photo principale de cuisine**
+**Position :** très proche du plan de travail *(40-60 cm de distance)*. Hauteur de plan de travail.
 
-Position :
-→ Depuis la pièce voisine ou la porte.
-→ Hauteur 100 cm (plan de travail).
+**Composition :** une **nature morte de cuisine** : planche en bois + couteau + citron coupé + feuilles d'herbes fraîches + sel en flocons + 1 verre d'huile.
 
-Composition :
-→ Le plan de travail file en diagonale
-  vers un point de fuite.
-→ Détails posés : 1 planche en bois,
-  1 bouquet, coupe de citrons.
-→ Aucun appareil électroménager visible
-  (sauf design).
-→ Crédence brillante, propre.
+**Cadrage :** mode photo classique *(pas portrait)*. Lumière naturelle **latérale** *(fenêtre sur le côté, pas en face)*.
 
-Cadrage :
-→ Verre, mat, bois, métal — au moins 3 textures.
-→ Évier dans le cadre seulement s'il est sec
-  et brillant.
+> Cette photo ne montre pas la cuisine. Elle **suggère une expérience**. Très puissant pour les voyageurs qui choisissent un logement où ils cuisineront.
+
+### Angle 3 — La cuisine vue depuis le salon *(si ouverte)*
+
+**Position :** depuis le salon, avec un meuble ou un canapé en premier plan. Hauteur 70-80 cm.
+
+**Composition :** premier plan = coin du canapé ou de la table à manger *(légèrement flou)*. Arrière-plan = la cuisine en perspective.
+
+> Idéal pour les logements **"open space"**. Donne l'impression de **circulation** entre les espaces.
 
 ---
 
-**Angle 2 — Détail cuisine "ambiance"**
+## La chambre
 
-Position :
-→ Très proche du plan de travail
-  (40-60 cm de distance).
-→ Hauteur de plan de travail.
+### Angle 1 — La photo principale de chambre
 
-Composition :
-→ Une nature morte de cuisine :
-  planche en bois + couteau + citron coupé +
-  feuilles d'herbes fraîches + sel en
-  flocons + 1 verre d'huile.
+**Position :** depuis la **porte d'entrée** de la chambre. Hauteur 70-80 cm.
 
-Cadrage :
-→ Mode photo classique (pas portrait).
-→ Lumière naturelle latérale (fenêtre
-  sur le côté, pas en face).
+**Composition :**
+- Lit sur le **tiers gauche ou droit**.
+- Fenêtre lumineuse sur l'autre tiers *(idéal : rideaux ouverts, voilage)*.
+- **4 oreillers** empilés *(2+2)*, 1 plaid au pied du lit.
 
-→ Cette photo ne montre pas la cuisine.
-  Elle suggère une expérience.
-  Très puissant pour les voyageurs
-  qui choisissent un logement où ils cuisineront.
+**Cadrage :** tête de lit visible en entier, pieds du lit visibles, au moins 1 table de nuit dans le cadre.
 
----
+### Angle 2 — Le lit "magazine"
 
-**Angle 3 — La cuisine vue depuis le salon (si ouverte)**
+**Position :** au pied du lit, à 60 cm de hauteur. Distance : 1,5 à 2 m du lit.
 
-Position :
-→ Depuis le salon, avec un meuble
-  ou un canapé en premier plan.
-→ Hauteur 70-80 cm.
+**Composition :**
+- Lit **centré** dans le cadre.
+- Drap blanc **impeccable**.
+- Couette légèrement froissée volontairement *(effet "matin paisible")*.
+- Lumière qui entre par une fenêtre latérale.
 
-Composition :
-→ Premier plan : coin du canapé
-  ou de la table à manger (légèrement flou).
-→ Arrière-plan : la cuisine en perspective.
+**Cadrage :** mode paysage horizontal. Le bas du lit occupe le **tiers inférieur**. Le mur derrière *(avec tableau ou tête de lit design)* occupe les **2/3 supérieurs**.
 
-Cadrage :
-→ Donne l'impression de circulation
-  entre les espaces.
-→ Idéal pour les logements "open space".
+### Angle 3 — Le détail "réveil paisible"
 
----
+**Position :** depuis la table de nuit, à 50-60 cm. Téléphone à hauteur de l'oreiller.
 
-## LA CHAMBRE
+**Composition :** premier plan = table de nuit avec lampe allumée, livre, tasse de café. Arrière-plan = oreillers et lit *(légèrement flou)*.
 
-**Angle 1 — La photo principale de chambre**
+**Cadrage :** mode portrait pour flou d'arrière-plan. Lumière chaude naturelle *(golden hour ou lampe allumée)*.
 
-Position :
-→ Depuis la porte d'entrée de la chambre.
-→ Hauteur 70-80 cm.
-
-Composition :
-→ Lit sur le tiers gauche ou droit.
-→ Fenêtre lumineuse sur l'autre tiers
-  (idéal : rideaux ouverts, voilage).
-→ 4 oreillers empilés (2+2),
-  1 plaid au pied du lit.
-
-Cadrage :
-→ Tête de lit visible en entier.
-→ Pieds du lit visibles.
-→ Au moins 1 table de nuit dans le cadre.
-
----
-
-**Angle 2 — Le lit "magazine"**
-
-Position :
-→ Au pied du lit, à 60 cm de hauteur.
-→ Distance : 1,5 à 2 m du lit.
-
-Composition :
-→ Lit centré dans le cadre.
-→ Drap blanc impeccable.
-→ Couette légèrement froissée volontairement
-  (effet "matin paisible").
-→ Lumière qui entre par une fenêtre latérale.
-
-Cadrage :
-→ Mode paysage horizontal.
-→ Le bas du lit occupe le tiers inférieur.
-→ Le mur derrière (avec tableau ou tête de lit
-  design) occupe les 2/3 supérieurs.
-
----
-
-**Angle 3 — Le détail "réveil paisible"**
-
-Position :
-→ Depuis la table de nuit, à 50-60 cm.
-→ Téléphone à hauteur de l'oreiller.
-
-Composition :
-→ Premier plan : table de nuit avec lampe
-  allumée, livre, tasse de café.
-→ Arrière-plan : oreillers et lit (légèrement flou).
-
-Cadrage :
-→ Mode portrait pour flou d'arrière-plan.
-→ Lumière chaude naturelle (golden hour
-  ou lampe allumée).
-
-→ Photo très "vendeuse" pour les chambres
-  d'hôtes ou les logements romantiques.
+> Photo très *« vendeuse »* pour les **chambres d'hôtes** ou les **logements romantiques**.
 
 ---
 
 ## La règle des "3 angles minimum par pièce"
-Pour chaque pièce de vie (salon, cuisine,
-chambres), prends au moins 3 photos :
 
-→ 1 photo principale (vue d'ensemble)
-→ 1 photo "lifestyle" (détail vivant)
-→ 1 photo de perspective ou angle alternatif
+Pour chaque pièce de vie *(salon, cuisine, chambres)*, prends au moins **3 photos** :
 
-Sur Airbnb, mettre 3 photos d'une même pièce
-augmente la durée passée sur l'annonce de 22 %.
+1. **1 photo principale** *(vue d'ensemble)*
+2. **1 photo "lifestyle"** *(détail vivant)*
+3. **1 photo de perspective** ou angle alternatif
 
-→ Plus le voyageur explore, plus il s'attache,
-  plus il réserve.
+> Sur Airbnb, mettre 3 photos d'une même pièce augmente la durée passée sur l'annonce de **22 %**.
+
+> Plus le voyageur explore, plus il s'attache, **plus il réserve**.
 
 ---
 
-## Exercice
-**Action immédiate :**
+## Exercice — action immédiate
 
-Pour chaque pièce, planifie tes 3 angles
-sur une feuille avant la séance :
-→ Position du téléphone (avec quel pied/trépied)
-→ Hauteur visée
-→ Composition (sujet sur quel tiers)
-→ Lumière et heure
+Pour chaque pièce, planifie tes **3 angles** sur une feuille avant la séance :
 
-Cette préparation prend 20 minutes max,
-mais te fait gagner 1 heure pendant la séance.`,
+- Position du téléphone *(avec quel pied/trépied)*
+- Hauteur visée
+- Composition *(sujet sur quel tiers)*
+- Lumière et heure
+
+> Cette préparation prend **20 minutes max**, mais te fait gagner **1 heure** pendant la séance.`,
         },
         {
           id: 2,
           title: `Salle de bain — la pièce la plus difficile`,
           duration: '8 min',
-          content: `---
+          content: `## Pourquoi la salle de bain est si dure
 
-MODULE 5 · LEÇON 2
-────────────────────────────────────
-Salle de bain
-La pièce la plus difficile à photographier
-────────────────────────────────────
+Quasiment toutes les salles de bain ont au moins **3 défauts** qui rendent la photo difficile :
 
----
+- **Petite** *(souvent 4-6 m²)*
+- **Peu ou pas de lumière naturelle**
+- **Surfaces très réfléchissantes** *(miroir, faïence, robinetterie)*
 
-## Pourquoi la salle de bain est si dure
-Quasiment toutes les salles de bain ont
-au moins 3 défauts qui rendent la photo difficile :
+C'est pour ça que la majorité des annonces LCD ont une **mauvaise** photo de salle de bain.
 
-→ Petite (souvent 4-6 m²)
-→ Peu ou pas de lumière naturelle
-→ Surfaces très réfléchissantes
-  (miroir, faïence, robinetterie)
-
-C'est pour ça que la majorité des annonces LCD
-ont une mauvaise photo de salle de bain.
-
-→ Bonne nouvelle : si TU réussis à bien la photographier,
-  tu te démarques immédiatement.
-  C'est un avantage facile à prendre.
+> **Bonne nouvelle :** si **toi** tu réussis à bien la photographier, tu te démarques immédiatement. *C'est un avantage facile à prendre.*
 
 ---
 
 ## La règle absolue : ne JAMAIS photographier le miroir
-Le miroir capte ton reflet, ton téléphone,
-ton trépied, et n'importe quel élément
-qui se trouve derrière toi.
 
-→ Une photo "amateur" se reconnaît à 100 %
-  par : le reflet du smartphone dans le miroir.
+Le miroir capte ton reflet, ton téléphone, ton trépied, et n'importe quel élément qui se trouve derrière toi.
 
-**Solutions :**
+> Une photo *« amateur »* se reconnaît à **100 %** par : *le reflet du smartphone dans le miroir*.
 
-01. Photographie le miroir vu en biais
-    (et pas frontal).
+### Solutions
 
-02. Place-toi de manière à ce que le reflet
-    montre une zone propre (mur, fenêtre)
-    et pas toi.
-
-03. Si impossible, ne fais pas figurer
-    le miroir dans la photo.
-    Cadre serré sur la vasque seule
-    ou la douche.
+1. **Photographie le miroir vu en biais** *(et pas frontal)*.
+2. **Place-toi** de manière à ce que le reflet montre une zone propre *(mur, fenêtre)* et pas toi.
+3. Si impossible, **ne fais pas figurer le miroir** dans la photo. Cadre serré sur la vasque seule ou la douche.
 
 ---
 
 ## Stratégie 1 : photographier depuis le couloir
+
 **Position :**
-→ Porte de la salle de bain ouverte à 90°.
-→ Toi, debout dans le couloir,
-  téléphone à hauteur 90 cm.
+- Porte de la salle de bain ouverte à 90°.
+- Toi, debout **dans le couloir**, téléphone à hauteur 90 cm.
 
 **Avantages :**
-→ Tu n'es pas dans la pièce
-  → pas de reflet de toi dans le miroir.
-→ Tu as plus de recul → tu vois plus
-  de la pièce.
-→ La porte ouverte cadre l'image
-  → effet "découverte".
+- Tu n'es **pas dans la pièce** → pas de reflet de toi dans le miroir.
+- Tu as plus de **recul** → tu vois plus de la pièce.
+- La porte ouverte **cadre l'image** → effet *« découverte »*.
 
 **Composition :**
-→ La porte sur le tiers gauche ou droit.
-→ La salle de bain au centre, dans le cadre
-  formé par la porte.
-→ Lumière naturelle qui rentre depuis l'extérieur.
+- La porte sur le tiers gauche ou droit.
+- La salle de bain au centre, dans le cadre formé par la porte.
+- Lumière naturelle qui rentre depuis l'extérieur.
 
-→ C'est l'angle préféré des photographes
-  immobiliers pour les SDB de moins de 5 m².
+> C'est l'angle **préféré** des photographes immobiliers pour les SDB de moins de 5 m².
 
 ---
 
 ## Stratégie 2 : la photo "vasque" centrée
-**Position :**
-→ À l'opposé de la vasque, dans la pièce.
-→ Hauteur 90-100 cm.
+
+**Position :** à l'opposé de la vasque, dans la pièce. Hauteur 90-100 cm.
 
 **Composition :**
-→ Vasque parfaitement centrée.
-→ Miroir vu de face MAIS reflet visible
-  de quelque chose de neutre derrière toi
-  (mur clair, fenêtre).
-→ Sur la vasque : 1 plante + 1 distributeur
-  de savon design + 1 bougie.
+- Vasque **parfaitement centrée**.
+- Miroir vu de face MAIS reflet visible de quelque chose de **neutre** derrière toi *(mur clair, fenêtre)*.
+- Sur la vasque : 1 plante + 1 distributeur de savon design + 1 bougie.
 
 **Cadrage :**
-→ Mode paysage.
-→ Tu vois la vasque entière + 30 cm
-  au-dessus et 30 cm de chaque côté.
-→ Lumière chaude (lampe sous-miroir
-  ou plafonnier allumés).
+- Mode paysage.
+- Tu vois la vasque entière + 30 cm au-dessus et 30 cm de chaque côté.
+- Lumière chaude *(lampe sous-miroir ou plafonnier allumés)*.
 
 ---
 
 ## Stratégie 3 : le détail texture
-**Position :**
-→ À 30-40 cm de l'objet à photographier.
-→ Hauteur : selon l'objet.
+
+**Position :** à 30-40 cm de l'objet à photographier. Hauteur selon l'objet.
 
 **Sujets parfaits :**
-→ Pile de serviettes blanches roulées.
-→ Vasque en pierre + savon artisanal.
-→ Robinet en laiton + carrelage métro.
-→ Plante verte + bougie sur le rebord.
+- Pile de **serviettes blanches** roulées
+- **Vasque en pierre** + savon artisanal
+- **Robinet en laiton** + carrelage métro
+- **Plante verte** + bougie sur le rebord
 
-**Cadrage :**
-→ Mode portrait pour flou d'arrière-plan.
-→ Lumière naturelle latérale ou douce.
+**Cadrage :** mode portrait pour flou d'arrière-plan. Lumière naturelle latérale ou douce.
 
-→ Cette photo ne montre pas la salle de bain.
-  Elle suggère un soin esthétique.
-  Magique pour les annonces "design".
+> Cette photo ne montre pas la salle de bain. *Elle suggère un soin esthétique.* **Magique** pour les annonces *« design »*.
 
 ---
 
 ## Trucs pour les SDB sans fenêtre
-Cas le plus difficile : SDB en aveugle,
-seulement éclairée au plafond.
 
-**Solution 1 : porte ouverte sur pièce lumineuse**
-→ Ouvre la porte de la SDB sur le couloir
-  ou la chambre voisine, qui doit être ensoleillée.
-→ Allume tout dans la SDB (plafonnier,
-  appliques, sous-miroir, miroir LED).
-→ Mode HDR + mode nuit si besoin.
-→ Trépied obligatoire.
+Cas le plus difficile : SDB en **aveugle**, seulement éclairée au plafond.
 
-**Solution 2 : éclairage temporaire**
-→ Apporte une lampe de chevet portable
-  (ou achète une LED sans fil 8-10 €).
-→ Place-la hors du cadre, dirigée vers le mur
-  pour éclairage indirect.
-→ Photographie comme s'il y avait
-  une fenêtre.
+### Solution 1 — Porte ouverte sur pièce lumineuse
 
-**Solution 3 : photo "détail" uniquement**
-→ Si la pièce est vraiment sombre et petite,
-  ne fais pas de photo d'ensemble.
-→ Fais 2-3 photos de détails seulement
-  (vasque, douche, robinetterie).
-→ Sur Airbnb, le voyageur ne pénalise pas
-  l'absence de photo d'ensemble si les détails
-  sont attirants.
+- Ouvre la porte de la SDB sur le couloir ou la chambre voisine *(qui doit être ensoleillée)*.
+- Allume **tout** dans la SDB *(plafonnier, appliques, sous-miroir, miroir LED)*.
+- Mode **HDR + mode nuit** si besoin.
+- **Trépied obligatoire.**
+
+### Solution 2 — Éclairage temporaire
+
+- Apporte une lampe de chevet portable *(ou achète une LED sans fil 8-10 €)*.
+- Place-la **hors du cadre**, dirigée vers le mur pour éclairage **indirect**.
+- Photographie comme s'il y avait une fenêtre.
+
+### Solution 3 — Photo "détail" uniquement
+
+- Si la pièce est vraiment sombre et petite, **ne fais pas de photo d'ensemble**.
+- Fais 2-3 photos de **détails** seulement *(vasque, douche, robinetterie)*.
+- Sur Airbnb, le voyageur ne pénalise pas l'absence de photo d'ensemble si les détails sont **attirants**.
 
 ---
 
 ## La douche, l'élément à montrer
-Si tu as une douche italienne ou une douche
-avec porte en verre, c'est un atout fort
-pour ton annonce.
 
-**Comment la mettre en valeur :**
+Si tu as une **douche italienne** ou une douche avec **porte en verre**, c'est un **atout fort** pour ton annonce.
 
-→ Photographie la depuis l'extérieur,
-  porte ouverte ou paroi en verre.
+### Comment la mettre en valeur
 
-→ Allume la lumière à l'intérieur de la douche.
+- **Photographie-la** depuis l'extérieur, porte ouverte ou paroi en verre.
+- **Allume la lumière** à l'intérieur de la douche.
+- **Pose 1 ou 2 produits** de bain design *(galet de savon noir, bouteille en verre)* dans le coin de la douche.
+- **Surface impeccable**, aucune trace d'eau séchée.
 
-→ Pose 1 ou 2 produits de bain design
-  (galet de savon noir, bouteille en verre)
-  dans le coin de la douche.
-
-→ Surface impeccable, aucune trace
-  d'eau séchée.
-
-→ La photo de douche est souvent la 2e plus
-  cliquée d'une annonce. Ne la néglige pas.
+> La photo de douche est souvent la **2e plus cliquée** d'une annonce. *Ne la néglige pas.*
 
 ---
 
 ## La douche défavorable : que cacher
-Si ta douche est moins glamour
-(bac plastique standard, rideau de douche,
-flexible apparent) :
 
-→ Ne la mets pas en photo principale.
+Si ta douche est moins glamour *(bac plastique standard, rideau de douche, flexible apparent)* :
 
-→ Limite-toi à des plans larges où la douche
-  est en arrière-plan, jamais en sujet principal.
-
-→ Dans la description, mentionne uniquement
-  les éléments de la douche
-  (eau chaude illimitée, jet réglable, etc.)
-  sans la décrire visuellement.
+- **Ne la mets pas** en photo principale.
+- Limite-toi à des **plans larges** où la douche est en arrière-plan, jamais en sujet principal.
+- Dans la description, mentionne uniquement les **éléments fonctionnels** *(eau chaude illimitée, jet réglable, etc.)* sans la décrire visuellement.
 
 ---
 
-## Exercice
-**Pour la séance photo :**
+## Exercice — pour la séance photo
 
-Choisis ta stratégie principale pour la SDB :
-→ Stratégie 1 (depuis le couloir) ?
-→ Stratégie 2 (vasque centrée) ?
-→ Stratégie 3 (détails texture) ?
+1. **Choisis ta stratégie** principale pour la SDB :
+   - Stratégie 1 *(depuis le couloir)* ?
+   - Stratégie 2 *(vasque centrée)* ?
+   - Stratégie 3 *(détails texture)* ?
+2. Si ta SDB est sombre et sans fenêtre, **prévois** aussi le matériel d'éclairage temporaire *(lampe portable ou LED 10 €)*.
 
-Si ta SDB est sombre et sans fenêtre,
-prévois aussi le matériel d'éclairage
-temporaire (lampe portable ou LED 10 €).
+> **Note :** si ta SDB est vraiment moche *(années 80, carrelage daté, ambiance triste)*, c'est probablement le **seul élément** du logement où il vaut la peine d'investir 200-500 € en mini-rénovation cosmétique *(peinture du carrelage, robinetterie neuve, luminaire moderne, plantes)*.
 
-Note : si ta SDB est vraiment moche
-(années 80, carrelage daté, ambiance triste),
-c'est probablement le seul élément du logement
-où il vaut la peine d'investir 200-500 €
-en mini-rénovation cosmétique
-(peinture du carrelage, robinetterie neuve,
-luminaire moderne, plantes).
-
-→ ROI très rapide via les nouvelles photos.`,
+> **ROI très rapide** via les nouvelles photos.`,
         },
         {
           id: 3,
           title: `Extérieurs — valoriser vues, terrasses et jardins`,
           duration: '8 min',
-          content: `---
+          content: `## Pourquoi les extérieurs convertissent
 
-MODULE 5 · LEÇON 3
-────────────────────────────────────
-Extérieurs
-Vues, terrasses, jardins, façades
-────────────────────────────────────
+Les voyageurs choisissent autant un **lieu** qu'un logement.
 
----
+- Un appart en **centre-ville** sans vue ? La photo de ville en bas de l'immeuble.
+- Une maison à la **campagne** ? La photo du jardin, de la nature.
+- Un **loft avec terrasse** ? La photo de la terrasse au coucher de soleil.
 
-## Pourquoi les extérieurs convertissent
-Les voyageurs choisissent autant un lieu
-qu'un logement.
+> Si tu as 1 photo extérieure **forte**, elle peut devenir ta **couverture**.
 
-Un appart en centre-ville sans vue ?
-La photo de ville en bas de l'immeuble.
-
-Une maison à la campagne ?
-La photo du jardin, de la nature.
-
-Un loft avec terrasse ?
-La photo de la terrasse au coucher de soleil.
-
-→ Si tu as 1 photo extérieure forte,
-  elle peut devenir ta couverture.
-
-→ Cette photo seule peut justifier
-  +20-30 € par nuit sur ton tarif.
+> Cette photo seule peut justifier **+20-30 €** par nuit sur ton tarif.
 
 ---
 
 ## La terrasse / balcon
-**Quand photographier :**
-→ Idéal : "golden hour" (1h avant coucher).
-→ Acceptable : matin (8h-10h).
-→ À éviter : midi pile (lumière dure et bleue).
-→ À éviter : nuit complète (sauf si tu as
-  un éclairage extérieur design).
 
-**Composition :**
-→ Place-toi à l'angle de la terrasse,
-  à 90 cm de hauteur.
-→ Sur la terrasse : table dressée
-  (verre de vin, tasse de café, plante,
-  livre ouvert).
-→ Vue ou mur opposé visible en arrière-plan.
+### Quand photographier
 
-**Mise en scène temporaire :**
-→ Sors les coussins, plaids, table dressée.
-→ Allume une bougie ou un photophore
-  (gros effet en fin de journée).
-→ Mets une plante sur la table.
+- ✅ **Idéal** : *"golden hour"* *(1h avant coucher)*.
+- ✅ Acceptable : matin *(8h-10h)*.
+- ❌ À éviter : **midi pile** *(lumière dure et bleue)*.
+- ❌ À éviter : nuit complète *(sauf si tu as un éclairage extérieur design)*.
 
-**Cadrage :**
-→ La table en premier plan sur 1/3.
-→ La vue ou la façade en arrière-plan
-  sur les 2/3.
-→ Lignes de fuite : la rambarde de la terrasse
-  qui file vers la vue.
+### Composition
+
+- Place-toi à l'**angle** de la terrasse, à 90 cm de hauteur.
+- Sur la terrasse : **table dressée** *(verre de vin, tasse de café, plante, livre ouvert)*.
+- Vue ou mur opposé visible en arrière-plan.
+
+### Mise en scène temporaire
+
+- Sors les **coussins, plaids**, table dressée.
+- Allume une **bougie** ou un photophore *(gros effet en fin de journée)*.
+- Mets une **plante** sur la table.
+
+### Cadrage
+
+- La table en premier plan sur **1/3**.
+- La vue ou la façade en arrière-plan sur les **2/3**.
+- **Lignes de fuite** : la rambarde de la terrasse qui file vers la vue.
 
 ---
 
 ## Le jardin
-**Quand photographier :**
-→ Tôt le matin (rosée, lumière douce).
-→ Fin d'après-midi (golden hour).
-→ Évite midi (couleurs lavées).
 
-**Composition :**
-→ Hauteur 130-140 cm (la pleine hauteur du jardin).
-→ Place-toi en bordure du jardin,
-  pas au milieu.
+### Quand photographier
 
-**Sujets photogéniques :**
-→ Une terrasse aménagée avec table.
-→ Un coin barbecue / plancha.
-→ Une piscine (nettoyée, bâche enlevée).
-→ Un hamac ou un fauteuil suspendu.
-→ Un arbre majestueux.
-→ Une allée fleurie.
+- ✅ **Tôt le matin** *(rosée, lumière douce)*.
+- ✅ **Fin d'après-midi** *(golden hour)*.
+- ❌ Évite **midi** *(couleurs lavées)*.
 
-**Évite à tout prix :**
-→ La poubelle, le composteur, le tas de bois.
-→ Les outils de jardinage qui traînent.
-→ Le linge qui sèche.
-→ Les jouets pour enfants éparpillés.
+### Composition
 
-→ Tour du jardin avant la séance,
-  avec un sac, comme dans la cuisine.
+- Hauteur **130-140 cm** *(la pleine hauteur du jardin)*.
+- Place-toi en **bordure** du jardin, pas au milieu.
+
+### Sujets photogéniques
+
+- Une **terrasse aménagée** avec table
+- Un coin **barbecue / plancha**
+- Une **piscine** *(nettoyée, bâche enlevée)*
+- Un **hamac** ou un fauteuil suspendu
+- Un **arbre** majestueux
+- Une **allée fleurie**
+
+### Évite à tout prix
+
+- ❌ La poubelle, le composteur, le tas de bois
+- ❌ Les outils de jardinage qui traînent
+- ❌ Le linge qui sèche
+- ❌ Les jouets pour enfants éparpillés
+
+> **Tour du jardin** avant la séance, avec un sac, comme dans la cuisine.
 
 ---
 
 ## La vue depuis l'intérieur
-Si ton logement a une jolie vue
-(montagne, mer, ville, champs),
-tu DOIS la photographier.
 
-**La meilleure technique : la fenêtre encadrée**
+Si ton logement a une jolie vue *(montagne, mer, ville, champs)*, tu **dois** la photographier.
 
-→ Place-toi dans la pièce, en biais
-  par rapport à la fenêtre.
+### La meilleure technique : la fenêtre encadrée
 
-→ Composition : 1/3 d'intérieur (canapé,
-  meuble, plante en premier plan)
-  + 2/3 de fenêtre avec vue.
+1. **Place-toi dans la pièce**, en biais par rapport à la fenêtre.
+2. **Composition** : 1/3 d'intérieur *(canapé, meuble, plante en premier plan)* + 2/3 de fenêtre avec vue.
+3. **Active le HDR** pour gérer la grosse différence de lumière entre intérieur et extérieur.
 
-→ Active le HDR pour gérer la grosse différence
-  de lumière entre intérieur et extérieur.
-
-→ Évite : photographier la fenêtre seule
-  comme une carte postale.
-  Le voyageur veut voir l'intérieur ET la vue,
-  pour comprendre comment il vivra le lieu.
+> **Évite** : photographier la fenêtre seule comme une carte postale. *Le voyageur veut voir l'intérieur **ET** la vue*, pour comprendre comment il vivra le lieu.
 
 ---
 
-## La façade extérieure (si maison/gîte)
-Pour une maison de vacances ou un gîte,
-la photo de façade est souvent
-la photo de couverture.
+## La façade extérieure *(si maison/gîte)*
 
-**Quand photographier :**
-→ Golden hour (1h avant coucher).
-→ Lumière chaude qui flatte les murs.
+Pour une **maison de vacances** ou un **gîte**, la photo de façade est souvent la photo de couverture.
 
-**Composition :**
-→ Recule au maximum (10-15 m si possible).
-→ Place-toi en biais (3/4 face),
-  pas pile en face.
+### Quand photographier
 
-→ Active la grille de composition.
+- **Golden hour** *(1h avant coucher)*.
+- Lumière chaude qui flatte les murs.
 
-→ La maison occupe 2/3 du cadre,
-  le ciel 1/3.
+### Composition
 
-→ Si tu peux : voiture ou personne
-  en premier plan flou (échelle).
+- **Recule au maximum** *(10-15 m si possible)*.
+- Place-toi en **biais** *(3/4 face)*, pas pile en face.
+- Active la **grille** de composition.
+- La maison occupe **2/3** du cadre, le ciel **1/3**.
+- Si tu peux : voiture ou personne en **premier plan flou** *(échelle)*.
 
-→ Évite : photo de face plate
-  (effet plan d'architecte).
+> **Évite** : photo de face plate *(effet plan d'architecte)*.
 
-**Préparation :**
-→ Mets les volets dans la même position
-  (tous ouverts ou tous fermés).
-→ Range les éléments mobiles
-  (vélo posé contre le mur, poubelles,
-   plots de chantier).
-→ Arrose les plantes ou la pelouse devant
-  pour qu'elles soient bien vertes.
+### Préparation
+
+- **Mets les volets** dans la même position *(tous ouverts ou tous fermés)*.
+- **Range les éléments mobiles** *(vélo posé contre le mur, poubelles, plots de chantier)*.
+- **Arrose les plantes** ou la pelouse devant pour qu'elles soient bien vertes.
 
 ---
 
 ## Le piège du drone
-Beaucoup d'hôtes pensent qu'une photo aérienne
-fait "pro". C'est rarement vrai.
 
-**Quand un drone vaut le coup :**
-→ Très grand domaine (gîte de groupe,
-  villa avec piscine et terrain).
-→ Vue exceptionnelle (bord de mer,
-  haut de colline avec panorama).
-→ Architecture remarquable
-  (villa moderne, château).
+Beaucoup d'hôtes pensent qu'une photo aérienne fait *« pro »*. **C'est rarement vrai.**
 
-**Quand un drone ne vaut PAS le coup :**
-→ Studio en ville.
-→ Maison de banlieue standard.
-→ Appartement.
+### Quand un drone vaut le coup
 
-→ Si tu n'es pas dans les 3 cas favorables,
-  ignore le drone. Investis ces 50-100 €
-  ailleurs.
+- ✅ Très **grand domaine** *(gîte de groupe, villa avec piscine et terrain)*
+- ✅ **Vue exceptionnelle** *(bord de mer, haut de colline avec panorama)*
+- ✅ **Architecture remarquable** *(villa moderne, château)*
+
+### Quand un drone ne vaut PAS le coup
+
+- ❌ Studio en ville
+- ❌ Maison de banlieue standard
+- ❌ Appartement
+
+> Si tu n'es pas dans les 3 cas favorables, **ignore le drone**. Investis ces 50-100 € ailleurs.
 
 ---
 
 ## Photo de quartier / environs
-Les voyageurs adorent les photos qui leur
-montrent le quartier où ils dormiront.
 
-→ Si tu es près d'un monument, marché,
-  plage, restaurant connu : photographie-le.
+Les voyageurs adorent les photos qui leur montrent le **quartier** où ils dormiront.
 
-→ Place ces photos en n°5 à n°8 dans ton ordre,
-  pas en couverture.
+- Si tu es près d'un **monument, marché, plage, restaurant connu** : photographie-le.
+- Place ces photos en **n°5 à n°8** dans ton ordre, pas en couverture.
+- **Évite** les photos prises depuis Google Street View *(basse qualité, voyageurs le voient)*.
 
-→ Évite les photos prises depuis Google Street View
-  (basse qualité, voyageurs le voient).
-
-→ Une vraie photo de balade dans ton quartier
-  vaut 10 captures Google.
+> Une vraie photo de balade dans ton quartier vaut **10 captures Google**.
 
 ---
 
-## Exercice
-**Action de la séance :**
+## Exercice — action de la séance
 
-Liste les 3 photos extérieures que tu vas faire :
-→ Si tu as une terrasse : 1 photo "golden hour".
-→ Si tu as un jardin : 1 photo "ambiance".
-→ Si tu as une vue : 1 photo "fenêtre encadrée".
-→ Si tu n'as rien de tout ça : 1 photo
-  d'un beau lieu à 5-10 min de ton logement.
+**Liste les 3 photos extérieures** que tu vas faire :
 
-Note l'heure idéale pour chacune.
-Ajoute-les à ton planning de séance.`,
+- Si tu as une **terrasse** → 1 photo *« golden hour »*.
+- Si tu as un **jardin** → 1 photo *« ambiance »*.
+- Si tu as une **vue** → 1 photo *« fenêtre encadrée »*.
+- Si tu n'as rien de tout ça → 1 photo d'un **beau lieu à 5-10 min** de ton logement.
+
+> **Note l'heure idéale** pour chacune. Ajoute-les à ton planning de séance.`,
         },
         {
           id: 4,
           title: `Lifestyle shots — créer l'envie en 1 photo`,
           duration: '7 min',
-          content: `---
+          content: `## La différence entre "logement" et "expérience"
 
-MODULE 5 · LEÇON 4
-────────────────────────────────────
-Lifestyle shots
-Les photos qui vendent l'expérience
-────────────────────────────────────
-
----
-
-## La différence entre "logement" et "expérience"
-Un voyageur qui réserve un logement LCD
-n'achète pas un toit.
+Un voyageur qui réserve un logement LCD **n'achète pas un toit**.
 
 Il achète :
-→ Un petit-déjeuner sur la terrasse.
-→ Une soirée pizza sur le canapé.
-→ Une douche après la plage.
-→ Un café face à la vue.
-→ Un livre devant la cheminée.
 
-→ Si tes photos ne montrent que le logement vide,
-  tu vends un toit. Tarif standard.
+- Un **petit-déjeuner** sur la terrasse
+- Une **soirée pizza** sur le canapé
+- Une **douche** après la plage
+- Un **café** face à la vue
+- Un **livre** devant la cheminée
 
-→ Si tes photos suggèrent l'expérience,
-  tu vends un moment. Tarif premium.
+> Si tes photos ne montrent que le logement vide, tu vends un **toit**. *Tarif standard.*
+
+> Si tes photos suggèrent l'**expérience**, tu vends un **moment**. *Tarif premium.*
 
 ---
 
 ## Qu'est-ce qu'une "lifestyle shot" ?
+
 Une lifestyle shot est une photo qui :
-→ Montre une scène de vie quotidienne idéalisée.
-→ Suggère qu'un humain a vécu cette scène.
-→ Crée une projection émotionnelle.
 
-→ Aucun humain visible dans la photo
-  (toujours mauvaise idée).
+- Montre une **scène de vie** quotidienne idéalisée
+- Suggère qu'un humain a vécu cette scène
+- Crée une **projection émotionnelle**
 
-→ Les indices d'humanité sont dans les détails :
-  une tasse à moitié pleine, un livre ouvert,
-  un plaid froissé, un croissant entamé,
-  un verre d'eau au bord du lit.
+> **Aucun humain visible** dans la photo *(toujours mauvaise idée)*.
+
+Les **indices d'humanité** sont dans les détails : une tasse à moitié pleine, un livre ouvert, un plaid froissé, un croissant entamé, un verre d'eau au bord du lit.
 
 ---
 
 ## Les 7 lifestyle shots qui font cliquer
 
-**01. Le petit-déjeuner sur la table**
-→ Sur la table à manger ou la terrasse.
-→ Plateau avec : 1 tasse de café fumant,
-  croissant ou pain coupé, jus d'orange,
-  bouquet de fleurs, livre ouvert.
-→ Effet : "Voilà comment je commence ma journée ici."
+### 1. Le petit-déjeuner sur la table
 
-**02. Le verre de vin sur la terrasse**
-→ Sur la terrasse au coucher du soleil.
-→ Verre de vin (rouge ou blanc), bougie allumée,
-  tapas dans une assiette en bois.
-→ Effet : "Voilà le moment qui clôt la journée."
+- Sur la table à manger ou la terrasse.
+- Plateau avec : 1 tasse de café fumant, croissant ou pain coupé, jus d'orange, bouquet de fleurs, livre ouvert.
 
-**03. Le livre + plaid sur le canapé**
-→ Sur le canapé, à côté de la lampe allumée.
-→ Livre ouvert posé pages vers le bas,
-  tasse de thé fumant, plaid en velours.
-→ Effet : "Cocon, calme, repos."
+> **Effet :** *« Voilà comment je commence ma journée ici. »*
 
-**04. La cuisine en pleine action**
-→ Sur le plan de travail.
-→ Planche en bois avec : pain, citron coupé,
-  herbes fraîches, couteau de chef.
-→ Effet : "Ici, on cuisine."
+### 2. Le verre de vin sur la terrasse
 
-**05. Le café du matin face à la fenêtre**
-→ Sur le rebord de fenêtre ou table près
-  de la fenêtre.
-→ Tasse de café fumante posée sur un livre.
-  Lumière du matin qui rentre.
-→ Effet : "Voilà mon réveil ici."
+- Sur la terrasse au coucher du soleil.
+- Verre de vin *(rouge ou blanc)*, bougie allumée, tapas dans une assiette en bois.
 
-**06. Le bain dressé**
-→ Dans la baignoire.
-→ Mousse, plateau en bois posé sur les bords
-  de la baignoire avec : verre de vin,
-  livre, bougie, serviette pliée.
-→ Effet : "Détente totale."
+> **Effet :** *« Voilà le moment qui clôt la journée. »*
 
-**07. Le coin lecture cosy**
-→ Fauteuil avec lampe de lecture.
-→ Plaid + livre + tasse + lumière chaude.
-→ Effet : "Refuge intellectuel."
+### 3. Le livre + plaid sur le canapé
+
+- Sur le canapé, à côté de la lampe allumée.
+- Livre ouvert posé pages vers le bas, tasse de thé fumant, plaid en velours.
+
+> **Effet :** *« Cocon, calme, repos. »*
+
+### 4. La cuisine en pleine action
+
+- Sur le plan de travail.
+- Planche en bois avec : pain, citron coupé, herbes fraîches, couteau de chef.
+
+> **Effet :** *« Ici, on cuisine. »*
+
+### 5. Le café du matin face à la fenêtre
+
+- Sur le rebord de fenêtre ou table près de la fenêtre.
+- Tasse de café fumante posée sur un livre. Lumière du matin qui rentre.
+
+> **Effet :** *« Voilà mon réveil ici. »*
+
+### 6. Le bain dressé
+
+- Dans la baignoire.
+- Mousse, plateau en bois posé sur les bords de la baignoire avec : verre de vin, livre, bougie, serviette pliée.
+
+> **Effet :** *« Détente totale. »*
+
+### 7. Le coin lecture cosy
+
+- Fauteuil avec lampe de lecture.
+- Plaid + livre + tasse + lumière chaude.
+
+> **Effet :** *« Refuge intellectuel. »*
 
 ---
 
 ## Les règles de la fumée
-Une tasse fumante, une casserole qui fume,
-une bougie qui fume — ça crée du mouvement
-et de la "vie" dans une photo statique.
 
-**Comment capturer la fumée :**
+Une tasse fumante, une casserole qui fume, une bougie qui fume — ça crée du **mouvement** et de la *« vie »* dans une photo statique.
 
-→ La fumée doit être éclairée par derrière
-  (contre-jour) ou de côté pour être visible.
+### Comment capturer la fumée
 
-→ Quelques secondes après le café versé,
-  la fumée est maximale. Bois (très chaud)
-  + faible humidité = fumée bien visible.
+- La fumée doit être éclairée **par derrière** *(contre-jour)* ou **de côté** pour être visible.
+- Quelques secondes après le café versé, la fumée est maximale. **Boisson très chaude** + faible humidité = fumée bien visible.
 
-→ Astuce : verse du café un peu trop chaud,
-  pose, prend la photo dans les 30 secondes
-  qui suivent.
+> **Astuce :** verse du café un peu **trop chaud**, pose, prends la photo dans les **30 secondes** qui suivent.
 
 ---
 
 ## Le piège du "trop mis en scène"
-La frontière entre lifestyle réussie
-et "photo de catalogue" est fine.
 
-**Trop = "fake" :**
-→ Tasse de café parfaitement centrée,
-  croissant impeccable, fleur isolée.
-  Effet "publicité Nespresso".
+La frontière entre lifestyle réussie et *« photo de catalogue »* est **fine**.
 
-**Bien = "vie réelle" :**
-→ Tasse de café légèrement décalée,
-  croissant entamé (1 bouchée prise),
-  miettes sur la table, journal froissé.
+### ❌ Trop = "fake"
 
-→ La règle : ajoute 1 imperfection
-  volontaire à chaque scène.
-→ Ça paraît "vrai", "vécu", "pas mis en scène".
+> Tasse de café parfaitement centrée, croissant impeccable, fleur isolée. Effet *« publicité Nespresso »*.
+
+### ✅ Bien = "vie réelle"
+
+> Tasse de café légèrement décalée, croissant **entamé** *(1 bouchée prise)*, miettes sur la table, journal froissé.
+
+> **La règle :** ajoute **1 imperfection volontaire** à chaque scène. *Ça paraît « vrai », « vécu », « pas mis en scène ».*
 
 ---
 
 ## Le ratio idéal d'une annonce
-Sur les 20-30 photos de ton annonce,
-voici la répartition optimale :
 
-→ 1 photo de couverture (la plus forte).
-→ 8 à 12 photos de pièces (toutes les pièces
-  importantes, 1-2 par pièce).
-→ 4 à 6 photos extérieures (terrasse,
-  jardin, vue, façade).
-→ 4 à 6 lifestyle shots (réparties
-  dans les pièces clés).
-→ 2 à 4 photos de détails (équipements
-  remarquables, déco, objets uniques).
+Sur les 20-30 photos de ton annonce, voici la répartition optimale :
 
-→ Une annonce sans lifestyle shots
-  est une annonce qui vend un toit.
+| Type | Quantité |
+|---|---|
+| **Photo de couverture** *(la plus forte)* | 1 |
+| **Photos de pièces** *(toutes les pièces importantes)* | 8 à 12 |
+| **Photos extérieures** *(terrasse, jardin, vue, façade)* | 4 à 6 |
+| **Lifestyle shots** *(réparties dans les pièces clés)* | 4 à 6 |
+| **Photos de détails** *(équipements, déco, objets uniques)* | 2 à 4 |
 
-→ Une annonce avec 4-6 lifestyle shots
-  bien réparties peut tarifer 15-25 % plus cher.
+> Une annonce **sans lifestyle shots** est une annonce qui vend un toit.
+
+> Une annonce avec **4-6 lifestyle shots** bien réparties peut tarifer **15-25 % plus cher**.
 
 ---
 
-## Exercice
-**À planifier pour ta séance :**
+## Exercice — à planifier pour ta séance
 
-Choisis 3 des 7 lifestyle shots
-qui correspondent à ton type de logement :
+**Choisis 3 des 7 lifestyle shots** qui correspondent à ton type de logement :
 
-→ Logement urbain → café matinal,
-  livre canapé, soirée terrasse.
+- **Logement urbain** → café matinal, livre canapé, soirée terrasse.
+- **Maison de campagne** → petit-déjeuner extérieur, bain dressé, cuisine en action.
+- **Studio cosy** → café du matin, coin lecture, plateau-repas sur le lit.
 
-→ Maison de campagne → petit-déjeuner extérieur,
-  bain dressé, cuisine en action.
+**Achète / prépare** les éléments nécessaires *(café, fleurs, bougies, vaisselle propre)* avant la séance.
 
-→ Studio cosy → café du matin,
-  coin lecture, plateau-repas sur le lit.
-
-Achète/prépare les éléments nécessaires
-(café, fleurs, bougies, vaisselle propre)
-avant la séance.
-
-→ Rappel : ces lifestyle shots prennent
-  10 min chacune à mettre en place
-  mais peuvent doubler ton tarif sur l'annonce.`,
+> **Rappel :** ces lifestyle shots prennent **10 min** chacune à mettre en place mais peuvent **doubler** ton tarif sur l'annonce.`,
         },
       ],
     },
