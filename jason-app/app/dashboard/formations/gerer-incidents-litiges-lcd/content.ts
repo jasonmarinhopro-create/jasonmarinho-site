@@ -3330,5 +3330,880 @@ Plus tu fais cette formation, plus tu **préviens**.
         },
       ],
     },
+    {
+      id: 6,
+      title: `Cas concrets et plan de crise`,
+      duration: '25 min',
+      lessons: [
+        {
+          id: 1,
+          title: `Plainte voisin pour bruit : la marche à suivre`,
+          duration: '6 min',
+          content: `## Le scénario complet
+
+Voici un cas réel que tu vivras au moins une fois si tu fais de la LCD plus de 6 mois.
+
+> *Ton appartement est dans un immeuble parisien. Le voyageur, un groupe de 5 amis, organise une soirée jusqu'à 2h du matin. Le lundi matin, tu reçois un mail du syndic : "Une plainte officielle a été déposée par 3 copropriétaires concernant les nuisances sonores du week-end."*
+
+C'est sérieux. Voici comment réagir, **étape par étape**.
+
+---
+
+## Étape 1 — Réponds au syndic dans les 24 h
+
+Format type :
+
+> *« Bonjour [Syndic],*
+>
+> *Je viens de prendre connaissance de la plainte du week-end. Je vous remercie de m'avoir informé.*
+>
+> *Pour clarifier la situation : le logement [adresse] a effectivement été loué en courte durée du [date] au [date]. J'ai eu un signalement le [date du signalement] de la part d'un voisin et je suis intervenu immédiatement par message au voyageur.*
+>
+> *Je tiens à votre disposition l'historique complet de mes échanges avec le voyageur, ainsi qu'un constat factuel.*
+>
+> *Je suis pleinement engagé à respecter le règlement de copropriété et la tranquillité du voisinage. Je vais examiner avec attention les améliorations possibles pour éviter ce type d'incident à l'avenir.*
+>
+> *Je reste à votre disposition pour toute discussion. »*
+
+### Pourquoi ce ton
+
+- **Reconnaissance** des faits sans aveu de culpabilité.
+- **Démonstration d'intervention** (tu n'es pas resté passif).
+- **Engagement futur** sans promesse irréaliste.
+- **Ouverture** au dialogue.
+
+> Un syndic qui sent un hôte **réceptif et coopératif** ne va pas escalader vers l'AG ou la procédure d'interdiction.
+
+---
+
+## Étape 2 — Documente l'incident
+
+### Mets dans un dossier
+
+- L'**email du syndic** (avec date d'envoi).
+- L'**email du voisin** (s'il existe).
+- L'**historique des messages** avec le voyageur (Airbnb / SMS).
+- Tes **interventions** (heures, contenus).
+- Toute **preuve objective** (logs Wi-Fi, capteurs sonores, etc.).
+
+### Note dans ton dashboard
+
+Sur la fiche incident du séjour :
+
+- **Type :** plainte voisin
+- **Statut :** en cours
+- **Préjudice estimé :** 0 € à [X €] selon issue
+
+---
+
+## Étape 3 — Évalue tes risques
+
+### Niveau 1 — Plainte unique
+
+Un seul voisin se plaint, syndic prend acte sans suite particulière.
+
+**Risque :** faible (mauvais commentaire en AG).
+**Action :** vigilance accrue, pas d'autre démarche.
+
+### Niveau 2 — Plainte collective
+
+3+ copropriétaires se plaignent ou demandent à l'AG d'examiner.
+
+**Risque :** modéré.
+**Action :** prépare un **dossier défense** pour l'AG :
+
+- Tes 50 derniers avis (montrer le respect habituel).
+- Ton règlement intérieur signé par les voyageurs.
+- Tes mesures de prévention.
+
+### Niveau 3 — Procédure d'interdiction LCD
+
+L'AG vote l'interdiction de la LCD dans la copropriété.
+
+**Risque :** élevé.
+**Action :** **avocat** spécialisé immobilier sous 30 jours.
+
+> Une procédure d'interdiction LCD est **complexe** et **rarement gagnée** par les copropriétaires si le règlement initial autorisait la LCD. Mais ça coûte du temps et de l'énergie.
+
+---
+
+## Étape 4 — Préviens le rebond
+
+Pour éviter qu'un seul incident se transforme en historique négatif :
+
+### Action 1 — Renforce ta sélection
+
+- Augmente la **caution** (×1.5).
+- Ajoute des **questions pré-arrivée** spécifiques (motif du voyage, nombre d'invités).
+- **Refuse** systématiquement les voyageurs avec moins de 3 avis.
+
+### Action 2 — Renforce ton règlement
+
+- Ajoute une **clause anti-fête** explicite avec pénalité chiffrée.
+- Augmente la **pénalité bruit nocturne** (200-500 €).
+- Ajoute un capteur sonore **Minut** ou **NoiseAware** (légal, prévient avant la plainte).
+
+### Action 3 — Communique avec les voisins
+
+- Donne ton **numéro direct** aux 3-5 voisins les plus proches.
+- Demande-leur de t'**alerter** avant le syndic en cas de bruit.
+- Tu deviens le contact direct, pas le coupable abstrait.
+
+> Un voisin allié vaut **mieux** qu'un voisin neutre.
+
+---
+
+## Étape 5 — Si la situation s'aggrave
+
+### Signal d'aggravation
+
+- 2ème plainte dans les 6 mois.
+- Pétition de copropriétaires.
+- Mention en AG.
+- Convocation du conseil syndical.
+
+### Réaction immédiate
+
+1. **Avocat spécialisé** immobilier (consultation 200 €).
+2. **Pause** la LCD pendant 1-2 mois pour calmer la situation.
+3. **Mise en place** de mesures démontrables (capteur sonore, charte affichée).
+4. **Présentation** au conseil syndical de tes mesures.
+
+> Une **pause stratégique** vaut mieux qu'une **interdiction définitive**.
+
+---
+
+## Le mythe du "voisin de mauvaise foi"
+
+Tu vas être tenté de penser : *« Ce voisin se plaint pour rien, il est de mauvaise foi. »*
+
+C'est **rarement** vrai.
+
+### Réalité
+
+- 95 % des voisins se plaignent **avec raison** (selon leur perception).
+- 5 % sont effectivement de mauvaise foi (jaloux, conflit pré-existant).
+
+### Conséquence
+
+> **Ne te défausse jamais** sur le voisin. Même si tu penses qu'il exagère, **traite la plainte au sérieux**.
+
+Si tu prouves au syndic que tu as **agi**, le voisin paraîtra peu raisonnable.
+
+Si tu critiques le voisin, **toi** paraîtras peu raisonnable.
+
+---
+
+## Exercice — action immédiate
+
+1. **Identifie** les 3-5 voisins les plus proches de ton logement.
+2. **Récupère** leur **numéro direct**.
+3. **Présente-toi** comme hôte LCD et propose ton numéro en cas de problème.
+4. **Vérifie** ton règlement de copropriété : la LCD est-elle explicitement autorisée ?
+5. **Souscris** un capteur sonore type **Minut** (~80 €) pour prévenir avant la plainte.
+
+> Une plainte voisin **bien gérée** = 0 conséquence.
+> Mal gérée = interdiction LCD à terme.`,
+        },
+        {
+          id: 2,
+          title: `Linge taché / casse : la facturation réflexe`,
+          duration: '6 min',
+          content: `## Les 3 dégâts les plus fréquents
+
+Sur 100 séjours, voici la fréquence statistique des dégâts les plus courants :
+
+| Dégât | Fréquence | Coût moyen |
+|---|---|---|
+| **Drap / linge taché** | 25 % | 30-80 € |
+| **Verres cassés / vaisselle** | 15 % | 15-50 € |
+| **Tache canapé / matelas** | 8 % | 80-300 € |
+| **Brûlure tissu** | 5 % | 100-400 € |
+| **Vol petits objets** | 3 % | 50-200 € |
+
+> Ces 5 cas couvrent **85 % des dégâts** que tu rencontreras. Voici la procédure pour chacun.
+
+---
+
+## Cas 1 — Drap / linge taché
+
+### Tarif type
+
+- Drap housse 160x200 : 50-70 €
+- Drap housse 90x190 : 30-40 €
+- Taie d'oreiller : 15-20 €
+- Housse de couette 220x240 : 80-100 €
+- Serviette de bain : 20-30 €
+- Drap de bain : 35-50 €
+
+### Comment chiffrer
+
+Choisis **le prix d'un produit équivalent neuf**, pas le prix d'achat original.
+
+### La procédure
+
+1. **Photo de la tache** (avec règle ou pièce de monnaie pour échelle).
+2. **Photo du drap entier** (pour situer).
+3. **Capture du prix neuf** sur Amazon ou Ikea.
+4. **Capture la caution Stripe** du montant exact.
+5. **Envoie le rapport** au voyageur (Module 3.L3).
+
+### Le piège du "lavage spécialisé"
+
+Si la tache **part au lavage**, tu ne peux **pas** facturer le remplacement.
+
+**Solution intermédiaire :**
+
+- Devis d'un pressing pro (15-30 €).
+- Tu peux facturer ce coût.
+
+> **Honnêteté payante** : un voyageur qui voit que tu factures ce qui est juste te respecte plus.
+
+---
+
+## Cas 2 — Verres cassés / vaisselle
+
+### Tarif type
+
+- Verre à eau standard : 3-5 €
+- Verre à vin : 5-10 €
+- Assiette plate : 8-15 €
+- Tasse : 5-10 €
+- Couvert dépareillé : 4-8 €
+
+### Comment chiffrer
+
+- **Si tu connais la marque** (Ikea, Habitat, etc.) : prix neuf direct.
+- **Si tu ne sais pas** : prix moyen d'un produit similaire.
+
+### La procédure simple
+
+> *« Bonjour, lors du nettoyage, j'ai constaté qu'il manque 2 verres à vin et 1 assiette dans la vaisselle fournie. Le coût de remplacement est de 24 €. Ce montant sera prélevé sur la caution. »*
+
+### Quand ne PAS facturer
+
+- **Vaisselle ancienne** (> 5 ans) : usure normale acceptable.
+- **Casse mineure** (< 10 €) : effort commercial appréciable.
+
+> Décide de **ton seuil de tolérance** (ex: < 15 € = pas de facturation). Cohérence sur tous les séjours.
+
+---
+
+## Cas 3 — Tache sur canapé ou matelas
+
+### Pourquoi c'est cher
+
+Une tache **profonde** sur un canapé ou matelas est **rarement réparable** en domestique.
+
+3 options possibles :
+
+### Option 1 — Nettoyage professionnel
+
+- Détacher pro : 80-200 € (selon surface et profondeur).
+- Délai : 2-5 jours.
+- Succès : ~70 % des taches.
+
+### Option 2 — Remplacement de la housse
+
+- Si housse amovible : 80-300 € (selon canapé).
+- Délai : 7-14 jours (commande + livraison).
+
+### Option 3 — Remplacement total
+
+- Canapé entier : 500-3000 €.
+- Matelas : 300-1500 €.
+- Délai : 7-21 jours.
+
+### La procédure
+
+1. **Photo détaillée** de la tache (close-up + plan large).
+2. **Devis de nettoyage pro** comme **première option**.
+3. **Devis de housse / remplacement** comme **plan B**.
+4. Capture la caution **avec marge** (10-20 % de plus que le devis).
+
+### Le piège : "le voyageur ne pouvait pas savoir"
+
+Le voyageur peut argumenter : *« Je ne pouvais pas savoir que ça allait tacher »*.
+
+**Réponse :**
+
+> *« Le contrat signé indique que le locataire est responsable des dégâts causés au mobilier, intentionnels ou non. Je facture le coût de remplacement, pas le préjudice intentionnel. »*
+
+> Le contrat est ton **bouclier**. Toujours.
+
+---
+
+## Cas 4 — Brûlure de tissu
+
+### Sources fréquentes
+
+- Cigarette (sur canapé, lit, tapis, vêtement).
+- Bougie (sur table, comptoir).
+- Fer à repasser (sur table à repasser, vêtement).
+
+### Tarif type
+
+| Brûlure | Coût |
+|---|---|
+| Petite (< 3 cm) | 80-150 € (réparation) |
+| Moyenne (3-10 cm) | 150-400 € (housse / remplacement partiel) |
+| Grosse (> 10 cm) | 400-1500 € (remplacement complet) |
+
+### Bonus — la facturation "fumée"
+
+Si la brûlure est due à une cigarette, tu peux **cumuler** :
+
+- Coût de la brûlure (X €).
+- Coût de désinfection olfactive (200-400 €).
+- Manque à gagner si bloque le séjour suivant (1-2 nuits = 100-300 €).
+
+**Total moyen :** 500 à 1500 €.
+
+> Une cigarette = **toujours** une facture lourde. Ton contrat doit l'expliciter.
+
+---
+
+## Cas 5 — Vol de petits objets
+
+### Vols les plus fréquents
+
+- Serviettes de bain (10-30 €)
+- Peignoirs (20-50 €)
+- Vaisselle design (5-30 € par pièce)
+- Objets décoratifs (10-100 €)
+- Petits électroménagers (cafetière, bouilloire) (30-100 €)
+
+### La procédure
+
+1. **Inventaire** détaillé (avant) avec photos.
+2. **Inventaire de sortie** : compare.
+3. **Photos** des emplacements vides.
+4. **Devis** ou prix neuf de l'objet.
+
+### Le piège du "j'ai oublié à la maison"
+
+Le voyageur peut prétendre avoir **oublié** des objets et propose de les renvoyer.
+
+**Réagis :**
+
+> *« Si vous voulez bien me les renvoyer en courrier suivi à mes frais, c'est volontiers. Si je les reçois dans 7 jours, j'annule la facturation. »*
+
+→ Si tu les reçois → annule.
+→ Si tu ne les reçois pas → applique la facturation comme prévue.
+
+> 99 % des "j'ai oublié" sont en fait des **vols masqués**.
+
+---
+
+## La règle d'or de la facturation
+
+### Tu factures ce que tu peux **prouver et justifier**.
+
+Pas plus, pas moins.
+
+### Tu n'inventes **jamais** de dégâts.
+
+Un seul mensonge = perte de crédibilité totale en cas de procès.
+
+### Tu **factures systématiquement** ce que tu identifies.
+
+Si tu fermes les yeux sur certains dégâts pour "garder la paix", tu envoies un message terrible aux voyageurs **futurs** : *« On peut casser sans payer. »*
+
+---
+
+## Les 3 erreurs à éviter
+
+### Erreur 1 — Facturer trop tard
+
+Tu attends 1 semaine pour faire ton inventaire complet.
+
+**Conséquence :** la caution Stripe est **expirée**, AirCover refuse car hors délai.
+
+> Inspection dans les **2 h** post-départ. Toujours.
+
+### Erreur 2 — Facturer sans devis
+
+Tu mets *« 350 € pour la tache »* sans justificatif.
+
+**Conséquence :** Airbnb refuse, voyageur conteste, tu perds tout.
+
+> **Devis pro** systématique > 100 €.
+
+### Erreur 3 — Facturer émotionnellement
+
+Tu factures *« 500 € pour les nuisances »* sans coût réel.
+
+**Conséquence :** ridicule, refus.
+
+> Le préjudice **moral** ne se facture pas en LCD.
+
+---
+
+## Exercice — action immédiate
+
+1. **Crée ton tableau de tarifs** pour les 5 cas (drap, vaisselle, tache, brûlure, vol).
+2. **Conserve** les **prix neufs** mis à jour 2x par an.
+3. **Identifie** un nettoyeur pro pour devis rapides (canapé, matelas).
+4. **Configure** la procédure dans ton dashboard : photo + devis + capture en 5 minutes.
+
+> Une facturation **rapide et juste** = **respect** des futurs voyageurs.
+> Une facturation **floue ou tardive** = **abus** des voyageurs malins.`,
+        },
+        {
+          id: 3,
+          title: `No-show et annulation tardive : comment réagir`,
+          duration: '6 min',
+          content: `## Les 3 scénarios principaux
+
+### Scénario 1 — Le voyageur ne vient pas
+
+Tu attends 14h. 18h. 22h. Personne. Pas de message.
+
+### Scénario 2 — Le voyageur annule la veille / le jour J
+
+Le voyageur annule à J-1 ou J-0, alors que ton calendrier était bloqué.
+
+### Scénario 3 — Le voyageur arrive mais part au bout de quelques heures
+
+Il est venu, a regardé, et est reparti en disant que le logement ne convient pas.
+
+> Chacun a une **procédure différente**.
+
+---
+
+## Scénario 1 — Le no-show complet
+
+### Étape 1 — Constate l'absence
+
+À l'heure d'arrivée prévue + 4 h, si tu n'as **aucun signe de vie** :
+
+- **Appelle** le voyageur (numéro fourni).
+- **Envoie** un SMS, un message Airbnb / Booking.
+- **Vérifie** l'état du logement (le voyageur n'est peut-être pas entré sans te prévenir).
+
+### Étape 2 — Envoie un message officiel
+
+> *« Bonjour [Prénom],*
+>
+> *Vous étiez attendu à [heure prévue] au logement [adresse]. Je n'ai aucun signe de vie de votre part.*
+>
+> *Pouvez-vous me confirmer dès que possible :*
+> *— Si vous arrivez plus tard ou êtes annulé.*
+> *— Votre nouvelle heure d'arrivée si applicable.*
+>
+> *À défaut de réponse dans les 12 heures, le séjour sera considéré comme annulé sans remboursement, conformément à la politique d'annulation. »*
+
+### Étape 3 — Attends 12 à 24 h
+
+3 issues possibles :
+
+### Issue A — Le voyageur arrive en retard
+
+- Note l'**heure d'arrivée réelle**.
+- **Pénalise** s'il dépasse de plus de 12 h le créneau prévu (bonus stress + ménage de tes équipes).
+
+### Issue B — Le voyageur explique (urgence)
+
+- **Empathie** si situation crédible (avion annulé, hospitalisation).
+- Demande **preuves** (boarding pass, certif médical).
+- **Modifie le séjour** sur la plateforme.
+
+### Issue C — Le voyageur reste silencieux
+
+- **Annule** le séjour (Airbnb / Booking) après 24 h.
+- **Aucun remboursement** sauf si politique flexible activée.
+
+---
+
+## Le no-show : qui paye ?
+
+### Sur Airbnb
+
+**Politique standard :** le voyageur **paye intégralement** le séjour, même no-show.
+
+**Politique flexible** (si tu l'as activée) : remboursement partiel sous conditions.
+
+> **Recommandation :** désactive la politique flexible pour les **séjours > 200 €** ou **week-ends en haute saison**. Tu te protèges.
+
+### Sur Booking
+
+**Politique standard :** dépend de la **politique d'annulation** que tu as configurée.
+
+- **Non remboursable :** voyageur paye 100 %.
+- **Annulation gratuite jusqu'à 24 h :** voyageur ne paye rien si annulation à temps.
+- **Annulation tardive :** voyageur paye selon barème.
+
+> Vérifie tes politiques en **Extranet → Tarifs et calendrier**.
+
+---
+
+## Scénario 2 — Annulation tardive
+
+### Si la politique le permet
+
+- Pas d'action particulière. Politique d'annulation s'applique.
+- Tu **rouvres** la disponibilité immédiatement (autres voyageurs peuvent réserver).
+
+### Si la politique est "non remboursable"
+
+- Le voyageur **paye intégralement**.
+- Il peut le **contester** en disant *« cas de force majeure »* (maladie, deuil).
+
+### Comment réagir aux contestations "force majeure"
+
+#### Cas 1 — Force majeure crédible
+
+Maladie grave, hospitalisation, deuil familial proche.
+
+> **Choix éthique :** ton choix. Beaucoup d'hôtes acceptent un **avoir** (pour un séjour futur) plutôt qu'un remboursement.
+
+#### Cas 2 — Force majeure douteuse
+
+*« J'ai un imprévu professionnel »*, *« mon avion est annulé »*.
+
+→ Demande **preuves** (boarding pass annulé, mail d'employeur).
+
+→ Si pas de preuve, **maintiens** la politique non remboursable.
+
+#### Cas 3 — Politique d'Airbnb pour cas exceptionnels
+
+Airbnb a une **liste officielle** des "circonstances exceptionnelles" :
+
+- Catastrophe naturelle dans la zone.
+- Maladie grave avec certificat.
+- Restrictions gouvernementales (ex: confinement).
+
+> Dans ces cas, Airbnb **rembourse** le voyageur **sans** te pénaliser. Tu es payé quand même.
+
+---
+
+## Scénario 3 — Le voyageur arrive et repart
+
+### Cas type
+
+> *Le voyageur arrive, fait le tour du logement, te dit "ce n'est pas ce que j'attendais" et part. Demande remboursement immédiat.*
+
+### Comment réagir
+
+#### Étape 1 — Identifie la raison
+
+> *« Pouvez-vous me préciser ce qui ne convient pas ? »*
+
+3 sous-cas :
+
+- **Erreur du voyageur :** "Je pensais que c'était plus grand", "Je ne savais pas que c'était au 5ème étage". → **Pas de remboursement**, c'est sur l'annonce.
+- **Réalité différente de l'annonce :** "Les photos ne montrent pas la vue sur le mur", "Pas de wifi annoncé". → **Remboursement partiel possible** si tu as effectivement omis quelque chose.
+- **Problème ponctuel résolvable :** "Le chauffage ne marche pas", "Le wifi est coupé". → **Tu interviens** et règles le problème, pas de remboursement.
+
+#### Étape 2 — Photographie l'état d'arrivée
+
+Le voyageur a passé quelques heures dans le logement. Vérifie qu'**aucun dégât** n'a été causé.
+
+#### Étape 3 — Décide en factuel
+
+- **Si le voyageur a tort** : pas de remboursement, message factuel.
+- **Si le voyageur a raison** : remboursement proportionnel (pas total).
+
+> Un remboursement total est rarement justifié. Le voyageur a **occupé** le logement quelques heures, **bloqué** les autres voyageurs.
+
+### Format type
+
+> *« Suite à votre départ anticipé, voici la situation :*
+> *— Vous êtes arrivé à [heure] et reparti à [heure].*
+> *— Le motif évoqué est [raison].*
+> *— Le logement correspond à l'annonce sur les points suivants : [liste].*
+> *— Conformément à la politique d'annulation, le remboursement n'est pas applicable.*
+>
+> *Cordialement. »*
+
+---
+
+## La protection contre les annulations abusives
+
+### Astuce 1 — Politique d'annulation stricte
+
+- **Standard** ou **strict** sur Airbnb.
+- **Non remboursable** sur Booking pour les périodes hautes.
+
+### Astuce 2 — Annonce détaillée et honnête
+
+- 47 photos précises (Module 3).
+- Description **factuelle** sans embellissement.
+- Mention claire des contraintes (étage, ascenseur, vue, bruit).
+
+### Astuce 3 — Contrat avec clause anti-départ-anticipé
+
+> *« En cas de départ anticipé décidé par le locataire, aucun remboursement ne sera applicable, sauf défaut prouvé du logement. »*
+
+### Astuce 4 — Pré-vérification téléphonique
+
+Pour les **séjours > 500 €**, appelle le voyageur la veille.
+
+> Si quelqu'un veut "annuler à l'arrivée", tu détectes la mauvaise foi avant.
+
+---
+
+## Exercice — action immédiate
+
+1. **Vérifie** ta politique d'annulation Airbnb (standard, modérée, stricte).
+2. **Vérifie** ta politique Booking par période (haute saison vs basse saison).
+3. **Crée un message-type** "no-show > 4h" et "départ anticipé".
+4. **Mets à jour** ton contrat avec une **clause anti-départ-anticipé**.
+5. Pour les séjours **> 500 €**, **active** un appel pré-arrivée systématique.
+
+> Une politique claire = **0 abus**.
+> Une politique floue = **abus garantis**.`,
+        },
+        {
+          id: 4,
+          title: `Garder son sang-froid et ne pas s'épuiser : le mental de l'hôte`,
+          duration: '7 min',
+          content: `## Le burn-out de l'hôte LCD existe
+
+Si tu fais cette formation, c'est probablement parce que tu as déjà vécu :
+
+- Une nuit blanche à cause d'une fête.
+- Un voyageur agressif qui te menace.
+- Un avis 1⭐ qui t'a laissé une boule au ventre pendant 3 jours.
+- Une caution prélevée mais perdue après contestation.
+
+Ces moments, **cumulés**, fragilisent ton **mental**.
+
+> 35 % des hôtes LCD arrêtent dans les 3 premières années à cause du **stress**, pas du manque de rentabilité.
+
+---
+
+## Pourquoi la LCD est psychologiquement plus dure que d'autres business
+
+### 1. La performance est publique
+
+Tes avis sont **visibles**. Un mauvais commentaire reste **éternel**.
+
+### 2. Les conflits sont émotionnels
+
+Un client mécontent dans une boutique repart.
+Un voyageur mécontent **dort dans ton logement**.
+
+### 3. La frontière privée/pro est floue
+
+Un voyageur qui te texte à 23 h, c'est **chez toi**.
+
+### 4. Le rythme est continu
+
+Pas de week-end de pause. Pas de fermeture annuelle.
+Toujours **en alerte**.
+
+---
+
+## Les 5 règles du mental sain
+
+### Règle 1 — Ne réponds JAMAIS aux messages le soir tard
+
+Si un voyageur t'écrit après 22 h pour un sujet non urgent :
+
+- **Lis** le message.
+- **Ne réponds pas avant le lendemain matin.**
+
+> La nuit, tu réagis sur **l'émotion**, pas sur la **raison**.
+
+### Règle 2 — Ne lis pas les avis le dimanche soir
+
+Tu vas ruminer toute la nuit pour pas grand-chose.
+
+> Lecture des avis = **lundi 10 h**, en mode "je peux agir".
+
+### Règle 3 — Une fois sur 10, dis "non"
+
+À chaque demande spéciale (heure d'arrivée tardive, 1 personne en plus, animal pas déclaré, "petit geste commercial").
+
+- 9 fois sur 10, tu acceptes pour fluidifier.
+- 1 fois sur 10, **dis "non"** pour rappeler les limites.
+
+> Si tu dis toujours oui, tu épuises **tes ressources** et **ton autorité**.
+
+### Règle 4 — Bloque 1 semaine de fermeture par an
+
+Choisis une période **basse saison** (novembre ou janvier).
+
+- **Bloque** ton calendrier complètement.
+- **Visite** ton logement pour faire les réparations cumulées.
+- **Repose-toi** mentalement.
+
+> Sans pause = burn-out garanti.
+
+### Règle 5 — Ne sois pas seul·e dans ta tête
+
+- **Discute** avec d'autres hôtes (Chez Nous, Facebook, conférences).
+- **Ne garde pas** les conflits pour toi.
+- **Demande conseil** quand tu hésites.
+
+> Un hôte isolé prend de **mauvaises décisions** sous stress.
+
+---
+
+## Le rituel post-incident
+
+Après un incident lourd (fête, dégât, avis méchant), suis ce rituel en 4 étapes :
+
+### Étape 1 — La pause de 24 h
+
+- Ne réponds pas immédiatement.
+- Laisse passer **une nuit**.
+- Tu vois les choses différemment au matin.
+
+### Étape 2 — L'analyse factuelle (45 min)
+
+- Note **tous les faits** sans émotion.
+- Quantifie le préjudice (€).
+- Liste les actions à mener.
+
+### Étape 3 — L'action concrète (1-2 h)
+
+- Capture caution Stripe.
+- Envoie message factuel au voyageur.
+- Ouvre Resolution Center si nécessaire.
+
+### Étape 4 — La fermeture mentale (5 min)
+
+- Une fois les actions faites, **ferme le dossier**.
+- Note dans ton dashboard : **"Géré, classé"**.
+- Passe à autre chose.
+
+> La rumination après l'action ne sert **strictement à rien**. Ferme et avance.
+
+---
+
+## Le piège du "sur-investissement"
+
+Beaucoup d'hôtes pensent que **plus ils s'occupent**, **mieux** c'est.
+
+C'est faux **au-delà** d'un certain seuil.
+
+### Signes du sur-investissement
+
+- Tu réponds aux messages en < 5 min, 24h/24.
+- Tu vérifies tes avis 5 fois par jour.
+- Tu refais les photos 3 fois par an "au cas où".
+- Tu lis tous les commentaires sur les forums hôtes.
+
+### Le coût caché
+
+- **Temps perdu** (heures qui ne génèrent rien).
+- **Stress chronique** (toujours en alerte).
+- **Retour décroissant** (la 100ème vérification ne te rapporte rien).
+
+> Définis tes **horaires** d'hôte (ex: 9h-19h). Le reste = OFF.
+
+---
+
+## Les outils du mental sain
+
+### 1. Le dashboard Jason Marinho
+
+- Centralise les conversations.
+- **Pas de** notifications après 21 h.
+- Tu **vois** ton activité sans être noyé.
+
+### 2. L'app de méditation
+
+- 10 min/jour suffisent (Petit Bambou, Calm, Headspace).
+- Particulièrement utile **avant un dossier conflictuel**.
+
+### 3. Le journal de bord
+
+- 5 lignes par jour, le soir.
+- *« Aujourd'hui : [3 victoires] / [1 challenge à régler] »*.
+- Recadre l'esprit sur le **positif majoritaire**.
+
+### 4. Le buddy hôte
+
+- 1 ami hôte avec qui tu discutes 1x/semaine (15 min).
+- Vous échangez sur vos cas, vos succès, vos doutes.
+- Vous vous **désassombrissez** mutuellement.
+
+---
+
+## Le mantra de l'hôte zen
+
+> Voici un mantra à mémoriser pour les moments durs :
+
+> ***« Je gère. Je ne possède pas. Je facilite. Je ne suis pas hôtelier. Mon logement est un actif, pas mon enfant. »***
+
+### Pourquoi ce mantra
+
+- Tu **rappelles** que tu n'es pas en charge de l'hospitalité absolue.
+- Tu **rappelles** que ton logement est un **business**, pas une **mission**.
+- Tu **rappelles** que tu peux **dire non**, **prélever**, **te protéger**.
+
+> Une hôte qui se sent pris·e en otage de ses voyageurs **brûle**.
+> Une hôte qui pose des limites **dure**.
+
+---
+
+## Le bilan annuel
+
+À la fin de chaque année, fais ton bilan :
+
+| Indicateur | Valeur |
+|---|---|
+| Nb séjours | ... |
+| CA | ... € |
+| Préjudice non récupéré | ... € |
+| % de séjours problématiques | ... % |
+| Nb avis 5⭐ | ... |
+| Nb avis < 4⭐ | ... |
+| Mon stress sur 10 | ... |
+
+### Tirage des conclusions
+
+- Si **stress > 7/10** : revois ta sélection voyageurs.
+- Si **% séjours problématiques > 10 %** : durcis tes règles.
+- Si **préjudice > 1 % du CA** : améliore prévention et caution.
+
+> Sans bilan, tu **subis**. Avec bilan, tu **pilotes**.
+
+---
+
+## Exercice — action finale
+
+1. **Note** ton stress actuel sur 10.
+2. **Identifie** la 1 chose qui t'épuise le plus dans la LCD.
+3. **Choisis** une **règle** parmi les 5 du mental sain et applique-la dès aujourd'hui.
+4. **Bloque** dès maintenant ta **semaine de fermeture** annuelle dans ton calendrier.
+5. **Trouve** un **buddy hôte** dans ton réseau (Chez Nous, communauté FB).
+
+> La LCD est un **marathon**, pas un sprint.
+> Les hôtes qui durent 10 ans sont ceux qui **se protègent** d'eux-mêmes en premier.
+
+---
+
+## Récap de toute la formation
+
+Tu sais maintenant :
+
+1. **Sécuriser** chaque réservation avant l'arrivée (contrat, caution, questions pré-arrivée).
+2. **Détecter** les signaux pendant le séjour (8 alertes silencieuses).
+3. **Gérer** une plainte voisin sans escalader.
+4. **Réagir** à un voyageur qui viole les règles.
+5. **Faire un EDL** qui te protège (47 photos + EDL signé).
+6. **Réclamer** la caution sur Airbnb, Booking, Stripe.
+7. **Constituer** un dossier de preuves complet.
+8. **Répondre** à un avis injustifié sans s'enliser.
+9. **Activer** AirCover et la médiation.
+10. **Préserver** ton mental dans la durée.
+
+> Tu es maintenant un hôte **professionnel**, capable de gérer **sereinement** tout ce qui peut t'arriver.
+
+> Tes voyageurs respectueux le sentent.
+> Tes voyageurs problématiques aussi.
+
+Bonne continuation — et sache que les meilleurs hôtes ont vécu **tous** ces incidents avant de devenir excellents.
+
+Pour toute question sur ton cas spécifique, [prends un appel avec Jason](/contact).
+
+**Formation Gérer les incidents et litiges en LCD — fin.**`,
+        },
+      ],
+    },
   ],
 }
