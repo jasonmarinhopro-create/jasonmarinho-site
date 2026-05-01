@@ -12,6 +12,10 @@ import { FISCALITE_LCD_FORMATION } from '@/app/dashboard/formations/fiscalite-re
 import { ECRIRE_AVIS_FORMATION } from '@/app/dashboard/formations/ecrire-avis-repondre-voyageurs/content'
 import { DECORER_AMENAGER_FORMATION } from '@/app/dashboard/formations/decorer-amenager-logement-lcd/content'
 import { CREER_CONCIERGERIE_FORMATION } from '@/app/dashboard/formations/creer-conciergerie-lcd/content'
+import { FISCALITE_CONCIERGERIE_FORMATION } from '@/app/dashboard/formations/fiscalite-statut-conciergerie-tourisme/content'
+import { BOOKING_FORMATION } from '@/app/dashboard/formations/maitriser-booking-com-algorithme-genius/content'
+import { PHOTOGRAPHIE_LCD_FORMATION } from '@/app/dashboard/formations/photographie-lcd-smartphone/content'
+import { GERER_INCIDENTS_LITIGES_FORMATION } from '@/app/dashboard/formations/gerer-incidents-litiges-lcd/content'
 
 export interface StaticFormation {
   slug?: string
@@ -48,4 +52,8 @@ export const FORMATION_CONTENT_MAP: Record<string, StaticFormation> = {
   'ecrire-avis-repondre-voyageurs': ECRIRE_AVIS_FORMATION,
   'decorer-amenager-logement-lcd': DECORER_AMENAGER_FORMATION,
   'creer-conciergerie-lcd': CREER_CONCIERGERIE_FORMATION,
+  'fiscalite-statut-conciergerie-tourisme': FISCALITE_CONCIERGERIE_FORMATION,
+  'maitriser-booking-com-algorithme-genius': BOOKING_FORMATION,
+  'photographie-lcd-smartphone': PHOTOGRAPHIE_LCD_FORMATION,
+  'gerer-incidents-litiges-lcd': GERER_INCIDENTS_LITIGES_FORMATION,
 }
