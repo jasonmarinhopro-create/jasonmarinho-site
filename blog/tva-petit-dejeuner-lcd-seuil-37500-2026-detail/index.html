@@ -227,9 +227,9 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </section>
 
 <div class="art-body">
-<p class="art-lead">Beaucoup d'hôtes français ne réalisent pas qu'ils dépassent le seuil TVA bien plus tôt qu'ils ne le pensent. La règle 2026 abaisse le seuil à 37 500 € de CA pour les hébergements avec prestations para-hôtelières — et la définition de "para-hôtelier" est plus large que tu ne crois.</p>
+<p class="art-lead">Beaucoup d'hôtes français ne réalisent pas qu'ils dépassent le seuil TVA bien plus tôt qu'ils ne le pensent. La règle 2026 abaisse le seuil à 37 500 € de CA pour les hébergements avec prestations para-hôtelières, et la définition de "para-hôtelier" est plus large que tu ne crois.</p>
 <h2 class="art-h2">1. Ce qu'est une prestation para-hôtelière en 2026</h2>
-<p class="art-p">L'administration fiscale définit les prestations para-hôtelières comme tout service à valeur ajoutée fourni en plus du logement, similaire à un hôtel. Si tu fournis 3 sur 4 des éléments suivants, tu es considéré comme para-hôtelier — donc soumis au seuil 37 500 € (et non 85 800 €).</p>
+<p class="art-p">L'administration fiscale définit les prestations para-hôtelières comme tout service à valeur ajoutée fourni en plus du logement, similaire à un hôtel. Si tu fournis 3 sur 4 des éléments suivants, tu es considéré comme para-hôtelier, donc soumis au seuil 37 500 € (et non 85 800 €).</p>
 <ul class="art-ul"><li>Petit-déjeuner ou repas (même un simple kit pré-installé compte)</li><li>Nettoyage régulier des locaux (au-delà du ménage de fin de séjour)</li><li>Fourniture du linge de maison (draps, serviettes)</li><li>Réception de la clientèle (accueil personnalisé, conciergerie)</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu accueilles physiquement tes voyageurs ET tu fournis le linge ET tu mets un kit petit-déjeuner d'accueil, tu coches 3/4 et tu bascules en para-hôtelier. La plupart des chambres d'hôtes le sont par défaut.</span></div>
 <h2 class="art-h2">2. Le calcul du seuil 37 500 € en pratique</h2>
@@ -238,7 +238,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">En pratique, dès que tu dépasses ~100 € de tarif moyen et 50 % d'occupation, tu te rapproches dangereusement du seuil. Pour un T3 ou plus, c'est quasi certain.</p>
 <h2 class="art-h2">3. Devenir assujetti TVA : ce que ça change concrètement</h2>
 <p class="art-p">Quand tu dépasses le seuil, tu deviens assujetti TVA. Les conséquences pratiques.</p>
-<ul class="art-ul"><li>Tu factures 10 % de TVA en plus aux voyageurs (sauf si tu absorbes dans ton tarif)</li><li>Tu peux récupérer la TVA sur tes achats pro (mobilier, équipements, réparations) — gain potentiel de 1 000-3 000 €/an</li><li>Tu dois faire une déclaration TVA tous les 3 mois (CA3), ou demander la franchise en base si tu repasses sous le seuil</li><li>Tu dois afficher ton n° de TVA intracommunautaire sur tes factures</li><li>Côté plateformes : Airbnb et Booking gèrent la TVA voyageur automatiquement, tu n'as rien à régler</li></ul>
+<ul class="art-ul"><li>Tu factures 10 % de TVA en plus aux voyageurs (sauf si tu absorbes dans ton tarif)</li><li>Tu peux récupérer la TVA sur tes achats pro (mobilier, équipements, réparations), gain potentiel de 1 000-3 000 €/an</li><li>Tu dois faire une déclaration TVA tous les 3 mois (CA3), ou demander la franchise en base si tu repasses sous le seuil</li><li>Tu dois afficher ton n° de TVA intracommunautaire sur tes factures</li><li>Côté plateformes : Airbnb et Booking gèrent la TVA voyageur automatiquement, tu n'as rien à régler</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Bonne pratique : intègre 5-7 % de marge tarifaire en réserve. Si tu approches le seuil en cours d'année, tu peux absorber la TVA dans ton tarif sans perdre en compétitivité.</span></div>
 <h2 class="art-h2">4. Stratégie 2026 : passer ou pas ?</h2>
 <p class="art-p">Si tu es proche du seuil, tu as 2 options : freiner ton CA pour rester en dessous (peu rentable), ou basculer en TVA pour récupérer sur les achats. Voici la matrice de décision.</p>
@@ -298,14 +298,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

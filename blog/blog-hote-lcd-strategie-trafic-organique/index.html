@@ -233,14 +233,14 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Sur 100 hôtes français qui ont un blog actif (1+ article/semaine pendant 12 mois), 75 % génèrent au moins 30 % de leurs réservations en direct, sans commission Airbnb.</p>
 <h2 class="art-h2">2. Les 4 types d'articles à écrire</h2>
 <p class="art-p">Voici les types d'articles avec le meilleur ROI SEO/conversion.</p>
-<ul class="art-ul"><li>Type 1 — Guide local : "10 restaurants incontournables à [ville]", "5 visites insolites à [quartier]". Capte les recherches voyageurs en pré-réservation. CTR élevé</li><li>Type 2 — Guide pratique : "Que faire à [ville] quand il pleut ?", "Aller à [ville] sans voiture : guide complet". Long-tail SEO</li><li>Type 3 — Saisonnier : "[Ville] en hiver : top 7 activités", "[Ville] en automne : pourquoi c'est la meilleure saison". Récurrent chaque année</li><li>Type 4 — Comparatif : "[Ville] vs [Ville voisine] : laquelle visiter ?", "Logement à [quartier] vs [autre quartier]". Capte les indécis</li></ul>
-<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Évite les articles "trop génériques" comme "Guide complet de Paris" — tu ne ressortiras jamais sur ces requêtes contre les gros médias. Vise les longue traîne hyperlocales : "Que faire à Saint-Émilion en mai ?" — beaucoup moins de concurrence, audience qualifiée.</span></div>
+<ul class="art-ul"><li>Type 1, Guide local : "10 restaurants incontournables à [ville]", "5 visites insolites à [quartier]". Capte les recherches voyageurs en pré-réservation. CTR élevé</li><li>Type 2, Guide pratique : "Que faire à [ville] quand il pleut ?", "Aller à [ville] sans voiture : guide complet". Long-tail SEO</li><li>Type 3, Saisonnier : "[Ville] en hiver : top 7 activités", "[Ville] en automne : pourquoi c'est la meilleure saison". Récurrent chaque année</li><li>Type 4, Comparatif : "[Ville] vs [Ville voisine] : laquelle visiter ?", "Logement à [quartier] vs [autre quartier]". Capte les indécis</li></ul>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Évite les articles "trop génériques" comme "Guide complet de Paris", tu ne ressortiras jamais sur ces requêtes contre les gros médias. Vise les longue traîne hyperlocales : "Que faire à Saint-Émilion en mai ?", beaucoup moins de concurrence, audience qualifiée.</span></div>
 <h2 class="art-h2">3. Fréquence et SEO</h2>
 <p class="art-p">Pour avoir des résultats, voici la fréquence minimale.</p>
 <ul class="art-ul"><li>Mois 1-3 : 2 articles/semaine (besoin de masse pour démarrer le SEO)</li><li>Mois 4-12 : 1 article/semaine en cruise</li><li>Au-delà de 1 an : 2-3 articles/mois suffisent (le ROI vient des anciens)</li><li>Longueur : 800-1 500 mots optimal (pas trop court, pas trop long)</li><li>Mots-clés : 1 mot-clé principal + 3-5 long-tail dans le titre/description/H2</li><li>Liens internes : 2-3 liens vers tes autres articles + 1-2 liens vers ton annonce/réservation</li></ul>
 <h2 class="art-h2">4. Convertir les visiteurs en réservations</h2>
 <p class="art-p">Avoir 500 visiteurs/mois ne sert à rien sans tunnel de conversion.</p>
-<ul class="art-ul"><li>Lead magnet : guide PDF gratuit ("Les 20 secrets de [ville]") en échange de l'email — capture 5-15 % des visiteurs</li><li>CTA bien visible dans chaque article : "Tu veux séjourner à [ville] ? Voir notre logement"</li><li>Pop-up sortie discret : "Avant de partir, code FIDELE10 pour -10 % sur ta première réservation"</li><li>Newsletter : email mensuel à ta base avec les nouveautés du quartier + dispos calendrier</li><li>Conversion blog → réservation directe : taux moyen 0,5-2 % du trafic. Sur 500 visites/mois, c'est 2-10 réservations directes/mois</li></ul>
+<ul class="art-ul"><li>Lead magnet : guide PDF gratuit ("Les 20 secrets de [ville]") en échange de l'email, capture 5-15 % des visiteurs</li><li>CTA bien visible dans chaque article : "Tu veux séjourner à [ville] ? Voir notre logement"</li><li>Pop-up sortie discret : "Avant de partir, code FIDELE10 pour -10 % sur ta première réservation"</li><li>Newsletter : email mensuel à ta base avec les nouveautés du quartier + dispos calendrier</li><li>Conversion blog → réservation directe : taux moyen 0,5-2 % du trafic. Sur 500 visites/mois, c'est 2-10 réservations directes/mois</li></ul>
 <div class="art-cta-box"><p>Tu veux mettre en place ton blog d'hôte LCD pour gagner en réservation directe ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
 
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

@@ -125,7 +125,7 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
         }
       }
 
-      const key = s.logement ?? '—'
+      const key = s.logement ?? '-'
       if (!perLogement[key]) perLogement[key] = { nuits: 0, revenu: 0, sejours: 0, durees: [], anticipation: [] }
       perLogement[key].nuits += nuits
       perLogement[key].revenu += revenuFraction
@@ -603,10 +603,10 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
                     <td style={{ ...s.td, textAlign: 'right' }}>{c.nuits}</td>
                     <td style={{ ...s.td, textAlign: 'right' }}>{c.sejours}</td>
                     <td style={{ ...s.td, textAlign: 'right' }}>
-                      {c.dureeAvg > 0 ? `${c.dureeAvg.toFixed(1)} n.` : '—'}
+                      {c.dureeAvg > 0 ? `${c.dureeAvg.toFixed(1)} n.` : '-'}
                     </td>
                     <td style={{ ...s.td, textAlign: 'right' }}>
-                      {c.antAvg > 0 ? `${Math.round(c.antAvg)} j.` : '—'}
+                      {c.antAvg > 0 ? `${Math.round(c.antAvg)} j.` : '-'}
                     </td>
                   </tr>
                 )

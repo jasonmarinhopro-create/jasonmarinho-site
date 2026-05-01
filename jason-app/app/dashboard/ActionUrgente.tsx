@@ -41,7 +41,7 @@ export default function ActionUrgente({ unsignedContracts, pendingPayments, toda
       <div style={s.cardGreen} className="glass-card">
         <CheckCircle size={22} color="#10b981" weight="fill" style={{ flexShrink: 0 }} />
         <div>
-          <p style={s.greenTitle}>Tout est à jour — beau travail ! 🌿</p>
+          <p style={s.greenTitle}>Tout est à jour, beau travail ! 🌿</p>
           <p style={s.greenSub}>Aucun contrat en attente, aucun paiement à relancer.</p>
         </div>
       </div>

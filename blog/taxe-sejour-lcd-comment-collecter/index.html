@@ -231,10 +231,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <h2 class="art-h2">1. Qui est redevable et combien</h2>
 <p class="art-p">La taxe de séjour est instaurée par chaque commune. Elle s'applique par voyageur et par nuit. Elle varie de 0,20 € à 5 € selon la commune, le type d'hébergement et son classement.</p>
 <ul class="art-ul"><li>Hébergement non classé (Airbnb classique) : généralement 5 % du tarif HT par nuit/personne, plafonné à ~5 €</li><li>Meublé de tourisme classé (1 à 5 étoiles) : tarif fixe par catégorie (0,80 € à 4,30 €/nuit/personne)</li><li>Exempts : enfants -18 ans, contrat saisonnier de travail, urgence sanitaire</li><li>Plafonnement : la taxe ne peut pas dépasser le tarif le plus élevé de l'hôtellerie 4 étoiles de la commune</li></ul>
-<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Vérifie le montant exact pour ta commune sur taxesejour.impots.gouv.fr — tu as un simulateur officiel qui calcule exactement ce que tu dois facturer.</span></div>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Vérifie le montant exact pour ta commune sur taxesejour.impots.gouv.fr, tu as un simulateur officiel qui calcule exactement ce que tu dois facturer.</span></div>
 <h2 class="art-h2">2. Sur Airbnb et Booking : c'est automatique</h2>
-<p class="art-p">Depuis 2019, Airbnb et Booking collectent automatiquement la taxe de séjour pour la majorité des communes françaises. Tu n'as RIEN à faire — la plateforme la facture au voyageur, la collecte, et la reverse directement à la commune.</p>
-<ul class="art-ul"><li>Tu vois la taxe sur la facture voyageur (séparée du tarif)</li><li>La plateforme te transmet une attestation annuelle pour ta comptabilité</li><li>Aucune déclaration mairie de ta part (sauf attestation à fournir si demandée)</li><li>Important : vérifie 1 fois/an que ta commune est bien dans le système — les nouvelles communes mettent du temps à intégrer</li></ul>
+<p class="art-p">Depuis 2019, Airbnb et Booking collectent automatiquement la taxe de séjour pour la majorité des communes françaises. Tu n'as RIEN à faire, la plateforme la facture au voyageur, la collecte, et la reverse directement à la commune.</p>
+<ul class="art-ul"><li>Tu vois la taxe sur la facture voyageur (séparée du tarif)</li><li>La plateforme te transmet une attestation annuelle pour ta comptabilité</li><li>Aucune déclaration mairie de ta part (sauf attestation à fournir si demandée)</li><li>Important : vérifie 1 fois/an que ta commune est bien dans le système, les nouvelles communes mettent du temps à intégrer</li></ul>
 <h2 class="art-h2">3. Sur réservation directe : tu dois la collecter toi-même</h2>
 <p class="art-p">Si tu prends des réservations en direct (via ton site, Driing, GMB, ou autre canal hors Airbnb/Booking), tu es responsable de la collecte ET de la déclaration. Voici la procédure.</p>
 <ul class="art-ul"><li>Calcule la taxe due au moment de la réservation (montant × nombre de nuits × nombre de voyageurs)</li><li>Affiche-la séparément du tarif sur ta facture (transparence obligatoire)</li><li>Encaisse le montant total (tarif + taxe) en même temps</li><li>Reverse à la commune trimestriellement ou semestriellement selon ses règles</li><li>Tiens un registre des séjours (registre du logeur) avec dates, nombre de personnes, montant collecté</li></ul>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

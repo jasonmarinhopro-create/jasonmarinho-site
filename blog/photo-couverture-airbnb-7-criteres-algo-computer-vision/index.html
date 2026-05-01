@@ -233,7 +233,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">La photo de couverture (la première affichée dans les résultats de recherche) doit obtenir un score parmi les meilleurs de ta galerie. Si une autre photo de ta galerie obtient un meilleur score, l'algorithme peut décider de la promouvoir en couverture sans te prévenir.</p>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Tu peux verrouiller manuellement ta photo de couverture dans les paramètres de ton annonce. Mais si l'algo détecte qu'une autre photo génère plus de clics en test A/B (oui, Airbnb fait des tests A/B silencieusement), il les substituera.</span></div>
 <h2 class="art-h2">2. Les 7 critères de l'algo en 2026</h2>
-<ul class="art-ul"><li>Format paysage (horizontal) — les photos en portrait sont rétrogradées de 40 %</li><li>Résolution ≥ 1920×1080 — en dessous, dégradation visible côté algo</li><li>Luminosité moyenne entre 60 et 85 % — ni trop sombre ni cramé</li><li>Scène principale identifiable (salon, chambre, extérieur, vue) en plein cadre, pas un détail</li><li>Présence humaine = exclu (l'algo détecte et déclasse — focaliser sur l'espace)</li><li>Cohérence avec les équipements cochés — si tu as coché "vue mer", la couverture doit la montrer</li><li>Stabilité : pas de flou de mouvement, pas de filtre Instagram trop saturé</li></ul>
+<ul class="art-ul"><li>Format paysage (horizontal), les photos en portrait sont rétrogradées de 40 %</li><li>Résolution ≥ 1920×1080, en dessous, dégradation visible côté algo</li><li>Luminosité moyenne entre 60 et 85 %, ni trop sombre ni cramé</li><li>Scène principale identifiable (salon, chambre, extérieur, vue) en plein cadre, pas un détail</li><li>Présence humaine = exclu (l'algo détecte et déclasse, focaliser sur l'espace)</li><li>Cohérence avec les équipements cochés, si tu as coché "vue mer", la couverture doit la montrer</li><li>Stabilité : pas de flou de mouvement, pas de filtre Instagram trop saturé</li></ul>
 <h2 class="art-h2">3. Les 5 photos qui marchent (et celles qui flopent)</h2>
 <p class="art-p">Sur 200 annonces analysées, certaines photos passent systématiquement dans le top 3 du score Computer Vision. Voici la hiérarchie observée.</p>
 <ul class="art-ul"><li>Top performer : salon en lumière naturelle douce (matin ou fin d'après-midi), grand angle, mobilier visible, fenêtre lumineuse en arrière-plan</li><li>Très efficace : pièce principale aux 2/3 de l'image avec un coin atypique (bibliothèque, bow-window, parquet ancien)</li><li>Bon score : chambre principale avec lit fait, lumière douce, en plongée légère pour montrer la profondeur</li><li>Score moyen : extérieur (terrasse, balcon) si la photo est en pleine journée et que les meubles d'extérieur sont visibles</li><li>À éviter : photo d'objet seul (lit, fauteuil), photo trop sombre ou cramée, photo prise au flash, photo en gros plan</li></ul>
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

@@ -83,7 +83,7 @@ export default function CoulissesJason({ initialPosts, isAdmin }: Props) {
       </div>
 
       <p style={s.sub}>
-        Ce que je construis en ce moment — pour toi.
+        Ce que je construis en ce moment, pour toi.
       </p>
 
       {/* Admin post form */}

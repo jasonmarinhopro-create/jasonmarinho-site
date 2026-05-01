@@ -97,7 +97,7 @@ LIVRET PAPIER
 LIVRET DIGITAL (Driing)
 → Accessible via un lien ou QR code,
   sur n'importe quel smartphone
-→ Mis à jour en temps réel — un changement
+→ Mis à jour en temps réel, un changement
   s'applique à tous les voyageurs instantanément
 → Consultable avant, pendant et après le séjour
 → Traduction disponible en plusieurs langues
@@ -137,14 +137,14 @@ Le livret Driing est structuré en 6 blocs :
 
 ⭐ LIVRE D'OR
    Les voyageurs laissent leur avis
-   directement dans le livret —
+   directement dans le livret -
    avant même de quitter le logement
 
 ---
 
 
 ## Exercice
-**Exercice pratique :** Compte les messages reçus sur ton dernier séjour. Combien auraient pu être évités avec un livret bien fait ? Note ce chiffre — c'est le temps que tu vas récupérer après cette formation.
+**Exercice pratique :** Compte les messages reçus sur ton dernier séjour. Combien auraient pu être évités avec un livret bien fait ? Note ce chiffre, c'est le temps que tu vas récupérer après cette formation.
 
 ---`,
         },
@@ -157,7 +157,7 @@ Le livret Driing est structuré en 6 blocs :
 MODULE 1 · LEÇON 2
 ────────────────────────────────────
 Anatomie d'un bon livret
-Ce qu'il contient — et ce qu'il ne contient pas
+Ce qu'il contient, et ce qu'il ne contient pas
 ────────────────────────────────────
 
 ---
@@ -185,7 +185,7 @@ du voyageur :
 
 → Cette structure permet au voyageur
   de trouver l'information exacte
-  au moment exact où il en a besoin —
+  au moment exact où il en a besoin -
   pas de chercher dans un PDF de 12 pages.
 
 ---
@@ -262,7 +262,7 @@ Pourquoi c'est puissant :
 
 02. C'EST PLUS NATUREL QU'UN EMAIL
     Pas de lien à cliquer, pas de plateforme
-    à retrouver — c'est là, dans le livret
+    à retrouver, c'est là, dans le livret
     qu'ils consultent déjà.
 
 03. CES AVIS RENFORCENT VOTRE CRÉDIBILITÉ
@@ -280,7 +280,7 @@ Pourquoi c'est puissant :
 
 
 ## Exercice
-**Exercice pratique :** Avant de créer ton livret, note sur une feuille tes 5 recommandations locales préférées — restaurants, cafés, activités, spots. Ce sont tes contenus les plus précieux et les plus personnels. Ils feront la différence entre un livret générique et un livret mémorable.
+**Exercice pratique :** Avant de créer ton livret, note sur une feuille tes 5 recommandations locales préférées, restaurants, cafés, activités, spots. Ce sont tes contenus les plus précieux et les plus personnels. Ils feront la différence entre un livret générique et un livret mémorable.
 
 ---`,
         },
@@ -308,12 +308,12 @@ Créer son compte et les fondations du livret
 ## Créer son compte Driing
 Rendez-vous sur app.driing.co
 
-ÉTAPE 1 — Créer votre compte
+ÉTAPE 1, Créer votre compte
 → Email + mot de passe
 → Ou connexion via Google
 → Gratuit pour commencer
 
-ÉTAPE 2 — Nommer votre logement
+ÉTAPE 2, Nommer votre logement
 → Choisissez un nom mémorable
   et différenciateur.
   Pas "Appartement Paris 11"
@@ -321,14 +321,14 @@ Rendez-vous sur app.driing.co
 → Ce nom apparaîtra en titre
   dans le livret de vos voyageurs.
 
-ÉTAPE 3 — Ajouter votre photo de profil
+ÉTAPE 3, Ajouter votre photo de profil
 → Une vraie photo de vous, souriante.
 → Le voyageur voit à qui il a affaire
   avant même d'arriver.
 → C'est le premier élément humain
   de l'expérience d'accueil.
 
-ÉTAPE 4 — Choisir les langues du livret
+ÉTAPE 4, Choisir les langues du livret
 → Driing permet d'afficher le livret
   en plusieurs langues.
 → Sélectionnez au minimum 🇫🇷 et 🇬🇧.
@@ -376,26 +376,26 @@ et par les propriétaires qui cherchent
 une conciergerie dans l'annuaire.
 
 Bons exemples :
-→ "Le Studio du Marais" — clair, local
-→ "Villa Soleil — Côte d'Azur" — evocateur
-→ "L'Appartement Fibre + Bureau — Lyon" — ciblé pro
+→ "Le Studio du Marais", clair, local
+→ "Villa Soleil, Côte d'Azur", evocateur
+→ "L'Appartement Fibre + Bureau, Lyon", ciblé pro
 
 Mauvais exemples :
-→ "Appartement 2" — aucune personnalité
-→ "Loc saisonnière Bordeaux" — trop générique
-→ "Airbnb Marseille" — à éviter
+→ "Appartement 2", aucune personnalité
+→ "Loc saisonnière Bordeaux", trop générique
+→ "Airbnb Marseille", à éviter
   (vous n'êtes pas qu'Airbnb)
 
 → Un bon nom se retient.
   Un voyageur qui se souvient du nom
-  peut vous recommander à un ami —
+  peut vous recommander à un ami -
   ou revenir directement via Driing.
 
 ---
 
 
 ## Exercice
-**Exercice pratique :** Va sur app.driing.co et crée ton compte maintenant. Rédige ton message de bienvenue selon la structure de la slide 3. Ne passe pas à la leçon suivante sans avoir complété ces deux étapes — c'est la base sur laquelle tout le reste est construit.
+**Exercice pratique :** Va sur app.driing.co et crée ton compte maintenant. Rédige ton message de bienvenue selon la structure de la slide 3. Ne passe pas à la leçon suivante sans avoir complété ces deux étapes, c'est la base sur laquelle tout le reste est construit.
 
 ---`,
         },
@@ -408,7 +408,7 @@ Mauvais exemples :
 MODULE 2 · LEÇON 2
 ────────────────────────────────────
 Les 3 sections essentielles
-Arrivée — Séjour — Départ
+Arrivée, Séjour, Départ
 ────────────────────────────────────
 
 ---
@@ -419,16 +419,16 @@ doit contenir pour être parfaite :
 
 🔑 ACCÈS AU LOGEMENT
 "Pour entrer : [Boîte à clés / serrure connectée]
-Code : [X] — [localisation précise]"
+Code : [X], [localisation précise]"
 
 📶 WI-FI
 "Réseau : [Nom du réseau]
 Mot de passe : [Mot de passe]"
 
 🚗 STATIONNEMENT
-"[Instructions parking — gratuit rue X,
+"[Instructions parking, gratuit rue X,
 parking payant à X mètres à gauche,
-pas de parking — métro recommandé]"
+pas de parking, métro recommandé]"
 
 🌡️ CHAUFFAGE / CLIMATISATION
 "Le thermostat est situé [localisation].
@@ -484,12 +484,12 @@ En cas de besoin, contactez-nous
 la veille pour un late check-out."
 
 🔑 LES CLÉS
-"Déposez les clés [localisation précise —
+"Déposez les clés [localisation précise -
 boîte à clés / sur le comptoir /
 dans la boîte aux lettres]"
 
 🧹 ÉTAT DU LOGEMENT ATTENDU
-"Pas besoin de faire le ménage —
+"Pas besoin de faire le ménage -
 notre équipe s'en charge.
 Merci de :
 → Vider le réfrigérateur de vos affaires
@@ -574,7 +574,7 @@ CATÉGORIE
   nature, activité, supermarché...
 
 Exemple :
-"Le Bouillon Pigalle — Restaurant
+"Le Bouillon Pigalle, Restaurant
 Le meilleur rapport qualité/prix du quartier.
 Commandez le pot-au-feu ou les œufs mayo.
 Arrivez avant 12h pour éviter la queue.
@@ -633,7 +633,7 @@ Pour la configurer :
 
 
 ## Exercice
-**Exercice pratique :** Ajoute maintenant tes 5 meilleures recommandations locales dans Driing. Pour chacune : nom, description personnelle de 2 lignes, lien Maps. Ce contenu est ce qui va différencier ton livret d'un livret générique — prends le temps de bien le rédiger.
+**Exercice pratique :** Ajoute maintenant tes 5 meilleures recommandations locales dans Driing. Pour chacune : nom, description personnelle de 2 lignes, lien Maps. Ce contenu est ce qui va différencier ton livret d'un livret générique, prends le temps de bien le rédiger.
 
 ---`,
         },
@@ -693,7 +693,7 @@ Dans le message check-in :
 pour votre séjour sont disponibles ici :
 [Lien livret Driing]
 Wi-Fi, accès, recommandations,
-numéro d'urgence — tout y est."
+numéro d'urgence, tout y est."
 
 Dans le message de bienvenue :
 "Pour retrouver toutes les infos
@@ -735,23 +735,23 @@ Impact : perçu comme hôte premium.
 ## Ce que voient les voyageurs sur leur téléphone
 Quand le voyageur ouvre le lien Driing :
 
-Écran 1 — Votre message de bienvenue
+Écran 1, Votre message de bienvenue
 avec votre photo et les drapeaux des langues.
 Il choisit sa langue en un clic.
 
-Écran 2 — Les 3 sections (Arrivée/Séjour/Départ)
+Écran 2, Les 3 sections (Arrivée/Séjour/Départ)
 avec les infos clés accessibles immédiatement.
 
-Écran 3 — Les activités recommandées
+Écran 3, Les activités recommandées
 avec liens Maps cliquables.
 
-Écran 4 — Vos coordonnées
+Écran 4, Vos coordonnées
 avec bouton d'appel et SMS directs.
 
-Écran 5 — La carte interactive
+Écran 5, La carte interactive
 avec bouton "Voir l'itinéraire".
 
-Écran 6 — Le livre d'or
+Écran 6, Le livre d'or
 avec les avis des voyageurs précédents
 et le bouton "Laisser un avis".
 
@@ -810,7 +810,7 @@ La clé : rendre le geste naturel, pas commercial.
 
 DANS LE LIVRET (section départ) :
 "Vous avez passé un beau séjour ?
-Partagez votre expérience dans notre livre d'or —
+Partagez votre expérience dans notre livre d'or -
 ça prend 30 secondes et ça nous fait vraiment plaisir."
 
 DANS LE MESSAGE DE CHECK-OUT :
@@ -827,7 +827,7 @@ LE QR CODE DANS LE LOGEMENT :
 
 → La subtilité : on ne demande pas un avis
   5 étoiles. On invite à partager son expérience.
-  C'est différent — et ça convertit mieux.
+  C'est différent, et ça convertit mieux.
 
 ---
 
@@ -862,7 +862,7 @@ PREUVE SOCIALE PENDANT LE SÉJOUR
 
 
 ## Exercice
-**Exercice pratique :** Ajoutez une phrase d'invitation au livre d'or dans votre section "À votre départ" dans Driing. Puis ajoutez la même invitation dans votre gabarit de message de check-out (disponible dans la plateforme). C'est tout — le système fait le reste automatiquement.
+**Exercice pratique :** Ajoutez une phrase d'invitation au livre d'or dans votre section "À votre départ" dans Driing. Puis ajoutez la même invitation dans votre gabarit de message de check-out (disponible dans la plateforme). C'est tout, le système fait le reste automatiquement.
 
 ---`,
         },

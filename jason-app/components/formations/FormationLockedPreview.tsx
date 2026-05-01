@@ -14,7 +14,7 @@ interface Props {
   formationLevel: string
   modules?: Module[]
   objectifs?: string[]
-  // Social proof (optionnels — peut être 0)
+  // Social proof (optionnels, peut être 0)
   enrolledCount?: number
   completedCount?: number
   reviewsCount?: number
@@ -56,11 +56,11 @@ export default function FormationLockedPreview(props: Props) {
 
         {/* CTA principal */}
         <Link href="/dashboard/abonnement" style={s.ctaPrimary}>
-          Débloquer cette formation — 1,98 €/mois
+          Débloquer cette formation, 1,98 €/mois
           <ArrowRight size={14} weight="bold" />
         </Link>
 
-        {/* Social proof — stats globales */}
+        {/* Social proof, stats globales */}
         {((props.enrolledCount ?? 0) > 0 || (props.reviewsCount ?? 0) > 0) && (
           <div style={s.socialProof}>
             {(props.enrolledCount ?? 0) > 0 && (
@@ -101,7 +101,7 @@ export default function FormationLockedPreview(props: Props) {
         </section>
       )}
 
-      {/* Sommaire complet — accessible en preview */}
+      {/* Sommaire complet, accessible en preview */}
       {props.modules && props.modules.length > 0 && (
         <section style={s.section}>
           <h2 style={s.sectionTitle}>Programme complet</h2>
@@ -148,7 +148,7 @@ export default function FormationLockedPreview(props: Props) {
                   ))}
                 </div>
                 {r.comment && <p style={s.reviewComment}>« {r.comment} »</p>}
-                {r.display_name && <span style={s.reviewAuthor}>— {r.display_name}</span>}
+                {r.display_name && <span style={s.reviewAuthor}>- {r.display_name}</span>}
               </div>
             ))}
           </div>

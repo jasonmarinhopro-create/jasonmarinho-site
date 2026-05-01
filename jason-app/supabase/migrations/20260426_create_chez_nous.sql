@@ -1,5 +1,5 @@
 -- ─────────────────────────────────────────────────────────────────────
--- Migration : Chez Nous — Communauté ouverte (forum)
+-- Migration : Chez Nous, Communauté ouverte (forum)
 -- Date : 2026-04-26
 -- ─────────────────────────────────────────────────────────────────────
 

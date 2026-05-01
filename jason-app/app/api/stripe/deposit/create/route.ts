@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
               currency: 'eur',
               unit_amount: amountCents,
               product_data: {
-                name: `Dépôt de garantie — ${contract.logement_adresse}`,
+                name: `Dépôt de garantie, ${contract.logement_adresse}`,
                 description: `Caution pour le séjour du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}. Cette somme est bloquée sur votre carte mais ne sera prélevée qu'en cas de dommages constatés.`,
               },
             },
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
           },
         ],
         payment_intent_data: {
-          capture_method: 'manual', // Pré-autorisation — pas de débit immédiat
+          capture_method: 'manual', // Pré-autorisation, pas de débit immédiat
           description: `Caution contrat ${contract.id.slice(0, 8).toUpperCase()}`,
           metadata: { contract_id: contract.id },
         },

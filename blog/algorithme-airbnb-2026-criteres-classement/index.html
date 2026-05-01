@@ -238,11 +238,11 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Conséquence directe : mettre à jour tes photos régulièrement avec des images en lumière naturelle, en format paysage, qui montrent réellement ce que tu annonces, est maintenant une nécessité algorithmique et pas seulement esthétique.</p>
 <h2 class="art-h2">3. Les résultats réels comptent pour 50 % du score</h2>
 <p class="art-p">C'est le changement le plus structurant de 2026 : la moitié du poids algorithmique repose désormais sur les résultats réels de ton annonce. Cela comprend le taux de clics, le taux de conversion (clic → réservation), les avis laissés à l'issue des séjours, et l'absence de problèmes signalés pendant les séjours (messagerie de problème Airbnb).</p>
-<ul class="art-ul"><li>Taux de clics : tes photos de couverture et ton prix affiché sont les premiers leviers</li><li>Taux de conversion : ton profil, tes avis récents et ta politique d'annulation influencent la décision finale</li><li>Avis post-séjour : la régularité compte plus que la perfection — 4,8 stable vaut mieux que 5,0 avec des trous</li><li>Signalements de problèmes : chaque incident horodaté (ampoule, Wi-Fi, propreté) impacte ton score de fiabilité</li></ul>
+<ul class="art-ul"><li>Taux de clics : tes photos de couverture et ton prix affiché sont les premiers leviers</li><li>Taux de conversion : ton profil, tes avis récents et ta politique d'annulation influencent la décision finale</li><li>Avis post-séjour : la régularité compte plus que la perfection, 4,8 stable vaut mieux que 5,0 avec des trous</li><li>Signalements de problèmes : chaque incident horodaté (ampoule, Wi-Fi, propreté) impacte ton score de fiabilité</li></ul>
 <h2 class="art-h2">4. Ce qui détruit ton classement : annulations et délai de réponse</h2>
 <p class="art-p">En 2026, Airbnb a durci sa politique sur deux points qui semblaient anodins : les annulations hôte et le délai de réponse. Une seule annulation de ta part peut entraîner plusieurs mois de visibilité réduite. Le système ne fait pas de distinction entre une annulation "justifiée" et une annulation opportuniste.</p>
 <p class="art-p">Sur le délai de réponse, le seuil critique est désormais de 4 heures en journée (entre 8h et 22h). Dépasser ce délai de façon répétée affecte ton score de fiabilité, visible par les voyageurs et pris en compte par l'algorithme. Active les réponses automatiques pour les demandes fréquentes et utilise l'application mobile avec les notifications activées.</p>
-<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu dois absolument annuler une réservation, contacte d'abord le voyageur pour qu'il annule de son côté — avec un geste commercial si nécessaire. Une annulation voyageur n'impacte pas ton classement. Une annulation hôte, si.</span></div>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu dois absolument annuler une réservation, contacte d'abord le voyageur pour qu'il annule de son côté, avec un geste commercial si nécessaire. Une annulation voyageur n'impacte pas ton classement. Une annulation hôte, si.</span></div>
 <div class="art-cta-box"><p>Tu veux un plan d'action complet pour optimiser ta visibilité sur Airbnb et les autres plateformes ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
 
@@ -298,14 +298,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

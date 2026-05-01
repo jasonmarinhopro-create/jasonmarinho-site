@@ -97,7 +97,7 @@ export async function reportGuest(formData: {
 
   if (error) {
     if (error.code === '42P01') return { error: 'TABLE_MISSING' }
-    if (error.code === '42501') return { error: 'Accès refusé — vérifie les policies RLS dans Supabase.' }
+    if (error.code === '42501') return { error: 'Accès refusé, vérifie les policies RLS dans Supabase.' }
     return { error: `Erreur Supabase : ${error.message}` }
   }
 
@@ -114,7 +114,7 @@ export async function reportGuest(formData: {
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
-    subject: `Nouveau signalement — ${incident_type}`,
+    subject: `Nouveau signalement, ${incident_type}`,
     html: buildEmail({
       title: 'Signalement voyageur à modérer',
       body: `
@@ -163,7 +163,7 @@ export async function requestDeletion(params: {
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
-    subject: `Demande de suppression RGPD — Art. 17`,
+    subject: `Demande de suppression RGPD, Art. 17`,
     html: buildEmail({
       title: 'Demande d\'effacement (RGPD)',
       body: `

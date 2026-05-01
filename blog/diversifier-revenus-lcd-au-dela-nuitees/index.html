@@ -232,12 +232,12 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Le moyen le plus simple d'augmenter ton revenu par séjour : proposer des services payants en plus de la simple nuitée. Le voyageur les ajoute volontairement, donc zéro cannibalisation de ton tarif principal.</p>
 <ul class="art-ul"><li>Petit-déjeuner livré le matin (boulangerie locale ou kit organique) : marge 8-15 € par séjour</li><li>Kit bébé (lit parapluie, chaise haute, baignoire) : 15-25 € par séjour, demande très forte</li><li>Vélo électrique loué à la journée (en partenariat avec un loueur) : 5-10 € de commission par jour</li><li>Late check-out facturé : 30-50 € pour un départ retardé de 4 h, accepté par 20-30 % des voyageurs</li><li>Nettoyage à mi-séjour pour les longs séjours : 35-50 €, accepté par 60 % des voyageurs sur 7+ nuits</li></ul>
 <h2 class="art-h2">2. Les partenariats locaux à commission</h2>
-<p class="art-p">Tu peux générer du revenu en orientant tes voyageurs vers des prestataires locaux qui te reversent une commission. Ce n'est pas du conflit d'intérêt si la qualité est là — c'est un service rendu au voyageur ET un revenu pour toi.</p>
+<p class="art-p">Tu peux générer du revenu en orientant tes voyageurs vers des prestataires locaux qui te reversent une commission. Ce n'est pas du conflit d'intérêt si la qualité est là, c'est un service rendu au voyageur ET un revenu pour toi.</p>
 <ul class="art-ul"><li>Restaurants locaux (réservation à la commission ou bon ami) : 5-10 % du panier moyen</li><li>Visites guidées et activités (Get Your Guide, Civitatis, prestataires directs) : 10-15 % du tarif</li><li>Spa, massage à domicile : 15-25 % du tarif</li><li>Boulangerie pour livraison petit-déj : 1-2 € par livraison</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Crée un livret d'accueil digital avec tes recommandations triées et tes liens d'affiliation. Les voyageurs adorent les recommandations curated, ça améliore ta note ET ton revenu.</span></div>
 <h2 class="art-h2">3. Les revenus passifs liés au logement</h2>
 <p class="art-p">Quelques sources de revenus que ton logement peut générer même quand il n'est pas loué.</p>
-<ul class="art-ul"><li>Tournages et shootings photo (entre 200 et 800 €/jour selon localisation) — inscription sur ShootRights, Pollen Studios</li><li>Espaces stockage longue durée (cave, garage) sur Costockage : 30-100 €/mois selon la zone</li><li>Location de matériel photo / drone si tu en as : 30-80 €/jour selon le marché</li></ul>
+<ul class="art-ul"><li>Tournages et shootings photo (entre 200 et 800 €/jour selon localisation), inscription sur ShootRights, Pollen Studios</li><li>Espaces stockage longue durée (cave, garage) sur Costockage : 30-100 €/mois selon la zone</li><li>Location de matériel photo / drone si tu en as : 30-80 €/jour selon le marché</li></ul>
 <h2 class="art-h2">4. Les revenus indirects via le canal direct</h2>
 <p class="art-p">Le canal direct (réservation directe via ton site Driing, Google ou réseaux sociaux) génère un revenu net plus élevé que les plateformes. Sur le même tarif voyageur, tu économises 15 % de commission Airbnb. Sur 50 réservations à 90 € sur l'année, c'est 675 € en plus dans ta poche.</p>
 <ul class="art-ul"><li>Bâtir une base de voyageurs fidèles via emails après séjour : 8-12 % reviennent en direct</li><li>Activer Google Business Profile pour les réservations directes : 15-30 % de réservations en plus selon la zone</li><li>Lancer un canal Instagram pour ton logement : conversion plus lente mais audience qualifiée</li></ul>
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

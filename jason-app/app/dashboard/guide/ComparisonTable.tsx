@@ -121,7 +121,7 @@ export default function ComparisonTable() {
           </span>
           <div style={{ textAlign: 'left' as const }}>
             <div style={s.toggleTitle}>Tableau comparatif des 4 profils</div>
-            <div style={s.toggleDesc}>Statut, fiscalité, TVA, plafonds, plateformes — d&apos;un coup d&apos;œil</div>
+            <div style={s.toggleDesc}>Statut, fiscalité, TVA, plafonds, plateformes, d&apos;un coup d&apos;œil</div>
           </div>
         </span>
         <span style={{ ...s.chevron, transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}>

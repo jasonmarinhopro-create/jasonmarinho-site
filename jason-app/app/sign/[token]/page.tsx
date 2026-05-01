@@ -8,7 +8,7 @@ import DepositSection from './DepositSection'
 import PaymentSection from './PaymentSection'
 import IbanSection from './IbanSection'
 
-// Toujours servir depuis le serveur (pas de cache) — la signature doit être fraîche
+// Toujours servir depuis le serveur (pas de cache), la signature doit être fraîche
 export const dynamic = 'force-dynamic'
 
 function createServiceClient() {
@@ -39,7 +39,7 @@ function nights(arrivee: string, depart: string) {
 export async function generateMetadata({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params
   return {
-    title: 'Contrat de location — Signature',
+    title: 'Contrat de location, Signature',
     description: 'Signez votre contrat de location électroniquement.',
     robots: 'noindex, nofollow',
     other: { token },
@@ -53,7 +53,7 @@ export default async function SignPage({
   params: Promise<{ token: string }>
   searchParams: Promise<{ deposit?: string; payment?: string }>
 }) {
-  // Désactive TOUT le data cache Next.js pour cette page — critique pour avoir
+  // Désactive TOUT le data cache Next.js pour cette page, critique pour avoir
   // le statut de signature à jour immédiatement après la signature
   noStore()
 
@@ -69,7 +69,7 @@ export default async function SignPage({
 
   if (error || !contract) return notFound()
 
-  // Vérifier si le visiteur est le bailleur (propriétaire) — il ne doit pas pouvoir signer
+  // Vérifier si le visiteur est le bailleur (propriétaire), il ne doit pas pouvoir signer
   const authClient = await createAuthClient()
   const { data: { user: authUser } } = await authClient.auth.getUser()
   const isViewerBailleur = !!(authUser && authUser.id === contract.user_id)
@@ -131,7 +131,7 @@ export default async function SignPage({
             <div>
               <strong>Ce contrat a été signé électroniquement</strong>
               <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.85 }}>
-                Signé le {formatDate(contract.signature_date)} — Les deux parties ont reçu une confirmation par email.
+                Signé le {formatDate(contract.signature_date)}, Les deux parties ont reçu une confirmation par email.
               </p>
             </div>
           </div>
@@ -156,9 +156,9 @@ export default async function SignPage({
 
         {/* ─── Corps du contrat ─────────────────────────────────────────────── */}
         <div style={contractBody} className="contract-print">
-          {/* Art. 1 — Parties */}
+          {/* Art. 1, Parties */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 1 — Parties au contrat</h2>
+            <h2 style={sectionTitle}>Article 1, Parties au contrat</h2>
             <div style={partyGrid}>
               <div style={partyBox}>
                 <p style={partyLabel}>Bailleur (propriétaire)</p>
@@ -178,9 +178,9 @@ export default async function SignPage({
 
           <div style={divider} />
 
-          {/* Art. 2 — Bien loué */}
+          {/* Art. 2, Bien loué */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 2 — Bien loué</h2>
+            <h2 style={sectionTitle}>Article 2, Bien loué</h2>
             <p style={contractText}>
               Le bailleur loue au locataire le bien immobilier situé à l&apos;adresse suivante&nbsp;:
             </p>
@@ -194,16 +194,16 @@ export default async function SignPage({
               Capacité maximale d&apos;occupation&nbsp;: <strong>{contract.capacite_max} personne{contract.capacite_max > 1 ? 's' : ''}</strong>.
             </p>
             <p style={{ ...contractText, marginTop: '6px', fontSize: '13px', opacity: 0.7 }}>
-              Animaux admis&nbsp;: {contract.animaux_acceptes ? 'Oui' : 'Non'} —
+              Animaux admis&nbsp;: {contract.animaux_acceptes ? 'Oui' : 'Non'} -
               Tabac&nbsp;: {contract.fumeur_accepte ? 'Autorisé' : 'Interdit'}
             </p>
           </section>
 
           <div style={divider} />
 
-          {/* Art. 3 — Durée */}
+          {/* Art. 3, Durée */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 3 — Durée de la location</h2>
+            <h2 style={sectionTitle}>Article 3, Durée de la location</h2>
             <div style={datesGrid}>
               <div style={dateBox}>
                 <p style={dateLabel}>Arrivée</p>
@@ -224,9 +224,9 @@ export default async function SignPage({
 
           <div style={divider} />
 
-          {/* Art. 4 — Prix */}
+          {/* Art. 4, Prix */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 4 — Prix et modalités de paiement</h2>
+            <h2 style={sectionTitle}>Article 4, Prix et modalités de paiement</h2>
             <div style={pricesGrid}>
               <div style={priceBox}>
                 <p style={priceLabel}>Loyer total</p>
@@ -255,28 +255,28 @@ export default async function SignPage({
 
           <div style={divider} />
 
-          {/* Art. 5 — Conditions d'annulation */}
+          {/* Art. 5, Conditions d'annulation */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 5 — Conditions d&apos;annulation</h2>
+            <h2 style={sectionTitle}>Article 5, Conditions d&apos;annulation</h2>
             <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{contract.conditions_annulation}</p>
           </section>
 
           <div style={divider} />
 
-          {/* Art. 6 — Règlement intérieur */}
+          {/* Art. 6, Règlement intérieur */}
           {contract.reglement_interieur && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>Article 6 — Règlement intérieur</h2>
+                <h2 style={sectionTitle}>Article 6, Règlement intérieur</h2>
                 <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{contract.reglement_interieur}</p>
               </section>
               <div style={divider} />
             </>
           )}
 
-          {/* Art. 7 — Obligations légales */}
+          {/* Art. 7, Obligations légales */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 7 — Obligations des parties</h2>
+            <h2 style={sectionTitle}>Article 7, Obligations des parties</h2>
             <p style={contractText}>
               <strong>Le bailleur s&apos;engage à&nbsp;:</strong> remettre le logement en bon état, assurer la jouissance paisible des lieux,
               et garantir contre les vices et défauts qui rendraient le bien impropre à l&apos;usage.
@@ -290,21 +290,21 @@ export default async function SignPage({
 
           <div style={divider} />
 
-          {/* Art. 8 — RGPD */}
+          {/* Art. 8, RGPD */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 8 — Protection des données personnelles (RGPD)</h2>
+            <h2 style={sectionTitle}>Article 8, Protection des données personnelles (RGPD)</h2>
             <p style={contractText}>
               Les données personnelles collectées dans ce contrat sont traitées sur la base légale de l&apos;exécution du contrat
-              (Art. 6.1.b RGPD). Elles sont conservées 5 ans à compter de la fin du séjour (prescription civile — Art. 2224 Code civil).
+              (Art. 6.1.b RGPD). Elles sont conservées 5 ans à compter de la fin du séjour (prescription civile, Art. 2224 Code civil).
               Vous disposez d&apos;un droit d&apos;accès, de rectification et d&apos;effacement auprès du bailleur.
             </p>
           </section>
 
           <div style={divider} />
 
-          {/* Art. 9 — Loi applicable */}
+          {/* Art. 9, Loi applicable */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 9 — Loi applicable et juridiction</h2>
+            <h2 style={sectionTitle}>Article 9, Loi applicable et juridiction</h2>
             <p style={contractText}>
               Le présent contrat est soumis au droit français. En cas de litige, les parties tenteront de résoudre
               leur différend à l&apos;amiable. À défaut, le tribunal compétent sera celui du lieu de situation du bien loué.
@@ -313,9 +313,9 @@ export default async function SignPage({
 
           <div style={divider} />
 
-          {/* Art. 10 — Signature électronique */}
+          {/* Art. 10, Signature électronique */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 10 — Valeur juridique de la signature électronique</h2>
+            <h2 style={sectionTitle}>Article 10, Valeur juridique de la signature électronique</h2>
             <p style={contractText}>
               La signature électronique apposée ci-dessous constitue une <strong>signature électronique simple</strong> au sens
               du règlement (UE) n° 910/2014 (eIDAS) et de l&apos;article 1366 du Code civil français.
@@ -390,7 +390,7 @@ export default async function SignPage({
           </div>
         )}
 
-        {/* Signature du locataire — affichée en bas du contrat */}
+        {/* Signature du locataire, affichée en bas du contrat */}
         {alreadySigned && (
           <div style={signedBlock} className="print-signature">
             <div style={signedLeft}>
@@ -414,10 +414,10 @@ export default async function SignPage({
         <div style={footerLegal} className="print-footer">
           <p>
             Contrat établi via <a href="https://jasonmarinho.com" style={{ color: '#4a7260' }}>jasonmarinho.com</a>
-            {' — '}Conforme au Code civil, au Code du tourisme et au règlement eIDAS (UE) 910/2014.
+            {', '}Conforme au Code civil, au Code du tourisme et au règlement eIDAS (UE) 910/2014.
           </p>
           <p style={{ marginTop: '6px' }}>
-            Référence&nbsp;: {contract.id.slice(0, 8).toUpperCase()} — Créé le {formatDate(contract.created_at)}
+            Référence&nbsp;: {contract.id.slice(0, 8).toUpperCase()}, Créé le {formatDate(contract.created_at)}
           </p>
         </div>
 

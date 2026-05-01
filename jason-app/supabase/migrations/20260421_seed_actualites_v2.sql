@@ -1,4 +1,4 @@
--- Seed nouvelles actualités LCD — semaine du 16 au 21 avril 2026
+-- Seed nouvelles actualités LCD, semaine du 16 au 21 avril 2026
 INSERT INTO public.actualites (title, summary, source_url, category, published_at, is_published) VALUES
 
 (
@@ -21,7 +21,7 @@ INSERT INTO public.actualites (title, summary, source_url, category, published_a
 
 (
   'Airbnb : commission unifiée à 15,5 % entièrement à la charge de l''hôte',
-  'Airbnb a généralisé début 2026 un nouveau modèle tarifaire : une commission fixe de 15,5 % intégralement supportée par l''hôte, sans frais additionnels pour le voyageur. Ce changement, déjà appliqué sur la majorité des annonces européennes, modifie la structure de prix affichée — et rend les réservations directes encore plus attractives.',
+  'Airbnb a généralisé début 2026 un nouveau modèle tarifaire : une commission fixe de 15,5 % intégralement supportée par l''hôte, sans frais additionnels pour le voyageur. Ce changement, déjà appliqué sur la majorité des annonces européennes, modifie la structure de prix affichée, et rend les réservations directes encore plus attractives.',
   'https://parisbnb.fr/commission-airbnb-2025-nouveaux-frais-pour-hotes/',
   'plateformes',
   '2026-04-18 00:00:00+00',
@@ -30,7 +30,7 @@ INSERT INTO public.actualites (title, summary, source_url, category, published_a
 
 (
   'DPE meublés de tourisme : classe E obligatoire dès 2028, classe D dès 2034',
-  'Le gouvernement a précisé le calendrier des obligations énergétiques pour les meublés de tourisme. Dès 2028, tout bien nouvellement mis en location devra être classé au minimum E. À partir de 2034, la classe D deviendra le seuil minimal — au même titre que les locations classiques. Les logements F et G devront être rénovés ou retirés du marché.',
+  'Le gouvernement a précisé le calendrier des obligations énergétiques pour les meublés de tourisme. Dès 2028, tout bien nouvellement mis en location devra être classé au minimum E. À partir de 2034, la classe D deviendra le seuil minimal, au même titre que les locations classiques. Les logements F et G devront être rénovés ou retirés du marché.',
   'https://actus.foncia.com/gestion-locative/louer/dpe-location-saisonniere',
   'reglementation',
   '2026-04-19 00:00:00+00',

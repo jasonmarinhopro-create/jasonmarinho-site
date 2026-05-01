@@ -1,4 +1,4 @@
-# Audit Google Business Profile — Outil intégré
+# Audit Google Business Profile, Outil intégré
 
 L'**audit Google Business Profile (GBP)** est un outil disponible dans l'espace membre de la plateforme Jason Marinho. Il permet aux hôtes de location courte durée d'analyser la qualité et la complétude de leur fiche Google Business Profile.
 

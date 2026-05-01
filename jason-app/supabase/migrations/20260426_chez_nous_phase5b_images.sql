@@ -1,5 +1,5 @@
 -- ─────────────────────────────────────────────────────────────────────
--- Migration : Chez Nous Phase 5b — Images dans les posts
+-- Migration : Chez Nous Phase 5b, Images dans les posts
 -- Date : 2026-04-26
 -- ─────────────────────────────────────────────────────────────────────
 

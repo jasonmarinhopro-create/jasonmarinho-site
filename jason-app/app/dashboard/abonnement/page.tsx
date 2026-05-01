@@ -16,7 +16,7 @@ const DECOUVERTE_FEATURES = [
   'Sécurité voyageur (consultation + signalement)',
   '2 formations d\'introduction',
   'Calendrier + journal des revenus',
-  '1 logement — voyageurs illimités',
+  '1 logement, voyageurs illimités',
   'Communauté (noms des groupes) + partenaires',
 ]
 
@@ -42,11 +42,11 @@ export default async function AbonnementPage({
 }) {
   const supabase = await createClient()
 
-  // getUser() valide le token auprès de Supabase Auth — jamais de données stales
+  // getUser() valide le token auprès de Supabase Auth, jamais de données stales
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) redirect('/auth/login')
 
-  // Requête directe — sans passer par React.cache() ni getProfile()
+  // Requête directe, sans passer par React.cache() ni getProfile()
   // Garantit une lecture fraîche à chaque chargement de cette page
   const { data: profileData } = await supabase
     .from('profiles')
@@ -85,7 +85,7 @@ export default async function AbonnementPage({
         {subscriptionResult === 'success' && (
           <div style={styles.alertSuccess} className="fade-up">
             <CheckCircle size={18} color="#34D399" weight="fill" />
-            Abonnement activé — bienvenue dans le plan Standard !
+            Abonnement activé, bienvenue dans le plan Standard !
           </div>
         )}
         {subscriptionResult === 'cancel' && (
@@ -97,10 +97,10 @@ export default async function AbonnementPage({
 
         <div style={styles.mainGrid} className="abo-grid">
 
-          {/* LEFT — plan actuel */}
+          {/* LEFT, plan actuel */}
           <div style={styles.leftCol}>
 
-            {/* ── Plan Administrateur — visible uniquement pour Jason ── */}
+            {/* ── Plan Administrateur, visible uniquement pour Jason ── */}
             {isAdmin && (
               <div style={styles.adminBanner} className="glass-card fade-up">
                 <div style={styles.adminGlow} />
@@ -116,7 +116,7 @@ export default async function AbonnementPage({
                 <div style={styles.featureList}>
                   {[
                     'Accès illimité à tout le contenu',
-                    'Panel admin — membres, contenu, stats',
+                    'Panel admin, membres, contenu, stats',
                     'Accès anticipé à toutes les nouveautés',
                     'Aucun abonnement requis',
                   ].map(f => (
@@ -201,11 +201,11 @@ export default async function AbonnementPage({
             )}
           </div>
 
-          {/* RIGHT — upgrades (masqué pour l'admin) */}
+          {/* RIGHT, upgrades (masqué pour l'admin) */}
           <div style={styles.rightCol}>
           {!isAdmin && (<>
 
-            {/* Standard upgrade — visible seulement en Découverte */}
+            {/* Standard upgrade, visible seulement en Découverte */}
             {isDecouverte && (
               <>
                 <div style={styles.sectionLabel} className="fade-up">
@@ -232,13 +232,13 @@ export default async function AbonnementPage({
                       </div>
                     ))}
                   </div>
-                  <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard — 1,98 €/mois" />
+                  <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard, 1,98 €/mois" />
                   <p style={styles.smallNote}>Prix HT bloqué à vie tant que l&apos;abonnement est actif. Résiliable à tout moment.</p>
                 </div>
               </>
             )}
 
-            {/* Driing — visible si non Driing */}
+            {/* Driing, visible si non Driing */}
             {!isDriing && (
               <>
                 <div style={{ ...styles.sectionLabel, marginTop: isDecouverte ? '8px' : 0 }} className="fade-up">
@@ -248,7 +248,7 @@ export default async function AbonnementPage({
                 <div style={styles.driingRow} className="fade-up d2">
                   <div style={styles.driingRowGlow} />
                   <div style={{ ...styles.upgradeName, color: 'var(--accent-text)' }}>Membre Driing</div>
-                  <p style={styles.planDesc}>Tu es client Driing ? Toute la plateforme est incluse sans surcoût — aucun paiement séparé.</p>
+                  <p style={styles.planDesc}>Tu es client Driing ? Toute la plateforme est incluse sans surcoût, aucun paiement séparé.</p>
                   <div style={styles.perks} className="abo-perks">
                     {DRIING_FEATURES.map(p => (
                       <span key={p} style={styles.perk}>
@@ -266,7 +266,7 @@ export default async function AbonnementPage({
               </>
             )}
 
-            {/* Gérer abonnement — Standard actif */}
+            {/* Gérer abonnement, Standard actif */}
             {isStandard && (
               <>
                 <div style={styles.sectionLabel} className="fade-up">

@@ -51,7 +51,7 @@ export default function NouveautesPage() {
             Historique des <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>mises à jour</em>
           </h2>
           <p style={s.pageDesc}>
-            Suis l'évolution de la plateforme — chaque amélioration, nouvelle fonctionnalité et correction.
+            Suis l'évolution de la plateforme, chaque amélioration, nouvelle fonctionnalité et correction.
           </p>
           <div style={s.statRow}>
             <span style={s.statChip}>
@@ -123,7 +123,7 @@ export default function NouveautesPage() {
 
             return (
               <div key={entry.id} className={`cl-row${cardOnLeft ? '' : ' cl-card-right'}`}>
-                {/* Carte — toujours dans .cl-card */}
+                {/* Carte, toujours dans .cl-card */}
                 <div className="cl-card">
                   {CardEl}
                 </div>
@@ -143,7 +143,7 @@ export default function NouveautesPage() {
                   )}
                 </div>
 
-                {/* Meta date — masqué sur mobile */}
+                {/* Meta date, masqué sur mobile */}
                 <div className="cl-meta-col">
                   {MetaEl}
                 </div>

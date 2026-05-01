@@ -11,7 +11,7 @@ description: "Contrat de location, caution digitale, paiement sécurisé, assura
 
 Le principal frein des hôtes qui hésitent à développer la location directe, c'est souvent celui-ci : *"Et si quelque chose se passe mal ? Avec Airbnb, j'ai AirCover. En direct, je n'ai rien."*
 
-C'est une crainte légitime — mais elle repose sur une fausse prémisse. Tu peux très bien sécuriser une réservation directe de façon professionnelle, avec les bons outils. Certains aspects sont même mieux protégés qu'avec une plateforme.
+C'est une crainte légitime, mais elle repose sur une fausse prémisse. Tu peux très bien sécuriser une réservation directe de façon professionnelle, avec les bons outils. Certains aspects sont même mieux protégés qu'avec une plateforme.
 
 Voici comment construire un cadre solide pour ta réservation directe.
 
@@ -41,29 +41,29 @@ Le chèque de caution papier est obsolète et peu pratique pour les deux parties
 
 **Les outils à connaître :**
 
-**Swikly** — la référence française pour la caution digitale LCD. Le voyageur autorise un montant sur sa carte sans que les fonds soient réellement prélevés. Si tout se passe bien, rien n'est débité. En cas de dégât, tu encaisses la caution d'un clic.
+**Swikly**, la référence française pour la caution digitale LCD. Le voyageur autorise un montant sur sa carte sans que les fonds soient réellement prélevés. Si tout se passe bien, rien n'est débité. En cas de dégât, tu encaisses la caution d'un clic.
 - Avantage : pas de fonds bloqués pour le voyageur (moins de friction), sécurité maximale pour toi.
 - Prix : environ 2 à 3 % du montant de la caution.
 
-**Superhog** — combine caution digitale et vérification d'identité du voyageur. Particulièrement utile si tu reçois des voyageurs que tu ne connais pas du tout.
+**Superhog**, combine caution digitale et vérification d'identité du voyageur. Particulièrement utile si tu reçois des voyageurs que tu ne connais pas du tout.
 
-**Stripe ou SumUp** — si tu veux encaisser une vraie caution (fonds réels bloqués), ces solutions de paiement permettent de créer une autorisation ou un encaissement manuel remboursable.
+**Stripe ou SumUp**, si tu veux encaisser une vraie caution (fonds réels bloqués), ces solutions de paiement permettent de créer une autorisation ou un encaissement manuel remboursable.
 
 ---
 
 ## 3. Le paiement : sécurisé et traçable
 
-En location directe, tu gères toi-même le paiement. Pas de virement de plateforme — c'est à toi de mettre en place un système fiable.
+En location directe, tu gères toi-même le paiement. Pas de virement de plateforme, c'est à toi de mettre en place un système fiable.
 
 **Les options selon ton volume :**
 
-**Virement bancaire** — simple, sans frais, mais irréversible. Conseillé pour les voyageurs que tu connais ou qui ont déjà séjourné chez toi. Moins adapté pour les nouveaux voyageurs inconnus.
+**Virement bancaire**, simple, sans frais, mais irréversible. Conseillé pour les voyageurs que tu connais ou qui ont déjà séjourné chez toi. Moins adapté pour les nouveaux voyageurs inconnus.
 
-**Stripe** — solution de paiement en ligne professionnelle. Tu crées un lien de paiement, le voyageur paie par carte, les fonds arrivent sur ton compte sous 2 à 7 jours. Frais : environ 1,4 % + 0,25 € par transaction (cartes européennes).
+**Stripe**, solution de paiement en ligne professionnelle. Tu crées un lien de paiement, le voyageur paie par carte, les fonds arrivent sur ton compte sous 2 à 7 jours. Frais : environ 1,4 % + 0,25 € par transaction (cartes européennes).
 
-**PayPal** — connu des voyageurs, mais des frais plus élevés (environ 3 %) et une protection vendeur parfois insuffisante pour les locations.
+**PayPal**, connu des voyageurs, mais des frais plus élevés (environ 3 %) et une protection vendeur parfois insuffisante pour les locations.
 
-**Via Driing** — [Driing](https://www.driing.co) gère la mise en relation directe entre toi et le voyageur. Le cadre de confiance de la plateforme (hôtes vérifiés, annonces contrôlées) réduit le risque de mauvaise foi des deux côtés, sans te faire payer de commission.
+**Via Driing**, [Driing](https://www.driing.co) gère la mise en relation directe entre toi et le voyageur. Le cadre de confiance de la plateforme (hôtes vérifiés, annonces contrôlées) réduit le risque de mauvaise foi des deux côtés, sans te faire payer de commission.
 
 ---
 
@@ -110,5 +110,5 @@ Ce process prend moins de 10 minutes de ton côté une fois qu'il est configuré
 - Un contrat signé électroniquement est la base juridique de toute réservation directe.
 - Swikly est la solution la plus adaptée pour la caution digitale en LCD France.
 - Stripe est le moyen de paiement en ligne le plus fiable et le moins coûteux pour les hôtes.
-- Ton assurance LCD doit couvrir les réservations hors plateformes — vérifie-le explicitement.
+- Ton assurance LCD doit couvrir les réservations hors plateformes, vérifie-le explicitement.
 - Sur Driing, le cadre de confiance de la plateforme (vérification des hôtes, comparatif de prix transparent) réduit les risques sans te facturer de commission.

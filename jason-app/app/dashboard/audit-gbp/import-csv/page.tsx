@@ -4,7 +4,7 @@ import ImportCsvForm from './ImportCsvForm'
 import { ArrowLeft, FileCsv, Lightning, Info, Question, ArrowSquareOut } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic  = 'force-dynamic'
-export const metadata = { title: 'Audit Express — Import CSV — Jason Marinho' }
+export const metadata = { title: 'Audit Express, Import CSV, Jason Marinho' }
 
 export default async function ImportCsvPage() {
   const profile = await getProfile()
@@ -56,7 +56,7 @@ export default async function ImportCsvPage() {
               <div style={s.stepTitle}>Sélectionne ta ou tes fiches</div>
               <div style={s.stepDesc}>
                 Coche la (ou les) fiche que tu veux auditer. Si tu n'en gères qu'une seule
-                et que tu ne vois pas la liste, c'est normal — Google va directement te proposer
+                et que tu ne vois pas la liste, c'est normal, Google va directement te proposer
                 ses options de gestion en bas de page.
               </div>
             </div>
@@ -104,7 +104,7 @@ export default async function ImportCsvPage() {
               <li>
                 <strong>Compte mono-fiche</strong> : Google ne te montre pas la liste, mais directement
                 ta fiche. Dans ce cas, va plutôt sur <a href="https://www.google.com/search?q=mon+entreprise" target="_blank" rel="noopener noreferrer" style={s.link}>Google Search "mon entreprise"</a> et
-                clique sur "Modifier le profil" — l'export CSV n'est <strong>pas disponible</strong> dans
+                clique sur "Modifier le profil", l'export CSV n'est <strong>pas disponible</strong> dans
                 cette interface.
               </li>
             </ul>
@@ -116,7 +116,7 @@ export default async function ImportCsvPage() {
             </p>
             <p style={{ ...s.faqP, marginTop: '12px' }}>
               Si rien de tout ça ne fonctionne, tu peux toujours{' '}
-              <Link href="/dashboard/audit-gbp" style={s.link}>faire l'audit manuellement</Link> —
+              <Link href="/dashboard/audit-gbp" style={s.link}>faire l'audit manuellement</Link> -
               c'est plus long mais ça marche à 100%.
             </p>
           </div>
@@ -128,7 +128,7 @@ export default async function ImportCsvPage() {
           <div>
             <strong style={{ color: 'var(--text)' }}>Tes données restent privées.</strong> Le CSV
             est lu localement dans ton navigateur. Seules les réponses (oui/non/choix) sont
-            sauvegardées en base — jamais le fichier brut.
+            sauvegardées en base, jamais le fichier brut.
           </div>
         </div>
 

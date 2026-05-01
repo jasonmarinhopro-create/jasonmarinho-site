@@ -77,7 +77,7 @@
       '.hbg.open span:nth-child(2){opacity:0;transform:scaleX(0)}',
       '.hbg.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}',
 
-      /* Mobile menu — compact, animé, zéro scroll */
+      /* Mobile menu, compact, animé, zéro scroll */
       '.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--gd);border-top:1px solid rgba(255,213,107,.08);padding:4px clamp(16px,5vw,32px) 28px;z-index:199;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s}',
       '.mob-menu.open{opacity:1;transform:translateY(0)}',
       '.mob-stitle{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.4);padding:18px 0 4px}',
@@ -93,7 +93,7 @@
       '.mob-acc-body{max-height:0;overflow:hidden;transition:max-height .32s ease}',
       '.mob-acc.open .mob-acc-body{max-height:600px}',
 
-      /* Driing mobile — carte highlight */
+      /* Driing mobile, carte highlight */
       '.mob-driing{background:rgba(255,213,107,.06)!important;border:1px solid rgba(255,213,107,.18)!important;border-radius:10px!important;padding:13px 14px!important;margin-top:4px;border-bottom:none!important}',
       '.mob-driing i{color:var(--y)!important;opacity:.85}',
       '.mob-driing-body{display:flex;flex-direction:column;gap:1px}',
@@ -141,7 +141,7 @@
           + '<a href="/pour-qui/membres-driing" class="n-driing-card">'
             + '<div class="n-driing-badge"><div class="n-driing-dot"></div><span class="n-driing-badge-txt">Membres</span></div>'
             + '<div class="n-driing-name">Driing</div>'
-            + '<div class="n-driing-sub">Réservation directe sans commission — accédez à vos avantages exclusifs</div>'
+            + '<div class="n-driing-sub">Réservation directe sans commission, accédez à vos avantages exclusifs</div>'
             + '<div class="n-driing-cta">Voir mes avantages <i class="ph ph-arrow-right" style="font-size:11px"></i></div>'
           + '</a>'
         + '</div>'
@@ -192,7 +192,7 @@
     + '<button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>'
   + '</nav>'
 
-  /* ── MOBILE MENU — ordre identique au desktop ── */
+  /* ── MOBILE MENU, ordre identique au desktop ── */
   + '<div class="mob-menu" id="mob">'
 
     + '<div class="mob-acc" id="acc-pq">'
@@ -268,7 +268,7 @@
       });
     }
 
-    /* Hamburger — animation fluide (opacity + translateY) */
+    /* Hamburger, animation fluide (opacity + translateY) */
     hbg.addEventListener('click', function (e) {
       e.stopPropagation();
       var isOpen = mob.classList.contains('open');
@@ -318,7 +318,7 @@
       });
     });
 
-    /* Mega menu desktop — toggle au clic (touch/clavier) */
+    /* Mega menu desktop, toggle au clic (touch/clavier) */
     document.querySelectorAll('.n-drop').forEach(function (drop) {
       drop.querySelector('.n-btn').addEventListener('click', function (e) {
         e.stopPropagation();

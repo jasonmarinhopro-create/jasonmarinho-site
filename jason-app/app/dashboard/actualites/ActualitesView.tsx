@@ -307,7 +307,7 @@ export default function ActualitesView({
           Actualités <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
         </h2>
         <p style={s.pageDesc}>
-          Réglementation, fiscalité, marché, gîtes, chambres d&apos;hôtes, conciergeries et réservation directe — triées et résumées pour toi.
+          Réglementation, fiscalité, marché, gîtes, chambres d&apos;hôtes, conciergeries et réservation directe, triées et résumées pour toi.
         </p>
         {isAuthenticated && articles.length > 0 && (
           <div style={s.headerStats}>
@@ -349,13 +349,13 @@ export default function ActualitesView({
           </div>
           <p style={s.emptyDesc}>
             Le fil d&apos;actualités arrive prochainement. Réglementation, fiscalité, marché,
-            gîtes, chambres d&apos;hôtes, conciergeries, réservation directe — tout le secteur LCD
+            gîtes, chambres d&apos;hôtes, conciergeries, réservation directe, tout le secteur LCD
             centralisé et trié par profil.
           </p>
         </div>
       ) : (
         <>
-          {/* À LA UNE — articles épinglés */}
+          {/* À LA UNE, articles épinglés */}
           {pinned.length > 0 && (
             <section style={s.heroSection} className="fade-up">
               <div style={s.sectionHead}>
@@ -403,7 +403,7 @@ export default function ActualitesView({
             </section>
           )}
 
-          {/* POUR TOI — articles correspondant aux régions de l'utilisateur */}
+          {/* POUR TOI, articles correspondant aux régions de l'utilisateur */}
           {recommendedForUser.length > 0 && (
             <section style={s.recoSection} className="fade-up">
               <div style={s.sectionHead}>
@@ -483,7 +483,7 @@ export default function ActualitesView({
                 </p>
                 <p style={s.gateDesc}>Accède à toutes les actualités LCD en passant en Standard Membre Fondateur.</p>
                 <a href="/dashboard/abonnement" style={s.gateCta}>
-                  Passer en Standard — 1,98 €/mois
+                  Passer en Standard, 1,98 €/mois
                 </a>
               </div>
             </div>

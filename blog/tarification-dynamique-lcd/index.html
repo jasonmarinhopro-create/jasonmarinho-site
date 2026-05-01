@@ -377,7 +377,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <h2 class="art-h2">Pourquoi le prix fixe est une erreur</h2>
 <p class="art-p">Avec un prix fixe, tu laisses de l’argent sur la table les week-ends et jours fériés, et tu affiches un tarif trop élevé en période creuse qui fait fuir les voyageurs. L’algorithme Airbnb défavorise aussi les annonces avec un taux d’occupation faible.</p>
 <h2 class="art-h2">Les 3 variables à surveiller</h2>
-<ul class="art-ul"><li>Evénements locaux : concerts, salons, matchs sportifs — multiplier par 1,5 à 2</li><li>Saisonnalité : vacances scolaires, été, Noël — augmenter progressivement</li><li>Délais de réservation : prix bas 1 à 3 jours avant pour remplir les trous</li></ul>
+<ul class="art-ul"><li>Evénements locaux : concerts, salons, matchs sportifs, multiplier par 1,5 à 2</li><li>Saisonnalité : vacances scolaires, été, Noël, augmenter progressivement</li><li>Délais de réservation : prix bas 1 à 3 jours avant pour remplir les trous</li></ul>
 <h2 class="art-h2">Les outils pour automatiser</h2>
 <p class="art-p">Plusieurs outils spécialisés analysent le marché local et ajustent tes prix automatiquement : PriceLabs, Beyond Pricing, Wheelhouse. Ils coûtent entre 20 et 50 €/mois par logement mais se rentabilisent généralement dès le premier mois.</p>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Commence par auditer tes 12 derniers mois : identifie les nuits où tu étais réservé à prix bas (tu aurais pu charger plus) et celles où tu étais vide à prix élevé (tu aurais dû baisser). Ce diagnostic te donnera ta stratégie.</span></div>
@@ -439,14 +439,14 @@ function subscriberBrevo(e) {
       msg.style.display = 'block';
       document.getElementById('brevo-email').value = '';
     } else {
-      msg.textContent = 'Déjà inscrit ou erreur — réessaie.';
+      msg.textContent = 'Déjà inscrit ou erreur, réessaie.';
       msg.style.color = 'rgba(255,255,255,.6)';
       msg.style.display = 'block';
     }
     btn.textContent = "S'inscrire";
     btn.disabled = false;
   }).catch(function() {
-    msg.textContent = 'Erreur réseau — réessaie.';
+    msg.textContent = 'Erreur réseau, réessaie.';
     msg.style.color = 'rgba(255,255,255,.6)';
     msg.style.display = 'block';
     btn.textContent = "S'inscrire";

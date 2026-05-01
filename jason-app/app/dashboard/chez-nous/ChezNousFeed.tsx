@@ -255,7 +255,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
           <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
         </div>
 
-        {/* Bouton Partager — visible mobile uniquement (la sidebar fait déjà le job desktop) */}
+        {/* Bouton Partager, visible mobile uniquement (la sidebar fait déjà le job desktop) */}
         <button
           type="button"
           className="cn-mobile-invite"

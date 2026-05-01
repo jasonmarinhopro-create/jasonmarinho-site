@@ -83,7 +83,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
 
   const [selectedLogementId, setSelectedLogementId] = useState<string | null>(initialLogement?.id ?? null)
 
-  // Form state — pré-rempli depuis le logement si disponible
+  // Form state, pré-rempli depuis le logement si disponible
   const [form, setForm] = useState({
     // Bailleur
     bailleur_prenom: bailleur.prenom,
@@ -98,7 +98,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     locataire_email: voyageur.email ?? '',
     locataire_telephone: voyageur.telephone ?? '',
 
-    // Bien — pré-rempli depuis la fiche logement si elle correspond
+    // Bien, pré-rempli depuis la fiche logement si elle correspond
     logement_nom: initialLogement?.nom ?? '',
     logement_adresse: initialLogement?.adresse ?? '',
     logement_description: initialLogement?.description ?? '',
@@ -110,7 +110,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     heure_arrivee: '16:00',
     heure_depart: '11:00',
 
-    // Financier — pré-rempli selon les méthodes de paiement du logement
+    // Financier, pré-rempli selon les méthodes de paiement du logement
     montant_loyer: sejour.montant ?? 0,
     montant_caution: 0,
     methodes_keys: initialLogement?.methodes_paiement ?? 'virement',
@@ -129,7 +129,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       }
     })(),
 
-    // Clauses — pré-remplies depuis la fiche logement si disponible
+    // Clauses, pré-remplies depuis la fiche logement si disponible
     conditions_annulation: initialLogement?.conditions_annulation ?? DEFAULT_ANNULATION,
     reglement_interieur: initialLogement?.reglement_interieur ?? DEFAULT_REGLEMENT,
     animaux_acceptes: initialLogement?.animaux_acceptes ?? false,
@@ -529,7 +529,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 </div>
                 {!bailleur.stripeReady && (
                   <p style={{ margin: '8px 0 0', fontSize: '11px', color: '#6b9a7e', lineHeight: 1.5 }}>
-                    🔒 Stripe non configuré — connectez votre compte dans <strong>Paramètres → Paiements</strong> pour l&apos;activer.
+                    🔒 Stripe non configuré, connectez votre compte dans <strong>Paramètres → Paiements</strong> pour l&apos;activer.
                   </p>
                 )}
               </div>

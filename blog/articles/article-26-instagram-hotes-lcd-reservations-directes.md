@@ -11,7 +11,7 @@ description: "Instagram est un canal d'acquisition de voyageurs direct et gratui
 
 La plupart des hôtes LCD ne sont pas sur Instagram. Ceux qui y sont publient quelques photos sans stratégie et abandonnent au bout de 3 mois. Et une petite minorité en fait un vrai canal de réservation directe qui tourne tout seul.
 
-La différence entre ces trois profils, c'est une question de méthode — pas de talent créatif ni de budget publicité.
+La différence entre ces trois profils, c'est une question de méthode, pas de talent créatif ni de budget publicité.
 
 ---
 
@@ -34,13 +34,13 @@ La première décision : utiliser ton compte personnel ou créer un compte dédi
 **Les éléments du profil à soigner :**
 - **Nom du compte** : quelque chose de mémorable lié à ton logement (ex: @leflatdumarais, @lacabaneduplsage)
 - **Photo de profil** : la meilleure photo de ton logement, pas un portrait
-- **Bio** : en 150 caractères, l'essentiel — type de logement, localisation, ce qui le rend unique
+- **Bio** : en 150 caractères, l'essentiel, type de logement, localisation, ce qui le rend unique
 - **Lien en bio** : le seul lien cliquable sur Instagram. Mets ton annonce Driing ou ton site. Si tu veux mettre plusieurs liens, utilise un outil comme Linktree.
 
 **Exemple de bio qui convertit :**
 > *🏡 Appartement design au cœur du Marais · Paris 4e*
 > *📶 Fibre · terrasse privée · check-in autonome*
-> *👇 Réservez directement — sans frais de plateforme*
+> *👇 Réservez directement, sans frais de plateforme*
 
 ---
 
@@ -50,7 +50,7 @@ La première décision : utiliser ton compte personnel ou créer un compte dédi
 C'est le cœur de ton compte. Les mêmes règles que pour tes photos d'annonce s'appliquent : lumière naturelle, mise en scène, angles larges. Varie les pièces et les moments de la journée.
 
 **Les photos du quartier et de la ville (30 %)**
-Les voyageurs ne choisissent pas seulement un logement — ils choisissent une expérience et un lieu. Montre le marché local, le café du coin, la vue depuis la rue, les ruelles... C'est ce qui crée l'envie de venir.
+Les voyageurs ne choisissent pas seulement un logement, ils choisissent une expérience et un lieu. Montre le marché local, le café du coin, la vue depuis la rue, les ruelles... C'est ce qui crée l'envie de venir.
 
 **Les "behind the scenes" et les coulisses (20 %)**
 Comment tu prépares le logement, un nouveau équipement que tu viens d'installer, une anecdote d'hôte... Ce contenu humanise ton compte et crée une connexion avec ton audience.
@@ -68,12 +68,12 @@ Les hashtags restent un levier de découverte sur Instagram en 2026. Utilise ent
 #locationvacances #locationcourteduree #locationairbnb #hotebnb #locationmeublee
 
 **Hashtags géographiques :**
-#paris #bretagne #louvrelyon #cotedazur — adapte à ta ville et ta région
+#paris #bretagne #louvrelyon #cotedazur, adapte à ta ville et ta région
 
 **Hashtags d'ambiance :**
 #appartementdesign #maisondevacances #locationdirect #voyagefrance #weekendfrance
 
-Évite les hashtags trop génériques (#travel, #vacation) avec des millions de posts — tu noyées dans la masse.
+Évite les hashtags trop génériques (#travel, #vacation) avec des millions de posts, tu noyées dans la masse.
 
 ---
 
@@ -83,10 +83,10 @@ Depuis 2022, les Reels (vidéos courtes) sont le format le plus favorisé par l'
 
 **Des idées de Reels simples à réaliser :**
 - Un tour du logement en 30 secondes avec une musique tendance
-- "Ce que vous aurez dans votre séjour" — texte en liste sur des visuels du logement
+- "Ce que vous aurez dans votre séjour", texte en liste sur des visuels du logement
 - Avant/après une rénovation ou une mise en scène
 - Les 3 restaurants incontournables à 5 min du logement (avec des clips de chaque)
-- Le check-in autonome en 30 secondes — tu montres comment ça marche
+- Le check-in autonome en 30 secondes, tu montres comment ça marche
 
 Pas besoin de matériel professionnel. Un iPhone stabilisé et un bon éclairage suffisent largement.
 
@@ -100,8 +100,8 @@ Un compte Instagram avec 1 000 abonnés qui ne génère aucune réservation dire
 
 - **Un lien en bio vers Driing** clairement mentionné dans chaque post : *"Lien de réservation directe en bio 👆"*
 - **Des stories régulières** avec un sticker "Lien" vers ton annonce Driing quand tu as des disponibilités
-- **La réponse rapide aux messages privés** : des voyageurs te contacteront en DM pour demander des disponibilités — réponds dans l'heure
-- **Des posts de disponibilités** : *"Ce weekend est encore disponible — réservez directement depuis le lien en bio"*
+- **La réponse rapide aux messages privés** : des voyageurs te contacteront en DM pour demander des disponibilités, réponds dans l'heure
+- **Des posts de disponibilités** : *"Ce weekend est encore disponible, réservez directement depuis le lien en bio"*
 
 ---
 
@@ -109,7 +109,7 @@ Un compte Instagram avec 1 000 abonnés qui ne génère aucune réservation dire
 
 Tu n'as pas besoin de publier tous les jours. Pour un hôte LCD qui gère son Instagram en parallèle de son activité, **3 posts par semaine + 2 à 3 stories par jour** est un rythme soutenable qui produit des résultats.
 
-Planifie tes posts à l'avance avec Meta Business Suite (gratuit) — ça te permet de préparer 2 semaines de contenu en une session de 2h.
+Planifie tes posts à l'avance avec Meta Business Suite (gratuit), ça te permet de préparer 2 semaines de contenu en une session de 2h.
 
 ---
 
@@ -117,6 +117,6 @@ Planifie tes posts à l'avance avec Meta Business Suite (gratuit) — ça te per
 
 - Un compte dédié à ton logement est plus efficace qu'un compte personnel mélangé.
 - Le mix gagnant : 40 % logement + 30 % quartier/ville + 20 % coulisses + 10 % témoignages.
-- Les Reels génèrent bien plus de portée que les photos — commence à en faire même si tu n'as jamais essayé.
-- Le lien en bio doit pointer vers ton annonce Driing ou ton site — mentionne-le dans chaque post.
+- Les Reels génèrent bien plus de portée que les photos, commence à en faire même si tu n'as jamais essayé.
+- Le lien en bio doit pointer vers ton annonce Driing ou ton site, mentionne-le dans chaque post.
 - 3 posts semaine + stories régulières = un rythme réaliste qui produit des résultats sur 3 à 6 mois.

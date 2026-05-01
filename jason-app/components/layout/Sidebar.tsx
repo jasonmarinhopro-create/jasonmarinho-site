@@ -158,7 +158,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
             </div>
           ))}
 
-          {/* Lien Contributeurs — visible pour tous, badge selon statut */}
+          {/* Lien Contributeurs, visible pour tous, badge selon statut */}
           <Link
             href="/dashboard/contributeurs"
             onClick={onClose}
@@ -178,7 +178,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
             {pathname === '/dashboard/contributeurs' && <div style={styles.activeDot} />}
           </Link>
 
-          {/* Section admin — visible uniquement pour Jason */}
+          {/* Section admin, visible uniquement pour Jason */}
           {isAdmin && (
             <>
               <div style={styles.navDivider}>

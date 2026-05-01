@@ -240,7 +240,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <ul class="art-ul"><li>Compresses stériles : durée 5 ans à partir fabrication. Vérifier 1x/an</li><li>Désinfectant : durée 6-12 mois après ouverture. Remplacer 1x/an</li><li>Médicaments (Doliprane, etc.) : vérifier dates 2x/an</li><li>Pansements adhésifs : remplacer si la colle a séché (test rapide)</li><li>Couverture de survie : durée illimitée si fermée. Remplacer si déchirée</li></ul>
 <h2 class="art-h2">4. Affichage des numéros d'urgence</h2>
 <p class="art-p">En complément de la trousse, l'affichage des numéros d'urgence est obligatoire. Affiche-les en évidence (réfrigérateur, livret d'accueil) :</p>
-<ul class="art-ul"><li>112 — Numéro d'urgence européen unique</li><li>15 — SAMU (urgences médicales)</li><li>17 — Police Secours</li><li>18 — Pompiers</li><li>114 — Urgences pour personnes sourdes/malentendantes</li><li>Ton numéro de téléphone personnel (en cas de panne d'eau, électricité, problème dans le logement)</li><li>Le numéro du médecin de garde du quartier</li><li>Le numéro du commissariat le plus proche</li></ul>
+<ul class="art-ul"><li>112, Numéro d'urgence européen unique</li><li>15, SAMU (urgences médicales)</li><li>17, Police Secours</li><li>18, Pompiers</li><li>114, Urgences pour personnes sourdes/malentendantes</li><li>Ton numéro de téléphone personnel (en cas de panne d'eau, électricité, problème dans le logement)</li><li>Le numéro du médecin de garde du quartier</li><li>Le numéro du commissariat le plus proche</li></ul>
 <div class="art-cta-box"><p>Tu veux ta checklist complète d'équipement et conformité LCD ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
 
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

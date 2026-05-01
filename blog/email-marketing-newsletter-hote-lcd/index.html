@@ -233,7 +233,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <ul class="art-ul"><li>Au moment de la réservation Airbnb : pas d'accès direct à l'email (Airbnb le masque). Demander en post-séjour si voyageur d'accord</li><li>Réservation directe (Driing, ton site) : email collecté avec consentement pour newsletter (case à cocher visible)</li><li>Réservation Booking : email accessible, mais consentement explicite obligatoire pour newsletter</li><li>Stocker dans un outil RGPD-compliant (Brevo, MailChimp, etc.). Pas dans ton Google Sheet perso</li></ul>
 <h2 class="art-h2">2. Structure de newsletter mensuelle</h2>
 <p class="art-p">Voici la structure qui convertit le mieux, testée sur 50+ hôtes français.</p>
-<ul class="art-ul"><li>Section 1 — Petit message personnel (3-4 lignes) : "Coucou, on espère que tout va bien chez toi !". Ton chaleureux, pas vendeur</li><li>Section 2 — News du quartier (2-3 actualités locales : nouveau resto, exposition, événement) — apporte de la valeur</li><li>Section 3 — Calendrier dispo (si certaines dates en basse saison ne se remplissent pas) avec offre fidèle -10 %</li><li>Section 4 — Photo récente du logement (saisonnière, après-petit-aménagement) avec 2-3 lignes</li><li>Section 5 — CTA simple : "Réserver en direct" avec bouton</li><li>Section 6 — Footer simple : ton nom, contact, lien désabonnement</li></ul>
+<ul class="art-ul"><li>Section 1, Petit message personnel (3-4 lignes) : "Coucou, on espère que tout va bien chez toi !". Ton chaleureux, pas vendeur</li><li>Section 2, News du quartier (2-3 actualités locales : nouveau resto, exposition, événement), apporte de la valeur</li><li>Section 3, Calendrier dispo (si certaines dates en basse saison ne se remplissent pas) avec offre fidèle -10 %</li><li>Section 4, Photo récente du logement (saisonnière, après-petit-aménagement) avec 2-3 lignes</li><li>Section 5, CTA simple : "Réserver en direct" avec bouton</li><li>Section 6, Footer simple : ton nom, contact, lien désabonnement</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Évite les newsletters "promotionnelles" pure (-20 %, dernière minute). Ce sont les newsletters "valeur + nouvelles" qui convertissent le mieux car elles ne donnent pas l'impression d'être spammé.</span></div>
 <h2 class="art-h2">3. Outils gratuits et fréquence</h2>
 <ul class="art-ul"><li>Brevo (anciennement Sendinblue) : 9 000 emails/mois gratuits. Interface simple, RGPD français</li><li>MailChimp : 500 contacts gratuits. Interface anglaise mais très complète</li><li>Mailerlite : 1 000 contacts gratuits, interface excellente</li><li>Pour 0-200 voyageurs/an : MailChimp ou Mailerlite gratuit suffit</li><li>Fréquence optimale : 1 newsletter/mois. Plus, ça spam. Moins, on t'oublie</li><li>Jour optimal : mardi 10 h ou jeudi 14 h (taux d'ouverture plus élevés)</li></ul>
@@ -295,14 +295,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

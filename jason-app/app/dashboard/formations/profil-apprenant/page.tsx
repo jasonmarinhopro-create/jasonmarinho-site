@@ -47,7 +47,7 @@ export default async function ProfilApprenantPage() {
   const totalHours = Math.floor(totalMinutes / 60)
   const remainingMin = totalMinutes % 60
 
-  // Streak — jours consécutifs où au moins 1 leçon a été complétée
+  // Streak, jours consécutifs où au moins 1 leçon a été complétée
   const streak = (() => {
     if (!completionLog || completionLog.length === 0) return 0
     const days = new Set<string>()
@@ -82,7 +82,7 @@ export default async function ProfilApprenantPage() {
     { id: 'streak3', emoji: '🔥', label: 'Streak 3 jours',      desc: '3 jours d\'apprentissage consécutifs', unlocked: streak >= 3 },
     { id: 'streak7', emoji: '⚡', label: 'Streak 7 jours',      desc: 'Une semaine de régularité !',          unlocked: streak >= 7 },
     { id: 'fifty',  emoji: '🌟', label: '50 leçons terminées',  desc: 'Sérieusement engagé',                  unlocked: totalLessonsDone >= 50 },
-    { id: 'all',    emoji: '👑', label: 'Toutes les formations',desc: 'Tu as tout terminé — bravo !',         unlocked: completed.length >= 16 },
+    { id: 'all',    emoji: '👑', label: 'Toutes les formations',desc: 'Tu as tout terminé, bravo !',         unlocked: completed.length >= 16 },
   ]
 
   return (

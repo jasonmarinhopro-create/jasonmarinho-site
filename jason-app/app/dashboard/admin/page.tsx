@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import AdminUI from './AdminUI'
 
-export const metadata = { title: 'Administration — Jason Marinho' }
+export const metadata = { title: 'Administration, Jason Marinho' }
 
 export default async function AdminPage() {
   const supabase = await createClient()
@@ -64,7 +64,7 @@ export default async function AdminPage() {
     supabase.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
   ])
 
-  // Formation la plus commencée — tri par count desc puis titre alphabétique
+  // Formation la plus commencée, tri par count desc puis titre alphabétique
   // (tiebreaker déterministe : sans ça, l'ordre des Object.values dépend de l'insertion).
   const formationCounts: Record<string, { title: string; count: number }> = {}
   for (const uf of formationEnrollments ?? []) {

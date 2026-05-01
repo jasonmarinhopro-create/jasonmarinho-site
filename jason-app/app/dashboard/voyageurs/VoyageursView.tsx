@@ -132,7 +132,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
     setFormError('')
 
     startTransition(async () => {
-      // Phase 7 — sécurité : si création, vérifier que email/tel ne sont pas signalés
+      // Phase 7, sécurité : si création, vérifier que email/tel ne sont pas signalés
       if (modal === 'add' && !allowDespiteSignal && (form.email?.trim() || form.telephone?.trim())) {
         const check = await checkVoyageurSignale({ email: form.email, telephone: form.telephone })
         if (check.signale) {
@@ -326,7 +326,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
             </div>
           )}
 
-          {/* List — vue Cards */}
+          {/* List, vue Cards */}
           {filtered.length > 0 && viewMode === 'cards' && (
             <div style={s.list} className="fade-up">
               {filtered.map(v => {
@@ -392,7 +392,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                       </div>
                     </div>
 
-                    {/* Stats — desktop only */}
+                    {/* Stats, desktop only */}
                     <div className="voy-stats" style={s.stats}>
                       <div style={s.statVal}>{v.sejours.length}</div>
                       <div style={s.statLabel}>séjour{v.sejours.length !== 1 ? 's' : ''}</div>
@@ -404,7 +404,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                       </div>
                     )}
 
-                    {/* Actions — desktop only */}
+                    {/* Actions, desktop only */}
                     <div className="voy-actions" style={s.rowActions} onClick={e => e.stopPropagation()}>
                       <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
                         <Note size={15} />
@@ -421,7 +421,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
             </div>
           )}
 
-          {/* List — vue Tableau */}
+          {/* List, vue Tableau */}
           {filtered.length > 0 && viewMode === 'table' && (
             <div style={s.tableWrap} className="fade-up">
               <table style={s.tableEl}>
@@ -450,10 +450,10 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                           </div>
                         </td>
                         <td style={{ ...s.tableTd, color: 'var(--text-2)' }}>
-                          {v.email || v.telephone || <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          {v.email || v.telephone || <span style={{ color: 'var(--text-muted)' }}>-</span>}
                         </td>
                         <td style={s.tableTdNum}>{v.sejours.length}</td>
-                        <td style={s.tableTdNum}>{ca > 0 ? `${ca.toLocaleString('fr-FR')} €` : '—'}</td>
+                        <td style={s.tableTdNum}>{ca > 0 ? `${ca.toLocaleString('fr-FR')} €` : '-'}</td>
                         <td style={s.tableTd}>
                           {v.tags && v.tags.length > 0 ? (
                             <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '4px' }}>
@@ -461,7 +461,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                                 <span key={t} style={s.tagChip}>{t}</span>
                               ))}
                             </div>
-                          ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          ) : <span style={{ color: 'var(--text-muted)' }}>-</span>}
                         </td>
                         <td style={s.tableTd}>
                           {v.is_flagged ? (
@@ -583,7 +583,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
 
               {formError && <p style={s.error}>{formError}</p>}
 
-              {/* Phase 7 — alerte si email/tel signalé par la communauté */}
+              {/* Phase 7, alerte si email/tel signalé par la communauté */}
               {signaleAlert && (
                 <div style={{
                   padding: '14px 16px',
@@ -802,7 +802,7 @@ const s: Record<string, React.CSSProperties> = {
   error: { fontSize: '13px', color: '#ef4444', margin: 0 },
   formActions: { display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '4px' },
 
-  // ─── Phase 2 — stats globales, filtres, vue tableau ─────────────
+  // ─── Phase 2, stats globales, filtres, vue tableau ─────────────
   statsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',

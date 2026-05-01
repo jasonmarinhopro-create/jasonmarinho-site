@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import FormationsAdmin from './FormationsAdmin'
 
-export const metadata = { title: 'Formations — Admin — Jason Marinho' }
+export const metadata = { title: 'Formations, Admin, Jason Marinho' }
 
 function getServiceClient() {
   return createServiceClient(

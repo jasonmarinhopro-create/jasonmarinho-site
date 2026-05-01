@@ -608,7 +608,7 @@ function TaxeSejour() {
 
       <div style={s.disclaimer}>
         <Info size={11} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
-        <span>Tarifs <strong>indicatifs 2025</strong>. Chaque mairie fixe son barème — vérifie sur le site officiel <em>impots.gouv.fr</em> ou ta mairie. La taxe départementale (10 %) est additionnée automatiquement.</span>
+        <span>Tarifs <strong>indicatifs 2025</strong>. Chaque mairie fixe son barème, vérifie sur le site officiel <em>impots.gouv.fr</em> ou ta mairie. La taxe départementale (10 %) est additionnée automatiquement.</span>
       </div>
     </div>
   )

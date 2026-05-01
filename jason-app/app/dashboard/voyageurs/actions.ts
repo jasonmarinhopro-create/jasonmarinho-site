@@ -10,7 +10,7 @@ export type VoyageurData = {
   telephone?: string
   notes?: string
 
-  // Phase 1 — enrichissement
+  // Phase 1, enrichissement
   tags?: string[]
   source?: string | null
   date_naissance?: string | null

@@ -367,7 +367,7 @@ export default function LogementsPage({ logements: initial }: Props) {
               Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>logements</em>
             </h1>
             <p style={pageSubtitle}>
-              Créez des fiches pour chacun de vos biens — elles pré-rempliront automatiquement les contrats.
+              Créez des fiches pour chacun de vos biens, elles pré-rempliront automatiquement les contrats.
             </p>
           </div>
           <button onClick={openCreate} style={addBtn}>
@@ -463,7 +463,7 @@ export default function LogementsPage({ logements: initial }: Props) {
             <House size={20} weight="fill" color="var(--accent-text)" />
             <div style={{ flex: 1 }}>
               <div style={singleHintTitle}>Découvre le dashboard de ton bien</div>
-              <div style={singleHintDesc}>Stats, prochains séjours, voyageurs récents, infos pratiques — tout est centralisé dans la fiche détaillée.</div>
+              <div style={singleHintDesc}>Stats, prochains séjours, voyageurs récents, infos pratiques, tout est centralisé dans la fiche détaillée.</div>
             </div>
             <ArrowRight size={14} weight="bold" color="var(--accent-text)" />
           </div>
@@ -528,11 +528,11 @@ export default function LogementsPage({ logements: initial }: Props) {
                       </div>
                     </td>
                     <td style={tableTd}>
-                      {l.type_logement ? TYPE_LOGEMENT_LABELS[l.type_logement] ?? l.type_logement : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                      {l.type_logement ? TYPE_LOGEMENT_LABELS[l.type_logement] ?? l.type_logement : <span style={{ color: 'var(--text-muted)' }}>-</span>}
                     </td>
                     <td style={{ ...tableTd, color: 'var(--text-2)' }}>{l.adresse}</td>
                     <td style={tableTdNum}>{l.capacite_max} pers.</td>
-                    <td style={tableTdNum}>{l.tarif_nuitee_moyen ? `${l.tarif_nuitee_moyen} €` : '—'}</td>
+                    <td style={tableTdNum}>{l.tarif_nuitee_moyen ? `${l.tarif_nuitee_moyen} €` : '-'}</td>
                     <td style={tableTd}>
                       {l.actif === false ? (
                         <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>En pause</span>
@@ -832,7 +832,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                             cursor: 'pointer', fontFamily: 'inherit',
                           }}
                         >
-                          {n === 0 ? '—' : '★'.repeat(n)}
+                          {n === 0 ? '-' : '★'.repeat(n)}
                         </button>
                       )
                     })}
@@ -857,7 +857,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                             cursor: 'pointer', fontFamily: 'inherit',
                           }}
                         >
-                          {d ?? '—'}
+                          {d ?? '-'}
                         </button>
                       )
                     })}
@@ -1090,7 +1090,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                   })}
                 </div>
                 <p style={{ margin: '6px 0 0', fontSize: '11px', color: 'var(--text-3)' }}>
-                  Sélectionnez tous les modes acceptés — ils seront proposés dans le contrat.
+                  Sélectionnez tous les modes acceptés, ils seront proposés dans le contrat.
                 </p>
               </div>
               {error && (
@@ -1449,7 +1449,7 @@ const sectionLabel: React.CSSProperties = {
   whiteSpace: 'nowrap',
 }
 
-// ─── Phase 3 — filtres, recherche, tableau ──────────────────────────────────
+// ─── Phase 3, filtres, recherche, tableau ──────────────────────────────────
 
 const filterBar: React.CSSProperties = {
   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -1632,7 +1632,7 @@ const tableThumb: React.CSSProperties = {
   flexShrink: 0,
 }
 
-// ─── Phase 5 — propriétaire styles ─────────────────────────────────────────────
+// ─── Phase 5, propriétaire styles ─────────────────────────────────────────────
 
 const proprietaireRow: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
@@ -1658,7 +1658,7 @@ const proprietaireText: React.CSSProperties = {
   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
 }
 
-// ─── Phase 1 — nouveaux styles ─────────────────────────────────────────────────
+// ─── Phase 1, nouveaux styles ─────────────────────────────────────────────────
 
 const cardCover: React.CSSProperties = {
   position: 'relative' as const,
@@ -1734,7 +1734,7 @@ const linkBtn: React.CSSProperties = {
   transition: 'all 0.15s',
 }
 
-// Modal — sections du formulaire enrichi
+// Modal, sections du formulaire enrichi
 const sectionTitle: React.CSSProperties = {
   fontSize: '12px', fontWeight: 700, letterSpacing: '0.4px',
   textTransform: 'uppercase' as const,

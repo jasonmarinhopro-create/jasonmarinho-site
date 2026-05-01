@@ -96,7 +96,7 @@ En dessous de ce seuil, tu travailles à perte. Peu importe ce que fait la concu
 
 Ton prix minimum est un **plancher interne**, pas le prix que tu affiches systématiquement.
 
-En haute saison, avec une forte demande, tu peux afficher 180 €, 220 € ou plus. La tarification dynamique s'occupe de maximiser le prix en fonction de la demande. Mais ton prix minimum, lui, reste fixe — c'est lui qui empêche l'algorithme de tarification dynamique de te pousser vers des prix non rentables la nuit avant une période creuse.
+En haute saison, avec une forte demande, tu peux afficher 180 €, 220 € ou plus. La tarification dynamique s'occupe de maximiser le prix en fonction de la demande. Mais ton prix minimum, lui, reste fixe, c'est lui qui empêche l'algorithme de tarification dynamique de te pousser vers des prix non rentables la nuit avant une période creuse.
 
 Configure ton **prix minimum dans les paramètres Airbnb** pour que jamais une nuit ne soit proposée en dessous de ce seuil, même si l'outil de tarification automatique le suggère.
 

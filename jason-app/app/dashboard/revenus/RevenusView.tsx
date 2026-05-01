@@ -352,7 +352,7 @@ export default function RevenusView({
     }
   }, [contracts, entries, thisMonth, thisYear, chargesStats.cesMois, chargesStats.cetteAnnee])
 
-  // ── Chart (Phase 3 — enrichi) ────────────────────────────────────
+  // ── Chart (Phase 3, enrichi) ────────────────────────────────────
   const [chartRange, setChartRange] = useState<'6m' | '12m' | 'year'>('6m')
 
   const chartData = useMemo(() => {
@@ -462,7 +462,7 @@ export default function RevenusView({
       .sort((a, b) => (b.encaisse + b.pending) - (a.encaisse + a.pending))
   }, [contracts, entries, charges, logements])
 
-  // ─── Phase 9 — Honoraires conciergerie ─────────────────────────
+  // ─── Phase 9, Honoraires conciergerie ─────────────────────────
   const honorairesStats = useMemo(() => {
     const items: Array<{ nom: string; logement_id: string | null; ca: number; pct: number; honoraires: number; netProprietaire: number }> = []
     let totalHonoraires = 0
@@ -514,7 +514,7 @@ export default function RevenusView({
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }, [contracts, entries])
 
-  // Phase 5 — search + sort
+  // Phase 5, search + sort
   const [txSearch, setTxSearch] = useState('')
   const [txSort, setTxSort] = useState<'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc'>('date-desc')
 
@@ -598,7 +598,7 @@ export default function RevenusView({
               <Upload size={20} weight="fill" color="var(--accent-text)" />
               <div style={s.onboardingStepBody}>
                 <div style={s.onboardingStepTitle}>Importer un CSV</div>
-                <div style={s.onboardingStepDesc}>Airbnb, Booking — ton historique en 30 secondes</div>
+                <div style={s.onboardingStepDesc}>Airbnb, Booking, ton historique en 30 secondes</div>
               </div>
               <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
             </button>
@@ -607,7 +607,7 @@ export default function RevenusView({
               <Plus size={20} weight="bold" color="var(--accent-text)" />
               <div style={s.onboardingStepBody}>
                 <div style={s.onboardingStepTitle}>Ajouter manuellement</div>
-                <div style={s.onboardingStepDesc}>Virement, espèces, chèque — saisie rapide</div>
+                <div style={s.onboardingStepDesc}>Virement, espèces, chèque, saisie rapide</div>
               </div>
               <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
             </button>
@@ -616,7 +616,7 @@ export default function RevenusView({
               <Receipt size={20} weight="fill" color="var(--accent-text)" />
               <div style={s.onboardingStepBody}>
                 <div style={s.onboardingStepTitle}>Saisir tes charges</div>
-                <div style={s.onboardingStepDesc}>Ménage, énergie, assurance — pour ton bénéfice net</div>
+                <div style={s.onboardingStepDesc}>Ménage, énergie, assurance, pour ton bénéfice net</div>
               </div>
               <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
             </button>
@@ -672,7 +672,7 @@ export default function RevenusView({
         />
       </div>
 
-      {/* Objectif annuel — bandeau jauge */}
+      {/* Objectif annuel, bandeau jauge */}
       <div style={s.objectifBanner}>
         {editingObjectif ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, width: '100%' }}>
@@ -900,7 +900,7 @@ export default function RevenusView({
         </section>
       </div>
 
-      {/* ── Phase 9 — Honoraires conciergerie ─────────────────────── */}
+      {/* ── Phase 9, Honoraires conciergerie ─────────────────────── */}
       {honorairesStats.items.length > 0 && (
         <section style={s.card}>
           <div style={s.journalHead}>
@@ -988,7 +988,7 @@ export default function RevenusView({
           <div>
             <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>Journal des paiements</h2>
             <p style={{ ...s.cardSub, margin: 0 }}>
-              Encaissements Stripe, virements, espèces — tout en un seul endroit
+              Encaissements Stripe, virements, espèces, tout en un seul endroit
             </p>
           </div>
           <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap' }}>
@@ -1137,7 +1137,7 @@ export default function RevenusView({
           <div style={{ position: 'relative' as const }}>
             <input
               type="text"
-              placeholder="Rechercher dans le journal — logement, voyageur…"
+              placeholder="Rechercher dans le journal, logement, voyageur…"
               value={txSearch}
               onChange={(e) => setTxSearch(e.target.value)}
               style={{
@@ -1221,7 +1221,7 @@ export default function RevenusView({
               Charges & dépenses
             </h2>
             <p style={{ ...s.cardSub, margin: 0 }}>
-              Ménage, énergie, commissions, taxes, assurance — pour calculer ton bénéfice net
+              Ménage, énergie, commissions, taxes, assurance, pour calculer ton bénéfice net
             </p>
           </div>
           <div style={{ display: 'flex', gap: '8px', flexShrink: 0, alignItems: 'center', flexWrap: 'wrap' as const }}>
@@ -1482,7 +1482,7 @@ const REGIMES = [
     seuil: '15 000 €',
     abattement: '30 %',
     forWho: 'Tu loues sur Airbnb ou Booking sans classement officiel, et tes revenus restent sous 15 000 €/an.',
-    avantage: 'Zéro compta — abattement automatique à la déclaration.',
+    avantage: 'Zéro compta, abattement automatique à la déclaration.',
     attention: 'Si tes charges réelles dépassent 30 % de tes loyers, le régime réel sera plus avantageux.',
   },
   {
@@ -1493,15 +1493,15 @@ const REGIMES = [
     bg: 'rgba(52,211,153,0.07)',
     border: 'rgba(52,211,153,0.2)',
     seuil: '83 600 €',
-    abattement: '50 % — 71 %',
+    abattement: '50 %, 71 %',
     forWho: 'Ton logement a obtenu un classement tourisme (étoiles) ou tu gères des chambres d\'hôtes.',
-    avantage: 'Abattement de 50 % (classé) ou 71 % (chambres d\'hôtes) — un classement peut diviser ta base imposable par deux.',
+    avantage: 'Abattement de 50 % (classé) ou 71 % (chambres d\'hôtes), un classement peut diviser ta base imposable par deux.',
     attention: 'Le classement implique une démarche officielle auprès d\'un organisme agréé.',
   },
   {
     key: 'reel',
     label: 'Régime réel',
-    sublabel: 'LMNP — toutes catégories',
+    sublabel: 'LMNP, toutes catégories',
     color: '#f59e0b',
     bg: 'rgba(245,158,11,0.07)',
     border: 'rgba(245,158,11,0.2)',
@@ -1540,7 +1540,7 @@ function nextFiscalDeadlines(): Array<{ label: string; date: string; description
     description: 'À reverser à ta mairie (si tu encaisses en direct)',
   })
 
-  // CFE — fin novembre
+  // CFE, fin novembre
   const cfeDate = new Date(year, 10, 30)
   if (cfeDate < today) cfeDate.setFullYear(year + 1)
   deadlines.push({
@@ -1583,7 +1583,7 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
     : (annuel > 77700) ? { label: 'Régime réel obligatoire', detail: 'Tu dépasses le plafond micro-BIC. Le régime réel est imposé.' }
     : (chargesAnnee >= annuel * 0.30 && chargesAnnee > 1000) ? {
         label: 'Régime réel recommandé',
-        detail: `Tes charges représentent ${Math.round(taux * 100)} % de ton CA — le réel sera plus avantageux que le micro-BIC.`,
+        detail: `Tes charges représentent ${Math.round(taux * 100)} % de ton CA, le réel sera plus avantageux que le micro-BIC.`,
       }
     : annuel > 15000
     ? { label: 'Micro-BIC classé recommandé', detail: 'Pense à faire classer ton meublé pour profiter du plafond 77 700 € + 71 % d\'abattement.' }
@@ -1613,7 +1613,7 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
         </button>
       </div>
 
-      {/* Seuils strip — always visible */}
+      {/* Seuils strip, always visible */}
       <div style={sf.seuilsStrip} className="fisc-seuils-strip">
         <SeuilPill label="Non classé" seuil="< 15 000 €" pct="30 %" color="#60a5fa" />
         <SeuilPill label="Classé ★"   seuil="< 83 600 €" pct="50 %" color="#34d399" />
@@ -1674,7 +1674,7 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
         </div>
       )}
 
-      {/* Calendrier fiscal — prochaines échéances */}
+      {/* Calendrier fiscal, prochaines échéances */}
       {deadlines.length > 0 && (
         <div style={sf.deadlinesBox}>
           <div style={sf.deadlinesHeader}>
@@ -1711,7 +1711,7 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
       {annuel >= 20000 && annuel < 25000 && (
         <div style={{ ...sf.alert, borderColor: 'rgba(251,146,60,0.3)', background: 'rgba(251,146,60,0.07)' }}>
           <Warning size={14} style={{ color: '#fb923c', flexShrink: 0 }} />
-          <span>Tes revenus approchent le seuil LMP (23 000 €). Si tes revenus locatifs dépassent 50 % de tes revenus du foyer, le passage au statut LMP est automatique — avec des cotisations sociales à la clé.</span>
+          <span>Tes revenus approchent le seuil LMP (23 000 €). Si tes revenus locatifs dépassent 50 % de tes revenus du foyer, le passage au statut LMP est automatique, avec des cotisations sociales à la clé.</span>
         </div>
       )}
 
@@ -1748,7 +1748,7 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
       <p style={sf.disclaimer} className="fisc-disclaimer">
         <Info size={12} style={{ flexShrink: 0, marginTop: '1px' }} />
         <span>
-          Guide informatif basé sur la réglementation en vigueur en 2026 —{' '}
+          Guide informatif basé sur la réglementation en vigueur en 2026 -{' '}
           <a href="https://www.service-public.fr/particuliers/vosdroits/F32744" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>service-public.fr</a>
           {', '}
           <a href="https://lmnp.ai/fiscalite-lmnp" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>lmnp.ai</a>.
@@ -1772,7 +1772,7 @@ function SeuilPill({ label, seuil, pct, color }: { label: string; seuil: string;
 const sf: Record<string, React.CSSProperties> = {
   wrap:        { background: 'var(--surface)', border: '1px solid var(--border-2)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' },
 
-  // ─── Phase 7 — jauges seuils, recommandation, calendrier fiscal ─
+  // ─── Phase 7, jauges seuils, recommandation, calendrier fiscal ─
   jaugesGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -1992,7 +1992,7 @@ const s: Record<string, React.CSSProperties> = {
 
   empty:    { fontSize: '14px', color: 'var(--text-muted)', textAlign: 'center', padding: '28px 0', margin: 0 },
 
-  // ─── Phase 8 — Objectif annuel ──────────────────────────────────
+  // ─── Phase 8, Objectif annuel ──────────────────────────────────
   objectifBanner: {
     background: 'var(--surface)',
     border: '1px solid var(--accent-border)',
@@ -2036,7 +2036,7 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', fontFamily: 'inherit',
   },
 
-  // ─── Phase 3 — Chart toggle ─────────────────────────────────────
+  // ─── Phase 3, Chart toggle ─────────────────────────────────────
   chartToggle: {
     display: 'inline-flex', gap: '2px',
     padding: '3px',
@@ -2060,7 +2060,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--accent-text)',
   },
 
-  // ─── Phase 4 — Charges & dépenses ──────────────────────────────
+  // ─── Phase 4, Charges & dépenses ──────────────────────────────
   chargesCatGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -2104,7 +2104,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text-muted)',
   },
 
-  // ─── Phase 1 — Onboarding empty state ──────────────────────────
+  // ─── Phase 1, Onboarding empty state ──────────────────────────
   onboardingCard: {
     background: 'var(--surface)',
     border: '1px solid var(--accent-border)',

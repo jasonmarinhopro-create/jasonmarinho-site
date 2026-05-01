@@ -1,7 +1,7 @@
 export const ECRIRE_AVIS_FORMATION = {
   slug: 'ecrire-avis-repondre-voyageurs',
   title: 'Écrire des avis et répondre aux voyageurs',
-  description: 'Les avis sont le moteur n°1 de vos réservations. Apprenez à les collecter, à rédiger les vôtres, à répondre aux négatifs sans jamais perdre de clients — et à transformer chaque commentaire en levier de croissance.',
+  description: 'Les avis sont le moteur n°1 de vos réservations. Apprenez à les collecter, à rédiger les vôtres, à répondre aux négatifs sans jamais perdre de clients, et à transformer chaque commentaire en levier de croissance.',
   duration: '2h00',
   level: 'Débutant',
   objectifs: [
@@ -101,7 +101,7 @@ Airbnb note les hôtes sur 6 dimensions :
     avant et pendant le séjour.
 
 04. EMPLACEMENT
-    Difficile à améliorer — mais la
+    Difficile à améliorer, mais la
     description doit être honnête.
 
 05. ARRIVÉE
@@ -135,7 +135,7 @@ Sur Booking :
   après la publication de l'avis voyageur.
 
 Sur Google My Business :
-→ Pas de délai — les avis peuvent
+→ Pas de délai, les avis peuvent
   être laissés à tout moment.
 → Tu peux répondre à tout moment.
 
@@ -148,7 +148,7 @@ Sur Google My Business :
 
 
 ## Exercice
-**Exercice pratique :** Regarde maintenant les 6 critères de ta dernière période de réservations sur Airbnb. Quel est ton critère le plus faible ? C'est là que tu dois concentrer tes efforts en premier — pas sur ce qui va déjà bien.
+**Exercice pratique :** Regarde maintenant les 6 critères de ta dernière période de réservations sur Airbnb. Quel est ton critère le plus faible ? C'est là que tu dois concentrer tes efforts en premier, pas sur ce qui va déjà bien.
 
 ---`,
         },
@@ -161,7 +161,7 @@ Sur Google My Business :
 MODULE 1 · LEÇON 2
 ────────────────────────────────────
 Collecter plus d'avis
-Les méthodes qui fonctionnent — et celles qui sont interdites
+Les méthodes qui fonctionnent, et celles qui sont interdites
 ────────────────────────────────────
 
 ---
@@ -194,28 +194,28 @@ retrait de l'avis et de votre réponse.
 ---
 
 ## Les méthodes légitimes et efficaces
-MÉTHODE 1 — La demande dans le message de check-out
+MÉTHODE 1, La demande dans le message de check-out
 Le moment le plus naturel.
 "Si vous avez passé un bon moment,
 un avis nous ferait vraiment plaisir."
 → Simple, dans le contexte du départ,
   sans pression.
 
-MÉTHODE 2 — Le QR code dans le logement
+MÉTHODE 2, Le QR code dans le logement
 Un cadre encadré, posé sur la table :
 "Vous avez aimé votre séjour ?
 Laissez-nous un avis Google 👇"
 + QR code vers votre fiche GMB.
 → Discret, efficace, disponible 24h/24.
 
-MÉTHODE 3 — Laisser votre avis en premier
+MÉTHODE 3, Laisser votre avis en premier
 Sur Airbnb, dès que vous laissez
 votre avis sur le voyageur,
 il reçoit une notification.
 → La réciprocité joue : 
   ils pensent à laisser le leur.
 
-MÉTHODE 4 — Le message J+1
+MÉTHODE 4, Le message J+1
 Un message le lendemain du départ,
 chaleureux, qui glisse la demande
 naturellement sans en faire l'objet principal.
@@ -316,20 +316,20 @@ n'aide personne.
 "[Prénom] a communiqué rapidement,
 respecté le logement et rendu les lieux
 propres à son départ. Aucune question
-pendant le séjour — on recommande !"
+pendant le séjour, on recommande !"
 → Utile.
 
 ---
 
 ## La structure d'un avis positif efficace en 3 parties
-PARTIE 1 — L'identité du séjour (1 phrase)
+PARTIE 1, L'identité du séjour (1 phrase)
 Contexte qui personnalise l'avis :
 "[Prénom] est venu(e) pour [raison
-implicite — weekend, déplacement pro...]"
+implicite, weekend, déplacement pro...]"
 ou juste "[Prénom] a séjourné [X nuits]
 dans notre logement."
 
-PARTIE 2 — Les points forts concrets (2-3 phrases)
+PARTIE 2, Les points forts concrets (2-3 phrases)
 Pas de généralités : des faits observables.
 → Communication : réactivité, clarté
 → Comportement : respect du règlement,
@@ -338,7 +338,7 @@ Pas de généralités : des faits observables.
 → Respect des horaires
 → Discrétion, absence de nuisance
 
-PARTIE 3 — La recommandation (1 phrase)
+PARTIE 3, La recommandation (1 phrase)
 "Nous recommandons [Prénom] sans hésitation
 à tous les hôtes."
 ou
@@ -360,7 +360,7 @@ On l'accueillerait sans hésitation."
 ✅ BON AVIS POSITIF (court)
 
 "Thomas a été discret, propre et ponctuel.
-RAS de notre côté — on recommande."
+RAS de notre côté, on recommande."
 
 ❌ MAUVAIS AVIS (trop vague)
 
@@ -398,7 +398,7 @@ Règle générale :
 
 
 ## Exercice
-**Exercice pratique :** Pense à ton dernier bon voyageur. Rédige son avis maintenant en 3 phrases en suivant la structure de la slide 3. Si le délai de 14 jours n'est pas dépassé, publie-le. Sinon, conserve ce template — tu t'en serviras pour le prochain.
+**Exercice pratique :** Pense à ton dernier bon voyageur. Rédige son avis maintenant en 3 phrases en suivant la structure de la slide 3. Si le délai de 14 jours n'est pas dépassé, publie-le. Sinon, conserve ce template, tu t'en serviras pour le prochain.
 
 ---`,
         },
@@ -468,18 +468,18 @@ pas ce voyageur."
 ---
 
 ## Structure d'un avis négatif professionnel
-PARTIE 1 — Constat factuel (1-2 phrases)
+PARTIE 1, Constat factuel (1-2 phrases)
 Décrivez ce qui s'est passé,
 sans interprétation ni jugement de valeur.
 → "Le logement a été rendu avec [constat précis]."
 → "Le règlement intérieur n'a pas été respecté
   concernant [point précis]."
 
-PARTIE 2 — Impact si pertinent (1 phrase, optionnel)
+PARTIE 2, Impact si pertinent (1 phrase, optionnel)
 "Cela a nécessité [réparation / nettoyage
 supplémentaire / intervention d'urgence]."
 
-PARTIE 3 — Conclusion (1 phrase)
+PARTIE 3, Conclusion (1 phrase)
 Directe et sans ambiguïté :
 "Nous ne recommandons pas ce voyageur."
 ou
@@ -573,12 +573,12 @@ de votre façon de gérer les problèmes.
 ---
 
 ## Les 3 types d'avis négatifs
-TYPE 1 — L'AVIS LÉGITIME
+TYPE 1, L'AVIS LÉGITIME
 Le voyageur a vécu quelque chose
 de réel et le décrit honnêtement.
 → Reconnaître, s'améliorer, le montrer.
 
-TYPE 2 — L'AVIS EXCESSIF
+TYPE 2, L'AVIS EXCESSIF
 Le problème était réel mais mineur.
 Le voyageur a sur-réagi ou est
 intrinsèquement difficile à satisfaire.
@@ -586,7 +586,7 @@ intrinsèquement difficile à satisfaire.
   les choses dans leur contexte.
   Sans agressivité.
 
-TYPE 3 — L'AVIS INJUSTE OU DE MAUVAISE FOI
+TYPE 3, L'AVIS INJUSTE OU DE MAUVAISE FOI
 Informations fausses, harcèlement,
 voyageur qui cherche un remboursement.
 → Répondre factuellement + signaler
@@ -633,7 +633,7 @@ Recommandation :
   (pour éviter la réponse à chaud).
 → Ne dépasse pas 5-7 jours.
 → Un avis sans réponse après une semaine
-  semble ignoré — message négatif
+  semble ignoré, message négatif
   pour les futurs voyageurs.
 
 Sur Booking :
@@ -669,13 +669,13 @@ La structure d'une réponse parfaite
 ---
 
 ## La structure en 4 étapes
-ÉTAPE 1 — REMERCIER (1 phrase)
+ÉTAPE 1, REMERCIER (1 phrase)
 Toujours. Même si ça fait mal.
 "Merci pour votre retour."
 → Montre que vous prenez les avis
   au sérieux, pas seulement les positifs.
 
-ÉTAPE 2 — RECONNAÎTRE (1-2 phrases)
+ÉTAPE 2, RECONNAÎTRE (1-2 phrases)
 Reconnaître le ressenti,
 même si vous n'êtes pas entièrement d'accord.
 "Nous comprenons que [X] n'a pas
@@ -683,14 +683,14 @@ correspondu à vos attentes."
 → Ne pas confondre reconnaître et admettre
   une faute que vous n'avez pas commise.
 
-ÉTAPE 3 — AGIR OU EXPLIQUER (1-2 phrases)
+ÉTAPE 3, AGIR OU EXPLIQUER (1-2 phrases)
 Ce que vous avez fait ou allez faire.
 "Depuis ce séjour, nous avons [action concrète]."
 ou
 "Pour information, [élément de contexte
 factuel qui éclaire la situation]."
 
-ÉTAPE 4 — CONCLURE POSITIVEMENT (1 phrase)
+ÉTAPE 4, CONCLURE POSITIVEMENT (1 phrase)
 "Nous espérons pouvoir vous accueillir
 à nouveau dans de meilleures conditions."
 ou simplement :
@@ -701,7 +701,7 @@ l'expérience de nos futurs voyageurs."
 
 ## Exemple : avis légitime
 AVIS REÇU :
-"La salle de bain était décevante —
+"La salle de bain était décevante -
  joint de douche à refaire, robinet
  qui gouttait. Dommage car le reste
  était très bien."
@@ -713,7 +713,7 @@ sont toujours vérifiés entre chaque séjour."
 BONNE RÉPONSE :
 "Merci pour votre retour honnête.
 Vous avez tout à fait raison concernant
-la salle de bain — ces défauts avaient
+la salle de bain, ces défauts avaient
 été signalés mais pas encore traités.
 Les réparations ont été effectuées
 dans la semaine suivant votre séjour.
@@ -745,7 +745,7 @@ que les nuisances sonores du quartier
 aient perturbé vos nuits.
 L'emplacement de notre logement,
 au cœur du quartier festif, est mentionné
-dans notre annonce — nous y ajouterons
+dans notre annonce, nous y ajouterons
 une mention plus explicite sur l'animation
 nocturne pour mieux informer
 les futurs voyageurs.
@@ -775,7 +775,7 @@ avons les photos pour le prouver."
 BONNE RÉPONSE :
 "Merci pour votre retour.
 Le lave-vaisselle était en bon état
-lors de votre séjour — aucun incident
+lors de votre séjour, aucun incident
 ne nous a été signalé pendant ou après.
 Le thermostat était réglé à 19°C
 conformément à nos paramètres habituels ;
@@ -805,7 +805,7 @@ de la plateforme pour tout justificatif."
 MODULE 3 · LEÇON 3
 ────────────────────────────────────
 Contester un avis injuste
-Quand c'est possible — et comment s'y prendre
+Quand c'est possible, et comment s'y prendre
 ────────────────────────────────────
 
 ---
@@ -976,19 +976,19 @@ mais cachent des attentes non comblées.
 Après avoir analysé vos avis,
 classez les améliorations en 3 niveaux :
 
-NIVEAU 1 — QUICK WINS (< 50€, 1 journée)
+NIVEAU 1, QUICK WINS (< 50€, 1 journée)
 → Remplacer un équipement défaillant
 → Acheter des protège-oreilles
 → Améliorer la signalétique
 → Ajouter une lampe dans un coin sombre
 
-NIVEAU 2 — AMÉLIORATIONS MOYEN TERME (50-500€)
+NIVEAU 2, AMÉLIORATIONS MOYEN TERME (50-500€)
 → Changer un matelas
 → Acheter une meilleure cafetière
 → Améliorer la connexion Wi-Fi
 → Ajouter un équipement manquant
 
-NIVEAU 3 — INVESTISSEMENTS LOURDS (> 500€)
+NIVEAU 3, INVESTISSEMENTS LOURDS (> 500€)
 → Rénovation partielle
 → Isolation phonique
 → Changement de mobilier majeur
@@ -1057,7 +1057,7 @@ EXEMPLES :
 
 "Merci beaucoup [Prénom] !
 Votre mention sur la propreté
-nous touche particulièrement —
+nous touche particulièrement -
 c'est notre priorité absolue.
 Au plaisir de vous revoir !"
 
@@ -1177,12 +1177,12 @@ exclusivement sur Airbnb.
 
 La note Google est pourtant visible
 par n'importe qui sur n'importe quel
-moteur de recherche — sans réservation.
+moteur de recherche, sans réservation.
 
 Un futur propriétaire qui cherche
 une conciergerie, un voyageur qui
 hésite entre deux logements,
-un journaliste local —
+un journaliste local -
 tous passent par Google.
 
 Pour développer ta note Google :

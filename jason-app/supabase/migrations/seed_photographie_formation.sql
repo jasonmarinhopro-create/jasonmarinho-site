@@ -16,7 +16,7 @@ INSERT INTO public.formations (
 ) VALUES (
   'photographie-lcd-smartphone',
   'Faire des photos qui font cliquer : la photographie LCD au smartphone',
-  'Les photos décident à elles seules de 60 % du clic et 40 % du prix qu''un voyageur est prêt à payer. Cette formation t''apprend à transformer ton annonce en quelques heures, avec ton seul smartphone — composition, lumière, mise en scène, retouche, mise en ligne. Aucun matériel pro requis.',
+  'Les photos décident à elles seules de 60 % du clic et 40 % du prix qu''un voyageur est prêt à payer. Cette formation t''apprend à transformer ton annonce en quelques heures, avec ton seul smartphone, composition, lumière, mise en scène, retouche, mise en ligne. Aucun matériel pro requis.',
   '2h30',
   6,
   19,

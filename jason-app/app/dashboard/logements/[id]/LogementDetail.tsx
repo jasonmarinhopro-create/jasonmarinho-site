@@ -321,7 +321,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount }:
             </>
           ) : (
             <>
-              <div style={{ ...s.statValue, color: 'var(--text-muted)' }}>—</div>
+              <div style={{ ...s.statValue, color: 'var(--text-muted)' }}>-</div>
               <div style={s.statLabel}>Aucun séjour à venir</div>
             </>
           )}

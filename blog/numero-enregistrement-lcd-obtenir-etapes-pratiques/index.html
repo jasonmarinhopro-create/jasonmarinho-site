@@ -230,7 +230,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-lead">À partir du 20 mai 2026, tout hôte qui loue en LCD en France doit avoir un numéro d'enregistrement national. Sans lui, tes annonces seront retirées des plateformes. Voici la procédure complète en 8 étapes pour l'obtenir avant la deadline, avec les pièges à éviter.</p>
 <h2 class="art-h2">1. Avant de commencer : les 4 documents à préparer</h2>
 <p class="art-p">Avant de te connecter au téléservice, rassemble ces documents. Les avoir prêts évite de devoir interrompre la procédure et la reprendre.</p>
-<ul class="art-ul"><li>DPE en cours de validité (< 10 ans) — classe ≥ E pour les nouvelles autorisations 2026</li><li>Justificatif de propriété (acte de vente) ou d'autorisation du propriétaire (mandat de gestion si tu n'es pas propriétaire)</li><li>Attestation de déclaration en mairie (formulaire Cerfa 14004) si commune en zone tendue</li><li>SIRET si tu as une activité déclarée. Sinon, tu seras enregistré comme particulier</li></ul>
+<ul class="art-ul"><li>DPE en cours de validité (< 10 ans), classe ≥ E pour les nouvelles autorisations 2026</li><li>Justificatif de propriété (acte de vente) ou d'autorisation du propriétaire (mandat de gestion si tu n'es pas propriétaire)</li><li>Attestation de déclaration en mairie (formulaire Cerfa 14004) si commune en zone tendue</li><li>SIRET si tu as une activité déclarée. Sinon, tu seras enregistré comme particulier</li></ul>
 <h2 class="art-h2">2. Les 8 étapes de la procédure</h2>
 <ul class="art-ul"><li>1. Se connecter à service-public.fr → rubrique "Meublés de tourisme" → "Demander un numéro d'enregistrement"</li><li>2. Créer ou se connecter à son compte FranceConnect</li><li>3. Saisir les coordonnées du propriétaire (nom, adresse, email, téléphone)</li><li>4. Saisir l'adresse exacte du logement (le système vérifie via Google Maps)</li><li>5. Indiquer le type de logement (résidence principale partielle ou meublé de tourisme dédié)</li><li>6. Uploader le DPE en PDF</li><li>7. Fournir le numéro de SIRET si professionnel + justificatifs</li><li>8. Recevoir le numéro d'enregistrement par email (généralement sous 5-10 jours)</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Le numéro d'enregistrement a la forme XXXXX-XXXXX (chiffres + lettres). Note-le précieusement, tu vas devoir le saisir sur Airbnb, Booking et toutes tes annonces (champ "Informations réglementaires").</span></div>
@@ -239,7 +239,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <ul class="art-ul"><li>Idéal : démarche faite dès que tu as ton DPE, même 6 mois avant la deadline</li><li>Limite : faire la démarche au plus tard fin avril 2026 pour avoir ton numéro avant le 20 mai</li><li>Si en retard : tu risques le retrait automatique de tes annonces dès le 21 mai. Pas de période de grâce annoncée par les plateformes</li></ul>
 <h2 class="art-h2">4. Erreurs fréquentes qui bloquent la procédure</h2>
 <p class="art-p">Sur les premières démarches déposées en 2025, voici les motifs de blocage les plus fréquents.</p>
-<ul class="art-ul"><li>DPE expiré (> 10 ans) — refait obligatoirement avant de pouvoir continuer</li><li>Adresse mal saisie (différente de Google Maps) — erreur 404 du téléservice, à corriger manuellement</li><li>Absence de déclaration mairie pour communes en zone tendue (>200 villes en France) — démarche complémentaire à faire</li><li>Confusion résidence principale partielle vs meublé de tourisme dédié — affecte tes plafonds annuels</li><li>Tentative depuis un compte FranceConnect d'un proche — refusé, doit être au nom du propriétaire</li></ul>
+<ul class="art-ul"><li>DPE expiré (> 10 ans), refait obligatoirement avant de pouvoir continuer</li><li>Adresse mal saisie (différente de Google Maps), erreur 404 du téléservice, à corriger manuellement</li><li>Absence de déclaration mairie pour communes en zone tendue (>200 villes en France), démarche complémentaire à faire</li><li>Confusion résidence principale partielle vs meublé de tourisme dédié, affecte tes plafonds annuels</li><li>Tentative depuis un compte FranceConnect d'un proche, refusé, doit être au nom du propriétaire</li></ul>
 <div class="art-cta-box"><p>Tu veux être conforme à toutes les obligations LCD 2026 sans stress ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
 
@@ -295,14 +295,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

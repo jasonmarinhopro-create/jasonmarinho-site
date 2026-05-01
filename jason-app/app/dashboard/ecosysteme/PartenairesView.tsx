@@ -70,10 +70,10 @@ export default function PartenairesView({
     })
   }
 
-  // Outils avec partenariat (discount) — affichés en haut
+  // Outils avec partenariat (discount), affichés en haut
   const partnered = ECOSYSTEME_TOOLS.filter(t => t.partnership === 'discount')
 
-  // Outils sans partenariat — affichés par catégorie dans le catalogue
+  // Outils sans partenariat, affichés par catégorie dans le catalogue
   const catalog = ECOSYSTEME_TOOLS.filter(t => t.partnership === 'none')
   const filteredCatalog = activeCategory
     ? catalog.filter(t => t.category === activeCategory)
@@ -95,7 +95,7 @@ export default function PartenairesView({
         </h2>
         <p style={styles.pageDesc}>
           Tous les services, partenaires et acteurs qui font vivre ta location courte durée.
-          Avec partenariats négociés mis en avant quand ils existent — sinon liens directs vers les outils du marché.
+          Avec partenariats négociés mis en avant quand ils existent, sinon liens directs vers les outils du marché.
         </p>
       </div>
 
@@ -217,7 +217,7 @@ export default function PartenairesView({
                   )}
                   {p.promo_code && isDecouverte && (
                     <a href="/dashboard/abonnement" style={styles.promoLocked}>
-                      🔒 Code promo — Standard
+                      🔒 Code promo, Standard
                     </a>
                   )}
                 </div>
@@ -238,7 +238,7 @@ export default function PartenairesView({
           <span style={styles.sectionCount}>{catalog.length}</span>
         </div>
         <p style={styles.catalogDesc}>
-          Les outils les plus utilisés du marché — sans partenariat négocié à ce jour.
+          Les outils les plus utilisés du marché, sans partenariat négocié à ce jour.
           Si tu en utilises un, n&apos;hésite pas à nous le faire savoir pour qu&apos;on cherche à négocier.
         </p>
 
@@ -405,7 +405,7 @@ export default function PartenairesView({
                 Tu utilises un outil pas listé ici ?
               </h3>
               <p style={styles.suggestDesc}>
-                Dis-nous lequel — on l&apos;ajoutera au catalogue et on cherchera à négocier
+                Dis-nous lequel, on l&apos;ajoutera au catalogue et on cherchera à négocier
                 un partenariat si beaucoup de membres le demandent.
               </p>
             </div>

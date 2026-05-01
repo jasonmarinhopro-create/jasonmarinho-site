@@ -19,7 +19,7 @@ export default function FormationsSuggestForm() {
       const res = await saveSuggestion('formation', topic)
       if (res.error) {
         setError(res.error.includes('TABLE_MISSING') || res.error.includes('pas encore configurée')
-          ? '⚠️ Base non configurée — exécute supabase-migration.sql dans Supabase.'
+          ? '⚠️ Base non configurée, exécute supabase-migration.sql dans Supabase.'
           : res.error)
         return
       }

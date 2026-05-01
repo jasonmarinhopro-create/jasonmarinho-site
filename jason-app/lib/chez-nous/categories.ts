@@ -14,7 +14,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
   bienvenue: {
     id: 'bienvenue', label: 'Bienvenue', short: 'Bienvenue', emoji: '👋',
     color: '#34d399', bg: 'rgba(52,211,153,0.14)',
-    description: 'Présente-toi en 2 lignes — qui tu es, où, depuis combien de temps',
+    description: 'Présente-toi en 2 lignes, qui tu es, où, depuis combien de temps',
   },
   reglementation: {
     id: 'reglementation', label: 'Réglementation & Fiscal', short: 'Régl. & Fiscal', emoji: '⚖️',

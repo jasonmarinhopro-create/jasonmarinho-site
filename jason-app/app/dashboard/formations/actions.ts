@@ -20,7 +20,7 @@ export async function enrollInFormation(formationId: string) {
   return { success: true }
 }
 
-// ─── Phase 2 — Notes personnelles par leçon ────────────────────
+// ─── Phase 2, Notes personnelles par leçon ────────────────────
 
 export async function saveLessonNote(input: {
   formationId: string
@@ -64,7 +64,7 @@ export async function getLessonNotes(formationId: string): Promise<Record<string
   return out
 }
 
-// ─── Phase 3 — Favoris/bookmarks par leçon ─────────────────────
+// ─── Phase 3, Favoris/bookmarks par leçon ─────────────────────
 
 export async function toggleLessonBookmark(input: {
   formationId: string
@@ -122,7 +122,7 @@ export async function getLessonBookmarks(formationId: string): Promise<number[]>
   return (data ?? []).map((b: any) => b.lesson_id as number)
 }
 
-// ─── Phase 7 — Notation par leçon (utile / pas utile) ─────────
+// ─── Phase 7, Notation par leçon (utile / pas utile) ─────────
 
 export async function voteLesson(input: {
   formationId: string
@@ -159,7 +159,7 @@ export async function voteLesson(input: {
   return {}
 }
 
-// ─── Phase 8 — Q&A et commentaires par leçon ─────────────────
+// ─── Phase 8, Q&A et commentaires par leçon ─────────────────
 
 export async function postLessonComment(input: {
   formationId: string
@@ -229,7 +229,7 @@ export async function listLessonComments(formationId: string, lessonId: number):
   return { comments: data ?? [] }
 }
 
-// ─── Phase 7 — Avis public par formation ──────────────────────
+// ─── Phase 7, Avis public par formation ──────────────────────
 
 export async function submitFormationReview(input: {
   formationId: string
@@ -267,7 +267,7 @@ export async function updateFormationProgress(
   formationId: string,
   progress: number,
   completedLessons?: number[],
-  newlyCompletedLessonId?: number, // Phase 6 — pour logger la date dans completion_log
+  newlyCompletedLessonId?: number, // Phase 6, pour logger la date dans completion_log
 ) {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
@@ -288,7 +288,7 @@ export async function updateFormationProgress(
 
   if (error) return { error: error.message }
 
-  // Phase 6 — Logger la complétion pour le streak/historique
+  // Phase 6, Logger la complétion pour le streak/historique
   if (newlyCompletedLessonId !== undefined) {
     await supabase
       .from('user_lesson_completion_log')

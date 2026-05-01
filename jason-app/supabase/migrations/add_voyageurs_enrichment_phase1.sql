@@ -1,8 +1,8 @@
--- Phase 1 — Enrichissement de la fiche voyageur
+-- Phase 1, Enrichissement de la fiche voyageur
 -- Transforme un répertoire passif en mini-CRM hôtelier :
 -- tags, source, fiscalité (date naissance, nationalité), vérification ID, statut, blocage, préférences
 --
--- Toutes les colonnes sont optionnelles (NULL/default) — aucun breaking change
+-- Toutes les colonnes sont optionnelles (NULL/default), aucun breaking change
 
 ALTER TABLE voyageurs
   -- ─── Tags & catégorisation ──────────────────────────────────────

@@ -172,7 +172,7 @@ export default function CommunauteView({
       ? SUPER_CATEGORIES.find(c => c.id === activeCategory)?.tags ?? []
       : []
     return groups.filter(g => {
-      // Facebook only — les groupes WhatsApp ne sont plus affichés
+      // Facebook only, les groupes WhatsApp ne sont plus affichés
       if (g.platform !== 'facebook') return false
       if (!showDismissed && memberships[g.id] === 'dismissed') return false
       if (activeRegion && !parseTags(g.tag).includes(activeRegion)) return false
@@ -321,11 +321,11 @@ export default function CommunauteView({
         </h2>
         <p style={s.pageDesc}>
           Étends ta visibilité commerciale en rejoignant les groupes où voyagent tes futurs clients.
-          Rejoins-en quelques-uns ciblés pour démultiplier ta portée — sans effort.
+          Rejoins-en quelques-uns ciblés pour démultiplier ta portée, sans effort.
         </p>
       </div>
 
-      {/* Stats banner — toujours visible */}
+      {/* Stats banner, toujours visible */}
       <div style={s.banner} className="fade-up">
         <div style={s.bannerStat}>
           <WifiHigh size={20} color="#15803d" weight="fill" />
@@ -365,7 +365,7 @@ export default function CommunauteView({
         )}
       </div>
 
-      {/* Communauté Driing — accordéon discret en haut */}
+      {/* Communauté Driing, accordéon discret en haut */}
       {featuredGroups.length > 0 && (
         <div style={s.driingWrap} className="fade-up">
           <button
@@ -413,7 +413,7 @@ export default function CommunauteView({
               {isRegionalReco
                 ? 'Détectés depuis l\'adresse de tes logements'
                 : detectedRegions.size > 0
-                ? `Aucun groupe pour ${Array.from(detectedRegions)[0]} pour le moment — voici les top groupes les plus suivis`
+                ? `Aucun groupe pour ${Array.from(detectedRegions)[0]} pour le moment, voici les top groupes les plus suivis`
                 : 'Les groupes les plus suivis que tu n\'as pas encore rejoints'
               }
             </span>
@@ -462,7 +462,7 @@ export default function CommunauteView({
           </div>
         </div>
 
-        {/* Sous-filtre régions — visible seulement quand "Régions" est sélectionné */}
+        {/* Sous-filtre régions, visible seulement quand "Régions" est sélectionné */}
         {activeCategory === 'regions' && availableRegions.length > 0 && (
           <div style={s.filterLine} className="communaute-filter-line">
             <span style={{ ...s.filterLbl, color: 'var(--text-muted)' }} className="filter-lbl">Région</span>

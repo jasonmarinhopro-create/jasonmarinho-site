@@ -203,7 +203,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
           ) : (
             <button disabled={isPending} onClick={handleDeleteAllBots} style={s.deleteBotsBtn}>
               <Robot size={13} />
-              {totalBots} bots suspects — nettoyer
+              {totalBots} bots suspects, nettoyer
             </button>
           )
         )}
@@ -378,7 +378,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
           <span style={s.joinDate}>Inscrit le {formatDate(m.created_at)}</span>
         </div>
 
-        {/* Plan badge — top right */}
+        {/* Plan badge, top right */}
         <div style={{ ...s.planBadge, background: planBg, color: planColor, border: `1px solid ${planBorder}` }}>
           {isAdmin ? <Crown size={11} weight="fill" /> : isDriing ? <Star size={11} weight="fill" /> : null}
           {planLabel}
@@ -560,7 +560,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                   <span style={{ ...ps.bigAvatarText, color: pal.text }}>{ini}</span>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={ps.memberName}>{member.full_name || '—'}</div>
+                  <div style={ps.memberName}>{member.full_name || '-'}</div>
                   <div style={ps.memberEmail}>{member.email}</div>
                   <div style={{ display: 'flex', gap: '6px', marginTop: '8px', flexWrap: 'wrap' }}>
                     <span style={{ ...ps.planPill, background: planCfg.bg, color: planCfg.color }}>

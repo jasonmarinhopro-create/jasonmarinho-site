@@ -9,7 +9,7 @@ description: "Les télétravailleurs et nomades digitaux sont la clientèle LCD 
 
 # Télétravail et LCD : comment attirer les nomades digitaux dans ton logement
 
-Depuis l'explosion du télétravail, un nouveau profil de voyageur s'est imposé en location courte durée : le nomade digital. Il ne part pas en vacances — il travaille depuis un endroit différent, quelques semaines ou quelques mois, tout en maintenant son rythme professionnel.
+Depuis l'explosion du télétravail, un nouveau profil de voyageur s'est imposé en location courte durée : le nomade digital. Il ne part pas en vacances, il travaille depuis un endroit différent, quelques semaines ou quelques mois, tout en maintenant son rythme professionnel.
 
 Ce profil est idéal pour les hôtes LCD : les séjours sont longs, les voyageurs sont calmes, ils respectent les logements et repartent souvent avec un excellent avis. En basse saison, ils peuvent littéralement sauver ton taux d'occupation.
 
@@ -21,12 +21,12 @@ Voici comment les attirer et les fidéliser.
 
 Contrairement au touriste qui cherche une expérience, le télétravailleurs cherche d'abord **un environnement de travail fonctionnel**. Ses priorités sont différentes :
 
-1. **Internet rapide et fiable** — c'est la condition non négociable numéro 1
-2. **Un espace de travail dédié** — un bureau, une chaise confortable, de la lumière
-3. **Un logement calme** — pas de voisins bruyants, pas de chambre côté rue passante
-4. **Une cuisine équipée** — il mange souvent chez lui le midi
-5. **Une machine à laver** — pour les séjours de plus de 2 semaines, c'est indispensable
-6. **La flexibilité des horaires** — check-in et check-out adaptables
+1. **Internet rapide et fiable**, c'est la condition non négociable numéro 1
+2. **Un espace de travail dédié**, un bureau, une chaise confortable, de la lumière
+3. **Un logement calme**, pas de voisins bruyants, pas de chambre côté rue passante
+4. **Une cuisine équipée**, il mange souvent chez lui le midi
+5. **Une machine à laver**, pour les séjours de plus de 2 semaines, c'est indispensable
+6. **La flexibilité des horaires**, check-in et check-out adaptables
 
 Ce qu'il regarde moins : la décoration, la vue, la proximité des attractions touristiques.
 
@@ -34,12 +34,12 @@ Ce qu'il regarde moins : la décoration, la vue, la proximité des attractions t
 
 ## Les 5 équipements qui font la différence
 
-### 1. Le Wi-Fi — teste et affiche ton débit réel
+### 1. Le Wi-Fi, teste et affiche ton débit réel
 Ne te contente pas d'écrire "Wi-Fi inclus" dans ton annonce. Les télétravailleurs le savent : Wi-Fi inclus peut vouloir dire 5 Mbps partagés avec tout l'immeuble.
 
 Ce qu'il faut faire :
 - Mesure ton débit avec Speedtest.net (teste en download ET upload)
-- Affiche le résultat exact dans ta description : "Fibre optique 500 Mbps/200 Mbps — testé et vérifié"
+- Affiche le résultat exact dans ta description : "Fibre optique 500 Mbps/200 Mbps, testé et vérifié"
 - Si possible, installe un routeur Wi-Fi dédié au logement (TP-Link Deco ou similar, ~80 €) pour une connexion stable
 
 Un débit upload correct (au moins 50 Mbps) est particulièrement important pour les visioconférences.
@@ -47,7 +47,7 @@ Un débit upload correct (au moins 50 Mbps) est particulièrement important pour
 ### 2. L'espace bureau
 Pas besoin d'un bureau impressionnant. Ce qu'il faut :
 - Une table stable avec suffisamment de surface (au moins 100 cm de large)
-- Une chaise avec support lombaire — pas un tabouret de bar
+- Une chaise avec support lombaire, pas un tabouret de bar
 - Une prise électrique accessible depuis le bureau
 - Un éclairage de bureau correct (lampe ou lumière naturelle directe)
 
@@ -60,7 +60,7 @@ Les télétravailleurs ont souvent 3 à 5 appareils branchés simultanément : l
 Pour les séjours de 2 semaines ou plus, c'est indispensable. Si tu n'as pas de machine à laver dans le logement, indique clairement la laverie la plus proche.
 
 ### 5. Le blackout en chambre
-Les télétravailleurs travaillent parfois en horaires décalés. Des rideaux occultants en chambre permettent de dormir à n'importe quelle heure — un détail apprécié et souvent mentionné dans les avis.
+Les télétravailleurs travaillent parfois en horaires décalés. Des rideaux occultants en chambre permettent de dormir à n'importe quelle heure, un détail apprécié et souvent mentionné dans les avis.
 
 ---
 
@@ -70,7 +70,7 @@ Les télétravailleurs travaillent parfois en horaires décalés. Des rideaux oc
 Intègre les mots que les télétravailleurs recherchent :
 - "Appartement avec bureau dédié et fibre 500 Mbps"
 - "Studio calme idéal télétravail, Wi-Fi très haut débit"
-- "T2 avec espace bureau — fibre optique incluse"
+- "T2 avec espace bureau, fibre optique incluse"
 
 ### La description
 Crée une section spécifique "Idéal pour le télétravail" :
@@ -103,7 +103,7 @@ Une remise de 30 % sur un séjour d'un mois te garantit des revenus stables, san
 
 ## Et pour les réservations directes ?
 
-Les télétravailleurs ont souvent un réseau. Un séjour réussi avec un nomade digital peut générer 2 ou 3 recommandations dans sa communauté — qui réserveront souvent directement, sans passer par une plateforme.
+Les télétravailleurs ont souvent un réseau. Un séjour réussi avec un nomade digital peut générer 2 ou 3 recommandations dans sa communauté, qui réserveront souvent directement, sans passer par une plateforme.
 
 C'est là que [Driing](https://www.driing.co) est particulièrement pertinent : tu peux partager ton lien Driing directement à ces voyageurs, qui réservent sans commission, et tu touches 100 % du montant. Un canal simple, gratuit, et idéal pour fidéliser cette clientèle de qualité.
 
@@ -114,5 +114,5 @@ C'est là que [Driing](https://www.driing.co) est particulièrement pertinent : 
 - Les télétravailleurs sont la clientèle idéale en basse saison : longs séjours, calmes, bons avis.
 - Wi-Fi haut débit avec débit affiché + bureau dédié = les deux critères non négociables.
 - Adapte ton titre et ta description pour apparaître dans les recherches "télétravail" sur Airbnb.
-- Propose des remises dégressives pour les séjours longs — c'est souvent plus rentable que les courtes rotations.
+- Propose des remises dégressives pour les séjours longs, c'est souvent plus rentable que les courtes rotations.
 - Fidélise cette clientèle avec un canal de réservation directe comme Driing pour tes prochains séjours.

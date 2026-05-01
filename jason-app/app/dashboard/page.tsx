@@ -466,7 +466,7 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* ── État des lieux — 4 métriques ─────────────────────────────── */}
+        {/* ── État des lieux, 4 métriques ─────────────────────────────── */}
         <section style={s.section} className="fade-up d1">
           <EtatDesLieux
             prochainSejour={prochainSejour}

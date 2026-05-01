@@ -73,16 +73,16 @@ Voici le minimum syndical pour un hôte LCD en France :
 | Couverture | Solution |
 |---|---|
 | Dommages causés par les voyageurs | AirCover (si Airbnb) + assurance LCD pour les autres canaux |
-| Responsabilité civile hôte | Obligatoire — vérifier qu'elle couvre bien l'activité LCD |
+| Responsabilité civile hôte | Obligatoire, vérifier qu'elle couvre bien l'activité LCD |
 | Dommages à l'immeuble / parties communes | PNO ou extension spécifique |
 | Perte de revenus locatifs | Option dans certains contrats spécialisés |
-| Vol et dommages aux effets personnels | Souvent exclus partout — sécurise ou retire tes biens de valeur |
+| Vol et dommages aux effets personnels | Souvent exclus partout, sécurise ou retire tes biens de valeur |
 
 ---
 
 ## Le cas particulier des réservations directes
 
-Si tu reçois des réservations via des canaux sans assurance intégrée — comme [Driing](https://www.driing.co) ou ton propre site — AirCover ne s'applique pas. C'est une raison supplémentaire d'avoir ta propre assurance LCD valable quel que soit le canal de réservation.
+Si tu reçois des réservations via des canaux sans assurance intégrée, comme [Driing](https://www.driing.co) ou ton propre site, AirCover ne s'applique pas. C'est une raison supplémentaire d'avoir ta propre assurance LCD valable quel que soit le canal de réservation.
 
 La bonne pratique : une assurance LCD indépendante qui couvre toutes tes nuits, peu importe d'où vient la réservation. Tu n'es alors pas dépendant d'une plateforme pour être protégé.
 
@@ -93,7 +93,7 @@ La bonne pratique : une assurance LCD indépendante qui couvre toutes tes nuits,
 C'est souvent plus simple qu'on ne le croit :
 
 1. **Appelle ton assureur actuel** et demande si ta police couvre la location meublée touristique.
-2. Si non, demande une extension ou un avenant — certains assureurs l'acceptent moyennant une faible majoration de prime.
+2. Si non, demande une extension ou un avenant, certains assureurs l'acceptent moyennant une faible majoration de prime.
 3. Si ton assureur refuse, souscris un contrat spécialisé LCD (Swtch, etc.) en parallèle ou en remplacement.
 
 Ne laisse pas passer cette étape. En cas de sinistre non couvert, les conséquences financières peuvent être bien plus lourdes que la prime annuelle d'une assurance adaptée.
@@ -103,6 +103,6 @@ Ne laisse pas passer cette étape. En cas de sinistre non couvert, les conséque
 ## Ce qu'il faut retenir
 
 - AirCover est un bon filet de sécurité, mais il a des limites importantes et ne couvre que les réservations Airbnb.
-- Ton assurance habitation classique ne couvre probablement pas ton activité LCD — vérifie sans attendre.
+- Ton assurance habitation classique ne couvre probablement pas ton activité LCD, vérifie sans attendre.
 - Souscris une assurance LCD spécialisée dès que tu accueilles des voyageurs, quel que soit le canal.
 - Si tu passes par plusieurs canaux (Airbnb, Booking, Driing, direct...), seule une assurance indépendante te protège sur l'ensemble de tes nuits.

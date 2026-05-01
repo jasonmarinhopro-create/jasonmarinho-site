@@ -101,7 +101,7 @@ export default function ReportButton({ postId, replyId }: Props) {
                 <textarea
                   value={message}
                   onChange={e => setMessage(e.target.value)}
-                  placeholder="Précisions (optionnel) — 500 caractères max"
+                  placeholder="Précisions (optionnel), 500 caractères max"
                   rows={3}
                   maxLength={500}
                   style={s.textarea}

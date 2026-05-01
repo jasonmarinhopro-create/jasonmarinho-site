@@ -26,7 +26,7 @@ export default async function PartenairesPage() {
       : Promise.resolve({ data: [] as { tool_slug: string }[] }),
   ])
 
-  // Compteurs par tool_slug (lus en SELECT — RLS doit autoriser SELECT)
+  // Compteurs par tool_slug (lus en SELECT, RLS doit autoriser SELECT)
   const interestCounts: Record<string, number> = {}
   ;(allInterests ?? []).forEach((r: { tool_slug: string }) => {
     interestCounts[r.tool_slug] = (interestCounts[r.tool_slug] ?? 0) + 1

@@ -163,7 +163,7 @@ Quelques idées reçues à corriger :
 MODULE 1 · LEÇON 2
 ────────────────────────────────────
 Le numéro d'enregistrement
-Comment l'obtenir — et vite
+Comment l'obtenir, et vite
 ────────────────────────────────────
 
 ---
@@ -192,7 +192,7 @@ Sans lui après le 20 mai 2026 :
 ---
 
 ## Comment faire la déclaration : 3 étapes
-ÉTAPE 1 — Choisir ta procédure
+ÉTAPE 1, Choisir ta procédure
 Deux options selon ta commune :
 
 Option A : Téléservice national
@@ -205,14 +205,14 @@ Option B : Guichet de ta mairie
 → À déposer ou envoyer en mairie
 → Réponse sous quelques jours à semaines
 
-ÉTAPE 2 — Rassembler les pièces
+ÉTAPE 2, Rassembler les pièces
 → Titre de propriété ou bail
 → Pièce d'identité
 → DPE si applicable (voir module 3)
 → Attestation de conformité
    aux règles de copropriété si applicable
 
-ÉTAPE 3 — Obtenir et utiliser le numéro
+ÉTAPE 3, Obtenir et utiliser le numéro
 → Ton numéro t'est délivré par courrier
    ou directement en ligne
 → Tu le saisis dans tes annonces
@@ -426,7 +426,7 @@ Chambres d'hôtes              71%       77 700€
 ---
 
 ## Ce que ça veut dire en pratique
-Exemple concret — meublé NON classé :
+Exemple concret, meublé NON classé :
 
 Recettes brutes : 18 000€/an
 
@@ -574,7 +574,7 @@ Exemple : appartement à crédit
 → Amortissements : 6 500€/an
 → Taux d'imposition : 30%
 
-MICRO-BIC (si applicable — ici dépassement)
+MICRO-BIC (si applicable, ici dépassement)
 → Non applicable (> 15 000€ non classé)
 
 RÉGIME RÉEL
@@ -625,7 +625,7 @@ Le micro-BIC reste pertinent si :
 
 
 ## Exercice
-**Exercice pratique :** Si tu ne sais pas quel régime te convient, c'est normal — c'est une décision qui dépend de ta situation personnelle. L'action de cette leçon : [prends un appel découverte avec Jason](/contact) pour faire le point, ou consulte un expert-comptable spécialisé LMNP. Ne prends pas cette décision à l'aveugle.
+**Exercice pratique :** Si tu ne sais pas quel régime te convient, c'est normal, c'est une décision qui dépend de ta situation personnelle. L'action de cette leçon : [prends un appel découverte avec Jason](/contact) pour faire le point, ou consulte un expert-comptable spécialisé LMNP. Ne prends pas cette décision à l'aveugle.
 
 ---`,
         },
@@ -813,12 +813,12 @@ Avec classement (micro-BIC) :
 ---
 
 ## Comment obtenir le classement : les étapes
-ÉTAPE 1 — Choisir un organisme agréé
+ÉTAPE 1, Choisir un organisme agréé
 La liste est disponible sur atout-france.fr
 → Qualitel, BureauVeritas, Dekra,
   Certibat, et d'autres selon ta région
 
-ÉTAPE 2 — Demander une visite d'inspection
+ÉTAPE 2, Demander une visite d'inspection
 L'inspecteur évalue ton logement
 sur des critères précis :
 → Surface, nombre de couchages, équipements
@@ -826,11 +826,11 @@ sur des critères précis :
 → Accessibilité, sécurité, literie
 → Services proposés (Wi-Fi, linge de maison...)
 
-ÉTAPE 3 — Obtenir ta décision de classement
+ÉTAPE 3, Obtenir ta décision de classement
 → Valide 5 ans, renouvelable
 → Coût : entre 100€ et 300€ selon l'organisme
 
-ÉTAPE 4 — Déclarer en mairie avec le classement
+ÉTAPE 4, Déclarer en mairie avec le classement
 → Mentionne ton classement dans
   ta déclaration de meublé de tourisme
 → Ton numéro d'enregistrement tient compte
@@ -886,7 +886,7 @@ l'économie fiscale annuelle peut atteindre
 MODULE 4 · LEÇON 1
 ────────────────────────────────────
 La taxe de séjour
-Ce que tu dois collecter — et quand
+Ce que tu dois collecter, et quand
 ────────────────────────────────────
 
 ---
@@ -942,18 +942,18 @@ DRIING / RÉSERVATION DIRECTE
 ---
 
 ## Comment connaître le taux applicable
-ÉTAPE 1 — Vérifier si ta commune
+ÉTAPE 1, Vérifier si ta commune
           a instauré la taxe de séjour
 → Sur le site de ta mairie
 → Sur taxesejour.impots.gouv.fr
 
-ÉTAPE 2 — Identifier ta catégorie
+ÉTAPE 2, Identifier ta catégorie
 → Logement non classé : tarif minimum
 → Logement classé 1-5 étoiles : tarif correspondant
 → Palaces, résidences de tourisme :
    tarifs spécifiques
 
-ÉTAPE 3 — Calculer le montant
+ÉTAPE 3, Calculer le montant
 Taxe = taux journalier × nombre de nuits
        × nombre de personnes adultes
 
@@ -1004,7 +1004,7 @@ Pour Driing et la réservation directe :
 MODULE 4 · LEÇON 2
 ────────────────────────────────────
 Ce que les plateformes transmettent
-aux impôts — et pourquoi ça change tout
+aux impôts, et pourquoi ça change tout
 ────────────────────────────────────
 
 ---
@@ -1132,16 +1132,16 @@ Les dates à connaître absolument
 ---
 
 ## Le calendrier administratif annuel
-JANVIER — FÉVRIER
+JANVIER, FÉVRIER
 → Récupère tes relevés de versement
   annuels sur Airbnb, Booking, Driing
 → Totalise l'ensemble de tes recettes
 
-MARS — AVRIL
+MARS, AVRIL
 → Si régime réel : transmission de la
   liasse fiscale avec ton expert-comptable
 
-MAI — JUIN
+MAI, JUIN
 → Déclaration annuelle de revenus
 → Formulaire 2042 C PRO
 → Délais variables selon ton département
@@ -1317,7 +1317,7 @@ POUR CONSERVER LES DOCUMENTS
 MODULE 5 · LEÇON 3
 ────────────────────────────────────
 L'expert-comptable LMNP
-Quand c'est nécessaire — et quand ça ne l'est pas
+Quand c'est nécessaire, et quand ça ne l'est pas
 ────────────────────────────────────
 
 ---
@@ -1436,33 +1436,33 @@ Fais le bilan de ta situation avec ces 5 questions :
 
 ---
 
-# RÉCAPITULATIF — Ce que tu sais maintenant faire
+# RÉCAPITULATIF, Ce que tu sais maintenant faire
 
-MODULE 1 — Loi Le Meur
+MODULE 1, Loi Le Meur
 □ Comprendre pourquoi et comment elle change les règles
 □ Obtenir ton numéro d'enregistrement avant le 20 mai 2026
 
-MODULE 2 — Fiscalité
+MODULE 2, Fiscalité
 □ Connaître ton statut LMNP et t'immatriculer
 □ Choisir entre micro-BIC et régime réel selon ta situation
 □ Comprendre l'impact du plafond à 15 000€
 
-MODULE 3 — DPE et classement
+MODULE 3, DPE et classement
 □ Connaître la note DPE de ton logement
 □ Évaluer si le classement meublé de tourisme est pertinent
 
-MODULE 4 — Taxe de séjour et plateformes
+MODULE 4, Taxe de séjour et plateformes
 □ Vérifier qui collecte la taxe de séjour pour ton logement
 □ Comprendre ce que les plateformes transmettent aux impôts
 
-MODULE 5 — Organisation
+MODULE 5, Organisation
 □ Connaître le calendrier des obligations annuelles
 □ Archiver tes documents efficacement
 □ Savoir quand consulter un expert-comptable
 
 ---
 
-# ANNEXE — Tableau récapitulatif des régimes fiscaux 2026
+# ANNEXE, Tableau récapitulatif des régimes fiscaux 2026
 
 MICRO-BIC           MICRO-BIC          RÉGIME RÉEL
                     Non classé          Classé
@@ -1480,7 +1480,7 @@ Déclaration         2042 C PRO          2042 C PRO         2031 + annexes
 
 ---
 
-# ANNEXE — Contacts et ressources officielles
+# ANNEXE, Contacts et ressources officielles
 
 IMMATRICULATION
 → inpi.fr (guichet unique)

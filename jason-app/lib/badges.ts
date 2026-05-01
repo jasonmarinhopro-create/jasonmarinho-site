@@ -9,13 +9,13 @@ export type Badge = {
 }
 
 export const BADGES: Record<BadgeId, Badge> = {
-  pionnier:    { id: 'pionnier',    label: '⭐',  color: '#FFD56B', bg: 'rgba(255,213,107,0.18)', title: 'Pionnier — parmi les 20 premiers' },
-  visionnaire: { id: 'visionnaire', label: '💡', color: '#a78bfa', bg: 'rgba(167,139,250,0.18)', title: 'Visionnaire — a soumis une idée' },
-  batisseur:   { id: 'batisseur',   label: '🗳',  color: '#34d399', bg: 'rgba(52,211,153,0.18)',  title: 'Bâtisseur — a voté sur 3+ idées' },
-  auditeur:    { id: 'auditeur',    label: '🔍', color: '#60a5fa', bg: 'rgba(96,165,250,0.18)',  title: 'Auditeur GBP — a réalisé un audit' },
-  forme:       { id: 'forme',       label: '🎓', color: '#fb923c', bg: 'rgba(251,146,60,0.18)',  title: 'Formé — inscrit à une formation' },
-  connecte:    { id: 'connecte',    label: '🌐', color: '#f472b6', bg: 'rgba(244,114,182,0.18)', title: 'Connecté — membre d\'une communauté FB' },
-  premier_message: { id: 'premier_message', label: '👋', color: '#10b981', bg: 'rgba(16,185,129,0.18)', title: 'Premier message — a posté Chez Nous' },
+  pionnier:    { id: 'pionnier',    label: '⭐',  color: '#FFD56B', bg: 'rgba(255,213,107,0.18)', title: 'Pionnier, parmi les 20 premiers' },
+  visionnaire: { id: 'visionnaire', label: '💡', color: '#a78bfa', bg: 'rgba(167,139,250,0.18)', title: 'Visionnaire, a soumis une idée' },
+  batisseur:   { id: 'batisseur',   label: '🗳',  color: '#34d399', bg: 'rgba(52,211,153,0.18)',  title: 'Bâtisseur, a voté sur 3+ idées' },
+  auditeur:    { id: 'auditeur',    label: '🔍', color: '#60a5fa', bg: 'rgba(96,165,250,0.18)',  title: 'Auditeur GBP, a réalisé un audit' },
+  forme:       { id: 'forme',       label: '🎓', color: '#fb923c', bg: 'rgba(251,146,60,0.18)',  title: 'Formé, inscrit à une formation' },
+  connecte:    { id: 'connecte',    label: '🌐', color: '#f472b6', bg: 'rgba(244,114,182,0.18)', title: 'Connecté, membre d\'une communauté FB' },
+  premier_message: { id: 'premier_message', label: '👋', color: '#10b981', bg: 'rgba(16,185,129,0.18)', title: 'Premier message, a posté Chez Nous' },
 }
 
 export type ContributorBadges = Record<string, BadgeId[]>

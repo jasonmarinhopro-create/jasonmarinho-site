@@ -1,5 +1,5 @@
 /**
- * Shared email template — Jason Marinho
+ * Shared email template, Jason Marinho
  * Dark Scandinavian design, consistent across all transactional emails.
  */
 

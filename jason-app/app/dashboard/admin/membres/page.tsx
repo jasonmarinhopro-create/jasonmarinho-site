@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import MembresUI from './MembresUI'
 
-export const metadata = { title: 'Membres — Jason Marinho' }
+export const metadata = { title: 'Membres, Jason Marinho' }
 
 export default async function MembresPage() {
   const supabase = await createClient()

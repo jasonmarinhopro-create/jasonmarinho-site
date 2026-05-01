@@ -1,4 +1,4 @@
-# Formations LCD — Jason Marinho
+# Formations LCD, Jason Marinho
 
 Jason Marinho propose un catalogue de formations pratiques pour les hôtes de location courte durée (LCD) en France. Les formations sont accessibles depuis l'espace membre de la plateforme.
 

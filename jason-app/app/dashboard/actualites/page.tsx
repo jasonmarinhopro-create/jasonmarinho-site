@@ -2,7 +2,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import ActualitesView from './ActualitesView'
 
-export const metadata = { title: 'Actualités LCD — Jason Marinho' }
+export const metadata = { title: 'Actualités LCD, Jason Marinho' }
 
 export interface Actualite {
   id: string

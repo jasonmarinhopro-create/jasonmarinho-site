@@ -59,7 +59,7 @@ export async function getBulkProStats(
 
   const userIds = profilesData.map(p => p.id)
 
-  // Bulk fetch logements (only id, user_id, adresse — minimal cost)
+  // Bulk fetch logements (only id, user_id, adresse, minimal cost)
   const { data: logementsData } = await supabase
     .from('logements')
     .select('user_id, adresse')

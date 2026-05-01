@@ -48,7 +48,7 @@
 <p class="art-p">Voici comment prévenir au maximum les problèmes, et comment les gérer efficacement quand ils surviennent quand même.</p>
 <h2 class="art-h2">La prévention : le meilleur investissement</h2>
 <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:24px 0 10px;letter-spacing:-.2px">Un règlement intérieur clair et signé</h3>
-<p class="art-p">Le règlement intérieur est ta première ligne de défense. Il doit être court, clair, non-agressif — mais sans ambiguïté sur les points importants.</p>
+<p class="art-p">Le règlement intérieur est ta première ligne de défense. Il doit être court, clair, non-agressif, mais sans ambiguïté sur les points importants.</p>
 <p class="art-p">Ce qu'il doit couvrir :</p>
 <ul class="art-ul">
 <li><strong>Fêtes et rassemblements</strong> : interdits ou limités à un certain nombre de personnes</li>
@@ -79,7 +79,7 @@
 <p class="art-p">C'est la hantise de beaucoup d'hôtes. Quelques mesures préventives :</p>
 <ul class="art-ul">
 <li><strong>Active l'outil anti-fête d'Airbnb</strong> : il limite les réservations de dernière minute de locaux le weekend.</li>
-<li><strong>Installe un détecteur de bruit</strong> (Minut, NoiseAware) : il t'alerte si le niveau sonore dépasse un seuil sans enregistrer les conversations — légal, discret, dissuasif.</li>
+<li><strong>Installe un détecteur de bruit</strong> (Minut, NoiseAware) : il t'alerte si le niveau sonore dépasse un seuil sans enregistrer les conversations, légal, discret, dissuasif.</li>
 <li><strong>Pas de boîte à clés visible pendant les weekends</strong> dans les zones à risque : oblige à un check-in en personne.</li>
 </ul>
 <p class="art-p">Si tu découvres qu'une fête est en cours :</p>
@@ -102,7 +102,7 @@
 <p class="art-p">C'est rare mais ça arrive. Si un voyageur refuse de quitter le logement à l'heure du check-out :</p>
 <ul class="art-ul">
 <li>Contacte Airbnb ou Booking support immédiatement</li>
-<li>Ne jamais essayer de faire partir le voyageur de force — risque légal</li>
+<li>Ne jamais essayer de faire partir le voyageur de force, risque légal</li>
 <li>Si la situation dégénère, contacter la police (le voyageur est en violation de contrat)</li>
 </ul>
 <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:24px 0 10px;letter-spacing:-.2px">Le voyageur qui se plaint de tout</h3>
@@ -112,7 +112,7 @@
 <li>Propose des solutions concrètes sans promettre de remboursement immédiat</li>
 <li>Documente chaque échange</li>
 </ul>
-<p class="art-p">La messagerie de la plateforme est ta meilleure protection légale — ne passe jamais sur WhatsApp ou SMS pour les échanges litigieux.</p>
+<p class="art-p">La messagerie de la plateforme est ta meilleure protection légale, ne passe jamais sur WhatsApp ou SMS pour les échanges litigieux.</p>
 <h2 class="art-h2">Après un incident : comment protéger ta réputation</h2>
 <p class="art-p">Un incident bien géré ne doit pas forcément déboucher sur un mauvais avis. Les clés :</p>
 <ul class="art-ul">
@@ -125,7 +125,7 @@
 <ul class="art-ul">
 <li>Un règlement intérieur clair et un profil voyageur vérifié sont tes meilleures préventions.</li>
 <li>Un détecteur de bruit (Minut, NoiseAware) dissuade les fêtes sans espionner tes voyageurs.</li>
-<li>Documente l'état du logement avec photos avant chaque check-in — c'est indispensable pour les litiges.</li>
+<li>Documente l'état du logement avec photos avant chaque check-in, c'est indispensable pour les litiges.</li>
 <li>Pour les réservations directes (Driing, direct), utilise une caution digitale (Swikly, Superhog).</li>
 <li>Tous les échanges litigieux doivent rester sur la messagerie de la plateforme pour conserver une traçabilité.</li>
 </ul>
@@ -157,7 +157,7 @@
 <script src="/footer.js"></script>
 <script>
 const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
-function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='✓ Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value=''}else{msg.textContent='Déjà inscrit ou erreur — réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block'}btn.textContent="S'inscrire";btn.disabled=false}).catch(function(){msg.textContent='Erreur réseau — réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false})}
+function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='✓ Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value=''}else{msg.textContent='Déjà inscrit ou erreur, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block'}btn.textContent="S'inscrire";btn.disabled=false}).catch(function(){msg.textContent='Erreur réseau, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false})}
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
 document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
 </script>

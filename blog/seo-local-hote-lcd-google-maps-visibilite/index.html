@@ -236,7 +236,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <ul class="art-ul"><li>Catégorie principale précise : "Meublé de tourisme" (pas "Hôtel" ni "Logement"). Sous-catégories : "Location de vacances", "Studio meublé"</li><li>Description 750 caractères avec mots-clés naturels (nom du quartier, type de logement, points d'intérêt à proximité)</li><li>Adresse exacte (vérifiée par Google) + zone de chalandise (rayon de 2-5 km dans les villes)</li><li>Photos uploadées par toi ET tes voyageurs (les photos voyageurs sont un signal fort)</li><li>Posts Google Business hebdomadaires (changement saisonnier, petite actualité, événement local)</li></ul>
 <h2 class="art-h2">3. Les avis Google : nombre et fréquence</h2>
 <p class="art-p">Le nombre d'avis Google est l'un des 3 facteurs majeurs du Local Pack. Une fiche avec 30+ avis (note moyenne ≥ 4,5) bat systématiquement une fiche avec 5 avis, même mieux notée.</p>
-<ul class="art-ul"><li>Sollicite chaque voyageur post-séjour : "Si vous avez apprécié votre séjour, un avis Google nous aiderait beaucoup. Voici le lien direct"</li><li>Privilégie 1 avis Google + 1 avis Airbnb (au lieu de 2 avis Airbnb)</li><li>Réponds à 100 % des avis (positifs et négatifs) — Google value cet engagement</li><li>Évite les solicitations massives en série (Google détecte et pénalise les pics suspects)</li></ul>
+<ul class="art-ul"><li>Sollicite chaque voyageur post-séjour : "Si vous avez apprécié votre séjour, un avis Google nous aiderait beaucoup. Voici le lien direct"</li><li>Privilégie 1 avis Google + 1 avis Airbnb (au lieu de 2 avis Airbnb)</li><li>Réponds à 100 % des avis (positifs et négatifs), Google value cet engagement</li><li>Évite les solicitations massives en série (Google détecte et pénalise les pics suspects)</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Crée un QR code qui renvoie directement à l'écran d'avis de ta fiche Google. Imprime-le sur ton livret d'accueil. Tu doubles le taux de retour d'avis.</span></div>
 <h2 class="art-h2">4. Les citations et backlinks locaux</h2>
 <p class="art-p">Une citation = une mention de ton nom + adresse + téléphone (NAP) sur un site externe. Les citations locales boostent ton SEO. Voici les sites prioritaires.</p>
@@ -296,14 +296,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

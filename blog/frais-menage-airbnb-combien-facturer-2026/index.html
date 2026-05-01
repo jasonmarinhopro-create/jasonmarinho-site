@@ -242,7 +242,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu loues majoritairement à des séjours longs, tu peux mettre 0 € de cleaning fee et intégrer le coût dans le tarif nuitée. Tu apparais alors dans les recherches "prix nuitée < X" sans pénalité, et le voyageur paie le même prix total.</span></div>
 <h2 class="art-h2">4. Optimiser son ménage côté charges</h2>
 <p class="art-p">Si ton cleaning fee te coûte plus cher que tu ne facture, il faut optimiser le ménage avant de toucher au tarif. Quelques pistes éprouvées.</p>
-<ul class="art-ul"><li>Acheter du linge en double (jeu rotation) — réduit le temps de pliage entre 2 séjours</li><li>Investir dans un système de blanchisserie externalisée (location de linge, ~3-5 €/kit complet) — vraiment rentable au-delà de 30 nuits/mois</li><li>Utiliser une checklist photo standardisée — réduit les retours voyageurs et donc les pertes</li><li>Négocier des tarifs dégressifs avec une entreprise de ménage à partir de 4 prestations/mois</li></ul>
+<ul class="art-ul"><li>Acheter du linge en double (jeu rotation), réduit le temps de pliage entre 2 séjours</li><li>Investir dans un système de blanchisserie externalisée (location de linge, ~3-5 €/kit complet), vraiment rentable au-delà de 30 nuits/mois</li><li>Utiliser une checklist photo standardisée, réduit les retours voyageurs et donc les pertes</li><li>Négocier des tarifs dégressifs avec une entreprise de ménage à partir de 4 prestations/mois</li></ul>
 <div class="art-cta-box"><p>Tu veux apprendre à structurer tes coûts LCD pour maximiser ta marge sans perdre en visibilité ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
 
@@ -298,14 +298,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

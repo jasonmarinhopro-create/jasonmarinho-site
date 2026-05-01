@@ -232,7 +232,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
         {replies.length === 0 ? (
           <div style={s.empty}>
             <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
-              Pas encore de réponse — {post.locked ? 'le sujet est verrouillé.' : 'sois le premier à répondre.'}
+              Pas encore de réponse, {post.locked ? 'le sujet est verrouillé.' : 'sois le premier à répondre.'}
             </p>
           </div>
         ) : (

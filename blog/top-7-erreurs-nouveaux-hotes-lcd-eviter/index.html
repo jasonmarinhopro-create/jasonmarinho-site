@@ -229,11 +229,11 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-body">
 <p class="art-lead">Sur 250 hôtes accompagnés à leurs débuts, 7 erreurs reviennent inlassablement. Elles coûtent en moyenne 2 000 à 5 000 € de manque à gagner sur les 6 premiers mois. Les éviter te fait gagner du temps, de la marge et des avis. Les voici dans l'ordre de fréquence.</p>
 <h2 class="art-h2">1. Erreurs 1 et 2 : tarif et politique d'annulation</h2>
-<ul class="art-ul"><li>Erreur 1 — Tarif fixe toute l'année. 90 % des nouveaux hôtes définissent UN tarif "à l'année" sans modulation. Ils perdent 20-30 % de revenus en haute saison (sous-tarification) et 15-25 % en basse saison (sur-tarification qui empêche les réservations). La tarification doit varier semaine par semaine en fonction de la demande locale</li><li>Erreur 2 — Politique d'annulation "Stricte". Beaucoup choisissent "Stricte" par prudence (peur des annulations tardives). Conséquence : -25 à -45 % de visibilité Airbnb (l'algorithme privilégie les politiques "Souples"). Une politique "Souple" génère 12-18 % de revenus en plus malgré ~5 % d'annulations en plus</li></ul>
+<ul class="art-ul"><li>Erreur 1, Tarif fixe toute l'année. 90 % des nouveaux hôtes définissent UN tarif "à l'année" sans modulation. Ils perdent 20-30 % de revenus en haute saison (sous-tarification) et 15-25 % en basse saison (sur-tarification qui empêche les réservations). La tarification doit varier semaine par semaine en fonction de la demande locale</li><li>Erreur 2, Politique d'annulation "Stricte". Beaucoup choisissent "Stricte" par prudence (peur des annulations tardives). Conséquence : -25 à -45 % de visibilité Airbnb (l'algorithme privilégie les politiques "Souples"). Une politique "Souple" génère 12-18 % de revenus en plus malgré ~5 % d'annulations en plus</li></ul>
 <h2 class="art-h2">2. Erreurs 3 et 4 : photos et description</h2>
-<ul class="art-ul"><li>Erreur 3 — Photos prises avec smartphone basique en intérieur sombre. Les photos dégradent ton CTR de 30-50 % vs photos professionnelles. Solutions : photo pro (300-500 €) ou si budget serré, suivre une formation photo smartphone et photographier en lumière naturelle de matinée</li><li>Erreur 4 — Description "storytelling" personnel. "Cet appartement, c'est notre coup de cœur que nous avons rénové en 2019..." est contre-productif. Les voyageurs et l'algorithme cherchent du factuel : taille, équipements, localisation, atouts. Storytelling = perte de matching algorithmique</li></ul>
+<ul class="art-ul"><li>Erreur 3, Photos prises avec smartphone basique en intérieur sombre. Les photos dégradent ton CTR de 30-50 % vs photos professionnelles. Solutions : photo pro (300-500 €) ou si budget serré, suivre une formation photo smartphone et photographier en lumière naturelle de matinée</li><li>Erreur 4, Description "storytelling" personnel. "Cet appartement, c'est notre coup de cœur que nous avons rénové en 2019..." est contre-productif. Les voyageurs et l'algorithme cherchent du factuel : taille, équipements, localisation, atouts. Storytelling = perte de matching algorithmique</li></ul>
 <h2 class="art-h2">3. Erreurs 5 et 6 : équipement et accueil</h2>
-<ul class="art-ul"><li>Erreur 5 — Sous-équipement cuisine. Les voyageurs aiment cuisiner en LCD (réduit le budget restau). Une cuisine sans poêle, sans plat à four, avec 4 verres pour 4 personnes = ressort dans les avis comme "manque". Investis 200-400 € dans un kit cuisine complet</li><li>Erreur 6 — Pas de check-in autonome. Si tu n'as pas mis en place un système de check-in 24/7 (boîte à clés ou serrure connectée), tu loupe 60 % des voyageurs business qui arrivent après 21 h. Investis 80-300 € dans une solution dès le démarrage</li></ul>
+<ul class="art-ul"><li>Erreur 5, Sous-équipement cuisine. Les voyageurs aiment cuisiner en LCD (réduit le budget restau). Une cuisine sans poêle, sans plat à four, avec 4 verres pour 4 personnes = ressort dans les avis comme "manque". Investis 200-400 € dans un kit cuisine complet</li><li>Erreur 6, Pas de check-in autonome. Si tu n'as pas mis en place un système de check-in 24/7 (boîte à clés ou serrure connectée), tu loupe 60 % des voyageurs business qui arrivent après 21 h. Investis 80-300 € dans une solution dès le démarrage</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>L'erreur 6 est la plus rentable à corriger : pour ~150 € d'investissement (boîte à clés Master Lock), tu débloques l'accès à un segment voyageur (business late check-in) qui paie souvent plus cher et laisse des meilleurs avis (séjours courts, peu de friction).</span></div>
 <h2 class="art-h2">4. Erreur 7 : sous-traiter le ménage trop tôt ou trop tard</h2>
 <p class="art-p">L'arbitrage ménage soi-même vs sous-traité est crucial. Erreur fréquente : extrêmes des deux côtés.</p>
@@ -294,14 +294,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

@@ -450,7 +450,7 @@ export default function AdminUI({
                 <div className="admin-item-head">
                   <div style={s.itemAvatar}>{(u.full_name || u.email).slice(0, 1).toUpperCase()}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={s.cellPrimary}>{u.full_name || '—'}</div>
+                    <div style={s.cellPrimary}>{u.full_name || '-'}</div>
                     <div style={s.cellSub}>{u.email} · {formatDate(u.created_at)}</div>
                   </div>
                   <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c', border: '1px solid rgba(251,146,60,.2)' }}>En attente</span>
@@ -489,7 +489,7 @@ export default function AdminUI({
                     </span>
                   </div>
                 </div>
-                <div style={s.cellSub}>{r.reporter_city || '—'} · {formatDate(r.reported_at)}</div>
+                <div style={s.cellSub}>{r.reporter_city || '-'} · {formatDate(r.reported_at)}</div>
                 {r.description && <div style={s.description}>{r.description}</div>}
                 <div className="admin-item-foot">
                   {feedback?.id === r.id
@@ -519,7 +519,7 @@ export default function AdminUI({
                   <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD', border: '1px solid rgba(147,197,253,.2)' }) }}>
                     {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
                   </span>
-                  <div style={{ ...s.cellSub, marginLeft: 'auto' }}>{sg.user_email || '—'} · {formatDate(sg.created_at)}</div>
+                  <div style={{ ...s.cellSub, marginLeft: 'auto' }}>{sg.user_email || '-'} · {formatDate(sg.created_at)}</div>
                 </div>
                 <div style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55, marginTop: '4px' }}>{sg.message}</div>
                 <div className="admin-item-foot">

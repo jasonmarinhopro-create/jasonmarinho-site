@@ -137,7 +137,7 @@ export default async function MembrePage({ params }: Props) {
                         style={{ ...s.badgeChip, color: BADGES[bid].color, background: BADGES[bid].bg, borderColor: `${BADGES[bid].color}44` }}
                         title={BADGES[bid].title}
                       >
-                        {BADGES[bid].label} {BADGES[bid].title.split(' — ')[0]}
+                        {BADGES[bid].label} {BADGES[bid].title.split(', ')[0]}
                       </span>
                     ))}
                   </div>
@@ -222,7 +222,7 @@ export default async function MembrePage({ params }: Props) {
                 </p>
                 <p style={s.emptyDesc}>
                   {isMe
-                    ? 'Lance une conversation, pose une question — la famille est là pour toi.'
+                    ? 'Lance une conversation, pose une question, la famille est là pour toi.'
                     : 'Ce membre n\'a pas encore posté ou répondu dans Chez Nous.'}
                 </p>
                 {isMe && (

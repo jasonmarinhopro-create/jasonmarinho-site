@@ -53,7 +53,7 @@ Le prix varie aussi selon la ville : à Paris ou dans des zones touristiques ten
 
 Faire appel à une conciergerie est rentable quand **le coût de ton temps dépasse ce que tu paies**.
 
-Si tu passes 3h par semaine à gérer ton logement et que ton taux horaire professionnel est de 50 €, ça représente 600 € par mois de temps valorisé. Si la conciergerie coûte 360 €, tu es gagnant — même sans compter le stress évité.
+Si tu passes 3h par semaine à gérer ton logement et que ton taux horaire professionnel est de 50 €, ça représente 600 € par mois de temps valorisé. Si la conciergerie coûte 360 €, tu es gagnant, même sans compter le stress évité.
 
 C'est aussi pertinent si :
 - Tu habites loin de ton logement (impossibilité de gérer les urgences)
@@ -66,7 +66,7 @@ C'est aussi pertinent si :
 ## Comment bien choisir sa conciergerie
 
 ### 1. Vérifie les avis d'autres propriétaires (pas des voyageurs)
-Les avis Google d'une conciergerie sont souvent laissés par des voyageurs — pas par des propriétaires. Cherche des témoignages de propriétaires sur des forums LCD France, des groupes Facebook, ou demande directement des références.
+Les avis Google d'une conciergerie sont souvent laissés par des voyageurs, pas par des propriétaires. Cherche des témoignages de propriétaires sur des forums LCD France, des groupes Facebook, ou demande directement des références.
 
 ### 2. Demande un contrat détaillé
 Avant de signer, assure-toi que le contrat précise :
@@ -103,7 +103,7 @@ Si tu ne veux pas tout déléguer, il existe des options intermédiaires :
 - **Déléguer uniquement le check-in** : utile si les arrivées tardives sont ton principal problème
 - **Automatiser avec un PMS** : Smoobu, Hostaway ou Beds24 peuvent remplacer 70 % du travail de gestion sans commission
 
-La conciergerie complète est la solution maximale — mais elle n'est pas toujours nécessaire. Évalue précisément quelle partie de la gestion te coûte le plus de temps et d'énergie avant de décider.
+La conciergerie complète est la solution maximale, mais elle n'est pas toujours nécessaire. Évalue précisément quelle partie de la gestion te coûte le plus de temps et d'énergie avant de décider.
 
 ---
 

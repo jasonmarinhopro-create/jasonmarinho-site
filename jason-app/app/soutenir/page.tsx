@@ -7,7 +7,7 @@ import TipForm from './TipForm'
 import BackButton from './BackButton'
 
 export const metadata: Metadata = {
-  title: 'Devenir contributeur — jasonmarinho.com',
+  title: 'Devenir contributeur, jasonmarinho.com',
   description: 'Rejoins les personnes qui orientent la plateforme. Un siège à la table, pas un don.',
 }
 
@@ -43,7 +43,7 @@ export default async function SoutenirPage({
             <div style={s.merciIcon}>✦</div>
             <h1 style={s.merciTitle}>Bienvenue dans le cercle.</h1>
             <p style={s.merciText}>
-              Ta contribution est reçue. Ton badge Contributeur sera activé sous 24h —
+              Ta contribution est reçue. Ton badge Contributeur sera activé sous 24h -
               tu recevras un accès à l&apos;espace exclusif dans ton dashboard.
             </p>
             <a href="/dashboard" style={s.merciBtn}>
@@ -78,17 +78,17 @@ export default async function SoutenirPage({
               </div>
               <div style={s.jasonText}>
                 <p style={s.jasonQuote}>
-                  &ldquo;Cette plateforme, je la construis seul — la nuit, les week-ends, entre deux clients Driing.
+                  &ldquo;Cette plateforme, je la construis seul, la nuit, les week-ends, entre deux clients Driing.
                   Il n&apos;y a pas d&apos;investisseur derrière, pas d&apos;équipe.
                   Juste un outil que j&apos;aurais aimé avoir quand j&apos;ai commencé, et que je construis
                   maintenant pour ceux qui veulent aller plus loin.
                 &rdquo;</p>
                 <p style={s.jasonQuote2}>
                   Si la plateforme t&apos;apporte de la valeur et que tu veux qu&apos;elle continue
-                  d&apos;évoluer — ta contribution me donne le temps de la construire,
+                  d&apos;évoluer, ta contribution me donne le temps de la construire,
                   et toi tu obtiens un vrai rôle dans ce que ça devient.
                 </p>
-                <p style={s.jasonName}>— Jason Marinho</p>
+                <p style={s.jasonName}>- Jason Marinho</p>
               </div>
             </div>
           </section>
@@ -106,7 +106,7 @@ export default async function SoutenirPage({
                 {
                   icon: Users, color: '#34d399', glow: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.2)',
                   label: 'Espace contributeurs',
-                  desc: 'Accès à un espace dédié dans ton dashboard — roadmap en temps réel, idées en cours, discussions.',
+                  desc: 'Accès à un espace dédié dans ton dashboard, roadmap en temps réel, idées en cours, discussions.',
                 },
                 {
                   icon: Rocket, color: '#a78bfa', glow: 'rgba(167,139,250,0.1)', border: 'rgba(167,139,250,0.2)',

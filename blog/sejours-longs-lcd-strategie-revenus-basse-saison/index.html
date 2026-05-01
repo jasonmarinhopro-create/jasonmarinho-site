@@ -238,7 +238,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Sur Airbnb, les remises semaine et mensuelle se configurent directement dans les paramètres de prix. Sur Booking, tu peux créer des promotions longue durée. L'avantage : ces réductions attirent des voyageurs qui filtrent spécifiquement par durée et budget total.</p>
 <h2 class="art-h2">3. Adapter ton calendrier et ton annonce pour capter ce segment</h2>
 <p class="art-p">La clé pour maximiser les longs séjours en basse saison est de les anticiper dans la gestion de ton calendrier. En haute saison, tu peux bloquer des créneaux pour éviter qu'un long séjour ne t'empêche d'accueillir deux groupes différents à des tarifs plus élevés. En basse saison, le calcul s'inverse : privilégie les créneaux continus de 7 à 30 jours.</p>
-<ul class="art-ul"><li>Réduire ou supprimer la durée de séjour minimale en octobre, novembre, janvier et février</li><li>Activer les remises automatiques longue durée dès l'approche de la basse saison</li><li>Adapter la description de l'annonce avec une section "Séjour prolongé" qui liste les atouts</li><li>Mettre en avant le quartier, les commodités, l'environnement — ce qui compte sur le long terme</li></ul>
+<ul class="art-ul"><li>Réduire ou supprimer la durée de séjour minimale en octobre, novembre, janvier et février</li><li>Activer les remises automatiques longue durée dès l'approche de la basse saison</li><li>Adapter la description de l'annonce avec une section "Séjour prolongé" qui liste les atouts</li><li>Mettre en avant le quartier, les commodités, l'environnement, ce qui compte sur le long terme</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Un voyageur qui cherche un logement pour 3 semaines pense à son quotidien : supermarché, transports, restaurants du quartier. Donne ces informations proactivement dans ton annonce et ton livret d'accueil.</span></div>
 <h2 class="art-h2">4. Gérer les contraintes pratiques des longs séjours</h2>
 <p class="art-p">Les longs séjours amènent des questions de gestion que les courts séjours ne posent pas. La plus importante : le ménage intermédiaire. Pour un séjour de 14 jours ou plus, prévois au moins un ménage à mi-parcours (draps, serviettes, nettoyage général) inclus dans le prix, ou en option payante.</p>
@@ -298,14 +298,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

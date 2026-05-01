@@ -11,7 +11,7 @@ description: "IKEA, Vinted, Leboncoin : comment équiper et décorer ton logemen
 
 On voit souvent des logements LCD magnifiquement décorés sur les réseaux sociaux et on se dit qu'il faut dépenser des milliers d'euros pour être compétitif. C'est faux.
 
-Les hôtes qui ont les meilleures notes ne sont pas forcément ceux qui ont les logements les plus chers à l'aménagement. Ce sont ceux qui ont **priorisé les bons investissements** — les éléments qui impactent réellement les avis voyageurs et la qualité des photos d'annonce.
+Les hôtes qui ont les meilleures notes ne sont pas forcément ceux qui ont les logements les plus chers à l'aménagement. Ce sont ceux qui ont **priorisé les bons investissements**, les éléments qui impactent réellement les avis voyageurs et la qualité des photos d'annonce.
 
 Voici comment aménager efficacement, même avec un budget serré.
 
@@ -24,9 +24,9 @@ Avant d'acheter quoi que ce soit, pose-toi cette question : est-ce que cet achat
 Si la réponse est non aux trois, ce n'est probablement pas une priorité pour la LCD.
 
 Les 3 postes où investir en premier :
-1. **La literie** — c'est la nuit que tu vends
-2. **La salle de bain** — c'est ce que les voyageurs regardent en premier
-3. **La lumière** — c'est ce qui fait la différence sur les photos
+1. **La literie**, c'est la nuit que tu vends
+2. **La salle de bain**, c'est ce que les voyageurs regardent en premier
+3. **La lumière**, c'est ce qui fait la différence sur les photos
 
 Tout le reste peut attendre ou être résolu avec de la débrouille.
 
@@ -72,7 +72,7 @@ Les photos de ton annonce sont ta vitrine. Et la différence entre une bonne et 
 - **Ajoute des lampes d'appoint** dans le salon et la chambre : une lampe de chevet et un lampadaire suffisent à changer complètement l'ambiance d'une pièce.
 - **Utilise des rideaux translucides** plutôt qu'opaques dans les pièces de vie : ils laissent entrer la lumière naturelle tout en préservant l'intimité.
 
-Un appartement bien éclairé paraît plus grand, plus propre et plus accueillant — même sans aucune décoration.
+Un appartement bien éclairé paraît plus grand, plus propre et plus accueillant, même sans aucune décoration.
 
 ---
 
@@ -118,7 +118,7 @@ Ces fourchettes incluent literie, linge de bain, petits électroménagers et dé
 
 ## Et une fois le logement prêt ?
 
-Un beau logement bien aménagé mérite d'être bien présenté. Si tu veux aller au-delà des plateformes classiques et proposer des réservations directes sans commission, **[Driing](https://www.driing.co)** te permet de créer une annonce avec tes propres photos, et de recevoir des réservations directement de voyageurs — sans que 15 à 20 % de tes revenus partent en frais de plateforme.
+Un beau logement bien aménagé mérite d'être bien présenté. Si tu veux aller au-delà des plateformes classiques et proposer des réservations directes sans commission, **[Driing](https://www.driing.co)** te permet de créer une annonce avec tes propres photos, et de recevoir des réservations directement de voyageurs, sans que 15 à 20 % de tes revenus partent en frais de plateforme.
 
 L'aménagement que tu vas faire, autant qu'il soit valorisé à sa juste valeur dans tes prix.
 

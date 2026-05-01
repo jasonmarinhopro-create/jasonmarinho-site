@@ -37,14 +37,14 @@ export function renderMarkdown(input: string): string {
   // 1) Échapper le HTML brut d'entrée
   let s = escapeHtml(input)
 
-  // 2) Liens markdown [texte](url) — exécuté avant les autolinks
+  // 2) Liens markdown [texte](url), exécuté avant les autolinks
   //    On encode l'URL pour éviter d'injecter du JS via javascript:
   s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, text: string, url: string) => {
     const safeUrl = url.replace(/"/g, '%22')
     return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer nofollow" class="cn-link">${text}</a>`
   })
 
-  // 3) Autolinks (URLs nues hors balises) — on évite de re-linker ce qui est déjà dans <a ...>
+  // 3) Autolinks (URLs nues hors balises), on évite de re-linker ce qui est déjà dans <a ...>
   //    Approche simple : pas d'autolinks à l'intérieur de tags HTML déjà créés.
   //    On split sur les <a ...> pour ne traiter que ce qui est en dehors.
   s = s.split(/(<a[^>]*>.*?<\/a>)/gi).map(chunk => {

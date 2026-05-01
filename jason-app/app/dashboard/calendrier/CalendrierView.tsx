@@ -613,7 +613,7 @@ export default function CalendrierView({
     return true
   }), [icalEvents, filter, q])
 
-  // ── event index by date — multi-day events are indexed for every day they span
+  // ── event index by date, multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
     const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[] }> = {}
 
@@ -911,7 +911,7 @@ export default function CalendrierView({
     setFEndDate(endDate ?? selected)
     setShowForm(true)
   }
-  // Document-level mouseup — click selects day, drag opens form with date range
+  // Document-level mouseup, click selects day, drag opens form with date range
   useEffect(() => {
     function onUp() {
       if (!dragState.current) return
@@ -1109,7 +1109,7 @@ export default function CalendrierView({
             )
           }
           if (parts.length === 0) {
-            return <p style={s.pageSub}>Séjours, ménages, rendez-vous — tout ton planning en un coup d&apos;œil.</p>
+            return <p style={s.pageSub}>Séjours, ménages, rendez-vous, tout ton planning en un coup d&apos;œil.</p>
           }
           // Intercale séparateurs entre sections
           const withSeparators: React.ReactNode[] = []
@@ -1203,7 +1203,7 @@ export default function CalendrierView({
           .cal-month-title { font-size: 15px !important; min-width: 120px !important; }
           .cal-layout      { min-height: 0 !important; }
           .cal-side-head   { padding: 10px 14px 8px !important; }
-          /* Alert grid — horizontal scroll on mobile */
+          /* Alert grid, horizontal scroll on mobile */
           .cal-alert-grid  { display: flex !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; gap: 8px !important; }
           .cal-alert-grid::-webkit-scrollbar { display: none; }
           .cal-alert-col   { min-width: 128px !important; flex-shrink: 0 !important; }
@@ -1300,7 +1300,7 @@ export default function CalendrierView({
         <span style={s.quickAddIcon}>⚡</span>
         <input
           type="text"
-          placeholder="Saisie rapide — ex : Ménage Villa demain 10h, RDV plombier vendredi 14h, +3j tâche révision tarifs…"
+          placeholder="Saisie rapide, ex : Ménage Villa demain 10h, RDV plombier vendredi 14h, +3j tâche révision tarifs…"
           value={quickAdd}
           onChange={(e) => setQuickAdd(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') handleQuickAdd() }}
@@ -1313,7 +1313,7 @@ export default function CalendrierView({
         )}
       </div>
 
-      {/* ── Actions à traiter — liste compacte par priorité, avec actions inline */}
+      {/* ── Actions à traiter, liste compacte par priorité, avec actions inline */}
       {contractEvents.length > 0 && urgentAlerts.length > 0 && (
         <div style={s.alertList}>
           <div style={s.alertHeader}>
@@ -1380,11 +1380,11 @@ export default function CalendrierView({
       {contractEvents.length > 0 && urgentAlerts.length === 0 && (
         <div style={s.alertOk} className="cal-alert-ok">
           <span style={s.alertOkDot} />
-          Tout est en ordre — aucune action en attente
+          Tout est en ordre, aucune action en attente
         </div>
       )}
 
-      {/* ── Prochain événement — bandeau highlight */}
+      {/* ── Prochain événement, bandeau highlight */}
       {nextUpcoming && nextUpcoming.daysAway >= 0 && nextUpcoming.daysAway <= 30 && (
         <button
           onClick={() => {
@@ -1407,7 +1407,7 @@ export default function CalendrierView({
         </button>
       )}
 
-      {/* ── Sources synchronisées (iCal) — replié par défaut */}
+      {/* ── Sources synchronisées (iCal), replié par défaut */}
       {icalFeeds.length > 0 && (
         <div style={s.sourcesWrap}>
           <button
@@ -1526,7 +1526,7 @@ export default function CalendrierView({
                           outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : isSel ? '2px solid var(--accent-border)' : isToday && inMonth ? '2px solid var(--accent-text)' : '1.5px solid transparent',
                         }}
                       >
-                        {/* Day number — always at top */}
+                        {/* Day number, always at top */}
                         <div style={{ position: 'absolute', top: 8, left: 8, right: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           {isToday && inMonth
                             ? <span className="today-num">{day}</span>
@@ -1601,7 +1601,7 @@ export default function CalendrierView({
         </div>
         )}
 
-        {/* Vue liste — événements à venir, regroupés par date */}
+        {/* Vue liste, événements à venir, regroupés par date */}
         {viewMode === 'list' && (
           <ListView
             byDate={byDate}
@@ -2098,7 +2098,7 @@ const s: Record<string, React.CSSProperties> = {
     flex: 1, padding: '32px 16px', textAlign: 'center',
   },
 
-  // À traiter — liste compacte
+  // À traiter, liste compacte
   alertList: {
     background: 'var(--surface)',
     border: '1px solid var(--border)',

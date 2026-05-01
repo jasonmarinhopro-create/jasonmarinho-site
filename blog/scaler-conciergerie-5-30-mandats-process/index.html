@@ -232,7 +232,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <ul class="art-ul"><li>Onboarding nouveau mandat : audit du logement (checklist 47 points), set up des annonces (Airbnb, Booking, Driing), photographie pro, livret accueil, 2-3 semaines de mise en route</li><li>Off-boarding (fin de mandat) : restitution accès propriétaire, photos finales du logement, bilan financier, transfert ou archivage des avis. 1 semaine prête</li><li>Documentation : chaque étape avec checklist + qui fait quoi + délai. Pas de "on verra"</li><li>Outil : Notion ou ClickUp pour gérer les onboardings comme un pipe-line</li></ul>
 <h2 class="art-h2">2. Process 3 : la délégation hiérarchique</h2>
 <p class="art-p">Au-delà de 10 mandats, tu ne peux plus tout faire seul. Tu dois embaucher et déléguer. Ordre logique des recrutements.</p>
-<ul class="art-ul"><li>1er recrutement (à 10-15 mandats) : agent ménage interne ou prestataire principal. Coût : 15-25 € de l'heure</li><li>2e recrutement (à 15-20 mandats) : assistant administratif (gestion messages, ménage planning, factures) — alternant ou freelance 15-20 h/semaine</li><li>3e recrutement (à 20-25 mandats) : technicien volant pour petites réparations, état des lieux, dépannages</li><li>4e recrutement (à 25-30 mandats) : commercial / chargé de prospection à temps partiel</li></ul>
+<ul class="art-ul"><li>1er recrutement (à 10-15 mandats) : agent ménage interne ou prestataire principal. Coût : 15-25 € de l'heure</li><li>2e recrutement (à 15-20 mandats) : assistant administratif (gestion messages, ménage planning, factures), alternant ou freelance 15-20 h/semaine</li><li>3e recrutement (à 20-25 mandats) : technicien volant pour petites réparations, état des lieux, dépannages</li><li>4e recrutement (à 25-30 mandats) : commercial / chargé de prospection à temps partiel</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Le 1er recrutement est crucial. Mauvais agent ménage = avis voyageur en chute libre. Investis du temps dans le recrutement (3-5 candidats vus, 2 semaines en binôme avec toi).</span></div>
 <h2 class="art-h2">3. Process 4 et 5 : pricing et reporting</h2>
 <ul class="art-ul"><li>Pricing : passer de Smart Pricing manuel à PriceLabs ou Beyond Pricing. ROI visible dès 10 mandats. Coût : 5-10 €/mandat/mois</li><li>Reporting propriétaires : automatiser le reporting mensuel (CA, occupation, avis, dépenses). Outil : Hostfully ou Lodgify intègrent ça nativement, sinon Google Sheets template</li><li>Frequence : mensuel, format identique pour tous les mandats. Le propriétaire sait exactement quoi attendre</li><li>Bilan trimestriel : recommandations d'optimisation par mandat (changement tarif, photos, équipements)</li></ul>
@@ -294,14 +294,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

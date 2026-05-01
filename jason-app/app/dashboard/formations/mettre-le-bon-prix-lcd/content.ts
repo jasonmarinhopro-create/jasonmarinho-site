@@ -166,7 +166,7 @@ Note ce chiffre quelque part. C'est le seul nombre qui ne bougera jamais quelles
 MODULE 1 · LEÇON 2
 ────────────────────────────────────
 Le prix de base
-Ni trop haut, ni trop bas — la méthode
+Ni trop haut, ni trop bas, la méthode
 ────────────────────────────────────
 
 ---
@@ -307,24 +307,24 @@ Multiplier ses revenus aux bons moments
 ---
 
 ## Les 4 niveaux de demande à connaître
-NIVEAU 4 — DEMANDE EXCEPTIONNELLE
+NIVEAU 4, DEMANDE EXCEPTIONNELLE
 Événements rares : grand festival, compétition
 internationale, salon professionnel majeur
 → Majoration : +50% à +100% du prix de base
 
-NIVEAU 3 — HAUTE SAISON
+NIVEAU 3, HAUTE SAISON
 Vacances scolaires, été, fêtes de fin d'année
 → Majoration : +30% à +50%
 
-NIVEAU 2 — DEMANDE STANDARD
+NIVEAU 2, DEMANDE STANDARD
 Weekends, jours fériés isolés
 → Majoration : +15% à +25%
 
-NIVEAU 1 — PRIX DE BASE
+NIVEAU 1, PRIX DE BASE
 Semaine ordinaire, hors saison
 → Ton prix de base (0% de variation)
 
-NIVEAU 0 — BASSE SAISON
+NIVEAU 0, BASSE SAISON
 Périodes creuses, semaines calmes
 → Réduction : -15% à -30%
 
@@ -347,7 +347,7 @@ Ces périodes méritent systématiquement
 un tarif majoré programmé à l'avance.
 
 Airbnb et Booking te suggèrent ces
-ajustements — mais ne les fais pas
+ajustements, mais ne les fais pas
 à ta place et souvent sous-évaluent.
 
 ---
@@ -357,7 +357,7 @@ C'est là que la majorité des hôtes
 laissent le plus d'argent sur la table.
 
 Un concert de stade, un salon professionnel,
-un marathon, un festival — la demande explose
+un marathon, un festival, la demande explose
 dans un rayon de quelques kilomètres.
 
 Comment les identifier :
@@ -555,7 +555,7 @@ Vérifie que le prix par nuit résultant reste au-dessus de ton prix minimum cal
 MODULE 3 · LEÇON 1
 ────────────────────────────────────
 L'algorithme Airbnb
-Ce qu'il fait — et ce qu'il ne fait pas
+Ce qu'il fait, et ce qu'il ne fait pas
 ────────────────────────────────────
 
 ---
@@ -674,7 +674,7 @@ Le voyageur paie ton prix + 14-16% de frais.
 Tu paies 3-5% de commission.
 
 Sur Booking.com :
-Le voyageur voit TON prix — sans frais.
+Le voyageur voit TON prix, sans frais.
 Tu paies 15-18% de commission sur ce prix.
 
 Conséquence directe :
@@ -712,7 +712,7 @@ L'algorithme de Booking priorise :
 
 → Booking a tendance à pousser
   les annonces avec annulation gratuite
-  et prix compétitifs — même si ça réduit
+  et prix compétitifs, même si ça réduit
   ta rentabilité par réservation.
 
 ---
@@ -825,15 +825,15 @@ Sur un séjour d'une semaine :
 ---
 
 ## Les 3 erreurs à ne pas faire sur le prix direct
-ERREUR 1 — Afficher le même prix qu'Airbnb
+ERREUR 1, Afficher le même prix qu'Airbnb
 → Pourquoi réserver directement ?
   Il n'y a aucun avantage visible.
 
-ERREUR 2 — Brader trop bas
+ERREUR 2, Brader trop bas
 → -30% vs Airbnb ne rapporte rien de plus
   que -10%, mais te fait perdre 20% de marge.
 
-ERREUR 3 — Ne pas rendre la comparaison visible
+ERREUR 3, Ne pas rendre la comparaison visible
 → Le voyageur ne fait pas le calcul seul.
   Sur Driing, c'est fait automatiquement.
   Sur ton site propre, montre-le explicitement.
@@ -894,7 +894,7 @@ il faut comprendre la logique.
 Un outil de tarification dynamique
 peut augmenter tes revenus de 15 à 30%.
 Mais il part de ton prix de base
-et de tes règles — si tu les as mal
+et de tes règles, si tu les as mal
 configurés, il amplifie les erreurs.
 
 → Les 3 premières semaines : manuellement.
@@ -930,20 +930,20 @@ C'est tout. 15 minutes. Chaque semaine.
 ---
 
 ## Les 5 règles de tarification manuelle
-RÈGLE 1 — Le prix minimum est sacré
+RÈGLE 1, Le prix minimum est sacré
 → Jamais en dessous, quelles que soient
   les circonstances
 
-RÈGLE 2 — Weekends majorés systématiquement
+RÈGLE 2, Weekends majorés systématiquement
 → +15-25% par rapport au prix de base
 
-RÈGLE 3 — Événements = majoration immédiate
+RÈGLE 3, Événements = majoration immédiate
 → Ne pas attendre. Agir dès l'identification.
 
-RÈGLE 4 — Calendrier vide à J-14 = remise
+RÈGLE 4, Calendrier vide à J-14 = remise
 → Une nuit à -15% vaut mieux qu'une nuit vide
 
-RÈGLE 5 — Haute saison = prix maximum
+RÈGLE 5, Haute saison = prix maximum
 → Pendant les vacances scolaires et l'été,
   monte au maximum raisonnable (+30-50%)
   et augmente le séjour minimum
@@ -968,7 +968,7 @@ et lesquelles méritent d'être optimisées.
 
 
 ## Exercice
-**Exercice pratique :** Ouvre un Google Sheet ou une simple note. Liste les 8 prochaines semaines. Pour chacune, note le niveau de demande estimé (vacances ? événement ? standard ? creux ?) et le prix que tu vas appliquer. C'est ton premier plan de tarification — imparfait mais déjà 10 fois mieux qu'un prix fixe.
+**Exercice pratique :** Ouvre un Google Sheet ou une simple note. Liste les 8 prochaines semaines. Pour chacune, note le niveau de demande estimé (vacances ? événement ? standard ? creux ?) et le prix que tu vas appliquer. C'est ton premier plan de tarification, imparfait mais déjà 10 fois mieux qu'un prix fixe.
 
 ---`,
         },
@@ -981,7 +981,7 @@ et lesquelles méritent d'être optimisées.
 MODULE 4 · LEÇON 2
 ────────────────────────────────────
 Les outils de tarification dynamique
-Quand en avoir besoin — et lesquels
+Quand en avoir besoin, et lesquels
 ────────────────────────────────────
 
 ---
@@ -1176,7 +1176,7 @@ Résultat réel :
 ---
 
 ## Erreurs 4 et 5
-ERREUR 4 — Oublier l'impact des frais de ménage
+ERREUR 4, Oublier l'impact des frais de ménage
 
 Des frais de ménage trop élevés (80€+)
 découragent les courtes réservations.
@@ -1187,7 +1187,7 @@ d'une nuit non rentables.
   pour les séjours courts (1-2 nuits)
   et facturer séparément pour les longs séjours.
 
-ERREUR 5 — Ne pas tenir compte de la taxe de séjour
+ERREUR 5, Ne pas tenir compte de la taxe de séjour
 
 La taxe de séjour varie de 0,20€ à plus de 5€
 par nuit et par personne selon la commune
@@ -1395,7 +1395,7 @@ Calcule ton RevPAN du mois dernier. Revenus bruts ÷ nuits disponibles = ___€.
 
 ---
 
-# ANNEXE — Récapitulatif des formules
+# ANNEXE, Récapitulatif des formules
 
 \`\`\`
 PRIX MINIMUM

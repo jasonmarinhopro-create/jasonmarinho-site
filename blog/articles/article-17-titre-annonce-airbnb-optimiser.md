@@ -11,7 +11,7 @@ description: "50 caractères pour convaincre un voyageur de cliquer sur ton anno
 
 Dans les résultats de recherche Airbnb, un voyageur voit une photo, un prix, une localisation et un titre. C'est tout. Il prend sa décision en moins de 3 secondes.
 
-Ton titre d'annonce est l'un des rares leviers textuels que tu contrôles entièrement dans ces 3 secondes. Et pourtant, la plupart des hôtes le bâclent avec quelque chose comme "Bel appartement Paris" ou "Cosy studio near center" — des titres qui ne disent rien, ne se différencient pas et ne déclenchent aucune émotion.
+Ton titre d'annonce est l'un des rares leviers textuels que tu contrôles entièrement dans ces 3 secondes. Et pourtant, la plupart des hôtes le bâclent avec quelque chose comme "Bel appartement Paris" ou "Cosy studio near center", des titres qui ne disent rien, ne se différencient pas et ne déclenchent aucune émotion.
 
 Voici comment écrire un titre qui fait vraiment cliquer.
 
@@ -86,7 +86,7 @@ Le titre qui essaie de plaire à tout le monde ne plaît à personne. Choisir un
 
 ## Le piège des titres saisonniers figés
 
-Beaucoup d'hôtes écrivent un titre une fois et ne le touchent plus pendant des années. Pourtant, un titre peut — et devrait — être mis à jour selon la saison et la demande.
+Beaucoup d'hôtes écrivent un titre une fois et ne le touchent plus pendant des années. Pourtant, un titre peut, et devrait, être mis à jour selon la saison et la demande.
 
 **En été :** mets en avant la terrasse, la piscine, la proximité de la plage ou de la nature.
 **En hiver :** valorise le calme, le chauffage, le bureau pour le télétravail, la proximité des transports.
@@ -116,7 +116,7 @@ Les mêmes principes s'appliquent sur Booking.com et sur [Driing](https://www.dr
 
 ## Ce qu'il faut retenir
 
-- Les 50 premiers caractères sont ce que le voyageur lit vraiment — mets l'essentiel là.
+- Les 50 premiers caractères sont ce que le voyageur lit vraiment, mets l'essentiel là.
 - Structure gagnante : adjectif fort + type de logement + avantage clé + localisation.
 - Parle à ta cible, pas à tout le monde.
 - Mets à jour ton titre selon les saisons et les événements locaux.

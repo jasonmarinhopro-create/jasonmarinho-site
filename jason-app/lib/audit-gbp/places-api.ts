@@ -182,7 +182,7 @@ export async function fetchPlaceFromMapsUrl(rawUrl: string, apiKey: string): Pro
     const placeId = await searchPlaceByText(resolved, apiKey)
     if (placeId) return getPlaceDetails(placeId, apiKey)
   } catch {
-    // ignore — on essaie un dernier fallback ci-dessous
+    // ignore, on essaie un dernier fallback ci-dessous
   }
 
   // 4. Dernier recours : URL brute (cas où la résolution a échoué)

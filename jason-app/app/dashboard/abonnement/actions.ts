@@ -65,7 +65,7 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
-    subject: `Nouvelle demande Membre Driing — ${userName}`,
+    subject: `Nouvelle demande Membre Driing, ${userName}`,
     html: buildEmail({
       title: 'Nouvelle demande Membre Driing',
       body: `

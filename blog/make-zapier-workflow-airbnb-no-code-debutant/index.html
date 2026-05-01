@@ -228,7 +228,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 
 <div class="art-body">
 <p class="art-lead">Tu veux automatiser des tâches Airbnb sans embaucher un développeur ? Make (anciennement Integromat) et Zapier sont des plateformes no-code qui connectent Airbnb à des centaines d'autres outils. Une fois maîtrisés, ils te font gagner 5 à 10 heures par semaine. Voici comment démarrer.</p>
-<h2 class="art-h2">1. Make vs Zapier — quelle plateforme choisir</h2>
+<h2 class="art-h2">1. Make vs Zapier, quelle plateforme choisir</h2>
 <p class="art-p">Les deux outils permettent de connecter des apps en mode "si X arrive, alors Y se déclenche". La différence se joue sur l'interface et le pricing.</p>
 <ul class="art-ul"><li>Zapier : interface ultra-simple "Quand X, faire Y". Plan gratuit limité à 100 tâches/mois. Premium à 25 €/mois pour 750 tâches</li><li>Make : interface visuelle (boîtes connectées par fils), plus complexe mais plus puissant (logique conditionnelle, boucles). Plan gratuit 1 000 ops/mois</li><li>Pour démarrer : Zapier (plus accessible). Pour les gros besoins : Make (mieux scalable)</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu n'as jamais touché au no-code, commence par Zapier sur une seule automation simple. Tu apprendras la logique avant de passer à Make pour des workflows complexes.</span></div>
@@ -241,7 +241,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Quand tu construis un workflow, ajoute toujours une notification de fallback (Slack ou email à toi-même). Les automations cassent parfois, tu veux le savoir avant que ça impacte un voyageur.</span></div>
 <h2 class="art-h2">4. Limites et alternatives</h2>
 <p class="art-p">Make et Zapier ont 3 limites importantes pour les hôtes LCD à connaître avant d'investir du temps.</p>
-<ul class="art-ul"><li>Sans API Airbnb officielle, tu dépends du parsing email — si Airbnb change ses templates, tes automations cassent</li><li>Le coût grimpe vite avec le volume (au-delà de 1 000 ops/mois sur Make ou 750 tâches/mois sur Zapier)</li><li>Si tu as besoin de logique business complexe (calcul tarifaire dynamique, gestion multi-biens), un PMS comme Hospitable est plus pertinent</li></ul>
+<ul class="art-ul"><li>Sans API Airbnb officielle, tu dépends du parsing email, si Airbnb change ses templates, tes automations cassent</li><li>Le coût grimpe vite avec le volume (au-delà de 1 000 ops/mois sur Make ou 750 tâches/mois sur Zapier)</li><li>Si tu as besoin de logique business complexe (calcul tarifaire dynamique, gestion multi-biens), un PMS comme Hospitable est plus pertinent</li></ul>
 <p class="art-p">Alternative : Hospitable (anciennement Smartbnb) est un PMS qui inclut nativement de l'automation conditionnelle. Plus cher en mensuel mais zéro maintenance, et l'intégration Airbnb est officielle (via API channel partner).</p>
 <div class="art-cta-box"><p>Tu veux apprendre à automatiser sa LCD avec ou sans no-code ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
@@ -298,14 +298,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

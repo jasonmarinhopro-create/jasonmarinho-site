@@ -138,7 +138,7 @@ export default function SignaturePage({ token, locataireName }: Props) {
         const detail = data.debug ? ` [${data.debug}]` : ''
         setError((data.error ?? 'Une erreur est survenue.') + detail)
       } else if (data.already_signed) {
-        // Contrat déjà signé (idempotent) — rafraîchir pour afficher l'état signé
+        // Contrat déjà signé (idempotent), rafraîchir pour afficher l'état signé
         setAlreadySigned(true)
         router.refresh()
         fallbackTimerRef.current = setTimeout(() => {
@@ -147,7 +147,7 @@ export default function SignaturePage({ token, locataireName }: Props) {
       } else {
         setSuccess(true)
         // router.refresh() demande au serveur de re-rendre le composant avec les données fraîches
-        // (statut='signe' en DB) — remplace le formulaire par le bloc signé sans rechargement complet.
+        // (statut='signe' en DB), remplace le formulaire par le bloc signé sans rechargement complet.
         // Le fallback avec timestamp bust le cache CDN/navigateur au cas où le refresh échoue.
         router.refresh()
         fallbackTimerRef.current = setTimeout(() => {

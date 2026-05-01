@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { ArrowLeft, BookmarkSimple, ArrowUpRight, Newspaper } from '@phosphor-icons/react/dist/ssr'
 
-export const metadata = { title: 'Mes favoris — Actualités LCD' }
+export const metadata = { title: 'Mes favoris, Actualités LCD' }
 
 const CAT_COLORS: Record<string, { color: string; bg: string; label: string }> = {
   reglementation:     { color: '#60a5fa', bg: 'rgba(96,165,250,0.12)',  label: 'Réglementation' },

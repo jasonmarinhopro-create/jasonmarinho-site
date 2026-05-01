@@ -94,7 +94,7 @@ export default function ImageUploader({ value, onChange, max = 3 }: Props) {
       )}
 
       {error && <p style={s.error}>{error}</p>}
-      <p style={s.help}>JPEG, PNG, WebP — max 5 Mo · jusqu'à {max} images</p>
+      <p style={s.help}>JPEG, PNG, WebP, max 5 Mo · jusqu'à {max} images</p>
     </div>
   )
 }

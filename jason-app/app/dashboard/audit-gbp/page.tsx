@@ -6,7 +6,7 @@ import AuditHistory, { type PastAudit } from './AuditHistory'
 import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning, FileCsv, MapPin } from '@phosphor-icons/react/dist/ssr'
 
 export const dynamic  = 'force-dynamic'
-export const metadata = { title: 'Audit GBP — Jason Marinho' }
+export const metadata = { title: 'Audit GBP, Jason Marinho' }
 
 const PILLAR_ICONS = [
   { Icon: IdentificationCard, label: 'Identité',  color: '#60a5fa' },
@@ -107,7 +107,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
             <div style={s.resumeBody}>
               <div style={s.resumeTitle}>Tu reprends ton audit</div>
               <div style={s.resumeDesc}>
-                Tes réponses précédentes sont chargées — continue là où tu t'étais
+                Tes réponses précédentes sont chargées, continue là où tu t'étais
                 arrêté. Tes modifications sont auto-sauvegardées.
               </div>
             </div>
@@ -117,7 +117,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
           </div>
         )}
 
-        {/* ── Modes Express — uniquement si pas de session en cours ── */}
+        {/* ── Modes Express, uniquement si pas de session en cours ── */}
         {!initialSession && (
           <div style={s.expressGrid} className="fade-up">
             {/* URL Maps (recommandé) */}

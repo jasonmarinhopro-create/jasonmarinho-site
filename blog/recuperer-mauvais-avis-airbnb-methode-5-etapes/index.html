@@ -229,7 +229,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-body">
 <p class="art-lead">Tu viens de recevoir un avis 1 ou 2 étoiles, peut-être injuste, peut-être pas. La panique te dit de répondre vite. Erreur. Voici la méthode en 5 étapes pour limiter les dégâts, contester si possible, et récupérer ton classement en 60 jours.</p>
 <h2 class="art-h2">1. Étape 1 : Ne pas réagir dans les 6 premières heures</h2>
-<p class="art-p">Le réflexe naturel face à un mauvais avis est de répondre tout de suite — pour rétablir la vérité, défendre ton bien, exprimer ta frustration. C'est une erreur. Une réponse à chaud génère 3 fois plus de réponses émotionnelles regrettées que les réponses à froid.</p>
+<p class="art-p">Le réflexe naturel face à un mauvais avis est de répondre tout de suite, pour rétablir la vérité, défendre ton bien, exprimer ta frustration. C'est une erreur. Une réponse à chaud génère 3 fois plus de réponses émotionnelles regrettées que les réponses à froid.</p>
 <p class="art-p">Imposer-toi un délai de 6 à 24 h. Lis l'avis, prends note, mais NE RÉPONDS PAS. Pendant ce temps, tu vérifies les faits, tu retrouves les messages, tu prépares ta réponse en mode logique au lieu d'émotionnel.</p>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si l'avis te touche personnellement, écris ta réponse "défoulement" dans un brouillon Word. Tu ne l'enverras jamais. Le simple fait de l'écrire libère la frustration et te permet d'écrire ta vraie réponse posément.</span></div>
 <h2 class="art-h2">2. Étape 2 : Vérifier si l'avis enfreint les règles Airbnb</h2>
@@ -299,14 +299,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

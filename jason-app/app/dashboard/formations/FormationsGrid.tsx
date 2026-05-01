@@ -136,7 +136,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 
   return (
     <div>
-      {/* Hero — Parcours d'apprentissage mis en avant */}
+      {/* Hero, Parcours d'apprentissage mis en avant */}
       <Link href="/dashboard/formations/parcours" style={styles.parcoursHero} className="formations-parcours-hero">
         <div style={styles.parcoursHeroIcon}>
           <Compass size={28} weight="fill" />
@@ -144,9 +144,9 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
         <div style={styles.parcoursHeroBody}>
           <div style={styles.parcoursHeroLabel}>Parcours d&apos;apprentissage</div>
           <div style={styles.parcoursHeroTitle}>Suis un parcours structuré, étape par étape</div>
-          <div style={styles.parcoursHeroDesc}>Une progression pensée pour passer de débutant à expert LCD — sans te demander quoi faire ensuite.</div>
+          <div style={styles.parcoursHeroDesc}>Une progression pensée pour passer de débutant à expert LCD, sans te demander quoi faire ensuite.</div>
         </div>
-        <div style={styles.parcoursHeroCta}>
+        <div style={styles.parcoursHeroCta} className="formations-parcours-cta">
           Commencer <ArrowRight size={16} weight="bold" />
         </div>
       </Link>
@@ -208,7 +208,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
           )}
         </div>
 
-        {/* Category filter — scrollable row on mobile */}
+        {/* Category filter, scrollable row on mobile */}
         <div style={styles.filterScrollRow} className="filter-scroll-row">
           <span style={styles.filterLabel}><Funnel size={12} /> Thème</span>
           {(['all', 'visibilite', 'revenus', 'gestion', 'reglementation', 'conciergerie'] as CategoryFilter[]).map(v => (
@@ -356,7 +356,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
           )
         })}
 
-        {/* Coming soon — only shown when no filters active */}
+        {/* Coming soon, only shown when no filters active */}
         {!hasFilters && comingSoon.map((f, i) => (
           <div key={f.id} style={styles.comingSoonCard} className={`glass-card fade-up d${(i % 6) + 1}`}>
             <div style={styles.cardHeader}>
@@ -404,7 +404,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  // Hero parcours d'apprentissage — mis en avant en haut
+  // Hero parcours d'apprentissage, mis en avant en haut
   parcoursHero: {
     display: 'flex', alignItems: 'center', gap: '20px',
     padding: 'clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px)',
@@ -449,7 +449,7 @@ const styles: Record<string, React.CSSProperties> = {
   } as React.CSSProperties,
 
   statsRow: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' },
-  // Bouton cœur favoris — dans le footer à côté du bouton CTA
+  // Bouton cœur favoris, dans le footer à côté du bouton CTA
   heartBtn: {
     width: '40px', height: '40px',
     borderRadius: '10px',
@@ -513,7 +513,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--text-muted)', fontSize: '16px', lineHeight: 1,
     padding: '0 2px', flexShrink: 0,
   },
-  // Horizontally scrollable filter row — works on all screen sizes
+  // Horizontally scrollable filter row, works on all screen sizes
   // Note: overflow and scroll behavior handled by .filter-scroll-row CSS class
   filterScrollRow: {
     display: 'flex', alignItems: 'center', gap: '4px',

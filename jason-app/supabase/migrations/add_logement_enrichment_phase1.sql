@@ -1,4 +1,4 @@
--- Phase 1 — Enrichissement de la fiche logement
+-- Phase 1, Enrichissement de la fiche logement
 -- Transforme la fiche d'un référentiel statique en hub central du bien :
 -- caractéristiques physiques, conformité légale, tarifs, équipements, liens annonces, contacts utiles, photos
 --

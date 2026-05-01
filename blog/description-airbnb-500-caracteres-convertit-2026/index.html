@@ -234,10 +234,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Test express : copie tes 500 premiers caractères dans un éditeur. Si tu n'y trouves pas le type de logement, la capacité, la localisation précise, et 2 atouts différenciants, tu perds des réservations sans le savoir.</span></div>
 <h2 class="art-h2">2. La structure 4-phrases qui convertit</h2>
 <p class="art-p">Sur 250 hôtes accompagnés, la structure suivante augmente le taux de conversion de 18 à 32 % par rapport à une description "storytelling" classique. Elle tient en 4 phrases ordonnées et fait environ 480 caractères.</p>
-<ul class="art-ul"><li>Phrase 1 — Type + capacité + spécificité : "Studio rénové 28 m² au 3e étage avec ascenseur, accueille 2 voyageurs."</li><li>Phrase 2 — Localisation factuelle : "Situé rue de la République à Lyon, à 4 minutes à pied de la place Bellecour et de la station de métro."</li><li>Phrase 3 — Atout principal différenciant : "Vue dégagée sur la cour intérieure, très calme malgré l'hyper-centre."</li><li>Phrase 4 — Pratique du séjour : "Check-in autonome 24/7, fibre 450 Mb/s, kit petit-déjeuner offert."</li></ul>
+<ul class="art-ul"><li>Phrase 1, Type + capacité + spécificité : "Studio rénové 28 m² au 3e étage avec ascenseur, accueille 2 voyageurs."</li><li>Phrase 2, Localisation factuelle : "Situé rue de la République à Lyon, à 4 minutes à pied de la place Bellecour et de la station de métro."</li><li>Phrase 3, Atout principal différenciant : "Vue dégagée sur la cour intérieure, très calme malgré l'hyper-centre."</li><li>Phrase 4, Pratique du séjour : "Check-in autonome 24/7, fibre 450 Mb/s, kit petit-déjeuner offert."</li></ul>
 <h2 class="art-h2">3. Les 5 erreurs qui font perdre des réservations</h2>
-<p class="art-p">Ces erreurs sont récurrentes même chez les hôtes expérimentés. Elles passent inaperçues parce qu'elles ne génèrent pas de remontée voyageur — juste moins de réservations.</p>
-<ul class="art-ul"><li>Commencer par "Bienvenue chez nous !" ou "Nous vous accueillons" — perd 15 % de matching algorithmique car ces mots ne correspondent à aucune recherche voyageur</li><li>Mettre la durée du séjour idéal en premier ("idéal pour 2 nuits") — l'algo l'interprète comme une restriction</li><li>Adjectifs sans données : "très spacieux", "magnifique vue" — préférer "salon 32 m² orienté sud-ouest"</li><li>Mention du quartier sans nom précis — l'algo a besoin du nom de rue ou place de référence</li><li>Émojis dans les 200 premiers caractères — Airbnb les filtre comme spam depuis 2025</li></ul>
+<p class="art-p">Ces erreurs sont récurrentes même chez les hôtes expérimentés. Elles passent inaperçues parce qu'elles ne génèrent pas de remontée voyageur, juste moins de réservations.</p>
+<ul class="art-ul"><li>Commencer par "Bienvenue chez nous !" ou "Nous vous accueillons", perd 15 % de matching algorithmique car ces mots ne correspondent à aucune recherche voyageur</li><li>Mettre la durée du séjour idéal en premier ("idéal pour 2 nuits"), l'algo l'interprète comme une restriction</li><li>Adjectifs sans données : "très spacieux", "magnifique vue", préférer "salon 32 m² orienté sud-ouest"</li><li>Mention du quartier sans nom précis, l'algo a besoin du nom de rue ou place de référence</li><li>Émojis dans les 200 premiers caractères, Airbnb les filtre comme spam depuis 2025</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu hésites entre 2 versions, A/B teste-les en alternant chaque semaine pendant un mois. Mesure le taux de clic dans tes statistiques Airbnb (section "Performances").</span></div>
 <h2 class="art-h2">4. Adapter la description par profil de voyageur</h2>
 <p class="art-p">Un logement à Paris hyper-centre attire majoritairement des voyageurs business (séjours courts, mobilité). Un gîte rural en Bourgogne attire des familles ou couples (séjours plus longs, loisir). Ta description optimisée doit refléter ce profil dominant pour maximiser le matching.</p>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

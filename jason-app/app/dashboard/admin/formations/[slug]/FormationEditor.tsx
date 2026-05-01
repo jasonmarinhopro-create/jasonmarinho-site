@@ -140,7 +140,7 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
         }))
         setModules(built)
         setOpenModules(built.map(m => m.id))
-        fb('ok', `${staticContent.modules.length} modules importés ✓ — Rechargez la page pour éditer les leçons`)
+        fb('ok', `${staticContent.modules.length} modules importés ✓, Rechargez la page pour éditer les leçons`)
       } else {
         fb('err', res.error ?? 'Erreur lors de l\'import')
       }
@@ -606,7 +606,7 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
                   <label style={{ ...s.label, marginBottom: '6px' }}>
                     Contenu (Markdown)
                     <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: '8px' }}>
-                      — ## Titre, ### Sous-titre, **gras**, *italique*, - liste, &gt; citation
+                     , ## Titre, ### Sous-titre, **gras**, *italique*, - liste, &gt; citation
                     </span>
                   </label>
                   <textarea

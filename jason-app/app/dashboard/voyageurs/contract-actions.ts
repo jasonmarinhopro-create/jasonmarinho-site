@@ -102,7 +102,7 @@ export async function createContract(data: ContractData): Promise<{
     await getResend().emails.send({
       from: FROM_EMAIL,
       to: data.locataire_email,
-      subject: `Contrat à signer — ${propertyLabel}`,
+      subject: `Contrat à signer, ${propertyLabel}`,
       html: buildEmail({
         title: 'Contrat de location',
         preview: `${hostName} vous invite à signer votre contrat pour ${propertyLabel}.`,

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import CommunauteAdmin from './CommunauteAdmin'
 
-export const metadata = { title: 'Communauté — Admin — Jason Marinho' }
+export const metadata = { title: 'Communauté, Admin, Jason Marinho' }
 
 export default async function AdminCommunautePage() {
   const supabase = await createClient()

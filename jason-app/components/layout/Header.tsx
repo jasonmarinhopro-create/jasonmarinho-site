@@ -136,7 +136,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     return unsub
   }, [])
 
-  // Load read IDs from localStorage — lazy init prevents badge flash on navigation
+  // Load read IDs from localStorage, lazy init prevents badge flash on navigation
   useEffect(() => {
     setReadIds(getReadIds())
   }, [])
@@ -229,7 +229,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
           {/* Notifications */}
           <button
             style={styles.iconBtn}
-            aria-label={`Notifications${hydrated && unreadCount > 0 ? ` — ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
+            aria-label={`Notifications${hydrated && unreadCount > 0 ? `, ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
             onClick={handleOpenNotif}
           >
             <Bell size={18} weight={hydrated && unreadCount > 0 ? 'fill' : 'regular'} />

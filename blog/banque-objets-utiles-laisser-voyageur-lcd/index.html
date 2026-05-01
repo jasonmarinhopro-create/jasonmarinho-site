@@ -230,17 +230,17 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-lead">Au-delà des essentiels (linge, vaisselle, café), il y a des objets "bonus" qui marquent vraiment l'expérience voyageur. Coût total ~80 €, gain : +0,2 étoile en moyenne sur les avis. Voici la liste organisée par catégorie.</p>
 <h2 class="art-h2">1. Kit oubli (5 objets)</h2>
 <p class="art-p">Les voyageurs oublient toujours quelque chose. Anticipe et tu deviens leur héros.</p>
-<ul class="art-ul"><li>Brosses à dents jetables emballées (pack de 5, 4 €)</li><li>Mini dentifrice (pack de 5, 6 €)</li><li>Cotons-tiges et lingettes démaquillantes (10 €)</li><li>Rasoir jetable (pack de 5, 5 €)</li><li>Chargeurs USB-C et Lightning (pack de 2, 15 €) — souvent oubliés ou perdus</li></ul>
+<ul class="art-ul"><li>Brosses à dents jetables emballées (pack de 5, 4 €)</li><li>Mini dentifrice (pack de 5, 6 €)</li><li>Cotons-tiges et lingettes démaquillantes (10 €)</li><li>Rasoir jetable (pack de 5, 5 €)</li><li>Chargeurs USB-C et Lightning (pack de 2, 15 €), souvent oubliés ou perdus</li></ul>
 <h2 class="art-h2">2. Kit dépannage (5 objets)</h2>
 <p class="art-p">Petites pannes du quotidien : tu deviens problème solver et le voyageur n'a pas à te déranger.</p>
-<ul class="art-ul"><li>Trousse de couture (3 €)</li><li>Décapsuleur + tire-bouchon (5 €) — souvent oubliés en location</li><li>Lampe torche / lampe d'urgence (10 €)</li><li>Allumettes longues + briquet (5 €)</li><li>Petite trousse outils (tournevis, marteau, mètre — 15 €)</li></ul>
+<ul class="art-ul"><li>Trousse de couture (3 €)</li><li>Décapsuleur + tire-bouchon (5 €), souvent oubliés en location</li><li>Lampe torche / lampe d'urgence (10 €)</li><li>Allumettes longues + briquet (5 €)</li><li>Petite trousse outils (tournevis, marteau, mètre, 15 €)</li></ul>
 <h2 class="art-h2">3. Kit plaisir (5 objets)</h2>
 <p class="art-p">Le bonus inattendu qui crée le "wow" effet. Petit budget, gros impact.</p>
 <ul class="art-ul"><li>Jeux de société classiques : Uno, Mille Bornes, jeu d'échecs (15 €)</li><li>Bibliothèque mini avec 5-10 livres en français + anglais (gratuit avec recyclage)</li><li>Enceinte Bluetooth basique (20-30 €)</li><li>Carte du quartier annotée à la main (gratuit)</li><li>Carnet de visite avec stylo où les voyageurs peuvent laisser un mot (8 €)</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Le carnet de visite a un effet incroyable : les nouveaux voyageurs feuillettent les mots des précédents et se sentent dans une histoire. Beaucoup laissent un mot eux-mêmes (effet boule de neige).</span></div>
 <h2 class="art-h2">4. Comment et où les présenter</h2>
 <p class="art-p">L'effet est multiplié par la présentation.</p>
-<ul class="art-ul"><li>Boîte/panier dédié : "Bienvenue ! Servez-vous" — ne crée pas de friction d'avoir à demander</li><li>Liste écrite dans le livret d'accueil : "Si vous avez besoin de [...], retrouvez-les dans le tiroir X"</li><li>Renouveler après chaque séjour si nécessaire (vérification rapide ménage)</li><li>Coût total : 80-120 € pour démarrer, ~5-10 € de renouvellement par mois selon volume</li></ul>
+<ul class="art-ul"><li>Boîte/panier dédié : "Bienvenue ! Servez-vous", ne crée pas de friction d'avoir à demander</li><li>Liste écrite dans le livret d'accueil : "Si vous avez besoin de [...], retrouvez-les dans le tiroir X"</li><li>Renouveler après chaque séjour si nécessaire (vérification rapide ménage)</li><li>Coût total : 80-120 € pour démarrer, ~5-10 € de renouvellement par mois selon volume</li></ul>
 <p class="art-p">Le ROI est mesurable. Sur 50 hôtes français qui ont mis ces 15 objets, la note moyenne post-séjour a augmenté de 4,71 à 4,89 (+0,18 étoile) en 6 mois. Un gain qui se traduit en classement Airbnb amélioré et plus de réservations.</p>
 <div class="art-cta-box"><p>Tu veux maximiser l'expérience voyageur sans exploser ton budget ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
@@ -297,14 +297,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur, réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau, réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

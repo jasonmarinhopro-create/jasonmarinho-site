@@ -149,7 +149,7 @@ C'est l'objectif. Concret et réaliste.
 MODULE 1 · LEÇON 2
 ────────────────────────────────────
 Les voyageurs de basse saison
-Qui voyage en hiver — et ce qu'ils veulent
+Qui voyage en hiver, et ce qu'ils veulent
 ────────────────────────────────────
 
 ---
@@ -397,7 +397,7 @@ Pour en profiter :
 
 ✓ Ouvrir le calendrier jusqu'à la veille
   (certains hôtes bloquent les 2-3 prochains
-   jours — erreur en basse saison).
+   jours, erreur en basse saison).
 
 ✓ Réduire automatiquement les prix
   de -10% pour les réservations J-3.
@@ -459,17 +459,17 @@ LE TITRE EN BASSE SAISON
 Intègre 1 à 2 éléments qui parlent
 aux voyageurs hivernaux :
 
-→ "Appartement cosy avec cheminée — [Ville]"
-→ "[X] Mbps fibre + bureau — idéal télétravail"
+→ "Appartement cosy avec cheminée, [Ville]"
+→ "[X] Mbps fibre + bureau, idéal télétravail"
 → "Nid douillet à [X] min du centre"
-→ "Logement calme et chauffé — [Quartier]"
+→ "Logement calme et chauffé, [Quartier]"
 
 Ce qui change selon la saison :
 → Été : "Terrasse, vue jardin, proche plage"
 → Hiver : "Cosy, cheminée, fibre, calme"
 
 Sur Airbnb tu peux modifier ton titre
-à tout moment — sans impact négatif
+à tout moment, sans impact négatif
 sur ton classement.
 Change-le en octobre avant la basse saison,
 remets-le en version estivale en avril.
@@ -535,7 +535,7 @@ de votre première journée."
 
 
 ## Exercice
-**Exercice pratique :** Modifie ton titre Airbnb maintenant pour la basse saison. Ajoute un élément "hiver" — cosy, fibre, bureau, cheminée, selon ce que tu as. Ensuite, planifie une session photo en soirée cette semaine pour prendre 2-3 photos d'ambiance chaleureuse avec les lampes et bougies allumées. Ce sont les 2 actions qui améliorent le plus la conversion en basse saison.
+**Exercice pratique :** Modifie ton titre Airbnb maintenant pour la basse saison. Ajoute un élément "hiver", cosy, fibre, bureau, cheminée, selon ce que tu as. Ensuite, planifie une session photo en soirée cette semaine pour prendre 2-3 photos d'ambiance chaleureuse avec les lampes et bougies allumées. Ce sont les 2 actions qui améliorent le plus la conversion en basse saison.
 
 ---`,
         },
@@ -573,13 +573,13 @@ vs le scénario sans stratégie :
 ---
 
 ## Comment attirer les séjours longue durée
-ÉTAPE 1 — Activer les remises longue durée
+ÉTAPE 1, Activer les remises longue durée
 Sur Airbnb :
 → Tarification → Remises personnalisées
 → 7 nuits : -15%
 → 28 nuits : -25 à -35%
 
-ÉTAPE 2 — Créer une annonce spécifique
+ÉTAPE 2, Créer une annonce spécifique
   "longue durée / télétravail"
 → Certains hôtes créent une deuxième
   annonce pour leur même logement,
@@ -589,7 +589,7 @@ Sur Airbnb :
   bureau/vie quotidienne, description
   axée confort au quotidien.
 
-ÉTAPE 3 — Activer Airbnb Monthly Stays
+ÉTAPE 3, Activer Airbnb Monthly Stays
 → Airbnb a une section dédiée
   aux séjours de 28+ nuits.
 → Assure-toi que ton annonce
@@ -854,7 +854,7 @@ d'accéder à ces segments directement :
 Script d'approche par email ou LinkedIn :
 
 Objet : "Logement professionnel à [X] min
-         de votre siège — disponible cet hiver"
+         de votre siège, disponible cet hiver"
 
 "Bonjour [Prénom],
 
@@ -941,9 +941,9 @@ et nous en gardons un excellent souvenir !
 Nous vous réservons une offre exclusive
 pour cet hiver :
 
-🏠 [Nom logement] — [Ville]
+🏠 [Nom logement], [Ville]
 📅 Disponible du [date] au [date]
-💶 [Prix] €/nuit — réservation directe
+💶 [Prix] €/nuit, réservation directe
    sans frais de service
 
 Soit [X]€ de moins qu'en passant
@@ -967,18 +967,18 @@ Cette offre est disponible jusqu'au [date].
 Si tu as une base email de 30+ contacts,
 segmente tes envois :
 
-SEGMENT 1 — Voyageurs d'été
+SEGMENT 1, Voyageurs d'été
 → Leur proposer de découvrir
   le logement en hiver.
 → Angle : "L'hiver ici est encore plus beau"
   ou "Profitez du calme de l'intersaison"
 
-SEGMENT 2 — Voyageurs déjà venus en hiver
+SEGMENT 2, Voyageurs déjà venus en hiver
 → Ce sont tes meilleurs prospects.
 → Ils savent déjà que c'est agréable
   en basse saison.
 
-SEGMENT 3 — Voyageurs pros / télétravailleurs
+SEGMENT 3, Voyageurs pros / télétravailleurs
 → Mettre en avant la semaine complète
   à tarif réduit.
 → "Travaillez depuis [Ville] cet hiver :
@@ -1122,7 +1122,7 @@ De la formation à l'exécution
 ---
 
 ## Les 3 profils et leur stratégie adaptée
-PROFIL A — LOGEMENT EN ZONE URBAINE
+PROFIL A, LOGEMENT EN ZONE URBAINE
 (Paris, Lyon, Bordeaux, grandes villes)
 → Levier 1 : Voyageurs d'affaires et télétravailleurs
 → Levier 2 : Événements pro locaux (salons)
@@ -1130,7 +1130,7 @@ PROFIL A — LOGEMENT EN ZONE URBAINE
 → Action prioritaire : Wi-Fi fibre + bureau
   + annonce ciblée pro
 
-PROFIL B — LOGEMENT EN ZONE TOURISTIQUE BALNÉAIRE
+PROFIL B, LOGEMENT EN ZONE TOURISTIQUE BALNÉAIRE
 (littoral hors hiver)
 → Levier 1 : Couples en escapade romantique
 → Levier 2 : Télétravailleurs "slow travel"
@@ -1138,7 +1138,7 @@ PROFIL B — LOGEMENT EN ZONE TOURISTIQUE BALNÉAIRE
 → Action prioritaire : Ambiance cosy
   + remise longue durée + email base fidèle
 
-PROFIL C — LOGEMENT EN ZONE RURALE / CAMPAGNE
+PROFIL C, LOGEMENT EN ZONE RURALE / CAMPAGNE
 → Levier 1 : Couples et familles hiver
 → Levier 2 : Chasses / randonnées hivernales
 → Levier 3 : Partenariats locaux
@@ -1150,29 +1150,29 @@ PROFIL C — LOGEMENT EN ZONE RURALE / CAMPAGNE
 ---
 
 ## Le calendrier de mise en place (8 semaines)
-SEMAINE 1 — ANALYSE ET DÉCISION
+SEMAINE 1, ANALYSE ET DÉCISION
 □ Analyser son taux d'occupation par mois
 □ Choisir ses 2-3 mois cibles
 □ Identifier son segment prioritaire
 
-SEMAINE 2 — AJUSTEMENTS IMMÉDIATS
+SEMAINE 2, AJUSTEMENTS IMMÉDIATS
 □ Modifier le titre de l'annonce
 □ Ajuster les prix de base (-15 à -20%)
 □ Réduire le séjour minimum
 □ Activer les remises longue durée
 □ Créer une promotion Booking sur les mois creux
 
-SEMAINE 3-4 — CONTENU ET PRÉSENCE
+SEMAINE 3-4, CONTENU ET PRÉSENCE
 □ Prendre les photos d'ambiance hiver
 □ Mettre à jour la description
 □ Publier sur LeBonCoin (longue durée)
 □ Envoyer l'email à la base voyageurs
 
-SEMAINE 5-6 — PARTENARIATS
+SEMAINE 5-6, PARTENARIATS
 □ Contacter 3-5 entreprises locales
 □ Se référencer sur l'annuaire Driing
 
-SEMAINE 7-8 — TRAVAUX ET AMÉLIORATIONS
+SEMAINE 7-8, TRAVAUX ET AMÉLIORATIONS
 □ Réaliser les petites réparations
 □ Acheter les équipements manquants
 □ Réserver le photographe si pertinent
@@ -1234,7 +1234,7 @@ MODULE 4
   personnalisé sur 8 semaines
 
 → La basse saison ne se subit pas.
-  Elle se prépare — idéalement
+  Elle se prépare, idéalement
   2 mois avant qu'elle arrive.
 
 Des questions sur ton marché spécifique ?
@@ -1246,7 +1246,7 @@ Des questions sur ton marché spécifique ?
 ## Exercice
 **L'action finale de la formation :**
 
-Identifie ton profil (A, B ou C) et copie le calendrier de mise en place. Donne une date à chaque semaine. Programme ces dates dans ton agenda maintenant. La basse saison prochaine commence dans X mois — et les hôtes qui s'y préparent en août-septembre sont ceux qui remplissent en janvier.
+Identifie ton profil (A, B ou C) et copie le calendrier de mise en place. Donne une date à chaque semaine. Programme ces dates dans ton agenda maintenant. La basse saison prochaine commence dans X mois, et les hôtes qui s'y préparent en août-septembre sont ceux qui remplissent en janvier.
 
 Formation suivante`,
         },

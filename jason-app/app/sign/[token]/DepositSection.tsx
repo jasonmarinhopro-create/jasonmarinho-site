@@ -84,7 +84,7 @@ export default function DepositSection({ token, amount, depositParam, depositAlr
           est demandé par le propriétaire.
         </p>
         <p style={{ ...hint, marginTop: '8px' }}>
-          Votre carte sera <strong style={{ color: '#f0ebe1' }}>bloquée mais pas débitée</strong> — la somme
+          Votre carte sera <strong style={{ color: '#f0ebe1' }}>bloquée mais pas débitée</strong>, la somme
           n&apos;est encaissée qu&apos;en cas de dommages constatés à la fin du séjour.
         </p>
       </div>
@@ -113,7 +113,7 @@ function PayButton({ loading, onClick, amount }: { loading: boolean; onClick: ()
     >
       {loading
         ? 'Redirection vers Stripe…'
-        : `Régler la caution — ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € →`}
+        : `Régler la caution, ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € →`}
     </button>
   )
 }

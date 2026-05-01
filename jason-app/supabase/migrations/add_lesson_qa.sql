@@ -1,4 +1,4 @@
--- Phase 8 — Q&A et commentaires par leçon
+-- Phase 8, Q&A et commentaires par leçon
 -- Permet aux apprenants de poser des questions ou commenter une leçon.
 -- Réponses possibles (notamment de Jason via author_role).
 

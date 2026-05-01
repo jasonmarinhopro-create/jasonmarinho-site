@@ -13,7 +13,7 @@ import {
 } from '@/lib/audit-gbp/questions'
 
 export const dynamic  = 'force-dynamic'
-export const metadata = { title: 'Résultats audit GBP — Jason Marinho' }
+export const metadata = { title: 'Résultats audit GBP, Jason Marinho' }
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -175,11 +175,11 @@ export default async function AuditResultsPage({ params }: PageProps) {
 
 // ─── Score label helper ───
 function getScoreLabel(score: number): { label: string; color: string } {
-  if (score >= 85) return { label: 'Excellent — fiche optimisée', color: '#34d399' }
-  if (score >= 70) return { label: 'Bon niveau — quelques détails à régler', color: '#10b981' }
-  if (score >= 50) return { label: 'Correct — marge de progression nette', color: '#FFD56B' }
-  if (score >= 30) return { label: 'Faible — beaucoup à faire', color: '#fb923c' }
-  return { label: 'Critique — fiche peu visible', color: '#ef4444' }
+  if (score >= 85) return { label: 'Excellent, fiche optimisée', color: '#34d399' }
+  if (score >= 70) return { label: 'Bon niveau, quelques détails à régler', color: '#10b981' }
+  if (score >= 50) return { label: 'Correct, marge de progression nette', color: '#FFD56B' }
+  if (score >= 30) return { label: 'Faible, beaucoup à faire', color: '#fb923c' }
+  return { label: 'Critique, fiche peu visible', color: '#ef4444' }
 }
 
 // ─── Composant SVG Score Ring ───

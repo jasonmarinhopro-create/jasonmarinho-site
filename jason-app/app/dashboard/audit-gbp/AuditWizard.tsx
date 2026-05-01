@@ -115,7 +115,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
         <h2 style={s.startTitle}>Avant de commencer</h2>
         <p style={s.startDesc}>
           Donne-nous le nom de ta fiche pour suivre tes progrès dans le temps.
-          Optionnel — tu peux laisser vide.
+          Optionnel, tu peux laisser vide.
         </p>
 
         <div style={s.formRow}>
@@ -143,7 +143,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
         </div>
 
         <label style={{ ...s.label, marginTop: '12px' }}>
-          <span style={s.labelText}>URL Google Maps de ta fiche (optionnel — pour les raccourcis)</span>
+          <span style={s.labelText}>URL Google Maps de ta fiche (optionnel, pour les raccourcis)</span>
           <input
             type="url"
             value={gbpUrl}
@@ -153,7 +153,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
           />
           <span style={s.labelHint}>
             Si tu colles ton URL ici, on te proposera un bouton pour ouvrir directement
-            ta fiche à chaque pilier — pratique pour vérifier en un clic.
+            ta fiche à chaque pilier, pratique pour vérifier en un clic.
           </span>
         </label>
 
@@ -209,7 +209,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
           <Lightning size={16} color="var(--accent-text)" weight="fill" />
           <div>
             <strong style={{ color: 'var(--text)' }}>{prefilledKeys.size} réponse{prefilledKeys.size > 1 ? 's' : ''} pré-remplie{prefilledKeys.size > 1 ? 's' : ''} depuis ton CSV.</strong> Les
-            questions concernées sont marquées <span style={s.csvBadgeMini}>Auto</span> — vérifie qu'elles sont correctes.
+            questions concernées sont marquées <span style={s.csvBadgeMini}>Auto</span>, vérifie qu'elles sont correctes.
           </div>
         </div>
       )}

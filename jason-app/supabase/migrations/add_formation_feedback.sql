@@ -1,4 +1,4 @@
--- Phase 7 — Notation par leçon (👍/👎) + avis par formation
+-- Phase 7, Notation par leçon (👍/👎) + avis par formation
 -- Permet aux apprenants de donner un retour rapide par leçon et un avis détaillé par formation.
 
 -- Feedback par leçon (utile / pas utile)

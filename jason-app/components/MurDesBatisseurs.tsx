@@ -120,7 +120,7 @@ export default function MurDesBatisseurs({ contributors }: { contributors: Contr
       )}
 
       <p style={s.footer}>
-        Chaque bâtisseur a un siège à la table — pour toujours.
+        Chaque bâtisseur a un siège à la table, pour toujours.
       </p>
     </div>
   )
