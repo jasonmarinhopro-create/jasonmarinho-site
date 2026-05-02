@@ -206,6 +206,46 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Comment synchroniser son calendrier Airbnb avec Google Calendar ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Airbnb propose une synchronisation iCal native : Tableau de bord → Calendrier → Exporter le calendrier → Copier le lien iCal. Dans Google Calendar, ajouter un calendrier depuis une URL (Autres agendas → Ajouter par URL) et coller le lien iCal. La synchronisation est unidirectionnelle d'Airbnb vers Google et se rafraîchit toutes les 15-60 minutes. Pour une synchronisation bidirectionnelle (bloquer des dates dans Google qui se reflètent sur Airbnb), un outil comme Lodgify ou Smoobu est nécessaire."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment éviter les doubles réservations lors de la gestion multi-plateformes ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La solution la plus fiable est un channel manager (Smoobu, Lodgify, Hostaway) qui synchronise les calendriers entre toutes les plateformes en temps réel (délai de 5-10 minutes maximum). La synchronisation iCal native entre plateformes est moins fiable (délai de 15-60 minutes, voire plusieurs heures) et expose à des doubles réservations pendant la fenêtre de désynchronisation. Pour 2+ plateformes actives simultanément, investir dans un channel manager à 30-80€/mois est indispensable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Peut-on synchroniser Booking.com et Airbnb directement sans outil tiers ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, via l'échange de liens iCal entre les deux plateformes : Airbnb et Booking.com acceptent tous deux l'import d'un lien iCal externe pour bloquer les dates réservées sur l'autre plateforme. La limitation : délai de synchronisation de 15-60 minutes et synchronisation uniquement des disponibilités (pas des prix, pas des informations voyageurs). Pour les hôtes avec peu de rotations, cette solution gratuite peut suffire — pour les hébergements très actifs, le channel manager reste la norme."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment bloquer des dates personnelles sur Airbnb sans les afficher comme 'réservées' ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dans le calendrier Airbnb, sélectionnez les dates → marquez comme 'Indisponibles' ou 'Bloquées'. Ces dates apparaissent grisées pour les voyageurs sans raison affichée (contrairement aux réservations confirmées qui affichent un statut différent). Pour les absences longues (travaux, usage personnel), vous pouvez aussi modifier temporairement le délai de préavis minimum à 365 jours — personne ne peut réserver, et cela n'impacte pas votre classement autant qu'un blocage direct."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <script src="/nav.js"></script>
