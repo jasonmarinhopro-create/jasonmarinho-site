@@ -3,7 +3,7 @@
 
   /* ── Phosphor Icons (fallback si non chargé par la page) ── */
   if (!document.querySelector('link[href*="phosphor"]')) {
-    ['phosphor-bold','phosphor-regular'].forEach(function(n){
+    ['phosphor-bold-subset','phosphor-regular-subset'].forEach(function(n){
       var l = document.createElement('link');
       l.rel = 'stylesheet'; l.type = 'text/css';
       l.href = '/fonts/'+n+'.css';
