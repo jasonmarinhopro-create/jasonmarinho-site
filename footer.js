@@ -141,6 +141,7 @@
             + '<a href="/devenir-hote-airbnb-rouen">Devenir hôte à Rouen</a>'
             + '<a href="/devenir-hote-airbnb-perpignan">Devenir hôte à Perpignan</a>'
           + '</div>'
+          + '<a href="/villes" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;font-weight:600;color:var(--ft-accent,#63D683);text-decoration:none;letter-spacing:.2px">Voir les guides pour les 27 villes <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
         + '</details>'
         + '<details class="ft-seo-block">'
           + '<summary>'
