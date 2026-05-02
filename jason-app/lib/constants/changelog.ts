@@ -9,6 +9,107 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  // ─── Mai 2026 ──────────────────────────────────────────────────
+  {
+    id: 'formations-page-refonte-mai-2026',
+    date: '2026-05-01',
+    tag: 'amélioration',
+    title: 'Page Formations repensée : parcours mis en avant + favoris en 1 clic',
+    description: '"Parcours d\'apprentissage" sort enfin de l\'ombre, hero card en haut de page pour te guider étape par étape. Tu peux maintenant mettre une formation en favori d\'un clic sur le cœur ❤️ directement sur sa carte. La page Mes favoris affiche les formations et leçons bookmarkées dans 2 sections distinctes.',
+  },
+  {
+    id: 'em-dashes-nettoyage-mai-2026',
+    date: '2026-05-01',
+    tag: 'amélioration',
+    title: 'Textes nettoyés : suppression des tirets longs partout',
+    description: 'Plus de 1 700 tirets longs "—" remplacés par des virgules ou tirets simples dans tout le contenu (formations, dashboard, site public). Lecture plus naturelle, meilleur SEO, et fini la touche "AI generated".',
+  },
+  {
+    id: 'rail-formation-agrandie-mai-2026',
+    date: '2026-05-01',
+    tag: 'amélioration',
+    title: 'Rail latérale des formations agrandie',
+    description: 'La rail droite des leçons (Progression, Navigation, Notes, Sur cette page) gagne 23 % de largeur pour respirer enfin. Les liens "Sur cette page" scrollent maintenant correctement vers le titre cliqué.',
+  },
+  {
+    id: 'photographie-lcd-mai-2026',
+    date: '2026-04-30',
+    tag: 'nouveau',
+    title: 'Nouvelle formation : Faire des photos qui font cliquer',
+    description: 'La 17e formation est en ligne. Apprends à transformer ton annonce avec ton seul smartphone : composition, lumière naturelle, mise en scène, retouche Snapseed, ordre des photos. 6 modules, 19 leçons. Une bonne photo de couverture peut multiplier tes réservations par 1,5.',
+  },
+  {
+    id: 'gerer-incidents-mai-2026',
+    date: '2026-04-30',
+    tag: 'nouveau',
+    title: 'Nouvelle formation : Gérer les incidents et litiges en LCD',
+    description: 'La 18e formation t\'apprend à anticiper, gérer et facturer chaque incident sans paniquer : caution Stripe, AirCover Airbnb, Booking, état des lieux, médiation. Plaintes voisins, dégâts, voyageurs problématiques, no-show : tout y est. 6 modules, 22 leçons.',
+  },
+  {
+    id: 'performances-dashboard-mai-2026',
+    date: '2026-04-29',
+    tag: 'nouveau',
+    title: 'Performances : ton tableau de bord de pilotage',
+    description: 'Une nouvelle section dans le dashboard pour piloter ton activité : taux d\'occupation par logement, revenus mensuels sur 12 mois, prix moyen par nuit, comparateur de tes logements, sources de réservation, insights automatiques. Tout ce qu\'il te faut pour savoir quand baisser tes prix ou monter en gamme.',
+  },
+  {
+    id: 'fiche-incident-sejour-mai-2026',
+    date: '2026-04-28',
+    tag: 'nouveau',
+    title: 'Fiche incident par séjour',
+    description: 'Tu peux maintenant signaler chaque incident lié à un séjour directement depuis la fiche voyageur : linge taché, casse, dégradation, vol, retard de restitution, plainte voisin… Avec photo, montant de caution à appliquer et statut (ouvert / résolu / remboursé). Tes preuves sont organisées en 1 endroit.',
+  },
+  {
+    id: 'auto-checklist-contrats-mai-2026',
+    date: '2026-04-27',
+    tag: 'amélioration',
+    title: 'Checklist contrat auto-cochée à chaque étape',
+    description: 'Ton suivi opérationnel se met à jour tout seul : "Contrat envoyé" coché à la création, "Contrat signé" à la signature, "Solde reçu" et "Caution reçue" cochés automatiquement quand le voyageur paye sur Stripe. Plus besoin de cocher à la main, et la checklist est synchronisée entre calendrier et fiche voyageur.',
+  },
+  {
+    id: 'calendrier-barre-sejour-mai-2026',
+    date: '2026-04-27',
+    tag: 'amélioration',
+    title: 'Calendrier : barre continue entre arrivée et départ',
+    description: 'Avant, l\'arrivée et le départ s\'affichaient comme 2 blocs séparés sur le calendrier. Maintenant, une bande verte continue traverse toute la durée du séjour, beaucoup plus lisible d\'un coup d\'œil. Bonus : un bouton "Gabarit" sur chaque alerte pour ouvrir le bon message-type prêt à l\'emploi.',
+  },
+  {
+    id: 'ical-sync-logements-mai-2026',
+    date: '2026-04-26',
+    tag: 'nouveau',
+    title: 'Synchronisation iCal multi-plateformes',
+    description: 'Ajoute tes liens iCal Airbnb, Booking, Vrbo et autres plateformes directement sur la fiche logement. Les réservations externes apparaissent automatiquement dans ton calendrier intégré. Plus de double-réservation par oubli de bloquer une date.',
+  },
+  {
+    id: 'profil-chez-nous-enrichi-mai-2026',
+    date: '2026-04-25',
+    tag: 'amélioration',
+    title: 'Profil membre Chez Nous enrichi',
+    description: 'Le profil public d\'un membre dans la communauté Chez Nous affiche maintenant les plateformes utilisées (Airbnb, Booking…), les catégories où il s\'exprime le plus, sa dernière activité, ses badges (mode clair lisible enfin) et tu accèdes à ton propre profil en 1 clic depuis le menu en haut à droite.',
+  },
+  {
+    id: 'profil-mes-coordonnees-mai-2026',
+    date: '2026-04-24',
+    tag: 'amélioration',
+    title: 'Page profil refondue avec barre de progression',
+    description: 'Refonte complète de la page profil en cartes thématiques (Identité, Coordonnées, Encaissements, Profil Chez Nous), progression visible en pourcentage, layout en 2-3 colonnes sur ordinateur. Trouve et complète ton profil 3x plus vite.',
+  },
+  {
+    id: 'chez-nous-mobile-bubble-mai-2026',
+    date: '2026-04-23',
+    tag: 'amélioration',
+    title: 'Chez Nous : catégories en bulles sur mobile',
+    description: 'Les catégories de Chez Nous s\'affichent maintenant en bulles rondes "stories" sur mobile (style Instagram), beaucoup plus tactiles. Un bouton "Inviter des amis hôtes" en pleine largeur fait son apparition pour partager la communauté en 1 geste.',
+  },
+  {
+    id: 'fixes-mobile-light-mode-mai-2026',
+    date: '2026-04-22',
+    tag: 'correction',
+    title: 'Corrections mobile et mode clair',
+    description: 'Sidebar du dashboard qui défilait mal sur iPhone Safari → corrigée. Calendrier surchargé sur mobile → header épuré avec 3 KPIs essentiels. Bouton "Inviter" jaune sur fond blanc invisible → contraste corrigé. Site public bloqué par DDoS Vercel après refresh intensifs → diagnostiqué.',
+  },
+
+  // ─── Avril 2026 (pre-existant) ─────────────────────────────────
   {
     id: 'formation-booking-com-apr-2026',
     date: '2026-04-25',
