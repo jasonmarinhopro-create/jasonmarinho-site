@@ -206,6 +206,46 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Comment définir sa fourchette de prix min-max sur Airbnb ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La fourchette optimale : prix minimum = votre coût variable par nuit + marge minimale acceptable (ne jamais louer à perte), prix maximum = le tarif le plus élevé constaté sur des logements comparables dans votre zone lors des pics de demande. Entre les deux, les outils de tarification dynamique (PriceLabs, Beyond) ajustent automatiquement selon la demande en temps réel. Configurer le max trop bas vous fait manquer des revenus en haute demande, le min trop bas vous expose à des pertes en basse saison."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quel écart de prix entre semaine et week-end est recommandé en LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "En zones urbaines à demande mixte (touristique + business) : week-end +20 à +40% vs semaine. En zones à dominante touristique (balnéaire, montagne) : le week-end peut être similaire à la semaine hors saison, mais l'écart haute/basse saison est plus important. Les outils de tarification dynamique gèrent cet écart automatiquement en analysant la demande par jour de la semaine sur votre marché spécifique — plus précis qu'une règle fixe appliquée uniformément."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment tester si son prix est optimal sur Airbnb sans perdre de réservations ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Méthode de test progressif : augmenter le tarif de 10% pendant 2 semaines en comparant le taux d'occupation avec la période précédente. Si l'occupation baisse de moins de 5%, le nouveau tarif est viable. Si l'occupation chute de plus de 10%, le prix était déjà optimisé. Cette approche itérative permet de trouver le point de tarification optimal sans sacrifier brutalement des semaines entières de revenus sur un test A/B radical."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Les tarifs spéciaux pour les séjours longs impactent-ils le classement Airbnb ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui positivement. Airbnb favorise dans son algorithme les annonces qui proposent des réductions semaine (-10% minimum) et mois (-20% minimum) car elles correspondent à des préférences de recherche actives. Ces réductions sont visibles dans les résultats et améliorent le CTR. Elles réduisent aussi votre coût de rotation (moins de ménages pour le même revenu total), ce qui améliore la marge nette malgré le tarif apparemment moins élevé."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <script src="/nav.js"></script>
