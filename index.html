@@ -191,6 +191,7 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 
 .ab-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin:26px 0 38px}
 .ab-list li{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;font-weight:300;color:rgba(255,255,255,.6);line-height:1.5}
+.ab-list li span{flex:1;min-width:0;overflow-wrap:break-word;word-break:normal;hyphens:none}
 .chk{width:20px;height:20px;flex-shrink:0;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.22);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
 .chk i{font-size:11px;color:var(--y)}
 
@@ -297,6 +298,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .h-acts{flex-wrap:wrap}
 }
 @media(max-width:640px){
+  .ab-list li{font-size:13.5px}
   .h-inner{padding:clamp(36px,8vw,56px) clamp(16px,5vw,60px) clamp(48px,8vw,64px)}
   .h-h1{letter-spacing:-1.5px}
   .h-acts{flex-direction:column;align-items:stretch}
@@ -502,10 +504,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         <h2 class="h2 lt">Hôte avant d'être<br><em>formateur</em></h2>
         <p class="sub lt">Je suis hôte et co-fondateur de Driing avant d'être formateur. Je partage ce que j'ai appris sur le terrain, les bonnes pratiques comme les erreurs à éviter. Pas de mise en scène, pas de faux résultats.</p>
         <ul class="ab-list">
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div>4 ans d'expérience terrain en <a href="/services/formations" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">location courte durée</a></li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Co-fondateur de <a href="https://driing.fr" target="_blank" rel="noopener" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">Driing</a>, plateforme de réservation et <a href="/services/formations/livret-accueil-digital" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">livrets d'accueil digitaux</a></li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div>250+ hôtes accompagnés dans leur développement LCD</li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Support humain et réactif : <a href="/contact" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">Jason répond lui-même</a> à chaque message</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div><span>4 ans d'expérience terrain en <a href="/services/formations" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">location courte durée</a></span></li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div><span>Co&#8209;fondateur de <a href="https://driing.co" target="_blank" rel="noopener" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">Driing</a>, plateforme de réservation et <a href="/services/formations/livret-accueil-digital" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">livrets d'accueil digitaux</a></span></li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div><span>250+ hôtes accompagnés dans leur développement LCD</span></li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div><span>Support humain et réactif : <a href="/contact" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">Jason répond lui-même</a> à chaque message</span></li>
         </ul>
         <a href="/contact" class="btn-p">Prendre contact <i class="ph-bold ph-arrow-right"></i></a>
       </div>
