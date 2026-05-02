@@ -1146,11 +1146,11 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px',
   },
   railStat: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    display: 'flex', alignItems: 'baseline', gap: '5px',
     fontSize: '12px',
   },
-  railStatVal: { fontWeight: 600, color: 'var(--text)' },
-  railStatLbl: { color: 'var(--text-muted)' },
+  railStatVal: { fontWeight: 700, color: 'var(--text)', fontSize: '14px' },
+  railStatLbl: { color: 'var(--text-muted)', fontSize: '12px' },
 
   // ─── Phase 7, Vote utile/pas utile ────────────────────────────
   railVoteBtn: {
@@ -1222,7 +1222,6 @@ const styles: Record<string, React.CSSProperties> = {
   // Overview
   overview: {
     padding: 'clamp(28px,4vw,52px)',
-    maxWidth: '720px',
   },
   overviewMobile: {
     padding: '20px 16px',
