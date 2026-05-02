@@ -206,6 +206,46 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Comment accepter des paiements directs par carte pour la location courte durée avec Stripe ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Créez un compte Stripe, intégrez-le à votre site de réservation directe (Lodgify, Hostfully ou via l'API Stripe). Stripe gère la 3DS, les remboursements et les litiges. Vérifiez que votre activité LCD est bien déclarée en MK (meublé de tourisme) dans votre profil Stripe pour éviter les blocages."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quels sont les frais Stripe pour la location saisonnière ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Stripe prélève 1,5 % + 0,25 € par transaction pour les cartes européennes, et 2,5 % + 0,25 € pour les cartes hors UE. Sans frais mensuels fixes. Comparez à la commission Airbnb (14-17 % côté voyageur + 3 % hôte) : Stripe reste bien moins cher sur les réservations directes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Stripe est-il sécurisé pour recevoir des paiements de voyageurs LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Stripe est certifié PCI DSS niveau 1, le plus haut niveau de sécurité pour les paiements en ligne. Ils gèrent la 3D Secure, la détection de fraude et la protection contre les chargebacks. C'est la solution utilisée par la majorité des plateformes de réservation directe."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Peut-on bloquer une caution avec Stripe en LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui via les PaymentIntents avec capture_method: manual. Vous autorisez le montant (caution) sans le débiter immédiatement, puis capturez ou libérez après le séjour. Cette fonctionnalité est disponible via l'API Stripe ou certains outils LCD comme OwnerRez."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <script src="/nav.js"></script>
