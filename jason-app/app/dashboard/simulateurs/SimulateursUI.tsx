@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp } from '@phosphor-icons/react'
+import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp } from '@phosphor-icons/react/dist/ssr'
 
 type CalcTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe'
 

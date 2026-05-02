@@ -6,7 +6,7 @@ import {
   ArrowLeft, Plus, Trash, FloppyDisk, DownloadSimple,
   PencilSimple, BookOpen, GraduationCap, Warning, Check,
   CaretDown, CaretRight, Eye
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import {
   updateFormationMeta, upsertModule, upsertLesson,
   deleteModule, deleteLesson, importStaticContent,

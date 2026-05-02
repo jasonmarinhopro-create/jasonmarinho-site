@@ -6,7 +6,7 @@ import {
   House, Plus, Trash, X, Check,
   Info, Warning, ArrowRight, Scales, Upload,
   Receipt, ChartBar, Target,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel } from './actions'
 import ImportCSVModal from './ImportCSVModal'
 

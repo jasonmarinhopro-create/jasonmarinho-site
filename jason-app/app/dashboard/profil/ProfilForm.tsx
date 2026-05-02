@@ -8,7 +8,7 @@ import {
   Check, User, EnvelopeSimple, PencilSimple, Warning, Lock,
   Eye, EyeSlash, CreditCard, Bank, MapPin, IdentificationCard,
   Wallet,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
   initialFullName: string

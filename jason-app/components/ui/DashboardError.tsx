@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { ArrowCounterClockwise, Warning } from '@phosphor-icons/react'
+import { ArrowCounterClockwise, Warning } from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
   error: Error & { digest?: string }

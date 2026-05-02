@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { House, Check, Eye, EyeSlash, ArrowSquareOut, UsersThree } from '@phosphor-icons/react'
+import { House, Check, Eye, EyeSlash, ArrowSquareOut, UsersThree } from '@phosphor-icons/react/dist/ssr'
 import { updateProfilePseudo } from '../chez-nous/actions'
 
 type Props = {

@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import {
   ArrowRight, Eye, EyeSlash, CheckCircle, UserPlus,
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 
 const PERKS = [

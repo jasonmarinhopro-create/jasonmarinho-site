@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Heart } from '@phosphor-icons/react'
+import { Heart } from '@phosphor-icons/react/dist/ssr'
 import type { BadgeId } from '@/lib/badges'
 import { BADGES } from '@/lib/badges'
 

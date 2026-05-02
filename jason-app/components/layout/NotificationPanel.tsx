@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight } from '@phosphor-icons/react'
+import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
 
 const VISIBLE_COUNT = 3

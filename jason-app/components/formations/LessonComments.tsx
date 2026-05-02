@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useTransition } from 'react'
-import { ChatCircle, PaperPlaneRight, Trash, Star } from '@phosphor-icons/react'
+import { ChatCircle, PaperPlaneRight, Trash, Star } from '@phosphor-icons/react/dist/ssr'
 import { listLessonComments, postLessonComment, deleteLessonComment } from '@/app/dashboard/formations/actions'
 
 interface Comment {

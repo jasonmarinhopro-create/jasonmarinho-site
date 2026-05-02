@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition } from 'react'
 import Link from 'next/link'
-import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy, Compass, Heart } from '@phosphor-icons/react'
+import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy, Compass, Heart } from '@phosphor-icons/react/dist/ssr'
 import { toggleFormationFavorite } from './actions'
 
 interface Formation {

@@ -9,7 +9,7 @@ import {
   BookOpen, Newspaper, Crown, ShieldStar, TrendUp, Lightning,
   Sparkle, Circle, CurrencyEur, ChartLineUp, Percent,
   UserPlus, Star,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import {
   confirmDriingMember, rejectDriingMember,
   validateReport, deleteReport, deleteSuggestion,

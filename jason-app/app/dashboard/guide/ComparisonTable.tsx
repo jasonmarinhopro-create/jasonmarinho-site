@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { HouseLine, Coffee, Buildings, Handshake, Table, ArrowRight, CheckCircle, MinusCircle } from '@phosphor-icons/react'
+import { HouseLine, Coffee, Buildings, Handshake, Table, ArrowRight, CheckCircle, MinusCircle } from '@phosphor-icons/react/dist/ssr'
 
 type Cell = { value: string; tone?: 'ok' | 'warn' | 'neutral' }
 

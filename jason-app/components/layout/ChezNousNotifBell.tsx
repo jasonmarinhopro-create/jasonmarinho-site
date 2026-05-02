@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ChatCircleDots } from '@phosphor-icons/react'
+import { ChatCircleDots } from '@phosphor-icons/react/dist/ssr'
 import { createClient } from '@/lib/supabase/client'
 
 export default function ChezNousNotifBell() {

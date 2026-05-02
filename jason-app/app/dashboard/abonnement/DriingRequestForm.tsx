@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { requestDriingUpgrade } from './actions'
-import { Star, EnvelopeSimple, Warning, Check, ArrowSquareOut } from '@phosphor-icons/react'
+import { Star, EnvelopeSimple, Warning, Check, ArrowSquareOut } from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
   userEmail: string

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useTransition } from 'react'
 import Image from 'next/image'
-import { ImageSquare, Plus, X } from '@phosphor-icons/react'
+import { ImageSquare, Plus, X } from '@phosphor-icons/react/dist/ssr'
 import { uploadPostImage } from '@/app/dashboard/chez-nous/actions'
 
 type Props = {

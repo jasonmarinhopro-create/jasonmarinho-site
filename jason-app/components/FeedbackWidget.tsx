@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { ChatTeardrop, X, PaperPlaneTilt, Bug, Lightbulb, ChatCircle, Check } from '@phosphor-icons/react'
+import { ChatTeardrop, X, PaperPlaneTilt, Bug, Lightbulb, ChatCircle, Check } from '@phosphor-icons/react/dist/ssr'
 import { sendFeedback } from '@/app/dashboard/feedback/actions'
 
 type FeedbackType = 'bug' | 'idee' | 'autre'

@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Fraunces, Outfit } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import Script from 'next/script'
 import './globals.css'
 
 const fraunces = Fraunces({
@@ -43,13 +42,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <Analytics />
         <SpeedInsights />
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-L0Q61HE4RM" strategy="afterInteractive" />
-        <Script id="google-analytics" strategy="afterInteractive">{`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-L0Q61HE4RM');
-        `}</Script>
       </body>
     </html>
   )

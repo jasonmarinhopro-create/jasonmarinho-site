@@ -6,7 +6,7 @@ import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
   ChatText,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import type { ContractEvent, IcalFeed, IcalEvent } from './page'

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkle, ArrowUp, Wrench, Star } from '@phosphor-icons/react'
+import { Sparkle, ArrowUp, Wrench, Star } from '@phosphor-icons/react/dist/ssr'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
 
 const TAG_CONFIG: Record<ChangelogTag, { label: string; color: string; bg: string; border: string }> = {

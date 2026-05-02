@@ -7,7 +7,7 @@ import {
   Envelope, Phone, Note, CalendarBlank, House,
   CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
   ListChecks, CheckSquare, Square, Bandaids,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'

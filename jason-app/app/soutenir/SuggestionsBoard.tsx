@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ArrowUp, CircleNotch, CheckCircle, PaperPlaneTilt } from '@phosphor-icons/react'
+import { ArrowUp, CircleNotch, CheckCircle, PaperPlaneTilt } from '@phosphor-icons/react/dist/ssr'
 
 interface Idea {
   id: string

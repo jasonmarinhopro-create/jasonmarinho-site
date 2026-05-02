@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useMemo } from 'react'
 import Link from 'next/link'
-import { Eye, EyeSlash, Trash, GraduationCap, Users, ArrowCounterClockwise, MagnifyingGlass, PencilSimple } from '@phosphor-icons/react'
+import { Eye, EyeSlash, Trash, GraduationCap, Users, ArrowCounterClockwise, MagnifyingGlass, PencilSimple } from '@phosphor-icons/react/dist/ssr'
 import { toggleFormationPublished, deleteFormation, republishAllFormations } from './actions'
 
 interface Formation {

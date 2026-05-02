@@ -2,7 +2,7 @@
 
 import { useState, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { UploadSimple, CheckCircle, XCircle, ArrowRight, FileCsv, Warning } from '@phosphor-icons/react'
+import { UploadSimple, CheckCircle, XCircle, ArrowRight, FileCsv, Warning } from '@phosphor-icons/react/dist/ssr'
 import { parseCsv, csvRowToAnswers, type ImportResult } from '@/lib/audit-gbp/csv-mapper'
 import { startAuditSession, saveAuditAnswers } from '../actions'
 

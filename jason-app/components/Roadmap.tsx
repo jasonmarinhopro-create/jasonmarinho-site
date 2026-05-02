@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import {
   Lightbulb, Clock, Rocket, CheckCircle,
   ArrowFatUp, ChatCircle, Plus, X, SpinnerGap, Trash,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import {
   submitRoadmapIdea,
   voteRoadmapItem,

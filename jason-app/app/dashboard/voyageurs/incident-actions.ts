@@ -41,8 +41,8 @@ export type IncidentInput = {
 
 async function getSession() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  return { supabase, session }
+  const { data: { user: session } } = await supabase.auth.getUser()
+  return { supabase, session: session ? { user: session } : null }
 }
 
 export async function listIncidentsBySejours(sejourIds: string[]): Promise<SejourIncident[]> {

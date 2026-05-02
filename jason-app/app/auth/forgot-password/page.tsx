@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, ArrowLeft, CheckCircle } from '@phosphor-icons/react'
+import { ArrowRight, ArrowLeft, CheckCircle } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 
 export default function ForgotPasswordPage() {

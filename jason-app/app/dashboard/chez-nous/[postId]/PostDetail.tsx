@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, ChatCircle, PushPin, Lock, Trash, LockOpen,
   ArrowFatUp, Pencil, X, Check, CheckCircle,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'

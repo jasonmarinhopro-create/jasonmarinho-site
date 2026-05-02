@@ -7,7 +7,7 @@ import Link from 'next/link'
 import {
   ArrowRight, Eye, EyeSlash,
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 
 const PERKS = [

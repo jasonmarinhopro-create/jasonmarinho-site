@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useTransition } from 'react'
-import { CloudArrowUp, Check, X, Warning, FileCsv, ArrowRight } from '@phosphor-icons/react'
+import { CloudArrowUp, Check, X, Warning, FileCsv, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import { bulkImportRevenusEntries } from './actions'
 
 // ── Types ────────────────────────────────────────────────────────────────────

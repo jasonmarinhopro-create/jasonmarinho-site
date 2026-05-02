@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import {
   Plus, Trash, X, FacebookLogo, WhatsappLogo,
   Users, PencilSimple, Check, FolderSimple, Tag,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { addGroup, updateGroup, deleteGroup, updateGroupMembersCount } from './actions'
 
 interface Group {

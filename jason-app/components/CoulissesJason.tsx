@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Lock, PencilSimpleLine, X, SpinnerGap, Trash } from '@phosphor-icons/react'
+import { Lock, PencilSimpleLine, X, SpinnerGap, Trash } from '@phosphor-icons/react/dist/ssr'
 
 export interface CoulissesPost {
   id: string

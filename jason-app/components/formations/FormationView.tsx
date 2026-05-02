@@ -6,7 +6,7 @@ import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
   CaretDown, CaretRight, Star, Check, List, X,
   BookmarkSimple, Note as NoteIcon, ArrowSquareOut, ArrowRight,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark, voteLesson } from '@/app/dashboard/formations/actions'
 import LessonComments from './LessonComments'
 

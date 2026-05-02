@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
   Question, CaretDown, ArrowUpRight, Sun, Moon, Star
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
 import NotificationPanel from './NotificationPanel'

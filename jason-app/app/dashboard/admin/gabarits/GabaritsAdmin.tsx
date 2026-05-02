@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   Plus, Trash, PencilSimple, X, Check, Copy,
   MagnifyingGlass, CaretDown, CaretUp, Globe,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { addTemplate, deleteTemplate, updateTemplate } from './actions'
 
 interface Template {

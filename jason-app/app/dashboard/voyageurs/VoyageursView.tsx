@@ -6,7 +6,7 @@ import {
   Plus, MagnifyingGlass, Warning, CaretRight,
   X, User, Envelope, Phone, Note,
   Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
 
 type Sejour = { id: string; date_arrivee: string; date_depart: string; montant: number | null }

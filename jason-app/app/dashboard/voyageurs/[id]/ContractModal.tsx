@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useRef, useEffect } from 'react'
-import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock } from '@phosphor-icons/react'
+import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock } from '@phosphor-icons/react/dist/ssr'
 import { createContract, type ContractData } from '../contract-actions'
 
 const DEFAULT_ANNULATION =

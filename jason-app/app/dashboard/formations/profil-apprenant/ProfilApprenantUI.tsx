@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, GraduationCap, Trophy, Flame, Clock, BookOpen, ArrowRight, Star } from '@phosphor-icons/react'
+import { ArrowLeft, GraduationCap, Trophy, Flame, Clock, BookOpen, ArrowRight, Star } from '@phosphor-icons/react/dist/ssr'
 
 interface Formation {
   id: string

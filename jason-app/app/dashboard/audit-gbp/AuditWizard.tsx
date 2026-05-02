@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, ArrowLeft, CheckCircle, Sparkle, Lightning, ArrowSquareOut, FloppyDisk } from '@phosphor-icons/react'
+import { ArrowRight, ArrowLeft, CheckCircle, Sparkle, Lightning, ArrowSquareOut, FloppyDisk } from '@phosphor-icons/react/dist/ssr'
 import { PILLARS, QUESTIONS, getOptimalAnswer, type AnswerValue, type PillarId } from '@/lib/audit-gbp/questions'
 import { startAuditSession, updateAuditMeta, saveAuditAnswers, completeAudit } from './actions'
 

@@ -27,7 +27,7 @@ export default async function AuditResultsPage({ params }: PageProps) {
   const supabase = await createClient()
   const { data: session, error } = await supabase
     .from('audit_gbp_sessions')
-    .select('*')
+    .select('id, answers, completed_at, user_id')
     .eq('id', id)
     .eq('user_id', profile.userId)
     .maybeSingle()

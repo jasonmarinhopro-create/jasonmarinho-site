@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { CalendarBlank } from '@phosphor-icons/react'
+import { CalendarBlank } from '@phosphor-icons/react/dist/ssr'
 
 const DAYS    = ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di']
 const MONTHS  = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']

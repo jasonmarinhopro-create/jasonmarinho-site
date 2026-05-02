@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, Trash } from '@phosphor-icons/react'
+import { ArrowRight, Trash } from '@phosphor-icons/react/dist/ssr'
 import { deleteAuditSession } from './actions'
 
 export interface PastAudit {
