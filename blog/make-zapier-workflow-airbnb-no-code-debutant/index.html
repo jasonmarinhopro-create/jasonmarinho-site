@@ -206,6 +206,46 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Comment automatiser la gestion Airbnb avec des outils no-code comme Make ou Zapier ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Les automatisations les plus utiles pour un hôte LCD débutant en no-code : 1) Notification Slack/WhatsApp à chaque nouvelle réservation, 2) Ajout automatique des séjours dans Google Calendar, 3) Envoi d'un SMS ou email au prestataire ménage à chaque départ prévu, 4) Création automatique d'une tâche Notion/Trello pour chaque nouveau voyageur. Ces workflows se créent en 15-30 minutes sur Make (anciennement Integromat) ou Zapier sans écrire une ligne de code."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Make ou Zapier : lequel choisir pour automatiser son activité LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Make (anciennement Integromat) est recommandé pour les hôtes LCD pour plusieurs raisons : plan gratuit plus généreux (1 000 opérations/mois vs 100 pour Zapier), interface visuelle plus intuitive pour des workflows complexes, et coût inférieur sur les plans payants (9-16€/mois vs 20-30€ pour Zapier). Zapier est meilleur pour les automatisations simples 2 étapes et s'intègre plus facilement à certains outils américains. Pour des workflows LCD typiques (notif réservation, calendrier, ménage), Make est le meilleur choix."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelles données Airbnb peut-on utiliser dans des automatisations no-code ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Airbnb n'a pas d'API publique directe, mais les données peuvent transiter via : les webhooks de votre PMS (Smoobu, Hostaway, Lodgify exportent les événements de réservation), les emails de confirmation Airbnb parsés par Make/Zapier via Gmail, ou des outils spécialisés comme Hostify qui servent de pont entre Airbnb et les outils d'automatisation. Les données accessibles : nom du voyageur, dates de séjour, montant, numéro de réservation, et coordonnées (sous conditions RGPD)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelle économie de temps peut-on espérer avec les automatisations no-code en LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Les hôtes qui automatisent leurs process via Make ou Zapier rapportent une économie de 3 à 8 heures par semaine pour un portefeuille de 3-5 logements. Les tâches les plus chronophages éliminées : copier les réservations dans le calendrier, notifier le prestataire ménage, envoyer les rappels aux voyageurs. L'investissement initial (2-4 heures pour créer et tester les workflows) est amorti en 1-2 semaines. Ces automatisations permettent de scaler l'activité sans embaucher davantage."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <script src="/nav.js"></script>

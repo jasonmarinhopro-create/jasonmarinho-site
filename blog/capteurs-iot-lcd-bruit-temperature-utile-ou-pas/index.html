@@ -206,6 +206,46 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Les capteurs de bruit en location courte durée sont-ils légaux en France ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, à condition de ne pas enregistrer les conversations. Les capteurs homologués pour la LCD (Minut, NoiseAware, Alertify) mesurent uniquement le niveau sonore en décibels — comme un sonomètre — sans microphone ni enregistrement. Vous devez en informer les voyageurs dans la description de l'annonce et dans le règlement intérieur. Ne jamais installer de micro ou de caméra à l'intérieur du logement — c'est interdit par la loi française."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Un capteur de bruit vaut-il vraiment l'investissement pour un hôte LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le retour sur investissement est positif si vous avez déjà eu un incident de bruit ou si votre logement est en immeuble avec voisins proches. Le Minut coûte 100-130€ et se rentabilise avec un seul incident évité (dépôt de plainte voisin = litige Airbnb = risque de suspension). Pour un logement isolé ou une maison individuelle, l'urgence est moindre. Le bénéfice indirect est aussi de rassurer les propriétaires en cas de sous-location mandatée."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quels capteurs IoT sont réellement utiles en dehors du bruit ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Par utilité décroissante : 1) Détecteur de fumée connecté (obligatoire légalement, version connectée envoie une alerte sur smartphone), 2) Thermostat connecté Nest ou Tado (économies d'énergie importantes sur les logements chauffés en continu), 3) Serrure connectée (igloohome, Nuki) pour le check-in autonome et la gestion à distance, 4) Capteur de fuite d'eau (sous-estimé mais évite les dégâts catastrophiques en cas de fuite non détectée pendant un séjour)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment configurer un capteur Minut pour un logement LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Configuration recommandée : seuil d'alerte à 75-80 dB (conversation normale = 60 dB, fête = 85-95 dB), plage horaire active de 22h à 8h uniquement pour éviter les fausses alertes de journée. Le Minut envoie une notification mobile si le seuil est dépassé pendant plus de 60 secondes consécutives. Vous pouvez envoyer un message automatique via l'intégration Airbnb/Minut. Positionnement idéal : couloir ou salon, jamais dans la chambre ou la salle de bain."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <script src="/nav.js"></script>

@@ -206,6 +206,46 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Quelles obligations RGPD s'appliquent à un hôte LCD en France ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "En tant qu'hôte LCD qui collecte des données de voyageurs (noms, emails, données de paiement, fiches de police), vous êtes soumis au RGPD si vous traitez ces données de façon organisée. Obligations clés : informer les voyageurs de la collecte et de l'usage de leurs données (mention dans le règlement ou livret), ne conserver les données que le temps nécessaire (6 mois pour les fiches police, durée légale pour les données comptables), ne pas transmettre ces données à des tiers sans consentement, et répondre aux demandes d'accès ou de suppression sous 30 jours."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Peut-on utiliser les données des voyageurs Airbnb pour leur envoyer des emails marketing ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non directement — Airbnb masque les vraies adresses email des voyageurs dans leurs communications. Utiliser des données obtenues via Airbnb pour du marketing hors plateforme sans consentement explicite viole les CGU d'Airbnb ET le RGPD. La seule voie légale : demander explicitement pendant ou après le séjour si le voyageur souhaite recevoir vos offres directes (opt-in explicite), avec une case à cocher dans votre livret digital ou un lien d'inscription dans votre email post-séjour personnalisé."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment sécuriser les données des voyageurs pour être conforme RGPD en LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mesures pratiques : stocker les fiches de police dans un dossier protégé par mot de passe (pas dans un dossier partagé ouvert), utiliser un gestionnaire de mots de passe pour accéder aux plateformes (évite les accès non autorisés), chiffrer les disques durs contenant des données voyageurs, et définir une politique de rétention claire (supprimer les données 6 mois après le séjour sauf obligation légale plus longue). Un simple document Word ou tableur non protégé n'est pas une mesure de sécurité suffisante."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Faut-il nommer un DPO (Délégué à la Protection des Données) pour une activité LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non, la nomination d'un DPO n'est obligatoire que pour les organisations qui traitent des données à grande échelle ou des données sensibles de façon systématique. Un hôte LCD individuel ou une petite conciergerie gérant quelques dizaines de logements n'y est pas soumis. Il est cependant recommandé de tenir un registre simple des traitements de données (quel type de données, pour quel usage, durée de conservation) — ce document prouve votre démarche de conformité en cas de contrôle de la CNIL."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <script src="/nav.js"></script>

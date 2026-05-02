@@ -1,21 +1,18 @@
-/**
- * Rate limiter — Upstash Redis with in-memory fallback.
- *
- * If UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN are set in env,
- * uses Upstash for cluster-wide accurate limits across all serverless
- * instances. Otherwise falls back to per-instance in-memory limiter
- * (only useful for local dev — multi-instance prod gives effective
- * limit = N × max).
- */
-
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 
-const HAS_UPSTASH = !!(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-)
+// Vercel × Upstash integration creates UPSTASH_REDIS_REST_KV_REST_API_* vars
+const UPSTASH_URL =
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_URL
 
-const redis = HAS_UPSTASH ? Redis.fromEnv() : null
+const UPSTASH_TOKEN =
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN
+
+const HAS_UPSTASH = !!(UPSTASH_URL && UPSTASH_TOKEN)
+
+const redis = HAS_UPSTASH ? new Redis({ url: UPSTASH_URL!, token: UPSTASH_TOKEN! }) : null
 
 // Cache one Ratelimit instance per (bucket, max, windowMs) tuple
 const upstashCache = new Map<string, Ratelimit>()

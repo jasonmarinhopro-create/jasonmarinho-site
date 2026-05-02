@@ -168,17 +168,24 @@ RESEND_API_KEY
 NEXT_PUBLIC_APP_URL
 UPSTASH_REDIS_REST_URL           ← rate limiting (optionnel, fallback in-memory)
 UPSTASH_REDIS_REST_TOKEN
+# Variables injectées automatiquement par l'intégration Vercel × Upstash :
+UPSTASH_REDIS_REST_KV_REST_API_URL
+UPSTASH_REDIS_REST_KV_REST_API_TOKEN
 ```
 
 ## Rate limiting (Upstash Redis)
 
-`lib/security/rate-limit.ts` détecte automatiquement la présence de `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`. Si absentes, fallback in-memory (par lambda) — utile en dev local. Si présentes, sliding-window cluster-wide via `@upstash/ratelimit`.
+`lib/security/rate-limit.ts` détecte automatiquement les variables Upstash — supporte les deux formats :
+- `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` (manuelles)
+- `UPSTASH_REDIS_REST_KV_REST_API_URL` + `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` (injectées par l'intégration Vercel × Upstash)
 
-Setup Upstash :
-1. Créer une DB Redis sur upstash.com (free tier : 10k req/jour, suffisant)
-2. Copier `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN` depuis le dashboard
-3. Les ajouter dans Vercel → Project Settings → Environment Variables (Production + Preview)
-4. Redeploy : le code détecte auto les vars, aucune autre modif requise
+Si absentes, fallback in-memory (par lambda) — utile en dev local.
+
+Setup via intégration Vercel (méthode recommandée) :
+1. Vercel Dashboard → Storage → Connect → Upstash for Redis
+2. Région `iad1` (US East, aligne avec les fonctions Vercel)
+3. Prefix `UPSTASH_REDIS_REST` → variables auto-injectées en Production + Preview
+4. Redeploy automatique
 
 Routes protégées : `/api/login`, `/api/register`, `/api/send-reset-email`, `/api/contracts/sign`, `/api/ideas/submit`, `/api/ideas/vote`.
 

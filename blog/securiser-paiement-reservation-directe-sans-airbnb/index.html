@@ -38,6 +38,46 @@
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Quelles sont les solutions de paiement sécurisé pour les réservations directes LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Les options recommandées par ordre de praticité : 1) Stripe (1.4% + 0.25€ en Europe, intégrable dans tous les PMS, liens de paiement sans code), 2) PayPal (2.9% de frais, très connu des voyageurs mais plus cher), 3) Virement bancaire (0 frais mais délai de 1-3 jours et risque de non-paiement si non sécurisé par contrat), 4) Sumup (utile si vous acceptez aussi des paiements en présentiel). Stripe est la référence pour les hôtes LCD qui font du volume — le coût est largement inférieur aux commissions Airbnb économisées."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment protéger sa réservation directe LCD sans l'assurance d'Airbnb ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le pack de protection pour les réservations directes : contrat de location signé numériquement (HelloSign ou Docusign, 10-20€/mois) avec les conditions d'annulation et de responsabilité, acompte de 30-50% non remboursable après 48h capturé via Stripe, dépôt de garantie préautorisé (Stripe permet de pré-autoriser sans débiter, libéré après constat d'état satisfaisant), et assurance LCD spécifique couvrant les dommages voyageurs. Ce dispositif offre une protection comparable à AirCover pour les réservations directes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment émettre une facture légale pour une réservation directe LCD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Si vous êtes en statut LMNP avec numéro SIRET, vous devez émettre une facture pour chaque prestation : votre nom/adresse, SIRET, date, description du service (location meublée du X au Y à l'adresse Z), montant HT (exonéré de TVA pour la LCD simple), et mention 'TVA non applicable, article 261 D du CGI'. Les logiciels de facturation comme Facture.net (gratuit) ou Pennylane (payant, intégré à la comptabilité) permettent de générer ces factures conformes en quelques clics."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quels risques prendre en compte avant d'accepter un paiement direct hors plateforme ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Risques principaux : annulation sans recours si pas de contrat signé, charge-back bancaire frauduleux (le voyageur conteste le paiement auprès de sa banque — avec Stripe, vous avez une procédure de contestation mais perdez souvent sans preuves solides), et dommages non couverts sans dépôt de garantie. Mitigation : contrat signé + acompte Stripe + dépôt de garantie pré-autorisé + assurance LCD. Avec ces 4 éléments, le risque résiduel est inférieur à celui d'une réservation Airbnb classique."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <script src="/nav.js"></script>
