@@ -3,7 +3,7 @@
 import { useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, BellRinging, ChatCircleDots, Check } from '@phosphor-icons/react'
+import { ArrowLeft, BellRinging, ChatCircleDots, Check } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { markNotifRead, markAllNotifsRead } from './actions'

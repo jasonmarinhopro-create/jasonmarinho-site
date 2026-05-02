@@ -7,13 +7,13 @@ export const metadata = { title: 'Membres, Jason Marinho' }
 
 export default async function MembresPage() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) redirect('/auth/login')
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth/login')
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('role, full_name')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single()
 
   if (profile?.role !== 'admin') redirect('/dashboard')

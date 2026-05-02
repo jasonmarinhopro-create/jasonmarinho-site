@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import {
   Plus, Trash, PencilSimple, X, Check, ArrowClockwise,
   Eye, EyeSlash, CheckCircle, XCircle, Globe,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { addActualite, updateActualite, deleteActualite, togglePublish } from './actions'
 
 interface Actualite {

@@ -19,8 +19,8 @@ function serviceClient() {
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
 
     const { contract_id } = await request.json()
     if (!contract_id) return NextResponse.json({ error: 'contract_id manquant.' }, { status: 400 })
@@ -30,9 +30,9 @@ export async function POST(request: NextRequest) {
     // Récupérer le contrat (vérifie ownership via user_id)
     const { data: contract } = await db
       .from('contracts')
-      .select('*')
+      .select('stripe_deposit_status, stripe_deposit_payment_intent_id, user_id')
       .eq('id', contract_id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .single()
 
     if (!contract) return NextResponse.json({ error: 'Contrat introuvable.' }, { status: 404 })
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const { data: profile } = await db
       .from('profiles')
       .select('stripe_account_id')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single()
 
     if (!profile?.stripe_account_id) {

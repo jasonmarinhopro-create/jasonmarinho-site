@@ -26,10 +26,10 @@ export async function searchGuest(query: string): Promise<{
   }
 
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { results: [], error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { results: [], error: 'Non authentifié.' }
 
-  const q = query.trim().toLowerCase()
+  const q = query.trim().toLowerCase().replace(/[%_\\,]/g, '\\$&')
 
   const { data, error } = await supabase
     .from('reported_guests')
@@ -54,8 +54,8 @@ export async function reportGuest(formData: {
   description: string
 }): Promise<{ success?: boolean; error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
 
   const { email, phone, full_name, incident_type, description } = formData
 
@@ -81,7 +81,7 @@ export async function reportGuest(formData: {
   const { data: reporterProfile } = await supabase
     .from('profiles')
     .select('email, full_name')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .maybeSingle()
 
   // Create ONE row per submission
@@ -91,7 +91,7 @@ export async function reportGuest(formData: {
     name: nameVal || null,
     incident_type,
     description: description.trim(),
-    reporter_id: session.user.id,
+    reporter_id: user.id,
     is_validated: false,
   })
 
@@ -102,7 +102,7 @@ export async function reportGuest(formData: {
   }
 
   // Notification email pour modération
-  const reporterEmail = reporterProfile?.email ?? session.user.email ?? 'inconnu'
+  const reporterEmail = reporterProfile?.email ?? user.email ?? 'inconnu'
   const reporterName = reporterProfile?.full_name ?? reporterEmail
 
   const identifiersHtml = [
@@ -146,18 +146,18 @@ export async function requestDeletion(params: {
   reason?: string
 }): Promise<{ success?: boolean; error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
 
   const { entry_id, identifier, reason } = params
 
   const { data: requesterProfile } = await supabase
     .from('profiles')
     .select('email, full_name')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .maybeSingle()
 
-  const requesterEmail = requesterProfile?.email ?? session.user.email ?? 'inconnu'
+  const requesterEmail = requesterProfile?.email ?? user.email ?? 'inconnu'
   const requesterName = requesterProfile?.full_name ?? requesterEmail
 
   await getResend().emails.send({

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { House, Tag, MagnifyingGlass, ChatCircle, ArrowRight, X } from '@phosphor-icons/react'
+import { House, Tag, MagnifyingGlass, ChatCircle, ArrowRight, X } from '@phosphor-icons/react/dist/ssr'
 import { markChezNousOnboarded } from '@/app/dashboard/chez-nous/actions'
 
 const SLIDES = [

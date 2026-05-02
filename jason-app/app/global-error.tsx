@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { ArrowCounterClockwise } from '@phosphor-icons/react'
+import { ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr'
 
 export default function GlobalError({
   error,

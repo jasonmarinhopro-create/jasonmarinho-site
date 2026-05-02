@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, type RefObject } from 'react'
-import { TextB, TextItalic, Link } from '@phosphor-icons/react'
+import { TextB, TextItalic, Link } from '@phosphor-icons/react/dist/ssr'
 
 type Props = {
   textareaRef: RefObject<HTMLTextAreaElement>

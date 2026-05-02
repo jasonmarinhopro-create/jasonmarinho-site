@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import {
   Copy, Check, MagnifyingGlass, Heart, PencilSimple, X,
   CalendarCheck, House, SunHorizon, ArrowRight, UsersThree,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import type { Template, UserTemplateCustomization } from '@/types'
 
 // ── Mapping catégorie → moment d'envoi ─────────────────────────────────────

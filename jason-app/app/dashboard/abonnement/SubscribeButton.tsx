@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { ArrowRight, CircleNotch } from '@phosphor-icons/react'
+import { ArrowRight, CircleNotch } from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
   priceId: string

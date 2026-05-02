@@ -7,7 +7,7 @@ import Resources from './Resources'
 import {
   HouseLine, Coffee, Buildings, Handshake, Sparkle,
   ArrowRight, ArrowUpRight, BookOpen, Calculator, MagnifyingGlass,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 
 // Type local, la data + le rendu des cards vivent dans GuideCards.tsx (server)
 type ProfileFilter = 'all' | 'commun' | 'gites' | 'chambres' | 'conciergerie' | 'direct'

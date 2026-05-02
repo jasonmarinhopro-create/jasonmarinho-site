@@ -7,7 +7,7 @@ import {
   BookmarkSimple, PencilSimple, Flag, Lightbulb, Lightning,
   Pencil, Check, X, Note, SpinnerGap, EnvelopeSimple,
   ArrowClockwise, FacebookLogo, MagnifyingGlass, Trophy,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { updateAdminNotes, changeUserPlan } from '../../actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────

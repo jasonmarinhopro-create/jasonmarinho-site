@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { ArrowUpRight, Star, Buildings, Handshake, Sparkle, Heart, TrendUp } from '@phosphor-icons/react'
+import { ArrowUpRight, Star, Buildings, Handshake, Sparkle, Heart, TrendUp } from '@phosphor-icons/react/dist/ssr'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
 import { ECOSYSTEME_TOOLS, ECOSYSTEME_CATEGORIES, type EcosystemeTool } from '@/lib/constants/ecosysteme'
 import PartenaireSuggestForm from './PartenaireSuggestForm'

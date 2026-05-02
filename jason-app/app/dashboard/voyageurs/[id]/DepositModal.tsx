@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { X, LockKey, LockKeyOpen, Warning, CurrencyEur, Copy, Check, PaperPlaneTilt, Bank } from '@phosphor-icons/react'
+import { X, LockKey, LockKeyOpen, Warning, CurrencyEur, Copy, Check, PaperPlaneTilt, Bank } from '@phosphor-icons/react/dist/ssr'
 import { useRouter } from 'next/navigation'
 
 type DepositStatus = 'pending' | 'held' | 'captured' | 'released' | 'failed' | null

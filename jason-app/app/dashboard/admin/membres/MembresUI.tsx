@@ -8,7 +8,7 @@ import {
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
   Crown, Star, TextAa, CurrencyEur, DownloadSimple,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import {
   changeUserPlan, deleteUser, deleteAllBots,
   getMemberDetails, toggleContributor, updateMemberName,

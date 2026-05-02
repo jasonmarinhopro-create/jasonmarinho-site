@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { PaperPlaneRight, Check } from '@phosphor-icons/react'
+import { PaperPlaneRight, Check } from '@phosphor-icons/react/dist/ssr'
 import { saveSuggestion } from '@/app/actions/suggestions'
 
 export default function PartenaireSuggestForm() {

@@ -6,7 +6,7 @@ import {
   ArrowLeft, Clock, BookOpen, CheckCircle, GraduationCap,
   CaretDown, CaretRight, Star, Check, List, X,
   BookmarkSimple, Note as NoteIcon, ArrowSquareOut, ArrowRight,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark, voteLesson } from '@/app/dashboard/formations/actions'
 import LessonComments from './LessonComments'
 
@@ -327,8 +327,17 @@ export default function FormationView({
     return elements
   }
 
+  function escapeHtml(s: string): string {
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+  }
+
   function formatInline(text: string): string {
-    return text
+    return escapeHtml(text)
       .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:var(--text);font-weight:600">$1</strong>')
       .replace(/\*([^*]+)\*/g, '<em style="color:var(--accent-text);font-style:italic">$1</em>')
       .replace(/`([^`]+)`/g, '<code style="background:var(--border);padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;color:var(--accent-text)">$1</code>')

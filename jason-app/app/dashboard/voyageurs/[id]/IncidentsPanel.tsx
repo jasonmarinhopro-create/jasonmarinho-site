@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from 'react'
 import {
   Warning, X, Trash, CheckCircle, ArrowsClockwise,
   Plus, CurrencyEur, Camera,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import {
   listIncidentsBySejours,
   createIncident,

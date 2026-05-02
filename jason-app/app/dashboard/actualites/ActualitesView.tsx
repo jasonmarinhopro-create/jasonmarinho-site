@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {
   Newspaper, ArrowUpRight, Clock, Funnel, Star, Check,
   BookmarkSimple, Hourglass, Sparkle, ShareNetwork, CheckCircle,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import type { Actualite } from './page'
 import { markActualiteRead, markAllActualitesRead, toggleActualiteFavorite } from './actions'
 

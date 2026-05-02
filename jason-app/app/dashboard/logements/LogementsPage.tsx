@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition, useEffect, useMemo } from 'react'
-import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight } from '@phosphor-icons/react'
+import Image from 'next/image'
+import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 
@@ -578,7 +579,13 @@ export default function LogementsPage({ logements: initial }: Props) {
                 {/* Photo couverture si présente */}
                 {l.photo_couverture_url && (
                   <div style={cardCover}>
-                    <img src={l.photo_couverture_url} alt={l.nom} style={cardCoverImg} />
+                    <Image
+                      src={l.photo_couverture_url}
+                      alt={l.nom}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 320px"
+                      style={{ objectFit: 'cover' }}
+                    />
                     {l.actif === false && (
                       <span style={cardCoverBadge}>En pause</span>
                     )}

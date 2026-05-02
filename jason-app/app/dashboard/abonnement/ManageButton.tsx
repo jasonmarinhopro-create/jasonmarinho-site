@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { ArrowSquareOut, CircleNotch } from '@phosphor-icons/react'
+import { ArrowSquareOut, CircleNotch } from '@phosphor-icons/react/dist/ssr'
 
 export default function ManageButton() {
   const [loading, setLoading] = useState(false)

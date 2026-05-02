@@ -5,7 +5,7 @@ import {
   ChartLineUp, House, CurrencyEur, Bed, CalendarBlank,
   TrendUp, TrendDown, Minus, Trophy, Warning, Sparkle,
   ArrowDown, ArrowUp, Download, Funnel,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import type { SejourRow, LogementRow, VoyageurMin } from './page'
 
 type Props = {

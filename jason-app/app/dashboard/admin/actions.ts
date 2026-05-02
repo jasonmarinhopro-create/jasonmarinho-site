@@ -21,13 +21,13 @@ function getServiceClient() {
 
 async function getAdminClient() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié', supabase: null }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié', supabase: null }
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single()
 
   if (profile?.role !== 'admin') return { error: 'Non autorisé', supabase: null }

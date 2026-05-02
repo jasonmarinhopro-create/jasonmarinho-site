@@ -8,7 +8,7 @@ import {
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
   FacebookLogo, CaretDown, House, ChartBar, CalendarBlank, Heart,
   MagnifyingGlass, ChatsCircle, Globe, Calculator, ChartLineUp,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'

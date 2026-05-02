@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, Eye, EyeSlash, CheckCircle } from '@phosphor-icons/react'
+import { ArrowRight, Eye, EyeSlash, CheckCircle } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 
 function ResetPasswordForm() {

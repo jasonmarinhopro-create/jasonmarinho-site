@@ -5,7 +5,7 @@ import {
   ArrowUpRight, UsersThree, FacebookLogo,
   Star, MagnifyingGlass, CaretDown, CaretUp, X,
   Check, EyeSlash, WifiHigh,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { setGroupMembership, restoreAllDismissed } from './actions'
 
 interface Group {

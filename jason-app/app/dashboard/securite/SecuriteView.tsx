@@ -5,7 +5,7 @@ import {
   MagnifyingGlass, ShieldCheck, ShieldWarning, Warning,
   CheckCircle, Info, PaperPlaneRight, X, PhoneCall, Star, Trash,
   Siren, Users, Handshake,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 import { searchGuest, reportGuest, requestDeletion } from './actions'
 
 const ARNAQUES = [

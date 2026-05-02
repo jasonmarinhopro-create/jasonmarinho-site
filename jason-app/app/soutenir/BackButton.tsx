@@ -1,5 +1,5 @@
 'use client'
-import { ArrowLeft } from '@phosphor-icons/react'
+import { ArrowLeft } from '@phosphor-icons/react/dist/ssr'
 
 export default function BackButton({ label, style }: { label?: string; style?: React.CSSProperties }) {
   return (

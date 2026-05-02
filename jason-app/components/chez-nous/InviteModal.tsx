@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import {
   X, Copy, Check, WhatsappLogo, EnvelopeSimple,
   Link as LinkIcon, ShareNetwork, FacebookLogo, UsersThree, CaretDown,
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
   open: boolean

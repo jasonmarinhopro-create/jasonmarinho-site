@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { X } from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/ssr'
 
 /**
  * Affiche une grille d'images cliquables (lightbox simple au clic).

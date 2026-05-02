@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Flag, X, Check } from '@phosphor-icons/react'
+import { Flag, X, Check } from '@phosphor-icons/react/dist/ssr'
 import { reportContent } from '@/app/dashboard/chez-nous/actions'
 
 type Props = {

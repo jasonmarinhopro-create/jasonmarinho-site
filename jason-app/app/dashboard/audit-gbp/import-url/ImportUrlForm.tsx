@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapPin, CheckCircle, XCircle, ArrowRight, Star, Warning, Info } from '@phosphor-icons/react'
+import { MapPin, CheckCircle, XCircle, ArrowRight, Star, Warning, Info } from '@phosphor-icons/react/dist/ssr'
 import { previewMapsUrl, startAuditFromMapsUrl } from '../place-actions'
 import type { PlacesImportResult } from '@/lib/audit-gbp/places-mapper'
 
