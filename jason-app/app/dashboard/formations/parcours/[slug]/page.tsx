@@ -121,7 +121,7 @@ export default async function ParcoursDetailPage({ params }: { params: Promise<{
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '900px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   backLink: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, color: 'var(--text-2)', textDecoration: 'none', marginBottom: '20px' },
 
   hero: { background: 'var(--surface)', border: '1px solid var(--accent-border)', borderRadius: '18px', padding: 'clamp(20px,3vw,32px)', marginBottom: '28px' },

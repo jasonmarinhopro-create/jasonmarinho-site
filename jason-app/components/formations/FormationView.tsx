@@ -619,9 +619,52 @@ export default function FormationView({
         )}
       </main>
 
-      {/* ── Phase 1 : Rail droite (desktop large only, visible quand leçon active) ── */}
-      {!isMobile && !isMidScreen && activeLesson && (
+      {/* ── Phase 1 : Rail droite (desktop large only) ── */}
+      {!isMobile && !isMidScreen && (
         <aside style={styles.rightRail}>
+          {/* Rail overview : sommaire du cours (page d'entrée sans leçon active) */}
+          {!activeLesson && (
+            <>
+              <div style={styles.railSection}>
+                <div style={styles.railLabel}>Contenu du cours</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {formation.modules.map((mod) => (
+                    <div key={mod.id} style={styles.railModuleRow}>
+                      <div style={styles.railModuleNum}>{mod.id}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={styles.railModuleTitle}>{mod.title}</div>
+                        <div style={styles.railModuleMeta}>{mod.lessons.length} leçon{mod.lessons.length > 1 ? 's' : ''} · {mod.duration}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={styles.railSection}>
+                <div style={styles.railLabel}>En bref</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div style={styles.railStat}><span style={styles.railStatVal}>{formation.modules.length}</span><span style={styles.railStatLbl}>modules</span></div>
+                  <div style={styles.railStat}><span style={styles.railStatVal}>{totalLessons}</span><span style={styles.railStatLbl}>leçons</span></div>
+                  <div style={styles.railStat}><span style={styles.railStatVal}>{formation.duration}</span><span style={styles.railStatLbl}>durée totale</span></div>
+                </div>
+              </div>
+              {recommendedNext.length > 0 && (
+                <div style={{ ...styles.railSection, borderBottom: 'none' }}>
+                  <div style={styles.railLabel}>Formations liées</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {recommendedNext.map(rec => (
+                      <Link key={rec.slug} href={`/dashboard/formations/${rec.slug}`} style={styles.tocLink}>
+                        <span style={styles.tocBullet}>·</span>
+                        <span style={{ flex: 1 }}>{rec.title}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          {/* Rail leçon active : progression, navigation, notes, TOC, votes */}
+          {activeLesson && (
+          <>
           {/* Mini-progression */}
           <div style={styles.railSection}>
             <div style={styles.railLabel}>Progression</div>
@@ -797,6 +840,8 @@ export default function FormationView({
                 ))}
               </div>
             </div>
+          )}
+          </>
           )}
         </aside>
       )}
@@ -1079,6 +1124,33 @@ const styles: Record<string, React.CSSProperties> = {
     minHeight: '90px',
     lineHeight: 1.5,
   },
+
+  // ─── Rail overview : sommaire du cours ───────────────────────
+  railModuleRow: {
+    display: 'flex', alignItems: 'flex-start', gap: '8px',
+    padding: '6px 0',
+    borderBottom: '1px solid var(--border)',
+  },
+  railModuleNum: {
+    width: '20px', height: '20px', flexShrink: 0,
+    borderRadius: '50%',
+    background: 'var(--surface-2)', border: '1px solid var(--border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)',
+    marginTop: '1px',
+  },
+  railModuleTitle: {
+    fontSize: '12px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.35,
+  },
+  railModuleMeta: {
+    fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px',
+  },
+  railStat: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    fontSize: '12px',
+  },
+  railStatVal: { fontWeight: 600, color: 'var(--text)' },
+  railStatLbl: { color: 'var(--text-muted)' },
 
   // ─── Phase 7, Vote utile/pas utile ────────────────────────────
   railVoteBtn: {
