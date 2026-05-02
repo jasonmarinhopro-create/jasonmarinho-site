@@ -183,6 +183,7 @@
             + '<i class="ph ph-caret-down ft-seo-caret"></i>'
           + '</summary>'
           + '<div class="ft-seo-grid">'
+            + '<a href="/comparatif-driing-airbnb-booking">Driing vs Airbnb vs Booking.com</a>'
             + '<a href="/comparatif-pricelabs-beyond-wheelhouse">PriceLabs vs Beyond vs Wheelhouse</a>'
             + '<a href="/comparatif-smoobu-hospitable">Smoobu vs Hospitable</a>'
             + '<a href="/comparatif-superhote-welkeys">Superhote vs Welkeys</a>'
