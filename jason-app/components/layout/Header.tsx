@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, Star
+  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, Article,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
@@ -46,6 +46,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/ecosysteme': 'Écosystème LCD',
   '/dashboard/contributeurs': 'Contributeurs',
   '/dashboard/guide': 'Guide LCD',
+  '/dashboard/blog': 'Blog LCD',
   '/dashboard/admin': 'Administration',
   '/dashboard/admin/membres': 'Membres',
   '/dashboard/admin/communaute': 'Communauté',
@@ -353,6 +354,44 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
 
                 <div style={styles.dropDivider} />
 
+                {/* Ressources LCD */}
+                <div style={{ padding: '6px 6px 2px' }}>
+                  <div style={styles.dropResourcesLabel}>
+                    <Article size={11} />
+                    Ressources LCD
+                  </div>
+                  {[
+                    { label: 'Algorithme Airbnb 2026', href: 'https://jasonmarinho.com/blog/algorithme-airbnb-2026-criteres-classement' },
+                    { label: 'LMNP vs LMP 2026', href: 'https://jasonmarinho.com/blog/lmnp-vs-lmp-changement-2026-impact' },
+                    { label: 'Tarification dynamique', href: 'https://jasonmarinho.com/blog/fixer-prix-minimum-airbnb-lcd' },
+                    { label: 'Réservation directe', href: 'https://jasonmarinho.com/blog/location-directe-pourquoi-saffranchir-plateformes' },
+                    { label: 'Numéro d\'enregistrement 2026', href: 'https://jasonmarinho.com/blog/numero-enregistrement-lcd-20-mai-2026-demarches' },
+                  ].map(({ label, href }) => (
+                    <a
+                      key={href}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={styles.dropResourceItem}
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      <span style={{ flex: 1 }}>{label}</span>
+                      <ArrowUpRight size={10} style={{ opacity: 0.4, flexShrink: 0 }} />
+                    </a>
+                  ))}
+                  <a
+                    href="https://jasonmarinho.com/blog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={styles.dropResourcesAll}
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Voir tous les articles →
+                  </a>
+                </div>
+
+                <div style={styles.dropDivider} />
+
                 <button
                   onClick={() => { setDropdownOpen(false); handleSignOut() }}
                   style={styles.dropSignOut}
@@ -508,6 +547,29 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s',
     background: 'none', border: 'none', cursor: 'pointer', width: '100%',
     textAlign: 'left',
+  },
+  dropResourcesLabel: {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    fontSize: '10px', fontWeight: 600, letterSpacing: '0.8px',
+    textTransform: 'uppercase' as const,
+    color: 'var(--text-3)',
+    padding: '4px 8px 6px',
+  },
+  dropResourceItem: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '6px 8px', borderRadius: '6px',
+    fontSize: '12px', fontWeight: 400,
+    color: 'var(--text-2)',
+    textDecoration: 'none',
+    transition: 'background 0.15s',
+  },
+  dropResourcesAll: {
+    display: 'block',
+    padding: '5px 8px 8px',
+    fontSize: '11px', fontWeight: 500,
+    color: 'var(--accent-text)',
+    textDecoration: 'none',
+    opacity: 0.8,
   },
   dropSignOut: {
     display: 'flex', alignItems: 'center', gap: '10px',
