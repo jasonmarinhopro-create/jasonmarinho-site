@@ -174,8 +174,8 @@ export default function NouveautesPage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page:     { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '900px' },
-  intro:    { marginBottom: '28px' },
+  page:     { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  intro:    { marginBottom: '28px', maxWidth: '720px' },
   pageTitle: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '8px',
