@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, Article,
+  Question, CaretDown, ArrowUpRight, Sun, Moon, Star,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
@@ -30,7 +30,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/gabarits': 'Gabarits',
   '/dashboard/aide': "Centre d'aide",
   '/dashboard/revenus': 'Revenus',
-  '/dashboard/profil': 'Mon profil',
+  '/dashboard/profil': 'Mon compte',
   '/dashboard/abonnement': 'Abonnement',
   '/dashboard/actualites': 'Actualités',
   '/dashboard/actualites/favoris': 'Mes favoris',
@@ -46,7 +46,6 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/ecosysteme': 'Écosystème LCD',
   '/dashboard/contributeurs': 'Contributeurs',
   '/dashboard/guide': 'Guide LCD',
-  '/dashboard/blog': 'Blog LCD',
   '/dashboard/admin': 'Administration',
   '/dashboard/admin/membres': 'Membres',
   '/dashboard/admin/communaute': 'Communauté',
@@ -104,7 +103,7 @@ interface HeaderProps {
   currentPlan?: string
   /** Passé depuis le layout. Évite un useEffect qui refait 2 queries Supabase à chaque navigation. */
   isAdmin?: boolean
-  /** Pour le lien "Mon profil Chez Nous" dans le dropdown */
+  /** Pour le lien "Profil forum" dans le dropdown */
   userId?: string
 }
 
@@ -302,12 +301,12 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                 <nav style={styles.dropNav}>
                   <Link href="/dashboard/profil" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <UserCircle size={15} />
-                    Mon profil
+                    Mon compte
                   </Link>
                   {userId && (
                     <Link href={`/dashboard/chez-nous/membre/${userId}`} style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                       <UserCircle size={15} weight="duotone" />
-                      Mon profil Chez Nous
+                      Profil forum
                     </Link>
                   )}
                   <Link href="/dashboard/abonnement" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
@@ -349,44 +348,6 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                     <Star size={14} weight="fill" style={{ color: '#FFD56B', flexShrink: 0 }} />
                     Laisser un avis Google
                     <ArrowUpRight size={12} style={{ marginLeft: 'auto', opacity: 0.6 }} />
-                  </a>
-                </div>
-
-                <div style={styles.dropDivider} />
-
-                {/* Ressources LCD */}
-                <div style={{ padding: '6px 6px 2px' }}>
-                  <div style={styles.dropResourcesLabel}>
-                    <Article size={11} />
-                    Ressources LCD
-                  </div>
-                  {[
-                    { label: 'Algorithme Airbnb 2026', href: 'https://jasonmarinho.com/blog/algorithme-airbnb-2026-criteres-classement' },
-                    { label: 'LMNP vs LMP 2026', href: 'https://jasonmarinho.com/blog/lmnp-vs-lmp-changement-2026-impact' },
-                    { label: 'Tarification dynamique', href: 'https://jasonmarinho.com/blog/fixer-prix-minimum-airbnb-lcd' },
-                    { label: 'Réservation directe', href: 'https://jasonmarinho.com/blog/location-directe-pourquoi-saffranchir-plateformes' },
-                    { label: 'Numéro d\'enregistrement 2026', href: 'https://jasonmarinho.com/blog/numero-enregistrement-lcd-20-mai-2026-demarches' },
-                  ].map(({ label, href }) => (
-                    <a
-                      key={href}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={styles.dropResourceItem}
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      <span style={{ flex: 1 }}>{label}</span>
-                      <ArrowUpRight size={10} style={{ opacity: 0.4, flexShrink: 0 }} />
-                    </a>
-                  ))}
-                  <a
-                    href="https://jasonmarinho.com/blog"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={styles.dropResourcesAll}
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    Voir tous les articles →
                   </a>
                 </div>
 
@@ -547,29 +508,6 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s',
     background: 'none', border: 'none', cursor: 'pointer', width: '100%',
     textAlign: 'left',
-  },
-  dropResourcesLabel: {
-    display: 'flex', alignItems: 'center', gap: '6px',
-    fontSize: '10px', fontWeight: 600, letterSpacing: '0.8px',
-    textTransform: 'uppercase' as const,
-    color: 'var(--text-3)',
-    padding: '4px 8px 6px',
-  },
-  dropResourceItem: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    padding: '6px 8px', borderRadius: '6px',
-    fontSize: '12px', fontWeight: 400,
-    color: 'var(--text-2)',
-    textDecoration: 'none',
-    transition: 'background 0.15s',
-  },
-  dropResourcesAll: {
-    display: 'block',
-    padding: '5px 8px 8px',
-    fontSize: '11px', fontWeight: 500,
-    color: 'var(--accent-text)',
-    textDecoration: 'none',
-    opacity: 0.8,
   },
   dropSignOut: {
     display: 'flex', alignItems: 'center', gap: '10px',
