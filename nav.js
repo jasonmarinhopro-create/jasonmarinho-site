@@ -110,8 +110,7 @@
       '.mc-c i{color:var(--gd)!important}',
 
       /* Responsive */
-      '@media(max-width:960px){.n-links,.n-right .nb-c{display:none}.hbg{display:flex}}',
-      '@media(max-width:520px){.nb-o{display:none}}'
+      '@media(max-width:960px){.n-links,.n-right .nb-c,.n-right .nb-o{display:none}.hbg{display:flex}}'
     ].join('');
     document.head.appendChild(style);
   }
