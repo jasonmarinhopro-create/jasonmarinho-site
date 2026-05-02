@@ -7,7 +7,7 @@
     style.textContent = [
       'footer{background:#001a11;padding:clamp(48px,6vw,72px) clamp(16px,5vw,60px) clamp(24px,4vw,40px);border-top:1px solid rgba(255,255,255,.05)}',
       '.ft-in{max-width:1240px;margin:0 auto}',
-      '.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:36px;margin-bottom:44px}',
+      '.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}',
       '.ft-col-brand{min-width:0}',
       '.ft-desc{font-size:14px;color:rgba(255,255,255,.35);line-height:1.75;max-width:300px;margin-top:14px;font-family:\'Outfit\',sans-serif}',
       '.ft-ct{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.4);margin-bottom:14px;font-family:\'Outfit\',sans-serif}',
@@ -16,6 +16,20 @@
       '.ft-ls a:hover{color:rgba(255,255,255,.85)}',
       '.ft-ls a i{font-size:14px;color:rgba(255,213,107,.35);flex-shrink:0;width:14px;text-align:center}',
       '.ft-ls a .ft-ext{font-size:10px;color:rgba(255,213,107,.35);margin-left:2px}',
+      /* Collapsible SEO sections */
+      '.ft-seo{border-top:1px solid rgba(255,255,255,.05);padding-top:8px;margin-bottom:28px}',
+      '.ft-seo-block{border-bottom:1px solid rgba(255,255,255,.04)}',
+      '.ft-seo-block:last-child{border-bottom:none}',
+      '.ft-seo-block summary{list-style:none;cursor:pointer;padding:16px 4px;display:flex;align-items:center;justify-content:space-between;font-family:\'Outfit\',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);transition:color .2s;-webkit-tap-highlight-color:transparent}',
+      '.ft-seo-block summary::-webkit-details-marker{display:none}',
+      '.ft-seo-block summary:hover{color:rgba(255,255,255,.9)}',
+      '.ft-seo-block summary .ft-seo-label{display:flex;align-items:center;gap:10px}',
+      '.ft-seo-block summary .ft-seo-label i{font-size:14px;color:rgba(255,213,107,.5)}',
+      '.ft-seo-block summary .ft-seo-caret{font-size:12px;color:rgba(255,255,255,.3);transition:transform .25s}',
+      '.ft-seo-block[open] summary .ft-seo-caret{transform:rotate(180deg)}',
+      '.ft-seo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 24px;padding:4px 4px 20px}',
+      '.ft-seo-grid a{color:rgba(255,255,255,.38);text-decoration:none;font-size:13px;font-family:\'Outfit\',sans-serif;padding:5px 0;transition:color .2s;line-height:1.4}',
+      '.ft-seo-grid a:hover{color:rgba(255,255,255,.85)}',
       '.ft-bot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding-top:28px;border-top:1px solid rgba(255,255,255,.05)}',
       '.ft-bot-l{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;font-family:\'Outfit\',sans-serif}',
       '.ft-cp{font-size:12px;color:rgba(255,255,255,.2)}',
@@ -29,9 +43,9 @@
       /* Tablet : 3 cols, brand pleine largeur */
       '@media(max-width:960px){.ft-g{grid-template-columns:repeat(3,1fr);gap:28px}.ft-col-brand{grid-column:1 / -1;max-width:520px}.ft-desc{max-width:none}}',
       /* Mobile : 2 cols */
-      '@media(max-width:640px){.ft-g{grid-template-columns:1fr 1fr;gap:24px}.ft-bot{flex-direction:column;align-items:flex-start}.ft-legal{margin-top:-4px}}',
+      '@media(max-width:640px){.ft-g{grid-template-columns:1fr 1fr;gap:24px}.ft-bot{flex-direction:column;align-items:flex-start}.ft-legal{margin-top:-4px}.ft-seo-grid{grid-template-columns:1fr 1fr;gap:4px 16px}}',
       /* Petit mobile : 1 col */
-      '@media(max-width:420px){.ft-g{grid-template-columns:1fr;gap:22px}}'
+      '@media(max-width:420px){.ft-g{grid-template-columns:1fr;gap:22px}.ft-seo-grid{grid-template-columns:1fr}}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -56,7 +70,6 @@
             + '<li><a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a></li>'
             + '<li><a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a></li>'
             + '<li><a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits messages</a></li>'
-            + '<li><a href="/comparatif-pricelabs-beyond-wheelhouse"><i class="ph ph-scales"></i>PriceLabs vs Beyond</a></li>'
           + '</ul>'
         + '</div>'
         + '<div>'
@@ -73,15 +86,12 @@
           + '</ul>'
         + '</div>'
         + '<div>'
-          + '<div class="ft-ct">Devenir hôte</div>'
+          + '<div class="ft-ct">Pour qui</div>'
           + '<ul class="ft-ls">'
             + '<li><a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a></li>'
             + '<li><a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes</a></li>'
             + '<li><a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a></li>'
             + '<li><a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing</a></li>'
-            + '<li><a href="/devenir-hote-airbnb-lyon"><i class="ph ph-map-pin"></i>Hôte à Lyon</a></li>'
-            + '<li><a href="/devenir-hote-airbnb-bordeaux"><i class="ph ph-map-pin"></i>Hôte à Bordeaux</a></li>'
-            + '<li><a href="/devenir-hote-airbnb-annecy"><i class="ph ph-map-pin"></i>Hôte à Annecy</a></li>'
           + '</ul>'
         + '</div>'
         + '<div>'
@@ -94,6 +104,29 @@
             + '<li><a href="https://driing.co" target="_blank" rel="noopener"><i class="ph ph-arrow-square-out"></i>Driing<span class="ft-ext"><i class="ph ph-arrow-up-right"></i></span></a></li>'
           + '</ul>'
         + '</div>'
+      + '</div>'
+      /* Sections SEO collapsibles : capture longue traîne sans polluer la nav */
+      + '<div class="ft-seo">'
+        + '<details class="ft-seo-block">'
+          + '<summary>'
+            + '<span class="ft-seo-label"><i class="ph ph-map-pin"></i>Devenir hôte par ville</span>'
+            + '<i class="ph ph-caret-down ft-seo-caret"></i>'
+          + '</summary>'
+          + '<div class="ft-seo-grid">'
+            + '<a href="/devenir-hote-airbnb-lyon">Devenir hôte à Lyon</a>'
+            + '<a href="/devenir-hote-airbnb-bordeaux">Devenir hôte à Bordeaux</a>'
+            + '<a href="/devenir-hote-airbnb-annecy">Devenir hôte à Annecy</a>'
+          + '</div>'
+        + '</details>'
+        + '<details class="ft-seo-block">'
+          + '<summary>'
+            + '<span class="ft-seo-label"><i class="ph ph-scales"></i>Comparatifs outils LCD</span>'
+            + '<i class="ph ph-caret-down ft-seo-caret"></i>'
+          + '</summary>'
+          + '<div class="ft-seo-grid">'
+            + '<a href="/comparatif-pricelabs-beyond-wheelhouse">PriceLabs vs Beyond vs Wheelhouse</a>'
+          + '</div>'
+        + '</details>'
       + '</div>'
       + '<div class="ft-bot">'
         + '<div class="ft-bot-l">'
