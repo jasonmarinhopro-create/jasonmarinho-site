@@ -201,6 +201,60 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
       "@type": "WebPage",
       "@id": "https://jasonmarinho.com/blog/automatiser-caution-swikly-youka-test-terrain"
     }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Pourquoi automatiser la caution voyageur ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Demander une caution en cash ou par chèque au check-in crée 3 problèmes : friction au moment de l arrivée donc mauvaise première impression, pas de couverture si check-in autonome car tu n es pas là pour récupérer le chèque, et complexité de remboursement post-séjour. Les solutions dématérialisées résolvent ces 3 points avec une autorisation de prélèvement avant l arrivée et un remboursement automatique 48 heures après le check-out."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment fonctionne SwikLy concrètement ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SwikLy basé en France et RGPD friendly est la solution la plus utilisée par les hôtes LCD français. Le voyageur reçoit un email avec un lien pour autoriser une empreinte CB avant son arrivée. Si dégât détecté après le séjour, tu prélèves directement depuis ton dashboard hôte. Si pas de problème, tu cliques simplement sur libérer et le voyageur récupère sa caution sous 24 heures sur sa carte."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quelle différence entre SwikLy et Youka ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Youka est plus récent et propose une intégration directe avec Airbnb via API. Le lien de caution est envoyé automatiquement après chaque réservation, sans intervention de ta part. Si tu cherches du set and forget c est l option la plus pratique. SwikLy demande un peu plus de manipulation mais offre plus de souplesse pour les réservations directes ou multi-canaux et reste la référence française."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Peut-on faire sa propre caution avec Stripe ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui si tu as un site de réservation directe via Driing par exemple. Tu peux mettre en place ta propre solution de pré-autorisation Stripe sans passer par un tiers. Les avantages sont zéro coût par caution et contrôle total du processus. Les inconvénients sont la nécessité d un développement initial et la conformité PCI à respecter, qui demande un minimum de compétences techniques pour être implémentée correctement."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Faut-il choisir SwikLy ou la solution maison ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Pour la plupart des hôtes, le rapport coût-temps-fiabilité penche clairement en faveur de SwikLy ou Youka. La solution maison via Stripe ne devient rentable qu au-delà de 100 cautions par an et nécessite des compétences techniques pour gérer le développement, la conformité PCI et la maintenance. En dessous de ce volume, payer une commission à SwikLy ou Youka reste la solution la plus pragmatique."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quel montant de caution demander ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Le montant standard se situe entre 200 et 500 euros pour un appartement classique en LCD. Pour des logements de valeur ou des biens premium, le montant peut monter jusqu à 1000 euros voire plus. Adapte le montant au profil de ton logement, à la valeur des équipements présents et au type de voyageurs accueillis. Trop bas tu n es pas couvert, trop haut tu freines la conversion à la réservation."
+        }
+      }
+    ]
   }
 ]
 </script>
