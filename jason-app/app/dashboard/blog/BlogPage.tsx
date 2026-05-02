@@ -36,7 +36,7 @@ export default function BlogPage({ articles }: Props) {
   }, [articles])
 
   return (
-    <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '1100px' }}>
+    <div style={{ padding: 'clamp(24px,3vw,40px)' }}>
       {/* Header */}
       <div style={{ marginBottom: '28px' }}>
         <div style={s.badge}>
@@ -243,8 +243,8 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '100px', padding: '1px 6px',
   },
   countActive: {
-    fontSize: '11px', fontWeight: 600,
-    background: 'var(--accent-text)', color: '#fff',
+    fontSize: '11px', fontWeight: 700,
+    background: 'rgba(0,0,0,0.28)', color: 'var(--accent-text)',
     borderRadius: '100px', padding: '1px 6px',
   },
   resultCount: {
