@@ -21,7 +21,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   const [voyageurRes, sejoursRes, authRes, profileDataRes, logementsRes] = await Promise.all([
     supabase
       .from('voyageurs')
-      .select('id, prenom, nom, email, telephone, user_id, created_at')
+      .select('*')
       .eq('id', id)
       .eq('user_id', profile.userId)
       .single(),
