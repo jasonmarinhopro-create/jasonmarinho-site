@@ -166,7 +166,21 @@ STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
 RESEND_API_KEY
 NEXT_PUBLIC_APP_URL
+UPSTASH_REDIS_REST_URL           ← rate limiting (optionnel, fallback in-memory)
+UPSTASH_REDIS_REST_TOKEN
 ```
+
+## Rate limiting (Upstash Redis)
+
+`lib/security/rate-limit.ts` détecte automatiquement la présence de `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`. Si absentes, fallback in-memory (par lambda) — utile en dev local. Si présentes, sliding-window cluster-wide via `@upstash/ratelimit`.
+
+Setup Upstash :
+1. Créer une DB Redis sur upstash.com (free tier : 10k req/jour, suffisant)
+2. Copier `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN` depuis le dashboard
+3. Les ajouter dans Vercel → Project Settings → Environment Variables (Production + Preview)
+4. Redeploy : le code détecte auto les vars, aucune autre modif requise
+
+Routes protégées : `/api/login`, `/api/register`, `/api/send-reset-email`, `/api/contracts/sign`, `/api/ideas/submit`, `/api/ideas/vote`.
 
 ---
 

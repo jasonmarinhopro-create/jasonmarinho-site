@@ -14,7 +14,7 @@ function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req)
-    const ipLimit = rateLimit('reset:ip', ip, 10, 60 * 60_000)
+    const ipLimit = await rateLimit('reset:ip', ip, 10, 60 * 60_000)
     if (!ipLimit.allowed) {
       return NextResponse.json({ error: 'Trop de tentatives. Réessaye plus tard.' }, { status: 429 })
     }
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     const normalized = normalizeEmail(email)
 
-    const emailLimit = rateLimit('reset:email', normalized, 3, 15 * 60_000)
+    const emailLimit = await rateLimit('reset:email', normalized, 3, 15 * 60_000)
     if (!emailLimit.allowed) {
       return NextResponse.json(
         { error: 'Trop de tentatives. Attends 15 minutes.' },

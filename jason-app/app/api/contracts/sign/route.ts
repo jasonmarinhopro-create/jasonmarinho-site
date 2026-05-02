@@ -56,7 +56,7 @@ const FROM_EMAIL = 'contrats@jasonmarinho.com'
 export async function POST(request: NextRequest) {
   try {
     const ipForLimit = getClientIp(request)
-    const limit = rateLimit('contracts:sign', ipForLimit, 10, 60_000)
+    const limit = await rateLimit('contracts:sign', ipForLimit, 10, 60_000)
     if (!limit.allowed) {
       return NextResponse.json({ error: 'Trop de tentatives. Réessaye dans 1 minute.' }, { status: 429 })
     }
@@ -336,7 +336,7 @@ export async function POST(request: NextRequest) {
 // Retourne les données du contrat pour la page de signature (sans données sensibles)
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request)
-  const limit = rateLimit('contracts:sign:read', ip, 60, 60_000)
+  const limit = await rateLimit('contracts:sign:read', ip, 60, 60_000)
   if (!limit.allowed) {
     return NextResponse.json({ error: 'Trop de requêtes.' }, { status: 429 })
   }
