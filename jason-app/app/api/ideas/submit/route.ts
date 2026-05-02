@@ -15,7 +15,7 @@ function getClient() {
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req)
-  const limit = rateLimit('ideas:submit', ip, 5, 60_000)
+  const limit = await rateLimit('ideas:submit', ip, 5, 60_000)
   if (!limit.allowed) {
     return NextResponse.json({ error: 'Trop de requêtes. Réessaye dans 1 minute.' }, { status: 429 })
   }

@@ -10,7 +10,7 @@ const log = logger('api/login')
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req)
-    const ipLimit = rateLimit('login:ip', ip, 10, 60_000)
+    const ipLimit = await rateLimit('login:ip', ip, 10, 60_000)
     if (!ipLimit.allowed) {
       return NextResponse.json({ error: 'TOO_MANY_REQUESTS' }, { status: 429 })
     }
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'INVALID_CREDENTIALS' }, { status: 400 })
     }
 
-    const emailLimit = rateLimit('login:email', normalizeEmail(email), 5, 15 * 60_000)
+    const emailLimit = await rateLimit('login:email', normalizeEmail(email), 5, 15 * 60_000)
     if (!emailLimit.allowed) {
       return NextResponse.json({ error: 'TOO_MANY_REQUESTS' }, { status: 429 })
     }
