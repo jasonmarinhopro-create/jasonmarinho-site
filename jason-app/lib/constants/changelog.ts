@@ -18,13 +18,6 @@ export const CHANGELOG: ChangelogEntry[] = [
     description: '"Parcours d\'apprentissage" sort enfin de l\'ombre, hero card en haut de page pour te guider étape par étape. Tu peux maintenant mettre une formation en favori d\'un clic sur le cœur ❤️ directement sur sa carte. La page Mes favoris affiche les formations et leçons bookmarkées dans 2 sections distinctes.',
   },
   {
-    id: 'em-dashes-nettoyage-mai-2026',
-    date: '2026-05-01',
-    tag: 'amélioration',
-    title: 'Textes nettoyés : suppression des tirets longs partout',
-    description: 'Plus de 1 700 tirets longs "—" remplacés par des virgules ou tirets simples dans tout le contenu (formations, dashboard, site public). Lecture plus naturelle, meilleur SEO, et fini la touche "AI generated".',
-  },
-  {
     id: 'rail-formation-agrandie-mai-2026',
     date: '2026-05-01',
     tag: 'amélioration',
