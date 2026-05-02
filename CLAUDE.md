@@ -174,7 +174,12 @@ NEXT_PUBLIC_APP_URL
 
 1. **Phosphor /dist/ssr** : ne jamais importer depuis la racine du package
 2. **select('*')** : énumérer les colonnes sauf quand >8 colonnes toutes utilisées
-3. **Formation content** : 18 fichiers `content.ts` ~1000-4000 lignes chacun — candidats futurs pour migration Supabase
+3. **Formation content** : 18 fichiers `content.ts` ~1000-4000 lignes chacun. Tables `formation_modules` + `formation_lessons` créées (migration `20260502_023`). Pour seeder le contenu en DB, lancer depuis `jason-app/` :
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
+     node scripts/seed-formations-content.mjs
+   ```
+   Une fois en DB, `getFormationDbContent()` lit la DB en priorité et le fallback statique sert juste de safety net.
 4. **Pas de gtag** : analytics via Vercel Analytics uniquement
 5. **Cache-Control immutable** : configuré dans vercel.json pour /fonts/* et *.webp
 
