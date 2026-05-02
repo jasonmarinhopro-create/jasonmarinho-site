@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexique LCD : tous les termes de la location courte durée | Jason Marinho</title>
+<meta name="description" content="Glossaire complet des termes utilisés en location courte durée : LMNP, LMP, micro-BIC, taxe de séjour, ERP, DPE, RevPAR, channel manager, et bien plus. Définitions claires et concrètes.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jasonmarinho.com/lexique-lcd">
+<meta property="og:title" content="Lexique LCD : tous les termes de la location courte durée">
+<meta property="og:description" content="Glossaire complet des termes LCD : statuts, fiscalité, réglementation, métriques, outils.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jasonmarinho.com/lexique-lcd">
+<meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+<link rel="icon" type="image/webp" href="/favicon-jason.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "name": "Lexique LCD — Location Courte Durée",
+  "description": "Glossaire complet des termes utilisés en location courte durée en France",
+  "url": "https://jasonmarinho.com/lexique-lcd",
+  "inLanguage": "fr-FR"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://jasonmarinho.com" },
+    { "@type": "ListItem", "position": 2, "name": "Lexique LCD", "item": "https://jasonmarinho.com/lexique-lcd" }
+  ]
+}
+</script>
+
+<style>
+  :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.6}
+  a{color:var(--g);text-decoration:underline;text-decoration-color:rgba(0,76,63,.25);text-underline-offset:3px}
+  a:hover{text-decoration-color:var(--g)}
+
+  .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(56px,9vw,96px) clamp(16px,5vw,60px) clamp(48px,7vw,72px);position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04) 0%,transparent 70%);pointer-events:none}
+  .hero-in{max-width:920px;margin:0 auto;position:relative}
+  .breadcrumb{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:24px;display:flex;align-items:center;gap:6px}
+  .breadcrumb a{color:rgba(255,255,255,.55);text-decoration:none}
+  .breadcrumb a:hover{color:#fff}
+  .breadcrumb i{font-size:11px;opacity:0.6}
+  .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
+  .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:300}
+  .h1 em{color:var(--y);font-style:italic;font-weight:300}
+  .lead{font-size:clamp(15px,1.5vw,17px);color:rgba(255,255,255,.6);margin:0;max-width:680px;line-height:1.7}
+
+  .toc{background:#fff;border-bottom:1px solid var(--bd);padding:24px clamp(16px,5vw,60px);position:sticky;top:64px;z-index:50;backdrop-filter:blur(10px)}
+  .toc-in{max-width:920px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px}
+  .toc a{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:6px 12px;background:rgba(0,76,63,.06);border-radius:100px;color:var(--g);text-decoration:none;transition:all .18s}
+  .toc a:hover{background:var(--g);color:#fff}
+
+  main{max-width:920px;margin:0 auto;padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px)}
+
+  .cat{margin-bottom:56px;scroll-margin-top:140px}
+  .cat-h{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:400;letter-spacing:-.5px;margin:0 0 8px;color:var(--td);display:flex;align-items:center;gap:12px}
+  .cat-h i{color:var(--g);font-size:.85em}
+  .cat-h em{font-style:italic;color:var(--g);font-weight:300}
+  .cat-desc{color:var(--tm);font-size:15px;margin:0 0 28px;max-width:600px}
+
+  .term{padding:24px 0;border-top:1px solid var(--bd);scroll-margin-top:140px}
+  .term:first-of-type{border-top:none}
+  .term-h{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:600;color:var(--td);margin:0 0 8px;letter-spacing:-.3px}
+  .term-h a{color:inherit;text-decoration:none;border-bottom:2px solid transparent;transition:border-color .18s}
+  .term-h:hover a{border-color:var(--y)}
+  .term-h .perma{font-size:13px;font-weight:400;color:var(--tl);margin-left:6px;opacity:0;transition:opacity .18s}
+  .term:hover .perma{opacity:1}
+  .term p{color:var(--tm);font-size:15px;line-height:1.75;margin:0 0 8px}
+  .term .also{font-size:13px;color:var(--tl);margin-top:6px}
+  .term .also strong{color:var(--tm);font-weight:500}
+
+  .cta-banner{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:18px;padding:clamp(28px,4vw,44px);margin:48px 0 0;text-align:center}
+  .cta-banner h2{font-family:'Fraunces',serif;color:#fff;font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:400;margin:0 0 10px;letter-spacing:-.4px}
+  .cta-banner h2 em{color:var(--y);font-style:italic;font-weight:300}
+  .cta-banner p{color:rgba(255,255,255,.6);font-size:15px;margin:0 0 20px;max-width:480px;margin-left:auto;margin-right:auto}
+  .cta-banner .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14px;padding:12px 22px;border-radius:9px;text-decoration:none;transition:all .2s}
+  .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,213,107,.25);text-decoration:none}
+  .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.78);font-weight:500;font-size:14px;padding:11px 20px;border-radius:9px;text-decoration:none;transition:all .2s}
+  .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff;text-decoration:none}
+
+  @media (max-width: 720px) {
+    .toc{padding:16px 16px}
+    .toc-in{gap:6px}
+    .toc a{font-size:12px;padding:5px 10px}
+  }
+</style>
+</head>
+<body>
+<div id="nav-mount"></div>
+
+<section class="hero">
+  <div class="hero-in">
+    <nav class="breadcrumb" aria-label="Fil d'ariane">
+      <a href="/">Accueil</a>
+      <i class="ph ph-caret-right"></i>
+      <span>Lexique LCD</span>
+    </nav>
+    <span class="lbl">Glossaire</span>
+    <h1 class="h1">Lexique <em>LCD</em>, tous les termes utiles</h1>
+    <p class="lead">Statuts, fiscalité, réglementation, plateformes, métriques : 30+ définitions claires pour comprendre la location courte durée et arrêter de chercher.</p>
+  </div>
+</section>
+
+<nav class="toc" aria-label="Table des matières">
+  <div class="toc-in">
+    <a href="#statuts"><i class="ph ph-scales"></i> Statuts</a>
+    <a href="#fiscalite"><i class="ph ph-receipt"></i> Fiscalité</a>
+    <a href="#reglementation"><i class="ph ph-shield-check"></i> Réglementation</a>
+    <a href="#plateformes"><i class="ph ph-globe"></i> Plateformes & outils</a>
+    <a href="#metriques"><i class="ph ph-chart-line-up"></i> Métriques</a>
+    <a href="#metiers"><i class="ph ph-briefcase"></i> Métiers & business</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ───── STATUTS ───── -->
+<section id="statuts" class="cat">
+  <h2 class="cat-h"><i class="ph ph-scales"></i> Statuts <em>juridiques</em></h2>
+  <p class="cat-desc">Comment ton activité de location est qualifiée fiscalement et juridiquement.</p>
+
+  <article class="term" id="lmnp">
+    <h3 class="term-h"><a href="#lmnp">LMNP — Loueur Meublé Non Professionnel <span class="perma">#</span></a></h3>
+    <p>Statut fiscal par défaut quand tes revenus locatifs meublés restent inférieurs à 23 000 € par an OU à 50 % de tes revenus globaux. Le LMNP permet l'amortissement du bien et du mobilier en régime réel, ce qui réduit fortement la base imposable. C'est le statut le plus utilisé par les hôtes Airbnb particuliers.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#lmp">LMP</a>, <a href="#micro-bic">micro-BIC</a>, <a href="/blog/location-courte-duree-impots-france">guide impôts LCD</a></p>
+  </article>
+
+  <article class="term" id="lmp">
+    <h3 class="term-h"><a href="#lmp">LMP — Loueur Meublé Professionnel <span class="perma">#</span></a></h3>
+    <p>Statut activé automatiquement quand tes recettes locatives dépassent 23 000 € par an ET représentent plus de 50 % de tes revenus du foyer. Tes déficits sont alors imputables sur le revenu global, mais tu paies les cotisations sociales SSI (≈30-45 %) au lieu des prélèvements sociaux à 17,2 %.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#lmnp">LMNP</a>, <a href="/blog/fiscalite-location-meublee-lmnp-lmp-2026">guide LMNP vs LMP 2026</a></p>
+  </article>
+
+  <article class="term" id="micro-bic">
+    <h3 class="term-h"><a href="#micro-bic">Micro-BIC <span class="perma">#</span></a></h3>
+    <p>Régime fiscal simplifié des Bénéfices Industriels et Commerciaux. En LCD classique : abattement forfaitaire de 50 % (plafond 77 700 €). En meublé de tourisme classé : 71 % (plafond 188 700 €). La loi Le Meur 2026 prévoit des évolutions pour les meublés non classés. Sans déduction des charges réelles ni amortissement.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#bic-reel">BIC réel</a>, <a href="/blog/micro-bic-abattement-2026-airbnb">abattement micro-BIC 2026</a></p>
+  </article>
+
+  <article class="term" id="bic-reel">
+    <h3 class="term-h"><a href="#bic-reel">Régime réel BIC <span class="perma">#</span></a></h3>
+    <p>Régime fiscal qui permet de déduire toutes les charges réelles (intérêts d'emprunt, taxe foncière, assurances, ménage, frais de gestion…) ET d'amortir le bien (sur 25-30 ans) et le mobilier (sur 5-7 ans). Souvent plus avantageux que le micro-BIC dès que les charges + amortissement dépassent 50 % des recettes.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#micro-bic">micro-BIC</a>, <a href="#lmnp">LMNP</a></p>
+  </article>
+
+  <article class="term" id="meuble-tourisme">
+    <h3 class="term-h"><a href="#meuble-tourisme">Meublé de tourisme <span class="perma">#</span></a></h3>
+    <p>Catégorie réglementaire désignant un logement meublé loué à une clientèle de passage qui n'y élit pas domicile, pour des durées inférieures à 90 jours par client. Tu peux faire classer ton meublé (1 à 5 étoiles) auprès d'un organisme agréé (Atout France, Clévacances…) pour bénéficier de l'abattement micro-BIC majoré.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#numero-enregistrement">numéro d'enregistrement</a>, <a href="/blog/declarer-meuble-tourisme-mairie-formalites">déclaration en mairie</a></p>
+  </article>
+
+  <article class="term" id="bail-mobilite">
+    <h3 class="term-h"><a href="#bail-mobilite">Bail mobilité <span class="perma">#</span></a></h3>
+    <p>Contrat de location meublée de 1 à 10 mois, non renouvelable, créé par la loi Elan en 2018. Réservé à des locataires en situation spécifique (étudiant, formation, mission, mutation). N'est PAS de la LCD au sens fiscal : pas de taxe de séjour, pas de numéro d'enregistrement requis, mais cadre juridique différent (préavis, dépôt de garantie limité à 1 mois).</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="/blog/bail-mobilite-vs-courte-duree-differences">bail mobilité vs LCD</a></p>
+  </article>
+</section>
+
+<!-- ───── FISCALITÉ ───── -->
+<section id="fiscalite" class="cat">
+  <h2 class="cat-h"><i class="ph ph-receipt"></i> <em>Fiscalité</em> & taxes</h2>
+  <p class="cat-desc">Ce que tu dois déclarer, collecter, et reverser quand tu loues en courte durée.</p>
+
+  <article class="term" id="taxe-sejour">
+    <h3 class="term-h"><a href="#taxe-sejour">Taxe de séjour <span class="perma">#</span></a></h3>
+    <p>Taxe communale collectée auprès du voyageur pour chaque nuit, et reversée à la mairie (ou à l'EPCI). Le tarif dépend du type de logement et de son classement (de 0,20 € à 5 €/nuit/personne). Airbnb, Booking et Vrbo collectent et reversent souvent automatiquement, mais en réservation directe, c'est à toi de la collecter.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="/blog/taxe-sejour-lcd-comment-la-collecter">comment la collecter</a></p>
+  </article>
+
+  <article class="term" id="cfe">
+    <h3 class="term-h"><a href="#cfe">CFE — Cotisation Foncière des Entreprises <span class="perma">#</span></a></h3>
+    <p>Impôt local dû par toute entreprise, y compris les loueurs meublés non professionnels. Calculée sur la valeur locative cadastrale du logement. Souvent oubliée par les nouveaux hôtes, elle apparaît à la 2e année (exonération l'année de création). Montant moyen : 200 à 1 200 €/an selon la commune.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#lmnp">LMNP</a>, <a href="/blog/declarer-activite-location-courte-duree-france-demarches">démarches LCD</a></p>
+  </article>
+
+  <article class="term" id="abattement">
+    <h3 class="term-h"><a href="#abattement">Abattement forfaitaire <span class="perma">#</span></a></h3>
+    <p>Réduction automatique appliquée à tes recettes brutes en régime micro-BIC, sans justificatif à fournir. Couvre forfaitairement toutes tes charges. La loi Le Meur 2026 abaisse cet abattement à 30 % pour les meublés non classés (contre 50 % avant) — un changement majeur qui pousse beaucoup d'hôtes vers le régime réel ou le classement.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#micro-bic">micro-BIC</a>, <a href="/blog/micro-bic-abattement-2026-airbnb">loi Le Meur impact</a></p>
+  </article>
+
+  <article class="term" id="tva">
+    <h3 class="term-h"><a href="#tva">TVA en LCD <span class="perma">#</span></a></h3>
+    <p>En location courte durée meublée pure, la TVA ne s'applique généralement PAS (exonération). Elle devient obligatoire si tu fournis 3 des 4 services para-hôteliers : petit-déjeuner, ménage régulier en cours de séjour, fourniture de linge, accueil personnalisé. Dans ce cas, tu factures 10 % de TVA et tu peux la déduire sur tes achats.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="/blog/tva-location-meublee-courte-duree-guide">guide TVA LCD</a></p>
+  </article>
+
+  <article class="term" id="amortissement">
+    <h3 class="term-h"><a href="#amortissement">Amortissement <span class="perma">#</span></a></h3>
+    <p>Mécanisme comptable du régime réel BIC qui permet de déduire chaque année une fraction du prix du bien et du mobilier. Le bâti s'amortit sur 25-30 ans, le mobilier sur 5-7 ans. C'est le levier fiscal majeur du LMNP : tes recettes locatives peuvent rester non imposées pendant des années.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#bic-reel">régime réel BIC</a>, <a href="#lmnp">LMNP</a></p>
+  </article>
+</section>
+
+<!-- ───── RÉGLEMENTATION ───── -->
+<section id="reglementation" class="cat">
+  <h2 class="cat-h"><i class="ph ph-shield-check"></i> <em>Réglementation</em> & conformité</h2>
+  <p class="cat-desc">Les obligations légales que tu dois respecter pour louer en France.</p>
+
+  <article class="term" id="numero-enregistrement">
+    <h3 class="term-h"><a href="#numero-enregistrement">Numéro d'enregistrement <span class="perma">#</span></a></h3>
+    <p>Identifiant communal obligatoire dans la plupart des grandes villes pour louer un meublé de tourisme. Délivré gratuitement après déclaration en mairie. Doit figurer sur ton annonce Airbnb/Booking sous peine d'amende (jusqu'à 12 500 € par logement). Paris, Lyon, Bordeaux, Marseille… ont rendu ce numéro obligatoire.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#meuble-tourisme">meublé de tourisme</a>, <a href="/blog/declarer-meuble-tourisme-mairie-formalites">démarches mairie</a></p>
+  </article>
+
+  <article class="term" id="zones-tendues">
+    <h3 class="term-h"><a href="#zones-tendues">Zones tendues <span class="perma">#</span></a></h3>
+    <p>Communes (1 149 en France) où l'offre de logements est insuffisante par rapport à la demande. Dans ces zones, des règles spécifiques s'appliquent en LCD : limitation à 120 nuits par an pour la résidence principale, autorisation de changement d'usage pour les résidences secondaires, compensation par création de logements ailleurs.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="/blog/hausse-loyers-lcd-zones-tendues-2026">zones tendues 2026</a></p>
+  </article>
+
+  <article class="term" id="loi-le-meur">
+    <h3 class="term-h"><a href="#loi-le-meur">Loi Le Meur (2024-2025) <span class="perma">#</span></a></h3>
+    <p>Loi du 19 novembre 2024 visant à renforcer les outils de régulation des meublés de tourisme. Principales mesures : abaissement de l'abattement micro-BIC à 30 % pour les meublés non classés, obligation de DPE classe E minimum à partir de 2034, généralisation possible du numéro d'enregistrement, durcissement des règles dans les zones tendues.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#abattement">abattement</a>, <a href="#dpe">DPE</a>, <a href="/blog/reglementation-lcd-france-2026">réglementation 2026</a></p>
+  </article>
+
+  <article class="term" id="dpe">
+    <h3 class="term-h"><a href="#dpe">DPE — Diagnostic de Performance Énergétique <span class="perma">#</span></a></h3>
+    <p>Évaluation de la consommation énergétique du logement, classée de A à G. Doit figurer sur les annonces Airbnb/Booking depuis 2022. Calendrier d'interdiction de location : G en 2025, F en 2028, E en 2034. Concerne aussi (avec un calendrier décalé) les meublés de tourisme.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#loi-le-meur">loi Le Meur</a></p>
+  </article>
+
+  <article class="term" id="erp">
+    <h3 class="term-h"><a href="#erp">ERP — Établissement Recevant du Public <span class="perma">#</span></a></h3>
+    <p>Catégorie juridique applicable aux logements LCD à partir d'un certain seuil de capacité (≥15 personnes pour les meublés). Implique des règles strictes (sécurité incendie, accessibilité PMR, registre de sécurité). La majorité des hôtes individuels échappent à ce statut, mais c'est crucial pour les chambres d'hôtes et les résidences de tourisme.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#meuble-tourisme">meublé de tourisme</a></p>
+  </article>
+</section>
+
+<!-- ───── PLATEFORMES ───── -->
+<section id="plateformes" class="cat">
+  <h2 class="cat-h"><i class="ph ph-globe"></i> <em>Plateformes</em> & outils</h2>
+  <p class="cat-desc">L'écosystème technique de la location courte durée.</p>
+
+  <article class="term" id="ota">
+    <h3 class="term-h"><a href="#ota">OTA — Online Travel Agency <span class="perma">#</span></a></h3>
+    <p>Plateforme de réservation en ligne qui agrège l'offre d'hébergement et la commercialise. Airbnb, Booking.com, Vrbo, Expedia sont des OTA. Chaque OTA prélève une commission (3 à 18 %) et impose ses propres règles (cancellation policy, ranking, verification voyageur).</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#channel-manager">channel manager</a>, <a href="/blog/airbnb-vs-booking-com-location-courte-duree">Airbnb vs Booking</a></p>
+  </article>
+
+  <article class="term" id="pms">
+    <h3 class="term-h"><a href="#pms">PMS — Property Management System <span class="perma">#</span></a></h3>
+    <p>Logiciel central de gestion d'un parc de logements LCD : centralisation des réservations multi-plateformes, calendrier unifié, automatisation des messages, ménage, facturation, statistiques. Smoobu, Hospitable (anciennement Smartbnb), Lodgify, Superhote sont les plus populaires en France.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#channel-manager">channel manager</a>, <a href="/blog/pms-logiciel-gestion-location-courte-duree-debutant">comparatif PMS</a></p>
+  </article>
+
+  <article class="term" id="channel-manager">
+    <h3 class="term-h"><a href="#channel-manager">Channel manager <span class="perma">#</span></a></h3>
+    <p>Outil de synchronisation des disponibilités et tarifs entre plusieurs plateformes (Airbnb, Booking, Vrbo, ton site direct). Évite les double-réservations et permet de pousser un tarif unique partout. Souvent intégré dans les PMS, mais peut aussi être un outil indépendant (ex. Beds24, MyAllocator).</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#pms">PMS</a>, <a href="/blog/channel-manager-lcd-comparatif">comparatif channel managers</a></p>
+  </article>
+
+  <article class="term" id="gmb">
+    <h3 class="term-h"><a href="#gmb">GMB — Google My Business (Google Business Profile) <span class="perma">#</span></a></h3>
+    <p>Fiche d'établissement gratuite sur Google Maps et Google Search. Indispensable pour la réservation directe : permet d'apparaître dans le pack local, de collecter des avis Google et d'attirer des recherches "logement [ville]" sans passer par Airbnb. Renommée Google Business Profile depuis 2022, mais l'acronyme GMB reste utilisé.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="/services/audit-gbp">audit GBP gratuit</a>, <a href="/blog/google-my-business-hotes-lcd">GMB pour hôtes LCD</a></p>
+  </article>
+
+  <article class="term" id="ical">
+    <h3 class="term-h"><a href="#ical">iCal (calendrier .ics) <span class="perma">#</span></a></h3>
+    <p>Format universel de partage de calendrier. En LCD, permet à un PMS, un channel manager ou un calendrier perso de récupérer les disponibilités d'Airbnb, Booking, etc. Synchronisation à sens unique (export) ou bidirectionnelle. Délai typique : 30 min à 2 h, donc risque de double-réservation à fort taux d'occupation.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#channel-manager">channel manager</a></p>
+  </article>
+
+  <article class="term" id="instant-book">
+    <h3 class="term-h"><a href="#instant-book">Réservation instantanée <span class="perma">#</span></a></h3>
+    <p>Mode de réservation où le voyageur peut bloquer ton calendrier sans validation préalable de ta part. Largement valorisée par l'algorithme Airbnb (boost de visibilité). En contrepartie, tu acceptes par avance toutes les réservations conformes à tes critères. Désactivable en cas de besoin.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="/blog/algorithme-airbnb-2026-criteres-classement">algorithme Airbnb</a></p>
+  </article>
+</section>
+
+<!-- ───── MÉTRIQUES ───── -->
+<section id="metriques" class="cat">
+  <h2 class="cat-h"><i class="ph ph-chart-line-up"></i> <em>Métriques</em> & KPI</h2>
+  <p class="cat-desc">Les chiffres qui mesurent vraiment la performance de ton activité LCD.</p>
+
+  <article class="term" id="adr">
+    <h3 class="term-h"><a href="#adr">ADR — Average Daily Rate <span class="perma">#</span></a></h3>
+    <p>Tarif moyen par nuit réservée, hors taxes et frais de ménage. Calcul : recettes brutes / nombre de nuits réservées. Permet de mesurer le pricing pur, indépendamment du taux d'occupation. Un bon hôte LCD vise à maximiser le RevPAR plutôt que le seul ADR.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#revpar">RevPAR</a>, <a href="#taux-occupation">taux d'occupation</a></p>
+  </article>
+
+  <article class="term" id="revpar">
+    <h3 class="term-h"><a href="#revpar">RevPAR — Revenue Per Available Room <span class="perma">#</span></a></h3>
+    <p>Indicateur synthétique de performance LCD : revenu par nuit disponible (réservée OU pas). Calcul : ADR × taux d'occupation, OU recettes brutes / nuits disponibles. Le RevPAR est l'indicateur de référence en hôtellerie : il combine pricing et remplissage.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#adr">ADR</a>, <a href="#taux-occupation">taux d'occupation</a>, <a href="/blog/mesurer-performance-canal-reservation-directe-kpi">KPI réservation directe</a></p>
+  </article>
+
+  <article class="term" id="taux-occupation">
+    <h3 class="term-h"><a href="#taux-occupation">Taux d'occupation <span class="perma">#</span></a></h3>
+    <p>Pourcentage de nuits réservées sur les nuits disponibles à la vente. Calcul : nuits réservées / (nuits disponibles dans le calendrier). Un taux entre 65 % et 80 % est généralement optimal en LCD, au-delà c'est souvent le signe d'un sous-pricing.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#revpar">RevPAR</a>, <a href="/blog/optimiser-taux-occupation-lcd-strategies">optimiser le taux d'occupation</a></p>
+  </article>
+
+  <article class="term" id="lead-time">
+    <h3 class="term-h"><a href="#lead-time">Lead time <span class="perma">#</span></a></h3>
+    <p>Délai moyen entre la date de réservation et la date d'arrivée. Court (< 7 jours) : tarification dynamique critique pour combler les "trous". Long (> 60 jours) : optimisation du tarif de base sur base saisonnière. Un PMS comme PriceLabs adapte automatiquement la stratégie selon le lead time observé.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#pms">PMS</a>, <a href="/blog/tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif">tarification dynamique</a></p>
+  </article>
+</section>
+
+<!-- ───── MÉTIERS ───── -->
+<section id="metiers" class="cat">
+  <h2 class="cat-h"><i class="ph ph-briefcase"></i> <em>Métiers</em> & business</h2>
+  <p class="cat-desc">Les modèles d'activité autour de la location courte durée.</p>
+
+  <article class="term" id="conciergerie">
+    <h3 class="term-h"><a href="#conciergerie">Conciergerie LCD <span class="perma">#</span></a></h3>
+    <p>Société qui gère pour le compte de propriétaires (mandat de gestion) un parc de logements en LCD : annonces, prix, ménage, accueil voyageur, maintenance. Rémunération typique : 18 à 30 % des recettes brutes. Statut juridique adapté : SARL, SAS, ou auto-entreprise selon la taille.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#co-hote">co-hôte</a>, <a href="/blog/creer-conciergerie-airbnb-2025">créer sa conciergerie</a></p>
+  </article>
+
+  <article class="term" id="co-hote">
+    <h3 class="term-h"><a href="#co-hote">Co-hôte (Airbnb Co-host) <span class="perma">#</span></a></h3>
+    <p>Personne qui aide un hôte à gérer son annonce Airbnb sans être le propriétaire. Le co-hôte peut gérer les messages, le calendrier, le ménage, les arrivées. Mode léger de conciergerie. Depuis 2024, Airbnb a un programme officiel de co-hosting avec barème de commission négocié directement entre l'hôte et le co-hôte.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#conciergerie">conciergerie</a>, <a href="/blog/gestion-co-hotes-airbnb-guide">gérer ses co-hôtes</a></p>
+  </article>
+
+  <article class="term" id="superhote">
+    <h3 class="term-h"><a href="#superhote">Superhôte (Airbnb) <span class="perma">#</span></a></h3>
+    <p>Statut Airbnb attribué tous les 3 mois aux hôtes qui répondent à 4 critères : 10+ séjours par an, 90 % de taux de réponse, < 1 % d'annulations, 4,8/5 d'évaluation moyenne. Bénéfices : badge sur l'annonce, boost SEO Airbnb, visibilité supérieure dans les filtres voyageurs, support prioritaire.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="/blog/superhote-avis-test-hotes-lcd">obtenir Superhôte</a></p>
+  </article>
+
+  <article class="term" id="reservation-directe">
+    <h3 class="term-h"><a href="#reservation-directe">Réservation directe <span class="perma">#</span></a></h3>
+    <p>Réservation effectuée par un voyageur sans passer par une OTA : site web propre, fiche GMB, Instagram, bouche-à-oreille, base de voyageurs fidèles. Avantages : pas de commission (économie 15-18 %), maîtrise des CGV, du paiement, fidélisation possible. Inconvénients : marketing & support 100 % à ta charge.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="/services/annonce-directe">annonce directe</a>, <a href="/blog/reservation-directe-sans-commission">se lancer sans site</a></p>
+  </article>
+
+  <article class="term" id="multi-canal">
+    <h3 class="term-h"><a href="#multi-canal">Multi-canal (multi-channel) <span class="perma">#</span></a></h3>
+    <p>Stratégie consistant à publier ton annonce sur plusieurs OTA + ton canal direct simultanément. Permet de diversifier les sources de réservation et de réduire la dépendance à Airbnb. Indispensable d'avoir un channel manager ou un PMS pour éviter les double-réservations.</p>
+    <p class="also"><strong>Voir aussi :</strong> <a href="#channel-manager">channel manager</a>, <a href="#ota">OTA</a></p>
+  </article>
+</section>
+
+<aside class="cta-banner">
+  <h2>Au-delà du <em>vocabulaire</em>, structure ton activité LCD</h2>
+  <p>16 formations pratiques, des outils gratuits, et un accompagnement humain pour transformer ta location en vraie activité rentable.</p>
+  <div class="btns">
+    <a href="https://app.jasonmarinho.com/auth/register" class="btn-p"><i class="ph ph-rocket"></i> Créer mon compte gratuit</a>
+    <a href="/services" class="btn-ol"><i class="ph ph-arrow-right"></i> Explorer les services</a>
+  </div>
+</aside>
+
+</main>
+
+<div id="footer-mount"></div>
+<script src="/nav.js" defer></script>
+<script src="/footer.js" defer></script>
+<script src="/cookie-banner.js" defer></script>
+</body>
+</html>
