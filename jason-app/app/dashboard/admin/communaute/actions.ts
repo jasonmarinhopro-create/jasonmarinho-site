@@ -15,9 +15,9 @@ function getServiceClient() {
 
 async function assertAdmin() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié', adminClient: null }
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié', adminClient: null }
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role !== 'admin') return { error: 'Non autorisé', adminClient: null }
   return { error: null, adminClient: getServiceClient() }
 }
