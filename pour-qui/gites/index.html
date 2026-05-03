@@ -27,6 +27,7 @@
     *,*::before,*::after{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
     img{max-width:100%;height:auto} a{color:inherit}
     .s-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
     .sec{padding:clamp(64px,8vw,104px) 0}

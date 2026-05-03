@@ -26,6 +26,7 @@
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 html{scroll-behavior:smooth}
 body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 main{max-width:760px;margin:0 auto;padding:104px clamp(20px,5vw,40px) 80px}
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--tl);text-decoration:none;font-size:13px;margin-bottom:36px;transition:color .2s}
 .back:hover{color:var(--g)}

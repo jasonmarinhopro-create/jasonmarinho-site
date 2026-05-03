@@ -31,6 +31,7 @@
     :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
     *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
     body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
     img{max-width:100%;height:auto} a{color:inherit}
     .s-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
     .sec{padding:clamp(64px,8vw,104px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
