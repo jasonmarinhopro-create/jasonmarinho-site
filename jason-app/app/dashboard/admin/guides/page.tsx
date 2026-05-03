@@ -78,7 +78,7 @@ export default async function AdminGuidesPage() {
 
   return (
     <>
-      <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '960px' }}>
+      <div style={{ padding: 'clamp(24px,3vw,40px)', width: '100%' }}>
 
         {/* Intro */}
         <div style={s.intro} className="fade-up">

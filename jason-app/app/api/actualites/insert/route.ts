@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const VALID_CATEGORIES = new Set([
   'reglementation', 'fiscalite', 'plateformes', 'marche', 'outils', 'juridique', 'driing',
+  'gites', 'chambres-hotes', 'conciergerie', 'reservation-directe', 'communes', 'general',
 ])
 
 function serviceClient() {

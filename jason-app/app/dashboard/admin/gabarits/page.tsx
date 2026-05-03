@@ -24,7 +24,7 @@ export default async function AdminGabaritsPage() {
 
   return (
     <>
-      <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '900px' }}>
+      <div style={{ padding: 'clamp(24px,3vw,40px)', width: '100%' }}>
         <GabaritsAdmin templates={templates ?? []} />
       </div>
     </>
