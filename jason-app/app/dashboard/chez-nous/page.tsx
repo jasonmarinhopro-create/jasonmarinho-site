@@ -14,11 +14,8 @@ export const metadata = { title: 'Chez Nous, Jason Marinho' }
 type SearchParams = { cat?: string; sort?: string; q?: string }
 
 export default async function ChezNousPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
-  const profile = await getProfile()
+  const [profile, supabase, sp] = await Promise.all([getProfile(), createClient(), searchParams])
   if (!profile?.userId) redirect('/auth/login')
-
-  const sp       = await searchParams
-  const supabase = await createClient()
 
   // Onboarding : si jamais vu le tour
   const { data: meProfile } = await supabase
@@ -134,9 +131,15 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     }
   })
 
-  const { count: totalPosts }   = await supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true })
-  const { count: totalReplies } = await supabase.from('chez_nous_replies').select('*', { count: 'exact', head: true })
-  const { count: totalMembers } = await supabase.from('profiles').select('*', { count: 'exact', head: true })
+  const [
+    { count: totalPosts },
+    { count: totalReplies },
+    { count: totalMembers },
+  ] = await Promise.all([
+    supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }),
+    supabase.from('chez_nous_replies').select('*', { count: 'exact', head: true }),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }),
+  ])
 
   // Nouveaux membres : les 5 derniers inscrits (hors moi-même)
   const { data: newMembersData } = await supabase
@@ -254,12 +257,10 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
 
   // Régions des membres (carte de France), uniquement profils ayant
   // privacy_show_city != false, agrégé par membre (pas par logement)
-  const { data: allLogements } = await supabase
-    .from('logements')
-    .select('user_id, adresse')
-  const { data: privacyData } = await supabase
-    .from('profiles')
-    .select('id, privacy_show_city')
+  const [{ data: allLogements }, { data: privacyData }] = await Promise.all([
+    supabase.from('logements').select('user_id, adresse'),
+    supabase.from('profiles').select('id, privacy_show_city'),
+  ])
 
   const allowedUserIds = new Set(
     (privacyData ?? [])

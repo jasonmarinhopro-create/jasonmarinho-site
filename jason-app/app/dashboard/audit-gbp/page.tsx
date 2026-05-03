@@ -22,9 +22,11 @@ interface PageProps {
 }
 
 export default async function AuditGbpPage({ searchParams }: PageProps) {
-  const profile = await getProfile()
-  const supabase = await createClient()
-  const { session: requestedSessionId } = await searchParams
+  const [profile, supabase, { session: requestedSessionId }] = await Promise.all([
+    getProfile(),
+    createClient(),
+    searchParams,
+  ])
 
   // Récupère les 3 derniers audits du user
   const { data: pastAudits } = await supabase
