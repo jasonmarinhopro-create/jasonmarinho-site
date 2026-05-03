@@ -247,13 +247,16 @@
   /* ── INJECTION ── */
   var tmp = document.createElement('div');
   tmp.innerHTML = h;
-  var s = document.currentScript;
-  if (s && s.parentNode) {
-    while (tmp.firstChild) s.parentNode.insertBefore(tmp.firstChild, s);
-  } else {
-    var frag = document.createDocumentFragment();
-    while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+  var frag = document.createDocumentFragment();
+  while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+  // Always prepend to body, regardless of where the script tag lives
+  // (works for inline body scripts, deferred head scripts, async, etc.)
+  if (document.body) {
     document.body.prepend(frag);
+  } else {
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.prepend(frag);
+    });
   }
 
   /* ── INTERACTIONS ── */
