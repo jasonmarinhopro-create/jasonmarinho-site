@@ -204,6 +204,7 @@
         + '</div>'
         + '<div class="socs">'
           + '<a href="https://instagram.com/jason_marinho" target="_blank" rel="noopener" class="soc" aria-label="Instagram"><i class="ph-bold ph-instagram-logo"></i></a>'
+          + '<a href="https://www.facebook.com/jasonmarinholcd" target="_blank" rel="noopener" class="soc" aria-label="Facebook"><i class="ph-bold ph-facebook-logo"></i></a>'
           + '<a href="https://www.linkedin.com/in/jason-driing-location-sanscommission/" target="_blank" rel="noopener" class="soc" aria-label="LinkedIn"><i class="ph-bold ph-linkedin-logo"></i></a>'
           + '<a href="https://wa.me/33630212592" target="_blank" rel="noopener" class="soc" aria-label="WhatsApp"><i class="ph-bold ph-whatsapp-logo"></i></a>'
         + '</div>'
