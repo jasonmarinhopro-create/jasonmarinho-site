@@ -3,10 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import VoyageursView from './VoyageursView'
 
 export default async function VoyageursPage() {
-  const profile = await getProfile()
+  const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   if (!profile) return null
-
-  const supabase = await createClient()
 
   const { data: voyageurs, error } = await supabase
     .from('voyageurs')
