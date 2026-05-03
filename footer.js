@@ -214,7 +214,13 @@
   var tmp = document.createElement('div');
   tmp.innerHTML = FOOTER_HTML;
   var s = document.currentScript;
-  while (tmp.firstChild) s.parentNode.insertBefore(tmp.firstChild, s);
+  if (s && s.parentNode) {
+    while (tmp.firstChild) s.parentNode.insertBefore(tmp.firstChild, s);
+  } else {
+    var frag = document.createDocumentFragment();
+    while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+    document.body.appendChild(frag);
+  }
 
   // ── Mises à jour dynamiques post-insertion ───────────────────────────────
 

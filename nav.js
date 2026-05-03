@@ -248,7 +248,13 @@
   var tmp = document.createElement('div');
   tmp.innerHTML = h;
   var s = document.currentScript;
-  while (tmp.firstChild) s.parentNode.insertBefore(tmp.firstChild, s);
+  if (s && s.parentNode) {
+    while (tmp.firstChild) s.parentNode.insertBefore(tmp.firstChild, s);
+  } else {
+    var frag = document.createDocumentFragment();
+    while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+    document.body.prepend(frag);
+  }
 
   /* ── INTERACTIONS ── */
   document.addEventListener('DOMContentLoaded', function () {
