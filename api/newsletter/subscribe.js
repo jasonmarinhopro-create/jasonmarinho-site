@@ -65,7 +65,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         email: rawEmail,
-        listIds: [2],
+        listIds: [3],
         updateEnabled: true,
       }),
     })
