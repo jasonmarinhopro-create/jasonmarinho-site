@@ -204,6 +204,7 @@
         + '</div>'
         + '<div class="socs">'
           + '<a href="https://instagram.com/jason_marinho" target="_blank" rel="noopener" class="soc" aria-label="Instagram"><i class="ph-bold ph-instagram-logo"></i></a>'
+          + '<a href="https://www.facebook.com/jasonmarinholcd" target="_blank" rel="noopener" class="soc" aria-label="Facebook"><i class="ph-bold ph-facebook-logo"></i></a>'
           + '<a href="https://www.linkedin.com/in/jason-driing-location-sanscommission/" target="_blank" rel="noopener" class="soc" aria-label="LinkedIn"><i class="ph-bold ph-linkedin-logo"></i></a>'
           + '<a href="https://wa.me/33630212592" target="_blank" rel="noopener" class="soc" aria-label="WhatsApp"><i class="ph-bold ph-whatsapp-logo"></i></a>'
         + '</div>'
@@ -213,13 +214,14 @@
 
   var tmp = document.createElement('div');
   tmp.innerHTML = FOOTER_HTML;
-  var s = document.currentScript;
-  if (s && s.parentNode) {
-    while (tmp.firstChild) s.parentNode.insertBefore(tmp.firstChild, s);
-  } else {
-    var frag = document.createDocumentFragment();
-    while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+  var frag = document.createDocumentFragment();
+  while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+  if (document.body) {
     document.body.appendChild(frag);
+  } else {
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.appendChild(frag);
+    });
   }
 
   // ── Mises à jour dynamiques post-insertion ───────────────────────────────
