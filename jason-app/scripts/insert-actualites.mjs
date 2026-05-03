@@ -11,6 +11,7 @@
  *   SUPABASE_SERVICE_ROLE_KEY
  *
  * Categories: reglementation | fiscalite | plateformes | marche | outils | juridique | driing
+ *             gites | chambres-hotes | conciergerie | reservation-directe | communes | general
  */
 
 import { readFileSync, existsSync } from 'fs'
@@ -61,7 +62,10 @@ try {
 }
 
 // ── Insert ─────────────────────────────────────────────────────────────────
-const VALID_CATEGORIES = new Set(['reglementation','fiscalite','plateformes','marche','outils','juridique','driing'])
+const VALID_CATEGORIES = new Set([
+  'reglementation', 'fiscalite', 'plateformes', 'marche', 'outils', 'juridique', 'driing',
+  'gites', 'chambres-hotes', 'conciergerie', 'reservation-directe', 'communes', 'general',
+])
 
 let inserted = 0
 let skipped  = 0
