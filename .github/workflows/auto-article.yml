@@ -1,0 +1,62 @@
+name: Auto-article blog (Lun/Mer/Ven)
+
+# ┌─ Planification : Lundi, Mercredi, Vendredi à 7h00 UTC (8h/9h Paris)
+# └─ Déclenchement manuel possible via "Run workflow" sur GitHub Actions
+on:
+  schedule:
+    - cron: '0 7 * * 1,3,5'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (génère sans committer)'
+        required: false
+        default: 'false'
+        type: boolean
+
+# Droits d'écriture sur le repo pour pouvoir committer
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Pas d'install npm — le script utilise fetch natif Node 18+
+
+      - name: Générer l'article via Claude API
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/auto-generate-article.mjs
+
+      - name: Commit et push (si non dry-run)
+        if: ${{ inputs.dry_run != 'true' }}
+        run: |
+          git config user.name  "jason-blog-bot"
+          git config user.email "bot@jasonmarinho.com"
+
+          # Stager les fichiers modifiés par la génération
+          git add blog/ sitemap.xml scripts/articles-queue.json
+
+          # Ne committer que s'il y a des changements
+          if git diff --cached --quiet; then
+            echo "Aucun changement à committer."
+          else
+            TODAY=$(date +'%Y-%m-%d')
+            git commit -m "feat(blog): article auto du $TODAY"
+            git push origin main
+            echo "✓ Article publié et déployé."
+          fi
