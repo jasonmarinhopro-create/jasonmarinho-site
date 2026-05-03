@@ -1,0 +1,54 @@
+@font-face {
+  font-family: "Phosphor-Light";
+  src:
+    url("/fonts/Phosphor-Light.woff2") format("woff2"),
+    url("/fonts/Phosphor-Light.woff") format("woff"),
+    url("/fonts/Phosphor-Light.ttf") format("truetype"),
+    url("/fonts/Phosphor-Light.svg#Phosphor-Light") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.ph-light {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "Phosphor-Light" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Enable Ligatures ================ */
+  letter-spacing: 0;
+  -webkit-font-feature-settings: "liga";
+  -moz-font-feature-settings: "liga=1";
+  -moz-font-feature-settings: "liga";
+  -ms-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga";
+  -webkit-font-variant-ligatures: discretionary-ligatures;
+  font-variant-ligatures: discretionary-ligatures;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.ph-light.ph-books:before { content: "\e758"; }
+.ph-light.ph-calculator:before { content: "\e538"; }
+.ph-light.ph-chart-line-up:before { content: "\e156"; }
+.ph-light.ph-chat-circle-dots:before { content: "\e16c"; }
+.ph-light.ph-chat-circle-text:before { content: "\e16e"; }
+.ph-light.ph-chats:before { content: "\e17c"; }
+.ph-light.ph-compass:before { content: "\e1c8"; }
+.ph-light.ph-files:before { content: "\e710"; }
+.ph-light.ph-graduation-cap:before { content: "\e62c"; }
+.ph-light.ph-handshake:before { content: "\e582"; }
+.ph-light.ph-house-line:before { content: "\e2c4"; }
+.ph-light.ph-map-pin-line:before { content: "\e318"; }
+.ph-light.ph-map-trifold:before { content: "\e31a"; }
+.ph-light.ph-megaphone:before { content: "\e324"; }
+.ph-light.ph-robot:before { content: "\e762"; }
+.ph-light.ph-shield-check:before { content: "\e40c"; }
+.ph-light.ph-users-four:before { content: "\e68c"; }
+.ph-light.ph-video-camera:before { content: "\e4da"; }
