@@ -81,9 +81,9 @@
   ]
 }
 </script>
+<script defer src="/nav.js"></script>
 </head>
 <body>
-<script src="/nav.js"></script>
 <section class="art-hero">
   <div class="ah-g"></div><div class="ah-g2"></div>
   <div class="art-hero-in">
@@ -225,7 +225,7 @@
   </div>
 </section>
 <!-- FOOTER -->
-<script src="/footer.js"></script>
+<script defer src="/footer.js"></script>
 <script>
 const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
 function subscriberBrevo(e){e.preventDefault();var email=document.getElementById('brevo-email').value;var msg=document.getElementById('brevo-msg');var btn=document.getElementById('brevo-submit');if(!email||!email.includes('@')){msg.textContent='Saisis une adresse email valide.';msg.style.color='#FFD56B';msg.style.display='block';return}btn.textContent='Envoi...';btn.disabled=true;fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){if(r.ok||r.status===204){msg.textContent='✓ Bienvenue ! Vérifie ta boîte mail.';msg.style.color='#FFD56B';msg.style.display='block';document.getElementById('brevo-email').value=''}else{msg.textContent='Déjà inscrit ou erreur, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block'}btn.textContent="S'inscrire";btn.disabled=false}).catch(function(){msg.textContent='Erreur réseau, réessaie.';msg.style.color='rgba(255,255,255,.6)';msg.style.display='block';btn.textContent="S'inscrire";btn.disabled=false})}
