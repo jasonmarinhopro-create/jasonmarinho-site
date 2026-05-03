@@ -26,7 +26,7 @@ export default async function AdminCommunautePage() {
 
   return (
     <>
-      <div style={{ padding: 'clamp(24px,3vw,40px)', maxWidth: '900px' }}>
+      <div style={{ padding: 'clamp(24px,3vw,40px)', width: '100%' }}>
         <CommunauteAdmin groups={groups ?? []} />
       </div>
     </>
