@@ -1,0 +1,51 @@
+name: Process actualités queue
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/actualites-queue/**'
+
+jobs:
+  insert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trouver les fichiers JSON en attente
+        id: find
+        run: |
+          FILES=$(find data/actualites-queue -name "*.json" 2>/dev/null | sort)
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+          echo "count=$(echo "$FILES" | grep -c . || echo 0)" >> $GITHUB_OUTPUT
+
+      - name: Envoyer les actualités à l'API
+        if: steps.find.outputs.count != '0'
+        run: |
+          for FILE in ${{ steps.find.outputs.files }}; do
+            echo "Traitement de $FILE..."
+            PAYLOAD=$(cat "$FILE")
+            RESPONSE=$(curl -s -o /tmp/api_response.json -w "%{http_code}" \
+              -X POST https://app.jasonmarinho.com/api/actualites/insert \
+              -H "Content-Type: application/json" \
+              -H "x-insert-token: ${{ secrets.ACTUALITES_INSERT_SECRET }}" \
+              -d "$PAYLOAD")
+            echo "Status HTTP: $RESPONSE"
+            cat /tmp/api_response.json
+            if [ "$RESPONSE" = "200" ] || [ "$RESPONSE" = "207" ]; then
+              echo "OK: $FILE inséré avec succès"
+            else
+              echo "ERREUR: $FILE rejeté (HTTP $RESPONSE)"
+              exit 1
+            fi
+          done
+
+      - name: Supprimer les fichiers traités
+        if: steps.find.outputs.count != '0'
+        run: |
+          find data/actualites-queue -name "*.json" -delete
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/actualites-queue/
+          git diff --staged --quiet || git commit -m "chore: actualités publiées et queue vidée"
+          git push
