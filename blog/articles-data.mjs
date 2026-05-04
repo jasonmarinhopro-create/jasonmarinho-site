@@ -134,6 +134,7 @@ export const articles = [
   { slug: 'banque-objets-utiles-laisser-voyageur-lcd', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: '15 objets utiles à laisser à tes voyageurs LCD : kit oubli, dépannage, plaisir' },
   { slug: 'modele-email-post-sejour-fideliser-voyageur', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: 'Email post-séjour Airbnb : 4 modèles testés pour avoir 5★ et fidéliser' },
   { slug: 'micro-bic-abattement-2026-airbnb', categorySlug: 'fiscalite', date: '2026-04-25', readTime: 10, title: 'Abattement micro-BIC 2026 : ce que la loi Le Meur coûte vraiment aux hôtes Airbnb' },
+  { slug: 'chatgpt-hotes-lcd-usages-concrets', categorySlug: 'automatisation', date: '2026-05-04', readTime: 7, title: 'ChatGPT pour hôtes LCD : 8 usages concrets pour gagner 5 heures par semaine' },
 ]
 
 export const CATEGORIES = {
