@@ -1,17 +1,18 @@
 #!/usr/bin/env node
-// Usage: node scripts/generate-article.mjs scripts/articles/mon-article.mjs
+// Crée un nouvel article de blog à partir d'un fichier de config .mjs.
+//
+// Usage : node scripts/generate-article.mjs scripts/articles/mon-article.mjs
+//   ou : npm run blog:new -- scripts/articles/mon-article.mjs
 //
 // Le script :
-//   1. Lit la config de l'article (fichier .mjs passé en argument)
-//   2. Crée blog/[slug]/index.html (HTML complet, SEO-ready)
-//   3. Insère la carte dans blog/index.html entre <!-- BLOG:CARDS:START --> et <!-- BLOG:CARDS:END -->
-//   4. Met à jour les compteurs de filtres dans blog/index.html
-//   5. Ajoute l'URL dans sitemap.xml
-//   6. Ajoute l'entrée dans blog/articles-data.mjs
+//   1. Génère blog/[slug]/index.html (HTML complet, SEO-ready)
+//   2. Ajoute l'entrée dans blog/articles-data.mjs (source de vérité)
+//   3. Délègue à scripts/rebuild-blog.mjs pour régénérer cartes/compteurs/sitemap
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
+import { spawnSync } from 'child_process'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
@@ -40,11 +41,15 @@ function frenchDate(iso) {
 }
 
 function esc(str) {
-  return str
+  return String(str)
     .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+}
+
+function escSingle(str) {
+  return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 }
 
 function buildBodyContent(sections) {
@@ -373,90 +378,50 @@ document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
 </html>`
 }
 
-// ─── Carte blog (pour blog/index.html) ───────────────────────────────────────
-
-function generateCard(art) {
-  const cat = CATEGORIES[art.categorySlug]
-  const cardTitle = art.cardTitle || art.title
-  const desc = art.description
-  return `      <article data-cat="${art.categorySlug}" data-title="${esc(cardTitle)}" data-desc="${esc(desc)}" class="blog-card rv">
-        <div class="bc-bar" style="background:${cat.barColor}"></div>
-        <div class="bc-body">
-          <div class="bc-cat" style="color:${cat.catColor}"><span style="background:${cat.barColor}"></span>${cat.label}</div>
-          <h2 class="bc-title">${cardTitle}</h2>
-          <p class="bc-desc">${desc}</p>
-          <div class="bc-foot">
-            <span class="bc-time">${art.readTime} min de lecture</span>
-            <a href="/blog/${art.slug}" class="bc-lk">Lire <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </article>`
-}
-
-// ─── Mise à jour blog/index.html ─────────────────────────────────────────────
-
-function updateBlogIndex(art) {
-  const filePath = resolve(ROOT, 'blog/index.html')
-  let html = readFileSync(filePath, 'utf8')
-
-  // Insertion de la carte après <!-- BLOG:CARDS:START -->
-  const START_MARKER = '<!-- BLOG:CARDS:START -->'
-  const idx = html.indexOf(START_MARKER)
-  if (idx === -1) throw new Error('Marqueur <!-- BLOG:CARDS:START --> introuvable dans blog/index.html')
-  const insertPos = idx + START_MARKER.length
-  html = html.slice(0, insertPos) + '\n' + generateCard(art) + '\n' + html.slice(insertPos)
-
-  // Compteur total : "52 ressources gratuites" → "53 ressources gratuites"
-  html = html.replace(
-    /(<span id="articles-count"[^>]*>)(\d+)( ressource[s]? gratuite[s]?<\/span>)/,
-    (_, before, n, after) => `${before}${parseInt(n, 10) + 1}${after}`
-  )
-
-  // Compteur "Tous" dans la barre de filtres
-  html = html.replace(
-    /(data-filter="all"[^>]*>.*?<span class="blog-cat-count">)(\d+)(<\/span>)/s,
-    (_, before, n, after) => `${before}${parseInt(n, 10) + 1}${after}`
-  )
-
-  // Compteur de la catégorie concernée
-  const catSlug = art.categorySlug
-  const catRegex = new RegExp(
-    `(data-filter="${catSlug}"[^>]*>[\\s\\S]*?<span class="blog-cat-count">)(\\d+)(<\\/span>)`
-  )
-  html = html.replace(catRegex, (_, before, n, after) => `${before}${parseInt(n, 10) + 1}${after}`)
-
-  writeFileSync(filePath, html, 'utf8')
-  console.log(`✓ blog/index.html mis à jour (carte + compteurs)`)
-}
-
-// ─── Mise à jour sitemap.xml ──────────────────────────────────────────────────
-
-function updateSitemap(art) {
-  const filePath = resolve(ROOT, 'sitemap.xml')
-  let xml = readFileSync(filePath, 'utf8')
-  const entry = `\n  <url>\n    <loc>https://jasonmarinho.com/blog/${art.slug}/</loc>\n    <lastmod>${art.date}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>`
-  xml = xml.replace('</urlset>', entry + '\n</urlset>')
-  writeFileSync(filePath, xml, 'utf8')
-  console.log(`✓ sitemap.xml mis à jour`)
-}
-
 // ─── Mise à jour articles-data.mjs ───────────────────────────────────────────
 
-function updateArticlesData(art) {
+function upsertArticleEntry(art) {
   const filePath = resolve(ROOT, 'blog/articles-data.mjs')
   let src = readFileSync(filePath, 'utf8')
-  const entry = `  { slug: '${art.slug}', categorySlug: '${art.categorySlug}', date: '${art.date}', readTime: ${art.readTime}, title: '${art.title.replace(/'/g, "\\'")}' },`
-  // Insérer avant la dernière ligne du tableau (avant le ']')
-  src = src.replace(/(\n]\s*\nexport const CATEGORIES)/, `\n${entry}$1`)
+
+  // Si le slug existe déjà, on remplace la ligne ; sinon on l'ajoute avant `]`
+  const escSlug = art.slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const lineRegex = new RegExp(`^\\s*\\{\\s*slug:\\s*'${escSlug}'.*$`, 'm')
+
+  const entry = `  { slug: '${art.slug}', categorySlug: '${art.categorySlug}', date: '${art.date}', readTime: ${art.readTime}, title: '${escSingle(art.title)}', description: '${escSingle(art.description)}' },`
+
+  if (lineRegex.test(src)) {
+    src = src.replace(lineRegex, entry)
+    console.log(`✓ blog/articles-data.mjs : entrée "${art.slug}" mise à jour`)
+  } else {
+    src = src.replace(/(\n\]\s*\nexport const CATEGORIES)/, `\n${entry}$1`)
+    console.log(`✓ blog/articles-data.mjs : entrée "${art.slug}" ajoutée`)
+  }
+
   writeFileSync(filePath, src, 'utf8')
-  console.log(`✓ blog/articles-data.mjs mis à jour`)
+}
+
+// ─── Délégation au rebuild ───────────────────────────────────────────────────
+
+function runRebuild() {
+  const r = spawnSync('node', [resolve(__dirname, 'rebuild-blog.mjs')], {
+    stdio: 'inherit',
+    cwd: ROOT,
+  })
+  if (r.status !== 0) {
+    console.error('❌ rebuild-blog.mjs a échoué')
+    process.exit(r.status || 1)
+  }
 }
 
 // ─── Point d'entrée ───────────────────────────────────────────────────────────
 
-const configPath = process.argv[2]
+const args = process.argv.slice(2)
+const force = args.includes('--force')
+const configPath = args.find(a => !a.startsWith('--'))
+
 if (!configPath) {
-  console.error('Usage: node scripts/generate-article.mjs scripts/articles/mon-article.mjs')
+  console.error('Usage: node scripts/generate-article.mjs scripts/articles/mon-article.mjs [--force]')
   process.exit(1)
 }
 
@@ -479,8 +444,12 @@ if (!CATEGORIES[art.categorySlug]) {
 
 const outDir = resolve(ROOT, 'blog', art.slug)
 if (existsSync(outDir)) {
-  console.error(`Erreur : blog/${art.slug}/ existe déjà. Supprime-le d'abord si tu veux le régénérer.`)
-  process.exit(1)
+  if (!force) {
+    console.error(`⚠️  blog/${art.slug}/ existe déjà. Ajoute --force pour écraser.`)
+    process.exit(1)
+  }
+  rmSync(outDir, { recursive: true, force: true })
+  console.log(`✓ Ancien blog/${art.slug}/ supprimé (--force)`)
 }
 
 mkdirSync(outDir, { recursive: true })
@@ -488,9 +457,8 @@ const html = generateArticleHTML(art)
 writeFileSync(resolve(outDir, 'index.html'), html, 'utf8')
 console.log(`✓ blog/${art.slug}/index.html créé (${html.length} octets)`)
 
-updateBlogIndex(art)
-updateSitemap(art)
-updateArticlesData(art)
+upsertArticleEntry(art)
+runRebuild()
 
-console.log(`\n🎉 Article "${art.title}" publié avec succès !`)
-console.log(`   → https://jasonmarinho.com/blog/${art.slug}/`)
+console.log(`\n🎉 Article "${art.title}" publié.`)
+console.log(`   → https://jasonmarinho.com/blog/${art.slug}`)
