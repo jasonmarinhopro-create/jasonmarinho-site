@@ -1,7 +1,6 @@
 // Registre de tous les articles du blog.
 // Ajouté automatiquement par scripts/generate-article.mjs pour les nouveaux articles.
 export const articles = [
-  { slug: 'optimiser-annonce-airbnb',                              categorySlug: 'visibilite',     date: '2025-03-01', readTime: 5,  title: 'Optimiser son annonce Airbnb : les 8 éléments qui font vraiment la différence' },
   { slug: 'tarification-dynamique-lcd',                            categorySlug: 'revenus',        date: '2025-03-01', readTime: 7,  title: 'Tarification dynamique en location courte durée : par où commencer' },
   { slug: 'messages-airbnb-automatiser',                           categorySlug: 'automatisation', date: '2025-03-01', readTime: 4,  title: 'Les 5 messages Airbnb à automatiser absolument dès cette semaine' },
   { slug: 'google-my-business-hotes-lcd',                          categorySlug: 'visibilite',     date: '2025-03-01', readTime: 6,  title: 'Pourquoi Google My Business est indispensable pour les hôtes LCD en 2025' },
@@ -134,6 +133,7 @@ export const articles = [
   { slug: 'banque-objets-utiles-laisser-voyageur-lcd', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: '15 objets utiles à laisser à tes voyageurs LCD : kit oubli, dépannage, plaisir' },
   { slug: 'modele-email-post-sejour-fideliser-voyageur', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: 'Email post-séjour Airbnb : 4 modèles testés pour avoir 5★ et fidéliser' },
   { slug: 'micro-bic-abattement-2026-airbnb', categorySlug: 'fiscalite', date: '2026-04-25', readTime: 10, title: 'Abattement micro-BIC 2026 : ce que la loi Le Meur coûte vraiment aux hôtes Airbnb' },
+  { slug: 'optimiser-annonce-airbnb', categorySlug: 'visibilite', date: '2025-03-01', readTime: 7, title: 'Optimiser son annonce Airbnb : les 8 éléments qui font vraiment la différence' },
 ]
 
 export const CATEGORIES = {
