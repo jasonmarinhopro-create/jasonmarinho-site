@@ -11,55 +11,96 @@ export default {
 
   sections: [
     {
-      h2: '1. Avant de commencer : les 4 documents à préparer',
+      h2: 'Étape 1 : Préparer le DPE en cours de validité',
       content: [
-        { type: 'p', text: 'Avant de te connecter au téléservice, rassemble ces documents. Les avoir prêts évite de devoir interrompre la procédure et la reprendre.' },
+        { type: 'p', text: 'Le DPE (Diagnostic de Performance Énergétique) est le premier document exigé. Sans lui, tu ne peux pas terminer la procédure. Un DPE de classe G ou F peut aussi te bloquer pour les nouvelles autorisations.' },
         { type: 'ul', items: [
-          'DPE en cours de validité (< 10 ans) — classe ≥ E pour les nouvelles autorisations 2026',
-          'Justificatif de propriété (acte de vente) ou d\'autorisation du propriétaire (mandat de gestion si tu n\'es pas propriétaire)',
-          'Attestation de déclaration en mairie (formulaire Cerfa 14004) si commune en zone tendue',
-          'SIRET si tu as une activité déclarée. Sinon, tu seras enregistré comme particulier',
+          'DPE valide : moins de 10 ans. Si expiré, le faire refaire avant de démarrer (150-300 €)',
+          'Classe minimum requise pour nouvelles autorisations 2026 : classe ≥ E',
+          'Conserver le PDF du DPE — il sera uploadé directement dans le téléservice',
         ]},
       ],
     },
     {
-      h2: '2. Les 8 étapes de la procédure',
+      h2: 'Étape 2 : Préparer les justificatifs de propriété ou d\'autorisation',
       content: [
+        { type: 'p', text: 'Tu dois prouver que tu es bien le propriétaire ou que tu as l\'autorisation d\'exploiter le logement en LCD.' },
         { type: 'ul', items: [
-          '1. Se connecter à service-public.fr → rubrique "Meublés de tourisme" → "Demander un numéro d\'enregistrement"',
-          '2. Créer ou se connecter à son compte FranceConnect',
-          '3. Saisir les coordonnées du propriétaire (nom, adresse, email, téléphone)',
-          '4. Saisir l\'adresse exacte du logement (le système vérifie via Google Maps)',
-          '5. Indiquer le type de logement (résidence principale partielle ou meublé de tourisme dédié)',
-          '6. Uploader le DPE en PDF',
-          '7. Fournir le numéro de SIRET si professionnel + justificatifs',
-          '8. Recevoir le numéro d\'enregistrement par email (généralement sous 5-10 jours)',
-        ]},
-        { type: 'tip', text: 'Le numéro d\'enregistrement a la forme XXXXX-XXXXX (chiffres + lettres). Note-le précieusement, tu vas devoir le saisir sur Airbnb, Booking et toutes tes annonces (champ "Informations réglementaires").' },
-      ],
-    },
-    {
-      h2: '3. Délais réels et anticipation',
-      content: [
-        { type: 'p', text: 'Le téléservice a annoncé un délai de 5-10 jours, mais en pratique, vu l\'afflux des demandes en avril 2026, certains hôtes attendent 3-4 semaines. À J-30 de la deadline (20 mai), il y aura un goulot d\'étranglement.' },
-        { type: 'ul', items: [
-          'Idéal : démarche faite dès que tu as ton DPE, même 6 mois avant la deadline',
-          'Limite : faire la démarche au plus tard fin avril 2026 pour avoir ton numéro avant le 20 mai',
-          'Si en retard : tu risques le retrait automatique de tes annonces dès le 21 mai. Pas de période de grâce annoncée par les plateformes',
+          'Propriétaire : acte de vente ou extrait de la taxe foncière récent',
+          'Locataire / mandataire : autorisation écrite du propriétaire (modèle disponible sur service-public.fr)',
+          'Copropriété : vérifier que le règlement de copropriété n\'interdit pas la LCD (certificat du syndic recommandé)',
         ]},
       ],
     },
     {
-      h2: '4. Erreurs fréquentes qui bloquent la procédure',
+      h2: 'Étape 3 : Vérifier si ta commune exige une déclaration préalable en mairie',
       content: [
-        { type: 'p', text: 'Sur les premières démarches déposées en 2025, voici les motifs de blocage les plus fréquents.' },
+        { type: 'p', text: 'Dans les communes en zone tendue (>200 villes en France dont Paris, Lyon, Bordeaux, Marseille...), une déclaration Cerfa 14004 en mairie est obligatoire AVANT de pouvoir demander le numéro d\'enregistrement national.' },
         { type: 'ul', items: [
-          'DPE expiré (> 10 ans) — refait obligatoirement avant de pouvoir continuer',
-          'Adresse mal saisie (différente de Google Maps) — erreur 404 du téléservice, à corriger manuellement',
-          'Absence de déclaration mairie pour communes en zone tendue (>200 villes en France) — démarche complémentaire à faire',
-          'Confusion résidence principale partielle vs meublé de tourisme dédié — affecte tes plafonds annuels',
-          'Tentative depuis un compte FranceConnect d\'un proche — refusé, doit être au nom du propriétaire',
+          'Vérifier si ta commune est en zone tendue : site service-public.fr ou mairie directement',
+          'Si oui : déposer le Cerfa 14004 en mairie (avec accusé de réception)',
+          'Délai de traitement mairie : 1 à 4 semaines selon la commune',
+          'Si non concerné : passer directement à l\'étape 4',
         ]},
+      ],
+    },
+    {
+      h2: 'Étape 4 : Créer ou se connecter à son compte FranceConnect',
+      content: [
+        { type: 'p', text: 'Le téléservice d\'enregistrement LCD utilise FranceConnect pour l\'authentification. Si tu n\'as pas de compte, il faut en créer un avant de commencer.' },
+        { type: 'ul', items: [
+          'FranceConnect est accessible via : identifiants Ameli, impots.gouv.fr, La Poste, MSA',
+          'La connexion doit être au nom du propriétaire — pas d\'un proche ou d\'un prestataire',
+          'Préparer une adresse email valide et un numéro de mobile (confirmation par SMS)',
+        ]},
+      ],
+    },
+    {
+      h2: 'Étape 5 : Saisir les informations du logement',
+      content: [
+        { type: 'p', text: 'Une fois connecté, la procédure demande les informations précises du logement. L\'adresse doit être exactement identique à celle de Google Maps — une discordance bloque le système.' },
+        { type: 'ul', items: [
+          'Adresse exacte du logement (numéro, rue, code postal, ville)',
+          'Type de logement : résidence principale partielle ou meublé de tourisme dédié',
+          'Capacité d\'accueil déclarée (nombre de voyageurs max)',
+          'Type de mise en location : direct ou via plateforme (Airbnb, Booking, etc.)',
+        ]},
+      ],
+    },
+    {
+      h2: 'Étape 6 : Uploader le DPE et les justificatifs',
+      content: [
+        { type: 'p', text: 'La plateforme demande l\'upload de documents en PDF. Prépare-les à l\'avance dans un dossier — la session expire après 30 minutes d\'inactivité.' },
+        { type: 'ul', items: [
+          'DPE en PDF — obligatoire',
+          'Justificatif de propriété ou d\'autorisation — obligatoire',
+          'Accusé de réception mairie si commune en zone tendue — obligatoire dans ce cas',
+          'Taille maximum par fichier : 5 Mo. Scanner en 150 DPI suffit',
+        ]},
+      ],
+    },
+    {
+      h2: 'Étape 7 : Déclarer son SIRET si activité professionnelle',
+      content: [
+        { type: 'p', text: 'Si tu loues en tant que professionnel (LMNP au réel, SASU, SCI), tu dois indiquer ton SIRET. Si tu loues comme particulier (micro-BIC), cette case est optionnelle.' },
+        { type: 'ul', items: [
+          'SIRET disponible sur l\'avis de situation SIRENE (sirene.fr ou insee.fr)',
+          'Si tu n\'as pas encore de SIRET et que tu es professionnel : inscription sur guichet-entreprises.fr d\'abord',
+          'Pour les SCI : SIRET de la société (pas le SIRET personnel)',
+        ]},
+      ],
+    },
+    {
+      h2: 'Étape 8 : Recevoir et activer le numéro sur tes annonces',
+      content: [
+        { type: 'p', text: 'Le numéro d\'enregistrement est envoyé par email sous 5-10 jours (prévoir 3-4 semaines en période de rush avant mai 2026). Une fois reçu, il doit être saisi sur toutes tes annonces.' },
+        { type: 'ul', items: [
+          'Format du numéro : XXXXX-XXXXX (chiffres et lettres)',
+          'Sur Airbnb : Tableau de bord → Annonce → Informations réglementaires → Coller le numéro',
+          'Sur Booking : Extranet → Détails de la propriété → Enregistrement légal',
+          'Délai légal pour l\'afficher : immédiat dès réception, sous peine de retrait d\'annonce',
+        ]},
+        { type: 'tip', text: 'Si tu es en retard sur la deadline : contacte directement le support Airbnb et Booking en leur montrant ton accusé de réception de dépôt. Ils accordent généralement un délai de 10-15 jours supplémentaires si la demande est en cours.' },
         { type: 'cta', text: 'Tu veux être conforme à toutes les obligations LCD 2026 sans stress ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

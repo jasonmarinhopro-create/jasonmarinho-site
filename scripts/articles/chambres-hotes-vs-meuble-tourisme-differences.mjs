@@ -11,53 +11,86 @@ export default {
 
   sections: [
     {
-      h2: '1. Définition et conditions',
+      h2: '1. La présence de l\'hôte',
       content: [
-        { type: 'p', text: 'Chambres d\'hôtes : tu accueilles dans des chambres meublées au sein de ta résidence (où tu habites), avec petit-déjeuner inclus, dans la limite de 5 chambres et 15 personnes max. Meublé de tourisme : tu loues un logement entier (studio, appartement, maison) à des voyageurs, sans présence obligatoire de l\'hôte sur place.' },
+        { type: 'p', text: 'C\'est la différence fondamentale. En chambres d\'hôtes, la présence de l\'hôte est OBLIGATOIRE — tu dois habiter le logement pendant que le voyageur séjourne. En meublé de tourisme, ta présence n\'est pas requise.' },
         { type: 'ul', items: [
-          'Chambres d\'hôtes : présence de l\'hôte obligatoire, petit-déj inclus, max 5 chambres / 15 pers',
-          'Meublé de tourisme : pas de présence obligatoire, pas de petit-déj imposé, pas de limite de capacité',
-          'Sur Airbnb : la majorité des locations entières sont des "meublés de tourisme". Les locations de chambre dans la maison de l\'hôte sont des "chambres d\'hôtes"',
+          'Chambres d\'hôtes : l\'hôte réside dans le logement pendant l\'accueil',
+          'Meublé de tourisme : l\'hôte peut être absent (check-in autonome possible)',
+          'Sur Airbnb : location d\'une chambre chez soi = chambres d\'hôtes. Location du logement entier = meublé de tourisme',
         ]},
       ],
     },
     {
-      h2: '2. Différences fiscales',
+      h2: '2. Le petit-déjeuner',
       content: [
-        { type: 'p', text: 'Les 2 régimes diffèrent fiscalement. Beaucoup d\'hôtes ratent des optimisations en se trompant de régime.' },
+        { type: 'p', text: 'En chambres d\'hôtes, le petit-déjeuner doit être proposé aux voyageurs (obligatoirement, gratuit ou payant). En meublé de tourisme, aucune prestation de restauration n\'est requise.' },
         { type: 'ul', items: [
-          'Chambres d\'hôtes classées : abattement micro-BIC 71 % (au lieu de 50 % standard) jusqu\'à 188 700 € de CA',
-          'Chambres d\'hôtes non classées : abattement 50 %',
-          'Meublé de tourisme classé : abattement 71 % avec plafond 188 700 €',
-          'Meublé de tourisme non classé en 2026 : abattement 30 %',
-          'Conséquence : faire classer son logement (1 à 5 étoiles) est devenu très rentable en 2026',
-        ]},
-        { type: 'tip', text: 'Le classement meublé de tourisme se fait via un organisme agréé (Atout France, Gîtes de France, Clévacances). Coût : 200-400 €. Bénéfice fiscal : 21 points d\'abattement supplémentaires (de 50 % à 71 %), soit 3 000-7 000 € d\'impôt en moins par an pour un CA de 25-35 000 €.' },
-      ],
-    },
-    {
-      h2: '3. Obligations différentes',
-      content: [
-        { type: 'p', text: 'Les obligations légales et déclaratives ne sont pas les mêmes.' },
-        { type: 'ul', items: [
-          'Chambres d\'hôtes : déclaration en mairie (Cerfa 13566). TVA seuil 91 800 € avec abattement chambres d\'hôtes',
-          'Meublé de tourisme : déclaration en mairie (Cerfa 14004) + numéro d\'enregistrement national (mai 2026)',
-          'Chambres d\'hôtes : pas obligatoire d\'avoir un classement. Meublé de tourisme : non plus mais très avantageux',
-          'Petit-déjeuner chambres d\'hôtes : obligatoire de proposer (gratuit ou payant), différent du forfait Airbnb',
+          'Chambres d\'hôtes : petit-déjeuner obligatoire — peut être inclus dans le prix ou facturé en supplément',
+          'Meublé de tourisme : pas de petit-déjeuner imposé — les hôtes qui en proposent un glissent vers les services parahôteliers (et la TVA qui va avec)',
+          'Cette obligation distingue les chambres d\'hôtes comme un service d\'accueil "vivant" vs un logement mis à disposition',
         ]},
       ],
     },
     {
-      h2: '4. Quel régime choisir',
+      h2: '3. La capacité maximale',
       content: [
-        { type: 'p', text: 'La décision dépend de ta configuration physique et de ton mode de vie.' },
+        { type: 'p', text: 'Les chambres d\'hôtes sont soumises à un plafond légal de capacité. Le meublé de tourisme n\'a pas de limite imposée par la loi (seul le règlement de copropriété ou l\'arrêté municipal peut l\'imposer).' },
         { type: 'ul', items: [
-          'Tu loues une chambre dans ta résidence pendant que tu y habites : OBLIGATOIREMENT chambres d\'hôtes',
-          'Tu loues une chambre indépendante avec accès séparé pendant que tu es ailleurs : meublé de tourisme',
-          'Tu loues toute la maison/appart pendant que tu es absent : meublé de tourisme',
-          'Tu fais coexister ta présence + un studio annexe loué : si studio totalement indépendant = meublé. Si chambres avec parties communes = chambres d\'hôtes',
+          'Chambres d\'hôtes : maximum 5 chambres et 15 personnes simultanément',
+          'Meublé de tourisme : pas de limite légale de capacité (la taille du logement prime)',
+          'Au-delà de 5 chambres : le régime bascule obligatoirement vers l\'hôtellerie ou para-hôtellerie',
         ]},
-        { type: 'p', text: 'En cas de doute, vérifier auprès de ta mairie ou un expert-comptable spécialisé. Une mauvaise déclaration peut entraîner un redressement avec rappel sur 3 ans + pénalités.' },
+      ],
+    },
+    {
+      h2: '4. L\'abattement fiscal en 2026',
+      content: [
+        { type: 'p', text: 'La loi Le Meur de 2024 a profondément modifié la fiscalité. La différence d\'abattement entre régimes est devenue déterminante pour la rentabilité.' },
+        { type: 'ul', items: [
+          'Chambres d\'hôtes classées : abattement micro-BIC 71 % (plafond 188 700 € de CA)',
+          'Chambres d\'hôtes non classées : abattement 71 % également (elles bénéficient du même traitement)',
+          'Meublé de tourisme classé : abattement 71 % (plafond 188 700 €)',
+          'Meublé de tourisme non classé en 2026 : abattement ramené à 30 %',
+          'Conclusion : faire classer son logement est devenu très rentable pour les meublés non classés',
+        ]},
+        { type: 'tip', text: 'Le classement meublé de tourisme (1-5 étoiles) via un organisme agréé coûte 200-400 €. L\'économie fiscale peut atteindre 3 000-7 000 €/an pour un CA de 25-35 000 €. ROI en quelques semaines.' },
+      ],
+    },
+    {
+      h2: '5. Les obligations déclaratives',
+      content: [
+        { type: 'p', text: 'Les formulaires et procédures de déclaration ne sont pas les mêmes selon le régime.' },
+        { type: 'ul', items: [
+          'Chambres d\'hôtes : déclaration mairie via Cerfa 13566',
+          'Meublé de tourisme : déclaration mairie via Cerfa 14004 + numéro d\'enregistrement national (obligatoire depuis mai 2026)',
+          'Les deux : numéro SIRET recommandé (ou obligatoire selon activité)',
+          'Chambres d\'hôtes : les règles locales d\'urbanisme s\'appliquent moins strictement que pour les meublés',
+        ]},
+      ],
+    },
+    {
+      h2: '6. Le régime TVA et les services parahôteliers',
+      content: [
+        { type: 'p', text: 'Le régime TVA diffère selon que tu proposes ou non des services au-delà du simple hébergement.' },
+        { type: 'ul', items: [
+          'Chambres d\'hôtes avec petit-déjeuner : régime parahôtelier, TVA à 10 % dès le 1er euro si les services sont significatifs',
+          'Meublé de tourisme simple (sans service actif) : pas de TVA en dessous du seuil (91 900 € en 2026)',
+          'Meublé avec services parahôteliers (ménage quotidien, petit-déj, linge changé) : TVA 10 % obligatoire',
+          'La ligne de démarcation : 3 services parahôteliers ou plus = assujettissement TVA automatique',
+        ]},
+      ],
+    },
+    {
+      h2: '7. Quel régime choisir pour ta situation',
+      content: [
+        { type: 'p', text: 'La décision dépend de ta configuration physique et de ton mode de vie. En cas de mauvais choix, un redressement URSSAF ou fiscal peut porter sur 3 ans avec pénalités.' },
+        { type: 'ul', items: [
+          'Tu loues une chambre dans ta résidence principale en y habitant → chambres d\'hôtes (obligatoire)',
+          'Tu loues tout le logement pendant ton absence → meublé de tourisme',
+          'Tu as un studio annexe complètement indépendant → meublé de tourisme',
+          'En cas de doute : mairie ou expert-comptable spécialisé LCD avant de déclarer',
+        ]},
         { type: 'cta', text: 'Tu veux maîtriser ton statut LCD et ta fiscalité ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },
