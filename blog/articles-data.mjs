@@ -135,6 +135,7 @@ export const articles = [
   { slug: 'modele-email-post-sejour-fideliser-voyageur', categorySlug: 'ressources', date: '2026-04-25', readTime: 4, title: 'Email post-séjour Airbnb : 4 modèles testés pour avoir 5★ et fidéliser', description: 'L\'email post-séjour est la dernière chance d\'obtenir un avis 5★ et un retour fidèle. Voici 4 modèles testés selon le profil voyageur.' },
   { slug: 'micro-bic-abattement-2026-airbnb', categorySlug: 'fiscalite', date: '2026-04-25', readTime: 10, title: 'Abattement micro-BIC 2026 : ce que la loi Le Meur coûte vraiment aux hôtes Airbnb', description: 'L\'abattement micro-BIC des meublés de tourisme non classés passe de 50% à 30%. Calcul concret sur ton impôt selon ton profil, et comment limiter la casse en 2026.' },
   { slug: 'optimiser-annonce-airbnb', categorySlug: 'visibilite', date: '2025-03-01', readTime: 7, title: 'Optimiser son annonce Airbnb : les 8 éléments qui font vraiment la différence', description: 'Titre, photos, description, prix, équipements, réactivité, avis et règles : les 8 leviers concrets pour apparaître en tête et convertir plus de visiteurs en réservations.' },
+  { slug: 'superhost-airbnb-criteres-methode-2026', categorySlug: 'visibilite', date: '2026-05-04', readTime: 7, title: 'Devenir Superhost Airbnb : les 4 critères à valider et la méthode pour y arriver en 2026', description: 'Note 4,8, taux de réponse 90 %, annulations sous 1 %, 10 séjours : les 4 critères du statut Superhost Airbnb 2026 et la méthode pour les valider sans stress.' },
 ]
 
 export const CATEGORIES = {
