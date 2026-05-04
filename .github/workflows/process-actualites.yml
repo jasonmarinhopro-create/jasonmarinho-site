@@ -2,15 +2,22 @@ name: Process actualités queue
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'claude/**'
     paths:
       - 'data/actualites-queue/**'
+
+permissions:
+  contents: write
 
 jobs:
   insert:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Trouver les fichiers JSON en attente
         id: find
