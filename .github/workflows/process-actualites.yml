@@ -2,7 +2,9 @@ name: Process actualités queue
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'claude/**'
     paths:
       - 'data/actualites-queue/**'
 
