@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/generate-article.mjs *)",
+      "Bash(node scripts/*.mjs *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git commit -m *)",
+      "Bash(git push *)",
+      "Bash(git push -u origin *)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(git checkout *)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+      "Bash(ls *)",
+      "Bash(find . *)",
+      "Bash(grep *)",
+      "Write(*)",
+      "Read(*)"
+    ]
+  }
+}
