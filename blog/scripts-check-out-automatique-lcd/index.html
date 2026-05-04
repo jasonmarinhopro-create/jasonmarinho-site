@@ -22,12 +22,9 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -209,49 +206,9 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Comment automatiser le processus de check-out en location courte durée ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "L'automatisation complète du check-out en 4 éléments : 1) Message automatique J-1 rappelant l'heure de départ et les consignes (clés, fenêtres, poubelles), 2) Instructions check-out dans le livret digital accessible à tout moment, 3) Processus de retour des clés autonome (boîte à clés codée ou serrure connectée avec code qui expire automatiquement), 4) Message de confirmation automatique quand le voyageur signale son départ. Ce processus élimine totalement la nécessité d'être présent au départ."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Quelles consignes de check-out inclure pour faciliter la rotation ménage en LCD ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Consignes qui facilitent le travail du prestataire ménage : sortir les poubelles dans les conteneurs correspondants, déposer le linge utilisé dans le panier prévu (réduit le temps de tri), mettre la vaisselle propre dans le lave-vaisselle et le démarrer, laisser les clés dans la boîte à clés, et signaler tout problème ou dommage par message avant de partir. Ces consignes simples réduisent le temps de rotation de 15-20 minutes et améliorent la relation avec le prestataire ménage."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Comment gérer les check-outs tardifs en LCD sans bloquer la rotation ménage ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Politique recommandée : check-out standard à 11h, late checkout jusqu'à 13h disponible sur demande et selon disponibilité (gratuit si logement libre ensuite), late checkout après 13h facturé (20-40€ ou demi-nuitée). Automatiser la réponse aux demandes de late checkout : vérifier dans le PMS si la prochaine réservation arrive le jour même, et répondre automatiquement oui ou non selon la disponibilité. Ne jamais promettre un late checkout si une rotation est prévue, le stress du prestataire ménage dégrade la qualité."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Les voyageurs respectent-ils vraiment les consignes de check-out automatique ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Dans 85-90% des cas, oui, surtout quand les consignes sont claires, courtes (maximum 5 points), et rappelées la veille. Les 10-15% de non-respect portent surtout sur l'heure de départ (dépassement de 30-60 min) et le tri des poubelles. Pour améliorer le taux de respect : personnaliser le message de rappel avec le prénom, expliquer pourquoi chaque consigne est importante (pas juste 'respectez les règles'), et remercier à l'avance pour leur coopération. Un message chaleureux obtient 2x plus de conformité qu'un message autoritaire."
-      }
-    }
-  ]
-}
-</script>
-<script defer src="/nav.js"></script>
 </head>
 <body>
+<script src="/nav.js"></script>
 <section class="art-hero">
   <div class="ah-g"></div>
   <div class="ah-g2"></div>
@@ -270,19 +227,30 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </section>
 
 <div class="art-body">
-<p class="art-lead">Le check-out est le dernier moment de contact avec ton voyageur. Bien orchestré, il génère un avis 5 étoiles et augmente les chances de fidélisation. Mal orchestré, tu rates l'avis ou tu finis avec des questions tardives. Voici 6 messages à programmer pour zéro friction.</p>
-<h2 class="art-h2">1. Message 1 : Rappel J-1 check-out (la veille)</h2>
-<p class="art-p">Programmé via Hospitable, Smoobu ou Make : envoyé 24 h avant le check-out.</p>
-<p class="art-p">Contenu : "Bonjour {prénom}, j'espère que ton séjour s'est bien passé ! Petit rappel pour ton check-out demain : départ avant {heure_checkout}. Avant de partir, merci de penser à : ranger vaisselle dans le lave-vaisselle, fermer les volets, déposer les clés dans la boîte. Belle continuation et n'hésite pas si questions !"</p>
-<h2 class="art-h2">2. Messages 2 et 3 : Procédure check-out + remerciement</h2>
-<ul class="art-ul"><li>Message 2 : à 9h le jour du check-out (rappel + lien procédure détaillée du livret d'accueil)</li><li>Message 3 : 1 h après le check-out planifié (remerciement + question rétention), "Merci pour ton séjour ! J'espère qu'il a été parfait. Quel a été ton moment préféré ? "</li></ul>
-<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Le message à 1 h post-checkout est crucial. Le voyageur a encore le souvenir frais et vif. Sa réponse te donne souvent un futur témoignage. Si la réponse est positive, c'est le moment idéal pour demander l'avis Airbnb.</span></div>
-<h2 class="art-h2">3. Messages 4 et 5 : Sollicitation avis (à H+24 et H+72)</h2>
-<ul class="art-ul"><li>Message 4 (H+24) : "Bonjour {prénom}, on espère que tu es bien rentré ! Si tu as un instant, un avis sur Airbnb nous aiderait beaucoup. Voici le lien direct : {lien_avis}. Bonne continuation !"</li><li>Message 5 (H+72) : si pas d'avis encore, relance courte. "Coucou ! Tu n'as pas eu le temps de laisser un avis, normal, voici à nouveau le lien rapide : {lien_avis}. Merci d'avance !"</li><li>Au-delà de 7 jours sans avis : ne plus relancer (Airbnb ferme la fenêtre d'avis à J+14)</li></ul>
-<h2 class="art-h2">4. Message 6 : Fidélisation longue durée</h2>
-<p class="art-p">Le message #6 est envoyé 30-60 jours après le check-out, en ouverture de la prochaine saison ou pour fidéliser.</p>
-<ul class="art-ul"><li>Contenu : "Bonjour {prénom} ! On pense à toi. Notre logement à {ville} est dispo pour {prochaine_saison}. Si tu veux revenir, on a une offre fidèle de -10 % sur la réservation directe (lien direct sans Airbnb). Belle journée !"</li><li>Astuce : ne PAS envoyer ça via Airbnb (Airbnb pénalise la sollicitation hors plateforme). Envoyer par SMS ou email collecté avec son consentement RGPD</li><li>Stocker les emails voyageurs avec leur permission dans un CRM léger (Notion, Brevo, MailChimp gratuit)</li><li>Taux de retour fidèle : 5-15 % selon la qualité du séjour, soit 50-150 € de marge nette par voyageur fidélisé/an</li></ul>
-<div class="art-cta-box"><p>Tu veux automatiser tous tes messages voyageurs et fidéliser ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
+<p class="art-lead">Le check-out est le dernier moment de contact avec ton voyageur. Bien orchestré, il génère un avis 5 étoiles et augmente les chances de fidélisation. Voici 6 messages à programmer pour zéro friction — aucun ne nécessite d'intervention manuelle.</p>
+<h2 class="art-h2">Message 1 — Rappel J-1 (la veille du check-out)</h2>
+<p class="art-p">Programmé via Hospitable, Smoobu ou Make : envoyé automatiquement 24 h avant le check-out. Ce message évite les oublis et les retards le lendemain.</p>
+<p class="art-p">"Bonjour {prénom}, j'espère que ton séjour s'est bien passé ! Petit rappel pour demain : départ avant {heure_checkout}. À prévoir : ranger la vaisselle dans le lave-vaisselle, fermer les volets, déposer les clés dans la boîte. Belle continuation !"</p>
+<h2 class="art-h2">Message 2 — Procédure check-out le matin J (9h)</h2>
+<p class="art-p">Un rappel rapide le matin du départ avec le lien vers la procédure complète dans ton livret d'accueil. Pour les voyageurs qui ont oublié le message J-1.</p>
+<p class="art-p">"Bonjour {prénom} ! C'est le grand jour du retour. Pour le check-out, retrouve toute la procédure ici : {lien_livret}. Si tu as la moindre question, je suis disponible. Bon voyage !"</p>
+<ul class="art-ul"><li>Envoi automatique à 9h le jour J</li><li>Inclure le lien direct vers la section check-out du livret d'accueil digital</li><li>Message court : les voyageurs ont des valises à faire, pas le temps de lire 5 paragraphes</li></ul>
+<h2 class="art-h2">Message 3 — Remerciement 1 h après le check-out planifié</h2>
+<p class="art-p">Ce message est crucial. Le voyageur est parti depuis 1 heure, le séjour est encore frais dans sa mémoire. C'est le meilleur moment pour créer un lien émotionnel qui mène à un avis positif.</p>
+<p class="art-p">"Merci pour ton séjour {prénom} ! J'espère qu'il a été parfait. Quel a été ton moment préféré ? (curiosité sincère) Si tu repasses par [ville], avec plaisir de t'accueillir à nouveau !"</p>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>La question "quel a été ton moment préféré ?" génère des réponses qui deviennent de futurs témoignages utilisables. Et une réponse positive te signale que c'est le moment idéal pour demander l'avis Airbnb.</span></div>
+<h2 class="art-h2">Message 4 — Sollicitation avis Airbnb à H+24</h2>
+<p class="art-p">Si le message 3 a reçu une réponse positive (ou même sans réponse), envoie une demande d'avis directe à H+24. Pas avant — trop proche, perçu comme du harcèlement. Pas après H+72 — le souvenir s'estompe.</p>
+<p class="art-p">"Bonjour {prénom} ! On espère que tu es bien rentré. Si tu as un instant, un avis sur Airbnb nous aide vraiment à accueillir de futurs voyageurs. Voici le lien direct : {lien_avis}. Merci d'avance !"</p>
+<h2 class="art-h2">Message 5 — Relance avis à H+72 (si pas encore posté)</h2>
+<p class="art-p">Si l'avis n'est toujours pas posté à H+72, envoie une unique relance courte. Airbnb ferme la fenêtre d'avis à J+14 — ne jamais relancer au-delà de J+7 pour rester naturel.</p>
+<p class="art-p">"Coucou {prénom} ! Tu n'as peut-être pas eu le temps, voici à nouveau le lien rapide pour l'avis : {lien_avis}. Merci si tu as 30 secondes !"</p>
+<ul class="art-ul"><li>Une seule relance maximum — deux relances = impression de pression, impact négatif sur l'avis</li><li>Si toujours pas d'avis à J+7 : laisser tomber. Certains voyageurs ne laissent jamais d'avis</li><li>Airbnb ferme la fenêtre de publication des avis à J+14 après le check-out</li></ul>
+<h2 class="art-h2">Message 6 — Fidélisation longue durée (J+30 à J+60)</h2>
+<p class="art-p">Envoyé 30 à 60 jours après le séjour, en ouverture de la prochaine saison ou pour une occasion spéciale. Ce message transforme un voyageur en client récurrent.</p>
+<p class="art-p">"Bonjour {prénom} ! On pense à toi. Notre logement à {ville} est dispo pour {prochaine_saison}. Si tu veux revenir, on t'offre -10 % sur la réservation directe : {lien_site_direct}. Belle journée !"</p>
+<ul class="art-ul"><li>Ne PAS envoyer via Airbnb — Airbnb pénalise les sollicitations hors plateforme</li><li>Envoyer par SMS ou email collecté avec consentement RGPD pendant le séjour</li><li>Stocker les emails voyageurs dans un CRM léger : Notion, Brevo, MailChimp (gratuit jusqu'à 500 contacts)</li><li>Taux de retour fidèle : 5-15 % selon qualité du séjour, soit 50-150 € de marge nette par voyageur fidélisé/an</li></ul>
+<div class="art-cta-box"><p>Tu veux automatiser tous tes messages voyageurs et fidéliser ta clientèle ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
 
 <section class="related-sec">
@@ -311,7 +279,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </section>
 
 <!-- FOOTER -->
-<script defer src="/footer.js"></script>
+<script src="/footer.js"></script>
 <script>
 const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
@@ -337,14 +305,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur, réessaie.';
+      msg.textContent='Déjà inscrit ou erreur — réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau, réessaie.';
+    msg.textContent='Erreur réseau — réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

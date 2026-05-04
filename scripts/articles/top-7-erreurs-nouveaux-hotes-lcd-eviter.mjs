@@ -11,44 +11,84 @@ export default {
 
   sections: [
     {
-      h2: '1. Erreurs 1 et 2 : tarif et politique d\'annulation',
+      h2: '1. Tarif fixe toute l\'année',
       content: [
+        { type: 'p', text: '90 % des nouveaux hôtes définissent UN tarif "à l\'année" sans modulation saisonnière. Résultat : ils perdent 20-30 % de revenus en haute saison (sous-tarification) et 15-25 % en basse saison (sur-tarification qui bloque les réservations).' },
         { type: 'ul', items: [
-          'Erreur 1 — Tarif fixe toute l\'année. 90 % des nouveaux hôtes définissent UN tarif "à l\'année" sans modulation. Ils perdent 20-30 % de revenus en haute saison (sous-tarification) et 15-25 % en basse saison (sur-tarification qui empêche les réservations). La tarification doit varier semaine par semaine en fonction de la demande locale',
-          'Erreur 2 — Politique d\'annulation "Stricte". Beaucoup choisissent "Stricte" par prudence (peur des annulations tardives). Conséquence : -25 à -45 % de visibilité Airbnb (l\'algorithme privilégie les politiques "Souples"). Une politique "Souple" génère 12-18 % de revenus en plus malgré ~5 % d\'annulations en plus',
+          'La tarification doit varier semaine par semaine en fonction de la demande locale',
+          'Utiliser un outil dynamique (PriceLabs, Beyond) dès le 1er mois — ROI immédiat',
+          'Comparer ses prix avec 5 logements similaires à 2 km avant chaque week-end',
         ]},
       ],
     },
     {
-      h2: '2. Erreurs 3 et 4 : photos et description',
+      h2: '2. Politique d\'annulation trop stricte',
       content: [
+        { type: 'p', text: 'Beaucoup choisissent la politique "Stricte" par prudence, craignant les annulations tardives. Erreur de calcul : la politique Stricte réduit la visibilité Airbnb de 25 à 45 % (l\'algorithme favorise les politiques souples). Une politique "Souple" génère 12-18 % de revenus en plus malgré ~5 % d\'annulations supplémentaires.' },
         { type: 'ul', items: [
-          'Erreur 3 — Photos prises avec smartphone basique en intérieur sombre. Les photos dégradent ton CTR de 30-50 % vs photos professionnelles. Solutions : photo pro (300-500 €) ou si budget serré, suivre une formation photo smartphone et photographier en lumière naturelle de matinée',
-          'Erreur 4 — Description "storytelling" personnel. "Cet appartement, c\'est notre coup de cœur que nous avons rénové en 2019..." est contre-productif. Les voyageurs et l\'algorithme cherchent du factuel : taille, équipements, localisation, atouts. Storytelling = perte de matching algorithmique',
+          'Politique recommandée au démarrage : "Modérée" (remboursement complet jusqu\'à 5 jours avant)',
+          '"Souple" si tu es en zone très touristique et que ta demande est forte',
+          'Réévaluer tous les 6 mois selon ton taux d\'annulation réel',
         ]},
       ],
     },
     {
-      h2: '3. Erreurs 5 et 6 : équipement et accueil',
+      h2: '3. Photos sombres prises avec un smartphone basique',
       content: [
+        { type: 'p', text: 'Les photos dégradent le CTR (taux de clic) de 30-50 % par rapport à des photos professionnelles. C\'est la première chose que voit le voyageur — avant le prix, avant les avis.' },
         { type: 'ul', items: [
-          'Erreur 5 — Sous-équipement cuisine. Les voyageurs aiment cuisiner en LCD (réduit le budget restau). Une cuisine sans poêle, sans plat à four, avec 4 verres pour 4 personnes = ressort dans les avis comme "manque". Investis 200-400 € dans un kit cuisine complet',
-          'Erreur 6 — Pas de check-in autonome. Si tu n\'as pas mis en place un système de check-in 24/7 (boîte à clés ou serrure connectée), tu loupe 60 % des voyageurs business qui arrivent après 21 h. Investis 80-300 € dans une solution dès le démarrage',
+          'Option 1 : photographe pro — 300-500 €, ROI en 2-3 réservations supplémentaires',
+          'Option 2 : suivre une formation photo smartphone + photographier de 10h à 12h en lumière naturelle',
+          'Ne jamais uploader une photo prise au flash ou en intérieur sombre',
+          'Minimum 20 photos en 2026 — en dessous l\'annonce est marquée "incomplète"',
         ]},
-        { type: 'tip', text: 'L\'erreur 6 est la plus rentable à corriger : pour ~150 € d\'investissement (boîte à clés Master Lock), tu débloques l\'accès à un segment voyageur (business late check-in) qui paie souvent plus cher et laisse des meilleurs avis (séjours courts, peu de friction).' },
       ],
     },
     {
-      h2: '4. Erreur 7 : sous-traiter le ménage trop tôt ou trop tard',
+      h2: '4. Description en mode storytelling personnel',
       content: [
-        { type: 'p', text: 'L\'arbitrage ménage soi-même vs sous-traité est crucial. Erreur fréquente : extrêmes des deux côtés.' },
+        { type: 'p', text: '"Cet appartement, c\'est notre coup de cœur rénové en 2019 avec amour..." — ce type de description est contre-productif. Les voyageurs et l\'algorithme cherchent du factuel (taille, équipements, localisation, atouts). Le storytelling romantique coûte du matching algorithmique.' },
         { type: 'ul', items: [
-          'Trop tôt : tu sous-traites dès le premier mois sans connaître ton standard. Tu ne peux pas former ton prestataire, ni détecter ses lacunes. Avis voyageurs vont chuter pendant 3-6 mois',
-          'Trop tard : tu fais le ménage toi-même sur 50+ ménages/mois. Tu sacrifies ta vie perso, tes vacances, et tu finis par bâcler par fatigue',
-          'Bon timing : commence à sous-traiter à partir de 15-20 ménages/mois, après avoir fait les 10-15 premiers toi-même pour fixer le standard',
-          'Modèle : trouve 1 prestataire de confiance, fais 3 ménages avec lui en binôme pour transmettre tes attentes, puis délègue progressivement',
+          'Structure gagnante : (1) bénéfice principal + ambiance, (2) équipements différenciants, (3) localisation concrète',
+          'Phrases courtes (15-20 mots max), éviter les superlatifs non vérifiables',
+          'Ne PAS commencer par "Je", "Nous", "Notre" — commencer par le logement',
         ]},
-        { type: 'p', text: 'Tu maitrises la qualité ménage ET tu libères ton temps pour développer (acquisition, optimisation, expansion). Le ménage devient un coût variable maîtrisé au lieu d\'une corvée chronophage.' },
+      ],
+    },
+    {
+      h2: '5. Cuisine sous-équipée',
+      content: [
+        { type: 'p', text: 'Les voyageurs aiment cuisiner en LCD — cela réduit leur budget restaurant. Une cuisine sans poêle adaptée, sans plat à four, avec 4 verres pour 4 personnes ressort systématiquement dans les avis comme "manque". Investis 200-400 € dans un kit cuisine complet une seule fois.' },
+        { type: 'ul', items: [
+          'Kit minimum : casseroles 3 tailles, poêle 2 tailles, plat four, couteaux, planche',
+          'Vaisselle pour 2× la capacité (casse et renouvellement)',
+          'Cafetière + bouilloire + grille-pain : trio indispensable dans les avis',
+          'Coche toute la liste équipements dans Airbnb (filtrage voyageur)',
+        ]},
+      ],
+    },
+    {
+      h2: '6. Pas de check-in autonome',
+      content: [
+        { type: 'p', text: 'Sans check-in 24/7 (boîte à clés ou serrure connectée), tu rates 60 % des voyageurs business qui arrivent après 21 h. C\'est l\'erreur la plus rentable à corriger : pour ~150 € d\'investissement, tu débloques un segment qui paie mieux et laisse de meilleurs avis.' },
+        { type: 'ul', items: [
+          'Boîte à clés Master Lock : 80-120 €. Solution simple, fiable, sans abonnement',
+          'Serrure connectée Igloohome ou Nuki : 150-300 €. Code unique par séjour',
+          'Instructions check-in en vidéo 30 secondes envoyées 24 h avant l\'arrivée',
+          'Effet immédiat sur le taux d\'occupation et les demandes late check-in',
+        ]},
+      ],
+    },
+    {
+      h2: '7. Sous-traiter le ménage trop tôt ou trop tard',
+      content: [
+        { type: 'p', text: 'L\'arbitrage ménage soi-même vs sous-traité est crucial. Les deux extrêmes sont des erreurs.' },
+        { type: 'ul', items: [
+          'Trop tôt (mois 1) : tu sous-traites sans connaître ton standard. Le prestataire fait moins bien, les avis chutent pendant 3-6 mois',
+          'Trop tard : tu fais toi-même 50+ ménages/mois. Tu sacrifies ta vie perso et finis par bâcler par fatigue',
+          'Bon timing : commence à déléguer à partir de 15-20 ménages/mois, après avoir fait les 10-15 premiers soi-même',
+          'Méthode : 3 ménages en binôme avec le prestataire pour transmettre ton standard, puis délégation progressive',
+        ]},
         { type: 'cta', text: 'Tu veux éviter ces 7 erreurs et plus encore en démarrant en LCD ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

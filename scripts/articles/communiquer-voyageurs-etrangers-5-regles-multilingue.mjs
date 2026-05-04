@@ -11,55 +11,66 @@ export default {
 
   sections: [
     {
-      h2: '1. Règle 1 : utiliser la traduction native des plateformes',
+      h2: 'Règle 1 — Utilise la traduction native des plateformes',
       content: [
-        { type: 'p', text: 'Airbnb et Booking proposent une traduction automatique des messages depuis 2023. Le système est bon (utilise GPT/DeepL en arrière-plan) et fonctionne dans 30+ langues.' },
+        { type: 'p', text: 'Airbnb et Booking proposent une traduction automatique bidirectionnelle depuis 2023 (moteur GPT/DeepL en arrière-plan), dans 30+ langues. Tu n\'as pas besoin d\'écrire en anglais — tape en français, le voyageur reçoit dans sa langue.' },
         { type: 'ul', items: [
-          'Sur Airbnb : tape ton message en français, Airbnb le traduit dans la langue du voyageur côté lecteur',
-          'Sur Booking : idem, traduction bidirectionnelle automatique dans 30+ langues',
-          'Limite : les expressions idiomatiques mal traduisent. Reste factuel, évite "il faut faire gaffe", "c\'est du gâteau", etc.',
-          'Conseil : écris des phrases courtes (15-20 mots max) — ça améliore la traduction',
+          'Airbnb : activation automatique — le voyageur voit ton message traduit dans sa langue natale',
+          'Booking : idem, traduction bidirectionnelle intégrée',
+          'Pour une meilleure traduction : phrases courtes (15-20 mots max), éviter les expressions idiomatiques',
+          'Exemples à éviter : "il faut faire gaffe", "c\'est du gâteau", "ça roule"',
         ]},
       ],
     },
     {
-      h2: '2. Règle 2 : l\'anglais comme socle',
+      h2: 'Règle 2 — L\'anglais comme filet de sécurité',
       content: [
-        { type: 'p', text: 'L\'anglais reste la langue universelle des voyageurs internationaux, même chez les non-anglophones. Si tu peux écrire 80 % de tes messages en français + 20 % de mots-clés anglais, tu couvres déjà l\'essentiel.' },
+        { type: 'p', text: 'L\'anglais reste la langue universelle, même chez les non-anglophones. Quelques phrases clés en anglais dans ton livret d\'accueil suffisent pour rassurer les voyageurs internationaux.' },
         { type: 'ul', items: [
-          'Phrases types à connaître en anglais : "Welcome", "Check-in instructions", "WiFi password", "Emergency contact"',
-          'Investis 10 € dans un correcteur professionnel (Grammarly) — gratuit la version basique',
-          'Pour le livret d\'accueil : version FR + version EN systématique. ChatGPT te traduit en 30 secondes pour < 1 € en API',
-        ]},
-        { type: 'tip', text: 'Sur Driing et les autres outils LCD, tu peux générer des livrets d\'accueil multilingues automatiquement. Le coût est minime mais l\'impact sur la satisfaction voyageur est gros.' },
-      ],
-    },
-    {
-      h2: '3. Règle 3 : les visuels priment sur les mots',
-      content: [
-        { type: 'p', text: 'Quand la barrière linguistique est forte, les visuels et les pictos communiquent mieux que le texte. Investis dans un livret d\'accueil avec photos et schémas, peu importe la langue.' },
-        { type: 'ul', items: [
-          'Photo du chemin d\'accès depuis la rue jusqu\'à ta porte — clarté immédiate',
-          'Photo de la boîte à clés / digicode avec annotations',
-          'Schéma du compteur d\'eau, du tableau électrique en cas de panne',
-          'Pictos universels pour les règles (silence après 22 h, non-fumeurs, etc.)',
-          'Vidéo de 30 sec pour le check-in (filme depuis ton portable, pas besoin de pro)',
+          'Phrases essentielles : "Welcome", "Check-in instructions", "WiFi password : [code]", "Emergency contact : [numéro]"',
+          'Livret d\'accueil : version FR + version EN systématiquement. ChatGPT traduit en 30 secondes',
+          'Outil recommandé : Grammarly (gratuit) pour corriger ton anglais dans les messages',
+          'Les voyageurs anglophones (US, UK, Australie) représentent 15-25 % du CA dans les zones touristiques',
         ]},
       ],
     },
     {
-      h2: '4. Règles 4-5 : l\'attention aux différences culturelles',
+      h2: 'Règle 3 — Les visuels priment sur le texte',
       content: [
-        { type: 'p', text: 'Les attentes voyageurs varient fortement selon les cultures. Quelques différences clés à connaître pour les nationalités les plus fréquentes en France.' },
+        { type: 'p', text: 'Quand la barrière linguistique est forte, une photo vaut 1 000 mots. Investis dans un livret d\'accueil avec photos et schémas plutôt qu\'un texte dense.' },
         { type: 'ul', items: [
-          'Voyageurs anglo-saxons (US, UK) : valorisent la propreté impeccable et la communication ultra-réactive (< 2 h)',
-          'Voyageurs asiatiques (Japon, Corée, Chine) : valorisent le silence, l\'ordre parfait, des instructions très détaillées',
-          'Voyageurs allemands : valorisent la ponctualité (check-in à l\'heure), la transparence sur les coûts, et la qualité des équipements',
-          'Voyageurs italiens / espagnols : plus flexibles sur les horaires, valorisent la chaleur de l\'accueil et les bons restaurants locaux recommandés',
-          'Voyageurs nord-africains / orientaux : peuvent voyager en grand groupe familial — anticiper l\'espace nuit et la cuisine',
+          'Photo du chemin depuis la rue jusqu\'à ta porte — clarté immédiate',
+          'Photo annotée de la boîte à clés / digicode',
+          'Schéma du tableau électrique et du compteur d\'eau en cas de panne',
+          'Pictos universels pour les règles (silence 22h, non-fumeurs, tri sélectif)',
+          'Vidéo de 30 sec pour le check-in filmée avec un smartphone — pas besoin de pro',
         ]},
-        { type: 'p', text: 'En adaptant ton attention au profil du voyageur (visible sur sa fiche Airbnb), tu génères des avis "exceeded expectations" qui boostent ton classement durablement.' },
-        { type: 'cta', text: 'Tu veux maîtriser l\'expérience voyageur de A à Z ?', button: 'Voir les formations', href: '/#formations' },
+      ],
+    },
+    {
+      h2: 'Règle 4 — Connaître les attentes par nationalité',
+      content: [
+        { type: 'p', text: 'Les attentes voyageurs varient fortement selon les cultures. Ces 5 profils représentent 70 % des voyageurs étrangers en France LCD.' },
+        { type: 'ul', items: [
+          'Anglo-saxons (US, UK) : propreté impeccable + réactivité < 2 h aux messages',
+          'Asiatiques (Japon, Corée, Chine) : silence, ordre parfait, instructions ultra-détaillées',
+          'Allemands : ponctualité (check-in à l\'heure exacte), transparence sur les coûts',
+          'Italiens/Espagnols : flexibilité sur les horaires, chaleur de l\'accueil, bonnes adresses locales',
+          'Nord-africains/Orientaux : souvent en grand groupe familial — anticiper l\'espace nuit et la cuisine',
+        ]},
+      ],
+    },
+    {
+      h2: 'Règle 5 — Anticiper avant l\'arrivée',
+      content: [
+        { type: 'p', text: 'Pour les voyageurs internationaux, envoyer les informations clés 48-72 h avant l\'arrivée est plus important encore que pour les voyageurs francophones. Un voyageur étranger qui atterrit à 22 h dans une ville qu\'il ne connaît pas a besoin d\'être hyper rassuré.' },
+        { type: 'ul', items: [
+          'Message J-2 : code d\'accès + lien livret d\'accueil digital + ton numéro WhatsApp',
+          'Message J-1 : "Tout est prêt pour votre arrivée. En cas de problème à [heure], appelez [numéro]"',
+          'Lien Google Maps vers ton logement avec épingle exacte — indispensable pour les non-connaisseurs',
+          'Indiquer la meilleure sortie de transport (aéroport → logement en 3 étapes simples)',
+        ]},
+        { type: 'cta', text: 'Tu veux maîtriser l\'expérience voyageur international de A à Z ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },
   ],

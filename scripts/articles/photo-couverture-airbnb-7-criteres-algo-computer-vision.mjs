@@ -7,58 +7,94 @@ export default {
   categorySlug: 'visibilite',
   readTime: 6,
 
-  lead: 'Airbnb teste depuis 2024 son moteur Computer Vision pour analyser et noter automatiquement chaque photo. La photo de couverture est celle qui détermine 70 % du CTR (taux de clic) de ton annonce. En 2026, l\'algorithme évalue 7 critères précis. Connaître ces critères, c\'est maximiser sa visibilité sans nouvelle photo studio.',
+  lead: 'Airbnb utilise depuis 2024 un moteur Computer Vision pour noter automatiquement chaque photo uploadée. La photo de couverture détermine 70 % du CTR (taux de clic) de ton annonce. En 2026, l\'algorithme évalue 7 critères précis. Connaître ces critères, c\'est maximiser sa visibilité sans nouvelle photo studio.',
 
   sections: [
     {
-      h2: '1. Ce que la Computer Vision Airbnb analyse réellement',
+      h2: '1. Format paysage (horizontal) obligatoire',
       content: [
-        { type: 'p', text: 'L\'IA d\'Airbnb traite chaque image uploadée en 4 étapes : reconnaissance d\'objets (lit, canapé, fenêtre), analyse de luminosité, détection de scène (chambre, salon, extérieur), évaluation esthétique. Chaque photo reçoit un score global qui pondère son ordre d\'affichage.' },
-        { type: 'p', text: 'La photo de couverture (la première affichée dans les résultats de recherche) doit obtenir un score parmi les meilleurs de ta galerie. Si une autre photo de ta galerie obtient un meilleur score, l\'algorithme peut décider de la promouvoir en couverture sans te prévenir.' },
-        { type: 'tip', text: 'Tu peux verrouiller manuellement ta photo de couverture dans les paramètres de ton annonce. Mais si l\'algo détecte qu\'une autre photo génère plus de clics en test A/B (oui, Airbnb fait des tests A/B silencieusement), il les substituera.' },
-      ],
-    },
-    {
-      h2: '2. Les 7 critères de l\'algo en 2026',
-      content: [
+        { type: 'p', text: 'Le premier critère éliminatoire : le format de l\'image. L\'algorithme Computer Vision déclasse les photos en format portrait (vertical) de 40 %. Le format horizontal (paysage) est le seul qui valorise le logement dans le contexte d\'affichage Airbnb.' },
         { type: 'ul', items: [
-          'Format paysage (horizontal) — les photos en portrait sont rétrogradées de 40 %',
-          'Résolution ≥ 1920×1080 — en dessous, dégradation visible côté algo',
-          'Luminosité moyenne entre 60 et 85 % — ni trop sombre ni cramé',
-          'Scène principale identifiable (salon, chambre, extérieur, vue) en plein cadre, pas un détail',
-          'Présence humaine = exclu (l\'algo détecte et déclasse — focaliser sur l\'espace)',
-          'Cohérence avec les équipements cochés — si tu as coché "vue mer", la couverture doit la montrer',
-          'Stabilité : pas de flou de mouvement, pas de filtre Instagram trop saturé',
+          'Ratio optimal : 16:9 (1920×1080 px minimum)',
+          'Éviter de photographier en portrait puis recadrer — perte de qualité',
+          'Si ta photo a été prise en portrait, ne pas la rotationner : créer une nouvelle prise de vue',
         ]},
       ],
     },
     {
-      h2: '3. Les 5 photos qui marchent (et celles qui flopent)',
+      h2: '2. Résolution ≥ 1920×1080 pixels',
       content: [
-        { type: 'p', text: 'Sur 200 annonces analysées, certaines photos passent systématiquement dans le top 3 du score Computer Vision. Voici la hiérarchie observée.' },
+        { type: 'p', text: 'Airbnb impose une résolution minimum pour afficher les annonces en haute qualité sur tous les écrans (mobile, desktop, TV). En dessous de 1920×1080, l\'algo détecte une "image basse résolution" et la pénalise dans le score global.' },
         { type: 'ul', items: [
-          'Top performer : salon en lumière naturelle douce (matin ou fin d\'après-midi), grand angle, mobilier visible, fenêtre lumineuse en arrière-plan',
-          'Très efficace : pièce principale aux 2/3 de l\'image avec un coin atypique (bibliothèque, bow-window, parquet ancien)',
-          'Bon score : chambre principale avec lit fait, lumière douce, en plongée légère pour montrer la profondeur',
-          'Score moyen : extérieur (terrasse, balcon) si la photo est en pleine journée et que les meubles d\'extérieur sont visibles',
-          'À éviter : photo d\'objet seul (lit, fauteuil), photo trop sombre ou cramée, photo prise au flash, photo en gros plan',
+          'Smartphone récent (iPhone 12+, Samsung S21+) : résolution largement suffisante',
+          'Éviter de réduire la taille des photos avant de les uploader',
+          'Les photos prises avec un appareil compact ancien (2010-2015) peuvent être sous le seuil',
         ]},
-        { type: 'tip', text: 'Si tu n\'as qu\'un seul créneau pour photographier ton logement, choisis 10 h-12 h ou 16 h-18 h. La lumière naturelle douce de ces créneaux maximise le score Computer Vision sans matériel pro.' },
       ],
     },
     {
-      h2: '4. Combien de photos uploader et dans quel ordre',
+      h2: '3. Luminosité optimale entre 60 et 85 %',
       content: [
-        { type: 'p', text: 'Airbnb recommande officiellement 20 photos minimum en 2026 (contre 10 en 2023). En dessous, ton annonce affiche un avertissement "incomplète" et perd 20 % de visibilité. L\'ordre des 5 premières photos compte autant que la couverture.' },
-        { type: 'p', text: 'Ordre optimal : (1) salon ou pièce principale, (2) chambre principale, (3) cuisine équipée, (4) salle de bain, (5) extérieur ou vue. Les photos 6 à 20 montrent le détail des équipements (placards ouverts, équipements de cuisine, salle de bain, machine à laver, chaque équipement coché doit avoir sa photo).' },
-        { type: 'cta', text: 'Tu veux apprendre à photographier ton logement comme un pro avec ton smartphone et passer haut sur l\'algo Airbnb ?', button: 'Voir les formations', href: '/#formations' },
+        { type: 'p', text: 'L\'algorithme analyse la luminosité moyenne de l\'image et pénalise les deux extrêmes : trop sombre (< 40 %) ou surexposé (> 90 %). La plage 60-85 % de luminosité moyenne correspond à ce que les voyageurs perçoivent comme "accueillant et réaliste".' },
+        { type: 'ul', items: [
+          'Créneau idéal : photographier entre 10h-12h ou 16h-18h (lumière naturelle douce)',
+          'Éviter les photos prises au flash — créent des zones surexposées',
+          'En cas de faible luminosité naturelle : ajouter 2-3 lampes supplémentaires dans les coins',
+        ]},
+        { type: 'tip', text: 'Si tu n\'as qu\'un seul créneau pour photographier ton logement, choisis 10h-12h. La lumière naturelle de la matinée maximise le score Computer Vision sans matériel pro.' },
+      ],
+    },
+    {
+      h2: '4. Scène principale identifiable en plein cadre',
+      content: [
+        { type: 'p', text: 'L\'algorithme classifie chaque photo dans une catégorie (salon, chambre, cuisine, extérieur, salle de bain). La scène principale doit être identifiable dans les premiers millisecondes — si le moteur hésite, il déclasse la photo.' },
+        { type: 'ul', items: [
+          'Photo de couverture : privilégier le salon ou la pièce principale en grand angle',
+          'Éviter les angles trop serrés ou les photos de détails (lampe, coussin, bouquet)',
+          'Le logement entier doit se deviner en 0,3 seconde — test : si tu dois "chercher" ce que c\'est, refaire la photo',
+        ]},
+      ],
+    },
+    {
+      h2: '5. Aucune présence humaine dans le cadre',
+      content: [
+        { type: 'p', text: 'L\'algorithme Computer Vision détecte les personnes dans les photos et déclasse systématiquement les images qui en contiennent. La raison : Airbnb veut que les voyageurs projettent LEUR image dans le logement, pas celle d\'inconnus.' },
+        { type: 'ul', items: [
+          'Vérifier que personne n\'apparaît dans les reflets (miroirs, fenêtres, TV)',
+          'Retirer les photos de famille et décos personnalisées avant la prise de vue',
+          'Même les silhouettes floues déclenchent le filtre — vérifier systématiquement',
+        ]},
+      ],
+    },
+    {
+      h2: '6. Cohérence avec les équipements cochés dans l\'annonce',
+      content: [
+        { type: 'p', text: 'En 2026, l\'algorithme croise les équipements cochés dans l\'annonce avec le contenu visuel des photos. Si tu as coché "vue mer" mais qu\'aucune photo ne montre la mer, le score baisse. Si tu as coché "balcon" et que la couverture montre un salon intérieur, même problème.' },
+        { type: 'ul', items: [
+          'Audit : liste tes 5 équipements différenciants cochés et vérifie qu\'ils sont tous en photo',
+          'La photo de couverture doit refléter l\'élément le plus différenciant de ton annonce',
+          'Si vue mer = point fort, mettre la vue en couverture prime sur le salon — même si le salon est plus joli',
+        ]},
+      ],
+    },
+    {
+      h2: '7. Image stable sans filtre saturé',
+      content: [
+        { type: 'p', text: 'Le dernier critère technique : l\'absence de flou de mouvement, de grain excessif, et de filtres Instagram trop saturés. L\'algorithme détecte ces artefacts et les pénalise — même si visuellement la photo semble belle à l\'œil humain.' },
+        { type: 'ul', items: [
+          'Flou de mouvement : utiliser un trépied ou appuyer sur une surface stable',
+          'Filtres Instagram : appliquer un léger ajustement (luminosité, contraste +10 max) plutôt qu\'un filtre preset',
+          'Saturation : ne pas dépasser +15-20 % de saturation — les couleurs sursaturées déclassent',
+          'Grain : éviter les photos prises en très basse lumière avec ISO > 3200',
+        ]},
+        { type: 'cta', text: 'Tu veux apprendre à photographier ton logement comme un pro avec ton smartphone ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },
   ],
 
   related: [
-    { slug: 'photos-airbnb-computer-vision-ia-optimiser',       label: 'Photos Airbnb & Computer Vision',       categoryLabel: 'Visibilité' },
     { slug: 'photographier-logement-location-courte-duree-smartphone', label: 'Photographier au smartphone',  categoryLabel: 'Visibilité' },
     { slug: 'optimiser-annonce-airbnb',                         label: 'Optimiser son annonce Airbnb',          categoryLabel: 'Visibilité' },
+    { slug: 'titre-annonce-airbnb-optimiser-clics-visibilite',  label: 'Rédiger un titre qui fait cliquer',     categoryLabel: 'Visibilité' },
   ],
 }

@@ -7,57 +7,105 @@ export default {
   categorySlug: 'conciergerie',
   readTime: 6,
 
-  lead: 'Une conciergerie LCD sans contrat formalisé court à la catastrophe. Le moindre désaccord avec un propriétaire (qui a payé quoi, qui possède la photo, qui a le contrôle des annonces) peut tourner au litige. Voici les 8 clauses indispensables d\'un mandat de conciergerie LCD en 2026.',
+  lead: 'Une conciergerie LCD sans contrat formalisé court à la catastrophe. Le moindre désaccord avec un propriétaire — qui a payé quoi, qui contrôle les annonces, qui possède les photos — peut tourner au litige. Voici les 8 clauses indispensables d\'un mandat de conciergerie LCD en 2026.',
 
   sections: [
     {
-      h2: '1. Clause 1 : Objet du mandat précis',
+      h2: '1. L\'objet du mandat : ce qui est inclus (et ce qui ne l\'est pas)',
       content: [
-        { type: 'p', text: 'L\'objet du mandat doit lister exhaustivement ce qui est inclus ET ce qui ne l\'est pas. Vague = source de conflit.' },
+        { type: 'p', text: 'L\'objet du mandat doit lister exhaustivement ce qui est inclus ET ce qui ne l\'est pas. Vague = source de conflit systématique.' },
         { type: 'ul', items: [
-          'Inclus : création/gestion annonces (Airbnb, Booking, autres listés), tarification, calendrier, communication voyageurs, organisation ménage, accueil voyageurs, gestion des avis',
-          'Inclus optionnellement (à cocher) : photographie pro, livret d\'accueil digital, fourniture du linge, kit petit-déjeuner',
-          'Non inclus : travaux > 200 €, achat équipement neuf (sauf accord écrit préalable), litiges juridiques avec voyageurs',
-          'Limites : nombre max d\'interventions/mois incluses, au-delà facturation à l\'heure',
+          'Inclus standard : création/gestion annonces, tarification, calendrier, communication voyageurs, organisation ménage, gestion des avis',
+          'Inclus optionnellement (à cocher) : photographie pro, livret d\'accueil digital, fourniture linge, kit petit-déjeuner',
+          'Non inclus : travaux > 200 €, achat équipement neuf sans accord préalable, litiges juridiques avec voyageurs',
+          'Limites quantitatives : nombre max d\'interventions/mois incluses, facturation à l\'heure au-delà',
         ]},
       ],
     },
     {
-      h2: '2. Clause 2 : Rémunération et facturation',
+      h2: '2. La rémunération et la facturation',
       content: [
-        { type: 'p', text: 'Précise comment ta rémunération est calculée, quand elle est facturée, et comment elle est encaissée.' },
+        { type: 'p', text: 'Précise comment ta rémunération est calculée, quand elle est facturée, et comment elle est encaissée. Aucune ambiguïté possible.' },
         { type: 'ul', items: [
-          'Pourcentage exact (ex. 22 % du CA TTC voyageur)',
-          'Base de calcul : CA TTC encaissé (avant ou après commission plateforme)',
-          'Mode d\'encaissement : prélèvement direct sur le compte voyageur via plateforme, ou facturation mensuelle au propriétaire',
-          'TVA : préciser si le pourcentage est TTC (intègre la TVA) ou HT (TVA en plus)',
-          'Frais ménage : facturés au voyageur séparément ou inclus dans ta commission (à définir)',
-          'Date de paiement : J+5 du mois suivant, par virement automatique',
+          'Pourcentage exact (ex : 22 % du CA TTC voyageur)',
+          'Base de calcul : CA TTC encaissé avant ou après commission plateforme — préciser lequel',
+          'Mode d\'encaissement : prélèvement direct via plateforme, ou facturation mensuelle au propriétaire',
+          'TVA : préciser si le pourcentage est TTC ou HT',
+          'Date de paiement : J+5 du mois suivant par virement automatique',
         ]},
       ],
     },
     {
-      h2: '3. Clauses 3-4 : Durée et fin du mandat',
+      h2: '3. La durée minimale et le préavis',
       content: [
-        { type: 'p', text: 'Ces 2 clauses cadrent la sortie du contrat — souvent le moment le plus tendu.' },
+        { type: 'p', text: 'La durée du mandat et les conditions de sortie doivent être explicitement définies pour protéger les deux parties.' },
         { type: 'ul', items: [
-          'Clause 3 - Durée : engagement minimum (3-12 mois) puis tacite reconduction. Préavis de résiliation 1-3 mois selon le contrat',
-          'Clause 4 - Fin de mandat : restitution des accès (compte Airbnb, codes, clés), traitement des réservations en cours (qui assure le check-out ?), bilan financier, photos du logement à la sortie pour preuve d\'état',
-          'Clause 5 - Litiges : médiation amiable avant procédure judiciaire. Tribunal compétent (généralement celui du siège de la conciergerie)',
+          'Engagement minimum recommandé : 3-6 mois pour que la conciergerie puisse optimiser l\'annonce',
+          'Tacite reconduction mensuelle après la période minimale',
+          'Préavis de résiliation : 1-3 mois selon le volume et la complexité de la gestion',
+          'Résiliation pour faute : possible sans préavis avec mise en demeure préalable',
         ]},
-        { type: 'tip', text: 'Inclus une clause de "non-débauchage" : le propriétaire ne peut pas embaucher tes salariés ménage ou ton équipe pendant 6-12 mois après la fin du mandat. Sinon, certains propriétaires apprennent ton organisation puis te remplacent par tes propres employés.' },
       ],
     },
     {
-      h2: '4. Clauses 6-8 : Responsabilités et propriété',
+      h2: '4. La procédure de fin de mandat',
       content: [
-        { type: 'p', text: 'Ces 3 clauses définissent qui possède quoi et qui répond de quoi.' },
+        { type: 'p', text: 'La fin du mandat est souvent le moment le plus tendu de la relation. La clause de sortie doit être précise sur tous les aspects opérationnels.' },
         { type: 'ul', items: [
-          'Clause 6 - Propriété intellectuelle : QUI possède le compte Airbnb (au nom du propriétaire, géré par toi), les photos pros (souvent le propriétaire qui a financé), le livret d\'accueil (toi ou propriétaire selon qui a créé)',
-          'Clause 7 - Assurance : précise qui souscrit quelle assurance. La conciergerie a sa RC pro, le propriétaire son assurance LCD propre. Pas de doublon mais zéro vide non plus',
-          'Clause 8 - Limites de responsabilité : la conciergerie n\'est pas responsable des dégâts voyageurs au-delà de ce que couvre la caution/AirCover. Le propriétaire ne peut pas se retourner contre toi pour des cas hors de ton contrôle',
+          'Restitution des accès : compte Airbnb/Booking, codes serrure, clés dans les X jours suivant la résiliation',
+          'Traitement des réservations en cours : qui assure les check-in/out jusqu\'à la fin des séjours',
+          'Bilan financier : compte de solde dans les 30 jours après fin de mandat',
+          'Photos et contenus : qui conserve les droits sur les photos pro, le livret d\'accueil',
         ]},
-        { type: 'p', text: 'Pour rédiger un contrat solide, fais le faire par un avocat spécialisé en droit immobilier (compter 600-1 500 € pour un contrat type). Il sera réutilisable pour tous tes futurs mandats. Le coût est largement amorti par les litiges évités.' },
+        { type: 'tip', text: 'Ajoute une clause de non-débauchage : le propriétaire ne peut pas embaucher tes salariés ou prestataires ménage pendant 12 mois après la fin. Sans ça, certains propriétaires apprennent ton organisation puis te remplacent par tes propres équipes.' },
+      ],
+    },
+    {
+      h2: '5. Le règlement des litiges',
+      content: [
+        { type: 'p', text: 'Définir à l\'avance la procédure en cas de désaccord te fait économiser du temps, de l\'énergie et des frais d\'avocat.' },
+        { type: 'ul', items: [
+          'Médiation amiable obligatoire avant toute procédure judiciaire (délai 30 jours)',
+          'Tribunal compétent : généralement celui du siège de la conciergerie',
+          'Droit applicable : droit français',
+          'Clause arbitrale si tu vises des clients professionnels (structure corporative)',
+        ]},
+      ],
+    },
+    {
+      h2: '6. La propriété intellectuelle',
+      content: [
+        { type: 'p', text: 'Qui possède quoi après la fin du mandat ? Cette clause évite des situations catastrophiques où le propriétaire te "vole" tes créations.' },
+        { type: 'ul', items: [
+          'Compte Airbnb : appartient au propriétaire (créé à son nom, tu le gères en mandataire)',
+          'Photos professionnelles : appartiennent au propriétaire s\'il les a financées, à toi si tu les as financées et produites',
+          'Livret d\'accueil digital : appartient à celui qui l\'a créé et financé — préciser dans le contrat',
+          'Scripts de messages automatisés : à toi — usage autorisé pour le propriétaire pendant le mandat uniquement',
+        ]},
+      ],
+    },
+    {
+      h2: '7. Les assurances et responsabilités',
+      content: [
+        { type: 'p', text: 'Chaque partie doit avoir sa couverture assurance propre. Cette clause définit qui souscrit quoi et qui répond de quoi.' },
+        { type: 'ul', items: [
+          'La conciergerie : RC professionnelle couvrant les erreurs de gestion (acte ou omission)',
+          'Le propriétaire : assurance LCD dédiée (pas MRH classique) couvrant les sinistres voyageurs',
+          'Pas de doublon : la RC pro conciergerie couvre tes fautes professionnelles, pas les dommages matériels du logement',
+          'AirCover Airbnb : complémentaire, pas substituable à une vraie assurance',
+        ]},
+      ],
+    },
+    {
+      h2: '8. Les limites de responsabilité de la conciergerie',
+      content: [
+        { type: 'p', text: 'Sans cette clause, le propriétaire peut en théorie se retourner contre toi pour n\'importe quel sinistre. Les limites de responsabilité te protègent contre les demandes abusives.' },
+        { type: 'ul', items: [
+          'La conciergerie n\'est pas responsable des dégâts voyageurs au-delà de la caution/AirCover',
+          'Pas de responsabilité pour les cas de force majeure (catastrophe naturelle, pandémie, coupure électrique)',
+          'Plafond de responsabilité : limiter à X mois de commission perçue (3-6 mois standard)',
+          'Exclusion pour faute du propriétaire : si le propriétaire refuse d\'entretenir le logement et qu\'un avis 1★ en découle',
+        ]},
         { type: 'cta', text: 'Tu veux toutes les clés juridiques et opérationnelles pour ta conciergerie LCD ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

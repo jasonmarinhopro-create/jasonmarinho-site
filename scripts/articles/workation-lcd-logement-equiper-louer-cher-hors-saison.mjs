@@ -7,48 +7,70 @@ export default {
   categorySlug: 'revenus',
   readTime: 7,
 
-  lead: 'Les voyageurs workation — télétravailleurs qui combinent séjour et boulot — sont devenus le profil le plus rentable à capter en basse saison. Ils séjournent 7 à 30 jours, génèrent peu de turn-over, laissent de bons avis et cherchent des logements spécifiquement équipés pour travailler. Les hôtes qui ont adapté leur bien à ce profil louent en moyenne 30 % plus cher hors saison. Voici comment faire pareil.',
+  lead: 'Les voyageurs workation — télétravailleurs qui combinent séjour et boulot — sont le profil le plus rentable en basse saison. Séjours de 7 à 30 jours, peu de turn-over, bons avis. Les hôtes qui ont adapté leur bien à ce profil louent en moyenne 30 % plus cher hors saison. Voici les 5 équipements à mettre en place.',
 
   sections: [
     {
-      h2: '1. Qui sont vraiment les voyageurs workation en 2026',
+      h2: '1. Fibre optique ≥ 200 Mb/s avec test de débit affiché',
       content: [
-        { type: 'p', text: 'Le profil workation de 2026 est plus varié qu\'on ne le croit. Ce ne sont plus seulement des développeurs freelances ou des créateurs de contenu. On y trouve des cadres en télétravail partiel, des consultants en mission, des couples dont l\'un travaille à distance, et des solopreneurs qui font le tour des régions françaises. Selon les chiffres de Beyond Pricing, ce segment représente 15 à 25 % du CA des locations haut de gamme hors saison, et jusqu\'à 40 % en basse saison dans les zones attractives (montagne, littoral, campagne calme).' },
-        { type: 'p', text: 'Ce profil paie plus cher pour deux raisons : il recherche un confort de travail qu\'un hôtel ne peut pas offrir, et il a besoin de stabilité (pas d\'hôtel qui change de prix toutes les nuits). Un logement bien équipé pour le travail justifie un tarif 20 à 35 % au-dessus du prix standard.' },
-      ],
-    },
-    {
-      h2: '2. Les 5 équipements indispensables (et leur impact sur le prix)',
-      content: [
+        { type: 'p', text: 'C\'est le critère #1 non négociable pour un workationer. Une connexion lente ou instable disqualifie ton logement avant même que le voyageur ait regardé les photos. Et la preuve se donne en photo, pas en promesse.' },
         { type: 'ul', items: [
-          'Fibre optique ≥ 200 Mb/s avec test de débit affiché dans l\'annonce — c\'est le critère n°1 non négociable',
-          'Bureau dédié avec surface ≥ 120 cm de large, éclairage orientable et prise secteur accessible',
-          'Chaise ergonomique réglable (pas le tabouret de cuisine ou la chaise de jardin)',
-          'Grand écran externe disponible (27 pouces) ou possibilité de brancher son propre écran via HDMI/USB-C',
-          'Espace de travail séparé du salon principal — même un coin bureau derrière un meuble fait la différence',
+          'Fibre 200 Mb/s minimum (idéal 500 Mb/s+)',
+          'Test Speedtest récent (< 1 mois) mis en photo dans l\'annonce — plus convaincant que du texte',
+          'Couverture wifi dans toutes les pièces : vérifier avec WiFi Analyzer',
+          'Backup 4G : routeur de secours (Huawei 4G, 30-50 €) en cas de panne fibre',
         ]},
-        { type: 'tip', text: 'Fais un test de débit Speedtest et mets la capture d\'écran en photo d\'annonce. Les workateurs qui voient "fibre 450 Mb/s" dans les photos réservent sans même demander. C\'est plus convaincant qu\'un texte dans la description.' },
+        { type: 'tip', text: 'Affiche la capture Speedtest directement dans tes photos d\'annonce. Un workationer qui voit "472 Mb/s download" réserve sans poser de question. C\'est plus fort que n\'importe quelle description.' },
       ],
     },
     {
-      h2: '3. Adapter ton annonce et ta tarification pour ce profil',
+      h2: '2. Bureau dédié de minimum 80 cm de large',
       content: [
-        { type: 'p', text: 'Les workateurs ne cherchent pas leur logement comme un vacancier classique. Ils filtrent souvent par durée minimale, équipements et localisation (calme, bien desservi). Ton titre et ta description doivent parler directement à ce profil.' },
-        { type: 'p', text: 'Côté tarif, propose des réductions explicites pour les séjours semaine (+7 jours) et mensuel (+28 jours) : une remise de 20 % à la semaine et 35 % au mois est dans les standards. En échange, tu gagnes un taux d\'occupation stable, moins de ménage et un voyageur qui entretient mieux le logement.' },
+        { type: 'p', text: 'Une table de salle à manger n\'est pas un bureau. Les workationers le savent, et ils l\'ont mauvaise quand l\'hôte fait la confusion. Un bureau dédié avec surface suffisante est visible en photo — et c\'est souvent ce qui déclenche la réservation.' },
         { type: 'ul', items: [
-          'Titre : intègre les mots "télétravail", "fibre", "bureau" ou "workation" directement dans ton titre ou sous-titre',
-          'Photos : inclus une photo du bureau avec éclairage, une capture du test de débit, et l\'espace de travail éclairé',
-          'Description : une section dédiée "Travailler depuis ce logement" avec détails fibre, bureau, calme',
-          'Calendrier : bloque des créneaux pour les réservations longues en basse saison plutôt que d\'accepter des nuits isolées',
+          'Surface minimum : 80 cm de large (idéal 120 cm pour l\'aise)',
+          'Modèle accessible : IKEA LINNMON 120 cm — 50 €',
+          'Éclairage orientable LED sur le bureau : 30 €',
+          'Le montrer dans les 5 premières photos — avant même la chambre',
         ]},
       ],
     },
     {
-      h2: '4. Fidéliser les workateurs pour créer des revenus récurrents',
+      h2: '3. Chaise ergonomique réglable',
       content: [
-        { type: 'p', text: 'Contrairement aux vacanciers, les workateurs reviennent. Si l\'expérience est bonne (connexion stable, confort de travail, calme), ils revisitent le même logement — ou recommandent à leurs collègues qui télétravaillent également. C\'est un segment à fort potentiel de fidélisation.' },
-        { type: 'p', text: 'Quelques attentions concrètes font toute la différence : un guide d\'accueil avec les bons cafés et coworking du quartier, les horaires des transports en commun, les meilleurs spots pour les appels vidéo. Ces détails signalent que tu as pensé à leur usage spécifique — et ça se retrouve dans les avis.' },
-        { type: 'cta', text: 'Tu veux apprendre à diversifier ta clientèle et maximiser tes revenus hors saison ?', button: 'Voir les formations', href: '/#formations' },
+        { type: 'p', text: 'Un workationer peut rester assis 6-8 h par jour. La chaise de salon ou de salle à manger n\'est pas adaptée. Une vraie chaise ergonomique est le signal visuel qui distingue un logement "workation-ready" d\'un logement classique.' },
+        { type: 'ul', items: [
+          'Chaise avec réglage hauteur, accoudoirs et support lombaire — 100-200 €',
+          'Marques accessibles : IKEA Markus (130 €), Hbada (90 €), Songmics (80 €)',
+          'Vérifier régulièrement que les réglages fonctionnent (ressorts, roulettes)',
+          'La mention "chaise ergonomique" dans l\'annonce augmente le taux de clic de 15-20 % sur ce segment',
+        ]},
+      ],
+    },
+    {
+      h2: '4. Grand écran externe ou port HDMI/USB-C disponible',
+      content: [
+        { type: 'p', text: 'Beaucoup de workationers voyagent avec un laptop 13-15 pouces et cherchent à se connecter à un grand écran pour être productifs. Un moniteur 27 pouces ou une TV avec port HDMI accessible est un argument différenciant fort.' },
+        { type: 'ul', items: [
+          'Option 1 : moniteur 27 pouces sur le bureau — 150 € chez Lidl ou Amazon (one-shot)',
+          'Option 2 : TV dans la pièce de travail avec câble HDMI et adaptateur USB-C disponibles',
+          'Afficher en photo avec le câble visible — montre que tu y as pensé',
+          'Mentionner dans l\'annonce : "Écran externe 27" disponible sur demande"',
+        ]},
+      ],
+    },
+    {
+      h2: '5. Espace de travail séparé de la zone de vie',
+      content: [
+        { type: 'p', text: 'L\'équipement seul ne suffit pas — les workationers ont besoin d\'un espace mentalement séparé du salon et de la chambre. Même un coin bureau derrière un meuble ou dans une alcôve fait la différence psychologique.' },
+        { type: 'ul', items: [
+          'Coin bureau délimité par une étagère, un rideau, un meuble de séparation',
+          'Idéal : une pièce dédiée (bureau, chambre d\'amis) — mais rare et pas obligatoire',
+          'Si studio : bureau positionné face à une fenêtre, dos au canapé — séparation visuelle suffit',
+          'Mentionner dans la description : "Espace de travail distinct de la zone de vie"',
+        ]},
+        { type: 'p', text: 'Ces 5 équipements combinés permettent de proposer un tarif "workation" 20-30 % supérieur au tarif standard. Sur une réservation de 14 nuits à 90 €/nuit standard, la version workation peut se vendre 110-115 €/nuit — soit 280-350 € de revenu supplémentaire par réservation.' },
+        { type: 'cta', text: 'Tu veux diversifier ta clientèle et maximiser tes revenus hors saison ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },
   ],

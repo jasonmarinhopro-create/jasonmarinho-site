@@ -7,56 +7,71 @@ export default {
   categorySlug: 'experience',
   readTime: 6,
 
-  lead: 'Tu viens de recevoir un avis 1 ou 2 étoiles, peut-être injuste, peut-être pas. La panique te dit de répondre vite. Erreur. Voici la méthode en 5 étapes pour limiter les dégâts, contester si possible, et récupérer ton classement en 60 jours.',
+  lead: 'Tu viens de recevoir un avis 1 ou 2 étoiles, peut-être injuste. La panique te dit de répondre vite. Erreur. Voici la méthode en 5 étapes pour limiter les dégâts, contester si possible, et récupérer ton classement en 60 jours.',
 
   sections: [
     {
-      h2: '1. Étape 1 : Ne pas réagir dans les 6 premières heures',
+      h2: 'Étape 1 — Ne pas réagir dans les 6 premières heures',
       content: [
-        { type: 'p', text: 'Le réflexe naturel face à un mauvais avis est de répondre tout de suite — pour rétablir la vérité, défendre ton bien, exprimer ta frustration. C\'est une erreur. Une réponse à chaud génère 3 fois plus de réponses émotionnelles regrettées que les réponses à froid.' },
-        { type: 'p', text: 'Imposer-toi un délai de 6 à 24 h. Lis l\'avis, prends note, mais NE RÉPONDS PAS. Pendant ce temps, tu vérifies les faits, tu retrouves les messages, tu prépares ta réponse en mode logique au lieu d\'émotionnel.' },
-        { type: 'tip', text: 'Si l\'avis te touche personnellement, écris ta réponse "défoulement" dans un brouillon Word. Tu ne l\'enverras jamais. Le simple fait de l\'écrire libère la frustration et te permet d\'écrire ta vraie réponse posément.' },
+        { type: 'p', text: 'Le réflexe naturel est de répondre immédiatement pour rétablir la vérité. C\'est une erreur. Une réponse à chaud génère 3× plus de formulations regrettées que les réponses à froid. Impose-toi un délai de 6 à 24 h.' },
+        { type: 'ul', items: [
+          'Lis l\'avis, prends note des éléments contestables, mais NE RÉPONDS PAS',
+          'Retrouve les messages Airbnb avec le voyageur pour vérifier les faits',
+          'Astuce : écris ta réponse "défoulement" dans un brouillon Word — libère la frustration sans la publier',
+          'Après 6-24 h, tu es dans un état d\'esprit logique au lieu d\'émotionnel',
+        ]},
       ],
     },
     {
-      h2: '2. Étape 2 : Vérifier si l\'avis enfreint les règles Airbnb',
+      h2: 'Étape 2 — Vérifier si l\'avis peut être supprimé par Airbnb',
       content: [
-        { type: 'p', text: 'Airbnb supprime les avis qui violent ses règles de publication. Si ton avis tombe dans une de ces catégories, tu peux demander la suppression.' },
+        { type: 'p', text: 'Airbnb supprime les avis qui violent ses règles de publication. Si ton avis entre dans une des catégories ci-dessous, tu peux demander la suppression.' },
         { type: 'ul', items: [
-          'Avis non basé sur une expérience réelle (le voyageur n\'est jamais venu)',
+          'Avis non basé sur une expérience réelle (voyageur jamais venu)',
           'Discrimination ou propos haineux (race, religion, orientation, handicap)',
           'Informations privées (numéro de téléphone, adresse complète)',
-          'Chantage ou menace ("baissez votre prix ou je laisserai 1 étoile")',
+          'Chantage ("baissez votre prix ou je mets 1 étoile") — prouvable avec captures d\'écran',
           'Référence à un litige actif avec Airbnb',
-          'Contenu non pertinent (publicité, lien externe)',
         ]},
-        { type: 'p', text: 'Si l\'un de ces critères s\'applique, va sur Airbnb → Avis → Cliquer sur les 3 points à côté de l\'avis → "Signaler cet avis". Airbnb répond en 5-10 jours. La suppression effective si validée intervient en 24-48 h après validation.' },
+        { type: 'p', text: 'Procédure : Airbnb → Avis → 3 points à côté de l\'avis → "Signaler cet avis". Réponse Airbnb sous 5-10 jours. Suppression effective sous 24-48 h si validée.' },
       ],
     },
     {
-      h2: '3. Étape 3 : Rédiger une réponse publique impeccable',
+      h2: 'Étape 3 — Rédiger une réponse publique impeccable',
       content: [
-        { type: 'p', text: 'Si l\'avis ne peut pas être supprimé, ta réponse publique devient critique. Elle est lue par les futurs voyageurs (étude : 84 % des voyageurs lisent les réponses de l\'hôte aux avis négatifs avant de réserver).' },
+        { type: 'p', text: 'Si l\'avis ne peut pas être supprimé, ta réponse publique est critique. 84 % des futurs voyageurs lisent les réponses de l\'hôte aux avis négatifs avant de réserver.' },
         { type: 'ul', items: [
-          'Reconnaitre la frustration du voyageur sans accepter les torts ("Je suis désolé d\'apprendre que votre séjour n\'a pas été à la hauteur de vos attentes")',
-          'Apporter des faits précis qui contredisent ou nuancent ("Concernant le bruit signalé, le rapport sonore moyen sur 30 jours est de 35 dB, en deçà du seuil de gêne")',
-          'Présenter les actions correctrices (même si tu n\'es pas d\'accord) : "Suite à votre retour, nous avons renforcé l\'isolation phonique entre les chambres"',
-          'Garder un ton neutre, professionnel, jamais vexé ou ironique',
-          'Maximum 4-5 phrases. Au-delà, c\'est défensif et contre-productif',
+          'Reconnaitre la frustration sans accepter les torts : "Je suis désolé d\'apprendre que..."',
+          'Apporter des faits précis qui nuancent : "Concernant le bruit signalé, le rapport sonore moyen est de 35 dB"',
+          'Présenter les actions correctrices : "Suite à votre retour, nous avons renforcé l\'isolation phonique"',
+          'Ton : neutre, professionnel, jamais vexé ni ironique',
+          'Longueur : maximum 4-5 phrases. Au-delà = défensif, contre-productif',
         ]},
-        { type: 'tip', text: 'Si l\'avis porte sur un point factuel facilement vérifiable (propreté, équipement), prends en photo le logement après check-out comme preuve. Ces photos peuvent t\'aider en cas de litige Airbnb.' },
       ],
     },
     {
-      h2: '4. Étapes 4-5 : Récupérer le classement en 60 jours',
+      h2: 'Étape 4 — Tripler la sollicitation d\'avis sur 30 jours',
       content: [
-        { type: 'p', text: 'Un mauvais avis fait baisser ta note moyenne sur 30 jours glissants (sur la plupart des plateformes). Pour récupérer rapidement, voici les 2 étapes finales.' },
+        { type: 'p', text: 'Un avis 1★ fait baisser ta note sur 30 jours glissants. Pour récupérer rapidement : accumuler des avis 5★ qui diluent le mauvais. Le volume d\'avis positifs est ta meilleure arme.' },
         { type: 'ul', items: [
-          'Étape 4 : tripler ta sollicitation d\'avis sur les 30 prochains jours. Si tu as 5 séjours, demande activement aux 5 de laisser un avis (message post-départ avec lien direct). Plus tu accumules d\'avis 5★, plus l\'avis 1★ se dilue dans la moyenne',
-          'Étape 5 : optimiser ton offre sur ce qui a été reproché. Si bruit → installer rideaux occultants + isolation phonique. Si propreté → nouveau prestataire ménage avec checklist photo. Documente publiquement (réponse à l\'avis : "Nous avons depuis fait X et Y")',
+          'Envoyer un message post-check-out avec lien direct vers l\'avis Airbnb à tous tes voyageurs du mois',
+          'Relance à H+72 si pas d\'avis encore (une seule relance)',
+          'Objectif : 5-7 nouveaux avis 5★ dans les 30 jours qui suivent l\'avis 1★',
+          'Sur 50 hôtes ayant suivi cette méthode : classement revenu à son niveau initial en 45-75 jours',
         ]},
-        { type: 'p', text: 'Sur 50 hôtes ayant suivi cette méthode, le classement Airbnb est revenu à son niveau d\'avant l\'avis 1★ en 45 à 75 jours. Certains ont même fini avec un meilleur classement (les améliorations apportées ont profité à tous les voyageurs suivants).' },
-        { type: 'cta', text: 'Tu veux maîtriser la gestion des avis voyageurs et protéger ton classement ?', button: 'Voir les formations', href: '/#formations' },
+      ],
+    },
+    {
+      h2: 'Étape 5 — Corriger ce qui a été reproché et le documenter',
+      content: [
+        { type: 'p', text: 'La dernière étape est aussi la plus utile pour le long terme : prendre l\'avis comme feedback, corriger réellement le problème, et documenter cette correction publiquement.' },
+        { type: 'ul', items: [
+          'Si bruit : installer rideaux occultants épais + rappel règlement silence dans le livret',
+          'Si propreté : changer de prestataire ménage + checklist photo systématique après chaque ménage',
+          'Si équipement : acheter ce qui manquait + le mentionner dans les photos',
+          'Documenter dans ta réponse à l\'avis : "Nous avons depuis fait X" — les futurs voyageurs voient que tu agis',
+        ]},
+        { type: 'cta', text: 'Tu veux maîtriser la gestion des avis et protéger ton classement Airbnb ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },
   ],
