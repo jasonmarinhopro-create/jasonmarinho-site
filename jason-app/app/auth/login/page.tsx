@@ -198,23 +198,27 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} style={s.form}>
             <div style={s.field}>
-              <label style={s.label}>Adresse email</label>
+              <label htmlFor="login-email" style={s.label}>Adresse email</label>
               <input
-                type="email" className="input-field" placeholder="toi@email.com"
+                id="login-email" name="email" type="email"
+                className="input-field" placeholder="toi@email.com"
                 value={email} onChange={e => setEmail(e.target.value)}
-                required autoComplete="email" disabled={isBlocked}
+                required autoComplete="username" inputMode="email"
+                spellCheck={false} autoCapitalize="none"
+                disabled={isBlocked}
               />
             </div>
 
             <div style={s.field}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <label style={s.label}>Mot de passe</label>
+                <label htmlFor="login-password" style={s.label}>Mot de passe</label>
                 <Link href="/auth/forgot-password" style={s.forgotLink}>
                   Mot de passe oublié ?
                 </Link>
               </div>
               <div style={{ position: 'relative' }}>
                 <input
+                  id="login-password" name="password"
                   type={showPassword ? 'text' : 'password'} className="input-field"
                   placeholder="••••••••"
                   value={password} onChange={e => setPassword(e.target.value)}
