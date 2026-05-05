@@ -11,13 +11,24 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
 
   const supabase = await createClient()
 
-  // Logement
-  const { data: logement, error: logementError } = await supabase
-    .from('logements')
-    .select('*')
-    .eq('id', id)
-    .eq('user_id', profile.userId)
-    .single()
+  // Logement + contracts en parallèle : tous deux n'ont besoin que de `id`.
+  // sejours doit attendre logement.nom (pas encore de logement_id sur sejours).
+  const [
+    { data: logement, error: logementError },
+    { data: contractsByLogementId },
+  ] = await Promise.all([
+    supabase
+      .from('logements')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', profile.userId)
+      .single(),
+    supabase
+      .from('contracts')
+      .select('id, statut, date_arrivee, date_depart, montant_loyer, locataire_prenom, locataire_nom')
+      .eq('user_id', profile.userId)
+      .eq('logement_id', id),
+  ])
 
   if (logementError || !logement) notFound()
 
@@ -28,13 +39,6 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
     .eq('user_id', profile.userId)
     .eq('logement', logement.nom)
     .order('date_arrivee', { ascending: false })
-
-  // Contrats rattachés via logement_id
-  const { data: contractsByLogementId } = await supabase
-    .from('contracts')
-    .select('id, statut, date_arrivee, date_depart, montant_loyer, locataire_prenom, locataire_nom')
-    .eq('user_id', profile.userId)
-    .eq('logement_id', id)
 
   // Supabase retourne voyageurs sous forme d'array (relation 1-1), on aplatit
   const sejoursList = ((sejours ?? []) as any[]).map(s => ({

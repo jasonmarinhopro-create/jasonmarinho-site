@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, House, MapPin, Star, PencilSimple, ArrowSquareOut,
@@ -215,7 +216,14 @@ export default function LogementDetail({ logement: l, sejours, contractsCount }:
       <div style={s.hero}>
         {l.photo_couverture_url ? (
           <div style={s.heroImageWrap}>
-            <img src={l.photo_couverture_url} alt={l.nom} style={s.heroImage} />
+            <Image
+              src={l.photo_couverture_url}
+              alt={l.nom}
+              fill
+              priority
+              sizes="(max-width: 900px) 100vw, 900px"
+              style={{ objectFit: 'cover' }}
+            />
             <div style={s.heroOverlay} />
           </div>
         ) : (
