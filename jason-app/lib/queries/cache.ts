@@ -12,11 +12,12 @@ import { unstable_cache } from 'next/cache'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export const CACHE_TAGS = {
-  COMMUNITY_GROUPS: 'community-groups',
-  ROADMAP_ITEMS:    'roadmap-items',
-  ROADMAP_COMMENTS: 'roadmap-comments',
-  ROADMAP_VOTES:    'roadmap-votes',
-  CONTRIBUTORS:     'contributors',
+  COMMUNITY_GROUPS:      'community-groups',
+  ROADMAP_ITEMS:         'roadmap-items',
+  ROADMAP_COMMENTS:      'roadmap-comments',
+  ROADMAP_VOTES:         'roadmap-votes',
+  CONTRIBUTORS:          'contributors',
+  ACTUALITES_PUBLISHED:  'actualites-published',
 } as const
 
 function getServiceClient() {
@@ -84,6 +85,40 @@ export const getCachedRoadmapVotes = unstable_cache(
   },
   ['roadmap-votes-v1'],
   { tags: [CACHE_TAGS.ROADMAP_VOTES], revalidate: 120 },
+)
+
+// ─── Actualités publiées (catalogue public partagé) ───────────────────────
+// Données identiques pour tous les users : 1 query DB par fenêtre de cache,
+// pas 1 query par visite. Invalidé via revalidateTag dans les server actions
+// admin (addActualite/updateActualite/deleteActualite/togglePublish).
+
+export interface CachedActualite {
+  id: string
+  title: string
+  summary: string
+  source_url: string | null
+  category: string
+  published_at: string | null
+  created_at: string
+  deadline_date?: string | null
+  is_pinned?: boolean | null
+  regions?: string[] | null
+  read_time_minutes?: number | null
+}
+
+export const getCachedPublishedActualites = unstable_cache(
+  async (): Promise<CachedActualite[]> => {
+    const db = getServiceClient()
+    const { data } = await db
+      .from('actualites')
+      .select('id, title, summary, source_url, category, published_at, created_at, deadline_date, is_pinned, regions, read_time_minutes')
+      .eq('is_published', true)
+      .order('is_pinned', { ascending: false, nullsFirst: false })
+      .order('published_at', { ascending: false, nullsFirst: false })
+    return (data ?? []) as CachedActualite[]
+  },
+  ['actualites-published-v1'],
+  { tags: [CACHE_TAGS.ACTUALITES_PUBLISHED], revalidate: 300 },
 )
 
 // ─── Contributeurs (mur public) ────────────────────────────────────────────

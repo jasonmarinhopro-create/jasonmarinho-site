@@ -2,7 +2,8 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/queries/cache'
 
 function getServiceClient() {
   return createSupabaseAdmin(
@@ -24,6 +25,9 @@ async function assertAdmin() {
 function revalidate() {
   revalidatePath('/dashboard/admin/actualites')
   revalidatePath('/dashboard/actualites')
+  // Invalide le cache cross-utilisateurs (getCachedPublishedActualites) dès
+  // qu'un article est créé/modifié/supprimé/(dé)publié.
+  revalidateTag(CACHE_TAGS.ACTUALITES_PUBLISHED)
 }
 
 export async function addActualite(formData: FormData) {

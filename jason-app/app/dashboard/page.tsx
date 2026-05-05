@@ -9,7 +9,7 @@ import {
 import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
 import ChezNousWidget from './ChezNousWidget'
-import { getCachedCommunityGroups } from '@/lib/queries/cache'
+import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 
 function getGreeting() {
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
   const [
     { data: contracts },
     { count: logCount },
-    { data: latestNews },
+    allCachedNews,
     { data: entriesYearAll },
     { data: objectifData },
     communityGroups,
@@ -82,12 +82,8 @@ export default async function DashboardPage() {
       .from('logements')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId),
-    supabase
-      .from('actualites')
-      .select('id, title, summary, source_url, category, published_at, created_at')
-      .eq('is_published', true)
-      .order('published_at', { ascending: false, nullsFirst: false })
-      .limit(3),
+    // Catalogue public caché 5 min, on slice côté JS pour ne garder que 3
+    getCachedPublishedActualites(),
     // Une seule requête pour TOUTE l'année : on splitera par mois en JS (économise 2 round-trips)
     supabase
       .from('revenus_entries')
@@ -130,6 +126,8 @@ export default async function DashboardPage() {
       .limit(3),
     supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }),
   ])
+
+  const latestNews = allCachedNews.slice(0, 3)
 
   // Split de la requête revenus annuelle en this month / prev month / year (JS, gratuit)
   const yearEntries     = entriesYearAll ?? []
@@ -699,7 +697,7 @@ export default async function DashboardPage() {
         </section>
 
         {/* ── Actualités du secteur ───────────────────────────────────── */}
-        {(latestNews ?? []).length > 0 && (
+        {latestNews.length > 0 && (
           <section style={s.section} className="fade-up d3">
             <div style={s.sectionHead}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -711,7 +709,7 @@ export default async function DashboardPage() {
               </Link>
             </div>
             <div style={s.newsGrid}>
-              {(latestNews ?? []).map(article => (
+              {latestNews.map(article => (
                 <NewsCard key={article.id} article={article} />
               ))}
             </div>
