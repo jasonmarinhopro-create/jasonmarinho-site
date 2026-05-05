@@ -218,6 +218,7 @@
             + '<a href="/comparatif-smoobu-hospitable">Smoobu vs Hospitable</a>'
             + '<a href="/comparatif-superhote-welkeys">Superhote vs Welkeys</a>'
             + '<a href="/comparatif-turnoverbnb-properly">Turno vs Properly</a>'
+            + '<a href="/comparatif-welkeys-guestready">Welkeys vs GuestReady</a>'
           + '</div>'
         + '</details>'
       + '</div>'
