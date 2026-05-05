@@ -77,40 +77,29 @@ interface SidebarProps {
   isContributor?: boolean
   /** Date de dernière visite de la page Actualités (DB, suit le compte). */
   lastSeenActualitesAt?: string | null
+  /** Pré-calculé côté serveur dans le layout : évite une requête DB à chaque navigation. */
+  hasNewActualites?: boolean
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
   const [adminContentOpen, setAdminContentOpen] = useState(
     adminContent.some(item => pathname.startsWith(item.href))
   )
-  const [hasNewActualites, setHasNewActualites] = useState(false)
-  // Borne locale, mise à jour dès qu'on visite la page : évite que le badge
-  // se rallume jusqu'à l'invalidation du cache profil côté serveur.
-  const localLastSeenRef = useRef<string | null>(null)
+  const [hasNewActualites, setHasNewActualites] = useState(initialHasNewActualites)
 
   useEffect(() => {
-    if (pathname === '/dashboard/actualites') {
-      localLastSeenRef.current = new Date().toISOString()
-      setHasNewActualites(false)
-      fetch('/api/me/mark-seen', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'actualites' }),
-      }).catch(() => { /* best-effort, le badge sera recalculé au prochain mount */ })
-      return
-    }
-    const lastSeen = localLastSeenRef.current ?? lastSeenActualitesAt ?? '1970-01-01T00:00:00Z'
-    supabase
-      .from('actualites')
-      .select('published_at')
-      .eq('is_published', true)
-      .gt('published_at', lastSeen)
-      .limit(1)
-      .then(({ data }) => setHasNewActualites((data?.length ?? 0) > 0))
-  }, [pathname, lastSeenActualitesAt])
+    if (pathname !== '/dashboard/actualites') return
+    // L'utilisateur visite la page : on efface le badge immédiatement côté client.
+    setHasNewActualites(false)
+    fetch('/api/me/mark-seen', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind: 'actualites' }),
+    }).catch(() => {})
+  }, [pathname])
 
   async function handleSignOut() {
     await supabase.auth.signOut()
