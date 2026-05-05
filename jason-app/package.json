@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync-counts": "node ../scripts/sync-counts.mjs",
+    "predev": "node ../scripts/sync-counts.mjs",
+    "prebuild": "node ../scripts/sync-counts.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

@@ -5,6 +5,7 @@
   "main": "cookie-banner.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "sync-counts": "node scripts/sync-counts.mjs",
     "blog:rebuild": "node scripts/rebuild-blog.mjs",
     "blog:new": "node scripts/generate-article.mjs",
     "blog:delete": "node scripts/delete-article.mjs"
