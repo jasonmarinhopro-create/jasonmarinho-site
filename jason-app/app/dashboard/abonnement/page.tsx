@@ -1,12 +1,15 @@
 export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
-import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle, ShieldStar, Crown } from '@phosphor-icons/react/dist/ssr'
+import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle, ShieldStar, Crown, LockKey } from '@phosphor-icons/react/dist/ssr'
 import DriingRequestForm from './DriingRequestForm'
 import SubscribeButton from './SubscribeButton'
 import ManageButton from './ManageButton'
 import { STRIPE_PLANS } from '@/lib/constants/stripe-plans'
+import { FOUNDER_TOTAL_SEATS } from '@/lib/constants/founder'
+import { FORMATIONS_TOTAL } from '@/lib/constants/auto-counts'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
@@ -14,17 +17,23 @@ const DECOUVERTE_FEATURES = [
   'Guide LCD, actualités & gabarits (FR + EN)',
   'Guide fiscalité 2026',
   'Sécurité voyageur (consultation + signalement)',
-  '2 formations d\'introduction',
+  '2 formations au choix',
   'Calendrier + journal des revenus',
   '1 logement, voyageurs illimités',
-  'Communauté (noms des groupes) + partenaires',
+  'Simulateurs (rentabilité, fiscalité)',
+  'Chez nous (lecture du forum hôtes)',
+  'Roadmap publique + suggestions',
+  'Communauté + partenaires exclusifs',
 ]
 
 const STANDARD_FEATURES = [
   'Logements illimités',
   'Contrats illimités + PDF + paiement Stripe',
-  '14 formations complètes',
-  'Communauté complète + partenaires exclusifs',
+  'État des lieux + livret d\'accueil digital',
+  'Performances détaillées + simulateurs',
+  'Audit Google Business Profile',
+  `${FORMATIONS_TOTAL} formations complètes`,
+  'Chez nous (forum hôtes) + communauté complète',
   'Support prioritaire',
 ]
 
@@ -70,6 +79,32 @@ export default async function AbonnementPage({
 
   const planLabel = isAdmin ? 'Administrateur' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
   const fullName  = profileData?.full_name ?? undefined
+
+  // ── Compteur places fondateur (server-side, lecture directe Supabase) ──
+  // Same source de vérité que /api/founder-seats : on évite un round-trip HTTP.
+  let founderRemaining = FOUNDER_TOTAL_SEATS
+  try {
+    const adminDb = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } },
+    )
+    const foundingPriceIds = [
+      STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY,
+      STRIPE_PLANS.STANDARD_FOUNDING_YEARLY,
+    ].filter(Boolean) as string[]
+    const { count } = await adminDb
+      .from('profiles')
+      .select('id', { count: 'exact', head: true })
+      .in('stripe_price_id', foundingPriceIds)
+      .in('stripe_subscription_status', ['active', 'trialing'])
+    founderRemaining = Math.max(0, FOUNDER_TOTAL_SEATS - (count ?? 0))
+  } catch {
+    // Fallback safe : on garde 50/50 plutôt que de bloquer le rendu
+  }
+  const founderExhausted = founderRemaining === 0
+  const founderUrgent    = !founderExhausted && founderRemaining < 10
+  const founderPct       = Math.round(((FOUNDER_TOTAL_SEATS - founderRemaining) / FOUNDER_TOTAL_SEATS) * 100)
 
   return (
     <>
@@ -216,12 +251,80 @@ export default async function AbonnementPage({
                   <div style={styles.upgradeGlow} />
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
                     <div style={styles.upgradeName}>Standard</div>
-                    <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>
+                    {!founderExhausted && (
+                      <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>
+                    )}
                   </div>
+
+                  {/* Compteur places fondateur (SSR, source: DB Supabase) */}
+                  <div style={{
+                    margin: '4px 0 6px',
+                    background: founderExhausted
+                      ? 'rgba(255,255,255,.04)'
+                      : founderUrgent
+                        ? 'linear-gradient(135deg,rgba(255,140,80,.12),rgba(255,140,80,.04))'
+                        : 'linear-gradient(135deg,rgba(255,213,107,.10),rgba(255,213,107,.04))',
+                    border: `1px solid ${founderExhausted ? 'rgba(255,255,255,.08)' : founderUrgent ? 'rgba(255,90,30,.4)' : 'rgba(255,213,107,.28)'}`,
+                    borderRadius: '12px',
+                    padding: '12px 14px',
+                    display: 'flex',
+                    flexDirection: 'column' as const,
+                    gap: '9px',
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '12.5px',
+                      fontWeight: 600,
+                      lineHeight: 1.4,
+                      color: founderExhausted ? 'var(--text-2)' : founderUrgent ? '#ff7a3d' : '#ffd56b',
+                    }}>
+                      <LockKey size={14} weight="fill" />
+                      {founderExhausted ? (
+                        <span>Offre Fondateur épuisée — Tarif Standard <strong>3,98 €/mois</strong></span>
+                      ) : (
+                        <span>Offre Fondateur — Plus que <strong>{founderRemaining}</strong> places sur {FOUNDER_TOTAL_SEATS}</span>
+                      )}
+                    </div>
+                    <div style={{
+                      height: '6px',
+                      background: 'rgba(255,255,255,.08)',
+                      borderRadius: '100px',
+                      overflow: 'hidden',
+                    }}>
+                      <div style={{
+                        height: '100%',
+                        width: `${founderPct}%`,
+                        background: founderExhausted
+                          ? 'rgba(255,255,255,.2)'
+                          : founderUrgent
+                            ? 'linear-gradient(90deg,#ff7a3d,#ff5722)'
+                            : 'linear-gradient(90deg,#d4a400,#ffc94d)',
+                        borderRadius: '100px',
+                        transition: 'width .7s cubic-bezier(.4,0,.2,1)',
+                      }} />
+                    </div>
+                    {!founderExhausted && (
+                      <p style={{ fontSize: '11.5px', color: 'var(--text-2)', lineHeight: 1.55, margin: 0 }}>
+                        Chaque place fondateur garantit le tarif de <strong style={{ color: '#ffd56b' }}>1,98 €/mois à vie</strong>.
+                      </p>
+                    )}
+                  </div>
+
                   <div style={styles.priceRow}>
-                    <span style={styles.price}>1,98 €</span>
-                    <span style={styles.priceLabel}> / mois HT</span>
-                    <span style={styles.priceStrike}>3,98 €</span>
+                    {founderExhausted ? (
+                      <>
+                        <span style={styles.price}>3,98 €</span>
+                        <span style={styles.priceLabel}> / mois HT</span>
+                      </>
+                    ) : (
+                      <>
+                        <span style={styles.price}>1,98 €</span>
+                        <span style={styles.priceLabel}> / mois HT</span>
+                        <span style={styles.priceStrike}>3,98 €</span>
+                      </>
+                    )}
                   </div>
                   <p style={styles.planDesc}>Logements illimités, contrats, paiement en ligne et formations complètes.</p>
                   <div style={styles.featureList}>
@@ -232,8 +335,16 @@ export default async function AbonnementPage({
                       </div>
                     ))}
                   </div>
-                  <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard, 1,98 €/mois" />
-                  <p style={styles.smallNote}>Prix HT bloqué à vie tant que l&apos;abonnement est actif. Résiliable à tout moment.</p>
+                  {founderExhausted ? (
+                    <SubscribeButton priceId={STRIPE_PLANS.STANDARD_PUBLIC_MONTHLY} label="Passer en Standard, 3,98 €/mois" />
+                  ) : (
+                    <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard, 1,98 €/mois" />
+                  )}
+                  <p style={styles.smallNote}>
+                    {founderExhausted
+                      ? 'Annuel disponible à 38,98 €/an (économise 18 %). Résiliable à tout moment.'
+                      : 'Prix HT bloqué à vie tant que l’abonnement est actif. Résiliable à tout moment.'}
+                  </p>
                 </div>
               </>
             )}
