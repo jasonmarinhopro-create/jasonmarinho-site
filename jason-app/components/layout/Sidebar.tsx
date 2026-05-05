@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -12,6 +12,8 @@ import {
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+
+const ACTUALITES_STORAGE_KEY = 'lastSeenActualites'
 
 const navGroups = [
   {
@@ -84,13 +86,30 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
   const [adminContentOpen, setAdminContentOpen] = useState(
     adminContent.some(item => pathname.startsWith(item.href))
   )
+  const [hasNewActualites, setHasNewActualites] = useState(false)
+
+  useEffect(() => {
+    if (pathname === '/dashboard/actualites') {
+      localStorage.setItem(ACTUALITES_STORAGE_KEY, new Date().toISOString())
+      setHasNewActualites(false)
+      return
+    }
+    const lastSeen = localStorage.getItem(ACTUALITES_STORAGE_KEY) ?? '1970-01-01T00:00:00Z'
+    supabase
+      .from('actualites')
+      .select('published_at')
+      .eq('is_published', true)
+      .gt('published_at', lastSeen)
+      .limit(1)
+      .then(({ data }) => setHasNewActualites((data?.length ?? 0) > 0))
+  }, [pathname])
 
   async function handleSignOut() {
     await supabase.auth.signOut()
     router.push('/auth/login')
   }
 
-  function NavItem({ href, label, Icon, adminColor }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean }) {
+  function NavItem({ href, label, Icon, adminColor, notifDot }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean }) {
     const active = pathname === href
     return (
       <Link
@@ -102,7 +121,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
           ...(!active && adminColor ? { color: 'var(--nav-admin-color)' } : {}),
         }}
       >
-        <Icon size={18} weight={active ? 'fill' : 'regular'} />
+        <div style={{ position: 'relative', flexShrink: 0, display: 'flex' }}>
+          <Icon size={18} weight={active ? 'fill' : 'regular'} />
+          {notifDot && !active && <span style={styles.notifDot} />}
+        </div>
         <span>{label}</span>
         {active && <div style={styles.activeDot} />}
       </Link>
@@ -152,7 +174,13 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
               )}
               <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
                 {group.items.map(({ href, label, icon: Icon }) => (
-                  <NavItem key={href} href={href} label={label} Icon={Icon} />
+                  <NavItem
+                    key={href}
+                    href={href}
+                    label={label}
+                    Icon={Icon}
+                    notifDot={href === '/dashboard/actualites' && hasNewActualites}
+                  />
                 ))}
               </div>
             </div>
@@ -366,6 +394,14 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid var(--accent-border)',
     borderRadius: '999px', padding: '2px 7px',
     opacity: 0.8,
+  },
+  notifDot: {
+    position: 'absolute',
+    top: '-3px', right: '-3px',
+    width: '7px', height: '7px',
+    background: '#EF4444',
+    borderRadius: '50%',
+    border: '1.5px solid var(--nav-bg)',
   },
   signOut: {
     display: 'flex', alignItems: 'center', gap: '8px',
