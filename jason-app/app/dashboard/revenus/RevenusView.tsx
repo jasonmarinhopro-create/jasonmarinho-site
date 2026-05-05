@@ -67,6 +67,7 @@ interface Props {
 
 const MODE_LABELS: Record<string, string> = {
   virement: 'Virement', especes: 'Espèces', cheque: 'Chèque', stripe: 'Stripe', autre: 'Autre',
+  sejour: 'Séjour',
 }
 const TYPE_LABELS: Record<string, string> = {
   loyer: 'Loyer', caution: 'Caution', frais_menage: 'Frais ménage', autre: 'Autre',
@@ -488,7 +489,7 @@ export default function RevenusView({
   type Tx = {
     id: string; date: string; logement: string; guest?: string
     label: string; mode: string; montant: number
-    statut: 'encaisse' | 'attente'; source: 'contrat' | 'manuel'
+    statut: 'encaisse' | 'attente'; source: 'contrat' | 'manuel' | 'sejour'
   }
 
   const allTx = useMemo((): Tx[] => {
@@ -509,7 +510,7 @@ export default function RevenusView({
       id: e.id, date: e.date_paiement, logement: e.logement_nom,
       label: TYPE_LABELS[e.type_paiement ?? 'loyer'] ?? 'Paiement',
       mode: MODE_LABELS[e.mode_paiement] ?? e.mode_paiement,
-      montant: e.montant, statut: 'encaisse', source: 'manuel',
+      montant: e.montant, statut: 'encaisse', source: e.id.startsWith('sejour:') ? 'sejour' : 'manuel',
     }))
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }, [contracts, entries])
@@ -1203,7 +1204,9 @@ export default function RevenusView({
                     ? <button onClick={() => handleDelete(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer">
                         <Trash size={13} />
                       </button>
-                    : <div style={{ width: '24px', flexShrink: 0 }} />
+                    : tx.source === 'sejour'
+                      ? <span style={{ fontSize: '10px', color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap' as const }}>Calendrier</span>
+                      : <div style={{ width: '24px', flexShrink: 0 }} />
                   }
                 </div>
                 )

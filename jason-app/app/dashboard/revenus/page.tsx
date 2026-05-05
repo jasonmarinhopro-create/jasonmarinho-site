@@ -24,6 +24,7 @@ export default async function RevenusPage() {
     { data: charges },
     { data: logements },
     { data: objectif },
+    { data: sejours },
   ] = await Promise.all([
     supabase
       .from('contracts')
@@ -50,7 +51,24 @@ export default async function RevenusPage() {
       .select('objectif_ca_annuel, annee')
       .eq('user_id', userId)
       .maybeSingle(),
+    supabase
+      .from('sejours')
+      .select('id, logement, date_arrivee, date_depart, montant')
+      .eq('user_id', userId)
+      .not('montant', 'is', null)
+      .gt('montant', 0)
+      .order('date_arrivee', { ascending: false }),
   ])
+
+  const sejourEntries = (sejours ?? []).map(s => ({
+    id: `sejour:${s.id}`,
+    logement_nom: s.logement ?? '',
+    montant: s.montant as number,
+    date_paiement: s.date_arrivee,
+    mode_paiement: 'sejour',
+    type_paiement: 'loyer',
+    description: `Séjour du ${s.date_arrivee} au ${s.date_depart}`,
+  }))
 
   const logementNoms = [
     ...new Set([
@@ -63,7 +81,7 @@ export default async function RevenusPage() {
     <>
       <RevenusView
         contracts={contracts ?? []}
-        initialEntries={entries ?? []}
+        initialEntries={[...(entries ?? []), ...sejourEntries]}
         initialCharges={(charges ?? []) as any[]}
         logementNoms={logementNoms}
         logements={(logements ?? []) as any[]}

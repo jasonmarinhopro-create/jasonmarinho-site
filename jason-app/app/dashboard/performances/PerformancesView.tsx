@@ -72,7 +72,7 @@ function fmtPct(n: number, withSign = false) {
 
 // ─── composant principal ───────────────────────────────────────────────────
 export default function PerformancesView({ sejours, logements, voyageurs }: Props) {
-  const [period, setPeriod] = useState<Period>('1m')
+  const [period, setPeriod] = useState<Period>(sejours.length < 5 ? '12m' : '1m')
   const [logementFilter, setLogementFilter] = useState<string>('all')
 
   const logementMap = useMemo(() => {
