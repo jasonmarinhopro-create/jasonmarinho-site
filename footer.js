@@ -213,6 +213,7 @@
             + '<a href="/comparatif-igloohome-ttlock">igloohome vs TTLock</a>'
             + '<a href="/comparatif-indy-tiime-henrri">Indy vs Tiime vs Henrri</a>'
             + '<a href="/comparatif-lodgify-smoobu">Lodgify vs Smoobu</a>'
+            + '<a href="/comparatif-matterport-cubicasa">Matterport vs CubiCasa</a>'
             + '<a href="/comparatif-pricelabs-beyond-wheelhouse">PriceLabs vs Beyond vs Wheelhouse</a>'
             + '<a href="/comparatif-ring-eufy-reolink">Ring vs Eufy vs Reolink</a>'
             + '<a href="/comparatif-smoobu-hospitable">Smoobu vs Hospitable</a>'
