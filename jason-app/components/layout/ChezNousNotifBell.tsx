@@ -15,14 +15,14 @@ export default function ChezNousNotifBell({ userId }: ChezNousNotifBellProps) {
   const [count, setCount] = useState(0)
   const [hydrated, setHydrated] = useState(false)
 
+  // Fetch une seule fois au mount (pas à chaque navigation).
+  // Économise 50-100ms de RTT Supabase par navigation.
   useEffect(() => {
     setHydrated(true)
     if (!userId) return
     let cancelled = false
     const supabase = createClient()
 
-    // userId vient du layout server-side : pas besoin d'un auth.getUser() ici.
-    // Économise 50-100ms de RTT vers Supabase Auth à chaque navigation.
     supabase
       .from('chez_nous_notifications')
       .select('*', { count: 'exact', head: true })
@@ -33,7 +33,12 @@ export default function ChezNousNotifBell({ userId }: ChezNousNotifBellProps) {
       })
 
     return () => { cancelled = true }
-  }, [pathname, userId])
+  }, [userId])
+
+  // Quand l'utilisateur visite la page notifications, le badge se vide.
+  useEffect(() => {
+    if (pathname === '/dashboard/chez-nous/notifications') setCount(0)
+  }, [pathname])
 
   return (
     <Link

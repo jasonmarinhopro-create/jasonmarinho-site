@@ -101,9 +101,11 @@ interface HeaderProps {
   lastSeenNouveautesAt?: string | null
   /** Date de dernière visite Actualités, transmise au Sidebar mobile. */
   lastSeenActualitesAt?: string | null
+  /** Badge Actualités pré-calculé côté serveur, transmis au Sidebar mobile. */
+  hasNewActualites?: boolean
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -186,7 +188,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   return (
     <>
       <div className="dash-mobile-sidebar-wrap">
-        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} lastSeenActualitesAt={lastSeenActualitesAt} />
+        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} lastSeenActualitesAt={lastSeenActualitesAt} hasNewActualites={hasNewActualites} />
       </div>
 
       <NotificationPanel
