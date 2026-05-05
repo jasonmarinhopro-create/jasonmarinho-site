@@ -238,7 +238,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
           </button>
 
           {/* Chez Nous notifications */}
-          <ChezNousNotifBell />
+          <ChezNousNotifBell userId={userId ?? ''} />
 
           {/* Profile dropdown */}
           <div ref={dropdownRef} style={styles.dropdownWrap}>

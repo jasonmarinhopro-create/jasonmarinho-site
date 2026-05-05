@@ -2,7 +2,14 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/queries/cache'
+
+function invalidateCatalogues() {
+  revalidatePath('/dashboard/admin/formations')
+  revalidatePath('/dashboard/formations')
+  revalidateTag(CACHE_TAGS.FORMATIONS_PUBLISHED)
+}
 
 function getServiceClient() {
   return createSupabaseAdmin(
@@ -32,8 +39,7 @@ export async function toggleFormationPublished(formationId: string, isPublished:
 
   if (dbError) return { success: false, error: dbError.message }
 
-  revalidatePath('/dashboard/admin/formations')
-  revalidatePath('/dashboard/formations')
+  invalidateCatalogues()
   return { success: true }
 }
 
@@ -49,8 +55,7 @@ export async function republishFormationBySlug(slug: string) {
 
   if (dbError) return { success: false, error: dbError.message }
 
-  revalidatePath('/dashboard/admin/formations')
-  revalidatePath('/dashboard/formations')
+  invalidateCatalogues()
   return { success: true }
 }
 
@@ -61,8 +66,7 @@ export async function deleteFormation(formationId: string) {
   const { error: dbError } = await adminClient.from('formations').delete().eq('id', formationId)
   if (dbError) return { success: false, error: dbError.message }
 
-  revalidatePath('/dashboard/admin/formations')
-  revalidatePath('/dashboard/formations')
+  invalidateCatalogues()
   return { success: true }
 }
 
@@ -79,8 +83,7 @@ export async function republishAllFormations() {
 
   if (dbError) return { success: false, error: dbError.message }
 
-  revalidatePath('/dashboard/admin/formations')
-  revalidatePath('/dashboard/formations')
+  invalidateCatalogues()
   revalidatePath('/dashboard')
   return { success: true, count: data?.length ?? 0 }
 }

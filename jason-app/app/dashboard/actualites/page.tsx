@@ -1,5 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import ActualitesView from './ActualitesView'
 
 export const metadata = { title: 'Actualités LCD, Jason Marinho' }
@@ -63,17 +64,14 @@ export default async function ActualitesPage() {
   const userId = profile?.userId ?? null
 
   const [
-    { data: articles },
+    articles,
     { data: reads },
     { data: favorites },
     { data: userLogements },
   ] = await Promise.all([
-    supabase
-      .from('actualites')
-      .select('id, title, summary, source_url, category, published_at, created_at, deadline_date, is_pinned, regions, read_time_minutes')
-      .eq('is_published', true)
-      .order('is_pinned', { ascending: false, nullsFirst: false })
-      .order('published_at', { ascending: false, nullsFirst: false }),
+    // Catalogue public partagé : caché 5 min via unstable_cache,
+    // évite 1 query DB par visite quand le contenu n'a pas changé.
+    getCachedPublishedActualites(),
     userId
       ? supabase.from('user_actualite_reads').select('actualite_id').eq('user_id', userId)
       : Promise.resolve({ data: [] as { actualite_id: string }[] }),
@@ -85,7 +83,7 @@ export default async function ActualitesPage() {
       : Promise.resolve({ data: [] as { adresse: string | null }[] }),
   ])
 
-  const allArticles = (articles ?? []) as Actualite[]
+  const allArticles = articles as Actualite[]
   const visibleArticles = isDecouverte
     ? allArticles.slice(0, FREE_ARTICLES_LIMIT)
     : allArticles

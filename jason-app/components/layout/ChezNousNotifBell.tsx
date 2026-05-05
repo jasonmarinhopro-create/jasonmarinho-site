@@ -6,30 +6,34 @@ import { usePathname } from 'next/navigation'
 import { ChatCircleDots } from '@phosphor-icons/react/dist/ssr'
 import { createClient } from '@/lib/supabase/client'
 
-export default function ChezNousNotifBell() {
+interface ChezNousNotifBellProps {
+  userId: string
+}
+
+export default function ChezNousNotifBell({ userId }: ChezNousNotifBellProps) {
   const pathname = usePathname()
   const [count, setCount] = useState(0)
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
     setHydrated(true)
+    if (!userId) return
     let cancelled = false
     const supabase = createClient()
 
-    async function fetchCount() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user || cancelled) return
-      const { count: c } = await supabase
-        .from('chez_nous_notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('recipient_id', user.id)
-        .is('read_at', null)
-      if (!cancelled) setCount(c ?? 0)
-    }
+    // userId vient du layout server-side : pas besoin d'un auth.getUser() ici.
+    // Économise 50-100ms de RTT vers Supabase Auth à chaque navigation.
+    supabase
+      .from('chez_nous_notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('recipient_id', userId)
+      .is('read_at', null)
+      .then(({ count: c }) => {
+        if (!cancelled) setCount(c ?? 0)
+      })
 
-    fetchCount()
     return () => { cancelled = true }
-  }, [pathname])
+  }, [pathname, userId])
 
   return (
     <Link

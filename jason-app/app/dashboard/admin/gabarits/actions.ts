@@ -2,7 +2,14 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/queries/cache'
+
+function invalidateCatalogue() {
+  revalidatePath('/dashboard/admin/gabarits')
+  revalidatePath('/dashboard/gabarits')
+  revalidateTag(CACHE_TAGS.TEMPLATES_CATALOG)
+}
 
 function getServiceClient() {
   return createSupabaseAdmin(
@@ -47,8 +54,7 @@ export async function addTemplate(formData: FormData) {
 
   if (dbError) return { success: false, error: dbError.message }
 
-  revalidatePath('/dashboard/admin/gabarits')
-  revalidatePath('/dashboard/gabarits')
+  invalidateCatalogue()
   return { success: true }
 }
 
@@ -59,8 +65,7 @@ export async function deleteTemplate(templateId: string) {
   const { error: dbError } = await adminClient.from('templates').delete().eq('id', templateId)
   if (dbError) return { success: false, error: dbError.message }
 
-  revalidatePath('/dashboard/admin/gabarits')
-  revalidatePath('/dashboard/gabarits')
+  invalidateCatalogue()
   return { success: true }
 }
 
@@ -85,7 +90,6 @@ export async function updateTemplate(templateId: string, formData: FormData) {
 
   if (dbError) return { success: false, error: dbError.message }
 
-  revalidatePath('/dashboard/admin/gabarits')
-  revalidatePath('/dashboard/gabarits')
+  invalidateCatalogue()
   return { success: true }
 }
