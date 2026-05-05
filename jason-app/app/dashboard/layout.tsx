@@ -25,12 +25,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div style={styles.layout}>
         {/* Sidebar et Header rendus une seule fois dans le layout, pas de re-mount entre navigations.
             Élimine le flicker du titre + économise 1 query Supabase par navigation. */}
-        <Sidebar isAdmin={isAdmin} isContributor={profile.is_contributor ?? false} />
+        <Sidebar
+          isAdmin={isAdmin}
+          isContributor={profile.is_contributor ?? false}
+          lastSeenActualitesAt={profile.last_seen_actualites_at}
+        />
         <Header
           userName={profile.full_name ?? undefined}
           currentPlan={planLabel}
           isAdmin={isAdmin}
           userId={profile.userId}
+          lastSeenNouveautesAt={profile.last_seen_nouveautes_at}
+          lastSeenActualitesAt={profile.last_seen_actualites_at}
         />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>

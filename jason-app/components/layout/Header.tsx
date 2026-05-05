@@ -15,8 +15,6 @@ import { useTheme } from '@/components/ThemeProvider'
 import { CHANGELOG } from '@/lib/constants/changelog'
 import { subscribeDashboardTitle } from '@/lib/dashboard-title-store'
 
-const STORAGE_KEY = 'jm_notif_read'
-
 // Mapping pathname → titre du header (routes statiques)
 const PATH_TITLES: Record<string, string> = {
   '/dashboard': 'Accueil',
@@ -82,18 +80,12 @@ const PLAN_COLORS: Record<string, { bg: string; color: string; dot: string }> = 
   'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC',       dot: '#C084FC' },
 }
 
-function getReadIds(): Set<string> {
-  if (typeof window === 'undefined') return new Set()
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? new Set(JSON.parse(raw) as string[]) : new Set()
-  } catch {
-    return new Set()
-  }
-}
-
-function saveReadIds(ids: Set<string>) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(ids)))
+// Une entrée du changelog est considérée comme "lue" si sa date est antérieure
+// ou égale au dernier passage de l'utilisateur dans le panneau Nouveautés
+// (timestamp stocké en DB, donc partagé entre tous ses navigateurs).
+function computeReadIds(lastSeenAt: string | null | undefined): Set<string> {
+  if (!lastSeenAt) return new Set()
+  return new Set(CHANGELOG.filter(e => e.date <= lastSeenAt).map(e => e.id))
 }
 
 interface HeaderProps {
@@ -105,13 +97,17 @@ interface HeaderProps {
   isAdmin?: boolean
   /** Pour le lien "Profil forum" dans le dropdown */
   userId?: string
+  /** Date de dernière ouverture du panneau Nouveautés (DB, suit le compte). */
+  lastSeenNouveautesAt?: string | null
+  /** Date de dernière visite Actualités, transmise au Sidebar mobile. */
+  lastSeenActualitesAt?: string | null
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
-  const [readIds, setReadIds] = useState<Set<string>>(new Set())
+  const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
   const [userName] = useState(initialUserName ?? '')
   const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -136,31 +132,32 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     return unsub
   }, [])
 
-  // Load read IDs from localStorage, lazy init prevents badge flash on navigation
+  // Resync si la prop change (rare : nouveau profil chargé après mutation)
   useEffect(() => {
-    setReadIds(getReadIds())
-  }, [])
-
-  // Suppress badge until hydration is complete (avoids "+9" flash)
-  const [hydrated, setHydrated] = useState(false)
-  useEffect(() => { setHydrated(true) }, [])
+    setReadIds(computeReadIds(lastSeenNouveautesAt))
+  }, [lastSeenNouveautesAt])
 
   const unreadCount = CHANGELOG.filter(e => !readIds.has(e.id)).length
+
+  const markAllReadOnServer = useCallback(() => {
+    fetch('/api/me/mark-seen', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind: 'nouveautes' }),
+    }).catch(() => { /* best-effort, sera retenté au prochain mount */ })
+  }, [])
 
   const handleOpenNotif = useCallback(() => {
     setNotifOpen(true)
     setDropdownOpen(false)
-    // Mark all as read when panel opens
-    const all = new Set(CHANGELOG.map(e => e.id))
-    setReadIds(all)
-    saveReadIds(all)
-  }, [])
+    setReadIds(new Set(CHANGELOG.map(e => e.id)))
+    markAllReadOnServer()
+  }, [markAllReadOnServer])
 
   const handleMarkAllRead = useCallback(() => {
-    const all = new Set(CHANGELOG.map(e => e.id))
-    setReadIds(all)
-    saveReadIds(all)
-  }, [])
+    setReadIds(new Set(CHANGELOG.map(e => e.id)))
+    markAllReadOnServer()
+  }, [markAllReadOnServer])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -189,7 +186,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   return (
     <>
       <div className="dash-mobile-sidebar-wrap">
-        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} />
+        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} lastSeenActualitesAt={lastSeenActualitesAt} />
       </div>
 
       <NotificationPanel
@@ -229,11 +226,11 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
           {/* Notifications */}
           <button
             style={styles.iconBtn}
-            aria-label={`Notifications${hydrated && unreadCount > 0 ? `, ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
+            aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
             onClick={handleOpenNotif}
           >
-            <Bell size={18} weight={hydrated && unreadCount > 0 ? 'fill' : 'regular'} />
-            {hydrated && unreadCount > 0 && (
+            <Bell size={18} weight={unreadCount > 0 ? 'fill' : 'regular'} />
+            {unreadCount > 0 && (
               <span style={styles.notifBadge}>
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
