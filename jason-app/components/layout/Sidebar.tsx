@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -12,8 +12,6 @@ import {
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-
-const ACTUALITES_STORAGE_KEY = 'lastSeenActualites'
 
 const navGroups = [
   {
@@ -77,9 +75,11 @@ interface SidebarProps {
   onClose?: () => void
   isAdmin?: boolean
   isContributor?: boolean
+  /** Date de dernière visite de la page Actualités (DB, suit le compte). */
+  lastSeenActualitesAt?: string | null
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -87,14 +87,22 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
     adminContent.some(item => pathname.startsWith(item.href))
   )
   const [hasNewActualites, setHasNewActualites] = useState(false)
+  // Borne locale, mise à jour dès qu'on visite la page : évite que le badge
+  // se rallume jusqu'à l'invalidation du cache profil côté serveur.
+  const localLastSeenRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (pathname === '/dashboard/actualites') {
-      localStorage.setItem(ACTUALITES_STORAGE_KEY, new Date().toISOString())
+      localLastSeenRef.current = new Date().toISOString()
       setHasNewActualites(false)
+      fetch('/api/me/mark-seen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'actualites' }),
+      }).catch(() => { /* best-effort, le badge sera recalculé au prochain mount */ })
       return
     }
-    const lastSeen = localStorage.getItem(ACTUALITES_STORAGE_KEY) ?? '1970-01-01T00:00:00Z'
+    const lastSeen = localLastSeenRef.current ?? lastSeenActualitesAt ?? '1970-01-01T00:00:00Z'
     supabase
       .from('actualites')
       .select('published_at')
@@ -102,7 +110,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor }:
       .gt('published_at', lastSeen)
       .limit(1)
       .then(({ data }) => setHasNewActualites((data?.length ?? 0) > 0))
-  }, [pathname])
+  }, [pathname, lastSeenActualitesAt])
 
   async function handleSignOut() {
     await supabase.auth.signOut()
