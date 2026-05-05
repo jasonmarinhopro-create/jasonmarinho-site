@@ -210,6 +210,7 @@
             + '<a href="/comparatif-driing-airbnb-booking">Driing vs Airbnb vs Booking.com</a>'
             + '<a href="/comparatif-hostfully-guesty">Hostfully vs Guesty</a>'
             + '<a href="/comparatif-hostfully-guidebook-driing-touchstay">Hostfully Guidebook vs Driing vs Touch Stay</a>'
+            + '<a href="/comparatif-igloohome-ttlock">igloohome vs TTLock</a>'
             + '<a href="/comparatif-indy-tiime-henrri">Indy vs Tiime vs Henrri</a>'
             + '<a href="/comparatif-lodgify-smoobu">Lodgify vs Smoobu</a>'
             + '<a href="/comparatif-pricelabs-beyond-wheelhouse">PriceLabs vs Beyond vs Wheelhouse</a>'
