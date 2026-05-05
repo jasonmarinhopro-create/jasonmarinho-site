@@ -1,5 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedTemplatesCatalog } from '@/lib/queries/cache'
 import dynamic from 'next/dynamic'
 import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 import type { Template, UserTemplateCustomization } from '@/types'
@@ -13,8 +14,10 @@ export default async function GabaritsPage() {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   const userId = profile?.userId ?? null
 
-  const [{ data: templates }, { data: favData }, { data: custData }] = await Promise.all([
-    supabase.from('templates').select('id, title, content, corps_en, category, timing, variante, variables, tags, copy_count, created_at').order('category').order('title').limit(500),
+  const [templates, { data: favData }, { data: custData }] = await Promise.all([
+    // Catalogue partagé entre tous les utilisateurs : caché 5 min.
+    // copy_count peut être figé jusqu'à 5 min, accepté (compteur décoratif).
+    getCachedTemplatesCatalog(),
     userId
       ? supabase.from('user_template_favorites').select('template_id').eq('user_id', userId)
       : Promise.resolve({ data: [] as { template_id: string }[] }),
@@ -28,7 +31,7 @@ export default async function GabaritsPage() {
   return (
     <>
       <GabaritsClient
-        templates={(templates ?? []) as Template[]}
+        templates={templates as unknown as Template[]}
         initialFavorites={initialFavorites}
         initialCustomizations={(custData ?? []) as UserTemplateCustomization[]}
         userId={userId}

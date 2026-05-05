@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import FormationsSuggestForm from './FormationsSuggestForm'
 import FormationsGrid from './FormationsGrid'
 import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
+import { getCachedPublishedFormations } from '@/lib/queries/cache'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -54,12 +55,18 @@ export default async function FormationsPage() {
 
   const plan = profile?.plan ?? 'decouverte'
 
-  const [{ data: formations }, { data: userFormations }, { data: favorites }, unlockedSlugs] = await Promise.all([
-    supabase.from('formations').select('id, slug, title, description, duration, level, modules_count, lessons_count').in('slug', ACTIVE_SLUGS).eq('is_published', true).order('created_at', { ascending: true }),
+  const [allCachedFormations, { data: userFormations }, { data: favorites }, unlockedSlugs] = await Promise.all([
+    // Catalogue public partagé entre tous les users (caché 10 min).
+    getCachedPublishedFormations(),
     supabase.from('user_formations').select('formation_id, progress').eq('user_id', userId),
     supabase.from('user_formation_favorites').select('formation_id').eq('user_id', userId),
     getUnlockedFormationSlugs(supabase, userId, plan),
   ])
+
+  // Filtre côté JS sur ACTIVE_SLUGS : la liste est petite et la donnée
+  // cachée, donc moins coûteux que de re-querier la DB par utilisateur.
+  const activeSet = new Set(ACTIVE_SLUGS)
+  const formations = allCachedFormations.filter(f => activeSet.has(f.slug))
 
   const progressMap = Object.fromEntries(
     (userFormations ?? []).map(uf => [uf.formation_id, uf.progress])
@@ -77,7 +84,7 @@ export default async function FormationsPage() {
 
         <div style={styles.section} className="fade-up d1">
           <FormationsGrid
-            formations={(formations ?? []) as import('@/types').Formation[]}
+            formations={formations as unknown as import('@/types').Formation[]}
             progressMap={progressMap}
             comingSoon={COMING_SOON}
             unlockedSlugs={unlockedSlugs}
