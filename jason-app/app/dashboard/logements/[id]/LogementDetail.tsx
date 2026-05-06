@@ -101,8 +101,8 @@ const EQUIPEMENT_LABELS: Record<string, { label: string; emoji: string }> = {
   'terrasse':       { label: 'Terrasse',       emoji: '🪑' },
   'balcon':         { label: 'Balcon',         emoji: '🌿' },
   'pmr':            { label: 'Accès PMR',      emoji: '♿' },
-  'ascenseur':      { label: 'Ascenseur',      emoji: '🛗' },
-  'cheminee':       { label: 'Cheminée',       emoji: '🪵' },
+  'ascenseur':      { label: 'Ascenseur',      emoji: '↕️' },
+  'cheminee':       { label: 'Cheminée',       emoji: '🔥' },
   'spa':            { label: 'Spa / jacuzzi',  emoji: '🛁' },
 }
 
