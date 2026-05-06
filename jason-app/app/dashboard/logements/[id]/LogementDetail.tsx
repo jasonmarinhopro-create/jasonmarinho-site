@@ -375,7 +375,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             {l.adresse}
           </p>
           <div style={s.heroActions}>
-            <Link href={`/dashboard/logements?edit=${l.id}`} style={s.btnPrimary}>
+            <Link href={`/dashboard/logements?edit=${l.id}&from=detail`} style={s.btnPrimary}>
               <PencilSimple size={14} weight="bold" />
               Modifier la fiche
             </Link>

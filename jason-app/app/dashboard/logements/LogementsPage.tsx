@@ -161,14 +161,16 @@ export default function LogementsPage({ logements: initial }: Props) {
   const [filter, setFilter] = useState<'all' | 'actifs' | 'en-pause' | string>('all') // string = type slug
   const [viewMode, setViewMode] = useState<'cards' | 'table'>(initial.length >= 5 ? 'table' : 'cards')
 
-  // Si la page est ouverte avec ?edit=id (depuis le détail), ouvrir directement la modal d'édition
+  // Si la page est ouverte avec ?edit=id (depuis le détail), ouvrir directement la modal d'édition.
+  // Avec ?from=detail, on masque la liste sous-jacente et on retourne à la fiche après fermeture.
+  const fromDetail = searchParams.get('from') === 'detail'
+  const editIdFromUrl = searchParams.get('edit')
   useEffect(() => {
-    const editId = searchParams.get('edit')
-    if (!editId) return
-    const target = logements.find(l => l.id === editId)
+    if (!editIdFromUrl) return
+    const target = logements.find(l => l.id === editIdFromUrl)
     if (target) openEdit(target)
-    // Nettoyer l'URL pour ne pas réouvrir au refresh
-    router.replace('/dashboard/logements')
+    // En mode "from=detail" on garde l'URL pour pouvoir revenir à la fiche à la fermeture.
+    if (!fromDetail) router.replace('/dashboard/logements')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -266,6 +268,11 @@ export default function LogementsPage({ logements: initial }: Props) {
     setModal(null)
     setEditing(null)
     setError('')
+    // Si on est arrivé depuis la fiche détail, on y retourne au lieu de rester
+    // sur la liste (sinon l'utilisateur se retrouve loin de son contexte).
+    if (fromDetail && editIdFromUrl) {
+      router.replace(`/dashboard/logements/${editIdFromUrl}`)
+    }
   }
 
   function validate(): string {
@@ -360,7 +367,9 @@ export default function LogementsPage({ logements: initial }: Props) {
 
   return (
     <div style={page}>
-      <div style={container}>
+      {/* Mode "from=detail" : on masque la liste pour ne montrer que la modale,
+          ce qui évite la sensation d'être éjecté de la fiche détail. */}
+      <div style={{ ...container, ...(fromDetail ? { visibility: 'hidden' as const, height: 0, overflow: 'hidden' as const } : {}) }}>
         {/* Header */}
         <div style={headerRow}>
           <div>

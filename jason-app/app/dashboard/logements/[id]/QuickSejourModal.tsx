@@ -6,6 +6,7 @@ import {
   X, Users, Plus, MagnifyingGlass, CalendarBlank, CurrencyEur, FileText, ArrowRight, Check,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, addSejour } from '@/app/dashboard/voyageurs/actions'
+import { CalendarInput } from '@/components/ui/CalendarInput'
 
 export type VoyageurOption = {
   id: string
@@ -221,21 +222,21 @@ export default function QuickSejourModal({ logementId, logementNom, voyageurs, o
             <div style={grid2}>
               <div>
                 <label style={fieldLabel}>Arrivée *</label>
-                <input
-                  type="date"
+                <CalendarInput
                   value={dateArrivee}
-                  onChange={e => setDateArrivee(e.target.value)}
-                  style={input}
+                  onChange={v => {
+                    setDateArrivee(v)
+                    if (dateDepart && v && dateDepart < v) setDateDepart(v)
+                  }}
+                  placeholder="Choisir une date"
                 />
               </div>
               <div>
                 <label style={fieldLabel}>Départ *</label>
-                <input
-                  type="date"
+                <CalendarInput
                   value={dateDepart}
-                  onChange={e => setDateDepart(e.target.value)}
-                  style={input}
-                  min={dateArrivee || undefined}
+                  onChange={setDateDepart}
+                  placeholder="Choisir une date"
                 />
               </div>
             </div>
