@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import LogementDetail from './LogementDetail'
 import TitleSetter from '@/components/layout/TitleSetter'
+import { getLogementIcalStatus } from '../actions'
 
 export default async function LogementDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -33,12 +34,16 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
   if (logementError || !logement) notFound()
 
   // Séjours rattachés (matching par nom, logement_id n'existe pas encore sur sejours)
-  const { data: sejours } = await supabase
-    .from('sejours')
-    .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien, voyageurs(id, prenom, nom, email, telephone)')
-    .eq('user_id', profile.userId)
-    .eq('logement', logement.nom)
-    .order('date_arrivee', { ascending: false })
+  // + statut iCal pour la section sync (en parallèle car indépendants)
+  const [{ data: sejours }, icalStatus] = await Promise.all([
+    supabase
+      .from('sejours')
+      .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien, voyageurs(id, prenom, nom, email, telephone)')
+      .eq('user_id', profile.userId)
+      .eq('logement', logement.nom)
+      .order('date_arrivee', { ascending: false }),
+    getLogementIcalStatus(id),
+  ])
 
   // Supabase retourne voyageurs sous forme d'array (relation 1-1), on aplatit
   const sejoursList = ((sejours ?? []) as any[]).map(s => ({
@@ -64,6 +69,7 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
         logement={logement as any}
         sejours={sejoursList}
         contractsCount={contractsByLogementId?.length ?? 0}
+        icalStatus={icalStatus}
       />
     </>
   )

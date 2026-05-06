@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
+import { syncLogementIcalUrls } from '@/lib/ical/sync'
 
 export type LogementData = {
   // Identité
@@ -111,6 +112,19 @@ export async function createLogement(data: LogementData): Promise<{ error?: stri
     .single()
 
   if (error) return { error: error.message }
+
+  // Bridge iCal : si des URLs sont fournies, on crée les feeds et on lance la sync
+  const hasIcal = data.ical_airbnb || data.ical_booking || data.ical_vrbo || data.ical_autre
+  if (hasIcal) {
+    await syncLogementIcalUrls(supabase, profile.userId, data.nom, {
+      ical_airbnb: data.ical_airbnb,
+      ical_booking: data.ical_booking,
+      ical_vrbo: data.ical_vrbo,
+      ical_autre: data.ical_autre,
+    })
+    revalidatePath('/dashboard/calendrier')
+  }
+
   revalidatePath('/dashboard/logements')
   return { id: row.id }
 }
@@ -127,9 +141,133 @@ export async function updateLogement(id: string, data: Partial<LogementData>): P
     .eq('user_id', profile.userId)
 
   if (error) return { error: error.message }
+
+  // Bridge iCal : si l'update touche au moins une URL iCal, on resync
+  const touchesIcal =
+    'ical_airbnb' in data || 'ical_booking' in data || 'ical_vrbo' in data || 'ical_autre' in data
+  if (touchesIcal) {
+    // Re-fetch le logement pour avoir le nom + l'ensemble des URLs (data ne contient
+    // que les champs modifiés)
+    const { data: full } = await supabase
+      .from('logements')
+      .select('nom, ical_airbnb, ical_booking, ical_vrbo, ical_autre')
+      .eq('id', id)
+      .eq('user_id', profile.userId)
+      .single()
+    if (full) {
+      await syncLogementIcalUrls(supabase, profile.userId, full.nom, {
+        ical_airbnb: full.ical_airbnb,
+        ical_booking: full.ical_booking,
+        ical_vrbo: full.ical_vrbo,
+        ical_autre: full.ical_autre,
+      })
+      revalidatePath('/dashboard/calendrier')
+    }
+  }
+
   revalidatePath('/dashboard/logements')
   revalidatePath(`/dashboard/logements/${id}`)
   return {}
+}
+
+// ─── Sync iCal d'un logement (appelé depuis la fiche détail) ────────────────
+
+export type LogementIcalFeedStatus = {
+  source: 'airbnb' | 'booking' | 'vrbo' | 'autre'
+  label: string
+  url: string
+  feedId: string | null
+  lastSynced: string | null
+  eventsCount: number
+}
+
+/**
+ * Liste les URLs iCal du logement avec leur statut de sync (feed associé,
+ * dernière synchro, nombre d'événements importés).
+ */
+export async function getLogementIcalStatus(logementId: string): Promise<LogementIcalFeedStatus[]> {
+  const profile = await getProfile()
+  if (!profile) return []
+
+  const supabase = await createClient()
+  const { data: logement } = await supabase
+    .from('logements')
+    .select('ical_airbnb, ical_booking, ical_vrbo, ical_autre')
+    .eq('id', logementId)
+    .eq('user_id', profile.userId)
+    .single()
+  if (!logement) return []
+
+  const sources: Array<{ key: 'airbnb' | 'booking' | 'vrbo' | 'autre'; label: string; url: string | null }> = [
+    { key: 'airbnb',  label: 'Airbnb',          url: logement.ical_airbnb },
+    { key: 'booking', label: 'Booking.com',     url: logement.ical_booking },
+    { key: 'vrbo',    label: 'Vrbo / Abritel',  url: logement.ical_vrbo },
+    { key: 'autre',   label: 'Autre',           url: logement.ical_autre },
+  ]
+
+  const results: LogementIcalFeedStatus[] = []
+  for (const s of sources) {
+    if (!s.url) continue
+
+    const { data: feed } = await supabase
+      .from('ical_feeds')
+      .select('id, last_synced')
+      .eq('user_id', profile.userId)
+      .eq('url', s.url)
+      .maybeSingle()
+
+    let eventsCount = 0
+    if (feed?.id) {
+      const { count } = await supabase
+        .from('ical_events')
+        .select('id', { count: 'exact', head: true })
+        .eq('feed_id', feed.id)
+        .eq('user_id', profile.userId)
+      eventsCount = count ?? 0
+    }
+
+    results.push({
+      source: s.key,
+      label: s.label,
+      url: s.url,
+      feedId: feed?.id ?? null,
+      lastSynced: feed?.last_synced ?? null,
+      eventsCount,
+    })
+  }
+
+  return results
+}
+
+/**
+ * Force la synchro de toutes les URLs iCal d'un logement.
+ * (Re-)crée les feeds manquants et lance fetchAndUpsertIcalFeed.
+ */
+export async function syncLogementIcalFeeds(
+  logementId: string,
+): Promise<{ synced: number; errors: string[]; error?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { synced: 0, errors: [], error: 'Non authentifié.' }
+
+  const supabase = await createClient()
+  const { data: logement } = await supabase
+    .from('logements')
+    .select('nom, ical_airbnb, ical_booking, ical_vrbo, ical_autre')
+    .eq('id', logementId)
+    .eq('user_id', profile.userId)
+    .single()
+  if (!logement) return { synced: 0, errors: [], error: 'Logement introuvable.' }
+
+  const result = await syncLogementIcalUrls(supabase, profile.userId, logement.nom, {
+    ical_airbnb: logement.ical_airbnb,
+    ical_booking: logement.ical_booking,
+    ical_vrbo: logement.ical_vrbo,
+    ical_autre: logement.ical_autre,
+  })
+
+  revalidatePath('/dashboard/calendrier')
+  revalidatePath(`/dashboard/logements/${logementId}`)
+  return result
 }
 
 export async function deleteLogement(id: string): Promise<{ error?: string }> {

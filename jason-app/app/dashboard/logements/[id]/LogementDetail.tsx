@@ -11,7 +11,8 @@ import {
   Check, Copy, ArrowRight,
 } from '@phosphor-icons/react/dist/ssr'
 import { EditableCard } from './EditableCard'
-import { updateLogement } from '../actions'
+import IcalSyncSection from './IcalSyncSection'
+import { updateLogement, type LogementIcalFeedStatus } from '../actions'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -78,6 +79,7 @@ interface Props {
   logement: Logement
   sejours: Sejour[]
   contractsCount: number
+  icalStatus: LogementIcalFeedStatus[]
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -150,7 +152,7 @@ function CopyChip({ icon, label, value, accent }: { icon: React.ReactNode; label
 
 // ─── Composant principal ─────────────────────────────────────────────────────
 
-export default function LogementDetail({ logement: l, sejours, contractsCount }: Props) {
+export default function LogementDetail({ logement: l, sejours, contractsCount, icalStatus }: Props) {
   const router = useRouter()
   const today = new Date().toISOString().slice(0, 10)
 
@@ -378,6 +380,9 @@ export default function LogementDetail({ logement: l, sejours, contractsCount }:
           )}
         </div>
       </div>
+
+      {/* Synchronisation iCal */}
+      <IcalSyncSection logementId={l.id} status={icalStatus} />
 
       {/* Layout 2 colonnes : prochains séjours + voyageurs récents */}
       <div style={s.twoColumns}>
