@@ -168,12 +168,35 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
   const [draftChambres, setDraftChambres] = useState<number | null>(l.nb_chambres)
   const [draftLits, setDraftLits] = useState<number | null>(l.nb_lits)
   const [draftSdb, setDraftSdb] = useState<number | null>(l.nb_sdb)
+  // Conformité (n° enregistrement, classement, DPE)
+  const [draftNumeroEnreg, setDraftNumeroEnreg] = useState(l.numero_enregistrement ?? '')
+  const [draftClassement, setDraftClassement] = useState<number | null>(l.classement_etoiles)
+  const [draftDpe, setDraftDpe] = useState(l.dpe ?? '')
   // Description
   const [draftDescription, setDraftDescription] = useState(l.description ?? '')
   // Conditions d'annulation
   const [draftConditions, setDraftConditions] = useState(l.conditions_annulation ?? '')
   // Règlement intérieur
   const [draftReglement, setDraftReglement] = useState(l.reglement_interieur ?? '')
+  // Tarifs
+  const [draftTarifNuit, setDraftTarifNuit] = useState<number | null>(l.tarif_nuitee_moyen)
+  const [draftFraisMenage, setDraftFraisMenage] = useState<number | null>(l.frais_menage)
+  const [draftCaution, setDraftCaution] = useState<number | null>(l.caution)
+  const [draftMethodesPaiement, setDraftMethodesPaiement] = useState(l.methodes_paiement ?? '')
+  // Équipements (liste de slugs + booléens animaux/fumeur)
+  const [draftEquipements, setDraftEquipements] = useState<string[]>(l.equipements ?? [])
+  const [draftAnimaux, setDraftAnimaux] = useState(l.animaux_acceptes ?? false)
+  const [draftFumeur, setDraftFumeur] = useState(l.fumeur_accepte ?? false)
+  // Liens annonces
+  const [draftLienAirbnb, setDraftLienAirbnb] = useState(l.lien_airbnb ?? '')
+  const [draftLienBooking, setDraftLienBooking] = useState(l.lien_booking ?? '')
+  const [draftLienGmb, setDraftLienGmb] = useState(l.lien_gmb ?? '')
+  const [draftLienSiteDirect, setDraftLienSiteDirect] = useState(l.lien_site_direct ?? '')
+  // Propriétaire (conciergerie)
+  const [draftPropNom, setDraftPropNom] = useState(l.proprietaire_nom ?? '')
+  const [draftPropEmail, setDraftPropEmail] = useState(l.proprietaire_email ?? '')
+  const [draftPropTel, setDraftPropTel] = useState(l.proprietaire_telephone ?? '')
+  const [draftHonoraires, setDraftHonoraires] = useState<number | null>(l.honoraires_pct)
 
   // Modale Nouveau séjour rapide
   const [showQuickSejour, setShowQuickSejour] = useState(false)
@@ -184,6 +207,9 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
     setDraftChambres(l.nb_chambres)
     setDraftLits(l.nb_lits)
     setDraftSdb(l.nb_sdb)
+    setDraftNumeroEnreg(l.numero_enregistrement ?? '')
+    setDraftClassement(l.classement_etoiles)
+    setDraftDpe(l.dpe ?? '')
   }
 
   async function saveCaracteristiques() {
@@ -193,6 +219,9 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
       nb_chambres: draftChambres,
       nb_lits: draftLits,
       nb_sdb: draftSdb,
+      numero_enregistrement: draftNumeroEnreg || null,
+      classement_etoiles: draftClassement,
+      dpe: draftDpe || null,
     })
   }
   async function saveDescription() {
@@ -203,6 +232,37 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
   }
   async function saveReglement() {
     return updateLogement(l.id, { reglement_interieur: draftReglement })
+  }
+  async function saveTarifs() {
+    return updateLogement(l.id, {
+      tarif_nuitee_moyen: draftTarifNuit,
+      frais_menage: draftFraisMenage,
+      caution: draftCaution,
+      methodes_paiement: draftMethodesPaiement || undefined,
+    })
+  }
+  async function saveEquipements() {
+    return updateLogement(l.id, {
+      equipements: draftEquipements,
+      animaux_acceptes: draftAnimaux,
+      fumeur_accepte: draftFumeur,
+    })
+  }
+  async function saveLiens() {
+    return updateLogement(l.id, {
+      lien_airbnb: draftLienAirbnb || null,
+      lien_booking: draftLienBooking || null,
+      lien_gmb: draftLienGmb || null,
+      lien_site_direct: draftLienSiteDirect || null,
+    })
+  }
+  async function saveProprietaire() {
+    return updateLogement(l.id, {
+      proprietaire_nom: draftPropNom || null,
+      proprietaire_email: draftPropEmail || null,
+      proprietaire_telephone: draftPropTel || null,
+      honoraires_pct: draftHonoraires,
+    })
   }
 
   // Stats : CA, occupation, séjours, prochain check-in
@@ -633,22 +693,42 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                 <span>Salles de bain</span>
                 <input style={s.editInput} type="number" min={0} value={draftSdb ?? ''} onChange={e => setDraftSdb(e.target.value ? parseInt(e.target.value) : null)} placeholder="—" />
               </label>
-              <p style={s.editHint}>
-                Pour modifier le n° d&apos;enregistrement, le classement Atout France ou le DPE, utilisez le bouton « Modifier la fiche » en haut.
-              </p>
+              <label style={s.editLabel}>
+                <span>N° enregistrement</span>
+                <input style={s.editInput} type="text" value={draftNumeroEnreg} onChange={e => setDraftNumeroEnreg(e.target.value)} placeholder="XX 000 000 000" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Classement Atout France (étoiles)</span>
+                <select style={s.editInput} value={draftClassement ?? ''} onChange={e => setDraftClassement(e.target.value ? parseInt(e.target.value) : null)}>
+                  <option value="">Non classé</option>
+                  {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n} étoile{n > 1 ? 's' : ''}</option>)}
+                </select>
+              </label>
+              <label style={s.editLabel}>
+                <span>DPE</span>
+                <select style={s.editInput} value={draftDpe} onChange={e => setDraftDpe(e.target.value)}>
+                  <option value="">Non renseigné</option>
+                  {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </label>
             </div>
           }
         />
 
         {/* Tarifs */}
-        {(l.tarif_nuitee_moyen || l.frais_menage || l.caution) && (
-          <div style={s.section}>
-            <div style={s.sectionHeader}>
-              <h3 style={s.sectionTitle}>
-                <CurrencyEur size={15} weight="fill" />
-                Tarifs indicatifs
-              </h3>
-            </div>
+        <EditableCard
+          title="Tarifs indicatifs"
+          icon={<CurrencyEur size={15} weight="fill" />}
+          onSave={saveTarifs}
+          onCancel={() => {
+            setDraftTarifNuit(l.tarif_nuitee_moyen)
+            setDraftFraisMenage(l.frais_menage)
+            setDraftCaution(l.caution)
+            setDraftMethodesPaiement(l.methodes_paiement ?? '')
+          }}
+          hasValue={!!(l.tarif_nuitee_moyen || l.frais_menage || l.caution || l.methodes_paiement)}
+          emptyView={<p style={s.emptyHint}>Aucun tarif renseigné. Cliquez sur Modifier pour les ajouter.</p>}
+          view={
             <div style={s.detailRows}>
               {l.tarif_nuitee_moyen && (
                 <div style={s.detailRow}>
@@ -675,23 +755,47 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                 </div>
               )}
             </div>
-          </div>
-        )}
+          }
+          edit={
+            <div style={s.editGrid}>
+              <label style={s.editLabel}>
+                <span>Nuitée moyenne (€)</span>
+                <input style={s.editInput} type="number" min={0} value={draftTarifNuit ?? ''} onChange={e => setDraftTarifNuit(e.target.value ? parseFloat(e.target.value) : null)} placeholder="0" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Frais de ménage (€)</span>
+                <input style={s.editInput} type="number" min={0} value={draftFraisMenage ?? ''} onChange={e => setDraftFraisMenage(e.target.value ? parseFloat(e.target.value) : null)} placeholder="0" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Caution (€)</span>
+                <input style={s.editInput} type="number" min={0} value={draftCaution ?? ''} onChange={e => setDraftCaution(e.target.value ? parseFloat(e.target.value) : null)} placeholder="0" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Méthodes de paiement</span>
+                <input style={s.editInput} type="text" value={draftMethodesPaiement} onChange={e => setDraftMethodesPaiement(e.target.value)} placeholder="Virement, Espèces…" />
+              </label>
+            </div>
+          }
+        />
       </div>
 
       {/* Équipements + Liens */}
       <div style={s.twoColumns}>
         {/* Équipements */}
-        {l.equipements && l.equipements.length > 0 && (
-          <div style={s.section}>
-            <div style={s.sectionHeader}>
-              <h3 style={s.sectionTitle}>
-                <Sparkle size={15} weight="fill" />
-                Équipements
-              </h3>
-            </div>
+        <EditableCard
+          title="Équipements"
+          icon={<Sparkle size={15} weight="fill" />}
+          onSave={saveEquipements}
+          onCancel={() => {
+            setDraftEquipements(l.equipements ?? [])
+            setDraftAnimaux(l.animaux_acceptes ?? false)
+            setDraftFumeur(l.fumeur_accepte ?? false)
+          }}
+          hasValue={!!(l.equipements && l.equipements.length > 0) || l.animaux_acceptes || l.fumeur_accepte}
+          emptyView={<p style={s.emptyHint}>Aucun équipement renseigné. Cliquez sur Modifier pour en ajouter.</p>}
+          view={
             <div style={s.equipChips}>
-              {l.equipements.map(eq => {
+              {(l.equipements ?? []).map(eq => {
                 const def = EQUIPEMENT_LABELS[eq] ?? { label: eq, emoji: '✓' }
                 return (
                   <span key={eq} style={s.equipChip}>
@@ -703,18 +807,65 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               {l.animaux_acceptes && <span style={s.equipChip}>🐾 Animaux acceptés</span>}
               {l.fumeur_accepte && <span style={s.equipChip}>🚬 Fumeur autorisé</span>}
             </div>
-          </div>
-        )}
+          }
+          edit={
+            <div>
+              <div style={s.checkGrid}>
+                {Object.entries(EQUIPEMENT_LABELS).map(([slug, { label, emoji }]) => {
+                  const checked = draftEquipements.includes(slug)
+                  return (
+                    <label key={slug} style={s.checkRow}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => setDraftEquipements(prev =>
+                          checked ? prev.filter(e => e !== slug) : [...prev, slug]
+                        )}
+                        style={{ accentColor: 'var(--accent-text)', width: '14px', height: '14px', flexShrink: 0 }}
+                      />
+                      <span>{emoji} {label}</span>
+                    </label>
+                  )
+                })}
+              </div>
+              <div style={{ display: 'flex', gap: '16px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--border-2)' }}>
+                <label style={s.checkRow}>
+                  <input
+                    type="checkbox"
+                    checked={draftAnimaux}
+                    onChange={e => setDraftAnimaux(e.target.checked)}
+                    style={{ accentColor: 'var(--accent-text)', width: '14px', height: '14px', flexShrink: 0 }}
+                  />
+                  <span>🐾 Animaux acceptés</span>
+                </label>
+                <label style={s.checkRow}>
+                  <input
+                    type="checkbox"
+                    checked={draftFumeur}
+                    onChange={e => setDraftFumeur(e.target.checked)}
+                    style={{ accentColor: 'var(--accent-text)', width: '14px', height: '14px', flexShrink: 0 }}
+                  />
+                  <span>🚬 Fumeur autorisé</span>
+                </label>
+              </div>
+            </div>
+          }
+        />
 
         {/* Liens annonces externes */}
-        {(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct) && (
-          <div style={s.section}>
-            <div style={s.sectionHeader}>
-              <h3 style={s.sectionTitle}>
-                <ArrowSquareOut size={15} weight="fill" />
-                Liens annonces
-              </h3>
-            </div>
+        <EditableCard
+          title="Liens annonces"
+          icon={<ArrowSquareOut size={15} weight="fill" />}
+          onSave={saveLiens}
+          onCancel={() => {
+            setDraftLienAirbnb(l.lien_airbnb ?? '')
+            setDraftLienBooking(l.lien_booking ?? '')
+            setDraftLienGmb(l.lien_gmb ?? '')
+            setDraftLienSiteDirect(l.lien_site_direct ?? '')
+          }}
+          hasValue={!!(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct)}
+          emptyView={<p style={s.emptyHint}>Aucun lien renseigné. Cliquez sur Modifier pour les ajouter.</p>}
+          view={
             <div style={s.linksList}>
               {l.lien_airbnb && (
                 <a href={l.lien_airbnb} target="_blank" rel="noopener noreferrer" style={s.linkRow}>
@@ -745,19 +896,44 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                 </a>
               )}
             </div>
-          </div>
-        )}
+          }
+          edit={
+            <div style={s.editGrid}>
+              <label style={s.editLabel}>
+                <span>🏠 Airbnb</span>
+                <input style={s.editInput} type="url" value={draftLienAirbnb} onChange={e => setDraftLienAirbnb(e.target.value)} placeholder="https://www.airbnb.fr/rooms/…" />
+              </label>
+              <label style={s.editLabel}>
+                <span>🛎️ Booking.com</span>
+                <input style={s.editInput} type="url" value={draftLienBooking} onChange={e => setDraftLienBooking(e.target.value)} placeholder="https://www.booking.com/…" />
+              </label>
+              <label style={s.editLabel}>
+                <span>📍 Google Business Profile</span>
+                <input style={s.editInput} type="url" value={draftLienGmb} onChange={e => setDraftLienGmb(e.target.value)} placeholder="https://maps.google.com/…" />
+              </label>
+              <label style={s.editLabel}>
+                <span>🌐 Site direct</span>
+                <input style={s.editInput} type="url" value={draftLienSiteDirect} onChange={e => setDraftLienSiteDirect(e.target.value)} placeholder="https://…" />
+              </label>
+            </div>
+          }
+        />
       </div>
 
       {/* Propriétaire (conciergerie) */}
-      {(l.proprietaire_nom || l.proprietaire_email || l.proprietaire_telephone || l.honoraires_pct != null) && (
-        <div style={s.section}>
-          <div style={s.sectionHeader}>
-            <h3 style={s.sectionTitle}>
-              <Users size={15} weight="fill" />
-              Propriétaire (conciergerie)
-            </h3>
-          </div>
+      <EditableCard
+        title="Propriétaire (conciergerie)"
+        icon={<Users size={15} weight="fill" />}
+        onSave={saveProprietaire}
+        onCancel={() => {
+          setDraftPropNom(l.proprietaire_nom ?? '')
+          setDraftPropEmail(l.proprietaire_email ?? '')
+          setDraftPropTel(l.proprietaire_telephone ?? '')
+          setDraftHonoraires(l.honoraires_pct)
+        }}
+        hasValue={!!(l.proprietaire_nom || l.proprietaire_email || l.proprietaire_telephone || l.honoraires_pct != null)}
+        emptyView={<p style={s.emptyHint}>Aucun propriétaire renseigné (utile si vous gérez ce logement en tant que conciergerie).</p>}
+        view={
           <div style={s.detailRows}>
             {l.proprietaire_nom && (
               <div style={s.detailRow}>
@@ -784,8 +960,28 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               </div>
             )}
           </div>
-        </div>
-      )}
+        }
+        edit={
+          <div style={s.editGrid}>
+            <label style={s.editLabel}>
+              <span>Nom du propriétaire</span>
+              <input style={s.editInput} type="text" value={draftPropNom} onChange={e => setDraftPropNom(e.target.value)} placeholder="Jean Dupont" />
+            </label>
+            <label style={s.editLabel}>
+              <span>Email</span>
+              <input style={s.editInput} type="email" value={draftPropEmail} onChange={e => setDraftPropEmail(e.target.value)} placeholder="jean@exemple.fr" />
+            </label>
+            <label style={s.editLabel}>
+              <span>Téléphone</span>
+              <input style={s.editInput} type="tel" value={draftPropTel} onChange={e => setDraftPropTel(e.target.value)} placeholder="06 00 00 00 00" />
+            </label>
+            <label style={s.editLabel}>
+              <span>Honoraires (%)</span>
+              <input style={s.editInput} type="number" min={0} max={100} value={draftHonoraires ?? ''} onChange={e => setDraftHonoraires(e.target.value ? parseFloat(e.target.value) : null)} placeholder="20" />
+            </label>
+          </div>
+        }
+      />
 
       {/* Description (éditable inline) */}
       <EditableCard
@@ -1227,6 +1423,20 @@ const s: Record<string, React.CSSProperties> = {
     margin: 0,
     padding: '8px 0',
     fontStyle: 'italic' as const,
+  },
+  checkGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+    gap: '8px',
+  },
+  checkRow: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontSize: '13px',
+    color: 'var(--text)',
+    cursor: 'pointer',
+    userSelect: 'none' as const,
   },
 
   // Équipements
