@@ -167,3 +167,36 @@ export async function syncIcalFeed(feedId: string) {
   if (result.synced) revalidatePath('/dashboard/calendrier')
   return result
 }
+
+// ─── Export iCal (lien public sécurisé par token) ─────────────────────────────
+
+export async function generateIcalToken() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+
+  const token = crypto.randomUUID()
+  const { error } = await supabase
+    .from('profiles')
+    .update({ ical_token: token })
+    .eq('id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/calendrier')
+  return { token }
+}
+
+export async function revokeIcalToken() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ ical_token: null })
+    .eq('id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/calendrier')
+  return { ok: true }
+}
