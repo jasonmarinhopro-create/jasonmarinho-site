@@ -34,8 +34,8 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
   if (logementError || !logement) notFound()
 
   // Séjours rattachés (matching par nom, logement_id n'existe pas encore sur sejours)
-  // + statut iCal pour la section sync (en parallèle car indépendants)
-  const [{ data: sejours }, icalStatus] = await Promise.all([
+  // + statut iCal + liste voyageurs pour la modale rapide (en parallèle, indépendants)
+  const [{ data: sejours }, icalStatus, { data: allVoyageurs }] = await Promise.all([
     supabase
       .from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien, voyageurs(id, prenom, nom, email, telephone)')
@@ -43,6 +43,11 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
       .eq('logement', logement.nom)
       .order('date_arrivee', { ascending: false }),
     getLogementIcalStatus(id),
+    supabase
+      .from('voyageurs')
+      .select('id, prenom, nom, email, telephone')
+      .eq('user_id', profile.userId)
+      .order('nom'),
   ])
 
   // Supabase retourne voyageurs sous forme d'array (relation 1-1), on aplatit
@@ -70,6 +75,7 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
         sejours={sejoursList}
         contractsCount={contractsByLogementId?.length ?? 0}
         icalStatus={icalStatus}
+        voyageurs={allVoyageurs ?? []}
       />
     </>
   )

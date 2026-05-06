@@ -10,9 +10,13 @@ import {
   WifiHigh, Key, Phone, Wrench, Sparkle, ShieldCheck,
   Check, Copy, ArrowRight,
 } from '@phosphor-icons/react/dist/ssr'
+import dynamic from 'next/dynamic'
 import { EditableCard } from './EditableCard'
 import IcalSyncSection from './IcalSyncSection'
+import type { VoyageurOption } from './QuickSejourModal'
 import { updateLogement, type LogementIcalFeedStatus } from '../actions'
+
+const QuickSejourModal = dynamic(() => import('./QuickSejourModal'), { ssr: false })
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -80,6 +84,7 @@ interface Props {
   sejours: Sejour[]
   contractsCount: number
   icalStatus: LogementIcalFeedStatus[]
+  voyageurs: VoyageurOption[]
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -152,7 +157,7 @@ function CopyChip({ icon, label, value, accent }: { icon: React.ReactNode; label
 
 // ─── Composant principal ─────────────────────────────────────────────────────
 
-export default function LogementDetail({ logement: l, sejours, contractsCount, icalStatus }: Props) {
+export default function LogementDetail({ logement: l, sejours, contractsCount, icalStatus, voyageurs }: Props) {
   const router = useRouter()
   const today = new Date().toISOString().slice(0, 10)
 
@@ -169,6 +174,9 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
   const [draftConditions, setDraftConditions] = useState(l.conditions_annulation ?? '')
   // Règlement intérieur
   const [draftReglement, setDraftReglement] = useState(l.reglement_interieur ?? '')
+
+  // Modale Nouveau séjour rapide
+  const [showQuickSejour, setShowQuickSejour] = useState(false)
 
   function resetCaracteristiques() {
     setDraftCapacite(l.capacite_max)
@@ -311,10 +319,14 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               <PencilSimple size={14} weight="bold" />
               Modifier la fiche
             </Link>
-            <Link href="/dashboard/voyageurs" style={s.btnSecondary}>
+            <button
+              type="button"
+              onClick={() => setShowQuickSejour(true)}
+              style={{ ...s.btnSecondary, cursor: 'pointer', fontFamily: 'inherit' }}
+            >
               <Users size={14} weight="bold" />
               Nouveau séjour
-            </Link>
+            </button>
             <Link href={`/dashboard/calendrier?logement=${encodeURIComponent(l.nom)}`} style={s.btnSecondary}>
               <CalendarIcon size={14} weight="bold" />
               Calendrier de ce bien
@@ -831,6 +843,15 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
           }
         />
       </div>
+
+      {showQuickSejour && (
+        <QuickSejourModal
+          logementId={l.id}
+          logementNom={l.nom}
+          voyageurs={voyageurs}
+          onClose={() => setShowQuickSejour(false)}
+        />
+      )}
     </div>
   )
 }

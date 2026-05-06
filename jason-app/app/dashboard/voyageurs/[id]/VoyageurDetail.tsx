@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
   Envelope, Phone, Note, CalendarBlank, House,
@@ -329,10 +329,26 @@ interface Props {
 export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [], plan = 'decouverte' }: Props) {
   const isDecouverte = plan === 'decouverte'
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
 
   // Contract modal
   const [contractSejour, setContractSejour] = useState<Sejour | null>(null)
+
+  // Auto-open ContractModal si ?contract=SEJOUR_ID (depuis la modale rapide
+  // de la fiche logement). On nettoie l'URL après ouverture pour éviter de
+  // rouvrir au refresh.
+  useEffect(() => {
+    const sejourId = searchParams.get('contract')
+    if (!sejourId) return
+    const target = sejours.find(sj => sj.id === sejourId)
+    if (target) {
+      setContractSejour(target)
+      const url = new URL(window.location.href)
+      url.searchParams.delete('contract')
+      window.history.replaceState({}, '', url.toString())
+    }
+  }, [searchParams, sejours])
 
   // Deposit modal
   const [depositContract, setDepositContract] = useState<DepositContract | null>(null)
