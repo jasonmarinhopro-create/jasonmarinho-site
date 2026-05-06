@@ -10,6 +10,8 @@ import {
   WifiHigh, Key, Phone, Wrench, Sparkle, ShieldCheck,
   Check, Copy, ArrowRight,
 } from '@phosphor-icons/react/dist/ssr'
+import { EditableCard } from './EditableCard'
+import { updateLogement } from '../actions'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -101,8 +103,8 @@ const EQUIPEMENT_LABELS: Record<string, { label: string; emoji: string }> = {
   'terrasse':       { label: 'Terrasse',       emoji: '🪑' },
   'balcon':         { label: 'Balcon',         emoji: '🌿' },
   'pmr':            { label: 'Accès PMR',      emoji: '♿' },
-  'ascenseur':      { label: 'Ascenseur',      emoji: '🛗' },
-  'cheminee':       { label: 'Cheminée',       emoji: '🪵' },
+  'ascenseur':      { label: 'Ascenseur',      emoji: '↕️' },
+  'cheminee':       { label: 'Cheminée',       emoji: '🔥' },
   'spa':            { label: 'Spa / jacuzzi',  emoji: '🛁' },
 }
 
@@ -151,6 +153,47 @@ function CopyChip({ icon, label, value, accent }: { icon: React.ReactNode; label
 export default function LogementDetail({ logement: l, sejours, contractsCount }: Props) {
   const router = useRouter()
   const today = new Date().toISOString().slice(0, 10)
+
+  // ─── États locaux pour l'édition inline ───
+  // Caractéristiques (capacité, surface, chambres, lits, sdb)
+  const [draftCapacite, setDraftCapacite] = useState(l.capacite_max)
+  const [draftSurface, setDraftSurface] = useState<number | null>(l.surface_m2)
+  const [draftChambres, setDraftChambres] = useState<number | null>(l.nb_chambres)
+  const [draftLits, setDraftLits] = useState<number | null>(l.nb_lits)
+  const [draftSdb, setDraftSdb] = useState<number | null>(l.nb_sdb)
+  // Description
+  const [draftDescription, setDraftDescription] = useState(l.description ?? '')
+  // Conditions d'annulation
+  const [draftConditions, setDraftConditions] = useState(l.conditions_annulation ?? '')
+  // Règlement intérieur
+  const [draftReglement, setDraftReglement] = useState(l.reglement_interieur ?? '')
+
+  function resetCaracteristiques() {
+    setDraftCapacite(l.capacite_max)
+    setDraftSurface(l.surface_m2)
+    setDraftChambres(l.nb_chambres)
+    setDraftLits(l.nb_lits)
+    setDraftSdb(l.nb_sdb)
+  }
+
+  async function saveCaracteristiques() {
+    return updateLogement(l.id, {
+      capacite_max: draftCapacite,
+      surface_m2: draftSurface,
+      nb_chambres: draftChambres,
+      nb_lits: draftLits,
+      nb_sdb: draftSdb,
+    })
+  }
+  async function saveDescription() {
+    return updateLogement(l.id, { description: draftDescription })
+  }
+  async function saveConditions() {
+    return updateLogement(l.id, { conditions_annulation: draftConditions })
+  }
+  async function saveReglement() {
+    return updateLogement(l.id, { reglement_interieur: draftReglement })
+  }
 
   // Stats : CA, occupation, séjours, prochain check-in
   const stats = (() => {
@@ -516,15 +559,15 @@ export default function LogementDetail({ logement: l, sejours, contractsCount }:
 
       {/* Conformité + Tarifs */}
       <div style={s.twoColumns}>
-        {/* Conformité */}
-        {(l.numero_enregistrement || l.classement_etoiles || l.dpe || l.surface_m2 || l.nb_chambres || l.nb_lits || l.nb_sdb) && (
-          <div style={s.section}>
-            <div style={s.sectionHeader}>
-              <h3 style={s.sectionTitle}>
-                <ShieldCheck size={15} weight="fill" />
-                Caractéristiques & conformité
-              </h3>
-            </div>
+        {/* Caractéristiques (édition inline des nombres) */}
+        <EditableCard
+          title="Caractéristiques & conformité"
+          icon={<ShieldCheck size={15} weight="fill" />}
+          onSave={saveCaracteristiques}
+          onCancel={resetCaracteristiques}
+          hasValue={!!(l.numero_enregistrement || l.classement_etoiles || l.dpe || l.surface_m2 || l.nb_chambres || l.nb_lits || l.nb_sdb)}
+          emptyView={<p style={s.emptyHint}>Aucune information renseignée. Cliquez sur Modifier pour les ajouter.</p>}
+          view={
             <div style={s.detailRows}>
               {l.surface_m2 && <div style={s.detailRow}><span style={s.detailKey}>Surface</span><span style={s.detailVal}>{l.surface_m2} m²</span></div>}
               {l.nb_chambres != null && l.nb_chambres > 0 && <div style={s.detailRow}><span style={s.detailKey}>Chambres</span><span style={s.detailVal}>{l.nb_chambres}</span></div>}
@@ -550,8 +593,35 @@ export default function LogementDetail({ logement: l, sejours, contractsCount }:
                 </div>
               )}
             </div>
-          </div>
-        )}
+          }
+          edit={
+            <div style={s.editGrid}>
+              <label style={s.editLabel}>
+                <span>Capacité (personnes)</span>
+                <input style={s.editInput} type="number" min={1} value={draftCapacite} onChange={e => setDraftCapacite(parseInt(e.target.value) || 1)} />
+              </label>
+              <label style={s.editLabel}>
+                <span>Surface (m²)</span>
+                <input style={s.editInput} type="number" min={0} value={draftSurface ?? ''} onChange={e => setDraftSurface(e.target.value ? parseFloat(e.target.value) : null)} placeholder="—" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Chambres</span>
+                <input style={s.editInput} type="number" min={0} value={draftChambres ?? ''} onChange={e => setDraftChambres(e.target.value ? parseInt(e.target.value) : null)} placeholder="—" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Lits</span>
+                <input style={s.editInput} type="number" min={0} value={draftLits ?? ''} onChange={e => setDraftLits(e.target.value ? parseInt(e.target.value) : null)} placeholder="—" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Salles de bain</span>
+                <input style={s.editInput} type="number" min={0} value={draftSdb ?? ''} onChange={e => setDraftSdb(e.target.value ? parseInt(e.target.value) : null)} placeholder="—" />
+              </label>
+              <p style={s.editHint}>
+                Pour modifier le n° d&apos;enregistrement, le classement Atout France ou le DPE, utilisez le bouton « Modifier la fiche » en haut.
+              </p>
+            </div>
+          }
+        />
 
         {/* Tarifs */}
         {(l.tarif_nuitee_moyen || l.frais_menage || l.caution) && (
@@ -700,37 +770,62 @@ export default function LogementDetail({ logement: l, sejours, contractsCount }:
         </div>
       )}
 
-      {/* Description */}
-      {l.description && (
-        <div style={s.section}>
-          <div style={s.sectionHeader}>
-            <h3 style={s.sectionTitle}>Description</h3>
-          </div>
-          <p style={s.descText}>{l.description}</p>
-        </div>
-      )}
+      {/* Description (éditable inline) */}
+      <EditableCard
+        title="Description"
+        onSave={saveDescription}
+        onCancel={() => setDraftDescription(l.description ?? '')}
+        hasValue={!!l.description}
+        emptyView={<p style={s.emptyHint}>Aucune description. Cliquez sur Modifier pour ajouter une présentation de votre logement.</p>}
+        view={<p style={s.descText}>{l.description}</p>}
+        edit={
+          <textarea
+            style={s.editTextarea}
+            value={draftDescription}
+            onChange={e => setDraftDescription(e.target.value)}
+            placeholder="Décrivez votre logement, son ambiance, ses atouts…"
+            rows={6}
+          />
+        }
+      />
 
-      {/* Conditions & règlement (collapsible feel : light) */}
-      {(l.conditions_annulation || l.reglement_interieur) && (
-        <div style={s.twoColumns}>
-          {l.conditions_annulation && (
-            <div style={s.section}>
-              <div style={s.sectionHeader}>
-                <h3 style={s.sectionTitle}>Conditions d&apos;annulation</h3>
-              </div>
-              <p style={s.descText}>{l.conditions_annulation}</p>
-            </div>
-          )}
-          {l.reglement_interieur && (
-            <div style={s.section}>
-              <div style={s.sectionHeader}>
-                <h3 style={s.sectionTitle}>Règlement intérieur</h3>
-              </div>
-              <p style={{ ...s.descText, whiteSpace: 'pre-wrap' as const }}>{l.reglement_interieur}</p>
-            </div>
-          )}
-        </div>
-      )}
+      {/* Conditions & règlement (éditables inline) */}
+      <div style={s.twoColumns}>
+        <EditableCard
+          title="Conditions d'annulation"
+          onSave={saveConditions}
+          onCancel={() => setDraftConditions(l.conditions_annulation ?? '')}
+          hasValue={!!l.conditions_annulation}
+          emptyView={<p style={s.emptyHint}>Aucune condition d&apos;annulation. Cliquez sur Modifier pour les définir.</p>}
+          view={<p style={s.descText}>{l.conditions_annulation}</p>}
+          edit={
+            <textarea
+              style={s.editTextarea}
+              value={draftConditions}
+              onChange={e => setDraftConditions(e.target.value)}
+              placeholder="Ex : Annulation gratuite jusqu'à 30 jours avant l'arrivée, 50 % entre 30 et 7 jours, 100 % après."
+              rows={5}
+            />
+          }
+        />
+        <EditableCard
+          title="Règlement intérieur"
+          onSave={saveReglement}
+          onCancel={() => setDraftReglement(l.reglement_interieur ?? '')}
+          hasValue={!!l.reglement_interieur}
+          emptyView={<p style={s.emptyHint}>Aucun règlement. Cliquez sur Modifier pour ajouter les règles de la maison.</p>}
+          view={<p style={{ ...s.descText, whiteSpace: 'pre-wrap' as const }}>{l.reglement_interieur}</p>}
+          edit={
+            <textarea
+              style={s.editTextarea}
+              value={draftReglement}
+              onChange={e => setDraftReglement(e.target.value)}
+              placeholder={'- Pas de fête\n- Non-fumeur à l\'intérieur\n- Animaux non admis'}
+              rows={5}
+            />
+          }
+        />
+      </div>
     </div>
   )
 }
@@ -1053,6 +1148,59 @@ const s: Record<string, React.CSSProperties> = {
   detailVal: {
     color: 'var(--text)',
     fontWeight: 500,
+  },
+
+  // Inline edit
+  editGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+    gap: '12px',
+  },
+  editLabel: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '4px',
+    fontSize: '12px',
+    color: 'var(--text-2)',
+  },
+  editInput: {
+    width: '100%',
+    padding: '8px 10px',
+    fontSize: '14px',
+    background: 'var(--bg)',
+    color: 'var(--text)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    fontFamily: 'inherit',
+    boxSizing: 'border-box' as const,
+  },
+  editTextarea: {
+    width: '100%',
+    padding: '10px 12px',
+    fontSize: '14px',
+    lineHeight: 1.55,
+    background: 'var(--bg)',
+    color: 'var(--text)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    fontFamily: 'inherit',
+    boxSizing: 'border-box' as const,
+    resize: 'vertical' as const,
+    minHeight: '110px',
+  },
+  editHint: {
+    gridColumn: '1 / -1',
+    fontSize: '11.5px',
+    color: 'var(--text-muted)',
+    margin: 0,
+    fontStyle: 'italic' as const,
+  },
+  emptyHint: {
+    fontSize: '13px',
+    color: 'var(--text-muted)',
+    margin: 0,
+    padding: '8px 0',
+    fontStyle: 'italic' as const,
   },
 
   // Équipements

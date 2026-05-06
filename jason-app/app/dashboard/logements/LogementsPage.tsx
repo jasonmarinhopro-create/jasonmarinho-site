@@ -36,8 +36,8 @@ const EQUIPEMENTS: { slug: string; label: string; emoji: string }[] = [
   { slug: 'terrasse',       label: 'Terrasse',       emoji: '🪑' },
   { slug: 'balcon',         label: 'Balcon',         emoji: '🌿' },
   { slug: 'pmr',            label: 'Accès PMR',      emoji: '♿' },
-  { slug: 'ascenseur',      label: 'Ascenseur',      emoji: '🛗' },
-  { slug: 'cheminee',       label: 'Cheminée',       emoji: '🪵' },
+  { slug: 'ascenseur',      label: 'Ascenseur',      emoji: '↕️' },
+  { slug: 'cheminee',       label: 'Cheminée',       emoji: '🔥' },
   { slug: 'spa',            label: 'Spa / jacuzzi',  emoji: '🛁' },
 ]
 
@@ -819,8 +819,8 @@ export default function LogementsPage({ logements: initial }: Props) {
               <div style={fieldRow}>
                 <Field label="Numéro d'enregistrement (Cerfa)" value={form.numero_enregistrement ?? ''} onChange={v => set('numero_enregistrement', v || null)} placeholder="Obligatoire dans certaines communes" />
               </div>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
-                <div style={{ flex: 1, minWidth: '160px' }}>
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' as const }}>
+                <div style={{ flex: 1, minWidth: '220px' }}>
                   <label style={label}>Classement Atout France</label>
                   <div style={{ display: 'flex', gap: '4px' }}>
                     {[0, 1, 2, 3, 4, 5].map(n => {
@@ -845,7 +845,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                     })}
                   </div>
                 </div>
-                <div style={{ flex: 1, minWidth: '180px' }}>
+                <div style={{ flex: 1, minWidth: '240px' }}>
                   <label style={label}>DPE (étiquette énergie)</label>
                   <div style={{ display: 'flex', gap: '3px' }}>
                     {[null, 'A', 'B', 'C', 'D', 'E', 'F', 'G'].map(d => {
