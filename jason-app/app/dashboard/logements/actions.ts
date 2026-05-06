@@ -128,6 +128,7 @@ export async function updateLogement(id: string, data: Partial<LogementData>): P
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/logements')
+  revalidatePath(`/dashboard/logements/${id}`)
   return {}
 }
 
