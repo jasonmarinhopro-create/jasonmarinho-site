@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { CalendarBlank } from '@phosphor-icons/react/dist/ssr'
 
 const DAYS    = ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di']
@@ -92,7 +93,7 @@ export function CalendarInput({
         {!disabled && <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>▼</span>}
       </button>
 
-      {open && pos && (
+      {open && pos && typeof document !== 'undefined' && createPortal(
         <div
           ref={popupRef}
           style={{
@@ -140,7 +141,8 @@ export function CalendarInput({
               )
             })}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
@@ -213,7 +215,7 @@ export function TimePickerInput({
         <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>▼</span>
       </button>
 
-      {open && pos && (
+      {open && pos && typeof document !== 'undefined' && createPortal(
         <div
           ref={popupRef}
           style={{
@@ -249,7 +251,8 @@ export function TimePickerInput({
               Effacer
             </button>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
