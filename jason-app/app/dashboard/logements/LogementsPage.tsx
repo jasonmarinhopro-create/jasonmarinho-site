@@ -585,163 +585,184 @@ export default function LogementsPage({ logements: initial }: Props) {
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); router.push(`/dashboard/logements/${l.id}`) } }}
                 style={{ ...card, opacity: l.actif === false ? 0.65 : 1, cursor: 'pointer' }}
               >
-                {/* Photo couverture si présente */}
-                {l.photo_couverture_url && (
+                {/* Photo couverture */}
+                {l.photo_couverture_url ? (
                   <div style={cardCover}>
                     <Image
                       src={l.photo_couverture_url}
                       alt={l.nom}
                       fill
-                      sizes="(max-width: 640px) 100vw, 320px"
+                      sizes="(max-width: 640px) 100vw, 400px"
                       style={{ objectFit: 'cover' }}
                     />
                     {l.actif === false && (
                       <span style={cardCoverBadge}>En pause</span>
                     )}
-                  </div>
-                )}
-                <div style={cardTop}>
-                  {!l.photo_couverture_url ? (
-                    <div style={cardIcon}><House size={18} color="var(--accent-text)" weight="fill" /></div>
-                  ) : <span />}
-                  <div style={cardActions}>
-                    <button
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(l) }}
-                      style={iconBtn} title="Modifier"
-                    >
-                      <PencilSimple size={14} />
-                    </button>
-                    <button
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
-                      style={iconBtn} title="Supprimer"
-                    >
-                      <Trash size={14} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Type + statut */}
-                {(l.type_logement || l.classement_etoiles || l.actif === false) && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px', marginBottom: '4px' }}>
-                    {l.type_logement && (
-                      <span style={typeChip}>{TYPE_LOGEMENT_LABELS[l.type_logement] ?? l.type_logement}</span>
-                    )}
-                    {l.classement_etoiles !== null && l.classement_etoiles > 0 && (
-                      <span style={starChip}>
-                        {Array.from({ length: l.classement_etoiles }).map((_, i) => (
-                          <Star key={i} size={10} weight="fill" />
-                        ))}
-                      </span>
-                    )}
-                    {l.dpe && (
-                      <span style={{ ...dpeChip, background: dpeColor(l.dpe).bg, color: dpeColor(l.dpe).fg, borderColor: dpeColor(l.dpe).border }}>
-                        DPE {l.dpe}
-                      </span>
-                    )}
-                    {!l.actif && (
-                      <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>
-                        En pause
-                      </span>
-                    )}
-                  </div>
-                )}
-
-                <h3 style={cardName}>{l.nom}</h3>
-                <p style={cardAddress}>
-                  <MapPin size={11} weight="fill" style={{ display: 'inline', marginRight: '4px', verticalAlign: '-1px', color: 'var(--text-muted)' }} />
-                  {l.adresse}
-                </p>
-
-                {/* Caractéristiques physiques */}
-                <div style={cardMeta}>
-                  <span style={chip}>{l.capacite_max} pers.</span>
-                  {l.surface_m2 && <span style={chip}>{l.surface_m2} m²</span>}
-                  {l.nb_chambres && <span style={chip}>{l.nb_chambres} ch.</span>}
-                  {l.nb_lits && <span style={chip}>{l.nb_lits} lit{l.nb_lits > 1 ? 's' : ''}</span>}
-                  {l.animaux_acceptes && <span style={chip}>🐾 Animaux</span>}
-                  {l.fumeur_accepte && <span style={chip}>🚬 Fumeur</span>}
-                </div>
-
-                {/* Tarifs */}
-                {(l.tarif_nuitee_moyen || l.frais_menage || l.caution) && (
-                  <div style={tarifRow}>
-                    {l.tarif_nuitee_moyen && (
-                      <span style={tarifChip}>
-                        <CurrencyEur size={11} weight="fill" />
-                        <strong>{l.tarif_nuitee_moyen}</strong> /nuit
-                      </span>
-                    )}
-                    {l.frais_menage && (
-                      <span style={tarifChip}>Ménage {l.frais_menage}€</span>
-                    )}
-                    {l.caution && (
-                      <span style={tarifChip}>Caution {l.caution}€</span>
-                    )}
-                  </div>
-                )}
-
-                {/* Liens annonces */}
-                {(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct) && (
-                  <div style={linksRow}>
-                    {l.lien_airbnb && <a href={l.lien_airbnb} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Airbnb">Airbnb <ArrowSquareOut size={9} /></a>}
-                    {l.lien_booking && <a href={l.lien_booking} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Booking">Booking <ArrowSquareOut size={9} /></a>}
-                    {l.lien_gmb && <a href={l.lien_gmb} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Google">Google <ArrowSquareOut size={9} /></a>}
-                    {l.lien_site_direct && <a href={l.lien_site_direct} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir le site">Site <ArrowSquareOut size={9} /></a>}
-                  </div>
-                )}
-
-                {/* Infos pratiques */}
-                {(l.heure_arrivee || l.heure_depart || l.wifi_nom || l.code_acces) && (
-                  <div style={practicalRow}>
-                    {(l.heure_arrivee || l.heure_depart) && (
-                      <div style={practicalItem}>
-                        <Clock size={12} color="#60BEFF" />
-                        <span style={practicalText}>
-                          {l.heure_arrivee && <>Arrivée {l.heure_arrivee}</>}
-                          {l.heure_arrivee && l.heure_depart && ' · '}
-                          {l.heure_depart && <>Départ {l.heure_depart}</>}
-                        </span>
-                      </div>
-                    )}
-                    {l.wifi_nom && (
-                      <CopyChip icon={<WifiHigh size={12} color="#34D399" />} label={l.wifi_nom} value={`${l.wifi_nom}${l.wifi_mdp ? ` / ${l.wifi_mdp}` : ''}`} />
-                    )}
-                    {l.code_acces && (
-                      <CopyChip icon={<Key size={12} color="var(--accent-text)" />} label={l.code_acces} value={l.code_acces} />
-                    )}
-                  </div>
-                )}
-
-                {l.proprietaire_nom && (
-                  <div style={proprietaireRow}>
-                    <span style={proprietaireBadge}>Propriétaire</span>
-                    <span style={proprietaireText}>
-                      {l.proprietaire_nom}
-                      {l.honoraires_pct != null && ` · ${l.honoraires_pct}% d'honoraires`}
-                    </span>
-                  </div>
-                )}
-
-                {l.description && (
-                  <p style={cardDesc}>{l.description.slice(0, 80)}{l.description.length > 80 ? '…' : ''}</p>
-                )}
-
-                {/* Delete confirm */}
-                {deleteConfirm === l.id && (
-                  <div style={deleteBox}>
-                    <p style={{ margin: '0 0 10px', fontSize: '13px', color: 'var(--text-2)' }}>
-                      Supprimer ce logement ? Cette action est irréversible.
-                    </p>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button onClick={() => handleDelete(l.id)} disabled={isPending} style={deleteConfirmBtn}>
-                        {isPending ? 'Suppression…' : 'Supprimer'}
+                    {/* Actions overlay sur la photo */}
+                    <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
+                      <button
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(l) }}
+                        style={{ ...iconBtn, background: 'rgba(0,0,0,0.55)', borderColor: 'rgba(255,255,255,0.15)', color: '#fff' }} title="Modifier"
+                      >
+                        <PencilSimple size={13} />
                       </button>
-                      <button onClick={() => setDeleteConfirm(null)} style={cancelBtn}>
-                        Annuler
+                      <button
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
+                        style={{ ...iconBtn, background: 'rgba(0,0,0,0.55)', borderColor: 'rgba(255,255,255,0.15)', color: '#fff' }} title="Supprimer"
+                      >
+                        <Trash size={13} />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Placeholder coloré quand pas de photo */
+                  <div style={{ ...cardCover, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(52,211,153,0.06)', borderBottom: '1px solid var(--border)' }}>
+                    <House size={52} color="rgba(52,211,153,0.35)" weight="thin" />
+                    <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
+                      <button
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(l) }}
+                        style={iconBtn} title="Modifier"
+                      >
+                        <PencilSimple size={13} />
+                      </button>
+                      <button
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
+                        style={iconBtn} title="Supprimer"
+                      >
+                        <Trash size={13} />
                       </button>
                     </div>
                   </div>
                 )}
+
+                <div style={cardBody}>
+                  {/* Type + statut */}
+                  {(l.type_logement || l.classement_etoiles || l.actif === false) && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
+                      {l.type_logement && (
+                        <span style={typeChip}>{TYPE_LOGEMENT_LABELS[l.type_logement] ?? l.type_logement}</span>
+                      )}
+                      {l.classement_etoiles !== null && l.classement_etoiles > 0 && (
+                        <span style={starChip}>
+                          {Array.from({ length: l.classement_etoiles }).map((_, i) => (
+                            <Star key={i} size={10} weight="fill" />
+                          ))}
+                        </span>
+                      )}
+                      {l.dpe && (
+                        <span style={{ ...dpeChip, background: dpeColor(l.dpe).bg, color: dpeColor(l.dpe).fg, borderColor: dpeColor(l.dpe).border }}>
+                          DPE {l.dpe}
+                        </span>
+                      )}
+                      {!l.actif && (
+                        <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>
+                          En pause
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  <div style={cardTop}>
+                    <div>
+                      <h3 style={cardName}>{l.nom}</h3>
+                      <p style={cardAddress}>
+                        <MapPin size={11} weight="fill" style={{ display: 'inline', marginRight: '4px', verticalAlign: '-1px', color: 'var(--text-muted)' }} />
+                        {l.adresse}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Caractéristiques physiques */}
+                  <div style={cardMeta}>
+                    <span style={chip}>{l.capacite_max} pers.</span>
+                    {l.surface_m2 && <span style={chip}>{l.surface_m2} m²</span>}
+                    {l.nb_chambres && <span style={chip}>{l.nb_chambres} ch.</span>}
+                    {l.nb_lits && <span style={chip}>{l.nb_lits} lit{l.nb_lits > 1 ? 's' : ''}</span>}
+                    {l.animaux_acceptes && <span style={chip}>🐾 Animaux</span>}
+                    {l.fumeur_accepte && <span style={chip}>🚬 Fumeur</span>}
+                  </div>
+
+                  {/* Tarifs */}
+                  {(l.tarif_nuitee_moyen || l.frais_menage || l.caution) && (
+                    <div style={tarifRow}>
+                      {l.tarif_nuitee_moyen && (
+                        <span style={tarifChip}>
+                          <CurrencyEur size={11} weight="fill" />
+                          <strong>{l.tarif_nuitee_moyen}</strong> /nuit
+                        </span>
+                      )}
+                      {l.frais_menage && (
+                        <span style={tarifChip}>Ménage {l.frais_menage}€</span>
+                      )}
+                      {l.caution && (
+                        <span style={tarifChip}>Caution {l.caution}€</span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Liens annonces */}
+                  {(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct) && (
+                    <div style={linksRow}>
+                      {l.lien_airbnb && <a href={l.lien_airbnb} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Airbnb">Airbnb <ArrowSquareOut size={9} /></a>}
+                      {l.lien_booking && <a href={l.lien_booking} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Booking">Booking <ArrowSquareOut size={9} /></a>}
+                      {l.lien_gmb && <a href={l.lien_gmb} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Google">Google <ArrowSquareOut size={9} /></a>}
+                      {l.lien_site_direct && <a href={l.lien_site_direct} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir le site">Site <ArrowSquareOut size={9} /></a>}
+                    </div>
+                  )}
+
+                  {/* Infos pratiques */}
+                  {(l.heure_arrivee || l.heure_depart || l.wifi_nom || l.code_acces) && (
+                    <div style={practicalRow}>
+                      {(l.heure_arrivee || l.heure_depart) && (
+                        <div style={practicalItem}>
+                          <Clock size={12} color="#60BEFF" />
+                          <span style={practicalText}>
+                            {l.heure_arrivee && <>Arrivée {l.heure_arrivee}</>}
+                            {l.heure_arrivee && l.heure_depart && ' · '}
+                            {l.heure_depart && <>Départ {l.heure_depart}</>}
+                          </span>
+                        </div>
+                      )}
+                      {l.wifi_nom && (
+                        <CopyChip icon={<WifiHigh size={12} color="#34D399" />} label={l.wifi_nom} value={`${l.wifi_nom}${l.wifi_mdp ? ` / ${l.wifi_mdp}` : ''}`} />
+                      )}
+                      {l.code_acces && (
+                        <CopyChip icon={<Key size={12} color="var(--accent-text)" />} label={l.code_acces} value={l.code_acces} />
+                      )}
+                    </div>
+                  )}
+
+                  {l.proprietaire_nom && (
+                    <div style={proprietaireRow}>
+                      <span style={proprietaireBadge}>Propriétaire</span>
+                      <span style={proprietaireText}>
+                        {l.proprietaire_nom}
+                        {l.honoraires_pct != null && ` · ${l.honoraires_pct}% d'honoraires`}
+                      </span>
+                    </div>
+                  )}
+
+                  {l.description && (
+                    <p style={cardDesc}>{l.description.slice(0, 100)}{l.description.length > 100 ? '…' : ''}</p>
+                  )}
+
+                  {/* Delete confirm */}
+                  {deleteConfirm === l.id && (
+                    <div style={deleteBox}>
+                      <p style={{ margin: '0 0 10px', fontSize: '13px', color: 'var(--text-2)' }}>
+                        Supprimer ce logement ? Cette action est irréversible.
+                      </p>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={() => handleDelete(l.id)} disabled={isPending} style={deleteConfirmBtn}>
+                          {isPending ? 'Suppression…' : 'Supprimer'}
+                        </button>
+                        <button onClick={() => setDeleteConfirm(null)} style={cancelBtn}>
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -1265,28 +1286,35 @@ const emptyText: React.CSSProperties = {
 
 const grid: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-  gap: '16px',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+  gap: '20px',
 }
 
 const card: React.CSSProperties = {
   background: 'var(--surface)',
   border: '1px solid var(--border)',
-  borderRadius: '16px', padding: '20px',
-  display: 'flex', flexDirection: 'column', gap: '8px',
+  borderRadius: '20px', padding: '0',
+  display: 'flex', flexDirection: 'column',
+  overflow: 'hidden',
+}
+
+const cardBody: React.CSSProperties = {
+  padding: '20px 22px 22px',
+  display: 'flex', flexDirection: 'column', gap: '10px',
 }
 
 const cardTop: React.CSSProperties = {
-  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-  marginBottom: '4px',
+  display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+  gap: '8px',
 }
 
 const cardIcon: React.CSSProperties = {
-  width: '36px', height: '36px',
+  width: '52px', height: '52px',
   background: 'rgba(52,211,153,0.08)',
   border: '1px solid rgba(52,211,153,0.15)',
-  borderRadius: '10px',
+  borderRadius: '14px',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
+  flexShrink: 0,
 }
 
 const cardActions: React.CSSProperties = {
@@ -1303,7 +1331,7 @@ const iconBtn: React.CSSProperties = {
 
 const cardName: React.CSSProperties = {
   fontFamily: 'var(--font-fraunces), Georgia, serif',
-  fontSize: '17px', fontWeight: 400, color: 'var(--text)', margin: 0,
+  fontSize: '20px', fontWeight: 400, color: 'var(--text)', margin: 0, lineHeight: 1.3,
 }
 
 const cardAddress: React.CSSProperties = {
@@ -1678,12 +1706,10 @@ const proprietaireText: React.CSSProperties = {
 
 const cardCover: React.CSSProperties = {
   position: 'relative' as const,
-  margin: '-20px -20px 4px',
-  height: '120px',
+  height: '200px',
   overflow: 'hidden' as const,
-  borderTopLeftRadius: '15px',
-  borderTopRightRadius: '15px',
   background: 'var(--bg-2)',
+  flexShrink: 0,
 }
 
 const cardCoverImg: React.CSSProperties = {
