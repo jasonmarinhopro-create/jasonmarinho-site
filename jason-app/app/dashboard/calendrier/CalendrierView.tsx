@@ -471,6 +471,7 @@ export default function CalendrierView({
   const [syncFeedback, setSyncFeedback] = useState<{ ok?: string; err?: string } | null>(null)
   const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
+  const [activeSource, setActiveSource] = useState<string | null>(null) // null = all, 'internal', or feed_color
   const [search, setSearch] = useState('')
   const [quickAdd, setQuickAdd] = useState('')
 
@@ -482,6 +483,7 @@ export default function CalendrierView({
     if (logementParam) {
       setSearch(logementParam)
       setFilter('sejours')
+      setActiveSource(null)
     }
   }, [])
 
@@ -506,6 +508,7 @@ export default function CalendrierView({
     isStart: boolean
     isEnd: boolean
     isIcal: boolean
+    platformLabel?: string
     onClick: () => void
   }
   function computeSpans(weekCells: typeof cells): SpanItem[] {
@@ -543,6 +546,10 @@ export default function CalendrierView({
         seen.add(`ical-${e.id}`)
         const ss = e.start_date >= ws ? e.start_date : ws
         const se = e.end_date! <= we ? e.end_date! : we
+        const platformLabel = e.feed_color === '#FF5A5F' ? 'Airbnb'
+          : e.feed_color === '#003B95' ? 'Booking'
+          : e.feed_color === '#FFC72C' ? 'Vrbo'
+          : 'Synchro'
         out.push({
           id: `ical-${e.id}`,
           title: e.title,
@@ -553,6 +560,7 @@ export default function CalendrierView({
           isStart:  e.start_date >= ws,
           isEnd:    e.end_date! <= we,
           isIcal:   true,
+          platformLabel,
           onClick:  () => { setSelected(e.start_date); setYear(Number(e.start_date.slice(0,4))); setMonth(Number(e.start_date.slice(5,7))-1) },
         })
       })
@@ -609,15 +617,17 @@ export default function CalendrierView({
 
   const filteredContractEvents = useMemo(() => contractEvents.filter(c => {
     if (filter === 'menages' || filter === 'rdv-tache' || filter === 'synchro') return false
+    if (activeSource !== null && activeSource !== 'internal') return false
     if (q && !matchesSearch(c.title, c.logement_nom)) return false
     return true
-  }), [contractEvents, filter, q])
+  }), [contractEvents, filter, q, activeSource])
 
   const filteredIcalEvents = useMemo(() => icalEvents.filter(e => {
     if (filter === 'menages' || filter === 'rdv-tache') return false
+    if (activeSource !== null && activeSource !== e.feed_color) return false
     if (q && !matchesSearch(e.title, e.description)) return false
     return true
-  }), [icalEvents, filter, q])
+  }), [icalEvents, filter, q, activeSource])
 
   // ── event index by date, multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
@@ -820,6 +830,21 @@ export default function CalendrierView({
     list.sort((a, b) => a.date.localeCompare(b.date))
     return list[0] ?? null
   }, [contractEvents, icalEvents])
+
+  // ── Legend sources (derived from icalEvents feed colors)
+  const legendSources = useMemo(() => {
+    const seen = new Map<string, string>()
+    icalEvents.forEach(e => {
+      if (!seen.has(e.feed_color)) {
+        const label = e.feed_color === '#FF5A5F' ? 'Airbnb'
+          : e.feed_color === '#003B95' ? 'Booking'
+          : e.feed_color === '#FFC72C' ? 'Vrbo'
+          : 'Synchro'
+        seen.set(e.feed_color, label)
+      }
+    })
+    return Array.from(seen.entries()).map(([color, label]) => ({ color, label }))
+  }, [icalEvents])
 
   const LOGEMENT_COLORS = ['#10b981','#60a5fa','#f59e0b','#a78bfa','#fb923c','#f472b6']
   const logements = useMemo(() => {
@@ -1416,7 +1441,7 @@ export default function CalendrierView({
           ] as const).map(f => (
             <button
               key={f.id}
-              onClick={() => setFilter(f.id)}
+              onClick={() => { setFilter(f.id); setActiveSource(null) }}
               className="cal-filter-chip"
               style={{
                 ...s.filterChip,
@@ -1667,19 +1692,36 @@ export default function CalendrierView({
                       <div
                         key={span.id}
                         onClick={span.onClick}
-                        title={span.title}
+                        title={span.isIcal && span.platformLabel ? `${span.platformLabel} · ${span.title}` : span.title}
                         style={{
                           position: 'absolute', top, left, width, height: BAR_H, zIndex: 2,
                           background: span.bg,
                           borderLeft: span.isStart ? `2.5px solid ${span.color}` : 'none',
                           borderRadius: br,
-                          display: 'flex', alignItems: 'center',
+                          display: 'flex', alignItems: 'center', gap: '3px',
                           padding: '0 6px', fontSize: '11px', fontWeight: 500,
                           color: 'var(--text-2)', overflow: 'hidden', cursor: 'pointer',
-                          whiteSpace: 'nowrap',
                         }}
                       >
-                        {span.isStart && span.title}
+                        {span.isStart && (
+                          <>
+                            {span.isIcal && span.platformLabel && (
+                              <span style={{
+                                fontSize: '9px', fontWeight: 800, letterSpacing: '0.2px',
+                                padding: '0 3px', borderRadius: '2px', lineHeight: '14px',
+                                flexShrink: 0, background: `${span.color}40`, color: span.color,
+                              }}>
+                                {span.platformLabel === 'Airbnb' ? 'AB'
+                                  : span.platformLabel === 'Booking' ? 'BK'
+                                  : span.platformLabel === 'Vrbo' ? 'VB'
+                                  : '···'}
+                              </span>
+                            )}
+                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, flex: 1 }}>
+                              {span.title}
+                            </span>
+                          </>
+                        )}
                       </div>
                     )
                   })}
@@ -1687,6 +1729,50 @@ export default function CalendrierView({
               )
             })}
           </div>
+
+          {/* Legend row: color per source, clickable to filter */}
+          {(contractEvents.length > 0 || legendSources.length > 0) && (
+            <div style={s.legend} className="cal-legend">
+              {contractEvents.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setActiveSource(v => v === 'internal' ? null : 'internal')}
+                  style={{
+                    ...s.legendChip,
+                    ...(activeSource === 'internal' ? { ...s.legendChipActive, borderColor: CAT.arrivee.color, color: CAT.arrivee.color } : {}),
+                  }}
+                  title={activeSource === 'internal' ? 'Afficher toutes les sources' : 'Filtrer : séjours internes seulement'}
+                >
+                  <span style={{ ...s.legendDot, background: CAT.arrivee.color }} />
+                  Séjours
+                </button>
+              )}
+              {legendSources.map(src => (
+                <button
+                  key={src.color}
+                  type="button"
+                  onClick={() => setActiveSource(v => v === src.color ? null : src.color)}
+                  style={{
+                    ...s.legendChip,
+                    ...(activeSource === src.color ? { ...s.legendChipActive, borderColor: src.color, color: src.color } : {}),
+                  }}
+                  title={activeSource === src.color ? 'Afficher toutes les sources' : `Filtrer : ${src.label} seulement`}
+                >
+                  <span style={{ ...s.legendDot, background: src.color }} />
+                  {src.label}
+                </button>
+              ))}
+              {activeSource !== null && (
+                <button
+                  type="button"
+                  onClick={() => setActiveSource(null)}
+                  style={s.legendClear}
+                >
+                  × Tout afficher
+                </button>
+              )}
+            </div>
+          )}
         </div>
         )}
 
@@ -2759,6 +2845,43 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--border-2)',
     margin: '0 4px',
   },
+  // Legend
+  legend: {
+    display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' as const,
+    padding: '9px 12px',
+    borderTop: '1px solid var(--border-2)',
+    background: 'var(--bg-2)',
+  },
+  legendChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '3px 10px',
+    fontSize: '11px', fontWeight: 500,
+    color: 'var(--text-2)',
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    borderRadius: '100px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    transition: 'all 0.12s',
+    whiteSpace: 'nowrap' as const,
+  },
+  legendChipActive: {
+    background: 'var(--surface)',
+    borderColor: 'var(--border-2)',
+    fontWeight: 600,
+  },
+  legendDot: {
+    width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,
+  },
+  legendClear: {
+    fontSize: '11px', fontWeight: 500,
+    color: 'var(--text-muted)',
+    background: 'transparent', border: 'none',
+    cursor: 'pointer', fontFamily: 'inherit',
+    padding: '3px 6px',
+    marginLeft: '2px',
+  },
+
   // ── KPIs compacts mobile (3 cartes) ──
   mobKpi: {
     display: 'flex', flexDirection: 'column' as const,
