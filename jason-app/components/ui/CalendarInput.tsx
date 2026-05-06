@@ -125,7 +125,9 @@ export function CalendarInput({
             {Array.from({ length: daysInMo }).map((_, i) => {
               const day  = i + 1
               const d    = new Date(year, month, day); d.setHours(0,0,0,0)
-              const isSel    = selDate ? d.getTime() === selDate.getTime() : false
+              const isSel    = selDate
+                ? (selDate.getFullYear() === year && selDate.getMonth() === month && selDate.getDate() === day)
+                : false
               const isToday2 = d.getTime() === today.getTime()
               return (
                 <button key={day} type="button" onClick={() => selectDay(day)} style={{
