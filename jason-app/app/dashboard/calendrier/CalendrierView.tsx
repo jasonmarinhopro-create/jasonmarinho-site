@@ -7,7 +7,8 @@ import {
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
   ChatText,
 } from '@phosphor-icons/react/dist/ssr'
-import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist } from './actions'
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed } from './actions'
+import { ArrowsClockwise, Lightning } from '@phosphor-icons/react/dist/ssr'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import type { ContractEvent, IcalFeed, IcalEvent } from './page'
 
@@ -463,6 +464,11 @@ export default function CalendrierView({
   )
   const [selectedContract, setSelectedContract] = useState<import('./page').ContractEvent | null>(null)
   const [showSources, setShowSources] = useState(false)
+  const [showStatsDetails, setShowStatsDetails] = useState(false)
+  const [showQuickAdd, setShowQuickAdd] = useState(false)
+  const [showSyncPanel, setShowSyncPanel] = useState(false)
+  const [syncingAll, setSyncingAll] = useState(false)
+  const [syncFeedback, setSyncFeedback] = useState<{ ok?: string; err?: string } | null>(null)
   const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
   const [search, setSearch] = useState('')
@@ -1030,96 +1036,138 @@ export default function CalendrierView({
   // ── render
   return (
     <div className="cal-root" style={s.root}>
-      {/* Page heading + mini-stats */}
-      <div>
-        <h1 style={s.pageTitle}>
-          Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
-        </h1>
-        {(() => {
-          const parts: React.ReactNode[] = []
-          if (headerStats.activeToday > 0) {
-            parts.push(
-              <span key="active" style={s.miniStat}>
-                <span style={s.miniStatNum}>{headerStats.activeToday}</span>
-                <span style={s.miniStatLabel}>séjour{headerStats.activeToday > 1 ? 's' : ''} en cours</span>
-              </span>
-            )
-          }
-          if (headerStats.arrToday > 0 || headerStats.depToday > 0) {
-            parts.push(
-              <span key="today" style={s.miniStat}>
-                <span style={s.miniStatLabel}>Aujourd&apos;hui</span>
-                {headerStats.arrToday > 0 && (
-                  <>
-                    <span style={s.miniStatNum}>{headerStats.arrToday}</span>
-                    <span style={s.miniStatLabel}>arrivée{headerStats.arrToday > 1 ? 's' : ''}</span>
-                  </>
-                )}
-                {headerStats.depToday > 0 && (
-                  <>
-                    <span style={s.miniStatNum}>{headerStats.depToday}</span>
-                    <span style={s.miniStatLabel}>départ{headerStats.depToday > 1 ? 's' : ''}</span>
-                  </>
-                )}
-              </span>
-            )
-          }
-          if (headerStats.arrWeek > 0 || headerStats.depWeek > 0 || headerStats.menageWeek > 0) {
-            parts.push(
-              <span key="week" style={s.miniStat}>
-                <span style={s.miniStatLabel}>Cette semaine</span>
-                {headerStats.arrWeek > 0 && (
-                  <>
-                    <span style={s.miniStatNum}>{headerStats.arrWeek}</span>
-                    <span style={s.miniStatLabel}>arrivée{headerStats.arrWeek > 1 ? 's' : ''}</span>
-                  </>
-                )}
-                {headerStats.depWeek > 0 && (
-                  <>
-                    <span style={s.miniStatNum}>{headerStats.depWeek}</span>
-                    <span style={s.miniStatLabel}>départ{headerStats.depWeek > 1 ? 's' : ''}</span>
-                  </>
-                )}
-                {headerStats.menageWeek > 0 && (
-                  <>
-                    <span style={s.miniStatNum}>{headerStats.menageWeek}</span>
-                    <span style={s.miniStatLabel}>ménage{headerStats.menageWeek > 1 ? 's' : ''}</span>
-                  </>
-                )}
-              </span>
-            )
-          }
-          if (headerStats.monthEvents > 0) {
-            parts.push(
-              <span key="month" style={s.miniStat}>
-                <span style={s.miniStatLabel}>Ce mois</span>
-                <span style={s.miniStatNum}>{headerStats.monthEvents}</span>
-                <span style={s.miniStatLabel}>événement{headerStats.monthEvents > 1 ? 's' : ''}</span>
-              </span>
-            )
-          }
-          if (headerStats.occupiedDays > 0) {
-            parts.push(
-              <span key="occ" style={s.miniStat} title={`${headerStats.occupiedDays}/${headerStats.monthDays} jours occupés`}>
-                <span style={s.miniStatLabel}>Occupation</span>
-                <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
+      {/* Page heading + résumé compact (1 ligne) avec toggle détails */}
+      <div style={s.headerCompact} className="cal-header-compact">
+        <div style={s.headerLeft}>
+          <h1 style={s.pageTitleSmall}>
+            Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
+          </h1>
+          <div style={s.summaryRow}>
+            {headerStats.occupiedDays > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowStatsDetails(s => !s)}
+                style={s.summaryChip}
+                title="Voir le détail des stats"
+              >
+                <span style={s.summaryLabel}>Occupation</span>
+                <span style={{ ...s.summaryValue, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
                   {headerStats.occupationPct}%
                 </span>
+              </button>
+            )}
+            {nextUpcoming && nextUpcoming.daysAway >= 0 && nextUpcoming.daysAway <= 30 && (
+              <button
+                type="button"
+                onClick={() => {
+                  const d = nextUpcoming.date
+                  setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
+                  if (nextUpcoming.contract) setSelectedContract(nextUpcoming.contract)
+                }}
+                style={{ ...s.summaryChip, borderLeftColor: nextUpcoming.color, borderLeftWidth: '2px' }}
+                title="Voir cet événement"
+              >
+                <span style={s.summaryLabel}>Prochain</span>
+                <span style={s.summaryValue}>{nextUpcoming.title}</span>
+                <span style={{ ...s.summaryDays, color: nextUpcoming.color }}>
+                  {nextUpcoming.daysAway === 0 ? "aujourd'hui"
+                    : nextUpcoming.daysAway === 1 ? 'demain'
+                    : `dans ${nextUpcoming.daysAway}j`}
+                </span>
+              </button>
+            )}
+            {contractEvents.length > 0 && urgentAlerts.length === 0 && (
+              <span style={s.summaryOk}>
+                <span style={s.alertOkDot} />
+                Tout est en ordre
               </span>
-            )
-          }
-          if (parts.length === 0) {
-            return <p style={s.pageSub}>Séjours, ménages, rendez-vous, tout ton planning en un coup d&apos;œil.</p>
-          }
-          // Intercale séparateurs entre sections
-          const withSeparators: React.ReactNode[] = []
-          parts.forEach((p, i) => {
-            if (i > 0) withSeparators.push(<span key={`sep-${i}`} style={s.miniStatSep}>·</span>)
-            withSeparators.push(p)
-          })
-          return <div style={s.miniStats} className="cal-mini-stats">{withSeparators}</div>
-        })()}
+            )}
+            <button
+              type="button"
+              onClick={() => setShowStatsDetails(s => !s)}
+              style={s.summaryToggle}
+              aria-expanded={showStatsDetails}
+              title={showStatsDetails ? 'Masquer les stats' : 'Voir toutes les stats'}
+            >
+              <CaretRight size={11} weight="bold" style={{ transform: showStatsDetails ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }} />
+              {showStatsDetails ? 'Masquer' : 'Détails'}
+            </button>
+          </div>
+        </div>
       </div>
+
+      {/* Stats détaillées repliables */}
+      {showStatsDetails && (() => {
+        const parts: React.ReactNode[] = []
+        if (headerStats.activeToday > 0) {
+          parts.push(
+            <span key="active" style={s.miniStat}>
+              <span style={s.miniStatNum}>{headerStats.activeToday}</span>
+              <span style={s.miniStatLabel}>séjour{headerStats.activeToday > 1 ? 's' : ''} en cours</span>
+            </span>
+          )
+        }
+        if (headerStats.arrToday > 0 || headerStats.depToday > 0) {
+          parts.push(
+            <span key="today" style={s.miniStat}>
+              <span style={s.miniStatLabel}>Aujourd&apos;hui</span>
+              {headerStats.arrToday > 0 && (
+                <>
+                  <span style={s.miniStatNum}>{headerStats.arrToday}</span>
+                  <span style={s.miniStatLabel}>arrivée{headerStats.arrToday > 1 ? 's' : ''}</span>
+                </>
+              )}
+              {headerStats.depToday > 0 && (
+                <>
+                  <span style={s.miniStatNum}>{headerStats.depToday}</span>
+                  <span style={s.miniStatLabel}>départ{headerStats.depToday > 1 ? 's' : ''}</span>
+                </>
+              )}
+            </span>
+          )
+        }
+        if (headerStats.arrWeek > 0 || headerStats.depWeek > 0 || headerStats.menageWeek > 0) {
+          parts.push(
+            <span key="week" style={s.miniStat}>
+              <span style={s.miniStatLabel}>Cette semaine</span>
+              {headerStats.arrWeek > 0 && (
+                <>
+                  <span style={s.miniStatNum}>{headerStats.arrWeek}</span>
+                  <span style={s.miniStatLabel}>arrivée{headerStats.arrWeek > 1 ? 's' : ''}</span>
+                </>
+              )}
+              {headerStats.depWeek > 0 && (
+                <>
+                  <span style={s.miniStatNum}>{headerStats.depWeek}</span>
+                  <span style={s.miniStatLabel}>départ{headerStats.depWeek > 1 ? 's' : ''}</span>
+                </>
+              )}
+              {headerStats.menageWeek > 0 && (
+                <>
+                  <span style={s.miniStatNum}>{headerStats.menageWeek}</span>
+                  <span style={s.miniStatLabel}>ménage{headerStats.menageWeek > 1 ? 's' : ''}</span>
+                </>
+              )}
+            </span>
+          )
+        }
+        if (headerStats.monthEvents > 0) {
+          parts.push(
+            <span key="month" style={s.miniStat}>
+              <span style={s.miniStatLabel}>Ce mois</span>
+              <span style={s.miniStatNum}>{headerStats.monthEvents}</span>
+              <span style={s.miniStatLabel}>événement{headerStats.monthEvents > 1 ? 's' : ''}</span>
+            </span>
+          )
+        }
+        if (parts.length === 0) return null
+        const withSeparators: React.ReactNode[] = []
+        parts.forEach((p, i) => {
+          if (i > 0) withSeparators.push(<span key={`sep-${i}`} style={s.miniStatSep}>·</span>)
+          withSeparators.push(p)
+        })
+        return <div style={s.miniStats} className="cal-mini-stats">{withSeparators}</div>
+      })()}
 
       {/* Vue compacte mobile : 2 KPIs essentiels seulement */}
       <div className="cal-mobile-kpis">
@@ -1147,6 +1195,7 @@ export default function CalendrierView({
       </div>
 
       <style>{`
+        @keyframes cal-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .cal-cell { transition: background 0.12s; cursor: pointer; }
         .cal-cell:hover { background: var(--surface-2) !important; }
         .cal-cell-sel { background: var(--surface) !important; }
@@ -1247,6 +1296,51 @@ export default function CalendrierView({
               <span className="cal-view-text">Liste</span>
             </button>
           </div>
+          {/* Chip sync iCal — visible si feeds configurés */}
+          {icalFeeds.length > 0 && (
+            <div style={{ position: 'relative' }}>
+              {(() => {
+                const lastSync = icalFeeds
+                  .map(f => f.last_synced)
+                  .filter(Boolean)
+                  .sort()
+                  .pop()
+                const lastSyncDate = lastSync ? new Date(lastSync) : null
+                const ageMs = lastSyncDate ? Date.now() - lastSyncDate.getTime() : null
+                const stale = ageMs != null && ageMs > 1000 * 60 * 60 * 6 // > 6h
+                const noEvents = icalEvents.length === 0
+                const status = noEvents ? 'warn' : stale ? 'stale' : 'ok'
+                const dotColor = status === 'warn' ? '#ef4444' : status === 'stale' ? '#fbbf24' : '#10b981'
+                return (
+                  <button
+                    type="button"
+                    onClick={() => setShowSyncPanel(p => !p)}
+                    style={s.syncChip}
+                    title={
+                      noEvents ? 'iCal configuré mais aucune réservation importée'
+                      : stale ? `Dernière sync : ${lastSyncDate?.toLocaleString('fr-FR')}`
+                      : `${icalEvents.length} résa(s) synchronisée(s)`
+                    }
+                  >
+                    <span style={{ ...s.syncDot, background: dotColor }} />
+                    <span className="cal-sync-text">
+                      {noEvents ? 'Aucune résa' : `${icalEvents.length} résa${icalEvents.length > 1 ? 's' : ''}`}
+                    </span>
+                  </button>
+                )
+              })()}
+            </div>
+          )}
+          {/* Toggle saisie rapide */}
+          <button
+            type="button"
+            onClick={() => setShowQuickAdd(v => !v)}
+            style={{ ...s.topbarIconBtn, ...(showQuickAdd ? s.topbarIconBtnActive : {}) }}
+            title="Saisie rapide (Ménage demain 10h…)"
+            aria-label="Saisie rapide"
+          >
+            <Lightning size={14} weight="fill" />
+          </button>
           <button className="btn-ghost" onClick={goToday} style={s.todayBtn}>Aujourd'hui</button>
           <button className="btn-primary" onClick={() => openAdd()} style={s.addBtn}>
             <Plus size={15} weight="bold" />
@@ -1254,6 +1348,61 @@ export default function CalendrierView({
           </button>
         </div>
       </div>
+
+      {/* Panneau sync iCal (popover sous le chip) */}
+      {showSyncPanel && icalFeeds.length > 0 && (
+        <div style={s.syncPanel}>
+          <div style={s.syncPanelHeader}>
+            <span style={s.syncPanelTitle}>Synchronisations iCal</span>
+            <button
+              type="button"
+              onClick={async () => {
+                setSyncingAll(true)
+                setSyncFeedback(null)
+                let total = 0
+                const errs: string[] = []
+                for (const feed of icalFeeds) {
+                  const res = await syncIcalFeed(feed.id)
+                  if (res.error) errs.push(`${feed.name}: ${res.error}`)
+                  else if (res.synced) total += res.synced
+                }
+                setSyncingAll(false)
+                if (errs.length > 0) setSyncFeedback({ err: errs.join(' · ') })
+                else setSyncFeedback({ ok: `${total} événement${total > 1 ? 's' : ''} synchronisé${total > 1 ? 's' : ''}` })
+                setTimeout(() => setSyncFeedback(null), 4500)
+              }}
+              disabled={syncingAll}
+              style={{ ...s.syncAllBtn, opacity: syncingAll ? 0.6 : 1 }}
+            >
+              <ArrowsClockwise size={11} weight="bold" style={syncingAll ? { animation: 'cal-spin 0.8s linear infinite' } : undefined} />
+              {syncingAll ? 'Sync…' : 'Tout synchroniser'}
+            </button>
+          </div>
+          {syncFeedback?.ok && <div style={s.syncOk}>{syncFeedback.ok}</div>}
+          {syncFeedback?.err && <div style={s.syncErr}>{syncFeedback.err}</div>}
+          <div style={s.syncFeedsList}>
+            {icalFeeds.map(f => {
+              const count = icalEvents.filter(e => e.feed_id === f.id).length
+              const lastSync = f.last_synced
+                ? new Date(f.last_synced).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+                : 'jamais'
+              return (
+                <div key={f.id} style={s.syncFeedItem}>
+                  <span style={{ ...s.sourcesDot, background: f.color }} />
+                  <span style={s.sourceName}>{f.name}</span>
+                  <span style={s.sourceCount}>{count}</span>
+                  <span style={s.sourceSync}>{lastSync}</span>
+                </div>
+              )
+            })}
+          </div>
+          {icalEvents.length === 0 && (
+            <p style={s.syncEmpty}>
+              Aucune réservation importée. Cliquez sur « Tout synchroniser » pour récupérer les dates depuis Airbnb / Booking / Vrbo.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* ── Filters + search */}
       <div style={s.filterBar} className="cal-filter-bar">
@@ -1295,23 +1444,34 @@ export default function CalendrierView({
         </div>
       </div>
 
-      {/* ── Quick add */}
-      <div style={s.quickAddWrap} className="cal-quick-wrap">
-        <span style={s.quickAddIcon}>⚡</span>
-        <input
-          type="text"
-          placeholder="Saisie rapide, ex : Ménage Villa demain 10h, RDV plombier vendredi 14h, +3j tâche révision tarifs…"
-          value={quickAdd}
-          onChange={(e) => setQuickAdd(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleQuickAdd() }}
-          style={s.quickAddInput}
-        />
-        {quickAdd && (
-          <button onClick={handleQuickAdd} style={s.quickAddBtn} disabled={isPending}>
-            Créer
+      {/* ── Quick add (caché derrière l'icône éclair du topbar) */}
+      {showQuickAdd && (
+        <div style={s.quickAddWrap} className="cal-quick-wrap">
+          <span style={s.quickAddIcon}>⚡</span>
+          <input
+            type="text"
+            placeholder="Saisie rapide, ex : Ménage Villa demain 10h, RDV plombier vendredi 14h…"
+            value={quickAdd}
+            onChange={(e) => setQuickAdd(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleQuickAdd() }}
+            style={s.quickAddInput}
+            autoFocus
+          />
+          {quickAdd && (
+            <button onClick={handleQuickAdd} style={s.quickAddBtn} disabled={isPending}>
+              Créer
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => { setShowQuickAdd(false); setQuickAdd('') }}
+            style={s.quickAddClose}
+            aria-label="Fermer"
+          >
+            <X size={12} weight="bold" />
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* ── Actions à traiter, liste compacte par priorité, avec actions inline */}
       {contractEvents.length > 0 && urgentAlerts.length > 0 && (
@@ -1377,79 +1537,8 @@ export default function CalendrierView({
           </div>
         </div>
       )}
-      {contractEvents.length > 0 && urgentAlerts.length === 0 && (
-        <div style={s.alertOk} className="cal-alert-ok">
-          <span style={s.alertOkDot} />
-          Tout est en ordre, aucune action en attente
-        </div>
-      )}
-
-      {/* ── Prochain événement, bandeau highlight */}
-      {nextUpcoming && nextUpcoming.daysAway >= 0 && nextUpcoming.daysAway <= 30 && (
-        <button
-          onClick={() => {
-            const d = nextUpcoming.date
-            setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
-            if (nextUpcoming.contract) setSelectedContract(nextUpcoming.contract)
-          }}
-          style={{ ...s.nextWrap, borderLeftColor: nextUpcoming.color }}
-        >
-          <span style={s.nextLabel}>Prochain événement</span>
-          <span style={s.nextMain}>
-            <span style={s.nextTitle}>{nextUpcoming.title}</span>
-            <span style={s.nextSub}>· {nextUpcoming.sub}</span>
-          </span>
-          <span style={{ ...s.nextDays, color: nextUpcoming.color }}>
-            {nextUpcoming.daysAway === 0 ? "aujourd'hui"
-              : nextUpcoming.daysAway === 1 ? 'demain'
-              : `dans ${nextUpcoming.daysAway} jours`}
-          </span>
-        </button>
-      )}
-
-      {/* ── Sources synchronisées (iCal), replié par défaut */}
-      {icalFeeds.length > 0 && (
-        <div style={s.sourcesWrap}>
-          <button
-            onClick={() => setShowSources(s => !s)}
-            style={s.sourcesToggle}
-            aria-expanded={showSources}
-          >
-            <span style={s.sourcesToggleLeft}>
-              <span style={s.sourcesDots}>
-                {icalFeeds.slice(0, 4).map(f => (
-                  <span key={f.id} style={{ ...s.sourcesDot, background: f.color }} />
-                ))}
-              </span>
-              <span style={s.sourcesLabel}>
-                {icalFeeds.length} source{icalFeeds.length > 1 ? 's' : ''} synchronisée{icalFeeds.length > 1 ? 's' : ''}
-                <span style={s.sourcesCount}> · {icalEvents.length} résa{icalEvents.length > 1 ? 's' : ''}</span>
-              </span>
-            </span>
-            <span style={{ ...s.sourcesChevron, transform: showSources ? 'rotate(90deg)' : 'rotate(0deg)' }}>
-              <CaretRight size={12} weight="bold" />
-            </span>
-          </button>
-          {showSources && (
-            <div style={s.sourcesList}>
-              {icalFeeds.map(f => {
-                const count = icalEvents.filter(e => e.feed_id === f.id).length
-                const lastSync = f.last_synced
-                  ? new Date(f.last_synced).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
-                  : 'jamais'
-                return (
-                  <div key={f.id} style={s.sourceItem}>
-                    <span style={{ ...s.sourcesDot, background: f.color }} />
-                    <span style={s.sourceName}>{f.name}</span>
-                    <span style={s.sourceCount}>{count} résa{count > 1 ? 's' : ''}</span>
-                    <span style={s.sourceSync}>· sync {lastSync}</span>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-        </div>
-      )}
+      {/* "Tout est en ordre", "Prochain événement" et "Sources iCal"
+          ont été fusionnés dans le résumé compact en haut + chip sync dans le topbar. */}
 
       {/* ── Main layout */}
       <div className="cal-layout" style={s.layout}>
@@ -1893,7 +1982,206 @@ export default function CalendrierView({
 
 const s: Record<string, React.CSSProperties> = {
   pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px' },
+  pageTitleSmall: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'clamp(20px,2vw,26px)',
+    fontWeight: 400,
+    color: 'var(--text)',
+    margin: 0,
+    lineHeight: 1.2,
+  },
   pageSub:   { fontSize: '14px', color: 'var(--text-2)', margin: 0 },
+  // Header compact (titre + résumé 1 ligne)
+  headerCompact: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '16px',
+    flexWrap: 'wrap' as const,
+  },
+  headerLeft: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+    flexWrap: 'wrap' as const,
+    flex: 1,
+    minWidth: 0,
+  },
+  summaryRow: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexWrap: 'wrap' as const,
+  },
+  summaryChip: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '5px 10px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '8px',
+    fontSize: '12px',
+    color: 'var(--text-2)',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    whiteSpace: 'nowrap' as const,
+    transition: 'border-color 0.15s',
+  },
+  summaryLabel: { fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.04em', fontWeight: 600 },
+  summaryValue: { fontSize: '12.5px', color: 'var(--text)', fontWeight: 500 },
+  summaryDays:  { fontSize: '11.5px', fontWeight: 600 },
+  summaryOk: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '5px 10px',
+    background: 'rgba(16,185,129,0.08)',
+    border: '1px solid rgba(16,185,129,0.2)',
+    borderRadius: '8px',
+    fontSize: '12px',
+    color: '#10b981',
+    fontWeight: 500,
+    whiteSpace: 'nowrap' as const,
+  },
+  summaryToggle: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '5px 9px',
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    fontSize: '11.5px',
+    color: 'var(--text-2)',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  // Sync chip + panel
+  syncChip: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '6px 10px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    fontSize: '12px',
+    color: 'var(--text-2)',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    whiteSpace: 'nowrap' as const,
+  },
+  syncDot: {
+    width: '7px',
+    height: '7px',
+    borderRadius: '50%',
+    flexShrink: 0,
+  },
+  syncPanel: {
+    background: 'var(--surface)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '12px',
+    padding: '14px 16px',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '10px',
+  },
+  syncPanelHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '12px',
+  },
+  syncPanelTitle: {
+    fontSize: '13px',
+    fontWeight: 600,
+    color: 'var(--text)',
+    fontFamily: 'var(--font-fraunces), serif',
+  },
+  syncAllBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '5px',
+    padding: '5px 11px',
+    fontSize: '11.5px',
+    fontWeight: 600,
+    color: 'var(--bg)',
+    background: 'var(--accent-text)',
+    border: 'none',
+    borderRadius: '7px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  syncFeedsList: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '5px',
+  },
+  syncFeedItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '6px 10px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '7px',
+    fontSize: '12px',
+    color: 'var(--text-2)',
+  },
+  syncOk: {
+    fontSize: '12px',
+    color: '#10b981',
+    background: 'rgba(16,185,129,0.08)',
+    padding: '6px 10px',
+    borderRadius: '7px',
+  },
+  syncErr: {
+    fontSize: '12px',
+    color: '#ef4444',
+    background: 'rgba(239,68,68,0.08)',
+    padding: '6px 10px',
+    borderRadius: '7px',
+  },
+  syncEmpty: {
+    fontSize: '11.5px',
+    color: 'var(--text-muted)',
+    margin: 0,
+    fontStyle: 'italic' as const,
+    lineHeight: 1.5,
+  },
+  // Topbar icon button (lightning toggle)
+  topbarIconBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '32px',
+    height: '32px',
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    color: 'var(--text-2)',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  topbarIconBtnActive: {
+    background: 'var(--accent-bg)',
+    borderColor: 'var(--accent-border)',
+    color: 'var(--accent-text)',
+  },
+  quickAddClose: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '26px',
+    height: '26px',
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    borderRadius: '6px',
+    color: 'var(--text-muted)',
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
   root: {
     padding: 'clamp(20px,3vw,40px) clamp(20px,3vw,40px) 32px',
     display: 'flex',
