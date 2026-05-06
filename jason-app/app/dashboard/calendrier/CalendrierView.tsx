@@ -8,7 +8,7 @@ import {
   ChatText,
 } from '@phosphor-icons/react/dist/ssr'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed } from './actions'
-import { ArrowsClockwise, Lightning } from '@phosphor-icons/react/dist/ssr'
+import { ArrowsClockwise, Lightning, SidebarSimple } from '@phosphor-icons/react/dist/ssr'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import type { ContractEvent, IcalFeed, IcalEvent } from './page'
 
@@ -474,6 +474,7 @@ export default function CalendrierView({
   const [activeSource, setActiveSource] = useState<string | null>(null) // null = all, 'internal', or feed_color
   const [search, setSearch] = useState('')
   const [quickAdd, setQuickAdd] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(true)
 
   // Si la page est ouverte avec ?logement=X (depuis fiche détail), pré-remplir la recherche
   useEffect(() => {
@@ -486,6 +487,18 @@ export default function CalendrierView({
       setActiveSource(null)
     }
   }, [])
+
+  // Mobile: bascule auto en vue liste sur petit écran (à l'initialisation)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      setViewMode('list')
+    }
+  }, [])
+
+  // Drawer auto-ouverture sur actions explicites (création d'événement, sélection d'un contrat)
+  useEffect(() => {
+    if (showForm || selectedContract) setDrawerOpen(true)
+  }, [showForm, selectedContract])
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -1240,7 +1253,22 @@ export default function CalendrierView({
         }
         @media (max-width: 900px) {
           .cal-layout { flex-direction: column !important; }
-          .cal-side   { width: 100% !important; border-left: none !important; border-top: 1px solid var(--border) !important; max-height: none !important; }
+          /* Sur mobile/tablette le drawer redevient un bloc en flux normal,
+             toujours visible (le toggle drawer est caché de toute façon) */
+          .cal-side   {
+            position: relative !important;
+            width: 100% !important;
+            transform: none !important;
+            box-shadow: none !important;
+            pointer-events: auto !important;
+            border-left: none !important;
+            border-top: 1px solid var(--border) !important;
+            max-height: none !important;
+            z-index: auto !important;
+            display: flex !important;
+          }
+          /* Bouton drawer caché : pas pertinent quand le panneau est en flux */
+          .cal-drawer-toggle, .cal-drawer-close { display: none !important; }
         }
         /* Vue KPIs mobile : cachée sur desktop */
         .cal-mobile-kpis { display: none; }
@@ -1365,6 +1393,17 @@ export default function CalendrierView({
             aria-label="Saisie rapide"
           >
             <Lightning size={14} weight="fill" />
+          </button>
+          {/* Toggle drawer (panneau latéral) */}
+          <button
+            type="button"
+            onClick={() => setDrawerOpen(v => !v)}
+            style={{ ...s.topbarIconBtn, ...(drawerOpen ? s.topbarIconBtnActive : {}) }}
+            title={drawerOpen ? 'Masquer le panneau de détails' : 'Afficher le panneau de détails'}
+            aria-label="Panneau de détails"
+            className="cal-drawer-toggle"
+          >
+            <SidebarSimple size={14} weight={drawerOpen ? 'fill' : 'regular'} />
           </button>
           <button className="btn-ghost" onClick={goToday} style={s.todayBtn}>Aujourd'hui</button>
           <button className="btn-primary" onClick={() => openAdd()} style={s.addBtn}>
@@ -1791,17 +1830,36 @@ export default function CalendrierView({
           />
         )}
 
-        {/* ── Side panel */}
-        <div className="cal-side" style={s.side}>
+        {/* ── Side drawer (panneau latéral) — overlay sur la grille pour gagner de la place */}
+        <div
+          className={`cal-side${drawerOpen ? ' cal-side-open' : ' cal-side-closed'}`}
+          style={{
+            ...s.side,
+            transform: drawerOpen ? 'translateX(0)' : 'translateX(100%)',
+            boxShadow: drawerOpen ? '-12px 0 24px rgba(0,0,0,0.10)' : 'none',
+            pointerEvents: drawerOpen ? 'auto' : 'none',
+          }}
+        >
           <div className="cal-side-head" style={s.sideHead}>
             <div style={s.sideHeadLeft}>
               <div style={s.sideDow}>{capitalize(formatDayLong(selected).split(' ')[0])}</div>
               <div style={s.sideDate}>{formatDayLong(selected).split(' ').slice(1).join(' ')}</div>
             </div>
-            {!showForm && !selectedContract
-              ? <button onClick={() => openAdd()} style={s.addDayBtn} className="icon-btn" title="Ajouter"><Plus size={15} weight="bold" /></button>
-              : <button onClick={() => { cancelForm(); setSelectedContract(null) }} style={s.addDayBtn} className="icon-btn" title="Fermer"><X size={15} /></button>
-            }
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
+              {!showForm && !selectedContract
+                ? <button onClick={() => openAdd()} style={s.addDayBtn} className="icon-btn" title="Ajouter"><Plus size={15} weight="bold" /></button>
+                : <button onClick={() => { cancelForm(); setSelectedContract(null) }} style={s.addDayBtn} className="icon-btn" title="Annuler"><X size={15} /></button>
+              }
+              <button
+                onClick={() => setDrawerOpen(false)}
+                style={s.addDayBtn}
+                className="icon-btn cal-drawer-close"
+                title="Fermer le panneau"
+                aria-label="Fermer le panneau"
+              >
+                <CaretRight size={15} weight="bold" />
+              </button>
+            </div>
           </div>
 
           {/* ── Form */}
@@ -2324,11 +2382,12 @@ const s: Record<string, React.CSSProperties> = {
   },
   layout: {
     display: 'flex',
+    position: 'relative' as const,
     background: 'var(--surface)',
     border: '1px solid var(--border-2)',
     borderRadius: '16px',
     overflow: 'hidden',
-    minHeight: '560px',
+    minHeight: '640px',
   },
   gridWrap: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' },
   dayHeaders: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid var(--border-2)', background: 'var(--bg-2)' },
@@ -2342,7 +2401,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   grid: { flex: 1, display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' },
   cell: {
-    minHeight: '92px',
+    minHeight: '108px',
     padding: '8px',
     borderRight: '1px solid var(--border-2)',
     borderBottom: '1px solid var(--border-2)',
@@ -2369,12 +2428,17 @@ const s: Record<string, React.CSSProperties> = {
   },
   extraChip: { fontSize: '10px', fontWeight: 600, color: 'var(--text-muted)', padding: '1px 4px' },
 
-  // side
+  // side: drawer slidant à droite (position absolute pour libérer la grille)
   side: {
-    width: '290px', flexShrink: 0,
+    position: 'absolute' as const,
+    right: 0, top: 0, bottom: 0,
+    width: '340px',
+    background: 'var(--surface)',
     borderLeft: '1px solid var(--border)',
     display: 'flex', flexDirection: 'column',
     overflowY: 'auto',
+    zIndex: 5,
+    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
   },
   sideHead: {
     padding: '18px 18px 14px',
