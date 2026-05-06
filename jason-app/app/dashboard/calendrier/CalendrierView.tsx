@@ -969,8 +969,8 @@ export default function CalendrierView({
     setDrawerOpen(true)
   }
   // Document-level mouseup :
-  // - click simple sur cellule → sélectionne le jour seulement
   // - click sur une bar → rien (le onClick de la bar gère l'affichage)
+  // - click simple sur cellule vide → sélectionne le jour ET ouvre le form
   // - drag multi-jours → ouvre le formulaire pré-rempli avec la plage
   useEffect(() => {
     function onUp(e: MouseEvent) {
@@ -981,11 +981,19 @@ export default function CalendrierView({
       const target = e.target as HTMLElement | null
       // Annule si mouseup hors de la grille (clic sur bouton topbar, etc.)
       if (!target?.closest('.cal-cell')) return
+      // Si le clic est sur une bar d'événement, laisser son onClick gérer
+      if (target.closest('[data-bar]')) return
       if (start === cur) {
-        // Clic simple : sélectionner le jour.
-        // Si le clic est sur une bar, ne pas interférer (son onClick gère l'événement).
-        if (target.closest('[data-bar]')) return
+        // Clic simple : sélectionne ET ouvre le formulaire (sauf si on édite déjà)
         setSelected(start)
+        if (!editingRef.current) {
+          setSelectedContract(null)
+          setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
+          setFCat('menage'); setFDesc('')
+          setFStartDate(start); setFEndDate(start)
+          setShowForm(true)
+          setDrawerOpen(true)
+        }
         return
       }
       // Drag multi-jours → ouvrir formulaire avec la plage sélectionnée
