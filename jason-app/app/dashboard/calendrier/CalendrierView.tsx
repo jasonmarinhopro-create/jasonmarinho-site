@@ -457,6 +457,7 @@ export default function CalendrierView({
   // ── drag-to-create
   const dragState  = useRef<{ start: string; cur: string } | null>(null)
   const [dragRange, setDragRange] = useState<{ start: string; end: string } | null>(null)
+  const [selRange,  setSelRange]  = useState<{ start: string; end: string } | null>(null)
   // Ref pour lire l'état d'édition courant depuis le mouseup (closure stable)
   const editingRef = useRef<CalEvent | null>(null)
 
@@ -957,6 +958,7 @@ export default function CalendrierView({
     // pour garantir que le formulaire s'affiche bien dans le drawer.
     dragState.current = null
     setDragRange(null)
+    setSelRange(null)
     setSelectedContract(null)
     setEditing(null)
     setFTitle(''); setFStart(''); setFEnd('')
@@ -986,6 +988,7 @@ export default function CalendrierView({
       if (start === cur) {
         // Clic simple : sélectionne ET ouvre le formulaire (sauf si on édite déjà)
         setSelected(start)
+        setSelRange(null)
         if (!editingRef.current) {
           setSelectedContract(null)
           setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
@@ -996,9 +999,10 @@ export default function CalendrierView({
         }
         return
       }
-      // Drag multi-jours → ouvrir formulaire avec la plage sélectionnée
+      // Drag multi-jours → persister la plage visuellement ET ouvrir le form
       const [s, e2] = start <= cur ? [start, cur] : [cur, start]
       setSelected(s)
+      setSelRange({ start: s, end: e2 })
       setYear(Number(s.slice(0, 4)))
       setMonth(Number(s.slice(5, 7)) - 1)
       setSelectedContract(null)
@@ -1041,7 +1045,7 @@ export default function CalendrierView({
     setFEndDate(ev.end_date ?? ev.date)
     setShowForm(true)
   }
-  function cancelForm() { setShowForm(false); setEditing(null) }
+  function cancelForm() { setShowForm(false); setEditing(null); setSelRange(null) }
 
   function handleQuickAdd() {
     const parsed = parseQuickAdd(quickAdd, selected)
@@ -1096,7 +1100,7 @@ export default function CalendrierView({
           setEvents(prev => [...prev, res.event as CalEvent])
         }
       }
-      setShowForm(false); setEditing(null)
+      setShowForm(false); setEditing(null); setSelRange(null)
     })
   }
 
@@ -1280,6 +1284,7 @@ export default function CalendrierView({
         .icon-btn { transition: all 0.12s; cursor: pointer; }
         .icon-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; }
         .today-num { background: var(--accent-text); color: var(--bg); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
+        .sel-num { background: rgba(255,213,107,0.18); color: var(--accent-text); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; outline: 1.5px solid rgba(255,213,107,0.5); }
         .time-sel:hover { border-color: var(--border-2) !important; }
         .time-sel:focus { border-color: var(--accent-text) !important; outline: none; box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 0,76,63), 0.12); }
         .multi-toggle { transition: all 0.15s; cursor: pointer; }
@@ -1692,6 +1697,7 @@ export default function CalendrierView({
                     const isWeekend    = (() => { const d = new Date(date).getDay(); return d === 0 || d === 6 })()
                     const isPast       = inMonth && date < TODAY
                     const isInDrag     = !!(dragRange && date >= dragRange.start && date <= dragRange.end)
+                    const isInSelRange = !!(selRange  && date >= selRange.start  && date <= selRange.end)
                     const spacer       = nBars > 0 ? BAR_TOP + nBars * (BAR_H + BAR_GAP) - BAR_TOP + 4 : 0
                     const alertsForDay = inMonth ? (smartAlerts[date] ?? []) : []
 
@@ -1699,7 +1705,7 @@ export default function CalendrierView({
                       <div
                         key={date}
                         className={`cal-cell${isSel ? ' cal-cell-sel' : ''}`}
-                        onMouseDown={e => { e.preventDefault(); dragState.current = { start: date, cur: date }; setDragRange(null) }}
+                        onMouseDown={e => { e.preventDefault(); dragState.current = { start: date, cur: date }; setDragRange(null); setSelRange(null) }}
                         onMouseEnter={() => {
                           if (!dragState.current) return
                           dragState.current.cur = date
@@ -1711,15 +1717,17 @@ export default function CalendrierView({
                           ...s.cell,
                           opacity: !inMonth ? 0.4 : isPast ? 0.6 : 1,
                           userSelect: 'none', position: 'relative',
-                          background: isInDrag ? 'rgba(96,165,250,0.12)' : isSel ? 'var(--surface-2)' : isWeekend && inMonth ? 'var(--bg-2)' : 'transparent',
-                          outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : isSel ? '2px solid var(--accent-border)' : isToday && inMonth ? '2px solid var(--accent-text)' : '1.5px solid transparent',
+                          background: isInDrag ? 'rgba(96,165,250,0.12)' : isInSelRange ? 'rgba(255,213,107,0.10)' : isSel && !selRange ? 'var(--surface-2)' : isWeekend && inMonth ? 'var(--bg-2)' : 'transparent',
+                          outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : (isSel && !selRange) ? '2px solid var(--accent-border)' : isToday && inMonth ? '2px solid var(--accent-text)' : '1.5px solid transparent',
                         }}
                       >
                         {/* Day number, always at top */}
                         <div style={{ position: 'absolute', top: 8, left: 8, right: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           {isToday && inMonth
                             ? <span className="today-num">{day}</span>
-                            : <span style={{ ...s.dayNum, color: isWeekend && inMonth ? 'var(--text-muted)' : 'var(--text-2)' }}>{day}</span>
+                            : (isSel && inMonth)
+                              ? <span className="sel-num">{day}</span>
+                              : <span style={{ ...s.dayNum, color: isWeekend && inMonth ? 'var(--text-muted)' : 'var(--text-2)' }}>{day}</span>
                           }
                           {(uniqDots.length > 0 || alertsForDay.length > 0) && (
                             <span style={s.dotRow}>
