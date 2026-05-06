@@ -2433,7 +2433,7 @@ const s: Record<string, React.CSSProperties> = {
     position: 'absolute' as const,
     right: 0, top: 0, bottom: 0,
     width: '340px',
-    background: 'var(--surface)',
+    background: 'var(--bg)',
     borderLeft: '1px solid var(--border)',
     display: 'flex', flexDirection: 'column',
     overflowY: 'auto',
@@ -2445,7 +2445,7 @@ const s: Record<string, React.CSSProperties> = {
     borderBottom: '1px solid var(--border)',
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px',
     position: 'sticky', top: 0,
-    background: 'var(--surface)', zIndex: 1,
+    background: 'var(--bg)', zIndex: 1,
   },
   sideHeadLeft: { display: 'flex', flexDirection: 'column', gap: '1px' },
   sideDow: {
@@ -2500,7 +2500,7 @@ const s: Record<string, React.CSSProperties> = {
   evtCard: {
     padding: '12px 14px', borderRadius: '10px',
     border: '1px solid var(--border)',
-    background: 'var(--surface)',
+    background: 'var(--bg-2)',
     display: 'flex', flexDirection: 'column', gap: '5px',
   },
   evtCardTop: {
