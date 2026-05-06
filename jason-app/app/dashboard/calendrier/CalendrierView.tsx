@@ -953,12 +953,20 @@ export default function CalendrierView({
 
   // ── form helpers
   function openAdd(endDate?: string) {
+    // Reset défensif : on annule tout drag pendant et toute sélection contrat
+    // pour garantir que le formulaire s'affiche bien dans le drawer.
+    dragState.current = null
+    setDragRange(null)
+    setSelectedContract(null)
     setEditing(null)
     setFTitle(''); setFStart(''); setFEnd('')
     setFCat('menage'); setFDesc('')
     setFStartDate(selected)
     setFEndDate(endDate ?? selected)
     setShowForm(true)
+    // Forcer l'ouverture du drawer même si showForm était déjà true
+    // (le useEffect ne se déclencherait pas dans ce cas).
+    setDrawerOpen(true)
   }
   // Document-level mouseup, click selects day, drag opens form with date range
   useEffect(() => {
