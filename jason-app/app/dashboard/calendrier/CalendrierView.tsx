@@ -457,6 +457,8 @@ export default function CalendrierView({
   // ── drag-to-create
   const dragState  = useRef<{ start: string; cur: string } | null>(null)
   const [dragRange, setDragRange] = useState<{ start: string; end: string } | null>(null)
+  // Ref pour lire l'état d'édition courant depuis le mouseup (closure stable)
+  const editingRef = useRef<CalEvent | null>(null)
 
   // ── checklist state (contractId → { key: boolean })
   const [contractChecklists, setContractChecklists] = useState<Record<string, Record<string, boolean>>>(() =>
@@ -499,6 +501,9 @@ export default function CalendrierView({
   useEffect(() => {
     if (showForm || selectedContract) setDrawerOpen(true)
   }, [showForm, selectedContract])
+
+  // Garde editingRef à jour pour le mouseup handler (closure stable)
+  useEffect(() => { editingRef.current = editing }, [editing])
 
   // ── calendar cells
   const cells = useMemo(() => buildCalendarDays(year, month), [year, month])
@@ -957,19 +962,34 @@ export default function CalendrierView({
   }
   // Document-level mouseup, click selects day, drag opens form with date range
   useEffect(() => {
-    function onUp() {
+    function onUp(e: MouseEvent) {
       if (!dragState.current) return
       const { start, cur } = dragState.current
       dragState.current = null
       setDragRange(null)
-      if (start === cur) { setSelected(start); return }
-      const [s, e] = start <= cur ? [start, cur] : [cur, start]
+      // Si le mouseup est en dehors de la grille (ex: sur le bouton "Événement"),
+      // on annule le geste pour ne pas entrer en collision avec le clic de ce bouton.
+      const target = e.target as HTMLElement | null
+      if (!target?.closest('.cal-cell')) return
+      if (start === cur) {
+        // Clic simple sur un jour : on sélectionne ET on ouvre le formulaire de création.
+        // Si on est en train d'éditer un événement existant, on ne perturbe pas le form.
+        setSelected(start)
+        if (!editingRef.current) {
+          setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
+          setFCat('menage'); setFDesc('')
+          setFStartDate(start); setFEndDate(start)
+          setShowForm(true)
+        }
+        return
+      }
+      const [s, e2] = start <= cur ? [start, cur] : [cur, start]
       setSelected(s)
       setYear(Number(s.slice(0, 4)))
       setMonth(Number(s.slice(5, 7)) - 1)
       setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
       setFCat('menage'); setFDesc('')
-      setFStartDate(s); setFEndDate(e)
+      setFStartDate(s); setFEndDate(e2)
       setShowForm(true)
     }
     document.addEventListener('mouseup', onUp)
@@ -1730,6 +1750,7 @@ export default function CalendrierView({
                     return (
                       <div
                         key={span.id}
+                        onMouseDown={e => e.stopPropagation()}
                         onClick={span.onClick}
                         title={span.isIcal && span.platformLabel ? `${span.platformLabel} · ${span.title}` : span.title}
                         style={{
