@@ -7,8 +7,8 @@ import {
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
   ChatText,
 } from '@phosphor-icons/react/dist/ssr'
-import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed } from './actions'
-import { ArrowsClockwise, Lightning, SidebarSimple } from '@phosphor-icons/react/dist/ssr'
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken } from './actions'
+import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning } from '@phosphor-icons/react/dist/ssr'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import type { ContractEvent, IcalFeed, IcalEvent } from './page'
 
@@ -433,6 +433,8 @@ export default function CalendrierView({
   contractEvents,
   icalFeeds,
   icalEvents,
+  icalToken,
+  appUrl,
 }: Props) {
   const TODAY = todayString()
   const now   = new Date()
@@ -472,6 +474,11 @@ export default function CalendrierView({
   const [showSyncPanel, setShowSyncPanel] = useState(false)
   const [syncingAll, setSyncingAll] = useState(false)
   const [syncFeedback, setSyncFeedback] = useState<{ ok?: string; err?: string } | null>(null)
+  const [showExportPanel, setShowExportPanel] = useState(false)
+  const [icalTokenState, setIcalTokenState] = useState<string | null>(icalToken)
+  const [exportBusy, setExportBusy] = useState(false)
+  const [exportCopied, setExportCopied] = useState(false)
+  const exportUrl = icalTokenState ? `${appUrl}/api/calendar/feed?token=${icalTokenState}` : ''
   const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
   const [activeSource, setActiveSource] = useState<string | null>(null) // null = all, 'internal', or feed_color
@@ -1435,6 +1442,86 @@ export default function CalendrierView({
           >
             <Lightning size={14} weight="fill" />
           </button>
+          {/* Bouton Export iCal — partager le calendrier vers Google/Apple/Outlook */}
+          <div style={{ position: 'relative' }}>
+            <button
+              type="button"
+              onClick={() => setShowExportPanel(v => !v)}
+              style={{ ...s.topbarIconBtn, ...(showExportPanel ? s.topbarIconBtnActive : {}) }}
+              title="Exporter ce calendrier (Google, Apple, Outlook…)"
+              aria-label="Exporter le calendrier"
+            >
+              <Share size={14} weight="bold" />
+            </button>
+            {showExportPanel && (
+              <div style={s.exportPanel}>
+                <div style={s.exportHeader}>
+                  <span style={s.exportTitle}>Exporter ce calendrier</span>
+                  <button type="button" onClick={() => setShowExportPanel(false)} style={s.exportClose} aria-label="Fermer">
+                    <X size={13} weight="bold" />
+                  </button>
+                </div>
+                <p style={s.exportDesc}>
+                  Collez ce lien dans Google&nbsp;Calendar, Apple Calendar, Outlook ou Notion pour voir vos séjours et rendez-vous se synchroniser automatiquement.
+                </p>
+                {icalTokenState ? (
+                  <>
+                    <div style={s.exportUrlRow}>
+                      <input
+                        readOnly
+                        value={exportUrl}
+                        onClick={e => (e.target as HTMLInputElement).select()}
+                        style={s.exportUrlInput}
+                      />
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(exportUrl)
+                            setExportCopied(true)
+                            setTimeout(() => setExportCopied(false), 2000)
+                          } catch {}
+                        }}
+                        style={{ ...s.exportCopyBtn, ...(exportCopied ? s.exportCopyBtnOk : {}) }}
+                      >
+                        {exportCopied
+                          ? <><Check size={12} weight="bold" /> Copié</>
+                          : <><Copy size={12} weight="bold" /> Copier</>}
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={exportBusy}
+                      onClick={async () => {
+                        if (!confirm('Régénérer le lien invalidera l\'ancien partout où il a été collé. Continuer ?')) return
+                        setExportBusy(true)
+                        const res = await generateIcalToken()
+                        setExportBusy(false)
+                        if ('token' in res && res.token) setIcalTokenState(res.token)
+                      }}
+                      style={s.exportSecondaryBtn}
+                    >
+                      <Warning size={11} weight="bold" /> Régénérer le lien
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={exportBusy}
+                    onClick={async () => {
+                      setExportBusy(true)
+                      const res = await generateIcalToken()
+                      setExportBusy(false)
+                      if ('token' in res && res.token) setIcalTokenState(res.token)
+                    }}
+                    style={{ ...s.exportPrimaryBtn, opacity: exportBusy ? 0.6 : 1 }}
+                  >
+                    {exportBusy ? 'Génération…' : 'Activer le lien iCal'}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
           {/* Toggle drawer (panneau latéral) */}
           <button
             type="button"
@@ -2293,6 +2380,93 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column' as const,
     gap: '10px',
+  },
+  exportPanel: {
+    position: 'absolute' as const,
+    top: 'calc(100% + 8px)',
+    right: 0,
+    width: '340px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '12px',
+    padding: '14px',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '10px',
+    zIndex: 50,
+    boxShadow: '0 12px 32px rgba(0,0,0,0.35)',
+  },
+  exportHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  exportTitle: {
+    fontSize: '13px',
+    fontWeight: 600,
+    color: 'var(--text)',
+    fontFamily: 'var(--font-fraunces), serif',
+  },
+  exportClose: {
+    width: '22px', height: '22px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'transparent', border: 'none', borderRadius: '6px',
+    color: 'var(--text-muted)', cursor: 'pointer',
+  },
+  exportDesc: {
+    fontSize: '12px',
+    color: 'var(--text-muted)',
+    lineHeight: 1.45,
+    margin: 0,
+  },
+  exportUrlRow: {
+    display: 'flex', gap: '6px', alignItems: 'stretch',
+  },
+  exportUrlInput: {
+    flex: 1, minWidth: 0,
+    background: 'var(--bg)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    padding: '8px 10px',
+    fontSize: '11px',
+    fontFamily: 'ui-monospace, SFMono-Regular, monospace',
+    color: 'var(--text-2)',
+  },
+  exportCopyBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    padding: '0 12px',
+    background: 'var(--accent-bg-2)',
+    border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)',
+    borderRadius: '8px',
+    fontSize: '11px', fontWeight: 600,
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
+  exportCopyBtnOk: {
+    background: 'rgba(16,185,129,0.15)',
+    borderColor: 'rgba(16,185,129,0.4)',
+    color: '#10b981',
+  },
+  exportPrimaryBtn: {
+    width: '100%',
+    background: 'var(--accent-text)',
+    color: 'var(--bg)',
+    border: 'none', borderRadius: '8px',
+    padding: '10px 14px',
+    fontSize: '13px', fontWeight: 600,
+    cursor: 'pointer',
+  },
+  exportSecondaryBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    alignSelf: 'flex-start',
+    padding: '6px 10px',
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    color: 'var(--text-muted)',
+    borderRadius: '7px',
+    fontSize: '11px',
+    cursor: 'pointer',
   },
   syncPanelHeader: {
     display: 'flex',
