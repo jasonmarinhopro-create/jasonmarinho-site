@@ -968,37 +968,37 @@ export default function CalendrierView({
     // (le useEffect ne se déclencherait pas dans ce cas).
     setDrawerOpen(true)
   }
-  // Document-level mouseup, click selects day, drag opens form with date range
+  // Document-level mouseup :
+  // - click simple sur cellule → sélectionne le jour seulement
+  // - click sur une bar → rien (le onClick de la bar gère l'affichage)
+  // - drag multi-jours → ouvre le formulaire pré-rempli avec la plage
   useEffect(() => {
     function onUp(e: MouseEvent) {
       if (!dragState.current) return
       const { start, cur } = dragState.current
       dragState.current = null
       setDragRange(null)
-      // Si le mouseup est en dehors de la grille (ex: sur le bouton "Événement"),
-      // on annule le geste pour ne pas entrer en collision avec le clic de ce bouton.
       const target = e.target as HTMLElement | null
+      // Annule si mouseup hors de la grille (clic sur bouton topbar, etc.)
       if (!target?.closest('.cal-cell')) return
       if (start === cur) {
-        // Clic simple sur un jour : on sélectionne ET on ouvre le formulaire de création.
-        // Si on est en train d'éditer un événement existant, on ne perturbe pas le form.
+        // Clic simple : sélectionner le jour.
+        // Si le clic est sur une bar, ne pas interférer (son onClick gère l'événement).
+        if (target.closest('[data-bar]')) return
         setSelected(start)
-        if (!editingRef.current) {
-          setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
-          setFCat('menage'); setFDesc('')
-          setFStartDate(start); setFEndDate(start)
-          setShowForm(true)
-        }
         return
       }
+      // Drag multi-jours → ouvrir formulaire avec la plage sélectionnée
       const [s, e2] = start <= cur ? [start, cur] : [cur, start]
       setSelected(s)
       setYear(Number(s.slice(0, 4)))
       setMonth(Number(s.slice(5, 7)) - 1)
+      setSelectedContract(null)
       setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
       setFCat('menage'); setFDesc('')
       setFStartDate(s); setFEndDate(e2)
       setShowForm(true)
+      setDrawerOpen(true)
     }
     document.addEventListener('mouseup', onUp)
     return () => document.removeEventListener('mouseup', onUp)
@@ -1758,7 +1758,7 @@ export default function CalendrierView({
                     return (
                       <div
                         key={span.id}
-                        onMouseDown={e => e.stopPropagation()}
+                        data-bar="1"
                         onClick={span.onClick}
                         title={span.isIcal && span.platformLabel ? `${span.platformLabel} · ${span.title}` : span.title}
                         style={{
@@ -1894,17 +1894,25 @@ export default function CalendrierView({
           {/* ── Form */}
           {showForm && (
             <div style={s.form}>
+              {/* Barre d'accent colorée selon la catégorie sélectionnée */}
+              <div style={{
+                height: '3px', borderRadius: '0 0 3px 3px',
+                background: CAT[fCat]?.color ?? 'var(--accent-text)',
+                margin: '-16px -16px 2px', transition: 'background 0.2s',
+              }} />
+
+              {/* Titre — champ principal, bien visible */}
               <input
                 autoFocus
                 placeholder="Titre de l'événement…"
                 value={fTitle}
                 onChange={e => setFTitle(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') handleSave() }}
+                onKeyDown={e => { if (e.key === 'Enter' && fTitle.trim()) handleSave() }}
                 className="input-field"
-                style={s.fInput}
+                style={{ ...s.fInput, marginTop: '4px' }}
               />
 
-              {/* Date row */}
+              {/* Plage de dates */}
               <div className="cal-date-row" style={s.dateRow}>
                 <CalendarInput
                   value={fStartDate}
@@ -1920,31 +1928,33 @@ export default function CalendrierView({
                 />
               </div>
 
-              {/* Time row */}
+              {/* Heures */}
               <div className="cal-date-row" style={s.dateRow}>
                 <TimePickerInput value={fStart} onChange={setFStart} placeholder="Heure début" />
                 <span className="cal-row-arrow" style={s.rowArrow}>→</span>
                 <TimePickerInput value={fEnd} onChange={setFEnd} placeholder="Heure fin" />
               </div>
 
-              {/* Category chips */}
+              {/* Catégories — avec indicateur coloré */}
               <div style={s.catRow}>
                 {PICKER_CATS.map(key => {
                   const cfg = CAT[key]
+                  const active = fCat === key
                   return (
-                  <button
-                    key={key}
-                    className="cat-chip"
-                    onClick={() => setFCat(key)}
-                    style={{
-                      ...s.catChip,
-                      border: `1.5px solid ${fCat === key ? cfg.color : 'transparent'}`,
-                      background: fCat === key ? cfg.bg : 'var(--surface)',
-                      color: fCat === key ? cfg.color : 'var(--text-3)',
-                    }}
-                  >
-                    {cfg.label}
-                  </button>
+                    <button
+                      key={key}
+                      className="cat-chip"
+                      onClick={() => setFCat(key)}
+                      style={{
+                        ...s.catChip,
+                        border: `1.5px solid ${active ? cfg.color : 'var(--border)'}`,
+                        background: active ? cfg.bg : 'transparent',
+                        color: active ? cfg.color : 'var(--text-3)',
+                      }}
+                    >
+                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: active ? cfg.color : 'var(--text-3)', flexShrink: 0, transition: 'background 0.15s' }} />
+                      {cfg.label}
+                    </button>
                   )
                 })}
               </div>
@@ -1958,17 +1968,25 @@ export default function CalendrierView({
                 style={s.fTextarea}
               />
 
-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                <button className="btn-ghost" onClick={cancelForm} style={s.fCancel}>Annuler</button>
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button className="btn-ghost" onClick={cancelForm} style={{ ...s.fCancel, flex: 1 }}>
+                  Annuler
+                </button>
                 <button
                   className="btn-primary"
                   onClick={handleSave}
                   disabled={!fTitle.trim() || isPending}
-                  style={{ ...s.fSave, opacity: !fTitle.trim() || isPending ? 0.5 : 1 }}
+                  style={{ ...s.fSave, flex: 2, opacity: !fTitle.trim() || isPending ? 0.5 : 1 }}
                 >
-                  {editing ? 'Modifier' : 'Créer'}
+                  {isPending ? '…' : editing ? 'Modifier' : 'Créer'}
                 </button>
               </div>
+              {fTitle.trim() && !editing && (
+                <div style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-muted)', marginTop: '-4px' }}>
+                  Entrée ↵ pour créer rapidement
+                </div>
+              )}
             </div>
           )}
 
@@ -2500,8 +2518,8 @@ const s: Record<string, React.CSSProperties> = {
     borderBottom: '1px solid var(--border)',
   },
   fInput: {
-    width: '100%', padding: '10px 12px',
-    fontSize: '14px', fontWeight: 500, borderRadius: '10px',
+    width: '100%', padding: '11px 14px',
+    fontSize: '15px', fontWeight: 500, borderRadius: '10px',
   },
   dateRow: {
     display: 'grid', gridTemplateColumns: '1fr auto 1fr',
@@ -2511,18 +2529,20 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text-muted)', fontSize: '12px',
     flexShrink: 0, textAlign: 'center',
   },
-  catRow: { display: 'flex', flexWrap: 'wrap', gap: '5px' },
+  catRow: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
   catChip: {
-    padding: '4px 11px', borderRadius: '100px',
-    fontSize: '12px', fontWeight: 500, cursor: 'pointer',
+    padding: '6px 12px', borderRadius: '100px',
+    fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+    display: 'flex', alignItems: 'center', gap: '6px',
+    transition: 'all 0.15s',
   },
   fTextarea: {
-    width: '100%', padding: '10px 12px',
+    width: '100%', padding: '10px 14px',
     fontSize: '13px', borderRadius: '10px',
-    resize: 'vertical', minHeight: '72px',
+    resize: 'vertical' as const, minHeight: '72px',
   },
-  fCancel: { padding: '8px 14px', fontSize: '13px' },
-  fSave:   { padding: '8px 18px', fontSize: '13px', border: 'none', cursor: 'pointer', borderRadius: '9px' },
+  fCancel: { padding: '9px 14px', fontSize: '13px', borderRadius: '9px' },
+  fSave:   { padding: '9px 18px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer', borderRadius: '9px' },
 
   // events
   evtList: { padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 },
