@@ -301,7 +301,7 @@ export default function ActualitesView({
   }
 
   return (
-    <div style={s.page}>
+    <div style={s.page} className="actualites-no-fade">
 
       {/* Intro + compteur unread */}
       <div style={s.intro} className="fade-up">

@@ -268,7 +268,9 @@ em { font-style: italic; color: var(--accent); }
 
 /* Pages avec bypass fade-up (React 18 client-nav timing issue) */
 .communaute-no-fade .fade-up,
-.formations-no-fade .fade-up {
+.formations-no-fade .fade-up,
+.guide-no-fade .fade-up,
+.actualites-no-fade .fade-up {
   animation: none !important;
   opacity: 1 !important;
   transform: none !important;
