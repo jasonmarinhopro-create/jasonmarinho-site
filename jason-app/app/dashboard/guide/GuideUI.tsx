@@ -130,7 +130,7 @@ export default function GuideUI({ guideCards }: GuideUIProps) {
   const q = search.trim().toLowerCase()
 
   return (
-    <div style={s.page}>
+    <div style={s.page} className="guide-no-fade">
 
       {/* Intro */}
       <div style={s.intro} className="fade-up">
