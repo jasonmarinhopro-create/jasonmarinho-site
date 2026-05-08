@@ -2,15 +2,16 @@
 
 import { useState, useMemo, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
   ChatText,
 } from '@phosphor-icons/react/dist/ssr'
-import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken } from './actions'
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar } from './actions'
 import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning } from '@phosphor-icons/react/dist/ssr'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
-import type { ContractEvent, IcalFeed, IcalEvent } from './page'
+import type { ContractEvent, IcalFeed, IcalEvent, SejourEvent, VoyageurOption, LogementOption } from './page'
 
 // ── Mapping checklist key → catégorie de gabarit pertinente
 const CHECKLIST_TO_GABARIT: Record<string, { cat: string; label: string }> = {
@@ -36,6 +37,9 @@ interface Props {
   contractEvents: ContractEvent[]
   icalFeeds: IcalFeed[]
   icalEvents: IcalEvent[]
+  sejourEvents: SejourEvent[]
+  voyageurOptions: VoyageurOption[]
+  logementOptions: LogementOption[]
   icalToken: string | null
   appUrl: string
 }
@@ -43,6 +47,7 @@ interface Props {
 const CAT: Record<string, { label: string; color: string; bg: string; border: string }> = {
   arrivee:   { label: 'Arrivée',     color: '#10b981', bg: 'rgba(16,185,129,0.13)',  border: 'rgba(16,185,129,0.30)' },
   depart:    { label: 'Départ',      color: '#60a5fa', bg: 'rgba(96,165,250,0.13)',  border: 'rgba(96,165,250,0.30)' },
+  sejour:    { label: 'Séjour',      color: '#F472B6', bg: 'rgba(244,114,182,0.13)', border: 'rgba(244,114,182,0.30)' },
   menage:    { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)',  border: 'rgba(251,146,60,0.30)' },
   rdv:       { label: 'RDV',         color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', border: 'var(--accent-border)' },
   tache:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.30)' },
@@ -52,8 +57,8 @@ const CAT: Record<string, { label: string; color: string; bg: string; border: st
   admin:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.30)' },
 }
 
-type CatKey = 'arrivee' | 'depart' | 'menage' | 'rdv' | 'tache' | 'note'
-const PICKER_CATS: CatKey[] = ['menage', 'rdv', 'tache']
+type CatKey = 'arrivee' | 'depart' | 'sejour' | 'menage' | 'rdv' | 'tache' | 'note'
+const PICKER_CATS: CatKey[] = ['sejour', 'menage', 'rdv', 'tache']
 
 function catToDisplay(c: string): CatKey {
   if (c === 'entretien') return 'menage'
@@ -230,14 +235,15 @@ function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1) }
 // ─── Vue liste : événements chronologiques à venir ─────────────────────────
 
 interface ListViewProps {
-  byDate: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[] }>
+  byDate: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[]; sejours: SejourEvent[] }>
   contractEvents: ContractEvent[]
   today: string
   icalFeeds: IcalFeed[]
   onSelect: (date: string, contract?: ContractEvent) => void
+  onSelectSejour: (voyageurId: string) => void
 }
 
-function ListView({ byDate, today, icalFeeds, onSelect }: ListViewProps) {
+function ListView({ byDate, today, icalFeeds, onSelect, onSelectSejour }: ListViewProps) {
   const dates = Object.keys(byDate).sort()
   const upcoming = dates.filter(d => d >= today).slice(0, 60) // 60 prochains jours avec events
   const past     = dates.filter(d => d < today).slice(-15)    // 15 derniers passés
@@ -269,6 +275,18 @@ function ListView({ byDate, today, icalFeeds, onSelect }: ListViewProps) {
         subtitle: c.logement_nom ?? undefined,
         tag: 'Séjour',
         onClick: () => onSelect(d, c),
+      })
+    })
+    day.sejours.forEach(s => {
+      // N'affiche que le jour d'arrivée pour éviter le bruit (un séjour de 7j ne ferait pas 7 lignes)
+      if (s.date_arrivee !== d) return
+      items.push({
+        id: `sejour-${s.id}`,
+        title: `${s.voyageur_label} · ${s.logement_label}`,
+        color: CAT.sejour.color,
+        subtitle: `Du ${s.date_arrivee} au ${s.date_depart}${s.montant ? ` · ${s.montant} €` : ''}`,
+        tag: 'Séjour',
+        onClick: () => onSelectSejour(s.voyageur_id),
       })
     })
     day.ical.forEach(e => {
@@ -433,16 +451,21 @@ export default function CalendrierView({
   contractEvents,
   icalFeeds,
   icalEvents,
+  sejourEvents: initialSejourEvents,
+  voyageurOptions,
+  logementOptions,
   icalToken,
   appUrl,
 }: Props) {
   const TODAY = todayString()
   const now   = new Date()
+  const router = useRouter()
 
   const [year,     setYear]     = useState(now.getFullYear())
   const [month,    setMonth]    = useState(now.getMonth())
   const [selected, setSelected] = useState(TODAY)
   const [events,   setEvents]   = useState<CalEvent[]>(initial)
+  const [sejourEvents, setSejourEvents] = useState<SejourEvent[]>(initialSejourEvents)
   const [showForm, setShowForm] = useState(false)
   const [editing,  setEditing]  = useState<CalEvent | null>(null)
   const [isPending, startT]     = useTransition()
@@ -455,6 +478,13 @@ export default function CalendrierView({
   const [fDesc,    setFDesc]    = useState('')
   const [fStartDate, setFStartDate] = useState('')
   const [fEndDate,   setFEndDate]   = useState('')
+
+  // séjour-specific form fields
+  const [fVoyageurId, setFVoyageurId] = useState('')
+  const [fLogementId, setFLogementId] = useState('')
+  const [fMontant,    setFMontant]    = useState('')
+  const [fContratStatut, setFContratStatut] = useState<'nouveau' | 'en_attente' | 'signe' | 'non_requis'>('nouveau')
+  const [sejourError, setSejourError] = useState<string | null>(null)
 
   // ── drag-to-create
   const dragState  = useRef<{ start: string; cur: string } | null>(null)
@@ -622,6 +652,28 @@ export default function CalendrierView({
         })
       })
 
+    // Séjours sans contrat (créés depuis le calendrier ou sans contrat encore)
+    filteredSejourEvents
+      .filter(s => s.date_arrivee && s.date_depart)
+      .filter(s => s.date_arrivee <= we && s.date_depart >= ws)
+      .forEach(s => {
+        const ss = s.date_arrivee >= ws ? s.date_arrivee : ws
+        const se = s.date_depart <= we ? s.date_depart : we
+        const cfg = CAT.sejour
+        out.push({
+          id: `sejour-${s.id}`,
+          title: `${s.voyageur_label} · ${s.logement_label}`,
+          color: cfg.color,
+          bg:    cfg.bg,
+          startCol: weekCells.findIndex(c2 => c2.date === ss),
+          endCol:   weekCells.findIndex(c2 => c2.date === se),
+          isStart:  s.date_arrivee >= ws,
+          isEnd:    s.date_depart <= we,
+          isIcal:   false,
+          onClick:  () => router.push(`/dashboard/voyageurs/${s.voyageur_id}`),
+        })
+      })
+
     return out
   }
 
@@ -655,9 +707,16 @@ export default function CalendrierView({
     return true
   }), [icalEvents, filter, q, activeSource])
 
+  const filteredSejourEvents = useMemo(() => sejourEvents.filter(s => {
+    if (filter === 'menages' || filter === 'rdv-tache' || filter === 'synchro') return false
+    if (activeSource !== null && activeSource !== 'internal') return false
+    if (q && !matchesSearch(s.voyageur_label, s.logement_label)) return false
+    return true
+  }), [sejourEvents, filter, q, activeSource])
+
   // ── event index by date, multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
-    const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[] }> = {}
+    const m: Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[]; sejours: SejourEvent[] }> = {}
 
     filteredEvents.forEach(e => {
       const startD = e.date
@@ -668,13 +727,13 @@ export default function CalendrierView({
       const endDt  = new Date(ey, em - 1, ed)
       while (cur <= endDt) {
         const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
-        ;(m[ds] ??= { custom: [], contracts: [], ical: [] }).custom.push(e)
+        ;(m[ds] ??= { custom: [], contracts: [], ical: [], sejours: [] }).custom.push(e)
         cur.setDate(cur.getDate() + 1)
       }
     })
 
     filteredContractEvents.forEach(c => {
-      ;(m[c.date] ??= { custom: [], contracts: [], ical: [] }).contracts.push(c)
+      ;(m[c.date] ??= { custom: [], contracts: [], ical: [], sejours: [] }).contracts.push(c)
     })
 
     filteredIcalEvents.forEach(e => {
@@ -686,18 +745,30 @@ export default function CalendrierView({
       const endDt  = new Date(ey, em - 1, ed)
       while (cur <= endDt) {
         const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
-        ;(m[ds] ??= { custom: [], contracts: [], ical: [] }).ical.push(e)
+        ;(m[ds] ??= { custom: [], contracts: [], ical: [], sejours: [] }).ical.push(e)
+        cur.setDate(cur.getDate() + 1)
+      }
+    })
+
+    filteredSejourEvents.forEach(s => {
+      const [sy, sm, sd] = s.date_arrivee.split('-').map(Number)
+      const [ey, em, ed] = s.date_depart.split('-').map(Number)
+      const cur    = new Date(sy, sm - 1, sd)
+      const endDt  = new Date(ey, em - 1, ed)
+      while (cur <= endDt) {
+        const ds = toStr(cur.getFullYear(), cur.getMonth(), cur.getDate())
+        ;(m[ds] ??= { custom: [], contracts: [], ical: [], sejours: [] }).sejours.push(s)
         cur.setDate(cur.getDate() + 1)
       }
     })
 
     return m
-  }, [filteredEvents, filteredContractEvents, filteredIcalEvents])
+  }, [filteredEvents, filteredContractEvents, filteredIcalEvents, filteredSejourEvents])
 
   // ── selected day merged events (deduplicated by id)
-  type Merged = CalEvent & { isContract?: boolean; isIcal?: boolean; feedColor?: string; feedName?: string }
+  type Merged = CalEvent & { isContract?: boolean; isIcal?: boolean; isSejour?: boolean; feedColor?: string; feedName?: string; voyageurId?: string }
   const selectedAll = useMemo(() => {
-    const day  = byDate[selected] ?? { custom: [], contracts: [], ical: [] }
+    const day  = byDate[selected] ?? { custom: [], contracts: [], ical: [], sejours: [] }
     const seen = new Set<string>()
     const list: Merged[] = []
 
@@ -710,6 +781,25 @@ export default function CalendrierView({
           description: c.logement_nom,
           category: c.type,
           isContract: true,
+        })
+      }
+    })
+
+    day.sejours.forEach(s => {
+      const key = `sejour-${s.id}`
+      if (!seen.has(key)) {
+        seen.add(key)
+        list.push({
+          id: key,
+          title: `${s.voyageur_label} · ${s.logement_label}`,
+          date: s.date_arrivee,
+          end_date: s.date_depart,
+          start_time: null,
+          end_time: null,
+          description: s.montant ? `${s.montant} €` : null,
+          category: 'sejour',
+          isSejour: true,
+          voyageurId: s.voyageur_id,
         })
       }
     })
@@ -960,6 +1050,14 @@ export default function CalendrierView({
   }
 
   // ── form helpers
+  function resetSejourFields() {
+    setFVoyageurId('')
+    setFLogementId('')
+    setFMontant('')
+    setFContratStatut('nouveau')
+    setSejourError(null)
+  }
+
   function openAdd(endDate?: string) {
     // Reset défensif : on annule tout drag pendant et toute sélection contrat
     // pour garantir que le formulaire s'affiche bien dans le drawer.
@@ -972,6 +1070,7 @@ export default function CalendrierView({
     setFCat('menage'); setFDesc('')
     setFStartDate(selected)
     setFEndDate(endDate ?? selected)
+    resetSejourFields()
     setShowForm(true)
     // Forcer l'ouverture du drawer même si showForm était déjà true
     // (le useEffect ne se déclencherait pas dans ce cas).
@@ -1000,6 +1099,7 @@ export default function CalendrierView({
           setSelectedContract(null)
           setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
           setFCat('menage'); setFDesc('')
+          resetSejourFields()
           setFStartDate(start); setFEndDate(start)
           setShowForm(true)
           setDrawerOpen(true)
@@ -1015,6 +1115,7 @@ export default function CalendrierView({
       setSelectedContract(null)
       setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
       setFCat('menage'); setFDesc('')
+      resetSejourFields()
       setFStartDate(s); setFEndDate(e2)
       setShowForm(true)
       setDrawerOpen(true)
@@ -1052,7 +1153,10 @@ export default function CalendrierView({
     setFEndDate(ev.end_date ?? ev.date)
     setShowForm(true)
   }
-  function cancelForm() { setShowForm(false); setEditing(null); setSelRange(null) }
+  function cancelForm() {
+    setShowForm(false); setEditing(null); setSelRange(null)
+    resetSejourFields()
+  }
 
   function handleQuickAdd() {
     const parsed = parseQuickAdd(quickAdd, selected)
@@ -1079,6 +1183,42 @@ export default function CalendrierView({
   }
 
   function handleSave() {
+    // Cas séjour : flow dédié (table sejours, pas calendar_events)
+    if (fCat === 'sejour' && !editing) {
+      if (!fVoyageurId || !fLogementId) {
+        setSejourError('Choisis un voyageur et un logement.')
+        return
+      }
+      const startD = fStartDate || selected
+      const endD   = fEndDate || startD
+      if (endD < startD) {
+        setSejourError('La date de départ doit être après la date d\'arrivée.')
+        return
+      }
+      const logement = logementOptions.find(l => l.id === fLogementId)
+      const montantNum = fMontant.trim() ? Number(fMontant.replace(',', '.')) : null
+      setSejourError(null)
+      startT(async () => {
+        const res = await createSejourFromCalendar({
+          voyageur_id: fVoyageurId,
+          logement_id: fLogementId,
+          logement_nom: logement?.nom ?? 'Logement',
+          date_arrivee: startD,
+          date_depart: endD,
+          montant: montantNum && !Number.isNaN(montantNum) ? montantNum : null,
+          contrat_statut: fContratStatut,
+        })
+        if (res.error || !res.sejour) {
+          setSejourError(res.error ?? 'Impossible de créer le séjour.')
+          return
+        }
+        setSejourEvents(prev => [...prev, res.sejour])
+        setShowForm(false); setEditing(null); setSelRange(null)
+        resetSejourFields()
+      })
+      return
+    }
+
     if (!fTitle.trim()) return
     startT(async () => {
       if (editing) {
@@ -1959,6 +2099,7 @@ export default function CalendrierView({
               setYear(Number(d.slice(0,4))); setMonth(Number(d.slice(5,7))-1)
               if (contract) setSelectedContract(contract)
             }}
+            onSelectSejour={(voyageurId) => router.push(`/dashboard/voyageurs/${voyageurId}`)}
           />
         )}
 
@@ -1995,7 +2136,13 @@ export default function CalendrierView({
           </div>
 
           {/* ── Form */}
-          {showForm && (
+          {showForm && (() => {
+            const isSejour = fCat === 'sejour' && !editing
+            const sejourBlocked = isSejour && (voyageurOptions.length === 0 || logementOptions.length === 0)
+            const sejourSubmitDisabled = isSejour && (!fVoyageurId || !fLogementId || isPending)
+            const generalSubmitDisabled = !isSejour && (!fTitle.trim() || isPending)
+
+            return (
             <div style={s.form}>
               {/* Barre d'accent colorée selon la catégorie sélectionnée */}
               <div style={{
@@ -2004,72 +2151,184 @@ export default function CalendrierView({
                 margin: '-16px -16px 2px', transition: 'background 0.2s',
               }} />
 
-              {/* Titre — champ principal, bien visible */}
-              <input
-                autoFocus
-                placeholder="Titre de l'événement…"
-                value={fTitle}
-                onChange={e => setFTitle(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && fTitle.trim()) handleSave() }}
-                className="input-field"
-                style={{ ...s.fInput, marginTop: '4px' }}
-              />
+              {/* Catégories — placées en haut quand on crée (le choix conditionne le formulaire) */}
+              {!editing && (
+                <div style={s.catRow}>
+                  {PICKER_CATS.map(key => {
+                    const cfg = CAT[key]
+                    const active = fCat === key
+                    return (
+                      <button
+                        key={key}
+                        className="cat-chip"
+                        onClick={() => setFCat(key)}
+                        style={{
+                          ...s.catChip,
+                          border: `1.5px solid ${active ? cfg.color : 'var(--border)'}`,
+                          background: active ? cfg.bg : 'transparent',
+                          color: active ? cfg.color : 'var(--text-3)',
+                        }}
+                      >
+                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: active ? cfg.color : 'var(--text-3)', flexShrink: 0, transition: 'background 0.15s' }} />
+                        {cfg.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
 
-              {/* Plage de dates */}
+              {/* Titre — uniquement pour ménage/rdv/tâche */}
+              {!isSejour && (
+                <input
+                  autoFocus
+                  placeholder="Titre de l'événement…"
+                  value={fTitle}
+                  onChange={e => setFTitle(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter' && fTitle.trim()) handleSave() }}
+                  className="input-field"
+                  style={{ ...s.fInput, marginTop: '4px' }}
+                />
+              )}
+
+              {/* ─── Champs spécifiques séjour ─── */}
+              {isSejour && sejourBlocked && (
+                <div style={{
+                  background: 'var(--accent-bg-2)',
+                  border: '1px solid var(--accent-border)',
+                  borderRadius: '10px',
+                  padding: '14px',
+                  fontSize: '12.5px',
+                  color: 'var(--text-2)',
+                  lineHeight: 1.55,
+                }}>
+                  <div style={{ fontWeight: 500, color: 'var(--text)', marginBottom: '8px', fontSize: '13px' }}>
+                    Crée d'abord les bases
+                  </div>
+                  <div style={{ marginBottom: '12px' }}>
+                    Pour ajouter un séjour, il te faut au moins {voyageurOptions.length === 0 && 'un voyageur'}
+                    {voyageurOptions.length === 0 && logementOptions.length === 0 && ' et '}
+                    {logementOptions.length === 0 && 'un logement'}.
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {voyageurOptions.length === 0 && (
+                      <Link href="/dashboard/voyageurs" className="btn-primary" style={{ fontSize: '12px', padding: '7px 12px' }}>
+                        + Voyageur
+                      </Link>
+                    )}
+                    {logementOptions.length === 0 && (
+                      <Link href="/dashboard/logements" className="btn-primary" style={{ fontSize: '12px', padding: '7px 12px' }}>
+                        + Logement
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {isSejour && !sejourBlocked && (
+                <>
+                  <div>
+                    <label style={s.fLabel}>Voyageur</label>
+                    <select
+                      autoFocus
+                      value={fVoyageurId}
+                      onChange={e => setFVoyageurId(e.target.value)}
+                      className="input-field"
+                      style={s.fInput}
+                    >
+                      <option value="">— Choisir un voyageur —</option>
+                      {voyageurOptions.map(v => (
+                        <option key={v.id} value={v.id}>{v.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={s.fLabel}>Logement</label>
+                    <select
+                      value={fLogementId}
+                      onChange={e => setFLogementId(e.target.value)}
+                      className="input-field"
+                      style={s.fInput}
+                    >
+                      <option value="">— Choisir un logement —</option>
+                      {logementOptions.map(l => (
+                        <option key={l.id} value={l.id}>{l.nom}</option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {/* Plage de dates — toujours visible */}
               <div className="cal-date-row" style={s.dateRow}>
                 <CalendarInput
                   value={fStartDate}
                   onChange={v => { setFStartDate(v); if (fEndDate < v) setFEndDate(v) }}
-                  placeholder="Date début"
+                  placeholder={isSejour ? 'Arrivée' : 'Date début'}
                   disabled={!!editing}
                 />
                 <span className="cal-row-arrow" style={s.rowArrow}>→</span>
                 <CalendarInput
                   value={fEndDate}
                   onChange={setFEndDate}
-                  placeholder="Date fin"
+                  placeholder={isSejour ? 'Départ' : 'Date fin'}
                 />
               </div>
 
-              {/* Heures */}
-              <div className="cal-date-row" style={s.dateRow}>
-                <TimePickerInput value={fStart} onChange={setFStart} placeholder="Heure début" />
-                <span className="cal-row-arrow" style={s.rowArrow}>→</span>
-                <TimePickerInput value={fEnd} onChange={setFEnd} placeholder="Heure fin" />
-              </div>
+              {/* Heures — uniquement pour ménage/rdv/tâche */}
+              {!isSejour && (
+                <div className="cal-date-row" style={s.dateRow}>
+                  <TimePickerInput value={fStart} onChange={setFStart} placeholder="Heure début" />
+                  <span className="cal-row-arrow" style={s.rowArrow}>→</span>
+                  <TimePickerInput value={fEnd} onChange={setFEnd} placeholder="Heure fin" />
+                </div>
+              )}
 
-              {/* Catégories — avec indicateur coloré */}
-              <div style={s.catRow}>
-                {PICKER_CATS.map(key => {
-                  const cfg = CAT[key]
-                  const active = fCat === key
-                  return (
-                    <button
-                      key={key}
-                      className="cat-chip"
-                      onClick={() => setFCat(key)}
-                      style={{
-                        ...s.catChip,
-                        border: `1.5px solid ${active ? cfg.color : 'var(--border)'}`,
-                        background: active ? cfg.bg : 'transparent',
-                        color: active ? cfg.color : 'var(--text-3)',
-                      }}
+              {/* Champs séjour additionnels : montant + contrat */}
+              {isSejour && !sejourBlocked && (
+                <>
+                  <div className="cal-date-row" style={s.dateRow}>
+                    <input
+                      type="number"
+                      placeholder="Montant (€)"
+                      value={fMontant}
+                      onChange={e => setFMontant(e.target.value)}
+                      className="input-field"
+                      style={s.fInput}
+                      min={0}
+                      step="0.01"
+                    />
+                    <select
+                      value={fContratStatut}
+                      onChange={e => setFContratStatut(e.target.value as typeof fContratStatut)}
+                      className="input-field"
+                      style={s.fInput}
                     >
-                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: active ? cfg.color : 'var(--text-3)', flexShrink: 0, transition: 'background 0.15s' }} />
-                      {cfg.label}
-                    </button>
-                  )
-                })}
-              </div>
+                      <option value="nouveau">Contrat à venir</option>
+                      <option value="en_attente">En attente de signature</option>
+                      <option value="signe">Signé</option>
+                      <option value="non_requis">Pas de contrat</option>
+                    </select>
+                  </div>
+                </>
+              )}
 
-              <textarea
-                placeholder="Notes, détails, liens…"
-                value={fDesc}
-                onChange={e => setFDesc(e.target.value)}
-                rows={3}
-                className="input-field"
-                style={s.fTextarea}
-              />
+              {/* Notes — uniquement pour ménage/rdv/tâche */}
+              {!isSejour && (
+                <textarea
+                  placeholder="Notes, détails, liens…"
+                  value={fDesc}
+                  onChange={e => setFDesc(e.target.value)}
+                  rows={3}
+                  className="input-field"
+                  style={s.fTextarea}
+                />
+              )}
+
+              {sejourError && (
+                <div style={{ fontSize: '12px', color: '#ef4444', lineHeight: 1.4 }}>
+                  {sejourError}
+                </div>
+              )}
 
               {/* Actions */}
               <div style={{ display: 'flex', gap: '8px' }}>
@@ -2079,19 +2338,24 @@ export default function CalendrierView({
                 <button
                   className="btn-primary"
                   onClick={handleSave}
-                  disabled={!fTitle.trim() || isPending}
-                  style={{ ...s.fSave, flex: 2, opacity: !fTitle.trim() || isPending ? 0.5 : 1 }}
+                  disabled={sejourBlocked || sejourSubmitDisabled || generalSubmitDisabled}
+                  style={{
+                    ...s.fSave,
+                    flex: 2,
+                    opacity: sejourBlocked || sejourSubmitDisabled || generalSubmitDisabled ? 0.5 : 1,
+                  }}
                 >
-                  {isPending ? '…' : editing ? 'Modifier' : 'Créer'}
+                  {isPending ? '…' : editing ? 'Modifier' : isSejour ? 'Créer le séjour' : 'Créer'}
                 </button>
               </div>
-              {fTitle.trim() && !editing && (
+              {!isSejour && fTitle.trim() && !editing && (
                 <div style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-muted)', marginTop: '-4px' }}>
                   Entrée ↵ pour créer rapidement
                 </div>
               )}
             </div>
-          )}
+            )
+          })()}
 
           {/* ── Checklist panel (contract event selected) */}
           {!showForm && selectedContract && (() => {
@@ -2710,6 +2974,15 @@ const s: Record<string, React.CSSProperties> = {
   fInput: {
     width: '100%', padding: '11px 14px',
     fontSize: '15px', fontWeight: 500, borderRadius: '10px',
+  },
+  fLabel: {
+    display: 'block',
+    fontSize: '11px',
+    fontWeight: 600,
+    color: 'var(--text-3)',
+    letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const,
+    marginBottom: '5px',
   },
   dateRow: {
     display: 'grid', gridTemplateColumns: '1fr auto 1fr',
