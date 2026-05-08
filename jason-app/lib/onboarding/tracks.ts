@@ -99,7 +99,7 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
         title: 'Publie ton premier post',
         description: 'Personnalise le message, copie-le et partage-le dans les groupes Facebook LCD.',
         ctaLabel: 'Voir les groupes',
-        ctaHref: '/dashboard/services',
+        ctaHref: '/dashboard/communaute',
         detect: 'manual',
       },
       {
@@ -124,7 +124,7 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
         title: 'Découvre la base de signalements',
         description: 'Plus de 200 voyageurs problématiques signalés par la communauté LCD.',
         ctaLabel: 'Ouvrir la base',
-        ctaHref: '/dashboard/voyageurs-signales',
+        ctaHref: '/dashboard/securite',
         detect: 'manual',
       },
       {
@@ -132,7 +132,7 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
         title: 'Vérifie un voyageur',
         description: 'Recherche par téléphone ou email avant de confirmer une réservation.',
         ctaLabel: 'Faire une recherche',
-        ctaHref: '/dashboard/voyageurs-signales',
+        ctaHref: '/dashboard/securite',
         detect: 'manual',
       },
       {
@@ -174,7 +174,7 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
         title: 'Explore l\'écosystème LCD',
         description: 'Conciergeries, services partenaires, formations.',
         ctaLabel: 'Voir les services',
-        ctaHref: '/dashboard/services',
+        ctaHref: '/dashboard/ecosysteme',
         detect: 'manual',
       },
     ],

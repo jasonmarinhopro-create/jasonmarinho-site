@@ -9,6 +9,7 @@ import {
 import { ONBOARDING_TRACKS, getTrack } from '@/lib/onboarding/tracks'
 import {
   startOnboarding, pinOnboardingTrack, markOnboardingStep,
+  dismissOnboarding, restoreOnboarding,
 } from '@/lib/onboarding/actions'
 
 interface Props {
@@ -39,17 +40,23 @@ export function OnboardingTracks({
   plan,
 }: Props) {
   const [pinnedKey, setPinnedKey] = useState<string>(initialPinned)
+  const [isDismissed, setIsDismissed] = useState(dismissed)
   const [view, setView] = useState<View>(dismissed || completed ? 'pill' : 'track')
   const [, startTransition] = useTransition()
 
   // Listen for the custom event dispatched by the Header "Parcours" button.
+  // Restores from a dismissed state and opens the panel directly.
   useEffect(() => {
-    function onOpen() { setView(v => v === 'pill' ? 'track' : v) }
+    function onOpen() {
+      setIsDismissed(false)
+      setView('track')
+      startTransition(async () => { await restoreOnboarding() })
+    }
     window.addEventListener('open-onboarding', onOpen)
     return () => window.removeEventListener('open-onboarding', onOpen)
   }, [])
 
-  if (completed) return null
+  if (completed || isDismissed) return null
 
   const pinnedTrack = getTrack(pinnedKey) ?? ONBOARDING_TRACKS[0]
   const isFirstTime = persistedStep < 2
@@ -58,6 +65,11 @@ export function OnboardingTracks({
     setPinnedKey(key)
     setView('track')
     startTransition(async () => { await pinOnboardingTrack(key) })
+  }
+
+  function dismissAll() {
+    setIsDismissed(true)
+    startTransition(async () => { await dismissOnboarding() })
   }
 
   function handleStartWelcome() {
@@ -127,6 +139,14 @@ export function OnboardingTracks({
                 title="Réduire"
               >
                 <CaretDown size={14} weight="bold" />
+              </button>
+              <button
+                onClick={dismissAll}
+                style={s.iconBtn}
+                aria-label="Masquer"
+                title="Masquer (rouvrable depuis l'en-tête)"
+              >
+                <X size={14} weight="bold" />
               </button>
             </div>
           </div>
@@ -263,6 +283,14 @@ export function OnboardingTracks({
               title="Réduire"
             >
               <CaretDown size={14} weight="bold" />
+            </button>
+            <button
+              onClick={dismissAll}
+              style={s.iconBtn}
+              aria-label="Masquer"
+              title="Masquer (rouvrable depuis l'en-tête)"
+            >
+              <X size={14} weight="bold" />
             </button>
           </div>
         </div>

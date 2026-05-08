@@ -8,6 +8,7 @@ import {
   CalendarCheck, House, SunHorizon, ArrowRight, UsersThree,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Template, UserTemplateCustomization } from '@/types'
+import { markStepIfNotYet } from '@/lib/onboarding/client'
 
 // ── Mapping catégorie → moment d'envoi ─────────────────────────────────────
 type TimingBucket = 'avant-arrivee' | 'pendant-sejour' | 'apres-depart'
@@ -169,6 +170,10 @@ export default function GabaritsClient({
     showToast('Copié dans le presse-papier !')
     const supabase = createClient()
     try { await supabase.rpc('increment_copy_count', { template_id: id }) } catch {}
+
+    // Onboarding : valide l'étape "Choisis un gabarit Facebook" si le gabarit copié l'est.
+    const t = templates.find(x => x.id === id)
+    if (t?.category === 'facebook') void markStepIfNotYet('fb_template_chosen')
   }
 
   async function copyWithFill() {
@@ -225,6 +230,7 @@ export default function GabaritsClient({
         await supabase.from('user_template_favorites').insert({ user_id: userId, template_id: editingTemplate.id })
       }
       showToast('Version personnalisée enregistrée !')
+      void markStepIfNotYet('gabarit')
     }
     setSavingModal(false)
     setEditingTemplate(null)
