@@ -6,7 +6,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { OnboardingChecklist } from '@/components/onboarding/OnboardingChecklist'
-import { detectOnboardingStep } from '@/lib/onboarding/steps'
+import { detectOnboardingStep } from '@/lib/onboarding/detect'
 import DashboardLoading from './loading'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
