@@ -66,6 +66,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           lastSeenNouveautesAt={profile.last_seen_nouveautes_at}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
+          showOnboardingBtn={showOnboarding}
         />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>

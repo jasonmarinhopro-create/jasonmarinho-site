@@ -47,7 +47,7 @@ export default function ChezNousNotifBell({ userId }: ChezNousNotifBellProps) {
       aria-label={`Notifications Chez Nous${hydrated && count > 0 ? `, ${count} non lue${count > 1 ? 's' : ''}` : ''}`}
       title="Mes notifications Chez Nous"
     >
-      <ChatCircleDots size={18} weight={hydrated && count > 0 ? 'fill' : 'regular'} />
+      <ChatCircleDots size={18} weight="regular" />
       {hydrated && count > 0 && (
         <span style={s.badge}>{count > 9 ? '9+' : count}</span>
       )}
@@ -58,8 +58,8 @@ export default function ChezNousNotifBell({ userId }: ChezNousNotifBellProps) {
 const s: Record<string, React.CSSProperties> = {
   btn: {
     position: 'relative',
-    width: '36px', height: '36px', borderRadius: '8px',
-    background: 'transparent', border: '1px solid var(--border)',
+    width: '36px', height: '36px', borderRadius: '9px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     color: 'var(--text-2)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     textDecoration: 'none',

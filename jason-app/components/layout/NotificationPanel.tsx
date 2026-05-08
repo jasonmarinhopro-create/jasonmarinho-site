@@ -62,13 +62,14 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
       aria-label="Nouveautés de la plateforme"
       style={{
         position: 'fixed',
-        top: 'calc(var(--header-h, 60px) + 10px)',
-        right: '16px',
-        width: 'min(360px, calc(100vw - 32px))',
+        top: 'calc(var(--header-h, 60px) + 8px)',
+        right: 0,
+        width: 'min(380px, 100vw)',
         background: 'var(--bg-2)',
         border: '1px solid var(--border-2)',
-        borderRadius: '16px',
-        boxShadow: '0 16px 48px rgba(0,0,0,0.35), 0 0 0 1px var(--surface)',
+        borderRight: 'none',
+        borderRadius: '16px 0 0 16px',
+        boxShadow: '-8px 16px 48px rgba(0,0,0,0.3)',
         zIndex: 160,
         display: 'flex',
         flexDirection: 'column',
@@ -78,8 +79,8 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
     >
       <style>{`
         @keyframes notifPop {
-          from { opacity: 0; transform: scale(0.95) translateY(-6px); }
-          to   { opacity: 1; transform: scale(1) translateY(0); }
+          from { opacity: 0; transform: translateX(24px); }
+          to   { opacity: 1; transform: translateX(0); }
         }
       `}</style>
 
