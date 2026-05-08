@@ -62,7 +62,6 @@ const SLUG_CATEGORY: Record<string, string> = {
   'maitriser-booking-com-algorithme-genius': 'visibilite',
   'photographie-lcd-smartphone': 'visibilite',
   'gerer-incidents-litiges-lcd': 'gestion',
-  'maitriser-dashboard-jason-marinho': 'gestion',
 }
 
 const categoryLabel: Record<string, string> = {
