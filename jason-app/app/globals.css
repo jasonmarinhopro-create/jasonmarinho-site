@@ -270,10 +270,17 @@ em { font-style: italic; color: var(--accent); }
 .communaute-no-fade .fade-up,
 .formations-no-fade .fade-up,
 .guide-no-fade .fade-up,
-.actualites-no-fade .fade-up {
+.actualites-no-fade .fade-up,
+.aide-no-fade .fade-up {
   animation: none !important;
   opacity: 1 !important;
   transform: none !important;
+}
+
+/* Hover sur cartes catégories de l'aide */
+.aide-cat-card:hover {
+  border-color: var(--accent-border) !important;
+  transform: translateY(-1px);
 }
 
 /* ── PROGRESS BAR ── */
