@@ -5,12 +5,13 @@
 import {
   Rocket, House, FileText, ChartLineUp, Toolbox, UsersThree,
 } from '@phosphor-icons/react/dist/ssr'
-import type { ComponentType } from 'react'
+
+type PhosphorIcon = typeof Rocket
 
 export interface HelpCategory {
   slug: string
   emoji: string
-  Icon: ComponentType<{ size?: number; weight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone'; color?: string }>
+  Icon: PhosphorIcon
   title: string
   description: string
   color: string
