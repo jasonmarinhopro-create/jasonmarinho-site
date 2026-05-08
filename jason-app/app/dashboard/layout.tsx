@@ -5,8 +5,8 @@ import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import { OnboardingChecklist } from '@/components/onboarding/OnboardingChecklist'
-import { detectOnboardingStep } from '@/lib/onboarding/detect'
+import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
+import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
 import DashboardLoading from './loading'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
@@ -26,9 +26,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const isAdmin = profile.role === 'admin'
   const planLabel = planToLabel(profile.plan, profile.role)
 
-  // Onboarding : toujours détecter l'étape réelle — afficher tant que non terminé
-  const onboardingState = await detectOnboardingStep(profile.userId, profile.onboarding_step)
-  const showOnboarding = !onboardingState.completed
+  // Onboarding multi-parcours : détecte la progression de chaque parcours.
+  const onboardingState = await detectTracksProgress({
+    userId: profile.userId,
+    completedSteps: profile.onboarding_completed_steps,
+    chezNousOnboardedAt: profile.chez_nous_onboarded_at,
+    onboardingStep: profile.onboarding_step,
+  })
+  const onboardingCompleted = onboardingState.totalDone === onboardingState.totalSteps
+  const showOnboarding = !onboardingCompleted
+
+  // Construit le map { trackKey: doneStepKeys[] } pour le composant client.
+  const doneByTrack: Record<string, string[]> = {}
+  onboardingState.tracks.forEach(t => { doneByTrack[t.key] = Array.from(t.doneSteps) })
 
   // Badge Actualités calculé une fois côté serveur — plus de requête DB par navigation.
   const latestPublishedAt = cachedActualites[0]?.published_at ?? null
@@ -63,11 +73,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </Suspense>
         </main>
         {showOnboarding && (
-          <OnboardingChecklist
-            currentStep={onboardingState.current}
+          <OnboardingTracks
+            pinnedTrack={profile.onboarding_pinned_track}
+            completedSteps={profile.onboarding_completed_steps}
+            doneByTrack={doneByTrack}
             dismissed={profile.onboarding_dismissed}
-            completed={!!profile.onboarding_completed_at}
+            completed={onboardingCompleted}
             persistedStep={profile.onboarding_step}
+            plan={profile.plan}
           />
         )}
       </div>
