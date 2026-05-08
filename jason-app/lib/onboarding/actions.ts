@@ -87,3 +87,55 @@ export async function restoreOnboarding() {
   revalidatePath('/dashboard')
   return { ok: true }
 }
+
+// ─── Multi-track onboarding actions ─────────────────────────────────────────
+
+/**
+ * Épingle un parcours d'onboarding (celui affiché dans le pill en bas à droite).
+ */
+export async function pinOnboardingTrack(trackKey: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ onboarding_pinned_track: trackKey })
+    .eq('id', user.id)
+
+  if (error) return { error: error.message }
+  invalidateProfileCache(user.id)
+  revalidatePath('/dashboard')
+  return { ok: true }
+}
+
+/**
+ * Marque une étape "manuelle" comme faite (ou non faite).
+ * Les étapes auto (logement, voyageur…) ignorent cette fonction.
+ */
+export async function markOnboardingStep(stepKey: string, done: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+
+  const { data: row } = await supabase
+    .from('profiles')
+    .select('onboarding_completed_steps')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  const current: string[] = (row?.onboarding_completed_steps as string[] | null) ?? []
+  const set = new Set(current)
+  if (done) set.add(stepKey)
+  else set.delete(stepKey)
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ onboarding_completed_steps: Array.from(set) })
+    .eq('id', user.id)
+
+  if (error) return { error: error.message }
+  invalidateProfileCache(user.id)
+  revalidatePath('/dashboard')
+  return { ok: true }
+}
