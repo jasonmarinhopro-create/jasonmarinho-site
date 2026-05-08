@@ -3,11 +3,17 @@ import {
   MagnifyingGlass, ArrowRight, ArrowUpRight, WhatsappLogo, ChatsCircle,
   BookOpen, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
-import { HELP_CATEGORIES } from '@/lib/help/categories'
+import { HELP_CATEGORIES, getCategory } from '@/lib/help/categories'
+import { listAllArticles } from '@/lib/help/loader'
 
 export const metadata = { title: 'Centre d\'aide, Jason Marinho' }
 
 export default async function AidePage() {
+  // Articles populaires : on prend les top 5 selon `order` dans le frontmatter
+  const popularArticles = listAllArticles()
+    .filter(a => (a.order ?? 999) <= 3)
+    .slice(0, 5)
+
   return (
     <div style={s.page} className="aide-no-fade">
 
@@ -48,18 +54,38 @@ export default async function AidePage() {
         ))}
       </div>
 
-      {/* Articles populaires (placeholder Phase 3) */}
-      <section style={s.popularSection}>
-        <div style={s.sectionHeader}>
-          <Sparkle size={14} weight="fill" style={{ color: 'var(--accent-text)' }} />
-          <span style={s.sectionLabel}>Les plus consultés</span>
-        </div>
-        <div style={s.popularList}>
-          <div style={s.popularPlaceholder}>
-            Les articles arrivent — viens tester les catégories ci-dessus en attendant.
+      {/* Articles populaires */}
+      {popularArticles.length > 0 && (
+        <section style={s.popularSection}>
+          <div style={s.sectionHeader}>
+            <Sparkle size={14} weight="fill" style={{ color: 'var(--accent-text)' }} />
+            <span style={s.sectionLabel}>Les essentiels pour démarrer</span>
           </div>
-        </div>
-      </section>
+          <div style={s.popularList}>
+            {popularArticles.map(article => {
+              const cat = getCategory(article.category)
+              return (
+                <Link
+                  key={`${article.category}-${article.slug}`}
+                  href={`/dashboard/aide/${article.category}/${article.slug}`}
+                  style={s.popularItem}
+                  className="aide-article-card"
+                >
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={s.popularTitle}>{article.title}</div>
+                    {cat && (
+                      <div style={{ ...s.popularCat, color: cat.color }}>
+                        {cat.title}
+                      </div>
+                    )}
+                  </div>
+                  <ArrowRight size={13} weight="bold" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Contact direct */}
       <section style={s.contactBox} className="glass-card">
@@ -232,17 +258,30 @@ const s: Record<string, React.CSSProperties> = {
     textTransform: 'uppercase' as const,
   },
   popularList: {
-    background: 'var(--surface)',
-    border: '1px dashed var(--border)',
-    borderRadius: '12px',
-    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
   },
-  popularPlaceholder: {
+  popularItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '12px 14px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    textDecoration: 'none',
+    transition: 'border-color 0.15s',
+  },
+  popularTitle: {
     fontSize: '13px',
-    fontWeight: 300,
-    color: 'var(--text-3)',
-    fontStyle: 'italic',
-    textAlign: 'center',
+    fontWeight: 400,
+    color: 'var(--text)',
+    marginBottom: '2px',
+  },
+  popularCat: {
+    fontSize: '11px',
+    fontWeight: 500,
   },
 
   /* Contact box */
