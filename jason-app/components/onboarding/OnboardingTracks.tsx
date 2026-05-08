@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Check, ArrowRight, X, Sparkle, CaretDown, CaretRight, Lock,
-  CheckCircle, Circle,
+  CheckCircle,
 } from '@phosphor-icons/react/dist/ssr'
-import { ONBOARDING_TRACKS, type OnboardingTrackDef, getTrack } from '@/lib/onboarding/tracks'
+import { ONBOARDING_TRACKS, getTrack } from '@/lib/onboarding/tracks'
 import {
-  dismissOnboarding, startOnboarding, pinOnboardingTrack, markOnboardingStep,
+  startOnboarding, pinOnboardingTrack, markOnboardingStep,
 } from '@/lib/onboarding/actions'
 
 interface Props {
@@ -41,9 +41,15 @@ export function OnboardingTracks({
   const [pinnedKey, setPinnedKey] = useState<string>(initialPinned)
   const [view, setView] = useState<View>(dismissed || completed ? 'pill' : 'track')
   const [, startTransition] = useTransition()
-  const [hidden, setHidden] = useState(false)
 
-  if (hidden || completed) return null
+  // Listen for the custom event dispatched by the Header "Parcours" button.
+  useEffect(() => {
+    function onOpen() { setView(v => v === 'pill' ? 'track' : v) }
+    window.addEventListener('open-onboarding', onOpen)
+    return () => window.removeEventListener('open-onboarding', onOpen)
+  }, [])
+
+  if (completed) return null
 
   const pinnedTrack = getTrack(pinnedKey) ?? ONBOARDING_TRACKS[0]
   const isFirstTime = persistedStep < 2
@@ -52,11 +58,6 @@ export function OnboardingTracks({
     setPinnedKey(key)
     setView('track')
     startTransition(async () => { await pinOnboardingTrack(key) })
-  }
-
-  function dismissAll() {
-    setHidden(true)
-    startTransition(async () => { await dismissOnboarding() })
   }
 
   function handleStartWelcome() {
@@ -256,12 +257,12 @@ export function OnboardingTracks({
               <CaretRight size={14} weight="bold" style={{ transform: 'rotate(180deg)' }} />
             </button>
             <button
-              onClick={dismissAll}
+              onClick={() => setView('pill')}
               style={s.iconBtn}
-              aria-label="Masquer"
-              title="Masquer la checklist"
+              aria-label="Réduire"
+              title="Réduire"
             >
-              <X size={14} weight="bold" />
+              <CaretDown size={14} weight="bold" />
             </button>
           </div>
         </div>

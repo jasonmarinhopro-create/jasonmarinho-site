@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, Star,
+  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, MapTrifold,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
@@ -103,9 +103,11 @@ interface HeaderProps {
   lastSeenActualitesAt?: string | null
   /** Badge Actualités pré-calculé côté serveur, transmis au Sidebar mobile. */
   hasNewActualites?: boolean
+  /** Affiche le bouton Parcours (onboarding non terminé). */
+  showOnboardingBtn?: boolean
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -212,6 +214,18 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
         </div>
 
         <div style={styles.right}>
+          {/* Onboarding parcours button */}
+          {showOnboardingBtn && (
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding'))}
+              className="theme-toggle"
+              aria-label="Mes parcours d'onboarding"
+              title="Mes parcours"
+            >
+              <MapTrifold size={17} weight="regular" />
+            </button>
+          )}
+
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
@@ -231,7 +245,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
             onClick={handleOpenNotif}
           >
-            <Bell size={18} weight={unreadCount > 0 ? 'fill' : 'regular'} />
+            <Bell size={18} weight="regular" />
             {unreadCount > 0 && (
               <span style={styles.notifBadge}>
                 {unreadCount > 9 ? '9+' : unreadCount}
