@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import {
   MagnifyingGlass, ShieldCheck, ShieldWarning, Warning,
   CheckCircle, Info, PaperPlaneRight, X, PhoneCall, Star, Trash,
   Siren, Users, Handshake,
 } from '@phosphor-icons/react/dist/ssr'
 import { searchGuest, reportGuest, requestDeletion } from './actions'
+import { markStepIfNotYet } from '@/lib/onboarding/client'
 
 const ARNAQUES = [
   {
@@ -158,6 +159,9 @@ export default function SecuriteView({
   const [isDeletionPending, startDeletion] = useTransition()
   const [deletionSuccess, setDeletionSuccess] = useState<string | null>(null)
 
+  // Onboarding : valide "Découvre la base de signalements" dès qu'on visite la page.
+  useEffect(() => { void markStepIfNotYet('reported_view') }, [])
+
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     setSearchError('')
@@ -166,6 +170,8 @@ export default function SecuriteView({
       const res = await searchGuest(query)
       if (res.error) { setSearchError(res.error); return }
       setResults(res.results)
+      // Onboarding : valide "Vérifie un voyageur" dès la première recherche réussie.
+      void markStepIfNotYet('reported_search')
     })
   }
 

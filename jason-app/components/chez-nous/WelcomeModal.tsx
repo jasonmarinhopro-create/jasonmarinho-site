@@ -90,14 +90,16 @@ const s: Record<string, React.CSSProperties> = {
   overlay: {
     position: 'fixed', inset: 0,
     background: 'rgba(0,0,0,0.65)',
+    backdropFilter: 'blur(6px)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     padding: '20px', zIndex: 1000,
   },
   modal: {
     position: 'relative',
-    background: 'var(--surface)', border: '1px solid var(--border)',
+    background: 'var(--bg-2)', border: '1px solid var(--border-2)',
     borderRadius: '20px', padding: '28px',
     width: '100%', maxWidth: '440px',
+    boxShadow: '0 24px 60px rgba(0,0,0,0.5)',
     display: 'flex', flexDirection: 'column', gap: '18px',
   },
   closeBtn: {
@@ -123,7 +125,7 @@ const s: Record<string, React.CSSProperties> = {
     margin: '2px 0 0',
   },
   slideBox: {
-    background: 'var(--bg)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '14px', padding: '24px',
     display: 'flex', flexDirection: 'column', gap: '10px',
     alignItems: 'flex-start',

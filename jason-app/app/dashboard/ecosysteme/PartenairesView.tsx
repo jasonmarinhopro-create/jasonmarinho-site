@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { ArrowUpRight, Star, Buildings, Handshake, Sparkle, Heart, TrendUp } from '@phosphor-icons/react/dist/ssr'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
 import { ECOSYSTEME_TOOLS, ECOSYSTEME_CATEGORIES, type EcosystemeTool } from '@/lib/constants/ecosysteme'
 import PartenaireSuggestForm from './PartenaireSuggestForm'
 import { toggleToolInterest } from './actions'
+import { markStepIfNotYet } from '@/lib/onboarding/client'
 
 interface Partner {
   id: string
@@ -37,6 +38,9 @@ export default function PartenairesView({
   const [counts, setCounts] = useState<Record<string, number>>(interestCounts)
   const [voted, setVoted] = useState<Set<string>>(new Set(userVotedSlugs))
   const [, startTransition] = useTransition()
+
+  // Onboarding : valide "Explore l'écosystème LCD" dès qu'on visite la page.
+  useEffect(() => { void markStepIfNotYet('ecosysteme_explored') }, [])
 
   function handleToggleInterest(slug: string, e: React.MouseEvent) {
     e.preventDefault()
