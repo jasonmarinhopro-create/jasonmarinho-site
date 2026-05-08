@@ -312,10 +312,18 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
               <User size={40} color="var(--text-muted)" />
               <p style={s.emptyTitle}>Aucun voyageur pour l&apos;instant</p>
               <p style={s.emptyDesc}>Ajoutez vos premiers voyageurs pour suivre leurs coordonnées et leurs séjours.</p>
-              <button onClick={openAdd} className="btn-primary">
-                <Plus size={15} weight="bold" />
-                Ajouter un voyageur
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '8px' }}>
+                <button onClick={openAdd} className="btn-primary">
+                  <Plus size={15} weight="bold" />
+                  Ajouter un voyageur
+                </button>
+                <a
+                  href="/dashboard/aide/logements-voyageurs/ajouter-voyageur"
+                  style={{ fontSize: '12.5px', color: 'var(--text-2)', textDecoration: 'none' }}
+                >
+                  Comment ça marche ?
+                </a>
+              </div>
             </div>
           )}
 

@@ -487,10 +487,18 @@ export default function LogementsPage({ logements: initial }: Props) {
             <p style={emptyText}>
               Créez votre première fiche logement pour gagner du temps lors de la création de vos contrats.
             </p>
-            <button onClick={openCreate} style={addBtnAlt}>
-              <Plus size={15} weight="bold" />
-              Créer un logement
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button onClick={openCreate} style={addBtnAlt}>
+                <Plus size={15} weight="bold" />
+                Créer un logement
+              </button>
+              <a
+                href="/dashboard/aide/logements-voyageurs/ajouter-logement"
+                style={{ fontSize: '12.5px', color: 'var(--text-2)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+              >
+                Comment ça marche ?
+              </a>
+            </div>
           </div>
         )}
 

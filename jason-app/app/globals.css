@@ -282,6 +282,9 @@ em { font-style: italic; color: var(--accent); }
   border-color: var(--accent-border) !important;
   transform: translateY(-1px);
 }
+.aide-article-card:hover {
+  border-color: var(--accent-border) !important;
+}
 
 /* ── PROGRESS BAR ── */
 .progress-bar {
