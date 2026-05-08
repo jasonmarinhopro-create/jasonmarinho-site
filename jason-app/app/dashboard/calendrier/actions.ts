@@ -117,6 +117,66 @@ export async function deleteCalendarEvent(id: string) {
   return { success: true }
 }
 
+// ─── Séjours depuis le calendrier ──────────────────────────────────────────
+
+interface SejourFromCalendarInput {
+  voyageur_id: string
+  logement_id: string
+  logement_nom: string
+  date_arrivee: string
+  date_depart: string
+  montant: number | null
+  contrat_statut: 'nouveau' | 'en_attente' | 'signe' | 'non_requis'
+}
+
+export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  const { data: row, error } = await supabase
+    .from('sejours')
+    .insert({
+      voyageur_id: input.voyageur_id,
+      logement: input.logement_nom,
+      date_arrivee: input.date_arrivee,
+      date_depart: input.date_depart,
+      montant: input.montant,
+      contrat_statut: input.contrat_statut,
+      user_id: session.user.id,
+    })
+    .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut')
+    .single()
+
+  if (error) return { error: error.message }
+
+  // Récupère le label voyageur pour le retour client
+  const { data: voyageur } = await supabase
+    .from('voyageurs')
+    .select('prenom, nom')
+    .eq('id', input.voyageur_id)
+    .eq('user_id', session.user.id)
+    .single()
+
+  revalidatePath('/dashboard/calendrier')
+  revalidatePath(`/dashboard/voyageurs/${input.voyageur_id}`)
+
+  return {
+    sejour: {
+      id: row.id,
+      voyageur_id: row.voyageur_id,
+      voyageur_label: voyageur
+        ? `${voyageur.prenom ?? ''} ${voyageur.nom ?? ''}`.trim() || 'Voyageur'
+        : 'Voyageur',
+      logement_label: row.logement ?? 'Logement',
+      date_arrivee: row.date_arrivee,
+      date_depart: row.date_depart,
+      montant: row.montant ?? null,
+      contrat_statut: row.contrat_statut ?? null,
+    },
+  }
+}
+
 // ─── iCal feeds ─────────────────────────────────────────────────────────────
 
 export async function addIcalFeed(input: { name: string; url: string; color: string }) {
