@@ -117,35 +117,35 @@ export function OnboardingChecklist({ currentStep, dismissed, completed, persist
                     ...(isDone ? s.itemDone : {}),
                   }}
                 >
-                  <div style={{
-                    ...s.checkbox,
-                    ...(isDone ? s.checkboxDone : {}),
-                    ...(isCurrent ? s.checkboxCurrent : {}),
-                  }}>
-                    {isDone ? <Check size={11} weight="bold" /> : step.id}
-                  </div>
+                  <div style={s.itemRow}>
+                    <div style={{
+                      ...s.checkbox,
+                      ...(isDone ? s.checkboxDone : {}),
+                      ...(isCurrent ? s.checkboxCurrent : {}),
+                    }}>
+                      {isDone ? <Check size={13} weight="bold" /> : step.id}
+                    </div>
 
-                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ ...s.itemTitle, ...(isDone ? s.itemTitleDone : {}) }}>
                       {step.title}
                     </div>
-                    {isCurrent && (
-                      <div style={s.itemDesc}>{step.description}</div>
-                    )}
                   </div>
 
                   {isCurrent && (
-                    isWelcome && isFirstTime ? (
-                      <button onClick={handleStart} style={s.itemAction} className="btn-primary">
-                        {step.ctaLabel}
-                        <ArrowRight size={11} weight="bold" />
-                      </button>
-                    ) : (
-                      <Link href={step.ctaHref} style={s.itemAction} className="btn-primary">
-                        {step.ctaLabel}
-                        <ArrowRight size={11} weight="bold" />
-                      </Link>
-                    )
+                    <>
+                      <div style={s.itemDesc}>{step.description}</div>
+                      {isWelcome && isFirstTime ? (
+                        <button onClick={handleStart} style={s.itemAction} className="btn-primary">
+                          {step.ctaLabel}
+                          <ArrowRight size={12} weight="bold" />
+                        </button>
+                      ) : (
+                        <Link href={step.ctaHref} style={s.itemAction} className="btn-primary">
+                          {step.ctaLabel}
+                          <ArrowRight size={12} weight="bold" />
+                        </Link>
+                      )}
+                    </>
                   )}
                 </div>
               )
@@ -219,32 +219,32 @@ const s: Record<string, React.CSSProperties> = {
 
   /* Carte dépliée */
   card: {
-    width: '340px',
+    width: '400px',
     maxWidth: 'calc(100vw - 40px)',
     background: 'var(--surface)',
     border: '1px solid var(--accent-border)',
     borderRadius: '18px',
-    padding: '18px',
+    padding: '22px',
     boxShadow: '0 16px 40px rgba(0,0,0,0.3)',
   },
   cardHeader: {
     display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: '12px',
+    marginBottom: '14px',
     gap: '10px',
   },
   cardTitle: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '16px',
+    fontSize: '18px',
     fontWeight: 400,
     color: 'var(--text)',
     lineHeight: 1.2,
   },
   cardSub: {
-    fontSize: '11.5px',
+    fontSize: '12.5px',
     color: 'var(--text-3)',
-    marginTop: '2px',
+    marginTop: '4px',
   },
   iconBtn: {
     width: '30px',
@@ -278,25 +278,31 @@ const s: Record<string, React.CSSProperties> = {
   list: {
     display: 'flex',
     flexDirection: 'column' as const,
-    gap: '4px',
+    gap: '6px',
   },
   item: {
     display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    padding: '10px',
-    borderRadius: '10px',
+    flexDirection: 'column' as const,
+    gap: '8px',
+    padding: '12px 14px',
+    borderRadius: '12px',
     transition: 'background 0.15s',
+  },
+  itemRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
   },
   itemCurrent: {
     background: 'var(--accent-bg)',
+    padding: '14px',
   },
   itemDone: {
-    opacity: 0.6,
+    opacity: 0.55,
   },
   checkbox: {
-    width: '22px',
-    height: '22px',
+    width: '26px',
+    height: '26px',
     borderRadius: '50%',
     background: 'var(--surface-2)',
     color: 'var(--text-3)',
@@ -305,7 +311,7 @@ const s: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
-    fontSize: '11px',
+    fontSize: '12px',
     fontWeight: 600,
   },
   checkboxDone: {
@@ -319,10 +325,12 @@ const s: Record<string, React.CSSProperties> = {
     borderColor: 'var(--accent-text)',
   },
   itemTitle: {
-    fontSize: '13px',
+    flex: 1,
+    minWidth: 0,
+    fontSize: '14px',
     fontWeight: 500,
     color: 'var(--text)',
-    lineHeight: 1.3,
+    lineHeight: 1.35,
   },
   itemTitleDone: {
     textDecoration: 'line-through',
@@ -330,15 +338,17 @@ const s: Record<string, React.CSSProperties> = {
     fontWeight: 400,
   },
   itemDesc: {
-    fontSize: '11.5px',
+    fontSize: '12.5px',
+    fontWeight: 300,
     color: 'var(--text-2)',
-    marginTop: '3px',
-    lineHeight: 1.4,
+    lineHeight: 1.55,
+    paddingLeft: '38px',
   },
   itemAction: {
-    fontSize: '11.5px',
-    padding: '6px 10px',
-    flexShrink: 0,
+    fontSize: '12.5px',
+    padding: '9px 14px',
+    marginLeft: '38px',
+    alignSelf: 'flex-start' as const,
   },
 
   /* Completed card */
