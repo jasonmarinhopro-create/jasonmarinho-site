@@ -5,6 +5,8 @@ import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { OnboardingChecklist } from '@/components/onboarding/OnboardingChecklist'
+import { detectOnboardingStep } from '@/lib/onboarding/detect'
 import DashboardLoading from './loading'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
@@ -23,6 +25,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const isAdmin = profile.role === 'admin'
   const planLabel = planToLabel(profile.plan, profile.role)
+
+  // Onboarding : ne lance la détection que si la checklist peut s'afficher
+  const showOnboarding = !profile.onboarding_dismissed
+  const onboardingState = showOnboarding
+    ? await detectOnboardingStep(profile.userId, profile.onboarding_step)
+    : { current: 6, completed: true }
 
   // Badge Actualités calculé une fois côté serveur — plus de requête DB par navigation.
   const latestPublishedAt = cachedActualites[0]?.published_at ?? null
@@ -56,6 +64,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
             {children}
           </Suspense>
         </main>
+        {showOnboarding && (
+          <OnboardingChecklist
+            currentStep={onboardingState.current}
+            dismissed={profile.onboarding_dismissed}
+            completed={!!profile.onboarding_completed_at}
+            persistedStep={profile.onboarding_step}
+          />
+        )}
       </div>
     </ThemeProvider>
   )

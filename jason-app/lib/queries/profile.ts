@@ -34,7 +34,7 @@ async function fetchProfileData(userId: string) {
   const supabase = getServiceClient()
   const { data } = await supabase
     .from('profiles')
-    .select('full_name, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id, is_contributor, last_seen_actualites_at, last_seen_nouveautes_at')
+    .select('full_name, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id, is_contributor, last_seen_actualites_at, last_seen_nouveautes_at, onboarding_step, onboarding_completed_at, onboarding_dismissed')
     .eq('id', userId)
     .maybeSingle()
   return data
@@ -78,5 +78,8 @@ export const getProfile = cache(async () => {
     is_contributor: (isAdmin ? true : (profile?.is_contributor ?? false)),
     last_seen_actualites_at: profile?.last_seen_actualites_at ?? null,
     last_seen_nouveautes_at: profile?.last_seen_nouveautes_at ?? null,
+    onboarding_step: (profile?.onboarding_step ?? 0) as number,
+    onboarding_completed_at: profile?.onboarding_completed_at ?? null,
+    onboarding_dismissed: !!profile?.onboarding_dismissed,
   }
 })
