@@ -20,8 +20,8 @@ interface Props {
 }
 
 export function OnboardingChecklist({ currentStep, dismissed, completed, persistedStep }: Props) {
-  const [open, setOpen] = useState(false)
-  const [hidden, setHidden] = useState(dismissed || completed)
+  const [open, setOpen] = useState(!dismissed && !completed)
+  const [hidden, setHidden] = useState(false)
   const [, startTransition] = useTransition()
 
   if (hidden) return null
@@ -91,9 +91,6 @@ export function OnboardingChecklist({ currentStep, dismissed, completed, persist
             <div style={{ display: 'flex', gap: '8px' }}>
               <button onClick={() => setOpen(false)} style={s.iconBtn} aria-label="Réduire" title="Réduire">
                 <CaretDown size={14} weight="bold" />
-              </button>
-              <button onClick={handleDismiss} style={s.iconBtn} aria-label="Masquer" title="Masquer">
-                <X size={14} weight="bold" />
               </button>
             </div>
           </div>

@@ -444,6 +444,126 @@ const lvs: Record<string, React.CSSProperties> = {
   },
 }
 
+// ─── Searchable combobox for voyageur / logement ─────────────────────────────
+
+function SearchableCombobox({
+  options, value, onChange, placeholder, autoFocus,
+}: {
+  options: Array<{ id: string; label: string }>
+  value: string
+  onChange: (id: string) => void
+  placeholder: string
+  autoFocus?: boolean
+}) {
+  const [query, setQuery] = useState('')
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const selected = options.find(o => o.id === value)
+  const filtered = query.trim()
+    ? options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()))
+    : options
+
+  useEffect(() => {
+    if (!open) return
+    function onDown(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false)
+        setQuery('')
+      }
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [open])
+
+  function handleSelect(id: string) {
+    onChange(id)
+    setOpen(false)
+    setQuery('')
+  }
+
+  function handleTriggerClick() {
+    setOpen(true)
+    // On next tick, focus the input inside
+    setTimeout(() => inputRef.current?.focus(), 0)
+  }
+
+  return (
+    <div ref={wrapRef} style={{ position: 'relative' }}>
+      <div
+        onClick={handleTriggerClick}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '8px',
+          padding: '9px 12px',
+          background: 'var(--surface)',
+          border: `1px solid ${open ? 'var(--accent-text)' : 'var(--border)'}`,
+          borderRadius: '10px',
+          cursor: 'text',
+          minHeight: '40px',
+          transition: 'border-color 0.15s',
+          boxShadow: open ? '0 0 0 2px rgba(var(--accent-rgb, 0,76,63), 0.10)' : 'none',
+        }}
+      >
+        {open ? (
+          <input
+            ref={inputRef}
+            autoFocus={autoFocus}
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Rechercher…"
+            style={{
+              border: 'none', background: 'transparent', flex: 1,
+              outline: 'none', fontSize: '13.5px', color: 'var(--text)',
+              fontFamily: 'inherit',
+            }}
+            onClick={e => e.stopPropagation()}
+          />
+        ) : (
+          <span style={{ flex: 1, fontSize: '13.5px', color: selected ? 'var(--text)' : 'var(--text-3)' }}>
+            {selected?.label ?? placeholder}
+          </span>
+        )}
+        <MagnifyingGlass size={13} weight="bold" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
+      </div>
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0,
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '10px',
+          zIndex: 50,
+          maxHeight: '200px',
+          overflowY: 'auto',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+        }}>
+          {filtered.length === 0 ? (
+            <div style={{ padding: '12px 14px', fontSize: '13px', color: 'var(--text-3)' }}>
+              Aucun résultat
+            </div>
+          ) : filtered.map(o => (
+            <div
+              key={o.id}
+              onMouseDown={() => handleSelect(o.id)}
+              style={{
+                padding: '10px 14px',
+                fontSize: '13.5px',
+                color: 'var(--text)',
+                background: value === o.id ? 'var(--accent-bg)' : 'transparent',
+                cursor: 'pointer',
+                fontWeight: value === o.id ? 500 : 400,
+                borderRadius: '4px',
+              }}
+            >
+              {o.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function CalendrierView({
@@ -483,7 +603,6 @@ export default function CalendrierView({
   const [fVoyageurId, setFVoyageurId] = useState('')
   const [fLogementId, setFLogementId] = useState('')
   const [fMontant,    setFMontant]    = useState('')
-  const [fContratStatut, setFContratStatut] = useState<'nouveau' | 'en_attente' | 'signe' | 'non_requis'>('nouveau')
   const [sejourError, setSejourError] = useState<string | null>(null)
 
   // ── drag-to-create
@@ -1054,7 +1173,6 @@ export default function CalendrierView({
     setFVoyageurId('')
     setFLogementId('')
     setFMontant('')
-    setFContratStatut('nouveau')
     setSejourError(null)
   }
 
@@ -1206,7 +1324,7 @@ export default function CalendrierView({
           date_arrivee: startD,
           date_depart: endD,
           montant: montantNum && !Number.isNaN(montantNum) ? montantNum : null,
-          contrat_statut: fContratStatut,
+          contrat_statut: 'nouveau',
         })
         if (res.error || !res.sejour) {
           setSejourError(res.error ?? 'Impossible de créer le séjour.')
@@ -2228,32 +2346,22 @@ export default function CalendrierView({
                 <>
                   <div>
                     <label style={s.fLabel}>Voyageur</label>
-                    <select
-                      autoFocus
+                    <SearchableCombobox
+                      options={voyageurOptions}
                       value={fVoyageurId}
-                      onChange={e => setFVoyageurId(e.target.value)}
-                      className="input-field"
-                      style={s.fInput}
-                    >
-                      <option value="">— Choisir un voyageur —</option>
-                      {voyageurOptions.map(v => (
-                        <option key={v.id} value={v.id}>{v.label}</option>
-                      ))}
-                    </select>
+                      onChange={setFVoyageurId}
+                      placeholder="Choisir un voyageur…"
+                      autoFocus
+                    />
                   </div>
                   <div>
                     <label style={s.fLabel}>Logement</label>
-                    <select
+                    <SearchableCombobox
+                      options={logementOptions.map(l => ({ id: l.id, label: l.nom }))}
                       value={fLogementId}
-                      onChange={e => setFLogementId(e.target.value)}
-                      className="input-field"
-                      style={s.fInput}
-                    >
-                      <option value="">— Choisir un logement —</option>
-                      {logementOptions.map(l => (
-                        <option key={l.id} value={l.id}>{l.nom}</option>
-                      ))}
-                    </select>
+                      onChange={setFLogementId}
+                      placeholder="Choisir un logement…"
+                    />
                   </div>
                 </>
               )}
@@ -2283,33 +2391,29 @@ export default function CalendrierView({
                 </div>
               )}
 
-              {/* Champs séjour additionnels : montant + contrat */}
+              {/* Montant optionnel */}
               {isSejour && !sejourBlocked && (
-                <>
-                  <div className="cal-date-row" style={s.dateRow}>
+                <div>
+                  <label style={s.fLabel}>Montant (optionnel)</label>
+                  <div style={{ position: 'relative' }}>
                     <input
                       type="number"
-                      placeholder="Montant (€)"
+                      placeholder="0"
                       value={fMontant}
                       onChange={e => setFMontant(e.target.value)}
                       className="input-field"
-                      style={s.fInput}
+                      style={{ ...s.fInput, paddingRight: '32px' }}
                       min={0}
                       step="0.01"
                     />
-                    <select
-                      value={fContratStatut}
-                      onChange={e => setFContratStatut(e.target.value as typeof fContratStatut)}
-                      className="input-field"
-                      style={s.fInput}
-                    >
-                      <option value="nouveau">Contrat à venir</option>
-                      <option value="en_attente">En attente de signature</option>
-                      <option value="signe">Signé</option>
-                      <option value="non_requis">Pas de contrat</option>
-                    </select>
+                    <span style={{
+                      position: 'absolute', right: '12px', top: '50%',
+                      transform: 'translateY(-50%)',
+                      fontSize: '13px', color: 'var(--text-3)',
+                      pointerEvents: 'none',
+                    }}>€</span>
                   </div>
-                </>
+                </div>
               )}
 
               {/* Notes — uniquement pour ménage/rdv/tâche */}

@@ -26,11 +26,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const isAdmin = profile.role === 'admin'
   const planLabel = planToLabel(profile.plan, profile.role)
 
-  // Onboarding : ne lance la détection que si la checklist peut s'afficher
-  const showOnboarding = !profile.onboarding_dismissed
-  const onboardingState = showOnboarding
-    ? await detectOnboardingStep(profile.userId, profile.onboarding_step)
-    : { current: 6, completed: true }
+  // Onboarding : toujours détecter l'étape réelle — afficher tant que non terminé
+  const onboardingState = await detectOnboardingStep(profile.userId, profile.onboarding_step)
+  const showOnboarding = !onboardingState.completed
 
   // Badge Actualités calculé une fois côté serveur — plus de requête DB par navigation.
   const latestPublishedAt = cachedActualites[0]?.published_at ?? null
