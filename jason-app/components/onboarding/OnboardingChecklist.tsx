@@ -49,14 +49,14 @@ export function OnboardingChecklist({ currentStep, dismissed, completed, persist
     return (
       <div style={s.wrap}>
         <div style={s.completedCard}>
-          <Trophy size={20} weight="fill" style={{ color: 'var(--accent-text)' }} />
-          <div style={{ flex: 1 }}>
-            <div style={s.completedTitle}>Bravo, tu es opérationnel ✨</div>
-            <div style={s.completedDesc}>Tu as envoyé ton premier contrat.</div>
-          </div>
           <button onClick={handleDismiss} style={s.completedClose} aria-label="Fermer">
             <X size={14} weight="bold" />
           </button>
+          <div style={s.completedIconWrap}>
+            <Trophy size={28} weight="fill" style={{ color: 'var(--accent-text)' }} />
+          </div>
+          <div style={s.completedTitle}>Bravo, tu es opérationnel ✨</div>
+          <div style={s.completedDesc}>Tu as complété toutes les étapes. Bienvenue dans l'aventure LCD !</div>
         </div>
       </div>
     )
@@ -88,12 +88,12 @@ export function OnboardingChecklist({ currentStep, dismissed, completed, persist
               <div style={s.cardTitle}>Démarrer en 5 étapes</div>
               <div style={s.cardSub}>{doneCount} sur {totalSteps} · {percent}%</div>
             </div>
-            <div style={{ display: 'flex', gap: '4px' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <button onClick={() => setOpen(false)} style={s.iconBtn} aria-label="Réduire" title="Réduire">
-                <CaretDown size={13} weight="bold" />
+                <CaretDown size={14} weight="bold" />
               </button>
               <button onClick={handleDismiss} style={s.iconBtn} aria-label="Masquer" title="Masquer">
-                <X size={13} weight="bold" />
+                <X size={14} weight="bold" />
               </button>
             </div>
           </div>
@@ -247,8 +247,8 @@ const s: Record<string, React.CSSProperties> = {
     marginTop: '2px',
   },
   iconBtn: {
-    width: '26px',
-    height: '26px',
+    width: '30px',
+    height: '30px',
     borderRadius: '8px',
     border: 'none',
     background: 'transparent',
@@ -258,6 +258,7 @@ const s: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     transition: 'background 0.15s, color 0.15s',
+    flexShrink: 0,
   },
   bar: {
     width: '100%',
@@ -342,31 +343,51 @@ const s: Record<string, React.CSSProperties> = {
 
   /* Completed card */
   completedCard: {
+    position: 'relative',
     display: 'flex',
+    flexDirection: 'column' as const,
     alignItems: 'center',
-    gap: '12px',
-    padding: '12px 14px',
+    gap: '10px',
+    padding: '22px 20px 18px',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '18px',
+    boxShadow: '0 16px 40px rgba(0,0,0,0.3)',
+    width: '260px',
+    maxWidth: 'calc(100vw - 40px)',
+    textAlign: 'center' as const,
+  },
+  completedIconWrap: {
+    width: '52px',
+    height: '52px',
+    borderRadius: '50%',
     background: 'var(--accent-bg)',
     border: '1px solid var(--accent-border)',
-    borderRadius: '14px',
-    boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
-    maxWidth: '320px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '4px',
   },
   completedTitle: {
-    fontSize: '13px',
+    fontSize: '14px',
     fontWeight: 600,
     color: 'var(--text)',
     lineHeight: 1.3,
   },
   completedDesc: {
-    fontSize: '11.5px',
+    fontSize: '12px',
+    fontWeight: 300,
     color: 'var(--text-2)',
-    marginTop: '2px',
+    lineHeight: 1.5,
+    marginTop: '-2px',
   },
   completedClose: {
-    width: '24px',
-    height: '24px',
-    borderRadius: '6px',
+    position: 'absolute' as const,
+    top: '10px',
+    right: '10px',
+    width: '28px',
+    height: '28px',
+    borderRadius: '8px',
     border: 'none',
     background: 'transparent',
     color: 'var(--text-3)',
@@ -375,5 +396,6 @@ const s: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
+    transition: 'background 0.15s',
   },
 }

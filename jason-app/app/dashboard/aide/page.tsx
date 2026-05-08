@@ -148,8 +148,6 @@ const s: Record<string, React.CSSProperties> = {
   page: {
     padding: 'clamp(20px,3vw,44px)',
     width: '100%',
-    maxWidth: '900px',
-    margin: '0 auto',
   },
 
   /* Hero */
