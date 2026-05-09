@@ -69,7 +69,12 @@ export default function QrSimpleTab({ plan, logements }: Props) {
   const [qrType, setQrType] = useState<QrTypeId>('wifi')
   const [fields, setFields] = useState<Record<string, string>>({ wifiSecurity: 'WPA' })
   const [dotStyle, setDotStyle] = useState<DotStyleId>('rounded')
-  const [fgColor, setFgColor] = useState('#0B1D0F')
+  const [fgColor, setFgColorRaw] = useState('#0B1D0F')
+  const [hexDraft, setHexDraft] = useState('0B1D0F')
+  function setFgColor(c: string) {
+    setFgColorRaw(c)
+    setHexDraft(c.replace('#', '').toUpperCase())
+  }
   const [logoUrl, setLogoUrl] = useState('')
   const [selectedLogement, setSelectedLogement] = useState<string>('')
   const [qrInstance, setQrInstance] = useState<any>(null)
@@ -339,6 +344,25 @@ export default function QrSimpleTab({ plan, logements }: Props) {
                   title="Couleur personnalisée"
                 />
               </div>
+              <div style={s.hexWrap}>
+                <span style={s.hexHash}>#</span>
+                <input
+                  type="text"
+                  value={hexDraft}
+                  onChange={e => {
+                    const raw = e.target.value.replace(/[^0-9a-fA-F]/g, '').slice(0, 6).toUpperCase()
+                    setHexDraft(raw)
+                    if (raw.length === 6) setFgColorRaw('#' + raw)
+                    else if (raw.length === 3) setFgColorRaw('#' + raw.split('').map(c => c + c).join(''))
+                  }}
+                  onBlur={() => setHexDraft(fgColor.replace('#', '').toUpperCase())}
+                  placeholder="0B1D0F"
+                  spellCheck={false}
+                  maxLength={6}
+                  style={s.hexInput}
+                />
+                <div style={{ ...s.hexPreview, background: fgColor }} />
+              </div>
             </div>
           </div>
         </div>
@@ -397,9 +421,10 @@ export default function QrSimpleTab({ plan, logements }: Props) {
 const s: Record<string, React.CSSProperties> = {
   layout: {
     display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)',
-    gap: '28px',
+    gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)',
+    gap: 'clamp(20px, 3vw, 40px)',
     alignItems: 'start',
+    width: '100%',
   },
   formCol: {
     display: 'flex',
@@ -558,6 +583,43 @@ const s: Record<string, React.CSSProperties> = {
     padding: 0,
     cursor: 'pointer',
     background: 'none',
+  },
+  hexWrap: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0',
+    marginTop: '8px',
+    background: 'var(--bg)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '8px',
+    padding: '0 10px',
+    width: 'fit-content',
+  },
+  hexHash: {
+    fontSize: '13px',
+    color: 'var(--text-muted)',
+    fontFamily: 'monospace',
+    fontWeight: 500,
+  },
+  hexInput: {
+    width: '74px',
+    background: 'transparent',
+    border: 'none',
+    padding: '7px 6px',
+    fontSize: '13px',
+    color: 'var(--text)',
+    fontFamily: 'monospace',
+    fontWeight: 500,
+    outline: 'none',
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const,
+  },
+  hexPreview: {
+    width: '18px',
+    height: '18px',
+    borderRadius: '5px',
+    border: '1px solid var(--border-2)',
+    flexShrink: 0,
   },
   previewCard: {
     background: 'var(--surface)',
