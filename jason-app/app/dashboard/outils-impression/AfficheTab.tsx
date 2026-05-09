@@ -19,7 +19,7 @@ interface Logement {
   wifi_mdp?: string
 }
 
-type Lang = 'fr' | 'en' | 'fr-en'
+type Lang = 'fr' | 'en'
 type RuleId =
   | 'no-smoking'
   | 'quiet-hours'
@@ -47,7 +47,6 @@ interface AfficheData {
   language: Lang
   logementNom: string
   tagline?: string
-  showFlag: boolean
 
   wifiSsid?: string
   wifiPassword?: string
@@ -83,7 +82,7 @@ const STEPS = [
 type StepId = (typeof STEPS)[number]['id']
 
 const ACCENT_COLORS = [
-  { id: '#0B4C3F', label: 'Forêt' },
+  { id: '#374151', label: 'Ardoise' },
   { id: '#D9612E', label: 'Coral' },
   { id: '#1e3a5f', label: 'Marine' },
   { id: '#7c3aed', label: 'Violet' },
@@ -183,9 +182,7 @@ const BLOCK_ICONS_REACT = {
 
 // === Translation helper ===
 function t(field: { fr: string; en: string }, lang: Lang): string {
-  if (lang === 'fr') return field.fr
-  if (lang === 'en') return field.en
-  return `${field.fr} · ${field.en}`
+  return lang === 'en' ? field.en : field.fr
 }
 
 // === Canvas helpers ===
@@ -638,9 +635,8 @@ function defaultBlock(): InfoBlock {
 
 function makeDefaultData(): AfficheData {
   return {
-    language: 'fr-en',
+    language: 'fr',
     logementNom: '',
-    showFlag: true,
     blocks: {
       host:     { enabled: true, name: '', phone: '' },
       checkout: { enabled: true, time: '11h00' },
@@ -651,7 +647,7 @@ function makeDefaultData(): AfficheData {
     },
     selectedRules: ['no-smoking', 'quiet-hours', 'no-parties', 'recycling'],
     showEmergency: true,
-    accentColor: '#0B4C3F',
+    accentColor: '#374151',
   }
 }
 
@@ -698,16 +694,21 @@ async function renderPosterCanvas(
     y = await drawWifiHero(ctx, W, y, data, qrWifiUrl, accent, textDark, textMute)
   }
 
-  // === INFO GRID ===
+  // === INFO GRID (guide rendered separately at bottom) ===
   const enabledBlocks = (Object.keys(data.blocks) as Array<keyof typeof data.blocks>)
-    .filter(k => data.blocks[k].enabled && hasContent(k, data.blocks[k]))
+    .filter(k => k !== 'guide' && data.blocks[k].enabled && hasContent(k, data.blocks[k]))
   if (enabledBlocks.length > 0) {
-    y = await drawInfoGrid(ctx, W, y, data, enabledBlocks, qrGuideUrl, accent, textDark, textMute, hairline)
+    y = await drawInfoGrid(ctx, W, y, data, enabledBlocks, '', accent, textDark, textMute, hairline)
   }
 
   // === RULES ===
   if (data.selectedRules.length > 0) {
     y = drawRulesRow(ctx, W, y, data, accent, textDark, textMute)
+  }
+
+  // === GUIDE / LIVRET ===
+  if (data.blocks.guide.enabled && hasContent('guide', data.blocks.guide)) {
+    y = await drawGuideSection(ctx, W, y, data, qrGuideUrl, accent, textDark, textMute)
   }
 
   // === EMERGENCY ===
@@ -761,23 +762,13 @@ function drawHeader(
   textMute: string,
   hairline: string,
 ): number {
-  let y = 36
+  let y = 42
   const lang = data.language
-
-  // Flags
-  if (data.showFlag) {
-    ctx.font = '17px "Apple Color Emoji", "Segoe UI Emoji", sans-serif'
-    ctx.textAlign = 'center'
-    ctx.fillStyle = textDark
-    const flagText = lang === 'en' ? '🇬🇧' : lang === 'fr' ? '🇫🇷' : '🇫🇷  🇬🇧'
-    ctx.fillText(flagText, W / 2, y + 12)
-    y += 22
-  }
 
   // Decorative thin bar
   ctx.fillStyle = hairline
   ctx.fillRect(W / 2 - 60, y + 6, 120, 1)
-  y += 14
+  y += 16
 
   // Main title
   ctx.font = 'bold 56px Georgia, "Times New Roman", serif'
@@ -785,29 +776,17 @@ function drawHeader(
   ctx.textAlign = 'center'
   const mainTitle = lang === 'en' ? 'WELCOME' : 'BIENVENUE'
   ctx.fillText(mainTitle, W / 2, y + 52)
-  y += 56
-
-  // Secondary title (only in fr-en mode)
-  if (lang === 'fr-en') {
-    ctx.font = 'italic 22px Georgia, "Times New Roman", serif'
-    ctx.fillStyle = textMute
-    ctx.fillText('Welcome', W / 2, y + 8)
-    y += 24
-  } else {
-    y += 8
-  }
+  y += 68
 
   // Tagline
   const taglineDefault = lang === 'fr'
     ? `Bienvenue${data.logementNom ? ` à ${data.logementNom}` : ''}. Voici ce qu'il faut savoir pour votre séjour.`
-    : lang === 'en'
-      ? `Welcome${data.logementNom ? ` to ${data.logementNom}` : ''}. Here is what you need for your stay.`
-      : `Bienvenue${data.logementNom ? ` à ${data.logementNom}` : ''} · Welcome${data.logementNom ? ` to ${data.logementNom}` : ''}`
+    : `Welcome${data.logementNom ? ` to ${data.logementNom}` : ''}. Here is what you need for your stay.`
   ctx.font = '12.5px "Outfit", "Helvetica Neue", sans-serif'
   ctx.fillStyle = '#4A4A4A'
   ctx.textAlign = 'center'
   const taglineLines = wrapText(ctx, data.tagline || taglineDefault, W / 2, y + 14, W - 180, 18, 2)
-  y += taglineLines * 18 + 14
+  y += taglineLines * 18 + 20
 
   // Hairline separator
   ctx.strokeStyle = hairline
@@ -816,7 +795,7 @@ function drawHeader(
   ctx.moveTo(60, y + 4)
   ctx.lineTo(W - 60, y + 4)
   ctx.stroke()
-  y += 16
+  y += 20
 
   return y
 }
@@ -831,7 +810,7 @@ async function drawWifiHero(
   textDark: string,
   textMute: string,
 ): Promise<number> {
-  const y = startY + 18
+  const y = startY + 24
   const qrSize = 168
   const padX = 60
   const qrX = padX
@@ -914,7 +893,7 @@ async function drawInfoGrid(
   textMute: string,
   hairline: string,
 ): Promise<number> {
-  const y = startY + 16
+  const y = startY + 22
   const padX = 60
   const innerW = W - 2 * padX
   const cols = Math.min(enabledKeys.length, 3)
@@ -948,16 +927,9 @@ async function drawInfoGrid(
     const label = t(labelMap[key as keyof typeof labelMap], data.language).toUpperCase()
     ctx.fillText(label, cx + 46, cy + 22)
 
-    // Subtitle (English version when fr-en)
-    if (data.language === 'fr-en') {
-      ctx.font = '9px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = textMute
-      ctx.fillText(labelMap[key as keyof typeof labelMap].en.toUpperCase(), cx + 46, cy + 35)
-    }
-
     // Content
     const block = data.blocks[key]
-    const contentY = data.language === 'fr-en' ? cy + 56 : cy + 50
+    const contentY = cy + 50
     const contentX = cx + 16
     const contentW = cardW - 32
 
@@ -1019,7 +991,7 @@ function drawRulesRow(
   textDark: string,
   textMute: string,
 ): number {
-  const y = startY + 12
+  const y = startY + 20
   const padX = 50
   const innerW = W - 2 * padX
   const rules = data.selectedRules.slice(0, 6)
@@ -1054,17 +1026,10 @@ function drawRulesRow(
     ctx.font = '11px "Outfit", "Helvetica Neue", sans-serif'
     ctx.fillStyle = textDark
     ctx.textAlign = 'center'
-    if (data.language === 'fr-en') {
-      ctx.fillText(def.fr, cx, itemY + iconR + 18)
-      ctx.font = '9.5px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = textMute
-      ctx.fillText(def.en, cx, itemY + iconR + 32)
-    } else {
-      ctx.fillText(data.language === 'fr' ? def.fr : def.en, cx, itemY + iconR + 18)
-    }
+    ctx.fillText(data.language === 'fr' ? def.fr : def.en, cx, itemY + iconR + 18)
   })
 
-  return itemY + iconR + (data.language === 'fr-en' ? 42 : 28)
+  return itemY + iconR + 34
 }
 
 function drawEmergencyBand(
@@ -1113,11 +1078,7 @@ function drawEmergencyBand(
     ctx.font = 'bold 12px "Outfit", "Helvetica Neue", sans-serif'
     ctx.fillStyle = accent
     ctx.textAlign = 'center'
-    if (data.language === 'fr-en') {
-      ctx.fillText(`${cell.fr} · ${cell.en}`, cx, bandTop + 38)
-    } else {
-      ctx.fillText(data.language === 'fr' ? cell.fr : cell.en, cx, bandTop + 38)
-    }
+    ctx.fillText(data.language === 'fr' ? cell.fr : cell.en, cx, bandTop + 38)
 
     ctx.font = `bold ${cells.length > 3 ? 18 : 24}px Georgia, "Times New Roman", serif`
     ctx.fillStyle = textDark
@@ -1132,6 +1093,76 @@ function drawEmergencyBand(
       ctx.stroke()
     }
   })
+}
+
+async function drawGuideSection(
+  ctx: CanvasRenderingContext2D,
+  W: number,
+  startY: number,
+  data: AfficheData,
+  qrGuideUrl: string,
+  accent: string,
+  textDark: string,
+  textMute: string,
+): Promise<number> {
+  const guide = data.blocks.guide
+  if (!guide.url) return startY
+
+  const y = startY + 20
+  const padX = 60
+  const innerW = W - 2 * padX
+  const qrSize = 110
+  const sectionH = qrSize + 36
+
+  // Section label
+  ctx.font = 'bold 11px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = accent
+  ctx.textAlign = 'center'
+  ctx.fillText(t(T.guide, data.language).toUpperCase(), W / 2, y + 14)
+  ctx.strokeStyle = accent + '30'
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(W / 2 - 22, y + 26)
+  ctx.lineTo(W / 2 + 22, y + 26)
+  ctx.stroke()
+
+  // Card
+  ctx.fillStyle = accent + '07'
+  fillRoundRect(ctx, padX, y + 36, innerW, sectionH, 12)
+  ctx.fill()
+
+  // QR
+  const qrX = padX + 20
+  const qrY = y + 36 + (sectionH - qrSize) / 2
+  if (qrGuideUrl) {
+    try {
+      const qrImg = await loadImage(qrGuideUrl)
+      ctx.fillStyle = '#FFFFFF'
+      fillRoundRect(ctx, qrX - 4, qrY - 4, qrSize + 8, qrSize + 8, 8)
+      ctx.fill()
+      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize)
+    } catch {}
+  }
+
+  // Text side
+  const textX = qrX + qrSize + 20
+  const textW = innerW - qrSize - 56
+  let ty = qrY + 8
+
+  if (guide.text) {
+    ctx.font = '12.5px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.fillStyle = textDark
+    ctx.textAlign = 'left'
+    const lines = wrapText(ctx, guide.text, textX, ty, textW, 16, 3)
+    ty += lines * 16 + 12
+  }
+
+  ctx.font = 'italic 10px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = textMute
+  ctx.textAlign = 'left'
+  ctx.fillText('Créez votre livret avec Driing', textX, ty + 12)
+
+  return y + 36 + sectionH + 16
 }
 
 async function generateQrPng(content: string, accentColor: string): Promise<string> {
@@ -1162,7 +1193,7 @@ export default function AfficheTab({ plan, logements }: Props) {
   const isStandard = plan !== 'decouverte'
   const [step, setStep] = useState<StepId>('logement')
   const [data, setData] = useState<AfficheData>(makeDefaultData)
-  const [hexDraft, setHexDraft] = useState('0B4C3F')
+  const [hexDraft, setHexDraft] = useState('374151')
   const [selectedLogementId, setSelectedLogementId] = useState<string>('')
   const [previewUrl, setPreviewUrl] = useState<string>('')
   const [isRendering, setIsRendering] = useState(false)
@@ -1341,7 +1372,7 @@ export default function AfficheTab({ plan, logements }: Props) {
                 <label style={s.fieldLabel}>Message d&apos;accueil (optionnel)</label>
                 <textarea
                   style={{ ...s.input, minHeight: '70px', resize: 'vertical' as const }}
-                  placeholder={data.language === 'en' ? 'Welcome to our home…' : data.language === 'fr' ? 'Bienvenue chez nous…' : 'Bienvenue chez nous · Welcome to our home'}
+                  placeholder={data.language === 'en' ? 'Welcome to our home…' : 'Bienvenue chez nous…'}
                   value={data.tagline ?? ''}
                   onChange={e => setField('tagline', e.target.value)}
                 />
@@ -1352,9 +1383,8 @@ export default function AfficheTab({ plan, logements }: Props) {
                 <label style={s.fieldLabel}><Translate size={13} style={{ verticalAlign: '-2px', marginRight: 4 }} /> Langue de l&apos;affiche</label>
                 <div style={s.langGrid}>
                   {([
-                    { id: 'fr',     label: 'Français',   flag: '🇫🇷' },
-                    { id: 'fr-en',  label: 'FR + EN',    flag: '🇫🇷 🇬🇧' },
-                    { id: 'en',     label: 'English',    flag: '🇬🇧' },
+                    { id: 'fr', label: 'Français' },
+                    { id: 'en', label: 'English' },
                   ] as const).map(opt => (
                     <button
                       key={opt.id}
@@ -1364,16 +1394,10 @@ export default function AfficheTab({ plan, logements }: Props) {
                         ...(data.language === opt.id ? s.langBtnActive : {}),
                       }}
                     >
-                      <span style={{ fontSize: '18px' }}>{opt.flag}</span>
                       <span>{opt.label}</span>
                     </button>
                   ))}
                 </div>
-              </div>
-
-              <div style={s.toggleRow}>
-                <label style={s.toggleLabel}>Afficher les drapeaux</label>
-                <ToggleSwitch value={data.showFlag} onChange={v => setField('showFlag', v)} />
               </div>
             </div>
           )}
@@ -1543,13 +1567,6 @@ export default function AfficheTab({ plan, logements }: Props) {
                   ))}
                 </div>
                 <div style={s.hexWrap}>
-                  <input
-                    type="color"
-                    value={data.accentColor}
-                    onChange={e => setAccentColor(e.target.value)}
-                    style={s.colorPicker}
-                    title="Sélecteur de couleur"
-                  />
                   <span style={s.hexHash}>#</span>
                   <input
                     type="text"
@@ -1751,7 +1768,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   toggleLabel: { fontSize: '13.5px', fontWeight: 500, color: 'var(--text)' },
   langGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+    display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)',
     gap: '8px',
   },
   langBtn: {
@@ -1838,12 +1855,6 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--bg)', border: '1px solid var(--border-2)',
     borderRadius: '10px', padding: '4px 10px',
     width: 'fit-content',
-  },
-  colorPicker: {
-    width: '26px', height: '26px',
-    borderRadius: '7px', border: 'none',
-    padding: 0, cursor: 'pointer',
-    background: 'none', marginRight: '8px',
   },
   hexHash: {
     fontSize: '13px', color: 'var(--text-muted)',
