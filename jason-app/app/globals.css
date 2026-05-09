@@ -179,6 +179,14 @@ em { font-style: italic; color: var(--accent); }
 
 /* badge-yellow adapts already via var(--accent-bg) / var(--accent-text) — no override needed */
 
+/* ── PLAN GATE (locked feature pages) ── */
+@media (max-width: 900px) {
+  .plan-gate-card {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+}
+
 /* ── Badges Chez Nous : contraste optimisé en mode clair ── */
 [data-theme="light"] .cn-member-badge {
   font-weight: 700 !important;

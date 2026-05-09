@@ -143,7 +143,7 @@ const s: Record<string, React.CSSProperties> = {
     textDecoration: 'none',
   },
   form: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  formDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6, margin: 0 },
+  formDesc: { fontSize: '13px', fontWeight: 400, color: 'var(--text-2)', lineHeight: 1.6, margin: 0 },
   inputWrap: { position: 'relative', display: 'flex', alignItems: 'center' },
   inputIcon: { position: 'absolute', left: '13px', color: 'var(--text-3)', flexShrink: 0 },
   input: {
@@ -172,16 +172,16 @@ const s: Record<string, React.CSSProperties> = {
   notClient: { fontSize: '12px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 },
   link: {
     display: 'inline-flex', alignItems: 'center', gap: '3px',
-    color: 'rgba(255,213,107,0.5)', textDecoration: 'none',
+    color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600,
   },
   pendingBox: {
     display: 'flex', alignItems: 'flex-start', gap: '12px',
-    background: 'rgba(255,213,107,0.06)', border: '1px solid rgba(255,213,107,0.15)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     borderRadius: '12px', padding: '14px 16px',
   },
   pendingIcon: { fontSize: '18px', flexShrink: 0 },
-  pendingTitle: { fontSize: '13px', fontWeight: 600, color: 'rgba(255,213,107,0.7)', marginBottom: '4px' },
-  pendingDesc: { fontSize: '12px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.6 },
+  pendingTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--accent-text)', marginBottom: '4px' },
+  pendingDesc: { fontSize: '12px', fontWeight: 400, color: 'var(--text-2)', lineHeight: 1.6 },
   successBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
     fontSize: '13px', color: '#34D399',
