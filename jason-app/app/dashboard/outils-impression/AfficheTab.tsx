@@ -156,6 +156,20 @@ function drawCheckmark(ctx: CanvasRenderingContext2D, cx: number, cy: number, r:
   ctx.restore()
 }
 
+function fillRoundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.lineTo(x + w - r, y)
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+  ctx.lineTo(x + w, y + h - r)
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+  ctx.lineTo(x + r, y + h)
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+  ctx.lineTo(x, y + r)
+  ctx.quadraticCurveTo(x, y, x + r, y)
+  ctx.closePath()
+}
+
 function wrapText(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -201,10 +215,9 @@ async function renderPosterCanvas(
   const accent = data.accentColor
   const bg = '#FFFFFF'
   const textDark = '#1A1A1A'
-  const textMute = '#7A7A7A'
-  const dividerColor = `${accent}33`
+  const textMute = '#6B7280'
+  const dividerColor = accent + '28'
 
-  // Wait for fonts
   if (typeof document !== 'undefined' && 'fonts' in document) {
     try { await (document as any).fonts.ready } catch {}
   }
@@ -213,218 +226,297 @@ async function renderPosterCanvas(
   ctx.fillStyle = bg
   ctx.fillRect(0, 0, W, H)
 
+  // Top accent strip
+  ctx.fillStyle = accent
+  ctx.fillRect(0, 0, W, 5)
+
   // === HEADER ===
-  // Flag emoji (small, centered above title)
+  let hY = 32
+
+  // Flags
   if (data.showFlag) {
-    ctx.font = '22px "Apple Color Emoji", "Segoe UI Emoji", sans-serif'
+    ctx.font = '18px "Apple Color Emoji", "Segoe UI Emoji", sans-serif'
     ctx.fillStyle = textDark
     ctx.textAlign = 'center'
-    ctx.fillText('🇫🇷', W / 2, 70)
+    ctx.fillText('🇫🇷  🇬🇧', W / 2, hY + 14)
+    hY += 28
   }
 
-  // BIENVENUE — big bold serif
-  ctx.font = 'bold 68px Georgia, "Times New Roman", serif'
+  // Thin decorative bar
+  ctx.fillStyle = dividerColor
+  ctx.fillRect(W / 2 - 80, hY + 4, 160, 1)
+  hY += 16
+
+  // BIENVENUE
+  ctx.font = 'bold 60px Georgia, "Times New Roman", serif'
   ctx.fillStyle = accent
   ctx.textAlign = 'center'
-  ctx.fillText('BIENVENUE', W / 2, 130)
+  ctx.fillText('BIENVENUE', W / 2, hY + 56)
+  hY += 62
 
-  // Subtitle
-  const tagline = data.tagline || (data.logementNom
-    ? `Bonjour et bienvenue à ${data.logementNom}. Voici quelques informations essentielles pour profiter pleinement de votre séjour.`
-    : 'Voici quelques informations essentielles pour profiter pleinement de votre séjour.')
-  ctx.font = '14px "Outfit", "Helvetica Neue", sans-serif'
-  ctx.fillStyle = '#3A3A3A'
+  // WELCOME — secondary, spaced
+  ctx.font = '20px Georgia, "Times New Roman", serif'
+  ctx.fillStyle = textMute
   ctx.textAlign = 'center'
-  wrapText(ctx, tagline, W / 2, 165, W - 180, 22)
+  ctx.fillText('— WELCOME —', W / 2, hY + 4)
+  hY += 22
 
-  // === TWO COLUMNS ===
-  const colTop = 240
-  const colBottom = data.showLivret ? 800 : 1020
-  const midX = W / 2
-  const leftX = 70
-  const leftW = midX - leftX - 30
-  const rightX = midX + 30
-  const rightW = W - rightX - 70
-
-  // Vertical divider
+  // Full separator
   ctx.strokeStyle = dividerColor
   ctx.lineWidth = 1
   ctx.beginPath()
-  ctx.moveTo(midX, colTop + 20)
-  ctx.lineTo(midX, colBottom - 20)
+  ctx.moveTo(60, hY + 10)
+  ctx.lineTo(W - 60, hY + 10)
   ctx.stroke()
+  hY += 24
 
-  // === LEFT COLUMN: WiFi + SOS ===
-  let lY = colTop + 20
+  // Tagline
+  const taglineDefault = data.logementNom
+    ? `Bienvenue à ${data.logementNom} · Welcome to ${data.logementNom}`
+    : 'Bienvenue dans notre logement · Welcome to our home'
+  ctx.font = '13px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = '#4A4A4A'
+  ctx.textAlign = 'center'
+  const tlLines = wrapText(ctx, data.tagline || taglineDefault, W / 2, hY, W - 200, 19)
+  hY += tlLines * 19 + 16
+
+  // === COLUMN SETUP ===
+  const colTop = hY + 4
+  const midX = W / 2
+  const pad = 56
+  const colGap = 18
+  const leftX = pad
+  const leftW = midX - pad - colGap
+  const rightX = midX + colGap
+  const rightW = W - midX - colGap - pad
+
+  // === LEFT COLUMN: WiFi ===
+  let lY = colTop + 10
 
   if (data.showWifi && data.wifiSsid) {
-    // WiFi icon
-    drawWifiIcon(ctx, leftX + leftW / 2, lY + 10, accent, 1.4)
-    lY += 50
-
-    // WIFI label
-    ctx.font = 'bold 22px Georgia, "Times New Roman", serif'
+    ctx.font = 'bold 15px Georgia, "Times New Roman", serif'
     ctx.fillStyle = accent
     ctx.textAlign = 'center'
-    ctx.fillText('WIFI', leftX + leftW / 2, lY + 10)
-    lY += 30
+    ctx.fillText('WIFI', leftX + leftW / 2, lY + 14)
+    lY += 20
 
-    // QR code
+    drawWifiIcon(ctx, leftX + leftW / 2, lY + 12, accent, 1.2)
+    lY += 40
+
     if (qrWifiUrl) {
       try {
         const qrImg = await loadImage(qrWifiUrl)
-        const qrSize = Math.min(leftW - 60, 200)
+        const qrSize = Math.min(leftW - 28, 188)
         ctx.drawImage(qrImg, leftX + (leftW - qrSize) / 2, lY, qrSize, qrSize)
-        lY += qrSize + 14
+        lY += qrSize + 12
       } catch {}
     }
 
-    // SSID + password
-    ctx.font = 'bold 13px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.font = 'bold 12px "Outfit", "Helvetica Neue", sans-serif'
     ctx.fillStyle = textDark
     ctx.textAlign = 'center'
     ctx.fillText(data.wifiSsid, leftX + leftW / 2, lY)
     lY += 18
+
     if (data.wifiPassword) {
-      ctx.font = '12px monospace'
+      ctx.font = '11px monospace'
       ctx.fillStyle = textMute
-      ctx.fillText(data.wifiPassword, leftX + leftW / 2, lY)
-      lY += 16
-    }
-    lY += 30
-  }
-
-  // SOS section
-  if (data.showEmergency) {
-    drawSOSIcon(ctx, leftX + leftW / 2, lY + 10, accent)
-    lY += 40
-
-    const cellW = leftW / 3
-    const numbers = [
-      { label: 'Pompier', value: '18' },
-      { label: 'Samu',    value: '15' },
-      { label: 'Police',  value: '17' },
-    ]
-    numbers.forEach((n, i) => {
-      const cx = leftX + cellW * (i + 0.5)
-      ctx.font = 'bold 13px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = accent
+      const pwText = data.wifiPassword
+      const pwW = Math.min(ctx.measureText(pwText).width + 22, leftW - 8)
+      const pwX = leftX + (leftW - pwW) / 2
+      ctx.fillStyle = accent + '14'
+      fillRoundRect(ctx, pwX, lY - 2, pwW, 20, 5)
+      ctx.fill()
+      ctx.fillStyle = textMute
+      ctx.font = '11px monospace'
       ctx.textAlign = 'center'
-      ctx.fillText(n.label, cx, lY + 14)
-      ctx.font = '13px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = textDark
-      ctx.fillText(n.value, cx, lY + 36)
-    })
+      ctx.fillText(pwText, leftX + leftW / 2, lY + 13)
+      lY += 28
+    }
   }
 
   // === RIGHT COLUMN: Rules + Departure ===
-  let rY = colTop + 20
+  let rY = colTop + 10
 
   if (data.showRules) {
-    ctx.font = 'bold 22px Georgia, "Times New Roman", serif'
+    ctx.font = 'bold 15px Georgia, "Times New Roman", serif'
     ctx.fillStyle = accent
     ctx.textAlign = 'center'
-    ctx.fillText('LES RÈGLES', rightX + rightW / 2, rY + 10)
-    rY += 38
+    ctx.fillText('LES RÈGLES', rightX + rightW / 2, rY + 14)
+    rY += 20
+    ctx.font = '9.5px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.fillStyle = textMute
+    ctx.textAlign = 'center'
+    ctx.fillText('HOUSE RULES', rightX + rightW / 2, rY + 10)
+    rY += 26
 
     const rules = data.houseRules.length > 0 ? data.houseRules : DEFAULT_RULES
-    rules.forEach((rule, i) => {
-      const num = String(i + 1).padStart(2, '0') + '.'
-      ctx.font = 'bold 12.5px "Outfit", "Helvetica Neue", sans-serif'
+    rules.forEach(rule => {
       ctx.fillStyle = accent
-      ctx.textAlign = 'left'
-      ctx.fillText(num, rightX, rY)
-
+      ctx.fillRect(rightX, rY - 7, 3, 13)
       ctx.font = '12.5px "Outfit", "Helvetica Neue", sans-serif'
       ctx.fillStyle = textDark
-      const lines = wrapText(ctx, rule, rightX + 32, rY, rightW - 32, 16)
-      rY += Math.max(24, lines * 16 + 8)
+      ctx.textAlign = 'left'
+      const lines = wrapText(ctx, rule, rightX + 11, rY, rightW - 11, 17)
+      rY += Math.max(26, lines * 17 + 10)
     })
-    rY += 12
+    rY += 8
   }
 
   if (data.showDeparture) {
-    ctx.font = 'bold 22px Georgia, "Times New Roman", serif'
+    ctx.font = 'bold 15px Georgia, "Times New Roman", serif'
     ctx.fillStyle = accent
     ctx.textAlign = 'center'
-    ctx.fillText('DÉPART', rightX + rightW / 2, rY + 10)
-    rY += 32
+    ctx.fillText('DÉPART', rightX + rightW / 2, rY + 14)
+    rY += 20
+    ctx.font = '9.5px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.fillStyle = textMute
+    ctx.textAlign = 'center'
+    ctx.fillText('CHECK-OUT', rightX + rightW / 2, rY + 10)
+    rY += 24
 
     if (data.departureTime) {
-      ctx.font = 'bold 14px "Outfit", "Helvetica Neue", sans-serif'
+      ctx.font = 'bold 28px Georgia, "Times New Roman", serif'
       ctx.fillStyle = textDark
       ctx.textAlign = 'center'
-      ctx.fillText(data.departureTime, rightX + rightW / 2, rY)
-      rY += 22
+      ctx.fillText(data.departureTime, rightX + rightW / 2, rY + 24)
+      rY += 36
     }
 
     if (data.departureNote) {
-      ctx.font = 'italic 11.5px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = textDark
+      ctx.font = 'italic 11px "Outfit", "Helvetica Neue", sans-serif'
+      ctx.fillStyle = textMute
       ctx.textAlign = 'center'
-      const lines = wrapText(ctx, data.departureNote, rightX + rightW / 2, rY, rightW - 20, 15)
+      const lines = wrapText(ctx, data.departureNote, rightX + rightW / 2, rY, rightW - 10, 15)
       rY += lines * 15 + 12
     }
 
     const checklist = data.departureChecklist.length > 0 ? data.departureChecklist : DEFAULT_CHECKLIST
     checklist.forEach(item => {
       drawCheckmark(ctx, rightX + 8, rY - 4, 7, accent)
-      ctx.font = '12.5px "Outfit", "Helvetica Neue", sans-serif'
+      ctx.font = '12px "Outfit", "Helvetica Neue", sans-serif'
       ctx.fillStyle = textDark
       ctx.textAlign = 'left'
-      ctx.fillText(item, rightX + 24, rY)
+      ctx.fillText(item, rightX + 22, rY)
       rY += 22
     })
   }
 
-  // === BOTTOM: Livret ===
-  if (data.showLivret) {
-    // Horizontal divider
+  // Vertical divider (drawn after columns so we know height)
+  const colBottom = Math.max(lY, rY)
+  ctx.strokeStyle = dividerColor
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(midX, colTop + 14)
+  ctx.lineTo(midX, colBottom + 10)
+  ctx.stroke()
+
+  // === EMERGENCY BAND ===
+  let afterBandY = colBottom + 16
+  if (data.showEmergency) {
+    const bandTop = colBottom + 24
+    const bandH = 96
+
+    ctx.fillStyle = accent + '10'
+    ctx.fillRect(0, bandTop, W, bandH)
+
     ctx.strokeStyle = dividerColor
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.moveTo(70, 870)
-    ctx.lineTo(W - 70, 870)
+    ctx.moveTo(0, bandTop)
+    ctx.lineTo(W, bandTop)
+    ctx.moveTo(0, bandTop + bandH)
+    ctx.lineTo(W, bandTop + bandH)
     ctx.stroke()
 
-    const livretY = 900
+    ctx.font = 'bold 10px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.fillStyle = accent
+    ctx.textAlign = 'center'
+    ctx.fillText('URGENCES · EMERGENCY', W / 2, bandTop + 17)
+
+    const numbers = [
+      { fr: 'Pompier', en: 'Fire', value: '18' },
+      { fr: 'Samu', en: 'Ambulance', value: '15' },
+      { fr: 'Police', en: 'Police', value: '17' },
+    ]
+    const cellW = W / 3
+    numbers.forEach((n, i) => {
+      const cx = cellW * (i + 0.5)
+      ctx.font = 'bold 12.5px "Outfit", "Helvetica Neue", sans-serif'
+      ctx.fillStyle = accent
+      ctx.textAlign = 'center'
+      ctx.fillText(n.fr, cx, bandTop + 40)
+      ctx.font = '10px "Outfit", "Helvetica Neue", sans-serif'
+      ctx.fillStyle = textMute
+      ctx.fillText(n.en, cx, bandTop + 54)
+      ctx.font = 'bold 26px Georgia, "Times New Roman", serif'
+      ctx.fillStyle = textDark
+      ctx.fillText(n.value, cx, bandTop + 84)
+    })
+
+    ctx.strokeStyle = dividerColor
+    ctx.lineWidth = 1
+    for (let i = 1; i < 3; i++) {
+      ctx.beginPath()
+      ctx.moveTo(cellW * i, bandTop + 24)
+      ctx.lineTo(cellW * i, bandTop + 88)
+      ctx.stroke()
+    }
+
+    afterBandY = bandTop + bandH + 16
+  }
+
+  // === LIVRET ===
+  if (data.showLivret) {
+    ctx.strokeStyle = dividerColor
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(60, afterBandY + 6)
+    ctx.lineTo(W - 60, afterBandY + 6)
+    ctx.stroke()
+
+    const livretY = afterBandY + 22
 
     if (qrLivretUrl) {
       try {
         const qrImg = await loadImage(qrLivretUrl)
-        ctx.drawImage(qrImg, 70, livretY, 130, 130)
+        ctx.drawImage(qrImg, 60, livretY, 120, 120)
       } catch {}
     }
 
-    const tx = qrLivretUrl ? 220 : 70
-    const tw = W - tx - 70
+    const tx = qrLivretUrl ? 196 : 60
+    const tw = W - tx - 60
 
-    ctx.font = 'italic bold 22px Georgia, "Times New Roman", serif'
+    ctx.font = 'italic bold 18px Georgia, "Times New Roman", serif'
     ctx.fillStyle = accent
     ctx.textAlign = 'left'
-    ctx.fillText(data.livretTitle || 'Scannez ici notre livret d\'accueil', tx, livretY + 28)
+    ctx.fillText(data.livretTitle || 'Livret d\'accueil · Guest Guide', tx, livretY + 22)
 
-    ctx.font = '12.5px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.font = '12px "Outfit", "Helvetica Neue", sans-serif'
     ctx.fillStyle = textDark
-    const sub = data.livretSubtitle || 'De nombreux détails supplémentaires sont inclus dans le livret, ainsi que des recommandations de bonnes adresses locales sélectionnées par nos soins.'
-    wrapText(ctx, sub, tx, livretY + 52, tw, 17)
+    const sub = data.livretSubtitle || 'De nombreux détails et recommandations locales vous attendent dans notre livret numérique. Many more details and local tips await in our digital guide.'
+    wrapText(ctx, sub, tx, livretY + 44, tw, 16)
 
-    ctx.font = 'bold 13px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.font = 'bold 12px "Outfit", "Helvetica Neue", sans-serif'
     ctx.fillStyle = textDark
-    ctx.fillText('Bon séjour !', tx, livretY + 110)
+    ctx.fillText('Bon séjour · Enjoy your stay!', tx, livretY + 108)
   }
 
   // === FOOTER ===
-  ctx.font = '10.5px "Outfit", "Helvetica Neue", sans-serif'
-  ctx.fillStyle = textMute
+  ctx.font = '9.5px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = '#C0C0C0'
   ctx.textAlign = 'center'
-  ctx.fillText('Créé avec Jason Marinho', W / 2, H - 24)
+  ctx.fillText('Créé avec Jason Marinho · app.jasonmarinho.com', W / 2, H - 22)
+
+  // Bottom accent strip
+  ctx.fillStyle = accent
+  ctx.fillRect(0, H - 5, W, 5)
 
   // Watermark
   if (watermark) {
     ctx.save()
-    ctx.globalAlpha = 0.10
-    ctx.font = 'bold 56px sans-serif'
+    ctx.globalAlpha = 0.08
+    ctx.font = 'bold 52px sans-serif'
     ctx.fillStyle = '#000000'
     ctx.textAlign = 'center'
     ctx.translate(W / 2, H / 2)
@@ -627,7 +719,7 @@ export default function AfficheTab({ plan, logements }: Props) {
           {step === 'logement' && (
             <div style={s.stepInner}>
               <h3 style={s.stepTitle}>Accueil voyageurs</h3>
-              <p style={s.stepDesc}>Le titre de l&apos;affiche sera <strong>BIENVENUE</strong>. Tu peux personnaliser le message d&apos;accueil et nommer ton logement.</p>
+              <p style={s.stepDesc}>Le titre de l&apos;affiche sera <strong>BIENVENUE / WELCOME</strong> — bilingue FR + EN. Tu peux personnaliser le message d&apos;accueil et nommer ton logement.</p>
 
               {logements.length > 0 && (
                 <div style={s.fieldWrap}>
@@ -669,7 +761,7 @@ export default function AfficheTab({ plan, logements }: Props) {
               </div>
 
               <div style={s.toggleRow}>
-                <label style={s.toggleLabel}>Afficher le drapeau 🇫🇷</label>
+                <label style={s.toggleLabel}>Afficher les drapeaux 🇫🇷 🇬🇧</label>
                 <ToggleSwitch value={data.showFlag} onChange={v => setField('showFlag', v)} />
               </div>
             </div>

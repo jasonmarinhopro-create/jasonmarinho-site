@@ -93,15 +93,22 @@ export default function AffichePublicView({ data: rawData }: Props) {
 
   return (
     <div style={{ minHeight: '100svh', background: '#F5F5F0', padding: 'clamp(16px,3vw,40px) 16px', fontFamily: '"Outfit", "Helvetica Neue", sans-serif' }}>
-      <div style={{ maxWidth: '720px', margin: '0 auto', background: '#FFFFFF', borderRadius: '20px', padding: 'clamp(28px,4vw,56px) clamp(20px,4vw,56px)', boxShadow: '0 20px 60px rgba(0,0,0,0.08)' }}>
+      <div style={{ maxWidth: '720px', margin: '0 auto', background: '#FFFFFF', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.08)' }}>
+        <div style={{ height: '5px', background: accent }} />
+        <div style={{ padding: 'clamp(28px,4vw,52px) clamp(20px,4vw,52px) clamp(20px,4vw,40px)' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          {d.showFlag !== false && <div style={{ fontSize: '24px', marginBottom: '4px' }}>🇫🇷</div>}
-          <h1 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 'clamp(40px,8vw,68px)', fontWeight: 700, color: accent, margin: 0, letterSpacing: '0.5px', lineHeight: 1.1 }}>
+          {d.showFlag !== false && <div style={{ fontSize: '22px', marginBottom: '6px', letterSpacing: '4px' }}>🇫🇷 🇬🇧</div>}
+          <div style={{ width: '120px', height: '1px', background: `${accent}28`, margin: '0 auto 12px' }} />
+          <h1 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 'clamp(38px,8vw,64px)', fontWeight: 700, color: accent, margin: 0, letterSpacing: '0.5px', lineHeight: 1.1 }}>
             BIENVENUE
           </h1>
-          <p style={{ fontSize: 'clamp(13px,1.6vw,15px)', color: '#3A3A3A', margin: '14px auto 0', maxWidth: '520px', lineHeight: 1.6 }}>
-            {d.tagline || `Bonjour et bienvenue à ${d.logementNom ?? 'notre logement'}. Voici quelques informations essentielles pour profiter pleinement de votre séjour.`}
+          <div style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 'clamp(14px,2vw,18px)', color: '#9CA3AF', marginTop: '6px', letterSpacing: '2px' }}>— WELCOME —</div>
+          <div style={{ width: '80%', maxWidth: '500px', height: '1px', background: `${accent}28`, margin: '14px auto 0' }} />
+          <p style={{ fontSize: 'clamp(13px,1.6vw,14px)', color: '#4A4A4A', margin: '14px auto 0', maxWidth: '520px', lineHeight: 1.65 }}>
+            {d.tagline || (d.logementNom
+              ? `Bienvenue à ${d.logementNom} · Welcome to ${d.logementNom}`
+              : 'Bienvenue dans notre logement · Welcome to our home')}
           </p>
         </div>
 
@@ -112,7 +119,7 @@ export default function AffichePublicView({ data: rawData }: Props) {
             {d.showWifi && d.wifiSsid && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                 <WifiIcon color={accent} />
-                <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: 700, color: accent, margin: 0, letterSpacing: '1.5px' }}>WIFI</h2>
+                <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: 700, color: accent, margin: 0, letterSpacing: '2px' }}>WIFI</h2>
                 <div ref={wifiQrRef} style={{ width: '180px', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '8px' }} />
                 <div style={{ marginTop: '6px', textAlign: 'center' }}>
                   <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1A1A' }}>{d.wifiSsid}</div>
@@ -122,20 +129,21 @@ export default function AffichePublicView({ data: rawData }: Props) {
             )}
 
             {d.showEmergency && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%' }}>
-                <SOSIcon color={accent} />
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', width: '100%' }}>
+              <div style={{ width: '100%', background: `${accent}10`, borderRadius: '10px', padding: '14px 12px', border: `1px solid ${accent}22` }}>
+                <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: accent, marginBottom: '10px' }}>
+                  URGENCES · EMERGENCY
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px' }}>
                   {[
-                    { label: 'Pompier', value: '18' },
-                    { label: 'Samu', value: '15' },
-                    { label: 'Police', value: '17' },
-                  ].map(n => (
-                    <div key={n.value} style={{ textAlign: 'center' }}>
-                      <a href={`tel:${n.value}`} style={{ textDecoration: 'none', display: 'block' }}>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: accent }}>{n.label}</div>
-                        <div style={{ fontSize: '14px', color: '#1A1A1A', fontWeight: 500, marginTop: '2px' }}>{n.value}</div>
-                      </a>
-                    </div>
+                    { fr: 'Pompier', en: 'Fire', value: '18' },
+                    { fr: 'Samu', en: 'Ambulance', value: '15' },
+                    { fr: 'Police', en: 'Police', value: '17' },
+                  ].map((n, i) => (
+                    <a key={n.value} href={`tel:${n.value}`} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' as const, padding: '6px 4px', borderRight: i < 2 ? `1px solid ${accent}22` : 'none' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: accent }}>{n.fr}</div>
+                      <div style={{ fontSize: '10px', color: '#9CA3AF', marginTop: '1px' }}>{n.en}</div>
+                      <div style={{ fontSize: '20px', fontWeight: 700, color: '#1A1A1A', fontFamily: 'Georgia, serif', marginTop: '4px' }}>{n.value}</div>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -149,21 +157,25 @@ export default function AffichePublicView({ data: rawData }: Props) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
             {d.showRules && (
               <div>
-                <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: 700, color: accent, margin: 0, letterSpacing: '0.5px', textAlign: 'center' }}>LES RÈGLES</h2>
-                <ol style={{ listStyle: 'none', padding: 0, margin: '20px 0 0', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ textAlign: 'center' }}>
+                  <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '17px', fontWeight: 700, color: accent, margin: 0, letterSpacing: '0.5px' }}>LES RÈGLES</h2>
+                  <div style={{ fontSize: '10px', letterSpacing: '1.5px', color: '#9CA3AF', marginTop: '2px', textTransform: 'uppercase' as const }}>House Rules</div>
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '16px 0 0', display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' as const }}>
                   {rules.map((r, i) => (
-                    <li key={i} style={{ display: 'flex', gap: '8px', fontSize: '13px', lineHeight: 1.5, color: '#1A1A1A' }}>
-                      <span style={{ fontWeight: 700, color: accent, fontFamily: 'monospace', flexShrink: 0 }}>{String(i + 1).padStart(2, '0')}.</span>
+                    <li key={i} style={{ display: 'flex', gap: '10px', fontSize: '13px', lineHeight: 1.5, color: '#1A1A1A', alignItems: 'flex-start' }}>
+                      <span style={{ width: '3px', height: '14px', borderRadius: '2px', background: accent, flexShrink: 0, marginTop: '3px', display: 'block' }} />
                       <span>{r}</span>
                     </li>
                   ))}
-                </ol>
+                </ul>
               </div>
             )}
 
             {d.showDeparture && (
               <div style={{ textAlign: 'center' as const }}>
-                <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: 700, color: accent, margin: 0, letterSpacing: '0.5px' }}>DÉPART</h2>
+                <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '17px', fontWeight: 700, color: accent, margin: 0, letterSpacing: '0.5px' }}>DÉPART</h2>
+                <div style={{ fontSize: '10px', letterSpacing: '1.5px', color: '#9CA3AF', marginTop: '2px', textTransform: 'uppercase' as const }}>Check-out</div>
                 {d.departureTime && (
                   <div style={{ fontSize: '15px', fontWeight: 700, color: '#1A1A1A', marginTop: '8px' }}>{d.departureTime}</div>
                 )}
@@ -190,24 +202,26 @@ export default function AffichePublicView({ data: rawData }: Props) {
             <div style={{ display: 'grid', gridTemplateColumns: '140px minmax(0, 1fr)', gap: '24px', alignItems: 'center' }} className="affiche-livret">
               <div ref={livretQrRef} style={{ width: '140px', height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
               <div>
-                <h3 style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 'clamp(18px,2.5vw,22px)', fontWeight: 700, color: accent, margin: 0 }}>
-                  {d.livretTitle || 'Scannez ici notre livret d\'accueil'}
+                <h3 style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 'clamp(16px,2.5vw,20px)', fontWeight: 700, color: accent, margin: 0 }}>
+                  {d.livretTitle || 'Livret d\'accueil · Guest Guide'}
                 </h3>
                 <p style={{ fontSize: '13px', color: '#1A1A1A', margin: '10px 0 0', lineHeight: 1.65 }}>
-                  {d.livretSubtitle || 'De nombreux détails supplémentaires sont inclus dans le livret, ainsi que des recommandations de bonnes adresses locales sélectionnées par nos soins.'}
+                  {d.livretSubtitle || 'De nombreux détails et recommandations locales vous attendent dans notre livret numérique. Many more details and local tips await in our digital guide.'}
                 </p>
-                <p style={{ fontSize: '13px', fontWeight: 700, color: '#1A1A1A', margin: '12px 0 0' }}>Bon séjour !</p>
+                <p style={{ fontSize: '13px', fontWeight: 700, color: '#1A1A1A', margin: '12px 0 0' }}>Bon séjour · Enjoy your stay!</p>
               </div>
             </div>
           </>
         )}
 
         {/* Footer */}
-        <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: '1px solid #EEE' }}>
+        <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: `1px solid ${accent}18` }}>
           <p style={{ fontSize: '11px', color: '#9CA3AF', margin: 0 }}>
             Créé avec <a href="https://app.jasonmarinho.com/dashboard/outils-impression" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jason Marinho</a>
           </p>
         </div>
+        </div>{/* end padding wrapper */}
+        <div style={{ height: '5px', background: accent }} />
       </div>
 
       <style>{`
