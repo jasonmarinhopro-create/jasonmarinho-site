@@ -156,6 +156,7 @@
             + '<li><a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a></li>'
             + '<li><a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a></li>'
             + '<li><a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits messages</a></li>'
+            + '<li><a href="/services/qr-affiches"><i class="ph ph-qr-code"></i>QR & Affiches WiFi</a></li>'
           + '</ul>'
         + '</div>'
         + '<div>'
