@@ -81,6 +81,8 @@ export default function QrSimpleTab({ plan, logements }: Props) {
   const [dotStyle, setDotStyle] = useState<DotStyleId>('rounded')
   const [fgColor, setFgColorRaw] = useState('#FFFFFF')
   const [hexDraft, setHexDraft] = useState('FFFFFF')
+  const [transparentBg, setTransparentBg] = useState(true)
+  const [bgColor, setBgColor] = useState('#FFFFFF')
   function setFgColor(c: string) {
     setFgColorRaw(c)
     setHexDraft(c.replace('#', '').toUpperCase())
@@ -118,7 +120,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
         height: size,
         data: qrData,
         image: logoUrl || undefined,
-        backgroundOptions: { color: 'transparent' },
+        backgroundOptions: { color: transparentBg ? 'transparent' : bgColor },
         dotsOptions: { color: fgColor, type: dotStyle },
         cornersSquareOptions: { color: fgColor },
         cornersDotOptions: { color: fgColor },
@@ -134,7 +136,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
     } finally {
       setIsGenerating(false)
     }
-  }, [qrData, fgColor, dotStyle, logoUrl, hasData])
+  }, [qrData, fgColor, dotStyle, logoUrl, transparentBg, bgColor, hasData])
 
   useEffect(() => {
     if (hasData) {
@@ -142,7 +144,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
       return () => clearTimeout(timer)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [qrData, fgColor, dotStyle, logoUrl])
+  }, [qrData, fgColor, dotStyle, logoUrl, transparentBg, bgColor])
 
   async function downloadPng() {
     if (!qrRef.current) return
@@ -368,6 +370,40 @@ export default function QrSimpleTab({ plan, logements }: Props) {
                 <div style={{ ...s.hexPreview, background: fgColor }} />
               </div>
             </div>
+            <div style={s.fieldWrap}>
+              <label style={s.fieldLabel}>Fond</label>
+              <div style={s.bgToggleRow}>
+                <button
+                  onClick={() => setTransparentBg(true)}
+                  style={{ ...s.bgToggleBtn, ...(transparentBg ? s.bgToggleBtnActive : {}) }}
+                >
+                  Transparent
+                </button>
+                <button
+                  onClick={() => setTransparentBg(false)}
+                  style={{ ...s.bgToggleBtn, ...(!transparentBg ? s.bgToggleBtnActive : {}) }}
+                >
+                  Couleur unie
+                </button>
+              </div>
+              {!transparentBg && (
+                <div style={s.colorRow}>
+                  {['#FFFFFF', '#1A1A1A', '#F5F0E8', '#FFD56B', '#93C5FD', '#F472B6'].map(c => (
+                    <button
+                      key={c}
+                      onClick={() => setBgColor(c)}
+                      style={{
+                        ...s.colorSwatch,
+                        background: c,
+                        boxShadow: c === '#FFFFFF' ? 'inset 0 0 0 1px var(--border-2)' : 'none',
+                        outline: bgColor === c ? `2px solid ${c === '#FFFFFF' ? 'var(--accent-text)' : c}` : 'none',
+                        outlineOffset: '2px',
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -376,7 +412,13 @@ export default function QrSimpleTab({ plan, logements }: Props) {
       <div style={s.previewCol}>
         <div style={s.previewCard}>
           <div style={s.previewLabel}>Aperçu</div>
-          <div style={{ ...s.previewWrap, background: isLightColor(fgColor) ? '#1A1A1A' : '#F5F5F0', borderRadius: '12px' }}>
+          <div style={{
+            ...s.previewWrap,
+            background: transparentBg
+              ? (isLightColor(fgColor) ? '#1A1A1A' : '#F5F5F0')
+              : bgColor,
+            borderRadius: '12px',
+          }}>
             {!hasData ? (
               <div style={s.previewEmpty}>
                 Remplis les champs pour voir ton QR code
@@ -395,16 +437,18 @@ export default function QrSimpleTab({ plan, logements }: Props) {
               }}
             />
           </div>
-          {isLightColor(fgColor) && (
+          {transparentBg && isLightColor(fgColor) && (
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0, textAlign: 'center' as const }}>
-              Aperçu sur fond sombre — idéal pour Canva dark ou impression noire
+              Aperçu sur fond sombre · le QR exporté reste transparent
             </p>
           )}
 
           {hasData && !isGenerating && (
             <>
               <p style={s.previewNote}>
-                Fond transparent — intègre ce QR code dans tes propres designs Canva, Word, Figma…
+                {transparentBg
+                  ? 'Fond transparent — intègre ce QR code dans tes propres designs Canva, Word, Figma…'
+                  : 'Fond couleur unie — prêt à imprimer ou utiliser tel quel.'}
               </p>
               <div style={s.dlButtons}>
                 <button onClick={downloadPng} style={s.dlBtn}>
@@ -417,7 +461,9 @@ export default function QrSimpleTab({ plan, logements }: Props) {
                 </button>
               </div>
               <p style={s.transparentNote}>
-                Le QR code PNG a un fond transparent. Pour une impression directe, utilise SVG ou génère une affiche dans l&apos;onglet <strong>Affiche A4</strong>.
+                {transparentBg
+                  ? <>Le QR code PNG a un fond transparent. Pour une impression directe, utilise SVG ou génère une affiche dans l&apos;onglet <strong>Affiche A4</strong>.</>
+                  : <>Le fond est inclus dans le PNG. Pour un fond transparent, repasse sur l&apos;option <strong>Transparent</strong>.</>}
               </p>
             </>
           )}
@@ -575,6 +621,28 @@ const s: Record<string, React.CSSProperties> = {
     gap: '8px',
     alignItems: 'center',
     flexWrap: 'wrap' as const,
+  },
+  bgToggleRow: {
+    display: 'flex',
+    gap: '6px',
+    flexWrap: 'wrap' as const,
+  },
+  bgToggleBtn: {
+    padding: '7px 14px',
+    borderRadius: '8px',
+    fontSize: '12.5px',
+    fontWeight: 400,
+    color: 'var(--text-2)',
+    background: 'var(--bg)',
+    border: '1px solid var(--border-2)',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  bgToggleBtnActive: {
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)',
+    fontWeight: 600,
   },
   colorSwatch: {
     width: '26px',
