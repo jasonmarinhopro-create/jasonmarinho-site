@@ -956,3 +956,26 @@ a { color: inherit; }
   word-break: break-word;
 }
 .cn-link:hover { text-decoration-color: #ffd56b; }
+
+/* ── Outils Impression — QR & Affiches ── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+  .outils-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .outils-preview-col {
+    position: static !important;
+    order: -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .outils-preview-wrap {
+    max-width: 340px !important;
+    margin: 0 auto;
+  }
+}
