@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur QR Code & Affiche WiFi pour Hôtes LCD | Jason Marinho</title>
+  <meta name="description" content="Créez gratuitement votre QR code WiFi, lien ou avis Google, et générez une affiche A4 prête à imprimer pour votre logement Airbnb ou location courte durée.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/qr-affiches/">
+  <meta property="og:title" content="Générateur QR Code & Affiche WiFi Gratuit pour Hôtes LCD | Jason Marinho">
+  <meta property="og:description" content="QR code WiFi, URL, avis Google, téléphone — transparent, sans fond, pour vos designs. Affiche A4 personnalisée prête à imprimer en 2 minutes.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/qr-affiches/">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/webp" href="/favicon-jason.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(64px,8vw,104px) 0} .sec.cr{background:var(--cr)}
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.6);margin:0 0 32px;max-width:560px}
+    .sub.dk{color:var(--tm)}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,213,107,.25)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
+    .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.1);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,120px) 0 clamp(56px,7vw,90px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:32px}
+    .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff} .hero-brd span{font-size:11px}
+    .badge-hero{display:inline-flex;align-items:center;gap:8px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.2);border-radius:100px;padding:6px 14px;font-size:12px;font-weight:600;color:rgba(255,213,107,.85);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+    .stats-hero{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px}
+    .stat-h{font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:6px}
+    .stat-h i{color:rgba(255,213,107,.5)}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:36px}
+    .card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:26px;transition:box-shadow .2s,transform .2s}
+    .card:hover{box-shadow:0 8px 32px rgba(0,76,63,.1);transform:translateY(-2px)}
+    .card-ic{width:48px;height:48px;border-radius:12px;background:rgba(0,76,63,.08);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:24px;margin-bottom:16px}
+    .card h3{font-family:'Fraunces',serif;font-size:1.1rem;margin:0 0 8px;font-weight:600;color:var(--td)}
+    .card p{font-size:14px;line-height:1.7;color:var(--tm);margin:0 0 10px}
+    .card-tag{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--tl)}
+    .ck-list{list-style:none;padding:0;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+    .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.6;color:var(--tm)}
+    .ck-list li .chk{margin-top:2px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}.hero-ctas{flex-direction:column;align-items:flex-start}}
+    .steps{display:flex;flex-direction:column;gap:16px;margin-top:28px}
+    .step{display:flex;gap:16px;align-items:flex-start}
+    .step-n{width:32px;height:32px;border-radius:50%;background:var(--g);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+    .step-t{font-weight:600;font-size:15px;color:var(--td);margin:0 0 4px}
+    .step-d{font-size:14px;color:var(--tm);line-height:1.6;margin:0}
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,56px);text-align:center}
+    .faq{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+    .faq-item{border:1px solid rgba(0,76,63,.1);border-radius:12px;overflow:hidden}
+    .faq-q{padding:17px 20px;font-weight:600;font-size:14.5px;color:var(--td);cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:#fff;user-select:none}
+    .faq-q:hover{background:rgba(0,76,63,.02)}
+    .faq-a{padding:0 20px 16px;font-size:14px;line-height:1.75;color:var(--tm);display:none}
+    .faq-item.open .faq-a{display:block} .faq-item.open .faq-ic{transform:rotate(180deg)}
+    .faq-ic{transition:transform .2s;color:var(--tl)}
+    /* QR preview mockup */
+    .qr-mockup{background:linear-gradient(135deg,var(--gd),var(--gm));border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:16px}
+    .qr-card{background:rgba(255,255,255,.07);border-radius:12px;padding:20px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+    .qr-card-info{display:flex;flex-direction:column;gap:4px}
+    .qr-card-tag{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,213,107,.6)}
+    .qr-card-name{font-size:18px;font-weight:700;color:#fff}
+    .qr-card-sub{font-size:12px;color:rgba(255,255,255,.5);font-family:monospace}
+    .qr-square{width:64px;height:64px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:28px}
+    .qr-types{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+    .qr-type-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:5px 12px;font-size:12px;color:rgba(255,255,255,.65);font-weight:500}
+    .hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+    .dl-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:12px;color:rgba(255,255,255,.55)}
+  </style>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"Le générateur de QR code est-il vraiment gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Le générateur de QR code simple (WiFi, URL, avis Google, téléphone…) est entièrement gratuit et sans limite. L'export PNG transparent et SVG est inclus. Le générateur d'affiche A4 est disponible en plan Standard (1,98 €/mois)."}},
+    {"@type":"Question","name":"Quelle est la différence entre QR code simple et affiche A4 ?","acceptedAnswer":{"@type":"Answer","text":"Le QR code simple génère uniquement le code (fond transparent, à intégrer dans vos propres designs Canva, Word, Figma). L'affiche A4 génère une affiche complète avec nom du logement, WiFi, contacts, en haute résolution prête pour l'impression."}},
+    {"@type":"Question","name":"Est-ce que le QR code WiFi fonctionne sur iPhone et Android ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Le format WIFI: est supporté par l'appareil photo natif d'iOS (11+) et Android (9+) sans application supplémentaire. Le téléphone se connecte automatiquement en scannant le code."}},
+    {"@type":"Question","name":"Peut-on utiliser l'affiche directement chez l'imprimeur ?","acceptedAnswer":{"@type":"Answer","text":"Oui. L'export PDF est au format A4 210×297mm en haute résolution (2× — 1588×2246px), parfait pour l'impression en ligne (Pixartprinting, Vistaprint, imprimeur local)."}},
+    {"@type":"Question","name":"Mes données WiFi sont-elles stockées ?","acceptedAnswer":{"@type":"Answer","text":"Non. La génération du QR code se fait entièrement dans votre navigateur. Aucune donnée WiFi n'est transmise à nos serveurs. Pour les affiches sauvegardées dans votre espace (plan Standard), les données sont chiffrées et liées à votre compte."}}
+  ]}</script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd">
+      <a href="/">Accueil</a><span>›</span>
+      <a href="/services">Services</a><span>›</span>
+      <span>QR Code &amp; Affiches</span>
+    </div>
+    <div class="badge-hero"><i class="ph-bold ph-qr-code"></i> Gratuit • Sans compte requis</div>
+    <h1 class="h1">Générateur de QR Code<br><em>&amp; Affiche WiFi</em></h1>
+    <p class="sub">
+      Crée ton QR code WiFi, URL ou avis Google en 30 secondes — fond transparent, prêt à intégrer dans Canva ou Word.
+      Et génère une belle affiche A4 pour ton logement, personnalisée et prête à imprimer.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://app.jasonmarinho.com/dashboard/outils-impression" class="btn-p">
+        <i class="ph-bold ph-qr-code"></i>
+        Créer mon QR code
+      </a>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">
+        Affiche A4 →
+      </a>
+    </div>
+    <div class="stats-hero">
+      <div class="stat-h"><i class="ph-bold ph-check-circle"></i> Export PNG transparent</div>
+      <div class="stat-h"><i class="ph-bold ph-check-circle"></i> Export SVG vectoriel</div>
+      <div class="stat-h"><i class="ph-bold ph-check-circle"></i> PDF A4 haute résolution</div>
+    </div>
+  </div>
+</header>
+
+<!-- QR types -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk"><i class="ph-bold ph-qr-code"></i> QR Code Simple</div>
+        <h2 class="h2">7 types de QR codes<br><em>pour ton logement</em></h2>
+        <p class="sub dk">Un QR code transparent, sans fond, à glisser dans tous tes designs existants.</p>
+
+        <ul class="ck-list">
+          <li>
+            <div class="chk"><i class="ph-bold ph-wifi-high"></i></div>
+            <div><strong>WiFi</strong> — Connexion automatique en un scan. Plus jamais à épeler ton mot de passe.</div>
+          </li>
+          <li>
+            <div class="chk"><i class="ph-bold ph-link"></i></div>
+            <div><strong>Lien / URL</strong> — Annonce Airbnb, site direct, guide en ligne, check-in digital.</div>
+          </li>
+          <li>
+            <div class="chk"><i class="ph-bold ph-map-pin"></i></div>
+            <div><strong>Google Maps</strong> — Itinéraire vers ton logement d'un tap.</div>
+          </li>
+          <li>
+            <div class="chk"><i class="ph-bold ph-star"></i></div>
+            <div><strong>Avis Google</strong> — Invite tes voyageurs à laisser un avis directement depuis ta fiche GMB.</div>
+          </li>
+          <li>
+            <div class="chk"><i class="ph-bold ph-phone"></i></div>
+            <div><strong>Téléphone &amp; SMS</strong> — Appel ou message pré-rédigé en un scan.</div>
+          </li>
+          <li>
+            <div class="chk"><i class="ph-bold ph-envelope-simple"></i></div>
+            <div><strong>E-mail</strong> — Ouvre la messagerie avec ton adresse et sujet pré-remplis.</div>
+          </li>
+        </ul>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <div class="dl-chip"><i class="ph-bold ph-download-simple"></i> PNG transparent</div>
+          <div class="dl-chip"><i class="ph-bold ph-download-simple"></i> SVG vectoriel</div>
+        </div>
+      </div>
+
+      <!-- Mockup -->
+      <div class="qr-mockup">
+        <div class="qr-card">
+          <div class="qr-card-info">
+            <div class="qr-card-tag">📶 WiFi</div>
+            <div class="qr-card-name">MonChalet-5G</div>
+            <div class="qr-card-sub">••••••••••••</div>
+          </div>
+          <div class="qr-square">▦</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:10px;letter-spacing:.8px;text-transform:uppercase">Autres types disponibles</div>
+          <div class="qr-types">
+            <div class="qr-type-chip">🔗 URL</div>
+            <div class="qr-type-chip">📍 Maps</div>
+            <div class="qr-type-chip">⭐ Avis</div>
+            <div class="qr-type-chip">📞 Tél</div>
+            <div class="qr-type-chip">✉️ Mail</div>
+            <div class="qr-type-chip">💬 SMS</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <div style="flex:1;background:rgba(255,213,107,.12);border:1px solid rgba(255,213,107,.25);border-radius:9px;padding:12px 14px;font-size:13px;font-weight:600;color:rgba(255,213,107,.85);text-align:center">⬇ PNG transparent</div>
+          <div style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:12px 14px;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);text-align:center">⬇ SVG</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Poster section -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;max-width:640px;margin:0 auto 52px">
+      <div class="lbl"><i class="ph-bold ph-printer"></i> Affiche A4</div>
+      <h2 class="h2" style="color:#fff">Une affiche <em>professionnelle</em><br>en 2 minutes</h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.55);line-height:1.75;margin:0">
+        Réponds à quelques questions, prévisualise en direct et exporte en PDF A4 haute résolution.
+        Prête pour l'impression chez l'imprimeur ou à la maison.
+      </p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-ic"><i class="ph-bold ph-question"></i></div>
+        <h3>Guide pas à pas</h3>
+        <p>4 étapes simples : logement, WiFi, contacts, style. Chaque champ est optionnel, tu n'inclus que ce que tu veux.</p>
+        <div class="card-tag">Q&amp;A guidé</div>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph-bold ph-eye"></i></div>
+        <h3>Aperçu en direct</h3>
+        <p>Chaque modification se reflète instantanément dans l'aperçu à droite. Tu vois exactement ce que tu vas télécharger.</p>
+        <div class="card-tag">Preview temps réel</div>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph-bold ph-palette"></i></div>
+        <h3>Personnalisation couleurs</h3>
+        <p>6 palettes prêtes à l'emploi ou couleur personnalisée. Nom, accroche, adresse, contacts — tout est ajustable.</p>
+        <div class="card-tag">6 couleurs + custom</div>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph-bold ph-file-pdf"></i></div>
+        <h3>PDF A4 imprimable</h3>
+        <p>Export PDF 210×297mm haute résolution. Compatible avec tous les imprimeurs en ligne et à domicile.</p>
+        <div class="card-tag">Print-ready</div>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph-bold ph-house-simple"></i></div>
+        <h3>Sauvegardé par logement</h3>
+        <p>Tes réglages sont mémorisés pour chaque logement. Mets à jour le WiFi, re-télécharge en 10 secondes.</p>
+        <div class="card-tag">Synchro logements</div>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph-bold ph-link"></i></div>
+        <h3>Lien public partageable</h3>
+        <p>Partage ton affiche digitale par lien. Voyageurs sur téléphone : se connectent d'un tap sans imprimer.</p>
+        <div class="card-tag">URL publique</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk"><i class="ph-bold ph-list-numbers"></i> Comment ça marche</div>
+        <h2 class="h2">De zéro à ton affiche<br><em>en 2 minutes</em></h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div>
+              <div class="step-t">Choisis ton type de QR</div>
+              <p class="step-d">WiFi, URL, Google Maps, avis, téléphone, e-mail ou SMS. Remplis simplement les champs demandés.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div>
+              <div class="step-t">Personnalise le style</div>
+              <p class="step-d">Couleur, style des points (carré, rond, arrondi…). Le QR code se met à jour en temps réel.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div>
+              <div class="step-t">Télécharge PNG ou SVG</div>
+              <p class="step-d">Fond transparent — à coller dans Canva, Word, Figma ou directement sur une affiche. Ou génère l'affiche A4 complète.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">4</div>
+            <div>
+              <div class="step-t">Imprime et expose</div>
+              <p class="step-d">Affiche l'affiche dans ton entrée, ta cuisine ou ton salon. Tes voyageurs se connectent en 3 secondes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="background:linear-gradient(135deg,var(--gd),var(--gm));border-radius:20px;padding:28px;color:#fff">
+          <div style="font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,213,107,.5);margin-bottom:16px">Affiche exemple</div>
+          <!-- Poster preview mockup -->
+          <div style="background:#FAFAF8;border-radius:12px;overflow:hidden">
+            <div style="background:#004C3F;padding:20px 18px 16px">
+              <div style="font-family:'Fraunces',serif;font-size:19px;font-weight:700;color:#fff;margin-bottom:4px">Studio Marais</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.7)">Bienvenue dans notre appartement !</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px">📍 12 rue des Lilas, 75011 Paris</div>
+            </div>
+            <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+              <div style="background:#F0F9F5;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div style="font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#004C3F;margin-bottom:3px">📶 WiFi</div>
+                  <div style="font-size:15px;font-weight:700;color:#0B1D0F">MonStudio-5G</div>
+                  <div style="font-size:11px;color:#6B7280;font-family:monospace">Azerty1234!</div>
+                </div>
+                <div style="width:52px;height:52px;background:#E5F0EB;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px">▦</div>
+              </div>
+              <div style="background:#F9FAFB;border:1px solid #E8EDE9;border-radius:8px;padding:10px 12px;font-size:13px;font-weight:500;color:#0B1D0F;display:flex;align-items:center;gap:8px">
+                📞 <span>+33 6 12 34 56 78</span>
+              </div>
+              <div style="background:#004C3F;padding:10px 16px;text-align:center">
+                <div style="font-size:10px;color:rgba(255,255,255,.55)">Scannez le QR code pour vous connecter automatiquement</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Canva comparison -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;max-width:580px;margin:0 auto 48px">
+      <div class="lbl"><i class="ph-bold ph-arrows-left-right"></i> Vs les alternatives</div>
+      <h2 class="h2 lt">Pourquoi pas <em>Canva</em> ou un générateur générique ?</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:22px">
+        <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.4);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px">Canva</div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-size:14px;color:rgba(255,255,255,.55);line-height:1.6">
+          <li>✗ &nbsp;QR code URL uniquement — pas de WiFi natif</li>
+          <li>✗ &nbsp;Obligé de créer un design autour du QR</li>
+          <li>✗ &nbsp;Pas de prévisualisation de l'affiche intégrée</li>
+          <li>✗ &nbsp;Pas de sauvegarde par logement</li>
+        </ul>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:22px">
+        <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.4);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px">Générateurs génériques</div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-size:14px;color:rgba(255,255,255,.55);line-height:1.6">
+          <li>✗ &nbsp;Interface complexe ou pleine de pubs</li>
+          <li>✗ &nbsp;Pas d'affiche — juste le QR code brut</li>
+          <li>✗ &nbsp;Pas de personnalisation couleur / style</li>
+          <li>✗ &nbsp;Pas connecté à tes logements</li>
+        </ul>
+      </div>
+      <div style="background:rgba(0,76,63,.35);border:1px solid rgba(255,213,107,.2);border-radius:14px;padding:22px">
+        <div style="font-size:13px;font-weight:600;color:rgba(255,213,107,.7);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px">Jason Marinho LCD</div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-size:14px;color:rgba(255,255,255,.75);line-height:1.6">
+          <li>✓ &nbsp;WiFi, URL, Maps, avis, tél, mail, SMS</li>
+          <li>✓ &nbsp;PNG transparent + SVG vectoriel</li>
+          <li>✓ &nbsp;Affiche A4 avec QR code intégré</li>
+          <li>✓ &nbsp;Prérempli depuis tes logements</li>
+          <li>✓ &nbsp;Lien public partageable</li>
+          <li>✓ &nbsp;Sauvegardé et synchronisé</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec cr">
+  <div class="s-in" style="max-width:760px">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="lbl dk"><i class="ph-bold ph-question"></i> FAQ</div>
+      <h2 class="h2">Questions fréquentes</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Le générateur de QR code est-il vraiment gratuit ?
+          <i class="ph-bold ph-caret-down faq-ic"></i>
+        </div>
+        <div class="faq-a">Oui. Le générateur de QR code simple (WiFi, URL, avis Google, téléphone…) est entièrement gratuit et sans limite. L'export PNG transparent et SVG est inclus. Le générateur d'affiche A4 est disponible en plan Standard (1,98 €/mois).</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Est-ce que le QR code WiFi fonctionne sur iPhone et Android ?
+          <i class="ph-bold ph-caret-down faq-ic"></i>
+        </div>
+        <div class="faq-a">Oui. Le format WIFI: est supporté par l'appareil photo natif d'iOS 11+ et Android 9+ sans application supplémentaire. Le téléphone se connecte automatiquement en scannant le code.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Peut-on utiliser l'affiche directement chez l'imprimeur ?
+          <i class="ph-bold ph-caret-down faq-ic"></i>
+        </div>
+        <div class="faq-a">Oui. L'export PDF est au format A4 210×297mm en haute résolution (2× — environ 1600×2250px), parfait pour l'impression en ligne (Pixartprinting, Vistaprint, imprimeur local).</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Mes données WiFi sont-elles stockées ?
+          <i class="ph-bold ph-caret-down faq-ic"></i>
+        </div>
+        <div class="faq-a">Non. La génération du QR code se fait entièrement dans votre navigateur. Aucune donnée WiFi n'est transmise à nos serveurs. Pour les affiches sauvegardées dans votre espace (plan Standard), les données sont liées à votre compte sécurisé.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Quelle est la différence entre le QR code simple et l'affiche A4 ?
+          <i class="ph-bold ph-caret-down faq-ic"></i>
+        </div>
+        <div class="faq-a">Le QR code simple génère uniquement le code (fond transparent, à intégrer dans vos propres designs Canva, Word, Figma). L'affiche A4 génère une affiche complète avec nom du logement, WiFi, contacts et QR code, en haute résolution prête pour l'impression.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec">
+  <div class="s-in">
+    <div class="cta-ban">
+      <div class="lbl"><i class="ph-bold ph-qr-code"></i> Commencer maintenant</div>
+      <h2 class="h2 lt" style="max-width:520px;margin:0 auto 16px">Ton QR code WiFi<br><em>en 30 secondes</em></h2>
+      <p style="font-size:15px;color:rgba(255,255,255,.55);margin:0 auto 32px;max-width:420px;line-height:1.7">
+        Aucun compte requis pour le QR code simple. Crée ton affiche A4 avec un compte gratuit.
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://app.jasonmarinho.com/dashboard/outils-impression" class="btn-p">
+          <i class="ph-bold ph-qr-code"></i>
+          Créer mon QR code
+        </a>
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">
+          Créer un compte gratuit →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script defer src="/footer.js"></script>
+</body>
+</html>
