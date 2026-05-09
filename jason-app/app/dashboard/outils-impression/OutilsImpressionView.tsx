@@ -64,9 +64,8 @@ export default function OutilsImpressionView({ plan, logements }: Props) {
 
 const s: Record<string, React.CSSProperties> = {
   page: {
-    maxWidth: '1100px',
-    margin: '0 auto',
-    padding: 'clamp(20px, 3vw, 40px)',
+    width: '100%',
+    padding: 'clamp(16px, 2.5vw, 32px) clamp(20px, 3vw, 40px)',
     display: 'flex',
     flexDirection: 'column',
     gap: '24px',
