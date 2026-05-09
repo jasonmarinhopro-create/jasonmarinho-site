@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import {
   Lock, ArrowRight, Sparkle, ChartLineUp, Receipt, FileText,
-  Calculator, Sparkle as Sparkles, Tag, GraduationCap,
-  Newspaper, ChartBar,
+  Calculator, Tag, GraduationCap, Newspaper, ChartBar,
 } from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
@@ -12,7 +11,7 @@ interface Props {
 }
 
 interface Feature {
-  icon: React.ComponentType<{ size?: number; weight?: string; color?: string }>
+  icon: React.ElementType
   title: string
   desc: string
 }
@@ -31,7 +30,7 @@ const COPY: Record<string, Copy> = {
     intro: 'Inclus avec Standard',
     features: [
       { icon: GraduationCap, title: '14 formations complètes', desc: 'Fiscalité, Airbnb, GBP, photographie, automatisation, prix dynamiques…' },
-      { icon: Sparkles,      title: 'Accès à vie',             desc: 'Une fois débloqué, le contenu reste à toi sans limite de temps.' },
+      { icon: Sparkle,      title: 'Accès à vie',             desc: 'Une fois débloqué, le contenu reste à toi sans limite de temps.' },
       { icon: ChartLineUp,   title: 'Suivi de progression',    desc: 'Reprends où tu t\'étais arrêté, modules, leçons et favoris synchronisés.' },
     ],
   },
@@ -54,7 +53,7 @@ const COPY: Record<string, Copy> = {
     features: [
       { icon: FileText,    title: 'Contrats illimités + PDF',      desc: 'Génère un contrat de location courte durée en 30 secondes, signé électroniquement.' },
       { icon: Receipt,     title: 'Paiement Stripe sécurisé',      desc: 'Loyer encaissé, caution bloquée, libération automatique après le départ.' },
-      { icon: Sparkles,    title: 'État des lieux + livret',       desc: 'Photos horodatées, livret d\'accueil digital partageable par lien ou QR code.' },
+      { icon: Sparkle,    title: 'État des lieux + livret',       desc: 'Photos horodatées, livret d\'accueil digital partageable par lien ou QR code.' },
       { icon: ChartLineUp, title: 'Performances détaillées',       desc: 'Taux de transformation, durée moyenne, panier moyen — par logement.' },
     ],
   },
@@ -64,7 +63,7 @@ const COPY: Record<string, Copy> = {
     intro: 'Ce qui t\'attend en Standard',
     features: [
       { icon: Tag,        title: 'Codes promo membres',     desc: 'Réductions exclusives sur les outils que tu utilises déjà au quotidien.' },
-      { icon: Sparkles,   title: 'Avantages négociés',      desc: 'Conditions privilégiées sur la formation, l\'assurance, la conciergerie.' },
+      { icon: Sparkle,   title: 'Avantages négociés',      desc: 'Conditions privilégiées sur la formation, l\'assurance, la conciergerie.' },
       { icon: Sparkle,    title: 'Nouveaux partenariats',   desc: 'Tu accèdes en avant-première aux nouveaux deals signés chaque mois.' },
     ],
   },
@@ -74,7 +73,7 @@ const COPY: Record<string, Copy> = {
     intro: 'Ce qui t\'attend en Standard',
     features: [
       { icon: Newspaper,  title: 'Tout l\'historique d\'actus',   desc: 'Accède à toutes les analyses publiées, pas seulement les plus récentes.' },
-      { icon: Sparkles,   title: 'Filtres + favoris',             desc: 'Catégories, recherche par mot-clé, sauvegarde de tes articles préférés.' },
+      { icon: Sparkle,   title: 'Filtres + favoris',             desc: 'Catégories, recherche par mot-clé, sauvegarde de tes articles préférés.' },
       { icon: ChartLineUp, title: 'Veille hebdomadaire',          desc: 'Récap des changements régulièrement publié — gain de temps assuré.' },
     ],
   },
