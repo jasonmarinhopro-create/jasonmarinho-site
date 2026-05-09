@@ -449,10 +449,11 @@ const styles: Record<string, React.CSSProperties> = {
   /* ── Driing featured ── */
   featured: {
     marginBottom: '40px',
-    background: 'linear-gradient(135deg, rgba(0,76,63,0.45) 0%, rgba(0,51,42,0.3) 100%)',
+    background: 'linear-gradient(135deg, var(--accent-bg-2) 0%, var(--accent-bg) 100%)',
     border: '1px solid var(--accent-border)',
     borderRadius: '20px',
     padding: 'clamp(20px,3vw,32px)',
+    boxShadow: 'var(--card-shadow)',
   },
   featuredHeader: {
     display: 'flex', alignItems: 'center', gap: '12px',
@@ -469,8 +470,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   featuredLogo: {
     width: '48px', height: '48px', flexShrink: 0,
-    background: 'rgba(0,76,63,0.6)',
-    border: '1px solid var(--accent-border)',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border-2)',
     borderRadius: '13px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
@@ -487,7 +488,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   serviceCard: {
     padding: '16px 18px', borderRadius: '14px',
-    background: 'rgba(0,0,0,0.20)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     textDecoration: 'none' as const, color: 'var(--text-2)',
     display: 'flex', flexDirection: 'column' as const, gap: '10px',
   },
@@ -580,7 +581,7 @@ const styles: Record<string, React.CSSProperties> = {
   catChipCount: {
     fontSize: '10px', fontWeight: 700,
     padding: '1px 6px', borderRadius: '100px',
-    background: 'rgba(255,255,255,0.06)',
+    background: 'var(--surface-2)',
     color: 'var(--text-muted)',
   },
 
