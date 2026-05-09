@@ -26,6 +26,7 @@ interface AfficheData {
   language?: Lang
   logementNom?: string
   tagline?: string
+  logoUrl?: string
   wifiSsid?: string
   wifiPassword?: string
   blocks?: {
@@ -181,6 +182,14 @@ export default function AffichePublicView({ data: rawData }: Props) {
         <div style={{ padding: 'clamp(28px,4vw,52px) clamp(20px,4vw,52px) 0' }}>
           {/* === HEADER === */}
           <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+            {d.logoUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={d.logoUrl}
+                alt={d.logementNom || 'Logo'}
+                style={{ maxHeight: '64px', maxWidth: '200px', objectFit: 'contain' as const, margin: '0 auto 16px', display: 'block' }}
+              />
+            )}
             <div style={{ width: '120px', height: '1px', background: `${accent}28`, margin: '0 auto 12px' }} />
             <h1 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 'clamp(38px,7vw,58px)', fontWeight: 700, color: accent, margin: '0 0 16px', letterSpacing: '0.5px', lineHeight: 1.05 }}>
               {mainTitle}

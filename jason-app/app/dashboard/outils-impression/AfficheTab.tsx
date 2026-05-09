@@ -47,6 +47,7 @@ interface AfficheData {
   language: Lang
   logementNom: string
   tagline?: string
+  logoUrl?: string
 
   wifiSsid?: string
   wifiPassword?: string
@@ -687,7 +688,7 @@ async function renderPosterCanvas(
   let y = 0
 
   // === HEADER ===
-  y = drawHeader(ctx, W, data, accent, textDark, textMute, hairline)
+  y = await drawHeader(ctx, W, data, accent, textDark, textMute, hairline)
 
   // === WIFI HERO ===
   if (data.wifiSsid) {
@@ -753,7 +754,7 @@ function hasContent(key: string, block: InfoBlock): boolean {
   }
 }
 
-function drawHeader(
+async function drawHeader(
   ctx: CanvasRenderingContext2D,
   W: number,
   data: AfficheData,
@@ -761,9 +762,27 @@ function drawHeader(
   textDark: string,
   textMute: string,
   hairline: string,
-): number {
+): Promise<number> {
   let y = 42
   const lang = data.language
+
+  // Logo (optional, above title)
+  if (data.logoUrl) {
+    try {
+      const logo = await loadImage(data.logoUrl)
+      const maxLogoH = 64
+      const maxLogoW = 200
+      const ratio = logo.width / logo.height
+      let lh = maxLogoH
+      let lw = lh * ratio
+      if (lw > maxLogoW) {
+        lw = maxLogoW
+        lh = lw / ratio
+      }
+      ctx.drawImage(logo, W / 2 - lw / 2, y, lw, lh)
+      y += lh + 12
+    } catch {}
+  }
 
   // Decorative thin bar
   ctx.fillStyle = hairline
@@ -1369,6 +1388,38 @@ export default function AfficheTab({ plan, logements }: Props) {
               </div>
 
               <div style={s.fieldWrap}>
+                <label style={s.fieldLabel}>Logo (optionnel, affiché au-dessus du titre)</label>
+                {data.logoUrl ? (
+                  <div style={s.logoPreviewRow}>
+                    <div style={s.logoPreviewBox}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={data.logoUrl} alt="Logo" style={s.logoPreviewImg} />
+                    </div>
+                    <button onClick={() => setField('logoUrl', undefined)} style={s.logoRemoveBtn}>
+                      Retirer
+                    </button>
+                  </div>
+                ) : (
+                  <label style={s.logoUploadBtn}>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                      onChange={async e => {
+                        const file = e.target.files?.[0]
+                        if (!file) return
+                        const reader = new FileReader()
+                        reader.onload = ev => setField('logoUrl', ev.target?.result as string)
+                        reader.readAsDataURL(file)
+                      }}
+                      style={{ display: 'none' }}
+                    />
+                    <span>Téléverser un logo</span>
+                  </label>
+                )}
+                <span style={s.hint}>PNG, JPEG ou SVG · idéalement avec fond transparent · hauteur ~200 px.</span>
+              </div>
+
+              <div style={s.fieldWrap}>
                 <label style={s.fieldLabel}>Message d&apos;accueil (optionnel)</label>
                 <textarea
                   style={{ ...s.input, minHeight: '70px', resize: 'vertical' as const }}
@@ -1832,7 +1883,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
-  ruleIconActive: { background: 'var(--accent-text)', color: '#FFFFFF' },
+  ruleIconActive: { background: 'var(--accent-text)', color: '#1A1A1A' },
   ruleLabel: { fontSize: '12px', fontWeight: 600, color: 'var(--text)', textAlign: 'center' as const },
   ruleSub: { fontSize: '10.5px', color: 'var(--text-muted)', textAlign: 'center' as const },
   colorGrid: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px' },
@@ -1859,6 +1910,35 @@ const s: Record<string, React.CSSProperties> = {
   hexHash: {
     fontSize: '13px', color: 'var(--text-muted)',
     fontFamily: 'monospace', fontWeight: 500,
+  },
+  logoUploadBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    padding: '10px 16px', borderRadius: '10px',
+    fontSize: '13px', fontWeight: 500,
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)', border: '1px dashed var(--accent-border)',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
+    width: 'fit-content',
+  },
+  logoPreviewRow: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+  },
+  logoPreviewBox: {
+    width: '80px', height: '64px',
+    background: 'var(--bg)', border: '1px solid var(--border-2)',
+    borderRadius: '8px', padding: '6px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  logoPreviewImg: {
+    maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' as const,
+  },
+  logoRemoveBtn: {
+    padding: '7px 12px', borderRadius: '8px',
+    fontSize: '12px', fontWeight: 500,
+    color: 'var(--text-2)', background: 'var(--surface)',
+    border: '1px solid var(--border-2)',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
   },
   hexInput: {
     width: '74px', background: 'transparent', border: 'none',

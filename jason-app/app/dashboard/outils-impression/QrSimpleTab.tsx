@@ -324,25 +324,19 @@ export default function QrSimpleTab({ plan, logements }: Props) {
             <div style={s.fieldWrap}>
               <label style={s.fieldLabel}>Couleur</label>
               <div style={s.colorRow}>
-                {['#0B1D0F', '#1e3a5f', '#7c3aed', '#b91c1c', '#d97706', '#059669'].map(c => (
+                {['#FFFFFF', '#1e3a5f', '#7c3aed', '#b91c1c', '#d97706', '#059669'].map(c => (
                   <button
                     key={c}
                     onClick={() => setFgColor(c)}
                     style={{
                       ...s.colorSwatch,
                       background: c,
-                      outline: fgColor === c ? `2px solid ${c}` : 'none',
+                      boxShadow: c === '#FFFFFF' ? 'inset 0 0 0 1px var(--border-2)' : 'none',
+                      outline: fgColor === c ? `2px solid ${c === '#FFFFFF' ? 'var(--accent-text)' : c}` : 'none',
                       outlineOffset: '2px',
                     }}
                   />
                 ))}
-                <input
-                  type="color"
-                  value={fgColor}
-                  onChange={e => setFgColor(e.target.value)}
-                  style={s.colorPicker}
-                  title="Couleur personnalisée"
-                />
               </div>
               <div style={s.hexWrap}>
                 <span style={s.hexHash}>#</span>
@@ -574,15 +568,6 @@ const s: Record<string, React.CSSProperties> = {
     border: 'none',
     cursor: 'pointer',
     flexShrink: 0,
-  },
-  colorPicker: {
-    width: '26px',
-    height: '26px',
-    borderRadius: '7px',
-    border: '1px solid var(--border-2)',
-    padding: 0,
-    cursor: 'pointer',
-    background: 'none',
   },
   hexWrap: {
     display: 'flex',
