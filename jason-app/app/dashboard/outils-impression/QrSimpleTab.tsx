@@ -65,12 +65,22 @@ function buildQrData(type: QrTypeId, fields: Record<string, string>): string {
   }
 }
 
+function isLightColor(hex: string): boolean {
+  const h = hex.replace('#', '')
+  if (h.length < 6) return false
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  // Perceived luminance
+  return (r * 0.299 + g * 0.587 + b * 0.114) > 180
+}
+
 export default function QrSimpleTab({ plan, logements }: Props) {
   const [qrType, setQrType] = useState<QrTypeId>('wifi')
   const [fields, setFields] = useState<Record<string, string>>({ wifiSecurity: 'WPA' })
   const [dotStyle, setDotStyle] = useState<DotStyleId>('rounded')
-  const [fgColor, setFgColorRaw] = useState('#0B1D0F')
-  const [hexDraft, setHexDraft] = useState('0B1D0F')
+  const [fgColor, setFgColorRaw] = useState('#FFFFFF')
+  const [hexDraft, setHexDraft] = useState('FFFFFF')
   function setFgColor(c: string) {
     setFgColorRaw(c)
     setHexDraft(c.replace('#', '').toUpperCase())
@@ -366,7 +376,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
       <div style={s.previewCol}>
         <div style={s.previewCard}>
           <div style={s.previewLabel}>Aperçu</div>
-          <div style={s.previewWrap}>
+          <div style={{ ...s.previewWrap, background: isLightColor(fgColor) ? '#1A1A1A' : '#F5F5F0', borderRadius: '12px' }}>
             {!hasData ? (
               <div style={s.previewEmpty}>
                 Remplis les champs pour voir ton QR code
@@ -385,6 +395,11 @@ export default function QrSimpleTab({ plan, logements }: Props) {
               }}
             />
           </div>
+          {isLightColor(fgColor) && (
+            <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0, textAlign: 'center' as const }}>
+              Aperçu sur fond sombre — idéal pour Canva dark ou impression noire
+            </p>
+          )}
 
           {hasData && !isGenerating && (
             <>
