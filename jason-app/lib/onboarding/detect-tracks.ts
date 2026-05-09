@@ -42,13 +42,14 @@ export async function detectTracksProgress(input: DetectInput): Promise<Onboardi
   const supabase = await createClient()
   const manualSet = new Set(completedSteps)
 
-  const [logements, voyageurs, sejours, contracts, audits, chezNousPosts] = await Promise.all([
+  const [logements, voyageurs, sejours, contracts, audits, chezNousPosts, affiches] = await Promise.all([
     supabase.from('logements')          .select('id', { count: 'exact', head: true }).eq('user_id', userId),
     supabase.from('voyageurs')          .select('id', { count: 'exact', head: true }).eq('user_id', userId),
     supabase.from('sejours')            .select('id', { count: 'exact', head: true }).eq('user_id', userId),
     supabase.from('contracts')          .select('id', { count: 'exact', head: true }).eq('user_id', userId).neq('statut', 'annule'),
     supabase.from('audit_gbp_sessions') .select('id', { count: 'exact', head: true }).eq('user_id', userId),
     supabase.from('chez_nous_posts')    .select('id', { count: 'exact', head: true }).eq('user_id', userId),
+    supabase.from('affiches')           .select('id', { count: 'exact', head: true }).eq('user_id', userId),
   ])
 
   const auto: Record<string, boolean> = {
@@ -59,6 +60,7 @@ export async function detectTracksProgress(input: DetectInput): Promise<Onboardi
     gbp_audit:       (audits.count ?? 0) > 0,
     chez_nous_intro: !!chezNousOnboardedAt,
     chez_nous_post:  (chezNousPosts.count ?? 0) > 0,
+    affiche:         (affiches.count ?? 0) > 0,
     // welcome est manuel mais on le considère fait dès que onboarding_step >= 2
     // (compat avec l'ancien système).
   }

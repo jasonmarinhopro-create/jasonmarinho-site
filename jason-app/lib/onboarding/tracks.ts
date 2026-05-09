@@ -77,6 +77,14 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
         ctaHref: '/dashboard/gabarits',
         detect: 'manual',
       },
+      {
+        key: 'affiche',
+        title: 'Crée ton affiche WiFi & accueil',
+        description: 'QR code WiFi + infos pratiques sur une affiche A4 prête à imprimer pour ton logement.',
+        ctaLabel: 'Créer mon affiche',
+        ctaHref: '/dashboard/outils-impression',
+        detect: 'auto',
+      },
     ],
   },
   {
