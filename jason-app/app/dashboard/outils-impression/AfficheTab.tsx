@@ -2,9 +2,12 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import {
-  WifiHigh, HouseSimple, ListChecks, BookOpen, Palette,
+  WifiHigh, HouseSimple, ListChecks, Phone, Translate,
   CheckCircle, ArrowLeft, ArrowRight, DownloadSimple,
-  ArrowsClockwise, Lock,
+  ArrowsClockwise, Lock, Palette,
+  Cigarette, Moon, MusicNote, PawPrint, Drop,
+  Recycle, Footprints,
+  Car, Clock, Thermometer, BookOpen, Trash,
 } from '@phosphor-icons/react/dist/ssr'
 import { saveAffiche, getAfficheByLogement } from './actions'
 
@@ -16,31 +19,50 @@ interface Logement {
   wifi_mdp?: string
 }
 
+type Lang = 'fr' | 'en' | 'fr-en'
+type RuleId =
+  | 'no-smoking'
+  | 'quiet-hours'
+  | 'no-pets'
+  | 'pets-ok'
+  | 'no-parties'
+  | 'no-shoes'
+  | 'recycling'
+  | 'lock-up'
+  | 'save-water'
+
+interface InfoBlock {
+  enabled: boolean
+  text?: string
+  // host-specific
+  name?: string
+  phone?: string
+  // checkout-specific
+  time?: string
+  // guide-specific
+  url?: string
+}
+
 interface AfficheData {
-  // Header
+  language: Lang
   logementNom: string
   tagline?: string
   showFlag: boolean
-  // WiFi
+
   wifiSsid?: string
   wifiPassword?: string
-  showWifi: boolean
-  // Rules
-  showRules: boolean
-  houseRules: string[]
-  // Departure
-  showDeparture: boolean
-  departureTime?: string
-  departureChecklist: string[]
-  departureNote?: string
-  // Emergency
+
+  blocks: {
+    host: InfoBlock
+    checkout: InfoBlock
+    parking: InfoBlock
+    waste: InfoBlock
+    climate: InfoBlock
+    guide: InfoBlock
+  }
+
+  selectedRules: RuleId[]
   showEmergency: boolean
-  // Livret
-  showLivret: boolean
-  livretUrl?: string
-  livretTitle?: string
-  livretSubtitle?: string
-  // Style
   accentColor: string
 }
 
@@ -51,37 +73,122 @@ interface Props {
 
 const STEPS = [
   { id: 'logement',  label: 'Accueil',         icon: HouseSimple },
-  { id: 'wifi',      label: 'WiFi',             icon: WifiHigh },
-  { id: 'rules',     label: 'Règles & Départ',  icon: ListChecks },
-  { id: 'livret',    label: 'Livret + SOS',     icon: BookOpen },
-  { id: 'style',     label: 'Style & export',   icon: Palette },
+  { id: 'wifi',      label: 'WiFi',            icon: WifiHigh },
+  { id: 'practical', label: 'Infos pratiques', icon: ListChecks },
+  { id: 'rules',     label: 'Règles maison',   icon: Lock },
+  { id: 'emergency', label: 'Urgences',        icon: Phone },
+  { id: 'style',     label: 'Style & export',  icon: Palette },
 ] as const
 
 type StepId = (typeof STEPS)[number]['id']
 
 const ACCENT_COLORS = [
-  { id: '#D9612E', label: 'Coral' },
   { id: '#0B4C3F', label: 'Forêt' },
+  { id: '#D9612E', label: 'Coral' },
   { id: '#1e3a5f', label: 'Marine' },
   { id: '#7c3aed', label: 'Violet' },
-  { id: '#b91c1c', label: 'Rouge' },
+  { id: '#b45309', label: 'Ambre' },
   { id: '#0f766e', label: 'Teal' },
 ]
 
-const DEFAULT_RULES = [
-  'Respect du calme et des autres clients',
-  'Interdiction de fumer dans les chambres',
-  'Respectez les horaires d\'arrivée et de départ',
-  'Prenez soin du mobilier et des équipements',
+// Translation table
+const T = {
+  welcomeFr: 'Bienvenue',
+  welcomeEn: 'Welcome',
+  wifi: { fr: 'WiFi', en: 'Wi-Fi' },
+  password: { fr: 'Mot de passe', en: 'Password' },
+  scanToConnect: { fr: 'Scannez pour vous connecter', en: 'Scan to connect' },
+  host: { fr: 'Votre hôte', en: 'Your host' },
+  checkout: { fr: 'Départ', en: 'Check-out' },
+  parking: { fr: 'Parking', en: 'Parking' },
+  waste: { fr: 'Tri sélectif', en: 'Recycling' },
+  climate: { fr: 'Chauffage · Clim', en: 'Heating · AC' },
+  guide: { fr: 'Livret d\'accueil', en: 'Guest guide' },
+  rules: { fr: 'Règles maison', en: 'House rules' },
+  emergency: { fr: 'Urgences', en: 'Emergency' },
+  taglineDefault: { fr: 'Voici ce qu\'il faut savoir pour votre séjour', en: 'Here is what you need for your stay' },
+}
+
+interface RuleDef {
+  id: RuleId
+  fr: string
+  en: string
+  // canvas drawing function
+  draw: (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) => void
+}
+
+const RULES: RuleDef[] = [
+  {
+    id: 'no-smoking', fr: 'Non-fumeur', en: 'No smoking',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, false, () => drawCigarette(ctx, cx, cy, r, c, true)),
+  },
+  {
+    id: 'quiet-hours', fr: 'Calme la nuit', en: 'Quiet at night',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, false, () => drawMoon(ctx, cx, cy, r, c)),
+  },
+  {
+    id: 'no-parties', fr: 'Pas de fêtes', en: 'No parties',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, false, () => drawMusicNote(ctx, cx, cy, r, c, true)),
+  },
+  {
+    id: 'no-pets', fr: 'Pas d\'animaux', en: 'No pets',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, false, () => drawPaw(ctx, cx, cy, r, c, true)),
+  },
+  {
+    id: 'pets-ok', fr: 'Animaux OK', en: 'Pets welcome',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, true, () => drawPaw(ctx, cx, cy, r, c, false)),
+  },
+  {
+    id: 'no-shoes', fr: 'Sans chaussures', en: 'No shoes inside',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, false, () => drawShoe(ctx, cx, cy, r, c, true)),
+  },
+  {
+    id: 'recycling', fr: 'Tri sélectif', en: 'Sort recycling',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, true, () => drawRecycle(ctx, cx, cy, r, c)),
+  },
+  {
+    id: 'lock-up', fr: 'Fermer à clé', en: 'Lock when leaving',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, true, () => drawLock(ctx, cx, cy, r, c)),
+  },
+  {
+    id: 'save-water', fr: 'Économie d\'eau', en: 'Save water',
+    draw: (ctx, cx, cy, r, c) => drawIconCircle(ctx, cx, cy, r, c, true, () => drawDrop(ctx, cx, cy, r, c)),
+  },
 ]
 
-const DEFAULT_CHECKLIST = [
-  'Rendre la clé ou badge',
-  'Vérifier que rien n\'est oublié',
-  'Jeter les déchets dans les poubelles',
-  'Éteindre les lumières et la climatisation',
-]
+const RULES_MAP: Record<RuleId, RuleDef> = Object.fromEntries(RULES.map(r => [r.id, r])) as Record<RuleId, RuleDef>
 
+// Phosphor icon component lookup (for the wizard UI)
+const RULE_ICONS_REACT: Record<RuleId, typeof Cigarette> = {
+  'no-smoking': Cigarette,
+  'quiet-hours': Moon,
+  'no-parties': MusicNote,
+  'no-pets': PawPrint,
+  'pets-ok': PawPrint,
+  'no-shoes': Footprints,
+  'recycling': Recycle,
+  'lock-up': Lock,
+  'save-water': Drop,
+}
+
+// Block icon lookup for wizard
+const BLOCK_ICONS_REACT = {
+  host: Phone,
+  checkout: Clock,
+  parking: Car,
+  waste: Trash,
+  climate: Thermometer,
+  guide: BookOpen,
+}
+
+// === Translation helper ===
+function t(field: { fr: string; en: string }, lang: Lang): string {
+  if (lang === 'fr') return field.fr
+  if (lang === 'en') return field.en
+  return `${field.fr} · ${field.en}`
+}
+
+// === Canvas helpers ===
 function buildWifiQr(ssid: string, password: string): string {
   const s = ssid.replace(/[\\;,":]/g, c => `\\${c}`)
   const p = password.replace(/[\\;,":]/g, c => `\\${c}`)
@@ -97,76 +204,18 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
-function drawWifiIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, color: string, scale = 1) {
-  ctx.save()
-  ctx.strokeStyle = color
-  ctx.fillStyle = color
-  ctx.lineWidth = 3 * scale
-  ctx.lineCap = 'round'
-  for (let i = 1; i <= 3; i++) {
-    ctx.beginPath()
-    ctx.arc(cx, cy + 6 * scale, 6 * i * scale, Math.PI * 1.20, Math.PI * 1.80)
-    ctx.stroke()
-  }
-  ctx.beginPath()
-  ctx.arc(cx, cy + 6 * scale, 2 * scale, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.restore()
-}
-
-function drawSOSIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, color: string) {
-  ctx.save()
-  // Phone shape
-  ctx.strokeStyle = color
-  ctx.lineWidth = 2.5
-  ctx.lineCap = 'round'
-  ctx.beginPath()
-  // Simplified handset
-  ctx.arc(cx, cy + 6, 18, Math.PI * 1.05, Math.PI * 1.95)
-  ctx.stroke()
-  // SOS bubble
-  ctx.fillStyle = color
-  ctx.beginPath()
-  ctx.ellipse(cx, cy - 4, 16, 11, 0, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.fillStyle = '#FFFFFF'
-  ctx.font = 'bold 10px Outfit, "Helvetica Neue", sans-serif'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText('SOS', cx, cy - 3)
-  ctx.textBaseline = 'alphabetic'
-  ctx.restore()
-}
-
-function drawCheckmark(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
-  ctx.save()
-  ctx.fillStyle = color
-  ctx.beginPath()
-  ctx.arc(cx, cy, r, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.strokeStyle = '#FFFFFF'
-  ctx.lineWidth = 1.8
-  ctx.lineCap = 'round'
-  ctx.lineJoin = 'round'
-  ctx.beginPath()
-  ctx.moveTo(cx - r * 0.45, cy + r * 0.05)
-  ctx.lineTo(cx - r * 0.10, cy + r * 0.40)
-  ctx.lineTo(cx + r * 0.50, cy - r * 0.30)
-  ctx.stroke()
-  ctx.restore()
-}
-
 function fillRoundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  const radius = Math.min(r, w / 2, h / 2)
   ctx.beginPath()
-  ctx.moveTo(x + r, y)
-  ctx.lineTo(x + w - r, y)
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r)
-  ctx.lineTo(x + w, y + h - r)
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
-  ctx.lineTo(x + r, y + h)
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r)
-  ctx.lineTo(x, y + r)
-  ctx.quadraticCurveTo(x, y, x + r, y)
+  ctx.moveTo(x + radius, y)
+  ctx.lineTo(x + w - radius, y)
+  ctx.quadraticCurveTo(x + w, y, x + w, y + radius)
+  ctx.lineTo(x + w, y + h - radius)
+  ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h)
+  ctx.lineTo(x + radius, y + h)
+  ctx.quadraticCurveTo(x, y + h, x, y + h - radius)
+  ctx.lineTo(x, y + radius)
+  ctx.quadraticCurveTo(x, y, x + radius, y)
   ctx.closePath()
 }
 
@@ -177,6 +226,7 @@ function wrapText(
   y: number,
   maxWidth: number,
   lineHeight: number,
+  maxLines = 99,
 ): number {
   const words = text.split(' ')
   let line = ''
@@ -184,6 +234,14 @@ function wrapText(
   for (const word of words) {
     const test = line ? line + ' ' + word : word
     if (ctx.measureText(test).width > maxWidth && line) {
+      if (drawn >= maxLines - 1) {
+        let truncated = line
+        while (truncated.length > 0 && ctx.measureText(truncated + '…').width > maxWidth) {
+          truncated = truncated.slice(0, -1)
+        }
+        ctx.fillText(truncated + '…', x, y + drawn * lineHeight)
+        return drawn + 1
+      }
       ctx.fillText(line, x, y + drawn * lineHeight)
       drawn++
       line = word
@@ -198,10 +256,410 @@ function wrapText(
   return drawn
 }
 
+// === Rule icon drawing primitives ===
+function drawIconCircle(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  color: string,
+  positive: boolean,
+  drawInner: () => void,
+) {
+  ctx.save()
+  // Outer ring
+  ctx.strokeStyle = color
+  ctx.lineWidth = 1.4
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.stroke()
+  // Faint fill
+  ctx.fillStyle = color + (positive ? '14' : '08')
+  ctx.beginPath()
+  ctx.arc(cx, cy, r - 0.7, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+
+  drawInner()
+}
+
+function drawSlash(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.lineWidth = 2.2
+  ctx.lineCap = 'round'
+  const off = r * 0.62
+  ctx.beginPath()
+  ctx.moveTo(cx - off, cy + off)
+  ctx.lineTo(cx + off, cy - off)
+  ctx.stroke()
+  ctx.restore()
+}
+
+function drawCigarette(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string, withSlash: boolean) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.fillStyle = color
+  ctx.lineWidth = 1.3
+  ctx.lineCap = 'round'
+  // body
+  const w = r * 1.05
+  const h = r * 0.32
+  ctx.beginPath()
+  ctx.rect(cx - w / 2, cy - h / 2, w, h)
+  ctx.stroke()
+  // filter section
+  ctx.fillStyle = color + '60'
+  ctx.fillRect(cx + w / 2 - w * 0.28, cy - h / 2, w * 0.28, h)
+  // smoke wisps
+  ctx.strokeStyle = color
+  ctx.lineWidth = 1
+  for (let i = 0; i < 2; i++) {
+    ctx.beginPath()
+    ctx.moveTo(cx - w / 2 - 4 - i * 4, cy - h / 2 - 2)
+    ctx.bezierCurveTo(cx - w / 2 - 6 - i * 4, cy - h / 2 - 5, cx - w / 2 - 4 - i * 4, cy - h / 2 - 7, cx - w / 2 - 6 - i * 4, cy - h / 2 - 10)
+    ctx.stroke()
+  }
+  ctx.restore()
+  if (withSlash) drawSlash(ctx, cx, cy, r, color)
+}
+
+function drawMoon(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.fillStyle = color
+  const moonR = r * 0.55
+  ctx.beginPath()
+  ctx.arc(cx, cy, moonR, 0, Math.PI * 2)
+  ctx.fill()
+  // crescent: erase a circle offset
+  ctx.globalCompositeOperation = 'destination-out'
+  ctx.beginPath()
+  ctx.arc(cx + moonR * 0.45, cy - moonR * 0.15, moonR * 0.95, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+}
+
+function drawMusicNote(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string, withSlash: boolean) {
+  ctx.save()
+  ctx.fillStyle = color
+  ctx.strokeStyle = color
+  ctx.lineWidth = 1.6
+  ctx.lineCap = 'round'
+  // stem
+  ctx.beginPath()
+  ctx.moveTo(cx - r * 0.05, cy + r * 0.45)
+  ctx.lineTo(cx - r * 0.05, cy - r * 0.55)
+  ctx.stroke()
+  // flag
+  ctx.beginPath()
+  ctx.moveTo(cx - r * 0.05, cy - r * 0.55)
+  ctx.quadraticCurveTo(cx + r * 0.4, cy - r * 0.45, cx + r * 0.35, cy - r * 0.05)
+  ctx.stroke()
+  // note head
+  ctx.beginPath()
+  ctx.ellipse(cx - r * 0.25, cy + r * 0.45, r * 0.22, r * 0.16, -0.3, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+  if (withSlash) drawSlash(ctx, cx, cy, r, color)
+}
+
+function drawPaw(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string, withSlash: boolean) {
+  ctx.save()
+  ctx.fillStyle = color
+  // main pad
+  ctx.beginPath()
+  ctx.ellipse(cx, cy + r * 0.25, r * 0.36, r * 0.30, 0, 0, Math.PI * 2)
+  ctx.fill()
+  // toes (4 small ovals)
+  const toes = [
+    [cx - r * 0.45, cy - r * 0.05],
+    [cx - r * 0.18, cy - r * 0.40],
+    [cx + r * 0.18, cy - r * 0.40],
+    [cx + r * 0.45, cy - r * 0.05],
+  ]
+  toes.forEach(([x, y]) => {
+    ctx.beginPath()
+    ctx.ellipse(x, y, r * 0.16, r * 0.20, 0, 0, Math.PI * 2)
+    ctx.fill()
+  })
+  ctx.restore()
+  if (withSlash) drawSlash(ctx, cx, cy, r, color)
+}
+
+function drawShoe(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string, withSlash: boolean) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.fillStyle = color + '40'
+  ctx.lineWidth = 1.4
+  ctx.beginPath()
+  // simple footprint shape
+  ctx.moveTo(cx - r * 0.25, cy - r * 0.5)
+  ctx.bezierCurveTo(cx + r * 0.25, cy - r * 0.55, cx + r * 0.55, cy - r * 0.1, cx + r * 0.4, cy + r * 0.4)
+  ctx.bezierCurveTo(cx + r * 0.25, cy + r * 0.55, cx - r * 0.25, cy + r * 0.55, cx - r * 0.4, cy + r * 0.35)
+  ctx.bezierCurveTo(cx - r * 0.55, cy + r * 0.05, cx - r * 0.4, cy - r * 0.4, cx - r * 0.25, cy - r * 0.5)
+  ctx.closePath()
+  ctx.fill()
+  ctx.stroke()
+  ctx.restore()
+  if (withSlash) drawSlash(ctx, cx, cy, r, color)
+}
+
+function drawRecycle(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.fillStyle = color
+  ctx.lineWidth = 1.6
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  const rad = r * 0.55
+  // 3 arrows in triangle
+  for (let i = 0; i < 3; i++) {
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.rotate((i * 2 * Math.PI) / 3)
+    ctx.beginPath()
+    ctx.moveTo(-rad * 0.5, -rad * 0.55)
+    ctx.lineTo(rad * 0.45, -rad * 0.55)
+    ctx.lineTo(rad * 0.05, -rad * 0.95)
+    ctx.closePath()
+    ctx.fill()
+    ctx.restore()
+  }
+  ctx.restore()
+}
+
+function drawLock(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.fillStyle = color
+  ctx.lineWidth = 1.6
+  // shackle
+  ctx.beginPath()
+  ctx.arc(cx, cy - r * 0.05, r * 0.32, Math.PI, 0)
+  ctx.stroke()
+  // body
+  fillRoundRect(ctx, cx - r * 0.45, cy - r * 0.05, r * 0.9, r * 0.65, r * 0.1)
+  ctx.fill()
+  // keyhole
+  ctx.fillStyle = '#FFFFFF'
+  ctx.beginPath()
+  ctx.arc(cx, cy + r * 0.18, r * 0.10, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.fillRect(cx - r * 0.04, cy + r * 0.18, r * 0.08, r * 0.20)
+  ctx.restore()
+}
+
+function drawDrop(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.fillStyle = color
+  ctx.beginPath()
+  ctx.moveTo(cx, cy - r * 0.65)
+  ctx.bezierCurveTo(cx + r * 0.55, cy - r * 0.05, cx + r * 0.42, cy + r * 0.55, cx, cy + r * 0.55)
+  ctx.bezierCurveTo(cx - r * 0.42, cy + r * 0.55, cx - r * 0.55, cy - r * 0.05, cx, cy - r * 0.65)
+  ctx.closePath()
+  ctx.fill()
+  ctx.restore()
+}
+
+// === Block icons ===
+function drawBlockIcon(ctx: CanvasRenderingContext2D, key: string, cx: number, cy: number, color: string) {
+  const r = 14
+  switch (key) {
+    case 'host':     return drawPhoneIcon(ctx, cx, cy, r, color)
+    case 'checkout': return drawClockIcon(ctx, cx, cy, r, color)
+    case 'parking':  return drawCarIcon(ctx, cx, cy, r, color)
+    case 'waste':    return drawTrashIcon(ctx, cx, cy, r, color)
+    case 'climate':  return drawThermoIcon(ctx, cx, cy, r, color)
+    case 'guide':    return drawBookIcon(ctx, cx, cy, r, color)
+  }
+}
+
+function drawPhoneIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.lineWidth = 1.7
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  ctx.beginPath()
+  ctx.moveTo(cx - r * 0.62, cy - r * 0.62)
+  ctx.bezierCurveTo(cx - r * 0.85, cy - r * 0.15, cx - r * 0.4, cy + r * 0.65, cx + r * 0.15, cy + r * 0.85)
+  ctx.bezierCurveTo(cx + r * 0.55, cy + r * 0.95, cx + r * 0.85, cy + r * 0.55, cx + r * 0.55, cy + r * 0.30)
+  ctx.lineTo(cx + r * 0.20, cy + r * 0.10)
+  ctx.lineTo(cx + r * 0.05, cy + r * 0.30)
+  ctx.bezierCurveTo(cx - r * 0.30, cy + r * 0.05, cx - r * 0.30, cy - r * 0.20, cx - r * 0.05, cy - r * 0.45)
+  ctx.lineTo(cx - r * 0.30, cy - r * 0.70)
+  ctx.lineTo(cx - r * 0.62, cy - r * 0.62)
+  ctx.stroke()
+  ctx.restore()
+}
+
+function drawClockIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.lineWidth = 1.6
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+  ctx.arc(cx, cy, r * 0.78, 0, Math.PI * 2)
+  ctx.stroke()
+  // hands
+  ctx.beginPath()
+  ctx.moveTo(cx, cy)
+  ctx.lineTo(cx, cy - r * 0.55)
+  ctx.moveTo(cx, cy)
+  ctx.lineTo(cx + r * 0.42, cy + r * 0.10)
+  ctx.stroke()
+  ctx.restore()
+}
+
+function drawCarIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.fillStyle = color
+  ctx.lineWidth = 1.5
+  ctx.lineJoin = 'round'
+  // body
+  ctx.beginPath()
+  ctx.moveTo(cx - r * 0.85, cy + r * 0.30)
+  ctx.lineTo(cx - r * 0.85, cy - r * 0.05)
+  ctx.lineTo(cx - r * 0.55, cy - r * 0.45)
+  ctx.lineTo(cx + r * 0.55, cy - r * 0.45)
+  ctx.lineTo(cx + r * 0.85, cy - r * 0.05)
+  ctx.lineTo(cx + r * 0.85, cy + r * 0.30)
+  ctx.stroke()
+  // wheels
+  ctx.beginPath()
+  ctx.arc(cx - r * 0.5, cy + r * 0.40, r * 0.22, 0, Math.PI * 2)
+  ctx.arc(cx + r * 0.5, cy + r * 0.40, r * 0.22, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+}
+
+function drawTrashIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.lineWidth = 1.6
+  ctx.lineCap = 'round'
+  // lid
+  ctx.beginPath()
+  ctx.moveTo(cx - r * 0.7, cy - r * 0.45)
+  ctx.lineTo(cx + r * 0.7, cy - r * 0.45)
+  // handle
+  ctx.moveTo(cx - r * 0.25, cy - r * 0.45)
+  ctx.lineTo(cx - r * 0.25, cy - r * 0.65)
+  ctx.lineTo(cx + r * 0.25, cy - r * 0.65)
+  ctx.lineTo(cx + r * 0.25, cy - r * 0.45)
+  // body
+  ctx.moveTo(cx - r * 0.55, cy - r * 0.45)
+  ctx.lineTo(cx - r * 0.45, cy + r * 0.65)
+  ctx.lineTo(cx + r * 0.45, cy + r * 0.65)
+  ctx.lineTo(cx + r * 0.55, cy - r * 0.45)
+  // vertical lines
+  ctx.moveTo(cx - r * 0.20, cy - r * 0.20)
+  ctx.lineTo(cx - r * 0.18, cy + r * 0.45)
+  ctx.moveTo(cx + r * 0.20, cy - r * 0.20)
+  ctx.lineTo(cx + r * 0.18, cy + r * 0.45)
+  ctx.stroke()
+  ctx.restore()
+}
+
+function drawThermoIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.fillStyle = color
+  ctx.lineWidth = 1.5
+  ctx.lineCap = 'round'
+  // bulb
+  ctx.beginPath()
+  ctx.arc(cx, cy + r * 0.55, r * 0.28, 0, Math.PI * 2)
+  ctx.fill()
+  // tube
+  ctx.beginPath()
+  ctx.moveTo(cx - r * 0.18, cy - r * 0.60)
+  ctx.lineTo(cx - r * 0.18, cy + r * 0.40)
+  ctx.moveTo(cx + r * 0.18, cy - r * 0.60)
+  ctx.lineTo(cx + r * 0.18, cy + r * 0.40)
+  // top
+  ctx.arc(cx, cy - r * 0.60, r * 0.18, Math.PI, 0)
+  ctx.stroke()
+  ctx.restore()
+}
+
+function drawBookIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.lineWidth = 1.6
+  ctx.lineJoin = 'round'
+  ctx.beginPath()
+  // cover
+  ctx.moveTo(cx - r * 0.7, cy - r * 0.7)
+  ctx.lineTo(cx - r * 0.7, cy + r * 0.7)
+  ctx.lineTo(cx + r * 0.7, cy + r * 0.7)
+  ctx.lineTo(cx + r * 0.7, cy - r * 0.7)
+  ctx.closePath()
+  ctx.stroke()
+  // spine line
+  ctx.beginPath()
+  ctx.moveTo(cx, cy - r * 0.7)
+  ctx.lineTo(cx, cy + r * 0.7)
+  // page lines
+  ctx.moveTo(cx - r * 0.4, cy - r * 0.30)
+  ctx.lineTo(cx - r * 0.15, cy - r * 0.30)
+  ctx.moveTo(cx - r * 0.4, cy + r * 0.05)
+  ctx.lineTo(cx - r * 0.15, cy + r * 0.05)
+  ctx.moveTo(cx + r * 0.15, cy - r * 0.30)
+  ctx.lineTo(cx + r * 0.4, cy - r * 0.30)
+  ctx.moveTo(cx + r * 0.15, cy + r * 0.05)
+  ctx.lineTo(cx + r * 0.4, cy + r * 0.05)
+  ctx.stroke()
+  ctx.restore()
+}
+
+function drawWifiIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, color: string, scale = 1) {
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.fillStyle = color
+  ctx.lineWidth = 2.5 * scale
+  ctx.lineCap = 'round'
+  for (let i = 1; i <= 3; i++) {
+    ctx.beginPath()
+    ctx.arc(cx, cy + 6 * scale, 5 * i * scale, Math.PI * 1.20, Math.PI * 1.80)
+    ctx.stroke()
+  }
+  ctx.beginPath()
+  ctx.arc(cx, cy + 6 * scale, 1.8 * scale, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+}
+
+// === Default factory ===
+function defaultBlock(): InfoBlock {
+  return { enabled: false }
+}
+
+function makeDefaultData(): AfficheData {
+  return {
+    language: 'fr-en',
+    logementNom: '',
+    showFlag: true,
+    blocks: {
+      host:     { enabled: true, name: '', phone: '' },
+      checkout: { enabled: true, time: '11h00' },
+      parking:  defaultBlock(),
+      waste:    defaultBlock(),
+      climate:  defaultBlock(),
+      guide:    defaultBlock(),
+    },
+    selectedRules: ['no-smoking', 'quiet-hours', 'no-parties', 'recycling'],
+    showEmergency: true,
+    accentColor: '#0B4C3F',
+  }
+}
+
+// === Main canvas render ===
 async function renderPosterCanvas(
   data: AfficheData,
   qrWifiUrl: string,
-  qrLivretUrl: string,
+  qrGuideUrl: string,
   watermark: boolean,
 ): Promise<HTMLCanvasElement> {
   const W = 794
@@ -212,311 +670,66 @@ async function renderPosterCanvas(
   const ctx = canvas.getContext('2d')!
   ctx.scale(2, 2)
 
-  const accent = data.accentColor
-  const bg = '#FFFFFF'
-  const textDark = '#1A1A1A'
-  const textMute = '#6B7280'
-  const dividerColor = accent + '28'
-
   if (typeof document !== 'undefined' && 'fonts' in document) {
     try { await (document as any).fonts.ready } catch {}
   }
+
+  const accent = data.accentColor
+  const bg = '#FFFFFF'
+  const textDark = '#1A1A1A'
+  const textMute = '#7A7A7A'
+  const hairline = accent + '20'
 
   // Background
   ctx.fillStyle = bg
   ctx.fillRect(0, 0, W, H)
 
-  // Top accent strip
+  // Top accent line (very thin)
   ctx.fillStyle = accent
-  ctx.fillRect(0, 0, W, 5)
+  ctx.fillRect(0, 0, W, 3)
+
+  let y = 0
 
   // === HEADER ===
-  let hY = 32
+  y = drawHeader(ctx, W, data, accent, textDark, textMute, hairline)
 
-  // Flags
-  if (data.showFlag) {
-    ctx.font = '18px "Apple Color Emoji", "Segoe UI Emoji", sans-serif'
-    ctx.fillStyle = textDark
-    ctx.textAlign = 'center'
-    ctx.fillText('🇫🇷  🇬🇧', W / 2, hY + 14)
-    hY += 28
+  // === WIFI HERO ===
+  if (data.wifiSsid) {
+    y = await drawWifiHero(ctx, W, y, data, qrWifiUrl, accent, textDark, textMute)
   }
 
-  // Thin decorative bar
-  ctx.fillStyle = dividerColor
-  ctx.fillRect(W / 2 - 80, hY + 4, 160, 1)
-  hY += 16
-
-  // BIENVENUE
-  ctx.font = 'bold 60px Georgia, "Times New Roman", serif'
-  ctx.fillStyle = accent
-  ctx.textAlign = 'center'
-  ctx.fillText('BIENVENUE', W / 2, hY + 56)
-  hY += 62
-
-  // WELCOME — secondary, spaced
-  ctx.font = '20px Georgia, "Times New Roman", serif'
-  ctx.fillStyle = textMute
-  ctx.textAlign = 'center'
-  ctx.fillText('— WELCOME —', W / 2, hY + 4)
-  hY += 22
-
-  // Full separator
-  ctx.strokeStyle = dividerColor
-  ctx.lineWidth = 1
-  ctx.beginPath()
-  ctx.moveTo(60, hY + 10)
-  ctx.lineTo(W - 60, hY + 10)
-  ctx.stroke()
-  hY += 24
-
-  // Tagline
-  const taglineDefault = data.logementNom
-    ? `Bienvenue à ${data.logementNom} · Welcome to ${data.logementNom}`
-    : 'Bienvenue dans notre logement · Welcome to our home'
-  ctx.font = '13px "Outfit", "Helvetica Neue", sans-serif'
-  ctx.fillStyle = '#4A4A4A'
-  ctx.textAlign = 'center'
-  const tlLines = wrapText(ctx, data.tagline || taglineDefault, W / 2, hY, W - 200, 19)
-  hY += tlLines * 19 + 16
-
-  // === COLUMN SETUP ===
-  const colTop = hY + 4
-  const midX = W / 2
-  const pad = 56
-  const colGap = 18
-  const leftX = pad
-  const leftW = midX - pad - colGap
-  const rightX = midX + colGap
-  const rightW = W - midX - colGap - pad
-
-  // === LEFT COLUMN: WiFi ===
-  let lY = colTop + 10
-
-  if (data.showWifi && data.wifiSsid) {
-    ctx.font = 'bold 15px Georgia, "Times New Roman", serif'
-    ctx.fillStyle = accent
-    ctx.textAlign = 'center'
-    ctx.fillText('WIFI', leftX + leftW / 2, lY + 14)
-    lY += 20
-
-    drawWifiIcon(ctx, leftX + leftW / 2, lY + 12, accent, 1.2)
-    lY += 40
-
-    if (qrWifiUrl) {
-      try {
-        const qrImg = await loadImage(qrWifiUrl)
-        const qrSize = Math.min(leftW - 28, 188)
-        ctx.drawImage(qrImg, leftX + (leftW - qrSize) / 2, lY, qrSize, qrSize)
-        lY += qrSize + 12
-      } catch {}
-    }
-
-    ctx.font = 'bold 12px "Outfit", "Helvetica Neue", sans-serif'
-    ctx.fillStyle = textDark
-    ctx.textAlign = 'center'
-    ctx.fillText(data.wifiSsid, leftX + leftW / 2, lY)
-    lY += 18
-
-    if (data.wifiPassword) {
-      ctx.font = '11px monospace'
-      ctx.fillStyle = textMute
-      const pwText = data.wifiPassword
-      const pwW = Math.min(ctx.measureText(pwText).width + 22, leftW - 8)
-      const pwX = leftX + (leftW - pwW) / 2
-      ctx.fillStyle = accent + '14'
-      fillRoundRect(ctx, pwX, lY - 2, pwW, 20, 5)
-      ctx.fill()
-      ctx.fillStyle = textMute
-      ctx.font = '11px monospace'
-      ctx.textAlign = 'center'
-      ctx.fillText(pwText, leftX + leftW / 2, lY + 13)
-      lY += 28
-    }
+  // === INFO GRID ===
+  const enabledBlocks = (Object.keys(data.blocks) as Array<keyof typeof data.blocks>)
+    .filter(k => data.blocks[k].enabled && hasContent(k, data.blocks[k]))
+  if (enabledBlocks.length > 0) {
+    y = await drawInfoGrid(ctx, W, y, data, enabledBlocks, qrGuideUrl, accent, textDark, textMute, hairline)
   }
 
-  // === RIGHT COLUMN: Rules + Departure ===
-  let rY = colTop + 10
-
-  if (data.showRules) {
-    ctx.font = 'bold 15px Georgia, "Times New Roman", serif'
-    ctx.fillStyle = accent
-    ctx.textAlign = 'center'
-    ctx.fillText('LES RÈGLES', rightX + rightW / 2, rY + 14)
-    rY += 20
-    ctx.font = '9.5px "Outfit", "Helvetica Neue", sans-serif'
-    ctx.fillStyle = textMute
-    ctx.textAlign = 'center'
-    ctx.fillText('HOUSE RULES', rightX + rightW / 2, rY + 10)
-    rY += 26
-
-    const rules = data.houseRules.length > 0 ? data.houseRules : DEFAULT_RULES
-    rules.forEach(rule => {
-      ctx.fillStyle = accent
-      ctx.fillRect(rightX, rY - 7, 3, 13)
-      ctx.font = '12.5px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = textDark
-      ctx.textAlign = 'left'
-      const lines = wrapText(ctx, rule, rightX + 11, rY, rightW - 11, 17)
-      rY += Math.max(26, lines * 17 + 10)
-    })
-    rY += 8
+  // === RULES ===
+  if (data.selectedRules.length > 0) {
+    y = drawRulesRow(ctx, W, y, data, accent, textDark, textMute)
   }
 
-  if (data.showDeparture) {
-    ctx.font = 'bold 15px Georgia, "Times New Roman", serif'
-    ctx.fillStyle = accent
-    ctx.textAlign = 'center'
-    ctx.fillText('DÉPART', rightX + rightW / 2, rY + 14)
-    rY += 20
-    ctx.font = '9.5px "Outfit", "Helvetica Neue", sans-serif'
-    ctx.fillStyle = textMute
-    ctx.textAlign = 'center'
-    ctx.fillText('CHECK-OUT', rightX + rightW / 2, rY + 10)
-    rY += 24
-
-    if (data.departureTime) {
-      ctx.font = 'bold 28px Georgia, "Times New Roman", serif'
-      ctx.fillStyle = textDark
-      ctx.textAlign = 'center'
-      ctx.fillText(data.departureTime, rightX + rightW / 2, rY + 24)
-      rY += 36
-    }
-
-    if (data.departureNote) {
-      ctx.font = 'italic 11px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = textMute
-      ctx.textAlign = 'center'
-      const lines = wrapText(ctx, data.departureNote, rightX + rightW / 2, rY, rightW - 10, 15)
-      rY += lines * 15 + 12
-    }
-
-    const checklist = data.departureChecklist.length > 0 ? data.departureChecklist : DEFAULT_CHECKLIST
-    checklist.forEach(item => {
-      drawCheckmark(ctx, rightX + 8, rY - 4, 7, accent)
-      ctx.font = '12px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = textDark
-      ctx.textAlign = 'left'
-      ctx.fillText(item, rightX + 22, rY)
-      rY += 22
-    })
-  }
-
-  // Vertical divider (drawn after columns so we know height)
-  const colBottom = Math.max(lY, rY)
-  ctx.strokeStyle = dividerColor
-  ctx.lineWidth = 1
-  ctx.beginPath()
-  ctx.moveTo(midX, colTop + 14)
-  ctx.lineTo(midX, colBottom + 10)
-  ctx.stroke()
-
-  // === EMERGENCY BAND ===
-  let afterBandY = colBottom + 16
+  // === EMERGENCY ===
   if (data.showEmergency) {
-    const bandTop = colBottom + 24
-    const bandH = 96
-
-    ctx.fillStyle = accent + '10'
-    ctx.fillRect(0, bandTop, W, bandH)
-
-    ctx.strokeStyle = dividerColor
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.moveTo(0, bandTop)
-    ctx.lineTo(W, bandTop)
-    ctx.moveTo(0, bandTop + bandH)
-    ctx.lineTo(W, bandTop + bandH)
-    ctx.stroke()
-
-    ctx.font = 'bold 10px "Outfit", "Helvetica Neue", sans-serif'
-    ctx.fillStyle = accent
-    ctx.textAlign = 'center'
-    ctx.fillText('URGENCES · EMERGENCY', W / 2, bandTop + 17)
-
-    const numbers = [
-      { fr: 'Pompier', en: 'Fire', value: '18' },
-      { fr: 'Samu', en: 'Ambulance', value: '15' },
-      { fr: 'Police', en: 'Police', value: '17' },
-    ]
-    const cellW = W / 3
-    numbers.forEach((n, i) => {
-      const cx = cellW * (i + 0.5)
-      ctx.font = 'bold 12.5px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = accent
-      ctx.textAlign = 'center'
-      ctx.fillText(n.fr, cx, bandTop + 40)
-      ctx.font = '10px "Outfit", "Helvetica Neue", sans-serif'
-      ctx.fillStyle = textMute
-      ctx.fillText(n.en, cx, bandTop + 54)
-      ctx.font = 'bold 26px Georgia, "Times New Roman", serif'
-      ctx.fillStyle = textDark
-      ctx.fillText(n.value, cx, bandTop + 84)
-    })
-
-    ctx.strokeStyle = dividerColor
-    ctx.lineWidth = 1
-    for (let i = 1; i < 3; i++) {
-      ctx.beginPath()
-      ctx.moveTo(cellW * i, bandTop + 24)
-      ctx.lineTo(cellW * i, bandTop + 88)
-      ctx.stroke()
-    }
-
-    afterBandY = bandTop + bandH + 16
-  }
-
-  // === LIVRET ===
-  if (data.showLivret) {
-    ctx.strokeStyle = dividerColor
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.moveTo(60, afterBandY + 6)
-    ctx.lineTo(W - 60, afterBandY + 6)
-    ctx.stroke()
-
-    const livretY = afterBandY + 22
-
-    if (qrLivretUrl) {
-      try {
-        const qrImg = await loadImage(qrLivretUrl)
-        ctx.drawImage(qrImg, 60, livretY, 120, 120)
-      } catch {}
-    }
-
-    const tx = qrLivretUrl ? 196 : 60
-    const tw = W - tx - 60
-
-    ctx.font = 'italic bold 18px Georgia, "Times New Roman", serif'
-    ctx.fillStyle = accent
-    ctx.textAlign = 'left'
-    ctx.fillText(data.livretTitle || 'Livret d\'accueil · Guest Guide', tx, livretY + 22)
-
-    ctx.font = '12px "Outfit", "Helvetica Neue", sans-serif'
-    ctx.fillStyle = textDark
-    const sub = data.livretSubtitle || 'De nombreux détails et recommandations locales vous attendent dans notre livret numérique. Many more details and local tips await in our digital guide.'
-    wrapText(ctx, sub, tx, livretY + 44, tw, 16)
-
-    ctx.font = 'bold 12px "Outfit", "Helvetica Neue", sans-serif'
-    ctx.fillStyle = textDark
-    ctx.fillText('Bon séjour · Enjoy your stay!', tx, livretY + 108)
+    drawEmergencyBand(ctx, W, H, data, accent, textDark, textMute, hairline)
   }
 
   // === FOOTER ===
   ctx.font = '9.5px "Outfit", "Helvetica Neue", sans-serif'
-  ctx.fillStyle = '#C0C0C0'
+  ctx.fillStyle = '#BBBBBB'
   ctx.textAlign = 'center'
-  ctx.fillText('Créé avec Jason Marinho · app.jasonmarinho.com', W / 2, H - 22)
+  ctx.fillText('Créé avec Jason Marinho · app.jasonmarinho.com', W / 2, H - 18)
 
-  // Bottom accent strip
+  // Bottom accent line
   ctx.fillStyle = accent
-  ctx.fillRect(0, H - 5, W, 5)
+  ctx.fillRect(0, H - 3, W, 3)
 
   // Watermark
   if (watermark) {
     ctx.save()
-    ctx.globalAlpha = 0.08
-    ctx.font = 'bold 52px sans-serif'
+    ctx.globalAlpha = 0.07
+    ctx.font = 'bold 50px sans-serif'
     ctx.fillStyle = '#000000'
     ctx.textAlign = 'center'
     ctx.translate(W / 2, H / 2)
@@ -530,11 +743,402 @@ async function renderPosterCanvas(
   return canvas
 }
 
+function hasContent(key: string, block: InfoBlock): boolean {
+  switch (key) {
+    case 'host':     return Boolean(block.phone || block.name)
+    case 'checkout': return Boolean(block.time)
+    case 'guide':    return Boolean(block.url)
+    default:         return Boolean(block.text)
+  }
+}
+
+function drawHeader(
+  ctx: CanvasRenderingContext2D,
+  W: number,
+  data: AfficheData,
+  accent: string,
+  textDark: string,
+  textMute: string,
+  hairline: string,
+): number {
+  let y = 36
+  const lang = data.language
+
+  // Flags
+  if (data.showFlag) {
+    ctx.font = '17px "Apple Color Emoji", "Segoe UI Emoji", sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillStyle = textDark
+    const flagText = lang === 'en' ? '🇬🇧' : lang === 'fr' ? '🇫🇷' : '🇫🇷  🇬🇧'
+    ctx.fillText(flagText, W / 2, y + 12)
+    y += 22
+  }
+
+  // Decorative thin bar
+  ctx.fillStyle = hairline
+  ctx.fillRect(W / 2 - 60, y + 6, 120, 1)
+  y += 14
+
+  // Main title
+  ctx.font = 'bold 56px Georgia, "Times New Roman", serif'
+  ctx.fillStyle = accent
+  ctx.textAlign = 'center'
+  const mainTitle = lang === 'en' ? 'WELCOME' : 'BIENVENUE'
+  ctx.fillText(mainTitle, W / 2, y + 52)
+  y += 56
+
+  // Secondary title (only in fr-en mode)
+  if (lang === 'fr-en') {
+    ctx.font = 'italic 22px Georgia, "Times New Roman", serif'
+    ctx.fillStyle = textMute
+    ctx.fillText('Welcome', W / 2, y + 8)
+    y += 24
+  } else {
+    y += 8
+  }
+
+  // Tagline
+  const taglineDefault = lang === 'fr'
+    ? `Bienvenue${data.logementNom ? ` à ${data.logementNom}` : ''}. Voici ce qu'il faut savoir pour votre séjour.`
+    : lang === 'en'
+      ? `Welcome${data.logementNom ? ` to ${data.logementNom}` : ''}. Here is what you need for your stay.`
+      : `Bienvenue${data.logementNom ? ` à ${data.logementNom}` : ''} · Welcome${data.logementNom ? ` to ${data.logementNom}` : ''}`
+  ctx.font = '12.5px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = '#4A4A4A'
+  ctx.textAlign = 'center'
+  const taglineLines = wrapText(ctx, data.tagline || taglineDefault, W / 2, y + 14, W - 180, 18, 2)
+  y += taglineLines * 18 + 14
+
+  // Hairline separator
+  ctx.strokeStyle = hairline
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(60, y + 4)
+  ctx.lineTo(W - 60, y + 4)
+  ctx.stroke()
+  y += 16
+
+  return y
+}
+
+async function drawWifiHero(
+  ctx: CanvasRenderingContext2D,
+  W: number,
+  startY: number,
+  data: AfficheData,
+  qrUrl: string,
+  accent: string,
+  textDark: string,
+  textMute: string,
+): Promise<number> {
+  const y = startY + 18
+  const qrSize = 168
+  const padX = 60
+  const qrX = padX
+  const textX = qrX + qrSize + 36
+  const textW = W - textX - padX
+
+  // Faint background card
+  ctx.fillStyle = accent + '08'
+  fillRoundRect(ctx, padX - 10, y - 10, W - 2 * padX + 20, qrSize + 30, 14)
+  ctx.fill()
+
+  // QR code
+  if (qrUrl) {
+    try {
+      const qrImg = await loadImage(qrUrl)
+      // QR background
+      ctx.fillStyle = '#FFFFFF'
+      fillRoundRect(ctx, qrX, y, qrSize, qrSize, 8)
+      ctx.fill()
+      ctx.drawImage(qrImg, qrX + 4, y + 4, qrSize - 8, qrSize - 8)
+    } catch {}
+  }
+
+  // WiFi icon + label
+  let ty = y + 8
+  drawWifiIcon(ctx, textX + 14, ty + 6, accent, 1.0)
+  ctx.font = 'bold 11px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = accent
+  ctx.textAlign = 'left'
+  ctx.fillText(t(T.wifi, data.language).toUpperCase(), textX + 36, ty + 13)
+  ty += 26
+
+  // SSID
+  ctx.font = 'bold 26px Georgia, "Times New Roman", serif'
+  ctx.fillStyle = textDark
+  ctx.textAlign = 'left'
+  ctx.fillText(data.wifiSsid || '—', textX, ty + 18)
+  ty += 36
+
+  // Password label
+  if (data.wifiPassword) {
+    ctx.font = '10px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.fillStyle = textMute
+    const pwLabel = t(T.password, data.language).toUpperCase()
+    ctx.fillText(pwLabel, textX, ty + 8)
+    ty += 14
+
+    // Password pill
+    ctx.font = 'bold 16px monospace'
+    const pwText = data.wifiPassword
+    const pwTextW = ctx.measureText(pwText).width
+    const pillW = Math.min(Math.max(pwTextW + 24, 100), textW)
+    const pillH = 32
+    ctx.fillStyle = accent + '14'
+    fillRoundRect(ctx, textX, ty, pillW, pillH, 6)
+    ctx.fill()
+    ctx.fillStyle = textDark
+    ctx.textAlign = 'left'
+    ctx.fillText(pwText, textX + 12, ty + 21)
+    ty += pillH + 12
+  }
+
+  // Scan hint
+  ctx.font = 'italic 11px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = textMute
+  ctx.fillText(t(T.scanToConnect, data.language), textX, ty + 8)
+
+  return y + qrSize + 30
+}
+
+async function drawInfoGrid(
+  ctx: CanvasRenderingContext2D,
+  W: number,
+  startY: number,
+  data: AfficheData,
+  enabledKeys: Array<keyof AfficheData['blocks']>,
+  qrGuideUrl: string,
+  accent: string,
+  textDark: string,
+  textMute: string,
+  hairline: string,
+): Promise<number> {
+  const y = startY + 16
+  const padX = 60
+  const innerW = W - 2 * padX
+  const cols = Math.min(enabledKeys.length, 3)
+  const rows = Math.ceil(enabledKeys.length / cols)
+  const gap = 14
+  const cardW = (innerW - (cols - 1) * gap) / cols
+  const cardH = 118
+
+  for (let i = 0; i < enabledKeys.length; i++) {
+    const key = enabledKeys[i]
+    const row = Math.floor(i / cols)
+    const col = i % cols
+    const cx = padX + col * (cardW + gap)
+    const cy = y + row * (cardH + gap)
+
+    // Card background
+    ctx.strokeStyle = hairline
+    ctx.lineWidth = 1
+    ctx.fillStyle = '#FAFAF8'
+    fillRoundRect(ctx, cx, cy, cardW, cardH, 10)
+    ctx.fill()
+    ctx.stroke()
+
+    // Icon + label header
+    drawBlockIcon(ctx, key as string, cx + 24, cy + 26, accent)
+
+    ctx.font = 'bold 11px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.fillStyle = accent
+    ctx.textAlign = 'left'
+    const labelMap = { host: T.host, checkout: T.checkout, parking: T.parking, waste: T.waste, climate: T.climate, guide: T.guide }
+    const label = t(labelMap[key as keyof typeof labelMap], data.language).toUpperCase()
+    ctx.fillText(label, cx + 46, cy + 22)
+
+    // Subtitle (English version when fr-en)
+    if (data.language === 'fr-en') {
+      ctx.font = '9px "Outfit", "Helvetica Neue", sans-serif'
+      ctx.fillStyle = textMute
+      ctx.fillText(labelMap[key as keyof typeof labelMap].en.toUpperCase(), cx + 46, cy + 35)
+    }
+
+    // Content
+    const block = data.blocks[key]
+    const contentY = data.language === 'fr-en' ? cy + 56 : cy + 50
+    const contentX = cx + 16
+    const contentW = cardW - 32
+
+    ctx.textAlign = 'left'
+    if (key === 'host') {
+      // Name + phone (clickable looking)
+      if (block.name) {
+        ctx.font = '12px "Outfit", "Helvetica Neue", sans-serif'
+        ctx.fillStyle = textDark
+        ctx.fillText(block.name, contentX, contentY)
+      }
+      if (block.phone) {
+        ctx.font = 'bold 16px Georgia, "Times New Roman", serif'
+        ctx.fillStyle = textDark
+        ctx.fillText(block.phone, contentX, block.name ? contentY + 22 : contentY + 6)
+      }
+    } else if (key === 'checkout') {
+      if (block.time) {
+        ctx.font = 'bold 22px Georgia, "Times New Roman", serif'
+        ctx.fillStyle = textDark
+        ctx.fillText(block.time, contentX, contentY + 4)
+      }
+      if (block.text) {
+        ctx.font = '10.5px "Outfit", "Helvetica Neue", sans-serif'
+        ctx.fillStyle = textMute
+        wrapText(ctx, block.text, contentX, contentY + 26, contentW, 13, 2)
+      }
+    } else if (key === 'guide' && qrGuideUrl) {
+      try {
+        const qrImg = await loadImage(qrGuideUrl)
+        const qSize = cardH - 56 - 12
+        ctx.drawImage(qrImg, contentX, contentY - 6, qSize, qSize)
+        if (block.text) {
+          ctx.font = '10px "Outfit", "Helvetica Neue", sans-serif'
+          ctx.fillStyle = textMute
+          wrapText(ctx, block.text, contentX + qSize + 8, contentY + 6, contentW - qSize - 8, 12, 4)
+        }
+      } catch {}
+    } else {
+      // generic text content
+      const text = block.text || ''
+      if (text) {
+        ctx.font = '11.5px "Outfit", "Helvetica Neue", sans-serif'
+        ctx.fillStyle = textDark
+        wrapText(ctx, text, contentX, contentY, contentW, 14, 4)
+      }
+    }
+  }
+
+  return y + rows * cardH + (rows - 1) * gap + 16
+}
+
+function drawRulesRow(
+  ctx: CanvasRenderingContext2D,
+  W: number,
+  startY: number,
+  data: AfficheData,
+  accent: string,
+  textDark: string,
+  textMute: string,
+): number {
+  const y = startY + 12
+  const padX = 50
+  const innerW = W - 2 * padX
+  const rules = data.selectedRules.slice(0, 6)
+
+  // Section header
+  ctx.font = 'bold 11px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = accent
+  ctx.textAlign = 'center'
+  const titleText = t(T.rules, data.language).toUpperCase()
+  ctx.fillText(titleText, W / 2, y + 14)
+
+  // Hairline below header
+  const lineY = y + 26
+  ctx.strokeStyle = accent + '30'
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(W / 2 - 22, lineY)
+  ctx.lineTo(W / 2 + 22, lineY)
+  ctx.stroke()
+
+  const itemY = y + 50
+  const cellW = innerW / rules.length
+  const iconR = 22
+
+  rules.forEach((id, i) => {
+    const cx = padX + cellW * (i + 0.5)
+    const def = RULES_MAP[id]
+    if (!def) return
+    def.draw(ctx, cx, itemY, iconR, accent)
+
+    // Label below
+    ctx.font = '11px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.fillStyle = textDark
+    ctx.textAlign = 'center'
+    if (data.language === 'fr-en') {
+      ctx.fillText(def.fr, cx, itemY + iconR + 18)
+      ctx.font = '9.5px "Outfit", "Helvetica Neue", sans-serif'
+      ctx.fillStyle = textMute
+      ctx.fillText(def.en, cx, itemY + iconR + 32)
+    } else {
+      ctx.fillText(data.language === 'fr' ? def.fr : def.en, cx, itemY + iconR + 18)
+    }
+  })
+
+  return itemY + iconR + (data.language === 'fr-en' ? 42 : 28)
+}
+
+function drawEmergencyBand(
+  ctx: CanvasRenderingContext2D,
+  W: number,
+  H: number,
+  data: AfficheData,
+  accent: string,
+  textDark: string,
+  textMute: string,
+  hairline: string,
+) {
+  const bandH = 92
+  const bandTop = H - bandH - 32
+
+  ctx.fillStyle = accent + '0E'
+  ctx.fillRect(0, bandTop, W, bandH)
+
+  ctx.strokeStyle = hairline
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(0, bandTop)
+  ctx.lineTo(W, bandTop)
+  ctx.moveTo(0, bandTop + bandH)
+  ctx.lineTo(W, bandTop + bandH)
+  ctx.stroke()
+
+  // Header
+  ctx.font = 'bold 10px "Outfit", "Helvetica Neue", sans-serif'
+  ctx.fillStyle = accent
+  ctx.textAlign = 'center'
+  ctx.fillText(t(T.emergency, data.language).toUpperCase(), W / 2, bandTop + 16)
+
+  const cells: { fr: string; en: string; value: string }[] = [
+    { fr: 'Pompier', en: 'Fire',      value: '18' },
+    { fr: 'Samu',    en: 'Ambulance', value: '15' },
+    { fr: 'Police',  en: 'Police',    value: '17' },
+  ]
+  if (data.blocks.host.enabled && data.blocks.host.phone) {
+    cells.push({ fr: 'Hôte', en: 'Host', value: data.blocks.host.phone })
+  }
+
+  const cellW = W / cells.length
+  cells.forEach((cell, i) => {
+    const cx = cellW * (i + 0.5)
+    ctx.font = 'bold 12px "Outfit", "Helvetica Neue", sans-serif'
+    ctx.fillStyle = accent
+    ctx.textAlign = 'center'
+    if (data.language === 'fr-en') {
+      ctx.fillText(`${cell.fr} · ${cell.en}`, cx, bandTop + 38)
+    } else {
+      ctx.fillText(data.language === 'fr' ? cell.fr : cell.en, cx, bandTop + 38)
+    }
+
+    ctx.font = `bold ${cells.length > 3 ? 18 : 24}px Georgia, "Times New Roman", serif`
+    ctx.fillStyle = textDark
+    ctx.fillText(cell.value, cx, bandTop + 72)
+
+    if (i < cells.length - 1) {
+      ctx.strokeStyle = hairline
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(cellW * (i + 1), bandTop + 22)
+      ctx.lineTo(cellW * (i + 1), bandTop + bandH - 14)
+      ctx.stroke()
+    }
+  })
+}
+
 async function generateQrPng(content: string, accentColor: string): Promise<string> {
   if (!content) return ''
   const { default: QRCodeStyling } = await import('qr-code-styling')
   const qr = new QRCodeStyling({
-    width: 240, height: 240,
+    width: 360, height: 360,
     data: content,
     backgroundOptions: { color: '#FFFFFF' },
     dotsOptions: { color: accentColor, type: 'rounded' },
@@ -553,26 +1157,12 @@ async function generateQrPng(content: string, accentColor: string): Promise<stri
   })
 }
 
+// === COMPONENT ===
 export default function AfficheTab({ plan, logements }: Props) {
   const isStandard = plan !== 'decouverte'
   const [step, setStep] = useState<StepId>('logement')
-  const [data, setData] = useState<AfficheData>({
-    logementNom: '',
-    showFlag: true,
-    showWifi: true,
-    showRules: true,
-    houseRules: [...DEFAULT_RULES],
-    showDeparture: true,
-    departureTime: '11h00',
-    departureChecklist: [...DEFAULT_CHECKLIST],
-    departureNote: 'Pensez à nous signaler tout dommage ou dysfonctionnement éventuel. Merci.',
-    showEmergency: true,
-    showLivret: false,
-    livretTitle: 'Scannez ici notre livret d\'accueil',
-    livretSubtitle: 'De nombreux détails supplémentaires sont inclus dans le livret, ainsi que des recommandations de bonnes adresses locales sélectionnées par nos soins.',
-    accentColor: '#D9612E',
-  })
-  const [hexDraft, setHexDraft] = useState('D9612E')
+  const [data, setData] = useState<AfficheData>(makeDefaultData)
+  const [hexDraft, setHexDraft] = useState('0B4C3F')
   const [selectedLogementId, setSelectedLogementId] = useState<string>('')
   const [previewUrl, setPreviewUrl] = useState<string>('')
   const [isRendering, setIsRendering] = useState(false)
@@ -584,6 +1174,22 @@ export default function AfficheTab({ plan, logements }: Props) {
 
   function setField<K extends keyof AfficheData>(key: K, value: AfficheData[K]) {
     setData(prev => ({ ...prev, [key]: value }))
+  }
+
+  function setBlock<K extends keyof AfficheData['blocks']>(key: K, patch: Partial<InfoBlock>) {
+    setData(prev => ({
+      ...prev,
+      blocks: { ...prev.blocks, [key]: { ...prev.blocks[key], ...patch } },
+    }))
+  }
+
+  function toggleRule(id: RuleId) {
+    setData(prev => {
+      const has = prev.selectedRules.includes(id)
+      if (has) return { ...prev, selectedRules: prev.selectedRules.filter(r => r !== id) }
+      if (prev.selectedRules.length >= 6) return prev
+      return { ...prev, selectedRules: [...prev.selectedRules, id] }
+    })
   }
 
   function setAccentColor(c: string) {
@@ -604,7 +1210,13 @@ export default function AfficheTab({ plan, logements }: Props) {
     }))
     getAfficheByLogement(selectedLogementId).then(existing => {
       if (existing?.data) {
-        setData(d => ({ ...d, ...(existing.data as Partial<AfficheData>) }))
+        const loaded = existing.data as Partial<AfficheData>
+        // Merge with defaults to handle older saves
+        setData(d => ({
+          ...d,
+          ...loaded,
+          blocks: { ...d.blocks, ...(loaded.blocks ?? {}) },
+        }))
         setSavedId(existing.id)
       }
     })
@@ -613,13 +1225,13 @@ export default function AfficheTab({ plan, logements }: Props) {
   const renderPreview = useCallback(async () => {
     setIsRendering(true)
     try {
-      const qrWifi = (data.showWifi && data.wifiSsid)
+      const qrWifi = data.wifiSsid
         ? await generateQrPng(buildWifiQr(data.wifiSsid, data.wifiPassword ?? ''), data.accentColor)
         : ''
-      const qrLivret = (data.showLivret && data.livretUrl)
-        ? await generateQrPng(data.livretUrl, data.accentColor)
+      const qrGuide = (data.blocks.guide.enabled && data.blocks.guide.url)
+        ? await generateQrPng(data.blocks.guide.url, data.accentColor)
         : ''
-      const canvas = await renderPosterCanvas(data, qrWifi, qrLivret, !isStandard)
+      const canvas = await renderPosterCanvas(data, qrWifi, qrGuide, !isStandard)
       setPreviewUrl(canvas.toDataURL('image/jpeg', 0.92))
     } catch (e) {
       console.error(e)
@@ -635,13 +1247,9 @@ export default function AfficheTab({ plan, logements }: Props) {
   }, [renderPreview])
 
   async function downloadPng() {
-    const qrWifi = (data.showWifi && data.wifiSsid)
-      ? await generateQrPng(buildWifiQr(data.wifiSsid, data.wifiPassword ?? ''), data.accentColor)
-      : ''
-    const qrLivret = (data.showLivret && data.livretUrl)
-      ? await generateQrPng(data.livretUrl, data.accentColor)
-      : ''
-    const canvas = await renderPosterCanvas(data, qrWifi, qrLivret, !isStandard)
+    const qrWifi = data.wifiSsid ? await generateQrPng(buildWifiQr(data.wifiSsid, data.wifiPassword ?? ''), data.accentColor) : ''
+    const qrGuide = (data.blocks.guide.enabled && data.blocks.guide.url) ? await generateQrPng(data.blocks.guide.url, data.accentColor) : ''
+    const canvas = await renderPosterCanvas(data, qrWifi, qrGuide, !isStandard)
     const link = document.createElement('a')
     link.download = `affiche-${data.logementNom || 'logement'}.png`
     link.href = canvas.toDataURL('image/png')
@@ -650,13 +1258,9 @@ export default function AfficheTab({ plan, logements }: Props) {
 
   async function downloadPdf() {
     const { jsPDF } = await import('jspdf')
-    const qrWifi = (data.showWifi && data.wifiSsid)
-      ? await generateQrPng(buildWifiQr(data.wifiSsid, data.wifiPassword ?? ''), data.accentColor)
-      : ''
-    const qrLivret = (data.showLivret && data.livretUrl)
-      ? await generateQrPng(data.livretUrl, data.accentColor)
-      : ''
-    const canvas = await renderPosterCanvas(data, qrWifi, qrLivret, !isStandard)
+    const qrWifi = data.wifiSsid ? await generateQrPng(buildWifiQr(data.wifiSsid, data.wifiPassword ?? ''), data.accentColor) : ''
+    const qrGuide = (data.blocks.guide.enabled && data.blocks.guide.url) ? await generateQrPng(data.blocks.guide.url, data.accentColor) : ''
+    const canvas = await renderPosterCanvas(data, qrWifi, qrGuide, !isStandard)
     const imgData = canvas.toDataURL('image/jpeg', 0.95)
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
     pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297)
@@ -672,22 +1276,6 @@ export default function AfficheTab({ plan, logements }: Props) {
     } finally {
       setIsSaving(false)
     }
-  }
-
-  function updateListItem(key: 'houseRules' | 'departureChecklist', idx: number, value: string) {
-    setData(prev => {
-      const next = [...prev[key]]
-      next[idx] = value
-      return { ...prev, [key]: next }
-    })
-  }
-
-  function addListItem(key: 'houseRules' | 'departureChecklist') {
-    setData(prev => ({ ...prev, [key]: [...prev[key], ''] }))
-  }
-
-  function removeListItem(key: 'houseRules' | 'departureChecklist', idx: number) {
-    setData(prev => ({ ...prev, [key]: prev[key].filter((_, i) => i !== idx) }))
   }
 
   return (
@@ -719,7 +1307,7 @@ export default function AfficheTab({ plan, logements }: Props) {
           {step === 'logement' && (
             <div style={s.stepInner}>
               <h3 style={s.stepTitle}>Accueil voyageurs</h3>
-              <p style={s.stepDesc}>Le titre de l&apos;affiche sera <strong>BIENVENUE / WELCOME</strong> — bilingue FR + EN. Tu peux personnaliser le message d&apos;accueil et nommer ton logement.</p>
+              <p style={s.stepDesc}>Le titre de l&apos;affiche s&apos;adapte à la langue choisie : <strong>BIENVENUE</strong>, <strong>WELCOME</strong>, ou les deux.</p>
 
               {logements.length > 0 && (
                 <div style={s.fieldWrap}>
@@ -753,15 +1341,38 @@ export default function AfficheTab({ plan, logements }: Props) {
                 <label style={s.fieldLabel}>Message d&apos;accueil (optionnel)</label>
                 <textarea
                   style={{ ...s.input, minHeight: '70px', resize: 'vertical' as const }}
-                  placeholder={`Bonjour et bienvenue à ${data.logementNom || '[logement]'}. Voici quelques informations essentielles…`}
+                  placeholder={data.language === 'en' ? 'Welcome to our home…' : data.language === 'fr' ? 'Bienvenue chez nous…' : 'Bienvenue chez nous · Welcome to our home'}
                   value={data.tagline ?? ''}
                   onChange={e => setField('tagline', e.target.value)}
                 />
-                <span style={s.hint}>Si vide, un message par défaut sera utilisé.</span>
+                <span style={s.hint}>Si vide, un message par défaut sera utilisé selon la langue.</span>
+              </div>
+
+              <div style={s.fieldWrap}>
+                <label style={s.fieldLabel}><Translate size={13} style={{ verticalAlign: '-2px', marginRight: 4 }} /> Langue de l&apos;affiche</label>
+                <div style={s.langGrid}>
+                  {([
+                    { id: 'fr',     label: 'Français',   flag: '🇫🇷' },
+                    { id: 'fr-en',  label: 'FR + EN',    flag: '🇫🇷 🇬🇧' },
+                    { id: 'en',     label: 'English',    flag: '🇬🇧' },
+                  ] as const).map(opt => (
+                    <button
+                      key={opt.id}
+                      onClick={() => setField('language', opt.id)}
+                      style={{
+                        ...s.langBtn,
+                        ...(data.language === opt.id ? s.langBtnActive : {}),
+                      }}
+                    >
+                      <span style={{ fontSize: '18px' }}>{opt.flag}</span>
+                      <span>{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div style={s.toggleRow}>
-                <label style={s.toggleLabel}>Afficher les drapeaux 🇫🇷 🇬🇧</label>
+                <label style={s.toggleLabel}>Afficher les drapeaux</label>
                 <ToggleSwitch value={data.showFlag} onChange={v => setField('showFlag', v)} />
               </div>
             </div>
@@ -770,173 +1381,141 @@ export default function AfficheTab({ plan, logements }: Props) {
           {step === 'wifi' && (
             <div style={s.stepInner}>
               <h3 style={s.stepTitle}>Connexion WiFi</h3>
-              <p style={s.stepDesc}>Tes voyageurs scannent le QR code et sont connectés en 1 seconde, sans saisir de mot de passe.</p>
+              <p style={s.stepDesc}>Le QR code est l&apos;élément <strong>héro</strong> de l&apos;affiche : tes voyageurs scannent et sont connectés en 1 seconde.</p>
 
-              <div style={s.toggleRow}>
-                <label style={s.toggleLabel}>Inclure le WiFi sur l&apos;affiche</label>
-                <ToggleSwitch value={data.showWifi} onChange={v => setField('showWifi', v)} />
+              <div style={s.fieldWrap}>
+                <label style={s.fieldLabel}>Nom du réseau (SSID) *</label>
+                <input
+                  style={s.input}
+                  placeholder="MonWiFi-5G"
+                  value={data.wifiSsid ?? ''}
+                  onChange={e => setField('wifiSsid', e.target.value)}
+                />
               </div>
+              <div style={s.fieldWrap}>
+                <label style={s.fieldLabel}>Mot de passe</label>
+                <input
+                  style={s.input}
+                  type="text"
+                  placeholder="MotDePasseWifi"
+                  value={data.wifiPassword ?? ''}
+                  onChange={e => setField('wifiPassword', e.target.value)}
+                />
+              </div>
+              <div style={s.callout}>
+                💡 Astuce : utilise un mot de passe simple (pas de caractères ambigus comme O/0, l/1) pour faciliter la saisie manuelle si nécessaire.
+              </div>
+            </div>
+          )}
 
-              {data.showWifi && (
-                <>
-                  <div style={s.fieldWrap}>
-                    <label style={s.fieldLabel}>Nom du réseau (SSID) *</label>
-                    <input
-                      style={s.input}
-                      placeholder="MonWiFi-5G"
-                      value={data.wifiSsid ?? ''}
-                      onChange={e => setField('wifiSsid', e.target.value)}
-                    />
+          {step === 'practical' && (
+            <div style={s.stepInner}>
+              <h3 style={s.stepTitle}>Infos pratiques</h3>
+              <p style={s.stepDesc}>Les voyageurs cherchent ces 6 infos en priorité. Active uniquement celles qui sont pertinentes pour ton logement.</p>
+
+              {(['host', 'checkout', 'parking', 'waste', 'climate', 'guide'] as const).map(key => {
+                const Icon = BLOCK_ICONS_REACT[key]
+                const labelMap = { host: 'Hôte (contact)', checkout: 'Heure de départ', parking: 'Parking · Accès', waste: 'Tri · Poubelles', climate: 'Chauffage · Clim', guide: 'Livret digital (QR)' }
+                const block = data.blocks[key]
+                return (
+                  <div key={key} style={s.blockEditor}>
+                    <div style={s.blockHeader}>
+                      <div style={s.blockHeaderLeft}>
+                        <div style={s.blockIcon}><Icon size={15} /></div>
+                        <span style={s.blockLabel}>{labelMap[key]}</span>
+                      </div>
+                      <ToggleSwitch value={block.enabled} onChange={v => setBlock(key, { enabled: v })} />
+                    </div>
+                    {block.enabled && (
+                      <div style={s.blockFields}>
+                        {key === 'host' && (
+                          <>
+                            <input style={s.input} placeholder="Prénom (ex: Jason)" value={block.name ?? ''} onChange={e => setBlock(key, { name: e.target.value })} />
+                            <input style={s.input} placeholder="+33 6 12 34 56 78" value={block.phone ?? ''} onChange={e => setBlock(key, { phone: e.target.value })} />
+                          </>
+                        )}
+                        {key === 'checkout' && (
+                          <>
+                            <input style={s.input} placeholder="11h00" value={block.time ?? ''} onChange={e => setBlock(key, { time: e.target.value })} />
+                            <input style={s.input} placeholder="Note (ex: laissez les clés sur la table)" value={block.text ?? ''} onChange={e => setBlock(key, { text: e.target.value })} />
+                          </>
+                        )}
+                        {key === 'parking' && (
+                          <textarea style={{ ...s.input, minHeight: '52px' }} placeholder="Ex: Parking gratuit dans la rue · 2 places privées au sous-sol (code 1234)" value={block.text ?? ''} onChange={e => setBlock(key, { text: e.target.value })} />
+                        )}
+                        {key === 'waste' && (
+                          <textarea style={{ ...s.input, minHeight: '52px' }} placeholder="Ex: Verre jaune · Tri vert · Collecte le mardi soir" value={block.text ?? ''} onChange={e => setBlock(key, { text: e.target.value })} />
+                        )}
+                        {key === 'climate' && (
+                          <textarea style={{ ...s.input, minHeight: '52px' }} placeholder="Ex: Thermostat 19-21°C · Clim télécommande sur le mur" value={block.text ?? ''} onChange={e => setBlock(key, { text: e.target.value })} />
+                        )}
+                        {key === 'guide' && (
+                          <>
+                            <input style={s.input} type="url" placeholder="https://votre-livret-digital.com" value={block.url ?? ''} onChange={e => setBlock(key, { url: e.target.value })} />
+                            <input style={s.input} placeholder="Description courte (ex: Bonnes adresses, équipements…)" value={block.text ?? ''} onChange={e => setBlock(key, { text: e.target.value })} />
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  <div style={s.fieldWrap}>
-                    <label style={s.fieldLabel}>Mot de passe</label>
-                    <input
-                      style={s.input}
-                      type="text"
-                      placeholder="MotDePasseWifi"
-                      value={data.wifiPassword ?? ''}
-                      onChange={e => setField('wifiPassword', e.target.value)}
-                    />
-                  </div>
-                </>
-              )}
+                )
+              })}
             </div>
           )}
 
           {step === 'rules' && (
             <div style={s.stepInner}>
-              <h3 style={s.stepTitle}>Règles & Départ</h3>
-              <p style={s.stepDesc}>Les règles de la maison + la checklist de départ. Modifie-les selon ton logement.</p>
+              <h3 style={s.stepTitle}>Règles maison</h3>
+              <p style={s.stepDesc}>Sélectionne jusqu&apos;à 6 règles. L&apos;affichage se fait avec icônes claires plutôt que du texte (plus scannable). <strong>{data.selectedRules.length}/6 sélectionnées</strong>.</p>
 
-              <div style={s.toggleRow}>
-                <label style={s.toggleLabel}>LES RÈGLES</label>
-                <ToggleSwitch value={data.showRules} onChange={v => setField('showRules', v)} />
-              </div>
-              {data.showRules && (
-                <div style={s.listEditor}>
-                  {data.houseRules.map((rule, i) => (
-                    <div key={i} style={s.listItem}>
-                      <span style={s.listNum}>{String(i + 1).padStart(2, '0')}.</span>
-                      <input
-                        style={{ ...s.input, flex: 1 }}
-                        value={rule}
-                        onChange={e => updateListItem('houseRules', i, e.target.value)}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeListItem('houseRules', i)}
-                        style={s.removeBtn}
-                        aria-label="Supprimer"
-                      >×</button>
-                    </div>
-                  ))}
-                  {data.houseRules.length < 6 && (
-                    <button type="button" onClick={() => addListItem('houseRules')} style={s.addBtn}>
-                      + Ajouter une règle
-                    </button>
-                  )}
-                </div>
-              )}
-
-              <div style={{ ...s.toggleRow, marginTop: '8px' }}>
-                <label style={s.toggleLabel}>DÉPART</label>
-                <ToggleSwitch value={data.showDeparture} onChange={v => setField('showDeparture', v)} />
-              </div>
-              {data.showDeparture && (
-                <>
-                  <div style={s.fieldRow2}>
-                    <div style={s.fieldWrap}>
-                      <label style={s.fieldLabel}>Heure de départ</label>
-                      <input
-                        style={s.input}
-                        placeholder="11h00"
-                        value={data.departureTime ?? ''}
-                        onChange={e => setField('departureTime', e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div style={s.fieldWrap}>
-                    <label style={s.fieldLabel}>Note italique (optionnel)</label>
-                    <input
-                      style={s.input}
-                      placeholder="Pensez à nous signaler tout dommage…"
-                      value={data.departureNote ?? ''}
-                      onChange={e => setField('departureNote', e.target.value)}
-                    />
-                  </div>
-                  <div style={s.listEditor}>
-                    <label style={s.fieldLabel}>Checklist de départ</label>
-                    {data.departureChecklist.map((item, i) => (
-                      <div key={i} style={s.listItem}>
-                        <span style={s.listCheck}>✓</span>
-                        <input
-                          style={{ ...s.input, flex: 1 }}
-                          value={item}
-                          onChange={e => updateListItem('departureChecklist', i, e.target.value)}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeListItem('departureChecklist', i)}
-                          style={s.removeBtn}
-                          aria-label="Supprimer"
-                        >×</button>
+              <div style={s.rulesGrid}>
+                {RULES.map(r => {
+                  const ReactIcon = RULE_ICONS_REACT[r.id]
+                  const active = data.selectedRules.includes(r.id)
+                  const disabled = !active && data.selectedRules.length >= 6
+                  return (
+                    <button
+                      key={r.id}
+                      onClick={() => !disabled && toggleRule(r.id)}
+                      disabled={disabled}
+                      style={{
+                        ...s.ruleCard,
+                        ...(active ? s.ruleCardActive : {}),
+                        ...(disabled ? s.ruleCardDisabled : {}),
+                      }}
+                    >
+                      <div style={{ ...s.ruleIcon, ...(active ? s.ruleIconActive : {}) }}>
+                        <ReactIcon size={20} weight={active ? 'fill' : 'regular'} />
                       </div>
-                    ))}
-                    {data.departureChecklist.length < 6 && (
-                      <button type="button" onClick={() => addListItem('departureChecklist')} style={s.addBtn}>
-                        + Ajouter une étape
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
+                      <div style={s.ruleLabel}>{r.fr}</div>
+                      <div style={s.ruleSub}>{r.en}</div>
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           )}
 
-          {step === 'livret' && (
+          {step === 'emergency' && (
             <div style={s.stepInner}>
-              <h3 style={s.stepTitle}>Livret d&apos;accueil & Numéros d&apos;urgence</h3>
-              <p style={s.stepDesc}>Ajoute un QR code en bas de l&apos;affiche pour ton livret d&apos;accueil digital, et les numéros d&apos;urgence FR (18, 15, 17).</p>
+              <h3 style={s.stepTitle}>Numéros d&apos;urgence</h3>
+              <p style={s.stepDesc}>Numéros d&apos;urgence français en bas de l&apos;affiche : Pompier 18, Samu 15, Police 17. Si tu as activé le bloc &quot;Hôte&quot; avec un numéro, il sera ajouté automatiquement.</p>
 
               <div style={s.toggleRow}>
-                <label style={s.toggleLabel}>Numéros d&apos;urgence (Pompier, Samu, Police)</label>
+                <label style={s.toggleLabel}>Afficher la bande d&apos;urgences</label>
                 <ToggleSwitch value={data.showEmergency} onChange={v => setField('showEmergency', v)} />
               </div>
 
-              <div style={s.toggleRow}>
-                <label style={s.toggleLabel}>QR code livret d&apos;accueil</label>
-                <ToggleSwitch value={data.showLivret} onChange={v => setField('showLivret', v)} />
-              </div>
-
-              {data.showLivret && (
-                <>
-                  <div style={s.fieldWrap}>
-                    <label style={s.fieldLabel}>URL du livret * (annonce, Drive, livret digital…)</label>
-                    <input
-                      style={s.input}
-                      type="url"
-                      placeholder="https://..."
-                      value={data.livretUrl ?? ''}
-                      onChange={e => setField('livretUrl', e.target.value)}
-                    />
-                  </div>
-                  <div style={s.fieldWrap}>
-                    <label style={s.fieldLabel}>Titre du livret</label>
-                    <input
-                      style={s.input}
-                      value={data.livretTitle ?? ''}
-                      onChange={e => setField('livretTitle', e.target.value)}
-                    />
-                  </div>
-                  <div style={s.fieldWrap}>
-                    <label style={s.fieldLabel}>Description courte</label>
-                    <textarea
-                      style={{ ...s.input, minHeight: '70px', resize: 'vertical' as const }}
-                      value={data.livretSubtitle ?? ''}
-                      onChange={e => setField('livretSubtitle', e.target.value)}
-                    />
-                  </div>
-                </>
+              {data.showEmergency && (
+                <div style={s.callout}>
+                  <strong>📞 Numéros affichés :</strong><br />
+                  • Pompier : 18 (incendie, accident)<br />
+                  • Samu : 15 (urgence médicale)<br />
+                  • Police : 17 (sécurité)<br />
+                  {data.blocks.host.phone && <>• Hôte : {data.blocks.host.phone}<br /></>}
+                  <br />
+                  <em>Tip : 112 fonctionne aussi partout en Europe.</em>
+                </div>
               )}
             </div>
           )}
@@ -991,7 +1570,6 @@ export default function AfficheTab({ plan, logements }: Props) {
                 </div>
               </div>
 
-              {/* Download */}
               <div style={s.actionBox}>
                 {!isStandard && (
                   <div style={s.watermarkNotice}>
@@ -1108,408 +1686,261 @@ const s: Record<string, React.CSSProperties> = {
     alignItems: 'start',
     width: '100%',
   },
-  wizardCol: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-  },
-  stepBar: {
-    display: 'flex',
-    gap: '6px',
-    flexWrap: 'wrap' as const,
-  },
+  wizardCol: { display: 'flex', flexDirection: 'column', gap: '20px' },
+  stepBar: { display: 'flex', gap: '6px', flexWrap: 'wrap' as const },
   stepBtn: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '7px',
-    padding: '8px 14px',
-    borderRadius: '10px',
-    fontSize: '12.5px',
-    fontWeight: 400,
-    color: 'var(--text-3)',
-    background: 'var(--surface)',
-    border: '1px solid var(--border-2)',
-    cursor: 'pointer',
-    fontFamily: 'var(--font-outfit), sans-serif',
-    transition: 'all 0.15s',
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    padding: '8px 14px', borderRadius: '10px',
+    fontSize: '12.5px', fontWeight: 400,
+    color: 'var(--text-3)', background: 'var(--surface)',
+    border: '1px solid var(--border-2)', cursor: 'pointer',
+    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
   stepBtnActive: {
-    background: 'var(--accent-bg)',
-    border: '1px solid var(--accent-border)',
-    color: 'var(--accent-text)',
-    fontWeight: 600,
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)', fontWeight: 600,
   },
-  stepBtnDone: {
-    color: 'var(--text-2)',
-    background: 'var(--surface-2)',
-  },
-  stepNum: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'var(--text-3)',
-  },
+  stepBtnDone: { color: 'var(--text-2)', background: 'var(--surface-2)' },
+  stepNum: { display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-3)' },
   stepNumActive: { color: 'var(--accent-text)' },
-  stepNumDone:   { color: 'var(--text-2)' },
+  stepNumDone: { color: 'var(--text-2)' },
   stepLabel: {},
   stepContent: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border-2)',
-    borderRadius: '16px',
-    overflow: 'hidden',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
+    borderRadius: '16px', overflow: 'hidden',
   },
   stepInner: {
     padding: '24px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
+    display: 'flex', flexDirection: 'column', gap: '16px',
   },
   stepTitle: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '20px',
-    fontWeight: 400,
-    color: 'var(--text)',
-    margin: 0,
+    fontSize: '20px', fontWeight: 400,
+    color: 'var(--text)', margin: 0,
     letterSpacing: '-0.2px',
   },
   stepDesc: {
-    fontSize: '13.5px',
-    color: 'var(--text-2)',
-    margin: 0,
-    lineHeight: 1.6,
+    fontSize: '13.5px', color: 'var(--text-2)',
+    margin: 0, lineHeight: 1.6,
   },
-  fieldWrap: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-  },
-  fieldRow2: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-    gap: '12px',
-  },
-  fieldLabel: {
-    fontSize: '12px',
-    fontWeight: 500,
-    color: 'var(--text-3)',
-    letterSpacing: '0.1px',
-  },
-  hint: {
-    fontSize: '11.5px',
-    color: 'var(--text-muted)',
-    fontStyle: 'italic' as const,
-  },
+  fieldWrap: { display: 'flex', flexDirection: 'column', gap: '6px' },
+  fieldLabel: { fontSize: '12px', fontWeight: 500, color: 'var(--text-3)', letterSpacing: '0.1px' },
+  hint: { fontSize: '11.5px', color: 'var(--text-muted)', fontStyle: 'italic' as const },
   input: {
     background: 'var(--bg)',
     border: '1px solid var(--border-2)',
-    borderRadius: '10px',
-    padding: '10px 13px',
-    fontSize: '14px',
-    color: 'var(--text)',
+    borderRadius: '10px', padding: '10px 13px',
+    fontSize: '14px', color: 'var(--text)',
     fontFamily: 'var(--font-outfit), sans-serif',
-    outline: 'none',
-    width: '100%',
+    outline: 'none', width: '100%',
     boxSizing: 'border-box' as const,
   },
-  selectWrap: {
-    position: 'relative' as const,
-  },
+  selectWrap: { position: 'relative' as const },
   select: {
-    background: 'var(--bg)',
-    border: '1px solid var(--border-2)',
-    borderRadius: '10px',
-    padding: '10px 36px 10px 13px',
-    fontSize: '13.5px',
-    color: 'var(--text)',
+    background: 'var(--bg)', border: '1px solid var(--border-2)',
+    borderRadius: '10px', padding: '10px 36px 10px 13px',
+    fontSize: '13.5px', color: 'var(--text)',
     fontFamily: 'var(--font-outfit), sans-serif',
-    outline: 'none',
-    width: '100%',
-    appearance: 'none' as const,
-    cursor: 'pointer',
+    outline: 'none', width: '100%',
+    appearance: 'none' as const, cursor: 'pointer',
   },
   toggleRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: '12px',
-    padding: '10px 0',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    gap: '12px', padding: '10px 0',
     borderBottom: '1px solid var(--border-2)',
   },
-  toggleLabel: {
-    fontSize: '13.5px',
-    fontWeight: 500,
-    color: 'var(--text)',
-  },
-  listEditor: {
-    display: 'flex',
-    flexDirection: 'column' as const,
+  toggleLabel: { fontSize: '13.5px', fontWeight: 500, color: 'var(--text)' },
+  langGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
     gap: '8px',
   },
-  listItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
+  langBtn: {
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    gap: '6px', padding: '12px 8px',
+    borderRadius: '10px', background: 'var(--bg)',
+    border: '1px solid var(--border-2)', cursor: 'pointer',
+    fontFamily: 'var(--font-outfit), sans-serif',
+    fontSize: '12.5px', color: 'var(--text)', fontWeight: 500,
+    transition: 'all 0.15s',
   },
-  listNum: {
-    fontSize: '13px',
-    fontWeight: 700,
-    color: 'var(--accent-text)',
-    minWidth: '24px',
-    fontFamily: 'monospace',
+  langBtnActive: {
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)', fontWeight: 600,
   },
-  listCheck: {
-    fontSize: '13px',
-    fontWeight: 700,
-    color: 'var(--accent-text)',
-    minWidth: '20px',
-    textAlign: 'center' as const,
+  callout: {
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    borderRadius: '10px', padding: '12px 14px',
+    fontSize: '12.5px', color: 'var(--text)', lineHeight: 1.6,
   },
-  removeBtn: {
-    width: '28px',
-    height: '28px',
-    flexShrink: 0,
-    background: 'var(--bg)',
-    border: '1px solid var(--border-2)',
+  blockEditor: {
+    background: 'var(--bg)', border: '1px solid var(--border-2)',
+    borderRadius: '10px', padding: '12px',
+    display: 'flex', flexDirection: 'column' as const, gap: '10px',
+  },
+  blockHeader: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    gap: '12px',
+  },
+  blockHeaderLeft: { display: 'flex', alignItems: 'center', gap: '10px' },
+  blockIcon: {
+    width: '28px', height: '28px',
     borderRadius: '7px',
-    color: 'var(--text-3)',
-    fontSize: '16px',
-    cursor: 'pointer',
-    fontFamily: 'var(--font-outfit), sans-serif',
+    background: 'var(--surface-2)', color: 'var(--accent-text)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
   },
-  addBtn: {
-    alignSelf: 'flex-start' as const,
-    fontSize: '12.5px',
-    fontWeight: 500,
-    color: 'var(--accent-text)',
-    background: 'transparent',
-    border: '1px dashed var(--accent-border)',
-    borderRadius: '8px',
-    padding: '7px 12px',
-    cursor: 'pointer',
-    fontFamily: 'var(--font-outfit), sans-serif',
+  blockLabel: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' },
+  blockFields: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  rulesGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(118px, 1fr))',
+    gap: '10px',
   },
-  colorGrid: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: '8px',
-  },
-  colorCard: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '10px 14px',
-    borderRadius: '10px',
-    background: 'var(--bg)',
+  ruleCard: {
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    gap: '8px', padding: '14px 10px',
+    borderRadius: '12px',
+    background: 'var(--bg)', border: '1px solid var(--border-2)',
     cursor: 'pointer',
     fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.15s',
   },
-  colorDot: {
-    width: '32px',
-    height: '32px',
+  ruleCardActive: {
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+  },
+  ruleCardDisabled: { opacity: 0.4, cursor: 'not-allowed' },
+  ruleIcon: {
+    width: '40px', height: '40px',
     borderRadius: '50%',
+    background: 'var(--surface-2)', color: 'var(--text-3)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
+  ruleIconActive: { background: 'var(--accent-text)', color: '#FFFFFF' },
+  ruleLabel: { fontSize: '12px', fontWeight: 600, color: 'var(--text)', textAlign: 'center' as const },
+  ruleSub: { fontSize: '10.5px', color: 'var(--text-muted)', textAlign: 'center' as const },
+  colorGrid: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px' },
+  colorCard: {
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    gap: '6px', padding: '10px 14px',
+    borderRadius: '10px', background: 'var(--bg)',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-outfit), sans-serif',
+    transition: 'all 0.15s',
+  },
+  colorDot: { width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 },
   colorLabel: {
-    fontSize: '11.5px',
-    color: 'var(--text-2)',
-    fontWeight: 500,
+    fontSize: '11.5px', color: 'var(--text-2)', fontWeight: 500,
     fontFamily: 'var(--font-outfit), sans-serif',
   },
   hexWrap: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0',
+    display: 'flex', alignItems: 'center', gap: '0',
     marginTop: '8px',
-    background: 'var(--bg)',
-    border: '1px solid var(--border-2)',
-    borderRadius: '10px',
-    padding: '4px 10px',
+    background: 'var(--bg)', border: '1px solid var(--border-2)',
+    borderRadius: '10px', padding: '4px 10px',
     width: 'fit-content',
   },
   colorPicker: {
-    width: '26px',
-    height: '26px',
-    borderRadius: '7px',
-    border: 'none',
-    padding: 0,
-    cursor: 'pointer',
-    background: 'none',
-    marginRight: '8px',
+    width: '26px', height: '26px',
+    borderRadius: '7px', border: 'none',
+    padding: 0, cursor: 'pointer',
+    background: 'none', marginRight: '8px',
   },
   hexHash: {
-    fontSize: '13px',
-    color: 'var(--text-muted)',
-    fontFamily: 'monospace',
-    fontWeight: 500,
+    fontSize: '13px', color: 'var(--text-muted)',
+    fontFamily: 'monospace', fontWeight: 500,
   },
   hexInput: {
-    width: '74px',
-    background: 'transparent',
-    border: 'none',
-    padding: '7px 6px',
-    fontSize: '13px',
-    color: 'var(--text)',
-    fontFamily: 'monospace',
-    fontWeight: 500,
-    outline: 'none',
-    letterSpacing: '0.5px',
+    width: '74px', background: 'transparent', border: 'none',
+    padding: '7px 6px', fontSize: '13px', color: 'var(--text)',
+    fontFamily: 'monospace', fontWeight: 500,
+    outline: 'none', letterSpacing: '0.5px',
     textTransform: 'uppercase' as const,
   },
   hexPreview: {
-    width: '20px',
-    height: '20px',
-    borderRadius: '5px',
-    border: '1px solid var(--border-2)',
+    width: '20px', height: '20px',
+    borderRadius: '5px', border: '1px solid var(--border-2)',
     flexShrink: 0,
   },
   actionBox: {
-    background: 'var(--accent-bg)',
-    border: '1px solid var(--accent-border)',
-    borderRadius: '12px',
-    padding: '16px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    borderRadius: '12px', padding: '16px',
+    display: 'flex', flexDirection: 'column', gap: '10px',
     marginTop: '4px',
   },
   watermarkNotice: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '8px',
-    fontSize: '12.5px',
-    color: 'var(--accent-text)',
-    lineHeight: 1.5,
+    display: 'flex', alignItems: 'flex-start', gap: '8px',
+    fontSize: '12.5px', color: 'var(--accent-text)', lineHeight: 1.5,
   },
-  dlRow: {
-    display: 'flex',
-    gap: '10px',
-    flexWrap: 'wrap' as const,
-  },
+  dlRow: { display: 'flex', gap: '10px', flexWrap: 'wrap' as const },
   dlBtn: {
-    flex: 1,
-    minWidth: '140px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '6px',
-    padding: '10px 16px',
-    borderRadius: '10px',
-    fontSize: '13px',
-    fontWeight: 600,
+    flex: 1, minWidth: '140px',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    gap: '6px', padding: '10px 16px',
+    borderRadius: '10px', fontSize: '13px', fontWeight: 600,
     color: 'var(--accent-text)',
-    background: 'var(--surface)',
-    border: '1px solid var(--accent-border)',
-    cursor: 'pointer',
-    fontFamily: 'var(--font-outfit), sans-serif',
+    background: 'var(--surface)', border: '1px solid var(--accent-border)',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
   },
-  dlBtnSecondary: {
-    background: 'transparent',
-    color: 'var(--accent-text)',
-  },
+  dlBtnSecondary: { background: 'transparent', color: 'var(--accent-text)' },
   saveBtn: {
-    padding: '8px 16px',
-    borderRadius: '10px',
-    fontSize: '12.5px',
-    fontWeight: 500,
-    color: 'var(--accent-text)',
-    background: 'transparent',
+    padding: '8px 16px', borderRadius: '10px',
+    fontSize: '12.5px', fontWeight: 500,
+    color: 'var(--accent-text)', background: 'transparent',
     border: '1px solid var(--accent-border)',
-    cursor: 'pointer',
-    fontFamily: 'var(--font-outfit), sans-serif',
+    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
     alignSelf: 'flex-start' as const,
   },
-  navButtons: {
-    display: 'flex',
-    gap: '10px',
-  },
+  navButtons: { display: 'flex', gap: '10px' },
   navBtn: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '10px 18px',
-    borderRadius: '10px',
-    fontSize: '13.5px',
-    fontWeight: 500,
-    color: 'var(--text-2)',
-    background: 'var(--surface)',
-    border: '1px solid var(--border-2)',
-    cursor: 'pointer',
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '10px 18px', borderRadius: '10px',
+    fontSize: '13.5px', fontWeight: 500,
+    color: 'var(--text-2)', background: 'var(--surface)',
+    border: '1px solid var(--border-2)', cursor: 'pointer',
     fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.15s',
   },
   navBtnPrimary: {
-    background: 'var(--accent-bg)',
-    border: '1px solid var(--accent-border)',
-    color: 'var(--accent-text)',
-    fontWeight: 600,
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)', fontWeight: 600,
   },
   previewCol: {
     position: 'sticky' as const,
     top: 'calc(var(--header-h) + 16px)',
   },
   previewCard: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border-2)',
-    borderRadius: '16px',
-    padding: '20px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
+    borderRadius: '16px', padding: '20px',
+    display: 'flex', flexDirection: 'column', gap: '12px',
   },
   previewHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
   },
   previewLabel: {
-    fontSize: '11px',
-    fontWeight: 700,
-    letterSpacing: '0.7px',
-    textTransform: 'uppercase' as const,
+    fontSize: '11px', fontWeight: 700,
+    letterSpacing: '0.7px', textTransform: 'uppercase' as const,
     color: 'var(--text-muted)',
   },
   renderingChip: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '5px',
-    fontSize: '10.5px',
-    color: 'var(--accent-text)',
-    background: 'var(--accent-bg)',
+    display: 'inline-flex', alignItems: 'center',
+    gap: '5px', fontSize: '10.5px',
+    color: 'var(--accent-text)', background: 'var(--accent-bg)',
     border: '1px solid var(--accent-border)',
-    borderRadius: '999px',
-    padding: '3px 9px',
+    borderRadius: '999px', padding: '3px 9px',
   },
   previewWrap: {
-    width: '100%',
-    aspectRatio: '210 / 297',
-    background: 'var(--bg)',
-    borderRadius: '8px',
-    overflow: 'hidden',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: '100%', aspectRatio: '210 / 297',
+    background: 'var(--bg)', borderRadius: '8px', overflow: 'hidden',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
     border: '1px solid var(--border-2)',
   },
-  previewImg: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'contain',
-    display: 'block',
-  },
+  previewImg: { width: '100%', height: '100%', objectFit: 'contain', display: 'block' },
   previewEmpty: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    alignItems: 'center',
-    gap: '10px',
-    fontSize: '13px',
-    color: 'var(--text-muted)',
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'center',
+    gap: '10px', fontSize: '13px', color: 'var(--text-muted)',
   },
   previewNote: {
-    fontSize: '11.5px',
-    color: 'var(--text-muted)',
-    margin: 0,
-    textAlign: 'center' as const,
+    fontSize: '11.5px', color: 'var(--text-muted)',
+    margin: 0, textAlign: 'center' as const,
   },
 }
