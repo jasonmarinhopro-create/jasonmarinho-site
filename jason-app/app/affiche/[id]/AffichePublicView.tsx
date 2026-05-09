@@ -7,7 +7,7 @@ import {
   Recycle, Lock, Drop,
 } from '@phosphor-icons/react/dist/ssr'
 
-type Lang = 'fr' | 'en' | 'fr-en'
+type Lang = 'fr' | 'en'
 
 type RuleId =
   | 'no-smoking' | 'quiet-hours' | 'no-pets' | 'pets-ok'
@@ -26,7 +26,6 @@ interface AfficheData {
   language?: Lang
   logementNom?: string
   tagline?: string
-  showFlag?: boolean
   wifiSsid?: string
   wifiPassword?: string
   blocks?: {
@@ -61,9 +60,7 @@ const T = {
 }
 
 function t(field: { fr: string; en: string }, lang: Lang): string {
-  if (lang === 'fr') return field.fr
-  if (lang === 'en') return field.en
-  return `${field.fr} · ${field.en}`
+  return lang === 'en' ? field.en : field.fr
 }
 
 const RULE_LABELS: Record<RuleId, { fr: string; en: string; positive: boolean }> = {
@@ -103,8 +100,8 @@ function buildWifiQr(ssid: string, password: string): string {
 
 export default function AffichePublicView({ data: rawData }: Props) {
   const d = rawData as AfficheData
-  const lang: Lang = d.language ?? 'fr-en'
-  const accent = d.accentColor ?? '#0B4C3F'
+  const lang: Lang = (d.language as Lang | undefined) === 'en' ? 'en' : 'fr'
+  const accent = d.accentColor ?? '#374151'
   const wifiQrRef = useRef<HTMLDivElement>(null)
   const guideQrRef = useRef<HTMLDivElement>(null)
 
@@ -148,27 +145,23 @@ export default function AffichePublicView({ data: rawData }: Props) {
   }, [])
 
   const blocks = d.blocks ?? {}
-  const enabledBlocks = (['host', 'checkout', 'parking', 'waste', 'climate', 'guide'] as const)
+  const enabledBlocks = (['host', 'checkout', 'parking', 'waste', 'climate'] as const)
     .filter(k => {
       const b = blocks[k]
       if (!b?.enabled) return false
       if (k === 'host') return Boolean(b.phone || b.name)
       if (k === 'checkout') return Boolean(b.time)
-      if (k === 'guide') return Boolean(b.url)
       return Boolean(b.text)
     })
+  const guideEnabled = Boolean(blocks.guide?.enabled && blocks.guide?.url)
 
   const selectedRules = (d.selectedRules ?? []).slice(0, 6)
 
-  const flagText = lang === 'en' ? '🇬🇧' : lang === 'fr' ? '🇫🇷' : '🇫🇷  🇬🇧'
   const mainTitle = lang === 'en' ? 'WELCOME' : 'BIENVENUE'
-  const showSecondary = lang === 'fr-en'
 
   const taglineDefault = lang === 'fr'
     ? `Bienvenue${d.logementNom ? ` à ${d.logementNom}` : ''}. Voici ce qu'il faut savoir pour votre séjour.`
-    : lang === 'en'
-      ? `Welcome${d.logementNom ? ` to ${d.logementNom}` : ''}. Here is what you need for your stay.`
-      : `Bienvenue${d.logementNom ? ` à ${d.logementNom}` : ''} · Welcome${d.logementNom ? ` to ${d.logementNom}` : ''}`
+    : `Welcome${d.logementNom ? ` to ${d.logementNom}` : ''}. Here is what you need for your stay.`
 
   const emergencyCells: Array<{ fr: string; en: string; value: string }> = [
     { fr: 'Pompier', en: 'Fire',      value: '18' },
@@ -187,23 +180,15 @@ export default function AffichePublicView({ data: rawData }: Props) {
 
         <div style={{ padding: 'clamp(28px,4vw,52px) clamp(20px,4vw,52px) 0' }}>
           {/* === HEADER === */}
-          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-            {d.showFlag !== false && (
-              <div style={{ fontSize: '20px', marginBottom: '4px', letterSpacing: '4px' }}>{flagText}</div>
-            )}
-            <div style={{ width: '120px', height: '1px', background: `${accent}28`, margin: '8px auto 0' }} />
-            <h1 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 'clamp(38px,7vw,58px)', fontWeight: 700, color: accent, margin: '14px 0 0', letterSpacing: '0.5px', lineHeight: 1.05 }}>
+          <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+            <div style={{ width: '120px', height: '1px', background: `${accent}28`, margin: '0 auto 12px' }} />
+            <h1 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 'clamp(38px,7vw,58px)', fontWeight: 700, color: accent, margin: '0 0 16px', letterSpacing: '0.5px', lineHeight: 1.05 }}>
               {mainTitle}
             </h1>
-            {showSecondary && (
-              <div style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontStyle: 'italic', fontSize: 'clamp(16px,2.4vw,22px)', color: '#9CA3AF', marginTop: '4px' }}>
-                Welcome
-              </div>
-            )}
-            <p style={{ fontSize: 'clamp(13px,1.7vw,14px)', color: '#4A4A4A', margin: '16px auto 0', maxWidth: '540px', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 'clamp(13px,1.7vw,14px)', color: '#4A4A4A', margin: '0 auto 24px', maxWidth: '540px', lineHeight: 1.6 }}>
               {d.tagline || taglineDefault}
             </p>
-            <div style={{ width: '100%', height: '1px', background: `${accent}1A`, margin: '24px auto 0' }} />
+            <div style={{ width: '100%', height: '1px', background: `${accent}1A` }} />
           </div>
 
           {/* === WIFI HERO === */}
@@ -254,16 +239,11 @@ export default function AffichePublicView({ data: rawData }: Props) {
                       </div>
                       <div>
                         <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', color: accent }}>
-                          {labelMap[key].fr.toUpperCase()}
+                          {t(labelMap[key], lang).toUpperCase()}
                         </div>
-                        {lang === 'fr-en' && (
-                          <div style={{ fontSize: '9px', letterSpacing: '0.8px', color: '#9CA3AF', marginTop: '1px' }}>
-                            {labelMap[key].en.toUpperCase()}
-                          </div>
-                        )}
                       </div>
                     </div>
-                    <BlockContent type={key} block={block} accent={accent} guideQrRef={key === 'guide' ? guideQrRef : null} />
+                    <BlockContent type={key} block={block} />
                   </div>
                 )
               })}
@@ -308,13 +288,8 @@ export default function AffichePublicView({ data: rawData }: Props) {
                         )}
                       </div>
                       <div style={{ fontSize: '11px', color: '#1A1A1A', marginTop: '8px', fontWeight: 600, lineHeight: 1.2 }}>
-                        {def.fr}
+                        {lang === 'en' ? def.en : def.fr}
                       </div>
-                      {lang === 'fr-en' && (
-                        <div style={{ fontSize: '9.5px', color: '#9CA3AF', marginTop: '2px', lineHeight: 1.2 }}>
-                          {def.en}
-                        </div>
-                      )}
                     </div>
                   )
                 })}
@@ -322,6 +297,33 @@ export default function AffichePublicView({ data: rawData }: Props) {
             </div>
           )}
         </div>
+
+        {/* === GUIDE / LIVRET === */}
+        {guideEnabled && (
+          <div style={{ padding: '0 clamp(20px,4vw,52px) 28px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: accent }}>
+                {t(T.guide, lang).toUpperCase()}
+              </div>
+              <div style={{ width: '40px', height: '1px', background: `${accent}40`, margin: '6px auto 0' }} />
+            </div>
+            <div style={{ background: `${accent}07`, borderRadius: '12px', padding: '20px', display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <div style={{ flexShrink: 0, background: '#FFFFFF', borderRadius: '8px', padding: '4px' }}>
+                <div ref={guideQrRef} style={{ width: '110px', height: '110px' }} />
+              </div>
+              <div>
+                {blocks.guide?.text && (
+                  <p style={{ fontSize: '13px', color: '#1A1A1A', margin: '0 0 10px', lineHeight: 1.55 }}>
+                    {blocks.guide.text}
+                  </p>
+                )}
+                <p style={{ fontSize: '11px', color: '#9CA3AF', margin: 0, fontStyle: 'italic' }}>
+                  Créez votre livret avec Driing
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* === EMERGENCY BAND === */}
         {d.showEmergency && (
@@ -343,13 +345,8 @@ export default function AffichePublicView({ data: rawData }: Props) {
                   }}
                 >
                   <div style={{ fontSize: '11px', fontWeight: 700, color: accent }}>
-                    {cell.fr}
+                    {lang === 'en' ? cell.en : cell.fr}
                   </div>
-                  {lang === 'fr-en' && (
-                    <div style={{ fontSize: '9px', color: '#9CA3AF', marginTop: '1px' }}>
-                      {cell.en}
-                    </div>
-                  )}
                   <div style={{ fontFamily: 'Georgia, serif', fontSize: emergencyCells.length > 3 ? '15px' : '20px', fontWeight: 700, color: '#1A1A1A', marginTop: '6px' }}>
                     {cell.value}
                   </div>
@@ -381,17 +378,7 @@ export default function AffichePublicView({ data: rawData }: Props) {
   )
 }
 
-function BlockContent({
-  type,
-  block,
-  accent,
-  guideQrRef,
-}: {
-  type: string
-  block: InfoBlock
-  accent: string
-  guideQrRef: React.RefObject<HTMLDivElement> | null
-}) {
+function BlockContent({ type, block }: { type: string; block: InfoBlock }) {
   if (type === 'host') {
     return (
       <div>
@@ -414,25 +401,6 @@ function BlockContent({
         )}
         {block.text && (
           <div style={{ fontSize: '12px', color: '#7A7A7A', marginTop: '6px', lineHeight: 1.5 }}>{block.text}</div>
-        )}
-      </div>
-    )
-  }
-  if (type === 'guide') {
-    return (
-      <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-        <div style={{ flexShrink: 0, background: '#FFFFFF', borderRadius: '6px', padding: '2px' }}>
-          <div ref={guideQrRef} style={{ width: '70px', height: '70px' }} />
-        </div>
-        {block.text && (
-          <div style={{ fontSize: '11.5px', color: '#1A1A1A', lineHeight: 1.5, flex: 1 }}>
-            {block.text}
-          </div>
-        )}
-        {!block.text && block.url && (
-          <div style={{ fontSize: '11px', color: '#7A7A7A', lineHeight: 1.5, flex: 1, fontStyle: 'italic' as const }}>
-            Scannez pour ouvrir le livret
-          </div>
         )}
       </div>
     )
