@@ -260,11 +260,11 @@ export default async function AbonnementPage({
                   <div style={{
                     margin: '4px 0 6px',
                     background: founderExhausted
-                      ? 'rgba(255,255,255,.04)'
+                      ? 'var(--surface-2)'
                       : founderUrgent
-                        ? 'linear-gradient(135deg,rgba(255,140,80,.12),rgba(255,140,80,.04))'
-                        : 'linear-gradient(135deg,rgba(255,213,107,.10),rgba(255,213,107,.04))',
-                    border: `1px solid ${founderExhausted ? 'rgba(255,255,255,.08)' : founderUrgent ? 'rgba(255,90,30,.4)' : 'rgba(255,213,107,.28)'}`,
+                        ? 'rgba(255,140,80,.10)'
+                        : 'var(--accent-bg)',
+                    border: `1px solid ${founderExhausted ? 'var(--border)' : founderUrgent ? 'rgba(255,90,30,.35)' : 'var(--accent-border)'}`,
                     borderRadius: '12px',
                     padding: '12px 14px',
                     display: 'flex',
@@ -278,7 +278,7 @@ export default async function AbonnementPage({
                       fontSize: '12.5px',
                       fontWeight: 600,
                       lineHeight: 1.4,
-                      color: founderExhausted ? 'var(--text-2)' : founderUrgent ? '#ff7a3d' : '#ffd56b',
+                      color: founderExhausted ? 'var(--text-2)' : founderUrgent ? '#ff7a3d' : 'var(--accent-text)',
                     }}>
                       <LockKey size={14} weight="fill" />
                       {founderExhausted ? (
@@ -289,7 +289,7 @@ export default async function AbonnementPage({
                     </div>
                     <div style={{
                       height: '6px',
-                      background: 'rgba(255,255,255,.08)',
+                      background: 'var(--border-2)',
                       borderRadius: '100px',
                       overflow: 'hidden',
                     }}>
@@ -307,7 +307,7 @@ export default async function AbonnementPage({
                     </div>
                     {!founderExhausted && (
                       <p style={{ fontSize: '11.5px', color: 'var(--text-2)', lineHeight: 1.55, margin: 0 }}>
-                        Chaque place fondateur garantit le tarif de <strong style={{ color: '#ffd56b' }}>1,98 €/mois à vie</strong>.
+                        Chaque place fondateur garantit le tarif de <strong style={{ color: 'var(--accent-text)' }}>1,98 €/mois à vie</strong>.
                       </p>
                     )}
                   </div>
@@ -410,10 +410,10 @@ const styles: Record<string, React.CSSProperties> = {
   planLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: '#34D399' },
   dot: { width: '7px', height: '7px', borderRadius: '50%', background: '#34D399' },
   planName: { fontFamily: 'var(--font-fraunces), serif', fontSize: '32px', fontWeight: 400, color: 'var(--text)' },
-  planDesc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-3)', lineHeight: 1.6, margin: 0 },
+  planDesc: { fontSize: '13px', fontWeight: 400, color: 'var(--text-3)', lineHeight: 1.6, margin: 0 },
   featureList: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  featureItem: { display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', fontWeight: 300, color: 'var(--text-2)' },
-  smallNote: { fontSize: '12px', fontWeight: 300, color: 'var(--text-muted)', lineHeight: 1.65, borderTop: '1px solid var(--border)', paddingTop: '12px', marginTop: '4px' },
+  featureItem: { display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', fontWeight: 400, color: 'var(--text-2)' },
+  smallNote: { fontSize: '12px', fontWeight: 400, color: 'var(--text-muted)', lineHeight: 1.65, borderTop: '1px solid var(--border)', paddingTop: '12px', marginTop: '4px' },
 
   priceRow: { display: 'flex', alignItems: 'baseline', gap: '4px', flexWrap: 'wrap' },
   price: { fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', fontWeight: 600, color: 'var(--text)' },
