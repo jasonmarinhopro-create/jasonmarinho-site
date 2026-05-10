@@ -90,6 +90,21 @@ const MONTHS_FR = [
 
 function pad2(n: number) { return String(n).padStart(2, '0') }
 function toStr(y: number, m: number, d: number) { return `${y}-${pad2(m + 1)}-${pad2(d)}` }
+
+// Sur Airbnb, "Not available" couvre 2 cas : vraie réservation (la description contient
+// "Reservation URL") OU date manuellement bloquée par l'hôte (description vide).
+// Idem pour Booking.com : "CLOSED - Not available" peut être un blocage manuel.
+// On ne compte pas les blocages dans le taux d'occupation.
+function isBlockedIcalEvent(title: string | null | undefined, description: string | null | undefined): boolean {
+  const t = (title ?? '').toLowerCase()
+  const d = (description ?? '').toLowerCase()
+  // Vraie réservation : présence d'un identifiant Airbnb / Booking dans la description
+  if (d.includes('reservation url') || d.includes('phone number') || d.includes('checkin')) return false
+  // Patterns "non disponible" sans données voyageur → blocage manuel
+  if (t.includes('not available') || t.includes('unavailable') || t.includes('blocked') || t.includes('blocage')) return true
+  if (t.startsWith('closed') || t.includes('- not available')) return true
+  return false
+}
 function todayString() {
   const t = new Date()
   return toStr(t.getFullYear(), t.getMonth(), t.getDate())
@@ -683,6 +698,7 @@ export default function CalendrierView({
     isStart: boolean
     isEnd: boolean
     isIcal: boolean
+    isBlocked?: boolean
     platformLabel?: string
     onClick: () => void
   }
@@ -732,16 +748,18 @@ export default function CalendrierView({
           : e.feed_color === '#003B95' ? 'Booking'
           : e.feed_color === '#FFC72C' ? 'Vrbo'
           : 'Synchro'
+        const blocked = isBlockedIcalEvent(e.title, e.description)
         out.push({
           id: `ical-${e.id}`,
-          title: e.title,
-          color: e.feed_color,
-          bg:    `${e.feed_color}22`,
+          title: blocked ? `Bloqué — ${platformLabel}` : e.title,
+          color: blocked ? '#94a3b8' : e.feed_color,
+          bg:    blocked ? 'rgba(148,163,184,0.10)' : `${e.feed_color}22`,
           startCol: weekCells.findIndex(c => c.date === ss),
           endCol:   weekCells.findIndex(c => c.date === se),
           isStart:  e.start_date >= ws,
           isEnd:    e.end_date! <= we,
           isIcal:   true,
+          isBlocked: blocked,
           platformLabel,
           onClick:  () => {
             setSelected(e.start_date)
@@ -1033,7 +1051,11 @@ export default function CalendrierView({
     contractEvents.forEach(c => {
       if (c.type === 'arrivee') expandRange(c.date_arrivee, c.date_depart)
     })
-    icalEvents.forEach(e => expandRange(e.start_date, e.end_date))
+    icalEvents.forEach(e => {
+      // Exclure les dates manuellement fermées (pas de vraie réservation)
+      if (isBlockedIcalEvent(e.title, e.description)) return
+      expandRange(e.start_date, e.end_date)
+    })
     sejourEvents.forEach(s => expandRange(s.date_arrivee, s.date_depart))
     const occupationPct = Math.round((occupiedDays.size / monthDays) * 100)
 
@@ -2146,15 +2168,20 @@ export default function CalendrierView({
                         key={span.id}
                         data-bar="1"
                         onClick={span.onClick}
-                        title={span.isIcal && span.platformLabel ? `${span.platformLabel} · ${span.title}` : span.title}
+                        title={span.isBlocked
+                          ? `${span.platformLabel} · Date fermée par l'hôte (non comptée dans l'occupation)`
+                          : span.isIcal && span.platformLabel ? `${span.platformLabel} · ${span.title}` : span.title}
                         style={{
                           position: 'absolute', top, left, width, height: BAR_H, zIndex: 2,
-                          background: span.bg,
+                          background: span.isBlocked
+                            ? 'repeating-linear-gradient(45deg, rgba(148,163,184,0.10) 0 6px, rgba(148,163,184,0.20) 6px 12px)'
+                            : span.bg,
                           borderLeft: span.isStart ? `2.5px solid ${span.color}` : 'none',
                           borderRadius: br,
                           display: 'flex', alignItems: 'center', gap: '3px',
                           padding: '0 6px', fontSize: '11px', fontWeight: 500,
                           color: 'var(--text-2)', overflow: 'hidden', cursor: 'pointer',
+                          opacity: span.isBlocked ? 0.75 : 1,
                         }}
                       >
                         {span.isStart && (
