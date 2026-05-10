@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import Stripe from 'stripe'
-import { planFromPriceId } from '@/lib/constants/stripe-plans'
 import { logger } from '@/lib/logger'
-import { invalidateProfileCache } from '@/lib/queries/profile'
+import { dispatchStripeEvent } from '@/lib/stripe/dispatch'
 const log = logger('api/stripe/webhooks')
 
 function serviceClient() {
@@ -35,167 +34,22 @@ export async function POST(request: NextRequest) {
 
   const db = serviceClient()
 
+  // Idempotence : Stripe garantit "at-least-once delivery", on saute si déjà traité
+  const { error: insertErr } = await db
+    .from('stripe_webhook_events')
+    .insert({ event_id: event.id, type: event.type })
+  if (insertErr && insertErr.code === '23505') {
+    return NextResponse.json({ received: true, duplicate: true })
+  }
+
   try {
-    switch (event.type) {
-      // La Checkout Session est complète
-      case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session
-        const contractId = session.metadata?.contract_id
-        if (!contractId || session.payment_status !== 'paid') break
-
-        const paymentIntentId = session.payment_intent as string
-        const type = session.metadata?.type // 'loyer' | undefined (caution)
-
-        // Récupère la checklist actuelle pour merge
-        const { data: currentRow } = await db
-          .from('contracts')
-          .select('checklist_status')
-          .eq('id', contractId)
-          .single()
-        const currentChecklist = (currentRow?.checklist_status as Record<string, boolean>) ?? {}
-
-        if (type === 'loyer') {
-          // Paiement immédiat du loyer → coche "Solde reçu" auto
-          await db
-            .from('contracts')
-            .update({
-              stripe_payment_intent_id: paymentIntentId,
-              stripe_payment_status: 'paid',
-              checklist_status: { ...currentChecklist, solde_recu: true },
-            })
-            .eq('id', contractId)
-        } else {
-          // Pré-autorisation caution (capture manuelle) → coche "Caution reçue"
-          await db
-            .from('contracts')
-            .update({
-              stripe_deposit_payment_intent_id: paymentIntentId,
-              stripe_deposit_status: 'held',
-              checklist_status: { ...currentChecklist, caution_recue: true },
-            })
-            .eq('id', contractId)
-        }
-        break
-      }
-
-      // Pré-autorisation confirmée (caution retenue sur la carte)
-      // Fiable même si checkout.session.completed est manqué
-      case 'payment_intent.amount_capturable_updated': {
-        const pi = event.data.object as Stripe.PaymentIntent
-        const contractId = pi.metadata?.contract_id
-        if (!contractId) break
-        // Récupère la checklist actuelle pour merge
-        const { data: currentRow } = await db
-          .from('contracts')
-          .select('checklist_status')
-          .eq('id', contractId)
-          .single()
-        const currentChecklist = (currentRow?.checklist_status as Record<string, boolean>) ?? {}
-        // Passer en 'held' seulement si ce n'est pas déjà capturé/libéré
-        await db
-          .from('contracts')
-          .update({
-            stripe_deposit_payment_intent_id: pi.id,
-            stripe_deposit_status: 'held',
-            checklist_status: { ...currentChecklist, caution_recue: true },
-          })
-          .eq('id', contractId)
-          .in('stripe_deposit_status', ['pending', null])
-        break
-      }
-
-      // Autorisation expirée ou annulée (Stripe expire les pré-auths après 7–30 jours)
-      case 'payment_intent.canceled': {
-        const pi = event.data.object as Stripe.PaymentIntent
-        const contractId = pi.metadata?.contract_id
-        if (!contractId) break
-        // Si l'autorisation était retenue, remettre en 'pending' pour que le voyageur puisse repayer
-        await db
-          .from('contracts')
-          .update({ stripe_deposit_status: 'pending', stripe_deposit_payment_intent_id: null })
-          .eq('id', contractId)
-          .eq('stripe_deposit_status', 'held')
-        break
-      }
-
-      // Compte Connect : onboarding terminé
-      case 'account.updated': {
-        const account = event.data.object as Stripe.Account
-        if (account.details_submitted) {
-          const { data } = await db
-            .from('profiles')
-            .update({ stripe_onboarding_complete: true })
-            .eq('stripe_account_id', account.id)
-            .select('id')
-            .maybeSingle()
-          if (data?.id) invalidateProfileCache(data.id)
-        }
-        break
-      }
-
-      // Abonnement plateforme créé
-      case 'customer.subscription.created': {
-        const sub = event.data.object as Stripe.Subscription
-        const userId = sub.metadata?.user_id
-        if (!userId) break
-        const priceId = sub.items.data[0]?.price?.id ?? ''
-        await db.from('profiles').update({
-          plan: planFromPriceId(priceId),
-          stripe_subscription_id: sub.id,
-          stripe_subscription_status: sub.status,
-          stripe_price_id: priceId,
-        }).eq('id', userId)
-        invalidateProfileCache(userId)
-        break
-      }
-
-      // Abonnement mis à jour (upgrade, downgrade, renouvellement)
-      case 'customer.subscription.updated': {
-        const sub = event.data.object as Stripe.Subscription
-        const userId = sub.metadata?.user_id
-        if (!userId) break
-        const priceId = sub.items.data[0]?.price?.id ?? ''
-        const plan = sub.status === 'active' ? planFromPriceId(priceId) : 'decouverte'
-        await db.from('profiles').update({
-          plan,
-          stripe_subscription_status: sub.status,
-          stripe_price_id: priceId,
-        }).eq('id', userId)
-        invalidateProfileCache(userId)
-        break
-      }
-
-      // Abonnement résilié
-      case 'customer.subscription.deleted': {
-        const sub = event.data.object as Stripe.Subscription
-        const userId = sub.metadata?.user_id
-        if (!userId) break
-        await db.from('profiles').update({
-          plan: 'decouverte',
-          stripe_subscription_id: null,
-          stripe_subscription_status: 'canceled',
-          stripe_price_id: null,
-        }).eq('id', userId)
-        invalidateProfileCache(userId)
-        break
-      }
-
-      // Paiement échoué → passe en past_due
-      case 'invoice.payment_failed': {
-        const invoice = event.data.object as Stripe.Invoice & { subscription?: string | Stripe.Subscription | null }
-        const subId = typeof invoice.subscription === 'string'
-          ? invoice.subscription
-          : (invoice.subscription as Stripe.Subscription | null | undefined)?.id
-        if (!subId) break
-        const { data } = await db.from('profiles').update({
-          stripe_subscription_status: 'past_due',
-        }).eq('stripe_subscription_id', subId).select('id').maybeSingle()
-        if (data?.id) invalidateProfileCache(data.id)
-        break
-      }
-    }
+    await dispatchStripeEvent(event, db)
   } catch (err) {
-    log.error('unexpected', { err: String(err) })
+    // Libère le lock pour que Stripe retry automatiquement (jusqu'à 3 jours).
+    // Sinon le replay manuel via /api/stripe/sync reste possible.
+    await db.from('stripe_webhook_events').delete().eq('event_id', event.id)
+    log.error('unexpected', { err: String(err), event_id: event.id, type: event.type })
+    return NextResponse.json({ error: 'dispatch failed' }, { status: 500 })
   }
 
   return NextResponse.json({ received: true })
