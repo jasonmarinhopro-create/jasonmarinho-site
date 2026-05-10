@@ -9,6 +9,7 @@ import {
   Star, CaretDown, CaretUp, PushPin, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
+import type { LogementOption } from './page'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
 
 // ── Mapping catégorie → moment d'envoi ─────────────────────────────────────
@@ -88,8 +89,14 @@ interface GabaritsClientProps {
   initialFavorites:       string[]
   initialCustomizations:  UserTemplateCustomization[]
   initialPinned:          UserPinnedTemplate[]
+  logements:              LogementOption[]
   userId:                 string | null
 }
+
+const DEFAULT_KEY = 'default' as const
+const EMPTY_BUCKETS = (): Record<TimingBucket, string[]> => ({
+  'avant-arrivee': [], 'pendant-sejour': [], 'apres-depart': [],
+})
 
 // ── Composant principal ───────────────────────────────────────────────────────
 export default function GabaritsClient({
@@ -97,6 +104,7 @@ export default function GabaritsClient({
   initialFavorites,
   initialCustomizations,
   initialPinned,
+  logements,
   userId,
 }: GabaritsClientProps) {
 
@@ -104,14 +112,35 @@ export default function GabaritsClient({
   const [customizations, setCustomizations] = useState<Record<string, UserTemplateCustomization>>(
     () => Object.fromEntries(initialCustomizations.map(c => [c.template_id, c]))
   )
-  const [pinned, setPinned] = useState<Record<TimingBucket, string[]>>(() => {
-    const map: Record<TimingBucket, string[]> = {
-      'avant-arrivee': [], 'pendant-sejour': [], 'apres-depart': [],
-    }
+  // Tous les pins, keyés par logement_id (ou 'default' pour la séquence globale).
+  const [allPinned, setAllPinned] = useState<Record<string, Record<TimingBucket, string[]>>>(() => {
+    const map: Record<string, Record<TimingBucket, string[]>> = {}
     const sorted = [...initialPinned].sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-    for (const p of sorted) map[p.timing_bucket].push(p.template_id)
+    for (const p of sorted) {
+      const key = p.logement_id ?? DEFAULT_KEY
+      if (!map[key]) map[key] = EMPTY_BUCKETS()
+      map[key][p.timing_bucket].push(p.template_id)
+    }
     return map
   })
+  const [selectedLogementId, setSelectedLogementId] = useState<string | null>(null)
+
+  // Séquence affichée = celle du logement sélectionné (ou défaut si NULL).
+  const pinned = useMemo<Record<TimingBucket, string[]>>(() => {
+    const key = selectedLogementId ?? DEFAULT_KEY
+    return allPinned[key] ?? EMPTY_BUCKETS()
+  }, [allPinned, selectedLogementId])
+
+  function updatePinnedBucket(bucket: TimingBucket, ids: string[]) {
+    const key = selectedLogementId ?? DEFAULT_KEY
+    setAllPinned(prev => ({
+      ...prev,
+      [key]: {
+        ...(prev[key] ?? EMPTY_BUCKETS()),
+        [bucket]: ids,
+      },
+    }))
+  }
   const [expandedBuckets, setExpandedBuckets] = useState<Set<TimingBucket>>(new Set())
   const [expandedHeroCards, setExpandedHeroCards] = useState<Set<string>>(new Set())
 
@@ -138,6 +167,13 @@ export default function GabaritsClient({
     else setActiveFilter('all')
   }, [searchParams])
 
+  // ── Pré-sélection du logement depuis ?logement=<id> (raccourci fiche logement)
+  useEffect(() => {
+    const lid = searchParams?.get('logement')
+    if (!lid) return
+    if (logements.some(l => l.id === lid)) setSelectedLogementId(lid)
+  }, [searchParams, logements])
+
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
   const [modalTitle, setModalTitle]           = useState('')
   const [modalContent, setModalContent]       = useState('')
@@ -150,31 +186,36 @@ export default function GabaritsClient({
   const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en' } | null>(null)
   const [fillValues, setFillValues]           = useState<Record<string, string>>({})
 
-  // ── Pinned (liste ordonnée de messages par phase) ────────────────────────
+  // ── Pinned (liste ordonnée de messages par phase, par logement) ──────────
+  // L'index unique sur (user, bucket, template, COALESCE(logement_id, sentinel))
+  // ne supporte pas les expressions dans onConflict, donc on fait DELETE+INSERT.
   async function persistPinnedOrder(bucket: TimingBucket, ids: string[]) {
     if (!userId) return
     const supabase = createClient()
-    if (ids.length === 0) {
-      await supabase.from('user_pinned_templates').delete().eq('user_id', userId).eq('timing_bucket', bucket)
-      return
-    }
+    const lid = selectedLogementId
+    let delQ = supabase.from('user_pinned_templates').delete()
+      .eq('user_id', userId).eq('timing_bucket', bucket)
+    delQ = lid ? delQ.eq('logement_id', lid) : delQ.is('logement_id', null)
+    await delQ
+    if (ids.length === 0) return
     const rows = ids.map((template_id, position) => ({
-      user_id: userId, timing_bucket: bucket, template_id, position, updated_at: new Date().toISOString(),
+      user_id: userId, timing_bucket: bucket, template_id,
+      logement_id: lid, position, updated_at: new Date().toISOString(),
     }))
-    await supabase.from('user_pinned_templates')
-      .upsert(rows, { onConflict: 'user_id,timing_bucket,template_id' })
+    await supabase.from('user_pinned_templates').insert(rows)
   }
 
   async function addPin(templateId: string, bucket: TimingBucket) {
     if (!userId) return
     if (pinned[bucket].includes(templateId)) return
     const next = [...pinned[bucket], templateId]
-    setPinned(prev => ({ ...prev, [bucket]: next }))
+    updatePinnedBucket(bucket, next)
     const supabase = createClient()
-    await supabase.from('user_pinned_templates').upsert({
+    await supabase.from('user_pinned_templates').insert({
       user_id: userId, timing_bucket: bucket, template_id: templateId,
-      position: next.length - 1, updated_at: new Date().toISOString(),
-    }, { onConflict: 'user_id,timing_bucket,template_id' })
+      logement_id: selectedLogementId, position: next.length - 1,
+      updated_at: new Date().toISOString(),
+    })
     showToast(`📌 Ajouté à tes messages — n°${next.length}`)
     void markStepIfNotYet('gabarit')
   }
@@ -182,12 +223,9 @@ export default function GabaritsClient({
   async function removePin(templateId: string, bucket: TimingBucket) {
     if (!userId) return
     const next = pinned[bucket].filter(id => id !== templateId)
-    setPinned(prev => ({ ...prev, [bucket]: next }))
-    const supabase = createClient()
-    await supabase.from('user_pinned_templates')
-      .delete().eq('user_id', userId).eq('timing_bucket', bucket).eq('template_id', templateId)
-    // Réécrire les positions restantes
-    if (next.length > 0) await persistPinnedOrder(bucket, next)
+    updatePinnedBucket(bucket, next)
+    // persistPinnedOrder fait un DELETE + INSERT complet de la bucket
+    await persistPinnedOrder(bucket, next)
     showToast('Retiré de tes messages')
   }
 
@@ -200,8 +238,46 @@ export default function GabaritsClient({
     const next = [...list]
     const [removed] = next.splice(idx, 1)
     next.splice(newIdx, 0, removed)
-    setPinned(prev => ({ ...prev, [bucket]: next }))
+    updatePinnedBucket(bucket, next)
     await persistPinnedOrder(bucket, next)
+  }
+
+  // Cloner la séquence par défaut vers le logement sélectionné
+  async function cloneDefaultToLogement() {
+    if (!userId || !selectedLogementId) return
+    const defaultPinned = allPinned[DEFAULT_KEY]
+    if (!defaultPinned) return
+    const supabase = createClient()
+    const allRows: Array<{
+      user_id: string; timing_bucket: TimingBucket; template_id: string;
+      logement_id: string; position: number; updated_at: string;
+    }> = []
+    for (const bucket of TIMING_ORDER) {
+      const ids = defaultPinned[bucket] ?? []
+      ids.forEach((template_id, position) => {
+        allRows.push({
+          user_id: userId, timing_bucket: bucket, template_id,
+          logement_id: selectedLogementId, position,
+          updated_at: new Date().toISOString(),
+        })
+      })
+    }
+    if (allRows.length === 0) {
+      showToast('Aucune séquence par défaut à copier')
+      return
+    }
+    await supabase.from('user_pinned_templates').delete()
+      .eq('user_id', userId).eq('logement_id', selectedLogementId)
+    await supabase.from('user_pinned_templates').insert(allRows)
+    setAllPinned(prev => ({
+      ...prev,
+      [selectedLogementId]: {
+        'avant-arrivee':  [...(defaultPinned['avant-arrivee']  ?? [])],
+        'pendant-sejour': [...(defaultPinned['pendant-sejour'] ?? [])],
+        'apres-depart':   [...(defaultPinned['apres-depart']   ?? [])],
+      },
+    }))
+    showToast('✨ Séquence par défaut copiée pour ce logement')
   }
 
   function toggleExpanded(bucket: TimingBucket) {
@@ -417,6 +493,40 @@ export default function GabaritsClient({
           </p>
         </div>
 
+        {/* Sélecteur de logement — chaque logement peut avoir sa propre séquence */}
+        {logements.length > 0 && (
+          <div style={s.logementSelector} className="fade-up d1">
+            <div style={s.logementSelectorLabel}>
+              <House size={14} weight="duotone" color="var(--accent-text)" />
+              <span>Séquence pour&nbsp;:</span>
+            </div>
+            <div style={s.logementChips}>
+              <button
+                onClick={() => setSelectedLogementId(null)}
+                style={{
+                  ...s.logementChip,
+                  ...(selectedLogementId === null ? s.logementChipActive : {}),
+                }}
+              >
+                ✨ Par défaut
+              </button>
+              {logements.map(l => (
+                <button
+                  key={l.id}
+                  onClick={() => setSelectedLogementId(l.id)}
+                  style={{
+                    ...s.logementChip,
+                    ...(selectedLogementId === l.id ? s.logementChipActive : {}),
+                  }}
+                  title={l.nom}
+                >
+                  {l.nom}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Navigation */}
         <div style={s.nav} className="fade-up d1">
           {([
@@ -464,6 +574,31 @@ export default function GabaritsClient({
             )}
           </div>
         )}
+
+        {/* Bandeau "Reprendre la séquence par défaut" si on est sur un logement vide
+            mais qu'une séquence par défaut existe */}
+        {isMesMessagesView && selectedLogementId !== null && (() => {
+          const currentLogementHasPins = TIMING_ORDER.some(b => pinned[b].length > 0)
+          const defBuckets = allPinned[DEFAULT_KEY]
+          const defaultHasPins = !!defBuckets && TIMING_ORDER.some(b => (defBuckets[b] ?? []).length > 0)
+          if (currentLogementHasPins || !defaultHasPins) return null
+          const logementName = logements.find(l => l.id === selectedLogementId)?.nom ?? 'ce logement'
+          return (
+            <div style={s.cloneBanner} className="fade-up d2">
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)' }}>
+                  Aucune séquence pour {logementName}
+                </div>
+                <div style={{ fontSize: '13px', color: 'var(--text-2)', marginTop: '2px' }}>
+                  Tu peux repartir de ta séquence par défaut et l&apos;ajuster pour ce logement.
+                </div>
+              </div>
+              <button onClick={cloneDefaultToLogement} style={s.cloneBtn}>
+                ✨ Copier la séquence par défaut
+              </button>
+            </div>
+          )
+        })()}
 
         {/* Vue Mes 3 messages — hero + inspirations repliables */}
         {isMesMessagesView && (
@@ -1134,6 +1269,43 @@ const s: Record<string, React.CSSProperties> = {
   intro:     { marginBottom: '32px' },
   pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
   pageDesc:  { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.65 },
+
+  logementSelector: {
+    display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px',
+    marginBottom: '20px', padding: '12px 14px',
+    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px',
+  },
+  logementSelectorLabel: {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', fontWeight: 600, color: 'var(--text-2)',
+    textTransform: 'uppercase', letterSpacing: '0.4px',
+  },
+  logementChips: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+  logementChip: {
+    fontSize: '12px', fontWeight: 500, padding: '6px 12px',
+    borderRadius: '100px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif',
+    transition: 'all 0.15s', whiteSpace: 'nowrap',
+  },
+  logementChipActive: {
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)', fontWeight: 600,
+  },
+
+  cloneBanner: {
+    display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap',
+    padding: '14px 18px', marginBottom: '24px',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    borderRadius: '12px',
+  },
+  cloneBtn: {
+    fontSize: '13px', fontWeight: 600, padding: '9px 16px',
+    borderRadius: '100px', cursor: 'pointer',
+    background: 'var(--accent-text)', border: 'none', color: 'var(--bg)',
+    fontFamily: 'var(--font-outfit), sans-serif',
+    transition: 'transform 0.15s', whiteSpace: 'nowrap',
+  },
 
   nav: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' },
   navBtn: {

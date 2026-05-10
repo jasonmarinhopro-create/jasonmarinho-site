@@ -75,9 +75,11 @@ export interface UserTemplateCustomization {
 export type TimingBucket = 'avant-arrivee' | 'pendant-sejour' | 'apres-depart'
 
 export interface UserPinnedTemplate {
+  id: string
   user_id: string
   timing_bucket: TimingBucket
   template_id: string
+  logement_id: string | null
   position: number
   created_at: string
   updated_at: string
