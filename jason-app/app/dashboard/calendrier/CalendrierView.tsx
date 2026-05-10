@@ -11,6 +11,7 @@ import {
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar } from './actions'
 import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning } from '@phosphor-icons/react/dist/ssr'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
+import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import type { ContractEvent, IcalFeed, IcalEvent, SejourEvent, VoyageurOption, LogementOption } from './page'
 
 // ── Mapping checklist key → catégorie de gabarit pertinente
@@ -95,16 +96,6 @@ function toStr(y: number, m: number, d: number) { return `${y}-${pad2(m + 1)}-${
 // "Reservation URL") OU date manuellement bloquée par l'hôte (description vide).
 // Idem pour Booking.com : "CLOSED - Not available" peut être un blocage manuel.
 // On ne compte pas les blocages dans le taux d'occupation.
-function isBlockedIcalEvent(title: string | null | undefined, description: string | null | undefined): boolean {
-  const t = (title ?? '').toLowerCase()
-  const d = (description ?? '').toLowerCase()
-  // Vraie réservation : présence d'un identifiant Airbnb / Booking dans la description
-  if (d.includes('reservation url') || d.includes('phone number') || d.includes('checkin')) return false
-  // Patterns "non disponible" sans données voyageur → blocage manuel
-  if (t.includes('not available') || t.includes('unavailable') || t.includes('blocked') || t.includes('blocage')) return true
-  if (t.startsWith('closed') || t.includes('- not available')) return true
-  return false
-}
 function todayString() {
   const t = new Date()
   return toStr(t.getFullYear(), t.getMonth(), t.getDate())

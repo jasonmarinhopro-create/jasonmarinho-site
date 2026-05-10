@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest } from 'next/server'
+import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 
 function p2(n: number) { return String(n).padStart(2, '0') }
 function icalDate(s: string) { return s.replace(/-/g, '') }
@@ -104,6 +105,8 @@ export async function GET(req: NextRequest) {
         ),
         sejours_avec_dates: sejours?.length ?? 0,
         ical_events_imported: icalEvents?.length ?? 0,
+        ical_events_reservations: (icalEvents ?? []).filter(e => !isBlockedIcalEvent(e.title, e.description)).length,
+        ical_events_blocages: (icalEvents ?? []).filter(e => isBlockedIcalEvent(e.title, e.description)).length,
         ical_feeds_configured: icalFeeds?.length ?? 0,
       },
       ical_feeds: (icalFeeds ?? []).map(f => ({
@@ -198,7 +201,15 @@ export async function GET(req: NextRequest) {
   }
 
   // ── Réservations importées depuis les feeds Airbnb/Booking/Vrbo ───────────
-  for (const e of icalEvents ?? []) {
+  // Par défaut on filtre les blocages techniques (Airbnb auto-bloque les dates
+  // > 12 mois rolling, "CLOSED - Not available" sur Booking, etc.) qui sont
+  // du bruit côté Google Agenda. Opt-in via ?includeBlocked=1 pour les garder.
+  const includeBlocked = req.nextUrl.searchParams.get('includeBlocked') === '1'
+  const exportableIcalEvents = includeBlocked
+    ? (icalEvents ?? [])
+    : (icalEvents ?? []).filter(e => !isBlockedIcalEvent(e.title, e.description))
+
+  for (const e of exportableIcalEvents) {
     lines.push('BEGIN:VEVENT')
     lines.push(`UID:imported-${e.id}@jasonmarinho.com`)
     lines.push(`DTSTAMP:${stamp}`)
