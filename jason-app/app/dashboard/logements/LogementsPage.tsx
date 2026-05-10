@@ -64,6 +64,7 @@ type Logement = {
   lien_booking: string | null
   lien_gmb: string | null
   lien_site_direct: string | null
+  lien_driing: string | null
   photo_couverture_url: string | null
   photos_urls: string[]
   contact_urgence_nom: string | null
@@ -118,6 +119,7 @@ function emptyForm(): LogementData {
     lien_booking: null,
     lien_gmb: null,
     lien_site_direct: null,
+    lien_driing: null,
     photo_couverture_url: null,
     photos_urls: [],
     contact_urgence_nom: null,
@@ -233,6 +235,7 @@ export default function LogementsPage({ logements: initial }: Props) {
       lien_booking: l.lien_booking,
       lien_gmb: l.lien_gmb,
       lien_site_direct: l.lien_site_direct,
+      lien_driing: l.lien_driing ?? null,
       photo_couverture_url: l.photo_couverture_url,
       photos_urls: l.photos_urls ?? [],
       contact_urgence_nom: l.contact_urgence_nom,
@@ -311,6 +314,7 @@ export default function LogementsPage({ logements: initial }: Props) {
         lien_booking: form.lien_booking ?? null,
         lien_gmb: form.lien_gmb ?? null,
         lien_site_direct: form.lien_site_direct ?? null,
+        lien_driing: form.lien_driing ?? null,
         photo_couverture_url: form.photo_couverture_url ?? null,
         photos_urls: form.photos_urls ?? [],
         contact_urgence_nom: form.contact_urgence_nom ?? null,
@@ -709,12 +713,13 @@ export default function LogementsPage({ logements: initial }: Props) {
                   )}
 
                   {/* Liens annonces */}
-                  {(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct) && (
+                  {(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct || l.lien_driing) && (
                     <div style={linksRow}>
                       {l.lien_airbnb && <a href={l.lien_airbnb} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Airbnb">Airbnb <ArrowSquareOut size={9} /></a>}
                       {l.lien_booking && <a href={l.lien_booking} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Booking">Booking <ArrowSquareOut size={9} /></a>}
                       {l.lien_gmb && <a href={l.lien_gmb} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Google">Google <ArrowSquareOut size={9} /></a>}
                       {l.lien_site_direct && <a href={l.lien_site_direct} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir le site">Site <ArrowSquareOut size={9} /></a>}
+                      {l.lien_driing && <a href={l.lien_driing} target="_blank" rel="noopener noreferrer" style={linkBtn} onClick={e => e.stopPropagation()} title="Voir sur Driing">Driing <ArrowSquareOut size={9} /></a>}
                     </div>
                   )}
 
@@ -966,7 +971,10 @@ export default function LogementsPage({ logements: initial }: Props) {
                 <Field label="📍 URL Google Business Profile" value={form.lien_gmb ?? ''} onChange={v => set('lien_gmb', v || null)} placeholder="https://maps.google.com/…" />
               </div>
               <div style={fieldRow}>
-                <Field label="🌐 Site direct / Driing" value={form.lien_site_direct ?? ''} onChange={v => set('lien_site_direct', v || null)} placeholder="https://…" />
+                <Field label="🌐 Site direct" value={form.lien_site_direct ?? ''} onChange={v => set('lien_site_direct', v || null)} placeholder="https://…" />
+              </div>
+              <div style={fieldRow}>
+                <Field label="🔔 Lien Driing" value={form.lien_driing ?? ''} onChange={v => set('lien_driing', v || null)} placeholder="https://driing.co/…" />
               </div>
 
               {/* ── Synchronisation calendrier (iCal) ── */}
