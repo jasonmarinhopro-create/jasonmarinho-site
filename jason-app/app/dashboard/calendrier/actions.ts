@@ -27,12 +27,12 @@ interface EventUpdate {
 
 export async function createCalendarEvent(input: EventInput) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { data, error } = await supabase
     .from('calendar_events')
-    .insert({ ...input, user_id: session.user.id })
+    .insert({ ...input, user_id: user.id })
     .select()
     .single()
 
@@ -43,14 +43,14 @@ export async function createCalendarEvent(input: EventInput) {
 
 export async function updateCalendarEvent(id: string, input: EventUpdate) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { data, error } = await supabase
     .from('calendar_events')
     .update({ ...input, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .select()
     .single()
 
@@ -65,14 +65,14 @@ export async function updateContractChecklist(
   value: boolean,
 ) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { data, error } = await supabase
     .from('contracts')
     .select('checklist_status, sejour_id')
     .eq('id', contractId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .single()
 
   if (error) return { error: error.message }
@@ -82,7 +82,7 @@ export async function updateContractChecklist(
     .from('contracts')
     .update({ checklist_status: { ...current, [key]: value } })
     .eq('id', contractId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   // Rafraîchir les deux vues qui affichent cette checklist (calendrier + voyageur)
   revalidatePath('/dashboard/calendrier')
@@ -91,7 +91,7 @@ export async function updateContractChecklist(
       .from('sejours')
       .select('voyageur_id')
       .eq('id', data.sejour_id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .single()
     if (sejourRow?.voyageur_id) {
       revalidatePath(`/dashboard/voyageurs/${sejourRow.voyageur_id}`)
@@ -103,14 +103,14 @@ export async function updateContractChecklist(
 
 export async function deleteCalendarEvent(id: string) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('calendar_events')
     .delete()
     .eq('id', id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/calendrier')
@@ -132,8 +132,8 @@ interface SejourFromCalendarInput {
 
 export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { data: row, error } = await supabase
     .from('sejours')
@@ -144,7 +144,7 @@ export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
       date_depart: input.date_depart,
       montant: input.montant,
       contrat_statut: input.contrat_statut,
-      user_id: session.user.id,
+      user_id: user.id,
     })
     .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut')
     .single()
@@ -158,7 +158,7 @@ export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
       .from('voyageurs')
       .select('prenom, nom')
       .eq('id', input.voyageur_id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .single()
     voyageurLabel = voyageur
       ? `${voyageur.prenom ?? ''} ${voyageur.nom ?? ''}`.trim() || 'Voyageur'
@@ -186,12 +186,12 @@ export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
 
 export async function addIcalFeed(input: { name: string; url: string; color: string }) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { data, error } = await supabase
     .from('ical_feeds')
-    .insert({ ...input, user_id: session.user.id })
+    .insert({ ...input, user_id: user.id })
     .select()
     .single()
 
@@ -201,14 +201,14 @@ export async function addIcalFeed(input: { name: string; url: string; color: str
 
 export async function removeIcalFeed(id: string) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('ical_feeds')
     .delete()
     .eq('id', id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   if (error) return { error: error.message }
   return { success: true }
@@ -216,19 +216,19 @@ export async function removeIcalFeed(id: string) {
 
 export async function syncIcalFeed(feedId: string) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { data: feed } = await supabase
     .from('ical_feeds')
     .select('id, url')
     .eq('id', feedId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .single()
 
   if (!feed) return { error: 'Flux introuvable' }
 
-  const result = await fetchAndUpsertIcalFeed(supabase, feedId, feed.url, session.user.id)
+  const result = await fetchAndUpsertIcalFeed(supabase, feedId, feed.url, user.id)
   if (result.synced) revalidatePath('/dashboard/calendrier')
   return result
 }
