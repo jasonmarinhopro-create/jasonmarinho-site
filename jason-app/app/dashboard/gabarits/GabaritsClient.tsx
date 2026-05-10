@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
-  Copy, Check, MagnifyingGlass, Heart, PencilSimple, X,
+  Copy, Check, MagnifyingGlass, PencilSimple, X,
   CalendarCheck, House, SunHorizon, ArrowRight, UsersThree,
   Star, CaretDown, CaretUp, PushPin, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
@@ -113,6 +113,15 @@ export default function GabaritsClient({
     return map
   })
   const [expandedBuckets, setExpandedBuckets] = useState<Set<TimingBucket>>(new Set())
+  const [expandedHeroCards, setExpandedHeroCards] = useState<Set<string>>(new Set())
+
+  function toggleHeroExpand(templateId: string) {
+    setExpandedHeroCards(prev => {
+      const next = new Set(prev)
+      if (next.has(templateId)) next.delete(templateId); else next.add(templateId)
+      return next
+    })
+  }
 
   const [search, setSearch]             = useState('')
   const [activeFilter, setActiveFilter] = useState<FilterKey>('mes-messages')
@@ -126,7 +135,7 @@ export default function GabaritsClient({
     if (!cat) return
     const bucket = CATEGORY_TO_TIMING[cat]
     if (bucket) setActiveFilter(bucket)
-    else if (cat === 'facebook') setActiveFilter('facebook')
+    else setActiveFilter('all')
   }, [searchParams])
 
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
@@ -382,22 +391,10 @@ export default function GabaritsClient({
     return acc
   }, {} as Record<TimingBucket, Template[]>)
 
-  const favoritesByBucket = TIMING_ORDER.reduce((acc, bucket) => {
-    acc[bucket] = filtered.filter(t => {
-      const customTiming = customizations[t.id]?.timing_label
-      const b = (customTiming ? guessTimingBucket(customTiming) : null) ?? getTimingBucket(t)
-      return b === bucket
-    })
-    return acc
-  }, {} as Record<TimingBucket, Template[]>)
-
-  const facebookTemplates    = filtered.filter(t => t.category === 'facebook')
   const allFacebookTemplates = templates.filter(t => t.category === 'facebook')
 
   const isMesMessagesView = activeFilter === 'mes-messages'
-  const isFavoritesView  = activeFilter === 'favorites'
-  const isFacebookView   = activeFilter === 'facebook'
-  const isSingleSection  = !['mes-messages', 'all', 'favorites', 'facebook'].includes(activeFilter)
+  const isSingleSection   = !['mes-messages', 'all', 'favorites', 'facebook'].includes(activeFilter)
 
   return (
     <>
@@ -423,10 +420,8 @@ export default function GabaritsClient({
         {/* Navigation */}
         <div style={s.nav} className="fade-up d1">
           {([
-            { key: 'mes-messages',   label: '🌟 Ma séquence', bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
-            { key: 'favorites',      label: '♡ Mes favoris',     count: favorites.size },
-            { key: 'facebook',       label: 'Posts & annonces',   color: '#818CF8', count: allFacebookTemplates.length || undefined },
-            { key: 'all',            label: '💡 Inspirations' },
+            { key: 'mes-messages', label: '🌟 Ma séquence', bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
+            { key: 'all',          label: '💡 Inspirations' },
           ] as { key: FilterKey; label: string; count?: number; color?: string; bg?: string; borderColor?: string }[]).map(f => (
             <button
               key={f.key}
@@ -512,10 +507,10 @@ export default function GabaritsClient({
                     </div>
                   </div>
 
-                  {/* Liste de hero cards (1, 2, 3...) */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  {/* Liste de hero cards compactes (1, 2, 3...) */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {heroes.map((t, idx) => (
-                      <HeroCard
+                      <CompactHeroCard
                         key={t.id}
                         template={t}
                         bucket={bucket}
@@ -523,7 +518,6 @@ export default function GabaritsClient({
                         position={hasPins ? idx + 1 : null}
                         totalPinned={hasPins ? pinnedList.length : 0}
                         customization={customizations[t.id]}
-                        isFav={favorites.has(t.id)}
                         copied={copied}
                         onCopy={copyTemplate}
                         onCustomize={openCustomize}
@@ -531,6 +525,8 @@ export default function GabaritsClient({
                         onRemove={hasPins ? () => removePin(t.id, bucket) : undefined}
                         onMoveUp={hasPins && idx > 0 ? () => movePin(bucket, t.id, -1) : undefined}
                         onMoveDown={hasPins && idx < pinnedList.length - 1 ? () => movePin(bucket, t.id, 1) : undefined}
+                        isExpanded={expandedHeroCards.has(t.id)}
+                        onToggleExpand={() => toggleHeroExpand(t.id)}
                       />
                     ))}
                   </div>
@@ -561,11 +557,10 @@ export default function GabaritsClient({
                           {inspirations.map(t => (
                             <TemplateCard
                               key={t.id} template={t}
-                              isFav={favorites.has(t.id)}
                               customization={customizations[t.id]}
                               copied={copied} bucket={bucket}
                               isPinned={false}
-                              onCopy={copyTemplate} onFavorite={toggleFavorite} onCustomize={openCustomize}
+                              onCopy={copyTemplate} onCustomize={openCustomize}
                               onPin={() => addPin(t.id, bucket)}
                             />
                           ))}
@@ -579,77 +574,7 @@ export default function GabaritsClient({
           </div>
         )}
 
-        {/* Vue Favoris */}
-        {isFavoritesView && (
-          <div className="fade-up d1">
-            {favorites.size === 0 ? (
-              <div style={s.empty}>
-                <Heart size={40} color="var(--text-muted)" />
-                <p style={s.emptyText}>Clique sur ♡ pour sauvegarder tes gabarits préférés.</p>
-              </div>
-            ) : filtered.length === 0 ? (
-              <div style={s.empty}>
-                <MagnifyingGlass size={36} color="var(--text-muted)" />
-                <p style={s.emptyText}>Aucun favori pour &ldquo;{search}&rdquo;.</p>
-                <button onClick={() => setSearch('')} style={s.ghostBtn}>Effacer la recherche</button>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-                {TIMING_ORDER.map(bucket => {
-                  const items = favoritesByBucket[bucket]
-                  if (!items.length) return null
-                  const cfg = SECTION_CONFIG[bucket]
-                  const Icon = cfg.icon
-                  return (
-                    <div key={bucket}>
-                      <SectionHeader Icon={Icon} label={cfg.label} color={cfg.color} bg={cfg.bg} border={cfg.border} count={items.length} />
-                      <div style={s.grid}>
-                        {items.map(t => (
-                          <TemplateCard
-                            key={t.id} template={t}
-                            isFav={favorites.has(t.id)}
-                            customization={customizations[t.id]}
-                            copied={copied} bucket={getTimingBucket(t)}
-                            onCopy={copyTemplate} onFavorite={toggleFavorite} onCustomize={openCustomize}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Vue Facebook */}
-        {isFacebookView && (
-          <div className="fade-up d1">
-            {facebookTemplates.length === 0 ? (
-              <div style={s.empty}>
-                <UsersThree size={40} color="var(--text-muted)" />
-                <p style={s.emptyText}>Aucun gabarit Facebook{search ? ` pour "${search}"` : ''}.</p>
-              </div>
-            ) : (
-              <>
-                <SectionHeader Icon={FACEBOOK_CONFIG.icon} label={FACEBOOK_CONFIG.label} color={FACEBOOK_CONFIG.color} count={facebookTemplates.length} />
-                <div style={s.grid}>
-                  {facebookTemplates.map(t => (
-                    <TemplateCard
-                      key={t.id} template={t}
-                      isFav={favorites.has(t.id)}
-                      customization={customizations[t.id]}
-                      copied={copied} bucket={null}
-                      onCopy={copyTemplate} onFavorite={toggleFavorite} onCustomize={openCustomize}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        )}
-
-        {/* Vue section unique */}
+        {/* Vue section unique (depuis ?cat= URL) */}
         {isSingleSection && (
           <div className="fade-up d1">
             {filtered.length === 0 ? (
@@ -662,10 +587,9 @@ export default function GabaritsClient({
                 {filtered.map(t => (
                   <TemplateCard
                     key={t.id} template={t}
-                    isFav={favorites.has(t.id)}
                     customization={customizations[t.id]}
                     copied={copied} bucket={getTimingBucket(t)}
-                    onCopy={copyTemplate} onFavorite={toggleFavorite} onCustomize={openCustomize}
+                    onCopy={copyTemplate} onCustomize={openCustomize}
                   />
                 ))}
               </div>
@@ -673,7 +597,7 @@ export default function GabaritsClient({
           </div>
         )}
 
-        {/* Vue Tous */}
+        {/* Vue Inspirations (tous les gabarits) */}
         {activeFilter === 'all' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }} className="fade-up d1">
             {(() => {
@@ -689,11 +613,11 @@ export default function GabaritsClient({
                   <SectionHeader Icon={Icon} label={FACEBOOK_CONFIG.label} color={FACEBOOK_CONFIG.color} count={fbItems.length} />
                   <div style={s.grid}>
                     {shown.map(t => (
-                      <TemplateCard key={t.id} template={t} isFav={favorites.has(t.id)} customization={customizations[t.id]} copied={copied} bucket={null} onCopy={copyTemplate} onFavorite={toggleFavorite} onCustomize={openCustomize} />
+                      <TemplateCard key={t.id} template={t} customization={customizations[t.id]} copied={copied} bucket={null} onCopy={copyTemplate} onCustomize={openCustomize} />
                     ))}
                   </div>
                   {remaining > 0 && (
-                    <button onClick={() => setActiveFilter('facebook')} style={s.seeMoreBtn}>
+                    <button onClick={() => setActiveFilter('all')} style={s.seeMoreBtn}>
                       <ArrowRight size={14} color={FACEBOOK_CONFIG.color} />
                       <span>Voir les {remaining} autres gabarits &ldquo;{FACEBOOK_CONFIG.label}&rdquo;</span>
                     </button>
@@ -714,7 +638,7 @@ export default function GabaritsClient({
                   <SectionHeader Icon={Icon} label={cfg.label} color={cfg.color} count={items.length} />
                   <div style={s.grid}>
                     {shown.map(t => (
-                      <TemplateCard key={t.id} template={t} isFav={favorites.has(t.id)} customization={customizations[t.id]} copied={copied} bucket={bucket} onCopy={copyTemplate} onFavorite={toggleFavorite} onCustomize={openCustomize} />
+                      <TemplateCard key={t.id} template={t} customization={customizations[t.id]} copied={copied} bucket={bucket} onCopy={copyTemplate} onCustomize={openCustomize} />
                     ))}
                   </div>
                   {remaining > 0 && (
@@ -821,7 +745,7 @@ function SectionHeader({ Icon, label, color, bg, border, count }: {
   )
 }
 
-// ── Hero card (message principal d'une phase) ────────────────────────────────
+// ── Compact hero card (message principal, collapsible) ───────────────────────
 
 interface HeroCardProps {
   template:      Template
@@ -830,7 +754,6 @@ interface HeroCardProps {
   position?:     number | null
   totalPinned?:  number
   customization: UserTemplateCustomization | undefined
-  isFav:         boolean
   copied:        string | null
   onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
   onCustomize:   (t: Template) => void
@@ -838,11 +761,13 @@ interface HeroCardProps {
   onRemove?:     () => void
   onMoveUp?:     () => void
   onMoveDown?:   () => void
+  isExpanded:    boolean
+  onToggleExpand: () => void
 }
 
-function HeroCard({
+function CompactHeroCard({
   template: t, bucket, isPinned, position, totalPinned, customization, copied,
-  onCopy, onCustomize, onAdd, onRemove, onMoveUp, onMoveDown,
+  onCopy, onCustomize, onAdd, onRemove, onMoveUp, onMoveDown, isExpanded, onToggleExpand,
 }: HeroCardProps) {
   const [lang, setLang] = useState<'fr' | 'en'>('fr')
   const hasEN = !!t.corps_en
@@ -856,141 +781,159 @@ function HeroCard({
   const displayTitle = customization?.title ?? t.title
   const variables = extractVariables(displayContent)
 
+  const previewText = (() => {
+    const line = displayContent.split('\n').find(l => l.trim()) ?? ''
+    return line.length > 110 ? line.slice(0, 110) + '…' : line
+  })()
+
   return (
     <div style={{
-      ...s.heroCard,
-      borderColor: cfg.border,
-      background: `linear-gradient(180deg, ${cfg.bg} 0%, var(--surface) 60%)`,
+      background: 'var(--surface)',
+      border: `1px solid ${cfg.border}`,
+      borderLeft: `4px solid ${cfg.color}`,
+      borderRadius: '14px',
+      overflow: 'hidden',
     }}>
-      {/* Bandeau du haut */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
-          {isPinned && position ? (
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              width: '28px', height: '28px', borderRadius: '50%',
-              background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
-              fontSize: '14px', fontWeight: 700, color: 'var(--accent-text)',
-              fontFamily: 'var(--font-fraunces), serif', flexShrink: 0,
-            }}>
-              {position}
-            </span>
-          ) : null}
+      {/* Top bar — click to toggle */}
+      <div
+        onClick={onToggleExpand}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '8px',
+          padding: '10px 14px', cursor: 'pointer', userSelect: 'none' as const,
+          borderBottom: isExpanded ? `1px solid ${cfg.border}` : 'none',
+        }}
+      >
+        {isPinned && position ? (
           <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: '5px',
-            padding: '4px 11px', borderRadius: '100px',
-            background: isPinned ? 'var(--accent-bg-2)' : cfg.bg,
-            color: isPinned ? 'var(--accent-text)' : cfg.color,
-            border: `1px solid ${isPinned ? 'var(--accent-border)' : cfg.border}`,
-            fontSize: '11px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase',
-          }}>
-            {isPinned
-              ? <><PushPin size={11} weight="fill" /> {position && totalPinned && totalPinned > 1 ? `Message ${position}/${totalPinned}` : 'Mon message'}</>
-              : <><Sparkle size={11} weight="fill" /> Suggestion</>
-            }
-          </span>
-          {customization && (
-            <span style={s.customChip}>Personnalisé</span>
-          )}
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: '22px', height: '22px', borderRadius: '50%', flexShrink: 0,
+            background: cfg.bg, border: `1px solid ${cfg.border}`,
+            fontSize: '11px', fontWeight: 700, color: cfg.color,
+            fontFamily: 'var(--font-fraunces), serif',
+          }}>{position}</span>
+        ) : null}
+
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: '4px',
+          padding: '3px 8px', borderRadius: '100px', flexShrink: 0,
+          background: isPinned ? 'var(--accent-bg)' : cfg.bg,
+          color: isPinned ? 'var(--accent-text)' : cfg.color,
+          border: `1px solid ${isPinned ? 'var(--accent-border)' : cfg.border}`,
+          fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase' as const,
+        }}>
+          {isPinned
+            ? <><PushPin size={10} weight="fill" /> MON MESSAGE</>
+            : <><Sparkle size={10} weight="fill" /> Suggestion</>}
+        </span>
+
+        {customization && <span style={s.customChip}>Personnalisé</span>}
+
+        <span style={{
+          flex: 1, minWidth: 0, fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+        }}>{displayTitle}</span>
+
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+          {onMoveUp   && <button onClick={onMoveUp}   style={s.heroIconBtn} title="Remonter"><CaretUp   size={12} weight="bold" /></button>}
+          {onMoveDown && <button onClick={onMoveDown} style={s.heroIconBtn} title="Descendre"><CaretDown size={12} weight="bold" /></button>}
+          {onAdd    && <button onClick={onAdd}    style={s.heroPinBtn}       title="Ajouter"><PushPin size={11} /> Épingler</button>}
+          {onRemove && <button onClick={onRemove} style={s.heroIconBtn}      title="Retirer"><X size={12} /></button>}
         </div>
-        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-          {/* Reorder up */}
-          {onMoveUp && (
-            <button onClick={onMoveUp} style={s.heroIconBtn} title="Remonter">
-              <CaretUp size={14} weight="bold" />
-            </button>
-          )}
-          {/* Reorder down */}
-          {onMoveDown && (
-            <button onClick={onMoveDown} style={s.heroIconBtn} title="Descendre">
-              <CaretDown size={14} weight="bold" />
-            </button>
-          )}
-          {/* Add to pinned (when showing fallback suggestion) */}
-          {onAdd && (
-            <button onClick={onAdd} style={s.heroPinBtn} title="Ajouter à mes messages">
-              <PushPin size={13} /> Épingler
-            </button>
-          )}
-          {/* Remove from pinned */}
-          {onRemove && (
-            <button onClick={onRemove} style={s.heroPinBtnActive} title="Retirer de mes messages">
-              <PushPin size={13} weight="fill" /> Retirer
-            </button>
-          )}
-        </div>
+
+        <span style={{
+          color: 'var(--text-muted)', display: 'flex', flexShrink: 0,
+          transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'none',
+        }}>
+          <CaretDown size={13} />
+        </span>
       </div>
 
-      {/* Titre */}
-      <div style={s.heroTitle}>{displayTitle}</div>
-
-      {/* Variables badge */}
-      {variables.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '12px' }}>
-          {variables.map(v => <span key={v} style={s.varChip}>{v}</span>)}
+      {/* Collapsed: preview + quick copy */}
+      {!isExpanded && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '7px 14px 11px' }}>
+          <span style={{
+            flex: 1, minWidth: 0, fontSize: '12.5px', fontWeight: 300,
+            color: 'var(--text-muted)', fontFamily: 'var(--font-outfit), sans-serif',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+          }}>{previewText}</span>
+          <button
+            onClick={e => { e.stopPropagation(); onCopy(t, e, lang) }}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              padding: '7px 15px', borderRadius: '9px', cursor: 'pointer',
+              fontSize: '12.5px', fontWeight: 700, flexShrink: 0,
+              fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
+              ...(isCopied
+                ? { background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', color: '#34D399' }
+                : { background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' }
+              ),
+            }}
+          >
+            {isCopied
+              ? <><Check size={12} weight="bold" /> Copié</>
+              : <><Copy size={12} weight="bold" /> Copier</>}
+          </button>
         </div>
       )}
 
-      {/* Contenu */}
-      <pre style={s.heroContent}>{displayContent}</pre>
-
-      {/* Note privée */}
-      {customization?.notes && lang === 'fr' && (
-        <div style={{ ...s.notePreview, marginBottom: '14px' }}>
-          <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-            📎 {customization.notes}
-          </span>
-        </div>
-      )}
-
-      {/* Footer : actions */}
-      <div style={s.heroFooter}>
-        {hasEN && (
-          <div style={s.langToggle}>
-            <button onClick={() => setLang('fr')} style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}>FR</button>
-            <button onClick={() => setLang('en')} style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActiveEN : {}) }}>EN</button>
+      {/* Expanded: full content + actions */}
+      {isExpanded && (
+        <div style={{ padding: '14px 16px 16px' }}>
+          {variables.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '10px' }}>
+              {variables.map(v => <span key={v} style={s.varChip}>{v}</span>)}
+            </div>
+          )}
+          <pre style={{ ...s.heroContent, marginBottom: '12px' }}>{displayContent}</pre>
+          {customization?.notes && lang === 'fr' && (
+            <div style={{ ...s.notePreview, marginBottom: '12px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                📎 {customization.notes}
+              </span>
+            </div>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
+            {hasEN && (
+              <div style={s.langToggle}>
+                <button onClick={() => setLang('fr')} style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}>FR</button>
+                <button onClick={() => setLang('en')} style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActiveEN : {}) }}>EN</button>
+              </div>
+            )}
+            <button onClick={() => onCustomize(t)} style={s.heroEditBtn}>
+              <PencilSimple size={13} /> {customization ? 'Modifier ma version' : 'Personnaliser'}
+            </button>
+            <button
+              onClick={e => onCopy(t, e, lang)}
+              style={{
+                ...s.heroCopyBtn,
+                ...(isCopied ? s.copyBtnDone : { background: 'var(--accent-bg-2)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' }),
+              }}
+            >
+              {isCopied
+                ? <><Check size={15} weight="bold" /> Copié !</>
+                : <><Copy size={15} weight="bold" /> {lang === 'en' ? 'Copy in English' : 'Copier mon message'}</>}
+            </button>
           </div>
-        )}
-        <button onClick={() => onCustomize(t)} style={s.heroEditBtn}>
-          <PencilSimple size={14} /> {customization ? 'Modifier ma version' : 'Personnaliser'}
-        </button>
-        <button
-          onClick={e => onCopy(t, e, lang)}
-          style={{
-            ...s.heroCopyBtn,
-            ...(isCopied ? s.copyBtnDone : {
-              background: 'var(--accent-bg-2)',
-              borderColor: 'var(--accent-border)',
-              color: 'var(--accent-text)',
-            }),
-          }}
-        >
-          {isCopied
-            ? <><Check size={15} weight="bold" /> Copié !</>
-            : <><Copy size={15} weight="bold" /> {lang === 'en' ? 'Copy in English' : 'Copier mon message'}</>
-          }
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   )
 }
 
-// ── Template card ─────────────────────────────────────────────────────────────
+// ── Template card (Inspirations) ──────────────────────────────────────────────
 
 interface TemplateCardProps {
   template:      Template
-  isFav:         boolean
   customization: UserTemplateCustomization | undefined
   copied:        string | null
   bucket:        TimingBucket | null
   isPinned?:     boolean
   onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
-  onFavorite:    (id: string, e: React.MouseEvent) => void
   onCustomize:   (t: Template) => void
   onPin?:        () => void
 }
 
-function TemplateCard({ template: t, isFav, customization, copied, bucket, isPinned, onCopy, onFavorite, onCustomize, onPin }: TemplateCardProps) {
+function TemplateCard({ template: t, customization, copied, bucket, isPinned, onCopy, onCustomize, onPin }: TemplateCardProps) {
   const [lang, setLang] = useState<'fr' | 'en'>('fr')
   const hasEN = !!t.corps_en
   const cfg         = bucket ? SECTION_CONFIG[bucket] : null
@@ -1028,13 +971,6 @@ function TemplateCard({ template: t, isFav, customization, copied, bucket, isPin
               <PushPin size={14} weight={isPinned ? 'fill' : 'regular'} color={isPinned ? 'var(--accent-text)' : undefined} />
             </button>
           )}
-          <button
-            onClick={e => onFavorite(t.id, e)}
-            style={{ ...s.iconBtn, ...(isFav ? s.iconBtnFavActive : {}) }}
-            title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-          >
-            <Heart size={14} weight={isFav ? 'fill' : 'regular'} color={isFav ? 'var(--accent-text)' : undefined} />
-          </button>
           <button
             onClick={() => onCustomize(t)}
             style={{ ...s.iconBtn, ...(customization ? s.iconBtnCustomActive : {}) }}
