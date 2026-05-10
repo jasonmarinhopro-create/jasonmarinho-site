@@ -207,12 +207,12 @@ export async function getBailleurProfile(): Promise<{
 
 export async function getChecklistBySejour(sejourId: string): Promise<{
   contractId?: string
-  checklist?: Record<string, boolean>
+  checklist: Record<string, boolean>
   error?: string
 }> {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  if (!session) return { checklist: {}, error: 'Non authentifié.' }
 
   const { data, error } = await supabase
     .from('contracts')
@@ -223,10 +223,47 @@ export async function getChecklistBySejour(sejourId: string): Promise<{
     .limit(1)
     .maybeSingle()
 
-  if (error) return { error: error.message }
-  if (!data) return {}
-  return {
-    contractId: data.id,
-    checklist: (data.checklist_status as Record<string, boolean>) ?? {},
+  if (error) return { checklist: {}, error: error.message }
+  if (data) {
+    return {
+      contractId: data.id,
+      checklist: (data.checklist_status as Record<string, boolean>) ?? {},
+    }
   }
+
+  // Pas de contrat Jason : utilise la checklist directement sur le séjour
+  const { data: sj } = await supabase
+    .from('sejours')
+    .select('checklist_status')
+    .eq('id', sejourId)
+    .eq('user_id', session.user.id)
+    .maybeSingle()
+
+  return { checklist: (sj?.checklist_status as Record<string, boolean>) ?? {} }
+}
+
+export async function updateSejourChecklist(
+  sejourId: string,
+  key: string,
+  value: boolean,
+): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié.' }
+
+  const { data } = await supabase
+    .from('sejours')
+    .select('checklist_status')
+    .eq('id', sejourId)
+    .eq('user_id', session.user.id)
+    .maybeSingle()
+
+  const current = (data?.checklist_status as Record<string, boolean>) ?? {}
+  const { error } = await supabase
+    .from('sejours')
+    .update({ checklist_status: { ...current, [key]: value } })
+    .eq('id', sejourId)
+    .eq('user_id', session.user.id)
+
+  return error ? { error: error.message } : {}
 }
