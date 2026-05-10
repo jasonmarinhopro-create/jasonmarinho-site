@@ -60,7 +60,6 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
   const [copied, setCopied] = useState(false)
   const [saving, setSaving] = useState(false)
   const [savedFlash, setSavedFlash] = useState(false)
-  const [titleEditing, setTitleEditing] = useState(false)
 
   const isSavedSelected = !!selectedKey?.startsWith(SAVED_PREFIX)
 
@@ -81,7 +80,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLogementId])
 
-  // Quand on change de chip → recharge le contenu correspondant.
+  // Quand on change de chip → recharge le contenu ET le titre selon le contexte.
   useEffect(() => {
     if (!selectedKey) return
     if (selectedKey.startsWith(SAVED_PREFIX)) {
@@ -91,10 +90,12 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
         setPostContent(savedForLogement.content)
       }
     } else {
-      // Chip d'un template d'inspiration
+      // Chip d'un template d'inspiration : reset titre à "Mon post" pour
+      // signaler que c'est un nouveau brouillon, pas l'édition du post sauvegardé.
       const tpl = templates.find(t => t.id === selectedKey)
       if (tpl) {
         setPostContent(applyVariables(tpl.content, selectedLogement?.lien_driing ?? null))
+        setPostTitle('Mon post')
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -206,9 +207,9 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
                 onClick={() => setSelectedKey(key)}
                 style={{
                   ...s.chip,
-                  background: active ? '#10b98122' : 'rgba(16,185,129,0.07)',
+                  background: active ? '#10b981' : 'transparent',
                   borderColor: active ? '#10b981' : 'rgba(16,185,129,0.45)',
-                  color: active ? '#10b981' : '#10b981',
+                  color: active ? '#fff' : '#059669',
                   fontWeight: 600,
                 }}
                 title="Ton post sauvegardé pour ce logement"
@@ -254,20 +255,18 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
         </div>
       )}
 
-      {/* Input titre (visible uniquement si on est en train d'éditer / sauvegarder) */}
-      {(isSavedSelected || titleEditing) && (
-        <label style={s.field}>
-          <span style={s.fieldLabel}>Titre de ton post</span>
-          <input
-            type="text"
-            value={postTitle}
-            onChange={e => setPostTitle(e.target.value)}
-            placeholder="Mon post"
-            style={s.input}
-            maxLength={60}
-          />
-        </label>
-      )}
+      {/* Input titre — toujours visible, suit le contexte (saved title ou 'Mon post') */}
+      <label style={s.field}>
+        <span style={s.fieldLabel}>Titre du post</span>
+        <input
+          type="text"
+          value={postTitle}
+          onChange={e => setPostTitle(e.target.value)}
+          placeholder="Mon post"
+          style={s.input}
+          maxLength={60}
+        />
+      </label>
 
       {/* Textarea éditable */}
       <textarea
@@ -296,10 +295,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
           )}
           <button
             type="button"
-            onClick={() => {
-              if (!isSavedSelected) setTitleEditing(true)
-              handleSave()
-            }}
+            onClick={handleSave}
             disabled={!postContent.trim() || saving}
             style={{
               ...s.saveBtn,
