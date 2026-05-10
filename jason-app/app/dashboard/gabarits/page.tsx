@@ -1,14 +1,8 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import { getCachedTemplatesCatalog } from '@/lib/queries/cache'
-import dynamic from 'next/dynamic'
-import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
+import GabaritsClient from './GabaritsClient'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
-
-const GabaritsClient = dynamic(() => import('./GabaritsClient'), {
-  ssr: false,
-  loading: () => <DashboardSkeleton />,
-})
 
 export interface LogementOption {
   id: string
