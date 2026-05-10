@@ -158,8 +158,14 @@ export default function GabaritsClient({
   const [toast, setToast]               = useState<string | null>(null)
 
   // ── Auto-filtre depuis ?cat= (lien depuis le calendrier) ─────────────
+  // ── ou ?filter=facebook (lien depuis la page Communauté)
   const searchParams = useSearchParams()
   useEffect(() => {
+    const filter = searchParams?.get('filter')
+    if (filter === 'facebook') {
+      setActiveFilter('facebook')
+      return
+    }
     const cat = searchParams?.get('cat')
     if (!cat) return
     const bucket = CATEGORY_TO_TIMING[cat]

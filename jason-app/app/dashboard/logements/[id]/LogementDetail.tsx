@@ -495,7 +495,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                     </div>
                     <div style={s.sejourBody}>
                       <span style={s.sejourName}>
-                        {v ? `${v.prenom} ${v.nom}` : 'Voyageur inconnu'}
+                        {v ? `${v.prenom} ${v.nom}` : 'Séjour privé'}
                       </span>
                       {sj.montant != null && sj.montant > 0 && (
                         <span style={s.sejourAmount}>{fmtEur(sj.montant)}</span>
