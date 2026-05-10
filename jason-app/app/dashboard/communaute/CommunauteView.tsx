@@ -87,6 +87,7 @@ export default function CommunauteView({
   userAdresses,
   facebookTemplates,
   userLogements,
+  savedFbPosts,
 }: {
   groups: Group[]
   userId: string | null
@@ -94,6 +95,7 @@ export default function CommunauteView({
   userAdresses: string[]
   facebookTemplates: { id: string; title: string; content: string }[]
   userLogements: { id: string; nom: string; lien_driing: string | null }[]
+  savedFbPosts: { id: string; logement_id: string | null; title: string; content: string }[]
 }) {
   const [search, setSearch]             = useState('')
   const [activeCategory, setCategory]   = useState<string | null>(null)
@@ -334,6 +336,7 @@ export default function CommunauteView({
       <FacebookTemplatesSection
         templates={facebookTemplates}
         logements={userLogements}
+        savedPosts={savedFbPosts}
       />
 
       {/* Stats banner, toujours visible */}

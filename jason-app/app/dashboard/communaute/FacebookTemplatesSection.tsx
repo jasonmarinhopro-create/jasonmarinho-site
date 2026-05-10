@@ -1,15 +1,19 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { FacebookLogo, Copy, Check, House } from '@phosphor-icons/react/dist/ssr'
+import { FacebookLogo, Copy, Check, House, FloppyDisk, Trash, BookmarkSimple } from '@phosphor-icons/react/dist/ssr'
+import { saveFacebookPost, deleteFacebookPost } from './actions'
 
 interface Template { id: string; title: string; content: string }
 interface Logement { id: string; nom: string; lien_driing: string | null }
+interface SavedPost { id: string; logement_id: string | null; title: string; content: string }
 
 interface Props {
   templates: Template[]
   logements: Logement[]
+  savedPosts: SavedPost[]
 }
 
 // Remplace les variables connues du gabarit (lien Driing) par les vraies données.
@@ -20,7 +24,12 @@ function applyVariables(content: string, lienDriing: string | null): string {
   return content.replace(/\[LIEN_ANNONCE_DRIING\]/g, lienDriing)
 }
 
-export default function FacebookTemplatesSection({ templates, logements }: Props) {
+const SAVED_PREFIX = 'saved-' // pour distinguer les chips post sauvegardé vs template
+
+export default function FacebookTemplatesSection({ templates, logements, savedPosts }: Props) {
+  const router = useRouter()
+  const [, startTransition] = useTransition()
+
   // Logement par défaut : le premier qui a un lien Driing renseigné, sinon le premier tout court.
   const defaultLogementId = useMemo(() => {
     const withLink = logements.find(l => l.lien_driing)
@@ -28,29 +37,68 @@ export default function FacebookTemplatesSection({ templates, logements }: Props
   }, [logements])
 
   const [selectedLogementId, setSelectedLogementId] = useState<string | null>(defaultLogementId)
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(templates[0]?.id ?? null)
-  const [postContent, setPostContent] = useState('')
-  const [copied, setCopied] = useState(false)
 
   const selectedLogement = useMemo(
     () => logements.find(l => l.id === selectedLogementId) ?? null,
     [selectedLogementId, logements],
   )
 
-  // Quand on change de gabarit ou de logement, on régénère le contenu.
-  useEffect(() => {
-    const tpl = templates.find(t => t.id === selectedTemplateId)
-    if (!tpl) return
-    setPostContent(applyVariables(tpl.content, selectedLogement?.lien_driing ?? null))
-  }, [selectedTemplateId, selectedLogement, templates])
+  // Post sauvegardé pour le logement sélectionné (ou null si aucun).
+  const savedForLogement = useMemo(() => {
+    return savedPosts.find(p => p.logement_id === selectedLogementId) ?? null
+  }, [savedPosts, selectedLogementId])
 
-  // Premier render : initialise le contenu si un template est dispo.
+  // Sélection initiale : si un post sauvegardé existe pour ce logement → on l'affiche.
+  // Sinon → premier template.
+  const initialSelectedKey = savedForLogement
+    ? `${SAVED_PREFIX}${savedForLogement.id}`
+    : (templates[0]?.id ?? null)
+
+  const [selectedKey, setSelectedKey] = useState<string | null>(initialSelectedKey)
+  const [postContent, setPostContent] = useState('')
+  const [postTitle, setPostTitle] = useState('Mon post')
+  const [copied, setCopied] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [savedFlash, setSavedFlash] = useState(false)
+  const [titleEditing, setTitleEditing] = useState(false)
+
+  const isSavedSelected = !!selectedKey?.startsWith(SAVED_PREFIX)
+
+  // Quand on change de logement → bascule sur le post sauvegardé du logement si existant.
   useEffect(() => {
-    if (!postContent && selectedTemplateId) {
-      const tpl = templates.find(t => t.id === selectedTemplateId)
-      if (tpl) setPostContent(applyVariables(tpl.content, selectedLogement?.lien_driing ?? null))
+    if (savedForLogement) {
+      setSelectedKey(`${SAVED_PREFIX}${savedForLogement.id}`)
+      setPostTitle(savedForLogement.title)
+      setPostContent(savedForLogement.content)
+    } else {
+      const firstTpl = templates[0]
+      if (firstTpl) {
+        setSelectedKey(firstTpl.id)
+        setPostTitle('Mon post')
+        setPostContent(applyVariables(firstTpl.content, selectedLogement?.lien_driing ?? null))
+      }
     }
-  }, [postContent, selectedTemplateId, templates, selectedLogement])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLogementId])
+
+  // Quand on change de chip → recharge le contenu correspondant.
+  useEffect(() => {
+    if (!selectedKey) return
+    if (selectedKey.startsWith(SAVED_PREFIX)) {
+      // Chip "Mon post" sélectionnée
+      if (savedForLogement) {
+        setPostTitle(savedForLogement.title)
+        setPostContent(savedForLogement.content)
+      }
+    } else {
+      // Chip d'un template d'inspiration
+      const tpl = templates.find(t => t.id === selectedKey)
+      if (tpl) {
+        setPostContent(applyVariables(tpl.content, selectedLogement?.lien_driing ?? null))
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedKey])
 
   async function handleCopy() {
     try {
@@ -58,6 +106,38 @@ export default function FacebookTemplatesSection({ templates, logements }: Props
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {}
+  }
+
+  async function handleSave() {
+    if (!postContent.trim()) return
+    setSaving(true)
+    const res = await saveFacebookPost({
+      logementId: selectedLogementId,
+      title: postTitle.trim() || 'Mon post',
+      content: postContent,
+    })
+    setSaving(false)
+    if (!res.error) {
+      setSavedFlash(true)
+      setTimeout(() => setSavedFlash(false), 1800)
+      startTransition(() => router.refresh())
+    }
+  }
+
+  async function handleDelete() {
+    if (!savedForLogement) return
+    if (!confirm('Supprimer ce post sauvegardé ?')) return
+    const res = await deleteFacebookPost(savedForLogement.id)
+    if (!res.error) {
+      // Reset sur le premier template d'inspiration
+      const firstTpl = templates[0]
+      if (firstTpl) {
+        setSelectedKey(firstTpl.id)
+        setPostContent(applyVariables(firstTpl.content, selectedLogement?.lien_driing ?? null))
+        setPostTitle('Mon post')
+      }
+      startTransition(() => router.refresh())
+    }
   }
 
   if (templates.length === 0) return null
@@ -76,13 +156,13 @@ export default function FacebookTemplatesSection({ templates, logements }: Props
           <div>
             <div style={s.title}>Poste dans ces groupes</div>
             <div style={s.subtitle}>
-              Personnalise ton message une seule fois, copie, colle dans tous les groupes.
+              Personnalise ton message une fois, sauvegarde-le, puis copie-colle dans tous les groupes.
             </div>
           </div>
         </div>
       </div>
 
-      {/* Sélecteurs : logement + gabarit */}
+      {/* Sélecteur logement */}
       <div style={s.controls}>
         {hasLogements ? (
           <label style={s.field}>
@@ -111,28 +191,54 @@ export default function FacebookTemplatesSection({ templates, logements }: Props
         )}
       </div>
 
-      {/* Liste des gabarits — chips horizontales */}
-      <div style={s.chipsRow}>
-        {templates.map(t => {
-          const active = t.id === selectedTemplateId
-          return (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => setSelectedTemplateId(t.id)}
-              style={{
-                ...s.chip,
-                background: active ? 'var(--accent-bg-2)' : 'var(--surface)',
-                borderColor: active ? 'var(--accent-border-2)' : 'var(--border)',
-                color: active ? 'var(--accent-text)' : 'var(--text-2)',
-                fontWeight: active ? 600 : 400,
-              }}
-              title={t.title}
-            >
-              {t.title}
-            </button>
-          )
-        })}
+      {/* Chips : Mon post (si sauvegardé) + templates d'inspiration */}
+      <div>
+        <div style={s.chipsLabel}>
+          {savedForLogement ? 'Ton post sauvegardé · ou pioche un autre style' : "Choisis un style pour démarrer"}
+        </div>
+        <div style={s.chipsRow}>
+          {savedForLogement && (() => {
+            const key = `${SAVED_PREFIX}${savedForLogement.id}`
+            const active = key === selectedKey
+            return (
+              <button
+                type="button"
+                onClick={() => setSelectedKey(key)}
+                style={{
+                  ...s.chip,
+                  background: active ? '#10b98122' : 'rgba(16,185,129,0.07)',
+                  borderColor: active ? '#10b981' : 'rgba(16,185,129,0.45)',
+                  color: active ? '#10b981' : '#10b981',
+                  fontWeight: 600,
+                }}
+                title="Ton post sauvegardé pour ce logement"
+              >
+                <BookmarkSimple size={11} weight="fill" />
+                {savedForLogement.title}
+              </button>
+            )
+          })()}
+          {templates.map(t => {
+            const active = t.id === selectedKey
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setSelectedKey(t.id)}
+                style={{
+                  ...s.chip,
+                  background: active ? 'var(--accent-bg-2)' : 'var(--surface)',
+                  borderColor: active ? 'var(--accent-border-2)' : 'var(--border)',
+                  color: active ? 'var(--accent-text)' : 'var(--text-2)',
+                  fontWeight: active ? 600 : 400,
+                }}
+                title={t.title}
+              >
+                {t.title}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Hint si lien Driing manquant */}
@@ -148,6 +254,21 @@ export default function FacebookTemplatesSection({ templates, logements }: Props
         </div>
       )}
 
+      {/* Input titre (visible uniquement si on est en train d'éditer / sauvegarder) */}
+      {(isSavedSelected || titleEditing) && (
+        <label style={s.field}>
+          <span style={s.fieldLabel}>Titre de ton post</span>
+          <input
+            type="text"
+            value={postTitle}
+            onChange={e => setPostTitle(e.target.value)}
+            placeholder="Mon post"
+            style={s.input}
+            maxLength={60}
+          />
+        </label>
+      )}
+
       {/* Textarea éditable */}
       <textarea
         value={postContent}
@@ -157,23 +278,54 @@ export default function FacebookTemplatesSection({ templates, logements }: Props
         spellCheck={false}
       />
 
+      {/* Footer : hint + boutons */}
       <div style={s.editorFooter}>
         <span style={s.footerHint}>
-          Personnalise les zones <code style={s.code}>[entre crochets]</code> avant de copier.
+          Personnalise les zones <code style={s.code}>[entre crochets]</code>, sauvegarde, puis copie.
         </span>
-        <button
-          type="button"
-          onClick={handleCopy}
-          disabled={!postContent.trim()}
-          style={{
-            ...s.copyBtn,
-            background: copied ? '#10b981' : 'var(--accent-text)',
-            color: copied ? '#fff' : 'var(--bg)',
-          }}
-        >
-          {copied ? <Check size={14} weight="bold" /> : <Copy size={14} weight="bold" />}
-          {copied ? 'Copié !' : 'Copier le post'}
-        </button>
+        <div style={s.actionsRow}>
+          {isSavedSelected && savedForLogement && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              style={s.deleteBtn}
+              title="Supprimer ce post sauvegardé"
+            >
+              <Trash size={13} />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              if (!isSavedSelected) setTitleEditing(true)
+              handleSave()
+            }}
+            disabled={!postContent.trim() || saving}
+            style={{
+              ...s.saveBtn,
+              background: savedFlash ? '#10b981' : 'transparent',
+              color: savedFlash ? '#fff' : 'var(--text-2)',
+              borderColor: savedFlash ? '#10b981' : 'var(--border-2)',
+            }}
+            title={isSavedSelected ? 'Mettre à jour ce post' : 'Sauvegarder comme ton post pour ce logement'}
+          >
+            {savedFlash ? <Check size={13} weight="bold" /> : <FloppyDisk size={13} weight="bold" />}
+            {savedFlash ? 'Sauvegardé' : (isSavedSelected ? 'Mettre à jour' : 'Sauvegarder')}
+          </button>
+          <button
+            type="button"
+            onClick={handleCopy}
+            disabled={!postContent.trim()}
+            style={{
+              ...s.copyBtn,
+              background: copied ? '#10b981' : 'var(--accent-text)',
+              color: copied ? '#fff' : 'var(--bg)',
+            }}
+          >
+            {copied ? <Check size={14} weight="bold" /> : <Copy size={14} weight="bold" />}
+            {copied ? 'Copié !' : 'Copier le post'}
+          </button>
+        </div>
       </div>
     </section>
   )
@@ -210,6 +362,12 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text)', fontSize: '13.5px', fontFamily: 'inherit',
     cursor: 'pointer',
   },
+  input: {
+    padding: '9px 12px', borderRadius: '10px',
+    border: '1px solid var(--border)', background: 'var(--bg-2)',
+    color: 'var(--text)', fontSize: '13.5px', fontFamily: 'inherit',
+    outline: 'none',
+  },
 
   warningBox: {
     flex: '1 1 auto',
@@ -220,6 +378,11 @@ const s: Record<string, React.CSSProperties> = {
   },
   warningLink: { color: 'var(--accent-text)', textDecoration: 'underline', fontWeight: 500 },
 
+  chipsLabel: {
+    fontSize: '11px', fontWeight: 600, color: 'var(--text-3)',
+    textTransform: 'uppercase', letterSpacing: '0.4px',
+    marginBottom: '8px',
+  },
   chipsRow: {
     display: 'flex', flexWrap: 'wrap', gap: '6px',
   },
@@ -227,7 +390,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '7px 12px', borderRadius: '100px',
     border: '1px solid', fontSize: '12.5px', fontFamily: 'inherit',
     cursor: 'pointer', transition: 'all 0.12s',
-    background: 'var(--surface)',
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
   },
 
   hintBox: {
@@ -253,6 +416,23 @@ const s: Record<string, React.CSSProperties> = {
   code: {
     background: 'var(--surface-2)', padding: '1px 6px', borderRadius: '4px',
     fontSize: '11px', fontFamily: 'ui-monospace, monospace',
+  },
+  actionsRow: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+  },
+  saveBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '9px 14px', borderRadius: '10px',
+    border: '1px solid var(--border-2)',
+    fontSize: '12.5px', fontFamily: 'inherit', fontWeight: 500,
+    cursor: 'pointer', transition: 'all 0.15s',
+  },
+  deleteBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: '32px', height: '32px', borderRadius: '8px',
+    border: '1px solid var(--border)', background: 'transparent',
+    color: 'var(--text-3)', cursor: 'pointer',
+    transition: 'all 0.15s',
   },
   copyBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
