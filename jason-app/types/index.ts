@@ -78,6 +78,7 @@ export interface UserPinnedTemplate {
   user_id: string
   timing_bucket: TimingBucket
   template_id: string
+  position: number
   created_at: string
   updated_at: string
 }
