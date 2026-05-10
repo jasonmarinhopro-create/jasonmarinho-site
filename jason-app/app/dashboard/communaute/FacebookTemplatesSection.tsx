@@ -80,22 +80,22 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLogementId])
 
-  // Quand on change de chip → recharge le contenu ET le titre selon le contexte.
+  // Quand on change de chip → recharge le contenu correspondant.
+  // Le titre n'est PAS reset si on bascule vers une inspiration : on garde
+  // le titre courant (souvent celui du post sauvegardé) pour que le user
+  // sache qu'il édite/met à jour le même post avec un autre contenu de base.
+  // Le titre n'est restauré qu'en cliquant sur la chip "Mon post" elle-même.
   useEffect(() => {
     if (!selectedKey) return
     if (selectedKey.startsWith(SAVED_PREFIX)) {
-      // Chip "Mon post" sélectionnée
       if (savedForLogement) {
         setPostTitle(savedForLogement.title)
         setPostContent(savedForLogement.content)
       }
     } else {
-      // Chip d'un template d'inspiration : reset titre à "Mon post" pour
-      // signaler que c'est un nouveau brouillon, pas l'édition du post sauvegardé.
       const tpl = templates.find(t => t.id === selectedKey)
       if (tpl) {
         setPostContent(applyVariables(tpl.content, selectedLogement?.lien_driing ?? null))
-        setPostTitle('Mon post')
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -166,7 +166,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
       {/* Sélecteur logement */}
       <div style={s.controls}>
         {hasLogements ? (
-          <label style={s.field}>
+          <label style={s.fieldGrow}>
             <span style={s.fieldLabel}>Logement</span>
             <select
               value={selectedLogementId ?? ''}
@@ -303,10 +303,10 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
               color: savedFlash ? '#fff' : 'var(--text-2)',
               borderColor: savedFlash ? '#10b981' : 'var(--border-2)',
             }}
-            title={isSavedSelected ? 'Mettre à jour ce post' : 'Sauvegarder comme ton post pour ce logement'}
+            title={savedForLogement ? 'Mettre à jour ton post sauvegardé' : 'Sauvegarder comme ton post pour ce logement'}
           >
             {savedFlash ? <Check size={13} weight="bold" /> : <FloppyDisk size={13} weight="bold" />}
-            {savedFlash ? 'Sauvegardé' : (isSavedSelected ? 'Mettre à jour' : 'Sauvegarder')}
+            {savedFlash ? 'Sauvegardé' : (savedForLogement ? 'Mettre à jour' : 'Sauvegarder')}
           </button>
           <button
             type="button"
@@ -350,7 +350,8 @@ const s: Record<string, React.CSSProperties> = {
   subtitle: { fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.55 },
 
   controls: { display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'flex-end' },
-  field: { display: 'flex', flexDirection: 'column', gap: '6px', flex: '1 1 240px', minWidth: 0 },
+  field: { display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 },
+  fieldGrow: { display: 'flex', flexDirection: 'column', gap: '6px', flex: '1 1 240px', minWidth: 0 },
   fieldLabel: { fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.4px' },
   select: {
     padding: '9px 12px', borderRadius: '10px',
