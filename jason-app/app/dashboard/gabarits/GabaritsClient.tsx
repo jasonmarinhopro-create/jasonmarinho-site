@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
   Copy, Check, MagnifyingGlass, Heart, PencilSimple, X,
   CalendarCheck, House, SunHorizon, ArrowRight, UsersThree,
+  Star, CaretDown, CaretUp, PushPin, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
-import type { Template, UserTemplateCustomization } from '@/types'
+import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
 
 // ── Mapping catégorie → moment d'envoi ─────────────────────────────────────
@@ -79,13 +80,14 @@ function extractVariables(text: string): string[] {
   return [...new Set(matches)]
 }
 
-type FilterKey = 'all' | 'favorites' | TimingBucket | 'facebook'
+type FilterKey = 'mes-messages' | 'all' | 'favorites' | TimingBucket | 'facebook'
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 interface GabaritsClientProps {
   templates:              Template[]
   initialFavorites:       string[]
   initialCustomizations:  UserTemplateCustomization[]
+  initialPinned:          UserPinnedTemplate[]
   userId:                 string | null
 }
 
@@ -94,6 +96,7 @@ export default function GabaritsClient({
   templates,
   initialFavorites,
   initialCustomizations,
+  initialPinned,
   userId,
 }: GabaritsClientProps) {
 
@@ -101,9 +104,17 @@ export default function GabaritsClient({
   const [customizations, setCustomizations] = useState<Record<string, UserTemplateCustomization>>(
     () => Object.fromEntries(initialCustomizations.map(c => [c.template_id, c]))
   )
+  const [pinned, setPinned] = useState<Record<TimingBucket, string | null>>(() => {
+    const map: Record<TimingBucket, string | null> = {
+      'avant-arrivee': null, 'pendant-sejour': null, 'apres-depart': null,
+    }
+    for (const p of initialPinned) map[p.timing_bucket] = p.template_id
+    return map
+  })
+  const [expandedBuckets, setExpandedBuckets] = useState<Set<TimingBucket>>(new Set())
 
   const [search, setSearch]             = useState('')
-  const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
+  const [activeFilter, setActiveFilter] = useState<FilterKey>('mes-messages')
   const [copied, setCopied]             = useState<string | null>(null)
   const [toast, setToast]               = useState<string | null>(null)
 
@@ -128,6 +139,60 @@ export default function GabaritsClient({
   // ── Remplissage variables ─────────────────────────────────────────────────
   const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en' } | null>(null)
   const [fillValues, setFillValues]           = useState<Record<string, string>>({})
+
+  // ── Pinned (message principal par phase) ─────────────────────────────────
+  async function pinTemplate(templateId: string, bucket: TimingBucket) {
+    if (!userId) return
+    const supabase = createClient()
+    setPinned(prev => ({ ...prev, [bucket]: templateId }))
+    await supabase.from('user_pinned_templates').upsert({
+      user_id: userId, timing_bucket: bucket, template_id: templateId, updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id,timing_bucket' })
+    showToast('📌 Défini comme message principal')
+    void markStepIfNotYet('gabarit')
+  }
+
+  async function unpinTemplate(bucket: TimingBucket) {
+    if (!userId) return
+    const supabase = createClient()
+    setPinned(prev => ({ ...prev, [bucket]: null }))
+    await supabase.from('user_pinned_templates').delete().eq('user_id', userId).eq('timing_bucket', bucket)
+    showToast('Message principal retiré')
+  }
+
+  function toggleExpanded(bucket: TimingBucket) {
+    setExpandedBuckets(prev => {
+      const next = new Set(prev)
+      if (next.has(bucket)) next.delete(bucket)
+      else next.add(bucket)
+      return next
+    })
+  }
+
+  // Templates par phase, triés (popularité décroissante) — utilisé pour le fallback default + la liste d'inspirations
+  const templatesByBucketSorted = useMemo(() => {
+    const map: Record<TimingBucket, Template[]> = {
+      'avant-arrivee': [], 'pendant-sejour': [], 'apres-depart': [],
+    }
+    for (const t of templates) {
+      const b = getTimingBucket(t)
+      if (b) map[b].push(t)
+    }
+    for (const b of TIMING_ORDER) {
+      map[b].sort((a, b2) => (b2.copy_count ?? 0) - (a.copy_count ?? 0))
+    }
+    return map
+  }, [templates])
+
+  // Pour chaque phase : template effectivement affiché (pinned > top par popularité)
+  function getHeroTemplate(bucket: TimingBucket): Template | null {
+    const pinnedId = pinned[bucket]
+    if (pinnedId) {
+      const t = templates.find(x => x.id === pinnedId)
+      if (t) return t
+    }
+    return templatesByBucketSorted[bucket][0] ?? null
+  }
 
   // ── Favoris ───────────────────────────────────────────────────────────────
   async function toggleFavorite(templateId: string, e: React.MouseEvent) {
@@ -292,9 +357,10 @@ export default function GabaritsClient({
   const facebookTemplates    = filtered.filter(t => t.category === 'facebook')
   const allFacebookTemplates = templates.filter(t => t.category === 'facebook')
 
+  const isMesMessagesView = activeFilter === 'mes-messages'
   const isFavoritesView  = activeFilter === 'favorites'
   const isFacebookView   = activeFilter === 'facebook'
-  const isSingleSection  = !['all', 'favorites', 'facebook'].includes(activeFilter)
+  const isSingleSection  = !['mes-messages', 'all', 'favorites', 'facebook'].includes(activeFilter)
 
   return (
     <>
@@ -309,23 +375,21 @@ export default function GabaritsClient({
 
         <div style={s.intro} className="fade-up">
           <h2 style={s.pageTitle}>
-            Gabarits <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>prêts à l&apos;emploi</em>
+            Tes 3 messages <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>essentiels</em>
           </h2>
           <p style={s.pageDesc}>
-            Tes messages déjà rédigés, à copier-coller directement sur les plateformes ou les groupes.
-            Personnalise-les une fois, retrouve-les dans tes favoris.
+            Un message principal par phase (avant l&apos;arrivée, pendant, après). Tu le personnalises une fois,
+            tu le copies en un clic à chaque réservation.
           </p>
         </div>
 
         {/* Navigation */}
         <div style={s.nav} className="fade-up d1">
           {([
-            { key: 'all',            label: 'Tous les gabarits' },
+            { key: 'mes-messages',   label: '🌟 Mes 3 messages', bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
             { key: 'favorites',      label: '♡ Mes favoris',     count: favorites.size },
             { key: 'facebook',       label: 'Posts & annonces',   color: '#818CF8', count: allFacebookTemplates.length || undefined },
-            { key: 'avant-arrivee',  label: "Avant l'arrivée",   bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)', count: templates.filter(t => getTimingBucket(t) === 'avant-arrivee').length  || undefined },
-            { key: 'pendant-sejour', label: 'Pendant le séjour',  color: '#60BEFF', count: templates.filter(t => getTimingBucket(t) === 'pendant-sejour').length || undefined },
-            { key: 'apres-depart',   label: 'Après le départ',    color: '#F97583', count: templates.filter(t => getTimingBucket(t) === 'apres-depart').length   || undefined },
+            { key: 'all',            label: '💡 Inspirations' },
           ] as { key: FilterKey; label: string; count?: number; color?: string; bg?: string; borderColor?: string }[]).map(f => (
             <button
               key={f.key}
@@ -351,20 +415,117 @@ export default function GabaritsClient({
           ))}
         </div>
 
-        {/* Recherche */}
-        <div style={s.searchWrap} className="fade-up d2">
-          <MagnifyingGlass size={15} color="var(--text-3)" />
-          <input
-            type="text"
-            placeholder="Chercher un gabarit…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            style={s.searchInput}
-          />
-          {search && (
-            <button onClick={() => setSearch('')} style={s.clearSearch}><X size={14} /></button>
-          )}
-        </div>
+        {/* Recherche — masquée sur "Mes 3 messages" */}
+        {!isMesMessagesView && (
+          <div style={s.searchWrap} className="fade-up d2">
+            <MagnifyingGlass size={15} color="var(--text-3)" />
+            <input
+              type="text"
+              placeholder="Chercher un gabarit…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={s.searchInput}
+            />
+            {search && (
+              <button onClick={() => setSearch('')} style={s.clearSearch}><X size={14} /></button>
+            )}
+          </div>
+        )}
+
+        {/* Vue Mes 3 messages — hero + inspirations repliables */}
+        {isMesMessagesView && (
+          <div className="fade-up d1" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {TIMING_ORDER.map(bucket => {
+              const cfg = SECTION_CONFIG[bucket]
+              const Icon = cfg.icon
+              const hero = getHeroTemplate(bucket)
+              const allInBucket = templatesByBucketSorted[bucket]
+              const inspirations = allInBucket.filter(t => t.id !== hero?.id)
+              const isPinned = !!pinned[bucket]
+              const isExpanded = expandedBuckets.has(bucket)
+
+              if (!hero) return (
+                <div key={bucket} style={{ padding: '20px', background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: '14px', textAlign: 'center' }}>
+                  <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Aucun gabarit pour cette phase pour l&apos;instant.</p>
+                </div>
+              )
+
+              return (
+                <div key={bucket}>
+                  {/* Header phase */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                    <div style={{
+                      width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+                      background: cfg.bg, border: `1px solid ${cfg.border}`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <Icon size={18} color={cfg.color} weight="fill" />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '21px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.2 }}>
+                        {cfg.label}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        {isPinned ? 'Ton message épinglé' : 'Notre suggestion par défaut · épingle le tien quand tu veux'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Hero card */}
+                  <HeroCard
+                    template={hero}
+                    bucket={bucket}
+                    isPinned={isPinned}
+                    customization={customizations[hero.id]}
+                    isFav={favorites.has(hero.id)}
+                    copied={copied}
+                    onCopy={copyTemplate}
+                    onCustomize={openCustomize}
+                    onUnpin={() => unpinTemplate(bucket)}
+                    onPin={() => pinTemplate(hero.id, bucket)}
+                  />
+
+                  {/* Inspirations repliable */}
+                  {inspirations.length > 0 && (
+                    <>
+                      <button
+                        onClick={() => toggleExpanded(bucket)}
+                        style={{
+                          ...s.seeMoreBtn,
+                          marginTop: '12px',
+                          color: cfg.color,
+                          borderColor: `${cfg.color}30`,
+                          background: isExpanded ? cfg.bg : 'transparent',
+                        }}
+                      >
+                        {isExpanded ? <CaretUp size={14} /> : <CaretDown size={14} />}
+                        <span>
+                          {isExpanded ? 'Masquer les exemples' : `💡 Voir ${inspirations.length} autre${inspirations.length > 1 ? 's' : ''} exemple${inspirations.length > 1 ? 's' : ''}`}
+                        </span>
+                      </button>
+
+                      {isExpanded && (
+                        <div style={{ ...s.grid, marginTop: '14px' }}>
+                          {inspirations.map(t => (
+                            <TemplateCard
+                              key={t.id} template={t}
+                              isFav={favorites.has(t.id)}
+                              customization={customizations[t.id]}
+                              copied={copied} bucket={bucket}
+                              isPinned={pinned[bucket] === t.id}
+                              onCopy={copyTemplate} onFavorite={toggleFavorite} onCustomize={openCustomize}
+                              onPin={() => pinTemplate(t.id, bucket)}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
 
         {/* Vue Favoris */}
         {isFavoritesView && (
@@ -608,6 +769,127 @@ function SectionHeader({ Icon, label, color, bg, border, count }: {
   )
 }
 
+// ── Hero card (message principal d'une phase) ────────────────────────────────
+
+interface HeroCardProps {
+  template:      Template
+  bucket:        TimingBucket
+  isPinned:      boolean
+  customization: UserTemplateCustomization | undefined
+  isFav:         boolean
+  copied:        string | null
+  onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
+  onCustomize:   (t: Template) => void
+  onPin:         () => void
+  onUnpin:       () => void
+}
+
+function HeroCard({
+  template: t, bucket, isPinned, customization, isFav, copied,
+  onCopy, onCustomize, onPin, onUnpin,
+}: HeroCardProps) {
+  const [lang, setLang] = useState<'fr' | 'en'>('fr')
+  const hasEN = !!t.corps_en
+  const cfg = SECTION_CONFIG[bucket]
+  const copiedKey = t.id + lang
+  const isCopied = copied === copiedKey
+
+  const displayContent = lang === 'en'
+    ? (t.corps_en ?? t.content)
+    : (customization?.content ?? t.content)
+  const displayTitle = customization?.title ?? t.title
+  const variables = extractVariables(displayContent)
+
+  return (
+    <div style={{
+      ...s.heroCard,
+      borderColor: cfg.border,
+      background: `linear-gradient(180deg, ${cfg.bg} 0%, var(--surface) 60%)`,
+    }}>
+      {/* Bandeau du haut */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: '5px',
+            padding: '4px 11px', borderRadius: '100px',
+            background: isPinned ? 'var(--accent-bg-2)' : cfg.bg,
+            color: isPinned ? 'var(--accent-text)' : cfg.color,
+            border: `1px solid ${isPinned ? 'var(--accent-border)' : cfg.border}`,
+            fontSize: '11px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase',
+          }}>
+            {isPinned ? <><PushPin size={11} weight="fill" /> Mon message principal</> : <><Sparkle size={11} weight="fill" /> Suggestion</>}
+          </span>
+          {customization && (
+            <span style={s.customChip}>Personnalisé</span>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {isPinned ? (
+            <button onClick={onUnpin} style={s.heroPinBtnActive} title="Retirer comme message principal">
+              <PushPin size={13} weight="fill" /> Désépingler
+            </button>
+          ) : (
+            <button onClick={onPin} style={s.heroPinBtn} title="Définir comme message principal">
+              <PushPin size={13} /> Épingler
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Titre */}
+      <div style={s.heroTitle}>{displayTitle}</div>
+
+      {/* Variables badge */}
+      {variables.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '12px' }}>
+          {variables.map(v => <span key={v} style={s.varChip}>{v}</span>)}
+        </div>
+      )}
+
+      {/* Contenu */}
+      <pre style={s.heroContent}>{displayContent}</pre>
+
+      {/* Note privée */}
+      {customization?.notes && lang === 'fr' && (
+        <div style={{ ...s.notePreview, marginBottom: '14px' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+            📎 {customization.notes}
+          </span>
+        </div>
+      )}
+
+      {/* Footer : actions */}
+      <div style={s.heroFooter}>
+        {hasEN && (
+          <div style={s.langToggle}>
+            <button onClick={() => setLang('fr')} style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}>FR</button>
+            <button onClick={() => setLang('en')} style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActiveEN : {}) }}>EN</button>
+          </div>
+        )}
+        <button onClick={() => onCustomize(t)} style={s.heroEditBtn}>
+          <PencilSimple size={14} /> {customization ? 'Modifier ma version' : 'Personnaliser'}
+        </button>
+        <button
+          onClick={e => onCopy(t, e, lang)}
+          style={{
+            ...s.heroCopyBtn,
+            ...(isCopied ? s.copyBtnDone : {
+              background: 'var(--accent-bg-2)',
+              borderColor: 'var(--accent-border)',
+              color: 'var(--accent-text)',
+            }),
+          }}
+        >
+          {isCopied
+            ? <><Check size={15} weight="bold" /> Copié !</>
+            : <><Copy size={15} weight="bold" /> {lang === 'en' ? 'Copy in English' : 'Copier mon message'}</>
+          }
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ── Template card ─────────────────────────────────────────────────────────────
 
 interface TemplateCardProps {
@@ -616,12 +898,14 @@ interface TemplateCardProps {
   customization: UserTemplateCustomization | undefined
   copied:        string | null
   bucket:        TimingBucket | null
+  isPinned?:     boolean
   onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
   onFavorite:    (id: string, e: React.MouseEvent) => void
   onCustomize:   (t: Template) => void
+  onPin?:        () => void
 }
 
-function TemplateCard({ template: t, isFav, customization, copied, bucket, onCopy, onFavorite, onCustomize }: TemplateCardProps) {
+function TemplateCard({ template: t, isFav, customization, copied, bucket, isPinned, onCopy, onFavorite, onCustomize, onPin }: TemplateCardProps) {
   const [lang, setLang] = useState<'fr' | 'en'>('fr')
   const hasEN = !!t.corps_en
   const cfg         = bucket ? SECTION_CONFIG[bucket] : null
@@ -650,6 +934,15 @@ function TemplateCard({ template: t, isFav, customization, copied, bucket, onCop
           )}
         </div>
         <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+          {onPin && bucket && (
+            <button
+              onClick={onPin}
+              style={{ ...s.iconBtn, ...(isPinned ? s.iconBtnPinActive : {}) }}
+              title={isPinned ? 'Message principal de cette phase' : 'Définir comme message principal'}
+            >
+              <PushPin size={14} weight={isPinned ? 'fill' : 'regular'} color={isPinned ? 'var(--accent-text)' : undefined} />
+            </button>
+          )}
           <button
             onClick={e => onFavorite(t.id, e)}
             style={{ ...s.iconBtn, ...(isFav ? s.iconBtnFavActive : {}) }}
@@ -868,6 +1161,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   iconBtnFavActive:    { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
   iconBtnCustomActive: { background: 'rgba(96,190,255,0.08)', border: '1px solid rgba(96,190,255,0.25)', color: '#60BEFF' },
+  iconBtnPinActive:    { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
 
   contentWrap: { position: 'relative' },
   content: {
@@ -1002,5 +1296,51 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 500, padding: '7px 13px', borderRadius: '8px', cursor: 'pointer',
     background: 'rgba(249,117,131,0.08)', border: '1px solid rgba(249,117,131,0.25)',
     color: '#F97583', fontFamily: 'var(--font-outfit), sans-serif',
+  },
+
+  // ── Hero card (message principal) ───────────────────────────────────────
+  heroCard: {
+    padding: '24px 26px 22px',
+    border: '1px solid', borderRadius: '18px',
+    boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+  },
+  heroTitle: {
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 500,
+    color: 'var(--text)', lineHeight: 1.25, marginBottom: '12px',
+  },
+  heroContent: {
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', fontWeight: 300,
+    color: 'var(--text)', lineHeight: 1.75,
+    whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+    margin: '0 0 16px', padding: '14px 16px',
+    background: 'rgba(0,0,0,0.18)', border: '1px solid var(--border)', borderRadius: '12px',
+    maxHeight: '300px', overflowY: 'auto',
+  },
+  heroFooter: {
+    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+  },
+  heroPinBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11.5px', fontWeight: 600, padding: '5px 11px', borderRadius: '8px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-2)',
+    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
+  },
+  heroPinBtnActive: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11.5px', fontWeight: 600, padding: '5px 11px', borderRadius: '8px', cursor: 'pointer',
+    background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)',
+    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
+  },
+  heroEditBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '13px', fontWeight: 500, padding: '10px 16px', borderRadius: '10px', cursor: 'pointer',
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)',
+    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
+  },
+  heroCopyBtn: {
+    flex: 1, minWidth: '180px',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+    fontSize: '14px', fontWeight: 700, padding: '12px 20px', borderRadius: '11px', cursor: 'pointer',
+    border: '1px solid', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.18s',
   },
 }
