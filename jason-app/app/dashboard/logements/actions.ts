@@ -38,6 +38,7 @@ export type LogementData = {
   lien_booking?: string | null
   lien_gmb?: string | null
   lien_site_direct?: string | null
+  lien_driing?: string | null
 
   // Photos
   photo_couverture_url?: string | null

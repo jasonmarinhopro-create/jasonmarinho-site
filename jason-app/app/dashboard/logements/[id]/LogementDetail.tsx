@@ -43,6 +43,7 @@ type Logement = {
   lien_booking: string | null
   lien_gmb: string | null
   lien_site_direct: string | null
+  lien_driing: string | null
   photo_couverture_url: string | null
   photos_urls: string[] | null
   contact_urgence_nom: string | null
@@ -192,6 +193,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
   const [draftLienBooking, setDraftLienBooking] = useState(l.lien_booking ?? '')
   const [draftLienGmb, setDraftLienGmb] = useState(l.lien_gmb ?? '')
   const [draftLienSiteDirect, setDraftLienSiteDirect] = useState(l.lien_site_direct ?? '')
+  const [draftLienDriing, setDraftLienDriing] = useState(l.lien_driing ?? '')
   // Propriétaire (conciergerie)
   const [draftPropNom, setDraftPropNom] = useState(l.proprietaire_nom ?? '')
   const [draftPropEmail, setDraftPropEmail] = useState(l.proprietaire_email ?? '')
@@ -254,6 +256,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
       lien_booking: draftLienBooking || null,
       lien_gmb: draftLienGmb || null,
       lien_site_direct: draftLienSiteDirect || null,
+      lien_driing: draftLienDriing || null,
     })
   }
   async function saveProprietaire() {
@@ -866,8 +869,9 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             setDraftLienBooking(l.lien_booking ?? '')
             setDraftLienGmb(l.lien_gmb ?? '')
             setDraftLienSiteDirect(l.lien_site_direct ?? '')
+            setDraftLienDriing(l.lien_driing ?? '')
           }}
-          hasValue={!!(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct)}
+          hasValue={!!(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct || l.lien_driing)}
           emptyView={<p style={s.emptyHint}>Aucun lien renseigné. Cliquez sur Modifier pour les ajouter.</p>}
           view={
             <div style={s.linksList}>
@@ -899,6 +903,13 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                   <ArrowSquareOut size={11} color="var(--text-muted)" />
                 </a>
               )}
+              {l.lien_driing && (
+                <a href={l.lien_driing} target="_blank" rel="noopener noreferrer" style={s.linkRow}>
+                  <span style={s.linkEmoji}>🔔</span>
+                  <span style={s.linkLabel}>Driing</span>
+                  <ArrowSquareOut size={11} color="var(--text-muted)" />
+                </a>
+              )}
             </div>
           }
           edit={
@@ -914,6 +925,10 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               <label style={s.editLabel}>
                 <span>📍 Google Business Profile</span>
                 <input style={s.editInput} type="url" value={draftLienGmb} onChange={e => setDraftLienGmb(e.target.value)} placeholder="https://maps.google.com/…" />
+              </label>
+              <label style={s.editLabel}>
+                <span>🔔 Driing</span>
+                <input style={s.editInput} type="url" value={draftLienDriing} onChange={e => setDraftLienDriing(e.target.value)} placeholder="https://driing.co/…" />
               </label>
               <label style={s.editLabel}>
                 <span>🌐 Site direct</span>
