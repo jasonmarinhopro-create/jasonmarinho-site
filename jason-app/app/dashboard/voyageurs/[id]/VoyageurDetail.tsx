@@ -147,7 +147,26 @@ const CHECKLIST_PHASES = [
     ],
   },
 ]
-const CL_TOTAL = CHECKLIST_PHASES.flatMap(p => p.items).length
+
+// Items à masquer quand le séjour est géré par une plateforme externe
+// (Booking, Airbnb…) : la plateforme s'occupe du contrat, du paiement,
+// de la caution et de la vérification d'identité.
+const PLATFORM_HIDDEN_KEYS = new Set([
+  'contrat_envoye',
+  'contrat_signe',
+  'acompte_recu',
+  'solde_recu',
+  'caution_recue',
+  'caution_restituee',
+  'identite_verifiee',
+])
+
+function getChecklistPhases(contratPlateforme: string | null | undefined) {
+  if (!contratPlateforme) return CHECKLIST_PHASES
+  return CHECKLIST_PHASES
+    .map(p => ({ ...p, items: p.items.filter(it => !PLATFORM_HIDDEN_KEYS.has(it.key)) }))
+    .filter(p => p.items.length > 0)
+}
 
 const PLATFORM_LABELS: Record<string, { label: string; icon: string }> = {
   booking:          { label: 'Booking.com',      icon: '🛎️' },
@@ -979,7 +998,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               </div>
               <div style={s.field}>
                 <label style={s.label}>Nationalité</label>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative', zIndex: profileNatOpen ? 100 : 'auto' }}>
                   <button
                     type="button"
                     onClick={() => { setProfileNatOpen(o => !o); setProfileNatSearch('') }}
@@ -1645,8 +1664,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             const n = nights(sj.date_arrivee, sj.date_depart)
             const isExpanded = expandedSejourId === sj.id
             const cl = checklistData[sj.id]
-            const doneCount = cl ? Object.values(cl.items).filter(Boolean).length : 0
-            const pct = cl ? Math.round((doneCount / CL_TOTAL) * 100) : 0
+            const phases = getChecklistPhases(sj.contrat_plateforme)
+            const phaseKeys = phases.flatMap(p => p.items).map(it => it.key)
+            const clTotal = phaseKeys.length
+            const doneCount = cl ? phaseKeys.filter(k => cl.items[k]).length : 0
+            const pct = cl && clTotal > 0 ? Math.round((doneCount / clTotal) * 100) : 0
 
             return (
               <div key={sj.id}>
@@ -1723,7 +1745,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   >
                     <ListChecks size={13} />
                     {checklistLoading === sj.id ? '…' : (
-                      cl ? `${doneCount}/${CL_TOTAL}` : 'Checklist'
+                      cl ? `${doneCount}/${clTotal}` : 'Checklist'
                     )}
                   </button>
                   {(() => {
@@ -1764,12 +1786,12 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                             <div style={{ height: '100%', width: `${pct}%`, background: barColor, borderRadius: '10px', transition: 'width 0.3s' }} />
                           </div>
                           <span style={{ fontSize: '12px', fontWeight: 600, color: barColor, whiteSpace: 'nowrap' }}>
-                            {doneCount}/{CL_TOTAL} complétés
+                            {doneCount}/{clTotal} complétés
                           </span>
                         </div>
 
                         {/* Phases */}
-                        {CHECKLIST_PHASES.map(phase => {
+                        {phases.map(phase => {
                           const phaseDone = phase.items.filter(it => cl.items[it.key]).length
                           return (
                             <div key={phase.label} style={{ marginBottom: '14px' }}>

@@ -605,7 +605,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
               {/* Nationalité */}
               <div style={s.field}>
                 <label style={s.label}>Nationalité</label>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative', zIndex: natOpen ? 100 : 'auto' }}>
                   <button
                     type="button"
                     onClick={() => { setNatOpen(o => !o); setNatSearch('') }}
