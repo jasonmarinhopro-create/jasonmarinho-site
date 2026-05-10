@@ -104,11 +104,12 @@ export default function GabaritsClient({
   const [customizations, setCustomizations] = useState<Record<string, UserTemplateCustomization>>(
     () => Object.fromEntries(initialCustomizations.map(c => [c.template_id, c]))
   )
-  const [pinned, setPinned] = useState<Record<TimingBucket, string | null>>(() => {
-    const map: Record<TimingBucket, string | null> = {
-      'avant-arrivee': null, 'pendant-sejour': null, 'apres-depart': null,
+  const [pinned, setPinned] = useState<Record<TimingBucket, string[]>>(() => {
+    const map: Record<TimingBucket, string[]> = {
+      'avant-arrivee': [], 'pendant-sejour': [], 'apres-depart': [],
     }
-    for (const p of initialPinned) map[p.timing_bucket] = p.template_id
+    const sorted = [...initialPinned].sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+    for (const p of sorted) map[p.timing_bucket].push(p.template_id)
     return map
   })
   const [expandedBuckets, setExpandedBuckets] = useState<Set<TimingBucket>>(new Set())
@@ -140,24 +141,58 @@ export default function GabaritsClient({
   const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en' } | null>(null)
   const [fillValues, setFillValues]           = useState<Record<string, string>>({})
 
-  // ── Pinned (message principal par phase) ─────────────────────────────────
-  async function pinTemplate(templateId: string, bucket: TimingBucket) {
+  // ── Pinned (liste ordonnée de messages par phase) ────────────────────────
+  async function persistPinnedOrder(bucket: TimingBucket, ids: string[]) {
     if (!userId) return
     const supabase = createClient()
-    setPinned(prev => ({ ...prev, [bucket]: templateId }))
+    if (ids.length === 0) {
+      await supabase.from('user_pinned_templates').delete().eq('user_id', userId).eq('timing_bucket', bucket)
+      return
+    }
+    const rows = ids.map((template_id, position) => ({
+      user_id: userId, timing_bucket: bucket, template_id, position, updated_at: new Date().toISOString(),
+    }))
+    await supabase.from('user_pinned_templates')
+      .upsert(rows, { onConflict: 'user_id,timing_bucket,template_id' })
+  }
+
+  async function addPin(templateId: string, bucket: TimingBucket) {
+    if (!userId) return
+    if (pinned[bucket].includes(templateId)) return
+    const next = [...pinned[bucket], templateId]
+    setPinned(prev => ({ ...prev, [bucket]: next }))
+    const supabase = createClient()
     await supabase.from('user_pinned_templates').upsert({
-      user_id: userId, timing_bucket: bucket, template_id: templateId, updated_at: new Date().toISOString(),
-    }, { onConflict: 'user_id,timing_bucket' })
-    showToast('📌 Défini comme message principal')
+      user_id: userId, timing_bucket: bucket, template_id: templateId,
+      position: next.length - 1, updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id,timing_bucket,template_id' })
+    showToast(`📌 Ajouté à tes messages — n°${next.length}`)
     void markStepIfNotYet('gabarit')
   }
 
-  async function unpinTemplate(bucket: TimingBucket) {
+  async function removePin(templateId: string, bucket: TimingBucket) {
     if (!userId) return
+    const next = pinned[bucket].filter(id => id !== templateId)
+    setPinned(prev => ({ ...prev, [bucket]: next }))
     const supabase = createClient()
-    setPinned(prev => ({ ...prev, [bucket]: null }))
-    await supabase.from('user_pinned_templates').delete().eq('user_id', userId).eq('timing_bucket', bucket)
-    showToast('Message principal retiré')
+    await supabase.from('user_pinned_templates')
+      .delete().eq('user_id', userId).eq('timing_bucket', bucket).eq('template_id', templateId)
+    // Réécrire les positions restantes
+    if (next.length > 0) await persistPinnedOrder(bucket, next)
+    showToast('Retiré de tes messages')
+  }
+
+  async function movePin(bucket: TimingBucket, templateId: string, dir: -1 | 1) {
+    const list = pinned[bucket]
+    const idx = list.indexOf(templateId)
+    if (idx < 0) return
+    const newIdx = idx + dir
+    if (newIdx < 0 || newIdx >= list.length) return
+    const next = [...list]
+    const [removed] = next.splice(idx, 1)
+    next.splice(newIdx, 0, removed)
+    setPinned(prev => ({ ...prev, [bucket]: next }))
+    await persistPinnedOrder(bucket, next)
   }
 
   function toggleExpanded(bucket: TimingBucket) {
@@ -184,13 +219,15 @@ export default function GabaritsClient({
     return map
   }, [templates])
 
-  // Pour chaque phase : template effectivement affiché (pinned > top par popularité)
-  function getHeroTemplate(bucket: TimingBucket): Template | null {
-    const pinnedId = pinned[bucket]
-    if (pinnedId) {
-      const t = templates.find(x => x.id === pinnedId)
-      if (t) return t
-    }
+  // Pour chaque phase : liste ordonnée des templates épinglés (résolus)
+  function getPinnedTemplates(bucket: TimingBucket): Template[] {
+    return pinned[bucket]
+      .map(id => templates.find(x => x.id === id))
+      .filter((t): t is Template => !!t)
+  }
+
+  // Fallback quand l'utilisateur n'a rien épinglé : la suggestion la plus populaire
+  function getFallbackTemplate(bucket: TimingBucket): Template | null {
     return templatesByBucketSorted[bucket][0] ?? null
   }
 
@@ -375,18 +412,18 @@ export default function GabaritsClient({
 
         <div style={s.intro} className="fade-up">
           <h2 style={s.pageTitle}>
-            Tes 3 messages <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>essentiels</em>
+            Ta <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>séquence</em> de messages
           </h2>
           <p style={s.pageDesc}>
-            Un message principal par phase (avant l&apos;arrivée, pendant, après). Tu le personnalises une fois,
-            tu le copies en un clic à chaque réservation.
+            Construis ta routine pour chaque phase (avant l&apos;arrivée, pendant, après).
+            Ajoute autant de messages que tu veux, mets-les dans l&apos;ordre, copie-les en un clic.
           </p>
         </div>
 
         {/* Navigation */}
         <div style={s.nav} className="fade-up d1">
           {([
-            { key: 'mes-messages',   label: '🌟 Mes 3 messages', bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
+            { key: 'mes-messages',   label: '🌟 Ma séquence', bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
             { key: 'favorites',      label: '♡ Mes favoris',     count: favorites.size },
             { key: 'facebook',       label: 'Posts & annonces',   color: '#818CF8', count: allFacebookTemplates.length || undefined },
             { key: 'all',            label: '💡 Inspirations' },
@@ -434,17 +471,19 @@ export default function GabaritsClient({
 
         {/* Vue Mes 3 messages — hero + inspirations repliables */}
         {isMesMessagesView && (
-          <div className="fade-up d1" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div className="fade-up d1" style={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
             {TIMING_ORDER.map(bucket => {
               const cfg = SECTION_CONFIG[bucket]
               const Icon = cfg.icon
-              const hero = getHeroTemplate(bucket)
-              const allInBucket = templatesByBucketSorted[bucket]
-              const inspirations = allInBucket.filter(t => t.id !== hero?.id)
-              const isPinned = !!pinned[bucket]
+              const pinnedList = getPinnedTemplates(bucket)
+              const hasPins = pinnedList.length > 0
+              const fallback = !hasPins ? getFallbackTemplate(bucket) : null
+              const heroes = hasPins ? pinnedList : (fallback ? [fallback] : [])
+              const pinnedIdsSet = new Set(pinned[bucket])
+              const inspirations = templatesByBucketSorted[bucket].filter(t => !pinnedIdsSet.has(t.id) && t.id !== fallback?.id)
               const isExpanded = expandedBuckets.has(bucket)
 
-              if (!hero) return (
+              if (heroes.length === 0) return (
                 <div key={bucket} style={{ padding: '20px', background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: '14px', textAlign: 'center' }}>
                   <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Aucun gabarit pour cette phase pour l&apos;instant.</p>
                 </div>
@@ -466,24 +505,35 @@ export default function GabaritsClient({
                         {cfg.label}
                       </div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                        {isPinned ? 'Ton message épinglé' : 'Notre suggestion par défaut · épingle le tien quand tu veux'}
+                        {hasPins
+                          ? `${pinnedList.length} message${pinnedList.length > 1 ? 's' : ''} dans ta séquence · réordonne avec ↑ ↓`
+                          : 'Suggestion par défaut · ajoute tes propres messages quand tu veux'}
                       </div>
                     </div>
                   </div>
 
-                  {/* Hero card */}
-                  <HeroCard
-                    template={hero}
-                    bucket={bucket}
-                    isPinned={isPinned}
-                    customization={customizations[hero.id]}
-                    isFav={favorites.has(hero.id)}
-                    copied={copied}
-                    onCopy={copyTemplate}
-                    onCustomize={openCustomize}
-                    onUnpin={() => unpinTemplate(bucket)}
-                    onPin={() => pinTemplate(hero.id, bucket)}
-                  />
+                  {/* Liste de hero cards (1, 2, 3...) */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    {heroes.map((t, idx) => (
+                      <HeroCard
+                        key={t.id}
+                        template={t}
+                        bucket={bucket}
+                        isPinned={hasPins}
+                        position={hasPins ? idx + 1 : null}
+                        totalPinned={hasPins ? pinnedList.length : 0}
+                        customization={customizations[t.id]}
+                        isFav={favorites.has(t.id)}
+                        copied={copied}
+                        onCopy={copyTemplate}
+                        onCustomize={openCustomize}
+                        onAdd={!hasPins ? () => addPin(t.id, bucket) : undefined}
+                        onRemove={hasPins ? () => removePin(t.id, bucket) : undefined}
+                        onMoveUp={hasPins && idx > 0 ? () => movePin(bucket, t.id, -1) : undefined}
+                        onMoveDown={hasPins && idx < pinnedList.length - 1 ? () => movePin(bucket, t.id, 1) : undefined}
+                      />
+                    ))}
+                  </div>
 
                   {/* Inspirations repliable */}
                   {inspirations.length > 0 && (
@@ -492,7 +542,7 @@ export default function GabaritsClient({
                         onClick={() => toggleExpanded(bucket)}
                         style={{
                           ...s.seeMoreBtn,
-                          marginTop: '12px',
+                          marginTop: '14px',
                           color: cfg.color,
                           borderColor: `${cfg.color}30`,
                           background: isExpanded ? cfg.bg : 'transparent',
@@ -500,7 +550,9 @@ export default function GabaritsClient({
                       >
                         {isExpanded ? <CaretUp size={14} /> : <CaretDown size={14} />}
                         <span>
-                          {isExpanded ? 'Masquer les exemples' : `💡 Voir ${inspirations.length} autre${inspirations.length > 1 ? 's' : ''} exemple${inspirations.length > 1 ? 's' : ''}`}
+                          {isExpanded
+                            ? 'Masquer les exemples'
+                            : `💡 ${hasPins ? 'Ajouter un autre message' : 'Voir d\'autres exemples'} (${inspirations.length})`}
                         </span>
                       </button>
 
@@ -512,9 +564,9 @@ export default function GabaritsClient({
                               isFav={favorites.has(t.id)}
                               customization={customizations[t.id]}
                               copied={copied} bucket={bucket}
-                              isPinned={pinned[bucket] === t.id}
+                              isPinned={false}
                               onCopy={copyTemplate} onFavorite={toggleFavorite} onCustomize={openCustomize}
-                              onPin={() => pinTemplate(t.id, bucket)}
+                              onPin={() => addPin(t.id, bucket)}
                             />
                           ))}
                         </div>
@@ -775,18 +827,22 @@ interface HeroCardProps {
   template:      Template
   bucket:        TimingBucket
   isPinned:      boolean
+  position?:     number | null
+  totalPinned?:  number
   customization: UserTemplateCustomization | undefined
   isFav:         boolean
   copied:        string | null
   onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
   onCustomize:   (t: Template) => void
-  onPin:         () => void
-  onUnpin:       () => void
+  onAdd?:        () => void
+  onRemove?:     () => void
+  onMoveUp?:     () => void
+  onMoveDown?:   () => void
 }
 
 function HeroCard({
-  template: t, bucket, isPinned, customization, isFav, copied,
-  onCopy, onCustomize, onPin, onUnpin,
+  template: t, bucket, isPinned, position, totalPinned, customization, copied,
+  onCopy, onCustomize, onAdd, onRemove, onMoveUp, onMoveDown,
 }: HeroCardProps) {
   const [lang, setLang] = useState<'fr' | 'en'>('fr')
   const hasEN = !!t.corps_en
@@ -808,7 +864,18 @@ function HeroCard({
     }}>
       {/* Bandeau du haut */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
+          {isPinned && position ? (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: '28px', height: '28px', borderRadius: '50%',
+              background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
+              fontSize: '14px', fontWeight: 700, color: 'var(--accent-text)',
+              fontFamily: 'var(--font-fraunces), serif', flexShrink: 0,
+            }}>
+              {position}
+            </span>
+          ) : null}
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: '5px',
             padding: '4px 11px', borderRadius: '100px',
@@ -817,20 +884,38 @@ function HeroCard({
             border: `1px solid ${isPinned ? 'var(--accent-border)' : cfg.border}`,
             fontSize: '11px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase',
           }}>
-            {isPinned ? <><PushPin size={11} weight="fill" /> Mon message principal</> : <><Sparkle size={11} weight="fill" /> Suggestion</>}
+            {isPinned
+              ? <><PushPin size={11} weight="fill" /> {position && totalPinned && totalPinned > 1 ? `Message ${position}/${totalPinned}` : 'Mon message'}</>
+              : <><Sparkle size={11} weight="fill" /> Suggestion</>
+            }
           </span>
           {customization && (
             <span style={s.customChip}>Personnalisé</span>
           )}
         </div>
-        <div style={{ display: 'flex', gap: '6px' }}>
-          {isPinned ? (
-            <button onClick={onUnpin} style={s.heroPinBtnActive} title="Retirer comme message principal">
-              <PushPin size={13} weight="fill" /> Désépingler
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          {/* Reorder up */}
+          {onMoveUp && (
+            <button onClick={onMoveUp} style={s.heroIconBtn} title="Remonter">
+              <CaretUp size={14} weight="bold" />
             </button>
-          ) : (
-            <button onClick={onPin} style={s.heroPinBtn} title="Définir comme message principal">
+          )}
+          {/* Reorder down */}
+          {onMoveDown && (
+            <button onClick={onMoveDown} style={s.heroIconBtn} title="Descendre">
+              <CaretDown size={14} weight="bold" />
+            </button>
+          )}
+          {/* Add to pinned (when showing fallback suggestion) */}
+          {onAdd && (
+            <button onClick={onAdd} style={s.heroPinBtn} title="Ajouter à mes messages">
               <PushPin size={13} /> Épingler
+            </button>
+          )}
+          {/* Remove from pinned */}
+          {onRemove && (
+            <button onClick={onRemove} style={s.heroPinBtnActive} title="Retirer de mes messages">
+              <PushPin size={13} weight="fill" /> Retirer
             </button>
           )}
         </div>
@@ -938,7 +1023,7 @@ function TemplateCard({ template: t, isFav, customization, copied, bucket, isPin
             <button
               onClick={onPin}
               style={{ ...s.iconBtn, ...(isPinned ? s.iconBtnPinActive : {}) }}
-              title={isPinned ? 'Message principal de cette phase' : 'Définir comme message principal'}
+              title={isPinned ? 'Déjà dans ta séquence' : 'Ajouter à ta séquence de messages'}
             >
               <PushPin size={14} weight={isPinned ? 'fill' : 'regular'} color={isPinned ? 'var(--accent-text)' : undefined} />
             </button>
@@ -1318,6 +1403,12 @@ const s: Record<string, React.CSSProperties> = {
   },
   heroFooter: {
     display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+  },
+  heroIconBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: '28px', height: '28px', borderRadius: '7px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-2)',
+    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s', flexShrink: 0,
   },
   heroPinBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',

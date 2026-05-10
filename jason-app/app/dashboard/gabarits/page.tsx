@@ -23,7 +23,7 @@ export default async function GabaritsPage() {
       ? supabase.from('user_template_customizations').select('id, user_id, template_id, title, content, notes, timing_label, created_at, updated_at').eq('user_id', userId)
       : Promise.resolve({ data: [] as UserTemplateCustomization[] }),
     userId
-      ? supabase.from('user_pinned_templates').select('user_id, timing_bucket, template_id, created_at, updated_at').eq('user_id', userId)
+      ? supabase.from('user_pinned_templates').select('user_id, timing_bucket, template_id, position, created_at, updated_at').eq('user_id', userId).order('position', { ascending: true })
       : Promise.resolve({ data: [] as UserPinnedTemplate[] }),
   ])
 
