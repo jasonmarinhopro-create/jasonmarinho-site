@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id')
+    .select('id, full_name')
     .eq('ical_token', token)
     .single()
 
@@ -42,12 +42,12 @@ export async function GET(req: NextRequest) {
     { data: contracts },
     { data: sejours },
     { data: icalEvents },
+    { data: icalFeeds },
   ] = await Promise.all([
     supabase
       .from('contracts')
-      .select('id, logement_nom, date_arrivee, date_depart, sejour_id')
-      .eq('user_id', uid)
-      .neq('statut', 'annule'),
+      .select('id, logement_nom, date_arrivee, date_depart, sejour_id, statut')
+      .eq('user_id', uid),
     supabase
       .from('sejours')
       .select('id, logement, date_arrivee, date_depart, voyageurs(prenom, nom)')
@@ -58,11 +58,60 @@ export async function GET(req: NextRequest) {
       .from('ical_events')
       .select('id, title, start_date, end_date, start_time, end_time, description')
       .eq('user_id', uid),
+    supabase
+      .from('ical_feeds')
+      .select('id, name, last_synced')
+      .eq('user_id', uid),
   ])
+
+  // Filtre les contrats annulés en JS pour gérer correctement les statut NULL
+  // (PostgreSQL traite NULL != 'annule' comme NULL/false, on les exclurait à tort)
+  const activeContracts = (contracts ?? []).filter(c => c.statut !== 'annule')
+
+  // Mode debug : ?debug=1 renvoie un JSON diagnostic au lieu du fichier iCal.
+  // Le token est requis donc seul le propriétaire peut consulter.
+  if (req.nextUrl.searchParams.get('debug') === '1') {
+    return Response.json({
+      user_id: uid,
+      user_name: (profile as any).full_name ?? null,
+      counts: {
+        contracts_total: contracts?.length ?? 0,
+        contracts_actifs: activeContracts.length,
+        contracts_par_statut: Object.fromEntries(
+          Object.entries(
+            (contracts ?? []).reduce<Record<string, number>>((acc, c) => {
+              const k = c.statut ?? 'null'
+              acc[k] = (acc[k] ?? 0) + 1
+              return acc
+            }, {})
+          )
+        ),
+        sejours_avec_dates: sejours?.length ?? 0,
+        ical_events_imported: icalEvents?.length ?? 0,
+        ical_feeds_configured: icalFeeds?.length ?? 0,
+      },
+      ical_feeds: (icalFeeds ?? []).map(f => ({
+        name: (f as any).name,
+        last_synced: (f as any).last_synced,
+      })),
+      sample_sejours: (sejours ?? []).slice(0, 3).map((s: any) => ({
+        id: s.id,
+        logement: s.logement,
+        date_arrivee: s.date_arrivee,
+        date_depart: s.date_depart,
+      })),
+      sample_contracts: activeContracts.slice(0, 3).map(c => ({
+        id: c.id,
+        statut: c.statut,
+        date_arrivee: c.date_arrivee,
+        date_depart: c.date_depart,
+      })),
+    })
+  }
 
   // Séjours déjà couverts par un contrat → on évite le doublon dans l'export
   const sejourIdsWithContract = new Set(
-    (contracts ?? [])
+    activeContracts
       .map(c => (c as any).sejour_id as string | null)
       .filter((v): v is string => !!v)
   )
@@ -82,7 +131,7 @@ export async function GET(req: NextRequest) {
   ]
 
   // ── Arrivées et départs depuis les contrats ───────────────────────────────
-  for (const c of contracts ?? []) {
+  for (const c of activeContracts) {
     if (c.date_arrivee) {
       lines.push('BEGIN:VEVENT')
       lines.push(`UID:arr-${c.id}@jasonmarinho.com`)
