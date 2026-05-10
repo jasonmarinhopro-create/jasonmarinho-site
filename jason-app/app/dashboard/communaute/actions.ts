@@ -48,6 +48,7 @@ export async function restoreAllDismissed() {
 // ─── Posts Facebook personnalisés ─────────────────────────────────────────
 
 export async function saveFacebookPost(input: {
+  postId?: string | null
   logementId: string | null
   title: string
   content: string
@@ -60,26 +61,17 @@ export async function saveFacebookPost(input: {
   const content = input.content.trim()
   if (!content) return { error: 'Contenu vide' }
 
-  // Upsert sur (user_id, logement_id) — un seul post par logement.
-  // .upsert avec onConflict ne supporte pas COALESCE sur la nullité de logement_id,
-  // donc on fait un select-then-insert/update à la main.
-  const existingQuery = supabase
-    .from('user_facebook_posts')
-    .select('id')
-    .eq('user_id', user.id)
-  const { data: existing } = input.logementId
-    ? await existingQuery.eq('logement_id', input.logementId).maybeSingle()
-    : await existingQuery.is('logement_id', null).maybeSingle()
-
-  if (existing?.id) {
+  if (input.postId) {
+    // Mise à jour d'un post existant.
     const { error } = await supabase
       .from('user_facebook_posts')
       .update({ title, content, updated_at: new Date().toISOString() })
-      .eq('id', existing.id)
+      .eq('id', input.postId)
       .eq('user_id', user.id)
     if (error) return { error: error.message }
   } else {
-    const { error } = await supabase
+    // Création d'un nouveau post (plusieurs posts par logement autorisés).
+    const { data, error } = await supabase
       .from('user_facebook_posts')
       .insert({
         user_id: user.id,
@@ -87,7 +79,11 @@ export async function saveFacebookPost(input: {
         title,
         content,
       })
+      .select('id')
+      .single()
     if (error) return { error: error.message }
+    revalidatePath('/dashboard/communaute')
+    return { success: true, postId: data?.id ?? null }
   }
 
   revalidatePath('/dashboard/communaute')
