@@ -77,6 +77,7 @@ type Sejour = {
   montant: number | null
   contrat_statut: 'signe' | 'en_attente' | 'non_requis' | 'nouveau'
   contrat_date_signature: string | null; contrat_lien: string | null
+  contrat_plateforme: string | null
 }
 
 type DepositContract = {
@@ -148,10 +149,81 @@ const CHECKLIST_PHASES = [
 ]
 const CL_TOTAL = CHECKLIST_PHASES.flatMap(p => p.items).length
 
+const PLATFORM_LABELS: Record<string, { label: string; icon: string }> = {
+  booking:          { label: 'Booking.com',      icon: '🛎️' },
+  airbnb:           { label: 'Airbnb',           icon: '🏠' },
+  abritel:          { label: 'Abritel',          icon: '🏡' },
+  vrbo:             { label: 'Vrbo',             icon: '🌴' },
+  gites_de_france:  { label: 'Gîtes de France',  icon: '🌳' },
+  driing:           { label: 'Driing',           icon: '🔔' },
+  direct:           { label: 'Direct / Email',   icon: '📧' },
+  autre:            { label: 'Autre',            icon: '📄' },
+}
+
+const COUNTRIES: { code: string; name: string }[] = [
+  { code: 'FR', name: 'France' },
+  { code: 'BE', name: 'Belgique' },
+  { code: 'CH', name: 'Suisse' },
+  { code: 'LU', name: 'Luxembourg' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'MC', name: 'Monaco' },
+  { code: 'DE', name: 'Allemagne' },
+  { code: 'ES', name: 'Espagne' },
+  { code: 'IT', name: 'Italie' },
+  { code: 'PT', name: 'Portugal' },
+  { code: 'GB', name: 'Royaume-Uni' },
+  { code: 'NL', name: 'Pays-Bas' },
+  { code: 'AT', name: 'Autriche' },
+  { code: 'PL', name: 'Pologne' },
+  { code: 'CZ', name: 'Tchéquie' },
+  { code: 'RO', name: 'Roumanie' },
+  { code: 'HU', name: 'Hongrie' },
+  { code: 'GR', name: 'Grèce' },
+  { code: 'SE', name: 'Suède' },
+  { code: 'DK', name: 'Danemark' },
+  { code: 'NO', name: 'Norvège' },
+  { code: 'FI', name: 'Finlande' },
+  { code: 'IE', name: 'Irlande' },
+  { code: 'HR', name: 'Croatie' },
+  { code: 'RS', name: 'Serbie' },
+  { code: 'UA', name: 'Ukraine' },
+  { code: 'RU', name: 'Russie' },
+  { code: 'TR', name: 'Turquie' },
+  { code: 'MA', name: 'Maroc' },
+  { code: 'TN', name: 'Tunisie' },
+  { code: 'DZ', name: 'Algérie' },
+  { code: 'SN', name: 'Sénégal' },
+  { code: 'CI', name: "Côte d'Ivoire" },
+  { code: 'CM', name: 'Cameroun' },
+  { code: 'US', name: 'États-Unis' },
+  { code: 'MX', name: 'Mexique' },
+  { code: 'BR', name: 'Brésil' },
+  { code: 'AR', name: 'Argentine' },
+  { code: 'CO', name: 'Colombie' },
+  { code: 'CN', name: 'Chine' },
+  { code: 'JP', name: 'Japon' },
+  { code: 'KR', name: 'Corée du Sud' },
+  { code: 'IN', name: 'Inde' },
+  { code: 'AU', name: 'Australie' },
+  { code: 'NZ', name: 'Nouvelle-Zélande' },
+  { code: 'ZA', name: 'Afrique du Sud' },
+  { code: 'AE', name: 'Émirats arabes unis' },
+  { code: 'SA', name: 'Arabie saoudite' },
+  { code: 'IL', name: 'Israël' },
+  { code: 'MU', name: 'Maurice' },
+  { code: 'RE', name: 'Réunion' },
+  { code: 'GP', name: 'Guadeloupe' },
+  { code: 'MQ', name: 'Martinique' },
+  { code: 'GF', name: 'Guyane' },
+  { code: 'NC', name: 'Nouvelle-Calédonie' },
+  { code: 'PF', name: 'Polynésie française' },
+]
+
 const EMPTY_SEJOUR: Omit<SejourData, 'voyageur_id'> = {
   logement: '', date_arrivee: '', date_depart: '',
   montant: null, contrat_statut: 'nouveau',
   contrat_date_signature: null, contrat_lien: null,
+  contrat_plateforme: null,
 }
 
 // Aesthetic calendar date picker (popup)
@@ -421,6 +493,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const [tags, setTags] = useState<string[]>(voyageur.tags ?? [])
   const [tagInput, setTagInput] = useState('')
   const [source, setSource] = useState<string | null>(voyageur.source ?? null)
+  const [nationalite, setNationalite] = useState<string | null>(voyageur.nationalite ?? null)
+  const [natOpen, setNatOpen] = useState(false)
+  const [natSearch, setNatSearch] = useState('')
   const [idVerifie, setIdVerifie] = useState<boolean>(voyageur.id_verifie ?? false)
   const [idType, setIdType] = useState<string | null>(voyageur.id_type ?? null)
   const [idUrl, setIdUrl] = useState<string>(voyageur.id_url ?? '')
@@ -456,6 +531,12 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   function handleSourceChange(s: string | null) {
     setSource(s)
     persistField({ source: s })
+  }
+  function handleNationaliteChange(code: string | null) {
+    setNationalite(code)
+    setNatOpen(false)
+    setNatSearch('')
+    persistField({ nationalite: code })
   }
   function handleNotePriveeChange(n: number | null) {
     setNotePrivee(n)
@@ -706,6 +787,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       contrat_statut: s.contrat_statut,
       contrat_date_signature: s.contrat_date_signature,
       contrat_lien: s.contrat_lien,
+      contrat_plateforme: s.contrat_plateforme,
     })
     setSejourError('')
     setEditSejour(s)
@@ -1227,6 +1309,123 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         </div>
       </div>
 
+      {/* ── Nationalité ── */}
+      <div style={s.section} className="fade-up">
+        <div style={s.sectionHeader}>
+          <div style={s.sectionTitle}>🌍 Nationalité</div>
+          {nationalite && (
+            <button
+              onClick={() => handleNationaliteChange(null)}
+              style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '11px', padding: '2px 6px' }}
+            >
+              Effacer
+            </button>
+          )}
+        </div>
+        <div style={{ position: 'relative' }}>
+          <button
+            type="button"
+            onClick={() => { setNatOpen(o => !o); setNatSearch('') }}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+              padding: '9px 12px', borderRadius: '10px', fontFamily: 'inherit',
+              border: `1px solid ${natOpen ? 'var(--accent-border)' : 'var(--border)'}`,
+              background: natOpen ? 'var(--accent-bg)' : 'var(--surface)',
+              cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
+            }}
+          >
+            {nationalite ? (
+              <>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  width: '28px', height: '20px', borderRadius: '4px', flexShrink: 0,
+                  background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
+                  fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+                  color: 'var(--accent-text)', fontFamily: 'monospace',
+                }}>
+                  {nationalite}
+                </span>
+                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--text)', flex: 1 }}>
+                  {COUNTRIES.find(c => c.code === nationalite)?.name ?? nationalite}
+                </span>
+              </>
+            ) : (
+              <span style={{ fontSize: '13px', color: 'var(--text-muted)', flex: 1 }}>
+                Sélectionner un pays…
+              </span>
+            )}
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>▾</span>
+          </button>
+
+          {natOpen && (
+            <div style={{
+              position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 50,
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderRadius: '12px', boxShadow: '0 12px 36px rgba(0,0,0,0.35)',
+              overflow: 'hidden',
+            }}>
+              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border)' }}>
+                <input
+                  autoFocus
+                  value={natSearch}
+                  onChange={e => setNatSearch(e.target.value)}
+                  placeholder="Rechercher un pays…"
+                  style={{
+                    width: '100%', padding: '6px 10px', borderRadius: '7px',
+                    border: '1px solid var(--border)', background: 'var(--bg-2)',
+                    color: 'var(--text)', fontSize: '12.5px', fontFamily: 'inherit', outline: 'none',
+                    boxSizing: 'border-box' as const,
+                  }}
+                />
+              </div>
+              <div style={{ maxHeight: '220px', overflowY: 'auto' }}>
+                {COUNTRIES.filter(c =>
+                  c.name.toLowerCase().includes(natSearch.toLowerCase()) ||
+                  c.code.toLowerCase().includes(natSearch.toLowerCase())
+                ).map(c => {
+                  const active = nationalite === c.code
+                  return (
+                    <button
+                      key={c.code}
+                      type="button"
+                      onClick={() => handleNationaliteChange(c.code)}
+                      style={{
+                        width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+                        padding: '8px 12px', border: 'none', background: active ? 'var(--accent-bg)' : 'transparent',
+                        cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', transition: 'background 0.1s',
+                      }}
+                    >
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                        width: '28px', height: '20px', borderRadius: '4px', flexShrink: 0,
+                        background: active ? 'var(--accent-bg-2)' : 'var(--surface-2)',
+                        border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
+                        fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+                        color: active ? 'var(--accent-text)' : 'var(--text-muted)',
+                        fontFamily: 'monospace',
+                      }}>
+                        {c.code}
+                      </span>
+                      <span style={{ fontSize: '13px', color: active ? 'var(--accent-text)' : 'var(--text)', fontWeight: active ? 600 : 400 }}>
+                        {c.name}
+                      </span>
+                    </button>
+                  )
+                })}
+                {COUNTRIES.filter(c =>
+                  c.name.toLowerCase().includes(natSearch.toLowerCase()) ||
+                  c.code.toLowerCase().includes(natSearch.toLowerCase())
+                ).length === 0 && (
+                  <div style={{ padding: '14px 12px', fontSize: '12.5px', color: 'var(--text-muted)', textAlign: 'center' }}>
+                    Aucun pays trouvé
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* ── Vérification & sécurité ── */}
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
@@ -1458,6 +1657,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     <span style={{ ...s.metaChip, color: ct.color, background: ct.bg }}>
                       <Seal size={12} />
                       {ct.label}
+                      {sj.contrat_plateforme && PLATFORM_LABELS[sj.contrat_plateforme] && (
+                        <> · {PLATFORM_LABELS[sj.contrat_plateforme].label}</>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -1859,30 +2061,101 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               </div>
               <div style={s.field}>
                 <label style={s.label}>Statut contrat</label>
-                <select
-                  value={sejourForm.contrat_statut}
-                  onChange={e => setSejourForm(f => ({ ...f, contrat_statut: e.target.value as SejourData['contrat_statut'] }))}
-                  style={{ ...s.inputWrap, cursor: 'pointer' }}
-                >
-                  <option value="nouveau">Nouveau</option>
-                  <option value="en_attente">En attente</option>
-                  <option value="signe">Signé</option>
-                </select>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  {(['nouveau', 'en_attente', 'signe'] as const).map(val => {
+                    const labels = { nouveau: 'Nouveau', en_attente: 'En attente', signe: 'Signé' }
+                    const active = sejourForm.contrat_statut === val
+                    return (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setSejourForm(f => ({ ...f, contrat_statut: val, contrat_plateforme: val === 'signe' ? f.contrat_plateforme : null }))}
+                        style={{
+                          flex: 1, padding: '8px 4px', fontSize: '12.5px', fontWeight: 600,
+                          borderRadius: '9px', border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
+                          background: active ? 'var(--accent-bg)' : 'var(--surface)',
+                          color: active ? 'var(--accent-text)' : 'var(--text-2)',
+                          cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+                        }}
+                      >
+                        {labels[val]}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
               {sejourForm.contrat_statut === 'signe' && (
-                <div style={s.formRow}>
+                <>
                   <div style={s.field}>
-                    <label style={s.label}>Date de signature</label>
-                    <CalendarInput value={sejourForm.contrat_date_signature ?? ''} onChange={v => setSejourForm(f => ({ ...f, contrat_date_signature: v || null }))} />
-                  </div>
-                  <div style={s.field}>
-                    <label style={s.label}>Lien contrat</label>
-                    <div style={s.inputWrap}>
-                      <LinkIcon size={15} color="var(--text-muted)" />
-                      <input style={s.input} type="url" value={sejourForm.contrat_lien ?? ''} onChange={e => setSejourForm(f => ({ ...f, contrat_lien: e.target.value || null }))} placeholder="https://…" />
+                    <label style={s.label}>Signé via</label>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      {(['jason', 'plateforme'] as const).map(via => {
+                        const active = via === 'plateforme' ? !!sejourForm.contrat_plateforme : !sejourForm.contrat_plateforme
+                        return (
+                          <button
+                            key={via}
+                            type="button"
+                            onClick={() => setSejourForm(f => ({
+                              ...f,
+                              contrat_plateforme: via === 'plateforme' ? (f.contrat_plateforme ?? 'booking') : null,
+                            }))}
+                            style={{
+                              flex: 1, padding: '8px 4px', fontSize: '12.5px', fontWeight: 600,
+                              borderRadius: '9px', border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
+                              background: active ? 'var(--accent-bg)' : 'var(--surface)',
+                              color: active ? 'var(--accent-text)' : 'var(--text-2)',
+                              cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+                            }}
+                          >
+                            {via === 'jason' ? '✍️ Contrat Jason' : '🌐 Plateforme'}
+                          </button>
+                        )
+                      })}
                     </div>
                   </div>
-                </div>
+                  {sejourForm.contrat_plateforme !== undefined && sejourForm.contrat_plateforme !== null ? (
+                    <div style={s.field}>
+                      <label style={s.label}>Plateforme</label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
+                        {Object.entries(PLATFORM_LABELS).map(([key, def]) => {
+                          const active = sejourForm.contrat_plateforme === key
+                          return (
+                            <button
+                              key={key}
+                              type="button"
+                              onClick={() => setSejourForm(f => ({ ...f, contrat_plateforme: key }))}
+                              style={{
+                                display: 'inline-flex', alignItems: 'center', gap: '5px',
+                                padding: '5px 10px', fontSize: '12px', fontWeight: 500,
+                                borderRadius: '100px', fontFamily: 'inherit', cursor: 'pointer',
+                                border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
+                                background: active ? 'var(--accent-bg)' : 'var(--surface)',
+                                color: active ? 'var(--accent-text)' : 'var(--text-2)',
+                                transition: 'all 0.12s',
+                              }}
+                            >
+                              <span>{def.icon}</span>{def.label}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={s.formRow}>
+                      <div style={s.field}>
+                        <label style={s.label}>Date de signature</label>
+                        <CalendarInput value={sejourForm.contrat_date_signature ?? ''} onChange={v => setSejourForm(f => ({ ...f, contrat_date_signature: v || null }))} />
+                      </div>
+                      <div style={s.field}>
+                        <label style={s.label}>Lien contrat</label>
+                        <div style={s.inputWrap}>
+                          <LinkIcon size={15} color="var(--text-muted)" />
+                          <input style={s.input} type="url" value={sejourForm.contrat_lien ?? ''} onChange={e => setSejourForm(f => ({ ...f, contrat_lien: e.target.value || null }))} placeholder="https://…" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
               {sejourError && <p style={s.error}>{sejourError}</p>}
               <div style={s.formActions}>

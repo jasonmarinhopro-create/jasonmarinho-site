@@ -33,7 +33,28 @@ function lastStay(sejours: Sejour[]): string | null {
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-const EMPTY_FORM: VoyageurData = { prenom: '', nom: '', email: '', telephone: '', notes: '' }
+const COUNTRIES: { code: string; name: string }[] = [
+  { code: 'FR', name: 'France' }, { code: 'BE', name: 'Belgique' }, { code: 'CH', name: 'Suisse' },
+  { code: 'LU', name: 'Luxembourg' }, { code: 'CA', name: 'Canada' }, { code: 'MC', name: 'Monaco' },
+  { code: 'DE', name: 'Allemagne' }, { code: 'ES', name: 'Espagne' }, { code: 'IT', name: 'Italie' },
+  { code: 'PT', name: 'Portugal' }, { code: 'GB', name: 'Royaume-Uni' }, { code: 'NL', name: 'Pays-Bas' },
+  { code: 'AT', name: 'Autriche' }, { code: 'PL', name: 'Pologne' }, { code: 'CZ', name: 'Tchéquie' },
+  { code: 'RO', name: 'Roumanie' }, { code: 'HU', name: 'Hongrie' }, { code: 'GR', name: 'Grèce' },
+  { code: 'SE', name: 'Suède' }, { code: 'DK', name: 'Danemark' }, { code: 'NO', name: 'Norvège' },
+  { code: 'FI', name: 'Finlande' }, { code: 'IE', name: 'Irlande' }, { code: 'HR', name: 'Croatie' },
+  { code: 'RS', name: 'Serbie' }, { code: 'UA', name: 'Ukraine' }, { code: 'RU', name: 'Russie' },
+  { code: 'TR', name: 'Turquie' }, { code: 'MA', name: 'Maroc' }, { code: 'TN', name: 'Tunisie' },
+  { code: 'DZ', name: 'Algérie' }, { code: 'SN', name: 'Sénégal' }, { code: 'CI', name: "Côte d'Ivoire" },
+  { code: 'CM', name: 'Cameroun' }, { code: 'US', name: 'États-Unis' }, { code: 'MX', name: 'Mexique' },
+  { code: 'BR', name: 'Brésil' }, { code: 'AR', name: 'Argentine' }, { code: 'CO', name: 'Colombie' },
+  { code: 'CN', name: 'Chine' }, { code: 'JP', name: 'Japon' }, { code: 'KR', name: 'Corée du Sud' },
+  { code: 'IN', name: 'Inde' }, { code: 'AU', name: 'Australie' }, { code: 'NZ', name: 'Nouvelle-Zélande' },
+  { code: 'ZA', name: 'Afrique du Sud' }, { code: 'AE', name: 'Émirats arabes unis' },
+  { code: 'MU', name: 'Maurice' }, { code: 'RE', name: 'Réunion' }, { code: 'GP', name: 'Guadeloupe' },
+  { code: 'MQ', name: 'Martinique' }, { code: 'PF', name: 'Polynésie française' },
+]
+
+const EMPTY_FORM: VoyageurData = { prenom: '', nom: '', email: '', telephone: '', notes: '', nationalite: null }
 
 interface Props {
   voyageurs: Voyageur[]
@@ -50,6 +71,8 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
   const [formError, setFormError] = useState('')
   const [signaleAlert, setSignaleAlert] = useState<{ count: number; motifs?: string[] } | null>(null)
   const [allowDespiteSignal, setAllowDespiteSignal] = useState(false)
+  const [natOpen, setNatOpen] = useState(false)
+  const [natSearch, setNatSearch] = useState('')
 
   // Filtres + tri + vue
   const [filter, setFilter] = useState<'all' | 'recurrents' | 'a-venir' | 'signales' | 'bloques'>('all')
@@ -107,12 +130,13 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
     setForm(EMPTY_FORM)
     setFormError('')
     setEditTarget(null)
+    setNatOpen(false); setNatSearch('')
     setModal('add')
   }
 
   function openEdit(v: Voyageur, e: React.MouseEvent) {
     e.stopPropagation()
-    setForm({ prenom: v.prenom, nom: v.nom, email: v.email ?? '', telephone: v.telephone ?? '', notes: v.notes ?? '' })
+    setForm({ prenom: v.prenom, nom: v.nom, email: v.email ?? '', telephone: v.telephone ?? '', notes: v.notes ?? '', nationalite: (v as any).nationalite ?? null })
     setFormError('')
     setEditTarget(v)
     setModal('edit')
@@ -575,6 +599,111 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                     onChange={e => setForm(f => ({ ...f, telephone: e.target.value }))}
                     placeholder="+33 6 12 34 56 78"
                   />
+                </div>
+              </div>
+
+              {/* Nationalité */}
+              <div style={s.field}>
+                <label style={s.label}>Nationalité</label>
+                <div style={{ position: 'relative' }}>
+                  <button
+                    type="button"
+                    onClick={() => { setNatOpen(o => !o); setNatSearch('') }}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+                      padding: '9px 12px', borderRadius: '10px', fontFamily: 'inherit',
+                      border: `1px solid ${natOpen ? 'var(--accent-border)' : 'var(--border)'}`,
+                      background: natOpen ? 'var(--accent-bg)' : 'var(--surface)',
+                      cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
+                    }}
+                  >
+                    {form.nationalite ? (
+                      <>
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          width: '28px', height: '20px', borderRadius: '4px', flexShrink: 0,
+                          background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
+                          fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+                          color: 'var(--accent-text)', fontFamily: 'monospace',
+                        }}>
+                          {form.nationalite}
+                        </span>
+                        <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--text)', flex: 1 }}>
+                          {COUNTRIES.find(c => c.code === form.nationalite)?.name ?? form.nationalite}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={e => { e.stopPropagation(); setForm(f => ({ ...f, nationalite: null })) }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '0 2px', display: 'flex' }}
+                        >
+                          <X size={13} />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)', flex: 1 }}>Sélectionner un pays…</span>
+                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>▾</span>
+                      </>
+                    )}
+                  </button>
+
+                  {natOpen && (
+                    <div style={{
+                      position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 50,
+                      background: 'var(--surface)', border: '1px solid var(--border)',
+                      borderRadius: '12px', boxShadow: '0 12px 36px rgba(0,0,0,0.35)', overflow: 'hidden',
+                    }}>
+                      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border)' }}>
+                        <input
+                          autoFocus
+                          value={natSearch}
+                          onChange={e => setNatSearch(e.target.value)}
+                          placeholder="Rechercher un pays…"
+                          style={{
+                            width: '100%', padding: '6px 10px', borderRadius: '7px',
+                            border: '1px solid var(--border)', background: 'var(--bg-2)',
+                            color: 'var(--text)', fontSize: '12.5px', fontFamily: 'inherit', outline: 'none',
+                            boxSizing: 'border-box' as const,
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                        {COUNTRIES.filter(c =>
+                          c.name.toLowerCase().includes(natSearch.toLowerCase()) ||
+                          c.code.toLowerCase().includes(natSearch.toLowerCase())
+                        ).map(c => {
+                          const active = form.nationalite === c.code
+                          return (
+                            <button
+                              key={c.code}
+                              type="button"
+                              onClick={() => { setForm(f => ({ ...f, nationalite: c.code })); setNatOpen(false); setNatSearch('') }}
+                              style={{
+                                width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+                                padding: '8px 12px', border: 'none',
+                                background: active ? 'var(--accent-bg)' : 'transparent',
+                                cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+                              }}
+                            >
+                              <span style={{
+                                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                width: '28px', height: '20px', borderRadius: '4px', flexShrink: 0,
+                                background: active ? 'var(--accent-bg-2)' : 'var(--surface-2)',
+                                border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
+                                fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+                                color: active ? 'var(--accent-text)' : 'var(--text-muted)', fontFamily: 'monospace',
+                              }}>
+                                {c.code}
+                              </span>
+                              <span style={{ fontSize: '13px', color: active ? 'var(--accent-text)' : 'var(--text)', fontWeight: active ? 600 : 400 }}>
+                                {c.name}
+                              </span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

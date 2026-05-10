@@ -27,7 +27,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
       .single(),
     supabase
       .from('sejours')
-      .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien')
+      .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien, contrat_plateforme')
       .eq('voyageur_id', id)
       .eq('user_id', profile.userId)
       .order('date_arrivee', { ascending: false }),
