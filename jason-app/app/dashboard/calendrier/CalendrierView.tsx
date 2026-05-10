@@ -634,6 +634,30 @@ export default function CalendrierView({
   const [editing,  setEditing]  = useState<CalEvent | null>(null)
   const [isPending, startT]     = useTransition()
 
+  // Auto-sync iCal feeds au montage si dernière sync > 15 min (ou jamais).
+  // Fire-and-forget : la page s'affiche immédiatement, refresh quand la sync est finie.
+  const autoSyncTriggered = useRef(false)
+  useEffect(() => {
+    if (autoSyncTriggered.current) return
+    autoSyncTriggered.current = true
+    if (icalFeeds.length === 0) return
+    const STALE_MS = 15 * 60 * 1000
+    const nowTs = Date.now()
+    const stale = icalFeeds.filter(f => {
+      if (!f.last_synced) return true
+      return nowTs - new Date(f.last_synced).getTime() > STALE_MS
+    })
+    if (stale.length === 0) return
+    ;(async () => {
+      let didSync = false
+      await Promise.all(stale.map(async f => {
+        const res = await syncIcalFeed(f.id)
+        if (res.synced) didSync = true
+      }))
+      if (didSync) router.refresh()
+    })()
+  }, [icalFeeds, router])
+
   // form fields
   const [fTitle,   setFTitle]   = useState('')
   const [fStart,   setFStart]   = useState('')

@@ -152,6 +152,20 @@ export async function fetchAndUpsertIcalFeed(
       )
     if (upsertErr) return { error: upsertErr.message }
 
+    // Nettoyage : supprime les events qui ne sont plus dans le feed (résa annulée
+    // côté plateforme). Sans ça, les fantômes restent dans le calendrier à vie.
+    const validUids = new Set(parsed.map(e => e.uid))
+    const { data: existing } = await supabase
+      .from('ical_events')
+      .select('id, uid')
+      .eq('feed_id', feedId)
+    const toDelete = (existing ?? [])
+      .filter(e => !validUids.has(e.uid))
+      .map(e => e.id)
+    if (toDelete.length > 0) {
+      await supabase.from('ical_events').delete().in('id', toDelete)
+    }
+
     await supabase
       .from('ical_feeds')
       .update({ last_synced: new Date().toISOString() })
