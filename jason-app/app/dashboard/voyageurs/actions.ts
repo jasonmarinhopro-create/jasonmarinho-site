@@ -37,6 +37,8 @@ export type SejourData = {
   contrat_statut: 'signe' | 'en_attente' | 'non_requis' | 'nouveau' // non_requis conservé pour compatibilité avec les anciens séjours
   contrat_date_signature?: string | null
   contrat_lien?: string | null
+  /** Platform that signed the contract: null = signed via Jason */
+  contrat_plateforme?: string | null
 }
 
 async function getSession() {
