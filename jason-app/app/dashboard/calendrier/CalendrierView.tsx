@@ -633,7 +633,7 @@ export default function CalendrierView({
   const [activeSource, setActiveSource] = useState<string | null>(null) // null = all, 'internal', or feed_color
   const [search, setSearch] = useState('')
   const [quickAdd, setQuickAdd] = useState('')
-  const [drawerOpen, setDrawerOpen] = useState(true)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   // Si la page est ouverte avec ?logement=X (depuis fiche détail), pré-remplir la recherche
   useEffect(() => {
@@ -1018,6 +1018,7 @@ export default function CalendrierView({
       if (c.type === 'arrivee') expandRange(c.date_arrivee, c.date_depart)
     })
     icalEvents.forEach(e => expandRange(e.start_date, e.end_date))
+    sejourEvents.forEach(s => expandRange(s.date_arrivee, s.date_depart))
     const occupationPct = Math.round((occupiedDays.size / monthDays) * 100)
 
     return {
@@ -1026,7 +1027,7 @@ export default function CalendrierView({
       monthEvents: monthEvents + customMonth,
       occupationPct, occupiedDays: occupiedDays.size, monthDays,
     }
-  }, [contractEvents, events, icalEvents, year, month])
+  }, [contractEvents, events, icalEvents, sejourEvents, year, month])
 
   // ── Prochain événement à venir
   const nextUpcoming = useMemo(() => {
@@ -1503,7 +1504,15 @@ export default function CalendrierView({
             </span>
           )
         }
-        if (parts.length === 0) return null
+        parts.push(
+          <span key="occ" style={s.miniStat}>
+            <span style={s.miniStatLabel}>Occupation {MONTHS_FR[month].toLowerCase()}</span>
+            <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : undefined }}>
+              {headerStats.occupationPct}%
+            </span>
+            <span style={s.miniStatLabel}>({headerStats.occupiedDays}/{headerStats.monthDays}j)</span>
+          </span>
+        )
         const withSeparators: React.ReactNode[] = []
         parts.forEach((p, i) => {
           if (i > 0) withSeparators.push(<span key={`sep-${i}`} style={s.miniStatSep}>·</span>)

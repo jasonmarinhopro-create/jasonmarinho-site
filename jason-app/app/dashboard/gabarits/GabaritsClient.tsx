@@ -394,7 +394,7 @@ export default function GabaritsClient({
   const allFacebookTemplates = templates.filter(t => t.category === 'facebook')
 
   const isMesMessagesView = activeFilter === 'mes-messages'
-  const isSingleSection   = !['mes-messages', 'all', 'favorites', 'facebook'].includes(activeFilter)
+  const isSingleSection   = !['mes-messages', 'all', 'favorites'].includes(activeFilter)
 
   return (
     <>
@@ -422,6 +422,7 @@ export default function GabaritsClient({
           {([
             { key: 'mes-messages', label: '🌟 Ma séquence', bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
             { key: 'all',          label: '💡 Inspirations' },
+            { key: 'facebook',     label: '📣 Posts & annonces', color: FACEBOOK_CONFIG.color, bg: `${FACEBOOK_CONFIG.color}14`, borderColor: `${FACEBOOK_CONFIG.color}35` },
           ] as { key: FilterKey; label: string; count?: number; color?: string; bg?: string; borderColor?: string }[]).map(f => (
             <button
               key={f.key}

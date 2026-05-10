@@ -29,11 +29,12 @@ const navGroups = [
     ],
   },
   {
-    label: 'Gestion',
+    label: 'Pilotage',
     items: [
+      { href: '/dashboard/calendrier',   label: 'Calendrier',        icon: CalendarBlank },
       { href: '/dashboard/logements',    label: 'Mes Logements',     icon: House },
       { href: '/dashboard/voyageurs',    label: 'Mes Voyageurs',     icon: Users },
-      { href: '/dashboard/calendrier',   label: 'Calendrier',        icon: CalendarBlank },
+      { href: '/dashboard/gabarits',     label: 'Messages',          icon: FileText },
       { href: '/dashboard/revenus',      label: 'Revenus',           icon: ChartBar },
       { href: '/dashboard/performances', label: 'Performances',      icon: ChartLineUp },
     ],
@@ -42,10 +43,9 @@ const navGroups = [
     label: 'Outils',
     items: [
       { href: '/dashboard/simulateurs',         label: 'Simulateurs',       icon: Calculator },
-      { href: '/dashboard/audit-gbp',          label: 'Audit GBP',         icon: MagnifyingGlass },
-      { href: '/dashboard/gabarits',           label: 'Gabarits',          icon: FileText },
-      { href: '/dashboard/outils-impression',  label: 'QR & Affiches',     icon: Printer },
-      { href: '/dashboard/securite',           label: 'Sécurité Voyageur', icon: ShieldCheck },
+      { href: '/dashboard/audit-gbp',           label: 'Audit GBP',         icon: MagnifyingGlass },
+      { href: '/dashboard/outils-impression',   label: 'QR & Affiches',     icon: Printer },
+      { href: '/dashboard/securite',            label: 'Sécurité Voyageur', icon: ShieldCheck },
     ],
   },
   {
