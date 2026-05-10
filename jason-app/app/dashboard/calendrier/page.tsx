@@ -1,12 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import dynamic from 'next/dynamic'
-import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
-
-const CalendrierView = dynamic(() => import('./CalendrierView'), {
-  ssr: false,
-  loading: () => <DashboardSkeleton />,
-})
+import CalendrierView from './CalendrierView'
 
 export interface ContractEvent {
   id: string

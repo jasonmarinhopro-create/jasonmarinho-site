@@ -1,14 +1,8 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import dynamic from 'next/dynamic'
-import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 import { notFound } from 'next/navigation'
 import TitleSetter from '@/components/layout/TitleSetter'
-
-const VoyageurDetail = dynamic(() => import('./VoyageurDetail'), {
-  ssr: false,
-  loading: () => <DashboardSkeleton />,
-})
+import VoyageurDetail from './VoyageurDetail'
 
 export default async function VoyageurPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
