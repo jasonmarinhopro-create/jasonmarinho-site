@@ -42,7 +42,7 @@ export interface IcalEvent {
 
 export interface SejourEvent {
   id: string
-  voyageur_id: string
+  voyageur_id: string | null
   voyageur_label: string
   logement_label: string
   date_arrivee: string
@@ -151,10 +151,10 @@ export default async function CalendrierPage() {
       const v = s.voyageurs as { prenom?: string; nom?: string } | null
       const voyageurLabel = v
         ? `${v.prenom ?? ''} ${v.nom ?? ''}`.trim() || 'Voyageur'
-        : 'Voyageur'
+        : s.voyageur_id ? 'Voyageur' : 'Privé'
       return {
         id: s.id,
-        voyageur_id: s.voyageur_id,
+        voyageur_id: s.voyageur_id ?? null,
         voyageur_label: voyageurLabel,
         logement_label: s.logement ?? 'Logement',
         date_arrivee: s.date_arrivee,

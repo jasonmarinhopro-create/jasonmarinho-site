@@ -301,7 +301,7 @@ function ListView({ byDate, today, icalFeeds, onSelect, onSelectSejour }: ListVi
         color: CAT.sejour.color,
         subtitle: `Du ${s.date_arrivee} au ${s.date_depart}${s.montant ? ` · ${s.montant} €` : ''}`,
         tag: 'Séjour',
-        onClick: () => onSelectSejour(s.voyageur_id),
+        onClick: () => { if (s.voyageur_id) onSelectSejour(s.voyageur_id) },
       })
     })
     day.ical.forEach(e => {
@@ -462,16 +462,18 @@ const lvs: Record<string, React.CSSProperties> = {
 // ─── Searchable combobox for voyageur / logement ─────────────────────────────
 
 function SearchableCombobox({
-  options, value, onChange, placeholder, autoFocus,
+  options, value, onChange, placeholder, autoFocus, allowClear,
 }: {
   options: Array<{ id: string; label: string }>
   value: string
   onChange: (id: string) => void
   placeholder: string
   autoFocus?: boolean
+  allowClear?: boolean
 }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
+  const [hovered, setHovered] = useState<string | null>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -498,9 +500,14 @@ function SearchableCombobox({
     setQuery('')
   }
 
+  function handleClear(e: React.MouseEvent) {
+    e.stopPropagation()
+    onChange('')
+    setQuery('')
+  }
+
   function handleTriggerClick() {
     setOpen(true)
-    // On next tick, focus the input inside
     setTimeout(() => inputRef.current?.focus(), 0)
   }
 
@@ -511,13 +518,13 @@ function SearchableCombobox({
         style={{
           display: 'flex', alignItems: 'center', gap: '8px',
           padding: '9px 12px',
-          background: 'var(--surface)',
-          border: `1px solid ${open ? 'var(--accent-text)' : 'var(--border)'}`,
+          background: 'var(--bg-2)',
+          border: `1.5px solid ${open ? 'var(--accent-text)' : value ? 'var(--accent-border)' : 'var(--border)'}`,
           borderRadius: '10px',
           cursor: 'text',
           minHeight: '40px',
-          transition: 'border-color 0.15s',
-          boxShadow: open ? '0 0 0 2px rgba(var(--accent-rgb, 0,76,63), 0.10)' : 'none',
+          transition: 'border-color 0.15s, box-shadow 0.15s',
+          boxShadow: open ? '0 0 0 3px var(--accent-bg-2)' : 'none',
         }}
       >
         {open ? (
@@ -539,40 +546,62 @@ function SearchableCombobox({
             {selected?.label ?? placeholder}
           </span>
         )}
-        <MagnifyingGlass size={13} weight="bold" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
+        {allowClear && selected && !open && (
+          <button
+            type="button"
+            onClick={handleClear}
+            style={{
+              border: 'none', background: 'transparent', cursor: 'pointer',
+              color: 'var(--text-3)', padding: '2px', display: 'flex', alignItems: 'center',
+            }}
+            title="Effacer"
+            aria-label="Effacer"
+          >
+            <X size={12} weight="bold" />
+          </button>
+        )}
+        <MagnifyingGlass size={13} weight="bold" style={{ color: open ? 'var(--accent-text)' : 'var(--text-3)', flexShrink: 0 }} />
       </div>
       {open && (
         <div style={{
           position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0,
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
+          background: 'var(--bg)',
+          border: '1.5px solid var(--accent-border)',
           borderRadius: '10px',
-          zIndex: 50,
-          maxHeight: '200px',
+          zIndex: 1000,
+          maxHeight: '220px',
           overflowY: 'auto',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+          boxShadow: '0 12px 32px rgba(0,0,0,0.45), 0 0 0 1px var(--accent-bg-2)',
+          padding: '4px',
         }}>
           {filtered.length === 0 ? (
             <div style={{ padding: '12px 14px', fontSize: '13px', color: 'var(--text-3)' }}>
               Aucun résultat
             </div>
-          ) : filtered.map(o => (
-            <div
-              key={o.id}
-              onMouseDown={() => handleSelect(o.id)}
-              style={{
-                padding: '10px 14px',
-                fontSize: '13.5px',
-                color: 'var(--text)',
-                background: value === o.id ? 'var(--accent-bg)' : 'transparent',
-                cursor: 'pointer',
-                fontWeight: value === o.id ? 500 : 400,
-                borderRadius: '4px',
-              }}
-            >
-              {o.label}
-            </div>
-          ))}
+          ) : filtered.map(o => {
+            const isSel = value === o.id
+            const isHov = hovered === o.id
+            return (
+              <div
+                key={o.id}
+                onMouseDown={() => handleSelect(o.id)}
+                onMouseEnter={() => setHovered(o.id)}
+                onMouseLeave={() => setHovered(null)}
+                style={{
+                  padding: '10px 12px',
+                  fontSize: '13.5px',
+                  color: isSel ? 'var(--accent-text)' : 'var(--text)',
+                  background: isSel ? 'var(--accent-bg-2)' : isHov ? 'var(--surface-2)' : 'transparent',
+                  cursor: 'pointer',
+                  fontWeight: isSel ? 600 : 400,
+                  borderRadius: '6px',
+                  transition: 'background 0.1s',
+                }}
+              >
+                {o.label}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
@@ -823,7 +852,18 @@ export default function CalendrierView({
           isStart:  s.date_arrivee >= ws,
           isEnd:    s.date_depart <= we,
           isIcal:   false,
-          onClick:  () => router.push(`/dashboard/voyageurs/${s.voyageur_id}`),
+          onClick:  () => {
+            if (s.voyageur_id) {
+              router.push(`/dashboard/voyageurs/${s.voyageur_id}`)
+            } else {
+              setSelected(s.date_arrivee)
+              setYear(Number(s.date_arrivee.slice(0, 4)))
+              setMonth(Number(s.date_arrivee.slice(5, 7)) - 1)
+              setShowForm(false)
+              setSelectedContract(null)
+              setDrawerOpen(true)
+            }
+          },
         })
       })
 
@@ -952,7 +992,7 @@ export default function CalendrierView({
           description: s.montant ? `${s.montant} €` : null,
           category: 'sejour',
           isSejour: true,
-          voyageurId: s.voyageur_id,
+          voyageurId: s.voyageur_id ?? undefined,
         })
       }
     })
@@ -1342,8 +1382,8 @@ export default function CalendrierView({
   function handleSave() {
     // Cas séjour : flow dédié (table sejours, pas calendar_events)
     if (fCat === 'sejour' && !editing) {
-      if (!fVoyageurId || !fLogementId) {
-        setSejourError('Choisis un voyageur et un logement.')
+      if (!fLogementId) {
+        setSejourError('Choisis un logement.')
         return
       }
       const startD = fStartDate || selected
@@ -1357,7 +1397,7 @@ export default function CalendrierView({
       setSejourError(null)
       startT(async () => {
         const res = await createSejourFromCalendar({
-          voyageur_id: fVoyageurId,
+          voyageur_id: fVoyageurId || null,
           logement_id: fLogementId,
           logement_nom: logement?.nom ?? 'Logement',
           date_arrivee: startD,
@@ -2308,8 +2348,9 @@ export default function CalendrierView({
           {/* ── Form */}
           {showForm && (() => {
             const isSejour = fCat === 'sejour' && !editing
-            const sejourBlocked = isSejour && (voyageurOptions.length === 0 || logementOptions.length === 0)
-            const sejourSubmitDisabled = isSejour && (!fVoyageurId || !fLogementId || isPending)
+            // Bloqué uniquement si pas de logement (le voyageur est optionnel)
+            const sejourBlocked = isSejour && logementOptions.length === 0
+            const sejourSubmitDisabled = isSejour && (!fLogementId || isPending)
             const generalSubmitDisabled = !isSejour && (!fTitle.trim() || isPending)
 
             return (
@@ -2375,21 +2416,12 @@ export default function CalendrierView({
                     Crée d'abord les bases
                   </div>
                   <div style={{ marginBottom: '12px' }}>
-                    Pour ajouter un séjour, il te faut au moins {voyageurOptions.length === 0 && 'un voyageur'}
-                    {voyageurOptions.length === 0 && logementOptions.length === 0 && ' et '}
-                    {logementOptions.length === 0 && 'un logement'}.
+                    Pour ajouter un séjour, il te faut au moins un logement.
                   </div>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    {voyageurOptions.length === 0 && (
-                      <Link href="/dashboard/voyageurs" className="btn-primary" style={{ fontSize: '12px', padding: '7px 12px' }}>
-                        + Voyageur
-                      </Link>
-                    )}
-                    {logementOptions.length === 0 && (
-                      <Link href="/dashboard/logements" className="btn-primary" style={{ fontSize: '12px', padding: '7px 12px' }}>
-                        + Logement
-                      </Link>
-                    )}
+                    <Link href="/dashboard/logements" className="btn-primary" style={{ fontSize: '12px', padding: '7px 12px' }}>
+                      + Logement
+                    </Link>
                   </div>
                 </div>
               )}
@@ -2397,13 +2429,15 @@ export default function CalendrierView({
               {isSejour && !sejourBlocked && (
                 <>
                   <div>
-                    <label style={s.fLabel}>Voyageur</label>
+                    <label style={s.fLabel}>
+                      Voyageur <span style={{ color: 'var(--text-3)', fontWeight: 400, fontSize: '11px' }}>(optionnel)</span>
+                    </label>
                     <SearchableCombobox
                       options={voyageurOptions}
                       value={fVoyageurId}
                       onChange={setFVoyageurId}
-                      placeholder="Choisir un voyageur…"
-                      autoFocus
+                      placeholder="Aucun (séjour personnel / privé)"
+                      allowClear
                     />
                   </div>
                   <div>
@@ -2413,6 +2447,7 @@ export default function CalendrierView({
                       value={fLogementId}
                       onChange={setFLogementId}
                       placeholder="Choisir un logement…"
+                      autoFocus
                     />
                   </div>
                 </>
