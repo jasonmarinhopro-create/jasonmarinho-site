@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
   Copy, Check, MagnifyingGlass, PencilSimple, X,
-  CalendarCheck, House, SunHorizon, ArrowRight, UsersThree,
+  CalendarCheck, House, SunHorizon, ArrowRight,
   Star, CaretDown, CaretUp, PushPin, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
@@ -53,7 +53,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   autre:        'Autre',
 }
 
-const FACEBOOK_CONFIG = { label: 'Posts & annonces', color: '#818CF8', icon: UsersThree }
 
 const SECTION_CONFIG: Record<TimingBucket, { label: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
   'avant-arrivee':  { label: "Avant l'arrivée",   color: 'var(--accent-text)', bg: 'var(--accent-bg)',            border: 'var(--accent-border)',          icon: CalendarCheck },
@@ -81,7 +80,7 @@ function extractVariables(text: string): string[] {
   return [...new Set(matches)]
 }
 
-type FilterKey = 'mes-messages' | 'all' | 'favorites' | TimingBucket | 'facebook'
+type FilterKey = 'mes-messages' | 'all' | 'favorites' | TimingBucket
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 interface GabaritsClientProps {
@@ -158,14 +157,8 @@ export default function GabaritsClient({
   const [toast, setToast]               = useState<string | null>(null)
 
   // ── Auto-filtre depuis ?cat= (lien depuis le calendrier) ─────────────
-  // ── ou ?filter=facebook (lien depuis la page Communauté)
   const searchParams = useSearchParams()
   useEffect(() => {
-    const filter = searchParams?.get('filter')
-    if (filter === 'facebook') {
-      setActiveFilter('facebook')
-      return
-    }
     const cat = searchParams?.get('cat')
     if (!cat) return
     const bucket = CATEGORY_TO_TIMING[cat]
@@ -366,7 +359,6 @@ export default function GabaritsClient({
 
     // Onboarding : valide l'étape "Choisis un gabarit Facebook" si le gabarit copié l'est.
     const t = templates.find(x => x.id === id)
-    if (t?.category === 'facebook') void markStepIfNotYet('fb_template_chosen')
   }
 
   async function copyWithFill() {
@@ -464,7 +456,6 @@ export default function GabaritsClient({
     if (activeFilter === 'avant-arrivee')  return getTimingBucket(t) === 'avant-arrivee' && matchesSearch
     if (activeFilter === 'pendant-sejour') return getTimingBucket(t) === 'pendant-sejour' && matchesSearch
     if (activeFilter === 'apres-depart')   return getTimingBucket(t) === 'apres-depart' && matchesSearch
-    if (activeFilter === 'facebook')       return t.category === 'facebook' && matchesSearch
     return matchesSearch
   })
 
@@ -473,7 +464,6 @@ export default function GabaritsClient({
     return acc
   }, {} as Record<TimingBucket, Template[]>)
 
-  const allFacebookTemplates = templates.filter(t => t.category === 'facebook')
 
   const isMesMessagesView = activeFilter === 'mes-messages'
   const isSingleSection   = !['mes-messages', 'all', 'favorites'].includes(activeFilter)
@@ -538,7 +528,6 @@ export default function GabaritsClient({
           {([
             { key: 'mes-messages', label: '🌟 Ma séquence', bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
             { key: 'all',          label: '💡 Inspirations' },
-            { key: 'facebook',     label: '📣 Posts & annonces', color: FACEBOOK_CONFIG.color, bg: `${FACEBOOK_CONFIG.color}14`, borderColor: `${FACEBOOK_CONFIG.color}35` },
           ] as { key: FilterKey; label: string; count?: number; color?: string; bg?: string; borderColor?: string }[]).map(f => (
             <button
               key={f.key}
@@ -742,32 +731,6 @@ export default function GabaritsClient({
         {/* Vue Inspirations (tous les gabarits) */}
         {activeFilter === 'all' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }} className="fade-up d1">
-            {(() => {
-              const fbItems = allFacebookTemplates.filter(t =>
-                !search || t.title.toLowerCase().includes(search.toLowerCase()) || t.content.toLowerCase().includes(search.toLowerCase())
-              )
-              if (!fbItems.length) return null
-              const Icon = FACEBOOK_CONFIG.icon
-              const shown = fbItems.slice(0, INITIAL_SHOW)
-              const remaining = fbItems.length - INITIAL_SHOW
-              return (
-                <div key="facebook">
-                  <SectionHeader Icon={Icon} label={FACEBOOK_CONFIG.label} color={FACEBOOK_CONFIG.color} count={fbItems.length} />
-                  <div style={s.grid}>
-                    {shown.map(t => (
-                      <TemplateCard key={t.id} template={t} customization={customizations[t.id]} copied={copied} bucket={null} onCopy={copyTemplate} onCustomize={openCustomize} />
-                    ))}
-                  </div>
-                  {remaining > 0 && (
-                    <button onClick={() => setActiveFilter('all')} style={s.seeMoreBtn}>
-                      <ArrowRight size={14} color={FACEBOOK_CONFIG.color} />
-                      <span>Voir les {remaining} autres gabarits &ldquo;{FACEBOOK_CONFIG.label}&rdquo;</span>
-                    </button>
-                  )}
-                </div>
-              )
-            })()}
-
             {TIMING_ORDER.map(bucket => {
               const items = templatesByBucket[bucket]
               if (!items.length) return null
@@ -793,7 +756,7 @@ export default function GabaritsClient({
               )
             })}
 
-            {filtered.length === 0 && allFacebookTemplates.length === 0 && (
+            {filtered.length === 0 && (
               <div style={s.empty}>
                 <MagnifyingGlass size={36} color="var(--text-muted)" />
                 <p style={s.emptyText}>Aucun gabarit pour &ldquo;{search}&rdquo;.</p>

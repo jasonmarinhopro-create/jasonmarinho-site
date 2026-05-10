@@ -31,10 +31,15 @@ export default async function GabaritsPage() {
 
   const initialFavorites = (favData ?? []).map((f: { template_id: string }) => f.template_id)
 
+  // Les templates 'facebook' sont gérés séparément dans la page Communauté
+  // (posts pour groupes Facebook). On les exclut de la page Gabarits qui ne
+  // concerne que les séquences de messages voyageur.
+  const sequencesTemplates = templates.filter(t => t.category !== 'facebook')
+
   return (
     <>
       <GabaritsClient
-        templates={templates as unknown as Template[]}
+        templates={sequencesTemplates as unknown as Template[]}
         initialFavorites={initialFavorites}
         initialCustomizations={(custData ?? []) as UserTemplateCustomization[]}
         initialPinned={(pinData ?? []) as UserPinnedTemplate[]}
