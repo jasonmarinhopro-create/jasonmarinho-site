@@ -80,7 +80,7 @@ export function CalendarInput({
         style={{
           display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
           background: 'var(--surface)',
-          border: `1px solid ${open ? '#4a7260' : 'var(--border)'}`,
+          border: `1px solid ${open ? 'var(--accent-border-2)' : 'var(--border)'}`,
           borderRadius: '10px', padding: '10px 12px',
           fontSize: '13px', color: selDate ? 'var(--text)' : 'var(--text-muted)',
           cursor: disabled ? 'default' : 'pointer', textAlign: 'left', fontFamily: 'inherit',
@@ -99,16 +99,16 @@ export function CalendarInput({
           style={{
             position: 'fixed', top: pos.top, left: pos.left, zIndex: 9999,
             minWidth: pos.width,
-            background: 'var(--bg-2, #0f2018)',
-            border: '1px solid #2a5040',
+            background: 'var(--bg-2)',
+            border: '1px solid var(--border-2)',
             borderRadius: '16px', padding: '14px 14px 10px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
+            boxShadow: 'var(--card-shadow, 0 20px 60px rgba(0,0,0,0.7))',
           }}
         >
           {/* Month nav */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
             <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth()-1, 1))} style={navBtn}>‹</button>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text, #f0ebe1)', textTransform: 'capitalize' }}>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)', textTransform: 'capitalize' }}>
               {MONTHS[month]} {year}
             </span>
             <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth()+1, 1))} style={navBtn}>›</button>
@@ -116,7 +116,7 @@ export function CalendarInput({
           {/* Day headers */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '2px' }}>
             {DAYS.map(d => (
-              <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 600, color: '#4a7260', padding: '3px 0', letterSpacing: '0.5px' }}>{d}</div>
+              <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', padding: '3px 0', letterSpacing: '0.5px' }}>{d}</div>
             ))}
           </div>
           {/* Days */}
@@ -134,10 +134,10 @@ export function CalendarInput({
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   height: '34px', borderRadius: '8px', border: 'none',
                   fontSize: '13px', fontWeight: isSel ? 700 : 400,
-                  background: isSel ? 'rgba(255,213,107,0.18)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
-                  color: isSel ? '#FFD56B' : isToday2 ? '#34D399' : '#a5c4b0',
+                  background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'var(--surface-2)' : 'transparent',
+                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--success)' : 'var(--text-2)',
                   cursor: 'pointer',
-                  outline: isSel ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
+                  outline: isSel ? '1.5px solid var(--accent-border-2)' : 'none',
                   transition: 'background 0.1s',
                 }}>{day}</button>
               )
@@ -205,7 +205,7 @@ export function TimePickerInput({
         style={{
           display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
           background: 'var(--surface)',
-          border: `1px solid ${open ? '#4a7260' : 'var(--border)'}`,
+          border: `1px solid ${open ? 'var(--accent-border-2)' : 'var(--border)'}`,
           borderRadius: '10px', padding: '9px 12px',
           fontSize: '13px', color: value ? 'var(--text)' : 'var(--text-muted)',
           cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
@@ -223,10 +223,10 @@ export function TimePickerInput({
           style={{
             position: 'fixed', top: pos.top, left: pos.left, zIndex: 9999,
             width: pos.width,
-            background: 'var(--bg-2, #0f2018)',
-            border: '1px solid #2a5040',
+            background: 'var(--bg-2)',
+            border: '1px solid var(--border-2)',
             borderRadius: '16px', padding: '12px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
+            boxShadow: 'var(--card-shadow, 0 20px 60px rgba(0,0,0,0.7))',
           }}
         >
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px', maxHeight: '220px', overflowY: 'auto' }}>
@@ -234,10 +234,10 @@ export function TimePickerInput({
               <button key={t} type="button" onClick={() => { onChange(t); setOpen(false) }} style={{
                 padding: '8px 4px', borderRadius: '8px', border: 'none',
                 fontSize: '13px', fontWeight: value === t ? 700 : 400,
-                background: value === t ? 'rgba(255,213,107,0.18)' : 'transparent',
-                color: value === t ? '#FFD56B' : '#a5c4b0',
+                background: value === t ? 'var(--accent-bg-2)' : 'transparent',
+                color: value === t ? 'var(--accent-text)' : 'var(--text-2)',
                 cursor: 'pointer',
-                outline: value === t ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
+                outline: value === t ? '1.5px solid var(--accent-border-2)' : 'none',
                 transition: 'background 0.1s',
               }}>{t}</button>
             ))}
@@ -261,8 +261,8 @@ export function TimePickerInput({
 }
 
 const navBtn: React.CSSProperties = {
-  background: 'var(--surface)', border: '1px solid #1e3d2f',
-  borderRadius: '8px', color: '#a5c4b0', fontSize: '18px',
+  background: 'var(--surface)', border: '1px solid var(--border)',
+  borderRadius: '8px', color: 'var(--text-2)', fontSize: '18px',
   width: '32px', height: '32px',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   cursor: 'pointer', lineHeight: '1',
