@@ -17,6 +17,13 @@ export interface CommunauteLogement {
   lien_driing: string | null
 }
 
+export interface SavedFacebookPost {
+  id: string
+  logement_id: string | null
+  title: string
+  content: string
+}
+
 export default async function CommunautePage() {
   const [profile, supabase, groups, templates] = await Promise.all([
     getProfile(),
@@ -27,13 +34,16 @@ export default async function CommunautePage() {
 
   let userLogementsData: { id: string; nom: string; adresse: string | null; lien_driing: string | null; lien_site_direct: string | null }[] = []
   let mems: { group_id: string; status: string }[] = []
+  let savedFbPosts: SavedFacebookPost[] = []
 
   if (profile?.userId) {
-    const [memsRes, logRes] = await Promise.all([
+    const [memsRes, logRes, postsRes] = await Promise.all([
       supabase.from('user_community_memberships').select('group_id, status').eq('user_id', profile.userId),
       // On tente avec lien_driing (migration 035). Si la migration n'est pas
       // encore appliquée, fallback gracieux sans cette colonne.
       supabase.from('logements').select('id, nom, adresse, lien_driing, lien_site_direct').eq('user_id', profile.userId).order('nom'),
+      // Posts Facebook sauvegardés (migration 036). Fallback gracieux si pas encore appliquée.
+      supabase.from('user_facebook_posts').select('id, logement_id, title, content').eq('user_id', profile.userId),
     ])
     mems = memsRes.data ?? []
     if (logRes.error) {
@@ -42,6 +52,9 @@ export default async function CommunautePage() {
       userLogementsData = (fallback.data ?? []).map(l => ({ ...l, lien_driing: null }))
     } else {
       userLogementsData = logRes.data ?? []
+    }
+    if (!postsRes.error) {
+      savedFbPosts = (postsRes.data ?? []) as SavedFacebookPost[]
     }
   }
 
@@ -78,6 +91,7 @@ export default async function CommunautePage() {
         userAdresses={userAdresses}
         facebookTemplates={facebookTemplates}
         userLogements={userLogements}
+        savedFbPosts={savedFbPosts}
       />
     </>
   )
