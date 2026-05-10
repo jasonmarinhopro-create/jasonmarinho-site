@@ -325,6 +325,22 @@ export default function CommunauteView({
         </p>
       </div>
 
+      {/* CTA Gabarits Facebook : raccourci vers les posts prêts à coller */}
+      <a href="/dashboard/gabarits?filter=facebook" style={s.fbTemplatesCta} className="fade-up">
+        <div style={s.fbTemplatesCtaIcon}>
+          <FacebookLogo size={22} color="#1877F2" weight="fill" />
+        </div>
+        <div style={s.fbTemplatesCtaBody}>
+          <div style={s.fbTemplatesCtaTitle}>Posts prêts à coller pour ces groupes</div>
+          <div style={s.fbTemplatesCtaDesc}>
+            Annonces logement, demandes de recommandation, présentation hôte… des gabarits rédigés pour gagner en visibilité dans les groupes Facebook.
+          </div>
+        </div>
+        <div style={s.fbTemplatesCtaArrow}>
+          <ArrowUpRight size={16} weight="bold" />
+        </div>
+      </a>
+
       {/* Stats banner, toujours visible */}
       <div style={s.banner} className="fade-up">
         <div style={s.bannerStat}>
@@ -556,6 +572,35 @@ export default function CommunauteView({
 const s: Record<string, React.CSSProperties> = {
   page:     { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro:    { marginBottom: '28px' },
+
+  fbTemplatesCta: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    padding: '16px 18px', marginBottom: '20px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', textDecoration: 'none', color: 'inherit',
+    transition: 'background 0.15s, border-color 0.15s, transform 0.15s',
+  },
+  fbTemplatesCtaIcon: {
+    width: '40px', height: '40px',
+    background: 'rgba(24,119,242,0.10)', borderRadius: '10px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  fbTemplatesCtaBody: { flex: 1, minWidth: 0 },
+  fbTemplatesCtaTitle: {
+    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+    marginBottom: '2px',
+  },
+  fbTemplatesCtaDesc: {
+    fontSize: '12.5px', color: 'var(--text-2)',
+    lineHeight: 1.55,
+  },
+  fbTemplatesCtaArrow: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: '32px', height: '32px',
+    color: 'var(--text-3)', flexShrink: 0,
+    transition: 'color 0.15s',
+  },
   pageTitle: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
