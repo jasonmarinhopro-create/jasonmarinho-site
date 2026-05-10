@@ -495,8 +495,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const [tagInput, setTagInput] = useState('')
   const [source, setSource] = useState<string | null>(voyageur.source ?? null)
   const [nationalite, setNationalite] = useState<string | null>(voyageur.nationalite ?? null)
-  const [natOpen, setNatOpen] = useState(false)
-  const [natSearch, setNatSearch] = useState('')
   const [idVerifie, setIdVerifie] = useState<boolean>(voyageur.id_verifie ?? false)
   const [idType, setIdType] = useState<string | null>(voyageur.id_type ?? null)
   const [idUrl, setIdUrl] = useState<string>(voyageur.id_url ?? '')
@@ -533,12 +531,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     setSource(s)
     persistField({ source: s })
   }
-  function handleNationaliteChange(code: string | null) {
-    setNationalite(code)
-    setNatOpen(false)
-    setNatSearch('')
-    persistField({ nationalite: code })
-  }
   function handleNotePriveeChange(n: number | null) {
     setNotePrivee(n)
     persistField({ note_privee: n })
@@ -573,7 +565,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   // Checklist panel
   const [expandedSejourId, setExpandedSejourId] = useState<string | null>(null)
   const [checklistData, setChecklistData] = useState<
-    Record<string, { contractId: string; items: Record<string, boolean> } | null>
+    Record<string, { contractId?: string; items: Record<string, boolean> }>
   >({})
   const [checklistLoading, setChecklistLoading] = useState<string | null>(null)
 
@@ -591,22 +583,25 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       const res = await getChecklistBySejour(sejourId)
       setChecklistData(prev => ({
         ...prev,
-        [sejourId]: res.contractId
-          ? { contractId: res.contractId, items: res.checklist ?? {} }
-          : null,
+        [sejourId]: { contractId: res.contractId, items: res.checklist ?? {} },
       }))
     } finally {
       setChecklistLoading(null)
     }
   }
 
-  async function handleChecklistToggle(sejourId: string, contractId: string, key: string, value: boolean) {
+  async function handleChecklistToggle(sejourId: string, contractId: string | undefined, key: string, value: boolean) {
     setChecklistData(prev => {
       const entry = prev[sejourId]
       if (!entry) return prev
       return { ...prev, [sejourId]: { ...entry, items: { ...entry.items, [key]: value } } }
     })
-    await updateContractChecklist(contractId, key, value)
+    if (contractId) {
+      await updateContractChecklist(contractId, key, value)
+    } else {
+      const { updateSejourChecklist } = await import('../contract-actions')
+      await updateSejourChecklist(sejourId, key, value)
+    }
   }
 
   const initials = `${voyageur.prenom[0]}${voyageur.nom[0]}`.toUpperCase()
@@ -1100,6 +1095,22 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             <>
               <div style={s.profileNameRow}>
                 <h2 style={s.profileName}>{voyageur.prenom} {voyageur.nom}</h2>
+                {nationalite && (
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                    padding: '3px 10px 3px 6px', borderRadius: '8px',
+                    background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
+                    fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)',
+                  }}>
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      width: '24px', height: '17px', borderRadius: '3px',
+                      background: 'var(--accent-border)', fontSize: '9px', fontWeight: 700,
+                      letterSpacing: '0.5px', color: 'var(--accent-text)', fontFamily: 'monospace',
+                    }}>{nationalite}</span>
+                    {COUNTRIES.find(c => c.code === nationalite)?.name ?? nationalite}
+                  </span>
+                )}
                 <button onClick={() => openProfileEdit()} style={s.editBtn}>
                   <Pencil size={14} />
                   Modifier
@@ -1429,123 +1440,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         </div>
       </div>
 
-      {/* ── Nationalité ── */}
-      <div style={s.section} className="fade-up">
-        <div style={s.sectionHeader}>
-          <div style={s.sectionTitle}>🌍 Nationalité</div>
-          {nationalite && (
-            <button
-              onClick={() => handleNationaliteChange(null)}
-              style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '11px', padding: '2px 6px' }}
-            >
-              Effacer
-            </button>
-          )}
-        </div>
-        <div style={{ position: 'relative' }}>
-          <button
-            type="button"
-            onClick={() => { setNatOpen(o => !o); setNatSearch('') }}
-            style={{
-              width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
-              padding: '9px 12px', borderRadius: '10px', fontFamily: 'inherit',
-              border: `1px solid ${natOpen ? 'var(--accent-border)' : 'var(--border)'}`,
-              background: natOpen ? 'var(--accent-bg)' : 'var(--surface)',
-              cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
-            }}
-          >
-            {nationalite ? (
-              <>
-                <span style={{
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  width: '28px', height: '20px', borderRadius: '4px', flexShrink: 0,
-                  background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
-                  fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
-                  color: 'var(--accent-text)', fontFamily: 'monospace',
-                }}>
-                  {nationalite}
-                </span>
-                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--text)', flex: 1 }}>
-                  {COUNTRIES.find(c => c.code === nationalite)?.name ?? nationalite}
-                </span>
-              </>
-            ) : (
-              <span style={{ fontSize: '13px', color: 'var(--text-muted)', flex: 1 }}>
-                Sélectionner un pays…
-              </span>
-            )}
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>▾</span>
-          </button>
-
-          {natOpen && (
-            <div style={{
-              position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 50,
-              background: 'var(--surface)', border: '1px solid var(--border)',
-              borderRadius: '12px', boxShadow: '0 12px 36px rgba(0,0,0,0.35)',
-              overflow: 'hidden',
-            }}>
-              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border)' }}>
-                <input
-                  autoFocus
-                  value={natSearch}
-                  onChange={e => setNatSearch(e.target.value)}
-                  placeholder="Rechercher un pays…"
-                  style={{
-                    width: '100%', padding: '6px 10px', borderRadius: '7px',
-                    border: '1px solid var(--border)', background: 'var(--bg-2)',
-                    color: 'var(--text)', fontSize: '12.5px', fontFamily: 'inherit', outline: 'none',
-                    boxSizing: 'border-box' as const,
-                  }}
-                />
-              </div>
-              <div style={{ maxHeight: '220px', overflowY: 'auto' }}>
-                {COUNTRIES.filter(c =>
-                  c.name.toLowerCase().includes(natSearch.toLowerCase()) ||
-                  c.code.toLowerCase().includes(natSearch.toLowerCase())
-                ).map(c => {
-                  const active = nationalite === c.code
-                  return (
-                    <button
-                      key={c.code}
-                      type="button"
-                      onClick={() => handleNationaliteChange(c.code)}
-                      style={{
-                        width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
-                        padding: '8px 12px', border: 'none', background: active ? 'var(--accent-bg)' : 'transparent',
-                        cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', transition: 'background 0.1s',
-                      }}
-                    >
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                        width: '28px', height: '20px', borderRadius: '4px', flexShrink: 0,
-                        background: active ? 'var(--accent-bg-2)' : 'var(--surface-2)',
-                        border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
-                        fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
-                        color: active ? 'var(--accent-text)' : 'var(--text-muted)',
-                        fontFamily: 'monospace',
-                      }}>
-                        {c.code}
-                      </span>
-                      <span style={{ fontSize: '13px', color: active ? 'var(--accent-text)' : 'var(--text)', fontWeight: active ? 600 : 400 }}>
-                        {c.name}
-                      </span>
-                    </button>
-                  )
-                })}
-                {COUNTRIES.filter(c =>
-                  c.name.toLowerCase().includes(natSearch.toLowerCase()) ||
-                  c.code.toLowerCase().includes(natSearch.toLowerCase())
-                ).length === 0 && (
-                  <div style={{ padding: '14px 12px', fontSize: '12.5px', color: 'var(--text-muted)', textAlign: 'center' }}>
-                    Aucun pays trouvé
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* ── Vérification & sécurité ── */}
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
@@ -1753,6 +1647,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             const cl = checklistData[sj.id]
             const doneCount = cl ? Object.values(cl.items).filter(Boolean).length : 0
             const pct = cl ? Math.round((doneCount / CL_TOTAL) * 100) : 0
+
             return (
               <div key={sj.id}>
               <div style={s.sejourRow} className="sejour-row-mobile">
@@ -1857,13 +1752,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               {/* ── Checklist panel ────────────────────────────── */}
               {isExpanded && (
                 <div style={s.clPanel}>
-                  {cl === undefined && (
+                  {cl === undefined ? (
                     <p style={s.clEmpty}>Chargement…</p>
-                  )}
-                  {cl === null && (
-                    <p style={s.clEmpty}>Aucun contrat associé à ce séjour, crée d&apos;abord un contrat pour accéder à la checklist.</p>
-                  )}
-                  {cl && (() => {
+                  ) : (() => {
                     const barColor = pct === 100 ? '#10b981' : pct >= 50 ? '#eab308' : '#f97316'
                     return (
                       <>
