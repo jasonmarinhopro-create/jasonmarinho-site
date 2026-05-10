@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest } from 'next/server'
+import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 
 function p2(n: number) { return String(n).padStart(2, '0') }
 function icalDate(s: string) { return s.replace(/-/g, '') }
@@ -69,8 +70,24 @@ export async function GET(req: NextRequest) {
   const activeContracts = (contracts ?? []).filter(c => c.statut !== 'annule')
 
   // Mode debug : ?debug=1 renvoie un JSON diagnostic au lieu du fichier iCal.
+  // ?debug=full ajoute le détail complet des events iCal et séjours (dates exactes,
+  //   feed associé, titre brut) pour diagnostiquer un jour bloqué/libre incorrect.
   // Le token est requis donc seul le propriétaire peut consulter.
-  if (req.nextUrl.searchParams.get('debug') === '1') {
+  const debugMode = req.nextUrl.searchParams.get('debug')
+  if (debugMode === '1' || debugMode === 'full') {
+    const fullEventsBase = (icalEvents ?? []).map((e: any) => {
+      const feed = (icalFeeds ?? []).find((f: any) => f.id === e.feed_id) as any
+      return {
+        id: e.id,
+        title: e.title,
+        feed_name: feed?.name ?? null,
+        start_date: e.start_date,
+        end_date: e.end_date,
+        start_time: e.start_time,
+        end_time: e.end_time,
+        description: e.description,
+      }
+    })
     return Response.json({
       user_id: uid,
       user_name: (profile as any).full_name ?? null,
@@ -88,24 +105,37 @@ export async function GET(req: NextRequest) {
         ),
         sejours_avec_dates: sejours?.length ?? 0,
         ical_events_imported: icalEvents?.length ?? 0,
+        ical_events_reservations: (icalEvents ?? []).filter(e => !isBlockedIcalEvent(e.title, e.description)).length,
+        ical_events_blocages: (icalEvents ?? []).filter(e => isBlockedIcalEvent(e.title, e.description)).length,
         ical_feeds_configured: icalFeeds?.length ?? 0,
       },
       ical_feeds: (icalFeeds ?? []).map(f => ({
+        id: (f as any).id,
         name: (f as any).name,
         last_synced: (f as any).last_synced,
       })),
-      sample_sejours: (sejours ?? []).slice(0, 3).map((s: any) => ({
-        id: s.id,
-        logement: s.logement,
-        date_arrivee: s.date_arrivee,
-        date_depart: s.date_depart,
-      })),
-      sample_contracts: activeContracts.slice(0, 3).map(c => ({
-        id: c.id,
-        statut: c.statut,
-        date_arrivee: c.date_arrivee,
-        date_depart: c.date_depart,
-      })),
+      ...(debugMode === 'full' ? {
+        all_ical_events: fullEventsBase,
+        all_sejours: (sejours ?? []).map((s: any) => ({
+          id: s.id,
+          logement: s.logement,
+          date_arrivee: s.date_arrivee,
+          date_depart: s.date_depart,
+        })),
+      } : {
+        sample_sejours: (sejours ?? []).slice(0, 3).map((s: any) => ({
+          id: s.id,
+          logement: s.logement,
+          date_arrivee: s.date_arrivee,
+          date_depart: s.date_depart,
+        })),
+        sample_contracts: activeContracts.slice(0, 3).map(c => ({
+          id: c.id,
+          statut: c.statut,
+          date_arrivee: c.date_arrivee,
+          date_depart: c.date_depart,
+        })),
+      }),
     })
   }
 
@@ -171,7 +201,15 @@ export async function GET(req: NextRequest) {
   }
 
   // ── Réservations importées depuis les feeds Airbnb/Booking/Vrbo ───────────
-  for (const e of icalEvents ?? []) {
+  // Par défaut on filtre les blocages techniques (Airbnb auto-bloque les dates
+  // > 12 mois rolling, "CLOSED - Not available" sur Booking, etc.) qui sont
+  // du bruit côté Google Agenda. Opt-in via ?includeBlocked=1 pour les garder.
+  const includeBlocked = req.nextUrl.searchParams.get('includeBlocked') === '1'
+  const exportableIcalEvents = includeBlocked
+    ? (icalEvents ?? [])
+    : (icalEvents ?? []).filter(e => !isBlockedIcalEvent(e.title, e.description))
+
+  for (const e of exportableIcalEvents) {
     lines.push('BEGIN:VEVENT')
     lines.push(`UID:imported-${e.id}@jasonmarinho.com`)
     lines.push(`DTSTAMP:${stamp}`)
