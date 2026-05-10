@@ -39,15 +39,10 @@ export async function GET(req: NextRequest) {
 
   const uid = profile.id
   const [
-    { data: events },
     { data: contracts },
     { data: sejours },
     { data: icalEvents },
   ] = await Promise.all([
-    supabase
-      .from('calendar_events')
-      .select('id, title, date, end_date, start_time, end_time, description')
-      .eq('user_id', uid),
     supabase
       .from('contracts')
       .select('id, logement_nom, date_arrivee, date_depart, sejour_id')
@@ -85,24 +80,6 @@ export async function GET(req: NextRequest) {
     'X-PUBLISHED-TTL:PT1H',
     'REFRESH-INTERVAL;VALUE=DURATION:PT1H',
   ]
-
-  // ── Events custom (créés depuis le dashboard) ─────────────────────────────
-  for (const ev of events ?? []) {
-    lines.push('BEGIN:VEVENT')
-    lines.push(`UID:custom-${ev.id}@jasonmarinho.com`)
-    lines.push(`DTSTAMP:${stamp}`)
-    if (ev.start_time) {
-      lines.push(`DTSTART;TZID=Europe/Paris:${icalDT(ev.date, ev.start_time)}`)
-      const ed = ev.end_date ?? ev.date
-      lines.push(`DTEND;TZID=Europe/Paris:${icalDT(ed, ev.end_time ?? ev.start_time)}`)
-    } else {
-      lines.push(`DTSTART;VALUE=DATE:${icalDate(ev.date)}`)
-      lines.push(`DTEND;VALUE=DATE:${nextDay(ev.end_date ?? ev.date)}`)
-    }
-    lines.push(fold(`SUMMARY:${esc(ev.title)}`))
-    if (ev.description) lines.push(fold(`DESCRIPTION:${esc(ev.description)}`))
-    lines.push('END:VEVENT')
-  }
 
   // ── Arrivées et départs depuis les contrats ───────────────────────────────
   for (const c of contracts ?? []) {
