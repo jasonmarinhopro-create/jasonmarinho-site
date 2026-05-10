@@ -120,7 +120,8 @@ export async function deleteCalendarEvent(id: string) {
 // ─── Séjours depuis le calendrier ──────────────────────────────────────────
 
 interface SejourFromCalendarInput {
-  voyageur_id: string
+  voyageur_id: string | null
+  voyageur_label_libre?: string | null
   logement_id: string
   logement_nom: string
   date_arrivee: string
@@ -150,24 +151,28 @@ export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
 
   if (error) return { error: error.message }
 
-  // Récupère le label voyageur pour le retour client
-  const { data: voyageur } = await supabase
-    .from('voyageurs')
-    .select('prenom, nom')
-    .eq('id', input.voyageur_id)
-    .eq('user_id', session.user.id)
-    .single()
+  // Récupère le label voyageur pour le retour client (uniquement si voyageur_id présent)
+  let voyageurLabel = input.voyageur_label_libre?.trim() || 'Privé'
+  if (input.voyageur_id) {
+    const { data: voyageur } = await supabase
+      .from('voyageurs')
+      .select('prenom, nom')
+      .eq('id', input.voyageur_id)
+      .eq('user_id', session.user.id)
+      .single()
+    voyageurLabel = voyageur
+      ? `${voyageur.prenom ?? ''} ${voyageur.nom ?? ''}`.trim() || 'Voyageur'
+      : 'Voyageur'
+  }
 
   revalidatePath('/dashboard/calendrier')
-  revalidatePath(`/dashboard/voyageurs/${input.voyageur_id}`)
+  if (input.voyageur_id) revalidatePath(`/dashboard/voyageurs/${input.voyageur_id}`)
 
   return {
     sejour: {
       id: row.id,
       voyageur_id: row.voyageur_id,
-      voyageur_label: voyageur
-        ? `${voyageur.prenom ?? ''} ${voyageur.nom ?? ''}`.trim() || 'Voyageur'
-        : 'Voyageur',
+      voyageur_label: voyageurLabel,
       logement_label: row.logement ?? 'Logement',
       date_arrivee: row.date_arrivee,
       date_depart: row.date_depart,
