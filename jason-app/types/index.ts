@@ -72,6 +72,16 @@ export interface UserTemplateCustomization {
   updated_at: string
 }
 
+export type TimingBucket = 'avant-arrivee' | 'pendant-sejour' | 'apres-depart'
+
+export interface UserPinnedTemplate {
+  user_id: string
+  timing_bucket: TimingBucket
+  template_id: string
+  created_at: string
+  updated_at: string
+}
+
 export interface CommunityGroup {
   id: string
   name: string
