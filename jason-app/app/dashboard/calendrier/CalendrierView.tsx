@@ -670,6 +670,8 @@ export default function CalendrierView({
   const [selRange,  setSelRange]  = useState<{ start: string; end: string } | null>(null)
   // Ref pour lire l'état d'édition courant depuis le mouseup (closure stable)
   const editingRef = useRef<CalEvent | null>(null)
+  // Ref pour lire byDate depuis le mouseup (closure stable, sync via useEffect)
+  const byDateRef = useRef<Record<string, { custom: CalEvent[]; contracts: ContractEvent[]; ical: IcalEvent[]; sejours: SejourEvent[] }>>({})
 
   // ── checklist state (contractId → { key: boolean })
   const [contractChecklists, setContractChecklists] = useState<Record<string, Record<string, boolean>>>(() =>
@@ -972,6 +974,9 @@ export default function CalendrierView({
 
     return m
   }, [filteredEvents, filteredContractEvents, filteredIcalEvents, filteredSejourEvents])
+
+  // Sync byDateRef pour le mouseup handler (sait si la date cliquée est vide ou pleine)
+  useEffect(() => { byDateRef.current = byDate }, [byDate])
 
   // ── selected day merged events (deduplicated by id)
   type Merged = CalEvent & { isContract?: boolean; isIcal?: boolean; isSejour?: boolean; feedColor?: string; feedName?: string; voyageurId?: string }
@@ -1290,7 +1295,9 @@ export default function CalendrierView({
   }
   // Document-level mouseup :
   // - click sur une bar → rien (le onClick de la bar gère l'affichage)
-  // - click simple sur cellule vide → sélectionne le jour ET ouvre le form
+  // - click simple sur cellule vide → sélectionne ET ouvre le form (priorité séjour)
+  // - click simple sur cellule pleine → sélectionne ET affiche la liste des events
+  //   (l'utilisateur clique sur "+" du panneau s'il veut créer)
   // - drag multi-jours → ouvre le formulaire pré-rempli avec la plage
   useEffect(() => {
     function onUp(e: MouseEvent) {
@@ -1304,17 +1311,32 @@ export default function CalendrierView({
       // Si le clic est sur une bar d'événement, laisser son onClick gérer
       if (target.closest('[data-bar]')) return
       if (start === cur) {
-        // Clic simple : sélectionne ET ouvre le formulaire (sauf si on édite déjà)
+        // Clic simple : sélectionne la date et ouvre le panneau
         setSelected(start)
         setSelRange(null)
         if (!editingRef.current) {
           setSelectedContract(null)
-          setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
-          setFCat('sejour'); setFDesc('')
-          resetSejourFields()
-          setFStartDate(start); setFEndDate(start)
-          setShowForm(true)
-          setDrawerOpen(true)
+          // Date vide → ouvre le formulaire de création (séjour par défaut).
+          // Date pleine → affiche juste la liste des events du jour.
+          const day = byDateRef.current[start]
+          const dayHasContent = !!day && (
+            day.sejours.length > 0 ||
+            day.contracts.length > 0 ||
+            day.ical.length > 0 ||
+            day.custom.length > 0
+          )
+          if (dayHasContent) {
+            setShowForm(false)
+            setEditing(null)
+            setDrawerOpen(true)
+          } else {
+            setEditing(null); setFTitle(''); setFStart(''); setFEnd('')
+            setFCat('sejour'); setFDesc('')
+            resetSejourFields()
+            setFStartDate(start); setFEndDate(start)
+            setShowForm(true)
+            setDrawerOpen(true)
+          }
         }
         return
       }
