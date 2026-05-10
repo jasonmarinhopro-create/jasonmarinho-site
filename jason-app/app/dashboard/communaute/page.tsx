@@ -25,12 +25,25 @@ export default async function CommunautePage() {
     getCachedTemplatesCatalog(),
   ])
 
-  const [{ data: mems }, { data: userLogementsData }] = profile?.userId
-    ? await Promise.all([
-        supabase.from('user_community_memberships').select('group_id, status').eq('user_id', profile.userId),
-        supabase.from('logements').select('id, nom, adresse, lien_driing').eq('user_id', profile.userId).order('nom'),
-      ])
-    : [{ data: [] as { group_id: string; status: string }[] }, { data: [] as { id: string; nom: string; adresse: string | null; lien_driing: string | null }[] }]
+  let userLogementsData: { id: string; nom: string; adresse: string | null; lien_driing: string | null }[] = []
+  let mems: { group_id: string; status: string }[] = []
+
+  if (profile?.userId) {
+    const [memsRes, logRes] = await Promise.all([
+      supabase.from('user_community_memberships').select('group_id, status').eq('user_id', profile.userId),
+      // On tente avec lien_driing (migration 035). Si la migration n'est pas
+      // encore appliquée, fallback gracieux sans cette colonne.
+      supabase.from('logements').select('id, nom, adresse, lien_driing').eq('user_id', profile.userId).order('nom'),
+    ])
+    mems = memsRes.data ?? []
+    if (logRes.error) {
+      // Fallback : la colonne lien_driing n'existe pas encore (migration 035 pas appliquée).
+      const fallback = await supabase.from('logements').select('id, nom, adresse').eq('user_id', profile.userId).order('nom')
+      userLogementsData = (fallback.data ?? []).map(l => ({ ...l, lien_driing: null }))
+    } else {
+      userLogementsData = logRes.data ?? []
+    }
+  }
 
   const memberships: Record<string, 'joined' | 'dismissed'> = {}
   ;(mems ?? []).forEach(m => {

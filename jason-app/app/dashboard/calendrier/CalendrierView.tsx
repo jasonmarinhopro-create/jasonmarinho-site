@@ -691,7 +691,16 @@ export default function CalendrierView({
   const exportUrl = icalTokenState ? `${appUrl}/api/calendar/feed?token=${icalTokenState}` : ''
   const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
-  const [activeSource, setActiveSource] = useState<string | null>(null) // null = all, 'internal', or feed_color
+  const [hiddenSources, setHiddenSources] = useState<Set<string>>(() => new Set())
+
+  function toggleSource(key: string) {
+    setHiddenSources(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
   const [search, setSearch] = useState('')
   const [quickAdd, setQuickAdd] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -704,7 +713,7 @@ export default function CalendrierView({
     if (logementParam) {
       setSearch(logementParam)
       setFilter('sejours')
-      setActiveSource(null)
+      setHiddenSources(new Set())
     }
   }, [])
 
@@ -905,24 +914,24 @@ export default function CalendrierView({
 
   const filteredContractEvents = useMemo(() => contractEvents.filter(c => {
     if (filter === 'menages' || filter === 'rdv-tache' || filter === 'synchro') return false
-    if (activeSource !== null && activeSource !== 'internal') return false
+    if (hiddenSources.has('internal')) return false
     if (q && !matchesSearch(c.title, c.logement_nom)) return false
     return true
-  }), [contractEvents, filter, q, activeSource])
+  }), [contractEvents, filter, q, hiddenSources])
 
   const filteredIcalEvents = useMemo(() => icalEvents.filter(e => {
     if (filter === 'menages' || filter === 'rdv-tache') return false
-    if (activeSource !== null && activeSource !== e.feed_color) return false
+    if (hiddenSources.has(e.feed_color)) return false
     if (q && !matchesSearch(e.title, e.description)) return false
     return true
-  }), [icalEvents, filter, q, activeSource])
+  }), [icalEvents, filter, q, hiddenSources])
 
   const filteredSejourEvents = useMemo(() => sejourEvents.filter(s => {
     if (filter === 'menages' || filter === 'rdv-tache' || filter === 'synchro') return false
-    if (activeSource !== null && activeSource !== 'internal') return false
+    if (hiddenSources.has('internal')) return false
     if (q && !matchesSearch(s.voyageur_label, s.logement_label)) return false
     return true
-  }), [sejourEvents, filter, q, activeSource])
+  }), [sejourEvents, filter, q, hiddenSources])
 
   // ── event index by date, multi-day events are indexed for every day they span
   const byDate = useMemo(() => {
@@ -1990,7 +1999,7 @@ export default function CalendrierView({
           ] as const).map(f => (
             <button
               key={f.id}
-              onClick={() => { setFilter(f.id); setActiveSource(null) }}
+              onClick={() => { setFilter(f.id); setHiddenSources(new Set()) }}
               className="cal-filter-chip"
               style={{
                 ...s.filterChip,
@@ -2288,45 +2297,56 @@ export default function CalendrierView({
             })}
           </div>
 
-          {/* Legend row: color per source, clickable to filter */}
+          {/* Legend row : un chip par source. Allumé = events visibles dans le calendrier.
+              Click = toggle l'affichage de CETTE source uniquement (sans toucher au reste). */}
           {(contractEvents.length > 0 || legendSources.length > 0) && (
             <div style={s.legend} className="cal-legend">
-              {contractEvents.length > 0 && (
+              {contractEvents.length > 0 && (() => {
+                const visible = !hiddenSources.has('internal')
+                return (
+                  <button
+                    type="button"
+                    onClick={() => toggleSource('internal')}
+                    style={{
+                      ...s.legendChip,
+                      ...(visible
+                        ? { background: `${CAT.arrivee.color}14`, borderColor: `${CAT.arrivee.color}55`, color: CAT.arrivee.color, fontWeight: 600 }
+                        : { opacity: 0.45, textDecoration: 'line-through' }),
+                    }}
+                    title={visible ? 'Masquer les séjours internes' : 'Afficher les séjours internes'}
+                  >
+                    <span style={{ ...s.legendDot, background: CAT.arrivee.color, opacity: visible ? 1 : 0.35 }} />
+                    Séjours
+                  </button>
+                )
+              })()}
+              {legendSources.map(src => {
+                const visible = !hiddenSources.has(src.color)
+                return (
+                  <button
+                    key={src.color}
+                    type="button"
+                    onClick={() => toggleSource(src.color)}
+                    style={{
+                      ...s.legendChip,
+                      ...(visible
+                        ? { background: `${src.color}14`, borderColor: `${src.color}55`, color: src.color, fontWeight: 600 }
+                        : { opacity: 0.45, textDecoration: 'line-through' }),
+                    }}
+                    title={visible ? `Masquer ${src.label}` : `Afficher ${src.label}`}
+                  >
+                    <span style={{ ...s.legendDot, background: src.color, opacity: visible ? 1 : 0.35 }} />
+                    {src.label}
+                  </button>
+                )
+              })}
+              {hiddenSources.size > 0 && (
                 <button
                   type="button"
-                  onClick={() => setActiveSource(v => v === 'internal' ? null : 'internal')}
-                  style={{
-                    ...s.legendChip,
-                    ...(activeSource === 'internal' ? { ...s.legendChipActive, borderColor: CAT.arrivee.color, color: CAT.arrivee.color } : {}),
-                  }}
-                  title={activeSource === 'internal' ? 'Afficher toutes les sources' : 'Filtrer : séjours internes seulement'}
-                >
-                  <span style={{ ...s.legendDot, background: CAT.arrivee.color }} />
-                  Séjours
-                </button>
-              )}
-              {legendSources.map(src => (
-                <button
-                  key={src.color}
-                  type="button"
-                  onClick={() => setActiveSource(v => v === src.color ? null : src.color)}
-                  style={{
-                    ...s.legendChip,
-                    ...(activeSource === src.color ? { ...s.legendChipActive, borderColor: src.color, color: src.color } : {}),
-                  }}
-                  title={activeSource === src.color ? 'Afficher toutes les sources' : `Filtrer : ${src.label} seulement`}
-                >
-                  <span style={{ ...s.legendDot, background: src.color }} />
-                  {src.label}
-                </button>
-              ))}
-              {activeSource !== null && (
-                <button
-                  type="button"
-                  onClick={() => setActiveSource(null)}
+                  onClick={() => setHiddenSources(new Set())}
                   style={s.legendClear}
                 >
-                  × Tout afficher
+                  × Tout réafficher
                 </button>
               )}
             </div>
