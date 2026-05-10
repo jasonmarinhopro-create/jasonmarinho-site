@@ -8,7 +8,7 @@ import {
   ArrowLeft, House, MapPin, Star, PencilSimple, ArrowSquareOut,
   CurrencyEur, Calendar as CalendarIcon, Users, TrendUp, Clock,
   WifiHigh, Key, Phone, Wrench, Sparkle, ShieldCheck,
-  Check, Copy, ArrowRight,
+  Check, Copy, ArrowRight, ChatText,
 } from '@phosphor-icons/react/dist/ssr'
 import dynamic from 'next/dynamic'
 import { EditableCard } from './EditableCard'
@@ -390,6 +390,10 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             <Link href={`/dashboard/calendrier?logement=${encodeURIComponent(l.nom)}`} style={s.btnSecondary}>
               <CalendarIcon size={14} weight="bold" />
               Calendrier de ce bien
+            </Link>
+            <Link href={`/dashboard/gabarits?logement=${l.id}`} style={s.btnSecondary}>
+              <ChatText size={14} weight="bold" />
+              Messages de ce bien
             </Link>
             <Link href={`/dashboard/revenus?logement=${encodeURIComponent(l.nom)}`} style={s.btnSecondary}>
               <CurrencyEur size={14} weight="bold" />

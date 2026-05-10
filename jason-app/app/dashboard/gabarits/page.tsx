@@ -10,11 +10,16 @@ const GabaritsClient = dynamic(() => import('./GabaritsClient'), {
   loading: () => <DashboardSkeleton />,
 })
 
+export interface LogementOption {
+  id: string
+  nom: string
+}
+
 export default async function GabaritsPage() {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   const userId = profile?.userId ?? null
 
-  const [templates, { data: favData }, { data: custData }, { data: pinData }] = await Promise.all([
+  const [templates, { data: favData }, { data: custData }, { data: pinData }, { data: logementsData }] = await Promise.all([
     getCachedTemplatesCatalog(),
     userId
       ? supabase.from('user_template_favorites').select('template_id').eq('user_id', userId)
@@ -23,8 +28,11 @@ export default async function GabaritsPage() {
       ? supabase.from('user_template_customizations').select('id, user_id, template_id, title, content, notes, timing_label, created_at, updated_at').eq('user_id', userId)
       : Promise.resolve({ data: [] as UserTemplateCustomization[] }),
     userId
-      ? supabase.from('user_pinned_templates').select('user_id, timing_bucket, template_id, position, created_at, updated_at').eq('user_id', userId).order('position', { ascending: true })
+      ? supabase.from('user_pinned_templates').select('id, user_id, timing_bucket, template_id, logement_id, position, created_at, updated_at').eq('user_id', userId).order('position', { ascending: true })
       : Promise.resolve({ data: [] as UserPinnedTemplate[] }),
+    userId
+      ? supabase.from('logements').select('id, nom').eq('user_id', userId).order('nom')
+      : Promise.resolve({ data: [] as LogementOption[] }),
   ])
 
   const initialFavorites = (favData ?? []).map((f: { template_id: string }) => f.template_id)
@@ -36,6 +44,7 @@ export default async function GabaritsPage() {
         initialFavorites={initialFavorites}
         initialCustomizations={(custData ?? []) as UserTemplateCustomization[]}
         initialPinned={(pinData ?? []) as UserPinnedTemplate[]}
+        logements={(logementsData ?? []) as LogementOption[]}
         userId={userId}
       />
     </>
