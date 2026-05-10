@@ -155,9 +155,7 @@ const PLATFORM_LABELS: Record<string, { label: string; icon: string }> = {
   abritel:          { label: 'Abritel',          icon: '🏡' },
   vrbo:             { label: 'Vrbo',             icon: '🌴' },
   gites_de_france:  { label: 'Gîtes de France',  icon: '🌳' },
-  driing:           { label: 'Driing',           icon: '🔔' },
-  direct:           { label: 'Direct / Email',   icon: '📧' },
-  autre:            { label: 'Autre',            icon: '📄' },
+  autre:            { label: 'Autre plateforme', icon: '📄' },
 }
 
 const COUNTRIES: { code: string; name: string }[] = [
@@ -482,7 +480,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     nom: voyageur.nom,
     email: voyageur.email ?? '',
     telephone: voyageur.telephone ?? '',
+    nationalite: voyageur.nationalite ?? null as string | null,
   })
+  const [profileNatOpen, setProfileNatOpen] = useState(false)
+  const [profileNatSearch, setProfileNatSearch] = useState('')
   const [profileError, setProfileError] = useState('')
 
   // Notes inline edit
@@ -732,6 +733,20 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     return events.sort((a, b) => b.date.localeCompare(a.date))
   })()
 
+  function openProfileEdit() {
+    setProfileForm({
+      prenom: voyageur.prenom,
+      nom: voyageur.nom,
+      email: voyageur.email ?? '',
+      telephone: voyageur.telephone ?? '',
+      nationalite: nationalite,
+    })
+    setProfileError('')
+    setProfileNatOpen(false)
+    setProfileNatSearch('')
+    setEditingProfile(true)
+  }
+
   function saveProfile() {
     if (!profileForm.prenom.trim() || !profileForm.nom.trim()) {
       setProfileError('Prénom et nom sont obligatoires.')
@@ -745,9 +760,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         email: profileForm.email.trim() || undefined,
         telephone: profileForm.telephone.trim() || undefined,
         notes: notes.trim() || undefined,
+        nationalite: profileForm.nationalite,
       }
       const res = await updateVoyageur(voyageur.id, data)
       if (res.error) { setProfileError(res.error); return }
+      setNationalite(profileForm.nationalite)
       setEditingProfile(false)
       router.refresh()
     })
@@ -965,6 +982,109 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </div>
                 </div>
               </div>
+              <div style={s.field}>
+                <label style={s.label}>Nationalité</label>
+                <div style={{ position: 'relative' }}>
+                  <button
+                    type="button"
+                    onClick={() => { setProfileNatOpen(o => !o); setProfileNatSearch('') }}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+                      padding: '9px 12px', borderRadius: '10px', fontFamily: 'inherit',
+                      border: `1px solid ${profileNatOpen ? 'var(--accent-border)' : 'var(--border)'}`,
+                      background: profileNatOpen ? 'var(--accent-bg)' : 'var(--surface)',
+                      cursor: 'pointer', textAlign: 'left' as const, transition: 'all 0.15s',
+                      boxSizing: 'border-box' as const,
+                    }}
+                  >
+                    {profileForm.nationalite ? (
+                      <>
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          width: '28px', height: '20px', borderRadius: '4px', flexShrink: 0,
+                          background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
+                          fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+                          color: 'var(--accent-text)', fontFamily: 'monospace',
+                        }}>
+                          {profileForm.nationalite}
+                        </span>
+                        <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)', flex: 1 }}>
+                          {COUNTRIES.find(c => c.code === profileForm.nationalite)?.name ?? profileForm.nationalite}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={e => { e.stopPropagation(); setProfileForm(f => ({ ...f, nationalite: null })) }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '0 2px', display: 'flex' }}
+                        >
+                          <X size={13} />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)', flex: 1 }}>Sélectionner un pays…</span>
+                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>▾</span>
+                      </>
+                    )}
+                  </button>
+                  {profileNatOpen && (
+                    <div style={{
+                      position: 'absolute' as const, top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 50,
+                      background: 'var(--surface)', border: '1px solid var(--border)',
+                      borderRadius: '12px', boxShadow: '0 12px 36px rgba(0,0,0,0.35)', overflow: 'hidden',
+                    }}>
+                      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border)' }}>
+                        <input
+                          autoFocus
+                          value={profileNatSearch}
+                          onChange={e => setProfileNatSearch(e.target.value)}
+                          placeholder="Rechercher un pays…"
+                          style={{
+                            width: '100%', padding: '6px 10px', borderRadius: '7px',
+                            border: '1px solid var(--border)', background: 'var(--bg-2)',
+                            color: 'var(--text)', fontSize: '12.5px', fontFamily: 'inherit', outline: 'none',
+                            boxSizing: 'border-box' as const,
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '200px', overflowY: 'auto' as const }}>
+                        {COUNTRIES.filter(c =>
+                          c.name.toLowerCase().includes(profileNatSearch.toLowerCase()) ||
+                          c.code.toLowerCase().includes(profileNatSearch.toLowerCase())
+                        ).map(c => {
+                          const active = profileForm.nationalite === c.code
+                          return (
+                            <button
+                              key={c.code}
+                              type="button"
+                              onClick={() => { setProfileForm(f => ({ ...f, nationalite: c.code })); setProfileNatOpen(false); setProfileNatSearch('') }}
+                              style={{
+                                width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+                                padding: '8px 12px', border: 'none',
+                                background: active ? 'var(--accent-bg)' : 'transparent',
+                                cursor: 'pointer', textAlign: 'left' as const, fontFamily: 'inherit',
+                              }}
+                            >
+                              <span style={{
+                                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                width: '28px', height: '20px', borderRadius: '4px', flexShrink: 0,
+                                background: active ? 'var(--accent-bg-2)' : 'var(--surface-2)',
+                                border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
+                                fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
+                                color: active ? 'var(--accent-text)' : 'var(--text-muted)', fontFamily: 'monospace',
+                              }}>
+                                {c.code}
+                              </span>
+                              <span style={{ fontSize: '13px', color: active ? 'var(--accent-text)' : 'var(--text)', fontWeight: active ? 600 : 400 }}>
+                                {c.name}
+                              </span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
               {profileError && <p style={s.error}>{profileError}</p>}
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button onClick={() => { setEditingProfile(false); setProfileError('') }} className="btn-ghost">
@@ -980,7 +1100,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             <>
               <div style={s.profileNameRow}>
                 <h2 style={s.profileName}>{voyageur.prenom} {voyageur.nom}</h2>
-                <button onClick={() => setEditingProfile(true)} style={s.editBtn}>
+                <button onClick={() => openProfileEdit()} style={s.editBtn}>
                   <Pencil size={14} />
                   Modifier
                 </button>
@@ -1000,7 +1120,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     {voyageur.email}
                   </a>
                 ) : (
-                  <button onClick={() => setEditingProfile(true)} style={s.addFieldBtn}>
+                  <button onClick={() => openProfileEdit()} style={s.addFieldBtn}>
                     <Envelope size={14} />
                     Ajouter un email
                   </button>
@@ -1011,7 +1131,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     {voyageur.telephone}
                   </a>
                 ) : (
-                  <button onClick={() => setEditingProfile(true)} style={s.addFieldBtn}>
+                  <button onClick={() => openProfileEdit()} style={s.addFieldBtn}>
                     <Phone size={14} />
                     Ajouter un téléphone
                   </button>
@@ -1664,22 +1784,27 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </div>
                 </div>
                 <div className="sejour-actions">
-                  {isDecouverte ? (
+                  {/* Contrat géré par une plateforme externe : pas de bouton contrat/paiement */}
+                  {sj.contrat_plateforme ? (
+                    <span style={{ ...s.metaChip, color: 'var(--text-muted)', background: 'var(--surface-2)', fontSize: '11px' }} title="Géré par la plateforme">
+                      <Lock size={11} /> Géré par {PLATFORM_LABELS[sj.contrat_plateforme]?.label ?? 'plateforme'}
+                    </span>
+                  ) : isDecouverte ? (
                     <a href="/dashboard/abonnement" style={{ ...s.contractBtn, opacity: 0.6, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }} title="Contrats disponibles en Standard">
                       <Lock size={13} /> Standard
                     </a>
                   ) : (
-                  <button
-                    onClick={() => handleContractClick(sj)}
-                    style={s.contractBtn}
-                    disabled={contractLoading === sj.id}
-                    title={sj.contrat_statut === 'nouveau' ? 'Créer un contrat' : 'Voir le contrat'}
-                  >
-                    <FileText size={13} weight="fill" />
-                    {contractLoading === sj.id ? '…' : sj.contrat_statut === 'nouveau' ? 'Créer contrat' : 'Voir contrat'}
-                  </button>
+                    <button
+                      onClick={() => handleContractClick(sj)}
+                      style={s.contractBtn}
+                      disabled={contractLoading === sj.id}
+                      title={sj.contrat_statut === 'nouveau' ? 'Créer un contrat' : 'Voir le contrat'}
+                    >
+                      <FileText size={13} weight="fill" />
+                      {contractLoading === sj.id ? '…' : sj.contrat_statut === 'nouveau' ? 'Créer contrat' : 'Voir contrat'}
+                    </button>
                   )}
-                  {sj.contrat_statut === 'signe' && (
+                  {sj.contrat_statut === 'signe' && !sj.contrat_plateforme && !isDecouverte && (
                     <button
                       onClick={() => openDepositModal(sj.id)}
                       disabled={depositLoading === sj.id}
@@ -2069,7 +2194,15 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       <button
                         key={val}
                         type="button"
-                        onClick={() => setSejourForm(f => ({ ...f, contrat_statut: val, contrat_plateforme: val === 'signe' ? f.contrat_plateforme : null }))}
+                        onClick={() => setSejourForm(f => ({
+                          ...f,
+                          contrat_statut: val,
+                          // Découverte : on force toujours via plateforme quand signé
+                          // Standard : on garde le choix existant (null si pas encore défini)
+                          contrat_plateforme: val === 'signe'
+                            ? (isDecouverte ? (f.contrat_plateforme ?? 'booking') : f.contrat_plateforme)
+                            : null,
+                        }))}
                         style={{
                           flex: 1, padding: '8px 4px', fontSize: '12.5px', fontWeight: 600,
                           borderRadius: '9px', border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
@@ -2086,34 +2219,47 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               </div>
               {sejourForm.contrat_statut === 'signe' && (
                 <>
-                  <div style={s.field}>
-                    <label style={s.label}>Signé via</label>
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      {(['jason', 'plateforme'] as const).map(via => {
-                        const active = via === 'plateforme' ? !!sejourForm.contrat_plateforme : !sejourForm.contrat_plateforme
-                        return (
-                          <button
-                            key={via}
-                            type="button"
-                            onClick={() => setSejourForm(f => ({
-                              ...f,
-                              contrat_plateforme: via === 'plateforme' ? (f.contrat_plateforme ?? 'booking') : null,
-                            }))}
-                            style={{
-                              flex: 1, padding: '8px 4px', fontSize: '12.5px', fontWeight: 600,
-                              borderRadius: '9px', border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
-                              background: active ? 'var(--accent-bg)' : 'var(--surface)',
-                              color: active ? 'var(--accent-text)' : 'var(--text-2)',
-                              cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
-                            }}
-                          >
-                            {via === 'jason' ? '✍️ Contrat Jason' : '🌐 Plateforme'}
-                          </button>
-                        )
-                      })}
+                  {!isDecouverte && (
+                    <div style={s.field}>
+                      <label style={s.label}>Signé via</label>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        {(['jason', 'plateforme'] as const).map(via => {
+                          const active = via === 'plateforme' ? !!sejourForm.contrat_plateforme : !sejourForm.contrat_plateforme
+                          return (
+                            <button
+                              key={via}
+                              type="button"
+                              onClick={() => setSejourForm(f => ({
+                                ...f,
+                                contrat_plateforme: via === 'plateforme' ? (f.contrat_plateforme ?? 'booking') : null,
+                              }))}
+                              style={{
+                                flex: 1, padding: '8px 4px', fontSize: '12.5px', fontWeight: 600,
+                                borderRadius: '9px', border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
+                                background: active ? 'var(--accent-bg)' : 'var(--surface)',
+                                color: active ? 'var(--accent-text)' : 'var(--text-2)',
+                                cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+                              }}
+                            >
+                              {via === 'jason' ? '✍️ Contrat Jason' : '🌐 Plateforme'}
+                            </button>
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
-                  {sejourForm.contrat_plateforme !== undefined && sejourForm.contrat_plateforme !== null ? (
+                  )}
+                  {isDecouverte && (
+                    <div style={{
+                      padding: '10px 12px', borderRadius: '10px',
+                      background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+                      fontSize: '12px', color: 'var(--accent-text)', lineHeight: 1.55,
+                    }}>
+                      <Lock size={12} style={{ verticalAlign: '-2px', marginRight: '5px' }} weight="fill" />
+                      Sur l&apos;offre Découverte, les contrats Jason ne sont pas disponibles. Tu peux uniquement
+                      indiquer la plateforme qui a géré le contrat (Booking, Airbnb, …). <a href="/dashboard/abonnement" style={{ color: 'var(--accent-text)', textDecoration: 'underline' }}>Passer en Standard</a>
+                    </div>
+                  )}
+                  {((isDecouverte ? true : (sejourForm.contrat_plateforme !== undefined && sejourForm.contrat_plateforme !== null))) ? (
                     <div style={s.field}>
                       <label style={s.label}>Plateforme</label>
                       <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
