@@ -49,6 +49,9 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
   const [editingPostId, setEditingPostId] = useState<string | null>(
     savedForLogement[0]?.id ?? null,
   )
+  // lastLoadedTemplateId = id du dernier template d'inspiration piché.
+  // Sert uniquement à highlighter visuellement la chip dans la rangée inspiration.
+  const [lastLoadedTemplateId, setLastLoadedTemplateId] = useState<string | null>(null)
   const [postTitle, setPostTitle] = useState('Mon post')
   const [postContent, setPostContent] = useState('')
   const [copied, setCopied] = useState(false)
@@ -80,6 +83,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
 
   function selectSavedPost(post: SavedPost) {
     setEditingPostId(post.id)
+    setLastLoadedTemplateId(null)
     setPostTitle(post.title)
     setPostContent(post.content)
     setSaveError(null)
@@ -87,6 +91,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
 
   function startNewDraft() {
     setEditingPostId(null)
+    setLastLoadedTemplateId(null)
     setPostTitle('Mon post')
     setPostContent('')
     setSaveError(null)
@@ -95,6 +100,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
   function loadTemplate(tpl: Template) {
     // Ne change pas editingPostId : si on était en train d'éditer un saved post,
     // on charge juste un nouveau contenu pour cette édition. Le titre reste.
+    setLastLoadedTemplateId(tpl.id)
     setPostContent(applyVariables(tpl.content, selectedLogement?.lien_driing ?? null))
     setSaveError(null)
   }
@@ -244,23 +250,26 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
       <div>
         <div style={s.chipsLabel}>Pioche un style pour t'inspirer</div>
         <div style={s.chipsRow}>
-          {templates.map(t => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => loadTemplate(t)}
-              style={{
-                ...s.chip,
-                background: 'var(--surface)',
-                borderColor: 'var(--border)',
-                color: 'var(--text-2)',
-                fontWeight: 400,
-              }}
-              title={`Charger : ${t.title}`}
-            >
-              {t.title}
-            </button>
-          ))}
+          {templates.map(t => {
+            const active = t.id === lastLoadedTemplateId
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => loadTemplate(t)}
+                style={{
+                  ...s.chip,
+                  background: active ? 'var(--accent-bg-2)' : 'var(--surface)',
+                  borderColor: active ? 'var(--accent-border-2)' : 'var(--border)',
+                  color: active ? 'var(--accent-text)' : 'var(--text-2)',
+                  fontWeight: active ? 600 : 400,
+                }}
+                title={`Charger : ${t.title}`}
+              >
+                {t.title}
+              </button>
+            )
+          })}
         </div>
       </div>
 
