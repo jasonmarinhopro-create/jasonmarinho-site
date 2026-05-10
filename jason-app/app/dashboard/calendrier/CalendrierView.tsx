@@ -710,7 +710,14 @@ export default function CalendrierView({
           isStart:  e.date >= ws,
           isEnd:    e.end_date! <= we,
           isIcal:   false,
-          onClick:  () => { setSelected(e.date); setYear(Number(e.date.slice(0,4))); setMonth(Number(e.date.slice(5,7))-1) },
+          onClick:  () => {
+            setSelected(e.date)
+            setYear(Number(e.date.slice(0,4)))
+            setMonth(Number(e.date.slice(5,7))-1)
+            setShowForm(false)
+            setSelectedContract(null)
+            setDrawerOpen(true)
+          },
         })
       })
 
@@ -736,7 +743,14 @@ export default function CalendrierView({
           isEnd:    e.end_date! <= we,
           isIcal:   true,
           platformLabel,
-          onClick:  () => { setSelected(e.start_date); setYear(Number(e.start_date.slice(0,4))); setMonth(Number(e.start_date.slice(5,7))-1) },
+          onClick:  () => {
+            setSelected(e.start_date)
+            setYear(Number(e.start_date.slice(0,4)))
+            setMonth(Number(e.start_date.slice(5,7))-1)
+            setShowForm(false)
+            setSelectedContract(null)
+            setDrawerOpen(true)
+          },
         })
       })
 
@@ -765,8 +779,10 @@ export default function CalendrierView({
             setSelected(c.date_arrivee)
             setYear(Number(c.date_arrivee.slice(0, 4)))
             setMonth(Number(c.date_arrivee.slice(5, 7)) - 1)
+            setShowForm(false)
             const arrEv = contractEvents.find(e => e.contractId === c.contractId && e.type === 'arrivee')
             if (arrEv) setSelectedContract(arrEv)
+            setDrawerOpen(true)
           },
         })
       })

@@ -122,7 +122,9 @@ export async function fetchAndUpsertIcalFeed(
   userId: string,
 ): Promise<SyncResult> {
   try {
-    const res = await fetch(url, {
+    // webcal:// is identical to https:// — convert so fetch() can handle it
+    const fetchUrl = url.replace(/^webcal:\/\//i, 'https://')
+    const res = await fetch(fetchUrl, {
       headers: { 'User-Agent': 'JasonMarinho-Calendar/1.0' },
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     })
