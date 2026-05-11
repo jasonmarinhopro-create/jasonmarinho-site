@@ -1329,7 +1329,13 @@ export default function AfficheTab({ plan, logements }: Props) {
   }
 
   return (
-    <div style={s.layout}>
+    <div style={s.layout} className="affiche-layout">
+      <style>{`
+        @media (max-width: 980px) {
+          .affiche-layout { grid-template-columns: 1fr !important; }
+          .affiche-preview-col { position: static !important; top: auto !important; }
+        }
+      `}</style>
       <div style={s.wizardCol}>
         {/* Step bar */}
         <div style={s.stepBar}>
@@ -1686,7 +1692,7 @@ export default function AfficheTab({ plan, logements }: Props) {
       </div>
 
       {/* Preview */}
-      <div style={s.previewCol}>
+      <div style={s.previewCol} className="affiche-preview-col">
         <div style={s.previewCard}>
           <div style={s.previewHeader}>
             <div style={s.previewLabel}>Aperçu en direct</div>
