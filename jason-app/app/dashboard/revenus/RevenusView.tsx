@@ -1711,10 +1711,51 @@ function FiscaliteSection({ annuel, chargesAnnee = 0 }: { annuel: number; charge
           <span>Tes revenus cette année approchent le seuil micro-BIC non classé (15 000 €). Si tu le dépasses, tu bascules automatiquement au régime réel ou micro-BIC classé.</span>
         </div>
       )}
-      {annuel >= 20000 && annuel < 25000 && (
-        <div style={{ ...sf.alert, borderColor: 'rgba(251,146,60,0.3)', background: 'rgba(251,146,60,0.07)' }}>
-          <Warning size={14} style={{ color: '#fb923c', flexShrink: 0 }} />
-          <span>Tes revenus approchent le seuil LMP (23 000 €). Si tes revenus locatifs dépassent 50 % de tes revenus du foyer, le passage au statut LMP est automatique, avec des cotisations sociales à la clé.</span>
+      {annuel >= 18000 && (
+        <div style={{
+          marginTop: '12px', padding: '16px 18px', borderRadius: '14px',
+          background: annuel >= 23000 ? 'rgba(251,146,60,0.07)' : 'rgba(96,165,250,0.05)',
+          border: `1px solid ${annuel >= 23000 ? 'rgba(251,146,60,0.3)' : 'rgba(96,165,250,0.22)'}`,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
+            <Warning size={16} style={{ color: annuel >= 23000 ? '#fb923c' : '#60a5fa', flexShrink: 0, marginTop: '2px' }} weight="fill" />
+            <div>
+              <div style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>
+                {annuel >= 23000 ? 'Tu as franchi le seuil 23 000 € · attention au LMP' : "Tu approches le seuil 23 000 € · à anticiper"}
+              </div>
+              <div style={{ fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.6 }}>
+                Depuis 2020, tu bascules automatiquement en <strong>LMP (Loueur Meublé Professionnel)</strong> si <strong>2 conditions cumulatives</strong> sont remplies :
+              </div>
+            </div>
+          </div>
+          <ul style={{ margin: '0 0 10px 30px', padding: 0, fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.7, listStyle: 'none' }}>
+            <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '12px' }}>{annuel > 23000 ? '⚠️' : '○'}</span>
+              <span>Revenus LCD &gt; <strong>23 000 €</strong> /an &nbsp;
+                <span style={{ color: 'var(--text-3)' }}>· {fmt(annuel)} actuellement</span>
+              </span>
+            </li>
+            <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '12px' }}>○</span>
+              <span>Revenus LCD &gt; <strong>tes autres revenus pro du foyer</strong> (salaires, retraites, BNC…)</span>
+            </li>
+          </ul>
+          <div style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.6, paddingLeft: '30px', marginBottom: '12px' }}>
+            <strong style={{ color: 'var(--text-2)' }}>Conséquences si LMP :</strong>
+            {' '}cotisations URSSAF (SSI) ~35% du bénéfice, plus-values pro
+            {' '}(exonération si CA &lt; 90 k€ HT pendant 5 ans), déficits imputables sur le revenu global,
+            {' '}biens sortis de l&apos;IFI, immatriculation INSEE/SIRET obligatoire.
+          </div>
+          <a href="/dashboard/simulateurs" style={{
+            display: 'inline-flex', alignItems: 'center', gap: '6px',
+            fontSize: '12.5px', fontWeight: 600, color: 'var(--accent-text)',
+            background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+            padding: '7px 12px', borderRadius: '8px', textDecoration: 'none',
+            marginLeft: '30px',
+          }}>
+            Simuler mon statut LMNP/LMP
+            <ArrowRight size={12} weight="bold" />
+          </a>
         </div>
       )}
 

@@ -20,6 +20,7 @@ function fmtPct(n: number): string {
 function FiscalLCD() {
   const [ca, setCa] = useState(30000)
   const [classe, setClasse] = useState(false)
+  const [autresRevenus, setAutresRevenus] = useState(45000)
 
   const result = useMemo(() => {
     const plafond = classe ? 77700 : 15000
@@ -29,6 +30,21 @@ function FiscalLCD() {
     const economieClassement = ca * (0.71 - 0.30)
     return { plafond, tauxAbattement, sousPlafond, baseImposable, economieClassement }
   }, [ca, classe])
+
+  // Statut LMNP / LMP (depuis loi Macron 2020) : 2 conditions cumulatives pour LMP :
+  // (a) CA LCD > 23 000 € ET (b) CA LCD > autres revenus pro du foyer.
+  const statut = useMemo(() => {
+    const seuilCA = 23000
+    const conditionA = ca > seuilCA
+    const conditionB = ca > autresRevenus
+    const isLMP = conditionA && conditionB
+    // Bénéfice estimé = base imposable du micro-BIC (approximation pédagogique).
+    const beneficeEstime = ca * (1 - result.tauxAbattement)
+    // Cotisations sociales SSI (Sécurité Sociale des Indépendants) si LMP :
+    // ~35% en moyenne du bénéfice net. Tranche basse ~30%, haute ~43%.
+    const cotisLMP = isLMP ? beneficeEstime * 0.35 : 0
+    return { isLMP, conditionA, conditionB, cotisLMP, seuilCA, beneficeEstime }
+  }, [ca, autresRevenus, result.tauxAbattement])
 
   return (
     <div style={s.calc}>
@@ -83,9 +99,124 @@ function FiscalLCD() {
         )}
       </div>
 
+      {/* ─── Statut LMNP / LMP ─── */}
+      <div style={{ ...s.row, marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
+        <div style={{ gridColumn: '1 / -1', marginBottom: '4px' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px', letterSpacing: '-.1px' }}>
+            Statut LMNP ou LMP ?
+          </div>
+          <div style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5 }}>
+            Au-delà de <strong style={{ color: 'var(--text-2)' }}>23 000 € de CA LCD</strong>
+            {' '}<em>ET</em> si tes revenus locatifs dépassent tes autres revenus pro du foyer,
+            tu bascules automatiquement en LMP (Loueur Meublé Professionnel) — pas un choix, la loi.
+          </div>
+        </div>
+        <div style={s.field}>
+          <label style={s.label}>Tes autres revenus pro du foyer / an</label>
+          <div style={s.inputWrap}>
+            <input type="number" value={autresRevenus} onChange={e => setAutresRevenus(Math.max(0, Number(e.target.value)))}
+              style={s.input} min={0} step={1000} />
+            <span style={s.suffix}>€</span>
+          </div>
+          <input type="range" value={autresRevenus} onChange={e => setAutresRevenus(Number(e.target.value))}
+            min={0} max={100000} step={1000} style={s.range} />
+          <div style={s.helper}>Salaires, BNC, autres BIC, retraites du foyer fiscal (hors LCD).</div>
+        </div>
+        <div style={s.field}>
+          <label style={s.label}>Verdict</label>
+          <div style={{
+            padding: '14px 16px', borderRadius: '12px',
+            background: statut.isLMP ? 'rgba(251,146,60,0.10)' : 'rgba(16,185,129,0.10)',
+            border: `1px solid ${statut.isLMP ? 'rgba(251,146,60,0.30)' : 'rgba(16,185,129,0.30)'}`,
+          }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const,
+              color: statut.isLMP ? '#d97706' : '#059669', marginBottom: '4px' }}>
+              {statut.isLMP ? '⚠️ Tu bascules en LMP' : '✓ Tu restes en LMNP'}
+            </div>
+            <div style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.45 }}>
+              {statut.isLMP
+                ? 'Particulier devenant pro. Cotisations sociales SSI à la clé.'
+                : 'Statut particulier conservé. Pas de cotisations sociales.'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Détail des 2 conditions avec checkmarks visuels */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '12px' }} className="lmp-conds">
+        <div style={{
+          padding: '10px 12px', borderRadius: '10px',
+          background: statut.conditionA ? 'rgba(251,146,60,0.08)' : 'rgba(16,185,129,0.06)',
+          border: `1px solid ${statut.conditionA ? 'rgba(251,146,60,0.25)' : 'rgba(16,185,129,0.20)'}`,
+          fontSize: '12.5px', display: 'flex', alignItems: 'center', gap: '8px',
+        }}>
+          <span style={{ fontSize: '14px' }}>{statut.conditionA ? '⚠️' : '✓'}</span>
+          <span style={{ color: 'var(--text)' }}>
+            <strong>CA &gt; 23 000 €</strong>
+            <span style={{ color: 'var(--text-3)' }}> · actuellement {fmtEur(ca)}</span>
+          </span>
+        </div>
+        <div style={{
+          padding: '10px 12px', borderRadius: '10px',
+          background: statut.conditionB ? 'rgba(251,146,60,0.08)' : 'rgba(16,185,129,0.06)',
+          border: `1px solid ${statut.conditionB ? 'rgba(251,146,60,0.25)' : 'rgba(16,185,129,0.20)'}`,
+          fontSize: '12.5px', display: 'flex', alignItems: 'center', gap: '8px',
+        }}>
+          <span style={{ fontSize: '14px' }}>{statut.conditionB ? '⚠️' : '✓'}</span>
+          <span style={{ color: 'var(--text)' }}>
+            <strong>CA &gt; autres revenus</strong>
+            <span style={{ color: 'var(--text-3)' }}> · {fmtEur(ca)} vs {fmtEur(autresRevenus)}</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Conséquences détaillées selon le statut */}
+      {statut.isLMP ? (
+        <div style={{
+          marginTop: '12px', padding: '14px 16px', borderRadius: '12px',
+          background: 'rgba(251,146,60,0.06)', border: '1px solid rgba(251,146,60,0.20)',
+        }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#d97706', marginBottom: '8px',
+            textTransform: 'uppercase' as const, letterSpacing: '0.5px' }}>
+            Ce qui change en LMP
+          </div>
+          <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', lineHeight: 1.7, color: 'var(--text-2)' }}>
+            <li><strong style={{ color: 'var(--text)' }}>Cotisations URSSAF (SSI)</strong> ~35% du bénéfice net
+              {statut.cotisLMP > 0 && <> → estimé <strong style={{ color: '#d97706' }}>{fmtEur(statut.cotisLMP)}/an</strong></>}
+            </li>
+            <li><strong style={{ color: 'var(--text)' }}>Plus-values pro</strong> au lieu de privées
+              {' '}<span style={{ color: 'var(--text-3)' }}>(exonération si CA &lt; 90 k€ HT pendant 5 ans)</span>
+            </li>
+            <li><strong style={{ color: 'var(--text)' }}>Déficits imputables sur ton revenu global</strong>
+              {' '}(LMNP : déficits utilisables uniquement sur futurs loyers meublés)</li>
+            <li><strong style={{ color: 'var(--text)' }}>Biens loués sortis de l&apos;assiette IFI</strong></li>
+            <li>Immatriculation INSEE / SIRET obligatoire</li>
+          </ul>
+        </div>
+      ) : (
+        <div style={{
+          marginTop: '12px', padding: '14px 16px', borderRadius: '12px',
+          background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.20)',
+        }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#059669', marginBottom: '8px',
+            textTransform: 'uppercase' as const, letterSpacing: '0.5px' }}>
+            Tu restes LMNP — ce que ça implique
+          </div>
+          <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', lineHeight: 1.7, color: 'var(--text-2)' }}>
+            <li><strong style={{ color: 'var(--text)' }}>Pas de cotisations sociales URSSAF</strong>
+              {' '}(juste 17,2% prélèvements sociaux si régime réel)</li>
+            <li><strong style={{ color: 'var(--text)' }}>Plus-values privées</strong>
+              {' '}(abattement durée détention)</li>
+            <li><strong style={{ color: 'var(--text)' }}>Déficits imputables uniquement</strong>
+              {' '}sur futurs revenus de location meublée (10 ans max)</li>
+            <li>Biens inclus dans l&apos;assiette IFI</li>
+          </ul>
+        </div>
+      )}
+
       <div style={s.disclaimer}>
         <Info size={11} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
-        <span>Estimation pédagogique. Le régime <strong>réel simplifié</strong> peut être plus avantageux au-delà de 30 k€/an si tu as des charges (amortissement, intérêts, travaux). Consulte un expert-comptable.</span>
+        <span>Estimation pédagogique. Le régime <strong>réel simplifié</strong> peut être plus avantageux au-delà de 30 k€/an si tu as des charges (amortissement, intérêts, travaux). Les cotisations SSI varient selon le bénéfice net réel et ton plan retraite. Consulte un expert-comptable.</span>
       </div>
     </div>
   )
