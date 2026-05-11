@@ -3,12 +3,12 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, MapTrifold,
+  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, MapTrifold, Lifebuoy,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
 import NotificationPanel from './NotificationPanel'
-import ChezNousNotifBell from './ChezNousNotifBell'
+import SOSModal from '@/components/sos/SOSModal'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
@@ -111,6 +111,15 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
+  const [sosOpen, setSosOpen] = useState(false)
+  // Mapping du label plan vers la valeur technique attendue par SOSModal.
+  // Admin a accès complet aux scénarios (équivalent Driing).
+  const sosPlan: 'decouverte' | 'standard' | 'driing' =
+    currentPlan === 'Membre Driing' || currentPlan === 'Administrateur' ? 'driing'
+    : currentPlan === 'Standard' ? 'standard'
+    : 'decouverte'
+
+  const [chezNousUnread, setChezNousUnread] = useState(0)
   const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
   const [userName] = useState(initialUserName ?? '')
   const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
@@ -119,6 +128,29 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   const pathname = usePathname()
   const { theme, toggleTheme } = useTheme()
   const isAdmin = isAdminProp
+
+  // Cloche unifiée : on récupère le count Chez Nous côté client une fois au mount
+  // pour pouvoir le sommer au unreadCount produit (badge agrégé) et l'afficher
+  // dans le 2e onglet du NotificationPanel.
+  useEffect(() => {
+    if (!userId) return
+    let cancelled = false
+    const supabase = createClient()
+    supabase
+      .from('chez_nous_notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('recipient_id', userId)
+      .is('read_at', null)
+      .then(({ count }) => {
+        if (!cancelled) setChezNousUnread(count ?? 0)
+      })
+    return () => { cancelled = true }
+  }, [userId])
+
+  // Quand l'utilisateur visite la page notifications Chez Nous, le badge se vide.
+  useEffect(() => {
+    if (pathname === '/dashboard/chez-nous/notifications') setChezNousUnread(0)
+  }, [pathname])
 
   // Titre final : prop forcée > store (TitleSetter) > mapping pathname
   const title = titleOverrideProp ?? titleFromStore ?? resolveTitle(pathname ?? '')
@@ -198,6 +230,13 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
         onClose={() => setNotifOpen(false)}
         readIds={readIds}
         onMarkAllRead={handleMarkAllRead}
+        chezNousUnread={chezNousUnread}
+      />
+
+      <SOSModal
+        open={sosOpen}
+        onClose={() => setSosOpen(false)}
+        plan={sosPlan}
       />
 
       <header style={styles.header} className="dash-header">
@@ -239,22 +278,34 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             }
           </button>
 
-          {/* Notifications */}
+          {/* SOS Hôte — accessible depuis n'importe quelle page du dashboard */}
           <button
-            style={styles.iconBtn}
-            aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
-            onClick={handleOpenNotif}
+            style={styles.sosBtn}
+            aria-label="SOS Hôte — En cas de problème"
+            title="SOS Hôte — En cas de problème"
+            onClick={() => setSosOpen(true)}
           >
-            <Bell size={18} weight="regular" />
-            {unreadCount > 0 && (
-              <span style={styles.notifBadge}>
-                {unreadCount > 9 ? '9+' : unreadCount}
-              </span>
-            )}
+            <Lifebuoy size={18} weight="regular" />
           </button>
 
-          {/* Chez Nous notifications */}
-          <ChezNousNotifBell userId={userId ?? ''} />
+          {/* Notifications — cloche unifiée (Nouveautés produit + Forum Chez Nous) */}
+          {(() => {
+            const totalUnread = unreadCount + chezNousUnread
+            return (
+              <button
+                style={styles.iconBtn}
+                aria-label={`Notifications${totalUnread > 0 ? `, ${totalUnread} non lue${totalUnread > 1 ? 's' : ''}` : ''}`}
+                onClick={handleOpenNotif}
+              >
+                <Bell size={18} weight="regular" />
+                {totalUnread > 0 && (
+                  <span style={styles.notifBadge}>
+                    {totalUnread > 9 ? '9+' : totalUnread}
+                  </span>
+                )}
+              </button>
+            )
+          })()}
 
           {/* Profile dropdown */}
           <div ref={dropdownRef} style={styles.dropdownWrap}>
@@ -418,6 +469,16 @@ const styles: Record<string, React.CSSProperties> = {
     width: '36px', height: '36px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-2)',
+  },
+  sosBtn: {
+    position: 'relative',
+    background: 'rgba(220,38,38,0.08)',
+    border: '1px solid rgba(220,38,38,0.22)',
+    borderRadius: '9px',
+    width: '36px', height: '36px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', color: '#dc2626',
+    transition: 'background 0.15s',
   },
   notifBadge: {
     position: 'absolute',

@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight, ChatCircleDots } from '@phosphor-icons/react/dist/ssr'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
 
 const VISIBLE_COUNT = 3
@@ -12,7 +12,11 @@ interface NotificationPanelProps {
   onClose: () => void
   readIds: Set<string>
   onMarkAllRead: () => void
+  /** Compteur de notifications Chez Nous non lues (récupéré dans Header). */
+  chezNousUnread?: number
 }
+
+type Tab = 'nouveautes' | 'cheznous'
 
 const TAG_CONFIG: Record<ChangelogTag, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
   nouveau:      { label: 'Nouveau',       color: '#63D683', bg: 'rgba(99,214,131,0.12)',  icon: <Sparkle size={11} weight="fill" /> },
@@ -26,8 +30,21 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
 }
 
-export default function NotificationPanel({ open, onClose, readIds, onMarkAllRead }: NotificationPanelProps) {
+export default function NotificationPanel({ open, onClose, readIds, onMarkAllRead, chezNousUnread = 0 }: NotificationPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null)
+  const [tab, setTab] = useState<Tab>('nouveautes')
+
+  // Auto-switch sur l'onglet Chez Nous à l'ouverture s'il y a des notifs là-bas
+  // et aucune nouveauté produit non lue : l'utilisateur va probablement vers le plus pressant.
+  useEffect(() => {
+    if (!open) return
+    const productUnread = CHANGELOG.filter(e => !readIds.has(e.id)).length
+    if (chezNousUnread > 0 && productUnread === 0) {
+      setTab('cheznous')
+    } else {
+      setTab('nouveautes')
+    }
+  }, [open, chezNousUnread, readIds])
 
   // Close on outside click
   useEffect(() => {
@@ -87,13 +104,10 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
       {/* Header */}
       <div style={s.header}>
         <div style={s.headerLeft}>
-          <span style={s.title}>Nouveautés</span>
-          {unreadCount > 0 && (
-            <span style={s.unreadPill}>{unreadCount} non lu{unreadCount > 1 ? 's' : ''}</span>
-          )}
+          <span style={s.title}>Notifications</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          {unreadCount > 0 && (
+          {tab === 'nouveautes' && unreadCount > 0 && (
             <button onClick={onMarkAllRead} style={s.markAllBtn} title="Tout marquer comme lu">
               Tout lu
             </button>
@@ -104,64 +118,127 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
         </div>
       </div>
 
-      {/* Divider */}
-      <div style={s.divider} />
-
-      {/* Entries */}
-      <div style={s.list}>
-        {visibleEntries.map((entry, i) => {
-          const isRead = readIds.has(entry.id)
-          const tag = TAG_CONFIG[entry.tag]
-          const isLast = i === visibleEntries.length - 1
-          return (
-            <div
-              key={entry.id}
-              style={{
-                ...s.entry,
-                ...(isLast ? {} : { borderBottom: '1px solid var(--border)' }),
-                opacity: isRead ? 0.5 : 1,
-              }}
-            >
-              {/* Unread dot */}
-              <div style={s.dotWrap}>
-                <div style={{
-                  ...s.dot,
-                  background: isRead ? 'transparent' : tag.color,
-                  border: isRead ? '1.5px solid var(--border)' : 'none',
-                  boxShadow: isRead ? 'none' : `0 0 5px ${tag.color}80`,
-                }} />
-              </div>
-
-              {/* Content */}
-              <div style={s.entryBody}>
-                <div style={s.entryMeta}>
-                  <span style={{ ...s.tag, color: tag.color, background: tag.bg }}>
-                    {tag.icon}
-                    {tag.label}
-                  </span>
-                  <span style={s.date}>{formatDate(entry.date)}</span>
-                </div>
-                <div style={s.entryTitle}>{entry.title}</div>
-                <div style={s.entryDesc}>{entry.description}</div>
-              </div>
-            </div>
-          )
-        })}
+      {/* Onglets */}
+      <div style={s.tabs}>
+        <button
+          onClick={() => setTab('nouveautes')}
+          style={{ ...s.tab, ...(tab === 'nouveautes' ? s.tabActive : {}) }}
+        >
+          <Sparkle size={12} weight={tab === 'nouveautes' ? 'fill' : 'regular'} />
+          Nouveautés
+          {unreadCount > 0 && (
+            <span style={s.tabBadge}>{unreadCount}</span>
+          )}
+        </button>
+        <button
+          onClick={() => setTab('cheznous')}
+          style={{ ...s.tab, ...(tab === 'cheznous' ? s.tabActive : {}) }}
+        >
+          <ChatCircleDots size={12} weight={tab === 'cheznous' ? 'fill' : 'regular'} />
+          Chez Nous
+          {chezNousUnread > 0 && (
+            <span style={s.tabBadge}>{chezNousUnread > 9 ? '9+' : chezNousUnread}</span>
+          )}
+        </button>
       </div>
 
       {/* Divider */}
       <div style={s.divider} />
 
-      {/* Footer, "En savoir plus" */}
+      {/* Contenu — Nouveautés produit */}
+      {tab === 'nouveautes' && (
+        <div style={s.list}>
+          {visibleEntries.map((entry, i) => {
+            const isRead = readIds.has(entry.id)
+            const tagCfg = TAG_CONFIG[entry.tag]
+            const isLast = i === visibleEntries.length - 1
+            return (
+              <div
+                key={entry.id}
+                style={{
+                  ...s.entry,
+                  ...(isLast ? {} : { borderBottom: '1px solid var(--border)' }),
+                  opacity: isRead ? 0.5 : 1,
+                }}
+              >
+                <div style={s.dotWrap}>
+                  <div style={{
+                    ...s.dot,
+                    background: isRead ? 'transparent' : tagCfg.color,
+                    border: isRead ? '1.5px solid var(--border)' : 'none',
+                    boxShadow: isRead ? 'none' : `0 0 5px ${tagCfg.color}80`,
+                  }} />
+                </div>
+                <div style={s.entryBody}>
+                  <div style={s.entryMeta}>
+                    <span style={{ ...s.tag, color: tagCfg.color, background: tagCfg.bg }}>
+                      {tagCfg.icon}
+                      {tagCfg.label}
+                    </span>
+                    <span style={s.date}>{formatDate(entry.date)}</span>
+                  </div>
+                  <div style={s.entryTitle}>{entry.title}</div>
+                  <div style={s.entryDesc}>{entry.description}</div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Contenu — Forum Chez Nous */}
+      {tab === 'cheznous' && (
+        <div style={s.list}>
+          {chezNousUnread > 0 ? (
+            <div style={s.cnNotice}>
+              <div style={s.cnIcon}>
+                <ChatCircleDots size={22} weight="fill" color="var(--accent-text)" />
+              </div>
+              <div style={s.cnText}>
+                <div style={s.cnTitle}>
+                  {chezNousUnread} notification{chezNousUnread > 1 ? 's' : ''} non lue{chezNousUnread > 1 ? 's' : ''}
+                </div>
+                <div style={s.cnDesc}>
+                  Quelqu&apos;un t&apos;a répondu, mentionné ou réagi à ton activité dans le forum Chez Nous.
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div style={s.cnEmpty}>
+              <div style={{ fontSize: '24px', marginBottom: '8px' }}>📭</div>
+              <div style={{ fontSize: '13px', color: 'var(--text-2)', fontWeight: 500 }}>Tu es à jour</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '4px' }}>
+                Aucune nouvelle notification du forum.
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Divider */}
+      <div style={s.divider} />
+
+      {/* Footer, lien adapté à l'onglet */}
       <div style={s.footer}>
-        <Link
-          href="/dashboard/nouveautes"
-          onClick={onClose}
-          style={s.learnMoreBtn}
-        >
-          En savoir plus
-          <ArrowRight size={13} weight="bold" />
-        </Link>
+        {tab === 'nouveautes' ? (
+          <Link
+            href="/dashboard/nouveautes"
+            onClick={onClose}
+            style={s.learnMoreBtn}
+          >
+            En savoir plus
+            <ArrowRight size={13} weight="bold" />
+          </Link>
+        ) : (
+          <Link
+            href="/dashboard/chez-nous/notifications"
+            onClick={onClose}
+            style={s.learnMoreBtn}
+          >
+            Voir mes notifications Chez Nous
+            <ArrowRight size={13} weight="bold" />
+          </Link>
+        )}
       </div>
     </div>
   )
@@ -186,6 +263,57 @@ const s: Record<string, React.CSSProperties> = {
     padding: '2px 8px', borderRadius: '100px',
     background: 'rgba(99,214,131,0.15)', color: '#63D683',
     letterSpacing: '0.2px',
+  },
+  tabs: {
+    display: 'flex', gap: '4px',
+    padding: '0 12px 10px',
+  },
+  tab: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '7px 12px', borderRadius: '8px',
+    background: 'transparent', border: '1px solid transparent',
+    color: 'var(--text-3)', fontSize: '12.5px',
+    cursor: 'pointer', fontFamily: 'inherit',
+    transition: 'all 0.12s',
+  },
+  tabActive: {
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    color: 'var(--text)',
+    fontWeight: 600,
+  },
+  tabBadge: {
+    fontSize: '10px', fontWeight: 700,
+    padding: '1px 6px', borderRadius: '999px',
+    background: '#ef4444', color: '#fff',
+    minWidth: '16px', textAlign: 'center' as const,
+    lineHeight: 1.4,
+  },
+
+  cnNotice: {
+    display: 'flex', alignItems: 'flex-start', gap: '12px',
+    padding: '18px 16px',
+  },
+  cnIcon: {
+    width: '40px', height: '40px',
+    background: 'var(--accent-bg-2)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '10px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  cnText: { flex: 1, minWidth: 0 },
+  cnTitle: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--text)', marginBottom: '4px',
+  },
+  cnDesc: {
+    fontSize: '12px', color: 'var(--text-3)',
+    lineHeight: 1.5,
+  },
+  cnEmpty: {
+    textAlign: 'center' as const,
+    padding: '32px 16px',
   },
   markAllBtn: {
     background: 'none', border: '1px solid var(--border)',
