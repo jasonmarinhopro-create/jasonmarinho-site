@@ -1,0 +1,16 @@
+{
+  "name": "Jason Marinho — Expert Location Courte Durée",
+  "short_name": "Jason Marinho",
+  "description": "Formations, ressources et accompagnement pour développer ton activité de location courte durée.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FDFCF9",
+  "theme_color": "#004C3F",
+  "lang": "fr-FR",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
