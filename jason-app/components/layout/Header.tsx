@@ -9,7 +9,7 @@ import Link from 'next/link'
 import Sidebar from './Sidebar'
 import NotificationPanel from './NotificationPanel'
 import SOSModal from '@/components/sos/SOSModal'
-import ChezNousNotifBell from './ChezNousNotifBell'
+import { createClient } from '@/lib/supabase/client'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
@@ -119,6 +119,30 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     currentPlan === 'Membre Driing' || currentPlan === 'Administrateur' ? 'driing'
     : currentPlan === 'Standard' ? 'standard'
     : 'decouverte'
+
+  // Cloche unifiée : on récupère le count Chez Nous côté client une fois au mount
+  // pour pouvoir le sommer au unreadCount produit (badge agrégé) et l'afficher
+  // dans le 2e onglet du NotificationPanel.
+  const [chezNousUnread, setChezNousUnread] = useState(0)
+  useEffect(() => {
+    if (!userId) return
+    let cancelled = false
+    const supabase = createClient()
+    supabase
+      .from('chez_nous_notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('recipient_id', userId)
+      .is('read_at', null)
+      .then(({ count }) => {
+        if (!cancelled) setChezNousUnread(count ?? 0)
+      })
+    return () => { cancelled = true }
+  }, [userId])
+
+  // Quand l'utilisateur visite la page notifications Chez Nous, le badge se vide.
+  useEffect(() => {
+    if (pathname === '/dashboard/chez-nous/notifications') setChezNousUnread(0)
+  }, [pathname])
   const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
   const [userName] = useState(initialUserName ?? '')
   const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
@@ -206,6 +230,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
         onClose={() => setNotifOpen(false)}
         readIds={readIds}
         onMarkAllRead={handleMarkAllRead}
+        chezNousUnread={chezNousUnread}
       />
 
       <SOSModal
@@ -263,22 +288,24 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             <Lifebuoy size={18} weight="regular" />
           </button>
 
-          {/* Notifications */}
-          <button
-            style={styles.iconBtn}
-            aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : ''}`}
-            onClick={handleOpenNotif}
-          >
-            <Bell size={18} weight="regular" />
-            {unreadCount > 0 && (
-              <span style={styles.notifBadge}>
-                {unreadCount > 9 ? '9+' : unreadCount}
-              </span>
-            )}
-          </button>
-
-          {/* Chez Nous notifications */}
-          <ChezNousNotifBell userId={userId ?? ''} />
+          {/* Notifications — cloche unifiée (Nouveautés produit + Forum Chez Nous) */}
+          {(() => {
+            const totalUnread = unreadCount + chezNousUnread
+            return (
+              <button
+                style={styles.iconBtn}
+                aria-label={`Notifications${totalUnread > 0 ? `, ${totalUnread} non lue${totalUnread > 1 ? 's' : ''}` : ''}`}
+                onClick={handleOpenNotif}
+              >
+                <Bell size={18} weight="regular" />
+                {totalUnread > 0 && (
+                  <span style={styles.notifBadge}>
+                    {totalUnread > 9 ? '9+' : totalUnread}
+                  </span>
+                )}
+              </button>
+            )
+          })()}
 
           {/* Profile dropdown */}
           <div ref={dropdownRef} style={styles.dropdownWrap}>
