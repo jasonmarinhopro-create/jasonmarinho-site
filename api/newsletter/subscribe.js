@@ -24,6 +24,36 @@ function getClientIp(req) {
   )
 }
 
+// Domaines email jetables les plus courants. Liste compacte (pas exhaustive
+// mais couvre 95% des bots) — pas de dépendance externe.
+const DISPOSABLE_DOMAINS = new Set([
+  'yopmail.com','yopmail.fr','yopmail.net',
+  'mailinator.com','mailinator.net','mailinator.org',
+  'tempmail.com','temp-mail.org','temp-mail.io','temp-mail.fr',
+  '10minutemail.com','10minutemail.net','10minutemail.org',
+  'guerrillamail.com','guerrillamail.net','guerrillamail.biz','guerrillamail.org',
+  'sharklasers.com','grr.la','spam4.me','pokemail.net',
+  'maildrop.cc','throwawaymail.com','dispostable.com','fakeinbox.com',
+  'trashmail.com','trashmail.net','trashmail.de','trash-mail.com',
+  'getnada.com','nada.email','inboxbear.com','tempinbox.com',
+  'mintemail.com','spamgourmet.com','mytemp.email','jetable.org',
+  'minuteinbox.com','emailondeck.com','mohmal.com','etranquil.com',
+  'mailcatch.com','spambog.com','spambox.us','spamfree.com',
+  'discardmail.com','discardmail.de','mailnesia.com','meltmail.com',
+  'tempr.email','tmail.io','tmail.run','tmail.us','tmail.ws',
+  'wegwerfemail.com','wegwerfemail.de','wegwerfmail.de','wegwerfmail.net',
+  'mvrht.net','asdf.pl','mt2014.com','mt2015.com','mailbox52.ga',
+  'guerillamail.com','vomoto.com','tagyourself.com','byom.de',
+  'mailtothis.com','dropmail.me','emailfake.com','tempmailo.com',
+])
+
+function isDisposableEmail(email) {
+  const at = email.lastIndexOf('@')
+  if (at === -1) return false
+  const domain = email.slice(at + 1).toLowerCase()
+  return DISPOSABLE_DOMAINS.has(domain)
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -41,9 +71,39 @@ module.exports = async function handler(req, res) {
   }
   body = body || {}
 
+  // ─── Anti-bot : honeypot + time-trap + domaines jetables ─────────────────
+  // On répond 200 OK fake aux bots pour ne pas leur indiquer la détection
+  // (sinon ils itèrent jusqu'à passer). Le contact n'est juste pas créé.
+
+  // 1. Honeypot : champ caché qu'un humain ne remplit JAMAIS.
+  if (body.website && typeof body.website === 'string' && body.website.trim().length > 0) {
+    console.warn('[newsletter] bot detected · honeypot filled', { ip, email: body.email })
+    return res.status(200).json({ ok: true })
+  }
+
+  // 2. Time-trap : un humain met >1.5s à remplir et soumettre. Bot souvent <500ms.
+  const ts = typeof body.ts === 'number' ? body.ts : 0
+  if (ts > 0) {
+    const elapsed = Date.now() - ts
+    if (elapsed < 1500) {
+      console.warn('[newsletter] bot detected · too fast', { ip, elapsed })
+      return res.status(200).json({ ok: true })
+    }
+    // Form ouvert depuis > 24h → token sans doute volé / replayed
+    if (elapsed > 24 * 60 * 60_000) {
+      return res.status(400).json({ error: 'Formulaire expiré, recharge la page.' })
+    }
+  }
+
   const rawEmail = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
   if (!rawEmail || rawEmail.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail)) {
     return res.status(400).json({ error: 'Email invalide.' })
+  }
+
+  // 3. Domaine jetable → fake success silencieux.
+  if (isDisposableEmail(rawEmail)) {
+    console.warn('[newsletter] bot detected · disposable email', { ip, email: rawEmail })
+    return res.status(200).json({ ok: true })
   }
 
   if (isRateLimited(`email:${rawEmail}`, 3, 15 * 60_000)) {

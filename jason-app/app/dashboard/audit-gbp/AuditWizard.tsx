@@ -478,6 +478,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '11px 20px', borderRadius: '10px',
     border: 'none', cursor: 'pointer',
     transition: 'background 0.15s, transform 0.15s',
+    marginTop: '20px',
   },
 
   /* Wizard */
