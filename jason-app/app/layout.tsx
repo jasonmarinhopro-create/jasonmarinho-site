@@ -23,11 +23,8 @@ export const metadata: Metadata = {
   title: 'Mon espace, Jason Marinho',
   description: 'Formations, gabarits et ressources pour développer ton activité de location courte durée.',
   robots: 'noindex, nofollow',
-  icons: {
-    icon: [{ url: '/favicon-jason.webp', type: 'image/webp' }],
-    shortcut: '/favicon-jason.webp',
-    apple: [{ url: '/favicon-jason.webp', sizes: '180x180', type: 'image/webp' }],
-  },
+  // Les icônes (favicon.ico, icon.png, apple-icon.png) sont auto-détectées
+  // par Next.js App Router depuis app/. Pas besoin de les déclarer ici.
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
