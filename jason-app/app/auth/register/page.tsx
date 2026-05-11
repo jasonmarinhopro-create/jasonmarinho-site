@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useRef } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import {
@@ -55,6 +55,10 @@ function RegisterForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  // Honeypot (champ caché qu'un humain ne remplit jamais) + timestamp d'ouverture
+  // du form pour détecter les bots ultra-rapides (anti-spam Brevo).
+  const [website, setWebsite] = useState('')
+  const formLoadedAtRef = useRef<number>(Date.now())
 
   // Détection d'une invitation (?ref=USERID&from=NAME)
   const searchParams = useSearchParams()
@@ -75,7 +79,10 @@ function RegisterForm() {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName, isDriingMember, newsletterConsent }),
+        body: JSON.stringify({
+          email, password, fullName, isDriingMember, newsletterConsent,
+          website, ts: formLoadedAtRef.current,
+        }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -254,6 +261,22 @@ function RegisterForm() {
             </label>
 
             {error && <p style={s.errorBox}>{error}</p>}
+
+            {/* Honeypot anti-bot : champ caché qu'un humain ne remplit jamais */}
+            <input
+              type="text"
+              name="website"
+              value={website}
+              onChange={e => setWebsite(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{
+                position: 'absolute', left: '-9999px', top: '-9999px',
+                opacity: 0, pointerEvents: 'none', height: 0, width: 0,
+                border: 0, padding: 0,
+              }}
+            />
 
             <button
               type="submit" className="btn-primary" disabled={loading}
