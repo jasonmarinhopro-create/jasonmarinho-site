@@ -119,10 +119,19 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     : currentPlan === 'Standard' ? 'standard'
     : 'decouverte'
 
+  const [chezNousUnread, setChezNousUnread] = useState(0)
+  const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
+  const [userName] = useState(initialUserName ?? '')
+  const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+  const pathname = usePathname()
+  const { theme, toggleTheme } = useTheme()
+  const isAdmin = isAdminProp
+
   // Cloche unifiée : on récupère le count Chez Nous côté client une fois au mount
   // pour pouvoir le sommer au unreadCount produit (badge agrégé) et l'afficher
   // dans le 2e onglet du NotificationPanel.
-  const [chezNousUnread, setChezNousUnread] = useState(0)
   useEffect(() => {
     if (!userId) return
     let cancelled = false
@@ -142,14 +151,6 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   useEffect(() => {
     if (pathname === '/dashboard/chez-nous/notifications') setChezNousUnread(0)
   }, [pathname])
-  const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
-  const [userName] = useState(initialUserName ?? '')
-  const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
-  const pathname = usePathname()
-  const { theme, toggleTheme } = useTheme()
-  const isAdmin = isAdminProp
 
   // Titre final : prop forcée > store (TitleSetter) > mapping pathname
   const title = titleOverrideProp ?? titleFromStore ?? resolveTitle(pathname ?? '')
