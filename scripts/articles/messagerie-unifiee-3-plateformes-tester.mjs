@@ -63,6 +63,6 @@ export default {
   related: [
     { slug: 'hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls', label: 'Hospitable PMS tout-en-un', categoryLabel: 'Automatisation' },
     { slug: 'gabarits-messages-lcd-hotes-templates',           label: 'Gabarits de messages LCD',              categoryLabel: 'Ressources' },
-    { slug: 'gerer-lcd-automatisation',                         label: 'Automatiser sa LCD',                    categoryLabel: 'Automatisation' },
+    { slug: 'outils-gerer-location-courte-duree-2025',          label: '7 outils pour gérer sa LCD',            categoryLabel: 'Automatisation' },
   ],
 }

@@ -57,6 +57,6 @@ export default {
   related: [
     { slug: 'airbnb-vs-booking-com-location-courte-duree',       label: 'Airbnb vs Booking.com : lequel choisir ?',     categoryLabel: 'Visibilité'    },
     { slug: 'google-my-business-reservations-directes-hotes-lcd', label: 'Google My Business pour hôtes LCD',            categoryLabel: 'Visibilité'    },
-    { slug: 'channel-manager-location-courte-duree-choisir',      label: 'Choisir son channel manager LCD',             categoryLabel: 'Automatisation' },
+    { slug: 'pms-logiciel-gestion-location-courte-duree-debutant', label: 'Quel PMS choisir pour ta LCD',              categoryLabel: 'Automatisation' },
   ],
 }
