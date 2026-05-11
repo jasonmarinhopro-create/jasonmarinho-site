@@ -85,6 +85,14 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
         ctaHref: '/dashboard/outils-impression',
         detect: 'auto',
       },
+      {
+        key: 'install_app',
+        title: 'Installe ton espace sur ton téléphone',
+        description: 'Garde Jason à portée de tap : un raccourci comme une vraie app, sur ton écran d\'accueil.',
+        ctaLabel: 'Installer maintenant',
+        ctaHref: '/dashboard?install=1',
+        detect: 'manual',
+      },
     ],
   },
   {
