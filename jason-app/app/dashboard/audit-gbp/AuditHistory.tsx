@@ -84,7 +84,7 @@ export default function AuditHistory({ audits }: Props) {
 
               {/* Bouton suppression */}
               {isConfirming ? (
-                <div style={s.confirmRow}>
+                <div style={s.confirmRow} className="audit-history-confirm">
                   <span style={s.confirmText}>Supprimer définitivement ?</span>
                   <button
                     type="button"
@@ -137,6 +137,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '12px', overflow: 'hidden',
     transition: 'border-color 0.15s',
+    flexWrap: 'wrap' as const,
   },
   historyLink: {
     flex: 1,
@@ -180,10 +181,12 @@ const s: Record<string, React.CSSProperties> = {
 
   confirmRow: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    padding: '8px 12px',
+    padding: '10px 14px',
     background: 'rgba(239,68,68,0.05)',
     borderLeft: '1px solid rgba(239,68,68,0.18)',
     flexWrap: 'wrap' as const,
+    width: '100%',
+    justifyContent: 'flex-end',
   },
   confirmText: {
     fontSize: '12px', color: 'var(--text-2)',
