@@ -231,7 +231,7 @@ function RegisterForm() {
                 />
                 <span>
                   Je suis membre <strong style={{ color: '#004C3F' }}>Driing</strong>
-                  <span style={s.driingBadge}>Accès gratuit</span>
+                  <span style={s.driingBadge}>Standard inclus</span>
                 </span>
               </label>
               {isDriingMember && (
