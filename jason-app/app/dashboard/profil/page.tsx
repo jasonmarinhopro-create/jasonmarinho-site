@@ -5,7 +5,7 @@ import ProfilForm from './ProfilForm'
 import ChezNousIdentity from './ChezNousIdentity'
 
 const PLAN_BADGE: Record<string, { label: string; color: string; bg: string; dot: string }> = {
-  'Membre Driing':  { label: 'Membre Driing',  color: '#FFD56B', bg: 'rgba(255,213,107,0.14)', dot: '#FFD56B' },
+  'Membre Driing':  { label: 'Membre Driing',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', dot: 'var(--accent-text)' },
   'Standard':       { label: 'Standard',        color: '#34D399', bg: 'rgba(52,211,153,0.12)',  dot: '#34D399' },
   'Administrateur': { label: 'Administrateur',  color: '#C084FC', bg: 'rgba(192,132,252,0.12)', dot: '#C084FC' },
   'Découverte':     { label: 'Découverte',      color: 'var(--text-3)', bg: 'var(--border)',    dot: '#6b7280' },
@@ -150,7 +150,7 @@ export default async function ProfilPage() {
         }
         .profil-progress-fill {
           height: 100%;
-          background: linear-gradient(90deg, var(--accent-text), #FFD56B);
+          background: linear-gradient(90deg, var(--accent-text), var(--accent-border-2));
           border-radius: 999px;
           transition: width 0.4s ease;
         }

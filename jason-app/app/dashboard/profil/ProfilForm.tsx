@@ -122,7 +122,7 @@ const f: Record<string, React.CSSProperties> = {
 function stripeBanner(type: 'success' | 'pending' | 'error'): React.CSSProperties {
   const c = {
     success: { bg: 'rgba(52,211,153,0.08)', border: 'rgba(52,211,153,0.2)', color: '#34D399' },
-    pending: { bg: 'rgba(255,213,107,0.08)', border: 'rgba(255,213,107,0.2)', color: '#FFD56B' },
+    pending: { bg: 'rgba(217,119,6,0.10)', border: 'rgba(217,119,6,0.28)', color: '#b45309' },
     error:   { bg: 'rgba(239,68,68,0.08)',   border: 'rgba(239,68,68,0.2)',   color: '#ef4444' },
   }[type]
   return {
@@ -408,8 +408,8 @@ export default function ProfilForm({
           ) : stripeAccountId && !stripeComplete ? (
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#FFD56B', flexShrink: 0 }} />
-                <span style={{ fontSize: '13px', color: '#FFD56B' }}>Onboarding incomplet</span>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#d97706', flexShrink: 0 }} />
+                <span style={{ fontSize: '13px', color: '#b45309', fontWeight: 600 }}>Onboarding incomplet</span>
               </div>
               <button onClick={handleStripeConnect} disabled={stripeLoading} style={addBtn('#a29bfe', 'rgba(99,91,255,0.1)', 'rgba(99,91,255,0.3)')}>
                 {stripeLoading ? 'Chargement…' : 'Finaliser mon compte Stripe →'}
@@ -515,14 +515,14 @@ function DangerZone() {
       <div style={dz.card}>
         <div style={dz.header}>
           <div style={dz.iconWrap}>
-            <Warning size={18} weight="fill" />
+            <Trash size={18} weight="bold" />
           </div>
           <div>
-            <h3 style={dz.title}>Zone de danger</h3>
+            <h3 style={dz.title}>Supprimer mon compte</h3>
             <p style={dz.desc}>
-              Supprimer ton compte est définitif. Toutes tes données (logements,
-              voyageurs, séjours, contrats, posts, abonnement) seront effacées.
-              Action conforme à ton droit RGPD et au droit de rétractation 14 jours.
+              Si tu ne veux plus utiliser ton espace, tu peux le supprimer en 1 clic.
+              Toutes tes données (logements, voyageurs, séjours, contrats, posts) seront
+              effacées et ton abonnement résilié. Conforme RGPD + droit de rétractation 14 jours.
             </p>
           </div>
         </div>
@@ -609,7 +609,7 @@ function DangerZone() {
 const dz: Record<string, React.CSSProperties> = {
   card: {
     background: 'var(--surface)',
-    border: '1px solid rgba(220,38,38,0.25)',
+    border: '1px solid var(--border-2)',
     borderRadius: '14px',
     padding: '18px 20px',
     marginTop: '24px',
@@ -620,7 +620,7 @@ const dz: Record<string, React.CSSProperties> = {
   header: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
   iconWrap: {
     width: '36px', height: '36px',
-    background: 'rgba(220,38,38,0.10)', color: '#dc2626',
+    background: 'var(--surface-2)', color: 'var(--text-3)',
     borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
