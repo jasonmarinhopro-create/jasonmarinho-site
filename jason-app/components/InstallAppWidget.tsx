@@ -154,15 +154,28 @@ export default function InstallAppWidget() {
           0%, 100% { transform: translateY(0); opacity: .5; }
           50%      { transform: translateY(6px); opacity: 1; }
         }
+        /* Widget — fond opaque dédié (les vars --surface du dashboard sont
+           translucides par design, ce qui rendrait le widget illisible) */
         .jm-iw-root {
           position: fixed; bottom: 16px; right: 16px; left: auto; z-index: 9998;
           width: min(360px, calc(100vw - 32px));
-          background: var(--surface); color: var(--text);
-          border: 1px solid var(--border-2); border-radius: 14px;
+          background: #FDFCF9; color: #0F1A0D;
+          border: 1px solid rgba(0,76,63,.16); border-radius: 14px;
           box-shadow: 0 12px 32px rgba(0,0,0,.25);
           padding: 14px 16px 12px;
           animation: jm-iw-slide-in .35s cubic-bezier(.22,.61,.36,1) forwards;
         }
+        [data-theme="dark"] .jm-iw-root {
+          background: #0F1A0D; color: #F0F4FF;
+          border-color: rgba(255,213,107,.18);
+          box-shadow: 0 12px 32px rgba(0,0,0,.5);
+        }
+        .jm-iw-desc { color: rgba(15,26,13,.66); }
+        [data-theme="dark"] .jm-iw-desc { color: rgba(240,244,255,.62); }
+        .jm-iw-close { color: rgba(15,26,13,.4); }
+        [data-theme="dark"] .jm-iw-close { color: rgba(240,244,255,.4); }
+        .jm-iw-close:hover { background: rgba(15,26,13,.06); color: rgba(15,26,13,.7); }
+        [data-theme="dark"] .jm-iw-close:hover { background: rgba(255,255,255,.08); color: rgba(240,244,255,.7); }
         @media (max-width: 480px) {
           .jm-iw-root { right: 8px; bottom: 8px; left: 8px; width: auto; }
         }
@@ -175,9 +188,9 @@ export default function InstallAppWidget() {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={s.title}>Garde Jason à portée de tap</p>
-            <p style={s.desc}>Installe ton espace comme une app pour le retrouver en un tap sur ton écran d&apos;accueil.</p>
+            <p className="jm-iw-desc" style={s.desc}>Installe ton espace comme une app pour le retrouver en un tap sur ton écran d&apos;accueil.</p>
           </div>
-          <button onClick={dismiss} style={s.close} aria-label="Fermer">×</button>
+          <button onClick={dismiss} className="jm-iw-close" style={s.close} aria-label="Fermer">×</button>
         </div>
         <button onClick={handleInstallClick} style={s.cta} disabled={!!bookmarkHint}>
           {bookmarkHint ?? "Installer l'app"}
@@ -249,10 +262,10 @@ const s: Record<string, React.CSSProperties> = {
     background: '#004C3F',
   },
   title: { fontSize: '14px', fontWeight: 600, margin: '0 0 2px', letterSpacing: '-.1px' },
-  desc: { fontSize: '12.5px', color: 'var(--text-2)', margin: 0, lineHeight: 1.45 },
+  desc: { fontSize: '12.5px', margin: 0, lineHeight: 1.45 },
   close: {
     background: 'none', border: 'none', cursor: 'pointer', padding: '4px',
-    color: 'var(--text-3)', fontSize: '18px', lineHeight: 1, marginLeft: 'auto',
+    fontSize: '18px', lineHeight: 1, marginLeft: 'auto',
     width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center',
     borderRadius: '6px', flexShrink: 0,
   },
