@@ -3,11 +3,12 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, MapTrifold,
+  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, MapTrifold, Lifebuoy,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
 import NotificationPanel from './NotificationPanel'
+import SOSModal from '@/components/sos/SOSModal'
 import ChezNousNotifBell from './ChezNousNotifBell'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
@@ -111,6 +112,13 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
+  const [sosOpen, setSosOpen] = useState(false)
+  // Mapping du label plan vers la valeur technique attendue par SOSModal.
+  // Admin a accès complet aux scénarios (équivalent Driing).
+  const sosPlan: 'decouverte' | 'standard' | 'driing' =
+    currentPlan === 'Membre Driing' || currentPlan === 'Administrateur' ? 'driing'
+    : currentPlan === 'Standard' ? 'standard'
+    : 'decouverte'
   const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
   const [userName] = useState(initialUserName ?? '')
   const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
@@ -200,6 +208,12 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
         onMarkAllRead={handleMarkAllRead}
       />
 
+      <SOSModal
+        open={sosOpen}
+        onClose={() => setSosOpen(false)}
+        plan={sosPlan}
+      />
+
       <header style={styles.header} className="dash-header">
         <div style={styles.left} className="dash-header-left">
           <button
@@ -237,6 +251,16 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
               ? <Sun size={17} weight="regular" />
               : <Moon size={17} weight="regular" />
             }
+          </button>
+
+          {/* SOS Hôte — accessible depuis n'importe quelle page du dashboard */}
+          <button
+            style={styles.sosBtn}
+            aria-label="SOS Hôte — En cas de problème"
+            title="SOS Hôte — En cas de problème"
+            onClick={() => setSosOpen(true)}
+          >
+            <Lifebuoy size={18} weight="regular" />
           </button>
 
           {/* Notifications */}
@@ -418,6 +442,16 @@ const styles: Record<string, React.CSSProperties> = {
     width: '36px', height: '36px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-2)',
+  },
+  sosBtn: {
+    position: 'relative',
+    background: 'rgba(220,38,38,0.08)',
+    border: '1px solid rgba(220,38,38,0.22)',
+    borderRadius: '9px',
+    width: '36px', height: '36px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', color: '#dc2626',
+    transition: 'background 0.15s',
   },
   notifBadge: {
     position: 'absolute',
