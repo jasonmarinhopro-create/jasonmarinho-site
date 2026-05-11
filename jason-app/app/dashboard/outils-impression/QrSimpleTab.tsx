@@ -5,6 +5,7 @@ import {
   WifiHigh, Link, EnvelopeSimple, Phone, ChatTeardropText, Star,
   MapPin, DownloadSimple, ArrowsClockwise, CaretDown,
 } from '@phosphor-icons/react/dist/ssr'
+import { useTheme } from '@/components/ThemeProvider'
 
 interface Logement {
   id: string
@@ -76,13 +77,38 @@ function isLightColor(hex: string): boolean {
 }
 
 export default function QrSimpleTab({ plan, logements }: Props) {
+  const { theme } = useTheme()
+  // Couleur par défaut selon le thème : blanc en sombre, noir en clair.
+  // L'init se fait via lazy state, donc on respecte le thème dès le premier render.
   const [qrType, setQrType] = useState<QrTypeId>('wifi')
   const [fields, setFields] = useState<Record<string, string>>({ wifiSecurity: 'WPA' })
   const [dotStyle, setDotStyle] = useState<DotStyleId>('rounded')
-  const [fgColor, setFgColorRaw] = useState('#FFFFFF')
-  const [hexDraft, setHexDraft] = useState('FFFFFF')
+  const initialFg = theme === 'light' ? '#000000' : '#FFFFFF'
+  const [fgColor, setFgColorRaw] = useState(initialFg)
+  const [hexDraft, setHexDraft] = useState(initialFg.replace('#', ''))
   const [transparentBg, setTransparentBg] = useState(true)
   const [bgColor, setBgColor] = useState('#FFFFFF')
+
+  // Si le user toggle le thème pendant la session ET qu'il n'a pas customisé
+  // sa couleur (toujours sur la couleur défaut de l'autre thème), on bascule.
+  useEffect(() => {
+    setFgColorRaw(prev => {
+      if (theme === 'light' && prev === '#FFFFFF') return '#000000'
+      if (theme === 'dark' && prev === '#000000') return '#FFFFFF'
+      return prev
+    })
+    setHexDraft(prev => {
+      if (theme === 'light' && prev === 'FFFFFF') return '000000'
+      if (theme === 'dark' && prev === '000000') return 'FFFFFF'
+      return prev
+    })
+  }, [theme])
+
+  // Swatches : ordre dépend du thème (noir en premier en clair, blanc en premier en sombre).
+  const swatchColors = theme === 'light'
+    ? ['#000000', '#FFFFFF', '#1e3a5f', '#7c3aed', '#b91c1c', '#d97706', '#059669']
+    : ['#FFFFFF', '#000000', '#1e3a5f', '#7c3aed', '#b91c1c', '#d97706', '#059669']
+
   function setFgColor(c: string) {
     setFgColorRaw(c)
     setHexDraft(c.replace('#', '').toUpperCase())
@@ -163,7 +189,19 @@ export default function QrSimpleTab({ plan, logements }: Props) {
   const selectedType = QR_TYPES.find(t => t.id === qrType)!
 
   return (
-    <div style={s.layout}>
+    <div style={s.layout} className="qrsimple-layout">
+      {/* Responsive CSS — passage en 1 colonne sur tablette/mobile */}
+      <style>{`
+        @media (max-width: 980px) {
+          .qrsimple-layout { grid-template-columns: 1fr !important; }
+          .qrsimple-preview-col { position: static !important; top: auto !important; }
+          .qrsimple-field-row { grid-template-columns: 1fr !important; }
+          .qrsimple-dl-buttons { flex-direction: column !important; }
+        }
+        @media (max-width: 480px) {
+          .qrsimple-preview-wrap { width: 100% !important; max-width: 280px !important; }
+        }
+      `}</style>
       {/* Left: form */}
       <div style={s.formCol}>
         {/* Type selector */}
@@ -210,7 +248,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
                   </div>
                 </div>
               )}
-              <div style={s.fieldRow}>
+              <div style={s.fieldRow} className="qrsimple-field-row">
                 <div style={s.fieldWrap}>
                   <label style={s.fieldLabel}>Nom du réseau (SSID)</label>
                   <input
@@ -336,7 +374,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
             <div style={s.fieldWrap}>
               <label style={s.fieldLabel}>Couleur</label>
               <div style={s.colorRow}>
-                {['#FFFFFF', '#1e3a5f', '#7c3aed', '#b91c1c', '#d97706', '#059669'].map(c => (
+                {swatchColors.map(c => (
                   <button
                     key={c}
                     onClick={() => setFgColor(c)}
@@ -409,10 +447,10 @@ export default function QrSimpleTab({ plan, logements }: Props) {
       </div>
 
       {/* Right: preview + download */}
-      <div style={s.previewCol}>
+      <div style={s.previewCol} className="qrsimple-preview-col">
         <div style={s.previewCard}>
           <div style={s.previewLabel}>Aperçu</div>
-          <div style={{
+          <div className="qrsimple-preview-wrap" style={{
             ...s.previewWrap,
             background: transparentBg
               ? (isLightColor(fgColor) ? '#1A1A1A' : '#F5F5F0')
@@ -450,7 +488,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
                   ? 'Fond transparent — intègre ce QR code dans tes propres designs Canva, Word, Figma…'
                   : 'Fond couleur unie — prêt à imprimer ou utiliser tel quel.'}
               </p>
-              <div style={s.dlButtons}>
+              <div style={s.dlButtons} className="qrsimple-dl-buttons">
                 <button onClick={downloadPng} style={s.dlBtn}>
                   <DownloadSimple size={15} weight="bold" />
                   Télécharger PNG
