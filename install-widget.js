@@ -234,16 +234,20 @@
         <div class="jm-ios-step">
           <div class="jm-ios-stepNum">2</div>
           <div class="jm-ios-stepText">
-            Fais défiler et choisis <strong>« Sur l'écran d'accueil »</strong>
+            Fais défiler la liste, puis touche
+            <strong>« Sur l'écran d'accueil »</strong>
             <span class="jm-ios-pictogram" aria-hidden="true">
               <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a1 1 0 011 1v6h6a1 1 0 010 2H9v6a1 1 0 01-2 0V9H1a1 1 0 010-2h6V1a1 1 0 011-1z"/></svg>
             </span>
+            <div style="margin-top:8px;font-size:12.5px;color:rgba(15,26,13,.55);background:rgba(0,76,63,.05);border-radius:8px;padding:8px 10px">
+              Tu ne la vois pas&nbsp;? Touche <strong>« En voir plus »</strong> en bas de la feuille, l'option se trouve dans la liste complète.
+            </div>
           </div>
         </div>
         <div class="jm-ios-step">
           <div class="jm-ios-stepNum">3</div>
           <div class="jm-ios-stepText">
-            Touche <strong>Ajouter</strong> en haut à droite. C'est fait !
+            Touche <strong>Ajouter</strong> en haut à droite. C'est fait&nbsp;!
           </div>
         </div>
         <div class="jm-ios-arrow" aria-hidden="true">↓</div>
