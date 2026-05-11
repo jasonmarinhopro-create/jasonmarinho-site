@@ -3,11 +3,11 @@
 import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { saveProfileName, saveIban, saveAdresse } from './actions'
+import { saveProfileName, saveIban, saveAdresse, deleteAccount } from './actions'
 import {
   Check, User, EnvelopeSimple, PencilSimple, Warning, Lock,
   Eye, EyeSlash, CreditCard, Bank, MapPin, IdentificationCard,
-  Wallet,
+  Wallet, Trash, X,
 } from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
@@ -481,8 +481,226 @@ export default function ProfilForm({
           )}
         </FieldRow>
       </SectionCard>
+
+      {/* ── Zone de danger : suppression du compte (RGPD) ── */}
+      <DangerZone />
     </>
   )
+}
+
+// ─── Zone de danger : suppression de compte ────────────────────────────────
+function DangerZone() {
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
+  const [confirmation, setConfirmation] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleDelete() {
+    if (confirmation !== 'SUPPRIMER') return
+    setSubmitting(true)
+    setError(null)
+    const res = await deleteAccount(confirmation)
+    if (res.error) {
+      setError(res.error)
+      setSubmitting(false)
+      return
+    }
+    // Compte supprimé : redirect vers la page login (la session a déjà été nettoyée)
+    router.replace('/auth/login')
+  }
+
+  return (
+    <>
+      <div style={dz.card}>
+        <div style={dz.header}>
+          <div style={dz.iconWrap}>
+            <Warning size={18} weight="fill" />
+          </div>
+          <div>
+            <h3 style={dz.title}>Zone de danger</h3>
+            <p style={dz.desc}>
+              Supprimer ton compte est définitif. Toutes tes données (logements,
+              voyageurs, séjours, contrats, posts, abonnement) seront effacées.
+              Action conforme à ton droit RGPD et au droit de rétractation 14 jours.
+            </p>
+          </div>
+        </div>
+        <button onClick={() => setOpen(true)} style={dz.btn}>
+          <Trash size={13} weight="bold" />
+          Supprimer mon compte
+        </button>
+      </div>
+
+      {open && (
+        <div style={dz.overlay} onClick={() => !submitting && setOpen(false)}>
+          <div style={dz.modal} onClick={e => e.stopPropagation()}>
+            <div style={dz.modalHead}>
+              <h3 style={dz.modalTitle}>Confirmer la suppression</h3>
+              <button
+                onClick={() => !submitting && setOpen(false)}
+                disabled={submitting}
+                style={dz.modalClose}
+                aria-label="Fermer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <p style={dz.modalText}>
+              Tu t'apprêtes à supprimer <strong style={{ color: 'var(--text)' }}>définitivement</strong> ton
+              compte. Cette action :
+            </p>
+            <ul style={dz.modalList}>
+              <li>annule ton abonnement Stripe s'il est actif</li>
+              <li>efface tous tes logements, voyageurs et séjours</li>
+              <li>efface tes contrats, posts Facebook et préférences</li>
+              <li>ne peut pas être annulée</li>
+            </ul>
+
+            <p style={dz.modalConfirmLabel}>
+              Tape <code style={dz.code}>SUPPRIMER</code> pour confirmer :
+            </p>
+            <input
+              type="text"
+              value={confirmation}
+              onChange={e => setConfirmation(e.target.value)}
+              placeholder="SUPPRIMER"
+              autoFocus
+              disabled={submitting}
+              style={dz.input}
+            />
+
+            {error && (
+              <div style={dz.errorBox}>
+                <Warning size={14} />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <div style={dz.modalActions}>
+              <button
+                onClick={() => setOpen(false)}
+                disabled={submitting}
+                style={dz.btnCancel}
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={confirmation !== 'SUPPRIMER' || submitting}
+                style={{
+                  ...dz.btnDelete,
+                  opacity: confirmation === 'SUPPRIMER' && !submitting ? 1 : 0.5,
+                  cursor: confirmation === 'SUPPRIMER' && !submitting ? 'pointer' : 'not-allowed',
+                }}
+              >
+                <Trash size={13} weight="bold" />
+                {submitting ? 'Suppression…' : 'Supprimer définitivement'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+const dz: Record<string, React.CSSProperties> = {
+  card: {
+    background: 'var(--surface)',
+    border: '1px solid rgba(220,38,38,0.25)',
+    borderRadius: '14px',
+    padding: '18px 20px',
+    marginTop: '24px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '14px',
+  },
+  header: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
+  iconWrap: {
+    width: '36px', height: '36px',
+    background: 'rgba(220,38,38,0.10)', color: '#dc2626',
+    borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  title: {
+    fontSize: '14.5px', fontWeight: 600, color: 'var(--text)',
+    margin: '0 0 4px',
+  },
+  desc: {
+    fontSize: '12.5px', color: 'var(--text-2)', margin: 0, lineHeight: 1.55,
+  },
+  btn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '9px 16px', borderRadius: '10px',
+    fontSize: '13px', fontWeight: 600, fontFamily: 'inherit',
+    background: 'rgba(220,38,38,0.10)', color: '#dc2626',
+    border: '1px solid rgba(220,38,38,0.30)',
+    cursor: 'pointer', width: 'fit-content',
+  },
+  overlay: {
+    position: 'fixed', inset: 0, zIndex: 9999,
+    background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '16px',
+  },
+  modal: {
+    background: 'var(--bg)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '14px',
+    padding: '22px 24px',
+    width: '100%', maxWidth: '460px',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+  },
+  modalHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' },
+  modalTitle: {
+    fontSize: '17px', fontWeight: 600, color: 'var(--text)', margin: 0,
+    fontFamily: 'var(--font-fraunces), serif',
+  },
+  modalClose: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'var(--text-3)', padding: '4px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    borderRadius: '6px',
+  },
+  modalText: { fontSize: '13.5px', color: 'var(--text-2)', lineHeight: 1.6, margin: '0 0 10px' },
+  modalList: {
+    margin: '0 0 18px', paddingLeft: '20px',
+    fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.7,
+  },
+  modalConfirmLabel: { fontSize: '13px', color: 'var(--text-2)', margin: '0 0 8px' },
+  code: {
+    background: 'rgba(220,38,38,0.10)', color: '#dc2626',
+    padding: '2px 8px', borderRadius: '5px',
+    fontSize: '12.5px', fontFamily: 'ui-monospace, monospace', fontWeight: 600,
+  },
+  input: {
+    width: '100%', padding: '10px 13px', borderRadius: '10px',
+    border: '1px solid var(--border-2)', background: 'var(--surface)',
+    color: 'var(--text)', fontSize: '14px', fontFamily: 'ui-monospace, monospace',
+    fontWeight: 600, letterSpacing: '1px', outline: 'none',
+    boxSizing: 'border-box', marginBottom: '14px',
+  },
+  errorBox: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '10px 12px', borderRadius: '10px',
+    background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.25)',
+    fontSize: '12.5px', color: '#dc2626', marginBottom: '14px',
+  },
+  modalActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
+  btnCancel: {
+    padding: '9px 16px', borderRadius: '10px',
+    fontSize: '13px', fontWeight: 500, fontFamily: 'inherit',
+    background: 'transparent', color: 'var(--text-2)',
+    border: '1px solid var(--border-2)', cursor: 'pointer',
+  },
+  btnDelete: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '9px 16px', borderRadius: '10px',
+    fontSize: '13px', fontWeight: 600, fontFamily: 'inherit',
+    background: '#dc2626', color: '#fff', border: 'none',
+  },
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
