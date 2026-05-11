@@ -76,7 +76,7 @@ function resolveTitle(pathname: string): string {
 const PLAN_COLORS: Record<string, { bg: string; color: string; dot: string }> = {
   'Découverte':    { bg: 'var(--border)', color: 'var(--text-3)',  dot: '#6b7280' },
   'Standard':      { bg: 'rgba(52,211,153,0.12)',  color: '#34D399',       dot: '#34D399' },
-  'Membre Driing': { bg: 'rgba(255,213,107,0.14)', color: '#FFD56B',       dot: '#FFD56B' },
+  'Membre Driing': { bg: 'var(--accent-bg-2)',    color: 'var(--accent-text)', dot: 'var(--accent-text)' },
   'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC',       dot: '#C084FC' },
 }
 
@@ -358,7 +358,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                     onClick={() => setDropdownOpen(false)}
                     style={styles.dropReviewBtn}
                   >
-                    <Star size={14} weight="fill" style={{ color: '#FFD56B', flexShrink: 0 }} />
+                    <Star size={14} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0 }} />
                     Laisser un avis Google
                     <ArrowUpRight size={12} style={{ marginLeft: 'auto', opacity: 0.6 }} />
                   </a>
@@ -448,7 +448,7 @@ const styles: Record<string, React.CSSProperties> = {
   avatar: {
     width: '28px', height: '28px', flexShrink: 0,
     background: 'rgba(0,76,63,0.5)',
-    border: '1px solid rgba(255,213,107,0.25)',
+    border: '1px solid var(--accent-border-2)',
     borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
@@ -482,7 +482,7 @@ const styles: Record<string, React.CSSProperties> = {
   dropAvatar: {
     width: '40px', height: '40px', flexShrink: 0,
     background: 'rgba(0,76,63,0.5)',
-    border: '1.5px solid rgba(255,213,107,0.25)',
+    border: '1.5px solid var(--accent-border-2)',
     borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
@@ -537,8 +537,8 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '9px 12px', borderRadius: '8px',
     fontSize: '13px', fontWeight: 500,
     color: 'var(--accent-text)',
-    background: 'rgba(255,213,107,0.06)',
-    border: '1px solid rgba(255,213,107,0.18)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     textDecoration: 'none',
     width: '100%',
     transition: 'background 0.15s',
