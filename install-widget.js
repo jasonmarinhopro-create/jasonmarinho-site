@@ -1,14 +1,15 @@
-/* Install widget — propose d'installer le site comme app ou de l'ajouter
-   à l'écran d'accueil selon le navigateur détecté.
+/* Install widget — propose d'installer le site comme app via UN SEUL
+   bouton "Installer l'app" qui s'adapte automatiquement au device :
 
-   Comportements :
-   - Chrome/Edge desktop + Android : capture beforeinstallprompt et
-     déclenche le prompt natif au clic sur le bouton.
-   - Safari iOS : pas de prompt natif disponible, on affiche un guide
-     visuel "Partager → Ajouter à l'écran d'accueil".
-   - Firefox / autres : guide "Bookmark · Ctrl/Cmd+D" ou "Menu → Installer".
-   - Si déjà installé (display-mode standalone) : on ne montre rien.
-   - Dismiss persistant via localStorage (90 jours).
+   1. Chrome / Edge / Android compatible → déclenche le prompt natif PWA
+      (instantané, l'utilisateur clique "Installer" dans la popup système).
+   2. iOS Safari → overlay visuel plein écran avec instructions GRAPHIQUES
+      (pas d'API native dispo, on guide l'utilisateur 1 → 2 → 3).
+   3. Autres (Firefox desktop, Safari Mac…) → tente navigator.share, sinon
+      affiche un guide bookmark (Ctrl/⌘+D).
+
+   Skip si déjà installé (display-mode: standalone).
+   Dismiss persistant via localStorage (90 jours).
 */
 
 (function () {
@@ -17,9 +18,9 @@
   const STORAGE_KEY = 'jm-install-widget'
   const DISMISS_DAYS = 90
 
-  // 1. Skip si déjà installé / mode standalone (PWA already on home screen)
+  // 1. Skip si déjà installé / mode standalone
   const isStandalone =
-    window.matchMedia && window.matchMedia('(display-mode: standalone)').matches ||
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
     window.navigator.standalone === true
   if (isStandalone) return
 
@@ -32,7 +33,7 @@
     }
   } catch (e) { /* localStorage indisponible — on continue */ }
 
-  // 3. Détection navigateur (sniffing minimal, suffisant pour le routage UX)
+  // 3. Détection navigateur
   const ua = navigator.userAgent
   const isIOS = /iPhone|iPad|iPod/.test(ua) && !window.MSStream
   const isAndroid = /Android/.test(ua)
@@ -44,23 +45,19 @@
   let beforeInstallEvent = null
   let widgetEl = null
 
-  // 4. Capture l'événement natif d'installation (Chrome/Edge/Samsung/Opera)
+  // 4. Capture le prompt d'installation natif si dispo
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault()
     beforeInstallEvent = e
-    if (widgetEl) {
-      // Si le widget est déjà rendu sans bouton natif, on l'update
-      widgetEl.querySelector('[data-install-native]')?.style.removeProperty('display')
-    }
   })
 
-  // 5. Quand l'app est installée, on cache le widget définitivement
+  // 5. Si l'app finit installée, on cache le widget définitivement
   window.addEventListener('appinstalled', function () {
     try { localStorage.setItem(STORAGE_KEY, String(Date.now() + 365 * 86400 * 1000)) } catch (e) {}
     if (widgetEl) widgetEl.remove()
   })
 
-  // 6. Délai avant affichage — laisser la page se charger
+  // 6. Délai avant affichage
   setTimeout(render, 4500)
 
   function render() {
@@ -74,22 +71,13 @@
     document.body.appendChild(root)
     widgetEl = root
 
-    // Bind events
     root.querySelector('[data-dismiss]').addEventListener('click', dismiss)
-    const installBtn = root.querySelector('[data-install-native]')
-    if (installBtn) installBtn.addEventListener('click', installNative)
-    const guideBtn = root.querySelector('[data-show-guide]')
-    if (guideBtn) guideBtn.addEventListener('click', () => {
-      root.querySelector('[data-guide-panel]')?.classList.toggle('open')
-    })
+    root.querySelector('[data-install]').addEventListener('click', handleInstallClick)
 
-    // Animation entrée
     requestAnimationFrame(() => root.classList.add('jm-iw-open'))
   }
 
   function template() {
-    const native = !!beforeInstallEvent
-    const guideText = getGuideText()
     return `
       <style>
         #jm-install-widget { position:fixed; bottom:16px; right:16px; left:auto; z-index:9998;
@@ -113,20 +101,13 @@
           width:24px; height:24px; display:flex; align-items:center; justify-content:center;
           border-radius:6px; flex-shrink:0; }
         .jm-iw-close:hover { background:rgba(15,26,13,.06); color:rgba(15,26,13,.7); }
-        .jm-iw-actions { display:flex; gap:8px; margin-top:12px; }
-        .jm-iw-btn { flex:1; padding:8px 12px; border-radius:9px; font-size:12.5px; font-weight:600;
-          cursor:pointer; border:none; font-family:inherit; transition:background .15s, transform .15s; }
-        .jm-iw-btn-primary { background:#004C3F; color:#FFD56B; }
-        .jm-iw-btn-primary:hover { background:#003329; }
-        .jm-iw-btn-ghost { background:transparent; color:rgba(15,26,13,.7);
-          border:1px solid rgba(0,76,63,.18); }
-        .jm-iw-btn-ghost:hover { background:rgba(0,76,63,.04); }
-        .jm-iw-guide { max-height:0; overflow:hidden; transition:max-height .3s;
-          font-size:12px; color:rgba(15,26,13,.7); line-height:1.55; }
-        .jm-iw-guide.open { max-height:200px; margin-top:10px;
-          padding-top:10px; border-top:1px solid rgba(0,76,63,.1); }
-        .jm-iw-guide kbd { background:rgba(0,76,63,.08); border:1px solid rgba(0,76,63,.18);
-          border-radius:4px; padding:1px 6px; font-size:11px; font-family:ui-monospace,monospace; }
+        .jm-iw-btn { width:100%; margin-top:12px; padding:10px 14px; border-radius:10px;
+          font-size:13px; font-weight:600; cursor:pointer; border:none;
+          font-family:inherit; background:#004C3F; color:#FFD56B;
+          display:flex; align-items:center; justify-content:center; gap:7px;
+          transition:background .15s, transform .15s; }
+        .jm-iw-btn:hover { background:#003329; transform:translateY(-1px); }
+        .jm-iw-btn:active { transform:translateY(0); }
         @media (max-width:480px) {
           #jm-install-widget { right:8px; bottom:8px; left:8px; width:auto; }
         }
@@ -135,11 +116,42 @@
           .jm-iw-desc { color:rgba(255,255,255,.62); }
           .jm-iw-close { color:rgba(255,255,255,.4); }
           .jm-iw-close:hover { background:rgba(255,255,255,.08); color:rgba(255,255,255,.7); }
-          .jm-iw-btn-ghost { color:rgba(255,255,255,.7); border-color:rgba(255,213,107,.2); }
-          .jm-iw-btn-ghost:hover { background:rgba(255,213,107,.06); }
-          .jm-iw-guide { color:rgba(255,255,255,.7); }
-          .jm-iw-guide { border-top-color:rgba(255,213,107,.12); }
-          .jm-iw-guide kbd { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.18); }
+        }
+
+        /* Overlay iOS — apparaît au-dessus de tout, plein écran */
+        #jm-ios-overlay { position:fixed; inset:0; z-index:99999;
+          background:rgba(0,15,10,.86); backdrop-filter:blur(8px);
+          display:flex; align-items:flex-end; justify-content:center;
+          opacity:0; transition:opacity .25s; padding:0;
+          font-family:'Outfit',system-ui,sans-serif; }
+        #jm-ios-overlay.open { opacity:1; }
+        .jm-ios-card { background:#FDFCF9; color:#0F1A0D; width:100%;
+          max-width:480px; border-radius:20px 20px 0 0; padding:24px 20px 32px;
+          transform:translateY(20px); transition:transform .3s cubic-bezier(.22,.61,.36,1); }
+        #jm-ios-overlay.open .jm-ios-card { transform:translateY(0); }
+        .jm-ios-head { display:flex; justify-content:space-between; align-items:center;
+          margin-bottom:18px; }
+        .jm-ios-title { font-family:'Fraunces',serif; font-size:22px; font-weight:400;
+          margin:0; letter-spacing:-.3px; }
+        .jm-ios-close { background:rgba(15,26,13,.06); border:none; cursor:pointer;
+          width:32px; height:32px; border-radius:50%; font-size:20px;
+          display:flex; align-items:center; justify-content:center; color:rgba(15,26,13,.55); }
+        .jm-ios-step { display:flex; gap:14px; padding:12px 0;
+          border-top:1px solid rgba(0,76,63,.08); }
+        .jm-ios-step:first-of-type { border-top:none; }
+        .jm-ios-stepNum { width:28px; height:28px; border-radius:50%; flex-shrink:0;
+          background:#004C3F; color:#FFD56B; font-size:13px; font-weight:700;
+          display:flex; align-items:center; justify-content:center; }
+        .jm-ios-stepText { font-size:14px; line-height:1.55; padding-top:3px; flex:1; }
+        .jm-ios-stepText strong { color:#004C3F; font-weight:600; }
+        .jm-ios-pictogram { display:inline-flex; align-items:center; justify-content:center;
+          width:24px; height:24px; vertical-align:middle; margin:0 2px;
+          background:rgba(0,76,63,.08); border-radius:6px; color:#004C3F; }
+        .jm-ios-arrow { display:block; text-align:center; font-size:26px;
+          color:rgba(0,76,63,.4); margin:14px 0 6px; animation:jm-ios-bounce 1.4s infinite; }
+        @keyframes jm-ios-bounce {
+          0%, 100% { transform:translateY(0); opacity:.5; }
+          50%      { transform:translateY(6px); opacity:1; }
         }
       </style>
       <div class="jm-iw-head">
@@ -148,89 +160,115 @@
         </div>
         <div style="flex:1;min-width:0">
           <p class="jm-iw-title">Garde Jason à portée de clic</p>
-          <p class="jm-iw-desc">Installe le site comme une app pour le retrouver en un tap sur ton écran d'accueil.</p>
+          <p class="jm-iw-desc">Ajoute le site à ton écran d'accueil pour le retrouver en un tap.</p>
         </div>
         <button class="jm-iw-close" data-dismiss aria-label="Fermer">×</button>
       </div>
-      <div class="jm-iw-actions">
-        <button class="jm-iw-btn jm-iw-btn-primary" data-install-native
-                style="${native ? '' : 'display:none'}">
-          Installer l'app
-        </button>
-        <button class="jm-iw-btn ${native ? 'jm-iw-btn-ghost' : 'jm-iw-btn-primary'}" data-show-guide>
-          ${native ? 'Autre méthode' : 'Comment faire ?'}
-        </button>
-      </div>
-      <div class="jm-iw-guide" data-guide-panel>
-        ${guideText}
-      </div>
+      <button class="jm-iw-btn" data-install>Installer l'app</button>
     `
   }
 
-  function getGuideText() {
-    if (isIOS && isSafari) {
-      return `
-        <strong>Sur Safari iPhone/iPad :</strong><br>
-        1. Touche l'icône <strong>Partager</strong> en bas (⬆️)<br>
-        2. Fais défiler et choisis <strong>« Sur l'écran d'accueil »</strong><br>
-        3. Touche <strong>Ajouter</strong> en haut à droite
-      `
+  // Handler du bouton "Installer l'app" — choisit la meilleure méthode dispo
+  async function handleInstallClick() {
+    // CAS 1 — Prompt natif PWA (Chrome / Edge / Android)
+    if (beforeInstallEvent) {
+      beforeInstallEvent.prompt()
+      try {
+        const { outcome } = await beforeInstallEvent.userChoice
+        if (outcome === 'accepted' && widgetEl) widgetEl.remove()
+      } catch (e) {}
+      beforeInstallEvent = null
+      return
     }
+
+    // CAS 2 — iOS Safari : pas d'API native, on affiche l'overlay visuel
     if (isIOS) {
-      return `
-        <strong>Sur iPhone/iPad :</strong> ouvre cette page dans <strong>Safari</strong>,
-        puis Partager (⬆️) → <strong>Sur l'écran d'accueil</strong>.
-      `
+      showIOSOverlay()
+      return
     }
-    if (isAndroid && isFirefox) {
-      return `
-        <strong>Sur Firefox Android :</strong> Menu (⋮) → <strong>Installer</strong>.
-        Ou bien ajoute aux favoris : Menu → <strong>Marque-page</strong>.
-      `
+
+    // CAS 3 — Web Share API (mobiles non-Chrome, ex: Firefox Android)
+    if (navigator.share && (isAndroid || isFirefox)) {
+      try {
+        await navigator.share({
+          title: document.title,
+          text: 'Jason Marinho — Expert location courte durée',
+          url: window.location.href,
+        })
+        return
+      } catch (e) { /* user cancelled — on tombe sur le fallback */ }
     }
-    if (isAndroid) {
-      return `
-        <strong>Sur Android :</strong> Menu (⋮) → <strong>Installer l'application</strong>
-        (ou <strong>« Ajouter à l'écran d'accueil »</strong>).
-      `
-    }
-    if (isFirefox) {
-      return `
-        <strong>Sur Firefox :</strong> ajoute aux favoris avec
-        <kbd>Ctrl</kbd>+<kbd>D</kbd> (ou <kbd>⌘</kbd>+<kbd>D</kbd> sur Mac).
-        Firefox desktop ne propose pas l'installation PWA.
-      `
-    }
-    if (isSafari) {
-      return `
-        <strong>Sur Safari Mac :</strong> ajoute aux favoris avec
-        <kbd>⌘</kbd>+<kbd>D</kbd>. Pour épingler l'onglet, fais clic-droit
-        sur l'onglet → <strong>Épingler l'onglet</strong>.
-      `
-    }
-    if (isChrome || isEdge) {
-      return `
-        <strong>Sur ${isEdge ? 'Edge' : 'Chrome'} :</strong> clique l'icône
-        d'installation (⊕) dans la barre d'adresse, ou Menu (⋮) →
-        <strong>Installer Jason Marinho</strong>.
-      `
-    }
-    return `
-      Ajoute cette page aux favoris avec <kbd>Ctrl</kbd>+<kbd>D</kbd>
-      (ou <kbd>⌘</kbd>+<kbd>D</kbd> sur Mac) pour la retrouver facilement.
-    `
+
+    // CAS 4 — Desktop sans support PWA (Safari Mac, Firefox desktop) → bookmark
+    showBookmarkHint()
   }
 
-  async function installNative() {
-    if (!beforeInstallEvent) return
-    beforeInstallEvent.prompt()
-    try {
-      const { outcome } = await beforeInstallEvent.userChoice
-      if (outcome === 'accepted') {
-        widgetEl && widgetEl.remove()
-      }
-    } catch (e) { /* user closed the prompt — keep widget visible */ }
-    beforeInstallEvent = null
+  // Overlay plein écran iOS avec instructions visuelles claires
+  function showIOSOverlay() {
+    if (document.getElementById('jm-ios-overlay')) return
+    const overlay = document.createElement('div')
+    overlay.id = 'jm-ios-overlay'
+    overlay.innerHTML = `
+      <div class="jm-ios-card">
+        <div class="jm-ios-head">
+          <h3 class="jm-ios-title">Ajoute Jason à ton écran d'accueil</h3>
+          <button class="jm-ios-close" aria-label="Fermer">×</button>
+        </div>
+        <div class="jm-ios-step">
+          <div class="jm-ios-stepNum">1</div>
+          <div class="jm-ios-stepText">
+            Touche l'icône <strong>Partager</strong>
+            <span class="jm-ios-pictogram" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L4 5h2.5v6h3V5H12L8 1zm6 12H2v-2H1v3a1 1 0 001 1h12a1 1 0 001-1v-3h-1v2z"/></svg>
+            </span>
+            en bas de l'écran.
+          </div>
+        </div>
+        <div class="jm-ios-step">
+          <div class="jm-ios-stepNum">2</div>
+          <div class="jm-ios-stepText">
+            Fais défiler et choisis <strong>« Sur l'écran d'accueil »</strong>
+            <span class="jm-ios-pictogram" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a1 1 0 011 1v6h6a1 1 0 010 2H9v6a1 1 0 01-2 0V9H1a1 1 0 010-2h6V1a1 1 0 011-1z"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="jm-ios-step">
+          <div class="jm-ios-stepNum">3</div>
+          <div class="jm-ios-stepText">
+            Touche <strong>Ajouter</strong> en haut à droite. C'est fait !
+          </div>
+        </div>
+        <div class="jm-ios-arrow" aria-hidden="true">↓</div>
+      </div>
+    `
+    document.body.appendChild(overlay)
+    requestAnimationFrame(() => overlay.classList.add('open'))
+
+    function closeOverlay() {
+      overlay.classList.remove('open')
+      setTimeout(() => overlay.remove(), 300)
+    }
+    overlay.querySelector('.jm-ios-close').addEventListener('click', closeOverlay)
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay() })
+  }
+
+  // Hint bookmark inline (desktop sans support PWA)
+  function showBookmarkHint() {
+    if (!widgetEl) return
+    const isMac = /Mac/.test(navigator.platform)
+    const key = isMac ? '⌘' : 'Ctrl'
+    const btn = widgetEl.querySelector('[data-install]')
+    if (!btn) return
+    const original = btn.innerHTML
+    btn.innerHTML = `Appuie sur ${key} + D pour ajouter aux favoris`
+    btn.style.background = '#003329'
+    btn.disabled = true
+    setTimeout(() => {
+      btn.innerHTML = original
+      btn.style.background = ''
+      btn.disabled = false
+    }, 5000)
   }
 
   function dismiss() {
@@ -241,7 +279,7 @@
     }
   }
 
-  // Register service worker (nécessaire pour beforeinstallprompt sur Chrome/Edge)
+  // Register service worker (requis pour beforeinstallprompt)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').catch(() => {})
