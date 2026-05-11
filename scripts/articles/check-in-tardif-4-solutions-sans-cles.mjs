@@ -70,6 +70,6 @@ export default {
   related: [
     { slug: 'check-in-location-courte-duree-boite-a-cles-serrure-connectee', label: 'Check-in : boîte à clés vs serrure', categoryLabel: 'Expérience' },
     { slug: 'serrure-connectee-igloohome-nuki-comparatif-2026', label: 'Serrures connectées comparées',         categoryLabel: 'Automatisation' },
-    { slug: 'gerer-lcd-automatisation',                         label: 'Automatiser sa LCD',                    categoryLabel: 'Automatisation' },
+    { slug: 'outils-gerer-location-courte-duree-2025',          label: '7 outils pour gérer sa LCD',            categoryLabel: 'Automatisation' },
   ],
 }
