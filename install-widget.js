@@ -16,22 +16,29 @@
   'use strict'
 
   const STORAGE_KEY = 'jm-install-widget'
-  const DISMISS_DAYS = 90
+  const DISMISS_DAYS = 7
+
+  // Échappatoire : ?install=1 dans l'URL force l'affichage du widget,
+  // même si l'utilisateur l'a fermé récemment. Pratique pour les liens
+  // d'invitation (« clique ici pour installer »).
+  const forceShow = /[?&]install=1/.test(window.location.search)
 
   // 1. Skip si déjà installé / mode standalone
   const isStandalone =
     (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
     window.navigator.standalone === true
-  if (isStandalone) return
+  if (isStandalone && !forceShow) return
 
-  // 2. Skip si dismissed récemment
-  try {
-    const dismissed = localStorage.getItem(STORAGE_KEY)
-    if (dismissed) {
-      const t = parseInt(dismissed, 10)
-      if (!isNaN(t) && Date.now() - t < DISMISS_DAYS * 86400 * 1000) return
-    }
-  } catch (e) { /* localStorage indisponible — on continue */ }
+  // 2. Skip si dismissed récemment (sauf forceShow)
+  if (!forceShow) {
+    try {
+      const dismissed = localStorage.getItem(STORAGE_KEY)
+      if (dismissed) {
+        const t = parseInt(dismissed, 10)
+        if (!isNaN(t) && Date.now() - t < DISMISS_DAYS * 86400 * 1000) return
+      }
+    } catch (e) { /* localStorage indisponible — on continue */ }
+  }
 
   // 3. Détection navigateur
   const ua = navigator.userAgent
@@ -57,8 +64,8 @@
     if (widgetEl) widgetEl.remove()
   })
 
-  // 6. Délai avant affichage
-  setTimeout(render, 4500)
+  // 6. Délai avant affichage (immédiat si ?install=1)
+  setTimeout(render, forceShow ? 0 : 4500)
 
   function render() {
     if (document.getElementById('jm-install-widget')) return
