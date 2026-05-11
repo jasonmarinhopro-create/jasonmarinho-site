@@ -296,7 +296,7 @@ const styles: Record<string, React.CSSProperties> = {
   logoIcon: {
     width: '34px', height: '34px', flexShrink: 0,
     background: 'rgba(0,76,63,0.5)',
-    border: '1px solid rgba(255,213,107,0.18)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '9px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
