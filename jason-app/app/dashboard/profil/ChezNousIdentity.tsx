@@ -47,7 +47,7 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
       {/* ── Header ── */}
       <div style={s.header}>
         <div style={s.iconWrap}>
-          <House size={20} color="#FFD56B" weight="fill" />
+          <House size={20} color="var(--accent-text)" weight="fill" />
         </div>
         <div>
           <h3 style={s.title}>Profil Chez Nous</h3>
@@ -58,7 +58,7 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
       <div style={s.body}>
         {/* Bandeau explicatif Chez Nous */}
         <Link href="/dashboard/chez-nous" style={s.infoBanner}>
-          <UsersThree size={18} weight="fill" color="#FFD56B" />
+          <UsersThree size={18} weight="fill" color="var(--accent-text)" />
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={s.infoTitle}>Qu&apos;est-ce que Chez Nous&nbsp;?</p>
             <p style={s.infoDesc}>
@@ -177,7 +177,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   iconWrap: {
     width: '40px', height: '40px', borderRadius: '10px',
-    background: 'rgba(255,213,107,0.12)',
+    background: 'var(--accent-bg-2)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
@@ -227,8 +227,8 @@ const s: Record<string, React.CSSProperties> = {
   infoBanner: {
     display: 'flex', alignItems: 'center', gap: '12px',
     padding: '12px 14px', borderRadius: '12px',
-    background: 'rgba(255,213,107,0.06)',
-    border: '1px solid rgba(255,213,107,0.18)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     textDecoration: 'none', cursor: 'pointer',
     transition: 'background 0.15s, border-color 0.15s',
   },
