@@ -71,9 +71,9 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
       },
       {
         key: 'gabarit',
-        title: 'Personnalise un gabarit',
-        description: 'Adapte les emails et messages à ta voix : signature, ton, détails.',
-        ctaLabel: 'Voir mes gabarits',
+        title: 'Configure ta séquence de messages',
+        description: 'Choisis quels messages envoyer à tes voyageurs avant, pendant et après leur séjour. Le moteur des relations propres.',
+        ctaLabel: 'Configurer ma séquence',
         ctaHref: '/dashboard/gabarits',
         detect: 'manual',
       },
@@ -104,10 +104,10 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
     steps: [
       {
         key: 'fb_template_chosen',
-        title: 'Choisis un gabarit Facebook',
-        description: 'Un message prêt-à-publier pour les groupes d\'entraide LCD.',
-        ctaLabel: 'Voir les gabarits Facebook',
-        ctaHref: '/dashboard/gabarits?cat=facebook',
+        title: 'Choisis un post pour les groupes Facebook',
+        description: 'Pioche un gabarit dans la page Communauté pour te présenter dans les groupes d\'entraide LCD.',
+        ctaLabel: 'Voir les groupes',
+        ctaHref: '/dashboard/communaute',
         detect: 'manual',
       },
       {

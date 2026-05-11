@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { FacebookLogo, Copy, Check, House, FloppyDisk, Trash, BookmarkSimple, Plus, Warning } from '@phosphor-icons/react/dist/ssr'
 import { saveFacebookPost, deleteFacebookPost } from './actions'
+import { markStepIfNotYet } from '@/lib/onboarding/client'
 
 interface Template { id: string; title: string; content: string }
 interface Logement { id: string; nom: string; lien_driing: string | null }
@@ -98,11 +99,15 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
   }
 
   function loadTemplate(tpl: Template) {
-    // Ne change pas editingPostId : si on était en train d'éditer un saved post,
-    // on charge juste un nouveau contenu pour cette édition. Le titre reste.
+    // Bascule en mode brouillon avec le contenu ET le titre de l'inspiration.
+    // L'utilisateur peut ensuite tweaker et 'Sauvegarder' → ça créera un nouveau
+    // post sauvegardé (pas écrasement du saved courant).
+    setEditingPostId(null)
     setLastLoadedTemplateId(tpl.id)
+    setPostTitle(tpl.title)
     setPostContent(applyVariables(tpl.content, selectedLogement?.lien_driing ?? null))
     setSaveError(null)
+    void markStepIfNotYet('fb_template_chosen')
   }
 
   async function handleCopy() {
@@ -246,10 +251,29 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
         </div>
       </div>
 
-      {/* Section 2 : Inspirations templates */}
+      {/* Section 2 : Inspirations templates — carrousel horizontal sur mobile */}
       <div>
         <div style={s.chipsLabel}>Pioche un style pour t'inspirer</div>
-        <div style={s.chipsRow}>
+        <div style={s.chipsRow} className="fb-inspirations-row">
+          <style>{`
+            @media (max-width: 640px) {
+              .fb-inspirations-row {
+                flex-wrap: nowrap !important;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding-bottom: 6px;
+                -webkit-overflow-scrolling: touch;
+              }
+              .fb-inspirations-row > button {
+                scroll-snap-align: start;
+                flex-shrink: 0;
+              }
+              .fb-inspirations-row::-webkit-scrollbar { height: 3px; }
+              .fb-inspirations-row::-webkit-scrollbar-thumb {
+                background: var(--border-2); border-radius: 999px;
+              }
+            }
+          `}</style>
           {templates.map(t => {
             const active = t.id === lastLoadedTemplateId
             return (
