@@ -7,6 +7,7 @@ import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
 import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
+import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
@@ -84,6 +85,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             plan={profile.plan}
           />
         )}
+        <InstallAppWidget />
       </div>
     </ThemeProvider>
   )
