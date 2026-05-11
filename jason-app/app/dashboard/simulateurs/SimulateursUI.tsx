@@ -43,7 +43,20 @@ function FiscalLCD() {
     // Cotisations sociales SSI (Sécurité Sociale des Indépendants) si LMP :
     // ~35% en moyenne du bénéfice net. Tranche basse ~30%, haute ~43%.
     const cotisLMP = isLMP ? beneficeEstime * 0.35 : 0
-    return { isLMP, conditionA, conditionB, cotisLMP, seuilCA, beneficeEstime }
+    // Raison contextuelle pour expliquer pourquoi le user est LMNP malgré
+    // un éventuel dépassement de 23 k€ (cas le plus pédagogique).
+    let lmnpReason = ''
+    if (!isLMP) {
+      if (!conditionA && !conditionB) {
+        lmnpReason = `Tes ${fmtEur(ca)} de CA LCD sont sous les deux seuils (23 000 € et tes autres revenus pro).`
+      } else if (!conditionA) {
+        lmnpReason = `Ta LCD ne dépasse pas 23 000 € (actuellement ${fmtEur(ca)}). C'est la première condition à franchir.`
+      } else {
+        // conditionA vraie, conditionB fausse : cas du salarié qui dépasse 23k mais reste pro
+        lmnpReason = `Tu as dépassé les 23 000 €, MAIS tes autres revenus pro (${fmtEur(autresRevenus)}) restent supérieurs à ta LCD (${fmtEur(ca)}). Tant que ta LCD n'est pas ta source principale de revenus, tu restes particulier.`
+      }
+    }
+    return { isLMP, conditionA, conditionB, cotisLMP, seuilCA, beneficeEstime, lmnpReason }
   }, [ca, autresRevenus, result.tauxAbattement])
 
   return (
@@ -100,8 +113,28 @@ function FiscalLCD() {
       </div>
 
       {/* ─── Statut LMNP / LMP ─── */}
-      <div style={{ ...s.row, marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
-        <div style={{ gridColumn: '1 / -1', marginBottom: '4px' }}>
+      <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
+        <style>{`
+          .lmp-section-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+            gap: 16px;
+            width: 100%;
+            align-items: stretch;
+          }
+          .lmp-section-row > * { min-width: 0; }
+          .lmp-conds-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+          }
+          @media (max-width: 720px) {
+            .lmp-section-row,
+            .lmp-conds-row { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+        <div style={{ marginBottom: '14px' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px', letterSpacing: '-.1px' }}>
             Statut LMNP ou LMP ?
           </div>
@@ -109,41 +142,57 @@ function FiscalLCD() {
             Au-delà de <strong style={{ color: 'var(--text-2)' }}>23 000 € de CA LCD</strong>
             {' '}<em>ET</em> si tes revenus locatifs dépassent tes autres revenus pro du foyer,
             tu bascules automatiquement en LMP (Loueur Meublé Professionnel) — pas un choix, la loi.
+            <br />
+            <strong style={{ color: 'var(--text-2)' }}>Les 2 conditions doivent être remplies en même temps.</strong>
+            {' '}Si tu rates l&apos;une des deux (par exemple ton salaire reste supérieur à ta LCD), tu restes particulier (LMNP).
           </div>
         </div>
-        <div style={s.field}>
-          <label style={s.label}>Tes autres revenus pro du foyer / an</label>
-          <div style={s.inputWrap}>
-            <input type="number" value={autresRevenus} onChange={e => setAutresRevenus(Math.max(0, Number(e.target.value)))}
-              style={s.input} min={0} step={1000} />
-            <span style={s.suffix}>€</span>
-          </div>
-          <input type="range" value={autresRevenus} onChange={e => setAutresRevenus(Number(e.target.value))}
-            min={0} max={100000} step={1000} style={s.range} />
-          <div style={s.helper}>Salaires, BNC, autres BIC, retraites du foyer fiscal (hors LCD).</div>
-        </div>
-        <div style={s.field}>
-          <label style={s.label}>Verdict</label>
-          <div style={{
-            padding: '14px 16px', borderRadius: '12px',
-            background: statut.isLMP ? 'rgba(251,146,60,0.10)' : 'rgba(16,185,129,0.10)',
-            border: `1px solid ${statut.isLMP ? 'rgba(251,146,60,0.30)' : 'rgba(16,185,129,0.30)'}`,
-          }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const,
-              color: statut.isLMP ? '#d97706' : '#059669', marginBottom: '4px' }}>
-              {statut.isLMP ? '⚠️ Tu bascules en LMP' : '✓ Tu restes en LMNP'}
+        <div className="lmp-section-row">
+          <div style={s.field}>
+            <label style={s.label}>Tes autres revenus pro du foyer / an</label>
+            <div style={s.inputWrap}>
+              <input type="number" value={autresRevenus} onChange={e => setAutresRevenus(Math.max(0, Number(e.target.value)))}
+                style={s.input} min={0} step={1000} />
+              <span style={s.suffix}>€</span>
             </div>
-            <div style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.45 }}>
-              {statut.isLMP
-                ? 'Particulier devenant pro. Cotisations sociales SSI à la clé.'
-                : 'Statut particulier conservé. Pas de cotisations sociales.'}
+            <input type="range" value={autresRevenus} onChange={e => setAutresRevenus(Number(e.target.value))}
+              min={0} max={100000} step={1000} style={s.range} />
+            <div style={s.helper}>Salaires, BNC, autres BIC, retraites du foyer fiscal (hors LCD).</div>
+          </div>
+          <div style={s.field}>
+            <label style={s.label}>Verdict</label>
+            <div style={{
+              padding: '14px 16px', borderRadius: '12px',
+              background: statut.isLMP ? 'rgba(251,146,60,0.10)' : 'rgba(16,185,129,0.10)',
+              border: `1px solid ${statut.isLMP ? 'rgba(251,146,60,0.30)' : 'rgba(16,185,129,0.30)'}`,
+              height: '100%', display: 'flex', flexDirection: 'column' as const, justifyContent: 'center',
+            }}>
+              <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const,
+                color: statut.isLMP ? '#d97706' : '#059669', marginBottom: '4px' }}>
+                {statut.isLMP ? '⚠️ Tu bascules en LMP' : '✓ Tu restes en LMNP'}
+              </div>
+              <div style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.45 }}>
+                {statut.isLMP
+                  ? 'Particulier devenant pro. Cotisations sociales SSI à la clé.'
+                  : 'Statut particulier conservé. Pas de cotisations sociales.'}
+              </div>
+              {!statut.isLMP && statut.lmnpReason && (
+                <div style={{
+                  marginTop: '10px', paddingTop: '10px',
+                  borderTop: '1px solid rgba(16,185,129,0.18)',
+                  fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.5,
+                }}>
+                  <strong style={{ color: '#059669' }}>Pourquoi&nbsp;? </strong>
+                  {statut.lmnpReason}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* Détail des 2 conditions avec checkmarks visuels */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '12px' }} className="lmp-conds">
+      <div className="lmp-conds-row">
         <div style={{
           padding: '10px 12px', borderRadius: '10px',
           background: statut.conditionA ? 'rgba(251,146,60,0.08)' : 'rgba(16,185,129,0.06)',
