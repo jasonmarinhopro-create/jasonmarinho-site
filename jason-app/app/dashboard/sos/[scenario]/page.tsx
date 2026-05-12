@@ -151,13 +151,14 @@ const s: Record<string, React.CSSProperties> = {
     padding: 'clamp(16px, 3vw, 32px)',
   },
   backLink: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    display: 'flex', alignItems: 'center', gap: '5px',
     fontSize: '12.5px', color: 'var(--text-3)',
     textDecoration: 'none',
+    width: 'fit-content',
     marginBottom: '14px',
   },
   badge: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    display: 'flex', alignItems: 'center', gap: '5px',
     fontSize: '10.5px', fontWeight: 700,
     letterSpacing: '0.6px', textTransform: 'uppercase' as const,
     color: '#dc2626',
@@ -165,6 +166,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(220,38,38,0.25)',
     borderRadius: '999px',
     padding: '3px 9px',
+    width: 'fit-content',
     marginBottom: '10px',
   },
   title: {
