@@ -158,6 +158,7 @@
             + '<a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a>'
             + '<a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a>'
             + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
+            + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte</a>'
             + '<a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
             + '<a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a>'
           + '</div>'
