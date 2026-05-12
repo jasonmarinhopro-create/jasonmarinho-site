@@ -7,7 +7,7 @@
     url("/fonts/Phosphor-Bold.svg#Phosphor-Bold") format("svg");
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 .ph-bold {
@@ -53,7 +53,9 @@
 .ph-bold.ph-buildings:before { content: "\e102"; }
 .ph-bold.ph-calculator:before { content: "\e538"; }
 .ph-bold.ph-calendar:before { content: "\e108"; }
+.ph-bold.ph-calendar-blank:before { content: "\e10a"; }
 .ph-bold.ph-calendar-check:before { content: "\e712"; }
+.ph-bold.ph-calendar-x:before { content: "\e10c"; }
 .ph-bold.ph-camera:before { content: "\e10e"; }
 .ph-bold.ph-caret-down:before { content: "\e136"; }
 .ph-bold.ph-caret-right:before { content: "\e13a"; }
@@ -77,6 +79,7 @@
 .ph-bold.ph-clock-counter-clockwise:before { content: "\e1a0"; }
 .ph-bold.ph-coffee:before { content: "\e1c2"; }
 .ph-bold.ph-compass:before { content: "\e1c8"; }
+.ph-bold.ph-confetti:before { content: "\e81a"; }
 .ph-bold.ph-couch:before { content: "\e7f6"; }
 .ph-bold.ph-credit-card:before { content: "\e1d2"; }
 .ph-bold.ph-currency-circle-dollar:before { content: "\e54c"; }
@@ -112,18 +115,21 @@
 .ph-bold.ph-instagram-logo:before { content: "\e2d0"; }
 .ph-bold.ph-key:before { content: "\e2d6"; }
 .ph-bold.ph-layout:before { content: "\e6d6"; }
+.ph-bold.ph-lifebuoy:before { content: "\e63a"; }
 .ph-bold.ph-lightbulb:before { content: "\e2dc"; }
 .ph-bold.ph-lightning:before { content: "\e2de"; }
 .ph-bold.ph-link:before { content: "\e2e2"; }
 .ph-bold.ph-linkedin-logo:before { content: "\e2ee"; }
 .ph-bold.ph-list-checks:before { content: "\eadc"; }
 .ph-bold.ph-lock:before { content: "\e2fa"; }
+.ph-bold.ph-lock-key:before { content: "\e2fe"; }
 .ph-bold.ph-lock-open:before { content: "\e306"; }
 .ph-bold.ph-lock-simple:before { content: "\e308"; }
 .ph-bold.ph-magnet:before { content: "\e680"; }
 .ph-bold.ph-magnifying-glass:before { content: "\e30c"; }
 .ph-bold.ph-map-pin:before { content: "\e316"; }
 .ph-bold.ph-map-pin-line:before { content: "\e318"; }
+.ph-bold.ph-map-pin-simple-line:before { content: "\ee38"; }
 .ph-bold.ph-map-trifold:before { content: "\e31a"; }
 .ph-bold.ph-megaphone:before { content: "\e324"; }
 .ph-bold.ph-moon:before { content: "\e330"; }
@@ -160,6 +166,8 @@
 .ph-bold.ph-tag:before { content: "\e478"; }
 .ph-bold.ph-target:before { content: "\e47c"; }
 .ph-bold.ph-text-b:before { content: "\e5be"; }
+.ph-bold.ph-thumbs-down:before { content: "\e48c"; }
+.ph-bold.ph-thumbs-up:before { content: "\e48e"; }
 .ph-bold.ph-timer:before { content: "\e492"; }
 .ph-bold.ph-translate:before { content: "\e4a2"; }
 .ph-bold.ph-tree-evergreen:before { content: "\e6dc"; }
@@ -174,6 +182,7 @@
 .ph-bold.ph-video-camera:before { content: "\e4da"; }
 .ph-bold.ph-warning:before { content: "\e4e0"; }
 .ph-bold.ph-warning-circle:before { content: "\e4e2"; }
+.ph-bold.ph-warning-octagon:before { content: "\e4e4"; }
 .ph-bold.ph-waves:before { content: "\e6de"; }
 .ph-bold.ph-whatsapp-logo:before { content: "\e5d0"; }
 .ph-bold.ph-wrench:before { content: "\e5d4"; }
