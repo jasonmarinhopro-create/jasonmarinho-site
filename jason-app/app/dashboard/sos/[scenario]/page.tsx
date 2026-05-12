@@ -3,6 +3,8 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { SOS_SCENARIOS } from '@/components/sos/SOSModal'
 import { ArrowLeft, Warning, Info } from '@phosphor-icons/react/dist/ssr'
+import { SCENARIOS_CONTENT } from '@/lib/sos/scenarios-content'
+import ScenarioContent from '@/components/sos/ScenarioContent'
 
 /* Page détail d'un scénario SOS Hôte.
    Le contenu de chaque scénario × canal sera ajouté en Phase 2.
@@ -90,31 +92,36 @@ export default async function ScenarioPage({
             </div>
           </div>
         </div>
-      ) : (
-        <>
-          {/* PLACEHOLDER — Le contenu détaillé arrive en Phase 2 */}
-          <div style={s.placeholder}>
-            <div style={s.placeholderIcon}>🚧</div>
-            <h2 style={s.placeholderTitle}>Contenu en cours de rédaction</h2>
-            <p style={s.placeholderText}>
-              Le pas-à-pas <strong>{scenarioDef.title}</strong> pour <strong>{CHANNEL_LABELS[channel]}</strong>
-              {' '}est en cours de finalisation. Il inclura&nbsp;:
-            </p>
-            <ul style={s.placeholderList}>
-              <li>📅 Le délai critique pour agir</li>
-              <li>📋 Le pas-à-pas numéroté avec actions concrètes</li>
-              <li>💬 Les templates de messages prêts à copier</li>
-              <li>⛔ Les erreurs à NE SURTOUT PAS faire</li>
-              <li>⚖️ Les recours additionnels (médiateur, justice…)</li>
-              <li>🛡 La prévention pour éviter que ça se reproduise</li>
-            </ul>
-            <p style={{ fontSize: '12.5px', color: 'var(--text-3)', marginTop: '16px' }}>
-              En attendant, contacte directement Jason via le{' '}
-              <Link href="/dashboard/aide" style={{ color: 'var(--accent-text)' }}>Centre d&apos;aide</Link>.
-            </p>
-          </div>
-        </>
-      )}
+      ) : (() => {
+        const scenarioContent = SCENARIOS_CONTENT[scenario]?.[channel]
+        if (!scenarioContent) {
+          // Contenu pas encore rédigé pour cette combinaison → placeholder
+          return (
+            <div style={s.placeholder}>
+              <div style={s.placeholderIcon}>🚧</div>
+              <h2 style={s.placeholderTitle}>Contenu en cours de rédaction</h2>
+              <p style={s.placeholderText}>
+                Le pas-à-pas <strong>{scenarioDef.title}</strong> pour <strong>{CHANNEL_LABELS[channel]}</strong>
+                {' '}est en cours de finalisation. Il inclura&nbsp;:
+              </p>
+              <ul style={s.placeholderList}>
+                <li>📅 Le délai critique pour agir</li>
+                <li>📋 Le pas-à-pas numéroté avec actions concrètes</li>
+                <li>💬 Les templates de messages prêts à copier</li>
+                <li>⛔ Les erreurs à NE SURTOUT PAS faire</li>
+                <li>⚖️ Les recours additionnels (médiateur, justice…)</li>
+                <li>🛡 La prévention pour éviter que ça se reproduise</li>
+              </ul>
+              <p style={{ fontSize: '12.5px', color: 'var(--text-3)', marginTop: '16px' }}>
+                En attendant, contacte directement Jason via le{' '}
+                <Link href="/dashboard/aide" style={{ color: 'var(--accent-text)' }}>Centre d&apos;aide</Link>.
+              </p>
+            </div>
+          )
+        }
+        // Contenu disponible → rendu complet
+        return <ScenarioContent content={scenarioContent} />
+      })()}
 
       {/* Disclaimer juridique */}
       <div style={s.disclaimer}>
