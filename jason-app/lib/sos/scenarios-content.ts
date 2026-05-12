@@ -1017,4 +1017,570 @@ Cordialement,
     },
 
   },
+
+  // ─── SCÉNARIO 4 : Mon voyageur refuse de partir ─────────────────────────
+
+  'voyageur-refuse-partir': {
+
+    // ── Airbnb ────────────────────────────────────────────────────────────
+    airbnb: {
+      reassurance: "Situation rare mais stressante. Un voyageur qui refuse de quitter un meublé de tourisme est en occupation sans droit ni titre. La trêve hivernale et les procédures longues d'expulsion classique ne s'appliquent pas de la même façon. Tu as des leviers rapides.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · le jour même',
+        body: 'Agis dès la date de départ prévue. Chaque journée d\'attente complique la résolution et menace les réservations suivantes.',
+      },
+      steps: [
+        {
+          title: 'Contacte le voyageur par écrit, immédiatement',
+          body: 'Messagerie Airbnb (et email/SMS en parallèle pour multiplier les traces). Rappel de la date de fin de séjour, demande de départ **immédiat**, ton ferme mais correct.',
+        },
+        {
+          title: 'Signale à Airbnb dans la foulée',
+          body: 'Centre d\'aide Airbnb → **Le voyageur refuse de quitter le logement**. Airbnb peut intervenir directement auprès du voyageur, voire activer l\'assistance sécurité 24h/24.',
+        },
+        {
+          title: 'Si refus persistant, appelle la police (17) ou la gendarmerie',
+          body: 'Présente le contrat de location (= ta réservation Airbnb avec dates), l\'annonce, les échanges écrits. Ils peuvent constater l\'**occupation sans droit ni titre** et faire pression sur le voyageur pour qu\'il parte. Souvent suffisant.',
+        },
+        {
+          title: 'Constat d\'huissier en parallèle',
+          body: 'Pour les cas qui s\'enkystent, un constat d\'huissier (~150-300 €) établit officiellement l\'occupation sans droit. Pièce maîtresse pour la suite.',
+        },
+        {
+          title: 'Si la situation perdure : avocat + référé',
+          body: 'Avocat spécialisé en droit immobilier. **Procédure d\'expulsion en référé** devant le tribunal judiciaire (procédure rapide, ~2-4 semaines). Pour un meublé de tourisme, le juge tranche vite car ce n\'est pas un bail d\'habitation classique.',
+        },
+        {
+          title: 'Réclamation Airbnb post-résolution',
+          body: 'Demande remboursement des nuits non disponibles pour les voyageurs suivants (que tu as dû annuler) + indemnité pour préjudice. AirCover peut couvrir une partie selon ton dossier.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Premier message au voyageur',
+          body: `Bonjour [Prénom],
+
+Votre réservation prend fin aujourd'hui [date] à [heure].
+
+Conformément aux conditions de la réservation Airbnb [HM/numéro], merci de quitter le logement immédiatement.
+
+D'autres voyageurs sont attendus aujourd'hui. Sans départ sous [délai raisonnable, ex: 2 h], je serai contraint(e) de :
+- Signaler la situation à Airbnb
+- Contacter les autorités pour occupation sans droit ni titre
+- Engager une procédure d'expulsion en référé avec demande d'indemnisation
+
+Cordialement,
+[Prénom]`,
+        },
+        {
+          label: 'Signalement Airbnb',
+          body: `Bonjour,
+
+Le voyageur [Prénom] avait réservé jusqu'au [date] à [heure] (réservation HM[numéro]).
+
+À ce jour [date du jour], il refuse de quitter le logement malgré mes demandes répétées (échanges en pièce jointe).
+
+Je sollicite votre intervention immédiate pour faire respecter la date de fin de séjour.
+
+Sans solution sous 24 h, je devrai annuler les réservations suivantes (préjudice direct) et engager une procédure d'expulsion en référé.
+
+Merci de votre aide urgente.
+
+Cordialement,
+[Prénom]
+Téléphone : [numéro pour rappel]`,
+        },
+      ],
+      doNotDo: [
+        'Entrer de force, changer la serrure ou couper les fluides (eau, électricité) : c\'est une voie de fait, tu deviens fautif et le juge te sanctionnera plus durement que le voyageur',
+        'Te confronter physiquement seul(e)',
+        'Attendre plusieurs jours en espérant que ça se règle tout seul : ça ne se règle jamais tout seul',
+        'Régler le problème "à l\'amiable" en versant de l\'argent au voyageur pour qu\'il parte : ouvre la porte à du chantage',
+      ],
+      recourses: [
+        'Police ou gendarmerie pour constat d\'occupation sans droit (souvent suffisant pour faire partir)',
+        'Constat d\'huissier (~150-300 €) pour les cas qui s\'enkystent',
+        'Avocat spécialisé en droit immobilier + référé devant le tribunal judiciaire',
+        'Réclamation Airbnb pour perte des nuits suivantes + préjudice',
+      ],
+      prevention: [
+        'Règlement intérieur signé avec **date et heure précises de check-out** explicites',
+        'Caution suffisante pour décourager les abus',
+        'Vérification du profil voyageur (avis antérieurs, vérification d\'identité Airbnb)',
+        'Pour les séjours longs (> 1 mois), méfie-toi : risque légal augmenté, à encadrer par contrat solide',
+      ],
+    },
+
+    // ── Booking.com ───────────────────────────────────────────────────────
+    booking: {
+      reassurance: "Booking peut t'aider à médier mais le levier principal reste la police et la justice. Documente, contacte, escalade vite.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · le jour même',
+        body: 'Réagis dès la date de départ. Pas d\'attente.',
+      },
+      steps: [
+        {
+          title: 'Contact écrit immédiat',
+          body: 'Messagerie Booking + email + SMS. Rappel des dates, demande de départ immédiat, mention des recours en cas de refus.',
+        },
+        {
+          title: 'Signale dans l\'extranet Booking',
+          body: 'Extranet → **Boîte de réception** → **Demande spéciale** → décris la situation et joins l\'échange. Booking peut intervenir.',
+        },
+        {
+          title: 'Police ou gendarmerie',
+          body: 'Comme pour Airbnb : présente la confirmation Booking avec les dates, l\'échange écrit. Constat d\'occupation sans droit, pression sur le voyageur.',
+        },
+        {
+          title: 'Constat d\'huissier si situation prolongée',
+          body: 'Pièce officielle pour la procédure judiciaire ultérieure.',
+        },
+        {
+          title: 'Référé devant le tribunal judiciaire',
+          body: 'Avocat + procédure rapide pour expulsion d\'un meublé de tourisme.',
+        },
+        {
+          title: 'Réclamation Booking post-résolution',
+          body: 'Demande indemnisation des préjudices, en particulier les annulations forcées des réservations suivantes.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message au voyageur via Booking',
+          body: `Bonjour [Prénom],
+
+Votre réservation [numéro] prend fin aujourd'hui [date] à [heure].
+
+Merci de quitter le logement immédiatement. D'autres voyageurs sont attendus.
+
+Sans départ sous 2 h, je signalerai la situation à Booking, contacterai les autorités pour occupation sans droit ni titre, et engagerai une procédure d'expulsion en référé.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Voie de fait (changement de serrure, coupure de fluides)',
+        'Confrontation physique seul(e)',
+        'Verser de l\'argent pour faire partir le voyageur (chantage)',
+        'Attendre plusieurs jours',
+      ],
+      recourses: [
+        'Police ou gendarmerie',
+        'Constat d\'huissier',
+        'Avocat + référé tribunal judiciaire',
+        'Réclamation Booking pour préjudice',
+      ],
+      prevention: [
+        'Confirmation écrite avec heure de check-out explicite',
+        'Caution suffisante',
+        'Profil voyageur vérifié (Genius, avis antérieurs)',
+      ],
+    },
+
+    // ── Vrbo / Abritel ────────────────────────────────────────────────────
+    vrbo: {
+      reassurance: "Process similaire à Airbnb. Vrbo a une ligne d'assistance hôte qui peut intervenir.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · le jour même',
+        body: 'Réagis dès la date de départ.',
+      },
+      steps: [
+        {
+          title: 'Contact écrit immédiat (Vrbo + email)',
+          body: 'Messagerie Vrbo, ton ferme, rappel des dates, demande de départ immédiat.',
+        },
+        {
+          title: 'Signale au support Vrbo',
+          body: 'Centre d\'aide propriétaire → urgence → intervention possible.',
+        },
+        {
+          title: 'Police pour occupation sans droit',
+          body: 'Présente la confirmation Vrbo, l\'échange écrit, demande constat.',
+        },
+        {
+          title: 'Constat d\'huissier puis référé',
+          body: 'Si la situation s\'enkyste : huissier puis avocat + référé.',
+        },
+        {
+          title: 'Réclamation Vrbo pour préjudice',
+          body: 'Demande remboursement des annulations forcées.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message au voyageur via Vrbo',
+          body: `Bonjour [Prénom],
+
+Votre séjour prend fin aujourd'hui [date] à [heure].
+
+Merci de quitter le logement immédiatement.
+
+Sans départ sous 2 h, je signalerai à Vrbo, contacterai les autorités pour occupation sans droit ni titre, et engagerai une procédure judiciaire avec demande d'indemnisation.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Voie de fait (serrure, fluides)',
+        'Confrontation physique seul(e)',
+        'Chantage par paiement',
+        'Attente passive',
+      ],
+      recourses: [
+        'Police ou gendarmerie',
+        'Constat huissier',
+        'Avocat + référé',
+        'Réclamation Vrbo',
+      ],
+      prevention: [
+        'Heure de check-out explicite',
+        'Caution suffisante',
+        'Vérification profil voyageur',
+      ],
+    },
+
+    // ── Direct ────────────────────────────────────────────────────────────
+    direct: {
+      reassurance: "En direct, tu as l'avantage d'un contrat de location saisonnière complet. Utilise-le, c'est ton arme principale. Le voyageur ne peut pas plaider l'ignorance, il a signé.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · le jour même',
+        body: 'Réagis dès la date de fin de séjour prévue au contrat.',
+      },
+      steps: [
+        {
+          title: 'Email + SMS immédiat au voyageur',
+          body: 'Rappel des dates du contrat, demande de départ immédiat, mention explicite des sanctions prévues au contrat et des recours.',
+        },
+        {
+          title: 'Appelle la police ou la gendarmerie',
+          body: 'Présente le contrat de location saisonnière signé, l\'état des lieux d\'entrée, les échanges écrits. **Occupation sans droit ni titre** est constituée dès la fin du contrat. La police intervient souvent.',
+        },
+        {
+          title: 'Constat d\'huissier dans la foulée',
+          body: 'Si la police seule ne suffit pas, fais venir un huissier (~150-300 €) qui dresse un constat officiel d\'occupation sans droit. Pièce maîtresse.',
+        },
+        {
+          title: 'Mise en demeure recommandée AR',
+          body: 'Lettre recommandée AR au voyageur listant la violation du contrat, les sanctions, les recours envisagés. Délai 48 h pour partir.',
+        },
+        {
+          title: 'Référé devant le tribunal judiciaire',
+          body: 'Avocat spécialisé. Pour un meublé de tourisme avec contrat clair, le juge tranche en référé sous 2-4 semaines. Demande aussi des dommages et intérêts pour les nuits perdues.',
+        },
+        {
+          title: 'Active la caution + assurance PNO',
+          body: 'Caution retenue pour couvrir les nuits indues. Assurance PNO si frais juridiques importants (extension protection juridique souvent incluse).',
+        },
+      ],
+      templates: [
+        {
+          label: 'Email + SMS au voyageur',
+          body: `Bonjour [Prénom],
+
+Votre séjour, encadré par le contrat de location saisonnière signé le [date], prend fin aujourd'hui [date] à [heure].
+
+Conformément à l'article [N] du contrat, vous êtes tenu(e) de quitter le logement à cette date et heure précises.
+
+À défaut de départ sous 2 h, j'engagerai sans délai :
+- L'intervention de la police pour occupation sans droit ni titre
+- Un constat d'huissier
+- Une procédure d'expulsion en référé devant le tribunal judiciaire
+- Une demande d'indemnisation pour les nuits suivantes que je dois annuler
+
+Cordialement,
+[Prénom Nom]
+[Téléphone]`,
+        },
+        {
+          label: 'Mise en demeure recommandée AR',
+          body: `[Tes coordonnées complètes]
+[Coordonnées du voyageur]
+
+Objet : Mise en demeure de quitter les lieux sans délai
+Lettre recommandée avec accusé de réception
+[Ville], le [date]
+
+Madame, Monsieur [Nom],
+
+Aux termes du contrat de location saisonnière signé le [date], votre séjour dans le logement meublé de tourisme situé [adresse] devait prendre fin le [date] à [heure].
+
+À la date de la présente, vous occupez toujours les lieux sans droit ni titre.
+
+Je vous mets formellement en demeure de quitter les lieux sous 48 h à compter de la réception de cette lettre.
+
+À défaut, j'engagerai sans nouvelle mise en demeure :
+- Un constat d'huissier
+- Une procédure d'expulsion en référé devant le tribunal judiciaire compétent
+- Une demande d'indemnisation pour la totalité du préjudice subi (nuits perdues, frais d'huissier, frais d'avocat, dommages et intérêts)
+
+Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées.
+
+[Prénom Nom]
+[Signature manuscrite]`,
+        },
+      ],
+      doNotDo: [
+        'Voie de fait absolument interdite : changement de serrure, coupure d\'eau/électricité, retrait des affaires du voyageur. Tu deviens fautif et le juge te sanctionnera plus que le voyageur',
+        'Confrontation physique seul(e)',
+        'Verser de l\'argent pour faire partir',
+        'Attendre que ça passe : ça ne passe jamais',
+      ],
+      recourses: [
+        'Police ou gendarmerie (souvent suffisant)',
+        'Constat d\'huissier (~150-300 €)',
+        'Avocat + référé tribunal judiciaire',
+        'Assurance PNO / MRH avec protection juridique',
+      ],
+      prevention: [
+        'Contrat de location saisonnière clair avec date et heure de check-out précises (article L324-2 Code du tourisme)',
+        'Caution suffisante (15-30 % du séjour minimum)',
+        'Filtrage des réservations directes via Driing (avis communautaires, vérifications)',
+        'Pour les séjours longs (> 1 mois), encadrer par contrat solide + caution renforcée',
+      ],
+    },
+
+  },
+
+  // ─── SCÉNARIO 5 : Litige avec Airbnb / Booking / Vrbo ───────────────────
+
+  'litige-plateforme': {
+
+    // ── Airbnb ────────────────────────────────────────────────────────────
+    airbnb: {
+      reassurance: "Les litiges avec Airbnb peuvent être longs mais ils se résolvent. Garde tes nerfs, documente, escalade méthodiquement. Les recours externes (médiateur, DGCCRF) marchent quand tu épuises l'interne.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · pas de plafond impératif',
+        body: 'Plus tu attends, plus c\'est dur de reconstituer le dossier. Agis dans les 7-30 jours selon la nature du litige.',
+      },
+      steps: [
+        {
+          title: 'Centre d\'aide Airbnb : ouvre un ticket précis',
+          body: 'Centre d\'aide → ton problème spécifique. Décris factuellement : dates, montants, numéro de réservation, captures d\'écran. **Pas d\'émotion**, juste les faits.',
+        },
+        {
+          title: 'Téléphone si pas de réponse sous 48 h',
+          body: 'Numéro Airbnb hôtes en France (à vérifier sur la page officielle Aide Airbnb). Note le **nom de l\'agent**, l\'**heure d\'appel**, le **résumé** de la conversation, le **numéro de ticket**. Demande un email récapitulatif.',
+        },
+        {
+          title: 'Escalade : superviseur ou Twitter/X',
+          body: 'Si pas de résolution sous 5 jours : demande explicitement un **superviseur** ou écris à **@AirbnbHelp** sur Twitter/X (souvent plus rapide que les canaux classiques).',
+        },
+        {
+          title: 'Recours formel par email',
+          body: 'Email à l\'adresse customer.protection@airbnb.com (à confirmer sur leur site) avec récap complet : tous les numéros de ticket, l\'historique, ta demande précise, le délai (15 jours).',
+        },
+        {
+          title: 'Médiation externe',
+          body: '**Médiateur de la consommation européen (ODR)** pour les transactions transfrontalières (Airbnb est basé en Irlande). Saisine en ligne sur ec.europa.eu/odr. Gratuit. Le médiateur du tourisme et du voyage (MTV) n\'est compétent que pour ses adhérents (Airbnb ne l\'est pas, à vérifier régulièrement).',
+        },
+        {
+          title: 'DGCCRF',
+          body: 'Signalement sur signal.conso.gouv.fr pour pratique commerciale abusive. Pas une procédure individuelle de réparation, mais ça met la pression et alimente les statistiques utilisables ensuite.',
+        },
+        {
+          title: 'Action en justice',
+          body: 'Tribunal judiciaire du lieu du logement, conciliateur préalable si < 5 000 €. Avocat conseillé pour les montants importants.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Recours formel email Airbnb',
+          body: `Objet : Recours formel · Réservation HM[numéro]
+
+Madame, Monsieur,
+
+Je suis hôte sur Airbnb depuis [date] (identifiant [pseudo]).
+
+Concernant la réservation HM[numéro] de [Prénom voyageur], j'ai rencontré le problème suivant :
+[Exposé factuel des faits, en quelques phrases, sans émotion]
+
+J'ai contacté votre service client le [date] (référence ticket #[numéro]), sans réponse satisfaisante à ce jour, malgré [X] relances.
+
+Je sollicite formellement [demande précise : remboursement / suppression d'avis / déblocage de compte / restitution du paiement bloqué / etc.].
+
+Sans réponse de votre part sous 15 jours à compter de cet email, je saisirai :
+- Le Médiateur de la consommation européen (ODR)
+- La DGCCRF via signal.conso.gouv.fr
+- Le tribunal judiciaire compétent
+
+Cordialement,
+[Prénom Nom]
+[Email] / [Téléphone]`,
+        },
+      ],
+      doNotDo: [
+        'Insulter les agents (ça ferme tout)',
+        'Multiplier les tickets sur le même sujet (ça brouille ton dossier)',
+        'Menacer publiquement sur les réseaux sociaux avant d\'avoir épuisé les recours internes (le juge te le reprochera)',
+        'Régler à la baisse à la première proposition Airbnb si tu es certain de ton bon droit',
+      ],
+      recourses: [
+        'Superviseur Airbnb (demande explicitement)',
+        'Twitter / X @AirbnbHelp pour escalade rapide',
+        'Médiateur de la consommation européen (ODR), gratuit',
+        'DGCCRF via signal.conso.gouv.fr',
+        'Tribunal judiciaire (conciliateur obligatoire < 5 000 €)',
+        'Associations de consommateurs (UFC-Que Choisir, CLCV)',
+      ],
+      prevention: [
+        'Garde TOUS les échanges en sauvegarde (PDF, captures) au-delà de la plateforme',
+        'Documente chaque incident hôte/voyageur dès qu\'il survient (date, montant, contexte)',
+        'Sauvegarde régulièrement tes données Airbnb (export RGPD à demander de temps en temps)',
+        'Diversifie tes canaux : ne mets jamais 100 % de tes revenus sur une seule plateforme',
+      ],
+    },
+
+    // ── Booking.com ───────────────────────────────────────────────────────
+    booking: {
+      reassurance: "Booking a un support partenaire dédié et des Account Managers pour les hôtes actifs. Utilise ces canaux avant les recours externes.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · agis dans les 7-30 jours',
+        body: 'Pas de délai impératif Booking, mais les dossiers anciens sont traités moins prioritairement.',
+      },
+      steps: [
+        {
+          title: 'Extranet partenaire : section Réclamations',
+          body: 'Extranet → **Réclamations** ou **Demandes spéciales** selon la nature. Ouvre un dossier avec description factuelle, captures d\'écran, références.',
+        },
+        {
+          title: 'Téléphone partenaire Booking',
+          body: 'Numéro partenaire selon ton pays (vérifier sur l\'extranet, souvent 0805 088 074 en France). Note le nom de l\'agent, le numéro de ticket, demande un email récapitulatif.',
+        },
+        {
+          title: 'Account Manager si disponible',
+          body: 'Si tu as un Account Manager dédié (hôtes à fort volume), contacte-le directement par email. C\'est le canal le plus efficace.',
+        },
+        {
+          title: 'Recours formel email',
+          body: 'Email partner@booking.com (à confirmer) avec récap complet et délai de réponse demandé.',
+        },
+        {
+          title: 'Médiation et juridique',
+          body: 'Médiateur de la consommation européen (ODR), DGCCRF, tribunal judiciaire.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Recours formel email Booking',
+          body: `Objet : Recours formel · Réservation [numéro Booking]
+
+Madame, Monsieur,
+
+Identifiant partenaire : [numéro]
+Établissement : [Nom]
+
+Je rencontre le problème suivant concernant la réservation [numéro] :
+[Exposé factuel]
+
+J'ai ouvert le ticket [numéro] le [date] et appelé votre service partenaire le [date] (agent : [nom]), sans réponse satisfaisante.
+
+Je sollicite formellement [demande précise].
+
+Sans réponse sous 15 jours, je saisirai le Médiateur de la consommation européen, la DGCCRF et le tribunal compétent.
+
+Cordialement,
+[Prénom Nom]`,
+        },
+      ],
+      doNotDo: [
+        'Insulter les agents',
+        'Multiplier les tickets parallèles',
+        'Menacer publiquement avant d\'avoir épuisé l\'interne',
+      ],
+      recourses: [
+        'Account Manager (canal prioritaire)',
+        'Téléphone partenaire Booking',
+        'Médiateur de la consommation européen (ODR)',
+        'DGCCRF via signal.conso.gouv.fr',
+        'Tribunal judiciaire',
+      ],
+      prevention: [
+        'Sauvegarde régulière des échanges et données',
+        'Diversification des canaux de réservation',
+        'Documentation systématique des incidents',
+      ],
+    },
+
+    // ── Vrbo / Abritel ────────────────────────────────────────────────────
+    vrbo: {
+      reassurance: "Vrbo a un support propriétaire et des escalades possibles. Process similaire.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · agis dans les 7-30 jours',
+        body: 'Pas de délai strict mais les dossiers récents sont traités plus vite.',
+      },
+      steps: [
+        {
+          title: 'Centre d\'aide propriétaire Vrbo',
+          body: 'Ouvre un ticket précis, factuel, avec captures d\'écran et numéro de réservation.',
+        },
+        {
+          title: 'Téléphone propriétaire Vrbo',
+          body: 'Numéro hôte selon ton pays (vérifier sur le centre d\'aide). Note nom, ticket, heure.',
+        },
+        {
+          title: 'Demande de superviseur si nécessaire',
+          body: 'Insiste poliment pour une escalade interne si la première réponse n\'est pas satisfaisante.',
+        },
+        {
+          title: 'Recours médiation',
+          body: 'Médiateur de la consommation européen (ODR), DGCCRF si pratique commerciale abusive.',
+        },
+        {
+          title: 'Tribunal en dernier ressort',
+          body: 'Conciliateur préalable < 5 000 €, tribunal judiciaire au-delà.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Recours formel Vrbo',
+          body: `Objet : Recours formel · Réservation [numéro]
+
+Madame, Monsieur,
+
+ID propriétaire : [numéro]
+
+Je rencontre le problème suivant : [exposé factuel].
+
+Ticket ouvert le [date] (référence [numéro]), sans réponse satisfaisante après [X] relances.
+
+Je sollicite [demande précise].
+
+Sans réponse sous 15 jours, je saisirai le Médiateur de la consommation européen et la DGCCRF.
+
+Cordialement,
+[Prénom Nom]`,
+        },
+      ],
+      doNotDo: [
+        'Insultes ou menaces',
+        'Tickets multiples parallèles',
+        'Communication publique prématurée',
+      ],
+      recourses: [
+        'Superviseur Vrbo',
+        'Médiateur de la consommation européen (ODR)',
+        'DGCCRF',
+        'Tribunal judiciaire',
+      ],
+      prevention: [
+        'Documentation systématique',
+        'Sauvegarde des échanges',
+        'Diversification des canaux',
+      ],
+    },
+
+    // Direct : pas de plateforme = pas de litige plateforme.
+    // L'UI affiche "Pas applicable sur ce canal"
+
+  },
+
 }
