@@ -56,22 +56,11 @@ export default async function DashboardPage() {
   const prevMPfx = monthPrefix(-1)
   const yearPfx  = String(now.getFullYear())
 
-  // ── 1 SEULE Promise.all pour TOUTES les requêtes parallélisables.
-  // Avant : 4 phases séquentielles de Supabase (contrats → memberships → formations → chez_nous).
-  // Après : 1 phase parallèle. Diminue le TTFB du dashboard d'environ 60%.
-  const [
-    { data: contracts },
-    { count: logCount },
-    allCachedNews,
-    { data: entriesYearAll },
-    { data: objectifData },
-    communityGroups,
-    { data: joinedMemberships },
-    { data: userFormationsLearn },
-    { data: completionLogLearn },
-    { data: cnPosts },
-    { count: cnTotal },
-  ] = await Promise.all([
+  // ── 1 SEULE Promise.allSettled pour TOUTES les requêtes parallélisables.
+  // allSettled (vs all) : si une requête échoue (table renommée, colonne supprimée,
+  // timeout réseau), les autres restent disponibles et la page se rend en mode dégradé
+  // au lieu de planter complètement.
+  const results = await Promise.allSettled([
     supabase
       .from('contracts')
       .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, montant_loyer, stripe_payment_status, stripe_payment_enabled, locataire_prenom, locataire_nom')
@@ -127,6 +116,29 @@ export default async function DashboardPage() {
     supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }),
   ])
 
+  // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
+  // Évite que tout le dashboard plante si une seule requête échoue.
+  function pick<T>(idx: number, fallback: T): T {
+    const r = results[idx]
+    if (r.status !== 'fulfilled') {
+      console.error(`[Dashboard] Query ${idx} failed:`, r.reason)
+      return fallback
+    }
+    return r.value as T
+  }
+
+  const { data: contracts }       = pick<{ data: any[] | null }>(0, { data: [] })
+  const { count: logCount }       = pick<{ count: number | null }>(1, { count: 0 })
+  const allCachedNews             = pick<any[]>(2, [])
+  const { data: entriesYearAll }  = pick<{ data: any[] | null }>(3, { data: [] })
+  const { data: objectifData }    = pick<{ data: any | null }>(4, { data: null })
+  const communityGroups           = pick<any[]>(5, [])
+  const { data: joinedMemberships } = pick<{ data: { group_id: string }[] | null }>(6, { data: [] })
+  const { data: userFormationsLearn } = pick<{ data: any[] | null }>(7, { data: [] })
+  const { data: completionLogLearn }  = pick<{ data: { completed_at: string }[] | null }>(8, { data: [] })
+  const { data: cnPosts }         = pick<{ data: any[] | null }>(9, { data: [] })
+  const { count: cnTotal }        = pick<{ count: number | null }>(10, { count: 0 })
+
   const latestNews = allCachedNews.slice(0, 3)
 
   // Split de la requête revenus annuelle en this month / prev month / year (JS, gratuit)
@@ -158,7 +170,10 @@ export default async function DashboardPage() {
     if (!completionLogLearn || completionLogLearn.length === 0) return 0
     const days = new Set<string>()
     completionLogLearn.forEach((c: { completed_at: string }) => {
-      days.add(new Date(c.completed_at).toISOString().slice(0, 10))
+      if (!c.completed_at) return
+      const d = new Date(c.completed_at)
+      if (isNaN(d.getTime())) return
+      days.add(d.toISOString().slice(0, 10))
     })
     let count = 0
     const t = new Date()
@@ -739,8 +754,13 @@ const CATEGORY_CONFIG: Record<string, { bg: string; color: string; label: string
 
 const NEWS_MONTHS = ['jan.','fév.','mar.','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.']
 function fmtNewsDate(d: string) {
-  const [y, m, day] = d.split('-')
-  return `${parseInt(day)} ${NEWS_MONTHS[parseInt(m) - 1]} ${y}`
+  if (!d) return ''
+  const parts = d.split('-')
+  if (parts.length < 3) return d
+  const [y, m, day] = parts
+  const monthIdx = parseInt(m) - 1
+  const monthName = NEWS_MONTHS[monthIdx] ?? ''
+  return `${parseInt(day)} ${monthName} ${y}`
 }
 
 interface NewsArticle {
@@ -751,10 +771,11 @@ interface NewsArticle {
 
 function NewsCard({ article }: { article: NewsArticle }) {
   const tc = CATEGORY_CONFIG[article.category] ?? CATEGORY_CONFIG.general
-  const dateStr = article.published_at ?? article.created_at
-  const shortDesc = article.summary.length > 110
-    ? article.summary.slice(0, 110).trimEnd() + '…'
-    : article.summary
+  const dateStr = article.published_at ?? article.created_at ?? ''
+  const summary = article.summary ?? ''
+  const shortDesc = summary.length > 110
+    ? summary.slice(0, 110).trimEnd() + '…'
+    : summary
   const href = article.source_url ?? '/dashboard/actualites'
 
   return (

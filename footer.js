@@ -155,6 +155,7 @@
             + '<li><a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a></li>'
             + '<li><a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a></li>'
             + '<li><a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a></li>'
+            + '<li><a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a></li>'
             + '<li><a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits messages</a></li>'
             + '<li><a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a></li>'
           + '</ul>'
