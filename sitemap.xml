@@ -57,6 +57,12 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://jasonmarinho.com/sos-hote/annulation-last-minute</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/lexique-lcd</loc>
     <lastmod>2026-05-02</lastmod>
     <changefreq>monthly</changefreq>
@@ -640,6 +646,12 @@
   </url>
 
   <!-- ── Blog ── -->
+  <url>
+    <loc>https://jasonmarinho.com/blog/galeres-location-courte-duree-comment-gerer-urgence</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
   <url>
     <loc>https://jasonmarinho.com/blog/gerer-lcd-distance-7-piliers-hote-absent</loc>
     <lastmod>2026-05-11</lastmod>
