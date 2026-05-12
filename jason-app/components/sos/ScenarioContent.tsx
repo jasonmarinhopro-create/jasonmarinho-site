@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Copy, Check, Clock, Warning, ProhibitInset, Scales, Shield } from '@phosphor-icons/react/dist/ssr'
+import { Copy, Check, Clock, Warning, ProhibitInset, Scales, Shield, CheckCircle, ArrowsClockwise } from '@phosphor-icons/react/dist/ssr'
 import type { ScenarioContent as ScenarioContentType } from '@/lib/sos/scenarios-content'
+import { getVerificationStatus } from '@/lib/sos/scenarios-content'
 
 /* Composant client de rendu d'un scénario SOS Hôte.
    Reçoit le contenu typé et l'affiche avec :
@@ -20,8 +21,27 @@ interface Props {
 }
 
 export default function ScenarioContent({ content }: Props) {
+  const verif = getVerificationStatus(content.lastVerified)
+
   return (
     <div style={s.wrap}>
+      {/* Badge vérification éditoriale */}
+      {verif.date && (
+        <div style={{
+          ...s.verifBadge,
+          ...(verif.isStale ? s.verifBadgeStale : {}),
+        }}>
+          {verif.isStale
+            ? <ArrowsClockwise size={12} weight="bold" />
+            : <CheckCircle size={12} weight="fill" />
+          }
+          <span>
+            Dernière vérification&nbsp;: <strong>{verif.label}</strong>
+            {verif.isStale && <span style={{ marginLeft: '6px', opacity: 0.85 }}>· à revérifier</span>}
+          </span>
+        </div>
+      )}
+
       {/* Rassurance */}
       <div style={s.reassurance}>
         <strong style={{ color: 'var(--text)' }}>Avant tout, respire.</strong>
@@ -175,6 +195,21 @@ function renderMarkdown(text: string): string {
 const s: Record<string, React.CSSProperties> = {
   wrap: {
     display: 'flex', flexDirection: 'column' as const, gap: '20px',
+  },
+
+  verifBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    alignSelf: 'flex-start',
+    padding: '5px 10px', borderRadius: '999px',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)',
+    fontSize: '11.5px', lineHeight: 1.4,
+  },
+  verifBadgeStale: {
+    background: 'rgba(217,119,6,0.08)',
+    border: '1px solid rgba(217,119,6,0.30)',
+    color: '#b45309',
   },
 
   reassurance: {

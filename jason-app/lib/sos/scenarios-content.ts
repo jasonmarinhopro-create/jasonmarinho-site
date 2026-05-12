@@ -32,6 +32,28 @@ export interface ScenarioContent {
   doNotDo: string[]
   recourses: string[]
   prevention: string[]
+  /** Date ISO YYYY-MM-DD de la dernière vérification éditoriale du contenu. */
+  lastVerified?: string
+}
+
+/** Calcul du statut de fraîcheur à partir de lastVerified. */
+export function getVerificationStatus(lastVerified?: string): {
+  date: Date | null
+  daysSince: number | null
+  isStale: boolean
+  label: string
+} {
+  if (!lastVerified) {
+    return { date: null, daysSince: null, isStale: false, label: '' }
+  }
+  const date = new Date(lastVerified + 'T00:00:00Z')
+  const daysSince = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))
+  return {
+    date,
+    daysSince,
+    isStale: daysSince > 90,
+    label: date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
+  }
 }
 
 // Indexation : scenarios[slug][channel] = ScenarioContent
@@ -130,6 +152,7 @@ Cordialement,
         'Règlement intérieur signé numériquement avant le check-in',
         'Demande au voyageur de signaler tout dégât préexistant dans les 2 h après son arrivée',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Booking.com ───────────────────────────────────────────────────────
@@ -227,6 +250,7 @@ Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées
         'Caution suffisante (15-30 % du séjour minimum) en virement bloqué ou empreinte Stripe',
         'Assurance PNO ou MRH avec extension saisonnière vérifiée',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Vrbo / Abritel ────────────────────────────────────────────────────
@@ -297,6 +321,7 @@ Cordialement,
         'État des lieux photo systématique',
         'Règlement intérieur signé numériquement',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Direct (location directe sans plateforme) ─────────────────────────
@@ -414,6 +439,7 @@ RIB : [IBAN]
         'Assurance PNO / MRH avec extension saisonnière vérifiée chaque année',
         'Pour passer en réservation directe sereinement : la plateforme Driing automatise contrat + caution + signature',
       ],
+      lastVerified: '2026-05-12',
     },
 
   },
@@ -519,6 +545,7 @@ Nous restons à l'écoute pour améliorer en permanence l'expérience de nos voy
         'Réponds à TOUS les avis, même les bons (signal d\'hôte engagé)',
         'Garde un dossier d\'éléments factuels (photos d\'entretien, état des lieux) prêts à dégainer en cas de litige',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Booking.com ───────────────────────────────────────────────────────
@@ -604,6 +631,7 @@ Cordialement,
         'Maintiens une note > 8/10 : sur Booking, c\'est le seuil psychologique des voyageurs',
         'Soigne la communication AVANT séjour (instructions claires, attentes alignées)',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Vrbo / Abritel ────────────────────────────────────────────────────
@@ -685,6 +713,7 @@ Cordialement,
         'Réponse systématique à tous les avis',
         'Communication pré-séjour claire et complète',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // Note : pas applicable en location directe (pas d'avis publics)
@@ -788,6 +817,7 @@ Cordialement,
         'Mention claire "pas de fêtes" + capacité réelle dans l\'annonce',
         'Vérification du profil voyageur avant acceptation (avis, vérification d\'identité Airbnb)',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Booking.com ───────────────────────────────────────────────────────
@@ -857,6 +887,7 @@ Cordialement,
         'Caméra extérieure CNIL-compliant',
         'Annonce avec capacité max claire et règles de vie',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Vrbo / Abritel ────────────────────────────────────────────────────
@@ -919,6 +950,7 @@ Cordialement,
         'Capteur de bruit',
         'Annonce avec capacité max claire',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Direct ────────────────────────────────────────────────────────────
@@ -1014,6 +1046,7 @@ Cordialement,
         'Caution suffisante (15-30 % du séjour minimum)',
         'Filtrage des réservations en direct via Driing (avis communautaires)',
       ],
+      lastVerified: '2026-05-12',
     },
 
   },
@@ -1110,6 +1143,7 @@ Téléphone : [numéro pour rappel]`,
         'Vérification du profil voyageur (avis antérieurs, vérification d\'identité Airbnb)',
         'Pour les séjours longs (> 1 mois), méfie-toi : risque légal augmenté, à encadrer par contrat solide',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Booking.com ───────────────────────────────────────────────────────
@@ -1178,6 +1212,7 @@ Cordialement,
         'Caution suffisante',
         'Profil voyageur vérifié (Genius, avis antérieurs)',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Vrbo / Abritel ────────────────────────────────────────────────────
@@ -1242,6 +1277,7 @@ Cordialement,
         'Caution suffisante',
         'Vérification profil voyageur',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Direct ────────────────────────────────────────────────────────────
@@ -1343,6 +1379,7 @@ Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées
         'Filtrage des réservations directes via Driing (avis communautaires, vérifications)',
         'Pour les séjours longs (> 1 mois), encadrer par contrat solide + caution renforcée',
       ],
+      lastVerified: '2026-05-12',
     },
 
   },
@@ -1435,6 +1472,7 @@ Cordialement,
         'Sauvegarde régulièrement tes données Airbnb (export RGPD à demander de temps en temps)',
         'Diversifie tes canaux : ne mets jamais 100 % de tes revenus sur une seule plateforme',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Booking.com ───────────────────────────────────────────────────────
@@ -1507,6 +1545,7 @@ Cordialement,
         'Diversification des canaux de réservation',
         'Documentation systématique des incidents',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // ── Vrbo / Abritel ────────────────────────────────────────────────────
@@ -1576,6 +1615,7 @@ Cordialement,
         'Sauvegarde des échanges',
         'Diversification des canaux',
       ],
+      lastVerified: '2026-05-12',
     },
 
     // Direct : pas de plateforme = pas de litige plateforme.

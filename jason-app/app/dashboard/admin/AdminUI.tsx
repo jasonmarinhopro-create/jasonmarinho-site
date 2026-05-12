@@ -312,6 +312,7 @@ export default function AdminUI({
             { href: '/dashboard/admin/actualites', icon: Newspaper,     color: '#f472b6', bg: 'rgba(244,114,182,0.1)', title: 'Actualités',  desc: 'Fil LCD' },
             { href: '/dashboard/admin/communaute', icon: UsersThree,    color: '#93C5FD', bg: 'rgba(147,197,253,0.1)', title: 'Communauté',  desc: `${stats.groupsCount} groupe${stats.groupsCount !== 1 ? 's' : ''}` },
             { href: '/dashboard/admin/guides',     icon: BookOpen,      color: '#fb923c', bg: 'rgba(251,146,60,0.1)',  title: 'Guide LCD',   desc: 'Profils & fiches' },
+            { href: '/dashboard/admin/sos-feedback', icon: Warning,     color: '#dc2626', bg: 'rgba(220,38,38,0.1)',   title: 'SOS Feedback', desc: 'Signalements & témoignages' },
           ].map(({ href, icon: Icon, color, bg, title, desc }) => (
             <Link key={href} href={href} style={s.contentCard} className="admin-content-card">
               <div style={{ ...s.contentIcon, color, background: bg, border: `1px solid ${color}20` }}>
