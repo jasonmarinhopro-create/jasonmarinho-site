@@ -1025,23 +1025,29 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
       </div>
 
       <div style={s.formField}>
-        <label style={s.label}>Titre</label>
+        <label style={s.label}>
+          Titre <span style={s.required}>*</span>
+        </label>
         <input
           type="text" value={title} onChange={e => setTitle(e.target.value)}
           placeholder="Un sujet précis et clair…"
           style={s.input} maxLength={200}
+          required
         />
         <p style={s.helper}>{title.length}/200 caractères. Pose ta question ou ton sujet en une phrase.</p>
       </div>
 
       <div style={s.formField}>
-        <label style={s.label}>Message</label>
+        <label style={s.label}>
+          Message <span style={s.required}>*</span>
+        </label>
         <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
         <textarea
           ref={taRef}
           value={body} onChange={e => setBody(e.target.value)}
           placeholder="Détaille ton contexte, ce que tu as déjà essayé, ce que tu cherches…"
           style={s.textarea} rows={6} maxLength={8000}
+          required
         />
         <p style={s.helper}>{body.length}/8000</p>
       </div>
@@ -1052,6 +1058,16 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
       </div>
 
       {error && <p style={s.error}>{error}</p>}
+
+      {(!title.trim() || !body.trim()) && !error && (
+        <p style={s.helperRequired}>
+          {!title.trim() && !body.trim()
+            ? 'Renseigne un titre et un message pour publier.'
+            : !title.trim()
+              ? 'Il manque le titre pour pouvoir publier.'
+              : 'Il manque le message pour pouvoir publier.'}
+        </p>
+      )}
 
       <div style={s.formActions}>
         <button onClick={onSuccess} style={s.btnGhost} disabled={pending}>Annuler</button>
@@ -1405,19 +1421,19 @@ const s: Record<string, React.CSSProperties> = {
   // ─── PostFormModal ─────────────────────────────────────────────────
   modalBackdrop: {
     position: 'fixed' as const, inset: 0, zIndex: 1000,
-    background: 'rgba(0,0,0,0.60)', backdropFilter: 'blur(4px)',
+    background: 'rgba(0,0,0,0.78)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     padding: '16px',
   },
   modalDialog: {
     position: 'relative' as const,
-    background: 'var(--surface)',
+    background: 'var(--bg)',
     border: '1px solid var(--border)',
     borderRadius: '16px',
     width: '100%', maxWidth: '560px',
     maxHeight: '90vh',
     display: 'flex', flexDirection: 'column' as const,
-    boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
+    boxShadow: '0 24px 72px rgba(0,0,0,0.6)',
     overflow: 'hidden',
   },
   modalHeader: {
@@ -1519,7 +1535,16 @@ const s: Record<string, React.CSSProperties> = {
   },
   formField: { display: 'flex', flexDirection: 'column', gap: '6px' },
   label: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' },
+  required: { color: '#dc2626', fontWeight: 700, marginLeft: '2px' },
   helper: { fontSize: '11px', color: 'var(--text-muted)', margin: 0 },
+  helperRequired: {
+    fontSize: '12px', color: '#b45309',
+    background: 'rgba(217,119,6,0.08)',
+    border: '1px solid rgba(217,119,6,0.20)',
+    borderRadius: '8px',
+    padding: '8px 12px',
+    margin: 0,
+  },
   select: {
     background: 'var(--bg)', color: 'var(--text)',
     border: '1px solid var(--border)', borderRadius: '8px',
