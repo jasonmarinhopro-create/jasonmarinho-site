@@ -6,6 +6,7 @@ import Link from 'next/link'
 import {
   X, Lock, ArrowRight, Warning,
   House, Star, Confetti, DoorOpen, Scales, Cat, Cigarette, ProhibitInset,
+  CalendarX,
 } from '@phosphor-icons/react/dist/ssr'
 
 /* SOS Modal — Module d'urgence accessible depuis le header.
@@ -69,6 +70,14 @@ export const SOS_SCENARIOS: SOSScenario[] = [
     short: 'Paiement, blocage, annulation — épuiser les recours',
     icon: Scales,
     channels: ['airbnb', 'booking', 'vrbo'],
+    urgency: 'medium',
+  },
+  {
+    slug: 'annulation-last-minute',
+    title: 'Voyageur annule à la dernière minute',
+    short: 'Compenser la perte, relouer vite, ajuster les pénalités',
+    icon: CalendarX,
+    channels: ['airbnb', 'booking', 'vrbo', 'direct'],
     urgency: 'medium',
   },
 ]

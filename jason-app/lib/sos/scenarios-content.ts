@@ -1623,4 +1623,294 @@ Cordialement,
 
   },
 
+  // ─── SCÉNARIO 6 : Annulation last-minute du voyageur ────────────────────
+
+  'annulation-last-minute': {
+
+    // ── Airbnb ────────────────────────────────────────────────────────────
+    airbnb: {
+      reassurance: "C'est frustrant mais pas la fin du monde. Si tu as activé la bonne politique d'annulation, tu touches déjà une partie. Et tu as quelques heures pour essayer de relouer la période, voire de récupérer le manque à gagner via AirCover dans certains cas.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai · agir dans les 24 h',
+        body: 'Les meilleures relocations se font dans les 24-48 h. Au-delà, les voyageurs en quête de dernière minute auront déjà choisi ailleurs.',
+      },
+      steps: [
+        {
+          title: 'Vérifier ce que tu touches automatiquement',
+          body: 'Selon ta politique d\'annulation (Flexible, Modérée, Stricte, Super stricte), Airbnb prélève automatiquement une partie du montant et te la verse. Vérifie le détail dans **Calendrier → réservation annulée → Détails du paiement**.',
+        },
+        {
+          title: 'Republier la période immédiatement',
+          body: 'Va dans **Calendrier → date** et vérifie que les jours sont bien à nouveau ouverts. Si tu utilises Smart Pricing, baisse manuellement de 10-15 % pour booster la relocation last-minute. Mets aussi à jour le minimum de nuits si nécessaire.',
+        },
+        {
+          title: 'Communiquer poliment avec le voyageur',
+          body: 'Messagerie Airbnb, ton neutre : "Je comprends que les imprévus arrivent. Selon la politique d\'annulation, la plateforme prélève [montant]. Bonne route." Pas d\'attaque, l\'avis voyageur est verrouillé sur 12 mois.',
+        },
+        {
+          title: 'Demander AirCover si annulation tardive justifie',
+          body: 'AirCover couvre l\'indemnisation des nuits perdues dans certains cas (annulation < 24 h, no-show non justifié). À demander via le **Centre de résolution** dans les 14 jours suivant la date prévue.',
+        },
+        {
+          title: 'Booster la visibilité de l\'annonce',
+          body: 'Republie ton annonce (édition mineure de la description), ajoute une nouvelle photo, baisse le prix de 10-15 % sur la période. Boost manuel de l\'algorithme.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message au voyageur après annulation',
+          body: `Bonjour [Prénom],
+
+Bien reçu l'annulation pour la période du [date] au [date]. Je comprends que les imprévus arrivent, j'espère que tout va bien de ton côté.
+
+Selon la politique d'annulation [Modérée / Stricte] de l'annonce, le remboursement est géré automatiquement par Airbnb.
+
+Si tu prévois de venir à [ville] à une autre date, n'hésite pas à me recontacter directement.
+
+Bonne journée,
+[Prénom]`,
+        },
+        {
+          label: 'Demande AirCover si annulation < 24 h',
+          subject: 'AirCover · Réservation HM[numéro] annulée last-minute',
+          body: `Bonjour,
+
+Le voyageur [Prénom] a annulé la réservation HM[numéro] le [date], soit moins de 24 h avant la date prévue d'arrivée. La période n'est plus relouable.
+
+Je sollicite la prise en charge AirCover pour les [nombre] nuits perdues au tarif moyen de l'annonce, soit [montant] €.
+
+Capture d'écran de l'annulation et calendrier de l'annonce en pièce jointe.
+
+Cordialement,
+[Prénom Nom]`,
+        },
+      ],
+      doNotDo: [
+        'Réagir avec colère ou culpabilisation auprès du voyageur',
+        'Bloquer le voyageur sans raison',
+        'Tenter de garder l\'argent au-delà de ce que la politique permet',
+        'Laisser le calendrier fermé sur la période annulée',
+        'Faire monter le prix pensant qu\'un autre voyageur se précipitera',
+      ],
+      recourses: [
+        'AirCover pour les annulations très tardives non justifiées',
+        'Politique d\'annulation à durcir pour le futur',
+        'Pas de recours juridique : l\'annulation par un voyageur est encadrée par les CGU acceptées',
+      ],
+      prevention: [
+        'Politique d\'annulation Stricte ou Super stricte pour les périodes haute saison',
+        'Acompte de 30-50 % à la réservation (configurable selon les marchés)',
+        'Délai minimum de réservation de 2-3 jours (filtre les voyageurs hésitants)',
+        'Communication early : message le lendemain de la réservation pour confirmer',
+      ],
+      lastVerified: '2026-05-12',
+    },
+
+    // ── Booking.com ───────────────────────────────────────────────────────
+    booking: {
+      reassurance: "Sur Booking, c'est ta propre politique d'annulation qui s'applique. Si tu as bien configuré, tu touches une partie ou la totalité. Si pas de carte prépayée, tu risques le no-show pur. À documenter et à signaler vite.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai · agir dans les 24-48 h',
+        body: 'Booking laisse 24-48 h pour réclamer un no-show ou une annulation tardive. Au-delà, plus rien.',
+      },
+      steps: [
+        {
+          title: 'Documenter dans l\'extranet',
+          body: 'Booking → Réservations → l\'annulation. Note la date et l\'heure exactes de l\'annulation. Capture d\'écran pour archive.',
+        },
+        {
+          title: 'Charger la carte si politique non remboursable',
+          body: 'Si ta politique est "non remboursable" et que la carte a été pré-autorisée, **charge-la via l\'extranet** dans les 24 h. La carte de crédit virtuelle Booking accepte le prélèvement automatique selon les CGU.',
+        },
+        {
+          title: 'Signaler un no-show si applicable',
+          body: 'Si le voyageur n\'a pas annulé mais ne s\'est pas présenté, marque "No-show" dans l\'extranet (Réservations → l\'arrivée non honorée → Signaler no-show) dans les 48 h. Booking valide et te permet de prélever la carte.',
+        },
+        {
+          title: 'Republier les dates et baisser le prix',
+          body: 'Réouvre les dates dans l\'extranet. Active la promotion "Last-minute" automatique de Booking ou crée une promotion manuelle de 10-15 %. Booking met en avant les disponibilités fraîches dans ses résultats.',
+        },
+        {
+          title: 'Si litige avec le voyageur, ticket Booking',
+          body: 'Si le voyageur conteste le prélèvement ou réclame un remboursement, ouvre un ticket dans l\'extranet → Boîte de réception. Joins les preuves et cite ta politique d\'annulation publique.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Signalement no-show via extranet',
+          body: `Réservation [numéro Booking]
+Date d'arrivée prévue : [date à 15 h]
+Le voyageur ne s'est pas présenté et n'a pas répondu aux messages envoyés à [heure].
+Signalement no-show pour application de la politique d'annulation non-remboursable signée à la réservation.
+Demande de validation pour prélèvement carte.`,
+        },
+      ],
+      doNotDo: [
+        'Attendre 3 jours pour signaler le no-show',
+        'Tenter de prélever une carte au-delà du montant prévu par la politique',
+        'Insulter le voyageur dans les échanges',
+        'Laisser les dates fermées par défaut',
+      ],
+      recourses: [
+        'Ticket extranet Booking pour les litiges de prélèvement',
+        'Carte de crédit virtuelle Booking pour les hôtes éligibles',
+        'Médiateur de la consommation européen pour les litiges complexes',
+      ],
+      prevention: [
+        'Politique d\'annulation "Non-remboursable" sur les périodes haute saison',
+        'Carte prépayée exigée à la réservation',
+        'Acompte de 30 % minimum si tu acceptes les paiements à l\'arrivée',
+        'Confirmation par message 48 h avant l\'arrivée',
+      ],
+      lastVerified: '2026-05-12',
+    },
+
+    // ── Vrbo / Abritel ────────────────────────────────────────────────────
+    vrbo: {
+      reassurance: "Sur Vrbo, ta politique d'annulation est ce qui te protège. Bien configurée (Stricte ou Super stricte), tu gardes la majeure partie. Le voyageur a accepté ces conditions à la réservation, c'est ferme.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai · agir dans les 24 h',
+        body: 'Idem Airbnb et Booking : 24-48 h pour relouer ou activer les protections.',
+      },
+      steps: [
+        {
+          title: 'Vérifier l\'application automatique de la politique',
+          body: 'Vrbo applique ta politique d\'annulation automatiquement et te verse la part due. Vérifie le détail dans **Réservations → annulation → Calcul du remboursement**.',
+        },
+        {
+          title: 'Republier la période',
+          body: 'Calendrier → réouvre les dates. Si tu utilises un PMS (Smoobu, Lodgify), assure-toi que la synchro s\'est bien faite.',
+        },
+        {
+          title: 'Activer une promotion last-minute',
+          body: 'Tableau de bord Vrbo → Promotions → 10-15 % de baisse sur les dates concernées. Vrbo met en avant les annonces avec promotion active.',
+        },
+        {
+          title: 'Réponse polie au voyageur',
+          body: 'Via la messagerie Vrbo, neutre et brève. Garde la trace en cas de litige ultérieur.',
+        },
+        {
+          title: 'Si annulation très tardive : Property Damage Protection si applicable',
+          body: 'Le PDP couvre principalement les dégâts, pas les annulations. Pour les annulations très tardives sans recours, contacte le support 1-877-228-3145.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message au voyageur après annulation Vrbo',
+          body: `Bonjour [Prénom],
+
+Bien reçu l'annulation pour le séjour du [date] au [date]. Selon la politique d'annulation [Modérée / Stricte] acceptée à la réservation, le remboursement est traité automatiquement par Vrbo.
+
+Au plaisir de t'accueillir une prochaine fois.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Tenter d\'imposer un remboursement plus restrictif que la politique signée',
+        'Ne pas relouer la période',
+        'Faire monter le prix de manière déraisonnable',
+      ],
+      recourses: [
+        'Support Vrbo 1-877-228-3145',
+        'Médiateur de la consommation européen pour les litiges',
+      ],
+      prevention: [
+        'Politique d\'annulation Stricte sur les périodes haute saison',
+        'Acompte de 50 % à la réservation, solde 30 jours avant',
+        'Communication active 1 semaine avant l\'arrivée',
+      ],
+      lastVerified: '2026-05-12',
+    },
+
+    // ── Direct ────────────────────────────────────────────────────────────
+    direct: {
+      reassurance: "En direct, ton contrat de location saisonnière et ta caution sont tes meilleures armes. Bien rédigé, tu gardes l'acompte voire la totalité selon la date d'annulation. C'est même plus simple qu'en plateforme.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · 24-72 h pour relouer',
+        body: 'Tu n\'as pas de plateforme à respecter, juste ton calendrier et ta capacité à relouer.',
+      },
+      steps: [
+        {
+          title: 'Vérifier les conditions d\'annulation de ton contrat',
+          body: 'Reprends ton contrat de location saisonnière (article L324-2 Code du tourisme). Selon la date d\'annulation, ton barème prévoit en général : > 30 jours = 50 % acompte gardé, < 30 jours = 100 % acompte gardé, < 7 jours = totalité du séjour due.',
+        },
+        {
+          title: 'Confirmer par écrit au voyageur',
+          body: 'Email + SMS. "Bien reçu votre annulation du [date] pour le séjour du [date]. Conformément à l\'article [X] du contrat signé, l\'acompte de [montant] reste acquis. Cordialement."',
+        },
+        {
+          title: 'Encaisser la somme due',
+          body: 'Si l\'acompte était bloqué sur Stripe, lance la capture. Si c\'est un chèque, encaisse-le. Si c\'est un virement déjà reçu, conserve-le.',
+        },
+        {
+          title: 'Republier les dates immédiatement',
+          body: 'Sur ton site direct, ton calendrier Driing, ton Google Business Profile, tes canaux secondaires. Annonce explicite "Dates libérées last-minute, [-10 %] sur ce créneau".',
+        },
+        {
+          title: 'Si le voyageur conteste, ton contrat fait foi',
+          body: 'Le contrat de location saisonnière signé prime sur toute contestation orale. Si le voyageur menace le tribunal, garde ton calme : tu as le contrat, l\'article L324-2 te protège. En cas de litige réel, un avocat spécialisé droit du tourisme tranchera.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Confirmation d\'annulation en direct',
+          body: `Bonjour [Prénom],
+
+Bien reçu votre annulation pour le séjour du [date] au [date] (réservation signée le [date]).
+
+Conformément à l'article [X] du contrat de location saisonnière signé, l'acompte de [montant] € reste acquis à titre de dédit (article 1590 du Code civil).
+
+[Si solde aussi dû selon le délai] : Conformément à l'article [Y], le solde de [montant] € reste également dû car l'annulation intervient à moins de [X] jours du séjour.
+
+Aucun document complémentaire ne sera émis. Je vous souhaite bonne continuation et reste disponible si vos plans changent.
+
+Cordialement,
+[Prénom Nom]`,
+        },
+        {
+          label: 'Mise en demeure si le voyageur conteste',
+          subject: 'Mise en demeure · Contrat de location saisonnière du [date]',
+          body: `Bonjour [Prénom],
+
+Suite à votre contestation du [date] concernant l'application des conditions d'annulation, je vous rappelle que :
+
+1. Vous avez signé le [date] un contrat de location saisonnière conforme à l'article L324-2 du Code du tourisme.
+2. L'article [X] de ce contrat prévoit explicitement les conditions d'annulation et les sommes dues.
+3. L'acompte versé constitue un dédit au sens de l'article 1590 du Code civil et reste acquis.
+
+À défaut de retrait de votre contestation sous 8 jours, je transmettrai le dossier à mon avocat pour suite à donner.
+
+Cordialement,
+[Prénom Nom]`,
+        },
+      ],
+      doNotDo: [
+        'Rembourser au-delà de ce que ton contrat prévoit "par geste commercial" sans réfléchir',
+        'Encaisser plus que ce que ton contrat prévoit',
+        'Engager une procédure juridique pour une annulation à 200 €',
+        'Oublier de refermer le créneau sur tes canaux secondaires',
+      ],
+      recourses: [
+        'Conciliateur de justice (gratuit) pour les petits litiges',
+        'Tribunal de proximité pour montants < 5 000 €',
+        'Avocat spécialisé droit du tourisme pour les gros dossiers',
+      ],
+      prevention: [
+        'Contrat de location saisonnière clair avec barème d\'annulation explicite',
+        'Acompte de 30-50 % à la signature, solde 30 jours avant',
+        'Caution distincte de l\'acompte, à bloquer Stripe ou chèque',
+        'Confirmation 1 semaine et 48 h avant l\'arrivée',
+        'Pour les réservations directes, passer par un outil comme Driing qui formalise contrat + paiement automatiquement',
+      ],
+      lastVerified: '2026-05-12',
+    },
+
+  },
+
 }
