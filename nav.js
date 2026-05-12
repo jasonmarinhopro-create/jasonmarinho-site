@@ -229,6 +229,7 @@
         + '<a href="/services/actualites"><i class="ph ph-newspaper"></i>Actualités LCD</a>'
         + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
         + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
+        + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte</a>'
         + '<a href="/services/chez-nous"><i class="ph ph-house"></i>Chez Nous (forum)</a>'
         + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
         + '<a href="/services/ecosysteme"><i class="ph ph-globe"></i>Écosystème LCD</a>'
