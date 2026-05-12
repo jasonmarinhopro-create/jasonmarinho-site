@@ -25,12 +25,9 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -212,49 +209,9 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </script>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Comment synchroniser son calendrier Airbnb avec Google Calendar ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Airbnb propose une synchronisation iCal native : Tableau de bord → Calendrier → Exporter le calendrier → Copier le lien iCal. Dans Google Calendar, ajouter un calendrier depuis une URL (Autres agendas → Ajouter par URL) et coller le lien iCal. La synchronisation est unidirectionnelle d'Airbnb vers Google et se rafraîchit toutes les 15-60 minutes. Pour une synchronisation bidirectionnelle (bloquer des dates dans Google qui se reflètent sur Airbnb), un outil comme Lodgify ou Smoobu est nécessaire."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Comment éviter les doubles réservations lors de la gestion multi-plateformes ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "La solution la plus fiable est un channel manager (Smoobu, Lodgify, Hostaway) qui synchronise les calendriers entre toutes les plateformes en temps réel (délai de 5-10 minutes maximum). La synchronisation iCal native entre plateformes est moins fiable (délai de 15-60 minutes, voire plusieurs heures) et expose à des doubles réservations pendant la fenêtre de désynchronisation. Pour 2+ plateformes actives simultanément, investir dans un channel manager à 30-80€/mois est indispensable."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Peut-on synchroniser Booking.com et Airbnb directement sans outil tiers ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Oui, via l'échange de liens iCal entre les deux plateformes : Airbnb et Booking.com acceptent tous deux l'import d'un lien iCal externe pour bloquer les dates réservées sur l'autre plateforme. La limitation : délai de synchronisation de 15-60 minutes et synchronisation uniquement des disponibilités (pas des prix, pas des informations voyageurs). Pour les hôtes avec peu de rotations, cette solution gratuite peut suffire, pour les hébergements très actifs, le channel manager reste la norme."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Comment bloquer des dates personnelles sur Airbnb sans les afficher comme 'réservées' ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Dans le calendrier Airbnb, sélectionnez les dates → marquez comme 'Indisponibles' ou 'Bloquées'. Ces dates apparaissent grisées pour les voyageurs sans raison affichée (contrairement aux réservations confirmées qui affichent un statut différent). Pour les absences longues (travaux, usage personnel), vous pouvez aussi modifier temporairement le délai de préavis minimum à 365 jours, personne ne peut réserver, et cela n'impacte pas votre classement autant qu'un blocage direct."
-      }
-    }
-  ]
-}
-</script>
-<script defer src="/nav.js"></script>
 </head>
 <body>
+<script src="/nav.js"></script>
 <section class="art-hero">
   <div class="ah-g"></div>
   <div class="ah-g2"></div>
@@ -278,7 +235,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-p">Avoir tout dans un seul calendrier change la vie quand tu es hôte LCD.</p>
 <ul class="art-ul"><li>Vue 360° : tes réservations + ton emploi perso dans une seule vue</li><li>Notifications : Google Calendar te notifie 24 h avant chaque check-in/check-out</li><li>Partage : ton équipe ménage peut voir le calendrier en lecture seule (très utile)</li><li>Mobile : Google Calendar app sur ton téléphone = consultation rapide partout</li><li>Intégration : autres apps (Slack, Trello, Notion) peuvent lire Google Calendar pour automatiser</li></ul>
 <h2 class="art-h2">2. Étapes d'intégration</h2>
-<ul class="art-ul"><li>Étape 1, Sur Airbnb : Calendrier → Synchronisation calendriers → Exporter calendrier. Copier le lien iCal</li><li>Étape 2, Sur Google Calendar : Autres calendriers → "+" → À partir de l'URL → coller le lien iCal Airbnb</li><li>Étape 3, Renommer le calendrier importé en "Airbnb [nom logement]"</li><li>Étape 4, Choisir une couleur (rouge pour Airbnb, bleu pour perso) pour distinguer visuellement</li><li>Étape 5, Vérifier 5 min plus tard que les réservations apparaissent. Mise à jour toutes les 24 h</li></ul>
+<ul class="art-ul"><li>Étape 1 — Sur Airbnb : Calendrier → Synchronisation calendriers → Exporter calendrier. Copier le lien iCal</li><li>Étape 2 — Sur Google Calendar : Autres calendriers → "+" → À partir de l'URL → coller le lien iCal Airbnb</li><li>Étape 3 — Renommer le calendrier importé en "Airbnb [nom logement]"</li><li>Étape 4 — Choisir une couleur (rouge pour Airbnb, bleu pour perso) pour distinguer visuellement</li><li>Étape 5 — Vérifier 5 min plus tard que les réservations apparaissent. Mise à jour toutes les 24 h</li></ul>
 <div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu as plusieurs logements, fais ça pour chacun avec une couleur différente. Tu vois en un coup d'œil tous tes biens dans une seule timeline.</span></div>
 <h2 class="art-h2">3. Faire pareil avec Booking.com</h2>
 <p class="art-p">Booking permet aussi l'export iCal. Procédure similaire.</p>
@@ -294,7 +251,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <div class="lbl rv">Continuer la lecture</div>
     <h2 style="font-family:'Fraunces',serif;font-size:clamp(20px,2.2vw,24px);font-weight:400;color:var(--td);margin-bottom:0;letter-spacing:-.2px">Articles similaires</h2>
     <div class="rel-grid">
-      <a href="/blog/gerer-lcd-automatisation" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Automatisation</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">Automatiser sa LCD</p></div></a><a href="/blog/make-zapier-workflow-airbnb-no-code-debutant" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Automatisation</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">Make/Zapier no-code</p></div></a><a href="/blog/messagerie-unifiee-3-plateformes-tester" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Automatisation</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">Messagerie unifiée</p></div></a>
+      <a href="/blog/outils-gerer-location-courte-duree-2025" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Automatisation</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">7 outils pour gérer sa LCD</p></div></a><a href="/blog/make-zapier-workflow-airbnb-no-code-debutant" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Automatisation</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">Make/Zapier no-code</p></div></a><a href="/blog/messagerie-unifiee-3-plateformes-tester" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Automatisation</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">Messagerie unifiée</p></div></a>
     </div>
   </div>
 </section>
@@ -315,7 +272,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </section>
 
 <!-- FOOTER -->
-<script defer src="/footer.js"></script>
+<script src="/footer.js"></script>
 <script>
 const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
@@ -341,14 +298,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur, réessaie.';
+      msg.textContent='Déjà inscrit ou erreur — réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau, réessaie.';
+    msg.textContent='Erreur réseau — réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

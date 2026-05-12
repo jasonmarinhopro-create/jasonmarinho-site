@@ -64,7 +64,7 @@ export default {
   ],
 
   related: [
-    { slug: 'gerer-lcd-automatisation',                         label: 'Automatiser sa LCD',                    categoryLabel: 'Automatisation' },
+    { slug: 'outils-gerer-location-courte-duree-2025',          label: '7 outils pour gérer sa LCD',            categoryLabel: 'Automatisation' },
     { slug: 'make-zapier-workflow-airbnb-no-code-debutant',     label: 'Make/Zapier no-code',                   categoryLabel: 'Automatisation' },
     { slug: 'messagerie-unifiee-3-plateformes-tester',          label: 'Messagerie unifiée',                    categoryLabel: 'Automatisation' },
   ],

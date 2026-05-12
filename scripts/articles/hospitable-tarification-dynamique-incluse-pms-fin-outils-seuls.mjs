@@ -56,7 +56,7 @@ export default {
 
   related: [
     { slug: 'tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif', label: 'PriceLabs vs Wheelhouse vs Beyond',         categoryLabel: 'Revenus'       },
-    { slug: 'automatiser-messages-voyageurs-airbnb-booking',                 label: 'Automatiser ses messages voyageurs',        categoryLabel: 'Automatisation' },
-    { slug: 'channel-manager-location-courte-duree-choisir',                 label: 'Choisir son channel manager LCD',           categoryLabel: 'Automatisation' },
+    { slug: 'messages-airbnb-automatiser',                                   label: 'Les 5 messages Airbnb à automatiser',       categoryLabel: 'Automatisation' },
+    { slug: 'pms-logiciel-gestion-location-courte-duree-debutant',           label: 'Quel PMS choisir pour ta LCD',              categoryLabel: 'Automatisation' },
   ],
 }
