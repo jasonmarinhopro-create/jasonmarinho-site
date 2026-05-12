@@ -1,7 +1,7 @@
 import { getProfile } from '@/lib/queries/profile'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import { SOS_SCENARIOS } from '@/components/sos/SOSModal'
+import { SOS_SCENARIOS } from '@/lib/sos/scenarios'
 import { ArrowLeft, Warning, Info } from '@phosphor-icons/react/dist/ssr'
 import { SCENARIOS_CONTENT } from '@/lib/sos/scenarios-content'
 import ScenarioContent from '@/components/sos/ScenarioContent'
