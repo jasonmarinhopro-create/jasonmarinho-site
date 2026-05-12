@@ -146,9 +146,9 @@ export default async function ScenarioPage({
 
 const s: Record<string, React.CSSProperties> = {
   page: {
-    maxWidth: '1180px',
+    maxWidth: '1380px',
     margin: '0 auto',
-    padding: 'clamp(16px, 3vw, 32px)',
+    padding: 'clamp(16px, 3vw, 40px) clamp(16px, 4vw, 56px)',
   },
   backLink: {
     display: 'flex', alignItems: 'center', gap: '5px',
