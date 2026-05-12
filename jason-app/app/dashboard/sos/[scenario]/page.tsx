@@ -146,7 +146,7 @@ export default async function ScenarioPage({
 
 const s: Record<string, React.CSSProperties> = {
   page: {
-    maxWidth: '780px',
+    maxWidth: '1180px',
     margin: '0 auto',
     padding: 'clamp(16px, 3vw, 32px)',
   },
