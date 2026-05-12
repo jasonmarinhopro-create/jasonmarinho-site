@@ -25,6 +25,30 @@ export default function ScenarioContent({ content }: Props) {
 
   return (
     <div style={s.wrap}>
+      {/* Styles responsive 2 colonnes desktop → 1 colonne mobile.
+          Breakpoint à 1024 px : au-dessus on a assez de largeur pour
+          afficher le pas-à-pas + les templates à gauche et les blocs
+          secondaires (NE PAS faire / recours / prévention) à droite.  */}
+      <style>{`
+        .sos-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        .sos-col {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          min-width: 0;
+        }
+        @media (min-width: 1024px) {
+          .sos-grid {
+            grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+            align-items: start;
+          }
+        }
+      `}</style>
+
       {/* Badge vérification éditoriale */}
       {verif.date && (
         <div style={{
@@ -42,108 +66,116 @@ export default function ScenarioContent({ content }: Props) {
         </div>
       )}
 
-      {/* Rassurance */}
-      <div style={s.reassurance}>
-        <strong style={{ color: 'var(--text)' }}>Avant tout, respire.</strong>
-        <span style={{ marginLeft: '6px' }}>{content.reassurance}</span>
-      </div>
+      <div className="sos-grid">
+        {/* Colonne MAIN : rassurance, délai, pas-à-pas, templates */}
+        <div className="sos-col">
+          {/* Rassurance */}
+          <div style={s.reassurance}>
+            <strong style={{ color: 'var(--text)' }}>Avant tout, respire.</strong>
+            <span style={{ marginLeft: '6px' }}>{content.reassurance}</span>
+          </div>
 
-      {/* Délai critique */}
-      <div style={{
-        ...s.delayBox,
-        background: content.delayBox.type === 'urgent' ? 'rgba(220,38,38,0.07)' : 'rgba(217,119,6,0.07)',
-        borderColor: content.delayBox.type === 'urgent' ? 'rgba(220,38,38,0.30)' : 'rgba(217,119,6,0.28)',
-      }}>
-        <Clock
-          size={18}
-          weight="fill"
-          style={{ color: content.delayBox.type === 'urgent' ? '#dc2626' : '#b45309', flexShrink: 0, marginTop: '2px' }}
-        />
-        <div>
+          {/* Délai critique */}
           <div style={{
-            ...s.delayLabel,
-            color: content.delayBox.type === 'urgent' ? '#dc2626' : '#b45309',
+            ...s.delayBox,
+            background: content.delayBox.type === 'urgent' ? 'rgba(220,38,38,0.07)' : 'rgba(217,119,6,0.07)',
+            borderColor: content.delayBox.type === 'urgent' ? 'rgba(220,38,38,0.30)' : 'rgba(217,119,6,0.28)',
           }}>
-            {content.delayBox.label}
-          </div>
-          <div style={s.delayBody}>{content.delayBox.body}</div>
-        </div>
-      </div>
-
-      {/* Pas-à-pas */}
-      <div style={s.section}>
-        <h2 style={s.sectionTitle}>Le pas-à-pas</h2>
-        <ol style={s.stepsList}>
-          {content.steps.map((step, i) => (
-            <li key={i} style={s.step}>
-              <div style={s.stepNum}>{i + 1}</div>
-              <div style={s.stepBody}>
-                <div style={s.stepTitle}>{step.title}</div>
-                <div style={s.stepText} dangerouslySetInnerHTML={{ __html: renderMarkdown(step.body) }} />
+            <Clock
+              size={18}
+              weight="fill"
+              style={{ color: content.delayBox.type === 'urgent' ? '#dc2626' : '#b45309', flexShrink: 0, marginTop: '2px' }}
+            />
+            <div>
+              <div style={{
+                ...s.delayLabel,
+                color: content.delayBox.type === 'urgent' ? '#dc2626' : '#b45309',
+              }}>
+                {content.delayBox.label}
               </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-
-      {/* Templates */}
-      {content.templates.length > 0 && (
-        <div style={s.section}>
-          <h2 style={s.sectionTitle}>Templates prêts à copier</h2>
-          <div style={s.templatesList}>
-            {content.templates.map((tpl, i) => (
-              <TemplateBox key={i} template={tpl} />
-            ))}
+              <div style={s.delayBody}>{content.delayBox.body}</div>
+            </div>
           </div>
+
+          {/* Pas-à-pas */}
+          <div style={s.section}>
+            <h2 style={s.sectionTitle}>Le pas-à-pas</h2>
+            <ol style={s.stepsList}>
+              {content.steps.map((step, i) => (
+                <li key={i} style={s.step}>
+                  <div style={s.stepNum}>{i + 1}</div>
+                  <div style={s.stepBody}>
+                    <div style={s.stepTitle}>{step.title}</div>
+                    <div style={s.stepText} dangerouslySetInnerHTML={{ __html: renderMarkdown(step.body) }} />
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {/* Templates */}
+          {content.templates.length > 0 && (
+            <div style={s.section}>
+              <h2 style={s.sectionTitle}>Templates prêts à copier</h2>
+              <div style={s.templatesList}>
+                {content.templates.map((tpl, i) => (
+                  <TemplateBox key={i} template={tpl} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
 
-      {/* Ce qu'il NE faut surtout PAS faire */}
-      <div style={{ ...s.section, ...s.dontSection }}>
-        <h2 style={{ ...s.sectionTitle, color: '#dc2626' }}>
-          <ProhibitInset size={18} weight="fill" style={{ display: 'inline-block', verticalAlign: '-3px', marginRight: '6px' }} />
-          Ce qu&apos;il ne faut surtout PAS faire
-        </h2>
-        <ul style={s.dontList}>
-          {content.doNotDo.map((item, i) => (
-            <li key={i} style={s.dontItem}>
-              <span style={{ ...s.bullet, color: '#dc2626' }}>✗</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+        {/* Colonne ASIDE : à NE PAS faire, recours, prévention */}
+        <aside className="sos-col">
+          {/* Ce qu'il NE faut surtout PAS faire */}
+          <div style={{ ...s.section, ...s.dontSection }}>
+            <h2 style={{ ...s.sectionTitle, color: '#dc2626' }}>
+              <ProhibitInset size={18} weight="fill" style={{ display: 'inline-block', verticalAlign: '-3px', marginRight: '6px' }} />
+              Ce qu&apos;il ne faut surtout PAS faire
+            </h2>
+            <ul style={s.dontList}>
+              {content.doNotDo.map((item, i) => (
+                <li key={i} style={s.dontItem}>
+                  <span style={{ ...s.bullet, color: '#dc2626' }}>✗</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-      {/* Recours additionnels */}
-      <div style={s.section}>
-        <h2 style={s.sectionTitle}>
-          <Scales size={18} weight="fill" style={{ display: 'inline-block', verticalAlign: '-3px', marginRight: '6px', color: 'var(--accent-text)' }} />
-          Si ça tourne mal, les recours
-        </h2>
-        <ul style={s.recoursesList}>
-          {content.recourses.map((item, i) => (
-            <li key={i} style={s.recourseItem}>
-              <span style={{ ...s.bullet, color: 'var(--accent-text)' }}>→</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+          {/* Recours additionnels */}
+          <div style={s.section}>
+            <h2 style={s.sectionTitle}>
+              <Scales size={18} weight="fill" style={{ display: 'inline-block', verticalAlign: '-3px', marginRight: '6px', color: 'var(--accent-text)' }} />
+              Si ça tourne mal, les recours
+            </h2>
+            <ul style={s.recoursesList}>
+              {content.recourses.map((item, i) => (
+                <li key={i} style={s.recourseItem}>
+                  <span style={{ ...s.bullet, color: 'var(--accent-text)' }}>→</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-      {/* Prévention */}
-      <div style={{ ...s.section, ...s.preventionSection }}>
-        <h2 style={{ ...s.sectionTitle, color: '#059669' }}>
-          <Shield size={18} weight="fill" style={{ display: 'inline-block', verticalAlign: '-3px', marginRight: '6px' }} />
-          Pour que ça ne se reproduise plus
-        </h2>
-        <ul style={s.preventionList}>
-          {content.prevention.map((item, i) => (
-            <li key={i} style={s.preventionItem}>
-              <span style={{ ...s.bullet, color: '#059669' }}>✓</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
+          {/* Prévention */}
+          <div style={{ ...s.section, ...s.preventionSection }}>
+            <h2 style={{ ...s.sectionTitle, color: '#059669' }}>
+              <Shield size={18} weight="fill" style={{ display: 'inline-block', verticalAlign: '-3px', marginRight: '6px' }} />
+              Pour que ça ne se reproduise plus
+            </h2>
+            <ul style={s.preventionList}>
+              {content.prevention.map((item, i) => (
+                <li key={i} style={s.preventionItem}>
+                  <span style={{ ...s.bullet, color: '#059669' }}>✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
       </div>
     </div>
   )
