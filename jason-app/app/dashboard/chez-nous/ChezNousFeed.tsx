@@ -736,45 +736,35 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
     })
   }
 
+  const excerpt = (() => {
+    const stripped = stripMarkdown(post.body)
+    return stripped.slice(0, 360) + (stripped.length > 360 ? '…' : '')
+  })()
+
   return (
     <div style={s.postCard}>
-      {/* Vote */}
-      <button
-        type="button"
-        onClick={onVote}
-        disabled={pending}
-        style={{
-          ...s.voteCol,
-          color: voted ? 'var(--accent-text)' : 'var(--text-muted)',
-          background: voted ? 'rgba(255,213,107,0.10)' : 'transparent',
-          borderColor: voted ? 'rgba(255,213,107,0.3)' : 'var(--border)',
-        }}
-        title={voted ? 'Retirer mon vote' : 'Marquer utile'}
-      >
-        <ArrowFatUp size={14} weight={voted ? 'fill' : 'regular'} />
-        <span style={s.voteCount}>{count}</span>
-      </button>
-
       {/* Avatar (cliquable → profil) */}
       <Link href={`/dashboard/chez-nous/membre/${post.author_id}`} style={{ ...s.avatar, background: av.bg, color: av.text }} title={name}>
         {initials}
       </Link>
 
       {/* Contenu */}
-      <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postBody}>
-        <div style={s.postMeta}>
-          <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>{cat.short}</span>
-          {post.is_resolved && (
-            <span style={s.resolvedChip}>
-              <CheckCircle size={11} weight="fill" /> Résolu
-            </span>
-          )}
-          {post.pinned && <PushPin size={12} color="var(--accent-text)" weight="fill" />}
-          {post.locked && <Lock size={12} color="#94a3b8" weight="fill" />}
-          {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
-        </div>
-        <h3 style={s.postTitle}>{post.title}</h3>
-        <p style={s.postExcerpt}>{(() => { const stripped = stripMarkdown(post.body); return stripped.slice(0, 180) + (stripped.length > 180 ? '…' : '') })()}</p>
+      <div style={s.postBody}>
+        <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postBodyLink}>
+          <div style={s.postMeta}>
+            <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>{cat.short}</span>
+            {post.is_resolved && (
+              <span style={s.resolvedChip}>
+                <CheckCircle size={11} weight="fill" /> Résolu
+              </span>
+            )}
+            {post.pinned && <PushPin size={12} color="var(--accent-text)" weight="fill" />}
+            {post.locked && <Lock size={12} color="#94a3b8" weight="fill" />}
+            {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
+          </div>
+          <h3 style={s.postTitle}>{post.title}</h3>
+          <p style={s.postExcerpt}>{excerpt}</p>
+        </Link>
         <div style={s.postFoot}>
           <span style={s.postFootName}>
             {name}
@@ -790,23 +780,40 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
             </span>
           ))}
           <span style={s.postFootDot}>·</span>
-          <span>{formatRelative(post.last_reply_at ?? post.created_at)}</span>
-          <span style={s.postFootDot}>·</span>
-          <span style={s.postReplies}>
-            <ChatCircle size={11} weight="fill" />
-            {post.reply_count}
-          </span>
-          {post.image_count > 0 && (
-            <>
-              <span style={s.postFootDot}>·</span>
-              <span style={s.postReplies} title={`${post.image_count} image${post.image_count > 1 ? 's' : ''}`}>
-                <ImageSquare size={11} weight="fill" />
+          <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postFootLink}>
+            {formatRelative(post.last_reply_at ?? post.created_at)}
+          </Link>
+          <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <Link href={`/dashboard/chez-nous/${post.id}`} style={{ ...s.postReplies, ...s.postFootLink }} title={`${post.reply_count} réponse${post.reply_count > 1 ? 's' : ''}`}>
+              <ChatCircle size={12} weight="fill" />
+              {post.reply_count}
+            </Link>
+            {post.image_count > 0 && (
+              <Link href={`/dashboard/chez-nous/${post.id}`} style={{ ...s.postReplies, ...s.postFootLink }} title={`${post.image_count} image${post.image_count > 1 ? 's' : ''}`}>
+                <ImageSquare size={12} weight="fill" />
                 {post.image_count}
-              </span>
-            </>
-          )}
+              </Link>
+            )}
+            <button
+              type="button"
+              onClick={onVote}
+              disabled={pending}
+              style={{
+                ...s.voteInline,
+                color: voted ? 'var(--accent-text)' : 'var(--text-muted)',
+                background: voted ? 'var(--accent-bg-2)' : 'transparent',
+                borderColor: voted ? 'var(--accent-border-2)' : 'var(--border)',
+              }}
+              title={voted ? 'Retirer mon vote utile' : 'Marquer comme utile'}
+              aria-label={voted ? 'Retirer mon vote utile' : 'Marquer comme utile'}
+            >
+              <ArrowFatUp size={12} weight={voted ? 'fill' : 'regular'} />
+              {count > 0 && <span>{count}</span>}
+              <span style={s.voteInlineLabel}>{voted ? 'Utile' : 'Marquer utile'}</span>
+            </button>
+          </span>
         </div>
-      </Link>
+      </div>
     </div>
   )
 }
@@ -1025,23 +1032,29 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
       </div>
 
       <div style={s.formField}>
-        <label style={s.label}>Titre</label>
+        <label style={s.label}>
+          Titre <span style={s.required}>*</span>
+        </label>
         <input
           type="text" value={title} onChange={e => setTitle(e.target.value)}
           placeholder="Un sujet précis et clair…"
           style={s.input} maxLength={200}
+          required
         />
         <p style={s.helper}>{title.length}/200 caractères. Pose ta question ou ton sujet en une phrase.</p>
       </div>
 
       <div style={s.formField}>
-        <label style={s.label}>Message</label>
+        <label style={s.label}>
+          Message <span style={s.required}>*</span>
+        </label>
         <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
         <textarea
           ref={taRef}
           value={body} onChange={e => setBody(e.target.value)}
           placeholder="Détaille ton contexte, ce que tu as déjà essayé, ce que tu cherches…"
           style={s.textarea} rows={6} maxLength={8000}
+          required
         />
         <p style={s.helper}>{body.length}/8000</p>
       </div>
@@ -1052,6 +1065,16 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
       </div>
 
       {error && <p style={s.error}>{error}</p>}
+
+      {(!title.trim() || !body.trim()) && !error && (
+        <p style={s.helperRequired}>
+          {!title.trim() && !body.trim()
+            ? 'Renseigne un titre et un message pour publier.'
+            : !title.trim()
+              ? 'Il manque le titre pour pouvoir publier.'
+              : 'Il manque le message pour pouvoir publier.'}
+        </p>
+      )}
 
       <div style={s.formActions}>
         <button onClick={onSuccess} style={s.btnGhost} disabled={pending}>Annuler</button>
@@ -1405,19 +1428,19 @@ const s: Record<string, React.CSSProperties> = {
   // ─── PostFormModal ─────────────────────────────────────────────────
   modalBackdrop: {
     position: 'fixed' as const, inset: 0, zIndex: 1000,
-    background: 'rgba(0,0,0,0.60)', backdropFilter: 'blur(4px)',
+    background: 'rgba(0,0,0,0.78)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     padding: '16px',
   },
   modalDialog: {
     position: 'relative' as const,
-    background: 'var(--surface)',
+    background: 'var(--bg)',
     border: '1px solid var(--border)',
     borderRadius: '16px',
     width: '100%', maxWidth: '560px',
     maxHeight: '90vh',
     display: 'flex', flexDirection: 'column' as const,
-    boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
+    boxShadow: '0 24px 72px rgba(0,0,0,0.6)',
     overflow: 'hidden',
   },
   modalHeader: {
@@ -1519,7 +1542,16 @@ const s: Record<string, React.CSSProperties> = {
   },
   formField: { display: 'flex', flexDirection: 'column', gap: '6px' },
   label: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' },
+  required: { color: '#dc2626', fontWeight: 700, marginLeft: '2px' },
   helper: { fontSize: '11px', color: 'var(--text-muted)', margin: 0 },
+  helperRequired: {
+    fontSize: '12px', color: '#b45309',
+    background: 'rgba(217,119,6,0.08)',
+    border: '1px solid rgba(217,119,6,0.20)',
+    borderRadius: '8px',
+    padding: '8px 12px',
+    margin: 0,
+  },
   select: {
     background: 'var(--bg)', color: 'var(--text)',
     border: '1px solid var(--border)', borderRadius: '8px',
@@ -1573,22 +1605,23 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   postCard: {
-    display: 'flex', gap: '12px',
+    display: 'flex', gap: '14px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '14px 16px',
+    borderRadius: '14px', padding: '16px 18px',
     transition: 'border-color 0.15s',
     alignItems: 'flex-start',
   },
-  voteCol: {
-    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-    gap: '2px',
-    minWidth: '44px', minHeight: '54px',
+  voteInline: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    padding: '4px 9px', borderRadius: '999px',
     background: 'transparent', border: '1px solid',
-    borderRadius: '10px', cursor: 'pointer',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    fontSize: '11.5px', fontWeight: 600,
     transition: 'background 0.15s, color 0.15s, border-color 0.15s',
-    flexShrink: 0,
+    lineHeight: 1,
   },
-  voteCount: { fontSize: '12px', fontWeight: 700, lineHeight: 1 },
+  voteInlineLabel: { fontSize: '11px' },
 
   avatar: {
     width: '40px', height: '40px', borderRadius: '50%',
@@ -1599,8 +1632,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   postBody: {
     flex: 1, minWidth: 0,
+    display: 'flex', flexDirection: 'column', gap: '8px',
+  },
+  postBodyLink: {
     display: 'flex', flexDirection: 'column', gap: '5px',
     textDecoration: 'none', color: 'inherit',
+  },
+  postFootLink: {
+    color: 'inherit', textDecoration: 'none',
   },
   postMeta: { display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' },
   resolvedChip: {
@@ -1626,9 +1665,9 @@ const s: Record<string, React.CSSProperties> = {
     margin: '2px 0', lineHeight: 1.35,
   },
   postExcerpt: {
-    fontSize: '13px', color: 'var(--text-2)',
-    margin: 0, lineHeight: 1.6,
-    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
+    fontSize: '13.5px', color: 'var(--text-2)',
+    margin: 0, lineHeight: 1.65,
+    display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
   },
   postFoot: {
     display: 'flex', alignItems: 'center', gap: '6px',
