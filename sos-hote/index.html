@@ -74,6 +74,10 @@
     .scen-card p{font-size:13.5px;line-height:1.65;color:var(--tm);margin:0}
     .scen-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
     .scen-chan{font-size:10.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--tl);background:rgba(0,76,63,.06);padding:3px 8px;border-radius:100px;border:1px solid rgba(0,76,63,.08)}
+    a.scen-card{text-decoration:none;color:inherit;display:flex}
+    a.scen-card:hover{border-color:var(--g)}
+    .scen-link{font-size:13px;font-weight:600;color:var(--g);margin-top:4px;display:inline-flex;align-items:center;gap:5px}
+    a.scen-card:hover .scen-link{gap:8px}
 
     .pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:28px}
     .pillar{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:8px}
@@ -251,50 +255,55 @@
     <p class="sub dk mx">Chaque scénario est décliné en 4 canaux (Airbnb, Booking, Vrbo, Direct) avec son pas-à-pas, ses templates et ses recours. Si une situation n&apos;est pas applicable sur ton canal, on te le dit clairement.</p>
 
     <div class="scen-grid">
-      <article class="scen-card">
+      <a href="/sos-hote/voyageur-degrade-logement" class="scen-card">
         <div class="scen-ic"><i class="ph ph-house"></i></div>
         <h3>Mon voyageur a dégradé mon logement</h3>
         <p>Réagir vite, documenter avant tout nettoyage, déclencher AirCover dans les 14 jours, demander remboursement via le Centre de résolution. Pour les autres canaux, encaisser la caution et factures à l&apos;appui.</p>
         <div class="scen-meta">
           <span class="scen-chan">Airbnb</span><span class="scen-chan">Booking</span><span class="scen-chan">Vrbo</span><span class="scen-chan">Direct</span>
         </div>
-      </article>
+        <span class="scen-link">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
 
-      <article class="scen-card">
+      <a href="/sos-hote/avis-injuste" class="scen-card">
         <div class="scen-ic mid"><i class="ph ph-star"></i></div>
         <h3>J&apos;ai reçu un avis négatif injuste</h3>
         <p>Identifier le motif de retrait (insulte, mensonge, hors séjour, chantage), signaler à la plateforme, publier une réponse publique factuelle qui rassure les futurs voyageurs sans alimenter le conflit.</p>
         <div class="scen-meta">
           <span class="scen-chan">Airbnb</span><span class="scen-chan">Booking</span><span class="scen-chan">Vrbo</span>
         </div>
-      </article>
+        <span class="scen-link">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
 
-      <article class="scen-card">
+      <a href="/sos-hote/voyageur-fete-nuisance" class="scen-card">
         <div class="scen-ic"><i class="ph ph-confetti"></i></div>
         <h3>Voyageur fait la fête / nuisance</h3>
         <p>Documenter le bruit (heure, témoins, voisins), contacter le voyageur fermement, signaler à la plateforme, demander un check-out anticipé. Préserver tes preuves pour la suite.</p>
         <div class="scen-meta">
           <span class="scen-chan">Airbnb</span><span class="scen-chan">Booking</span><span class="scen-chan">Vrbo</span><span class="scen-chan">Direct</span>
         </div>
-      </article>
+        <span class="scen-link">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
 
-      <article class="scen-card">
+      <a href="/sos-hote/voyageur-refuse-partir" class="scen-card">
         <div class="scen-ic"><i class="ph ph-door-open"></i></div>
         <h3>Mon voyageur refuse de partir</h3>
         <p>Occupation sans droit ni titre, agir le jour même. Mise en demeure écrite, appel police pour constat, huissier, avocat si besoin. Pas de voie de fait : la coupure d&apos;eau / le changement de serrure pendant l&apos;occupation t&apos;exposent.</p>
         <div class="scen-meta">
           <span class="scen-chan">Airbnb</span><span class="scen-chan">Booking</span><span class="scen-chan">Vrbo</span><span class="scen-chan">Direct</span>
         </div>
-      </article>
+        <span class="scen-link">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
 
-      <article class="scen-card">
+      <a href="/sos-hote/litige-plateforme" class="scen-card">
         <div class="scen-ic mid"><i class="ph ph-scales"></i></div>
         <h3>Litige avec Airbnb / Booking</h3>
         <p>Centre d&apos;aide, escalade téléphonique, Twitter public, email recours formel. Médiateur de la consommation européen (ODR), DGCCRF, tribunal judiciaire en dernier ressort. Garde tes nerfs et tes preuves.</p>
         <div class="scen-meta">
           <span class="scen-chan">Airbnb</span><span class="scen-chan">Booking</span><span class="scen-chan">Vrbo</span>
         </div>
-      </article>
+        <span class="scen-link">Lire le guide <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
     </div>
   </div>
 </section>
