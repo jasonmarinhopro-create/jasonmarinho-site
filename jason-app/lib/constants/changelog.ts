@@ -63,6 +63,27 @@ export const CHANGELOG: ChangelogEntry[] = [
     title: 'Synchronisation iCal multi-plateformes',
     description: 'Ajoute tes liens iCal Airbnb, Booking, Vrbo et autres plateformes directement sur la fiche logement. Les réservations externes apparaissent automatiquement dans ton calendrier intégré. Plus de double-réservation par oubli de bloquer une date.',
   },
+  {
+    id: 'qr-affiches-mai-2026',
+    date: '2026-05-09',
+    tag: 'nouveau',
+    title: 'QR & Affiches : prêts à imprimer pour ton logement',
+    description: 'Génère en 2 minutes les affiches utiles pour ton logement : WiFi (avec QR code de connexion auto), règlement intérieur, consignes check-out, contacts d\'urgence. Personnalisation rapide, format A4 prêt à imprimer ou afficher. Idéal pour réduire les questions voyageurs.',
+  },
+  {
+    id: 'audit-gbp-mai-2026',
+    date: '2026-05-06',
+    tag: 'nouveau',
+    title: 'Audit Google Business Profile gratuit',
+    description: 'Évalue en 25 questions la santé de ta fiche Google Business Profile. Score sur 100, points faibles identifiés, plan d\'action priorisé. Une bonne fiche GBP peut t\'amener 10 à 30 réservations directes par an sans commission.',
+  },
+  {
+    id: 'simulateurs-lcd-mai-2026',
+    date: '2026-05-06',
+    tag: 'nouveau',
+    title: 'Simulateurs LCD : rentabilité, fiscalité, point mort',
+    description: 'Calculateurs intégrés pour anticiper : LMNP vs LMP selon ton chiffre d\'affaires, simulation micro-BIC vs régime réel, calcul de point mort par logement, marge nette par nuit. Connecté à la dernière fiscalité 2026 (Loi Le Meur, abattements actualisés).',
+  },
 
   // ─── Avril 2026 ─────────────────────────────────
   {
