@@ -18,11 +18,14 @@ interface NotificationPanelProps {
 
 type Tab = 'nouveautes' | 'cheznous'
 
+// Note : pour 'amélioration', on utilise var(--accent-text) au lieu d'un jaune
+// hardcodé (#FFD56B). En mode clair le jaune est invisible sur fond blanc,
+// alors que --accent-text est calibré pour rester lisible dans les deux thèmes.
 const TAG_CONFIG: Record<ChangelogTag, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-  nouveau:      { label: 'Nouveau',       color: '#63D683', bg: 'rgba(99,214,131,0.12)',  icon: <Sparkle size={11} weight="fill" /> },
-  amélioration: { label: 'Amélioration',  color: '#FFD56B', bg: 'rgba(255,213,107,0.13)', icon: <ArrowUp  size={11} weight="bold" /> },
-  correction:   { label: 'Correction',    color: '#93C5FD', bg: 'rgba(147,197,253,0.13)', icon: <Wrench   size={11} weight="fill" /> },
-  important:    { label: 'Important',     color: '#F472B6', bg: 'rgba(244,114,182,0.13)', icon: <Star     size={11} weight="fill" /> },
+  nouveau:      { label: 'Nouveau',       color: '#10b981',           bg: 'rgba(16,185,129,0.12)',  icon: <Sparkle size={11} weight="fill" /> },
+  amélioration: { label: 'Amélioration',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)',    icon: <ArrowUp  size={11} weight="bold" /> },
+  correction:   { label: 'Correction',    color: '#2563eb',           bg: 'rgba(37,99,235,0.10)',   icon: <Wrench   size={11} weight="fill" /> },
+  important:    { label: 'Important',     color: '#db2777',           bg: 'rgba(219,39,119,0.10)',  icon: <Star     size={11} weight="fill" /> },
 }
 
 function formatDate(iso: string): string {
@@ -166,7 +169,6 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
                     ...s.dot,
                     background: isRead ? 'transparent' : tagCfg.color,
                     border: isRead ? '1.5px solid var(--border)' : 'none',
-                    boxShadow: isRead ? 'none' : `0 0 5px ${tagCfg.color}80`,
                   }} />
                 </div>
                 <div style={s.entryBody}>

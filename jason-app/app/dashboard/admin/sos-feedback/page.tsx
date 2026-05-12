@@ -24,7 +24,7 @@ export default async function AdminSOSFeedbackPage() {
     .limit(500)
 
   return (
-    <div style={{ padding: 'clamp(20px,3vw,40px)', width: '100%' }}>
+    <div style={{ padding: 'clamp(20px,3vw,40px) clamp(16px,4vw,48px)', width: '100%' }}>
       <SOSFeedbackAdmin items={feedback ?? []} />
     </div>
   )

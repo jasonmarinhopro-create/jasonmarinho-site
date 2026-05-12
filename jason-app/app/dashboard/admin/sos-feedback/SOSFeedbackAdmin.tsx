@@ -271,7 +271,7 @@ function statusStyle(status: FeedbackItem['status']): React.CSSProperties {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { maxWidth: '1080px', margin: '0 auto' },
+  wrap: { maxWidth: '1400px', margin: '0 auto', width: '100%' },
   backLink: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '12.5px', color: 'var(--text-3)',
