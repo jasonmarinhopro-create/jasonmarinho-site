@@ -5,6 +5,7 @@ import { SOS_SCENARIOS } from '@/components/sos/SOSModal'
 import { ArrowLeft, Warning, Info } from '@phosphor-icons/react/dist/ssr'
 import { SCENARIOS_CONTENT } from '@/lib/sos/scenarios-content'
 import ScenarioContent from '@/components/sos/ScenarioContent'
+import SOSFeedbackBlock from '@/components/sos/SOSFeedbackBlock'
 
 /* Page détail d'un scénario SOS Hôte.
    Le contenu de chaque scénario × canal sera ajouté en Phase 2.
@@ -119,8 +120,15 @@ export default async function ScenarioPage({
             </div>
           )
         }
-        // Contenu disponible → rendu complet
-        return <ScenarioContent content={scenarioContent} />
+        // Contenu disponible → rendu complet + bloc feedback communauté
+        return (
+          <>
+            <ScenarioContent content={scenarioContent} />
+            <div style={{ marginTop: '20px' }}>
+              <SOSFeedbackBlock scenario={scenario} channel={channel} />
+            </div>
+          </>
+        )
       })()}
 
       {/* Disclaimer juridique */}
