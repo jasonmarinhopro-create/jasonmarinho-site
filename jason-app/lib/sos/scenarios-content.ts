@@ -418,6 +418,1169 @@ RIB : [IBAN]
 
   },
 
-  // Les 4 autres scénarios arrivent dans les commits suivants.
-  // Structure identique : 'slug': { airbnb: {...}, booking: {...}, vrbo: {...}, direct: {...} }
+  // ─── SCÉNARIO 2 : J'ai reçu un avis négatif injuste ────────────────────
+
+  'avis-injuste': {
+
+    // ── Airbnb ────────────────────────────────────────────────────────────
+    airbnb: {
+      reassurance: "Un avis injuste, ça pique. Mais c'est rarement la fin du monde. Airbnb ne supprime PAS un avis 'juste parce qu'il est sévère' — il faut identifier la violation précise de la politique de contenu. C'est cette précision qui fait gagner le dossier.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · Airbnb examine sous 24-72 h',
+        body: 'Agis dans les 7 jours suivant la publication. Plus tard, Airbnb peut considérer que tu as accepté l\'avis. Et prépare ta réponse publique en parallèle : elle sera visible quoi qu\'il arrive.',
+      },
+      steps: [
+        {
+          title: 'Identifie le motif PRÉCIS parmi les 5 valides',
+          body: 'Airbnb supprime uniquement si l\'avis viole sa politique : **(1) Contenu interdit** (insultes, propos haineux, diffamation, menaces), **(2) Hors-sujet** (politique, religion, quartier, séjour passé, pas le logement réel), **(3) Informations confidentielles divulguées** (adresse complète, nom de famille, téléphone), **(4) Avis de rétorsion** (le voyageur menace de mauvais avis pour obtenir compensation, ou avis publié après que tu lui aies demandé de payer des dégâts), **(5) Avis biaisé** (auteur n\'a pas séjourné, concurrent, employé). Sans motif = pas de suppression.',
+        },
+        {
+          title: 'Rassemble les preuves',
+          body: 'Captures d\'écran horodatées de l\'avis, de tous les messages échangés sur la plateforme, de tout élément qui prouve le motif (ex: la menace explicite si rétorsion).',
+        },
+        {
+          title: 'Signale l\'avis',
+          body: 'Depuis ton profil hôte → ouvre l\'avis → bouton **Signaler** → sélectionne le motif → joins les preuves → envoie.',
+        },
+        {
+          title: 'Prépare TA réponse publique en parallèle',
+          body: 'Ta réponse sera visible que l\'avis soit supprimé ou non. Elle doit être **courte (3-5 lignes max), factuelle, professionnelle, sans agressivité ni majuscules ni sarcasme**. Un futur voyageur lira ta réponse autant que l\'avis.',
+        },
+        {
+          title: 'Attends 24-72 h la décision Airbnb',
+          body: 'Si l\'agent refuse mais que tu es certain du motif, tu peux demander une **nouvelle revue par un autre agent**. Argumente précisément, cite la politique. Persévère poliment.',
+        },
+        {
+          title: 'Si l\'avis reste, noie-le',
+          body: 'Ta réponse publique devient ta meilleure arme. Et collecte activement **5-10 nouveaux avis positifs rapidement** : ton score remonte, l\'avis problématique descend dans la liste, son impact baisse.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Signalement Airbnb · avis hors-sujet',
+          body: `Bonjour,
+
+Je signale l'avis du voyageur [Prénom] pour motif **Hors-sujet** selon votre politique de contenu.
+
+L'avis ne concerne pas l'hébergement ni l'expérience de séjour, mais [précise : sujet politique / religieux / quartier / autre séjour / etc.].
+
+Captures d'écran jointes.
+
+Merci de bien vouloir procéder à sa suppression.
+
+Cordialement,
+[Prénom]`,
+        },
+        {
+          label: 'Signalement Airbnb · avis de rétorsion',
+          body: `Bonjour,
+
+Je signale l'avis du voyageur [Prénom] pour motif **Avis de rétorsion**.
+
+Contexte : le voyageur a explicitement menacé de laisser un mauvais avis [si je ne lui rembourse pas X / si je signale ses dégâts / autre]. Les échanges sont en pièce jointe (captures horodatées).
+
+Cet avis a été publié [date] après mon refus de céder à sa demande.
+
+Merci d'examiner mon dossier et de procéder à la suppression de l'avis.
+
+Cordialement,
+[Prénom]`,
+        },
+        {
+          label: 'Ta réponse publique · avis injuste qui ne sera pas supprimé',
+          body: `Bonjour [Prénom],
+
+Merci pour votre retour. Nous regrettons que votre séjour n'ait pas répondu à vos attentes.
+
+Nous tenons à préciser que [un élément factuel qui contredit l'avis, en une phrase neutre — ex : "le logement avait été nettoyé en profondeur la veille de votre arrivée et photographié pour preuve"].
+
+Nous restons à l'écoute pour améliorer en permanence l'expérience de nos voyageurs.
+
+— [Ton prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Répondre publiquement de manière agressive ou émotionnelle (ça décrédibilise plus que l\'avis lui-même)',
+        'Demander la suppression "parce que c\'est injuste" sans citer le motif précis de la politique',
+        'Proposer une compensation au voyageur en échange d\'une modification (interdit par Airbnb, t\'expose à une suspension)',
+        'Utiliser des MAJUSCULES, des points d\'exclamation, du sarcasme dans ta réponse publique',
+        'Laisser passer les 7 jours sans signaler',
+      ],
+      recourses: [
+        'Demander une nouvelle revue par un autre agent Airbnb si le premier refuse (insiste poliment avec arguments)',
+        'Twitter / X @AirbnbHelp est souvent plus rapide que le téléphone pour escalader un cas bloqué',
+        'Médiation interne via customer.protection@airbnb.com pour les cas complexes',
+        'Stratégie "noyer l\'avis" : 5-10 nouveaux avis positifs rapidement, l\'algorithme fait son travail',
+      ],
+      prevention: [
+        'Avant chaque check-out, demande au voyageur s\'il a passé un bon séjour et s\'il y a quoi que ce soit à signaler — traite les problèmes AVANT le départ',
+        'Optimise le timing de demande d\'avis (message automatique le jour du départ, pas 3 jours après)',
+        'Réponds à TOUS les avis, même les bons (signal d\'hôte engagé)',
+        'Garde un dossier d\'éléments factuels (photos d\'entretien, état des lieux) prêts à dégainer en cas de litige',
+      ],
+    },
+
+    // ── Booking.com ───────────────────────────────────────────────────────
+    booking: {
+      reassurance: "Booking applique sa propre politique de contenu. C'est moins strict qu'Airbnb mais les leviers existent : signalement via l'extranet partenaire, et surtout une réponse publique soignée. Sur Booking, la note moyenne pèse moins que la qualité des derniers avis affichés en haut.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · pas de plafond officiel',
+        body: 'Agis dans les 7 à 14 jours. Booking n\'a pas de délai impératif mais examine plus rapidement les dossiers récents.',
+      },
+      steps: [
+        {
+          title: 'Identifie un motif de violation',
+          body: 'Booking supprime si l\'avis contient : **propos diffamatoires ou haineux, informations personnelles divulguées, mentions commerciales (publicité concurrente), avis frauduleux** (auteur fictif ou n\'ayant pas séjourné), **contenu obscène**. C\'est plus restrictif qu\'Airbnb.',
+        },
+        {
+          title: 'Rassemble les preuves',
+          body: 'Captures d\'écran horodatées, échanges messagerie, tout élément qui démontre la violation.',
+        },
+        {
+          title: 'Signale via l\'extranet Booking',
+          body: 'Extranet Booking → **Boîte de réception** → **Demandes spéciales** → **Contester un avis**. Choisis le motif, joins les preuves.',
+        },
+        {
+          title: 'Publie ta réponse publique en parallèle',
+          body: 'Depuis l\'extranet → **Avis voyageurs** → réponds à l\'avis problématique. Sur Booking, la réponse hôte est très lue car affichée juste sous l\'avis.',
+        },
+        {
+          title: 'Demande une revue manager si refus',
+          body: 'Si Booking refuse, demande explicitement une **revue par un manager** ou contacte ton **Account Manager** si tu en as un (téléphone partenaire : 0805 088 074 selon ton pays).',
+        },
+        {
+          title: 'Stratégie nouveaux avis',
+          body: 'Comme sur Airbnb : collecte rapidement de nouveaux avis positifs. Sur Booking, l\'algorithme affiche prioritairement les 6 derniers avis, l\'avis problématique sort vite si tu tournes bien.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Signalement Booking · avis diffamatoire',
+          body: `Bonjour,
+
+Je conteste l'avis du voyageur [Prénom] pour le motif **Propos diffamatoires** au regard de votre politique de contenu.
+
+L'avis contient : [cite le passage précis qui pose problème].
+
+Capture d'écran horodatée jointe.
+
+Merci de procéder à son examen et à sa suppression si la violation est confirmée.
+
+Cordialement,
+[Prénom Nom]
+Identifiant partenaire : [numéro]`,
+        },
+        {
+          label: 'Ta réponse publique sur Booking',
+          body: `Cher(e) [Prénom],
+
+Merci d'avoir pris le temps de partager votre expérience. Nous regrettons que votre séjour n'ait pas répondu à vos attentes.
+
+Nous tenons à préciser que [élément factuel qui contredit l'avis, en une phrase courte et neutre].
+
+Nous restons à l'écoute pour continuer à améliorer l'accueil de nos voyageurs.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Répondre publiquement avec agressivité, sarcasme, majuscules',
+        'Contacter directement le voyageur hors plateforme pour le pousser à modifier (interdit)',
+        'Demander la suppression sans motif précis de violation',
+        'Multiplier les tickets sur le même sujet (Booking ferme le dossier comme "non recevable" si harcèlement)',
+      ],
+      recourses: [
+        'Account Manager Booking si tu en as un (canal prioritaire)',
+        'Téléphone partenaire Booking pour escalade : 0805 088 074',
+        'Médiateur du tourisme et du voyage (MTV) — vérifier si Booking est adhérent',
+        'Stratégie volume : collecter rapidement de nouveaux avis positifs',
+      ],
+      prevention: [
+        'Demande explicitement un retour au voyageur au check-out (anticipation des problèmes)',
+        'Réponds à TOUS les avis sur ta fiche, signal d\'hôte engagé',
+        'Maintiens une note > 8/10 : sur Booking, c\'est le seuil psychologique des voyageurs',
+        'Soigne la communication AVANT séjour (instructions claires, attentes alignées)',
+      ],
+    },
+
+    // ── Vrbo / Abritel ────────────────────────────────────────────────────
+    vrbo: {
+      reassurance: "La politique d'avis Vrbo est proche d'Airbnb : suppression si violation précise (contenu interdit, hors-sujet, infos confidentielles, biais manifeste). Identique sur le fond, processus très similaire.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · agis sous 7 jours',
+        body: 'Vrbo examine plus rapidement les avis récents. Ne traîne pas, même si le délai n\'est pas strictement impératif.',
+      },
+      steps: [
+        {
+          title: 'Identifie le motif de violation Vrbo',
+          body: 'Catégories similaires à Airbnb : **propos haineux/insultants, hors-sujet, infos personnelles divulguées, fausses informations, avis biaisé ou frauduleux**.',
+        },
+        {
+          title: 'Rassemble les preuves',
+          body: 'Captures d\'écran horodatées de l\'avis et des échanges sur la plateforme.',
+        },
+        {
+          title: 'Signale l\'avis depuis ton compte propriétaire',
+          body: 'Tableau de bord Vrbo → **Avis** → ouvre l\'avis → bouton **Signaler ce commentaire**. Précise le motif, joins les preuves.',
+        },
+        {
+          title: 'Réponse publique en parallèle',
+          body: 'Vrbo affiche la réponse propriétaire juste sous l\'avis. Soigne-la : courte, factuelle, sans émotion.',
+        },
+        {
+          title: 'Escalade si refus initial',
+          body: 'Si la suppression est refusée, contacte le support propriétaire Vrbo via le centre d\'aide et demande une revue par un superviseur.',
+        },
+        {
+          title: 'Noyer l\'avis avec du volume positif',
+          body: 'Comme sur Airbnb et Booking, l\'algorithme valorise les avis récents. Collecte activement des avis positifs après ce séjour.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Signalement Vrbo',
+          body: `Bonjour,
+
+Je signale l'avis du voyageur [Prénom] pour motif **[Hors-sujet / Propos diffamatoires / Informations personnelles / Avis frauduleux]** selon votre politique de contenu.
+
+[Contexte précis en 2-3 lignes + capture d'écran jointe.]
+
+Merci de bien vouloir examiner ce signalement et procéder à la suppression si la violation est confirmée.
+
+Cordialement,
+[Prénom Nom]
+ID propriétaire : [numéro]`,
+        },
+        {
+          label: 'Réponse publique Vrbo',
+          body: `Bonjour [Prénom],
+
+Merci pour votre retour. Nous regrettons que votre séjour n'ait pas répondu à vos attentes.
+
+[Élément factuel neutre qui contredit l'avis, en une phrase.]
+
+Nous restons attachés à offrir une expérience de qualité à tous nos voyageurs.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Demander la suppression sans citer un motif précis de la politique Vrbo',
+        'Répondre publiquement avec agressivité ou émotion',
+        'Contacter le voyageur hors plateforme pour pression',
+        'Laisser passer plus de 30 jours sans signaler',
+      ],
+      recourses: [
+        'Support propriétaire Vrbo via centre d\'aide',
+        'Demande de revue par un superviseur si refus initial',
+        'Stratégie volume : nouveaux avis positifs',
+      ],
+      prevention: [
+        'Demande de feedback explicite au check-out',
+        'Réponse systématique à tous les avis',
+        'Communication pré-séjour claire et complète',
+      ],
+    },
+
+    // Note : pas applicable en location directe (pas d'avis publics)
+    // L'UI affiche déjà l'encart "Pas applicable sur ce canal"
+
+  },
+
+  // ─── SCÉNARIO 3 : Voyageur fait la fête / nuisance / dépassement ───────
+
+  'voyageur-fete-nuisance': {
+
+    // ── Airbnb ────────────────────────────────────────────────────────────
+    airbnb: {
+      reassurance: "Agir vite, calmement, par écrit. Tu n'as pas à te déplacer seul(e) ni à t'exposer physiquement. Airbnb a une cellule sécurité 24h/24, utilise-la.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · en temps réel',
+        body: 'Plus tu attends, plus le problème grossit. Documente puis agis dans l\'heure qui suit l\'alerte. Si situation grave : police d\'abord (17), Airbnb ensuite.',
+      },
+      steps: [
+        {
+          title: 'Documente immédiatement',
+          body: 'Capteur de bruit (Minut, NoiseAware) → exporte les rapports horodatés. Sinon : demande aux voisins de confirmer par écrit ou SMS le bruit + les horaires. Photos discrètes du nombre de personnes si dépassement de capacité, ou demande à un voisin de confirmer.',
+        },
+        {
+          title: 'Contacte le voyageur PAR ÉCRIT via la messagerie Airbnb',
+          body: 'Ton ferme mais correct. Rappelle le règlement intérieur signé. Demande l\'arrêt **immédiat** des nuisances ou la réduction au nombre de personnes annoncé. **Garde la trace écrite.**',
+        },
+        {
+          title: 'Si pas d\'amélioration sous 1-2 h, signale à Airbnb',
+          body: 'Centre d\'aide Airbnb → **Signaler ce voyageur** → **Comportement perturbateur**. Joins captures d\'écran et preuves. Airbnb peut intervenir directement auprès du voyageur ou bloquer le compte.',
+        },
+        {
+          title: 'AirCover assistance sécurité 24h/24 si tu te sens en danger',
+          body: 'Ligne d\'urgence Airbnb disponible 24h/24 pour les hôtes en situation critique. Numéro accessible depuis l\'application Airbnb → **Aide** → **Urgence sécurité**.',
+        },
+        {
+          title: 'Police (17) si nuisances graves ou tapage nocturne (après 22 h)',
+          body: 'N\'hésite pas. Tapage nocturne après 22 h est une infraction. La police peut intervenir et établir un PV qui te servira ensuite auprès d\'Airbnb. **Ne te rends pas seul(e) sur place pour confronter physiquement le voyageur.**',
+        },
+        {
+          title: 'Après le départ : réclamation Airbnb',
+          body: 'Ouvre une réclamation pour **Violation du règlement intérieur**. Demande remboursement : dégâts éventuels, frais de ménage supplémentaires, indemnité pour la gêne aux voisins, voire amende pour syndic si copropriété.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message ferme au voyageur (1er contact)',
+          body: `Bonjour [Prénom],
+
+Je viens d'être alerté(e) par les voisins d'un niveau sonore élevé dans le logement.
+
+Je vous rappelle que le règlement intérieur que vous avez signé interdit :
+- les fêtes
+- les nuisances sonores après 22 h
+- le dépassement de la capacité maximale annoncée ([X] personnes)
+
+Merci de baisser immédiatement le son et de respecter ces règles.
+
+Sans amélioration sous 1 h, je serai contraint(e) de signaler la situation à Airbnb et aux autorités. Cela peut entraîner la suspension de votre compte Airbnb et des poursuites.
+
+Cordialement,
+[Prénom]`,
+        },
+        {
+          label: 'Signalement Airbnb · comportement perturbateur',
+          body: `Bonjour,
+
+Je signale le voyageur [Prénom] (réservation HM[numéro]) pour **Comportement perturbateur**.
+
+Faits constatés :
+- [date / heure] : nuisances sonores signalées par les voisins ([noms / témoignages écrits joints])
+- [Dépassement de capacité : X personnes constatées au lieu de Y annoncées]
+- [Rapports capteur bruit Minut/NoiseAware joints]
+
+J'ai contacté le voyageur via la messagerie Airbnb (échange joint) sans amélioration.
+
+Merci pour votre intervention rapide.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Te rendre seul(e) sur place pour confronter physiquement le voyageur (danger personnel + voie de fait potentielle)',
+        'Couper l\'eau, l\'électricité ou changer la serrure (voie de fait, illégal, tu deviens fautif)',
+        'Insulter ou menacer le voyageur dans tes messages',
+        'Attendre le lendemain matin "pour voir si ça passe" : la situation s\'aggrave généralement',
+      ],
+      recourses: [
+        'Police (17) pour tapage nocturne, qui établit un PV utilisable ensuite',
+        'AirCover assistance sécurité 24h/24 en cas de danger',
+        'Signalement Airbnb pour suspension du compte voyageur',
+        'Action en justice si dommages graves (tribunal judiciaire)',
+        'Syndic de copropriété si la nuisance affecte d\'autres résidents',
+      ],
+      prevention: [
+        'Règlement intérieur signé numériquement AVANT l\'arrivée avec mention explicite "pas de fêtes" + capacité max',
+        'Capteur de bruit (Minut, NoiseAware) — alerte automatique et preuve horodatée',
+        'Caméra extérieure si déclarée à la CNIL (interdit en intérieur)',
+        'Mention claire "pas de fêtes" + capacité réelle dans l\'annonce',
+        'Vérification du profil voyageur avant acceptation (avis, vérification d\'identité Airbnb)',
+      ],
+    },
+
+    // ── Booking.com ───────────────────────────────────────────────────────
+    booking: {
+      reassurance: "Pas d'AirCover sur Booking, mais la police et tes assurances restent tes meilleurs alliés. Documente, contacte par écrit via la messagerie Booking, escalade si besoin.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · en temps réel',
+        body: 'Réagis dans l\'heure. Plus tu attends, plus tu perds ta capacité à prouver la causalité.',
+      },
+      steps: [
+        {
+          title: 'Documente : capteur de bruit, témoignages voisins, photos',
+          body: 'Mêmes règles que sur Airbnb. Le capteur de bruit Minut/NoiseAware est ton meilleur ami pour les preuves horodatées.',
+        },
+        {
+          title: 'Contacte le voyageur via la messagerie Booking',
+          body: 'Garde la trace écrite. Ton ferme, rappel du règlement, demande d\'arrêt immédiat.',
+        },
+        {
+          title: 'Signale dans l\'extranet Booking',
+          body: 'Extranet → **Boîte de réception** → **Comportement de l\'invité** → décris la situation, joins captures et preuves. Booking peut intervenir et bloquer le compte.',
+        },
+        {
+          title: 'Police (17) si tapage nocturne ou danger',
+          body: 'Tapage nocturne après 22 h = infraction. PV de police = preuve indiscutable pour la suite.',
+        },
+        {
+          title: 'Réclamation post-séjour via extranet',
+          body: 'Demande indemnisation des dégâts, frais de ménage supplémentaires, gêne aux voisins. Booking peut t\'aider à récupérer auprès du voyageur.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message ferme au voyageur via Booking',
+          body: `Bonjour [Prénom],
+
+Je viens d'être alerté(e) par les voisins de nuisances sonores dans le logement.
+
+Le règlement intérieur que vous avez accepté interdit :
+- les fêtes
+- les nuisances sonores après 22 h
+- le dépassement de la capacité ([X] personnes max)
+
+Merci de respecter ces règles immédiatement.
+
+Sans amélioration sous 1 h, je serai contraint(e) de contacter les autorités et de signaler la situation à Booking, ce qui peut entraîner la suspension de votre compte et des poursuites pour les frais engagés.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Confronter physiquement seul(e) le voyageur',
+        'Couper les fluides ou changer la serrure',
+        'Attendre le lendemain matin',
+      ],
+      recourses: [
+        'Police (17) pour tapage nocturne',
+        'Signalement Booking via extranet',
+        'Assurance PNO ou MRH si dégâts',
+        'Syndic de copropriété si applicable',
+      ],
+      prevention: [
+        'Règlement intérieur signé en pré-arrivée',
+        'Capteur de bruit (Minut, NoiseAware)',
+        'Caméra extérieure CNIL-compliant',
+        'Annonce avec capacité max claire et règles de vie',
+      ],
+    },
+
+    // ── Vrbo / Abritel ────────────────────────────────────────────────────
+    vrbo: {
+      reassurance: "Vrbo propose une ligne d'assistance hôte 24h/24 pour les urgences. Documente, contacte le voyageur par écrit, escalade.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · en temps réel',
+        body: 'Réagis dans l\'heure. La documentation horodatée est ton meilleur atout.',
+      },
+      steps: [
+        {
+          title: 'Documente immédiatement',
+          body: 'Capteur de bruit, témoignages voisins, photos discrètes. Tout horodaté.',
+        },
+        {
+          title: 'Contacte le voyageur via la messagerie Vrbo',
+          body: 'Ton ferme et correct, rappel du règlement intérieur, demande d\'arrêt immédiat.',
+        },
+        {
+          title: 'Signale au support Vrbo',
+          body: 'Centre d\'aide propriétaire Vrbo → **Signaler un comportement** → décris la situation et joins les preuves. Le support peut intervenir.',
+        },
+        {
+          title: 'Police (17) si nécessaire',
+          body: 'Tapage nocturne après 22 h, situation dangereuse : appelle. Ne te déplace pas seul(e).',
+        },
+        {
+          title: 'Réclamation post-séjour',
+          body: 'Demande remboursement des frais supplémentaires (ménage, dégâts, gêne voisins). Vrbo médie entre toi et le voyageur.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message ferme au voyageur via Vrbo',
+          body: `Bonjour [Prénom],
+
+Les voisins m'ont alerté(e) de nuisances sonores dans le logement.
+
+Le règlement que vous avez accepté interdit les fêtes, les nuisances après 22 h, et le dépassement de la capacité de [X] personnes.
+
+Merci de respecter ces règles immédiatement, à défaut je devrai contacter les autorités et signaler à Vrbo.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Confrontation physique seul(e)',
+        'Coupure de fluides ou changement de serrure',
+        'Reporter au lendemain',
+      ],
+      recourses: [
+        'Police (17) pour tapage nocturne',
+        'Support Vrbo pour signalement',
+        'Assurance PNO ou MRH',
+      ],
+      prevention: [
+        'Règlement intérieur signé',
+        'Capteur de bruit',
+        'Annonce avec capacité max claire',
+      ],
+    },
+
+    // ── Direct ────────────────────────────────────────────────────────────
+    direct: {
+      reassurance: "En direct, tu es entièrement responsable de la gestion. C'est aussi toi qui as choisi tes voyageurs : tu peux exiger fermement le respect du contrat signé. Les recours sont le contrat, le règlement intérieur, et le Code pénal en cas de tapage.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · en temps réel',
+        body: 'Pas de plateforme pour médier, mais tes outils restent solides : contrat, règlement, police, assurance.',
+      },
+      steps: [
+        {
+          title: 'Documente immédiatement',
+          body: 'Capteur de bruit, témoignages écrits/SMS des voisins, photos. Tout horodaté.',
+        },
+        {
+          title: 'Contacte le voyageur par écrit (email + SMS)',
+          body: 'Ton ferme, rappel des clauses du contrat signé (capacité, règlement intérieur, sanctions). Demande l\'arrêt immédiat. Capture les échanges.',
+        },
+        {
+          title: 'Police (17) si tapage nocturne ou danger',
+          body: 'Tapage nocturne après 22 h = infraction (article R623-2 Code pénal). Demande un PV qui te servira pour la suite.',
+        },
+        {
+          title: 'Constat huissier si situation prolongée',
+          body: 'Pour les nuisances graves ou répétées, un constat d\'huissier (~150-300 €) est une preuve irréfutable, utilisable en justice.',
+        },
+        {
+          title: 'Réclamation au voyageur après séjour',
+          body: 'Email ou recommandé AR listant les violations du contrat (capacité dépassée, nuisances, dégâts), avec demande d\'indemnisation. Active la caution et demande le complément.',
+        },
+        {
+          title: 'Recours juridiques si refus',
+          body: 'Conciliateur de justice (gratuit, obligatoire < 5 000 €), tribunal judiciaire au-delà. Le contrat signé + le PV de police + les témoignages constituent un dossier solide.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message ferme au voyageur',
+          body: `Bonjour [Prénom],
+
+Les voisins m'ont alerté(e) à plusieurs reprises de nuisances sonores graves dans le logement.
+
+Je vous rappelle les clauses du contrat de location saisonnière que vous avez signé :
+- Capacité maximale : [X] personnes (article [N] du contrat)
+- Respect du règlement intérieur, incluant l'interdiction des fêtes et le silence après 22 h
+- Sanctions prévues en cas de violation : conservation de la caution, indemnisation des préjudices
+
+Merci de respecter immédiatement ces règles. À défaut, je vais contacter la police pour tapage nocturne et engager les recours prévus au contrat.
+
+Cordialement,
+[Prénom Nom]
+[Téléphone]`,
+        },
+        {
+          label: 'Email récapitulatif post-séjour avec demande d\'indemnisation',
+          body: `Bonjour [Prénom],
+
+Suite à votre séjour du [date] au [date], je constate plusieurs violations du contrat de location saisonnière que vous avez signé :
+
+- [Capacité dépassée : X personnes constatées au lieu de Y]
+- [Nuisances sonores signalées par les voisins le [date / heure], PV de police N° [numéro] joint]
+- [Dégâts constatés : liste précise + photos]
+
+Conformément au contrat (article [N]), j'ai prélevé la caution de [Y] €.
+
+Le préjudice total s'élève à [X] € (devis et factures joints). Le complément à régler est de [X-Y] €.
+
+Merci de régler ce montant sous 15 jours par virement. À défaut, je saisirai le conciliateur de justice puis le tribunal compétent.
+
+Cordialement,
+[Prénom Nom]`,
+        },
+      ],
+      doNotDo: [
+        'Confrontation physique seul(e)',
+        'Couper l\'eau, l\'électricité ou changer la serrure (voie de fait, illégal)',
+        'Renoncer faute de "preuves suffisantes" sans avoir appelé la police',
+        'Attendre plusieurs jours en espérant que ça passe',
+      ],
+      recourses: [
+        'Police (17) pour tapage nocturne, PV utilisable en justice',
+        'Constat d\'huissier (~150-300 €) pour cas graves',
+        'Conciliateur de justice (gratuit, obligatoire < 5 000 €)',
+        'Tribunal judiciaire au-delà',
+        'Assurance PNO ou MRH avec extension saisonnière',
+      ],
+      prevention: [
+        'Contrat de location saisonnière complet avec clauses de sanctions (obligatoire art. L324-2)',
+        'Règlement intérieur signé numériquement avant arrivée',
+        'Capteur de bruit (Minut, NoiseAware) — alerte + preuve',
+        'Caméra extérieure CNIL-compliant',
+        'Caution suffisante (15-30 % du séjour minimum)',
+        'Filtrage des réservations en direct via Driing (avis communautaires)',
+      ],
+    },
+
+  },
+
+  // ─── SCÉNARIO 4 : Mon voyageur refuse de partir ─────────────────────────
+
+  'voyageur-refuse-partir': {
+
+    // ── Airbnb ────────────────────────────────────────────────────────────
+    airbnb: {
+      reassurance: "Situation rare mais stressante. Un voyageur qui refuse de quitter un meublé de tourisme est en occupation sans droit ni titre. La trêve hivernale et les procédures longues d'expulsion classique ne s'appliquent pas de la même façon. Tu as des leviers rapides.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · le jour même',
+        body: 'Agis dès la date de départ prévue. Chaque journée d\'attente complique la résolution et menace les réservations suivantes.',
+      },
+      steps: [
+        {
+          title: 'Contacte le voyageur par écrit, immédiatement',
+          body: 'Messagerie Airbnb (et email/SMS en parallèle pour multiplier les traces). Rappel de la date de fin de séjour, demande de départ **immédiat**, ton ferme mais correct.',
+        },
+        {
+          title: 'Signale à Airbnb dans la foulée',
+          body: 'Centre d\'aide Airbnb → **Le voyageur refuse de quitter le logement**. Airbnb peut intervenir directement auprès du voyageur, voire activer l\'assistance sécurité 24h/24.',
+        },
+        {
+          title: 'Si refus persistant, appelle la police (17) ou la gendarmerie',
+          body: 'Présente le contrat de location (= ta réservation Airbnb avec dates), l\'annonce, les échanges écrits. Ils peuvent constater l\'**occupation sans droit ni titre** et faire pression sur le voyageur pour qu\'il parte. Souvent suffisant.',
+        },
+        {
+          title: 'Constat d\'huissier en parallèle',
+          body: 'Pour les cas qui s\'enkystent, un constat d\'huissier (~150-300 €) établit officiellement l\'occupation sans droit. Pièce maîtresse pour la suite.',
+        },
+        {
+          title: 'Si la situation perdure : avocat + référé',
+          body: 'Avocat spécialisé en droit immobilier. **Procédure d\'expulsion en référé** devant le tribunal judiciaire (procédure rapide, ~2-4 semaines). Pour un meublé de tourisme, le juge tranche vite car ce n\'est pas un bail d\'habitation classique.',
+        },
+        {
+          title: 'Réclamation Airbnb post-résolution',
+          body: 'Demande remboursement des nuits non disponibles pour les voyageurs suivants (que tu as dû annuler) + indemnité pour préjudice. AirCover peut couvrir une partie selon ton dossier.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Premier message au voyageur',
+          body: `Bonjour [Prénom],
+
+Votre réservation prend fin aujourd'hui [date] à [heure].
+
+Conformément aux conditions de la réservation Airbnb [HM/numéro], merci de quitter le logement immédiatement.
+
+D'autres voyageurs sont attendus aujourd'hui. Sans départ sous [délai raisonnable, ex: 2 h], je serai contraint(e) de :
+- Signaler la situation à Airbnb
+- Contacter les autorités pour occupation sans droit ni titre
+- Engager une procédure d'expulsion en référé avec demande d'indemnisation
+
+Cordialement,
+[Prénom]`,
+        },
+        {
+          label: 'Signalement Airbnb',
+          body: `Bonjour,
+
+Le voyageur [Prénom] avait réservé jusqu'au [date] à [heure] (réservation HM[numéro]).
+
+À ce jour [date du jour], il refuse de quitter le logement malgré mes demandes répétées (échanges en pièce jointe).
+
+Je sollicite votre intervention immédiate pour faire respecter la date de fin de séjour.
+
+Sans solution sous 24 h, je devrai annuler les réservations suivantes (préjudice direct) et engager une procédure d'expulsion en référé.
+
+Merci de votre aide urgente.
+
+Cordialement,
+[Prénom]
+Téléphone : [numéro pour rappel]`,
+        },
+      ],
+      doNotDo: [
+        'Entrer de force, changer la serrure ou couper les fluides (eau, électricité) : c\'est une voie de fait, tu deviens fautif et le juge te sanctionnera plus durement que le voyageur',
+        'Te confronter physiquement seul(e)',
+        'Attendre plusieurs jours en espérant que ça se règle tout seul : ça ne se règle jamais tout seul',
+        'Régler le problème "à l\'amiable" en versant de l\'argent au voyageur pour qu\'il parte : ouvre la porte à du chantage',
+      ],
+      recourses: [
+        'Police ou gendarmerie pour constat d\'occupation sans droit (souvent suffisant pour faire partir)',
+        'Constat d\'huissier (~150-300 €) pour les cas qui s\'enkystent',
+        'Avocat spécialisé en droit immobilier + référé devant le tribunal judiciaire',
+        'Réclamation Airbnb pour perte des nuits suivantes + préjudice',
+      ],
+      prevention: [
+        'Règlement intérieur signé avec **date et heure précises de check-out** explicites',
+        'Caution suffisante pour décourager les abus',
+        'Vérification du profil voyageur (avis antérieurs, vérification d\'identité Airbnb)',
+        'Pour les séjours longs (> 1 mois), méfie-toi : risque légal augmenté, à encadrer par contrat solide',
+      ],
+    },
+
+    // ── Booking.com ───────────────────────────────────────────────────────
+    booking: {
+      reassurance: "Booking peut t'aider à médier mais le levier principal reste la police et la justice. Documente, contacte, escalade vite.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · le jour même',
+        body: 'Réagis dès la date de départ. Pas d\'attente.',
+      },
+      steps: [
+        {
+          title: 'Contact écrit immédiat',
+          body: 'Messagerie Booking + email + SMS. Rappel des dates, demande de départ immédiat, mention des recours en cas de refus.',
+        },
+        {
+          title: 'Signale dans l\'extranet Booking',
+          body: 'Extranet → **Boîte de réception** → **Demande spéciale** → décris la situation et joins l\'échange. Booking peut intervenir.',
+        },
+        {
+          title: 'Police ou gendarmerie',
+          body: 'Comme pour Airbnb : présente la confirmation Booking avec les dates, l\'échange écrit. Constat d\'occupation sans droit, pression sur le voyageur.',
+        },
+        {
+          title: 'Constat d\'huissier si situation prolongée',
+          body: 'Pièce officielle pour la procédure judiciaire ultérieure.',
+        },
+        {
+          title: 'Référé devant le tribunal judiciaire',
+          body: 'Avocat + procédure rapide pour expulsion d\'un meublé de tourisme.',
+        },
+        {
+          title: 'Réclamation Booking post-résolution',
+          body: 'Demande indemnisation des préjudices, en particulier les annulations forcées des réservations suivantes.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message au voyageur via Booking',
+          body: `Bonjour [Prénom],
+
+Votre réservation [numéro] prend fin aujourd'hui [date] à [heure].
+
+Merci de quitter le logement immédiatement. D'autres voyageurs sont attendus.
+
+Sans départ sous 2 h, je signalerai la situation à Booking, contacterai les autorités pour occupation sans droit ni titre, et engagerai une procédure d'expulsion en référé.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Voie de fait (changement de serrure, coupure de fluides)',
+        'Confrontation physique seul(e)',
+        'Verser de l\'argent pour faire partir le voyageur (chantage)',
+        'Attendre plusieurs jours',
+      ],
+      recourses: [
+        'Police ou gendarmerie',
+        'Constat d\'huissier',
+        'Avocat + référé tribunal judiciaire',
+        'Réclamation Booking pour préjudice',
+      ],
+      prevention: [
+        'Confirmation écrite avec heure de check-out explicite',
+        'Caution suffisante',
+        'Profil voyageur vérifié (Genius, avis antérieurs)',
+      ],
+    },
+
+    // ── Vrbo / Abritel ────────────────────────────────────────────────────
+    vrbo: {
+      reassurance: "Process similaire à Airbnb. Vrbo a une ligne d'assistance hôte qui peut intervenir.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · le jour même',
+        body: 'Réagis dès la date de départ.',
+      },
+      steps: [
+        {
+          title: 'Contact écrit immédiat (Vrbo + email)',
+          body: 'Messagerie Vrbo, ton ferme, rappel des dates, demande de départ immédiat.',
+        },
+        {
+          title: 'Signale au support Vrbo',
+          body: 'Centre d\'aide propriétaire → urgence → intervention possible.',
+        },
+        {
+          title: 'Police pour occupation sans droit',
+          body: 'Présente la confirmation Vrbo, l\'échange écrit, demande constat.',
+        },
+        {
+          title: 'Constat d\'huissier puis référé',
+          body: 'Si la situation s\'enkyste : huissier puis avocat + référé.',
+        },
+        {
+          title: 'Réclamation Vrbo pour préjudice',
+          body: 'Demande remboursement des annulations forcées.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Message au voyageur via Vrbo',
+          body: `Bonjour [Prénom],
+
+Votre séjour prend fin aujourd'hui [date] à [heure].
+
+Merci de quitter le logement immédiatement.
+
+Sans départ sous 2 h, je signalerai à Vrbo, contacterai les autorités pour occupation sans droit ni titre, et engagerai une procédure judiciaire avec demande d'indemnisation.
+
+Cordialement,
+[Prénom]`,
+        },
+      ],
+      doNotDo: [
+        'Voie de fait (serrure, fluides)',
+        'Confrontation physique seul(e)',
+        'Chantage par paiement',
+        'Attente passive',
+      ],
+      recourses: [
+        'Police ou gendarmerie',
+        'Constat huissier',
+        'Avocat + référé',
+        'Réclamation Vrbo',
+      ],
+      prevention: [
+        'Heure de check-out explicite',
+        'Caution suffisante',
+        'Vérification profil voyageur',
+      ],
+    },
+
+    // ── Direct ────────────────────────────────────────────────────────────
+    direct: {
+      reassurance: "En direct, tu as l'avantage d'un contrat de location saisonnière complet. Utilise-le, c'est ton arme principale. Le voyageur ne peut pas plaider l'ignorance, il a signé.",
+      delayBox: {
+        type: 'urgent',
+        label: 'Délai critique · le jour même',
+        body: 'Réagis dès la date de fin de séjour prévue au contrat.',
+      },
+      steps: [
+        {
+          title: 'Email + SMS immédiat au voyageur',
+          body: 'Rappel des dates du contrat, demande de départ immédiat, mention explicite des sanctions prévues au contrat et des recours.',
+        },
+        {
+          title: 'Appelle la police ou la gendarmerie',
+          body: 'Présente le contrat de location saisonnière signé, l\'état des lieux d\'entrée, les échanges écrits. **Occupation sans droit ni titre** est constituée dès la fin du contrat. La police intervient souvent.',
+        },
+        {
+          title: 'Constat d\'huissier dans la foulée',
+          body: 'Si la police seule ne suffit pas, fais venir un huissier (~150-300 €) qui dresse un constat officiel d\'occupation sans droit. Pièce maîtresse.',
+        },
+        {
+          title: 'Mise en demeure recommandée AR',
+          body: 'Lettre recommandée AR au voyageur listant la violation du contrat, les sanctions, les recours envisagés. Délai 48 h pour partir.',
+        },
+        {
+          title: 'Référé devant le tribunal judiciaire',
+          body: 'Avocat spécialisé. Pour un meublé de tourisme avec contrat clair, le juge tranche en référé sous 2-4 semaines. Demande aussi des dommages et intérêts pour les nuits perdues.',
+        },
+        {
+          title: 'Active la caution + assurance PNO',
+          body: 'Caution retenue pour couvrir les nuits indues. Assurance PNO si frais juridiques importants (extension protection juridique souvent incluse).',
+        },
+      ],
+      templates: [
+        {
+          label: 'Email + SMS au voyageur',
+          body: `Bonjour [Prénom],
+
+Votre séjour, encadré par le contrat de location saisonnière signé le [date], prend fin aujourd'hui [date] à [heure].
+
+Conformément à l'article [N] du contrat, vous êtes tenu(e) de quitter le logement à cette date et heure précises.
+
+À défaut de départ sous 2 h, j'engagerai sans délai :
+- L'intervention de la police pour occupation sans droit ni titre
+- Un constat d'huissier
+- Une procédure d'expulsion en référé devant le tribunal judiciaire
+- Une demande d'indemnisation pour les nuits suivantes que je dois annuler
+
+Cordialement,
+[Prénom Nom]
+[Téléphone]`,
+        },
+        {
+          label: 'Mise en demeure recommandée AR',
+          body: `[Tes coordonnées complètes]
+[Coordonnées du voyageur]
+
+Objet : Mise en demeure de quitter les lieux sans délai
+Lettre recommandée avec accusé de réception
+[Ville], le [date]
+
+Madame, Monsieur [Nom],
+
+Aux termes du contrat de location saisonnière signé le [date], votre séjour dans le logement meublé de tourisme situé [adresse] devait prendre fin le [date] à [heure].
+
+À la date de la présente, vous occupez toujours les lieux sans droit ni titre.
+
+Je vous mets formellement en demeure de quitter les lieux sous 48 h à compter de la réception de cette lettre.
+
+À défaut, j'engagerai sans nouvelle mise en demeure :
+- Un constat d'huissier
+- Une procédure d'expulsion en référé devant le tribunal judiciaire compétent
+- Une demande d'indemnisation pour la totalité du préjudice subi (nuits perdues, frais d'huissier, frais d'avocat, dommages et intérêts)
+
+Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées.
+
+[Prénom Nom]
+[Signature manuscrite]`,
+        },
+      ],
+      doNotDo: [
+        'Voie de fait absolument interdite : changement de serrure, coupure d\'eau/électricité, retrait des affaires du voyageur. Tu deviens fautif et le juge te sanctionnera plus que le voyageur',
+        'Confrontation physique seul(e)',
+        'Verser de l\'argent pour faire partir',
+        'Attendre que ça passe : ça ne passe jamais',
+      ],
+      recourses: [
+        'Police ou gendarmerie (souvent suffisant)',
+        'Constat d\'huissier (~150-300 €)',
+        'Avocat + référé tribunal judiciaire',
+        'Assurance PNO / MRH avec protection juridique',
+      ],
+      prevention: [
+        'Contrat de location saisonnière clair avec date et heure de check-out précises (article L324-2 Code du tourisme)',
+        'Caution suffisante (15-30 % du séjour minimum)',
+        'Filtrage des réservations directes via Driing (avis communautaires, vérifications)',
+        'Pour les séjours longs (> 1 mois), encadrer par contrat solide + caution renforcée',
+      ],
+    },
+
+  },
+
+  // ─── SCÉNARIO 5 : Litige avec Airbnb / Booking / Vrbo ───────────────────
+
+  'litige-plateforme': {
+
+    // ── Airbnb ────────────────────────────────────────────────────────────
+    airbnb: {
+      reassurance: "Les litiges avec Airbnb peuvent être longs mais ils se résolvent. Garde tes nerfs, documente, escalade méthodiquement. Les recours externes (médiateur, DGCCRF) marchent quand tu épuises l'interne.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · pas de plafond impératif',
+        body: 'Plus tu attends, plus c\'est dur de reconstituer le dossier. Agis dans les 7-30 jours selon la nature du litige.',
+      },
+      steps: [
+        {
+          title: 'Centre d\'aide Airbnb : ouvre un ticket précis',
+          body: 'Centre d\'aide → ton problème spécifique. Décris factuellement : dates, montants, numéro de réservation, captures d\'écran. **Pas d\'émotion**, juste les faits.',
+        },
+        {
+          title: 'Téléphone si pas de réponse sous 48 h',
+          body: 'Numéro Airbnb hôtes en France (à vérifier sur la page officielle Aide Airbnb). Note le **nom de l\'agent**, l\'**heure d\'appel**, le **résumé** de la conversation, le **numéro de ticket**. Demande un email récapitulatif.',
+        },
+        {
+          title: 'Escalade : superviseur ou Twitter/X',
+          body: 'Si pas de résolution sous 5 jours : demande explicitement un **superviseur** ou écris à **@AirbnbHelp** sur Twitter/X (souvent plus rapide que les canaux classiques).',
+        },
+        {
+          title: 'Recours formel par email',
+          body: 'Email à l\'adresse customer.protection@airbnb.com (à confirmer sur leur site) avec récap complet : tous les numéros de ticket, l\'historique, ta demande précise, le délai (15 jours).',
+        },
+        {
+          title: 'Médiation externe',
+          body: '**Médiateur de la consommation européen (ODR)** pour les transactions transfrontalières (Airbnb est basé en Irlande). Saisine en ligne sur ec.europa.eu/odr. Gratuit. Le médiateur du tourisme et du voyage (MTV) n\'est compétent que pour ses adhérents (Airbnb ne l\'est pas, à vérifier régulièrement).',
+        },
+        {
+          title: 'DGCCRF',
+          body: 'Signalement sur signal.conso.gouv.fr pour pratique commerciale abusive. Pas une procédure individuelle de réparation, mais ça met la pression et alimente les statistiques utilisables ensuite.',
+        },
+        {
+          title: 'Action en justice',
+          body: 'Tribunal judiciaire du lieu du logement, conciliateur préalable si < 5 000 €. Avocat conseillé pour les montants importants.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Recours formel email Airbnb',
+          body: `Objet : Recours formel · Réservation HM[numéro]
+
+Madame, Monsieur,
+
+Je suis hôte sur Airbnb depuis [date] (identifiant [pseudo]).
+
+Concernant la réservation HM[numéro] de [Prénom voyageur], j'ai rencontré le problème suivant :
+[Exposé factuel des faits, en quelques phrases, sans émotion]
+
+J'ai contacté votre service client le [date] (référence ticket #[numéro]), sans réponse satisfaisante à ce jour, malgré [X] relances.
+
+Je sollicite formellement [demande précise : remboursement / suppression d'avis / déblocage de compte / restitution du paiement bloqué / etc.].
+
+Sans réponse de votre part sous 15 jours à compter de cet email, je saisirai :
+- Le Médiateur de la consommation européen (ODR)
+- La DGCCRF via signal.conso.gouv.fr
+- Le tribunal judiciaire compétent
+
+Cordialement,
+[Prénom Nom]
+[Email] / [Téléphone]`,
+        },
+      ],
+      doNotDo: [
+        'Insulter les agents (ça ferme tout)',
+        'Multiplier les tickets sur le même sujet (ça brouille ton dossier)',
+        'Menacer publiquement sur les réseaux sociaux avant d\'avoir épuisé les recours internes (le juge te le reprochera)',
+        'Régler à la baisse à la première proposition Airbnb si tu es certain de ton bon droit',
+      ],
+      recourses: [
+        'Superviseur Airbnb (demande explicitement)',
+        'Twitter / X @AirbnbHelp pour escalade rapide',
+        'Médiateur de la consommation européen (ODR), gratuit',
+        'DGCCRF via signal.conso.gouv.fr',
+        'Tribunal judiciaire (conciliateur obligatoire < 5 000 €)',
+        'Associations de consommateurs (UFC-Que Choisir, CLCV)',
+      ],
+      prevention: [
+        'Garde TOUS les échanges en sauvegarde (PDF, captures) au-delà de la plateforme',
+        'Documente chaque incident hôte/voyageur dès qu\'il survient (date, montant, contexte)',
+        'Sauvegarde régulièrement tes données Airbnb (export RGPD à demander de temps en temps)',
+        'Diversifie tes canaux : ne mets jamais 100 % de tes revenus sur une seule plateforme',
+      ],
+    },
+
+    // ── Booking.com ───────────────────────────────────────────────────────
+    booking: {
+      reassurance: "Booking a un support partenaire dédié et des Account Managers pour les hôtes actifs. Utilise ces canaux avant les recours externes.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · agis dans les 7-30 jours',
+        body: 'Pas de délai impératif Booking, mais les dossiers anciens sont traités moins prioritairement.',
+      },
+      steps: [
+        {
+          title: 'Extranet partenaire : section Réclamations',
+          body: 'Extranet → **Réclamations** ou **Demandes spéciales** selon la nature. Ouvre un dossier avec description factuelle, captures d\'écran, références.',
+        },
+        {
+          title: 'Téléphone partenaire Booking',
+          body: 'Numéro partenaire selon ton pays (vérifier sur l\'extranet, souvent 0805 088 074 en France). Note le nom de l\'agent, le numéro de ticket, demande un email récapitulatif.',
+        },
+        {
+          title: 'Account Manager si disponible',
+          body: 'Si tu as un Account Manager dédié (hôtes à fort volume), contacte-le directement par email. C\'est le canal le plus efficace.',
+        },
+        {
+          title: 'Recours formel email',
+          body: 'Email partner@booking.com (à confirmer) avec récap complet et délai de réponse demandé.',
+        },
+        {
+          title: 'Médiation et juridique',
+          body: 'Médiateur de la consommation européen (ODR), DGCCRF, tribunal judiciaire.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Recours formel email Booking',
+          body: `Objet : Recours formel · Réservation [numéro Booking]
+
+Madame, Monsieur,
+
+Identifiant partenaire : [numéro]
+Établissement : [Nom]
+
+Je rencontre le problème suivant concernant la réservation [numéro] :
+[Exposé factuel]
+
+J'ai ouvert le ticket [numéro] le [date] et appelé votre service partenaire le [date] (agent : [nom]), sans réponse satisfaisante.
+
+Je sollicite formellement [demande précise].
+
+Sans réponse sous 15 jours, je saisirai le Médiateur de la consommation européen, la DGCCRF et le tribunal compétent.
+
+Cordialement,
+[Prénom Nom]`,
+        },
+      ],
+      doNotDo: [
+        'Insulter les agents',
+        'Multiplier les tickets parallèles',
+        'Menacer publiquement avant d\'avoir épuisé l\'interne',
+      ],
+      recourses: [
+        'Account Manager (canal prioritaire)',
+        'Téléphone partenaire Booking',
+        'Médiateur de la consommation européen (ODR)',
+        'DGCCRF via signal.conso.gouv.fr',
+        'Tribunal judiciaire',
+      ],
+      prevention: [
+        'Sauvegarde régulière des échanges et données',
+        'Diversification des canaux de réservation',
+        'Documentation systématique des incidents',
+      ],
+    },
+
+    // ── Vrbo / Abritel ────────────────────────────────────────────────────
+    vrbo: {
+      reassurance: "Vrbo a un support propriétaire et des escalades possibles. Process similaire.",
+      delayBox: {
+        type: 'soft',
+        label: 'Délai · agis dans les 7-30 jours',
+        body: 'Pas de délai strict mais les dossiers récents sont traités plus vite.',
+      },
+      steps: [
+        {
+          title: 'Centre d\'aide propriétaire Vrbo',
+          body: 'Ouvre un ticket précis, factuel, avec captures d\'écran et numéro de réservation.',
+        },
+        {
+          title: 'Téléphone propriétaire Vrbo',
+          body: 'Numéro hôte selon ton pays (vérifier sur le centre d\'aide). Note nom, ticket, heure.',
+        },
+        {
+          title: 'Demande de superviseur si nécessaire',
+          body: 'Insiste poliment pour une escalade interne si la première réponse n\'est pas satisfaisante.',
+        },
+        {
+          title: 'Recours médiation',
+          body: 'Médiateur de la consommation européen (ODR), DGCCRF si pratique commerciale abusive.',
+        },
+        {
+          title: 'Tribunal en dernier ressort',
+          body: 'Conciliateur préalable < 5 000 €, tribunal judiciaire au-delà.',
+        },
+      ],
+      templates: [
+        {
+          label: 'Recours formel Vrbo',
+          body: `Objet : Recours formel · Réservation [numéro]
+
+Madame, Monsieur,
+
+ID propriétaire : [numéro]
+
+Je rencontre le problème suivant : [exposé factuel].
+
+Ticket ouvert le [date] (référence [numéro]), sans réponse satisfaisante après [X] relances.
+
+Je sollicite [demande précise].
+
+Sans réponse sous 15 jours, je saisirai le Médiateur de la consommation européen et la DGCCRF.
+
+Cordialement,
+[Prénom Nom]`,
+        },
+      ],
+      doNotDo: [
+        'Insultes ou menaces',
+        'Tickets multiples parallèles',
+        'Communication publique prématurée',
+      ],
+      recourses: [
+        'Superviseur Vrbo',
+        'Médiateur de la consommation européen (ODR)',
+        'DGCCRF',
+        'Tribunal judiciaire',
+      ],
+      prevention: [
+        'Documentation systématique',
+        'Sauvegarde des échanges',
+        'Diversification des canaux',
+      ],
+    },
+
+    // Direct : pas de plateforme = pas de litige plateforme.
+    // L'UI affiche "Pas applicable sur ce canal"
+
+  },
+
 }
