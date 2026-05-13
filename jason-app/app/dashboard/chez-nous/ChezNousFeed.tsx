@@ -862,16 +862,20 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
             {formatRelative(post.last_reply_at ?? post.created_at)}
           </Link>
           <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-            <Link href={`/dashboard/chez-nous/${post.id}`} style={{ ...s.postReplies, ...s.postFootLink }} title={`${post.reply_count} réponse${post.reply_count > 1 ? 's' : ''}`}>
-              <ChatCircle size={12} weight="fill" />
-              {post.reply_count}
+            <Link
+              href={`/dashboard/chez-nous/${post.id}#reply`}
+              style={s.replyBtn}
+              title={post.reply_count > 0
+                ? `${post.reply_count} réponse${post.reply_count > 1 ? 's' : ''} — clique pour répondre`
+                : 'Répondre à ce post'}
+            >
+              <ChatCircle size={13} weight="fill" />
+              {post.reply_count > 0 ? (
+                <span><strong style={{ fontWeight: 700 }}>{post.reply_count}</strong> · Commenter</span>
+              ) : (
+                <span>Commenter</span>
+              )}
             </Link>
-            {post.image_count > 0 && (
-              <Link href={`/dashboard/chez-nous/${post.id}`} style={{ ...s.postReplies, ...s.postFootLink }} title={`${post.image_count} image${post.image_count > 1 ? 's' : ''}`}>
-                <ImageSquare size={12} weight="fill" />
-                {post.image_count}
-              </Link>
-            )}
             <button
               type="button"
               onClick={onVote}
@@ -1688,6 +1692,17 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '14px', padding: '16px 18px',
     transition: 'border-color 0.15s',
     alignItems: 'flex-start',
+  },
+  replyBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '4px 11px', borderRadius: '999px',
+    background: 'transparent', border: '1px solid var(--border)',
+    color: 'var(--text-2)',
+    fontFamily: 'inherit',
+    fontSize: '11.5px', fontWeight: 500,
+    textDecoration: 'none',
+    transition: 'background 0.15s, color 0.15s, border-color 0.15s',
+    lineHeight: 1,
   },
   voteInline: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
