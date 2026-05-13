@@ -9,7 +9,6 @@ import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
 import { MapPin } from '@phosphor-icons/react/dist/ssr'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
-import { stripMarkdown } from '@/lib/chez-nous/markdown'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
@@ -725,20 +724,32 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
   const cat      = CATEGORIES[post.category]
 
   const onVote = (e: React.MouseEvent) => {
-    e.preventDefault()
     e.stopPropagation()
     const wasVoted = voted
     setVoted(!wasVoted)
     setCount(c => c + (wasVoted ? -1 : 1))
     startTransition(async () => {
-      await togglePostVote(post.id, wasVoted)
+      const res = await togglePostVote(post.id, wasVoted)
+      if (!res?.ok) {
+        // Échec serveur → rollback de l'optimiste pour ne pas mentir à l'utilisateur
+        setVoted(wasVoted)
+        setCount(c => c + (wasVoted ? 1 : -1))
+      }
       router.refresh()
     })
   }
 
   const excerpt = (() => {
-    const stripped = stripMarkdown(post.body)
-    return stripped.slice(0, 360) + (stripped.length > 360 ? '…' : '')
+    // On préserve les sauts de ligne (\n) pour rendre les paragraphes naturellement,
+    // façon feed Instagram / Facebook. On strip uniquement les marqueurs de bold,
+    // italique et liens markdown ; le reste s'affiche tel quel via white-space: pre-line.
+    const txt = post.body
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/\*(.+?)\*/g, '$1')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/\n{3,}/g, '\n\n')   // pas plus de 2 sauts de ligne consécutifs
+      .trim()
+    return txt.length > 500 ? txt.slice(0, 500).trimEnd() + '…' : txt
   })()
 
   return (
@@ -1667,7 +1678,11 @@ const s: Record<string, React.CSSProperties> = {
   postExcerpt: {
     fontSize: '13.5px', color: 'var(--text-2)',
     margin: 0, lineHeight: 1.65,
-    display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
+    // pre-line : on garde les \n des paragraphes, on collapse les espaces multiples.
+    // Combiné au -webkit-line-clamp, le navigateur tronque proprement avec ellipsis
+    // après 6 lignes visuelles (paragraphes ou pas).
+    whiteSpace: 'pre-line' as const,
+    display: '-webkit-box', WebkitLineClamp: 6, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
   },
   postFoot: {
     display: 'flex', alignItems: 'center', gap: '6px',
