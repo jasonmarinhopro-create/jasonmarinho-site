@@ -45,6 +45,9 @@ function extractCity(address: string | null | undefined): string | null {
 /**
  * Fetch pro stats in bulk for multiple users.
  * `profilesData` must include privacy flags + created_at.
+ *
+ * `preloadedLogements` (optionnel) : si l'appelant a déjà fetché les logements
+ * dans son Promise.all parent, on évite un round-trip Supabase séquentiel.
  */
 export async function getBulkProStats(
   supabase: SupabaseClient,
@@ -54,16 +57,21 @@ export async function getBulkProStats(
     privacy_show_logements: boolean | null
     privacy_show_city: boolean | null
   }>,
+  preloadedLogements?: Array<{ user_id: string; adresse: string | null }> | null,
 ): Promise<ProStatsByUser> {
   if (profilesData.length === 0) return {}
 
-  const userIds = profilesData.map(p => p.id)
+  let logementsData: Array<{ user_id: string; adresse: string | null }> | null = preloadedLogements ?? null
 
-  // Bulk fetch logements (only id, user_id, adresse, minimal cost)
-  const { data: logementsData } = await supabase
-    .from('logements')
-    .select('user_id, adresse')
-    .in('user_id', userIds)
+  // Fallback : si l'appelant n'a pas pré-chargé, on fait la query ici (mode 1 RTT).
+  if (!logementsData) {
+    const userIds = profilesData.map(p => p.id)
+    const res = await supabase
+      .from('logements')
+      .select('user_id, adresse')
+      .in('user_id', userIds)
+    logementsData = res.data ?? []
+  }
 
   // Group by user_id
   const logementsByUser: Record<string, Array<{ adresse: string | null }>> = {}

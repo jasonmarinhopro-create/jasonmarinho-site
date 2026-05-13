@@ -37,11 +37,13 @@ export default async function ChezNousPostPage({ params }: Props) {
   const userIds = Array.from(new Set([post.author_id, ...replies.map(r => r.author_id)]))
 
   // Phase 2 : toutes les queries dépendant de userIds en parallèle.
-  // cnAuthorsRows était hors du Promise.all (RTT séquentiel) — déplacé ici.
-  const [{ data: usersData }, { data: myVote }, { data: cnAuthorsRows }, ...badgeQueries] = await Promise.all([
+  // Hoist du fetch logements (utilisé par getBulkProStats) ici aussi pour qu'il
+  // tourne en parallèle au lieu d'attendre Phase 3 séquentiellement.
+  const [{ data: usersData }, { data: myVote }, { data: cnAuthorsRows }, { data: logementsData }, ...badgeQueries] = await Promise.all([
     userIds.length ? supabase.from('profiles').select('id, full_name, pseudo, role, is_contributor, created_at, privacy_show_logements, privacy_show_city').in('id', userIds) : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null; role: string | null; is_contributor: boolean | null; created_at: string | null; privacy_show_logements: boolean | null; privacy_show_city: boolean | null }[] }),
     supabase.from('chez_nous_post_votes').select('post_id').eq('user_id', profile.userId).eq('post_id', postId).maybeSingle(),
     userIds.length ? supabase.from('chez_nous_posts').select('author_id').in('author_id', userIds) : Promise.resolve({ data: [] as { author_id: string }[] }),
+    userIds.length ? supabase.from('logements').select('user_id, adresse').in('user_id', userIds) : Promise.resolve({ data: [] as { user_id: string; adresse: string | null }[] }),
     userIds.length ? supabase.from('roadmap_votes').select('user_id').in('user_id', userIds) : Promise.resolve({ data: [] }),
     userIds.length ? supabase.from('roadmap_items').select('author_id').in('author_id', userIds) : Promise.resolve({ data: [] }),
     userIds.length ? supabase.from('audit_gbp_sessions').select('user_id').in('user_id', userIds).not('completed_at', 'is', null) : Promise.resolve({ data: [] }),
@@ -68,6 +70,7 @@ export default async function ChezNousPostPage({ params }: Props) {
     chezNousAuthorIds: new Set((cnAuthorsRows ?? []).map(r => r.author_id)),
   })
 
+  // logementsData déjà fetché en Phase 2 → passage en preloaded, pas de RTT supplémentaire.
   const proStatsByUser = await getBulkProStats(
     supabase,
     (usersData ?? []).map(u => ({
@@ -76,6 +79,7 @@ export default async function ChezNousPostPage({ params }: Props) {
       privacy_show_logements: (u as { privacy_show_logements?: boolean | null }).privacy_show_logements ?? null,
       privacy_show_city:      (u as { privacy_show_city?: boolean | null }).privacy_show_city ?? null,
     })),
+    logementsData,
   )
 
   const usersMap: Record<string, {

@@ -32,6 +32,7 @@ type Post = {
   is_resolved: boolean
   image_count: number
   images: string[]
+  recent_replies: Array<{ id: string; author_id: string; body: string; created_at: string }>
 }
 
 type Author = {
@@ -326,7 +327,7 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
               <EmptyState category={currentCategory} sort={currentSort} search={currentSearch} onNew={() => setShowForm(true)} />
             ) : (
               posts.map(post => (
-                <PostRow key={post.id} post={post} author={authorsMap[post.author_id]} currentUserId={currentUserId} />
+                <PostRow key={post.id} post={post} author={authorsMap[post.author_id]} currentUserId={currentUserId} authorsMap={authorsMap} />
               ))
             )}
           </div>
@@ -713,7 +714,7 @@ function TipCard() {
 
 // ─── Post row ─────────────────────────────────────────────────────────
 
-function PostRow({ post, author, currentUserId }: { post: Post; author?: Author; currentUserId: string }) {
+function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; author?: Author; currentUserId: string; authorsMap: Record<string, Author> }) {
   const [voted, setVoted] = useState(post.has_voted)
   const [count, setCount] = useState(post.vote_count)
   const [expanded, setExpanded] = useState(false)
@@ -842,6 +843,36 @@ function PostRow({ post, author, currentUserId }: { post: Post; author?: Author;
             ))}
           </Link>
         )}
+
+        {/* Aperçu des 2 dernières réponses — évite à l'utilisateur de cliquer
+            quand la discussion est déjà claire dans le feed. */}
+        {post.recent_replies.length > 0 && (
+          <Link href={`/dashboard/chez-nous/${post.id}`} style={s.recentReplies}>
+            {post.recent_replies.slice().reverse().map(r => {
+              const rAuthor = authorsMap[r.author_id]
+              const rName = rAuthor ? displayName({ pseudo: rAuthor.pseudo, full_name: rAuthor.full_name }) : 'Anonyme'
+              const rAv = colorFromId(r.author_id)
+              const rInitials = rAuthor ? displayInitials({ pseudo: rAuthor.pseudo, full_name: rAuthor.full_name }) : '?'
+              const rExcerpt = r.body.replace(/\n+/g, ' ').replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1').trim()
+              return (
+                <div key={r.id} style={s.recentReplyItem}>
+                  <span style={{ ...s.recentReplyAvatar, background: rAv.bg, color: rAv.text }}>{rInitials}</span>
+                  <span style={s.recentReplyText}>
+                    <strong style={s.recentReplyAuthor}>{rName}</strong>
+                    <span style={s.recentReplyDot}> · </span>
+                    {rExcerpt.length > 120 ? rExcerpt.slice(0, 120) + '…' : rExcerpt}
+                  </span>
+                </div>
+              )
+            })}
+            {post.reply_count > post.recent_replies.length && (
+              <span style={s.recentRepliesMore}>
+                + {post.reply_count - post.recent_replies.length} autre{post.reply_count - post.recent_replies.length > 1 ? 's' : ''}
+              </span>
+            )}
+          </Link>
+        )}
+
         <div style={s.postFoot}>
           <span style={s.postFootName}>
             {name}
@@ -1806,6 +1837,37 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     color: '#fff', fontSize: '18px', fontWeight: 700,
     fontFamily: 'var(--font-fraunces), serif',
+  },
+  recentReplies: {
+    display: 'flex', flexDirection: 'column' as const, gap: '6px',
+    padding: '10px 12px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    marginTop: '4px',
+    textDecoration: 'none', color: 'inherit',
+  },
+  recentReplyItem: {
+    display: 'flex', alignItems: 'flex-start', gap: '8px',
+  },
+  recentReplyAvatar: {
+    width: '24px', height: '24px', borderRadius: '50%', flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '10px', fontWeight: 700, lineHeight: 1,
+    fontFamily: 'var(--font-fraunces), serif',
+  },
+  recentReplyText: {
+    fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.5,
+    flex: 1, minWidth: 0,
+    overflow: 'hidden' as const,
+    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const,
+  },
+  recentReplyAuthor: { color: 'var(--text)', fontWeight: 600 },
+  recentReplyDot: { color: 'var(--text-muted)' },
+  recentRepliesMore: {
+    fontSize: '11.5px', fontWeight: 600,
+    color: 'var(--accent-text)',
+    paddingLeft: '32px',
   },
   postFoot: {
     display: 'flex', alignItems: 'center', gap: '6px',
