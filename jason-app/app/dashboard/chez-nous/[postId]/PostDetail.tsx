@@ -81,6 +81,16 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
   const [voted, setVoted] = useState(post.has_voted)
   const [voteCount, setVoteCount] = useState(post.vote_count)
 
+  // Si l'URL contient ?edit=1 (clic 'Modifier' depuis le feed), on ouvre
+  // directement le mode édition pour économiser un clic à l'auteur.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !canEdit) return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('edit') === '1') {
+      setEditing(true)
+    }
+  }, [canEdit])
+
   const onDelete = () => {
     if (!confirm('Supprimer cette discussion ?')) return
     startTransition(async () => {
