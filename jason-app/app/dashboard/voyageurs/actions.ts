@@ -6,9 +6,9 @@ import { createClient } from '@/lib/supabase/server'
 export type VoyageurData = {
   prenom: string
   nom: string
-  email?: string
-  telephone?: string
-  notes?: string
+  email?: string | null
+  telephone?: string | null
+  notes?: string | null
 
   // Phase 1, enrichissement
   tags?: string[]
@@ -49,7 +49,7 @@ async function getSession() {
 
 // ─── Check si un email/tel est signalé par la communauté ────────────────
 // Utilisé à la création d'un voyageur pour alerter le hôte avant ajout
-export async function checkVoyageurSignale(input: { email?: string; telephone?: string }): Promise<{
+export async function checkVoyageurSignale(input: { email?: string | null; telephone?: string | null }): Promise<{
   signale: boolean
   count?: number
   motifs?: string[]

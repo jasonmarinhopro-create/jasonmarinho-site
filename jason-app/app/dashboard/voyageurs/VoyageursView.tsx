@@ -777,7 +777,15 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
 }
 
 const MEDIA_CSS = `
-  .voy-stats { display: flex; }
+  .voy-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 68px;
+    padding: 0 8px;
+  }
+  .voy-stats + .voy-stats { border-left: 1px solid var(--border); }
   .voy-actions { display: flex; }
   .voy-meta-mobile { display: none; }
   @media (max-width: 1023px) {
