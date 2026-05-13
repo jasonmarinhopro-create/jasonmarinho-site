@@ -13,7 +13,7 @@ import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
 import InviteModal from '@/components/chez-nous/InviteModal'
-import { createPost, createReply, togglePostVote } from './actions'
+import { createPost, togglePostVote } from './actions'
 
 type Post = {
   id: string
@@ -714,16 +714,9 @@ function TipCard() {
 // ─── Post row ─────────────────────────────────────────────────────────
 
 function PostRow({ post, author, currentUserId }: { post: Post; author?: Author; currentUserId: string }) {
-  const router = useRouter()
   const [voted, setVoted] = useState(post.has_voted)
   const [count, setCount] = useState(post.vote_count)
   const [expanded, setExpanded] = useState(false)
-  const [showReply, setShowReply] = useState(false)
-  const [replyBody, setReplyBody] = useState('')
-  const [replyPending, setReplyPending] = useState(false)
-  const [replyError, setReplyError] = useState<string | null>(null)
-  const [replyCount, setReplyCount] = useState(post.reply_count)
-  const replyTextareaRef = useRef<HTMLTextAreaElement>(null)
 
   const av       = colorFromId(post.author_id)
   const initials = author ? displayInitials({ pseudo: author.pseudo, full_name: author.full_name }) : '?'
@@ -733,8 +726,6 @@ function PostRow({ post, author, currentUserId }: { post: Post; author?: Author;
 
   // Vote 100% optimiste : pas de startTransition, pas de router.refresh().
   // L'UI bascule instantanément ; le serveur reçoit l'update en fond.
-  // Si erreur → rollback. Sinon on laisse le state local, le prochain
-  // navigation/revalidation rafraîchira de toute façon.
   const onVote = (e: React.MouseEvent) => {
     e.stopPropagation()
     const wasVoted = voted
@@ -746,35 +737,6 @@ function PostRow({ post, author, currentUserId }: { post: Post; author?: Author;
         setCount(c => c + (wasVoted ? 1 : -1))
       }
     })
-  }
-
-  // Reply inline : on toggle l'affichage, focus le textarea, et envoie
-  // directement depuis la carte sans navigation.
-  const toggleReply = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setShowReply(v => !v)
-    setReplyError(null)
-    // focus différé pour laisser le DOM se mettre à jour
-    setTimeout(() => replyTextareaRef.current?.focus(), 50)
-  }
-
-  const submitReply = async () => {
-    const trimmed = replyBody.trim()
-    if (!trimmed || replyPending) return
-    setReplyPending(true)
-    setReplyError(null)
-    const res = await createReply({ postId: post.id, body: trimmed })
-    setReplyPending(false)
-    if (!res.ok) {
-      setReplyError(res.error)
-      return
-    }
-    // Succès : ferme le form, vide le textarea, incrémente le compteur.
-    setReplyBody('')
-    setShowReply(false)
-    setReplyCount(c => c + 1)
-    router.refresh()
   }
 
   // Rendu light du markdown pour le feed : bold + italique uniquement,
@@ -825,7 +787,7 @@ function PostRow({ post, author, currentUserId }: { post: Post; author?: Author;
             )}
             {post.pinned && <PushPin size={12} color="var(--accent-text)" weight="fill" />}
             {post.locked && <Lock size={12} color="#94a3b8" weight="fill" />}
-            {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
+            {post.edited_at && <span style={s.editedTag}>modifié</span>}
           </div>
           <h3 style={s.postTitle}>{post.title}</h3>
         </Link>
@@ -910,21 +872,21 @@ function PostRow({ post, author, currentUserId }: { post: Post; author?: Author;
                 <span>Modifier</span>
               </Link>
             )}
-            <button
-              type="button"
-              onClick={toggleReply}
+            <Link
+              href={`/dashboard/chez-nous/${post.id}#reply`}
               style={s.replyBtn}
-              title={replyCount > 0
-                ? `${replyCount} réponse${replyCount > 1 ? 's' : ''} — clique pour commenter`
-                : 'Commenter ce post'}
+              title={post.reply_count > 0
+                ? `Voir les ${post.reply_count} commentaire${post.reply_count > 1 ? 's' : ''}`
+                : 'Ouvrir et commenter'}
+              onClick={e => e.stopPropagation()}
             >
               <ChatCircle size={13} weight="fill" />
-              {replyCount > 0 ? (
-                <span><strong style={{ fontWeight: 700 }}>{replyCount}</strong> · Commenter</span>
+              {post.reply_count > 0 ? (
+                <span><strong style={{ fontWeight: 700 }}>{post.reply_count}</strong> · Voir</span>
               ) : (
                 <span>Commenter</span>
               )}
-            </button>
+            </Link>
             <button
               type="button"
               onClick={onVote}
@@ -943,53 +905,6 @@ function PostRow({ post, author, currentUserId }: { post: Post; author?: Author;
             </button>
           </span>
         </div>
-
-        {/* Form de réponse inline (s'affiche au clic sur Commenter).
-            Évite de naviguer vers la page détail juste pour ajouter un commentaire. */}
-        {showReply && (
-          <div style={s.inlineReply} onClick={e => e.stopPropagation()}>
-            <textarea
-              ref={replyTextareaRef}
-              value={replyBody}
-              onChange={e => setReplyBody(e.target.value)}
-              onKeyDown={e => {
-                if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-                  e.preventDefault()
-                  submitReply()
-                }
-              }}
-              placeholder={`Réponds à ${name}…`}
-              maxLength={4000}
-              rows={3}
-              style={s.inlineReplyTextarea}
-            />
-            {replyError && <p style={s.inlineReplyError}>{replyError}</p>}
-            <div style={s.inlineReplyActions}>
-              <span style={s.inlineReplyHint}>⌘+Entrée pour envoyer</span>
-              <div style={{ display: 'flex', gap: '6px' }}>
-                <button
-                  type="button"
-                  onClick={() => { setShowReply(false); setReplyBody(''); setReplyError(null) }}
-                  style={s.inlineReplyCancel}
-                  disabled={replyPending}
-                >
-                  Annuler
-                </button>
-                <button
-                  type="button"
-                  onClick={submitReply}
-                  disabled={replyPending || !replyBody.trim()}
-                  style={{
-                    ...s.inlineReplySubmit,
-                    ...(replyPending || !replyBody.trim() ? s.inlineReplySubmitDisabled : {}),
-                  }}
-                >
-                  {replyPending ? 'Envoi…' : 'Répondre'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
@@ -1799,50 +1714,6 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s, color 0.15s, border-color 0.15s',
     lineHeight: 1,
     cursor: 'pointer',
-  },
-  inlineReply: {
-    marginTop: '12px',
-    padding: '10px 12px',
-    background: 'var(--bg-2)',
-    border: '1px solid var(--border)',
-    borderRadius: '10px',
-    display: 'flex', flexDirection: 'column' as const, gap: '8px',
-  },
-  inlineReplyTextarea: {
-    width: '100%',
-    padding: '8px 10px',
-    fontFamily: 'inherit', fontSize: '13px', lineHeight: 1.55,
-    color: 'var(--text)',
-    background: 'var(--bg)',
-    border: '1px solid var(--border)',
-    borderRadius: '8px',
-    resize: 'vertical' as const,
-    minHeight: '60px',
-  },
-  inlineReplyError: {
-    margin: 0,
-    fontSize: '12px', color: '#dc2626',
-  },
-  inlineReplyActions: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px',
-  },
-  inlineReplyHint: {
-    fontSize: '11px', color: 'var(--text-muted)',
-  },
-  inlineReplyCancel: {
-    padding: '6px 12px', borderRadius: '8px',
-    background: 'transparent', border: '1px solid var(--border)',
-    color: 'var(--text-2)', fontSize: '12px', fontFamily: 'inherit',
-    cursor: 'pointer',
-  },
-  inlineReplySubmit: {
-    padding: '6px 14px', borderRadius: '8px',
-    background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border-2)',
-    color: 'var(--accent-text)', fontSize: '12px', fontWeight: 600, fontFamily: 'inherit',
-    cursor: 'pointer',
-  },
-  inlineReplySubmitDisabled: {
-    opacity: 0.5, cursor: 'not-allowed',
   },
   voteInline: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
