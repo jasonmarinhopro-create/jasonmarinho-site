@@ -255,6 +255,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
           has_voted:     myVotedSet.has(p.id),
           is_resolved:   !!p.accepted_reply_id,
           image_count:   Array.isArray(p.images) ? p.images.length : 0,
+          images:        Array.isArray(p.images) ? p.images.slice(0, 4) : [],
         }))}
         authorsMap={authorsMap}
         currentUserId={profile.userId}

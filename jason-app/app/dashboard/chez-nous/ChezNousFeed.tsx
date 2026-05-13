@@ -31,6 +31,7 @@ type Post = {
   has_voted: boolean
   is_resolved: boolean
   image_count: number
+  images: string[]
 }
 
 type Author = {
@@ -717,6 +718,7 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
   const [pending, startTransition] = useTransition()
   const [voted, setVoted] = useState(post.has_voted)
   const [count, setCount] = useState(post.vote_count)
+  const [expanded, setExpanded] = useState(false)
 
   const av       = colorFromId(post.author_id)
   const initials = author ? displayInitials({ pseudo: author.pseudo, full_name: author.full_name }) : '?'
@@ -731,7 +733,6 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
     startTransition(async () => {
       const res = await togglePostVote(post.id, wasVoted)
       if (!res?.ok) {
-        // Échec serveur → rollback de l'optimiste pour ne pas mentir à l'utilisateur
         setVoted(wasVoted)
         setCount(c => c + (wasVoted ? 1 : -1))
       }
@@ -739,18 +740,34 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
     })
   }
 
-  const excerpt = (() => {
-    // On préserve les sauts de ligne (\n) pour rendre les paragraphes naturellement,
-    // façon feed Instagram / Facebook. On strip uniquement les marqueurs de bold,
-    // italique et liens markdown ; le reste s'affiche tel quel via white-space: pre-line.
-    const txt = post.body
-      .replace(/\*\*(.+?)\*\*/g, '$1')
-      .replace(/\*(.+?)\*/g, '$1')
+  // Rendu light du markdown pour le feed : bold + italique uniquement,
+  // pas d'autolinks ni de <a> imbriqués (la carte entière est déjà un lien).
+  // On préserve les \n via white-space: pre-line dans le CSS.
+  const renderedBody = (() => {
+    const escapeHtml = (str: string) => str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+
+    // Plafonnement : pas plus de 2 sauts de ligne consécutifs (évite les trous géants).
+    let txt = post.body
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-      .replace(/\n{3,}/g, '\n\n')   // pas plus de 2 sauts de ligne consécutifs
+      .replace(/\n{3,}/g, '\n\n')
       .trim()
-    return txt.length > 500 ? txt.slice(0, 500).trimEnd() + '…' : txt
+
+    return escapeHtml(txt)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
   })()
+
+  // Décide si on doit proposer 'Voir plus' : heuristique simple sur la longueur
+  // et le nombre de sauts de ligne (suffisant pour ce contexte forum).
+  const newlineCount = (post.body.match(/\n/g) || []).length
+  const isLong = post.body.length > 500 || newlineCount > 5
+
+  const hasImages = post.images && post.images.length > 0
 
   return (
     <div style={s.postCard}>
@@ -774,8 +791,58 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
             {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
           </div>
           <h3 style={s.postTitle}>{post.title}</h3>
-          <p style={s.postExcerpt}>{excerpt}</p>
         </Link>
+
+        {/* Corps : excerpt cliquable (ouvre le détail) + bouton Voir plus inline.
+            Le bouton expand est en dehors du Link pour ne pas déclencher la navigation. */}
+        <Link
+          href={`/dashboard/chez-nous/${post.id}`}
+          style={{
+            ...s.postExcerpt,
+            ...(expanded ? { WebkitLineClamp: 'unset' as unknown as number, display: 'block' } : {}),
+          }}
+          dangerouslySetInnerHTML={{ __html: renderedBody }}
+        />
+        {isLong && (
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded(v => !v) }}
+            style={s.expandBtn}
+          >
+            {expanded ? 'Voir moins' : 'Voir plus'}
+          </button>
+        )}
+
+        {hasImages && (
+          <Link
+            href={`/dashboard/chez-nous/${post.id}`}
+            style={{
+              ...s.imageGrid,
+              gridTemplateColumns: post.images.length === 1 ? '1fr' : '1fr 1fr',
+            }}
+          >
+            {post.images.slice(0, 4).map((url, i) => (
+              <div
+                key={i}
+                style={{
+                  ...s.imageThumb,
+                  aspectRatio: post.images.length === 1 ? '16 / 10' : '1 / 1',
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={url}
+                  alt=""
+                  loading="lazy"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+                {i === 3 && post.images.length > 4 && (
+                  <span style={s.imageOverlayMore}>+{post.images.length - 4}</span>
+                )}
+              </div>
+            ))}
+          </Link>
+        )}
         <div style={s.postFoot}>
           <span style={s.postFootName}>
             {name}
@@ -1678,11 +1745,41 @@ const s: Record<string, React.CSSProperties> = {
   postExcerpt: {
     fontSize: '13.5px', color: 'var(--text-2)',
     margin: 0, lineHeight: 1.65,
-    // pre-line : on garde les \n des paragraphes, on collapse les espaces multiples.
-    // Combiné au -webkit-line-clamp, le navigateur tronque proprement avec ellipsis
-    // après 6 lignes visuelles (paragraphes ou pas).
+    textDecoration: 'none',
+    // pre-line : on garde les \n des paragraphes de l'auteur (façon Insta/Facebook).
+    // Combiné au -webkit-line-clamp, le navigateur tronque proprement après 6 lignes
+    // visibles. Si l'utilisateur clique 'Voir plus', on bascule sur display: block et
+    // -webkit-line-clamp: unset pour libérer la hauteur.
     whiteSpace: 'pre-line' as const,
     display: '-webkit-box', WebkitLineClamp: 6, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
+  },
+  expandBtn: {
+    background: 'transparent', border: 'none', padding: '2px 0',
+    color: 'var(--accent-text)', fontSize: '12.5px', fontWeight: 600,
+    cursor: 'pointer', fontFamily: 'inherit',
+    alignSelf: 'flex-start',
+    marginTop: '-2px',
+  },
+  imageGrid: {
+    display: 'grid',
+    gap: '4px',
+    marginTop: '8px',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    textDecoration: 'none',
+  },
+  imageThumb: {
+    width: '100%',
+    background: 'var(--surface)',
+    position: 'relative' as const,
+    overflow: 'hidden',
+  },
+  imageOverlayMore: {
+    position: 'absolute' as const, inset: 0,
+    background: 'rgba(0,0,0,0.55)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: '#fff', fontSize: '18px', fontWeight: 700,
+    fontFamily: 'var(--font-fraunces), serif',
   },
   postFoot: {
     display: 'flex', alignItems: 'center', gap: '6px',
