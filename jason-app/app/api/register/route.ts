@@ -40,6 +40,54 @@ function isDisposableEmail(email: string): boolean {
   return DISPOSABLE_DOMAINS.has(email.slice(at + 1).toLowerCase())
 }
 
+/**
+ * Détecte les noms générés aléatoirement par des bots.
+ *
+ * Pattern observé sur les inscriptions parasites :
+ *   kOuoEZqDVJrOjrWktKvpF, jLcvamJGbuMROfOULBYKwx, twrnArGljiUFsdRaR…
+ *
+ * Caractéristiques communes :
+ * - Un seul mot (pas d'espace)
+ * - Plus de 15 caractères
+ * - Majuscules dispersées au milieu du mot (3-7 caps inattendues)
+ * - Ratio voyelles / consonnes très bas (< 28 %)
+ *
+ * Les vrais noms longs ont presque toujours un espace (prénom + nom).
+ * Un mot unique de 15+ caractères est déjà rare ; combiné aux autres signaux,
+ * c'est un signal fort de génération aléatoire.
+ *
+ * @returns true si le nom ressemble à du bruit aléatoire (à rejeter silencieusement).
+ */
+function looksLikeBotName(name: string | null | undefined): boolean {
+  const trimmed = (name ?? '').trim()
+  if (!trimmed) return false
+
+  // 5+ chiffres au milieu d'un nom = pas un vrai nom.
+  const digits = (trimmed.match(/\d/g) || []).length
+  if (digits >= 5) return true
+
+  const hasSpace = /\s/.test(trimmed)
+  if (hasSpace) return false  // un nom avec espace est presque toujours OK
+
+  // Single token > 15 chars : on regarde de plus près.
+  if (trimmed.length <= 15) return false
+
+  const letters = trimmed.toLowerCase().match(/[a-zàâäéèêëïîôöùûüÿç]/g) ?? []
+  if (letters.length === 0) return true  // que des chiffres / symboles
+  const vowelChars = new Set('aeiouyàâäéèêëïîôöùûüÿ')
+  const vowels = letters.filter(c => vowelChars.has(c)).length
+  const vowelRatio = vowels / letters.length
+
+  // Vrai mot français a 30-45 % de voyelles ; < 28 % = très probablement aléatoire.
+  if (vowelRatio < 0.28) return true
+
+  // Majuscules dispersées (> 3) dans un mot unique = pattern typique de bot.
+  const uppers = (trimmed.match(/[A-Z]/g) || []).length
+  if (uppers >= 4) return true
+
+  return false
+}
+
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req)
@@ -81,6 +129,12 @@ export async function POST(req: NextRequest) {
     // 3. Domaine email jetable → fake success silencieux.
     if (isDisposableEmail(normalized)) {
       log.warn('botDisposable', { ip, email: normalized })
+      return NextResponse.json({ ok: true })
+    }
+
+    // 4. Nom au pattern aléatoire (bot-generated) → fake success.
+    if (looksLikeBotName(fullName)) {
+      log.warn('botRandomName', { ip, email: normalized, fullName })
       return NextResponse.json({ ok: true })
     }
 
