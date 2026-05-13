@@ -3,7 +3,7 @@
 import { useState, useTransition, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Plus, MagnifyingGlass, Warning, CaretRight,
+  Plus, MagnifyingGlass, Warning,
   X, User, Envelope, Phone, Note,
   Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset,
 } from '@phosphor-icons/react/dist/ssr'
@@ -360,28 +360,45 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
 
           {/* List, vue Cards */}
           {filtered.length > 0 && viewMode === 'cards' && (
-            <div style={s.list} className="fade-up">
+            <div style={s.tileGrid} className="fade-up">
               {filtered.map(v => {
                 const initials = `${v.prenom[0]}${v.nom[0]}`.toUpperCase()
                 const color = avatarColor(v.prenom + v.nom)
-                const last = lastStay(v.sejours)
                 const ca = caOf(v)
+                const recurrent = v.sejours.length >= 2
+                const fidele = v.sejours.length >= 4
                 return (
                   <div
                     key={v.id}
                     onClick={() => router.push(`/dashboard/voyageurs/${v.id}`)}
-                    style={{ ...s.row, opacity: v.bloque ? 0.6 : 1 }}
-                    className="dash-help-row voy-row"
+                    style={{ ...s.tile, opacity: v.bloque ? 0.6 : 1 }}
+                    className="dash-help-row"
                   >
-                    {/* Avatar */}
-                    <div style={{ ...s.avatar, background: color }}>
-                      <span style={s.avatarText}>{initials}</span>
+                    {/* Actions en haut à droite */}
+                    <div style={s.tileActions} onClick={e => e.stopPropagation()}>
+                      <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
+                        <Note size={14} />
+                      </button>
+                      <button onClick={e => handleDelete(v.id, e)} style={s.actionBtn} title="Supprimer">
+                        <X size={14} />
+                      </button>
                     </div>
 
-                    {/* Info */}
-                    <div style={s.info}>
-                      <div style={s.rowName}>
-                        {v.prenom} {v.nom}
+                    {/* Avatar + nom */}
+                    <div style={s.tileHead}>
+                      <div style={{ ...s.tileAvatar, background: color }}>
+                        <span style={s.tileAvatarText}>{initials}</span>
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={s.tileName}>{v.prenom} {v.nom}</div>
+                        {v.email && <div style={s.tileMeta}>{v.email}</div>}
+                        {v.telephone && <div style={s.tileMeta}>{v.telephone}</div>}
+                      </div>
+                    </div>
+
+                    {/* Badges */}
+                    {(v.is_flagged || v.bloque || fidele || recurrent || (v.tags && v.tags.length > 0)) && (
+                      <div style={s.tileBadges}>
                         {v.is_flagged && (
                           <span style={s.flagBadge}>
                             <Warning size={11} weight="fill" />
@@ -394,59 +411,35 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                             Bloqué
                           </span>
                         )}
+                        {!v.is_flagged && !v.bloque && fidele && (
+                          <span style={{ ...s.flagBadge, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.30)', color: '#10b981' }}>
+                            Fidèle
+                          </span>
+                        )}
+                        {!v.is_flagged && !v.bloque && !fidele && recurrent && (
+                          <span style={{ ...s.flagBadge, background: 'rgba(96,165,250,0.10)', borderColor: 'rgba(96,165,250,0.30)', color: '#60a5fa' }}>
+                            Récurrent
+                          </span>
+                        )}
                         {v.tags && v.tags.slice(0, 2).map(t => (
                           <span key={t} style={s.tagChip}>{t}</span>
                         ))}
                       </div>
-                      <div style={s.rowMeta}>
-                        {v.email && <span>{v.email}</span>}
-                        {v.email && v.telephone && <span style={s.dot}>·</span>}
-                        {v.telephone && <span>{v.telephone}</span>}
-                      </div>
-                      {/* Mobile-only compact meta row */}
-                      <div className="voy-meta-mobile" onClick={e => e.stopPropagation()}>
-                        <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
-                          {v.sejours.length} séjour{v.sejours.length !== 1 ? 's' : ''}
-                        </span>
-                        {ca > 0 && (
-                          <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 600 }}>
-                            · {ca.toLocaleString('fr-FR')} €
-                          </span>
-                        )}
-                        <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px' }}>
-                          <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
-                            <Note size={14} />
-                          </button>
-                          <button onClick={e => handleDelete(v.id, e)} style={s.actionBtn} title="Supprimer">
-                            <X size={14} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Stats, desktop only */}
-                    <div className="voy-stats" style={s.stats}>
-                      <div style={s.statVal}>{v.sejours.length}</div>
-                      <div style={s.statLabel}>séjour{v.sejours.length !== 1 ? 's' : ''}</div>
-                    </div>
-                    {ca > 0 && (
-                      <div className="voy-stats" style={s.stats}>
-                        <div style={{ ...s.statVal, color: '#10b981' }}>{ca.toLocaleString('fr-FR')} €</div>
-                        <div style={s.statLabel}>CA</div>
-                      </div>
                     )}
 
-                    {/* Actions, desktop only */}
-                    <div className="voy-actions" style={s.rowActions} onClick={e => e.stopPropagation()}>
-                      <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
-                        <Note size={15} />
-                      </button>
-                      <button onClick={e => handleDelete(v.id, e)} style={s.actionBtn} title="Supprimer">
-                        <X size={15} />
-                      </button>
+                    {/* Stats bas de carte */}
+                    <div style={s.tileFooter}>
+                      <div style={s.tileStat}>
+                        <span style={s.tileStatVal}>{v.sejours.length}</span>
+                        <span style={s.tileStatLabel}>séjour{v.sejours.length !== 1 ? 's' : ''}</span>
+                      </div>
+                      {ca > 0 && (
+                        <div style={s.tileStat}>
+                          <span style={{ ...s.tileStatVal, color: '#10b981' }}>{ca.toLocaleString('fr-FR')} €</span>
+                          <span style={s.tileStatLabel}>CA</span>
+                        </div>
+                      )}
                     </div>
-
-                    <CaretRight size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                   </div>
                 )
               })}
@@ -777,34 +770,8 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
 }
 
 const MEDIA_CSS = `
-  .voy-stats {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 68px;
-    padding: 0 8px;
-  }
-  .voy-stats + .voy-stats { border-left: 1px solid var(--border); }
-  .voy-actions { display: flex; }
-  .voy-meta-mobile { display: none; }
   @media (max-width: 1023px) {
     .voy-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  }
-  @media (max-width: 767px) {
-    .voy-stats { display: none !important; }
-    .voy-actions { display: none !important; }
-    .voy-row { flex-wrap: wrap !important; }
-    .voy-meta-mobile {
-      display: flex !important;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border);
-      width: 100%;
-    }
   }
 `
 
@@ -858,6 +825,59 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--surface)', border: '1px solid var(--surface-2)',
     borderRadius: '16px', overflow: 'hidden',
   },
+
+  tileGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: '14px',
+  },
+  tile: {
+    position: 'relative' as const,
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '18px',
+    cursor: 'pointer', transition: 'border-color 0.15s, transform 0.15s',
+    display: 'flex', flexDirection: 'column' as const, gap: '14px',
+  },
+  tileActions: {
+    position: 'absolute' as const, top: '10px', right: '10px',
+    display: 'flex', gap: '2px',
+  },
+  tileHead: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    paddingRight: '60px', // éviter overlap avec tileActions
+  },
+  tileAvatar: {
+    width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  tileAvatarText: {
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '15px',
+    fontWeight: 600, color: '#fff',
+  },
+  tileName: {
+    fontSize: '14.5px', fontWeight: 600, color: 'var(--text)',
+    marginBottom: '3px',
+    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
+  },
+  tileMeta: {
+    fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.4,
+    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
+  },
+  tileBadges: {
+    display: 'flex', flexWrap: 'wrap' as const, gap: '5px',
+  },
+  tileFooter: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    paddingTop: '10px',
+    borderTop: '1px solid var(--border)',
+    marginTop: 'auto',
+  },
+  tileStat: {
+    display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-start',
+    gap: '2px',
+  },
+  tileStatVal: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', lineHeight: 1 },
+  tileStatLabel: { fontSize: '11px', color: 'var(--text-muted)' },
   row: {
     display: 'flex', alignItems: 'center', gap: '14px',
     padding: '14px 18px', borderBottom: '1px solid var(--border)',
