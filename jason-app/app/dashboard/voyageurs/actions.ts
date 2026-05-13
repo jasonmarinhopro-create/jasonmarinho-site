@@ -6,9 +6,9 @@ import { createClient } from '@/lib/supabase/server'
 export type VoyageurData = {
   prenom: string
   nom: string
-  email?: string
-  telephone?: string
-  notes?: string
+  email?: string | null
+  telephone?: string | null
+  notes?: string | null
 
   // Phase 1, enrichissement
   tags?: string[]

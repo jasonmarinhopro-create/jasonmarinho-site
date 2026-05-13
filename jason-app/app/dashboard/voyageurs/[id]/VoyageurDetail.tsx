@@ -768,12 +768,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     }
     setProfileError('')
     startTransition(async () => {
+      // Vidage d'un champ optionnel : on envoie null (pas undefined) sinon
+      // supabase-js retire la clé du payload JSON et le champ reste inchangé en base.
       const data: VoyageurData = {
         prenom: profileForm.prenom.trim(),
         nom: profileForm.nom.trim(),
-        email: profileForm.email.trim() || undefined,
-        telephone: profileForm.telephone.trim() || undefined,
-        notes: notes.trim() || undefined,
+        email: profileForm.email.trim() || null,
+        telephone: profileForm.telephone.trim() || null,
+        notes: notes.trim() || null,
         nationalite: profileForm.nationalite,
       }
       const res = await updateVoyageur(voyageur.id, data)
@@ -786,12 +788,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
   function saveNotes() {
     startTransition(async () => {
+      // Save dédié au champ notes : on garde les autres champs intacts en
+      // les relisant depuis le voyageur côté serveur (et null si vraiment vide).
       const data: VoyageurData = {
-        prenom: profileForm.prenom || voyageur.prenom,
-        nom: profileForm.nom || voyageur.nom,
-        email: profileForm.email.trim() || voyageur.email || undefined,
-        telephone: profileForm.telephone.trim() || voyageur.telephone || undefined,
-        notes: notes.trim() || undefined,
+        prenom: voyageur.prenom,
+        nom: voyageur.nom,
+        email: voyageur.email || null,
+        telephone: voyageur.telephone || null,
+        notes: notes.trim() || null,
       }
       await updateVoyageur(voyageur.id, data)
       setEditingNotes(false)
