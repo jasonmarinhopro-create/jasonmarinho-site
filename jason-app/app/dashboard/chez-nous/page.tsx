@@ -111,7 +111,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     userVotesResult,
     topMembersResult,
     activityProfilesResult,
-    recentRepliesResult,
+    repliesPreviewResult,
   ] = await Promise.all([
     authorIds.length ? supabase.from('profiles').select('id, full_name, pseudo, role, is_contributor, created_at, privacy_show_logements, privacy_show_city').in('id', authorIds) : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null; role: string | null; is_contributor: boolean | null; created_at: string | null; privacy_show_logements: boolean | null; privacy_show_city: boolean | null }[] }),
     authorIds.length ? supabase.from('roadmap_votes').select('user_id').in('user_id', authorIds) : Promise.resolve({ data: [] as { user_id: string }[] }),
@@ -246,7 +246,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   // On retient seulement les 2 plus récentes par post même si la query limit 50
   // (cas où plusieurs posts récents ont beaucoup de réponses).
   const recentRepliesByPost: Record<string, Array<{ id: string; author_id: string; body: string; created_at: string }>> = {}
-  ;(recentRepliesResult.data ?? []).forEach(r => {
+  ;(repliesPreviewResult.data ?? []).forEach(r => {
     if (!recentRepliesByPost[r.post_id]) recentRepliesByPost[r.post_id] = []
     if (recentRepliesByPost[r.post_id].length < 2) {
       recentRepliesByPost[r.post_id].push({ id: r.id, author_id: r.author_id, body: r.body, created_at: r.created_at })
