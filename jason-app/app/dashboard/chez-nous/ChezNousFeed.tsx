@@ -9,7 +9,6 @@ import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
 import { MapPin } from '@phosphor-icons/react/dist/ssr'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
-import { stripMarkdown } from '@/lib/chez-nous/markdown'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
@@ -32,6 +31,7 @@ type Post = {
   has_voted: boolean
   is_resolved: boolean
   image_count: number
+  images: string[]
 }
 
 type Author = {
@@ -718,6 +718,7 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
   const [pending, startTransition] = useTransition()
   const [voted, setVoted] = useState(post.has_voted)
   const [count, setCount] = useState(post.vote_count)
+  const [expanded, setExpanded] = useState(false)
 
   const av       = colorFromId(post.author_id)
   const initials = author ? displayInitials({ pseudo: author.pseudo, full_name: author.full_name }) : '?'
@@ -725,21 +726,48 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
   const cat      = CATEGORIES[post.category]
 
   const onVote = (e: React.MouseEvent) => {
-    e.preventDefault()
     e.stopPropagation()
     const wasVoted = voted
     setVoted(!wasVoted)
     setCount(c => c + (wasVoted ? -1 : 1))
     startTransition(async () => {
-      await togglePostVote(post.id, wasVoted)
+      const res = await togglePostVote(post.id, wasVoted)
+      if (!res?.ok) {
+        setVoted(wasVoted)
+        setCount(c => c + (wasVoted ? 1 : -1))
+      }
       router.refresh()
     })
   }
 
-  const excerpt = (() => {
-    const stripped = stripMarkdown(post.body)
-    return stripped.slice(0, 360) + (stripped.length > 360 ? '…' : '')
+  // Rendu light du markdown pour le feed : bold + italique uniquement,
+  // pas d'autolinks ni de <a> imbriqués (la carte entière est déjà un lien).
+  // On préserve les \n via white-space: pre-line dans le CSS.
+  const renderedBody = (() => {
+    const escapeHtml = (str: string) => str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+
+    // Plafonnement : pas plus de 2 sauts de ligne consécutifs (évite les trous géants).
+    let txt = post.body
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()
+
+    return escapeHtml(txt)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
   })()
+
+  // Décide si on doit proposer 'Voir plus' : heuristique simple sur la longueur
+  // et le nombre de sauts de ligne (suffisant pour ce contexte forum).
+  const newlineCount = (post.body.match(/\n/g) || []).length
+  const isLong = post.body.length > 500 || newlineCount > 5
+
+  const hasImages = post.images && post.images.length > 0
 
   return (
     <div style={s.postCard}>
@@ -763,8 +791,58 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
             {post.edited_at && <span style={s.editedTag}><Pencil size={9} /> modifié</span>}
           </div>
           <h3 style={s.postTitle}>{post.title}</h3>
-          <p style={s.postExcerpt}>{excerpt}</p>
         </Link>
+
+        {/* Corps : excerpt cliquable (ouvre le détail) + bouton Voir plus inline.
+            Le bouton expand est en dehors du Link pour ne pas déclencher la navigation. */}
+        <Link
+          href={`/dashboard/chez-nous/${post.id}`}
+          style={{
+            ...s.postExcerpt,
+            ...(expanded ? { WebkitLineClamp: 'unset' as unknown as number, display: 'block' } : {}),
+          }}
+          dangerouslySetInnerHTML={{ __html: renderedBody }}
+        />
+        {isLong && (
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded(v => !v) }}
+            style={s.expandBtn}
+          >
+            {expanded ? 'Voir moins' : 'Voir plus'}
+          </button>
+        )}
+
+        {hasImages && (
+          <Link
+            href={`/dashboard/chez-nous/${post.id}`}
+            style={{
+              ...s.imageGrid,
+              gridTemplateColumns: post.images.length === 1 ? '1fr' : '1fr 1fr',
+            }}
+          >
+            {post.images.slice(0, 4).map((url, i) => (
+              <div
+                key={i}
+                style={{
+                  ...s.imageThumb,
+                  aspectRatio: post.images.length === 1 ? '16 / 10' : '1 / 1',
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={url}
+                  alt=""
+                  loading="lazy"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+                {i === 3 && post.images.length > 4 && (
+                  <span style={s.imageOverlayMore}>+{post.images.length - 4}</span>
+                )}
+              </div>
+            ))}
+          </Link>
+        )}
         <div style={s.postFoot}>
           <span style={s.postFootName}>
             {name}
@@ -784,16 +862,20 @@ function PostRow({ post, author }: { post: Post; author?: Author }) {
             {formatRelative(post.last_reply_at ?? post.created_at)}
           </Link>
           <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-            <Link href={`/dashboard/chez-nous/${post.id}`} style={{ ...s.postReplies, ...s.postFootLink }} title={`${post.reply_count} réponse${post.reply_count > 1 ? 's' : ''}`}>
-              <ChatCircle size={12} weight="fill" />
-              {post.reply_count}
+            <Link
+              href={`/dashboard/chez-nous/${post.id}#reply`}
+              style={s.replyBtn}
+              title={post.reply_count > 0
+                ? `${post.reply_count} réponse${post.reply_count > 1 ? 's' : ''} — clique pour répondre`
+                : 'Répondre à ce post'}
+            >
+              <ChatCircle size={13} weight="fill" />
+              {post.reply_count > 0 ? (
+                <span><strong style={{ fontWeight: 700 }}>{post.reply_count}</strong> · Commenter</span>
+              ) : (
+                <span>Commenter</span>
+              )}
             </Link>
-            {post.image_count > 0 && (
-              <Link href={`/dashboard/chez-nous/${post.id}`} style={{ ...s.postReplies, ...s.postFootLink }} title={`${post.image_count} image${post.image_count > 1 ? 's' : ''}`}>
-                <ImageSquare size={12} weight="fill" />
-                {post.image_count}
-              </Link>
-            )}
             <button
               type="button"
               onClick={onVote}
@@ -1611,6 +1693,17 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'border-color 0.15s',
     alignItems: 'flex-start',
   },
+  replyBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '4px 11px', borderRadius: '999px',
+    background: 'transparent', border: '1px solid var(--border)',
+    color: 'var(--text-2)',
+    fontFamily: 'inherit',
+    fontSize: '11.5px', fontWeight: 500,
+    textDecoration: 'none',
+    transition: 'background 0.15s, color 0.15s, border-color 0.15s',
+    lineHeight: 1,
+  },
   voteInline: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
     padding: '4px 9px', borderRadius: '999px',
@@ -1667,7 +1760,41 @@ const s: Record<string, React.CSSProperties> = {
   postExcerpt: {
     fontSize: '13.5px', color: 'var(--text-2)',
     margin: 0, lineHeight: 1.65,
-    display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
+    textDecoration: 'none',
+    // pre-line : on garde les \n des paragraphes de l'auteur (façon Insta/Facebook).
+    // Combiné au -webkit-line-clamp, le navigateur tronque proprement après 6 lignes
+    // visibles. Si l'utilisateur clique 'Voir plus', on bascule sur display: block et
+    // -webkit-line-clamp: unset pour libérer la hauteur.
+    whiteSpace: 'pre-line' as const,
+    display: '-webkit-box', WebkitLineClamp: 6, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
+  },
+  expandBtn: {
+    background: 'transparent', border: 'none', padding: '2px 0',
+    color: 'var(--accent-text)', fontSize: '12.5px', fontWeight: 600,
+    cursor: 'pointer', fontFamily: 'inherit',
+    alignSelf: 'flex-start',
+    marginTop: '-2px',
+  },
+  imageGrid: {
+    display: 'grid',
+    gap: '4px',
+    marginTop: '8px',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    textDecoration: 'none',
+  },
+  imageThumb: {
+    width: '100%',
+    background: 'var(--surface)',
+    position: 'relative' as const,
+    overflow: 'hidden',
+  },
+  imageOverlayMore: {
+    position: 'absolute' as const, inset: 0,
+    background: 'rgba(0,0,0,0.55)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: '#fff', fontSize: '18px', fontWeight: 700,
+    fontFamily: 'var(--font-fraunces), serif',
   },
   postFoot: {
     display: 'flex', alignItems: 'center', gap: '6px',

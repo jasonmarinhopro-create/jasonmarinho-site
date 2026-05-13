@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useRef } from 'react'
+import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -561,6 +561,20 @@ function ReplyForm({ postId }: { postId: string }) {
   const [pending, startTransition] = useTransition()
   const taRef = useRef<HTMLTextAreaElement>(null!)
 
+  // Auto-focus la zone de réponse si on arrive avec #reply dans l'URL
+  // (ex: clic sur 'Commenter' depuis le feed).
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.location.hash === '#reply') {
+      // Petit délai pour laisser la page se peindre avant scroll/focus.
+      const t = setTimeout(() => {
+        taRef.current?.focus({ preventScroll: false })
+        taRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 80)
+      return () => clearTimeout(t)
+    }
+  }, [])
+
   const submit = () => {
     setError(null)
     startTransition(async () => {
@@ -575,7 +589,7 @@ function ReplyForm({ postId }: { postId: string }) {
   }
 
   return (
-    <div style={s.replyForm}>
+    <div id="reply" style={s.replyForm}>
       <label style={s.label}>Ta réponse</label>
       <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
       <textarea
