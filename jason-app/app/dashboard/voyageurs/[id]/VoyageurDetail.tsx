@@ -6,7 +6,7 @@ import {
   ArrowLeft, Warning, Plus, X, Pencil, Check,
   Envelope, Phone, Note, CalendarBlank, House,
   CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
-  ListChecks, CheckSquare, Square, Bandaids,
+  ListChecks, CheckSquare, Square, Bandaids, DownloadSimple,
 } from '@phosphor-icons/react/dist/ssr'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
@@ -1723,6 +1723,20 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     >
                       <FileText size={13} weight="fill" />
                       {contractLoading === sj.id ? '…' : sj.contrat_statut === 'nouveau' ? 'Créer contrat' : 'Voir contrat'}
+                    </button>
+                  )}
+                  {sj.contrat_statut === 'signe' && sj.contrat_lien && !sj.contrat_plateforme && !isDecouverte && (
+                    <button
+                      onClick={() => {
+                        // Le PrintButton sur /sign/[token] détecte ?print=1
+                        // et déclenche window.print() automatiquement.
+                        const sep = sj.contrat_lien!.includes('?') ? '&' : '?'
+                        window.open(sj.contrat_lien + sep + 'print=1', '_blank', 'noopener,noreferrer')
+                      }}
+                      style={s.sejourActionBtn}
+                      title="Télécharger le contrat en PDF"
+                    >
+                      <DownloadSimple size={14} />
                     </button>
                   )}
                   {sj.contrat_statut === 'signe' && !sj.contrat_plateforme && !isDecouverte && (
