@@ -1075,10 +1075,15 @@ function NewMembersBand({ members }: { members: NewMember[] }) {
 }
 
 // ─── Search bar ───────────────────────────────────────────────────────
+// UX : icône loupe discrète au repos. Click → la barre s'expand sur la
+// largeur disponible. Une fois soumis, on garde l'état expand pour que
+// l'utilisateur voie sa recherche. Bouton X pour fermer ou clear.
 
 function SearchBar({ initial, cat, sort }: { initial: string; cat: CategoryId | 'all'; sort: Sort }) {
   const router = useRouter()
   const [value, setValue] = useState(initial)
+  const [expanded, setExpanded] = useState(!!initial)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -1099,21 +1104,47 @@ function SearchBar({ initial, cat, sort }: { initial: string; cat: CategoryId | 
     router.push(url)
   }
 
+  const handleExpand = () => {
+    setExpanded(true)
+    setTimeout(() => inputRef.current?.focus(), 50)
+  }
+
+  const handleCollapse = () => {
+    if (value || initial) clear()
+    setExpanded(false)
+  }
+
+  // État replié : juste une icône loupe, alignée à droite, sans place perdue.
+  if (!expanded) {
+    return (
+      <div style={s.searchCollapsedWrap}>
+        <button
+          type="button"
+          onClick={handleExpand}
+          style={s.searchIconBtn}
+          aria-label="Rechercher dans Chez Nous"
+          title="Rechercher dans Chez Nous"
+        >
+          <MagnifyingGlass size={16} />
+        </button>
+      </div>
+    )
+  }
+
   return (
     <form onSubmit={submit} style={s.searchBar}>
       <MagnifyingGlass size={14} color="var(--text-muted)" />
       <input
+        ref={inputRef}
         type="search"
         value={value}
         onChange={e => setValue(e.target.value)}
         placeholder="Rechercher dans Chez Nous…"
         style={s.searchInput}
       />
-      {(value || initial) && (
-        <button type="button" onClick={clear} style={s.searchClearBtn} title="Effacer">
-          <X size={12} weight="bold" />
-        </button>
-      )}
+      <button type="button" onClick={handleCollapse} style={s.searchClearBtn} title="Fermer">
+        <X size={12} weight="bold" />
+      </button>
     </form>
   )
 }
@@ -1620,6 +1651,19 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '8px 12px',
     marginBottom: '12px',
+  },
+  searchCollapsedWrap: {
+    display: 'flex', justifyContent: 'flex-end',
+    marginBottom: '12px',
+  },
+  searchIconBtn: {
+    width: '36px', height: '36px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', cursor: 'pointer',
+    color: 'var(--text-2)',
+    fontFamily: 'inherit',
+    transition: 'background 0.15s, border-color 0.15s, color 0.15s',
   },
   searchInput: {
     flex: 1, minWidth: 0,
