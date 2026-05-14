@@ -111,6 +111,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     userVotesResult,
     topMembersResult,
     activityProfilesResult,
+    repliesPreviewResult,
   ] = await Promise.all([
     authorIds.length ? supabase.from('profiles').select('id, full_name, pseudo, role, is_contributor, created_at, privacy_show_logements, privacy_show_city').in('id', authorIds) : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null; role: string | null; is_contributor: boolean | null; created_at: string | null; privacy_show_logements: boolean | null; privacy_show_city: boolean | null }[] }),
     authorIds.length ? supabase.from('roadmap_votes').select('user_id').in('user_id', authorIds) : Promise.resolve({ data: [] as { user_id: string }[] }),
@@ -121,6 +122,12 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     posts.length ? supabase.from('chez_nous_post_votes').select('post_id').eq('user_id', profile.userId).in('post_id', posts.map(p => p.id)) : Promise.resolve({ data: [] as { post_id: string }[] }),
     topMemberIds.length ? supabase.from('profiles').select('id, full_name, pseudo, is_contributor').in('id', topMemberIds) : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null; is_contributor: boolean | null }[] }),
     activityUserIds.size ? supabase.from('profiles').select('id, full_name, pseudo').in('id', Array.from(activityUserIds)) : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null }[] }),
+    // Top 2 réponses les plus récentes par post visible, pour afficher un
+    // aperçu inline sous chaque card du feed (gain UX : pas besoin de cliquer
+    // pour voir si la discussion a déjà des réponses pertinentes).
+    posts.length
+      ? supabase.from('chez_nous_replies').select('id, post_id, author_id, body, created_at').in('post_id', posts.map(p => p.id)).order('created_at', { ascending: false }).limit(50)
+      : Promise.resolve({ data: [] as { id: string; post_id: string; author_id: string; body: string; created_at: string }[] }),
   ])
 
   const authorsData = authorsResult.data ?? []
@@ -235,6 +242,22 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
   })
   const regionCounts = aggregateRegionsByMember(addressesByMember)
 
+  // Préparer les 2 dernières réponses par post pour l'aperçu inline du feed.
+  // On retient seulement les 2 plus récentes par post même si la query limit 50
+  // (cas où plusieurs posts récents ont beaucoup de réponses).
+  const recentRepliesByPost: Record<string, Array<{ id: string; author_id: string; body: string; created_at: string }>> = {}
+  ;(repliesPreviewResult.data ?? []).forEach(r => {
+    if (!recentRepliesByPost[r.post_id]) recentRepliesByPost[r.post_id] = []
+    if (recentRepliesByPost[r.post_id].length < 2) {
+      recentRepliesByPost[r.post_id].push({ id: r.id, author_id: r.author_id, body: r.body, created_at: r.created_at })
+    }
+  })
+
+  // Ajouter les auteurs des réponses à authorsMap si pas déjà présent (rare en
+  // pratique car ils ont souvent posté quelque chose visible).
+  // On ne refait pas de query : on accepte juste l'absence d'info auteur sur
+  // la preview reply (affichera 'Anonyme').
+
   return (
     <>
       {showWelcome && <WelcomeModal />}
@@ -256,6 +279,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
           is_resolved:   !!p.accepted_reply_id,
           image_count:   Array.isArray(p.images) ? p.images.length : 0,
           images:        Array.isArray(p.images) ? p.images.slice(0, 4) : [],
+          recent_replies: recentRepliesByPost[p.id] ?? [],
         }))}
         authorsMap={authorsMap}
         currentUserId={profile.userId}
