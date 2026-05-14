@@ -1275,7 +1275,7 @@ const s: Record<string, React.CSSProperties> = {
     whiteSpace: 'nowrap' as const,
     flexShrink: 0,
     fontFamily: 'var(--font-outfit), sans-serif',
-    transition: 'transform 0.15s', whiteSpace: 'nowrap',
+    transition: 'transform 0.15s',
   },
 
   nav: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' },
