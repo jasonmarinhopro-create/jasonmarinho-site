@@ -969,8 +969,18 @@ a { color: inherit; }
   font-weight: 600;
   font-size: 0.95em;
   transition: background 0.15s, border-color 0.15s;
+  display: inline-block;
 }
 .cn-mention:hover { background: var(--accent-bg); }
+
+/* Variante broadcast @tous : rouge pour signaler 'notif à tous' (visible
+   et un peu plus alarmant qu'un mention individuel). */
+.cn-mention-all {
+  color: #b45309;
+  background: rgba(217,119,6,0.10);
+  border-color: rgba(217,119,6,0.30);
+}
+[data-theme="light"] .cn-mention-all { color: #92400e; }
 
 /* ── Outils Impression — QR & Affiches ── */
 @keyframes spin {

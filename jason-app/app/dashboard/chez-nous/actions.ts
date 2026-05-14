@@ -28,11 +28,23 @@ function validateImages(images: string[] | undefined): string[] {
 }
 
 /**
+ * Plafond pour le broadcast @tous : on ne notifie pas plus de 300 hôtes
+ * d'un coup pour ne pas DoS la table notifications. Au-delà, on tronque
+ * silencieusement (les plus anciens membres d'abord par created_at desc).
+ */
+const BROADCAST_MENTION_CAP = 300
+
+/**
  * Parse le texte pour extraire les mentions @pseudo et insère les rows
  * correspondantes dans chez_nous_mentions (qui déclenche la notif via
  * le trigger SQL chez_nous_notify_on_mention).
  *
- * - Match seulement des pseudos entre 2 et 30 caractères [a-zA-Z0-9_-]
+ * Spéciaux :
+ * - @tous (ou @everyone) → notifie tous les membres Chez Nous actifs
+ *   (plafonné à BROADCAST_MENTION_CAP pour éviter d'inonder la table)
+ *
+ * Mentions individuelles :
+ * - Match pseudos entre 2 et 30 caractères [a-zA-Z0-9_-]
  * - Résout pseudo → user_id via la table profiles
  * - Déduplique : une seule mention par utilisateur par source
  * - N'inclut PAS l'auteur lui-même (anti auto-notif)
@@ -43,26 +55,51 @@ async function processMentions(
   actorId: string,
   source: { postId?: string; replyId?: string },
 ): Promise<void> {
+  // 1) Détection broadcast @tous / @everyone (en début ou après espace)
+  const hasBroadcast = /(^|\s)@(tous|everyone)\b/i.test(text)
+
+  // 2) Mentions individuelles classiques
   const pseudos = Array.from(new Set(
-    [...text.matchAll(/@([a-zA-Z0-9_-]{2,30})/g)].map(m => m[1])
+    [...text.matchAll(/@([a-zA-Z0-9_-]{2,30})/g)]
+      .map(m => m[1])
+      // On retire 'tous' et 'everyone' qui sont gérés à part
+      .filter(p => p.toLowerCase() !== 'tous' && p.toLowerCase() !== 'everyone')
   ))
-  if (pseudos.length === 0) return
 
-  const { data: matches } = await supabase
-    .from('profiles')
-    .select('id, pseudo')
-    .in('pseudo', pseudos)
-  if (!matches || matches.length === 0) return
+  if (!hasBroadcast && pseudos.length === 0) return
 
-  const rows = matches
-    .filter(m => m.id !== actorId)
-    .map(m => ({
-      mentioned_user_id: m.id,
-      actor_id: actorId,
-      post_id: source.postId ?? null,
-      reply_id: source.replyId ?? null,
-    }))
-  if (rows.length === 0) return
+  // 3) Récupération des destinataires
+  const recipientIds = new Set<string>()
+
+  if (hasBroadcast) {
+    // Tous les membres sauf l'auteur, plafonné pour éviter DoS
+    const { data: allMembers } = await supabase
+      .from('profiles')
+      .select('id, created_at')
+      .neq('id', actorId)
+      .order('created_at', { ascending: false })
+      .limit(BROADCAST_MENTION_CAP)
+    ;(allMembers ?? []).forEach(m => recipientIds.add(m.id))
+  }
+
+  if (pseudos.length > 0) {
+    const { data: matches } = await supabase
+      .from('profiles')
+      .select('id, pseudo')
+      .in('pseudo', pseudos)
+    ;(matches ?? [])
+      .filter(m => m.id !== actorId)
+      .forEach(m => recipientIds.add(m.id))
+  }
+
+  if (recipientIds.size === 0) return
+
+  const rows = Array.from(recipientIds).map(id => ({
+    mentioned_user_id: id,
+    actor_id: actorId,
+    post_id: source.postId ?? null,
+    reply_id: source.replyId ?? null,
+  }))
 
   await supabase.from('chez_nous_mentions').insert(rows)
 }

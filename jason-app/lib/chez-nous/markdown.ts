@@ -60,13 +60,23 @@ export function renderMarkdown(input: string): string {
   // 5) Italique *texte* (en évitant les ** déjà traités)
   s = s.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
 
-  // 6) Mentions @pseudo → lien vers le profil membre.
+  // 6) Mentions @tous et @everyone → pill broadcast spéciale (pas un lien
+  //    car il n'y a pas d'utilisateur 'tous'). Traitée AVANT les mentions
+  //    individuelles pour éviter qu'elle ne soit interceptée par le
+  //    pattern @pseudo.
+  s = s.split(/(<a[^>]*>.*?<\/a>)/gi).map(chunk => {
+    if (chunk.startsWith('<a')) return chunk
+    return chunk.replace(/(^|[^a-zA-Z0-9_-])@(tous|everyone)\b/gi,
+      '$1<span class="cn-mention cn-mention-all">@$2</span>')
+  }).join('')
+
+  // 7) Mentions @pseudo individuelles → lien vers le profil membre.
   //    Pas de XSS car le pseudo a été échappé en étape 1. On limite à
   //    [a-zA-Z0-9_-]{2,30} pour matcher exactement ce que le parser
   //    serveur considère comme une mention valide.
-  //    On ne re-link pas ce qui est déjà dans un <a>.
-  s = s.split(/(<a[^>]*>.*?<\/a>)/gi).map(chunk => {
-    if (chunk.startsWith('<a')) return chunk
+  //    On ne re-link pas ce qui est déjà dans un <a> ou <span>.
+  s = s.split(/(<(?:a|span)[^>]*>.*?<\/(?:a|span)>)/gi).map(chunk => {
+    if (chunk.startsWith('<a') || chunk.startsWith('<span')) return chunk
     return chunk.replace(/(^|[^a-zA-Z0-9_-])@([a-zA-Z0-9_-]{2,30})/g,
       '$1<a href="/dashboard/chez-nous/membre-pseudo/$2" class="cn-mention">@$2</a>')
   }).join('')
