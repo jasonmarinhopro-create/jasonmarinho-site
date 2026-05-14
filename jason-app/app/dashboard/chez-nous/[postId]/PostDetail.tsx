@@ -9,7 +9,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
-import { BADGES, type BadgeId } from '@/lib/badges'
+import type { BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import RichText from '@/components/chez-nous/RichText'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
@@ -203,15 +203,6 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
                 {author?.proStats && formatProStats(author.proStats) && (
                   <div style={s.proStatsTxt}>{formatProStats(author.proStats)}</div>
                 )}
-                {(author?.badges ?? []).length > 0 && (
-                  <div style={s.badgeStrip}>
-                    {(author?.badges ?? []).slice(0, 4).map(bid => (
-                      <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
-                        {BADGES[bid].label}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
 
               <div style={s.actions} className="cn-post-actions">
@@ -394,15 +385,6 @@ function AuthorAside({ authorId, name, initials, avatarColor, isContributor, isA
           )}
         </div>
       </Link>
-      {badges.length > 0 && (
-        <div style={s.asideBadges}>
-          {badges.map(bid => (
-            <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
-              {BADGES[bid].label}
-            </span>
-          ))}
-        </div>
-      )}
       <Link href={`/dashboard/chez-nous/membre/${authorId}`} style={s.asideLink}>
         Voir le profil →
       </Link>
@@ -577,11 +559,6 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
           {proStats && formatProStats(proStats) && (
             <span style={s.proStatsPill}>{formatProStats(proStats)}</span>
           )}
-          {badges.slice(0, 3).map(bid => (
-            <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
-              {BADGES[bid].label}
-            </span>
-          ))}
           <span style={s.authorDate}>{formatRelative(reply.created_at)}</span>
           {reply.edited_at && <span style={s.editedTag}>· modifié</span>}
           <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px' }}>

@@ -8,7 +8,7 @@ import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/cat
 import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
 import { MapPin } from '@phosphor-icons/react/dist/ssr'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
-import { BADGES, type BadgeId } from '@/lib/badges'
+import type { BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
@@ -968,11 +968,6 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
           {author?.proStats && formatProStats(author.proStats) && (
             <span style={s.proStatsTxt}>{formatProStats(author.proStats)}</span>
           )}
-          {(author?.badges ?? []).slice(0, 3).map(bid => (
-            <span key={bid} title={BADGES[bid].title} style={{ ...s.miniBadge, background: BADGES[bid].bg }}>
-              {BADGES[bid].label}
-            </span>
-          ))}
           <span style={s.postFootDot}>·</span>
           <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postFootLink}>
             {formatRelative(post.last_reply_at ?? post.created_at)}
