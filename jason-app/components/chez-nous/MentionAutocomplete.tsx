@@ -131,7 +131,7 @@ export default function MentionAutocomplete({
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', width: '100%' }}>
       <textarea
         ref={taRef as React.RefObject<HTMLTextAreaElement>}
         value={value}
@@ -142,7 +142,7 @@ export default function MentionAutocomplete({
         maxLength={maxLength}
         rows={rows}
         required={required}
-        style={style}
+        style={{ width: '100%', boxSizing: 'border-box', ...style }}
       />
       {suggestions.length > 0 && (
         <div style={popover}>
