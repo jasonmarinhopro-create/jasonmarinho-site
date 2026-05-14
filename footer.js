@@ -235,6 +235,8 @@
             + '<a href="/politique-de-confidentialite">Confidentialité</a>'
             + '<span class="ft-legal-sep">·</span>'
             + '<a href="/cgvu">CGV / CGU</a>'
+            + '<span class="ft-legal-sep">·</span>'
+            + '<a href="#" onclick="if(window.openCookieSettings){openCookieSettings();}return false;">Gérer les cookies</a>'
           + '</div>'
         + '</div>'
         + '<div class="socs">'
