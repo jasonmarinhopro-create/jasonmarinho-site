@@ -475,3 +475,55 @@ export async function updateProfilePseudo(input: {
   revalidatePath('/dashboard/chez-nous')
   return { ok: true }
 }
+
+/**
+ * Recherche autocomplete de pseudos pour les mentions @ dans les
+ * textareas Chez Nous. Renvoie max 6 résultats matchant le préfixe
+ * (case-insensitive).
+ *
+ * Inclut une entrée spéciale 'tousleshôtes' en tête si l'auteur courant
+ * est admin ET que le préfixe matche (les non-admins ne la voient pas
+ * du tout, le tag est silencieusement ignoré côté server processMentions
+ * même s'ils l'écrivent manuellement).
+ */
+export async function searchMentions(prefix: string): Promise<{
+  suggestions: Array<{ pseudo: string; isBroadcast?: true }>
+}> {
+  const cleaned = prefix.trim().toLowerCase()
+  if (!cleaned) return { suggestions: [] }
+
+  const { supabase, userId } = await requireAuth()
+
+  // Check admin pour inclure @tousleshôtes
+  const { data: actor } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', userId)
+    .maybeSingle()
+  const isAdmin = actor?.role === 'admin'
+
+  const suggestions: Array<{ pseudo: string; isBroadcast?: true }> = []
+
+  if (isAdmin && 'tousleshôtes'.startsWith(cleaned)) {
+    suggestions.push({ pseudo: 'tousleshôtes', isBroadcast: true })
+  }
+
+  // Pseudos commençant par le préfixe (ILIKE pour case-insensitive)
+  // On échappe les wildcards SQL pour éviter une injection LIKE.
+  const safePrefix = cleaned.replace(/[%_\\,]/g, '\\$&')
+  const { data: matches } = await supabase
+    .from('profiles')
+    .select('pseudo')
+    .ilike('pseudo', `${safePrefix}%`)
+    .neq('id', userId)
+    .not('pseudo', 'is', null)
+    .limit(6)
+
+  ;(matches ?? []).forEach(m => {
+    if (m.pseudo && !suggestions.some(s => s.pseudo === m.pseudo)) {
+      suggestions.push({ pseudo: m.pseudo })
+    }
+  })
+
+  return { suggestions: suggestions.slice(0, 6) }
+}

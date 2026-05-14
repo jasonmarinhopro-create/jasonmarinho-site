@@ -13,6 +13,7 @@ import { BADGES, type BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import RichText from '@/components/chez-nous/RichText'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
+import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
 import ReportButton from '@/components/chez-nous/ReportButton'
 import ImageGrid from '@/components/chez-nous/ImageGrid'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
@@ -624,11 +625,11 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
             )}
             {replying && (
               <div style={s.childReplyForm}>
-                <textarea
-                  ref={replyTaRef}
+                <MentionAutocomplete
+                  textareaRef={replyTaRef}
                   value={replyBody}
-                  onChange={e => setReplyBody(e.target.value)}
-                  onKeyDown={e => {
+                  onChange={setReplyBody}
+                  onKeyDownExtra={e => {
                     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
                       e.preventDefault()
                       submitChildReply()
@@ -708,11 +709,14 @@ function ReplyForm({ postId }: { postId: string }) {
     <div id="reply" style={s.replyForm}>
       <label style={s.label}>Ta réponse</label>
       <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
-      <textarea
-        ref={taRef}
-        value={body} onChange={e => setBody(e.target.value)}
+      <MentionAutocomplete
+        textareaRef={taRef}
+        value={body}
+        onChange={setBody}
         placeholder="Réponds, partage ton expérience, propose une piste…"
-        style={s.textarea} rows={5} maxLength={4000}
+        style={s.textarea}
+        rows={5}
+        maxLength={4000}
       />
       <p style={s.helper}>{body.length}/4000</p>
       {error && <p style={s.error}>{error}</p>}

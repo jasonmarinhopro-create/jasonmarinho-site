@@ -10,10 +10,11 @@ import { MapPin } from '@phosphor-icons/react/dist/ssr'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { BADGES, type BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
+import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
 import InviteModal from '@/components/chez-nous/InviteModal'
-import { createPost, togglePostVote } from './actions'
+import { createPost, createReply, togglePostVote } from './actions'
 
 type Post = {
   id: string
@@ -769,9 +770,16 @@ function TipCard() {
 // ─── Post row ─────────────────────────────────────────────────────────
 
 function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; author?: Author; currentUserId: string; authorsMap: Record<string, Author> }) {
+  const router = useRouter()
   const [voted, setVoted] = useState(post.has_voted)
   const [count, setCount] = useState(post.vote_count)
   const [expanded, setExpanded] = useState(false)
+  const [showInlineReply, setShowInlineReply] = useState(false)
+  const [replyBody, setReplyBody] = useState('')
+  const [replyPending, setReplyPending] = useState(false)
+  const [replyError, setReplyError] = useState<string | null>(null)
+  const [replyCountLocal, setReplyCountLocal] = useState(post.reply_count)
+  const inlineTaRef = useRef<HTMLTextAreaElement>(null)
 
   const av       = colorFromId(post.author_id)
   const initials = author ? displayInitials({ pseudo: author.pseudo, full_name: author.full_name }) : '?'
@@ -792,6 +800,30 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
         setCount(c => c + (wasVoted ? 1 : -1))
       }
     })
+  }
+
+  // Toggle du form de réponse inline. Ne navigue PAS (à l'inverse du
+  // ancien bouton 'Commenter' qui amenait sur /chez-nous/[id]#reply).
+  const toggleInlineReply = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setShowInlineReply(v => !v)
+    setReplyError(null)
+    setTimeout(() => inlineTaRef.current?.focus(), 50)
+  }
+
+  const submitInlineReply = async () => {
+    const trimmed = replyBody.trim()
+    if (!trimmed || replyPending) return
+    setReplyPending(true)
+    setReplyError(null)
+    const res = await createReply({ postId: post.id, body: trimmed })
+    setReplyPending(false)
+    if (!res.ok) { setReplyError(res.error); return }
+    setReplyBody('')
+    setShowInlineReply(false)
+    setReplyCountLocal(c => c + 1)
+    router.refresh()
   }
 
   // Rendu light du markdown pour le feed : bold + italique uniquement,
@@ -957,21 +989,21 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
                 <span>Modifier</span>
               </Link>
             )}
-            <Link
-              href={`/dashboard/chez-nous/${post.id}#reply`}
+            <button
+              type="button"
+              onClick={toggleInlineReply}
               style={s.replyBtn}
-              title={post.reply_count > 0
-                ? `Voir les ${post.reply_count} commentaire${post.reply_count > 1 ? 's' : ''}`
-                : 'Ouvrir et commenter'}
-              onClick={e => e.stopPropagation()}
+              title={replyCountLocal > 0
+                ? `${replyCountLocal} commentaire${replyCountLocal > 1 ? 's' : ''} — clique pour ajouter le tien`
+                : 'Ajouter un commentaire rapide'}
             >
               <ChatCircle size={13} weight="fill" />
-              {post.reply_count > 0 ? (
-                <span><strong style={{ fontWeight: 700 }}>{post.reply_count}</strong> · Voir</span>
+              {replyCountLocal > 0 ? (
+                <span><strong style={{ fontWeight: 700 }}>{replyCountLocal}</strong> · Commenter</span>
               ) : (
                 <span>Commenter</span>
               )}
-            </Link>
+            </button>
             <button
               type="button"
               onClick={onVote}
@@ -990,6 +1022,61 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
             </button>
           </span>
         </div>
+
+        {/* Form de réponse inline (click 'Commenter' → toggle).
+            Pour LIRE les commentaires existants, il y a déjà les 2 dernières
+            réponses affichées au-dessus + le compteur 'N · Commenter' qui les
+            indique. Pour creuser : clic sur l'aperçu / le titre du post →
+            page détail. */}
+        {showInlineReply && (
+          <div style={s.inlineReplyWrap} onClick={e => e.stopPropagation()}>
+            {replyCountLocal > 0 && (
+              <Link href={`/dashboard/chez-nous/${post.id}`} style={s.inlineReplySeeAll}>
+                Voir tous les {replyCountLocal} commentaire{replyCountLocal > 1 ? 's' : ''} →
+              </Link>
+            )}
+            <MentionAutocomplete
+              textareaRef={inlineTaRef}
+              value={replyBody}
+              onChange={setReplyBody}
+              onKeyDownExtra={e => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                  e.preventDefault()
+                  submitInlineReply()
+                }
+              }}
+              placeholder={`Réponds à ${name}…`}
+              maxLength={4000}
+              rows={3}
+              style={s.inlineReplyTextarea}
+            />
+            {replyError && <p style={s.inlineReplyError}>{replyError}</p>}
+            <div style={s.inlineReplyActions}>
+              <span style={s.inlineReplyHint}>⌘+Entrée pour envoyer</span>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  type="button"
+                  onClick={() => { setShowInlineReply(false); setReplyBody(''); setReplyError(null) }}
+                  style={s.inlineReplyCancel}
+                  disabled={replyPending}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={submitInlineReply}
+                  disabled={replyPending || !replyBody.trim()}
+                  style={{
+                    ...s.inlineReplySubmit,
+                    ...(replyPending || !replyBody.trim() ? s.inlineReplySubmitDisabled : {}),
+                  }}
+                >
+                  {replyPending ? 'Envoi…' : 'Répondre'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -1185,11 +1272,14 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
           Message <span style={s.required}>*</span>
         </label>
         <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
-        <textarea
-          ref={taRef}
-          value={body} onChange={e => setBody(e.target.value)}
+        <MentionAutocomplete
+          textareaRef={taRef}
+          value={body}
+          onChange={setBody}
           placeholder="Détaille ton contexte, ce que tu as déjà essayé, ce que tu cherches…"
-          style={s.textarea} rows={6} maxLength={8000}
+          style={s.textarea}
+          rows={6}
+          maxLength={8000}
           required
         />
         <p style={s.helper}>{body.length}/8000</p>
@@ -1740,6 +1830,51 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s, color 0.15s, border-color 0.15s',
     lineHeight: 1,
     cursor: 'pointer',
+  },
+  inlineReplyWrap: {
+    marginTop: '10px',
+    padding: '10px 12px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+  },
+  inlineReplySeeAll: {
+    fontSize: '12px', fontWeight: 600,
+    color: 'var(--accent-text)',
+    textDecoration: 'none',
+    alignSelf: 'flex-start',
+  },
+  inlineReplyTextarea: {
+    width: '100%', padding: '8px 10px',
+    fontFamily: 'inherit', fontSize: '13px', lineHeight: 1.55,
+    color: 'var(--text)', background: 'var(--bg)',
+    border: '1px solid var(--border)', borderRadius: '8px',
+    resize: 'vertical' as const, minHeight: '60px',
+  },
+  inlineReplyError: {
+    margin: 0, fontSize: '12px', color: '#dc2626',
+  },
+  inlineReplyActions: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px',
+  },
+  inlineReplyHint: {
+    fontSize: '11px', color: 'var(--text-muted)',
+  },
+  inlineReplyCancel: {
+    padding: '6px 12px', borderRadius: '8px',
+    background: 'transparent', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontSize: '12px', fontFamily: 'inherit',
+    cursor: 'pointer',
+  },
+  inlineReplySubmit: {
+    padding: '6px 14px', borderRadius: '8px',
+    background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border-2)',
+    color: 'var(--accent-text)', fontSize: '12px', fontWeight: 600, fontFamily: 'inherit',
+    cursor: 'pointer',
+  },
+  inlineReplySubmitDisabled: {
+    opacity: 0.5, cursor: 'not-allowed',
   },
   voteInline: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
