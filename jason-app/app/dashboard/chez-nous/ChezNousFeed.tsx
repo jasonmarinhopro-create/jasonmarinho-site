@@ -14,6 +14,7 @@ import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
 import InviteModal from '@/components/chez-nous/InviteModal'
+import { useDraftAutosave } from '@/lib/chez-nous/use-draft'
 import { createPost, createReply, togglePostVote } from './actions'
 
 type Post = {
@@ -1222,6 +1223,24 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
   const [pending, startTransition] = useTransition()
   const router = useRouter()
   const taRef = useRef<HTMLTextAreaElement>(null!)
+  const [restoredNotice, setRestoredNotice] = useState(false)
+
+  const draftValue = { category, title, body, images }
+  const { restored, clearDraft } = useDraftAutosave('new-post', draftValue, {
+    skipIfEmpty: v => !v.title.trim() && !v.body.trim() && v.images.length === 0,
+  })
+
+  // Hydrate depuis le brouillon une fois au montage
+  useEffect(() => {
+    if (restored && !restoredNotice) {
+      if (restored.category) setCategory(restored.category)
+      if (restored.title) setTitle(restored.title)
+      if (restored.body) setBody(restored.body)
+      if (restored.images?.length) setImages(restored.images)
+      setRestoredNotice(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restored])
 
   const submit = () => {
     setError(null)
@@ -1229,6 +1248,7 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
       const res = await createPost({ category, title, body, images })
       if (res.ok) {
         setTitle(''); setBody(''); setImages([])
+        clearDraft()
         onSuccess()
         router.push(`/dashboard/chez-nous/${res.postId}`)
       } else {
@@ -1237,8 +1257,22 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
     })
   }
 
+  const discardDraft = () => {
+    setCategory(defaultCategory); setTitle(''); setBody(''); setImages([])
+    clearDraft()
+    setRestoredNotice(false)
+  }
+
   return (
     <div style={s.form}>
+      {restoredNotice && (title.trim() || body.trim()) && (
+        <div style={s.draftNotice}>
+          <span>Brouillon récupéré (sauvegarde auto)</span>
+          <button onClick={discardDraft} style={s.draftNoticeBtn} type="button">
+            Effacer
+          </button>
+        </div>
+      )}
       <div style={s.formField}>
         <label style={s.label}>Catégorie</label>
         <select value={category} onChange={e => setCategory(e.target.value as CategoryId)} style={s.select}>
@@ -1742,6 +1776,17 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '16px', padding: '20px',
     display: 'flex', flexDirection: 'column', gap: '14px',
     marginBottom: '20px',
+  },
+  draftNotice: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    gap: '10px', padding: '8px 12px',
+    background: 'rgba(255,213,107,0.10)', border: '1px solid rgba(255,213,107,0.35)',
+    borderRadius: '8px', fontSize: '12px', color: 'var(--text-2)',
+  },
+  draftNoticeBtn: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: 'var(--text-2)', fontSize: '12px', fontWeight: 600,
+    textDecoration: 'underline', padding: 0,
   },
   formField: { display: 'flex', flexDirection: 'column', gap: '6px' },
   label: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' },
