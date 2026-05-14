@@ -28,9 +28,10 @@ function validateImages(images: string[] | undefined): string[] {
 }
 
 /**
- * Plafond pour le broadcast @tous : on ne notifie pas plus de 300 hôtes
- * d'un coup pour ne pas DoS la table notifications. Au-delà, on tronque
- * silencieusement (les plus anciens membres d'abord par created_at desc).
+ * Plafond pour le broadcast @tousleshôtes : on ne notifie pas plus de
+ * 300 hôtes d'un coup pour ne pas DoS la table notifications. Au-delà,
+ * on tronque silencieusement (les plus anciens membres d'abord par
+ * created_at desc).
  */
 const BROADCAST_MENTION_CAP = 300
 
@@ -40,8 +41,10 @@ const BROADCAST_MENTION_CAP = 300
  * le trigger SQL chez_nous_notify_on_mention).
  *
  * Spéciaux :
- * - @tous (ou @everyone) → notifie tous les membres Chez Nous actifs
- *   (plafonné à BROADCAST_MENTION_CAP pour éviter d'inonder la table)
+ * - @tousleshôtes → broadcast à tous les membres Chez Nous actifs
+ *   (plafonné à BROADCAST_MENTION_CAP). RÉSERVÉ AUX ADMINS — si l'auteur
+ *   n'est pas admin, le tag est ignoré côté notif (le texte reste mais
+ *   personne n'est notifié).
  *
  * Mentions individuelles :
  * - Match pseudos entre 2 et 30 caractères [a-zA-Z0-9_-]
@@ -55,31 +58,42 @@ async function processMentions(
   actorId: string,
   source: { postId?: string; replyId?: string },
 ): Promise<void> {
-  // 1) Détection broadcast @tous / @everyone (en début ou après espace)
-  const hasBroadcast = /(^|\s)@(tous|everyone)\b/i.test(text)
+  // 1) Détection broadcast @tousleshôtes (réservé admin)
+  const hasBroadcast = /(^|\s)@tousleshôtes\b/i.test(text)
 
-  // 2) Mentions individuelles classiques
+  // 2) Mentions individuelles classiques (on retire 'tousleshôtes' qui
+  //    contient un accent et ne match pas le pattern ASCII de toute façon ;
+  //    on garde le filtre par sécurité au cas où quelqu'un ajouterait
+  //    un alias ASCII type 'tousleshotes')
   const pseudos = Array.from(new Set(
     [...text.matchAll(/@([a-zA-Z0-9_-]{2,30})/g)]
       .map(m => m[1])
-      // On retire 'tous' et 'everyone' qui sont gérés à part
-      .filter(p => p.toLowerCase() !== 'tous' && p.toLowerCase() !== 'everyone')
+      .filter(p => p.toLowerCase() !== 'tousleshotes')
   ))
 
   if (!hasBroadcast && pseudos.length === 0) return
 
-  // 3) Récupération des destinataires
   const recipientIds = new Set<string>()
 
   if (hasBroadcast) {
-    // Tous les membres sauf l'auteur, plafonné pour éviter DoS
-    const { data: allMembers } = await supabase
+    // Vérif admin avant de broadcaster
+    const { data: actorProfile } = await supabase
       .from('profiles')
-      .select('id, created_at')
-      .neq('id', actorId)
-      .order('created_at', { ascending: false })
-      .limit(BROADCAST_MENTION_CAP)
-    ;(allMembers ?? []).forEach(m => recipientIds.add(m.id))
+      .select('role')
+      .eq('id', actorId)
+      .maybeSingle()
+    const isActorAdmin = actorProfile?.role === 'admin'
+
+    if (isActorAdmin) {
+      const { data: allMembers } = await supabase
+        .from('profiles')
+        .select('id, created_at')
+        .neq('id', actorId)
+        .order('created_at', { ascending: false })
+        .limit(BROADCAST_MENTION_CAP)
+      ;(allMembers ?? []).forEach(m => recipientIds.add(m.id))
+    }
+    // Sinon : ignore silencieusement, le texte reste mais aucune notif
   }
 
   if (pseudos.length > 0) {

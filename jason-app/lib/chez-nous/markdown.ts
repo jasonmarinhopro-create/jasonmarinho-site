@@ -60,14 +60,17 @@ export function renderMarkdown(input: string): string {
   // 5) Italique *texte* (en évitant les ** déjà traités)
   s = s.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
 
-  // 6) Mentions @tous et @everyone → pill broadcast spéciale (pas un lien
-  //    car il n'y a pas d'utilisateur 'tous'). Traitée AVANT les mentions
-  //    individuelles pour éviter qu'elle ne soit interceptée par le
-  //    pattern @pseudo.
+  // 6) Mention @tousleshôtes → pill broadcast spéciale (pas un lien car
+  //    il n'y a pas d'utilisateur 'tousleshôtes'). Traitée AVANT les
+  //    mentions individuelles pour éviter le mismatch. Note : l'envoi
+  //    de notif est restreint aux admins côté serveur, mais on rend la
+  //    pill pour tout le monde car c'est juste du texte.
+  //    Le 'ô' est échappé en HTML entity à l'étape 1 → on match donc
+  //    'ô' en clair dans le texte échappé.
   s = s.split(/(<a[^>]*>.*?<\/a>)/gi).map(chunk => {
     if (chunk.startsWith('<a')) return chunk
-    return chunk.replace(/(^|[^a-zA-Z0-9_-])@(tous|everyone)\b/gi,
-      '$1<span class="cn-mention cn-mention-all">@$2</span>')
+    return chunk.replace(/(^|[^a-zA-Z0-9_-])@tousleshôtes\b/gi,
+      '$1<span class="cn-mention cn-mention-all">@tousleshôtes</span>')
   }).join('')
 
   // 7) Mentions @pseudo individuelles → lien vers le profil membre.
