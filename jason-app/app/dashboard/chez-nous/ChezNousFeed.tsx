@@ -1830,6 +1830,8 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s, color 0.15s, border-color 0.15s',
     lineHeight: 1,
     cursor: 'pointer',
+    whiteSpace: 'nowrap' as const,
+    flexShrink: 0,
   },
   inlineReplyWrap: {
     marginTop: '10px',
@@ -1877,6 +1879,8 @@ const s: Record<string, React.CSSProperties> = {
     opacity: 0.5, cursor: 'not-allowed',
   },
   voteInline: {
+    whiteSpace: 'nowrap' as const,
+    flexShrink: 0,
     display: 'inline-flex', alignItems: 'center', gap: '4px',
     padding: '4px 9px', borderRadius: '999px',
     background: 'transparent', border: '1px solid',

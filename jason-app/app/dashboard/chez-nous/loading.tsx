@@ -4,22 +4,22 @@ export default function ChezNousLoading() {
       <style>{CSS}</style>
 
       {/* Barre de stats */}
-      <div style={s.statsRow}>
+      <div style={s.statsRow} className="cn-skel-stats">
         {[80, 100, 90].map((w, i) => (
-          <div key={i} style={{ ...s.statBox }}>
+          <div key={i} style={{ ...s.statBox }} className="cn-skel-stat-box">
             <div style={{ ...s.skel, width: w, height: 28, borderRadius: 6, marginBottom: 6 }} />
             <div style={{ ...s.skel, width: 60, height: 13, borderRadius: 4 }} />
           </div>
         ))}
       </div>
 
-      <div style={s.body}>
+      <div style={s.body} className="cn-skel-body">
         {/* Colonne principale */}
         <div style={s.main}>
           {/* Bouton + filtres */}
           <div style={s.toolbar}>
             <div style={{ ...s.skel, width: 140, height: 38, borderRadius: 10 }} />
-            <div style={s.filterRow}>
+            <div style={s.filterRow} className="cn-skel-filters">
               {[70, 80, 90, 85].map((w, i) => (
                 <div key={i} style={{ ...s.skel, width: w, height: 32, borderRadius: 8 }} />
               ))}
@@ -46,7 +46,7 @@ export default function ChezNousLoading() {
         </div>
 
         {/* Colonne latérale */}
-        <aside style={s.sidebar}>
+        <aside style={s.sidebar} className="cn-skel-sidebar">
           {[1, 2].map(block => (
             <div key={block} style={s.sideBlock}>
               <div style={{ ...s.skel, width: 120, height: 14, borderRadius: 4, marginBottom: 14 }} />
@@ -71,6 +71,16 @@ const CSS = `
   @keyframes shimmer {
     0%   { background-position: -400px 0 }
     100% { background-position:  400px 0 }
+  }
+  @media (max-width: 1023px) {
+    .cn-skel-body { flex-direction: column !important; gap: 16px !important; }
+    .cn-skel-sidebar { width: 100% !important; }
+    .cn-skel-stats { grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; }
+    .cn-skel-stat-box { padding: 10px 14px !important; }
+    .cn-skel-filters { gap: 6px !important; }
+  }
+  @media (max-width: 480px) {
+    .cn-skel-stats { grid-template-columns: 1fr 1fr !important; }
   }
 `
 
