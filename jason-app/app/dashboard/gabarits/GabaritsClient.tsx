@@ -1269,11 +1269,13 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '12px',
   },
   cloneBtn: {
-    fontSize: '13px', fontWeight: 600, padding: '9px 16px',
+    fontSize: '13px', fontWeight: 600, padding: '10px 18px',
     borderRadius: '100px', cursor: 'pointer',
     background: 'var(--accent-text)', border: 'none', color: 'var(--bg)',
+    whiteSpace: 'nowrap' as const,
+    flexShrink: 0,
     fontFamily: 'var(--font-outfit), sans-serif',
-    transition: 'transform 0.15s', whiteSpace: 'nowrap',
+    transition: 'transform 0.15s',
   },
 
   nav: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' },

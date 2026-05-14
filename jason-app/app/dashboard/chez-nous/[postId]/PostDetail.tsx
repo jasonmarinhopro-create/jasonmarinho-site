@@ -128,6 +128,22 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
 
   return (
     <div style={s.page}>
+      <style>{`
+        @media (max-width: 640px) {
+          .cn-post-actions {
+            width: 100%;
+            order: 3;
+            justify-content: flex-start !important;
+            margin-top: 6px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+          }
+          .cn-reply-children {
+            margin-left: 12px !important;
+            padding-left: 8px !important;
+          }
+        }
+      `}</style>
       <Link href="/dashboard/chez-nous" style={s.back}>
         <ArrowLeft size={14} weight="bold" /> Retour à Chez Nous
       </Link>
@@ -192,7 +208,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
                 )}
               </div>
 
-              <div style={s.actions}>
+              <div style={s.actions} className="cn-post-actions">
                 <button onClick={onVote} disabled={pending} style={{
                   ...s.voteBtn,
                   color: voted ? 'var(--accent-text)' : 'var(--text-2)',
@@ -308,7 +324,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
               <div key={reply.id} style={s.replyThread}>
                 {renderReply(reply, false)}
                 {children.length > 0 && (
-                  <div style={s.replyChildrenWrap}>
+                  <div style={s.replyChildrenWrap} className="cn-reply-children">
                     {children.map(child => renderReply(child, true))}
                   </div>
                 )}
@@ -822,6 +838,7 @@ const s: Record<string, React.CSSProperties> = {
   authorRow: {
     display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '16px',
     paddingBottom: '14px', borderBottom: '1px solid var(--border)',
+    flexWrap: 'wrap' as const,
   },
   avatar: {
     width: '40px', height: '40px', borderRadius: '50%',
@@ -893,7 +910,7 @@ const s: Record<string, React.CSSProperties> = {
     marginLeft: 'clamp(24px, 5vw, 40px)',
     paddingLeft: '14px',
     borderLeft: '2px solid var(--border)',
-  },
+  } as React.CSSProperties,
   replyToBtn: {
     background: 'transparent', border: 'none', cursor: 'pointer',
     color: 'var(--accent-text)',
