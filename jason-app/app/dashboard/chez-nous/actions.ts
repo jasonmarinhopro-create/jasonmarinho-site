@@ -28,11 +28,26 @@ function validateImages(images: string[] | undefined): string[] {
 }
 
 /**
+ * Plafond pour le broadcast @tousleshôtes : on ne notifie pas plus de
+ * 300 hôtes d'un coup pour ne pas DoS la table notifications. Au-delà,
+ * on tronque silencieusement (les plus anciens membres d'abord par
+ * created_at desc).
+ */
+const BROADCAST_MENTION_CAP = 300
+
+/**
  * Parse le texte pour extraire les mentions @pseudo et insère les rows
  * correspondantes dans chez_nous_mentions (qui déclenche la notif via
  * le trigger SQL chez_nous_notify_on_mention).
  *
- * - Match seulement des pseudos entre 2 et 30 caractères [a-zA-Z0-9_-]
+ * Spéciaux :
+ * - @tousleshôtes → broadcast à tous les membres Chez Nous actifs
+ *   (plafonné à BROADCAST_MENTION_CAP). RÉSERVÉ AUX ADMINS — si l'auteur
+ *   n'est pas admin, le tag est ignoré côté notif (le texte reste mais
+ *   personne n'est notifié).
+ *
+ * Mentions individuelles :
+ * - Match pseudos entre 2 et 30 caractères [a-zA-Z0-9_-]
  * - Résout pseudo → user_id via la table profiles
  * - Déduplique : une seule mention par utilisateur par source
  * - N'inclut PAS l'auteur lui-même (anti auto-notif)
@@ -43,26 +58,62 @@ async function processMentions(
   actorId: string,
   source: { postId?: string; replyId?: string },
 ): Promise<void> {
+  // 1) Détection broadcast @tousleshôtes (réservé admin)
+  const hasBroadcast = /(^|\s)@tousleshôtes\b/i.test(text)
+
+  // 2) Mentions individuelles classiques (on retire 'tousleshôtes' qui
+  //    contient un accent et ne match pas le pattern ASCII de toute façon ;
+  //    on garde le filtre par sécurité au cas où quelqu'un ajouterait
+  //    un alias ASCII type 'tousleshotes')
   const pseudos = Array.from(new Set(
-    [...text.matchAll(/@([a-zA-Z0-9_-]{2,30})/g)].map(m => m[1])
+    [...text.matchAll(/@([a-zA-Z0-9_-]{2,30})/g)]
+      .map(m => m[1])
+      .filter(p => p.toLowerCase() !== 'tousleshotes')
   ))
-  if (pseudos.length === 0) return
 
-  const { data: matches } = await supabase
-    .from('profiles')
-    .select('id, pseudo')
-    .in('pseudo', pseudos)
-  if (!matches || matches.length === 0) return
+  if (!hasBroadcast && pseudos.length === 0) return
 
-  const rows = matches
-    .filter(m => m.id !== actorId)
-    .map(m => ({
-      mentioned_user_id: m.id,
-      actor_id: actorId,
-      post_id: source.postId ?? null,
-      reply_id: source.replyId ?? null,
-    }))
-  if (rows.length === 0) return
+  const recipientIds = new Set<string>()
+
+  if (hasBroadcast) {
+    // Vérif admin avant de broadcaster
+    const { data: actorProfile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', actorId)
+      .maybeSingle()
+    const isActorAdmin = actorProfile?.role === 'admin'
+
+    if (isActorAdmin) {
+      const { data: allMembers } = await supabase
+        .from('profiles')
+        .select('id, created_at')
+        .neq('id', actorId)
+        .order('created_at', { ascending: false })
+        .limit(BROADCAST_MENTION_CAP)
+      ;(allMembers ?? []).forEach(m => recipientIds.add(m.id))
+    }
+    // Sinon : ignore silencieusement, le texte reste mais aucune notif
+  }
+
+  if (pseudos.length > 0) {
+    const { data: matches } = await supabase
+      .from('profiles')
+      .select('id, pseudo')
+      .in('pseudo', pseudos)
+    ;(matches ?? [])
+      .filter(m => m.id !== actorId)
+      .forEach(m => recipientIds.add(m.id))
+  }
+
+  if (recipientIds.size === 0) return
+
+  const rows = Array.from(recipientIds).map(id => ({
+    mentioned_user_id: id,
+    actor_id: actorId,
+    post_id: source.postId ?? null,
+    reply_id: source.replyId ?? null,
+  }))
 
   await supabase.from('chez_nous_mentions').insert(rows)
 }

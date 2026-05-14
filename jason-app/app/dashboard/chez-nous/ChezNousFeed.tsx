@@ -290,15 +290,17 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
       <div style={s.layout}>
         {/* Colonne principale */}
         <div style={s.mainCol} className="cn-main-col">
-          {/* Recherche */}
-          <SearchBar initial={currentSearch} cat={currentCategory} sort={currentSort} />
-
-          {/* Composer (style Facebook) */}
+          {/* Composer unifié : poste + recherche dans la même card.
+              Click sur la zone texte → modal de création. Click sur la
+              loupe → bascule en mode recherche dans la même barre.  */}
           <ComposerCard
             firstName={currentUserName.split(/\s+/)[0] || ''}
             initials={(currentUserName || 'JM').split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)}
             onOpen={() => setShowForm(true)}
             userId={currentUserId}
+            searchInitial={currentSearch}
+            cat={currentCategory}
+            sort={currentSort}
           />
 
           {/* Tri */}
@@ -378,12 +380,41 @@ function InviteFriendsCard({ onClick }: { onClick: () => void }) {
 }
 
 // ─── ComposerCard (Facebook-style "Exprimez-vous") ────────────────────
-function ComposerCard({ firstName, initials, onOpen, userId }: {
+function ComposerCard({ firstName, initials, onOpen, userId, searchInitial, cat, sort }: {
   firstName: string; initials: string; onOpen: () => void; userId: string
+  searchInitial: string; cat: CategoryId | 'all'; sort: Sort
 }) {
-  // Version simplifiée : avatar + input cliquable, point.
-  // Les 3 chips quick-action (Photo / Demander aide / Partager réussite)
-  // ouvraient toutes la même modale → bruit visuel pour zéro valeur ajoutée.
+  const router = useRouter()
+  const [searchMode, setSearchMode] = useState(!!searchInitial)
+  const [searchValue, setSearchValue] = useState(searchInitial)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  const submitSearch = (e?: React.FormEvent) => {
+    e?.preventDefault()
+    const params = new URLSearchParams()
+    if (cat !== 'all')      params.set('cat', cat)
+    if (sort !== 'recent')  params.set('sort', sort)
+    if (searchValue.trim()) params.set('q', searchValue.trim())
+    router.push('/dashboard/chez-nous' + (params.toString() ? `?${params}` : ''))
+  }
+
+  const exitSearch = () => {
+    if (searchValue || searchInitial) {
+      // clear la recherche dans l'URL avant de fermer
+      const params = new URLSearchParams()
+      if (cat !== 'all')      params.set('cat', cat)
+      if (sort !== 'recent')  params.set('sort', sort)
+      router.push('/dashboard/chez-nous' + (params.toString() ? `?${params}` : ''))
+    }
+    setSearchValue('')
+    setSearchMode(false)
+  }
+
+  const enterSearch = () => {
+    setSearchMode(true)
+    setTimeout(() => searchInputRef.current?.focus(), 50)
+  }
+
   return (
     <div style={s.composerCard}>
       <div style={s.composerRow}>
@@ -394,9 +425,43 @@ function ComposerCard({ firstName, initials, onOpen, userId }: {
         >
           {initials}
         </Link>
-        <button onClick={onOpen} style={s.composerInput}>
-          {firstName ? `Exprime-toi, ${firstName}…` : 'Pose ta question, partage une expérience…'}
-        </button>
+        {searchMode ? (
+          <form onSubmit={submitSearch} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+            <MagnifyingGlass size={16} color="var(--text-muted)" />
+            <input
+              ref={searchInputRef}
+              type="search"
+              value={searchValue}
+              onChange={e => setSearchValue(e.target.value)}
+              placeholder="Rechercher dans Chez Nous…"
+              style={s.composerSearchInput}
+            />
+            <button
+              type="button"
+              onClick={exitSearch}
+              style={s.composerToggleBtn}
+              title="Fermer la recherche"
+              aria-label="Fermer la recherche"
+            >
+              <X size={14} weight="bold" />
+            </button>
+          </form>
+        ) : (
+          <>
+            <button onClick={onOpen} style={s.composerInput}>
+              {firstName ? `Exprime-toi, ${firstName}…` : 'Pose ta question, partage une expérience…'}
+            </button>
+            <button
+              type="button"
+              onClick={enterSearch}
+              style={s.composerToggleBtn}
+              title="Rechercher dans Chez Nous"
+              aria-label="Rechercher dans Chez Nous"
+            >
+              <MagnifyingGlass size={16} />
+            </button>
+          </>
+        )}
       </div>
     </div>
   )
@@ -1063,80 +1128,8 @@ function NewMembersBand({ members }: { members: NewMember[] }) {
   )
 }
 
-// ─── Search bar ───────────────────────────────────────────────────────
-// UX : icône loupe discrète au repos. Click → la barre s'expand sur la
-// largeur disponible. Une fois soumis, on garde l'état expand pour que
-// l'utilisateur voie sa recherche. Bouton X pour fermer ou clear.
-
-function SearchBar({ initial, cat, sort }: { initial: string; cat: CategoryId | 'all'; sort: Sort }) {
-  const router = useRouter()
-  const [value, setValue] = useState(initial)
-  const [expanded, setExpanded] = useState(!!initial)
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const params = new URLSearchParams()
-    if (cat !== 'all')      params.set('cat', cat)
-    if (sort !== 'recent')  params.set('sort', sort)
-    if (value.trim())       params.set('q', value.trim())
-    const url = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
-    router.push(url)
-  }
-
-  const clear = () => {
-    setValue('')
-    const params = new URLSearchParams()
-    if (cat !== 'all')      params.set('cat', cat)
-    if (sort !== 'recent')  params.set('sort', sort)
-    const url = '/dashboard/chez-nous' + (params.toString() ? `?${params}` : '')
-    router.push(url)
-  }
-
-  const handleExpand = () => {
-    setExpanded(true)
-    setTimeout(() => inputRef.current?.focus(), 50)
-  }
-
-  const handleCollapse = () => {
-    if (value || initial) clear()
-    setExpanded(false)
-  }
-
-  // État replié : juste une icône loupe, alignée à droite, sans place perdue.
-  if (!expanded) {
-    return (
-      <div style={s.searchCollapsedWrap}>
-        <button
-          type="button"
-          onClick={handleExpand}
-          style={s.searchIconBtn}
-          aria-label="Rechercher dans Chez Nous"
-          title="Rechercher dans Chez Nous"
-        >
-          <MagnifyingGlass size={16} />
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <form onSubmit={submit} style={s.searchBar}>
-      <MagnifyingGlass size={14} color="var(--text-muted)" />
-      <input
-        ref={inputRef}
-        type="search"
-        value={value}
-        onChange={e => setValue(e.target.value)}
-        placeholder="Rechercher dans Chez Nous…"
-        style={s.searchInput}
-      />
-      <button type="button" onClick={handleCollapse} style={s.searchClearBtn} title="Fermer">
-        <X size={12} weight="bold" />
-      </button>
-    </form>
-  )
-}
+// La SearchBar standalone a été fusionnée dans ComposerCard
+// (loupe à droite de 'Exprime-toi'). Plus de double row.
 
 function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; defaultCategory: CategoryId }) {
   const [category, setCategory] = useState<CategoryId>(defaultCategory)
@@ -1621,36 +1614,19 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s, border-color 0.15s',
   },
 
-  searchBar: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '10px', padding: '8px 12px',
-    marginBottom: '12px',
-  },
-  searchCollapsedWrap: {
-    display: 'flex', justifyContent: 'flex-end',
-    marginBottom: '12px',
-  },
-  searchIconBtn: {
-    width: '36px', height: '36px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '10px', cursor: 'pointer',
-    color: 'var(--text-2)',
-    fontFamily: 'inherit',
-    transition: 'background 0.15s, border-color 0.15s, color 0.15s',
-  },
-  searchInput: {
+  composerSearchInput: {
     flex: 1, minWidth: 0,
     background: 'transparent', border: 'none', outline: 'none',
-    color: 'var(--text)', fontSize: '13px', fontFamily: 'inherit',
+    color: 'var(--text)', fontSize: '14px', fontFamily: 'inherit',
   },
-  searchClearBtn: {
-    background: 'var(--bg)', border: '1px solid var(--border)',
-    color: 'var(--text-muted)', cursor: 'pointer',
-    width: '22px', height: '22px', borderRadius: '6px',
+  composerToggleBtn: {
+    background: 'transparent', border: 'none', cursor: 'pointer',
+    color: 'var(--text-2)',
+    width: '32px', height: '32px',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    borderRadius: '8px',
     flexShrink: 0,
+    transition: 'background 0.15s, color 0.15s',
   },
   toolbar: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
