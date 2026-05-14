@@ -87,6 +87,7 @@ export async function toggleLockPost(postId: string, locked: boolean): Promise<{
 export async function createReply(input: {
   postId: string
   body: string
+  parentReplyId?: string | null
 }): Promise<{ ok: true; replyId: string } | { ok: false; error: string }> {
   const { supabase, userId } = await requireAuth()
 
@@ -95,9 +96,28 @@ export async function createReply(input: {
     return { ok: false, error: 'La réponse doit faire entre 1 et 4000 caractères' }
   }
 
+  // Anti-nesting > 1 niveau : si parentReplyId est lui-même une réponse à
+  // une réponse, on remonte au parent pour rester sur 2 niveaux max (style
+  // Facebook). Évite les threads infinis qui détruisent la lisibilité.
+  let parentReplyId: string | null = input.parentReplyId ?? null
+  if (parentReplyId) {
+    const { data: parentRow } = await supabase
+      .from('chez_nous_replies')
+      .select('id, post_id, parent_reply_id')
+      .eq('id', parentReplyId)
+      .maybeSingle()
+    if (!parentRow || parentRow.post_id !== input.postId) {
+      return { ok: false, error: 'Commentaire parent invalide.' }
+    }
+    if (parentRow.parent_reply_id) {
+      // Le parent est déjà une réponse imbriquée → on attache au grand-parent
+      parentReplyId = parentRow.parent_reply_id
+    }
+  }
+
   const { data, error } = await supabase
     .from('chez_nous_replies')
-    .insert({ post_id: input.postId, author_id: userId, body })
+    .insert({ post_id: input.postId, author_id: userId, body, parent_reply_id: parentReplyId })
     .select('id')
     .single()
 

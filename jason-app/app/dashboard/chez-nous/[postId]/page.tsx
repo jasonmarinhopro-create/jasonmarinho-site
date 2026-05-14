@@ -26,7 +26,7 @@ export default async function ChezNousPostPage({ params }: Props) {
       .maybeSingle(),
     supabase
       .from('chez_nous_replies')
-      .select('id, author_id, body, created_at, edited_at')
+      .select('id, author_id, body, created_at, edited_at, parent_reply_id')
       .eq('post_id', postId)
       .order('created_at', { ascending: true }),
   ])
@@ -123,11 +123,12 @@ export default async function ChezNousPostPage({ params }: Props) {
           images: Array.isArray(post.images) ? (post.images as string[]) : [],
         }}
         replies={(replies ?? []).map(r => ({
-          id:         r.id,
-          author_id:  r.author_id,
-          body:       r.body,
-          created_at: r.created_at,
-          edited_at:  r.edited_at,
+          id:              r.id,
+          author_id:       r.author_id,
+          body:            r.body,
+          created_at:      r.created_at,
+          edited_at:       r.edited_at,
+          parent_reply_id: (r as { parent_reply_id?: string | null }).parent_reply_id ?? null,
         }))}
         usersMap={usersMap}
         currentUserId={profile.userId}
