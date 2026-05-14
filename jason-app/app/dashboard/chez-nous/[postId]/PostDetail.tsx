@@ -54,6 +54,7 @@ type Reply = {
   body: string
   created_at: string
   edited_at: string | null
+  parent_reply_id: string | null
 }
 
 type Props = {
@@ -245,13 +246,26 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
               Pas encore de réponse, {post.locked ? 'le sujet est verrouillé.' : 'sois le premier à répondre.'}
             </p>
           </div>
-        ) : (
-          // Trie : la réponse acceptée d'abord, puis ordre chronologique
-          [...replies].sort((a, b) => {
+        ) : (() => {
+          // Threaded rendering (style Facebook, 1 niveau max) :
+          // - Top-level : replies sans parent_reply_id
+          // - Nested : groupés par parent_reply_id sous leur parent
+          const topLevel = replies.filter(r => !r.parent_reply_id)
+          const childrenByParent: Record<string, Reply[]> = {}
+          replies.filter(r => r.parent_reply_id).forEach(r => {
+            const pid = r.parent_reply_id!
+            if (!childrenByParent[pid]) childrenByParent[pid] = []
+            childrenByParent[pid].push(r)
+          })
+
+          // Trie top-level : réponse acceptée d'abord, puis chronologique
+          const sortedTopLevel = [...topLevel].sort((a, b) => {
             if (a.id === post.accepted_reply_id) return -1
             if (b.id === post.accepted_reply_id) return 1
             return a.created_at.localeCompare(b.created_at)
-          }).map(reply => {
+          })
+
+          const renderReply = (reply: Reply, isChild: boolean) => {
             const ra        = usersMap[reply.author_id]
             const rav       = colorFromId(reply.author_id)
             const rinitials = ra ? displayInitials({ pseudo: ra.pseudo, full_name: ra.full_name }) : '?'
@@ -260,7 +274,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
             const canEditReply = reply.author_id === currentUserId
             const isAccepted   = reply.id === post.accepted_reply_id
             const canAccept    = post.author_id === currentUserId
-            const isOwnReply   = reply.author_id === post.author_id  // pas la peine de marquer sa propre reply
+            const isOwnReply   = reply.author_id === post.author_id
 
             return (
               <ReplyBlock
@@ -280,10 +294,27 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
                 canReport={reply.author_id !== currentUserId}
                 isAccepted={isAccepted}
                 canAccept={canAccept && !isOwnReply}
+                canReply={!post.locked && !isChild}
+                isChild={isChild}
               />
             )
+          }
+
+          return sortedTopLevel.map(reply => {
+            const children = (childrenByParent[reply.id] ?? [])
+              .sort((a, b) => a.created_at.localeCompare(b.created_at))
+            return (
+              <div key={reply.id} style={s.replyThread}>
+                {renderReply(reply, false)}
+                {children.length > 0 && (
+                  <div style={s.replyChildrenWrap}>
+                    {children.map(child => renderReply(child, true))}
+                  </div>
+                )}
+              </div>
+            )
           })
-        )}
+        })()}
       </div>
 
       {!post.locked && <ReplyForm postId={post.id} />}
@@ -424,7 +455,7 @@ function EditPostForm({ post, onCancel, onSaved }: { post: Post; onCancel: () =>
 
 // ─── Reply block ────────────────────────────────────────────────────
 
-function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avatarColor, badges, proStats, isContributor, isAdminAuthor, canDelete, canEdit, canReport, isAccepted, canAccept }: {
+function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avatarColor, badges, proStats, isContributor, isAdminAuthor, canDelete, canEdit, canReport, isAccepted, canAccept, canReply, isChild }: {
   reply: Reply
   postId: string
   authorId: string
@@ -440,12 +471,34 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
   canReport: boolean
   isAccepted: boolean
   canAccept: boolean
+  canReply: boolean
+  isChild: boolean
 }) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
+  const [replying, setReplying] = useState(false)
+  const [replyBody, setReplyBody] = useState('')
+  const [replyError, setReplyError] = useState<string | null>(null)
   const [body, setBody] = useState(reply.body)
   const [pending, startTransition] = useTransition()
   const taRef = useRef<HTMLTextAreaElement>(null!)
+  const replyTaRef = useRef<HTMLTextAreaElement>(null)
+
+  const submitChildReply = () => {
+    const trimmed = replyBody.trim()
+    if (!trimmed) return
+    setReplyError(null)
+    startTransition(async () => {
+      const res = await createReply({ postId, body: trimmed, parentReplyId: reply.id })
+      if (res.ok) {
+        setReplyBody('')
+        setReplying(false)
+        router.refresh()
+      } else {
+        setReplyError(res.error)
+      }
+    })
+  }
 
   const onAccept = () => {
     startTransition(async () => {
@@ -555,7 +608,60 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
             </div>
           </div>
         ) : (
-          <RichText text={reply.body} style={s.replyBody} />
+          <>
+            <RichText text={reply.body} style={s.replyBody} />
+            {canReply && (
+              <button
+                onClick={() => {
+                  setReplying(v => !v)
+                  setTimeout(() => replyTaRef.current?.focus(), 50)
+                }}
+                style={s.replyToBtn}
+                disabled={pending}
+              >
+                {replying ? 'Annuler' : 'Répondre'}
+              </button>
+            )}
+            {replying && (
+              <div style={s.childReplyForm}>
+                <textarea
+                  ref={replyTaRef}
+                  value={replyBody}
+                  onChange={e => setReplyBody(e.target.value)}
+                  onKeyDown={e => {
+                    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                      e.preventDefault()
+                      submitChildReply()
+                    }
+                  }}
+                  placeholder={`Répondre à ${authorName}…`}
+                  maxLength={4000}
+                  rows={3}
+                  style={s.childReplyTextarea}
+                />
+                {replyError && <p style={s.error}>{replyError}</p>}
+                <div style={s.childReplyActions}>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>⌘+Entrée pour envoyer</span>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <button
+                      onClick={() => { setReplying(false); setReplyBody(''); setReplyError(null) }}
+                      style={s.btnGhostSmall}
+                      disabled={pending}
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      onClick={submitChildReply}
+                      style={s.btnPrimarySmall}
+                      disabled={pending || !replyBody.trim()}
+                    >
+                      {pending ? 'Envoi…' : 'Répondre'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -777,6 +883,38 @@ const s: Record<string, React.CSSProperties> = {
     margin: '24px 0 12px',
   },
   repliesList: { display: 'flex', flexDirection: 'column', gap: '10px' },
+  replyThread: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  replyChildrenWrap: {
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+    marginLeft: 'clamp(24px, 5vw, 40px)',
+    paddingLeft: '14px',
+    borderLeft: '2px solid var(--border)',
+  },
+  replyToBtn: {
+    background: 'transparent', border: 'none', cursor: 'pointer',
+    color: 'var(--accent-text)',
+    fontSize: '12px', fontWeight: 600, fontFamily: 'inherit',
+    padding: '4px 0',
+    marginTop: '4px',
+    alignSelf: 'flex-start',
+  },
+  childReplyForm: {
+    marginTop: '8px', padding: '10px 12px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+  },
+  childReplyTextarea: {
+    width: '100%', padding: '8px 10px',
+    fontFamily: 'inherit', fontSize: '13px', lineHeight: 1.55,
+    color: 'var(--text)', background: 'var(--bg)',
+    border: '1px solid var(--border)', borderRadius: '8px',
+    resize: 'vertical' as const, minHeight: '60px',
+  },
+  childReplyActions: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px',
+  },
 
   proStatsTxt: {
     fontSize: '11px', color: 'var(--text-muted)',

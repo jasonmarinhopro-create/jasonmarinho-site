@@ -536,7 +536,7 @@ Nous restons à l'écoute pour améliorer en permanence l'expérience de nos voy
       recourses: [
         'Demander une nouvelle revue par un autre agent Airbnb si le premier refuse (insiste poliment avec arguments)',
         'Twitter / X @AirbnbHelp est souvent plus rapide que le téléphone pour escalader un cas bloqué',
-        'Médiation interne via customer.protection@airbnb.com pour les cas complexes',
+        'Escalade interne Trust & Safety : répondre dans le ticket existant en marquant « Plainte formelle » + demander un superviseur',
         'Stratégie "noyer l\'avis" : 5-10 nouveaux avis positifs rapidement, l\'algorithme fait son travail',
       ],
       prevention: [
@@ -1410,8 +1410,8 @@ Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées
           body: 'Si pas de résolution sous 5 jours : demande explicitement un **superviseur** ou écris à **@AirbnbHelp** sur Twitter/X (souvent plus rapide que les canaux classiques).',
         },
         {
-          title: 'Recours formel par email',
-          body: 'Email à l\'adresse customer.protection@airbnb.com (à confirmer sur leur site) avec récap complet : tous les numéros de ticket, l\'historique, ta demande précise, le délai (15 jours).',
+          title: 'Plainte formelle écrite + escalade Trust & Safety',
+          body: 'Airbnb n\'a pas d\'email d\'escalade public fiable. La voie qui marche : répondre dans le ticket existant en marquant **« Plainte formelle · Escalade Trust & Safety »** et demander explicitement la transmission à un superviseur. Récap complet : tous les numéros de ticket, l\'historique, ta demande précise, le délai (15 jours). Pour les cas critiques, envoi recommandé en parallèle au siège (888 Brannan St., San Francisco) avec accusé de réception.',
         },
         {
           title: 'Médiation externe',
