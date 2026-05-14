@@ -221,6 +221,9 @@ export default function GabaritsClient({
 
   async function removePin(templateId: string, bucket: TimingBucket) {
     if (!userId) return
+    // Confirmation pour éviter les fat-finger taps sur mobile (la croix est
+    // à côté du caret expand → un mauvais tap supprimait silencieusement).
+    if (!window.confirm('Retirer ce message de ta séquence ?')) return
     const next = pinned[bucket].filter(id => id !== templateId)
     updatePinnedBucket(bucket, next)
     // persistPinnedOrder fait un DELETE + INSERT complet de la bucket
@@ -945,8 +948,11 @@ function CompactHeroCard({
           {onRemove && <button onClick={onRemove} style={s.heroIconBtn}      title="Retirer"><X size={12} /></button>}
         </div>
 
+        {/* Marge gauche supplémentaire pour éloigner le caret expand
+            de la croix 'Retirer' — évite les fat-finger taps mobile. */}
         <span style={{
           color: 'var(--text-muted)', display: 'flex', flexShrink: 0,
+          marginLeft: '8px', padding: '6px 4px',
           transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'none',
         }}>
           <CaretDown size={13} />
@@ -1383,10 +1389,12 @@ const s: Record<string, React.CSSProperties> = {
 
   toast: {
     position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
-    background: 'rgba(0,30,20,0.96)', border: '1px solid rgba(52,211,153,0.2)',
+    background: 'rgba(0,30,20,0.96)', border: '1px solid rgba(52,211,153,0.3)',
     borderRadius: '10px', padding: '10px 18px',
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '13px', fontWeight: 500, color: 'var(--text)',
+    // Couleur blanche fixe : le fond est toujours sombre, donc var(--text)
+    // donnait du texte noir sur fond vert foncé en mode clair → illisible.
+    fontSize: '13px', fontWeight: 500, color: '#fff',
     zIndex: 1000, backdropFilter: 'blur(12px)',
     animation: 'fadeUp 0.3s ease', whiteSpace: 'nowrap',
   },
