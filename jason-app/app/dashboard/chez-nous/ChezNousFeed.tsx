@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ImageSquare, ShareNetwork, UserPlus } from '@phosphor-icons/react/dist/ssr'
+import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ShareNetwork, UserPlus } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
 import { MapPin } from '@phosphor-icons/react/dist/ssr'
@@ -381,6 +381,9 @@ function InviteFriendsCard({ onClick }: { onClick: () => void }) {
 function ComposerCard({ firstName, initials, onOpen, userId }: {
   firstName: string; initials: string; onOpen: () => void; userId: string
 }) {
+  // Version simplifiée : avatar + input cliquable, point.
+  // Les 3 chips quick-action (Photo / Demander aide / Partager réussite)
+  // ouvraient toutes la même modale → bruit visuel pour zéro valeur ajoutée.
   return (
     <div style={s.composerCard}>
       <div style={s.composerRow}>
@@ -393,20 +396,6 @@ function ComposerCard({ firstName, initials, onOpen, userId }: {
         </Link>
         <button onClick={onOpen} style={s.composerInput}>
           {firstName ? `Exprime-toi, ${firstName}…` : 'Pose ta question, partage une expérience…'}
-        </button>
-      </div>
-      <div style={s.composerActions}>
-        <button onClick={onOpen} style={s.composerAction}>
-          <ImageSquare size={16} color="#34d399" weight="fill" />
-          <span>Photo</span>
-        </button>
-        <button onClick={onOpen} style={s.composerAction}>
-          <Question size={16} color="#fb923c" weight="fill" />
-          <span>Demander de l&apos;aide</span>
-        </button>
-        <button onClick={onOpen} style={s.composerAction}>
-          <Sparkle size={16} color="#a78bfa" weight="fill" />
-          <span>Partager une réussite</span>
         </button>
       </div>
     </div>
@@ -1565,20 +1554,6 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', fontFamily: 'inherit',
     transition: 'background 0.15s, color 0.15s',
   },
-  composerActions: {
-    display: 'flex', gap: '4px',
-    paddingTop: '10px',
-  },
-  composerAction: {
-    flex: 1,
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-    background: 'transparent', border: 'none', borderRadius: '8px',
-    padding: '8px 6px', fontSize: '12.5px', fontWeight: 600,
-    color: 'var(--text-2)',
-    cursor: 'pointer', fontFamily: 'inherit',
-    transition: 'background 0.15s',
-  },
-
   // ─── PostFormModal ─────────────────────────────────────────────────
   modalBackdrop: {
     position: 'fixed' as const, inset: 0, zIndex: 1000,
