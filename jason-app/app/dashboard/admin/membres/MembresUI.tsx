@@ -749,13 +749,23 @@ const s: Record<string, React.CSSProperties> = {
     background: 'none', border: 'none', cursor: 'pointer',
     color: 'var(--text-3)', display: 'flex', padding: '2px',
   },
-  planTabs: { display: 'flex', gap: '4px' },
+  planTabs: {
+    display: 'flex', gap: '4px',
+    overflowX: 'auto' as const,
+    // Sur mobile, les 4 tabs débordent → scroll horizontal interne au
+    // lieu de pousser la page entière (qui créait un overflow visible).
+    scrollbarWidth: 'none' as const,
+    msOverflowStyle: 'none' as const,
+    paddingBottom: '2px',
+  },
   planTab: {
     display: 'flex', alignItems: 'center', gap: '7px',
     padding: '7px 14px', borderRadius: '9px', fontSize: '12px', fontWeight: 500,
     background: 'none', border: '1px solid var(--border)',
     color: 'var(--text-3)', cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
     transition: 'all 0.15s',
+    flexShrink: 0,
+    whiteSpace: 'nowrap' as const,
   },
   planTabActive: {
     background: 'var(--accent-bg)',

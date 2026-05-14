@@ -142,6 +142,12 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
             margin-left: 12px !important;
             padding-left: 8px !important;
           }
+          .cn-aside {
+            flex: 1 1 100% !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            position: static !important;
+          }
         }
       `}</style>
       <Link href="/dashboard/chez-nous" style={s.back}>
@@ -338,7 +344,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
         </div>
 
         {/* Aside auteur */}
-        <aside style={s.aside}>
+        <aside style={s.aside} className="cn-aside">
           <AuthorAside
             authorId={post.author_id}
             name={name}
