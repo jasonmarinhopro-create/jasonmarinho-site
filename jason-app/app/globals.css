@@ -957,6 +957,21 @@ a { color: inherit; }
 }
 .cn-link:hover { text-decoration-color: #ffd56b; }
 
+/* Mentions @pseudo dans le rich text Chez Nous : un peu plus visible
+   qu'un lien normal pour montrer que c'est un membre. */
+.cn-mention {
+  color: var(--accent-text);
+  background: var(--accent-bg-2);
+  border: 1px solid var(--accent-border-2);
+  border-radius: 999px;
+  padding: 0 7px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95em;
+  transition: background 0.15s, border-color 0.15s;
+}
+.cn-mention:hover { background: var(--accent-bg); }
+
 /* ── Outils Impression — QR & Affiches ── */
 @keyframes spin {
   from { transform: rotate(0deg); }

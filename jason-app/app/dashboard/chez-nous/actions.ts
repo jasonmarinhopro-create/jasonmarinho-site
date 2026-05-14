@@ -27,6 +27,46 @@ function validateImages(images: string[] | undefined): string[] {
     .slice(0, MAX_IMAGES_PER_POST)
 }
 
+/**
+ * Parse le texte pour extraire les mentions @pseudo et insère les rows
+ * correspondantes dans chez_nous_mentions (qui déclenche la notif via
+ * le trigger SQL chez_nous_notify_on_mention).
+ *
+ * - Match seulement des pseudos entre 2 et 30 caractères [a-zA-Z0-9_-]
+ * - Résout pseudo → user_id via la table profiles
+ * - Déduplique : une seule mention par utilisateur par source
+ * - N'inclut PAS l'auteur lui-même (anti auto-notif)
+ */
+async function processMentions(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  text: string,
+  actorId: string,
+  source: { postId?: string; replyId?: string },
+): Promise<void> {
+  const pseudos = Array.from(new Set(
+    [...text.matchAll(/@([a-zA-Z0-9_-]{2,30})/g)].map(m => m[1])
+  ))
+  if (pseudos.length === 0) return
+
+  const { data: matches } = await supabase
+    .from('profiles')
+    .select('id, pseudo')
+    .in('pseudo', pseudos)
+  if (!matches || matches.length === 0) return
+
+  const rows = matches
+    .filter(m => m.id !== actorId)
+    .map(m => ({
+      mentioned_user_id: m.id,
+      actor_id: actorId,
+      post_id: source.postId ?? null,
+      reply_id: source.replyId ?? null,
+    }))
+  if (rows.length === 0) return
+
+  await supabase.from('chez_nous_mentions').insert(rows)
+}
+
 export async function createPost(input: {
   category: string
   title: string
@@ -50,6 +90,9 @@ export async function createPost(input: {
     .single()
 
   if (error || !data) return { ok: false, error: error?.message ?? 'Erreur création' }
+
+  // Parser titre + body pour les mentions @pseudo (best-effort, n'échoue pas le post)
+  await processMentions(supabase, `${title} ${body}`, userId, { postId: data.id }).catch(() => {})
 
   revalidatePath('/dashboard/chez-nous')
   return { ok: true, postId: data.id }
@@ -122,6 +165,9 @@ export async function createReply(input: {
     .single()
 
   if (error || !data) return { ok: false, error: error?.message ?? 'Erreur création' }
+
+  // Mentions @pseudo dans le body (best-effort, n'échoue pas la reply)
+  await processMentions(supabase, body, userId, { replyId: data.id }).catch(() => {})
 
   revalidatePath(`/dashboard/chez-nous/${input.postId}`)
   revalidatePath('/dashboard/chez-nous')
