@@ -295,7 +295,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
                 canReport={reply.author_id !== currentUserId}
                 isAccepted={isAccepted}
                 canAccept={canAccept && !isOwnReply}
-                canReply={!post.locked && !isChild}
+                canReply={!post.locked}
                 isChild={isChild}
               />
             )
