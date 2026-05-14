@@ -98,6 +98,25 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
         /* Map silhouette: white in dark mode, dark green in light mode */
         .cn-map-shape { fill: rgba(255,255,255,0.025); stroke: rgba(255,255,255,0.14); }
         [data-theme="light"] .cn-map-shape { fill: rgba(0,76,63,0.07); stroke: rgba(0,76,63,0.28); }
+        /* Hover preview pour les réponses tronquées du feed */
+        .cn-recent-reply { position: relative; }
+        .cn-recent-reply-full {
+          position: absolute; left: 28px; top: calc(100% + 6px);
+          z-index: 20; max-width: 480px; min-width: 240px;
+          padding: 12px 14px; border-radius: 10px;
+          background: var(--surface); border: 1px solid var(--border);
+          box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+          font-size: 13px; color: var(--text); line-height: 1.5;
+          opacity: 0; visibility: hidden; pointer-events: none;
+          transition: opacity 0.15s ease, transform 0.15s ease;
+          transform: translateY(-4px);
+        }
+        .cn-recent-reply:hover .cn-recent-reply-full,
+        .cn-recent-reply:focus-within .cn-recent-reply-full {
+          opacity: 1; visibility: visible; transform: translateY(0);
+        }
+        /* Pas de hover sur mobile (touch) → tooltip inutile */
+        @media (hover: none) { .cn-recent-reply-full { display: none; } }
         /* Default category chip rendering (desktop) */
         .cn-cat-emoji { font-size: 13px; line-height: 1; }
         .cn-cat-label { font-weight: 600; }
@@ -941,14 +960,21 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
               const rAv = colorFromId(r.author_id)
               const rInitials = rAuthor ? displayInitials({ pseudo: rAuthor.pseudo, full_name: rAuthor.full_name }) : '?'
               const rExcerpt = r.body.replace(/\n+/g, ' ').replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1').trim()
+              const isTruncated = rExcerpt.length > 120
               return (
-                <div key={r.id} style={s.recentReplyItem}>
+                <div key={r.id} style={s.recentReplyItem} className="cn-recent-reply">
                   <span style={{ ...s.recentReplyAvatar, background: rAv.bg, color: rAv.text }}>{rInitials}</span>
                   <span style={s.recentReplyText}>
                     <strong style={s.recentReplyAuthor}>{rName}</strong>
                     <span style={s.recentReplyDot}> · </span>
-                    {rExcerpt.length > 120 ? rExcerpt.slice(0, 120) + '…' : rExcerpt}
+                    {isTruncated ? rExcerpt.slice(0, 120) + '…' : rExcerpt}
                   </span>
+                  {isTruncated && (
+                    <span className="cn-recent-reply-full" role="tooltip">
+                      <strong>{rName}</strong>
+                      <span style={{ display: 'block', marginTop: '6px', whiteSpace: 'pre-wrap' as const }}>{rExcerpt}</span>
+                    </span>
+                  )}
                 </div>
               )
             })}
