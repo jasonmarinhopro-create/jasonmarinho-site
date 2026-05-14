@@ -23,6 +23,8 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
   <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
   <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
   <style>
@@ -176,6 +178,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   ]
 }
 </script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Qu'est-ce que Driing et comment ça fonctionne ?","acceptedAnswer":{"@type":"Answer","text":"Driing est une plateforme de réservation pensée pour les hôtes qui veulent développer leur canal direct sans verser de commission aux OTA classiques. Tu publies ton logement sur Driing avec tes propres conditions et tu encaisses les paiements en direct, avec une visibilité ciblée vers une audience qualifiée."}},{"@type":"Question","name":"Qu'apporte Driing par rapport aux OTA classiques ?","acceptedAnswer":{"@type":"Answer","text":"Driing ne prend pas de commission par réservation comme les plateformes traditionnelles. L'objectif est de t'aider à reprendre le contrôle de tes prix, de tes conditions et de ta relation voyageur, en restant sur une plateforme qui sécurise paiement et confiance pour tes clients."}},{"@type":"Question","name":"Quelles sont les conditions pour rejoindre Driing ?","acceptedAnswer":{"@type":"Answer","text":"Il faut un logement répondant aux critères qualité de la plateforme (photos professionnelles ou de très bonne qualité, description complète, équipements LCD standards) et accepter les conditions générales de Driing. Le processus d'inscription est encadré pour garantir l'expérience voyageur."}},{"@type":"Question","name":"Comment optimiser sa fiche Driing ?","acceptedAnswer":{"@type":"Answer","text":"Les leviers sont similaires à ceux d'une bonne fiche OTA : photo de couverture qui donne envie de cliquer, titre clair sur le bénéfice (vue, équipement clé, localisation), description structurée et politique d'annulation lisible. La cohérence avec ta fiche Google Business Profile renforce la confiance."}},{"@type":"Question","name":"Driing remplace-t-il complètement Airbnb ou Booking ?","acceptedAnswer":{"@type":"Answer","text":"Non, et ce n'est pas l'objectif. Driing s'inscrit dans une stratégie de diversification : tu gardes les OTA pour la visibilité de masse, et tu utilises Driing pour développer une part de revenus directs sans commission. La logique est de réduire ta dépendance progressivement, pas du jour au lendemain."}}]}</script>
 <!-- JSONLD-AUTO:END -->
 <script defer src="/nav.js"></script>
 </head>
@@ -394,6 +397,33 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   </div>
 </section>
 <!-- RELATED-LINKS:END -->
+
+<section class="sec">
+  <style>
+    .faq{display:flex;flex-direction:column;gap:12px;margin-top:32px;max-width:800px;margin-left:auto;margin-right:auto}
+    .faq-item{border:1px solid rgba(0,76,63,.1);border-radius:12px;overflow:hidden;background:#fff}
+    .faq-q{padding:18px 22px;font-weight:600;font-size:15px;color:var(--td,#1a1a1a);cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:#fff;user-select:none}
+    .faq-q:hover{background:rgba(0,76,63,.02)}
+    .faq-a{padding:0 22px 18px;font-size:14px;line-height:1.75;color:var(--tm,#555);display:none}
+    .faq-item.open .faq-a{display:block}
+    .faq-item.open .faq-ic{transform:rotate(180deg)}
+    .faq-ic{transition:transform .2s;font-size:14px}
+  </style>
+  <div class="s-in">
+    <div class="lbl dk">Questions fréquentes</div>
+    <h2 class="h2">Les questions des <em>membres Driing</em></h2>
+    <div class="faq">
+      <div class="faq-item"><div class="faq-q">Qu'est-ce que Driing et comment ça fonctionne ?<i class="ph ph-caret-down faq-ic"></i></div><div class="faq-a">Driing est une plateforme de réservation pensée pour les hôtes qui veulent développer leur canal direct sans verser de commission aux OTA classiques. Tu publies ton logement sur Driing avec tes propres conditions et tu encaisses les paiements en direct, avec une visibilité ciblée vers une audience qualifiée. <a href="/blog/driing-plateforme-vacances-sans-commissions/" style="color:var(--g);font-weight:600">Tout sur Driing →</a></div></div>
+      <div class="faq-item"><div class="faq-q">Qu'apporte Driing par rapport aux OTA classiques ?<i class="ph ph-caret-down faq-ic"></i></div><div class="faq-a">Driing ne prend pas de commission par réservation comme les plateformes traditionnelles. L'objectif est de t'aider à reprendre le contrôle de tes prix, de tes conditions et de ta relation voyageur, en restant sur une plateforme qui sécurise paiement et confiance pour tes clients.</div></div>
+      <div class="faq-item"><div class="faq-q">Quelles sont les conditions pour rejoindre Driing ?<i class="ph ph-caret-down faq-ic"></i></div><div class="faq-a">Il faut un logement répondant aux critères qualité de la plateforme (photos professionnelles ou de très bonne qualité, description complète, équipements LCD standards) et accepter les conditions générales de Driing. Le processus d'inscription est encadré pour garantir l'expérience voyageur.</div></div>
+      <div class="faq-item"><div class="faq-q">Comment optimiser sa fiche Driing ?<i class="ph ph-caret-down faq-ic"></i></div><div class="faq-a">Les leviers sont similaires à ceux d'une bonne fiche OTA : photo de couverture qui donne envie de cliquer, titre clair sur le bénéfice (vue, équipement clé, localisation), description structurée et politique d'annulation lisible. La cohérence avec ta fiche Google Business Profile renforce la confiance. <a href="/blog/photo-couverture-airbnb-7-criteres-algo-computer-vision/" style="color:var(--g);font-weight:600">Critères photo de couverture →</a></div></div>
+      <div class="faq-item"><div class="faq-q">Driing remplace-t-il complètement les OTA ?<i class="ph ph-caret-down faq-ic"></i></div><div class="faq-a">Non, et ce n'est pas l'objectif. Driing s'inscrit dans une stratégie de diversification : tu gardes les OTA pour la visibilité de masse, et tu utilises Driing pour développer une part de revenus directs sans commission. La logique est de réduire ta dépendance progressivement, pas du jour au lendemain.</div></div>
+    </div>
+  </div>
+  <script>
+    document.querySelectorAll('.faq-q').forEach(function(q){q.addEventListener('click',function(){q.closest('.faq-item').classList.toggle('open')})});
+  </script>
+</section>
 
 <section class="sec dk">
   <div class="s-in" style="text-align:center;max-width:540px">

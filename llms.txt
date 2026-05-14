@@ -2,12 +2,14 @@
 
 > Plateforme de ressources et d'accompagnement pour les hôtes de location courte durée (LCD) en France. Jason Marinho aide les propriétaires Airbnb, Booking.com et chambres d'hôtes à optimiser leurs annonces, développer les réservations directes et piloter leur activité avec des outils concrets.
 
-Jason Marinho est un expert en location courte durée (LCD) basé en France. Il propose des formations, outils et contenus pratiques destinés aux hôtes indépendants, gérants de gîtes, chambres d'hôtes et conciergeries. La plateforme inclut un espace membre à l'adresse app.jasonmarinho.com avec des outils intégrés (audit Google Business Profile, suivi des revenus, tableau de voyageurs, Chez Nous).
+Jason Marinho est un expert en location courte durée (LCD) basé en France. Il propose des formations, outils et contenus pratiques destinés aux hôtes indépendants, gérants de gîtes, chambres d'hôtes et conciergeries. La plateforme inclut un espace membre à l'adresse app.jasonmarinho.com avec des outils intégrés (audit Google Business Profile, suivi des revenus, tableau de voyageurs, forum Chez Nous, gabarits de messages, gestion de contrats avec signature électronique et caution Stripe).
 
 ## Qui est Jason Marinho
 
 - [À propos](https://jasonmarinho.com/qui-suis-je/): Parcours, expertise et vision de Jason Marinho en LCD
 - [Appel découverte](https://jasonmarinho.com/contact/): Prise de contact et accompagnement personnalisé
+- [Article appel découverte](https://jasonmarinho.com/blog/appel-decouverte-jason-marinho-accompagnement-lcd/): Comment se déroule l'accompagnement
+- [Pourquoi créer un compte](https://jasonmarinho.com/blog/pourquoi-creer-compte-plateforme-jason-marinho/): Avantages de l'espace membre
 
 ## Pour qui
 
@@ -37,7 +39,7 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 
 ## Blog — Sujets principaux
 
-Le blog de jasonmarinho.com couvre 5 grands thèmes pour les hôtes LCD :
+Le blog de jasonmarinho.com couvre une large palette de sujets pour les hôtes LCD :
 
 ### Optimiser son annonce et ses revenus
 - [Optimiser son annonce Airbnb](https://jasonmarinho.com/blog/optimiser-annonce-airbnb/)
@@ -45,24 +47,50 @@ Le blog de jasonmarinho.com couvre 5 grands thèmes pour les hôtes LCD :
 - [PriceLabs, Wheelhouse, Beyond — comparatif](https://jasonmarinho.com/blog/tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif/)
 - [Algorithme Airbnb 2026 — critères de classement](https://jasonmarinho.com/blog/algorithme-airbnb-2026-criteres-classement/)
 - [Titre d'annonce Airbnb — optimiser clics et visibilité](https://jasonmarinho.com/blog/titre-annonce-airbnb-optimiser-clics-visibilite/)
+- [Mots-clés titre Airbnb — éviter le spam detection](https://jasonmarinho.com/blog/mots-cles-titre-annonce-airbnb-eviter-spam-detection/)
 - [Description 500 caractères Airbnb 2026](https://jasonmarinho.com/blog/description-airbnb-500-caracteres-convertit-2026/)
 - [Photos Airbnb et computer vision IA](https://jasonmarinho.com/blog/photos-airbnb-computer-vision-ia-optimiser/)
 - [Photo de couverture Airbnb — 7 critères algo](https://jasonmarinho.com/blog/photo-couverture-airbnb-7-criteres-algo-computer-vision/)
+- [Photographier son logement au smartphone](https://jasonmarinho.com/blog/photographier-logement-location-courte-duree-smartphone/)
+- [Photos avant/après — home staging LCD](https://jasonmarinho.com/blog/photos-avant-apres-home-staging-lcd/)
+- [Profil hôte Airbnb — bio et photo de confiance](https://jasonmarinho.com/blog/profil-hote-airbnb-bio-photo-confiance/)
 - [Frais de ménage Airbnb — combien facturer 2026](https://jasonmarinho.com/blog/frais-menage-airbnb-combien-facturer-2026/)
 - [Budget annuel hôte LCD — grille de coûts](https://jasonmarinho.com/blog/budget-annuel-hote-lcd-grille-couts/)
 - [Marge nette par nuitée — suivi précis](https://jasonmarinho.com/blog/marge-nette-par-nuitee-suivi-precis/)
 - [Point mort LCD — calcul de rentabilité](https://jasonmarinho.com/blog/point-mort-lcd-calcul-rentabilite-hote/)
+- [Prix min/max Airbnb — fourchette tarifaire](https://jasonmarinho.com/blog/prix-min-max-airbnb-fourchette-tarifaire/)
+- [Fixer son prix minimum Airbnb LCD](https://jasonmarinho.com/blog/fixer-prix-minimum-airbnb-lcd/)
+- [Saisonnalité tarif région France LCD 2026](https://jasonmarinho.com/blog/saisonnalite-tarif-region-france-lcd-2026/)
+- [Last minute vs early booking — stratégie 2026](https://jasonmarinho.com/blog/last-minute-vs-early-booking-strategie-2026/)
+- [Tarif hebdomadaire vs nuitée — quand préférer](https://jasonmarinho.com/blog/tarif-hebdomadaire-vs-nuitee-quand-preferer/)
+- [Statistiques Airbnb — 4 KPIs essentiels](https://jasonmarinho.com/blog/statistiques-annonce-airbnb-4-kpis-essentiels/)
+- [Superhost Airbnb — critères et méthode 2026](https://jasonmarinho.com/blog/superhost-airbnb-criteres-methode-2026/)
+- [AirDNA — mode d'emploi débutant](https://jasonmarinho.com/blog/airdna-mode-emploi-hote-lcd-debutant/)
+- [Basse saison LCD — stratégies de réservations](https://jasonmarinho.com/blog/basse-saison-location-courte-duree-strategies-reservations/)
+- [Séjours longs LCD — stratégie revenus basse saison](https://jasonmarinho.com/blog/sejours-longs-lcd-strategie-revenus-basse-saison/)
+- [Workation LCD — équiper et louer plus cher hors saison](https://jasonmarinho.com/blog/workation-lcd-logement-equiper-louer-cher-hors-saison/)
+- [Diversifier ses revenus LCD au-delà des nuitées](https://jasonmarinho.com/blog/diversifier-revenus-lcd-au-dela-nuitees/)
 
-### Réservations directes
+### Réservations directes et acquisition
 - [Réservation directe sans commission](https://jasonmarinho.com/blog/reservation-directe-sans-commission/)
 - [Pourquoi s'affranchir des plateformes](https://jasonmarinho.com/blog/location-directe-pourquoi-saffranchir-plateformes/)
 - [Premières réservations directes sans audience](https://jasonmarinho.com/blog/premieres-reservations-directes-sans-audience-site-web/)
 - [Créer un site de réservation directe](https://jasonmarinho.com/blog/site-reservation-directe-location-courte-duree/)
+- [Description logement qui convertit (direct)](https://jasonmarinho.com/blog/description-logement-convertit-reservation-directe/)
+- [Politique d'annulation location directe](https://jasonmarinho.com/blog/politique-annulation-location-directe-hote/)
+- [Fixer son prix en réservation directe](https://jasonmarinho.com/blog/fixer-prix-reservation-directe-location-courte-duree/)
 - [Sécuriser les paiements sans Airbnb](https://jasonmarinho.com/blog/securiser-paiement-reservation-directe-sans-airbnb/)
+- [Stripe paiement direct LCD — mise en place](https://jasonmarinho.com/blog/stripe-paiement-direct-lcd-mise-en-place/)
 - [Google My Business pour réservations directes](https://jasonmarinho.com/blog/google-my-business-reservations-directes-hotes-lcd/)
 - [Instagram pour hôtes LCD](https://jasonmarinho.com/blog/instagram-hotes-lcd-attirer-voyageurs-reservations-directes/)
+- [Instagram Reels et TikTok LCD](https://jasonmarinho.com/blog/instagram-reels-tiktok-lcd-attirer-voyageurs/)
+- [Blog hôte LCD — stratégie trafic organique](https://jasonmarinho.com/blog/blog-hote-lcd-strategie-trafic-organique/)
+- [Email marketing newsletter pour hôte LCD](https://jasonmarinho.com/blog/email-marketing-newsletter-hote-lcd/)
 - [Base de voyageurs fidèles](https://jasonmarinho.com/blog/base-voyageurs-fideles-location-directe-durable/)
+- [Programme de parrainage voyageurs](https://jasonmarinho.com/blog/programme-parrainage-voyageurs-fidelisation-lcd/)
+- [Modèle email post-séjour pour fidéliser](https://jasonmarinho.com/blog/modele-email-post-sejour-fideliser-voyageur/)
 - [Mesurer la performance du canal direct](https://jasonmarinho.com/blog/mesurer-performance-canal-reservation-directe-kpi/)
+- [Partenariats locaux hôtes LCD — restaurants, activités](https://jasonmarinho.com/blog/partenariats-locaux-hotes-lcd-restaurants-activites/)
 
 ### Google My Business et visibilité locale
 - [Google My Business pour hôtes LCD](https://jasonmarinho.com/blog/google-my-business-hotes-lcd/)
@@ -72,7 +100,10 @@ Le blog de jasonmarinho.com couvre 5 grands thèmes pour les hôtes LCD :
 - [Driing — plateforme sans commissions](https://jasonmarinho.com/blog/driing-plateforme-vacances-sans-commissions/)
 
 ### Fiscalité et réglementation
+- [Déclarer son activité LCD en France — démarches](https://jasonmarinho.com/blog/declarer-activite-location-courte-duree-france-demarches/)
 - [Réglementation LCD France 2026](https://jasonmarinho.com/blog/reglementation-lcd-france-2026/)
+- [Numéro d'enregistrement LCD — démarches](https://jasonmarinho.com/blog/numero-enregistrement-lcd-obtenir-etapes-pratiques/)
+- [Numéro d'enregistrement LCD — 20 mai 2026](https://jasonmarinho.com/blog/numero-enregistrement-lcd-20-mai-2026-demarches/)
 - [Micro-BIC abattement 2026 Airbnb](https://jasonmarinho.com/blog/micro-bic-abattement-2026-airbnb/)
 - [Guide fiscal débutant hôte Airbnb 2026](https://jasonmarinho.com/blog/guide-fiscal-debutant-hote-airbnb-2026/)
 - [LMNP vs LMP — changement 2026](https://jasonmarinho.com/blog/lmnp-vs-lmp-changement-2026-impact/)
@@ -80,18 +111,93 @@ Le blog de jasonmarinho.com couvre 5 grands thèmes pour les hôtes LCD :
 - [TVA location courte durée 2026](https://jasonmarinho.com/blog/tva-location-courte-duree-2026/)
 - [TVA petit-déjeuner LCD seuil 37 500 € 2026](https://jasonmarinho.com/blog/tva-petit-dejeuner-lcd-seuil-37500-2026-detail/)
 - [DPE et obligations 2025–2034](https://jasonmarinho.com/blog/dpe-location-courte-duree-obligations-2025-2034/)
-- [Numéro d'enregistrement LCD — démarches](https://jasonmarinho.com/blog/numero-enregistrement-lcd-obtenir-etapes-pratiques/)
+- [Travaux énergétiques LCD — aides MaPrimeRénov 2026](https://jasonmarinho.com/blog/travaux-energetiques-lcd-aides-maprimerenov-2026/)
+- [ERP classement meublé de tourisme LCD](https://jasonmarinho.com/blog/erp-classement-meuble-tourisme-lcd/)
 - [Impôts location courte durée France](https://jasonmarinho.com/blog/location-courte-duree-impots-france/)
 - [Taxe de séjour — comment collecter](https://jasonmarinho.com/blog/taxe-sejour-lcd-comment-collecter/)
+- [Bail mobilité vs courte durée — différences](https://jasonmarinho.com/blog/bail-mobilite-vs-courte-duree-differences/)
+- [Chambres d'hôtes vs meublé de tourisme](https://jasonmarinho.com/blog/chambres-hotes-vs-meuble-tourisme-differences/)
+- [Formulaire fiche police LCD obligatoire](https://jasonmarinho.com/blog/formulaire-fiche-police-lcd-obligatoire/)
+- [RGPD données voyageurs Airbnb — conformité](https://jasonmarinho.com/blog/rgpd-donnees-voyageurs-airbnb-conformite/)
 
-### Outils, conciergerie et automatisation
+### Outils, automatisation et conciergerie
 - [Automatiser ses messages Airbnb](https://jasonmarinho.com/blog/messages-airbnb-automatiser/)
+- [Gabarits de messages LCD — templates](https://jasonmarinho.com/blog/gabarits-messages-lcd-hotes-templates/)
+- [Messagerie unifiée — 3 plateformes testées](https://jasonmarinho.com/blog/messagerie-unifiee-3-plateformes-tester/)
+- [Communiquer avec voyageurs étrangers — multilingue](https://jasonmarinho.com/blog/communiquer-voyageurs-etrangers-5-regles-multilingue/)
+- [Intégration calendrier perso Airbnb / Google](https://jasonmarinho.com/blog/integration-calendrier-perso-airbnb-google/)
 - [PMS logiciel de gestion LCD débutant](https://jasonmarinho.com/blog/pms-logiciel-gestion-location-courte-duree-debutant/)
 - [Hospitable — tarification dynamique incluse](https://jasonmarinho.com/blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls/)
+- [Outils gérer location courte durée 2025](https://jasonmarinho.com/blog/outils-gerer-location-courte-duree-2025/)
+- [Outils gratuits indispensables pour démarrer LCD 2026](https://jasonmarinho.com/blog/outils-gratuits-indispensables-demarrer-lcd-2026/)
 - [Make / Zapier — workflow no-code LCD](https://jasonmarinho.com/blog/make-zapier-workflow-airbnb-no-code-debutant/)
+- [Scripts check-out automatique LCD](https://jasonmarinho.com/blog/scripts-check-out-automatique-lcd/)
+- [Automatiser la caution — Swikly vs Youka](https://jasonmarinho.com/blog/automatiser-caution-swikly-youka-test-terrain/)
+- [Capteurs IoT LCD — bruit, température, utile ou pas](https://jasonmarinho.com/blog/capteurs-iot-lcd-bruit-temperature-utile-ou-pas/)
 - [Créer une conciergerie Airbnb 2025](https://jasonmarinho.com/blog/creer-conciergerie-airbnb-2025/)
 - [Tarif conciergerie LCD — grille de marché 2026](https://jasonmarinho.com/blog/tarif-conciergerie-lcd-grille-marche-2026/)
 - [Logiciels conciergerie — comparatif 2026](https://jasonmarinho.com/blog/logiciels-conciergerie-comparatif-2026/)
+- [Conciergerie Airbnb — faire appel ou non](https://jasonmarinho.com/blog/conciergerie-airbnb-faire-appel-choisir/)
+- [Contrat de mandat conciergerie LCD — modèle](https://jasonmarinho.com/blog/contrat-mandat-conciergerie-lcd-modele-clauses/)
+- [Prospection conciergerie — trouver son premier mandat](https://jasonmarinho.com/blog/prospection-conciergerie-trouver-premier-mandat/)
+- [Équipe ménage conciergerie — recruter et fidéliser](https://jasonmarinho.com/blog/equipe-menage-conciergerie-recruter-fideliser/)
+- [Scaler sa conciergerie de 5 à 30 mandats](https://jasonmarinho.com/blog/scaler-conciergerie-5-30-mandats-process/)
+- [Sortir un mauvais client de conciergerie](https://jasonmarinho.com/blog/sortir-mauvais-client-conciergerie-procedure/)
+- [Gérer sa LCD à distance — 7 piliers hôte absent](https://jasonmarinho.com/blog/gerer-lcd-distance-7-piliers-hote-absent/)
+
+### Équipement, aménagement et expérience voyageur
+- [Aménager son logement LCD à petit budget](https://jasonmarinho.com/blog/amenager-logement-location-courte-duree-petit-budget/)
+- [Banque d'objets utiles à laisser au voyageur LCD](https://jasonmarinho.com/blog/banque-objets-utiles-laisser-voyageur-lcd/)
+- [Inventaire logement Airbnb — modèle photos](https://jasonmarinho.com/blog/inventaire-logement-airbnb-modele-photos/)
+- [Checklist préparation logement avant 1ère réservation](https://jasonmarinho.com/blog/checklist-preparation-logement-avant-1ere-reservation/)
+- [Checklist ménage professionnelle LCD](https://jasonmarinho.com/blog/checklist-menage-professionnelle-location-courte-duree/)
+- [Livret d'accueil digital LCD — créer](https://jasonmarinho.com/blog/livret-accueil-digital-creer-location-courte-duree/)
+- [Livret d'accueil digital pour hôtes LCD](https://jasonmarinho.com/blog/livret-accueil-digital-hotes-lcd/)
+- [Signalétique intérieure LCD — réduire les questions](https://jasonmarinho.com/blog/signaletique-interieure-lcd-reduit-questions/)
+- [Welcome bag LCD — 12 idées marquantes à petit budget](https://jasonmarinho.com/blog/welcome-bag-lcd-12-idees-marquantes-budget/)
+- [Wifi LCD — débit, équipement, avis](https://jasonmarinho.com/blog/wifi-location-courte-duree-debit-equipement-avis/)
+- [Trousse premiers secours LCD — équipement obligatoire](https://jasonmarinho.com/blog/trousse-premier-secours-lcd-equipement-obligatoire/)
+- [Check-in tardif — 4 solutions sans clés](https://jasonmarinho.com/blog/check-in-tardif-4-solutions-sans-cles/)
+- [Check-in LCD — boîte à clés ou serrure connectée](https://jasonmarinho.com/blog/check-in-location-courte-duree-boite-a-cles-serrure-connectee/)
+- [Serrure connectée Igloohome vs Nuki — comparatif 2026](https://jasonmarinho.com/blog/serrure-connectee-igloohome-nuki-comparatif-2026/)
+
+### Accueil de voyageurs ciblés
+- [Accueillir une famille avec enfants Airbnb — équipement](https://jasonmarinho.com/blog/accueillir-famille-enfants-airbnb-equipement/)
+- [Accueillir un voyageur business LCD — essentiels](https://jasonmarinho.com/blog/accueillir-voyageur-business-lcd-essentiels/)
+- [Accepter les animaux LCD — 7 règles pet-friendly](https://jasonmarinho.com/blog/accepter-animaux-lcd-7-regles-pet-friendly/)
+- [Attirer le télétravailleur nomade digital LCD](https://jasonmarinho.com/blog/attirer-teletravailleur-nomade-digital-location-courte-duree/)
+
+### Sécurité, litiges et assurances
+- [Assurance LCD — 5 garanties indispensables 2026](https://jasonmarinho.com/blog/assurance-lcd-5-garanties-indispensables-2026/)
+- [Assurance location courte durée Airbnb — couverture](https://jasonmarinho.com/blog/assurance-location-courte-duree-airbnb-couverture/)
+- [Vérifier ses voyageurs avant d'accepter](https://jasonmarinho.com/blog/verification-voyageurs-avant-accepter-reservation-lcd/)
+- [Gérer les voyageurs difficiles LCD](https://jasonmarinho.com/blog/gerer-voyageurs-difficiles-location-courte-duree/)
+- [Galères LCD — gérer les urgences](https://jasonmarinho.com/blog/galeres-location-courte-duree-comment-gerer-urgence/)
+- [Refacturer un dégât voyageur Airbnb — procédure](https://jasonmarinho.com/blog/refacturer-degat-voyageur-airbnb-procedure/)
+- [Bruit et règlement intérieur LCD efficace](https://jasonmarinho.com/blog/bruit-reglement-interieur-lcd-efficace/)
+- [Droits des voisins LCD — copropriété et litiges](https://jasonmarinho.com/blog/droits-voisins-lcd-copropriete-litiges/)
+- [Erreurs de débutant en LCD — premier logement](https://jasonmarinho.com/blog/erreurs-debutant-location-courte-duree-premier-logement/)
+- [Top 7 erreurs des nouveaux hôtes LCD](https://jasonmarinho.com/blog/top-7-erreurs-nouveaux-hotes-lcd-eviter/)
+
+### Avis voyageurs et fidélisation
+- [Obtenir des avis 5 étoiles Airbnb](https://jasonmarinho.com/blog/obtenir-avis-5-etoiles-airbnb/)
+- [Gérer un mauvais avis Airbnb — réponse hôte](https://jasonmarinho.com/blog/gerer-mauvais-avis-airbnb-reponse-hote/)
+- [Récupérer un mauvais avis Airbnb — méthode 5 étapes](https://jasonmarinho.com/blog/recuperer-mauvais-avis-airbnb-methode-5-etapes/)
+- [Communauté LCD — groupes hôtes Facebook entraide](https://jasonmarinho.com/blog/communaute-lcd-groupes-hotes-entraide-facebook/)
+
+### Plateformes, comparatifs et marché
+- [Airbnb vs Booking.com — comparatif location courte durée](https://jasonmarinho.com/blog/airbnb-vs-booking-com-location-courte-duree/)
+- [Booking.com hôtes LCD — guide](https://jasonmarinho.com/blog/booking-com-hotes-location-courte-duree-guide/)
+- [Optimiser son annonce Booking.com 2026](https://jasonmarinho.com/blog/optimiser-annonce-booking-com-2026-classement/)
+- [ChatGPT et Booking.com — impact sur les hôtes LCD](https://jasonmarinho.com/blog/chatgpt-booking-com-impact-hotes-lcd/)
+- [Cybevasion rachetée par Holidu — impact et alternatives](https://jasonmarinho.com/blog/cybevasion-rachetee-holidu-impact-hotes-alternatives/)
+- [Recherches voyageurs Airbnb — tendances émergentes 2026](https://jasonmarinho.com/blog/recherches-voyageurs-airbnb-tendances-emergentes-2026/)
+- [Partenaires LCD — outils validés sur le terrain](https://jasonmarinho.com/blog/partenaires-lcd-outils-valides-terrain-hotes/)
+
+### Pages plateforme
+- [Formations LCD disponibles sur la plateforme](https://jasonmarinho.com/blog/formations-lcd-disponibles-plateforme-jason-marinho/)
+- [Conciergeries — ressources plateforme](https://jasonmarinho.com/blog/conciergeries-lcd-ressources-plateforme-jason-marinho/)
+- [Chambres d'hôtes — ressources plateforme](https://jasonmarinho.com/blog/chambres-hotes-plateforme-jason-marinho-ressources/)
 
 ## Pages légales
 

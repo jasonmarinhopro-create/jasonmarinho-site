@@ -1,6 +1,20 @@
 'use client'
 
+import { useEffect } from 'react'
+
 export default function PrintButton() {
+  // Auto-déclenche l'impression si on arrive sur la page avec ?print=1
+  // (utilisé depuis le dashboard hôte pour ouvrir directement en PDF).
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('print') === '1') {
+      // Léger délai pour laisser le layout se stabiliser avant le snapshot.
+      const t = setTimeout(() => window.print(), 400)
+      return () => clearTimeout(t)
+    }
+  }, [])
+
   return (
     <div style={{ marginTop: '20px', textAlign: 'center' }} className="no-print">
       <button
