@@ -378,14 +378,17 @@ export async function acceptReply(postId: string, replyId: string | null): Promi
   if (!post)                       return { ok: false, error: 'Post introuvable' }
   if (post.author_id !== userId)   return { ok: false, error: 'Seul l\'auteur du post peut accepter une réponse' }
 
-  // Si replyId, vérifier qu'il appartient bien au post
+  // Si replyId, vérifier qu'il appartient bien au post + récupérer l'auteur
+  // pour notifier (sauf auto-acceptation)
+  let replyAuthorId: string | null = null
   if (replyId) {
     const { data: reply } = await supabase
       .from('chez_nous_replies')
-      .select('post_id')
+      .select('post_id, author_id')
       .eq('id', replyId)
       .maybeSingle()
     if (!reply || reply.post_id !== postId) return { ok: false, error: 'Réponse invalide' }
+    replyAuthorId = reply.author_id
   }
 
   const { error } = await supabase
@@ -394,6 +397,21 @@ export async function acceptReply(postId: string, replyId: string | null): Promi
     .eq('id', postId)
 
   if (error) return { ok: false, error: error.message }
+
+  // Notifie l'auteur de la réponse acceptée (jamais soi-même).
+  // L'action toggle off (replyId null) ne crée pas de notif.
+  if (replyId && replyAuthorId && replyAuthorId !== userId) {
+    await supabase
+      .from('chez_nous_notifications')
+      .insert({
+        recipient_id: replyAuthorId,
+        actor_id: userId,
+        type: 'accepted',
+        post_id: postId,
+        reply_id: replyId,
+      })
+  }
+
   revalidatePath(`/dashboard/chez-nous/${postId}`)
   revalidatePath('/dashboard/chez-nous')
   return { ok: true }

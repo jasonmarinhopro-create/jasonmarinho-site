@@ -1,12 +1,14 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, BellRinging, ChatCircleDots, Check } from '@phosphor-icons/react/dist/ssr'
+import { ArrowLeft, BellRinging, ChatCircleDots, Check, At, CheckCircle, Funnel } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { markNotifRead, markAllNotifsRead } from './actions'
+
+type NotifType = 'reply' | 'mention' | 'accepted'
 
 type Notif = {
   id: string
@@ -24,9 +26,17 @@ type Props = {
   unreadCount: number
 }
 
+const FILTERS: { id: 'all' | NotifType; label: string }[] = [
+  { id: 'all',      label: 'Tout' },
+  { id: 'reply',    label: 'Réponses' },
+  { id: 'mention',  label: 'Mentions' },
+  { id: 'accepted', label: 'Acceptées' },
+]
+
 export default function NotificationsView({ notifs, postsMap, actorsMap, unreadCount }: Props) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
+  const [filter, setFilter] = useState<'all' | NotifType>('all')
 
   const handleMarkAll = () => {
     startTransition(async () => {
@@ -34,6 +44,23 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
       router.refresh()
     })
   }
+
+  const filtered = useMemo(
+    () => filter === 'all' ? notifs : notifs.filter(n => n.type === filter),
+    [notifs, filter],
+  )
+
+  // Compteurs par type pour le badge sur chaque tab
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { all: 0, reply: 0, mention: 0, accepted: 0 }
+    for (const n of notifs) {
+      if (!n.read_at) {
+        c.all++
+        if (n.type in c) c[n.type]++
+      }
+    }
+    return c
+  }, [notifs])
 
   return (
     <div style={s.page}>
@@ -49,7 +76,7 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
           </h1>
           <p style={s.subtitle}>
             {unreadCount > 0
-              ? `${unreadCount} notification${unreadCount > 1 ? 's' : ''} non lue${unreadCount > 1 ? 's' : ''}`
+              ? `${unreadCount} non lue${unreadCount > 1 ? 's' : ''}`
               : 'Tu es à jour'}
           </p>
         </div>
@@ -60,17 +87,49 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
         )}
       </div>
 
-      {notifs.length === 0 ? (
+      {/* Filtres par type */}
+      <div style={s.filterRow} className="cn-notif-filters">
+        <Funnel size={13} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+        {FILTERS.map(f => {
+          const active = filter === f.id
+          const badge = counts[f.id] ?? 0
+          return (
+            <button
+              key={f.id}
+              onClick={() => setFilter(f.id)}
+              style={{
+                ...s.filterBtn,
+                background: active ? 'var(--accent-bg)' : 'transparent',
+                color: active ? 'var(--accent-text)' : 'var(--text-2)',
+                borderColor: active ? 'var(--accent-border)' : 'var(--border)',
+              }}
+            >
+              {f.label}
+              {badge > 0 && (
+                <span style={{
+                  ...s.filterBadge,
+                  background: active ? 'var(--accent-border)' : 'var(--surface-2)',
+                  color: active ? 'var(--accent-text)' : 'var(--text-muted)',
+                }}>{badge}</span>
+              )}
+            </button>
+          )
+        })}
+      </div>
+
+      {filtered.length === 0 ? (
         <div style={s.empty}>
           <ChatCircleDots size={32} color="var(--accent-text)" weight="duotone" />
-          <p style={s.emptyTitle}>Aucune notification</p>
+          <p style={s.emptyTitle}>{notifs.length === 0 ? 'Aucune notification' : 'Aucun résultat pour ce filtre'}</p>
           <p style={s.emptyDesc}>
-            Tu seras prévenu ici quand quelqu'un répondra à un de tes posts dans Chez Nous.
+            {notifs.length === 0
+              ? 'Tu seras prévenu ici quand quelqu\'un répondra à un de tes posts, te mentionnera dans Chez Nous, ou acceptera ta réponse.'
+              : 'Essaie un autre filtre ou bascule sur "Tout".'}
           </p>
         </div>
       ) : (
         <div style={s.list}>
-          {notifs.map(n => (
+          {filtered.map(n => (
             <NotifRow
               key={n.id}
               notif={n}
@@ -81,8 +140,32 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
           ))}
         </div>
       )}
+
+      <style>{`
+        @media (max-width: 640px) {
+          .cn-notif-filters {
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            flex-wrap: nowrap !important;
+          }
+          .cn-notif-filters::-webkit-scrollbar { display: none; }
+        }
+      `}</style>
     </div>
   )
+}
+
+function notifVerbForType(type: string): { icon: React.ReactNode; text: React.ReactNode; color: string } {
+  switch (type) {
+    case 'mention':
+      return { icon: <At size={11} weight="bold" />, text: <>t'a mentionné</>, color: '#f59e0b' }
+    case 'accepted':
+      return { icon: <CheckCircle size={11} weight="fill" />, text: <>a accepté ta réponse</>, color: '#10b981' }
+    case 'reply':
+    default:
+      return { icon: <ChatCircleDots size={11} weight="fill" />, text: <>a répondu à ton sujet</>, color: 'var(--accent-text)' }
+  }
 }
 
 function NotifRow({ notif, post, actor, actorId }: {
@@ -91,7 +174,6 @@ function NotifRow({ notif, post, actor, actorId }: {
   actor?: { full_name: string | null; pseudo: string | null }
   actorId: string
 }) {
-  const router = useRouter()
   const [, startTransition] = useTransition()
 
   const av = colorFromId(actorId)
@@ -108,6 +190,7 @@ function NotifRow({ notif, post, actor, actorId }: {
 
   const cat = post ? CATEGORIES[post.category as CategoryId] : null
   const isUnread = !notif.read_at
+  const verb = notifVerbForType(notif.type)
 
   if (!post || !notif.post_id) return null
 
@@ -121,10 +204,15 @@ function NotifRow({ notif, post, actor, actorId }: {
         borderColor:  isUnread ? 'rgba(255,213,107,0.25)' : 'var(--border)',
       }}
     >
-      <div style={{ ...s.avatar, background: av.bg, color: av.text }}>{initials}</div>
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+        <div style={{ ...s.avatar, background: av.bg, color: av.text }}>{initials}</div>
+        <span style={{ ...s.typeChip, background: verb.color }} title={notif.type}>
+          {verb.icon}
+        </span>
+      </div>
       <div style={s.body}>
         <div style={s.text}>
-          <strong>{name}</strong> a répondu à ton sujet
+          <strong>{name}</strong> {verb.text}
         </div>
         {cat && (
           <div style={s.meta}>
@@ -165,6 +253,25 @@ const s: Record<string, React.CSSProperties> = {
     padding: '7px 14px', borderRadius: '8px', cursor: 'pointer',
   },
 
+  filterRow: {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    marginBottom: '16px', flexWrap: 'wrap',
+    paddingBottom: '4px',
+  },
+  filterBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '12px', fontWeight: 600,
+    padding: '6px 12px', borderRadius: '999px',
+    border: '1px solid',
+    cursor: 'pointer', fontFamily: 'inherit',
+    flexShrink: 0, whiteSpace: 'nowrap' as const,
+  },
+  filterBadge: {
+    fontSize: '10px', fontWeight: 700,
+    padding: '1px 6px', borderRadius: '999px',
+    minWidth: '18px', textAlign: 'center' as const,
+  },
+
   empty: {
     background: 'var(--surface)', border: '1px dashed var(--border)',
     borderRadius: '14px', padding: '40px 24px', textAlign: 'center',
@@ -186,6 +293,13 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', fontWeight: 700, lineHeight: 1,
     fontFamily: 'var(--font-fraunces), serif',
     flexShrink: 0,
+  },
+  // Pastille colorée en bas-droite de l'avatar pour visualiser le type
+  typeChip: {
+    position: 'absolute' as const, bottom: '-2px', right: '-2px',
+    width: '16px', height: '16px', borderRadius: '50%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: '#fff', border: '2px solid var(--bg)',
   },
   body: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '3px' },
   text: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.4 },

@@ -1047,10 +1047,12 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   {profileNatOpen && (
                     <div style={{
                       position: 'absolute' as const, top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 50,
-                      background: 'var(--surface)', border: '1px solid var(--border)',
-                      borderRadius: '12px', boxShadow: '0 12px 36px rgba(0,0,0,0.35)', overflow: 'hidden',
+                      // --surface est rgba(...,0.04) en mode sombre → invisible.
+                      // --bg-2 est solide dans les deux modes.
+                      background: 'var(--bg-2)', border: '1px solid var(--border-2)',
+                      borderRadius: '12px', boxShadow: '0 12px 36px rgba(0,0,0,0.45)', overflow: 'hidden',
                     }}>
-                      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border)' }}>
+                      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border)', background: 'var(--bg-3)' }}>
                         <input
                           autoFocus
                           value={profileNatSearch}
@@ -1058,13 +1060,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                           placeholder="Rechercher un pays…"
                           style={{
                             width: '100%', padding: '6px 10px', borderRadius: '7px',
-                            border: '1px solid var(--border)', background: 'var(--bg-2)',
+                            border: '1px solid var(--border)', background: 'var(--bg)',
                             color: 'var(--text)', fontSize: '12.5px', fontFamily: 'inherit', outline: 'none',
                             boxSizing: 'border-box' as const,
                           }}
                         />
                       </div>
-                      <div style={{ maxHeight: '200px', overflowY: 'auto' as const }}>
+                      <div style={{ maxHeight: '200px', overflowY: 'auto' as const, background: 'var(--bg-2)' }}>
                         {COUNTRIES.filter(c =>
                           c.name.toLowerCase().includes(profileNatSearch.toLowerCase()) ||
                           c.code.toLowerCase().includes(profileNatSearch.toLowerCase())

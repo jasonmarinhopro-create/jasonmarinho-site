@@ -355,6 +355,9 @@ export default function RevenusView({
 
   // ── Chart (Phase 3, enrichi) ────────────────────────────────────
   const [chartRange, setChartRange] = useState<'6m' | '12m' | 'year'>('6m')
+  // Mode d'affichage : 'stacked' (encaissé + prévu + ligne N-1) ou
+  // 'compare' (2 barres côte-à-côte : N vs N-1 sur la même échelle).
+  const [chartMode, setChartMode] = useState<'stacked' | 'compare'>('stacked')
 
   const chartData = useMemo(() => {
     // 6m : 6 derniers mois glissants
@@ -748,23 +751,42 @@ export default function RevenusView({
               <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>Revenus encaissés</h2>
               <p style={{ ...s.cardSub, margin: 0 }}>
                 {chartRange === '6m' ? '6 derniers mois' : chartRange === '12m' ? '12 derniers mois' : `Année ${thisYear}`}
-                {' · '}vert : encaissé · cyan pointillé : prévu · trait gris : N−1
+                {' · '}
+                {chartMode === 'compare'
+                  ? `vert : ${thisYear} · violet : ${thisYear - 1}`
+                  : 'vert : encaissé · cyan pointillé : prévu · trait gris : N−1'}
               </p>
             </div>
-            <div style={s.chartToggle}>
-              {([
-                { id: '6m', label: '6 mois' },
-                { id: '12m', label: '12 mois' },
-                { id: 'year', label: `${thisYear}` },
-              ] as const).map(opt => (
-                <button
-                  key={opt.id}
-                  onClick={() => setChartRange(opt.id)}
-                  style={{ ...s.chartToggleBtn, ...(chartRange === opt.id ? s.chartToggleBtnActive : {}) }}
-                >
-                  {opt.label}
-                </button>
-              ))}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' as const }}>
+              <div style={s.chartToggle}>
+                {([
+                  { id: 'stacked', label: 'Empilé' },
+                  { id: 'compare', label: `N vs N−1` },
+                ] as const).map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setChartMode(opt.id)}
+                    style={{ ...s.chartToggleBtn, ...(chartMode === opt.id ? s.chartToggleBtnActive : {}) }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              <div style={s.chartToggle}>
+                {([
+                  { id: '6m', label: '6 mois' },
+                  { id: '12m', label: '12 mois' },
+                  { id: 'year', label: `${thisYear}` },
+                ] as const).map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setChartRange(opt.id)}
+                    style={{ ...s.chartToggleBtn, ...(chartRange === opt.id ? s.chartToggleBtnActive : {}) }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           <div style={{ ...s.chart, position: 'relative' as const }}>
@@ -797,42 +819,67 @@ export default function RevenusView({
               const totalH = Math.max((month.encaisse / chartMaxValue) * 100, month.encaisse > 0 ? 4 : 2)
               const prevuH = (month.prevu / chartMaxValue) * 100
               const n1H = (month.n1 / chartMaxValue) * 100
+              const nH = Math.max((month.encaisse / chartMaxValue) * 100, month.encaisse > 0 ? 4 : 2)
+              const evolPct = month.n1 > 0 ? Math.round(((month.encaisse - month.n1) / month.n1) * 100) : null
               return (
                 <div key={month.key} style={s.chartCol}>
-                  <div style={{ ...s.barWrap, position: 'relative' as const }}>
-                    {/* Marqueur N-1 (trait gris fin) */}
-                    {month.n1 > 0 && (
+                  {chartMode === 'compare' ? (
+                    <div style={{ ...s.barWrap, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '3px' }}>
+                      {/* Barre N (année courante) */}
                       <div style={{
-                        position: 'absolute' as const, left: '4px', right: '4px',
-                        bottom: `${n1H}%`,
-                        height: '2px',
-                        background: 'var(--text-muted)',
-                        opacity: 0.5,
-                        borderRadius: '1px',
-                      }} title={`N−1 : ${fmt(month.n1)}`} />
-                    )}
-                    {/* Bar encaissé */}
-                    <div style={{
-                      ...s.bar,
-                      height: `${totalH}%`,
-                      opacity: month.encaisse === 0 ? 0.15 : 1,
-                    }} />
-                    {/* Bar prévu (au-dessus, hachuré cyan) */}
-                    {month.prevu > 0 && (
-                      <div style={{
-                        position: 'absolute' as const,
-                        bottom: `${totalH}%`,
-                        left: 0, right: 0,
-                        height: `${prevuH}%`,
-                        background: 'repeating-linear-gradient(45deg, rgba(96,165,250,0.45) 0, rgba(96,165,250,0.45) 4px, rgba(96,165,250,0.20) 4px, rgba(96,165,250,0.20) 8px)',
+                        width: '42%', height: `${nH}%`,
+                        background: 'var(--accent-bg-2)',
+                        borderTop: '2px solid var(--accent-text)',
                         borderRadius: '3px 3px 0 0',
-                      }} title={`Prévu : ${fmt(month.prevu)}`} />
-                    )}
-                  </div>
+                        opacity: month.encaisse === 0 ? 0.15 : 1,
+                      }} title={`${thisYear} : ${fmt(month.encaisse)}`} />
+                      {/* Barre N-1 */}
+                      <div style={{
+                        width: '42%', height: `${Math.max(n1H, month.n1 > 0 ? 4 : 2)}%`,
+                        background: 'rgba(168,85,247,0.18)',
+                        borderTop: '2px solid rgba(168,85,247,0.85)',
+                        borderRadius: '3px 3px 0 0',
+                        opacity: month.n1 === 0 ? 0.15 : 1,
+                      }} title={`${thisYear - 1} : ${fmt(month.n1)}`} />
+                    </div>
+                  ) : (
+                    <div style={{ ...s.barWrap, position: 'relative' as const }}>
+                      {/* Marqueur N-1 (trait gris fin) */}
+                      {month.n1 > 0 && (
+                        <div style={{
+                          position: 'absolute' as const, left: '4px', right: '4px',
+                          bottom: `${n1H}%`,
+                          height: '2px',
+                          background: 'var(--text-muted)',
+                          opacity: 0.5,
+                          borderRadius: '1px',
+                        }} title={`N−1 : ${fmt(month.n1)}`} />
+                      )}
+                      {/* Bar encaissé */}
+                      <div style={{
+                        ...s.bar,
+                        height: `${totalH}%`,
+                        opacity: month.encaisse === 0 ? 0.15 : 1,
+                      }} />
+                      {/* Bar prévu (au-dessus, hachuré cyan) */}
+                      {month.prevu > 0 && (
+                        <div style={{
+                          position: 'absolute' as const,
+                          bottom: `${totalH}%`,
+                          left: 0, right: 0,
+                          height: `${prevuH}%`,
+                          background: 'repeating-linear-gradient(45deg, rgba(96,165,250,0.45) 0, rgba(96,165,250,0.45) 4px, rgba(96,165,250,0.20) 4px, rgba(96,165,250,0.20) 8px)',
+                          borderRadius: '3px 3px 0 0',
+                        }} title={`Prévu : ${fmt(month.prevu)}`} />
+                      )}
+                    </div>
+                  )}
                   <span style={s.barAmount}>
-                    {month.total > 0
-                      ? new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(month.total)
-                      : '–'
+                    {chartMode === 'compare' && evolPct !== null
+                      ? <span style={{ color: evolPct >= 0 ? '#10b981' : '#ef4444', fontWeight: 700 }}>{evolPct > 0 ? '+' : ''}{evolPct}%</span>
+                      : month.total > 0
+                        ? new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(month.total)
+                        : '–'
                     }
                   </span>
                   <span style={{ ...s.barLabel, fontWeight: month.isCurrent ? 700 : 500, color: month.isCurrent ? 'var(--accent-text)' : undefined }}>
