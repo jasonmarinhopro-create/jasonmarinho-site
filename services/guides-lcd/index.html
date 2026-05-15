@@ -145,14 +145,15 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .teaser-blur{position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to bottom,transparent,var(--cr) 80%);z-index:2;display:flex;align-items:flex-end;justify-content:center;padding-bottom:28px}
 .btn-unlock{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:12px 24px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s;border:none;cursor:pointer}
 .btn-unlock:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,213,107,.3)}
-.btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
-.btn-ol:hover{background:var(--g);color:#fff}
+.btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background .2s cubic-bezier(.4,0,.2,1),color .2s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.btn-ol:hover{background:var(--g);color:#fff;transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,76,63,.18)}
+    .btn-ol:active{transform:translateY(0)}
 
 /* ── CTA BANNER ── */
 .cta-s{background:var(--g);padding:clamp(64px,8vw,88px) clamp(16px,5vw,60px);text-align:center;position:relative;overflow:hidden}
 .cta-gw{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:640px;height:300px;background:radial-gradient(ellipse,rgba(255,213,107,.06) 0%,transparent 65%);pointer-events:none}
 .cta-in{max-width:520px;margin:0 auto;position:relative;z-index:2}
-.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:background .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
 .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.28)}
 
 /* ── FOOTER ── */
