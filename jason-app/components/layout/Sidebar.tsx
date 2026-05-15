@@ -113,6 +113,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
       <Link
         href={href}
         onClick={onClose}
+        className={active ? 'jm-nav-item jm-nav-item--active' : 'jm-nav-item'}
         style={{
           ...styles.navItem,
           ...(active ? styles.navItemActive : {}),
@@ -341,18 +342,19 @@ const styles: Record<string, React.CSSProperties> = {
   },
   navItem: {
     display: 'flex', alignItems: 'center', gap: '11px',
-    padding: '10px 12px', borderRadius: '10px',
-    fontSize: '14px', fontWeight: 400,
+    padding: '9px 12px', borderRadius: 'var(--r-md)',
+    fontSize: 'var(--t-base)', fontWeight: 400,
     color: 'var(--nav-item)',
     textDecoration: 'none',
-    transition: 'all 0.18s',
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth)',
     position: 'relative',
   },
   navItemActive: {
     background: 'var(--nav-active-bg)',
     color: 'var(--nav-active-color)',
-    fontWeight: 500,
-    border: '1px solid var(--nav-active-border)',
+    fontWeight: 600,
+    // Indicateur vertical à gauche, style 2026 (Linear/Vercel pattern)
+    boxShadow: 'inset 3px 0 0 var(--nav-active-color)',
   },
   activeDot: {
     position: 'absolute', right: '12px',

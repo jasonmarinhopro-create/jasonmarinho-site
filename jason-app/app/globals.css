@@ -507,6 +507,12 @@ em { font-style: italic; color: var(--accent); }
 }
 .quick-hover:hover [data-quick-icon] { transform: scale(1.08); }
 
+/* Sidebar nav-item hover (non actif) */
+.jm-nav-item:not(.jm-nav-item--active):hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
 /* Pages avec bypass fade-up (React 18 client-nav timing issue) */
 .communaute-no-fade .fade-up,
 .formations-no-fade .fade-up,
