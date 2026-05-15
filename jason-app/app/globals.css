@@ -115,19 +115,223 @@
   --error:        #DC2626;
 }
 
+/* ═════════════════════════════════════════════════════════════════════
+ * DESIGN SYSTEM 2026 — tokens sémantiques additifs
+ * Ces variables sont nouvelles ET coexistent avec les anciennes.
+ * Migration progressive : nouveaux composants → tokens sémantiques,
+ * anciens composants continuent de marcher tant qu'on n'a pas migré.
+ * ═════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Spacing scale (8pt grid) ─────────────────────────────────────── */
+  --s-0: 0;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 28px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+
+  /* ── Radius scale ─────────────────────────────────────────────────── */
+  --r-xs:   4px;
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   18px;
+  --r-2xl:  24px;
+  --r-pill: 999px;
+
+  /* ── Typography scale (compacte, 5 tailles principales) ───────────── */
+  --t-xs:   12px;
+  --t-sm:   13px;
+  --t-base: 14px;
+  --t-md:   15px;
+  --t-lg:   17px;
+  --t-xl:   20px;
+  --t-2xl:  24px;
+  --t-3xl:  32px;
+  --t-display: 40px;
+
+  /* Line heights */
+  --lh-tight: 1.2;
+  --lh-snug:  1.4;
+  --lh-base:  1.55;
+  --lh-relax: 1.7;
+
+  /* Letter spacing pour titres serif (Fraunces aime un peu de négatif) */
+  --ls-tight: -0.025em;
+  --ls-snug:  -0.015em;
+  --ls-wide:  0.02em;
+
+  /* ── Easing functions (animations 2026) ───────────────────────────── */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);          /* "expo-out", élégant */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);      /* léger overshoot, ludique */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);           /* material standard */
+
+  /* ── Durations ────────────────────────────────────────────────────── */
+  --d-fast:   120ms;
+  --d-base:   200ms;
+  --d-slow:   350ms;
+
+  /* ── Focus ring accessible (WCAG AAA) ─────────────────────────────── */
+  --ring:        0 0 0 3px rgba(255,213,107,0.45);
+  --ring-offset: 2px;
+}
+
+/* ── Tokens sémantiques status (override par thème) ─────────────────── */
+:root {
+  /* Sur fond sombre, on utilise des couleurs claires saturées et leurs variantes */
+  --info:           #93C5FD;    /* sky-300 */
+  --info-text:      #BFDBFE;
+  --info-bg:        rgba(147,197,253,0.08);
+  --info-border:    rgba(147,197,253,0.25);
+
+  --success-1:      #34D399;
+  --success-text:   #6EE7B7;
+  --success-bg:     rgba(52,211,153,0.08);
+  --success-border: rgba(52,211,153,0.25);
+
+  --warning:        #FBBF24;    /* amber-400 */
+  --warning-text:   #FCD34D;
+  --warning-bg:     rgba(251,191,36,0.08);
+  --warning-border: rgba(251,191,36,0.28);
+
+  --danger:         #F87171;
+  --danger-text:    #FCA5A5;
+  --danger-bg:      rgba(248,113,113,0.08);
+  --danger-border:  rgba(248,113,113,0.28);
+
+  /* ── Shadows scale (douces, modernes) ─────────────────────────────── */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.30);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.35);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,0.45);
+  --shadow-xl:  0 24px 60px rgba(0,0,0,0.55);
+  /* Glow d'accent pour CTA */
+  --shadow-glow: 0 8px 28px rgba(255,213,107,0.22);
+}
+
+/* En light mode, on resature les status pour le contraste sur fond clair */
+[data-theme="light"] {
+  --info:           #2563EB;
+  --info-text:      #1E40AF;
+  --info-bg:        rgba(37,99,235,0.07);
+  --info-border:    rgba(37,99,235,0.22);
+
+  --success-1:      #059669;
+  --success-text:   #065F46;
+  --success-bg:     rgba(5,150,105,0.07);
+  --success-border: rgba(5,150,105,0.25);
+
+  --warning:        #D97706;
+  --warning-text:   #92400E;
+  --warning-bg:     rgba(217,119,6,0.07);
+  --warning-border: rgba(217,119,6,0.28);
+
+  --danger:         #DC2626;
+  --danger-text:    #991B1B;
+  --danger-bg:      rgba(220,38,38,0.06);
+  --danger-border:  rgba(220,38,38,0.25);
+
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 12px rgba(0,76,63,0.08);
+  --shadow-lg:  0 12px 32px rgba(0,76,63,0.12);
+  --shadow-xl:  0 24px 60px rgba(0,76,63,0.18);
+  --shadow-glow: 0 8px 28px rgba(0,76,63,0.18);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+ * ACCESSIBILITÉ — contraste amélioré pour WCAG AA
+ * --text-muted était à 0.24 d'opacité (~3:1 = AA fail).
+ * On le remonte à 0.42 (~5:1 = AA pour body, AA-large pour 11px+).
+ * ═════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --text-muted: rgba(240,244,255,0.42);
+}
+[data-theme="light"] {
+  --text-muted: rgba(11,29,15,0.55);
+}
+
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-outfit), sans-serif;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition: background var(--d-slow) var(--ease-smooth), color var(--d-slow) var(--ease-smooth);
+  /* Font features modernes : ligatures, kerning, chiffres tabulaires sur stats */
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
 }
+
+/* Chiffres tabulaires (largeur fixe) sur les KPIs et tableaux financiers */
+.tabular-nums { font-variant-numeric: tabular-nums lining-nums; }
 
 /* ── TYPOGRAPHY ── */
 h1, h2, h3, h4 { font-family: var(--font-fraunces), serif; font-weight: 400; letter-spacing: -0.02em; }
 em { font-style: italic; color: var(--accent); }
+
+/* ═════════════════════════════════════════════════════════════════════
+ * ANIMATIONS RÉUTILISABLES — appliquer via className
+ * Utilisation : <div className="anim-fade-up"> — léger, pas de JS.
+ * ═════════════════════════════════════════════════════════════════════ */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+.anim-fade-up    { animation: fadeUp var(--d-slow) var(--ease-out) both; }
+.anim-fade-in    { animation: fadeIn var(--d-base) var(--ease-smooth) both; }
+.anim-scale-in   { animation: scaleIn var(--d-base) var(--ease-out) both; }
+.anim-pulse-soft { animation: pulse-soft 2.5s ease-in-out infinite; }
+
+/* Respect des préférences utilisateur réduisant les animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+ * FOCUS RING ACCESSIBLE — vise un seul style cohérent pour tout
+ * Utilisation native : marche pour tous les <button>, <input>, <a>
+ * ═════════════════════════════════════════════════════════════════════ */
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: inherit;
+}
+/* Les boutons custom peuvent désactiver le ring s'ils en ont déjà un */
+.no-ring:focus-visible { box-shadow: none; }
 
 /* ── GLASS CARD ── */
 .glass-card {
@@ -286,13 +490,28 @@ em { font-style: italic; color: var(--accent); }
 }
 
 .fade-up {
-  animation: fadeUp 0.5s ease both;
+  animation: fadeUp 0.5s var(--ease-out) both;
   will-change: opacity, transform;
 }
 .fade-up.d1 { animation-delay: 0.08s; }
 .fade-up.d2 { animation-delay: 0.16s; }
 .fade-up.d3 { animation-delay: 0.24s; }
 .fade-up.d4 { animation-delay: 0.32s; }
+
+/* Quick action lift moderne 2026 */
+.quick-hover:hover {
+  border-color: var(--border-2) !important;
+  background: var(--surface-2) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.quick-hover:hover [data-quick-icon] { transform: scale(1.08); }
+
+/* Sidebar nav-item hover (non actif) */
+.jm-nav-item:not(.jm-nav-item--active):hover {
+  background: var(--surface);
+  color: var(--text);
+}
 
 /* Pages avec bypass fade-up (React 18 client-nav timing issue) */
 .communaute-no-fade .fade-up,
