@@ -9,7 +9,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel } from './actions'
 import ImportCSVModal from './ImportCSVModal'
-import { PLATFORMS } from '@/lib/platforms'
+import { PLATFORMS, suggestCommission } from '@/lib/platforms'
 import { COUNTRIES as COUNTRIES_MAP } from '@/lib/countries'
 
 // ── types ────────────────────────────────────────────────────────────────────
@@ -305,7 +305,7 @@ export default function RevenusView({
   // Agrège les revenus issus de séjours par plateforme YTD, calcule les
   // commissions totales et le net par canal. Met en avant le canal direct.
   const channelStatsYTD = useMemo(() => {
-    const byChannel: Record<string, { brut: number; commission: number; net: number; count: number }> = {}
+    const byChannel: Record<string, { brut: number; commission: number; net: number; count: number; commissionEstimated: number }> = {}
     let commissionTotalYTD = 0
     let bruteYTD = 0
     let directBruteYTD = 0
@@ -315,13 +315,26 @@ export default function RevenusView({
       const d = new Date(e.date_paiement)
       if (d.getFullYear() !== thisYear) return
       const channel = e.contrat_plateforme ?? 'direct'
+      // Source de vérité = la plateforme (pas la commission saisie). Si plateforme
+      // 'direct'/'driing' ou null → canal direct. Sinon → OTA, même si la
+      // commission n'a pas été saisie par l'hôte (séjours créés avant la
+      // feature commission par exemple).
       const isDirect = !e.contrat_plateforme || e.contrat_plateforme === 'driing' || e.contrat_plateforme === 'direct'
-      const commission = e.commission_montant ?? 0
+
+      // Commission effective : valeur saisie en priorité, sinon estimation au
+      // taux par défaut de la plateforme. Permet d'avoir un net réaliste
+      // même quand l'hôte n'a pas encore renseigné la commission exacte.
+      const commissionEntered = e.commission_montant ?? null
+      const commissionEstimated = commissionEntered === null && !isDirect
+        ? suggestCommission(e.montant, channel)
+        : 0
+      const commission = commissionEntered ?? commissionEstimated
       const net = e.montant - commission
 
-      if (!byChannel[channel]) byChannel[channel] = { brut: 0, commission: 0, net: 0, count: 0 }
+      if (!byChannel[channel]) byChannel[channel] = { brut: 0, commission: 0, net: 0, count: 0, commissionEstimated: 0 }
       byChannel[channel].brut += e.montant
       byChannel[channel].commission += commission
+      byChannel[channel].commissionEstimated += commissionEstimated
       byChannel[channel].net += net
       byChannel[channel].count += 1
 
@@ -340,6 +353,8 @@ export default function RevenusView({
       bruteYTD,
       directBruteYTD,
       directPct: bruteYTD > 0 ? (directBruteYTD / bruteYTD) * 100 : 0,
+      // True si AU MOINS une partie des commissions est estimée (UX : afficher l'avertissement)
+      hasEstimatedCommission: sorted.some(c => c.commissionEstimated > 0),
     }
   }, [entries, thisYear])
 
@@ -433,16 +448,25 @@ export default function RevenusView({
     const evolMois  = memeMoisN1 > 0 ? ((cesMoisEnc - memeMoisN1) / memeMoisN1) * 100 : null
     const evolAnnee = anneeN1   > 0 ? ((cetteAnneeEnc - anneeN1)   / anneeN1)   * 100 : null
 
-    // Commissions plateformes : ce que les OTA reprennent sur le brut
+    // Commissions plateformes : ce que les OTA reprennent sur le brut.
+    // Si la commission n'a pas été saisie sur un séjour OTA, on l'estime
+    // au taux par défaut de la plateforme (cohérent avec channelStatsYTD).
     let commissionsCesMois = 0
     let commissionsYTD = 0
+    let commissionsEstimatedYTD = 0
     entries.forEach(e => {
       if (e.mode_paiement !== 'sejour') return
-      const com = e.commission_montant ?? 0
+      const isDirect = !e.contrat_plateforme || e.contrat_plateforme === 'driing' || e.contrat_plateforme === 'direct'
+      const entered = e.commission_montant ?? null
+      const estimated = entered === null && !isDirect
+        ? suggestCommission(e.montant, e.contrat_plateforme ?? null)
+        : 0
+      const com = entered ?? estimated
       if (com <= 0) return
       const d = new Date(e.date_paiement)
       if (d.getFullYear() === thisYear) {
         commissionsYTD += com
+        if (estimated > 0) commissionsEstimatedYTD += estimated
         if (d.getMonth() === thisMonth) commissionsCesMois += com
       }
     })
@@ -459,7 +483,7 @@ export default function RevenusView({
       cesMoisEnc, enAttente, cetteAnneeEnc,
       moyMensuelle: last6Sum / 6,
       memeMoisN1, anneeN1, evolMois, evolAnnee,
-      commissionsCesMois, commissionsYTD,
+      commissionsCesMois, commissionsYTD, commissionsEstimatedYTD,
       netCesMois, netYTD,
       beneficeMois, beneficeYTD,
     }
@@ -741,29 +765,57 @@ export default function RevenusView({
       )}
 
       {/* ── Bandeau Brut → Commissions → Net (focus visuel principal) ── */}
-      {kpis.cetteAnneeEnc > 0 && (
-        <div style={s.netBanner} className="rv-net-banner">
-          <div style={s.netBannerCol}>
-            <div style={s.netBannerLbl}>Encaissé brut {thisYear}</div>
-            <div style={{ ...s.netBannerVal, color: 'var(--text)' }}>{fmt(kpis.cetteAnneeEnc)}</div>
-            <div style={s.netBannerSub}>Total payé par tes voyageurs</div>
-          </div>
-          <div style={{ ...s.netBannerArrow, color: '#ef4444' }} className="rv-net-banner-arrow">−</div>
-          <div style={s.netBannerCol}>
-            <div style={s.netBannerLbl}>Commissions plateformes</div>
-            <div style={{ ...s.netBannerVal, color: '#ef4444' }}>{fmt(kpis.commissionsYTD)}</div>
-            <div style={s.netBannerSub}>
-              {kpis.commissionsYTD > 0
-                ? `${((kpis.commissionsYTD / kpis.cetteAnneeEnc) * 100).toFixed(1)} % du brut · OTA`
-                : 'Aucune commission · 100 % direct 🎉'}
+      {kpis.cetteAnneeEnc > 0 && (() => {
+        // Le label "X % direct" se base sur les PLATEFORMES (source de vérité),
+        // pas sur les commissions saisies. Évite l'ancien bug "100 % direct"
+        // qui s'affichait quand l'hôte avait du Booking sans commission saisie.
+        const directPct = channelStatsYTD.directPct
+        const isPureDirect = directPct >= 99 && kpis.commissionsYTD === 0
+        return (
+          <div style={s.netBanner} className="rv-net-banner">
+            <div style={s.netBannerCol}>
+              <div style={s.netBannerLbl}>Encaissé brut {thisYear}</div>
+              <div style={{ ...s.netBannerVal, color: 'var(--text)' }}>{fmt(kpis.cetteAnneeEnc)}</div>
+              <div style={s.netBannerSub}>Total payé par tes voyageurs</div>
+            </div>
+            <div style={{ ...s.netBannerArrow, color: '#ef4444' }} className="rv-net-banner-arrow">−</div>
+            <div style={s.netBannerCol}>
+              <div style={s.netBannerLbl}>
+                Commissions plateformes
+                {kpis.commissionsEstimatedYTD > 0 && <span style={{ marginLeft: '6px', fontSize: '9px', fontWeight: 700, padding: '1px 6px', borderRadius: '999px', background: 'rgba(245,158,11,0.18)', color: '#f59e0b' }}>ESTIMÉ</span>}
+              </div>
+              <div style={{ ...s.netBannerVal, color: '#ef4444' }}>{fmt(kpis.commissionsYTD)}</div>
+              <div style={s.netBannerSub}>
+                {isPureDirect
+                  ? 'Aucune commission · 100 % direct 🎉'
+                  : kpis.commissionsYTD > 0
+                    ? `${((kpis.commissionsYTD / kpis.cetteAnneeEnc) * 100).toFixed(1)} % du brut · ${(100 - directPct).toFixed(0)} % via OTA`
+                    : `${directPct.toFixed(0)} % direct · saisis tes commissions OTA pour un calcul exact`}
+              </div>
+            </div>
+            <div style={{ ...s.netBannerArrow, color: '#10b981' }} className="rv-net-banner-arrow">=</div>
+            <div style={s.netBannerCol}>
+              <div style={s.netBannerLbl}>Dans ta poche</div>
+              <div style={{ ...s.netBannerVal, color: '#10b981', fontSize: '28px' }}>{fmt(kpis.netYTD)}</div>
+              <div style={s.netBannerSub}>Net après commissions, avant charges</div>
             </div>
           </div>
-          <div style={{ ...s.netBannerArrow, color: '#10b981' }} className="rv-net-banner-arrow">=</div>
-          <div style={s.netBannerCol}>
-            <div style={s.netBannerLbl}>Dans ta poche</div>
-            <div style={{ ...s.netBannerVal, color: '#10b981', fontSize: '28px' }}>{fmt(kpis.netYTD)}</div>
-            <div style={s.netBannerSub}>Net après commissions, avant charges</div>
-          </div>
+        )
+      })()}
+
+      {/* Avertissement si commissions estimées : invite l'hôte à éditer les séjours */}
+      {kpis.commissionsEstimatedYTD > 0 && (
+        <div style={{
+          padding: '10px 14px', marginBottom: '16px', marginTop: '-8px',
+          background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.22)',
+          borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px',
+          fontSize: '12px', color: 'var(--text-2)', flexWrap: 'wrap' as const,
+        }}>
+          <Warning size={14} weight="fill" color="#f59e0b" />
+          <span>
+            <strong>{fmt(kpis.commissionsEstimatedYTD)} de commissions estimées</strong> au taux par défaut des plateformes
+            (Airbnb 15.5 %, Booking 15 %, Abritel/Vrbo 8 %). Ouvre tes séjours dans la fiche voyageur pour saisir le montant exact.
+          </span>
         </div>
       )}
 
@@ -1145,7 +1197,12 @@ export default function RevenusView({
                     </div>
                     <div style={{ ...s.channelStatArrow, color: c.commission > 0 ? '#ef4444' : 'var(--text-muted)' }}>−</div>
                     <div style={s.channelStatBox}>
-                      <div style={s.channelStatLbl}>Commission</div>
+                      <div style={s.channelStatLbl}>
+                        Commission
+                        {c.commissionEstimated > 0 && c.commissionEstimated === c.commission && (
+                          <span style={{ marginLeft: '4px', fontSize: '8px', fontWeight: 700, padding: '1px 4px', borderRadius: '999px', background: 'rgba(245,158,11,0.18)', color: '#f59e0b' }}>EST.</span>
+                        )}
+                      </div>
                       <div style={{ ...s.channelStatVal, color: c.commission > 0 ? '#ef4444' : 'var(--text-muted)' }}>
                         {c.commission > 0 ? fmt(c.commission) : '0 €'}
                       </div>
