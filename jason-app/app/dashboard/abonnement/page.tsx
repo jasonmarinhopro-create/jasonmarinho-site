@@ -400,25 +400,55 @@ export default async function AbonnementPage({
 
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
-  intro: { marginBottom: '36px' },
-  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.6 },
-  mainGrid: { gap: '28px' },
+  intro: { marginBottom: 'var(--s-8)' },
+  pageTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'clamp(28px,3vw,40px)', fontWeight: 400,
+    color: 'var(--text)', marginBottom: 'var(--s-3)',
+    letterSpacing: 'var(--ls-tight)',
+  },
+  pageDesc: {
+    fontSize: 'var(--t-md)', fontWeight: 400, color: 'var(--text-2)',
+    maxWidth: '560px', lineHeight: 'var(--lh-relax)',
+  },
+  mainGrid: { gap: 'var(--s-7)' },
   leftCol: {},
-  rightCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
+  rightCol: { display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)' },
 
-  planLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--success-1)' },
+  planLabel: {
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-2)',
+    fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const, color: 'var(--success-1)',
+  },
   dot: { width: '7px', height: '7px', borderRadius: '50%', background: 'var(--success-1)' },
-  planName: { fontFamily: 'var(--font-fraunces), serif', fontSize: '32px', fontWeight: 400, color: 'var(--text)' },
-  planDesc: { fontSize: '13px', fontWeight: 400, color: 'var(--text-3)', lineHeight: 1.6, margin: 0 },
-  featureList: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  featureItem: { display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', fontWeight: 400, color: 'var(--text-2)' },
-  smallNote: { fontSize: '12px', fontWeight: 400, color: 'var(--text-muted)', lineHeight: 1.65, borderTop: '1px solid var(--border)', paddingTop: '12px', marginTop: '4px' },
+  planName: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'var(--t-3xl)', fontWeight: 400, color: 'var(--text)',
+    letterSpacing: 'var(--ls-tight)',
+  },
+  planDesc: {
+    fontSize: 'var(--t-sm)', fontWeight: 400, color: 'var(--text-3)',
+    lineHeight: 'var(--lh-relax)', margin: 0,
+  },
+  featureList: { display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-3)' },
+  featureItem: {
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    fontSize: 'var(--t-sm)', fontWeight: 400, color: 'var(--text-2)',
+  },
+  smallNote: {
+    fontSize: 'var(--t-xs)', fontWeight: 400, color: 'var(--text-muted)',
+    lineHeight: 'var(--lh-relax)', borderTop: '1px solid var(--border)',
+    paddingTop: 'var(--s-3)', marginTop: 'var(--s-1)',
+  },
 
-  priceRow: { display: 'flex', alignItems: 'baseline', gap: '4px', flexWrap: 'wrap' },
-  price: { fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', fontWeight: 600, color: 'var(--text)' },
-  priceLabel: { fontSize: '13px', color: 'var(--text-muted)' },
-  priceStrike: { fontSize: '12px', color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: '4px' },
+  priceRow: { display: 'flex', alignItems: 'baseline', gap: 'var(--s-1)', flexWrap: 'wrap' as const },
+  price: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'var(--t-2xl)', fontWeight: 600, color: 'var(--text)',
+    letterSpacing: 'var(--ls-tight)',
+  },
+  priceLabel: { fontSize: 'var(--t-sm)', color: 'var(--text-muted)' },
+  priceStrike: { fontSize: 'var(--t-xs)', color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: 'var(--s-1)' },
 
   fmPill: { display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.25)', color: '#a07500', fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px', padding: '3px 9px', borderRadius: '100px' },
   fmDot: { width: '4px', height: '4px', borderRadius: '50%', background: '#d4a400', flexShrink: 0 },
@@ -437,24 +467,38 @@ const styles: Record<string, React.CSSProperties> = {
     pointerEvents: 'none',
   },
 
-  /* Current plan cards */
+  /* Current plan cards : mesh gradient + halo accent 2026 */
   currentBanner: {
-    padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px',
-    background: 'linear-gradient(135deg, rgba(52,211,153,0.08) 0%, rgba(52,211,153,0.03) 100%)',
-    border: '1px solid rgba(52,211,153,0.2)', borderRadius: '20px',
+    position: 'relative' as const, overflow: 'hidden' as const,
+    padding: 'var(--s-8)', display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
+    background: 'radial-gradient(ellipse 80% 60% at 100% 0%, var(--success-bg), transparent 60%), var(--surface)',
+    border: '1px solid var(--success-border)',
+    borderRadius: 'var(--r-xl)',
+    boxShadow: 'var(--shadow-md)',
   },
   standardBanner: {
-    padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px',
-    background: 'linear-gradient(135deg, rgba(0,76,63,0.12) 0%, rgba(0,76,63,0.04) 100%)',
-    border: '1px solid rgba(0,76,63,0.25)', borderRadius: '20px',
+    position: 'relative' as const, overflow: 'hidden' as const,
+    padding: 'var(--s-8)', display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
+    background: 'radial-gradient(ellipse 80% 60% at 100% 0%, var(--accent-bg-2), transparent 60%), linear-gradient(135deg, rgba(0,76,63,0.10) 0%, transparent 70%)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: 'var(--r-xl)',
+    boxShadow: 'var(--shadow-md)',
   },
   driingBanner: {
-    position: 'relative', overflow: 'hidden', padding: '32px',
-    display: 'flex', flexDirection: 'column', gap: '16px',
-    background: 'linear-gradient(135deg, rgba(255,213,107,0.10) 0%, rgba(255,213,107,0.03) 100%)',
-    border: '1px solid rgba(255,213,107,0.3)', borderRadius: '20px',
+    position: 'relative' as const, overflow: 'hidden' as const,
+    padding: 'var(--s-8)',
+    display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
+    background: 'radial-gradient(ellipse 80% 60% at 100% 0%, var(--accent-bg-2), transparent 60%), var(--surface)',
+    border: '1px solid var(--accent-border-2)',
+    borderRadius: 'var(--r-xl)',
+    boxShadow: 'var(--shadow-md)',
   },
-  driingGlow: { position: 'absolute', top: '-60px', right: '-60px', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,213,107,0.15) 0%, transparent 70%)', pointerEvents: 'none' },
+  driingGlow: {
+    position: 'absolute' as const, top: '-60px', right: '-60px',
+    width: '200px', height: '200px', borderRadius: '50%',
+    background: 'radial-gradient(circle, var(--accent-bg-2) 0%, transparent 70%)',
+    pointerEvents: 'none' as const,
+  },
 
   /* Right column */
   sectionLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--text-muted)' },
