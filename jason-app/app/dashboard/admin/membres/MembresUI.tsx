@@ -173,6 +173,13 @@ export default function MembresUI({ members }: { members: Member[] }) {
 
   return (
     <div style={s.wrap}>
+      <style>{`
+        .jm-membre-card { will-change: transform; }
+        .jm-membre-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .jm-membre-card:hover .jm-action-btn { opacity: 1; }
+        .jm-action-btn { opacity: 0.85; }
+        .jm-action-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; border-color: var(--border-2) !important; transform: translateY(-1px); }
+      `}</style>
 
       {/* ── Stats ── */}
       <div style={s.statsRow}>
@@ -334,7 +341,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
   const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
 
   return (
-    <div style={{ ...s.card, ...(suspect ? { borderColor: 'rgba(248,113,113,0.25)' } : {}) }}>
+    <div className="jm-membre-card" style={{ ...s.card, ...(suspect ? { borderColor: 'var(--danger-border)' } : {}) }}>
 
       {/* ── Identity ── */}
       <div style={s.cardTop}>
@@ -446,12 +453,12 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
             )}
 
             {/* View activity */}
-            <button onClick={() => onOpenPanel(m)} style={{ ...s.actionBtn, marginLeft: 'auto' }} title="Voir l'activité">
+            <button onClick={() => onOpenPanel(m)} className="jm-action-btn" style={{ ...s.actionBtn, marginLeft: 'auto' }} title="Voir l'activité">
               <Users size={13} />
             </button>
 
             {/* Full profile */}
-            <a href={`/dashboard/admin/membres/${m.id}`} style={s.actionBtn} title="Fiche complète">
+            <a href={`/dashboard/admin/membres/${m.id}`} className="jm-action-btn" style={s.actionBtn} title="Fiche complète">
               <ArrowSquareOut size={13} />
             </a>
 
@@ -460,6 +467,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
               <button
                 disabled={isPending}
                 onClick={onDelete}
+                className="jm-action-btn"
                 style={{ ...s.actionBtn, ...s.actionBtnDanger }}
                 title="Supprimer"
               >
@@ -792,8 +800,8 @@ const s: Record<string, React.CSSProperties> = {
   card: {
     display: 'flex', flexDirection: 'column', gap: '0',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '18px', overflow: 'hidden',
-    transition: 'box-shadow 0.2s, border-color 0.2s',
+    borderRadius: 'var(--r-xl)', overflow: 'hidden',
+    transition: 'box-shadow var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
   },
   cardTop: {
     display: 'flex', alignItems: 'flex-start', gap: '13px',
@@ -853,9 +861,11 @@ const s: Record<string, React.CSSProperties> = {
   },
   formChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
-    background: 'rgba(52,211,153,0.08)', color: '#34D399',
-    border: '1px solid rgba(52,211,153,0.2)', cursor: 'pointer',
+    fontSize: 'var(--t-xs)', fontWeight: 600, padding: '3px 9px',
+    borderRadius: 'var(--r-pill)',
+    background: 'var(--success-bg)', color: 'var(--success-1)',
+    border: '1px solid var(--success-border)', cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth)',
   },
   emptyChip: {
     fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic',
@@ -875,16 +885,17 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', outline: 'none', fontFamily: 'var(--font-outfit), sans-serif',
   },
   actionBtn: {
-    width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
+    width: '34px', height: '34px', borderRadius: 'var(--r-sm)', flexShrink: 0,
     background: 'var(--surface)', border: '1px solid var(--border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'var(--text-3)', transition: 'all 0.15s',
+    cursor: 'pointer', color: 'var(--text-3)',
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
     textDecoration: 'none',
   },
   actionBtnDanger: {
-    background: 'rgba(248,113,113,0.06)',
-    border: '1px solid rgba(248,113,113,0.18)',
-    color: '#f87171',
+    background: 'var(--danger-bg)',
+    border: '1px solid var(--danger-border)',
+    color: 'var(--danger)',
   },
 }
 
