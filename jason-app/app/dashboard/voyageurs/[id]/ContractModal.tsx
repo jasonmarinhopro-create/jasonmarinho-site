@@ -963,60 +963,66 @@ const modalHeader: React.CSSProperties = {
 }
 
 const modalTag: React.CSSProperties = {
-  fontSize: '11px', fontWeight: 600, letterSpacing: '1.2px',
-  textTransform: 'uppercase', color: '#FFD56B',
+  fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '1.2px',
+  textTransform: 'uppercase' as const, color: 'var(--accent-text)',
 }
 
 const modalTitle: React.CSSProperties = {
   fontFamily: 'var(--font-fraunces), Georgia, serif',
-  fontSize: '20px', fontWeight: 400,
-  color: 'var(--text, #f0ebe1)', margin: 0,
+  fontSize: 'var(--t-xl)', fontWeight: 400,
+  color: 'var(--text)', margin: 0,
+  letterSpacing: 'var(--ls-snug)',
 }
 
 const closeBtn: React.CSSProperties = {
-  background: 'none', border: 'none', cursor: 'pointer',
-  color: 'var(--text-3, #6b9a7e)', padding: '4px',
+  background: 'var(--surface)', border: '1px solid var(--border)', cursor: 'pointer',
+  color: 'var(--text-2)', padding: '6px',
+  borderRadius: 'var(--r-sm)',
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth)',
 }
 
 const progressBar: React.CSSProperties = {
   display: 'flex', alignItems: 'center', justifyContent: 'center',
-  gap: '8px', padding: '14px 24px 0',
+  gap: 'var(--s-2)', padding: 'var(--s-4) var(--s-6) 0',
 }
 
 const progressDot: React.CSSProperties = {
   width: '10px', height: '10px',
   borderRadius: '50%',
-  transition: 'all 0.2s',
+  transition: 'background var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
 }
 
 const formBody: React.CSSProperties = {
-  padding: '20px 24px',
-  display: 'flex', flexDirection: 'column', gap: '14px',
+  padding: 'var(--s-5) var(--s-6)',
+  display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
 }
 
 const row: React.CSSProperties = {
-  display: 'flex', gap: '12px', flexWrap: 'wrap' as const,
+  display: 'flex', gap: 'var(--s-3)', flexWrap: 'wrap' as const,
 }
 
 const fieldLabel: React.CSSProperties = {
   display: 'block',
-  fontSize: '12px', fontWeight: 500,
-  color: 'var(--text-2, #a5c4b0)',
-  marginBottom: '6px',
+  fontSize: 'var(--t-xs)', fontWeight: 600,
+  color: 'var(--text-2)',
+  marginBottom: 'var(--s-2)',
+  letterSpacing: '0.2px',
 }
 
 const inputStyle: React.CSSProperties = {
   display: 'block', width: '100%', boxSizing: 'border-box' as const,
-  background: 'var(--surface, #0a1a14)',
-  border: '1px solid var(--border, #1e3d2f)',
-  borderRadius: '10px', padding: '10px 12px',
-  fontSize: '14px', color: 'var(--text, #f0ebe1)',
+  background: 'var(--bg-3)',
+  border: '1px solid var(--border-2)',
+  borderRadius: 'var(--r-md)', padding: '11px 14px',
+  fontSize: 'var(--t-base)', color: 'var(--text)',
   outline: 'none',
+  transition: 'border-color var(--d-base) var(--ease-smooth), background var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
 }
 
 const stepHint: React.CSSProperties = {
-  fontSize: '13px', color: 'var(--text-muted, #6b9a7e)',
-  margin: '0 0 4px', lineHeight: 1.5,
+  fontSize: 'var(--t-sm)', color: 'var(--text-muted)',
+  margin: '0 0 var(--s-1)', lineHeight: 'var(--lh-base)',
 }
 
 const warnText: React.CSSProperties = {
