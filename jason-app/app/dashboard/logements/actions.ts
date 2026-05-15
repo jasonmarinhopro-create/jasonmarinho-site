@@ -78,6 +78,10 @@ export type LogementData = {
   ical_booking?: string | null
   ical_vrbo?:    string | null
   ical_autre?:   string | null
+
+  // Pays + spécificités internationales
+  pays?:         string | null  // ISO-2 ; default 'FR' côté DB
+  numero_al?:    string | null  // Numéro Alojamento Local (PT)
 }
 
 export type Logement = LogementData & {
