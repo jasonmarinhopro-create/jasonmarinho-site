@@ -1388,20 +1388,29 @@ const s: Record<string, React.CSSProperties> = {
   emptyText: { fontSize: '14px', color: 'var(--text-3)', margin: 0 },
 
   toast: {
-    position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
-    background: 'rgba(0,30,20,0.96)', border: '1px solid rgba(52,211,153,0.3)',
-    borderRadius: '10px', padding: '10px 18px',
-    display: 'flex', alignItems: 'center', gap: '8px',
-    // Couleur blanche fixe : le fond est toujours sombre, donc var(--text)
-    // donnait du texte noir sur fond vert foncé en mode clair → illisible.
-    fontSize: '13px', fontWeight: 500, color: '#fff',
-    zIndex: 1000, backdropFilter: 'blur(12px)',
-    animation: 'fadeUp 0.3s ease', whiteSpace: 'nowrap',
+    position: 'fixed' as const, bottom: 'var(--s-6)', left: '50%', transform: 'translateX(-50%)',
+    // Background opaque sombre indépendant du thème + halo success vert
+    background: 'rgba(0,30,20,0.96)',
+    border: '1px solid var(--success-1)',
+    borderRadius: 'var(--r-md)',
+    padding: '12px 20px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    // Couleur blanche fixe : le fond est toujours sombre dans les deux modes
+    fontSize: 'var(--t-sm)', fontWeight: 600, color: '#fff',
+    zIndex: 1000,
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    // Shadow + glow vert pour effet 2026
+    boxShadow: '0 12px 32px rgba(0,0,0,0.45), 0 0 0 4px rgba(52,211,153,0.10)',
+    animation: 'fadeUp var(--d-slow) var(--ease-out)',
+    whiteSpace: 'nowrap' as const,
   },
 
   overlay: {
-    position: 'fixed', inset: 0, zIndex: 900,
-    background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)',
+    position: 'fixed' as const, inset: 0, zIndex: 900,
+    background: 'rgba(0,0,0,0.55)',
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
     display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
   },
   modal: {
