@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
+import { COUNTRIES, ACTIVE_COUNTRIES, getCountry, type CountryCode } from '@/lib/countries'
 
 const DEFAULT_ANNULATION =
   `En cas d'annulation par le locataire plus de 30 jours avant l'arrivée, l'acompte versé est remboursé intégralement. En cas d'annulation moins de 30 jours avant l'arrivée, l'acompte reste acquis au bailleur.`
@@ -90,6 +91,8 @@ type Logement = {
   ical_booking: string | null
   ical_vrbo:    string | null
   ical_autre:   string | null
+  pays: string | null         // Code ISO-2, 'FR' par défaut
+  numero_al: string | null    // Numéro Alojamento Local (PT)
 }
 
 interface Props {
@@ -145,6 +148,8 @@ function emptyForm(): LogementData {
     ical_booking: null,
     ical_vrbo:    null,
     ical_autre:   null,
+    pays:         'FR',
+    numero_al:    null,
   }
 }
 
@@ -261,6 +266,8 @@ export default function LogementsPage({ logements: initial }: Props) {
       ical_booking: l.ical_booking ?? null,
       ical_vrbo:    l.ical_vrbo    ?? null,
       ical_autre:   l.ical_autre   ?? null,
+      pays:         l.pays         ?? 'FR',
+      numero_al:    l.numero_al    ?? null,
     })
     setEditing(l)
     setError('')
@@ -340,6 +347,8 @@ export default function LogementsPage({ logements: initial }: Props) {
         ical_booking: form.ical_booking ?? null,
         ical_vrbo:    form.ical_vrbo    ?? null,
         ical_autre:   form.ical_autre   ?? null,
+        pays:         form.pays         ?? 'FR',
+        numero_al:    form.numero_al    ?? null,
       }
     }
 
@@ -857,63 +866,148 @@ export default function LogementsPage({ logements: initial }: Props) {
                 </div>
               </div>
 
-              {/* ── Conformité légale ── */}
-              <h4 style={sectionTitle}>Conformité & classement</h4>
-              <div style={fieldRow}>
-                <Field label="Numéro d'enregistrement (Cerfa)" value={form.numero_enregistrement ?? ''} onChange={v => set('numero_enregistrement', v || null)} placeholder="Obligatoire dans certaines communes" />
+              {/* ── Pays & conformité légale ── */}
+              <h4 style={sectionTitle}>Pays & conformité</h4>
+              <div style={{ marginBottom: '10px' }}>
+                <label style={label}>Pays du logement</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
+                  {ACTIVE_COUNTRIES.map(code => {
+                    const c = COUNTRIES[code]
+                    const selected = (form.pays ?? 'FR') === code
+                    return (
+                      <button
+                        key={code}
+                        type="button"
+                        onClick={() => {
+                          set('pays', code)
+                          // Si on bascule sur PT, on garde l'éventuel numéro d'enregistrement
+                          // FR mais on le déplace dans le bon champ visuellement (séparé).
+                        }}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '6px',
+                          padding: '8px 14px', fontSize: '13px', fontWeight: 600,
+                          borderRadius: '10px', cursor: 'pointer', fontFamily: 'inherit',
+                          border: `1px solid ${selected ? 'var(--accent-border)' : 'var(--border)'}`,
+                          background: selected ? 'var(--accent-bg)' : 'var(--surface)',
+                          color: selected ? 'var(--accent-text)' : 'var(--text-2)',
+                          transition: 'all 0.12s',
+                        }}
+                      >
+                        <span style={{ fontSize: '15px' }}>{c.flag}</span> {c.name}
+                      </button>
+                    )
+                  })}
+                </div>
+                <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '6px 0 0', lineHeight: 1.5 }}>
+                  {(() => {
+                    const c = getCountry(form.pays)
+                    return `Régime fiscal : ${c.taxation.simpleRegimeName} · IVA/TVA LCD : ${c.vat.lcdRate} %`
+                  })()}
+                </p>
               </div>
-              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' as const }}>
-                <div style={{ flex: 1, minWidth: '220px' }}>
-                  <label style={label}>Classement Atout France</label>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    {[0, 1, 2, 3, 4, 5].map(n => {
-                      const selected = (form.classement_etoiles ?? 0) === n
-                      return (
-                        <button
-                          key={n} type="button"
-                          onClick={() => set('classement_etoiles', n === 0 ? null : n)}
-                          style={{
-                            flex: 1,
-                            padding: '8px 6px', borderRadius: '8px',
-                            background: selected ? 'rgba(245,158,11,0.14)' : 'var(--surface)',
-                            border: `1px solid ${selected ? 'rgba(245,158,11,0.40)' : 'var(--border)'}`,
-                            color: selected ? '#d97706' : 'var(--text-2)',
-                            fontSize: '12px', fontWeight: 600,
-                            cursor: 'pointer', fontFamily: 'inherit',
-                          }}
-                        >
-                          {n === 0 ? '-' : '★'.repeat(n)}
-                        </button>
-                      )
-                    })}
+
+              {/* Numéro d'enregistrement adapté au pays sélectionné */}
+              {(() => {
+                const c = getCountry(form.pays)
+                const isPT = c.code === 'PT'
+                const value = isPT ? (form.numero_al ?? '') : (form.numero_enregistrement ?? '')
+                const onChange = (v: string) => {
+                  if (isPT) set('numero_al', v || null)
+                  else set('numero_enregistrement', v || null)
+                }
+                return (
+                  <div style={fieldRow}>
+                    <div style={{ flex: 1 }}>
+                      <Field
+                        label={`${c.flag} ${c.registration.label}`}
+                        value={value}
+                        onChange={onChange}
+                        placeholder={c.registration.shortLabel}
+                      />
+                      {c.registration.obtainUrl && (
+                        <a href={c.registration.obtainUrl} target="_blank" rel="noopener noreferrer"
+                           style={{ fontSize: '11px', color: 'var(--accent-text)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+                          Obtenir mon {c.registration.shortLabel} <ArrowSquareOut size={11} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )
+              })()}
+
+              {/* Classement Atout France + DPE : France uniquement */}
+              {(form.pays ?? 'FR') === 'FR' && (
+                <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' as const }}>
+                  <div style={{ flex: 1, minWidth: '220px' }}>
+                    <label style={label}>Classement Atout France</label>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      {[0, 1, 2, 3, 4, 5].map(n => {
+                        const selected = (form.classement_etoiles ?? 0) === n
+                        return (
+                          <button
+                            key={n} type="button"
+                            onClick={() => set('classement_etoiles', n === 0 ? null : n)}
+                            style={{
+                              flex: 1,
+                              padding: '8px 6px', borderRadius: '8px',
+                              background: selected ? 'rgba(245,158,11,0.14)' : 'var(--surface)',
+                              border: `1px solid ${selected ? 'rgba(245,158,11,0.40)' : 'var(--border)'}`,
+                              color: selected ? '#d97706' : 'var(--text-2)',
+                              fontSize: '12px', fontWeight: 600,
+                              cursor: 'pointer', fontFamily: 'inherit',
+                            }}
+                          >
+                            {n === 0 ? '-' : '★'.repeat(n)}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                  <div style={{ flex: 1, minWidth: '240px' }}>
+                    <label style={label}>DPE (étiquette énergie)</label>
+                    <div style={{ display: 'flex', gap: '3px' }}>
+                      {[null, 'A', 'B', 'C', 'D', 'E', 'F', 'G'].map(d => {
+                        const selected = form.dpe === d
+                        const dc = d ? dpeColor(d) : { bg: 'var(--surface)', fg: 'var(--text-2)', border: 'var(--border)' }
+                        return (
+                          <button
+                            key={d ?? 'none'} type="button"
+                            onClick={() => set('dpe', d)}
+                            style={{
+                              flex: 1, padding: '8px 0', borderRadius: '7px',
+                              background: selected ? dc.bg : 'var(--surface)',
+                              border: `1px solid ${selected ? dc.border : 'var(--border)'}`,
+                              color: selected ? dc.fg : 'var(--text-3)',
+                              fontSize: '12px', fontWeight: 700,
+                              cursor: 'pointer', fontFamily: 'inherit',
+                            }}
+                          >
+                            {d ?? '-'}
+                          </button>
+                        )
+                      })}
+                    </div>
                   </div>
                 </div>
-                <div style={{ flex: 1, minWidth: '240px' }}>
-                  <label style={label}>DPE (étiquette énergie)</label>
-                  <div style={{ display: 'flex', gap: '3px' }}>
-                    {[null, 'A', 'B', 'C', 'D', 'E', 'F', 'G'].map(d => {
-                      const selected = form.dpe === d
-                      const dc = d ? dpeColor(d) : { bg: 'var(--surface)', fg: 'var(--text-2)', border: 'var(--border)' }
-                      return (
-                        <button
-                          key={d ?? 'none'} type="button"
-                          onClick={() => set('dpe', d)}
-                          style={{
-                            flex: 1, padding: '8px 0', borderRadius: '7px',
-                            background: selected ? dc.bg : 'var(--surface)',
-                            border: `1px solid ${selected ? dc.border : 'var(--border)'}`,
-                            color: selected ? dc.fg : 'var(--text-3)',
-                            fontSize: '12px', fontWeight: 700,
-                            cursor: 'pointer', fontFamily: 'inherit',
-                          }}
-                        >
-                          {d ?? '-'}
-                        </button>
-                      )
-                    })}
+              )}
+
+              {/* Documents obligatoires sur place — affichés par pays */}
+              {(() => {
+                const c = getCountry(form.pays)
+                return (
+                  <div style={{
+                    marginTop: '12px', padding: '12px 14px', borderRadius: '10px',
+                    background: 'rgba(255,213,107,0.06)', border: '1px solid rgba(255,213,107,0.22)',
+                  }}>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--accent-text)', marginBottom: '6px', letterSpacing: '0.3px' }}>
+                      📋 Documents/affichages obligatoires sur place ({c.name})
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.6 }}>
+                      {c.onSiteDocuments.map((doc, i) => <li key={i}>{doc}</li>)}
+                    </ul>
                   </div>
-                </div>
-              </div>
+                )
+              })()}
 
               {/* ── Tarifs ── */}
               <h4 style={sectionTitle}>Tarifs (indicatifs)</h4>

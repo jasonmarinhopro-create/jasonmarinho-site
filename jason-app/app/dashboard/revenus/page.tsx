@@ -3,6 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import RevenusView from './RevenusView'
 import PlanGate from '@/components/ui/PlanGate'
 
+// Force le rendu dynamique pour que toute saisie (séjour, charge,
+// commission, etc.) apparaisse immédiatement sans cache.
+export const dynamic = 'force-dynamic'
+
 export default async function RevenusPage() {
   const profile = await getProfile()
   const plan = profile?.plan ?? 'decouverte'
@@ -44,7 +48,7 @@ export default async function RevenusPage() {
       .order('date_charge', { ascending: false }),
     supabase
       .from('logements')
-      .select('id, nom, honoraires_pct')
+      .select('id, nom, honoraires_pct, pays')
       .eq('user_id', userId),
     supabase
       .from('revenus_objectifs')

@@ -46,6 +46,7 @@ export type LogementOption = {
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement?: string | null
+  pays?: string | null
 }
 
 interface Props {
@@ -222,6 +223,13 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
   }
 
   function handleSubmit() {
+    // Pays du logement sélectionné → template juridique adapté.
+    // Fallback 'FR' si le logement n'a pas encore le champ pays.
+    const selectedLogement = selectedLogementId
+      ? (logements ?? []).find(l => l.id === selectedLogementId)
+      : null
+    const contractPays = selectedLogement?.pays ?? 'FR'
+
     const contractData: ContractData = {
       sejour_id: sejour.id,
       voyageur_id: voyageur.id,
@@ -251,6 +259,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       reglement_interieur: form.reglement_interieur.trim(),
       animaux_acceptes: form.animaux_acceptes,
       fumeur_accepte: form.fumeur_accepte,
+      pays: contractPays,
     }
 
     startTransition(async () => {

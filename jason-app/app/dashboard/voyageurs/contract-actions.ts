@@ -50,6 +50,9 @@ export type ContractData = {
   reglement_interieur: string
   animaux_acceptes: boolean
   fumeur_accepte: boolean
+
+  // Pays du logement → détermine le template juridique utilisé sur /sign
+  pays?: string
 }
 
 // ─── Créer un contrat ─────────────────────────────────────────────────────────

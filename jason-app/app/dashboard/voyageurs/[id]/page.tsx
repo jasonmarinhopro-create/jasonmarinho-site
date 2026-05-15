@@ -33,7 +33,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
       .single(),
     supabase
       .from('logements')
-      .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte, methodes_paiement')
+      .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte, methodes_paiement, pays, numero_al')
       .eq('user_id', profile.userId)
       .order('created_at', { ascending: false }),
   ])

@@ -7,6 +7,8 @@ import PrintButton from './PrintButton'
 import DepositSection from './DepositSection'
 import PaymentSection from './PaymentSection'
 import IbanSection from './IbanSection'
+import { getContractTemplate } from '@/lib/contract-templates'
+import { getCountry } from '@/lib/countries'
 
 // Toujours servir depuis le serveur (pas de cache), la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -76,6 +78,12 @@ export default async function SignPage({
 
   const expired = new Date(contract.token_expires_at) < new Date()
   const alreadySigned = contract.statut === 'signe'
+
+  // Template juridique adapté au pays du logement (FR par défaut).
+  // Pour les contrats créés avant l'ajout de la colonne pays, fallback FR.
+  const contractPays: string = (contract as any).pays ?? 'FR'
+  const tpl = getContractTemplate(contractPays)
+  const countryInfo = getCountry(contractPays)
   const cancelled = contract.statut === 'annule'
   const n = nights(contract.date_arrivee, contract.date_depart)
 
@@ -119,8 +127,11 @@ export default async function SignPage({
             <em style={{ color: '#FFD56B', fontStyle: 'normal' }}>saisonnière</em>
           </h1>
           <p style={subtitle} className="print-subtitle">
-            Établi conformément au Code civil (Art. 1366) et au Code du tourisme (L324-1).<br />
+            {tpl.legalBasis}<br />
             Signature électronique valide selon le règlement eIDAS (UE) 910/2014.
+            {contractPays !== 'FR' && (
+              <><br /><span style={{ fontSize: '11px', opacity: 0.75 }}>{countryInfo.flag} Contrat soumis au droit {countryInfo.name.toLowerCase()}</span></>
+            )}
           </p>
         </div>
 
@@ -278,14 +289,17 @@ export default async function SignPage({
           <section style={contractSection}>
             <h2 style={sectionTitle}>Article 7, Obligations des parties</h2>
             <p style={contractText}>
-              <strong>Le bailleur s&apos;engage à&nbsp;:</strong> remettre le logement en bon état, assurer la jouissance paisible des lieux,
-              et garantir contre les vices et défauts qui rendraient le bien impropre à l&apos;usage.
+              <strong>Le bailleur s&apos;engage à&nbsp;:</strong> {tpl.obligationsBailleur}
             </p>
             <p style={{ ...contractText, marginTop: '10px' }}>
-              <strong>Le locataire s&apos;engage à&nbsp;:</strong> user du logement en bon père de famille, payer le loyer aux termes convenus,
-              ne pas sous-louer sans accord écrit du bailleur, respecter la capacité maximale d&apos;occupation ({contract.capacite_max} personne{contract.capacite_max > 1 ? 's' : ''}),
-              et restituer les lieux dans l&apos;état initial.
+              <strong>Le locataire s&apos;engage à&nbsp;:</strong> {tpl.obligationsLocataire}
+              {' '}(Capacité maximale&nbsp;: {contract.capacite_max} personne{contract.capacite_max > 1 ? 's' : ''}.)
             </p>
+            {tpl.declarationVoyageur && (
+              <p style={{ ...contractText, marginTop: '10px', fontSize: '13px', opacity: 0.85 }}>
+                <strong>Déclaration des voyageurs étrangers&nbsp;:</strong> {tpl.declarationVoyageur}
+              </p>
+            )}
           </section>
 
           <div style={divider} />
@@ -293,11 +307,7 @@ export default async function SignPage({
           {/* Art. 8, RGPD */}
           <section style={contractSection}>
             <h2 style={sectionTitle}>Article 8, Protection des données personnelles (RGPD)</h2>
-            <p style={contractText}>
-              Les données personnelles collectées dans ce contrat sont traitées sur la base légale de l&apos;exécution du contrat
-              (Art. 6.1.b RGPD). Elles sont conservées 5 ans à compter de la fin du séjour (prescription civile, Art. 2224 Code civil).
-              Vous disposez d&apos;un droit d&apos;accès, de rectification et d&apos;effacement auprès du bailleur.
-            </p>
+            <p style={contractText}>{tpl.rgpd}</p>
           </section>
 
           <div style={divider} />
@@ -305,10 +315,7 @@ export default async function SignPage({
           {/* Art. 9, Loi applicable */}
           <section style={contractSection}>
             <h2 style={sectionTitle}>Article 9, Loi applicable et juridiction</h2>
-            <p style={contractText}>
-              Le présent contrat est soumis au droit français. En cas de litige, les parties tenteront de résoudre
-              leur différend à l&apos;amiable. À défaut, le tribunal compétent sera celui du lieu de situation du bien loué.
-            </p>
+            <p style={contractText}>{tpl.loiApplicable}</p>
           </section>
 
           <div style={divider} />
@@ -316,13 +323,17 @@ export default async function SignPage({
           {/* Art. 10, Signature électronique */}
           <section style={contractSection}>
             <h2 style={sectionTitle}>Article 10, Valeur juridique de la signature électronique</h2>
-            <p style={contractText}>
-              La signature électronique apposée ci-dessous constitue une <strong>signature électronique simple</strong> au sens
-              du règlement (UE) n° 910/2014 (eIDAS) et de l&apos;article 1366 du Code civil français.
-              Elle est produite après identification du signataire par son adresse email, et l&apos;enregistrement de l&apos;adresse IP,
-              de l&apos;horodatage et du navigateur utilisé (audit trail). Sa valeur probante est reconnue devant les juridictions françaises et européennes.
-            </p>
+            <p style={contractText}>{tpl.signatureElectronique}</p>
           </section>
+
+          {/* Disclaimer template non-FR */}
+          {tpl.disclaimer && (
+            <section style={{ ...contractSection, background: 'rgba(245,158,11,0.06)', padding: '14px 18px', borderRadius: '10px', border: '1px solid rgba(245,158,11,0.22)' }}>
+              <p style={{ ...contractText, fontSize: '12px', fontStyle: 'italic', margin: 0, opacity: 0.85 }}>
+                {tpl.disclaimer}
+              </p>
+            </section>
+          )}
         </div>
 
         {/* Signature canvas (si non signé) */}
