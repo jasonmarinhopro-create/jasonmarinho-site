@@ -55,6 +55,24 @@ const REPLACEMENTS = [
     from: /\.card:hover\{transform:translateY\(-4px\);box-shadow:0 12px 32px rgba\(0,76,63,\.1\)\}/g,
     to: '.card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,76,63,.14);border-color:rgba(0,76,63,.18)}',
   },
+
+  // .rel-card (related articles dans le blog) - easing moderne + lift renforcé
+  {
+    from: /\.rel-card\{([^}]*?)transition:transform \.2s,box-shadow \.2s([^}]*?)\}/g,
+    to: (_m, before, after) =>
+      `.rel-card{${before}transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .25s${after}}`,
+  },
+  {
+    from: /\.rel-card:hover\{transform:translateY\(-3px\);box-shadow:0 8px 24px rgba\(0,76,63,\.08\)\}/g,
+    to: '.rel-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(0,76,63,.12);border-color:rgba(0,76,63,.18)}',
+  },
+
+  // .al-card (Aller plus loin cards depuis inject-services-links.mjs)
+  {
+    from: /\.al-card\{([^}]*?)transition:transform \.2s,box-shadow \.2s,border-color \.2s([^}]*?)\}/g,
+    to: (_m, before, after) =>
+      `.al-card{${before}transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .25s${after}}`,
+  },
 ]
 
 const TARGETS = [
