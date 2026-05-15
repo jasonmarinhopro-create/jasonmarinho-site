@@ -367,17 +367,17 @@ export default async function DashboardPage() {
           </div>
           <div style={s.statsRow} className="dash-stats-row">
             <div style={s.stat}>
-              <span style={{ ...s.statVal, color: todayArrivals.length > 0 ? '#15803d' : 'var(--accent-text)' }}>{todayArrivals.length}</span>
+              <span style={{ ...s.statVal, color: todayArrivals.length > 0 ? 'var(--success-1)' : 'var(--accent-text)' }} className="tabular-nums">{todayArrivals.length}</span>
               <span style={s.statLbl}>Arrivée{pl(todayArrivals.length)} aujourd&apos;hui</span>
             </div>
             <div style={s.statDivider} />
             <div style={s.stat}>
-              <span style={{ ...s.statVal, color: todayDepartures.length > 0 ? '#0369a1' : 'var(--accent-text)' }}>{todayDepartures.length}</span>
+              <span style={{ ...s.statVal, color: todayDepartures.length > 0 ? 'var(--info)' : 'var(--accent-text)' }} className="tabular-nums">{todayDepartures.length}</span>
               <span style={s.statLbl}>Départ{pl(todayDepartures.length)} aujourd&apos;hui</span>
             </div>
             <div style={s.statDivider} />
             <div style={s.stat}>
-              <span style={{ ...s.statVal, color: actionsCount > 0 ? '#dc2626' : 'var(--accent-text)' }}>{actionsCount}</span>
+              <span style={{ ...s.statVal, color: actionsCount > 0 ? 'var(--danger)' : 'var(--accent-text)' }} className="tabular-nums">{actionsCount}</span>
               <span style={s.statLbl}>Action{pl(actionsCount)} à traiter</span>
             </div>
           </div>
@@ -807,19 +807,26 @@ const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
 
   welcome: {
-    background: 'linear-gradient(135deg, rgba(0,76,63,0.22) 0%, rgba(255,213,107,0.04) 100%)',
-    border: '1px solid rgba(255,213,107,0.12)', borderRadius: '20px',
-    padding: 'clamp(24px,3vw,40px) clamp(24px,4vw,48px)', marginBottom: '24px',
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px', flexWrap: 'wrap',
+    // Mesh gradient subtil 2026 : vert profond → halo accent en haut à droite
+    background: 'radial-gradient(ellipse 80% 60% at 90% 0%, rgba(255,213,107,0.10), transparent 60%), linear-gradient(135deg, rgba(0,76,63,0.28) 0%, rgba(0,76,63,0.10) 100%)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--r-xl)',
+    padding: 'clamp(28px,3vw,44px) clamp(28px,4vw,52px)',
+    marginBottom: 'var(--s-6)',
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    gap: 'var(--s-6)', flexWrap: 'wrap',
+    position: 'relative' as const,
+    overflow: 'hidden' as const,
+    boxShadow: 'var(--shadow-md)',
   },
-  welcomeSub:   { fontSize: '13px', color: 'var(--text-3)', marginBottom: '6px' },
-  welcomeTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,2.5vw,36px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
-  welcomeDesc:  { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '440px', lineHeight: 1.6 },
-  statsRow:     { display: 'flex', alignItems: 'center', gap: '28px', flexShrink: 0 },
-  stat:         { textAlign: 'center' },
-  statVal:      { display: 'block', fontFamily: 'var(--font-fraunces), serif', fontSize: '40px', fontWeight: 400, color: 'var(--accent-text)', lineHeight: 1 },
-  statLbl:      { display: 'block', fontSize: '11px', color: 'var(--text-3)', marginTop: '6px', letterSpacing: '0.3px' },
-  statDivider:  { width: '1px', height: '44px', background: 'var(--border)' },
+  welcomeSub:   { fontSize: 'var(--t-sm)', color: 'var(--text-3)', marginBottom: 'var(--s-2)', letterSpacing: '0.3px', textTransform: 'uppercase' as const, fontWeight: 500 },
+  welcomeTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(28px,2.6vw,40px)', fontWeight: 400, color: 'var(--text)', marginBottom: 'var(--s-3)', letterSpacing: 'var(--ls-tight)', lineHeight: 'var(--lh-tight)' },
+  welcomeDesc:  { fontSize: 'var(--t-base)', fontWeight: 400, color: 'var(--text-2)', maxWidth: '440px', lineHeight: 'var(--lh-relax)' },
+  statsRow:     { display: 'flex', alignItems: 'center', gap: 'var(--s-7)', flexShrink: 0 },
+  stat:         { textAlign: 'center' as const },
+  statVal:      { display: 'block', fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(36px,3vw,44px)', fontWeight: 400, color: 'var(--accent-text)', lineHeight: 'var(--lh-tight)', letterSpacing: 'var(--ls-tight)' },
+  statLbl:      { display: 'block', fontSize: 'var(--t-xs)', color: 'var(--text-3)', marginTop: 'var(--s-2)', letterSpacing: '0.4px' },
+  statDivider:  { width: '1px', height: '48px', background: 'var(--border)' },
 
   section:      { marginBottom: '28px' },
   sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', margin: 0 },
@@ -828,22 +835,23 @@ const s: Record<string, React.CSSProperties> = {
 
   // ── Quick actions ─────────────────────────────────────────────────────────
   quickStrip: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '10px',
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 'var(--s-3)',
   },
   quickItem: {
-    display: 'flex', alignItems: 'center', gap: '11px',
-    padding: '13px 16px', borderRadius: '12px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-3)',
+    padding: 'var(--s-4) var(--s-4)', borderRadius: 'var(--r-md)',
     background: 'var(--surface)', border: '1px solid var(--border)',
     textDecoration: 'none' as const, color: 'var(--text-2)',
-    transition: 'border-color 0.15s, transform 0.15s, background 0.15s',
-    fontSize: '13px', fontWeight: 600,
+    transition: 'border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-out), background var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
+    fontSize: 'var(--t-sm)', fontWeight: 600,
   },
   quickIcon: {
-    width: '36px', height: '36px', borderRadius: '10px',
+    width: '38px', height: '38px', borderRadius: 'var(--r-md)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
+    transition: 'transform var(--d-base) var(--ease-spring)',
   },
-  quickLabel: { color: 'var(--text)', fontSize: '13px', fontWeight: 600, lineHeight: 1.2 },
+  quickLabel: { color: 'var(--text)', fontSize: 'var(--t-sm)', fontWeight: 600, lineHeight: 'var(--lh-tight)' },
 
   // ── Objectif revenu annuel ───────────────────────────────────────────────
   objectifCard: {

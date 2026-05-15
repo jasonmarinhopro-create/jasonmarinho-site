@@ -490,13 +490,22 @@ em { font-style: italic; color: var(--accent); }
 }
 
 .fade-up {
-  animation: fadeUp 0.5s ease both;
+  animation: fadeUp 0.5s var(--ease-out) both;
   will-change: opacity, transform;
 }
 .fade-up.d1 { animation-delay: 0.08s; }
 .fade-up.d2 { animation-delay: 0.16s; }
 .fade-up.d3 { animation-delay: 0.24s; }
 .fade-up.d4 { animation-delay: 0.32s; }
+
+/* Quick action lift moderne 2026 */
+.quick-hover:hover {
+  border-color: var(--border-2) !important;
+  background: var(--surface-2) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.quick-hover:hover [data-quick-icon] { transform: scale(1.08); }
 
 /* Pages avec bypass fade-up (React 18 client-nav timing issue) */
 .communaute-no-fade .fade-up,
