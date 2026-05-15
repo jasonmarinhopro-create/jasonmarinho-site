@@ -32,7 +32,7 @@ function SectionCard({
   children: React.ReactNode
 }) {
   return (
-    <div style={sc.card}>
+    <div className="jm-profil-card" style={sc.card}>
       <div style={sc.header}>
         <div style={{ ...sc.iconWrap, background: iconBg, color: iconColor }}>
           {icon}
@@ -50,21 +50,28 @@ function SectionCard({
 const sc: Record<string, React.CSSProperties> = {
   card: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '18px', overflow: 'hidden',
+    borderRadius: 'var(--r-xl)', overflow: 'hidden',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
   header: {
-    display: 'flex', alignItems: 'center', gap: '14px',
-    padding: '20px 24px', borderBottom: '1px solid var(--border)',
-    background: 'var(--bg)',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-4)',
+    padding: 'var(--s-5) var(--s-6)', borderBottom: '1px solid var(--border)',
+    background: 'var(--bg-2)',
   },
   iconWrap: {
-    width: '40px', height: '40px', borderRadius: '10px',
+    width: '42px', height: '42px', borderRadius: 'var(--r-md)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
-  title: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', margin: '0 0 2px' },
-  desc: { fontSize: '12px', color: 'var(--text-3)', margin: 0, lineHeight: 1.4 },
-  body: { padding: '24px' },
+  title: {
+    fontSize: 'var(--t-md)', fontWeight: 600, color: 'var(--text)',
+    margin: '0 0 var(--s-1)', letterSpacing: 'var(--ls-snug)',
+  },
+  desc: {
+    fontSize: 'var(--t-xs)', color: 'var(--text-3)', margin: 0,
+    lineHeight: 'var(--lh-snug)',
+  },
+  body: { padding: 'var(--s-6)' },
 }
 
 // ─── Field row ──────────────────────────────────────────────────────────────
@@ -82,29 +89,38 @@ function FieldRow({ label, icon, children }: { label: string; icon?: React.React
 
 const f: Record<string, React.CSSProperties> = {
   label: {
-    display: 'flex', alignItems: 'center', gap: '6px',
-    fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px',
-    textTransform: 'uppercase', color: 'var(--text-3)',
-    marginBottom: '8px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    fontSize: 'var(--t-xs)', fontWeight: 600, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const, color: 'var(--text-3)',
+    marginBottom: 'var(--s-2)',
   },
-  valueRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' },
-  value: { fontSize: '14px', color: 'var(--text)', fontWeight: 400 },
+  valueRow: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    gap: 'var(--s-3)', flexWrap: 'wrap' as const,
+  },
+  value: { fontSize: 'var(--t-base)', color: 'var(--text)', fontWeight: 500 },
   editBtn: {
-    display: 'flex', alignItems: 'center', gap: '6px',
-    fontSize: '12px', fontWeight: 500, color: 'var(--text-3)',
-    background: 'none', border: '1px solid var(--border)',
-    borderRadius: '8px', padding: '5px 12px', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--text-2)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 'var(--r-sm)', padding: '6px 12px', cursor: 'pointer',
     flexShrink: 0,
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth)',
   },
   input: {
     flex: 1, minWidth: '120px',
     background: 'var(--bg)', border: '1px solid var(--border-2)',
-    borderRadius: '10px', padding: '10px 14px',
+    borderRadius: 'var(--r-md)', padding: '11px 14px',
     fontFamily: 'var(--font-outfit), sans-serif',
-    fontSize: '14px', color: 'var(--text)', outline: 'none',
-    width: '100%', boxSizing: 'border-box',
+    fontSize: 'var(--t-base)', color: 'var(--text)', outline: 'none',
+    width: '100%', boxSizing: 'border-box' as const,
+    transition: 'border-color var(--d-base) var(--ease-smooth), background var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   } as React.CSSProperties,
-  cancelBtn: { fontSize: '13px', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px' },
+  cancelBtn: {
+    fontSize: 'var(--t-sm)', color: 'var(--text-muted)',
+    background: 'none', border: 'none', cursor: 'pointer', padding: 'var(--s-2)',
+    transition: 'color var(--d-base) var(--ease-smooth)',
+  },
   readOnly: {
     fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)',
     background: 'var(--bg)', border: '1px solid var(--border)',
@@ -250,11 +266,17 @@ export default function ProfilForm({
 
   return (
     <>
+      <style>{`
+        /* Profil cards : hover state subtil pour signaler interactivité */
+        .jm-profil-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+        .jm-profil-edit-btn:hover { background: var(--surface-2); border-color: var(--border-2); color: var(--text); }
+        .jm-profil-cancel-btn:hover { color: var(--text-2); }
+      `}</style>
       {/* ── Carte 1 : Identité ─────────────────────────────────────────── */}
       <SectionCard
         icon={<IdentificationCard size={20} weight="fill" />}
-        iconColor="#34D399"
-        iconBg="rgba(52,211,153,0.12)"
+        iconColor="var(--success-1)"
+        iconBg="var(--success-bg)"
         title="Identité personnelle"
         description="Nom affiché, e-mail et mot de passe du compte"
       >
@@ -281,13 +303,13 @@ export default function ProfilForm({
                 <button onClick={handleSave} disabled={isPending} className="btn-primary" style={{ fontSize: '13px', padding: '9px 18px' }}>
                   {saved ? <><Check size={13} weight="bold" /> Sauvegardé</> : isPending ? 'Sauvegarde…' : 'Enregistrer'}
                 </button>
-                <button onClick={handleCancel} style={f.cancelBtn}>Annuler</button>
+                <button onClick={handleCancel} className="jm-profil-cancel-btn" style={f.cancelBtn}>Annuler</button>
               </div>
             </div>
           ) : (
             <div style={f.valueRow}>
               <span style={f.value}>{displayName || <span style={{ color: 'var(--text-muted)' }}>Non renseigné</span>}</span>
-              <button onClick={() => setEditName(true)} style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
+              <button onClick={() => setEditName(true)} className="jm-profil-edit-btn" style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
             </div>
           )}
         </FieldRow>
@@ -331,13 +353,13 @@ export default function ProfilForm({
                 <button onClick={handlePasswordSave} disabled={pwLoading} className="btn-primary" style={{ fontSize: '13px', padding: '9px 18px' }}>
                   {pwSaved ? <><Check size={13} weight="bold" /> Modifié</> : pwLoading ? 'Mise à jour…' : 'Enregistrer'}
                 </button>
-                <button onClick={() => { setEditPassword(false); setNewPassword(''); setConfirmPassword(''); setPwError('') }} style={f.cancelBtn}>Annuler</button>
+                <button onClick={() => { setEditPassword(false); setNewPassword(''); setConfirmPassword(''); setPwError('') }} className="jm-profil-cancel-btn" style={f.cancelBtn}>Annuler</button>
               </div>
             </div>
           ) : (
             <div style={f.valueRow}>
               <span style={{ ...f.value, letterSpacing: '3px' }}>••••••••</span>
-              <button onClick={() => setEditPassword(true)} style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
+              <button onClick={() => setEditPassword(true)} className="jm-profil-edit-btn" style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
             </div>
           )}
         </FieldRow>
@@ -366,13 +388,13 @@ export default function ProfilForm({
                 <button onClick={handleAdresseSave} disabled={adressePending} className="btn-primary" style={{ fontSize: '13px', padding: '9px 18px' }}>
                   {adressePending ? 'Sauvegarde…' : 'Enregistrer'}
                 </button>
-                <button onClick={handleAdresseCancel} style={f.cancelBtn}>Annuler</button>
+                <button onClick={handleAdresseCancel} className="jm-profil-cancel-btn" style={f.cancelBtn}>Annuler</button>
               </div>
             </div>
           ) : adresseValue ? (
             <div style={f.valueRow}>
               <span style={f.value}>{adresseValue}</span>
-              <button onClick={() => setEditAdresse(true)} style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
+              <button onClick={() => setEditAdresse(true)} className="jm-profil-edit-btn" style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
             </div>
           ) : (
             <button onClick={() => setEditAdresse(true)} style={addBtn('var(--accent-text)', 'var(--accent-bg)', 'var(--accent-border)')}>
@@ -403,7 +425,7 @@ export default function ProfilForm({
                 <span style={{ ...f.value, color: '#34D399' }}>Compte connecté</span>
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{stripeAccountId?.slice(0, 20)}…</span>
               </div>
-              <button onClick={handleStripeConnect} disabled={stripeLoading} style={f.editBtn}>{stripeLoading ? '…' : 'Gérer'}</button>
+              <button onClick={handleStripeConnect} disabled={stripeLoading} className="jm-profil-edit-btn" style={f.editBtn}>{stripeLoading ? '…' : 'Gérer'}</button>
             </div>
           ) : stripeAccountId && !stripeComplete ? (
             <div>
@@ -458,7 +480,7 @@ export default function ProfilForm({
                 <button onClick={handleIbanSave} disabled={ibanPending} className="btn-primary" style={{ fontSize: '13px', padding: '9px 18px' }}>
                   {ibanPending ? 'Sauvegarde…' : 'Enregistrer'}
                 </button>
-                <button onClick={handleIbanCancel} style={f.cancelBtn}>Annuler</button>
+                <button onClick={handleIbanCancel} className="jm-profil-cancel-btn" style={f.cancelBtn}>Annuler</button>
               </div>
             </div>
           ) : ibanValue ? (
@@ -467,7 +489,7 @@ export default function ProfilForm({
                 <p style={{ margin: '0 0 2px', fontFamily: 'monospace', fontSize: '13px', color: 'var(--text)', letterSpacing: '0.5px' }}>{ibanValue}</p>
                 {bicValue && <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-3)' }}>BIC : {bicValue}</p>}
               </div>
-              <button onClick={() => setEditIban(true)} style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
+              <button onClick={() => setEditIban(true)} className="jm-profil-edit-btn" style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
             </div>
           ) : (
             <div>
