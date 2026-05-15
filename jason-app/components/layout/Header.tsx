@@ -281,6 +281,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
           {/* SOS Hôte — accessible depuis n'importe quelle page du dashboard */}
           <button
             style={styles.sosBtn}
+            className="dash-sos-btn"
             aria-label="SOS Hôte — En cas de problème"
             title="SOS Hôte — En cas de problème"
             onClick={() => setSosOpen(true)}
@@ -294,12 +295,13 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             return (
               <button
                 style={styles.iconBtn}
+                className="dash-icon-btn"
                 aria-label={`Notifications${totalUnread > 0 ? `, ${totalUnread} non lue${totalUnread > 1 ? 's' : ''}` : ''}`}
                 onClick={handleOpenNotif}
               >
                 <Bell size={18} weight="regular" />
                 {totalUnread > 0 && (
-                  <span style={styles.notifBadge}>
+                  <span style={styles.notifBadge} className="anim-pulse-soft">
                     {totalUnread > 9 ? '9+' : totalUnread}
                   </span>
                 )}
@@ -312,6 +314,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             <button
               onClick={() => setDropdownOpen(v => !v)}
               style={styles.profileBtn}
+              className="dash-profile-btn"
               aria-expanded={dropdownOpen}
             >
               <div style={styles.avatar}>
@@ -443,68 +446,71 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'var(--nav-bg)',
     borderBottom: '1px solid var(--nav-border)',
     backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0 clamp(16px,3vw,32px)',
     zIndex: 90,
-    transition: 'background 0.25s ease, border-color 0.25s ease',
+    transition: 'background var(--d-slow) var(--ease-smooth), border-color var(--d-slow) var(--ease-smooth)',
   },
-  left: { display: 'flex', alignItems: 'center', gap: '14px' },
+  left: { display: 'flex', alignItems: 'center', gap: 'var(--s-3)' },
   menuBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    color: 'var(--nav-item)', padding: '6px',
-    borderRadius: '8px',
+    color: 'var(--nav-item)', padding: 'var(--s-2)',
+    borderRadius: 'var(--r-sm)',
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth)',
   },
   title: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px',
-    fontWeight: 400, color: 'var(--text)', letterSpacing: '-0.3px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'var(--t-lg)',
+    fontWeight: 400, color: 'var(--text)', letterSpacing: 'var(--ls-tight)',
   },
-  right: { display: 'flex', alignItems: 'center', gap: '8px' },
+  right: { display: 'flex', alignItems: 'center', gap: 'var(--s-2)' },
   iconBtn: {
     position: 'relative',
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '9px',
-    width: '36px', height: '36px',
+    borderRadius: 'var(--r-sm)',
+    width: '38px', height: '38px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-2)',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
   sosBtn: {
     position: 'relative',
-    background: 'rgba(220,38,38,0.08)',
-    border: '1px solid rgba(220,38,38,0.22)',
-    borderRadius: '9px',
-    width: '36px', height: '36px',
+    background: 'var(--danger-bg)',
+    border: '1px solid var(--danger-border)',
+    borderRadius: 'var(--r-sm)',
+    width: '38px', height: '38px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: '#dc2626',
-    transition: 'background 0.15s',
+    cursor: 'pointer', color: 'var(--danger)',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
   notifBadge: {
     position: 'absolute',
     top: '-5px', right: '-5px',
-    minWidth: '17px', height: '17px',
-    background: '#63D683',
+    minWidth: '18px', height: '18px',
+    background: 'var(--success-1)',
     color: '#001a14',
     fontSize: '10px', fontWeight: 700,
-    borderRadius: '100px',
+    borderRadius: 'var(--r-pill)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    padding: '0 4px',
+    padding: '0 5px',
     lineHeight: 1,
     boxShadow: '0 0 0 2px var(--bg)',
-    pointerEvents: 'none',
+    pointerEvents: 'none' as const,
   },
 
   /* Profile button (avatar + name + caret) */
   dropdownWrap: { position: 'relative' },
   profileBtn: {
-    display: 'flex', alignItems: 'center', gap: '8px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '100px',
-    padding: '4px 10px 4px 4px',
+    borderRadius: 'var(--r-pill)',
+    padding: '4px 12px 4px 4px',
     cursor: 'pointer',
-    transition: 'background 0.18s',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
   avatar: {
     width: '28px', height: '28px', flexShrink: 0,

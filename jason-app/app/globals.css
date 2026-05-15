@@ -513,6 +513,25 @@ em { font-style: italic; color: var(--accent); }
   color: var(--text);
 }
 
+/* Header buttons : hover lift moderne 2026 */
+.dash-icon-btn:hover,
+.dash-menu-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+.dash-sos-btn:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  transform: translateY(-1px);
+}
+.dash-profile-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  transform: translateY(-1px);
+}
+
 /* Pages avec bypass fade-up (React 18 client-nav timing issue) */
 .communaute-no-fade .fade-up,
 .formations-no-fade .fade-up,
