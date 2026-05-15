@@ -755,43 +755,49 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 500, color: 'var(--text-3)',
   },
   card: {
-    padding: '18px', borderRadius: '16px',
-    display: 'flex', flexDirection: 'column' as const, gap: '10px', height: '100%',
+    padding: 'var(--s-5)', borderRadius: 'var(--r-lg)',
+    display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-3)', height: '100%',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
   },
 
   /* Shared card elements */
-  cardTop: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
+  cardTop: { display: 'flex', alignItems: 'flex-start', gap: 'var(--s-3)' },
   platformIcon: {
-    width: '38px', height: '38px', borderRadius: '10px', flexShrink: 0,
+    width: '40px', height: '40px', borderRadius: 'var(--r-md)', flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'transform var(--d-base) var(--ease-spring)',
   },
   groupName: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', fontWeight: 400,
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'var(--t-md)', fontWeight: 500,
     color: 'var(--text)', margin: 0,
+    letterSpacing: 'var(--ls-snug)',
   },
   inlineTag: {
-    display: 'inline-flex', alignItems: 'center', gap: '3px',
-    fontSize: '10px', fontWeight: 500, padding: '2px 7px', borderRadius: '100px',
-    background: 'rgba(147,197,253,0.07)', border: '1px solid rgba(147,197,253,0.14)',
-    color: 'rgba(147,197,253,0.65)',
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
+    fontSize: 'var(--t-xs)', fontWeight: 600, padding: '2px 8px', borderRadius: 'var(--r-pill)',
+    background: 'var(--info-bg)', border: '1px solid var(--info-border)',
+    color: 'var(--info)',
   },
-  desc: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, margin: 0, flex: 1 },
+  desc: {
+    fontSize: 'var(--t-sm)', fontWeight: 400, color: 'var(--text-2)',
+    lineHeight: 'var(--lh-relax)', margin: 0, flex: 1,
+  },
 
   /* Stats row */
-  statRow: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
+  statRow: { display: 'flex', alignItems: 'center', gap: 'var(--s-2)', flexWrap: 'wrap' as const },
   statBubble: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    padding: '5px 11px', borderRadius: '8px',
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
+    padding: '5px 12px', borderRadius: 'var(--r-sm)',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    fontSize: '12px', color: 'var(--text-2)',
+    fontSize: 'var(--t-xs)', color: 'var(--text-2)',
   },
-  statNum: { fontWeight: 700, fontSize: '14px', color: 'var(--text)' },
-  statLbl: { color: 'var(--text-3)', fontSize: '12px' },
+  statNum: { fontWeight: 700, fontSize: 'var(--t-base)', color: 'var(--text)', fontVariantNumeric: 'tabular-nums' as const },
+  statLbl: { color: 'var(--text-3)', fontSize: 'var(--t-xs)' },
   reachBadge: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '11px', fontWeight: 500, color: 'var(--success-1)',
-    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.2)',
-    padding: '3px 9px', borderRadius: '100px',
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
+    fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--success-1)',
+    background: 'var(--success-bg)', border: '1px solid var(--success-border)',
+    padding: '3px 10px', borderRadius: 'var(--r-pill)',
   },
 
   /* Card actions */
