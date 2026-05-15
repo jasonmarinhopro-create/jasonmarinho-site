@@ -129,6 +129,16 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
   return (
     <div style={s.page}>
       <style>{`
+        /* Aside cards : hover subtil */
+        .cn-aside-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+        /* Reply cards : hover lift */
+        .cn-reply-card { will-change: transform; }
+        .cn-reply-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+        /* Vote button : scale au :active */
+        .cn-vote-btn:active { transform: scale(0.95); }
+        /* Action buttons header post : hover */
+        .cn-action-btn:hover { background: var(--surface-2); color: var(--text); border-color: var(--border-2); }
+        .cn-action-btn-small:hover { color: var(--text-2); }
         @media (max-width: 640px) {
           .cn-post-actions {
             width: 100%;
@@ -206,32 +216,32 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
               </div>
 
               <div style={s.actions} className="cn-post-actions">
-                <button onClick={onVote} disabled={pending} style={{
+                <button onClick={onVote} disabled={pending} className="cn-vote-btn" style={{
                   ...s.voteBtn,
                   color: voted ? 'var(--accent-text)' : 'var(--text-2)',
-                  background: voted ? 'rgba(255,213,107,0.10)' : 'transparent',
-                  borderColor: voted ? 'rgba(255,213,107,0.3)' : 'var(--border)',
+                  background: voted ? 'var(--accent-bg)' : 'transparent',
+                  borderColor: voted ? 'var(--accent-border-2)' : 'var(--border)',
                 }} title={voted ? 'Retirer mon vote' : 'Marquer utile'}>
                   <ArrowFatUp size={13} weight={voted ? 'fill' : 'regular'} />
                   <span style={{ fontSize: '12px', fontWeight: 700 }}>{voteCount}</span>
                 </button>
                 {canEdit && (
-                  <button onClick={() => setEditing(true)} style={s.actionBtn} title="Modifier">
+                  <button onClick={() => setEditing(true)} className="cn-action-btn" style={s.actionBtn} title="Modifier">
                     <Pencil size={13} />
                   </button>
                 )}
                 {canModerate && (
                   <>
-                    <button onClick={onTogglePin} style={s.actionBtn} disabled={pending} title={post.pinned ? 'Désépingler' : 'Épingler'}>
+                    <button onClick={onTogglePin} className="cn-action-btn" style={s.actionBtn} disabled={pending} title={post.pinned ? 'Désépingler' : 'Épingler'}>
                       <PushPin size={13} weight={post.pinned ? 'fill' : 'regular'} />
                     </button>
-                    <button onClick={onToggleLock} style={s.actionBtn} disabled={pending} title={post.locked ? 'Déverrouiller' : 'Verrouiller'}>
+                    <button onClick={onToggleLock} className="cn-action-btn" style={s.actionBtn} disabled={pending} title={post.locked ? 'Déverrouiller' : 'Verrouiller'}>
                       {post.locked ? <LockOpen size={13} /> : <Lock size={13} />}
                     </button>
                   </>
                 )}
                 {canDelete && (
-                  <button onClick={onDelete} style={{ ...s.actionBtn, color: '#fb7185' }} disabled={pending} title="Supprimer">
+                  <button onClick={onDelete} className="cn-action-btn" style={{ ...s.actionBtn, color: 'var(--danger)' }} disabled={pending} title="Supprimer">
                     <Trash size={13} />
                   </button>
                 )}
@@ -366,7 +376,7 @@ function AuthorAside({ authorId, name, initials, avatarColor, isContributor, isA
   badges: BadgeId[]
 }) {
   return (
-    <div style={s.asideCard}>
+    <div style={s.asideCard} className="cn-aside-card">
       <div style={s.asideHead}>
         <span style={s.asideTitle}>À propos de l'auteur</span>
       </div>
@@ -394,7 +404,7 @@ function AuthorAside({ authorId, name, initials, avatarColor, isContributor, isA
 
 function PostInfoAside({ post, replyCount }: { post: Post; replyCount: number }) {
   return (
-    <div style={s.asideCard}>
+    <div style={s.asideCard} className="cn-aside-card">
       <div style={s.asideHead}>
         <span style={s.asideTitle}>Cette discussion</span>
       </div>
@@ -536,10 +546,10 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
   }
 
   return (
-    <div style={{
+    <div className="cn-reply-card" style={{
       ...s.replyCard,
-      borderColor: isAccepted ? 'rgba(52,211,153,0.4)' : 'var(--border)',
-      background:  isAccepted ? 'rgba(52,211,153,0.05)' : 'var(--surface)',
+      borderColor: isAccepted ? 'var(--success-1)' : 'var(--border)',
+      background:  isAccepted ? 'var(--success-bg)' : 'var(--surface)',
     }}>
       <Link href={`/dashboard/chez-nous/membre/${authorId}`} style={{ ...s.avatar, background: avatarColor.bg, color: avatarColor.text }}>
         {authorInitials}
@@ -741,17 +751,18 @@ const s: Record<string, React.CSSProperties> = {
   aside: {
     flex: '0 1 300px',
     minWidth: '260px',
-    display: 'flex', flexDirection: 'column', gap: '14px',
-    position: 'sticky', top: '20px',
+    display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
+    position: 'sticky' as const, top: 'var(--s-5)',
   },
   asideCard: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: 'clamp(14px, 2.5vw, 18px)',
-    display: 'flex', flexDirection: 'column', gap: '12px',
+    borderRadius: 'var(--r-lg)', padding: 'clamp(14px, 2.5vw, 18px)',
+    display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-3)',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
-  asideHead: { display: 'flex', alignItems: 'center', gap: '7px' },
+  asideHead: { display: 'flex', alignItems: 'center', gap: 'var(--s-2)' },
   asideTitle: {
-    fontSize: '12px', fontWeight: 700, textTransform: 'uppercase' as const,
+    fontSize: 'var(--t-xs)', fontWeight: 700, textTransform: 'uppercase' as const,
     letterSpacing: '0.6px', color: 'var(--text-2)',
   },
   authorAsideRow: {
@@ -852,29 +863,31 @@ const s: Record<string, React.CSSProperties> = {
   miniBadge: {
     fontSize: '11px', lineHeight: 1, padding: '2px 4px', borderRadius: '5px',
   },
-  actions: { display: 'flex', gap: '4px', flexWrap: 'wrap', justifyContent: 'flex-end' },
+  actions: { display: 'flex', gap: 'var(--s-1)', flexWrap: 'wrap' as const, justifyContent: 'flex-end' },
   voteBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
     background: 'transparent', border: '1px solid',
-    borderRadius: '8px', padding: '5px 10px',
+    borderRadius: 'var(--r-sm)', padding: '6px 11px',
     cursor: 'pointer',
-    transition: 'background 0.15s, color 0.15s, border-color 0.15s',
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
   actionBtn: {
     background: 'transparent', border: '1px solid var(--border)',
-    color: 'var(--text-2)', borderRadius: '6px',
-    width: '28px', height: '28px',
+    color: 'var(--text-2)', borderRadius: 'var(--r-sm)',
+    width: '30px', height: '30px',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth)',
   },
   actionBtnSmall: {
     background: 'transparent', border: 'none',
     color: 'var(--text-muted)', cursor: 'pointer',
-    padding: '2px 5px',
+    padding: '3px 6px',
+    transition: 'color var(--d-base) var(--ease-smooth)',
   },
   postBody: {
-    fontSize: '14px', lineHeight: 1.7, color: 'var(--text-2)',
-    whiteSpace: 'pre-wrap',
+    fontSize: 'var(--t-base)', lineHeight: 'var(--lh-relax)', color: 'var(--text-2)',
+    whiteSpace: 'pre-wrap' as const,
   },
 
   editForm: {
@@ -942,28 +955,30 @@ const s: Record<string, React.CSSProperties> = {
     textTransform: 'uppercase' as const,
   },
   replyCard: {
-    display: 'flex', gap: '12px',
+    display: 'flex', gap: 'var(--s-3)',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '14px',
+    borderRadius: 'var(--r-lg)', padding: 'var(--s-4)',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
   replyMeta: {
-    display: 'flex', alignItems: 'center', gap: '6px',
-    marginBottom: '6px', flexWrap: 'wrap',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    marginBottom: 'var(--s-2)', flexWrap: 'wrap' as const,
   },
   replyBody: {
-    fontSize: '13.5px', lineHeight: 1.65, color: 'var(--text-2)',
-    whiteSpace: 'pre-wrap',
+    fontSize: 'var(--t-sm)', lineHeight: 'var(--lh-relax)', color: 'var(--text-2)',
+    whiteSpace: 'pre-wrap' as const,
   },
 
   empty: {
-    background: 'var(--surface)', border: '1px dashed var(--border)',
-    borderRadius: '12px', padding: '20px', textAlign: 'center',
+    background: 'var(--surface)', border: '1px dashed var(--border-2)',
+    borderRadius: 'var(--r-lg)', padding: 'var(--s-6)', textAlign: 'center' as const,
   },
 
   replyForm: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '18px', marginTop: '20px',
-    display: 'flex', flexDirection: 'column', gap: '8px',
+    borderRadius: 'var(--r-lg)', padding: 'var(--s-5)', marginTop: 'var(--s-5)',
+    display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-2)',
+    transition: 'border-color var(--d-base) var(--ease-smooth)',
   },
   label: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' },
   helper: { fontSize: '11px', color: 'var(--text-muted)', margin: 0 },
