@@ -423,37 +423,38 @@ export default function PartenairesView({
 
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
-  intro: { marginBottom: '28px' },
+  intro: { marginBottom: 'var(--s-7)' },
   pageTitle: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
-    fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(28px,3vw,40px)',
+    fontWeight: 400, color: 'var(--text)', marginBottom: 'var(--s-3)',
+    letterSpacing: 'var(--ls-tight)',
   },
   pageDesc: {
-    fontSize: '15px', fontWeight: 300,
-    color: 'var(--text-2)', maxWidth: '720px', lineHeight: 1.6,
+    fontSize: 'var(--t-md)', fontWeight: 400,
+    color: 'var(--text-2)', maxWidth: '720px', lineHeight: 'var(--lh-relax)',
   },
 
   /* ── Section générique ── */
-  sectionWrap: { marginBottom: '40px' },
+  sectionWrap: { marginBottom: 'var(--s-10)' },
   sectionLabel: {
-    display: 'flex', alignItems: 'center', gap: '7px',
-    fontSize: '12px', fontWeight: 700, letterSpacing: '0.7px',
-    textTransform: 'uppercase' as const, color: 'var(--text-2)', marginBottom: '14px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.7px',
+    textTransform: 'uppercase' as const, color: 'var(--text-2)', marginBottom: 'var(--s-4)',
   },
   sectionCount: {
-    fontSize: '11px', padding: '1px 8px', borderRadius: '100px',
+    fontSize: 'var(--t-xs)', padding: '1px 9px', borderRadius: 'var(--r-pill)',
     background: 'var(--surface)', color: 'var(--text-muted)', fontWeight: 600,
     letterSpacing: 0,
   },
 
-  /* ── Driing featured ── */
+  /* ── Driing featured (CTA premium) ── */
   featured: {
-    marginBottom: '40px',
-    background: 'linear-gradient(135deg, var(--accent-bg-2) 0%, var(--accent-bg) 100%)',
-    border: '1px solid var(--accent-border)',
-    borderRadius: '20px',
-    padding: 'clamp(20px,3vw,32px)',
-    boxShadow: 'var(--card-shadow)',
+    marginBottom: 'var(--s-10)',
+    background: 'radial-gradient(ellipse 70% 80% at 90% 0%, var(--accent-bg-2), transparent 60%), var(--surface)',
+    border: '1px solid var(--accent-border-2)',
+    borderRadius: 'var(--r-xl)',
+    padding: 'clamp(24px,3vw,36px)',
+    boxShadow: 'var(--shadow-md)',
   },
   featuredHeader: {
     display: 'flex', alignItems: 'center', gap: '12px',

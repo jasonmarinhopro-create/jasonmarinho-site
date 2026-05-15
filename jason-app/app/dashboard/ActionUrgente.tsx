@@ -115,27 +115,34 @@ export default function ActionUrgente({ unsignedContracts, pendingPayments, toda
 
 const s: Record<string, React.CSSProperties> = {
   cardGreen: {
-    display: 'flex', alignItems: 'center', gap: '14px',
-    padding: '16px 20px', borderRadius: '14px',
-    border: '1px solid rgba(16,185,129,0.2)',
-    background: 'rgba(16,185,129,0.06)',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-4)',
+    padding: 'var(--s-4) var(--s-5)', borderRadius: 'var(--r-lg)',
+    border: '1px solid var(--success-border)',
+    background: 'var(--success-bg)',
   },
-  greenTitle: { margin: 0, fontSize: '14px', fontWeight: 600, color: 'var(--success-1)' },
-  greenSub:   { margin: '3px 0 0', fontSize: '12px', color: 'var(--text-muted)' },
+  greenTitle: { margin: 0, fontSize: 'var(--t-base)', fontWeight: 600, color: 'var(--success-1)' },
+  greenSub:   { margin: 'var(--s-1) 0 0', fontSize: 'var(--t-xs)', color: 'var(--text-muted)' },
 
   card: {
-    display: 'flex', alignItems: 'flex-start', gap: '14px',
-    padding: '18px 20px', borderRadius: '14px',
+    display: 'flex', alignItems: 'flex-start', gap: 'var(--s-4)',
+    padding: 'var(--s-5) var(--s-5)', borderRadius: 'var(--r-lg)',
     border: '1px solid var(--border)', borderLeft: '3px solid',
     background: 'var(--surface)',
-    transition: 'transform 0.15s',
+    transition: 'transform var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
   iconWrap: {
-    width: '40px', height: '40px', borderRadius: '10px', flexShrink: 0,
+    width: '42px', height: '42px', borderRadius: 'var(--r-md)', flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'transform var(--d-base) var(--ease-spring)',
   },
-  badge:     { fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase', padding: '2px 8px', borderRadius: '100px' },
-  cardTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)' },
-  cardText:  { margin: 0, fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.55 },
-  cardMore:  { margin: '6px 0 0', fontSize: '11px', color: 'var(--text-3)', fontStyle: 'italic' },
+  badge: {
+    fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const, padding: '3px 9px', borderRadius: 'var(--r-pill)',
+  },
+  cardTitle: { fontSize: 'var(--t-base)', fontWeight: 600, color: 'var(--text)' },
+  cardText:  { margin: 0, fontSize: 'var(--t-sm)', color: 'var(--text-2)', lineHeight: 'var(--lh-base)' },
+  cardMore:  {
+    margin: 'var(--s-2) 0 0', fontSize: 'var(--t-xs)',
+    color: 'var(--text-3)', fontStyle: 'italic' as const,
+  },
 }
