@@ -741,6 +741,14 @@ em { font-style: italic; color: var(--accent); }
 }
 .quick-hover:hover [data-quick-icon] { transform: scale(1.08); }
 
+/* KPI cards EtatDesLieux : hover lift subtil + scale icon */
+.kpi-hover:hover {
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.kpi-hover:hover [data-kpi-icon] { transform: scale(1.06); }
+
 /* Sidebar nav-item hover (non actif) */
 .jm-nav-item:not(.jm-nav-item--active):hover {
   background: var(--surface);
