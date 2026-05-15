@@ -1699,8 +1699,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     <span style={{ ...s.metaChip, color: ct.color, background: ct.bg }}>
                       <Seal size={12} />
                       {ct.label}
-                      {sj.contrat_plateforme && PLATFORM_LABELS[sj.contrat_plateforme] && (
-                        <> · {PLATFORM_LABELS[sj.contrat_plateforme].label}</>
+                      {sj.contrat_plateforme && PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey] && (
+                        <> · {PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey].label}</>
                       )}
                     </span>
                   </div>
@@ -1709,7 +1709,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   {/* Contrat géré par une plateforme externe : pas de bouton contrat/paiement */}
                   {sj.contrat_plateforme ? (
                     <span style={{ ...s.metaChip, color: 'var(--text-muted)', background: 'var(--surface-2)', fontSize: '11px' }} title="Géré par la plateforme">
-                      <Lock size={11} /> Géré par {PLATFORM_LABELS[sj.contrat_plateforme]?.label ?? 'plateforme'}
+                      <Lock size={11} /> Géré par {PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey]?.label ?? 'plateforme'}
                     </span>
                   ) : isDecouverte ? (
                     <a href="/dashboard/abonnement" style={{ ...s.contractBtn, opacity: 0.6, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }} title="Contrats disponibles en Standard">
