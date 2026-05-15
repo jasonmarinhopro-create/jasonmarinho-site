@@ -73,6 +73,18 @@ const REPLACEMENTS = [
     to: (_m, before, after) =>
       `.al-card{${before}transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .25s${after}}`,
   },
+
+  // Body articles : .art-p / .art-ul li → fontWeight 300 trop fin pour lisibilité
+  // Migration vers 400 (standard). Améliore drastiquement la lecture sur écrans
+  // moyens, mode clair, et utilisateurs +50 ans.
+  {
+    from: /\.art-p\{font-size:15px;font-weight:300;color:var\(--tm\);line-height:1\.8;margin-bottom:16px\}/g,
+    to: '.art-p{font-size:15px;font-weight:400;color:var(--tm);line-height:1.75;margin-bottom:16px}',
+  },
+  {
+    from: /\.art-ul li\{font-size:15px;font-weight:300;color:var\(--tm\);line-height:1\.7;padding:6px 0 6px 24px;position:relative;border-bottom:1px solid var\(--bd\)\}/g,
+    to: '.art-ul li{font-size:15px;font-weight:400;color:var(--tm);line-height:1.7;padding:8px 0 8px 24px;position:relative;border-bottom:1px solid var(--bd)}',
+  },
 ]
 
 const TARGETS = [
