@@ -1808,11 +1808,20 @@ export default function RevenusView({
       />
 
       <style>{`
-        .kpi-icon-green  { color: #16a34a; }
+        .kpi-icon-green  { color: var(--success-1); }
         .kpi-icon-yellow { color: var(--accent-text); }
         .kpi-icon-accent { color: var(--accent-text); }
         .kpi-icon-muted  { color: var(--text-muted); }
-        .kpi-icon-red    { color: #ef4444; }
+        .kpi-icon-red    { color: var(--danger); }
+        /* Hover lift moderne 2026 sur KpiCard */
+        .kpi-card:hover { border-color: var(--border-2); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .kpi-card:hover .kpi-icon-green,
+        .kpi-card:hover .kpi-icon-yellow,
+        .kpi-card:hover .kpi-icon-accent,
+        .kpi-card:hover .kpi-icon-red,
+        .kpi-card:hover .kpi-icon-muted { transform: scale(1.05); }
+        /* Stagger animation : chaque KPI apparaît avec un léger délai */
+        .kpi-card { animation-delay: calc(var(--kpi-index, 0) * 40ms); }
         .tx-row  { transition: background 0.1s; }
         .tx-row:hover { background: var(--surface) !important; border-radius: 10px; }
         .tx-del  { opacity: 0; transition: opacity 0.15s; }
@@ -1837,11 +1846,11 @@ function KpiCard({ icon, label, value, colorClass, sub, subColor }: {
   icon: React.ReactNode; label: string; value: string; colorClass: string; sub?: string; subColor?: string
 }) {
   return (
-    <div style={s.kpiCard}>
+    <div style={s.kpiCard} className="kpi-card anim-fade-up">
       <div className={`kpi-icon-${colorClass}`} style={s.kpiIcon}>{icon}</div>
       <div style={s.kpiBody}>
         <span style={s.kpiLabel}>{label}</span>
-        <span style={s.kpiValue}>{value}</span>
+        <span style={s.kpiValue} className="tabular-nums">{value}</span>
         {sub && <span style={{ ...s.kpiSub, ...(subColor ? { color: subColor, fontWeight: 600 } : {}) }}>{sub}</span>}
       </div>
     </div>
@@ -2408,12 +2417,29 @@ const s: Record<string, React.CSSProperties> = {
   channelStatArrow: { fontSize: '14px', fontWeight: 700, opacity: 0.6 },
 
 
-  kpiCard:  { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '14px', padding: '18px 20px', display: 'flex', alignItems: 'flex-start', gap: '14px' },
-  kpiIcon:  { width: '38px', height: '38px', borderRadius: '10px', background: 'var(--bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  kpiBody:  { display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 },
-  kpiLabel: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.2px' },
-  kpiValue: { fontSize: '22px', fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.5px', lineHeight: 1.2 },
-  kpiSub:   { fontSize: '11px', color: 'var(--text-3)' },
+  kpiCard:  {
+    background: 'var(--card-bg)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--r-lg)',
+    padding: 'var(--s-5) var(--s-5)',
+    display: 'flex', alignItems: 'flex-start', gap: 'var(--s-4)',
+    transition: 'border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
+    cursor: 'default',
+    position: 'relative' as const,
+  },
+  kpiIcon:  {
+    width: '40px', height: '40px',
+    borderRadius: 'var(--r-md)',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+    transition: 'transform var(--d-base) var(--ease-spring), background var(--d-base) var(--ease-smooth)',
+  },
+  kpiBody:  { display: 'flex', flexDirection: 'column', gap: 'var(--s-1)', minWidth: 0 },
+  kpiLabel: { fontSize: 'var(--t-xs)', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.3px', textTransform: 'uppercase' as const },
+  kpiValue: { fontSize: 'var(--t-2xl)', fontWeight: 600, color: 'var(--text)', letterSpacing: 'var(--ls-tight)', lineHeight: 'var(--lh-tight)', fontFamily: 'var(--font-fraunces), serif' },
+  kpiSub:   { fontSize: 'var(--t-xs)', color: 'var(--text-3)', lineHeight: 'var(--lh-snug)', marginTop: 'var(--s-1)' },
 
   twoCol:   { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' },
   card:     { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' },
