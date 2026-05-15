@@ -732,19 +732,26 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '10px',
   },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '540px', lineHeight: 1.6 },
-
-  grid: { gap: '24px' },
-  leftCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
-  rightCol: { display: 'flex', flexDirection: 'column', gap: '12px' },
-
-  card: { padding: '28px', borderRadius: '20px' },
-  cardTitle: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400,
-    color: 'var(--text)', marginBottom: '10px',
+  pageDesc: {
+    fontSize: 'var(--t-md)', fontWeight: 400, color: 'var(--text-2)',
+    maxWidth: '540px', lineHeight: 'var(--lh-relax)',
   },
-  cardDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '24px' },
+
+  grid: { gap: 'var(--s-6)' },
+  leftCol: { display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' },
+  rightCol: { display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' },
+
+  card: { padding: 'var(--s-7)', borderRadius: 'var(--r-xl)' },
+  cardTitle: {
+    display: 'flex', alignItems: 'center', gap: 'var(--s-3)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'var(--t-xl)', fontWeight: 400,
+    color: 'var(--text)', marginBottom: 'var(--s-3)',
+    letterSpacing: 'var(--ls-tight)',
+  },
+  cardDesc: {
+    fontSize: 'var(--t-base)', fontWeight: 400, color: 'var(--text-2)',
+    lineHeight: 'var(--lh-relax)', marginBottom: 'var(--s-6)',
+  },
 
   searchForm: { display: 'flex', flexDirection: 'column', gap: '12px' },
   inputRow: { display: 'flex', gap: '10px', alignItems: 'center' },
@@ -754,26 +761,29 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)',
     outline: 'none', width: '100%',
   },
-  errorMsg: { fontSize: '13px', color: '#F87171', marginTop: '4px', lineHeight: 1.5 },
+  errorMsg: { fontSize: 'var(--t-sm)', color: 'var(--danger)', marginTop: 'var(--s-1)', lineHeight: 'var(--lh-snug)' },
 
-  resultsWrap: { marginTop: '20px', borderTop: '1px solid var(--border)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' },
+  resultsWrap: {
+    marginTop: 'var(--s-5)', borderTop: '1px solid var(--border)',
+    paddingTop: 'var(--s-5)', display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-3)',
+  },
   riskBadge: {
-    display: 'flex', alignItems: 'center', gap: '12px',
-    padding: '14px 16px', borderRadius: '14px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-3)',
+    padding: 'var(--s-4) var(--s-4)', borderRadius: 'var(--r-lg)',
     border: '1px solid',
   },
 
   resultOk: {
-    display: 'flex', alignItems: 'flex-start', gap: '14px',
-    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
-    borderRadius: '14px', padding: '16px 20px',
+    display: 'flex', alignItems: 'flex-start', gap: 'var(--s-4)',
+    background: 'var(--success-bg)', border: '1px solid var(--success-border)',
+    borderRadius: 'var(--r-lg)', padding: 'var(--s-4) var(--s-5)',
   },
-  resultOkTitle: { fontSize: '15px', fontWeight: 600, color: '#34D399', marginBottom: '6px' },
-  resultOkDesc: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55 },
+  resultOkTitle: { fontSize: 'var(--t-md)', fontWeight: 600, color: 'var(--success-1)', marginBottom: 'var(--s-2)' },
+  resultOkDesc: { fontSize: 'var(--t-sm)', color: 'var(--text-2)', lineHeight: 'var(--lh-base)' },
   vigilanceBox: {
-    display: 'flex', alignItems: 'flex-start', gap: '10px',
-    background: 'rgba(255,213,107,0.05)', border: '1px solid rgba(255,213,107,0.12)',
-    borderRadius: '12px', padding: '14px 16px',
+    display: 'flex', alignItems: 'flex-start', gap: 'var(--s-3)',
+    background: 'var(--warning-bg)', border: '1px solid var(--warning-border)',
+    borderRadius: 'var(--r-lg)', padding: 'var(--s-4) var(--s-4)',
   },
   contactCta: {
     display: 'flex', alignItems: 'center', gap: '8px',
@@ -814,7 +824,7 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: 'underline', padding: 0,
   },
 
-  reportCard: { padding: '24px', borderRadius: '20px' },
+  reportCard: { padding: 'var(--s-6)', borderRadius: 'var(--r-xl)' },
   reportHeader: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     gap: '12px', marginBottom: '12px',
