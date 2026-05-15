@@ -48,7 +48,7 @@ export default async function RevenusPage() {
       .order('date_charge', { ascending: false }),
     supabase
       .from('logements')
-      .select('id, nom, honoraires_pct')
+      .select('id, nom, honoraires_pct, pays')
       .eq('user_id', userId),
     supabase
       .from('revenus_objectifs')

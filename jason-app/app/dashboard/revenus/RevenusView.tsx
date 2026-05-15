@@ -10,6 +10,7 @@ import {
 import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel } from './actions'
 import ImportCSVModal from './ImportCSVModal'
 import { PLATFORMS } from '@/lib/platforms'
+import { COUNTRIES as COUNTRIES_MAP } from '@/lib/countries'
 
 // ── types ────────────────────────────────────────────────────────────────────
 
@@ -56,6 +57,7 @@ interface LogementMin {
   id: string
   nom: string
   honoraires_pct: number | null
+  pays?: string | null
 }
 
 interface Props {
@@ -340,6 +342,49 @@ export default function RevenusView({
       directPct: bruteYTD > 0 ? (directBruteYTD / bruteYTD) * 100 : 0,
     }
   }, [entries, thisYear])
+
+  // ── Estimation fiscale par pays ───────────────────────────────────────
+  // Quand l'hôte a des logements dans plusieurs pays, on calcule l'estimation
+  // de revenu imposable par pays selon le régime simplifié local (micro-BIC
+  // FR, Categoria B PT, Cedolare secca IT, etc.).
+  const taxEstimateByCountry = useMemo(() => {
+    // Map logement name → pays
+    const logementToPays: Record<string, string> = {}
+    logements.forEach(l => { if (l.nom) logementToPays[l.nom] = l.pays ?? 'FR' })
+
+    // Agrège les revenus encaissés YTD par pays (net après commission OTA)
+    const byCountry: Record<string, { net: number; brut: number; count: number }> = {}
+
+    entries.forEach(e => {
+      const d = new Date(e.date_paiement)
+      if (d.getFullYear() !== thisYear) return
+      const pays = e.logement_nom ? (logementToPays[e.logement_nom] ?? 'FR') : 'FR'
+      const commission = e.commission_montant ?? 0
+      const net = e.montant - commission
+
+      if (!byCountry[pays]) byCountry[pays] = { net: 0, brut: 0, count: 0 }
+      byCountry[pays].net += net
+      byCountry[pays].brut += e.montant
+      byCountry[pays].count += 1
+    })
+
+    contracts.forEach(c => {
+      if (!isPaid(c)) return
+      const loyer = c.montant_loyer ?? 0
+      if (loyer <= 0) return
+      const d = c.date_arrivee ? new Date(c.date_arrivee) : null
+      if (!d || d.getFullYear() !== thisYear) return
+      const pays = c.logement_nom ? (logementToPays[c.logement_nom] ?? 'FR') : 'FR'
+      if (!byCountry[pays]) byCountry[pays] = { net: 0, brut: 0, count: 0 }
+      byCountry[pays].net += loyer
+      byCountry[pays].brut += loyer
+      byCountry[pays].count += 1
+    })
+
+    return Object.entries(byCountry)
+      .map(([pays, val]) => ({ pays, ...val }))
+      .sort((a, b) => b.net - a.net)
+  }, [entries, contracts, logements, thisYear])
 
   // ── KPIs ────────────────────────────────────────────────────────────────
 
@@ -1134,6 +1179,67 @@ export default function RevenusView({
               </p>
             </div>
           )}
+        </section>
+      )}
+
+      {/* ── Estimation fiscale par pays (multi-pays) ────────────── */}
+      {taxEstimateByCountry.length > 0 && taxEstimateByCountry.some(c => c.brut > 0) && (
+        <section style={s.card}>
+          <div style={{ marginBottom: '12px' }}>
+            <h2 style={{ ...s.cardTitle, marginBottom: '4px' }}>Estimation fiscale {thisYear}</h2>
+            <p style={{ ...s.cardSub, margin: 0 }}>
+              Indicatif. Régime simplifié appliqué selon le pays de chaque logement. Pas un conseil fiscal — consulter un comptable pour la déclaration officielle.
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>
+            {taxEstimateByCountry.map(c => {
+              // Import dynamique pour éviter de charger toute la lib si pas utilisé
+              const country = COUNTRIES_MAP[c.pays as keyof typeof COUNTRIES_MAP] ?? COUNTRIES_MAP.FR
+              const taxableEstimate = c.net * country.taxation.taxableIncomeRatio
+              return (
+                <div key={c.pays} style={{
+                  padding: '14px 16px', borderRadius: '12px',
+                  background: 'var(--surface)', border: '1px solid var(--border)',
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '10px', marginBottom: '8px' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 700 }}>
+                      <span style={{ fontSize: '18px' }}>{country.flag}</span>
+                      {country.name}
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>· {c.count} encaissement{c.count > 1 ? 's' : ''}</span>
+                    </span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '999px', background: 'var(--accent-bg)', color: 'var(--accent-text)' }}>
+                      {country.taxation.simpleRegimeName}
+                    </span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', marginBottom: '10px' }}>
+                    <div style={{ padding: '8px 10px', background: 'var(--bg-2)', borderRadius: '8px' }}>
+                      <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.3px', textTransform: 'uppercase' as const }}>Brut encaissé</div>
+                      <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)' }}>{fmt(c.brut)}</div>
+                    </div>
+                    <div style={{ padding: '8px 10px', background: 'var(--bg-2)', borderRadius: '8px' }}>
+                      <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.3px', textTransform: 'uppercase' as const }}>Net (après commissions)</div>
+                      <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: '#10b981' }}>{fmt(c.net)}</div>
+                    </div>
+                    <div style={{ padding: '8px 10px', background: 'rgba(96,165,250,0.06)', borderRadius: '8px', border: '1px solid rgba(96,165,250,0.18)' }}>
+                      <div style={{ fontSize: '10px', fontWeight: 600, color: '#60a5fa', letterSpacing: '0.3px', textTransform: 'uppercase' as const }}>Base imposable estimée</div>
+                      <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: '#60a5fa' }}>{fmt(taxableEstimate)}</div>
+                      <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        coef. {(country.taxation.taxableIncomeRatio * 100).toFixed(0)} %
+                      </div>
+                    </div>
+                  </div>
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.55 }}>
+                    {country.taxation.note}
+                  </p>
+                  {c.brut > country.vat.franchiseThreshold && (
+                    <p style={{ fontSize: '11px', color: '#f59e0b', margin: '6px 0 0', lineHeight: 1.55 }}>
+                      ⚠️ CA brut au-dessus du seuil de franchise TVA/IVA ({fmt(country.vat.franchiseThreshold)}). Tu pourrais être redevable de la {country.code === 'FR' ? 'TVA' : 'IVA'} à {country.vat.lcdRate} %.
+                    </p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         </section>
       )}
 
