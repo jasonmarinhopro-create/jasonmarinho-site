@@ -512,14 +512,31 @@ em { font-style: italic; color: var(--accent); }
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--border-2);
-  border-radius: var(--radius);
+  border-radius: var(--r-md);
   padding: 12px 16px;
-  font-family: var(--font-outfit), sans-serif; font-size: 14px; font-weight: 300;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: var(--t-base); font-weight: 400;
   color: var(--text); outline: none;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color var(--d-base) var(--ease-smooth),
+              background var(--d-base) var(--ease-smooth),
+              box-shadow var(--d-base) var(--ease-smooth);
 }
 .input-field::placeholder { color: var(--text-3); }
-.input-field:focus { border-color: rgba(255,213,107,0.5); background: var(--surface-2); }
+.input-field:hover { border-color: var(--border-2); background: var(--surface-2); }
+.input-field:focus {
+  border-color: var(--accent);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+/* Invalid state (HTML5 :invalid + .input-field-error className manuel) */
+.input-field:invalid:not(:placeholder-shown),
+.input-field-error {
+  border-color: var(--danger);
+}
+.input-field:invalid:not(:placeholder-shown):focus,
+.input-field-error:focus {
+  box-shadow: 0 0 0 3px var(--danger-bg);
+}
 .input-field:-webkit-autofill,
 .input-field:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 1000px var(--autofill-bg) inset;
