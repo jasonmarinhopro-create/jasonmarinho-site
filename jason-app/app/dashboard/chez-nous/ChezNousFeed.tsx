@@ -117,6 +117,13 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
         }
         /* Pas de hover sur mobile (touch) → tooltip inutile */
         @media (hover: none) { .cn-recent-reply-full { display: none; } }
+        /* Composer card hover : feedback subtil pour inviter au clic */
+        .cn-composer-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+        .cn-composer-card:hover .cn-composer-input { background: var(--surface-2); color: var(--text-2); border-color: var(--border-2); }
+        .cn-composer-input:hover { background: var(--surface) !important; color: var(--text) !important; }
+        /* Post card hover : feedback discret pour signaler interactivité */
+        .cn-post-card { will-change: transform; }
+        .cn-post-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
         /* Default category chip rendering (desktop) */
         .cn-cat-emoji { font-size: 13px; line-height: 1; }
         .cn-cat-label { font-weight: 600; }
@@ -437,7 +444,7 @@ function ComposerCard({ firstName, initials, onOpen, userId, searchInitial, cat,
   }
 
   return (
-    <div style={s.composerCard}>
+    <div style={s.composerCard} className="cn-composer-card">
       <div style={s.composerRow}>
         <Link
           href={`/dashboard/chez-nous/membre/${userId}`}
@@ -469,7 +476,7 @@ function ComposerCard({ firstName, initials, onOpen, userId, searchInitial, cat,
           </form>
         ) : (
           <>
-            <button onClick={onOpen} style={s.composerInput}>
+            <button onClick={onOpen} style={s.composerInput} className="cn-composer-input">
               {firstName ? `Exprime-toi, ${firstName}…` : 'Pose ta question, partage une expérience…'}
             </button>
             <button
@@ -876,7 +883,7 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
   const hasImages = post.images && post.images.length > 0
 
   return (
-    <div style={s.postCard}>
+    <div style={s.postCard} className="cn-post-card">
       {/* Avatar (cliquable → profil) */}
       <Link href={`/dashboard/chez-nous/membre/${post.author_id}`} style={{ ...s.avatar, background: av.bg, color: av.text }} title={name}>
         {initials}
@@ -1667,30 +1674,32 @@ const s: Record<string, React.CSSProperties> = {
   composerCard: {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '14px',
-    padding: '12px',
-    marginBottom: '14px',
+    borderRadius: 'var(--r-lg)',
+    padding: 'var(--s-3)',
+    marginBottom: 'var(--s-4)',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
   composerRow: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    paddingBottom: '12px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-3)',
+    paddingBottom: 'var(--s-3)',
     borderBottom: '1px solid var(--border)',
   },
   composerAvatar: {
     width: '40px', height: '40px', borderRadius: '50%',
     background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '13px', fontWeight: 700, color: 'var(--accent-text)',
+    fontSize: 'var(--t-sm)', fontWeight: 700, color: 'var(--accent-text)',
     fontFamily: 'var(--font-fraunces), serif',
     flexShrink: 0,
+    transition: 'transform var(--d-base) var(--ease-spring)',
   },
   composerInput: {
     flex: 1, textAlign: 'left' as const,
     background: 'var(--bg)', border: '1px solid var(--border)',
-    borderRadius: '999px', padding: '11px 18px',
-    fontSize: '14px', color: 'var(--text-3)',
+    borderRadius: 'var(--r-pill)', padding: '12px 18px',
+    fontSize: 'var(--t-base)', color: 'var(--text-3)',
     cursor: 'pointer', fontFamily: 'inherit',
-    transition: 'background 0.15s, color 0.15s',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth)',
   },
   // ─── PostFormModal ─────────────────────────────────────────────────
   modalBackdrop: {
@@ -1879,21 +1888,21 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   postCard: {
-    display: 'flex', gap: '14px',
+    display: 'flex', gap: 'var(--s-4)',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '16px 18px',
-    transition: 'border-color 0.15s',
+    borderRadius: 'var(--r-lg)', padding: 'var(--s-4) var(--s-5)',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
     alignItems: 'flex-start',
   },
   replyBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    padding: '4px 11px', borderRadius: '999px',
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
+    padding: '5px 12px', borderRadius: 'var(--r-pill)',
     background: 'transparent', border: '1px solid var(--border)',
     color: 'var(--text-2)',
     fontFamily: 'inherit',
-    fontSize: '11.5px', fontWeight: 500,
+    fontSize: 'var(--t-xs)', fontWeight: 500,
     textDecoration: 'none',
-    transition: 'background 0.15s, color 0.15s, border-color 0.15s',
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth)',
     lineHeight: 1,
     cursor: 'pointer',
     whiteSpace: 'nowrap' as const,

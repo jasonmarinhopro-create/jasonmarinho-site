@@ -6,28 +6,28 @@ export default function DashboardLoading() {
 
       {/* Hero skeleton */}
       <div style={styles.hero}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div style={{ ...styles.bar, width: '120px', height: '13px' }} />
-          <div style={{ ...styles.bar, width: '280px', height: '32px' }} />
-          <div style={{ ...styles.bar, width: '380px', height: '14px', opacity: 0.5 }} />
+          <div style={{ ...styles.bar, width: '280px', height: '36px' }} />
+          <div style={{ ...styles.bar, width: '380px', height: '14px', opacity: 0.6 }} />
         </div>
       </div>
 
       {/* Grid skeleton */}
       <div style={styles.grid}>
         {[1, 2, 3].map(i => (
-          <div key={i} style={styles.card}>
-            <div style={{ display: 'flex', gap: '14px', alignItems: 'center', marginBottom: '18px' }}>
+          <div key={i} style={{ ...styles.card, animationDelay: `${i * 60}ms` }}>
+            <div style={{ display: 'flex', gap: '14px', alignItems: 'center', marginBottom: '20px' }}>
               <div style={{ ...styles.circle, width: '44px', height: '44px' }} />
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div style={{ ...styles.bar, width: '60%', height: '15px' }} />
-                <div style={{ ...styles.bar, width: '40%', height: '12px', opacity: 0.5 }} />
+                <div style={{ ...styles.bar, width: '40%', height: '12px', opacity: 0.6 }} />
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ ...styles.bar, width: '100%', height: '12px' }} />
               <div style={{ ...styles.bar, width: '85%', height: '12px' }} />
-              <div style={{ ...styles.bar, width: '70%', height: '12px', opacity: 0.5 }} />
+              <div style={{ ...styles.bar, width: '70%', height: '12px', opacity: 0.6 }} />
             </div>
           </div>
         ))}
@@ -36,48 +36,49 @@ export default function DashboardLoading() {
   )
 }
 
+// Shimmer 2026 : vrai gradient animé avec contraste (light strip qui balaie).
+// La keyframe `shimmer` est définie globalement dans globals.css.
 const pulse = {
-  background: 'linear-gradient(90deg, var(--border) 0%, var(--border) 50%, var(--border) 100%)',
+  background: 'linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%)',
   backgroundSize: '200% 100%',
-  animation: 'shimmer 1.6s infinite',
-  borderRadius: '8px',
+  animation: 'shimmer 1.8s infinite var(--ease-smooth)',
+  borderRadius: 'var(--r-sm)',
 }
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
     padding: 'clamp(20px,3vw,44px)',
     width: '100%',
-    opacity: 1,
-    animation: 'fadeIn 0.2s ease',
+    animation: 'fadeIn var(--d-base) var(--ease-smooth)',
   },
   headerSkel: {
     ...pulse,
     height: '44px',
     width: '240px',
-    borderRadius: '10px',
-    marginBottom: '32px',
+    borderRadius: 'var(--r-md)',
+    marginBottom: 'var(--s-8)',
   },
   hero: {
     ...pulse,
-    borderRadius: '20px',
+    borderRadius: 'var(--r-xl)',
     padding: 'clamp(24px,3vw,40px) clamp(24px,4vw,48px)',
-    marginBottom: '32px',
-    minHeight: '120px',
+    marginBottom: 'var(--s-8)',
+    minHeight: '140px',
   },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '16px',
+    gap: 'var(--s-4)',
   },
   card: {
     ...pulse,
-    borderRadius: '18px',
-    padding: '28px',
+    borderRadius: 'var(--r-xl)',
+    padding: 'var(--s-7)',
     minHeight: '180px',
   },
   bar: {
     ...pulse,
-    borderRadius: '6px',
+    borderRadius: 'var(--r-sm)',
   },
   circle: {
     ...pulse,
