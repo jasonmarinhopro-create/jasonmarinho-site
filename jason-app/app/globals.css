@@ -345,23 +345,102 @@ em { font-style: italic; color: var(--accent); }
 }
 .glass-card:hover { background: var(--surface-2); border-color: var(--border-2); }
 
-/* ── BUTTONS ── */
+/* ═════════════════════════════════════════════════════════════════════
+ * BUTTON SYSTEM — variants réutilisables (.btn-primary, .btn-ghost,
+ * .btn-danger, .btn-success). Tous partagent la base .jm-btn.
+ * Tailles : .jm-btn-sm, .jm-btn (default), .jm-btn-lg.
+ * ═════════════════════════════════════════════════════════════════════ */
+
+/* Base partagée par toutes les variantes */
+.jm-btn,
 .btn-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--yellow); color: var(--green-deep);
-  font-family: var(--font-outfit), sans-serif; font-size: 14px; font-weight: 600;
-  padding: 11px 22px; border-radius: 10px; border: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+  font-family: var(--font-outfit), sans-serif;
+  font-size: var(--t-base); font-weight: 600;
+  padding: 11px 22px;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
   cursor: pointer; text-decoration: none;
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
   white-space: nowrap;
+  transition: background var(--d-base) var(--ease-smooth),
+              border-color var(--d-base) var(--ease-smooth),
+              color var(--d-base) var(--ease-smooth),
+              transform var(--d-base) var(--ease-spring),
+              box-shadow var(--d-base) var(--ease-smooth);
+  user-select: none;
+}
+.jm-btn:disabled,
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.jm-btn:disabled:hover,
+.btn-primary:disabled:hover { transform: none; box-shadow: none; }
+
+/* Tailles */
+.jm-btn-sm { padding: 7px 14px; font-size: var(--t-sm); border-radius: var(--r-sm); gap: var(--s-1); }
+.jm-btn-lg { padding: 14px 28px; font-size: var(--t-md); border-radius: var(--r-lg); }
+
+/* Variante PRIMARY = jaune sur dark, vert forêt sur light */
+.btn-primary {
+  background: var(--yellow); color: var(--green-deep);
 }
 .btn-primary:hover {
   background: var(--yellow-hover);
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(255,213,107,0.25);
+  box-shadow: var(--shadow-glow);
 }
 [data-theme="light"] .btn-primary { background: var(--green); color: #ffffff; }
-[data-theme="light"] .btn-primary:hover { background: var(--green-mid); box-shadow: 0 8px 24px rgba(0,76,63,0.2); }
+[data-theme="light"] .btn-primary:hover { background: var(--green-mid); }
+
+/* Variante GHOST = bordure subtile, sans fond */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-2);
+  border-color: var(--border);
+}
+.btn-ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+/* Variante SECONDARY = fond surface, sans accent */
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-secondary:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Variante DANGER = rouge sémantique */
+.btn-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: var(--danger-border);
+}
+.btn-danger:hover {
+  background: var(--danger);
+  color: #ffffff;
+  border-color: var(--danger);
+  transform: translateY(-1px);
+}
+
+/* Variante SUCCESS = vert sémantique */
+.btn-success {
+  background: var(--success-bg);
+  color: var(--success-1);
+  border-color: var(--success-border);
+}
+.btn-success:hover {
+  background: var(--success-1);
+  color: #ffffff;
+  border-color: var(--success-1);
+  transform: translateY(-1px);
+}
 
 /* ── LIGHT THEME GLOBAL OVERRIDES ── */
 
