@@ -420,13 +420,15 @@ const s: Record<string, React.CSSProperties> = {
     color: 'rgba(255,213,107,0.7)',
   },
   card: {
-    background: 'var(--surface)', border: '1px solid var(--surface-2)',
-    borderRadius: '10px', overflow: 'hidden',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 'var(--r-md)', overflow: 'hidden',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
   iconBtn: {
-    background: 'var(--border)', border: '1px solid var(--border)',
-    borderRadius: '7px', width: '30px', height: '30px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 'var(--r-sm)', width: '32px', height: '32px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--text-2)', flexShrink: 0,
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
 }
