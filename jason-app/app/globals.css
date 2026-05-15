@@ -373,6 +373,41 @@ em { font-style: italic; color: var(--accent); }
 .anim-scale-in   { animation: scaleIn var(--d-base) var(--ease-out) both; }
 .anim-pulse-soft { animation: pulse-soft 2.5s ease-in-out infinite; }
 
+/* ── Utilitaires hover lift réutilisables ───────────────────────────── */
+
+/* Carte clickable : lift au survol */
+.lift-on-hover {
+  transition: transform var(--d-base) var(--ease-smooth),
+              box-shadow var(--d-base) var(--ease-smooth),
+              border-color var(--d-base) var(--ease-smooth);
+  cursor: pointer;
+}
+.lift-on-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-2);
+}
+.lift-on-hover:active { transform: translateY(0); box-shadow: var(--shadow-sm); }
+
+/* Hover scale subtil (boutons, icons) */
+.scale-on-hover {
+  transition: transform var(--d-base) var(--ease-spring);
+}
+.scale-on-hover:hover { transform: scale(1.05); }
+.scale-on-hover:active { transform: scale(0.97); }
+
+/* Active press feedback (click) */
+.tap-feedback {
+  transition: transform var(--d-fast) var(--ease-out);
+}
+.tap-feedback:active { transform: scale(0.97); }
+
+/* Stagger animation utility : appliquer avec --i sur les enfants */
+.stagger-children > * {
+  animation: fadeUp var(--d-slow) var(--ease-out) both;
+  animation-delay: calc(var(--stagger, 40ms) * var(--i, 0));
+}
+
 /* Respect des préférences utilisateur réduisant les animations */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -395,6 +430,37 @@ em { font-style: italic; color: var(--accent); }
 }
 /* Les boutons custom peuvent désactiver le ring s'ils en ont déjà un */
 .no-ring:focus-visible { box-shadow: none; }
+
+/* ═════════════════════════════════════════════════════════════════════
+ * SELECTION ACCENT — couleur d'accent au lieu du bleu système
+ * ═════════════════════════════════════════════════════════════════════ */
+
+::selection {
+  background: var(--accent-bg-2);
+  color: var(--accent-text);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+ * SCROLLBAR DISCRÈTE — style 2026 (Firefox + WebKit)
+ * Plus fine, moins agressive visuellement, accent au survol.
+ * ═════════════════════════════════════════════════════════════════════ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-2) transparent;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-2);
+  border-radius: var(--r-pill);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+  background-clip: padding-box;
+}
 
 /* ── GLASS CARD ── */
 .glass-card {
