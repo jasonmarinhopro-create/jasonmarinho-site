@@ -149,7 +149,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'commun-avis',
     profile: 'commun',
-    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    iconColor: 'var(--warning)', iconBg: 'rgba(245,158,11,0.12)',
     icon: <Star size={22} weight="fill" />,
     title: 'Avis & e-réputation',
     subtitle: 'La clé de ta crédibilité, toutes plateformes confondues',
@@ -168,7 +168,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'commun-litiges',
     profile: 'commun',
-    iconColor: '#ef4444', iconBg: 'rgba(239,68,68,0.12)',
+    iconColor: 'var(--danger)', iconBg: 'rgba(239,68,68,0.12)',
     icon: <Warning size={22} weight="fill" />,
     title: 'Litiges, dégâts & dépôt de garantie',
     subtitle: 'Anticiper et documenter, toujours',
@@ -189,7 +189,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'gites-statut',
     profile: 'gites',
-    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    iconColor: 'var(--warning)', iconBg: 'rgba(245,158,11,0.12)',
     icon: <Scales size={22} weight="fill" />,
     title: 'Statut juridique : EI ou SASU ?',
     subtitle: 'Choisir la bonne structure selon ton projet',
@@ -206,7 +206,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'gites-fiscalite',
     profile: 'gites',
-    iconColor: '#34d399', iconBg: 'rgba(52,211,153,0.12)',
+    iconColor: 'var(--success-1)', iconBg: 'var(--success-bg)',
     icon: <CurrencyEur size={22} weight="fill" />,
     title: 'Classement & impact fiscal (loi Le Meur 2025)',
     subtitle: "L'abattement varie selon le classement",
@@ -223,7 +223,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'gites-obligations',
     profile: 'gites',
-    iconColor: '#60a5fa', iconBg: 'rgba(96,165,250,0.12)',
+    iconColor: 'var(--info)', iconBg: 'rgba(96,165,250,0.12)',
     icon: <ClipboardText size={22} weight="fill" />,
     title: 'Obligations légales du gîte',
     subtitle: "Ce que la loi impose avant d'accueillir",
@@ -368,7 +368,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'chambres-haccp',
     profile: 'chambres',
-    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    iconColor: 'var(--warning)', iconBg: 'rgba(245,158,11,0.12)',
     icon: <ForkKnife size={22} weight="fill" />,
     title: 'HACCP & hygiène alimentaire (petit-déj)',
     subtitle: 'Servir un petit-déjeuner = obligations sanitaires',
@@ -473,7 +473,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'conciergerie-prospection',
     profile: 'conciergerie',
-    iconColor: '#10b981', iconBg: 'rgba(16,185,129,0.12)',
+    iconColor: 'var(--success-1)', iconBg: 'rgba(16,185,129,0.12)',
     icon: <Target size={22} weight="fill" />,
     title: 'Trouver son premier mandat',
     subtitle: 'Décrocher la confiance avant la facture',
@@ -490,7 +490,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'conciergerie-scaler',
     profile: 'conciergerie',
-    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    iconColor: 'var(--warning)', iconBg: 'rgba(245,158,11,0.12)',
     icon: <ChartLineUp size={22} weight="fill" />,
     title: 'Scaler de 5 à 30 mandats',
     subtitle: 'Industrialiser sans casser la qualité',
@@ -511,7 +511,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'direct-contrat',
     profile: 'direct',
-    iconColor: '#34d399', iconBg: 'rgba(52,211,153,0.12)',
+    iconColor: 'var(--success-1)', iconBg: 'var(--success-bg)',
     icon: <FileText size={22} weight="fill" />,
     title: 'Contrat obligatoire sans plateforme',
     subtitle: 'Ce que tu dois avoir avant le premier séjour',
@@ -547,7 +547,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'direct-visibilite',
     profile: 'direct',
-    iconColor: '#fbbf24', iconBg: 'rgba(251,191,36,0.12)',
+    iconColor: 'var(--warning)', iconBg: 'rgba(251,191,36,0.12)',
     icon: <Megaphone size={22} weight="fill" />,
     title: 'Se rendre visible sans Airbnb',
     subtitle: 'Les canaux pour remplir ton calendrier en direct',
@@ -606,7 +606,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'direct-paiement',
     profile: 'direct',
-    iconColor: '#10b981', iconBg: 'rgba(16,185,129,0.12)',
+    iconColor: 'var(--success-1)', iconBg: 'rgba(16,185,129,0.12)',
     icon: <CurrencyEur size={22} weight="fill" />,
     title: 'Paiement sécurisé sans plateforme',
     subtitle: 'Encaisser sans Airbnb, sans risque',
@@ -626,7 +626,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'direct-conversion',
     profile: 'direct',
-    iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',
+    iconColor: 'var(--warning)', iconBg: 'rgba(245,158,11,0.12)',
     icon: <ChatCircleText size={22} weight="fill" />,
     title: 'Convertir tes voyageurs plateforme → direct',
     subtitle: 'La stratégie pour s\'affranchir des commissions',
@@ -666,9 +666,9 @@ const GUIDE_CARDS: GuideCard[] = [
 ]
 
 const RULE_STYLES: Record<RuleType, { color: string; bg: string }> = {
-  warn: { color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
-  ok:   { color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
-  info: { color: '#60a5fa', bg: 'rgba(96,165,250,0.08)' },
+  warn: { color: 'var(--danger)', bg: 'rgba(239,68,68,0.08)' },
+  ok:   { color: 'var(--success-1)', bg: 'rgba(16,185,129,0.08)' },
+  info: { color: 'var(--info)', bg: 'var(--info-bg)' },
 }
 
 function RuleIcon({ type }: { type: RuleType }) {

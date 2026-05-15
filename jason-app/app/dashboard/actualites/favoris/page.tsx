@@ -6,12 +6,12 @@ import { ArrowLeft, BookmarkSimple, ArrowUpRight, Newspaper } from '@phosphor-ic
 export const metadata = { title: 'Mes favoris, Actualités LCD' }
 
 const CAT_COLORS: Record<string, { color: string; bg: string; label: string }> = {
-  reglementation:     { color: '#60a5fa', bg: 'rgba(96,165,250,0.12)',  label: 'Réglementation' },
-  fiscalite:          { color: '#34d399', bg: 'rgba(52,211,153,0.12)',  label: 'Fiscalité' },
-  gites:              { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  label: 'Gîtes & Meublés' },
+  reglementation:     { color: 'var(--info)', bg: 'rgba(96,165,250,0.12)',  label: 'Réglementation' },
+  fiscalite:          { color: 'var(--success-1)', bg: 'var(--success-bg)',  label: 'Fiscalité' },
+  gites:              { color: 'var(--warning)', bg: 'rgba(245,158,11,0.12)',  label: 'Gîtes & Meublés' },
   'chambres-hotes':   { color: '#ec4899', bg: 'rgba(236,72,153,0.12)',  label: "Chambres d'hôtes" },
   conciergerie:       { color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)',  label: 'Conciergeries' },
-  'reservation-directe': { color: '#10b981', bg: 'rgba(16,185,129,0.12)', label: 'Réserv. directe' },
+  'reservation-directe': { color: 'var(--success-1)', bg: 'rgba(16,185,129,0.12)', label: 'Réserv. directe' },
   marche:             { color: '#f472b6', bg: 'rgba(244,114,182,0.12)', label: 'Marché' },
   communes:           { color: '#64748b', bg: 'rgba(100,116,139,0.12)', label: 'Communes & Villes' },
   plateformes:        { color: '#fb923c', bg: 'rgba(251,146,60,0.12)',  label: 'Plateformes OTA' },

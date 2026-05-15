@@ -29,7 +29,7 @@ const SOURCE_LABELS: Record<string, { label: string; color: string }> = {
   booking:          { label: 'Booking.com',     color: '#003580' },
   abritel:          { label: 'Abritel / Vrbo',  color: '#3B82F6' },
   vrbo:             { label: 'Vrbo',            color: '#3B82F6' },
-  direct:           { label: 'Direct',          color: '#34D399' },
+  direct:           { label: 'Direct',          color: 'var(--success-1)' },
   bouche_a_oreille: { label: 'Bouche a oreille', color: '#A78BFA' },
   autre:            { label: 'Autre',           color: '#94A3B8' },
 }
@@ -449,7 +449,7 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
               style={{
                 ...s.insight,
                 borderLeftColor:
-                  ins.kind === 'top' ? '#34D399'
+                  ins.kind === 'top' ? 'var(--success-1)'
                   : ins.kind === 'low' ? '#F59E0B'
                   : 'var(--accent-text)',
               }}
@@ -476,7 +476,7 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
             label: m.label,
             value: m.occupation,
             display: fmtPct(m.occupation),
-            color: m.occupation >= 0.7 ? '#34D399' : m.occupation >= 0.4 ? '#FACC15' : '#F87171',
+            color: m.occupation >= 0.7 ? 'var(--success-1)' : m.occupation >= 0.4 ? '#FACC15' : 'var(--danger)',
           }))}
           maxValue={1}
         />
@@ -581,8 +581,8 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
             </thead>
             <tbody>
               {comparator.map(c => {
-                const occColor = c.occupation >= 0.7 ? '#34D399'
-                  : c.occupation >= 0.4 ? '#FACC15' : '#F87171'
+                const occColor = c.occupation >= 0.7 ? 'var(--success-1)'
+                  : c.occupation >= 0.4 ? '#FACC15' : 'var(--danger)'
                 return (
                   <tr key={c.id} style={s.tr}>
                     <td style={s.td}>
@@ -630,7 +630,7 @@ function KpiCard({ icon, label, value, delta, color }: {
   const showDelta = typeof delta === 'number'
   const isUp = (delta ?? 0) > 0.01
   const isDown = (delta ?? 0) < -0.01
-  const deltaColor = isUp ? '#34D399' : isDown ? '#F87171' : 'var(--text-3)'
+  const deltaColor = isUp ? 'var(--success-1)' : isDown ? 'var(--danger)' : 'var(--text-3)'
   const DeltaIcon = isUp ? ArrowUp : isDown ? ArrowDown : Minus
   return (
     <div style={s.kpi}>
@@ -673,7 +673,7 @@ function BarChart({ items, maxValue }: {
 }
 
 // ─── Donut SVG ────────────────────────────────────────────────────────────
-const DONUT_COLORS = ['#FFD56B', '#34D399', '#7EB8F7', '#A78BFA', '#F87171', '#FB923C', '#22D3EE', '#F472B6']
+const DONUT_COLORS = ['#FFD56B', 'var(--success-1)', '#7EB8F7', '#A78BFA', 'var(--danger)', '#FB923C', '#22D3EE', '#F472B6']
 
 function Donut({ items, total, centerLabel }: {
   items: { label: string; value: number; color: string }[]

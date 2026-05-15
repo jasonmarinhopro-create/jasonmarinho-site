@@ -90,7 +90,7 @@ export default async function ParcoursDetailPage({ params }: { params: Promise<{
             const isInProgress = progress > 0 && progress < 100
             return (
               <Link key={f.id} href={`/dashboard/formations/${f.slug}`} style={{ ...s.formationCard, opacity: isDone ? 0.85 : 1 }}>
-                <div style={{ ...s.stepNumber, background: isDone ? '#10b981' : isInProgress ? 'var(--accent-text)' : 'var(--surface-2)', color: isDone || isInProgress ? 'var(--bg)' : 'var(--text-muted)' }}>
+                <div style={{ ...s.stepNumber, background: isDone ? 'var(--success-1)' : isInProgress ? 'var(--accent-text)' : 'var(--surface-2)', color: isDone || isInProgress ? 'var(--bg)' : 'var(--text-muted)' }}>
                   {isDone ? <CheckCircle size={14} weight="fill" /> : i + 1}
                 </div>
                 <div style={s.formationBody}>
@@ -144,7 +144,7 @@ const s: Record<string, React.CSSProperties> = {
   formationBody: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: '6px' },
   formationTop: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const },
   formationTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)' },
-  doneBadge: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', padding: '2px 8px', background: 'rgba(16,185,129,0.10)', color: '#10b981', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '100px' },
+  doneBadge: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', padding: '2px 8px', background: 'rgba(16,185,129,0.10)', color: 'var(--success-1)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '100px' },
   inProgressBadge: { fontSize: '10px', fontWeight: 700, padding: '2px 8px', background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)', borderRadius: '100px' },
   formationDesc: { fontSize: '12.5px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 },
   formationMeta: { display: 'flex', gap: '12px', fontSize: '11px', color: 'var(--text-muted)' },

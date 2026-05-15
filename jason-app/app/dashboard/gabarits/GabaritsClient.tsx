@@ -975,7 +975,7 @@ function CompactHeroCard({
               fontSize: '12.5px', fontWeight: 700, flexShrink: 0,
               fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
               ...(isCopied
-                ? { background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', color: '#34D399' }
+                ? { background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', color: 'var(--success-1)' }
                 : { background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' }
               ),
             }}
@@ -1372,7 +1372,7 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all 0.18s',
   },
   copyBtnDone: {
-    background: 'rgba(52,211,153,0.1)', borderColor: 'rgba(52,211,153,0.3)', color: '#34D399',
+    background: 'rgba(52,211,153,0.1)', borderColor: 'var(--success-border)', color: 'var(--success-1)',
   },
 
   seeMoreBtn: {

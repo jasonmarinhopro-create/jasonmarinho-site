@@ -53,7 +53,7 @@ export default function ActionUrgente({ unsignedContracts, pendingPayments, toda
     const days   = diffDays(today, firstCritical.date_arrivee)
     const who    = [firstCritical.locataire_prenom, firstCritical.locataire_nom].filter(Boolean).join(' ')
     const urgent = days <= 2
-    const color  = urgent ? '#ef4444' : '#f97316'
+    const color  = urgent ? 'var(--danger)' : '#f97316'
     const others = unsignedContracts.length - 1
 
     return (
@@ -120,7 +120,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(16,185,129,0.2)',
     background: 'rgba(16,185,129,0.06)',
   },
-  greenTitle: { margin: 0, fontSize: '14px', fontWeight: 600, color: '#10b981' },
+  greenTitle: { margin: 0, fontSize: '14px', fontWeight: 600, color: 'var(--success-1)' },
   greenSub:   { margin: '3px 0 0', fontSize: '12px', color: 'var(--text-muted)' },
 
   card: {

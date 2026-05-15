@@ -104,7 +104,7 @@ export default async function SoutenirPage({
                   desc: 'Propose des fonctionnalités, vote sur les priorités. Ce que tu demandes passe avant tout le monde.',
                 },
                 {
-                  icon: Users, color: '#34d399', glow: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.2)',
+                  icon: Users, color: 'var(--success-1)', glow: 'rgba(52,211,153,0.1)', border: 'var(--success-border)',
                   label: 'Espace contributeurs',
                   desc: 'Accès à un espace dédié dans ton dashboard, roadmap en temps réel, idées en cours, discussions.',
                 },
@@ -114,7 +114,7 @@ export default async function SoutenirPage({
                   desc: 'Chaque nouveauté te parvient en avant-première. Tu testes avant que ça soit public.',
                 },
                 {
-                  icon: ShieldCheck, color: '#60a5fa', glow: 'rgba(96,165,250,0.1)', border: 'rgba(96,165,250,0.2)',
+                  icon: ShieldCheck, color: 'var(--info)', glow: 'rgba(96,165,250,0.1)', border: 'rgba(96,165,250,0.2)',
                   label: 'Badge permanent',
                   desc: 'Le badge Contributeur reste sur ton profil indéfiniment. Peu importe ce que tu mets.',
                 },

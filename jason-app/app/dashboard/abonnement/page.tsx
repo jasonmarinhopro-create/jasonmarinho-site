@@ -407,8 +407,8 @@ const styles: Record<string, React.CSSProperties> = {
   leftCol: {},
   rightCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
 
-  planLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: '#34D399' },
-  dot: { width: '7px', height: '7px', borderRadius: '50%', background: '#34D399' },
+  planLabel: { display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--success-1)' },
+  dot: { width: '7px', height: '7px', borderRadius: '50%', background: 'var(--success-1)' },
   planName: { fontFamily: 'var(--font-fraunces), serif', fontSize: '32px', fontWeight: 400, color: 'var(--text)' },
   planDesc: { fontSize: '13px', fontWeight: 400, color: 'var(--text-3)', lineHeight: 1.6, margin: 0 },
   featureList: { display: 'flex', flexDirection: 'column', gap: '10px' },
@@ -467,7 +467,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   upgradeGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(52,211,153,0.06) 0%, transparent 70%)', pointerEvents: 'none' },
   upgradeName: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)' },
-  ctaStandard: { display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.25)', color: '#34D399', fontSize: '13px', fontWeight: 600, padding: '11px 18px', borderRadius: '10px', textDecoration: 'none', transition: 'all .2s', marginTop: '4px' },
+  ctaStandard: { display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.25)', color: 'var(--success-1)', fontSize: '13px', fontWeight: 600, padding: '11px 18px', borderRadius: '10px', textDecoration: 'none', transition: 'all .2s', marginTop: '4px' },
 
   driingRow: {
     position: 'relative', overflow: 'hidden',
@@ -486,7 +486,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   ctaManage: { display: 'inline-flex', alignItems: 'center', gap: '7px', color: 'var(--text-2)', fontSize: '13px', fontWeight: 500, textDecoration: 'none' },
 
-  alertSuccess: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: 500, color: '#34D399', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: '12px', padding: '14px 18px', marginBottom: '24px' },
+  alertSuccess: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: 500, color: 'var(--success-1)', background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: '12px', padding: '14px 18px', marginBottom: '24px' },
   alertInfo: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: 400, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '14px 18px', marginBottom: '24px' },
 
   kofi: { display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, marginTop: '40px', padding: '20px 24px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px' },

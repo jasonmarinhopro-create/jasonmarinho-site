@@ -16,19 +16,19 @@ import {
 } from '../incident-actions'
 
 const TYPE_OPTIONS: { value: IncidentType; label: string; emoji: string; color: string }[] = [
-  { value: 'linge_tache',         label: 'Linge tache',         emoji: '🛏️', color: '#F87171' },
+  { value: 'linge_tache',         label: 'Linge tache',         emoji: '🛏️', color: 'var(--danger)' },
   { value: 'casse',               label: 'Casse / objet brise', emoji: '💥', color: '#F59E0B' },
   { value: 'salete',              label: 'Salete',              emoji: '🧹', color: '#A78BFA' },
   { value: 'degradation',         label: 'Degradation',         emoji: '⚠️', color: '#F43F5E' },
   { value: 'vol',                 label: 'Vol',                 emoji: '🚨', color: '#DC2626' },
   { value: 'retard_restitution',  label: 'Retard restitution',  emoji: '⏰', color: '#FB923C' },
-  { value: 'plainte_voisin',      label: 'Plainte voisin',      emoji: '🔇', color: '#FBBF24' },
+  { value: 'plainte_voisin',      label: 'Plainte voisin',      emoji: '🔇', color: 'var(--warning)' },
   { value: 'autre',               label: 'Autre',               emoji: '📝', color: '#94A3B8' },
 ]
 
 const STATUT_OPTIONS: { value: IncidentStatut; label: string; color: string; bg: string }[] = [
-  { value: 'ouvert',     label: 'Ouvert',         color: '#F87171', bg: 'rgba(248,113,113,0.12)' },
-  { value: 'resolu',     label: 'Resolu',         color: '#34D399', bg: 'rgba(52,211,153,0.12)' },
+  { value: 'ouvert',     label: 'Ouvert',         color: 'var(--danger)', bg: 'rgba(248,113,113,0.12)' },
+  { value: 'resolu',     label: 'Resolu',         color: 'var(--success-1)', bg: 'var(--success-bg)' },
   { value: 'rembourse',  label: 'Rembourse',      color: '#7EB8F7', bg: 'rgba(126,184,247,0.12)' },
   { value: 'annule',     label: 'Annule',         color: 'var(--text-3)', bg: 'var(--surface-2)' },
 ]
@@ -395,7 +395,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text)', fontSize: 13, fontFamily: 'inherit',
   },
   row2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
-  error: { padding: '6px 10px', background: 'rgba(248,113,113,0.1)', color: '#F87171', borderRadius: 6, fontSize: 12 },
+  error: { padding: '6px 10px', background: 'rgba(248,113,113,0.1)', color: 'var(--danger)', borderRadius: 6, fontSize: 12 },
   formActions: { display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 4 },
   btnGhost: {
     padding: '7px 14px', borderRadius: 8,

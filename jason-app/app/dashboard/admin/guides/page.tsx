@@ -34,9 +34,9 @@ const GUIDE_CARDS: {
   bg: string
 }[] = [
   // Gîtes
-  { id: 'gites-statut',        profile: 'gites',        title: 'Statut juridique : EI ou SASU ?',                   Icon: Scales,       color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  { id: 'gites-fiscalite',     profile: 'gites',        title: 'Classement & impact fiscal (loi Le Meur 2025)',      Icon: CurrencyEur,  color: '#34d399', bg: 'rgba(52,211,153,0.12)' },
-  { id: 'gites-obligations',   profile: 'gites',        title: 'Obligations légales du gîte',                       Icon: ClipboardText, color: '#60a5fa', bg: 'rgba(96,165,250,0.12)' },
+  { id: 'gites-statut',        profile: 'gites',        title: 'Statut juridique : EI ou SASU ?',                   Icon: Scales,       color: 'var(--warning)', bg: 'rgba(245,158,11,0.12)' },
+  { id: 'gites-fiscalite',     profile: 'gites',        title: 'Classement & impact fiscal (loi Le Meur 2025)',      Icon: CurrencyEur,  color: 'var(--success-1)', bg: 'var(--success-bg)' },
+  { id: 'gites-obligations',   profile: 'gites',        title: 'Obligations légales du gîte',                       Icon: ClipboardText, color: 'var(--info)', bg: 'rgba(96,165,250,0.12)' },
   // Chambres
   { id: 'chambres-regles',     profile: 'chambres',     title: 'Les règles légales strictes (loi 2006)',             Icon: Gavel,        color: '#fb7185', bg: 'rgba(251,113,133,0.12)' },
   { id: 'chambres-fiscalite',  profile: 'chambres',     title: "Fiscalité spécifique chambres d'hôtes",             Icon: CurrencyEur,  color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
@@ -46,9 +46,9 @@ const GUIDE_CARDS: {
   { id: 'concierge-statut',    profile: 'conciergerie', title: 'Statuts recommandés & TVA',                         Icon: Briefcase,    color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
   { id: 'concierge-contrats',  profile: 'conciergerie', title: 'Contrats & tarification',                           Icon: FileText,     color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)' },
   // Direct
-  { id: 'direct-contrat',      profile: 'direct',       title: 'Contrat obligatoire sans plateforme',               Icon: FileText,     color: '#34d399', bg: 'rgba(52,211,153,0.12)' },
+  { id: 'direct-contrat',      profile: 'direct',       title: 'Contrat obligatoire sans plateforme',               Icon: FileText,     color: 'var(--success-1)', bg: 'var(--success-bg)' },
   { id: 'direct-assurance',    profile: 'direct',       title: "Assurance : pas d'AirCover hors Airbnb",            Icon: ShieldCheck,  color: '#fb7185', bg: 'rgba(251,113,133,0.12)' },
-  { id: 'direct-visibilite',   profile: 'direct',       title: 'Se rendre visible sans Airbnb',                     Icon: Megaphone,    color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' },
+  { id: 'direct-visibilite',   profile: 'direct',       title: 'Se rendre visible sans Airbnb',                     Icon: Megaphone,    color: 'var(--warning)', bg: 'rgba(251,191,36,0.12)' },
 ]
 
 export default async function AdminGuidesPage() {
@@ -138,7 +138,7 @@ export default async function AdminGuidesPage() {
                     })}
                   </div>
                   <div style={s.profileFooter}>
-                    <span style={{ fontSize: '11px', color: counts.published > 0 ? '#34d399' : 'var(--text-muted)', fontWeight: 500 }}>
+                    <span style={{ fontSize: '11px', color: counts.published > 0 ? 'var(--success-1)' : 'var(--text-muted)', fontWeight: 500 }}>
                       {counts.published} actu{counts.published !== 1 ? 's' : ''} publiée{counts.published !== 1 ? 's' : ''}
                     </span>
                     {counts.total > counts.published && (

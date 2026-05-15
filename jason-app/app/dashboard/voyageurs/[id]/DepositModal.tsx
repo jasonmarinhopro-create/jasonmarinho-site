@@ -32,17 +32,17 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com
 
 const DEPOSIT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   pending:  { label: 'En attente de paiement', color: '#a5c4b0', bg: 'rgba(165,196,176,0.08)' },
-  held:     { label: 'Caution retenue ✓',       color: '#34D399', bg: 'rgba(52,211,153,0.08)' },
+  held:     { label: 'Caution retenue ✓',       color: 'var(--success-1)', bg: 'var(--success-bg)' },
   captured: { label: 'Encaissée',               color: '#FFD56B', bg: 'rgba(255,213,107,0.08)' },
   released: { label: 'Libérée',                  color: '#6b9a7e', bg: 'rgba(107,154,126,0.08)' },
-  failed:   { label: 'Échec paiement',           color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
+  failed:   { label: 'Échec paiement',           color: 'var(--danger)', bg: 'rgba(239,68,68,0.08)' },
 }
 
 const PAYMENT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   pending:  { label: 'En attente de paiement', color: '#a5c4b0', bg: 'rgba(165,196,176,0.08)' },
-  paid:     { label: 'Réglé ✓',                color: '#34D399', bg: 'rgba(52,211,153,0.08)' },
+  paid:     { label: 'Réglé ✓',                color: 'var(--success-1)', bg: 'var(--success-bg)' },
   refunded: { label: 'Remboursé',              color: '#FFD56B', bg: 'rgba(255,213,107,0.08)' },
-  failed:   { label: 'Échec paiement',          color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
+  failed:   { label: 'Échec paiement',          color: 'var(--danger)', bg: 'rgba(239,68,68,0.08)' },
 }
 
 export default function DepositModal({ contract, hostIban, hostBic, onClose }: Props) {
@@ -283,7 +283,7 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
               )}
               {done === 'released' && (
                 <div style={successBox}>
-                  <strong style={{ color: '#34D399' }}>Caution libérée ✓</strong>
+                  <strong style={{ color: 'var(--success-1)' }}>Caution libérée ✓</strong>
                   <p style={hint}>Le blocage carte a été annulé. Le locataire est libéré.</p>
                 </div>
               )}
@@ -339,7 +339,7 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
               {resent ? (
                 <div style={{ ...successBox, display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Check size={14} weight="bold" color="#34D399" />
-                  <p style={{ margin: 0, fontSize: '13px', color: '#34D399', fontWeight: 500 }}>
+                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--success-1)', fontWeight: 500 }}>
                     Email renvoyé à {contract.locataire_prenom} {contract.locataire_nom} ✓
                   </p>
                 </div>
@@ -451,10 +451,10 @@ const captureBtn: React.CSSProperties = {
 const releaseBtn: React.CSSProperties = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
   width: '100%', padding: '13px',
-  background: 'rgba(52,211,153,0.08)',
+  background: 'var(--success-bg)',
   border: '1px solid rgba(52,211,153,0.2)',
   borderRadius: '12px',
-  fontSize: '14px', fontWeight: 600, color: '#34D399',
+  fontSize: '14px', fontWeight: 600, color: 'var(--success-1)',
   cursor: 'pointer',
 }
 
@@ -463,14 +463,14 @@ const legal: React.CSSProperties = {
 }
 
 const successBox: React.CSSProperties = {
-  background: 'rgba(52,211,153,0.06)',
+  background: 'var(--success-bg)',
   border: '1px solid rgba(52,211,153,0.15)',
   borderRadius: '10px', padding: '14px',
 }
 
 const errorBox: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
-  fontSize: '13px', color: '#ef4444',
+  fontSize: '13px', color: 'var(--danger)',
   background: 'rgba(239,68,68,0.08)',
   border: '1px solid rgba(239,68,68,0.2)',
   borderRadius: '8px', padding: '10px 14px', marginTop: '12px',
@@ -497,10 +497,10 @@ const viewLink: React.CSSProperties = {
 const resendBtn: React.CSSProperties = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
   width: '100%', padding: '11px',
-  background: 'rgba(52,211,153,0.08)',
+  background: 'var(--success-bg)',
   border: '1px solid rgba(52,211,153,0.2)',
   borderRadius: '12px',
-  fontSize: '13px', fontWeight: 500, color: '#34D399',
+  fontSize: '13px', fontWeight: 500, color: 'var(--success-1)',
   cursor: 'pointer',
 }
 
@@ -542,10 +542,10 @@ function IbanField({
           flexShrink: 0,
           display: 'inline-flex', alignItems: 'center', gap: '5px',
           padding: '5px 12px', borderRadius: '8px',
-          background: isCopied ? 'rgba(52,211,153,0.15)' : 'rgba(99,91,255,0.2)',
+          background: isCopied ? 'var(--success-border)' : 'rgba(99,91,255,0.2)',
           border: isCopied ? '1px solid rgba(52,211,153,0.3)' : '1px solid rgba(99,91,255,0.35)',
           fontSize: '12px', fontWeight: 600,
-          color: isCopied ? '#34D399' : '#a29bfe',
+          color: isCopied ? 'var(--success-1)' : '#a29bfe',
           cursor: 'pointer',
           whiteSpace: 'nowrap',
         }}

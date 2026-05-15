@@ -60,7 +60,7 @@ function isBotLike(name: string | null, email: string): boolean {
 // Hash-based avatar color so every member gets a consistent unique color
 const PALETTE = [
   { bg: 'rgba(255,213,107,0.14)', border: 'rgba(255,213,107,0.32)', text: '#FFD56B' },
-  { bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.28)',  text: '#34D399' },
+  { bg: 'var(--success-bg)',  border: 'var(--success-border)',  text: 'var(--success-1)' },
   { bg: 'rgba(96,190,255,0.12)',  border: 'rgba(96,190,255,0.28)',  text: '#60BEFF' },
   { bg: 'rgba(249,117,131,0.12)', border: 'rgba(249,117,131,0.28)', text: '#F97583' },
   { bg: 'rgba(192,132,252,0.12)', border: 'rgba(192,132,252,0.28)', text: '#C084FC' },
@@ -347,7 +347,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
       <div style={s.cardTop}>
         {/* Avatar */}
         <div style={{ ...s.avatar, background: pal.bg, border: `1.5px solid ${suspect ? 'rgba(248,113,113,0.35)' : pal.border}` }}>
-          <span style={{ ...s.avatarText, color: suspect ? '#f87171' : pal.text }}>
+          <span style={{ ...s.avatarText, color: suspect ? 'var(--danger)' : pal.text }}>
             {suspect ? <Robot size={18} /> : ini}
           </span>
         </div>
@@ -502,10 +502,10 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
 
   const statTiles = details ? [
     { icon: <UsersFour size={14} />,    value: details.voyageurs,      label: 'Voyageurs',       color: '#93C5FD' },
-    { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: '#34D399' },
+    { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: 'var(--success-1)' },
     { icon: <BookmarkSimple size={14} />, value: details.favorites,    label: 'Gabarits favoris', color: 'var(--accent-text)' },
     { icon: <PencilSimple size={14} />, value: details.customizations, label: 'Gabarits perso',   color: '#C084FC' },
-    { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: '#f87171' },
+    { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: 'var(--danger)' },
     { icon: <Lightbulb size={14} />,     value: details.suggestions,   label: 'Suggestions',      color: '#FB923C' },
     { icon: <UsersFour size={14} />,    value: details.communityGroupsCount, label: 'Groupes FB',  color: '#60A5FA' },
     { icon: <MagnifyingGlass size={14} />, value: details.auditsCount,        label: 'Audits GBP',  color: '#A78BFA' },
@@ -616,7 +616,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                           <div style={{
                             display: 'flex', alignItems: 'center', gap: '10px',
                             padding: '10px 12px', borderRadius: '10px',
-                            background: 'rgba(96,165,250,0.06)',
+                            background: 'var(--info-bg)',
                             border: '1px solid rgba(96,165,250,0.18)',
                           }}>
                             <UsersFour size={14} color="#60A5FA" weight="fill" />
@@ -672,14 +672,14 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                           <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             Inscrit le {formatDate(uf.enrolled_at)}
                             {uf.progress === 100 && (
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#34D399', background: 'rgba(52,211,153,0.12)', padding: '1px 6px', borderRadius: '100px' }}>
+                              <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--success-1)', background: 'var(--success-bg)', padding: '1px 6px', borderRadius: '100px' }}>
                                 Terminée
                               </span>
                             )}
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <div style={{ flex: 1, height: '4px', background: 'var(--border)', borderRadius: '100px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? '#34D399' : 'var(--accent-text)', transition: 'width 0.3s' }} />
+                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? 'var(--success-1)' : 'var(--accent-text)', transition: 'width 0.3s' }} />
                             </div>
                             <span style={{ fontSize: '11px', color: 'var(--text-3)', width: '30px', textAlign: 'right' }}>{uf.progress}%</span>
                           </div>
@@ -700,7 +700,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
 // ── FeedbackPill ──────────────────────────────────────────────────────────────
 
 function FeedbackPill({ type, msg }: { type: 'ok'|'err'; msg: string }) {
-  const c = type === 'ok' ? '#34D399' : '#f87171'
+  const c = type === 'ok' ? 'var(--success-1)' : 'var(--danger)'
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 10px', borderRadius: '7px', fontSize: '12px', fontWeight: 500, color: c, background: `${c}14`, border: `1px solid ${c}28` }}>
       {type === 'ok' ? <CheckCircle size={12} weight="fill" /> : <XCircle size={12} weight="fill" />}
@@ -729,9 +729,9 @@ const s: Record<string, React.CSSProperties> = {
   statLabel: { fontSize: '12px', color: 'var(--text-2)' },
   deleteBotsBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)',
+    background: 'var(--danger-bg)', border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '9px', padding: '7px 13px',
-    color: '#f87171', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
+    color: 'var(--danger)', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
     fontFamily: 'var(--font-outfit), sans-serif',
   },
   exportBtn: {

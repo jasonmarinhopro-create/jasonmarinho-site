@@ -42,7 +42,7 @@ export default function SignaturePage({ token, locataireName }: Props) {
     canvas.width = rect.width * dpr
     canvas.height = rect.height * dpr
     ctx.scale(dpr, dpr)
-    ctx.strokeStyle = '#34D399'
+    ctx.strokeStyle = 'var(--success-1)'
     ctx.lineWidth = 2.5
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -329,7 +329,7 @@ const clearBtn: React.CSSProperties = {
   borderRadius: '8px',
   padding: '4px 10px',
   fontSize: '12px',
-  color: '#ef4444',
+  color: 'var(--danger)',
   cursor: 'pointer',
 }
 
@@ -347,7 +347,7 @@ const consentCheckbox: React.CSSProperties = {
   width: '16px',
   height: '16px',
   cursor: 'pointer',
-  accentColor: '#34D399',
+  accentColor: 'var(--success-1)',
 }
 
 const consentText: React.CSSProperties = {
@@ -357,7 +357,7 @@ const consentText: React.CSSProperties = {
 }
 
 const errorStyle: React.CSSProperties = {
-  color: '#ef4444',
+  color: 'var(--danger)',
   fontSize: '13px',
   margin: '0 0 16px',
 }
@@ -365,7 +365,7 @@ const errorStyle: React.CSSProperties = {
 const submitBtn: React.CSSProperties = {
   width: '100%',
   padding: '16px',
-  background: '#34D399',
+  background: 'var(--success-1)',
   border: 'none',
   borderRadius: '14px',
   fontSize: '15px',
@@ -383,7 +383,7 @@ const legalNote: React.CSSProperties = {
 }
 
 const successBox: React.CSSProperties = {
-  background: 'rgba(52,211,153,0.08)',
+  background: 'var(--success-bg)',
   border: '1px solid rgba(52,211,153,0.25)',
   borderRadius: '20px',
   padding: '40px 32px',
@@ -395,7 +395,7 @@ const successTitle: React.CSSProperties = {
   fontFamily: 'Georgia, serif',
   fontSize: '24px',
   fontWeight: 400,
-  color: '#34D399',
+  color: 'var(--success-1)',
   margin: '0 0 12px',
 }
 

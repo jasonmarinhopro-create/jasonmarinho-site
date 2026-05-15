@@ -107,21 +107,21 @@ function FiscalLCD() {
             </div>
             <div style={s.resultBox}>
               <div style={s.resultLabel}>Tu peux rester au micro</div>
-              <div style={{ ...s.resultValue, color: '#10b981' }}>OK</div>
+              <div style={{ ...s.resultValue, color: 'var(--success-1)' }}>OK</div>
               <div style={s.resultHint}>Sous le plafond {fmtEur(result.plafond)}</div>
             </div>
           </>
         ) : (
           <div style={{ ...s.resultBox, gridColumn: '1 / -1', borderColor: 'rgba(239,68,68,0.3)' }}>
             <div style={s.resultLabel}>Plafond dépassé</div>
-            <div style={{ ...s.resultValue, color: '#ef4444' }}>Régime réel</div>
+            <div style={{ ...s.resultValue, color: 'var(--danger)' }}>Régime réel</div>
             <div style={s.resultHint}>Tu dépasses le plafond {fmtEur(result.plafond)} → bascule au réel obligatoire l&apos;année suivante</div>
           </div>
         )}
         {regime === 'non_classe' && ca > 0 && (
           <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'rgba(34,197,94,0.06)', borderColor: 'rgba(34,197,94,0.25)' }}>
             <div style={s.resultLabel}>Si tu te fais classer Atout France</div>
-            <div style={{ ...s.resultValue, color: '#10b981', fontSize: '20px' }}>− {fmtEur(result.economieClassement)} de base imposable</div>
+            <div style={{ ...s.resultValue, color: 'var(--success-1)', fontSize: '20px' }}>− {fmtEur(result.economieClassement)} de base imposable</div>
             <div style={s.resultHint}>
               Économie estimée d&apos;impôt : ~{fmtEur(result.economieClassement * 0.30)} (à TMI 30 %).
               Le classement fait aussi passer ton plafond CA de 15 000 € à 77 700 €.
@@ -142,7 +142,7 @@ function FiscalLCD() {
               <br />Limite légale d&apos;activité : 5 chambres et 15 voyageurs simultanés
               (art. L.324-3 du Code du tourisme).
               {ca > 50000 && (
-                <><br /><strong style={{ color: '#f59e0b' }}>⚠️ Si tes charges réelles dépassent 50 % du CA,
+                <><br /><strong style={{ color: 'var(--warning)' }}>⚠️ Si tes charges réelles dépassent 50 % du CA,
                   le régime réel sera probablement plus avantageux que le micro-BIC.</strong></>
               )}
             </div>
@@ -459,9 +459,9 @@ function Rentabilite() {
     }
   }, [prixNuit, occupation, commission, fraisMenage, dureeMoy, chargesMens, investMode, prixAchat, apport, dureeCredit, tauxCredit])
 
-  const sante = r.margePct >= 40 ? { color: '#10b981', label: 'Excellente' }
-              : r.margePct >= 20 ? { color: '#f59e0b', label: 'Correcte' }
-              : { color: '#ef4444', label: 'Faible' }
+  const sante = r.margePct >= 40 ? { color: 'var(--success-1)', label: 'Excellente' }
+              : r.margePct >= 20 ? { color: 'var(--warning)', label: 'Correcte' }
+              : { color: 'var(--danger)', label: 'Faible' }
 
   return (
     <div style={s.calc}>
@@ -985,7 +985,7 @@ const s: Record<string, React.CSSProperties> = {
   disclaimer: {
     display: 'flex', alignItems: 'flex-start', gap: '7px',
     padding: '10px 12px',
-    background: 'rgba(96,165,250,0.06)',
+    background: 'var(--info-bg)',
     border: '1px solid rgba(96,165,250,0.18)',
     borderRadius: '9px',
     fontSize: '11.5px', fontWeight: 300, color: 'var(--text-2)',

@@ -117,10 +117,10 @@ export default function ProfilApprenantUI(props: Props) {
         </div>
         <div style={s.statCard}>
           <span style={{ ...s.statIcon, background: streak > 0 ? 'rgba(239,68,68,0.14)' : 'var(--surface-2)' }}>
-            <Flame size={18} weight="fill" color={streak > 0 ? '#dc2626' : 'var(--text-muted)'} />
+            <Flame size={18} weight="fill" color={streak > 0 ? 'var(--danger)' : 'var(--text-muted)'} />
           </span>
           <div>
-            <div style={{ ...s.statValue, color: streak > 0 ? '#dc2626' : 'var(--text)' }}>
+            <div style={{ ...s.statValue, color: streak > 0 ? 'var(--danger)' : 'var(--text)' }}>
               {streak} {streak > 0 ? 'jours' : ''}
             </div>
             <div style={s.statLabel}>Streak actuel</div>

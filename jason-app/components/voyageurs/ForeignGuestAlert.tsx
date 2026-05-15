@@ -71,7 +71,7 @@ export default function ForeignGuestAlert({ logementPays, voyageurNationalite, d
 
 const s: Record<string, React.CSSProperties> = {
   box: {
-    background: 'rgba(245,158,11,0.06)',
+    background: 'var(--warning-bg)',
     border: '1px solid rgba(245,158,11,0.28)',
     borderRadius: '10px',
     padding: '12px 14px',
@@ -81,11 +81,11 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
     marginBottom: '6px', flexWrap: 'wrap' as const,
   },
-  title: { fontSize: '13px', fontWeight: 700, color: '#f59e0b' },
+  title: { fontSize: '13px', fontWeight: 700, color: 'var(--warning)' },
   badge: {
     fontSize: '10px', fontWeight: 700,
     padding: '2px 7px', borderRadius: '999px',
-    background: 'rgba(245,158,11,0.18)', color: '#f59e0b',
+    background: 'var(--warning-border)', color: 'var(--warning)',
     letterSpacing: '0.3px',
   },
   text: {

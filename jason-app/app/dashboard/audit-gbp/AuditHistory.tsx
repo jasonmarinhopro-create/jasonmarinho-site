@@ -19,10 +19,10 @@ interface Props {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 80) return '#34d399'
+  if (score >= 80) return 'var(--success-1)'
   if (score >= 60) return '#d97706'
   if (score >= 40) return '#fb923c'
-  return '#ef4444'
+  return 'var(--danger)'
 }
 
 export default function AuditHistory({ audits }: Props) {
@@ -199,7 +199,7 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', fontFamily: 'inherit',
   },
   btnDanger: {
-    background: '#ef4444', color: '#fff',
+    background: 'var(--danger)', color: '#fff',
     border: 'none', borderRadius: '7px',
     padding: '6px 12px', fontSize: '12px', fontWeight: 600,
     cursor: 'pointer', fontFamily: 'inherit',

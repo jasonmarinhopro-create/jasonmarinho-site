@@ -107,9 +107,9 @@ export default async function SignPage({
   const paymentAlreadyDone = contract.stripe_payment_status === 'paid'
 
   const badgeStyle: React.CSSProperties = alreadySigned
-    ? { ...badge, background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.35)', color: '#34D399' }
+    ? { ...badge, background: 'var(--success-border)', border: '1px solid rgba(52,211,153,0.35)', color: 'var(--success-1)' }
     : cancelled
-    ? { ...badge, background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.35)', color: '#ef4444' }
+    ? { ...badge, background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.35)', color: 'var(--danger)' }
     : expired
     ? { ...badge, background: 'rgba(165,196,176,0.12)', border: '1px solid rgba(165,196,176,0.25)', color: '#a5c4b0' }
     : badge
@@ -328,7 +328,7 @@ export default async function SignPage({
 
           {/* Disclaimer template non-FR */}
           {tpl.disclaimer && (
-            <section style={{ ...contractSection, background: 'rgba(245,158,11,0.06)', padding: '14px 18px', borderRadius: '10px', border: '1px solid rgba(245,158,11,0.22)' }}>
+            <section style={{ ...contractSection, background: 'var(--warning-bg)', padding: '14px 18px', borderRadius: '10px', border: '1px solid rgba(245,158,11,0.22)' }}>
               <p style={{ ...contractText, fontSize: '12px', fontStyle: 'italic', margin: 0, opacity: 0.85 }}>
                 {tpl.disclaimer}
               </p>
@@ -541,7 +541,7 @@ const successBanner: React.CSSProperties = {
   borderRadius: '14px',
   padding: '16px 20px',
   marginBottom: '24px',
-  color: '#34D399',
+  color: 'var(--success-1)',
   fontSize: '14px',
   lineHeight: 1.5,
 }
@@ -712,7 +712,7 @@ const signedBlock: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: '20px',
-  background: 'rgba(52,211,153,0.06)',
+  background: 'var(--success-bg)',
   border: '1px solid rgba(52,211,153,0.2)',
   borderRadius: '16px',
   padding: '24px 28px',
@@ -734,7 +734,7 @@ const signedLabel: React.CSSProperties = {
 const signedName: React.CSSProperties = {
   fontSize: '18px',
   fontWeight: 600,
-  color: '#34D399',
+  color: 'var(--success-1)',
   margin: '0 0 4px',
 }
 

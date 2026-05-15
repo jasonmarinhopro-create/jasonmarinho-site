@@ -34,9 +34,9 @@ export interface RoadmapCommentData {
 
 const STATUS_CONFIG = {
   suggestion:  { label: 'Idée',     icon: Lightbulb,   color: 'var(--accent-text)', bg: 'var(--accent-bg)',  border: 'var(--accent-border)' },
-  planned:     { label: 'Prévu',    icon: Clock,       color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',   border: 'rgba(96,165,250,0.25)' },
+  planned:     { label: 'Prévu',    icon: Clock,       color: 'var(--info)', bg: 'rgba(96,165,250,0.1)',   border: 'var(--info-border)' },
   in_progress: { label: 'En cours', icon: Rocket,      color: '#a78bfa', bg: 'rgba(167,139,250,0.1)',  border: 'rgba(167,139,250,0.25)' },
-  done:        { label: 'Terminé',  icon: CheckCircle, color: '#34d399', bg: 'rgba(52,211,153,0.1)',   border: 'rgba(52,211,153,0.25)' },
+  done:        { label: 'Terminé',  icon: CheckCircle, color: 'var(--success-1)', bg: 'rgba(52,211,153,0.1)',   border: 'var(--success-border)' },
 } as const
 
 type StatusKey = keyof typeof STATUS_CONFIG
@@ -59,7 +59,7 @@ function timeAgo(iso: string): string {
 }
 
 function avatarColor(name: string): string {
-  const PALETTE = ['#FFD56B', '#60a5fa', '#a78bfa', '#34d399', '#f87171', '#fb923c']
+  const PALETTE = ['#FFD56B', 'var(--info)', '#a78bfa', 'var(--success-1)', 'var(--danger)', '#fb923c']
   let h = 0
   for (const c of name) h = (h + c.charCodeAt(0)) % PALETTE.length
   return PALETTE[h]
@@ -441,7 +441,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '14px', padding: '16px',
   },
   formInput: { width: '100%', fontSize: '13px', boxSizing: 'border-box' as const },
-  errMsg:    { fontSize: '12px', color: '#f87171', margin: 0 },
+  errMsg:    { fontSize: '12px', color: 'var(--danger)', margin: 0 },
   submitBtn: {
     alignSelf: 'flex-start',
     display: 'inline-flex', alignItems: 'center', gap: '6px',

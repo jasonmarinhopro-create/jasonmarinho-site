@@ -9,10 +9,10 @@ export const dynamic  = 'force-dynamic'
 export const metadata = { title: 'Audit GBP, Jason Marinho' }
 
 const PILLAR_ICONS = [
-  { Icon: IdentificationCard, label: 'Identité',  color: '#60a5fa' },
+  { Icon: IdentificationCard, label: 'Identité',  color: 'var(--info)' },
   { Icon: Camera,             label: 'Photos',    color: '#a78bfa' },
   { Icon: Star,               label: 'Avis',      color: 'var(--accent-text)' },
-  { Icon: Megaphone,          label: 'Posts',     color: '#34d399' },
+  { Icon: Megaphone,          label: 'Posts',     color: 'var(--success-1)' },
   { Icon: ChatCircleDots,     label: 'Q&A',       color: '#fb923c' },
   { Icon: Sparkle,            label: 'Attributs', color: '#f472b6' },
 ]
@@ -75,7 +75,7 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
           </div>
           <h1 style={s.heroTitle}>
             Audite ta fiche Google Business<br />
-            <em style={{ color: '#60a5fa', fontStyle: 'italic' }}>en 5 minutes.</em>
+            <em style={{ color: 'var(--info)', fontStyle: 'italic' }}>en 5 minutes.</em>
           </h1>
           <p style={s.heroDesc}>
             25 questions ciblées pour identifier les points faibles de ta fiche GBP
@@ -124,11 +124,11 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
           <div style={s.expressGrid} className="fade-up">
             {/* URL Maps (recommandé) */}
             <Link href="/dashboard/audit-gbp/import-url" style={{ ...s.expressCard, ...s.expressCardGreen }}>
-              <div style={{ ...s.expressIcon, background: 'rgba(52,211,153,0.12)' }}>
+              <div style={{ ...s.expressIcon, background: 'var(--success-bg)' }}>
                 <MapPin size={20} color="#34d399" weight="fill" />
               </div>
               <div style={s.expressBody}>
-                <div style={{ ...s.expressBadge, color: '#34d399' }}>
+                <div style={{ ...s.expressBadge, color: 'var(--success-1)' }}>
                   <Lightning size={11} weight="fill" /> Audit Express · 30 sec
                 </div>
                 <div style={s.expressTitle}>Coller mon URL Google Maps</div>
@@ -176,10 +176,10 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 80) return '#34d399'
+  if (score >= 80) return 'var(--success-1)'
   if (score >= 60) return '#d97706'
   if (score >= 40) return '#fb923c'
-  return '#ef4444'
+  return 'var(--danger)'
 }
 
 const s: Record<string, React.CSSProperties> = {
@@ -195,7 +195,7 @@ const s: Record<string, React.CSSProperties> = {
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: '#60a5fa', background: 'rgba(96,165,250,0.08)',
+    color: 'var(--info)', background: 'var(--info-bg)',
     border: '1px solid rgba(96,165,250,0.18)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },

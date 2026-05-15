@@ -128,7 +128,7 @@ export default function IcalSyncSection({ logementId, status }: Props) {
               <div style={feedInfo}>
                 <span style={{
                   ...syncStatus,
-                  color: synced ? '#10b981' : 'var(--text-muted)',
+                  color: synced ? 'var(--success-1)' : 'var(--text-muted)',
                 }}>
                   {synced ? <CheckCircle size={11} weight="fill" /> : <Warning size={11} weight="fill" />}
                   {fmtRelative(f.lastSynced)}
@@ -283,7 +283,7 @@ const feedbackOk: React.CSSProperties = {
   padding: '7px 11px',
   fontSize: '12px',
   fontWeight: 500,
-  color: '#10b981',
+  color: 'var(--success-1)',
   background: 'rgba(16,185,129,0.08)',
   border: '1px solid rgba(16,185,129,0.2)',
   borderRadius: '8px',
@@ -296,7 +296,7 @@ const feedbackErr: React.CSSProperties = {
   padding: '7px 11px',
   fontSize: '12px',
   fontWeight: 500,
-  color: '#ef4444',
+  color: 'var(--danger)',
   background: 'rgba(239,68,68,0.08)',
   border: '1px solid rgba(239,68,68,0.2)',
   borderRadius: '8px',

@@ -260,7 +260,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   successIcon: {
     width: '44px', height: '44px', borderRadius: '50%',
-    background: 'rgba(52,211,153,0.12)',
+    background: 'var(--success-bg)',
     border: '1px solid rgba(52,211,153,0.25)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },

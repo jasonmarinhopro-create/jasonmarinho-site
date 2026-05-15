@@ -592,7 +592,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                       {l.actif === false ? (
                         <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>En pause</span>
                       ) : (
-                        <span style={{ ...chip, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.25)', color: '#10b981' }}>Actif</span>
+                        <span style={{ ...chip, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.25)', color: 'var(--success-1)' }}>Actif</span>
                       )}
                     </td>
                     <td style={tableTd}>
@@ -1247,7 +1247,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                         background: checked ? 'rgba(52,211,153,0.1)' : 'var(--surface)',
                         border: `1px solid ${checked ? 'rgba(52,211,153,0.35)' : 'var(--border)'}`,
                         fontSize: '13px', fontWeight: checked ? 600 : 400,
-                        color: checked ? '#34D399' : 'var(--text-2)',
+                        color: checked ? 'var(--success-1)' : 'var(--text-2)',
                         transition: 'all 0.15s', userSelect: 'none' as const,
                       }}>
                         <input
@@ -1320,7 +1320,7 @@ function dpeColor(letter: string): { bg: string; fg: string; border: string } {
     case 'C': return { bg: 'rgba(234,179,8,0.12)',  fg: '#ca8a04', border: 'rgba(234,179,8,0.30)' }
     case 'D': return { bg: 'rgba(245,158,11,0.12)', fg: '#d97706', border: 'rgba(245,158,11,0.30)' }
     case 'E': return { bg: 'rgba(249,115,22,0.12)', fg: '#ea580c', border: 'rgba(249,115,22,0.30)' }
-    case 'F': return { bg: 'rgba(239,68,68,0.12)',  fg: '#dc2626', border: 'rgba(239,68,68,0.30)' }
+    case 'F': return { bg: 'rgba(239,68,68,0.12)',  fg: 'var(--danger)', border: 'rgba(239,68,68,0.30)' }
     case 'G': return { bg: 'rgba(127,29,29,0.18)',  fg: '#991b1b', border: 'rgba(127,29,29,0.40)' }
     default:  return { bg: 'rgba(148,163,184,0.12)', fg: 'var(--text-muted)', border: 'rgba(148,163,184,0.25)' }
   }
@@ -1342,7 +1342,7 @@ function Toggle({ label: lbl, value, onChange }: { label: string; value: boolean
     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
       <input
         type="checkbox" checked={value} onChange={e => onChange(e.target.checked)}
-        style={{ width: '16px', height: '16px', accentColor: '#34D399' }}
+        style={{ width: '16px', height: '16px', accentColor: 'var(--success-1)' }}
       />
       <span style={{ fontSize: '14px', color: 'var(--text-2)' }}>{lbl}</span>
     </label>
@@ -1390,7 +1390,7 @@ const successBanner: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
   background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)',
   borderRadius: '10px', padding: '12px 16px', marginBottom: '20px',
-  fontSize: '13px', color: '#34D399', fontWeight: 500,
+  fontSize: '13px', color: 'var(--success-1)', fontWeight: 500,
 }
 
 const emptyState: React.CSSProperties = {
@@ -1402,7 +1402,7 @@ const emptyState: React.CSSProperties = {
 
 const emptyIcon: React.CSSProperties = {
   width: '64px', height: '64px',
-  background: 'rgba(52,211,153,0.08)',
+  background: 'var(--success-bg)',
   border: '1px solid rgba(52,211,153,0.15)',
   borderRadius: '50%',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -1521,7 +1521,7 @@ const deleteBox: React.CSSProperties = {
 const deleteConfirmBtn: React.CSSProperties = {
   padding: '6px 14px', borderRadius: '8px',
   background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
-  color: '#ef4444', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+  color: 'var(--danger)', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
 }
 
 const cancelBtn: React.CSSProperties = {
@@ -1554,7 +1554,7 @@ const modalHeader: React.CSSProperties = {
 
 const modalTag: React.CSSProperties = {
   fontSize: '11px', fontWeight: 600, letterSpacing: '1.2px',
-  textTransform: 'uppercase', color: '#34D399', margin: '0 0 4px',
+  textTransform: 'uppercase', color: 'var(--success-1)', margin: '0 0 4px',
 }
 
 const modalTitle: React.CSSProperties = {
@@ -1600,7 +1600,7 @@ const input: React.CSSProperties = {
 
 const errorBox: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
-  fontSize: '13px', color: '#ef4444',
+  fontSize: '13px', color: 'var(--danger)',
   background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
   borderRadius: '8px', padding: '10px 14px',
 }
@@ -1612,7 +1612,7 @@ const ghostBtn: React.CSSProperties = {
 
 const saveBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
-  background: '#34D399', color: '#0a1a14',
+  background: 'var(--success-1)', color: '#0a1a14',
   border: 'none', borderRadius: '12px',
   padding: '10px 20px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
 }
@@ -1897,7 +1897,7 @@ const typeChip: React.CSSProperties = {
 
 const starChip: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '1px',
-  background: 'rgba(245,158,11,0.10)', color: '#d97706',
+  background: 'var(--warning-bg)', color: '#d97706',
   border: '1px solid rgba(245,158,11,0.25)',
   borderRadius: '6px', padding: '3px 6px',
 }
@@ -1915,7 +1915,7 @@ const tarifRow: React.CSSProperties = {
 
 const tarifChip: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '3px',
-  background: 'rgba(16,185,129,0.08)', color: '#10b981',
+  background: 'rgba(16,185,129,0.08)', color: 'var(--success-1)',
   border: '1px solid rgba(16,185,129,0.20)',
   borderRadius: '6px', padding: '3px 8px',
   fontSize: '11px', fontWeight: 500,

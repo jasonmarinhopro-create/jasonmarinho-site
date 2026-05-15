@@ -11,16 +11,16 @@ import { markActualiteRead, markAllActualitesRead, toggleActualiteFavorite } fro
 
 const CATEGORIES = [
   { value: 'all',                 label: 'Tout',                color: 'var(--text-2)', bg: 'var(--border)' },
-  { value: 'reglementation',      label: 'Réglementation',      color: '#60a5fa',       bg: 'rgba(96,165,250,0.12)' },
-  { value: 'fiscalite',           label: 'Fiscalité',           color: '#34d399',       bg: 'rgba(52,211,153,0.12)' },
-  { value: 'juridique',           label: 'Juridique',           color: '#f87171',       bg: 'rgba(248,113,113,0.12)' },
+  { value: 'reglementation',      label: 'Réglementation',      color: 'var(--info)',       bg: 'rgba(96,165,250,0.12)' },
+  { value: 'fiscalite',           label: 'Fiscalité',           color: 'var(--success-1)',       bg: 'var(--success-bg)' },
+  { value: 'juridique',           label: 'Juridique',           color: 'var(--danger)',       bg: 'rgba(248,113,113,0.12)' },
   { value: 'plateformes',         label: 'Plateformes OTA',     color: '#fb923c',       bg: 'rgba(251,146,60,0.12)' },
   { value: 'marche',              label: 'Marché',              color: '#f472b6',       bg: 'rgba(244,114,182,0.12)' },
   { value: 'outils',              label: 'Outils & Tech',       color: '#a78bfa',       bg: 'rgba(167,139,250,0.12)' },
-  { value: 'gites',               label: 'Gîtes & Meublés',     color: '#f59e0b',       bg: 'rgba(245,158,11,0.12)' },
+  { value: 'gites',               label: 'Gîtes & Meublés',     color: 'var(--warning)',       bg: 'rgba(245,158,11,0.12)' },
   { value: 'chambres-hotes',      label: "Chambres d'hôtes",    color: '#ec4899',       bg: 'rgba(236,72,153,0.12)' },
   { value: 'conciergerie',        label: 'Conciergeries',       color: '#8b5cf6',       bg: 'rgba(139,92,246,0.12)' },
-  { value: 'reservation-directe', label: 'Réserv. directe',    color: '#10b981',       bg: 'rgba(16,185,129,0.12)' },
+  { value: 'reservation-directe', label: 'Réserv. directe',    color: 'var(--success-1)',       bg: 'rgba(16,185,129,0.12)' },
   { value: 'communes',            label: 'Communes & Villes',   color: '#64748b',       bg: 'rgba(100,116,139,0.12)' },
   { value: 'driing',              label: 'Driing',              color: '#FFD56B',       bg: 'rgba(255,213,107,0.12)' },
   { value: 'general',             label: 'Général',             color: '#94a3b8',       bg: 'rgba(148,163,184,0.12)' },
@@ -54,9 +54,9 @@ function deadlineLabel(deadlineDate: string) {
   const diffMs = dl.getTime() - now.getTime()
   const days = Math.ceil(diffMs / 86400000)
   if (days < 0) return null
-  if (days === 0) return { label: "Aujourd'hui", color: '#dc2626', urgent: true }
-  if (days === 1) return { label: 'Demain', color: '#dc2626', urgent: true }
-  if (days <= 7) return { label: `Dans ${days} jours`, color: '#dc2626', urgent: true }
+  if (days === 0) return { label: "Aujourd'hui", color: 'var(--danger)', urgent: true }
+  if (days === 1) return { label: 'Demain', color: 'var(--danger)', urgent: true }
+  if (days <= 7) return { label: `Dans ${days} jours`, color: 'var(--danger)', urgent: true }
   if (days <= 30) return { label: `Dans ${days} jours`, color: '#d97706', urgent: false }
   if (days <= 90) return { label: `Dans ${days} jours`, color: '#0369a1', urgent: false }
   const dl2 = new Date(deadlineDate + 'T12:00:00')
@@ -317,7 +317,7 @@ export default function ActualitesView({
               <Newspaper size={12} /> <strong>{articles.length}</strong> articles
             </span>
             {unreadCount > 0 ? (
-              <span style={{ ...s.statChip, color: '#dc2626', background: 'rgba(220,38,38,0.10)', borderColor: 'rgba(220,38,38,0.28)' }}>
+              <span style={{ ...s.statChip, color: 'var(--danger)', background: 'rgba(220,38,38,0.10)', borderColor: 'rgba(220,38,38,0.28)' }}>
                 <span style={s.unreadDot} />
                 <strong>{unreadCount}</strong> non lu{unreadCount > 1 ? 's' : ''}
               </span>
@@ -566,7 +566,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   unreadDot: {
     display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%',
-    background: '#dc2626', flexShrink: 0,
+    background: 'var(--danger)', flexShrink: 0,
   },
 
   // Sections
@@ -635,7 +635,7 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-outfit), sans-serif', marginLeft: 'auto',
   },
   unreadToggleOn: {
-    background: 'rgba(220,38,38,0.08)', color: '#dc2626',
+    background: 'rgba(220,38,38,0.08)', color: 'var(--danger)',
     borderColor: 'rgba(220,38,38,0.28)',
   },
   filterScroll: {

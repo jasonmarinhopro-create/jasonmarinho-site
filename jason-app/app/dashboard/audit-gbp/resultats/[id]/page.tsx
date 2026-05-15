@@ -175,11 +175,11 @@ export default async function AuditResultsPage({ params }: PageProps) {
 
 // ─── Score label helper ───
 function getScoreLabel(score: number): { label: string; color: string } {
-  if (score >= 85) return { label: 'Excellent, fiche optimisée', color: '#34d399' }
-  if (score >= 70) return { label: 'Bon niveau, quelques détails à régler', color: '#10b981' }
+  if (score >= 85) return { label: 'Excellent, fiche optimisée', color: 'var(--success-1)' }
+  if (score >= 70) return { label: 'Bon niveau, quelques détails à régler', color: 'var(--success-1)' }
   if (score >= 50) return { label: 'Correct, marge de progression nette', color: '#FFD56B' }
   if (score >= 30) return { label: 'Faible, beaucoup à faire', color: '#fb923c' }
-  return { label: 'Critique, fiche peu visible', color: '#ef4444' }
+  return { label: 'Critique, fiche peu visible', color: 'var(--danger)' }
 }
 
 // ─── Composant SVG Score Ring ───
@@ -371,7 +371,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   ctaBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
-    background: '#60a5fa', color: '#0a1628',
+    background: 'var(--info)', color: '#0a1628',
     fontWeight: 700, fontSize: '13px',
     padding: '10px 18px', borderRadius: '10px',
     textDecoration: 'none',
@@ -384,7 +384,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   redoLink: {
     fontSize: '13px', fontWeight: 600,
-    color: '#60a5fa', textDecoration: 'none',
+    color: 'var(--info)', textDecoration: 'none',
   },
   redoNote: { fontSize: '11px', color: 'var(--text-3)' },
 }

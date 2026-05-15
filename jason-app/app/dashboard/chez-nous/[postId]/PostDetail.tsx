@@ -174,7 +174,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
             {cat.short}
           </span>
           {post.accepted_reply_id && (
-            <span style={{ ...s.flag, color: '#10b981', background: 'rgba(16,185,129,0.12)' }}>
+            <span style={{ ...s.flag, color: 'var(--success-1)', background: 'rgba(16,185,129,0.12)' }}>
               <CheckCircle size={11} weight="fill" /> Résolu
             </span>
           )}
@@ -578,7 +578,7 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
                 disabled={pending}
                 style={{
                   ...s.actionBtnSmall,
-                  color: isAccepted ? '#10b981' : 'var(--text-muted)',
+                  color: isAccepted ? 'var(--success-1)' : 'var(--text-muted)',
                   background: isAccepted ? 'rgba(16,185,129,0.10)' : 'transparent',
                   border: '1px solid ' + (isAccepted ? 'rgba(16,185,129,0.3)' : 'var(--border)'),
                   borderRadius: '6px',
@@ -947,7 +947,7 @@ const s: Record<string, React.CSSProperties> = {
   acceptedBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.4px',
-    color: '#10b981',
+    color: 'var(--success-1)',
     background: 'rgba(16,185,129,0.12)',
     border: '1px solid rgba(16,185,129,0.3)',
     padding: '3px 8px', borderRadius: '999px',

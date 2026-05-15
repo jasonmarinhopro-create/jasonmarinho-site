@@ -483,7 +483,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
     padding: '10px 14px', borderRadius: '10px',
     background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
-    color: '#ef4444', fontSize: '13px',
+    color: 'var(--danger)', fontSize: '13px',
   },
 
   metaRow: { display: 'flex', gap: '8px', flexWrap: 'wrap' },

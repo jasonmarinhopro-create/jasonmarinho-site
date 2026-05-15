@@ -154,8 +154,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   errorBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '13px', color: '#F87171',
-    background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.18)',
+    fontSize: '13px', color: 'var(--danger)',
+    background: 'var(--danger-bg)', border: '1px solid rgba(248,113,113,0.18)',
     borderRadius: '8px', padding: '10px 14px',
   },
   formButtons: { display: 'flex', alignItems: 'center', gap: '10px' },
@@ -184,8 +184,8 @@ const s: Record<string, React.CSSProperties> = {
   pendingDesc: { fontSize: '12px', fontWeight: 400, color: 'var(--text-2)', lineHeight: 1.6 },
   successBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '13px', color: '#34D399',
-    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.18)',
+    fontSize: '13px', color: 'var(--success-1)',
+    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.18)',
     borderRadius: '8px', padding: '12px 14px',
   },
 }

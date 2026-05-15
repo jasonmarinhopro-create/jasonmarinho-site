@@ -40,24 +40,24 @@ export default function EtatDesLieux({
   // Prochain séjour
   let sejLabel = 'Aucun séjour prévu'
   let sejSub   = 'Pas d\'arrivée planifiée'
-  let sejColor = '#60a5fa'
+  let sejColor = 'var(--info)'
   if (prochainSejour) {
     const days = diffDays(today, prochainSejour.date_arrivee)
     const who  = [prochainSejour.locataire_prenom, prochainSejour.locataire_nom].filter(Boolean).join(' ')
     sejLabel   = days === 0 ? "Aujourd'hui" : days === 1 ? 'Demain' : `Dans ${days} jour${days > 1 ? 's' : ''}`
     sejSub     = [who || null, prochainSejour.logement_nom].filter(Boolean).join(' · ') || 'Logement'
-    sejColor   = days <= 1 ? '#10b981' : days <= 3 ? '#eab308' : '#60a5fa'
+    sejColor   = days <= 1 ? 'var(--success-1)' : days <= 3 ? '#eab308' : 'var(--info)'
   }
 
   // Variation revenus
   const variation = revenusPrevMois > 0
     ? Math.round(((revenusThisMois - revenusPrevMois) / revenusPrevMois) * 100)
     : null
-  const varColor  = variation == null ? 'var(--text-muted)' : variation >= 0 ? '#10b981' : '#ef4444'
+  const varColor  = variation == null ? 'var(--text-muted)' : variation >= 0 ? 'var(--success-1)' : 'var(--danger)'
   const varText   = variation == null ? '' : `${variation >= 0 ? '+' : ''}${variation}% vs mois dernier`
 
   // Actions urgentes
-  const urgColor = urgentCount > 0 ? '#ef4444' : '#10b981'
+  const urgColor = urgentCount > 0 ? 'var(--danger)' : 'var(--success-1)'
   const urgLabel = urgentCount > 0
     ? `${urgentCount} à traiter`
     : 'Tout est à jour'
@@ -82,12 +82,12 @@ export default function EtatDesLieux({
       {/* 2, Revenu du mois */}
       <Link href="/dashboard/revenus" style={{ textDecoration: 'none' }}>
         <div style={s.card} className="kpi-hover">
-          <div style={{ ...s.icon, color: '#10b981', background: '#10b98118', border: '1px solid #10b98130' }}>
+          <div style={{ ...s.icon, color: 'var(--success-1)', background: '#10b98118', border: '1px solid #10b98130' }}>
             <CurrencyEur size={18} weight="fill" />
           </div>
           <div style={s.body}>
             <span style={s.lbl}>Revenu du mois</span>
-            <span style={{ ...s.val, color: '#10b981' }}>{fmtEur(revenusThisMois)}</span>
+            <span style={{ ...s.val, color: 'var(--success-1)' }}>{fmtEur(revenusThisMois)}</span>
             {varText && <span style={{ ...s.sub, color: varColor }}>{varText}</span>}
             {!varText && <span style={s.sub}>encaissés (contrats + manuel)</span>}
           </div>

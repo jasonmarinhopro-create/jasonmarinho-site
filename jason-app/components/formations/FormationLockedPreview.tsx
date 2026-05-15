@@ -143,7 +143,7 @@ export default function FormationLockedPreview(props: Props) {
                       key={j}
                       size={14}
                       weight={j < r.rating ? 'fill' : 'regular'}
-                      color={j < r.rating ? '#fbbf24' : 'var(--text-muted)'}
+                      color={j < r.rating ? 'var(--warning)' : 'var(--text-muted)'}
                     />
                   ))}
                 </div>

@@ -75,7 +75,7 @@ function resolveTitle(pathname: string): string {
 
 const PLAN_COLORS: Record<string, { bg: string; color: string; dot: string }> = {
   'Découverte':    { bg: 'var(--border)', color: 'var(--text-3)',  dot: '#6b7280' },
-  'Standard':      { bg: 'rgba(52,211,153,0.12)',  color: '#34D399',       dot: '#34D399' },
+  'Standard':      { bg: 'var(--success-bg)',  color: 'var(--success-1)',       dot: 'var(--success-1)' },
   'Membre Driing': { bg: 'var(--accent-bg-2)',    color: 'var(--accent-text)', dot: 'var(--accent-text)' },
   'Administrateur':{ bg: 'rgba(192,132,252,0.12)', color: '#C084FC',       dot: '#C084FC' },
 }

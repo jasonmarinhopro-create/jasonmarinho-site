@@ -420,15 +420,15 @@ const styles: Record<string, React.CSSProperties> = {
   } as React.CSSProperties,
   parcoursHeroIcon: {
     width: '56px', height: '56px', borderRadius: '14px',
-    background: 'rgba(96,165,250,0.18)',
-    color: '#60a5fa',
+    background: 'var(--info-border)',
+    color: 'var(--info)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
   parcoursHeroBody: { flex: 1, minWidth: 0 },
   parcoursHeroLabel: {
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.8px',
-    textTransform: 'uppercase' as const, color: '#60a5fa',
+    textTransform: 'uppercase' as const, color: 'var(--info)',
     marginBottom: '4px',
   },
   parcoursHeroTitle: {
@@ -442,7 +442,7 @@ const styles: Record<string, React.CSSProperties> = {
   parcoursHeroCta: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '9px 16px', borderRadius: '10px',
-    background: '#60a5fa', color: '#fff',
+    background: 'var(--info)', color: '#fff',
     fontSize: '13px', fontWeight: 600,
     flexShrink: 0,
     whiteSpace: 'nowrap',

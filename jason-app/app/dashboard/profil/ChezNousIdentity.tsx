@@ -147,8 +147,8 @@ function PrivacyToggle({ label, value, onChange }: { label: string; value: boole
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '8px 12px', borderRadius: '8px', cursor: 'pointer',
-        border: `1px solid ${value ? 'rgba(52,211,153,0.3)' : 'var(--border)'}`,
-        background: value ? 'rgba(52,211,153,0.05)' : 'transparent',
+        border: `1px solid ${value ? 'var(--success-border)' : 'var(--border)'}`,
+        background: value ? 'var(--success-bg)' : 'transparent',
         transition: 'border-color 0.15s, background 0.15s',
       }}
     >
@@ -156,8 +156,8 @@ function PrivacyToggle({ label, value, onChange }: { label: string; value: boole
       <span style={{
         display: 'inline-flex', alignItems: 'center', gap: '4px',
         fontSize: '11px', fontWeight: 600, padding: '3px 8px', borderRadius: '999px',
-        color: value ? '#34d399' : 'var(--text-muted)',
-        background: value ? 'rgba(52,211,153,0.12)' : 'rgba(148,163,184,0.08)',
+        color: value ? 'var(--success-1)' : 'var(--text-muted)',
+        background: value ? 'var(--success-bg)' : 'rgba(148,163,184,0.08)',
       }}>
         {value ? <><Eye size={11} /> Visible</> : <><EyeSlash size={11} /> Masqué</>}
       </span>
@@ -218,7 +218,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center',
     justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap',
   },
-  successMsg: { display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#34d399', fontSize: '12px', fontWeight: 600 },
+  successMsg: { display: 'inline-flex', alignItems: 'center', gap: '5px', color: 'var(--success-1)', fontSize: '12px', fontWeight: 600 },
   btn: {
     background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '8px',

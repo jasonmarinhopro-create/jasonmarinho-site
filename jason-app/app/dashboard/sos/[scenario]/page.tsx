@@ -161,7 +161,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '5px',
     fontSize: '10.5px', fontWeight: 700,
     letterSpacing: '0.6px', textTransform: 'uppercase' as const,
-    color: '#dc2626',
+    color: 'var(--danger)',
     background: 'rgba(220,38,38,0.10)',
     border: '1px solid rgba(220,38,38,0.25)',
     borderRadius: '999px',

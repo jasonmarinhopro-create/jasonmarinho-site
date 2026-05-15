@@ -227,7 +227,7 @@ export default function AuditWizard({ userId, initialSession }: Props) {
           {autoSaveStatus !== 'idle' && (
             <span style={{
               ...s.autoSave,
-              color: autoSaveStatus === 'saving' ? 'var(--text-muted)' : '#34d399',
+              color: autoSaveStatus === 'saving' ? 'var(--text-muted)' : 'var(--success-1)',
             }}>
               <FloppyDisk size={11} weight={autoSaveStatus === 'saved' ? 'fill' : 'regular'} />
               {autoSaveStatus === 'saving' ? 'Enregistrement…' : 'Sauvegardé'}
@@ -492,7 +492,7 @@ const s: Record<string, React.CSSProperties> = {
     overflow: 'hidden', marginBottom: '8px',
   },
   progressFill: {
-    height: '100%', background: '#60a5fa',
+    height: '100%', background: 'var(--info)',
     transition: 'width 0.3s',
   },
   progressMeta: {
@@ -630,9 +630,9 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'inherit',
   },
   choiceBtnActive: {
-    borderColor: '#60a5fa',
+    borderColor: 'var(--info)',
     background: 'rgba(96,165,250,0.1)',
-    color: '#60a5fa',
+    color: 'var(--info)',
     fontWeight: 600,
   },
 
@@ -653,7 +653,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   btnPrimary: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-    background: '#60a5fa', color: '#0a1628',
+    background: 'var(--info)', color: '#0a1628',
     fontWeight: 700, fontSize: '14px',
     padding: '11px 18px', borderRadius: '9px',
     border: 'none', cursor: 'pointer',
@@ -666,7 +666,7 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   error: {
-    color: '#ef4444', fontSize: '13px',
+    color: 'var(--danger)', fontSize: '13px',
     margin: '12px 0 0', padding: '10px 12px',
     background: 'rgba(239,68,68,0.08)',
     borderRadius: '8px',

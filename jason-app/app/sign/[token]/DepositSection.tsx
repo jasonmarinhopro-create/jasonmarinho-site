@@ -42,7 +42,7 @@ export default function DepositSection({ token, amount, depositParam, depositAlr
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ fontSize: '24px' }}>✅</span>
           <div>
-            <strong style={{ color: '#34D399', display: 'block', marginBottom: '4px' }}>
+            <strong style={{ color: 'var(--success-1)', display: 'block', marginBottom: '4px' }}>
               Caution enregistrée
             </strong>
             <p style={hint}>
@@ -122,7 +122,7 @@ function PayButton({ loading, onClick, amount }: { loading: boolean; onClick: ()
 
 function box(type: 'success' | 'warning' | 'default'): React.CSSProperties {
   const colors = {
-    success: { bg: 'rgba(52,211,153,0.06)',  border: 'rgba(52,211,153,0.2)' },
+    success: { bg: 'var(--success-bg)',  border: 'var(--success-border)' },
     warning: { bg: 'rgba(255,213,107,0.06)', border: 'rgba(255,213,107,0.2)' },
     default: { bg: '#0f2018',               border: '#1e3d2f' },
   }
@@ -139,5 +139,5 @@ const hint: React.CSSProperties = {
 }
 
 const errStyle: React.CSSProperties = {
-  fontSize: '13px', color: '#ef4444', margin: '12px 0 0',
+  fontSize: '13px', color: 'var(--danger)', margin: '12px 0 0',
 }

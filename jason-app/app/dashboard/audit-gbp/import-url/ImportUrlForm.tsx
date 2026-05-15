@@ -243,7 +243,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'flex-start', gap: '8px',
     padding: '11px 14px',
     background: 'rgba(239,68,68,0.08)',
-    color: '#ef4444', fontSize: '13px',
+    color: 'var(--danger)', fontSize: '13px',
     borderRadius: '10px', marginTop: '10px', marginBottom: '14px',
     lineHeight: 1.55,
   },
@@ -267,7 +267,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   previewIcon: {
     width: '40px', height: '40px', borderRadius: '10px',
-    background: 'rgba(52,211,153,0.12)',
+    background: 'var(--success-bg)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
@@ -300,7 +300,7 @@ const s: Record<string, React.CSSProperties> = {
   summaryBlock: { flex: 1, textAlign: 'center' as const },
   summaryNum: {
     fontSize: '24px', fontWeight: 700,
-    color: '#34d399', fontFamily: 'var(--font-fraunces), serif',
+    color: 'var(--success-1)', fontFamily: 'var(--font-fraunces), serif',
   },
   summaryLabel: { fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' },
 
@@ -330,7 +330,7 @@ const s: Record<string, React.CSSProperties> = {
   btnPrimary: {
     flex: 1, minWidth: '200px',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-    background: '#34d399', color: '#0a1628',
+    background: 'var(--success-1)', color: '#0a1628',
     border: 'none', borderRadius: '9px',
     padding: '11px 18px', fontSize: '14px', fontWeight: 700,
     cursor: 'pointer', fontFamily: 'inherit',

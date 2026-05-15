@@ -494,7 +494,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   lastActiveDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#10b981',
+    background: 'var(--success-1)',
     boxShadow: '0 0 0 3px rgba(16,185,129,0.18)',
   },
 }

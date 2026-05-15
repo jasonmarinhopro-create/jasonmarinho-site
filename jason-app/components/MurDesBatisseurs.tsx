@@ -15,8 +15,8 @@ export interface ContributorTile {
 const TILE_PALETTES = [
   { bg: 'rgba(255,213,107,0.10)', border: 'rgba(255,213,107,0.28)', text: '#FFD56B' },
   { bg: 'rgba(167,139,250,0.09)', border: 'rgba(167,139,250,0.26)', text: '#a78bfa' },
-  { bg: 'rgba(96,165,250,0.08)',  border: 'rgba(96,165,250,0.26)',  text: '#60a5fa' },
-  { bg: 'rgba(52,211,153,0.07)',  border: 'rgba(52,211,153,0.26)',  text: '#34d399' },
+  { bg: 'var(--info-bg)',  border: 'rgba(96,165,250,0.26)',  text: 'var(--info)' },
+  { bg: 'rgba(52,211,153,0.07)',  border: 'rgba(52,211,153,0.26)',  text: 'var(--success-1)' },
   { bg: 'rgba(251,113,133,0.08)', border: 'rgba(251,113,133,0.26)', text: '#fb7185' },
 ]
 

@@ -114,7 +114,7 @@ function nights(arrivee: string, depart: string) {
 }
 
 const CONTRAT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  signe:       { label: 'Signé',       color: '#34D399', bg: 'rgba(52,211,153,0.12)' },
+  signe:       { label: 'Signé',       color: 'var(--success-1)', bg: 'var(--success-bg)' },
   en_attente:  { label: 'En attente',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)' },
   non_requis:  { label: 'Non requis',  color: 'var(--text-muted)', bg: 'var(--surface-2)' },
   nouveau:     { label: 'Nouveau',     color: '#7EB8F7', bg: 'rgba(126,184,247,0.12)' },
@@ -359,7 +359,7 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
                   height: '34px', borderRadius: '8px', border: 'none',
                   fontSize: '13px', fontWeight: isSel ? 700 : 400,
                   background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
-                  color: isSel ? 'var(--accent-text)' : isToday2 ? '#34D399' : '#a5c4b0',
+                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--success-1)' : '#a5c4b0',
                   cursor: 'pointer',
                   outline: isSel ? '1.5px solid var(--accent-border)' : 'none',
                   transition: 'background 0.1s',
@@ -646,13 +646,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     // Statut auto
     let statut: { label: string; color: string; bg: string; border: string }
     if (isFlagged) {
-      statut = { label: 'Signalé', color: '#ef4444', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.30)' }
+      statut = { label: 'Signalé', color: 'var(--danger)', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.30)' }
     } else if (totalCA >= 5000 || nbSejours >= 5) {
       statut = { label: 'VIP', color: '#a78bfa', bg: 'rgba(167,139,250,0.10)', border: 'rgba(167,139,250,0.30)' }
     } else if (nbSejours >= 4) {
-      statut = { label: 'Fidèle', color: '#10b981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' }
+      statut = { label: 'Fidèle', color: 'var(--success-1)', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' }
     } else if (nbSejours >= 2) {
-      statut = { label: 'Récurrent', color: '#60a5fa', bg: 'rgba(96,165,250,0.10)', border: 'rgba(96,165,250,0.30)' }
+      statut = { label: 'Récurrent', color: 'var(--info)', bg: 'rgba(96,165,250,0.10)', border: 'rgba(96,165,250,0.30)' }
     } else {
       statut = { label: 'Nouveau', color: 'var(--text-muted)', bg: 'var(--surface)', border: 'var(--border)' }
     }
@@ -685,11 +685,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     return Math.max(0, Math.min(100, score))
   })()
   const trustLabel =
-    trustScore >= 80 ? { label: 'Très fiable',  color: '#10b981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' } :
-    trustScore >= 60 ? { label: 'Fiable',        color: '#34d399', bg: 'rgba(52,211,153,0.10)', border: 'rgba(52,211,153,0.30)' } :
+    trustScore >= 80 ? { label: 'Très fiable',  color: 'var(--success-1)', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' } :
+    trustScore >= 60 ? { label: 'Fiable',        color: 'var(--success-1)', bg: 'var(--success-bg)', border: 'var(--success-border)' } :
     trustScore >= 40 ? { label: 'Neutre',        color: 'var(--text-2)', bg: 'var(--surface)',  border: 'var(--border)' } :
-    trustScore >= 20 ? { label: 'À surveiller',  color: '#f59e0b', bg: 'rgba(245,158,11,0.10)', border: 'rgba(245,158,11,0.30)' } :
-                       { label: 'Risque élevé',  color: '#ef4444', bg: 'rgba(239,68,68,0.10)',  border: 'rgba(239,68,68,0.30)' }
+    trustScore >= 20 ? { label: 'À surveiller',  color: 'var(--warning)', bg: 'var(--warning-bg)', border: 'rgba(245,158,11,0.30)' } :
+                       { label: 'Risque élevé',  color: 'var(--danger)', bg: 'rgba(239,68,68,0.10)',  border: 'rgba(239,68,68,0.30)' }
 
   // ─── Timeline d'événements (calculée depuis séjours + contrat) ──
   type TimelineEvent = { date: string; icon: string; label: string; subtitle?: string; tone: 'past' | 'today' | 'future' }
@@ -1298,7 +1298,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                         style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px', display: 'flex' }}
                         title={`${n} étoile${n > 1 ? 's' : ''}`}
                       >
-                        <Star size={14} weight={filled ? 'fill' : 'regular'} color={filled ? '#fbbf24' : 'var(--text-muted)'} />
+                        <Star size={14} weight={filled ? 'fill' : 'regular'} color={filled ? 'var(--warning)' : 'var(--text-muted)'} />
                       </button>
                     )
                   })}
@@ -1516,7 +1516,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               type="checkbox"
               checked={idVerifie}
               onChange={(e) => { setIdVerifie(e.target.checked); persistField({ id_verifie: e.target.checked }) }}
-              style={{ width: '15px', height: '15px', accentColor: '#10b981' }}
+              style={{ width: '15px', height: '15px', accentColor: 'var(--success-1)' }}
             />
             <span style={{ fontSize: '13px', color: 'var(--text-2)', fontWeight: 500 }}>
               Pièce d&apos;identité vérifiée
@@ -1575,7 +1575,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 padding: '6px 12px',
                 fontSize: '12px', fontWeight: 500,
                 background: 'rgba(239,68,68,0.05)',
-                color: '#ef4444',
+                color: 'var(--danger)',
                 border: '1px solid rgba(239,68,68,0.20)',
                 borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit',
               }}
@@ -1585,7 +1585,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           ) : (
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 600, color: '#ef4444' }}>
+                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--danger)' }}>
                   🚫 Voyageur bloqué
                 </span>
               </div>
@@ -1638,7 +1638,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 </button>
                 <button
                   onClick={handleBlockConfirm}
-                  style={{ padding: '5px 12px', fontSize: '12px', fontWeight: 600, background: '#ef4444', color: '#fff', border: 'none', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                  style={{ padding: '5px 12px', fontSize: '12px', fontWeight: 600, background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
                 >
                   Confirmer le blocage
                 </button>
@@ -1790,7 +1790,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                         style={{
                           ...s.checklistBtn,
                           ...(incExpanded ? s.checklistBtnActive : {}),
-                          ...(hasOpen ? { color: '#F87171', borderColor: 'rgba(248,113,113,0.4)' } : {}),
+                          ...(hasOpen ? { color: 'var(--danger)', borderColor: 'rgba(248,113,113,0.4)' } : {}),
                         }}
                         title="Incidents du séjour"
                       >
@@ -1816,7 +1816,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   {cl === undefined ? (
                     <p style={s.clEmpty}>Chargement…</p>
                   ) : (() => {
-                    const barColor = pct === 100 ? '#10b981' : pct >= 50 ? '#eab308' : '#f97316'
+                    const barColor = pct === 100 ? 'var(--success-1)' : pct >= 50 ? '#eab308' : '#f97316'
                     return (
                       <>
                         {/* Progress bar */}
@@ -1836,7 +1836,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                             <div key={phase.label} style={{ marginBottom: '14px' }}>
                               <div style={s.clPhaseLabel}>
                                 {phase.label}
-                                <span style={{ ...s.clPhaseBadge, color: phaseDone === phase.items.length ? '#10b981' : 'var(--text-muted)' }}>
+                                <span style={{ ...s.clPhaseBadge, color: phaseDone === phase.items.length ? 'var(--success-1)' : 'var(--text-muted)' }}>
                                   {phaseDone}/{phase.items.length}
                                 </span>
                               </div>
@@ -1894,7 +1894,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0' }}>
             {timeline.map((ev, i) => {
               const opacity = ev.tone === 'past' ? 0.7 : 1
-              const accent = ev.tone === 'today' ? 'var(--accent-text)' : ev.tone === 'future' ? '#10b981' : 'var(--text-muted)'
+              const accent = ev.tone === 'today' ? 'var(--accent-text)' : ev.tone === 'future' ? 'var(--success-1)' : 'var(--text-muted)'
               return (
                 <div key={i} style={{ display: 'flex', gap: '12px', opacity, padding: '8px 0', borderBottom: i < timeline.length - 1 ? '1px dashed var(--border)' : 'none' }}>
                   <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px', flexShrink: 0, position: 'relative' as const }}>
@@ -1926,13 +1926,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             <div style={s.modalHeader}>
               {reportModal === 'report' ? (
                 <>
-                  <h3 style={{ ...s.modalTitle, color: '#ef4444', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ ...s.modalTitle, color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <ShieldWarning size={20} weight="fill" color="#ef4444" />
                     Signaler un incident
                   </h3>
                 </>
               ) : (
-                <h3 style={{ ...s.modalTitle, color: '#34D399', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h3 style={{ ...s.modalTitle, color: 'var(--success-1)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Star size={20} weight="fill" color="#34D399" />
                   Témoignage positif
                 </h3>
@@ -2005,8 +2005,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       padding: '9px 18px', borderRadius: '10px', border: 'none',
                       cursor: isReporting ? 'not-allowed' : 'pointer',
                       fontSize: '13px', fontWeight: 500,
-                      background: reportModal === 'positive' ? 'rgba(52,211,153,0.15)' : 'rgba(239,68,68,0.12)',
-                      color: reportModal === 'positive' ? '#34D399' : '#ef4444',
+                      background: reportModal === 'positive' ? 'var(--success-border)' : 'rgba(239,68,68,0.12)',
+                      color: reportModal === 'positive' ? 'var(--success-1)' : 'var(--danger)',
                     }}
                   >
                     {reportModal === 'positive' ? <Star size={14} /> : <ShieldWarning size={14} />}
@@ -2073,7 +2073,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                         >
                           <div style={{
                             width: '28px', height: '28px', flexShrink: 0, borderRadius: '7px',
-                            background: isSel ? 'rgba(52,211,153,0.15)' : 'var(--surface-2)',
+                            background: isSel ? 'var(--success-border)' : 'var(--surface-2)',
                             border: '1px solid var(--border)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
@@ -2082,7 +2082,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                               : <House size={13} color="var(--text-muted)" />
                             }
                           </div>
-                          <span style={{ flex: 1, fontSize: '13px', fontWeight: isSel ? 600 : 400, color: isSel ? '#34D399' : 'var(--text)' }}>
+                          <span style={{ flex: 1, fontSize: '13px', fontWeight: isSel ? 600 : 400, color: isSel ? 'var(--success-1)' : 'var(--text)' }}>
                             {l.nom}
                           </span>
                         </button>
@@ -2238,8 +2238,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                                 padding: '5px 10px', fontSize: '12px', fontWeight: 500,
                                 borderRadius: '100px', fontFamily: 'inherit', cursor: 'pointer',
                                 border: `1px solid ${active ? 'var(--accent-border)' : (def.isDirect ? 'rgba(52,211,153,0.4)' : 'var(--border)')}`,
-                                background: active ? 'var(--accent-bg)' : (def.isDirect ? 'rgba(52,211,153,0.06)' : 'var(--surface)'),
-                                color: active ? 'var(--accent-text)' : (def.isDirect ? '#10b981' : 'var(--text-2)'),
+                                background: active ? 'var(--accent-bg)' : (def.isDirect ? 'var(--success-bg)' : 'var(--surface)'),
+                                color: active ? 'var(--accent-text)' : (def.isDirect ? 'var(--success-1)' : 'var(--text-2)'),
                                 transition: 'all 0.12s',
                               }}
                               title={def.isDirect ? 'Canal direct, 0 % de commission' : `Commission par défaut ${def.defaultCommissionPct} %`}
@@ -2418,14 +2418,14 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
     borderRadius: '8px', padding: '4px 10px',
-    fontSize: '12px', color: '#ef4444', cursor: 'pointer',
+    fontSize: '12px', color: 'var(--danger)', cursor: 'pointer',
     transition: 'all 0.15s',
   },
   testimonyBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)',
+    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.2)',
     borderRadius: '8px', padding: '4px 10px',
-    fontSize: '12px', color: '#34D399', cursor: 'pointer',
+    fontSize: '12px', color: 'var(--success-1)', cursor: 'pointer',
     transition: 'all 0.15s',
   },
   notesText: { fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.7, margin: 0 },
@@ -2551,6 +2551,6 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '14px', color: 'var(--text)',
   },
   input: { flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: '14px', color: 'var(--text)' },
-  error: { fontSize: '13px', color: '#ef4444', margin: 0 },
+  error: { fontSize: '13px', color: 'var(--danger)', margin: 0 },
   formActions: { display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '4px' },
 }

@@ -300,7 +300,7 @@ export default function FormationView({
               const isBad = item.startsWith('❌')
               const text = item.replace(/^[-✅❌]\s/, '')
               return (
-                <li key={j} style={{ ...s.li, color: isGood ? '#34D399' : isBad ? '#F87171' : 'var(--text-2)' }}>
+                <li key={j} style={{ ...s.li, color: isGood ? 'var(--success-1)' : isBad ? 'var(--danger)' : 'var(--text-2)' }}>
                   <span style={s.bullet}>{isGood ? '✅' : isBad ? '❌' : '•'}</span>
                   <span dangerouslySetInnerHTML={{ __html: formatInline(text) }} />
                 </li>
@@ -405,7 +405,7 @@ export default function FormationView({
                           ...(isActive ? styles.lessonBtnActive : {}),
                         }}
                       >
-                        <div style={{ ...styles.lessonDot, ...(isDone ? { background: '#34D399' } : isActive ? { background: 'var(--accent-text)' } : {}) }}>
+                        <div style={{ ...styles.lessonDot, ...(isDone ? { background: 'var(--success-1)' } : isActive ? { background: 'var(--accent-text)' } : {}) }}>
                           {isDone && <Check size={9} color="#000" weight="bold" />}
                         </div>
                         <span style={{ flex: 1, textAlign: 'left' }}>{lesson.title}</span>
@@ -745,7 +745,7 @@ export default function FormationView({
                   Mes notes
                 </span>
                 {noteSaved && (
-                  <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 600 }}>
+                  <span style={{ fontSize: '10px', color: 'var(--success-1)', fontWeight: 600 }}>
                     ✓ Enregistré
                   </span>
                 )}
@@ -1066,7 +1066,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '9px 14px',
     fontSize: '12px', fontWeight: 600,
-    color: '#10b981',
+    color: 'var(--success-1)',
     background: 'rgba(16,185,129,0.08)',
     border: '1px solid rgba(16,185,129,0.25)',
     borderRadius: '8px',
@@ -1106,8 +1106,8 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: '6px',
   },
   railBookmarkBtnActive: {
-    background: 'rgba(245,158,11,0.10)',
-    color: '#f59e0b',
+    background: 'var(--warning-bg)',
+    color: 'var(--warning)',
     borderColor: 'rgba(245,158,11,0.30)',
     fontWeight: 600,
   },
@@ -1167,13 +1167,13 @@ const styles: Record<string, React.CSSProperties> = {
   },
   railVoteBtnUp: {
     background: 'rgba(16,185,129,0.10)',
-    color: '#10b981',
+    color: 'var(--success-1)',
     borderColor: 'rgba(16,185,129,0.30)',
     fontWeight: 600,
   },
   railVoteBtnDown: {
     background: 'rgba(239,68,68,0.08)',
-    color: '#ef4444',
+    color: 'var(--danger)',
     borderColor: 'rgba(239,68,68,0.25)',
     fontWeight: 600,
   },
@@ -1296,7 +1296,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   doneMsg: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '14px', color: '#34D399', fontWeight: 500,
+    fontSize: '14px', color: 'var(--success-1)', fontWeight: 500,
   },
 }
 

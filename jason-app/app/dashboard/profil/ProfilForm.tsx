@@ -128,8 +128,8 @@ const f: Record<string, React.CSSProperties> = {
   },
   errorBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '12px', color: '#F87171',
-    background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.18)',
+    fontSize: '12px', color: 'var(--danger)',
+    background: 'var(--danger-bg)', border: '1px solid rgba(248,113,113,0.18)',
     borderRadius: '8px', padding: '9px 12px', marginTop: '8px',
   },
   saveRow: { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '12px' },
@@ -137,9 +137,9 @@ const f: Record<string, React.CSSProperties> = {
 
 function stripeBanner(type: 'success' | 'pending' | 'error'): React.CSSProperties {
   const c = {
-    success: { bg: 'rgba(52,211,153,0.08)', border: 'rgba(52,211,153,0.2)', color: '#34D399' },
+    success: { bg: 'var(--success-bg)', border: 'var(--success-border)', color: 'var(--success-1)' },
     pending: { bg: 'rgba(217,119,6,0.10)', border: 'rgba(217,119,6,0.28)', color: '#b45309' },
-    error:   { bg: 'rgba(239,68,68,0.08)',   border: 'rgba(239,68,68,0.2)',   color: '#ef4444' },
+    error:   { bg: 'rgba(239,68,68,0.08)',   border: 'rgba(239,68,68,0.2)',   color: 'var(--danger)' },
   }[type]
   return {
     display: 'flex', alignItems: 'center', gap: '8px',
@@ -421,8 +421,8 @@ export default function ProfilForm({
           {isStripeConnected ? (
             <div style={f.valueRow}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34D399', flexShrink: 0 }} />
-                <span style={{ ...f.value, color: '#34D399' }}>Compte connecté</span>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success-1)', flexShrink: 0 }} />
+                <span style={{ ...f.value, color: 'var(--success-1)' }}>Compte connecté</span>
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{stripeAccountId?.slice(0, 20)}…</span>
               </div>
               <button onClick={handleStripeConnect} disabled={stripeLoading} className="jm-profil-edit-btn" style={f.editBtn}>{stripeLoading ? '…' : 'Gérer'}</button>
@@ -496,7 +496,7 @@ export default function ProfilForm({
               <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '10px' }}>
                 Ajoute ton IBAN pour proposer le virement comme option de paiement dans tes contrats.
               </p>
-              <button onClick={() => setEditIban(true)} style={addBtn('#34D399', 'rgba(52,211,153,0.1)', 'rgba(52,211,153,0.25)')}>
+              <button onClick={() => setEditIban(true)} style={addBtn('var(--success-1)', 'rgba(52,211,153,0.1)', 'var(--success-border)')}>
                 + Ajouter mon IBAN
               </button>
             </div>
@@ -657,7 +657,7 @@ const dz: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '9px 16px', borderRadius: '10px',
     fontSize: '13px', fontWeight: 600, fontFamily: 'inherit',
-    background: 'rgba(220,38,38,0.10)', color: '#dc2626',
+    background: 'rgba(220,38,38,0.10)', color: 'var(--danger)',
     border: '1px solid rgba(220,38,38,0.30)',
     cursor: 'pointer', width: 'fit-content',
   },
@@ -693,7 +693,7 @@ const dz: Record<string, React.CSSProperties> = {
   },
   modalConfirmLabel: { fontSize: '13px', color: 'var(--text-2)', margin: '0 0 8px' },
   code: {
-    background: 'rgba(220,38,38,0.10)', color: '#dc2626',
+    background: 'rgba(220,38,38,0.10)', color: 'var(--danger)',
     padding: '2px 8px', borderRadius: '5px',
     fontSize: '12.5px', fontFamily: 'ui-monospace, monospace', fontWeight: 600,
   },
@@ -708,7 +708,7 @@ const dz: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
     padding: '10px 12px', borderRadius: '10px',
     background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.25)',
-    fontSize: '12.5px', color: '#dc2626', marginBottom: '14px',
+    fontSize: '12.5px', color: 'var(--danger)', marginBottom: '14px',
   },
   modalActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
   btnCancel: {
@@ -721,7 +721,7 @@ const dz: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '9px 16px', borderRadius: '10px',
     fontSize: '13px', fontWeight: 600, fontFamily: 'inherit',
-    background: '#dc2626', color: '#fff', border: 'none',
+    background: 'var(--danger)', color: '#fff', border: 'none',
   },
 }
 

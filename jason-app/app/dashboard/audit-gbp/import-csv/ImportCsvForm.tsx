@@ -281,7 +281,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
     padding: '11px 14px',
     background: 'rgba(239,68,68,0.08)',
-    color: '#ef4444', fontSize: '13px',
+    color: 'var(--danger)', fontSize: '13px',
     borderRadius: '10px', marginTop: '12px',
   },
 
@@ -358,7 +358,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   summaryNum: {
     fontSize: '24px', fontWeight: 700,
-    color: '#34d399', fontFamily: 'var(--font-fraunces), serif',
+    color: 'var(--success-1)', fontFamily: 'var(--font-fraunces), serif',
   },
   summaryLabel: {
     fontSize: '11px', color: 'var(--text-3)',

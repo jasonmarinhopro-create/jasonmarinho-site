@@ -247,7 +247,7 @@ const s: Record<string, React.CSSProperties> = {
   privacyNote: {
     display: 'flex', alignItems: 'flex-start', gap: '10px',
     padding: '12px 14px',
-    background: 'rgba(52,211,153,0.06)',
+    background: 'var(--success-bg)',
     border: '1px solid rgba(52,211,153,0.18)',
     borderRadius: '10px',
     fontSize: '12.5px', color: 'var(--text-2)',

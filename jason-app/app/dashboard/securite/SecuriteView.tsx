@@ -12,7 +12,7 @@ import { markStepIfNotYet } from '@/lib/onboarding/client'
 const ARNAQUES = [
   {
     tag: 'Très actuelle',
-    tagColor: '#ef4444',
+    tagColor: 'var(--danger)',
     tagBg: 'rgba(239,68,68,0.1)',
     icon: '💸',
     title: 'Arnaque au surpaiement',
@@ -21,7 +21,7 @@ const ARNAQUES = [
   },
   {
     tag: 'En hausse 2025',
-    tagColor: '#f59e0b',
+    tagColor: 'var(--warning)',
     tagBg: 'rgba(245,158,11,0.1)',
     icon: '💳',
     title: 'Virement vers un inconnu sans contrat',
@@ -104,15 +104,15 @@ const TIPS = [
 type SearchResult = Awaited<ReturnType<typeof searchGuest>>['results'][0]
 
 const incidentColor: Record<string, string> = {
-  'Dégradation du logement': '#F87171',
+  'Dégradation du logement': 'var(--danger)',
   'Fête non autorisée': '#FB923C',
-  'Tentative d\'arnaque / fraude': '#F87171',
+  'Tentative d\'arnaque / fraude': 'var(--danger)',
   'Impayé / remboursement abusif': '#FB923C',
-  'Voyageur exemplaire': '#34D399',
-  'Logement laissé impeccable': '#34D399',
-  'Communication excellente': '#34D399',
-  'Respect total des règles': '#34D399',
-  'Je recommande vivement': '#34D399',
+  'Voyageur exemplaire': 'var(--success-1)',
+  'Logement laissé impeccable': 'var(--success-1)',
+  'Communication excellente': 'var(--success-1)',
+  'Respect total des règles': 'var(--success-1)',
+  'Je recommande vivement': 'var(--success-1)',
 }
 
 const POSITIVE_SET = new Set(POSITIVE_TYPES)
@@ -222,13 +222,13 @@ export default function SecuriteView({
           <div style={styles.statsBar}>
             <div style={styles.statItem}>
               <Siren size={14} color="#f87171" weight="fill" />
-              <span style={{ color: '#f87171', fontWeight: 700 }}>{totalNegative}</span>
+              <span style={{ color: 'var(--danger)', fontWeight: 700 }}>{totalNegative}</span>
               <span style={styles.statLabel}>signalement{totalNegative > 1 ? 's' : ''}</span>
             </div>
             <div style={styles.statDivider} />
             <div style={styles.statItem}>
               <Star size={14} color="#34d399" weight="fill" />
-              <span style={{ color: '#34d399', fontWeight: 700 }}>{totalPositive}</span>
+              <span style={{ color: 'var(--success-1)', fontWeight: 700 }}>{totalPositive}</span>
               <span style={styles.statLabel}>témoignage{totalPositive > 1 ? 's' : ''} positif{totalPositive > 1 ? 's' : ''}</span>
             </div>
             <div style={styles.statDivider} />
@@ -320,10 +320,10 @@ export default function SecuriteView({
                     : negResults.length <= 3 ? 'medium'
                     : 'high'
                   const riskConfig = {
-                    none:   { label: 'Aucun risque détecté',  color: '#34d399', bg: 'rgba(52,211,153,0.1)',  icon: '✅' },
-                    low:    { label: 'Risque modéré',          color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  icon: '⚠️' },
+                    none:   { label: 'Aucun risque détecté',  color: 'var(--success-1)', bg: 'rgba(52,211,153,0.1)',  icon: '✅' },
+                    low:    { label: 'Risque modéré',          color: 'var(--warning)', bg: 'rgba(245,158,11,0.1)',  icon: '⚠️' },
                     medium: { label: 'Risque élevé',           color: '#f97316', bg: 'rgba(249,115,22,0.1)',  icon: '🔶' },
-                    high:   { label: 'Risque très élevé',      color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   icon: '🚨' },
+                    high:   { label: 'Risque très élevé',      color: 'var(--danger)', bg: 'rgba(239,68,68,0.1)',   icon: '🚨' },
                   }[riskLevel]
 
                   return results.length === 0 ? null : (
@@ -366,14 +366,14 @@ export default function SecuriteView({
                         <div>
                           <div style={styles.resultAlertHeader}>
                             <Star size={20} color="#34D399" weight="fill" />
-                            <span style={{ ...styles.resultAlertTitle, color: '#34D399' }}>
+                            <span style={{ ...styles.resultAlertTitle, color: 'var(--success-1)' }}>
                               {posResults.length} témoignage{posResults.length > 1 ? 's' : ''} positif{posResults.length > 1 ? 's' : ''}
                             </span>
                           </div>
                           {posResults.map(r => (
                             <div key={r.id} style={styles.resultItemPositive}>
                               <div style={styles.resultItemHeader}>
-                                <span style={{ ...styles.incidentBadge, background: '#34D39920', color: '#34D399' }}>
+                                <span style={{ ...styles.incidentBadge, background: '#34D39920', color: 'var(--success-1)' }}>
                                   {r.incident_type}
                                 </span>
                                 <span style={styles.resultDate}>
@@ -409,7 +409,7 @@ export default function SecuriteView({
                         {results.map(r => (
                           <div key={r.id} style={{ marginBottom: '6px' }}>
                             {deletionSuccess === r.id ? (
-                              <span style={{ fontSize: '12px', color: '#34D399' }}>
+                              <span style={{ fontSize: '12px', color: 'var(--success-1)' }}>
                                 ✓ Demande de suppression envoyée pour cette fiche
                               </span>
                             ) : deletionRequestId === r.id ? (
@@ -420,7 +420,7 @@ export default function SecuriteView({
                                 <button
                                   onClick={() => handleDeletionRequest(r.id, r.identifier)}
                                   disabled={isDeletionPending}
-                                  style={{ fontSize: '12px', background: 'rgba(239,68,68,0.15)', color: '#F87171', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer' }}
+                                  style={{ fontSize: '12px', background: 'rgba(239,68,68,0.15)', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer' }}
                                 >
                                   {isDeletionPending ? 'Envoi...' : 'Confirmer'}
                                 </button>
@@ -564,7 +564,7 @@ export default function SecuriteView({
                 </div>
 
                 <div style={styles.formRow}>
-                  <label style={styles.label}>Décris l'incident <span style={{ color: '#F87171' }}>*</span></label>
+                  <label style={styles.label}>Décris l'incident <span style={{ color: 'var(--danger)' }}>*</span></label>
                   <textarea
                     value={report.description}
                     onChange={e => setReport(r => ({ ...r, description: e.target.value }))}
@@ -573,7 +573,7 @@ export default function SecuriteView({
                     rows={4}
                     required
                   />
-                  <span style={{ fontSize: '11px', color: report.description.length < 20 ? 'var(--text-muted)' : '#34D399' }}>
+                  <span style={{ fontSize: '11px', color: report.description.length < 20 ? 'var(--text-muted)' : 'var(--success-1)' }}>
                     {report.description.length}/20 minimum
                   </span>
                 </div>
@@ -652,7 +652,7 @@ export default function SecuriteView({
                 </div>
 
                 <div style={styles.formRow}>
-                  <label style={styles.label}>Décris ton expérience <span style={{ color: '#34D399' }}>*</span></label>
+                  <label style={styles.label}>Décris ton expérience <span style={{ color: 'var(--success-1)' }}>*</span></label>
                   <textarea
                     value={positive.description}
                     onChange={e => setPositive(r => ({ ...r, description: e.target.value }))}
@@ -661,7 +661,7 @@ export default function SecuriteView({
                     rows={4}
                     required
                   />
-                  <span style={{ fontSize: '11px', color: positive.description.length < 20 ? 'var(--text-muted)' : '#34D399' }}>
+                  <span style={{ fontSize: '11px', color: positive.description.length < 20 ? 'var(--text-muted)' : 'var(--success-1)' }}>
                     {positive.description.length}/20 minimum
                   </span>
                 </div>
@@ -796,9 +796,9 @@ const styles: Record<string, React.CSSProperties> = {
   resultAlertHeader: {
     display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px',
   },
-  resultAlertTitle: { fontSize: '15px', fontWeight: 600, color: '#F87171' },
+  resultAlertTitle: { fontSize: '15px', fontWeight: 600, color: 'var(--danger)' },
   resultItem: {
-    background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.15)',
+    background: 'var(--danger-bg)', border: '1px solid rgba(248,113,113,0.15)',
     borderRadius: '12px', padding: '14px 16px', marginBottom: '10px',
   },
   resultItemHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '8px' },
@@ -872,15 +872,15 @@ const styles: Record<string, React.CSSProperties> = {
 
   successBanner: {
     display: 'flex', alignItems: 'center', gap: '10px',
-    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
+    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.15)',
     borderRadius: '12px', padding: '14px 18px',
-    fontSize: '13px', color: '#34D399',
+    fontSize: '13px', color: 'var(--success-1)',
   },
   positiveBanner: {
     display: 'flex', alignItems: 'center', gap: '10px',
-    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
+    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.15)',
     borderRadius: '12px', padding: '14px 18px',
-    fontSize: '13px', color: '#34D399',
+    fontSize: '13px', color: 'var(--success-1)',
   },
   positiveCard: {
     padding: '24px', borderRadius: '20px',
@@ -889,23 +889,23 @@ const styles: Record<string, React.CSSProperties> = {
   },
   positiveNotice: {
     fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5,
-    background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)',
+    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.15)',
     borderRadius: '8px', padding: '10px 14px', marginBottom: '20px',
   },
   positiveLink: {
     background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: '12px', fontWeight: 500, color: '#34D399',
+    fontSize: '12px', fontWeight: 500, color: 'var(--success-1)',
     textDecoration: 'underline', padding: 0,
   },
   positiveBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '8px',
-    background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.3)',
-    color: '#34D399', fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', fontWeight: 600,
+    background: 'var(--success-border)', border: '1px solid rgba(52,211,153,0.3)',
+    color: 'var(--success-1)', fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', fontWeight: 600,
     padding: '11px 22px', borderRadius: '10px', cursor: 'pointer',
     whiteSpace: 'nowrap' as const,
   },
   resultItemPositive: {
-    background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)',
+    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.15)',
     borderRadius: '12px', padding: '14px 16px', marginBottom: '10px',
   },
 
@@ -922,7 +922,7 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: 'pointer', textAlign: 'left' as const,
   },
   alertBandLeft: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const },
-  alertBandTitle: { fontSize: '14px', fontWeight: 600, color: '#ef4444' },
+  alertBandTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--danger)' },
   alertBandSub: { fontSize: '12px', color: 'var(--text-muted)' },
   alertBandChevron: { fontSize: '20px', color: 'var(--text-muted)', transition: 'transform 0.2s', lineHeight: 1 },
   alertBandGrid: {
@@ -955,7 +955,7 @@ const styles: Record<string, React.CSSProperties> = {
   arnaqueSignal: {
     display: 'flex', alignItems: 'flex-start', gap: '6px',
     fontSize: '11px', color: 'var(--text-3)', lineHeight: 1.5,
-    background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.12)',
+    background: 'var(--warning-bg)', border: '1px solid rgba(245,158,11,0.12)',
     borderRadius: '8px', padding: '8px 10px',
   },
 

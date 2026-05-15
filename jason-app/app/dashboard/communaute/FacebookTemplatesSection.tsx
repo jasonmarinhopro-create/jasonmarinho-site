@@ -220,8 +220,8 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
                 onClick={() => selectSavedPost(post)}
                 style={{
                   ...s.chip,
-                  background: active ? '#10b981' : 'transparent',
-                  borderColor: active ? '#10b981' : 'rgba(16,185,129,0.45)',
+                  background: active ? 'var(--success-1)' : 'transparent',
+                  borderColor: active ? 'var(--success-1)' : 'rgba(16,185,129,0.45)',
                   color: active ? '#fff' : '#059669',
                   fontWeight: 600,
                 }}
@@ -368,9 +368,9 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
             disabled={!postContent.trim() || saving}
             style={{
               ...s.saveBtn,
-              background: savedFlash ? '#10b981' : 'transparent',
+              background: savedFlash ? 'var(--success-1)' : 'transparent',
               color: savedFlash ? '#fff' : 'var(--text-2)',
-              borderColor: savedFlash ? '#10b981' : 'var(--border-2)',
+              borderColor: savedFlash ? 'var(--success-1)' : 'var(--border-2)',
             }}
             title={editingPostId ? 'Mettre à jour ce post' : 'Sauvegarder comme nouveau post'}
           >
@@ -383,7 +383,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
             disabled={!postContent.trim()}
             style={{
               ...s.copyBtn,
-              background: copied ? '#10b981' : 'var(--accent-text)',
+              background: copied ? 'var(--success-1)' : 'var(--accent-text)',
               color: copied ? '#fff' : 'var(--bg)',
             }}
           >
@@ -462,7 +462,7 @@ const s: Record<string, React.CSSProperties> = {
   errorBox: {
     padding: '10px 12px', borderRadius: '10px',
     background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.30)',
-    fontSize: '12.5px', color: '#dc2626', lineHeight: 1.5,
+    fontSize: '12.5px', color: 'var(--danger)', lineHeight: 1.5,
     display: 'flex', alignItems: 'center', gap: '8px',
   },
 

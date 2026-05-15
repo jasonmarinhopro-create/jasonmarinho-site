@@ -789,8 +789,8 @@ const s: Record<string, React.CSSProperties> = {
   statLbl: { color: 'var(--text-3)', fontSize: '12px' },
   reachBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '11px', fontWeight: 500, color: '#34D399',
-    background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)',
+    fontSize: '11px', fontWeight: 500, color: 'var(--success-1)',
+    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.2)',
     padding: '3px 9px', borderRadius: '100px',
   },
 
@@ -819,7 +819,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   statusBtnOn: {
     background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)',
-    color: '#34D399',
+    color: 'var(--success-1)',
   },
   dismissBtn: {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -854,7 +854,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '6px', cursor: 'pointer',
   },
   restoreAllBtn: {
-    fontSize: '12px', color: '#34D399', background: 'rgba(52,211,153,0.08)',
+    fontSize: '12px', color: 'var(--success-1)', background: 'var(--success-bg)',
     border: '1px solid rgba(52,211,153,0.2)', padding: '4px 12px',
     borderRadius: '6px', cursor: 'pointer', fontWeight: 500,
   },
