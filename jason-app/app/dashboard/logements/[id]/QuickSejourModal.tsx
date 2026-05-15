@@ -426,7 +426,7 @@ const input: React.CSSProperties = {
 
 const errBox: React.CSSProperties = {
   padding: '9px 12px', borderRadius: '9px', background: 'rgba(239,68,68,0.08)',
-  border: '1px solid rgba(239,68,68,0.25)', color: '#ef4444', fontSize: '12.5px',
+  border: '1px solid rgba(239,68,68,0.25)', color: 'var(--danger)', fontSize: '12.5px',
 }
 
 const footer: React.CSSProperties = {

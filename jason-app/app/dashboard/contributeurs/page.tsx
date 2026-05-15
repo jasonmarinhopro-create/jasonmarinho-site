@@ -49,8 +49,8 @@ export default async function ContributeursPage() {
               {[
                 { icon: Medal,      color: 'var(--accent-text)', label: 'Badge Contributeur permanent sur ton profil' },
                 { icon: Star,       color: '#a78bfa', label: 'Tes idées rejoignent la roadmap officielle' },
-                { icon: ChatCircle, color: '#34d399', label: 'Espace discussion exclusif pour les bâtisseurs' },
-                { icon: Rocket,     color: '#60a5fa', label: 'Accès anticipé à chaque nouveauté' },
+                { icon: ChatCircle, color: 'var(--success-1)', label: 'Espace discussion exclusif pour les bâtisseurs' },
+                { icon: Rocket,     color: 'var(--info)', label: 'Accès anticipé à chaque nouveauté' },
               ].map(({ icon: Icon, color, label }) => (
                 <div key={label} style={{ ...s.perk, borderColor: `${color}22` }}>
                   <Icon size={16} color={color} weight="duotone" />
@@ -95,7 +95,7 @@ export default async function ContributeursPage() {
                 {[
                   { icon: Star,          color: 'var(--accent-text)', text: 'Laisse un avis 5 étoiles sur Google' },
                   { icon: Camera,        color: '#a78bfa', text: 'Prends une capture d\'écran de ton avis publié' },
-                  { icon: EnvelopeSimple,color: '#34d399', text: 'Envoie-la à contact@jasonmarinho.com avec ton prénom' },
+                  { icon: EnvelopeSimple,color: 'var(--success-1)', text: 'Envoie-la à contact@jasonmarinho.com avec ton prénom' },
                 ].map(({ icon: Icon, color, text }, i) => (
                   <div key={i} style={s.reviewStep}>
                     <div style={{ ...s.reviewStepNum, background: `${color}18`, color }}>
@@ -210,12 +210,12 @@ export default async function ContributeursPage() {
               </div>
               <div style={s.statItem}>
                 <Lightbulb size={15} color="#60a5fa" weight="fill" />
-                <span style={{ ...s.statNum, color: '#60a5fa' }}>{roadmapItems.length}</span>
+                <span style={{ ...s.statNum, color: 'var(--info)' }}>{roadmapItems.length}</span>
                 <span style={s.statLabel}>idée{roadmapItems.length > 1 ? 's' : ''}</span>
               </div>
               <div style={s.statItem}>
                 <CheckCircle size={15} color="#34d399" weight="fill" />
-                <span style={{ ...s.statNum, color: '#34d399' }}>{doneCount}</span>
+                <span style={{ ...s.statNum, color: 'var(--success-1)' }}>{doneCount}</span>
                 <span style={s.statLabel}>livrée{doneCount > 1 ? 's' : ''}</span>
               </div>
             </div>

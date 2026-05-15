@@ -361,19 +361,19 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: '12px',
                   padding: '12px 14px', borderRadius: '12px',
-                  background: 'rgba(52,211,153,0.08)',
+                  background: 'var(--success-bg)',
                   border: '1px solid rgba(52,211,153,0.25)',
                   marginBottom: '4px',
                 }}>
                   <div style={{
                     width: '34px', height: '34px', flexShrink: 0,
-                    background: 'rgba(52,211,153,0.15)', borderRadius: '9px',
+                    background: 'var(--success-border)', borderRadius: '9px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     <Check size={16} color="#34D399" weight="bold" />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#34D399' }}>{form.logement_nom}</p>
+                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: 'var(--success-1)' }}>{form.logement_nom}</p>
                     <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{form.logement_adresse}</p>
                   </div>
                   {logements.length > 1 && (
@@ -521,11 +521,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                           fontSize: '13px', fontWeight: checked ? 600 : 400, border: 'none',
                           background: isDisabled
                             ? 'rgba(165,196,176,0.05)'
-                            : checked ? 'rgba(52,211,153,0.12)' : 'var(--surface)',
+                            : checked ? 'var(--success-bg)' : 'var(--surface)',
                           outline: isDisabled
                             ? '1px solid rgba(165,196,176,0.1)'
                             : checked ? '1px solid rgba(52,211,153,0.4)' : '1px solid var(--border)',
-                          color: isDisabled ? 'rgba(165,196,176,0.3)' : checked ? '#34D399' : 'var(--text-2)',
+                          color: isDisabled ? 'rgba(165,196,176,0.3)' : checked ? 'var(--success-1)' : 'var(--text-2)',
                           transition: 'all 0.15s',
                           opacity: isDisabled ? 0.6 : 1,
                         }}
@@ -828,7 +828,7 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
                   height: '34px', borderRadius: '8px', border: 'none',
                   fontSize: '13px', fontWeight: isSel ? 700 : 400,
                   background: isSel ? 'rgba(255,213,107,0.18)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
-                  color: isSel ? '#FFD56B' : isToday2 ? '#34D399' : '#a5c4b0',
+                  color: isSel ? '#FFD56B' : isToday2 ? 'var(--success-1)' : '#a5c4b0',
                   cursor: 'pointer',
                   outline: isSel ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
                   transition: 'background 0.1s',
@@ -1027,7 +1027,7 @@ const warnText: React.CSSProperties = {
 }
 
 const errorStyle: React.CSSProperties = {
-  color: '#ef4444', fontSize: '13px', margin: 0,
+  color: 'var(--danger)', fontSize: '13px', margin: 0,
 }
 
 const footer: React.CSSProperties = {
@@ -1101,10 +1101,10 @@ const previewBtn: React.CSSProperties = {
 
 const sentNotice: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
-  background: 'rgba(52,211,153,0.08)',
+  background: 'var(--success-bg)',
   border: '1px solid rgba(52,211,153,0.2)',
   borderRadius: '10px', padding: '8px 16px',
-  fontSize: '13px', color: '#34D399',
+  fontSize: '13px', color: 'var(--success-1)',
 }
 
 const legalNotice: React.CSSProperties = {

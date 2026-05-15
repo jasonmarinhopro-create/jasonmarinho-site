@@ -11,16 +11,16 @@ import { markActualiteRead, markAllActualitesRead, toggleActualiteFavorite } fro
 
 const CATEGORIES = [
   { value: 'all',                 label: 'Tout',                color: 'var(--text-2)', bg: 'var(--border)' },
-  { value: 'reglementation',      label: 'Réglementation',      color: '#60a5fa',       bg: 'rgba(96,165,250,0.12)' },
-  { value: 'fiscalite',           label: 'Fiscalité',           color: '#34d399',       bg: 'rgba(52,211,153,0.12)' },
-  { value: 'juridique',           label: 'Juridique',           color: '#f87171',       bg: 'rgba(248,113,113,0.12)' },
+  { value: 'reglementation',      label: 'Réglementation',      color: 'var(--info)',       bg: 'rgba(96,165,250,0.12)' },
+  { value: 'fiscalite',           label: 'Fiscalité',           color: 'var(--success-1)',       bg: 'var(--success-bg)' },
+  { value: 'juridique',           label: 'Juridique',           color: 'var(--danger)',       bg: 'rgba(248,113,113,0.12)' },
   { value: 'plateformes',         label: 'Plateformes OTA',     color: '#fb923c',       bg: 'rgba(251,146,60,0.12)' },
   { value: 'marche',              label: 'Marché',              color: '#f472b6',       bg: 'rgba(244,114,182,0.12)' },
   { value: 'outils',              label: 'Outils & Tech',       color: '#a78bfa',       bg: 'rgba(167,139,250,0.12)' },
-  { value: 'gites',               label: 'Gîtes & Meublés',     color: '#f59e0b',       bg: 'rgba(245,158,11,0.12)' },
+  { value: 'gites',               label: 'Gîtes & Meublés',     color: 'var(--warning)',       bg: 'rgba(245,158,11,0.12)' },
   { value: 'chambres-hotes',      label: "Chambres d'hôtes",    color: '#ec4899',       bg: 'rgba(236,72,153,0.12)' },
   { value: 'conciergerie',        label: 'Conciergeries',       color: '#8b5cf6',       bg: 'rgba(139,92,246,0.12)' },
-  { value: 'reservation-directe', label: 'Réserv. directe',    color: '#10b981',       bg: 'rgba(16,185,129,0.12)' },
+  { value: 'reservation-directe', label: 'Réserv. directe',    color: 'var(--success-1)',       bg: 'rgba(16,185,129,0.12)' },
   { value: 'communes',            label: 'Communes & Villes',   color: '#64748b',       bg: 'rgba(100,116,139,0.12)' },
   { value: 'driing',              label: 'Driing',              color: '#FFD56B',       bg: 'rgba(255,213,107,0.12)' },
   { value: 'general',             label: 'Général',             color: '#94a3b8',       bg: 'rgba(148,163,184,0.12)' },
@@ -54,9 +54,9 @@ function deadlineLabel(deadlineDate: string) {
   const diffMs = dl.getTime() - now.getTime()
   const days = Math.ceil(diffMs / 86400000)
   if (days < 0) return null
-  if (days === 0) return { label: "Aujourd'hui", color: '#dc2626', urgent: true }
-  if (days === 1) return { label: 'Demain', color: '#dc2626', urgent: true }
-  if (days <= 7) return { label: `Dans ${days} jours`, color: '#dc2626', urgent: true }
+  if (days === 0) return { label: "Aujourd'hui", color: 'var(--danger)', urgent: true }
+  if (days === 1) return { label: 'Demain', color: 'var(--danger)', urgent: true }
+  if (days <= 7) return { label: `Dans ${days} jours`, color: 'var(--danger)', urgent: true }
   if (days <= 30) return { label: `Dans ${days} jours`, color: '#d97706', urgent: false }
   if (days <= 90) return { label: `Dans ${days} jours`, color: '#0369a1', urgent: false }
   const dl2 = new Date(deadlineDate + 'T12:00:00')
@@ -199,7 +199,7 @@ export default function ActualitesView({
           ...s.card,
           ...(isAuthenticated && !isRead ? s.cardUnread : {}),
         }}
-        className="glass-card"
+        className="glass-card actu-card"
       >
         {/* Top: catégorie + date + non-lu */}
         <div style={s.cardMeta}>
@@ -317,7 +317,7 @@ export default function ActualitesView({
               <Newspaper size={12} /> <strong>{articles.length}</strong> articles
             </span>
             {unreadCount > 0 ? (
-              <span style={{ ...s.statChip, color: '#dc2626', background: 'rgba(220,38,38,0.10)', borderColor: 'rgba(220,38,38,0.28)' }}>
+              <span style={{ ...s.statChip, color: 'var(--danger)', background: 'rgba(220,38,38,0.10)', borderColor: 'rgba(220,38,38,0.28)' }}>
                 <span style={s.unreadDot} />
                 <strong>{unreadCount}</strong> non lu{unreadCount > 1 ? 's' : ''}
               </span>
@@ -497,10 +497,16 @@ export default function ActualitesView({
         .actu-source-link {
           color: var(--text-3) !important;
           text-decoration: none;
-          transition: color 0.15s;
+          transition: color var(--d-base) var(--ease-smooth);
         }
         .actu-source-link:hover {
           color: var(--text-2) !important;
+        }
+        /* Card actualité : hover lift */
+        .actu-card:hover {
+          border-color: var(--border-2) !important;
+          box-shadow: var(--shadow-md);
+          transform: translateY(-2px);
         }
         .actu-filter-scroll::-webkit-scrollbar { display: none; }
         .actu-filter-scroll {
@@ -560,7 +566,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   unreadDot: {
     display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%',
-    background: '#dc2626', flexShrink: 0,
+    background: 'var(--danger)', flexShrink: 0,
   },
 
   // Sections
@@ -629,7 +635,7 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-outfit), sans-serif', marginLeft: 'auto',
   },
   unreadToggleOn: {
-    background: 'rgba(220,38,38,0.08)', color: '#dc2626',
+    background: 'rgba(220,38,38,0.08)', color: 'var(--danger)',
     borderColor: 'rgba(220,38,38,0.28)',
   },
   filterScroll: {
@@ -642,22 +648,41 @@ const s: Record<string, React.CSSProperties> = {
   filterCount: { fontSize: '10px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px', lineHeight: '1.4' },
 
   // Cards
-  card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column' as const, gap: '12px', position: 'relative' as const },
+  card: {
+    padding: 'var(--s-6)',
+    borderRadius: 'var(--r-xl)',
+    display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-3)',
+    position: 'relative' as const,
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
+  },
   cardUnread: {
     background: 'var(--surface)',
-    boxShadow: 'inset 3px 0 0 #dc2626',
+    boxShadow: 'inset 3px 0 0 var(--danger)',
   },
-  cardMeta: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' as const },
-  catBadge: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const, padding: '3px 8px', borderRadius: '100px', border: '1px solid', whiteSpace: 'nowrap' as const },
-  dateLabel: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: 300 },
-  cardTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.4, margin: 0 },
-  cardSummary: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, margin: 0 },
+  cardMeta: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--s-2)', flexWrap: 'wrap' as const },
+  catBadge: {
+    fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const,
+    padding: '3px 9px', borderRadius: 'var(--r-pill)',
+    border: '1px solid', whiteSpace: 'nowrap' as const,
+  },
+  dateLabel: { fontSize: 'var(--t-xs)', color: 'var(--text-muted)', fontWeight: 500 },
+  cardTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'var(--t-lg)',
+    fontWeight: 400, color: 'var(--text)',
+    lineHeight: 'var(--lh-snug)', margin: 0,
+    letterSpacing: 'var(--ls-snug)',
+  },
+  cardSummary: {
+    fontSize: 'var(--t-sm)', fontWeight: 400,
+    color: 'var(--text-2)', lineHeight: 'var(--lh-relax)', margin: 0,
+  },
   cardFooter: {
-    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const,
-    paddingTop: '8px', borderTop: '1px solid var(--border)', marginTop: '4px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-3)', flexWrap: 'wrap' as const,
+    paddingTop: 'var(--s-2)', borderTop: '1px solid var(--border)', marginTop: 'var(--s-1)',
   },
-  cardActions: { display: 'flex', alignItems: 'center', gap: '6px', marginLeft: 'auto', flexWrap: 'wrap' as const },
-  readTime: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--text-muted)' },
+  cardActions: { display: 'flex', alignItems: 'center', gap: 'var(--s-1)', marginLeft: 'auto', flexWrap: 'wrap' as const },
+  readTime: { display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)', fontSize: 'var(--t-xs)', color: 'var(--text-muted)' },
 
   // Pinned
   pinnedBadge: {

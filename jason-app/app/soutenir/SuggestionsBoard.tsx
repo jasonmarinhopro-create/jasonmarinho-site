@@ -14,7 +14,7 @@ interface Idea {
 const STATUS_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   pending: { label: 'Proposée',    color: 'rgba(255,255,255,0.4)',  bg: 'rgba(255,255,255,0.05)' },
   planned: { label: 'Planifiée',   color: '#FFD56B',                bg: 'rgba(255,213,107,0.1)'  },
-  done:    { label: 'Réalisée',    color: '#34d399',                bg: 'rgba(52,211,153,0.1)'   },
+  done:    { label: 'Réalisée',    color: 'var(--success-1)',                bg: 'rgba(52,211,153,0.1)'   },
 }
 
 function getVoted(): Set<string> {
@@ -178,8 +178,8 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s',
     whiteSpace: 'nowrap',
   },
-  err: { fontSize: '12px', color: '#f87171', margin: 0 },
-  ok: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#34d399', margin: 0 },
+  err: { fontSize: '12px', color: 'var(--danger)', margin: 0 },
+  ok: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--success-1)', margin: 0 },
 
   loadingWrap: { display: 'flex', justifyContent: 'center', padding: '40px 0' },
   empty: {

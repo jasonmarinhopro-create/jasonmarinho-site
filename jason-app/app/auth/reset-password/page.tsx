@@ -227,7 +227,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center',
   },
   error: {
-    fontSize: '13px', color: '#F87171',
+    fontSize: '13px', color: 'var(--danger)',
     background: 'rgba(248,113,113,0.1)',
     border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '8px', padding: '10px 14px',

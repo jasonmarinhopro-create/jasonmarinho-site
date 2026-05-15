@@ -46,8 +46,8 @@ interface Props {
 }
 
 const CAT: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  arrivee:   { label: 'Arrivée',     color: '#10b981', bg: 'rgba(16,185,129,0.13)',  border: 'rgba(16,185,129,0.30)' },
-  depart:    { label: 'Départ',      color: '#60a5fa', bg: 'rgba(96,165,250,0.13)',  border: 'rgba(96,165,250,0.30)' },
+  arrivee:   { label: 'Arrivée',     color: 'var(--success-1)', bg: 'rgba(16,185,129,0.13)',  border: 'rgba(16,185,129,0.30)' },
+  depart:    { label: 'Départ',      color: 'var(--info)', bg: 'rgba(96,165,250,0.13)',  border: 'rgba(96,165,250,0.30)' },
   sejour:    { label: 'Séjour',      color: '#F472B6', bg: 'rgba(244,114,182,0.13)', border: 'rgba(244,114,182,0.30)' },
   menage:    { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)',  border: 'rgba(251,146,60,0.30)' },
   rdv:       { label: 'RDV',         color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', border: 'var(--accent-border)' },
@@ -1189,7 +1189,7 @@ export default function CalendrierView({
     return Array.from(seen.entries()).map(([color, label]) => ({ color, label }))
   }, [icalEvents])
 
-  const LOGEMENT_COLORS = ['#10b981','#60a5fa','#f59e0b','#a78bfa','#fb923c','#f472b6']
+  const LOGEMENT_COLORS = ['var(--success-1)','var(--info)','var(--warning)','#a78bfa','#fb923c','#f472b6']
   const logements = useMemo(() => {
     const seen = new Set<string>()
     return contractEvents
@@ -1215,7 +1215,7 @@ export default function CalendrierView({
       const cl = contractChecklists[ev.contractId] ?? {}
       const arr = ev.date_arrivee, dep = ev.date_depart
       const dta = diff(today, arr)
-      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        add(arr, '#ef4444', 'Contrat non signé')
+      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        add(arr, 'var(--danger)', 'Contrat non signé')
       if (dta >= 0 && dta <= 3 && !cl.solde_recu)            add(arr, '#f97316', 'Solde non reçu')
       if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) add(arr, '#eab308', 'Instructions non envoyées')
       if (dep) {
@@ -1250,7 +1250,7 @@ export default function CalendrierView({
       const arrRef = contractEvents.find(e => e.contractId === ev.contractId && e.type === 'arrivee') ?? ev
       const depRef = dep ? (contractEvents.find(e => e.contractId === ev.contractId && e.type === 'depart') ?? ev) : ev
       function arrInfo(d: number) { return d === 0 ? "Arrivée aujourd'hui" : d === 1 ? 'Arrivée demain' : `Arrivée J-${d}` }
-      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        items.push({ color: '#ef4444', priority: 0, label: 'Contrat non signé',       logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'contrat_signe' })
+      if (dta >= 0 && dta <= 7 && !cl.contrat_signe)        items.push({ color: 'var(--danger)', priority: 0, label: 'Contrat non signé',       logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'contrat_signe' })
       if (dta >= 0 && dta <= 3 && !cl.solde_recu)            items.push({ color: '#f97316', priority: 1, label: 'Solde non reçu',           logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'solde_recu' })
       if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) items.push({ color: '#eab308', priority: 2, label: 'Instructions non envoyées', logement: nom, daysInfo: arrInfo(dta), navigateDate: arr, contractRef: arrRef, contractId: ev.contractId, checklistKey: 'instructions_envoyees' })
       if (dep) {
@@ -1519,7 +1519,7 @@ export default function CalendrierView({
                 title="Voir le détail des stats"
               >
                 <span style={s.summaryLabel}>Occupation</span>
-                <span style={{ ...s.summaryValue, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
+                <span style={{ ...s.summaryValue, color: headerStats.occupationPct >= 70 ? 'var(--success-1)' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
                   {headerStats.occupationPct}%
                 </span>
               </button>
@@ -1631,7 +1631,7 @@ export default function CalendrierView({
         parts.push(
           <span key="occ" style={s.miniStat}>
             <span style={s.miniStatLabel}>Occupation {MONTHS_FR[month].toLowerCase()}</span>
-            <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? '#10b981' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : undefined }}>
+            <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? 'var(--success-1)' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : undefined }}>
               {headerStats.occupationPct}%
             </span>
             <span style={s.miniStatLabel}>({headerStats.occupiedDays}/{headerStats.monthDays}j)</span>
@@ -1650,7 +1650,7 @@ export default function CalendrierView({
         {(() => {
           const arrivals = headerStats.arrToday + headerStats.depToday
           const occ = headerStats.occupationPct
-          const occColor = occ >= 70 ? '#10b981' : occ >= 40 ? 'var(--accent-text)' : 'var(--text-2)'
+          const occColor = occ >= 70 ? 'var(--success-1)' : occ >= 40 ? 'var(--accent-text)' : 'var(--text-2)'
           return (
             <>
               <div style={s.mobKpi}>
@@ -1822,7 +1822,7 @@ export default function CalendrierView({
                 const stale = ageMs != null && ageMs > 1000 * 60 * 60 * 6 // > 6h
                 const noEvents = icalEvents.length === 0
                 const status = noEvents ? 'warn' : stale ? 'stale' : 'ok'
-                const dotColor = status === 'warn' ? '#ef4444' : status === 'stale' ? '#fbbf24' : '#10b981'
+                const dotColor = status === 'warn' ? 'var(--danger)' : status === 'stale' ? 'var(--warning)' : 'var(--success-1)'
                 return (
                   <button
                     type="button"
@@ -2175,9 +2175,9 @@ export default function CalendrierView({
                       if (c.type === 'arrivee') {
                         const avantItems = CHECKLIST_ITEMS.filter(i => i.phase === 'avant')
                         const done = avantItems.filter(i => cl[i.key]).length
-                        if (done === avantItems.length) progressColor = '#10b981'
+                        if (done === avantItems.length) progressColor = 'var(--success-1)'
                         else if (done > 0) progressColor = '#eab308'
-                        else progressColor = '#ef4444'
+                        else progressColor = 'var(--danger)'
                       }
                       return { id: c.id, color: (CAT[c.type] ?? CAT.note).color, title: c.title, progressColor }
                     })
@@ -2593,7 +2593,7 @@ export default function CalendrierView({
               )}
 
               {sejourError && (
-                <div style={{ fontSize: '12px', color: '#ef4444', lineHeight: 1.4 }}>
+                <div style={{ fontSize: '12px', color: 'var(--danger)', lineHeight: 1.4 }}>
                   {sejourError}
                 </div>
               )}
@@ -2654,10 +2654,10 @@ export default function CalendrierView({
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '11px', color: 'var(--text-muted)' }}>
                     <span>Suivi opérationnel</span>
-                    <span style={{ fontWeight: 600, color: pct === 100 ? '#10b981' : pct > 50 ? '#eab308' : '#ef4444' }}>{done}/{total}</span>
+                    <span style={{ fontWeight: 600, color: pct === 100 ? 'var(--success-1)' : pct > 50 ? '#eab308' : 'var(--danger)' }}>{done}/{total}</span>
                   </div>
                   <div style={{ height: '5px', borderRadius: '3px', background: 'var(--surface)', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', borderRadius: '3px', width: `${pct}%`, background: pct === 100 ? '#10b981' : pct > 50 ? '#eab308' : '#ef4444', transition: 'width 0.3s' }} />
+                    <div style={{ height: '100%', borderRadius: '3px', width: `${pct}%`, background: pct === 100 ? 'var(--success-1)' : pct > 50 ? '#eab308' : 'var(--danger)', transition: 'width 0.3s' }} />
                   </div>
                 </div>
 
@@ -2673,7 +2673,7 @@ export default function CalendrierView({
                           type="button"
                           className="icon-btn"
                           onClick={() => handlePhaseToggle(selectedContract.contractId, phase, !allChecked)}
-                          style={{ fontSize: '10px', color: allChecked ? '#ef4444' : '#10b981', fontWeight: 600, padding: '2px 6px', borderRadius: '4px', border: `1px solid ${allChecked ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, background: allChecked ? 'rgba(239,68,68,0.08)' : 'rgba(16,185,129,0.08)', cursor: 'pointer' }}
+                          style={{ fontSize: '10px', color: allChecked ? 'var(--danger)' : 'var(--success-1)', fontWeight: 600, padding: '2px 6px', borderRadius: '4px', border: `1px solid ${allChecked ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, background: allChecked ? 'rgba(239,68,68,0.08)' : 'rgba(16,185,129,0.08)', cursor: 'pointer' }}
                         >
                           {allChecked ? 'Tout décocher' : 'Tout cocher'}
                         </button>
@@ -2696,8 +2696,8 @@ export default function CalendrierView({
                           >
                             <span style={{
                               width: 16, height: 16, borderRadius: '4px', flexShrink: 0,
-                              border: `1.5px solid ${checked ? '#10b981' : 'var(--border-2)'}`,
-                              background: checked ? '#10b981' : 'transparent',
+                              border: `1.5px solid ${checked ? 'var(--success-1)' : 'var(--border-2)'}`,
+                              background: checked ? 'var(--success-1)' : 'transparent',
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
                               transition: 'all 0.15s',
                             }}>
@@ -2750,7 +2750,7 @@ export default function CalendrierView({
                         <span style={s.evtTitle}>{ev.title}</span>
                         <div style={{ display: 'flex', gap: '4px', flexShrink: 0, alignItems: 'center' }}>
                           {isContract && (
-                            <span style={{ fontSize: '11px', fontWeight: 600, color: clDone === CHECKLIST_ITEMS.length ? '#10b981' : clDone > 0 ? '#eab308' : 'var(--text-muted)', background: 'var(--surface)', padding: '2px 7px', borderRadius: '100px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: clDone === CHECKLIST_ITEMS.length ? 'var(--success-1)' : clDone > 0 ? '#eab308' : 'var(--text-muted)', background: 'var(--surface)', padding: '2px 7px', borderRadius: '100px' }}>
                               {clDone}/{CHECKLIST_ITEMS.length}
                             </span>
                           )}
@@ -2866,7 +2866,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(16,185,129,0.2)',
     borderRadius: '8px',
     fontSize: '12px',
-    color: '#10b981',
+    color: 'var(--success-1)',
     fontWeight: 500,
     whiteSpace: 'nowrap' as const,
   },
@@ -2978,7 +2978,7 @@ const s: Record<string, React.CSSProperties> = {
   exportCopyBtnOk: {
     background: 'rgba(16,185,129,0.15)',
     borderColor: 'rgba(16,185,129,0.4)',
-    color: '#10b981',
+    color: 'var(--success-1)',
   },
   exportPrimaryBtn: {
     width: '100%',
@@ -3044,14 +3044,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   syncOk: {
     fontSize: '12px',
-    color: '#10b981',
+    color: 'var(--success-1)',
     background: 'rgba(16,185,129,0.08)',
     padding: '6px 10px',
     borderRadius: '7px',
   },
   syncErr: {
     fontSize: '12px',
-    color: '#ef4444',
+    color: 'var(--danger)',
     background: 'rgba(239,68,68,0.08)',
     padding: '6px 10px',
     borderRadius: '7px',
@@ -3295,7 +3295,7 @@ const s: Record<string, React.CSSProperties> = {
   evtTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.35 },
   spanBadge: {
     fontSize: '11px', fontWeight: 500,
-    color: '#60a5fa',
+    color: 'var(--info)',
     background: 'rgba(96,165,250,0.1)',
     padding: '2px 8px', borderRadius: '100px',
   },
@@ -3408,7 +3408,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'transparent',
     border: 'none',
     borderLeft: '1px solid var(--border)',
-    color: '#10b981',
+    color: 'var(--success-1)',
     fontSize: '14px', fontWeight: 700,
     cursor: 'pointer',
     flexShrink: 0,
@@ -3436,11 +3436,11 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(16,185,129,0.22)',
     borderRadius: '12px',
     fontSize: '12px', fontWeight: 500,
-    color: '#10b981',
+    color: 'var(--success-1)',
   },
   alertOkDot: {
     width: '8px', height: '8px', borderRadius: '50%',
-    background: '#10b981',
+    background: 'var(--success-1)',
     boxShadow: '0 0 0 4px rgba(16,185,129,0.18)',
   },
 

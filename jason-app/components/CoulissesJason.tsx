@@ -194,7 +194,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   formFoot: { display: 'flex', alignItems: 'center', gap: '10px' },
   charCount: { fontSize: '11px', color: 'var(--text-muted)', flex: 1 },
-  errMsg:    { fontSize: '12px', color: '#f87171' },
+  errMsg:    { fontSize: '12px', color: 'var(--danger)' },
   submitBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '13px', fontWeight: 700,

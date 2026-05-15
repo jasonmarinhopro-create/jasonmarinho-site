@@ -20,16 +20,16 @@ interface Actualite {
 }
 
 const CATEGORIES = [
-  { value: 'reglementation',      label: 'Réglementation',    color: '#60a5fa', bg: 'rgba(96,165,250,0.12)' },
-  { value: 'fiscalite',           label: 'Fiscalité',         color: '#34d399', bg: 'rgba(52,211,153,0.12)' },
-  { value: 'juridique',           label: 'Juridique',         color: '#f87171', bg: 'rgba(248,113,113,0.12)' },
+  { value: 'reglementation',      label: 'Réglementation',    color: 'var(--info)', bg: 'rgba(96,165,250,0.12)' },
+  { value: 'fiscalite',           label: 'Fiscalité',         color: 'var(--success-1)', bg: 'var(--success-bg)' },
+  { value: 'juridique',           label: 'Juridique',         color: 'var(--danger)', bg: 'rgba(248,113,113,0.12)' },
   { value: 'plateformes',         label: 'Plateformes OTA',   color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
   { value: 'marche',              label: 'Marché',            color: '#f472b6', bg: 'rgba(244,114,182,0.12)' },
   { value: 'outils',              label: 'Outils & Tech',     color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
-  { value: 'gites',               label: 'Gîtes & Meublés',   color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  { value: 'gites',               label: 'Gîtes & Meublés',   color: 'var(--warning)', bg: 'rgba(245,158,11,0.12)' },
   { value: 'chambres-hotes',      label: "Chambres d'hôtes",  color: '#ec4899', bg: 'rgba(236,72,153,0.12)' },
   { value: 'conciergerie',        label: 'Conciergeries',     color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)' },
-  { value: 'reservation-directe', label: 'Réserv. directe',  color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+  { value: 'reservation-directe', label: 'Réserv. directe',  color: 'var(--success-1)', bg: 'rgba(16,185,129,0.12)' },
   { value: 'communes',            label: 'Communes & Villes', color: '#64748b', bg: 'rgba(100,116,139,0.12)' },
   { value: 'driing',              label: 'Driing',            color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
   { value: 'general',             label: 'Général',           color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
@@ -44,7 +44,7 @@ function formatDate(iso: string) {
 }
 
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
-  const color = type === 'ok' ? '#34D399' : '#f87171'
+  const color = type === 'ok' ? 'var(--success-1)' : 'var(--danger)'
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: 500, color, background: `${color}14`, border: `1px solid ${color}30`, padding: '4px 10px', borderRadius: '8px' }}>
       {type === 'ok' ? <CheckCircle size={13} weight="fill" /> : <XCircle size={13} weight="fill" />}
@@ -140,7 +140,7 @@ function ActualiteForm({
             name="is_published"
             value="true"
             defaultChecked={defaultValues?.is_published ?? false}
-            style={{ accentColor: '#34d399', width: '15px', height: '15px', cursor: 'pointer' }}
+            style={{ accentColor: 'var(--success-1)', width: '15px', height: '15px', cursor: 'pointer' }}
           />
           Publier immédiatement
         </label>
@@ -227,7 +227,7 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
           <span style={s.statLbl}>article{articles.length > 1 ? 's' : ''} au total</span>
         </div>
         <div style={s.statChip}>
-          <span style={{ ...s.statNum, color: '#34d399' }}>{publishedCount}</span>
+          <span style={{ ...s.statNum, color: 'var(--success-1)' }}>{publishedCount}</span>
           <span style={s.statLbl}>publiés</span>
         </div>
         <div style={s.statChip}>
@@ -327,13 +327,13 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
                                 onClick={() => handleToggle(article.id, article.is_published)}
                                 disabled={isPending}
                                 title={article.is_published ? 'Dépublier' : 'Publier'}
-                                style={{ ...s.iconBtn, color: article.is_published ? '#fb923c' : '#34d399' }}
+                                style={{ ...s.iconBtn, color: article.is_published ? '#fb923c' : 'var(--success-1)' }}
                               >
                                 {article.is_published ? <EyeSlash size={15} /> : <Eye size={15} />}
                               </button>
                               <button
                                 onClick={() => setEditingId(article.id)}
-                                style={{ ...s.iconBtn, color: '#60a5fa' }}
+                                style={{ ...s.iconBtn, color: 'var(--info)' }}
                                 title="Modifier"
                               >
                                 <PencilSimple size={15} />
@@ -341,7 +341,7 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
                               <button
                                 onClick={() => handleDelete(article.id)}
                                 disabled={isPending}
-                                style={{ ...s.iconBtn, color: '#f87171' }}
+                                style={{ ...s.iconBtn, color: 'var(--danger)' }}
                                 title="Supprimer"
                               >
                                 <Trash size={15} />
@@ -410,7 +410,7 @@ const s: Record<string, React.CSSProperties> = {
   itemMeta: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
   catBadge: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const, padding: '3px 8px', borderRadius: '100px', border: '1px solid' },
   statusBadge: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const, padding: '3px 8px', borderRadius: '100px', border: '1px solid' },
-  statusPublished: { color: '#34d399', background: 'rgba(52,211,153,0.1)', borderColor: 'rgba(52,211,153,0.25)' },
+  statusPublished: { color: 'var(--success-1)', background: 'rgba(52,211,153,0.1)', borderColor: 'var(--success-border)' },
   statusDraft: { color: '#94a3b8', background: 'rgba(148,163,184,0.1)', borderColor: 'rgba(148,163,184,0.2)' },
   dateText: { fontSize: '11px', color: 'var(--text-muted)', fontWeight: 300 },
 

@@ -20,7 +20,7 @@ const PERKS = [
 function PasswordStrength({ password }: { password: string }) {
   if (!password) return null
   const strength = password.length < 6 ? 1 : password.length < 10 ? 2 : 3
-  const colors = ['', '#ef4444', '#f59e0b', '#10b981']
+  const colors = ['', 'var(--danger)', 'var(--warning)', 'var(--success-1)']
   const labels = ['', 'Faible', 'Moyen', 'Fort']
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px' }}>

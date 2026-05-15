@@ -6,7 +6,7 @@ import { HouseLine, Coffee, Buildings, Handshake, Table, ArrowRight, CheckCircle
 type Cell = { value: string; tone?: 'ok' | 'warn' | 'neutral' }
 
 const PROFILES = [
-  { id: 'gites',        label: 'Gîtes',               icon: HouseLine, color: '#d97706', bg: 'rgba(245,158,11,0.10)' },
+  { id: 'gites',        label: 'Gîtes',               icon: HouseLine, color: '#d97706', bg: 'var(--warning-bg)' },
   { id: 'chambres',     label: "Chambres d'hôtes",    icon: Coffee,    color: '#db2777', bg: 'rgba(236,72,153,0.10)' },
   { id: 'conciergerie', label: 'Conciergeries',       icon: Buildings, color: '#7c3aed', bg: 'rgba(139,92,246,0.10)' },
   { id: 'direct',       label: 'Réservation directe', icon: Handshake, color: '#059669', bg: 'rgba(16,185,129,0.10)' },

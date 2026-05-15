@@ -87,7 +87,7 @@ function formatDateShort(iso: string) {
 
 const PLAN_CFG: Record<string, { label: string; color: string; bg: string; mrr: number }> = {
   driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', mrr: 0 },
-  standard:   { label: 'Standard',      color: '#15803d',            bg: 'rgba(52,211,153,0.18)', mrr: 1.98 },
+  standard:   { label: 'Standard',      color: '#15803d',            bg: 'var(--success-border)', mrr: 1.98 },
   decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--surface-2)',   mrr: 0 },
 }
 
@@ -165,10 +165,10 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
 
   const statTiles = [
     { icon: <UsersFour size={16} />, value: stats.voyageurs,      label: 'Voyageurs',       color: '#93C5FD' },
-    { icon: <CalendarBlank size={16} />, value: stats.sejours,    label: 'Séjours',          color: '#34D399' },
+    { icon: <CalendarBlank size={16} />, value: stats.sejours,    label: 'Séjours',          color: 'var(--success-1)' },
     { icon: <BookmarkSimple size={16} />, value: stats.favorites,  label: 'Gabarits favoris', color: '#FFD56B' },
     { icon: <PencilSimple size={16} />, value: stats.customizations, label: 'Gabarits perso.', color: '#C084FC' },
-    { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: '#f87171' },
+    { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: 'var(--danger)' },
     { icon: <Lightbulb size={16} />, value: stats.suggestions,    label: 'Suggestions',      color: '#FB923C' },
     { icon: <FacebookLogo size={16} />, value: stats.communityGroupsCount, label: 'Groupes FB rejoints', color: '#60A5FA' },
     { icon: <MagnifyingGlass size={16} />, value: stats.auditsCount, label: 'Audits GBP', color: '#A78BFA' },
@@ -208,7 +208,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               {planCfg.label}
             </span>
             {planCfg.mrr > 0 && (
-              <span style={{ ...s.pill, background: 'rgba(52,211,153,0.1)', color: '#34D399' }}>
+              <span style={{ ...s.pill, background: 'rgba(52,211,153,0.1)', color: 'var(--success-1)' }}>
                 + {planCfg.mrr.toFixed(2)} € / mois
               </span>
             )}
@@ -222,7 +222,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '5px',
               padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 500,
-              color: planFeedback.type === 'ok' ? '#34D399' : '#f87171',
+              color: planFeedback.type === 'ok' ? 'var(--success-1)' : 'var(--danger)',
               background: planFeedback.type === 'ok' ? 'rgba(52,211,153,0.1)' : 'rgba(248,113,113,0.1)',
             }}>
               {planFeedback.msg}
@@ -243,7 +243,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               }}
             >
               <option value="decouverte" style={{ background: '#040d0b', color: '#f0f4ff' }}>Découverte</option>
-              <option value="standard" style={{ background: '#040d0b', color: '#34D399' }}>Standard</option>
+              <option value="standard" style={{ background: '#040d0b', color: 'var(--success-1)' }}>Standard</option>
               <option value="driing" style={{ background: '#040d0b', color: '#FFD56B' }}>Membre Driing</option>
             </select>
           )}
@@ -280,7 +280,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               placeholder={`Objectifs de ${profile.full_name || 'ce membre'}, points de suivi, prochaines étapes, conseils personnalisés…`}
               autoFocus
             />
-            {notesError && <p style={{ fontSize: '13px', color: '#ef4444', margin: 0 }}>{notesError}</p>}
+            {notesError && <p style={{ fontSize: '13px', color: 'var(--danger)', margin: 0 }}>{notesError}</p>}
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
               <button onClick={cancelNotes} style={s.ghostBtn} disabled={isPending}>
                 <X size={13} />
@@ -435,7 +435,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
           </div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {completedFormations.length > 0 && (
-              <span style={{ ...s.pill, background: 'rgba(52,211,153,0.1)', color: '#34D399' }}>
+              <span style={{ ...s.pill, background: 'rgba(52,211,153,0.1)', color: 'var(--success-1)' }}>
                 {completedFormations.length} terminée{completedFormations.length > 1 ? 's' : ''}
               </span>
             )}
@@ -457,8 +457,8 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               <div key={uf.id} style={s.formationItem}>
                 <div style={{
                   width: '36px', height: '36px', flexShrink: 0, borderRadius: '10px',
-                  background: uf.progress === 100 ? 'rgba(52,211,153,0.12)' : 'rgba(255,213,107,0.08)',
-                  border: `1px solid ${uf.progress === 100 ? 'rgba(52,211,153,0.2)' : 'rgba(255,213,107,0.15)'}`,
+                  background: uf.progress === 100 ? 'var(--success-bg)' : 'rgba(255,213,107,0.08)',
+                  border: `1px solid ${uf.progress === 100 ? 'var(--success-border)' : 'rgba(255,213,107,0.15)'}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
                   {uf.progress === 100
@@ -490,12 +490,12 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
                     </div>
                     <span style={{
                       fontSize: '12px', fontWeight: 600, minWidth: '36px', textAlign: 'right',
-                      color: uf.progress === 100 ? '#34D399' : 'var(--accent-text)',
+                      color: uf.progress === 100 ? 'var(--success-1)' : 'var(--accent-text)',
                     }}>
                       {uf.progress}%
                     </span>
                     {uf.progress === 100 && (
-                      <span style={{ ...s.pill, background: 'rgba(52,211,153,0.12)', color: '#34D399', fontSize: '10px', padding: '2px 7px' }}>
+                      <span style={{ ...s.pill, background: 'var(--success-bg)', color: 'var(--success-1)', fontSize: '10px', padding: '2px 7px' }}>
                         Terminée
                       </span>
                     )}
@@ -634,7 +634,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   savedBanner: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    fontSize: '12px', color: '#34D399', marginBottom: '12px',
+    fontSize: '12px', color: 'var(--success-1)', marginBottom: '12px',
   },
 
   primaryBtn: {

@@ -24,7 +24,7 @@ export default async function ImportUrlPage() {
           </div>
           <h1 style={s.heroTitle}>
             Pré-remplis 9 questions<br />
-            <em style={{ color: '#34d399', fontStyle: 'italic' }}>en collant ton URL.</em>
+            <em style={{ color: 'var(--success-1)', fontStyle: 'italic' }}>en collant ton URL.</em>
           </h1>
           <p style={s.heroDesc}>
             Donne-nous le lien Google Maps de ta fiche : on récupère officiellement
@@ -107,7 +107,7 @@ const s: Record<string, React.CSSProperties> = {
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase' as const,
-    color: '#34d399', background: 'rgba(52,211,153,0.08)',
+    color: 'var(--success-1)', background: 'var(--success-bg)',
     border: '1px solid rgba(52,211,153,0.18)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
@@ -139,8 +139,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   stepNum: {
     width: '32px', height: '32px', borderRadius: '50%',
-    background: 'rgba(52,211,153,0.12)',
-    color: '#34d399',
+    background: 'var(--success-bg)',
+    color: 'var(--success-1)',
     fontWeight: 700, fontSize: '14px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
@@ -154,7 +154,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.7,
   },
   link: {
-    color: '#34d399', textDecoration: 'none',
+    color: 'var(--success-1)', textDecoration: 'none',
     fontWeight: 500,
   },
   code: {
@@ -167,7 +167,7 @@ const s: Record<string, React.CSSProperties> = {
   privacyNote: {
     display: 'flex', alignItems: 'flex-start', gap: '10px',
     padding: '12px 14px',
-    background: 'rgba(52,211,153,0.06)',
+    background: 'var(--success-bg)',
     border: '1px solid rgba(52,211,153,0.18)',
     borderRadius: '10px',
     fontSize: '12.5px', color: 'var(--text-2)',

@@ -34,7 +34,7 @@ const TYPE_ICONS: Record<FeedbackItem['feedback_type'], typeof WarningOctagon> =
 }
 
 const TYPE_COLORS: Record<FeedbackItem['feedback_type'], string> = {
-  error: '#dc2626',
+  error: 'var(--danger)',
   testimony: '#2563eb',
   suggestion: '#d97706',
 }
@@ -245,7 +245,7 @@ export default function SOSFeedbackAdmin({ items: initial }: { items: FeedbackIt
                   <div style={{
                     ...s.notif,
                     background: fb.ok ? 'rgba(16,185,129,0.10)' : 'rgba(220,38,38,0.10)',
-                    color: fb.ok ? '#059669' : '#dc2626',
+                    color: fb.ok ? '#059669' : 'var(--danger)',
                     borderColor: fb.ok ? 'rgba(16,185,129,0.30)' : 'rgba(220,38,38,0.30)',
                   }}>
                     {fb.msg}
@@ -264,7 +264,7 @@ function statusStyle(status: FeedbackItem['status']): React.CSSProperties {
   const map: Record<FeedbackItem['status'], React.CSSProperties> = {
     pending: { background: 'rgba(217,119,6,0.10)', color: '#b45309', borderColor: 'rgba(217,119,6,0.25)' },
     approved: { background: 'rgba(16,185,129,0.10)', color: '#059669', borderColor: 'rgba(16,185,129,0.25)' },
-    rejected: { background: 'rgba(220,38,38,0.10)', color: '#dc2626', borderColor: 'rgba(220,38,38,0.25)' },
+    rejected: { background: 'rgba(220,38,38,0.10)', color: 'var(--danger)', borderColor: 'rgba(220,38,38,0.25)' },
     done: { background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' },
   }
   return map[status]
@@ -283,7 +283,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '10.5px', fontWeight: 700,
     letterSpacing: '0.6px', textTransform: 'uppercase' as const,
-    color: '#dc2626',
+    color: 'var(--danger)',
     background: 'rgba(220,38,38,0.10)',
     border: '1px solid rgba(220,38,38,0.25)',
     borderRadius: '999px',
@@ -412,7 +412,7 @@ const s: Record<string, React.CSSProperties> = {
   actionReject: {
     background: 'rgba(220,38,38,0.08)',
     borderColor: 'rgba(220,38,38,0.30)',
-    color: '#dc2626',
+    color: 'var(--danger)',
   },
   actionDone: {
     background: 'var(--accent-bg)',

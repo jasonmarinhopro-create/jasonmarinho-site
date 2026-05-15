@@ -159,7 +159,7 @@ const footerActions: React.CSSProperties = {
 
 const errMsg: React.CSSProperties = {
   fontSize: '12.5px',
-  color: '#ef4444',
+  color: 'var(--danger)',
 }
 
 const ghostBtn: React.CSSProperties = {

@@ -345,7 +345,7 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
           padding: '10px 14px', borderRadius: '10px', border: '1px solid',
           background: feedback.type === 'ok' ? 'rgba(99,214,131,0.12)' : 'rgba(239,68,68,0.12)',
           borderColor: feedback.type === 'ok' ? 'rgba(99,214,131,0.25)' : 'rgba(239,68,68,0.25)',
-          color: feedback.type === 'ok' ? '#63D683' : '#f87171',
+          color: feedback.type === 'ok' ? '#63D683' : 'var(--danger)',
           fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px',
         }}>
           {feedback.type === 'ok' ? <Check size={14} /> : <Warning size={14} />}

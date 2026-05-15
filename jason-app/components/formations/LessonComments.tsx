@@ -197,5 +197,5 @@ const s: Record<string, React.CSSProperties> = {
   textareaWrap: { position: 'relative' as const },
   textarea: { width: '100%', boxSizing: 'border-box' as const, padding: '10px 12px 40px', fontSize: '13px', fontFamily: 'inherit', color: 'var(--text)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', outline: 'none', resize: 'vertical' as const, minHeight: '70px' },
   submitBtn: { position: 'absolute' as const, right: '8px', bottom: '8px', display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 12px', fontSize: '12px', fontWeight: 600, color: 'var(--bg)', background: 'var(--accent-text)', border: 'none', borderRadius: '7px', fontFamily: 'inherit' },
-  error: { fontSize: '12px', color: '#ef4444', margin: 0 },
+  error: { fontSize: '12px', color: 'var(--danger)', margin: 0 },
 }

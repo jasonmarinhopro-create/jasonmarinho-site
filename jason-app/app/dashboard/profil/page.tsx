@@ -6,7 +6,7 @@ import ChezNousIdentity from './ChezNousIdentity'
 
 const PLAN_BADGE: Record<string, { label: string; color: string; bg: string; dot: string }> = {
   'Membre Driing':  { label: 'Membre Driing',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', dot: 'var(--accent-text)' },
-  'Standard':       { label: 'Standard',        color: '#34D399', bg: 'rgba(52,211,153,0.12)',  dot: '#34D399' },
+  'Standard':       { label: 'Standard',        color: 'var(--success-1)', bg: 'var(--success-bg)',  dot: 'var(--success-1)' },
   'Administrateur': { label: 'Administrateur',  color: '#C084FC', bg: 'rgba(192,132,252,0.12)', dot: '#C084FC' },
   'Découverte':     { label: 'Découverte',      color: 'var(--text-3)', bg: 'var(--border)',    dot: '#6b7280' },
 }
@@ -240,7 +240,7 @@ export default async function ProfilPage() {
               <span className="profil-progress-label">Profil complété</span>
               <span
                 className="profil-progress-pct"
-                style={{ color: percent === 100 ? '#34D399' : 'var(--accent-text)' }}
+                style={{ color: percent === 100 ? 'var(--success-1)' : 'var(--accent-text)' }}
               >
                 {percent}%
               </span>
@@ -257,7 +257,7 @@ export default async function ProfilPage() {
                 {missing.length > 2 && ` et ${missing.length - 2} autre${missing.length - 2 > 1 ? 's' : ''}`}
               </p>
             ) : (
-              <p className="profil-progress-missing" style={{ color: '#34D399' }}>
+              <p className="profil-progress-missing" style={{ color: 'var(--success-1)' }}>
                 ✓ Tout est rempli, parfait !
               </p>
             )}

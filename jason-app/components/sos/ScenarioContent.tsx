@@ -84,12 +84,12 @@ export default function ScenarioContent({ content }: Props) {
             <Clock
               size={18}
               weight="fill"
-              style={{ color: content.delayBox.type === 'urgent' ? '#dc2626' : '#b45309', flexShrink: 0, marginTop: '2px' }}
+              style={{ color: content.delayBox.type === 'urgent' ? 'var(--danger)' : '#b45309', flexShrink: 0, marginTop: '2px' }}
             />
             <div>
               <div style={{
                 ...s.delayLabel,
-                color: content.delayBox.type === 'urgent' ? '#dc2626' : '#b45309',
+                color: content.delayBox.type === 'urgent' ? 'var(--danger)' : '#b45309',
               }}>
                 {content.delayBox.label}
               </div>
@@ -130,14 +130,14 @@ export default function ScenarioContent({ content }: Props) {
         <aside className="sos-col">
           {/* Ce qu'il NE faut surtout PAS faire */}
           <div style={{ ...s.section, ...s.dontSection }}>
-            <h2 style={{ ...s.sectionTitle, color: '#dc2626' }}>
+            <h2 style={{ ...s.sectionTitle, color: 'var(--danger)' }}>
               <ProhibitInset size={18} weight="fill" style={{ display: 'inline-block', verticalAlign: '-3px', marginRight: '6px' }} />
               Ce qu&apos;il ne faut surtout PAS faire
             </h2>
             <ul style={s.dontList}>
               {content.doNotDo.map((item, i) => (
                 <li key={i} style={s.dontItem}>
-                  <span style={{ ...s.bullet, color: '#dc2626' }}>✗</span>
+                  <span style={{ ...s.bullet, color: 'var(--danger)' }}>✗</span>
                   <span>{item}</span>
                 </li>
               ))}

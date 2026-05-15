@@ -262,11 +262,11 @@ export default function AdminUI({
             </div>
           </div>
           <div style={s.actCard}>
-            <div style={{ ...s.actIcon, color: '#34D399', background: 'rgba(52,211,153,0.12)' }}>
+            <div style={{ ...s.actIcon, color: 'var(--success-1)', background: 'var(--success-bg)' }}>
               <CalendarBlank size={20} weight="duotone" />
             </div>
             <div>
-              <div style={{ ...s.actVal, color: '#34D399' }}>{stats.totalSejours}</div>
+              <div style={{ ...s.actVal, color: 'var(--success-1)' }}>{stats.totalSejours}</div>
               <div style={s.actLbl}>séjours</div>
             </div>
           </div>
@@ -308,11 +308,11 @@ export default function AdminUI({
           {[
             { href: '/dashboard/admin/membres',    icon: UsersThree,    color: '#a78bfa', bg: 'rgba(167,139,250,0.1)',  title: 'Membres',     desc: `${stats.totalUsers} inscrits · ${stats.driingMembers} Driing` },
             { href: '/dashboard/admin/gabarits',   icon: FileText,      color: '#FFD56B', bg: 'rgba(255,213,107,0.1)', title: 'Gabarits',    desc: `${stats.templatesCount} gabarit${stats.templatesCount !== 1 ? 's' : ''}` },
-            { href: '/dashboard/admin/formations', icon: GraduationCap, color: '#34D399', bg: 'rgba(52,211,153,0.1)',  title: 'Formations',  desc: `${stats.formationsCount} publiée${stats.formationsCount !== 1 ? 's' : ''}` },
+            { href: '/dashboard/admin/formations', icon: GraduationCap, color: 'var(--success-1)', bg: 'rgba(52,211,153,0.1)',  title: 'Formations',  desc: `${stats.formationsCount} publiée${stats.formationsCount !== 1 ? 's' : ''}` },
             { href: '/dashboard/admin/actualites', icon: Newspaper,     color: '#f472b6', bg: 'rgba(244,114,182,0.1)', title: 'Actualités',  desc: 'Fil LCD' },
             { href: '/dashboard/admin/communaute', icon: UsersThree,    color: '#93C5FD', bg: 'rgba(147,197,253,0.1)', title: 'Communauté',  desc: `${stats.groupsCount} groupe${stats.groupsCount !== 1 ? 's' : ''}` },
             { href: '/dashboard/admin/guides',     icon: BookOpen,      color: '#fb923c', bg: 'rgba(251,146,60,0.1)',  title: 'Guide LCD',   desc: 'Profils & fiches' },
-            { href: '/dashboard/admin/sos-feedback', icon: Warning,     color: '#dc2626', bg: 'rgba(220,38,38,0.1)',   title: 'SOS Feedback', desc: 'Signalements & témoignages' },
+            { href: '/dashboard/admin/sos-feedback', icon: Warning,     color: 'var(--danger)', bg: 'rgba(220,38,38,0.1)',   title: 'SOS Feedback', desc: 'Signalements & témoignages' },
           ].map(({ href, icon: Icon, color, bg, title, desc }) => (
             <Link key={href} href={href} style={s.contentCard} className="admin-content-card">
               <div style={{ ...s.contentIcon, color, background: bg, border: `1px solid ${color}20` }}>
@@ -484,8 +484,8 @@ export default function AdminUI({
                     <div style={s.cellSub}>{r.identifier_type} · {r.identifier}</div>
                   </div>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                    <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: '#f87171', border: '1px solid rgba(248,113,113,.2)' }}>{r.incident_type}</span>
-                    <span style={{ ...s.badge, ...(r.is_validated ? { background: 'rgba(52,211,153,.1)', color: '#34D399', border: '1px solid rgba(52,211,153,.2)' } : { background: 'rgba(251,146,60,.1)', color: '#fb923c', border: '1px solid rgba(251,146,60,.2)' }) }}>
+                    <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: 'var(--danger)', border: '1px solid rgba(248,113,113,.2)' }}>{r.incident_type}</span>
+                    <span style={{ ...s.badge, ...(r.is_validated ? { background: 'rgba(52,211,153,.1)', color: 'var(--success-1)', border: '1px solid rgba(52,211,153,.2)' } : { background: 'rgba(251,146,60,.1)', color: '#fb923c', border: '1px solid rgba(251,146,60,.2)' }) }}>
                       {r.is_validated ? 'Validé' : 'En attente'}
                     </span>
                   </div>
@@ -566,9 +566,9 @@ function SignupsSparkline({ data }: { data: MonthlySignup[] }) {
             {totalSignups} <span style={s.sparkTitleSub}>nouveaux membres</span>
           </div>
           <div style={s.sparkSub}>
-            dont <strong style={{ color: '#34D399' }}>{totalPaid}</strong> payants ·
+            dont <strong style={{ color: 'var(--success-1)' }}>{totalPaid}</strong> payants ·
             {trendPct !== null && (
-              <span style={{ color: trendPct >= 0 ? '#34D399' : '#f87171', marginLeft: '6px', fontWeight: 600 }}>
+              <span style={{ color: trendPct >= 0 ? 'var(--success-1)' : 'var(--danger)', marginLeft: '6px', fontWeight: 600 }}>
                 {trendPct >= 0 ? '↑' : '↓'} {Math.abs(trendPct)}% vs mois dernier
               </span>
             )}
@@ -580,7 +580,7 @@ function SignupsSparkline({ data }: { data: MonthlySignup[] }) {
             <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>Total</span>
           </span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#34D399' }} />
+            <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--success-1)' }} />
             <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>Payants</span>
           </span>
         </div>
@@ -633,7 +633,7 @@ function ActionBtn({ label, icon, color, loading, onClick }: { label: string; ic
   )
 }
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
-  const color = type === 'ok' ? '#34D399' : '#f87171'
+  const color = type === 'ok' ? 'var(--success-1)' : 'var(--danger)'
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, color, background: `${color}14`, border: `1px solid ${color}25` }}>
       {type === 'ok' ? <CheckCircle size={13} weight="fill" /> : <XCircle size={13} weight="fill" />}
@@ -790,7 +790,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sparkBarPaid: {
     position: 'absolute' as const, bottom: 0, left: 0, right: 0,
-    background: '#34D399', borderRadius: '0 0 0 0',
+    background: 'var(--success-1)', borderRadius: '0 0 0 0',
   },
   sparkLabel2: { fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
 

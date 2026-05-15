@@ -158,7 +158,7 @@ const copyBtn: React.CSSProperties = {
 }
 
 const copyBtnCopied: React.CSSProperties = {
-  background: 'rgba(52,211,153,0.15)',
+  background: 'var(--success-border)',
   border: '1px solid rgba(52,211,153,0.3)',
-  color: '#34D399',
+  color: 'var(--success-1)',
 }

@@ -405,7 +405,7 @@ export default async function DashboardPage() {
               <span style={s.quickLabel}>Saisir un revenu</span>
             </Link>
             <Link href="/dashboard/securite" style={s.quickItem} className="quick-hover">
-              <span style={{ ...s.quickIcon, color: '#dc2626', background: 'rgba(220,38,38,0.12)' }}>
+              <span style={{ ...s.quickIcon, color: 'var(--danger)', background: 'rgba(220,38,38,0.12)' }}>
                 <Flag size={18} weight="duotone" />
               </span>
               <span style={s.quickLabel}>Signaler un voyageur</span>
@@ -516,7 +516,7 @@ export default async function DashboardPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
                     {activeStays.map(c => (
                       <div key={c.id} style={s.stayRow}>
-                        <span style={{ ...s.badge, background: 'rgba(16,185,129,0.15)', color: '#10b981' }}>En cours</span>
+                        <span style={{ ...s.badge, background: 'rgba(16,185,129,0.15)', color: 'var(--success-1)' }}>En cours</span>
                         <div style={s.stayInfo}>
                           <span style={s.stayName}>{c.logement_nom ?? 'Logement'}</span>
                           <span style={s.stayMeta}>jusqu&apos;au {fmtShort(c.date_depart ?? today)}</span>
@@ -526,7 +526,7 @@ export default async function DashboardPage() {
                     {weekArrivals.map(c => {
                       const dta   = diffDays(today, c.date_arrivee)
                       const label = dta === 0 ? "Aujourd'hui" : dta === 1 ? 'Demain' : `Dans ${dta}j`
-                      const color = dta === 0 ? '#10b981' : dta === 1 ? '#eab308' : '#60a5fa'
+                      const color = dta === 0 ? 'var(--success-1)' : dta === 1 ? '#eab308' : 'var(--info)'
                       return (
                         <div key={c.id} style={s.stayRow}>
                           <span style={{ ...s.badge, background: color + '22', color }}>Arrivée · {label}</span>
@@ -544,7 +544,7 @@ export default async function DashboardPage() {
                       const label = dtd === 0 ? "Aujourd'hui" : dtd === 1 ? 'Demain' : `Dans ${dtd}j`
                       return (
                         <div key={c.id} style={s.stayRow}>
-                          <span style={{ ...s.badge, background: 'rgba(96,165,250,0.15)', color: '#60a5fa' }}>Départ · {label}</span>
+                          <span style={{ ...s.badge, background: 'rgba(96,165,250,0.15)', color: 'var(--info)' }}>Départ · {label}</span>
                           <div style={s.stayInfo}>
                             <span style={s.stayName}>{c.logement_nom ?? 'Logement'}</span>
                             <span style={s.stayMeta}>{fmtShort(c.date_depart!)}</span>
@@ -568,7 +568,7 @@ export default async function DashboardPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
                     {unsignedContracts.slice(0, 4).map(c => {
                       const dta     = diffDays(today, c.date_arrivee)
-                      const urgency = dta <= 2 ? '#ef4444' : dta <= 7 ? '#f97316' : '#eab308'
+                      const urgency = dta <= 2 ? 'var(--danger)' : dta <= 7 ? '#f97316' : '#eab308'
                       return (
                         <Link key={c.id} href="/dashboard/calendrier" style={{ textDecoration: 'none' }}>
                           <div style={s.actionRow}>
@@ -660,7 +660,7 @@ export default async function DashboardPage() {
                   {streakLearner > 0 && (
                     <span style={s.learnerStreak}>
                       <Flame size={12} weight="fill" color="#dc2626" />
-                      <strong style={{ color: '#dc2626' }}>{streakLearner}</strong> jour{streakLearner > 1 ? 's' : ''}
+                      <strong style={{ color: 'var(--danger)' }}>{streakLearner}</strong> jour{streakLearner > 1 ? 's' : ''}
                     </span>
                   )}
                   <span style={s.learnerCount}>
@@ -739,12 +739,12 @@ export default async function DashboardPage() {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 const CATEGORY_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
-  reglementation:      { bg: 'rgba(96,165,250,0.12)',  color: '#60a5fa', label: 'Réglementation' },
-  fiscalite:           { bg: 'rgba(52,211,153,0.12)',  color: '#34d399', label: 'Fiscalité' },
-  gites:               { bg: 'rgba(245,158,11,0.12)',  color: '#f59e0b', label: 'Gîtes & Meublés' },
+  reglementation:      { bg: 'rgba(96,165,250,0.12)',  color: 'var(--info)', label: 'Réglementation' },
+  fiscalite:           { bg: 'var(--success-bg)',  color: 'var(--success-1)', label: 'Fiscalité' },
+  gites:               { bg: 'rgba(245,158,11,0.12)',  color: 'var(--warning)', label: 'Gîtes & Meublés' },
   'chambres-hotes':    { bg: 'rgba(236,72,153,0.12)',  color: '#ec4899', label: "Chambres d'hôtes" },
   conciergerie:        { bg: 'rgba(139,92,246,0.12)',  color: '#8b5cf6', label: 'Conciergeries' },
-  'reservation-directe': { bg: 'rgba(16,185,129,0.12)', color: '#10b981', label: 'Réserv. directe' },
+  'reservation-directe': { bg: 'rgba(16,185,129,0.12)', color: 'var(--success-1)', label: 'Réserv. directe' },
   marche:              { bg: 'rgba(244,114,182,0.12)', color: '#f472b6', label: 'Marché' },
   communes:            { bg: 'rgba(100,116,139,0.12)', color: '#64748b', label: 'Communes' },
   plateformes:         { bg: 'rgba(251,146,60,0.12)',  color: '#fb923c', label: 'Plateformes OTA' },

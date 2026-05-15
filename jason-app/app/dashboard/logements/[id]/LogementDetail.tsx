@@ -132,7 +132,7 @@ function dpeColor(letter: string): { bg: string; fg: string; border: string } {
     case 'C': return { bg: 'rgba(234,179,8,0.12)',  fg: '#ca8a04', border: 'rgba(234,179,8,0.30)' }
     case 'D': return { bg: 'rgba(245,158,11,0.12)', fg: '#d97706', border: 'rgba(245,158,11,0.30)' }
     case 'E': return { bg: 'rgba(249,115,22,0.12)', fg: '#ea580c', border: 'rgba(249,115,22,0.30)' }
-    case 'F': return { bg: 'rgba(239,68,68,0.12)',  fg: '#dc2626', border: 'rgba(239,68,68,0.30)' }
+    case 'F': return { bg: 'rgba(239,68,68,0.12)',  fg: 'var(--danger)', border: 'rgba(239,68,68,0.30)' }
     case 'G': return { bg: 'rgba(127,29,29,0.18)',  fg: '#991b1b', border: 'rgba(127,29,29,0.40)' }
     default:  return { bg: 'var(--surface)',        fg: 'var(--text-2)', border: 'var(--border)' }
   }
@@ -356,7 +356,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               <span style={s.heroChip}>{TYPE_LABELS[l.type_logement] ?? l.type_logement}</span>
             )}
             {l.classement_etoiles !== null && l.classement_etoiles > 0 && (
-              <span style={{ ...s.heroChip, background: 'rgba(245,158,11,0.15)', color: '#fbbf24', borderColor: 'rgba(245,158,11,0.3)' }}>
+              <span style={{ ...s.heroChip, background: 'rgba(245,158,11,0.15)', color: 'var(--warning)', borderColor: 'rgba(245,158,11,0.3)' }}>
                 {Array.from({ length: l.classement_etoiles }).map((_, i) => (
                   <Star key={i} size={11} weight="fill" />
                 ))}
@@ -422,7 +422,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
           </div>
           <div style={{
             ...s.statValue,
-            color: stats.occupationPct >= 70 ? '#10b981' : stats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)',
+            color: stats.occupationPct >= 70 ? 'var(--success-1)' : stats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)',
           }}>
             {stats.occupationPct}%
           </div>
@@ -505,7 +505,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                       )}
                       <span style={{
                         ...s.sejourStatus,
-                        color: isContracted ? '#10b981' : 'var(--text-muted)',
+                        color: isContracted ? 'var(--success-1)' : 'var(--text-muted)',
                         background: isContracted ? 'rgba(16,185,129,0.10)' : 'var(--surface)',
                         borderColor: isContracted ? 'rgba(16,185,129,0.25)' : 'var(--border)',
                       }}>
@@ -612,7 +612,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             <div style={s.contactsList}>
               {l.contact_urgence_nom && (
                 <div style={s.contactRow}>
-                  <div style={{ ...s.contactBadge, background: 'rgba(239,68,68,0.10)', color: '#ef4444', borderColor: 'rgba(239,68,68,0.25)' }}>
+                  <div style={{ ...s.contactBadge, background: 'rgba(239,68,68,0.10)', color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.25)' }}>
                     Urgence
                   </div>
                   <div style={s.contactBody}>
@@ -625,7 +625,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               )}
               {l.contact_menage_nom && (
                 <div style={s.contactRow}>
-                  <div style={{ ...s.contactBadge, background: 'rgba(96,165,250,0.10)', color: '#60a5fa', borderColor: 'rgba(96,165,250,0.25)' }}>
+                  <div style={{ ...s.contactBadge, background: 'rgba(96,165,250,0.10)', color: 'var(--info)', borderColor: 'var(--info-border)' }}>
                     Ménage
                   </div>
                   <div style={s.contactBody}>
@@ -740,7 +740,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               {l.tarif_nuitee_moyen && (
                 <div style={s.detailRow}>
                   <span style={s.detailKey}>Nuitée moyenne</span>
-                  <span style={{ ...s.detailVal, color: '#10b981', fontWeight: 700 }}>{fmtEur(l.tarif_nuitee_moyen)}</span>
+                  <span style={{ ...s.detailVal, color: 'var(--success-1)', fontWeight: 700 }}>{fmtEur(l.tarif_nuitee_moyen)}</span>
                 </div>
               )}
               {l.frais_menage && (
@@ -1281,7 +1281,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sejourAmount: {
     fontSize: '12px', fontWeight: 600,
-    color: '#10b981',
+    color: 'var(--success-1)',
   },
   sejourStatus: {
     fontSize: '10px', fontWeight: 600,

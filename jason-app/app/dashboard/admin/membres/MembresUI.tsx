@@ -60,7 +60,7 @@ function isBotLike(name: string | null, email: string): boolean {
 // Hash-based avatar color so every member gets a consistent unique color
 const PALETTE = [
   { bg: 'rgba(255,213,107,0.14)', border: 'rgba(255,213,107,0.32)', text: '#FFD56B' },
-  { bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.28)',  text: '#34D399' },
+  { bg: 'var(--success-bg)',  border: 'var(--success-border)',  text: 'var(--success-1)' },
   { bg: 'rgba(96,190,255,0.12)',  border: 'rgba(96,190,255,0.28)',  text: '#60BEFF' },
   { bg: 'rgba(249,117,131,0.12)', border: 'rgba(249,117,131,0.28)', text: '#F97583' },
   { bg: 'rgba(192,132,252,0.12)', border: 'rgba(192,132,252,0.28)', text: '#C084FC' },
@@ -173,6 +173,13 @@ export default function MembresUI({ members }: { members: Member[] }) {
 
   return (
     <div style={s.wrap}>
+      <style>{`
+        .jm-membre-card { will-change: transform; }
+        .jm-membre-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .jm-membre-card:hover .jm-action-btn { opacity: 1; }
+        .jm-action-btn { opacity: 0.85; }
+        .jm-action-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; border-color: var(--border-2) !important; transform: translateY(-1px); }
+      `}</style>
 
       {/* ── Stats ── */}
       <div style={s.statsRow}>
@@ -334,13 +341,13 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
   const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
 
   return (
-    <div style={{ ...s.card, ...(suspect ? { borderColor: 'rgba(248,113,113,0.25)' } : {}) }}>
+    <div className="jm-membre-card" style={{ ...s.card, ...(suspect ? { borderColor: 'var(--danger-border)' } : {}) }}>
 
       {/* ── Identity ── */}
       <div style={s.cardTop}>
         {/* Avatar */}
         <div style={{ ...s.avatar, background: pal.bg, border: `1.5px solid ${suspect ? 'rgba(248,113,113,0.35)' : pal.border}` }}>
-          <span style={{ ...s.avatarText, color: suspect ? '#f87171' : pal.text }}>
+          <span style={{ ...s.avatarText, color: suspect ? 'var(--danger)' : pal.text }}>
             {suspect ? <Robot size={18} /> : ini}
           </span>
         </div>
@@ -446,12 +453,12 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
             )}
 
             {/* View activity */}
-            <button onClick={() => onOpenPanel(m)} style={{ ...s.actionBtn, marginLeft: 'auto' }} title="Voir l'activité">
+            <button onClick={() => onOpenPanel(m)} className="jm-action-btn" style={{ ...s.actionBtn, marginLeft: 'auto' }} title="Voir l'activité">
               <Users size={13} />
             </button>
 
             {/* Full profile */}
-            <a href={`/dashboard/admin/membres/${m.id}`} style={s.actionBtn} title="Fiche complète">
+            <a href={`/dashboard/admin/membres/${m.id}`} className="jm-action-btn" style={s.actionBtn} title="Fiche complète">
               <ArrowSquareOut size={13} />
             </a>
 
@@ -460,6 +467,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
               <button
                 disabled={isPending}
                 onClick={onDelete}
+                className="jm-action-btn"
                 style={{ ...s.actionBtn, ...s.actionBtnDanger }}
                 title="Supprimer"
               >
@@ -494,10 +502,10 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
 
   const statTiles = details ? [
     { icon: <UsersFour size={14} />,    value: details.voyageurs,      label: 'Voyageurs',       color: '#93C5FD' },
-    { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: '#34D399' },
+    { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: 'var(--success-1)' },
     { icon: <BookmarkSimple size={14} />, value: details.favorites,    label: 'Gabarits favoris', color: 'var(--accent-text)' },
     { icon: <PencilSimple size={14} />, value: details.customizations, label: 'Gabarits perso',   color: '#C084FC' },
-    { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: '#f87171' },
+    { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: 'var(--danger)' },
     { icon: <Lightbulb size={14} />,     value: details.suggestions,   label: 'Suggestions',      color: '#FB923C' },
     { icon: <UsersFour size={14} />,    value: details.communityGroupsCount, label: 'Groupes FB',  color: '#60A5FA' },
     { icon: <MagnifyingGlass size={14} />, value: details.auditsCount,        label: 'Audits GBP',  color: '#A78BFA' },
@@ -608,7 +616,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                           <div style={{
                             display: 'flex', alignItems: 'center', gap: '10px',
                             padding: '10px 12px', borderRadius: '10px',
-                            background: 'rgba(96,165,250,0.06)',
+                            background: 'var(--info-bg)',
                             border: '1px solid rgba(96,165,250,0.18)',
                           }}>
                             <UsersFour size={14} color="#60A5FA" weight="fill" />
@@ -664,14 +672,14 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                           <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             Inscrit le {formatDate(uf.enrolled_at)}
                             {uf.progress === 100 && (
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#34D399', background: 'rgba(52,211,153,0.12)', padding: '1px 6px', borderRadius: '100px' }}>
+                              <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--success-1)', background: 'var(--success-bg)', padding: '1px 6px', borderRadius: '100px' }}>
                                 Terminée
                               </span>
                             )}
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <div style={{ flex: 1, height: '4px', background: 'var(--border)', borderRadius: '100px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? '#34D399' : 'var(--accent-text)', transition: 'width 0.3s' }} />
+                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? 'var(--success-1)' : 'var(--accent-text)', transition: 'width 0.3s' }} />
                             </div>
                             <span style={{ fontSize: '11px', color: 'var(--text-3)', width: '30px', textAlign: 'right' }}>{uf.progress}%</span>
                           </div>
@@ -692,7 +700,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
 // ── FeedbackPill ──────────────────────────────────────────────────────────────
 
 function FeedbackPill({ type, msg }: { type: 'ok'|'err'; msg: string }) {
-  const c = type === 'ok' ? '#34D399' : '#f87171'
+  const c = type === 'ok' ? 'var(--success-1)' : 'var(--danger)'
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 10px', borderRadius: '7px', fontSize: '12px', fontWeight: 500, color: c, background: `${c}14`, border: `1px solid ${c}28` }}>
       {type === 'ok' ? <CheckCircle size={12} weight="fill" /> : <XCircle size={12} weight="fill" />}
@@ -721,9 +729,9 @@ const s: Record<string, React.CSSProperties> = {
   statLabel: { fontSize: '12px', color: 'var(--text-2)' },
   deleteBotsBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)',
+    background: 'var(--danger-bg)', border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '9px', padding: '7px 13px',
-    color: '#f87171', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
+    color: 'var(--danger)', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
     fontFamily: 'var(--font-outfit), sans-serif',
   },
   exportBtn: {
@@ -792,8 +800,8 @@ const s: Record<string, React.CSSProperties> = {
   card: {
     display: 'flex', flexDirection: 'column', gap: '0',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '18px', overflow: 'hidden',
-    transition: 'box-shadow 0.2s, border-color 0.2s',
+    borderRadius: 'var(--r-xl)', overflow: 'hidden',
+    transition: 'box-shadow var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
   },
   cardTop: {
     display: 'flex', alignItems: 'flex-start', gap: '13px',
@@ -853,9 +861,11 @@ const s: Record<string, React.CSSProperties> = {
   },
   formChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
-    background: 'rgba(52,211,153,0.08)', color: '#34D399',
-    border: '1px solid rgba(52,211,153,0.2)', cursor: 'pointer',
+    fontSize: 'var(--t-xs)', fontWeight: 600, padding: '3px 9px',
+    borderRadius: 'var(--r-pill)',
+    background: 'var(--success-bg)', color: 'var(--success-1)',
+    border: '1px solid var(--success-border)', cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth)',
   },
   emptyChip: {
     fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic',
@@ -875,16 +885,17 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', outline: 'none', fontFamily: 'var(--font-outfit), sans-serif',
   },
   actionBtn: {
-    width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
+    width: '34px', height: '34px', borderRadius: 'var(--r-sm)', flexShrink: 0,
     background: 'var(--surface)', border: '1px solid var(--border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'var(--text-3)', transition: 'all 0.15s',
+    cursor: 'pointer', color: 'var(--text-3)',
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
     textDecoration: 'none',
   },
   actionBtnDanger: {
-    background: 'rgba(248,113,113,0.06)',
-    border: '1px solid rgba(248,113,113,0.18)',
-    color: '#f87171',
+    background: 'var(--danger-bg)',
+    border: '1px solid var(--danger-border)',
+    color: 'var(--danger)',
   },
 }
 

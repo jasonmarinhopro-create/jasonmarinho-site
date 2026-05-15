@@ -50,12 +50,12 @@ const CATEGORIES = [
   { value: 'checkout',     label: 'Check-out',      color: '#fb923c', bg: 'rgba(251,146,60,0.12)'  },
   { value: 'bienvenue',    label: 'Bienvenue',      color: '#fcd34d', bg: 'rgba(252,211,77,0.12)'  },
   { value: 'avis',         label: 'Avis',           color: '#c084fc', bg: 'rgba(192,132,252,0.12)' },
-  { value: 'probleme',     label: 'Problème',       color: '#f87171', bg: 'rgba(248,113,113,0.12)' },
+  { value: 'probleme',     label: 'Problème',       color: 'var(--danger)', bg: 'rgba(248,113,113,0.12)' },
   { value: 'extra',        label: 'Extra',          color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)'  },
   { value: 'upsell',       label: 'Upsell',         color: '#ffd56b', bg: 'rgba(255,213,107,0.12)' },
   { value: 'securite',     label: 'Sécurité',       color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
   { value: 'conciergerie', label: 'Conciergerie',   color: '#f472b6', bg: 'rgba(244,114,182,0.12)' },
-  { value: 'saisonnier',   label: 'Saisonnier',     color: '#fbbf24', bg: 'rgba(251,191,36,0.12)'  },
+  { value: 'saisonnier',   label: 'Saisonnier',     color: 'var(--warning)', bg: 'rgba(251,191,36,0.12)'  },
   { value: 'airbnb',       label: 'Airbnb',         color: '#ff6b72', bg: 'rgba(255,107,114,0.12)' },
   { value: 'facebook',     label: 'Groupe Facebook', color: '#818cf8', bg: 'rgba(129,140,248,0.12)' },
   { value: 'autre',        label: 'Autre',          color: '#64748b', bg: 'rgba(100,116,139,0.1)'  },
@@ -290,9 +290,9 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
           style={{
             display: 'flex', alignItems: 'center', gap: '7px',
             padding: '9px 16px', borderRadius: '10px', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
-            background:   showAdd ? 'rgba(248,113,113,0.08)' : 'rgba(255,213,107,0.1)',
+            background:   showAdd ? 'var(--danger-bg)' : 'rgba(255,213,107,0.1)',
             border:       showAdd ? '1px solid rgba(248,113,113,0.25)' : '1px solid rgba(255,213,107,0.2)',
-            color:        showAdd ? '#f87171' : 'var(--accent-text)',
+            color:        showAdd ? 'var(--danger)' : 'var(--accent-text)',
           }}
         >
           {showAdd ? <X size={14} /> : <Plus size={14} />}
@@ -306,9 +306,9 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
           display: 'flex', alignItems: 'center', gap: '8px',
           padding: '10px 14px', borderRadius: '10px', border: '1px solid',
           fontSize: '13px', marginBottom: '16px',
-          background:   feedback.type === 'ok' ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)',
+          background:   feedback.type === 'ok' ? 'rgba(74,222,128,0.08)' : 'var(--danger-bg)',
           borderColor:  feedback.type === 'ok' ? 'rgba(74,222,128,0.3)'  : 'rgba(248,113,113,0.3)',
-          color:        feedback.type === 'ok' ? '#4ade80' : '#f87171',
+          color:        feedback.type === 'ok' ? '#4ade80' : 'var(--danger)',
         }}>
           {feedback.type === 'ok' ? <Check size={14} /> : <X size={14} />}
           {feedback.msg}

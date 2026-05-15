@@ -142,7 +142,7 @@ export default function SOSModal({ open, onClose, plan }: Props) {
                   <div style={{
                     ...s.cardIcon,
                     background: sc.urgency === 'high' ? 'rgba(220,38,38,0.10)' : 'rgba(217,119,6,0.10)',
-                    color: sc.urgency === 'high' ? '#dc2626' : '#b45309',
+                    color: sc.urgency === 'high' ? 'var(--danger)' : '#b45309',
                   }}>
                     <Icon size={20} weight="bold" />
                   </div>
@@ -206,7 +206,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '10.5px', fontWeight: 700,
     letterSpacing: '0.6px', textTransform: 'uppercase' as const,
-    color: '#dc2626',
+    color: 'var(--danger)',
     background: 'rgba(220,38,38,0.10)',
     border: '1px solid rgba(220,38,38,0.25)',
     borderRadius: '999px',

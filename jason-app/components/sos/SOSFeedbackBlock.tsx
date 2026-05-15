@@ -271,7 +271,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '10px 12px', borderRadius: '8px',
     background: 'rgba(220,38,38,0.08)',
     border: '1px solid rgba(220,38,38,0.25)',
-    color: '#dc2626',
+    color: 'var(--danger)',
     fontSize: '12.5px',
   },
   formActions: {

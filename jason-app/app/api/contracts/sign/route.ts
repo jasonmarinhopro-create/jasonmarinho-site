@@ -276,7 +276,7 @@ export async function POST(request: NextRequest) {
           { label: 'Logement', value: escHtml(propertyLabel) },
           { label: 'Signé le', value: escHtml(signDate) },
           { label: 'Adresse IP', value: escHtml(ip) },
-        ], '#34D399')}
+        ], 'var(--success-1)')}
         ${stripeBlock}
         ${ibanEmailBlock}
         ${emailBtn(contractUrl, 'Accéder au contrat signé', 'green')}
@@ -301,7 +301,7 @@ export async function POST(request: NextRequest) {
           { label: 'Logement', value: escHtml(propertyLabel) },
           { label: 'Signé le', value: escHtml(signDate) },
           { label: 'Adresse IP', value: escHtml(ip) },
-        ], '#34D399')}
+        ], 'var(--success-1)')}
         ${hostPaymentsBlock}
         ${emailBtn(contractUrl, 'Voir le contrat signé', 'green')}
         ${emailBtn(dashboardUrl, 'Tableau de bord', 'secondary')}

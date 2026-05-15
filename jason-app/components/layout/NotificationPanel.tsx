@@ -22,7 +22,7 @@ type Tab = 'nouveautes' | 'cheznous'
 // hardcodé (#FFD56B). En mode clair le jaune est invisible sur fond blanc,
 // alors que --accent-text est calibré pour rester lisible dans les deux thèmes.
 const TAG_CONFIG: Record<ChangelogTag, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-  nouveau:      { label: 'Nouveau',       color: '#10b981',           bg: 'rgba(16,185,129,0.12)',  icon: <Sparkle size={11} weight="fill" /> },
+  nouveau:      { label: 'Nouveau',       color: 'var(--success-1)',           bg: 'rgba(16,185,129,0.12)',  icon: <Sparkle size={11} weight="fill" /> },
   amélioration: { label: 'Amélioration',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)',    icon: <ArrowUp  size={11} weight="bold" /> },
   correction:   { label: 'Correction',    color: '#2563eb',           bg: 'rgba(37,99,235,0.10)',   icon: <Wrench   size={11} weight="fill" /> },
   important:    { label: 'Important',     color: '#db2777',           bg: 'rgba(219,39,119,0.10)',  icon: <Star     size={11} weight="fill" /> },
@@ -287,7 +287,7 @@ const s: Record<string, React.CSSProperties> = {
   tabBadge: {
     fontSize: '10px', fontWeight: 700,
     padding: '1px 6px', borderRadius: '999px',
-    background: '#ef4444', color: '#fff',
+    background: 'var(--danger)', color: '#fff',
     minWidth: '16px', textAlign: 'center' as const,
     lineHeight: 1.4,
   },

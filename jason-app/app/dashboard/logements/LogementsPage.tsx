@@ -380,6 +380,30 @@ export default function LogementsPage({ logements: initial }: Props) {
 
   return (
     <div style={page}>
+      <style>{`
+        /* Card logement : hover lift + halo accent subtil sur l'icône */
+        .jm-logement-card:hover {
+          border-color: var(--border-2);
+          box-shadow: var(--shadow-md);
+          transform: translateY(-3px);
+        }
+        .jm-logement-card:hover [data-card-icon] {
+          background: var(--success-1);
+          color: #fff;
+          transform: scale(1.06);
+        }
+        /* Icon buttons (modifier, supprimer) */
+        .jm-logement-card .jm-icon-btn { opacity: 0.75; }
+        .jm-logement-card:hover .jm-icon-btn { opacity: 1; }
+        .jm-icon-btn:hover {
+          background: var(--surface) !important;
+          color: var(--text) !important;
+          border-color: var(--border-2) !important;
+          transform: translateY(-1px);
+        }
+        /* Stop propagation visuelle quand on click sur icon btn */
+        .jm-icon-btn:focus-visible { box-shadow: var(--ring) !important; }
+      `}</style>
       {/* Mode "from=detail" : on masque la liste pour ne montrer que la modale,
           ce qui évite la sensation d'être éjecté de la fiche détail. */}
       <div style={{ ...container, ...(fromDetail ? { visibility: 'hidden' as const, height: 0, overflow: 'hidden' as const } : {}) }}>
@@ -568,7 +592,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                       {l.actif === false ? (
                         <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>En pause</span>
                       ) : (
-                        <span style={{ ...chip, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.25)', color: '#10b981' }}>Actif</span>
+                        <span style={{ ...chip, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.25)', color: 'var(--success-1)' }}>Actif</span>
                       )}
                     </td>
                     <td style={tableTd}>
@@ -604,6 +628,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                 tabIndex={0}
                 onClick={() => router.push(`/dashboard/logements/${l.id}`)}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); router.push(`/dashboard/logements/${l.id}`) } }}
+                className="jm-logement-card"
                 style={{ ...card, opacity: l.actif === false ? 0.65 : 1, cursor: 'pointer' }}
               >
                 {/* Photo couverture */}
@@ -637,8 +662,8 @@ export default function LogementsPage({ logements: initial }: Props) {
                   </div>
                 ) : (
                   /* Placeholder coloré quand pas de photo */
-                  <div style={{ ...cardCover, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(52,211,153,0.06)', borderBottom: '1px solid var(--border)' }}>
-                    <House size={52} color="rgba(52,211,153,0.35)" weight="thin" />
+                  <div style={{ ...cardCover, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--success-bg)' }}>
+                    <House size={52} color="var(--success-1)" weight="thin" style={{ opacity: 0.55 }} />
                     <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
                       <button
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(l) }}
@@ -1222,7 +1247,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                         background: checked ? 'rgba(52,211,153,0.1)' : 'var(--surface)',
                         border: `1px solid ${checked ? 'rgba(52,211,153,0.35)' : 'var(--border)'}`,
                         fontSize: '13px', fontWeight: checked ? 600 : 400,
-                        color: checked ? '#34D399' : 'var(--text-2)',
+                        color: checked ? 'var(--success-1)' : 'var(--text-2)',
                         transition: 'all 0.15s', userSelect: 'none' as const,
                       }}>
                         <input
@@ -1295,7 +1320,7 @@ function dpeColor(letter: string): { bg: string; fg: string; border: string } {
     case 'C': return { bg: 'rgba(234,179,8,0.12)',  fg: '#ca8a04', border: 'rgba(234,179,8,0.30)' }
     case 'D': return { bg: 'rgba(245,158,11,0.12)', fg: '#d97706', border: 'rgba(245,158,11,0.30)' }
     case 'E': return { bg: 'rgba(249,115,22,0.12)', fg: '#ea580c', border: 'rgba(249,115,22,0.30)' }
-    case 'F': return { bg: 'rgba(239,68,68,0.12)',  fg: '#dc2626', border: 'rgba(239,68,68,0.30)' }
+    case 'F': return { bg: 'rgba(239,68,68,0.12)',  fg: 'var(--danger)', border: 'rgba(239,68,68,0.30)' }
     case 'G': return { bg: 'rgba(127,29,29,0.18)',  fg: '#991b1b', border: 'rgba(127,29,29,0.40)' }
     default:  return { bg: 'rgba(148,163,184,0.12)', fg: 'var(--text-muted)', border: 'rgba(148,163,184,0.25)' }
   }
@@ -1317,7 +1342,7 @@ function Toggle({ label: lbl, value, onChange }: { label: string; value: boolean
     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
       <input
         type="checkbox" checked={value} onChange={e => onChange(e.target.checked)}
-        style={{ width: '16px', height: '16px', accentColor: '#34D399' }}
+        style={{ width: '16px', height: '16px', accentColor: 'var(--success-1)' }}
       />
       <span style={{ fontSize: '14px', color: 'var(--text-2)' }}>{lbl}</span>
     </label>
@@ -1365,7 +1390,7 @@ const successBanner: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
   background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)',
   borderRadius: '10px', padding: '12px 16px', marginBottom: '20px',
-  fontSize: '13px', color: '#34D399', fontWeight: 500,
+  fontSize: '13px', color: 'var(--success-1)', fontWeight: 500,
 }
 
 const emptyState: React.CSSProperties = {
@@ -1377,7 +1402,7 @@ const emptyState: React.CSSProperties = {
 
 const emptyIcon: React.CSSProperties = {
   width: '64px', height: '64px',
-  background: 'rgba(52,211,153,0.08)',
+  background: 'var(--success-bg)',
   border: '1px solid rgba(52,211,153,0.15)',
   borderRadius: '50%',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -1397,70 +1422,93 @@ const emptyText: React.CSSProperties = {
 const grid: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
-  gap: '20px',
+  gap: 'var(--s-5)',
 }
 
 const card: React.CSSProperties = {
   background: 'var(--surface)',
   border: '1px solid var(--border)',
-  borderRadius: '20px', padding: '0',
-  display: 'flex', flexDirection: 'column',
+  borderRadius: 'var(--r-xl)',
+  padding: '0',
+  display: 'flex',
+  flexDirection: 'column',
   overflow: 'hidden',
+  transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
 }
 
 const cardBody: React.CSSProperties = {
-  padding: '20px 22px 22px',
-  display: 'flex', flexDirection: 'column', gap: '10px',
+  padding: 'var(--s-5) var(--s-5) var(--s-5)',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 'var(--s-3)',
 }
 
 const cardTop: React.CSSProperties = {
-  display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-  gap: '8px',
+  display: 'flex',
+  alignItems: 'flex-start',
+  justifyContent: 'space-between',
+  gap: 'var(--s-2)',
 }
 
 const cardIcon: React.CSSProperties = {
-  width: '52px', height: '52px',
-  background: 'rgba(52,211,153,0.08)',
-  border: '1px solid rgba(52,211,153,0.15)',
-  borderRadius: '14px',
-  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  width: '54px',
+  height: '54px',
+  background: 'var(--success-bg)',
+  border: '1px solid var(--success-border)',
+  borderRadius: 'var(--r-lg)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   flexShrink: 0,
+  color: 'var(--success-1)',
+  transition: 'transform var(--d-base) var(--ease-spring), background var(--d-base) var(--ease-smooth)',
 }
 
 const cardActions: React.CSSProperties = {
-  display: 'flex', gap: '6px',
+  display: 'flex',
+  gap: 'var(--s-1)',
 }
 
 const iconBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-  width: '30px', height: '30px',
+  width: '32px', height: '32px',
   background: 'var(--surface-2)', border: '1px solid var(--border)',
-  borderRadius: '8px', cursor: 'pointer',
-  color: 'var(--text-2)', transition: 'all 0.15s',
+  borderRadius: 'var(--r-sm)', cursor: 'pointer',
+  color: 'var(--text-2)',
+  transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
 }
 
 const cardName: React.CSSProperties = {
   fontFamily: 'var(--font-fraunces), Georgia, serif',
-  fontSize: '20px', fontWeight: 400, color: 'var(--text)', margin: 0, lineHeight: 1.3,
+  fontSize: 'var(--t-xl)', fontWeight: 400,
+  color: 'var(--text)', margin: 0,
+  lineHeight: 'var(--lh-tight)',
+  letterSpacing: 'var(--ls-tight)',
 }
 
 const cardAddress: React.CSSProperties = {
-  fontSize: '13px', color: 'var(--text-2)', margin: 0, lineHeight: 1.5,
+  fontSize: 'var(--t-sm)', color: 'var(--text-2)', margin: 0,
+  lineHeight: 'var(--lh-snug)',
 }
 
 const cardMeta: React.CSSProperties = {
-  display: 'flex', gap: '6px', flexWrap: 'wrap' as const,
+  display: 'flex', gap: 'var(--s-2)', flexWrap: 'wrap' as const,
 }
 
 const chip: React.CSSProperties = {
   display: 'inline-block',
-  background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.15)',
-  borderRadius: '6px', padding: '3px 8px',
-  fontSize: '11px', color: '#34D399', fontWeight: 500,
+  background: 'var(--success-bg)',
+  border: '1px solid var(--success-border)',
+  borderRadius: 'var(--r-sm)',
+  padding: '3px 9px',
+  fontSize: 'var(--t-xs)',
+  color: 'var(--success-1)',
+  fontWeight: 600,
 }
 
 const cardDesc: React.CSSProperties = {
-  fontSize: '12px', color: 'var(--text-3)', margin: 0, lineHeight: 1.5,
+  fontSize: 'var(--t-xs)', color: 'var(--text-3)', margin: 0,
+  lineHeight: 'var(--lh-snug)',
 }
 
 const deleteBox: React.CSSProperties = {
@@ -1473,7 +1521,7 @@ const deleteBox: React.CSSProperties = {
 const deleteConfirmBtn: React.CSSProperties = {
   padding: '6px 14px', borderRadius: '8px',
   background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
-  color: '#ef4444', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+  color: 'var(--danger)', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
 }
 
 const cancelBtn: React.CSSProperties = {
@@ -1506,7 +1554,7 @@ const modalHeader: React.CSSProperties = {
 
 const modalTag: React.CSSProperties = {
   fontSize: '11px', fontWeight: 600, letterSpacing: '1.2px',
-  textTransform: 'uppercase', color: '#34D399', margin: '0 0 4px',
+  textTransform: 'uppercase', color: 'var(--success-1)', margin: '0 0 4px',
 }
 
 const modalTitle: React.CSSProperties = {
@@ -1552,7 +1600,7 @@ const input: React.CSSProperties = {
 
 const errorBox: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
-  fontSize: '13px', color: '#ef4444',
+  fontSize: '13px', color: 'var(--danger)',
   background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
   borderRadius: '8px', padding: '10px 14px',
 }
@@ -1564,7 +1612,7 @@ const ghostBtn: React.CSSProperties = {
 
 const saveBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
-  background: '#34D399', color: '#0a1a14',
+  background: 'var(--success-1)', color: '#0a1a14',
   border: 'none', borderRadius: '12px',
   padding: '10px 20px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
 }
@@ -1816,10 +1864,11 @@ const proprietaireText: React.CSSProperties = {
 
 const cardCover: React.CSSProperties = {
   position: 'relative' as const,
-  height: '200px',
+  height: '210px',
   overflow: 'hidden' as const,
   background: 'var(--bg-2)',
   flexShrink: 0,
+  borderBottom: '1px solid var(--border)',
 }
 
 const cardCoverImg: React.CSSProperties = {
@@ -1848,7 +1897,7 @@ const typeChip: React.CSSProperties = {
 
 const starChip: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '1px',
-  background: 'rgba(245,158,11,0.10)', color: '#d97706',
+  background: 'var(--warning-bg)', color: '#d97706',
   border: '1px solid rgba(245,158,11,0.25)',
   borderRadius: '6px', padding: '3px 6px',
 }
@@ -1866,7 +1915,7 @@ const tarifRow: React.CSSProperties = {
 
 const tarifChip: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '3px',
-  background: 'rgba(16,185,129,0.08)', color: '#10b981',
+  background: 'rgba(16,185,129,0.08)', color: 'var(--success-1)',
   border: '1px solid rgba(16,185,129,0.20)',
   borderRadius: '6px', padding: '3px 8px',
   fontSize: '11px', fontWeight: 500,

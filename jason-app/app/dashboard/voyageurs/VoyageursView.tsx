@@ -246,10 +246,10 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
           </div>
           <div style={s.statCard}>
             <span style={{ ...s.statIcon, background: globalStats.signales > 0 ? 'rgba(239,68,68,0.10)' : 'var(--surface-2)' }}>
-              <ShieldCheck size={14} weight="fill" color={globalStats.signales > 0 ? '#ef4444' : 'var(--text-muted)'} />
+              <ShieldCheck size={14} weight="fill" color={globalStats.signales > 0 ? 'var(--danger)' : 'var(--text-muted)'} />
             </span>
             <div>
-              <div style={{ ...s.globalStatValue, color: globalStats.signales > 0 ? '#ef4444' : 'var(--text)' }}>{globalStats.signales}</div>
+              <div style={{ ...s.globalStatValue, color: globalStats.signales > 0 ? 'var(--danger)' : 'var(--text)' }}>{globalStats.signales}</div>
               <div style={s.globalStatLabel}>Signalé{globalStats.signales > 1 ? 's' : ''} / bloqué{globalStats.signales > 1 ? 's' : ''}</div>
             </div>
           </div>
@@ -412,12 +412,12 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                           </span>
                         )}
                         {!v.is_flagged && !v.bloque && fidele && (
-                          <span style={{ ...s.flagBadge, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.30)', color: '#10b981' }}>
+                          <span style={{ ...s.flagBadge, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.30)', color: 'var(--success-1)' }}>
                             Fidèle
                           </span>
                         )}
                         {!v.is_flagged && !v.bloque && !fidele && recurrent && (
-                          <span style={{ ...s.flagBadge, background: 'rgba(96,165,250,0.10)', borderColor: 'rgba(96,165,250,0.30)', color: '#60a5fa' }}>
+                          <span style={{ ...s.flagBadge, background: 'rgba(96,165,250,0.10)', borderColor: 'rgba(96,165,250,0.30)', color: 'var(--info)' }}>
                             Récurrent
                           </span>
                         )}
@@ -435,7 +435,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                       </div>
                       {ca > 0 && (
                         <div style={s.tileStat}>
-                          <span style={{ ...s.tileStatVal, color: '#10b981' }}>{ca.toLocaleString('fr-FR')} €</span>
+                          <span style={{ ...s.tileStatVal, color: 'var(--success-1)' }}>{ca.toLocaleString('fr-FR')} €</span>
                           <span style={s.tileStatLabel}>CA</span>
                         </div>
                       )}
@@ -500,11 +500,11 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                               Bloqué
                             </span>
                           ) : v.sejours.length >= 4 ? (
-                            <span style={{ ...s.flagBadge, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.30)', color: '#10b981' }}>
+                            <span style={{ ...s.flagBadge, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.30)', color: 'var(--success-1)' }}>
                               Fidèle
                             </span>
                           ) : v.sejours.length >= 2 ? (
-                            <span style={{ ...s.flagBadge, background: 'rgba(96,165,250,0.10)', borderColor: 'rgba(96,165,250,0.30)', color: '#60a5fa' }}>
+                            <span style={{ ...s.flagBadge, background: 'rgba(96,165,250,0.10)', borderColor: 'rgba(96,165,250,0.30)', color: 'var(--info)' }}>
                               Récurrent
                             </span>
                           ) : <span style={{ color: 'var(--text-muted)' }}>Nouveau</span>}
@@ -728,7 +728,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                     <Warning size={18} weight="fill" color="#ef4444" />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 700, color: '#ef4444', marginBottom: '4px' }}>
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--danger)', marginBottom: '4px' }}>
                         ⚠️ Voyageur signalé par la communauté
                       </div>
                       <p style={{ fontSize: '12.5px', color: 'var(--text-2)', margin: 0, lineHeight: 1.5 }}>
@@ -750,7 +750,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
                     <button
                       type="button"
                       onClick={() => { setAllowDespiteSignal(true); setSignaleAlert(null); document.querySelector('form')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })) }}
-                      style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 600, background: 'rgba(239,68,68,0.10)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.30)', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                      style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 600, background: 'rgba(239,68,68,0.10)', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.30)', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
                     >
                       Ajouter quand même
                     </button>
@@ -902,7 +902,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   flagBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    background: 'rgba(239,68,68,0.12)', color: '#ef4444',
+    background: 'rgba(239,68,68,0.12)', color: 'var(--danger)',
     border: '1px solid rgba(239,68,68,0.2)',
     borderRadius: '100px', padding: '2px 7px',
     fontSize: '11px', fontWeight: 600,
@@ -967,7 +967,7 @@ const s: Record<string, React.CSSProperties> = {
     resize: 'vertical', fontFamily: 'inherit',
     flex: 'unset', width: '100%', boxSizing: 'border-box',
   },
-  error: { fontSize: '13px', color: '#ef4444', margin: 0 },
+  error: { fontSize: '13px', color: 'var(--danger)', margin: 0 },
   formActions: { display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '4px' },
 
   // ─── Phase 2, stats globales, filtres, vue tableau ─────────────

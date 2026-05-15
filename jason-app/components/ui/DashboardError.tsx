@@ -47,7 +47,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   iconWrap: {
     width: '48px', height: '48px', borderRadius: '14px',
-    background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.18)',
+    background: 'var(--danger-bg)', border: '1px solid rgba(248,113,113,0.18)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     marginBottom: '4px',
   },

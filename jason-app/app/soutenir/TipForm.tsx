@@ -108,6 +108,6 @@ const s: Record<string, React.CSSProperties> = {
     boxShadow: '0 8px 32px rgba(255,213,107,0.25)', transition: 'all .2s',
   },
   ctaDisabled: { opacity: 0.35, cursor: 'not-allowed', boxShadow: 'none' },
-  err:         { fontSize: '13px', color: '#f87171', margin: 0, textAlign: 'center' },
+  err:         { fontSize: '13px', color: 'var(--danger)', margin: 0, textAlign: 'center' },
   legal:       { fontSize: '11px', color: 'rgba(255,255,255,0.18)', textAlign: 'center', margin: 0, lineHeight: 1.6 },
 }

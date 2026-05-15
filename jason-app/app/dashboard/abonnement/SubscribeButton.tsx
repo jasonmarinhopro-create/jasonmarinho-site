@@ -38,14 +38,14 @@ export default function SubscribeButton({ priceId, label = 'Passer en Standard',
           : <>{label} <ArrowRight size={14} weight="bold" /></>
         }
       </button>
-      {error && <p style={{ fontSize: '12px', color: '#f87171', margin: 0 }}>{error}</p>}
+      {error && <p style={{ fontSize: '12px', color: 'var(--danger)', margin: 0 }}>{error}</p>}
     </div>
   )
 }
 
 const btnStyle: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-  background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.25)',
-  color: '#34D399', fontSize: '13px', fontWeight: 600, padding: '11px 18px',
+  background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.25)',
+  color: 'var(--success-1)', fontSize: '13px', fontWeight: 600, padding: '11px 18px',
   borderRadius: '10px', cursor: 'pointer', transition: 'all .2s', fontFamily: 'inherit',
 }

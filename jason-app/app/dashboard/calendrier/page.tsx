@@ -163,7 +163,7 @@ export default async function CalendrierPage() {
     start_date: e.start_date, end_date: e.end_date,
     start_time: e.start_time, end_time: e.end_time,
     description: e.description,
-    feed_color: (e.ical_feeds as any)?.color ?? '#60a5fa',
+    feed_color: (e.ical_feeds as any)?.color ?? 'var(--info)',
   }))
 
   const voyageurOptions: VoyageurOption[] = (voyageursRaw ?? []).map((v: any) => ({

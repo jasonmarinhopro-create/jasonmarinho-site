@@ -1411,7 +1411,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   activityDotReply: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#34d399', flexShrink: 0, marginTop: '6px',
+    background: 'var(--success-1)', flexShrink: 0, marginTop: '6px',
     boxShadow: '0 0 0 3px rgba(52,211,153,0.18)',
   },
   activityDotPost: {
@@ -1832,7 +1832,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   formField: { display: 'flex', flexDirection: 'column', gap: '6px' },
   label: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' },
-  required: { color: '#dc2626', fontWeight: 700, marginLeft: '2px' },
+  required: { color: 'var(--danger)', fontWeight: 700, marginLeft: '2px' },
   helper: { fontSize: '11px', color: 'var(--text-muted)', margin: 0 },
   helperRequired: {
     fontSize: '12px', color: '#b45309',
@@ -1937,7 +1937,7 @@ const s: Record<string, React.CSSProperties> = {
     resize: 'vertical' as const, minHeight: '60px',
   },
   inlineReplyError: {
-    margin: 0, fontSize: '12px', color: '#dc2626',
+    margin: 0, fontSize: '12px', color: 'var(--danger)',
   },
   inlineReplyActions: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px',
@@ -1996,7 +1996,7 @@ const s: Record<string, React.CSSProperties> = {
   resolvedChip: {
     display: 'inline-flex', alignItems: 'center', gap: '3px',
     fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase' as const,
-    color: '#10b981',
+    color: 'var(--success-1)',
     background: 'rgba(16,185,129,0.10)',
     border: '1px solid rgba(16,185,129,0.25)',
     padding: '2px 7px', borderRadius: '999px',

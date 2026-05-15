@@ -153,7 +153,7 @@ const styles: Record<string, React.CSSProperties> = {
   field: { display: 'flex', flexDirection: 'column', gap: '7px' },
   label: { fontSize: '13px', fontWeight: 500, color: 'var(--text-2)' },
   error: {
-    fontSize: '13px', color: '#F87171',
+    fontSize: '13px', color: 'var(--danger)',
     background: 'rgba(248,113,113,0.1)',
     border: '1px solid rgba(248,113,113,0.2)',
     borderRadius: '8px', padding: '10px 14px',

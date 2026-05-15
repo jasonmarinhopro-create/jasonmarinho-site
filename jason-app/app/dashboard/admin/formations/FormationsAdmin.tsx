@@ -28,7 +28,7 @@ const LEVEL_LABELS: Record<string, string> = {
 const LEVEL_COLORS: Record<string, { bg: string; color: string }> = {
   debutant:     { bg: 'rgba(99,214,131,0.1)',  color: '#63D683' },
   intermediaire:{ bg: 'rgba(255,213,107,0.1)', color: 'var(--accent-text)' },
-  avance:       { bg: 'rgba(239,68,68,0.1)',   color: '#f87171' },
+  avance:       { bg: 'rgba(239,68,68,0.1)',   color: 'var(--danger)' },
 }
 
 type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
@@ -185,7 +185,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
           padding: '10px 14px', borderRadius: '10px', border: '1px solid',
           background: feedback.type === 'ok' ? 'rgba(99,214,131,0.12)' : 'rgba(239,68,68,0.12)',
           borderColor: feedback.type === 'ok' ? 'rgba(99,214,131,0.25)' : 'rgba(239,68,68,0.25)',
-          color: feedback.type === 'ok' ? '#63D683' : '#f87171',
+          color: feedback.type === 'ok' ? '#63D683' : 'var(--danger)',
           fontSize: '13px', marginBottom: '16px',
         }}>
           {feedback.msg}

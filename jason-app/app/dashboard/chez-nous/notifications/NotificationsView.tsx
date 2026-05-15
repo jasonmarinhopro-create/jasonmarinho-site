@@ -159,9 +159,9 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
 function notifVerbForType(type: string): { icon: React.ReactNode; text: React.ReactNode; color: string } {
   switch (type) {
     case 'mention':
-      return { icon: <At size={11} weight="bold" />, text: <>t'a mentionné</>, color: '#f59e0b' }
+      return { icon: <At size={11} weight="bold" />, text: <>t'a mentionné</>, color: 'var(--warning)' }
     case 'accepted':
-      return { icon: <CheckCircle size={11} weight="fill" />, text: <>a accepté ta réponse</>, color: '#10b981' }
+      return { icon: <CheckCircle size={11} weight="fill" />, text: <>a accepté ta réponse</>, color: 'var(--success-1)' }
     case 'reply':
     default:
       return { icon: <ChatCircleDots size={11} weight="fill" />, text: <>a répondu à ton sujet</>, color: 'var(--accent-text)' }
