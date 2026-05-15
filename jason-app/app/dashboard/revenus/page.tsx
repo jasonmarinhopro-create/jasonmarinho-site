@@ -3,6 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import RevenusView from './RevenusView'
 import PlanGate from '@/components/ui/PlanGate'
 
+// Force le rendu dynamique pour que toute saisie (séjour, charge,
+// commission, etc.) apparaisse immédiatement sans cache.
+export const dynamic = 'force-dynamic'
+
 export default async function RevenusPage() {
   const profile = await getProfile()
   const plan = profile?.plan ?? 'decouverte'
