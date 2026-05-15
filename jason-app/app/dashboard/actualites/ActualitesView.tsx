@@ -199,7 +199,7 @@ export default function ActualitesView({
           ...s.card,
           ...(isAuthenticated && !isRead ? s.cardUnread : {}),
         }}
-        className="glass-card"
+        className="glass-card actu-card"
       >
         {/* Top: catégorie + date + non-lu */}
         <div style={s.cardMeta}>
@@ -497,10 +497,16 @@ export default function ActualitesView({
         .actu-source-link {
           color: var(--text-3) !important;
           text-decoration: none;
-          transition: color 0.15s;
+          transition: color var(--d-base) var(--ease-smooth);
         }
         .actu-source-link:hover {
           color: var(--text-2) !important;
+        }
+        /* Card actualité : hover lift */
+        .actu-card:hover {
+          border-color: var(--border-2) !important;
+          box-shadow: var(--shadow-md);
+          transform: translateY(-2px);
         }
         .actu-filter-scroll::-webkit-scrollbar { display: none; }
         .actu-filter-scroll {
@@ -642,22 +648,41 @@ const s: Record<string, React.CSSProperties> = {
   filterCount: { fontSize: '10px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px', lineHeight: '1.4' },
 
   // Cards
-  card: { padding: '22px', borderRadius: '16px', display: 'flex', flexDirection: 'column' as const, gap: '12px', position: 'relative' as const },
+  card: {
+    padding: 'var(--s-6)',
+    borderRadius: 'var(--r-xl)',
+    display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-3)',
+    position: 'relative' as const,
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
+  },
   cardUnread: {
     background: 'var(--surface)',
-    boxShadow: 'inset 3px 0 0 #dc2626',
+    boxShadow: 'inset 3px 0 0 var(--danger)',
   },
-  cardMeta: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' as const },
-  catBadge: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const, padding: '3px 8px', borderRadius: '100px', border: '1px solid', whiteSpace: 'nowrap' as const },
-  dateLabel: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: 300 },
-  cardTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.4, margin: 0 },
-  cardSummary: { fontSize: '13px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, margin: 0 },
+  cardMeta: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--s-2)', flexWrap: 'wrap' as const },
+  catBadge: {
+    fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const,
+    padding: '3px 9px', borderRadius: 'var(--r-pill)',
+    border: '1px solid', whiteSpace: 'nowrap' as const,
+  },
+  dateLabel: { fontSize: 'var(--t-xs)', color: 'var(--text-muted)', fontWeight: 500 },
+  cardTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'var(--t-lg)',
+    fontWeight: 400, color: 'var(--text)',
+    lineHeight: 'var(--lh-snug)', margin: 0,
+    letterSpacing: 'var(--ls-snug)',
+  },
+  cardSummary: {
+    fontSize: 'var(--t-sm)', fontWeight: 400,
+    color: 'var(--text-2)', lineHeight: 'var(--lh-relax)', margin: 0,
+  },
   cardFooter: {
-    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const,
-    paddingTop: '8px', borderTop: '1px solid var(--border)', marginTop: '4px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-3)', flexWrap: 'wrap' as const,
+    paddingTop: 'var(--s-2)', borderTop: '1px solid var(--border)', marginTop: 'var(--s-1)',
   },
-  cardActions: { display: 'flex', alignItems: 'center', gap: '6px', marginLeft: 'auto', flexWrap: 'wrap' as const },
-  readTime: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--text-muted)' },
+  cardActions: { display: 'flex', alignItems: 'center', gap: 'var(--s-1)', marginLeft: 'auto', flexWrap: 'wrap' as const },
+  readTime: { display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)', fontSize: 'var(--t-xs)', color: 'var(--text-muted)' },
 
   // Pinned
   pinnedBadge: {
