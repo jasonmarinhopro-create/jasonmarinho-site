@@ -19,20 +19,21 @@ function fmtPct(n: number): string {
 
 function FiscalLCD() {
   const [ca, setCa] = useState(30000)
-  // 'non_classe' = meublé tourisme non classé (30 % / 15 000 €) post-loi Le Meur
-  // 'classe'     = meublé tourisme classé Atout France (50 % / 77 700 €) post-loi Le Meur
-  // 'cdh'        = chambres d'hôtes : régime BIC para-hôtelier distinct (71 % / 188 700 €)
-  //                conservé par loi Le Meur car activité commerciale para-hôtelière.
+  // 'non_classe' = meublé tourisme non classé : 30 % / 15 000 € (loi Le Meur 2025+)
+  // 'classe'     = meublé tourisme classé Atout France : 50 % / 77 700 € (loi Le Meur 2025+)
+  // 'cdh'        = chambres d'hôtes : 50 % / 77 700 € depuis la décision CE du 16/09/2025
+  //                qui a confirmé l'alignement sur le régime des meublés classés
+  //                (CGI art. 50-0, 2°). L'ancien régime 71 % / 188 700 € n'est plus
+  //                applicable.
   const [regime, setRegime] = useState<'non_classe' | 'classe' | 'cdh'>('non_classe')
   const [autresRevenus, setAutresRevenus] = useState(45000)
 
   const result = useMemo(() => {
-    // Loi Le Meur (n° 2024-1039 du 19 nov 2024), applicable revenus 2025+
-    const config = regime === 'cdh'
-      ? { plafond: 188700, tauxAbattement: 0.71 }
-      : regime === 'classe'
-        ? { plafond: 77700,  tauxAbattement: 0.50 }
-        : { plafond: 15000,  tauxAbattement: 0.30 }
+    // Loi Le Meur (n° 2024-1039 du 19 nov 2024), revenus 2025+
+    // Confirmation : décision Conseil d'État 16/09/2025 pour les chambres d'hôtes
+    const config = regime === 'non_classe'
+      ? { plafond: 15000, tauxAbattement: 0.30 }
+      : { plafond: 77700, tauxAbattement: 0.50 } // classé OU chambres d'hôtes : même régime
     const sousPlafond = ca <= config.plafond
     const baseImposable = sousPlafond ? ca * (1 - config.tauxAbattement) : ca
     // Économie marginale si passage non classé → classé (= 50 %−30 % = 20 pts)
@@ -90,8 +91,8 @@ function FiscalLCD() {
           </div>
           <div style={s.helper}>
             Abattement {result.tauxAbattement * 100} % · plafond {fmtEur(result.plafond)}
-            {regime === 'cdh' && <> · régime BIC para-hôtelier</>}
-            {regime !== 'cdh' && <> · post-loi Le Meur (2025+)</>}
+            {regime === 'cdh' && <> · CE 16/09/2025</>}
+            {regime !== 'cdh' && <> · loi Le Meur 2025+</>}
           </div>
         </div>
       </div>
@@ -129,14 +130,21 @@ function FiscalLCD() {
         )}
         {regime === 'cdh' && ca > 0 && (
           <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'rgba(255,213,107,0.06)', borderColor: 'rgba(255,213,107,0.25)' }}>
-            <div style={s.resultLabel}>Spécificité chambres d&apos;hôtes</div>
+            <div style={s.resultLabel}>Bon à savoir, chambres d&apos;hôtes</div>
             <div style={{ ...s.resultValue, color: 'var(--accent-text)', fontSize: '15px', fontFamily: 'inherit', fontWeight: 600 }}>
-              Régime BIC para-hôtelier conservé
+              Régime aligné sur les meublés classés
             </div>
             <div style={s.resultHint}>
-              Les chambres d&apos;hôtes ne sont pas concernées par la baisse de la loi Le Meur :
-              abattement maintenu à 71 % et plafond à 188 700 € (régime ventes/prestations de logement).
-              Limite légale : 5 chambres et 15 voyageurs simultanés (art. L.324-3 Code du tourisme).
+              Depuis la <strong>décision du Conseil d&apos;État du 16 septembre 2025</strong>, les chambres
+              d&apos;hôtes relèvent du 2° de l&apos;article 50-0 du CGI : abattement de 50 % et plafond
+              de 77 700 € (mêmes paramètres que les meublés de tourisme classés).
+              L&apos;ancien régime à 71 % d&apos;abattement n&apos;est plus applicable.
+              <br />Limite légale d&apos;activité : 5 chambres et 15 voyageurs simultanés
+              (art. L.324-3 du Code du tourisme).
+              {ca > 50000 && (
+                <><br /><strong style={{ color: '#f59e0b' }}>⚠️ Si tes charges réelles dépassent 50 % du CA,
+                  le régime réel sera probablement plus avantageux que le micro-BIC.</strong></>
+              )}
             </div>
           </div>
         )}
