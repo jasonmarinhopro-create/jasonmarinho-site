@@ -266,12 +266,6 @@ export default function ProfilForm({
 
   return (
     <>
-      <style>{`
-        /* Profil cards : hover state subtil pour signaler interactivité */
-        .jm-profil-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
-        .jm-profil-edit-btn:hover { background: var(--surface-2); border-color: var(--border-2); color: var(--text); }
-        .jm-profil-cancel-btn:hover { color: var(--text-2); }
-      `}</style>
       {/* ── Carte 1 : Identité ─────────────────────────────────────────── */}
       <SectionCard
         icon={<IdentificationCard size={20} weight="fill" />}

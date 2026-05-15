@@ -749,6 +749,11 @@ em { font-style: italic; color: var(--accent); }
 }
 .kpi-hover:hover [data-kpi-icon] { transform: scale(1.06); }
 
+/* Profil cards : hover state subtil pour signaler interactivité */
+.jm-profil-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+.jm-profil-edit-btn:hover { background: var(--surface-2); border-color: var(--border-2); color: var(--text); }
+.jm-profil-cancel-btn:hover { color: var(--text-2); }
+
 /* Sidebar nav-item hover (non actif) */
 .jm-nav-item:not(.jm-nav-item--active):hover {
   background: var(--surface);
