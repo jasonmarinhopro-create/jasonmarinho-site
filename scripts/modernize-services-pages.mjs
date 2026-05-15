@@ -58,12 +58,22 @@ const REPLACEMENTS = [
 ]
 
 const TARGETS = [
+  // 17 pages services
   ...fs.readdirSync(path.join(ROOT, 'services'))
     .filter(d => fs.existsSync(path.join(ROOT, 'services', d, 'index.html')))
     .map(d => path.join(ROOT, 'services', d, 'index.html')),
+  // 4 pages pour-qui
   ...fs.readdirSync(path.join(ROOT, 'pour-qui'))
     .filter(d => fs.existsSync(path.join(ROOT, 'pour-qui', d, 'index.html')))
     .map(d => path.join(ROOT, 'pour-qui', d, 'index.html')),
+  // 139 articles blog
+  ...fs.readdirSync(path.join(ROOT, 'blog'))
+    .filter(d => fs.existsSync(path.join(ROOT, 'blog', d, 'index.html')))
+    .map(d => path.join(ROOT, 'blog', d, 'index.html')),
+  // Pages légales root
+  ...['cgvu.html', 'mentions-legales.html', 'politique-de-confidentialite.html']
+    .filter(f => fs.existsSync(path.join(ROOT, f)))
+    .map(f => path.join(ROOT, f)),
 ]
 
 let totalReplacements = 0
