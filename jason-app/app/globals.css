@@ -400,13 +400,24 @@ em { font-style: italic; color: var(--accent); }
 .glass-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--r-xl);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--card-shadow);
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  transition: border-color var(--d-base) var(--ease-smooth),
+              background var(--d-base) var(--ease-smooth),
+              box-shadow var(--d-base) var(--ease-smooth),
+              transform var(--d-base) var(--ease-smooth);
 }
-.glass-card:hover { background: var(--surface-2); border-color: var(--border-2); }
+.glass-card:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+/* Lift l'icône au passage de la card */
+.glass-card:hover [data-card-icon],
+.glass-card:hover .card-icon { transform: scale(1.06); }
 
 /* ═════════════════════════════════════════════════════════════════════
  * BUTTON SYSTEM — variants réutilisables (.btn-primary, .btn-ghost,
