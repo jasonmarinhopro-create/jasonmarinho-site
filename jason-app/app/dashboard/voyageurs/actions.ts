@@ -39,6 +39,8 @@ export type SejourData = {
   contrat_lien?: string | null
   /** Platform that signed the contract: null = signed via Jason */
   contrat_plateforme?: string | null
+  /** Commission prélevée par la plateforme (€). null = non renseigné. */
+  commission_montant?: number | null
 }
 
 async function getSession() {

@@ -9,6 +9,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel } from './actions'
 import ImportCSVModal from './ImportCSVModal'
+import { PLATFORMS } from '@/lib/platforms'
 
 // ── types ────────────────────────────────────────────────────────────────────
 
@@ -34,6 +35,10 @@ interface RevenusEntry {
   mode_paiement: string
   type_paiement: string | null
   description: string | null
+  // Présent uniquement pour les entries dérivées d'un séjour : permet de
+  // calculer les commissions et le revenu net par canal.
+  commission_montant?: number
+  contrat_plateforme?: string | null
 }
 
 interface ChargeEntry {
@@ -293,6 +298,48 @@ export default function RevenusView({
       .sort((a, b) => b.total - a.total)
     return { cesMois, cetteAnnee, byCategorySorted }
   }, [charges, thisMonth, thisYear])
+
+  // ── Répartition par canal (séjours uniquement) ────────────────────────
+  // Agrège les revenus issus de séjours par plateforme YTD, calcule les
+  // commissions totales et le net par canal. Met en avant le canal direct.
+  const channelStatsYTD = useMemo(() => {
+    const byChannel: Record<string, { brut: number; commission: number; net: number; count: number }> = {}
+    let commissionTotalYTD = 0
+    let bruteYTD = 0
+    let directBruteYTD = 0
+
+    entries.forEach(e => {
+      if (e.mode_paiement !== 'sejour') return
+      const d = new Date(e.date_paiement)
+      if (d.getFullYear() !== thisYear) return
+      const channel = e.contrat_plateforme ?? 'direct'
+      const isDirect = !e.contrat_plateforme || e.contrat_plateforme === 'driing' || e.contrat_plateforme === 'direct'
+      const commission = e.commission_montant ?? 0
+      const net = e.montant - commission
+
+      if (!byChannel[channel]) byChannel[channel] = { brut: 0, commission: 0, net: 0, count: 0 }
+      byChannel[channel].brut += e.montant
+      byChannel[channel].commission += commission
+      byChannel[channel].net += net
+      byChannel[channel].count += 1
+
+      commissionTotalYTD += commission
+      bruteYTD += e.montant
+      if (isDirect) directBruteYTD += e.montant
+    })
+
+    const sorted = Object.entries(byChannel)
+      .map(([key, val]) => ({ key, ...val }))
+      .sort((a, b) => b.brut - a.brut)
+
+    return {
+      sorted,
+      commissionTotalYTD,
+      bruteYTD,
+      directBruteYTD,
+      directPct: bruteYTD > 0 ? (directBruteYTD / bruteYTD) * 100 : 0,
+    }
+  }, [entries, thisYear])
 
   // ── KPIs ────────────────────────────────────────────────────────────────
 
@@ -947,6 +994,88 @@ export default function RevenusView({
           }
         </section>
       </div>
+
+      {/* ── Répartition par canal (séjours) ─────────────────────── */}
+      {channelStatsYTD.bruteYTD > 0 && (
+        <section style={s.card}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' as const, gap: '12px', marginBottom: '14px' }}>
+            <div>
+              <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>Répartition par canal {thisYear}</h2>
+              <p style={{ ...s.cardSub, margin: 0 }}>
+                Sur tes séjours, suivi du brut, des commissions plateformes et du revenu net.
+              </p>
+            </div>
+            {/* Insight % direct (Driing + en direct) */}
+            <div style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px',
+              padding: '8px 14px', borderRadius: '12px',
+              background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.25)',
+            }}>
+              <span style={{ fontSize: '11px', fontWeight: 600, color: '#10b981', letterSpacing: '0.5px', textTransform: 'uppercase' as const }}>
+                Part en direct
+              </span>
+              <span style={{ fontSize: '20px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: '#10b981', lineHeight: 1 }}>
+                {channelStatsYTD.directPct.toFixed(0)} %
+              </span>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                Driing + canal direct
+              </span>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>
+            {channelStatsYTD.sorted.map(c => {
+              const def = (PLATFORMS as any)[c.key]
+              const label = def?.label ?? c.key
+              const icon = def?.icon ?? '📄'
+              const isDirect = def?.isDirect ?? false
+              const widthPct = (c.brut / channelStatsYTD.bruteYTD) * 100
+              const commissionPct = c.brut > 0 ? (c.commission / c.brut) * 100 : 0
+              return (
+                <div key={c.key} style={{ display: 'flex', flexDirection: 'column' as const, gap: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: isDirect ? '#10b981' : 'var(--text)' }}>
+                      <span>{icon}</span>
+                      {label}
+                      {isDirect && <span style={{ fontSize: '10px', fontWeight: 600, padding: '1px 6px', borderRadius: '999px', background: 'rgba(52,211,153,0.15)', color: '#10b981' }}>0 % commission</span>}
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>· {c.count} séjour{c.count > 1 ? 's' : ''}</span>
+                    </span>
+                    <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
+                      <span style={{ fontWeight: 600 }}>{fmt(c.net)}</span>
+                      {c.commission > 0 && (
+                        <span style={{ color: 'var(--text-muted)', marginLeft: '6px', fontSize: '11px' }}>
+                          (brut {fmt(c.brut)} · −{fmt(c.commission)} commission)
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <div style={{ height: '6px', borderRadius: '3px', background: 'var(--surface-2)', overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%', width: `${widthPct}%`,
+                      background: isDirect ? '#10b981' : 'var(--accent-text)',
+                      opacity: 0.85,
+                    }} />
+                  </div>
+                  {c.commission > 0 && (
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                      Commission {commissionPct.toFixed(1)} % du brut
+                    </span>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+          {channelStatsYTD.commissionTotalYTD > 0 && (
+            <div style={{ marginTop: '16px', padding: '12px 14px', borderRadius: '10px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }}>
+              <span style={{ fontSize: '12px', color: '#ef4444', fontWeight: 600 }}>
+                Total commissions plateformes {thisYear} : {fmt(channelStatsYTD.commissionTotalYTD)}
+              </span>
+              <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>
+                Soit {((channelStatsYTD.commissionTotalYTD / channelStatsYTD.bruteYTD) * 100).toFixed(1)} % de ton CA brut séjours. Développer ton canal direct (Driing, GMB, site perso) réduit mécaniquement cette ligne.
+              </p>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ── Phase 9, Honoraires conciergerie ─────────────────────── */}
       {honorairesStats.items.length > 0 && (

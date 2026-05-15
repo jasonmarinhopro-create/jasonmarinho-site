@@ -53,22 +53,30 @@ export default async function RevenusPage() {
       .maybeSingle(),
     supabase
       .from('sejours')
-      .select('id, logement, date_arrivee, date_depart, montant')
+      .select('id, logement, date_arrivee, date_depart, montant, contrat_plateforme, commission_montant')
       .eq('user_id', userId)
       .not('montant', 'is', null)
       .gt('montant', 0)
       .order('date_arrivee', { ascending: false }),
   ])
 
-  const sejourEntries = (sejours ?? []).map(s => ({
-    id: `sejour:${s.id}`,
-    logement_nom: s.logement ?? '',
-    montant: s.montant as number,
-    date_paiement: s.date_arrivee,
-    mode_paiement: 'sejour',
-    type_paiement: 'loyer',
-    description: `Séjour du ${s.date_arrivee} au ${s.date_depart}`,
-  }))
+  const sejourEntries = (sejours ?? []).map(s => {
+    const commission = (s as any).commission_montant ?? 0
+    const plateforme = (s as any).contrat_plateforme ?? null
+    const platformLabel = plateforme ? ` · ${plateforme}` : ' · en direct'
+    return {
+      id: `sejour:${s.id}`,
+      logement_nom: s.logement ?? '',
+      montant: s.montant as number,
+      // Net = brut - commission. Stocké à part pour les agrégats.
+      commission_montant: commission,
+      contrat_plateforme: plateforme,
+      date_paiement: s.date_arrivee,
+      mode_paiement: 'sejour',
+      type_paiement: 'loyer',
+      description: `Séjour du ${s.date_arrivee} au ${s.date_depart}${platformLabel}`,
+    }
+  })
 
   const logementNoms = [
     ...new Set([
