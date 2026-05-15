@@ -894,6 +894,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   return (
     <div style={s.page}>
       <style>{`
+        /* Séjour row : hover lift + border highlight */
+        .jm-sejour-row { transition: border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth); }
+        .jm-sejour-row:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+        /* Boutons d'action séjour : hover lift */
+        .jm-sejour-action:hover { background: var(--surface-2); color: var(--text); border-color: var(--border-2); transform: translateY(-1px); }
         .sejour-actions {
           display: flex;
           gap: 6px;
@@ -1683,7 +1688,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
             return (
               <div key={sj.id}>
-              <div style={s.sejourRow} className="sejour-row-mobile">
+              <div style={s.sejourRow} className="sejour-row-mobile jm-sejour-row">
                 <div style={s.sejourLeft}>
                   <div style={s.sejourDates}>
                     {formatDate(sj.date_arrivee)} → {formatDate(sj.date_depart)}
@@ -1741,6 +1746,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                         window.open(sj.contrat_lien + sep + 'print=1', '_blank', 'noopener,noreferrer')
                       }}
                       style={s.sejourActionBtn}
+                      className="jm-sejour-action"
                       title="Télécharger le contrat en PDF"
                     >
                       <DownloadSimple size={14} />
@@ -1756,10 +1762,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       {depositLoading === sj.id ? '…' : 'Paiements'}
                     </button>
                   )}
-                  <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} title="Modifier">
+                  <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} className="jm-sejour-action" title="Modifier">
                     <Pencil size={14} />
                   </button>
-                  <button onClick={() => handleDeleteSejour(sj.id)} style={{ ...s.sejourActionBtn, color: '#ef4444' }} title="Supprimer">
+                  <button onClick={() => handleDeleteSejour(sj.id)} style={{ ...s.sejourActionBtn, color: 'var(--danger)' }} className="jm-sejour-action" title="Supprimer">
                     <X size={14} />
                   </button>
                   <button
@@ -2431,57 +2437,67 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'inherit', resize: 'vertical',
   },
 
-  sejourList: { display: 'flex', flexDirection: 'column', gap: '10px' },
+  sejourList: { display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' },
   sejourRow: {
-    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px',
+    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--s-3)',
     background: 'var(--bg)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '14px 16px',
+    borderRadius: 'var(--r-lg)', padding: 'var(--s-4) var(--s-4)',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
   sejourLeft: { flex: 1, minWidth: 0 },
   sejourDates: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '8px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    fontSize: 'var(--t-base)', fontWeight: 600, color: 'var(--text)', marginBottom: 'var(--s-2)',
+    letterSpacing: 'var(--ls-snug)',
   },
   nightsBadge: {
-    background: 'var(--surface-2)', border: '1px solid var(--border)',
-    borderRadius: '100px', padding: '2px 8px',
-    fontSize: '11px', fontWeight: 500, color: 'var(--text-3)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    borderRadius: 'var(--r-pill)', padding: '2px 9px',
+    fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--accent-text)',
   },
-  sejourMeta: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+  sejourMeta: { display: 'flex', flexWrap: 'wrap', gap: 'var(--s-2)' },
   metaChip: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    background: 'var(--surface-2)', border: '1px solid var(--border)',
-    borderRadius: '100px', padding: '3px 9px',
-    fontSize: '12px', color: 'var(--text-3)',
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 'var(--r-pill)', padding: '3px 10px',
+    fontSize: 'var(--t-xs)', color: 'var(--text-2)',
+    transition: 'background var(--d-base) var(--ease-smooth)',
   },
   sejourActionBtn: {
-    background: 'none', border: 'none', cursor: 'pointer',
-    color: 'var(--text-muted)', padding: '5px', borderRadius: '7px',
-    transition: 'all 0.15s',
+    background: 'transparent', border: '1px solid var(--border)', cursor: 'pointer',
+    color: 'var(--text-muted)', padding: '6px', borderRadius: 'var(--r-sm)',
+    transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
   },
   contractBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
     background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
-    borderRadius: '8px', padding: '5px 11px',
-    fontSize: '12px', fontWeight: 500, color: 'var(--accent-text)',
-    cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
+    borderRadius: 'var(--r-sm)', padding: '6px 12px',
+    fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--accent-text)',
+    cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
+    flexShrink: 0,
   },
   depositBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'rgba(99,91,255,0.1)', border: '1px solid rgba(99,91,255,0.25)',
-    borderRadius: '8px', padding: '5px 11px',
-    fontSize: '12px', fontWeight: 500, color: '#a29bfe',
-    cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
+    display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
+    background: 'var(--info-bg)', border: '1px solid var(--info-border)',
+    borderRadius: 'var(--r-sm)', padding: '6px 12px',
+    fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--info)',
+    cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
+    flexShrink: 0,
   },
   checklistBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)',
-    borderRadius: '8px', padding: '5px 11px',
-    fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)',
-    cursor: 'pointer', transition: 'all 0.15s', flexShrink: 0,
+    background: 'var(--success-bg)', border: '1px solid var(--success-border)',
+    borderRadius: 'var(--r-sm)', padding: '6px 12px',
+    fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--text-muted)',
+    cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
+    flexShrink: 0,
   },
   checklistBtnActive: {
-    background: 'rgba(16,185,129,0.18)', borderColor: 'rgba(16,185,129,0.45)', color: '#10b981',
+    background: 'var(--success-bg)', borderColor: 'var(--success-1)', color: 'var(--success-1)',
   },
   clPanel: {
     margin: '0 0 8px 0', padding: '18px 20px',
