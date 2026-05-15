@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, MapTrifold, Lifebuoy,
+  Question, CaretDown, ArrowUpRight, Sun, Moon, MoonStars, Star, MapTrifold, Lifebuoy,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
@@ -265,18 +265,27 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             </button>
           )}
 
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            className="theme-toggle"
-            aria-label={theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'}
-            title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
-          >
-            {theme === 'dark'
-              ? <Sun size={17} weight="regular" />
-              : <Moon size={17} weight="regular" />
-            }
-          </button>
+          {/* Theme toggle — cycle dark → light → amoled → dark */}
+          {(() => {
+            const nextLabel =
+              theme === 'dark'   ? 'Passer en mode clair' :
+              theme === 'light'  ? 'Passer en mode AMOLED (noir profond)' :
+                                   'Passer en mode sombre'
+            const icon =
+              theme === 'dark'   ? <Sun size={17} weight="regular" /> :
+              theme === 'light'  ? <Moon size={17} weight="regular" /> :
+                                   <MoonStars size={17} weight="fill" />
+            return (
+              <button
+                onClick={toggleTheme}
+                className="theme-toggle"
+                aria-label={nextLabel}
+                title={nextLabel}
+              >
+                {icon}
+              </button>
+            )
+          })()}
 
           {/* SOS Hôte — accessible depuis n'importe quelle page du dashboard */}
           <button
