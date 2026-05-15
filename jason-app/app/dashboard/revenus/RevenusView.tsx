@@ -388,14 +388,34 @@ export default function RevenusView({
     const evolMois  = memeMoisN1 > 0 ? ((cesMoisEnc - memeMoisN1) / memeMoisN1) * 100 : null
     const evolAnnee = anneeN1   > 0 ? ((cetteAnneeEnc - anneeN1)   / anneeN1)   * 100 : null
 
-    // Bénéfice net (revenus - charges)
-    const beneficeMois = cesMoisEnc - chargesStats.cesMois
-    const beneficeYTD  = cetteAnneeEnc - chargesStats.cetteAnnee
+    // Commissions plateformes : ce que les OTA reprennent sur le brut
+    let commissionsCesMois = 0
+    let commissionsYTD = 0
+    entries.forEach(e => {
+      if (e.mode_paiement !== 'sejour') return
+      const com = e.commission_montant ?? 0
+      if (com <= 0) return
+      const d = new Date(e.date_paiement)
+      if (d.getFullYear() === thisYear) {
+        commissionsYTD += com
+        if (d.getMonth() === thisMonth) commissionsCesMois += com
+      }
+    })
+
+    // Net dans ta poche = brut encaissé - commissions plateformes
+    const netCesMois = cesMoisEnc - commissionsCesMois
+    const netYTD     = cetteAnneeEnc - commissionsYTD
+
+    // Bénéfice net (= net poche - charges opérationnelles : ménage, énergie...)
+    const beneficeMois = netCesMois - chargesStats.cesMois
+    const beneficeYTD  = netYTD     - chargesStats.cetteAnnee
 
     return {
       cesMoisEnc, enAttente, cetteAnneeEnc,
       moyMensuelle: last6Sum / 6,
       memeMoisN1, anneeN1, evolMois, evolAnnee,
+      commissionsCesMois, commissionsYTD,
+      netCesMois, netYTD,
       beneficeMois, beneficeYTD,
     }
   }, [contracts, entries, thisMonth, thisYear, chargesStats.cesMois, chargesStats.cetteAnnee])
@@ -675,6 +695,33 @@ export default function RevenusView({
         </div>
       )}
 
+      {/* ── Bandeau Brut → Commissions → Net (focus visuel principal) ── */}
+      {kpis.cetteAnneeEnc > 0 && (
+        <div style={s.netBanner} className="rv-net-banner">
+          <div style={s.netBannerCol}>
+            <div style={s.netBannerLbl}>Encaissé brut {thisYear}</div>
+            <div style={{ ...s.netBannerVal, color: 'var(--text)' }}>{fmt(kpis.cetteAnneeEnc)}</div>
+            <div style={s.netBannerSub}>Total payé par tes voyageurs</div>
+          </div>
+          <div style={{ ...s.netBannerArrow, color: '#ef4444' }} className="rv-net-banner-arrow">−</div>
+          <div style={s.netBannerCol}>
+            <div style={s.netBannerLbl}>Commissions plateformes</div>
+            <div style={{ ...s.netBannerVal, color: '#ef4444' }}>{fmt(kpis.commissionsYTD)}</div>
+            <div style={s.netBannerSub}>
+              {kpis.commissionsYTD > 0
+                ? `${((kpis.commissionsYTD / kpis.cetteAnneeEnc) * 100).toFixed(1)} % du brut · OTA`
+                : 'Aucune commission · 100 % direct 🎉'}
+            </div>
+          </div>
+          <div style={{ ...s.netBannerArrow, color: '#10b981' }} className="rv-net-banner-arrow">=</div>
+          <div style={s.netBannerCol}>
+            <div style={s.netBannerLbl}>Dans ta poche</div>
+            <div style={{ ...s.netBannerVal, color: '#10b981', fontSize: '28px' }}>{fmt(kpis.netYTD)}</div>
+            <div style={s.netBannerSub}>Net après commissions, avant charges</div>
+          </div>
+        </div>
+      )}
+
       {/* KPI cards (6) */}
       <div style={s.kpiGrid}>
         <KpiCard
@@ -682,8 +729,8 @@ export default function RevenusView({
           label="Encaissé ce mois"
           value={fmt(kpis.cesMoisEnc)}
           colorClass="green"
-          sub={kpis.evolMois != null ? `${kpis.evolMois > 0 ? '+' : ''}${kpis.evolMois.toFixed(0)} % vs ${thisYear - 1}` : undefined}
-          subColor={kpis.evolMois != null ? (kpis.evolMois >= 0 ? '#10b981' : '#ef4444') : undefined}
+          sub={kpis.commissionsCesMois > 0 ? `Net : ${fmt(kpis.netCesMois)} (−${fmt(kpis.commissionsCesMois)} commission)` : kpis.evolMois != null ? `${kpis.evolMois > 0 ? '+' : ''}${kpis.evolMois.toFixed(0)} % vs ${thisYear - 1}` : undefined}
+          subColor={kpis.commissionsCesMois > 0 ? '#ef4444' : (kpis.evolMois != null ? (kpis.evolMois >= 0 ? '#10b981' : '#ef4444') : undefined)}
         />
         <KpiCard
           icon={<Receipt size={20} weight="fill" />}
@@ -697,7 +744,7 @@ export default function RevenusView({
           label="Bénéfice net ce mois"
           value={fmt(kpis.beneficeMois)}
           colorClass={kpis.beneficeMois >= 0 ? 'accent' : 'red'}
-          sub="Encaissé − charges"
+          sub="Net − charges"
         />
         <KpiCard
           icon={<Clock size={20} weight="fill" />}
@@ -708,7 +755,7 @@ export default function RevenusView({
         />
         <KpiCard
           icon={<CalendarBlank size={20} weight="fill" />}
-          label={`CA ${thisYear}`}
+          label={`CA brut ${thisYear}`}
           value={fmt(kpis.cetteAnneeEnc)}
           colorClass="accent"
           sub={kpis.evolAnnee != null ? `${kpis.evolAnnee > 0 ? '+' : ''}${kpis.evolAnnee.toFixed(0)} % vs ${thisYear - 1}` : undefined}
@@ -719,7 +766,7 @@ export default function RevenusView({
           label={`Bénéfice net ${thisYear}`}
           value={fmt(kpis.beneficeYTD)}
           colorClass={kpis.beneficeYTD >= 0 ? 'green' : 'red'}
-          sub={kpis.cetteAnneeEnc > 0 ? `Marge ${Math.round((kpis.beneficeYTD / kpis.cetteAnneeEnc) * 100)} %` : undefined}
+          sub={kpis.cetteAnneeEnc > 0 ? `Marge ${Math.round((kpis.beneficeYTD / kpis.cetteAnneeEnc) * 100)} % · net commissions` : undefined}
         />
       </div>
 
@@ -1022,7 +1069,7 @@ export default function RevenusView({
               </span>
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '14px' }}>
             {channelStatsYTD.sorted.map(c => {
               const def = (PLATFORMS as any)[c.key]
               const label = def?.label ?? c.key
@@ -1031,35 +1078,48 @@ export default function RevenusView({
               const widthPct = (c.brut / channelStatsYTD.bruteYTD) * 100
               const commissionPct = c.brut > 0 ? (c.commission / c.brut) * 100 : 0
               return (
-                <div key={c.key} style={{ display: 'flex', flexDirection: 'column' as const, gap: '4px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: isDirect ? '#10b981' : 'var(--text)' }}>
-                      <span>{icon}</span>
+                <div key={c.key} style={{
+                  padding: '12px 14px', borderRadius: '12px',
+                  background: isDirect ? 'rgba(52,211,153,0.05)' : 'var(--surface)',
+                  border: `1px solid ${isDirect ? 'rgba(52,211,153,0.2)' : 'var(--border)'}`,
+                }}>
+                  {/* Ligne titre */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const, marginBottom: '10px' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 600, color: isDirect ? '#10b981' : 'var(--text)' }}>
+                      <span style={{ fontSize: '16px' }}>{icon}</span>
                       {label}
-                      {isDirect && <span style={{ fontSize: '10px', fontWeight: 600, padding: '1px 6px', borderRadius: '999px', background: 'rgba(52,211,153,0.15)', color: '#10b981' }}>0 % commission</span>}
+                      {isDirect && <span style={{ fontSize: '10px', fontWeight: 700, padding: '2px 7px', borderRadius: '999px', background: 'rgba(52,211,153,0.18)', color: '#10b981' }}>0 % commission</span>}
                       <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>· {c.count} séjour{c.count > 1 ? 's' : ''}</span>
                     </span>
-                    <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
-                      <span style={{ fontWeight: 600 }}>{fmt(c.net)}</span>
-                      {c.commission > 0 && (
-                        <span style={{ color: 'var(--text-muted)', marginLeft: '6px', fontSize: '11px' }}>
-                          (brut {fmt(c.brut)} · −{fmt(c.commission)} commission)
-                        </span>
-                      )}
-                    </span>
                   </div>
-                  <div style={{ height: '6px', borderRadius: '3px', background: 'var(--surface-2)', overflow: 'hidden' }}>
+                  {/* 3 colonnes : Brut → Commission → Net */}
+                  <div style={s.channelStats}>
+                    <div style={s.channelStatBox}>
+                      <div style={s.channelStatLbl}>Brut</div>
+                      <div style={{ ...s.channelStatVal, color: 'var(--text)' }}>{fmt(c.brut)}</div>
+                    </div>
+                    <div style={{ ...s.channelStatArrow, color: c.commission > 0 ? '#ef4444' : 'var(--text-muted)' }}>−</div>
+                    <div style={s.channelStatBox}>
+                      <div style={s.channelStatLbl}>Commission</div>
+                      <div style={{ ...s.channelStatVal, color: c.commission > 0 ? '#ef4444' : 'var(--text-muted)' }}>
+                        {c.commission > 0 ? fmt(c.commission) : '0 €'}
+                      </div>
+                      {c.commission > 0 && <div style={s.channelStatSub}>{commissionPct.toFixed(1)} %</div>}
+                    </div>
+                    <div style={{ ...s.channelStatArrow, color: '#10b981' }}>=</div>
+                    <div style={s.channelStatBox}>
+                      <div style={s.channelStatLbl}>Net dans ta poche</div>
+                      <div style={{ ...s.channelStatVal, color: '#10b981', fontWeight: 700 }}>{fmt(c.net)}</div>
+                    </div>
+                  </div>
+                  {/* Barre proportion */}
+                  <div style={{ height: '5px', borderRadius: '3px', background: 'var(--surface-2)', overflow: 'hidden', marginTop: '10px' }}>
                     <div style={{
                       height: '100%', width: `${widthPct}%`,
                       background: isDirect ? '#10b981' : 'var(--accent-text)',
                       opacity: 0.85,
                     }} />
                   </div>
-                  {c.commission > 0 && (
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                      Commission {commissionPct.toFixed(1)} % du brut
-                    </span>
-                  )}
                 </div>
               )
             })}
@@ -1597,6 +1657,9 @@ export default function RevenusView({
         @media (max-width: 640px) {
           .tx-meta { display: none !important; }
           .tx-guest { display: none !important; }
+          /* Bandeau Brut/Commissions/Net : passage en colonnes empilées */
+          .rv-net-banner { grid-template-columns: 1fr !important; gap: 10px !important; padding: 16px 18px !important; }
+          .rv-net-banner-arrow { display: none !important; }
         }
         .fisc-card { transition: border-color 0.15s, background 0.15s; }
         .fisc-card:hover { border-color: rgba(0,76,63,0.5) !important; }
@@ -2153,6 +2216,35 @@ const s: Record<string, React.CSSProperties> = {
   pageSub:  { fontSize: '14px', color: 'var(--text-2)', margin: 0 },
 
   kpiGrid:  { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' },
+
+  // Bandeau Brut → Commissions → Net : focus visuel principal pour
+  // que l'utilisateur voie d'un coup d'œil ce qui rentre vraiment.
+  netBanner: {
+    display: 'grid',
+    gridTemplateColumns: '1fr auto 1fr auto 1fr',
+    alignItems: 'center',
+    gap: '14px',
+    padding: '20px 24px',
+    background: 'linear-gradient(135deg, rgba(52,211,153,0.06), rgba(255,213,107,0.04))',
+    border: '1px solid rgba(52,211,153,0.18)',
+    borderRadius: '16px',
+    marginBottom: '20px',
+  },
+  netBannerCol: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', textAlign: 'center' as const, gap: '4px', minWidth: 0 },
+  netBannerLbl: { fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' },
+  netBannerVal: { fontSize: '24px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', lineHeight: 1.1, letterSpacing: '-0.5px' },
+  netBannerSub: { fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3 },
+  netBannerArrow: { fontSize: '24px', fontWeight: 700, opacity: 0.6 },
+
+  // 3 colonnes Brut → Commission → Net pour chaque canal
+  channelStats: { display: 'grid', gridTemplateColumns: '1fr auto 1fr auto 1fr', gap: '10px', alignItems: 'center' },
+  channelStatBox: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '2px', minWidth: 0 },
+  channelStatLbl: { fontSize: '10px', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' },
+  channelStatVal: { fontSize: '15px', fontWeight: 600, fontFamily: 'var(--font-fraunces), serif', letterSpacing: '-0.3px' },
+  channelStatSub: { fontSize: '10px', color: 'var(--text-muted)' },
+  channelStatArrow: { fontSize: '14px', fontWeight: 700, opacity: 0.6 },
+
+
   kpiCard:  { background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '14px', padding: '18px 20px', display: 'flex', alignItems: 'flex-start', gap: '14px' },
   kpiIcon:  { width: '38px', height: '38px', borderRadius: '10px', background: 'var(--bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   kpiBody:  { display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 },
