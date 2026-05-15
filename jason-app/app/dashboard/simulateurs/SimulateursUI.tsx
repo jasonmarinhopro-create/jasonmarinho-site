@@ -19,17 +19,26 @@ function fmtPct(n: number): string {
 
 function FiscalLCD() {
   const [ca, setCa] = useState(30000)
-  const [classe, setClasse] = useState(false)
+  // 'non_classe' = meublé tourisme non classé (30 % / 15 000 €) post-loi Le Meur
+  // 'classe'     = meublé tourisme classé Atout France (50 % / 77 700 €) post-loi Le Meur
+  // 'cdh'        = chambres d'hôtes : régime BIC para-hôtelier distinct (71 % / 188 700 €)
+  //                conservé par loi Le Meur car activité commerciale para-hôtelière.
+  const [regime, setRegime] = useState<'non_classe' | 'classe' | 'cdh'>('non_classe')
   const [autresRevenus, setAutresRevenus] = useState(45000)
 
   const result = useMemo(() => {
-    const plafond = classe ? 77700 : 15000
-    const tauxAbattement = classe ? 0.71 : 0.30
-    const sousPlafond = ca <= plafond
-    const baseImposable = sousPlafond ? ca * (1 - tauxAbattement) : ca
-    const economieClassement = ca * (0.71 - 0.30)
-    return { plafond, tauxAbattement, sousPlafond, baseImposable, economieClassement }
-  }, [ca, classe])
+    // Loi Le Meur (n° 2024-1039 du 19 nov 2024), applicable revenus 2025+
+    const config = regime === 'cdh'
+      ? { plafond: 188700, tauxAbattement: 0.71 }
+      : regime === 'classe'
+        ? { plafond: 77700,  tauxAbattement: 0.50 }
+        : { plafond: 15000,  tauxAbattement: 0.30 }
+    const sousPlafond = ca <= config.plafond
+    const baseImposable = sousPlafond ? ca * (1 - config.tauxAbattement) : ca
+    // Économie marginale si passage non classé → classé (= 50 %−30 % = 20 pts)
+    const economieClassement = ca * (0.50 - 0.30)
+    return { ...config, sousPlafond, baseImposable, economieClassement }
+  }, [ca, regime])
 
   // Statut LMNP / LMP (depuis loi Macron 2020) : 2 conditions cumulatives pour LMP :
   // (a) CA LCD > 23 000 € ET (b) CA LCD > autres revenus pro du foyer.
@@ -73,12 +82,17 @@ function FiscalLCD() {
             min={0} max={100000} step={1000} style={s.range} />
         </div>
         <div style={s.field}>
-          <label style={s.label}>Logement classé Atout France ?</label>
-          <div style={s.toggleRow}>
-            <button onClick={() => setClasse(false)} style={{ ...s.toggleBtn, ...(classe ? {} : s.toggleActive) }}>Non classé</button>
-            <button onClick={() => setClasse(true)} style={{ ...s.toggleBtn, ...(classe ? s.toggleActive : {}) }}>Classé 1–5★</button>
+          <label style={s.label}>Type d&apos;activité</label>
+          <div style={{ ...s.toggleRow, flexWrap: 'wrap' as const }}>
+            <button onClick={() => setRegime('non_classe')} style={{ ...s.toggleBtn, ...(regime === 'non_classe' ? s.toggleActive : {}) }}>Meublé non classé</button>
+            <button onClick={() => setRegime('classe')} style={{ ...s.toggleBtn, ...(regime === 'classe' ? s.toggleActive : {}) }}>Meublé classé 1–5★</button>
+            <button onClick={() => setRegime('cdh')} style={{ ...s.toggleBtn, ...(regime === 'cdh' ? s.toggleActive : {}) }}>Chambres d&apos;hôtes</button>
           </div>
-          <div style={s.helper}>Abattement {result.tauxAbattement * 100} % · plafond {fmtEur(result.plafond)}</div>
+          <div style={s.helper}>
+            Abattement {result.tauxAbattement * 100} % · plafond {fmtEur(result.plafond)}
+            {regime === 'cdh' && <> · régime BIC para-hôtelier</>}
+            {regime !== 'cdh' && <> · post-loi Le Meur (2025+)</>}
+          </div>
         </div>
       </div>
 
@@ -103,11 +117,27 @@ function FiscalLCD() {
             <div style={s.resultHint}>Tu dépasses le plafond {fmtEur(result.plafond)} → bascule au réel obligatoire l&apos;année suivante</div>
           </div>
         )}
-        {!classe && ca > 0 && (
+        {regime === 'non_classe' && ca > 0 && (
           <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'rgba(34,197,94,0.06)', borderColor: 'rgba(34,197,94,0.25)' }}>
             <div style={s.resultLabel}>Si tu te fais classer Atout France</div>
             <div style={{ ...s.resultValue, color: '#10b981', fontSize: '20px' }}>− {fmtEur(result.economieClassement)} de base imposable</div>
-            <div style={s.resultHint}>Économie estimée d&apos;impôt : ~{fmtEur(result.economieClassement * 0.30)} (à TMI 30 %)</div>
+            <div style={s.resultHint}>
+              Économie estimée d&apos;impôt : ~{fmtEur(result.economieClassement * 0.30)} (à TMI 30 %).
+              Le classement fait aussi passer ton plafond CA de 15 000 € à 77 700 €.
+            </div>
+          </div>
+        )}
+        {regime === 'cdh' && ca > 0 && (
+          <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'rgba(255,213,107,0.06)', borderColor: 'rgba(255,213,107,0.25)' }}>
+            <div style={s.resultLabel}>Spécificité chambres d&apos;hôtes</div>
+            <div style={{ ...s.resultValue, color: 'var(--accent-text)', fontSize: '15px', fontFamily: 'inherit', fontWeight: 600 }}>
+              Régime BIC para-hôtelier conservé
+            </div>
+            <div style={s.resultHint}>
+              Les chambres d&apos;hôtes ne sont pas concernées par la baisse de la loi Le Meur :
+              abattement maintenu à 71 % et plafond à 188 700 € (régime ventes/prestations de logement).
+              Limite légale : 5 chambres et 15 voyageurs simultanés (art. L.324-3 Code du tourisme).
+            </div>
           </div>
         )}
       </div>
