@@ -350,14 +350,14 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 .feat-time{font-size:12px;color:var(--tl);display:flex;align-items:center;gap:5px}
 
 /* ── ARTICLE CARDS ── */
-.blog-card{background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s;display:flex;flex-direction:column}
-.blog-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}
+.blog-card{background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .25s;display:flex;flex-direction:column}
+.blog-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,76,63,.14);border-color:rgba(0,76,63,.18)}
 .bc-bar{height:4px;flex-shrink:0}
-.bc-body{padding:22px;display:flex;flex-direction:column;flex:1}
-.bc-cat{font-size:10px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:9px;display:inline-flex;align-items:center;gap:5px}
+.bc-body{padding:24px;display:flex;flex-direction:column;flex:1}
+.bc-cat{font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:10px;display:inline-flex;align-items:center;gap:5px}
 .bc-cat span{width:5px;height:5px;border-radius:50%;display:inline-block;flex-shrink:0}
 .bc-title{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px;flex:1}
-.bc-desc{font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px}
+.bc-desc{font-size:13px;font-weight:400;color:var(--tm);line-height:1.65;margin-bottom:16px}
 .bc-foot{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)}
 .bc-time{font-size:11px;color:var(--tl)}
 .bc-lk{font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap .2s}
