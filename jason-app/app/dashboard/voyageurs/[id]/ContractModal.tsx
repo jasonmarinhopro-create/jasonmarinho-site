@@ -939,17 +939,21 @@ function TimePickerInput({ value, onChange }: { value: string; onChange: (v: str
 
 const overlay: React.CSSProperties = {
   position: 'fixed', inset: 0, zIndex: 400,
-  background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)',
-  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px',
+  background: 'rgba(0,0,0,0.55)',
+  backdropFilter: 'blur(8px)',
+  WebkitBackdropFilter: 'blur(8px)',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--s-4)',
+  animation: 'fadeIn var(--d-base) var(--ease-smooth)',
 }
 
 const modal: React.CSSProperties = {
-  background: 'var(--bg-2, #0f2018)',
-  border: '1px solid var(--border-2, #1e3d2f)',
-  borderRadius: '22px',
+  background: 'var(--bg-2)',
+  border: '1px solid var(--border-2)',
+  borderRadius: 'var(--r-xl)',
   width: '100%', maxWidth: '580px',
-  boxShadow: '0 32px 100px rgba(0,0,0,0.5)',
+  boxShadow: 'var(--shadow-xl)',
   maxHeight: '90vh', overflowY: 'auto',
+  animation: 'scaleIn var(--d-base) var(--ease-out)',
 }
 
 const modalHeader: React.CSSProperties = {

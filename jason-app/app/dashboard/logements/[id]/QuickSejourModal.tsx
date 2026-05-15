@@ -292,16 +292,23 @@ export default function QuickSejourModal({ logementId, logementNom, voyageurs, o
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const overlay: React.CSSProperties = {
-  position: 'fixed', inset: 0, background: 'rgba(8, 12, 18, 0.66)', backdropFilter: 'blur(2px)',
+  position: 'fixed', inset: 0,
+  background: 'rgba(0,0,0,0.55)',
+  backdropFilter: 'blur(8px)',
+  WebkitBackdropFilter: 'blur(8px)',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
-  padding: '24px', zIndex: 100,
+  padding: 'var(--s-5)', zIndex: 100,
+  animation: 'fadeIn var(--d-base) var(--ease-smooth)',
 }
 
 const modal: React.CSSProperties = {
-  background: 'var(--bg)', border: '1px solid var(--border-2)', borderRadius: '16px',
+  background: 'var(--bg-2)',
+  border: '1px solid var(--border-2)',
+  borderRadius: 'var(--r-xl)',
   width: '100%', maxWidth: '560px', maxHeight: '92vh',
   display: 'flex', flexDirection: 'column', overflow: 'hidden',
-  boxShadow: '0 20px 50px rgba(0,0,0,0.4)',
+  boxShadow: 'var(--shadow-xl)',
+  animation: 'scaleIn var(--d-base) var(--ease-out)',
 }
 
 const header: React.CSSProperties = {
