@@ -1672,18 +1672,38 @@ export default function CalendrierView({
 
       <style>{`
         @keyframes cal-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .cal-cell { transition: background 0.12s; cursor: pointer; }
-        .cal-cell:hover { background: var(--surface-2) !important; }
-        .cal-cell-sel { background: var(--surface) !important; }
-        .evt-row { transition: all 0.12s; }
+        .cal-cell { transition: background var(--d-base) var(--ease-smooth); cursor: pointer; }
+        .cal-cell:hover { background: var(--surface) !important; }
+        .cal-cell-sel { background: var(--accent-bg) !important; }
+        .evt-row { transition: background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth); }
         .evt-row:hover { background: var(--surface-2) !important; border-color: var(--border-2) !important; }
-        .cat-chip { transition: all 0.12s; cursor: pointer; }
-        .cat-chip:hover { opacity: 0.82; }
-        .icon-btn { transition: all 0.12s; cursor: pointer; }
-        .icon-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; }
-        .today-num { background: var(--accent-text); color: var(--bg); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
-        .sel-num { background: rgba(255,213,107,0.18); color: var(--accent-text); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; outline: 1.5px solid rgba(255,213,107,0.5); }
+        .cat-chip { transition: opacity var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring); cursor: pointer; }
+        .cat-chip:hover { opacity: 0.85; transform: translateY(-1px); }
+        .icon-btn { transition: background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring); cursor: pointer; }
+        .icon-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; transform: translateY(-1px); }
+        /* Aujourd'hui : pastille accent, animation pulse subtile */
+        .today-num {
+          background: var(--accent-text); color: var(--bg);
+          border-radius: 50%; width: 28px; height: 28px;
+          display: flex; align-items: center; justify-content: center;
+          font-weight: 700; flex-shrink: 0;
+          box-shadow: 0 0 0 3px var(--accent-bg);
+        }
+        .sel-num {
+          background: var(--accent-bg-2); color: var(--accent-text);
+          border-radius: 50%; width: 28px; height: 28px;
+          display: flex; align-items: center; justify-content: center;
+          font-weight: 700; flex-shrink: 0;
+          outline: 1.5px solid var(--accent-border-2);
+        }
         .time-sel:hover { border-color: var(--border-2) !important; }
+        /* Pills (séjours) : hover scale subtil */
+        .cal-pill { will-change: transform; }
+        .cal-pill:hover { transform: translateX(2px); }
+        /* Boutons calendrier : hover lift */
+        .cal-nav-btn:hover { background: var(--surface-2); border-color: var(--border-2); color: var(--text); transform: translateY(-1px); }
+        .cal-today-btn:hover { background: var(--surface-2); border-color: var(--border-2); color: var(--text); }
+        .cal-add-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-glow); }
         .time-sel:focus { border-color: var(--accent-text) !important; outline: none; box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 0,76,63), 0.12); }
         .multi-toggle { transition: all 0.15s; cursor: pointer; }
         .multi-toggle:hover { background: var(--surface-2) !important; }
@@ -1760,12 +1780,12 @@ export default function CalendrierView({
       {/* ── Top bar */}
       <div className="cal-topbar" style={s.topBar}>
         <div style={s.monthNav}>
-          <button className="btn-ghost" onClick={prevMonth} style={s.navBtn}><CaretLeft size={15} /></button>
+          <button className="cal-nav-btn" onClick={prevMonth} style={s.navBtn}><CaretLeft size={15} /></button>
           <h2 className="cal-month-title" style={s.monthTitle}>
             {MONTHS_FR[month]}&nbsp;
             <span style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: '18px' }}>{year}</span>
           </h2>
-          <button className="btn-ghost" onClick={nextMonth} style={s.navBtn}><CaretRight size={15} /></button>
+          <button className="cal-nav-btn" onClick={nextMonth} style={s.navBtn}><CaretRight size={15} /></button>
         </div>
 
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const }}>
@@ -1924,8 +1944,8 @@ export default function CalendrierView({
           >
             <SidebarSimple size={14} weight={drawerOpen ? 'fill' : 'regular'} />
           </button>
-          <button className="btn-ghost" onClick={goToday} style={s.todayBtn}>Aujourd'hui</button>
-          <button className="btn-primary" onClick={() => openAdd()} style={s.addBtn}>
+          <button className="cal-today-btn" onClick={goToday} style={s.todayBtn}>Aujourd&apos;hui</button>
+          <button className="btn-primary cal-add-btn" onClick={() => openAdd()} style={s.addBtn}>
             <Plus size={15} weight="bold" />
             <span className="cal-add-text">Événement</span>
           </button>
@@ -2222,7 +2242,7 @@ export default function CalendrierView({
                         {/* Single-day pills */}
                         <div className="cal-pill-wrap" style={s.pillWrap}>
                           {visible.map(e => (
-                            <div key={e.id} style={{ ...s.pill, borderLeftColor: e.color, background: `${e.color}1f` }}>
+                            <div key={e.id} className="cal-pill" style={{ ...s.pill, borderLeftColor: e.color, background: `${e.color}1f` }}>
                               <span style={s.pillText}>{e.title}</span>
                               {e.progressColor && (
                                 <span
@@ -3089,45 +3109,48 @@ const s: Record<string, React.CSSProperties> = {
     gap: '16px',
     flexWrap: 'wrap',
   },
-  monthNav: { display: 'flex', alignItems: 'center', gap: '10px' },
+  monthNav: { display: 'flex', alignItems: 'center', gap: 'var(--s-3)' },
   monthTitle: {
-    fontSize: '22px',
-    fontWeight: 600,
+    fontSize: 'var(--t-xl)',
+    fontWeight: 400,
     color: 'var(--text)',
     margin: 0,
-    letterSpacing: '-0.4px',
+    letterSpacing: 'var(--ls-tight)',
     fontFamily: 'var(--font-fraunces), serif',
     minWidth: '220px',
-    textAlign: 'center',
+    textAlign: 'center' as const,
   },
   navBtn: {
-    width: '34px', height: '34px',
+    width: '38px', height: '38px',
     padding: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    borderRadius: '9px',
-    border: '1px solid var(--border-2)',
+    borderRadius: 'var(--r-sm)',
+    border: '1px solid var(--border)',
     background: 'var(--surface)',
     color: 'var(--text-2)',
     cursor: 'pointer',
     flexShrink: 0,
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
   todayBtn: {
-    padding: '8px 16px',
-    borderRadius: '9px',
-    fontSize: '13px',
-    fontWeight: 500,
-    border: '1px solid var(--border-2)',
+    padding: '9px 18px',
+    borderRadius: 'var(--r-sm)',
+    fontSize: 'var(--t-sm)',
+    fontWeight: 600,
+    border: '1px solid var(--border)',
     background: 'var(--surface)',
     color: 'var(--text-2)',
     cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth)',
   },
   addBtn: {
-    display: 'flex', alignItems: 'center', gap: '7px',
-    padding: '9px 18px',
-    fontSize: '13px', fontWeight: 600,
-    borderRadius: '10px',
+    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    padding: '10px 20px',
+    fontSize: 'var(--t-sm)', fontWeight: 600,
+    borderRadius: 'var(--r-md)',
     border: 'none',
     cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring), box-shadow var(--d-base) var(--ease-smooth)',
   },
   layout: {
     display: 'flex',
@@ -3151,31 +3174,34 @@ const s: Record<string, React.CSSProperties> = {
   grid: { flex: 1, display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' },
   cell: {
     minHeight: '108px',
-    padding: '8px',
-    borderRight: '1px solid var(--border-2)',
-    borderBottom: '1px solid var(--border-2)',
-    display: 'flex', flexDirection: 'column', gap: '4px',
+    padding: 'var(--s-2)',
+    borderRight: '1px solid var(--border)',
+    borderBottom: '1px solid var(--border)',
+    display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-1)',
     outlineOffset: '-1px',
+    transition: 'background var(--d-base) var(--ease-smooth)',
   },
   cellTop: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    marginBottom: '2px',
+    marginBottom: 'var(--s-1)',
   },
-  dayNum: { fontSize: '13px', fontWeight: 500, lineHeight: 1 },
-  dotRow: { display: 'flex', gap: '2px', alignItems: 'center' },
-  dot: { width: '5px', height: '5px', borderRadius: '50%', flexShrink: 0 },
-  pillWrap: { display: 'flex', flexDirection: 'column', gap: '2px' },
+  dayNum: { fontSize: 'var(--t-sm)', fontWeight: 600, lineHeight: 1, fontVariantNumeric: 'tabular-nums' as const },
+  dotRow: { display: 'flex', gap: '3px', alignItems: 'center' },
+  dot: { width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0 },
+  pillWrap: { display: 'flex', flexDirection: 'column' as const, gap: '3px' },
   pill: {
     display: 'flex', alignItems: 'center',
-    padding: '2px 6px 2px 5px',
-    borderRadius: '4px', borderLeft: '2.5px solid',
-    overflow: 'hidden',
+    padding: '3px 7px 3px 6px',
+    borderRadius: 'var(--r-xs)',
+    borderLeft: '3px solid',
+    overflow: 'hidden' as const,
+    transition: 'transform var(--d-fast) var(--ease-smooth), background var(--d-base) var(--ease-smooth)',
   },
   pillText: {
-    fontSize: '11px', fontWeight: 500, color: 'var(--text-2)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%',
+    fontSize: 'var(--t-xs)', fontWeight: 500, color: 'var(--text-2)',
+    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const, maxWidth: '100%',
   },
-  extraChip: { fontSize: '10px', fontWeight: 600, color: 'var(--text-muted)', padding: '1px 4px' },
+  extraChip: { fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--text-muted)', padding: '1px 5px' },
 
   // side: drawer slidant à droite (position absolute pour libérer la grille)
   side: {
