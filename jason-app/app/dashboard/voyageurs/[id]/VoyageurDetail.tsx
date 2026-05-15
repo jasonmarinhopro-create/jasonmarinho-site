@@ -12,6 +12,7 @@ import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurDat
 import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
 import IncidentsPanel from './IncidentsPanel'
+import ForeignGuestAlert from '@/components/voyageurs/ForeignGuestAlert'
 import { PLATFORMS, suggestCommission, type PlatformKey } from '@/lib/platforms'
 import dynamic from 'next/dynamic'
 
@@ -402,6 +403,8 @@ type LogementOption = {
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement?: string | null
+  pays?: string | null
+  numero_al?: string | null
 }
 
 interface Props {
@@ -1674,6 +1677,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             const clTotal = phaseKeys.length
             const doneCount = cl ? phaseKeys.filter(k => cl.items[k]).length : 0
             const pct = cl && clTotal > 0 ? Math.round((doneCount / clTotal) * 100) : 0
+            // Détermine le pays du logement de ce séjour (pour l'alerte voyageur étranger)
+            const sejourLogement = sj.logement ? logements.find(l => l.nom === sj.logement) : undefined
+            const sejourLogementPays = sejourLogement?.pays ?? 'FR'
 
             return (
               <div key={sj.id}>
@@ -1789,6 +1795,14 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   })()}
                 </div>
               </div>
+
+              {/* Alerte légale voyageur étranger (SIBA PT, fiche police FR, etc.) */}
+              <ForeignGuestAlert
+                logementPays={sejourLogementPays}
+                voyageurNationalite={voyageur.nationalite}
+                dateArrivee={sj.date_arrivee}
+                voyageurNom={`${voyageur.prenom} ${voyageur.nom}`}
+              />
 
               {/* ── Checklist panel ────────────────────────────── */}
               {isExpanded && (
