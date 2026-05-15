@@ -297,8 +297,8 @@ em { font-style: italic; color: var(--accent); }
   to   { opacity: 1; transform: scale(1); }
 }
 @keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position:  400px 0; }
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }
@@ -484,10 +484,8 @@ em { font-style: italic; color: var(--accent); }
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.4; }
 }
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+/* La keyframe shimmer est définie plus haut (section animations 2026).
+   Les anciens skeleton continuent de marcher (loading.tsx etc.). */
 
 .fade-up {
   animation: fadeUp 0.5s var(--ease-out) both;
