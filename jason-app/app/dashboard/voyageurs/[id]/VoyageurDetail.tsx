@@ -12,6 +12,7 @@ import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurDat
 import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
 import IncidentsPanel from './IncidentsPanel'
+import { PLATFORMS, suggestCommission, type PlatformKey } from '@/lib/platforms'
 import dynamic from 'next/dynamic'
 
 const ContractModal = dynamic(() => import('./ContractModal'), { ssr: false })
@@ -78,6 +79,7 @@ type Sejour = {
   contrat_statut: 'signe' | 'en_attente' | 'non_requis' | 'nouveau'
   contrat_date_signature: string | null; contrat_lien: string | null
   contrat_plateforme: string | null
+  commission_montant: number | null
 }
 
 type DepositContract = {
@@ -168,14 +170,9 @@ function getChecklistPhases(contratPlateforme: string | null | undefined) {
     .filter(p => p.items.length > 0)
 }
 
-const PLATFORM_LABELS: Record<string, { label: string; icon: string }> = {
-  booking:          { label: 'Booking.com',      icon: '🛎️' },
-  airbnb:           { label: 'Airbnb',           icon: '🏠' },
-  abritel:          { label: 'Abritel',          icon: '🏡' },
-  vrbo:             { label: 'Vrbo',             icon: '🌴' },
-  gites_de_france:  { label: 'Gîtes de France',  icon: '🌳' },
-  autre:            { label: 'Autre plateforme', icon: '📄' },
-}
+// Alias local vers les défs partagées (lib/platforms.ts) :
+// Driing + direct mis en avant, hors Gîtes de France.
+const PLATFORM_LABELS = PLATFORMS
 
 const COUNTRIES: { code: string; name: string }[] = [
   { code: 'FR', name: 'France' },
@@ -241,6 +238,7 @@ const EMPTY_SEJOUR: Omit<SejourData, 'voyageur_id'> = {
   montant: null, contrat_statut: 'nouveau',
   contrat_date_signature: null, contrat_lien: null,
   contrat_plateforme: null,
+  commission_montant: null,
 }
 
 // Aesthetic calendar date picker (popup)
@@ -823,6 +821,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       contrat_date_signature: s.contrat_date_signature,
       contrat_lien: s.contrat_lien,
       contrat_plateforme: s.contrat_plateforme,
+      commission_montant: s.commission_montant,
     })
     setSejourError('')
     setEditSejour(s)
@@ -2198,26 +2197,61 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
                         {Object.entries(PLATFORM_LABELS).map(([key, def]) => {
                           const active = sejourForm.contrat_plateforme === key
+                          // Quand on choisit une plateforme, auto-suggérer la commission
+                          // (le user peut toujours l'écraser ensuite).
+                          const onPick = () => setSejourForm(f => {
+                            const suggested = f.montant ? suggestCommission(f.montant, key) : null
+                            return {
+                              ...f,
+                              contrat_plateforme: key,
+                              // Pré-remplit uniquement si le champ commission est vide
+                              commission_montant: f.commission_montant ?? (suggested && suggested > 0 ? suggested : (def.isDirect ? 0 : null)),
+                            }
+                          })
                           return (
                             <button
                               key={key}
                               type="button"
-                              onClick={() => setSejourForm(f => ({ ...f, contrat_plateforme: key }))}
+                              onClick={onPick}
                               style={{
                                 display: 'inline-flex', alignItems: 'center', gap: '5px',
                                 padding: '5px 10px', fontSize: '12px', fontWeight: 500,
                                 borderRadius: '100px', fontFamily: 'inherit', cursor: 'pointer',
-                                border: `1px solid ${active ? 'var(--accent-border)' : 'var(--border)'}`,
-                                background: active ? 'var(--accent-bg)' : 'var(--surface)',
-                                color: active ? 'var(--accent-text)' : 'var(--text-2)',
+                                border: `1px solid ${active ? 'var(--accent-border)' : (def.isDirect ? 'rgba(52,211,153,0.4)' : 'var(--border)')}`,
+                                background: active ? 'var(--accent-bg)' : (def.isDirect ? 'rgba(52,211,153,0.06)' : 'var(--surface)'),
+                                color: active ? 'var(--accent-text)' : (def.isDirect ? '#10b981' : 'var(--text-2)'),
                                 transition: 'all 0.12s',
                               }}
+                              title={def.isDirect ? 'Canal direct, 0 % de commission' : `Commission par défaut ${def.defaultCommissionPct} %`}
                             >
                               <span>{def.icon}</span>{def.label}
                             </button>
                           )
                         })}
                       </div>
+                      {/* Champ commission affiché uniquement pour les plateformes payantes */}
+                      {sejourForm.contrat_plateforme && !PLATFORM_LABELS[sejourForm.contrat_plateforme as PlatformKey]?.isDirect && (
+                        <div style={{ marginTop: '10px' }}>
+                          <label style={{ ...s.label, fontSize: '11px' }}>
+                            Commission plateforme (€)
+                            {sejourForm.montant && sejourForm.commission_montant != null && sejourForm.commission_montant > 0 && (
+                              <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: '6px' }}>
+                                soit {((sejourForm.commission_montant / sejourForm.montant) * 100).toFixed(1)} % du brut · net {(sejourForm.montant - sejourForm.commission_montant).toFixed(2)} €
+                              </span>
+                            )}
+                          </label>
+                          <div style={s.inputWrap}>
+                            <CurrencyEur size={15} color="var(--text-muted)" />
+                            <input
+                              style={s.input}
+                              type="number" min="0" step="0.01"
+                              value={sejourForm.commission_montant ?? ''}
+                              onChange={e => setSejourForm(f => ({ ...f, commission_montant: e.target.value ? Number(e.target.value) : null }))}
+                              placeholder={sejourForm.montant ? String(suggestCommission(sejourForm.montant, sejourForm.contrat_plateforme)) : '0'}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div style={s.formRow}>
