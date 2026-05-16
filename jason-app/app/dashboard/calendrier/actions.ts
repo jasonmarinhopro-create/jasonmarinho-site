@@ -182,6 +182,46 @@ export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
   }
 }
 
+// Update d'un séjour depuis le calendrier (édition rapide : dates + montant).
+// Le contrat lié, s'il existe, n'est pas modifié ici (édition via la page voyageur).
+export async function updateSejourFromCalendar(input: {
+  id: string
+  date_arrivee?: string
+  date_depart?: string
+  montant?: number | null
+}) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+
+  if (input.date_arrivee && input.date_depart && input.date_depart < input.date_arrivee) {
+    return { error: 'La date de départ doit être après la date d\'arrivée.' }
+  }
+
+  const patch: Record<string, unknown> = {}
+  if (input.date_arrivee !== undefined) patch.date_arrivee = input.date_arrivee
+  if (input.date_depart !== undefined)  patch.date_depart  = input.date_depart
+  if (input.montant !== undefined)      patch.montant      = input.montant
+  if (Object.keys(patch).length === 0)  return { error: 'Aucun champ à modifier.' }
+
+  const { data: row, error } = await supabase
+    .from('sejours')
+    .update(patch)
+    .eq('id', input.id)
+    .eq('user_id', user.id)
+    .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut')
+    .single()
+
+  if (error) return { error: error.message }
+  if (!row)  return { error: 'Séjour introuvable.' }
+
+  revalidatePath('/dashboard/calendrier')
+  if (row.voyageur_id) revalidatePath(`/dashboard/voyageurs/${row.voyageur_id}`)
+  revalidatePath('/dashboard/revenus')
+
+  return { sejour: row }
+}
+
 // ─── iCal feeds ─────────────────────────────────────────────────────────────
 
 export async function addIcalFeed(input: { name: string; url: string; color: string }) {

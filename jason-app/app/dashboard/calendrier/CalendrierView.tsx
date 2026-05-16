@@ -8,7 +8,7 @@ import {
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
   ChatText,
 } from '@phosphor-icons/react/dist/ssr'
-import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar } from './actions'
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar } from './actions'
 import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning } from '@phosphor-icons/react/dist/ssr'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
@@ -1416,6 +1416,14 @@ export default function CalendrierView({
     setFDesc(ev.description ?? '')
     setFStartDate(ev.date)
     setFEndDate(ev.end_date ?? ev.date)
+    // Si on édite un séjour : pré-remplir le montant depuis le séjour réel
+    if (ev.id.startsWith('sejour-')) {
+      const realId = ev.id.slice('sejour-'.length)
+      const sj = sejourEvents.find(s => s.id === realId)
+      setFMontant(sj?.montant != null ? String(sj.montant) : '')
+    } else {
+      setFMontant('')
+    }
     setShowForm(true)
   }
   function cancelForm() {
@@ -1448,6 +1456,42 @@ export default function CalendrierView({
   }
 
   function handleSave() {
+    // Édition d'un séjour : table sejours, pas calendar_events. L'id du
+    // CalEvent est préfixé 'sejour-' (cf. id `sejour-${s.id}` lors du build).
+    if (editing && editing.id.startsWith('sejour-')) {
+      const realId = editing.id.slice('sejour-'.length)
+      const startD = fStartDate || editing.date
+      const endD   = fEndDate || startD
+      if (endD < startD) {
+        setSejourError('La date de départ doit être après la date d\'arrivée.')
+        return
+      }
+      const montantNum = fMontant.trim() ? Number(fMontant.replace(',', '.')) : null
+      const montantFinal = montantNum && !Number.isNaN(montantNum) ? montantNum : null
+      setSejourError(null)
+      startT(async () => {
+        const res = await updateSejourFromCalendar({
+          id: realId,
+          date_arrivee: startD,
+          date_depart: endD,
+          montant: montantFinal,
+        })
+        if (res.error || !res.sejour) {
+          setSejourError(res.error ?? 'Impossible de modifier le séjour.')
+          return
+        }
+        setSejourEvents(prev => prev.map(s => s.id === realId ? {
+          ...s,
+          date_arrivee: res.sejour.date_arrivee,
+          date_depart: res.sejour.date_depart,
+          montant: res.sejour.montant,
+        } : s))
+        setShowForm(false); setEditing(null); setSelRange(null)
+        resetSejourFields()
+      })
+      return
+    }
+
     // Cas séjour : flow dédié (table sejours, pas calendar_events)
     if (fCat === 'sejour' && !editing) {
       if (!fLogementId) {
