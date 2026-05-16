@@ -339,6 +339,8 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
 
   // ─── empty state ───────────────────────────────────────────────────────
   if (sejours.length === 0 || logements.length === 0) {
+    const missLogement = logements.length === 0
+    const missSejour = sejours.length === 0
     return (
       <div style={s.wrap}>
         <header style={s.header}>
@@ -346,13 +348,15 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
             <ChartLineUp size={28} weight="duotone" color="var(--accent-text)" />
             <h1 style={s.title}>Performances</h1>
           </div>
-          <p style={s.subtitle}>Pilote ton activite : taux d'occupation, revenus, comparaison entre logements.</p>
+          <p style={s.subtitle}>Pilote ton activité : taux d&apos;occupation, revenus, comparaison entre logements.</p>
         </header>
         <div style={s.emptyCard}>
           <Sparkle size={42} weight="duotone" color="var(--accent-text)" />
-          <h2 style={s.emptyTitle}>Pas encore assez de donnees</h2>
+          <h2 style={s.emptyTitle}>Pas encore assez de données</h2>
           <p style={s.emptyText}>
-            Ajoute au moins un logement et un sejour pour commencer a voir tes statistiques d'occupation et de revenus.
+            {missLogement && missSejour && 'Ajoute un logement puis crée un séjour (calendrier) ou un contrat signé pour commencer.'}
+            {missLogement && !missSejour && 'Ajoute au moins un logement pour activer les statistiques par bien.'}
+            {!missLogement && missSejour && 'Ton logement est prêt. Crée un séjour dans le calendrier ou envoie un contrat signé pour faire apparaître les KPIs.'}
           </p>
         </div>
       </div>
