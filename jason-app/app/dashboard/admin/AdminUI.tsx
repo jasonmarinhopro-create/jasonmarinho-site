@@ -6,7 +6,7 @@ import {
   Users, Warning, CheckCircle, XCircle, Trash,
   Check, X, ArrowClockwise, FileText, GraduationCap,
   UsersThree, ArrowRight, UsersFour, CalendarBlank, Trophy,
-  BookOpen, Newspaper, Crown, ShieldStar, TrendUp, Lightning,
+  BookOpen, Newspaper, Crown, ShieldStar, ShieldCheck, TrendUp, Lightning,
   Sparkle, Circle, CurrencyEur, ChartLineUp, Percent,
   UserPlus, Star,
 } from '@phosphor-icons/react/dist/ssr'
@@ -313,6 +313,7 @@ export default function AdminUI({
             { href: '/dashboard/admin/communaute', icon: UsersThree,    color: '#93C5FD', bg: 'rgba(147,197,253,0.1)', title: 'Communauté',  desc: `${stats.groupsCount} groupe${stats.groupsCount !== 1 ? 's' : ''}` },
             { href: '/dashboard/admin/guides',     icon: BookOpen,      color: '#fb923c', bg: 'rgba(251,146,60,0.1)',  title: 'Guide LCD',   desc: 'Profils & fiches' },
             { href: '/dashboard/admin/sos-feedback', icon: Warning,     color: 'var(--danger)', bg: 'rgba(220,38,38,0.1)',   title: 'SOS Feedback', desc: 'Signalements & témoignages' },
+            { href: '/dashboard/admin/signalements', icon: ShieldCheck, color: '#f87171', bg: 'rgba(248,113,113,0.1)', title: 'Signalements', desc: `${pendingReportsCount} à valider` },
           ].map(({ href, icon: Icon, color, bg, title, desc }) => (
             <Link key={href} href={href} style={s.contentCard} className="admin-content-card">
               <div style={{ ...s.contentIcon, color, background: bg, border: `1px solid ${color}20` }}>
@@ -473,10 +474,24 @@ export default function AdminUI({
           </Section>
         )}
 
-        {/* Reports */}
+        {/* Reports — aperçu compact ; tout le travail (édition, recherche,
+            normalisation) se fait sur la page dédiée /admin/signalements */}
         {tab === 'reports' && (
           <Section title={`${reports.length} signalement${reports.length !== 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
-            {reports.map(r => (
+            <Link
+              href="/dashboard/admin/signalements"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '10px 14px', marginBottom: '12px',
+                background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+                borderRadius: '10px', color: 'var(--accent-text)',
+                textDecoration: 'none', fontSize: '12.5px', fontWeight: 600,
+              }}
+            >
+              Ouvrir la console signalements
+              <span style={{ fontSize: '11px', opacity: 0.7 }}>édition, recherche, normalisation →</span>
+            </Link>
+            {reports.slice(0, 5).map(r => (
               <div key={r.id} className="admin-item">
                 <div className="admin-item-head">
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -491,23 +506,13 @@ export default function AdminUI({
                   </div>
                 </div>
                 <div style={s.cellSub}>{r.reporter_city || '-'} · {formatDate(r.reported_at)}</div>
-                {r.description && <div style={s.description}>{r.description}</div>}
-                <div className="admin-item-foot">
-                  {feedback?.id === r.id
-                    ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
-                    : (
-                      <>
-                        {!r.is_validated && (
-                          <ActionBtn label="Valider" icon={<CheckCircle size={13} weight="bold" />} color="#34D399" loading={isPending}
-                            onClick={() => action(r.id, () => validateReport(r.id), 'Signalement validé')} />
-                        )}
-                        <ActionBtn label="Supprimer" icon={<Trash size={13} weight="bold" />} color="#f87171" loading={isPending}
-                          onClick={() => action(r.id, () => deleteReport(r.id), 'Supprimé')} />
-                      </>
-                    )}
-                </div>
               </div>
             ))}
+            {reports.length > 5 && (
+              <div style={{ textAlign: 'center', fontSize: '11.5px', color: 'var(--text-muted)', padding: '8px' }}>
+                + {reports.length - 5} autres signalements sur la console dédiée
+              </div>
+            )}
           </Section>
         )}
 

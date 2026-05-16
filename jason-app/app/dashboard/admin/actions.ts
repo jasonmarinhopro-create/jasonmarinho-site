@@ -135,7 +135,78 @@ export async function deleteReport(reportId: string) {
 
   if (deleteError) return { error: deleteError.message }
   revalidatePath('/dashboard/admin')
+  revalidatePath('/dashboard/admin/signalements')
   return { success: true }
+}
+
+// Édition d'un signalement par admin : permet de corriger un identifier
+// mal saisi (numéro avec un . à la fin, email avec espace, etc.), de
+// changer le type d'incident, le nom, la ville ou la description.
+export async function updateReport(reportId: string, patch: {
+  identifier?: string
+  identifier_type?: 'phone' | 'email' | string
+  name?: string | null
+  incident_type?: string
+  reporter_city?: string | null
+  description?: string | null
+}) {
+  const { error, supabase } = await getAdminClient()
+  if (error || !supabase) return { error }
+
+  const { normalizeIdentifier } = await import('@/lib/security/normalize-identifier')
+
+  const update: Record<string, unknown> = {}
+  if (patch.identifier_type !== undefined) update.identifier_type = patch.identifier_type
+  if (patch.identifier !== undefined) {
+    const type = patch.identifier_type ?? 'phone'
+    update.identifier = normalizeIdentifier(patch.identifier, type)
+  }
+  if (patch.name !== undefined)          update.name          = patch.name?.trim() || null
+  if (patch.incident_type !== undefined) update.incident_type = patch.incident_type
+  if (patch.reporter_city !== undefined) update.reporter_city = patch.reporter_city?.trim() || null
+  if (patch.description !== undefined)   update.description   = patch.description?.trim() || null
+
+  if (Object.keys(update).length === 0) return { error: 'Aucun champ à modifier.' }
+
+  const { error: updErr } = await supabase
+    .from('reported_guests')
+    .update(update)
+    .eq('id', reportId)
+
+  if (updErr) return { error: updErr.message }
+  revalidatePath('/dashboard/admin')
+  revalidatePath('/dashboard/admin/signalements')
+  return { success: true }
+}
+
+// Batch : passe tous les identifiers existants à la moulinette de
+// normalisation. Idempotent (on stocke déjà la forme normalisée, donc
+// re-lancer ne fait rien sur les rows déjà propres).
+export async function normalizeAllReportIdentifiers() {
+  const { error, supabase } = await getAdminClient()
+  if (error || !supabase) return { error }
+
+  const { normalizeIdentifier } = await import('@/lib/security/normalize-identifier')
+
+  const { data: rows, error: listErr } = await supabase
+    .from('reported_guests')
+    .select('id, identifier, identifier_type')
+  if (listErr) return { error: listErr.message }
+  if (!rows) return { updated: 0 }
+
+  let updated = 0
+  for (const r of rows) {
+    const next = normalizeIdentifier(r.identifier ?? '', r.identifier_type ?? 'phone')
+    if (!next || next === r.identifier) continue
+    const { error: upErr } = await supabase
+      .from('reported_guests')
+      .update({ identifier: next })
+      .eq('id', r.id)
+    if (!upErr) updated++
+  }
+
+  revalidatePath('/dashboard/admin/signalements')
+  return { updated }
 }
 
 export async function deleteSuggestion(suggestionId: string) {
