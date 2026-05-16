@@ -1,6 +1,19 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Purge les cookies Supabase quand une session est corrompue (décodable
+// localement mais refusée par le serveur). Sans ça → boucle infinie de
+// redirections, l'utilisateur doit clear ses cookies manuellement.
+function clearAuthCookies(response: NextResponse) {
+  // Supabase SSR : cookies préfixés sb-<project-ref>-auth-token, parfois
+  // fragmentés en .0 / .1 / .2 quand le token est trop gros pour un seul cookie.
+  response.cookies.getAll().forEach(c => {
+    if (c.name.startsWith('sb-') && c.name.includes('auth-token')) {
+      response.cookies.set({ name: c.name, value: '', maxAge: 0, path: '/' })
+    }
+  })
+}
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -27,10 +40,6 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Optimisation : getSession() décode la JWT localement (pas de round-trip Supabase).
-  // Suffisant pour la logique de redirection sur / et /auth/*.
-  // Pour /dashboard/* on appelle getUser() ensuite qui valide + refresh la JWT
-  // (indispensable pour ne pas avoir d'expired JWT sur les queries RLS).
   const path = request.nextUrl.pathname
 
   // Always allow access to reset-password page (needs unauthenticated access with token)
@@ -38,23 +47,40 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
-  // Pour les routes /dashboard/*, on fait getUser() (valide + refresh la JWT).
-  // getUser() writes new tokens via cookies.set, nécessaire pour ne pas casser
-  // les queries RLS server-side avec une JWT expirée.
+  // Source de vérité unique : getUser() valide la JWT contre le serveur
+  // Supabase. On évite getSession() (décodage local) qui peut diverger du
+  // serveur et causer ERR_TOO_MANY_REDIRECTS quand les cookies sont
+  // partiellement expirés / révoqués / corrompus.
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  const isAuthed = !!user
+
+  // Détection de session "fantôme" : un cookie auth présent mais refusé
+  // par le serveur. On le purge pour casser la boucle.
+  const hasAuthCookie = request.cookies.getAll().some(
+    c => c.name.startsWith('sb-') && c.name.includes('auth-token') && c.value
+  )
+  if (!isAuthed && hasAuthCookie && authError) {
+    // Si déjà sur /auth/* on laisse passer (pour permettre login) après purge
+    if (path.startsWith('/auth')) {
+      clearAuthCookies(supabaseResponse)
+      return supabaseResponse
+    }
+    const url = request.nextUrl.clone()
+    url.pathname = '/auth/login'
+    const res = NextResponse.redirect(url)
+    clearAuthCookies(res)
+    return res
+  }
+
+  // Routes /dashboard/* : nécessitent un user valide
   if (path.startsWith('/dashboard')) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
+    if (!isAuthed) {
       const url = request.nextUrl.clone()
       url.pathname = '/auth/login'
       return NextResponse.redirect(url)
     }
     return supabaseResponse
   }
-
-  // Pour / et /auth/*, getSession() suffit (pas de query RLS derrière à protéger).
-  // Gain : −50 à −100 ms sur les pages login/register/reset-password.
-  const { data: { session } } = await supabase.auth.getSession()
-  const isAuthed = !!session
 
   if (isAuthed && path.startsWith('/auth')) {
     const url = request.nextUrl.clone()
