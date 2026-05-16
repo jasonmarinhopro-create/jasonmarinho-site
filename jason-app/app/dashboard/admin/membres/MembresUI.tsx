@@ -815,7 +815,7 @@ const s: Record<string, React.CSSProperties> = {
   avatarText: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: '16px', fontWeight: 600,
   },
-  identity: { flex: 1, minWidth: 0 },
+  identity: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' as const },
   nameRow: { display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' },
   name: {
     fontSize: '15px', fontWeight: 600, color: 'var(--text)',
