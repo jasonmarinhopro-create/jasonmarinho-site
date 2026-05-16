@@ -100,6 +100,16 @@ const TARGETS = [
   ...fs.readdirSync(path.join(ROOT, 'blog'))
     .filter(d => fs.existsSync(path.join(ROOT, 'blog', d, 'index.html')))
     .map(d => path.join(ROOT, 'blog', d, 'index.html')),
+  // 60 pages 'devenir hôte Airbnb [ville]' (SEO local fort)
+  ...fs.readdirSync(ROOT)
+    .filter(d => d.startsWith('devenir-hote-airbnb-'))
+    .filter(d => fs.existsSync(path.join(ROOT, d, 'index.html')))
+    .map(d => path.join(ROOT, d, 'index.html')),
+  // 14 pages comparatif-* (outils, plateformes)
+  ...fs.readdirSync(ROOT)
+    .filter(d => d.startsWith('comparatif-'))
+    .filter(d => fs.existsSync(path.join(ROOT, d, 'index.html')))
+    .map(d => path.join(ROOT, d, 'index.html')),
   // Pages légales root
   ...['cgvu.html', 'mentions-legales.html', 'politique-de-confidentialite.html']
     .filter(f => fs.existsSync(path.join(ROOT, f)))
