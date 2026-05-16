@@ -485,10 +485,23 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               {upcomingSejours.map(sj => {
                 const v = sj.voyageurs
                 const isContracted = sj.contrat_statut === 'signe'
+                const isPending = sj.contrat_statut === 'en_attente'
+                // Séjour sans voyageur attaché = blocage perso volontaire,
+                // pas un brouillon de contrat. Le bouton mène au calendrier
+                // pré-filtré sur ce logement pour permettre l'édition.
+                const isPrivate = !v
+                const statusLabel = isContracted
+                  ? 'Signé'
+                  : isPending
+                    ? 'En attente'
+                    : isPrivate ? 'Privé' : 'Brouillon'
+                const href = v
+                  ? `/dashboard/voyageurs/${v.id}`
+                  : `/dashboard/calendrier?logement=${encodeURIComponent(l.nom ?? '')}`
                 return (
                   <Link
                     key={sj.id}
-                    href={v ? `/dashboard/voyageurs/${v.id}` : '#'}
+                    href={href}
                     style={s.sejourItem}
                   >
                     <div style={s.sejourDates}>
@@ -505,11 +518,11 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                       )}
                       <span style={{
                         ...s.sejourStatus,
-                        color: isContracted ? 'var(--success-1)' : 'var(--text-muted)',
-                        background: isContracted ? 'rgba(16,185,129,0.10)' : 'var(--surface)',
-                        borderColor: isContracted ? 'rgba(16,185,129,0.25)' : 'var(--border)',
+                        color: isContracted ? 'var(--success-1)' : isPrivate ? 'var(--accent-text)' : 'var(--text-muted)',
+                        background: isContracted ? 'rgba(16,185,129,0.10)' : isPrivate ? 'var(--accent-bg)' : 'var(--surface)',
+                        borderColor: isContracted ? 'rgba(16,185,129,0.25)' : isPrivate ? 'var(--accent-border)' : 'var(--border)',
                       }}>
-                        {isContracted ? 'Signé' : sj.contrat_statut === 'en_attente' ? 'En attente' : 'Brouillon'}
+                        {statusLabel}
                       </span>
                     </div>
                   </Link>
