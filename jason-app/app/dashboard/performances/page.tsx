@@ -20,7 +20,6 @@ export type LogementRow = {
   nom: string
   adresse: string | null
   ville: string | null
-  prix_nuit: number | null
 }
 
 export type VoyageurMin = {
@@ -51,7 +50,7 @@ export default async function PerformancesPage() {
       .order('date_arrivee', { ascending: false }),
     supabase
       .from('logements')
-      .select('id, nom, adresse, ville, prix_nuit')
+      .select('id, nom, adresse, ville')
       .eq('user_id', profile.userId)
       .order('created_at', { ascending: false }),
     supabase
