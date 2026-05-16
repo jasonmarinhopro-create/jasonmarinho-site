@@ -117,6 +117,7 @@ export default async function PerformancesPage() {
       voyageurs={voyageurs}
       benchmarks={benchmarks}
       objectifAnnuel={objectifRes?.data?.objectif_ca_annuel ?? null}
+      plan={profile.plan}
     />
   )
 }

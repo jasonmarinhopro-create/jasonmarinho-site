@@ -8,6 +8,9 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import type { SejourRow, LogementRow, VoyageurMin } from './page'
 import type { MarketBenchmark } from '@/lib/lcd/market-benchmarks'
+import PremiumLock from '@/components/ui/PremiumLock'
+
+type Plan = 'decouverte' | 'standard' | 'driing'
 
 type Props = {
   sejours:    SejourRow[]
@@ -15,6 +18,7 @@ type Props = {
   voyageurs:  VoyageurMin[]
   benchmarks?: Record<string, MarketBenchmark | null>
   objectifAnnuel?: number | null
+  plan?: Plan
 }
 
 type Period = '1m' | '3m' | '6m' | '12m' | 'ytd'
@@ -74,8 +78,9 @@ function fmtPct(n: number, withSign = false) {
 }
 
 // ─── composant principal ───────────────────────────────────────────────────
-export default function PerformancesView({ sejours, logements, voyageurs, benchmarks, objectifAnnuel }: Props) {
+export default function PerformancesView({ sejours, logements, voyageurs, benchmarks, objectifAnnuel, plan = 'decouverte' }: Props) {
   const [period, setPeriod] = useState<Period>(sejours.length < 5 ? '12m' : '1m')
+  const isPremium = plan === 'standard' || plan === 'driing'
   const [logementFilter, setLogementFilter] = useState<string>('all')
 
   const logementMap = useMemo(() => {
@@ -389,6 +394,170 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
     const l = logements.find(lg => lg.nom === logementFilter)
     return l ? { logement: l, bench: benchmarks[l.id] } : null
   }, [benchmarks, logements, logementFilter])
+
+  // ─── PREMIUM : heatmap jour de semaine (7 jours × intensité) ───────────
+  const dowHeatmap = useMemo(() => {
+    if (!isPremium) return null
+    const labels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+    const dowOrder = [1, 2, 3, 4, 5, 6, 0] // afficher lun→dim
+    const data = dowOrder.map(d => ({
+      label: labels[dowOrder.indexOf(d)],
+      nuits: hotelKpis.byDow[d]?.nuits ?? 0,
+      revenu: hotelKpis.byDow[d]?.revenu ?? 0,
+      adr: (hotelKpis.byDow[d]?.nuits ?? 0) > 0
+        ? (hotelKpis.byDow[d].revenu / hotelKpis.byDow[d].nuits) : 0,
+    }))
+    const maxNuits = Math.max(1, ...data.map(d => d.nuits))
+    return data.map(d => ({ ...d, intensity: d.nuits / maxNuits }))
+  }, [hotelKpis, isPremium])
+
+  // ─── PREMIUM : comparatif Year-over-Year (cette année vs N-1) ──────────
+  const yoyStats = useMemo(() => {
+    if (!isPremium) return null
+    const now = new Date()
+    const thisYear = now.getFullYear()
+    const lastYear = thisYear - 1
+    const thisYearStart = new Date(thisYear, 0, 1)
+    const lastYearStart = new Date(lastYear, 0, 1)
+    const lastYearSameDay = new Date(lastYear, now.getMonth(), now.getDate())
+
+    let thisYearNuits = 0, thisYearRevenu = 0, thisYearSejours = 0
+    let lastYearNuits = 0, lastYearRevenu = 0, lastYearSejours = 0
+
+    sejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const fullDuration = daysBetween(arr, dep) || 1
+      const pricePerNight = (s.montant ?? 0) / fullDuration
+
+      // This year YTD
+      const overlapTY = clampInterval(arr, dep, thisYearStart, now)
+      if (overlapTY) {
+        const n = daysBetween(overlapTY.s, overlapTY.e)
+        thisYearNuits += n
+        thisYearRevenu += pricePerNight * n
+        if (arr >= thisYearStart && arr <= now) thisYearSejours += 1
+      }
+      // Last year same period
+      const overlapLY = clampInterval(arr, dep, lastYearStart, lastYearSameDay)
+      if (overlapLY) {
+        const n = daysBetween(overlapLY.s, overlapLY.e)
+        lastYearNuits += n
+        lastYearRevenu += pricePerNight * n
+        if (arr >= lastYearStart && arr <= lastYearSameDay) lastYearSejours += 1
+      }
+    })
+
+    const revenuDelta = lastYearRevenu > 0 ? (thisYearRevenu - lastYearRevenu) / lastYearRevenu : null
+    const nuitsDelta = lastYearNuits > 0 ? (thisYearNuits - lastYearNuits) / lastYearNuits : null
+    const sejoursDelta = lastYearSejours > 0 ? (thisYearSejours - lastYearSejours) / lastYearSejours : null
+    return {
+      thisYear, lastYear, thisYearRevenu, lastYearRevenu, thisYearNuits, lastYearNuits,
+      thisYearSejours, lastYearSejours, revenuDelta, nuitsDelta, sejoursDelta,
+    }
+  }, [sejours, isPremium])
+
+  // ─── PREMIUM : recommandations de prix par mois (basé marché + historique) ──
+  const monthlyPricingReco = useMemo(() => {
+    if (!isPremium || !currentBenchmark?.bench) return null
+    const bench = currentBenchmark.bench
+    const seasonalMultiplier: Record<number, number> = {}
+    // Coefficient saisonnier : haute saison = 1.25, basse saison = 0.85, neutre = 1.0
+    for (let m = 1; m <= 12; m++) {
+      seasonalMultiplier[m] = bench.saisonHaute.includes(m) ? 1.25
+        : Math.abs(6.5 - m) > 4.5 ? 0.85 // mois loin de l'été par défaut
+        : 1.0
+    }
+    // ADR de base : utilise l'historique de l'hôte s'il y a, sinon le marché
+    const baseAdr = hotelKpis.adr > 0 ? hotelKpis.adr : bench.adrEur
+    return Array.from({ length: 12 }, (_, i) => {
+      const month = i + 1
+      const mult = seasonalMultiplier[month]
+      return {
+        month,
+        label: MONTH_NAMES_FULL[i],
+        recommandedPrice: Math.round(baseAdr * mult),
+        isHigh: bench.saisonHaute.includes(month),
+        isLow: mult < 1,
+      }
+    })
+  }, [isPremium, currentBenchmark, hotelKpis.adr])
+
+  // ─── PREMIUM : distance plafonds légaux (FR 120j / PT 200k€ AL) ────────
+  const legalLimits = useMemo(() => {
+    if (!isPremium) return null
+    const now = new Date()
+    const yStart = new Date(now.getFullYear(), 0, 1)
+    let nuitsYtd = 0
+    sejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const overlap = clampInterval(arr, dep, yStart, now)
+      if (overlap) nuitsYtd += daysBetween(overlap.s, overlap.e)
+    })
+
+    // Détecte le pays dominant des logements (filtre actuel ou 1er)
+    const currentPays = logementFilter === 'all'
+      ? (logements[0]?.pays ?? 'FR')
+      : (logements.find(l => l.nom === logementFilter)?.pays ?? 'FR')
+
+    // CA YTD (déjà calculé dans projection mais on duplique pour ne pas dépendre)
+    let caYtd = 0
+    sejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const overlap = clampInterval(arr, dep, yStart, now)
+      if (!overlap) return
+      const fullDuration = daysBetween(arr, dep) || 1
+      caYtd += (s.montant ?? 0) * (daysBetween(overlap.s, overlap.e) / fullDuration)
+    })
+
+    const limits: Array<{ label: string; current: number; max: number; unit: string; severity: 'ok' | 'warn' | 'danger'; note: string }> = []
+    if (currentPays === 'FR') {
+      limits.push({
+        label: 'Plafond résidence principale (120 j/an)',
+        current: nuitsYtd,
+        max: 120,
+        unit: 'j',
+        severity: nuitsYtd >= 110 ? 'danger' : nuitsYtd >= 90 ? 'warn' : 'ok',
+        note: 'Applicable si tu loues ta résidence principale meublée. Au-delà : ce n\'est plus une résidence principale fiscalement.',
+      })
+      limits.push({
+        label: 'Seuil micro-BIC non classé (15 000 €)',
+        current: caYtd,
+        max: 15000,
+        unit: '€',
+        severity: caYtd >= 13500 ? 'danger' : caYtd >= 12000 ? 'warn' : 'ok',
+        note: 'Au-delà : tu bascules au régime réel ou tu dois faire classer ton meublé.',
+      })
+      limits.push({
+        label: 'Seuil LMP (23 000 €)',
+        current: caYtd,
+        max: 23000,
+        unit: '€',
+        severity: caYtd >= 21000 ? 'danger' : caYtd >= 18000 ? 'warn' : 'ok',
+        note: 'Au-delà ET si LCD > autres revenus pro du foyer : passage automatique en Loueur Meublé Professionnel (cotisations SSI ~35 %).',
+      })
+    } else if (currentPays === 'PT') {
+      limits.push({
+        label: 'Seuil IVA Alojamento Local (15 000 €)',
+        current: caYtd,
+        max: 15000,
+        unit: '€',
+        severity: caYtd >= 13500 ? 'danger' : caYtd >= 12000 ? 'warn' : 'ok',
+        note: 'Au-delà (Portugal continental) tu deviens assujetti à l\'IVA (6 % continental, 5 % Açores/Madeira), reverse trimestriellement.',
+      })
+      limits.push({
+        label: 'Plafond Categoria B simplifié (200 000 €)',
+        current: caYtd,
+        max: 200000,
+        unit: '€',
+        severity: caYtd >= 180000 ? 'danger' : caYtd >= 150000 ? 'warn' : 'ok',
+        note: 'Au-delà : contabilidade organizada obligatoire (comptabilité complète, expert-comptable requis).',
+      })
+    }
+    return { limits, currentPays }
+  }, [isPremium, sejours, logements, logementFilter])
 
   // ─── insights auto enrichis ────────────────────────────────────────────
   const insights = useMemo(() => {
@@ -728,6 +897,170 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         </section>
       )}
 
+      {/* ═══════════════════════════════════════════════════════════════════
+          BLOCS ANALYSES AVANCÉES — réservés au plan Standard / Driing
+          (carte teaser unlock pour les comptes Découverte)
+         ═══════════════════════════════════════════════════════════════════ */}
+
+      {/* ─── Comparatif Year-over-Year ──────────────────────────────────── */}
+      {isPremium && yoyStats ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Année {yoyStats.thisYear} vs {yoyStats.lastYear} (même période)</h3>
+              <p style={s.cardSub}>Compare ton activité YTD à la même période de l'année dernière</p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+            <YoYCard label="Revenu" current={fmtEur(yoyStats.thisYearRevenu)} previous={fmtEur(yoyStats.lastYearRevenu)} delta={yoyStats.revenuDelta} />
+            <YoYCard label="Nuits réservées" current={String(yoyStats.thisYearNuits)} previous={String(yoyStats.lastYearNuits)} delta={yoyStats.nuitsDelta} />
+            <YoYCard label="Séjours" current={String(yoyStats.thisYearSejours)} previous={String(yoyStats.lastYearSejours)} delta={yoyStats.sejoursDelta} />
+          </div>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Comparatif année par année"
+          description="Compare ton activité année par année sur la même période. Sache si tu progresses ou si tu décroches vs N-1."
+          bullets={[
+            'Delta % en couleur sur revenu, nuits, séjours',
+            'Compare à date égale (équitable, pas année pleine vs année partielle)',
+            'Repère immédiatement les périodes de décrochage',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Heatmap jour de semaine ────────────────────────────────────── */}
+      {isPremium && dowHeatmap ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Performance par jour de semaine</h3>
+              <p style={s.cardSub}>Combien de nuits réservées chaque jour de la semaine sur la période — pour ajuster tes prix lun→dim</p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px' }}>
+            {dowHeatmap.map((d, i) => (
+              <div key={i} style={{
+                padding: '14px 10px', borderRadius: '10px',
+                background: `rgba(52, 211, 153, ${0.08 + 0.55 * d.intensity})`,
+                border: '1px solid var(--border)',
+                textAlign: 'center' as const,
+                color: d.intensity > 0.6 ? '#fff' : 'var(--text)',
+              }}>
+                <div style={{ fontSize: '11px', fontWeight: 600, opacity: 0.85, marginBottom: '4px' }}>{d.label}</div>
+                <div style={{ fontSize: '20px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif' }}>{d.nuits}</div>
+                <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '4px' }}>{d.adr > 0 ? fmtEur(d.adr) : '—'}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '12px', marginBottom: 0 }}>
+            Plus la case est verte foncée, plus tu loues ce jour-là. Sous chaque case : ADR moyen ce jour.
+          </p>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Heatmap jour de semaine"
+          description="Visualise instantanément quels jours rapportent le plus — du lundi au dimanche. Indispensable pour ajuster tes prix weekend/semaine."
+          bullets={[
+            'Code couleur d\'intensité par jour (vert plus ou moins foncé)',
+            'Nombre de nuits + ADR moyen par jour',
+            'Décision rapide : monter le prix le jour qui se remplit toujours',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Recommandations de prix par mois (basées marché + ton historique) */}
+      {isPremium && monthlyPricingReco && currentBenchmark?.bench ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Recommandation de prix par mois</h3>
+              <p style={s.cardSub}>
+                Basé sur ton ADR actuel ({fmtEur(hotelKpis.adr > 0 ? hotelKpis.adr : currentBenchmark.bench.adrEur)}) et la saisonnalité {currentBenchmark.bench.ville}
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '6px' }}>
+            {monthlyPricingReco.map(m => (
+              <div key={m.month} style={{
+                padding: '10px 8px', borderRadius: '10px', textAlign: 'center' as const,
+                background: m.isHigh ? 'rgba(52,211,153,0.10)' : m.isLow ? 'rgba(245,158,11,0.07)' : 'var(--bg-2)',
+                border: `1px solid ${m.isHigh ? 'rgba(52,211,153,0.30)' : m.isLow ? 'rgba(245,158,11,0.20)' : 'var(--border)'}`,
+              }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px', marginBottom: '4px' }}>
+                  {m.label.slice(0, 3)}
+                </div>
+                <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: m.isHigh ? 'var(--success-1)' : m.isLow ? '#F59E0B' : 'var(--text)' }}>
+                  {fmtEur(m.recommandedPrice)}
+                </div>
+                {m.isHigh && <div style={{ fontSize: '9px', color: 'var(--success-1)', marginTop: '2px', fontWeight: 600 }}>HAUTE</div>}
+                {m.isLow && <div style={{ fontSize: '9px', color: '#F59E0B', marginTop: '2px', fontWeight: 600 }}>BASSE</div>}
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '10px', marginBottom: 0, fontStyle: 'italic' }}>
+            Coefficients indicatifs : haute saison ×1.25, basse saison ×0.85, neutre ×1.0. Source saisonnalité : {currentBenchmark.bench.source}.
+          </p>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Recommandation de prix par mois"
+          description="Combien dois-tu facturer en juillet ? En février ? Le moteur croise ton ADR actuel avec la saisonnalité réelle de ta ville pour te donner un prix recommandé pour chaque mois de l'année."
+          bullets={[
+            '12 prix recommandés mois par mois',
+            'Différencie haute / basse saison spécifique à TA ville',
+            'Évite de laisser des euros sur la table en haute saison',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Distance aux plafonds légaux (FR ou PT selon logement) ─────── */}
+      {isPremium && legalLimits && legalLimits.limits.length > 0 ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Distance aux plafonds légaux {legalLimits.currentPays === 'PT' ? '🇵🇹' : '🇫🇷'}</h3>
+              <p style={s.cardSub}>Anticipe les bascules fiscales et réglementaires avant qu'elles arrivent</p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
+            {legalLimits.limits.map((l, i) => {
+              const pct = Math.min(100, (l.current / l.max) * 100)
+              const barColor = l.severity === 'danger' ? 'var(--danger)' : l.severity === 'warn' ? '#F59E0B' : 'var(--success-1)'
+              return (
+                <div key={i} style={{ padding: '14px 16px', borderRadius: '10px', background: 'var(--bg-2)', border: '1px solid var(--border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap' as const, gap: '8px', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{l.label}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: barColor, fontFamily: 'var(--font-fraunces), serif' }}>
+                      {l.unit === '€' ? fmtEur(l.current) : `${l.current} ${l.unit}`} / {l.unit === '€' ? fmtEur(l.max) : `${l.max} ${l.unit}`}
+                    </span>
+                  </div>
+                  <div style={{ width: '100%', height: '8px', background: 'var(--surface-2)', borderRadius: '999px', overflow: 'hidden', marginBottom: '6px' }}>
+                    <div style={{ width: `${pct}%`, height: '100%', background: barColor, transition: 'width 0.4s var(--ease-smooth, ease)' }} />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>{Math.round(pct)} %</span>
+                    {l.severity === 'danger' && <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--danger)' }}>⚠️ Plafond proche</span>}
+                    {l.severity === 'warn' && <span style={{ fontSize: '11px', fontWeight: 600, color: '#F59E0B' }}>À surveiller</span>}
+                  </div>
+                  <p style={{ fontSize: '11.5px', color: 'var(--text-2)', marginTop: '8px', marginBottom: 0, lineHeight: 1.5 }}>{l.note}</p>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Distance aux plafonds légaux"
+          description="Ne te fais pas surprendre par une bascule fiscale ou réglementaire. Suivi en temps réel des plafonds qui te concernent (FR : 120 j résidence principale, 15 000 €, 23 000 € LMP — PT : 15 000 € IVA, 200 000 € contabilidade organizada)."
+          bullets={[
+            'Jauges visuelles avec seuils de couleur (vert / orange / rouge)',
+            'Adaptation automatique selon le pays de ton logement',
+            'Note explicative sur la conséquence de chaque dépassement',
+          ]}
+        />
+      ) : null}
+
       {/* ─── Insights ───────────────────────────────────────────────── */}
       {insights.length > 0 && (
         <div style={s.insights}>
@@ -910,6 +1243,39 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
 }
 
 const MONTH_NAMES = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc']
+const MONTH_NAMES_FULL = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+
+// ─── YoY Card (comparatif année par année) ───────────────────────────────
+function YoYCard({ label, current, previous, delta }: {
+  label: string; current: string; previous: string; delta: number | null
+}) {
+  const isUp = delta !== null && delta > 0.02
+  const isDown = delta !== null && delta < -0.02
+  return (
+    <div style={{ padding: '14px 16px', borderRadius: '12px', background: 'var(--bg-2)', border: '1px solid var(--border)' }}>
+      <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px', marginBottom: '6px' }}>
+        {label}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px' }}>
+        <span style={{ fontSize: '20px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)' }}>{current}</span>
+        {delta !== null && (
+          <span style={{
+            fontSize: '12px', fontWeight: 700,
+            padding: '3px 8px', borderRadius: '999px',
+            background: isUp ? 'rgba(52,211,153,0.12)' : isDown ? 'rgba(248,113,113,0.12)' : 'var(--surface-2)',
+            color: isUp ? 'var(--success-1)' : isDown ? 'var(--danger)' : 'var(--text-muted)',
+            border: `1px solid ${isUp ? 'rgba(52,211,153,0.30)' : isDown ? 'rgba(248,113,113,0.30)' : 'var(--border)'}`,
+          }}>
+            {isUp ? '▲' : isDown ? '▼' : '='} {delta !== null ? Math.abs(Math.round(delta * 100)) : 0} %
+          </span>
+        )}
+      </div>
+      <div style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '4px' }}>
+        N-1 même période : {previous}
+      </div>
+    </div>
+  )
+}
 
 // ─── Mini KPI (compact, sans icône, pour les blocs hôteliers/projection) ─
 function MiniKpi({ label, hint, value, sub, subColor }: {
