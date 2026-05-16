@@ -13,7 +13,17 @@ export type SejourRow = {
   date_arrivee: string
   date_depart: string
   montant: number | null
+  commission_montant?: number | null
+  contrat_plateforme?: string | null
   created_at: string | null
+}
+
+export type ChargeRow = {
+  logement_nom: string | null
+  montant: number
+  date_charge: string
+  categorie: string | null
+  deductible: boolean | null
 }
 
 export type LogementRow = {
@@ -36,10 +46,10 @@ export default async function PerformancesPage() {
 
   const supabase = await createClient()
 
-  const [sejoursRes, contractsRes, logementsRes, voyageursRes, objectifRes] = await Promise.all([
+  const [sejoursRes, contractsRes, logementsRes, voyageursRes, objectifRes, chargesRes] = await Promise.all([
     supabase
       .from('sejours')
-      .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, created_at')
+      .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, commission_montant, contrat_plateforme, created_at')
       .eq('user_id', profile.userId)
       .order('date_arrivee', { ascending: false }),
     // Les contrats signés sans séjour lié comptent aussi pour l'occupation/revenus.
@@ -65,6 +75,10 @@ export default async function PerformancesPage() {
       .select('objectif_ca_annuel, annee')
       .eq('user_id', profile.userId)
       .maybeSingle(),
+    supabase
+      .from('revenus_charges')
+      .select('logement_nom, montant, date_charge, categorie, deductible')
+      .eq('user_id', profile.userId),
   ])
 
   const baseSejours: SejourRow[] = (sejoursRes.data ?? []) as SejourRow[]
@@ -87,6 +101,8 @@ export default async function PerformancesPage() {
       date_arrivee: c.date_arrivee,
       date_depart: c.date_depart,
       montant: c.montant_loyer ?? null,
+      commission_montant: null,           // contrats directs : pas de commission OTA
+      contrat_plateforme: 'direct',
       created_at: c.created_at ?? null,
     }))
 
@@ -110,6 +126,8 @@ export default async function PerformancesPage() {
     benchmarks[l.id] = findMarketBenchmark(l.ville, l.pays ?? 'FR')
   })
 
+  const charges: ChargeRow[] = (chargesRes?.data ?? []) as ChargeRow[]
+
   return (
     <PerformancesView
       sejours={sejours}
@@ -117,6 +135,8 @@ export default async function PerformancesPage() {
       voyageurs={voyageurs}
       benchmarks={benchmarks}
       objectifAnnuel={objectifRes?.data?.objectif_ca_annuel ?? null}
+      plan={profile.plan}
+      charges={charges}
     />
   )
 }
