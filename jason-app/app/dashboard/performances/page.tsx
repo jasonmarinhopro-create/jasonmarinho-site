@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
 import PerformancesView from './PerformancesView'
+import { extractCity, findMarketBenchmark, type MarketBenchmark } from '@/lib/lcd/market-benchmarks'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,7 +20,9 @@ export type LogementRow = {
   id: string
   nom: string
   adresse: string | null
-  ville: string | null
+  ville: string | null      // dérivé depuis adresse côté serveur
+  pays: string | null
+  tarif_nuitee_moyen: number | null
 }
 
 export type VoyageurMin = {
@@ -33,7 +36,7 @@ export default async function PerformancesPage() {
 
   const supabase = await createClient()
 
-  const [sejoursRes, contractsRes, logementsRes, voyageursRes] = await Promise.all([
+  const [sejoursRes, contractsRes, logementsRes, voyageursRes, objectifRes] = await Promise.all([
     supabase
       .from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, created_at')
@@ -50,13 +53,18 @@ export default async function PerformancesPage() {
       .order('date_arrivee', { ascending: false }),
     supabase
       .from('logements')
-      .select('id, nom, adresse, ville')
+      .select('id, nom, adresse, pays, tarif_nuitee_moyen')
       .eq('user_id', profile.userId)
       .order('created_at', { ascending: false }),
     supabase
       .from('voyageurs')
       .select('id, source')
       .eq('user_id', profile.userId),
+    supabase
+      .from('revenus_objectifs')
+      .select('objectif_ca_annuel, annee')
+      .eq('user_id', profile.userId)
+      .maybeSingle(),
   ])
 
   const baseSejours: SejourRow[] = (sejoursRes.data ?? []) as SejourRow[]
@@ -86,14 +94,29 @@ export default async function PerformancesPage() {
   // le séjour (le contrat sert juste à la signature). Pas de double comptage.
   void linkedSejourIds // marqueur d'intention, déjà géré par le filter ci-dessus
   const sejours: SejourRow[] = [...baseSejours, ...orphanContracts]
-  const logements: LogementRow[] = (logementsRes.data ?? []) as LogementRow[]
   const voyageurs: VoyageurMin[] = (voyageursRes.data ?? []) as VoyageurMin[]
+  const logementsRaw = (logementsRes.data ?? []) as Array<Omit<LogementRow, 'ville'>>
+  // Extraction ville depuis adresse (côté serveur, ville absente de la table).
+  // Une adresse type "12 rue Foo, 33000 Bordeaux, France" → "Bordeaux".
+  const logements: LogementRow[] = logementsRaw.map(l => ({
+    ...l,
+    ville: extractCity(l.adresse),
+  }))
+
+  // Benchmarks marché : un par logement (selon la ville détectée).
+  // Si aucun match précis, on retombe sur la moyenne pays / null.
+  const benchmarks: Record<string, MarketBenchmark | null> = {}
+  logements.forEach(l => {
+    benchmarks[l.id] = findMarketBenchmark(l.ville, l.pays ?? 'FR')
+  })
 
   return (
     <PerformancesView
       sejours={sejours}
       logements={logements}
       voyageurs={voyageurs}
+      benchmarks={benchmarks}
+      objectifAnnuel={objectifRes?.data?.objectif_ca_annuel ?? null}
     />
   )
 }
