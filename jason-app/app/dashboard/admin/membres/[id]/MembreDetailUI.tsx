@@ -554,14 +554,18 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   profileCard: {
-    display: 'flex', alignItems: 'flex-start', gap: '20px',
-    padding: '24px', borderRadius: '20px', flexWrap: 'wrap',
+    display: 'flex', alignItems: 'flex-start', gap: 'var(--s-5)',
+    padding: 'var(--s-6)', borderRadius: 'var(--r-xl)',
+    flexWrap: 'wrap' as const,
+    boxShadow: 'var(--shadow-sm)',
+    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
   bigAvatar: {
-    width: '64px', height: '64px', flexShrink: 0, borderRadius: '50%',
+    width: '68px', height: '68px', flexShrink: 0, borderRadius: '50%',
     background: 'rgba(0,76,63,0.6)',
-    border: '2px solid rgba(255,213,107,0.2)',
+    border: '2px solid var(--accent-border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
+    boxShadow: '0 0 0 4px var(--accent-bg)',
   },
   bigAvatarText: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 600, color: 'var(--accent-text)',

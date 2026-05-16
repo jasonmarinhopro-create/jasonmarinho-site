@@ -104,10 +104,10 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .h-sub{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.46);line-height:1.75;max-width:480px;margin-bottom:36px;animation:fu .7s .18s ease both}
 
 .h-acts{display:flex;align-items:center;gap:12px;flex-wrap:wrap;animation:fu .7s .27s ease both}
-.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:background .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
 .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.28)}
 .btn-g{background:transparent;color:rgba(255,255,255,.62);font-family:'Outfit',sans-serif;font-size:15px;font-weight:400;padding:14px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.13);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
-.btn-g:hover{border-color:rgba(255,255,255,.32);color:#fff}
+.btn-g:hover{border-color:rgba(255,255,255,.45);color:#fff;background:rgba(255,255,255,.04)}
 
 /* Hero card */
 .h-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px;animation:fu .7s .36s ease both}
@@ -201,8 +201,9 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 
 /* ── FORMATIONS ── */
 .f-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px}
-.btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
-.btn-ol:hover{background:var(--g);color:#fff}
+.btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background .2s cubic-bezier(.4,0,.2,1),color .2s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.btn-ol:hover{background:var(--g);color:#fff;transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,76,63,.18)}
+    .btn-ol:active{transform:translateY(0)}
 .f-gr{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .f-card{background:var(--w);border-radius:16px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s}
 .f-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}

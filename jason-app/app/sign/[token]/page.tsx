@@ -489,75 +489,85 @@ export default async function SignPage({
 
 const page: React.CSSProperties = {
   minHeight: '100vh',
-  background: '#0a1a14',
-  padding: 'clamp(16px, 4vw, 48px) 16px',
+  // Mesh gradient subtil pour donner une vraie profondeur au lieu d'un fond plat
+  background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,76,63,0.4), transparent 60%), #0a1a14',
+  padding: 'clamp(20px, 4vw, 56px) clamp(16px, 4vw, 24px)',
 }
 
 const container: React.CSSProperties = {
-  maxWidth: '720px',
+  maxWidth: '760px',
   margin: '0 auto',
+  animation: 'fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
 }
 
 const header: React.CSSProperties = {
-  marginBottom: '32px',
+  marginBottom: '40px',
+  textAlign: 'center' as const,
 }
 
 const badge: React.CSSProperties = {
-  display: 'inline-block',
-  background: 'rgba(255,213,107,0.15)',
-  border: '1px solid rgba(255,213,107,0.3)',
-  borderRadius: '100px',
-  padding: '4px 14px',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '6px',
+  background: 'rgba(255,213,107,0.12)',
+  border: '1px solid rgba(255,213,107,0.32)',
+  borderRadius: '999px',
+  padding: '5px 14px',
   fontSize: '11px',
-  fontWeight: 600,
+  fontWeight: 700,
   letterSpacing: '1.2px',
   textTransform: 'uppercase' as const,
   color: '#FFD56B',
-  marginBottom: '16px',
+  marginBottom: '20px',
+  boxShadow: '0 0 0 4px rgba(255,213,107,0.06)',
 }
 
 const title: React.CSSProperties = {
   fontFamily: 'Georgia, serif',
-  fontSize: 'clamp(26px, 5vw, 40px)',
+  fontSize: 'clamp(28px, 5vw, 44px)',
   fontWeight: 400,
   color: '#f0ebe1',
-  margin: '0 0 12px',
-  lineHeight: 1.2,
+  margin: '0 0 14px',
+  lineHeight: 1.15,
+  letterSpacing: '-0.5px',
 }
 
 const subtitle: React.CSSProperties = {
-  fontSize: '13px',
-  color: '#6b9a7e',
-  lineHeight: 1.6,
-  margin: 0,
+  fontSize: '14px',
+  color: 'rgba(240,235,225,0.55)',
+  lineHeight: 1.7,
+  margin: '0 auto',
+  maxWidth: '520px',
 }
 
 const successBanner: React.CSSProperties = {
   display: 'flex',
   alignItems: 'flex-start',
   gap: '14px',
-  background: 'rgba(52,211,153,0.1)',
-  border: '1px solid rgba(52,211,153,0.25)',
+  background: 'radial-gradient(ellipse 60% 80% at 100% 0%, rgba(52,211,153,0.10), transparent 60%), rgba(52,211,153,0.06)',
+  border: '1px solid rgba(52,211,153,0.32)',
   borderRadius: '14px',
-  padding: '16px 20px',
+  padding: '16px 22px',
   marginBottom: '24px',
-  color: 'var(--success-1)',
+  color: 'rgba(110,231,183,0.95)',
   fontSize: '14px',
-  lineHeight: 1.5,
+  lineHeight: 1.55,
+  boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
 }
 
 const warningBanner: React.CSSProperties = {
   display: 'flex',
   alignItems: 'flex-start',
   gap: '14px',
-  background: 'rgba(255,213,107,0.08)',
-  border: '1px solid rgba(255,213,107,0.25)',
+  background: 'radial-gradient(ellipse 60% 80% at 100% 0%, rgba(255,213,107,0.10), transparent 60%), rgba(255,213,107,0.05)',
+  border: '1px solid rgba(255,213,107,0.32)',
   borderRadius: '14px',
-  padding: '16px 20px',
+  padding: '16px 22px',
   marginBottom: '24px',
   color: '#FFD56B',
   fontSize: '14px',
-  lineHeight: 1.5,
+  lineHeight: 1.55,
+  boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
 }
 
 const contractBody: React.CSSProperties = {
@@ -566,10 +576,11 @@ const contractBody: React.CSSProperties = {
   borderRadius: '20px',
   overflow: 'hidden',
   marginBottom: '24px',
+  boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
 }
 
 const contractSection: React.CSSProperties = {
-  padding: '24px 28px',
+  padding: '26px 30px',
 }
 
 const sectionTitle: React.CSSProperties = {
@@ -577,7 +588,8 @@ const sectionTitle: React.CSSProperties = {
   fontSize: '16px',
   fontWeight: 600,
   color: '#f0ebe1',
-  margin: '0 0 14px',
+  margin: '0 0 16px',
+  letterSpacing: '-0.2px',
 }
 
 const contractText: React.CSSProperties = {
@@ -600,24 +612,27 @@ const partyGrid: React.CSSProperties = {
 
 const partyBox: React.CSSProperties = {
   background: '#0a1a14',
+  border: '1px solid rgba(255,255,255,0.04)',
   borderRadius: '12px',
-  padding: '16px 18px',
+  padding: '18px 20px',
+  transition: 'border-color 0.2s cubic-bezier(.4,0,.2,1)',
 }
 
 const partyLabel: React.CSSProperties = {
-  fontSize: '11px',
+  fontSize: '10px',
   color: '#6b9a7e',
   textTransform: 'uppercase' as const,
-  letterSpacing: '1px',
-  margin: '0 0 8px',
-  fontWeight: 600,
+  letterSpacing: '1.2px',
+  margin: '0 0 10px',
+  fontWeight: 700,
 }
 
 const partyName: React.CSSProperties = {
-  fontSize: '16px',
+  fontSize: '17px',
   fontWeight: 600,
   color: '#f0ebe1',
-  margin: '0 0 4px',
+  margin: '0 0 6px',
+  letterSpacing: '-0.2px',
 }
 
 const partyDetail: React.CSSProperties = {
@@ -635,8 +650,9 @@ const datesGrid: React.CSSProperties = {
 
 const dateBox: React.CSSProperties = {
   background: '#0a1a14',
+  border: '1px solid rgba(255,255,255,0.04)',
   borderRadius: '12px',
-  padding: '14px 18px',
+  padding: '16px 20px',
   minWidth: '140px',
 }
 
@@ -669,12 +685,14 @@ const dateArrow: React.CSSProperties = {
 }
 
 const nightsBadge: React.CSSProperties = {
-  background: 'rgba(255,213,107,0.1)',
-  border: '1px solid rgba(255,213,107,0.2)',
-  borderRadius: '100px',
-  padding: '6px 16px',
+  background: 'rgba(255,213,107,0.12)',
+  border: '1px solid rgba(255,213,107,0.28)',
+  borderRadius: '999px',
+  padding: '7px 18px',
   fontSize: '13px',
-  fontWeight: 600,
+  fontWeight: 700,
+  letterSpacing: '0.3px',
+  boxShadow: '0 0 0 4px rgba(255,213,107,0.04)',
   color: '#FFD56B',
 }
 
@@ -686,25 +704,28 @@ const pricesGrid: React.CSSProperties = {
 
 const priceBox: React.CSSProperties = {
   background: '#0a1a14',
+  border: '1px solid rgba(255,255,255,0.04)',
   borderRadius: '12px',
-  padding: '16px 18px',
+  padding: '18px 22px',
 }
 
 const priceLabel: React.CSSProperties = {
-  fontSize: '11px',
+  fontSize: '10px',
   color: '#6b9a7e',
   textTransform: 'uppercase' as const,
-  letterSpacing: '1px',
-  margin: '0 0 6px',
-  fontWeight: 600,
+  letterSpacing: '1.2px',
+  margin: '0 0 8px',
+  fontWeight: 700,
 }
 
 const priceValue: React.CSSProperties = {
-  fontSize: '24px',
+  fontSize: '26px',
   fontWeight: 700,
-  color: '#f0ebe1',
+  color: '#FFD56B',
   margin: 0,
   fontVariantNumeric: 'tabular-nums',
+  fontFamily: 'Georgia, serif',
+  letterSpacing: '-0.5px',
 }
 
 const signedBlock: React.CSSProperties = {
