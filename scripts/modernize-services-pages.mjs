@@ -110,6 +110,10 @@ const TARGETS = [
     .filter(d => d.startsWith('comparatif-'))
     .filter(d => fs.existsSync(path.join(ROOT, d, 'index.html')))
     .map(d => path.join(ROOT, d, 'index.html')),
+  // Pages standalone du footer (contact, qui-suis-je, tarifs, etc.)
+  ...['contact', 'qui-suis-je', 'sos-hote', 'tarifs', 'villes', 'lexique-lcd']
+    .filter(d => fs.existsSync(path.join(ROOT, d, 'index.html')))
+    .map(d => path.join(ROOT, d, 'index.html')),
   // Pages légales root
   ...['cgvu.html', 'mentions-legales.html', 'politique-de-confidentialite.html']
     .filter(f => fs.existsSync(path.join(ROOT, f)))
