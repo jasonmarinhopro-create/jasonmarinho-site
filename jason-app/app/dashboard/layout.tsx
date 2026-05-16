@@ -33,6 +33,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     completedSteps: profile.onboarding_completed_steps,
     chezNousOnboardedAt: profile.chez_nous_onboarded_at,
     onboardingStep: profile.onboarding_step,
+    stripeOnboardingComplete: profile.stripe_onboarding_complete,
   })
   const onboardingCompleted = onboardingState.totalDone === onboardingState.totalSteps
   const showOnboarding = !onboardingCompleted
