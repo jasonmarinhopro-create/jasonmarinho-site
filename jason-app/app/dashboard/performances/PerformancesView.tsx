@@ -22,14 +22,15 @@ type Props = {
   charges?: ChargeRow[]
 }
 
-type Period = '1m' | '3m' | '6m' | '12m' | 'ytd'
+type Period = '1m' | '3m' | '6m' | '12m' | 'ytd' | 'upcoming'
 
 const PERIOD_LABELS: Record<Period, string> = {
-  '1m':  'Ce mois',
-  '3m':  '3 mois',
-  '6m':  '6 mois',
-  '12m': '12 mois',
-  'ytd': 'Annee',
+  '1m':       'Ce mois',
+  '3m':       '3 mois',
+  '6m':       '6 mois',
+  '12m':      '12 mois',
+  'ytd':      'Année',
+  'upcoming': 'À venir',
 }
 
 const SOURCE_LABELS: Record<string, { label: string; color: string }> = {
@@ -58,14 +59,28 @@ function clampInterval(start: Date, end: Date, winStart: Date, winEnd: Date) {
   return s < e ? { s, e } : null
 }
 function periodWindow(period: Period, ref: Date = new Date()) {
-  const end = new Date()
+  const now = new Date()
   let start: Date
-  if (period === '1m') start = startOfMonth(ref)
-  else if (period === '3m') start = new Date(ref.getFullYear(), ref.getMonth() - 2, 1)
-  else if (period === '6m') start = new Date(ref.getFullYear(), ref.getMonth() - 5, 1)
-  else if (period === '12m') start = new Date(ref.getFullYear(), ref.getMonth() - 11, 1)
-  else start = new Date(ref.getFullYear(), 0, 1)
-  return { start, end: period === '1m' ? endOfMonth(ref) : end }
+  let end: Date = now
+  if (period === '1m') {
+    start = startOfMonth(ref)
+    end = endOfMonth(ref)
+  } else if (period === '3m') {
+    start = new Date(ref.getFullYear(), ref.getMonth() - 2, 1)
+  } else if (period === '6m') {
+    start = new Date(ref.getFullYear(), ref.getMonth() - 5, 1)
+  } else if (period === '12m') {
+    start = new Date(ref.getFullYear(), ref.getMonth() - 11, 1)
+  } else if (period === 'upcoming') {
+    // À venir : maintenant → +12 mois (réservations futures confirmées)
+    start = now
+    end = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate())
+  } else {
+    // 'ytd' devient 'année entière' (jan → déc) pour inclure les futures résa
+    start = new Date(ref.getFullYear(), 0, 1)
+    end = new Date(ref.getFullYear(), 11, 31)
+  }
+  return { start, end }
 }
 function fmtMonth(d: Date) {
   return d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '')
@@ -102,7 +117,19 @@ function fmtPct(n: number, withSign = false) {
 
 // ─── composant principal ───────────────────────────────────────────────────
 export default function PerformancesView({ sejours, logements, voyageurs, benchmarks, objectifAnnuel, plan = 'decouverte', charges = [] }: Props) {
-  const [period, setPeriod] = useState<Period>(sejours.length < 5 ? '12m' : '1m')
+  // Défaut intelligent : si la majorité des séjours sont dans le futur
+  // (= hôte qui démarre, à peine quelques jours/mois après son inscription),
+  // on bascule en mode 'À venir' pour qu'il voie immédiatement ses réservations
+  // confirmées au lieu d'une page vide.
+  const defaultPeriod: Period = useMemo(() => {
+    if (sejours.length === 0) return 'ytd'
+    const now = Date.now()
+    const futureCount = sejours.filter(s => new Date(s.date_arrivee + 'T12:00:00').getTime() > now).length
+    const pastCount = sejours.length - futureCount
+    if (futureCount > pastCount) return 'upcoming'
+    return sejours.length < 5 ? 'ytd' : '1m'
+  }, [sejours])
+  const [period, setPeriod] = useState<Period>(defaultPeriod)
   const isPremium = plan === 'standard' || plan === 'driing'
   const [logementFilter, setLogementFilter] = useState<string>('all')
 
@@ -958,6 +985,48 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           - garde les sections data en fond blanc, padding réduit
           - force les couleurs pour l'export */}
       <style dangerouslySetInnerHTML={{ __html: `
+        /* Fix select natif : les <option> héritent souvent du fond système
+           (blanc en clair) au lieu du fond du <select>. Forcer ici. */
+        .perf-root select option {
+          background-color: var(--bg) !important;
+          color: var(--text) !important;
+          padding: 8px 12px;
+        }
+        .perf-root .perf-chip:hover:not(.active) {
+          background: var(--surface-2) !important;
+          border-color: rgba(255,213,107,0.30) !important;
+          color: var(--text) !important;
+        }
+        .perf-root .perf-export-btn:hover {
+          background: linear-gradient(135deg, #FFD56B 0%, #FFC845 100%) !important;
+          border-color: #FFD56B !important;
+          color: #1F1A0E !important;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 18px -6px rgba(255,213,107,0.45);
+        }
+        .perf-root .perf-pdf-btn:hover {
+          background: linear-gradient(135deg, #63D683 0%, #4FB870 100%) !important;
+          border-color: #63D683 !important;
+          color: #0A1F12 !important;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 18px -6px rgba(99,214,131,0.45);
+        }
+        .perf-root .perf-kpi:hover {
+          border-color: rgba(255,213,107,0.35) !important;
+          transform: translateY(-2px);
+          box-shadow: 0 12px 32px -16px rgba(0,0,0,0.5);
+        }
+        .perf-root .perf-kpi::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, transparent 0%, rgba(255,213,107,0.5) 50%, transparent 100%);
+          opacity: 0;
+          transition: opacity .25s;
+        }
+        .perf-root .perf-kpi:hover::before { opacity: 1; }
+
         @media print {
           body { background: white !important; color: black !important; }
           .jm-sidebar, .jm-header-app, .cookie-banner, button { display: none !important; }
@@ -973,7 +1042,11 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           <ChartLineUp size={28} weight="duotone" color="var(--accent-text)" />
           <h1 style={s.title}>Performances</h1>
         </div>
-        <p style={s.subtitle}>Pilote ton activite : taux d'occupation, revenus, comparaison entre logements.</p>
+        <p style={s.subtitle}>
+          {logements.length > 1
+            ? "Pilote ton activité : taux d'occupation, revenus, comparaison entre logements."
+            : "Pilote ton activité : taux d'occupation, revenus, benchmark marché et analyses Premium."}
+        </p>
       </header>
 
       {/* ─── Filtres ─────────────────────────────────────────────────── */}
@@ -986,6 +1059,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
+                className={`perf-chip${period === p ? ' active' : ''}`}
                 style={{
                   ...s.chip,
                   ...(period === p ? s.chipActive : {}),
@@ -1010,17 +1084,24 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
             ))}
           </select>
         </div>
-        <button onClick={exportCsv} style={s.exportBtn}>
-          <Download size={16} weight="bold" />
+        <button onClick={exportCsv} className="perf-export-btn" style={s.exportBtn}>
+          <Download size={15} weight="bold" />
           Exporter CSV
         </button>
         {isPremium && (
           <button
             onClick={() => window.print()}
-            style={{ ...s.exportBtn, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' }}
+            className="perf-pdf-btn"
+            style={{
+              ...s.exportBtn,
+              marginLeft: 0,
+              background: 'linear-gradient(135deg, rgba(99,214,131,0.12) 0%, rgba(99,214,131,0.06) 100%)',
+              borderColor: 'rgba(99,214,131,0.30)',
+              color: '#63D683',
+            }}
             title="Ouvre la boîte d'impression : choisis 'Enregistrer en PDF' pour générer un rapport synthétique"
           >
-            <Download size={16} weight="bold" />
+            <Download size={15} weight="bold" />
             Rapport PDF
           </button>
         )}
@@ -1037,7 +1118,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         />
         <KpiCard
           icon={<CurrencyEur size={22} weight="duotone" />}
-          label="Revenu (periode)"
+          label="Revenu (période)"
           value={fmtEur(stats.revenue)}
           delta={deltas.revenue}
           color="#34D399"
@@ -1050,7 +1131,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         />
         <KpiCard
           icon={<CalendarBlank size={22} weight="duotone" />}
-          label="Nb sejours"
+          label="Nb séjours"
           value={String(stats.countSejours)}
           color="#A78BFA"
         />
@@ -1744,8 +1825,8 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         <section style={s.card}>
           <div style={s.cardHead}>
             <div>
-              <h3 style={s.cardTitle}>Repartition revenus par logement</h3>
-              <p style={s.cardSub}>Sur la periode selectionnee</p>
+              <h3 style={s.cardTitle}>Répartition revenus par logement</h3>
+              <p style={s.cardSub}>Sur la période sélectionnée</p>
             </div>
           </div>
           {repartition.total > 0 ? (
@@ -1952,13 +2033,22 @@ function BenchRow({ label, mineValue, mineNum, marketValue, marketNum, betterIfH
         <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>Marché</span>
         <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text-2)' }}>{marketValue}</span>
       </div>
-      {Math.abs(deltaPct) >= 2 && (
+      {/* Pas de delta si pas de data perso (évite "100 % en dessous" insultant) */}
+      {mineNum > 0 && Math.abs(deltaPct) >= 2 && (
         <div style={{
           marginTop: '10px', fontSize: '11px', fontWeight: 600,
           color: isPositive ? 'var(--success-1)' : '#F59E0B',
           display: 'flex', alignItems: 'center', gap: '4px',
         }}>
           {isPositive ? '▲' : '▼'} {Math.abs(deltaPct)} % {isPositive ? 'au-dessus' : 'en dessous'}
+        </div>
+      )}
+      {mineNum === 0 && (
+        <div style={{
+          marginTop: '10px', fontSize: '11px', fontWeight: 500,
+          color: 'var(--text-muted)', fontStyle: 'italic',
+        }}>
+          Pas encore de data — repère marché
         </div>
       )}
     </div>
@@ -1979,15 +2069,15 @@ function KpiCard({ icon, label, value, delta, color }: {
   const deltaColor = isUp ? 'var(--success-1)' : isDown ? 'var(--danger)' : 'var(--text-3)'
   const DeltaIcon = isUp ? ArrowUp : isDown ? ArrowDown : Minus
   return (
-    <div style={s.kpi}>
+    <div className="perf-kpi" style={s.kpi}>
       <div style={{ ...s.kpiIcon, color }}>{icon}</div>
-      <div>
+      <div style={{ flex: 1, minWidth: 0 }}>
         <div style={s.kpiLabel}>{label}</div>
         <div style={s.kpiValue}>{value}</div>
         {showDelta && (
           <div style={{ ...s.kpiDelta, color: deltaColor }}>
             <DeltaIcon size={12} weight="bold" />
-            {fmtPct(Math.abs(delta!), false)} vs periode precedente
+            {fmtPct(Math.abs(delta!), false)} vs période précédente
           </div>
         )}
       </div>
@@ -2082,39 +2172,58 @@ const s: Record<string, React.CSSProperties> = {
   subtitle: { color: 'var(--text-2)', fontSize: 14, margin: 0 },
 
   filters: {
-    display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12,
-    padding: '12px 14px',
-    background: 'var(--surface)',
+    display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14,
+    padding: '14px 18px',
+    background: 'linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%)',
     border: '1px solid var(--border)',
-    borderRadius: 14,
+    borderRadius: 16,
+    boxShadow: '0 1px 0 0 rgba(255,213,107,0.04) inset, 0 8px 24px -16px rgba(0,0,0,0.4)',
   },
-  filterGroup: { display: 'flex', alignItems: 'center', gap: 8 },
-  filterLabel: { fontSize: 12, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.06em' },
-  chipRow: { display: 'flex', gap: 4 },
+  filterGroup: { display: 'flex', alignItems: 'center', gap: 10 },
+  filterLabel: {
+    fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase',
+    letterSpacing: '0.08em', fontWeight: 700,
+  },
+  chipRow: { display: 'flex', gap: 6 },
   chip: {
-    padding: '6px 12px', borderRadius: 999,
-    background: 'transparent', border: '1px solid var(--border)',
-    color: 'var(--text-2)', fontSize: 13, cursor: 'pointer',
-    transition: 'all .15s',
+    padding: '7px 14px', borderRadius: 999,
+    background: 'var(--bg-2)', border: '1px solid var(--border)',
+    color: 'var(--text-2)', fontSize: 12.5, cursor: 'pointer',
+    transition: 'all .18s cubic-bezier(.16,1,.3,1)',
+    fontWeight: 500, fontFamily: 'inherit',
   },
   chipActive: {
-    background: 'var(--accent-bg-2)',
-    borderColor: 'var(--accent-border-2)',
-    color: 'var(--accent-text)',
-    fontWeight: 600,
+    background: 'linear-gradient(135deg, #FFD56B 0%, #FFC845 100%)',
+    borderColor: '#FFD56B',
+    color: '#1F1A0E',
+    fontWeight: 700,
+    boxShadow: '0 4px 14px -4px rgba(255,213,107,0.5)',
   },
   select: {
-    padding: '6px 10px', borderRadius: 8,
-    background: 'var(--surface-2)', border: '1px solid var(--border)',
-    color: 'var(--text)', fontSize: 13, cursor: 'pointer',
+    padding: '8px 14px', borderRadius: 10,
+    // Important : fond sombre EXPLICITE pour éviter le white-on-white quand
+    // le dropdown s'ouvre. Les <option> héritent du fond du <select> en css moderne.
+    background: 'var(--bg)',
+    color: 'var(--text)',
+    border: '1px solid var(--border)',
+    fontSize: 13, cursor: 'pointer',
+    fontFamily: 'inherit', fontWeight: 500,
+    appearance: 'none' as const,
+    WebkitAppearance: 'none' as const,
+    backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0a0' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>")`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'right 12px center',
+    paddingRight: 32,
   },
   exportBtn: {
     marginLeft: 'auto',
-    display: 'inline-flex', alignItems: 'center', gap: 6,
-    padding: '8px 14px', borderRadius: 999,
-    background: 'var(--surface-2)', border: '1px solid var(--border)',
-    color: 'var(--text-2)', fontSize: 13, cursor: 'pointer',
-    fontWeight: 500,
+    display: 'inline-flex', alignItems: 'center', gap: 8,
+    padding: '9px 16px', borderRadius: 999,
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    color: 'var(--text)', fontSize: 12.5, cursor: 'pointer',
+    fontWeight: 600, fontFamily: 'inherit',
+    transition: 'all .18s cubic-bezier(.16,1,.3,1)',
   },
 
   kpiGrid: {
@@ -2123,19 +2232,22 @@ const s: Record<string, React.CSSProperties> = {
     gap: 14,
   },
   kpi: {
-    background: 'var(--surface)',
+    position: 'relative',
+    background: 'linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%)',
     border: '1px solid var(--border)',
-    borderRadius: 'var(--r-lg)',
-    padding: 'var(--s-4) var(--s-5)',
-    display: 'flex', alignItems: 'flex-start', gap: 'var(--s-4)',
-    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
+    borderRadius: 16,
+    padding: '18px 20px',
+    display: 'flex', alignItems: 'flex-start', gap: 14,
+    transition: 'border-color .25s cubic-bezier(.16,1,.3,1), box-shadow .25s, transform .25s',
+    overflow: 'hidden' as const,
   },
   kpiIcon: {
-    width: 44, height: 44, borderRadius: 'var(--r-md)',
-    background: 'var(--surface-2)',
+    width: 44, height: 44, borderRadius: 12,
+    background: 'linear-gradient(135deg, rgba(255,213,107,0.18) 0%, rgba(99,214,131,0.10) 100%)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
-    transition: 'transform var(--d-base) var(--ease-spring)',
+    transition: 'transform .25s cubic-bezier(.34,1.56,.64,1)',
+    border: '1px solid rgba(255,213,107,0.20)',
   },
   kpiLabel: {
     fontSize: 'var(--t-xs)', color: 'var(--text-muted)',
