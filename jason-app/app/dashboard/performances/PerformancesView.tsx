@@ -7,11 +7,14 @@ import {
   ArrowDown, ArrowUp, Download, Funnel,
 } from '@phosphor-icons/react/dist/ssr'
 import type { SejourRow, LogementRow, VoyageurMin } from './page'
+import type { MarketBenchmark } from '@/lib/lcd/market-benchmarks'
 
 type Props = {
   sejours:    SejourRow[]
   logements:  LogementRow[]
   voyageurs:  VoyageurMin[]
+  benchmarks?: Record<string, MarketBenchmark | null>
+  objectifAnnuel?: number | null
 }
 
 type Period = '1m' | '3m' | '6m' | '12m' | 'ytd'
@@ -71,7 +74,7 @@ function fmtPct(n: number, withSign = false) {
 }
 
 // ─── composant principal ───────────────────────────────────────────────────
-export default function PerformancesView({ sejours, logements, voyageurs }: Props) {
+export default function PerformancesView({ sejours, logements, voyageurs, benchmarks, objectifAnnuel }: Props) {
   const [period, setPeriod] = useState<Period>(sejours.length < 5 ? '12m' : '1m')
   const [logementFilter, setLogementFilter] = useState<string>('all')
 
@@ -294,27 +297,168 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
     }).sort((a, b) => b.revenu - a.revenu)
   }, [logements, stats, totalDaysWindow])
 
-  // ─── insights auto ─────────────────────────────────────────────────────
+  // ─── KPIs hôteliers (RevPAR, ADR, premium weekend, jour de semaine) ────
+  // RevPAR  : Revenue Per Available Night — métrique #1 en hôtellerie
+  // ADR     : Average Daily Rate — prix moyen par nuit louée
+  // weekend premium : différentiel prix vendredi-samedi vs lundi-jeudi
+  const hotelKpis = useMemo(() => {
+    const logementCount = logementFilter === 'all' ? Math.max(1, logements.length) : 1
+    const nuitsDispo = totalDaysWindow * logementCount
+    const revpar = nuitsDispo > 0 ? stats.revenue / nuitsDispo : 0
+    const adr = stats.prixMoyen // = revenue / nuits louées (déjà calculé)
+
+    // Split par jour de semaine : on agrège les nuits réservées et le CA
+    // par jour de la semaine (0=dimanche, 1=lundi, ..., 6=samedi)
+    const byDow: Record<number, { nuits: number; revenu: number }> = {
+      0: { nuits: 0, revenu: 0 }, 1: { nuits: 0, revenu: 0 },
+      2: { nuits: 0, revenu: 0 }, 3: { nuits: 0, revenu: 0 },
+      4: { nuits: 0, revenu: 0 }, 5: { nuits: 0, revenu: 0 },
+      6: { nuits: 0, revenu: 0 },
+    }
+    filteredSejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const fullDuration = daysBetween(arr, dep) || 1
+      const pricePerNight = (s.montant ?? 0) / fullDuration
+      const overlap = clampInterval(arr, dep, winStart, winEnd)
+      if (!overlap) return
+      const cursor = new Date(overlap.s)
+      while (cursor < overlap.e) {
+        const dow = cursor.getDay()
+        byDow[dow].nuits += 1
+        byDow[dow].revenu += pricePerNight
+        cursor.setDate(cursor.getDate() + 1)
+      }
+    })
+
+    const weekendNuits = byDow[5].nuits + byDow[6].nuits // ven + sam
+    const weekendRevenu = byDow[5].revenu + byDow[6].revenu
+    const semaineNuits = byDow[0].nuits + byDow[1].nuits + byDow[2].nuits + byDow[3].nuits + byDow[4].nuits
+    const semaineRevenu = byDow[0].revenu + byDow[1].revenu + byDow[2].revenu + byDow[3].revenu + byDow[4].revenu
+    const weekendAdr = weekendNuits > 0 ? weekendRevenu / weekendNuits : 0
+    const semaineAdr = semaineNuits > 0 ? semaineRevenu / semaineNuits : 0
+    const weekendPremiumPct = semaineAdr > 0 ? (weekendAdr - semaineAdr) / semaineAdr : 0
+
+    return {
+      revpar,
+      adr,
+      nuitsDispo,
+      byDow,
+      weekendAdr,
+      semaineAdr,
+      weekendPremiumPct,
+      potentielAnnuel: adr * 365 * logementCount, // si 100% occupé toute l'année
+    }
+  }, [filteredSejours, winStart, winEnd, totalDaysWindow, logementFilter, logements.length, stats.prixMoyen, stats.revenue])
+
+  // ─── projection annuelle vs objectif (utilise revenus_objectifs) ───────
+  const projection = useMemo(() => {
+    if (!objectifAnnuel || objectifAnnuel <= 0) return null
+    // CA YTD réel (depuis le 1er janvier)
+    const now = new Date()
+    const yStart = new Date(now.getFullYear(), 0, 1)
+    let ytdRevenu = 0
+    sejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const overlap = clampInterval(arr, dep, yStart, now)
+      if (!overlap) return
+      const nuits = daysBetween(overlap.s, overlap.e)
+      const fullDuration = daysBetween(arr, dep) || 1
+      ytdRevenu += (s.montant ?? 0) * (nuits / fullDuration)
+    })
+    const daysElapsed = Math.max(1, daysBetween(yStart, now))
+    const daysInYear = ((now.getFullYear() % 4 === 0 && now.getFullYear() % 100 !== 0) || now.getFullYear() % 400 === 0) ? 366 : 365
+    // Projection naïve : extrapolation linéaire YTD → fin d'année
+    const projete = (ytdRevenu / daysElapsed) * daysInYear
+    const objectifPct = (ytdRevenu / objectifAnnuel) * 100
+    const projetePct = (projete / objectifAnnuel) * 100
+    return { ytdRevenu, projete, objectifPct, projetePct, daysElapsed, daysInYear }
+  }, [sejours, objectifAnnuel])
+
+  // ─── benchmark marché du logement courant ──────────────────────────────
+  const currentBenchmark = useMemo(() => {
+    if (!benchmarks) return null
+    if (logementFilter === 'all') {
+      // Si plusieurs logements, on prend celui qui a un benchmark précis,
+      // sinon le 1er (l'utilisateur change de filtre s'il veut autre chose)
+      const first = logements.find(l => benchmarks[l.id]?.tier === 'precise')
+                 ?? logements[0]
+      return first ? { logement: first, bench: benchmarks[first.id] } : null
+    }
+    const l = logements.find(lg => lg.nom === logementFilter)
+    return l ? { logement: l, bench: benchmarks[l.id] } : null
+  }, [benchmarks, logements, logementFilter])
+
+  // ─── insights auto enrichis ────────────────────────────────────────────
   const insights = useMemo(() => {
-    const out: { kind: 'top' | 'low' | 'tip'; text: string }[] = []
-    if (comparator.length > 0) {
+    const out: { kind: 'top' | 'low' | 'tip' | 'benchmark'; text: string }[] = []
+
+    // Comparatif multi-logement (utile si > 1)
+    if (logements.length > 1 && comparator.length > 0) {
       const top = comparator[0]
       if (top.revenu > 0) {
         out.push({ kind: 'top', text: `${top.nom} est ton top performer (${fmtPct(top.occupation)} occupation, ${fmtEur(top.revenu)})` })
       }
       const low = [...comparator].reverse().find(c => c.occupation < 0.4 && c.occupation > 0)
       if (low) {
-        out.push({ kind: 'low', text: `${low.nom} est sous les 40 % d'occupation, considere baisser le prix ou lancer une promo` })
+        out.push({ kind: 'low', text: `${low.nom} est sous les 40 % d'occupation, considère baisser le prix ou lancer une promo` })
       }
     }
+
+    // Benchmark régional vs occupation actuelle
+    if (currentBenchmark?.bench && stats.occupation > 0) {
+      const bench = currentBenchmark.bench
+      const myOccPct = Math.round(stats.occupation * 100)
+      const diff = myOccPct - bench.occupationAnnuellePct
+      if (Math.abs(diff) >= 5) {
+        const text = diff > 0
+          ? `Bravo : ton occupation (${myOccPct} %) dépasse la moyenne ${bench.ville} (${bench.occupationAnnuellePct} %) de ${diff} pts`
+          : `Tu es ${Math.abs(diff)} pts sous la moyenne ${bench.ville} (${bench.occupationAnnuellePct} %) — il y a une marge de remplissage`
+        out.push({ kind: diff > 0 ? 'top' : 'low', text })
+      }
+      // Prix vs ADR local
+      if (hotelKpis.adr > 0) {
+        const priceDiff = Math.round(((hotelKpis.adr - bench.adrEur) / bench.adrEur) * 100)
+        if (Math.abs(priceDiff) >= 15) {
+          out.push({
+            kind: 'benchmark',
+            text: priceDiff > 0
+              ? `Ton prix moyen (${fmtEur(hotelKpis.adr)}) est ${priceDiff} % au-dessus du marché ${bench.ville} (${fmtEur(bench.adrEur)}) — vérifie que tu ne te brides pas en occupation`
+              : `Ton prix moyen (${fmtEur(hotelKpis.adr)}) est ${Math.abs(priceDiff)} % sous le marché ${bench.ville} (${fmtEur(bench.adrEur)}) — tu peux probablement le monter`,
+          })
+        }
+      }
+    }
+
+    // Weekend premium actionnable
+    if (hotelKpis.semaineAdr > 0 && hotelKpis.weekendAdr > 0) {
+      const premPct = Math.round(hotelKpis.weekendPremiumPct * 100)
+      if (premPct < 10 && hotelKpis.semaineAdr > 30) {
+        out.push({
+          kind: 'tip',
+          text: `Tes weekends ne sont que ${premPct} % au-dessus de la semaine — la plupart des hôtes appliquent +20 à +40 %`,
+        })
+      } else if (premPct >= 30) {
+        out.push({
+          kind: 'top',
+          text: `Tu valorises bien tes weekends : +${premPct} % vs semaine, c'est cohérent avec le marché`,
+        })
+      }
+    }
+
     if (stats.dureeMoyenne > 0 && stats.dureeMoyenne < 3) {
-      out.push({ kind: 'tip', text: `Duree moyenne de ${stats.dureeMoyenne.toFixed(1)} nuits : pense a optimiser tes frais de menage` })
+      out.push({ kind: 'tip', text: `Durée moyenne de ${stats.dureeMoyenne.toFixed(1)} nuits : pense à optimiser tes frais de ménage` })
     }
     if (stats.anticipationMoyenne > 60) {
-      out.push({ kind: 'tip', text: `Tes voyageurs reservent ${Math.round(stats.anticipationMoyenne)} jours en avance, ouvre tes calendriers plus tot` })
+      out.push({ kind: 'tip', text: `Tes voyageurs réservent ${Math.round(stats.anticipationMoyenne)} jours en avance, ouvre tes calendriers plus tôt` })
     }
-    return out.slice(0, 3)
-  }, [comparator, stats])
+    if (stats.anticipationMoyenne > 0 && stats.anticipationMoyenne < 7) {
+      out.push({ kind: 'tip', text: `Réservations très tardives (${Math.round(stats.anticipationMoyenne)} j) : pense à attirer plus de réservations anticipées (early bird -10 % à 90 j)` })
+    }
+
+    return out.slice(0, 5)
+  }, [comparator, stats, currentBenchmark, hotelKpis, logements.length])
 
   // ─── export CSV ────────────────────────────────────────────────────────
   function exportCsv() {
@@ -444,6 +588,146 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
         />
       </div>
 
+      {/* ─── KPIs hôteliers : RevPAR, ADR, weekend premium ──────────── */}
+      <section style={s.card}>
+        <div style={s.cardHead}>
+          <div>
+            <h3 style={s.cardTitle}>Indicateurs hôteliers</h3>
+            <p style={s.cardSub}>Les métriques standards utilisées par les pros de l'hébergement</p>
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+          <MiniKpi
+            label="RevPAR"
+            hint="Revenu par nuit disponible"
+            value={fmtEur(hotelKpis.revpar)}
+            sub={`sur ${hotelKpis.nuitsDispo} nuits dispo`}
+          />
+          <MiniKpi
+            label="ADR"
+            hint="Average Daily Rate = prix moyen par nuit louée"
+            value={fmtEur(hotelKpis.adr)}
+            sub="prix moyen par nuit"
+          />
+          <MiniKpi
+            label="Prix weekend"
+            hint="Moyenne ven + sam"
+            value={hotelKpis.weekendAdr > 0 ? fmtEur(hotelKpis.weekendAdr) : '—'}
+            sub={hotelKpis.semaineAdr > 0 && hotelKpis.weekendAdr > 0
+              ? `${hotelKpis.weekendPremiumPct >= 0 ? '+' : ''}${Math.round(hotelKpis.weekendPremiumPct * 100)} % vs semaine`
+              : 'pas assez de data'}
+            subColor={hotelKpis.weekendPremiumPct >= 0.2 ? 'var(--success-1)' : hotelKpis.weekendPremiumPct >= 0.1 ? '#FACC15' : 'var(--danger)'}
+          />
+          <MiniKpi
+            label="Prix semaine"
+            hint="Moyenne lun à jeu"
+            value={hotelKpis.semaineAdr > 0 ? fmtEur(hotelKpis.semaineAdr) : '—'}
+            sub="lun → jeu"
+          />
+          <MiniKpi
+            label="Potentiel 100%"
+            hint="Si tu étais occupé toute l'année à ton ADR actuel"
+            value={fmtEur(hotelKpis.potentielAnnuel)}
+            sub="365 j × ADR"
+          />
+        </div>
+      </section>
+
+      {/* ─── Benchmark régional (depuis ville détectée) ─────────────── */}
+      {currentBenchmark?.bench && (
+        <section style={{ ...s.card, background: 'linear-gradient(135deg, var(--accent-bg) 0%, var(--surface) 100%)' }}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>
+                Benchmark marché &middot; {currentBenchmark.bench.ville}
+                {currentBenchmark.bench.tier === 'national' && <span style={{ fontSize: '11px', color: 'var(--text-3)', fontWeight: 400 }}> · moyenne pays (ville non listée)</span>}
+              </h3>
+              <p style={s.cardSub}>Comparatif indicatif vs marché LCD local — source : {currentBenchmark.bench.source}</p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
+            <BenchRow
+              label="Taux d'occupation moyen"
+              mineValue={fmtPct(stats.occupation)}
+              mineNum={stats.occupation * 100}
+              marketValue={`${currentBenchmark.bench.occupationAnnuellePct} %`}
+              marketNum={currentBenchmark.bench.occupationAnnuellePct}
+              betterIfHigher
+            />
+            <BenchRow
+              label="Prix moyen / nuit (ADR)"
+              mineValue={fmtEur(hotelKpis.adr)}
+              mineNum={hotelKpis.adr}
+              marketValue={fmtEur(currentBenchmark.bench.adrEur)}
+              marketNum={currentBenchmark.bench.adrEur}
+              betterIfHigher
+              tooltipMarket="Prix médian observé sur le marché local (LCD/Alojamento Local)"
+            />
+            <BenchRow
+              label="RevPAR annuel"
+              mineValue={fmtEur(hotelKpis.revpar * 365)}
+              mineNum={hotelKpis.revpar * 365}
+              marketValue={fmtEur(currentBenchmark.bench.revparAnnuelEur)}
+              marketNum={currentBenchmark.bench.revparAnnuelEur}
+              betterIfHigher
+              tooltipMarket="Revenu théorique annuel par bien selon le marché"
+            />
+          </div>
+          {currentBenchmark.bench.saisonHaute.length > 0 && (
+            <p style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '14px', marginBottom: 0 }}>
+              <strong style={{ color: 'var(--text-2)' }}>Haute saison locale :</strong> {currentBenchmark.bench.saisonHaute.map(m => MONTH_NAMES[m - 1]).join(', ')}.
+              Aligne tes prix sur ces mois.
+            </p>
+          )}
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px', marginBottom: 0, fontStyle: 'italic' }}>
+            Données indicatives agrégées depuis sources publiques (INSEE, DGE, INE, observatoires régionaux). À titre de repère, pas de référence absolue. Mise à jour annuelle.
+          </p>
+        </section>
+      )}
+
+      {/* ─── Projection annuelle vs objectif ─────────────────────────── */}
+      {projection && objectifAnnuel && (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Projection {new Date().getFullYear()} vs objectif</h3>
+              <p style={s.cardSub}>Extrapolation linéaire du CA actuel sur la fin d'année</p>
+            </div>
+            <span style={{
+              fontSize: '12px', fontWeight: 600,
+              padding: '4px 10px', borderRadius: '999px',
+              background: projection.projetePct >= 100 ? 'rgba(52,211,153,0.12)' : projection.projetePct >= 70 ? 'var(--accent-bg)' : 'rgba(245,158,11,0.12)',
+              color: projection.projetePct >= 100 ? 'var(--success-1)' : projection.projetePct >= 70 ? 'var(--accent-text)' : '#F59E0B',
+              border: `1px solid ${projection.projetePct >= 100 ? 'rgba(52,211,153,0.30)' : projection.projetePct >= 70 ? 'var(--accent-border)' : 'rgba(245,158,11,0.30)'}`,
+            }}>
+              {Math.round(projection.projetePct)}% de l'objectif
+            </span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '14px' }}>
+            <MiniKpi label="CA réalisé YTD"     value={fmtEur(projection.ytdRevenu)} sub={`au ${projection.daysElapsed}e jour de l'année`} />
+            <MiniKpi label="Projection fin d'année" value={fmtEur(projection.projete)} sub="extrapolation linéaire" />
+            <MiniKpi label="Objectif annuel"    value={fmtEur(objectifAnnuel)} sub="défini dans /revenus" />
+            <MiniKpi label="Reste à faire"      value={fmtEur(Math.max(0, objectifAnnuel - projection.ytdRevenu))} sub="d'ici fin d'année" />
+          </div>
+          {/* Jauge */}
+          <div style={{ width: '100%', height: '10px', background: 'var(--surface-2)', borderRadius: '999px', overflow: 'hidden', position: 'relative' as const }}>
+            <div style={{
+              width: `${Math.min(100, projection.objectifPct)}%`,
+              height: '100%',
+              background: projection.objectifPct >= 100 ? 'var(--success-1)' : 'var(--accent-text)',
+              transition: 'width 0.4s var(--ease-smooth, ease)',
+            }} />
+          </div>
+          <p style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '8px', marginBottom: 0 }}>
+            {projection.projetePct >= 100
+              ? `🎉 À ce rythme, tu dépasses ton objectif de ${fmtEur(projection.projete - objectifAnnuel)}.`
+              : projection.projetePct >= 80
+              ? `Tu es en bonne voie. Pour atteindre ton objectif, il te manque ~${fmtEur(objectifAnnuel - projection.projete)} sur l'année.`
+              : `À ce rythme, tu seras à ${Math.round(projection.projetePct)} % de ton objectif. Il faut booster d'environ ${fmtEur(objectifAnnuel - projection.projete)} sur le reste de l'année.`}
+          </p>
+        </section>
+      )}
+
       {/* ─── Insights ───────────────────────────────────────────────── */}
       {insights.length > 0 && (
         <div style={s.insights}>
@@ -455,12 +739,14 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
                 borderLeftColor:
                   ins.kind === 'top' ? 'var(--success-1)'
                   : ins.kind === 'low' ? '#F59E0B'
+                  : ins.kind === 'benchmark' ? '#A78BFA'
                   : 'var(--accent-text)',
               }}
             >
               {ins.kind === 'top' && <Trophy size={18} weight="fill" color="#34D399" />}
               {ins.kind === 'low' && <Warning size={18} weight="fill" color="#F59E0B" />}
               {ins.kind === 'tip' && <Sparkle size={18} weight="fill" color="var(--accent-text)" />}
+              {ins.kind === 'benchmark' && <Sparkle size={18} weight="fill" color="#A78BFA" />}
               <span>{ins.text}</span>
             </div>
           ))}
@@ -619,6 +905,81 @@ export default function PerformancesView({ sejours, logements, voyageurs }: Prop
           </table>
         </div>
       </section>
+    </div>
+  )
+}
+
+const MONTH_NAMES = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc']
+
+// ─── Mini KPI (compact, sans icône, pour les blocs hôteliers/projection) ─
+function MiniKpi({ label, hint, value, sub, subColor }: {
+  label: string
+  hint?: string
+  value: string
+  sub?: string
+  subColor?: string
+}) {
+  return (
+    <div
+      title={hint}
+      style={{
+        padding: '12px 14px', borderRadius: '10px',
+        background: 'var(--bg-2)', border: '1px solid var(--border)',
+      }}
+    >
+      <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.3px', textTransform: 'uppercase' as const, marginBottom: '4px' }}>
+        {label}
+      </div>
+      <div style={{ fontSize: '18px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)', lineHeight: 1.1 }}>
+        {value}
+      </div>
+      {sub && (
+        <div style={{ fontSize: '11px', color: subColor ?? 'var(--text-3)', marginTop: '4px', fontWeight: subColor ? 600 : 400 }}>
+          {sub}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Bench row (ta valeur vs marché, avec delta coloré) ──────────────────
+function BenchRow({ label, mineValue, mineNum, marketValue, marketNum, betterIfHigher, tooltipMarket }: {
+  label: string
+  mineValue: string
+  mineNum: number
+  marketValue: string
+  marketNum: number
+  betterIfHigher: boolean
+  tooltipMarket?: string
+}) {
+  const diff = mineNum - marketNum
+  const isPositive = betterIfHigher ? diff > 0 : diff < 0
+  const deltaPct = marketNum > 0 ? Math.round((diff / marketNum) * 100) : 0
+  return (
+    <div style={{
+      padding: '14px 16px', borderRadius: '10px',
+      background: 'var(--bg-2)', border: '1px solid var(--border)',
+    }}>
+      <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px', marginBottom: '8px' }}>
+        {label}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '10px', marginBottom: '6px' }}>
+        <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>Toi</span>
+        <span style={{ fontSize: '17px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)' }}>{mineValue}</span>
+      </div>
+      <div title={tooltipMarket} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '10px' }}>
+        <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>Marché</span>
+        <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text-2)' }}>{marketValue}</span>
+      </div>
+      {Math.abs(deltaPct) >= 2 && (
+        <div style={{
+          marginTop: '10px', fontSize: '11px', fontWeight: 600,
+          color: isPositive ? 'var(--success-1)' : '#F59E0B',
+          display: 'flex', alignItems: 'center', gap: '4px',
+        }}>
+          {isPositive ? '▲' : '▼'} {Math.abs(deltaPct)} % {isPositive ? 'au-dessus' : 'en dessous'}
+        </div>
+      )}
     </div>
   )
 }
