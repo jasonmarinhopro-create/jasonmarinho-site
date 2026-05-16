@@ -5,9 +5,9 @@ import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
   House, Plus, Trash, X, Check,
   Info, Warning, ArrowRight, Scales, Upload,
-  Receipt, ChartBar, Target,
+  Receipt, ChartBar, Target, EyeSlash,
 } from '@phosphor-icons/react/dist/ssr'
-import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel } from './actions'
+import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel, setEntryADeclarer } from './actions'
 import ImportCSVModal from './ImportCSVModal'
 import { PLATFORMS, suggestCommission } from '@/lib/platforms'
 import { COUNTRIES as COUNTRIES_MAP } from '@/lib/countries'
@@ -40,6 +40,10 @@ interface RevenusEntry {
   // calculer les commissions et le revenu net par canal.
   commission_montant?: number
   contrat_plateforme?: string | null
+  // Si false, l'entrée est exclue de l'estimation fiscale (cadeau, remboursement,
+  // usage perso). Default true côté DB. L'utilisateur reste responsable de sa
+  // déclaration légale.
+  a_declarer?: boolean
 }
 
 interface ChargeEntry {
@@ -225,6 +229,20 @@ export default function RevenusView({
     startT(async () => { await deleteRevenusEntry(id) })
   }
 
+  // Toggle 'à déclarer aux impôts' : exclut/réinclut une entrée de l'estimation
+  // fiscale. Optimiste avec rollback en cas d'échec.
+  function handleToggleADeclarer(id: string, next: boolean) {
+    const isSejour = id.startsWith('sejour:')
+    const realId = isSejour ? id.slice('sejour:'.length) : id
+    setEntries(prev => prev.map(e => e.id === id ? { ...e, a_declarer: next } : e))
+    startT(async () => {
+      const res = await setEntryADeclarer(realId, isSejour ? 'sejour' : 'entry', next)
+      if (res?.error) {
+        setEntries(prev => prev.map(e => e.id === id ? { ...e, a_declarer: !next } : e))
+      }
+    })
+  }
+
   // ── Charges handlers ───────────────────────────────────────────────────
 
   function resetChargeForm() {
@@ -371,6 +389,8 @@ export default function RevenusView({
     const byCountry: Record<string, { net: number; brut: number; count: number }> = {}
 
     entries.forEach(e => {
+      // Flag a_declarer=false : exclu de l'estimation fiscale (cadeau, perso, etc.)
+      if (e.a_declarer === false) return
       const d = new Date(e.date_paiement)
       if (d.getFullYear() !== thisYear) return
       const pays = e.logement_nom ? (logementToPays[e.logement_nom] ?? 'FR') : 'FR'
@@ -629,6 +649,7 @@ export default function RevenusView({
     id: string; date: string; logement: string; guest?: string
     label: string; mode: string; montant: number
     statut: 'encaisse' | 'attente'; source: 'contrat' | 'manuel' | 'sejour'
+    aDeclarer: boolean
   }
 
   const allTx = useMemo((): Tx[] => {
@@ -643,6 +664,7 @@ export default function RevenusView({
         label: 'Loyer', mode: c.stripe_payment_enabled ? 'Stripe' : '–',
         montant: c.montant_loyer ?? 0, statut: paid ? 'encaisse' : 'attente',
         source: 'contrat',
+        aDeclarer: true, // les contrats Stripe restent toujours déclarables côté UI
       })
     })
     entries.forEach(e => list.push({
@@ -650,6 +672,7 @@ export default function RevenusView({
       label: TYPE_LABELS[e.type_paiement ?? 'loyer'] ?? 'Paiement',
       mode: MODE_LABELS[e.mode_paiement] ?? e.mode_paiement,
       montant: e.montant, statut: 'encaisse', source: e.id.startsWith('sejour:') ? 'sejour' : 'manuel',
+      aDeclarer: e.a_declarer !== false,
     }))
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }, [contracts, entries])
@@ -1246,6 +1269,7 @@ export default function RevenusView({
             <h2 style={{ ...s.cardTitle, marginBottom: '4px' }}>Estimation fiscale {thisYear}</h2>
             <p style={{ ...s.cardSub, margin: 0 }}>
               Indicatif. Régime simplifié appliqué selon le pays de chaque logement. Pas un conseil fiscal — consulter un comptable pour la déclaration officielle.
+              Tu peux exclure des entrées de ce calcul via l&apos;icône <EyeSlash size={11} weight="bold" style={{ verticalAlign: 'middle' }} /> dans le journal (cadeau, remboursement, usage perso). Tu restes seul responsable de ta déclaration aux impôts.
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>
@@ -1570,8 +1594,14 @@ export default function RevenusView({
           : <div style={s.txList}>
               {filteredTx.map(tx => {
                 const logementMatch = logements.find(l => l.nom === tx.logement)
+                const muted = tx.aDeclarer === false
+                const canToggle = tx.source === 'manuel' || tx.source === 'sejour'
                 return (
-                <div key={tx.id + tx.source} style={s.txRow} className="tx-row">
+                <div
+                  key={tx.id + tx.source}
+                  style={{ ...s.txRow, opacity: muted ? 0.55 : 1 }}
+                  className="tx-row"
+                >
                   <div style={s.txDate}>{fmtDate(tx.date)}</div>
                   <div style={s.txInfo}>
                     {logementMatch ? (
@@ -1591,14 +1621,40 @@ export default function RevenusView({
                   <div style={s.txMeta} className="tx-meta">
                     <span style={s.txLabel}>{tx.label}</span>
                     {tx.mode !== '–' && <span style={s.txMode}>{tx.mode}</span>}
+                    {muted && (
+                      <span style={{
+                        fontSize: '10px', fontWeight: 600,
+                        padding: '2px 7px', borderRadius: '999px',
+                        background: 'var(--surface-2)', color: 'var(--text-muted)',
+                        border: '1px solid var(--border)',
+                        letterSpacing: '0.3px',
+                      }}>
+                        Non déclaré
+                      </span>
+                    )}
                   </div>
-                  <span style={s.txAmount}>{fmt(tx.montant)}</span>
+                  <span style={{ ...s.txAmount, textDecoration: muted ? 'line-through' as const : 'none' as const }}>
+                    {fmt(tx.montant)}
+                  </span>
                   <span style={{
                     ...s.txBadge,
                     ...(tx.statut === 'encaisse' ? s.badgeGreen : s.badgeYellow),
                   }}>
                     {tx.statut === 'encaisse' ? '✓ Encaissé' : '⏳ Attente'}
                   </span>
+                  {canToggle && (
+                    <button
+                      onClick={() => handleToggleADeclarer(tx.id, !tx.aDeclarer)}
+                      style={{
+                        ...s.deleteBtn,
+                        color: muted ? 'var(--accent-text)' : 'var(--text-muted)',
+                      }}
+                      className="tx-del icon-btn"
+                      title={muted ? 'Réinclure dans l\'estimation fiscale' : 'Exclure de l\'estimation fiscale (cadeau, perso, remboursement…)'}
+                    >
+                      <EyeSlash size={13} />
+                    </button>
+                  )}
                   {tx.source === 'manuel'
                     ? <button onClick={() => handleDelete(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer">
                         <Trash size={13} />

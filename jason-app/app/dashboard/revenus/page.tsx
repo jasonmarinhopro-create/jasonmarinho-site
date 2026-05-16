@@ -38,7 +38,7 @@ export default async function RevenusPage() {
       .order('date_arrivee', { ascending: false }),
     supabase
       .from('revenus_entries')
-      .select('id, logement_nom, montant, date_paiement, mode_paiement, type_paiement, description')
+      .select('id, logement_nom, montant, date_paiement, mode_paiement, type_paiement, description, a_declarer')
       .eq('user_id', userId)
       .order('date_paiement', { ascending: false }),
     supabase
@@ -57,7 +57,7 @@ export default async function RevenusPage() {
       .maybeSingle(),
     supabase
       .from('sejours')
-      .select('id, logement, date_arrivee, date_depart, montant, contrat_plateforme, commission_montant')
+      .select('id, logement, date_arrivee, date_depart, montant, contrat_plateforme, commission_montant, a_declarer')
       .eq('user_id', userId)
       .not('montant', 'is', null)
       .gt('montant', 0)
@@ -79,6 +79,7 @@ export default async function RevenusPage() {
       mode_paiement: 'sejour',
       type_paiement: 'loyer',
       description: `Séjour du ${s.date_arrivee} au ${s.date_depart}${platformLabel}`,
+      a_declarer: (s as any).a_declarer ?? true,
     }
   })
 
