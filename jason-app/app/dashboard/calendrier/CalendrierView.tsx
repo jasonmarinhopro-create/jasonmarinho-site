@@ -101,6 +101,24 @@ function todayString() {
   return toStr(t.getFullYear(), t.getMonth(), t.getDate())
 }
 
+// True si l'event iCal est une VRAIE réservation (pas un blocage automatique
+// du jour J par Airbnb / Booking pour empêcher les réservations same-day).
+// Airbnb génère chaque matin une dispo "Not available" pour aujourd'hui →
+// sinon le badge "Prochain" affichait "Airbnb (Not available) aujourd'hui"
+// 365 jours par an, bruit pur.
+function isRealReservation(e: { title: string; description: string | null }): boolean {
+  const desc = (e.description ?? '').toLowerCase()
+  // Réservation Airbnb : description contient l'URL de la résa
+  if (desc.includes('reservation url') || desc.includes('phone last 4')) return true
+  // Réservation Booking : description contient le numéro de résa
+  if (desc.includes('cn=')) return true
+  const title = (e.title ?? '').toLowerCase()
+  // Patterns connus de blocage SANS résa associée
+  if (title === 'not available' || title === 'closed - not available' || title.includes('blocked')) return false
+  // Par défaut : on considère l'event comme une vraie résa (titres custom voyageur)
+  return true
+}
+
 // Parser "saisie rapide" : « Ménage Villa demain 10h » → { category, title, date, start_time }
 function parseQuickAdd(input: string, defaultDate: string): {
   category: CatKey
@@ -1162,6 +1180,10 @@ export default function CalendrierView({
     })
     icalEvents.forEach(e => {
       if (e.start_date < today) return
+      // Ignore les blocages "Not available" sans résa réelle : Airbnb/Booking
+      // bloquent automatiquement la journée en cours pour empêcher les
+      // réservations same-day, ça polluait le badge "Prochain" en permanence.
+      if (!isRealReservation(e)) return
       list.push({
         date: e.start_date,
         title: e.title,
