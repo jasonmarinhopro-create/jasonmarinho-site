@@ -59,8 +59,11 @@ export async function reportGuest(formData: {
 
   const { email, phone, full_name, incident_type, description } = formData
 
-  const emailVal = email?.trim().toLowerCase() || ''
-  const phoneVal = phone?.trim() || ''
+  // Normalisation centralisée : numéros au format +33..., emails lowercased,
+  // pas de trailing dot/espace. Garantit cohérence DB + matchings recherche.
+  const { normalizePhone, normalizeEmail } = await import('@/lib/security/normalize-identifier')
+  const emailVal = normalizeEmail(email ?? '')
+  const phoneVal = normalizePhone(phone ?? '')
   const nameVal = full_name?.trim() || ''
 
   // Pick the primary identifier (email > phone > name)
