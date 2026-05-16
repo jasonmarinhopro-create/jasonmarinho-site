@@ -6,7 +6,7 @@ import {
   TrendUp, TrendDown, Minus, Trophy, Warning, Sparkle,
   ArrowDown, ArrowUp, Download, Funnel,
 } from '@phosphor-icons/react/dist/ssr'
-import type { SejourRow, LogementRow, VoyageurMin } from './page'
+import type { SejourRow, LogementRow, VoyageurMin, ChargeRow } from './page'
 import type { MarketBenchmark } from '@/lib/lcd/market-benchmarks'
 import PremiumLock from '@/components/ui/PremiumLock'
 
@@ -19,6 +19,7 @@ type Props = {
   benchmarks?: Record<string, MarketBenchmark | null>
   objectifAnnuel?: number | null
   plan?: Plan
+  charges?: ChargeRow[]
 }
 
 type Period = '1m' | '3m' | '6m' | '12m' | 'ytd'
@@ -69,6 +70,28 @@ function periodWindow(period: Period, ref: Date = new Date()) {
 function fmtMonth(d: Date) {
   return d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '')
 }
+function getISOWeek(d: Date): number {
+  // ISO week number (1-53)
+  const tmp = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
+  const dayNum = tmp.getUTCDay() || 7
+  tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum)
+  const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1))
+  return Math.ceil((((tmp.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+}
+function mondayOfWeek(d: Date): Date {
+  const m = new Date(d)
+  const day = m.getDay() || 7 // dim = 0 → 7
+  if (day !== 1) m.setDate(m.getDate() - (day - 1))
+  m.setHours(0, 0, 0, 0)
+  return m
+}
+function fmtDateRange(start: Date, end: Date): string {
+  const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' }
+  const sStr = start.toLocaleDateString('fr-FR', opts)
+  const e2 = new Date(end); e2.setDate(e2.getDate() - 1)
+  const eStr = e2.toLocaleDateString('fr-FR', opts)
+  return `${sStr} → ${eStr}`
+}
 function fmtEur(n: number) {
   return n.toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €'
 }
@@ -78,7 +101,7 @@ function fmtPct(n: number, withSign = false) {
 }
 
 // ─── composant principal ───────────────────────────────────────────────────
-export default function PerformancesView({ sejours, logements, voyageurs, benchmarks, objectifAnnuel, plan = 'decouverte' }: Props) {
+export default function PerformancesView({ sejours, logements, voyageurs, benchmarks, objectifAnnuel, plan = 'decouverte', charges = [] }: Props) {
   const [period, setPeriod] = useState<Period>(sejours.length < 5 ? '12m' : '1m')
   const isPremium = plan === 'standard' || plan === 'driing'
   const [logementFilter, setLogementFilter] = useState<string>('all')
@@ -559,6 +582,258 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
     return { limits, currentPays }
   }, [isPremium, sejours, logements, logementFilter])
 
+  // ─── PREMIUM : sources réservation par % REVENU (pas juste # voyageurs) ──
+  // Croise voyageurs (source) avec leurs séjours réalisés pour pondérer par CA.
+  const sourcesByRevenue = useMemo(() => {
+    if (!isPremium) return null
+    const voyageurSourceMap = new Map<string, string>()
+    voyageurs.forEach(v => voyageurSourceMap.set(v.id, (v.source ?? 'autre').toLowerCase()))
+
+    const bySource: Record<string, { revenu: number; nuits: number; voyageurs: Set<string> }> = {}
+    filteredSejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const overlap = clampInterval(arr, dep, winStart, winEnd)
+      if (!overlap) return
+      const fullDuration = daysBetween(arr, dep) || 1
+      const nuits = daysBetween(overlap.s, overlap.e)
+      const revenu = (s.montant ?? 0) * (nuits / fullDuration)
+
+      // Priorité : source plateforme du séjour, sinon source du voyageur, sinon 'autre'
+      const sejourSource = s.contrat_plateforme?.toLowerCase()
+      const voyageurSource = s.voyageur_id ? voyageurSourceMap.get(s.voyageur_id) : null
+      const source = (sejourSource ?? voyageurSource ?? 'autre').toLowerCase()
+
+      if (!bySource[source]) bySource[source] = { revenu: 0, nuits: 0, voyageurs: new Set() }
+      bySource[source].revenu += revenu
+      bySource[source].nuits += nuits
+      if (s.voyageur_id) bySource[source].voyageurs.add(s.voyageur_id)
+    })
+
+    const total = Object.values(bySource).reduce((sum, v) => sum + v.revenu, 0)
+    return Object.entries(bySource)
+      .map(([slug, v]) => ({
+        slug,
+        label: SOURCE_LABELS[slug]?.label ?? slug,
+        color: SOURCE_LABELS[slug]?.color ?? '#94A3B8',
+        revenu: v.revenu,
+        nuits: v.nuits,
+        voyageurs: v.voyageurs.size,
+        shareRevenu: total > 0 ? v.revenu / total : 0,
+        adr: v.nuits > 0 ? v.revenu / v.nuits : 0,
+      }))
+      .sort((a, b) => b.revenu - a.revenu)
+  }, [filteredSejours, voyageurs, winStart, winEnd, isPremium])
+
+  // ─── PREMIUM : saisonnalité personnelle vs marché ─────────────────────
+  // Compare ton occupation mois par mois à celle attendue par le marché
+  // (basée sur la saisonHaute du benchmark : haute=70%, basse=35%, neutre=50%)
+  const personalVsMarketSeason = useMemo(() => {
+    if (!isPremium || !currentBenchmark?.bench || sejours.length === 0) return null
+    const bench = currentBenchmark.bench
+    // Agrège occupation personnelle par mois (toutes années confondues, normalisée)
+    const personalByMonth: Record<number, { nuitsBooked: number; nuitsDispo: number }> = {}
+    for (let m = 1; m <= 12; m++) personalByMonth[m] = { nuitsBooked: 0, nuitsDispo: 0 }
+
+    // On agrège sur les 12 derniers mois (1 cycle complet) si l'utilisateur a la data
+    const now = new Date()
+    const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
+    sejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const overlap = clampInterval(arr, dep, oneYearAgo, now)
+      if (!overlap) return
+      const cursor = new Date(overlap.s)
+      while (cursor < overlap.e) {
+        const month = cursor.getMonth() + 1
+        personalByMonth[month].nuitsBooked += 1
+        cursor.setDate(cursor.getDate() + 1)
+      }
+    })
+    // Nuits dispo par mois sur les 12 derniers mois
+    const monthDays = [31,28,31,30,31,30,31,31,30,31,30,31]
+    const logementCount = logementFilter === 'all' ? Math.max(1, logements.length) : 1
+    for (let m = 1; m <= 12; m++) {
+      personalByMonth[m].nuitsDispo = monthDays[m - 1] * logementCount
+    }
+
+    return Array.from({ length: 12 }, (_, i) => {
+      const month = i + 1
+      const personalOcc = personalByMonth[month].nuitsDispo > 0
+        ? personalByMonth[month].nuitsBooked / personalByMonth[month].nuitsDispo : 0
+      // Marché : 70% en haute saison, 35% basse saison, 50% neutre (heuristique)
+      const marketOcc = bench.saisonHaute.includes(month) ? 0.70
+        : Math.abs(6.5 - month) > 4.5 ? 0.35
+        : 0.50
+      return {
+        month,
+        label: MONTH_NAMES[i],
+        personalOcc,
+        marketOcc,
+        delta: personalOcc - marketOcc,
+        isHigh: bench.saisonHaute.includes(month),
+      }
+    })
+  }, [isPremium, currentBenchmark, sejours, logementFilter, logements.length])
+
+  // ─── PREMIUM : top 3 semaines de l'année (revenu max) ──────────────────
+  const topWeeks = useMemo(() => {
+    if (!isPremium) return null
+    type Wk = { week: number; year: number; start: Date; end: Date; revenu: number; nuits: number }
+    const map: Record<string, Wk> = {}
+    sejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const fullDuration = daysBetween(arr, dep) || 1
+      const pricePerNight = (s.montant ?? 0) / fullDuration
+      const cursor = new Date(arr)
+      while (cursor < dep) {
+        const week = getISOWeek(cursor)
+        const year = cursor.getFullYear()
+        const key = `${year}-${week}`
+        if (!map[key]) {
+          const monday = mondayOfWeek(cursor)
+          const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 7)
+          map[key] = { week, year, start: monday, end: sunday, revenu: 0, nuits: 0 }
+        }
+        map[key].revenu += pricePerNight
+        map[key].nuits += 1
+        cursor.setDate(cursor.getDate() + 1)
+      }
+    })
+    return Object.values(map).sort((a, b) => b.revenu - a.revenu).slice(0, 3)
+  }, [isPremium, sejours])
+
+  // ─── PREMIUM : cohort / repeat rate voyageurs ──────────────────────────
+  const cohortStats = useMemo(() => {
+    if (!isPremium || voyageurs.length === 0) return null
+    // Compte les séjours par voyageur (uniquement séjours achevés)
+    const byVoyageur: Record<string, number> = {}
+    const now = new Date()
+    sejours.forEach(s => {
+      if (!s.voyageur_id) return
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      if (dep > now) return // pas encore parti, on ne compte pas
+      byVoyageur[s.voyageur_id] = (byVoyageur[s.voyageur_id] ?? 0) + 1
+    })
+    const totalUnique = Object.keys(byVoyageur).length
+    const returning = Object.values(byVoyageur).filter(n => n >= 2).length
+    const loyal = Object.values(byVoyageur).filter(n => n >= 3).length
+    const repeatRate = totalUnique > 0 ? returning / totalUnique : 0
+    const loyalRate = totalUnique > 0 ? loyal / totalUnique : 0
+    return {
+      totalUnique,
+      returning,
+      loyal,
+      repeatRate,
+      loyalRate,
+      avgStaysPerGuest: totalUnique > 0
+        ? Object.values(byVoyageur).reduce((s, n) => s + n, 0) / totalUnique
+        : 0,
+    }
+  }, [isPremium, sejours, voyageurs.length])
+
+  // ─── PREMIUM : élasticité prix (corrélation prix moyen ↔ occupation par mois) ──
+  // Approche simple : compare l'occupation des mois "prix bas" vs "prix haut"
+  // sur les 24 derniers mois pour donner une idée de sensibilité du marché.
+  const priceElasticity = useMemo(() => {
+    if (!isPremium || sejours.length < 6) return null
+    const now = new Date()
+    const start = new Date(now.getFullYear() - 2, now.getMonth(), 1)
+    const monthDays = [31,28,31,30,31,30,31,31,30,31,30,31]
+    const logementCount = logementFilter === 'all' ? Math.max(1, logements.length) : 1
+    const months: Record<string, { adr: number; nuits: number; nuitsDispo: number; nuitsSum: number; revenuSum: number }> = {}
+    sejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const overlap = clampInterval(arr, dep, start, now)
+      if (!overlap) return
+      const fullDuration = daysBetween(arr, dep) || 1
+      const pricePerNight = (s.montant ?? 0) / fullDuration
+      const cursor = new Date(overlap.s)
+      while (cursor < overlap.e) {
+        const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`
+        if (!months[key]) {
+          const m = cursor.getMonth()
+          months[key] = { adr: 0, nuits: 0, nuitsDispo: monthDays[m] * logementCount, nuitsSum: 0, revenuSum: 0 }
+        }
+        months[key].nuits += 1
+        months[key].nuitsSum += 1
+        months[key].revenuSum += pricePerNight
+        cursor.setDate(cursor.getDate() + 1)
+      }
+    })
+    const monthData = Object.values(months).map(m => ({
+      adr: m.nuitsSum > 0 ? m.revenuSum / m.nuitsSum : 0,
+      occupation: m.nuitsDispo > 0 ? m.nuits / m.nuitsDispo : 0,
+    })).filter(m => m.adr > 0 && m.occupation > 0)
+
+    if (monthData.length < 6) return null
+
+    // Coupe en 2 : mois "prix bas" (sous la médiane) et "prix haut" (au-dessus)
+    const sortedByAdr = [...monthData].sort((a, b) => a.adr - b.adr)
+    const mid = Math.floor(sortedByAdr.length / 2)
+    const lowPrice = sortedByAdr.slice(0, mid)
+    const highPrice = sortedByAdr.slice(mid)
+    const lowAvgAdr = lowPrice.reduce((s, m) => s + m.adr, 0) / Math.max(1, lowPrice.length)
+    const highAvgAdr = highPrice.reduce((s, m) => s + m.adr, 0) / Math.max(1, highPrice.length)
+    const lowAvgOcc = lowPrice.reduce((s, m) => s + m.occupation, 0) / Math.max(1, lowPrice.length)
+    const highAvgOcc = highPrice.reduce((s, m) => s + m.occupation, 0) / Math.max(1, highPrice.length)
+
+    // Élasticité approximative : Δ%occ / Δ%prix
+    const deltaPrice = highAvgAdr > 0 ? (highAvgAdr - lowAvgAdr) / lowAvgAdr : 0
+    const deltaOcc = lowAvgOcc > 0 ? (highAvgOcc - lowAvgOcc) / lowAvgOcc : 0
+    const elasticity = deltaPrice !== 0 ? deltaOcc / deltaPrice : 0
+    // RevPAR sur chaque cohorte (revenu / nuits dispo)
+    const lowRevpar = lowAvgAdr * lowAvgOcc
+    const highRevpar = highAvgAdr * highAvgOcc
+    return {
+      monthsAnalyzed: monthData.length,
+      lowAvgAdr, highAvgAdr, lowAvgOcc, highAvgOcc,
+      elasticity, lowRevpar, highRevpar,
+      // Recommandation : si elasticity > -0.5 (peu sensible), augmenter le prix
+      // Si elasticity < -1 (très sensible), envisager une baisse pour booster occupation
+      reco: elasticity > -0.3
+        ? 'Tes occupations résistent bien aux prix plus hauts. Tu peux probablement monter tes prix sans perdre en remplissage.'
+        : elasticity < -0.8
+        ? 'Ton marché est sensible au prix : une baisse contrôlée pourrait booster ton remplissage et ton RevPAR global.'
+        : 'Élasticité équilibrée : ton pricing est calibré, continue à ajuster mois par mois.',
+    }
+  }, [isPremium, sejours, logementFilter, logements.length])
+
+  // ─── PREMIUM : rentabilité nette (revenu YTD - commissions - charges) ──
+  const netProfitability = useMemo(() => {
+    if (!isPremium) return null
+    const now = new Date()
+    const yStart = new Date(now.getFullYear(), 0, 1)
+    let revenuYtd = 0
+    let commissionsYtd = 0
+    sejours.forEach(s => {
+      const arr = new Date(s.date_arrivee + 'T12:00:00')
+      const dep = new Date(s.date_depart + 'T12:00:00')
+      const overlap = clampInterval(arr, dep, yStart, now)
+      if (!overlap) return
+      const fullDuration = daysBetween(arr, dep) || 1
+      const fraction = daysBetween(overlap.s, overlap.e) / fullDuration
+      revenuYtd += (s.montant ?? 0) * fraction
+      commissionsYtd += (s.commission_montant ?? 0) * fraction
+    })
+    let chargesYtd = 0
+    let chargesYtdDeductibles = 0
+    charges.forEach(c => {
+      const d = new Date(c.date_charge + 'T12:00:00')
+      if (d < yStart || d > now) return
+      chargesYtd += c.montant
+      if (c.deductible !== false) chargesYtdDeductibles += c.montant
+    })
+    const netAvantImpots = revenuYtd - commissionsYtd - chargesYtd
+    const margeNette = revenuYtd > 0 ? netAvantImpots / revenuYtd : 0
+    return {
+      revenuYtd, commissionsYtd, chargesYtd, chargesYtdDeductibles,
+      netAvantImpots, margeNette,
+    }
+  }, [isPremium, sejours, charges])
+
   // ─── insights auto enrichis ────────────────────────────────────────────
   const insights = useMemo(() => {
     const out: { kind: 'top' | 'low' | 'tip' | 'benchmark'; text: string }[] = []
@@ -677,7 +952,21 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
   }
 
   return (
-    <div style={s.wrap}>
+    <div style={s.wrap} className="perf-root">
+      {/* CSS print pour rapport PDF propre (Premium uniquement) :
+          - masque la sidebar, le header global, les filtres, les teasers
+          - garde les sections data en fond blanc, padding réduit
+          - force les couleurs pour l'export */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          body { background: white !important; color: black !important; }
+          .jm-sidebar, .jm-header-app, .cookie-banner, button { display: none !important; }
+          .perf-root { padding: 0 !important; max-width: none !important; }
+          section { page-break-inside: avoid; break-inside: avoid; box-shadow: none !important; border-color: #ddd !important; }
+          h1, h2, h3, h4 { color: #111 !important; }
+        }
+      ` }} />
+
       {/* ─── Header ──────────────────────────────────────────────────── */}
       <header style={s.header}>
         <div style={s.titleRow}>
@@ -725,6 +1014,16 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           <Download size={16} weight="bold" />
           Exporter CSV
         </button>
+        {isPremium && (
+          <button
+            onClick={() => window.print()}
+            style={{ ...s.exportBtn, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' }}
+            title="Ouvre la boîte d'impression : choisis 'Enregistrer en PDF' pour générer un rapport synthétique"
+          >
+            <Download size={16} weight="bold" />
+            Rapport PDF
+          </button>
+        )}
       </div>
 
       {/* ─── KPIs ────────────────────────────────────────────────────── */}
@@ -1059,6 +1358,322 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
             'Note explicative sur la conséquence de chaque dépassement',
           ]}
         />
+      ) : null}
+
+      {/* ─── Sources réservation par % REVENU (Premium) ───────────────── */}
+      {isPremium && sourcesByRevenue && sourcesByRevenue.length > 0 ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Sources de réservation — par % de revenu</h3>
+              <p style={s.cardSub}>Ce qui rapporte réellement, pas juste ce qui amène le plus de voyageurs</p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>
+            {sourcesByRevenue.map(src => (
+              <div key={src.slug} style={{ padding: '12px 14px', borderRadius: '10px', background: 'var(--bg-2)', border: '1px solid var(--border)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '8px', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: src.color }} />
+                    <span style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>{src.label}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                    <span style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)' }}>{fmtEur(src.revenu)}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: src.color }}>{Math.round(src.shareRevenu * 100)} %</span>
+                  </div>
+                </div>
+                <div style={{ width: '100%', height: '6px', background: 'var(--surface-2)', borderRadius: '999px', overflow: 'hidden', marginBottom: '6px' }}>
+                  <div style={{ width: `${src.shareRevenu * 100}%`, height: '100%', background: src.color }} />
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-3)', display: 'flex', gap: '12px', flexWrap: 'wrap' as const }}>
+                  <span>{src.nuits} nuits</span>
+                  <span>{src.voyageurs} voyageur{src.voyageurs > 1 ? 's' : ''}</span>
+                  <span>ADR : {fmtEur(src.adr)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Sources de réservation — par % de revenu"
+          description="Pas juste le nombre de voyageurs, mais combien chaque canal te rapporte vraiment. Indispensable pour savoir où investir tes efforts d'acquisition."
+          bullets={[
+            'Part du CA réel par canal (Airbnb, Booking, direct, etc.)',
+            'ADR par canal — souvent les directs rapportent plus par nuit',
+            'Découvre quel canal est rentable en revenu (pas qu\'en volume)',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Saisonnalité personnelle vs marché (Premium) ─────────────── */}
+      {isPremium && personalVsMarketSeason && currentBenchmark?.bench ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Ta saisonnalité vs marché {currentBenchmark.bench.ville}</h3>
+              <p style={s.cardSub}>Ton taux d'occupation mois par mois (12 derniers mois) confronté à la saisonnalité locale attendue</p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '4px' }}>
+            {personalVsMarketSeason.map(m => {
+              const personalH = Math.max(2, m.personalOcc * 60)
+              const marketH = Math.max(2, m.marketOcc * 60)
+              return (
+                <div key={m.month} style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '60px' }}>
+                    <div title={`Toi: ${Math.round(m.personalOcc * 100)} %`} style={{
+                      width: '14px', height: `${personalH}px`,
+                      background: m.delta >= 0 ? 'var(--success-1)' : '#F59E0B',
+                      borderRadius: '3px 3px 0 0',
+                    }} />
+                    <div title={`Marché: ${Math.round(m.marketOcc * 100)} %`} style={{
+                      width: '14px', height: `${marketH}px`,
+                      background: 'rgba(160, 160, 160, 0.45)',
+                      borderRadius: '3px 3px 0 0',
+                    }} />
+                  </div>
+                  <span style={{ fontSize: '10px', color: m.isHigh ? 'var(--accent-text)' : 'var(--text-3)', fontWeight: m.isHigh ? 700 : 400 }}>{m.label}</span>
+                </div>
+              )
+            })}
+          </div>
+          <div style={{ display: 'flex', gap: '16px', marginTop: '12px', fontSize: '11.5px', color: 'var(--text-3)' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '10px', height: '10px', background: 'var(--success-1)', borderRadius: '2px' }} /> Toi (au-dessus du marché)
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '10px', height: '10px', background: '#F59E0B', borderRadius: '2px' }} /> Toi (en dessous)
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '10px', height: '10px', background: 'rgba(160,160,160,0.5)', borderRadius: '2px' }} /> Marché attendu
+            </span>
+          </div>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Saisonnalité personnelle vs marché"
+          description="Vois en un coup d'œil quels mois de l'année tu surperformes ou tu décroches par rapport à ta ville. Identifie tes vraies forces saisonnières."
+          bullets={[
+            'Graphique mois par mois Toi vs Marché',
+            'Repère les mois où tu peux gagner en occupation',
+            'Confirme tes mois forts pour pousser tes prix',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Top 3 semaines de l'année (Premium) ──────────────────────── */}
+      {isPremium && topWeeks && topWeeks.length > 0 ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Tes 3 meilleures semaines</h3>
+              <p style={s.cardSub}>Identifie les semaines à forte demande pour les rendre récurrentes et augmenter tes prix au prochain cycle</p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+            {topWeeks.map((w, i) => (
+              <div key={`${w.year}-${w.week}`} style={{
+                padding: '16px 18px', borderRadius: '12px',
+                background: i === 0 ? 'rgba(52,211,153,0.10)' : 'var(--bg-2)',
+                border: `1px solid ${i === 0 ? 'rgba(52,211,153,0.30)' : 'var(--border)'}`,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{
+                    fontSize: '11px', fontWeight: 700,
+                    padding: '2px 8px', borderRadius: '999px',
+                    background: i === 0 ? 'var(--success-1)' : 'var(--surface-2)',
+                    color: i === 0 ? 'var(--bg)' : 'var(--text-2)',
+                  }}>#{i + 1}</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-2)' }}>Semaine {w.week} · {w.year}</span>
+                </div>
+                <div style={{ fontSize: '22px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)', marginBottom: '4px' }}>
+                  {fmtEur(w.revenu)}
+                </div>
+                <div style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>
+                  {fmtDateRange(w.start, w.end)} · {w.nuits} nuits
+                </div>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '12px', marginBottom: 0, fontStyle: 'italic' }}>
+            💡 Ces semaines reviennent souvent chaque année (vacances, événements locaux). Bloque-les sur ton calendrier pour les promouvoir au bon moment.
+          </p>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Tes 3 meilleures semaines"
+          description="Identifie automatiquement les 3 semaines qui te rapportent le plus dans l'année. Aligne tes prix et anticipe l'année suivante."
+          bullets={[
+            'Top 3 semaines par revenu généré',
+            'Dates exactes + nb nuits + revenu total',
+            'Permet d\'aligner ta stratégie sur les pics locaux',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Repeat / Cohort voyageurs (Premium) ──────────────────────── */}
+      {isPremium && cohortStats && cohortStats.totalUnique > 0 ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Fidélisation voyageurs</h3>
+              <p style={s.cardSub}>
+                Combien de tes voyageurs sont revenus chez toi (séjours achevés uniquement). C'est le meilleur signal de satisfaction et de revenu récurrent.
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+            <MiniKpi label="Voyageurs uniques" value={String(cohortStats.totalUnique)} sub="ayant séjourné" />
+            <MiniKpi label="Voyageurs revenus" value={String(cohortStats.returning)} sub="2 séjours ou +" subColor={cohortStats.repeatRate >= 0.15 ? 'var(--success-1)' : '#F59E0B'} />
+            <MiniKpi label="Taux de retour" value={fmtPct(cohortStats.repeatRate)} sub="% des uniques" subColor={cohortStats.repeatRate >= 0.15 ? 'var(--success-1)' : '#F59E0B'} />
+            <MiniKpi label="Voyageurs fidèles" value={String(cohortStats.loyal)} sub="3 séjours ou +" />
+            <MiniKpi label="Séjours / voyageur" value={cohortStats.avgStaysPerGuest.toFixed(2)} sub="moyenne" />
+          </div>
+          <p style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '12px', marginBottom: 0 }}>
+            {cohortStats.repeatRate >= 0.20
+              ? `🎉 Excellent taux de retour (${Math.round(cohortStats.repeatRate * 100)} %). Ta base voyageurs fidèles est ton meilleur levier de revenus directs.`
+              : cohortStats.repeatRate >= 0.10
+              ? `Bon taux de retour. Mets en place un message post-séjour ciblé sur les fidèles pour booster encore.`
+              : `Taux de retour faible. Pense à un message 6 mois après le départ avec offre fidélité (-10 % par exemple) pour les inciter à revenir.`}
+          </p>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Fidélisation voyageurs"
+          description="Le repeat rate est le meilleur indicateur de satisfaction. Identifie tes voyageurs fidèles et mesure ta capacité à les faire revenir."
+          bullets={[
+            'Taux de retour (voyageurs avec 2+ séjours)',
+            'Voyageurs fidèles (3+ séjours)',
+            'Moyenne séjours / voyageur unique',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Élasticité prix (Premium) ─────────────────────────────────── */}
+      {isPremium && priceElasticity ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Sensibilité prix (élasticité)</h3>
+              <p style={s.cardSub}>
+                Compare ton occupation sur les mois "prix bas" vs "prix haut" pour évaluer la sensibilité de ton marché au prix.
+                Analyse sur {priceElasticity.monthsAnalyzed} mois.
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '12px' }}>
+            <div style={{ padding: '14px 16px', borderRadius: '10px', background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.20)' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: '#F59E0B', textTransform: 'uppercase' as const, letterSpacing: '0.3px', marginBottom: '8px' }}>Mois prix bas</div>
+              <div style={{ fontSize: '18px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)' }}>{fmtEur(priceElasticity.lowAvgAdr)} <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-3)' }}>ADR</span></div>
+              <div style={{ fontSize: '13px', color: 'var(--text-2)', marginTop: '4px' }}>{fmtPct(priceElasticity.lowAvgOcc)} occupation · RevPAR {fmtEur(priceElasticity.lowRevpar)}</div>
+            </div>
+            <div style={{ padding: '14px 16px', borderRadius: '10px', background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.20)' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--success-1)', textTransform: 'uppercase' as const, letterSpacing: '0.3px', marginBottom: '8px' }}>Mois prix haut</div>
+              <div style={{ fontSize: '18px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)' }}>{fmtEur(priceElasticity.highAvgAdr)} <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-3)' }}>ADR</span></div>
+              <div style={{ fontSize: '13px', color: 'var(--text-2)', marginTop: '4px' }}>{fmtPct(priceElasticity.highAvgOcc)} occupation · RevPAR {fmtEur(priceElasticity.highRevpar)}</div>
+            </div>
+          </div>
+          <div style={{
+            padding: '12px 16px', borderRadius: '10px',
+            background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+            fontSize: '13px', color: 'var(--accent-text)', lineHeight: 1.55,
+          }}>
+            <strong>💡 Recommandation :</strong> {priceElasticity.reco}
+          </div>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px', marginBottom: 0, fontStyle: 'italic' }}>
+            Élasticité approximative : {priceElasticity.elasticity.toFixed(2)} (négatif = hausse de prix réduit l'occupation).
+            Analyse indicative, le marché évolue avec la saison, la concurrence et les événements locaux.
+          </p>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Sensibilité prix (élasticité)"
+          description="Découvre comment ton marché réagit à tes variations de prix. Pour savoir si tu peux monter ou si tu dois baisser pour optimiser ton RevPAR global."
+          bullets={[
+            'Compare ADR + occupation des mois prix bas vs prix haut',
+            'Recommandation auto : monter, baisser ou stabiliser',
+            'Permet de prendre des décisions de pricing data-driven',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Rentabilité nette YTD (Premium) ──────────────────────────── */}
+      {isPremium && netProfitability ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Rentabilité nette {new Date().getFullYear()}</h3>
+              <p style={s.cardSub}>Revenu brut − commissions OTA − charges saisies dans /revenus</p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '14px' }}>
+            <MiniKpi label="Revenu brut YTD"       value={fmtEur(netProfitability.revenuYtd)}        sub="depuis le 1er janvier" />
+            <MiniKpi label="Commissions OTA"       value={fmtEur(netProfitability.commissionsYtd)}   sub="prélevées sur ton CA" />
+            <MiniKpi label="Charges saisies"       value={fmtEur(netProfitability.chargesYtd)}       sub={`dont ${fmtEur(netProfitability.chargesYtdDeductibles)} déductibles`} />
+            <MiniKpi label="Net avant impôts"      value={fmtEur(netProfitability.netAvantImpots)}    sub={`marge ${fmtPct(netProfitability.margeNette)}`} subColor={netProfitability.margeNette >= 0.5 ? 'var(--success-1)' : netProfitability.margeNette >= 0.3 ? '#F59E0B' : 'var(--danger)'} />
+          </div>
+          <div style={{
+            display: 'flex', height: '24px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)',
+          }}>
+            <div title="Net dans ta poche" style={{ width: `${Math.max(0, netProfitability.margeNette) * 100}%`, background: 'var(--success-1)' }} />
+            <div title="Commissions OTA" style={{
+              width: `${netProfitability.revenuYtd > 0 ? (netProfitability.commissionsYtd / netProfitability.revenuYtd) * 100 : 0}%`,
+              background: '#F59E0B',
+            }} />
+            <div title="Charges" style={{
+              width: `${netProfitability.revenuYtd > 0 ? (netProfitability.chargesYtd / netProfitability.revenuYtd) * 100 : 0}%`,
+              background: 'var(--danger)',
+            }} />
+          </div>
+          <div style={{ display: 'flex', gap: '14px', marginTop: '10px', fontSize: '11.5px', color: 'var(--text-3)' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '10px', height: '10px', background: 'var(--success-1)', borderRadius: '2px' }} /> Net
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '10px', height: '10px', background: '#F59E0B', borderRadius: '2px' }} /> Commissions
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '10px', height: '10px', background: 'var(--danger)', borderRadius: '2px' }} /> Charges
+            </span>
+          </div>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '10px', marginBottom: 0, fontStyle: 'italic' }}>
+            Charges et commissions à saisir dans <a href="/dashboard/revenus" style={{ color: 'var(--accent-text)' }}>/dashboard/revenus</a> pour précision maximale.
+          </p>
+        </section>
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Rentabilité nette"
+          description="Combien tu touches vraiment, après commissions OTA et charges. La métrique la plus importante mais souvent ignorée."
+          bullets={[
+            'Revenu brut − commissions OTA − charges saisies',
+            'Marge nette en % du CA',
+            'Barre visuelle de répartition (net / commissions / charges)',
+          ]}
+        />
+      ) : null}
+
+      {/* ─── Comparateur anonymisé "même profil dans ta ville" (à venir) ── */}
+      {isPremium ? (
+        <section style={{ ...s.card, background: 'linear-gradient(135deg, var(--surface) 0%, var(--accent-bg) 100%)' }}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Comparateur "même profil"</h3>
+              <p style={s.cardSub}>Te comparer aux autres hôtes Driing ayant un bien similaire dans ta ville (anonyme)</p>
+            </div>
+            <span style={{
+              fontSize: '11px', fontWeight: 700, padding: '3px 9px', borderRadius: '999px',
+              background: 'rgba(167,139,250,0.15)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.35)',
+            }}>
+              À venir
+            </span>
+          </div>
+          <div style={{ padding: '14px 16px', borderRadius: '10px', background: 'var(--bg-2)', border: '1px dashed var(--border)', fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.6 }}>
+            <strong style={{ color: 'var(--text)' }}>Pourquoi pas encore disponible :</strong> pour garantir l'anonymat (charte RGPD),
+            on a besoin d'au moins <strong>50 hôtes</strong> dans ta ville avec un type de bien comparable. Le comparateur s'active automatiquement
+            dès qu'on atteint ce seuil. Tu seras notifié.
+          </div>
+        </section>
       ) : null}
 
       {/* ─── Insights ───────────────────────────────────────────────── */}
