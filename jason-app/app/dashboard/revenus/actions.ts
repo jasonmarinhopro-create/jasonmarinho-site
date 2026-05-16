@@ -155,6 +155,27 @@ export async function deleteCharge(id: string) {
   return { success: true }
 }
 
+// ─── Flag 'à déclarer' ──────────────────────────────────────────────────────
+// Permet d'exclure une entrée de l'estimation fiscale (cadeau, remboursement,
+// usage perso). L'utilisateur reste seul responsable de sa déclaration légale.
+
+export async function setEntryADeclarer(id: string, source: 'entry' | 'sejour', aDeclarer: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+
+  const table = source === 'sejour' ? 'sejours' : 'revenus_entries'
+  const { error } = await supabase
+    .from(table)
+    .update({ a_declarer: aDeclarer })
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/revenus')
+  return { success: true }
+}
+
 // ─── Objectifs (Phase 8) ─────────────────────────────────────────────────────
 
 export async function setObjectifAnnuel(montant: number | null, annee: number) {
