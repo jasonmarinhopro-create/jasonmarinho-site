@@ -116,6 +116,38 @@ async function processMentions(
   }))
 
   await supabase.from('chez_nous_mentions').insert(rows)
+
+  // Emails aux mentionnés (best-effort, async, ne bloque pas).
+  // Si la mention est dans une reply, on remonte au post_id pour le lien.
+  ;(async () => {
+    try {
+      const { sendChezNousNotifEmailFromIds } = await import('@/lib/email/host')
+      let resolvedPostId = source.postId
+      if (!resolvedPostId && source.replyId) {
+        const { data: r } = await supabase
+          .from('chez_nous_replies')
+          .select('post_id')
+          .eq('id', source.replyId)
+          .maybeSingle()
+        resolvedPostId = r?.post_id ?? undefined
+      }
+      if (!resolvedPostId) return
+
+      const finalPostId = resolvedPostId
+      await Promise.all(
+        Array.from(recipientIds).map(rid =>
+          sendChezNousNotifEmailFromIds({
+            supabase: supabase as any,
+            recipientUserId: rid,
+            actorUserId: actorId,
+            type: 'mention',
+            postId: finalPostId,
+            excerpt: text,
+          })
+        )
+      )
+    } catch (e) { console.warn('[chez-nous] mention emails failed', e) }
+  })()
 }
 
 export async function createPost(input: {
@@ -219,6 +251,29 @@ export async function createReply(input: {
 
   // Mentions @pseudo dans le body (best-effort, n'échoue pas la reply)
   await processMentions(supabase, body, userId, { replyId: data.id }).catch(() => {})
+
+  // Email à l'auteur du post (notif 'reply'). Best-effort, async,
+  // ne bloque pas la création de la réponse.
+  ;(async () => {
+    try {
+      const { sendChezNousNotifEmailFromIds } = await import('@/lib/email/host')
+      const { data: post } = await supabase
+        .from('chez_nous_posts')
+        .select('author_id')
+        .eq('id', input.postId)
+        .maybeSingle()
+      if (post?.author_id && post.author_id !== userId) {
+        await sendChezNousNotifEmailFromIds({
+          supabase: supabase as any,
+          recipientUserId: post.author_id,
+          actorUserId: userId,
+          type: 'reply',
+          postId: input.postId,
+          excerpt: body,
+        })
+      }
+    } catch (e) { console.warn('[chez-nous] reply email failed', e) }
+  })()
 
   revalidatePath(`/dashboard/chez-nous/${input.postId}`)
   revalidatePath('/dashboard/chez-nous')
@@ -410,6 +465,20 @@ export async function acceptReply(postId: string, replyId: string | null): Promi
         post_id: postId,
         reply_id: replyId,
       })
+
+    // Email à l'auteur de la réponse acceptée (best-effort, ne bloque pas)
+    ;(async () => {
+      try {
+        const { sendChezNousNotifEmailFromIds } = await import('@/lib/email/host')
+        await sendChezNousNotifEmailFromIds({
+          supabase: supabase as any,
+          recipientUserId: replyAuthorId,
+          actorUserId: userId,
+          type: 'accepted',
+          postId,
+        })
+      } catch (e) { console.warn('[chez-nous] accepted email failed', e) }
+    })()
   }
 
   revalidatePath(`/dashboard/chez-nous/${postId}`)

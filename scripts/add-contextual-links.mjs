@@ -65,6 +65,133 @@ const INSERTIONS = [
     phrase: 'Airbnb',
     newSlug: 'cybevasion-rachetee-holidu-impact-hotes-alternatives',
     xrefId: 'cybevasion-holidu' },
+
+  // ─── Vague d'expansion 2026 ────────────────────────────────────────
+  // Maillage thématique sur les articles à fort trafic vers les contenus
+  // 2026 récents, pour distribuer le jus SEO.
+
+  // creer-conciergerie-airbnb-2025 → conciergerie-airbnb-faire-appel
+  { file: 'blog/creer-conciergerie-airbnb-2025/index.html',
+    phrase: 'conciergerie',
+    newSlug: 'conciergerie-airbnb-faire-appel-choisir',
+    xrefId: 'conc-choisir' },
+
+  // location-courte-duree-impots-france → reglementation-lcd-france-2026
+  { file: 'blog/location-courte-duree-impots-france/index.html',
+    phrase: 'loi',
+    newSlug: 'reglementation-lcd-france-2026',
+    xrefId: 'regl-2026' },
+
+  // obtenir-avis-5-etoiles-airbnb → gerer-mauvais-avis
+  { file: 'blog/obtenir-avis-5-etoiles-airbnb/index.html',
+    phrase: 'mauvais avis',
+    newSlug: 'gerer-mauvais-avis-airbnb-reponse-hote',
+    xrefId: 'mauvais-avis' },
+
+  // tarification-dynamique-lcd → tarification-dynamique-pricelabs comparatif
+  { file: 'blog/tarification-dynamique-lcd/index.html',
+    phrase: 'PriceLabs',
+    newSlug: 'tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif',
+    xrefId: 'pl-wh-by' },
+
+  // outils-gerer → tarification-dynamique-pricelabs comparatif
+  { file: 'blog/outils-gerer-location-courte-duree-2025/index.html',
+    phrase: 'tarification dynamique',
+    newSlug: 'tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif',
+    xrefId: 'pl-wh-by-tools' },
+
+  // livret-accueil-digital-hotes-lcd → livret-accueil-digital-creer (article récent)
+  { file: 'blog/livret-accueil-digital-hotes-lcd/index.html',
+    phrase: 'livret d\'accueil',
+    newSlug: 'livret-accueil-digital-creer-location-courte-duree',
+    xrefId: 'livret-creer' },
+
+  // reservation-directe-sans-commission → premieres-reservations-directes
+  { file: 'blog/reservation-directe-sans-commission/index.html',
+    phrase: 'réservations directes',
+    newSlug: 'premieres-reservations-directes-sans-audience-site-web',
+    xrefId: 'prem-directes' },
+
+  // reservation-directe-sans-commission → location-directe-pourquoi
+  { file: 'blog/reservation-directe-sans-commission/index.html',
+    phrase: 'plateformes',
+    newSlug: 'location-directe-pourquoi-saffranchir-plateformes',
+    xrefId: 'loc-directe-pq' },
+
+  // airbnb-vs-booking-com → photographier-logement smartphone
+  { file: 'blog/airbnb-vs-booking-com-location-courte-duree/index.html',
+    phrase: 'photos',
+    newSlug: 'photographier-logement-location-courte-duree-smartphone',
+    xrefId: 'photos-smartphone' },
+
+  // optimiser-annonce-airbnb → fixer-prix-minimum
+  { file: 'blog/optimiser-annonce-airbnb/index.html',
+    phrase: 'prix',
+    newSlug: 'fixer-prix-minimum-airbnb-lcd',
+    xrefId: 'prix-minimum' },
+
+  // creer-conciergerie-airbnb-2025 → erreurs debutant
+  { file: 'blog/creer-conciergerie-airbnb-2025/index.html',
+    phrase: 'débutant',
+    newSlug: 'erreurs-debutant-location-courte-duree-premier-logement',
+    xrefId: 'erreurs-deb' },
+
+  // messages-airbnb-automatiser → gabarits-messages-lcd-hotes-templates
+  { file: 'blog/messages-airbnb-automatiser/index.html',
+    phrase: 'gabarits',
+    newSlug: 'gabarits-messages-lcd-hotes-templates',
+    xrefId: 'gabarits' },
+
+  // google-my-business-hotes-lcd → algorithme Airbnb 2026 (croissance visibilité)
+  { file: 'blog/google-my-business-hotes-lcd/index.html',
+    phrase: 'visibilité',
+    newSlug: 'algorithme-airbnb-2026-criteres-classement',
+    xrefId: 'algo-gmb' },
+
+  // attirer-teletravailleur → wifi-location-courte-duree
+  { file: 'blog/attirer-teletravailleur-nomade-digital-location-courte-duree/index.html',
+    phrase: 'WiFi',
+    newSlug: 'wifi-location-courte-duree-debit-equipement-avis',
+    xrefId: 'wifi-tt' },
+
+  // accueillir-famille-enfants → welcome-bag idées
+  { file: 'blog/accueillir-famille-enfants-airbnb-equipement/index.html',
+    phrase: 'accueil',
+    newSlug: 'welcome-bag-lcd-12-idees-marquantes-budget',
+    xrefId: 'welcome-fam' },
+
+  // gerer-voyageurs-difficiles → verification voyageurs
+  { file: 'blog/gerer-voyageurs-difficiles-location-courte-duree/index.html',
+    phrase: 'vérifier',
+    newSlug: 'verification-voyageurs-avant-accepter-reservation-lcd',
+    xrefId: 'verif-vyg' },
+
+  // declarer-activite → bail mobilite (différences)
+  { file: 'blog/declarer-activite-location-courte-duree-france-demarches/index.html',
+    phrase: 'bail',
+    newSlug: 'bail-mobilite-vs-courte-duree-differences',
+    xrefId: 'bail-mob' },
+
+  // assurance-location-courte-duree → assurance-lcd 2026
+  { file: 'blog/assurance-location-courte-duree-airbnb-couverture/index.html',
+    phrase: 'garanties',
+    newSlug: 'assurance-lcd-5-garanties-indispensables-2026',
+    xrefId: 'ass-2026' },
+
+  // accepter-animaux-lcd → banque-objets
+  { file: 'blog/accepter-animaux-lcd-7-regles-pet-friendly/index.html',
+    phrase: 'équipement',
+    newSlug: 'banque-objets-utiles-laisser-voyageur-lcd',
+    xrefId: 'banque-obj' },
+
+  // basse-saison → workation (séjours longs)
+  { file: 'blog/basse-saison-location-courte-duree-strategies-reservations/index.html',
+    phrase: 'workation',
+    newSlug: 'workation-lcd-logement-equiper-louer-cher-hors-saison',
+    xrefId: 'workation-bs' },
+
+  // amenager-logement-petit-budget → decorer-amenager-logement (formation)
+  // ⚠ on évite les self-refs : amenager… pointerait vers lui-même → drop
 ];
 
 function escapeRe(s) {

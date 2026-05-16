@@ -35,10 +35,12 @@ interface DetectInput {
   chezNousOnboardedAt: string | null
   /** profiles.onboarding_step (welcome detection) */
   onboardingStep: number
+  /** profiles.stripe_onboarding_complete */
+  stripeOnboardingComplete: boolean
 }
 
 export async function detectTracksProgress(input: DetectInput): Promise<OnboardingTracksState> {
-  const { userId, completedSteps, chezNousOnboardedAt, onboardingStep } = input
+  const { userId, completedSteps, chezNousOnboardedAt, onboardingStep, stripeOnboardingComplete } = input
   const supabase = await createClient()
   const manualSet = new Set(completedSteps)
 
@@ -61,6 +63,7 @@ export async function detectTracksProgress(input: DetectInput): Promise<Onboardi
     chez_nous_intro: !!chezNousOnboardedAt,
     chez_nous_post:  (chezNousPosts.count ?? 0) > 0,
     affiche:         (affiches.count ?? 0) > 0,
+    stripe_connect:  stripeOnboardingComplete,
     // welcome est manuel mais on le considère fait dès que onboarding_step >= 2
     // (compat avec l'ancien système).
   }

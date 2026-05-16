@@ -22,7 +22,7 @@ interface Props {
 
 // ─── Shared section card wrapper ───────────────────────────────────────────
 function SectionCard({
-  icon, iconColor, iconBg, title, description, children,
+  icon, iconColor, iconBg, title, description, children, anchorId,
 }: {
   icon: React.ReactNode
   iconColor: string
@@ -30,9 +30,10 @@ function SectionCard({
   title: string
   description: string
   children: React.ReactNode
+  anchorId?: string
 }) {
   return (
-    <div className="jm-profil-card" style={sc.card}>
+    <div id={anchorId} className="jm-profil-card" style={sc.card}>
       <div style={sc.header}>
         <div style={{ ...sc.iconWrap, background: iconBg, color: iconColor }}>
           {icon}
@@ -400,6 +401,7 @@ export default function ProfilForm({
 
       {/* ── Carte 3 : Encaissements ────────────────────────────────────── */}
       <SectionCard
+        anchorId="stripe"
         icon={<Wallet size={20} weight="fill" />}
         iconColor="#a29bfe"
         iconBg="rgba(99,91,255,0.12)"

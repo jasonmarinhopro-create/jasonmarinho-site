@@ -152,6 +152,15 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
         detect: 'manual',
       },
       {
+        key: 'stripe_connect',
+        title: 'Connecte ton compte Stripe',
+        description: 'Indispensable pour encaisser loyer et caution en direct, sans passer par les OTA.',
+        ctaLabel: 'Connecter Stripe',
+        ctaHref: '/dashboard/profil#stripe',
+        detect: 'auto',
+        requiresPlan: 'standard',
+      },
+      {
         key: 'contrat',
         title: 'Envoie ton premier contrat',
         description: 'Génère un contrat de location, fais signer en ligne, encaisse loyer + caution.',
