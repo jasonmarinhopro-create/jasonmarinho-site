@@ -113,8 +113,14 @@ function isRealReservation(e: { title: string; description: string | null }): bo
   // Réservation Booking : description contient le numéro de résa
   if (desc.includes('cn=')) return true
   const title = (e.title ?? '').toLowerCase()
-  // Patterns connus de blocage SANS résa associée
-  if (title === 'not available' || title === 'closed - not available' || title.includes('blocked')) return false
+  // Patterns de blocage SANS résa associée (matching permissif : Airbnb prépend
+  // parfois la source, ex. "Airbnb (Not available)", "Airbnb - Not available", etc.)
+  if (
+    title.includes('not available') ||
+    title.includes('unavailable') ||
+    title.includes('closed') ||
+    title.includes('blocked')
+  ) return false
   // Par défaut : on considère l'event comme une vraie résa (titres custom voyageur)
   return true
 }
@@ -735,12 +741,23 @@ export default function CalendrierView({
     }
   }, [])
 
-  // Mobile: bascule auto en vue liste sur petit écran (à l'initialisation)
+  // Mémoire du dernier mode choisi par l'utilisateur (localStorage).
+  // Avant on basculait automatiquement en liste sur mobile, mais ça forçait
+  // une vue non désirée à chaque ouverture du calendrier. Maintenant on respecte
+  // le choix de l'utilisateur (défaut : 'month', overridable mobile via le toggle).
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth < 640) {
-      setViewMode('list')
-    }
+    if (typeof window === 'undefined') return
+    try {
+      const saved = window.localStorage.getItem('cal-view-mode')
+      if (saved === 'month' || saved === 'list') setViewMode(saved)
+    } catch {}
   }, [])
+
+  // Persiste le choix de mode quand l'utilisateur switch
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    try { window.localStorage.setItem('cal-view-mode', viewMode) } catch {}
+  }, [viewMode])
 
   // Drawer auto-ouverture sur actions explicites (création d'événement, sélection d'un contrat)
   useEffect(() => {
