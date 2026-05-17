@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur de prix LCD : combien afficher par nuit sur Airbnb, Booking et en direct | Jason Marinho</title>
+  <meta name="description" content="Calculateur gratuit pour fixer le bon prix par nuit en location courte durée. Tient compte de la ville, du mois, du type de bien et du canal (Airbnb, Booking, direct). Compensation automatique des commissions plateformes.">
+  <link rel="canonical" href="https://jasonmarinho.com/calculateurs/prix-lcd">
+  <meta property="og:title" content="Calculateur de prix LCD gratuit | Jason Marinho">
+  <meta property="og:description" content="Trouve le bon prix par nuit pour ton Airbnb, Booking ou direct selon la ville et la saison. Gratuit, sans inscription.">
+  <meta property="og:url" content="https://jasonmarinho.com/calculateurs/prix-lcd">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="/phosphor.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.10);--ok:#34D399}
+    *{box-sizing:border-box}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.6}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:400}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.4vw,1.9rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 12px;font-weight:400}
+    .lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
+    .lbl.lt{color:rgba(255,255,255,.7)}
+    .breadcrumb{font-size:12.5px;color:var(--tl);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--g);text-decoration:none;font-weight:500}
+
+    .hero{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;padding:clamp(48px,7vw,80px) clamp(16px,5vw,60px) clamp(40px,6vw,72px)}
+    .hero-in{max-width:980px;margin:0 auto}
+    .hero .h1{color:#fff;max-width:780px;margin:0 0 16px}
+    .hero p.sub{font-size:clamp(.95rem,1.3vw,1.05rem);font-weight:300;color:rgba(255,255,255,.8);max-width:680px;margin:0;line-height:1.6}
+
+    .calc-wrap{max-width:980px;margin:-40px auto 0;padding:0 16px 64px;position:relative;z-index:2}
+    @media(min-width:760px){.calc-wrap{padding:0 24px 80px}}
+    .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+    @media(max-width:880px){.calc-grid{grid-template-columns:1fr}}
+
+    .panel{background:var(--w);border:1px solid var(--bd);border-radius:18px;padding:28px;box-shadow:0 8px 32px rgba(0,76,63,.08)}
+    .panel h3{font-family:'Fraunces',serif;font-size:20px;font-weight:400;margin:0 0 18px;color:var(--td);letter-spacing:-.01em}
+
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:12.5px;font-weight:600;color:var(--td);margin-bottom:6px}
+    .field select,.field input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--bd);background:#fff;color:var(--td);font-family:'Outfit',sans-serif;font-size:14px;transition:border-color .2s, box-shadow .2s}
+    .field select:focus,.field input:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.10)}
+    .field-hint{font-size:11.5px;color:var(--tl);margin-top:4px}
+
+    .channel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .channel-opt{padding:12px;border:1px solid var(--bd);border-radius:10px;cursor:pointer;text-align:center;font-size:13px;font-weight:500;color:var(--tm);transition:all .2s;background:#fff}
+    .channel-opt.active{border-color:var(--g);background:rgba(0,76,63,.06);color:var(--g);font-weight:600}
+    .channel-opt small{display:block;font-size:10.5px;font-weight:400;color:var(--tl);margin-top:3px}
+
+    .result-empty{background:linear-gradient(135deg,var(--cr) 0%,#fff 100%);border:1px dashed var(--bd);border-radius:18px;padding:60px 24px;text-align:center;color:var(--tl)}
+    .result-empty i{font-size:38px;color:var(--g);opacity:.5;display:block;margin-bottom:12px}
+
+    .price-hero{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;border-radius:14px;padding:24px 26px;text-align:center;margin-bottom:18px}
+    .price-hero .price-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,213,107,1);margin-bottom:6px}
+    .price-hero .price-big{font-family:'Fraunces',serif;font-size:48px;font-weight:400;letter-spacing:-.02em;color:#fff;line-height:1}
+    .price-hero .price-month{font-size:13px;color:rgba(255,255,255,.7);margin-top:8px}
+
+    .price-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+    .price-mini{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
+    .price-mini .pm-label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--tl);margin-bottom:4px}
+    .price-mini .pm-value{font-family:'Fraunces',serif;font-size:20px;font-weight:400;color:var(--td)}
+    .price-mini .pm-sub{font-size:11px;color:var(--tl);margin-top:2px}
+    .price-mini.weekend{border-color:rgba(99,214,131,.30);background:linear-gradient(135deg,rgba(99,214,131,.06) 0%,#fff 100%)}
+    .price-mini.weekend .pm-value{color:var(--ok)}
+
+    .year-chart{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:6px;align-items:end;min-height:80px}
+    .yc-bar{display:flex;flex-direction:column;align-items:center;gap:3px}
+    .yc-fill{width:100%;background:linear-gradient(180deg,var(--y) 0%,var(--yd) 100%);border-radius:4px 4px 0 0;min-height:3px;cursor:pointer;transition:transform .2s}
+    .yc-fill.high{background:linear-gradient(180deg,var(--ok) 0%,#2BA56A 100%)}
+    .yc-fill:hover{transform:scaleY(1.05)}
+    .yc-label{font-size:9.5px;color:var(--tl);font-weight:500}
+    .yc-price{font-size:9.5px;color:var(--tm);font-weight:600}
+
+    .source-line{font-size:11.5px;color:var(--tl);font-style:italic;margin:12px 0 0;border-top:1px solid var(--bd);padding-top:12px}
+    .insights-box{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:16px 18px;margin-top:14px}
+    .insights-box h4{font-family:'Fraunces',serif;font-size:14px;font-weight:500;margin:0 0 10px;color:var(--td)}
+    .insights-box ul{margin:0;padding-left:18px;font-size:13px;color:var(--tm);line-height:1.7;font-weight:300}
+
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14px;padding:12px 22px;border-radius:10px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s cubic-bezier(.4,0,.2,1);text-decoration:none}
+    .btn-p:hover{background:var(--yd);transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,213,107,.32)}
+    .btn-full{width:100%;justify-content:center;padding:14px 22px;font-size:15px}
+
+    .cta-bottom{background:var(--g);color:#fff;padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);text-align:center}
+    .cta-bottom h2{color:#fff;max-width:520px;margin:0 auto 14px}
+    .cta-bottom p{color:rgba(255,255,255,.78);font-size:14px;font-weight:300;max-width:520px;margin:0 auto 22px}
+
+    .secondary-sec{padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);max-width:880px;margin:0 auto}
+    .faq-item{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 22px;margin-bottom:10px}
+    .faq-item summary{font-family:'Fraunces',serif;font-size:15.5px;font-weight:400;color:var(--td);cursor:pointer;list-style:none;position:relative;padding-right:24px}
+    .faq-item summary::-webkit-details-marker{display:none}
+    .faq-item summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:var(--g);font-weight:300}
+    .faq-item[open] summary::after{content:'−'}
+    .faq-item p{margin:12px 0 0;font-size:13.5px;color:var(--tm);line-height:1.7;font-weight:300}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur de prix LCD","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Calculateur gratuit pour fixer le bon prix par nuit en location courte durée. Tient compte de la ville, du mois, du type de bien et du canal de réservation (Airbnb, Booking, direct).","url":"https://jasonmarinho.com/calculateurs/prix-lcd","provider":{"@type":"Person","name":"Jason Marinho"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs","item":"https://jasonmarinho.com/calculateurs"},{"@type":"ListItem","position":3,"name":"Calculateur de prix LCD","item":"https://jasonmarinho.com/calculateurs/prix-lcd"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Pourquoi le prix conseillé varie selon Airbnb, Booking ou direct ?","acceptedAnswer":{"@type":"Answer","text":"Les commissions sont très différentes : Booking prend 15 % sur le prix affiché, Airbnb prélève environ 3 % côté hôte (host-only fees), le direct = 0 %. Pour encaisser la même somme nette, tu dois afficher des prix légèrement différents par canal. Le calculateur le fait automatiquement."}},{"@type":"Question","name":"Comment est calculé le prix recommandé ?","acceptedAnswer":{"@type":"Answer","text":"On part de l'ADR moyen LCD de ta ville (sources INSEE, DGE, INE, Turismo de Portugal). On ajuste selon le type de bien, le mois (haute saison ×1.25, basse ×0.85, neutre ×1.0) et le canal pour neutraliser la commission. On donne le prix base, le prix weekend (+20 %) et la fourchette min/max."}},{"@type":"Question","name":"Quelle est la différence entre prix semaine et prix weekend ?","acceptedAnswer":{"@type":"Answer","text":"Les hôtes LCD pratiquent un premium weekend de 20 à 40 % par rapport à la semaine. Vendredi et samedi sont les nuits les plus demandées, surtout en ville. Notre calculateur applique automatiquement un +20 % weekend, à ajuster selon ta concurrence locale."}}]}</script>
+  <script defer src="/nav.js"></script>
+  <script defer src="/calculateurs/engine.js"></script>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-in">
+    <div class="breadcrumb" style="color:rgba(255,255,255,.55)">
+      <a href="/" style="color:rgba(255,255,255,.7)">Accueil</a> /
+      <a href="/calculateurs" style="color:rgba(255,255,255,.7)">Calculateurs</a> /
+      <span>Prix LCD</span>
+    </div>
+    <div class="lbl lt"><i class="ph ph-currency-eur"></i> Calculateur gratuit</div>
+    <h1 class="h1" style="color:#fff">Combien afficher <em style="color:var(--y)">par nuit</em> ?</h1>
+    <p class="sub">Le bon prix selon ta ville, le mois, ton bien et la plateforme. Compensation automatique des commissions (Airbnb 3 %, Booking 15 %, direct 0 %). Données INSEE et Turismo de Portugal.</p>
+  </div>
+</header>
+
+<div class="calc-wrap">
+  <div class="calc-grid">
+    <!-- Form -->
+    <div class="panel">
+      <h3><i class="ph ph-sliders-horizontal" style="margin-right:6px;color:var(--g)"></i>Paramètres</h3>
+
+      <div class="field">
+        <label for="f-pays">Pays</label>
+        <select id="f-pays">
+          <option value="FR">🇫🇷 France</option>
+          <option value="PT">🇵🇹 Portugal</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-ville">Ville</label>
+        <select id="f-ville"><option>—</option></select>
+      </div>
+
+      <div class="field">
+        <label for="f-type">Type de bien</label>
+        <select id="f-type">
+          <option value="studio">Studio</option>
+          <option value="t1">T1 / 1 chambre</option>
+          <option value="t2" selected>T2 / 2 pièces</option>
+          <option value="t3">T3 / 3 pièces</option>
+          <option value="maison">Maison entière</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-chambres">Nombre de chambres</label>
+        <select id="f-chambres">
+          <option value="0">Aucune</option>
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4+</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-month">Mois cible</label>
+        <select id="f-month">
+          <option value="1">Janvier</option><option value="2">Février</option>
+          <option value="3">Mars</option><option value="4">Avril</option>
+          <option value="5">Mai</option><option value="6">Juin</option>
+          <option value="7" selected>Juillet</option><option value="8">Août</option>
+          <option value="9">Septembre</option><option value="10">Octobre</option>
+          <option value="11">Novembre</option><option value="12">Décembre</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Canal de réservation</label>
+        <div class="channel-grid">
+          <div class="channel-opt" data-channel="airbnb">Airbnb<small>commission ~3 %</small></div>
+          <div class="channel-opt" data-channel="booking">Booking<small>commission ~15 %</small></div>
+          <div class="channel-opt" data-channel="direct">Direct<small>0 % commission</small></div>
+          <div class="channel-opt active" data-channel="mix">Mix (tous)<small>moyenne pondérée</small></div>
+        </div>
+      </div>
+
+      <button id="btn-calc" class="btn-p btn-full" type="button">
+        <i class="ph-bold ph-calculator"></i>
+        Calculer le prix
+      </button>
+    </div>
+
+    <!-- Result -->
+    <div id="result-area">
+      <div class="result-empty">
+        <i class="ph ph-currency-eur"></i>
+        <p>Remplis le formulaire pour obtenir<br>ton prix recommandé.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="secondary-sec">
+  <div class="lbl"><i class="ph ph-question"></i> Questions fréquentes</div>
+  <h2 class="h2">À <em style="font-style:italic;color:var(--g)">savoir</em></h2>
+
+  <details class="faq-item">
+    <summary>Pourquoi le prix varie selon Airbnb, Booking ou direct ?</summary>
+    <p>Les commissions sont très différentes : Booking prend 15 % sur le prix affiché, Airbnb prélève environ 3 % côté hôte (host-only fees), le direct = 0 % de commission. Pour encaisser la même somme nette, tu dois afficher des prix légèrement différents sur chaque canal. Le calculateur le fait automatiquement.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Comment est calculé le prix recommandé ?</summary>
+    <p>On part de l'ADR moyen LCD de ta ville (sources INSEE, DGE, INE, Turismo de Portugal). On ajuste selon le type de bien (studio à maison entière), le mois (haute saison ×1.25, basse ×0.85, neutre ×1.0 selon les pics observés localement) et le canal de réservation pour neutraliser sa commission. On donne le prix base, le prix weekend (+20 %), le prix semaine (-8 %), et la fourchette min/max.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Différence prix semaine vs prix weekend ?</summary>
+    <p>Les hôtes LCD pratiquent un premium weekend de 20 à 40 % vs semaine. Vendredi et samedi sont les nuits les plus demandées surtout en ville. Notre calculateur applique automatiquement +20 % weekend, à ajuster selon ta concurrence locale (Airbnb te montre les prix moyens du quartier).</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Faut-il un prix dynamique mensuel ?</summary>
+    <p>Oui, surtout en zone touristique. Un prix fixe te fait perdre 15 à 25 % de revenus selon les études (rapports observatoires régionaux). Notre calculateur te donne les 12 prix mensuels d'une année, ajustés sur la saisonnalité réelle de TA ville. Tu n'as plus qu'à les saisir dans ton calendrier Airbnb/Booking.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Et la concurrence directe de mon quartier ?</summary>
+    <p>C'est l'élément qu'on ne peut pas évaluer ici (variabilité énorme rue par rue). Le calculateur donne une base solide marché. Pour affiner : regarde les 5-10 annonces concurrentes les plus comparables (taille, équipement, vue) sur Airbnb et compare. Si tu es ±15 % de la médiane des concurrents, tu es bon.</p>
+  </details>
+</section>
+
+<section class="cta-bottom">
+  <h2 class="h2">Tu veux du <em style="font-style:italic;color:var(--y)">pricing dynamique</em> ?</h2>
+  <p>Avec un compte Standard, tu obtiens des recommandations de prix mensuelles ajustées sur ta vraie occupation, ton historique et la saisonnalité locale.</p>
+  <a href="https://app.jasonmarinho.com/auth/register" class="btn-p" style="background:var(--y);color:var(--gd)">
+    Créer mon compte gratuit
+    <i class="ph-bold ph-arrow-right"></i>
+  </a>
+</section>
+
+<script src="/footer.js"></script>
+<script>
+(function () {
+  'use strict'
+  function $ (id) { return document.getElementById(id) }
+  var paysEl = $('f-pays'), villeEl = $('f-ville'), typeEl = $('f-type'),
+      chambresEl = $('f-chambres'), monthEl = $('f-month'), btn = $('btn-calc'),
+      result = $('result-area')
+  var channel = 'mix'
+
+  function fmtEur (n) { return n.toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €' }
+
+  function refreshCities () {
+    var pays = paysEl.value
+    var cities = window.JMCalc.citiesByCountry(pays)
+    var html = ''
+    cities.forEach(function (c) {
+      html += '<option value="' + c.ville + '">' + c.ville + '</option>'
+    })
+    html += '<option value="__other__">Autre ville (moyenne pays)</option>'
+    villeEl.innerHTML = html
+  }
+
+  function bindChannel () {
+    document.querySelectorAll('.channel-opt').forEach(function (el) {
+      el.addEventListener('click', function () {
+        document.querySelectorAll('.channel-opt').forEach(function (e) { e.classList.remove('active') })
+        el.classList.add('active')
+        channel = el.getAttribute('data-channel')
+      })
+    })
+  }
+
+  var MONTHS_LONG = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+
+  function render () {
+    if (!window.JMCalc) return
+    var villeInput = villeEl.value === '__other__' ? '' : villeEl.value
+    var month = parseInt(monthEl.value, 10)
+    var res = window.JMCalc.calculatePrice({
+      pays: paysEl.value,
+      ville: villeInput,
+      typeLogement: typeEl.value,
+      nbChambres: parseInt(chambresEl.value, 10),
+      month: month,
+      channel: channel,
+    })
+
+    var diffPct = res.marketAdr > 0 ? Math.round(((res.adjustedAdr - res.marketAdr) / res.marketAdr) * 100) : 0
+    var maxPriceY = Math.max.apply(null, res.yearPricing.map(function (p) { return p.price }))
+    var chartHtml = res.yearPricing.map(function (p, i) {
+      var h = maxPriceY > 0 ? Math.max(3, (p.price / maxPriceY) * 60) : 3
+      var isCurrentMonth = p.month === month
+      return '<div class="yc-bar" title="' + MONTHS_LONG[i] + ' : ' + fmtEur(p.price) + ' (weekend ' + fmtEur(p.weekend) + ')"><div class="yc-fill ' + (p.isHigh ? 'high' : '') + '" style="height:' + h + 'px;' + (isCurrentMonth ? 'box-shadow:0 0 0 2px var(--td)' : '') + '"></div><div class="yc-price">' + p.price + '</div><div class="yc-label">' + window.JMCalc.MONTHS_SHORT[i] + '</div></div>'
+    }).join('')
+
+    var channelLabel = { airbnb: 'Airbnb', booking: 'Booking', direct: 'Direct', mix: 'Mix multi-canal' }[channel]
+
+    var insights = []
+    if (diffPct >= 20) insights.push('Ton prix recommandé est <strong>' + diffPct + ' % au-dessus du marché médian</strong> (' + fmtEur(res.marketAdr) + '). Cohérent si ton bien est haut de gamme. Sinon, vérifie ta concurrence directe.')
+    if (diffPct <= -15) insights.push('Ton prix recommandé est <strong>' + Math.abs(diffPct) + ' % sous le marché</strong>. Tu peux probablement viser plus haut, surtout si ton bien est bien équipé.')
+    if (channel === 'direct') insights.push('Canal direct : tu peux offrir 5 à 10 % de réduction vs Airbnb pour <strong>récompenser la réservation sans commission</strong>. Ça crée des clients fidèles.')
+    if (channel === 'booking') insights.push('Booking prélève ~15 % : le prix recommandé inclut déjà la compensation pour que tu encaisses le même montant net qu\'ailleurs.')
+    var monthIsHigh = res.bench && res.bench.saisonHaute.indexOf(month) !== -1
+    if (monthIsHigh) insights.push('<strong>' + MONTHS_LONG[month - 1] + '</strong> est en <strong>haute saison locale</strong>. C\'est le moment de pousser les prix +25 à +40 %.')
+    if (!monthIsHigh && (month >= 11 || month <= 2)) insights.push('Hors saison : pense aux <strong>séjours longs</strong> (workation, télétravail) avec tarif dégressif à partir de 7 nuits.')
+
+    var html = '' +
+      '<div class="panel">' +
+        '<h3><i class="ph-fill ph-currency-eur" style="margin-right:6px;color:var(--g)"></i>Prix recommandé · ' + res.city + '</h3>' +
+        '<div class="price-hero">' +
+          '<div class="price-label">' + channelLabel + ' · ' + MONTHS_LONG[month - 1] + '</div>' +
+          '<div class="price-big">' + fmtEur(res.basePrice) + '<span style="font-size:18px;color:rgba(255,255,255,.6);font-weight:300"> / nuit</span></div>' +
+          '<div class="price-month">Fourchette acceptable : ' + fmtEur(res.minPrice) + ' à ' + fmtEur(res.maxPrice) + '</div>' +
+        '</div>' +
+        '<div class="price-row">' +
+          '<div class="price-mini">' +
+            '<div class="pm-label">Prix semaine (lun→jeu)</div>' +
+            '<div class="pm-value">' + fmtEur(res.weekPrice) + '</div>' +
+            '<div class="pm-sub">−8 % vs base</div>' +
+          '</div>' +
+          '<div class="price-mini weekend">' +
+            '<div class="pm-label">Prix weekend (ven+sam)</div>' +
+            '<div class="pm-value">' + fmtEur(res.weekendPrice) + '</div>' +
+            '<div class="pm-sub">+20 % vs base</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
+          '<span style="font-size:12.5px;color:var(--tm)">ADR marché ' + res.city + ' :</span>' +
+          '<span style="font-size:14px;font-weight:600;color:var(--td)">' + fmtEur(res.marketAdr) + (Math.abs(diffPct) >= 2 ? ' <span style="font-size:11.5px;color:' + (diffPct >= 0 ? 'var(--ok)' : '#F59E0B') + ';font-weight:600;margin-left:6px">' + (diffPct >= 0 ? '+' : '') + diffPct + ' %</span>' : '') + '</span>' +
+        '</div>' +
+        '<div>' +
+          '<div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--tl);margin-bottom:4px">Prix recommandé sur 12 mois</div>' +
+          '<div class="year-chart">' + chartHtml + '</div>' +
+          '<div style="font-size:11px;color:var(--tl);display:flex;gap:12px;margin-top:6px"><span><span style="display:inline-block;width:8px;height:8px;background:var(--ok);border-radius:2px;margin-right:4px"></span>Haute saison</span><span><span style="display:inline-block;width:8px;height:8px;background:var(--y);border-radius:2px;margin-right:4px"></span>Saison neutre/basse</span></div>' +
+        '</div>' +
+        (insights.length > 0 ? '<div class="insights-box"><h4>💡 Pour ajuster</h4><ul>' + insights.map(function (i) { return '<li>' + i + '</li>' }).join('') + '</ul></div>' : '') +
+        '<div class="source-line">Source : ' + res.source + '. Prix indicatif. Ajuste selon ta concurrence directe et la qualité de ton bien.</div>' +
+      '</div>'
+
+    result.innerHTML = html
+  }
+
+  function init () {
+    if (!window.JMCalc) { setTimeout(init, 60); return }
+    refreshCities()
+    paysEl.addEventListener('change', refreshCities)
+    bindChannel()
+    btn.addEventListener('click', render)
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
+  else init()
+})();
+</script>
+</body>
+</html>

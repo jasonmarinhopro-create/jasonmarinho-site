@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateurs LCD gratuits : revenus et prix par ville | Jason Marinho</title>
+  <meta name="description" content="2 calculateurs gratuits pour la location courte durée : estime tes revenus locatifs annuels et trouve le bon prix par nuit selon ta ville. Données INSEE, DGE, Turismo de Portugal. France et Portugal couverts.">
+  <link rel="canonical" href="https://jasonmarinho.com/calculateurs">
+  <meta property="og:title" content="Calculateurs LCD gratuits : revenus et prix par ville | Jason Marinho">
+  <meta property="og:description" content="Estime tes revenus locatifs et trouve le bon prix par nuit. Gratuit, sans inscription. France et Portugal.">
+  <meta property="og:url" content="https://jasonmarinho.com/calculateurs">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
+  <link rel="preload" as="font" href="/fonts/Phosphor-Bold.woff2" crossorigin>
+  <link rel="preload" as="font" href="/fonts/Phosphor.woff2" crossorigin>
+  <link rel="stylesheet" href="/phosphor.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.08)}
+    *{box-sizing:border-box}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.6}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;margin:0 0 20px;font-weight:400}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;font-family:'Outfit',sans-serif;border:none;cursor:pointer}
+    .btn-p:hover{background:var(--yd);transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .25s cubic-bezier(.4,0,.2,1);font-family:'Outfit',sans-serif;background:transparent;cursor:pointer}
+    .btn-ol:hover{background:var(--g);color:#fff;transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,76,63,.18)}
+    .lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--g);margin-bottom:14px}
+    .lbl.lt{color:rgba(255,255,255,.7)}
+    .hero{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;padding:clamp(60px,10vw,120px) clamp(16px,5vw,60px) clamp(40px,6vw,80px);text-align:center}
+    .hero .h1{color:#fff;max-width:880px;margin:0 auto 20px}
+    .hero p.sub{font-size:clamp(1rem,1.6vw,1.2rem);font-weight:300;color:rgba(255,255,255,.85);max-width:680px;margin:0 auto 28px;line-height:1.6}
+    .sec{padding:clamp(48px,7vw,96px) clamp(16px,5vw,60px);max-width:1100px;margin:0 auto}
+    .sec.cr{background:var(--cr);max-width:none}
+    .sec.cr .in{max-width:1100px;margin:0 auto}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:32px}
+    @media(max-width:760px){.grid-2{grid-template-columns:1fr}}
+    .tool-card{background:var(--w);border:1px solid var(--bd);border-radius:18px;padding:32px;display:flex;flex-direction:column;gap:16px;text-decoration:none;color:inherit;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .25s;position:relative;overflow:hidden}
+    .tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--y),#34D399);opacity:0;transition:opacity .25s}
+    .tool-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,76,63,.14);border-color:rgba(0,76,63,.18)}
+    .tool-card:hover::before{opacity:1}
+    .tool-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(255,213,107,.18) 0%,rgba(99,214,131,.10) 100%);border:1px solid rgba(255,213,107,.25);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:24px;flex-shrink:0}
+    .tool-card h3{font-family:'Fraunces',serif;font-size:24px;font-weight:400;margin:0;letter-spacing:-.015em;color:var(--td)}
+    .tool-card p{font-size:14.5px;font-weight:300;color:var(--tm);line-height:1.65;margin:0;flex:1}
+    .tool-card .meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--tl);margin-top:8px}
+    .tool-card .meta span{display:inline-flex;align-items:center;gap:4px}
+    .tool-card .cta{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:var(--g);margin-top:8px}
+    .badge-free{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:#E8F8EE;color:#0E7A3B;border:1px solid #C7EFD4}
+    .sources-box{background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:24px 28px;margin-top:32px;font-size:13.5px;color:var(--tm);line-height:1.7}
+    .sources-box strong{color:var(--td);font-weight:600}
+    .sources-box ul{margin:8px 0 0;padding-left:18px}
+    .sources-box li{margin-bottom:4px}
+    .faq-item{background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:20px 24px;margin-bottom:12px}
+    .faq-item summary{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);cursor:pointer;padding-right:24px;position:relative;list-style:none}
+    .faq-item summary::-webkit-details-marker{display:none}
+    .faq-item summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:24px;font-weight:300;color:var(--g);transition:transform .25s}
+    .faq-item[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+    .faq-item p{font-size:14px;font-weight:300;color:var(--tm);line-height:1.7;margin:14px 0 0}
+    .cta-s{background:var(--g);color:#fff;padding:clamp(50px,7vw,90px) clamp(16px,5vw,60px);text-align:center}
+    .cta-s h2{color:#fff;max-width:600px;margin:0 auto 16px}
+    .cta-s p{color:rgba(255,255,255,.8);font-size:15px;font-weight:300;max-width:520px;margin:0 auto 24px}
+    nav{display:none}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateurs LCD Jason Marinho","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Calculateurs gratuits pour estimer les revenus locatifs en location courte durée et calculer le bon prix par nuit par ville. Couverture France et Portugal.","url":"https://jasonmarinho.com/calculateurs","provider":{"@type":"Person","name":"Jason Marinho"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs LCD gratuits","item":"https://jasonmarinho.com/calculateurs"}]}</script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+<header class="hero">
+  <div class="lbl lt"><i class="ph ph-calculator"></i> Outils gratuits</div>
+  <h1 class="h1">Calculateurs <em style="font-style:italic;color:var(--y)">LCD</em></h1>
+  <p class="sub">2 outils gratuits, sans inscription, pour estimer tes revenus locatifs et trouver le bon prix par nuit. Basés sur des données publiques (INSEE, DGE, INE, Turismo de Portugal).</p>
+  <div style="display:inline-flex;gap:8px;align-items:center;font-size:12px;color:rgba(255,255,255,.6)">
+    <span class="badge-free">100 % gratuit</span>
+    <span>· Sans inscription · France et Portugal</span>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="lbl"><i class="ph ph-tools"></i> Choisis ton outil</div>
+  <h2 class="h2">Deux questions, <em style="font-style:italic;color:var(--g)">deux réponses</em></h2>
+  <p style="font-size:15px;font-weight:300;color:var(--tm);max-width:680px;line-height:1.7;margin:0">
+    Que tu envisages d'investir ou que tu loues déjà, ces deux calculateurs te donnent en 30 secondes les chiffres qui comptent vraiment pour ta location courte durée.
+  </p>
+
+  <div class="grid-2">
+    <a class="tool-card" href="/calculateurs/revenus-lcd">
+      <div class="tool-icon"><i class="ph-fill ph-chart-line-up"></i></div>
+      <span class="badge-free">Gratuit</span>
+      <h3>Estimateur de revenus LCD</h3>
+      <p>Tu envisages d'acheter ou de mettre un bien en LCD ? Estime le revenu annuel possible selon ta ville, le type de bien et ton mode d'exploitation. Fourchette basse/haute incluse.</p>
+      <div class="meta">
+        <span><i class="ph ph-map-pin"></i> 25 villes FR + 12 villes PT</span>
+        <span><i class="ph ph-database"></i> Sources publiques</span>
+      </div>
+      <span class="cta">Lancer l'estimation <i class="ph-bold ph-arrow-right"></i></span>
+    </a>
+
+    <a class="tool-card" href="/calculateurs/prix-lcd">
+      <div class="tool-icon" style="background:linear-gradient(135deg,rgba(99,214,131,.18) 0%,rgba(255,213,107,.10) 100%);border-color:rgba(99,214,131,.30)"><i class="ph-fill ph-currency-eur"></i></div>
+      <span class="badge-free">Gratuit</span>
+      <h3>Calculateur de prix LCD</h3>
+      <p>Combien afficher par nuit selon le mois, la ville, la plateforme (Airbnb, Booking, direct) ? Recommandation mensuelle + ajustements weekend/semaine + benchmark marché.</p>
+      <div class="meta">
+        <span><i class="ph ph-storefront"></i> Airbnb · Booking · Direct</span>
+        <span><i class="ph ph-calendar"></i> 12 prix mensuels</span>
+      </div>
+      <span class="cta">Calculer mes prix <i class="ph-bold ph-arrow-right"></i></span>
+    </a>
+  </div>
+
+  <div class="sources-box">
+    <strong><i class="ph ph-info"></i> D'où viennent ces chiffres ?</strong>
+    <ul>
+      <li><strong>France :</strong> Mémento du Tourisme 2024 (DGE), INSEE, Comités Régionaux du Tourisme (PACA, Occitanie, Bretagne, Normandie, Pays de la Loire, etc.), Atout France.</li>
+      <li><strong>Portugal :</strong> Anuário das Estatísticas do Turismo (INE), Registo Nacional do Alojamento Local (Turismo de Portugal), rapports municipaux Lisboa, Porto, Funchal.</li>
+      <li><strong>Mise à jour :</strong> annuelle, dès publication des rapports T1 N+1.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="in">
+    <div class="lbl"><i class="ph ph-question"></i> Questions fréquentes</div>
+    <h2 class="h2">Ce que tu te <em style="font-style:italic;color:var(--g)">demandes</em></h2>
+
+    <details class="faq-item">
+      <summary>Ces calculs sont-ils précis à l'euro près ?</summary>
+      <p>Non, et personne ne peut l'être sans connaître ton bien, tes photos, ton positionnement et ta concurrence directe rue par rue. Nos chiffres donnent une fourchette réaliste (±20 %) basée sur les moyennes marché de ta ville. C'est un point de départ solide pour décider, pas un contrat.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Pourquoi seulement 2 pays (France et Portugal) ?</summary>
+      <p>Parce qu'on refuse de gonfler la liste avec des données non vérifiées. Ces deux pays sont les premiers où nous avons agrégé des sources publiques officielles (INSEE, DGE, INE, Turismo de Portugal). L'Espagne, l'Italie et la Belgique arrivent au prochain trimestre. Les 15 autres pays UE dans le courant 2027.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Ma ville n'est pas dans la liste, que faire ?</summary>
+      <p>Sélectionne "Autre ville" : tu recevras une estimation basée sur la moyenne nationale de ton pays (qui reste utile comme repère). Pour une analyse plus fine, regarde la ville la plus proche dans la liste de profil similaire (taille, attractivité touristique).</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Pourquoi prendre Airbnb, Booking ET direct en compte dans le calculateur de prix ?</summary>
+      <p>Parce que les commissions varient énormément : Booking prend 15 %, Airbnb 3 % côté hôte (host-only fees), direct = 0 %. Pour ENCAISSER la même somme, tu dois afficher des prix légèrement différents. Notre calculateur le fait automatiquement.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>C'est vraiment 100 % gratuit ?</summary>
+      <p>Oui. Pas d'inscription, pas d'email demandé, pas de freemium. Si tu veux aller plus loin et suivre ta vraie activité (calendrier, revenus, performances, contrats), tu peux créer un compte gratuit (plan Découverte) ou passer Standard à 1,98 €/mois.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Quelle différence avec AirDNA ou Mashvisor ?</summary>
+      <p>Ces outils sont excellents mais payants (30-100 €/mois) et utilisent du scraping de listings. Nous, on cite des sources officielles publiques (INSEE, DGE, INE). C'est plus rigoureux mais moins exhaustif. Idéal pour démarrer ou valider une intuition sans engagement.</p>
+    </details>
+  </div>
+</section>
+
+<section class="cta-s">
+  <h2 class="h2">Tu loues déjà ? <em style="font-style:italic;color:var(--y)">Va plus loin</em></h2>
+  <p>Avec un compte gratuit, suis ton calendrier, tes revenus réels et tes performances. Compare ta vraie activité au marché. Pas de carte bancaire demandée.</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+    <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+    <a href="/tarifs" class="btn-ol" style="border-color:rgba(255,255,255,.22);color:rgba(255,255,255,.85)">Voir les tarifs</a>
+  </div>
+</section>
+
+<script src="/footer.js"></script>
+</body>
+</html>

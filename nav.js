@@ -51,6 +51,12 @@
       '.n-mega a:hover{color:#fff;background:rgba(255,255,255,.05)}',
       '.n-mega a.active{color:var(--y)}',
       '.n-mega a i{font-size:15px;color:rgba(255,213,107,.55);flex-shrink:0;width:16px;text-align:center}',
+      '.n-mega-3{min-width:680px}',
+      '.n-mega-3 .n-col{min-width:200px;flex:1}',
+      '.n-tag-free{display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(99,214,131,.18);color:#7AE89A;border:1px solid rgba(99,214,131,.30);margin-left:auto;flex-shrink:0}',
+      '.n-mega a.n-sub-link{color:rgba(255,213,107,.7);font-size:12.5px;margin-top:4px;border-top:1px dashed rgba(255,255,255,.06);padding-top:10px}',
+      '.n-mega a.n-sub-link:hover{color:var(--y)}',
+      '@media(max-width:1080px){.n-mega-3{min-width:0;flex-direction:column;gap:14px}}',
 
       /* Driing card redesignée */
       '.n-driing-card{display:flex;flex-direction:column;gap:10px;background:linear-gradient(145deg,rgba(255,213,107,.09) 0%,rgba(255,213,107,.04) 100%);border:1px solid rgba(255,213,107,.22);border-radius:12px;padding:18px 16px;text-decoration:none!important;color:inherit;transition:background .2s,border-color .2s;min-width:210px;align-self:stretch}',
@@ -149,10 +155,10 @@
       /* ── Services ── */
       + '<li class="n-drop">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Services ' + CARET + '</button>'
-        + '<div class="n-mega">'
+        + '<div class="n-mega n-mega-3">'
           + '<div class="n-col">'
             + '<div class="n-col-title">Outils</div>'
-            + '<a href="/services/simulateurs"><i class="ph ph-calculator"></i>Simulateurs LCD</a>'
+            + '<a href="/services/simulateurs"><i class="ph ph-calculator"></i>Simulateurs fiscaux</a>'
             + '<a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Audit GBP</a>'
             + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
             + '<a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a>'
@@ -160,6 +166,12 @@
             + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
             + '<a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
             + '<a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a>'
+          + '</div>'
+          + '<div class="n-col">'
+            + '<div class="n-col-title">Calculateurs</div>'
+            + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur revenus LCD <span class="n-tag-free">Gratuit</span></a>'
+            + '<a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur prix LCD <span class="n-tag-free">Gratuit</span></a>'
+            + '<a href="/calculateurs" class="n-sub-link"><i class="ph ph-arrow-right"></i>Voir tous les calculateurs</a>'
           + '</div>'
           + '<div class="n-col">'
             + '<div class="n-col-title">Ressources</div>'
@@ -217,7 +229,7 @@
       + '<button class="mob-acc-btn" aria-expanded="false">Services ' + MOB_ARROW + '</button>'
       + '<div class="mob-acc-body">'
         + '<span class="mob-stitle" style="display:block;padding:10px 0 2px">Outils</span>'
-        + '<a href="/services/simulateurs"><i class="ph ph-calculator"></i>Simulateurs LCD</a>'
+        + '<a href="/services/simulateurs"><i class="ph ph-calculator"></i>Simulateurs fiscaux</a>'
         + '<a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Audit GBP</a>'
         + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
         + '<a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a>'
@@ -225,6 +237,9 @@
         + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
         + '<a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
         + '<a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a>'
+        + '<span class="mob-stitle" style="display:block;padding:10px 0 2px">Calculateurs gratuits</span>'
+        + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur revenus LCD</a>'
+        + '<a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur prix LCD</a>'
         + '<span class="mob-stitle" style="display:block;padding:10px 0 2px">Ressources</span>'
         + '<a href="/services/actualites"><i class="ph ph-newspaper"></i>Actualités LCD</a>'
         + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations</a>'
