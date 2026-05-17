@@ -776,20 +776,20 @@ export default function GabaritsClient({
 
               return (
                 <div key={bucket}>
-                  {/* Header phase */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                  {/* Header phase compact */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                     <div style={{
-                      width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+                      width: '28px', height: '28px', borderRadius: '8px', flexShrink: 0,
                       background: cfg.bg, border: `1px solid ${cfg.border}`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
-                      <Icon size={18} color={cfg.color} weight="fill" />
+                      <Icon size={14} color={cfg.color} weight="fill" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '21px', fontWeight: 400, color: 'var(--text)', lineHeight: 1.2 }}>
+                      <div style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
                         {cfg.label}
                       </div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
                         {hasPins
                           ? `${pinnedList.length} message${pinnedList.length > 1 ? 's' : ''} dans ta séquence · réordonne avec ↑ ↓`
                           : 'Suggestion par défaut · ajoute tes propres messages quand tu veux'}
@@ -1517,19 +1517,20 @@ function CustomizeModal({
 
 const s: Record<string, React.CSSProperties> = {
   page:      { padding: 'clamp(20px,3vw,44px)', width: '100%' },
-  intro:     { marginBottom: '32px' },
-  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
-  pageDesc:  { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '560px', lineHeight: 1.65 },
+  intro:     { marginBottom: 'clamp(18px, 2.5vw, 24px)' },
+  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(22px,2.6vw,30px)', fontWeight: 400, color: 'var(--text)', marginBottom: '6px', letterSpacing: '-0.01em', lineHeight: 1.15 },
+  pageDesc:  { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '600px', lineHeight: 1.6, margin: 0 },
 
   logementSelector: {
     display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px',
-    marginBottom: '20px', padding: '12px 14px',
-    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px',
+    marginBottom: 'clamp(16px, 2.5vw, 22px)',
+    paddingBottom: '14px',
+    borderBottom: '1px solid var(--border)',
   },
   logementSelectorLabel: {
     display: 'flex', alignItems: 'center', gap: '6px',
-    fontSize: '12px', fontWeight: 600, color: 'var(--text-2)',
-    textTransform: 'uppercase', letterSpacing: '0.4px',
+    fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)',
+    textTransform: 'uppercase', letterSpacing: '0.7px',
   },
   logementChips: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
   logementChip: {
