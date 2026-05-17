@@ -38,7 +38,10 @@
     .btn-ol:hover{background:var(--g);color:#fff;transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,76,63,.18)}
     .lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--g);margin-bottom:14px}
     .lbl.lt{color:rgba(255,255,255,.7)}
-    .hero{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;padding:clamp(60px,10vw,120px) clamp(16px,5vw,60px) clamp(40px,6vw,80px);text-align:center}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(60px,10vw,120px) clamp(16px,5vw,60px) clamp(40px,6vw,80px);text-align:center;position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 78% 50%,rgba(255,213,107,.06),transparent 70%);pointer-events:none}
+    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 100%,rgba(0,76,63,.5),transparent 70%);pointer-events:none}
+    .hero > *{position:relative;z-index:1}
     .hero .h1{color:#fff;max-width:880px;margin:0 auto 20px}
     .hero p.sub{font-size:clamp(1rem,1.6vw,1.2rem);font-weight:300;color:rgba(255,255,255,.85);max-width:680px;margin:0 auto 28px;line-height:1.6}
     .sec{padding:clamp(48px,7vw,96px) clamp(16px,5vw,60px);max-width:1100px;margin:0 auto}
@@ -100,10 +103,9 @@
   </div>
 </header>
 
-<div style="max-width:1100px;margin:-22px auto 0;padding:0 16px;position:relative;z-index:3">
-  <a href="https://app.jasonmarinho.com/dashboard/simulateurs" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:linear-gradient(135deg,var(--w) 0%,rgba(255,213,107,.10) 100%);border:1px solid rgba(255,213,107,.40);border-radius:14px;box-shadow:0 6px 22px rgba(0,76,63,.08);text-decoration:none;color:inherit">
+<div style="max-width:1100px;margin:-26px auto 28px;padding:0 16px;position:relative;z-index:5"><a href="https://app.jasonmarinho.com/dashboard/simulateurs" style="display:flex;align-items:center;gap:14px;padding:16px 20px;background:#fff;border:1px solid rgba(255,213,107,.50);border-radius:16px;box-shadow:0 14px 40px rgba(0,76,63,.12),0 2px 6px rgba(0,0,0,.04);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s">
     <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--y) 0%,var(--yd) 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gd);font-size:19px">
-      <i class="ph-fill ph-house"></i>
+      <i class="ph-bold ph-house"></i>
     </div>
     <div style="flex:1">
       <div style="font-family:'Fraunces',serif;font-size:16px;color:var(--td);font-weight:500;line-height:1.3">💡 Encore plus puissant si tu as un compte</div>
@@ -122,7 +124,7 @@
 
   <div class="grid-2" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
     <a class="tool-card" href="/calculateurs/revenus-lcd">
-      <div class="tool-icon"><i class="ph-fill ph-chart-line-up"></i></div>
+      <div class="tool-icon"><i class="ph-bold ph-chart-line-up"></i></div>
       <span class="badge-free">Gratuit</span>
       <h3>Estimateur de revenus LCD</h3>
       <p>Tu envisages d'acheter ou de mettre un bien en LCD ? Estime le revenu annuel possible selon ta ville, le type de bien et ton mode d'exploitation. Fourchette basse/haute incluse.</p>
@@ -134,7 +136,7 @@
     </a>
 
     <a class="tool-card" href="/calculateurs/prix-lcd">
-      <div class="tool-icon" style="background:linear-gradient(135deg,rgba(99,214,131,.18) 0%,rgba(255,213,107,.10) 100%);border-color:rgba(99,214,131,.30)"><i class="ph-fill ph-currency-eur"></i></div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,rgba(99,214,131,.18) 0%,rgba(255,213,107,.10) 100%);border-color:rgba(99,214,131,.30)"><i class="ph-bold ph-currency-eur"></i></div>
       <span class="badge-free">Gratuit</span>
       <h3>Calculateur de prix LCD</h3>
       <p>Combien afficher par nuit selon le mois, la ville et le canal de réservation (Airbnb, Booking, Vrbo, en direct) ? Recommandation mensuelle + ajustements weekend/semaine + benchmark marché.</p>
@@ -146,7 +148,7 @@
     </a>
 
     <a class="tool-card" href="/calculateurs/comparer-villes">
-      <div class="tool-icon" style="background:linear-gradient(135deg,rgba(167,139,250,.18) 0%,rgba(99,214,131,.10) 100%);border-color:rgba(167,139,250,.30)"><i class="ph-fill ph-scales"></i></div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,rgba(167,139,250,.18) 0%,rgba(99,214,131,.10) 100%);border-color:rgba(167,139,250,.30)"><i class="ph-bold ph-scales"></i></div>
       <span class="badge-free">Gratuit</span>
       <h3>Comparateur de villes</h3>
       <p>Compare jusqu'à 4 villes côte à côte : occupation, ADR, RevPAR, saisonnalité, classement automatique. L'outil pour décider où investir en LCD parmi les 9 pays européens.</p>
