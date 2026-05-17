@@ -1336,7 +1336,7 @@ function CompareurMesVilles({ logements }: { logements: LogementPrefill[] }) {
         const mine = villesLogements.find(v => v.pays === s.pays && v.ville === s.ville)
         return { bench, mine }
       })
-      .filter((b): b is { bench: ReturnType<typeof citiesByCountry>[0]; mine?: typeof villesLogements[0] } => !!b)
+      .filter((b): b is { bench: ReturnType<typeof citiesByCountry>[0]; mine: typeof villesLogements[0] | undefined } => !!b)
   }, [selection, villesLogements])
 
   function updateSelection(idx: number, field: 'pays' | 'ville', value: string) {
