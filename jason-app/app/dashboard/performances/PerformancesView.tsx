@@ -1137,14 +1137,15 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         />
       </div>
 
-      {/* ─── KPIs hôteliers : RevPAR, ADR, weekend premium ──────────── */}
-      <section style={s.card}>
-        <div style={s.cardHead}>
-          <div>
-            <h3 style={s.cardTitle}>Indicateurs hôteliers</h3>
-            <p style={s.cardSub}>Les métriques standards utilisées par les pros de l'hébergement</p>
+      {/* ─── KPIs hôteliers : RevPAR, ADR, weekend premium (Premium) ──── */}
+      {isPremium ? (
+        <section style={s.card}>
+          <div style={s.cardHead}>
+            <div>
+              <h3 style={s.cardTitle}>Indicateurs hôteliers</h3>
+              <p style={s.cardSub}>Les métriques standards utilisées par les pros de l'hébergement</p>
+            </div>
           </div>
-        </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
           <MiniKpi
             label="RevPAR"
@@ -1181,9 +1182,21 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           />
         </div>
       </section>
+      ) : (
+        <PremiumLock
+          title="Indicateurs hôteliers (RevPAR, ADR, weekend premium)"
+          description="Les métriques standards utilisées par les pros de l'hôtellerie pour piloter leur activité — pas juste le taux d'occupation basique."
+          bullets={[
+            'RevPAR (Revenue Per Available Night) : la métrique #1 en hôtellerie',
+            'ADR (prix moyen par nuit louée) — différent du prix affiché',
+            'Différentiel prix weekend / semaine avec recommandation auto',
+            'Potentiel revenus annuel à occupation maximale',
+          ]}
+        />
+      )}
 
-      {/* ─── Benchmark régional (depuis ville détectée) ─────────────── */}
-      {currentBenchmark?.bench && (
+      {/* ─── Benchmark régional (depuis ville détectée) — Premium ──────── */}
+      {isPremium && currentBenchmark?.bench ? (
         <section style={{ ...s.card, background: 'linear-gradient(135deg, var(--accent-bg) 0%, var(--surface) 100%)' }}>
           <div style={s.cardHead}>
             <div>
@@ -1232,10 +1245,21 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
             Données indicatives agrégées depuis sources publiques (INSEE, DGE, INE, observatoires régionaux). À titre de repère, pas de référence absolue. Mise à jour annuelle.
           </p>
         </section>
-      )}
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Benchmark marché de ta ville"
+          description="Compare ton activité au marché LCD local : occupation moyenne, ADR médian, RevPAR annuel. Données sourcées (INSEE, DGE, INE, Turismo de Portugal, observatoires régionaux). 25 villes France + 12 villes Portugal couvertes."
+          bullets={[
+            'Ton taux d\'occupation vs moyenne marché ta ville',
+            'Ton ADR vs prix médian observé localement',
+            'Ton RevPAR annuel vs potentiel marché',
+            'Saisonnalité haute saison locale recommandée',
+          ]}
+        />
+      ) : null}
 
-      {/* ─── Projection annuelle vs objectif ─────────────────────────── */}
-      {projection && objectifAnnuel && (
+      {/* ─── Projection annuelle vs objectif (Premium — utilise revenus_objectifs) */}
+      {isPremium && projection && objectifAnnuel ? (
         <section style={s.card}>
           <div style={s.cardHead}>
             <div>
@@ -1275,7 +1299,18 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
               : `À ce rythme, tu seras à ${Math.round(projection.projetePct)} % de ton objectif. Il faut booster d'environ ${fmtEur(objectifAnnuel - projection.projete)} sur le reste de l'année.`}
           </p>
         </section>
-      )}
+      ) : !isPremium ? (
+        <PremiumLock
+          title="Projection annuelle vs objectif"
+          description="Définis ton objectif de CA annuel et suis l'avancement en temps réel avec une projection automatique de fin d'année."
+          bullets={[
+            'Objectif CA annuel (défini dans /revenus)',
+            'Projection fin d\'année par extrapolation linéaire',
+            'Jauge de progression + reste à faire',
+            'Message contextualisé selon ton avancement',
+          ]}
+        />
+      ) : null}
 
       {/* ═══════════════════════════════════════════════════════════════════
           BLOCS ANALYSES AVANCÉES — réservés au plan Standard / Driing

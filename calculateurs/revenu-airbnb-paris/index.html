@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Combien rapporte une location courte durée à Paris en 2026 ? Calcul gratuit | Jason Marinho</title>
+  <meta name="description" content="Estime gratuitement les revenus d'une location courte durée (Airbnb, Booking, en direct) à Paris en 2026. Données CRT Île-de-France + INSEE : 68 % d'occupation, 135 €/nuit. Calculateur préfilé pour studio, T2, T3 et maison.">
+  <link rel="canonical" href="https://jasonmarinho.com/calculateurs/revenu-airbnb-paris">
+  <meta property="og:title" content="Combien rapporte une location courte durée à Paris en 2026 ?">
+  <meta property="og:description" content="Calculateur gratuit + chiffres marché 2024 (CRT Île-de-France, INSEE). Tous canaux : Airbnb, Booking, direct.">
+  <meta property="og:url" content="https://jasonmarinho.com/calculateurs/revenu-airbnb-paris">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="/phosphor.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.10);--ok:#34D399}
+    *{box-sizing:border-box}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.7}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 18px;font-weight:400;color:#fff}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.2;margin:0 0 14px;font-weight:400;color:var(--td);letter-spacing:-.015em}
+    .h3{font-family:'Fraunces',serif;font-size:clamp(1.2rem,1.8vw,1.4rem);font-weight:500;margin:24px 0 10px;color:var(--td)}
+    .lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
+    .lbl.lt{color:rgba(255,255,255,.7)}
+    .breadcrumb{font-size:12.5px;color:var(--tl);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--g);text-decoration:none;font-weight:500}
+    .breadcrumb.lt a,.breadcrumb.lt{color:rgba(255,255,255,.7)}
+
+    .hero{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;padding:clamp(48px,7vw,80px) clamp(16px,5vw,60px) clamp(40px,6vw,72px)}
+    .hero-in{max-width:920px;margin:0 auto}
+    .hero p.sub{font-size:clamp(1rem,1.4vw,1.15rem);font-weight:300;color:rgba(255,255,255,.85);max-width:740px;margin:0;line-height:1.65}
+
+    .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:920px;margin:-32px auto 0;padding:0 16px 0;position:relative;z-index:2}
+    @media(max-width:680px){.stats-strip{grid-template-columns:repeat(2,1fr)}}
+    .stat-card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,76,63,.06)}
+    .stat-card .sc-label{font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tl);margin-bottom:6px}
+    .stat-card .sc-value{font-family:'Fraunces',serif;font-size:26px;font-weight:400;color:var(--g);letter-spacing:-.01em}
+    .stat-card .sc-sub{font-size:11.5px;color:var(--tm);margin-top:2px;font-weight:300}
+
+    .section{padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);max-width:920px;margin:0 auto}
+    .section p{font-size:15.5px;font-weight:300;color:var(--tm);line-height:1.75;margin:0 0 14px}
+    .section ul{padding-left:24px;font-size:15px;font-weight:300;color:var(--tm);line-height:1.8;margin:0 0 14px}
+    .section ul li{margin-bottom:6px}
+    .section strong{font-weight:600;color:var(--td)}
+    .section a{color:var(--g);font-weight:500}
+    .section.cr{background:var(--cr);max-width:none}
+    .section.cr .in{max-width:920px;margin:0 auto}
+
+    .scenarios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0 22px}
+    .scenario-card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:18px 20px;text-align:center}
+    .scenario-card .name{font-family:'Fraunces',serif;font-size:16px;font-weight:500;color:var(--td);margin-bottom:8px}
+    .scenario-card .revenue{font-family:'Fraunces',serif;font-size:24px;font-weight:400;color:var(--g);letter-spacing:-.01em}
+    .scenario-card .meta{font-size:11.5px;color:var(--tl);margin-top:6px;font-weight:300}
+
+    .source-box{background:#fff;border-left:3px solid var(--y);padding:14px 18px;border-radius:8px;font-size:13.5px;color:var(--tm);line-height:1.7;margin:18px 0}
+    .source-box strong{color:var(--g)}
+
+    .cta-embed{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;border-radius:18px;padding:28px 32px;margin:24px 0;text-align:center}
+    .cta-embed h3{color:#fff;font-family:'Fraunces',serif;font-size:22px;font-weight:400;margin:0 0 8px}
+    .cta-embed p{color:rgba(255,255,255,.85);font-size:14px;font-weight:300;margin:0 0 18px}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14px;padding:13px 24px;border-radius:10px;text-decoration:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s cubic-bezier(.4,0,.2,1)}
+    .btn-p:hover{background:var(--yd);transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,213,107,.32)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);font-weight:500;font-size:14px;padding:11px 22px;border-radius:10px;text-decoration:none;font-family:'Outfit',sans-serif;transition:all .2s;background:transparent}
+    .btn-ol:hover{background:rgba(255,255,255,.06)}
+
+    .faq-item{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 22px;margin-bottom:10px}
+    .faq-item summary{font-family:'Fraunces',serif;font-size:16px;font-weight:400;color:var(--td);cursor:pointer;list-style:none;position:relative;padding-right:24px}
+    .faq-item summary::-webkit-details-marker{display:none}
+    .faq-item summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:var(--g);font-weight:300}
+    .faq-item[open] summary::after{content:'−'}
+    .faq-item p{margin:12px 0 0;font-size:14px;color:var(--tm);line-height:1.7;font-weight:300}
+
+    .related-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px}
+    .related-row a{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 18px;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s}
+    .related-row a:hover{transform:translateY(-2px);border-color:var(--g)}
+    .related-row .rt{font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:500;margin-bottom:4px}
+    .related-row .rs{font-size:12.5px;color:var(--tl);font-weight:300}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Combien rapporte une location courte durée à Paris en 2026 ? Calcul gratuit + chiffres marché","description":"Estime gratuitement les revenus d'une location courte durée (Airbnb, Booking, en direct) à Paris en 2026. Données CRT Île-de-France + INSEE.","datePublished":"2026-05-17","dateModified":"2026-05-17","author":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"},"publisher":{"@type":"Organization","name":"Jason Marinho","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp"}},"image":"https://jasonmarinho.com/couverture-jason.webp","mainEntityOfPage":"https://jasonmarinho.com/calculateurs/revenu-airbnb-paris"}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs","item":"https://jasonmarinho.com/calculateurs"},{"@type":"ListItem","position":3,"name":"Revenu LCD Paris","item":"https://jasonmarinho.com/calculateurs/revenu-airbnb-paris"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien rapporte une location courte durée à Paris en moyenne ?","acceptedAnswer":{"@type":"Answer","text":"En moyenne marché 2024 (CRT Île-de-France) : un bien LCD à Paris loue 68 % du temps à 135 € la nuit, tous canaux confondus (Airbnb, Booking, Vrbo, direct), soit environ 33 500 € de RevPAR annuel. Un studio rapporte 20 à 25 k€/an, un T2 27 à 32 k€, un T3 35 à 42 k€."}},{"@type":"Question","name":"Quelle est la limite légale de jours pour louer en courte durée à Paris ?","acceptedAnswer":{"@type":"Answer","text":"120 jours par an pour une résidence principale meublée (loi ALUR + Loi Le Meur 2024). Au-delà : la résidence n'est plus considérée comme principale fiscalement. Pour louer plus, il faut changer l'usage du bien (compensation à Paris : très coûteuse et restreinte)."}},{"@type":"Question","name":"Quels quartiers parisiens rapportent le plus ?","acceptedAnswer":{"@type":"Answer","text":"Marais (3e, 4e), Saint-Germain (6e), Champs-Élysées (8e), Montmartre (18e) affichent les ADR les plus élevés (150 à 200 €/nuit). Les arrondissements périphériques (12e, 13e, 19e, 20e) sont à 90-110 €/nuit mais avec une demande forte."}}]}</script>
+  <script defer src="/nav.js"></script>
+  <script defer src="/calculateurs/engine.js"></script>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-in">
+    <div class="breadcrumb lt">
+      <a href="/">Accueil</a> /
+      <a href="/calculateurs">Calculateurs</a> /
+      <span>Revenu LCD Paris</span>
+    </div>
+    <div class="lbl lt"><i class="ph ph-chart-line-up"></i> Calculateur gratuit 🇫🇷 Paris</div>
+    <h1 class="h1">Combien rapporte une <em style="color:var(--y)">location courte durée</em> à Paris en 2026 ?</h1>
+    <p class="sub">Calcul gratuit, sans inscription, basé sur les chiffres marché 2024 (Comité Régional du Tourisme Île-de-France + INSEE). Tous canaux confondus : Airbnb, Booking, Vrbo, en direct. Estimation par type de bien et fourchette ±20 %.</p>
+  </div>
+</header>
+
+<div class="stats-strip">
+  <div class="stat-card">
+    <div class="sc-label">Occupation moyenne</div>
+    <div class="sc-value">68 %</div>
+    <div class="sc-sub">soit ~248 nuits/an</div>
+  </div>
+  <div class="stat-card">
+    <div class="sc-label">Prix moyen / nuit (ADR)</div>
+    <div class="sc-value">135 €</div>
+    <div class="sc-sub">médian LCD Paris</div>
+  </div>
+  <div class="stat-card">
+    <div class="sc-label">RevPAR annuel</div>
+    <div class="sc-value">~33 500 €</div>
+    <div class="sc-sub">par bien moyen</div>
+  </div>
+  <div class="stat-card">
+    <div class="sc-label">Haute saison</div>
+    <div class="sc-value">Mai → Sept</div>
+    <div class="sc-sub">+ pic septembre (Fashion Week)</div>
+  </div>
+</div>
+
+<section class="section">
+  <h2 class="h2">Les revenus moyens par type de bien à Paris</h2>
+  <p>
+    Voici les estimations indicatives pour Paris en 2026, calculées à partir des données 2024 du CRT Île-de-France et de l'INSEE.
+    Ces chiffres reflètent un bien <strong>correctement équipé, classé, avec photos pro et 50+ avis</strong>. Un bien moins bien positionné peut être 30 à 40 % en dessous.
+  </p>
+
+  <div class="scenarios-grid">
+    <div class="scenario-card">
+      <div class="name">Studio (15-25 m²)</div>
+      <div class="revenue">22 800 €/an</div>
+      <div class="meta">±20 % · ADR ~100 €</div>
+    </div>
+    <div class="scenario-card">
+      <div class="name">T1 (1 chambre)</div>
+      <div class="revenue">26 700 €/an</div>
+      <div class="meta">±20 % · ADR ~115 €</div>
+    </div>
+    <div class="scenario-card" style="border-color:var(--g);background:linear-gradient(135deg,#fff 0%,rgba(0,76,63,.04) 100%)">
+      <div class="name">T2 (2 pièces) <span style="font-size:10px;background:var(--y);color:var(--gd);padding:2px 6px;border-radius:8px;font-weight:700;vertical-align:middle">le plus courant</span></div>
+      <div class="revenue">33 500 €/an</div>
+      <div class="meta">±20 % · ADR ~135 €</div>
+    </div>
+    <div class="scenario-card">
+      <div class="name">T3 (3 pièces)</div>
+      <div class="revenue">38 500 €/an</div>
+      <div class="meta">±20 % · ADR ~155 €</div>
+    </div>
+    <div class="scenario-card">
+      <div class="name">Maison/loft</div>
+      <div class="revenue">43 500 €/an</div>
+      <div class="meta">±20 % · ADR ~175 €</div>
+    </div>
+  </div>
+
+  <div class="source-box">
+    <strong>📊 Source méthodologie :</strong> Comité Régional du Tourisme Île-de-France 2024 (taux d'occupation des meublés de tourisme), INSEE (panels touristiques annuels), agrégation Atout France 2024 sur les apartments LCD à Paris. Mise à jour annuelle.
+  </div>
+
+  <h3 class="h3">Affine ton estimation avec le calculateur</h3>
+  <p>
+    Le calculateur ci-dessous prend en compte ton type de bien, le nombre de chambres et ton mode d'exploitation (toute l'année, saisonnier, weekends) pour te donner une estimation personnalisée.
+  </p>
+
+  <div class="cta-embed">
+    <h3>Calcule ton revenu exact pour ton bien à Paris</h3>
+    <p>Préfilé sur Paris. Modifie le type de bien et le mode d'exploitation pour ta situation.</p>
+    <a href="/calculateurs/revenus-lcd?pays=FR&ville=Paris" class="btn-p">
+      Lancer le calculateur <i class="ph-bold ph-arrow-right"></i>
+    </a>
+  </div>
+</section>
+
+<section class="section cr">
+  <div class="in">
+    <h2 class="h2">Le marché LCD à Paris en détail</h2>
+
+    <h3 class="h3">Saisonnalité : les vrais pics</h3>
+    <p>
+      Paris n'a pas une seule haute saison, mais <strong>plusieurs pics</strong> :
+    </p>
+    <ul>
+      <li><strong>Mai-juin :</strong> printemps + congrès. Occupation 75-80 %, ADR +15 % vs moyenne.</li>
+      <li><strong>Juillet-août :</strong> tourisme international. Occupation 70-75 %, ADR +10 %.</li>
+      <li><strong>Septembre :</strong> Fashion Week + rentrée business. <strong>Plus gros pic de l'année</strong>, ADR +25 %.</li>
+      <li><strong>Décembre :</strong> Noël + fin d'année. Occupation 65-70 %, ADR +10 %.</li>
+      <li><strong>Janvier-février :</strong> creux. Occupation 55-60 %, ADR -15 % à -20 %.</li>
+    </ul>
+
+    <h3 class="h3">Quartiers : où ça rapporte le plus</h3>
+    <ul>
+      <li><strong>Marais (3e, 4e) :</strong> ADR 160-180 €, occupation 75 %. Le top.</li>
+      <li><strong>Saint-Germain-des-Prés (6e) :</strong> ADR 170-200 €, occupation 70 %. Très demandé.</li>
+      <li><strong>Champs-Élysées (8e) :</strong> ADR 150-220 €, occupation 68 %. Voyageurs business.</li>
+      <li><strong>Montmartre (18e) :</strong> ADR 130-160 €, occupation 72 %. Magnifique vue, touristes.</li>
+      <li><strong>Bastille (11e) :</strong> ADR 110-140 €, occupation 70 %. Nightlife, jeunes.</li>
+      <li><strong>Périphéries (12e, 13e, 19e, 20e) :</strong> ADR 90-110 €, occupation 65 %. Bon rapport prix/demande.</li>
+    </ul>
+
+    <h3 class="h3">Le plafond légal des 120 jours</h3>
+    <p>
+      Paris applique strictement la <strong>limite des 120 jours par an pour une résidence principale</strong> meublée (loi ALUR + Loi Le Meur 2024).
+      Au-delà, ton bien n'est plus considéré comme résidence principale fiscalement. Pour louer plus de 120 jours, il faut <strong>changer l'usage du bien</strong> :
+      à Paris, ça nécessite une compensation (transformer un local commercial en logement) qui peut coûter <strong>plusieurs centaines de milliers d'euros</strong>.
+    </p>
+    <p>
+      Conséquence : à 120 jours occupé à 135 € ADR, tu plafonnes à <strong>~16 000 € par an</strong> pour une résidence principale.
+      Les revenus marché 33 500 € de notre calculateur supposent un bien en <strong>résidence secondaire ou avec changement d'usage</strong>.
+    </p>
+
+    <h3 class="h3">Concurrence et positionnement</h3>
+    <p>
+      Paris compte plus de 100 000 annonces LCD actives toutes plateformes confondues (Airbnb, Booking, Vrbo et autres). La compétition est rude. Pour sortir du lot :
+    </p>
+    <ul>
+      <li>Photos professionnelles (différentiel +20 % de clics)</li>
+      <li>Classement meublé de tourisme ★★★+ (abattement fiscal 50 % au lieu de 30 %)</li>
+      <li>Pricing dynamique (gain 15-25 % de RevPAR vs prix fixe)</li>
+      <li>Réservations directes (gagner 15-20 % sur les commissions OTAs)</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="h2">Questions fréquentes</h2>
+
+  <details class="faq-item">
+    <summary>Combien rapporte une location courte durée à Paris en moyenne ?</summary>
+    <p>En moyenne marché 2024 (CRT Île-de-France, tous canaux confondus — Airbnb, Booking, Vrbo, en direct) : 68 % d'occupation à 135 € la nuit, soit environ 33 500 € de RevPAR annuel. Un studio rapporte 20 à 25 k€/an, un T2 27 à 32 k€, un T3 35 à 42 k€. Ces chiffres supposent un bien bien équipé et bien positionné.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Quelle est la limite légale pour louer en courte durée à Paris ?</summary>
+    <p>120 jours par an si c'est ta résidence principale meublée. Au-delà, le bien perd son statut de résidence principale et tu dois faire un changement d'usage (très restrictif à Paris). Numéro d'enregistrement obligatoire en mairie pour TOUTE location, même 1 nuit.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Quels quartiers parisiens rapportent le plus ?</summary>
+    <p>Marais (3e, 4e), Saint-Germain (6e), Champs-Élysées (8e), Montmartre (18e) affichent les ADR les plus élevés (150 à 200 €/nuit). Les arrondissements périphériques (12e, 13e, 19e, 20e) sont à 90-110 €/nuit mais avec une demande forte.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Faut-il être déclaré et payer des impôts ?</summary>
+    <p>Oui, dès le premier euro. Tu dois t'inscrire au régime micro-BIC (jusqu'à 15 000 € de CA non classé, 77 700 € classé) ou réel. Les revenus sont à déclarer au formulaire 2042-C-PRO. <a href="/calculateurs">Consulte nos calculateurs fiscaux gratuits</a> pour estimer ton imposition.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Combien je peux faire en mode résidence principale (120 j) ?</summary>
+    <p>À l'ADR moyen Paris de 135 €/nuit × 120 j max = <strong>~16 200 € brut/an</strong>. Avec un bien bien positionné (ADR 160-180 €), tu peux atteindre 19-22 k€. C'est ton plafond légal sans changement d'usage.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Différence entre revenu brut et net à Paris ?</summary>
+    <p>Sur 33 500 € de revenu brut moyen : retire commissions plateformes (~3 % Airbnb, 15 % Booking), frais ménage (~30 € par séjour × ~50 séjours/an = 1 500 €), assurance LCD (~300 €/an), charges (taxe foncière, copropriété), impôts micro-BIC à 70 % du CA. Net avant impôt : 20-25 k€ selon ton mix de canaux.</p>
+  </details>
+</section>
+
+<section class="section cr">
+  <div class="in">
+    <h2 class="h2">Outils complémentaires</h2>
+    <p>Plus loin que la simple estimation de revenus :</p>
+    <div class="related-row">
+      <a href="/calculateurs/prix-lcd?pays=FR&ville=Paris">
+        <div class="rt">Calculateur de prix à Paris</div>
+        <div class="rs">Combien afficher par nuit selon le mois et le canal</div>
+      </a>
+      <a href="/calculateurs/revenus-lcd?pays=FR&ville=Paris">
+        <div class="rt">Estimateur personnalisé</div>
+        <div class="rs">Ajuste avec ton type de bien et ton mode d'exploitation</div>
+      </a>
+      <a href="/services/simulateurs">
+        <div class="rt">Simulateurs fiscaux</div>
+        <div class="rs">Impôts, statut LMNP/LMP, rentabilité d'achat</div>
+      </a>
+      <a href="/blog/reglementation-lcd-france-2026">
+        <div class="rt">Réglementation LCD France 2026</div>
+        <div class="rs">Tout ce qui change pour les hôtes parisiens</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--g);color:#fff;padding:clamp(50px,7vw,90px) clamp(16px,5vw,60px);text-align:center">
+  <h2 class="h2" style="color:#fff">Tu loues déjà à Paris ? <em style="color:var(--y)">Va plus loin</em></h2>
+  <p style="color:rgba(255,255,255,.85);font-size:15px;font-weight:300;max-width:520px;margin:0 auto 22px">
+    Avec un compte gratuit, suis ton calendrier, tes revenus réels, ton occupation. Compare ta vraie activité au marché parisien en un coup d'œil.
+  </p>
+  <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">
+    Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i>
+  </a>
+</section>
+
+<script src="/footer.js"></script>
+</body>
+</html>

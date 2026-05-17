@@ -1854,9 +1854,9 @@ export default function RevenusView({
         chargesAnnee={chargesStats.cetteAnnee}
         country={
           // Choisit le pays dominant : celui avec le plus de revenus déclarables
-          // cette année. Fallback FR si l'utilisateur n'a rien encore.
-          taxEstimateByCountry.length > 0
-            ? (taxEstimateByCountry[0].pays === 'PT' ? 'PT' : 'FR')
+          // cette année. Fallback FR si pays non couvert ou rien encore.
+          (taxEstimateByCountry.length > 0 && ['FR','PT','ES','IT','BE'].includes(taxEstimateByCountry[0].pays))
+            ? (taxEstimateByCountry[0].pays as 'FR' | 'PT' | 'ES' | 'IT' | 'BE')
             : 'FR'
         }
       />
@@ -1992,13 +1992,88 @@ const REGIMES = [
 ]
 
 // Helper : prochaines échéances fiscales (FR par défaut, PT en alternative)
-function nextFiscalDeadlines(country: 'FR' | 'PT' = 'FR'): Array<{ label: string; date: string; description: string; type: 'urgent' | 'normal' }> {
+type FiscalCountry = 'FR' | 'PT' | 'ES' | 'IT' | 'BE'
+
+function nextFiscalDeadlines(country: FiscalCountry = 'FR'): Array<{ label: string; date: string; description: string; type: 'urgent' | 'normal' }> {
   const today = new Date()
   const year = today.getFullYear()
 
   const deadlines: Array<{ label: string; date: Date; description: string }> = []
 
-  if (country === 'PT') {
+  if (country === 'ES') {
+    // IRPF annuel : campaña du 2 avril → 30 juin (Modelo 100)
+    const irpfDate = new Date(year, 5, 30)
+    if (irpfDate < today) irpfDate.setFullYear(year + 1)
+    deadlines.push({
+      label: 'IRPF Modelo 100 (annuel)',
+      date: irpfDate,
+      description: 'Déclaration revenus via agenciatributaria.gob.es. Campaña 2 avril → 30 juin.',
+    })
+    // IVA Modelo 303 trimestriel : 20 du mois suivant la fin du trimestre
+    const month = today.getMonth()
+    const trimEnd = [2, 5, 8, 11].find(m => m > month) ?? 14
+    const ivaDate = new Date(trimEnd >= 12 ? year + 1 : year, trimEnd >= 12 ? trimEnd - 12 + 1 : trimEnd + 1, 20)
+    deadlines.push({
+      label: 'IVA Modelo 303 (trimestriel)',
+      date: ivaDate,
+      description: 'Si AT (Apartamento Turístico) avec services hôteliers → 10 % IVA. Sinon exonéré.',
+    })
+    // Tasa turística : par Comunidad Autónoma (Catalunya, Balears…)
+    const tasaDate = new Date(year, today.getMonth() + 1, 15)
+    deadlines.push({
+      label: 'Tasa turística autonómica',
+      date: tasaDate,
+      description: 'Reversement à la Comunidad Autónoma (Catalunya, Balears, Comunidad Valenciana…).',
+    })
+  } else if (country === 'IT') {
+    // Cedolare secca via 730/Redditi PF — échéance 30 septembre
+    const cedolareDate = new Date(year, 8, 30)
+    if (cedolareDate < today) cedolareDate.setFullYear(year + 1)
+    deadlines.push({
+      label: 'Cedolare secca (annuel)',
+      date: cedolareDate,
+      description: 'Déclaration via Modello 730 ou Redditi PF. 21 % flat (26 % au-delà de 4 unités).',
+    })
+    // CIN (Codice Identificativo Nazionale) — obligatoire depuis 2024
+    const cinDate = new Date(year, today.getMonth() + 1, 1)
+    deadlines.push({
+      label: 'Vérification CIN actif',
+      date: cinDate,
+      description: 'Code Identificatif National obligatoire pour toute location < 30 jours.',
+    })
+    // Imposta di soggiorno : reversement mensuel à la commune
+    const soggiornoDate = new Date(year, today.getMonth() + 1, 15)
+    deadlines.push({
+      label: 'Imposta di soggiorno (mensuelle)',
+      date: soggiornoDate,
+      description: 'À reverser à la commune (Roma 4-7€, Firenze 5€, Venezia 3-5€ par personne/nuit).',
+    })
+  } else if (country === 'BE') {
+    // IPP annuel : déclaration en juin (papier) ou octobre (Tax-on-web)
+    const ippDate = new Date(year, 5, 30)
+    if (ippDate < today) ippDate.setFullYear(year + 1)
+    deadlines.push({
+      label: 'Déclaration IPP (annuelle)',
+      date: ippDate,
+      description: 'Déclaration via Tax-on-web (finances.belgium.be). Revenus mobiliers ou professionnels selon volume.',
+    })
+    // TVA trimestrielle : 20 du mois suivant la fin du trimestre
+    const month = today.getMonth()
+    const trimEnd = [2, 5, 8, 11].find(m => m > month) ?? 14
+    const tvaDate = new Date(trimEnd >= 12 ? year + 1 : year, trimEnd >= 12 ? trimEnd - 12 + 1 : trimEnd + 1, 20)
+    deadlines.push({
+      label: 'TVA trimestrielle (6 %)',
+      date: tvaDate,
+      description: 'TVA réduite 6 % sur hébergement touristique. Reverse trimestriellement.',
+    })
+    // Taxe de séjour : variable par commune (Bruxelles, Brugge, Gent…)
+    const taxeDate = new Date(year, today.getMonth() + 1, 15)
+    deadlines.push({
+      label: 'Taxe de séjour communale',
+      date: taxeDate,
+      description: 'Reverse à la commune. Bruxelles ~4,24 € / unité / nuit, Brugge ~3,50 €/personne/nuit.',
+    })
+  } else if (country === 'PT') {
     // IRS annuel Portugal : déclaration du 1er avril au 30 juin
     const irsDate = new Date(year, 5, 30) // 30 juin
     if (irsDate < today) irsDate.setFullYear(year + 1)
@@ -2072,45 +2147,106 @@ function nextFiscalDeadlines(country: 'FR' | 'PT' = 'FR'): Array<{ label: string
     })
 }
 
-function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel: number; chargesAnnee?: number; country?: 'FR' | 'PT' }) {
-  const isPT = country === 'PT'
+// ─── Config fiscale par pays (Sprint 4) ────────────────────────────────────
+type FiscalSeuil = { key: string; label: string; valeur: number; color: string; bg: string }
+type FiscalConfig = {
+  flag: string
+  countryName: string
+  seuils: FiscalSeuil[]
+  /** Coefficients pour calculer base imposable */
+  coefStandard: number              // ex: 0.70 (FR micro-BIC non classé)
+  coefAvantageux: number            // ex: 0.29 (FR micro-BIC classé)
+  labelStandard: string
+  labelAvantageux: string
+  /** Fonction qui retourne la recommandation selon annuel et charges */
+  getReco: (annuel: number, charges: number) => { label: string; detail: string } | null
+  subtitle: string
+}
 
-  // Jauges seuils fiscaux (FR : micro-BIC non classé/classé + TVA prestations / PT : IVA + plafond simplifié AL)
-  const SEUILS = isPT
-    ? [
-        { key: 'iva',        label: 'Seuil IVA AL',         valeur: 15000,  color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
-        { key: 'simpl',      label: 'Régime simplifié AL',  valeur: 200000, color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
-      ]
-    : [
-        { key: 'micro-nc',   label: 'Micro-BIC non classé', valeur: 15000,  color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
-        { key: 'micro-c',    label: 'Micro-BIC classé',     valeur: 77700,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
-        { key: 'tva',        label: 'Franchise TVA (presta)', valeur: 36800, color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
-      ]
+const FISCAL_CONFIGS: Record<FiscalCountry, FiscalConfig> = {
+  FR: {
+    flag: '🇫🇷', countryName: 'France',
+    subtitle: "Quel régime s'applique à tes revenus de location meublée ?",
+    seuils: [
+      { key: 'micro-nc',   label: 'Micro-BIC non classé',   valeur: 15000,  color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
+      { key: 'micro-c',    label: 'Micro-BIC classé',       valeur: 77700,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+      { key: 'tva',        label: 'Franchise TVA (presta)', valeur: 36800,  color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+    ],
+    coefStandard: 0.70, coefAvantageux: 0.29,
+    labelStandard: 'Micro-BIC NC (30 %)', labelAvantageux: 'Micro-BIC ★ (71 %)',
+    getReco: (a, c) => a === 0 ? null
+      : a > 77700 ? { label: 'Régime réel obligatoire', detail: 'Tu dépasses le plafond micro-BIC. Le régime réel est imposé.' }
+      : c >= a * 0.30 && c > 1000 ? { label: 'Régime réel recommandé', detail: `Tes charges représentent ${Math.round((c/a)*100)} % de ton CA, le réel sera plus avantageux.` }
+      : a > 15000 ? { label: 'Micro-BIC classé recommandé', detail: 'Pense à faire classer ton meublé pour profiter du plafond 77 700 € + 71 % d\'abattement.' }
+      : { label: 'Micro-BIC non classé OK', detail: 'Le micro-BIC simplifie la déclaration. Si tes charges dépassent 30 %, le réel sera plus avantageux.' },
+  },
+  PT: {
+    flag: '🇵🇹', countryName: 'Portugal',
+    subtitle: "Quel régime s'applique à tes revenus Alojamento Local au Portugal ?",
+    seuils: [
+      { key: 'iva',        label: 'Seuil IVA AL',           valeur: 15000,  color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+      { key: 'simpl',      label: 'Régime simplifié AL',    valeur: 200000, color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+    ],
+    coefStandard: 0.35, coefAvantageux: 0.35,
+    labelStandard: 'Categoria B (coef. 0.35)', labelAvantageux: 'Categoria B (coef. 0.35)',
+    getReco: (a) => a === 0 ? null
+      : a > 200000 ? { label: 'Contabilidade organizada obligatoire', detail: 'Tu dépasses 200 000 € de CA AL. Le régime simplifié n\'est plus accessible.' }
+      : a > 15000 ? { label: 'IVA potentiellement due', detail: 'Au-delà de 15 000 € de CA AL (continental), tu peux être assujetti à l\'IVA. Vérifie sur Portal das Finanças.' }
+      : { label: 'Régime simplifié Categoria B', detail: 'Coefficient 0.35 appliqué au CA brut. Pas d\'IVA tant que tu restes sous 15 000 €.' },
+  },
+  ES: {
+    flag: '🇪🇸', countryName: 'España',
+    subtitle: "¿Qué régimen aplica a tus rendimientos por apartamentos turísticos ?",
+    seuils: [
+      { key: 'modulos',    label: 'Estimación objetiva',    valeur: 250000, color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+      { key: 'iva',        label: 'Auto-liquidación IVA',   valeur: 30000,  color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+    ],
+    // ES : estimación directa = CA - dépenses (régime réel)
+    //      estimación objetiva (módulos) = forfait avec coefficient ~0.40-0.45 sur le CA
+    coefStandard: 0.45, coefAvantageux: 0.45,
+    labelStandard: 'Estimación objetiva (45 %)', labelAvantageux: 'Estimación directa',
+    getReco: (a, c) => a === 0 ? null
+      : a > 250000 ? { label: 'Estimación directa obligatoria', detail: 'Au-delà de 250 000 € de CA tu dois passer en estimación directa (régime réel).' }
+      : c >= a * 0.30 && c > 1000 ? { label: 'Estimación directa recommandée', detail: 'Tes charges dépassent 30 % du CA : le régime réel sera plus avantageux.' }
+      : { label: 'Estimación objetiva OK', detail: 'Régime forfaitaire (módulos) simplifie la déclaration. IVA à 10 % si tu fournis services hôteliers, sinon exonéré.' },
+  },
+  IT: {
+    flag: '🇮🇹', countryName: 'Italia',
+    subtitle: "Quale regime per i tuoi redditi da Locazione Breve ?",
+    seuils: [
+      { key: 'cedolare',   label: 'Cedolare secca 21 %',    valeur: 50000,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+      { key: 'cedolare-haut', label: 'Cedolare 26 % (>4u)', valeur: 200000, color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
+    ],
+    // IT : Cedolare secca = flat tax 21 % (jusqu'à 4 unités) ou 26 % (>4 unités)
+    coefStandard: 1.00, coefAvantageux: 1.00,
+    labelStandard: 'Cedolare secca 21 %', labelAvantageux: 'Tassazione ordinaria',
+    getReco: (a) => a === 0 ? null
+      : { label: 'Cedolare secca 21 %', detail: 'Flat tax 21 % sur les locations < 30 jours. Passe à 26 % au-delà de 4 unités exploitées. CIN obligatoire depuis 2024.' },
+  },
+  BE: {
+    flag: '🇧🇪', countryName: 'Belgique',
+    subtitle: "Quel régime s'applique à tes revenus locatifs courte durée ?",
+    seuils: [
+      { key: 'mobiliers',  label: 'Revenus mobiliers (30 %)', valeur: 25000,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+      { key: 'pro',        label: 'Revenus professionnels',   valeur: 100000, color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
+    ],
+    // BE : 30 % flat sur revenus mobiliers (forfait) si activité non professionnelle
+    coefStandard: 0.60, coefAvantageux: 0.60,
+    labelStandard: 'Revenus mobiliers (30 %)', labelAvantageux: 'Revenus professionnels (barème)',
+    getReco: (a) => a === 0 ? null
+      : a > 25000 ? { label: 'Revenus professionnels probables', detail: 'Volume élevé : tu risques d\'être requalifié en activité professionnelle (barème IPP + cotisations sociales). Consulte un comptable.' }
+      : { label: 'Revenus mobiliers OK', detail: 'Si activité non régulière + sans services hôteliers : taux forfaitaire 30 % après abattement. TVA réduite 6 % si applicable.' },
+  },
+}
 
-  // Calculatrice : recommandation auto
-  const taux = annuel > 0 ? chargesAnnee / annuel : 0
-  // FR : base imposable = CA × (1 - abattement)
-  //   micro-BIC non classé : abat. 30 % → imposable 70 %
-  //   micro-BIC classé     : abat. 71 % → imposable 29 %
-  // PT : Categoria B (Alojamento Local) → coef. 0.35 sur le CA brut
-  //   au-delà de 200 000 € : contabilidade organizada obligatoire
-  const baseImposableMicroNC = isPT ? annuel * 0.35 : annuel * 0.70
-  const baseImposableMicroC  = isPT ? annuel * 0.35 : annuel * 0.29
+function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel: number; chargesAnnee?: number; country?: FiscalCountry }) {
+  const config = FISCAL_CONFIGS[country] ?? FISCAL_CONFIGS.FR
+  const SEUILS = config.seuils
+
+  const baseImposableMicroNC = annuel * config.coefStandard
+  const baseImposableMicroC  = annuel * config.coefAvantageux
   const baseImposableReel    = Math.max(0, annuel - chargesAnnee)
-  const recommendation = isPT
-    ? (annuel === 0 ? null
-      : annuel > 200000 ? { label: 'Contabilidade organizada obligatoire', detail: 'Tu dépasses 200 000 € de CA AL. Le régime simplifié n\'est plus accessible.' }
-      : annuel > 15000  ? { label: 'IVA potentiellement due', detail: 'Au-delà de 15 000 € de CA AL (continental), tu peux être assujetti à l\'IVA. Vérifie ton statut sur le Portal das Finanças.' }
-      : { label: 'Régime simplifié Categoria B', detail: 'Coefficient 0.35 appliqué au CA brut. Pas d\'IVA tant que tu restes sous 15 000 €.' })
-    : (annuel === 0 ? null
-      : (annuel > 77700) ? { label: 'Régime réel obligatoire', detail: 'Tu dépasses le plafond micro-BIC. Le régime réel est imposé.' }
-      : (chargesAnnee >= annuel * 0.30 && chargesAnnee > 1000) ? {
-          label: 'Régime réel recommandé',
-          detail: `Tes charges représentent ${Math.round(taux * 100)} % de ton CA, le réel sera plus avantageux que le micro-BIC.`,
-        }
-      : annuel > 15000
-      ? { label: 'Micro-BIC classé recommandé', detail: 'Pense à faire classer ton meublé pour profiter du plafond 77 700 € + 71 % d\'abattement.' }
-      : { label: 'Micro-BIC non classé OK', detail: 'Le micro-BIC simplifie la déclaration. Si tes charges dépassent 30 %, le réel sera plus avantageux.' })
+  const recommendation = config.getReco(annuel, chargesAnnee)
 
   const deadlines = nextFiscalDeadlines(country)
 
@@ -2126,12 +2262,8 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
             <Scales size={18} weight="fill" style={{ color: 'var(--accent-text)' }} />
           </div>
           <div>
-            <h2 style={sf.title}>Fiscalité 2026 {isPT ? '🇵🇹' : '🇫🇷'}</h2>
-            <p style={sf.subtitle}>
-              {isPT
-                ? 'Quel régime s\'applique à tes revenus Alojamento Local au Portugal ?'
-                : 'Quel régime s\'applique à tes revenus de location meublée ?'}
-            </p>
+            <h2 style={sf.title}>Fiscalité 2026 {config.flag}</h2>
+            <p style={sf.subtitle}>{config.subtitle}</p>
           </div>
         </div>
         <button onClick={() => setOpen(v => !v)} style={sf.toggleBtn} className="fisc-toggle">
@@ -2142,13 +2274,37 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
 
       {/* Seuils strip, always visible */}
       <div style={sf.seuilsStrip} className="fisc-seuils-strip">
-        {isPT ? (
+        {country === 'PT' ? (
           <>
             <SeuilPill label="Categoria B" seuil="< 200 000 €" pct="coef. 0.35" color="#34d399" />
             <SeuilPill label="IVA seuil"   seuil="> 15 000 €"  pct="IVA due"     color="#a78bfa" />
             <SeuilPill label="Continental" seuil="—"           pct="IVA 6 %"     color="#60a5fa" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
             <SeuilPill label="Açores/Madeira" seuil="—"        pct="IVA 5 %"     color="#fb923c" />
+          </>
+        ) : country === 'ES' ? (
+          <>
+            <SeuilPill label="Estim. objetiva" seuil="< 250 000 €" pct="módulos" color="#34d399" />
+            <SeuilPill label="Estim. directa"  seuil="> 250 000 €" pct="réel"     color="#f59e0b" />
+            <SeuilPill label="IVA AT"          seuil="10 %"        pct="si services" color="#a78bfa" />
+            <div style={sf.seuilSep} className="fisc-seuil-sep" />
+            <SeuilPill label="Tasa turística"  seuil="—"           pct="par CCAA" color="#60a5fa" />
+          </>
+        ) : country === 'IT' ? (
+          <>
+            <SeuilPill label="Cedolare secca" seuil="≤ 4 unités" pct="21 %" color="#34d399" />
+            <SeuilPill label="Cedolare 26 %"  seuil="> 4 unités" pct="26 %" color="#f59e0b" />
+            <SeuilPill label="CIN"            seuil="obligatoire" pct="2024+" color="#a78bfa" />
+            <div style={sf.seuilSep} className="fisc-seuil-sep" />
+            <SeuilPill label="Imposta soggiorno" seuil="par commune" pct="3-7 €/nuit" color="#60a5fa" />
+          </>
+        ) : country === 'BE' ? (
+          <>
+            <SeuilPill label="Mobiliers"        seuil="30 %"        pct="forfait" color="#34d399" />
+            <SeuilPill label="Pros (volume)"    seuil="> 25 000 €"  pct="barème IPP" color="#f59e0b" />
+            <SeuilPill label="TVA"              seuil="6 %"         pct="hébergement" color="#a78bfa" />
+            <div style={sf.seuilSep} className="fisc-seuil-sep" />
+            <SeuilPill label="Taxe séjour"      seuil="par commune" pct="3-5 €/nuit" color="#60a5fa" />
           </>
         ) : (
           <>
@@ -2197,33 +2353,20 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
           </div>
           <p style={sf.recoDetail}>{recommendation.detail}</p>
           <div style={sf.recoCalc} className="fisc-reco-calc">
-            {isPT ? (
-              <>
-                <div style={sf.recoCalcItem}>
-                  <span style={sf.recoCalcLabel}>Categoria B (coef. 0.35)</span>
-                  <span style={sf.recoCalcValue}>{fmt(baseImposableMicroNC)} imposable</span>
-                </div>
-                <div style={sf.recoCalcItem}>
-                  <span style={sf.recoCalcLabel}>Contabilidade organizada</span>
-                  <span style={sf.recoCalcValue}>{fmt(baseImposableReel)} imposable</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div style={sf.recoCalcItem}>
-                  <span style={sf.recoCalcLabel}>Micro-BIC NC (30 %)</span>
-                  <span style={sf.recoCalcValue}>{fmt(baseImposableMicroNC)} imposable</span>
-                </div>
-                <div style={sf.recoCalcItem}>
-                  <span style={sf.recoCalcLabel}>Micro-BIC ★ (71 %)</span>
-                  <span style={sf.recoCalcValue}>{fmt(baseImposableMicroC)} imposable</span>
-                </div>
-                <div style={sf.recoCalcItem}>
-                  <span style={sf.recoCalcLabel}>Réel (CA − charges)</span>
-                  <span style={sf.recoCalcValue}>{fmt(baseImposableReel)} imposable</span>
-                </div>
-              </>
+            <div style={sf.recoCalcItem}>
+              <span style={sf.recoCalcLabel}>{config.labelStandard}</span>
+              <span style={sf.recoCalcValue}>{fmt(baseImposableMicroNC)} imposable</span>
+            </div>
+            {config.coefAvantageux !== config.coefStandard && (
+              <div style={sf.recoCalcItem}>
+                <span style={sf.recoCalcLabel}>{config.labelAvantageux}</span>
+                <span style={sf.recoCalcValue}>{fmt(baseImposableMicroC)} imposable</span>
+              </div>
             )}
+            <div style={sf.recoCalcItem}>
+              <span style={sf.recoCalcLabel}>Régime réel (CA − charges)</span>
+              <span style={sf.recoCalcValue}>{fmt(baseImposableReel)} imposable</span>
+            </div>
           </div>
         </div>
       )}
@@ -2256,20 +2399,20 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
       )}
 
       {/* Alert si revenus annuels proches des seuils (FR uniquement) */}
-      {!isPT && annuel >= 12000 && annuel < 15500 && (
+      {country === 'FR' && annuel >= 12000 && annuel < 15500 && (
         <div style={{ ...sf.alert, borderColor: 'rgba(96,165,250,0.3)', background: 'rgba(96,165,250,0.07)' }}>
           <Info size={14} style={{ color: '#60a5fa', flexShrink: 0 }} />
           <span>Tes revenus cette année approchent le seuil micro-BIC non classé (15 000 €). Si tu le dépasses, tu bascules automatiquement au régime réel ou micro-BIC classé.</span>
         </div>
       )}
       {/* Alert IVA Portugal */}
-      {isPT && annuel >= 12000 && annuel < 16000 && (
+      {country === 'PT' && annuel >= 12000 && annuel < 16000 && (
         <div style={{ ...sf.alert, borderColor: 'rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.07)' }}>
           <Info size={14} style={{ color: '#a78bfa', flexShrink: 0 }} />
           <span>Tu approches le seuil IVA Alojamento Local (15 000 € au Portugal continental). Au-delà tu devras facturer l&apos;IVA (6 % continental, 5 % Açores/Madeira) et la reverser trimestriellement.</span>
         </div>
       )}
-      {!isPT && annuel >= 18000 && (
+      {country === 'FR' && annuel >= 18000 && (
         <div style={{
           marginTop: '12px', padding: '16px 18px', borderRadius: '14px',
           background: annuel >= 23000 ? 'rgba(251,146,60,0.07)' : 'rgba(96,165,250,0.05)',

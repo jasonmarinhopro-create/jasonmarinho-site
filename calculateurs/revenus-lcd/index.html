@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estimateur de revenus LCD : combien rapporte une location courte durée par ville | Jason Marinho</title>
+  <meta name="description" content="Calculateur gratuit de revenus locatifs en location courte durée. Estime le revenu annuel possible de ton bien selon la ville, le type et le mode d'exploitation. 25 villes France + 12 Portugal. Sources INSEE, DGE, Turismo de Portugal.">
+  <link rel="canonical" href="https://jasonmarinho.com/calculateurs/revenus-lcd">
+  <meta property="og:title" content="Estimateur de revenus LCD gratuit | Jason Marinho">
+  <meta property="og:description" content="Estime le revenu annuel possible de ton bien LCD selon la ville, le type et le mode d'exploitation. Gratuit, sans inscription.">
+  <meta property="og:url" content="https://jasonmarinho.com/calculateurs/revenus-lcd">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="/phosphor.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.10);--ok:#34D399}
+    *{box-sizing:border-box}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.6}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:400}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.4vw,1.9rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 12px;font-weight:400}
+    .lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
+    .lbl.lt{color:rgba(255,255,255,.7)}
+    .breadcrumb{font-size:12.5px;color:var(--tl);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--g);text-decoration:none;font-weight:500}
+    .breadcrumb a:hover{text-decoration:underline}
+    .hero{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;padding:clamp(48px,7vw,80px) clamp(16px,5vw,60px) clamp(40px,6vw,72px)}
+    .hero-in{max-width:980px;margin:0 auto}
+    .hero .h1{color:#fff;max-width:780px;margin:0 0 16px}
+    .hero p.sub{font-size:clamp(.95rem,1.3vw,1.05rem);font-weight:300;color:rgba(255,255,255,.8);max-width:680px;margin:0;line-height:1.6}
+
+    .calc-wrap{max-width:980px;margin:-40px auto 0;padding:0 16px 64px;position:relative;z-index:2}
+    @media(min-width:760px){.calc-wrap{padding:0 24px 80px}}
+    .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+    @media(max-width:880px){.calc-grid{grid-template-columns:1fr}}
+
+    .panel{background:var(--w);border:1px solid var(--bd);border-radius:18px;padding:28px;box-shadow:0 8px 32px rgba(0,76,63,.08)}
+    .panel h3{font-family:'Fraunces',serif;font-size:20px;font-weight:400;margin:0 0 18px;color:var(--td);letter-spacing:-.01em}
+
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:12.5px;font-weight:600;color:var(--td);margin-bottom:6px}
+    .field select,.field input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--bd);background:#fff;color:var(--td);font-family:'Outfit',sans-serif;font-size:14px;transition:border-color .2s, box-shadow .2s}
+    .field select:focus,.field input:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.10)}
+    .field-hint{font-size:11.5px;color:var(--tl);margin-top:4px}
+
+    .result-empty{background:linear-gradient(135deg,var(--cr) 0%,#fff 100%);border:1px dashed var(--bd);border-radius:18px;padding:60px 24px;text-align:center;color:var(--tl)}
+    .result-empty i{font-size:38px;color:var(--g);opacity:.5;display:block;margin-bottom:12px}
+    .result-empty p{margin:0;font-size:14px;font-weight:300}
+
+    .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
+    .kpi-card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+    .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--y),var(--ok))}
+    .kpi-label{font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--tl);margin-bottom:6px}
+    .kpi-value{font-family:'Fraunces',serif;font-size:24px;font-weight:400;color:var(--td);letter-spacing:-.01em}
+    .kpi-sub{font-size:11.5px;color:var(--tl);margin-top:4px}
+    .kpi-highlight .kpi-value{color:var(--g);font-size:30px}
+
+    .range-box{background:linear-gradient(135deg,rgba(255,213,107,.10) 0%,rgba(99,214,131,.06) 100%);border:1px solid rgba(255,213,107,.30);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+    .range-box .range-label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--g);margin-bottom:8px}
+    .range-box .range-val{font-family:'Fraunces',serif;font-size:14px;color:var(--td);font-weight:300}
+    .range-box .range-val strong{font-weight:600;color:var(--g);font-size:18px}
+
+    .monthly-chart{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin:14px 0 6px;align-items:end;min-height:80px}
+    .mc-bar{display:flex;flex-direction:column;align-items:center;gap:4px}
+    .mc-fill{width:100%;background:linear-gradient(180deg,var(--y) 0%,var(--yd) 100%);border-radius:4px 4px 0 0;min-height:3px;transition:height .4s cubic-bezier(.16,1,.3,1)}
+    .mc-fill.high{background:linear-gradient(180deg,var(--ok) 0%,#2BA56A 100%)}
+    .mc-label{font-size:9.5px;color:var(--tl);font-weight:500}
+
+    .source-line{font-size:11.5px;color:var(--tl);font-style:italic;margin:12px 0 0;border-top:1px solid var(--bd);padding-top:12px}
+
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14px;padding:12px 22px;border-radius:10px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s cubic-bezier(.4,0,.2,1);text-decoration:none}
+    .btn-p:hover{background:var(--yd);transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,213,107,.32)}
+    .btn-full{width:100%;justify-content:center;padding:14px 22px;font-size:15px}
+
+    .insights-box{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:16px 18px;margin-top:14px}
+    .insights-box h4{font-family:'Fraunces',serif;font-size:14px;font-weight:500;margin:0 0 10px;color:var(--td)}
+    .insights-box ul{margin:0;padding-left:18px;font-size:13px;color:var(--tm);line-height:1.7;font-weight:300}
+
+    .cta-bottom{background:var(--g);color:#fff;padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);text-align:center}
+    .cta-bottom h2{color:#fff;max-width:520px;margin:0 auto 14px}
+    .cta-bottom p{color:rgba(255,255,255,.78);font-size:14px;font-weight:300;max-width:520px;margin:0 auto 22px}
+
+    .secondary-sec{padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);max-width:880px;margin:0 auto}
+    .faq-item{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 22px;margin-bottom:10px}
+    .faq-item summary{font-family:'Fraunces',serif;font-size:15.5px;font-weight:400;color:var(--td);cursor:pointer;list-style:none;position:relative;padding-right:24px}
+    .faq-item summary::-webkit-details-marker{display:none}
+    .faq-item summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:var(--g);font-weight:300}
+    .faq-item[open] summary::after{content:'−'}
+    .faq-item p{margin:12px 0 0;font-size:13.5px;color:var(--tm);line-height:1.7;font-weight:300}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Estimateur de revenus LCD","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Calculateur gratuit de revenus annuels en location courte durée selon la ville, le type de bien et le mode d'exploitation. Couverture France et Portugal.","url":"https://jasonmarinho.com/calculateurs/revenus-lcd","provider":{"@type":"Person","name":"Jason Marinho"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs","item":"https://jasonmarinho.com/calculateurs"},{"@type":"ListItem","position":3,"name":"Estimateur de revenus LCD","item":"https://jasonmarinho.com/calculateurs/revenus-lcd"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment est calculée l'estimation de revenus ?","acceptedAnswer":{"@type":"Answer","text":"On part de l'ADR (prix moyen par nuit louée) et du taux d'occupation moyen de ta ville (sources publiques : INSEE, DGE, INE, Turismo de Portugal). On ajuste ensuite selon le type de bien (studio à maison), le nombre de chambres et ton mode d'exploitation (toute l'année, saisonnier été/hiver, weekends uniquement). Le résultat est une fourchette ±20 % pour refléter l'incertitude."}},{"@type":"Question","name":"Pourquoi une fourchette ±20 % ?","acceptedAnswer":{"@type":"Answer","text":"Parce que les revenus LCD dépendent énormément de facteurs qu'un calculateur ne peut pas évaluer : qualité des photos, prix concurrents directs dans ton quartier, classement sur les plateformes, événements locaux, météo annuelle. La fourchette donne une vision réaliste basse et haute."}},{"@type":"Question","name":"Quels pays sont couverts ?","acceptedAnswer":{"@type":"Answer","text":"France (25 villes) et Portugal (12 villes) à ce jour. Espagne, Italie et Belgique arrivent au prochain trimestre. Pour les villes non listées, on retombe sur la moyenne nationale du pays."}}]}</script>
+  <script defer src="/nav.js"></script>
+  <script defer src="/calculateurs/engine.js"></script>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-in">
+    <div class="breadcrumb" style="color:rgba(255,255,255,.55)">
+      <a href="/" style="color:rgba(255,255,255,.7)">Accueil</a> /
+      <a href="/calculateurs" style="color:rgba(255,255,255,.7)">Calculateurs</a> /
+      <span>Revenus LCD</span>
+    </div>
+    <div class="lbl lt"><i class="ph ph-chart-line-up"></i> Estimateur gratuit</div>
+    <h1 class="h1" style="color:#fff">Combien rapporte une <em style="color:var(--y)">location courte durée</em> ?</h1>
+    <p class="sub">Réponse en 30 secondes : revenus annuels estimés, occupation, ADR et répartition mensuelle. Sources publiques (INSEE, DGE, INE, Turismo de Portugal). 100 % gratuit, sans inscription.</p>
+  </div>
+</header>
+
+<div class="calc-wrap">
+  <div class="calc-grid">
+    <!-- Form -->
+    <div class="panel">
+      <h3><i class="ph ph-sliders-horizontal" style="margin-right:6px;color:var(--g)"></i>Paramètres de ton bien</h3>
+
+      <div class="field">
+        <label for="f-pays">Pays</label>
+        <select id="f-pays">
+          <option value="FR">🇫🇷 France</option>
+          <option value="PT">🇵🇹 Portugal</option>
+          <option value="ES">🇪🇸 Espagne</option>
+          <option value="IT">🇮🇹 Italie</option>
+          <option value="BE">🇧🇪 Belgique</option>
+          <option value="DE">🇩🇪 Allemagne</option>
+          <option value="NL">🇳🇱 Pays-Bas</option>
+          <option value="AT">🇦🇹 Autriche</option>
+          <option value="CH">🇨🇭 Suisse</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-ville">Ville</label>
+        <select id="f-ville"><option>—</option></select>
+        <div class="field-hint">Si ta ville n'est pas listée, "Autre ville" donne la moyenne nationale.</div>
+      </div>
+
+      <div class="field">
+        <label for="f-type">Type de bien</label>
+        <select id="f-type">
+          <option value="studio">Studio</option>
+          <option value="t1">T1 / 1 chambre</option>
+          <option value="t2" selected>T2 / 2 pièces</option>
+          <option value="t3">T3 / 3 pièces</option>
+          <option value="maison">Maison entière</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-chambres">Nombre de chambres</label>
+        <select id="f-chambres">
+          <option value="0">Aucune (studio)</option>
+          <option value="1">1 chambre</option>
+          <option value="2" selected>2 chambres</option>
+          <option value="3">3 chambres</option>
+          <option value="4">4+ chambres</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-mode">Mode d'exploitation</label>
+        <select id="f-mode">
+          <option value="toute-annee" selected>Toute l'année</option>
+          <option value="saisonnier-ete">Saisonnier été (3 mois)</option>
+          <option value="saisonnier-hiver">Saisonnier hiver (3 mois)</option>
+          <option value="weekends">Weekends uniquement</option>
+        </select>
+        <div class="field-hint">Le mode impacte directement le taux d'occupation possible.</div>
+      </div>
+
+      <button id="btn-calc" class="btn-p btn-full" type="button">
+        <i class="ph-bold ph-calculator"></i>
+        Calculer mes revenus
+      </button>
+    </div>
+
+    <!-- Result -->
+    <div id="result-area">
+      <div class="result-empty">
+        <i class="ph ph-chart-line-up"></i>
+        <p>Remplis le formulaire et clique sur <strong>Calculer mes revenus</strong>.<br>Tu auras la réponse en 1 clic.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="secondary-sec">
+  <div class="lbl"><i class="ph ph-question"></i> Questions fréquentes</div>
+  <h2 class="h2">À <em style="font-style:italic;color:var(--g)">savoir</em></h2>
+
+  <details class="faq-item">
+    <summary>Comment est calculée l'estimation de revenus ?</summary>
+    <p>On part de l'ADR (prix moyen par nuit louée) et du taux d'occupation moyen de ta ville selon les sources publiques (INSEE, DGE, INE, Turismo de Portugal). On ajuste ensuite selon le type de bien (studio à maison), le nombre de chambres et ton mode d'exploitation. Le résultat est une fourchette ±20 % pour refléter l'incertitude.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Pourquoi une fourchette ±20 % et pas un chiffre exact ?</summary>
+    <p>Parce que les revenus LCD dépendent énormément de facteurs qu'un calculateur ne peut pas évaluer : qualité des photos, prix concurrents directs dans ton quartier, classement sur les plateformes, événements locaux, météo annuelle. La fourchette donne une vision réaliste basse et haute. Un bien bien positionné dépasse la fourchette haute, un bien mal géré reste sous la basse.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Quels pays sont couverts aujourd'hui ?</summary>
+    <p>France (25 villes : Paris, Marseille, Lyon, Bordeaux, Nice, Lille, Strasbourg, Annecy, La Rochelle, Chamonix, Saint-Tropez…) et Portugal (12 villes : Lisboa, Porto, Cascais, Albufeira, Funchal…). Espagne, Italie et Belgique arrivent au prochain trimestre.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Différence avec AirDNA ou Mashvisor ?</summary>
+    <p>AirDNA et Mashvisor sont payants (30-100 €/mois) et utilisent du scraping de listings Airbnb/Booking. Notre approche : sources officielles publiques, gratuit, sans inscription. Plus rigoureux statistiquement, moins exhaustif sur le détail par quartier. Idéal pour valider une intuition d'investissement avant de payer un outil pro.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Comment ajuster mes attentes selon mon bien réel ?</summary>
+    <p>Bonifie la fourchette haute si : photos pro, classement meublé tourisme ★★★+, équipement piscine/parking/vue, déjà 20+ avis 5 étoiles. Pénalise vers la fourchette basse si : photos smartphone, pas de classement, équipement basique, sans avis. Le marché local fait l'autre moitié du chemin.</p>
+  </details>
+</section>
+
+<section class="cta-bottom">
+  <h2 class="h2">Tu veux <em style="font-style:italic;color:var(--y)">suivre ta vraie activité</em> ?</h2>
+  <p>Crée un compte gratuit pour comparer cette estimation à ton activité réelle : calendrier, revenus, taux d'occupation, benchmark vs marché.</p>
+  <a href="https://app.jasonmarinho.com/auth/register" class="btn-p" style="background:var(--y);color:var(--gd)">
+    Créer mon compte gratuit
+    <i class="ph-bold ph-arrow-right"></i>
+  </a>
+</section>
+
+<script src="/footer.js"></script>
+<script>
+(function () {
+  'use strict'
+  function $ (id) { return document.getElementById(id) }
+  var paysEl = $('f-pays'), villeEl = $('f-ville'), typeEl = $('f-type'),
+      chambresEl = $('f-chambres'), modeEl = $('f-mode'), btn = $('btn-calc'),
+      result = $('result-area')
+
+  function fmtEur (n) { return n.toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €' }
+
+  function refreshCities () {
+    var pays = paysEl.value
+    var cities = window.JMCalc.citiesByCountry(pays)
+    var html = ''
+    cities.forEach(function (c) {
+      html += '<option value="' + c.ville + '">' + c.ville + '</option>'
+    })
+    html += '<option value="__other__">Autre ville (moyenne pays)</option>'
+    villeEl.innerHTML = html
+  }
+
+  function render (input) {
+    if (!window.JMCalc) return
+    var villeInput = villeEl.value === '__other__' ? '' : villeEl.value
+    var res = window.JMCalc.estimateRevenue({
+      pays: paysEl.value,
+      ville: villeInput,
+      typeLogement: typeEl.value,
+      nbChambres: parseInt(chambresEl.value, 10),
+      mode: modeEl.value,
+    })
+
+    var maxMonth = Math.max.apply(null, res.monthly.map(function (m) { return m.revenu }))
+    var chartHtml = res.monthly.map(function (m, i) {
+      var h = maxMonth > 0 ? Math.max(3, (m.revenu / maxMonth) * 70) : 3
+      return '<div class="mc-bar"><div class="mc-fill ' + (m.isHigh ? 'high' : '') + '" style="height:' + h + 'px" title="' + window.JMCalc.MONTHS[i] + ' : ' + fmtEur(m.revenu) + '"></div><div class="mc-label">' + window.JMCalc.MONTHS_SHORT[i] + '</div></div>'
+    }).join('')
+
+    var insights = []
+    if (res.occupation >= 65) insights.push('Marché à <strong>forte demande</strong> : l\'occupation est solide, mais la concurrence aussi. Soigne tes photos et ton positionnement.')
+    if (res.occupation < 45) insights.push('Marché à <strong>faible demande</strong>. Pour atteindre la fourchette haute, cible une niche (workation, bien-être, famille) et travaille la visibilité hors plateformes.')
+    if (res.adr >= 150) insights.push('ADR élevé : tu peux te positionner sur le <strong>haut de gamme</strong> (équipement, déco, services premium).')
+    if (modeEl.value === 'weekends') insights.push('Mode weekends : ton CA sera concentré sur 100-120 jours. Calcule ton seuil de rentabilité en conséquence.')
+    if (modeEl.value !== 'toute-annee') insights.push('Mode saisonnier : pense à la fiscalité, le <strong>plafond résidence principale 120 j</strong> peut être ton meilleur ami (FR).')
+    var hasBench = res.bench
+    if (!hasBench) insights.push('Ville non listée : tu vois la <strong>moyenne nationale</strong>, donc moins précise. La vraie valeur peut s\'écarter de ±30 %.')
+
+    var html = '' +
+      '<div class="panel">' +
+        '<h3><i class="ph-fill ph-trend-up" style="margin-right:6px;color:var(--g)"></i>Estimation pour ' + res.city + '</h3>' +
+        '<div class="range-box">' +
+          '<div class="range-label">Revenu annuel estimé</div>' +
+          '<div class="range-val">Entre <strong>' + fmtEur(res.revenuLow) + '</strong> et <strong>' + fmtEur(res.revenuHigh) + '</strong> par an</div>' +
+          '<div style="font-size:11.5px;color:var(--tm);margin-top:6px">Estimation centrale : <strong style="color:var(--g)">' + fmtEur(res.revenuAnnuel) + '</strong></div>' +
+        '</div>' +
+        '<div class="kpi-grid">' +
+          '<div class="kpi-card kpi-highlight">' +
+            '<div class="kpi-label">Occupation</div>' +
+            '<div class="kpi-value">' + res.occupation + ' %</div>' +
+            '<div class="kpi-sub">moyenne annuelle</div>' +
+          '</div>' +
+          '<div class="kpi-card">' +
+            '<div class="kpi-label">ADR estimé</div>' +
+            '<div class="kpi-value">' + fmtEur(res.adr) + '</div>' +
+            '<div class="kpi-sub">prix moyen par nuit</div>' +
+          '</div>' +
+          '<div class="kpi-card">' +
+            '<div class="kpi-label">RevPAR</div>' +
+            '<div class="kpi-value">' + fmtEur(res.revpar) + '</div>' +
+            '<div class="kpi-sub">par nuit dispo</div>' +
+          '</div>' +
+          '<div class="kpi-card">' +
+            '<div class="kpi-label">Nuits louées / an</div>' +
+            '<div class="kpi-value">' + Math.round(365 * (res.occupation / 100)) + '</div>' +
+            '<div class="kpi-sub">sur 365 jours</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="margin-top:8px">' +
+          '<div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--tl);margin-bottom:4px">Répartition mensuelle</div>' +
+          '<div class="monthly-chart">' + chartHtml + '</div>' +
+          '<div style="font-size:11px;color:var(--tl);display:flex;gap:12px;margin-top:6px"><span><span style="display:inline-block;width:8px;height:8px;background:var(--ok);border-radius:2px;margin-right:4px"></span>Haute saison locale</span><span><span style="display:inline-block;width:8px;height:8px;background:var(--y);border-radius:2px;margin-right:4px"></span>Saison neutre/basse</span></div>' +
+        '</div>' +
+        (insights.length > 0 ? '<div class="insights-box"><h4>💡 Pour aller plus loin</h4><ul>' + insights.map(function (i) { return '<li>' + i + '</li>' }).join('') + '</ul></div>' : '') +
+        '<div class="source-line">Source : ' + res.source + '. Calcul indicatif (±20 %). Pas une garantie de revenus.</div>' +
+      '</div>'
+
+    result.innerHTML = html
+  }
+
+  function init () {
+    if (!window.JMCalc) { setTimeout(init, 60); return }
+    refreshCities()
+    paysEl.addEventListener('change', refreshCities)
+    btn.addEventListener('click', render)
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
+  else init()
+})();
+</script>
+</body>
+</html>
