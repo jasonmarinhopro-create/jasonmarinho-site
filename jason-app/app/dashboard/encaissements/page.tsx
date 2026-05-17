@@ -4,9 +4,10 @@ import { getProfile } from '@/lib/queries/profile'
 import { getEncaissementsSummary, deriveImpayes } from '@/lib/stripe/connect-queries'
 import EncaissementsView from './EncaissementsView'
 
-// Données Stripe en temps réel : pas de cache, l'hôte veut voir l'état exact.
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+// Cache court de 30s : évite de marteler l'API Stripe quand l'hôte rafraîchit
+// la page plusieurs fois d'affilée. Un payout/charge ne va pas changer à la
+// seconde près. Si l'hôte veut forcer un refresh, il peut recharger après 30s.
+export const revalidate = 30
 
 export default async function EncaissementsPage() {
   const profile = await getProfile()

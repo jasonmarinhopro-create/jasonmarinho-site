@@ -62,10 +62,12 @@ export default function NotificationsView({ initialNotifications }: Props) {
   function handleMarkOne(id: string) {
     // Optimiste
     setItems(prev => prev.map(n => n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
+    broadcastCount(Math.max(0, unreadCount - 1))
     startTransition(async () => {
       const res = await markNotificationRead(id)
       if (!res.ok) {
         setItems(prev => prev.map(n => n.id === id ? { ...n, read_at: null } : n))
+        broadcastCount(unreadCount)
         toast.error('Impossible de marquer comme lue, réessaie')
       }
     })
@@ -84,8 +86,20 @@ export default function NotificationsView({ initialNotifications }: Props) {
         toast.error('Impossible de tout marquer lu, réessaie')
       } else {
         toast.success(`${count} notification${count > 1 ? 's' : ''} marquée${count > 1 ? 's' : ''} lue${count > 1 ? 's' : ''}`)
+        // Notifie le Header pour que le badge de la cloche se vide tout de suite
+        // sans attendre un changement de pathname.
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: 0 } }))
+        }
       }
     })
+  }
+
+  // Idem pour mark-one : décrémente le compteur Header à chaque clic.
+  function broadcastCount(nextUnread: number) {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: nextUnread } }))
+    }
   }
 
   const filterBtns: Array<{ key: Filter; label: string; count?: number }> = [

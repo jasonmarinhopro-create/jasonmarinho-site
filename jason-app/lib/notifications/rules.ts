@@ -82,6 +82,56 @@ async function ruleArriveeDemain(userId: string): Promise<number> {
   return created
 }
 
+// ─── Règle 1bis : Départ aujourd'hui (état des lieux + caution) ──────
+async function ruleDepartAujourdhui(userId: string): Promise<number> {
+  const supabase = svc()
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const todayStart = today.toISOString().split('T')[0]
+  const tomorrowEnd = new Date(today)
+  tomorrowEnd.setHours(23, 59, 59, 999)
+
+  const { data: sejours, error } = await supabase
+    .from('sejours')
+    .select('id, logement, date_depart, voyageur_id, voyageurs(prenom, nom)')
+    .eq('user_id', userId)
+    .gte('date_depart', todayStart)
+    .lte('date_depart', tomorrowEnd.toISOString().split('T')[0])
+
+  if (error || !sejours) return 0
+
+  type SejourRow = {
+    id: string
+    logement: string | null
+    date_depart: string
+    voyageur_id: string | null
+    voyageurs: { prenom: string | null; nom: string | null } | Array<{ prenom: string | null; nom: string | null }> | null
+  }
+
+  let created = 0
+  for (const s of (sejours as unknown as SejourRow[])) {
+    const raw = s.voyageurs
+    const v = Array.isArray(raw) ? raw[0] ?? null : raw
+    const nom = v ? `${v.prenom ?? ''} ${v.nom ?? ''}`.trim() : 'le voyageur'
+    const ok = await createNotification({
+      recipientId: userId,
+      category: 'sejour',
+      type: 'depart_aujourdhui',
+      title: `Départ aujourd'hui — ${nom || 'voyageur'}`,
+      body: `${nom || 'Le voyageur'} part aujourd'hui de ${s.logement ?? 'ton logement'}. Pense à l'état des lieux et à libérer la caution si tout est OK.`,
+      ctaLabel: 'Voir le séjour',
+      ctaHref: s.voyageur_id ? `/dashboard/voyageurs/${s.voyageur_id}` : '/dashboard/voyageurs',
+      severity: 'info',
+      metadata: { sejour_id: s.id, voyageur: nom, logement: s.logement },
+      dedupKey: `depart_aujourdhui:sejour_${s.id}`,
+      // Expire en fin de journée
+      expiresAt: new Date(Date.now() + 30 * 3600 * 1000),
+    })
+    if (ok) created++
+  }
+  return created
+}
+
 // ─── Règle 2 : Approche plafond fiscal micro-BIC ──────────────────────
 // Seuils 2025 LCD non classé : 15 000 € (au-delà, sortie du régime).
 // Seuils 2025 LCD classé : 77 700 € (micro-BIC général).
@@ -204,6 +254,7 @@ async function ruleNouveauGuide(_userId: string): Promise<number> {
 // ─── Orchestrateur ────────────────────────────────────────────────────
 export interface RulesRunResult {
   arriveeDemain: number
+  departAujourdhui: number
   plafondMicro: number
   stripeIncomplete: number
   syncFailed: number
@@ -222,16 +273,17 @@ export async function runNotificationRules(userId: string): Promise<RulesRunResu
   const safe = async (fn: () => Promise<number>, name: string): Promise<number> => {
     try { return await fn() } catch (e) { console.error(`[rules:${name}]`, e); return 0 }
   }
-  const [arriveeDemain, plafondMicro, stripeIncomplete, syncFailed, nouveauGuide] = await Promise.all([
+  const [arriveeDemain, departAujourdhui, plafondMicro, stripeIncomplete, syncFailed, nouveauGuide] = await Promise.all([
     safe(() => ruleArriveeDemain(userId), 'arrivee_demain'),
+    safe(() => ruleDepartAujourdhui(userId), 'depart_aujourdhui'),
     safe(() => rulePlafondMicro(userId), 'plafond_micro'),
     safe(() => ruleStripeIncomplete(userId), 'stripe_incomplete'),
     safe(() => ruleSyncFailed(userId), 'sync_failed'),
     safe(() => ruleNouveauGuide(userId), 'nouveau_guide'),
   ])
   return {
-    arriveeDemain, plafondMicro, stripeIncomplete, syncFailed, nouveauGuide,
-    total: arriveeDemain + plafondMicro + stripeIncomplete + syncFailed + nouveauGuide,
+    arriveeDemain, departAujourdhui, plafondMicro, stripeIncomplete, syncFailed, nouveauGuide,
+    total: arriveeDemain + departAujourdhui + plafondMicro + stripeIncomplete + syncFailed + nouveauGuide,
     durationMs: Date.now() - t0,
   }
 }

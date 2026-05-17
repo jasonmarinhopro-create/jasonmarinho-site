@@ -169,6 +169,19 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     if (pathname === '/dashboard/notifications') setAppNotifUnread(0)
   }, [pathname])
 
+  // Synchro reactive : si l'utilisateur marque ses alertes lues depuis la page
+  // notifications (ou via le panel cloche), le badge se met à jour SANS attendre
+  // un changement de pathname. Émis par NotificationsView via window.dispatchEvent.
+  useEffect(() => {
+    function onCountChange(e: Event) {
+      const detail = (e as CustomEvent<{ appNotifUnread?: number; chezNousUnread?: number }>).detail
+      if (typeof detail?.appNotifUnread === 'number') setAppNotifUnread(detail.appNotifUnread)
+      if (typeof detail?.chezNousUnread === 'number') setChezNousUnread(detail.chezNousUnread)
+    }
+    window.addEventListener('notif-count-changed', onCountChange as EventListener)
+    return () => window.removeEventListener('notif-count-changed', onCountChange as EventListener)
+  }, [])
+
   // Titre final : prop forcée > store (TitleSetter) > mapping pathname
   const title = titleOverrideProp ?? titleFromStore ?? resolveTitle(pathname ?? '')
 

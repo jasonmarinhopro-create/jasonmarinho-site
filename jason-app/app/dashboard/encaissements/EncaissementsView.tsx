@@ -63,13 +63,23 @@ Merci d'avance,
 
 export default function EncaissementsView({ summary, impayes }: Props) {
   const isOnboarded = summary.hasOnboarded
-  const totalBalance = summary.balance.available + summary.balance.pending
 
   // Total impayé attendu (pour la stat en haut)
   const totalImpaye = useMemo(
     () => impayes.reduce((sum, c) => sum + (c.montant_loyer ?? 0), 0),
     [impayes],
   )
+
+  // L'hôte est onboarded mais n'a strictement rien encaissé encore :
+  // empty state explicite pour ne pas laisser croire à un bug.
+  const isOnboardedButEmpty =
+    isOnboarded &&
+    summary.balance.available === 0 &&
+    summary.balance.pending === 0 &&
+    summary.monthToDate.chargeCount === 0 &&
+    summary.recentPayouts.length === 0 &&
+    summary.recentFailedCharges.length === 0 &&
+    impayes.length === 0
 
   return (
     <div style={s.page}>
@@ -116,6 +126,26 @@ export default function EncaissementsView({ summary, impayes }: Props) {
           <Link href="/dashboard/profil" style={s.bannerCta}>
             Finaliser →
           </Link>
+        </div>
+      )}
+
+      {/* ─── Empty state quand l'hôte est prêt mais n'a encore rien encaissé ─── */}
+      {isOnboardedButEmpty && (
+        <div style={s.emptyReady}>
+          <div style={s.emptyReadyIcon} aria-hidden="true">
+            <CheckCircle size={32} weight="duotone" color="var(--success-1)" />
+          </div>
+          <h2 style={s.emptyReadyTitle}>Tu es prêt à encaisser ✨</h2>
+          <p style={s.emptyReadyBody}>
+            Ton compte Stripe est configuré et opérationnel. Dès ton premier paiement reçu (loyer, caution),
+            il apparaîtra ici avec le détail du virement, la date d'arrivée et le statut.
+          </p>
+          <div style={s.emptyReadyHint}>
+            En attendant, tu peux activer le paiement Stripe sur tes contrats existants depuis l'onglet{' '}
+            <Link href="/dashboard/voyageurs" style={{ color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600 }}>
+              Mes voyageurs
+            </Link>.
+          </div>
         </div>
       )}
 
@@ -370,6 +400,37 @@ const s: Record<string, React.CSSProperties> = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
     gap: 'clamp(10px, 1.5vw, 14px)',
+  },
+
+  emptyReady: {
+    display: 'flex', flexDirection: 'column' as const,
+    alignItems: 'center', textAlign: 'center' as const,
+    padding: 'clamp(28px, 4vw, 44px) 24px',
+    background: 'linear-gradient(135deg, rgba(16,185,129,0.04) 0%, var(--surface) 100%)',
+    border: '1px solid rgba(16,185,129,0.20)',
+    borderRadius: '16px',
+    gap: '10px',
+  },
+  emptyReadyIcon: {
+    width: '64px', height: '64px', borderRadius: '20px',
+    background: 'rgba(16,185,129,0.08)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    marginBottom: '6px',
+  },
+  emptyReadyTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '22px', fontWeight: 400, color: 'var(--text)',
+    margin: 0, letterSpacing: '-0.01em',
+  },
+  emptyReadyBody: {
+    fontSize: '13.5px', color: 'var(--text-2)', lineHeight: 1.6,
+    margin: 0, maxWidth: '440px',
+  },
+  emptyReadyHint: {
+    fontSize: '12.5px', color: 'var(--text-3)', lineHeight: 1.6,
+    marginTop: '4px', padding: '10px 14px',
+    background: 'var(--bg-2)', border: '1px solid var(--border)',
+    borderRadius: '10px',
   },
   statBox: {
     padding: '18px 20px', borderRadius: '14px',
