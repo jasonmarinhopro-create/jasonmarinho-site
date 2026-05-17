@@ -111,25 +111,51 @@
       /* Mobile menu, compact, animé, zéro scroll */
       '.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--gd);border-top:1px solid rgba(255,213,107,.08);padding:4px clamp(16px,5vw,32px) 28px;z-index:199;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s}',
       '.mob-menu.open{opacity:1;transform:translateY(0)}',
-      '.mob-stitle{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.4);padding:18px 0 4px}',
-      '.mob-menu a{font-size:15px;color:rgba(255,255,255,.6);text-decoration:none;padding:13px 0;display:flex;align-items:center;gap:12px;transition:color .15s;border-bottom:1px solid rgba(255,255,255,.035)}',
+      '.mob-stitle{font-family:\'Fraunces\',serif;font-size:14px;font-weight:500;letter-spacing:-.01em;color:#fff;padding:22px 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,213,107,.10);margin-bottom:4px}',
+      '.mob-stitle::before{content:"";width:18px;height:1px;background:var(--y);flex-shrink:0;opacity:.55}',
+      '.mob-menu a{font-size:15px;color:rgba(255,255,255,.7);text-decoration:none;padding:11px 0;display:flex;align-items:center;gap:12px;transition:color .15s;border-bottom:1px solid rgba(255,255,255,.035)}',
       '.mob-menu a:hover,.mob-menu a:active{color:#fff}',
-      '.mob-menu a i{font-size:17px;color:rgba(255,213,107,.4);flex-shrink:0;width:18px;text-align:center}',
+      '.mob-menu a i{font-size:16px;color:rgba(255,213,107,.5);flex-shrink:0;width:18px;text-align:center}',
       '.mob-sep{height:1px;background:rgba(255,255,255,.05);margin:6px 0}',
       '.mob-acc{}',
       '.mob-acc-btn{width:100%;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.035);cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px 0 14px;color:rgba(255,213,107,.45);font:600 10px/1 \'Outfit\',sans-serif;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}',
       '.mob-acc-btn:hover{color:rgba(255,213,107,.7)}',
       '.mob-acc-arrow{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;flex-shrink:0}',
       '.mob-acc.open .mob-acc-arrow{transform:rotate(180deg)}',
-      '.mob-acc-body{max-height:0;overflow:hidden;transition:max-height .32s ease}',
-      '.mob-acc.open .mob-acc-body{max-height:600px}',
+      '.mob-acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease}',
+      '.mob-acc.open .mob-acc-body{max-height:2200px}',
 
-      /* Driing mobile, carte highlight */
+      /* Tablette : grille 2 colonnes dans les accordéons pour densifier */
+      '@media(min-width:560px) and (max-width:960px){',
+        '.mob-acc-body{display:grid;grid-template-columns:1fr 1fr;column-gap:28px;row-gap:0}',
+        '.mob-acc-body .mob-stitle{grid-column:1 / -1}',
+        '.mob-acc-body .mob-driing-card{grid-column:1 / -1}',
+        '.mob-acc-body .mob-driing{grid-column:1 / -1}',
+        '.mob-acc-body .mob-sublink{grid-column:1 / -1}',
+      '}',
+
+      /* Lien "Voir tout" discret */
+      '.mob-sublink{font-size:13px!important;color:rgba(255,213,107,.65)!important;padding:11px 0 14px!important;border-bottom:none!important;display:inline-flex!important;align-items:center;gap:6px;margin-bottom:4px}',
+      '.mob-sublink:hover{color:var(--y)!important}',
+      '.mob-sublink i{color:rgba(255,213,107,.5)!important;font-size:12px!important}',
+
+      /* Driing mobile, carte highlight (Pour qui) */
       '.mob-driing{background:rgba(255,213,107,.06)!important;border:1px solid rgba(255,213,107,.18)!important;border-radius:10px!important;padding:13px 14px!important;margin-top:4px;border-bottom:none!important}',
       '.mob-driing i{color:var(--y)!important;opacity:.85}',
       '.mob-driing-body{display:flex;flex-direction:column;gap:1px}',
       '.mob-driing-name{font-size:15px;font-weight:500;color:var(--y);line-height:1.3}',
       '.mob-driing-sub{font-size:12px;color:rgba(255,213,107,.45)}',
+
+      /* Driing card riche pour Services accordion (mobile + tablette) */
+      '.mob-driing-card{display:flex!important;flex-direction:column;gap:10px;background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%)!important;border:1px solid rgba(255,213,107,.22)!important;border-radius:12px!important;padding:18px!important;margin:18px 0 4px!important;text-decoration:none!important;position:relative;overflow:hidden;border-bottom:none!important;align-items:flex-start!important}',
+      '.mob-driing-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 30%,rgba(255,213,107,.10),transparent 70%);pointer-events:none}',
+      '.mob-driing-card>*{position:relative;z-index:1}',
+      '.mob-driing-card .mdc-tag{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);background:rgba(255,213,107,.10);padding:3px 9px;border-radius:999px;width:fit-content}',
+      '.mob-driing-card .mdc-tag .mdc-dot{width:5px;height:5px;border-radius:50%;background:var(--y);box-shadow:0 0 7px rgba(255,213,107,.7)}',
+      '.mob-driing-card .mdc-h{font-family:\'Fraunces\',serif;font-size:18px;line-height:1.25;font-weight:400;color:#fff;letter-spacing:-.01em}',
+      '.mob-driing-card .mdc-h em{color:var(--y);font-style:italic;font-weight:300}',
+      '.mob-driing-card .mdc-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.5}',
+      '.mob-driing-card .mdc-cta{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(255,213,107,.15);color:var(--y);font-weight:600;font-size:12.5px;border-radius:8px;align-self:flex-start;margin-top:2px}',
 
       /* CTAs mobile */
       '.mob-ctas{display:flex;gap:8px;margin-top:auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)}',
@@ -268,7 +294,7 @@
     + '<div class="mob-acc" id="acc-sv">'
       + '<button class="mob-acc-btn" aria-expanded="false">Services ' + MOB_ARROW + '</button>'
       + '<div class="mob-acc-body">'
-        + '<span class="mob-stitle" style="display:block;padding:14px 0 2px">Piloter ton activité</span>'
+        + '<span class="mob-stitle">Piloter ton activité</span>'
         + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
         + '<a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a>'
         + '<a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a>'
@@ -276,15 +302,17 @@
         + '<a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
         + '<a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a>'
         + '<a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Audit Google Business</a>'
-        + '<span class="mob-stitle" style="display:block;padding:18px 0 2px">Chiffrer & décider</span>'
+        + '<span class="mob-stitle">Chiffrer & décider</span>'
         + '<a href="/services/simulateurs/fiscalite-micro-bic"><i class="ph ph-currency-eur"></i>Fiscalité micro-BIC</a>'
         + '<a href="/services/simulateurs/choisir-statut-ei-sasu"><i class="ph ph-scales"></i>EI vs SASU</a>'
         + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
         + '<a href="/services/simulateurs/taxe-de-sejour"><i class="ph ph-map-pin"></i>Taxe de séjour</a>'
+        + '<a href="/services/simulateurs" class="mob-sublink">Voir tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>'
         + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
         + '<a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur de prix</a>'
         + '<a href="/calculateurs/comparer-villes"><i class="ph ph-scales"></i>Comparateur de villes</a>'
-        + '<span class="mob-stitle" style="display:block;padding:18px 0 2px">Apprendre & échanger</span>'
+        + '<a href="/calculateurs" class="mob-sublink">Voir tous les calculateurs <i class="ph-bold ph-arrow-right"></i></a>'
+        + '<span class="mob-stitle">Apprendre & échanger</span>'
         + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations LCD</a>'
         + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
         + '<a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a>'
@@ -293,6 +321,12 @@
         + '<a href="/services/chez-nous"><i class="ph ph-house"></i>Chez Nous (forum)</a>'
         + '<a href="/services/ecosysteme"><i class="ph ph-globe"></i>Écosystème LCD</a>'
         + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
+        + '<a href="/pour-qui/membres-driing" class="mob-driing-card">'
+          + '<span class="mdc-tag"><span class="mdc-dot"></span>Membres Driing</span>'
+          + '<div class="mdc-h">Réservation directe, <em>0 commission</em></div>'
+          + '<div class="mdc-p">La place de marché LCD du futur, exclusivement pour les hôtes Driing.</div>'
+          + '<span class="mdc-cta">Voir mes avantages <i class="ph-bold ph-arrow-right"></i></span>'
+        + '</a>'
       + '</div>'
     + '</div>'
 
