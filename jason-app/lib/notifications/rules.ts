@@ -46,15 +46,22 @@ async function ruleArriveeDemain(userId: string): Promise<number> {
 
   if (error || !sejours) return 0
 
-  let created = 0
-  for (const s of sejours as Array<{
+  // Note typage : Supabase typecase la jointure `voyageurs(...)` comme un
+  // tableau (relations 1:N génériques), alors qu'au runtime une FK
+  // sejour.voyageur_id → voyageurs.id renvoie un objet unique. On passe par
+  // `unknown` puis on normalise défensivement.
+  type SejourRow = {
     id: string
     logement: string | null
     date_arrivee: string
     voyageur_id: string | null
-    voyageurs: { prenom: string | null; nom: string | null } | null
-  }>) {
-    const v = s.voyageurs
+    voyageurs: { prenom: string | null; nom: string | null } | Array<{ prenom: string | null; nom: string | null }> | null
+  }
+
+  let created = 0
+  for (const s of (sejours as unknown as SejourRow[])) {
+    const raw = s.voyageurs
+    const v = Array.isArray(raw) ? raw[0] ?? null : raw
     const nom = v ? `${v.prenom ?? ''} ${v.nom ?? ''}`.trim() : 'le voyageur'
     const ok = await createNotification({
       recipientId: userId,
