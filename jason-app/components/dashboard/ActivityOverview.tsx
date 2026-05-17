@@ -13,7 +13,7 @@ export function ActivityOverview({ stats }: { stats: AccountStats }) {
       : `${stats.villes.length} villes`
 
   return (
-    <div style={ao.wrap}>
+    <div style={ao.wrap} data-tour="activity-overview">
       <div style={ao.greet}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={ao.greetH}>

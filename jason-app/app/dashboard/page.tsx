@@ -11,6 +11,7 @@ import ActionUrgente from './ActionUrgente'
 import ChezNousWidget from './ChezNousWidget'
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import ConseilDuMoment from './ConseilDuMoment'
+import OnboardingTour from './OnboardingTour'
 import { selectConseil } from '@/lib/lcd/conseil-du-moment'
 import { getDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
@@ -391,6 +392,9 @@ export default async function DashboardPage() {
     <>
       <div style={s.page} className="dash-page">
 
+        {/* ── Visite guidée : 1ère visite uniquement (localStorage) ───── */}
+        <OnboardingTour userId={userId} />
+
         {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
         <SetupChecklist userId={userId} steps={setupSteps} />
 
@@ -429,7 +433,7 @@ export default async function DashboardPage() {
               })()}
             </p>
           </div>
-          <div style={s.statsRow} className="dash-stats-row">
+          <div style={s.statsRow} className="dash-stats-row" data-tour="dashboard-stats">
             <div style={s.stat}>
               <span style={{ ...s.statVal, color: todayArrivals.length > 0 ? 'var(--success-1)' : 'var(--accent-text)' }} className="tabular-nums">{todayArrivals.length}</span>
               <span style={s.statLbl}>Arrivée{pl(todayArrivals.length)} aujourd&apos;hui</span>

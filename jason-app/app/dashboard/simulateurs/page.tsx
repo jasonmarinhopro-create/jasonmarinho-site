@@ -3,6 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { computeAccountStats } from '@/lib/lcd/account-stats'
 import { getDashboardPrefill, type LogementPrefill as PrefillType } from '@/lib/lcd/dashboard-prefill'
 import SimulateursUI from './SimulateursUI'
+import OnboardingTour, { SIMULATEURS_STEPS } from '../OnboardingTour'
 
 export const metadata = { title: 'Simulateurs LCD, Jason Marinho' }
 export const dynamic = 'force-dynamic'
@@ -16,5 +17,10 @@ export default async function SimulateursPage() {
   if (!profile) redirect('/auth/login')
 
   const prefill = await getDashboardPrefill(profile.userId)
-  return <SimulateursUI logementsPrefill={prefill} accountStats={computeAccountStats(prefill, profile)} />
+  return (
+    <>
+      <OnboardingTour userId={profile.userId} steps={SIMULATEURS_STEPS} storageScope="simulateurs" />
+      <SimulateursUI logementsPrefill={prefill} accountStats={computeAccountStats(prefill, profile)} />
+    </>
+  )
 }

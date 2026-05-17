@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Scales, Check, Info } from '@phosphor-icons/react/dist/ssr'
+import Link from 'next/link'
+import { Scales, Check, Info, Compass } from '@phosphor-icons/react/dist/ssr'
 import { saveAutresRevenusPro } from './actions'
 
 interface Props {
@@ -77,6 +78,11 @@ export default function FiscalContextCard({ initialValue }: Props) {
           <span>Information privée, jamais partagée. Utilisée uniquement pour affiner ton statut LMNP/LMP côté simulateurs et activity overview.</span>
         </div>
       </div>
+
+      <Link href="/dashboard?tour=1" style={s.tourLink}>
+        <Compass size={13} weight="duotone" />
+        Refaire la visite guidée du dashboard
+      </Link>
     </div>
   )
 }
@@ -204,5 +210,18 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text-muted)',
     lineHeight: 1.45,
     marginTop: '4px',
+  },
+  tourLink: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '7px',
+    marginTop: '18px',
+    paddingTop: '16px',
+    borderTop: '1px dashed var(--border)',
+    fontSize: '12.5px',
+    fontWeight: 500,
+    color: 'var(--accent-text)',
+    textDecoration: 'none',
+    transition: 'color .15s',
   },
 }

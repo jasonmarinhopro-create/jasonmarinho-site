@@ -30,7 +30,7 @@ export default function ConseilDuMoment({ conseil }: Props) {
   const toneStyle = TONE_STYLES[conseil.tone]
 
   return (
-    <div style={{ ...s.wrap, ...toneStyle.wrap }}>
+    <div style={{ ...s.wrap, ...toneStyle.wrap }} data-tour="conseil">
       <div style={s.glow} aria-hidden />
       <div style={s.head}>
         <span style={{ ...s.tag, ...toneStyle.tag }}>
