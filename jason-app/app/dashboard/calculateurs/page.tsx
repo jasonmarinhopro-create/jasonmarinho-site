@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
 import { extractCity } from '@/lib/lcd/market-benchmarks'
+import { computeAccountStats } from '@/lib/lcd/account-stats'
 import CalculateursUI from './CalculateursUI'
 
 export const metadata = { title: 'Calculateurs marché, Jason Marinho' }
@@ -84,5 +85,5 @@ export default async function CalculateursPage() {
     }
   })
 
-  return <CalculateursUI logementsPrefill={prefill} />
+  return <CalculateursUI logementsPrefill={prefill} accountStats={computeAccountStats(prefill, profile)} />
 }

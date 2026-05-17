@@ -3,6 +3,8 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp, TrendUp, Storefront, Receipt } from '@phosphor-icons/react/dist/ssr'
 import { citiesByCountry, estimateRevenue, calculatePrice, SUPPORTED_COUNTRIES, type MarketBenchmark } from '@/lib/lcd/market-benchmarks'
+import type { AccountStats } from '@/lib/lcd/account-stats'
+import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
 
 type Pays = MarketBenchmark['pays']
 import type { LogementPrefill } from './page'
@@ -10,6 +12,7 @@ import type { LogementPrefill } from './page'
 
 interface Props {
   logementsPrefill?: LogementPrefill[]
+  accountStats?: AccountStats
 }
 
 // Mapping type_logement DB → clé engine (engine attend studio/t1/t2/t3/maison)
@@ -1538,7 +1541,7 @@ function MiniBox({ label, value, sub, highlight }: { label: string; value: strin
 type SimTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe'
 const SIM_TABS: SimTab[] = ['fiscal', 'statut', 'rentabilite', 'taxe']
 
-export default function SimulateursUI({ logementsPrefill = [] }: Props) {
+export default function SimulateursUI({ logementsPrefill = [], accountStats }: Props) {
   const [tab, setTab] = useState<SimTab>('fiscal')
 
   // Deep-linking via URL hash : /dashboard/simulateurs#statut ouvre l'onglet
@@ -1596,22 +1599,24 @@ export default function SimulateursUI({ logementsPrefill = [] }: Props) {
           </p>
         </div>
 
+        {accountStats && <ActivityOverview stats={accountStats} />}
+
         <div style={s.tabs} role="tablist" aria-label="Simulateurs fiscaux">
           <button onClick={() => selectTab('fiscal')} role="tab" aria-selected={tab === 'fiscal'} style={s.tab}>
-            <CurrencyEur size={14} weight="fill" /> Fiscalité
+            <CurrencyEur size={15} weight="fill" /> Fiscalité
           </button>
           <button onClick={() => selectTab('statut')} role="tab" aria-selected={tab === 'statut'} style={s.tab}>
-            <Scales size={14} weight="fill" /> EI vs SASU
+            <Scales size={15} weight="fill" /> EI vs SASU
           </button>
           <button onClick={() => selectTab('rentabilite')} role="tab" aria-selected={tab === 'rentabilite'} style={s.tab}>
-            <ChartLineUp size={14} weight="fill" /> Rentabilité
+            <ChartLineUp size={15} weight="fill" /> Rentabilité
           </button>
           <button onClick={() => selectTab('taxe')} role="tab" aria-selected={tab === 'taxe'} style={s.tab}>
-            <Receipt size={14} weight="fill" /> Taxe de séjour
+            <Receipt size={15} weight="fill" /> Taxe de séjour
           </button>
         </div>
 
-        <div style={s.body} role="tabpanel">
+        <div style={s.bodyCard} role="tabpanel">
           {tab === 'fiscal' && <FiscalLCD />}
           {tab === 'statut' && <EIvsSASU />}
           {tab === 'rentabilite' && <Rentabilite />}
@@ -1676,22 +1681,31 @@ const s: Record<string, React.CSSProperties> = {
     maxWidth: '600px', margin: 0,
   },
   tabs: {
-    display: 'flex', gap: '6px', padding: '4px',
+    display: 'flex', gap: '8px', padding: '6px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '12px', marginBottom: '20px',
+    borderRadius: '14px', marginBottom: 'clamp(18px, 2.5vw, 24px)',
     flexWrap: 'wrap' as const,
   },
   tab: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    padding: '8px 14px', fontSize: '12.5px', fontWeight: 500,
+    display: 'inline-flex', alignItems: 'center', gap: '8px',
+    padding: '11px 18px', fontSize: '13px', fontWeight: 500,
     color: 'var(--text-2)', background: 'transparent',
-    border: 'none', borderRadius: '9px', cursor: 'pointer',
+    border: 'none', borderRadius: '10px', cursor: 'pointer',
     fontFamily: 'inherit',
+    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
   },
   tabActive: {
     background: 'var(--accent-bg)', color: 'var(--accent-text)',
   },
   body: { minHeight: '200px' },
+  bodyCard: {
+    minHeight: '200px',
+    padding: 'clamp(18px, 2.6vw, 28px)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '16px',
+    boxShadow: '0 1px 0 rgba(255,255,255,.02) inset',
+  },
   placeholder: {
     padding: '40px', textAlign: 'center' as const,
     fontSize: '13px', color: 'var(--text-muted)',
