@@ -38,8 +38,8 @@ function fmtPct(n: number): string {
  * 1. FISCALITÉ LCD (micro-BIC)
  * ────────────────────────────────────────── */
 
-function FiscalLCD() {
-  const [ca, setCa] = useState(30000)
+function FiscalLCD({ accountStats }: { accountStats?: AccountStats }) {
+  const [ca, setCa] = useState(accountStats && accountStats.caTotal12m > 0 ? Math.round(accountStats.caTotal12m) : 30000)
   // 'non_classe' = meublé tourisme non classé : 30 % / 15 000 € (loi Le Meur 2025+)
   // 'classe'     = meublé tourisme classé Atout France : 50 % / 77 700 € (loi Le Meur 2025+)
   // 'cdh'        = chambres d'hôtes : 50 % / 77 700 € depuis la décision CE du 16/09/2025
@@ -334,8 +334,14 @@ function FiscalLCD() {
  * 2. EI vs SASU
  * ────────────────────────────────────────── */
 
-function EIvsSASU() {
-  const [benef, setBenef] = useState(40000)
+function EIvsSASU({ accountStats }: { accountStats?: AccountStats }) {
+  // Si l'hôte a une activité réelle, on initialise le bénéfice à 70% du CA
+  // (proxy raisonnable pour LCD : 30% de charges déductibles approximatives).
+  // Sinon, valeur de démo 40 000 €.
+  const initialBenef = accountStats && accountStats.caTotal12m > 0
+    ? Math.max(1000, Math.round(accountStats.caTotal12m * 0.7))
+    : 40000
+  const [benef, setBenef] = useState(initialBenef)
   const [tmi, setTmi] = useState(30)
 
   const result = useMemo(() => {
@@ -431,10 +437,11 @@ const COMMISSION_PRESETS = [
   { label: 'Booking', value: 18 },
 ]
 
-function Rentabilite() {
+function Rentabilite({ accountStats }: { accountStats?: AccountStats }) {
+  const hasReal = !!(accountStats && accountStats.caTotal12m > 0)
   // Operational
-  const [prixNuit, setPrixNuit] = useState(100)
-  const [occupation, setOccupation] = useState(65)
+  const [prixNuit, setPrixNuit] = useState(hasReal && accountStats!.adrMoyen > 0 ? accountStats!.adrMoyen : 100)
+  const [occupation, setOccupation] = useState(hasReal && accountStats!.occupationMoyenne > 0 ? accountStats!.occupationMoyenne : 65)
   const [commission, setCommission] = useState(17)
   const [fraisMenage, setFraisMenage] = useState(50)
   const [dureeMoy, setDureeMoy] = useState(3)
@@ -711,12 +718,22 @@ const CLASSEMENT_LABELS: Record<Classement, string> = {
   '45': '4–5★ / Palace',
 }
 
-function TaxeSejour() {
-  const [cityId, setCityId] = useState<string>('paris')
+function TaxeSejour({ accountStats }: { accountStats?: AccountStats }) {
+  // Si l'hôte a un logement dans une ville présente dans la base CITIES,
+  // on initialise sur sa ville. Sinon, Paris par défaut.
+  const defaultCityId = (() => {
+    const firstVille = accountStats?.villes?.[0]
+    if (!firstVille) return 'paris'
+    const normalized = firstVille.toLowerCase().trim()
+    const found = CITIES.find(c => c.name.toLowerCase() === normalized)
+    return found?.id ?? 'paris'
+  })()
+  const defaultPrix = accountStats && accountStats.adrMoyen > 0 ? accountStats.adrMoyen : 120
+  const [cityId, setCityId] = useState<string>(defaultCityId)
   const [classement, setClassement] = useState<Classement>('nc')
   const [adultes, setAdultes] = useState(2)
   const [nuits, setNuits] = useState(3)
-  const [prixNuit, setPrixNuit] = useState(120)
+  const [prixNuit, setPrixNuit] = useState(defaultPrix)
 
   const r = useMemo(() => {
     const city = CITIES.find(c => c.id === cityId) ?? CITIES[0]
@@ -1567,8 +1584,19 @@ export default function SimulateursUI({ logementsPrefill = [], accountStats }: P
       <style dangerouslySetInnerHTML={{ __html: `
         /* Selects en vert Jason quand ouverts */
         .sim-root select option { background-color: var(--bg-2); color: var(--text); padding: 8px 12px; font-weight: 500; }
-        .sim-root select option:hover { background-color: var(--accent-bg); }
-        .sim-root select option:checked { background: var(--accent-text); color: var(--bg); font-weight: 700; }
+        .sim-root select option:hover { background-color: rgba(0,76,63,0.55); color: #fff; }
+        .sim-root select option:checked { background: linear-gradient(0deg, var(--accent-text) 0%, var(--accent-text) 100%); color: var(--bg); font-weight: 700; }
+        /* Inputs et selects : focus state vert Jason */
+        .sim-root input[type="text"]:focus, .sim-root input[type="number"]:focus,
+        .sim-root select:focus, .sim-root textarea:focus {
+          border-color: rgba(99,214,131,0.55) !important;
+          box-shadow: 0 0 0 3px rgba(0,76,63,0.18), 0 0 0 1px rgba(99,214,131,0.40);
+          outline: none;
+        }
+        .sim-root select { transition: border-color .18s, box-shadow .18s; cursor: pointer; }
+        .sim-root select:hover { border-color: rgba(99,214,131,0.32); }
+        /* Plus d'air entre label et input */
+        .sim-root .jm-field-spaced > div[class*="field"], .sim-root .sim-field { gap: 11px !important; }
         /* Checkbox custom élégante */
         .jm-check { display: flex !important; align-items: center; gap: 10px; cursor: pointer; padding: 12px 14px !important; border-radius: 10px; background: linear-gradient(135deg, rgba(0,76,63,.05) 0%, rgba(255,213,107,.06) 100%); border: 1px solid var(--accent-border); transition: all .2s cubic-bezier(.4,0,.2,1); margin-top: 4px !important; }
         .jm-check:hover { border-color: var(--accent-text); background: linear-gradient(135deg, rgba(0,76,63,.10) 0%, rgba(255,213,107,.12) 100%); }
@@ -1617,10 +1645,10 @@ export default function SimulateursUI({ logementsPrefill = [], accountStats }: P
         </div>
 
         <div style={s.bodyCard} role="tabpanel">
-          {tab === 'fiscal' && <FiscalLCD />}
-          {tab === 'statut' && <EIvsSASU />}
-          {tab === 'rentabilite' && <Rentabilite />}
-          {tab === 'taxe' && <TaxeSejour />}
+          {tab === 'fiscal' && <FiscalLCD accountStats={accountStats} />}
+          {tab === 'statut' && <EIvsSASU accountStats={accountStats} />}
+          {tab === 'rentabilite' && <Rentabilite accountStats={accountStats} />}
+          {tab === 'taxe' && <TaxeSejour accountStats={accountStats} />}
         </div>
       </div>
     </div>
@@ -1718,10 +1746,11 @@ const s: Record<string, React.CSSProperties> = {
     gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
     gap: '16px',
   },
-  field: { display: 'flex', flexDirection: 'column' as const, gap: '7px' },
+  field: { display: 'flex', flexDirection: 'column' as const, gap: '11px' },
   label: {
-    fontSize: '11px', fontWeight: 600, letterSpacing: '0.4px',
+    fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px',
     textTransform: 'uppercase' as const, color: 'var(--text-3)',
+    marginBottom: '1px',
   },
   inputWrap: { position: 'relative' as const },
   input: {

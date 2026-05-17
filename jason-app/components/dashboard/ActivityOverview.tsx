@@ -30,6 +30,11 @@ export function ActivityOverview({ stats }: { stats: AccountStats }) {
             <Lightning size={11} weight="fill" /> Membre Driing
           </span>
         )}
+        {stats.plan === 'standard' && (
+          <span style={ao.planTagStandard}>
+            Membre Standard
+          </span>
+        )}
       </div>
 
       <div style={ao.grid}>
@@ -141,6 +146,21 @@ const ao: Record<string, React.CSSProperties> = {
     letterSpacing: '0.6px',
     textTransform: 'uppercase',
     border: '1px solid rgba(255,213,107,0.22)',
+    flexShrink: 0,
+  },
+  planTagStandard: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '5px',
+    padding: '6px 12px',
+    borderRadius: '999px',
+    background: 'rgba(99,214,131,0.10)',
+    color: '#5DC077',
+    fontSize: '11px',
+    fontWeight: 700,
+    letterSpacing: '0.6px',
+    textTransform: 'uppercase',
+    border: '1px solid rgba(99,214,131,0.22)',
     flexShrink: 0,
   },
   grid: {
