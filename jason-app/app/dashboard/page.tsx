@@ -10,6 +10,9 @@ import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
 import ChezNousWidget from './ChezNousWidget'
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
+import ConseilDuMoment from './ConseilDuMoment'
+import { selectConseil } from '@/lib/lcd/conseil-du-moment'
+import { getDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 
@@ -335,6 +338,24 @@ export default async function DashboardPage() {
   const hasContract = (contracts ?? []).length > 0
   const hasObjectif = !!objectifData
   const hasFormationStarted = totalLessonsDone > 0
+
+  // ─── Conseil du moment : règle contextuelle prioritaire ─────────────
+  // CA 12 mois glissants via cache partagé (déjà touché par /simulateurs
+  // et /calculateurs : 60 s TTL, peut être déjà en cache)
+  const prefillForConseil = await getDashboardPrefill(userId)
+  const caTotal12mForConseil = prefillForConseil.reduce(
+    (sum, l) => sum + (l.stats?.revenuTotal ?? 0), 0
+  )
+  const conseil = selectConseil({
+    hasLogement,
+    hasContract,
+    hasObjectif,
+    hasFormationStarted,
+    caTotal12m: caTotal12mForConseil,
+    monthIndex: now.getMonth(),
+    daysSinceLastContract: null,
+    upcomingArrivalsCount: weekArrivals.length,
+  })
   const setupSteps: SetupStep[] = [
     {
       key: 'account', label: 'Ton compte est créé',
@@ -372,6 +393,9 @@ export default async function DashboardPage() {
 
         {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
         <SetupChecklist userId={userId} steps={setupSteps} />
+
+        {/* ── Conseil du moment : 1 règle contextuelle prioritaire ────── */}
+        <ConseilDuMoment conseil={conseil} />
 
         {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
         <section style={s.welcome} className="fade-up dash-welcome">
