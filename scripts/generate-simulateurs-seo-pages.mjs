@@ -14,6 +14,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { SIMULATOR_CSS, SIMULATOR_MAP } from './lib/simulator-widgets.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -22,18 +23,18 @@ const ROOT = path.resolve(__dirname, '..')
 const PAGES = [
   {
     slug: 'fiscalite-micro-bic',
-    title: 'Simulateur fiscalité micro-BIC LCD : abattement 30 % ou 71 %, plafonds 2026',
-    metaDesc: 'Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 71 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.',
+    title: 'Simulateur fiscalité micro-BIC LCD : abattement 30 % ou 50 %, plafonds 2026',
+    metaDesc: 'Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 50 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.',
     canonical: 'https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic',
     appPath: '/dashboard/simulateurs?tab=fiscal',
     heroLabel: 'Outil gratuit · Fiscalité LCD',
     heroH1Top: 'Simulateur fiscalité',
     heroH1Em: 'micro-BIC pour la LCD',
-    heroSub: "Calcule ta base imposable en quelques secondes selon ton chiffre d'affaires et le classement Atout France. Identifie l'économie réelle d'un classement (abattement 71 % au lieu de 30 %), vérifie que tu restes sous le plafond du micro et compare avec le régime réel simplifié.",
+    heroSub: "Calcule ta base imposable en quelques secondes selon ton chiffre d'affaires et le classement Atout France. Identifie l'économie réelle d'un classement (abattement 50 % au lieu de 30 %), vérifie que tu restes sous le plafond du micro et compare avec le régime réel simplifié.",
     metaBadges: [
       { icon: 'currency-eur', text: 'CA jusqu\'à 100 k€' },
       { icon: 'gauge', text: 'Plafonds 15 k€ / 77,7 k€' },
-      { icon: 'percent', text: 'Abattement 30 % / 71 %' },
+      { icon: 'percent', text: 'Abattement 30 % / 50 %' },
       { icon: 'check-circle', text: 'Conforme 2026' },
     ],
     intro: {
@@ -41,7 +42,7 @@ const PAGES = [
       h2Top: 'La fiscalité LCD',
       h2Em: "n'est pas qu'une question d'abattement",
       paras: [
-        "Sous le régime micro-BIC, ton bénéfice imposable est calculé en appliquant un abattement forfaitaire à ton chiffre d'affaires. Cet abattement vaut 30 % par défaut, 71 % si ton meublé est classé Atout France (1 à 5 étoiles) ou labellisé tourisme. La différence est massive : sur 40 000 € de CA, le bénéfice passe de 28 000 € à 11 600 €, soit 16 400 € de base en moins.",
+        "Sous le régime micro-BIC, ton bénéfice imposable est calculé en appliquant un abattement forfaitaire à ton chiffre d'affaires. Cet abattement vaut 30 % par défaut, 50 % si ton meublé est classé Atout France (1 à 5 étoiles) ou labellisé tourisme. La différence est massive : sur 40 000 € de CA, le bénéfice passe de 28 000 € à 11 600 €, soit 16 400 € de base en moins.",
         "Mais ce n'est pas la seule variable. Tu as deux plafonds à surveiller (15 000 € pour les meublés non classés depuis 2025, 77 700 € pour les meublés classés et chambres d'hôtes), une option pour le versement libératoire (sous condition de RFR), et le choix de basculer vers le régime réel simplifié si tes charges réelles dépassent l'abattement.",
         "Ce simulateur fait tous ces calculs d'un coup et te dit : ton bénéfice imposable, ton impôt sur le revenu approximatif, ton économie en cas de classement, et si tu devrais envisager le réel.",
       ],
@@ -59,7 +60,7 @@ const PAGES = [
       items: [
         {
           h: 'Base imposable',
-          desc: "Base = CA × (1 − abattement). L'abattement est de 30 % pour un meublé non classé, 71 % pour un meublé classé Atout France ou labellisé tourisme. Minimum 305 € d'abattement, sinon CA entier imposé.",
+          desc: "Base = CA × (1 − abattement). L'abattement est de 30 % pour un meublé non classé, 50 % pour un meublé classé Atout France ou labellisé tourisme. Minimum 305 € d'abattement, sinon CA entier imposé.",
         },
         {
           h: 'Plafond micro-BIC',
@@ -88,7 +89,7 @@ const PAGES = [
           titre: 'Studio classé 3★ à 14 000 € de CA',
           steps: [
             'CA annuel : 14 000 €',
-            "Classement Atout France 3★ → abattement 71 %",
+            "Classement Atout France 3★ → abattement 50 %",
             'Base imposable : 14 000 × 29 % = 4 060 €',
             "TMI 30 % → IR estimé : 1 218 €",
             'Sans classement (abattement 30 %) : IR aurait été 2 940 €',
@@ -104,7 +105,7 @@ const PAGES = [
             "Charges réelles déductibles estimées : 9 500 € (intérêts crédit, copro, eau, ménage, amortissement mobilier)",
             'Bénéfice réel : 12 500 €',
             'IR (TMI 30 %) : 3 750 €',
-            "Avec classement 71 % et passage en chambre d'hôtes ou meublé classé : base aurait été 6 380 €, IR 1 914 €",
+            "Avec classement 50 % et passage en chambre d'hôtes ou meublé classé : base aurait été 6 380 €, IR 1 914 €",
             "Conseil simulateur : envisager le classement pour rester en micro avec plafond 77,7 k€",
           ],
         },
@@ -112,7 +113,7 @@ const PAGES = [
           titre: 'Maison classée 4★ à 65 000 € de CA',
           steps: [
             'CA annuel : 65 000 €',
-            "Classement Atout France 4★ → abattement 71 %",
+            "Classement Atout France 4★ → abattement 50 %",
             'Base imposable : 65 000 × 29 % = 18 850 €',
             "TMI 30 % → IR estimé : 5 655 €",
             'Cotisations sociales TNS (URSSAF) : ~22 % du bénéfice si dépassement seuil 23 000 €',
@@ -125,11 +126,11 @@ const PAGES = [
     faq: [
       {
         q: 'Quel abattement micro-BIC en 2026 pour la location courte durée ?',
-        a: "30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 71 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 77 700 €). Les chambres d'hôtes restent à 71 % avec plafond 77 700 €.",
+        a: "30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 50 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 77 700 €). Les chambres d'hôtes sont passées à 50 % (décision CE du 16/09/2025) avec plafond 77 700 €.",
       },
       {
-        q: "Comment se faire classer Atout France pour bénéficier de l'abattement 71 % ?",
-        a: "Tu mandates un organisme agréé (Cofrac), il fait l'inspection sur place (15 critères qualité), tu reçois ton classement officiel valable 5 ans. Coût moyen : 200 à 400 € selon la taille du logement. Le classement s'active immédiatement, l'abattement 71 % s'applique sur le CA de l'année.",
+        q: "Comment se faire classer Atout France pour bénéficier de l'abattement 50 % ?",
+        a: "Tu mandates un organisme agréé (Cofrac), il fait l'inspection sur place (15 critères qualité), tu reçois ton classement officiel valable 5 ans. Coût moyen : 200 à 400 € selon la taille du logement. Le classement s'active immédiatement, l'abattement 50 % s'applique sur le CA de l'année.",
       },
       {
         q: "Le micro-BIC est-il toujours plus avantageux que le réel simplifié ?",
@@ -370,7 +371,7 @@ const PAGES = [
             "Commission OTAs 12 % (mix réservations directes via Driing), charges courantes 6 800 €/an",
             "Revenu net annuel : 34 925 × 0,88 − 6 800 = 23 934 €",
             "Cash-flow mensuel : (34 925 × 0,88 / 12) − 1 549 − (6 800 / 12) = 414 €",
-            "Rentabilité nette nette : (23 934 − impôt classé 71 % ~2 100 €) / 415 000 € = 5,3 %",
+            "Rentabilité nette nette : (23 934 − impôt classé 50 % ~2 100 €) / 415 000 € = 5,3 %",
             "Verdict : excellent dossier, cash-flow solide, classement Atout France indispensable pour optimiser",
           ],
         },
@@ -391,7 +392,7 @@ const PAGES = [
       },
       {
         q: "La commission Airbnb / Booking est-elle déductible ?",
-        a: "Oui. Toute commission OTAs (Airbnb, Booking, Vrbo, Expedia, et autres) est déductible en régime réel. Au micro-BIC, elle est intégrée dans l'abattement forfaitaire (30 ou 71 %). Le simulateur permet de paramétrer une commission moyenne pour modéliser ton mix OTAs vs réservations directes (via Driing par exemple).",
+        a: "Oui. Toute commission OTAs (Airbnb, Booking, Vrbo, Expedia, et autres) est déductible en régime réel. Au micro-BIC, elle est intégrée dans l'abattement forfaitaire (30 ou 50 %). Le simulateur permet de paramétrer une commission moyenne pour modéliser ton mix OTAs vs réservations directes (via Driing par exemple).",
       },
       {
         q: "Quel cash-flow minimum pour qu'un bien LCD soit viable ?",
@@ -569,6 +570,9 @@ function buildPage(p) {
     creator: { '@type': 'Person', name: 'Jason Marinho', url: 'https://jasonmarinho.com' },
   }
 
+  // Widget simulateur interactif spécifique à la page
+  const widget = SIMULATOR_MAP[p.slug] ? SIMULATOR_MAP[p.slug]() : { html: '', script: '' }
+
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -665,6 +669,7 @@ function buildPage(p) {
     .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
     .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
     .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+${SIMULATOR_CSS}
   </style>
   <script type="application/ld+json">${JSON.stringify(ldApp)}</script>
   <script type="application/ld+json" data-schema-bc>${JSON.stringify(ldBc)}</script>
@@ -691,7 +696,13 @@ function buildPage(p) {
   </div>
 </header>
 
-<section class="sec">
+<section class="sec" style="padding-top:clamp(32px,4vw,48px);padding-bottom:0">
+  <div class="s-in">
+    ${widget.html}
+  </div>
+</section>
+
+<section class="sec" id="explication">
   <div class="s-in">
     <div class="two-col">
       <div>
@@ -790,6 +801,7 @@ function buildPage(p) {
 </section>
 
 <script defer src="/footer.js"></script>
+<script>${widget.script}</script>
 </body>
 </html>
 `

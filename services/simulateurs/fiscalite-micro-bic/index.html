@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulateur fiscalité micro-BIC LCD : abattement 30 % ou 71 %, plafonds 2026 | Jason Marinho</title>
-  <meta name="description" content="Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 71 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.">
+  <title>Simulateur fiscalité micro-BIC LCD : abattement 30 % ou 50 %, plafonds 2026 | Jason Marinho</title>
+  <meta name="description" content="Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 50 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.">
   <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic">
-  <meta property="og:title" content="Simulateur fiscalité micro-BIC LCD : abattement 30 % ou 71 %, plafonds 2026">
-  <meta property="og:description" content="Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 71 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.">
+  <meta property="og:title" content="Simulateur fiscalité micro-BIC LCD : abattement 30 % ou 50 %, plafonds 2026">
+  <meta property="og:description" content="Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 50 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.">
   <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic">
   <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
   <meta property="og:image:width" content="1200">
@@ -94,10 +94,203 @@
     .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
     .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
     .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+
+.sim-widget{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(20px,3vw,32px);
+  background:linear-gradient(160deg,#fff 0%,#FBFAF6 100%);
+  border:1px solid rgba(0,76,63,.12);
+  border-radius:20px;
+  padding:clamp(22px,3vw,36px);
+  margin:clamp(28px,4vw,40px) 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 18px 48px -24px rgba(0,76,63,.18);
+  position:relative;overflow:hidden;
+}
+.sim-widget::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 0%,rgba(255,213,107,.10),transparent 70%);
+  pointer-events:none;
+}
+.sim-widget > *{position:relative;z-index:1}
+
+@media (max-width:780px){
+  .sim-widget{grid-template-columns:1fr;gap:24px}
+}
+
+.sim-head{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g);margin-bottom:6px;
+}
+.sim-head-pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 0 4px rgba(0,76,63,.12);
+  animation:simPulse 2s ease-in-out infinite;
+}
+@keyframes simPulse{
+  0%,100%{box-shadow:0 0 0 4px rgba(0,76,63,.12)}
+  50%{box-shadow:0 0 0 8px rgba(0,76,63,.04)}
+}
+
+.sim-inputs{display:flex;flex-direction:column;gap:18px}
+.sim-results{
+  display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);
+  border-radius:14px;padding:clamp(20px,2.5vw,26px);
+  color:#fff;position:relative;overflow:hidden;
+}
+.sim-results::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 100%,rgba(255,213,107,.06),transparent 70%);
+  pointer-events:none;
+}
+.sim-results > *{position:relative;z-index:1}
+
+.sim-title{
+  font-family:'Fraunces',serif;font-size:20px;line-height:1.2;font-weight:400;
+  letter-spacing:-.01em;color:var(--td);margin:0 0 14px;
+}
+.sim-title em{color:var(--g);font-style:italic;font-weight:300}
+
+.sim-field{display:flex;flex-direction:column;gap:10px}
+.sim-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(0,76,63,.65);
+}
+.sim-label-val{
+  font-family:'Fraunces',serif;font-size:16px;font-weight:500;
+  color:var(--g);letter-spacing:-.01em;text-transform:none;
+}
+
+.sim-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:6px;border-radius:3px;
+  background:linear-gradient(90deg,var(--g) 0%,var(--g) var(--pct,0%),rgba(0,76,63,.10) var(--pct,0%),rgba(0,76,63,.10) 100%);
+  outline:none;cursor:pointer;
+}
+.sim-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--y);border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+  transition:transform .15s;
+}
+.sim-range::-webkit-slider-thumb:hover{transform:scale(1.10)}
+.sim-range::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;background:var(--y);
+  border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+}
+
+.sim-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sim-chip{
+  flex:1;min-width:0;padding:11px 14px;
+  font-size:13px;font-weight:500;color:var(--tm);
+  background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  cursor:pointer;text-align:center;
+  transition:all .18s cubic-bezier(.4,0,.2,1);
+  font-family:'Outfit',sans-serif;
+}
+.sim-chip:hover{border-color:var(--g);color:var(--g);background:rgba(0,76,63,.03)}
+.sim-chip.on{
+  background:linear-gradient(135deg,var(--g) 0%,var(--gm) 100%);color:#fff;
+  border-color:var(--g);font-weight:600;
+  box-shadow:0 4px 14px rgba(0,76,63,.22);
+}
+
+.sim-num{
+  width:100%;padding:13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;font-family:'Outfit',sans-serif;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-num:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-num::-webkit-outer-spin-button,
+.sim-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sim-num[type=number]{-moz-appearance:textfield}
+
+.sim-select{
+  width:100%;padding:13px 38px 13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;cursor:pointer;font-family:'Outfit',sans-serif;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23004C3F' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;background-size:14px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-select:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-select option{background:#fff;color:var(--td)}
+
+.sim-out{
+  display:flex;flex-direction:column;gap:4px;
+  padding:16px 18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,213,107,.12);
+  border-radius:12px;
+  transition:border-color .2s,background .2s;
+}
+.sim-out.primary{
+  background:linear-gradient(135deg,rgba(255,213,107,.10) 0%,rgba(255,213,107,.03) 100%);
+  border-color:rgba(255,213,107,.30);
+}
+.sim-out-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,213,107,.7);
+}
+.sim-out-value{
+  font-family:'Fraunces',serif;font-size:clamp(22px,2.4vw,28px);font-weight:500;
+  color:#fff;letter-spacing:-.01em;line-height:1.2;
+}
+.sim-out.primary .sim-out-value{color:var(--y)}
+.sim-out-value.alert{color:#FCA5A5}
+.sim-out-value.success{color:#A7F3B7}
+.sim-out-sub{font-size:12px;color:rgba(255,255,255,.55);line-height:1.4}
+
+.sim-cta-row{
+  display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;
+}
+.sim-cta-row a{
+  flex:1;min-width:160px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:12px 18px;border-radius:10px;
+  font-size:13.5px;font-weight:600;
+  text-decoration:none;
+  transition:all .2s;
+  font-family:'Outfit',sans-serif;
+}
+.sim-cta-primary{
+  background:var(--y);color:var(--gd);
+  box-shadow:0 4px 14px rgba(255,213,107,.22);
+}
+.sim-cta-primary:hover{
+  background:#ffe08f;transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(255,213,107,.30);
+}
+.sim-cta-ghost{
+  background:transparent;color:rgba(255,255,255,.78);
+  border:1px solid rgba(255,255,255,.18);
+}
+.sim-cta-ghost:hover{border-color:rgba(255,255,255,.4);color:#fff}
+
+.sim-hint{
+  font-size:12px;color:rgba(0,76,63,.55);line-height:1.5;
+  padding:10px 12px;background:rgba(0,76,63,.04);
+  border-left:2px solid var(--g);border-radius:0 8px 8px 0;
+}
+.sim-hint strong{color:var(--g)}
+
   </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur fiscalité micro-BIC pour la LCD","description":"Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 71 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.","url":"https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur fiscalité micro-BIC pour la LCD","description":"Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 50 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.","url":"https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
   <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Simulateur fiscalité micro-BIC pour la LCD","item":"https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic"}]}</script>
-  <script type="application/ld+json" data-schema-faq>{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quel abattement micro-BIC en 2026 pour la location courte durée ?","acceptedAnswer":{"@type":"Answer","text":"30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 71 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 77 700 €). Les chambres d'hôtes restent à 71 % avec plafond 77 700 €."}},{"@type":"Question","name":"Comment se faire classer Atout France pour bénéficier de l'abattement 71 % ?","acceptedAnswer":{"@type":"Answer","text":"Tu mandates un organisme agréé (Cofrac), il fait l'inspection sur place (15 critères qualité), tu reçois ton classement officiel valable 5 ans. Coût moyen : 200 à 400 € selon la taille du logement. Le classement s'active immédiatement, l'abattement 71 % s'applique sur le CA de l'année."}},{"@type":"Question","name":"Le micro-BIC est-il toujours plus avantageux que le réel simplifié ?","acceptedAnswer":{"@type":"Answer","text":"Non. Si tes charges déductibles réelles (intérêts d'emprunt, amortissement du mobilier, copropriété, eau, assurance, frais de ménage, abonnements iCal) dépassent l'abattement forfaitaire, le réel est plus avantageux. C'est souvent le cas pour les hôtes avec crédit immobilier en cours."}},{"@type":"Question","name":"Qu'est-ce que le versement libératoire et qui peut en profiter ?","acceptedAnswer":{"@type":"Answer","text":"C'est une option qui te permet de payer ton IR au fil de l'eau avec un taux fixe (1 % du CA en LCD classé, 1,7 % en non classé). Tu y as droit si le RFR du foyer fiscal de l'avant-dernière année est sous 27 478 € (1 part), 54 956 € (2 parts) ou 82 434 € (3 parts). Avantage : c'est définitif, pas de régularisation en mai."}},{"@type":"Question","name":"Que se passe-t-il si je dépasse le plafond du micro-BIC en cours d'année ?","acceptedAnswer":{"@type":"Answer","text":"Tu bascules automatiquement au régime réel simplifié dès l'année suivante (ou immédiatement si dépassement du plafond majoré sur 2 ans consécutifs). Plus de bénéfice de l'abattement forfaitaire, mais tu déduis toutes tes charges réelles, ce qui peut être beaucoup plus avantageux selon ton profil."}},{"@type":"Question","name":"Faut-il déclarer ses revenus LCD même en dessous de 15 000 € ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Tout revenu LCD doit être déclaré, peu importe le montant. La case 5ND (BIC pro non pros) ou 5NP (BIC pros) de ta 2042-C-PRO selon ton statut LMNP / LMP. L'oubli déclenche des redressements URSSAF + DGFiP avec intérêts de retard."}}]}</script>
+  <script type="application/ld+json" data-schema-faq>{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quel abattement micro-BIC en 2026 pour la location courte durée ?","acceptedAnswer":{"@type":"Answer","text":"30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 50 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 77 700 €). Les chambres d'hôtes sont passées à 50 % (décision CE du 16/09/2025) avec plafond 77 700 €."}},{"@type":"Question","name":"Comment se faire classer Atout France pour bénéficier de l'abattement 50 % ?","acceptedAnswer":{"@type":"Answer","text":"Tu mandates un organisme agréé (Cofrac), il fait l'inspection sur place (15 critères qualité), tu reçois ton classement officiel valable 5 ans. Coût moyen : 200 à 400 € selon la taille du logement. Le classement s'active immédiatement, l'abattement 50 % s'applique sur le CA de l'année."}},{"@type":"Question","name":"Le micro-BIC est-il toujours plus avantageux que le réel simplifié ?","acceptedAnswer":{"@type":"Answer","text":"Non. Si tes charges déductibles réelles (intérêts d'emprunt, amortissement du mobilier, copropriété, eau, assurance, frais de ménage, abonnements iCal) dépassent l'abattement forfaitaire, le réel est plus avantageux. C'est souvent le cas pour les hôtes avec crédit immobilier en cours."}},{"@type":"Question","name":"Qu'est-ce que le versement libératoire et qui peut en profiter ?","acceptedAnswer":{"@type":"Answer","text":"C'est une option qui te permet de payer ton IR au fil de l'eau avec un taux fixe (1 % du CA en LCD classé, 1,7 % en non classé). Tu y as droit si le RFR du foyer fiscal de l'avant-dernière année est sous 27 478 € (1 part), 54 956 € (2 parts) ou 82 434 € (3 parts). Avantage : c'est définitif, pas de régularisation en mai."}},{"@type":"Question","name":"Que se passe-t-il si je dépasse le plafond du micro-BIC en cours d'année ?","acceptedAnswer":{"@type":"Answer","text":"Tu bascules automatiquement au régime réel simplifié dès l'année suivante (ou immédiatement si dépassement du plafond majoré sur 2 ans consécutifs). Plus de bénéfice de l'abattement forfaitaire, mais tu déduis toutes tes charges réelles, ce qui peut être beaucoup plus avantageux selon ton profil."}},{"@type":"Question","name":"Faut-il déclarer ses revenus LCD même en dessous de 15 000 € ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Tout revenu LCD doit être déclaré, peu importe le montant. La case 5ND (BIC pro non pros) ou 5NP (BIC pros) de ta 2042-C-PRO selon ton statut LMNP / LMP. L'oubli déclenche des redressements URSSAF + DGFiP avec intérêts de retard."}}]}</script>
   <script defer src="/nav.js"></script>
 </head>
 <body>
@@ -109,11 +302,11 @@
     </div>
     <div class="lbl">Outil gratuit · Fiscalité LCD</div>
     <h1 class="h1">Simulateur fiscalité<br><em>micro-BIC pour la LCD</em></h1>
-    <p class="sub">Calcule ta base imposable en quelques secondes selon ton chiffre d&#39;affaires et le classement Atout France. Identifie l&#39;économie réelle d&#39;un classement (abattement 71 % au lieu de 30 %), vérifie que tu restes sous le plafond du micro et compare avec le régime réel simplifié.</p>
+    <p class="sub">Calcule ta base imposable en quelques secondes selon ton chiffre d&#39;affaires et le classement Atout France. Identifie l&#39;économie réelle d&#39;un classement (abattement 50 % au lieu de 30 %), vérifie que tu restes sous le plafond du micro et compare avec le régime réel simplifié.</p>
     <div class="meta-row">
       <div class="meta-bd"><i class="ph ph-currency-eur"></i> CA jusqu&#39;à 100 k€</div>
       <div class="meta-bd"><i class="ph ph-gauge"></i> Plafonds 15 k€ / 77,7 k€</div>
-      <div class="meta-bd"><i class="ph ph-percent"></i> Abattement 30 % / 71 %</div>
+      <div class="meta-bd"><i class="ph ph-percent"></i> Abattement 30 % / 50 %</div>
       <div class="meta-bd"><i class="ph ph-check-circle"></i> Conforme 2026</div>
     </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
@@ -123,13 +316,74 @@
   </div>
 </header>
 
-<section class="sec">
+<section class="sec" style="padding-top:clamp(32px,4vw,48px);padding-bottom:0">
+  <div class="s-in">
+    
+<div class="sim-widget" id="sim-fisc">
+  <div class="sim-inputs">
+    <div class="sim-head"><span class="sim-head-pulse"></span>Simulateur en direct</div>
+    <h3 class="sim-title">Calcule ton <em>impôt micro-BIC</em></h3>
+
+    <div class="sim-field">
+      <div class="sim-label">Chiffre d'affaires LCD <span class="sim-label-val" id="fsc-ca-v">30 000 €</span></div>
+      <input type="range" class="sim-range" id="fsc-ca" min="0" max="120000" step="500" value="30000">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Régime du meublé</div>
+      <div class="sim-chips" id="fsc-reg">
+        <button type="button" class="sim-chip on" data-v="nonClasse">Non classé</button>
+        <button type="button" class="sim-chip" data-v="classe">Classé Atout France</button>
+        <button type="button" class="sim-chip" data-v="cdh">Chambres d'hôtes</button>
+      </div>
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Tranche d'imposition (TMI)</div>
+      <div class="sim-chips" id="fsc-tmi">
+        <button type="button" class="sim-chip" data-v="11">11 %</button>
+        <button type="button" class="sim-chip on" data-v="30">30 %</button>
+        <button type="button" class="sim-chip" data-v="41">41 %</button>
+      </div>
+    </div>
+
+    <div class="sim-hint" id="fsc-hint">
+      Les valeurs reposent sur la <strong>loi Le Meur (2025+)</strong> : abattement 30 % / 50 %, plafonds 15 000 € / 77 700 €.
+    </div>
+  </div>
+
+  <div class="sim-results">
+    <div class="sim-out primary">
+      <div class="sim-out-label">Base imposable</div>
+      <div class="sim-out-value" id="fsc-out-base">21 000 €</div>
+      <div class="sim-out-sub" id="fsc-out-base-sub">Abattement 30 % sur 30 000 €</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Impôt sur le revenu estimé</div>
+      <div class="sim-out-value" id="fsc-out-ir">6 300 €</div>
+      <div class="sim-out-sub">à ton TMI sélectionné</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Statut plafond</div>
+      <div class="sim-out-value" id="fsc-out-plafond">À surveiller</div>
+      <div class="sim-out-sub" id="fsc-out-plafond-sub">CA / plafond du régime choisi</div>
+    </div>
+    <div class="sim-cta-row">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#fiscal" class="sim-cta-primary">Préfile avec mes logements <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <a href="#explication" class="sim-cta-ghost">Comprendre le calcul</a>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
+
+<section class="sec" id="explication">
   <div class="s-in">
     <div class="two-col">
       <div>
         <div class="lbl dk">Pourquoi cet outil</div>
         <h2 class="h2">La fiscalité LCD<br><em>n&#39;est pas qu&#39;une question d&#39;abattement</em></h2>
-        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Sous le régime micro-BIC, ton bénéfice imposable est calculé en appliquant un abattement forfaitaire à ton chiffre d&#39;affaires. Cet abattement vaut 30 % par défaut, 71 % si ton meublé est classé Atout France (1 à 5 étoiles) ou labellisé tourisme. La différence est massive : sur 40 000 € de CA, le bénéfice passe de 28 000 € à 11 600 €, soit 16 400 € de base en moins.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Sous le régime micro-BIC, ton bénéfice imposable est calculé en appliquant un abattement forfaitaire à ton chiffre d&#39;affaires. Cet abattement vaut 30 % par défaut, 50 % si ton meublé est classé Atout France (1 à 5 étoiles) ou labellisé tourisme. La différence est massive : sur 40 000 € de CA, le bénéfice passe de 28 000 € à 11 600 €, soit 16 400 € de base en moins.</p>
         <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Mais ce n&#39;est pas la seule variable. Tu as deux plafonds à surveiller (15 000 € pour les meublés non classés depuis 2025, 77 700 € pour les meublés classés et chambres d&#39;hôtes), une option pour le versement libératoire (sous condition de RFR), et le choix de basculer vers le régime réel simplifié si tes charges réelles dépassent l&#39;abattement.</p>
         <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Ce simulateur fait tous ces calculs d&#39;un coup et te dit : ton bénéfice imposable, ton impôt sur le revenu approximatif, ton économie en cas de classement, et si tu devrais envisager le réel.</p>
       </div>
@@ -153,7 +407,7 @@
     <div class="lbl dk">Comment ça se calcule</div>
     <h2 class="h2">Formules officielles <em>utilisées par le simulateur</em></h2>
     <div class="item-grid">
-      <div class="item-card"><h3 class="h3">Base imposable</h3><p>Base = CA × (1 − abattement). L&#39;abattement est de 30 % pour un meublé non classé, 71 % pour un meublé classé Atout France ou labellisé tourisme. Minimum 305 € d&#39;abattement, sinon CA entier imposé.</p></div>
+      <div class="item-card"><h3 class="h3">Base imposable</h3><p>Base = CA × (1 − abattement). L&#39;abattement est de 30 % pour un meublé non classé, 50 % pour un meublé classé Atout France ou labellisé tourisme. Minimum 305 € d&#39;abattement, sinon CA entier imposé.</p></div>
       <div class="item-card"><h3 class="h3">Plafond micro-BIC</h3><p>Tu dois rester sous 15 000 € de CA pour un meublé non classé (depuis 2025, loi de finances), 77 700 € pour un meublé classé et chambres d&#39;hôtes. Au-dessus, bascule automatique au réel.</p></div>
       <div class="item-card"><h3 class="h3">Impôt sur le revenu</h3><p>IR = Base × TMI. Le TMI dépend de ton revenu imposable global et de ton quotient familial. Les tranches 2026 retenues : 0 %, 11 %, 30 %, 41 %, 45 %.</p></div>
       <div class="item-card"><h3 class="h3">Versement libératoire</h3><p>Option ouverte si RFR du foyer ≤ 27 478 € (1 part), 54 956 € (2 parts), 82 434 € (3 parts). Taux fixe 1 % du CA en LCD classé, qui solde IR + cotisations forfaitaires.</p></div>
@@ -167,9 +421,9 @@
     <div class="lbl dk">Cas pratiques</div>
     <h2 class="h2">3 scénarios <em>avec chiffres concrets</em></h2>
     <div class="case-list">
-      <article class="case"><h3 class="case-t">Studio classé 3★ à 14 000 € de CA</h3><ol><li>CA annuel : 14 000 €</li><li>Classement Atout France 3★ → abattement 71 %</li><li>Base imposable : 14 000 × 29 % = 4 060 €</li><li>TMI 30 % → IR estimé : 1 218 €</li><li>Sans classement (abattement 30 %) : IR aurait été 2 940 €</li><li>Gain net du classement : 1 722 €/an, sur ~250 € de frais de classement (rentabilisé en 2 mois)</li></ol></article>
-      <article class="case"><h3 class="case-t">T2 non classé à 22 000 € de CA</h3><ol><li>CA annuel : 22 000 €</li><li>Meublé non classé → plafond micro 15 000 € dépassé</li><li>Bascule automatique au régime réel simplifié</li><li>Charges réelles déductibles estimées : 9 500 € (intérêts crédit, copro, eau, ménage, amortissement mobilier)</li><li>Bénéfice réel : 12 500 €</li><li>IR (TMI 30 %) : 3 750 €</li><li>Avec classement 71 % et passage en chambre d&#39;hôtes ou meublé classé : base aurait été 6 380 €, IR 1 914 €</li><li>Conseil simulateur : envisager le classement pour rester en micro avec plafond 77,7 k€</li></ol></article>
-      <article class="case"><h3 class="case-t">Maison classée 4★ à 65 000 € de CA</h3><ol><li>CA annuel : 65 000 €</li><li>Classement Atout France 4★ → abattement 71 %</li><li>Base imposable : 65 000 × 29 % = 18 850 €</li><li>TMI 30 % → IR estimé : 5 655 €</li><li>Cotisations sociales TNS (URSSAF) : ~22 % du bénéfice si dépassement seuil 23 000 €</li><li>Avec versement libératoire 1 % (RFR foyer &lt; 54 956 € pour 2 parts) : 650 € de plus à payer mais solde IR + cotisations forfaitaires</li><li>Conseil simulateur : si TMI 30 %+ et RFR éligible, le versement libératoire est presque toujours gagnant</li></ol></article>
+      <article class="case"><h3 class="case-t">Studio classé 3★ à 14 000 € de CA</h3><ol><li>CA annuel : 14 000 €</li><li>Classement Atout France 3★ → abattement 50 %</li><li>Base imposable : 14 000 × 29 % = 4 060 €</li><li>TMI 30 % → IR estimé : 1 218 €</li><li>Sans classement (abattement 30 %) : IR aurait été 2 940 €</li><li>Gain net du classement : 1 722 €/an, sur ~250 € de frais de classement (rentabilisé en 2 mois)</li></ol></article>
+      <article class="case"><h3 class="case-t">T2 non classé à 22 000 € de CA</h3><ol><li>CA annuel : 22 000 €</li><li>Meublé non classé → plafond micro 15 000 € dépassé</li><li>Bascule automatique au régime réel simplifié</li><li>Charges réelles déductibles estimées : 9 500 € (intérêts crédit, copro, eau, ménage, amortissement mobilier)</li><li>Bénéfice réel : 12 500 €</li><li>IR (TMI 30 %) : 3 750 €</li><li>Avec classement 50 % et passage en chambre d&#39;hôtes ou meublé classé : base aurait été 6 380 €, IR 1 914 €</li><li>Conseil simulateur : envisager le classement pour rester en micro avec plafond 77,7 k€</li></ol></article>
+      <article class="case"><h3 class="case-t">Maison classée 4★ à 65 000 € de CA</h3><ol><li>CA annuel : 65 000 €</li><li>Classement Atout France 4★ → abattement 50 %</li><li>Base imposable : 65 000 × 29 % = 18 850 €</li><li>TMI 30 % → IR estimé : 5 655 €</li><li>Cotisations sociales TNS (URSSAF) : ~22 % du bénéfice si dépassement seuil 23 000 €</li><li>Avec versement libératoire 1 % (RFR foyer &lt; 54 956 € pour 2 parts) : 650 € de plus à payer mais solde IR + cotisations forfaitaires</li><li>Conseil simulateur : si TMI 30 %+ et RFR éligible, le versement libératoire est presque toujours gagnant</li></ol></article>
     </div>
   </div>
 </section>
@@ -179,8 +433,8 @@
     <div class="lbl dk">Questions fréquentes</div>
     <h2 class="h2">FAQ <em>simulateur</em></h2>
     <div class="faq-list">
-      <details class="faq-it"><summary>Quel abattement micro-BIC en 2026 pour la location courte durée ?</summary><p>30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 71 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 77 700 €). Les chambres d&#39;hôtes restent à 71 % avec plafond 77 700 €.</p></details>
-      <details class="faq-it"><summary>Comment se faire classer Atout France pour bénéficier de l&#39;abattement 71 % ?</summary><p>Tu mandates un organisme agréé (Cofrac), il fait l&#39;inspection sur place (15 critères qualité), tu reçois ton classement officiel valable 5 ans. Coût moyen : 200 à 400 € selon la taille du logement. Le classement s&#39;active immédiatement, l&#39;abattement 71 % s&#39;applique sur le CA de l&#39;année.</p></details>
+      <details class="faq-it"><summary>Quel abattement micro-BIC en 2026 pour la location courte durée ?</summary><p>30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 50 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 77 700 €). Les chambres d&#39;hôtes sont passées à 50 % (décision CE du 16/09/2025) avec plafond 77 700 €.</p></details>
+      <details class="faq-it"><summary>Comment se faire classer Atout France pour bénéficier de l&#39;abattement 50 % ?</summary><p>Tu mandates un organisme agréé (Cofrac), il fait l&#39;inspection sur place (15 critères qualité), tu reçois ton classement officiel valable 5 ans. Coût moyen : 200 à 400 € selon la taille du logement. Le classement s&#39;active immédiatement, l&#39;abattement 50 % s&#39;applique sur le CA de l&#39;année.</p></details>
       <details class="faq-it"><summary>Le micro-BIC est-il toujours plus avantageux que le réel simplifié ?</summary><p>Non. Si tes charges déductibles réelles (intérêts d&#39;emprunt, amortissement du mobilier, copropriété, eau, assurance, frais de ménage, abonnements iCal) dépassent l&#39;abattement forfaitaire, le réel est plus avantageux. C&#39;est souvent le cas pour les hôtes avec crédit immobilier en cours.</p></details>
       <details class="faq-it"><summary>Qu&#39;est-ce que le versement libératoire et qui peut en profiter ?</summary><p>C&#39;est une option qui te permet de payer ton IR au fil de l&#39;eau avec un taux fixe (1 % du CA en LCD classé, 1,7 % en non classé). Tu y as droit si le RFR du foyer fiscal de l&#39;avant-dernière année est sous 27 478 € (1 part), 54 956 € (2 parts) ou 82 434 € (3 parts). Avantage : c&#39;est définitif, pas de régularisation en mai.</p></details>
       <details class="faq-it"><summary>Que se passe-t-il si je dépasse le plafond du micro-BIC en cours d&#39;année ?</summary><p>Tu bascules automatiquement au régime réel simplifié dès l&#39;année suivante (ou immédiatement si dépassement du plafond majoré sur 2 ans consécutifs). Plus de bénéfice de l&#39;abattement forfaitaire, mais tu déduis toutes tes charges réelles, ce qui peut être beaucoup plus avantageux selon ton profil.</p></details>
@@ -238,5 +492,51 @@
 </section>
 
 <script defer src="/footer.js"></script>
+<script>
+(function(){
+  var P = {"nonClasse":{"abattement":0.3,"plafond":15000,"label":"Meublé non classé"},"classe":{"abattement":0.5,"plafond":77700,"label":"Meublé classé Atout France"},"cdh":{"abattement":0.5,"plafond":77700,"label":"Chambres d'hôtes"}};
+  var regime = 'nonClasse', tmi = 0.30;
+  var $ca = document.getElementById('fsc-ca');
+  var $caV = document.getElementById('fsc-ca-v');
+  var $base = document.getElementById('fsc-out-base');
+  var $baseSub = document.getElementById('fsc-out-base-sub');
+  var $ir = document.getElementById('fsc-out-ir');
+  var $pla = document.getElementById('fsc-out-plafond');
+  var $plaSub = document.getElementById('fsc-out-plafond-sub');
+  function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));}
+  function pct(n){return Math.round(n*100)+' %';}
+  function update(){
+    var ca = +$ca.value;
+    var r = P[regime];
+    var abat = r.abattement;
+    var base = Math.max(0, ca * (1 - abat));
+    var ir = base * tmi;
+    var sousPlafond = ca <= r.plafond;
+    $caV.textContent = fmt(ca);
+    $ca.style.setProperty('--pct', (ca/120000*100)+'%');
+    $base.textContent = fmt(base);
+    $baseSub.textContent = 'Abattement ' + pct(abat) + ' sur ' + fmt(ca);
+    $ir.textContent = fmt(ir);
+    $pla.textContent = sousPlafond ? 'Sous plafond' : 'Plafond dépassé';
+    $pla.className = 'sim-out-value ' + (sousPlafond ? 'success' : 'alert');
+    $plaSub.textContent = sousPlafond
+      ? 'CA ≤ ' + fmt(r.plafond) + ' (' + r.label + ')'
+      : 'CA > ' + fmt(r.plafond) + ' → bascule régime réel obligatoire';
+  }
+  $ca.addEventListener('input', update);
+  document.querySelectorAll('#fsc-reg .sim-chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      document.querySelectorAll('#fsc-reg .sim-chip').forEach(function(x){x.classList.remove('on')});
+      c.classList.add('on'); regime = c.dataset.v; update();
+    });
+  });
+  document.querySelectorAll('#fsc-tmi .sim-chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      document.querySelectorAll('#fsc-tmi .sim-chip').forEach(function(x){x.classList.remove('on')});
+      c.classList.add('on'); tmi = +c.dataset.v / 100; update();
+    });
+  });
+  update();
+})();</script>
 </body>
 </html>

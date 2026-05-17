@@ -94,6 +94,199 @@
     .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
     .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
     .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+
+.sim-widget{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(20px,3vw,32px);
+  background:linear-gradient(160deg,#fff 0%,#FBFAF6 100%);
+  border:1px solid rgba(0,76,63,.12);
+  border-radius:20px;
+  padding:clamp(22px,3vw,36px);
+  margin:clamp(28px,4vw,40px) 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 18px 48px -24px rgba(0,76,63,.18);
+  position:relative;overflow:hidden;
+}
+.sim-widget::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 0%,rgba(255,213,107,.10),transparent 70%);
+  pointer-events:none;
+}
+.sim-widget > *{position:relative;z-index:1}
+
+@media (max-width:780px){
+  .sim-widget{grid-template-columns:1fr;gap:24px}
+}
+
+.sim-head{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g);margin-bottom:6px;
+}
+.sim-head-pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 0 4px rgba(0,76,63,.12);
+  animation:simPulse 2s ease-in-out infinite;
+}
+@keyframes simPulse{
+  0%,100%{box-shadow:0 0 0 4px rgba(0,76,63,.12)}
+  50%{box-shadow:0 0 0 8px rgba(0,76,63,.04)}
+}
+
+.sim-inputs{display:flex;flex-direction:column;gap:18px}
+.sim-results{
+  display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);
+  border-radius:14px;padding:clamp(20px,2.5vw,26px);
+  color:#fff;position:relative;overflow:hidden;
+}
+.sim-results::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 100%,rgba(255,213,107,.06),transparent 70%);
+  pointer-events:none;
+}
+.sim-results > *{position:relative;z-index:1}
+
+.sim-title{
+  font-family:'Fraunces',serif;font-size:20px;line-height:1.2;font-weight:400;
+  letter-spacing:-.01em;color:var(--td);margin:0 0 14px;
+}
+.sim-title em{color:var(--g);font-style:italic;font-weight:300}
+
+.sim-field{display:flex;flex-direction:column;gap:10px}
+.sim-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(0,76,63,.65);
+}
+.sim-label-val{
+  font-family:'Fraunces',serif;font-size:16px;font-weight:500;
+  color:var(--g);letter-spacing:-.01em;text-transform:none;
+}
+
+.sim-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:6px;border-radius:3px;
+  background:linear-gradient(90deg,var(--g) 0%,var(--g) var(--pct,0%),rgba(0,76,63,.10) var(--pct,0%),rgba(0,76,63,.10) 100%);
+  outline:none;cursor:pointer;
+}
+.sim-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--y);border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+  transition:transform .15s;
+}
+.sim-range::-webkit-slider-thumb:hover{transform:scale(1.10)}
+.sim-range::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;background:var(--y);
+  border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+}
+
+.sim-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sim-chip{
+  flex:1;min-width:0;padding:11px 14px;
+  font-size:13px;font-weight:500;color:var(--tm);
+  background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  cursor:pointer;text-align:center;
+  transition:all .18s cubic-bezier(.4,0,.2,1);
+  font-family:'Outfit',sans-serif;
+}
+.sim-chip:hover{border-color:var(--g);color:var(--g);background:rgba(0,76,63,.03)}
+.sim-chip.on{
+  background:linear-gradient(135deg,var(--g) 0%,var(--gm) 100%);color:#fff;
+  border-color:var(--g);font-weight:600;
+  box-shadow:0 4px 14px rgba(0,76,63,.22);
+}
+
+.sim-num{
+  width:100%;padding:13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;font-family:'Outfit',sans-serif;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-num:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-num::-webkit-outer-spin-button,
+.sim-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sim-num[type=number]{-moz-appearance:textfield}
+
+.sim-select{
+  width:100%;padding:13px 38px 13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;cursor:pointer;font-family:'Outfit',sans-serif;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23004C3F' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;background-size:14px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-select:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-select option{background:#fff;color:var(--td)}
+
+.sim-out{
+  display:flex;flex-direction:column;gap:4px;
+  padding:16px 18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,213,107,.12);
+  border-radius:12px;
+  transition:border-color .2s,background .2s;
+}
+.sim-out.primary{
+  background:linear-gradient(135deg,rgba(255,213,107,.10) 0%,rgba(255,213,107,.03) 100%);
+  border-color:rgba(255,213,107,.30);
+}
+.sim-out-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,213,107,.7);
+}
+.sim-out-value{
+  font-family:'Fraunces',serif;font-size:clamp(22px,2.4vw,28px);font-weight:500;
+  color:#fff;letter-spacing:-.01em;line-height:1.2;
+}
+.sim-out.primary .sim-out-value{color:var(--y)}
+.sim-out-value.alert{color:#FCA5A5}
+.sim-out-value.success{color:#A7F3B7}
+.sim-out-sub{font-size:12px;color:rgba(255,255,255,.55);line-height:1.4}
+
+.sim-cta-row{
+  display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;
+}
+.sim-cta-row a{
+  flex:1;min-width:160px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:12px 18px;border-radius:10px;
+  font-size:13.5px;font-weight:600;
+  text-decoration:none;
+  transition:all .2s;
+  font-family:'Outfit',sans-serif;
+}
+.sim-cta-primary{
+  background:var(--y);color:var(--gd);
+  box-shadow:0 4px 14px rgba(255,213,107,.22);
+}
+.sim-cta-primary:hover{
+  background:#ffe08f;transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(255,213,107,.30);
+}
+.sim-cta-ghost{
+  background:transparent;color:rgba(255,255,255,.78);
+  border:1px solid rgba(255,255,255,.18);
+}
+.sim-cta-ghost:hover{border-color:rgba(255,255,255,.4);color:#fff}
+
+.sim-hint{
+  font-size:12px;color:rgba(0,76,63,.55);line-height:1.5;
+  padding:10px 12px;background:rgba(0,76,63,.04);
+  border-left:2px solid var(--g);border-radius:0 8px 8px 0;
+}
+.sim-hint strong{color:var(--g)}
+
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur EI vs SASU pour la LCD","description":"Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 30 %). Inclut protection sociale, retraite, charges déductibles. Pour hôtes LCD jusqu'à 150 k€ de bénéfice.","url":"https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
   <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Simulateur EI vs SASU pour la LCD","item":"https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu"}]}</script>
@@ -123,7 +316,60 @@
   </div>
 </header>
 
-<section class="sec">
+<section class="sec" style="padding-top:clamp(32px,4vw,48px);padding-bottom:0">
+  <div class="s-in">
+    
+<div class="sim-widget" id="sim-ei">
+  <div class="sim-inputs">
+    <div class="sim-head"><span class="sim-head-pulse"></span>Simulateur en direct</div>
+    <h3 class="sim-title">Compare <em>EI vs SASU</em></h3>
+
+    <div class="sim-field">
+      <div class="sim-label">Bénéfice annuel LCD <span class="sim-label-val" id="ei-b-v">40 000 €</span></div>
+      <input type="range" class="sim-range" id="ei-b" min="10000" max="150000" step="1000" value="40000">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Ta tranche d'imposition (TMI)</div>
+      <div class="sim-chips" id="ei-tmi">
+        <button type="button" class="sim-chip" data-v="11">11 %</button>
+        <button type="button" class="sim-chip on" data-v="30">30 %</button>
+        <button type="button" class="sim-chip" data-v="41">41 %</button>
+      </div>
+    </div>
+
+    <div class="sim-hint">
+      <strong>EI au réel</strong> : cotisations TNS ~42 % + IR sur le restant.
+      <strong>SASU 100 % dividendes</strong> : IS (15/25 %) + flat tax 30 %.
+    </div>
+  </div>
+
+  <div class="sim-results">
+    <div class="sim-out primary">
+      <div class="sim-out-label">Net en poche EI</div>
+      <div class="sim-out-value" id="ei-out-ei">16 240 €</div>
+      <div class="sim-out-sub">après TNS + IR au TMI sélectionné</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Net en poche SASU (100 % dividendes)</div>
+      <div class="sim-out-value" id="ei-out-sasu">23 800 €</div>
+      <div class="sim-out-sub">après IS + flat tax 30 %</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Écart en faveur de</div>
+      <div class="sim-out-value" id="ei-out-verdict">SASU + 7 560 €</div>
+      <div class="sim-out-sub" id="ei-out-verdict-sub">Attention : SASU = zéro cotisation retraite</div>
+    </div>
+    <div class="sim-cta-row">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#statut" class="sim-cta-primary">Préfile avec mes chiffres <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <a href="#explication" class="sim-cta-ghost">Voir les détails</a>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
+
+<section class="sec" id="explication">
   <div class="s-in">
     <div class="two-col">
       <div>
@@ -238,5 +484,54 @@
 </section>
 
 <script defer src="/footer.js"></script>
+<script>
+(function(){
+  var tmi = 0.30;
+  var IS_RED = 0.15, IS_NOR = 0.25, IS_SEUIL = 42500;
+  var FLAT = 0.3, COTIS_EI = 0.42;
+  var $b = document.getElementById('ei-b'), $bV = document.getElementById('ei-b-v');
+  var $ei = document.getElementById('ei-out-ei'), $sasu = document.getElementById('ei-out-sasu');
+  var $v = document.getElementById('ei-out-verdict'), $vSub = document.getElementById('ei-out-verdict-sub');
+  function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));}
+  function update(){
+    var b = +$b.value;
+    // EI
+    var cotis = b * COTIS_EI;
+    var imp = b - cotis;
+    var ir = imp * tmi;
+    var netEi = imp - ir;
+    // SASU 100% dividendes
+    var is = b <= IS_SEUIL ? b * IS_RED : (IS_SEUIL * IS_RED + (b - IS_SEUIL) * IS_NOR);
+    var resteApresIs = b - is;
+    var ft = resteApresIs * FLAT;
+    var netSasu = resteApresIs - ft;
+    var diff = netSasu - netEi;
+    $bV.textContent = fmt(b);
+    $b.style.setProperty('--pct', ((b-10000)/(150000-10000)*100)+'%');
+    $ei.textContent = fmt(netEi);
+    $sasu.textContent = fmt(netSasu);
+    if (Math.abs(diff) < 200) {
+      $v.textContent = 'Quasi équivalent';
+      $v.className = 'sim-out-value';
+      $vSub.textContent = "Choix selon ta protection sociale";
+    } else if (diff > 0) {
+      $v.textContent = 'SASU + ' + fmt(diff);
+      $v.className = 'sim-out-value success';
+      $vSub.textContent = 'Attention : SASU = zéro cotisation retraite';
+    } else {
+      $v.textContent = 'EI + ' + fmt(-diff);
+      $v.className = 'sim-out-value success';
+      $vSub.textContent = 'EI = couverture sociale incluse';
+    }
+  }
+  $b.addEventListener('input', update);
+  document.querySelectorAll('#ei-tmi .sim-chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      document.querySelectorAll('#ei-tmi .sim-chip').forEach(function(x){x.classList.remove('on')});
+      c.classList.add('on'); tmi = +c.dataset.v / 100; update();
+    });
+  });
+  update();
+})();</script>
 </body>
 </html>
