@@ -620,9 +620,33 @@
   </url>
   <url>
     <loc>https://jasonmarinho.com/services/simulateurs</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/services/simulateurs/taxe-de-sejour</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/calculateurs</loc>

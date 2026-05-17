@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulateur rentabilité LCD : cash-flow, rentabilité brute et nette | Jason Marinho</title>
+  <meta name="description" content="Calcule la rentabilité d&#39;un logement en location courte durée : revenu net mensuel, cash-flow après crédit, rentabilité brute et nette. Mode opérationnel ou investissement, avec commission plateforme et charges incluses.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree">
+  <meta property="og:title" content="Simulateur rentabilité LCD : cash-flow, rentabilité brute et nette">
+  <meta property="og:description" content="Calcule la rentabilité d&#39;un logement en location courte durée : revenu net mensuel, cash-flow après crédit, rentabilité brute et nette. Mode opérationnel ou investissement, avec commission plateforme et charges incluses.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#004C3F">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.10)}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(56px,7vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .h3{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:500;color:var(--td);margin:0 0 10px;letter-spacing:-.01em}
+    .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.65);margin:0 0 32px;max-width:680px}
+    .sub.dk{color:var(--tm)} .sub.mx{max-width:760px}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s,transform .2s,box-shadow .2s}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.78);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-ol:hover{border-color:rgba(255,255,255,.55);color:#fff}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.22);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.10);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,120px) 0 clamp(56px,7vw,90px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 78% 50%,rgba(255,213,107,.06),transparent 70%);pointer-events:none}
+    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 100%,rgba(0,76,63,.5),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px);position:relative;z-index:1}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.38);margin-bottom:32px;flex-wrap:wrap}
+    .hero-brd a{color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff} .hero-brd span{font-size:11px}
+    .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+    .meta-bd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border-radius:7px;padding:6px 12px}
+    .meta-bd i{color:rgba(255,213,107,.55)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    .ck-list{list-style:none;padding:0;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+    .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5;color:var(--tm)}
+    .ck-list li .chk{margin-top:2px}
+    .item-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:28px}
+    .item-card{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:24px;transition:box-shadow .2s,transform .2s}
+    .item-card:hover{box-shadow:0 12px 32px rgba(0,76,63,.08);transform:translateY(-2px)}
+    .item-card p{font-size:14px;line-height:1.65;color:var(--tm);margin:0}
+    .case-list{display:flex;flex-direction:column;gap:22px;margin-top:28px}
+    .case{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:28px}
+    .case-t{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:500;color:var(--g);margin:0 0 14px;letter-spacing:-.01em}
+    .case ol{margin:0;padding:0 0 0 22px;color:var(--tm);font-size:14.5px;line-height:1.7}
+    .case ol li{margin-bottom:5px}
+    .faq-list{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+    .faq-it{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px 26px}
+    .faq-it summary{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:500;color:var(--td);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .faq-it summary::-webkit-details-marker{display:none}
+    .faq-it summary::after{content:'+';font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:300;color:var(--g);transition:transform .2s}
+    .faq-it[open] summary::after{transform:rotate(45deg)}
+    .faq-it p{margin:14px 0 0;font-size:14.5px;line-height:1.7;color:var(--tm)}
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:22px;padding:clamp(36px,5vw,56px);text-align:center;color:#fff}
+    .rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;max-width:1000px;margin:24px auto 0}
+    .rel-card{display:flex;flex-direction:column;gap:8px;background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:20px;text-decoration:none;color:inherit;transition:all .2s}
+    .rel-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
+    .rel-ic{width:38px;height:38px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:18px;flex-shrink:0}
+    .rel-card:hover .rel-ic{background:var(--g);color:var(--y)}
+    .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
+    .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
+    .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur rentabilité LCD","description":"Calcule la rentabilité d'un logement en location courte durée : revenu net mensuel, cash-flow après crédit, rentabilité brute et nette. Mode opérationnel ou investissement, avec commission plateforme et charges incluses.","url":"https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Simulateur rentabilité LCD","item":"https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree"}]}</script>
+  <script type="application/ld+json" data-schema-faq>{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment calculer la rentabilité d'une location courte durée ?","acceptedAnswer":{"@type":"Answer","text":"Deux niveaux. Rentabilité brute = revenu brut annuel / prix d'achat × 100 (vise 7-10 %). Rentabilité nette nette = (revenu net − impôt − cotisations) / coût total (achat + frais + travaux). C'est la nette nette qui compte vraiment, parce qu'elle se compare à n'importe quel autre placement."}},{"@type":"Question","name":"Quel taux d'occupation moyen pour une LCD rentable ?","acceptedAnswer":{"@type":"Answer","text":"Le seuil de rentabilité varie selon la ville et l'ADR. En grande ville (Paris, Lyon, Bordeaux), il faut viser au moins 60 % d'occupation annuelle. Dans une ville secondaire ou rurale, ça peut tomber à 45-50 % si l'ADR est élevé (maison atypique, vue mer, etc.). Le simulateur te montre la sensibilité de ton bien à l'occupation."}},{"@type":"Question","name":"Faut-il acheter à crédit pour faire de la LCD ?","acceptedAnswer":{"@type":"Answer","text":"Le crédit fait levier sur la rentabilité nette nette, à condition que le taux d'intérêt soit inférieur à la rentabilité brute. Avec un crédit à 3,8 % et une rentabilité brute à 8 %, le levier est positif. Avec un crédit à 4,5 % et une brute à 6 %, le levier est marginal et tu prends beaucoup de risque."}},{"@type":"Question","name":"La commission Airbnb / Booking est-elle déductible ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Toute commission OTAs (Airbnb, Booking, Vrbo, Expedia, et autres) est déductible en régime réel. Au micro-BIC, elle est intégrée dans l'abattement forfaitaire (30 ou 71 %). Le simulateur permet de paramétrer une commission moyenne pour modéliser ton mix OTAs vs réservations directes (via Driing par exemple)."}},{"@type":"Question","name":"Quel cash-flow minimum pour qu'un bien LCD soit viable ?","acceptedAnswer":{"@type":"Answer","text":"Idéalement positif (le bien s'autofinance). Acceptable s'il est légèrement négatif les premières années si la rentabilité nette nette est solide et le bien capitalise (zone à forte plus-value). Inacceptable si le cash-flow négatif persiste et la rentabilité nette nette tombe sous 4 %."}},{"@type":"Question","name":"Le simulateur prend-il en compte les charges de copropriété et la taxe foncière ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Tu paramètres charges courantes (eau, énergie, ménage, internet, assurance), charges fixes (copropriété, taxe foncière, CFE), et provision impôt/cotisations. Le simulateur affiche un net mensuel honnête, pas un brut trompeur."}}]}</script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><a href="/services/simulateurs">Simulateurs LCD</a><span>›</span><span>Simulateur rentabilité LCD</span>
+    </div>
+    <div class="lbl">Outil gratuit · Rentabilité LCD</div>
+    <h1 class="h1">Simulateur<br><em>rentabilité LCD</em></h1>
+    <p class="sub">Mode opérationnel : ton revenu net mensuel selon prix par nuit, occupation, commission, charges. Mode investissement : cash-flow après crédit, rentabilité brute, rentabilité nette nette. Pour décider si ton bien LCD vaut le coup, sans illusions de chiffres bruts.</p>
+    <div class="meta-row">
+      <div class="meta-bd"><i class="ph ph-chart-line-up"></i> Mode opérationnel</div>
+      <div class="meta-bd"><i class="ph ph-house"></i> Mode investissement</div>
+      <div class="meta-bd"><i class="ph ph-percent"></i> Rentabilité brute + nette</div>
+      <div class="meta-bd"><i class="ph ph-wallet"></i> Cash-flow + ROI</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=rentabilite" class="btn-p">Lancer le simulateur <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">Créer un compte gratuit</a>
+    </div>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Pourquoi cet outil</div>
+        <h2 class="h2">Trop d&#39;hôtes pilotent<br><em>au revenu brut</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Le piège classique : un logement qui sort 28 000 € de CA par an sur Airbnb, ça semble énorme. Sauf qu&#39;entre la commission plateforme (15 %), le ménage facturé en commission (à déduire si tu ne le refactures pas), l&#39;eau, l&#39;électricité, internet, l&#39;assurance, la copropriété, la taxe foncière, le crédit, et le mobilier qui s&#39;use, le net réel peut tomber à 8 000 €.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Le simulateur de rentabilité fait deux choses : il calcule ton net mensuel en mode opérationnel (logement déjà acquis), et il calcule ton cash-flow + rentabilité brute + rentabilité nette nette en mode investissement (achat à crédit). C&#39;est l&#39;outil de décision avant achat, et le tableau de bord après acquisition.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Bonus : le simulateur signale les ratios qui indiquent une rentabilité fragile (taux d&#39;effort &gt; 40 %, rentabilité nette &lt; 4 %) et compare ton bien à des standards du marché.</p>
+      </div>
+      <div>
+        <div class="lbl dk">Ce que tu obtiens</div>
+        <h2 class="h2">Un résultat <em>clair, instantané, gratuit</em></h2>
+        <ul class="ck-list">
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Mode opérationnel : revenu net mensuel post-charges</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Mode investissement : cash-flow + rentabilité brute + nette</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Commissions plateforme paramétrables</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Alertes ratios fragiles (taux d&#39;effort, ROI)</li>
+        </ul>
+        <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=rentabilite" class="btn-g" style="margin-top:18px">Lancer le simulateur <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Comment ça se calcule</div>
+    <h2 class="h2">Les 4 ratios <em>qui comptent vraiment</em></h2>
+    <div class="item-grid">
+      <div class="item-card"><h3 class="h3">Revenu brut LCD</h3><p>Revenu brut = ADR × nb_nuits_louées × (1 − commission_plateforme). L&#39;ADR moyen et le taux d&#39;occupation sont les deux variables critiques. Une variation de 10 % d&#39;occupation change ton revenu brut de 10 %.</p></div>
+      <div class="item-card"><h3 class="h3">Revenu net mensuel</h3><p>Net mensuel = (Revenu brut annuel − charges variables et fixes) / 12. Charges incluses : eau, électricité, gaz, internet, ménage, assurance PNO, copropriété, taxe foncière, abonnements, petits travaux d&#39;entretien.</p></div>
+      <div class="item-card"><h3 class="h3">Rentabilité brute</h3><p>Rentabilité brute = (Revenu brut annuel / Prix d&#39;achat tout compris) × 100. Indicateur d&#39;entrée de gamme. Un bien LCD classique vise 7 à 10 % brut, un bien premium 5 à 7 %.</p></div>
+      <div class="item-card"><h3 class="h3">Rentabilité nette nette</h3><p>Rentabilité nette nette = (Revenu net annuel − impôts − cotisations) / (Prix d&#39;achat + frais de notaire + travaux). C&#39;est le seul indicateur fiable pour comparer un LCD à un livret A, un PEA, un autre investissement immobilier. Vise 4 à 6 % minimum.</p></div>
+      <div class="item-card"><h3 class="h3">Cash-flow mensuel</h3><p>Cash-flow = Revenu brut mensuel − mensualité crédit − charges courantes − provision impôts/cotisations. Positif = le bien s&#39;autofinance et te dégage du cash. Négatif = tu mets de l&#39;argent tous les mois (déficit foncier acceptable si rentabilité nette nette positive).</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="lbl dk">Cas pratiques</div>
+    <h2 class="h2">3 stratégies <em>comparées en chiffres</em></h2>
+    <div class="case-list">
+      <article class="case"><h3 class="case-t">Studio Bordeaux 18 m², achat 130 000 €</h3><ol><li>Apport 25 000 € + prêt 105 000 € sur 25 ans à 3,8 % → mensualité 542 €</li><li>ADR moyen 75 €, occupation 60 % → 16 425 € CA brut/an</li><li>Commission OTAs 15 %, charges courantes 3 200 €/an</li><li>Revenu net annuel : 16 425 × 0,85 − 3 200 = 10 761 €</li><li>Cash-flow mensuel : (16 425 × 0,85 / 12) − 542 − (3 200 / 12) = 90 €</li><li>Rentabilité nette nette : (10 761 − impôt micro-BIC ~1 800 €) / 145 000 € (achat + frais) = 6,2 %</li><li>Verdict : bon dossier, cash-flow légèrement positif, rentabilité nette nette honorable</li></ol></article>
+      <article class="case"><h3 class="case-t">T2 Lyon 35 m², achat 240 000 €</h3><ol><li>Apport 50 000 € + prêt 190 000 € sur 25 ans à 3,8 % → mensualité 982 €</li><li>ADR moyen 95 €, occupation 65 % → 22 526 € CA brut/an</li><li>Commission OTAs 15 %, charges courantes 4 500 €/an</li><li>Revenu net annuel : 22 526 × 0,85 − 4 500 = 14 647 €</li><li>Cash-flow mensuel : (22 526 × 0,85 / 12) − 982 − (4 500 / 12) = 238 €</li><li>Rentabilité nette nette : (14 647 − impôt ~2 800 €) / 263 000 € = 4,5 %</li><li>Verdict : cash-flow correct mais rentabilité nette nette serrée, vise classement Atout France pour économiser sur l&#39;impôt</li></ol></article>
+      <article class="case"><h3 class="case-t">Maison Honfleur 80 m², achat 380 000 €</h3><ol><li>Apport 80 000 € + prêt 300 000 € sur 25 ans à 3,8 % → mensualité 1 549 €</li><li>ADR moyen 165 €, occupation 58 % → 34 925 € CA brut/an</li><li>Commission OTAs 12 % (mix réservations directes via Driing), charges courantes 6 800 €/an</li><li>Revenu net annuel : 34 925 × 0,88 − 6 800 = 23 934 €</li><li>Cash-flow mensuel : (34 925 × 0,88 / 12) − 1 549 − (6 800 / 12) = 414 €</li><li>Rentabilité nette nette : (23 934 − impôt classé 71 % ~2 100 €) / 415 000 € = 5,3 %</li><li>Verdict : excellent dossier, cash-flow solide, classement Atout France indispensable pour optimiser</li></ol></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Questions fréquentes</div>
+    <h2 class="h2">FAQ <em>simulateur</em></h2>
+    <div class="faq-list">
+      <details class="faq-it"><summary>Comment calculer la rentabilité d&#39;une location courte durée ?</summary><p>Deux niveaux. Rentabilité brute = revenu brut annuel / prix d&#39;achat × 100 (vise 7-10 %). Rentabilité nette nette = (revenu net − impôt − cotisations) / coût total (achat + frais + travaux). C&#39;est la nette nette qui compte vraiment, parce qu&#39;elle se compare à n&#39;importe quel autre placement.</p></details>
+      <details class="faq-it"><summary>Quel taux d&#39;occupation moyen pour une LCD rentable ?</summary><p>Le seuil de rentabilité varie selon la ville et l&#39;ADR. En grande ville (Paris, Lyon, Bordeaux), il faut viser au moins 60 % d&#39;occupation annuelle. Dans une ville secondaire ou rurale, ça peut tomber à 45-50 % si l&#39;ADR est élevé (maison atypique, vue mer, etc.). Le simulateur te montre la sensibilité de ton bien à l&#39;occupation.</p></details>
+      <details class="faq-it"><summary>Faut-il acheter à crédit pour faire de la LCD ?</summary><p>Le crédit fait levier sur la rentabilité nette nette, à condition que le taux d&#39;intérêt soit inférieur à la rentabilité brute. Avec un crédit à 3,8 % et une rentabilité brute à 8 %, le levier est positif. Avec un crédit à 4,5 % et une brute à 6 %, le levier est marginal et tu prends beaucoup de risque.</p></details>
+      <details class="faq-it"><summary>La commission Airbnb / Booking est-elle déductible ?</summary><p>Oui. Toute commission OTAs (Airbnb, Booking, Vrbo, Expedia, et autres) est déductible en régime réel. Au micro-BIC, elle est intégrée dans l&#39;abattement forfaitaire (30 ou 71 %). Le simulateur permet de paramétrer une commission moyenne pour modéliser ton mix OTAs vs réservations directes (via Driing par exemple).</p></details>
+      <details class="faq-it"><summary>Quel cash-flow minimum pour qu&#39;un bien LCD soit viable ?</summary><p>Idéalement positif (le bien s&#39;autofinance). Acceptable s&#39;il est légèrement négatif les premières années si la rentabilité nette nette est solide et le bien capitalise (zone à forte plus-value). Inacceptable si le cash-flow négatif persiste et la rentabilité nette nette tombe sous 4 %.</p></details>
+      <details class="faq-it"><summary>Le simulateur prend-il en compte les charges de copropriété et la taxe foncière ?</summary><p>Oui. Tu paramètres charges courantes (eau, énergie, ménage, internet, assurance), charges fixes (copropriété, taxe foncière, CFE), et provision impôt/cotisations. Le simulateur affiche un net mensuel honnête, pas un brut trompeur.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="cta-ban">
+      <h2 class="h2 lt" style="margin:0 auto 14px;max-width:600px;text-align:center">Prêt à <em>chiffrer ta décision</em> en 30 secondes ?</h2>
+      <p style="font-size:15px;line-height:1.7;color:rgba(255,255,255,.7);margin:0 auto 28px;max-width:540px;text-align:center">Crée un compte gratuit et accède au simulateur complet, préfilé avec tes vrais logements et tes vrais chiffres.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=rentabilite" class="btn-ol">Voir le simulateur</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Aller plus loin</div>
+      <h2 class="h2">Les autres <em>simulateurs LCD</em></h2>
+    </div>
+    <div class="rel-grid">
+      <a href="/services/simulateurs" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-calculator"></i></div>
+        <div class="rel-k">Catalogue</div>
+        <div class="rel-t">Les 4 simulateurs</div>
+        <div class="rel-d">Vue d'ensemble des outils fiscaux et de pilotage gratuits pour hôtes LCD.</div>
+      </a>
+      <a href="/services/guides-lcd" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-books"></i></div>
+        <div class="rel-k">Ressources</div>
+        <div class="rel-t">Guides LCD</div>
+        <div class="rel-d">Fiscalité, réglementation, tarification : tous les guides pour comprendre.</div>
+      </a>
+      <a href="/services/formations" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-graduation-cap"></i></div>
+        <div class="rel-k">Formation</div>
+        <div class="rel-t">Formations LCD</div>
+        <div class="rel-d">Va plus loin avec les formations dédiées hôtes débutants et confirmés.</div>
+      </a>
+      <a href="/calculateurs" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-chart-line-up"></i></div>
+        <div class="rel-k">Marché</div>
+        <div class="rel-t">Calculateurs marché</div>
+        <div class="rel-d">Estime tes revenus, trouve le bon prix, compare 83 villes européennes.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script defer src="/footer.js"></script>
+</body>
+</html>

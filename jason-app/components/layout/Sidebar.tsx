@@ -43,6 +43,7 @@ const navGroups = [
     label: 'Outils',
     items: [
       { href: '/dashboard/simulateurs',         label: 'Simulateurs',       icon: Calculator },
+      { href: '/dashboard/calculateurs',        label: 'Calculateurs marché', icon: ChartLineUp },
       { href: '/dashboard/audit-gbp',           label: 'Audit GBP',         icon: MagnifyingGlass },
       { href: '/dashboard/outils-impression',   label: 'QR & Affiches',     icon: Printer },
       { href: '/dashboard/securite',            label: 'Sécurité Voyageur', icon: ShieldCheck },

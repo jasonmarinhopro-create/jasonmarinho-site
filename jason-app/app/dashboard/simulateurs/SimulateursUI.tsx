@@ -857,7 +857,7 @@ function TaxeSejour() {
 const MONTHS_SHORT = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
 const MONTHS_LONG = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
 
-function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
+export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
   const [logementId, setLogementId] = useState<string>(logements[0]?.id ?? '__manual__')
   const selected = logements.find(l => l.id === logementId)
 
@@ -961,10 +961,10 @@ function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
           </div>
 
           {selected?.tarifNuitee && (
-            <label style={{ ...s.field, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+            <label className="jm-check">
               <input type="checkbox" checked={useAdrReel} onChange={e => setUseAdrReel(e.target.checked)} />
-              <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
-                Utiliser mon tarif réel ({selected.tarifNuitee} €/nuit) au lieu de la moyenne marché
+              <span>
+                Utiliser mon <strong>tarif réel ({selected.tarifNuitee} €/nuit)</strong> au lieu de la moyenne marché
               </span>
             </label>
           )}
@@ -1106,7 +1106,7 @@ function BenchmarkRow({ label, toi, marche, toiNum, marcheNum }: {
 /* ──────────────────────────────────────────
  * 6. CALCULATEUR DE PRIX LCD (préfilé)
  * ────────────────────────────────────────── */
-function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
+export function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
   const [logementId, setLogementId] = useState<string>(logements[0]?.id ?? '__manual__')
   const selected = logements.find(l => l.id === logementId)
 
@@ -1226,10 +1226,10 @@ function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
           </div>
 
           {selected?.tarifNuitee && (
-            <label style={{ ...s.field, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+            <label className="jm-check">
               <input type="checkbox" checked={useAdrReel} onChange={e => setUseAdrReel(e.target.checked)} />
-              <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
-                Utiliser mon tarif réel ({selected.tarifNuitee} €/nuit) au lieu de la moyenne marché
+              <span>
+                Utiliser mon <strong>tarif réel ({selected.tarifNuitee} €/nuit)</strong> au lieu de la moyenne marché
               </span>
             </label>
           )}
@@ -1302,7 +1302,7 @@ function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
 /* ──────────────────────────────────────────
  * 7. COMPARATEUR MES VILLES (multi-villes, préfilé avec tes logements)
  * ────────────────────────────────────────── */
-function CompareurMesVilles({ logements }: { logements: LogementPrefill[] }) {
+export function CompareurMesVilles({ logements }: { logements: LogementPrefill[] }) {
   // Villes uniques des logements de l'utilisateur (déduplication par ville+pays)
   const villesLogements = useMemo(() => {
     const seen = new Set<string>()
@@ -1541,29 +1541,36 @@ export default function SimulateursUI({ logementsPrefill = [] }: Props) {
 
   return (
     <div style={s.page}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* Selects en vert Jason quand ouverts */
+        .sim-root select option { background-color: var(--bg-2); color: var(--text); padding: 8px 12px; font-weight: 500; }
+        .sim-root select option:hover { background-color: var(--accent-bg); }
+        .sim-root select option:checked { background: var(--accent-text); color: var(--bg); font-weight: 700; }
+        /* Checkbox custom élégante */
+        .jm-check { display: flex !important; align-items: center; gap: 10px; cursor: pointer; padding: 12px 14px !important; border-radius: 10px; background: linear-gradient(135deg, rgba(0,76,63,.05) 0%, rgba(255,213,107,.06) 100%); border: 1px solid var(--accent-border); transition: all .2s cubic-bezier(.4,0,.2,1); margin-top: 4px !important; }
+        .jm-check:hover { border-color: var(--accent-text); background: linear-gradient(135deg, rgba(0,76,63,.10) 0%, rgba(255,213,107,.12) 100%); }
+        .jm-check input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--accent-border); background: var(--bg); cursor: pointer; flex-shrink: 0; position: relative; transition: all .15s; margin: 0; }
+        .jm-check input[type="checkbox"]:hover { border-color: var(--accent-text); }
+        .jm-check input[type="checkbox"]:checked { background: var(--accent-text); border-color: var(--accent-text); }
+        .jm-check input[type="checkbox"]:checked::after { content: ''; position: absolute; top: 3px; left: 6px; width: 5px; height: 9px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .jm-check span { font-size: 13.5px; color: var(--text); font-weight: 500; line-height: 1.4; }
+        .jm-check span strong { color: var(--accent-text); }
+      ` }} />
+      <div className="sim-root" style={{}}>
       <div style={s.hero}>
         <span style={s.heroBadge}>
           <Calculator size={13} weight="fill" />
-          7 simulateurs gratuits
+          4 simulateurs fiscaux
         </span>
         <h1 style={s.heroTitle}>
-          Simulateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
+          Simulateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>fiscaux</em>
         </h1>
         <p style={s.heroDesc}>
-          Estime tes revenus, trouve le bon prix, calcule ton imposition, choisis ton statut. Tout en quelques secondes, préfilé avec tes vrais logements.
+          Calcule ton imposition, choisis ton statut, estime ta taxe de séjour, projette ta rentabilité nette. Tout en quelques secondes, préfilé avec tes vrais logements. Pour estimer revenus et prix, file dans <a href="/dashboard/calculateurs" style={{ color: 'var(--accent-text)', textDecoration: 'underline', textDecorationThickness: '1px', textUnderlineOffset: '3px' }}>Calculateurs marché</a>.
         </p>
       </div>
 
       <div style={s.tabs}>
-        <button onClick={() => setTab('revenus')} style={{ ...s.tab, ...(tab === 'revenus' ? s.tabActive : {}) }}>
-          <TrendUp size={14} weight="fill" /> Revenus
-        </button>
-        <button onClick={() => setTab('prix')} style={{ ...s.tab, ...(tab === 'prix' ? s.tabActive : {}) }}>
-          <Storefront size={14} weight="fill" /> Prix par nuit
-        </button>
-        <button onClick={() => setTab('mesvilles')} style={{ ...s.tab, ...(tab === 'mesvilles' ? s.tabActive : {}) }}>
-          <MapPin size={14} weight="fill" /> Mes villes
-        </button>
         <button onClick={() => setTab('fiscal')} style={{ ...s.tab, ...(tab === 'fiscal' ? s.tabActive : {}) }}>
           <CurrencyEur size={14} weight="fill" /> Fiscalité
         </button>
@@ -1579,13 +1586,11 @@ export default function SimulateursUI({ logementsPrefill = [] }: Props) {
       </div>
 
       <div style={s.body}>
-        {tab === 'revenus' && <EstimateurRevenus logements={logementsPrefill} />}
-        {tab === 'prix' && <CalculateurPrix logements={logementsPrefill} />}
-        {tab === 'mesvilles' && <CompareurMesVilles logements={logementsPrefill} />}
         {tab === 'fiscal' && <FiscalLCD />}
         {tab === 'statut' && <EIvsSASU />}
         {tab === 'rentabilite' && <Rentabilite />}
         {tab === 'taxe' && <TaxeSejour />}
+      </div>
       </div>
     </div>
   )
