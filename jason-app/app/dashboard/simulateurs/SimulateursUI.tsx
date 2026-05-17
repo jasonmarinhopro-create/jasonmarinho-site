@@ -41,32 +41,35 @@ function fmtPct(n: number): string {
 
 function FiscalLCD({ accountStats }: { accountStats?: AccountStats }) {
   const [ca, setCa] = useState(accountStats && accountStats.caTotal12m > 0 ? Math.round(accountStats.caTotal12m) : 30000)
+  // Régime initial déduit du classement majoritaire des logements de l'hôte.
+  // Sinon non_classe par défaut (conservateur).
   // 'non_classe' = meublé tourisme non classé : 30 % / 15 000 € (loi Le Meur 2025+)
   // 'classe'     = meublé tourisme classé Atout France : 50 % / 77 700 € (loi Le Meur 2025+)
   // 'cdh'        = chambres d'hôtes : 50 % / 77 700 € depuis la décision CE du 16/09/2025
-  //                qui a confirmé l'alignement sur le régime des meublés classés
-  //                (CGI art. 50-0, 2°). L'ancien régime 71 % / 188 700 € n'est plus
-  //                applicable.
-  const [regime, setRegime] = useState<'non_classe' | 'classe' | 'cdh'>('non_classe')
+  const [regime, setRegime] = useState<'non_classe' | 'classe' | 'cdh'>(
+    accountStats?.defaultRegimeFiscal ?? 'non_classe'
+  )
   const [autresRevenus, setAutresRevenus] = useState(45000)
 
   const result = useMemo(() => {
     // Loi Le Meur (n° 2024-1039 du 19 nov 2024), revenus 2025+
     // Confirmation : décision Conseil d'État 16/09/2025 pour les chambres d'hôtes
+    // Source de vérité : lib/lcd/fiscal-params.ts
+    const microBic = FISCAL_PARAMS_2026.microBic
     const config = regime === 'non_classe'
-      ? { plafond: 15000, tauxAbattement: 0.30 }
-      : { plafond: 77700, tauxAbattement: 0.50 } // classé OU chambres d'hôtes : même régime
+      ? { plafond: microBic.nonClasse.plafond, tauxAbattement: microBic.nonClasse.abattement }
+      : { plafond: microBic.classe.plafond, tauxAbattement: microBic.classe.abattement }
     const sousPlafond = ca <= config.plafond
     const baseImposable = sousPlafond ? ca * (1 - config.tauxAbattement) : ca
-    // Économie marginale si passage non classé → classé (= 50 %−30 % = 20 pts)
-    const economieClassement = ca * (0.50 - 0.30)
+    // Économie marginale si passage non classé → classé
+    const economieClassement = ca * (microBic.classe.abattement - microBic.nonClasse.abattement)
     return { ...config, sousPlafond, baseImposable, economieClassement }
   }, [ca, regime])
 
   // Statut LMNP / LMP (depuis loi Macron 2020) : 2 conditions cumulatives pour LMP :
-  // (a) CA LCD > 23 000 € ET (b) CA LCD > autres revenus pro du foyer.
+  // (a) CA LCD > seuil (FISCAL_PARAMS_2026.ei.seuilLmp) ET (b) CA LCD > autres revenus pro du foyer.
   const statut = useMemo(() => {
-    const seuilCA = 23000
+    const seuilCA = FISCAL_PARAMS_2026.ei.seuilLmp
     const conditionA = ca > seuilCA
     const conditionB = ca > autresRevenus
     const isLMP = conditionA && conditionB

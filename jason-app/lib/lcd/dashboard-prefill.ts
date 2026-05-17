@@ -17,6 +17,8 @@ import { unstable_cache } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { extractCity } from '@/lib/lcd/market-benchmarks'
 
+export type ClassementAtoutFrance = 'non_classe' | '1' | '2' | '3' | '4' | '5' | 'chambres_hotes'
+
 export type LogementPrefill = {
   id: string
   nom: string
@@ -25,6 +27,7 @@ export type LogementPrefill = {
   tarifNuitee: number | null
   typeLogement: string | null
   nbChambres: number | null
+  classementAtoutFrance: ClassementAtoutFrance | null
   stats?: {
     nuitsLouees: number
     revenuTotal: number
@@ -53,7 +56,7 @@ export async function getDashboardPrefill(userId: string): Promise<LogementPrefi
       const [{ data: logements }, { data: sejours }] = await Promise.all([
         supabase
           .from('logements')
-          .select('id, nom, adresse, pays, tarif_nuitee_moyen, type_logement, nb_chambres')
+          .select('id, nom, adresse, pays, tarif_nuitee_moyen, type_logement, nb_chambres, classement_etoiles')
           .eq('user_id', uid)
           .order('created_at', { ascending: false }),
         supabase
@@ -94,14 +97,30 @@ export async function getDashboardPrefill(userId: string): Promise<LogementPrefi
             ? (rawPays as LogementPrefill['pays'])
             : 'FR'
         const nom = (l.nom as string) ?? ''
+        // Dérivation du classement Atout France depuis les colonnes existantes :
+        //  - type_logement === 'chambres-hotes' → 'chambres_hotes' (régime 50 %/77.7k)
+        //  - classement_etoiles 1-5            → '1'..'5' (régime classé 50 %/77.7k)
+        //  - classement_etoiles 0              → 'non_classe' (régime 30 %/15k)
+        //  - classement_etoiles null           → null (non renseigné, on suggérera la saisie)
+        const typeLog = (l.type_logement as string | null) ?? null
+        const stars = (l.classement_etoiles as number | null)
+        let classementAtoutFrance: LogementPrefill['classementAtoutFrance'] = null
+        if (typeLog === 'chambres-hotes') {
+          classementAtoutFrance = 'chambres_hotes'
+        } else if (stars === 0) {
+          classementAtoutFrance = 'non_classe'
+        } else if (stars && stars >= 1 && stars <= 5) {
+          classementAtoutFrance = String(stars) as LogementPrefill['classementAtoutFrance']
+        }
         return {
           id: l.id as string,
           nom,
           pays,
           ville: extractCity(l.adresse as string | null),
           tarifNuitee: (l.tarif_nuitee_moyen as number | null) ?? null,
-          typeLogement: (l.type_logement as string | null) ?? null,
+          typeLogement: typeLog,
           nbChambres: (l.nb_chambres as number | null) ?? null,
+          classementAtoutFrance,
           stats: statsByLogementNom[nom],
         }
       })
