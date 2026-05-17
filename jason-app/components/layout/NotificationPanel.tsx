@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight, ChatCircleDots } from '@phosphor-icons/react/dist/ssr'
+import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight, ChatCircleDots, Bell, Warning, Info, CheckCircle } from '@phosphor-icons/react/dist/ssr'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
+import type { AppNotification } from '@/lib/notifications/types'
 
 const VISIBLE_COUNT = 3
+const ALERTES_VISIBLE = 4
 
 interface NotificationPanelProps {
   open: boolean
@@ -14,9 +16,11 @@ interface NotificationPanelProps {
   onMarkAllRead: () => void
   /** Compteur de notifications Chez Nous non lues (récupéré dans Header). */
   chezNousUnread?: number
+  /** Compteur d'alertes contextuelles non lues (table `notifications`). */
+  appNotifUnread?: number
 }
 
-type Tab = 'nouveautes' | 'cheznous'
+type Tab = 'alertes' | 'nouveautes' | 'cheznous'
 
 // Note : pour 'amélioration', on utilise var(--accent-text) au lieu d'un jaune
 // hardcodé (#FFD56B). En mode clair le jaune est invisible sur fond blanc,
@@ -33,21 +37,40 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
 }
 
-export default function NotificationPanel({ open, onClose, readIds, onMarkAllRead, chezNousUnread = 0 }: NotificationPanelProps) {
+export default function NotificationPanel({ open, onClose, readIds, onMarkAllRead, chezNousUnread = 0, appNotifUnread = 0 }: NotificationPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null)
-  const [tab, setTab] = useState<Tab>('nouveautes')
+  const [tab, setTab] = useState<Tab>('alertes')
+  const [alertes, setAlertes] = useState<AppNotification[]>([])
+  const [alertesLoading, setAlertesLoading] = useState(false)
 
-  // Auto-switch sur l'onglet Chez Nous à l'ouverture s'il y a des notifs là-bas
-  // et aucune nouveauté produit non lue : l'utilisateur va probablement vers le plus pressant.
+  // Auto-switch à l'ouverture vers l'onglet le plus pressant :
+  // 1. Alertes contextuelles (priorité métier max)
+  // 2. Chez Nous (interactions sociales)
+  // 3. Nouveautés produit (info passive)
   useEffect(() => {
     if (!open) return
     const productUnread = CHANGELOG.filter(e => !readIds.has(e.id)).length
-    if (chezNousUnread > 0 && productUnread === 0) {
-      setTab('cheznous')
-    } else {
-      setTab('nouveautes')
-    }
-  }, [open, chezNousUnread, readIds])
+    if (appNotifUnread > 0) setTab('alertes')
+    else if (chezNousUnread > 0 && productUnread === 0) setTab('cheznous')
+    else setTab('nouveautes')
+  }, [open, chezNousUnread, appNotifUnread, readIds])
+
+  // Fetch des alertes + trigger best-effort du rules-engine quand le panel s'ouvre.
+  // Idempotent côté DB (dedup_key unique), donc safe à rerouler.
+  useEffect(() => {
+    if (!open) return
+    setAlertesLoading(true)
+    // Best-effort : si l'engine échoue, on continue avec les données en DB.
+    fetch('/api/notifications/run-rules', { method: 'POST' })
+      .catch(() => null)
+      .finally(() => {
+        fetch('/api/notifications/list?limit=' + ALERTES_VISIBLE, { cache: 'no-store' })
+          .then(r => r.ok ? r.json() : { notifications: [] })
+          .then(j => setAlertes(j.notifications ?? []))
+          .catch(() => setAlertes([]))
+          .finally(() => setAlertesLoading(false))
+      })
+  }, [open])
 
   // Close on outside click
   useEffect(() => {
@@ -124,8 +147,20 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
       {/* Onglets */}
       <div style={s.tabs}>
         <button
+          onClick={() => setTab('alertes')}
+          style={{ ...s.tab, ...(tab === 'alertes' ? s.tabActive : {}) }}
+          aria-selected={tab === 'alertes'}
+        >
+          <Bell size={12} weight={tab === 'alertes' ? 'fill' : 'regular'} />
+          Alertes
+          {appNotifUnread > 0 && (
+            <span style={s.tabBadge}>{appNotifUnread > 9 ? '9+' : appNotifUnread}</span>
+          )}
+        </button>
+        <button
           onClick={() => setTab('nouveautes')}
           style={{ ...s.tab, ...(tab === 'nouveautes' ? s.tabActive : {}) }}
+          aria-selected={tab === 'nouveautes'}
         >
           <Sparkle size={12} weight={tab === 'nouveautes' ? 'fill' : 'regular'} />
           Nouveautés
@@ -136,6 +171,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
         <button
           onClick={() => setTab('cheznous')}
           style={{ ...s.tab, ...(tab === 'cheznous' ? s.tabActive : {}) }}
+          aria-selected={tab === 'cheznous'}
         >
           <ChatCircleDots size={12} weight={tab === 'cheznous' ? 'fill' : 'regular'} />
           Chez Nous
@@ -147,6 +183,76 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
 
       {/* Divider */}
       <div style={s.divider} />
+
+      {/* Contenu — Alertes contextuelles (rules-engine) */}
+      {tab === 'alertes' && (
+        <div style={s.list}>
+          {alertesLoading && alertes.length === 0 ? (
+            <div style={s.cnEmpty}>
+              <div style={{ fontSize: '13px', color: 'var(--text-3)' }}>Chargement…</div>
+            </div>
+          ) : alertes.length === 0 ? (
+            <div style={s.cnEmpty}>
+              <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎉</div>
+              <div style={{ fontSize: '13px', color: 'var(--text-2)', fontWeight: 500 }}>Tu es à jour</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '4px' }}>
+                Aucune alerte contextuelle. On te préviendra quand quelque chose demande ton attention.
+              </div>
+            </div>
+          ) : (
+            alertes.map((n, i) => {
+              const isLast = i === alertes.length - 1
+              const isUnread = !n.read_at
+              const sevColor =
+                n.severity === 'error'   ? '#f87171' :
+                n.severity === 'warning' ? '#FFD56B' :
+                n.severity === 'success' ? 'var(--success-1)' : 'var(--text-3)'
+              const SevIcon =
+                n.severity === 'success' ? CheckCircle :
+                n.severity === 'warning' || n.severity === 'error' ? Warning :
+                Info
+              return (
+                <div
+                  key={n.id}
+                  style={{
+                    ...s.entry,
+                    ...(isLast ? {} : { borderBottom: '1px solid var(--border)' }),
+                    opacity: isUnread ? 1 : 0.6,
+                  }}
+                >
+                  <div style={s.dotWrap}>
+                    <div style={{
+                      width: '22px', height: '22px', borderRadius: '7px',
+                      background: sevColor + '14', border: '1px solid ' + sevColor + '33',
+                      color: sevColor,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }} aria-hidden="true">
+                      <SevIcon size={12} weight="fill" />
+                    </div>
+                  </div>
+                  <div style={s.entryBody}>
+                    <div style={s.entryTitle}>{n.title}</div>
+                    {n.body && <div style={s.entryDesc}>{n.body}</div>}
+                    {n.cta_href && (
+                      <Link
+                        href={n.cta_href}
+                        onClick={onClose}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '4px',
+                          marginTop: '6px', fontSize: '11.5px', fontWeight: 600,
+                          color: 'var(--accent-text)', textDecoration: 'none',
+                        }}
+                      >
+                        {n.cta_label ?? 'Voir'} <ArrowRight size={10} weight="bold" />
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              )
+            })
+          )}
+        </div>
+      )}
 
       {/* Contenu — Nouveautés produit */}
       {tab === 'nouveautes' && (
@@ -222,21 +328,20 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
 
       {/* Footer, lien adapté à l'onglet */}
       <div style={s.footer}>
-        {tab === 'nouveautes' ? (
-          <Link
-            href="/dashboard/nouveautes"
-            onClick={onClose}
-            style={s.learnMoreBtn}
-          >
+        {tab === 'alertes' && (
+          <Link href="/dashboard/notifications" onClick={onClose} style={s.learnMoreBtn}>
+            Voir toutes mes alertes
+            <ArrowRight size={13} weight="bold" />
+          </Link>
+        )}
+        {tab === 'nouveautes' && (
+          <Link href="/dashboard/nouveautes" onClick={onClose} style={s.learnMoreBtn}>
             En savoir plus
             <ArrowRight size={13} weight="bold" />
           </Link>
-        ) : (
-          <Link
-            href="/dashboard/chez-nous/notifications"
-            onClick={onClose}
-            style={s.learnMoreBtn}
-          >
+        )}
+        {tab === 'cheznous' && (
+          <Link href="/dashboard/chez-nous/notifications" onClick={onClose} style={s.learnMoreBtn}>
             Voir mes notifications Chez Nous
             <ArrowRight size={13} weight="bold" />
           </Link>

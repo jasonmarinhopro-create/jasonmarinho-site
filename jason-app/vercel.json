@@ -1,3 +1,9 @@
 {
-  "buildCommand": "node ../scripts/sync-counts.mjs && next build"
+  "buildCommand": "node ../scripts/sync-counts.mjs && next build",
+  "crons": [
+    {
+      "path": "/api/cron/notifications-engine",
+      "schedule": "0 7 * * *"
+    }
+  ]
 }
