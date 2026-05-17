@@ -1,8 +1,8 @@
 'use client'
 
-import type { AccountStats } from '@/lib/lcd/account-stats'
+import type { AccountStats, Insight } from '@/lib/lcd/account-stats'
 import { fmtEur } from '@/lib/lcd/account-stats'
-import { CurrencyEur, House, TrendUp, Scales, Lightning } from '@phosphor-icons/react/dist/ssr'
+import { CurrencyEur, House, TrendUp, Scales, Lightning, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
 export function ActivityOverview({ stats }: { stats: AccountStats }) {
   const hasActivity = stats.caTotal12m > 0
@@ -43,6 +43,7 @@ export function ActivityOverview({ stats }: { stats: AccountStats }) {
           value={hasActivity ? fmtEur(stats.caTotal12m) : '—'}
           sub={hasActivity ? `${stats.nuitsTotales12m} nuits vendues` : 'Pas encore de séjours'}
           icon={<CurrencyEur size={14} weight="fill" />}
+          insight={stats.insights.ca}
           accent
         />
         <StatTile
@@ -52,18 +53,21 @@ export function ActivityOverview({ stats }: { stats: AccountStats }) {
             ? `${stats.nbLogementsActifs} actif${stats.nbLogementsActifs > 1 ? 's' : ''} · ${villeLabel}`
             : 'Aucun configuré'}
           icon={<House size={14} weight="fill" />}
+          insight={stats.insights.logements}
         />
         <StatTile
           label="ADR moyen"
           value={hasActivity ? fmtEur(stats.adrMoyen) : '—'}
           sub={hasActivity ? `${stats.occupationMoyenne} % occupation` : 'À calculer'}
           icon={<TrendUp size={14} weight="fill" />}
+          insight={stats.insights.adr}
         />
         <StatTile
           label="Régime estimé"
           value={stats.regimeLabel}
           sub={stats.regimeHint}
           icon={<Scales size={14} weight="fill" />}
+          insight={stats.insights.regime}
           highlight={stats.regimeEstime !== 'aucun'}
         />
       </div>
@@ -72,7 +76,7 @@ export function ActivityOverview({ stats }: { stats: AccountStats }) {
 }
 
 function StatTile({
-  label, value, sub, icon, accent, highlight,
+  label, value, sub, icon, accent, highlight, insight,
 }: {
   label: string
   value: string
@@ -80,6 +84,7 @@ function StatTile({
   icon?: React.ReactNode
   accent?: boolean
   highlight?: boolean
+  insight?: Insight | null
 }) {
   return (
     <div style={{
@@ -93,6 +98,15 @@ function StatTile({
       </div>
       <div style={{ ...st.value, ...(accent ? st.valueAccent : {}) }}>{value}</div>
       {sub && <div style={st.sub}>{sub}</div>}
+      {insight && (
+        <div style={{ ...st.insight, ...(insight.tone === 'warning' ? st.insightWarning : insight.tone === 'opportunity' ? st.insightOpportunity : {}) }}>
+          <div style={st.insightMsg}>{insight.message}</div>
+          <a href={insight.ctaHref} style={{ ...st.insightCta, ...(insight.tone === 'warning' ? st.insightCtaWarning : {}) }}>
+            {insight.ctaLabel}
+            <ArrowRight size={11} weight="bold" />
+          </a>
+        </div>
+      )}
     </div>
   )
 }
@@ -165,7 +179,7 @@ const ao: Record<string, React.CSSProperties> = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
     gap: 'clamp(10px, 1.4vw, 14px)',
   },
 }
@@ -222,4 +236,40 @@ const st: Record<string, React.CSSProperties> = {
     color: 'var(--text-muted)',
     lineHeight: 1.4,
   },
+  // Insight tile sub-section
+  insight: {
+    marginTop: '10px',
+    paddingTop: '10px',
+    borderTop: '1px dashed var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  insightOpportunity: {
+    borderTopColor: 'rgba(99,214,131,0.22)',
+  },
+  insightWarning: {
+    borderTopColor: 'rgba(251,146,60,0.32)',
+  },
+  insightMsg: {
+    fontSize: '12px',
+    color: 'var(--text-2)',
+    lineHeight: 1.5,
+  },
+  insightCta: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    fontSize: '11.5px',
+    fontWeight: 600,
+    color: 'var(--accent-text)',
+    textDecoration: 'none',
+    alignSelf: 'flex-start',
+    padding: '4px 0',
+    transition: 'gap .15s',
+  },
+  insightCtaWarning: {
+    color: '#fb923c',
+  },
 }
+
