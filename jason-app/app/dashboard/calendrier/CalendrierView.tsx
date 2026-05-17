@@ -741,6 +741,30 @@ export default function CalendrierView({
     }
   }, [])
 
+  // Auto-refresh quand l'utilisateur revient sur l'onglet ou la fenêtre.
+  // Effet pseudo-realtime : si un nouveau séjour iCal a été synchronisé
+  // depuis Airbnb/Booking pendant que l'utilisateur était ailleurs, il
+  // apparaît au focus retour sans avoir à recharger manuellement.
+  // Throttle 30 s pour ne pas spammer le serveur si l'utilisateur fait
+  // alt-tab rapidement entre 2 fenêtres.
+  useEffect(() => {
+    let lastRefresh = Date.now()
+    const onFocus = () => {
+      if (Date.now() - lastRefresh < 30_000) return
+      lastRefresh = Date.now()
+      router.refresh()
+    }
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') onFocus()
+    }
+    window.addEventListener('focus', onFocus)
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      window.removeEventListener('focus', onFocus)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
+  }, [router])
+
   // Mémoire du dernier mode choisi par l'utilisateur (localStorage).
   // Avant on basculait automatiquement en liste sur mobile, mais ça forçait
   // une vue non désirée à chaque ouverture du calendrier. Maintenant on respecte

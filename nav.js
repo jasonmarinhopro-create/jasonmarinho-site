@@ -11,6 +11,34 @@
     });
   }
 
+  /* ── Speculation Rules (Chrome 121+ / Edge 121+, ignoré ailleurs) ──
+   * Prefetch automatique des pages internes au hover (eagerness moderate)
+   * → quand l'utilisateur survole un lien, la page suivante est déjà chargée
+   * → clic = navigation perçue comme instantanée
+   * Coût zéro sur Firefox/Safari (script simplement ignoré). */
+  if (!document.querySelector('script[type="speculationrules"]') && 'HTMLScriptElement' in window) {
+    try {
+      var sr = document.createElement('script');
+      sr.type = 'speculationrules';
+      sr.textContent = JSON.stringify({
+        prefetch: [{
+          source: 'document',
+          where: {
+            and: [
+              { href_matches: '/*' },
+              { not: { href_matches: '/api/*' } },
+              { not: { href_matches: '/sign/*' } },
+              { not: { selector_matches: 'a[rel~="external"]' } },
+              { not: { selector_matches: 'a[target="_blank"]' } }
+            ]
+          },
+          eagerness: 'moderate'
+        }]
+      });
+      document.head.appendChild(sr);
+    } catch (e) { /* navigateur ne supporte pas, fail silently */ }
+  }
+
   /* ── CSS ── */
   if (!document.getElementById('nav-styles')) {
     var style = document.createElement('style');
