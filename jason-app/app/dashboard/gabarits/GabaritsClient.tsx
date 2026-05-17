@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
   Copy, Check, MagnifyingGlass, PencilSimple, X,
   CalendarCheck, House, SunHorizon, ArrowRight,
-  Star, CaretDown, CaretUp, PushPin, Sparkle,
+  Star, CaretDown, CaretUp, PushPin, Sparkle, DotsThreeVertical,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
 import type { LogementOption } from './page'
@@ -473,6 +473,16 @@ export default function GabaritsClient({
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* Gabarits — labels Épingler/Copier cachés sur très petit écran pour
+           garder le header compact à 1 ligne (icônes seules) */
+        .gab-md-text { display: inline; }
+        @media (max-width: 480px) {
+          .gab-md-text { display: none; }
+        }
+        /* Hover des items du kebab menu */
+        [role="menuitem"]:hover { background: var(--bg-2, rgba(255,255,255,.04)) !important; }
+      ` }} />
       {toast && (
         <div style={s.toast}>
           <Check size={13} color="#34D399" weight="bold" />
@@ -878,6 +888,8 @@ function CompactHeroCard({
   onCopy, onCustomize, onAdd, onRemove, onMoveUp, onMoveDown, isExpanded, onToggleExpand,
 }: HeroCardProps) {
   const [lang, setLang] = useState<'fr' | 'en'>('fr')
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
   const hasEN = !!t.corps_en
   const cfg = SECTION_CONFIG[bucket]
   const copiedKey = t.id + lang
@@ -891,99 +903,188 @@ function CompactHeroCard({
 
   const previewText = (() => {
     const line = displayContent.split('\n').find(l => l.trim()) ?? ''
-    return line.length > 110 ? line.slice(0, 110) + '…' : line
+    return line.length > 130 ? line.slice(0, 130) + '…' : line
   })()
+
+  // Fermer le menu si clic à l'extérieur
+  useEffect(() => {
+    if (!menuOpen) return
+    const onClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [menuOpen])
+
+  const hasMenuActions = !!(onMoveUp || onMoveDown || onRemove)
 
   return (
     <div style={{
       background: 'var(--surface)',
       border: `1px solid ${cfg.border}`,
-      borderLeft: `4px solid ${cfg.color}`,
-      borderRadius: '14px',
+      borderLeft: `3px solid ${cfg.color}`,
+      borderRadius: '12px',
       overflow: 'hidden',
+      transition: 'border-color .15s',
     }}>
-      {/* Top bar — click to toggle */}
+      {/* Header compact 1 ligne : type-icon + titre + Épingler/Copier + ⋮ + caret */}
       <div
         onClick={onToggleExpand}
         style={{
-          display: 'flex', alignItems: 'center', gap: '8px',
-          padding: '10px 14px', cursor: 'pointer', userSelect: 'none' as const,
+          display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 12px',
+          cursor: 'pointer', userSelect: 'none' as const,
           borderBottom: isExpanded ? `1px solid ${cfg.border}` : 'none',
+          minHeight: '48px',
         }}
       >
+        {/* Numéro de position si épinglé, sinon petite icône type */}
         {isPinned && position ? (
           <span style={{
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: '22px', height: '22px', borderRadius: '50%', flexShrink: 0,
+            width: '24px', height: '24px', borderRadius: '50%', flexShrink: 0,
             background: cfg.bg, border: `1px solid ${cfg.border}`,
             fontSize: '11px', fontWeight: 700, color: cfg.color,
             fontFamily: 'var(--font-fraunces), serif',
           }}>{position}</span>
-        ) : null}
-
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', gap: '4px',
-          padding: '3px 8px', borderRadius: '100px', flexShrink: 0,
-          background: isPinned ? 'var(--accent-bg)' : cfg.bg,
-          color: isPinned ? 'var(--accent-text)' : cfg.color,
-          border: `1px solid ${isPinned ? 'var(--accent-border)' : cfg.border}`,
-          fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase' as const,
-        }}>
-          {isPinned
-            ? <><PushPin size={10} weight="fill" /> MON MESSAGE</>
-            : <><Sparkle size={10} weight="fill" /> Suggestion</>}
-        </span>
-
-        {customization && <span style={s.customChip}>Personnalisé</span>}
-
-        <span style={{
-          flex: 1, minWidth: 0, fontSize: '14px', fontWeight: 600, color: 'var(--text)',
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-        }}>{displayTitle}</span>
-
-        <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
-          {onMoveUp   && <button onClick={onMoveUp}   style={s.heroIconBtn} title="Remonter"><CaretUp   size={12} weight="bold" /></button>}
-          {onMoveDown && <button onClick={onMoveDown} style={s.heroIconBtn} title="Descendre"><CaretDown size={12} weight="bold" /></button>}
-          {onAdd    && <button onClick={onAdd}    style={s.heroPinBtn}       title="Ajouter"><PushPin size={11} /> Épingler</button>}
-          {onRemove && <button onClick={onRemove} style={s.heroIconBtn}      title="Retirer"><X size={12} /></button>}
-        </div>
-
-        {/* Marge gauche supplémentaire pour éloigner le caret expand
-            de la croix 'Retirer' — évite les fat-finger taps mobile. */}
-        <span style={{
-          color: 'var(--text-muted)', display: 'flex', flexShrink: 0,
-          marginLeft: '8px', padding: '6px 4px',
-          transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'none',
-        }}>
-          <CaretDown size={13} />
-        </span>
-      </div>
-
-      {/* Collapsed: preview + quick copy */}
-      {!isExpanded && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '7px 14px 11px' }}>
+        ) : (
           <span style={{
-            flex: 1, minWidth: 0, fontSize: '12.5px', fontWeight: 300,
-            color: 'var(--text-muted)', fontFamily: 'var(--font-outfit), sans-serif',
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-          }}>{previewText}</span>
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: '24px', height: '24px', borderRadius: '7px', flexShrink: 0,
+            background: cfg.bg, color: cfg.color,
+          }}>
+            {isPinned
+              ? <PushPin size={12} weight="fill" />
+              : <Sparkle size={12} weight="fill" />}
+          </span>
+        )}
+
+        {/* Titre + petite pill "perso" si personnalisé */}
+        <span style={{
+          flex: 1, minWidth: 0,
+          display: 'flex', alignItems: 'center', gap: '6px',
+          fontSize: '14px', fontWeight: 600, color: 'var(--text)',
+        }}>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const, minWidth: 0 }}>
+            {displayTitle}
+          </span>
+          {customization && (
+            <span title="Personnalisé" style={{
+              flexShrink: 0, fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px',
+              padding: '2px 7px', borderRadius: '999px',
+              background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
+              color: 'var(--accent-text)',
+            }}>PERSO</span>
+          )}
+        </span>
+
+        {/* Actions inline droite */}
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+          {/* Épingler : visible seulement pour les suggestions à ajouter */}
+          {onAdd && (
+            <button
+              onClick={onAdd}
+              style={{
+                ...s.heroPinBtn,
+                fontSize: '12px',
+              }}
+              aria-label="Épingler à ma séquence"
+              title="Épingler à ma séquence"
+            >
+              <PushPin size={11} /> <span className="gab-md-text">Épingler</span>
+            </button>
+          )}
+
+          {/* Copier — action primaire */}
           <button
             onClick={e => { e.stopPropagation(); onCopy(t, e, lang) }}
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              padding: '7px 15px', borderRadius: '9px', cursor: 'pointer',
+              display: 'inline-flex', alignItems: 'center', gap: '5px',
+              padding: '7px 12px', borderRadius: '8px', cursor: 'pointer',
               fontSize: '12.5px', fontWeight: 700, flexShrink: 0,
-              fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
+              fontFamily: 'var(--font-outfit), sans-serif',
+              transition: 'all 0.15s',
               ...(isCopied
-                ? { background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', color: 'var(--success-1)' }
+                ? { background: 'rgba(52,211,153,0.10)', border: '1px solid rgba(52,211,153,0.30)', color: 'var(--success-1)' }
                 : { background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' }
               ),
             }}
+            aria-label="Copier le message"
+            title={isCopied ? 'Copié' : 'Copier'}
           >
             {isCopied
-              ? <><Check size={12} weight="bold" /> Copié</>
-              : <><Copy size={12} weight="bold" /> Copier</>}
+              ? <><Check size={12} weight="bold" /> <span className="gab-md-text">Copié</span></>
+              : <><Copy size={12} weight="bold" /> <span className="gab-md-text">Copier</span></>}
           </button>
+
+          {/* Kebab menu : actions secondaires (déplacer, retirer) */}
+          {hasMenuActions && (
+            <div ref={menuRef} style={{ position: 'relative' as const }}>
+              <button
+                onClick={e => { e.stopPropagation(); setMenuOpen(v => !v) }}
+                style={s.heroIconBtn}
+                aria-label="Plus d'actions"
+                aria-haspopup="menu"
+                aria-expanded={menuOpen}
+                title="Plus d'actions"
+              >
+                <DotsThreeVertical size={14} weight="bold" />
+              </button>
+              {menuOpen && (
+                <div role="menu" style={{
+                  position: 'absolute' as const, top: 'calc(100% + 6px)', right: 0, zIndex: 30,
+                  minWidth: '190px',
+                  background: 'var(--surface)', border: '1px solid var(--border)',
+                  borderRadius: '10px', boxShadow: '0 16px 32px rgba(0,0,0,.35)',
+                  padding: '4px', display: 'flex', flexDirection: 'column' as const, gap: '1px',
+                }}>
+                  {onMoveUp && (
+                    <button role="menuitem" onClick={() => { onMoveUp(); setMenuOpen(false) }} style={s.menuItem}>
+                      <CaretUp size={13} weight="bold" /> Remonter
+                    </button>
+                  )}
+                  {onMoveDown && (
+                    <button role="menuitem" onClick={() => { onMoveDown(); setMenuOpen(false) }} style={s.menuItem}>
+                      <CaretDown size={13} weight="bold" /> Descendre
+                    </button>
+                  )}
+                  <button role="menuitem" onClick={() => { onCustomize(t); setMenuOpen(false) }} style={s.menuItem}>
+                    <PencilSimple size={13} /> {customization ? 'Modifier ma version' : 'Personnaliser'}
+                  </button>
+                  {onRemove && (
+                    <button role="menuitem" onClick={() => { onRemove(); setMenuOpen(false) }} style={{ ...s.menuItem, color: '#fb7185' }}>
+                      <X size={13} /> Retirer
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Caret expand */}
+          <span style={{
+            color: 'var(--text-muted)', display: 'flex', flexShrink: 0,
+            padding: '4px 2px',
+            transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'none',
+          }}>
+            <CaretDown size={12} />
+          </span>
+        </div>
+      </div>
+
+      {/* Collapsed : preview compact 2 lignes sous le titre (sans Copier dupliqué) */}
+      {!isExpanded && (
+        <div style={{ padding: '0 14px 11px 46px' }}>
+          <span style={{
+            fontSize: '12.5px', fontWeight: 300,
+            color: 'var(--text-muted)', fontFamily: 'var(--font-outfit), sans-serif',
+            display: '-webkit-box',
+            WebkitLineClamp: 2 as unknown as number,
+            WebkitBoxOrient: 'vertical' as const,
+            overflow: 'hidden', lineHeight: 1.55,
+          }}>{previewText}</span>
         </div>
       )}
 
@@ -1518,6 +1619,14 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11.5px', fontWeight: 600, padding: '5px 11px', borderRadius: '8px', cursor: 'pointer',
     background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)',
     fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
+  },
+  menuItem: {
+    display: 'inline-flex', alignItems: 'center', gap: '8px',
+    padding: '9px 12px', borderRadius: '7px', cursor: 'pointer',
+    fontSize: '13px', fontWeight: 500,
+    color: 'var(--text)', background: 'transparent', border: 'none',
+    fontFamily: 'var(--font-outfit), sans-serif', textAlign: 'left' as const,
+    transition: 'background .15s',
   },
   heroEditBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
