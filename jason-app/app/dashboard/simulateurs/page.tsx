@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 export type LogementPrefill = {
   id: string
   nom: string
-  pays: 'FR' | 'PT' | 'ES' | 'IT' | 'BE'
+  pays: 'FR' | 'PT' | 'ES' | 'IT' | 'BE' | 'DE' | 'NL' | 'AT' | 'CH'
   ville: string | null
   tarifNuitee: number | null
   typeLogement: string | null
@@ -30,8 +30,9 @@ export default async function SimulateursPage() {
 
   const prefill: LogementPrefill[] = (logements ?? []).map(l => {
     const rawPays = ((l.pays as string) ?? 'FR').toUpperCase()
+    const supported = ['PT','ES','IT','BE','DE','NL','AT','CH'] as const
     const pays: LogementPrefill['pays'] =
-      rawPays === 'PT' || rawPays === 'ES' || rawPays === 'IT' || rawPays === 'BE' ? rawPays : 'FR'
+      (supported as readonly string[]).includes(rawPays) ? (rawPays as LogementPrefill['pays']) : 'FR'
     return {
       id: l.id as string,
       nom: (l.nom as string) ?? '',

@@ -76,14 +76,42 @@
     { ville: 'Gent',            pays: 'BE', occ: 65, adr: 95,  revpar: 22500, saisonHaute: [4,5,6,7,8,9],          source: 'Visit Gent + Toerisme Vlaanderen 2024' },
     { ville: 'Antwerpen',       pays: 'BE', occ: 60, adr: 95,  revpar: 20800, saisonHaute: [4,5,6,7,8,9,12],      source: 'Toerisme Vlaanderen 2024' },
     { ville: 'Liège',           pays: 'BE', occ: 55, adr: 70,  revpar: 14100, saisonHaute: [5,6,7,8,12],           source: 'Visit Wallonia 2024' },
+    // Allemagne
+    { ville: 'Berlin',          pays: 'DE', occ: 65, adr: 95,  revpar: 22500, saisonHaute: [4,5,6,7,8,9,12],      source: 'visitBerlin + DZT 2024' },
+    { ville: 'München',         pays: 'DE', occ: 70, adr: 120, revpar: 30700, saisonHaute: [4,5,6,7,8,9,10,12],   source: 'München Tourismus + DZT 2024' },
+    { ville: 'Hamburg',         pays: 'DE', occ: 62, adr: 95,  revpar: 21500, saisonHaute: [5,6,7,8,9,12],         source: 'Hamburg Tourismus + DZT 2024' },
+    { ville: 'Köln',            pays: 'DE', occ: 58, adr: 85,  revpar: 18000, saisonHaute: [4,5,6,7,8,9,12],      source: 'KölnTourismus + DZT 2024' },
+    { ville: 'Frankfurt am Main', pays: 'DE', occ: 62, adr: 115, revpar: 26000, saisonHaute: [3,4,5,9,10,11],      source: 'Tourismus+Congress Frankfurt + DZT 2024' },
+    // Pays-Bas (Amsterdam : max 30 nuits/an par particulier — restriction stricte)
+    { ville: 'Amsterdam',       pays: 'NL', occ: 72, adr: 145, revpar: 38100, saisonHaute: [4,5,6,7,8,9,12],      source: 'NBTC Holland Marketing + CBS 2024' },
+    { ville: 'Rotterdam',       pays: 'NL', occ: 62, adr: 95,  revpar: 21500, saisonHaute: [5,6,7,8,9],            source: 'Rotterdam Partners + CBS 2024' },
+    { ville: 'Den Haag',        pays: 'NL', occ: 58, adr: 85,  revpar: 18000, saisonHaute: [5,6,7,8,9],            source: 'The Hague Convention Bureau + CBS 2024' },
+    { ville: 'Utrecht',         pays: 'NL', occ: 60, adr: 90,  revpar: 19700, saisonHaute: [4,5,6,7,8,9],          source: 'Utrecht Marketing + CBS 2024' },
+    { ville: 'Eindhoven',       pays: 'NL', occ: 55, adr: 75,  revpar: 15100, saisonHaute: [4,5,6,9,10],            source: 'Eindhoven Tourism + CBS 2024' },
+    // Autriche
+    { ville: 'Wien',            pays: 'AT', occ: 68, adr: 95,  revpar: 23600, saisonHaute: [4,5,6,7,8,9,12],      source: 'WienTourismus + Statistik Austria 2024' },
+    { ville: 'Salzburg',        pays: 'AT', occ: 70, adr: 125, revpar: 31900, saisonHaute: [6,7,8,12,1,2],         source: 'SalzburgerLand + Statistik Austria 2024' },
+    { ville: 'Innsbruck',       pays: 'AT', occ: 65, adr: 105, revpar: 24900, saisonHaute: [12,1,2,3,7,8],          source: 'Innsbruck Tourismus + Statistik Austria 2024' },
+    { ville: 'Graz',            pays: 'AT', occ: 58, adr: 75,  revpar: 15900, saisonHaute: [5,6,7,8,9],            source: 'Graz Tourismus + Statistik Austria 2024' },
+    { ville: 'Hallstatt',       pays: 'AT', occ: 72, adr: 145, revpar: 38100, saisonHaute: [5,6,7,8,9,12],         source: 'Salzkammergut Tourismus 2024' },
+    // Suisse (ADR converti CHF → EUR ~0.95)
+    { ville: 'Zürich',          pays: 'CH', occ: 65, adr: 175, revpar: 41500, saisonHaute: [5,6,7,8,9,12],         source: 'Zürich Tourismus + OFS 2024' },
+    { ville: 'Genève',          pays: 'CH', occ: 68, adr: 195, revpar: 48400, saisonHaute: [4,5,6,7,8,9,10],       source: 'Genève Tourisme + OFS 2024' },
+    { ville: 'Bern',            pays: 'CH', occ: 58, adr: 145, revpar: 30700, saisonHaute: [5,6,7,8,9],             source: 'Bern Welcome + OFS 2024' },
+    { ville: 'Lausanne',        pays: 'CH', occ: 62, adr: 160, revpar: 36200, saisonHaute: [5,6,7,8,9],             source: 'Lausanne Tourisme + OFS 2024' },
+    { ville: 'Interlaken',      pays: 'CH', occ: 70, adr: 170, revpar: 43400, saisonHaute: [6,7,8,12,1,2,3],         source: 'Interlaken Tourismus + OFS 2024' },
   ]
 
   var COUNTRY_AVG = {
-    FR: { occ: 52, adr: 85, source: 'DGE Mémento Tourisme 2024 + INSEE' },
-    PT: { occ: 60, adr: 80, source: 'INE + Turismo de Portugal 2024' },
-    ES: { occ: 60, adr: 90, source: 'INE Encuesta de Ocupación Apartamentos Turísticos 2024' },
-    IT: { occ: 58, adr: 95, source: 'ISTAT + ENIT 2024' },
-    BE: { occ: 55, adr: 85, source: 'Statbel + offices régionaux 2024' },
+    FR: { occ: 52, adr: 85,  source: 'DGE Mémento Tourisme 2024 + INSEE' },
+    PT: { occ: 60, adr: 80,  source: 'INE + Turismo de Portugal 2024' },
+    ES: { occ: 60, adr: 90,  source: 'INE Encuesta de Ocupación Apartamentos Turísticos 2024' },
+    IT: { occ: 58, adr: 95,  source: 'ISTAT + ENIT 2024' },
+    BE: { occ: 55, adr: 85,  source: 'Statbel + offices régionaux 2024' },
+    DE: { occ: 58, adr: 90,  source: 'DZT + Statistisches Bundesamt 2024' },
+    NL: { occ: 60, adr: 100, source: 'CBS Statistics Netherlands + NBTC 2024' },
+    AT: { occ: 62, adr: 95,  source: 'Statistik Austria + Österreich Werbung 2024' },
+    CH: { occ: 60, adr: 165, source: 'OFS + Suisse Tourisme 2024 (CHF→EUR ≈0.95)' },
   }
 
   var COUNTRY_LABELS = {
@@ -92,6 +120,10 @@
     ES: { flag: '🇪🇸', label: 'Espagne' },
     IT: { flag: '🇮🇹', label: 'Italie' },
     BE: { flag: '🇧🇪', label: 'Belgique' },
+    DE: { flag: '🇩🇪', label: 'Allemagne' },
+    NL: { flag: '🇳🇱', label: 'Pays-Bas' },
+    AT: { flag: '🇦🇹', label: 'Autriche' },
+    CH: { flag: '🇨🇭', label: 'Suisse' },
   }
 
   // ─── Multipliers pour ajustement par caractéristiques bien ────────────────
