@@ -5,14 +5,19 @@
 // règle peut être ré-exécutée sans créer de doublons (ex: le check
 // "arrivée demain" peut tourner toutes les heures sans flooder).
 
-import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { NotificationCategory, NotificationSeverity } from './types'
 
-let _serviceClient: ReturnType<typeof createServiceClient> | null = null
+// On laisse le schema en `any` car pas de Database type généré localement.
+// (Sans ce cast explicite, supabase-js 2.99 résout le schema interne et
+// toutes les tables remontent en type `never` → build error.)
+type ServiceClient = SupabaseClient<any, 'public', any>
 
-function getServiceClient() {
+let _serviceClient: ServiceClient | null = null
+
+function getServiceClient(): ServiceClient {
   if (_serviceClient) return _serviceClient
-  _serviceClient = createServiceClient(
+  _serviceClient = createServiceClient<any, 'public', any>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } },

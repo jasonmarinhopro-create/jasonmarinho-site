@@ -9,13 +9,16 @@
 // Chaque règle est défensive : elle ne throw jamais, log et continue. Une
 // règle cassée ne doit pas empêcher les autres de tourner.
 
-import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import { createNotification } from './create'
 
-let _service: ReturnType<typeof createServiceClient> | null = null
-function svc() {
+// Schema en `any` explicite (cf. note dans create.ts).
+type ServiceClient = SupabaseClient<any, 'public', any>
+
+let _service: ServiceClient | null = null
+function svc(): ServiceClient {
   if (_service) return _service
-  _service = createServiceClient(
+  _service = createServiceClient<any, 'public', any>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } },
