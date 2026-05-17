@@ -64,4 +64,29 @@ test.describe('Dashboard — pages clés accessibles', () => {
     // On vérifie juste que la page elle-même n'a pas crashé.
     await expect(page.locator('body')).toContainText(/(bonjour|bonsoir|dashboard|tableau)/i)
   })
+
+  test('Encaissements page loads (banner ou stats)', async ({ page }) => {
+    await login(page)
+    await page.goto('/dashboard/encaissements')
+    // Soit la bannière "Stripe non configuré", soit les 4 stats top.
+    await expect(page.locator('body')).toContainText(/(stripe|solde|virement|encaiss)/i)
+  })
+
+  test('Notifications page loads avec filtres', async ({ page }) => {
+    await login(page)
+    await page.goto('/dashboard/notifications')
+    // Soit l'empty state "à jour", soit la liste, mais les filtres doivent toujours être là.
+    await expect(page.locator('body')).toContainText(/(non lues|toutes|alerte|notification)/i)
+  })
+
+  test('Notifications cloche : panel affiche les 3 onglets', async ({ page }) => {
+    await login(page)
+    await page.goto('/dashboard')
+    // Ouvre la cloche
+    await page.getByLabel(/^notifications/i).first().click()
+    // Les 3 onglets doivent être présents : Alertes / Nouveautés / Chez Nous
+    await expect(page.locator('body')).toContainText(/alertes/i)
+    await expect(page.locator('body')).toContainText(/nouveautés/i)
+    await expect(page.locator('body')).toContainText(/chez nous/i)
+  })
 })
