@@ -67,11 +67,6 @@
     { slug: 'poitiers',        name: 'Poitiers',        adr: '60-105 €/nuit',  occ: "58 % d'occupation", ann: '~1 200 annonces', desc: "'Ville aux cent clochers', 28 000 étudiants, Futuroscope (1,9M visiteurs/an) à 8 km, TGV Paris 1h35. Triple demande tourisme + parc d'attractions + universitaire, prix d'achat très accessibles." }
   ];
 
-  // ── Génère les liens footer depuis CITIES ────────────────────────────────
-  var cityLinksHtml = CITIES.map(function (c) {
-    return '<a href="/devenir-hote-airbnb-' + c.slug + '">Devenir hôte à ' + c.name + '</a>';
-  }).join('');
-
   // ── Génère une carte ville pour /villes ──────────────────────────────────
   function cityCardHtml(c) {
     return '<a class="city-card" href="/devenir-hote-airbnb-' + c.slug + '">'
@@ -93,197 +88,209 @@
     var style = document.createElement('style');
     style.id = 'footer-styles';
     style.textContent = [
-      'footer{background:#001a11;padding:clamp(48px,6vw,72px) clamp(16px,5vw,60px) clamp(24px,4vw,40px);border-top:1px solid rgba(255,255,255,.05)}',
-      '.ft-in{max-width:1240px;margin:0 auto}',
-      '.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}',
-      '.ft-col-brand{min-width:0}',
-      '.ft-desc{font-size:14px;color:rgba(255,255,255,.35);line-height:1.75;max-width:300px;margin-top:14px;font-family:\'Outfit\',sans-serif}',
-      '.ft-ct{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.4);margin-bottom:14px;font-family:\'Outfit\',sans-serif}',
-      '.ft-ls{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px}',
-      '.ft-ls a{color:rgba(255,255,255,.4);text-decoration:none;font-size:14px;font-family:\'Outfit\',sans-serif;display:flex;align-items:center;gap:8px;padding:5px 0;transition:color .2s;line-height:1.3}',
-      '.ft-ls a:hover{color:rgba(255,255,255,.85)}',
-      '.ft-ls a i{font-size:14px;color:rgba(255,213,107,.35);flex-shrink:0;width:14px;text-align:center}',
-      '.ft-ls a .ft-ext{font-size:10px;color:rgba(255,213,107,.35);margin-left:2px}',
-      '.ft-seo{border-top:1px solid rgba(255,255,255,.05);padding-top:8px;margin-bottom:28px}',
-      '.ft-seo-block{border-bottom:1px solid rgba(255,255,255,.04)}',
-      '.ft-seo-block:last-child{border-bottom:none}',
-      '.ft-seo-block summary{list-style:none;cursor:pointer;padding:16px 4px;display:flex;align-items:center;justify-content:space-between;font-family:\'Outfit\',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);transition:color .2s;-webkit-tap-highlight-color:transparent}',
-      '.ft-seo-block summary::-webkit-details-marker{display:none}',
-      '.ft-seo-block summary:hover{color:rgba(255,255,255,.9)}',
-      '.ft-seo-block summary .ft-seo-label{display:flex;align-items:center;gap:10px}',
-      '.ft-seo-block summary .ft-seo-label i{font-size:14px;color:rgba(255,213,107,.5)}',
-      '.ft-seo-block summary .ft-seo-caret{font-size:12px;color:rgba(255,255,255,.3);transition:transform .25s}',
-      '.ft-seo-block[open] summary .ft-seo-caret{transform:rotate(180deg)}',
-      '.ft-seo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 24px;padding:4px 4px 16px}',
-      '.ft-seo-grid a{color:rgba(255,255,255,.38);text-decoration:none;font-size:13px;font-family:\'Outfit\',sans-serif;padding:5px 0;transition:color .2s;line-height:1.4}',
-      '.ft-seo-grid a:hover{color:rgba(255,255,255,.85)}',
-      '.ft-see-all{display:inline-flex;align-items:center;gap:6px;margin:4px 4px 32px;font-size:12px;font-weight:600;color:#63D683;text-decoration:none;letter-spacing:.2px;transition:opacity .2s}',
-      '.ft-see-all:hover{opacity:.75}',
-      '.ft-bot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding-top:28px;border-top:1px solid rgba(255,255,255,.05)}',
-      '.ft-bot-l{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;font-family:\'Outfit\',sans-serif}',
-      '.ft-cp{font-size:12px;color:rgba(255,255,255,.2)}',
-      '.ft-legal{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px}',
-      '.ft-legal a{font-size:12px;color:rgba(255,255,255,.28);text-decoration:none;transition:color .2s}',
-      '.ft-legal a:hover{color:rgba(255,255,255,.7)}',
-      '.ft-legal-sep{color:rgba(255,255,255,.15);font-size:11px}',
-      '.socs{display:flex;gap:8px}',
-      '.soc{width:40px;height:40px;border-radius:8px;border:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);text-decoration:none;font-size:15px;transition:all .2s}',
-      '.soc:hover{border-color:rgba(255,255,255,.3);color:#fff}',
-      '@media(max-width:960px){.ft-g{grid-template-columns:repeat(3,1fr);gap:28px}.ft-col-brand{grid-column:1 / -1;max-width:520px}.ft-desc{max-width:none}}',
-      '@media(max-width:640px){.ft-g{grid-template-columns:1fr 1fr;gap:24px}.ft-bot{flex-direction:column;align-items:flex-start}.ft-legal{margin-top:-4px}.ft-seo-grid{grid-template-columns:1fr 1fr;gap:4px 16px}}',
-      '@media(max-width:420px){.ft-g{grid-template-columns:1fr;gap:22px}.ft-seo-grid{grid-template-columns:1fr}}'
+      'footer{background:var(--gd,#003329);padding:clamp(56px,7vw,80px) clamp(16px,5vw,60px) clamp(24px,3vw,32px);border-top:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;color:#fff;font-family:\'Outfit\',sans-serif}',
+      'footer::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 100% 0%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}',
+      '.ft-in{max-width:1280px;margin:0 auto;position:relative;z-index:1}',
+
+      /* Hero : brand + 3 colonnes */
+      '.ft-hero{display:grid;grid-template-columns:1.3fr 2.7fr;gap:clamp(40px,6vw,80px);padding-bottom:clamp(36px,4vw,48px);border-bottom:1px solid rgba(255,255,255,.07)}',
+      '.ft-brand{display:flex;flex-direction:column;gap:18px}',
+      '.ft-brand-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff}',
+      '.ft-brand-logo img{width:36px;height:36px;border-radius:8px;filter:brightness(0) invert(1);opacity:.9}',
+      '.ft-brand-name{font-family:\'Fraunces\',serif;font-size:21px;font-weight:400;letter-spacing:-.01em}',
+      '.ft-brand-name em{color:#FFD56B;font-style:italic;font-weight:300}',
+      '.ft-brand-desc{font-size:14.5px;color:rgba(255,255,255,.6);line-height:1.7;margin:0;max-width:340px}',
+      '.ft-socs{display:flex;gap:8px;margin-top:4px}',
+      '.ft-soc{width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);text-decoration:none;font-size:16px;transition:all .2s}',
+      '.ft-soc:hover{background:rgba(255,213,107,.10);border-color:rgba(255,213,107,.22);color:#FFD56B;transform:translateY(-1px)}',
+
+      '.ft-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:clamp(28px,3.5vw,48px)}',
+      '.ft-cat{display:flex;flex-direction:column;gap:13px}',
+      '.ft-cat-t{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,213,107,.78);margin:0 0 4px}',
+      '.ft-cat a{color:rgba(255,255,255,.78);text-decoration:none;font-size:14.5px;line-height:1.55;width:fit-content;position:relative;transition:color .2s}',
+      '.ft-cat a::after{content:"";position:absolute;left:0;bottom:-2px;width:0;height:1px;background:#FFD56B;transition:width .22s}',
+      '.ft-cat a:hover{color:#fff}',
+      '.ft-cat a:hover::after{width:100%}',
+      '.ft-cat a .ft-ext{font-size:10px;color:rgba(255,213,107,.55);margin-left:5px;display:inline-flex;align-items:center;vertical-align:1px}',
+
+      /* Bloc Explorer : onglets + panneaux (tous les liens en HTML, SEO préservé) */
+      '.ft-explore{padding:clamp(28px,3.5vw,40px) 0;border-bottom:1px solid rgba(255,255,255,.07)}',
+      '.ft-explore-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;flex-wrap:wrap}',
+      '.ft-explore-h{display:flex;align-items:center;gap:12px;font-family:\'Fraunces\',serif;font-size:17px;font-weight:400;color:#fff;letter-spacing:-.01em;margin:0}',
+      '.ft-explore-h i{color:#FFD56B;font-size:18px}',
+      '.ft-explore-h em{color:#FFD56B;font-style:italic;font-weight:300}',
+      '.ft-explore-tabs{display:flex;gap:6px;flex-wrap:wrap}',
+      '.ft-tab{font-size:12.5px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.75);cursor:pointer;font-family:\'Outfit\',sans-serif;font-weight:500;transition:all .2s}',
+      '.ft-tab:hover{background:rgba(255,255,255,.08);color:#fff}',
+      '.ft-tab.on{background:rgba(255,213,107,.12);border-color:rgba(255,213,107,.30);color:#FFD56B;font-weight:600}',
+      '.ft-panels{margin-top:6px}',
+      '.ft-panel{display:none;flex-wrap:wrap;gap:7px}',
+      '.ft-panel.on{display:flex}',
+      '.ft-panel a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.035);color:rgba(255,255,255,.65);text-decoration:none;border:1px solid transparent;transition:all .18s;line-height:1.3;white-space:nowrap}',
+      '.ft-panel a:hover{color:#FFD56B;border-color:rgba(255,213,107,.20);background:rgba(255,213,107,.06)}',
+      '.ft-panel .ft-see-all{margin:6px 4px 0;font-size:12px;font-weight:600;color:#63D683;text-decoration:none;display:inline-flex;align-items:center;gap:5px;padding:6px 0;background:transparent;border:none}',
+      '.ft-panel .ft-see-all:hover{color:#7ce29a;background:transparent}',
+
+      /* Baseline */
+      '.ft-baseline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:28px;color:rgba(255,255,255,.45);font-size:12.5px}',
+      '.ft-baseline-l{display:flex;align-items:center;gap:16px;flex-wrap:wrap}',
+      '.ft-cp{font-size:12.5px;color:rgba(255,255,255,.4)}',
+      '.ft-legal{display:flex;align-items:center;flex-wrap:wrap;gap:0 16px}',
+      '.ft-legal a{font-size:12.5px;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s}',
+      '.ft-legal a:hover{color:#fff}',
+
+      /* Responsive */
+      '@media(max-width:960px){.ft-hero{grid-template-columns:1fr;gap:36px}.ft-cols{grid-template-columns:1fr 1fr 1fr;gap:28px}.ft-brand-desc{max-width:none}}',
+      '@media(max-width:640px){.ft-cols{grid-template-columns:1fr 1fr;gap:26px}.ft-explore-head{flex-direction:column;align-items:flex-start}.ft-baseline{flex-direction:column;align-items:flex-start}.ft-panel a{font-size:12px;padding:5px 10px}}',
+      '@media(max-width:420px){.ft-cols{grid-template-columns:1fr;gap:22px}}'
     ].join('');
     document.head.appendChild(style);
   }
 
+  // Études de revenus par ville (22 pages publiées)
+  var REVENU_LINKS = [
+    { href: '/calculateurs/revenu-airbnb-paris', name: 'Paris' },
+    { href: '/calculateurs/revenu-lcd-lyon', name: 'Lyon' },
+    { href: '/calculateurs/revenu-lcd-bordeaux', name: 'Bordeaux' },
+    { href: '/calculateurs/revenu-lcd-marseille', name: 'Marseille' },
+    { href: '/calculateurs/revenu-lcd-nice', name: 'Nice' },
+    { href: '/calculateurs/revenu-lcd-annecy', name: 'Annecy' },
+    { href: '/calculateurs/revenu-lcd-strasbourg', name: 'Strasbourg' },
+    { href: '/calculateurs/revenu-lcd-honfleur', name: 'Honfleur' },
+    { href: '/calculateurs/revenu-lcd-lisbonne', name: 'Lisbonne' },
+    { href: '/calculateurs/revenu-lcd-porto', name: 'Porto' },
+    { href: '/calculateurs/revenu-lcd-funchal', name: 'Funchal' },
+    { href: '/calculateurs/revenu-lcd-barcelona', name: 'Barcelone' },
+    { href: '/calculateurs/revenu-lcd-madrid', name: 'Madrid' },
+    { href: '/calculateurs/revenu-lcd-sevilla', name: 'Séville' },
+    { href: '/calculateurs/revenu-lcd-valencia', name: 'Valence' },
+    { href: '/calculateurs/revenu-lcd-rome', name: 'Rome' },
+    { href: '/calculateurs/revenu-lcd-firenze', name: 'Florence' },
+    { href: '/calculateurs/revenu-lcd-bruxelles', name: 'Bruxelles' },
+    { href: '/calculateurs/revenu-lcd-amsterdam', name: 'Amsterdam' },
+    { href: '/calculateurs/revenu-lcd-berlin', name: 'Berlin' },
+    { href: '/calculateurs/revenu-lcd-munich', name: 'Munich' },
+    { href: '/calculateurs/revenu-lcd-wien', name: 'Vienne' }
+  ];
+  var COMPARATIF_LINKS = [
+    { href: '/comparatif-airdna-mashvisor', name: 'AirDNA vs Mashvisor' },
+    { href: '/comparatif-driing-airbnb-booking', name: 'Driing vs Airbnb vs Booking' },
+    { href: '/comparatif-hostfully-guesty', name: 'Hostfully vs Guesty' },
+    { href: '/comparatif-hostfully-guidebook-driing-touchstay', name: 'Guidebook vs Driing vs Touch Stay' },
+    { href: '/comparatif-igloohome-ttlock', name: 'igloohome vs TTLock' },
+    { href: '/comparatif-indy-tiime-henrri', name: 'Indy vs Tiime vs Henrri' },
+    { href: '/comparatif-lodgify-smoobu', name: 'Lodgify vs Smoobu' },
+    { href: '/comparatif-matterport-cubicasa', name: 'Matterport vs CubiCasa' },
+    { href: '/comparatif-pricelabs-beyond-wheelhouse', name: 'PriceLabs vs Beyond vs Wheelhouse' },
+    { href: '/comparatif-ring-eufy-reolink', name: 'Ring vs Eufy vs Reolink' },
+    { href: '/comparatif-smoobu-hospitable', name: 'Smoobu vs Hospitable' },
+    { href: '/comparatif-superhote-welkeys', name: 'Superhote vs Welkeys' },
+    { href: '/comparatif-turnoverbnb-properly', name: 'Turno vs Properly' },
+    { href: '/comparatif-welkeys-guestready', name: 'Welkeys vs GuestReady' }
+  ];
+
+  function panelHtml(items) {
+    return items.map(function (i) {
+      return '<a href="' + i.href + '">' + i.name + '</a>';
+    }).join('');
+  }
+
+  var hostPanel = CITIES.map(function (c) {
+    return '<a href="/devenir-hote-airbnb-' + c.slug + '">' + c.name + '</a>';
+  }).join('');
+
   var FOOTER_HTML = '<footer>'
     + '<div class="ft-in">'
-      + '<div class="ft-g">'
-        + '<div class="ft-col-brand">'
-          + '<a href="/" class="n-logo" style="text-decoration:none">'
-            + '<img src="/logo.webp" alt="Jason Marinho" class="nav-logo-img" width="34" height="34" loading="lazy">'
-            + '<div class="n-brand">Jason <em>Marinho</em></div>'
+
+      /* ── Brand + 3 colonnes ── */
+      + '<div class="ft-hero">'
+        + '<div class="ft-brand">'
+          + '<a class="ft-brand-logo" href="/">'
+            + '<img src="/logo.webp" alt="Jason Marinho" width="36" height="36" loading="lazy">'
+            + '<span class="ft-brand-name">Jason <em>Marinho</em></span>'
           + '</a>'
-          + '<p class="ft-desc">Expert LCD et co-fondateur de Driing. J\'accompagne les hôtes et conciergeries à développer leur activité, honnêtement et efficacement.</p>'
+          + '<p class="ft-brand-desc">Expert LCD et co-fondateur de Driing. J\'aide les hôtes et conciergeries à piloter leur activité avec des chiffres clairs, honnêtement et efficacement.</p>'
+          + '<div class="ft-socs">'
+            + '<a href="https://www.linkedin.com/in/jason-driing-location-sanscommission/" target="_blank" rel="noopener" class="ft-soc" aria-label="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>'
+            + '<a href="https://instagram.com/jason_marinho" target="_blank" rel="noopener" class="ft-soc" aria-label="Instagram"><i class="ph ph-instagram-logo"></i></a>'
+            + '<a href="https://www.facebook.com/jasonmarinholcd" target="_blank" rel="noopener" class="ft-soc" aria-label="Facebook"><i class="ph ph-facebook-logo"></i></a>'
+            + '<a href="https://wa.me/33630212592" target="_blank" rel="noopener" class="ft-soc" aria-label="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>'
+          + '</div>'
         + '</div>'
-        + '<div>'
-          + '<div class="ft-ct">Outils</div>'
-          + '<ul class="ft-ls">'
-            + '<li><a href="/services/simulateurs"><i class="ph ph-calculator"></i>Simulateurs fiscaux</a></li>'
-            + '<li><a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Audit Google Business</a></li>'
-            + '<li><a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a></li>'
-            + '<li><a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a></li>'
-            + '<li><a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a></li>'
-            + '<li><a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a></li>'
-            + '<li><a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits messages</a></li>'
-            + '<li><a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a></li>'
-          + '</ul>'
-        + '</div>'
-        + '<div>'
-          + '<div class="ft-ct">Calculateurs</div>'
-          + '<ul class="ft-ls">'
-            + '<li><a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur revenus</a></li>'
-            + '<li><a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur prix</a></li>'
-            + '<li><a href="/calculateurs/comparer-villes"><i class="ph ph-scales"></i>Comparateur villes</a></li>'
-            + '<li><a href="/calculateurs"><i class="ph ph-rows"></i>Voir tous les calculateurs</a></li>'
-          + '</ul>'
-        + '</div>'
-        + '<div>'
-          + '<div class="ft-ct">Ressources</div>'
-          + '<ul class="ft-ls">'
-            + '<li><a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a></li>'
-            + '<li><a href="/lexique-lcd"><i class="ph ph-book-open"></i>Lexique LCD</a></li>'
-            + '<li><a href="/services/actualites"><i class="ph ph-megaphone"></i>Actualités LCD</a></li>'
-            + '<li><a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations</a></li>'
-            + '<li><a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a></li>'
-            + '<li><a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a></li>'
-            + '<li><a href="/services/chez-nous"><i class="ph ph-house"></i>Chez Nous (forum)</a></li>'
-            + '<li><a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a></li>'
-            + '<li><a href="/services/ecosysteme"><i class="ph ph-globe"></i>Écosystème LCD</a></li>'
-          + '</ul>'
-        + '</div>'
-        + '<div>'
-          + '<div class="ft-ct">Pour qui</div>'
-          + '<ul class="ft-ls">'
-            + '<li><a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a></li>'
-            + '<li><a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes</a></li>'
-            + '<li><a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a></li>'
-            + '<li><a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing</a></li>'
-          + '</ul>'
-        + '</div>'
-        + '<div>'
-          + '<div class="ft-ct">À propos</div>'
-          + '<ul class="ft-ls">'
-            + '<li><a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a></li>'
-            + '<li><a href="/tarifs"><i class="ph ph-tag"></i>Tarifs</a></li>'
-            + '<li><a href="/contact"><i class="ph ph-envelope"></i>Contact</a></li>'
-            + '<li><a href="https://app.jasonmarinho.com"><i class="ph ph-layout"></i>Espace membre</a></li>'
-            + '<li><a href="https://driing.co" target="_blank" rel="noopener"><i class="ph ph-arrow-square-out"></i>Driing<span class="ft-ext"><i class="ph ph-arrow-up-right"></i></span></a></li>'
-          + '</ul>'
+
+        + '<div class="ft-cols">'
+          + '<div class="ft-cat">'
+            + '<h4 class="ft-cat-t">Produit</h4>'
+            + '<a href="/services/calendrier">Calendrier & check-list</a>'
+            + '<a href="/services/performances">Performances LCD</a>'
+            + '<a href="/services/revenus">Suivi des revenus</a>'
+            + '<a href="/services/securite">Vérification voyageurs</a>'
+            + '<a href="/services/gabarits-messages">Gabarits de messages</a>'
+            + '<a href="/services/qr-affiches">QR & Affiches WiFi</a>'
+            + '<a href="/services/audit-gbp">Audit Google Business</a>'
+            + '<a href="/services/simulateurs">Simulateurs fiscaux</a>'
+            + '<a href="/calculateurs">Calculateurs marché</a>'
+          + '</div>'
+          + '<div class="ft-cat">'
+            + '<h4 class="ft-cat-t">Ressources</h4>'
+            + '<a href="/blog">Blog LCD</a>'
+            + '<a href="/services/guides-lcd">Guides LCD</a>'
+            + '<a href="/services/formations">Formations</a>'
+            + '<a href="/services/actualites">Actualités LCD</a>'
+            + '<a href="/lexique-lcd">Lexique LCD</a>'
+            + '<a href="/sos-hote">SOS Hôte (urgences)</a>'
+            + '<a href="/services/chez-nous">Chez Nous (forum)</a>'
+            + '<a href="/services/communaute">Groupes Facebook</a>'
+            + '<a href="/services/ecosysteme">Écosystème LCD</a>'
+          + '</div>'
+          + '<div class="ft-cat">'
+            + '<h4 class="ft-cat-t">Entreprise</h4>'
+            + '<a href="/qui-suis-je">Qui suis-je</a>'
+            + '<a href="/tarifs">Tarifs</a>'
+            + '<a href="/contact">Contact</a>'
+            + '<a href="/pour-qui/chambres-dhotes">Chambres d\'hôtes</a>'
+            + '<a href="/pour-qui/gites">Gîtes</a>'
+            + '<a href="/pour-qui/conciergeries">Conciergeries</a>'
+            + '<a href="/pour-qui/membres-driing">Membres Driing</a>'
+            + '<a href="https://driing.co" target="_blank" rel="noopener">Driing<span class="ft-ext"><i class="ph ph-arrow-up-right"></i></span></a>'
+            + '<a href="https://app.jasonmarinho.com">Espace membre</a>'
+          + '</div>'
         + '</div>'
       + '</div>'
-      + '<div class="ft-seo">'
-        + '<details class="ft-seo-block">'
-          + '<summary>'
-            + '<span class="ft-seo-label"><i class="ph ph-map-pin"></i>Devenir hôte par ville</span>'
-            + '<i class="ph ph-caret-down ft-seo-caret"></i>'
-          + '</summary>'
-          + '<div class="ft-seo-grid">' + cityLinksHtml + '</div>'
-          + '<a href="/villes" class="ft-see-all">Voir les guides pour les ' + CITIES.length + ' villes <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
-        + '</details>'
-        + '<details class="ft-seo-block">'
-          + '<summary>'
-            + '<span class="ft-seo-label"><i class="ph ph-trend-up"></i>Études de revenus par ville (22)</span>'
-            + '<i class="ph ph-caret-down ft-seo-caret"></i>'
-          + '</summary>'
-          + '<div class="ft-seo-grid">'
-            + '<a href="/calculateurs/revenu-airbnb-paris">🇫🇷 Paris</a>'
-            + '<a href="/calculateurs/revenu-lcd-lyon">🇫🇷 Lyon</a>'
-            + '<a href="/calculateurs/revenu-lcd-bordeaux">🇫🇷 Bordeaux</a>'
-            + '<a href="/calculateurs/revenu-lcd-marseille">🇫🇷 Marseille</a>'
-            + '<a href="/calculateurs/revenu-lcd-nice">🇫🇷 Nice</a>'
-            + '<a href="/calculateurs/revenu-lcd-annecy">🇫🇷 Annecy</a>'
-            + '<a href="/calculateurs/revenu-lcd-strasbourg">🇫🇷 Strasbourg</a>'
-            + '<a href="/calculateurs/revenu-lcd-honfleur">🇫🇷 Honfleur</a>'
-            + '<a href="/calculateurs/revenu-lcd-lisbonne">🇵🇹 Lisbonne</a>'
-            + '<a href="/calculateurs/revenu-lcd-porto">🇵🇹 Porto</a>'
-            + '<a href="/calculateurs/revenu-lcd-funchal">🇵🇹 Funchal</a>'
-            + '<a href="/calculateurs/revenu-lcd-barcelona">🇪🇸 Barcelona</a>'
-            + '<a href="/calculateurs/revenu-lcd-madrid">🇪🇸 Madrid</a>'
-            + '<a href="/calculateurs/revenu-lcd-sevilla">🇪🇸 Sevilla</a>'
-            + '<a href="/calculateurs/revenu-lcd-valencia">🇪🇸 Valencia</a>'
-            + '<a href="/calculateurs/revenu-lcd-rome">🇮🇹 Roma</a>'
-            + '<a href="/calculateurs/revenu-lcd-firenze">🇮🇹 Firenze</a>'
-            + '<a href="/calculateurs/revenu-lcd-bruxelles">🇧🇪 Bruxelles</a>'
-            + '<a href="/calculateurs/revenu-lcd-amsterdam">🇳🇱 Amsterdam</a>'
-            + '<a href="/calculateurs/revenu-lcd-berlin">🇩🇪 Berlin</a>'
-            + '<a href="/calculateurs/revenu-lcd-munich">🇩🇪 München</a>'
-            + '<a href="/calculateurs/revenu-lcd-wien">🇦🇹 Wien</a>'
-          + '</div>'
-          + '<a href="/calculateurs" class="ft-see-all">Voir tous les calculateurs (3 outils + 22 villes) <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
-        + '</details>'
-        + '<details class="ft-seo-block">'
-          + '<summary>'
-            + '<span class="ft-seo-label"><i class="ph ph-scales"></i>Comparatifs outils LCD</span>'
-            + '<i class="ph ph-caret-down ft-seo-caret"></i>'
-          + '</summary>'
-          + '<div class="ft-seo-grid">'
-            + '<a href="/comparatif-airdna-mashvisor">AirDNA vs Mashvisor</a>'
-            + '<a href="/comparatif-driing-airbnb-booking">Driing vs Airbnb vs Booking.com</a>'
-            + '<a href="/comparatif-hostfully-guesty">Hostfully vs Guesty</a>'
-            + '<a href="/comparatif-hostfully-guidebook-driing-touchstay">Hostfully Guidebook vs Driing vs Touch Stay</a>'
-            + '<a href="/comparatif-igloohome-ttlock">igloohome vs TTLock</a>'
-            + '<a href="/comparatif-indy-tiime-henrri">Indy vs Tiime vs Henrri</a>'
-            + '<a href="/comparatif-lodgify-smoobu">Lodgify vs Smoobu</a>'
-            + '<a href="/comparatif-matterport-cubicasa">Matterport vs CubiCasa</a>'
-            + '<a href="/comparatif-pricelabs-beyond-wheelhouse">PriceLabs vs Beyond vs Wheelhouse</a>'
-            + '<a href="/comparatif-ring-eufy-reolink">Ring vs Eufy vs Reolink</a>'
-            + '<a href="/comparatif-smoobu-hospitable">Smoobu vs Hospitable</a>'
-            + '<a href="/comparatif-superhote-welkeys">Superhote vs Welkeys</a>'
-            + '<a href="/comparatif-turnoverbnb-properly">Turno vs Properly</a>'
-            + '<a href="/comparatif-welkeys-guestready">Welkeys vs GuestReady</a>'
-          + '</div>'
-        + '</details>'
-      + '</div>'
-      + '<div class="ft-bot">'
-        + '<div class="ft-bot-l">'
-          + '<div class="ft-cp">© 2026 Jason Marinho · Fait avec soin à Paris</div>'
-          + '<div class="ft-legal">'
-            + '<span class="ft-legal-sep">·</span>'
-            + '<a href="/mentions-legales">Mentions légales</a>'
-            + '<span class="ft-legal-sep">·</span>'
-            + '<a href="/politique-de-confidentialite">Confidentialité</a>'
-            + '<span class="ft-legal-sep">·</span>'
-            + '<a href="/cgvu">CGV / CGU</a>'
-            + '<span class="ft-legal-sep">·</span>'
-            + '<a href="#" onclick="if(window.openCookieSettings){openCookieSettings();}return false;">Gérer les cookies</a>'
+
+      /* ── Bloc Explorer : 3 onglets, tous les liens en HTML ── */
+      + '<div class="ft-explore">'
+        + '<div class="ft-explore-head">'
+          + '<h3 class="ft-explore-h"><i class="ph ph-compass"></i>Explorer par <em>ville & comparatif</em></h3>'
+          + '<div class="ft-explore-tabs" role="tablist">'
+            + '<button class="ft-tab on" data-panel="revenus" role="tab" aria-selected="true">Études de revenus</button>'
+            + '<button class="ft-tab" data-panel="hote" role="tab" aria-selected="false">Devenir hôte</button>'
+            + '<button class="ft-tab" data-panel="outils" role="tab" aria-selected="false">Comparatifs outils</button>'
           + '</div>'
         + '</div>'
-        + '<div class="socs">'
-          + '<a href="https://instagram.com/jason_marinho" target="_blank" rel="noopener" class="soc" aria-label="Instagram"><i class="ph-bold ph-instagram-logo"></i></a>'
-          + '<a href="https://www.facebook.com/jasonmarinholcd" target="_blank" rel="noopener" class="soc" aria-label="Facebook"><i class="ph-bold ph-facebook-logo"></i></a>'
-          + '<a href="https://www.linkedin.com/in/jason-driing-location-sanscommission/" target="_blank" rel="noopener" class="soc" aria-label="LinkedIn"><i class="ph-bold ph-linkedin-logo"></i></a>'
-          + '<a href="https://wa.me/33630212592" target="_blank" rel="noopener" class="soc" aria-label="WhatsApp"><i class="ph-bold ph-whatsapp-logo"></i></a>'
+        + '<div class="ft-panels">'
+          + '<div class="ft-panel on" data-panel="revenus" role="tabpanel">'
+            + panelHtml(REVENU_LINKS)
+            + '<a href="/calculateurs" class="ft-see-all">Voir tous les calculateurs <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
+          + '</div>'
+          + '<div class="ft-panel" data-panel="hote" role="tabpanel">'
+            + hostPanel
+            + '<a href="/villes" class="ft-see-all">Voir tous les guides hôte <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
+          + '</div>'
+          + '<div class="ft-panel" data-panel="outils" role="tabpanel">'
+            + panelHtml(COMPARATIF_LINKS)
+          + '</div>'
+        + '</div>'
+      + '</div>'
+
+      /* ── Baseline ── */
+      + '<div class="ft-baseline">'
+        + '<div class="ft-cp">© 2026 Jason Marinho · Fait avec soin à Paris</div>'
+        + '<div class="ft-legal">'
+          + '<a href="/mentions-legales">Mentions légales</a>'
+          + '<a href="/politique-de-confidentialite">Confidentialité</a>'
+          + '<a href="/cgvu">CGV / CGU</a>'
+          + '<a href="#" onclick="if(window.openCookieSettings){openCookieSettings();}return false;">Cookies</a>'
         + '</div>'
       + '</div>'
     + '</div>'
@@ -320,4 +327,22 @@
   if (villesLead) {
     villesLead.textContent = CITIES.length;
   }
+
+  // ── Onglets footer "Explorer" (visuel seulement, liens déjà en HTML) ─────
+  // Délégation pour fonctionner même si footer injecté plus tard.
+  document.addEventListener('click', function (e) {
+    var tab = e.target.closest && e.target.closest('.ft-tab');
+    if (!tab) return;
+    var panelName = tab.getAttribute('data-panel');
+    var tabs = document.querySelectorAll('.ft-tab');
+    var panels = document.querySelectorAll('.ft-panel');
+    for (var t = 0; t < tabs.length; t++) {
+      var on = tabs[t].getAttribute('data-panel') === panelName;
+      tabs[t].classList.toggle('on', on);
+      tabs[t].setAttribute('aria-selected', on ? 'true' : 'false');
+    }
+    for (var p = 0; p < panels.length; p++) {
+      panels[p].classList.toggle('on', panels[p].getAttribute('data-panel') === panelName);
+    }
+  });
 }());
