@@ -1,9 +1,26 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp } from '@phosphor-icons/react/dist/ssr'
+import { useState, useMemo, useEffect } from 'react'
+import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp, TrendUp, Storefront } from '@phosphor-icons/react/dist/ssr'
+import { citiesByCountry, estimateRevenue, calculatePrice } from '@/lib/lcd/market-benchmarks'
+import type { LogementPrefill } from './page'
 
-type CalcTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe'
+type CalcTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe' | 'revenus' | 'prix'
+
+interface Props {
+  logementsPrefill?: LogementPrefill[]
+}
+
+// Mapping type_logement DB → clé engine (engine attend studio/t1/t2/t3/maison)
+function normalizeType(raw: string | null | undefined): string {
+  if (!raw) return 't2'
+  const s = String(raw).toLowerCase()
+  if (s.includes('studio')) return 'studio'
+  if (s.includes('maison') || s.includes('villa') || s.includes('house')) return 'maison'
+  if (s.includes('t1') || s.includes('1 piece') || s.includes('1 pièce')) return 't1'
+  if (s.includes('t3') || s.includes('3 piece') || s.includes('3 pièce')) return 't3'
+  return 't2'
+}
 
 function fmtEur(n: number, decimals: number = 0): string {
   return n.toLocaleString('fr-FR', { maximumFractionDigits: decimals }) + ' €'
@@ -832,27 +849,406 @@ function TaxeSejour() {
   )
 }
 
-export default function SimulateursUI() {
-  const [tab, setTab] = useState<CalcTab>('fiscal')
+/* ──────────────────────────────────────────
+ * 5. ESTIMATEUR DE REVENUS LCD (préfilé)
+ * ────────────────────────────────────────── */
+const MONTHS_SHORT = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
+const MONTHS_LONG = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+
+function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
+  const [logementId, setLogementId] = useState<string>(logements[0]?.id ?? '__manual__')
+  const selected = logements.find(l => l.id === logementId)
+
+  const [pays, setPays] = useState<'FR' | 'PT'>(selected?.pays ?? 'FR')
+  const [ville, setVille] = useState<string>(selected?.ville ?? '')
+  const [typeLogement, setTypeLogement] = useState<string>(normalizeType(selected?.typeLogement))
+  const [nbChambres, setNbChambres] = useState<number>(selected?.nbChambres ?? 2)
+  const [mode, setMode] = useState<string>('toute-annee')
+  const [useAdrReel, setUseAdrReel] = useState<boolean>(!!selected?.tarifNuitee)
+
+  // Si l'utilisateur change de logement → on resync les champs
+  useEffect(() => {
+    if (!selected) return
+    setPays(selected.pays)
+    setVille(selected.ville ?? '')
+    setTypeLogement(normalizeType(selected.typeLogement))
+    setNbChambres(selected.nbChambres ?? 2)
+    setUseAdrReel(!!selected.tarifNuitee)
+  }, [selected])
+
+  const cityOptions = useMemo(() => citiesByCountry(pays), [pays])
+  const adrOverride = useAdrReel ? (selected?.tarifNuitee ?? null) : null
+
+  const res = useMemo(() => estimateRevenue({
+    pays, ville: ville || null, typeLogement, nbChambres, mode, adrOverride,
+  }), [pays, ville, typeLogement, nbChambres, mode, adrOverride])
+
+  const maxMonth = Math.max(...res.monthly.map(m => m.revenu))
+
+  return (
+    <div>
+      <h2 style={s.sectionTitle}><TrendUp size={20} weight="fill" /> Estimateur de revenus annuels</h2>
+      <p style={s.sectionDesc}>
+        Combien peut rapporter ton bien (ou un bien que tu envisages d'acheter) selon ta ville, ton type de bien et ton mode d'exploitation.
+        {logements.length > 0 && ' Préfilé avec tes logements.'}
+      </p>
+
+      <div style={s.grid2}>
+        <div style={s.formCard}>
+          {logements.length > 0 && (
+            <div style={s.field}>
+              <label style={s.label}>Logement</label>
+              <select value={logementId} onChange={e => setLogementId(e.target.value)} style={s.input}>
+                {logements.map(l => (
+                  <option key={l.id} value={l.id}>
+                    {l.nom} {l.ville ? `· ${l.ville}` : ''}
+                  </option>
+                ))}
+                <option value="__manual__">— Saisie manuelle (autre bien) —</option>
+              </select>
+            </div>
+          )}
+
+          <div style={s.field}>
+            <label style={s.label}>Pays</label>
+            <select value={pays} onChange={e => setPays(e.target.value as 'FR' | 'PT')} style={s.input}>
+              <option value="FR">🇫🇷 France</option>
+              <option value="PT">🇵🇹 Portugal</option>
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Ville</label>
+            <select value={ville} onChange={e => setVille(e.target.value)} style={s.input}>
+              <option value="">— Autre ville (moyenne pays) —</option>
+              {cityOptions.map(c => <option key={c.ville} value={c.ville}>{c.ville}</option>)}
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Type de bien</label>
+            <select value={typeLogement} onChange={e => setTypeLogement(e.target.value)} style={s.input}>
+              <option value="studio">Studio</option>
+              <option value="t1">T1 / 1 chambre</option>
+              <option value="t2">T2 / 2 pièces</option>
+              <option value="t3">T3 / 3 pièces</option>
+              <option value="maison">Maison entière</option>
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Nombre de chambres</label>
+            <select value={nbChambres} onChange={e => setNbChambres(parseInt(e.target.value, 10))} style={s.input}>
+              <option value={0}>Aucune (studio)</option>
+              <option value={1}>1 chambre</option>
+              <option value={2}>2 chambres</option>
+              <option value={3}>3 chambres</option>
+              <option value={4}>4+ chambres</option>
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Mode d'exploitation</label>
+            <select value={mode} onChange={e => setMode(e.target.value)} style={s.input}>
+              <option value="toute-annee">Toute l'année</option>
+              <option value="saisonnier-ete">Saisonnier été (3 mois)</option>
+              <option value="saisonnier-hiver">Saisonnier hiver (3 mois)</option>
+              <option value="weekends">Weekends uniquement</option>
+            </select>
+          </div>
+
+          {selected?.tarifNuitee && (
+            <label style={{ ...s.field, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={useAdrReel} onChange={e => setUseAdrReel(e.target.checked)} />
+              <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
+                Utiliser mon tarif réel ({selected.tarifNuitee} €/nuit) au lieu de la moyenne marché
+              </span>
+            </label>
+          )}
+        </div>
+
+        <div style={s.resultCard}>
+          <div style={s.resultLabel}>Revenu annuel estimé pour {res.city}</div>
+          <div style={s.resultBigVal}>{fmtEur(res.revenuAnnuel)}</div>
+          <div style={{ fontSize: '13px', color: 'var(--text-2)', marginTop: '4px' }}>
+            Fourchette : <strong>{fmtEur(res.revenuLow)}</strong> → <strong>{fmtEur(res.revenuHigh)}</strong>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '16px' }}>
+            <MiniBox label="Occupation" value={`${res.occupation} %`} />
+            <MiniBox label="ADR moyen" value={fmtEur(res.adr)} />
+            <MiniBox label="RevPAR" value={fmtEur(res.revpar)} />
+            <MiniBox label="Nuits/an" value={String(Math.round(365 * res.occupation / 100))} />
+          </div>
+
+          <div style={{ marginTop: '20px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '8px' }}>
+              Répartition mensuelle
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '4px', alignItems: 'end', minHeight: '60px' }}>
+              {res.monthly.map((m, i) => {
+                const h = maxMonth > 0 ? Math.max(4, (m.revenu / maxMonth) * 50) : 4
+                return (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title={`${MONTHS_LONG[i]} : ${fmtEur(m.revenu)}`}>
+                    <div style={{
+                      width: '100%', height: `${h}px`,
+                      background: m.isHigh
+                        ? 'linear-gradient(180deg, var(--success-1) 0%, #2BA56A 100%)'
+                        : 'linear-gradient(180deg, #FFD56B 0%, #FFC845 100%)',
+                      borderRadius: '4px 4px 0 0',
+                    }} />
+                    <span style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>{MONTHS_SHORT[i]}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '14px', marginBottom: 0, fontStyle: 'italic' as const, borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+            Source : {res.source}. Estimation indicative (±20 %). Pas une garantie de revenus.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ──────────────────────────────────────────
+ * 6. CALCULATEUR DE PRIX LCD (préfilé)
+ * ────────────────────────────────────────── */
+function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
+  const [logementId, setLogementId] = useState<string>(logements[0]?.id ?? '__manual__')
+  const selected = logements.find(l => l.id === logementId)
+
+  const [pays, setPays] = useState<'FR' | 'PT'>(selected?.pays ?? 'FR')
+  const [ville, setVille] = useState<string>(selected?.ville ?? '')
+  const [typeLogement, setTypeLogement] = useState<string>(normalizeType(selected?.typeLogement))
+  const [nbChambres, setNbChambres] = useState<number>(selected?.nbChambres ?? 2)
+  const [month, setMonth] = useState<number>(new Date().getMonth() + 1)
+  const [channel, setChannel] = useState<string>('mix')
+  const [useAdrReel, setUseAdrReel] = useState<boolean>(!!selected?.tarifNuitee)
+
+  useEffect(() => {
+    if (!selected) return
+    setPays(selected.pays)
+    setVille(selected.ville ?? '')
+    setTypeLogement(normalizeType(selected.typeLogement))
+    setNbChambres(selected.nbChambres ?? 2)
+    setUseAdrReel(!!selected.tarifNuitee)
+  }, [selected])
+
+  const cityOptions = useMemo(() => citiesByCountry(pays), [pays])
+  const adrOverride = useAdrReel ? (selected?.tarifNuitee ?? null) : null
+
+  const res = useMemo(() => calculatePrice({
+    pays, ville: ville || null, typeLogement, nbChambres, month, channel, adrOverride,
+  }), [pays, ville, typeLogement, nbChambres, month, channel, adrOverride])
+
+  const diffPct = res.marketAdr > 0 ? Math.round(((res.adjustedAdr - res.marketAdr) / res.marketAdr) * 100) : 0
+  const maxYearPrice = Math.max(...res.yearPricing.map(p => p.price))
+
+  return (
+    <div>
+      <h2 style={s.sectionTitle}><CurrencyEur size={20} weight="fill" /> Calculateur de prix par nuit</h2>
+      <p style={s.sectionDesc}>
+        Combien afficher selon ta ville, le mois, le canal de réservation. Compensation auto des commissions Airbnb / Booking / direct.
+      </p>
+
+      <div style={s.grid2}>
+        <div style={s.formCard}>
+          {logements.length > 0 && (
+            <div style={s.field}>
+              <label style={s.label}>Logement</label>
+              <select value={logementId} onChange={e => setLogementId(e.target.value)} style={s.input}>
+                {logements.map(l => <option key={l.id} value={l.id}>{l.nom} {l.ville ? `· ${l.ville}` : ''}</option>)}
+                <option value="__manual__">— Saisie manuelle —</option>
+              </select>
+            </div>
+          )}
+
+          <div style={s.field}>
+            <label style={s.label}>Pays</label>
+            <select value={pays} onChange={e => setPays(e.target.value as 'FR' | 'PT')} style={s.input}>
+              <option value="FR">🇫🇷 France</option>
+              <option value="PT">🇵🇹 Portugal</option>
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Ville</label>
+            <select value={ville} onChange={e => setVille(e.target.value)} style={s.input}>
+              <option value="">— Autre ville (moyenne pays) —</option>
+              {cityOptions.map(c => <option key={c.ville} value={c.ville}>{c.ville}</option>)}
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Type de bien</label>
+            <select value={typeLogement} onChange={e => setTypeLogement(e.target.value)} style={s.input}>
+              <option value="studio">Studio</option>
+              <option value="t1">T1</option>
+              <option value="t2">T2</option>
+              <option value="t3">T3</option>
+              <option value="maison">Maison</option>
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Nombre de chambres</label>
+            <select value={nbChambres} onChange={e => setNbChambres(parseInt(e.target.value, 10))} style={s.input}>
+              <option value={0}>Aucune</option>
+              <option value={1}>1</option>
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+              <option value={4}>4+</option>
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Mois cible</label>
+            <select value={month} onChange={e => setMonth(parseInt(e.target.value, 10))} style={s.input}>
+              {MONTHS_LONG.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+            </select>
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Canal de réservation</label>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
+              {[
+                { v: 'airbnb',  l: 'Airbnb',     sub: '~3 % comm.' },
+                { v: 'booking', l: 'Booking',    sub: '~15 % comm.' },
+                { v: 'direct',  l: 'Direct',     sub: '0 % comm.' },
+                { v: 'mix',     l: 'Mix tous',   sub: 'pondéré' },
+              ].map(c => (
+                <button key={c.v} type="button" onClick={() => setChannel(c.v)} style={{
+                  padding: '10px', borderRadius: '8px', cursor: 'pointer',
+                  border: '1px solid ' + (channel === c.v ? 'var(--accent-text)' : 'var(--border)'),
+                  background: channel === c.v ? 'var(--accent-bg)' : 'var(--bg-2)',
+                  color: channel === c.v ? 'var(--accent-text)' : 'var(--text-2)',
+                  fontSize: '12.5px', fontWeight: channel === c.v ? 700 : 500,
+                  fontFamily: 'inherit', textAlign: 'center' as const,
+                }}>
+                  {c.l}<br/><span style={{ fontSize: '10.5px', fontWeight: 400, opacity: 0.75 }}>{c.sub}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {selected?.tarifNuitee && (
+            <label style={{ ...s.field, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={useAdrReel} onChange={e => setUseAdrReel(e.target.checked)} />
+              <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
+                Utiliser mon tarif réel ({selected.tarifNuitee} €/nuit) au lieu de la moyenne marché
+              </span>
+            </label>
+          )}
+        </div>
+
+        <div style={s.resultCard}>
+          <div style={s.resultLabel}>Prix recommandé · {res.city} · {MONTHS_LONG[month - 1]}</div>
+          <div style={s.resultBigVal}>{fmtEur(res.basePrice)} <span style={{ fontSize: '14px', color: 'var(--text-3)', fontWeight: 300 }}>/ nuit</span></div>
+          <div style={{ fontSize: '12px', color: 'var(--text-2)', marginTop: '4px' }}>
+            Fourchette : {fmtEur(res.minPrice)} → {fmtEur(res.maxPrice)}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '16px' }}>
+            <MiniBox label="Semaine (lun→jeu)" value={fmtEur(res.weekPrice)} sub="−8 % vs base" />
+            <MiniBox label="Weekend (ven+sam)" value={fmtEur(res.weekendPrice)} sub="+20 % vs base" highlight />
+          </div>
+
+          <div style={{
+            marginTop: '14px', padding: '10px 12px', borderRadius: '10px',
+            background: 'var(--bg-2)', border: '1px solid var(--border)',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            fontSize: '12.5px',
+          }}>
+            <span style={{ color: 'var(--text-2)' }}>ADR marché {res.city} :</span>
+            <span style={{ fontWeight: 600, color: 'var(--text)' }}>
+              {fmtEur(res.marketAdr)}
+              {Math.abs(diffPct) >= 2 && (
+                <span style={{ marginLeft: '8px', fontSize: '11.5px', color: diffPct >= 0 ? 'var(--success-1)' : '#F59E0B' }}>
+                  {diffPct >= 0 ? '+' : ''}{diffPct} %
+                </span>
+              )}
+            </span>
+          </div>
+
+          <div style={{ marginTop: '18px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '8px' }}>
+              Prix recommandés sur 12 mois
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '4px', alignItems: 'end', minHeight: '60px' }}>
+              {res.yearPricing.map((p, i) => {
+                const h = maxYearPrice > 0 ? Math.max(4, (p.price / maxYearPrice) * 50) : 4
+                const isCurrent = p.month === month
+                return (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }} title={`${MONTHS_LONG[i]} : ${fmtEur(p.price)} (weekend ${fmtEur(p.weekend)})`}>
+                    <div style={{
+                      width: '100%', height: `${h}px`,
+                      background: p.isHigh
+                        ? 'linear-gradient(180deg, var(--success-1) 0%, #2BA56A 100%)'
+                        : 'linear-gradient(180deg, #FFD56B 0%, #FFC845 100%)',
+                      borderRadius: '4px 4px 0 0',
+                      boxShadow: isCurrent ? '0 0 0 2px var(--accent-text)' : 'none',
+                    }} />
+                    <span style={{ fontSize: '9.5px', fontWeight: 600, color: 'var(--text-2)' }}>{p.price}</span>
+                    <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{MONTHS_SHORT[i]}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '14px', marginBottom: 0, fontStyle: 'italic' as const, borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+            Source : {res.source}. Ajuste selon ta concurrence directe et la qualité de ton bien.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function MiniBox({ label, value, sub, highlight }: { label: string; value: string; sub?: string; highlight?: boolean }) {
+  return (
+    <div style={{
+      padding: '10px 12px', borderRadius: '10px',
+      background: highlight ? 'linear-gradient(135deg, rgba(99,214,131,0.10) 0%, var(--bg-2) 100%)' : 'var(--bg-2)',
+      border: '1px solid ' + (highlight ? 'rgba(99,214,131,0.25)' : 'var(--border)'),
+    }}>
+      <div style={{ fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '3px' }}>{label}</div>
+      <div style={{ fontSize: '18px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: highlight ? 'var(--success-1)' : 'var(--text)' }}>{value}</div>
+      {sub && <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '2px' }}>{sub}</div>}
+    </div>
+  )
+}
+
+export default function SimulateursUI({ logementsPrefill = [] }: Props) {
+  const [tab, setTab] = useState<CalcTab>('revenus')
 
   return (
     <div style={s.page}>
       <div style={s.hero}>
         <span style={s.heroBadge}>
           <Calculator size={13} weight="fill" />
-          4 simulateurs gratuits
+          6 simulateurs gratuits
         </span>
         <h1 style={s.heroTitle}>
           Simulateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
         </h1>
         <p style={s.heroDesc}>
-          Estime ton imposition, choisis ton statut, calcule ta rentabilité et la taxe de séjour applicable. Tout en quelques secondes.
+          Estime tes revenus, trouve le bon prix, calcule ton imposition, choisis ton statut. Tout en quelques secondes, préfilé avec tes vrais logements.
         </p>
       </div>
 
       <div style={s.tabs}>
+        <button onClick={() => setTab('revenus')} style={{ ...s.tab, ...(tab === 'revenus' ? s.tabActive : {}) }}>
+          <TrendUp size={14} weight="fill" /> Revenus
+        </button>
+        <button onClick={() => setTab('prix')} style={{ ...s.tab, ...(tab === 'prix' ? s.tabActive : {}) }}>
+          <Storefront size={14} weight="fill" /> Prix par nuit
+        </button>
         <button onClick={() => setTab('fiscal')} style={{ ...s.tab, ...(tab === 'fiscal' ? s.tabActive : {}) }}>
-          <CurrencyEur size={14} weight="fill" /> Fiscalité LCD
+          <CurrencyEur size={14} weight="fill" /> Fiscalité
         </button>
         <button onClick={() => setTab('statut')} style={{ ...s.tab, ...(tab === 'statut' ? s.tabActive : {}) }}>
           <Scales size={14} weight="fill" /> EI vs SASU
@@ -866,6 +1262,8 @@ export default function SimulateursUI() {
       </div>
 
       <div style={s.body}>
+        {tab === 'revenus' && <EstimateurRevenus logements={logementsPrefill} />}
+        {tab === 'prix' && <CalculateurPrix logements={logementsPrefill} />}
         {tab === 'fiscal' && <FiscalLCD />}
         {tab === 'statut' && <EIvsSASU />}
         {tab === 'rentabilite' && <Rentabilite />}
@@ -990,5 +1388,37 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '9px',
     fontSize: '11.5px', fontWeight: 300, color: 'var(--text-2)',
     lineHeight: 1.5, marginTop: '4px',
+  },
+
+  // ─── Estimateur / Calculateur (nouveaux onglets Sprint 2) ─────────────
+  sectionTitle: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '22px', fontWeight: 400,
+    color: 'var(--text)', margin: '0 0 6px',
+    letterSpacing: '-0.01em',
+  },
+  sectionDesc: {
+    fontSize: '13.5px', fontWeight: 300, color: 'var(--text-2)',
+    lineHeight: 1.6, margin: '0 0 22px',
+  },
+  grid2: {
+    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px',
+    alignItems: 'flex-start',
+  },
+  formCard: {
+    padding: '20px 22px', borderRadius: '14px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+  },
+  resultCard: {
+    padding: '20px 22px', borderRadius: '14px',
+    background: 'linear-gradient(135deg, var(--accent-bg) 0%, var(--surface) 100%)',
+    border: '1px solid var(--accent-border)',
+  },
+  resultBigVal: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '36px', fontWeight: 400,
+    color: 'var(--text)', letterSpacing: '-0.02em',
+    margin: '4px 0',
   },
 }

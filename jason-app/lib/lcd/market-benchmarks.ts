@@ -146,3 +146,169 @@ export function findMarketBenchmark(ville: string | null | undefined, pays: stri
 export function allCityBenchmarks(): MarketBenchmark[] {
   return CITY_BENCHMARKS
 }
+
+export function citiesByCountry(pays: 'FR' | 'PT'): MarketBenchmark[] {
+  return CITY_BENCHMARKS.filter(b => b.pays === pays).sort((a, b) => a.ville.localeCompare(b.ville, 'fr'))
+}
+
+// ─── Multipliers (synchronisés avec /calculateurs/engine.js public) ─────────
+const TYPE_MULT: Record<string, number> = { studio: 0.75, t1: 0.85, t2: 1.00, t3: 1.15, maison: 1.30 }
+const CHAMBRES_MULT: Record<number, number> = { 0: 0.85, 1: 0.90, 2: 1.00, 3: 1.15, 4: 1.30 }
+const MODE_MULT: Record<string, number> = {
+  'toute-annee': 1.00, 'saisonnier-ete': 0.45, 'saisonnier-hiver': 0.45, 'weekends': 0.30,
+}
+const SEASON_COEF = { high: 1.25, neutral: 1.00, low: 0.85 } as const
+const CHANNEL_ADJ: Record<string, number> = {
+  airbnb: 1.03, booking: 1.18, direct: 0.95, mix: 1.05,
+}
+
+// ─── Estimation revenus annuels d'une LCD selon la ville + le bien ──────────
+export type EstimateRevenueInput = {
+  pays: 'FR' | 'PT'
+  ville?: string | null
+  typeLogement: string                  // 'studio' | 't1' | 't2' | 't3' | 'maison'
+  nbChambres: number                    // 0-4+
+  mode: string                          // 'toute-annee' | 'saisonnier-ete' | 'saisonnier-hiver' | 'weekends'
+  /** Override l'ADR base (utile pour préfilé avec le tarif réel du logement) */
+  adrOverride?: number | null
+}
+export type EstimateRevenueResult = {
+  bench: MarketBenchmark | null
+  city: string
+  adr: number
+  occupation: number      // 0-100
+  revenuAnnuel: number
+  revenuLow: number       // -20 %
+  revenuHigh: number      // +20 %
+  revpar: number
+  monthly: Array<{ month: number; revenu: number; isHigh: boolean }>
+  source: string
+}
+
+export function estimateRevenue(input: EstimateRevenueInput): EstimateRevenueResult {
+  const bench = findMarketBenchmark(input.ville, input.pays)
+  const countryAvg = COUNTRY_BENCHMARKS.find(b => b.pays === input.pays) ?? COUNTRY_BENCHMARKS[0]
+  const baseOcc = (bench?.occupationAnnuellePct ?? countryAvg.occupationAnnuellePct) / 100
+  const baseAdr = input.adrOverride && input.adrOverride > 0
+    ? input.adrOverride
+    : (bench?.adrEur ?? countryAvg.adrEur)
+  const sourceLabel = bench
+    ? bench.source
+    : `${countryAvg.source} (moyenne pays — ville non listée)`
+
+  const typeMult = TYPE_MULT[input.typeLogement] ?? 1.00
+  const chambresMult = CHAMBRES_MULT[Math.min(4, Math.max(0, input.nbChambres || 0))] ?? 1.00
+  const modeMult = MODE_MULT[input.mode] ?? 1.00
+
+  // adrOverride : on utilise tel quel (déjà calibré au bien réel), sinon on
+  // ajuste avec type+chambres pour partir de l'ADR marché vers une estimation
+  // adaptée au bien décrit.
+  const adjustedAdr = input.adrOverride && input.adrOverride > 0
+    ? baseAdr
+    : baseAdr * typeMult * chambresMult
+  const adjustedOcc = Math.min(0.95, baseOcc * modeMult)
+  const revenuAnnuel = Math.round(adjustedAdr * 365 * adjustedOcc)
+
+  // Répartition mensuelle (pondération haute/basse saison)
+  const weights: number[] = []
+  let totalW = 0
+  for (let m = 1; m <= 12; m++) {
+    const isHigh = bench ? bench.saisonHaute.includes(m) : [6, 7, 8, 9].includes(m)
+    const w = isHigh ? 1.3 : Math.abs(6.5 - m) > 4.5 ? 0.7 : 1.0
+    weights.push(w)
+    totalW += w
+  }
+  const monthly = weights.map((w, i) => ({
+    month: i + 1,
+    revenu: Math.round(revenuAnnuel * (w / totalW)),
+    isHigh: bench ? bench.saisonHaute.includes(i + 1) : [6, 7, 8, 9].includes(i + 1),
+  }))
+
+  return {
+    bench,
+    city: bench?.ville ?? input.ville ?? 'Ville inconnue',
+    adr: Math.round(adjustedAdr),
+    occupation: Math.round(adjustedOcc * 100),
+    revenuAnnuel,
+    revenuLow: Math.round(revenuAnnuel * 0.80),
+    revenuHigh: Math.round(revenuAnnuel * 1.20),
+    revpar: Math.round(adjustedAdr * adjustedOcc),
+    monthly,
+    source: sourceLabel,
+  }
+}
+
+// ─── Calculateur prix par nuit selon ville + mois + canal ───────────────────
+export type CalculatePriceInput = {
+  pays: 'FR' | 'PT'
+  ville?: string | null
+  typeLogement: string
+  nbChambres: number
+  month: number                         // 1-12
+  channel: string                       // 'airbnb' | 'booking' | 'direct' | 'mix'
+  /** Override l'ADR base (utile pour partir du tarif réel du logement) */
+  adrOverride?: number | null
+}
+export type CalculatePriceResult = {
+  bench: MarketBenchmark | null
+  city: string
+  basePrice: number
+  weekPrice: number
+  weekendPrice: number
+  minPrice: number
+  maxPrice: number
+  marketAdr: number
+  adjustedAdr: number
+  yearPricing: Array<{ month: number; price: number; weekend: number; isHigh: boolean }>
+  source: string
+}
+
+export function calculatePrice(input: CalculatePriceInput): CalculatePriceResult {
+  const bench = findMarketBenchmark(input.ville, input.pays)
+  const countryAvg = COUNTRY_BENCHMARKS.find(b => b.pays === input.pays) ?? COUNTRY_BENCHMARKS[0]
+  const baseAdr = bench?.adrEur ?? countryAvg.adrEur
+  const sourceLabel = bench ? bench.source : `${countryAvg.source} (moyenne pays)`
+  const saisonHaute = bench?.saisonHaute ?? [6, 7, 8, 9]
+
+  const typeMult = TYPE_MULT[input.typeLogement] ?? 1.00
+  const chambresMult = CHAMBRES_MULT[Math.min(4, Math.max(0, input.nbChambres || 0))] ?? 1.00
+  // adrOverride = ton vrai ADR observé → on l'utilise comme base sans réajuster
+  const adjustedAdr = input.adrOverride && input.adrOverride > 0
+    ? input.adrOverride
+    : baseAdr * typeMult * chambresMult
+
+  const channelMult = CHANNEL_ADJ[input.channel] ?? 1.00
+  const monthCoef = saisonHaute.includes(input.month) ? SEASON_COEF.high
+    : Math.abs(6.5 - input.month) > 4.5 ? SEASON_COEF.low
+    : SEASON_COEF.neutral
+
+  const basePrice = Math.round(adjustedAdr * monthCoef * channelMult)
+  const weekPrice = Math.round(basePrice * 0.92)
+  const weekendPrice = Math.round(basePrice * 1.20)
+  const minPrice = Math.round(basePrice * 0.75)
+  const maxPrice = Math.round(basePrice * 1.45)
+
+  const yearPricing = Array.from({ length: 12 }, (_, i) => {
+    const m = i + 1
+    const c = saisonHaute.includes(m) ? SEASON_COEF.high
+      : Math.abs(6.5 - m) > 4.5 ? SEASON_COEF.low
+      : SEASON_COEF.neutral
+    const price = Math.round(adjustedAdr * c * channelMult)
+    return {
+      month: m,
+      price,
+      weekend: Math.round(price * 1.20),
+      isHigh: saisonHaute.includes(m),
+    }
+  })
+
+  return {
+    bench,
+    city: bench?.ville ?? input.ville ?? 'Ville inconnue',
+    basePrice, weekPrice, weekendPrice, minPrice, maxPrice,
+    marketAdr: Math.round(baseAdr),
+    adjustedAdr: Math.round(adjustedAdr),
+    yearPricing,
+    source: sourceLabel,
+  }
+}
