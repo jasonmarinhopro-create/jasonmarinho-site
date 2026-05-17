@@ -2,14 +2,11 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp, TrendUp, Storefront, Receipt, Percent } from '@phosphor-icons/react/dist/ssr'
+import { Calculator, Scales, CurrencyEur, ChartLineUp, TrendUp, Storefront, Receipt, Percent } from '@phosphor-icons/react/dist/ssr'
 import { citiesByCountry, estimateRevenue, calculatePrice, SUPPORTED_COUNTRIES, type MarketBenchmark } from '@/lib/lcd/market-benchmarks'
 import type { AccountStats } from '@/lib/lcd/account-stats'
 import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
-// Helpers partagés (extraits dans un module dédié pour permettre le code-splitting
-// des 5 simulateurs fiscaux ci-dessous). Le styles local `s` reste défini
-// en bas de ce fichier pour les 3 composants marché qui restent inline.
-import { fmtEur, fmtPct, normalizeType, MiniBox, BenchmarkRow } from '@/components/simulateurs/_shared'
+import { fmtEur, normalizeType, MiniBox, BenchmarkRow } from '@/components/simulateurs/_shared'
 
 // Lazy-load des 5 simulateurs fiscaux : chacun dans son propre chunk JS.
 // L'utilisateur ne télécharge que ce dont il a besoin selon l'onglet sélectionné.
@@ -254,10 +251,6 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
         </div>
       </div>
     </div>
-  )
-}
-
-/* Sous-composant : ligne benchmark Toi vs Marché */
   )
 }
 
