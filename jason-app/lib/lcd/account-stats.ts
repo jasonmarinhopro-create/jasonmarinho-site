@@ -1,4 +1,4 @@
-import { estimateRegimeFromCA, type RegimeFiscalEstime, FISCAL_PARAMS_2026 } from './fiscal-params'
+import { estimateRegimeFromCA, type RegimeFiscalEstime, detectStatutLocatif, type StatutLocatif, FISCAL_PARAMS_2026 } from './fiscal-params'
 
 type LogementWithStats = {
   ville: string | null
@@ -31,12 +31,16 @@ export type AccountStats = {
   regimeEstime: RegimeFiscalEstime
   regimeLabel: string
   regimeHint: string
+  statutLocatif: StatutLocatif
+  statutLocatifLabel: string
+  statutLocatifDetails: string
   villes: string[]
   insights: {
     ca: Insight | null
     logements: Insight | null
     adr: Insight | null
     regime: Insight | null
+    statut: Insight | null
   }
 }
 
@@ -54,6 +58,9 @@ export function computeAccountStats(
     : 0
 
   const regimeInfo = estimateRegimeFromCA(caTotal12m)
+  // autresRevenus inconnus tant qu'on ne les a pas en base — null en attendant
+  // que l'utilisateur saisisse son revenu foyer dans son profil.
+  const statutInfo = detectStatutLocatif(caTotal12m, null)
 
   const villes = Array.from(new Set(prefill.map(l => l.ville).filter(Boolean) as string[]))
 
@@ -73,6 +80,9 @@ export function computeAccountStats(
     regimeEstime: regimeInfo.regime,
     regimeLabel: regimeInfo.label,
     regimeHint: regimeInfo.hint,
+    statutLocatif: statutInfo.statut,
+    statutLocatifLabel: statutInfo.label,
+    statutLocatifDetails: statutInfo.details,
     villes,
     insights: computeInsights({
       caTotal12m,
@@ -80,6 +90,7 @@ export function computeAccountStats(
       nbLogementsActifs,
       adrMoyen,
       regime: regimeInfo.regime,
+      statut: statutInfo.statut,
     }),
   }
 }
@@ -91,6 +102,7 @@ function computeInsights(s: {
   nbLogementsActifs: number
   adrMoyen: number
   regime: RegimeFiscalEstime
+  statut: StatutLocatif
 }): AccountStats['insights'] {
   const plafondNc = FISCAL_PARAMS_2026.microBic.nonClasse.plafond  // 15 000
   const plafondCl = FISCAL_PARAMS_2026.microBic.classe.plafond     // 77 700
@@ -224,7 +236,28 @@ function computeInsights(s: {
     }
   }
 
-  return { ca, logements, adr, regime }
+  // ── Statut LMNP/LMP tile ──
+  let statut: Insight | null = null
+  if (s.statut === 'a-configurer') {
+    statut = null
+  } else if (s.statut === 'lmp') {
+    statut = {
+      message: 'LMP : cotisations sociales TNS (URSSAF) applicables. Anticipe.',
+      ctaLabel: 'Comparer EI vs SASU',
+      ctaHref: '/dashboard/simulateurs#statut',
+      tone: 'warning',
+    }
+  } else if (s.caTotal12m >= FISCAL_PARAMS_2026.ei.seuilLmp) {
+    // CA >= 23000 mais statut LMNP par défaut faute d'autresRevenus
+    statut = {
+      message: `LMNP probable mais à vérifier (LMP si LCD > 50 % des revenus foyer)`,
+      ctaLabel: 'En savoir plus',
+      ctaHref: '/services/simulateurs/choisir-statut-ei-sasu',
+      tone: 'opportunity',
+    }
+  }
+
+  return { ca, logements, adr, regime, statut }
 }
 
 export function fmtEur(n: number): string {

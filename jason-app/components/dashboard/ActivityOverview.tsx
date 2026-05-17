@@ -2,7 +2,7 @@
 
 import type { AccountStats, Insight } from '@/lib/lcd/account-stats'
 import { fmtEur } from '@/lib/lcd/account-stats'
-import { CurrencyEur, House, TrendUp, Scales, Lightning, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { CurrencyEur, House, TrendUp, Scales, Lightning, ArrowRight, Briefcase } from '@phosphor-icons/react/dist/ssr'
 
 export function ActivityOverview({ stats }: { stats: AccountStats }) {
   const hasActivity = stats.caTotal12m > 0
@@ -63,12 +63,20 @@ export function ActivityOverview({ stats }: { stats: AccountStats }) {
           insight={stats.insights.adr}
         />
         <StatTile
-          label="Régime estimé"
+          label="Régime fiscal"
           value={stats.regimeLabel}
           sub={stats.regimeHint}
           icon={<Scales size={14} weight="fill" />}
           insight={stats.insights.regime}
           highlight={stats.regimeEstime !== 'aucun'}
+        />
+        <StatTile
+          label="Statut locatif"
+          value={stats.statutLocatif === 'a-configurer' ? '—' : stats.statutLocatifLabel}
+          sub={stats.statutLocatifDetails}
+          icon={<Briefcase size={14} weight="fill" />}
+          insight={stats.insights.statut}
+          highlight={stats.statutLocatif === 'lmnp' || stats.statutLocatif === 'lmp'}
         />
       </div>
     </div>
