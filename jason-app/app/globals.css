@@ -321,7 +321,12 @@ body *:not(.no-theme-transition) {
   --text-muted: rgba(11,29,15,0.55);
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* Offset pour les ancres #fiscal, #statut, etc. : compense le header
+   * fixe (64 px) pour que la cible ne soit pas cachée derrière. */
+  scroll-padding-top: var(--header-h, 64px);
+}
 body {
   font-family: var(--font-outfit), sans-serif;
   background: var(--bg);
