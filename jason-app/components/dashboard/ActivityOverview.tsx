@@ -116,7 +116,7 @@ function StatTile({
     >
       <div style={st.head}>
         <span style={st.label}>{label}</span>
-        <span style={{ ...st.icon, ...(accent ? { color: 'var(--accent-text)', opacity: 0.85 } : {}) }}>{icon}</span>
+        <span aria-hidden="true" style={{ ...st.icon, ...(accent ? { color: 'var(--accent-text)', opacity: 0.85 } : {}) }}>{icon}</span>
       </div>
       <div style={{ ...st.value, ...(accent ? st.valueAccent : {}) }}>{value}</div>
       {sub && <div style={st.sub}>{sub}</div>}

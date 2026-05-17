@@ -29,6 +29,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/gabarits': 'Gabarits',
   '/dashboard/aide': "Centre d'aide",
   '/dashboard/revenus': 'Revenus',
+  '/dashboard/encaissements': 'Encaissements',
   '/dashboard/profil': 'Mon compte',
   '/dashboard/abonnement': 'Abonnement',
   '/dashboard/actualites': 'Actualités',
