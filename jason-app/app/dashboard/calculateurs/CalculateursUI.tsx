@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Calculator, ChartLineUp, MapPin, Storefront, TrendUp } from '@phosphor-icons/react/dist/ssr'
 import { EstimateurRevenus, CalculateurPrix, CompareurMesVilles } from '../simulateurs/SimulateursUI'
+import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
+import type { AccountStats } from '@/lib/lcd/account-stats'
 import type { LogementPrefill } from './page'
 
 type CalcTab = 'revenus' | 'prix' | 'mesvilles'
@@ -10,9 +12,10 @@ const CALC_TABS: CalcTab[] = ['revenus', 'prix', 'mesvilles']
 
 interface Props {
   logementsPrefill?: LogementPrefill[]
+  accountStats?: AccountStats
 }
 
-export default function CalculateursUI({ logementsPrefill = [] }: Props) {
+export default function CalculateursUI({ logementsPrefill = [], accountStats }: Props) {
   const [tab, setTab] = useState<CalcTab>('revenus')
 
   useEffect(() => {
@@ -66,6 +69,8 @@ export default function CalculateursUI({ logementsPrefill = [] }: Props) {
           </p>
         </div>
 
+        {accountStats && <ActivityOverview stats={accountStats} />}
+
         {logementsPrefill.length === 0 && (
           <div style={s.emptyState}>
             <MapPin size={28} weight="duotone" style={{ color: 'var(--accent-text)', opacity: 0.85, marginBottom: '8px' }} />
@@ -77,17 +82,17 @@ export default function CalculateursUI({ logementsPrefill = [] }: Props) {
 
         <div style={s.tabs} role="tablist" aria-label="Calculateurs marché">
           <button onClick={() => selectTab('revenus')} role="tab" aria-selected={tab === 'revenus'} style={s.tab}>
-            <TrendUp size={14} weight="fill" /> Revenus
+            <TrendUp size={15} weight="fill" /> Revenus
           </button>
           <button onClick={() => selectTab('prix')} role="tab" aria-selected={tab === 'prix'} style={s.tab}>
-            <Storefront size={14} weight="fill" /> Prix par nuit
+            <Storefront size={15} weight="fill" /> Prix par nuit
           </button>
           <button onClick={() => selectTab('mesvilles')} role="tab" aria-selected={tab === 'mesvilles'} style={s.tab}>
-            <MapPin size={14} weight="fill" /> Mes villes
+            <MapPin size={15} weight="fill" /> Mes villes
           </button>
         </div>
 
-        <div style={s.body} role="tabpanel">
+        <div style={s.bodyCard} role="tabpanel">
           {tab === 'revenus' && <EstimateurRevenus logements={logementsPrefill} />}
           {tab === 'prix' && <CalculateurPrix logements={logementsPrefill} />}
           {tab === 'mesvilles' && <CompareurMesVilles logements={logementsPrefill} />}
@@ -182,18 +187,26 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   tabs: {
-    display: 'flex', gap: '6px', flexWrap: 'wrap',
-    padding: '8px', borderRadius: '14px',
+    display: 'flex', gap: '8px', flexWrap: 'wrap',
+    padding: '6px', borderRadius: '14px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    marginBottom: '28px',
+    marginBottom: 'clamp(18px, 2.5vw, 24px)',
   },
   tab: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    padding: '10px 18px', borderRadius: '10px',
+    display: 'inline-flex', alignItems: 'center', gap: '8px',
+    padding: '11px 18px', borderRadius: '10px',
     background: 'transparent', border: 'none',
     color: 'var(--text-2)', fontSize: '13px', fontWeight: 500,
     cursor: 'pointer', fontFamily: 'inherit',
     transition: 'all .18s cubic-bezier(.16,1,.3,1)',
   },
   body: { width: '100%' },
+  bodyCard: {
+    width: '100%',
+    padding: 'clamp(18px, 2.6vw, 28px)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '16px',
+    boxShadow: '0 1px 0 rgba(255,255,255,.02) inset',
+  },
 }

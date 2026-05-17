@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
 import { extractCity } from '@/lib/lcd/market-benchmarks'
+import { computeAccountStats } from '@/lib/lcd/account-stats'
 import SimulateursUI from './SimulateursUI'
 
 export const metadata = { title: 'Simulateurs LCD, Jason Marinho' }
@@ -88,5 +89,5 @@ export default async function SimulateursPage() {
     }
   })
 
-  return <SimulateursUI logementsPrefill={prefill} />
+  return <SimulateursUI logementsPrefill={prefill} accountStats={computeAccountStats(prefill, profile)} />
 }
