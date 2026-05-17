@@ -402,6 +402,18 @@ em { font-style: italic; color: var(--accent); }
 }
 .tap-feedback:active { transform: scale(0.97); }
 
+/* Hover subtle : pour les tuiles non-cliquables (stat tiles, info cards)
+ * Légère élévation de la border + ombre douce, sans cursor pointer pour
+ * ne pas faire croire que c'est cliquable. */
+.hover-subtle {
+  transition: border-color var(--d-base) var(--ease-smooth),
+              box-shadow var(--d-base) var(--ease-smooth);
+}
+.hover-subtle:hover {
+  border-color: var(--border-2);
+  box-shadow: 0 4px 14px -8px rgba(0, 0, 0, 0.35);
+}
+
 /* Stagger animation utility : appliquer avec --i sur les enfants */
 .stagger-children > * {
   animation: fadeUp var(--d-slow) var(--ease-out) both;

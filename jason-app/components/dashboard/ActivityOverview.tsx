@@ -106,11 +106,14 @@ function StatTile({
   insight?: Insight | null
 }) {
   return (
-    <div style={{
-      ...st.wrap,
-      ...(accent ? st.wrapAccent : {}),
-      ...(highlight && !accent ? st.wrapHighlight : {}),
-    }}>
+    <div
+      className="hover-subtle"
+      style={{
+        ...st.wrap,
+        ...(accent ? st.wrapAccent : {}),
+        ...(highlight && !accent ? st.wrapHighlight : {}),
+      }}
+    >
       <div style={st.head}>
         <span style={st.label}>{label}</span>
         <span style={{ ...st.icon, ...(accent ? { color: 'var(--accent-text)', opacity: 0.85 } : {}) }}>{icon}</span>
