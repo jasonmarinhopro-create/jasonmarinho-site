@@ -73,6 +73,20 @@ export const FISCAL_PARAMS_2026 = {
     seuilLmp: 23000,             // € de CA pour basculer en LMP (si >50% revenus foyer)
   },
 
+  // ─── TVA / Franchise en base ───────────────────────────────────────────
+  // LCD avec services para-hôteliers (petit-déj quotidien, ménage en cours
+  // de séjour, fourniture du linge) : régime hôtelier — soumise à TVA au-dessus
+  // du seuil. Sans ces services : hors champ TVA.
+  // Note : LFi 2025 a proposé un seuil unifié à 25 000 € mais sa mise en
+  // œuvre reste en suspens — on garde le seuil BIC services 37 500 €.
+  tva: {
+    seuilFranchise: 37500,        // € — sous ce CA, dispense de facturation TVA
+    seuilTolerance: 41250,        // € — au-dessus, sortie de la franchise dès N+1
+    tauxLcdHotelier: 0.10,        // TVA 10 % LCD avec services
+    seuilReformePropose: 25000,   // proposition LFi 2025, en suspens
+    label: 'Franchise en base BIC services',
+  },
+
   // ─── Plafonds régime micro-foncier (location nue, pour ref) ───────────
   microFoncier: {
     plafond: 15000,

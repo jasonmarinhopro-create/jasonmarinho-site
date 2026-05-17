@@ -32,6 +32,13 @@ export const FISCAL_PARAMS_2026 = {
     tauxCotisationsTns: 0.42,
     seuilLmp: 23000,
   },
+  tva: {
+    seuilFranchise: 37500,
+    seuilTolerance: 41250,
+    tauxLcdHotelier: 0.10,
+    seuilReformePropose: 25000,
+    label: 'Franchise en base BIC services',
+  },
   meta: {
     annee: 2026,
     versionLoi: 'Loi Le Meur (2025) + LFi 2026',

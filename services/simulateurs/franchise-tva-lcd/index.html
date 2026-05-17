@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulateur franchise TVA LCD : seuils 2026, services para-hôteliers | Jason Marinho</title>
+  <meta name="description" content="Vérifie ta franchise en base de TVA selon ton CA LCD et tes services. Seuils 2026 (37 500 € / 41 250 €), distinction location simple vs LCD para-hôtelière, alerte automatique. Gratuit.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/franchise-tva-lcd">
+  <meta property="og:title" content="Simulateur franchise TVA LCD : seuils 2026, services para-hôteliers">
+  <meta property="og:description" content="Vérifie ta franchise en base de TVA selon ton CA LCD et tes services. Seuils 2026 (37 500 € / 41 250 €), distinction location simple vs LCD para-hôtelière, alerte automatique. Gratuit.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/franchise-tva-lcd">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#004C3F">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.10)}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(56px,7vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .h3{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:500;color:var(--td);margin:0 0 10px;letter-spacing:-.01em}
+    .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.65);margin:0 0 32px;max-width:680px}
+    .sub.dk{color:var(--tm)} .sub.mx{max-width:760px}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s,transform .2s,box-shadow .2s}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.78);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-ol:hover{border-color:rgba(255,255,255,.55);color:#fff}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.22);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.10);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,120px) 0 clamp(56px,7vw,90px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 78% 50%,rgba(255,213,107,.06),transparent 70%);pointer-events:none}
+    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 100%,rgba(0,76,63,.5),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px);position:relative;z-index:1}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.38);margin-bottom:32px;flex-wrap:wrap}
+    .hero-brd a{color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff} .hero-brd span{font-size:11px}
+    .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+    .meta-bd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border-radius:7px;padding:6px 12px}
+    .meta-bd i{color:rgba(255,213,107,.55)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    .ck-list{list-style:none;padding:0;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+    .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5;color:var(--tm)}
+    .ck-list li .chk{margin-top:2px}
+    .item-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:28px}
+    .item-card{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:24px;transition:box-shadow .2s,transform .2s}
+    .item-card:hover{box-shadow:0 12px 32px rgba(0,76,63,.08);transform:translateY(-2px)}
+    .item-card p{font-size:14px;line-height:1.65;color:var(--tm);margin:0}
+    .case-list{display:flex;flex-direction:column;gap:22px;margin-top:28px}
+    .case{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:28px}
+    .case-t{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:500;color:var(--g);margin:0 0 14px;letter-spacing:-.01em}
+    .case ol{margin:0;padding:0 0 0 22px;color:var(--tm);font-size:14.5px;line-height:1.7}
+    .case ol li{margin-bottom:5px}
+    .faq-list{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+    .faq-it{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px 26px}
+    .faq-it summary{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:500;color:var(--td);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .faq-it summary::-webkit-details-marker{display:none}
+    .faq-it summary::after{content:'+';font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:300;color:var(--g);transition:transform .2s}
+    .faq-it[open] summary::after{transform:rotate(45deg)}
+    .faq-it p{margin:14px 0 0;font-size:14.5px;line-height:1.7;color:var(--tm)}
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:22px;padding:clamp(36px,5vw,56px);text-align:center;color:#fff}
+    .rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;max-width:1000px;margin:24px auto 0}
+    .rel-card{display:flex;flex-direction:column;gap:8px;background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:20px;text-decoration:none;color:inherit;transition:all .2s}
+    .rel-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
+    .rel-ic{width:38px;height:38px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:18px;flex-shrink:0}
+    .rel-card:hover .rel-ic{background:var(--g);color:var(--y)}
+    .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
+    .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
+    .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+
+.sim-widget{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(20px,3vw,32px);
+  background:linear-gradient(160deg,#fff 0%,#FBFAF6 100%);
+  border:1px solid rgba(0,76,63,.12);
+  border-radius:20px;
+  padding:clamp(22px,3vw,36px);
+  margin:clamp(28px,4vw,40px) 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 18px 48px -24px rgba(0,76,63,.18);
+  position:relative;overflow:hidden;
+}
+.sim-widget::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 0%,rgba(255,213,107,.10),transparent 70%);
+  pointer-events:none;
+}
+.sim-widget > *{position:relative;z-index:1}
+
+@media (max-width:780px){
+  .sim-widget{grid-template-columns:1fr;gap:24px}
+}
+
+.sim-head{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g);margin-bottom:6px;
+}
+.sim-head-pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 0 4px rgba(0,76,63,.12);
+  animation:simPulse 2s ease-in-out infinite;
+}
+@keyframes simPulse{
+  0%,100%{box-shadow:0 0 0 4px rgba(0,76,63,.12)}
+  50%{box-shadow:0 0 0 8px rgba(0,76,63,.04)}
+}
+
+.sim-inputs{display:flex;flex-direction:column;gap:18px}
+.sim-results{
+  display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);
+  border-radius:14px;padding:clamp(20px,2.5vw,26px);
+  color:#fff;position:relative;overflow:hidden;
+}
+.sim-results::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 100%,rgba(255,213,107,.06),transparent 70%);
+  pointer-events:none;
+}
+.sim-results > *{position:relative;z-index:1}
+
+.sim-title{
+  font-family:'Fraunces',serif;font-size:20px;line-height:1.2;font-weight:400;
+  letter-spacing:-.01em;color:var(--td);margin:0 0 14px;
+}
+.sim-title em{color:var(--g);font-style:italic;font-weight:300}
+
+.sim-field{display:flex;flex-direction:column;gap:10px}
+.sim-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(0,76,63,.65);
+}
+.sim-label-val{
+  font-family:'Fraunces',serif;font-size:16px;font-weight:500;
+  color:var(--g);letter-spacing:-.01em;text-transform:none;
+}
+
+.sim-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:6px;border-radius:3px;
+  background:linear-gradient(90deg,var(--g) 0%,var(--g) var(--pct,0%),rgba(0,76,63,.10) var(--pct,0%),rgba(0,76,63,.10) 100%);
+  outline:none;cursor:pointer;
+}
+.sim-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--y);border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+  transition:transform .15s;
+}
+.sim-range::-webkit-slider-thumb:hover{transform:scale(1.10)}
+.sim-range::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;background:var(--y);
+  border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+}
+
+.sim-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sim-chip{
+  flex:1;min-width:0;padding:11px 14px;
+  font-size:13px;font-weight:500;color:var(--tm);
+  background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  cursor:pointer;text-align:center;
+  transition:all .18s cubic-bezier(.4,0,.2,1);
+  font-family:'Outfit',sans-serif;
+}
+.sim-chip:hover{border-color:var(--g);color:var(--g);background:rgba(0,76,63,.03)}
+.sim-chip.on{
+  background:linear-gradient(135deg,var(--g) 0%,var(--gm) 100%);color:#fff;
+  border-color:var(--g);font-weight:600;
+  box-shadow:0 4px 14px rgba(0,76,63,.22);
+}
+
+.sim-num{
+  width:100%;padding:13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;font-family:'Outfit',sans-serif;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-num:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-num::-webkit-outer-spin-button,
+.sim-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sim-num[type=number]{-moz-appearance:textfield}
+
+.sim-select{
+  width:100%;padding:13px 38px 13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;cursor:pointer;font-family:'Outfit',sans-serif;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23004C3F' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;background-size:14px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-select:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-select option{background:#fff;color:var(--td)}
+
+.sim-out{
+  display:flex;flex-direction:column;gap:4px;
+  padding:16px 18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,213,107,.12);
+  border-radius:12px;
+  transition:border-color .2s,background .2s;
+}
+.sim-out.primary{
+  background:linear-gradient(135deg,rgba(255,213,107,.10) 0%,rgba(255,213,107,.03) 100%);
+  border-color:rgba(255,213,107,.30);
+}
+.sim-out-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,213,107,.7);
+}
+.sim-out-value{
+  font-family:'Fraunces',serif;font-size:clamp(22px,2.4vw,28px);font-weight:500;
+  color:#fff;letter-spacing:-.01em;line-height:1.2;
+}
+.sim-out.primary .sim-out-value{color:var(--y)}
+.sim-out-value.alert{color:#FCA5A5}
+.sim-out-value.success{color:#A7F3B7}
+.sim-out-sub{font-size:12px;color:rgba(255,255,255,.55);line-height:1.4}
+
+.sim-cta-row{
+  display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;
+}
+.sim-cta-row a{
+  flex:1;min-width:160px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:12px 18px;border-radius:10px;
+  font-size:13.5px;font-weight:600;
+  text-decoration:none;
+  transition:all .2s;
+  font-family:'Outfit',sans-serif;
+}
+.sim-cta-primary{
+  background:var(--y);color:var(--gd);
+  box-shadow:0 4px 14px rgba(255,213,107,.22);
+}
+.sim-cta-primary:hover{
+  background:#ffe08f;transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(255,213,107,.30);
+}
+.sim-cta-ghost{
+  background:transparent;color:rgba(255,255,255,.78);
+  border:1px solid rgba(255,255,255,.18);
+}
+.sim-cta-ghost:hover{border-color:rgba(255,255,255,.4);color:#fff}
+
+.sim-hint{
+  font-size:12px;color:rgba(0,76,63,.55);line-height:1.5;
+  padding:10px 12px;background:rgba(0,76,63,.04);
+  border-left:2px solid var(--g);border-radius:0 8px 8px 0;
+}
+.sim-hint strong{color:var(--g)}
+
+
+.sim-vs{
+  background:linear-gradient(160deg,#FBFAF6 0%,#fff 100%);
+  border:1px solid rgba(0,76,63,.12);
+  border-radius:20px;
+  padding:clamp(28px,3.5vw,40px);
+  margin:clamp(20px,3vw,32px) 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 12px 36px -20px rgba(0,76,63,.14);
+}
+.sim-vs-tag{
+  display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--g);
+  background:rgba(0,76,63,.06);border:1px solid rgba(0,76,63,.14);
+  border-radius:999px;padding:5px 12px;margin-bottom:14px;
+}
+.sim-vs-title{
+  font-family:'Fraunces',serif;font-size:clamp(18px,2.2vw,24px);
+  font-weight:400;color:var(--td);letter-spacing:-.01em;line-height:1.3;
+  margin:0 0 24px;
+}
+.sim-vs-title em{color:var(--g);font-style:italic;font-weight:300}
+.sim-vs-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,22px);
+}
+@media(max-width:780px){
+  .sim-vs-grid{grid-template-columns:1fr}
+}
+.sim-vs-col{
+  padding:22px 20px;
+  background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.sim-vs-col-on{
+  background:linear-gradient(160deg,rgba(0,76,63,.04) 0%,rgba(255,213,107,.05) 100%);
+  border:1.5px solid rgba(0,76,63,.18);
+  box-shadow:0 8px 24px -12px rgba(0,76,63,.18);
+}
+.sim-vs-h{
+  font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--tl);margin-bottom:6px;
+}
+.sim-vs-col-on .sim-vs-h{color:var(--g)}
+.sim-vs-col ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.sim-vs-col li{
+  display:flex;align-items:flex-start;gap:9px;
+  font-size:13.5px;line-height:1.5;color:var(--tm);
+}
+.sim-vs-col li strong{color:var(--td);font-weight:600}
+.vs-ico{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  font-size:11px;font-weight:700;
+  background:rgba(0,76,63,.08);color:var(--g);
+}
+.vs-ico-on{background:var(--g);color:#fff}
+.vs-ico-mute{background:rgba(0,76,63,.04);color:rgba(0,76,63,.35);font-weight:400}
+.sim-vs-cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--y);color:var(--gd);
+  font-weight:600;font-size:14px;
+  padding:13px 22px;border-radius:10px;text-decoration:none;
+  margin-top:14px;align-self:flex-start;
+  transition:all .2s;
+  font-family:'Outfit',sans-serif;
+  box-shadow:0 6px 18px rgba(255,213,107,.30);
+}
+.sim-vs-cta:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 10px 24px rgba(255,213,107,.36)}
+.sim-vs-note{
+  font-size:11.5px;color:var(--tl);margin-top:8px;
+}
+
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur franchise TVA pour la LCD","description":"Vérifie ta franchise en base de TVA selon ton CA LCD et tes services. Seuils 2026 (37 500 € / 41 250 €), distinction location simple vs LCD para-hôtelière, alerte automatique. Gratuit.","url":"https://jasonmarinho.com/services/simulateurs/franchise-tva-lcd","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Simulateur franchise TVA pour la LCD","item":"https://jasonmarinho.com/services/simulateurs/franchise-tva-lcd"}]}</script>
+  <script type="application/ld+json" data-schema-faq>{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quels services rendent une LCD soumise à la TVA ?","acceptedAnswer":{"@type":"Answer","text":"L'administration considère qu'au moins 3 services parmi les 4 suivants caractérisent la para-hôtellerie : petit-déjeuner quotidien, nettoyage régulier des locaux pendant le séjour, fourniture du linge de maison, accueil personnalisé de la clientèle. Sous ce seuil, tu es en location meublée hors champ TVA."}},{"@type":"Question","name":"Quel est le seuil de franchise TVA en 2026 pour la LCD ?","acceptedAnswer":{"@type":"Answer","text":"37 500 € de CA annuel pour la LCD avec services para-hôteliers, avec une zone de tolérance jusqu'à 41 250 € qui permet de rester en franchise une année supplémentaire si tu redescends. Au-dessus de 41 250 €, sortie immédiate dès le mois suivant le dépassement."}},{"@type":"Question","name":"La réforme 25 000 € est-elle applicable ?","acceptedAnswer":{"@type":"Answer","text":"La loi de finances 2025 a voté un seuil unifié à 25 000 € pour tous les BIC, mais sa mise en œuvre a été suspendue suite à des recours. À ce jour (2026), le seuil 37 500 € reste applicable. Vérifie le BOFiP ou demande à ton comptable avant toute décision impactante."}},{"@type":"Question","name":"Que se passe-t-il si je sors de la franchise TVA ?","acceptedAnswer":{"@type":"Answer","text":"Tu demandes un numéro de TVA intracommunautaire à ton SIE. Tu factures la TVA à 10 % à tes voyageurs (LCD para-hôtelière), tu déclares mensuellement ou trimestriellement, tu peux récupérer la TVA sur tes dépenses pro (commissions OTAs, eau, électricité, mobilier, etc.)."}},{"@type":"Question","name":"Suis-je redevable de la TVA si je n'ai aucun service ?","acceptedAnswer":{"@type":"Answer","text":"Non. Une location meublée nue saisonnière sans aucun service additionnel est hors champ TVA — aucune TVA à facturer, aucun seuil à surveiller, peu importe le CA. Tu restes uniquement en BIC pour l'impôt sur le revenu."}},{"@type":"Question","name":"Airbnb collecte-t-il la TVA pour moi ?","acceptedAnswer":{"@type":"Answer","text":"Airbnb ne collecte pas la TVA française pour l'hôte (contrairement à la taxe de séjour). Si tu es redevable, c'est à toi de la facturer et déclarer. Airbnb facture sa propre TVA sur sa commission, qui est récupérable si tu es au régime réel TVA."}}]}</script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><a href="/services/simulateurs">Simulateurs LCD</a><span>›</span><span>Simulateur franchise TVA pour la LCD</span>
+    </div>
+    <div class="lbl">Outil gratuit · Franchise TVA</div>
+    <h1 class="h1">Simulateur<br><em>franchise TVA pour la LCD</em></h1>
+    <p class="sub">Suis-je en franchise de TVA ? Quel seuil pour la LCD avec services para-hôteliers ? Le simulateur applique les barèmes 2026 et signale si tu dois facturer la TVA ou rester en dispense. Cas particulier des services hôteliers traité explicitement.</p>
+    <div class="meta-row">
+      <div class="meta-bd"><i class="ph ph-currency-eur"></i> Seuils 37,5 k€ / 41,25 k€</div>
+      <div class="meta-bd"><i class="ph ph-check-circle"></i> LCD avec ou sans services</div>
+      <div class="meta-bd"><i class="ph ph-percent"></i> TVA 10 % LCD hôtelier</div>
+      <div class="meta-bd"><i class="ph ph-warning-octagon"></i> Alerte dépassement</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#tva" class="btn-p">Lancer le simulateur <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">Créer un compte gratuit</a>
+    </div>
+  </div>
+</header>
+
+<section class="sec" style="padding-top:clamp(32px,4vw,48px);padding-bottom:0">
+  <div class="s-in">
+    
+<div class="sim-widget" id="sim-tva">
+  <div class="sim-inputs">
+    <div class="sim-head"><span class="sim-head-pulse"></span>Simulateur en direct</div>
+    <h3 class="sim-title">Vérifie ta <em>franchise TVA</em></h3>
+
+    <div class="sim-field">
+      <div class="sim-label">Chiffre d'affaires LCD annuel <span class="sim-label-val" id="tva-ca-v">25 000 €</span></div>
+      <input type="range" class="sim-range" id="tva-ca" min="0" max="80000" step="500" value="25000">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Type d'activité</div>
+      <div class="sim-chips" id="tva-type">
+        <button type="button" class="sim-chip on" data-v="hotelier">LCD avec services para-hôteliers</button>
+        <button type="button" class="sim-chip" data-v="locatif">LCD sans services (location simple)</button>
+      </div>
+    </div>
+
+    <div class="sim-hint">
+      <strong>Services para-hôteliers</strong> = au moins 3 services parmi : petit-déjeuner quotidien, ménage en cours de séjour, fourniture du linge, accueil personnalisé. Sans ces services, tu es hors champ TVA (location meublée nue).
+    </div>
+  </div>
+
+  <div class="sim-results">
+    <div class="sim-out primary">
+      <div class="sim-out-label">Verdict TVA</div>
+      <div class="sim-out-value" id="tva-out-verdict">Franchise applicable</div>
+      <div class="sim-out-sub" id="tva-out-verdict-sub">CA sous le seuil 37 500 €</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Position vs seuils</div>
+      <div class="sim-out-value" id="tva-out-position">Sous le seuil</div>
+      <div class="sim-out-sub" id="tva-out-position-sub">Marge restante : 12 500 €</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Si tu collectais la TVA</div>
+      <div class="sim-out-value" id="tva-out-collect">2 500 €</div>
+      <div class="sim-out-sub">TVA collectée au taux 10 % LCD hôtelier</div>
+    </div>
+    <div class="sim-cta-row">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#tva" class="sim-cta-primary">Préfile avec mon CA réel <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <a href="#explication" class="sim-cta-ghost">Comprendre le régime</a>
+    </div>
+  </div>
+</div>
+    
+<div class="sim-vs">
+  <div class="sim-vs-tag">Tu veux aller plus loin ?</div>
+  <h3 class="sim-vs-title">Tu viens de vérifier ta franchise sur un CA théorique.<br><em>Avec ton compte, l'outil est connecté à ton activité.</em></h3>
+  <div class="sim-vs-grid">
+    <div class="sim-vs-col">
+      <div class="sim-vs-h">Sans compte (maintenant)</div>
+      <ul>
+        <li><span class="vs-ico">✓</span>1 calcul instantané, sans inscription</li>
+        <li><span class="vs-ico">✓</span>Résultats à l'écran, partageables</li>
+        <li><span class="vs-ico vs-ico-mute">○</span>Pas de mémoire entre les sessions</li>
+        <li><span class="vs-ico vs-ico-mute">○</span>Valeurs génériques saisies à la main</li>
+      </ul>
+    </div>
+    <div class="sim-vs-col sim-vs-col-on">
+      <div class="sim-vs-h">Avec un compte gratuit</div>
+      <ul>
+        <li><span class="vs-ico vs-ico-on">✓</span><strong>Vérifie ta franchise avec ton CA réel et alerte automatique au seuil</strong></li>
+        <li><span class="vs-ico vs-ico-on">✓</span>Sauvegarde et historique de tes simulations</li>
+        <li><span class="vs-ico vs-ico-on">✓</span>Comparaison entre 2 scénarios côte à côte</li>
+        <li><span class="vs-ico vs-ico-on">✓</span>Recommandations personnalisées à ton profil fiscal</li>
+        <li><span class="vs-ico vs-ico-on">✓</span>Accès aux 6 autres outils (calendrier, performances…)</li>
+      </ul>
+      <a href="https://app.jasonmarinho.com/auth/register" class="sim-vs-cta">Créer mon compte gratuit <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <div class="sim-vs-note">Aucune carte bancaire requise · 30 secondes</div>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
+
+<section class="sec" id="explication">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Pourquoi cet outil</div>
+        <h2 class="h2">La TVA en LCD<br><em>n&#39;est pas systématique mais sensible</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">La franchise en base de TVA dispense de facturer la TVA à tes voyageurs tant que ton CA reste sous un seuil annuel. Pour la LCD avec services para-hôteliers (petit-déjeuner, ménage en cours de séjour, fourniture du linge, accueil), le seuil 2026 est de 37 500 €, avec une zone de tolérance jusqu&#39;à 41 250 €.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Si tu loues simplement un meublé sans aucun service additionnel (location nue saisonnière), tu es hors champ TVA : aucun seuil à surveiller, jamais de TVA à facturer.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Le simulateur te dit en un coup d&#39;œil : tu es en franchise, en zone de tolérance, ou tu dois facturer la TVA dès le mois suivant. Avec la TVA qui aurait été collectée, pour anticiper l&#39;impact si tu basculais.</p>
+      </div>
+      <div>
+        <div class="lbl dk">Ce que tu obtiens</div>
+        <h2 class="h2">Un résultat <em>clair, instantané, gratuit</em></h2>
+        <ul class="ck-list">
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Distinction LCD para-hôtelière vs location simple</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Calcul de la marge restante sous le seuil</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Alerte zone tolérance et sortie immédiate</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Estimation de la TVA collectée au taux 10 % LCD</li>
+        </ul>
+        <a href="https://app.jasonmarinho.com/dashboard/simulateurs#tva" class="btn-g" style="margin-top:18px">Lancer le simulateur <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Comment ça se calcule</div>
+    <h2 class="h2">Les 2 régimes <em>à connaître pour la LCD</em></h2>
+    <div class="item-grid">
+      <div class="item-card"><h3 class="h3">LCD avec services (para-hôtelière)</h3><p>Si tu fournis au moins 3 services parmi petit-déjeuner quotidien, ménage en cours de séjour, fourniture du linge, accueil personnalisé : tu es en régime hôtelier. Franchise applicable jusqu&#39;à 37 500 € de CA annuel.</p></div>
+      <div class="item-card"><h3 class="h3">LCD sans services (location simple)</h3><p>Location meublée nue saisonnière sans services additionnels : hors champ TVA. Aucun seuil à surveiller. Tu factures et déclares uniquement en BIC (micro ou réel).</p></div>
+      <div class="item-card"><h3 class="h3">Zone de tolérance</h3><p>Entre 37 500 € et 41 250 €, tu peux rester en franchise une année supplémentaire si tu redescends. Au-delà de 41 250 €, sortie immédiate de la franchise dès le mois suivant le dépassement.</p></div>
+      <div class="item-card"><h3 class="h3">Taux applicable</h3><p>Hors franchise, la LCD avec services para-hôteliers est soumise à la TVA au taux réduit de 10 % (régime des prestations hôtelières), pas 20 %.</p></div>
+      <div class="item-card"><h3 class="h3">Réforme proposée 25 000 €</h3><p>La loi de finances 2025 a proposé un seuil unifié à 25 000 € pour tous les BIC. Sa mise en œuvre a été suspendue. À ce jour, le seuil 37 500 € reste applicable. Vérifie le BOFiP avant toute décision.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="lbl dk">Cas pratiques</div>
+    <h2 class="h2">3 situations <em>avec verdict TVA</em></h2>
+    <div class="case-list">
+      <article class="case"><h3 class="case-t">Studio à 18 000 € de CA, ménage + linge + petit-déjeuner</h3><ol><li>CA annuel : 18 000 €</li><li>Services para-hôteliers : OUI (3 critères remplis)</li><li>Seuil franchise BIC services : 37 500 €</li><li>Verdict : franchise applicable</li><li>Marge restante avant seuil : 19 500 €</li><li>Tu ne factures pas la TVA, aucune déclaration TVA à faire</li></ol></article>
+      <article class="case"><h3 class="case-t">T2 à 40 000 € de CA, services para-hôteliers</h3><ol><li>CA annuel : 40 000 €</li><li>Au-dessus du seuil 37 500 € mais dans la tolérance (≤ 41 250 €)</li><li>Verdict : zone de tolérance</li><li>Si tu redescends sous 37 500 € l&#39;année prochaine, tu restes en franchise</li><li>Si tu dépasses 41 250 € en N+1, sortie immédiate dès le mois suivant</li><li>Surveille de près tes chiffres mensuels en fin d&#39;année</li></ol></article>
+      <article class="case"><h3 class="case-t">Maison à 50 000 € de CA, location simple sans services</h3><ol><li>CA annuel : 50 000 €</li><li>Services para-hôteliers : NON (location meublée nue saisonnière)</li><li>Régime applicable : hors champ TVA</li><li>Verdict : aucune TVA à facturer, aucun seuil à surveiller</li><li>Tu déclares uniquement en BIC (micro ou réel selon ton choix)</li><li>Important : si tu commences à proposer le linge + le ménage en cours, tu bascules en régime hôtelier et le seuil 37 500 € s&#39;applique</li></ol></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Questions fréquentes</div>
+    <h2 class="h2">FAQ <em>simulateur</em></h2>
+    <div class="faq-list">
+      <details class="faq-it"><summary>Quels services rendent une LCD soumise à la TVA ?</summary><p>L&#39;administration considère qu&#39;au moins 3 services parmi les 4 suivants caractérisent la para-hôtellerie : petit-déjeuner quotidien, nettoyage régulier des locaux pendant le séjour, fourniture du linge de maison, accueil personnalisé de la clientèle. Sous ce seuil, tu es en location meublée hors champ TVA.</p></details>
+      <details class="faq-it"><summary>Quel est le seuil de franchise TVA en 2026 pour la LCD ?</summary><p>37 500 € de CA annuel pour la LCD avec services para-hôteliers, avec une zone de tolérance jusqu&#39;à 41 250 € qui permet de rester en franchise une année supplémentaire si tu redescends. Au-dessus de 41 250 €, sortie immédiate dès le mois suivant le dépassement.</p></details>
+      <details class="faq-it"><summary>La réforme 25 000 € est-elle applicable ?</summary><p>La loi de finances 2025 a voté un seuil unifié à 25 000 € pour tous les BIC, mais sa mise en œuvre a été suspendue suite à des recours. À ce jour (2026), le seuil 37 500 € reste applicable. Vérifie le BOFiP ou demande à ton comptable avant toute décision impactante.</p></details>
+      <details class="faq-it"><summary>Que se passe-t-il si je sors de la franchise TVA ?</summary><p>Tu demandes un numéro de TVA intracommunautaire à ton SIE. Tu factures la TVA à 10 % à tes voyageurs (LCD para-hôtelière), tu déclares mensuellement ou trimestriellement, tu peux récupérer la TVA sur tes dépenses pro (commissions OTAs, eau, électricité, mobilier, etc.).</p></details>
+      <details class="faq-it"><summary>Suis-je redevable de la TVA si je n&#39;ai aucun service ?</summary><p>Non. Une location meublée nue saisonnière sans aucun service additionnel est hors champ TVA — aucune TVA à facturer, aucun seuil à surveiller, peu importe le CA. Tu restes uniquement en BIC pour l&#39;impôt sur le revenu.</p></details>
+      <details class="faq-it"><summary>Airbnb collecte-t-il la TVA pour moi ?</summary><p>Airbnb ne collecte pas la TVA française pour l&#39;hôte (contrairement à la taxe de séjour). Si tu es redevable, c&#39;est à toi de la facturer et déclarer. Airbnb facture sa propre TVA sur sa commission, qui est récupérable si tu es au régime réel TVA.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="cta-ban">
+      <h2 class="h2 lt" style="margin:0 auto 14px;max-width:600px;text-align:center">Prêt à <em>chiffrer ta décision</em> en 30 secondes ?</h2>
+      <p style="font-size:15px;line-height:1.7;color:rgba(255,255,255,.7);margin:0 auto 28px;max-width:540px;text-align:center">Crée un compte gratuit et accède au simulateur complet, préfilé avec tes vrais logements et tes vrais chiffres.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="https://app.jasonmarinho.com/dashboard/simulateurs#tva" class="btn-ol">Voir le simulateur</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Aller plus loin</div>
+      <h2 class="h2">Les autres <em>simulateurs LCD</em></h2>
+    </div>
+    <div class="rel-grid">
+      <a href="/services/simulateurs" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-calculator"></i></div>
+        <div class="rel-k">Catalogue</div>
+        <div class="rel-t">Les 4 simulateurs</div>
+        <div class="rel-d">Vue d'ensemble des outils fiscaux et de pilotage gratuits pour hôtes LCD.</div>
+      </a>
+      <a href="/services/guides-lcd" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-books"></i></div>
+        <div class="rel-k">Ressources</div>
+        <div class="rel-t">Guides LCD</div>
+        <div class="rel-d">Fiscalité, réglementation, tarification : tous les guides pour comprendre.</div>
+      </a>
+      <a href="/services/formations" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-graduation-cap"></i></div>
+        <div class="rel-k">Formation</div>
+        <div class="rel-t">Formations LCD</div>
+        <div class="rel-d">Va plus loin avec les formations dédiées hôtes débutants et confirmés.</div>
+      </a>
+      <a href="/calculateurs" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-chart-line-up"></i></div>
+        <div class="rel-k">Marché</div>
+        <div class="rel-t">Calculateurs marché</div>
+        <div class="rel-d">Estime tes revenus, trouve le bon prix, compare 83 villes européennes.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script defer src="/footer.js"></script>
+<script>
+(function(){
+  var SEUIL = 37500, TOL = 41250, TAUX = 0.1;
+  var type = 'hotelier';
+  var $ca = document.getElementById('tva-ca'), $caV = document.getElementById('tva-ca-v');
+  var $v = document.getElementById('tva-out-verdict'), $vS = document.getElementById('tva-out-verdict-sub');
+  var $p = document.getElementById('tva-out-position'), $pS = document.getElementById('tva-out-position-sub');
+  var $c = document.getElementById('tva-out-collect');
+  function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));}
+  function update(){
+    var ca = +$ca.value;
+    $caV.textContent = fmt(ca);
+    $ca.style.setProperty('--pct', (ca/80000*100)+'%');
+    if (type === 'locatif') {
+      $v.textContent = 'Hors champ TVA';
+      $v.className = 'sim-out-value success';
+      $vS.textContent = 'Location meublée nue : pas soumise à TVA';
+      $p.textContent = '—';
+      $p.className = 'sim-out-value';
+      $pS.textContent = 'Sans services para-hôteliers';
+      $c.textContent = '—';
+      return;
+    }
+    if (ca <= SEUIL) {
+      $v.textContent = 'Franchise applicable';
+      $v.className = 'sim-out-value success';
+      $vS.textContent = 'CA sous le seuil ' + fmt(SEUIL) + ' — tu ne factures pas la TVA';
+      $p.textContent = 'Sous le seuil';
+      $p.className = 'sim-out-value success';
+      $pS.textContent = 'Marge restante : ' + fmt(SEUIL - ca);
+    } else if (ca <= TOL) {
+      $v.textContent = 'Zone de tolérance';
+      $v.className = 'sim-out-value';
+      $vS.textContent = 'Tu peux rester en franchise une année supplémentaire si tu redescends';
+      $p.textContent = 'Au-dessus de ' + fmt(SEUIL);
+      $p.className = 'sim-out-value';
+      $pS.textContent = "Si tu dépasses 41250, sortie immédiate dès le mois suivant";
+    } else {
+      $v.textContent = 'Sortie de franchise';
+      $v.className = 'sim-out-value alert';
+      $vS.textContent = 'Tu dois facturer la TVA dès le mois suivant le dépassement';
+      $p.textContent = 'Au-dessus de ' + fmt(TOL);
+      $p.className = 'sim-out-value alert';
+      $pS.textContent = 'Demande ton numéro de TVA intracommunautaire';
+    }
+    $c.textContent = fmt(ca * TAUX);
+  }
+  $ca.addEventListener('input', update);
+  document.querySelectorAll('#tva-type .sim-chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      document.querySelectorAll('#tva-type .sim-chip').forEach(function(x){x.classList.remove('on')});
+      c.classList.add('on'); type = c.dataset.v; update();
+    });
+  });
+  update();
+})();</script>
+</body>
+</html>
