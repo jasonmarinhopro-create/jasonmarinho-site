@@ -139,11 +139,13 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   // Cloche unifiée : on récupère les compteurs (Chez Nous + Alertes app) côté
   // client au mount pour pouvoir les sommer au unreadCount produit (badge agrégé)
   // et les afficher dans les onglets du NotificationPanel.
+  // Défensif : try/catch + Promise.allSettled — si une des deux tables est
+  // momentanément indispo, l'autre compteur s'affiche quand même.
   useEffect(() => {
     if (!userId) return
     let cancelled = false
     const supabase = createClient()
-    Promise.all([
+    Promise.allSettled([
       supabase
         .from('chez_nous_notifications')
         .select('*', { count: 'exact', head: true })
@@ -153,13 +155,12 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
         .from('notifications')
         .select('*', { count: 'exact', head: true })
         .eq('recipient_id', userId)
-        .is('read_at', null)
-        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`),
-    ]).then(([cn, notif]) => {
+        .is('read_at', null),
+    ]).then(([cnResult, notifResult]) => {
       if (cancelled) return
-      setChezNousUnread(cn.count ?? 0)
-      setAppNotifUnread(notif.count ?? 0)
-    })
+      if (cnResult.status === 'fulfilled') setChezNousUnread(cnResult.value.count ?? 0)
+      if (notifResult.status === 'fulfilled') setAppNotifUnread(notifResult.value.count ?? 0)
+    }).catch(err => console.warn('[Header notif counts]', err))
     return () => { cancelled = true }
   }, [userId])
 
