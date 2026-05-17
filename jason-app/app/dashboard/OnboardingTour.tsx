@@ -69,9 +69,14 @@ export const SIMULATEURS_STEPS: TourStep[] = [
   },
 ]
 
-const POPOVER_W = 380
-const POPOVER_H_EST = 240
-const MARGIN = 18
+// Largeur du popover : 380px en desktop, sinon clamp à la viewport - margins.
+// Calculée dynamiquement au runtime pour gérer les rotations mobile.
+function getPopoverW(): number {
+  if (typeof window === 'undefined') return 380
+  return Math.min(380, window.innerWidth - 32)
+}
+const POPOVER_H_EST = 260
+const MARGIN = 14
 
 export default function OnboardingTour({
   userId,
@@ -123,12 +128,13 @@ export default function OnboardingTour({
     const step = STEPS[stepIdx]
     if (!step) return
 
+    const popoverW = getPopoverW()
     if (!step.targetSelector) {
       setTargetRect(null)
       // Centré viewport
       setPopoverPos({
         top: Math.max(MARGIN, (window.innerHeight - POPOVER_H_EST) / 2),
-        left: Math.max(MARGIN, (window.innerWidth - POPOVER_W) / 2),
+        left: Math.max(MARGIN, (window.innerWidth - popoverW) / 2),
       })
       return
     }
@@ -163,8 +169,8 @@ export default function OnboardingTour({
         arrowSide = 'top'
       }
 
-      let left = rect.left + (rect.width - POPOVER_W) / 2
-      left = Math.max(MARGIN, Math.min(left, window.innerWidth - POPOVER_W - MARGIN))
+      let left = rect.left + (rect.width - popoverW) / 2
+      left = Math.max(MARGIN, Math.min(left, window.innerWidth - popoverW - MARGIN))
 
       setPopoverPos({ top, left, arrowSide })
     }, 380)
@@ -232,7 +238,7 @@ export default function OnboardingTour({
             ...s.popover,
             top: popoverPos.top,
             left: popoverPos.left,
-            width: POPOVER_W,
+            width: getPopoverW(),
           }}
         >
           {targetRect && popoverPos.arrowSide && (
@@ -243,7 +249,7 @@ export default function OnboardingTour({
                 : { bottom: -8, borderLeft: '1px solid var(--accent-border)', borderBottom: '1px solid var(--accent-border)' }),
               left: Math.min(
                 Math.max(20, targetRect.left + targetRect.width / 2 - popoverPos.left - 6),
-                POPOVER_W - 30
+                getPopoverW() - 30
               ),
             }} />
           )}

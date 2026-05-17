@@ -1050,7 +1050,7 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
               }}>
                 <ChartLineUp size={12} weight="fill" /> Toi vs Marché ({selected.nom}, 12 derniers mois)
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(110px, 100%), 1fr))', gap: '10px' }}>
                 <BenchmarkRow
                   label="Occupation"
                   toi={`${selected.stats.occupationReelle} %`}
@@ -1227,7 +1227,7 @@ export function CalculateurPrix({ logements }: { logements: LogementPrefill[] })
 
           <div style={s.field}>
             <label style={s.label}>Canal de réservation</label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px, 100%), 1fr))', gap: '6px' }}>
               {[
                 { v: 'airbnb',  l: 'Airbnb',     sub: '~3 % comm.' },
                 { v: 'booking', l: 'Booking',    sub: '~15 % comm.' },
@@ -1414,42 +1414,53 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
           {selection.map((sel, i) => {
             const isMine = villesLogements.some(v => v.pays === sel.pays && v.ville === sel.ville)
             return (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '28px 1fr 140px 32px', gap: '8px', alignItems: 'center' }}>
-                <div style={{
-                  width: '24px', height: '24px', borderRadius: '6px',
-                  background: ['#10b981', '#3b82f6', '#f59e0b', '#a78bfa'][i],
-                  color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '11px', fontWeight: 700,
-                }}>{i + 1}</div>
-                <select value={sel.ville} onChange={e => updateSelection(i, 'ville', e.target.value)} style={s.input}>
-                  {citiesByCountry(sel.pays).map(c => (
-                    <option key={c.ville} value={c.ville}>
-                      {c.ville}{villesLogements.some(v => v.pays === sel.pays && v.ville === c.ville) ? ' ★ (mon bien)' : ''}
-                    </option>
-                  ))}
-                </select>
-                <select value={sel.pays} onChange={e => updateSelection(i, 'pays', e.target.value)} style={{ ...s.input, fontSize: '12.5px' }}>
-                  {SUPPORTED_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.flag} {c.label}</option>)}
-                </select>
-                <button
-                  type="button"
-                  onClick={() => removeCity(i)}
-                  disabled={selection.length <= 2}
-                  style={{
-                    width: '28px', height: '28px', borderRadius: '8px',
-                    border: '1px solid var(--border)', background: 'transparent',
-                    color: 'var(--text-muted)', cursor: selection.length <= 2 ? 'not-allowed' : 'pointer',
-                    fontSize: '13px', opacity: selection.length <= 2 ? 0.3 : 1,
-                  }}
-                  title="Retirer"
-                >✕</button>
+              <div key={i} style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const }}>
+                  <div style={{
+                    width: '24px', height: '24px', borderRadius: '6px',
+                    background: ['#10b981', '#3b82f6', '#f59e0b', '#a78bfa'][i],
+                    color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '11px', fontWeight: 700, flexShrink: 0,
+                  }}>{i + 1}</div>
+                  <select
+                    value={sel.ville}
+                    onChange={e => updateSelection(i, 'ville', e.target.value)}
+                    style={{ ...s.input, flex: '1 1 180px', minWidth: 0 }}
+                  >
+                    {citiesByCountry(sel.pays).map(c => (
+                      <option key={c.ville} value={c.ville}>
+                        {c.ville}{villesLogements.some(v => v.pays === sel.pays && v.ville === c.ville) ? ' ★ (mon bien)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={sel.pays}
+                    onChange={e => updateSelection(i, 'pays', e.target.value)}
+                    style={{ ...s.input, fontSize: '12.5px', flex: '0 1 130px', minWidth: 0 }}
+                  >
+                    {SUPPORTED_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.flag} {c.label}</option>)}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => removeCity(i)}
+                    disabled={selection.length <= 2}
+                    style={{
+                      width: '32px', height: '32px', borderRadius: '8px',
+                      border: '1px solid var(--border)', background: 'transparent',
+                      color: 'var(--text-muted)', cursor: selection.length <= 2 ? 'not-allowed' : 'pointer',
+                      fontSize: '13px', opacity: selection.length <= 2 ? 0.3 : 1,
+                      flexShrink: 0,
+                    }}
+                    title="Retirer"
+                    aria-label="Retirer cette ville"
+                  >✕</button>
+                </div>
                 {isMine && (
                   <div style={{
-                    gridColumn: '2 / 4',
                     fontSize: '10.5px',
                     color: 'var(--accent-text)',
                     fontWeight: 600,
-                    marginTop: '-2px',
+                    marginLeft: '32px',
                   }}>★ Ville où tu as un bien</div>
                 )}
               </div>
@@ -1474,9 +1485,9 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
         </button>
       </div>
 
-      {/* Tableau comparatif */}
-      <div style={{ ...s.resultCard, marginTop: '14px' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' as const, fontSize: '13px' }}>
+      {/* Tableau comparatif : scroll-x sur mobile pour ne pas casser le layout */}
+      <div style={{ ...s.resultCard, marginTop: '14px', padding: '12px', overflowX: 'auto' as const, WebkitOverflowScrolling: 'touch' as const }}>
+        <table style={{ width: '100%', minWidth: '480px', borderCollapse: 'collapse' as const, fontSize: '13px' }}>
           <thead>
             <tr>
               <th style={{ textAlign: 'left' as const, padding: '10px 12px', fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', borderBottom: '1px solid var(--border)' }}></th>
@@ -1956,7 +1967,10 @@ const s: Record<string, React.CSSProperties> = {
     lineHeight: 1.6, margin: '0 0 22px',
   },
   grid2: {
-    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px',
+    display: 'grid',
+    // auto-fit + minmax 320px : 2 colonnes desktop ≥ 660px, 1 colonne mobile/tablette
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
+    gap: 'clamp(14px, 2.5vw, 18px)',
     alignItems: 'flex-start',
   },
   formCard: {
