@@ -1855,8 +1855,8 @@ export default function RevenusView({
         country={
           // Choisit le pays dominant : celui avec le plus de revenus déclarables
           // cette année. Fallback FR si pays non couvert ou rien encore.
-          (taxEstimateByCountry.length > 0 && ['FR','PT','ES','IT','BE'].includes(taxEstimateByCountry[0].pays))
-            ? (taxEstimateByCountry[0].pays as 'FR' | 'PT' | 'ES' | 'IT' | 'BE')
+          (taxEstimateByCountry.length > 0 && ['FR','PT','ES','IT','BE','DE','NL','AT'].includes(taxEstimateByCountry[0].pays))
+            ? (taxEstimateByCountry[0].pays as 'FR' | 'PT' | 'ES' | 'IT' | 'BE' | 'DE' | 'NL' | 'AT')
             : 'FR'
         }
       />
@@ -1992,7 +1992,7 @@ const REGIMES = [
 ]
 
 // Helper : prochaines échéances fiscales (FR par défaut, PT en alternative)
-type FiscalCountry = 'FR' | 'PT' | 'ES' | 'IT' | 'BE'
+type FiscalCountry = 'FR' | 'PT' | 'ES' | 'IT' | 'BE' | 'DE' | 'NL' | 'AT'
 
 function nextFiscalDeadlines(country: FiscalCountry = 'FR'): Array<{ label: string; date: string; description: string; type: 'urgent' | 'normal' }> {
   const today = new Date()
@@ -2072,6 +2072,81 @@ function nextFiscalDeadlines(country: FiscalCountry = 'FR'): Array<{ label: stri
       label: 'Taxe de séjour communale',
       date: taxeDate,
       description: 'Reverse à la commune. Bruxelles ~4,24 € / unité / nuit, Brugge ~3,50 €/personne/nuit.',
+    })
+  } else if (country === 'DE') {
+    // Einkommensteuer annuel : 31 juillet (déclaration via ELSTER)
+    const estDate = new Date(year, 6, 31)
+    if (estDate < today) estDate.setFullYear(year + 1)
+    deadlines.push({
+      label: 'Einkommensteuererklärung (annuelle)',
+      date: estDate,
+      description: 'Déclaration revenus via ELSTER. Délai prolongé fin février N+1 si fait par Steuerberater.',
+    })
+    // USt voranmeldung mensuelle/trimestrielle
+    const month = today.getMonth()
+    const trimEnd = [2, 5, 8, 11].find(m => m > month) ?? 14
+    const ustDate = new Date(trimEnd >= 12 ? year + 1 : year, trimEnd >= 12 ? trimEnd - 12 + 1 : trimEnd + 1, 10)
+    deadlines.push({
+      label: 'USt-Voranmeldung (TVA)',
+      date: ustDate,
+      description: 'TVA Allemagne 7 % sur hébergement. Trimestriel si CA < 7 500 € TVA, mensuel sinon.',
+    })
+    // Permis Zweckentfremdungsverbot (Berlin/München) — rappel
+    const permitDate = new Date(year, today.getMonth() + 1, 1)
+    deadlines.push({
+      label: 'Vérification permis Zweckentfremdung',
+      date: permitDate,
+      description: 'Berlin & München : sans permis, max 8 semaines/an. Amendes jusqu\'à 500 000 €.',
+    })
+  } else if (country === 'NL') {
+    // Inkomstenbelasting annuelle : 1er mai
+    const ibDate = new Date(year, 4, 1)
+    if (ibDate < today) ibDate.setFullYear(year + 1)
+    deadlines.push({
+      label: 'Inkomstenbelasting (annuelle)',
+      date: ibDate,
+      description: 'Déclaration revenus via belastingdienst.nl. Box 1 (revenus pro) ou Box 3 (revenus mobiliers).',
+    })
+    // BTW (TVA) trimestrielle
+    const month = today.getMonth()
+    const trimEnd = [2, 5, 8, 11].find(m => m > month) ?? 14
+    const btwDate = new Date(trimEnd >= 12 ? year + 1 : year, trimEnd >= 12 ? trimEnd - 12 + 1 : trimEnd + 1, 31)
+    deadlines.push({
+      label: 'BTW (TVA) trimestrielle',
+      date: btwDate,
+      description: 'TVA Pays-Bas 9 % sur hébergement < 90 jours. Trimestrielle si < 50 000 € de TVA/an.',
+    })
+    // Rappel Amsterdam 30 jours
+    if (today.getMonth() === 0) {
+      const reminderDate = new Date(year, 11, 31)
+      deadlines.push({
+        label: '⚠️ Amsterdam : max 30 nuits/an',
+        date: reminderDate,
+        description: 'Limite stricte particuliers à Amsterdam. Vérifie ton compteur annuel.',
+      })
+    }
+  } else if (country === 'AT') {
+    // Einkommensteuer Autriche : 30 juin (papier) ou fin novembre (FinanzOnline)
+    const estDate = new Date(year, 5, 30)
+    if (estDate < today) estDate.setFullYear(year + 1)
+    deadlines.push({
+      label: 'Einkommensteuererklärung (annuelle)',
+      date: estDate,
+      description: 'Déclaration via FinanzOnline. Délai fin novembre si en ligne.',
+    })
+    // USt mensuelle
+    const ustDate = new Date(year, today.getMonth() + 1, 15)
+    deadlines.push({
+      label: 'USt-Voranmeldung (TVA mensuelle)',
+      date: ustDate,
+      description: 'TVA Autriche 10 % sur hébergement touristique. Mensuelle.',
+    })
+    // Ortstaxe (taxe locale)
+    const ortDate = new Date(year, today.getMonth() + 1, 15)
+    deadlines.push({
+      label: 'Ortstaxe (taxe de séjour Vienne)',
+      date: ortDate,
+      description: 'Reverse à WienTourismus. ~3,02 % du prix HT à Vienne.',
     })
   } else if (country === 'PT') {
     // IRS annuel Portugal : déclaration du 1er avril au 30 juin
@@ -2237,6 +2312,48 @@ const FISCAL_CONFIGS: Record<FiscalCountry, FiscalConfig> = {
       : a > 25000 ? { label: 'Revenus professionnels probables', detail: 'Volume élevé : tu risques d\'être requalifié en activité professionnelle (barème IPP + cotisations sociales). Consulte un comptable.' }
       : { label: 'Revenus mobiliers OK', detail: 'Si activité non régulière + sans services hôteliers : taux forfaitaire 30 % après abattement. TVA réduite 6 % si applicable.' },
   },
+  DE: {
+    flag: '🇩🇪', countryName: 'Deutschland',
+    subtitle: 'Welches Steuerregime gilt für deine Kurzzeitvermietung ?',
+    seuils: [
+      { key: 'kleinunternehmer', label: 'Kleinunternehmer (USt-frei)',   valeur: 22000,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+      { key: 'permit',           label: 'Zweckentfremdung (8 sem.)',     valeur: 8,      color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
+    ],
+    // DE : barème Einkommensteuer progressif (14-45 %). Pas d'abattement forfaitaire LCD.
+    coefStandard: 0.85, coefAvantageux: 0.85,
+    labelStandard: 'Einkommensteuer (barème)', labelAvantageux: 'Mit Steuerberater',
+    getReco: (a) => a === 0 ? null
+      : a > 22000 ? { label: 'TVA (USt 7 %) probablement due', detail: 'Tu dépasses le seuil Kleinunternehmer (22 000 €). USt 7 % à facturer + reverser. Vérifie ton permis Zweckentfremdung à Berlin/München.' }
+      : { label: 'Kleinunternehmer OK', detail: 'Sous 22 000 € de CA tu peux opter pour le statut Kleinunternehmer (pas de TVA). Attention Berlin/München : max 8 semaines/an sans permis.' },
+  },
+  NL: {
+    flag: '🇳🇱', countryName: 'Nederland',
+    subtitle: 'Welk belastingregime geldt voor jouw kortlopende verhuur ?',
+    seuils: [
+      { key: 'box3',       label: 'Box 3 (revenus mobiliers)', valeur: 50000,   color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+      { key: 'amsterdam',  label: 'Amsterdam (30 j max)',      valeur: 30,      color: '#ef4444', bg: 'rgba(239,68,68,0.10)' },
+    ],
+    // NL : Box 3 (forfait) si revenus mobiliers, Box 1 (barème) si activité pro
+    coefStandard: 0.70, coefAvantageux: 0.70,
+    labelStandard: 'Box 3 (forfait mobilier)', labelAvantageux: 'Box 1 (activité pro)',
+    getReco: (a) => a === 0 ? null
+      : a > 50000 ? { label: 'Box 1 probable (activité pro)', detail: 'Volume élevé : tu risques d\'être en Box 1 (barème IB progressif + cotisations). Amsterdam : max 30 nuits/an pour particuliers, sinon licence pro Hotelvergunning.' }
+      : { label: 'Box 3 OK', detail: 'Revenus mobiliers (forfait) si activité non pro. BTW 9 % sur hébergement < 90 jours. Amsterdam : surveille tes 30 nuits/an.' },
+  },
+  AT: {
+    flag: '🇦🇹', countryName: 'Österreich',
+    subtitle: 'Welches Steuerregime gilt für deine Kurzzeitvermietung ?',
+    seuils: [
+      { key: 'kleinunternehmer', label: 'Kleinunternehmer (USt-frei)',  valeur: 55000,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+      { key: 'gewerbe',          label: 'Gewerbe (>4 unités)',           valeur: 4,      color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
+    ],
+    // AT : barème Einkommensteuer 0-55 %. Seuil Kleinunternehmer 55 000 € (2024).
+    coefStandard: 0.85, coefAvantageux: 0.85,
+    labelStandard: 'Einkommensteuer (barème)', labelAvantageux: 'Gewerbliche Vermietung',
+    getReco: (a) => a === 0 ? null
+      : a > 55000 ? { label: 'USt (TVA 10 %) probablement due', detail: 'Tu dépasses le seuil Kleinunternehmer (55 000 €). USt 10 % à facturer + reverser mensuellement. Au-delà de 4 unités exploitées = activité Gewerbe (statut commerçant).' }
+      : { label: 'Kleinunternehmer OK', detail: 'Sous 55 000 € de CA, statut Kleinunternehmer (pas d\'USt). Ortstaxe ~3,02 % du prix HT à Vienne, à reverser séparément.' },
+  },
 }
 
 function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel: number; chargesAnnee?: number; country?: FiscalCountry }) {
@@ -2305,6 +2422,30 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
             <SeuilPill label="TVA"              seuil="6 %"         pct="hébergement" color="#a78bfa" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
             <SeuilPill label="Taxe séjour"      seuil="par commune" pct="3-5 €/nuit" color="#60a5fa" />
+          </>
+        ) : country === 'DE' ? (
+          <>
+            <SeuilPill label="Kleinunternehmer" seuil="< 22 000 €"  pct="USt-frei"  color="#34d399" />
+            <SeuilPill label="USt"              seuil="7 %"         pct="hébergement" color="#a78bfa" />
+            <SeuilPill label="ESt barème"       seuil="14-45 %"     pct="progressif" color="#f59e0b" />
+            <div style={sf.seuilSep} className="fisc-seuil-sep" />
+            <SeuilPill label="⚠ Permis Berlin/München" seuil="8 sem./an" pct="sans permis" color="#ef4444" />
+          </>
+        ) : country === 'NL' ? (
+          <>
+            <SeuilPill label="Box 3"            seuil="< 50 000 €"  pct="forfait"   color="#34d399" />
+            <SeuilPill label="Box 1"            seuil="> 50 000 €"  pct="barème IB" color="#f59e0b" />
+            <SeuilPill label="BTW"              seuil="9 %"         pct="< 90 jours" color="#a78bfa" />
+            <div style={sf.seuilSep} className="fisc-seuil-sep" />
+            <SeuilPill label="⚠ Amsterdam"      seuil="30 j/an max" pct="particulier" color="#ef4444" />
+          </>
+        ) : country === 'AT' ? (
+          <>
+            <SeuilPill label="Kleinunternehmer" seuil="< 55 000 €"  pct="USt-frei"  color="#34d399" />
+            <SeuilPill label="USt"              seuil="10 %"        pct="hébergement" color="#a78bfa" />
+            <SeuilPill label="Gewerbe"          seuil="> 4 unités"  pct="commerçant" color="#f59e0b" />
+            <div style={sf.seuilSep} className="fisc-seuil-sep" />
+            <SeuilPill label="Ortstaxe Wien"    seuil="~3,02 %"     pct="prix HT"   color="#60a5fa" />
           </>
         ) : (
           <>

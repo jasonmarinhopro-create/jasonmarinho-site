@@ -103,6 +103,9 @@
       '.ft-ls a{color:rgba(255,255,255,.4);text-decoration:none;font-size:14px;font-family:\'Outfit\',sans-serif;display:flex;align-items:center;gap:8px;padding:5px 0;transition:color .2s;line-height:1.3}',
       '.ft-ls a:hover{color:rgba(255,255,255,.85)}',
       '.ft-ls a i{font-size:14px;color:rgba(255,213,107,.35);flex-shrink:0;width:14px;text-align:center}',
+      /* Chips villes : padding réduit, font-size plus petite, sans icon-width forcée */
+      '.ft-cities a{padding:3px 0;font-size:13px;line-height:1.4}',
+      '.ft-cities a i{width:auto}',
       '.ft-ls a .ft-ext{font-size:10px;color:rgba(255,213,107,.35);margin-left:2px}',
       '.ft-seo{border-top:1px solid rgba(255,255,255,.05);padding-top:8px;margin-bottom:28px}',
       '.ft-seo-block{border-bottom:1px solid rgba(255,255,255,.04)}',
@@ -162,10 +165,20 @@
         + '<div>'
           + '<div class="ft-ct">Calculateurs</div>'
           + '<ul class="ft-ls">'
-            + '<li><a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur revenus LCD</a></li>'
-            + '<li><a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur prix LCD</a></li>'
-            + '<li><a href="/calculateurs/comparer-villes"><i class="ph ph-git-diff"></i>Comparateur de villes</a></li>'
-            + '<li><a href="/calculateurs"><i class="ph ph-grid-four"></i>Voir tous les calculateurs</a></li>'
+            + '<li><a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur revenus</a></li>'
+            + '<li><a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur prix</a></li>'
+            + '<li><a href="/calculateurs/comparer-villes"><i class="ph ph-scales"></i>Comparateur villes</a></li>'
+          + '</ul>'
+          + '<div class="ft-ct" style="margin-top:22px">Études par ville</div>'
+          + '<ul class="ft-ls ft-cities">'
+            + '<li><a href="/calculateurs/revenu-airbnb-paris">🇫🇷 Paris</a></li>'
+            + '<li><a href="/calculateurs/revenu-lcd-lyon">🇫🇷 Lyon</a></li>'
+            + '<li><a href="/calculateurs/revenu-lcd-bordeaux">🇫🇷 Bordeaux</a></li>'
+            + '<li><a href="/calculateurs/revenu-lcd-nice">🇫🇷 Nice</a></li>'
+            + '<li><a href="/calculateurs/revenu-lcd-lisbonne">🇵🇹 Lisbonne</a></li>'
+            + '<li><a href="/calculateurs/revenu-lcd-barcelona">🇪🇸 Barcelona</a></li>'
+            + '<li><a href="/calculateurs/revenu-lcd-rome">🇮🇹 Roma</a></li>'
+            + '<li><a href="/calculateurs"><i class="ph ph-arrow-right"></i> Toutes les villes</a></li>'
           + '</ul>'
         + '</div>'
         + '<div>'
