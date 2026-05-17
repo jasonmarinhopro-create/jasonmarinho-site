@@ -7,6 +7,7 @@ import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/
 export interface LogementOption {
   id: string
   nom: string
+  adresse?: string | null
 }
 
 export default async function GabaritsPage() {
@@ -25,7 +26,7 @@ export default async function GabaritsPage() {
       ? supabase.from('user_pinned_templates').select('id, user_id, timing_bucket, template_id, logement_id, position, created_at, updated_at').eq('user_id', userId).order('position', { ascending: true })
       : Promise.resolve({ data: [] as UserPinnedTemplate[] }),
     userId
-      ? supabase.from('logements').select('id, nom').eq('user_id', userId).order('nom')
+      ? supabase.from('logements').select('id, nom, adresse').eq('user_id', userId).order('nom')
       : Promise.resolve({ data: [] as LogementOption[] }),
   ])
 

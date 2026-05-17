@@ -80,6 +80,69 @@ function extractVariables(text: string): string[] {
   return [...new Set(matches)]
 }
 
+// Auto-fill : matche un nom de variable normalisé contre les données
+// du logement sélectionné. Évite à l'hôte de re-saisir adresse/nom/ville à
+// chaque copie de gabarit. Les variables non auto-fillables (ex : description
+// libre, montants) restent à remplir dans le modal.
+function extractCityFromAdresse(adresse: string | null | undefined): string | null {
+  if (!adresse) return null
+  // Pattern le plus simple : dernière partie après une virgule, ou avant un code postal
+  const m = adresse.match(/(?:^|,\s*)([A-Za-zÀ-ÿ\s'-]+?)(?:\s+\d{4,5}|$)/)
+  if (m) return m[1].trim()
+  // Fallback : prend les derniers mots non-numériques
+  const tokens = adresse.split(/[,\s]+/).filter(Boolean)
+  for (let i = tokens.length - 1; i >= 0; i--) {
+    if (!/^\d+$/.test(tokens[i])) return tokens[i]
+  }
+  return null
+}
+
+function buildAutoFillMap(logement: LogementOption | null): Record<string, string> {
+  if (!logement) return {}
+  const ville = extractCityFromAdresse(logement.adresse)
+  const out: Record<string, string> = {}
+  // Variables FR (la plupart des templates)
+  if (logement.nom) {
+    out['[nom du logement]'] = logement.nom
+    out['[nom logement]'] = logement.nom
+    out['[location]'] = logement.nom
+    out['[property name]'] = logement.nom
+    out['[location name]'] = logement.nom
+    out['[nom de la chambre]'] = logement.nom
+  }
+  if (logement.adresse) {
+    out['[adresse]'] = logement.adresse
+    out['[adresse complète]'] = logement.adresse
+    out['[address]'] = logement.adresse
+    out['[full address]'] = logement.adresse
+    out['[localisation]'] = logement.adresse
+    out['[location description]'] = logement.adresse
+  }
+  if (ville) {
+    out['[ville]'] = ville
+    out['[city]'] = ville
+  }
+  return out
+}
+
+// Applique l'auto-fill sur un texte, retourne le texte modifié + la liste des
+// variables qui n'ont PAS pu être auto-remplies (restent à remplir manuellement).
+function applyAutoFill(text: string, fillMap: Record<string, string>): {
+  filled: string
+  remaining: string[]
+} {
+  let filled = text
+  const allVars = extractVariables(text)
+  for (const v of allVars) {
+    const key = v.toLowerCase()
+    if (fillMap[key]) {
+      filled = filled.split(v).join(fillMap[key])
+    }
+  }
+  const remaining = extractVariables(filled)
+  return { filled, remaining }
+}
+
 type FilterKey = 'mes-messages' | 'all' | 'favorites' | TimingBucket
 
 // ── Props ─────────────────────────────────────────────────────────────────────
@@ -182,7 +245,7 @@ export default function GabaritsClient({
   const [deletingCustom, setDeletingCustom]   = useState(false)
 
   // ── Remplissage variables ─────────────────────────────────────────────────
-  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en' } | null>(null)
+  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en'; prefilled?: string } | null>(null)
   const [fillValues, setFillValues]           = useState<Record<string, string>>({})
 
   // ── Pinned (liste ordonnée de messages par phase, par logement) ──────────
@@ -343,13 +406,22 @@ export default function GabaritsClient({
     const raw = lang === 'en'
       ? (t.corps_en ?? t.content)
       : (customizations[t.id]?.content ?? t.content)
-    const vars = extractVariables(raw)
-    if (vars.length > 0) {
-      setFillTemplate({ t, lang })
-      setFillValues(Object.fromEntries(vars.map(v => [v, ''])))
+
+    // Auto-fill avec les infos du logement sélectionné (adresse/nom/ville).
+    // Évite à l'hôte de saisir ces vars à chaque copie.
+    const currentLogement = selectedLogementId
+      ? (logements.find(l => l.id === selectedLogementId) ?? null)
+      : null
+    const fillMap = buildAutoFillMap(currentLogement)
+    const { filled, remaining } = applyAutoFill(raw, fillMap)
+
+    if (remaining.length > 0) {
+      // Reste des vars à remplir → modal allégé (seulement les non-remplies)
+      setFillTemplate({ t, lang, prefilled: filled })
+      setFillValues(Object.fromEntries(remaining.map(v => [v, ''])))
       return
     }
-    await doCopy(t.id, raw, lang)
+    await doCopy(t.id, filled, lang)
   }
 
   async function doCopy(id: string, content: string, lang: 'fr' | 'en') {
@@ -366,11 +438,13 @@ export default function GabaritsClient({
 
   async function copyWithFill() {
     if (!fillTemplate) return
-    const { t, lang } = fillTemplate
-    const raw = lang === 'en'
+    const { t, lang, prefilled } = fillTemplate
+    // Si prefilled est défini (auto-fill déjà appliqué), on part de là
+    // pour éviter d'écraser les substitutions déjà faites.
+    const base = prefilled ?? (lang === 'en'
       ? (t.corps_en ?? t.content)
-      : (customizations[t.id]?.content ?? t.content)
-    let filled = raw
+      : (customizations[t.id]?.content ?? t.content))
+    let filled = base
     for (const [variable, value] of Object.entries(fillValues)) {
       filled = filled.split(variable).join(value || variable)
     }
