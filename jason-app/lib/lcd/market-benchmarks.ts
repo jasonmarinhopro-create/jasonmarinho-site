@@ -140,15 +140,15 @@ const CITY_BENCHMARKS: MarketBenchmark[] = [
 
 // Moyennes nationales — fallback quand la ville n'est pas dans la liste.
 const COUNTRY_BENCHMARKS: MarketBenchmark[] = [
-  { ville: 'France (moyenne nationale)',     pays: 'FR', occupationAnnuellePct: 52, adrEur: 85,  revparAnnuelEur: 16100, saisonHaute: [6,7,8,9],          source: 'DGE Mémento Tourisme 2024 + INSEE',                      tier: 'national' },
-  { ville: 'Portugal (média nacional)',      pays: 'PT', occupationAnnuellePct: 60, adrEur: 80,  revparAnnuelEur: 17500, saisonHaute: [5,6,7,8,9,10],     source: 'INE + Turismo de Portugal 2024',                         tier: 'national' },
-  { ville: 'España (media nacional)',        pays: 'ES', occupationAnnuellePct: 60, adrEur: 90,  revparAnnuelEur: 19700, saisonHaute: [5,6,7,8,9],         source: 'INE Encuesta de Ocupación Apartamentos Turísticos 2024', tier: 'national' },
-  { ville: 'Italia (media nazionale)',       pays: 'IT', occupationAnnuellePct: 58, adrEur: 95,  revparAnnuelEur: 20100, saisonHaute: [4,5,6,7,8,9,10],   source: 'ISTAT + ENIT 2024',                                      tier: 'national' },
-  { ville: 'Belgique (moyenne nationale)',   pays: 'BE', occupationAnnuellePct: 55, adrEur: 85,  revparAnnuelEur: 17100, saisonHaute: [5,6,7,8,9],         source: 'Statbel + offices régionaux 2024',                       tier: 'national' },
-  { ville: 'Deutschland (Bundesdurchschnitt)', pays: 'DE', occupationAnnuellePct: 58, adrEur: 90, revparAnnuelEur: 19100, saisonHaute: [5,6,7,8,9,12],     source: 'DZT + Statistisches Bundesamt 2024',                     tier: 'national' },
-  { ville: 'Nederland (landelijk gemiddelde)', pays: 'NL', occupationAnnuellePct: 60, adrEur: 100, revparAnnuelEur: 21900, saisonHaute: [5,6,7,8,9],         source: 'CBS Statistics Netherlands + NBTC 2024',                tier: 'national' },
-  { ville: 'Österreich (Bundesdurchschnitt)', pays: 'AT', occupationAnnuellePct: 62, adrEur: 95,  revparAnnuelEur: 21500, saisonHaute: [6,7,8,12,1,2],      source: 'Statistik Austria + Österreich Werbung 2024',           tier: 'national' },
-  { ville: 'Suisse (moyenne nationale)',     pays: 'CH', occupationAnnuellePct: 60, adrEur: 165, revparAnnuelEur: 36100, saisonHaute: [6,7,8,12,1,2],      source: 'OFS Office fédéral statistique + Suisse Tourisme 2024',  tier: 'national', currencyNote: '≈ 174 CHF' },
+  { ville: 'France (moyenne nationale)',   pays: 'FR', occupationAnnuellePct: 52, adrEur: 85,  revparAnnuelEur: 16100, saisonHaute: [6,7,8,9],          source: 'DGE Mémento Tourisme 2024 + INSEE',                      tier: 'national' },
+  { ville: 'Portugal (moyenne nationale)', pays: 'PT', occupationAnnuellePct: 60, adrEur: 80,  revparAnnuelEur: 17500, saisonHaute: [5,6,7,8,9,10],     source: 'INE + Turismo de Portugal 2024',                         tier: 'national' },
+  { ville: 'Espagne (moyenne nationale)',  pays: 'ES', occupationAnnuellePct: 60, adrEur: 90,  revparAnnuelEur: 19700, saisonHaute: [5,6,7,8,9],         source: 'INE Encuesta de Ocupación Apartamentos Turísticos 2024', tier: 'national' },
+  { ville: 'Italie (moyenne nationale)',   pays: 'IT', occupationAnnuellePct: 58, adrEur: 95,  revparAnnuelEur: 20100, saisonHaute: [4,5,6,7,8,9,10],   source: 'ISTAT + ENIT 2024',                                      tier: 'national' },
+  { ville: 'Belgique (moyenne nationale)', pays: 'BE', occupationAnnuellePct: 55, adrEur: 85,  revparAnnuelEur: 17100, saisonHaute: [5,6,7,8,9],         source: 'Statbel + offices régionaux 2024',                       tier: 'national' },
+  { ville: 'Allemagne (moyenne nationale)', pays: 'DE', occupationAnnuellePct: 58, adrEur: 90, revparAnnuelEur: 19100, saisonHaute: [5,6,7,8,9,12],     source: 'DZT + Statistisches Bundesamt 2024',                     tier: 'national' },
+  { ville: 'Pays-Bas (moyenne nationale)', pays: 'NL', occupationAnnuellePct: 60, adrEur: 100, revparAnnuelEur: 21900, saisonHaute: [5,6,7,8,9],         source: 'CBS Statistics Netherlands + NBTC 2024',                tier: 'national' },
+  { ville: 'Autriche (moyenne nationale)', pays: 'AT', occupationAnnuellePct: 62, adrEur: 95,  revparAnnuelEur: 21500, saisonHaute: [6,7,8,12,1,2],      source: 'Statistik Austria + Österreich Werbung 2024',           tier: 'national' },
+  { ville: 'Suisse (moyenne nationale)',   pays: 'CH', occupationAnnuellePct: 60, adrEur: 165, revparAnnuelEur: 36100, saisonHaute: [6,7,8,12,1,2],      source: 'OFS Office fédéral statistique + Suisse Tourisme 2024',  tier: 'national', currencyNote: '≈ 174 CHF' },
 ]
 
 function norm(s: string | null | undefined): string {
