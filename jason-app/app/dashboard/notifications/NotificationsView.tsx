@@ -8,6 +8,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import type { AppNotification, NotificationCategory } from '@/lib/notifications/types'
 import { markNotificationRead, markAllNotificationsRead } from '@/lib/notifications/actions'
+import { useToast } from '@/components/ui/Toast'
 
 interface Props {
   initialNotifications: AppNotification[]
@@ -48,6 +49,7 @@ export default function NotificationsView({ initialNotifications }: Props) {
   const [items, setItems] = useState(initialNotifications)
   const [filter, setFilter] = useState<Filter>('unread')
   const [pending, startTransition] = useTransition()
+  const toast = useToast()
 
   const filtered = useMemo(() => {
     if (filter === 'all') return items
@@ -63,8 +65,8 @@ export default function NotificationsView({ initialNotifications }: Props) {
     startTransition(async () => {
       const res = await markNotificationRead(id)
       if (!res.ok) {
-        // Rollback
         setItems(prev => prev.map(n => n.id === id ? { ...n, read_at: null } : n))
+        toast.error('Impossible de marquer comme lue, réessaie')
       }
     })
   }
@@ -73,10 +75,16 @@ export default function NotificationsView({ initialNotifications }: Props) {
     if (unreadCount === 0) return
     const now = new Date().toISOString()
     const snapshot = items
+    const count = unreadCount
     setItems(prev => prev.map(n => n.read_at ? n : { ...n, read_at: now }))
     startTransition(async () => {
       const res = await markAllNotificationsRead()
-      if (!res.ok) setItems(snapshot)
+      if (!res.ok) {
+        setItems(snapshot)
+        toast.error('Impossible de tout marquer lu, réessaie')
+      } else {
+        toast.success(`${count} notification${count > 1 ? 's' : ''} marquée${count > 1 ? 's' : ''} lue${count > 1 ? 's' : ''}`)
+      }
     })
   }
 
