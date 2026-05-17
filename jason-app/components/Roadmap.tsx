@@ -268,81 +268,86 @@ export default function Roadmap({
 
           return (
             <div key={item.id} style={s.card}>
-              <div style={s.cardRow}>
+              {/* Contenu plein-largeur (vote déplacé en bas façon Chez Nous) */}
+              <div style={s.cardBody}>
+                <div style={s.cardTop}>
+                  <span style={{ ...s.statusPill, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}>
+                    <Icon size={10} weight="fill" />
+                    {cfg.label}
+                  </span>
 
-                {/* Vote button, left column */}
+                  {/* Admin status selector */}
+                  {isAdmin && (
+                    <select
+                      value={item.status}
+                      onChange={e => handleStatusChange(item.id, e.target.value as StatusKey)}
+                      style={s.statusSelect}
+                    >
+                      {(Object.keys(STATUS_CONFIG) as StatusKey[]).map(k => (
+                        <option key={k} value={k}>{STATUS_CONFIG[k].label}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+
+                <h4 style={s.cardTitle}>{item.title}</h4>
+                {item.description && (
+                  <p style={s.cardDesc}>{item.description}</p>
+                )}
+
+                <div style={s.cardMeta}>
+                  {item.author_name && (
+                    <span style={s.author}>{item.author_name}</span>
+                  )}
+                  <span style={s.date}>{timeAgo(item.created_at)}</span>
+                </div>
+              </div>
+
+              {/* Footer actions inline : vote + comment + admin (façon Chez Nous) */}
+              <div style={s.cardFooter}>
                 <button
+                  type="button"
+                  onClick={() => toggleExpand(item.id)}
+                  style={{ ...s.actionPill, ...(open ? s.actionPillActive : {}) }}
+                  aria-label={open ? 'Masquer les commentaires' : 'Commenter'}
+                >
+                  <ChatCircle size={13} weight={open ? 'fill' : 'regular'} />
+                  {comments.length > 0 && (
+                    <span><strong style={{ fontWeight: 700 }}>{comments.length}</strong> · {open ? 'Masquer' : 'Commenter'}</span>
+                  )}
+                  {comments.length === 0 && <span>{open ? 'Masquer' : 'Commenter'}</span>}
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => handleVote(item.id)}
                   disabled={!userId}
                   style={{
-                    ...s.voteBtn,
-                    background: voted ? cfg.bg : 'var(--surface)',
-                    border:     voted ? `1px solid ${cfg.border}` : '1px solid var(--border)',
-                    color:      voted ? cfg.color : 'var(--text-3)',
+                    ...s.actionPill,
+                    color: voted ? cfg.color : 'var(--text-muted)',
+                    background: voted ? cfg.bg : 'transparent',
+                    borderColor: voted ? cfg.border : 'var(--border)',
+                    cursor: userId ? 'pointer' : 'not-allowed',
+                    opacity: userId ? 1 : 0.55,
                   }}
-                  title={voted ? 'Retirer mon vote' : 'Voter'}
+                  title={voted ? 'Retirer mon vote' : 'Voter pour cette idée'}
+                  aria-label={voted ? 'Retirer mon vote' : 'Voter'}
                 >
-                  <ArrowFatUp size={16} weight={voted ? 'fill' : 'regular'} />
-                  <span style={{ ...s.voteCount, color: voted ? cfg.color : 'var(--text-2)' }}>
-                    {votes}
-                  </span>
+                  <ArrowFatUp size={13} weight={voted ? 'fill' : 'regular'} />
+                  {votes > 0 && <strong style={{ fontWeight: 700 }}>{votes}</strong>}
+                  <span style={{ fontSize: '11px' }}>{voted ? 'Voté' : 'Voter'}</span>
                 </button>
 
-                {/* Content */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={s.cardTop}>
-                    <span style={{ ...s.statusPill, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}>
-                      <Icon size={10} weight="fill" />
-                      {cfg.label}
-                    </span>
-
-                    {/* Admin status selector */}
-                    {isAdmin && (
-                      <select
-                        value={item.status}
-                        onChange={e => handleStatusChange(item.id, e.target.value as StatusKey)}
-                        style={s.statusSelect}
-                      >
-                        {(Object.keys(STATUS_CONFIG) as StatusKey[]).map(k => (
-                          <option key={k} value={k}>{STATUS_CONFIG[k].label}</option>
-                        ))}
-                      </select>
-                    )}
-                  </div>
-
-                  <h4 style={s.cardTitle}>{item.title}</h4>
-                  {item.description && (
-                    <p style={s.cardDesc}>{item.description}</p>
-                  )}
-
-                  <div style={s.cardFoot}>
-                    {item.author_name && (
-                      <span style={s.author}>{item.author_name}</span>
-                    )}
-                    <span style={s.date}>{timeAgo(item.created_at)}</span>
-                    <div style={{ flex: 1 }} />
-
-                    {/* Comment toggle */}
-                    <button
-                      onClick={() => toggleExpand(item.id)}
-                      style={{ ...s.commentBtn, ...(open ? s.commentBtnOpen : {}) }}
-                    >
-                      <ChatCircle size={13} weight={open ? 'fill' : 'regular'} />
-                      {comments.length > 0 && <span>{comments.length}</span>}
-                      {open ? 'Masquer' : 'Commenter'}
-                    </button>
-
-                    {isAdmin && (
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        style={s.deleteBtn}
-                        title="Supprimer"
-                      >
-                        <Trash size={12} />
-                      </button>
-                    )}
-                  </div>
-                </div>
+                {isAdmin && (
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    style={s.deleteBtn}
+                    title="Supprimer"
+                    aria-label="Supprimer"
+                  >
+                    <Trash size={12} />
+                  </button>
+                )}
               </div>
 
               {/* Comments panel */}
@@ -493,17 +498,38 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'border-color 0.15s',
   },
 
-  cardRow: { display: 'flex', gap: '14px', padding: '16px' },
-
-  voteBtn: {
-    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px',
-    width: '48px', minHeight: '52px', borderRadius: '12px',
-    cursor: 'pointer', flexShrink: 0, padding: '8px 0',
-    transition: 'all 0.15s',
-  },
-  voteCount: { fontSize: '13px', fontWeight: 700 },
+  cardBody: { padding: '14px 16px 10px' },
 
   cardTop: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '7px', flexWrap: 'wrap' as const },
+
+  cardMeta: {
+    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const,
+    marginTop: '10px', fontSize: '12px', color: 'var(--text-muted)',
+  },
+
+  cardFooter: {
+    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+    padding: '10px 14px',
+    borderTop: '1px solid var(--border)',
+    background: 'var(--bg-2, rgba(255,255,255,0.02))',
+  },
+  actionPill: {
+    whiteSpace: 'nowrap' as const,
+    flexShrink: 0,
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '5px 11px', borderRadius: '999px',
+    background: 'transparent', border: '1px solid var(--border)',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    fontSize: '11.5px', fontWeight: 600,
+    color: 'var(--text-muted)',
+    transition: 'background .15s, color .15s, border-color .15s',
+    lineHeight: 1,
+  },
+  actionPillActive: {
+    background: 'var(--accent-bg-2)', borderColor: 'var(--accent-border-2)',
+    color: 'var(--accent-text)',
+  },
 
   statusPill: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',

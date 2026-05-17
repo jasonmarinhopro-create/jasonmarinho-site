@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { fetchAndUpsertIcalFeed } from '@/lib/ical/sync'
+import { invalidateDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 
 // ─── Custom events ──────────────────────────────────────────────────────────
 
@@ -167,6 +168,7 @@ export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
 
   revalidatePath('/dashboard/calendrier')
   if (input.voyageur_id) revalidatePath(`/dashboard/voyageurs/${input.voyageur_id}`)
+  await invalidateDashboardPrefill(user.id)
 
   return {
     sejour: {
@@ -218,6 +220,7 @@ export async function updateSejourFromCalendar(input: {
   revalidatePath('/dashboard/calendrier')
   if (row.voyageur_id) revalidatePath(`/dashboard/voyageurs/${row.voyageur_id}`)
   revalidatePath('/dashboard/revenus')
+  await invalidateDashboardPrefill(user.id)
 
   return { sejour: row }
 }

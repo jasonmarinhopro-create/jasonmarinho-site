@@ -29,6 +29,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/gabarits': 'Gabarits',
   '/dashboard/aide': "Centre d'aide",
   '/dashboard/revenus': 'Revenus',
+  '/dashboard/encaissements': 'Encaissements',
   '/dashboard/profil': 'Mon compte',
   '/dashboard/abonnement': 'Abonnement',
   '/dashboard/actualites': 'Actualités',
@@ -36,6 +37,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/nouveautes': 'Nouveautés',
   '/dashboard/chez-nous': 'Chez Nous',
   '/dashboard/chez-nous/notifications': 'Notifications',
+  '/dashboard/notifications': 'Mes alertes',
   '/dashboard/logements': 'Mes Logements',
   '/dashboard/calendrier': 'Calendrier',
   '/dashboard/formations': 'Formations',
@@ -121,6 +123,10 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     : 'decouverte'
 
   const [chezNousUnread, setChezNousUnread] = useState(0)
+  // Compteur des notifications contextuelles (table `notifications`, générées
+  // par le rules-engine). Récupéré au mount et mis à jour quand l'utilisateur
+  // visite /dashboard/notifications.
+  const [appNotifUnread, setAppNotifUnread] = useState(0)
   const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
   const [userName] = useState(initialUserName ?? '')
   const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
@@ -130,27 +136,37 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   const { theme, toggleTheme } = useTheme()
   const isAdmin = isAdminProp
 
-  // Cloche unifiée : on récupère le count Chez Nous côté client une fois au mount
-  // pour pouvoir le sommer au unreadCount produit (badge agrégé) et l'afficher
-  // dans le 2e onglet du NotificationPanel.
+  // Cloche unifiée : on récupère les compteurs (Chez Nous + Alertes app) côté
+  // client au mount pour pouvoir les sommer au unreadCount produit (badge agrégé)
+  // et les afficher dans les onglets du NotificationPanel.
   useEffect(() => {
     if (!userId) return
     let cancelled = false
     const supabase = createClient()
-    supabase
-      .from('chez_nous_notifications')
-      .select('*', { count: 'exact', head: true })
-      .eq('recipient_id', userId)
-      .is('read_at', null)
-      .then(({ count }) => {
-        if (!cancelled) setChezNousUnread(count ?? 0)
-      })
+    Promise.all([
+      supabase
+        .from('chez_nous_notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('recipient_id', userId)
+        .is('read_at', null),
+      supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('recipient_id', userId)
+        .is('read_at', null)
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`),
+    ]).then(([cn, notif]) => {
+      if (cancelled) return
+      setChezNousUnread(cn.count ?? 0)
+      setAppNotifUnread(notif.count ?? 0)
+    })
     return () => { cancelled = true }
   }, [userId])
 
-  // Quand l'utilisateur visite la page notifications Chez Nous, le badge se vide.
+  // Quand l'utilisateur visite la page concernée, le badge correspondant se vide.
   useEffect(() => {
     if (pathname === '/dashboard/chez-nous/notifications') setChezNousUnread(0)
+    if (pathname === '/dashboard/notifications') setAppNotifUnread(0)
   }, [pathname])
 
   // Titre final : prop forcée > store (TitleSetter) > mapping pathname
@@ -232,6 +248,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
         readIds={readIds}
         onMarkAllRead={handleMarkAllRead}
         chezNousUnread={chezNousUnread}
+        appNotifUnread={appNotifUnread}
       />
 
       <SOSModal
@@ -299,9 +316,9 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             <Lifebuoy size={18} weight="regular" />
           </button>
 
-          {/* Notifications — cloche unifiée (Nouveautés produit + Forum Chez Nous) */}
+          {/* Notifications — cloche unifiée (Alertes app + Nouveautés produit + Forum Chez Nous) */}
           {(() => {
-            const totalUnread = unreadCount + chezNousUnread
+            const totalUnread = unreadCount + chezNousUnread + appNotifUnread
             return (
               <button
                 style={styles.iconBtn}

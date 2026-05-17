@@ -5,10 +5,12 @@ import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { ToastProvider } from '@/components/ui/Toast'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
 import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
 import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
+import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
   if (role === 'admin') return 'Administrateur'
@@ -51,6 +53,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <ThemeProvider>
+      <ToastProvider>
       <div style={styles.layout}>
         {/* Sidebar et Header rendus une seule fois dans le layout, pas de re-mount entre navigations.
             Élimine le flicker du titre + économise 1 query Supabase par navigation. */}
@@ -72,7 +75,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>
-            {children}
+            <PageFadeWrapper>{children}</PageFadeWrapper>
           </Suspense>
         </main>
         {showOnboarding && (
@@ -88,6 +91,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         )}
         <InstallAppWidget />
       </div>
+      </ToastProvider>
     </ThemeProvider>
   )
 }

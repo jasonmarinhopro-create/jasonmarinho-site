@@ -11,6 +11,34 @@
     });
   }
 
+  /* ── Speculation Rules (Chrome 121+ / Edge 121+, ignoré ailleurs) ──
+   * Prefetch automatique des pages internes au hover (eagerness moderate)
+   * → quand l'utilisateur survole un lien, la page suivante est déjà chargée
+   * → clic = navigation perçue comme instantanée
+   * Coût zéro sur Firefox/Safari (script simplement ignoré). */
+  if (!document.querySelector('script[type="speculationrules"]') && 'HTMLScriptElement' in window) {
+    try {
+      var sr = document.createElement('script');
+      sr.type = 'speculationrules';
+      sr.textContent = JSON.stringify({
+        prefetch: [{
+          source: 'document',
+          where: {
+            and: [
+              { href_matches: '/*' },
+              { not: { href_matches: '/api/*' } },
+              { not: { href_matches: '/sign/*' } },
+              { not: { selector_matches: 'a[rel~="external"]' } },
+              { not: { selector_matches: 'a[target="_blank"]' } }
+            ]
+          },
+          eagerness: 'moderate'
+        }]
+      });
+      document.head.appendChild(sr);
+    } catch (e) { /* navigateur ne supporte pas, fail silently */ }
+  }
+
   /* ── CSS ── */
   if (!document.getElementById('nav-styles')) {
     var style = document.createElement('style');
@@ -226,6 +254,7 @@
             + '<a href="/services/simulateurs/choisir-statut-ei-sasu">EI vs SASU<span class="n-arr">→</span></a>'
             + '<a href="/services/simulateurs/rentabilite-location-courte-duree">Rentabilité LCD<span class="n-arr">→</span></a>'
             + '<a href="/services/simulateurs/taxe-de-sejour">Taxe de séjour<span class="n-arr">→</span></a>'
+            + '<a href="/services/simulateurs/franchise-tva-lcd">Franchise TVA<span class="n-arr">→</span></a>'
             + '<div class="n-sub-cat">Calculateurs marché</div>'
             + '<a href="/calculateurs/revenus-lcd">Estimateur de revenus<span class="n-arr">→</span></a>'
             + '<a href="/calculateurs/prix-lcd">Calculateur de prix<span class="n-arr">→</span></a>'
@@ -307,6 +336,7 @@
         + '<a href="/services/simulateurs/choisir-statut-ei-sasu"><i class="ph ph-scales"></i>EI vs SASU</a>'
         + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
         + '<a href="/services/simulateurs/taxe-de-sejour"><i class="ph ph-map-pin"></i>Taxe de séjour</a>'
+        + '<a href="/services/simulateurs/franchise-tva-lcd"><i class="ph ph-percent"></i>Franchise TVA</a>'
         + '<a href="/services/simulateurs" class="mob-sublink">Voir tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>'
         + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
         + '<a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur de prix</a>'

@@ -1,5 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import {
   CalendarBlank, Warning, CurrencyEur,
@@ -10,6 +11,11 @@ import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
 import ChezNousWidget from './ChezNousWidget'
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
+import ConseilDuMoment from './ConseilDuMoment'
+import OnboardingTour from './OnboardingTour'
+import UrgentAlertsBanner from '@/components/dashboard/UrgentAlertsBanner'
+import { selectConseil } from '@/lib/lcd/conseil-du-moment'
+import { getDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 
@@ -335,6 +341,24 @@ export default async function DashboardPage() {
   const hasContract = (contracts ?? []).length > 0
   const hasObjectif = !!objectifData
   const hasFormationStarted = totalLessonsDone > 0
+
+  // ─── Conseil du moment : règle contextuelle prioritaire ─────────────
+  // CA 12 mois glissants via cache partagé (déjà touché par /simulateurs
+  // et /calculateurs : 60 s TTL, peut être déjà en cache)
+  const prefillForConseil = await getDashboardPrefill(userId)
+  const caTotal12mForConseil = prefillForConseil.reduce(
+    (sum, l) => sum + (l.stats?.revenuTotal ?? 0), 0
+  )
+  const conseil = selectConseil({
+    hasLogement,
+    hasContract,
+    hasObjectif,
+    hasFormationStarted,
+    caTotal12m: caTotal12mForConseil,
+    monthIndex: now.getMonth(),
+    daysSinceLastContract: null,
+    upcomingArrivalsCount: weekArrivals.length,
+  })
   const setupSteps: SetupStep[] = [
     {
       key: 'account', label: 'Ton compte est créé',
@@ -370,8 +394,21 @@ export default async function DashboardPage() {
     <>
       <div style={s.page} className="dash-page">
 
+        {/* ── Visite guidée : 1ère visite uniquement (localStorage) ───── */}
+        <OnboardingTour userId={userId} />
+
         {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
         <SetupChecklist userId={userId} steps={setupSteps} />
+
+        {/* ── Alertes urgentes du rules-engine : ne s'affiche QUE s'il y
+            en a (warning/error non lues). Suspense avec fallback null
+            pour ne pas bloquer le rendu du reste. ────────────────────── */}
+        <Suspense fallback={null}>
+          <UrgentAlertsBanner />
+        </Suspense>
+
+        {/* ── Conseil du moment : 1 règle contextuelle prioritaire ────── */}
+        <ConseilDuMoment conseil={conseil} />
 
         {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
         <section style={s.welcome} className="fade-up dash-welcome">
@@ -405,7 +442,7 @@ export default async function DashboardPage() {
               })()}
             </p>
           </div>
-          <div style={s.statsRow} className="dash-stats-row">
+          <div style={s.statsRow} className="dash-stats-row" data-tour="dashboard-stats">
             <div style={s.stat}>
               <span style={{ ...s.statVal, color: todayArrivals.length > 0 ? 'var(--success-1)' : 'var(--accent-text)' }} className="tabular-nums">{todayArrivals.length}</span>
               <span style={s.statLbl}>Arrivée{pl(todayArrivals.length)} aujourd&apos;hui</span>

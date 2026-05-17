@@ -73,6 +73,20 @@ export const FISCAL_PARAMS_2026 = {
     seuilLmp: 23000,             // € de CA pour basculer en LMP (si >50% revenus foyer)
   },
 
+  // ─── TVA / Franchise en base ───────────────────────────────────────────
+  // LCD avec services para-hôteliers (petit-déj quotidien, ménage en cours
+  // de séjour, fourniture du linge) : régime hôtelier — soumise à TVA au-dessus
+  // du seuil. Sans ces services : hors champ TVA.
+  // Note : LFi 2025 a proposé un seuil unifié à 25 000 € mais sa mise en
+  // œuvre reste en suspens — on garde le seuil BIC services 37 500 €.
+  tva: {
+    seuilFranchise: 37500,        // € — sous ce CA, dispense de facturation TVA
+    seuilTolerance: 41250,        // € — au-dessus, sortie de la franchise dès N+1
+    tauxLcdHotelier: 0.10,        // TVA 10 % LCD avec services
+    seuilReformePropose: 25000,   // proposition LFi 2025, en suspens
+    label: 'Franchise en base BIC services',
+  },
+
   // ─── Plafonds régime micro-foncier (location nue, pour ref) ───────────
   microFoncier: {
     plafond: 15000,
@@ -90,7 +104,10 @@ export const FISCAL_PARAMS_2026 = {
 // ─── Helper : déterminer le régime selon CA ───────────────────────────
 export type RegimeFiscalEstime = 'aucun' | 'micro-non-classe' | 'micro-classe' | 'reel'
 
-export function estimateRegimeFromCA(ca: number): {
+export function estimateRegimeFromCA(
+  ca: number,
+  opts: { isClasse?: boolean } = {},
+): {
   regime: RegimeFiscalEstime
   label: string
   hint: string
@@ -102,18 +119,31 @@ export function estimateRegimeFromCA(ca: number): {
       hint: 'Ajoute tes premiers séjours pour estimer ton régime',
     }
   }
-  if (ca <= FISCAL_PARAMS_2026.microBic.nonClasse.plafond) {
+  const isClasse = !!opts.isClasse
+  // Si classé, le plafond micro est 77 700 € (sinon 15 000 € en non classé)
+  const effectifPlafond = isClasse
+    ? FISCAL_PARAMS_2026.microBic.classe.plafond
+    : FISCAL_PARAMS_2026.microBic.nonClasse.plafond
+  if (ca <= effectifPlafond) {
+    if (isClasse) {
+      return {
+        regime: 'micro-classe',
+        label: 'Micro-BIC, classé Atout France',
+        hint: `Plafond ${FISCAL_PARAMS_2026.microBic.classe.plafond.toLocaleString('fr-FR')} €, abattement ${Math.round(FISCAL_PARAMS_2026.microBic.classe.abattement * 100)} %`,
+      }
+    }
     return {
       regime: 'micro-non-classe',
       label: 'Micro-BIC, non classé',
       hint: `Plafond ${FISCAL_PARAMS_2026.microBic.nonClasse.plafond.toLocaleString('fr-FR')} €, abattement ${Math.round(FISCAL_PARAMS_2026.microBic.nonClasse.abattement * 100)} %`,
     }
   }
-  if (ca <= FISCAL_PARAMS_2026.microBic.classe.plafond) {
+  // Au-dessus du plafond non classé mais sous le plafond classé : projection si classement
+  if (ca <= FISCAL_PARAMS_2026.microBic.classe.plafond && !isClasse) {
     return {
-      regime: 'micro-classe',
-      label: 'Micro-BIC, classé Atout France',
-      hint: `Plafond ${FISCAL_PARAMS_2026.microBic.classe.plafond.toLocaleString('fr-FR')} €, abattement ${Math.round(FISCAL_PARAMS_2026.microBic.classe.abattement * 100)} %`,
+      regime: 'reel',
+      label: 'Régime réel (sauf si classé)',
+      hint: `Au-dessus de ${FISCAL_PARAMS_2026.microBic.nonClasse.plafond.toLocaleString('fr-FR')} €, classer ton meublé permettrait de rester en micro jusqu'à 77 700 €`,
     }
   }
   return {

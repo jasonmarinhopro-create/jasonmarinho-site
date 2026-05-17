@@ -14,12 +14,14 @@ export function simulatorVsBlock(simType) {
     statut: 'Tu viens de comparer EI vs SASU sur un bénéfice théorique.',
     rentabilite: 'Tu viens de simuler avec un ADR et une occupation génériques.',
     taxe: 'Tu viens de calculer pour un séjour-type.',
+    tva: 'Tu viens de vérifier ta franchise sur un CA théorique.',
   }
   const benefices = {
     fiscalite: 'Préfilé avec ton CA réel des 12 derniers mois',
     statut: 'Préfilé avec ton bénéfice net réel',
     rentabilite: 'Préfilé avec ton ADR et ton occupation réels par logement',
     taxe: 'Pré-rempli avec la ville et le prix de chacun de tes logements',
+    tva: 'Vérifie ta franchise avec ton CA réel et alerte automatique au seuil',
   }
   const tagline = taglines[simType] || taglines.fiscalite
   const benefice1 = benefices[simType] || benefices.fiscalite
@@ -747,11 +749,120 @@ export function widgetTaxeSejour() {
   return { html, script }
 }
 
+// ─── 5. Simulateur Franchise TVA ─────────────────────────────────────
+export function widgetFranchiseTva() {
+  const p = FISCAL_PARAMS_2026.tva
+  const html = `
+<div class="sim-widget" id="sim-tva">
+  <div class="sim-inputs">
+    <div class="sim-head"><span class="sim-head-pulse"></span>Simulateur en direct</div>
+    <h3 class="sim-title">Vérifie ta <em>franchise TVA</em></h3>
+
+    <div class="sim-field">
+      <div class="sim-label">Chiffre d'affaires LCD annuel <span class="sim-label-val" id="tva-ca-v">25 000 €</span></div>
+      <input type="range" class="sim-range" id="tva-ca" min="0" max="80000" step="500" value="25000">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Type d'activité</div>
+      <div class="sim-chips" id="tva-type">
+        <button type="button" class="sim-chip on" data-v="hotelier">LCD avec services para-hôteliers</button>
+        <button type="button" class="sim-chip" data-v="locatif">LCD sans services (location simple)</button>
+      </div>
+    </div>
+
+    <div class="sim-hint">
+      <strong>Services para-hôteliers</strong> = au moins 3 services parmi : petit-déjeuner quotidien, ménage en cours de séjour, fourniture du linge, accueil personnalisé. Sans ces services, tu es hors champ TVA (location meublée nue).
+    </div>
+  </div>
+
+  <div class="sim-results">
+    <div class="sim-out primary">
+      <div class="sim-out-label">Verdict TVA</div>
+      <div class="sim-out-value" id="tva-out-verdict">Franchise applicable</div>
+      <div class="sim-out-sub" id="tva-out-verdict-sub">CA sous le seuil 37 500 €</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Position vs seuils</div>
+      <div class="sim-out-value" id="tva-out-position">Sous le seuil</div>
+      <div class="sim-out-sub" id="tva-out-position-sub">Marge restante : 12 500 €</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Si tu collectais la TVA</div>
+      <div class="sim-out-value" id="tva-out-collect">2 500 €</div>
+      <div class="sim-out-sub">TVA collectée au taux 10 % LCD hôtelier</div>
+    </div>
+    <div class="sim-cta-row">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#tva" class="sim-cta-primary">Préfile avec mon CA réel <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <a href="#explication" class="sim-cta-ghost">Comprendre le régime</a>
+    </div>
+  </div>
+</div>`
+  const script = `
+(function(){
+  var SEUIL = ${p.seuilFranchise}, TOL = ${p.seuilTolerance}, TAUX = ${p.tauxLcdHotelier};
+  var type = 'hotelier';
+  var $ca = document.getElementById('tva-ca'), $caV = document.getElementById('tva-ca-v');
+  var $v = document.getElementById('tva-out-verdict'), $vS = document.getElementById('tva-out-verdict-sub');
+  var $p = document.getElementById('tva-out-position'), $pS = document.getElementById('tva-out-position-sub');
+  var $c = document.getElementById('tva-out-collect');
+  function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));}
+  function update(){
+    var ca = +$ca.value;
+    $caV.textContent = fmt(ca);
+    $ca.style.setProperty('--pct', (ca/80000*100)+'%');
+    if (type === 'locatif') {
+      $v.textContent = 'Hors champ TVA';
+      $v.className = 'sim-out-value success';
+      $vS.textContent = 'Location meublée nue : pas soumise à TVA';
+      $p.textContent = '—';
+      $p.className = 'sim-out-value';
+      $pS.textContent = 'Sans services para-hôteliers';
+      $c.textContent = '—';
+      return;
+    }
+    if (ca <= SEUIL) {
+      $v.textContent = 'Franchise applicable';
+      $v.className = 'sim-out-value success';
+      $vS.textContent = 'CA sous le seuil ' + fmt(SEUIL) + ' — tu ne factures pas la TVA';
+      $p.textContent = 'Sous le seuil';
+      $p.className = 'sim-out-value success';
+      $pS.textContent = 'Marge restante : ' + fmt(SEUIL - ca);
+    } else if (ca <= TOL) {
+      $v.textContent = 'Zone de tolérance';
+      $v.className = 'sim-out-value';
+      $vS.textContent = 'Tu peux rester en franchise une année supplémentaire si tu redescends';
+      $p.textContent = 'Au-dessus de ' + fmt(SEUIL);
+      $p.className = 'sim-out-value';
+      $pS.textContent = "Si tu dépasses ${p.seuilTolerance}, sortie immédiate dès le mois suivant";
+    } else {
+      $v.textContent = 'Sortie de franchise';
+      $v.className = 'sim-out-value alert';
+      $vS.textContent = 'Tu dois facturer la TVA dès le mois suivant le dépassement';
+      $p.textContent = 'Au-dessus de ' + fmt(TOL);
+      $p.className = 'sim-out-value alert';
+      $pS.textContent = 'Demande ton numéro de TVA intracommunautaire';
+    }
+    $c.textContent = fmt(ca * TAUX);
+  }
+  $ca.addEventListener('input', update);
+  document.querySelectorAll('#tva-type .sim-chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      document.querySelectorAll('#tva-type .sim-chip').forEach(function(x){x.classList.remove('on')});
+      c.classList.add('on'); type = c.dataset.v; update();
+    });
+  });
+  update();
+})();`
+  return { html, script }
+}
+
 export const SIMULATOR_MAP = {
   'fiscalite-micro-bic': widgetFiscalite,
   'choisir-statut-ei-sasu': widgetEiSasu,
   'rentabilite-location-courte-duree': widgetRentabilite,
   'taxe-de-sejour': widgetTaxeSejour,
+  'franchise-tva-lcd': widgetFranchiseTva,
 }
 
 // Mapping slug → type pour le bloc VS
@@ -760,4 +871,5 @@ export const SIMULATOR_VS_TYPE = {
   'choisir-statut-ei-sasu': 'statut',
   'rentabilite-location-courte-duree': 'rentabilite',
   'taxe-de-sejour': 'taxe',
+  'franchise-tva-lcd': 'tva',
 }

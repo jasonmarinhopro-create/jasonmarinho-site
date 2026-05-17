@@ -530,6 +530,133 @@ const PAGES = [
       },
     ],
   },
+
+  {
+    slug: 'franchise-tva-lcd',
+    title: 'Simulateur franchise TVA LCD : seuils 2026, services para-hôteliers',
+    metaDesc: "Vérifie ta franchise en base de TVA selon ton CA LCD et tes services. Seuils 2026 (37 500 € / 41 250 €), distinction location simple vs LCD para-hôtelière, alerte automatique. Gratuit.",
+    canonical: 'https://jasonmarinho.com/services/simulateurs/franchise-tva-lcd',
+    appPath: '/dashboard/simulateurs#tva',
+    heroLabel: 'Outil gratuit · Franchise TVA',
+    heroH1Top: 'Simulateur',
+    heroH1Em: 'franchise TVA pour la LCD',
+    heroSub: "Suis-je en franchise de TVA ? Quel seuil pour la LCD avec services para-hôteliers ? Le simulateur applique les barèmes 2026 et signale si tu dois facturer la TVA ou rester en dispense. Cas particulier des services hôteliers traité explicitement.",
+    metaBadges: [
+      { icon: 'currency-eur', text: 'Seuils 37,5 k€ / 41,25 k€' },
+      { icon: 'check-circle', text: 'LCD avec ou sans services' },
+      { icon: 'percent', text: 'TVA 10 % LCD hôtelier' },
+      { icon: 'warning-octagon', text: 'Alerte dépassement' },
+    ],
+    intro: {
+      lbl: 'Pourquoi cet outil',
+      h2Top: 'La TVA en LCD',
+      h2Em: "n'est pas systématique mais sensible",
+      paras: [
+        "La franchise en base de TVA dispense de facturer la TVA à tes voyageurs tant que ton CA reste sous un seuil annuel. Pour la LCD avec services para-hôteliers (petit-déjeuner, ménage en cours de séjour, fourniture du linge, accueil), le seuil 2026 est de 37 500 €, avec une zone de tolérance jusqu'à 41 250 €.",
+        "Si tu loues simplement un meublé sans aucun service additionnel (location nue saisonnière), tu es hors champ TVA : aucun seuil à surveiller, jamais de TVA à facturer.",
+        "Le simulateur te dit en un coup d'œil : tu es en franchise, en zone de tolérance, ou tu dois facturer la TVA dès le mois suivant. Avec la TVA qui aurait été collectée, pour anticiper l'impact si tu basculais.",
+      ],
+      checklist: [
+        "Distinction LCD para-hôtelière vs location simple",
+        "Calcul de la marge restante sous le seuil",
+        "Alerte zone tolérance et sortie immédiate",
+        "Estimation de la TVA collectée au taux 10 % LCD",
+      ],
+    },
+    formules: {
+      lbl: 'Comment ça se calcule',
+      h2Top: 'Les 2 régimes',
+      h2Em: 'à connaître pour la LCD',
+      items: [
+        {
+          h: 'LCD avec services (para-hôtelière)',
+          desc: "Si tu fournis au moins 3 services parmi petit-déjeuner quotidien, ménage en cours de séjour, fourniture du linge, accueil personnalisé : tu es en régime hôtelier. Franchise applicable jusqu'à 37 500 € de CA annuel.",
+        },
+        {
+          h: 'LCD sans services (location simple)',
+          desc: "Location meublée nue saisonnière sans services additionnels : hors champ TVA. Aucun seuil à surveiller. Tu factures et déclares uniquement en BIC (micro ou réel).",
+        },
+        {
+          h: 'Zone de tolérance',
+          desc: "Entre 37 500 € et 41 250 €, tu peux rester en franchise une année supplémentaire si tu redescends. Au-delà de 41 250 €, sortie immédiate de la franchise dès le mois suivant le dépassement.",
+        },
+        {
+          h: 'Taux applicable',
+          desc: 'Hors franchise, la LCD avec services para-hôteliers est soumise à la TVA au taux réduit de 10 % (régime des prestations hôtelières), pas 20 %.',
+        },
+        {
+          h: 'Réforme proposée 25 000 €',
+          desc: 'La loi de finances 2025 a proposé un seuil unifié à 25 000 € pour tous les BIC. Sa mise en œuvre a été suspendue. À ce jour, le seuil 37 500 € reste applicable. Vérifie le BOFiP avant toute décision.',
+        },
+      ],
+    },
+    cas: {
+      lbl: 'Cas pratiques',
+      h2Top: '3 situations',
+      h2Em: 'avec verdict TVA',
+      examples: [
+        {
+          titre: 'Studio à 18 000 € de CA, ménage + linge + petit-déjeuner',
+          steps: [
+            'CA annuel : 18 000 €',
+            'Services para-hôteliers : OUI (3 critères remplis)',
+            'Seuil franchise BIC services : 37 500 €',
+            'Verdict : franchise applicable',
+            'Marge restante avant seuil : 19 500 €',
+            'Tu ne factures pas la TVA, aucune déclaration TVA à faire',
+          ],
+        },
+        {
+          titre: 'T2 à 40 000 € de CA, services para-hôteliers',
+          steps: [
+            'CA annuel : 40 000 €',
+            'Au-dessus du seuil 37 500 € mais dans la tolérance (≤ 41 250 €)',
+            'Verdict : zone de tolérance',
+            'Si tu redescends sous 37 500 € l\'année prochaine, tu restes en franchise',
+            'Si tu dépasses 41 250 € en N+1, sortie immédiate dès le mois suivant',
+            'Surveille de près tes chiffres mensuels en fin d\'année',
+          ],
+        },
+        {
+          titre: 'Maison à 50 000 € de CA, location simple sans services',
+          steps: [
+            'CA annuel : 50 000 €',
+            'Services para-hôteliers : NON (location meublée nue saisonnière)',
+            'Régime applicable : hors champ TVA',
+            'Verdict : aucune TVA à facturer, aucun seuil à surveiller',
+            'Tu déclares uniquement en BIC (micro ou réel selon ton choix)',
+            'Important : si tu commences à proposer le linge + le ménage en cours, tu bascules en régime hôtelier et le seuil 37 500 € s\'applique',
+          ],
+        },
+      ],
+    },
+    faq: [
+      {
+        q: 'Quels services rendent une LCD soumise à la TVA ?',
+        a: "L'administration considère qu'au moins 3 services parmi les 4 suivants caractérisent la para-hôtellerie : petit-déjeuner quotidien, nettoyage régulier des locaux pendant le séjour, fourniture du linge de maison, accueil personnalisé de la clientèle. Sous ce seuil, tu es en location meublée hors champ TVA.",
+      },
+      {
+        q: 'Quel est le seuil de franchise TVA en 2026 pour la LCD ?',
+        a: "37 500 € de CA annuel pour la LCD avec services para-hôteliers, avec une zone de tolérance jusqu'à 41 250 € qui permet de rester en franchise une année supplémentaire si tu redescends. Au-dessus de 41 250 €, sortie immédiate dès le mois suivant le dépassement.",
+      },
+      {
+        q: 'La réforme 25 000 € est-elle applicable ?',
+        a: "La loi de finances 2025 a voté un seuil unifié à 25 000 € pour tous les BIC, mais sa mise en œuvre a été suspendue suite à des recours. À ce jour (2026), le seuil 37 500 € reste applicable. Vérifie le BOFiP ou demande à ton comptable avant toute décision impactante.",
+      },
+      {
+        q: 'Que se passe-t-il si je sors de la franchise TVA ?',
+        a: "Tu demandes un numéro de TVA intracommunautaire à ton SIE. Tu factures la TVA à 10 % à tes voyageurs (LCD para-hôtelière), tu déclares mensuellement ou trimestriellement, tu peux récupérer la TVA sur tes dépenses pro (commissions OTAs, eau, électricité, mobilier, etc.).",
+      },
+      {
+        q: 'Suis-je redevable de la TVA si je n\'ai aucun service ?',
+        a: "Non. Une location meublée nue saisonnière sans aucun service additionnel est hors champ TVA — aucune TVA à facturer, aucun seuil à surveiller, peu importe le CA. Tu restes uniquement en BIC pour l'impôt sur le revenu.",
+      },
+      {
+        q: 'Airbnb collecte-t-il la TVA pour moi ?',
+        a: "Airbnb ne collecte pas la TVA française pour l'hôte (contrairement à la taxe de séjour). Si tu es redevable, c'est à toi de la facturer et déclarer. Airbnb facture sa propre TVA sur sa commission, qui est récupérable si tu es au régime réel TVA.",
+      },
+    ],
+  },
 ]
 
 // ─── Template HTML ─────────────────────────────────────────────────────

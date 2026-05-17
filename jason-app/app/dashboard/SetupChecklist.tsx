@@ -47,7 +47,7 @@ export default function SetupChecklist({ userId, steps }: Props) {
   const nextStep = steps.find(s => !s.done)
 
   return (
-    <div style={s.wrap}>
+    <div style={s.wrap} data-tour="setup-checklist">
       <div style={s.head}>
         <div style={s.headLeft}>
           <div style={s.headTitle}>

@@ -1,7 +1,8 @@
-import { estimateRegimeFromCA, type RegimeFiscalEstime, FISCAL_PARAMS_2026 } from './fiscal-params'
+import { estimateRegimeFromCA, type RegimeFiscalEstime, detectStatutLocatif, type StatutLocatif, FISCAL_PARAMS_2026 } from './fiscal-params'
 
 type LogementWithStats = {
   ville: string | null
+  classementAtoutFrance?: 'non_classe' | '1' | '2' | '3' | '4' | '5' | 'chambres_hotes' | null
   stats?: {
     nuitsLouees: number
     revenuTotal: number
@@ -31,18 +32,25 @@ export type AccountStats = {
   regimeEstime: RegimeFiscalEstime
   regimeLabel: string
   regimeHint: string
+  // Régime micro-BIC pré-rempli dans le simulateur Fiscalité.
+  // Null si aucun classement renseigné → l'utilisateur choisit.
+  defaultRegimeFiscal: 'non_classe' | 'classe' | 'cdh' | null
+  statutLocatif: StatutLocatif
+  statutLocatifLabel: string
+  statutLocatifDetails: string
   villes: string[]
   insights: {
     ca: Insight | null
     logements: Insight | null
     adr: Insight | null
     regime: Insight | null
+    statut: Insight | null
   }
 }
 
 export function computeAccountStats(
   prefill: LogementWithStats[],
-  profile: { full_name: string | null; plan: 'decouverte' | 'standard' | 'driing' }
+  profile: { full_name: string | null; plan: 'decouverte' | 'standard' | 'driing'; autres_revenus_pro?: number | null }
 ): AccountStats {
   const caTotal12m = prefill.reduce((sum, l) => sum + (l.stats?.revenuTotal ?? 0), 0)
   const nuitsTotales12m = prefill.reduce((sum, l) => sum + (l.stats?.nuitsLouees ?? 0), 0)
@@ -53,7 +61,27 @@ export function computeAccountStats(
     ? Math.round(prefill.reduce((sum, l) => sum + (l.stats?.occupationReelle ?? 0), 0) / nbLogementsActifs)
     : 0
 
-  const regimeInfo = estimateRegimeFromCA(caTotal12m)
+  // Classement majoritaire : si la plupart des logements sont classés,
+  // on bascule l'estimation sur le régime classé (50 %/77.7 k€)
+  const classementCounts = prefill.reduce((acc, l) => {
+    const c = l.classementAtoutFrance
+    if (!c) return acc
+    if (c === 'non_classe') acc.nonClasse++
+    else if (c === 'chambres_hotes') acc.chambresHotes++
+    else acc.classe++  // étoiles 1-5
+    return acc
+  }, { classe: 0, nonClasse: 0, chambresHotes: 0 })
+  const totalRenseignes = classementCounts.classe + classementCounts.nonClasse + classementCounts.chambresHotes
+  const tousClasses = totalRenseignes > 0 && classementCounts.classe + classementCounts.chambresHotes === totalRenseignes
+  const tousNonClasses = totalRenseignes > 0 && classementCounts.nonClasse === totalRenseignes
+  const mixteClassement = totalRenseignes > 0 && !tousClasses && !tousNonClasses
+  const regimeInfo = estimateRegimeFromCA(caTotal12m, { isClasse: tousClasses })
+  // autresRevenus = saisis dans /dashboard/profil (FiscalContextCard).
+  // Si null, l'algo retombe sur "LMNP probable à vérifier".
+  const autresRevenus = (typeof profile.autres_revenus_pro === 'number' && profile.autres_revenus_pro >= 0)
+    ? profile.autres_revenus_pro
+    : null
+  const statutInfo = detectStatutLocatif(caTotal12m, autresRevenus)
 
   const villes = Array.from(new Set(prefill.map(l => l.ville).filter(Boolean) as string[]))
 
@@ -73,6 +101,16 @@ export function computeAccountStats(
     regimeEstime: regimeInfo.regime,
     regimeLabel: regimeInfo.label,
     regimeHint: regimeInfo.hint,
+    defaultRegimeFiscal: classementCounts.chambresHotes >= Math.max(classementCounts.classe, classementCounts.nonClasse) && classementCounts.chambresHotes > 0
+      ? 'cdh'
+      : classementCounts.classe > classementCounts.nonClasse
+        ? 'classe'
+        : classementCounts.nonClasse > 0
+          ? 'non_classe'
+          : null,
+    statutLocatif: statutInfo.statut,
+    statutLocatifLabel: statutInfo.label,
+    statutLocatifDetails: statutInfo.details,
     villes,
     insights: computeInsights({
       caTotal12m,
@@ -80,6 +118,12 @@ export function computeAccountStats(
       nbLogementsActifs,
       adrMoyen,
       regime: regimeInfo.regime,
+      statut: statutInfo.statut,
+      tousClasses,
+      tousNonClasses,
+      mixteClassement,
+      classementRenseigne: totalRenseignes > 0,
+      autresRevenusRenseignes: autresRevenus !== null,
     }),
   }
 }
@@ -91,6 +135,12 @@ function computeInsights(s: {
   nbLogementsActifs: number
   adrMoyen: number
   regime: RegimeFiscalEstime
+  statut: StatutLocatif
+  tousClasses: boolean
+  tousNonClasses: boolean
+  mixteClassement: boolean
+  classementRenseigne: boolean
+  autresRevenusRenseignes: boolean
 }): AccountStats['insights'] {
   const plafondNc = FISCAL_PARAMS_2026.microBic.nonClasse.plafond  // 15 000
   const plafondCl = FISCAL_PARAMS_2026.microBic.classe.plafond     // 77 700
@@ -188,6 +238,15 @@ function computeInsights(s: {
       ctaHref: '/dashboard/calendrier',
       tone: 'neutral',
     }
+  } else if (s.caTotal12m > 0 && !s.classementRenseigne && s.nbLogements > 0) {
+    // Cas critique : classement non renseigné → on prescrit la saisie pour
+    // débloquer l'estimation exacte du régime
+    regime = {
+      message: 'Renseigne le classement de tes logements pour un régime exact',
+      ctaLabel: 'Mettre à jour mes logements',
+      ctaHref: '/dashboard/logements',
+      tone: 'opportunity',
+    }
   } else if (s.regime === 'micro-non-classe' && s.caTotal12m > 0) {
     // Économie potentielle si classement : (abat_classé - abat_nonclassé) × CA × TMI estimé 30%
     const economieAn = s.caTotal12m
@@ -223,8 +282,39 @@ function computeInsights(s: {
       tone: 'opportunity',
     }
   }
+  // Note : si mixteClassement (logements mélangés), l'insight reste sur le
+  // régime majoritaire mais le label de la tile aura déjà signalé "mixte"
 
-  return { ca, logements, adr, regime }
+  // ── Statut LMNP/LMP tile ──
+  let statut: Insight | null = null
+  if (s.statut === 'a-configurer') {
+    statut = null
+  } else if (s.statut === 'lmp') {
+    statut = {
+      message: 'LMP : cotisations sociales TNS (URSSAF) applicables. Anticipe.',
+      ctaLabel: 'Comparer EI vs SASU',
+      ctaHref: '/dashboard/simulateurs#statut',
+      tone: 'warning',
+    }
+  } else if (s.caTotal12m >= FISCAL_PARAMS_2026.ei.seuilLmp && !s.autresRevenusRenseignes) {
+    // CA >= 23k€ mais autres revenus pas saisis → on prescrit la saisie pour
+    // verrouiller le statut LMNP/LMP
+    statut = {
+      message: `LMNP probable. Renseigne tes autres revenus pour verrouiller LMNP ou LMP`,
+      ctaLabel: 'Renseigner mes revenus',
+      ctaHref: '/dashboard/profil',
+      tone: 'opportunity',
+    }
+  } else if (s.statut === 'lmnp' && s.caTotal12m >= FISCAL_PARAMS_2026.ei.seuilLmp) {
+    statut = {
+      message: 'LMNP confirmé : LCD ≤ autres revenus du foyer',
+      ctaLabel: 'Voir le simulateur',
+      ctaHref: '/dashboard/simulateurs#statut',
+      tone: 'neutral',
+    }
+  }
+
+  return { ca, logements, adr, regime, statut }
 }
 
 export function fmtEur(n: number): string {

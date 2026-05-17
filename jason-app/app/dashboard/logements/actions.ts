@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
 import { syncLogementIcalUrls } from '@/lib/ical/sync'
+import { invalidateDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 
 export type LogementData = {
   // Identité
@@ -131,6 +132,7 @@ export async function createLogement(data: LogementData): Promise<{ error?: stri
   }
 
   revalidatePath('/dashboard/logements')
+  await invalidateDashboardPrefill(profile.userId)
   return { id: row.id }
 }
 
@@ -172,6 +174,7 @@ export async function updateLogement(id: string, data: Partial<LogementData>): P
 
   revalidatePath('/dashboard/logements')
   revalidatePath(`/dashboard/logements/${id}`)
+  await invalidateDashboardPrefill(profile.userId)
   return {}
 }
 
@@ -288,5 +291,6 @@ export async function deleteLogement(id: string): Promise<{ error?: string }> {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/logements')
+  await invalidateDashboardPrefill(profile.userId)
   return {}
 }
