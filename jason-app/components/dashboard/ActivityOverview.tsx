@@ -37,47 +37,58 @@ export function ActivityOverview({ stats }: { stats: AccountStats }) {
         )}
       </div>
 
-      <div style={ao.grid}>
-        <StatTile
-          label="CA 12 mois"
-          value={hasActivity ? fmtEur(stats.caTotal12m) : '—'}
-          sub={hasActivity ? `${stats.nuitsTotales12m} nuits vendues` : 'Pas encore de séjours'}
-          icon={<CurrencyEur size={14} weight="fill" />}
-          insight={stats.insights.ca}
-          accent
-        />
-        <StatTile
-          label="Logements"
-          value={`${stats.nbLogements}`}
-          sub={stats.nbLogements > 0
-            ? `${stats.nbLogementsActifs} actif${stats.nbLogementsActifs > 1 ? 's' : ''} · ${villeLabel}`
-            : 'Aucun configuré'}
-          icon={<House size={14} weight="fill" />}
-          insight={stats.insights.logements}
-        />
-        <StatTile
-          label="ADR moyen"
-          value={hasActivity ? fmtEur(stats.adrMoyen) : '—'}
-          sub={hasActivity ? `${stats.occupationMoyenne} % occupation` : 'À calculer'}
-          icon={<TrendUp size={14} weight="fill" />}
-          insight={stats.insights.adr}
-        />
-        <StatTile
-          label="Régime fiscal"
-          value={stats.regimeLabel}
-          sub={stats.regimeHint}
-          icon={<Scales size={14} weight="fill" />}
-          insight={stats.insights.regime}
-          highlight={stats.regimeEstime !== 'aucun'}
-        />
-        <StatTile
-          label="Statut locatif"
-          value={stats.statutLocatif === 'a-configurer' ? '—' : stats.statutLocatifLabel}
-          sub={stats.statutLocatifDetails}
-          icon={<Briefcase size={14} weight="fill" />}
-          insight={stats.insights.statut}
-          highlight={stats.statutLocatif === 'lmnp' || stats.statutLocatif === 'lmp'}
-        />
+      {/* Stagger : chaque tuile apparaît avec un léger délai (effet "cascade") */}
+      <div className="stagger-children" style={{ ...ao.grid, '--stagger': '50ms' } as React.CSSProperties}>
+        <div style={{ '--i': 0 } as React.CSSProperties}>
+          <StatTile
+            label="CA 12 mois"
+            value={hasActivity ? fmtEur(stats.caTotal12m) : '—'}
+            sub={hasActivity ? `${stats.nuitsTotales12m} nuits vendues` : 'Pas encore de séjours'}
+            icon={<CurrencyEur size={14} weight="fill" />}
+            insight={stats.insights.ca}
+            accent
+          />
+        </div>
+        <div style={{ '--i': 1 } as React.CSSProperties}>
+          <StatTile
+            label="Logements"
+            value={`${stats.nbLogements}`}
+            sub={stats.nbLogements > 0
+              ? `${stats.nbLogementsActifs} actif${stats.nbLogementsActifs > 1 ? 's' : ''} · ${villeLabel}`
+              : 'Aucun configuré'}
+            icon={<House size={14} weight="fill" />}
+            insight={stats.insights.logements}
+          />
+        </div>
+        <div style={{ '--i': 2 } as React.CSSProperties}>
+          <StatTile
+            label="ADR moyen"
+            value={hasActivity ? fmtEur(stats.adrMoyen) : '—'}
+            sub={hasActivity ? `${stats.occupationMoyenne} % occupation` : 'À calculer'}
+            icon={<TrendUp size={14} weight="fill" />}
+            insight={stats.insights.adr}
+          />
+        </div>
+        <div style={{ '--i': 3 } as React.CSSProperties}>
+          <StatTile
+            label="Régime fiscal"
+            value={stats.regimeLabel}
+            sub={stats.regimeHint}
+            icon={<Scales size={14} weight="fill" />}
+            insight={stats.insights.regime}
+            highlight={stats.regimeEstime !== 'aucun'}
+          />
+        </div>
+        <div style={{ '--i': 4 } as React.CSSProperties}>
+          <StatTile
+            label="Statut locatif"
+            value={stats.statutLocatif === 'a-configurer' ? '—' : stats.statutLocatifLabel}
+            sub={stats.statutLocatifDetails}
+            icon={<Briefcase size={14} weight="fill" />}
+            insight={stats.insights.statut}
+            highlight={stats.statutLocatif === 'lmnp' || stats.statutLocatif === 'lmp'}
+          />
+        </div>
       </div>
     </div>
   )
