@@ -21,7 +21,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="/phosphor.css">
+  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css">
+  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css">
   <style>
     :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.10);--ok:#34D399}
     *{box-sizing:border-box}
@@ -82,6 +83,14 @@
     .related-row a:hover{transform:translateY(-2px);border-color:var(--g)}
     .related-row .rt{font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:500;margin-bottom:4px}
     .related-row .rs{font-size:12.5px;color:var(--tl);font-weight:300}
+    /* ─── Design refresh 2026 : accent vert + gradients subtils ─────── */
+    body{background:linear-gradient(180deg,#fff 0%,var(--cr) 100%)}
+    .scenario-card,.stat-card,.faq-item,.related-row a{border-top:2px solid transparent;transition:border-color .25s,box-shadow .3s,transform .25s}
+    .scenario-card:hover,.stat-card:hover,.faq-item:hover,.related-row a:hover{border-top-color:var(--g)}
+    .btn-p{background:linear-gradient(135deg,var(--y) 0%,#FFE08A 50%,var(--y) 100%);background-size:200% 100%;transition:background-position .35s,transform .2s,box-shadow .2s}
+    .btn-p:hover{background-position:100% 0}
+    .lbl{position:relative;padding-left:18px}
+    .lbl::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:10px;height:2px;background:currentColor;border-radius:2px;opacity:.65}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Combien rapporte une location courte durée à Lisboa en 2026 ? Calcul gratuit + chiffres marché","description":"Estime gratuitement les revenus d'une location courte durée (Airbnb, Booking, en direct) à Lisboa en 2026. Données Turismo de Portugal (RNAL) : 72 % d'occupation, 115 €/nuit. Calculateur préfilé par type de bien.","datePublished":"2026-05-17","dateModified":"2026-05-17","author":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"},"publisher":{"@type":"Organization","name":"Jason Marinho","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp"}},"image":"https://jasonmarinho.com/couverture-jason.webp","mainEntityOfPage":"https://jasonmarinho.com/calculateurs/revenu-lcd-lisbonne"}</script>
   <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs","item":"https://jasonmarinho.com/calculateurs"},{"@type":"ListItem","position":3,"name":"Revenu LCD Lisboa","item":"https://jasonmarinho.com/calculateurs/revenu-lcd-lisbonne"}]}</script>
@@ -102,7 +111,18 @@
   </div>
 </header>
 
-<div class="stats-strip">
+<div style="max-width:920px;margin:-22px auto 0;padding:0 16px;position:relative;z-index:3">
+  <a href="https://app.jasonmarinho.com/dashboard/simulateurs" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:linear-gradient(135deg,#fff 0%,rgba(255,213,107,.10) 100%);border:1px solid rgba(255,213,107,.40);border-radius:14px;box-shadow:0 6px 22px rgba(0,76,63,.08);text-decoration:none;color:inherit">
+    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--y) 0%,var(--yd) 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gd);font-size:18px"><i class="ph-fill ph-house"></i></div>
+    <div style="flex:1">
+      <div style="font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:500;line-height:1.3">💡 Tu loues déjà à Lisboa ?</div>
+      <div style="font-size:12.5px;color:var(--tm);font-weight:300;margin-top:2px;line-height:1.4">Dans ton espace membre, l&apos;estimateur compare <strong style="color:var(--g);font-weight:600">ton ADR et ton occupation réels</strong> à ces chiffres marché. Compte gratuit.</div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:var(--g);white-space:nowrap;flex-shrink:0">Ouvrir →</div>
+  </a>
+</div>
+
+<div class="stats-strip" style="margin-top:18px">
   <div class="stat-card">
     <div class="sc-label">Occupation moyenne</div>
     <div class="sc-value">72 %</div>

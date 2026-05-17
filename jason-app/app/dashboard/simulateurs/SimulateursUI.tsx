@@ -7,7 +7,7 @@ import { citiesByCountry, estimateRevenue, calculatePrice, SUPPORTED_COUNTRIES, 
 type Pays = MarketBenchmark['pays']
 import type { LogementPrefill } from './page'
 
-type CalcTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe' | 'revenus' | 'prix'
+type CalcTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe' | 'revenus' | 'prix' | 'mesvilles'
 
 interface Props {
   logementsPrefill?: LogementPrefill[]
@@ -1007,11 +1007,98 @@ function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
             </div>
           </div>
 
+          {/* Bloc 'Toi vs Marché' : si l'hôte a déjà des séjours réels sur
+              ce logement, on compare son ADR/occupation réels à l'estimation
+              marché. Très puissant pour valider que tes vraies perfs sont
+              cohérentes (ou meilleures !) vs benchmark. */}
+          {selected?.stats && selected.stats.nuitsLouees > 0 && (
+            <div style={{
+              marginTop: '16px',
+              padding: '14px 16px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, rgba(99,214,131,0.08) 0%, var(--bg-2) 100%)',
+              border: '1px solid rgba(99,214,131,0.25)',
+            }}>
+              <div style={{
+                fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px',
+                textTransform: 'uppercase' as const, color: 'var(--success-1)',
+                marginBottom: '10px',
+                display: 'flex', alignItems: 'center', gap: '6px',
+              }}>
+                <ChartLineUp size={12} weight="fill" /> Toi vs Marché ({selected.nom}, 12 derniers mois)
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+                <BenchmarkRow
+                  label="Occupation"
+                  toi={`${selected.stats.occupationReelle} %`}
+                  marche={`${res.occupation} %`}
+                  toiNum={selected.stats.occupationReelle}
+                  marcheNum={res.occupation}
+                />
+                <BenchmarkRow
+                  label="ADR"
+                  toi={fmtEur(selected.stats.adrReel)}
+                  marche={fmtEur(res.adr)}
+                  toiNum={selected.stats.adrReel}
+                  marcheNum={res.adr}
+                />
+                <BenchmarkRow
+                  label="Revenu (annualisé)"
+                  toi={fmtEur(selected.stats.revenuTotal)}
+                  marche={fmtEur(res.revenuAnnuel)}
+                  toiNum={selected.stats.revenuTotal}
+                  marcheNum={res.revenuAnnuel}
+                />
+              </div>
+              <p style={{ fontSize: '11px', color: 'var(--text-2)', marginTop: '10px', marginBottom: 0, lineHeight: 1.5 }}>
+                {selected.stats.adrReel > res.adr * 1.1
+                  ? `🎉 Ton ADR (${fmtEur(selected.stats.adrReel)}) dépasse le marché (${fmtEur(res.adr)}). Tu as un positionnement premium, vérifie que ton occupation suit.`
+                  : selected.stats.occupationReelle < res.occupation - 8
+                  ? `⚠ Ton occupation (${selected.stats.occupationReelle} %) est sous la moyenne marché (${res.occupation} %). Marge de remplissage possible.`
+                  : `Tes performances sont alignées avec le marché. Pour gagner du potentiel : pricing dynamique, photos pro, classement.`}
+              </p>
+              <p style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '6px', marginBottom: 0, fontStyle: 'italic' as const }}>
+                Données réelles sur {selected.stats.nbSejours} séjour{selected.stats.nbSejours > 1 ? 's' : ''} encaissé{selected.stats.nbSejours > 1 ? 's' : ''} les 12 derniers mois.
+              </p>
+            </div>
+          )}
+
           <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '14px', marginBottom: 0, fontStyle: 'italic' as const, borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
             Source : {res.source}. Estimation indicative (±20 %). Pas une garantie de revenus.
           </p>
         </div>
       </div>
+    </div>
+  )
+}
+
+/* Sous-composant : ligne benchmark Toi vs Marché */
+function BenchmarkRow({ label, toi, marche, toiNum, marcheNum }: {
+  label: string; toi: string; marche: string; toiNum: number; marcheNum: number
+}) {
+  const diffPct = marcheNum > 0 ? Math.round(((toiNum - marcheNum) / marcheNum) * 100) : 0
+  const isAbove = diffPct > 5
+  const isBelow = diffPct < -5
+  return (
+    <div style={{ padding: '8px 10px', borderRadius: '8px', background: 'var(--bg-2)' }}>
+      <div style={{ fontSize: '10.5px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px', marginBottom: '4px' }}>{label}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: '11px', color: 'var(--text-3)' }}>
+        <span>Toi</span>
+        <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: isAbove ? 'var(--success-1)' : isBelow ? '#F59E0B' : 'var(--text)' }}>{toi}</span>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' }}>
+        <span>Marché</span>
+        <span>{marche}</span>
+      </div>
+      {Math.abs(diffPct) >= 5 && (
+        <div style={{
+          fontSize: '10.5px', fontWeight: 600,
+          color: isAbove ? 'var(--success-1)' : '#F59E0B',
+          marginTop: '4px',
+        }}>
+          {isAbove ? '▲' : '▼'} {Math.abs(diffPct)} % {isAbove ? 'au-dessus' : 'en dessous'}
+        </div>
+      )}
     </div>
   )
 }
@@ -1212,6 +1299,229 @@ function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
   )
 }
 
+/* ──────────────────────────────────────────
+ * 7. COMPARATEUR MES VILLES (multi-villes, préfilé avec tes logements)
+ * ────────────────────────────────────────── */
+function CompareurMesVilles({ logements }: { logements: LogementPrefill[] }) {
+  // Villes uniques des logements de l'utilisateur (déduplication par ville+pays)
+  const villesLogements = useMemo(() => {
+    const seen = new Set<string>()
+    const out: Array<{ pays: Pays; ville: string; isMine: true; logementNom?: string; statsReelles?: NonNullable<LogementPrefill['stats']> }> = []
+    logements.forEach(l => {
+      const key = `${l.pays}|${l.ville ?? ''}`
+      if (!l.ville || seen.has(key)) return
+      seen.add(key)
+      out.push({ pays: l.pays as Pays, ville: l.ville, isMine: true, logementNom: l.nom, statsReelles: l.stats })
+    })
+    return out
+  }, [logements])
+
+  // 4 villes max (les 2 premières de l'hôte, puis 2 villes par défaut à comparer)
+  const defaultSelection = useMemo(() => {
+    const sel: Array<{ pays: Pays; ville: string }> = []
+    villesLogements.slice(0, 2).forEach(v => sel.push({ pays: v.pays, ville: v.ville }))
+    // Complète avec des villes-référence si moins de 2 logements
+    if (sel.length < 2) sel.push({ pays: 'FR', ville: 'Paris' })
+    if (sel.length < 3) sel.push({ pays: 'FR', ville: 'Lyon' })
+    return sel
+  }, [villesLogements])
+
+  const [selection, setSelection] = useState(defaultSelection)
+
+  const benches = useMemo(() => {
+    return selection
+      .map(s => {
+        const bench = citiesByCountry(s.pays).find(c => c.ville === s.ville)
+        if (!bench) return null
+        const mine = villesLogements.find(v => v.pays === s.pays && v.ville === s.ville)
+        return { bench, mine }
+      })
+      .filter((b): b is { bench: ReturnType<typeof citiesByCountry>[0]; mine: typeof villesLogements[0] | undefined } => !!b)
+  }, [selection, villesLogements])
+
+  function updateSelection(idx: number, field: 'pays' | 'ville', value: string) {
+    setSelection(prev => {
+      const next = [...prev]
+      if (field === 'pays') {
+        const cities = citiesByCountry(value as Pays)
+        next[idx] = { pays: value as Pays, ville: cities[0]?.ville ?? '' }
+      } else {
+        next[idx] = { ...next[idx], ville: value }
+      }
+      return next
+    })
+  }
+  function addCity() {
+    if (selection.length >= 4) return
+    const last = selection[selection.length - 1]
+    const cities = citiesByCountry(last?.pays ?? 'FR')
+    const used = new Set(selection.map(s => s.ville))
+    const next = cities.find(c => !used.has(c.ville)) ?? cities[0]
+    if (next) setSelection([...selection, { pays: last?.pays ?? 'FR', ville: next.ville }])
+  }
+  function removeCity(idx: number) {
+    if (selection.length <= 2) return
+    setSelection(prev => prev.filter((_, i) => i !== idx))
+  }
+
+  // Best per metric
+  function bestIdx(values: number[], higherIsBetter = true): number {
+    let best = -1, bestVal = higherIsBetter ? -Infinity : Infinity
+    values.forEach((v, i) => { if (higherIsBetter ? v > bestVal : v < bestVal) { bestVal = v; best = i } })
+    return best
+  }
+  const occs = benches.map(b => b.bench.occupationAnnuellePct)
+  const adrs = benches.map(b => b.bench.adrEur)
+  const revpars = benches.map(b => b.bench.revparAnnuelEur)
+  const bestOcc = bestIdx(occs), bestAdr = bestIdx(adrs), bestRev = bestIdx(revpars)
+
+  return (
+    <div>
+      <h2 style={s.sectionTitle}>
+        <Storefront size={20} weight="fill" /> Compare tes villes
+      </h2>
+      <p style={s.sectionDesc}>
+        Compare les benchmarks marché de tes propres villes à d&apos;autres villes pour décider d&apos;un investissement.
+        {villesLogements.length > 0 && ` Préfilé avec ${villesLogements.length} ville${villesLogements.length > 1 ? 's' : ''} où tu as déjà un bien.`}
+      </p>
+
+      {/* Sélection villes */}
+      <div style={s.formCard}>
+        <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px', marginBottom: '14px' }}>
+          {selection.map((sel, i) => {
+            const isMine = villesLogements.some(v => v.pays === sel.pays && v.ville === sel.ville)
+            return (
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '28px 1fr 140px 32px', gap: '8px', alignItems: 'center' }}>
+                <div style={{
+                  width: '24px', height: '24px', borderRadius: '6px',
+                  background: ['#10b981', '#3b82f6', '#f59e0b', '#a78bfa'][i],
+                  color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '11px', fontWeight: 700,
+                }}>{i + 1}</div>
+                <select value={sel.ville} onChange={e => updateSelection(i, 'ville', e.target.value)} style={s.input}>
+                  {citiesByCountry(sel.pays).map(c => (
+                    <option key={c.ville} value={c.ville}>
+                      {c.ville}{villesLogements.some(v => v.pays === sel.pays && v.ville === c.ville) ? ' ★ (mon bien)' : ''}
+                    </option>
+                  ))}
+                </select>
+                <select value={sel.pays} onChange={e => updateSelection(i, 'pays', e.target.value)} style={{ ...s.input, fontSize: '12.5px' }}>
+                  {SUPPORTED_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.flag} {c.label}</option>)}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => removeCity(i)}
+                  disabled={selection.length <= 2}
+                  style={{
+                    width: '28px', height: '28px', borderRadius: '8px',
+                    border: '1px solid var(--border)', background: 'transparent',
+                    color: 'var(--text-muted)', cursor: selection.length <= 2 ? 'not-allowed' : 'pointer',
+                    fontSize: '13px', opacity: selection.length <= 2 ? 0.3 : 1,
+                  }}
+                  title="Retirer"
+                >✕</button>
+                {isMine && (
+                  <div style={{
+                    gridColumn: '2 / 4',
+                    fontSize: '10.5px',
+                    color: 'var(--accent-text)',
+                    fontWeight: 600,
+                    marginTop: '-2px',
+                  }}>★ Ville où tu as un bien</div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+        <button
+          type="button"
+          onClick={addCity}
+          disabled={selection.length >= 4}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '6px',
+            padding: '8px 14px', borderRadius: '8px',
+            border: '1px dashed var(--border)', background: 'transparent',
+            color: 'var(--accent-text)', fontSize: '12.5px', fontWeight: 500,
+            cursor: selection.length >= 4 ? 'not-allowed' : 'pointer',
+            opacity: selection.length >= 4 ? 0.4 : 1,
+            fontFamily: 'inherit',
+          }}
+        >
+          + Ajouter une ville
+        </button>
+      </div>
+
+      {/* Tableau comparatif */}
+      <div style={{ ...s.resultCard, marginTop: '14px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' as const, fontSize: '13px' }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: 'left' as const, padding: '10px 12px', fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', borderBottom: '1px solid var(--border)' }}></th>
+              {benches.map((b, i) => (
+                <th key={i} style={{ textAlign: 'left' as const, padding: '10px 12px', fontSize: '12px', fontWeight: 600, color: 'var(--text)', borderBottom: '1px solid var(--border)' }}>
+                  {SUPPORTED_COUNTRIES.find(c => c.code === b.bench.pays)?.flag} {b.bench.ville}
+                  {b.mine && <span style={{ display: 'block', fontSize: '10px', color: 'var(--accent-text)', fontWeight: 600, marginTop: '2px' }}>★ ton bien</span>}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>Occupation</td>
+              {benches.map((b, i) => (
+                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestOcc ? 'var(--success-1)' : 'var(--text)', fontWeight: i === bestOcc ? 600 : 400 }}>
+                  {i === bestOcc && '🏆 '}{b.bench.occupationAnnuellePct} %
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>ADR moyen</td>
+              {benches.map((b, i) => (
+                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestAdr ? 'var(--success-1)' : 'var(--text)', fontWeight: i === bestAdr ? 600 : 400 }}>
+                  {i === bestAdr && '🏆 '}{fmtEur(b.bench.adrEur)}
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>RevPAR annuel</td>
+              {benches.map((b, i) => (
+                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestRev ? 'var(--success-1)' : 'var(--text)', fontWeight: i === bestRev ? 600 : 400 }}>
+                  {i === bestRev && '🏆 '}{fmtEur(b.bench.revparAnnuelEur)}
+                </td>
+              ))}
+            </tr>
+            {/* Tes vraies stats si dispo */}
+            {benches.some(b => b.mine?.statsReelles && b.mine.statsReelles.nuitsLouees > 0) && (
+              <tr>
+                <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--accent-text)', borderBottom: '1px solid var(--border)' }}>★ Ton occupation réelle</td>
+                {benches.map((b, i) => (
+                  <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: 'var(--accent-text)' }}>
+                    {b.mine?.statsReelles ? `${b.mine.statsReelles.occupationReelle} %` : '—'}
+                  </td>
+                ))}
+              </tr>
+            )}
+            {benches.some(b => b.mine?.statsReelles && b.mine.statsReelles.adrReel > 0) && (
+              <tr>
+                <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--accent-text)' }}>★ Ton ADR réel</td>
+                {benches.map((b, i) => (
+                  <td key={i} style={{ padding: '12px 12px', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: 'var(--accent-text)' }}>
+                    {b.mine?.statsReelles?.adrReel ? fmtEur(b.mine.statsReelles.adrReel) : '—'}
+                  </td>
+                ))}
+              </tr>
+            )}
+          </tbody>
+        </table>
+
+        <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '14px', marginBottom: 0, fontStyle: 'italic' as const, borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+          Sources publiques INSEE, DGE, INE, ENIT, CBS, OFS, Statistik Austria 2024. Tes stats réelles calculées sur les 12 derniers mois de séjours encaissés.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function MiniBox({ label, value, sub, highlight }: { label: string; value: string; sub?: string; highlight?: boolean }) {
   return (
     <div style={{
@@ -1234,7 +1544,7 @@ export default function SimulateursUI({ logementsPrefill = [] }: Props) {
       <div style={s.hero}>
         <span style={s.heroBadge}>
           <Calculator size={13} weight="fill" />
-          6 simulateurs gratuits
+          7 simulateurs gratuits
         </span>
         <h1 style={s.heroTitle}>
           Simulateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
@@ -1251,6 +1561,9 @@ export default function SimulateursUI({ logementsPrefill = [] }: Props) {
         <button onClick={() => setTab('prix')} style={{ ...s.tab, ...(tab === 'prix' ? s.tabActive : {}) }}>
           <Storefront size={14} weight="fill" /> Prix par nuit
         </button>
+        <button onClick={() => setTab('mesvilles')} style={{ ...s.tab, ...(tab === 'mesvilles' ? s.tabActive : {}) }}>
+          <MapPin size={14} weight="fill" /> Mes villes
+        </button>
         <button onClick={() => setTab('fiscal')} style={{ ...s.tab, ...(tab === 'fiscal' ? s.tabActive : {}) }}>
           <CurrencyEur size={14} weight="fill" /> Fiscalité
         </button>
@@ -1261,13 +1574,14 @@ export default function SimulateursUI({ logementsPrefill = [] }: Props) {
           <ChartLineUp size={14} weight="fill" /> Rentabilité
         </button>
         <button onClick={() => setTab('taxe')} style={{ ...s.tab, ...(tab === 'taxe' ? s.tabActive : {}) }}>
-          <MapPin size={14} weight="fill" /> Taxe de séjour
+          <House size={14} weight="fill" /> Taxe de séjour
         </button>
       </div>
 
       <div style={s.body}>
         {tab === 'revenus' && <EstimateurRevenus logements={logementsPrefill} />}
         {tab === 'prix' && <CalculateurPrix logements={logementsPrefill} />}
+        {tab === 'mesvilles' && <CompareurMesVilles logements={logementsPrefill} />}
         {tab === 'fiscal' && <FiscalLCD />}
         {tab === 'statut' && <EIvsSASU />}
         {tab === 'rentabilite' && <Rentabilite />}

@@ -24,7 +24,8 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
   <link rel="preload" as="font" href="/fonts/Phosphor-Bold.woff2" crossorigin>
   <link rel="preload" as="font" href="/fonts/Phosphor.woff2" crossorigin>
-  <link rel="stylesheet" href="/phosphor.css">
+  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css">
+  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css">
   <style>
     :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.08)}
     *{box-sizing:border-box}
@@ -70,6 +71,19 @@
     .cta-s h2{color:#fff;max-width:600px;margin:0 auto 16px}
     .cta-s p{color:rgba(255,255,255,.8);font-size:15px;font-weight:300;max-width:520px;margin:0 auto 24px}
     nav{display:none}
+    /* ─── Design refresh 2026 : accent vert + gradients subtils ─────── */
+    body{background:linear-gradient(180deg,#fff 0%,var(--cr) 100%)}
+    .panel,.formCard,.formCard,form,.faq-item,.scenario-card,.stat-card,.tool-card{border-top:2px solid transparent;transition:border-color .25s,box-shadow .3s,transform .25s}
+    .panel:hover,.scenario-card:hover,.stat-card:hover,.tool-card:hover{border-top-color:var(--g)}
+    /* Champs verts plus visibles */
+    .field select,.field input,.city-select,.country-select{border-color:rgba(0,76,63,0.18);background:linear-gradient(180deg,#fff 0%,rgba(0,76,63,0.02) 100%);font-weight:500}
+    .field select:hover,.field input:hover,.city-select:hover,.country-select:hover{border-color:rgba(0,76,63,0.40)}
+    /* Bouton principal en gradient vert+jaune (au lieu de jaune plat) */
+    .btn-p{background:linear-gradient(135deg,var(--y) 0%,#FFE08A 50%,var(--y) 100%);background-size:200% 100%;transition:background-position .35s,transform .2s,box-shadow .2s}
+    .btn-p:hover{background-position:100% 0}
+    /* Section verte distinctive pour les headers de section */
+    .lbl{position:relative;padding-left:18px}
+    .lbl::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:10px;height:2px;background:var(--g);border-radius:2px}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateurs LCD Jason Marinho","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Calculateurs gratuits pour estimer les revenus locatifs en location courte durée et calculer le bon prix par nuit par ville. Couverture France, Portugal, Espagne, Italie, Belgique.","url":"https://jasonmarinho.com/calculateurs","provider":{"@type":"Person","name":"Jason Marinho"}}</script>
   <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs LCD gratuits","item":"https://jasonmarinho.com/calculateurs"}]}</script>
@@ -85,6 +99,19 @@
     <span>· Sans inscription · 🇫🇷 🇵🇹 🇪🇸 🇮🇹 🇧🇪 🇩🇪 🇳🇱 🇦🇹 🇨🇭 9 pays couverts</span>
   </div>
 </header>
+
+<div style="max-width:1100px;margin:-22px auto 0;padding:0 16px;position:relative;z-index:3">
+  <a href="https://app.jasonmarinho.com/dashboard/simulateurs" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:linear-gradient(135deg,var(--w) 0%,rgba(255,213,107,.10) 100%);border:1px solid rgba(255,213,107,.40);border-radius:14px;box-shadow:0 6px 22px rgba(0,76,63,.08);text-decoration:none;color:inherit">
+    <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--y) 0%,var(--yd) 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gd);font-size:19px">
+      <i class="ph-fill ph-house"></i>
+    </div>
+    <div style="flex:1">
+      <div style="font-family:'Fraunces',serif;font-size:16px;color:var(--td);font-weight:500;line-height:1.3">💡 Encore plus puissant si tu as un compte</div>
+      <div style="font-size:13px;color:var(--tm);font-weight:300;margin-top:3px;line-height:1.5">Dans ton espace, ces outils sont <strong style="color:var(--g);font-weight:600">préfilés avec tes vrais logements</strong> (ville, ADR, type de bien) et comparent ton occupation réelle au marché. Compte gratuit, sans carte bancaire.</div>
+    </div>
+    <div style="font-size:13px;font-weight:700;color:var(--g);white-space:nowrap;flex-shrink:0">Ouvrir mon espace →</div>
+  </a>
+</div>
 
 <section class="sec">
   <div class="lbl"><i class="ph ph-tools"></i> Choisis ton outil</div>
