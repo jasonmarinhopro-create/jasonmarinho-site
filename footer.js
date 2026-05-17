@@ -164,6 +164,7 @@
           + '<ul class="ft-ls">'
             + '<li><a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur revenus LCD</a></li>'
             + '<li><a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur prix LCD</a></li>'
+            + '<li><a href="/calculateurs/comparer-villes"><i class="ph ph-git-diff"></i>Comparateur de villes</a></li>'
             + '<li><a href="/calculateurs"><i class="ph ph-grid-four"></i>Voir tous les calculateurs</a></li>'
           + '</ul>'
         + '</div>'

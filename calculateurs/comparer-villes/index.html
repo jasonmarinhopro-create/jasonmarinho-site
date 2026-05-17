@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparer 4 villes LCD : où investir en location courte durée (9 pays européens) | Jason Marinho</title>
+  <meta name="description" content="Compare jusqu'à 4 villes côte à côte : occupation moyenne, ADR, RevPAR annuel, saisonnalité. Pour location courte durée (Airbnb, Booking, en direct). Gratuit, sans inscription. 83 villes européennes sourcées (INSEE, DGE, INE, ENIT, DZT, CBS, OFS).">
+  <link rel="canonical" href="https://jasonmarinho.com/calculateurs/comparer-villes">
+  <meta property="og:title" content="Comparer 4 villes LCD : où investir en location courte durée">
+  <meta property="og:description" content="Compare jusqu'à 4 villes côte à côte. Gratuit, sans inscription. 83 villes européennes sourcées.">
+  <meta property="og:url" content="https://jasonmarinho.com/calculateurs/comparer-villes">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="/phosphor.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.10);--ok:#34D399;--warn:#F59E0B}
+    *{box-sizing:border-box}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.65}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:400;color:#fff}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.4vw,1.9rem);line-height:1.2;margin:0 0 12px;font-weight:400;color:var(--td);letter-spacing:-.015em}
+    .lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
+    .lbl.lt{color:rgba(255,255,255,.7)}
+    .breadcrumb{font-size:12.5px;color:var(--tl);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--g);text-decoration:none;font-weight:500}
+    .breadcrumb.lt a,.breadcrumb.lt{color:rgba(255,255,255,.7)}
+
+    .hero{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;padding:clamp(48px,7vw,80px) clamp(16px,5vw,60px) clamp(40px,6vw,72px)}
+    .hero-in{max-width:1080px;margin:0 auto}
+    .hero p.sub{font-size:clamp(.95rem,1.3vw,1.05rem);font-weight:300;color:rgba(255,255,255,.8);max-width:680px;margin:0;line-height:1.6}
+
+    .calc-wrap{max-width:1100px;margin:-40px auto 0;padding:0 16px 64px;position:relative;z-index:2}
+    @media(min-width:760px){.calc-wrap{padding:0 24px 80px}}
+
+    .panel{background:var(--w);border:1px solid var(--bd);border-radius:18px;padding:24px 26px;box-shadow:0 8px 32px rgba(0,76,63,.08)}
+    .panel h3{font-family:'Fraunces',serif;font-size:19px;font-weight:400;margin:0 0 16px;color:var(--td);letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+
+    .city-rows{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+    .city-row{display:grid;grid-template-columns:32px 1fr 110px 32px;gap:8px;align-items:center}
+    .city-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff}
+    .city-num.c1{background:#10b981}
+    .city-num.c2{background:#3b82f6}
+    .city-num.c3{background:#f59e0b}
+    .city-num.c4{background:#a78bfa}
+    .city-select,.country-select{width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--bd);background:#fff;color:var(--td);font-family:'Outfit',sans-serif;font-size:14px;transition:border-color .2s,box-shadow .2s}
+    .city-select:focus,.country-select:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.10)}
+    .country-select{font-size:12.5px}
+    .btn-remove{width:28px;height:28px;border-radius:8px;border:1px solid var(--bd);background:#fff;color:var(--tl);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
+    .btn-remove:hover{border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,.05)}
+    .btn-remove.hidden{visibility:hidden}
+
+    .btn-add{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1px dashed var(--bd);background:transparent;color:var(--g);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:18px}
+    .btn-add:hover{border-color:var(--g);background:rgba(0,76,63,.04)}
+    .btn-add[disabled]{opacity:.4;cursor:not-allowed}
+
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 24px;border-radius:10px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s cubic-bezier(.4,0,.2,1);text-decoration:none}
+    .btn-p:hover{background:var(--yd);transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,213,107,.32)}
+    .btn-full{width:100%;justify-content:center}
+
+    .result-empty{background:linear-gradient(135deg,var(--cr) 0%,#fff 100%);border:1px dashed var(--bd);border-radius:18px;padding:60px 24px;text-align:center;color:var(--tl);margin-top:18px}
+    .result-empty i{font-size:38px;color:var(--g);opacity:.5;display:block;margin-bottom:12px}
+    .result-empty p{margin:0;font-size:14px;font-weight:300}
+
+    /* Comparatif table */
+    .compare-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:18px;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--bd)}
+    .compare-table th,.compare-table td{padding:14px 16px;text-align:left;font-size:13.5px;border-bottom:1px solid var(--bd)}
+    .compare-table thead th{background:var(--cr);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--g)}
+    .compare-table tbody tr:last-child td{border-bottom:none}
+    .compare-table .metric-label{font-weight:600;color:var(--td)}
+    .compare-table .metric-sub{font-size:11px;color:var(--tl);font-weight:400;margin-top:2px}
+    .compare-table .value{font-family:'Fraunces',serif;font-size:16px;color:var(--td);font-weight:400}
+    .compare-table .value.best{color:var(--ok);font-weight:600;position:relative}
+    .compare-table .value.best::before{content:'🏆 ';font-family:initial}
+    .city-header{font-family:'Fraunces',serif;font-size:14px;font-weight:500;color:var(--td)}
+    .city-header .city-flag{font-size:18px;margin-right:6px}
+    .compare-table td:first-child{background:var(--cr);min-width:160px}
+    @media(max-width:680px){
+      .compare-table{font-size:12px;display:block;overflow-x:auto;white-space:nowrap}
+      .compare-table th,.compare-table td{padding:10px 12px}
+    }
+
+    /* Saisonnalité chart */
+    .season-chart-wrap{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px 24px;margin-top:18px}
+    .season-chart-wrap h4{font-family:'Fraunces',serif;font-size:16px;font-weight:500;margin:0 0 14px;color:var(--td);display:flex;align-items:center;gap:8px}
+    .season-chart{position:relative;height:170px;display:flex;align-items:end;gap:10px;padding-left:30px;padding-right:8px}
+    .season-month{flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;position:relative}
+    .season-bars{display:flex;gap:2px;height:130px;align-items:end;width:100%;justify-content:center}
+    .season-bar{flex:1;max-width:8px;border-radius:3px 3px 0 0;min-height:3px;transition:opacity .15s}
+    .season-bar:hover{opacity:.7;cursor:pointer}
+    .season-month-label{font-size:10.5px;color:var(--tl);font-weight:500}
+    .season-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;justify-content:center}
+    .season-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--tm)}
+    .season-legend-color{width:12px;height:12px;border-radius:3px}
+
+    /* Verdict box */
+    .verdict-box{background:linear-gradient(135deg,rgba(255,213,107,.12) 0%,rgba(99,214,131,.08) 100%);border:1px solid rgba(255,213,107,.30);border-radius:14px;padding:20px 24px;margin-top:18px}
+    .verdict-box h4{font-family:'Fraunces',serif;font-size:16px;font-weight:500;margin:0 0 12px;color:var(--td);display:flex;align-items:center;gap:8px}
+    .verdict-ranking{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+    .verdict-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border-radius:10px;border:1px solid var(--bd)}
+    .verdict-rank{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--g);min-width:30px}
+    .verdict-city{font-weight:600;color:var(--td);flex:1}
+    .verdict-value{font-family:'Fraunces',serif;font-size:15px;color:var(--g);font-weight:500}
+    .verdict-reco{font-size:13.5px;color:var(--tm);line-height:1.65;margin:0;font-weight:300}
+    .verdict-reco strong{color:var(--td);font-weight:600}
+
+    .source-line{font-size:11.5px;color:var(--tl);font-style:italic;margin:14px 0 0;border-top:1px solid var(--bd);padding-top:12px}
+
+    /* Sections secondaires */
+    .secondary-sec{padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);max-width:1100px;margin:0 auto}
+    .faq-item{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 22px;margin-bottom:10px;max-width:880px;margin-left:auto;margin-right:auto}
+    .faq-item summary{font-family:'Fraunces',serif;font-size:15.5px;font-weight:400;color:var(--td);cursor:pointer;list-style:none;position:relative;padding-right:24px}
+    .faq-item summary::-webkit-details-marker{display:none}
+    .faq-item summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:var(--g);font-weight:300}
+    .faq-item[open] summary::after{content:'−'}
+    .faq-item p{margin:12px 0 0;font-size:13.5px;color:var(--tm);line-height:1.7;font-weight:300}
+
+    .cta-bottom{background:var(--g);color:#fff;padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);text-align:center}
+    .cta-bottom h2{color:#fff;max-width:520px;margin:0 auto 14px}
+    .cta-bottom p{color:rgba(255,255,255,.78);font-size:14px;font-weight:300;max-width:520px;margin:0 auto 22px}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Comparateur multi-villes LCD","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Comparateur gratuit pour évaluer jusqu'à 4 villes LCD côte à côte (occupation, ADR, RevPAR, saisonnalité). Idéal pour décider d'un investissement Airbnb. 83 villes européennes couvertes.","url":"https://jasonmarinho.com/calculateurs/comparer-villes","provider":{"@type":"Person","name":"Jason Marinho"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs","item":"https://jasonmarinho.com/calculateurs"},{"@type":"ListItem","position":3,"name":"Comparer villes","item":"https://jasonmarinho.com/calculateurs/comparer-villes"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment décider entre 2 ou 3 villes pour investir en location courte durée ?","acceptedAnswer":{"@type":"Answer","text":"Compare 3 indicateurs : le RevPAR annuel (revenu par nuit disponible — la vraie métrique de rentabilité), la durée de haute saison (plus elle est longue, plus tes revenus sont stables) et l'ADR (potentiel de prix par nuit). Notre comparateur te donne tout ça en 30 secondes."}},{"@type":"Question","name":"Quelle ville rapporte le plus en LCD en Europe ?","acceptedAnswer":{"@type":"Answer","text":"En valeur absolue de RevPAR annuel : Saint-Tropez (~53 k€), Genève (~48 k€), Ibiza (~47 k€), Chamonix (~42 k€), Venezia (~46 k€). En rapport demande/concurrence : Lisboa, Porto, Annecy et Funchal offrent un excellent équilibre."}},{"@type":"Question","name":"Faut-il privilégier une ville avec haute occupation ou ADR élevé ?","acceptedAnswer":{"@type":"Answer","text":"Le RevPAR (occupation × ADR) est l'indicateur final qui compte. Une ville à 80 % d'occupation à 80 €/nuit (= 23 k€) est moins rentable qu'une à 60 % à 130 €/nuit (= 28 k€). Privilégie le RevPAR pour la rentabilité brute, mais regarde aussi la saisonnalité pour la régularité."}}]}</script>
+  <script defer src="/nav.js"></script>
+  <script defer src="/calculateurs/engine.js"></script>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-in">
+    <div class="breadcrumb lt">
+      <a href="/">Accueil</a> /
+      <a href="/calculateurs">Calculateurs</a> /
+      <span>Comparer villes</span>
+    </div>
+    <div class="lbl lt"><i class="ph ph-git-diff"></i> Comparateur gratuit</div>
+    <h1 class="h1">Compare jusqu'à <em style="color:var(--y)">4 villes LCD</em> côte à côte</h1>
+    <p class="sub">L'outil pour décider d'un investissement en location courte durée (Airbnb, Booking, Vrbo, en direct). Occupation, ADR, RevPAR annuel, saisonnalité — tout sur un tableau. 83 villes européennes sourcées (INSEE, DGE, INE, ENIT, CBS, OFS, Statistik Austria).</p>
+  </div>
+</header>
+
+<div class="calc-wrap">
+  <div class="panel">
+    <h3><i class="ph ph-sliders-horizontal" style="color:var(--g)"></i>Choisis 2 à 4 villes à comparer</h3>
+    <div id="city-rows" class="city-rows">
+      <!-- Lignes injectées dynamiquement -->
+    </div>
+    <button id="btn-add" class="btn-add" type="button">
+      <i class="ph-bold ph-plus"></i> Ajouter une ville
+    </button>
+    <button id="btn-compare" class="btn-p btn-full" type="button">
+      <i class="ph-bold ph-git-diff"></i>
+      Comparer les villes
+    </button>
+  </div>
+
+  <div id="result-area">
+    <div class="result-empty">
+      <i class="ph ph-table"></i>
+      <p>Choisis au moins 2 villes et clique sur <strong>Comparer</strong>.<br>Tu auras le tableau côte à côte + recommandation en 1 clic.</p>
+    </div>
+  </div>
+</div>
+
+<section class="secondary-sec">
+  <div class="lbl"><i class="ph ph-question"></i> Questions fréquentes</div>
+  <h2 class="h2" style="text-align:center">À <em style="font-style:italic;color:var(--g)">savoir</em></h2>
+
+  <details class="faq-item">
+    <summary>Comment décider entre 2 ou 3 villes pour investir en location courte durée ?</summary>
+    <p>Compare 3 indicateurs clés : le <strong>RevPAR annuel</strong> (revenu par nuit disponible — la vraie métrique de rentabilité), la <strong>durée de haute saison</strong> (plus elle est longue, plus tes revenus sont stables sur l'année), et l'<strong>ADR</strong> (potentiel de prix par nuit). Notre comparateur te donne tout ça en 30 secondes avec un classement automatique. Valable pour la LCD en général : Airbnb, Booking, Vrbo ou réservations en direct.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Quelle ville rapporte le plus en LCD en Europe ?</summary>
+    <p>En valeur absolue de RevPAR annuel : <strong>Saint-Tropez (~53 k€)</strong>, Genève (~48 k€), Ibiza (~47 k€), Chamonix (~42 k€), Venezia (~46 k€). En rapport demande/concurrence : Lisboa, Porto, Annecy et Funchal offrent un excellent équilibre. Mais attention : les villes premium ont aussi des prix d'achat très élevés. Le RevPAR ne tient pas compte du coût d'acquisition.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Faut-il privilégier une ville avec haute occupation ou ADR élevé ?</summary>
+    <p>Le <strong>RevPAR (occupation × ADR)</strong> est l'indicateur final qui compte. Une ville à 80 % d'occupation à 80 €/nuit (= 23 k€/an) est moins rentable qu'une ville à 60 % à 130 €/nuit (= 28 k€/an). Privilégie le RevPAR pour la rentabilité brute, mais regarde aussi la saisonnalité pour la régularité des revenus.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Que prendre en compte au-delà des chiffres marché ?</summary>
+    <p>Le marché donne une moyenne. Pour TOI ça dépend aussi de : <strong>réglementation locale</strong> (Paris/Barcelone très restrictifs, Lisboa plus souple), <strong>prix d'acquisition</strong> (€/m² varie de 1 à 10 entre villes), <strong>fiscalité</strong> (régimes différents par pays), <strong>frais d'exploitation</strong> (ménage, charges), <strong>concurrence directe</strong> dans le quartier ciblé. Le comparateur de villes est un point de départ, pas une décision finale.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Pourquoi tes chiffres diffèrent d'AirDNA ou Mashvisor ?</summary>
+    <p>Ces outils scrapent les listings des plateformes (Airbnb, Booking, Vrbo). Nous, on utilise les <strong>statistiques officielles publiques</strong> (INSEE, DGE, INE, ENIT, CBS, OFS, Statistik Austria, DZT). Les chiffres officiels sont des moyennes statistiquement plus rigoureuses, mais moins granulaires (pas de détail rue par rue). Notre approche est meilleure pour valider un investissement, le scraping est mieux pour optimiser un bien déjà acquis.</p>
+  </details>
+</section>
+
+<section class="cta-bottom">
+  <h2 class="h2"><em style="font-style:italic;color:var(--y)">Tu loues déjà ?</em></h2>
+  <p>Crée un compte gratuit pour comparer ta vraie activité aux chiffres marché de ta ville — calendrier, occupation, revenus, performance vs benchmark.</p>
+  <a href="https://app.jasonmarinho.com/auth/register" class="btn-p" style="background:var(--y);color:var(--gd)">
+    Créer mon compte gratuit
+    <i class="ph-bold ph-arrow-right"></i>
+  </a>
+</section>
+
+<script src="/footer.js"></script>
+<script>
+(function () {
+  'use strict'
+  function $ (id) { return document.getElementById(id) }
+  function fmtEur (n) { return n.toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €' }
+
+  var MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
+  var COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#a78bfa']
+  var DEFAULT_CITIES = [
+    { country: 'FR', city: 'Paris' },
+    { country: 'FR', city: 'Lyon' },
+  ]
+  var state = DEFAULT_CITIES.slice()
+
+  function renderCityRows () {
+    var html = ''
+    state.forEach(function (row, i) {
+      var countriesHtml = ''
+      for (var code in window.JMCalc.COUNTRY_LABELS) {
+        var c = window.JMCalc.COUNTRY_LABELS[code]
+        countriesHtml += '<option value="' + code + '"' + (row.country === code ? ' selected' : '') + '>' + c.flag + ' ' + c.label + '</option>'
+      }
+      var cities = window.JMCalc.citiesByCountry(row.country)
+      var citiesHtml = ''
+      cities.forEach(function (c) {
+        citiesHtml += '<option value="' + c.ville + '"' + (row.city === c.ville ? ' selected' : '') + '>' + c.ville + '</option>'
+      })
+      html += '<div class="city-row" data-idx="' + i + '">' +
+        '<div class="city-num c' + (i + 1) + '">' + (i + 1) + '</div>' +
+        '<select class="city-select" data-idx="' + i + '">' + citiesHtml + '</select>' +
+        '<select class="country-select" data-idx="' + i + '">' + countriesHtml + '</select>' +
+        '<button class="btn-remove' + (state.length <= 2 ? ' hidden' : '') + '" data-idx="' + i + '" title="Retirer"><i class="ph ph-x"></i></button>' +
+      '</div>'
+    })
+    $('city-rows').innerHTML = html
+    bindRowEvents()
+    $('btn-add').disabled = state.length >= 4
+  }
+
+  function bindRowEvents () {
+    document.querySelectorAll('.city-select').forEach(function (el) {
+      el.addEventListener('change', function () {
+        var idx = parseInt(el.getAttribute('data-idx'), 10)
+        state[idx].city = el.value
+      })
+    })
+    document.querySelectorAll('.country-select').forEach(function (el) {
+      el.addEventListener('change', function () {
+        var idx = parseInt(el.getAttribute('data-idx'), 10)
+        state[idx].country = el.value
+        // Reset à la 1ère ville du nouveau pays
+        var cities = window.JMCalc.citiesByCountry(el.value)
+        state[idx].city = cities[0] ? cities[0].ville : ''
+        renderCityRows()
+      })
+    })
+    document.querySelectorAll('.btn-remove').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var idx = parseInt(el.getAttribute('data-idx'), 10)
+        state.splice(idx, 1)
+        renderCityRows()
+      })
+    })
+  }
+
+  function bestIndex (values, higherIsBetter) {
+    if (higherIsBetter === void 0) higherIsBetter = true
+    var bestVal = higherIsBetter ? -Infinity : Infinity
+    var best = -1
+    values.forEach(function (v, i) {
+      if (higherIsBetter ? v > bestVal : v < bestVal) { bestVal = v; best = i }
+    })
+    return best
+  }
+
+  function renderComparison () {
+    if (!window.JMCalc) return
+    var benches = state.map(function (s) { return window.JMCalc.findCity(s.city, s.country) }).filter(function (b) { return b })
+    if (benches.length < 2) {
+      $('result-area').innerHTML = '<div class="result-empty"><i class="ph ph-warning"></i><p>Sélectionne au moins 2 villes valides.</p></div>'
+      return
+    }
+
+    // Métriques pour le best ranking
+    var occs = benches.map(function (b) { return b.occ })
+    var adrs = benches.map(function (b) { return b.adr })
+    var revpars = benches.map(function (b) { return b.revpar })
+    var seasons = benches.map(function (b) { return b.saisonHaute.length })
+    var bestOcc = bestIndex(occs), bestAdr = bestIndex(adrs)
+    var bestRev = bestIndex(revpars), bestSeason = bestIndex(seasons)
+
+    // Headers
+    var headersHtml = '<th></th>'
+    benches.forEach(function (b, i) {
+      var flag = window.JMCalc.COUNTRY_LABELS[b.pays] ? window.JMCalc.COUNTRY_LABELS[b.pays].flag : ''
+      headersHtml += '<th><div class="city-header"><span class="city-flag">' + flag + '</span>' + b.ville + '</div></th>'
+    })
+
+    // Lignes
+    function row (label, sub, values, formatter, bestIdx, suffix) {
+      var html = '<tr><td><div class="metric-label">' + label + '</div>' + (sub ? '<div class="metric-sub">' + sub + '</div>' : '') + '</td>'
+      values.forEach(function (v, i) {
+        html += '<td><div class="value' + (i === bestIdx ? ' best' : '') + '">' + formatter(v) + (suffix || '') + '</div></td>'
+      })
+      return html + '</tr>'
+    }
+
+    var tableHtml = '<table class="compare-table"><thead><tr>' + headersHtml + '</tr></thead><tbody>' +
+      row('Taux d\'occupation', 'moyenne annuelle', occs, function (v) { return v }, bestOcc, ' %') +
+      row('ADR', 'prix moyen par nuit', adrs, fmtEur, bestAdr) +
+      row('RevPAR annuel', 'revenu par bien moyen', revpars, fmtEur, bestRev) +
+      row('Haute saison', 'nombre de mois forts', seasons, function (v) { return v }, bestSeason, ' mois') +
+      '<tr><td><div class="metric-label">Source</div></td>' +
+      benches.map(function (b) { return '<td><div style="font-size:11.5px;color:var(--tl);line-height:1.5">' + b.source + '</div></td>' }).join('') +
+      '</tr>' +
+      '</tbody></table>'
+
+    // Saisonnalité chart : 12 mois × N villes
+    var allMaxes = benches.map(function (b) {
+      // Modèle simple : haute saison = 80, neutre = 55, basse = 35
+      return b.saisonHaute.length
+    })
+    var seasonHtml = ''
+    for (var m = 1; m <= 12; m++) {
+      var barsHtml = ''
+      benches.forEach(function (b, i) {
+        var isHigh = b.saisonHaute.indexOf(m) !== -1
+        var farFromSummer = Math.abs(6.5 - m) > 4.5
+        var occMonth = isHigh ? 80 : farFromSummer ? 35 : 55
+        var height = (occMonth / 80) * 100
+        barsHtml += '<div class="season-bar" style="height:' + height + '%;background:' + COLORS[i] + '" title="' + b.ville + ' · ' + MONTHS[m-1] + ' : ' + occMonth + ' % (' + (isHigh ? 'haute' : farFromSummer ? 'basse' : 'neutre') + ' saison)"></div>'
+      })
+      seasonHtml += '<div class="season-month"><div class="season-bars">' + barsHtml + '</div><div class="season-month-label">' + MONTHS[m-1] + '</div></div>'
+    }
+
+    var legendHtml = ''
+    benches.forEach(function (b, i) {
+      legendHtml += '<div class="season-legend-item"><span class="season-legend-color" style="background:' + COLORS[i] + '"></span>' + b.ville + '</div>'
+    })
+
+    var seasonChartHtml = '<div class="season-chart-wrap">' +
+      '<h4><i class="ph ph-chart-bar" style="color:var(--g)"></i>Saisonnalité comparée (12 mois)</h4>' +
+      '<div class="season-chart">' + seasonHtml + '</div>' +
+      '<div class="season-legend">' + legendHtml + '</div>' +
+    '</div>'
+
+    // Verdict : ranking par RevPAR
+    var ranked = benches.map(function (b, i) { return { b: b, idx: i } }).sort(function (a, b) { return b.b.revpar - a.b.revpar })
+    var rankingHtml = ''
+    ranked.forEach(function (r, rank) {
+      var medal = rank === 0 ? '🥇' : rank === 1 ? '🥈' : rank === 2 ? '🥉' : '#' + (rank + 1)
+      rankingHtml += '<div class="verdict-row">' +
+        '<span class="verdict-rank">' + medal + '</span>' +
+        '<span class="verdict-city">' + r.b.ville + '</span>' +
+        '<span class="verdict-value">' + fmtEur(r.b.revpar) + ' RevPAR/an</span>' +
+      '</div>'
+    })
+
+    // Recommandation contextuelle
+    var top = ranked[0].b
+    var last = ranked[ranked.length - 1].b
+    var diff = top.revpar - last.revpar
+    var diffPct = last.revpar > 0 ? Math.round((diff / last.revpar) * 100) : 0
+    var topSeason = top.saisonHaute.length
+    var lastSeason = last.saisonHaute.length
+    var reco = '<strong>' + top.ville + '</strong> arrive en tête avec ' + fmtEur(top.revpar) + ' de RevPAR annuel'
+    if (diffPct > 0) {
+      reco += ', soit <strong>' + diffPct + ' % de plus que ' + last.ville + '</strong>'
+    }
+    reco += '. '
+    if (topSeason > lastSeason + 1) {
+      reco += '<strong>' + top.ville + '</strong> a aussi une saison plus longue (' + topSeason + ' mois forts vs ' + lastSeason + '), donc des revenus plus réguliers sur l\'année. '
+    } else if (lastSeason > topSeason + 1) {
+      reco += 'Note : <strong>' + last.ville + '</strong> a une saison plus longue (' + lastSeason + ' mois forts vs ' + topSeason + '), ce qui peut compenser le RevPAR plus bas. '
+    }
+    reco += 'Avant de décider, regarde aussi : prix d\'achat €/m² (très variable), réglementation locale (Paris/Barcelone restrictifs), fiscalité du pays, concurrence du quartier ciblé.'
+
+    var verdictHtml = '<div class="verdict-box">' +
+      '<h4><i class="ph-fill ph-trophy" style="color:var(--y)"></i>Verdict</h4>' +
+      '<div class="verdict-ranking">' + rankingHtml + '</div>' +
+      '<p class="verdict-reco">💡 ' + reco + '</p>' +
+    '</div>'
+
+    var sourceHtml = '<p class="source-line">Sources : moyennes annuelles 2024 agrégées depuis ' + Array.from(new Set(benches.map(function (b) { return b.source.split(' + ')[0] }))).join(', ') + '. Chiffres indicatifs (±20 %), à titre de repère. Mise à jour annuelle.</p>'
+
+    $('result-area').innerHTML = tableHtml + seasonChartHtml + verdictHtml + sourceHtml
+  }
+
+  function init () {
+    if (!window.JMCalc) { setTimeout(init, 60); return }
+    renderCityRows()
+    $('btn-add').addEventListener('click', function () {
+      if (state.length >= 4) return
+      // Ajoute une nouvelle ville par défaut (pays = même que dernier, ville = différente si possible)
+      var lastCountry = state[state.length - 1] ? state[state.length - 1].country : 'FR'
+      var cities = window.JMCalc.citiesByCountry(lastCountry)
+      var usedCities = state.map(function (s) { return s.city })
+      var nextCity = cities.find(function (c) { return usedCities.indexOf(c.ville) === -1 }) || cities[0]
+      state.push({ country: lastCountry, city: nextCity ? nextCity.ville : '' })
+      renderCityRows()
+    })
+    $('btn-compare').addEventListener('click', renderComparison)
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
+  else init()
+})();
+</script>
+</body>
+</html>
