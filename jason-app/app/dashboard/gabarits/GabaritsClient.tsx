@@ -9,7 +9,7 @@ import {
   Star, CaretDown, CaretUp, PushPin, Sparkle, DotsThreeVertical,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
-import type { LogementOption } from './page'
+import type { LogementOption, NextContractInfo } from './page'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
 
 // ── Mapping catégorie → moment d'envoi ─────────────────────────────────────
@@ -97,12 +97,31 @@ function extractCityFromAdresse(adresse: string | null | undefined): string | nu
   return null
 }
 
-function buildAutoFillMap(logement: LogementOption | null): Record<string, string> {
-  if (!logement) return {}
-  const ville = extractCityFromAdresse(logement.adresse)
+function fmtDateFr(iso: string | null | undefined): string | null {
+  if (!iso) return null
+  try {
+    return new Date(iso + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+  } catch { return null }
+}
+
+function nightsBetween(arr: string | null | undefined, dep: string | null | undefined): number | null {
+  if (!arr || !dep) return null
+  const a = new Date(arr + 'T12:00:00').getTime()
+  const d = new Date(dep + 'T12:00:00').getTime()
+  if (!isFinite(a) || !isFinite(d)) return null
+  return Math.max(0, Math.round((d - a) / 86400000))
+}
+
+function buildAutoFillMap(
+  logement: LogementOption | null,
+  nextContract: NextContractInfo | null,
+  hostFullName: string | null,
+): Record<string, string> {
   const out: Record<string, string> = {}
-  // Variables FR (la plupart des templates)
-  if (logement.nom) {
+  const ville = extractCityFromAdresse(logement?.adresse)
+
+  // ── Variables logement ──
+  if (logement?.nom) {
     out['[nom du logement]'] = logement.nom
     out['[nom logement]'] = logement.nom
     out['[location]'] = logement.nom
@@ -110,7 +129,7 @@ function buildAutoFillMap(logement: LogementOption | null): Record<string, strin
     out['[location name]'] = logement.nom
     out['[nom de la chambre]'] = logement.nom
   }
-  if (logement.adresse) {
+  if (logement?.adresse) {
     out['[adresse]'] = logement.adresse
     out['[adresse complète]'] = logement.adresse
     out['[address]'] = logement.adresse
@@ -122,6 +141,40 @@ function buildAutoFillMap(logement: LogementOption | null): Record<string, strin
     out['[ville]'] = ville
     out['[city]'] = ville
   }
+
+  // ── Variables prochain voyageur (next contract) ──
+  if (nextContract?.locataire_prenom) {
+    out['[prénom]'] = nextContract.locataire_prenom
+    out['[first name]'] = nextContract.locataire_prenom
+    out['[name]'] = nextContract.locataire_prenom
+  }
+  const arr = fmtDateFr(nextContract?.date_arrivee)
+  const dep = fmtDateFr(nextContract?.date_depart)
+  if (arr) {
+    out['[date arrivée]'] = arr
+    out['[date début]'] = arr
+    out['[date]'] = arr
+  }
+  if (dep) {
+    out['[date départ]'] = dep
+    out['[date de départ]'] = dep
+    out['[date fin]'] = dep
+    out['[checkout date]'] = dep
+  }
+  const nuits = nightsBetween(nextContract?.date_arrivee, nextContract?.date_depart)
+  if (nuits !== null && nuits > 0) {
+    out['[x nuits]'] = `${nuits} nuit${nuits > 1 ? 's' : ''}`
+    out['[nombre nuits]'] = String(nuits)
+    out['[durée]'] = `${nuits} nuit${nuits > 1 ? 's' : ''}`
+  }
+
+  // ── Variables hôte (profile) ──
+  if (hostFullName) {
+    const firstName = hostFullName.split(/\s+/)[0] ?? hostFullName
+    out['[prénom propriétaire]'] = firstName
+    out['[host name]'] = hostFullName
+  }
+
   return out
 }
 
@@ -152,6 +205,8 @@ interface GabaritsClientProps {
   initialCustomizations:  UserTemplateCustomization[]
   initialPinned:          UserPinnedTemplate[]
   logements:              LogementOption[]
+  nextContractByLogement: Record<string, NextContractInfo>
+  hostFullName:           string | null
   userId:                 string | null
 }
 
@@ -167,6 +222,8 @@ export default function GabaritsClient({
   initialCustomizations,
   initialPinned,
   logements,
+  nextContractByLogement,
+  hostFullName,
   userId,
 }: GabaritsClientProps) {
 
@@ -245,7 +302,7 @@ export default function GabaritsClient({
   const [deletingCustom, setDeletingCustom]   = useState(false)
 
   // ── Remplissage variables ─────────────────────────────────────────────────
-  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en'; prefilled?: string } | null>(null)
+  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en'; prefilled?: string; autoFilledCount?: number; autoFilledVars?: string[] } | null>(null)
   const [fillValues, setFillValues]           = useState<Record<string, string>>({})
 
   // ── Pinned (liste ordonnée de messages par phase, par logement) ──────────
@@ -407,21 +464,36 @@ export default function GabaritsClient({
       ? (t.corps_en ?? t.content)
       : (customizations[t.id]?.content ?? t.content)
 
-    // Auto-fill avec les infos du logement sélectionné (adresse/nom/ville).
+    // Auto-fill avec les infos du logement + prochaine résa + profile hôte.
     // Évite à l'hôte de saisir ces vars à chaque copie.
     const currentLogement = selectedLogementId
       ? (logements.find(l => l.id === selectedLogementId) ?? null)
       : null
-    const fillMap = buildAutoFillMap(currentLogement)
+    const nextContract = currentLogement
+      ? (nextContractByLogement[currentLogement.nom] ?? null)
+      : null
+    const fillMap = buildAutoFillMap(currentLogement, nextContract, hostFullName)
+    const initialVars = extractVariables(raw)
     const { filled, remaining } = applyAutoFill(raw, fillMap)
+    const autoFilledVars = initialVars
+      .filter(v => !remaining.includes(v))
+      .map(v => v) // garde la forme originale [Adresse]
 
     if (remaining.length > 0) {
       // Reste des vars à remplir → modal allégé (seulement les non-remplies)
-      setFillTemplate({ t, lang, prefilled: filled })
+      setFillTemplate({
+        t, lang,
+        prefilled: filled,
+        autoFilledCount: autoFilledVars.length,
+        autoFilledVars,
+      })
       setFillValues(Object.fromEntries(remaining.map(v => [v, ''])))
       return
     }
     await doCopy(t.id, filled, lang)
+    if (autoFilledVars.length > 0) {
+      showToast(`Copié · ${autoFilledVars.length} variable${autoFilledVars.length > 1 ? 's' : ''} pré-remplie${autoFilledVars.length > 1 ? 's' : ''}`)
+    }
   }
 
   async function doCopy(id: string, content: string, lang: 'fr' | 'en') {
@@ -856,16 +928,45 @@ export default function GabaritsClient({
       {/* Modal remplissage variables */}
       {fillTemplate && (
         <div style={s.overlay} onClick={() => setFillTemplate(null)}>
-          <div style={{ ...s.modal, maxWidth: '460px' }} onClick={e => e.stopPropagation()}>
+          <div style={{ ...s.modal, maxWidth: '500px' }} onClick={e => e.stopPropagation()}>
             <div style={s.modalHeader}>
               <div>
-                <h3 style={s.modalTitle}>Remplir les variables</h3>
+                <h3 style={s.modalTitle}>Plus que {Object.keys(fillValues).length} info{Object.keys(fillValues).length > 1 ? 's' : ''} à compléter</h3>
                 <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' }}>
                   Personnalise ce message avant de le copier
                 </p>
               </div>
               <button onClick={() => setFillTemplate(null)} style={s.closeBtn}><X size={18} /></button>
             </div>
+
+            {/* Indicateur "X variables déjà pré-remplies depuis ton dashboard" */}
+            {fillTemplate.autoFilledCount && fillTemplate.autoFilledCount > 0 && (
+              <div style={{
+                margin: '0 24px 4px',
+                padding: '10px 12px',
+                background: 'linear-gradient(135deg, rgba(99,214,131,0.08) 0%, rgba(99,214,131,0.02) 100%)',
+                border: '1px solid rgba(99,214,131,0.22)',
+                borderRadius: '10px',
+                fontSize: '12px',
+                color: 'var(--text-2)',
+                lineHeight: 1.5,
+                display: 'flex',
+                gap: '9px',
+                alignItems: 'flex-start',
+              }}>
+                <Sparkle size={13} weight="fill" style={{ color: '#5DC077', flexShrink: 0, marginTop: 1 }} />
+                <span>
+                  <strong style={{ color: 'var(--text)' }}>{fillTemplate.autoFilledCount} variable{fillTemplate.autoFilledCount > 1 ? 's' : ''} pré-remplie{fillTemplate.autoFilledCount > 1 ? 's' : ''}</strong> depuis ton logement et ta prochaine réservation
+                  {fillTemplate.autoFilledVars && fillTemplate.autoFilledVars.length > 0 && (
+                    <span style={{ display: 'block', marginTop: '4px', color: 'var(--text-muted)', fontSize: '11.5px' }}>
+                      {fillTemplate.autoFilledVars.slice(0, 4).join(' · ')}
+                      {fillTemplate.autoFilledVars.length > 4 && ` · +${fillTemplate.autoFilledVars.length - 4}`}
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
+
             <div style={{ ...s.modalBody, gap: '14px' }}>
               {Object.keys(fillValues).map(variable => (
                 <div key={variable} style={s.fieldGroup}>
