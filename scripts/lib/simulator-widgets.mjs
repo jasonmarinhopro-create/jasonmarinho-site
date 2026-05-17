@@ -4,6 +4,128 @@
 
 import { FISCAL_PARAMS_2026, TAXE_SEJOUR } from './fiscal-params.mjs'
 
+// ─── Bloc conversion : "Sans compte vs Avec compte" ──────────────────
+// Affiché juste sous chaque widget pour transformer un calcul one-shot
+// en intention d'inscription.
+export function simulatorVsBlock(simType) {
+  // Différenciation par simulateur : tagline contextuelle
+  const taglines = {
+    fiscalite: 'Tu viens de tester une valeur générique.',
+    statut: 'Tu viens de comparer EI vs SASU sur un bénéfice théorique.',
+    rentabilite: 'Tu viens de simuler avec un ADR et une occupation génériques.',
+    taxe: 'Tu viens de calculer pour un séjour-type.',
+  }
+  const benefices = {
+    fiscalite: 'Préfilé avec ton CA réel des 12 derniers mois',
+    statut: 'Préfilé avec ton bénéfice net réel',
+    rentabilite: 'Préfilé avec ton ADR et ton occupation réels par logement',
+    taxe: 'Pré-rempli avec la ville et le prix de chacun de tes logements',
+  }
+  const tagline = taglines[simType] || taglines.fiscalite
+  const benefice1 = benefices[simType] || benefices.fiscalite
+
+  return `
+<div class="sim-vs">
+  <div class="sim-vs-tag">Tu veux aller plus loin ?</div>
+  <h3 class="sim-vs-title">${tagline}<br><em>Avec ton compte, l'outil est connecté à ton activité.</em></h3>
+  <div class="sim-vs-grid">
+    <div class="sim-vs-col">
+      <div class="sim-vs-h">Sans compte (maintenant)</div>
+      <ul>
+        <li><span class="vs-ico">✓</span>1 calcul instantané, sans inscription</li>
+        <li><span class="vs-ico">✓</span>Résultats à l'écran, partageables</li>
+        <li><span class="vs-ico vs-ico-mute">○</span>Pas de mémoire entre les sessions</li>
+        <li><span class="vs-ico vs-ico-mute">○</span>Valeurs génériques saisies à la main</li>
+      </ul>
+    </div>
+    <div class="sim-vs-col sim-vs-col-on">
+      <div class="sim-vs-h">Avec un compte gratuit</div>
+      <ul>
+        <li><span class="vs-ico vs-ico-on">✓</span><strong>${benefice1}</strong></li>
+        <li><span class="vs-ico vs-ico-on">✓</span>Sauvegarde et historique de tes simulations</li>
+        <li><span class="vs-ico vs-ico-on">✓</span>Comparaison entre 2 scénarios côte à côte</li>
+        <li><span class="vs-ico vs-ico-on">✓</span>Recommandations personnalisées à ton profil fiscal</li>
+        <li><span class="vs-ico vs-ico-on">✓</span>Accès aux 6 autres outils (calendrier, performances…)</li>
+      </ul>
+      <a href="https://app.jasonmarinho.com/auth/register" class="sim-vs-cta">Créer mon compte gratuit <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <div class="sim-vs-note">Aucune carte bancaire requise · 30 secondes</div>
+    </div>
+  </div>
+</div>`
+}
+
+export const SIMULATOR_VS_CSS = `
+.sim-vs{
+  background:linear-gradient(160deg,#FBFAF6 0%,#fff 100%);
+  border:1px solid rgba(0,76,63,.12);
+  border-radius:20px;
+  padding:clamp(28px,3.5vw,40px);
+  margin:clamp(20px,3vw,32px) 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 12px 36px -20px rgba(0,76,63,.14);
+}
+.sim-vs-tag{
+  display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--g);
+  background:rgba(0,76,63,.06);border:1px solid rgba(0,76,63,.14);
+  border-radius:999px;padding:5px 12px;margin-bottom:14px;
+}
+.sim-vs-title{
+  font-family:'Fraunces',serif;font-size:clamp(18px,2.2vw,24px);
+  font-weight:400;color:var(--td);letter-spacing:-.01em;line-height:1.3;
+  margin:0 0 24px;
+}
+.sim-vs-title em{color:var(--g);font-style:italic;font-weight:300}
+.sim-vs-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,22px);
+}
+@media(max-width:780px){
+  .sim-vs-grid{grid-template-columns:1fr}
+}
+.sim-vs-col{
+  padding:22px 20px;
+  background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.sim-vs-col-on{
+  background:linear-gradient(160deg,rgba(0,76,63,.04) 0%,rgba(255,213,107,.05) 100%);
+  border:1.5px solid rgba(0,76,63,.18);
+  box-shadow:0 8px 24px -12px rgba(0,76,63,.18);
+}
+.sim-vs-h{
+  font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--tl);margin-bottom:6px;
+}
+.sim-vs-col-on .sim-vs-h{color:var(--g)}
+.sim-vs-col ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.sim-vs-col li{
+  display:flex;align-items:flex-start;gap:9px;
+  font-size:13.5px;line-height:1.5;color:var(--tm);
+}
+.sim-vs-col li strong{color:var(--td);font-weight:600}
+.vs-ico{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  font-size:11px;font-weight:700;
+  background:rgba(0,76,63,.08);color:var(--g);
+}
+.vs-ico-on{background:var(--g);color:#fff}
+.vs-ico-mute{background:rgba(0,76,63,.04);color:rgba(0,76,63,.35);font-weight:400}
+.sim-vs-cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--y);color:var(--gd);
+  font-weight:600;font-size:14px;
+  padding:13px 22px;border-radius:10px;text-decoration:none;
+  margin-top:14px;align-self:flex-start;
+  transition:all .2s;
+  font-family:'Outfit',sans-serif;
+  box-shadow:0 6px 18px rgba(255,213,107,.30);
+}
+.sim-vs-cta:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 10px 24px rgba(255,213,107,.36)}
+.sim-vs-note{
+  font-size:11.5px;color:var(--tl);margin-top:8px;
+}
+`
+
 // ─── CSS partagé pour les 4 simulateurs ──────────────────────────────
 export const SIMULATOR_CSS = `
 .sim-widget{
@@ -630,4 +752,12 @@ export const SIMULATOR_MAP = {
   'choisir-statut-ei-sasu': widgetEiSasu,
   'rentabilite-location-courte-duree': widgetRentabilite,
   'taxe-de-sejour': widgetTaxeSejour,
+}
+
+// Mapping slug → type pour le bloc VS
+export const SIMULATOR_VS_TYPE = {
+  'fiscalite-micro-bic': 'fiscalite',
+  'choisir-statut-ei-sasu': 'statut',
+  'rentabilite-location-courte-duree': 'rentabilite',
+  'taxe-de-sejour': 'taxe',
 }

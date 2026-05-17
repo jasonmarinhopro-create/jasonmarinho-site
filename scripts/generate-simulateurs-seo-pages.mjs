@@ -14,7 +14,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { SIMULATOR_CSS, SIMULATOR_MAP } from './lib/simulator-widgets.mjs'
+import { SIMULATOR_CSS, SIMULATOR_MAP, SIMULATOR_VS_CSS, SIMULATOR_VS_TYPE, simulatorVsBlock } from './lib/simulator-widgets.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -572,6 +572,9 @@ function buildPage(p) {
 
   // Widget simulateur interactif spécifique à la page
   const widget = SIMULATOR_MAP[p.slug] ? SIMULATOR_MAP[p.slug]() : { html: '', script: '' }
+  // Bloc conversion "Sans/Avec compte" sous le widget
+  const vsType = SIMULATOR_VS_TYPE[p.slug] || 'fiscalite'
+  const vsHtml = simulatorVsBlock(vsType)
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -670,6 +673,7 @@ function buildPage(p) {
     .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
     .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
 ${SIMULATOR_CSS}
+${SIMULATOR_VS_CSS}
   </style>
   <script type="application/ld+json">${JSON.stringify(ldApp)}</script>
   <script type="application/ld+json" data-schema-bc>${JSON.stringify(ldBc)}</script>
@@ -699,6 +703,7 @@ ${SIMULATOR_CSS}
 <section class="sec" style="padding-top:clamp(32px,4vw,48px);padding-bottom:0">
   <div class="s-in">
     ${widget.html}
+    ${vsHtml}
   </div>
 </section>
 

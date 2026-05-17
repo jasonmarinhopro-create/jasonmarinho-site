@@ -9,6 +9,7 @@ import {
 import EtatDesLieux from './EtatDesLieux'
 import ActionUrgente from './ActionUrgente'
 import ChezNousWidget from './ChezNousWidget'
+import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 
@@ -329,9 +330,48 @@ export default async function DashboardPage() {
     : profile?.plan === 'standard' ? 'Standard'
     : 'Découverte'
 
+  // ─── Onboarding checklist : détecte si tu démarres ou pas ──────────────
+  const hasLogement = (logCount ?? 0) > 0
+  const hasContract = (contracts ?? []).length > 0
+  const hasObjectif = !!objectifData
+  const hasFormationStarted = totalLessonsDone > 0
+  const setupSteps: SetupStep[] = [
+    {
+      key: 'account', label: 'Ton compte est créé',
+      desc: 'Tu fais partie de la communauté Jason Marinho',
+      done: true, ctaLabel: '', ctaHref: '', durationLabel: '',
+    },
+    {
+      key: 'logement', label: 'Ajouter ton premier logement',
+      desc: 'Indispensable pour préfiler tous les outils avec tes vrais chiffres',
+      done: hasLogement, ctaLabel: 'Ajouter', ctaHref: '/dashboard/logements',
+      durationLabel: '3 min',
+    },
+    {
+      key: 'sejour', label: 'Saisir ta première réservation',
+      desc: 'Active le pilotage CA, ADR, occupation et performances',
+      done: hasContract, ctaLabel: 'Ouvrir', ctaHref: '/dashboard/calendrier',
+      durationLabel: '2 min',
+    },
+    {
+      key: 'objectif', label: 'Définir ton objectif annuel',
+      desc: 'Pour voir où tu en es par rapport à ton plan de vol',
+      done: hasObjectif, ctaLabel: 'Définir', ctaHref: '/dashboard/revenus',
+      durationLabel: '1 min',
+    },
+    {
+      key: 'apprendre', label: 'Commencer une formation',
+      desc: 'Approfondis fiscalité, classement Atout France, automatisation',
+      done: hasFormationStarted, ctaLabel: 'Explorer', ctaHref: '/dashboard/formations',
+    },
+  ]
+
   return (
     <>
       <div style={s.page} className="dash-page">
+
+        {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
+        <SetupChecklist userId={userId} steps={setupSteps} />
 
         {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
         <section style={s.welcome} className="fade-up dash-welcome">
