@@ -11,6 +11,15 @@ export default async function ImportCsvPage() {
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .audit-grid { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+        .audit-left { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+        .audit-right { min-width: 0; }
+        @media (min-width: 960px) {
+          .audit-grid { grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); gap: clamp(20px, 2.5vw, 32px); }
+          .audit-right { position: sticky; top: clamp(16px, 2vw, 28px); }
+        }
+      `}} />
       <div style={s.page}>
 
         {/* Retour */}
@@ -18,122 +27,128 @@ export default async function ImportCsvPage() {
           <ArrowLeft size={14} weight="bold" /> Retour à l'audit
         </Link>
 
-        {/* Hero */}
-        <div style={s.hero}>
-          <div style={s.heroBadge}>
-            <Lightning size={13} color="#FFD56B" weight="fill" />
-            Audit Express · Import CSV
+        <div className="audit-grid">
+          <div className="audit-left">
+            {/* Hero */}
+            <div style={s.hero}>
+              <div style={s.heroBadge}>
+                <Lightning size={13} color="#FFD56B" weight="fill" />
+                Audit Express · Import CSV
+              </div>
+              <h1 style={s.heroTitle}>
+                Pré-remplis 7 questions<br />
+                <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>en 2 clics.</em>
+              </h1>
+              <p style={s.heroDesc}>
+                Google Business Profile permet d'exporter toutes tes infos en un fichier CSV.
+                Importe-le ici et on pré-remplira automatiquement les questions sur l'identité,
+                les catégories, la description, les horaires, et plus.
+              </p>
+            </div>
+
+            {/* Instructions étape par étape */}
+            <div style={s.steps}>
+              <h2 style={s.stepsTitle}>Comment exporter ton CSV depuis Google</h2>
+
+              <div style={s.step}>
+                <div style={s.stepNum}>1</div>
+                <div style={s.stepBody}>
+                  <div style={s.stepTitle}>Connecte-toi à Google Business Profile</div>
+                  <div style={s.stepDesc}>
+                    Rends-toi sur <a href="https://business.google.com" target="_blank" rel="noopener noreferrer" style={s.link}>business.google.com<ArrowSquareOut size={11} weight="bold" style={{ marginLeft: 3 }} /></a> avec
+                    le compte Google associé à ta fiche.
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.step}>
+                <div style={s.stepNum}>2</div>
+                <div style={s.stepBody}>
+                  <div style={s.stepTitle}>Sélectionne ta ou tes fiches</div>
+                  <div style={s.stepDesc}>
+                    Coche la (ou les) fiche que tu veux auditer. Si tu n'en gères qu'une seule
+                    et que tu ne vois pas la liste, c'est normal, Google va directement te proposer
+                    ses options de gestion en bas de page.
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.step}>
+                <div style={s.stepNum}>3</div>
+                <div style={s.stepBody}>
+                  <div style={s.stepTitle}>Clique sur "Actions" puis "Télécharger"</div>
+                  <div style={s.stepDesc}>
+                    Bouton <strong>Actions</strong> en haut à droite → <strong>Télécharger les fiches</strong> →
+                    choisis le format <strong>Feuille de calcul (CSV)</strong>.
+                    Le fichier se télécharge en quelques secondes dans ton dossier "Téléchargements".
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.step}>
+                <div style={s.stepNum}>4</div>
+                <div style={s.stepBody}>
+                  <div style={s.stepTitle}>Importe le fichier ici</div>
+                  <div style={s.stepDesc}>
+                    Glisse-dépose le fichier ci-dessous (ou clique pour le sélectionner).
+                    Ton fichier reste 100% privé : il est traité dans ton navigateur, pas envoyé sur nos serveurs.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* FAQ / Fallback */}
+            <details style={s.faq}>
+              <summary style={s.faqQ}>
+                <Question size={14} color="var(--text-2)" weight="fill" />
+                Je ne vois pas le bouton "Actions" ou "Télécharger"
+              </summary>
+              <div style={s.faqA}>
+                <p style={s.faqP}>
+                  Google a deux interfaces différentes selon ton type de compte :
+                </p>
+                <ul style={s.faqList}>
+                  <li>
+                    <strong>Compte multi-fiches</strong> : tu vois une liste de fiches → coche celles que tu veux,
+                    puis bouton <em>Actions</em> en haut à droite. Le téléchargement CSV est natif.
+                  </li>
+                  <li>
+                    <strong>Compte mono-fiche</strong> : Google ne te montre pas la liste, mais directement
+                    ta fiche. Dans ce cas, va plutôt sur <a href="https://www.google.com/search?q=mon+entreprise" target="_blank" rel="noopener noreferrer" style={s.link}>Google Search "mon entreprise"</a> et
+                    clique sur "Modifier le profil", l'export CSV n'est <strong>pas disponible</strong> dans
+                    cette interface.
+                  </li>
+                </ul>
+                <p style={{ ...s.faqP, marginTop: '12px' }}>
+                  <strong>Solution alternative</strong> : utilise Google Takeout pour exporter tes données
+                  GBP. Va sur <a href="https://takeout.google.com" target="_blank" rel="noopener noreferrer" style={s.link}>takeout.google.com</a>,
+                  décoche tout sauf "Google Business Profile", clique "Étape suivante", lance l'export.
+                  Tu recevras le CSV par email sous 24h.
+                </p>
+                <p style={{ ...s.faqP, marginTop: '12px' }}>
+                  Si rien de tout ça ne fonctionne, tu peux toujours{' '}
+                  <Link href="/dashboard/audit-gbp" style={s.link}>faire l'audit manuellement</Link> -
+                  c'est plus long mais ça marche à 100%.
+                </p>
+              </div>
+            </details>
+
+            {/* Note privacy */}
+            <div style={s.privacyNote}>
+              <Info size={14} color="#34d399" weight="fill" />
+              <div>
+                <strong style={{ color: 'var(--text)' }}>Tes données restent privées.</strong> Le CSV
+                est lu localement dans ton navigateur. Seules les réponses (oui/non/choix) sont
+                sauvegardées en base, jamais le fichier brut.
+              </div>
+            </div>
           </div>
-          <h1 style={s.heroTitle}>
-            Pré-remplis 7 questions<br />
-            <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>en 2 clics.</em>
-          </h1>
-          <p style={s.heroDesc}>
-            Google Business Profile permet d'exporter toutes tes infos en un fichier CSV.
-            Importe-le ici et on pré-remplira automatiquement les questions sur l'identité,
-            les catégories, la description, les horaires, et plus.
-          </p>
+
+          <div className="audit-right">
+            {/* Formulaire d'import */}
+            <ImportCsvForm userId={profile?.userId ?? null} />
+          </div>
         </div>
-
-        {/* Instructions étape par étape */}
-        <div style={s.steps}>
-          <h2 style={s.stepsTitle}>Comment exporter ton CSV depuis Google</h2>
-
-          <div style={s.step}>
-            <div style={s.stepNum}>1</div>
-            <div style={s.stepBody}>
-              <div style={s.stepTitle}>Connecte-toi à Google Business Profile</div>
-              <div style={s.stepDesc}>
-                Rends-toi sur <a href="https://business.google.com" target="_blank" rel="noopener noreferrer" style={s.link}>business.google.com<ArrowSquareOut size={11} weight="bold" style={{ marginLeft: 3 }} /></a> avec
-                le compte Google associé à ta fiche.
-              </div>
-            </div>
-          </div>
-
-          <div style={s.step}>
-            <div style={s.stepNum}>2</div>
-            <div style={s.stepBody}>
-              <div style={s.stepTitle}>Sélectionne ta ou tes fiches</div>
-              <div style={s.stepDesc}>
-                Coche la (ou les) fiche que tu veux auditer. Si tu n'en gères qu'une seule
-                et que tu ne vois pas la liste, c'est normal, Google va directement te proposer
-                ses options de gestion en bas de page.
-              </div>
-            </div>
-          </div>
-
-          <div style={s.step}>
-            <div style={s.stepNum}>3</div>
-            <div style={s.stepBody}>
-              <div style={s.stepTitle}>Clique sur "Actions" puis "Télécharger"</div>
-              <div style={s.stepDesc}>
-                Bouton <strong>Actions</strong> en haut à droite → <strong>Télécharger les fiches</strong> →
-                choisis le format <strong>Feuille de calcul (CSV)</strong>.
-                Le fichier se télécharge en quelques secondes dans ton dossier "Téléchargements".
-              </div>
-            </div>
-          </div>
-
-          <div style={s.step}>
-            <div style={s.stepNum}>4</div>
-            <div style={s.stepBody}>
-              <div style={s.stepTitle}>Importe le fichier ici</div>
-              <div style={s.stepDesc}>
-                Glisse-dépose le fichier ci-dessous (ou clique pour le sélectionner).
-                Ton fichier reste 100% privé : il est traité dans ton navigateur, pas envoyé sur nos serveurs.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* FAQ / Fallback */}
-        <details style={s.faq}>
-          <summary style={s.faqQ}>
-            <Question size={14} color="var(--text-2)" weight="fill" />
-            Je ne vois pas le bouton "Actions" ou "Télécharger"
-          </summary>
-          <div style={s.faqA}>
-            <p style={s.faqP}>
-              Google a deux interfaces différentes selon ton type de compte :
-            </p>
-            <ul style={s.faqList}>
-              <li>
-                <strong>Compte multi-fiches</strong> : tu vois une liste de fiches → coche celles que tu veux,
-                puis bouton <em>Actions</em> en haut à droite. Le téléchargement CSV est natif.
-              </li>
-              <li>
-                <strong>Compte mono-fiche</strong> : Google ne te montre pas la liste, mais directement
-                ta fiche. Dans ce cas, va plutôt sur <a href="https://www.google.com/search?q=mon+entreprise" target="_blank" rel="noopener noreferrer" style={s.link}>Google Search "mon entreprise"</a> et
-                clique sur "Modifier le profil", l'export CSV n'est <strong>pas disponible</strong> dans
-                cette interface.
-              </li>
-            </ul>
-            <p style={{ ...s.faqP, marginTop: '12px' }}>
-              <strong>Solution alternative</strong> : utilise Google Takeout pour exporter tes données
-              GBP. Va sur <a href="https://takeout.google.com" target="_blank" rel="noopener noreferrer" style={s.link}>takeout.google.com</a>,
-              décoche tout sauf "Google Business Profile", clique "Étape suivante", lance l'export.
-              Tu recevras le CSV par email sous 24h.
-            </p>
-            <p style={{ ...s.faqP, marginTop: '12px' }}>
-              Si rien de tout ça ne fonctionne, tu peux toujours{' '}
-              <Link href="/dashboard/audit-gbp" style={s.link}>faire l'audit manuellement</Link> -
-              c'est plus long mais ça marche à 100%.
-            </p>
-          </div>
-        </details>
-
-        {/* Note privacy */}
-        <div style={s.privacyNote}>
-          <Info size={14} color="#34d399" weight="fill" />
-          <div>
-            <strong style={{ color: 'var(--text)' }}>Tes données restent privées.</strong> Le CSV
-            est lu localement dans ton navigateur. Seules les réponses (oui/non/choix) sont
-            sauvegardées en base, jamais le fichier brut.
-          </div>
-        </div>
-
-        {/* Formulaire d'import */}
-        <ImportCsvForm userId={profile?.userId ?? null} />
 
       </div>
     </>
@@ -141,7 +156,7 @@ export default async function ImportCsvPage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '760px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1280px', margin: '0 auto' },
 
   back: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',

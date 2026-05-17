@@ -11,78 +11,93 @@ export default async function ImportUrlPage() {
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .audit-grid { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+        .audit-left { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+        .audit-right { min-width: 0; }
+        @media (min-width: 960px) {
+          .audit-grid { grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); gap: clamp(20px, 2.5vw, 32px); }
+          .audit-right { position: sticky; top: clamp(16px, 2vw, 28px); }
+        }
+      `}} />
       <div style={s.page}>
 
         <Link href="/dashboard/audit-gbp" style={s.back}>
           <ArrowLeft size={14} weight="bold" /> Retour à l'audit
         </Link>
 
-        <div style={s.hero}>
-          <div style={s.heroBadge}>
-            <Lightning size={13} color="#34d399" weight="fill" />
-            Audit Express · Import URL
-          </div>
-          <h1 style={s.heroTitle}>
-            Pré-remplis 9 questions<br />
-            <em style={{ color: 'var(--success-1)', fontStyle: 'italic' }}>en collant ton URL.</em>
-          </h1>
-          <p style={s.heroDesc}>
-            Donne-nous le lien Google Maps de ta fiche : on récupère officiellement
-            via l'API Google les infos clés (nom, catégorie, note, avis, horaires…)
-            et on pré-remplit les questions correspondantes.
-          </p>
-        </div>
+        <div className="audit-grid">
+          <div className="audit-left">
+            <div style={s.hero}>
+              <div style={s.heroBadge}>
+                <Lightning size={13} color="#34d399" weight="fill" />
+                Audit Express · Import URL
+              </div>
+              <h1 style={s.heroTitle}>
+                Pré-remplis 9 questions<br />
+                <em style={{ color: 'var(--success-1)', fontStyle: 'italic' }}>en collant ton URL.</em>
+              </h1>
+              <p style={s.heroDesc}>
+                Donne-nous le lien Google Maps de ta fiche : on récupère officiellement
+                via l'API Google les infos clés (nom, catégorie, note, avis, horaires…)
+                et on pré-remplit les questions correspondantes.
+              </p>
+            </div>
 
-        <div style={s.steps}>
-          <h2 style={s.stepsTitle}>Comment trouver ton URL ?</h2>
+            <div style={s.steps}>
+              <h2 style={s.stepsTitle}>Comment trouver ton URL ?</h2>
 
-          <div style={s.step}>
-            <div style={s.stepNum}>1</div>
-            <div style={s.stepBody}>
-              <div style={s.stepTitle}>Va sur Google Maps</div>
-              <div style={s.stepDesc}>
-                Ouvre <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" style={s.link}>google.com/maps<ArrowSquareOut size={11} weight="bold" style={{ marginLeft: 3 }} /></a> et
-                tape le nom de ton logement pour ouvrir ta fiche.
+              <div style={s.step}>
+                <div style={s.stepNum}>1</div>
+                <div style={s.stepBody}>
+                  <div style={s.stepTitle}>Va sur Google Maps</div>
+                  <div style={s.stepDesc}>
+                    Ouvre <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" style={s.link}>google.com/maps<ArrowSquareOut size={11} weight="bold" style={{ marginLeft: 3 }} /></a> et
+                    tape le nom de ton logement pour ouvrir ta fiche.
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.step}>
+                <div style={s.stepNum}>2</div>
+                <div style={s.stepBody}>
+                  <div style={s.stepTitle}>Copie l'URL depuis la barre d'adresse</div>
+                  <div style={s.stepDesc}>
+                    Une fois ta fiche ouverte, regarde la <strong>barre d'adresse du navigateur</strong> en
+                    haut. Sélectionne-la entièrement (Ctrl/Cmd+A) et copie (Ctrl/Cmd+C). L'URL doit
+                    commencer par <code style={s.code}>https://www.google.com/maps/place/...</code>
+                  </div>
+                </div>
+              </div>
+
+              <div style={s.step}>
+                <div style={s.stepNum}>3</div>
+                <div style={s.stepBody}>
+                  <div style={s.stepTitle}>Colle-la dans le champ ci-dessous</div>
+                  <div style={s.stepDesc}>
+                    <strong>⚠️ Important</strong> : n'utilise pas le bouton "Partager" de Google Maps,
+                    il génère un lien raccourci (<code style={s.code}>share.google/...</code>) qui
+                    n'est pas accepté par l'API officielle. Toujours copier l'URL longue depuis
+                    la barre d'adresse.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={s.privacyNote}>
+              <Info size={14} color="#34d399" weight="fill" />
+              <div>
+                <strong style={{ color: 'var(--text)' }}>API officielle Google Places</strong> : on
+                utilise uniquement les données publiques fournies par Google. Aucun scraping,
+                aucun risque légal, aucun coût pour toi.
               </div>
             </div>
           </div>
 
-          <div style={s.step}>
-            <div style={s.stepNum}>2</div>
-            <div style={s.stepBody}>
-              <div style={s.stepTitle}>Copie l'URL depuis la barre d'adresse</div>
-              <div style={s.stepDesc}>
-                Une fois ta fiche ouverte, regarde la <strong>barre d'adresse du navigateur</strong> en
-                haut. Sélectionne-la entièrement (Ctrl/Cmd+A) et copie (Ctrl/Cmd+C). L'URL doit
-                commencer par <code style={s.code}>https://www.google.com/maps/place/...</code>
-              </div>
-            </div>
-          </div>
-
-          <div style={s.step}>
-            <div style={s.stepNum}>3</div>
-            <div style={s.stepBody}>
-              <div style={s.stepTitle}>Colle-la dans le champ ci-dessous</div>
-              <div style={s.stepDesc}>
-                <strong>⚠️ Important</strong> : n'utilise pas le bouton "Partager" de Google Maps,
-                il génère un lien raccourci (<code style={s.code}>share.google/...</code>) qui
-                n'est pas accepté par l'API officielle. Toujours copier l'URL longue depuis
-                la barre d'adresse.
-              </div>
-            </div>
+          <div className="audit-right">
+            <ImportUrlForm userId={profile?.userId ?? null} />
           </div>
         </div>
-
-        <div style={s.privacyNote}>
-          <Info size={14} color="#34d399" weight="fill" />
-          <div>
-            <strong style={{ color: 'var(--text)' }}>API officielle Google Places</strong> : on
-            utilise uniquement les données publiques fournies par Google. Aucun scraping,
-            aucun risque légal, aucun coût pour toi.
-          </div>
-        </div>
-
-        <ImportUrlForm userId={profile?.userId ?? null} />
 
       </div>
     </>
@@ -90,7 +105,7 @@ export default async function ImportUrlPage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '760px' },
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1280px', margin: '0 auto' },
 
   back: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
