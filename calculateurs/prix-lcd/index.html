@@ -22,7 +22,8 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="/phosphor.css">
+  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css">
+  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css">
   <style>
     :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.10);--ok:#34D399}
     *{box-sizing:border-box}
@@ -102,6 +103,19 @@
     .faq-item summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:var(--g);font-weight:300}
     .faq-item[open] summary::after{content:'−'}
     .faq-item p{margin:12px 0 0;font-size:13.5px;color:var(--tm);line-height:1.7;font-weight:300}
+    /* ─── Design refresh 2026 : accent vert + gradients subtils ─────── */
+    body{background:linear-gradient(180deg,#fff 0%,var(--cr) 100%)}
+    .panel,.formCard,.formCard,form,.faq-item,.scenario-card,.stat-card,.tool-card{border-top:2px solid transparent;transition:border-color .25s,box-shadow .3s,transform .25s}
+    .panel:hover,.scenario-card:hover,.stat-card:hover,.tool-card:hover{border-top-color:var(--g)}
+    /* Champs verts plus visibles */
+    .field select,.field input,.city-select,.country-select{border-color:rgba(0,76,63,0.18);background:linear-gradient(180deg,#fff 0%,rgba(0,76,63,0.02) 100%);font-weight:500}
+    .field select:hover,.field input:hover,.city-select:hover,.country-select:hover{border-color:rgba(0,76,63,0.40)}
+    /* Bouton principal en gradient vert+jaune (au lieu de jaune plat) */
+    .btn-p{background:linear-gradient(135deg,var(--y) 0%,#FFE08A 50%,var(--y) 100%);background-size:200% 100%;transition:background-position .35s,transform .2s,box-shadow .2s}
+    .btn-p:hover{background-position:100% 0}
+    /* Section verte distinctive pour les headers de section */
+    .lbl{position:relative;padding-left:18px}
+    .lbl::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:10px;height:2px;background:var(--g);border-radius:2px}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur de prix LCD","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Calculateur gratuit pour fixer le bon prix par nuit en location courte durée. Tient compte de la ville, du mois, du type de bien et du canal de réservation (Airbnb, Booking, direct).","url":"https://jasonmarinho.com/calculateurs/prix-lcd","provider":{"@type":"Person","name":"Jason Marinho"}}</script>
   <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs","item":"https://jasonmarinho.com/calculateurs"},{"@type":"ListItem","position":3,"name":"Calculateur de prix LCD","item":"https://jasonmarinho.com/calculateurs/prix-lcd"}]}</script>
