@@ -7,7 +7,10 @@ import {
   CalendarCheck, Target, CalendarX, GraduationCap, Trophy, Lightbulb,
 } from '@phosphor-icons/react/dist/ssr'
 
-const ICON_MAP: Record<string, React.ComponentType<{ size?: number; weight?: 'fill' | 'regular' | 'bold' | 'duotone' }>> = {
+// React.ElementType : accepte n'importe quel composant React (les icons
+// Phosphor sont des ForwardRefExoticComponent<IconProps> qui ne matchent
+// pas un type strict). Pragmatique pour un map de lookup.
+const ICON_MAP: Record<string, React.ElementType> = {
   house: House,
   'calendar-plus': CalendarPlus,
   'warning-octagon': WarningOctagon,
