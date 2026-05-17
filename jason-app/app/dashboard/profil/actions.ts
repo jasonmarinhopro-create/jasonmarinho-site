@@ -132,3 +132,29 @@ export async function deleteAccount(confirmation: string): Promise<{ error?: str
 
   return {}
 }
+
+export async function saveAutresRevenusPro(value: number | null): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: "Non authentifié" }
+
+  // Validation : entre 0 et 10M €, ou null pour effacer
+  if (value !== null) {
+    if (!Number.isFinite(value) || value < 0 || value > 10_000_000) {
+      return { error: "Montant invalide (0 à 10 000 000 €)" }
+    }
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ autres_revenus_pro: value })
+    .eq("id", user.id)
+
+  if (error) return { error: error.message }
+  invalidateProfileCache(user.id)
+  revalidatePath("/dashboard/profil")
+  revalidatePath("/dashboard")
+  revalidatePath("/dashboard/simulateurs")
+  return {}
+}
+

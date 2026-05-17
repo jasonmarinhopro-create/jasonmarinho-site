@@ -3,6 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import ProfilForm from './ProfilForm'
 import ChezNousIdentity from './ChezNousIdentity'
+import FiscalContextCard from './FiscalContextCard'
 
 const PLAN_BADGE: Record<string, { label: string; color: string; bg: string; dot: string }> = {
   'Membre Driing':  { label: 'Membre Driing',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', dot: 'var(--accent-text)' },
@@ -286,6 +287,7 @@ export default async function ProfilPage() {
               show_city:      pd?.privacy_show_city ?? true,
             }}
           />
+          <FiscalContextCard initialValue={profile.autres_revenus_pro ?? null} />
         </div>
       </div>
     </>

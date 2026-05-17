@@ -50,7 +50,7 @@ export type AccountStats = {
 
 export function computeAccountStats(
   prefill: LogementWithStats[],
-  profile: { full_name: string | null; plan: 'decouverte' | 'standard' | 'driing' }
+  profile: { full_name: string | null; plan: 'decouverte' | 'standard' | 'driing'; autres_revenus_pro?: number | null }
 ): AccountStats {
   const caTotal12m = prefill.reduce((sum, l) => sum + (l.stats?.revenuTotal ?? 0), 0)
   const nuitsTotales12m = prefill.reduce((sum, l) => sum + (l.stats?.nuitsLouees ?? 0), 0)
@@ -76,9 +76,12 @@ export function computeAccountStats(
   const tousNonClasses = totalRenseignes > 0 && classementCounts.nonClasse === totalRenseignes
   const mixteClassement = totalRenseignes > 0 && !tousClasses && !tousNonClasses
   const regimeInfo = estimateRegimeFromCA(caTotal12m, { isClasse: tousClasses })
-  // autresRevenus inconnus tant qu'on ne les a pas en base — null en attendant
-  // que l'utilisateur saisisse son revenu foyer dans son profil.
-  const statutInfo = detectStatutLocatif(caTotal12m, null)
+  // autresRevenus = saisis dans /dashboard/profil (FiscalContextCard).
+  // Si null, l'algo retombe sur "LMNP probable à vérifier".
+  const autresRevenus = (typeof profile.autres_revenus_pro === 'number' && profile.autres_revenus_pro >= 0)
+    ? profile.autres_revenus_pro
+    : null
+  const statutInfo = detectStatutLocatif(caTotal12m, autresRevenus)
 
   const villes = Array.from(new Set(prefill.map(l => l.ville).filter(Boolean) as string[]))
 
@@ -120,6 +123,7 @@ export function computeAccountStats(
       tousNonClasses,
       mixteClassement,
       classementRenseigne: totalRenseignes > 0,
+      autresRevenusRenseignes: autresRevenus !== null,
     }),
   }
 }
@@ -136,6 +140,7 @@ function computeInsights(s: {
   tousNonClasses: boolean
   mixteClassement: boolean
   classementRenseigne: boolean
+  autresRevenusRenseignes: boolean
 }): AccountStats['insights'] {
   const plafondNc = FISCAL_PARAMS_2026.microBic.nonClasse.plafond  // 15 000
   const plafondCl = FISCAL_PARAMS_2026.microBic.classe.plafond     // 77 700
@@ -291,13 +296,21 @@ function computeInsights(s: {
       ctaHref: '/dashboard/simulateurs#statut',
       tone: 'warning',
     }
-  } else if (s.caTotal12m >= FISCAL_PARAMS_2026.ei.seuilLmp) {
-    // CA >= 23000 mais statut LMNP par défaut faute d'autresRevenus
+  } else if (s.caTotal12m >= FISCAL_PARAMS_2026.ei.seuilLmp && !s.autresRevenusRenseignes) {
+    // CA >= 23k€ mais autres revenus pas saisis → on prescrit la saisie pour
+    // verrouiller le statut LMNP/LMP
     statut = {
-      message: `LMNP probable mais à vérifier (LMP si LCD > 50 % des revenus foyer)`,
-      ctaLabel: 'En savoir plus',
-      ctaHref: '/services/simulateurs/choisir-statut-ei-sasu',
+      message: `LMNP probable. Renseigne tes autres revenus pour verrouiller LMNP ou LMP`,
+      ctaLabel: 'Renseigner mes revenus',
+      ctaHref: '/dashboard/profil',
       tone: 'opportunity',
+    }
+  } else if (s.statut === 'lmnp' && s.caTotal12m >= FISCAL_PARAMS_2026.ei.seuilLmp) {
+    statut = {
+      message: 'LMNP confirmé : LCD ≤ autres revenus du foyer',
+      ctaLabel: 'Voir le simulateur',
+      ctaHref: '/dashboard/simulateurs#statut',
+      tone: 'neutral',
     }
   }
 
