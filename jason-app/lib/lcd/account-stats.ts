@@ -1,3 +1,5 @@
+import { estimateRegimeFromCA, type RegimeFiscalEstime } from './fiscal-params'
+
 type LogementWithStats = {
   ville: string | null
   stats?: {
@@ -19,7 +21,7 @@ export type AccountStats = {
   nuitsTotales12m: number
   adrMoyen: number
   occupationMoyenne: number
-  regimeEstime: 'aucun' | 'micro-non-classe' | 'micro-classe' | 'reel'
+  regimeEstime: RegimeFiscalEstime
   regimeLabel: string
   regimeHint: string
   villes: string[]
@@ -38,22 +40,7 @@ export function computeAccountStats(
     ? Math.round(prefill.reduce((sum, l) => sum + (l.stats?.occupationReelle ?? 0), 0) / nbLogementsActifs)
     : 0
 
-  let regimeEstime: AccountStats['regimeEstime'] = 'aucun'
-  let regimeLabel = 'À configurer'
-  let regimeHint = 'Ajoute tes premiers séjours pour estimer ton régime'
-  if (caTotal12m > 0 && caTotal12m <= 15000) {
-    regimeEstime = 'micro-non-classe'
-    regimeLabel = 'Micro-BIC, non classé'
-    regimeHint = 'Plafond 15 000 €, abattement 30 %'
-  } else if (caTotal12m > 0 && caTotal12m <= 77700) {
-    regimeEstime = 'micro-classe'
-    regimeLabel = 'Micro-BIC, classé Atout France'
-    regimeHint = 'Plafond 77 700 €, abattement 71 %'
-  } else if (caTotal12m > 77700) {
-    regimeEstime = 'reel'
-    regimeLabel = 'Régime réel simplifié'
-    regimeHint = 'Au-dessus du plafond micro-BIC'
-  }
+  const regimeInfo = estimateRegimeFromCA(caTotal12m)
 
   const villes = Array.from(new Set(prefill.map(l => l.ville).filter(Boolean) as string[]))
 
@@ -70,9 +57,9 @@ export function computeAccountStats(
     nuitsTotales12m,
     adrMoyen,
     occupationMoyenne,
-    regimeEstime,
-    regimeLabel,
-    regimeHint,
+    regimeEstime: regimeInfo.regime,
+    regimeLabel: regimeInfo.label,
+    regimeHint: regimeInfo.hint,
     villes,
   }
 }

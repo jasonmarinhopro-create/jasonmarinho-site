@@ -38,8 +38,17 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
       <style dangerouslySetInnerHTML={{ __html: `
         /* Selects en vert Jason quand ouverts */
         .calc-root select option { background-color: var(--bg-2); color: var(--text); padding: 8px 12px; font-weight: 500; }
-        .calc-root select option:hover { background-color: var(--accent-bg); }
-        .calc-root select option:checked { background: var(--accent-text); color: var(--bg); font-weight: 700; }
+        .calc-root select option:hover { background-color: rgba(0,76,63,0.55); color: #fff; }
+        .calc-root select option:checked { background: linear-gradient(0deg, var(--accent-text) 0%, var(--accent-text) 100%); color: var(--bg); font-weight: 700; }
+        /* Focus state vert sur inputs/selects */
+        .calc-root input[type="text"]:focus, .calc-root input[type="number"]:focus,
+        .calc-root select:focus, .calc-root textarea:focus {
+          border-color: rgba(99,214,131,0.55) !important;
+          box-shadow: 0 0 0 3px rgba(0,76,63,0.18), 0 0 0 1px rgba(99,214,131,0.40);
+          outline: none;
+        }
+        .calc-root select { transition: border-color .18s, box-shadow .18s; cursor: pointer; }
+        .calc-root select:hover { border-color: rgba(99,214,131,0.32); }
         /* Checkbox custom élégante (réutilise classe globale jm-check) */
         .jm-check { display: flex !important; align-items: center; gap: 10px; cursor: pointer; padding: 12px 14px !important; border-radius: 10px; background: linear-gradient(135deg, rgba(0,76,63,.05) 0%, rgba(255,213,107,.06) 100%); border: 1px solid var(--accent-border); transition: all .2s cubic-bezier(.4,0,.2,1); margin-top: 4px !important; }
         .jm-check:hover { border-color: var(--accent-text); background: linear-gradient(135deg, rgba(0,76,63,.10) 0%, rgba(255,213,107,.12) 100%); }

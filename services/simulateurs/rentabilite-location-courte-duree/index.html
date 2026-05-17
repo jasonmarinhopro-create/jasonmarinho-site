@@ -94,10 +94,203 @@
     .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
     .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
     .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+
+.sim-widget{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(20px,3vw,32px);
+  background:linear-gradient(160deg,#fff 0%,#FBFAF6 100%);
+  border:1px solid rgba(0,76,63,.12);
+  border-radius:20px;
+  padding:clamp(22px,3vw,36px);
+  margin:clamp(28px,4vw,40px) 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 18px 48px -24px rgba(0,76,63,.18);
+  position:relative;overflow:hidden;
+}
+.sim-widget::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 0%,rgba(255,213,107,.10),transparent 70%);
+  pointer-events:none;
+}
+.sim-widget > *{position:relative;z-index:1}
+
+@media (max-width:780px){
+  .sim-widget{grid-template-columns:1fr;gap:24px}
+}
+
+.sim-head{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g);margin-bottom:6px;
+}
+.sim-head-pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 0 4px rgba(0,76,63,.12);
+  animation:simPulse 2s ease-in-out infinite;
+}
+@keyframes simPulse{
+  0%,100%{box-shadow:0 0 0 4px rgba(0,76,63,.12)}
+  50%{box-shadow:0 0 0 8px rgba(0,76,63,.04)}
+}
+
+.sim-inputs{display:flex;flex-direction:column;gap:18px}
+.sim-results{
+  display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);
+  border-radius:14px;padding:clamp(20px,2.5vw,26px);
+  color:#fff;position:relative;overflow:hidden;
+}
+.sim-results::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 100%,rgba(255,213,107,.06),transparent 70%);
+  pointer-events:none;
+}
+.sim-results > *{position:relative;z-index:1}
+
+.sim-title{
+  font-family:'Fraunces',serif;font-size:20px;line-height:1.2;font-weight:400;
+  letter-spacing:-.01em;color:var(--td);margin:0 0 14px;
+}
+.sim-title em{color:var(--g);font-style:italic;font-weight:300}
+
+.sim-field{display:flex;flex-direction:column;gap:10px}
+.sim-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(0,76,63,.65);
+}
+.sim-label-val{
+  font-family:'Fraunces',serif;font-size:16px;font-weight:500;
+  color:var(--g);letter-spacing:-.01em;text-transform:none;
+}
+
+.sim-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:6px;border-radius:3px;
+  background:linear-gradient(90deg,var(--g) 0%,var(--g) var(--pct,0%),rgba(0,76,63,.10) var(--pct,0%),rgba(0,76,63,.10) 100%);
+  outline:none;cursor:pointer;
+}
+.sim-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--y);border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+  transition:transform .15s;
+}
+.sim-range::-webkit-slider-thumb:hover{transform:scale(1.10)}
+.sim-range::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;background:var(--y);
+  border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+}
+
+.sim-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sim-chip{
+  flex:1;min-width:0;padding:11px 14px;
+  font-size:13px;font-weight:500;color:var(--tm);
+  background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  cursor:pointer;text-align:center;
+  transition:all .18s cubic-bezier(.4,0,.2,1);
+  font-family:'Outfit',sans-serif;
+}
+.sim-chip:hover{border-color:var(--g);color:var(--g);background:rgba(0,76,63,.03)}
+.sim-chip.on{
+  background:linear-gradient(135deg,var(--g) 0%,var(--gm) 100%);color:#fff;
+  border-color:var(--g);font-weight:600;
+  box-shadow:0 4px 14px rgba(0,76,63,.22);
+}
+
+.sim-num{
+  width:100%;padding:13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;font-family:'Outfit',sans-serif;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-num:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-num::-webkit-outer-spin-button,
+.sim-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sim-num[type=number]{-moz-appearance:textfield}
+
+.sim-select{
+  width:100%;padding:13px 38px 13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;cursor:pointer;font-family:'Outfit',sans-serif;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23004C3F' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;background-size:14px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-select:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-select option{background:#fff;color:var(--td)}
+
+.sim-out{
+  display:flex;flex-direction:column;gap:4px;
+  padding:16px 18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,213,107,.12);
+  border-radius:12px;
+  transition:border-color .2s,background .2s;
+}
+.sim-out.primary{
+  background:linear-gradient(135deg,rgba(255,213,107,.10) 0%,rgba(255,213,107,.03) 100%);
+  border-color:rgba(255,213,107,.30);
+}
+.sim-out-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,213,107,.7);
+}
+.sim-out-value{
+  font-family:'Fraunces',serif;font-size:clamp(22px,2.4vw,28px);font-weight:500;
+  color:#fff;letter-spacing:-.01em;line-height:1.2;
+}
+.sim-out.primary .sim-out-value{color:var(--y)}
+.sim-out-value.alert{color:#FCA5A5}
+.sim-out-value.success{color:#A7F3B7}
+.sim-out-sub{font-size:12px;color:rgba(255,255,255,.55);line-height:1.4}
+
+.sim-cta-row{
+  display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;
+}
+.sim-cta-row a{
+  flex:1;min-width:160px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:12px 18px;border-radius:10px;
+  font-size:13.5px;font-weight:600;
+  text-decoration:none;
+  transition:all .2s;
+  font-family:'Outfit',sans-serif;
+}
+.sim-cta-primary{
+  background:var(--y);color:var(--gd);
+  box-shadow:0 4px 14px rgba(255,213,107,.22);
+}
+.sim-cta-primary:hover{
+  background:#ffe08f;transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(255,213,107,.30);
+}
+.sim-cta-ghost{
+  background:transparent;color:rgba(255,255,255,.78);
+  border:1px solid rgba(255,255,255,.18);
+}
+.sim-cta-ghost:hover{border-color:rgba(255,255,255,.4);color:#fff}
+
+.sim-hint{
+  font-size:12px;color:rgba(0,76,63,.55);line-height:1.5;
+  padding:10px 12px;background:rgba(0,76,63,.04);
+  border-left:2px solid var(--g);border-radius:0 8px 8px 0;
+}
+.sim-hint strong{color:var(--g)}
+
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur rentabilité LCD","description":"Calcule la rentabilité d'un logement en location courte durée : revenu net mensuel, cash-flow après crédit, rentabilité brute et nette. Mode opérationnel ou investissement, avec commission plateforme et charges incluses.","url":"https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
   <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Simulateur rentabilité LCD","item":"https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree"}]}</script>
-  <script type="application/ld+json" data-schema-faq>{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment calculer la rentabilité d'une location courte durée ?","acceptedAnswer":{"@type":"Answer","text":"Deux niveaux. Rentabilité brute = revenu brut annuel / prix d'achat × 100 (vise 7-10 %). Rentabilité nette nette = (revenu net − impôt − cotisations) / coût total (achat + frais + travaux). C'est la nette nette qui compte vraiment, parce qu'elle se compare à n'importe quel autre placement."}},{"@type":"Question","name":"Quel taux d'occupation moyen pour une LCD rentable ?","acceptedAnswer":{"@type":"Answer","text":"Le seuil de rentabilité varie selon la ville et l'ADR. En grande ville (Paris, Lyon, Bordeaux), il faut viser au moins 60 % d'occupation annuelle. Dans une ville secondaire ou rurale, ça peut tomber à 45-50 % si l'ADR est élevé (maison atypique, vue mer, etc.). Le simulateur te montre la sensibilité de ton bien à l'occupation."}},{"@type":"Question","name":"Faut-il acheter à crédit pour faire de la LCD ?","acceptedAnswer":{"@type":"Answer","text":"Le crédit fait levier sur la rentabilité nette nette, à condition que le taux d'intérêt soit inférieur à la rentabilité brute. Avec un crédit à 3,8 % et une rentabilité brute à 8 %, le levier est positif. Avec un crédit à 4,5 % et une brute à 6 %, le levier est marginal et tu prends beaucoup de risque."}},{"@type":"Question","name":"La commission Airbnb / Booking est-elle déductible ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Toute commission OTAs (Airbnb, Booking, Vrbo, Expedia, et autres) est déductible en régime réel. Au micro-BIC, elle est intégrée dans l'abattement forfaitaire (30 ou 71 %). Le simulateur permet de paramétrer une commission moyenne pour modéliser ton mix OTAs vs réservations directes (via Driing par exemple)."}},{"@type":"Question","name":"Quel cash-flow minimum pour qu'un bien LCD soit viable ?","acceptedAnswer":{"@type":"Answer","text":"Idéalement positif (le bien s'autofinance). Acceptable s'il est légèrement négatif les premières années si la rentabilité nette nette est solide et le bien capitalise (zone à forte plus-value). Inacceptable si le cash-flow négatif persiste et la rentabilité nette nette tombe sous 4 %."}},{"@type":"Question","name":"Le simulateur prend-il en compte les charges de copropriété et la taxe foncière ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Tu paramètres charges courantes (eau, énergie, ménage, internet, assurance), charges fixes (copropriété, taxe foncière, CFE), et provision impôt/cotisations. Le simulateur affiche un net mensuel honnête, pas un brut trompeur."}}]}</script>
+  <script type="application/ld+json" data-schema-faq>{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment calculer la rentabilité d'une location courte durée ?","acceptedAnswer":{"@type":"Answer","text":"Deux niveaux. Rentabilité brute = revenu brut annuel / prix d'achat × 100 (vise 7-10 %). Rentabilité nette nette = (revenu net − impôt − cotisations) / coût total (achat + frais + travaux). C'est la nette nette qui compte vraiment, parce qu'elle se compare à n'importe quel autre placement."}},{"@type":"Question","name":"Quel taux d'occupation moyen pour une LCD rentable ?","acceptedAnswer":{"@type":"Answer","text":"Le seuil de rentabilité varie selon la ville et l'ADR. En grande ville (Paris, Lyon, Bordeaux), il faut viser au moins 60 % d'occupation annuelle. Dans une ville secondaire ou rurale, ça peut tomber à 45-50 % si l'ADR est élevé (maison atypique, vue mer, etc.). Le simulateur te montre la sensibilité de ton bien à l'occupation."}},{"@type":"Question","name":"Faut-il acheter à crédit pour faire de la LCD ?","acceptedAnswer":{"@type":"Answer","text":"Le crédit fait levier sur la rentabilité nette nette, à condition que le taux d'intérêt soit inférieur à la rentabilité brute. Avec un crédit à 3,8 % et une rentabilité brute à 8 %, le levier est positif. Avec un crédit à 4,5 % et une brute à 6 %, le levier est marginal et tu prends beaucoup de risque."}},{"@type":"Question","name":"La commission Airbnb / Booking est-elle déductible ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Toute commission OTAs (Airbnb, Booking, Vrbo, Expedia, et autres) est déductible en régime réel. Au micro-BIC, elle est intégrée dans l'abattement forfaitaire (30 ou 50 %). Le simulateur permet de paramétrer une commission moyenne pour modéliser ton mix OTAs vs réservations directes (via Driing par exemple)."}},{"@type":"Question","name":"Quel cash-flow minimum pour qu'un bien LCD soit viable ?","acceptedAnswer":{"@type":"Answer","text":"Idéalement positif (le bien s'autofinance). Acceptable s'il est légèrement négatif les premières années si la rentabilité nette nette est solide et le bien capitalise (zone à forte plus-value). Inacceptable si le cash-flow négatif persiste et la rentabilité nette nette tombe sous 4 %."}},{"@type":"Question","name":"Le simulateur prend-il en compte les charges de copropriété et la taxe foncière ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Tu paramètres charges courantes (eau, énergie, ménage, internet, assurance), charges fixes (copropriété, taxe foncière, CFE), et provision impôt/cotisations. Le simulateur affiche un net mensuel honnête, pas un brut trompeur."}}]}</script>
   <script defer src="/nav.js"></script>
 </head>
 <body>
@@ -123,7 +316,65 @@
   </div>
 </header>
 
-<section class="sec">
+<section class="sec" style="padding-top:clamp(32px,4vw,48px);padding-bottom:0">
+  <div class="s-in">
+    
+<div class="sim-widget" id="sim-r">
+  <div class="sim-inputs">
+    <div class="sim-head"><span class="sim-head-pulse"></span>Simulateur en direct</div>
+    <h3 class="sim-title">Calcule ta <em>rentabilité</em></h3>
+
+    <div class="sim-field">
+      <div class="sim-label">Prix par nuit <span class="sim-label-val" id="r-p-v">100 €</span></div>
+      <input type="range" class="sim-range" id="r-p" min="40" max="400" step="5" value="100">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Taux d'occupation <span class="sim-label-val" id="r-o-v">65 %</span></div>
+      <input type="range" class="sim-range" id="r-o" min="20" max="95" step="1" value="65">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Commission OTA <span class="sim-label-val" id="r-c-v">17 %</span></div>
+      <input type="range" class="sim-range" id="r-c" min="0" max="25" step="1" value="17">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Charges mensuelles <span class="sim-label-val" id="r-ch-v">800 €</span></div>
+      <input type="range" class="sim-range" id="r-ch" min="0" max="3000" step="50" value="800">
+    </div>
+
+    <div class="sim-hint">
+      Charges = copropriété, eau, électricité, internet, ménage, assurance PNO, abonnements.
+    </div>
+  </div>
+
+  <div class="sim-results">
+    <div class="sim-out primary">
+      <div class="sim-out-label">Revenu net mensuel</div>
+      <div class="sim-out-value" id="r-out-mens">1 350 €</div>
+      <div class="sim-out-sub" id="r-out-mens-sub">après commission + charges</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">CA brut annuel</div>
+      <div class="sim-out-value" id="r-out-ca">23 700 €</div>
+      <div class="sim-out-sub" id="r-out-ca-sub">~237 nuits vendues</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Total commission OTA</div>
+      <div class="sim-out-value" id="r-out-com">4 030 €</div>
+      <div class="sim-out-sub">économie si réservations directes (Driing)</div>
+    </div>
+    <div class="sim-cta-row">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#rentabilite" class="sim-cta-primary">Préfile avec mon ADR réel <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <a href="#explication" class="sim-cta-ghost">Mode investissement</a>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
+
+<section class="sec" id="explication">
   <div class="s-in">
     <div class="two-col">
       <div>
@@ -169,7 +420,7 @@
     <div class="case-list">
       <article class="case"><h3 class="case-t">Studio Bordeaux 18 m², achat 130 000 €</h3><ol><li>Apport 25 000 € + prêt 105 000 € sur 25 ans à 3,8 % → mensualité 542 €</li><li>ADR moyen 75 €, occupation 60 % → 16 425 € CA brut/an</li><li>Commission OTAs 15 %, charges courantes 3 200 €/an</li><li>Revenu net annuel : 16 425 × 0,85 − 3 200 = 10 761 €</li><li>Cash-flow mensuel : (16 425 × 0,85 / 12) − 542 − (3 200 / 12) = 90 €</li><li>Rentabilité nette nette : (10 761 − impôt micro-BIC ~1 800 €) / 145 000 € (achat + frais) = 6,2 %</li><li>Verdict : bon dossier, cash-flow légèrement positif, rentabilité nette nette honorable</li></ol></article>
       <article class="case"><h3 class="case-t">T2 Lyon 35 m², achat 240 000 €</h3><ol><li>Apport 50 000 € + prêt 190 000 € sur 25 ans à 3,8 % → mensualité 982 €</li><li>ADR moyen 95 €, occupation 65 % → 22 526 € CA brut/an</li><li>Commission OTAs 15 %, charges courantes 4 500 €/an</li><li>Revenu net annuel : 22 526 × 0,85 − 4 500 = 14 647 €</li><li>Cash-flow mensuel : (22 526 × 0,85 / 12) − 982 − (4 500 / 12) = 238 €</li><li>Rentabilité nette nette : (14 647 − impôt ~2 800 €) / 263 000 € = 4,5 %</li><li>Verdict : cash-flow correct mais rentabilité nette nette serrée, vise classement Atout France pour économiser sur l&#39;impôt</li></ol></article>
-      <article class="case"><h3 class="case-t">Maison Honfleur 80 m², achat 380 000 €</h3><ol><li>Apport 80 000 € + prêt 300 000 € sur 25 ans à 3,8 % → mensualité 1 549 €</li><li>ADR moyen 165 €, occupation 58 % → 34 925 € CA brut/an</li><li>Commission OTAs 12 % (mix réservations directes via Driing), charges courantes 6 800 €/an</li><li>Revenu net annuel : 34 925 × 0,88 − 6 800 = 23 934 €</li><li>Cash-flow mensuel : (34 925 × 0,88 / 12) − 1 549 − (6 800 / 12) = 414 €</li><li>Rentabilité nette nette : (23 934 − impôt classé 71 % ~2 100 €) / 415 000 € = 5,3 %</li><li>Verdict : excellent dossier, cash-flow solide, classement Atout France indispensable pour optimiser</li></ol></article>
+      <article class="case"><h3 class="case-t">Maison Honfleur 80 m², achat 380 000 €</h3><ol><li>Apport 80 000 € + prêt 300 000 € sur 25 ans à 3,8 % → mensualité 1 549 €</li><li>ADR moyen 165 €, occupation 58 % → 34 925 € CA brut/an</li><li>Commission OTAs 12 % (mix réservations directes via Driing), charges courantes 6 800 €/an</li><li>Revenu net annuel : 34 925 × 0,88 − 6 800 = 23 934 €</li><li>Cash-flow mensuel : (34 925 × 0,88 / 12) − 1 549 − (6 800 / 12) = 414 €</li><li>Rentabilité nette nette : (23 934 − impôt classé 50 % ~2 100 €) / 415 000 € = 5,3 %</li><li>Verdict : excellent dossier, cash-flow solide, classement Atout France indispensable pour optimiser</li></ol></article>
     </div>
   </div>
 </section>
@@ -182,7 +433,7 @@
       <details class="faq-it"><summary>Comment calculer la rentabilité d&#39;une location courte durée ?</summary><p>Deux niveaux. Rentabilité brute = revenu brut annuel / prix d&#39;achat × 100 (vise 7-10 %). Rentabilité nette nette = (revenu net − impôt − cotisations) / coût total (achat + frais + travaux). C&#39;est la nette nette qui compte vraiment, parce qu&#39;elle se compare à n&#39;importe quel autre placement.</p></details>
       <details class="faq-it"><summary>Quel taux d&#39;occupation moyen pour une LCD rentable ?</summary><p>Le seuil de rentabilité varie selon la ville et l&#39;ADR. En grande ville (Paris, Lyon, Bordeaux), il faut viser au moins 60 % d&#39;occupation annuelle. Dans une ville secondaire ou rurale, ça peut tomber à 45-50 % si l&#39;ADR est élevé (maison atypique, vue mer, etc.). Le simulateur te montre la sensibilité de ton bien à l&#39;occupation.</p></details>
       <details class="faq-it"><summary>Faut-il acheter à crédit pour faire de la LCD ?</summary><p>Le crédit fait levier sur la rentabilité nette nette, à condition que le taux d&#39;intérêt soit inférieur à la rentabilité brute. Avec un crédit à 3,8 % et une rentabilité brute à 8 %, le levier est positif. Avec un crédit à 4,5 % et une brute à 6 %, le levier est marginal et tu prends beaucoup de risque.</p></details>
-      <details class="faq-it"><summary>La commission Airbnb / Booking est-elle déductible ?</summary><p>Oui. Toute commission OTAs (Airbnb, Booking, Vrbo, Expedia, et autres) est déductible en régime réel. Au micro-BIC, elle est intégrée dans l&#39;abattement forfaitaire (30 ou 71 %). Le simulateur permet de paramétrer une commission moyenne pour modéliser ton mix OTAs vs réservations directes (via Driing par exemple).</p></details>
+      <details class="faq-it"><summary>La commission Airbnb / Booking est-elle déductible ?</summary><p>Oui. Toute commission OTAs (Airbnb, Booking, Vrbo, Expedia, et autres) est déductible en régime réel. Au micro-BIC, elle est intégrée dans l&#39;abattement forfaitaire (30 ou 50 %). Le simulateur permet de paramétrer une commission moyenne pour modéliser ton mix OTAs vs réservations directes (via Driing par exemple).</p></details>
       <details class="faq-it"><summary>Quel cash-flow minimum pour qu&#39;un bien LCD soit viable ?</summary><p>Idéalement positif (le bien s&#39;autofinance). Acceptable s&#39;il est légèrement négatif les premières années si la rentabilité nette nette est solide et le bien capitalise (zone à forte plus-value). Inacceptable si le cash-flow négatif persiste et la rentabilité nette nette tombe sous 4 %.</p></details>
       <details class="faq-it"><summary>Le simulateur prend-il en compte les charges de copropriété et la taxe foncière ?</summary><p>Oui. Tu paramètres charges courantes (eau, énergie, ménage, internet, assurance), charges fixes (copropriété, taxe foncière, CFE), et provision impôt/cotisations. Le simulateur affiche un net mensuel honnête, pas un brut trompeur.</p></details>
     </div>
@@ -238,5 +489,40 @@
 </section>
 
 <script defer src="/footer.js"></script>
+<script>
+(function(){
+  var $p = document.getElementById('r-p'), $pV = document.getElementById('r-p-v');
+  var $o = document.getElementById('r-o'), $oV = document.getElementById('r-o-v');
+  var $c = document.getElementById('r-c'), $cV = document.getElementById('r-c-v');
+  var $ch = document.getElementById('r-ch'), $chV = document.getElementById('r-ch-v');
+  var $mens = document.getElementById('r-out-mens'), $mSub = document.getElementById('r-out-mens-sub');
+  var $ca = document.getElementById('r-out-ca'), $caSub = document.getElementById('r-out-ca-sub');
+  var $com = document.getElementById('r-out-com');
+  function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));}
+  function update(){
+    var prix = +$p.value, occ = +$o.value / 100, com = +$c.value / 100, ch = +$ch.value;
+    var nuits = Math.round(occ * 365);
+    var caBrut = prix * nuits;
+    var caNet = caBrut * (1 - com);
+    var chargesAnnuel = ch * 12;
+    var netAnnuel = caNet - chargesAnnuel;
+    var netMensuel = netAnnuel / 12;
+    var commTotal = caBrut * com;
+    $pV.textContent = fmt(prix); $p.style.setProperty('--pct', ((prix-40)/(400-40)*100)+'%');
+    $oV.textContent = occ*100 + ' %'; $o.style.setProperty('--pct', ((+$o.value-20)/(95-20)*100)+'%');
+    $cV.textContent = (+$c.value)+' %'; $c.style.setProperty('--pct', ($c.value/25*100)+'%');
+    $chV.textContent = fmt(ch); $ch.style.setProperty('--pct', ($ch.value/3000*100)+'%');
+    $mens.textContent = fmt(netMensuel);
+    $mens.className = 'sim-out-value' + (netMensuel < 0 ? ' alert' : '');
+    $mSub.textContent = netMensuel < 0
+      ? 'Cash-flow négatif : revois prix ou charges'
+      : 'soit ' + fmt(netAnnuel) + ' net annuel';
+    $ca.textContent = fmt(caBrut);
+    $caSub.textContent = '~' + nuits + ' nuits vendues';
+    $com.textContent = fmt(commTotal);
+  }
+  [$p, $o, $c, $ch].forEach(function(el){ el.addEventListener('input', update); });
+  update();
+})();</script>
 </body>
 </html>

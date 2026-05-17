@@ -94,6 +94,199 @@
     .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
     .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
     .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+
+.sim-widget{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(20px,3vw,32px);
+  background:linear-gradient(160deg,#fff 0%,#FBFAF6 100%);
+  border:1px solid rgba(0,76,63,.12);
+  border-radius:20px;
+  padding:clamp(22px,3vw,36px);
+  margin:clamp(28px,4vw,40px) 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 18px 48px -24px rgba(0,76,63,.18);
+  position:relative;overflow:hidden;
+}
+.sim-widget::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 0%,rgba(255,213,107,.10),transparent 70%);
+  pointer-events:none;
+}
+.sim-widget > *{position:relative;z-index:1}
+
+@media (max-width:780px){
+  .sim-widget{grid-template-columns:1fr;gap:24px}
+}
+
+.sim-head{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g);margin-bottom:6px;
+}
+.sim-head-pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 0 4px rgba(0,76,63,.12);
+  animation:simPulse 2s ease-in-out infinite;
+}
+@keyframes simPulse{
+  0%,100%{box-shadow:0 0 0 4px rgba(0,76,63,.12)}
+  50%{box-shadow:0 0 0 8px rgba(0,76,63,.04)}
+}
+
+.sim-inputs{display:flex;flex-direction:column;gap:18px}
+.sim-results{
+  display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);
+  border-radius:14px;padding:clamp(20px,2.5vw,26px);
+  color:#fff;position:relative;overflow:hidden;
+}
+.sim-results::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 100% 100%,rgba(255,213,107,.06),transparent 70%);
+  pointer-events:none;
+}
+.sim-results > *{position:relative;z-index:1}
+
+.sim-title{
+  font-family:'Fraunces',serif;font-size:20px;line-height:1.2;font-weight:400;
+  letter-spacing:-.01em;color:var(--td);margin:0 0 14px;
+}
+.sim-title em{color:var(--g);font-style:italic;font-weight:300}
+
+.sim-field{display:flex;flex-direction:column;gap:10px}
+.sim-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(0,76,63,.65);
+}
+.sim-label-val{
+  font-family:'Fraunces',serif;font-size:16px;font-weight:500;
+  color:var(--g);letter-spacing:-.01em;text-transform:none;
+}
+
+.sim-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:6px;border-radius:3px;
+  background:linear-gradient(90deg,var(--g) 0%,var(--g) var(--pct,0%),rgba(0,76,63,.10) var(--pct,0%),rgba(0,76,63,.10) 100%);
+  outline:none;cursor:pointer;
+}
+.sim-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--y);border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+  transition:transform .15s;
+}
+.sim-range::-webkit-slider-thumb:hover{transform:scale(1.10)}
+.sim-range::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;background:var(--y);
+  border:3px solid var(--g);cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,76,63,.25);
+}
+
+.sim-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sim-chip{
+  flex:1;min-width:0;padding:11px 14px;
+  font-size:13px;font-weight:500;color:var(--tm);
+  background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  cursor:pointer;text-align:center;
+  transition:all .18s cubic-bezier(.4,0,.2,1);
+  font-family:'Outfit',sans-serif;
+}
+.sim-chip:hover{border-color:var(--g);color:var(--g);background:rgba(0,76,63,.03)}
+.sim-chip.on{
+  background:linear-gradient(135deg,var(--g) 0%,var(--gm) 100%);color:#fff;
+  border-color:var(--g);font-weight:600;
+  box-shadow:0 4px 14px rgba(0,76,63,.22);
+}
+
+.sim-num{
+  width:100%;padding:13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;font-family:'Outfit',sans-serif;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-num:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-num::-webkit-outer-spin-button,
+.sim-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sim-num[type=number]{-moz-appearance:textfield}
+
+.sim-select{
+  width:100%;padding:13px 38px 13px 14px;font-size:15px;font-weight:500;
+  color:var(--td);background:#fff;
+  border:1px solid rgba(0,76,63,.12);border-radius:10px;
+  outline:none;cursor:pointer;font-family:'Outfit',sans-serif;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23004C3F' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;background-size:14px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.sim-select:focus{
+  border-color:var(--g);
+  box-shadow:0 0 0 3px rgba(0,76,63,.15);
+}
+.sim-select option{background:#fff;color:var(--td)}
+
+.sim-out{
+  display:flex;flex-direction:column;gap:4px;
+  padding:16px 18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,213,107,.12);
+  border-radius:12px;
+  transition:border-color .2s,background .2s;
+}
+.sim-out.primary{
+  background:linear-gradient(135deg,rgba(255,213,107,.10) 0%,rgba(255,213,107,.03) 100%);
+  border-color:rgba(255,213,107,.30);
+}
+.sim-out-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,213,107,.7);
+}
+.sim-out-value{
+  font-family:'Fraunces',serif;font-size:clamp(22px,2.4vw,28px);font-weight:500;
+  color:#fff;letter-spacing:-.01em;line-height:1.2;
+}
+.sim-out.primary .sim-out-value{color:var(--y)}
+.sim-out-value.alert{color:#FCA5A5}
+.sim-out-value.success{color:#A7F3B7}
+.sim-out-sub{font-size:12px;color:rgba(255,255,255,.55);line-height:1.4}
+
+.sim-cta-row{
+  display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;
+}
+.sim-cta-row a{
+  flex:1;min-width:160px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:12px 18px;border-radius:10px;
+  font-size:13.5px;font-weight:600;
+  text-decoration:none;
+  transition:all .2s;
+  font-family:'Outfit',sans-serif;
+}
+.sim-cta-primary{
+  background:var(--y);color:var(--gd);
+  box-shadow:0 4px 14px rgba(255,213,107,.22);
+}
+.sim-cta-primary:hover{
+  background:#ffe08f;transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(255,213,107,.30);
+}
+.sim-cta-ghost{
+  background:transparent;color:rgba(255,255,255,.78);
+  border:1px solid rgba(255,255,255,.18);
+}
+.sim-cta-ghost:hover{border-color:rgba(255,255,255,.4);color:#fff}
+
+.sim-hint{
+  font-size:12px;color:rgba(0,76,63,.55);line-height:1.5;
+  padding:10px 12px;background:rgba(0,76,63,.04);
+  border-left:2px solid var(--g);border-radius:0 8px 8px 0;
+}
+.sim-hint strong{color:var(--g)}
+
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur taxe de séjour par ville","description":"Calcule la taxe de séjour à collecter sur tes voyageurs selon la ville (top 30 France), le classement de ton meublé, le nombre d'adultes et la durée. Barèmes 2026 officiels, exemptions, taxe départementale + 10 %.","url":"https://jasonmarinho.com/services/simulateurs/taxe-de-sejour","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
   <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Simulateur taxe de séjour par ville","item":"https://jasonmarinho.com/services/simulateurs/taxe-de-sejour"}]}</script>
@@ -123,7 +316,84 @@
   </div>
 </header>
 
-<section class="sec">
+<section class="sec" style="padding-top:clamp(32px,4vw,48px);padding-bottom:0">
+  <div class="s-in">
+    
+<div class="sim-widget" id="sim-t">
+  <div class="sim-inputs">
+    <div class="sim-head"><span class="sim-head-pulse"></span>Simulateur en direct</div>
+    <h3 class="sim-title">Calcule la <em>taxe de séjour</em></h3>
+
+    <div class="sim-field">
+      <div class="sim-label">Ville</div>
+      <select class="sim-select" id="t-city">
+      <option value="paris">Paris</option>
+      <option value="cannes">Cannes</option>
+      <option value="nice">Nice</option>
+      <option value="lyon">Lyon</option>
+      <option value="bordeaux">Bordeaux</option>
+      <option value="marseille">Marseille</option>
+      <option value="strasbourg">Strasbourg</option>
+      <option value="honfleur">Honfleur</option>
+      </select>
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Classement du meublé</div>
+      <div class="sim-chips" id="t-cls">
+        <button type="button" class="sim-chip on" data-v="nc">Non classé</button>
+        <button type="button" class="sim-chip" data-v="et12">1–2★</button>
+        <button type="button" class="sim-chip" data-v="et3">3★</button>
+        <button type="button" class="sim-chip" data-v="et45">4–5★</button>
+      </div>
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Adultes <span class="sim-label-val" id="t-a-v">2</span></div>
+      <input type="range" class="sim-range" id="t-a" min="1" max="10" step="1" value="2">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Nuits <span class="sim-label-val" id="t-n-v">3</span></div>
+      <input type="range" class="sim-range" id="t-n" min="1" max="14" step="1" value="3">
+    </div>
+
+    <div class="sim-field">
+      <div class="sim-label">Prix par nuit <span class="sim-label-val" id="t-p-v">120 €</span></div>
+      <input type="range" class="sim-range" id="t-p" min="20" max="500" step="10" value="120">
+    </div>
+
+    <div class="sim-hint">
+      Pour le non classé, taxe = 5 % du prix par nuit par personne, plafonné au cap palace de la ville.
+    </div>
+  </div>
+
+  <div class="sim-results">
+    <div class="sim-out primary">
+      <div class="sim-out-label">Total à collecter</div>
+      <div class="sim-out-value" id="t-out-total">14,90 €</div>
+      <div class="sim-out-sub" id="t-out-detail">2 adultes × 3 nuits × 2,49 €/nuit/adulte</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Taxe communale</div>
+      <div class="sim-out-value" id="t-out-com">13,55 €</div>
+      <div class="sim-out-sub">barème de la ville sélectionnée</div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-out-label">Taxe additionnelle</div>
+      <div class="sim-out-value" id="t-out-add">1,36 €</div>
+      <div class="sim-out-sub" id="t-out-add-sub">départementale +10 %</div>
+    </div>
+    <div class="sim-cta-row">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#taxe" class="sim-cta-primary">Top 30 villes dans l'app <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <a href="#explication" class="sim-cta-ghost">Comprendre la formule</a>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
+
+<section class="sec" id="explication">
   <div class="s-in">
     <div class="two-col">
       <div>
@@ -238,5 +508,54 @@
 </section>
 
 <script defer src="/footer.js"></script>
+<script>
+(function(){
+  var CITIES = {"paris":{"nom":"Paris","nc":5.2,"et12":1.13,"et3":1.95,"et45":5.2,"dpt":0.1,"idf":0.15},"cannes":{"nom":"Cannes","nc":5,"et12":1.1,"et3":1.9,"et45":4.5,"dpt":0.1,"idf":0},"nice":{"nom":"Nice","nc":3.5,"et12":0.83,"et3":1.5,"et45":2.3,"dpt":0.1,"idf":0},"lyon":{"nom":"Lyon","nc":3.46,"et12":0.99,"et3":1.65,"et45":2.53,"dpt":0.1,"idf":0},"bordeaux":{"nom":"Bordeaux","nc":3.4,"et12":0.83,"et3":1.4,"et45":2.1,"dpt":0.1,"idf":0},"marseille":{"nom":"Marseille","nc":3.3,"et12":0.85,"et3":1.45,"et45":2.1,"dpt":0.1,"idf":0},"strasbourg":{"nom":"Strasbourg","nc":2.5,"et12":0.78,"et3":1.3,"et45":1.95,"dpt":0.1,"idf":0},"honfleur":{"nom":"Honfleur","nc":2.2,"et12":0.65,"et3":1.1,"et45":1.65,"dpt":0.1,"idf":0}};
+  var $c = document.getElementById('t-city');
+  var $a = document.getElementById('t-a'), $aV = document.getElementById('t-a-v');
+  var $n = document.getElementById('t-n'), $nV = document.getElementById('t-n-v');
+  var $p = document.getElementById('t-p'), $pV = document.getElementById('t-p-v');
+  var $tot = document.getElementById('t-out-total'), $det = document.getElementById('t-out-detail');
+  var $com = document.getElementById('t-out-com'), $add = document.getElementById('t-out-add');
+  var $addSub = document.getElementById('t-out-add-sub');
+  var cls = 'nc';
+  function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);}
+  function update(){
+    var city = CITIES[$c.value];
+    var adultes = +$a.value, nuits = +$n.value, prix = +$p.value;
+    var cap = city[cls];
+    var tarifPersNuit;
+    if (cls === 'nc') {
+      var cinqPct = (prix * 0.05) / Math.max(1, adultes);
+      tarifPersNuit = Math.min(cinqPct, cap);
+    } else {
+      tarifPersNuit = cap;
+    }
+    var taxeCom = tarifPersNuit * adultes * nuits;
+    var taxeDpt = taxeCom * (city.dpt || 0);
+    var taxeIdf = taxeCom * (city.idf || 0);
+    var total = taxeCom + taxeDpt + taxeIdf;
+    $aV.textContent = adultes; $a.style.setProperty('--pct', ((adultes-1)/9*100)+'%');
+    $nV.textContent = nuits; $n.style.setProperty('--pct', ((nuits-1)/13*100)+'%');
+    $pV.textContent = fmt(prix); $p.style.setProperty('--pct', ((prix-20)/(500-20)*100)+'%');
+    $tot.textContent = fmt(total);
+    $det.textContent = adultes + ' adulte' + (adultes>1?'s':'') + ' × ' + nuits + ' nuit' + (nuits>1?'s':'') + ' × ' + fmt(tarifPersNuit) + '/nuit/adulte';
+    $com.textContent = fmt(taxeCom);
+    var add = taxeDpt + taxeIdf;
+    $add.textContent = fmt(add);
+    $addSub.textContent = city.idf
+      ? 'départementale +10 % + régionale IDF +15 %'
+      : 'départementale +10 %';
+  }
+  $c.addEventListener('change', update);
+  [$a, $n, $p].forEach(function(el){ el.addEventListener('input', update); });
+  document.querySelectorAll('#t-cls .sim-chip').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('#t-cls .sim-chip').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on'); cls = b.dataset.v; update();
+    });
+  });
+  update();
+})();</script>
 </body>
 </html>
