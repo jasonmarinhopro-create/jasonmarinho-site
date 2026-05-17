@@ -9,6 +9,7 @@ import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
 import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
 import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
+import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
   if (role === 'admin') return 'Administrateur'
@@ -72,7 +73,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>
-            {children}
+            <PageFadeWrapper>{children}</PageFadeWrapper>
           </Suspense>
         </main>
         {showOnboarding && (

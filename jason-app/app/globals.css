@@ -419,6 +419,45 @@ em { font-style: italic; color: var(--accent); }
 }
 
 /* ═════════════════════════════════════════════════════════════════════
+ * VIEW TRANSITIONS API (Chrome 111+, Edge 111+, Safari 18+)
+ * Crossfade natif entre les pages dashboard. Ignoré silencieusement
+ * sur Firefox & vieux browsers — pas de régression.
+ * Activé via le hook useViewTransitionRouter dans la sidebar.
+ * ═════════════════════════════════════════════════════════════════════ */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-old(root) {
+  animation-name: vt-fade-out;
+}
+::view-transition-new(root) {
+  animation-name: vt-fade-in;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
  * FOCUS RING ACCESSIBLE — vise un seul style cohérent pour tout
  * Utilisation native : marche pour tous les <button>, <input>, <a>
  * ═════════════════════════════════════════════════════════════════════ */
