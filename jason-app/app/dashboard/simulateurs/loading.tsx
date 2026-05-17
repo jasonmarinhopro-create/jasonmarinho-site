@@ -92,12 +92,11 @@ const s: Record<string, React.CSSProperties> = {
     flexWrap: 'wrap',
   },
   bodyCard: {
+    ...pulse,
     minHeight: '480px',
     padding: 'clamp(18px, 2.6vw, 28px)',
-    background: 'var(--surface)',
     border: '1px solid var(--border)',
     borderRadius: '16px',
-    ...pulse,
     opacity: 0.5,
   },
 }
