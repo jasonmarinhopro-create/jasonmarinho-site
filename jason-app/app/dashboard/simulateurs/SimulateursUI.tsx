@@ -1782,11 +1782,14 @@ export default function SimulateursUI({ logementsPrefill = [], accountStats }: P
         </div>
 
         <div style={s.bodyCard} role="tabpanel">
-          {tab === 'fiscal' && <FiscalLCD accountStats={accountStats} />}
-          {tab === 'statut' && <EIvsSASU accountStats={accountStats} />}
-          {tab === 'rentabilite' && <Rentabilite accountStats={accountStats} />}
-          {tab === 'taxe' && <TaxeSejour accountStats={accountStats} />}
-          {tab === 'tva' && <FranchiseTVA accountStats={accountStats} />}
+          {/* key={tab} force le remount → trigger l'anim fadeIn pour un crossfade subtil */}
+          <div key={tab} className="anim-fade-in">
+            {tab === 'fiscal' && <FiscalLCD accountStats={accountStats} />}
+            {tab === 'statut' && <EIvsSASU accountStats={accountStats} />}
+            {tab === 'rentabilite' && <Rentabilite accountStats={accountStats} />}
+            {tab === 'taxe' && <TaxeSejour accountStats={accountStats} />}
+            {tab === 'tva' && <FranchiseTVA accountStats={accountStats} />}
+          </div>
         </div>
       </div>
     </div>

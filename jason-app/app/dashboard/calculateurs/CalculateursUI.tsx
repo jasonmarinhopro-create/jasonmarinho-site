@@ -102,9 +102,12 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
         </div>
 
         <div style={s.bodyCard} role="tabpanel">
-          {tab === 'revenus' && <EstimateurRevenus logements={logementsPrefill} />}
-          {tab === 'prix' && <CalculateurPrix logements={logementsPrefill} />}
-          {tab === 'mesvilles' && <CompareurMesVilles logements={logementsPrefill} />}
+          {/* key={tab} : force le remount → anim fadeIn pour un crossfade subtil */}
+          <div key={tab} className="anim-fade-in">
+            {tab === 'revenus' && <EstimateurRevenus logements={logementsPrefill} />}
+            {tab === 'prix' && <CalculateurPrix logements={logementsPrefill} />}
+            {tab === 'mesvilles' && <CompareurMesVilles logements={logementsPrefill} />}
+          </div>
         </div>
       </div>
     </div>
