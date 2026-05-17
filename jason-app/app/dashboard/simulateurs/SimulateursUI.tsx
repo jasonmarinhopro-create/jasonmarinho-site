@@ -1,13 +1,12 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp, TrendUp, Storefront } from '@phosphor-icons/react/dist/ssr'
+import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp, TrendUp, Storefront, Receipt } from '@phosphor-icons/react/dist/ssr'
 import { citiesByCountry, estimateRevenue, calculatePrice, SUPPORTED_COUNTRIES, type MarketBenchmark } from '@/lib/lcd/market-benchmarks'
 
 type Pays = MarketBenchmark['pays']
 import type { LogementPrefill } from './page'
 
-type CalcTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe' | 'revenus' | 'prix' | 'mesvilles'
 
 interface Props {
   logementsPrefill?: LogementPrefill[]
@@ -1536,8 +1535,29 @@ function MiniBox({ label, value, sub, highlight }: { label: string; value: strin
   )
 }
 
+type SimTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe'
+const SIM_TABS: SimTab[] = ['fiscal', 'statut', 'rentabilite', 'taxe']
+
 export default function SimulateursUI({ logementsPrefill = [] }: Props) {
-  const [tab, setTab] = useState<CalcTab>('revenus')
+  const [tab, setTab] = useState<SimTab>('fiscal')
+
+  // Deep-linking via URL hash : /dashboard/simulateurs#statut ouvre l'onglet
+  useEffect(() => {
+    const fromHash = () => {
+      const h = (typeof window !== 'undefined' ? window.location.hash.slice(1) : '') as SimTab
+      if (SIM_TABS.includes(h)) setTab(h)
+    }
+    fromHash()
+    window.addEventListener('hashchange', fromHash)
+    return () => window.removeEventListener('hashchange', fromHash)
+  }, [])
+
+  const selectTab = (t: SimTab) => {
+    setTab(t)
+    if (typeof window !== 'undefined') {
+      history.replaceState(null, '', `#${t}`)
+    }
+  }
 
   return (
     <div style={s.page}>
@@ -1555,45 +1575,85 @@ export default function SimulateursUI({ logementsPrefill = [] }: Props) {
         .jm-check input[type="checkbox"]:checked::after { content: ''; position: absolute; top: 3px; left: 6px; width: 5px; height: 9px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); }
         .jm-check span { font-size: 13.5px; color: var(--text); font-weight: 500; line-height: 1.4; }
         .jm-check span strong { color: var(--accent-text); }
+        /* Tabs hover + focus */
+        .sim-root [role="tab"]:hover { color: var(--text); background: rgba(255,255,255,.03); }
+        .sim-root [role="tab"][aria-selected="true"] { background: var(--accent-bg); color: var(--accent-text); box-shadow: 0 1px 0 rgba(255,213,107,0.06) inset, 0 2px 8px rgba(255,213,107,0.10); }
       ` }} />
-      <div className="sim-root" style={{}}>
-      <div style={s.hero}>
-        <span style={s.heroBadge}>
-          <Calculator size={13} weight="fill" />
-          4 simulateurs fiscaux
-        </span>
-        <h1 style={s.heroTitle}>
-          Simulateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>fiscaux</em>
-        </h1>
-        <p style={s.heroDesc}>
-          Calcule ton imposition, choisis ton statut, estime ta taxe de séjour, projette ta rentabilité nette. Tout en quelques secondes, préfilé avec tes vrais logements. Pour estimer revenus et prix, file dans <a href="/dashboard/calculateurs" style={{ color: 'var(--accent-text)', textDecoration: 'underline', textDecorationThickness: '1px', textUnderlineOffset: '3px' }}>Calculateurs marché</a>.
-        </p>
-      </div>
+      <div className="sim-root">
 
-      <div style={s.tabs}>
-        <button onClick={() => setTab('fiscal')} style={{ ...s.tab, ...(tab === 'fiscal' ? s.tabActive : {}) }}>
-          <CurrencyEur size={14} weight="fill" /> Fiscalité
-        </button>
-        <button onClick={() => setTab('statut')} style={{ ...s.tab, ...(tab === 'statut' ? s.tabActive : {}) }}>
-          <Scales size={14} weight="fill" /> EI vs SASU
-        </button>
-        <button onClick={() => setTab('rentabilite')} style={{ ...s.tab, ...(tab === 'rentabilite' ? s.tabActive : {}) }}>
-          <ChartLineUp size={14} weight="fill" /> Rentabilité
-        </button>
-        <button onClick={() => setTab('taxe')} style={{ ...s.tab, ...(tab === 'taxe' ? s.tabActive : {}) }}>
-          <House size={14} weight="fill" /> Taxe de séjour
-        </button>
-      </div>
+        <PageSwitcher current="fiscal" />
 
-      <div style={s.body}>
-        {tab === 'fiscal' && <FiscalLCD />}
-        {tab === 'statut' && <EIvsSASU />}
-        {tab === 'rentabilite' && <Rentabilite />}
-        {tab === 'taxe' && <TaxeSejour />}
-      </div>
+        <div style={s.hero}>
+          <span style={s.heroBadge}>
+            <Calculator size={13} weight="fill" />
+            4 simulateurs fiscaux
+          </span>
+          <h1 style={s.heroTitle}>
+            Simulateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>fiscaux</em>
+          </h1>
+          <p style={s.heroDesc}>
+            Calcule ton imposition, choisis ton statut, estime ta taxe de séjour, projette ta rentabilité nette. Tout en quelques secondes, préfilé avec tes vrais logements.
+          </p>
+        </div>
+
+        <div style={s.tabs} role="tablist" aria-label="Simulateurs fiscaux">
+          <button onClick={() => selectTab('fiscal')} role="tab" aria-selected={tab === 'fiscal'} style={s.tab}>
+            <CurrencyEur size={14} weight="fill" /> Fiscalité
+          </button>
+          <button onClick={() => selectTab('statut')} role="tab" aria-selected={tab === 'statut'} style={s.tab}>
+            <Scales size={14} weight="fill" /> EI vs SASU
+          </button>
+          <button onClick={() => selectTab('rentabilite')} role="tab" aria-selected={tab === 'rentabilite'} style={s.tab}>
+            <ChartLineUp size={14} weight="fill" /> Rentabilité
+          </button>
+          <button onClick={() => selectTab('taxe')} role="tab" aria-selected={tab === 'taxe'} style={s.tab}>
+            <Receipt size={14} weight="fill" /> Taxe de séjour
+          </button>
+        </div>
+
+        <div style={s.body} role="tabpanel">
+          {tab === 'fiscal' && <FiscalLCD />}
+          {tab === 'statut' && <EIvsSASU />}
+          {tab === 'rentabilite' && <Rentabilite />}
+          {tab === 'taxe' && <TaxeSejour />}
+        </div>
       </div>
     </div>
   )
+}
+
+function PageSwitcher({ current }: { current: 'fiscal' | 'marche' }) {
+  const isFiscal = current === 'fiscal'
+  return (
+    <div style={ps.wrap} role="navigation" aria-label="Choix de la suite d'outils">
+      <a href="/dashboard/simulateurs" style={isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={isFiscal ? 'page' : undefined}>
+        <Calculator size={13} weight="fill" /> Simulateurs fiscaux
+      </a>
+      <a href="/dashboard/calculateurs" style={!isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={!isFiscal ? 'page' : undefined}>
+        <ChartLineUp size={13} weight="fill" /> Calculateurs marché
+      </a>
+    </div>
+  )
+}
+
+const ps: Record<string, React.CSSProperties> = {
+  wrap: {
+    display: 'inline-flex', gap: '4px', padding: '4px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', marginBottom: 'clamp(18px, 2.5vw, 26px)',
+  },
+  btn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '7px 12px', borderRadius: '7px',
+    fontSize: '12.5px', fontWeight: 500,
+    color: 'var(--text-2)', background: 'transparent',
+    textDecoration: 'none',
+    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
+  },
+  btnActive: {
+    background: 'var(--accent-bg)', color: 'var(--accent-text)',
+    fontWeight: 700,
+  },
 }
 
 const s: Record<string, React.CSSProperties> = {

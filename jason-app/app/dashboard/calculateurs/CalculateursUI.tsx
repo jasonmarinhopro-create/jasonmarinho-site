@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { ChartLineUp, MapPin, Storefront, TrendUp } from '@phosphor-icons/react/dist/ssr'
+import { useState, useEffect } from 'react'
+import { Calculator, ChartLineUp, MapPin, Storefront, TrendUp } from '@phosphor-icons/react/dist/ssr'
 import { EstimateurRevenus, CalculateurPrix, CompareurMesVilles } from '../simulateurs/SimulateursUI'
 import type { LogementPrefill } from './page'
 
 type CalcTab = 'revenus' | 'prix' | 'mesvilles'
+const CALC_TABS: CalcTab[] = ['revenus', 'prix', 'mesvilles']
 
 interface Props {
   logementsPrefill?: LogementPrefill[]
@@ -13,6 +14,21 @@ interface Props {
 
 export default function CalculateursUI({ logementsPrefill = [] }: Props) {
   const [tab, setTab] = useState<CalcTab>('revenus')
+
+  useEffect(() => {
+    const fromHash = () => {
+      const h = (typeof window !== 'undefined' ? window.location.hash.slice(1) : '') as CalcTab
+      if (CALC_TABS.includes(h)) setTab(h)
+    }
+    fromHash()
+    window.addEventListener('hashchange', fromHash)
+    return () => window.removeEventListener('hashchange', fromHash)
+  }, [])
+
+  const selectTab = (t: CalcTab) => {
+    setTab(t)
+    if (typeof window !== 'undefined') history.replaceState(null, '', `#${t}`)
+  }
 
   return (
     <div style={s.page}>
@@ -30,8 +46,13 @@ export default function CalculateursUI({ logementsPrefill = [] }: Props) {
         .jm-check input[type="checkbox"]:checked::after { content: ''; position: absolute; top: 3px; left: 6px; width: 5px; height: 9px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); }
         .jm-check span { font-size: 13.5px; color: var(--text); font-weight: 500; line-height: 1.4; }
         .jm-check span strong { color: var(--accent-text); }
+        .calc-root [role="tab"]:hover { color: var(--text); background: rgba(255,255,255,.03); }
+        .calc-root [role="tab"][aria-selected="true"] { background: var(--accent-bg); color: var(--accent-text); font-weight: 700; box-shadow: 0 2px 8px rgba(255,213,107,0.12); }
       ` }} />
       <div className="calc-root">
+
+        <PageSwitcher current="marche" />
+
         <div style={s.hero}>
           <span style={s.heroBadge}>
             <TrendUp size={13} weight="fill" />
@@ -45,19 +66,28 @@ export default function CalculateursUI({ logementsPrefill = [] }: Props) {
           </p>
         </div>
 
-        <div style={s.tabs}>
-          <button onClick={() => setTab('revenus')} style={{ ...s.tab, ...(tab === 'revenus' ? s.tabActive : {}) }}>
+        {logementsPrefill.length === 0 && (
+          <div style={s.emptyState}>
+            <MapPin size={28} weight="duotone" style={{ color: 'var(--accent-text)', opacity: 0.85, marginBottom: '8px' }} />
+            <div style={s.emptyTitle}>Préfilage indisponible</div>
+            <div style={s.emptyDesc}>Ajoute au moins un logement pour comparer ton activité réelle au marché européen. Tu peux quand même tester les outils sans préfilage.</div>
+            <a href="/dashboard/logements" style={s.emptyCta}>Ajouter mon premier logement →</a>
+          </div>
+        )}
+
+        <div style={s.tabs} role="tablist" aria-label="Calculateurs marché">
+          <button onClick={() => selectTab('revenus')} role="tab" aria-selected={tab === 'revenus'} style={s.tab}>
             <TrendUp size={14} weight="fill" /> Revenus
           </button>
-          <button onClick={() => setTab('prix')} style={{ ...s.tab, ...(tab === 'prix' ? s.tabActive : {}) }}>
+          <button onClick={() => selectTab('prix')} role="tab" aria-selected={tab === 'prix'} style={s.tab}>
             <Storefront size={14} weight="fill" /> Prix par nuit
           </button>
-          <button onClick={() => setTab('mesvilles')} style={{ ...s.tab, ...(tab === 'mesvilles' ? s.tabActive : {}) }}>
+          <button onClick={() => selectTab('mesvilles')} role="tab" aria-selected={tab === 'mesvilles'} style={s.tab}>
             <MapPin size={14} weight="fill" /> Mes villes
           </button>
         </div>
 
-        <div style={s.body}>
+        <div style={s.body} role="tabpanel">
           {tab === 'revenus' && <EstimateurRevenus logements={logementsPrefill} />}
           {tab === 'prix' && <CalculateurPrix logements={logementsPrefill} />}
           {tab === 'mesvilles' && <CompareurMesVilles logements={logementsPrefill} />}
@@ -65,6 +95,40 @@ export default function CalculateursUI({ logementsPrefill = [] }: Props) {
       </div>
     </div>
   )
+}
+
+function PageSwitcher({ current }: { current: 'fiscal' | 'marche' }) {
+  const isFiscal = current === 'fiscal'
+  return (
+    <div style={ps.wrap} role="navigation" aria-label="Choix de la suite d'outils">
+      <a href="/dashboard/simulateurs" style={isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={isFiscal ? 'page' : undefined}>
+        <Calculator size={13} weight="fill" /> Simulateurs fiscaux
+      </a>
+      <a href="/dashboard/calculateurs" style={!isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={!isFiscal ? 'page' : undefined}>
+        <ChartLineUp size={13} weight="fill" /> Calculateurs marché
+      </a>
+    </div>
+  )
+}
+
+const ps: Record<string, React.CSSProperties> = {
+  wrap: {
+    display: 'inline-flex', gap: '4px', padding: '4px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', marginBottom: 'clamp(18px, 2.5vw, 26px)',
+  },
+  btn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '7px 12px', borderRadius: '7px',
+    fontSize: '12.5px', fontWeight: 500,
+    color: 'var(--text-2)', background: 'transparent',
+    textDecoration: 'none',
+    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
+  },
+  btnActive: {
+    background: 'var(--accent-bg)', color: 'var(--accent-text)',
+    fontWeight: 700,
+  },
 }
 
 const s: Record<string, React.CSSProperties> = {
@@ -88,6 +152,35 @@ const s: Record<string, React.CSSProperties> = {
     lineHeight: 1.65, margin: 0, maxWidth: '640px',
   },
 
+  emptyState: {
+    padding: 'clamp(20px, 3vw, 28px)',
+    background: 'linear-gradient(135deg, rgba(255,213,107,0.05) 0%, rgba(0,76,63,0.03) 100%)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '14px',
+    marginBottom: '24px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '4px',
+  },
+  emptyTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '17px', fontWeight: 500,
+    color: 'var(--text)', letterSpacing: '-0.01em',
+  },
+  emptyDesc: {
+    fontSize: '13.5px', color: 'var(--text-2)',
+    lineHeight: 1.55, maxWidth: '560px', marginBottom: '8px',
+  },
+  emptyCta: {
+    fontSize: '13px', fontWeight: 600,
+    color: 'var(--accent-text)', textDecoration: 'none',
+    padding: '8px 14px', borderRadius: '8px',
+    background: 'rgba(255,213,107,0.10)',
+    border: '1px solid rgba(255,213,107,0.22)',
+    transition: 'all .2s',
+  },
+
   tabs: {
     display: 'flex', gap: '6px', flexWrap: 'wrap',
     padding: '8px', borderRadius: '14px',
@@ -101,10 +194,6 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text-2)', fontSize: '13px', fontWeight: 500,
     cursor: 'pointer', fontFamily: 'inherit',
     transition: 'all .18s cubic-bezier(.16,1,.3,1)',
-  },
-  tabActive: {
-    background: 'var(--accent-bg)', color: 'var(--accent-text)',
-    fontWeight: 700, boxShadow: '0 2px 8px rgba(255,213,107,0.12)',
   },
   body: { width: '100%' },
 }
