@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulateur taxe de séjour LCD : barème par ville, classement, durée | Jason Marinho</title>
+  <meta name="description" content="Calcule la taxe de séjour à collecter sur tes voyageurs selon la ville (top 30 France), le classement de ton meublé, le nombre d&#39;adultes et la durée. Barèmes 2026 officiels, exemptions, taxe départementale + 10 %.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/taxe-de-sejour">
+  <meta property="og:title" content="Simulateur taxe de séjour LCD : barème par ville, classement, durée">
+  <meta property="og:description" content="Calcule la taxe de séjour à collecter sur tes voyageurs selon la ville (top 30 France), le classement de ton meublé, le nombre d&#39;adultes et la durée. Barèmes 2026 officiels, exemptions, taxe départementale + 10 %.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/taxe-de-sejour">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#004C3F">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.10)}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(56px,7vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .h3{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:500;color:var(--td);margin:0 0 10px;letter-spacing:-.01em}
+    .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.65);margin:0 0 32px;max-width:680px}
+    .sub.dk{color:var(--tm)} .sub.mx{max-width:760px}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s,transform .2s,box-shadow .2s}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.78);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-ol:hover{border-color:rgba(255,255,255,.55);color:#fff}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.22);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.10);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,120px) 0 clamp(56px,7vw,90px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 78% 50%,rgba(255,213,107,.06),transparent 70%);pointer-events:none}
+    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 100%,rgba(0,76,63,.5),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px);position:relative;z-index:1}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.38);margin-bottom:32px;flex-wrap:wrap}
+    .hero-brd a{color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff} .hero-brd span{font-size:11px}
+    .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+    .meta-bd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border-radius:7px;padding:6px 12px}
+    .meta-bd i{color:rgba(255,213,107,.55)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    .ck-list{list-style:none;padding:0;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+    .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5;color:var(--tm)}
+    .ck-list li .chk{margin-top:2px}
+    .item-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:28px}
+    .item-card{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:24px;transition:box-shadow .2s,transform .2s}
+    .item-card:hover{box-shadow:0 12px 32px rgba(0,76,63,.08);transform:translateY(-2px)}
+    .item-card p{font-size:14px;line-height:1.65;color:var(--tm);margin:0}
+    .case-list{display:flex;flex-direction:column;gap:22px;margin-top:28px}
+    .case{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:28px}
+    .case-t{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:500;color:var(--g);margin:0 0 14px;letter-spacing:-.01em}
+    .case ol{margin:0;padding:0 0 0 22px;color:var(--tm);font-size:14.5px;line-height:1.7}
+    .case ol li{margin-bottom:5px}
+    .faq-list{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+    .faq-it{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px 26px}
+    .faq-it summary{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:500;color:var(--td);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .faq-it summary::-webkit-details-marker{display:none}
+    .faq-it summary::after{content:'+';font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:300;color:var(--g);transition:transform .2s}
+    .faq-it[open] summary::after{transform:rotate(45deg)}
+    .faq-it p{margin:14px 0 0;font-size:14.5px;line-height:1.7;color:var(--tm)}
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:22px;padding:clamp(36px,5vw,56px);text-align:center;color:#fff}
+    .rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;max-width:1000px;margin:24px auto 0}
+    .rel-card{display:flex;flex-direction:column;gap:8px;background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:20px;text-decoration:none;color:inherit;transition:all .2s}
+    .rel-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
+    .rel-ic{width:38px;height:38px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:18px;flex-shrink:0}
+    .rel-card:hover .rel-ic{background:var(--g);color:var(--y)}
+    .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
+    .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
+    .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur taxe de séjour par ville","description":"Calcule la taxe de séjour à collecter sur tes voyageurs selon la ville (top 30 France), le classement de ton meublé, le nombre d'adultes et la durée. Barèmes 2026 officiels, exemptions, taxe départementale + 10 %.","url":"https://jasonmarinho.com/services/simulateurs/taxe-de-sejour","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Simulateur taxe de séjour par ville","item":"https://jasonmarinho.com/services/simulateurs/taxe-de-sejour"}]}</script>
+  <script type="application/ld+json" data-schema-faq>{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Qui doit payer la taxe de séjour : l'hôte ou le voyageur ?","acceptedAnswer":{"@type":"Answer","text":"Le voyageur paie, l'hôte (ou la plateforme) collecte et reverse à la commune. Tu peux soit inclure la taxe dans ton tarif annoncé, soit la facturer en supplément à la fin du séjour. La plupart des hôtes la font figurer en ligne séparée sur la facture pour la transparence."}},{"@type":"Question","name":"Airbnb collecte-t-il la taxe de séjour automatiquement en France ?","acceptedAnswer":{"@type":"Answer","text":"Oui, dans la quasi-totalité des communes françaises depuis 2019 (accord national). Tu retrouves le montant collecté dans tes relevés Airbnb. Booking, Vrbo et autres OTAs ont des accords variables selon la ville, vérifie systématiquement. Pour tes réservations directes (site, Driing), c'est à toi de collecter."}},{"@type":"Question","name":"Comment connaître le barème exact de ma commune ?","acceptedAnswer":{"@type":"Answer","text":"Trois sources fiables : ton compte personnel sur taxesejour.fr (portail officiel), la délibération du conseil municipal (disponible en mairie ou sur le site de la ville), et le simulateur que je propose qui regroupe les 30 plus grandes villes françaises avec les barèmes 2026."}},{"@type":"Question","name":"Quelles sont les exemptions à la taxe de séjour ?","acceptedAnswer":{"@type":"Answer","text":"Mineurs (< 18 ans) totalement exemptés. Bénéficiaires d'un hébergement d'urgence ou temporaire (loi DALO). Saisonniers titulaires d'un contrat de travail. Séjours dépassant 30 nuits consécutives pour un même voyageur (assimilation résidence). Le simulateur applique automatiquement l'exemption mineurs."}},{"@type":"Question","name":"Que se passe-t-il si je ne collecte pas la taxe de séjour ?","acceptedAnswer":{"@type":"Answer","text":"Tu deviens redevable à la place du voyageur. Amende possible jusqu'à 2 500 €. En cas de contrôle (DGFiP, communes touristiques), la mairie peut te réclamer plusieurs années de taxe non collectée plus intérêts. Aucun intérêt à ne pas collecter, c'est neutre pour ton compte de résultat."}},{"@type":"Question","name":"Comment reverser la taxe de séjour à la mairie ?","acceptedAnswer":{"@type":"Answer","text":"La majorité des communes utilisent taxesejour.fr (portail dédié), où tu déclares chaque trimestre ou semestre le nombre de nuitées et la taxe collectée. Tu reçois ensuite un avis et paies par virement. Si Airbnb collecte automatiquement, la part Airbnb est reversée directement par la plateforme, tu n'as à déclarer que ta part Booking/directe."}}]}</script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><a href="/services/simulateurs">Simulateurs LCD</a><span>›</span><span>Simulateur taxe de séjour par ville</span>
+    </div>
+    <div class="lbl">Outil gratuit · Taxe de séjour</div>
+    <h1 class="h1">Simulateur<br><em>taxe de séjour par ville</em></h1>
+    <p class="sub">La taxe de séjour est une obligation légale, et son calcul varie par ville, par classement et par nuit. Le simulateur applique les barèmes 2026 des 30 plus grandes villes françaises, gère la taxe additionnelle départementale et signale les exemptions (mineurs, séjour &gt; 30 nuits).</p>
+    <div class="meta-row">
+      <div class="meta-bd"><i class="ph ph-map-pin"></i> 30 villes FR</div>
+      <div class="meta-bd"><i class="ph ph-star"></i> Non classé / 1-2★ / 3★ / 4-5★</div>
+      <div class="meta-bd"><i class="ph ph-plus"></i> Taxe départementale + 10 %</div>
+      <div class="meta-bd"><i class="ph ph-users"></i> Exemptions mineurs</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=taxe" class="btn-p">Lancer le simulateur <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">Créer un compte gratuit</a>
+    </div>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Pourquoi cet outil</div>
+        <h2 class="h2">La taxe de séjour est<br><em>collectée par tes soins</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Que tu loues via Airbnb, Booking, Vrbo, ton site direct ou Driing, la taxe de séjour est dûe à la commune par voyageur et par nuit. Elle est collectée soit par toi directement (réservations directes, certaines OTAs comme Vrbo selon les villes), soit par la plateforme et reversée à la commune (Airbnb dans les villes où l&#39;accord existe).</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Le piège : les barèmes varient à la fois par ville et par catégorie de meublé. Un T2 à Paris non classé : 1,55 €/nuit/adulte. Le même classé 4★ : 6,33 €/nuit/adulte. Et la taxe additionnelle départementale (10 %) s&#39;ajoute encore.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Le simulateur applique le bon barème automatiquement et te donne le montant total à collecter pour un séjour donné. Pratique pour facturer correctement, et pour préparer les versements semestriels à la mairie.</p>
+      </div>
+      <div>
+        <div class="lbl dk">Ce que tu obtiens</div>
+        <h2 class="h2">Un résultat <em>clair, instantané, gratuit</em></h2>
+        <ul class="ck-list">
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Barèmes 2026 des 30 plus grandes villes françaises</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Distinction non classé / classé 1-2★ / 3★ / 4-5★</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Taxe additionnelle départementale +10 % automatique</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Exemptions mineurs et séjours longue durée</li>
+        </ul>
+        <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=taxe" class="btn-g" style="margin-top:18px">Lancer le simulateur <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Comment ça se calcule</div>
+    <h2 class="h2">La formule officielle <em>taxe de séjour 2026</em></h2>
+    <div class="item-grid">
+      <div class="item-card"><h3 class="h3">Taxe communale par nuit</h3><p>Tarif fixé par délibération communale, par catégorie de meublé. Plafonnée par la loi (de 0,22 €/nuit pour un terrain de camping à 4,30 €/nuit pour un palace en zone tendue, hors taxe départementale).</p></div>
+      <div class="item-card"><h3 class="h3">Taxe additionnelle départementale</h3><p>Égale à 10 % de la taxe communale, fixée par le conseil départemental. S&#39;ajoute systématiquement dans les départements qui l&#39;ont votée (la majorité).</p></div>
+      <div class="item-card"><h3 class="h3">Taxe additionnelle régionale Île-de-France</h3><p>Spécifique IDF : 15 % supplémentaires sur la taxe communale, depuis la loi Grand Paris. Le simulateur applique automatiquement pour Paris, Boulogne-Billancourt, Versailles, etc.</p></div>
+      <div class="item-card"><h3 class="h3">Exemptions légales</h3><p>Les mineurs (&lt; 18 ans) sont exemptés totalement. Les bénéficiaires d&#39;un hébergement d&#39;urgence ou temporaire (loi DALO) aussi. Les séjours &gt; 30 nuits consécutives pour un même voyageur ne sont pas soumis à la taxe (résidence assimilée).</p></div>
+      <div class="item-card"><h3 class="h3">Cas Airbnb</h3><p>Airbnb collecte et reverse directement à la majorité des communes françaises (accord national). Tu n&#39;as rien à faire côté Airbnb, mais tu restes responsable pour Booking (mixte selon la ville), Vrbo (à toi de collecter), et tes réservations directes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="lbl dk">Cas pratiques</div>
+    <h2 class="h2">3 séjours typiques <em>avec calcul détaillé</em></h2>
+    <div class="case-list">
+      <article class="case"><h3 class="case-t">T1 à Paris non classé, 2 adultes, 4 nuits</h3><ol><li>Tarif Paris non classé : 1,55 €/nuit/adulte</li><li>Taxe additionnelle départementale (Paris) : 10 %</li><li>Taxe additionnelle régionale (IDF) : 15 %</li><li>Taxe par adulte par nuit : 1,55 × 1,25 = 1,94 €</li><li>Taxe totale : 1,94 × 2 adultes × 4 nuits = 15,52 €</li><li>Tu peux la facturer en supplément sur ton tarif final voyageur</li></ol></article>
+      <article class="case"><h3 class="case-t">T2 à Lyon classé 3★, 3 adultes, 5 nuits</h3><ol><li>Tarif Lyon classé 3★ : 1,53 €/nuit/adulte</li><li>Taxe additionnelle départementale (Rhône) : 10 %</li><li>Taxe par adulte par nuit : 1,53 × 1,10 = 1,68 €</li><li>Taxe totale : 1,68 × 3 adultes × 5 nuits = 25,20 €</li><li>Si Airbnb gère la collecte automatique (Lyon est dans l&#39;accord), rien à faire de ton côté</li></ol></article>
+      <article class="case"><h3 class="case-t">Maison à Bordeaux classée 4★, 4 adultes + 1 enfant, 7 nuits</h3><ol><li>Tarif Bordeaux classé 4★ : 2,42 €/nuit/adulte</li><li>Taxe additionnelle départementale (Gironde) : 10 %</li><li>Taxe par adulte par nuit : 2,42 × 1,10 = 2,66 €</li><li>L&#39;enfant (&lt; 18 ans) est exempté</li><li>Taxe totale : 2,66 × 4 adultes × 7 nuits = 74,48 €</li><li>À reverser à la mairie semestriellement ou via la plateforme</li></ol></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Questions fréquentes</div>
+    <h2 class="h2">FAQ <em>simulateur</em></h2>
+    <div class="faq-list">
+      <details class="faq-it"><summary>Qui doit payer la taxe de séjour : l&#39;hôte ou le voyageur ?</summary><p>Le voyageur paie, l&#39;hôte (ou la plateforme) collecte et reverse à la commune. Tu peux soit inclure la taxe dans ton tarif annoncé, soit la facturer en supplément à la fin du séjour. La plupart des hôtes la font figurer en ligne séparée sur la facture pour la transparence.</p></details>
+      <details class="faq-it"><summary>Airbnb collecte-t-il la taxe de séjour automatiquement en France ?</summary><p>Oui, dans la quasi-totalité des communes françaises depuis 2019 (accord national). Tu retrouves le montant collecté dans tes relevés Airbnb. Booking, Vrbo et autres OTAs ont des accords variables selon la ville, vérifie systématiquement. Pour tes réservations directes (site, Driing), c&#39;est à toi de collecter.</p></details>
+      <details class="faq-it"><summary>Comment connaître le barème exact de ma commune ?</summary><p>Trois sources fiables : ton compte personnel sur taxesejour.fr (portail officiel), la délibération du conseil municipal (disponible en mairie ou sur le site de la ville), et le simulateur que je propose qui regroupe les 30 plus grandes villes françaises avec les barèmes 2026.</p></details>
+      <details class="faq-it"><summary>Quelles sont les exemptions à la taxe de séjour ?</summary><p>Mineurs (&lt; 18 ans) totalement exemptés. Bénéficiaires d&#39;un hébergement d&#39;urgence ou temporaire (loi DALO). Saisonniers titulaires d&#39;un contrat de travail. Séjours dépassant 30 nuits consécutives pour un même voyageur (assimilation résidence). Le simulateur applique automatiquement l&#39;exemption mineurs.</p></details>
+      <details class="faq-it"><summary>Que se passe-t-il si je ne collecte pas la taxe de séjour ?</summary><p>Tu deviens redevable à la place du voyageur. Amende possible jusqu&#39;à 2 500 €. En cas de contrôle (DGFiP, communes touristiques), la mairie peut te réclamer plusieurs années de taxe non collectée plus intérêts. Aucun intérêt à ne pas collecter, c&#39;est neutre pour ton compte de résultat.</p></details>
+      <details class="faq-it"><summary>Comment reverser la taxe de séjour à la mairie ?</summary><p>La majorité des communes utilisent taxesejour.fr (portail dédié), où tu déclares chaque trimestre ou semestre le nombre de nuitées et la taxe collectée. Tu reçois ensuite un avis et paies par virement. Si Airbnb collecte automatiquement, la part Airbnb est reversée directement par la plateforme, tu n&#39;as à déclarer que ta part Booking/directe.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="cta-ban">
+      <h2 class="h2 lt" style="margin:0 auto 14px;max-width:600px;text-align:center">Prêt à <em>chiffrer ta décision</em> en 30 secondes ?</h2>
+      <p style="font-size:15px;line-height:1.7;color:rgba(255,255,255,.7);margin:0 auto 28px;max-width:540px;text-align:center">Crée un compte gratuit et accède au simulateur complet, préfilé avec tes vrais logements et tes vrais chiffres.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=taxe" class="btn-ol">Voir le simulateur</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Aller plus loin</div>
+      <h2 class="h2">Les autres <em>simulateurs LCD</em></h2>
+    </div>
+    <div class="rel-grid">
+      <a href="/services/simulateurs" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-calculator"></i></div>
+        <div class="rel-k">Catalogue</div>
+        <div class="rel-t">Les 4 simulateurs</div>
+        <div class="rel-d">Vue d'ensemble des outils fiscaux et de pilotage gratuits pour hôtes LCD.</div>
+      </a>
+      <a href="/services/guides-lcd" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-books"></i></div>
+        <div class="rel-k">Ressources</div>
+        <div class="rel-t">Guides LCD</div>
+        <div class="rel-d">Fiscalité, réglementation, tarification : tous les guides pour comprendre.</div>
+      </a>
+      <a href="/services/formations" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-graduation-cap"></i></div>
+        <div class="rel-k">Formation</div>
+        <div class="rel-t">Formations LCD</div>
+        <div class="rel-d">Va plus loin avec les formations dédiées hôtes débutants et confirmés.</div>
+      </a>
+      <a href="/calculateurs" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-chart-line-up"></i></div>
+        <div class="rel-k">Marché</div>
+        <div class="rel-t">Calculateurs marché</div>
+        <div class="rel-d">Estime tes revenus, trouve le bon prix, compare 83 villes européennes.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script defer src="/footer.js"></script>
+</body>
+</html>

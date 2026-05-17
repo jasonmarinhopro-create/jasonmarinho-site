@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulateur EI vs SASU pour la LCD : net en poche, cotisations, dividendes | Jason Marinho</title>
+  <meta name="description" content="Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 30 %). Inclut protection sociale, retraite, charges déductibles. Pour hôtes LCD jusqu&#39;à 150 k€ de bénéfice.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu">
+  <meta property="og:title" content="Simulateur EI vs SASU pour la LCD : net en poche, cotisations, dividendes">
+  <meta property="og:description" content="Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 30 %). Inclut protection sociale, retraite, charges déductibles. Pour hôtes LCD jusqu&#39;à 150 k€ de bénéfice.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#004C3F">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.10)}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(56px,7vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .h3{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:500;color:var(--td);margin:0 0 10px;letter-spacing:-.01em}
+    .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.65);margin:0 0 32px;max-width:680px}
+    .sub.dk{color:var(--tm)} .sub.mx{max-width:760px}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s,transform .2s,box-shadow .2s}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.78);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-ol:hover{border-color:rgba(255,255,255,.55);color:#fff}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.22);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.10);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,120px) 0 clamp(56px,7vw,90px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 78% 50%,rgba(255,213,107,.06),transparent 70%);pointer-events:none}
+    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 100%,rgba(0,76,63,.5),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px);position:relative;z-index:1}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.38);margin-bottom:32px;flex-wrap:wrap}
+    .hero-brd a{color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff} .hero-brd span{font-size:11px}
+    .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+    .meta-bd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border-radius:7px;padding:6px 12px}
+    .meta-bd i{color:rgba(255,213,107,.55)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    .ck-list{list-style:none;padding:0;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+    .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5;color:var(--tm)}
+    .ck-list li .chk{margin-top:2px}
+    .item-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:28px}
+    .item-card{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:24px;transition:box-shadow .2s,transform .2s}
+    .item-card:hover{box-shadow:0 12px 32px rgba(0,76,63,.08);transform:translateY(-2px)}
+    .item-card p{font-size:14px;line-height:1.65;color:var(--tm);margin:0}
+    .case-list{display:flex;flex-direction:column;gap:22px;margin-top:28px}
+    .case{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:28px}
+    .case-t{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:500;color:var(--g);margin:0 0 14px;letter-spacing:-.01em}
+    .case ol{margin:0;padding:0 0 0 22px;color:var(--tm);font-size:14.5px;line-height:1.7}
+    .case ol li{margin-bottom:5px}
+    .faq-list{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+    .faq-it{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px 26px}
+    .faq-it summary{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:500;color:var(--td);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .faq-it summary::-webkit-details-marker{display:none}
+    .faq-it summary::after{content:'+';font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:300;color:var(--g);transition:transform .2s}
+    .faq-it[open] summary::after{transform:rotate(45deg)}
+    .faq-it p{margin:14px 0 0;font-size:14.5px;line-height:1.7;color:var(--tm)}
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:22px;padding:clamp(36px,5vw,56px);text-align:center;color:#fff}
+    .rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;max-width:1000px;margin:24px auto 0}
+    .rel-card{display:flex;flex-direction:column;gap:8px;background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:20px;text-decoration:none;color:inherit;transition:all .2s}
+    .rel-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
+    .rel-ic{width:38px;height:38px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:18px;flex-shrink:0}
+    .rel-card:hover .rel-ic{background:var(--g);color:var(--y)}
+    .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
+    .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
+    .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur EI vs SASU pour la LCD","description":"Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 30 %). Inclut protection sociale, retraite, charges déductibles. Pour hôtes LCD jusqu'à 150 k€ de bénéfice.","url":"https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"creator":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Simulateur EI vs SASU pour la LCD","item":"https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu"}]}</script>
+  <script type="application/ld+json" data-schema-faq>{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"EI ou SASU pour faire de la location courte durée, lequel est mieux ?","acceptedAnswer":{"@type":"Answer","text":"Ça dépend de ton bénéfice. En dessous de 40 000 €, l'EI au régime réel est presque toujours plus avantageux (simplicité, cotisations qui ouvrent droit à la retraite). Au-dessus de 80 000 € avec un TMI 30 %+, la SASU 100 % dividendes peut faire gagner 10 à 20 % de net. Entre les deux, l'arbitrage dépend de tes besoins en protection sociale."}},{"@type":"Question","name":"La SASU 100 % dividendes, c'est légal pour la LCD ?","acceptedAnswer":{"@type":"Answer","text":"Oui. La SASU permet au président de ne pas se verser de salaire. Tu paies l'IS sur le bénéfice, puis tu distribues des dividendes à toi-même (actionnaire unique) avec la flat tax de 30 %. Aucun salaire = aucune cotisation = aucun droit retraite acquis sur cette activité. C'est légal mais à compenser par un PER ou une autre activité salariée."}},{"@type":"Question","name":"Quels sont les frais fixes de la SASU pour la LCD ?","acceptedAnswer":{"@type":"Answer","text":"CFE (~250 à 1 200 €), compte bancaire pro (~50 €/an), expert-comptable (~1 200 à 2 500 € selon volume), CFE de chambre de commerce sur première année. Total à prévoir : 2 000 à 4 000 €/an de frais fixes incompressibles. Cela explique pourquoi la SASU n'est rentable qu'à partir d'un certain bénéfice."}},{"@type":"Question","name":"Peut-on passer d'EI à SASU sans tout perdre ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Tu crées la SASU, tu apportes ton ancienne activité (apport en nature avec valeur d'expert si besoin), tu radies l'EI. Les biens immobiliers ne peuvent généralement pas être apportés à la SASU (ce serait une SCI), c'est l'activité de gestion et le matériel mobilier qui sont transférés."}},{"@type":"Question","name":"Y a-t-il un seuil de bénéfice où la SASU devient automatiquement plus rentable ?","acceptedAnswer":{"@type":"Answer","text":"Pas de seuil universel, mais un point de bascule moyen vers 60 000 à 80 000 € de bénéfice annuel, à condition d'avoir un TMI à 30 % ou plus et de pouvoir compenser la perte de protection sociale (PER, autre activité salariée, conjoint salarié)."}},{"@type":"Question","name":"Le simulateur prend-il en compte la CSG-CRDS et les prélèvements sociaux ?","acceptedAnswer":{"@type":"Answer","text":"Oui. La flat tax SASU de 30 % inclut 17,2 % de prélèvements sociaux (CSG + CRDS + prélèvement de solidarité). Côté EI, les cotisations TNS incluent maladie, retraite, allocations familiales, CSG-CRDS, et la cotisation à la CIPAV pour les libérales (ou SSI pour les commerciaux)."}}]}</script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><a href="/services/simulateurs">Simulateurs LCD</a><span>›</span><span>Simulateur EI vs SASU pour la LCD</span>
+    </div>
+    <div class="lbl">Outil gratuit · Statut juridique</div>
+    <h1 class="h1">Simulateur<br><em>EI vs SASU pour la LCD</em></h1>
+    <p class="sub">Quel statut juridique te laisse le plus à la fin ? EI au régime réel (cotisations TNS + impôt sur le revenu) versus SASU 100 % dividendes (impôt sur les sociétés + flat tax 30 %). Le simulateur compare le net en poche, la protection sociale, et la retraite.</p>
+    <div class="meta-row">
+      <div class="meta-bd"><i class="ph ph-scales"></i> Comparaison réelle</div>
+      <div class="meta-bd"><i class="ph ph-currency-eur"></i> Bénéfice jusqu&#39;à 150 k€</div>
+      <div class="meta-bd"><i class="ph ph-chart-bar"></i> 3 tranches IR (11/30/41 %)</div>
+      <div class="meta-bd"><i class="ph ph-shield-check"></i> Protection sociale incluse</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=statut" class="btn-p">Lancer le simulateur <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-ol">Créer un compte gratuit</a>
+    </div>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Pourquoi cet outil</div>
+        <h2 class="h2">EI ou SASU,<br><em>la décision la plus structurante</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Le choix du statut juridique détermine ton net en poche, ta protection sociale, ta retraite, et ta capacité à transmettre ton activité. La plupart des hôtes LCD démarrent en entreprise individuelle (EI) au régime micro-BIC, puis hésitent à passer en SASU quand le CA augmente.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">La vérité : il n&#39;y a pas de réponse universelle. Tout dépend de ton bénéfice, de ton TMI, de ton besoin de protection sociale, et de ta stratégie de rémunération (tout en dividendes pour optimiser, ou salaire pour cotiser à la retraite générale).</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 16px">Ce simulateur fait les deux calculs en parallèle et te montre l&#39;écart net réel, sans approximation marketing. Tu vois aussi ce que tu sacrifies en SASU pure dividendes (zéro cotisation = zéro trimestre retraite).</p>
+      </div>
+      <div>
+        <div class="lbl dk">Ce que tu obtiens</div>
+        <h2 class="h2">Un résultat <em>clair, instantané, gratuit</em></h2>
+        <ul class="ck-list">
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Calcul EI au réel : bénéfice − cotisations TNS − IR au TMI</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Calcul SASU 100 % dividendes : bénéfice − IS − flat tax 30 %</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Comparaison net en poche sur le même CA</li>
+          <li><div class="chk"><i class="ph-bold ph-check"></i></div>Alerte protection sociale (zéro cotisation = zéro retraite)</li>
+        </ul>
+        <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=statut" class="btn-g" style="margin-top:18px">Lancer le simulateur <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Comment ça se calcule</div>
+    <h2 class="h2">Les 2 modèles <em>côte à côte</em></h2>
+    <div class="item-grid">
+      <div class="item-card"><h3 class="h3">EI au régime réel</h3><p>Bénéfice − cotisations TNS (~30 à 45 % selon URSSAF, CIPAV ou SSI) − IR au TMI. Tu cotises pour la retraite et la maladie, mais tes charges sociales sont élevées.</p></div>
+      <div class="item-card"><h3 class="h3">SASU 100 % dividendes</h3><p>Bénéfice − impôt sur les sociétés (15 % jusqu&#39;à 42 500 €, 25 % au-delà) − flat tax 30 % (PFU = 12,8 % IR + 17,2 % prélèvements sociaux) sur les dividendes versés. Aucune cotisation sociale (zéro trimestre retraite acquis).</p></div>
+      <div class="item-card"><h3 class="h3">SASU avec salaire (option C)</h3><p>Tu te verses un salaire de président → cotisations assimilé salarié (~80 %) → tu acquiers des droits retraite régime général. Le reste du bénéfice peut sortir en dividendes (flat tax 30 %).</p></div>
+      <div class="item-card"><h3 class="h3">Quand bascule EI → SASU</h3><p>Le point de bascule théorique se situe entre 60 000 € et 80 000 € de bénéfice annuel selon ton TMI et ton besoin de protection sociale. En dessous, l&#39;EI au réel est généralement plus simple et meilleur en net.</p></div>
+      <div class="item-card"><h3 class="h3">CFE, impôt forfaitaire, taxe foncière</h3><p>Le simulateur intègre la CFE (cotisation foncière des entreprises, ~250 à 1 200 € selon ville) et signale les autres frais fixes (compte bancaire pro, comptable, expert-comptable obligatoire en SASU à partir d&#39;un certain seuil).</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="lbl dk">Cas pratiques</div>
+    <h2 class="h2">3 niveaux de bénéfice <em>EI vs SASU comparés</em></h2>
+    <div class="case-list">
+      <article class="case"><h3 class="case-t">Bénéfice 30 000 € — verdict : EI</h3><ol><li>EI au réel : 30 000 € − cotisations TNS ~9 000 € − IR TMI 11 % : 2 310 €</li><li>Net en poche EI : ~18 690 €</li><li>SASU 100 % dividendes : 30 000 € − IS 15 % : 4 500 € − flat tax 30 % sur 25 500 € : 7 650 €</li><li>Net en poche SASU : ~17 850 € (− 840 € vs EI)</li><li>Verdict : EI gagnant, plus simple, protection sociale acquise</li></ol></article>
+      <article class="case"><h3 class="case-t">Bénéfice 70 000 € — verdict : à arbitrer</h3><ol><li>EI au réel : 70 000 € − cotisations TNS ~22 400 € − IR TMI 30 % : 14 280 €</li><li>Net en poche EI : ~33 320 €</li><li>SASU 100 % dividendes : 70 000 € − IS 15 %/25 % : ~14 250 € − flat tax 30 % sur 55 750 € : 16 725 €</li><li>Net en poche SASU : ~39 025 € (+ 5 705 € vs EI)</li><li>Verdict : SASU gagne en net, mais zéro cotisation retraite. Si tu n&#39;as pas d&#39;autre activité salariée, choix risqué</li></ol></article>
+      <article class="case"><h3 class="case-t">Bénéfice 120 000 € — verdict : SASU</h3><ol><li>EI au réel : 120 000 € − cotisations TNS ~42 000 € − IR TMI 41 % : 31 980 €</li><li>Net en poche EI : ~46 020 €</li><li>SASU 100 % dividendes : 120 000 € − IS 15 %/25 % : ~28 750 € − flat tax 30 % sur 91 250 € : 27 375 €</li><li>Net en poche SASU : ~63 875 € (+ 17 855 € vs EI)</li><li>Verdict : SASU largement gagnante, mais prévoir une rémunération minimale ou un PER pour conserver de la retraite</li></ol></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div class="lbl dk">Questions fréquentes</div>
+    <h2 class="h2">FAQ <em>simulateur</em></h2>
+    <div class="faq-list">
+      <details class="faq-it"><summary>EI ou SASU pour faire de la location courte durée, lequel est mieux ?</summary><p>Ça dépend de ton bénéfice. En dessous de 40 000 €, l&#39;EI au régime réel est presque toujours plus avantageux (simplicité, cotisations qui ouvrent droit à la retraite). Au-dessus de 80 000 € avec un TMI 30 %+, la SASU 100 % dividendes peut faire gagner 10 à 20 % de net. Entre les deux, l&#39;arbitrage dépend de tes besoins en protection sociale.</p></details>
+      <details class="faq-it"><summary>La SASU 100 % dividendes, c&#39;est légal pour la LCD ?</summary><p>Oui. La SASU permet au président de ne pas se verser de salaire. Tu paies l&#39;IS sur le bénéfice, puis tu distribues des dividendes à toi-même (actionnaire unique) avec la flat tax de 30 %. Aucun salaire = aucune cotisation = aucun droit retraite acquis sur cette activité. C&#39;est légal mais à compenser par un PER ou une autre activité salariée.</p></details>
+      <details class="faq-it"><summary>Quels sont les frais fixes de la SASU pour la LCD ?</summary><p>CFE (~250 à 1 200 €), compte bancaire pro (~50 €/an), expert-comptable (~1 200 à 2 500 € selon volume), CFE de chambre de commerce sur première année. Total à prévoir : 2 000 à 4 000 €/an de frais fixes incompressibles. Cela explique pourquoi la SASU n&#39;est rentable qu&#39;à partir d&#39;un certain bénéfice.</p></details>
+      <details class="faq-it"><summary>Peut-on passer d&#39;EI à SASU sans tout perdre ?</summary><p>Oui. Tu crées la SASU, tu apportes ton ancienne activité (apport en nature avec valeur d&#39;expert si besoin), tu radies l&#39;EI. Les biens immobiliers ne peuvent généralement pas être apportés à la SASU (ce serait une SCI), c&#39;est l&#39;activité de gestion et le matériel mobilier qui sont transférés.</p></details>
+      <details class="faq-it"><summary>Y a-t-il un seuil de bénéfice où la SASU devient automatiquement plus rentable ?</summary><p>Pas de seuil universel, mais un point de bascule moyen vers 60 000 à 80 000 € de bénéfice annuel, à condition d&#39;avoir un TMI à 30 % ou plus et de pouvoir compenser la perte de protection sociale (PER, autre activité salariée, conjoint salarié).</p></details>
+      <details class="faq-it"><summary>Le simulateur prend-il en compte la CSG-CRDS et les prélèvements sociaux ?</summary><p>Oui. La flat tax SASU de 30 % inclut 17,2 % de prélèvements sociaux (CSG + CRDS + prélèvement de solidarité). Côté EI, les cotisations TNS incluent maladie, retraite, allocations familiales, CSG-CRDS, et la cotisation à la CIPAV pour les libérales (ou SSI pour les commerciaux).</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="cta-ban">
+      <h2 class="h2 lt" style="margin:0 auto 14px;max-width:600px;text-align:center">Prêt à <em>chiffrer ta décision</em> en 30 secondes ?</h2>
+      <p style="font-size:15px;line-height:1.7;color:rgba(255,255,255,.7);margin:0 auto 28px;max-width:540px;text-align:center">Crée un compte gratuit et accède au simulateur complet, préfilé avec tes vrais logements et tes vrais chiffres.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="https://app.jasonmarinho.com/dashboard/simulateurs?tab=statut" class="btn-ol">Voir le simulateur</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Aller plus loin</div>
+      <h2 class="h2">Les autres <em>simulateurs LCD</em></h2>
+    </div>
+    <div class="rel-grid">
+      <a href="/services/simulateurs" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-calculator"></i></div>
+        <div class="rel-k">Catalogue</div>
+        <div class="rel-t">Les 4 simulateurs</div>
+        <div class="rel-d">Vue d'ensemble des outils fiscaux et de pilotage gratuits pour hôtes LCD.</div>
+      </a>
+      <a href="/services/guides-lcd" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-books"></i></div>
+        <div class="rel-k">Ressources</div>
+        <div class="rel-t">Guides LCD</div>
+        <div class="rel-d">Fiscalité, réglementation, tarification : tous les guides pour comprendre.</div>
+      </a>
+      <a href="/services/formations" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-graduation-cap"></i></div>
+        <div class="rel-k">Formation</div>
+        <div class="rel-t">Formations LCD</div>
+        <div class="rel-d">Va plus loin avec les formations dédiées hôtes débutants et confirmés.</div>
+      </a>
+      <a href="/calculateurs" class="rel-card">
+        <div class="rel-ic"><i class="ph ph-chart-line-up"></i></div>
+        <div class="rel-k">Marché</div>
+        <div class="rel-t">Calculateurs marché</div>
+        <div class="rel-d">Estime tes revenus, trouve le bon prix, compare 83 villes européennes.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script defer src="/footer.js"></script>
+</body>
+</html>
