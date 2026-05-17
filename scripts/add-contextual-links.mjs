@@ -192,6 +192,69 @@ const INSERTIONS = [
 
   // amenager-logement-petit-budget → decorer-amenager-logement (formation)
   // ⚠ on évite les self-refs : amenager… pointerait vers lui-même → drop
+
+  // ─── Sprint 3 : maillage vers les calculateurs publics ───────────────
+  // Liens contextuels depuis les articles à forte intention 'prix' ou
+  // 'revenus' vers les calculateurs gratuits correspondants. Phrases
+  // simples (1 mot) qu'on sait être présentes dans les corps d'article.
+
+  // fixer-prix-minimum-airbnb-lcd → calculateur de prix
+  { file: 'blog/fixer-prix-minimum-airbnb-lcd/index.html',
+    phrase: 'rentabilité',
+    newSlug: '/calculateurs/prix-lcd',
+    xrefId: 'calc-prix-min' },
+
+  // tarification-dynamique-lcd → calculateur prix
+  { file: 'blog/tarification-dynamique-lcd/index.html',
+    phrase: 'saison',
+    newSlug: '/calculateurs/prix-lcd',
+    xrefId: 'calc-prix-dyn' },
+
+  // tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif → calc prix
+  { file: 'blog/tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif/index.html',
+    phrase: 'recommandation',
+    newSlug: '/calculateurs/prix-lcd',
+    xrefId: 'calc-prix-comparatif' },
+
+  // erreurs-debutant → estimateur revenus
+  { file: 'blog/erreurs-debutant-location-courte-duree-premier-logement/index.html',
+    phrase: 'revenu',
+    newSlug: '/calculateurs/revenus-lcd',
+    xrefId: 'calc-revenus-erreurs' },
+
+  // reservation-directe-sans-commission → calc prix (déjà fait via 'commission')
+
+  // location-courte-duree-impots-france → estimateur revenus
+  { file: 'blog/location-courte-duree-impots-france/index.html',
+    phrase: 'CA',
+    newSlug: '/calculateurs/revenus-lcd',
+    xrefId: 'calc-revenus-impots' },
+
+  // creer-conciergerie-airbnb-2025 → estimateur revenus (pour ses prospects)
+  { file: 'blog/creer-conciergerie-airbnb-2025/index.html',
+    phrase: 'estimation',
+    newSlug: '/calculateurs/revenus-lcd',
+    xrefId: 'calc-revenus-conc' },
+
+  // optimiser-annonce-airbnb → calc prix
+  { file: 'blog/optimiser-annonce-airbnb/index.html',
+    phrase: 'saison',
+    newSlug: '/calculateurs/prix-lcd',
+    xrefId: 'calc-prix-saison' },
+
+  // basse-saison-strategies → calc prix
+  { file: 'blog/basse-saison-location-courte-duree-strategies-reservations/index.html',
+    phrase: 'tarif',
+    newSlug: '/calculateurs/prix-lcd',
+    xrefId: 'calc-prix-bs' },
+
+  // location-directe-pourquoi-saffranchir-plateformes → calc prix direct (déjà fait via 'prix')
+
+  // photographier-logement-smartphone → estimateur revenus (vérifier ROI avant invest photos)
+  { file: 'blog/photographier-logement-location-courte-duree-smartphone/index.html',
+    phrase: 'revenus',
+    newSlug: '/calculateurs/revenus-lcd',
+    xrefId: 'calc-revenus-photo' },
 ];
 
 function escapeRe(s) {
@@ -233,11 +296,13 @@ for (const ins of INSERTIONS) {
     continue;
   }
 
-  const href = `/blog/${ins.newSlug}`;
+  // Si newSlug commence par '/' c'est déjà une URL absolue (vers /calculateurs/...
+  // ou /services/...), sinon on préfixe /blog/ pour le comportement historique.
+  const href = ins.newSlug.startsWith('/') ? ins.newSlug : `/blog/${ins.newSlug}`;
   const wrapped = `<a href="${href}" data-xref="${ins.xrefId}" style="color:var(--g);text-decoration:underline;text-decoration-color:rgba(0,76,63,.25);text-underline-offset:2px">${match[2]}</a>`;
   const newHtml = html.slice(0, match.index) + before + wrapped + match[3] + html.slice(match.index + match[0].length);
   fs.writeFileSync(p, newHtml);
-  console.log(`  ✓ ${ins.file} : "${ins.phrase}" → /blog/${ins.newSlug}`);
+  console.log(`  ✓ ${ins.file} : "${ins.phrase}" → ${href}`);
   totalInserted++;
 }
 

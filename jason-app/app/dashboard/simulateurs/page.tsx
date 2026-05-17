@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 export type LogementPrefill = {
   id: string
   nom: string
-  pays: 'FR' | 'PT'
+  pays: 'FR' | 'PT' | 'ES' | 'IT' | 'BE'
   ville: string | null
   tarifNuitee: number | null
   typeLogement: string | null
@@ -28,15 +28,20 @@ export default async function SimulateursPage() {
     .eq('user_id', profile.userId)
     .order('created_at', { ascending: false })
 
-  const prefill: LogementPrefill[] = (logements ?? []).map(l => ({
-    id: l.id as string,
-    nom: (l.nom as string) ?? '',
-    pays: ((l.pays as string) ?? 'FR') === 'PT' ? 'PT' : 'FR',
-    ville: extractCity(l.adresse as string | null),
-    tarifNuitee: (l.tarif_nuitee_moyen as number | null) ?? null,
-    typeLogement: (l.type_logement as string | null) ?? null,
-    nbChambres: (l.nb_chambres as number | null) ?? null,
-  }))
+  const prefill: LogementPrefill[] = (logements ?? []).map(l => {
+    const rawPays = ((l.pays as string) ?? 'FR').toUpperCase()
+    const pays: LogementPrefill['pays'] =
+      rawPays === 'PT' || rawPays === 'ES' || rawPays === 'IT' || rawPays === 'BE' ? rawPays : 'FR'
+    return {
+      id: l.id as string,
+      nom: (l.nom as string) ?? '',
+      pays,
+      ville: extractCity(l.adresse as string | null),
+      tarifNuitee: (l.tarif_nuitee_moyen as number | null) ?? null,
+      typeLogement: (l.type_logement as string | null) ?? null,
+      nbChambres: (l.nb_chambres as number | null) ?? null,
+    }
+  })
 
   return <SimulateursUI logementsPrefill={prefill} />
 }

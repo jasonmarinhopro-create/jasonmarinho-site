@@ -2,7 +2,9 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { Calculator, Scales, CurrencyEur, Info, House, MapPin, ChartLineUp, TrendUp, Storefront } from '@phosphor-icons/react/dist/ssr'
-import { citiesByCountry, estimateRevenue, calculatePrice } from '@/lib/lcd/market-benchmarks'
+import { citiesByCountry, estimateRevenue, calculatePrice, SUPPORTED_COUNTRIES, type MarketBenchmark } from '@/lib/lcd/market-benchmarks'
+
+type Pays = MarketBenchmark['pays']
 import type { LogementPrefill } from './page'
 
 type CalcTab = 'fiscal' | 'statut' | 'rentabilite' | 'taxe' | 'revenus' | 'prix'
@@ -859,7 +861,7 @@ function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
   const [logementId, setLogementId] = useState<string>(logements[0]?.id ?? '__manual__')
   const selected = logements.find(l => l.id === logementId)
 
-  const [pays, setPays] = useState<'FR' | 'PT'>(selected?.pays ?? 'FR')
+  const [pays, setPays] = useState<Pays>((selected?.pays as Pays) ?? 'FR')
   const [ville, setVille] = useState<string>(selected?.ville ?? '')
   const [typeLogement, setTypeLogement] = useState<string>(normalizeType(selected?.typeLogement))
   const [nbChambres, setNbChambres] = useState<number>(selected?.nbChambres ?? 2)
@@ -869,7 +871,7 @@ function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
   // Si l'utilisateur change de logement → on resync les champs
   useEffect(() => {
     if (!selected) return
-    setPays(selected.pays)
+    setPays(selected.pays as Pays)
     setVille(selected.ville ?? '')
     setTypeLogement(normalizeType(selected.typeLogement))
     setNbChambres(selected.nbChambres ?? 2)
@@ -911,9 +913,10 @@ function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
 
           <div style={s.field}>
             <label style={s.label}>Pays</label>
-            <select value={pays} onChange={e => setPays(e.target.value as 'FR' | 'PT')} style={s.input}>
-              <option value="FR">🇫🇷 France</option>
-              <option value="PT">🇵🇹 Portugal</option>
+            <select value={pays} onChange={e => setPays(e.target.value as Pays)} style={s.input}>
+              {SUPPORTED_COUNTRIES.map(c => (
+                <option key={c.code} value={c.code}>{c.flag} {c.label}</option>
+              ))}
             </select>
           </div>
 
@@ -1020,7 +1023,7 @@ function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
   const [logementId, setLogementId] = useState<string>(logements[0]?.id ?? '__manual__')
   const selected = logements.find(l => l.id === logementId)
 
-  const [pays, setPays] = useState<'FR' | 'PT'>(selected?.pays ?? 'FR')
+  const [pays, setPays] = useState<Pays>((selected?.pays as Pays) ?? 'FR')
   const [ville, setVille] = useState<string>(selected?.ville ?? '')
   const [typeLogement, setTypeLogement] = useState<string>(normalizeType(selected?.typeLogement))
   const [nbChambres, setNbChambres] = useState<number>(selected?.nbChambres ?? 2)
@@ -1030,7 +1033,7 @@ function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
 
   useEffect(() => {
     if (!selected) return
-    setPays(selected.pays)
+    setPays(selected.pays as Pays)
     setVille(selected.ville ?? '')
     setTypeLogement(normalizeType(selected.typeLogement))
     setNbChambres(selected.nbChambres ?? 2)
@@ -1068,9 +1071,10 @@ function CalculateurPrix({ logements }: { logements: LogementPrefill[] }) {
 
           <div style={s.field}>
             <label style={s.label}>Pays</label>
-            <select value={pays} onChange={e => setPays(e.target.value as 'FR' | 'PT')} style={s.input}>
-              <option value="FR">🇫🇷 France</option>
-              <option value="PT">🇵🇹 Portugal</option>
+            <select value={pays} onChange={e => setPays(e.target.value as Pays)} style={s.input}>
+              {SUPPORTED_COUNTRIES.map(c => (
+                <option key={c.code} value={c.code}>{c.flag} {c.label}</option>
+              ))}
             </select>
           </div>
 

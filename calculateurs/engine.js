@@ -48,11 +48,50 @@
     { ville: 'Aveiro',          pays: 'PT', occ: 58, adr: 75,  revpar: 15900, saisonHaute: [5,6,7,8,9],         source: 'Turismo Centro 2024' },
     { ville: 'Albufeira',       pays: 'PT', occ: 68, adr: 105, revpar: 26100, saisonHaute: [5,6,7,8,9],         source: 'Turismo Algarve 2024' },
     { ville: 'Lagos',           pays: 'PT', occ: 65, adr: 100, revpar: 23700, saisonHaute: [5,6,7,8,9],         source: 'Turismo Algarve 2024' },
+    // Espagne
+    { ville: 'Madrid',          pays: 'ES', occ: 68, adr: 110, revpar: 27300, saisonHaute: [3,4,5,9,10,11],     source: 'INE EOAT + Turismo Madrid 2024' },
+    { ville: 'Barcelona',       pays: 'ES', occ: 72, adr: 120, revpar: 31500, saisonHaute: [4,5,6,7,8,9,10],    source: 'INE + Turisme Barcelona 2024' },
+    { ville: 'Sevilla',         pays: 'ES', occ: 62, adr: 85,  revpar: 19200, saisonHaute: [3,4,5,10,11,12],    source: 'Turismo Andalucía 2024' },
+    { ville: 'Valencia',        pays: 'ES', occ: 60, adr: 80,  revpar: 17500, saisonHaute: [3,4,5,6,7,8,9],     source: 'GVA Turisme Comunitat Valenciana 2024' },
+    { ville: 'Málaga',          pays: 'ES', occ: 65, adr: 95,  revpar: 22500, saisonHaute: [4,5,6,7,8,9,10],    source: 'Turismo Costa del Sol 2024' },
+    { ville: 'Bilbao',          pays: 'ES', occ: 58, adr: 85,  revpar: 18000, saisonHaute: [5,6,7,8,9],          source: 'Turismo Bizkaia 2024' },
+    { ville: 'Granada',         pays: 'ES', occ: 58, adr: 75,  revpar: 15900, saisonHaute: [3,4,5,10,11],        source: 'Turismo Andalucía 2024' },
+    { ville: 'Palma',           pays: 'ES', occ: 70, adr: 130, revpar: 33200, saisonHaute: [4,5,6,7,8,9,10],    source: 'AETIB Turismo Illes Balears 2024' },
+    { ville: 'Ibiza',           pays: 'ES', occ: 62, adr: 210, revpar: 47500, saisonHaute: [5,6,7,8,9],          source: 'AETIB Turismo Illes Balears 2024' },
+    { ville: 'San Sebastián',   pays: 'ES', occ: 64, adr: 125, revpar: 29200, saisonHaute: [6,7,8,9],             source: 'Turismo Euskadi 2024' },
+    // Italie
+    { ville: 'Roma',            pays: 'IT', occ: 70, adr: 120, revpar: 30600, saisonHaute: [3,4,5,6,9,10,11],    source: 'ENIT + Roma Capitale Tourism 2024' },
+    { ville: 'Milano',          pays: 'IT', occ: 68, adr: 135, revpar: 33500, saisonHaute: [3,4,5,6,9,10,11],    source: 'ENIT + Comune Milano 2024' },
+    { ville: 'Firenze',         pays: 'IT', occ: 72, adr: 140, revpar: 36800, saisonHaute: [4,5,6,9,10],          source: 'Toscana Promozione Turistica 2024' },
+    { ville: 'Venezia',         pays: 'IT', occ: 75, adr: 170, revpar: 46500, saisonHaute: [3,4,5,6,7,9,10],      source: 'Regione Veneto Turismo + APT Venezia 2024' },
+    { ville: 'Napoli',          pays: 'IT', occ: 62, adr: 80,  revpar: 18100, saisonHaute: [4,5,6,9,10],          source: 'Regione Campania Turismo 2024' },
+    { ville: 'Torino',          pays: 'IT', occ: 58, adr: 85,  revpar: 18000, saisonHaute: [4,5,9,10,11,12,1],    source: 'Turismo Torino 2024' },
+    { ville: 'Bologna',         pays: 'IT', occ: 64, adr: 95,  revpar: 22200, saisonHaute: [3,4,5,9,10,11],       source: 'APT Servizi Emilia-Romagna 2024' },
+    { ville: 'Verona',          pays: 'IT', occ: 62, adr: 100, revpar: 22600, saisonHaute: [4,5,6,7,9,10],        source: 'Verona Garda OGD 2024' },
+    { ville: 'Cagliari',        pays: 'IT', occ: 60, adr: 90,  revpar: 19700, saisonHaute: [5,6,7,8,9],           source: 'ENIT Sardegna 2024' },
+    { ville: 'Palermo',         pays: 'IT', occ: 58, adr: 75,  revpar: 15900, saisonHaute: [4,5,6,9,10],          source: 'Regione Siciliana Turismo 2024' },
+    // Belgique
+    { ville: 'Bruxelles',       pays: 'BE', occ: 62, adr: 95,  revpar: 21500, saisonHaute: [4,5,6,7,9,10,12],     source: 'Visit Brussels + Statbel 2024' },
+    { ville: 'Brugge',          pays: 'BE', occ: 70, adr: 130, revpar: 33200, saisonHaute: [4,5,6,7,8,9,12],      source: 'Westtoer + Statbel 2024' },
+    { ville: 'Gent',            pays: 'BE', occ: 65, adr: 95,  revpar: 22500, saisonHaute: [4,5,6,7,8,9],          source: 'Visit Gent + Toerisme Vlaanderen 2024' },
+    { ville: 'Antwerpen',       pays: 'BE', occ: 60, adr: 95,  revpar: 20800, saisonHaute: [4,5,6,7,8,9,12],      source: 'Toerisme Vlaanderen 2024' },
+    { ville: 'Liège',           pays: 'BE', occ: 55, adr: 70,  revpar: 14100, saisonHaute: [5,6,7,8,12],           source: 'Visit Wallonia 2024' },
   ]
 
   var COUNTRY_AVG = {
     FR: { occ: 52, adr: 85, source: 'DGE Mémento Tourisme 2024 + INSEE' },
     PT: { occ: 60, adr: 80, source: 'INE + Turismo de Portugal 2024' },
+    ES: { occ: 60, adr: 90, source: 'INE Encuesta de Ocupación Apartamentos Turísticos 2024' },
+    IT: { occ: 58, adr: 95, source: 'ISTAT + ENIT 2024' },
+    BE: { occ: 55, adr: 85, source: 'Statbel + offices régionaux 2024' },
+  }
+
+  var COUNTRY_LABELS = {
+    FR: { flag: '🇫🇷', label: 'France' },
+    PT: { flag: '🇵🇹', label: 'Portugal' },
+    ES: { flag: '🇪🇸', label: 'Espagne' },
+    IT: { flag: '🇮🇹', label: 'Italie' },
+    BE: { flag: '🇧🇪', label: 'Belgique' },
   }
 
   // ─── Multipliers pour ajustement par caractéristiques bien ────────────────
@@ -230,6 +269,7 @@
   root.JMCalc = {
     CITIES: CITY_BENCHMARKS,
     COUNTRY_AVG: COUNTRY_AVG,
+    COUNTRY_LABELS: COUNTRY_LABELS,
     findCity: findCity,
     citiesByCountry: citiesByCountry,
     estimateRevenue: estimateRevenue,

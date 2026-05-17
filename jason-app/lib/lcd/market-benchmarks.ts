@@ -15,7 +15,7 @@
 
 export type MarketBenchmark = {
   ville: string
-  pays: 'FR' | 'PT'
+  pays: 'FR' | 'PT' | 'ES' | 'IT' | 'BE'
   occupationAnnuellePct: number       // 0..100
   adrEur: number                       // prix médian par nuit louée (LCD)
   revparAnnuelEur: number              // = occupation × ADR × 365 (approx)
@@ -72,12 +72,46 @@ const CITY_BENCHMARKS: MarketBenchmark[] = [
   { ville: 'Aveiro',             pays: 'PT', occupationAnnuellePct: 58, adrEur: 75,  revparAnnuelEur: 15900, saisonHaute: [5,6,7,8,9],      source: 'Turismo Centro 2024',                   tier: 'precise' },
   { ville: 'Albufeira',          pays: 'PT', occupationAnnuellePct: 68, adrEur: 105, revparAnnuelEur: 26100, saisonHaute: [5,6,7,8,9],      source: 'Turismo Algarve 2024',                  tier: 'precise' },
   { ville: 'Lagos',              pays: 'PT', occupationAnnuellePct: 65, adrEur: 100, revparAnnuelEur: 23700, saisonHaute: [5,6,7,8,9],      source: 'Turismo Algarve 2024',                  tier: 'precise' },
+
+  // ─── Espagne : top destinations apartamentos turísticos ─────────────────
+  { ville: 'Madrid',             pays: 'ES', occupationAnnuellePct: 68, adrEur: 110, revparAnnuelEur: 27300, saisonHaute: [3,4,5,9,10,11],     source: 'INE EOAT + Turismo Madrid 2024',          tier: 'precise' },
+  { ville: 'Barcelona',          pays: 'ES', occupationAnnuellePct: 72, adrEur: 120, revparAnnuelEur: 31500, saisonHaute: [4,5,6,7,8,9,10],   source: 'INE + Turisme Barcelona 2024',           tier: 'precise' },
+  { ville: 'Sevilla',            pays: 'ES', occupationAnnuellePct: 62, adrEur: 85,  revparAnnuelEur: 19200, saisonHaute: [3,4,5,10,11,12],   source: 'Turismo Andalucía 2024',                 tier: 'precise' },
+  { ville: 'Valencia',           pays: 'ES', occupationAnnuellePct: 60, adrEur: 80,  revparAnnuelEur: 17500, saisonHaute: [3,4,5,6,7,8,9],    source: 'GVA Turisme Comunitat Valenciana 2024',  tier: 'precise' },
+  { ville: 'Málaga',             pays: 'ES', occupationAnnuellePct: 65, adrEur: 95,  revparAnnuelEur: 22500, saisonHaute: [4,5,6,7,8,9,10],   source: 'Turismo Costa del Sol 2024',             tier: 'precise' },
+  { ville: 'Bilbao',             pays: 'ES', occupationAnnuellePct: 58, adrEur: 85,  revparAnnuelEur: 18000, saisonHaute: [5,6,7,8,9],         source: 'Turismo Bizkaia 2024',                   tier: 'precise' },
+  { ville: 'Granada',            pays: 'ES', occupationAnnuellePct: 58, adrEur: 75,  revparAnnuelEur: 15900, saisonHaute: [3,4,5,10,11],       source: 'Turismo Andalucía 2024',                 tier: 'precise' },
+  { ville: 'Palma',              pays: 'ES', occupationAnnuellePct: 70, adrEur: 130, revparAnnuelEur: 33200, saisonHaute: [4,5,6,7,8,9,10],   source: 'AETIB Turismo Illes Balears 2024',       tier: 'precise' },
+  { ville: 'Ibiza',              pays: 'ES', occupationAnnuellePct: 62, adrEur: 210, revparAnnuelEur: 47500, saisonHaute: [5,6,7,8,9],         source: 'AETIB Turismo Illes Balears 2024',       tier: 'precise' },
+  { ville: 'San Sebastián',      pays: 'ES', occupationAnnuellePct: 64, adrEur: 125, revparAnnuelEur: 29200, saisonHaute: [6,7,8,9],            source: 'Turismo Euskadi 2024',                   tier: 'precise' },
+
+  // ─── Italie : top destinations CAV (Case e Appartamenti Vacanze) ────────
+  { ville: 'Roma',               pays: 'IT', occupationAnnuellePct: 70, adrEur: 120, revparAnnuelEur: 30600, saisonHaute: [3,4,5,6,9,10,11],   source: 'ENIT + Roma Capitale Tourism 2024',      tier: 'precise' },
+  { ville: 'Milano',             pays: 'IT', occupationAnnuellePct: 68, adrEur: 135, revparAnnuelEur: 33500, saisonHaute: [3,4,5,6,9,10,11],   source: 'ENIT + Comune Milano 2024',              tier: 'precise' },
+  { ville: 'Firenze',            pays: 'IT', occupationAnnuellePct: 72, adrEur: 140, revparAnnuelEur: 36800, saisonHaute: [4,5,6,9,10],         source: 'Toscana Promozione Turistica 2024',      tier: 'precise' },
+  { ville: 'Venezia',            pays: 'IT', occupationAnnuellePct: 75, adrEur: 170, revparAnnuelEur: 46500, saisonHaute: [3,4,5,6,7,9,10],     source: 'Regione Veneto Turismo + APT Venezia 2024', tier: 'precise' },
+  { ville: 'Napoli',             pays: 'IT', occupationAnnuellePct: 62, adrEur: 80,  revparAnnuelEur: 18100, saisonHaute: [4,5,6,9,10],         source: 'Regione Campania Turismo 2024',          tier: 'precise' },
+  { ville: 'Torino',             pays: 'IT', occupationAnnuellePct: 58, adrEur: 85,  revparAnnuelEur: 18000, saisonHaute: [4,5,9,10,11,12,1],   source: 'Turismo Torino 2024',                    tier: 'precise' },
+  { ville: 'Bologna',            pays: 'IT', occupationAnnuellePct: 64, adrEur: 95,  revparAnnuelEur: 22200, saisonHaute: [3,4,5,9,10,11],      source: "APT Servizi Emilia-Romagna 2024",        tier: 'precise' },
+  { ville: 'Verona',             pays: 'IT', occupationAnnuellePct: 62, adrEur: 100, revparAnnuelEur: 22600, saisonHaute: [4,5,6,7,9,10],       source: 'Verona Garda OGD 2024',                  tier: 'precise' },
+  { ville: 'Cagliari',           pays: 'IT', occupationAnnuellePct: 60, adrEur: 90,  revparAnnuelEur: 19700, saisonHaute: [5,6,7,8,9],          source: 'ENIT Sardegna 2024',                     tier: 'precise' },
+  { ville: 'Palermo',            pays: 'IT', occupationAnnuellePct: 58, adrEur: 75,  revparAnnuelEur: 15900, saisonHaute: [4,5,6,9,10],         source: 'Regione Siciliana Turismo 2024',         tier: 'precise' },
+
+  // ─── Belgique : top destinations meublés de tourisme ────────────────────
+  { ville: 'Bruxelles',          pays: 'BE', occupationAnnuellePct: 62, adrEur: 95,  revparAnnuelEur: 21500, saisonHaute: [4,5,6,7,9,10,12],    source: 'Visit Brussels + Statbel 2024',          tier: 'precise' },
+  { ville: 'Brugge',             pays: 'BE', occupationAnnuellePct: 70, adrEur: 130, revparAnnuelEur: 33200, saisonHaute: [4,5,6,7,8,9,12],     source: 'Westtoer + Statbel 2024',                tier: 'precise' },
+  { ville: 'Gent',               pays: 'BE', occupationAnnuellePct: 65, adrEur: 95,  revparAnnuelEur: 22500, saisonHaute: [4,5,6,7,8,9],         source: 'Visit Gent + Toerisme Vlaanderen 2024',  tier: 'precise' },
+  { ville: 'Antwerpen',          pays: 'BE', occupationAnnuellePct: 60, adrEur: 95,  revparAnnuelEur: 20800, saisonHaute: [4,5,6,7,8,9,12],     source: 'Toerisme Vlaanderen 2024',               tier: 'precise' },
+  { ville: 'Liège',              pays: 'BE', occupationAnnuellePct: 55, adrEur: 70,  revparAnnuelEur: 14100, saisonHaute: [5,6,7,8,12],          source: 'Visit Wallonia 2024',                    tier: 'precise' },
 ]
 
 // Moyennes nationales — fallback quand la ville n'est pas dans la liste.
 const COUNTRY_BENCHMARKS: MarketBenchmark[] = [
-  { ville: 'France (moyenne nationale)',   pays: 'FR', occupationAnnuellePct: 52, adrEur: 85,  revparAnnuelEur: 16100, saisonHaute: [6,7,8,9], source: 'DGE Mémento Tourisme 2024 + INSEE', tier: 'national' },
-  { ville: 'Portugal (média nacional)',    pays: 'PT', occupationAnnuellePct: 60, adrEur: 80,  revparAnnuelEur: 17500, saisonHaute: [5,6,7,8,9,10], source: 'INE + Turismo de Portugal 2024', tier: 'national' },
+  { ville: 'France (moyenne nationale)',   pays: 'FR', occupationAnnuellePct: 52, adrEur: 85,  revparAnnuelEur: 16100, saisonHaute: [6,7,8,9],          source: 'DGE Mémento Tourisme 2024 + INSEE',                      tier: 'national' },
+  { ville: 'Portugal (média nacional)',    pays: 'PT', occupationAnnuellePct: 60, adrEur: 80,  revparAnnuelEur: 17500, saisonHaute: [5,6,7,8,9,10],     source: 'INE + Turismo de Portugal 2024',                         tier: 'national' },
+  { ville: 'España (media nacional)',      pays: 'ES', occupationAnnuellePct: 60, adrEur: 90,  revparAnnuelEur: 19700, saisonHaute: [5,6,7,8,9],         source: 'INE Encuesta de Ocupación Apartamentos Turísticos 2024', tier: 'national' },
+  { ville: 'Italia (media nazionale)',     pays: 'IT', occupationAnnuellePct: 58, adrEur: 95,  revparAnnuelEur: 20100, saisonHaute: [4,5,6,7,8,9,10],   source: 'ISTAT + ENIT 2024',                                      tier: 'national' },
+  { ville: 'Belgique (moyenne nationale)', pays: 'BE', occupationAnnuellePct: 55, adrEur: 85,  revparAnnuelEur: 17100, saisonHaute: [5,6,7,8,9],         source: 'Statbel + offices régionaux 2024',                       tier: 'national' },
 ]
 
 function norm(s: string | null | undefined): string {
@@ -110,7 +144,7 @@ export function extractCity(adresse: string | null | undefined): string | null {
   if (parts.length === 0) return null
   // Si le dernier est un pays, on prend l'avant-dernier
   const last = parts[parts.length - 1]
-  const isCountry = /^(france|portugal|espagne|spain|italy|belgium|switzerland)$/i.test(last)
+  const isCountry = /^(france|portugal|espa[ñn]a|spain|italia|italy|belgi[qe][uo]e|belgium|switzerland|suisse)$/i.test(last)
   const candidate = isCountry && parts.length >= 2 ? parts[parts.length - 2] : last
   // On vire les chiffres en début (code postal nu)
   return candidate.replace(/^\d+\s*/, '').trim() || null
@@ -121,7 +155,7 @@ export function extractCity(adresse: string | null | undefined): string | null {
  * Match exact normalisé → match partiel → moyenne pays.
  */
 export function findMarketBenchmark(ville: string | null | undefined, pays: string = 'FR'): MarketBenchmark | null {
-  const countryCode = (pays || 'FR').toUpperCase() as 'FR' | 'PT'
+  const countryCode = (pays || 'FR').toUpperCase() as MarketBenchmark['pays']
   if (!ville) {
     return COUNTRY_BENCHMARKS.find(b => b.pays === countryCode) ?? null
   }
@@ -147,9 +181,18 @@ export function allCityBenchmarks(): MarketBenchmark[] {
   return CITY_BENCHMARKS
 }
 
-export function citiesByCountry(pays: 'FR' | 'PT'): MarketBenchmark[] {
+export function citiesByCountry(pays: MarketBenchmark['pays']): MarketBenchmark[] {
   return CITY_BENCHMARKS.filter(b => b.pays === pays).sort((a, b) => a.ville.localeCompare(b.ville, 'fr'))
 }
+
+// Tous les pays couverts (utile pour les selects UI)
+export const SUPPORTED_COUNTRIES: Array<{ code: MarketBenchmark['pays']; flag: string; label: string }> = [
+  { code: 'FR', flag: '🇫🇷', label: 'France' },
+  { code: 'PT', flag: '🇵🇹', label: 'Portugal' },
+  { code: 'ES', flag: '🇪🇸', label: 'Espagne' },
+  { code: 'IT', flag: '🇮🇹', label: 'Italie' },
+  { code: 'BE', flag: '🇧🇪', label: 'Belgique' },
+]
 
 // ─── Multipliers (synchronisés avec /calculateurs/engine.js public) ─────────
 const TYPE_MULT: Record<string, number> = { studio: 0.75, t1: 0.85, t2: 1.00, t3: 1.15, maison: 1.30 }
@@ -164,7 +207,7 @@ const CHANNEL_ADJ: Record<string, number> = {
 
 // ─── Estimation revenus annuels d'une LCD selon la ville + le bien ──────────
 export type EstimateRevenueInput = {
-  pays: 'FR' | 'PT'
+  pays: MarketBenchmark['pays']
   ville?: string | null
   typeLogement: string                  // 'studio' | 't1' | 't2' | 't3' | 'maison'
   nbChambres: number                    // 0-4+
@@ -240,7 +283,7 @@ export function estimateRevenue(input: EstimateRevenueInput): EstimateRevenueRes
 
 // ─── Calculateur prix par nuit selon ville + mois + canal ───────────────────
 export type CalculatePriceInput = {
-  pays: 'FR' | 'PT'
+  pays: MarketBenchmark['pays']
   ville?: string | null
   typeLogement: string
   nbChambres: number
