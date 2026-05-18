@@ -447,7 +447,20 @@ export default function AdminUI({
         {/* Driing */}
         {tab === 'driing' && (
           <Section title="Demandes Membre Driing" empty={pendingDriing.length === 0} emptyMsg="Aucune demande en attente.">
-            {pendingDriing.map(u => (
+            <Link
+              href="/dashboard/admin/driing"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '10px 14px', marginBottom: '12px',
+                background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+                borderRadius: '10px', color: 'var(--accent-text)',
+                textDecoration: 'none', fontSize: '12.5px', fontWeight: 600,
+              }}
+            >
+              Ouvrir la console Membres Driing
+              <span style={{ fontSize: '11px', opacity: 0.7 }}>stats, filtres, validation rapide →</span>
+            </Link>
+            {pendingDriing.slice(0, 5).map(u => (
               <div key={u.id} className="admin-item">
                 <div className="admin-item-head">
                   <div style={s.itemAvatar}>{(u.full_name || u.email).slice(0, 1).toUpperCase()}</div>
@@ -471,6 +484,11 @@ export default function AdminUI({
                 </div>
               </div>
             ))}
+            {pendingDriing.length > 5 && (
+              <div style={{ textAlign: 'center', fontSize: '11.5px', color: 'var(--text-muted)', padding: '8px' }}>
+                + {pendingDriing.length - 5} autres demandes sur la console dédiée
+              </div>
+            )}
           </Section>
         )}
 
@@ -519,7 +537,20 @@ export default function AdminUI({
         {/* Suggestions */}
         {tab === 'suggestions' && (
           <Section title="Suggestions utilisateurs" empty={suggestions.length === 0} emptyMsg="Aucune suggestion.">
-            {suggestions.map(sg => (
+            <Link
+              href="/dashboard/admin/suggestions"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '10px 14px', marginBottom: '12px',
+                background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+                borderRadius: '10px', color: 'var(--accent-text)',
+                textDecoration: 'none', fontSize: '12.5px', fontWeight: 600,
+              }}
+            >
+              Ouvrir la console Suggestions
+              <span style={{ fontSize: '11px', opacity: 0.7 }}>filtres formations / partenaires →</span>
+            </Link>
+            {suggestions.slice(0, 5).map(sg => (
               <div key={sg.id} className="admin-item">
                 <div className="admin-item-head">
                   <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD', border: '1px solid rgba(147,197,253,.2)' }) }}>
@@ -536,6 +567,11 @@ export default function AdminUI({
                 </div>
               </div>
             ))}
+            {suggestions.length > 5 && (
+              <div style={{ textAlign: 'center', fontSize: '11.5px', color: 'var(--text-muted)', padding: '8px' }}>
+                + {suggestions.length - 5} autres suggestions sur la console dédiée
+              </div>
+            )}
           </Section>
         )}
       </div>

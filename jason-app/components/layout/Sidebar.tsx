@@ -61,8 +61,11 @@ const navGroups = [
 ]
 
 const adminMain = [
-  { href: '/dashboard/admin',         label: 'Vue d\'ensemble', Icon: Gear },
-  { href: '/dashboard/admin/membres', label: 'Membres',         Icon: UsersThree },
+  { href: '/dashboard/admin',              label: 'Vue d\'ensemble', Icon: Gear },
+  { href: '/dashboard/admin/membres',      label: 'Membres',         Icon: UsersThree },
+  { href: '/dashboard/admin/driing',       label: 'Membres Driing',  Icon: Heart },
+  { href: '/dashboard/admin/signalements', label: 'Signalements',    Icon: ShieldCheck },
+  { href: '/dashboard/admin/suggestions',  label: 'Suggestions',     Icon: ChatsCircle },
 ]
 
 const adminContent = [
