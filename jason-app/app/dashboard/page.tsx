@@ -400,12 +400,11 @@ export default async function DashboardPage() {
         {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
         <SetupChecklist userId={userId} steps={setupSteps} />
 
-        {/* ── Alertes urgentes du rules-engine : ne s'affiche QUE s'il y
-            en a (warning/error non lues). Suspense avec fallback null
-            pour ne pas bloquer le rendu du reste. ────────────────────── */}
-        <Suspense fallback={null}>
+        {/* ── Alertes urgentes : DÉSACTIVÉ temporairement le temps de
+            confirmer la cause du crash Server Components prod ────────── */}
+        {/* <Suspense fallback={null}>
           <UrgentAlertsBanner />
-        </Suspense>
+        </Suspense> */}
 
         {/* ── Conseil du moment : 1 règle contextuelle prioritaire ────── */}
         <ConseilDuMoment conseil={conseil} />
