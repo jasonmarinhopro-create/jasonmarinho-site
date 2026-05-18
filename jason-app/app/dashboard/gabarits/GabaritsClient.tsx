@@ -10,6 +10,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
 import type { LogementOption, NextContractInfo } from './page'
+import { infosPratiquesToFillMap } from '@/lib/logements/infos-pratiques'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
 
 // ── Mapping catégorie → moment d'envoi ─────────────────────────────────────
@@ -200,6 +201,47 @@ function buildAutoFillMap(
     const firstName = hostFullName.split(/\s+/)[0] ?? hostFullName
     out['[prénom propriétaire]'] = firstName
     out['[host name]'] = hostFullName
+  }
+
+  // ── Colonnes pratiques DIRECTES déjà saisies sur la fiche logement
+  //    (heures, WiFi, code accès). Source de vérité prioritaire.
+  if (logement?.wifi_nom) {
+    out['[nom réseau]']    = logement.wifi_nom
+    out['[nom du réseau]'] = logement.wifi_nom
+    out['[wifi]']          = logement.wifi_nom
+    out['[wifi name]']     = logement.wifi_nom
+    out['[ssid]']          = logement.wifi_nom
+  }
+  if (logement?.wifi_mdp) {
+    out['[mot de passe]']      = logement.wifi_mdp
+    out['[mot de passe wifi]'] = logement.wifi_mdp
+    out['[password]']          = logement.wifi_mdp
+    out['[wifi password]']     = logement.wifi_mdp
+  }
+  if (logement?.code_acces) {
+    out['[code]']        = logement.code_acces
+    out['[code accès]']  = logement.code_acces
+    out['[code acces]']  = logement.code_acces
+    out['[code porte]']  = logement.code_acces
+    out['[door code]']   = logement.code_acces
+  }
+  if (logement?.heure_arrivee) {
+    out['[heure arrivée]']   = logement.heure_arrivee
+    out['[heure arrivee]']   = logement.heure_arrivee
+    out['[check-in time]']   = logement.heure_arrivee
+    out['[checkin time]']    = logement.heure_arrivee
+  }
+  if (logement?.heure_depart) {
+    out['[heure départ]']     = logement.heure_depart
+    out['[heure depart]']     = logement.heure_depart
+    out['[check-out time]']   = logement.heure_depart
+    out['[checkout time]']    = logement.heure_depart
+  }
+
+  // ── Infos pratiques ÉTENDUES (JSONB) : poubelles, restos, transports,
+  //    urgences, etc. Saisies dans la section "Infos pratiques" de la fiche.
+  if (logement?.infos_pratiques) {
+    Object.assign(out, infosPratiquesToFillMap(logement.infos_pratiques))
   }
 
   return out

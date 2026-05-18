@@ -7,6 +7,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 import { COUNTRIES, ACTIVE_COUNTRIES, getCountry, type CountryCode } from '@/lib/countries'
 import TourTrigger from '@/components/dashboard/TourTrigger'
+import InfosPratiquesEditor from '@/components/logements/InfosPratiquesEditor'
+import type { InfosPratiques } from '@/lib/logements/infos-pratiques'
 
 const DEFAULT_ANNULATION =
   `En cas d'annulation par le locataire plus de 30 jours avant l'arrivée, l'acompte versé est remboursé intégralement. En cas d'annulation moins de 30 jours avant l'arrivée, l'acompte reste acquis au bailleur.`
@@ -94,6 +96,7 @@ type Logement = {
   ical_autre:   string | null
   pays: string | null         // Code ISO-2, 'FR' par défaut
   numero_al: string | null    // Numéro Alojamento Local (PT)
+  infos_pratiques?: InfosPratiques | null  // Auto-fill gabarits voyageur
 }
 
 interface Props {
@@ -151,6 +154,7 @@ function emptyForm(): LogementData {
     ical_autre:   null,
     pays:         'FR',
     numero_al:    null,
+    infos_pratiques: {},
   }
 }
 
@@ -207,7 +211,7 @@ export default function LogementsPage({ logements: initial }: Props) {
     return Array.from(set)
   }, [logements])
 
-  function set(field: string, value: string | number | boolean | null | string[]) {
+  function set(field: string, value: string | number | boolean | null | string[] | InfosPratiques) {
     setForm(f => ({ ...f, [field]: value }))
   }
 
@@ -269,6 +273,7 @@ export default function LogementsPage({ logements: initial }: Props) {
       ical_autre:   l.ical_autre   ?? null,
       pays:         l.pays         ?? 'FR',
       numero_al:    l.numero_al    ?? null,
+      infos_pratiques: l.infos_pratiques ?? {},
     })
     setEditing(l)
     setError('')
@@ -350,6 +355,7 @@ export default function LogementsPage({ logements: initial }: Props) {
         ical_autre:   form.ical_autre   ?? null,
         pays:         form.pays         ?? 'FR',
         numero_al:    form.numero_al    ?? null,
+        infos_pratiques: form.infos_pratiques ?? {},
       }
     }
 
@@ -1201,6 +1207,14 @@ export default function LogementsPage({ logements: initial }: Props) {
                   <Field label="Mot de passe Wi-Fi" value={form.wifi_mdp ?? ''} onChange={v => set('wifi_mdp', v)} placeholder="motdepasse123" />
                 </div>
               </div>
+
+              {/* ── Auto-fill gabarits : infos pratiques étendues (poubelles,
+                  restos, transports, urgences). Saisies ici une fois → réutilisées
+                  partout dans les messages voyageur. ── */}
+              <InfosPratiquesEditor
+                value={(form.infos_pratiques ?? {}) as InfosPratiques}
+                onChange={v => set('infos_pratiques', v)}
+              />
 
               {/* ── Conditions & règlement ── */}
               <div style={sectionDivider}>

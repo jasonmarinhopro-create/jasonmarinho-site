@@ -83,6 +83,11 @@ export type LogementData = {
   // Pays + spécificités internationales
   pays?:         string | null  // ISO-2 ; default 'FR' côté DB
   numero_al?:    string | null  // Numéro Alojamento Local (PT)
+
+  // Infos pratiques étendues (JSONB) : poubelles, restos, transports, urgences,
+  // etc. Source pour l'auto-fill des gabarits voyageur. Voir
+  // `lib/logements/infos-pratiques.ts` pour la forme exacte.
+  infos_pratiques?: import('@/lib/logements/infos-pratiques').InfosPratiques | null
 }
 
 export type Logement = LogementData & {

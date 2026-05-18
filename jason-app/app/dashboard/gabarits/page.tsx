@@ -3,11 +3,20 @@ import { createClient } from '@/lib/supabase/server'
 import { getCachedTemplatesCatalog } from '@/lib/queries/cache'
 import GabaritsClient from './GabaritsClient'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
+import type { InfosPratiques } from '@/lib/logements/infos-pratiques'
 
 export interface LogementOption {
   id: string
   nom: string
   adresse?: string | null
+  // Colonnes pratiques directes (déjà saisies dans la fiche logement)
+  code_acces?: string | null
+  wifi_nom?: string | null
+  wifi_mdp?: string | null
+  heure_arrivee?: string | null
+  heure_depart?: string | null
+  // Infos pratiques étendues (JSONB, migration 048)
+  infos_pratiques?: InfosPratiques | null
 }
 
 export interface NextContractInfo {
@@ -35,7 +44,10 @@ export default async function GabaritsPage() {
       ? supabase.from('user_pinned_templates').select('id, user_id, timing_bucket, template_id, logement_id, position, created_at, updated_at').eq('user_id', userId).order('position', { ascending: true })
       : Promise.resolve({ data: [] as UserPinnedTemplate[] }),
     userId
-      ? supabase.from('logements').select('id, nom, adresse').eq('user_id', userId).order('nom')
+      ? supabase.from('logements')
+          .select('id, nom, adresse, code_acces, wifi_nom, wifi_mdp, heure_arrivee, heure_depart, infos_pratiques')
+          .eq('user_id', userId)
+          .order('nom')
       : Promise.resolve({ data: [] as LogementOption[] }),
     userId
       ? supabase.from('contracts')
