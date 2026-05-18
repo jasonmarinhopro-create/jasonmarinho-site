@@ -80,6 +80,33 @@ function extractVariables(text: string): string[] {
   return [...new Set(matches)]
 }
 
+// Catégorisation des variables pour structurer le formulaire de remplissage.
+// Aide l'hôte à voir d'un coup d'œil ce qu'il doit fournir.
+type FillCategory = 'logement' | 'acces' | 'reseaux' | 'voyageur' | 'sejour' | 'pratique' | 'reco' | 'autre'
+
+function categorizeVariable(v: string): FillCategory {
+  const k = v.toLowerCase()
+  if (/wifi|réseau|reseau|mot de passe|password|ssid/.test(k)) return 'reseaux'
+  if (/code|lockbox|clé|cle|porte|serrure|acc[èe]s|access|arriv[ée]e tard/.test(k)) return 'acces'
+  if (/logement|adresse|address|ville|city|étage|etage/.test(k)) return 'logement'
+  if (/pr[ée]nom|nom\b|first name|name|voyageur|guest/.test(k)) return 'voyageur'
+  if (/date|nuit|durée|duree|arriv[ée]e|départ|depart|check-?in|check-?out|nombre.*adultes?/.test(k)) return 'sejour'
+  if (/poubelle|recyclage|parking|stationnement|chauffage|climatisation|électricité|ascenseur/.test(k)) return 'pratique'
+  if (/restaurant|caf[ée]|bar|activité|activite|transport|gare|aéroport|aeroport|métro|supermarché/.test(k)) return 'reco'
+  return 'autre'
+}
+
+const CATEGORY_META: Record<FillCategory, { label: string; icon: string; color: string }> = {
+  logement: { label: 'Logement',         icon: '🏠', color: 'var(--accent-text)' },
+  acces:    { label: 'Accès',            icon: '🔑', color: '#A78BFA' },
+  reseaux:  { label: 'WiFi / Réseaux',   icon: '📶', color: '#93C5FD' },
+  voyageur: { label: 'Voyageur',         icon: '👤', color: '#F472B6' },
+  sejour:   { label: 'Dates / Séjour',   icon: '📅', color: '#5DC077' },
+  pratique: { label: 'Infos pratiques',  icon: '♻️', color: '#FB923C' },
+  reco:     { label: 'Recommandations',  icon: '📍', color: '#FCD34D' },
+  autre:    { label: 'Autre',            icon: '✍️', color: 'var(--text-2)' },
+}
+
 // Auto-fill : matche un nom de variable normalisé contre les données
 // du logement sélectionné. Évite à l'hôte de re-saisir adresse/nom/ville à
 // chaque copie de gabarit. Les variables non auto-fillables (ex : description
@@ -302,7 +329,7 @@ export default function GabaritsClient({
   const [deletingCustom, setDeletingCustom]   = useState(false)
 
   // ── Remplissage variables ─────────────────────────────────────────────────
-  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en'; prefilled?: string; autoFilledCount?: number; autoFilledVars?: string[] } | null>(null)
+  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en'; prefilled?: string; autoFilledCount?: number; autoFilledVars?: string[]; logementId?: string | null; logementNom?: string | null } | null>(null)
   const [fillValues, setFillValues]           = useState<Record<string, string>>({})
 
   // ── Pinned (liste ordonnée de messages par phase, par logement) ──────────
@@ -481,13 +508,23 @@ export default function GabaritsClient({
 
     if (remaining.length > 0) {
       // Reste des vars à remplir → modal allégé (seulement les non-remplies)
+      // On pré-remplit depuis localStorage si l'hôte a déjà rempli ces vars
+      // pour ce logement par le passé : « plus jamais re-saisir le wifi du
+      // Casa Do Peidreiro ».
+      const memoryKey = currentLogement ? `gabarit-memory-${currentLogement.id}` : null
+      const memory: Record<string, string> = (() => {
+        if (!memoryKey) return {}
+        try { return JSON.parse(localStorage.getItem(memoryKey) ?? '{}') } catch { return {} }
+      })()
       setFillTemplate({
         t, lang,
         prefilled: filled,
         autoFilledCount: autoFilledVars.length,
         autoFilledVars,
+        logementId: currentLogement?.id ?? null,
+        logementNom: currentLogement?.nom ?? null,
       })
-      setFillValues(Object.fromEntries(remaining.map(v => [v, ''])))
+      setFillValues(Object.fromEntries(remaining.map(v => [v, memory[v] ?? ''])))
       return
     }
     await doCopy(t.id, filled, lang)
@@ -510,7 +547,7 @@ export default function GabaritsClient({
 
   async function copyWithFill() {
     if (!fillTemplate) return
-    const { t, lang, prefilled } = fillTemplate
+    const { t, lang, prefilled, logementId } = fillTemplate
     // Si prefilled est défini (auto-fill déjà appliqué), on part de là
     // pour éviter d'écraser les substitutions déjà faites.
     const base = prefilled ?? (lang === 'en'
@@ -520,6 +557,30 @@ export default function GabaritsClient({
     for (const [variable, value] of Object.entries(fillValues)) {
       filled = filled.split(variable).join(value || variable)
     }
+
+    // Mémorise les valeurs renseignées pour CE logement → prochaine copie de
+    // gabarit pour le même logement, les vars seront pré-remplies. Économise
+    // 10 minutes par semaine sur des champs fixes (WiFi, code accès, etc.).
+    if (logementId) {
+      try {
+        const memoryKey = `gabarit-memory-${logementId}`
+        const existing = JSON.parse(localStorage.getItem(memoryKey) ?? '{}')
+        const updated = { ...existing }
+        let savedCount = 0
+        for (const [v, value] of Object.entries(fillValues)) {
+          if (value.trim()) {
+            updated[v] = value.trim()
+            if (!existing[v]) savedCount++
+          }
+        }
+        localStorage.setItem(memoryKey, JSON.stringify(updated))
+        if (savedCount > 0) {
+          // Toast après le toast "Copié" pour ne pas le masquer
+          setTimeout(() => showToast(`💾 ${savedCount} info${savedCount > 1 ? 's' : ''} mémorisée${savedCount > 1 ? 's' : ''} pour ce logement`), 1500)
+        }
+      } catch {}
+    }
+
     await doCopy(t.id, filled, lang)
     setFillTemplate(null)
     setFillValues({})
@@ -968,18 +1029,79 @@ export default function GabaritsClient({
             )}
 
             <div style={{ ...s.modalBody, gap: '14px' }}>
-              {Object.keys(fillValues).map(variable => (
-                <div key={variable} style={s.fieldGroup}>
-                  <label style={s.label}>{variable}</label>
-                  <input
-                    value={fillValues[variable]}
-                    onChange={e => setFillValues(prev => ({ ...prev, [variable]: e.target.value }))}
-                    placeholder={`Remplace ${variable}`}
-                    style={s.input}
-                    autoFocus={Object.keys(fillValues)[0] === variable}
-                  />
+              {(() => {
+                // Groupe les variables par catégorie pour structurer le formulaire.
+                // Ordre fixe pour cohérence visuelle entre les copies de gabarits.
+                const ordered: FillCategory[] = ['logement', 'acces', 'reseaux', 'voyageur', 'sejour', 'pratique', 'reco', 'autre']
+                const groups: Record<string, string[]> = {}
+                for (const v of Object.keys(fillValues)) {
+                  const cat = categorizeVariable(v)
+                  if (!groups[cat]) groups[cat] = []
+                  groups[cat].push(v)
+                }
+                const allVars = Object.keys(fillValues)
+                const firstVar = allVars[0]
+                return ordered
+                  .filter(cat => groups[cat] && groups[cat].length > 0)
+                  .map(cat => {
+                    const meta = CATEGORY_META[cat]
+                    return (
+                      <div key={cat} style={{ display: 'flex', flexDirection: 'column' as const, gap: '8px' }}>
+                        <div style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '6px',
+                          fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px',
+                          textTransform: 'uppercase' as const, color: meta.color,
+                          padding: '4px 0',
+                        }}>
+                          <span aria-hidden="true">{meta.icon}</span>
+                          {meta.label}
+                          <span style={{
+                            fontSize: '10px', fontWeight: 700,
+                            padding: '1px 6px', borderRadius: '999px',
+                            background: meta.color + '20',
+                          }}>{groups[cat].length}</span>
+                        </div>
+                        {groups[cat].map(variable => (
+                          <div key={variable} style={s.fieldGroup}>
+                            <label style={s.label}>{variable}</label>
+                            <input
+                              value={fillValues[variable]}
+                              onChange={e => setFillValues(prev => ({ ...prev, [variable]: e.target.value }))}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault()
+                                  const idx = allVars.indexOf(variable)
+                                  const next = allVars[idx + 1]
+                                  if (next) {
+                                    const el = document.querySelector<HTMLInputElement>(`input[data-fillvar="${CSS.escape(next)}"]`)
+                                    el?.focus()
+                                  } else {
+                                    copyWithFill()
+                                  }
+                                }
+                              }}
+                              data-fillvar={variable}
+                              placeholder={`Remplace ${variable}`}
+                              style={s.input}
+                              autoFocus={firstVar === variable}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  })
+              })()}
+
+              {fillTemplate.logementNom && (
+                <div style={{
+                  padding: '10px 12px', marginTop: '4px',
+                  background: 'var(--bg-2)', border: '1px solid var(--border)',
+                  borderRadius: '10px',
+                  fontSize: '11.5px', color: 'var(--text-3)', lineHeight: 1.5,
+                }}>
+                  💾 Tes infos seront <strong style={{ color: 'var(--text-2)' }}>mémorisées pour {fillTemplate.logementNom}</strong> — la prochaine copie pré-remplit automatiquement.
                 </div>
-              ))}
+              )}
             </div>
             <div style={s.modalFooter}>
               <button onClick={() => setFillTemplate(null)} style={s.ghostBtn}>Annuler</button>
@@ -1685,9 +1807,7 @@ const s: Record<string, React.CSSProperties> = {
 
   overlay: {
     position: 'fixed' as const, inset: 0, zIndex: 900,
-    background: 'rgba(0,0,0,0.55)',
-    backdropFilter: 'blur(8px)',
-    WebkitBackdropFilter: 'blur(8px)',
+    background: 'rgba(0, 12, 8, 0.78)',
     display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
   },
   modal: {
