@@ -1,6 +1,7 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import VoyageursView from './VoyageursView'
+import OnboardingTour, { VOYAGEURS_STEPS } from '../OnboardingTour'
 
 export default async function VoyageursPage() {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
@@ -48,6 +49,7 @@ export default async function VoyageursPage() {
 
   return (
     <>
+      <OnboardingTour userId={profile.userId} steps={VOYAGEURS_STEPS} storageScope="voyageurs" />
       <VoyageursView voyageurs={list} tableReady={!error} />
     </>
   )

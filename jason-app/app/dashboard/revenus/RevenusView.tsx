@@ -11,6 +11,7 @@ import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, set
 import ImportCSVModal from './ImportCSVModal'
 import { PLATFORMS, suggestCommission } from '@/lib/platforms'
 import { COUNTRIES as COUNTRIES_MAP } from '@/lib/countries'
+import TourTrigger from '@/components/dashboard/TourTrigger'
 
 // ── types ────────────────────────────────────────────────────────────────────
 
@@ -736,9 +737,12 @@ export default function RevenusView({
 
       {/* Page heading */}
       <div style={s.pageHead}>
-        <h1 style={s.pageTitle}>
-          Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>revenus</em>
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
+          <h1 style={s.pageTitle}>
+            Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>revenus</em>
+          </h1>
+          <TourTrigger />
+        </div>
         <p style={s.pageSub}>Suivi de tes encaissements, charges, bénéfice net et fiscalité.</p>
       </div>
 
@@ -765,7 +769,7 @@ export default function RevenusView({
               </div>
               <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
             </button>
-            <button onClick={() => setShowForm(true)} style={s.onboardingStep}>
+            <button onClick={() => setShowForm(true)} style={s.onboardingStep} data-tour="revenus-create">
               <span style={s.onboardingStepNum}>2</span>
               <Plus size={20} weight="bold" color="var(--accent-text)" />
               <div style={s.onboardingStepBody}>

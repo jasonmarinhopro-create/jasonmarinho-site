@@ -6,6 +6,7 @@ import { EstimateurRevenus, CalculateurPrix, CompareurMesVilles } from '../simul
 import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
 import type { AccountStats } from '@/lib/lcd/account-stats'
 import type { LogementPrefill } from './page'
+import TourTrigger from '@/components/dashboard/TourTrigger'
 
 type CalcTab = 'revenus' | 'prix' | 'mesvilles'
 const CALC_TABS: CalcTab[] = ['revenus', 'prix', 'mesvilles']
@@ -70,9 +71,12 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
             <TrendUp size={13} weight="fill" />
             3 calculateurs marché
           </span>
-          <h1 style={s.heroTitle}>
-            Calculateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>marché</em>
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
+            <h1 style={s.heroTitle}>
+              Calculateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>marché</em>
+            </h1>
+            <TourTrigger />
+          </div>
           <p style={s.heroDesc}>
             Estime tes revenus, trouve le bon prix, compare tes villes. Préfilé avec tes vrais logements, comparé au marché européen (83 villes sourcées).
           </p>

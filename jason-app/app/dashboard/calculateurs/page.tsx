@@ -3,6 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { computeAccountStats } from '@/lib/lcd/account-stats'
 import { getDashboardPrefill, type LogementPrefill as PrefillType } from '@/lib/lcd/dashboard-prefill'
 import CalculateursUI from './CalculateursUI'
+import OnboardingTour, { CALCULATEURS_STEPS } from '../OnboardingTour'
 
 export const metadata = { title: 'Calculateurs marché, Jason Marinho' }
 export const dynamic = 'force-dynamic'
@@ -28,5 +29,10 @@ export default async function CalculateursPage() {
     console.error('[CalculateursPage] computeAccountStats failed', e)
   }
 
-  return <CalculateursUI logementsPrefill={prefill} accountStats={accountStats} />
+  return (
+    <>
+      <OnboardingTour userId={profile.userId} steps={CALCULATEURS_STEPS} storageScope="calculateurs" />
+      <CalculateursUI logementsPrefill={prefill} accountStats={accountStats} />
+    </>
+  )
 }

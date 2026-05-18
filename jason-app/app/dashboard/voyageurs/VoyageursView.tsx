@@ -8,6 +8,7 @@ import {
   Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
+import TourTrigger from '@/components/dashboard/TourTrigger'
 
 type Sejour = { id: string; date_arrivee: string; date_depart: string; montant: number | null }
 type Voyageur = {
@@ -197,9 +198,12 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
       {/* Header toolbar */}
       <div style={s.toolbar} className="fade-up">
         <div>
-          <h2 style={s.pageTitle}>
-            Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Voyageurs</em>
-          </h2>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
+            <h2 style={s.pageTitle}>
+              Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Voyageurs</em>
+            </h2>
+            <TourTrigger />
+          </div>
           <p style={s.pageDesc}>
             {voyageurs.length === 0
               ? 'Aucun voyageur enregistré'
@@ -207,7 +211,7 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
           </p>
         </div>
         {tableReady && (
-          <button onClick={openAdd} className="btn-primary" style={s.addBtn}>
+          <button onClick={openAdd} className="btn-primary" style={s.addBtn} data-tour="voyageur-create">
             <Plus size={16} weight="bold" />
             Ajouter
           </button>

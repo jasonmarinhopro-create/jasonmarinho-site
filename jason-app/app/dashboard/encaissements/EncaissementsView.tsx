@@ -7,6 +7,7 @@ import {
   Calendar, EnvelopeSimple, Info, ArrowSquareOut, Receipt, Clock,
 } from '@phosphor-icons/react/dist/ssr'
 import type { EncaissementsSummary, ContractImpaye } from '@/lib/stripe/connect-queries'
+import TourTrigger from '@/components/dashboard/TourTrigger'
 
 interface Props {
   summary: EncaissementsSummary
@@ -87,9 +88,12 @@ export default function EncaissementsView({ summary, impayes }: Props) {
         <span style={s.heroBadge}>
           <Bank size={13} weight="fill" /> Stripe Connect
         </span>
-        <h1 style={s.heroTitle}>
-          Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>encaissements</em>
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
+          <h1 style={s.heroTitle}>
+            Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>encaissements</em>
+          </h1>
+          <TourTrigger />
+        </div>
         <p style={s.heroDesc}>
           Solde disponible, prochains virements, encaissé du mois, paiements à relancer. Tout au même endroit, en temps réel.
         </p>
