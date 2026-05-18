@@ -121,8 +121,29 @@ export default function AdminUI({
 
       {/* ── Bannière admin ── */}
       <div style={s.hero}>
+        <style>{`
+          /* Mobile : position absolute → static pour éviter l'overlap avec
+             le badge "ESPACE PRIVÉ" qui wrap sur 2 lignes. La couronne
+             cachée pour gagner de la place visuelle. */
+          @media (max-width: 640px) {
+            .admin-hero-alert {
+              position: static !important;
+              display: inline-flex !important;
+              margin-bottom: 10px !important;
+            }
+            .admin-hero-crown {
+              display: none !important;
+            }
+          }
+        `}</style>
         <div style={s.heroGlow} />
         <div style={s.heroContent}>
+          {totalAlerts > 0 && (
+            <div className="admin-hero-alert" style={s.heroAlert}>
+              <Warning size={14} weight="fill" />
+              {totalAlerts} action{totalAlerts > 1 ? 's' : ''} en attente
+            </div>
+          )}
           <div style={s.heroBadge}>
             <ShieldStar size={11} weight="fill" />
             Espace privé · Accès restreint
@@ -130,15 +151,9 @@ export default function AdminUI({
           <h1 style={s.heroTitle}>Administration</h1>
           <p style={s.heroSub}>{formatDateLong()}</p>
         </div>
-        <div style={s.heroCrown}>
+        <div className="admin-hero-crown" style={s.heroCrown}>
           <Crown size={42} weight="duotone" />
         </div>
-        {totalAlerts > 0 && (
-          <div style={s.heroAlert}>
-            <Warning size={14} weight="fill" />
-            {totalAlerts} action{totalAlerts > 1 ? 's' : ''} en attente
-          </div>
-        )}
       </div>
 
       {/* ── Bandeau KPIs financiers ── */}
