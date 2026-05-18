@@ -1531,28 +1531,31 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
               <p style={s.cardSub}>Ton taux d'occupation mois par mois (12 derniers mois) confronté à la saisonnalité locale attendue</p>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '4px' }}>
-            {personalVsMarketSeason.map(m => {
-              const personalH = Math.max(2, m.personalOcc * 60)
-              const marketH = Math.max(2, m.marketOcc * 60)
-              return (
-                <div key={m.month} style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px' }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '60px' }}>
-                    <div title={`Toi: ${Math.round(m.personalOcc * 100)} %`} style={{
-                      width: '14px', height: `${personalH}px`,
-                      background: m.delta >= 0 ? 'var(--success-1)' : '#F59E0B',
-                      borderRadius: '3px 3px 0 0',
-                    }} />
-                    <div title={`Marché: ${Math.round(m.marketOcc * 100)} %`} style={{
-                      width: '14px', height: `${marketH}px`,
-                      background: 'rgba(160, 160, 160, 0.45)',
-                      borderRadius: '3px 3px 0 0',
-                    }} />
+          {/* Scroll horizontal sur mobile : 12 mois × ~30 px de bars ne tiennent pas sur 360 px de viewport. */}
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' as const, paddingBottom: '4px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, minmax(28px, 1fr))', gap: '4px', minWidth: '380px' }}>
+              {personalVsMarketSeason.map(m => {
+                const personalH = Math.max(2, m.personalOcc * 60)
+                const marketH = Math.max(2, m.marketOcc * 60)
+                return (
+                  <div key={m.month} style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '60px' }}>
+                      <div title={`Toi: ${Math.round(m.personalOcc * 100)} %`} style={{
+                        width: '12px', height: `${personalH}px`,
+                        background: m.delta >= 0 ? 'var(--success-1)' : '#F59E0B',
+                        borderRadius: '3px 3px 0 0',
+                      }} />
+                      <div title={`Marché: ${Math.round(m.marketOcc * 100)} %`} style={{
+                        width: '12px', height: `${marketH}px`,
+                        background: 'rgba(160, 160, 160, 0.45)',
+                        borderRadius: '3px 3px 0 0',
+                      }} />
+                    </div>
+                    <span style={{ fontSize: '10px', color: m.isHigh ? 'var(--accent-text)' : 'var(--text-3)', fontWeight: m.isHigh ? 700 : 400 }}>{m.label}</span>
                   </div>
-                  <span style={{ fontSize: '10px', color: m.isHigh ? 'var(--accent-text)' : 'var(--text-3)', fontWeight: m.isHigh ? 700 : 400 }}>{m.label}</span>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
           <div style={{ display: 'flex', gap: '16px', marginTop: '12px', fontSize: '11.5px', color: 'var(--text-3)' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -2219,7 +2222,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase',
     letterSpacing: '0.08em', fontWeight: 700,
   },
-  chipRow: { display: 'flex', gap: 6 },
+  chipRow: { display: 'flex', gap: 6, flexWrap: 'wrap' as const },
   chip: {
     padding: '7px 14px', borderRadius: 999,
     background: 'var(--bg-2)', border: '1px solid var(--border)',

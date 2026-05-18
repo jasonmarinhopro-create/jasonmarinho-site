@@ -85,32 +85,38 @@ export const SIMULATEURS_STEPS: TourStep[] = [
 ]
 
 // Tour pour la page Mes Logements — explique que c'est la SOURCE de tout
-// (préfilage simulateurs, contrats, iCal, Stripe). Volontairement court (4
-// étapes) car les mécaniques détaillées se découvrent en cliquant.
+// (préfilage simulateurs, contrats, iCal, Stripe).
 export const LOGEMENTS_STEPS: TourStep[] = [
   {
     id: 'intro',
     targetSelector: null,
     title: "Tes logements = ta source de vérité",
-    body: "Tout part d'ici. Une fois tes biens créés, ils alimentent automatiquement tes contrats, tes simulateurs, ton calendrier et tes calculs marché.",
+    body: "Tout part d'ici. Tes biens alimentent automatiquement tes contrats (nom, adresse, équipements), tes simulateurs fiscaux, ton calendrier (sync iCal), tes performances et tes calculs marché.",
   },
   {
     id: 'create',
-    targetSelector: '[data-tour="logement-create"]',
-    title: "Ajoute ton premier bien",
-    body: "Nom, ville, type, tarif moyen. Plus tu remplis, plus le préfilage est précis. Tu peux compléter au fil de l'eau.",
+    targetSelector: '[data-tour=\"logement-create\"]',
+    title: "Comment ajouter un bien",
+    body: "4 champs essentiels : nom, adresse, type, tarif moyen/nuit. Tu peux ajouter d'autres infos plus tard (équipements WiFi/parking, capacité, etc.). Compte 2 minutes par bien.",
   },
   {
     id: 'card',
-    targetSelector: '[data-tour="logement-list"]',
-    title: "Une fiche, plein d'options",
-    body: "Sur chaque fiche tu peux brancher Airbnb/Booking via iCal, activer le paiement Stripe, renseigner ton classement Atout France, ou mettre le bien en pause.",
+    targetSelector: '[data-tour=\"logement-list\"]',
+    title: "Sur chaque fiche, 4 mécaniques clés",
+    body: "1) iCal Airbnb + Booking pour synchro auto du calendrier. 2) Paiement Stripe pour encaisser en direct. 3) Classement Atout France pour ton régime fiscal. 4) Pause si tu retires temporairement le bien du marché.",
+  },
+  {
+    id: 'multi',
+    targetSelector: null,
+    title: "Multi-biens et multi-pays",
+    body: "Pas de limite. France, Portugal, Espagne, Italie, Belgique, Allemagne, Pays-Bas, Autriche, Suisse. Le dashboard agrège tout et affiche chaque bien dans sa devise locale + sa réglementation pays.",
   },
   {
     id: 'done',
     targetSelector: null,
-    title: "Tu peux gérer N logements depuis la même app",
-    body: "Pas de limite. Le dashboard agrège tout. Si tu loues plusieurs biens, c'est ici qu'ils vivent.",
+    title: "Une fois tes biens créés...",
+    body: "L'app travaille pour toi : les simulateurs deviennent préfilés, les contrats se génèrent en 1 clic, les revenus se ventilent par logement, les benchmarks deviennent comparables à ton marché.",
+    cta: { label: 'Voir mes simulateurs', href: '/dashboard/simulateurs' },
   },
 ]
 
@@ -141,42 +147,68 @@ export const VOYAGEURS_STEPS: TourStep[] = [
   {
     id: 'intro',
     targetSelector: null,
-    title: "Ton carnet de voyageurs",
-    body: "Centralise tous tes voyageurs : prénom, contact, séjours passés, notes privées. Plus tu remplis, plus tu gagnes de temps sur les prochains séjours.",
+    title: "Bienvenue dans ton carnet de voyageurs",
+    body: "C'est ton CRM LCD : tous les voyageurs qui ont (ou vont) séjourner chez toi, leurs contacts, l'historique de leurs séjours et tes notes privées sur chacun. Plus tu remplis, plus l'app pré-remplit pour toi.",
   },
   {
     id: 'add',
-    targetSelector: '[data-tour="voyageur-create"]',
-    title: "Ajoute un voyageur",
-    body: "Une fiche complète te permet de pré-remplir contrats et messages. Tu peux aussi importer depuis une réservation existante.",
+    targetSelector: '[data-tour=\"voyageur-create\"]',
+    title: "Comment ajouter un voyageur",
+    body: "Le bouton « Ajouter » te demande prénom, nom, email, téléphone. Tous les champs sont optionnels sauf le prénom. Tu peux toujours compléter plus tard quand tu as l'info.",
+  },
+  {
+    id: 'sejours',
+    targetSelector: null,
+    title: "Chaque voyageur garde son historique",
+    body: "Sur la fiche d'un voyageur, tu vois tous ses séjours passés et à venir avec montants et logements. Pratique pour identifier tes voyageurs fidèles ou comprendre une demande \"je suis déjà venu en juin\".",
+  },
+  {
+    id: 'notes',
+    targetSelector: null,
+    title: "Notes privées : ton mémo perso",
+    body: "Tu peux ajouter une note privée sur chaque voyageur (ex: « Vegan, allergie chat, préfère le café noir »). Ces notes ne sont JAMAIS partagées et te servent à personnaliser ton accueil au prochain séjour.",
   },
   {
     id: 'safety',
     targetSelector: null,
-    title: "Sécurité : signaler ou vérifier",
-    body: "Si un voyageur a un problème (litige, dégradation, faux profil), tu peux le signaler ici. Tu peux aussi consulter les signalements faits par d'autres hôtes avant d'accepter une réservation.",
+    title: "Sécurité : signaler & vérifier",
+    body: "Si un voyageur t'a posé problème (dégradation, litige caution, faux profil), tu peux le signaler. Les autres hôtes verront le signalement quand ils chercheront l'identifiant. Inversement, AVANT d'accepter, tu peux vérifier qu'un téléphone/email n'est pas dans la base communautaire.",
+    cta: { label: 'Aller à la Sécurité Voyageur', href: '/dashboard/securite' },
   },
 ]
 
-// Tour pour la page Revenus — saisir, agréger, exporter.
+// Tour pour la page Revenus — saisir, agréger, suivre.
 export const REVENUS_STEPS: TourStep[] = [
   {
     id: 'intro',
     targetSelector: null,
-    title: "Ta vue revenus, à ton rythme",
-    body: "Loyer, caution, ménage, taxe de séjour, commissions plateformes. Tout entré ici alimente automatiquement ton simulateur fiscal et tes performances.",
+    title: "Ta source de vérité revenus",
+    body: "Tout l'argent qui entre (et qui sort) de ton activité LCD : loyer, caution, ménage, taxe de séjour, commissions Airbnb/Booking, charges. Une seule page, une seule vérité, alimentée automatiquement par tes séjours.",
   },
   {
     id: 'add',
-    targetSelector: '[data-tour="revenus-create"]',
-    title: "Ajouter une entrée",
-    body: "Tu peux saisir des revenus uniques (loyer encaissé) ou récurrents. L'app sait associer automatiquement à un séjour si la date colle.",
+    targetSelector: '[data-tour=\"revenus-create\"]',
+    title: "Ajouter manuellement vs importer",
+    body: "Tu peux saisir une entrée à la main (1 minute) ou importer un CSV depuis Airbnb/Booking si tu as un historique. L'app détecte les doublons et associe chaque ligne au bon séjour.",
   },
   {
-    id: 'export',
+    id: 'aggregation',
     targetSelector: null,
-    title: "Export pour ton comptable",
-    body: "À tout moment, télécharge tes revenus filtrés par année / mois / logement en CSV. Pratique pour ton compte annuel ou le bilan auto-entrepreneur.",
+    title: "Vue par logement + par canal",
+    body: "L'app agrège automatiquement ton CA par logement (qui rapporte le plus) et par canal de réservation (direct vs Booking vs Airbnb). Tu vois en un clin d'œil où tes marges sont les meilleures.",
+  },
+  {
+    id: 'charges',
+    targetSelector: null,
+    title: "N'oublie pas les charges",
+    body: "Onglet « Charges » : loyer/crédit immo, énergie, abos, ménage, assurance, taxe foncière. Plus tu remplis, plus ta marge nette est précise et plus ton simulateur fiscal est utile.",
+  },
+  {
+    id: 'fiscal',
+    targetSelector: null,
+    title: "Lien direct avec ta fiscalité",
+    body: "Ton CA cumulé ici alimente directement les simulateurs fiscaux : approche du plafond micro-BIC, choix régime, taxe de séjour. Une saisie ici = pas besoin de recommencer ailleurs.",
+    cta: { label: 'Voir mes simulateurs', href: '/dashboard/simulateurs' },
   },
 ]
 
@@ -185,20 +217,32 @@ export const ENCAISSEMENTS_STEPS: TourStep[] = [
   {
     id: 'intro',
     targetSelector: null,
-    title: "Tes encaissements Stripe en temps réel",
-    body: "Tout ce que tu encaisses via Stripe (loyer, caution, paiements en lien) apparaît ici dès l'opération. Pas besoin d'ouvrir le dashboard Stripe.",
+    title: "Stripe en temps réel, sans quitter l'app",
+    body: "Tout ce que tu encaisses via Stripe (loyer, caution, paiements en lien) apparaît ici en quasi-temps réel. Plus besoin d'ouvrir le dashboard Stripe pour avoir tes chiffres du jour.",
   },
   {
     id: 'stats',
     targetSelector: null,
-    title: "4 chiffres clés en haut",
-    body: "Solde disponible, prochain virement, encaissé du mois, paiements à relancer. Aperçu rapide en arrivant le matin.",
+    title: "4 chiffres clés en haut de page",
+    body: "Solde disponible (ce qui sera viré au prochain payout), prochain virement (date + montant), encaissé ce mois (CA brut Stripe), paiements à relancer. Aperçu en 3 secondes.",
   },
   {
-    id: 'rappel',
+    id: 'payouts',
     targetSelector: null,
-    title: "Relance en 1 clic",
-    body: "Si un voyageur n'a pas payé et que son arrivée approche, un bouton « Rappel paiement » ouvre un email pré-rempli pour lui renvoyer le lien Stripe.",
+    title: "Virements récents avec statut",
+    body: "Stripe paie tous les jours ouvrés (compte standard EU, délai 2-3 jours). Tu vois chaque payout : Versé / En transit / En attente / Échec — avec la raison si échec. Si tu vois plusieurs « Échec », c'est qu'il y a un problème avec ton RIB Stripe.",
+  },
+  {
+    id: 'impayes',
+    targetSelector: null,
+    title: "Relance en 1 clic les impayés",
+    body: "Si un voyageur n'a pas payé et que son arrivée approche (J-7 ou passé), la section « À relancer » l'affiche en rouge. Bouton « Rappel paiement » → email pré-rempli pour lui renvoyer le lien Stripe.",
+  },
+  {
+    id: 'failed',
+    targetSelector: null,
+    title: "Échecs de paiement des 30 derniers jours",
+    body: "Section dédiée pour les CB refusées (fonds insuffisants, 3D-Secure échoué, carte expirée). Tu vois le voyageur + la raison + le montant — utile pour rappeler avant que le séjour soit annulé par sécurité.",
   },
 ]
 
@@ -326,9 +370,14 @@ export default function OnboardingTour({
       return
     }
 
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Sur mobile (< 768px), le scroll smooth est PERÇU lent car les distances
+    // sont plus grandes (page haute) et les frames moins fluides. On bascule
+    // sur un scroll instant pour que la visite soit vivante. Sur desktop, le
+    // smooth reste plus agréable visuellement.
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    el.scrollIntoView({ behavior: isMobile ? 'auto' : 'smooth', block: 'center' })
 
-    // Laisse le scroll s'effectuer puis mesure
+    // Laisse le scroll s'effectuer puis mesure (court sur mobile, normal desktop).
     setTimeout(() => {
       const rect = el.getBoundingClientRect()
       setTargetRect(rect)
@@ -352,7 +401,7 @@ export default function OnboardingTour({
       left = Math.max(MARGIN, Math.min(left, window.innerWidth - popoverW - MARGIN))
 
       setPopoverPos({ top, left, arrowSide })
-    }, 380)
+    }, isMobile ? 50 : 380)
   }, [stepIdx, STEPS])
 
   useEffect(() => {
