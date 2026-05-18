@@ -1102,7 +1102,11 @@ export default function GabaritsClient({
             </div>
 
             {/* Indicateur "X variables déjà pré-remplies depuis ton dashboard" */}
-            {(fillTemplate.autoFilledCount ?? 0) > 0 && (
+            {(() => {
+              const filled = fillTemplate.autoFilledCount ?? 0
+              if (filled <= 0) return null
+              const vars = fillTemplate.autoFilledVars ?? []
+              return (
               <div style={{
                 margin: '0 24px 4px',
                 padding: '10px 12px',
@@ -1118,16 +1122,17 @@ export default function GabaritsClient({
               }}>
                 <Sparkle size={13} weight="fill" style={{ color: '#5DC077', flexShrink: 0, marginTop: 1 }} />
                 <span>
-                  <strong style={{ color: 'var(--text)' }}>{fillTemplate.autoFilledCount} variable{fillTemplate.autoFilledCount > 1 ? 's' : ''} pré-remplie{fillTemplate.autoFilledCount > 1 ? 's' : ''}</strong> depuis ton logement et ta prochaine réservation
-                  {fillTemplate.autoFilledVars && fillTemplate.autoFilledVars.length > 0 && (
+                  <strong style={{ color: 'var(--text)' }}>{filled} variable{filled > 1 ? 's' : ''} pré-remplie{filled > 1 ? 's' : ''}</strong> depuis ton logement et ta prochaine réservation
+                  {vars.length > 0 && (
                     <span style={{ display: 'block', marginTop: '4px', color: 'var(--text-muted)', fontSize: '11.5px' }}>
-                      {fillTemplate.autoFilledVars.slice(0, 4).join(' · ')}
-                      {fillTemplate.autoFilledVars.length > 4 && ` · +${fillTemplate.autoFilledVars.length - 4}`}
+                      {vars.slice(0, 4).join(' · ')}
+                      {vars.length > 4 && ` · +${vars.length - 4}`}
                     </span>
                   )}
                 </span>
               </div>
-            )}
+              )
+            })()}
 
             <div style={{ ...s.modalBody, gap: '14px' }}>
               {(() => {
