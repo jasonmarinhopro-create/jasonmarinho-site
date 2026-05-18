@@ -10,8 +10,12 @@ import MurDesBatisseurs, { type ContributorTile } from '@/components/MurDesBatis
 import Roadmap, { type RoadmapItemData, type RoadmapCommentData } from '@/components/Roadmap'
 import { Heart, ArrowRight, Star, ChatCircle, Rocket, Medal, Lightbulb, CheckCircle, Camera, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
 
-export const dynamic   = 'force-dynamic'
-export const metadata  = { title: 'Contributeurs, Jason Marinho' }
+// Roadmap + mur des contributeurs : déjà sur getCachedXxx (TTL serveur).
+// On bascule la PAGE de force-dynamic à revalidate=60 pour économiser
+// des hits Supabase quand plusieurs users consultent successivement.
+// Les votes/commentaires invalident le cache via revalidateTag.
+export const revalidate = 60
+export const metadata   = { title: 'Contributeurs, Jason Marinho' }
 
 export default async function ContributeursPage() {
   const profile      = await getProfile()

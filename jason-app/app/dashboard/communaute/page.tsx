@@ -3,7 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import { getCachedCommunityGroups, getCachedTemplatesCatalog } from '@/lib/queries/cache'
 import CommunauteView from './CommunauteView'
 
-export const dynamic = 'force-dynamic'
+// Liste des groupes Facebook + templates — données quasi-statiques (admin
+// les édite rarement). 120s de cache, refresh auto à chaque modification
+// admin via revalidateTag(communityGroupsTag).
+export const revalidate = 120
 
 export interface FacebookTemplate {
   id: string

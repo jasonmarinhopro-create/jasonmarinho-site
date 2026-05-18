@@ -5,7 +5,10 @@ import AuditWizard from './AuditWizard'
 import AuditHistory, { type PastAudit } from './AuditHistory'
 import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning, FileCsv, MapPin } from '@phosphor-icons/react/dist/ssr'
 
-export const dynamic  = 'force-dynamic'
+// Historique des audits + état utilisateur. 60s de cache : les audits sont
+// lancés à la demande puis statiques. La page se rafraîchit automatiquement
+// après chaque mutation (server action → revalidatePath).
+export const revalidate = 60
 export const metadata = { title: 'Audit GBP, Jason Marinho' }
 
 const PILLAR_ICONS = [
