@@ -1,6 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
 import Link from 'next/link'
-import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import {
   CalendarBlank, Warning, CurrencyEur,
@@ -13,7 +12,6 @@ import ChezNousWidget from './ChezNousWidget'
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import ConseilDuMoment from './ConseilDuMoment'
 import OnboardingTour from './OnboardingTour'
-import UrgentAlertsBanner from '@/components/dashboard/UrgentAlertsBanner'
 import { selectConseil } from '@/lib/lcd/conseil-du-moment'
 import { getDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
@@ -399,12 +397,6 @@ export default async function DashboardPage() {
 
         {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
         <SetupChecklist userId={userId} steps={setupSteps} />
-
-        {/* ── Alertes urgentes : DÉSACTIVÉ temporairement le temps de
-            confirmer la cause du crash Server Components prod ────────── */}
-        {/* <Suspense fallback={null}>
-          <UrgentAlertsBanner />
-        </Suspense> */}
 
         {/* ── Conseil du moment : 1 règle contextuelle prioritaire ────── */}
         <ConseilDuMoment conseil={conseil} />

@@ -5,9 +5,6 @@ import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { ThemeProvider } from '@/components/ThemeProvider'
-// ToastProvider désactivé temporairement — suspect du crash Server Components.
-// Sera réactivé après confirmation que ce n'est pas la cause.
-// import { ToastProvider } from '@/components/ui/Toast'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
 import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
 import InstallAppWidget from '@/components/InstallAppWidget'
