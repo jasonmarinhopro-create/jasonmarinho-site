@@ -108,9 +108,11 @@ interface HeaderProps {
   hasNewActualites?: boolean
   /** Affiche le bouton Parcours (onboarding non terminé). */
   showOnboardingBtn?: boolean
+  /** Forwarded à la sidebar mobile : masque "Encaissements" si pas de Stripe. */
+  hasStripeAccount?: boolean
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -253,7 +255,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   return (
     <>
       <div className="dash-mobile-sidebar-wrap">
-        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} lastSeenActualitesAt={lastSeenActualitesAt} hasNewActualites={hasNewActualites} />
+        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} lastSeenActualitesAt={lastSeenActualitesAt} hasNewActualites={hasNewActualites} hasStripeAccount={hasStripeAccount} />
       </div>
 
       <NotificationPanel

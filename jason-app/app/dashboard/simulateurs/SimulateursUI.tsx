@@ -977,6 +977,7 @@ const s: Record<string, React.CSSProperties> = {
   formCard: {
     padding: '20px 22px', borderRadius: '14px',
     background: 'var(--surface)', border: '1px solid var(--border)',
+    display: 'flex', flexDirection: 'column' as const, gap: '18px',
   },
   resultCard: {
     padding: '20px 22px', borderRadius: '14px',

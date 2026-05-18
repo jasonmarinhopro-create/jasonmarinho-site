@@ -299,6 +299,15 @@ export function OnboardingTracks({
           <div style={{ ...s.barFill, width: `${overallPct}%` }} />
         </div>
 
+        <div style={s.tipBox}>
+          <span style={s.tipIcon} aria-hidden="true">
+            <Sparkle size={11} weight="fill" />
+          </span>
+          <span style={s.tipText}>
+            Une <strong>visite guidée</strong> se lance à ta première visite des pages clés (Logements, Calendrier, Simulateurs…). Tu peux la relancer via le bouton <em>« Comment ça marche ? »</em> en haut de chaque page.
+          </span>
+        </div>
+
         <div style={s.trackList}>
           {ONBOARDING_TRACKS.map(track => {
             const done = doneByTrack[track.key]?.length ?? 0
@@ -484,6 +493,22 @@ const s: Record<string, React.CSSProperties> = {
 
   /* Track list (all tracks view) */
   trackList: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+
+  tipBox: {
+    display: 'flex', alignItems: 'flex-start', gap: '8px',
+    padding: '10px 12px', marginBottom: '14px',
+    background: 'rgba(255,213,107,0.05)',
+    border: '1px solid rgba(255,213,107,0.18)',
+    borderRadius: '10px',
+    fontSize: '11.5px', lineHeight: 1.55, color: 'var(--text-2)',
+  },
+  tipIcon: {
+    width: '20px', height: '20px', borderRadius: '6px', flexShrink: 0,
+    background: 'rgba(255,213,107,0.12)', color: 'var(--accent-text)',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  },
+  tipText: { flex: 1 },
+
   trackCard: {
     display: 'flex', alignItems: 'center', gap: '12px',
     padding: '12px 14px', borderRadius: '12px',

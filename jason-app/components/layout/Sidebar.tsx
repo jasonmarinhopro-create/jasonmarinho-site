@@ -82,9 +82,12 @@ interface SidebarProps {
   lastSeenActualitesAt?: string | null
   /** Pré-calculé côté serveur dans le layout : évite une requête DB à chaque navigation. */
   hasNewActualites?: boolean
+  /** Affiche l'entrée "Encaissements" seulement si l'hôte utilise Stripe Connect.
+   *  Évite le clutter pour les hôtes qui n'encaissent que via Airbnb/Booking. */
+  hasStripeAccount?: boolean
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -174,7 +177,12 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 <div style={styles.sectionLabel}>{group.label}</div>
               )}
               <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
-                {group.items.map(({ href, label, icon: Icon }) => (
+                {group.items
+                  // Masque "Encaissements" pour les hôtes sans Stripe Connect :
+                  // la page reste accessible par URL directe mais n'encombre
+                  // pas le menu pour ceux qui n'utilisent pas le paiement Stripe.
+                  .filter(item => !(item.href === '/dashboard/encaissements' && !hasStripeAccount))
+                  .map(({ href, label, icon: Icon }) => (
                   <NavItem
                     key={href}
                     href={href}

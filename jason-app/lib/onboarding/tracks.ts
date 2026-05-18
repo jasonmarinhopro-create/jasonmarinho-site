@@ -48,9 +48,11 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
       {
         key: 'logement',
         title: 'Ajoute ton premier logement',
-        description: 'Le point de départ de tout le reste : 4 champs, 2 minutes.',
+        description: 'Le point de départ de tout le reste : 4 champs, 2 minutes. La visite guidée se lance pour t\'expliquer.',
         ctaLabel: 'Ajouter un logement',
-        ctaHref: '/dashboard/logements',
+        // ?tour=1 force la visite guidée à se lancer (utile pour les hôtes qui
+        // arrivent depuis le widget Parcours et n'ont pas encore vu le tour).
+        ctaHref: '/dashboard/logements?tour=1',
         detect: 'auto',
       },
       {

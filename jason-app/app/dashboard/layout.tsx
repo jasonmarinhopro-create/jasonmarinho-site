@@ -60,6 +60,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           isContributor={profile.is_contributor ?? false}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
+          hasStripeAccount={profile.stripe_onboarding_complete}
         />
         <Header
           userName={profile.full_name ?? undefined}
@@ -70,6 +71,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           showOnboardingBtn={showOnboarding}
+          hasStripeAccount={profile.stripe_onboarding_complete}
         />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>
