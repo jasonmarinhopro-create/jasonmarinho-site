@@ -2,6 +2,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import RevenusView from './RevenusView'
 import PlanGate from '@/components/ui/PlanGate'
+import OnboardingTour, { REVENUS_STEPS } from '../OnboardingTour'
 
 // Force le rendu dynamique pour que toute saisie (séjour, charge,
 // commission, etc.) apparaisse immédiatement sans cache.
@@ -92,6 +93,7 @@ export default async function RevenusPage() {
 
   return (
     <>
+      <OnboardingTour userId={profile?.userId ?? ''} steps={REVENUS_STEPS} storageScope="revenus" />
       <RevenusView
         contracts={contracts ?? []}
         initialEntries={[...(entries ?? []), ...sejourEntries]}

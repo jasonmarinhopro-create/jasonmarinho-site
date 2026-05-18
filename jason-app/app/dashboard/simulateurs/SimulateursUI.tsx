@@ -7,6 +7,7 @@ import { citiesByCountry, estimateRevenue, calculatePrice, SUPPORTED_COUNTRIES, 
 import type { AccountStats } from '@/lib/lcd/account-stats'
 import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
 import { fmtEur, normalizeType, MiniBox, BenchmarkRow } from '@/components/simulateurs/_shared'
+import TourTrigger from '@/components/dashboard/TourTrigger'
 
 // Lazy-load des 5 simulateurs fiscaux : chacun dans son propre chunk JS.
 // L'utilisateur ne télécharge que ce dont il a besoin selon l'onglet sélectionné.
@@ -751,9 +752,12 @@ export default function SimulateursUI({ logementsPrefill = [], accountStats }: P
             <Calculator size={13} weight="fill" />
             5 simulateurs fiscaux
           </span>
-          <h1 style={s.heroTitle}>
-            Simulateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>fiscaux</em>
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
+            <h1 style={s.heroTitle}>
+              Simulateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>fiscaux</em>
+            </h1>
+            <TourTrigger />
+          </div>
           <p style={s.heroDesc}>
             Calcule ton imposition, choisis ton statut, estime ta taxe de séjour, projette ta rentabilité nette, vérifie ta franchise TVA. Tout en quelques secondes, préfilé avec tes vrais logements.
           </p>

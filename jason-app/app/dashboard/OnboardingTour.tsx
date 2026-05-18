@@ -114,6 +114,94 @@ export const LOGEMENTS_STEPS: TourStep[] = [
   },
 ]
 
+// Tour pour la page Calculateurs marché — outils de pricing/estimation.
+export const CALCULATEURS_STEPS: TourStep[] = [
+  {
+    id: 'intro',
+    targetSelector: null,
+    title: "3 calculateurs marché, préfilés",
+    body: "Estime tes revenus annuels, trouve le bon prix par nuit, compare tes villes. Tous se chargent automatiquement avec tes vraies données.",
+  },
+  {
+    id: 'tabs',
+    targetSelector: '[role="tablist"]',
+    title: "Bascule entre les 3 outils",
+    body: "Estimateur de revenus / Calculateur de prix / Compareur de villes. À chaque fois, tu peux soit garder ton bien sélectionné, soit simuler un autre projet.",
+  },
+  {
+    id: 'data',
+    targetSelector: '[data-tour="activity-overview"]',
+    title: "Tes vraies données vs marché",
+    body: "L'app croise tes données réelles (12 derniers mois encaissés) avec les benchmarks 83 villes européennes. Tu sais si tu sur- ou sous-performes.",
+  },
+]
+
+// Tour pour la page Mes Voyageurs — carnet de contacts central + sécurité.
+export const VOYAGEURS_STEPS: TourStep[] = [
+  {
+    id: 'intro',
+    targetSelector: null,
+    title: "Ton carnet de voyageurs",
+    body: "Centralise tous tes voyageurs : prénom, contact, séjours passés, notes privées. Plus tu remplis, plus tu gagnes de temps sur les prochains séjours.",
+  },
+  {
+    id: 'add',
+    targetSelector: '[data-tour="voyageur-create"]',
+    title: "Ajoute un voyageur",
+    body: "Une fiche complète te permet de pré-remplir contrats et messages. Tu peux aussi importer depuis une réservation existante.",
+  },
+  {
+    id: 'safety',
+    targetSelector: null,
+    title: "Sécurité : signaler ou vérifier",
+    body: "Si un voyageur a un problème (litige, dégradation, faux profil), tu peux le signaler ici. Tu peux aussi consulter les signalements faits par d'autres hôtes avant d'accepter une réservation.",
+  },
+]
+
+// Tour pour la page Revenus — saisir, agréger, exporter.
+export const REVENUS_STEPS: TourStep[] = [
+  {
+    id: 'intro',
+    targetSelector: null,
+    title: "Ta vue revenus, à ton rythme",
+    body: "Loyer, caution, ménage, taxe de séjour, commissions plateformes. Tout entré ici alimente automatiquement ton simulateur fiscal et tes performances.",
+  },
+  {
+    id: 'add',
+    targetSelector: '[data-tour="revenus-create"]',
+    title: "Ajouter une entrée",
+    body: "Tu peux saisir des revenus uniques (loyer encaissé) ou récurrents. L'app sait associer automatiquement à un séjour si la date colle.",
+  },
+  {
+    id: 'export',
+    targetSelector: null,
+    title: "Export pour ton comptable",
+    body: "À tout moment, télécharge tes revenus filtrés par année / mois / logement en CSV. Pratique pour ton compte annuel ou le bilan auto-entrepreneur.",
+  },
+]
+
+// Tour pour la page Encaissements (uniquement utile si Stripe Connect activé).
+export const ENCAISSEMENTS_STEPS: TourStep[] = [
+  {
+    id: 'intro',
+    targetSelector: null,
+    title: "Tes encaissements Stripe en temps réel",
+    body: "Tout ce que tu encaisses via Stripe (loyer, caution, paiements en lien) apparaît ici dès l'opération. Pas besoin d'ouvrir le dashboard Stripe.",
+  },
+  {
+    id: 'stats',
+    targetSelector: null,
+    title: "4 chiffres clés en haut",
+    body: "Solde disponible, prochain virement, encaissé du mois, paiements à relancer. Aperçu rapide en arrivant le matin.",
+  },
+  {
+    id: 'rappel',
+    targetSelector: null,
+    title: "Relance en 1 clic",
+    body: "Si un voyageur n'a pas payé et que son arrivée approche, un bouton « Rappel paiement » ouvre un email pré-rempli pour lui renvoyer le lien Stripe.",
+  },
+]
+
 // Tour pour la page Calendrier — focus sur la navigation + sync iCal + saisie
 // rapide (les 3 mécaniques que les hôtes mettent souvent du temps à découvrir).
 export const CALENDRIER_STEPS: TourStep[] = [
@@ -167,7 +255,7 @@ export default function OnboardingTour({
   userId: string
   forceOpen?: boolean
   steps?: TourStep[]
-  storageScope?: 'home' | 'simulateurs' | 'logements' | 'calendrier'
+  storageScope?: 'home' | 'simulateurs' | 'logements' | 'calendrier' | 'voyageurs' | 'revenus' | 'encaissements' | 'calculateurs'
 }) {
   const STEPS = steps
   const [active, setActive] = useState(false)
@@ -202,6 +290,17 @@ export default function OnboardingTour({
     const t = setTimeout(() => setActive(true), 700)
     return () => clearTimeout(t)
   }, [storageKey, forceOpen])
+
+  // Écoute le CustomEvent dispatché par TourTrigger pour relancer la visite
+  // depuis la MÊME page (le param URL seul ne re-déclenche pas le useEffect).
+  useEffect(() => {
+    function onForceOpen() {
+      setStepIdx(0)
+      setActive(true)
+    }
+    window.addEventListener('jm-tour-open', onForceOpen)
+    return () => window.removeEventListener('jm-tour-open', onForceOpen)
+  }, [])
 
   // Calcul position popover + autoskip si target absent
   const updatePosition = useCallback(() => {

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
 import { getEncaissementsSummary, deriveImpayes } from '@/lib/stripe/connect-queries'
 import EncaissementsView from './EncaissementsView'
+import OnboardingTour, { ENCAISSEMENTS_STEPS } from '../OnboardingTour'
 
 // Cache court de 30s : évite de marteler l'API Stripe quand l'hôte rafraîchit
 // la page plusieurs fois d'affilée. Un payout/charge ne va pas changer à la
@@ -40,10 +41,13 @@ export default async function EncaissementsPage() {
   const impayes = deriveImpayes(contracts ?? [])
 
   return (
-    <EncaissementsView
-      summary={stripeSummary}
-      impayes={impayes}
-      planLabel={profile.plan}
-    />
+    <>
+      <OnboardingTour userId={profile.userId} steps={ENCAISSEMENTS_STEPS} storageScope="encaissements" />
+      <EncaissementsView
+        summary={stripeSummary}
+        impayes={impayes}
+        planLabel={profile.plan}
+      />
+    </>
   )
 }

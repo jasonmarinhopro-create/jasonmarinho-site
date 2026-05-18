@@ -1,12 +1,8 @@
 'use client'
 
 // Bouton discret pour relancer une visite guidée à la demande.
-// Pose juste `?tour=1` dans l'URL — c'est OnboardingTour qui détecte ce param
-// et démarre la visite (déjà géré dans le composant).
-//
-// Pourquoi un bouton plutôt qu'auto-launch ? Le tour s'auto-déclenche une
-// seule fois (premier visit, mémorisé en localStorage). Après ça, c'est à
-// l'utilisateur de demander à le revoir. Ce bouton lui donne la porte d'entrée.
+// Émet un CustomEvent que OnboardingTour écoute, et pose aussi ?tour=1
+// dans l'URL pour qu'un share-link fonctionne aussi.
 
 import { useRouter, usePathname } from 'next/navigation'
 import { Sparkle } from '@phosphor-icons/react/dist/ssr'
@@ -16,8 +12,12 @@ export default function TourTrigger({ label = 'Comment ça marche ?' }: { label?
   const pathname = usePathname()
 
   function start() {
-    // Ajoute ?tour=1 à l'URL et reload soft — OnboardingTour réagit au param.
-    router.push(`${pathname}?tour=1`)
+    // 1. Met à jour l'URL (pour shareability) — replace, pas push, pour ne pas polluer l'historique
+    router.replace(`${pathname}?tour=1`, { scroll: false })
+    // 2. Notifie le OnboardingTour de la même page (le push URL seul ne re-trigger pas le useEffect)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('jm-tour-open'))
+    }
   }
 
   return (
