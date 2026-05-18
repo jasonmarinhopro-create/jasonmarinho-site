@@ -58,17 +58,17 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
       {
         key: 'voyageur',
         title: 'Crée ta première fiche voyageur',
-        description: 'Ton carnet de contacts pour les séjours et les contrats.',
+        description: 'Ton carnet de contacts pour les séjours et les contrats. La visite guidée te montre où signaler ou vérifier.',
         ctaLabel: 'Ajouter un voyageur',
-        ctaHref: '/dashboard/voyageurs',
+        ctaHref: '/dashboard/voyageurs?tour=1',
         detect: 'auto',
       },
       {
         key: 'sejour',
         title: 'Crée ton premier séjour',
-        description: 'Lie un logement, un voyageur et des dates dans le calendrier.',
+        description: 'Lie un logement, un voyageur et des dates dans le calendrier. La visite guidée t\'explique la sync iCal et la saisie rapide.',
         ctaLabel: 'Créer un séjour',
-        ctaHref: '/dashboard/calendrier',
+        ctaHref: '/dashboard/calendrier?tour=1',
         detect: 'auto',
       },
       {

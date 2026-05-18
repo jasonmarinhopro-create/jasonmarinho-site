@@ -34,6 +34,25 @@ export default function ConseilDuMoment({ conseil }: Props) {
 
   return (
     <div style={{ ...s.wrap, ...toneStyle.wrap }} data-tour="conseil">
+      <style>{`
+        @media (max-width: 640px) {
+          .conseil-body {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 14px !important;
+          }
+          .conseil-body > .conseil-text {
+            min-width: 0;
+            text-align: left;
+          }
+          .conseil-cta {
+            width: 100%;
+            justify-content: center;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+          }
+        }
+      `}</style>
       <div style={s.glow} aria-hidden />
       <div style={s.head}>
         <span style={{ ...s.tag, ...toneStyle.tag }}>
@@ -41,15 +60,15 @@ export default function ConseilDuMoment({ conseil }: Props) {
         </span>
       </div>
 
-      <div style={s.body}>
+      <div style={s.body} className="conseil-body">
         <div style={{ ...s.iconWrap, ...toneStyle.iconWrap }}>
           <Icon size={24} weight="duotone" />
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="conseil-text" style={{ flex: 1, minWidth: 0 }}>
           <h3 style={s.title}>{conseil.title}</h3>
           <p style={s.desc}>{conseil.body}</p>
         </div>
-        <Link href={conseil.ctaHref} style={{ ...s.cta, ...toneStyle.cta }}>
+        <Link href={conseil.ctaHref} className="conseil-cta" style={{ ...s.cta, ...toneStyle.cta }}>
           {conseil.ctaLabel}
           <ArrowRight size={12} weight="bold" />
         </Link>
