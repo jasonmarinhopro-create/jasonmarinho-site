@@ -6,9 +6,6 @@ import SignalementsAdmin from './SignalementsAdmin'
 export const metadata = { title: 'Signalements, Admin' }
 export const dynamic = 'force-dynamic'
 
-// Service client pour lire TOUS les signalements (la RLS sur reported_guests
-// limite à l'utilisateur courant pour les hôtes, ce qui rendait la vue admin
-// vide). Le check du rôle 'admin' est effectué juste au-dessus avant d'appeler.
 function getServiceClient(): SupabaseClient<any, 'public', any> {
   return createServiceClient<any, 'public', any>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,14 +26,17 @@ export default async function SignalementsAdminPage() {
     .single()
   if (profile?.role !== 'admin') redirect('/dashboard')
 
-  // Ici on est admin authentifié → service role pour bypasser RLS et voir tous les reports.
-  // Vérification env vars + log explicite si erreur — la page affichait 0 sans erreur
-  // visible côté UI, on veut voir le vrai message dans les logs Vercel.
+  // Diagnostic visible côté UI : si une de ces conditions est true, on affiche
+  // un banner explicite plutôt qu'un mystérieux "0" silencieux.
+  let diagnostic: { kind: 'env' | 'query' | 'empty'; msg: string } | null = null
+
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.error('[SignalementsAdminPage] SUPABASE_SERVICE_ROLE_KEY manquant dans les env vars Vercel')
+    diagnostic = { kind: 'env', msg: 'SUPABASE_SERVICE_ROLE_KEY manquant dans les env vars Vercel. Ajoute-le dans Vercel → Settings → Environment Variables.' }
+    return <SignalementsAdmin initialReports={[]} diagnostic={diagnostic} />
   }
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    console.error('[SignalementsAdminPage] NEXT_PUBLIC_SUPABASE_URL manquant dans les env vars Vercel')
+    diagnostic = { kind: 'env', msg: 'NEXT_PUBLIC_SUPABASE_URL manquant dans les env vars Vercel.' }
+    return <SignalementsAdmin initialReports={[]} diagnostic={diagnostic} />
   }
 
   const admin = getServiceClient()
@@ -46,11 +46,19 @@ export default async function SignalementsAdminPage() {
     .order('reported_at', { ascending: false })
     .limit(500)
 
+  console.log(`[SignalementsAdminPage] count=${count ?? 'n/a'} fetched=${reports?.length ?? 0} err=${reportsErr ? JSON.stringify(reportsErr) : 'none'}`)
+
   if (reportsErr) {
-    console.error('[SignalementsAdminPage] reported_guests SELECT failed:', JSON.stringify(reportsErr))
-  } else {
-    console.log(`[SignalementsAdminPage] OK · ${reports?.length ?? 0} rows fetched · total count=${count ?? 'n/a'}`)
+    diagnostic = {
+      kind: 'query',
+      msg: `Query SELECT échouée : ${reportsErr.message}${reportsErr.hint ? ` (hint: ${reportsErr.hint})` : ''}${reportsErr.code ? ` [code: ${reportsErr.code}]` : ''}`,
+    }
+  } else if ((reports?.length ?? 0) === 0 && (count ?? 0) === 0) {
+    diagnostic = {
+      kind: 'empty',
+      msg: 'La query a réussi mais la table reported_guests est vide. Si tu vois des reports dans Supabase Studio, vérifie le nom de la table.',
+    }
   }
 
-  return <SignalementsAdmin initialReports={reports ?? []} />
+  return <SignalementsAdmin initialReports={reports ?? []} diagnostic={diagnostic} />
 }
