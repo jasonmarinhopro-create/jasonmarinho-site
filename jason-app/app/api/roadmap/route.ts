@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { rateLimit } from '@/lib/security/rate-limit'
 
 export async function GET() {
   const supabase = await createClient()
@@ -17,6 +18,17 @@ export async function POST(req: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
+
+  // Rate-limit par utilisateur (contributeur abusif protection). Le check
+  // is_contributor en dessous bloque déjà la majorité, mais ceinture+bretelles
+  // au cas où un contributeur deviendrait malveillant : max 10 suggestions/heure.
+  const limit = await rateLimit('roadmap:submit', user.id, 10, 60 * 60 * 1000)
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: 'Trop de suggestions soumises. Reviens dans une heure.' },
+      { status: 429 },
+    )
+  }
 
   const { data: profile } = await supabase
     .from('profiles')

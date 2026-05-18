@@ -4,6 +4,10 @@
     {
       "path": "/api/cron/notifications-engine",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/ping-db",
+      "schedule": "0 3 */3 * *"
     }
   ]
 }
