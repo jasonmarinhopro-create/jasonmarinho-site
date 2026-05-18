@@ -14,8 +14,23 @@
  */
 
 import { unstable_cache } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import { extractCity } from '@/lib/lcd/market-benchmarks'
+
+// On utilise le service role client à l'intérieur de unstable_cache :
+// 1. Pas besoin de cookies() (interdit dans unstable_cache en Next 14.2+)
+// 2. On filtre toujours par user_id explicitement → équivalent RLS
+// 3. Le service role tolère d'être appelé hors contexte de requête
+let _service: SupabaseClient<any, 'public', any> | null = null
+function svc(): SupabaseClient<any, 'public', any> {
+  if (_service) return _service
+  _service = createServiceClient<any, 'public', any>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+  return _service
+}
 
 export type ClassementAtoutFrance = 'non_classe' | '1' | '2' | '3' | '4' | '5' | 'chambres_hotes'
 
@@ -52,7 +67,9 @@ export async function getDashboardPrefill(userId: string): Promise<LogementPrefi
 
   const cachedFetch = unstable_cache(
     async (uid: string): Promise<LogementPrefill[]> => {
-      const supabase = await createClient()
+      // Service role obligatoire ici : pas de cookies() dans unstable_cache.
+      // RLS bypassé mais on filtre par user_id explicitement (équivalent sécurité).
+      const supabase = svc()
       const [{ data: logements }, { data: sejours }] = await Promise.all([
         supabase
           .from('logements')
