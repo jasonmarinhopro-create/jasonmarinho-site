@@ -12,38 +12,53 @@ export type TourStep = {
   cta?: { label: string; href: string }
 }
 
-// Tour par défaut pour le dashboard home
+// Tour par défaut pour le dashboard home.
+// Chemin d'apprentissage : on commence par les ressources (Apprendre →
+// Formations / Guide / Actualités), puis le pilotage quotidien (Calendrier),
+// puis l'action concrète (la checklist). Volontairement on NE pousse PAS
+// directement vers les simulateurs — ils sont une option, pas la priorité.
 export const DASHBOARD_HOME_STEPS: TourStep[] = [
   {
     id: 'welcome',
     targetSelector: null,
-    title: "Bienvenue dans ton dashboard",
-    body: "On parcourt ensemble les trucs qui valent ton inscription. 45 secondes, tu peux skipper à tout moment.",
+    title: "Bienvenue dans ton espace LCD",
+    body: "60 secondes pour découvrir ton dashboard et savoir où trouver quoi. Tu peux skipper à tout moment.",
+  },
+  {
+    id: 'formations',
+    targetSelector: 'a[href="/dashboard/formations"]',
+    title: "Apprendre : les Formations",
+    body: "18 formations pour devenir un hôte qui maîtrise vraiment la LCD : juridique, fiscal, Booking, Airbnb, automatisation… Commence par là.",
+  },
+  {
+    id: 'guide',
+    targetSelector: 'a[href="/dashboard/guide"]',
+    title: "Le Guide LCD",
+    body: "Le manuel concret pour les vraies situations : un voyageur qui annule, un mauvais commentaire, un litige de caution… On a tout couvert.",
+  },
+  {
+    id: 'actualites',
+    targetSelector: 'a[href="/dashboard/actualites"]',
+    title: "Reste informé : Actualités",
+    body: "Changements de loi, nouvelles obligations fiscales, actualité Airbnb/Booking. Curé par Jason, pas du bruit de presse — uniquement ce qui te concerne.",
+  },
+  {
+    id: 'calendrier',
+    targetSelector: 'a[href="/dashboard/calendrier"]',
+    title: "Piloter au quotidien : Calendrier",
+    body: "Toutes tes arrivées, départs, séjours sans contrat. Synchronisé avec Airbnb et Booking via iCal. Le hub central de ton activité.",
   },
   {
     id: 'setup',
     targetSelector: '[data-tour="setup-checklist"]',
-    title: "Ta route en 5 étapes",
-    body: "Cette checklist t'amène d'un compte vide à un dashboard pleinement opérationnel. Elle disparaît automatiquement quand tu as fini.",
+    title: "Tes prochaines étapes concrètes",
+    body: "Cette checklist t'accompagne d'un compte vide à une utilisation pleine. Elle disparaît automatiquement quand tu as fini.",
   },
   {
-    id: 'conseil',
-    targetSelector: '[data-tour="conseil"]',
-    title: "Le Conseil du moment",
-    body: "Une recommandation personnalisée à chaque visite, basée sur tes vraies données. Tu sais toujours quoi faire ensuite.",
-  },
-  {
-    id: 'stats',
-    targetSelector: '[data-tour="dashboard-stats"]',
-    title: "Tes chiffres en direct",
-    body: "Arrivées du jour, revenus du mois, objectif annuel. Les KPI sont calculés en temps réel sur tes vrais séjours.",
-  },
-  {
-    id: 'simulateurs',
+    id: 'done',
     targetSelector: null,
-    title: "Tes simulateurs sont déjà préfilés",
-    body: "CA réel, ADR moyen, régime fiscal estimé. Les 5 simulateurs (Fiscalité, EI vs SASU, Rentabilité, Taxe séjour, Franchise TVA) s'ouvrent avec tes données, pas des valeurs génériques. Vois par toi-même.",
-    cta: { label: 'Découvrir les simulateurs', href: '/dashboard/simulateurs?tour=1' },
+    title: "Tu as la carte. Bonne route ✨",
+    body: "Tout le reste se découvre en cliquant. Une visite guidée se relance à ta première visite des pages importantes (Logements, Calendrier, Simulateurs), ou via le bouton « Comment ça marche ? » en haut de chaque page.",
   },
 ]
 
