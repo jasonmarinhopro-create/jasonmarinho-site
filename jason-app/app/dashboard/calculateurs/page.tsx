@@ -14,6 +14,19 @@ export default async function CalculateursPage() {
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
 
-  const prefill = await getDashboardPrefill(profile.userId)
-  return <CalculateursUI logementsPrefill={prefill} accountStats={computeAccountStats(prefill, profile)} />
+  // Try/catch défensif — voir simulateurs/page.tsx.
+  let prefill: PrefillType[] = []
+  let accountStats: ReturnType<typeof computeAccountStats> | undefined
+  try {
+    prefill = await getDashboardPrefill(profile.userId)
+  } catch (e) {
+    console.error('[CalculateursPage] getDashboardPrefill failed', e)
+  }
+  try {
+    accountStats = computeAccountStats(prefill, profile)
+  } catch (e) {
+    console.error('[CalculateursPage] computeAccountStats failed', e)
+  }
+
+  return <CalculateursUI logementsPrefill={prefill} accountStats={accountStats} />
 }

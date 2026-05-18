@@ -343,7 +343,15 @@ export default async function DashboardPage() {
   // ─── Conseil du moment : règle contextuelle prioritaire ─────────────
   // CA 12 mois glissants via cache partagé (déjà touché par /simulateurs
   // et /calculateurs : 60 s TTL, peut être déjà en cache)
-  const prefillForConseil = await getDashboardPrefill(userId)
+  // Try/catch défensif : si getDashboardPrefill jette (cache stale, schéma
+  // changé, etc.), on ne crashe pas la page entière — on perd juste l'info
+  // contextuelle du conseil.
+  let prefillForConseil: Awaited<ReturnType<typeof getDashboardPrefill>> = []
+  try {
+    prefillForConseil = await getDashboardPrefill(userId)
+  } catch (e) {
+    console.error('[DashboardPage] getDashboardPrefill failed', e)
+  }
   const caTotal12mForConseil = prefillForConseil.reduce(
     (sum, l) => sum + (l.stats?.revenuTotal ?? 0), 0
   )
