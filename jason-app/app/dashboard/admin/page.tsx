@@ -1,6 +1,17 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import AdminUI from './AdminUI'
+
+// Service client : la RLS limite chaque utilisateur à SES données (profile,
+// reports, etc.). Pour la vue admin on bypasse une fois l'auth admin vérifiée.
+function getServiceClient(): SupabaseClient<any, 'public', any> {
+  return createServiceClient<any, 'public', any>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+}
 
 export const metadata = { title: 'Administration, Jason Marinho' }
 
@@ -28,6 +39,10 @@ export default async function AdminPage() {
   twelveMonthsAgo.setDate(1)
   twelveMonthsAgo.setHours(0, 0, 0, 0)
 
+  // Service role pour bypasser RLS sur les lectures admin (profiles, reports,
+  // suggestions). Les agrégats count/list ne marchaient pas en user-context.
+  const admin = getServiceClient()
+
   const [
     { count: totalUsers },
     { count: driingMembers },
@@ -46,22 +61,22 @@ export default async function AdminPage() {
     { data: recentSignups },
     { data: monthlySignups },
   ] = await Promise.all([
-    supabase.from('profiles').select('*', { count: 'exact', head: true }),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'standard'),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()),
-    supabase.from('templates').select('*', { count: 'exact', head: true }),
-    supabase.from('formations').select('*', { count: 'exact', head: true }).eq('is_published', true),
-    supabase.from('community_groups').select('*', { count: 'exact', head: true }),
-    supabase.from('voyageurs').select('*', { count: 'exact', head: true }),
-    supabase.from('sejours').select('*', { count: 'exact', head: true }),
-    supabase.from('user_formations').select('*', { count: 'exact', head: true }).eq('progress', 100),
-    supabase.from('profiles').select('id, email, full_name, created_at, driing_status').eq('driing_status', 'pending').order('created_at', { ascending: false }).limit(100),
-    supabase.from('reported_guests').select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reported_at, description').order('reported_at', { ascending: false }).limit(100),
-    supabase.from('suggestions').select('id, type, message, user_email, created_at').order('created_at', { ascending: false }).limit(100),
-    supabase.from('user_formations').select('formation_id, formations(title)'),
-    supabase.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
-    supabase.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
+    admin.from('profiles').select('*', { count: 'exact', head: true }),
+    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
+    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'standard'),
+    admin.from('profiles').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()),
+    admin.from('templates').select('*', { count: 'exact', head: true }),
+    admin.from('formations').select('*', { count: 'exact', head: true }).eq('is_published', true),
+    admin.from('community_groups').select('*', { count: 'exact', head: true }),
+    admin.from('voyageurs').select('*', { count: 'exact', head: true }),
+    admin.from('sejours').select('*', { count: 'exact', head: true }),
+    admin.from('user_formations').select('*', { count: 'exact', head: true }).eq('progress', 100),
+    admin.from('profiles').select('id, email, full_name, created_at, driing_status').eq('driing_status', 'pending').order('created_at', { ascending: false }).limit(100),
+    admin.from('reported_guests').select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reported_at, description').order('reported_at', { ascending: false }).limit(100),
+    admin.from('suggestions').select('id, type, message, user_email, created_at').order('created_at', { ascending: false }).limit(100),
+    admin.from('user_formations').select('formation_id, formations(title)'),
+    admin.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
+    admin.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
   ])
 
   // Formation la plus commencée, tri par count desc puis titre alphabétique
