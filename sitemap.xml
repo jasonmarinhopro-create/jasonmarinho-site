@@ -941,6 +941,12 @@
 
   <!-- ── Blog ── -->
   <url>
+    <loc>https://jasonmarinho.com/blog/duree-minimum-sejour-airbnb-criteres-choisir</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/blog/demande-reduction-prix-airbnb-7-reponses-hote</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>monthly</changefreq>
