@@ -348,7 +348,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 }
 
 const s: Record<string, React.CSSProperties> = {
-  root: { maxWidth: '1200px', margin: '0 auto', padding: 'clamp(16px, 3vw, 28px)' },
+  root: { width: '100%', padding: 'clamp(16px, 3vw, 44px)' },
   header: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     flexWrap: 'wrap', gap: '14px', marginBottom: '20px',
