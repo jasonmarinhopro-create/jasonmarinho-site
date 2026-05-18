@@ -5,7 +5,6 @@ import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import { ToastProvider } from '@/components/ui/Toast'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
 import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
 import InstallAppWidget from '@/components/InstallAppWidget'
@@ -53,7 +52,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <ThemeProvider>
-      <ToastProvider>
       <div style={styles.layout}>
         {/* Sidebar et Header rendus une seule fois dans le layout, pas de re-mount entre navigations.
             Élimine le flicker du titre + économise 1 query Supabase par navigation. */}
@@ -91,7 +89,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
         )}
         <InstallAppWidget />
       </div>
-      </ToastProvider>
     </ThemeProvider>
   )
 }
