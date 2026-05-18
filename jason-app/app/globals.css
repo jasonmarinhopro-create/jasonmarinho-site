@@ -1015,6 +1015,31 @@ a { color: inherit; }
   }
 }
 
+/* ─── Fix iOS Safari auto-zoom on input focus ─────────────────────────
+ * iOS zoome automatiquement quand un input a font-size < 16px et que
+ * l'utilisateur le focus, et le zoom reste souvent après fermeture du
+ * clavier. Solution Apple-recommandée : forcer 16px sur mobile pour tous
+ * les inputs/textarea/select. !important pour override les inline styles
+ * (très nombreux dans le dashboard).
+ * ─────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  input[type="url"],
+  input[type="password"],
+  input[type="time"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input:not([type]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
 /* Dropdown hover states */
 .dash-dropdown a:hover,
 .dash-dropdown button:hover {
