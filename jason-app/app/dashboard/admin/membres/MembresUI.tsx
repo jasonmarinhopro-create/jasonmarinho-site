@@ -191,14 +191,16 @@ export default function MembresUI({ members }: { members: Member[] }) {
           { icon: <CurrencyEur size={16} />, value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR estimé', color: '#15803d' },
         ].map(({ icon, value, label, color }) => (
           <div key={label} style={s.statChip}>
-            <span style={{ color, lineHeight: 1 }}>{icon}</span>
+            <span style={{ color, lineHeight: 1, flexShrink: 0 }}>{icon}</span>
             <span style={{ ...s.statNum, color }}>{value}</span>
             <span style={s.statLabel}>{label}</span>
           </div>
         ))}
+      </div>
 
-        <div style={{ flex: 1 }} />
-
+      {/* ── Actions (export + nettoyage bots) — ligne dédiée pour ne pas
+          déborder de la stats row sur mobile ── */}
+      <div style={s.actionsRow}>
         <button onClick={exportCsv} style={s.exportBtn} title="Exporter la liste filtrée en CSV">
           <DownloadSimple size={13} weight="bold" />
           Exporter CSV
@@ -714,16 +716,19 @@ function FeedbackPill({ type, msg }: { type: 'ok'|'err'; msg: string }) {
 const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '20px' },
 
-  // Stats
+  // Stats — sur mobile (<=640px) grid 2 colonnes pour éviter le débordement
   statsRow: {
-    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+    gap: '10px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '14px 20px',
+    borderRadius: '14px', padding: 'clamp(12px, 2vw, 16px)',
   },
   statChip: {
     display: 'flex', alignItems: 'center', gap: '7px',
-    padding: '6px 12px', borderRadius: '10px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
+    padding: '8px 12px', borderRadius: '10px',
+    background: 'var(--bg-2)', border: '1px solid var(--border)',
+    minWidth: 0,
   },
   statNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500 },
   statLabel: { fontSize: '12px', color: 'var(--text-2)' },
@@ -742,6 +747,12 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-outfit), sans-serif',
   },
 
+  // Ligne d'actions (export + bots) — séparée de la stats row pour éviter
+  // le débordement mobile et le « liseré noir » causé par overflow-x.
+  actionsRow: {
+    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+  },
+
   // Filters
   filtersRow: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
   searchWrap: {
@@ -758,13 +769,10 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text-3)', display: 'flex', padding: '2px',
   },
   planTabs: {
-    display: 'flex', gap: '4px',
-    overflowX: 'auto' as const,
-    // Sur mobile, les 4 tabs débordent → scroll horizontal interne au
-    // lieu de pousser la page entière (qui créait un overflow visible).
-    scrollbarWidth: 'none' as const,
-    msOverflowStyle: 'none' as const,
-    paddingBottom: '2px',
+    // Sur mobile les 4 tabs débordaient → scroll horizontal qui créait un
+    // « liseré noir » sur le côté droit. Bascule en flex-wrap : les tabs
+    // se placent sur 2 lignes proprement sans débordement.
+    display: 'flex', gap: '6px', flexWrap: 'wrap' as const,
   },
   planTab: {
     display: 'flex', alignItems: 'center', gap: '7px',
