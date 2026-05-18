@@ -69,6 +69,71 @@ export const SIMULATEURS_STEPS: TourStep[] = [
   },
 ]
 
+// Tour pour la page Mes Logements — explique que c'est la SOURCE de tout
+// (préfilage simulateurs, contrats, iCal, Stripe). Volontairement court (4
+// étapes) car les mécaniques détaillées se découvrent en cliquant.
+export const LOGEMENTS_STEPS: TourStep[] = [
+  {
+    id: 'intro',
+    targetSelector: null,
+    title: "Tes logements = ta source de vérité",
+    body: "Tout part d'ici. Une fois tes biens créés, ils alimentent automatiquement tes contrats, tes simulateurs, ton calendrier et tes calculs marché.",
+  },
+  {
+    id: 'create',
+    targetSelector: '[data-tour="logement-create"]',
+    title: "Ajoute ton premier bien",
+    body: "Nom, ville, type, tarif moyen. Plus tu remplis, plus le préfilage est précis. Tu peux compléter au fil de l'eau.",
+  },
+  {
+    id: 'card',
+    targetSelector: '[data-tour="logement-list"]',
+    title: "Une fiche, plein d'options",
+    body: "Sur chaque fiche tu peux brancher Airbnb/Booking via iCal, activer le paiement Stripe, renseigner ton classement Atout France, ou mettre le bien en pause.",
+  },
+  {
+    id: 'done',
+    targetSelector: null,
+    title: "Tu peux gérer N logements depuis la même app",
+    body: "Pas de limite. Le dashboard agrège tout. Si tu loues plusieurs biens, c'est ici qu'ils vivent.",
+  },
+]
+
+// Tour pour la page Calendrier — focus sur la navigation + sync iCal + saisie
+// rapide (les 3 mécaniques que les hôtes mettent souvent du temps à découvrir).
+export const CALENDRIER_STEPS: TourStep[] = [
+  {
+    id: 'intro',
+    targetSelector: null,
+    title: "Ton calendrier centralise tout",
+    body: "Arrivées, départs, ménages, séjours sans contrat, événements iCal. Tout est ici, tu n'as plus à jongler entre Airbnb, Booking et tes notes.",
+  },
+  {
+    id: 'nav',
+    targetSelector: '[data-tour="calendrier-monthnav"]',
+    title: "Navigue par mois",
+    body: "Flèches gauche / droite pour bouger dans le temps. Clique sur un jour pour saisir un événement directement.",
+  },
+  {
+    id: 'view',
+    targetSelector: '[data-tour="calendrier-views"]',
+    title: "Vue mois ou vue liste",
+    body: "La vue mois donne le panorama. La vue liste te donne tous les événements à venir, scrollable, parfait sur mobile.",
+  },
+  {
+    id: 'sync',
+    targetSelector: '[data-tour="calendrier-ical"]',
+    title: "Branche Airbnb + Booking en 30 secondes",
+    body: "Colle l'URL iCal de chaque plateforme dans tes fiches logement. Les réservations apparaissent ici en temps quasi-réel, codées par couleur.",
+  },
+  {
+    id: 'done',
+    targetSelector: null,
+    title: "Pro tip : la saisie rapide",
+    body: "L'éclair en haut à droite te permet d'écrire \"Ménage demain 10h chez Belleville\" et l'événement se crée. Plus rapide qu'un formulaire.",
+  },
+]
+
 // Largeur du popover : 380px en desktop, sinon clamp à la viewport - margins.
 // Calculée dynamiquement au runtime pour gérer les rotations mobile.
 function getPopoverW(): number {
@@ -87,7 +152,7 @@ export default function OnboardingTour({
   userId: string
   forceOpen?: boolean
   steps?: TourStep[]
-  storageScope?: 'home' | 'simulateurs'
+  storageScope?: 'home' | 'simulateurs' | 'logements' | 'calendrier'
 }) {
   const STEPS = steps
   const [active, setActive] = useState(false)

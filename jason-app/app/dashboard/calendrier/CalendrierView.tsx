@@ -10,6 +10,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar } from './actions'
 import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning } from '@phosphor-icons/react/dist/ssr'
+import TourTrigger from '@/components/dashboard/TourTrigger'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import type { ContractEvent, IcalFeed, IcalEvent, SejourEvent, VoyageurOption, LogementOption } from './page'
@@ -1614,9 +1615,12 @@ export default function CalendrierView({
       {/* Page heading + résumé compact (1 ligne) avec toggle détails */}
       <div style={s.headerCompact} className="cal-header-compact">
         <div style={s.headerLeft}>
-          <h1 style={s.pageTitleSmall}>
-            Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
+            <h1 style={s.pageTitleSmall}>
+              Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
+            </h1>
+            <TourTrigger />
+          </div>
           <div style={s.summaryRow}>
             {headerStats.occupiedDays > 0 && (
               <button
@@ -1886,7 +1890,7 @@ export default function CalendrierView({
 
       {/* ── Top bar */}
       <div className="cal-topbar" style={s.topBar}>
-        <div style={s.monthNav}>
+        <div style={s.monthNav} data-tour="calendrier-monthnav">
           <button className="cal-nav-btn" onClick={prevMonth} style={s.navBtn}><CaretLeft size={15} /></button>
           <h2 className="cal-month-title" style={s.monthTitle}>
             {MONTHS_FR[month]}&nbsp;
@@ -1897,7 +1901,7 @@ export default function CalendrierView({
 
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const }}>
           {/* View mode toggle */}
-          <div style={s.viewToggle}>
+          <div style={s.viewToggle} data-tour="calendrier-views">
             <button
               onClick={() => setViewMode('month')}
               style={{ ...s.viewBtn, ...(viewMode === 'month' ? s.viewBtnActive : {}) }}
@@ -1917,7 +1921,7 @@ export default function CalendrierView({
           </div>
           {/* Chip sync iCal — visible si feeds configurés */}
           {icalFeeds.length > 0 && (
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} data-tour="calendrier-ical">
               {(() => {
                 const lastSync = icalFeeds
                   .map(f => f.last_synced)

@@ -6,6 +6,7 @@ import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Ke
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 import { COUNTRIES, ACTIVE_COUNTRIES, getCountry, type CountryCode } from '@/lib/countries'
+import TourTrigger from '@/components/dashboard/TourTrigger'
 
 const DEFAULT_ANNULATION =
   `En cas d'annulation par le locataire plus de 30 jours avant l'arrivée, l'acompte versé est remboursé intégralement. En cas d'annulation moins de 30 jours avant l'arrivée, l'acompte reste acquis au bailleur.`
@@ -410,14 +411,17 @@ export default function LogementsPage({ logements: initial }: Props) {
         {/* Header */}
         <div style={headerRow}>
           <div>
-            <h1 style={pageTitle}>
-              Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>logements</em>
-            </h1>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
+              <h1 style={pageTitle}>
+                Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>logements</em>
+              </h1>
+              <TourTrigger />
+            </div>
             <p style={pageSubtitle}>
               Créez des fiches pour chacun de vos biens, elles pré-rempliront automatiquement les contrats.
             </p>
           </div>
-          <button onClick={openCreate} style={addBtn}>
+          <button onClick={openCreate} style={addBtn} data-tour="logement-create">
             <Plus size={16} weight="bold" />
             Nouveau logement
           </button>
@@ -620,7 +624,7 @@ export default function LogementsPage({ logements: initial }: Props) {
 
         {/* Vue Cards */}
         {filteredLogements.length > 0 && viewMode === 'cards' && (
-          <div style={grid}>
+          <div style={grid} data-tour="logement-list">
             {filteredLogements.map(l => (
               <div
                 key={l.id}
