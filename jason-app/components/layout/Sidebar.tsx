@@ -61,11 +61,11 @@ const navGroups = [
 ]
 
 const adminMain = [
-  { href: '/dashboard/admin',              label: 'Vue d\'ensemble', Icon: Gear },
-  { href: '/dashboard/admin/membres',      label: 'Membres',         Icon: UsersThree },
-  { href: '/dashboard/admin/driing',       label: 'Membres Driing',  Icon: Heart },
-  { href: '/dashboard/admin/signalements', label: 'Signalements',    Icon: ShieldCheck },
-  { href: '/dashboard/admin/suggestions',  label: 'Suggestions',     Icon: ChatsCircle },
+  { href: '/dashboard/admin',         label: 'Vue d\'ensemble', Icon: Gear },
+  { href: '/dashboard/admin/membres', label: 'Membres',         Icon: UsersThree },
+  // QG : fusion de Membres Driing + Signalements + Suggestions en une
+  // seule page avec 3 tabs. Évite la dispersion sur 3 entrées sidebar.
+  { href: '/dashboard/admin/qg',      label: 'QG demandes',     Icon: ShieldCheck },
 ]
 
 const adminContent = [

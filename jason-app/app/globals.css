@@ -1040,6 +1040,22 @@ a { color: inherit; }
   }
 }
 
+/* ─── Garde-fou contre les overflow horizontaux qui causent un « liseré
+ *    sombre » sur le bord droit en mobile. Tout débordement horizontal
+ *    est clipé au niveau du body/html (déjà fait) ET de chaque page
+ *    dashboard pour éviter les artefacts visuels du scrollbar/edge sur
+ *    iOS Safari. ─────────────────────────────────────────────────────*/
+@media (max-width: 900px) {
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+  }
+  .dash-main {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+  }
+}
+
 /* Dropdown hover states */
 .dash-dropdown a:hover,
 .dash-dropdown button:hover {
