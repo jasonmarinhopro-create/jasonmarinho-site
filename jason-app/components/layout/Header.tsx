@@ -49,6 +49,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/guide': 'Guide LCD',
   '/dashboard/admin': 'Administration',
   '/dashboard/admin/membres': 'Membres',
+  '/dashboard/admin/qg': 'QG demandes',
   '/dashboard/admin/driing': 'Membres Driing',
   '/dashboard/admin/signalements': 'Signalements',
   '/dashboard/admin/suggestions': 'Suggestions',

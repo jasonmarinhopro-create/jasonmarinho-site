@@ -41,7 +41,13 @@ function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-export default function SignalementsAdmin({ initialReports }: { initialReports: Report[] }) {
+export default function SignalementsAdmin({
+  initialReports,
+  diagnostic = null,
+}: {
+  initialReports: Report[]
+  diagnostic?: { kind: 'env' | 'query' | 'empty'; msg: string } | null
+}) {
   const [reports, setReports] = useState(initialReports)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'pending' | 'validated'>('all')
@@ -129,6 +135,33 @@ export default function SignalementsAdmin({ initialReports }: { initialReports: 
       {normalizeMsg && (
         <div style={s.normalizeMsg}>
           <Check size={14} weight="bold" /> {normalizeMsg}
+        </div>
+      )}
+
+      {/* Diagnostic visible : env var manquante, erreur SQL, ou table vide.
+          Évite le mystère "tout à 0 sans explication". */}
+      {diagnostic && (
+        <div style={{
+          padding: '14px 16px',
+          marginBottom: '14px',
+          background: diagnostic.kind === 'empty' ? 'rgba(96,165,250,0.10)' : 'rgba(248,113,113,0.10)',
+          border: `1px solid ${diagnostic.kind === 'empty' ? 'rgba(96,165,250,0.30)' : 'rgba(248,113,113,0.30)'}`,
+          borderRadius: '12px',
+          display: 'flex', alignItems: 'flex-start', gap: '10px',
+          fontSize: '13px', color: 'var(--text)', lineHeight: 1.55,
+        }}>
+          <Warning size={18} weight="fill" style={{
+            color: diagnostic.kind === 'empty' ? '#60a5fa' : '#f87171',
+            flexShrink: 0, marginTop: '1px',
+          }} />
+          <div>
+            <strong style={{ display: 'block', marginBottom: '4px' }}>
+              {diagnostic.kind === 'env' && 'Configuration manquante'}
+              {diagnostic.kind === 'query' && 'Erreur de query Supabase'}
+              {diagnostic.kind === 'empty' && 'Aucun signalement en base'}
+            </strong>
+            <span style={{ color: 'var(--text-2)' }}>{diagnostic.msg}</span>
+          </div>
         </div>
       )}
 
