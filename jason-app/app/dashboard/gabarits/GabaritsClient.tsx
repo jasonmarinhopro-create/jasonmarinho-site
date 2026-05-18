@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import {
   Copy, Check, MagnifyingGlass, PencilSimple, X,
   CalendarCheck, House, SunHorizon, ArrowRight,
-  Star, CaretDown, CaretUp, PushPin, Sparkle, DotsThreeVertical,
+  Star, CaretDown, CaretUp, PushPin, Sparkle, DotsThreeVertical, DotsSixVertical,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
 import type { LogementOption, NextContractInfo } from './page'
@@ -331,6 +331,9 @@ export default function GabaritsClient({
   }
   const [expandedBuckets, setExpandedBuckets] = useState<Set<TimingBucket>>(new Set())
   const [expandedHeroCards, setExpandedHeroCards] = useState<Set<string>>(new Set())
+  // État drag-and-drop pour réordonner les messages épinglés d'un bucket
+  const [drag, setDrag] = useState<{ bucket: TimingBucket; fromIdx: number } | null>(null)
+  const [dragOverIdx, setDragOverIdx] = useState<{ bucket: TimingBucket; idx: number } | null>(null)
 
   function toggleHeroExpand(templateId: string) {
     setExpandedHeroCards(prev => {
@@ -429,6 +432,23 @@ export default function GabaritsClient({
     const next = [...list]
     const [removed] = next.splice(idx, 1)
     next.splice(newIdx, 0, removed)
+    updatePinnedBucket(bucket, next)
+    await persistPinnedOrder(bucket, next)
+  }
+
+  // Drag-and-drop : place un message épinglé à une nouvelle position absolue
+  // dans son bucket. Persistance via persistPinnedOrder (UPDATE position en
+  // batch). Pas de re-render pessimiste : on update tout de suite côté state.
+  async function moveToPosition(bucket: TimingBucket, fromIdx: number, toIdx: number) {
+    if (fromIdx === toIdx) return
+    const list = pinned[bucket]
+    if (fromIdx < 0 || fromIdx >= list.length) return
+    if (toIdx < 0 || toIdx > list.length) return
+    const next = [...list]
+    const [moved] = next.splice(fromIdx, 1)
+    // Si on déplace vers le bas, l'index cible se décale de -1 après splice
+    const adjusted = toIdx > fromIdx ? toIdx - 1 : toIdx
+    next.splice(adjusted, 0, moved)
     updatePinnedBucket(bucket, next)
     await persistPinnedOrder(bucket, next)
   }
@@ -900,28 +920,67 @@ export default function GabaritsClient({
                     </div>
                   </div>
 
-                  {/* Liste de hero cards compactes (1, 2, 3...) */}
+                  {/* Liste de hero cards compactes (1, 2, 3...) — drag-and-drop
+                      activé seulement sur les épinglés (pas sur les suggestions). */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {heroes.map((t, idx) => (
-                      <CompactHeroCard
-                        key={t.id}
-                        template={t}
-                        bucket={bucket}
-                        isPinned={hasPins}
-                        position={hasPins ? idx + 1 : null}
-                        totalPinned={hasPins ? pinnedList.length : 0}
-                        customization={customizations[t.id]}
-                        copied={copied}
-                        onCopy={copyTemplate}
-                        onCustomize={openCustomize}
-                        onAdd={!hasPins ? () => addPin(t.id, bucket) : undefined}
-                        onRemove={hasPins ? () => removePin(t.id, bucket) : undefined}
-                        onMoveUp={hasPins && idx > 0 ? () => movePin(bucket, t.id, -1) : undefined}
-                        onMoveDown={hasPins && idx < pinnedList.length - 1 ? () => movePin(bucket, t.id, 1) : undefined}
-                        isExpanded={expandedHeroCards.has(t.id)}
-                        onToggleExpand={() => toggleHeroExpand(t.id)}
-                      />
-                    ))}
+                    {heroes.map((t, idx) => {
+                      const isDragging = drag?.bucket === bucket && drag?.fromIdx === idx
+                      const isDragOver = dragOverIdx?.bucket === bucket && dragOverIdx?.idx === idx && drag?.bucket === bucket && drag?.fromIdx !== idx
+                      return (
+                        <div
+                          key={t.id}
+                          draggable={hasPins}
+                          onDragStart={hasPins ? (e) => {
+                            setDrag({ bucket, fromIdx: idx })
+                            e.dataTransfer.effectAllowed = 'move'
+                            // Image fantôme par défaut OK ; rien à customiser ici
+                          } : undefined}
+                          onDragEnd={() => { setDrag(null); setDragOverIdx(null) }}
+                          onDragOver={hasPins ? (e) => {
+                            if (!drag || drag.bucket !== bucket) return
+                            e.preventDefault()
+                            e.dataTransfer.dropEffect = 'move'
+                            if (dragOverIdx?.bucket !== bucket || dragOverIdx?.idx !== idx) {
+                              setDragOverIdx({ bucket, idx })
+                            }
+                          } : undefined}
+                          onDrop={hasPins ? (e) => {
+                            e.preventDefault()
+                            if (!drag || drag.bucket !== bucket) return
+                            const toIdx = idx > drag.fromIdx ? idx + 1 : idx
+                            moveToPosition(bucket, drag.fromIdx, toIdx)
+                            setDrag(null)
+                            setDragOverIdx(null)
+                          } : undefined}
+                          style={{
+                            opacity: isDragging ? 0.4 : 1,
+                            transition: 'opacity .15s, transform .15s',
+                            // Visuel de drop : trait coloré au-dessus de la card cible
+                            borderTop: isDragOver ? `2px solid ${cfg.color}` : '2px solid transparent',
+                            paddingTop: isDragOver ? '4px' : 0,
+                          }}
+                        >
+                          <CompactHeroCard
+                            template={t}
+                            bucket={bucket}
+                            isPinned={hasPins}
+                            position={hasPins ? idx + 1 : null}
+                            totalPinned={hasPins ? pinnedList.length : 0}
+                            customization={customizations[t.id]}
+                            copied={copied}
+                            onCopy={copyTemplate}
+                            onCustomize={openCustomize}
+                            onAdd={!hasPins ? () => addPin(t.id, bucket) : undefined}
+                            onRemove={hasPins ? () => removePin(t.id, bucket) : undefined}
+                            onMoveUp={hasPins && idx > 0 ? () => movePin(bucket, t.id, -1) : undefined}
+                            onMoveDown={hasPins && idx < pinnedList.length - 1 ? () => movePin(bucket, t.id, 1) : undefined}
+                            isExpanded={expandedHeroCards.has(t.id)}
+                            onToggleExpand={() => toggleHeroExpand(t.id)}
+                            isDraggable={hasPins}
+                          />
+                        </div>
+                      )
+                    })}
                   </div>
 
                   {/* Inspirations repliable */}
@@ -1043,7 +1102,7 @@ export default function GabaritsClient({
             </div>
 
             {/* Indicateur "X variables déjà pré-remplies depuis ton dashboard" */}
-            {fillTemplate.autoFilledCount && fillTemplate.autoFilledCount > 0 && (
+            {(fillTemplate.autoFilledCount ?? 0) > 0 && (
               <div style={{
                 margin: '0 24px 4px',
                 padding: '10px 12px',
@@ -1220,11 +1279,14 @@ interface HeroCardProps {
   onMoveDown?:   () => void
   isExpanded:    boolean
   onToggleExpand: () => void
+  // Affiche la poignée de drag (≡) — pour le drag-and-drop activé sur les épinglés
+  isDraggable?:  boolean
 }
 
 function CompactHeroCard({
   template: t, bucket, isPinned, position, totalPinned, customization, copied,
   onCopy, onCustomize, onAdd, onRemove, onMoveUp, onMoveDown, isExpanded, onToggleExpand,
+  isDraggable,
 }: HeroCardProps) {
   const [lang, setLang] = useState<'fr' | 'en'>('fr')
   const [menuOpen, setMenuOpen] = useState(false)
@@ -1279,6 +1341,25 @@ function CompactHeroCard({
           minHeight: '48px',
         }}
       >
+        {/* Poignée de drag — visible seulement pour les messages épinglés
+            (draggables). Curseur grab pour signaler l'interaction. */}
+        {isDraggable && (
+          <span
+            aria-hidden="true"
+            title="Glisser pour réordonner"
+            style={{
+              color: 'var(--text-muted)',
+              cursor: 'grab',
+              display: 'flex', alignItems: 'center',
+              flexShrink: 0,
+              padding: '0 2px',
+              marginLeft: '-4px',
+            }}
+          >
+            <DotsSixVertical size={16} weight="bold" />
+          </span>
+        )}
+
         {/* Numéro de position si épinglé, sinon petite icône type */}
         {isPinned && position ? (
           <span style={{
@@ -1401,16 +1482,28 @@ function CompactHeroCard({
               )}
             </div>
           )}
-
-          {/* Caret expand */}
-          <span style={{
-            color: 'var(--text-muted)', display: 'flex', flexShrink: 0,
-            padding: '4px 2px',
-            transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'none',
-          }}>
-            <CaretDown size={12} />
-          </span>
         </div>
+
+        {/* Caret expand — bouton dédié EN DEHORS du conteneur stopPropagation
+            pour que le clic dessus (et autour) déclenche bien le toggle.
+            Avant : le caret était dans le wrapper actions et nécessitait un
+            tir précis à droite. */}
+        <button
+          type="button"
+          onClick={e => { e.stopPropagation(); onToggleExpand() }}
+          aria-label={isExpanded ? 'Réduire le message' : 'Voir le message'}
+          aria-expanded={isExpanded}
+          style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: '32px', height: '32px', borderRadius: '8px',
+            background: 'transparent', border: '1px solid var(--border)',
+            color: 'var(--text-2)', cursor: 'pointer', flexShrink: 0,
+            transition: 'transform 0.2s, background 0.15s',
+            transform: isExpanded ? 'rotate(180deg)' : 'none',
+          }}
+        >
+          <CaretDown size={13} weight="bold" />
+        </button>
       </div>
 
       {/* Collapsed : preview compact 2 lignes sous le titre (sans Copier dupliqué) */}
@@ -1849,7 +1942,7 @@ const s: Record<string, React.CSSProperties> = {
 
   overlay: {
     position: 'fixed' as const, inset: 0, zIndex: 900,
-    background: 'rgba(0, 12, 8, 0.78)',
+    background: 'rgba(0, 8, 5, 0.96)',
     display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
   },
   modal: {
