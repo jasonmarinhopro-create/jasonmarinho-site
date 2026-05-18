@@ -1,6 +1,7 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import CalendrierView from './CalendrierView'
+import OnboardingTour, { CALENDRIER_STEPS } from '../OnboardingTour'
 
 export interface ContractEvent {
   id: string
@@ -180,6 +181,7 @@ export default async function CalendrierPage() {
 
   return (
     <>
+      <OnboardingTour userId={userId} steps={CALENDRIER_STEPS} storageScope="calendrier" />
       <CalendrierView
         events={events ?? []}
         contractEvents={contractEvents}
