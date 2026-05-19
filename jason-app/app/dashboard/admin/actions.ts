@@ -19,19 +19,29 @@ function getServiceClient() {
   )
 }
 
+// getAdminClient : vérifie le rôle admin via le client SSR (cookies),
+// puis retourne le SERVICE ROLE client pour bypasser la RLS sur les
+// opérations admin (UPDATE/DELETE de rows appartenant à d'autres users).
+//
+// Auparavant, on retournait le client SSR → toutes les actions
+// UPDATE/DELETE sur reported_guests, suggestions, etc. étaient
+// silencieusement bloquées par la RLS (qui limite à reporter_id =
+// auth.uid()). Les actions paraissaient OK côté UI (optimiste) mais la
+// DB n'était jamais modifiée — bug invisible.
 async function getAdminClient() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const ssr = await createClient()
+  const { data: { user } } = await ssr.auth.getUser()
   if (!user) return { error: 'Non authentifié', supabase: null }
 
-  const { data: profile } = await supabase
+  const { data: profile } = await ssr
     .from('profiles')
     .select('role')
     .eq('id', user.id)
     .single()
 
   if (profile?.role !== 'admin') return { error: 'Non autorisé', supabase: null }
-  return { error: null, supabase }
+  // Admin confirmé : on retourne le service client pour bypass RLS.
+  return { error: null, supabase: getServiceClient() }
 }
 
 async function sendDriingConfirmationEmail(userEmail: string, userName: string | null) {
