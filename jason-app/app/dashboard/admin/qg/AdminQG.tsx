@@ -11,13 +11,14 @@ import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft, Check, X, EnvelopeSimple, Trash, MagnifyingGlass,
-  Crown, Clock, CheckCircle, Warning, Lightbulb, GraduationCap, Handshake,
+  Crown, CheckCircle, Warning, Lightbulb, GraduationCap, Handshake,
   ShieldStar, Heart,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   confirmDriingMember, rejectDriingMember,
-  validateReport, deleteReport, deleteSuggestion,
+  deleteSuggestion,
 } from '../actions'
+import SignalementsAdmin from '../signalements/SignalementsAdmin'
 
 // ─── Types ────────────────────────────────────────────────────────────
 interface DriingMember {
@@ -33,7 +34,7 @@ interface Report {
   is_validated: boolean
   reporter_city: string | null; reporter_id: string | null
   reported_at: string; description: string | null
-  created_at: string | null
+  created_at?: string | null
 }
 interface Suggestion {
   id: string; type: string; message: string
@@ -111,29 +112,9 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
     })
   }
 
-  // ── Reports actions ──
-  function reportValidate(id: string) {
-    setReports(prev => prev.map(r => r.id === id ? { ...r, is_validated: true } : r))
-    startT(async () => {
-      const res = await validateReport(id)
-      if (res?.error) {
-        setReports(prev => prev.map(r => r.id === id ? { ...r, is_validated: false } : r))
-        notify(id, 'err', `Erreur : ${res.error}`)
-      } else {
-        notify(id, 'ok', 'Validé ✓')
-      }
-    })
-  }
-  function reportDelete(id: string) {
-    if (!confirm('Supprimer ce signalement définitivement ?')) return
-    const snap = reports
-    setReports(prev => prev.filter(r => r.id !== id))
-    startT(async () => {
-      const res = await deleteReport(id)
-      if (res?.error) { setReports(snap); notify(id, 'err', `Erreur : ${res.error}`) }
-      else notify(id, 'ok', 'Supprimé')
-    })
-  }
+  // ── Reports : actions gérées en interne par SignalementsAdmin embedded
+  //    (on lui passe juste initialReports). On garde `reports` ici pour le
+  //    count du badge tab uniquement.
 
   // ── Suggestions actions ──
   function suggestionDelete(id: string) {
@@ -153,12 +134,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
     if (!q) return true
     return (m.email ?? '').toLowerCase().includes(q) || (m.full_name ?? '').toLowerCase().includes(q)
   }), [driing, q])
-  const filteredReports = useMemo(() => reports.filter(r => {
-    if (!q) return true
-    return (r.identifier ?? '').toLowerCase().includes(q) ||
-           (r.name ?? '').toLowerCase().includes(q) ||
-           (r.description ?? '').toLowerCase().includes(q)
-  }), [reports, q])
+  // Reports : filtrage géré dans SignalementsAdmin embedded
   const filteredSuggestions = useMemo(() => suggestions.filter(s => {
     if (!q) return true
     return (s.message ?? '').toLowerCase().includes(q) ||
@@ -213,20 +189,21 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
         />
       </div>
 
-      {/* Search */}
-      <div style={s.searchWrap}>
-        <MagnifyingGlass size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-        <input
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder={
-            tab === 'driing'      ? 'Email ou nom…'
-            : tab === 'reports'   ? 'Numéro, email, nom, description…'
-            : 'Message, email…'
-          }
-          style={s.searchInput}
-        />
-      </div>
+      {/* Search — masquée sur le tab "reports" (la console embedded
+          SignalementsAdmin a sa propre recherche + filtres en interne) */}
+      {tab !== 'reports' && (
+        <div style={s.searchWrap}>
+          <MagnifyingGlass size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder={
+              tab === 'driing' ? 'Email ou nom…' : 'Message, email…'
+            }
+            style={s.searchInput}
+          />
+        </div>
+      )}
 
       {/* ── DRIING ── */}
       {tab === 'driing' && (
@@ -287,56 +264,12 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
         </div>
       )}
 
-      {/* ── REPORTS ── */}
+      {/* ── REPORTS ── On embed la console riche /admin/signalements (KPIs,
+          filtres En attente/Validés, bouton Normaliser, édition d'identifiant,
+          actions Valider/Supprimer). embedded=true masque son header pour
+          éviter le doublon avec le titre du QG. */}
       {tab === 'reports' && (
-        <div style={s.list}>
-          {filteredReports.length === 0 ? (
-            <Empty label="Aucun signalement." />
-          ) : filteredReports.map(r => {
-            const fb = feedback?.id === r.id ? feedback : null
-            return (
-              <div key={r.id} style={s.row}>
-                <div style={s.rowMain}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={s.cellTitle}>{r.name || r.identifier}</div>
-                    <div style={s.cellSub}>{r.identifier_type} · {r.identifier}</div>
-                    {r.description && (
-                      <div style={{ fontSize: '12px', color: 'var(--text-2)', marginTop: '6px', lineHeight: 1.5 }}>
-                        {r.description.length > 200 ? r.description.slice(0, 200) + '…' : r.description}
-                      </div>
-                    )}
-                    <div style={s.cellMeta}>
-                      {r.incident_type ?? 'Incident'} · {r.reporter_city ?? '—'} · {fmtDate(r.reported_at)}
-                    </div>
-                  </div>
-                  {r.is_validated ? (
-                    <span style={{ ...s.badge, background: 'rgba(52,211,153,.1)', color: 'var(--success-1)', border: '1px solid rgba(52,211,153,.2)' }}>
-                      <CheckCircle size={11} weight="fill" /> Validé
-                    </span>
-                  ) : (
-                    <span style={{ ...s.badge, background: 'rgba(251,146,60,.1)', color: '#fb923c', border: '1px solid rgba(251,146,60,.2)' }}>
-                      <Clock size={11} weight="fill" /> En attente
-                    </span>
-                  )}
-                </div>
-                <div style={s.rowActions}>
-                  {fb ? <FbPill fb={fb} /> : (
-                    <>
-                      {!r.is_validated && (
-                        <button onClick={() => reportValidate(r.id)} disabled={isPending} style={{ ...s.btn, ...s.btnConfirm }}>
-                          <Check size={13} weight="bold" /> Valider
-                        </button>
-                      )}
-                      <button onClick={() => reportDelete(r.id)} disabled={isPending} style={{ ...s.btn, ...s.btnReject }}>
-                        <Trash size={13} weight="bold" /> Supprimer
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+        <SignalementsAdmin initialReports={reports} embedded />
       )}
 
       {/* ── SUGGESTIONS ── */}

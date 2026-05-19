@@ -19,7 +19,7 @@ interface Report {
   reporter_id: string | null
   reported_at: string
   description: string | null
-  created_at: string | null
+  created_at?: string | null
 }
 
 const INCIDENT_TYPES = [
@@ -44,9 +44,14 @@ function fmtDate(iso: string) {
 export default function SignalementsAdmin({
   initialReports,
   diagnostic = null,
+  embedded = false,
 }: {
   initialReports: Report[]
   diagnostic?: { kind: 'env' | 'query' | 'empty'; msg: string } | null
+  // Mode embarqué dans la page QG : on retire le header (titre + backlink)
+  // car le QG a déjà son propre header. Tout le reste (KPIs, filtres,
+  // normalize, edit) reste actif.
+  embedded?: boolean
 }) {
   const [reports, setReports] = useState(initialReports)
   const [search, setSearch] = useState('')
@@ -112,25 +117,42 @@ export default function SignalementsAdmin({
   }
 
   return (
-    <div style={s.root}>
-      <header style={s.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const }}>
-          <Link href="/dashboard/admin" style={s.backLink}>
-            <ArrowLeft size={13} weight="bold" />
-            Admin
-          </Link>
-          <h1 style={s.title}>Signalements</h1>
+    <div style={embedded ? s.rootEmbedded : s.root}>
+      {!embedded && (
+        <header style={s.header}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const }}>
+            <Link href="/dashboard/admin" style={s.backLink}>
+              <ArrowLeft size={13} weight="bold" />
+              Admin
+            </Link>
+            <h1 style={s.title}>Signalements</h1>
+          </div>
+          <button
+            onClick={handleBatchNormalize}
+            disabled={isPending}
+            style={s.normalizeBtn}
+            title="Réécrit tous les identifiants au format propre (vire les . en fin, ajoute +33 aux FR sans préfixe…)"
+          >
+            <Sparkle size={13} weight="fill" />
+            Normaliser tous les identifiants
+          </button>
+        </header>
+      )}
+
+      {/* Quand embedded : bouton Normaliser seul, sans le titre/backlink */}
+      {embedded && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+          <button
+            onClick={handleBatchNormalize}
+            disabled={isPending}
+            style={s.normalizeBtn}
+            title="Réécrit tous les identifiants au format propre"
+          >
+            <Sparkle size={13} weight="fill" />
+            Normaliser tous les identifiants
+          </button>
         </div>
-        <button
-          onClick={handleBatchNormalize}
-          disabled={isPending}
-          style={s.normalizeBtn}
-          title="Réécrit tous les identifiants au format propre (vire les . en fin, ajoute +33 aux FR sans préfixe…)"
-        >
-          <Sparkle size={13} weight="fill" />
-          Normaliser tous les identifiants
-        </button>
-      </header>
+      )}
 
       {normalizeMsg && (
         <div style={s.normalizeMsg}>
@@ -382,6 +404,8 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 
 const s: Record<string, React.CSSProperties> = {
   root: { width: '100%', padding: 'clamp(16px, 3vw, 44px)' },
+  // Mode embedded : pas de padding ni de container (déjà fourni par QG)
+  rootEmbedded: { width: '100%', display: 'flex', flexDirection: 'column' as const, gap: '14px' },
   header: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     flexWrap: 'wrap', gap: '14px', marginBottom: '20px',

@@ -1,12 +1,25 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml } from '@/lib/email/template'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
+
+// Service role pour lecture des signalements validés communauté-wide. La RLS
+// limite chaque hôte à ses propres reports, ce qui casserait la fonctionnalité
+// "recherche dans la base communautaire". On vérifie l'auth de l'utilisateur
+// AVANT de bypasser la RLS pour le SELECT lecture seule.
+function getServiceClient(): SupabaseClient<any, 'public', any> {
+  return createServiceClient<any, 'public', any>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+}
 
 export async function searchGuest(query: string): Promise<{
   results: Array<{
@@ -25,13 +38,17 @@ export async function searchGuest(query: string): Promise<{
     return { results: [], error: 'Entrez au moins 3 caractères.' }
   }
 
+  // Vérification auth via le client user-context (RLS active)
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { results: [], error: 'Non authentifié.' }
 
   const q = query.trim().toLowerCase().replace(/[%_\\,]/g, '\\$&')
 
-  const { data, error } = await supabase
+  // Recherche via service role : la base de signalements est communautaire,
+  // chaque hôte authentifié doit pouvoir y chercher (pas juste ses reports).
+  const admin = getServiceClient()
+  const { data, error } = await admin
     .from('reported_guests')
     .select('id, identifier, identifier_type, name, incident_type, description, reported_at, reporter_city')
     .or(`identifier.ilike.%${q}%,name.ilike.%${q}%`)

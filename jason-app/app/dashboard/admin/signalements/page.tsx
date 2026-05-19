@@ -42,7 +42,7 @@ export default async function SignalementsAdminPage() {
   const admin = getServiceClient()
   const { data: reports, error: reportsErr, count } = await admin
     .from('reported_guests')
-    .select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reporter_id, reported_at, description, created_at', { count: 'exact' })
+    .select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reporter_id, reported_at, description', { count: 'exact' })
     .order('reported_at', { ascending: false })
     .limit(500)
 
