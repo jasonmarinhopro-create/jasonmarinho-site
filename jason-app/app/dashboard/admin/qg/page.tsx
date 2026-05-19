@@ -41,7 +41,7 @@ export default async function AdminQGPage() {
       .limit(500),
     admin
       .from('reported_guests')
-      .select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reporter_id, reported_at, description, created_at')
+      .select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reporter_id, reported_at, description')
       .order('reported_at', { ascending: false })
       .limit(500),
     admin

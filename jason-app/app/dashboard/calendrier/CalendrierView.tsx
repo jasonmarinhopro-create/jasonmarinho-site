@@ -983,6 +983,12 @@ export default function CalendrierView({
     if (filter === 'menages' || filter === 'rdv-tache') return false
     if (hiddenSources.has(e.feed_color)) return false
     if (q && !matchesSearch(e.title, e.description)) return false
+    // Filtre les blocages auto "Not available" / "Closed" / "Blocked"
+    // que Airbnb/Booking génèrent automatiquement chaque jour pour
+    // empêcher les réservations same-day. Du bruit pur sans valeur info.
+    // Les vraies réservations (avec description "Reservation URL" ou "CN=")
+    // continuent à s'afficher normalement.
+    if (!isRealReservation(e)) return false
     return true
   }), [icalEvents, filter, q, hiddenSources])
 
