@@ -17,6 +17,8 @@
   <meta property="og:site_name" content="Jason Marinho">
   <meta name="robots" content="index, follow">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap">
@@ -187,6 +189,9 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Pourquoi le prix conseillé varie selon Airbnb, Booking ou direct ?","acceptedAnswer":{"@type":"Answer","text":"Les commissions sont très différentes : Booking prend 15 % sur le prix affiché, Airbnb prélève environ 3 % côté hôte (host-only fees), le direct = 0 %. Pour encaisser la même somme nette, tu dois afficher des prix légèrement différents par canal. Le calculateur le fait automatiquement."}},{"@type":"Question","name":"Comment est calculé le prix recommandé ?","acceptedAnswer":{"@type":"Answer","text":"On part de l'ADR moyen LCD de ta ville (sources INSEE, DGE, INE, Turismo de Portugal). On ajuste selon le type de bien, le mois (haute saison ×1.25, basse ×0.85, neutre ×1.0) et le canal pour neutraliser la commission. On donne le prix base, le prix weekend (+20 %) et la fourchette min/max."}},{"@type":"Question","name":"Quelle est la différence entre prix semaine et prix weekend ?","acceptedAnswer":{"@type":"Answer","text":"Les hôtes LCD pratiquent un premium weekend de 20 à 40 % par rapport à la semaine. Vendredi et samedi sont les nuits les plus demandées, surtout en ville. Notre calculateur applique automatiquement un +20 % weekend, à ajuster selon ta concurrence locale."}}]}</script>
   <script defer src="/nav.js"></script>
   <script defer src="/calculateurs/engine.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":200,"height":200},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
+</script>
 </head>
 <body>
 <header class="hero">

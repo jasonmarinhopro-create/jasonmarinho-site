@@ -1,0 +1,36 @@
+{
+  "name": "Jason Marinho — Expert LCD",
+  "short_name": "Jason Marinho",
+  "description": "Formations pratiques, ressources et accompagnement pour développer son activité de location courte durée.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#ECF5EF",
+  "theme_color": "#004C3F",
+  "lang": "fr-FR",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.webp",
+      "sizes": "200x200",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ]
+}
