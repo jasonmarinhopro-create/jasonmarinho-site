@@ -30,7 +30,19 @@ if (fs.existsSync(gridFile)) {
   if (match) DECOUVERTE_SLOTS = parseInt(match[1], 10)
 }
 
-console.log(`[sync-counts] ${TOTAL_FORMATIONS} formations · ${DECOUVERTE_SLOTS} slots gratuits Découverte`)
+// ── 1bis. Lit le total de places fondateur (source de vérité unique) ──────
+// Le compteur RESTANT est dynamique (/api/founder-seats), mais le TOTAL (50)
+// est hardcodé. On le lit depuis lib/constants/founder.ts pour aligner la
+// page statique /tarifs et éviter le drift.
+const founderConstFile = path.join(ROOT, 'jason-app/lib/constants/founder.ts')
+let FOUNDER_TOTAL = 50
+if (fs.existsSync(founderConstFile)) {
+  const f = fs.readFileSync(founderConstFile, 'utf8')
+  const m = f.match(/FOUNDER_TOTAL_SEATS\s*=\s*(\d+)/)
+  if (m) FOUNDER_TOTAL = parseInt(m[1], 10)
+}
+
+console.log(`[sync-counts] ${TOTAL_FORMATIONS} formations · ${DECOUVERTE_SLOTS} slots gratuits Découverte · ${FOUNDER_TOTAL} places fondateur`)
 
 // ── 2. Génère le fichier de constantes pour jason-app ─────────────────────
 const constantsDir = path.join(ROOT, 'jason-app/lib/constants')
@@ -82,6 +94,29 @@ for (const rel of FILES_TO_UPDATE) {
     fs.writeFileSync(file, after)
     totalEdits++
     console.log(`[sync-counts] ✓ ${rel}`)
+  }
+}
+
+// ── 4. Synchronise le TOTAL de places fondateur sur /tarifs ───────────────
+// Idempotent : remplace les références au total par FOUNDER_TOTAL. Le RESTANT
+// (data-founder-remaining) n'est PAS touché ici — il est mis à jour côté
+// client par le fetch /api/founder-seats. On ne touche QUE le total.
+const tarifsFile = path.join(ROOT, 'tarifs/index.html')
+if (fs.existsSync(tarifsFile)) {
+  const before = fs.readFileSync(tarifsFile, 'utf8')
+  let after = before
+    // attribut data-founder-total="50"
+    .replace(/(data-founder-total=")(\d+)(")/g, (_m, p1, _n, p3) => `${p1}${FOUNDER_TOTAL}${p3}`)
+    // label "places sur <span data-founder-total-label>50</span>"
+    .replace(/(<span data-founder-total-label>)(\d+)(<\/span>)/g, (_m, p1, _n, p3) => `${p1}${FOUNDER_TOTAL}${p3}`)
+    // fallback JS "parseInt(tracker.dataset.founderTotal, 10) || 50"
+    .replace(/(dataset\.founderTotal,\s*10\)\s*\|\|\s*)(\d+)/g, (_m, p1, _n) => `${p1}${FOUNDER_TOTAL}`)
+    // "Les 50 places fondateur sont prises"
+    .replace(/(Les\s+)(\d+)(\s+places\s+fondateur\s+sont\s+prises)/g, (_m, p1, _n, p3) => `${p1}${FOUNDER_TOTAL}${p3}`)
+  if (after !== before) {
+    fs.writeFileSync(tarifsFile, after)
+    totalEdits++
+    console.log(`[sync-counts] ✓ tarifs/index.html (total fondateur = ${FOUNDER_TOTAL})`)
   }
 }
 
