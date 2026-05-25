@@ -51,10 +51,22 @@ export async function GET(req: Request) {
       { auth: { autoRefreshToken: false, persistSession: false } },
     )
 
+    // Comptage robuste : on compte tous les membres Standard actifs.
+    // Tant que l'offre publique (3,98 €) n'est pas lancée, TOUS les Standard
+    // sont des fondateurs. On ne filtre PAS sur stripe_price_id car un webhook
+    // peut échouer à l'écrire (cas réel : premier client dont le webhook a
+    // planté sur la contrainte profiles_plan_check). Le plan='standard' +
+    // statut actif est la source de vérité la plus fiable.
+    //
+    // NOTE FUTURE : quand l'offre publique Standard sera lancée, repasser au
+    // filtrage par stripe_price_id ∈ FOUNDING_PRICE_IDS pour distinguer
+    // fondateurs et publics. (FOUNDING_PRICE_IDS gardé pour ce switch.)
+    void FOUNDING_PRICE_IDS
+
     const { count, error } = await db
       .from('profiles')
       .select('id', { count: 'exact', head: true })
-      .in('stripe_price_id', FOUNDING_PRICE_IDS)
+      .eq('plan', 'standard')
       .in('stripe_subscription_status', ['active', 'trialing'])
 
     if (error) throw error
