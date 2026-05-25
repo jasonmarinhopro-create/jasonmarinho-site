@@ -2235,15 +2235,28 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                               onClick={onPick}
                               style={{
                                 display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                padding: '5px 10px', fontSize: '12px', fontWeight: 500,
+                                padding: '5px 10px', fontSize: '12px',
+                                // L'état SÉLECTIONNÉ est le seul "rempli" + ring + gras.
+                                // Les canaux directs (Driing/En direct) gardent juste un
+                                // liseré vert léger sur fond transparent quand NON
+                                // sélectionnés, pour ne pas paraître pré-cochés.
+                                fontWeight: active ? 700 : 500,
                                 borderRadius: '100px', fontFamily: 'inherit', cursor: 'pointer',
-                                border: `1px solid ${active ? 'var(--accent-border)' : (def.isDirect ? 'rgba(52,211,153,0.4)' : 'var(--border)')}`,
-                                background: active ? 'var(--accent-bg)' : (def.isDirect ? 'var(--success-bg)' : 'var(--surface)'),
-                                color: active ? 'var(--accent-text)' : (def.isDirect ? 'var(--success-1)' : 'var(--text-2)'),
+                                border: active
+                                  ? '1px solid var(--accent-text)'
+                                  : (def.isDirect ? '1px solid rgba(52,211,153,0.35)' : '1px solid var(--border)'),
+                                background: active
+                                  ? 'var(--accent-bg)'
+                                  : 'transparent',
+                                color: active
+                                  ? 'var(--accent-text)'
+                                  : (def.isDirect ? 'var(--success-1)' : 'var(--text-2)'),
+                                boxShadow: active ? '0 0 0 2px var(--accent-bg)' : 'none',
                                 transition: 'all 0.12s',
                               }}
                               title={def.isDirect ? 'Canal direct, 0 % de commission' : `Commission par défaut ${def.defaultCommissionPct} %`}
                             >
+                              {active && <Check size={11} weight="bold" />}
                               <span>{def.icon}</span>{def.label}
                             </button>
                           )
@@ -2270,6 +2283,36 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                               placeholder={sejourForm.montant ? String(suggestCommission(sejourForm.montant, sejourForm.contrat_plateforme)) : '0'}
                             />
                           </div>
+                          {/* Raccourci "net réel" : Airbnb/Booking varient selon la
+                              résa. L'hôte connaît son net exact (Airbnb "Vous gagnez",
+                              Booking "Montant du versement"). On le laisse le saisir et
+                              on calcule la commission = montant − net. */}
+                          {sejourForm.montant ? (
+                            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
+                              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                                Ou saisis ton <strong style={{ color: 'var(--text-2)' }}>net réel</strong> (Airbnb « Vous gagnez ») :
+                              </span>
+                              <div style={{ ...s.inputWrap, flex: '0 0 130px' }}>
+                                <CurrencyEur size={13} color="var(--text-muted)" />
+                                <input
+                                  style={{ ...s.input, fontSize: '13px', padding: '7px 10px 7px 30px' }}
+                                  type="number" min="0" step="0.01"
+                                  placeholder="ex : 890.92"
+                                  onChange={e => {
+                                    const net = e.target.value ? Number(e.target.value) : null
+                                    setSejourForm(f => {
+                                      if (net == null || !f.montant) return { ...f, commission_montant: f.commission_montant }
+                                      const commission = Math.max(0, Math.round((f.montant - net) * 100) / 100)
+                                      return { ...f, commission_montant: commission }
+                                    })
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ) : null}
+                          <p style={{ fontSize: '10.5px', color: 'var(--text-3)', margin: '6px 0 0', lineHeight: 1.4 }}>
+                            Airbnb varie (~15-18 % selon la résa). Le plus fiable : entre directement ton net affiché côté plateforme.
+                          </p>
                         </div>
                       )}
                     </div>
