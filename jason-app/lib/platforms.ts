@@ -25,11 +25,17 @@ export type PlatformDef = {
 
 // Note : ordre = ordre d'affichage. Direct/Driing en premier pour mettre
 // en avant les canaux sans commission.
+//
+// Taux de commission = % du TOTAL payé par le voyageur jusqu'au NET touché
+// par l'hôte. Pour Airbnb en modèle "split-fee" (le plus courant), ça inclut
+// les frais voyageur (~14 %) côté traveler + les frais hôte (3 % + TVA), soit
+// ~17-18 % effectif du montant total. Ces taux sont des moyennes : Airbnb
+// varie selon la réservation, l'hôte ajuste séjour par séjour avec son net réel.
 export const PLATFORMS: Record<PlatformKey, PlatformDef> = {
   driing:   { label: 'Driing',         icon: '🔔', defaultCommissionPct: 0,    isDirect: true  },
   direct:   { label: 'En direct',      icon: '🤝', defaultCommissionPct: 0,    isDirect: true  },
-  airbnb:   { label: 'Airbnb',         icon: '🏠', defaultCommissionPct: 15.5, isDirect: false },
-  booking:  { label: 'Booking.com',    icon: '🛎️', defaultCommissionPct: 15,   isDirect: false },
+  airbnb:   { label: 'Airbnb',         icon: '🏠', defaultCommissionPct: 17,   isDirect: false },
+  booking:  { label: 'Booking.com',    icon: '🛎️', defaultCommissionPct: 16,   isDirect: false },
   abritel:  { label: 'Abritel',        icon: '🏡', defaultCommissionPct: 8,    isDirect: false },
   vrbo:     { label: 'Vrbo',           icon: '🌴', defaultCommissionPct: 8,    isDirect: false },
   autre:    { label: 'Autre plateforme', icon: '📄', defaultCommissionPct: 0,  isDirect: false },
