@@ -941,6 +941,12 @@
 
   <!-- ── Blog ── -->
   <url>
+    <loc>https://jasonmarinho.com/blog/videosurveillance-lcd-6-regles-cameras-legalite</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/blog/punaises-de-lit-lcd-prevenir-detecter-reagir</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
