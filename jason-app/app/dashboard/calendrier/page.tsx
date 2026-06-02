@@ -2,6 +2,8 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import CalendrierView from './CalendrierView'
 import OnboardingTour, { CALENDRIER_STEPS } from '../OnboardingTour'
+import { computeMenageSlots, type Occupation, type LogementSettings, type MenageSlot } from '@/lib/menage/compute'
+import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 
 export interface ContractEvent {
   id: string
@@ -56,6 +58,8 @@ export interface LogementOption {
   nom: string
 }
 
+export type { MenageSlot } from '@/lib/menage/compute'
+
 export default async function CalendrierPage() {
   const profile = await getProfile()
   const supabase = await createClient()
@@ -109,7 +113,7 @@ export default async function CalendrierPage() {
       .order('prenom'),
     supabase
       .from('logements')
-      .select('id, nom')
+      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage')
       .eq('user_id', userId)
       .order('nom'),
   ])
@@ -177,6 +181,58 @@ export default async function CalendrierPage() {
     nom: l.nom ?? 'Logement',
   }))
 
+  // ── Calcul des créneaux ménage auto ─────────────────────────────────────
+  // On fusionne contracts + sejours + ical events pour avoir TOUTES les
+  // occupations (la femme de ménage doit nettoyer entre chaque, peu importe
+  // le canal). Les contracts annulés sont déjà filtrés en amont.
+  const allLogementSettings: LogementSettings[] = (logementsRaw ?? []).map((l: any) => ({
+    id: l.id,
+    nom: l.nom ?? 'Logement',
+    menageDureeMin: l.menage_duree_min ?? 180,
+    menageHeureDefaut: l.menage_heure_defaut ?? '11:00',
+    menageNotes: l.menage_notes ?? null,
+    adresse: l.adresse ?? null,
+    contactMenageNom: l.contact_menage_nom ?? null,
+    contactMenageTel: l.contact_menage_tel ?? null,
+    fraisMenage: l.frais_menage ?? null,
+  }))
+
+  const occupations: Occupation[] = []
+  for (const c of contracts ?? []) {
+    if (!c.date_arrivee || !c.date_depart) continue
+    occupations.push({
+      sourceId: `contract-${c.id}`,
+      source: 'contract',
+      logementName: c.logement_nom ?? '',
+      dateArrivee: c.date_arrivee,
+      dateDepart: c.date_depart,
+      voyageurLabel: null,
+    })
+  }
+  for (const s of (sejoursRaw ?? []) as any[]) {
+    if (!s.date_arrivee || !s.date_depart) continue
+    // Skip si déjà couvert par un contrat (sinon doublon dans la planification)
+    if (sejourIdsWithContract.has(s.id)) continue
+    const v = s.voyageurs as { prenom?: string; nom?: string } | null
+    const voyageurLabel = v
+      ? `${v.prenom ?? ''} ${v.nom ?? ''}`.trim() || null
+      : null
+    occupations.push({
+      sourceId: `sejour-${s.id}`,
+      source: 'sejour',
+      logementName: s.logement ?? '',
+      dateArrivee: s.date_arrivee,
+      dateDepart: s.date_depart,
+      voyageurLabel,
+    })
+  }
+  // Note : les events iCal n'ont PAS de logement explicite — ils sont liés à
+  // un feed qui correspond à 1 logement. On peut faire ce mapping plus tard.
+  // Pour l'instant, on s'appuie uniquement sur contracts + sejours qui ont
+  // bien un logement_nom / logement.
+
+  const menageSlots: MenageSlot[] = computeMenageSlots(occupations, allLogementSettings)
+
   const icalToken: string | null = (profileData as any)?.ical_token ?? null
 
   return (
@@ -190,6 +246,7 @@ export default async function CalendrierPage() {
         sejourEvents={sejourEvents}
         voyageurOptions={voyageurOptions}
         logementOptions={logementOptions}
+        menageSlots={menageSlots}
         icalToken={icalToken}
         appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ''}
       />

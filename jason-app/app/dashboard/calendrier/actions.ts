@@ -26,6 +26,65 @@ interface EventUpdate {
   description: string | null
 }
 
+/**
+ * Crée un événement calendrier de catégorie 'menage' à la date donnée.
+ * Utilisé par le popover séjour quand l'hôte clique "Marquer ménage fait".
+ * Idempotent : si un événement menage existe déjà ce jour-là pour ce
+ * logement, on ne crée pas de doublon.
+ */
+export async function markMenageDone(input: {
+  date: string
+  logementName: string
+  startTime?: string
+  endTime?: string
+  notes?: string
+}): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'Non authentifié' }
+
+  // Dédup : un menage déjà saisi le même jour, même logement → no-op
+  const { data: existing } = await supabase
+    .from('calendar_events')
+    .select('id, description')
+    .eq('user_id', user.id)
+    .eq('date', input.date)
+    .eq('category', 'menage')
+    .ilike('title', `%${input.logementName}%`)
+    .limit(1)
+    .maybeSingle()
+
+  if (existing) {
+    // Marqué comme fait : on appose "[FAIT]" si pas déjà présent
+    const desc = existing.description ?? ''
+    if (!desc.includes('[FAIT]')) {
+      await supabase
+        .from('calendar_events')
+        .update({ description: `[FAIT] ${desc}`.trim() })
+        .eq('id', existing.id)
+    }
+    revalidatePath('/dashboard/calendrier')
+    return { ok: true }
+  }
+
+  const { error } = await supabase
+    .from('calendar_events')
+    .insert({
+      user_id: user.id,
+      title: `Ménage · ${input.logementName}`,
+      date: input.date,
+      end_date: null,
+      start_time: input.startTime ?? '11:00',
+      end_time: input.endTime ?? '14:00',
+      category: 'menage',
+      description: `[FAIT]${input.notes ? ' · ' + input.notes : ''}`,
+    })
+
+  if (error) return { ok: false, error: error.message }
+  revalidatePath('/dashboard/calendrier')
+  return { ok: true }
+}
+
 export async function createCalendarEvent(input: EventInput) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

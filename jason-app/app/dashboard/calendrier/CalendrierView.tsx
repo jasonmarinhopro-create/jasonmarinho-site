@@ -8,8 +8,10 @@ import {
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
   ChatText,
 } from '@phosphor-icons/react/dist/ssr'
-import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar } from './actions'
-import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning } from '@phosphor-icons/react/dist/ssr'
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar, markMenageDone } from './actions'
+import SejourPopover from './SejourPopover'
+import MenageExportModal from './MenageExportModal'
+import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning, Broom } from '@phosphor-icons/react/dist/ssr'
 import TourTrigger from '@/components/dashboard/TourTrigger'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
@@ -42,6 +44,7 @@ interface Props {
   sejourEvents: SejourEvent[]
   voyageurOptions: VoyageurOption[]
   logementOptions: LogementOption[]
+  menageSlots: import('./page').MenageSlot[]
   icalToken: string | null
   appUrl: string
 }
@@ -634,6 +637,7 @@ export default function CalendrierView({
   sejourEvents: initialSejourEvents,
   voyageurOptions,
   logementOptions,
+  menageSlots,
   icalToken,
   appUrl,
 }: Props) {
@@ -649,6 +653,11 @@ export default function CalendrierView({
   const [showForm, setShowForm] = useState(false)
   const [editing,  setEditing]  = useState<CalEvent | null>(null)
   const [isPending, startT]     = useTransition()
+
+  // Mini-popover quand on clique sur un séjour (au lieu de naviguer vers la fiche)
+  const [sejourPopover, setSejourPopover] = useState<{ sejour: SejourEvent; anchor: DOMRect | null } | null>(null)
+  // Modal d'export ménage (PDF / WhatsApp / iCal)
+  const [menageExportOpen, setMenageExportOpen] = useState(false)
 
   // Auto-sync iCal feeds au montage si dernière sync > 15 min (ou jamais).
   // Fire-and-forget : la page s'affiche immédiatement, refresh quand la sync est finie.
@@ -815,7 +824,7 @@ export default function CalendrierView({
     isIcal: boolean
     isBlocked?: boolean
     platformLabel?: string
-    onClick: () => void
+    onClick: (e?: React.MouseEvent) => void
   }
   function computeSpans(weekCells: typeof cells): SpanItem[] {
     const ws = weekCells[0].date
@@ -938,17 +947,13 @@ export default function CalendrierView({
           isStart:  s.date_arrivee >= ws,
           isEnd:    s.date_depart <= we,
           isIcal:   false,
-          onClick:  () => {
-            if (s.voyageur_id) {
-              router.push(`/dashboard/voyageurs/${s.voyageur_id}`)
-            } else {
-              setSelected(s.date_arrivee)
-              setYear(Number(s.date_arrivee.slice(0, 4)))
-              setMonth(Number(s.date_arrivee.slice(5, 7)) - 1)
-              setShowForm(false)
-              setSelectedContract(null)
-              setDrawerOpen(true)
-            }
+          onClick:  (e?: React.MouseEvent) => {
+            // Ouvre un mini-popover au lieu de naviguer vers la fiche voyageur.
+            // L'hôte garde l'accès à la fiche via un bouton dans le popover,
+            // mais voit en priorité : créneau ménage, dates, actions rapides.
+            const target = e?.currentTarget as HTMLElement | undefined
+            const rect = target?.getBoundingClientRect?.() ?? null
+            setSejourPopover({ sejour: s, anchor: rect })
           },
         })
       })
@@ -1970,6 +1975,16 @@ export default function CalendrierView({
           >
             <Lightning size={14} weight="fill" />
           </button>
+          {/* Bouton Planning ménage — ouvre le modal d'export pour la femme de ménage */}
+          <button
+            type="button"
+            onClick={() => setMenageExportOpen(true)}
+            style={s.topbarIconBtn}
+            title="Planning ménage (PDF, WhatsApp, iCal)"
+            aria-label="Planning ménage"
+          >
+            <Broom size={14} weight="duotone" />
+          </button>
           {/* Bouton Export iCal — partager le calendrier vers Google/Apple/Outlook */}
           <div style={{ position: 'relative' }}>
             <button
@@ -2916,6 +2931,49 @@ export default function CalendrierView({
 
         </div>
       </div>
+
+      {/* ── Mini-popover quand on clique sur un séjour ────────────────────── */}
+      {sejourPopover && (() => {
+        const slot = menageSlots.find(
+          m => m.date === sejourPopover.sejour.date_depart
+            && m.logementName.trim().toLowerCase() === sejourPopover.sejour.logement_label.trim().toLowerCase()
+        ) ?? null
+        return (
+          <SejourPopover
+            sejour={sejourPopover.sejour}
+            menageSlot={slot}
+            anchorRect={sejourPopover.anchor}
+            onClose={() => setSejourPopover(null)}
+            onMarkMenageDone={async () => {
+              const date = slot?.date ?? sejourPopover.sejour.date_depart
+              const name = slot?.logementName ?? sejourPopover.sejour.logement_label
+              const r = await markMenageDone({
+                date,
+                logementName: name,
+                startTime: slot?.startTime,
+                endTime: slot?.endTime,
+                notes: slot?.notes ?? undefined,
+              })
+              if (r.ok) {
+                setSejourPopover(null)
+                router.refresh()
+              } else {
+                alert(r.error)
+              }
+            }}
+          />
+        )
+      })()}
+
+      {/* ── Modal d'export ménage (PDF, WhatsApp, iCal cleaner) ───────────── */}
+      {menageExportOpen && (
+        <MenageExportModal
+          slots={menageSlots}
+          appUrl={appUrl}
+          icalToken={icalTokenState}
+          onClose={() => setMenageExportOpen(false)}
+        />
+      )}
 
     </div>
   )
