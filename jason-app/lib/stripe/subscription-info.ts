@@ -122,8 +122,8 @@ export async function listRecentInvoices(
       amountPaid: inv.amount_paid,
       currency: inv.currency,
       created: inv.created,
-      hostedInvoiceUrl: inv.hosted_invoice_url,
-      invoicePdf: inv.invoice_pdf,
+      hostedInvoiceUrl: inv.hosted_invoice_url ?? null,
+      invoicePdf: inv.invoice_pdf ?? null,
     }))
   } catch (e) {
     console.error('[stripe] listRecentInvoices failed', e)
