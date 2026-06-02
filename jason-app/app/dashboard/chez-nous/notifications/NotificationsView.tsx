@@ -3,12 +3,12 @@
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, BellRinging, ChatCircleDots, Check, At, CheckCircle, Funnel } from '@phosphor-icons/react/dist/ssr'
+import { ArrowLeft, BellRinging, ChatCircleDots, Check, At, CheckCircle, Funnel, NotePencil } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
 import { markNotifRead, markAllNotifsRead } from './actions'
 
-type NotifType = 'reply' | 'mention' | 'accepted'
+type NotifType = 'reply' | 'mention' | 'accepted' | 'post'
 
 type Notif = {
   id: string
@@ -28,6 +28,7 @@ type Props = {
 
 const FILTERS: { id: 'all' | NotifType; label: string }[] = [
   { id: 'all',      label: 'Tout' },
+  { id: 'post',     label: 'Nouveaux posts' },
   { id: 'reply',    label: 'Réponses' },
   { id: 'mention',  label: 'Mentions' },
   { id: 'accepted', label: 'Acceptées' },
@@ -162,6 +163,8 @@ function notifVerbForType(type: string): { icon: React.ReactNode; text: React.Re
       return { icon: <At size={11} weight="bold" />, text: <>t'a mentionné</>, color: 'var(--warning)' }
     case 'accepted':
       return { icon: <CheckCircle size={11} weight="fill" />, text: <>a accepté ta réponse</>, color: 'var(--success-1)' }
+    case 'post':
+      return { icon: <NotePencil size={11} weight="fill" />, text: <>a publié un nouveau sujet</>, color: 'var(--accent-text)' }
     case 'reply':
     default:
       return { icon: <ChatCircleDots size={11} weight="fill" />, text: <>a répondu à ton sujet</>, color: 'var(--accent-text)' }
