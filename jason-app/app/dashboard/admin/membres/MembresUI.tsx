@@ -429,7 +429,11 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
                 style={s.planSelect}
               >
                 {PLANS.map(p => (
-                  <option key={p.value} value={p.value} style={{ background: '#040d0b' }}>
+                  // Pas de background inline : le browser utilise les couleurs
+                  // de la color-scheme (root) pour rendre les options. Hardcoder
+                  // #040d0b cassait le rendu en light mode (texte foncé sur
+                  // fond foncé = invisible).
+                  <option key={p.value} value={p.value}>
                     {p.label}
                   </option>
                 ))}
