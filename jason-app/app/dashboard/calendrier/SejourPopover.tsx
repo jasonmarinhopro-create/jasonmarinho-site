@@ -200,7 +200,7 @@ export default function SejourPopover({ sejour, menageSlot, anchorRect, onClose,
         {menageSlot && (
           <div style={s.menageBlock}>
             <div style={s.menageHead}>
-              <Broom size={13} weight="duotone" style={{ color: '#fb923c' }} />
+              <Broom size={13} weight="duotone" style={{ color: '#5DC077' }} />
               <span>Ménage prévu</span>
               {menageSlot.sameDay && (
                 <span style={s.urgentBadge}>Turnover serré</span>
@@ -327,8 +327,8 @@ const s: Record<string, React.CSSProperties> = {
     flexDirection: 'column',
     gap: '6px',
     padding: '10px 12px',
-    background: 'rgba(251,146,60,0.08)',
-    border: '1px solid rgba(251,146,60,0.22)',
+    background: 'rgba(93,192,119,0.08)',
+    border: '1px solid rgba(93,192,119,0.22)',
     borderRadius: '10px',
   },
   menageHead: {
@@ -339,7 +339,7 @@ const s: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     letterSpacing: '0.4px',
     textTransform: 'uppercase',
-    color: '#fb923c',
+    color: '#5DC077',
   },
   urgentBadge: {
     marginLeft: 'auto',
@@ -367,7 +367,7 @@ const s: Record<string, React.CSSProperties> = {
     gap: '5px',
     marginTop: '2px',
     padding: '8px 10px',
-    background: '#fb923c',
+    background: '#5DC077',
     border: '1px solid #fb923c',
     color: '#1a0c00',
     fontSize: '12px',

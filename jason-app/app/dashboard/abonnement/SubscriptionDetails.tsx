@@ -34,7 +34,7 @@ const INVOICE_STATUS_LABEL: Record<string, { label: string; color: string }> = {
   paid: { label: 'Payée', color: '#34D399' },
   open: { label: 'En attente', color: '#fbbf24' },
   void: { label: 'Annulée', color: 'var(--text-muted)' },
-  uncollectible: { label: 'Impayée', color: '#fb923c' },
+  uncollectible: { label: 'Impayée', color: 'var(--warning)' },
   draft: { label: 'Brouillon', color: 'var(--text-muted)' },
 }
 
@@ -217,7 +217,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid',
   },
   statusOk: { color: '#34D399', borderColor: 'rgba(52,211,153,0.35)', background: 'rgba(52,211,153,0.08)' },
-  statusWarn: { color: '#fb923c', borderColor: 'rgba(251,146,60,0.35)', background: 'rgba(251,146,60,0.08)' },
+  statusWarn: { color: 'var(--warning)', borderColor: 'rgba(251,191,36,0.35)', background: 'rgba(251,191,36,0.08)' },
 
   keyRow: {
     display: 'flex', alignItems: 'center', gap: '12px',
@@ -253,9 +253,9 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   error: {
-    fontSize: '12.5px', color: '#fb923c',
-    background: 'rgba(251,146,60,0.08)',
-    border: '1px solid rgba(251,146,60,0.25)',
+    fontSize: '12.5px', color: 'var(--warning)',
+    background: 'rgba(251,191,36,0.08)',
+    border: '1px solid rgba(251,191,36,0.25)',
     padding: '8px 12px', borderRadius: '8px',
   },
 
