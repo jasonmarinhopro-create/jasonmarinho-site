@@ -721,9 +721,12 @@ export default async function DashboardPage() {
                 <div style={{
                   ...s.objectifFill,
                   width: `${objectifPct}%`,
+                  // Toujours vert — variation d'intensité selon avance/retard
+                  // pour rester dans la charte (pas d'orange off-brand).
                   background: (objectifPct ?? 0) >= expectedPct
                     ? 'linear-gradient(90deg, #15803d, #34d399)'
-                    : 'linear-gradient(90deg, #d97706, #f59e0b)',
+                    : 'linear-gradient(90deg, #166534, #4ade80)',
+                  opacity: (objectifPct ?? 0) >= expectedPct ? 1 : 0.82,
                 }} />
                 {/* Repère du % attendu */}
                 <div style={{
@@ -734,7 +737,7 @@ export default async function DashboardPage() {
               </div>
               <div style={s.objectifMeta}>
                 <span><strong style={{ color: 'var(--text)' }}>{fmtEur(revenuYTD)}</strong> sur {fmtEur(objectifAnnuel)}</span>
-                <span style={{ color: (objectifPct ?? 0) >= expectedPct ? '#15803d' : '#d97706', fontWeight: 600 }}>
+                <span style={{ color: (objectifPct ?? 0) >= expectedPct ? 'var(--success-1)' : 'var(--warning)', fontWeight: 600 }}>
                   {(objectifPct ?? 0) >= expectedPct ? '✓ Dans les temps' : `${expectedPct - (objectifPct ?? 0)} pts derrière`}
                 </span>
               </div>

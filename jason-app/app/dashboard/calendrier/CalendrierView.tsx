@@ -53,12 +53,12 @@ const CAT: Record<string, { label: string; color: string; bg: string; border: st
   arrivee:   { label: 'Arrivée',     color: 'var(--success-1)', bg: 'rgba(16,185,129,0.13)',  border: 'rgba(16,185,129,0.30)' },
   depart:    { label: 'Départ',      color: 'var(--info)', bg: 'rgba(96,165,250,0.13)',  border: 'rgba(96,165,250,0.30)' },
   sejour:    { label: 'Séjour',      color: '#F472B6', bg: 'rgba(244,114,182,0.13)', border: 'rgba(244,114,182,0.30)' },
-  menage:    { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)',  border: 'rgba(251,146,60,0.30)' },
+  menage:    { label: 'Ménage',      color: '#5DC077', bg: 'rgba(93,192,119,0.13)',  border: 'rgba(93,192,119,0.30)' },
   rdv:       { label: 'RDV',         color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', border: 'var(--accent-border)' },
   tache:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.30)' },
   note:      { label: 'Note',        color: '#94a3b8', bg: 'rgba(148,163,184,0.13)', border: 'rgba(148,163,184,0.30)' },
   // Legacy aliases (display only, not shown in pickers)
-  entretien: { label: 'Ménage',      color: '#fb923c', bg: 'rgba(251,146,60,0.13)',  border: 'rgba(251,146,60,0.30)' },
+  entretien: { label: 'Ménage',      color: '#5DC077', bg: 'rgba(93,192,119,0.13)',  border: 'rgba(93,192,119,0.30)' },
   admin:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.30)' },
 }
 

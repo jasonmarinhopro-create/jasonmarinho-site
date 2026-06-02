@@ -62,11 +62,11 @@ export default function AbonnementCard({ planLabel, subscription }: Props) {
       {sub && (
         <div style={s.metaList}>
           {sub.status === 'past_due' ? (
-            <div style={{ ...s.meta, color: '#fb923c' }}>
+            <div style={{ ...s.meta, color: 'var(--warning)' }}>
               <WarningCircle size={13} weight="fill" /> Paiement en échec — action requise
             </div>
           ) : sub.cancelAtPeriodEnd ? (
-            <div style={{ ...s.meta, color: '#fb923c' }}>
+            <div style={{ ...s.meta, color: 'var(--warning)' }}>
               <WarningCircle size={13} weight="fill" /> Résiliation programmée le {fmtDate(sub.cancelAt ?? sub.currentPeriodEnd)}
             </div>
           ) : (

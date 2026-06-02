@@ -193,7 +193,7 @@ export default function ConseilDuMoment({ conseils, conseil }: Props) {
           transition: background .12s ease;
         }
         .conseil-menu-item:hover { background: rgba(255,255,255,0.06); }
-        .conseil-menu-item.danger { color: #fb923c; }
+        .conseil-menu-item.danger { color: var(--warning); }
       `}</style>
       <div style={s.glow} aria-hidden />
 
@@ -263,10 +263,10 @@ const TONE_STYLES: Record<Conseil['tone'], { wrap: React.CSSProperties; tag: Rea
     cta: { background: 'var(--accent-text)', color: 'var(--bg)' },
   },
   warning: {
-    wrap: { background: 'linear-gradient(135deg, var(--surface) 0%, rgba(251,146,60,0.06) 100%)', borderColor: 'rgba(251,146,60,0.32)' },
-    tag: { color: '#fb923c', background: 'rgba(251,146,60,0.10)', borderColor: 'rgba(251,146,60,0.26)' },
-    iconWrap: { background: 'linear-gradient(135deg, rgba(251,146,60,0.20), rgba(251,146,60,0.05))', color: '#fb923c' },
-    cta: { background: '#fb923c', color: '#fff' },
+    wrap: { background: 'linear-gradient(135deg, var(--surface) 0%, rgba(251,191,36,0.06) 100%)', borderColor: 'rgba(251,191,36,0.32)' },
+    tag: { color: 'var(--warning)', background: 'rgba(251,191,36,0.10)', borderColor: 'rgba(251,191,36,0.26)' },
+    iconWrap: { background: 'linear-gradient(135deg, rgba(251,191,36,0.20), rgba(251,191,36,0.05))', color: 'var(--warning)' },
+    cta: { background: 'var(--warning)', color: '#1f1300' },
   },
   neutral: {
     wrap: { background: 'linear-gradient(135deg, var(--surface) 0%, rgba(99,214,131,0.04) 100%)', borderColor: 'var(--border)' },
