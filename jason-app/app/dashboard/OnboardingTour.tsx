@@ -567,7 +567,7 @@ const s: Record<string, React.CSSProperties> = {
   popover: {
     position: 'fixed',
     zIndex: 10000,
-    background: 'var(--surface)',
+    background: 'var(--floating-surface)',
     border: '1px solid var(--accent-border)',
     borderRadius: '16px',
     padding: '20px 22px 18px',
@@ -578,7 +578,7 @@ const s: Record<string, React.CSSProperties> = {
     position: 'absolute',
     width: '14px',
     height: '14px',
-    background: 'var(--surface)',
+    background: 'var(--floating-surface)',
     transform: 'rotate(45deg)',
   },
   popHead: {

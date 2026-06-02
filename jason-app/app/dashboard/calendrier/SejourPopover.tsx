@@ -250,8 +250,8 @@ export default function SejourPopover({ sejour, menageSlot, anchorRect, onClose,
 
 const s: Record<string, React.CSSProperties> = {
   wrap: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
+    background: 'var(--floating-surface)',
+    border: '1px solid var(--floating-border)',
     borderRadius: '14px',
     padding: '16px',
     boxShadow: '0 20px 40px -8px rgba(0,0,0,0.4), 0 8px 16px -4px rgba(0,0,0,0.25)',

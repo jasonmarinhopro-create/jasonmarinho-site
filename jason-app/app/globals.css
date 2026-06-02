@@ -38,6 +38,15 @@
   --border:       rgba(255,255,255,0.08);
   --border-2:     rgba(255,255,255,0.14);
 
+  /* Floating surface — fond OPAQUE pour modals/popovers/tooltips/menus.
+   * --surface est transparent (4 %) parce que les cartes du dashboard
+   * sont posées sur --bg : ça leur donne un look "verre dépoli" cohérent.
+   * Mais pour un élément FLOTTANT au-dessus de contenu arbitraire (popover
+   * calendrier, onboarding, dropdown), un fond transparent rend le contenu
+   * illisible. Toujours utiliser --floating-surface pour ces cas. */
+  --floating-surface: #0d1e18;
+  --floating-border:  rgba(255,255,255,0.12);
+
   --text:         #f0f4ff;
   --text-2:       rgba(240,244,255,0.62);
   --text-3:       rgba(240,244,255,0.38);
@@ -79,6 +88,9 @@
   --surface-2:    #F6FCF8;
   --border:       rgba(0,76,63,0.14);
   --border-2:     rgba(0,76,63,0.26);
+
+  --floating-surface: #FFFFFF;
+  --floating-border:  rgba(0,76,63,0.18);
 
   --text:         #0B1D0F;
   --text-2:       rgba(11,29,15,0.72);
@@ -131,6 +143,9 @@
   --surface-2:    rgba(255,255,255,0.08);
   --border:       rgba(255,255,255,0.10);
   --border-2:     rgba(255,255,255,0.18);
+
+  --floating-surface: #0a0a0a;
+  --floating-border:  rgba(255,255,255,0.14);
 
   --text:         #ffffff;
   --text-2:       rgba(255,255,255,0.70);
