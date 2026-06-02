@@ -1,12 +1,17 @@
 /**
- * Moteur "Conseil du moment" — sélectionne UNE recommandation contextuelle
- * à afficher sur la home dashboard. Règles évaluées dans l'ordre de priorité,
- * première règle qui matche gagne.
+ * Moteur "Conseil du moment" — sélectionne UN ou PLUSIEURS conseils
+ * contextuels à afficher sur la home dashboard.
+ *
+ * - `selectConseils()` retourne TOUS les conseils applicables, dans l'ordre
+ *   de priorité. Le client filtre les conseils dismissés (localStorage) et
+ *   affiche le premier restant. Ça permet à l'utilisateur de "passer" un
+ *   conseil sans pour autant désactiver tout le bloc.
+ * - `selectConseil()` reste exporté pour rétrocompatibilité (1er élément).
  *
  * Pour ajouter une règle :
  *   1. Définir un id unique
- *   2. Implémenter la condition dans selectConseil()
- *   3. Insérer à la bonne position de priorité
+ *   2. Pousser dans le tableau si la condition match
+ *   3. Position dans le tableau = priorité (top = priorité absolue)
  */
 
 import { FISCAL_PARAMS_2026 } from './fiscal-params'
@@ -34,12 +39,14 @@ export type ConseilContext = {
   upcomingArrivalsCount: number
 }
 
-export function selectConseil(ctx: ConseilContext): Conseil | null {
+/** Retourne TOUS les conseils applicables, en ordre de priorité. */
+export function selectConseils(ctx: ConseilContext): Conseil[] {
   const { microBic, tva } = FISCAL_PARAMS_2026
+  const out: Conseil[] = []
 
-  // ─── R1 : aucun logement (priorité absolue, setup) ─────────────────
+  // ─── Priorité absolue : setup ─────────────────────────────────────
   if (!ctx.hasLogement) {
-    return {
+    out.push({
       id: 'no-logement',
       icon: 'house',
       title: 'Commence par ajouter ton premier logement',
@@ -47,12 +54,11 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Ajouter un logement',
       ctaHref: '/dashboard/logements',
       tone: 'opportunity',
-    }
+    })
   }
 
-  // ─── R2 : aucune réservation (essentiel pour mesurer) ──────────────
   if (!ctx.hasContract) {
-    return {
+    out.push({
       id: 'no-contract',
       icon: 'calendar-plus',
       title: 'Saisis ta première réservation',
@@ -60,14 +66,14 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Ouvrir le calendrier',
       ctaHref: '/dashboard/calendrier',
       tone: 'opportunity',
-    }
+    })
   }
 
-  // ─── R3 : approche du plafond micro non classé (alerte fiscale) ────
+  // ─── Alertes fiscales (urgent) ────────────────────────────────────
   if (ctx.caTotal12m >= microBic.nonClasse.plafond * 0.80
       && ctx.caTotal12m < microBic.nonClasse.plafond) {
     const reste = Math.round(microBic.nonClasse.plafond - ctx.caTotal12m)
-    return {
+    out.push({
       id: 'plafond-non-classe',
       icon: 'warning-octagon',
       title: `Plus que ${reste.toLocaleString('fr-FR')} € avant ton plafond`,
@@ -75,13 +81,12 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Simuler avec classement',
       ctaHref: '/dashboard/simulateurs#fiscal',
       tone: 'warning',
-    }
+    })
   }
 
-  // ─── R4 : approche du seuil TVA franchise hôtelier ────────────────
   if (ctx.caTotal12m >= tva.seuilFranchise * 0.85
       && ctx.caTotal12m < tva.seuilFranchise) {
-    return {
+    out.push({
       id: 'tva-approach',
       icon: 'percent',
       title: 'Tu approches du seuil de TVA',
@@ -89,12 +94,11 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Vérifier ma franchise TVA',
       ctaHref: '/dashboard/simulateurs#tva',
       tone: 'warning',
-    }
+    })
   }
 
-  // ─── R5 : dépassé seuil TVA mais utilisateur sans doute pas au courant ─
   if (ctx.caTotal12m > tva.seuilFranchise) {
-    return {
+    out.push({
       id: 'tva-over',
       icon: 'warning-octagon',
       title: 'Vérifie ton assujettissement à la TVA',
@@ -102,12 +106,12 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Vérifier maintenant',
       ctaHref: '/dashboard/simulateurs#tva',
       tone: 'warning',
-    }
+    })
   }
 
-  // ─── R6 : fin d'année fiscale (novembre/décembre) ──────────────────
+  // ─── Saisonnier (fin d'année fiscale) ─────────────────────────────
   if (ctx.monthIndex >= 10) {
-    return {
+    out.push({
       id: 'fin-annee',
       icon: 'calendar-check',
       title: "Boucle ton année fiscale sereinement",
@@ -115,12 +119,25 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Lancer le simulateur fiscal',
       ctaHref: '/dashboard/simulateurs#fiscal',
       tone: 'neutral',
-    }
+    })
   }
 
-  // ─── R7 : pas d'objectif annuel défini ────────────────────────────
-  if (!ctx.hasObjectif) {
-    return {
+  // ─── Pic de saison estivale (mai-août) : pricing dynamique ────────
+  if (ctx.monthIndex >= 4 && ctx.monthIndex <= 7 && ctx.hasLogement) {
+    out.push({
+      id: 'pic-saison',
+      icon: 'trend-up',
+      title: 'Haute saison : optimise tes tarifs',
+      body: "Mai-août = +30 à +60 % sur la majorité des destinations. Vérifie tes prix vs marché et ajuste tes minimums.",
+      ctaLabel: 'Ouvrir le calculateur de prix',
+      ctaHref: '/dashboard/calculateurs#prix',
+      tone: 'opportunity',
+    })
+  }
+
+  // ─── Setup non terminé : objectif annuel ──────────────────────────
+  if (!ctx.hasObjectif && ctx.hasLogement) {
+    out.push({
       id: 'no-objectif',
       icon: 'target',
       title: "Définis ton objectif annuel",
@@ -128,12 +145,12 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Définir mon objectif',
       ctaHref: '/dashboard/revenus',
       tone: 'opportunity',
-    }
+    })
   }
 
-  // ─── R8 : aucune réservation à venir (creux activité) ─────────────
+  // ─── Creux activité ───────────────────────────────────────────────
   if (ctx.upcomingArrivalsCount === 0 && ctx.hasContract) {
-    return {
+    out.push({
       id: 'no-upcoming',
       icon: 'calendar-x',
       title: 'Aucune réservation à venir cette semaine',
@@ -141,12 +158,12 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Ajuster mes prix',
       ctaHref: '/dashboard/calculateurs#prix',
       tone: 'opportunity',
-    }
+    })
   }
 
-  // ─── R9 : pas de formation entamée ────────────────────────────────
+  // ─── Formation pas entamée ────────────────────────────────────────
   if (!ctx.hasFormationStarted) {
-    return {
+    out.push({
       id: 'no-formation',
       icon: 'graduation-cap',
       title: "Décolle avec les formations LCD",
@@ -154,12 +171,90 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Explorer les formations',
       ctaHref: '/dashboard/formations',
       tone: 'neutral',
-    }
+    })
   }
 
-  // ─── R10 : "tout est OK" — célébration légère ─────────────────────
+  // ─── Conseils evergreen : matchent quand le setup est OK ──────────
+  // Ces conseils sont des "best practices" toujours pertinents. Le client
+  // filtre les dismissés et fait tourner le reste — ça évite que l'utilisateur
+  // voie toujours le même conseil "all-good" pendant des semaines.
+  if (ctx.hasLogement && ctx.hasContract) {
+    out.push({
+      id: 'evergreen-classement',
+      icon: 'medal',
+      title: 'Classer ton meublé : +14 000 € de plafond',
+      body: 'Le classement Atout France te passe à 77 700 € de plafond micro-BIC et 71 % d\'abattement (vs 30 % non classé). Simule l\'impact net pour toi.',
+      ctaLabel: 'Simuler le classement',
+      ctaHref: '/dashboard/simulateurs#fiscal',
+      tone: 'opportunity',
+    })
+
+    out.push({
+      id: 'evergreen-ical',
+      icon: 'calendar-blank',
+      title: 'Synchronise tes calendriers iCal',
+      body: 'Évite les double-bookings entre Airbnb, Booking et Abritel : importe les flux iCal pour voir tous tes séjours en un seul calendrier.',
+      ctaLabel: 'Configurer la sync',
+      ctaHref: '/dashboard/calendrier',
+      tone: 'neutral',
+    })
+
+    out.push({
+      id: 'evergreen-signaler',
+      icon: 'shield-check',
+      title: 'Signale tes bons (et mauvais) voyageurs',
+      body: "La communauté Driing partage des signalements pour éviter les profils à risque. Ton historique aide les autres hôtes — et l'inverse.",
+      ctaLabel: 'Voir mes voyageurs',
+      ctaHref: '/dashboard/voyageurs',
+      tone: 'neutral',
+    })
+
+    out.push({
+      id: 'evergreen-gabarits',
+      icon: 'envelope-simple',
+      title: 'Gagne 5 min par voyageur avec les gabarits',
+      body: 'Messages d\'accueil, instructions d\'arrivée, rappels de check-out : les gabarits pré-remplissent tes communications en un clic.',
+      ctaLabel: 'Voir mes gabarits',
+      ctaHref: '/dashboard/gabarits',
+      tone: 'neutral',
+    })
+
+    out.push({
+      id: 'evergreen-perf',
+      icon: 'chart-line-up',
+      title: 'Compare-toi au marché local',
+      body: "Tes performances vs la moyenne de ta zone : ADR, taux d'occupation, RevPAR. Identifie où tu peux gagner 10-20 % facilement.",
+      ctaLabel: 'Voir mes performances',
+      ctaHref: '/dashboard/performances',
+      tone: 'neutral',
+    })
+
+    if (ctx.caTotal12m > 0) {
+      out.push({
+        id: 'evergreen-prix',
+        icon: 'currency-eur',
+        title: 'Pricing dynamique : +12 % en moyenne',
+        body: 'Tarifs en pic week-end, tarifs basse saison, last-minute : ajuste tes prix selon la demande pour maximiser ton revenu sans effort.',
+        ctaLabel: 'Ouvrir le calculateur',
+        ctaHref: '/dashboard/calculateurs#prix',
+        tone: 'opportunity',
+      })
+    }
+
+    out.push({
+      id: 'evergreen-cheznous',
+      icon: 'users-three',
+      title: 'Pose ta question à la communauté',
+      body: "Bloqué sur un cas fiscal, une copropriété, une mairie ? L'espace Chez-nous regroupe les hôtes Driing pour échanger entre pairs.",
+      ctaLabel: "Entrer dans l'espace",
+      ctaHref: '/dashboard/chez-nous',
+      tone: 'neutral',
+    })
+  }
+
+  // ─── Filet de sécurité : célébration légère quand tout est nominal ─
   if (ctx.caTotal12m > 0 && ctx.hasObjectif && ctx.hasFormationStarted) {
-    return {
+    out.push({
       id: 'all-good',
       icon: 'trophy',
       title: "Tu es bien armé",
@@ -167,8 +262,13 @@ export function selectConseil(ctx: ConseilContext): Conseil | null {
       ctaLabel: 'Voir mes performances',
       ctaHref: '/dashboard/performances',
       tone: 'celebration',
-    }
+    })
   }
 
-  return null
+  return out
+}
+
+/** Rétrocompat : retourne le 1er conseil applicable, ou null. */
+export function selectConseil(ctx: ConseilContext): Conseil | null {
+  return selectConseils(ctx)[0] ?? null
 }
