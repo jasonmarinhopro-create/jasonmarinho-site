@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
   X, User, House, CalendarBlank, Sparkle, ArrowSquareOut,
@@ -32,55 +32,148 @@ function fmtDateShort(date: string): string {
   } catch { return date }
 }
 
-export default function SejourPopover({ sejour, menageSlot, anchorRect, onClose, onMarkMenageDone }: Props) {
-  const ref = useRef<HTMLDivElement>(null)
+const MOBILE_BREAKPOINT = 640
+const POPOVER_WIDTH = 340
+const MARGIN = 8
+const ANCHOR_GAP = 6
 
-  // Close on click outside
-  useEffect(() => {
-    function onClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose()
-    }
-    function onEsc(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
-    // Délai pour ne pas capturer le click qui a ouvert le popover
-    setTimeout(() => document.addEventListener('mousedown', onClickOutside), 0)
-    document.addEventListener('keydown', onEsc)
-    return () => {
-      document.removeEventListener('mousedown', onClickOutside)
-      document.removeEventListener('keydown', onEsc)
-    }
-  }, [onClose])
-
-  // Positionnement : tenter de placer sous l'anchor, sinon centré viewport.
-  const style: React.CSSProperties = (() => {
-    if (!anchorRect) {
-      return { position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
-    }
-    const popoverWidth = 340
-    const margin = 8
-    const viewportW = typeof window !== 'undefined' ? window.innerWidth : 1024
-    let left = anchorRect.left
-    // Si dépasse à droite, on aligne à droite
-    if (left + popoverWidth + margin > viewportW) {
-      left = Math.max(margin, viewportW - popoverWidth - margin)
-    }
+/** Renvoie la position adaptée au viewport (desktop) ou un bottom sheet (mobile). */
+function computePosition(anchorRect: DOMRect | null, popoverHeight: number, isMobile: boolean): React.CSSProperties {
+  if (isMobile) {
+    // Bottom sheet : toute la largeur, ancré en bas, marge sécurité bord.
     return {
       position: 'fixed',
-      top: anchorRect.bottom + 6,
-      left,
-      width: popoverWidth,
-      maxWidth: 'calc(100vw - 16px)',
+      left: MARGIN,
+      right: MARGIN,
+      bottom: MARGIN,
+      width: 'auto',
+      maxWidth: 'none',
+      maxHeight: `calc(100vh - ${MARGIN * 2}px)`,
+      overflowY: 'auto',
       zIndex: 100,
     }
-  })()
+  }
+
+  const viewportW = typeof window !== 'undefined' ? window.innerWidth : 1024
+  const viewportH = typeof window !== 'undefined' ? window.innerHeight : 768
+
+  // Si pas d'ancre (clic sur l'event sans cible), on centre.
+  if (!anchorRect) {
+    return {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: POPOVER_WIDTH,
+      maxWidth: `calc(100vw - ${MARGIN * 2}px)`,
+      zIndex: 100,
+    }
+  }
+
+  // Horizontal : aligne sur l'ancre, mais clamp dans le viewport.
+  let left = anchorRect.left
+  if (left + POPOVER_WIDTH + MARGIN > viewportW) {
+    left = Math.max(MARGIN, viewportW - POPOVER_WIDTH - MARGIN)
+  }
+  if (left < MARGIN) left = MARGIN
+
+  // Vertical : par défaut SOUS l'ancre. Si pas la place, AU-DESSUS.
+  // popoverHeight peut être 0 au 1er rendu (avant mesure) — on retient
+  // une valeur safe par défaut pour éviter le flash en bas de viewport.
+  const estimatedHeight = popoverHeight || 280
+  const spaceBelow = viewportH - anchorRect.bottom - MARGIN
+  const spaceAbove = anchorRect.top - MARGIN
+
+  let top: number
+  let maxHeight: number
+  if (spaceBelow >= estimatedHeight || spaceBelow >= spaceAbove) {
+    // Place en dessous
+    top = anchorRect.bottom + ANCHOR_GAP
+    maxHeight = Math.max(180, viewportH - top - MARGIN)
+  } else {
+    // Place au-dessus
+    top = Math.max(MARGIN, anchorRect.top - estimatedHeight - ANCHOR_GAP)
+    maxHeight = Math.max(180, anchorRect.top - MARGIN - ANCHOR_GAP)
+  }
+
+  return {
+    position: 'fixed',
+    top,
+    left,
+    width: POPOVER_WIDTH,
+    maxWidth: `calc(100vw - ${MARGIN * 2}px)`,
+    maxHeight,
+    overflowY: 'auto',
+    zIndex: 100,
+  }
+}
+
+export default function SejourPopover({ sejour, menageSlot, anchorRect, onClose, onMarkMenageDone }: Props) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [popoverHeight, setPopoverHeight] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Détecte mobile (côté client uniquement)
+  useEffect(() => {
+    function check() {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  // Mesure la hauteur réelle après render pour ajuster le positionnement.
+  // useLayoutEffect = synchrone avant peinture, évite le flash.
+  useLayoutEffect(() => {
+    if (ref.current) {
+      setPopoverHeight(ref.current.offsetHeight)
+    }
+  }, [sejour.id, menageSlot])
+
+  // ESC pour fermer
+  useEffect(() => {
+    function onEsc(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onEsc)
+    return () => document.removeEventListener('keydown', onEsc)
+  }, [onClose])
+
+  // Lock body scroll en mobile (UX bottom sheet)
+  useEffect(() => {
+    if (!isMobile) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [isMobile])
+
+  const positionStyle = computePosition(anchorRect, popoverHeight, isMobile)
 
   return (
     <>
-      {/* Overlay invisible juste pour stopper la propagation */}
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 99, background: 'transparent' }} />
-      <div ref={ref} style={{ ...s.wrap, ...style }} role="dialog" aria-label="Détails du séjour">
+      {/* Overlay : transparent en desktop (clic = close), assombri en mobile (bottom sheet) */}
+      <div
+        onClick={onClose}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 99,
+          background: isMobile ? 'rgba(0,0,0,0.45)' : 'transparent',
+          backdropFilter: isMobile ? 'blur(2px)' : undefined,
+        }}
+      />
+      <div
+        ref={ref}
+        style={{ ...s.wrap, ...positionStyle }}
+        role="dialog"
+        aria-label="Détails du séjour"
+        onClick={e => e.stopPropagation()}
+      >
         <button onClick={onClose} aria-label="Fermer" style={s.closeBtn}>
           <X size={14} weight="bold" />
         </button>
+
+        {/* Drag handle visible uniquement sur bottom sheet mobile */}
+        {isMobile && <div style={s.dragHandle} aria-hidden />}
 
         {/* En-tête */}
         <div style={s.header}>
@@ -182,6 +275,13 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
     padding: 0,
   },
+  dragHandle: {
+    width: '36px',
+    height: '4px',
+    borderRadius: '999px',
+    background: 'var(--border-2)',
+    margin: '-6px auto 6px',
+  },
   header: {
     display: 'flex',
     alignItems: 'center',
@@ -266,15 +366,17 @@ const s: Record<string, React.CSSProperties> = {
     justifyContent: 'center',
     gap: '5px',
     marginTop: '2px',
-    padding: '6px 10px',
+    padding: '8px 10px',
     background: '#fb923c',
     border: '1px solid #fb923c',
     color: '#1a0c00',
-    fontSize: '11.5px',
+    fontSize: '12px',
     fontWeight: 600,
     borderRadius: '7px',
     cursor: 'pointer',
     fontFamily: 'inherit',
+    // iOS Safari : taille suffisante pour éviter zoom + tap target accessible
+    minHeight: 36,
   },
   actions: {
     display: 'flex',
@@ -285,7 +387,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '5px',
-    padding: '7px 11px',
+    padding: '9px 12px',
     background: 'var(--bg)',
     border: '1px solid var(--border)',
     color: 'var(--text-2)',
@@ -294,5 +396,6 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '8px',
     textDecoration: 'none',
     cursor: 'pointer',
+    minHeight: 36,
   },
 }
