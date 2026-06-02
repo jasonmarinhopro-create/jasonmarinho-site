@@ -7,9 +7,11 @@ import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle, ShieldStar, Crow
 import DriingRequestForm from './DriingRequestForm'
 import SubscribeButton from './SubscribeButton'
 import ManageButton from './ManageButton'
+import SubscriptionDetails from './SubscriptionDetails'
 import { STRIPE_PLANS } from '@/lib/constants/stripe-plans'
 import { FOUNDER_TOTAL_SEATS } from '@/lib/constants/founder'
 import { FORMATIONS_TOTAL } from '@/lib/constants/auto-counts'
+import { getSubscriptionDetails, listRecentInvoices } from '@/lib/stripe/subscription-info'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
@@ -105,6 +107,17 @@ export default async function AbonnementPage({
   const founderExhausted = founderRemaining === 0
   const founderUrgent    = !founderExhausted && founderRemaining < 10
   const founderPct       = Math.round(((FOUNDER_TOTAL_SEATS - founderRemaining) / FOUNDER_TOTAL_SEATS) * 100)
+
+  // ── Détails abonnement Stripe (date renouvellement, factures) ──────────
+  // Uniquement pour les vrais abonnés Stripe (Standard et Driing payant).
+  // L'admin n'a pas d'abonnement, le Découverte non plus.
+  const hasStripeSub = !!profileData?.stripe_subscription_id && !!profileData?.stripe_customer_id && !isAdmin
+  const [subDetails, invoices] = hasStripeSub
+    ? await Promise.all([
+        getSubscriptionDetails(profileData!.stripe_subscription_id),
+        listRecentInvoices(profileData!.stripe_customer_id),
+      ])
+    : [null, [] as Awaited<ReturnType<typeof listRecentInvoices>>]
 
   return (
     <>
@@ -382,11 +395,30 @@ export default async function AbonnementPage({
               <>
                 <div style={styles.sectionLabel} className="fade-up">
                   <Wrench size={12} />
-                  Gérer mon abonnement
+                  Mon abonnement
                 </div>
                 <div style={styles.manageCard} className="fade-up d1">
-                  <p style={styles.planDesc}>Modifie, mets en pause ou résilie ton abonnement depuis le portail Stripe.</p>
-                  <ManageButton />
+                  {subDetails ? (
+                    <SubscriptionDetails details={subDetails} invoices={invoices} />
+                  ) : (
+                    <>
+                      <p style={styles.planDesc}>Modifie, mets en pause ou résilie ton abonnement depuis le portail Stripe.</p>
+                      <ManageButton />
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+
+            {/* Driing payant : détails abonnement Stripe ───────────────── */}
+            {isDriing && subDetails && (
+              <>
+                <div style={styles.sectionLabel} className="fade-up">
+                  <Wrench size={12} />
+                  Mon abonnement Driing
+                </div>
+                <div style={styles.manageCard} className="fade-up d1">
+                  <SubscriptionDetails details={subDetails} invoices={invoices} />
                 </div>
               </>
             )}

@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import ProfilForm from './ProfilForm'
 import ChezNousIdentity from './ChezNousIdentity'
 import FiscalContextCard from './FiscalContextCard'
+import AbonnementCard from './AbonnementCard'
+import { getSubscriptionDetails } from '@/lib/stripe/subscription-info'
 
 const PLAN_BADGE: Record<string, { label: string; color: string; bg: string; dot: string }> = {
   'Membre Driing':  { label: 'Membre Driing',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', dot: 'var(--accent-text)' },
@@ -27,10 +29,17 @@ export default async function ProfilPage() {
   const [{ data: { session } }, { data: pd }] = await Promise.all([
     supabase.auth.getSession(),
     supabase.from('profiles')
-      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city')
+      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city, stripe_subscription_id, stripe_customer_id')
       .eq('id', userId)
       .maybeSingle(),
   ])
+
+  // Récupération abonnement Stripe (date renouvellement, prix, statut).
+  // Try/catch implicite côté helper : null si erreur, on n'affichera que
+  // le plan label sans détail.
+  const subscription = pd?.stripe_subscription_id
+    ? await getSubscriptionDetails(pd.stripe_subscription_id)
+    : null
 
   const email       = session?.user?.email ?? ''
   const createdAt   = session?.user?.created_at ?? ''
@@ -275,6 +284,10 @@ export default async function ProfilPage() {
             initialIban={pd?.iban ?? ''}
             initialBic={pd?.bic ?? ''}
             initialAdresse={pd?.adresse ?? ''}
+          />
+          <AbonnementCard
+            planLabel={planLabel as 'Découverte' | 'Standard' | 'Membre Driing' | 'Administrateur'}
+            subscription={subscription}
           />
           <ChezNousIdentity
             initialPseudo={pd?.pseudo ?? ''}
