@@ -119,6 +119,17 @@ export default async function DashboardPage() {
       .order('created_at', { ascending: false })
       .limit(3),
     supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }),
+    // Séjours (carnet voyageurs) avec un montant : compte dans le CA YTD,
+    // sinon le dashboard ignore les revenus saisis depuis /voyageurs et
+    // l'objectif reste à 0 alors que /revenus affiche le bon total.
+    supabase
+      .from('sejours')
+      .select('montant, date_arrivee')
+      .eq('user_id', userId)
+      .not('montant', 'is', null)
+      .gt('montant', 0)
+      .gte('date_arrivee', `${yearPfx}-01-01`)
+      .lt('date_arrivee', `${parseInt(yearPfx) + 1}-01-01`),
   ])
 
   // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
@@ -143,6 +154,7 @@ export default async function DashboardPage() {
   const { data: completionLogLearn }  = pick<{ data: { completed_at: string }[] | null }>(8, { data: [] })
   const { data: cnPosts }         = pick<{ data: any[] | null }>(9, { data: [] })
   const { count: cnTotal }        = pick<{ count: number | null }>(10, { count: 0 })
+  const { data: sejoursYearAll }  = pick<{ data: { montant: number | null; date_arrivee: string }[] | null }>(11, { data: [] })
 
   const latestNews = allCachedNews.slice(0, 3)
 
@@ -151,6 +163,11 @@ export default async function DashboardPage() {
   const entriesThisMois = yearEntries.filter(e => e.date_paiement?.startsWith(monthPfx))
   const entriesPrevMois = yearEntries.filter(e => e.date_paiement?.startsWith(prevMPfx))
   const entriesThisYear = yearEntries
+
+  // Idem pour les séjours (carnet voyageurs) — split JS depuis la requête année.
+  const yearSejours      = sejoursYearAll ?? []
+  const sejoursThisMois  = yearSejours.filter(s => s.date_arrivee?.startsWith(monthPfx))
+  const sejoursPrevMois  = yearSejours.filter(s => s.date_arrivee?.startsWith(prevMPfx))
 
   const ufLearn = (userFormationsLearn ?? []) as Array<{
     formation_id: string
@@ -301,15 +318,23 @@ export default async function DashboardPage() {
   const entriesThisSum = (entriesThisMois ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
   const entriesPrevSum = (entriesPrevMois ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
 
-  const revenusThisMois = contratsThisMois + entriesThisSum
-  const revenusPrevMois = contratsPrevMois + entriesPrevSum
+  // Revenus séjours (carnet voyageurs) ce mois + mois précédent
+  const sejoursThisSum = sejoursThisMois.reduce((acc, s) => acc + (s.montant ?? 0), 0)
+  const sejoursPrevSum = sejoursPrevMois.reduce((acc, s) => acc + (s.montant ?? 0), 0)
+
+  const revenusThisMois = contratsThisMois + entriesThisSum + sejoursThisSum
+  const revenusPrevMois = contratsPrevMois + entriesPrevSum + sejoursPrevSum
 
   // ── Revenu annuel YTD + objectif
   const contratsThisYear = allC
     .filter(c => c.date_arrivee?.startsWith(yearPfx) && isPaid(c))
     .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
   const entriesThisYearSum = (entriesThisYear ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
-  const revenuYTD = contratsThisYear + entriesThisYearSum
+  // Séjours du carnet voyageurs : même logique que /revenus (page de vérité).
+  // Évite que l'objectif annuel reste à 0 alors qu'on a déjà encaissé via
+  // l'onglet Mes voyageurs.
+  const sejoursThisYearSum = (sejoursYearAll ?? []).reduce((acc, s) => acc + (s.montant ?? 0), 0)
+  const revenuYTD = contratsThisYear + entriesThisYearSum + sejoursThisYearSum
   const objectifAnnuel = objectifData?.objectif_ca_annuel ? Number(objectifData.objectif_ca_annuel) : null
   const objectifPct = objectifAnnuel && objectifAnnuel > 0
     ? Math.min(100, Math.round((revenuYTD / objectifAnnuel) * 100))
