@@ -12,7 +12,7 @@ import ChezNousWidget from './ChezNousWidget'
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import ConseilDuMoment from './ConseilDuMoment'
 import OnboardingTour from './OnboardingTour'
-import { selectConseil } from '@/lib/lcd/conseil-du-moment'
+import { selectConseils } from '@/lib/lcd/conseil-du-moment'
 import { getDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 import type { CategoryId } from '@/lib/chez-nous/categories'
@@ -355,7 +355,7 @@ export default async function DashboardPage() {
   const caTotal12mForConseil = prefillForConseil.reduce(
     (sum, l) => sum + (l.stats?.revenuTotal ?? 0), 0
   )
-  const conseil = selectConseil({
+  const conseils = selectConseils({
     hasLogement,
     hasContract,
     hasObjectif,
@@ -407,7 +407,7 @@ export default async function DashboardPage() {
         <SetupChecklist userId={userId} steps={setupSteps} />
 
         {/* ── Conseil du moment : 1 règle contextuelle prioritaire ────── */}
-        <ConseilDuMoment conseil={conseil} />
+        <ConseilDuMoment conseils={conseils} />
 
         {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
         <section style={s.welcome} className="fade-up dash-welcome">
