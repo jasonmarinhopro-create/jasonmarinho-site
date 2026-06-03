@@ -248,6 +248,7 @@ export default async function CalendrierPage() {
         logementOptions={logementOptions}
         menageSlots={menageSlots}
         icalToken={icalToken}
+        hostName={profile?.full_name ?? null}
         appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ''}
       />
     </>
