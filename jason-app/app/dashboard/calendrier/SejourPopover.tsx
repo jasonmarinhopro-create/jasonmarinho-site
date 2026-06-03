@@ -8,17 +8,26 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import type { SejourEvent, MenageSlot } from './page'
 
+export type MenageInfo = {
+  /** Créneau ménage dérivé (date + heures + logement…) */
+  slot: MenageSlot
+  /** Vrai si un événement calendrier 'menage' [FAIT] existe en base */
+  done: boolean
+}
+
 type Props = {
   sejour: SejourEvent
-  /** Créneau ménage rattaché à ce séjour (date_depart match). Peut être null. */
-  menageSlot: MenageSlot | null
-  /** Vrai si un événement calendrier 'menage' existe déjà pour cette date+logement */
-  menageDone: boolean
+  /** Ménage AVANT l'arrivée : prépare le logement pour le voyageur de
+   *  ce séjour. Null si c'est le 1er séjour (rien avant). */
+  menageBefore: MenageInfo | null
+  /** Ménage APRÈS le départ : prépare pour le voyageur suivant (ou
+   *  clôt la saison). Null seulement si le logement n'a aucune fiche. */
+  menageAfter: MenageInfo | null
   /** Anchor element to position popover near (button/event clicked). */
   anchorRect: DOMRect | null
   onClose: () => void
-  /** Marque le ménage comme fait — crée un calendar_event 'menage' à la date du checkout. */
-  onMarkMenageDone: () => void | Promise<void>
+  /** Bascule l'état d'un créneau ménage (date + done). */
+  onToggleMenage: (slot: MenageSlot, done: boolean) => void | Promise<void>
 }
 
 function fmtDateFR(date: string): string {
@@ -32,6 +41,64 @@ function fmtDateShort(date: string): string {
   try {
     return new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
   } catch { return date }
+}
+
+/** Bloc d'un créneau ménage avec case à cocher (toggle on/off). */
+function MenageSection({
+  label, info, isPending, onToggle,
+}: {
+  label: string
+  info: MenageInfo
+  isPending: boolean
+  onToggle: () => void | Promise<void>
+}) {
+  const { slot, done } = info
+  return (
+    <div style={done ? s.menageBlockDone : s.menageBlock}>
+      <div style={s.menageHead}>
+        <Broom size={13} weight="duotone" />
+        <span>{label}</span>
+        {!done && slot.sameDay && <span style={s.urgentBadge}>Turnover serré</span>}
+        {done && <span style={s.doneTag}><CheckCircle size={11} weight="fill" /> Fait</span>}
+      </div>
+      <div style={s.menageRow}>
+        <CalendarBlank size={11} weight="duotone" />
+        <span>{fmtDateFR(slot.date)} · {slot.startTime}–{slot.endTime}</span>
+      </div>
+      {slot.adresse && (
+        <div style={s.menageRow}>
+          <MapPin size={11} weight="duotone" />
+          <span style={{ flex: 1 }}>{slot.adresse}</span>
+        </div>
+      )}
+      {slot.contactNom && (
+        <div style={s.menageRow}>
+          <Phone size={11} weight="duotone" />
+          <span>{slot.contactNom}{slot.contactTel ? ` · ${slot.contactTel}` : ''}</span>
+        </div>
+      )}
+      {slot.notes && (
+        <div style={{ ...s.menageRow, fontStyle: 'italic', opacity: 0.85 }}>
+          <Sparkle size={11} weight="duotone" />
+          <span>{slot.notes}</span>
+        </div>
+      )}
+      {/* Checkbox style toggle — clic = bascule. */}
+      <button
+        onClick={onToggle}
+        disabled={isPending}
+        aria-pressed={done}
+        style={{ ...s.toggleBtn, ...(done ? s.toggleBtnDone : {}), opacity: isPending ? 0.6 : 1, cursor: isPending ? 'wait' : 'pointer' }}
+      >
+        <span style={{ ...s.checkbox, ...(done ? s.checkboxDone : {}) }} aria-hidden>
+          {done && <CheckCircle size={11} weight="fill" />}
+        </span>
+        <span>
+          {isPending ? 'Enregistrement…' : (done ? 'Ménage fait — cliquer pour annuler' : 'Marquer comme fait')}
+        </span>
+      </button>
+    </div>
+  )
 }
 
 const MOBILE_BREAKPOINT = 640
@@ -110,11 +177,12 @@ function computePosition(anchorRect: DOMRect | null, popoverHeight: number, isMo
   }
 }
 
-export default function SejourPopover({ sejour, menageSlot, menageDone, anchorRect, onClose, onMarkMenageDone }: Props) {
+export default function SejourPopover({ sejour, menageBefore, menageAfter, anchorRect, onClose, onToggleMenage }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [popoverHeight, setPopoverHeight] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
-  const [pending, setPending] = useState(false)
+  // Pending par slot ID (avant/après peuvent être togglés indépendamment)
+  const [pendingSlotId, setPendingSlotId] = useState<string | null>(null)
 
   // Détecte mobile (côté client uniquement)
   useEffect(() => {
@@ -132,7 +200,7 @@ export default function SejourPopover({ sejour, menageSlot, menageDone, anchorRe
     if (ref.current) {
       setPopoverHeight(ref.current.offsetHeight)
     }
-  }, [sejour.id, menageSlot])
+  }, [sejour.id, menageBefore, menageAfter])
 
   // ESC pour fermer
   useEffect(() => {
@@ -199,58 +267,39 @@ export default function SejourPopover({ sejour, menageSlot, menageDone, anchorRe
           </span>
         </div>
 
-        {/* Bloc ménage : créneau auto + actions */}
-        {menageSlot && (
-          <div style={menageDone ? s.menageBlockDone : s.menageBlock}>
-            <div style={s.menageHead}>
-              <Broom size={13} weight="duotone" />
-              <span>{menageDone ? 'Ménage fait' : 'Ménage prévu'}</span>
-              {!menageDone && menageSlot.sameDay && (
-                <span style={s.urgentBadge}>Turnover serré</span>
-              )}
-            </div>
-            <div style={s.menageRow}>
-              <CalendarBlank size={11} weight="duotone" />
-              <span>{fmtDateFR(menageSlot.date)} · {menageSlot.startTime}–{menageSlot.endTime}</span>
-            </div>
-            {menageSlot.adresse && (
-              <div style={s.menageRow}>
-                <MapPin size={11} weight="duotone" />
-                <span style={{ flex: 1 }}>{menageSlot.adresse}</span>
-              </div>
-            )}
-            {menageSlot.contactNom && (
-              <div style={s.menageRow}>
-                <Phone size={11} weight="duotone" />
-                <span>{menageSlot.contactNom}{menageSlot.contactTel ? ` · ${menageSlot.contactTel}` : ''}</span>
-              </div>
-            )}
-            {menageSlot.notes && (
-              <div style={{ ...s.menageRow, fontStyle: 'italic', opacity: 0.85 }}>
-                <Sparkle size={11} weight="duotone" />
-                <span>{menageSlot.notes}</span>
-              </div>
-            )}
-            {menageDone ? (
-              <div style={s.menageDoneTag}>
-                <CheckCircle size={12} weight="fill" /> Marqué comme fait
-              </div>
-            ) : (
-              <button
-                onClick={async () => {
-                  if (pending) return
-                  setPending(true)
-                  try { await onMarkMenageDone() }
-                  finally { setPending(false) }
-                }}
-                disabled={pending}
-                style={{ ...s.btnMenageDone, opacity: pending ? 0.6 : 1, cursor: pending ? 'wait' : 'pointer' }}
-              >
-                <CheckCircle size={12} weight="fill" />
-                {pending ? 'Enregistrement…' : 'Marquer ménage fait'}
-              </button>
-            )}
+        {/* Ménage AVANT l'arrivée : prépare ce séjour. Null si 1er séjour. */}
+        {menageBefore ? (
+          <MenageSection
+            label="Avant l'arrivée"
+            info={menageBefore}
+            isPending={pendingSlotId === menageBefore.slot.id}
+            onToggle={async () => {
+              if (pendingSlotId) return
+              setPendingSlotId(menageBefore.slot.id)
+              try { await onToggleMenage(menageBefore.slot, !menageBefore.done) }
+              finally { setPendingSlotId(null) }
+            }}
+          />
+        ) : (
+          <div style={s.firstStayNote}>
+            <Sparkle size={12} weight="duotone" />
+            <span>Premier séjour sur cette période — pense à vérifier la propreté avant l'arrivée.</span>
           </div>
+        )}
+
+        {/* Ménage APRÈS le départ : prépare pour le voyageur suivant. */}
+        {menageAfter && (
+          <MenageSection
+            label="Après le départ"
+            info={menageAfter}
+            isPending={pendingSlotId === menageAfter.slot.id}
+            onToggle={async () => {
+              if (pendingSlotId) return
+              setPendingSlotId(menageAfter.slot.id)
+              try { await onToggleMenage(menageAfter.slot, !menageAfter.done) }
+              finally { setPendingSlotId(null) }
+            }}
+          />
         )}
 
         {/* Actions */}
@@ -370,20 +419,71 @@ const s: Record<string, React.CSSProperties> = {
     textTransform: 'uppercase',
     color: 'var(--accent-text)',
   },
-  menageDoneTag: {
+  doneTag: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    marginLeft: 'auto',
+    fontSize: '9.5px',
+    fontWeight: 700,
+    padding: '2px 7px',
+    borderRadius: '999px',
+    background: 'var(--success-bg)',
+    color: 'var(--success-1)',
+    border: '1px solid var(--success-border)',
+    letterSpacing: '0.3px',
+    textTransform: 'none',
+  },
+  firstStayNote: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '7px',
+    padding: '9px 11px',
+    fontSize: '11.5px',
+    color: 'var(--text-2)',
+    background: 'var(--surface-2)',
+    border: '1px dashed var(--border-2)',
+    borderRadius: '10px',
+    lineHeight: 1.45,
+  },
+  toggleBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginTop: '2px',
+    padding: '8px 10px',
+    background: 'var(--accent-text)',
+    border: '1px solid var(--accent-text)',
+    color: 'var(--bg)',
+    fontSize: '12px',
+    fontWeight: 600,
+    borderRadius: '7px',
+    fontFamily: 'inherit',
+    minHeight: 36,
+    textAlign: 'left',
+  },
+  toggleBtnDone: {
+    background: 'var(--surface-2)',
+    borderColor: 'var(--border)',
+    borderStyle: 'dashed',
+    color: 'var(--text-2)',
+    fontWeight: 500,
+  },
+  checkbox: {
+    width: 16,
+    height: 16,
+    borderRadius: 4,
+    background: 'transparent',
+    border: '1.5px solid var(--bg)',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '5px',
-    marginTop: '2px',
-    padding: '8px 10px',
-    background: 'var(--surface-2)',
-    border: '1px dashed var(--border-2)',
-    color: 'var(--text-2)',
-    fontSize: '12px',
-    fontWeight: 500,
-    borderRadius: '7px',
-    minHeight: 36,
+    flexShrink: 0,
+  },
+  checkboxDone: {
+    background: 'var(--success-1)',
+    borderColor: 'var(--success-1)',
+    color: '#fff',
   },
   urgentBadge: {
     marginLeft: 'auto',

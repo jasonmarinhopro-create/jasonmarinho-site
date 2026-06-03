@@ -8,7 +8,7 @@ import {
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
   ChatText,
 } from '@phosphor-icons/react/dist/ssr'
-import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar, markMenageDone } from './actions'
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar, setMenageDone } from './actions'
 import SejourPopover from './SejourPopover'
 import MenageExportModal from './MenageExportModal'
 import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning, Broom } from '@phosphor-icons/react/dist/ssr'
@@ -2936,44 +2936,53 @@ export default function CalendrierView({
 
       {/* ── Mini-popover quand on clique sur un séjour ────────────────────── */}
       {sejourPopover && (() => {
-        const slot = menageSlots.find(
-          m => m.date === sejourPopover.sejour.date_depart
-            && m.logementName.trim().toLowerCase() === sejourPopover.sejour.logement_label.trim().toLowerCase()
-        ) ?? null
-        // Détecte si l'hôte a déjà cliqué "Marquer ménage fait" pour ce
-        // créneau (un calendar_event 'menage' avec le bon nom + date existe).
-        // Sinon le bouton donne l'illusion de ne pas marcher : il insère
-        // bien en base, mais l'UI re-dérive toujours le slot depuis sejours
-        // → on ne voit aucun feedback. Avec cette détection on bascule sur
-        // un état "fait" visible la prochaine fois.
-        const sejourLogementLow = sejourPopover.sejour.logement_label.trim().toLowerCase()
-        const menageDone = events.some(e =>
-          e.category === 'menage'
-          && e.date === sejourPopover.sejour.date_depart
-          && (e.title ?? '').toLowerCase().includes(sejourLogementLow)
-        )
+        const sej = sejourPopover.sejour
+        const logementLow = sej.logement_label.trim().toLowerCase()
+        const matchLogement = (s: { logementName: string }) =>
+          s.logementName.trim().toLowerCase() === logementLow
+
+        // Ménage APRÈS le départ : date_depart de ce séjour
+        const slotAfter = menageSlots.find(m => m.date === sej.date_depart && matchLogement(m)) ?? null
+        // Ménage AVANT l'arrivée : un slot dont le prochain check-in == l'arrivée
+        // de ce séjour. C'est physiquement le ménage du départ précédent. Null
+        // si premier séjour du logement sur la période.
+        const slotBefore = menageSlots.find(m => m.prochainCheckIn === sej.date_arrivee && matchLogement(m)) ?? null
+
+        // Détecte si un calendar_event 'menage' [FAIT] existe déjà pour ce
+        // créneau (titre contient le nom du logement + même date). C'est
+        // l'état "coché" qui permet le toggle.
+        const isDoneFor = (date: string | null) => {
+          if (!date) return false
+          return events.some(e =>
+            e.category === 'menage'
+            && e.date === date
+            && (e.title ?? '').toLowerCase().includes(logementLow)
+            && (e.description ?? '').includes('[FAIT]')
+          )
+        }
+
+        const menageBefore = slotBefore ? { slot: slotBefore, done: isDoneFor(slotBefore.date) } : null
+        const menageAfter  = slotAfter  ? { slot: slotAfter,  done: isDoneFor(slotAfter.date)  } : null
+
         return (
           <SejourPopover
-            sejour={sejourPopover.sejour}
-            menageSlot={slot}
-            menageDone={menageDone}
+            sejour={sej}
+            menageBefore={menageBefore}
+            menageAfter={menageAfter}
             anchorRect={sejourPopover.anchor}
             onClose={() => setSejourPopover(null)}
-            onMarkMenageDone={async () => {
-              const date = slot?.date ?? sejourPopover.sejour.date_depart
-              const name = slot?.logementName ?? sejourPopover.sejour.logement_label
-              const r = await markMenageDone({
-                date,
-                logementName: name,
-                startTime: slot?.startTime,
-                endTime: slot?.endTime,
-                notes: slot?.notes ?? undefined,
+            onToggleMenage={async (slot, done) => {
+              const r = await setMenageDone({
+                date: slot.date,
+                logementName: slot.logementName,
+                done,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                notes: slot.notes ?? undefined,
               })
               if (r.ok) {
-                // On NE FERME PAS le popover : la prochaine ré-ouverture
-                // verrait le slot "non fait" si router.refresh est lent. À
-                // la place, on rafraîchit la donnée et on garde le popover
-                // pour que l'utilisateur voie l'état "Marqué comme fait".
+                // On NE FERME PAS le popover : l'hôte voit le toggle changer
+                // d'état sur place après le router.refresh.
                 router.refresh()
               } else {
                 alert(r.error)
