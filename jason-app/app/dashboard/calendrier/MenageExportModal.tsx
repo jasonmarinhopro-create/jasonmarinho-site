@@ -135,7 +135,7 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
       <div style={s.modal} role="dialog" aria-label="Planning ménage" className="menage-modal-content">
         <header style={s.head} className="menage-no-print">
           <div style={s.headTitle}>
-            <Broom size={18} weight="duotone" style={{ color: '#5DC077' }} />
+            <Broom size={18} weight="duotone" style={{ color: 'var(--accent-text)' }} />
             <h2 style={s.title}>Planning ménage</h2>
           </div>
           <button onClick={onClose} aria-label="Fermer" style={s.closeBtn}>
@@ -282,9 +282,9 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all .15s',
   },
   periodBtnActive: {
-    background: 'rgba(93,192,119,0.13)',
-    borderColor: 'rgba(93,192,119,0.35)',
-    color: '#5DC077',
+    background: 'var(--accent-bg-2)',
+    borderColor: 'var(--accent-border-2)',
+    color: 'var(--accent-text)',
     fontWeight: 600,
   },
   body: {
@@ -383,9 +383,9 @@ const s: Record<string, React.CSSProperties> = {
   btnPrimary: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '8px 14px',
-    background: '#5DC077',
-    border: '1px solid #fb923c',
-    color: '#1a0c00',
+    background: 'var(--accent-text)',
+    border: '1px solid var(--accent-text)',
+    color: 'var(--bg)',
     fontSize: '12px',
     fontWeight: 600,
     borderRadius: '8px',

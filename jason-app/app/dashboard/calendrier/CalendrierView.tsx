@@ -2938,10 +2938,23 @@ export default function CalendrierView({
           m => m.date === sejourPopover.sejour.date_depart
             && m.logementName.trim().toLowerCase() === sejourPopover.sejour.logement_label.trim().toLowerCase()
         ) ?? null
+        // Détecte si l'hôte a déjà cliqué "Marquer ménage fait" pour ce
+        // créneau (un calendar_event 'menage' avec le bon nom + date existe).
+        // Sinon le bouton donne l'illusion de ne pas marcher : il insère
+        // bien en base, mais l'UI re-dérive toujours le slot depuis sejours
+        // → on ne voit aucun feedback. Avec cette détection on bascule sur
+        // un état "fait" visible la prochaine fois.
+        const sejourLogementLow = sejourPopover.sejour.logement_label.trim().toLowerCase()
+        const menageDone = events.some(e =>
+          e.category === 'menage'
+          && e.date === sejourPopover.sejour.date_depart
+          && (e.title ?? '').toLowerCase().includes(sejourLogementLow)
+        )
         return (
           <SejourPopover
             sejour={sejourPopover.sejour}
             menageSlot={slot}
+            menageDone={menageDone}
             anchorRect={sejourPopover.anchor}
             onClose={() => setSejourPopover(null)}
             onMarkMenageDone={async () => {
@@ -2955,7 +2968,10 @@ export default function CalendrierView({
                 notes: slot?.notes ?? undefined,
               })
               if (r.ok) {
-                setSejourPopover(null)
+                // On NE FERME PAS le popover : la prochaine ré-ouverture
+                // verrait le slot "non fait" si router.refresh est lent. À
+                // la place, on rafraîchit la donnée et on garde le popover
+                // pour que l'utilisateur voie l'état "Marqué comme fait".
                 router.refresh()
               } else {
                 alert(r.error)

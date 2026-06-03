@@ -12,6 +12,8 @@ type Props = {
   sejour: SejourEvent
   /** Créneau ménage rattaché à ce séjour (date_depart match). Peut être null. */
   menageSlot: MenageSlot | null
+  /** Vrai si un événement calendrier 'menage' existe déjà pour cette date+logement */
+  menageDone: boolean
   /** Anchor element to position popover near (button/event clicked). */
   anchorRect: DOMRect | null
   onClose: () => void
@@ -108,10 +110,11 @@ function computePosition(anchorRect: DOMRect | null, popoverHeight: number, isMo
   }
 }
 
-export default function SejourPopover({ sejour, menageSlot, anchorRect, onClose, onMarkMenageDone }: Props) {
+export default function SejourPopover({ sejour, menageSlot, menageDone, anchorRect, onClose, onMarkMenageDone }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [popoverHeight, setPopoverHeight] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
+  const [pending, setPending] = useState(false)
 
   // Détecte mobile (côté client uniquement)
   useEffect(() => {
@@ -198,11 +201,11 @@ export default function SejourPopover({ sejour, menageSlot, anchorRect, onClose,
 
         {/* Bloc ménage : créneau auto + actions */}
         {menageSlot && (
-          <div style={s.menageBlock}>
+          <div style={menageDone ? s.menageBlockDone : s.menageBlock}>
             <div style={s.menageHead}>
-              <Broom size={13} weight="duotone" style={{ color: '#5DC077' }} />
-              <span>Ménage prévu</span>
-              {menageSlot.sameDay && (
+              <Broom size={13} weight="duotone" />
+              <span>{menageDone ? 'Ménage fait' : 'Ménage prévu'}</span>
+              {!menageDone && menageSlot.sameDay && (
                 <span style={s.urgentBadge}>Turnover serré</span>
               )}
             </div>
@@ -228,9 +231,25 @@ export default function SejourPopover({ sejour, menageSlot, anchorRect, onClose,
                 <span>{menageSlot.notes}</span>
               </div>
             )}
-            <button onClick={onMarkMenageDone} style={s.btnMenageDone}>
-              <CheckCircle size={12} weight="fill" /> Marquer ménage fait
-            </button>
+            {menageDone ? (
+              <div style={s.menageDoneTag}>
+                <CheckCircle size={12} weight="fill" /> Marqué comme fait
+              </div>
+            ) : (
+              <button
+                onClick={async () => {
+                  if (pending) return
+                  setPending(true)
+                  try { await onMarkMenageDone() }
+                  finally { setPending(false) }
+                }}
+                disabled={pending}
+                style={{ ...s.btnMenageDone, opacity: pending ? 0.6 : 1, cursor: pending ? 'wait' : 'pointer' }}
+              >
+                <CheckCircle size={12} weight="fill" />
+                {pending ? 'Enregistrement…' : 'Marquer ménage fait'}
+              </button>
+            )}
           </div>
         )}
 
@@ -327,9 +346,19 @@ const s: Record<string, React.CSSProperties> = {
     flexDirection: 'column',
     gap: '6px',
     padding: '10px 12px',
-    background: 'rgba(93,192,119,0.08)',
-    border: '1px solid rgba(93,192,119,0.22)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '10px',
+  },
+  menageBlockDone: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+    padding: '10px 12px',
+    background: 'var(--surface-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    opacity: 0.85,
   },
   menageHead: {
     display: 'flex',
@@ -339,7 +368,22 @@ const s: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     letterSpacing: '0.4px',
     textTransform: 'uppercase',
-    color: '#5DC077',
+    color: 'var(--accent-text)',
+  },
+  menageDoneTag: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '5px',
+    marginTop: '2px',
+    padding: '8px 10px',
+    background: 'var(--surface-2)',
+    border: '1px dashed var(--border-2)',
+    color: 'var(--text-2)',
+    fontSize: '12px',
+    fontWeight: 500,
+    borderRadius: '7px',
+    minHeight: 36,
   },
   urgentBadge: {
     marginLeft: 'auto',
@@ -367,9 +411,9 @@ const s: Record<string, React.CSSProperties> = {
     gap: '5px',
     marginTop: '2px',
     padding: '8px 10px',
-    background: '#5DC077',
-    border: '1px solid #fb923c',
-    color: '#1a0c00',
+    background: 'var(--accent-text)',
+    border: '1px solid var(--accent-text)',
+    color: 'var(--bg)',
     fontSize: '12px',
     fontWeight: 600,
     borderRadius: '7px',
