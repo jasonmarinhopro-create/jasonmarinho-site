@@ -27,14 +27,20 @@ interface EventUpdate {
 }
 
 /**
- * Crée un événement calendrier de catégorie 'menage' à la date donnée.
- * Utilisé par le popover séjour quand l'hôte clique "Marquer ménage fait".
- * Idempotent : si un événement menage existe déjà ce jour-là pour ce
- * logement, on ne crée pas de doublon.
+ * Bascule l'état "ménage fait" pour un créneau (date + logement).
+ *
+ * done=true  → crée (ou marque [FAIT]) un calendar_event de catégorie
+ *              'menage' à la date donnée. Idempotent.
+ * done=false → supprime l'événement 'menage' correspondant (ou retire le
+ *              tag [FAIT] s'il y a d'autres infos dans la description).
+ *
+ * Utilisé par le popover séjour pour cocher/décocher les ménages avant
+ * arrivée et après départ.
  */
-export async function markMenageDone(input: {
+export async function setMenageDone(input: {
   date: string
   logementName: string
+  done: boolean
   startTime?: string
   endTime?: string
   notes?: string
@@ -43,7 +49,6 @@ export async function markMenageDone(input: {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false, error: 'Non authentifié' }
 
-  // Dédup : un menage déjà saisi le même jour, même logement → no-op
   const { data: existing } = await supabase
     .from('calendar_events')
     .select('id, description')
@@ -54,8 +59,33 @@ export async function markMenageDone(input: {
     .limit(1)
     .maybeSingle()
 
+  // ─── Décocher : supprimer l'événement (ou son tag [FAIT]) ────────────
+  if (!input.done) {
+    if (!existing) {
+      // Rien à faire — déjà non coché
+      return { ok: true }
+    }
+    // Si la description contient autre chose que [FAIT], on garde l'événement
+    // pour préserver les notes manuelles éventuelles. Sinon on supprime.
+    const desc = existing.description ?? ''
+    const stripped = desc.replace(/\[FAIT\]\s*/, '').trim()
+    if (stripped.length > 0 && stripped !== '·') {
+      await supabase
+        .from('calendar_events')
+        .update({ description: stripped })
+        .eq('id', existing.id)
+    } else {
+      await supabase
+        .from('calendar_events')
+        .delete()
+        .eq('id', existing.id)
+    }
+    revalidatePath('/dashboard/calendrier')
+    return { ok: true }
+  }
+
+  // ─── Cocher : créer ou marquer [FAIT] ────────────────────────────────
   if (existing) {
-    // Marqué comme fait : on appose "[FAIT]" si pas déjà présent
     const desc = existing.description ?? ''
     if (!desc.includes('[FAIT]')) {
       await supabase
@@ -83,6 +113,20 @@ export async function markMenageDone(input: {
   if (error) return { ok: false, error: error.message }
   revalidatePath('/dashboard/calendrier')
   return { ok: true }
+}
+
+/**
+ * @deprecated Utilise setMenageDone({ ..., done: true }) à la place.
+ * Conservée pour rétrocompat le temps de migrer tous les appelants.
+ */
+export async function markMenageDone(input: {
+  date: string
+  logementName: string
+  startTime?: string
+  endTime?: string
+  notes?: string
+}): Promise<{ ok: true } | { ok: false; error: string }> {
+  return setMenageDone({ ...input, done: true })
 }
 
 export async function createCalendarEvent(input: EventInput) {
