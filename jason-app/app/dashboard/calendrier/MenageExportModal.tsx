@@ -11,6 +11,7 @@ type Props = {
   slots: MenageSlot[]
   appUrl: string
   icalToken: string | null
+  hostName: string | null
   onClose: () => void
 }
 
@@ -88,7 +89,288 @@ function buildWhatsAppMessage(slots: MenageSlot[], label: string): string {
   return lines.join('\n')
 }
 
-export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, onClose }: Props) {
+/** Échappe une chaîne pour insertion safe dans du HTML (XSS-safe). */
+function esc(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+/**
+ * Génère le HTML d'un planning ménage imprimable A4, charte brand
+ * (forest green #004C3F + jaune accent #FFD56B). Ouvert dans une nouvelle
+ * fenêtre pour utiliser le dialogue d'impression natif du browser —
+ * fiable cross-browser, pas de print CSS visibility tricks fragiles.
+ */
+function buildPrintHtml(slots: MenageSlot[], periodLabel: string, hostName: string | null): string {
+  const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+  const slotsBy: Record<string, MenageSlot[]> = {}
+  for (const s of slots) {
+    const key = new Date(s.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+    if (!slotsBy[key]) slotsBy[key] = []
+    slotsBy[key].push(s)
+  }
+  const groups = Object.entries(slotsBy)
+
+  const bodyContent = slots.length === 0
+    ? `<div class="empty">Aucun créneau ménage prévu sur cette période.</div>`
+    : groups.map(([dateLabel, daySlots]) => `
+        <section class="day">
+          <h3 class="day-title">${esc(dateLabel)}</h3>
+          ${daySlots.map(slot => `
+            <article class="slot ${slot.sameDay ? 'urgent' : ''}">
+              <div class="slot-time">${esc(slot.startTime)} – ${esc(slot.endTime)}</div>
+              <div class="slot-body">
+                <div class="slot-logement">${esc(slot.logementName)}${slot.sameDay ? ' <span class="badge-urgent">Turnover serré</span>' : ''}</div>
+                ${slot.adresse ? `<div class="slot-meta">📍 ${esc(slot.adresse)}</div>` : ''}
+                ${slot.contactNom ? `<div class="slot-meta">👤 ${esc(slot.contactNom)}${slot.contactTel ? ` · ${esc(slot.contactTel)}` : ''}</div>` : ''}
+                ${slot.notes ? `<div class="slot-notes">${esc(slot.notes)}</div>` : ''}
+                ${slot.fraisMenage != null && slot.fraisMenage > 0 ? `<div class="slot-meta slot-forfait">Forfait : ${slot.fraisMenage} €</div>` : ''}
+              </div>
+            </article>
+          `).join('')}
+        </section>
+      `).join('')
+
+  const subtitle = hostName
+    ? `Préparé par ${esc(hostName)} · ${esc(today)}`
+    : `Généré le ${esc(today)}`
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Planning ménage — ${esc(periodLabel)}</title>
+<style>
+  @page { size: A4 portrait; margin: 14mm 14mm 18mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #1a1a1a;
+    background: #ffffff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    line-height: 1.5;
+  }
+  /* ── Hero header forest green ────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, #004C3F 0%, #005A4A 100%);
+    color: #FFFFFF;
+    padding: 22px 26px 20px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,213,107,0.10);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255,213,107,0.18);
+    color: #FFD56B;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero-title {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    font-weight: 400;
+    margin: 0 0 6px;
+    letter-spacing: -0.3px;
+  }
+  .hero-period {
+    font-size: 13px;
+    color: rgba(255,255,255,0.82);
+    margin: 0;
+  }
+  .hero-meta {
+    font-size: 11px;
+    color: rgba(255,255,255,0.62);
+    margin-top: 8px;
+  }
+  .hero-count {
+    position: absolute;
+    bottom: 18px;
+    right: 26px;
+    background: #FFD56B;
+    color: #003329;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+  /* ── Liste des créneaux par jour ─────────────────────────────────── */
+  .day { margin-bottom: 16px; page-break-inside: avoid; }
+  .day-title {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    color: #004C3F;
+    margin: 0 0 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #D5E6DA;
+    text-transform: capitalize;
+  }
+  .slot {
+    display: flex;
+    gap: 14px;
+    padding: 11px 14px;
+    margin-bottom: 7px;
+    background: #F6FCF8;
+    border: 1px solid #D5E6DA;
+    border-left: 4px solid #004C3F;
+    border-radius: 8px;
+    page-break-inside: avoid;
+  }
+  .slot.urgent {
+    border-left-color: #b35e00;
+    background: #FFF9EE;
+  }
+  .slot-time {
+    flex: 0 0 84px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #004C3F;
+    padding-top: 1px;
+  }
+  .slot.urgent .slot-time { color: #b35e00; }
+  .slot-body { flex: 1; min-width: 0; }
+  .slot-logement {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #0B1D0F;
+    margin-bottom: 3px;
+  }
+  .slot-meta {
+    font-size: 11.5px;
+    color: rgba(11,29,15,0.68);
+    margin-top: 2px;
+  }
+  .slot-forfait {
+    color: #004C3F;
+    font-weight: 600;
+  }
+  .slot-notes {
+    font-size: 11.5px;
+    color: rgba(11,29,15,0.82);
+    margin-top: 5px;
+    padding: 6px 8px;
+    background: rgba(255,213,107,0.18);
+    border-radius: 4px;
+    border-left: 2px solid #FFD56B;
+    font-style: italic;
+  }
+  .badge-urgent {
+    display: inline-block;
+    margin-left: 6px;
+    background: #b35e00;
+    color: #fff;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    vertical-align: 1px;
+  }
+  .empty {
+    padding: 36px 24px;
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+    font-size: 13px;
+    border: 1px dashed #D5E6DA;
+    border-radius: 8px;
+  }
+  /* ── Footer ──────────────────────────────────────────────────────── */
+  .footer {
+    margin-top: 22px;
+    padding-top: 10px;
+    border-top: 1px solid #D5E6DA;
+    font-size: 9.5px;
+    color: #6b7280;
+    display: flex;
+    justify-content: space-between;
+  }
+  .footer-brand strong { color: #004C3F; }
+  /* ── Print button (only on screen, hidden in print) ──────────────── */
+  .toolbar {
+    position: fixed;
+    top: 12px; right: 12px;
+    background: #fff;
+    border: 1px solid #D5E6DA;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    z-index: 10;
+  }
+  .toolbar button {
+    background: #004C3F;
+    color: #fff;
+    border: 0;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .toolbar button:hover { background: #003329; }
+  @media print {
+    .toolbar { display: none; }
+    body { padding: 0; }
+  }
+  body { padding: 18mm 14mm; max-width: 794px; margin: 0 auto; }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button onclick="window.print()">Imprimer / PDF</button>
+  </div>
+
+  <div class="hero">
+    <div class="hero-tag">🧹 Planning ménage</div>
+    <h1 class="hero-title">Préparation des logements</h1>
+    <p class="hero-period">${esc(periodLabel)}</p>
+    <p class="hero-meta">${subtitle}</p>
+    <div class="hero-count">${slots.length} créneau${slots.length > 1 ? 'x' : ''}</div>
+  </div>
+
+  ${bodyContent}
+
+  <div class="footer">
+    <span class="footer-brand">Édité depuis <strong>app.jasonmarinho.com</strong></span>
+    <span>${esc(today)}</span>
+  </div>
+
+  <script>
+    // Auto-ouverture du dialog d'impression après chargement
+    window.addEventListener('load', () => setTimeout(() => window.print(), 250));
+  </script>
+</body>
+</html>`
+}
+
+export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, hostName, onClose }: Props) {
   const [period, setPeriod] = useState<Period>('week')
   const [copied, setCopied] = useState(false)
 
@@ -112,28 +394,25 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
   }
 
   function handlePrint() {
-    window.print()
+    // Ouvre une fenêtre dédiée avec un HTML A4 brand-aligned. Plus fiable
+    // que le print CSS in-place (qui ratait certains contenus selon les
+    // browsers et donnait des pages blanches).
+    const html = buildPrintHtml(slots, label, hostName)
+    const w = window.open('', '_blank', 'width=820,height=900')
+    if (!w) {
+      alert('Le navigateur a bloqué la nouvelle fenêtre. Autorise les pop-ups pour cette page.')
+      return
+    }
+    w.document.open()
+    w.document.write(html)
+    w.document.close()
   }
 
   return (
     <>
-      <style>{`
-        @media print {
-          body * { visibility: hidden; }
-          .menage-print-area, .menage-print-area * { visibility: visible; }
-          .menage-print-area {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            background: white !important;
-            color: black !important;
-            padding: 20px !important;
-          }
-          .menage-no-print { display: none !important; }
-        }
-      `}</style>
-      <div onClick={onClose} style={s.backdrop} className="menage-no-print" />
-      <div style={s.modal} role="dialog" aria-label="Planning ménage" className="menage-modal-content">
-        <header style={s.head} className="menage-no-print">
+      <div onClick={onClose} style={s.backdrop} />
+      <div style={s.modal} role="dialog" aria-label="Planning ménage">
+        <header style={s.head}>
           <div style={s.headTitle}>
             <Broom size={18} weight="duotone" style={{ color: 'var(--accent-text)' }} />
             <h2 style={s.title}>Planning ménage</h2>
@@ -144,7 +423,7 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
         </header>
 
         {/* Sélecteur de période */}
-        <div style={s.periodRow} className="menage-no-print">
+        <div style={s.periodRow}>
           {(['week', 'next-week', 'month', 'next-month'] as Period[]).map(p => (
             <button
               key={p}
@@ -157,7 +436,7 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
         </div>
 
         {/* Liste des créneaux (visible à l'écran + à l'impression) */}
-        <div className="menage-print-area" style={s.body}>
+        <div style={s.body}>
           <div style={s.printHead}>
             <h3 style={s.printTitle}>Planning ménage — {label}</h3>
             <p style={s.printSub}>{slots.length} créneau{slots.length > 1 ? 'x' : ''} · généré le {new Date().toLocaleDateString('fr-FR')}</p>
@@ -193,7 +472,7 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
         </div>
 
         {/* Actions d'export */}
-        <footer style={s.footer} className="menage-no-print">
+        <footer style={s.footer}>
           <button onClick={handlePrint} style={s.btnGhost}>
             <Printer size={13} weight="bold" /> Imprimer / PDF
           </button>
@@ -212,7 +491,7 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
           )}
         </footer>
 
-        <p style={s.footerNote} className="menage-no-print">
+        <p style={s.footerNote}>
           💡 Le lien iCal permet à la femme de ménage de s'abonner depuis son téléphone : son agenda se met à jour automatiquement à chaque nouvelle réservation.
         </p>
       </div>

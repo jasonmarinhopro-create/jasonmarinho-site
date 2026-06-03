@@ -46,6 +46,7 @@ interface Props {
   logementOptions: LogementOption[]
   menageSlots: import('./page').MenageSlot[]
   icalToken: string | null
+  hostName: string | null
   appUrl: string
 }
 
@@ -639,6 +640,7 @@ export default function CalendrierView({
   logementOptions,
   menageSlots,
   icalToken,
+  hostName,
   appUrl,
 }: Props) {
   const TODAY = todayString()
@@ -2987,6 +2989,7 @@ export default function CalendrierView({
           slots={menageSlots}
           appUrl={appUrl}
           icalToken={icalTokenState}
+          hostName={hostName}
           onClose={() => setMenageExportOpen(false)}
         />
       )}
