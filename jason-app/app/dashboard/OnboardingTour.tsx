@@ -289,6 +289,25 @@ function getPopoverW(): number {
 }
 const POPOVER_H_EST = 260
 const MARGIN = 14
+const MOBILE_BREAKPOINT = 768
+
+/** Détecte si un élément est réellement VISIBLE à l'écran (pas hidden,
+ *  pas offscreen, pas display:none). Sur mobile, les liens du sidebar
+ *  desktop existent toujours dans le DOM mais sont cachés — leur rect
+ *  est dégénéré (width 0 ou complètement hors viewport). */
+function isElementVisible(el: HTMLElement): boolean {
+  if (!el) return false
+  const style = window.getComputedStyle(el)
+  if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) {
+    return false
+  }
+  const rect = el.getBoundingClientRect()
+  if (rect.width < 4 || rect.height < 4) return false
+  // Si l'élément est COMPLÈTEMENT en dehors du viewport (à gauche/droite),
+  // c'est probablement un drawer fermé.
+  if (rect.right < 0 || rect.left > window.innerWidth) return false
+  return true
+}
 
 export default function OnboardingTour({
   userId,
@@ -352,34 +371,65 @@ export default function OnboardingTour({
     if (!step) return
 
     const popoverW = getPopoverW()
-    if (!step.targetSelector) {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
+
+    // Helper : popover en bottom sheet (mobile) sans spotlight.
+    // Pas de targetRect → backdrop full + popover ancré en bas avec marge sécurité
+    // pour ne pas chevaucher la barre de nav OS (iOS safe area approx 60px).
+    const bottomSheet = () => {
       setTargetRect(null)
-      // Centré viewport
+      setPopoverPos({
+        top: Math.max(MARGIN, window.innerHeight - POPOVER_H_EST - 80),
+        left: MARGIN,
+      })
+    }
+
+    // Helper : popover centré viewport (desktop sans target).
+    const centered = () => {
+      setTargetRect(null)
       setPopoverPos({
         top: Math.max(MARGIN, (window.innerHeight - POPOVER_H_EST) / 2),
         left: Math.max(MARGIN, (window.innerWidth - popoverW) / 2),
       })
+    }
+
+    // Pas de target défini : centrer (desktop) ou bottom sheet (mobile)
+    if (!step.targetSelector) {
+      if (isMobile) bottomSheet()
+      else centered()
       return
     }
 
     const el = document.querySelector(step.targetSelector) as HTMLElement | null
-    if (!el) {
-      // Target absent → skip to next
+
+    // Sur mobile, si l'élément n'est pas visible (sidebar desktop caché par
+    // exemple), on N'AUTOSKIP PAS — au contraire on garde le step comme
+    // information éducative, juste sans spotlight. C'est plus utile pour
+    // l'utilisateur : il sait que "Formations" existe sans qu'on saute
+    // le step parce que le sidebar mobile est fermé.
+    if (!el || (isMobile && !isElementVisible(el))) {
+      if (isMobile) {
+        bottomSheet()
+        return
+      }
+      // Desktop sans target trouvé → skip silencieux comme avant
       if (stepIdx < STEPS.length - 1) setStepIdx(stepIdx + 1)
       else finish()
       return
     }
 
-    // Sur mobile (< 768px), le scroll smooth est PERÇU lent car les distances
-    // sont plus grandes (page haute) et les frames moins fluides. On bascule
-    // sur un scroll instant pour que la visite soit vivante. Sur desktop, le
-    // smooth reste plus agréable visuellement.
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    // À partir d'ici : élément visible, on peut scroll + positionner.
     el.scrollIntoView({ behavior: isMobile ? 'auto' : 'smooth', block: 'center' })
 
     // Laisse le scroll s'effectuer puis mesure (court sur mobile, normal desktop).
     setTimeout(() => {
       const rect = el.getBoundingClientRect()
+      // Double-check : après scroll, si l'élément est toujours offscreen
+      // ou collé au bord, on bascule en bottom sheet propre.
+      if (isMobile && !isElementVisible(el)) {
+        bottomSheet()
+        return
+      }
       setTargetRect(rect)
 
       const spaceBelow = window.innerHeight - rect.bottom
@@ -467,6 +517,11 @@ export default function OnboardingTour({
             top: popoverPos.top,
             left: popoverPos.left,
             width: getPopoverW(),
+            // Garde-fou : si le contenu dépasse (texte long, écran court),
+            // on borne et on autorise le scroll interne plutôt que de
+            // tronquer hors viewport. Réserve 16px de marge bas.
+            maxHeight: `calc(100vh - ${popoverPos.top + 16}px)`,
+            overflowY: 'auto',
           }}
         >
           {targetRect && popoverPos.arrowSide && (
