@@ -2993,15 +2993,33 @@ export default function CalendrierView({
       })()}
 
       {/* ── Modal d'export ménage (PDF, WhatsApp, iCal cleaner) ───────────── */}
-      {menageExportOpen && (
-        <MenageExportModal
-          slots={menageSlots}
-          appUrl={appUrl}
-          icalToken={icalTokenState}
-          hostName={hostName}
-          onClose={() => setMenageExportOpen(false)}
-        />
-      )}
+      {menageExportOpen && (() => {
+        // Calcule l'ensemble des slots qui ont déjà un calendar_event [FAIT]
+        // associé (matching date + nom de logement). Sert au modal + au PDF
+        // pour afficher visuellement l'état "fait" — sinon le PDF ne reflète
+        // pas les ménages que l'hôte a marqués comme finis dans le popover.
+        const doneIds = new Set<string>()
+        for (const slot of menageSlots) {
+          const logementLow = slot.logementName.trim().toLowerCase()
+          const isDone = events.some(e =>
+            e.category === 'menage'
+            && e.date === slot.date
+            && (e.title ?? '').toLowerCase().includes(logementLow)
+            && (e.description ?? '').includes('[FAIT]')
+          )
+          if (isDone) doneIds.add(slot.id)
+        }
+        return (
+          <MenageExportModal
+            slots={menageSlots}
+            doneIds={doneIds}
+            appUrl={appUrl}
+            icalToken={icalTokenState}
+            hostName={hostName}
+            onClose={() => setMenageExportOpen(false)}
+          />
+        )
+      })()}
 
     </div>
   )
