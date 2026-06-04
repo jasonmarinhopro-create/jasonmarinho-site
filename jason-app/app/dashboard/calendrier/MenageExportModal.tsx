@@ -9,6 +9,8 @@ import type { MenageSlot } from './page'
 
 type Props = {
   slots: MenageSlot[]
+  /** Set des slot.id qui ont déjà un calendar_event [FAIT] associé. */
+  doneIds: Set<string>
   appUrl: string
   icalToken: string | null
   hostName: string | null
@@ -105,7 +107,7 @@ function esc(s: string): string {
  * fenêtre pour utiliser le dialogue d'impression natif du browser —
  * fiable cross-browser, pas de print CSS visibility tricks fragiles.
  */
-function buildPrintHtml(slots: MenageSlot[], periodLabel: string, hostName: string | null): string {
+function buildPrintHtml(slots: MenageSlot[], doneIds: Set<string>, periodLabel: string, hostName: string | null): string {
   const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
   const slotsBy: Record<string, MenageSlot[]> = {}
   for (const s of slots) {
@@ -115,23 +117,27 @@ function buildPrintHtml(slots: MenageSlot[], periodLabel: string, hostName: stri
   }
   const groups = Object.entries(slotsBy)
 
+  const doneCount = slots.filter(s => doneIds.has(s.id)).length
   const bodyContent = slots.length === 0
     ? `<div class="empty">Aucun créneau ménage prévu sur cette période.</div>`
     : groups.map(([dateLabel, daySlots]) => `
         <section class="day">
           <h3 class="day-title">${esc(dateLabel)}</h3>
-          ${daySlots.map(slot => `
-            <article class="slot ${slot.sameDay ? 'urgent' : ''}">
+          ${daySlots.map(slot => {
+            const done = doneIds.has(slot.id)
+            return `
+            <article class="slot ${slot.sameDay ? 'urgent' : ''} ${done ? 'done' : ''}">
+              <div class="slot-check" aria-hidden>${done ? '✓' : ''}</div>
               <div class="slot-time">${esc(slot.startTime)} – ${esc(slot.endTime)}</div>
               <div class="slot-body">
-                <div class="slot-logement">${esc(slot.logementName)}${slot.sameDay ? ' <span class="badge-urgent">Turnover serré</span>' : ''}</div>
+                <div class="slot-logement">${esc(slot.logementName)}${slot.sameDay && !done ? ' <span class="badge-urgent">Turnover serré</span>' : ''}${done ? ' <span class="badge-done">Fait</span>' : ''}</div>
                 ${slot.adresse ? `<div class="slot-meta">📍 ${esc(slot.adresse)}</div>` : ''}
                 ${slot.contactNom ? `<div class="slot-meta">👤 ${esc(slot.contactNom)}${slot.contactTel ? ` · ${esc(slot.contactTel)}` : ''}</div>` : ''}
                 ${slot.notes ? `<div class="slot-notes">${esc(slot.notes)}</div>` : ''}
                 ${slot.fraisMenage != null && slot.fraisMenage > 0 ? `<div class="slot-meta slot-forfait">Forfait : ${slot.fraisMenage} €</div>` : ''}
               </div>
             </article>
-          `).join('')}
+          `}).join('')}
         </section>
       `).join('')
 
@@ -237,10 +243,49 @@ function buildPrintHtml(slots: MenageSlot[], periodLabel: string, hostName: stri
     border-left: 4px solid #004C3F;
     border-radius: 8px;
     page-break-inside: avoid;
+    align-items: flex-start;
   }
   .slot.urgent {
     border-left-color: #b35e00;
     background: #FFF9EE;
+  }
+  .slot.done {
+    background: #ECF5EF;
+    border-left-color: #34D399;
+    opacity: 0.78;
+  }
+  .slot.done .slot-logement { text-decoration: line-through; text-decoration-thickness: 1px; }
+  .slot-check {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid #D5E6DA;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: transparent;
+    margin-top: 1px;
+  }
+  .slot.done .slot-check {
+    background: #34D399;
+    border-color: #34D399;
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .badge-done {
+    display: inline-block;
+    margin-left: 6px;
+    background: #34D399;
+    color: #ffffff;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    vertical-align: 1px;
   }
   .slot-time {
     flex: 0 0 84px;
@@ -335,6 +380,12 @@ function buildPrintHtml(slots: MenageSlot[], periodLabel: string, hostName: stri
     font-size: 13px;
   }
   .toolbar button:hover { background: #003329; }
+  .toolbar .btn-close {
+    background: #ffffff;
+    color: #004C3F;
+    border: 1px solid #D5E6DA;
+  }
+  .toolbar .btn-close:hover { background: #ECF5EF; }
   @media print {
     .toolbar { display: none; }
     body { padding: 0; }
@@ -345,13 +396,14 @@ function buildPrintHtml(slots: MenageSlot[], periodLabel: string, hostName: stri
 <body>
   <div class="toolbar">
     <button onclick="window.print()">Imprimer / PDF</button>
+    <button class="btn-close" onclick="window.close()" title="Fermer cette fenêtre">Fermer ↩</button>
   </div>
 
   <div class="hero">
     <div class="hero-tag">🧹 Planning ménage</div>
     <h1 class="hero-title">Préparation des logements</h1>
     <p class="hero-period">${esc(periodLabel)}</p>
-    <p class="hero-meta">${subtitle}</p>
+    <p class="hero-meta">${subtitle}${doneCount > 0 ? ` · ${doneCount} déjà fait${doneCount > 1 ? 's' : ''}` : ''}</p>
     <div class="hero-count">${slots.length} créneau${slots.length > 1 ? 'x' : ''}</div>
   </div>
 
@@ -361,16 +413,11 @@ function buildPrintHtml(slots: MenageSlot[], periodLabel: string, hostName: stri
     <span class="footer-brand">Édité depuis <strong>app.jasonmarinho.com</strong></span>
     <span>${esc(today)}</span>
   </div>
-
-  <script>
-    // Auto-ouverture du dialog d'impression après chargement
-    window.addEventListener('load', () => setTimeout(() => window.print(), 250));
-  </script>
 </body>
 </html>`
 }
 
-export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, hostName, onClose }: Props) {
+export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, icalToken, hostName, onClose }: Props) {
   const [period, setPeriod] = useState<Period>('week')
   const [copied, setCopied] = useState(false)
 
@@ -394,18 +441,47 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
   }
 
   function handlePrint() {
-    // Ouvre une fenêtre dédiée avec un HTML A4 brand-aligned. Plus fiable
-    // que le print CSS in-place (qui ratait certains contenus selon les
-    // browsers et donnait des pages blanches).
-    const html = buildPrintHtml(slots, label, hostName)
-    const w = window.open('', '_blank', 'width=820,height=900')
-    if (!w) {
-      alert('Le navigateur a bloqué la nouvelle fenêtre. Autorise les pop-ups pour cette page.')
-      return
+    // Stratégie : iframe cachée pour rester sur la page (mobile-friendly).
+    // L'iframe contient le HTML A4 brand-aligned. Au load, on déclenche
+    // print() sur la fenêtre de l'iframe et on retire l'iframe quand le
+    // dialog se referme. Pas de pop-up, pas de risque que le browser
+    // garde l'utilisateur coincé sur l'onglet imprimé.
+    const html = buildPrintHtml(slots, doneIds, label, hostName)
+
+    // Supprime une iframe précédente si l'utilisateur clique plusieurs fois
+    const previous = document.getElementById('menage-print-iframe')
+    if (previous) previous.remove()
+
+    const iframe = document.createElement('iframe')
+    iframe.id = 'menage-print-iframe'
+    iframe.style.cssText = 'position:fixed;right:-9999px;bottom:-9999px;width:0;height:0;border:0;'
+    iframe.srcdoc = html
+    document.body.appendChild(iframe)
+
+    iframe.onload = () => {
+      try {
+        const w = iframe.contentWindow
+        if (!w) return
+        w.focus()
+        w.print()
+        // L'event afterprint se déclenche après que l'utilisateur ait
+        // imprimé OU annulé. On nettoie l'iframe.
+        const cleanup = () => { iframe.remove() }
+        w.addEventListener('afterprint', cleanup)
+        // Filet : si le browser ne tire pas afterprint (mobile parfois),
+        // nettoyage forcé après 30s.
+        setTimeout(() => { if (document.getElementById('menage-print-iframe')) iframe.remove() }, 30_000)
+      } catch (e) {
+        // Cross-origin ou contexte étrange — fallback window.open
+        iframe.remove()
+        const w = window.open('', '_blank')
+        if (w) {
+          w.document.open()
+          w.document.write(html)
+          w.document.close()
+        }
+      }
     }
-    w.document.open()
-    w.document.write(html)
-    w.document.close()
   }
 
   return (
@@ -446,15 +522,18 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
             <p style={s.empty}>Aucun créneau ménage prévu sur cette période.</p>
           ) : (
             <ol style={s.list}>
-              {slots.map(slot => (
-                <li key={slot.id} style={s.item}>
+              {slots.map(slot => {
+                const done = doneIds.has(slot.id)
+                return (
+                <li key={slot.id} style={{ ...s.item, ...(done ? s.itemDone : {}) }}>
                   <div style={s.itemDate}>
                     <CalendarIcon size={14} weight="duotone" />
-                    <strong>{fmtDateLong(slot.date)}</strong>
+                    <strong style={done ? s.itemTextDone : undefined}>{fmtDateLong(slot.date)}</strong>
                     <span style={s.itemHours}>{slot.startTime}–{slot.endTime}</span>
-                    {slot.sameDay && <span style={s.urgentBadge}>Turnover serré</span>}
+                    {done && <span style={s.doneBadge}><Check size={10} weight="bold" /> Fait</span>}
+                    {!done && slot.sameDay && <span style={s.urgentBadge}>Turnover serré</span>}
                   </div>
-                  <div style={s.itemLogement}>{slot.logementName}</div>
+                  <div style={{ ...s.itemLogement, ...(done ? s.itemTextDone : {}) }}>{slot.logementName}</div>
                   {slot.adresse && (
                     <div style={s.itemMeta}>
                       <MapPin size={11} weight="duotone" /> {slot.adresse}
@@ -466,7 +545,8 @@ export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, 
                     </div>
                   )}
                 </li>
-              ))}
+                )
+              })}
             </ol>
           )}
         </div>
@@ -629,6 +709,26 @@ const s: Record<string, React.CSSProperties> = {
     color: '#ef4444',
     border: '1px solid rgba(239,68,68,0.28)',
     letterSpacing: '0.3px',
+  },
+  doneBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '3px',
+    fontSize: '10px',
+    fontWeight: 700,
+    padding: '2px 6px',
+    borderRadius: '999px',
+    background: 'var(--success-bg)',
+    color: 'var(--success-1)',
+    border: '1px solid var(--success-border)',
+    letterSpacing: '0.3px',
+  },
+  itemDone: {
+    opacity: 0.6,
+  },
+  itemTextDone: {
+    textDecoration: 'line-through',
+    textDecorationThickness: '1px',
   },
   itemLogement: {
     fontSize: '14px',
