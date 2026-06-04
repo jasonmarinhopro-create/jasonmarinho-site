@@ -4,9 +4,11 @@ import RevenusView from './RevenusView'
 import PlanGate from '@/components/ui/PlanGate'
 import OnboardingTour, { REVENUS_STEPS } from '../OnboardingTour'
 
-// Force le rendu dynamique pour que toute saisie (séjour, charge,
-// commission, etc.) apparaisse immédiatement sans cache.
-export const dynamic = 'force-dynamic'
+// revalidate: 60 (vs force-dynamic) permet à Vercel de servir une page en
+// cache pendant 60s. Les server actions de saisie appellent revalidatePath
+// pour invalider immédiatement, donc l'UX reste cohérente : chaque
+// création/édition recalculée, mais les visites répétées sont instantanées.
+export const revalidate = 60
 
 export default async function RevenusPage() {
   const profile = await getProfile()

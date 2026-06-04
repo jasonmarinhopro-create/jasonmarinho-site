@@ -118,7 +118,10 @@ export default async function DashboardPage() {
       .order('last_reply_at', { ascending: false, nullsFirst: false })
       .order('created_at', { ascending: false })
       .limit(3),
-    supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }),
+    // count 'estimated' (vs 'exact') évite un scan full-table à chaque
+    // chargement de la home. La précision exacte n'est pas critique pour
+    // le widget "X posts dans la communauté".
+    supabase.from('chez_nous_posts').select('*', { count: 'estimated', head: true }),
     // Séjours (carnet voyageurs) avec un montant : compte dans le CA YTD,
     // sinon le dashboard ignore les revenus saisis depuis /voyageurs et
     // l'objectif reste à 0 alors que /revenus affiche le bon total.
@@ -224,13 +227,14 @@ export default async function DashboardPage() {
       })()
     : null
 
-  // ── Chez Nous : authors fetchés à part (dépendent des author_ids des posts)
+  // ── Chez Nous : authors fetchés à part (dépendent des author_ids des posts).
+  // On défère cette query — elle s'exécute en parallèle avec
+  // getDashboardPrefill plus bas via Promise.all pour éviter de bloquer
+  // sur 2 RTT sériels.
   const cnAuthorIds = Array.from(new Set((cnPosts ?? []).map(p => p.author_id)))
-  const { data: cnAuthorsData } = cnAuthorIds.length
-    ? await supabase.from('profiles').select('id, full_name, pseudo').in('id', cnAuthorIds)
-    : { data: [] }
-  const cnAuthors: Record<string, { full_name: string | null; pseudo: string | null }> = {}
-  ;(cnAuthorsData ?? []).forEach(a => { cnAuthors[a.id] = { full_name: a.full_name, pseudo: a.pseudo } })
+  const cnAuthorsPromise = cnAuthorIds.length
+    ? supabase.from('profiles').select('id, full_name, pseudo').in('id', cnAuthorIds)
+    : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null }[] })
 
   const joinedIds    = new Set((joinedMemberships ?? []).map(m => m.group_id))
   const joinedGroups = communityGroups.filter(g => joinedIds.has(g.id))
@@ -371,11 +375,26 @@ export default async function DashboardPage() {
   // Try/catch défensif : si getDashboardPrefill jette (cache stale, schéma
   // changé, etc.), on ne crashe pas la page entière — on perd juste l'info
   // contextuelle du conseil.
+  //
+  // PARALLÉLISÉ avec cnAuthorsPromise : les deux requêtes s'exécutent en
+  // même temps. Avant, on avait : Promise.allSettled → cnAuthors RTT →
+  // getDashboardPrefill RTT. Maintenant : Promise.allSettled → 1 seul RTT
+  // pour les 2 dépendances post-batch.
   let prefillForConseil: Awaited<ReturnType<typeof getDashboardPrefill>> = []
-  try {
-    prefillForConseil = await getDashboardPrefill(userId)
-  } catch (e) {
-    console.error('[DashboardPage] getDashboardPrefill failed', e)
+  const [prefillResult, cnAuthorsResult] = await Promise.allSettled([
+    getDashboardPrefill(userId),
+    cnAuthorsPromise,
+  ])
+  if (prefillResult.status === 'fulfilled') {
+    prefillForConseil = prefillResult.value
+  } else {
+    console.error('[DashboardPage] getDashboardPrefill failed', prefillResult.reason)
+  }
+  const cnAuthors: Record<string, { full_name: string | null; pseudo: string | null }> = {}
+  if (cnAuthorsResult.status === 'fulfilled') {
+    ;(cnAuthorsResult.value.data ?? []).forEach(a => {
+      cnAuthors[a.id] = { full_name: a.full_name, pseudo: a.pseudo }
+    })
   }
   const caTotal12mForConseil = prefillForConseil.reduce(
     (sum, l) => sum + (l.stats?.revenuTotal ?? 0), 0

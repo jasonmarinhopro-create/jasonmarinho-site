@@ -10,7 +10,13 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar, setMenageDone } from './actions'
 import SejourPopover from './SejourPopover'
-import MenageExportModal from './MenageExportModal'
+import dynamic from 'next/dynamic'
+
+// MenageExportModal contient le builder de PDF inline (HTML + CSS) → chunk
+// non-critique au premier render. On le lazy-loade : il n'arrive que quand
+// l'utilisateur clique sur le bouton balai. Économise ~15 KB du bundle
+// initial du calendrier.
+const MenageExportModal = dynamic(() => import('./MenageExportModal'), { ssr: false })
 import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning, Broom } from '@phosphor-icons/react/dist/ssr'
 import TourTrigger from '@/components/dashboard/TourTrigger'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
