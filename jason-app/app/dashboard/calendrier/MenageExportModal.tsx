@@ -1,29 +1,35 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import {
   X, Broom, FileText, ChatTeardropDots, Calendar as CalendarIcon,
-  Copy, Check, ArrowSquareOut, Printer, MapPin,
+  Copy, Check, ArrowSquareOut, Printer, MapPin, PencilSimple, Plus, Trash, FloppyDisk,
 } from '@phosphor-icons/react/dist/ssr'
 import type { MenageSlot } from './page'
+import { upsertMenageEvent, deleteMenageEvent } from './actions'
 
 type Props = {
   slots: MenageSlot[]
   /** Set des slot.id qui ont déjà un calendar_event [FAIT] associé. */
   doneIds: Set<string>
+  /** Liste des noms de logements pour le select Ajouter. */
+  logementNames: string[]
   appUrl: string
   icalToken: string | null
   hostName: string | null
   onClose: () => void
+  /** Callback pour rafraîchir la liste après création/édition/suppression. */
+  onSlotsChanged?: () => void
 }
 
-type Period = 'week' | 'next-week' | 'month' | 'next-month'
+type Period = 'week' | 'next-week' | 'month' | 'next-month' | 'custom'
 
 const PERIOD_LABELS: Record<Period, string> = {
   'week':       'Cette semaine',
   'next-week':  'Semaine prochaine',
   'month':      'Ce mois-ci',
   'next-month': 'Mois prochain',
+  'custom':     'Période perso',
 }
 
 function startOfWeek(d: Date): Date {
@@ -44,18 +50,26 @@ function toISODate(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-function getPeriodRange(period: Period): { from: string; to: string; label: string } {
+function fmtRangeLabel(from: string, to: string): string {
+  try {
+    const f = new Date(from)
+    const t = new Date(to)
+    return `du ${f.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} au ${t.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}`
+  } catch { return `du ${from} au ${to}` }
+}
+
+function getPeriodRange(period: Period, customFrom?: string, customTo?: string): { from: string; to: string; label: string } {
   const now = new Date()
   switch (period) {
     case 'week': {
       const ws = startOfWeek(now)
       const we = addDays(ws, 6)
-      return { from: toISODate(ws), to: toISODate(we), label: `du ${ws.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} au ${we.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}` }
+      return { from: toISODate(ws), to: toISODate(we), label: fmtRangeLabel(toISODate(ws), toISODate(we)) }
     }
     case 'next-week': {
       const ws = addDays(startOfWeek(now), 7)
       const we = addDays(ws, 6)
-      return { from: toISODate(ws), to: toISODate(we), label: `du ${ws.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} au ${we.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}` }
+      return { from: toISODate(ws), to: toISODate(we), label: fmtRangeLabel(toISODate(ws), toISODate(we)) }
     }
     case 'month': {
       const ms = new Date(now.getFullYear(), now.getMonth(), 1)
@@ -67,6 +81,13 @@ function getPeriodRange(period: Period): { from: string; to: string; label: stri
       const me = new Date(now.getFullYear(), now.getMonth() + 2, 0)
       return { from: toISODate(ms), to: toISODate(me), label: ms.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) }
     }
+    case 'custom': {
+      // Fallback : période vide ou inversée → on borne sur 1 an aujourd'hui
+      const from = customFrom && /^\d{4}-\d{2}-\d{2}$/.test(customFrom) ? customFrom : toISODate(now)
+      const to = customTo && /^\d{4}-\d{2}-\d{2}$/.test(customTo) ? customTo : toISODate(addDays(now, 60))
+      const ordered = from <= to ? { from, to } : { from: to, to: from }
+      return { ...ordered, label: fmtRangeLabel(ordered.from, ordered.to) }
+    }
   }
 }
 
@@ -74,6 +95,189 @@ function fmtDateLong(date: string): string {
   try {
     return new Date(date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
   } catch { return date }
+}
+
+function EditPanel({
+  initial, logementNames, isPending, error,
+  onSave, onCancel, canDelete, onDelete,
+}: {
+  initial: EditForm
+  logementNames: string[]
+  isPending: boolean
+  error: string | null
+  onSave: (form: EditForm) => void
+  onCancel: () => void
+  canDelete: boolean
+  onDelete: () => void
+}) {
+  const [form, setForm] = useState<EditForm>(initial)
+  return (
+    <div style={editStyles.wrap}>
+      <div style={editStyles.row}>
+        <label style={editStyles.field}>
+          <span style={editStyles.label}>Date</span>
+          <input
+            type="date"
+            value={form.date}
+            onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+            style={editStyles.input}
+          />
+        </label>
+        <label style={editStyles.field}>
+          <span style={editStyles.label}>Logement</span>
+          {logementNames.length > 0 ? (
+            <select
+              value={form.logementName}
+              onChange={e => setForm(f => ({ ...f, logementName: e.target.value }))}
+              style={editStyles.input}
+            >
+              {!logementNames.includes(form.logementName) && (
+                <option value={form.logementName}>{form.logementName || '—'}</option>
+              )}
+              {logementNames.map(n => <option key={n} value={n}>{n}</option>)}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={form.logementName}
+              onChange={e => setForm(f => ({ ...f, logementName: e.target.value }))}
+              style={editStyles.input}
+              placeholder="Nom du logement"
+            />
+          )}
+        </label>
+      </div>
+      <div style={editStyles.row}>
+        <label style={editStyles.field}>
+          <span style={editStyles.label}>Début</span>
+          <input
+            type="time"
+            value={form.startTime}
+            onChange={e => setForm(f => ({ ...f, startTime: e.target.value }))}
+            style={editStyles.input}
+          />
+        </label>
+        <label style={editStyles.field}>
+          <span style={editStyles.label}>Fin</span>
+          <input
+            type="time"
+            value={form.endTime}
+            onChange={e => setForm(f => ({ ...f, endTime: e.target.value }))}
+            style={editStyles.input}
+          />
+        </label>
+        <label style={editStyles.field}>
+          <span style={editStyles.label}>Forfait (€)</span>
+          <input
+            type="number"
+            min={0}
+            step={0.5}
+            value={form.prix ?? ''}
+            onChange={e => setForm(f => ({ ...f, prix: e.target.value === '' ? null : Number(e.target.value) }))}
+            style={editStyles.input}
+            placeholder="—"
+          />
+        </label>
+      </div>
+      <label style={{ ...editStyles.field, flexDirection: 'column' as const }}>
+        <span style={editStyles.label}>Notes (ex: lit bébé, code wifi…)</span>
+        <textarea
+          value={form.notes}
+          onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+          style={{ ...editStyles.input, minHeight: 48, resize: 'vertical' as const }}
+          placeholder="Instructions pour la femme de ménage"
+        />
+      </label>
+      {error && <div style={editStyles.error}>{error}</div>}
+      <div style={editStyles.actions}>
+        <button onClick={onCancel} disabled={isPending} style={editStyles.btnGhost}>Annuler</button>
+        {canDelete && (
+          <button onClick={onDelete} disabled={isPending} style={editStyles.btnDanger}>
+            <Trash size={12} weight="bold" /> Supprimer
+          </button>
+        )}
+        <button onClick={() => onSave(form)} disabled={isPending} style={editStyles.btnPrimary}>
+          <FloppyDisk size={12} weight="bold" /> {isPending ? 'Enregistrement…' : 'Enregistrer'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+const editStyles: Record<string, React.CSSProperties> = {
+  wrap: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    padding: '12px 14px',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '10px',
+  },
+  row: { display: 'flex', gap: '10px', flexWrap: 'wrap' },
+  field: { display: 'flex', flexDirection: 'column' as const, gap: '4px', flex: '1 1 130px', minWidth: 120 },
+  label: { fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.3px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' },
+  input: {
+    padding: '7px 9px',
+    fontSize: '16px', // évite zoom auto iOS
+    color: 'var(--text)',
+    background: 'var(--bg)',
+    border: '1px solid var(--border)',
+    borderRadius: '6px',
+    fontFamily: 'inherit',
+    width: '100%',
+  },
+  error: {
+    fontSize: '12px',
+    color: 'var(--warning)',
+    background: 'var(--warning-bg)',
+    border: '1px solid var(--warning-border)',
+    padding: '6px 10px',
+    borderRadius: '6px',
+  },
+  actions: { display: 'flex', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' as const, marginTop: '2px' },
+  btnGhost: {
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    color: 'var(--text-2)',
+    padding: '7px 12px',
+    borderRadius: '6px',
+    fontSize: '12.5px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  btnPrimary: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'var(--accent-text)',
+    border: '1px solid var(--accent-text)',
+    color: 'var(--bg)',
+    padding: '7px 12px',
+    borderRadius: '6px',
+    fontSize: '12.5px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  btnDanger: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'transparent',
+    border: '1px solid var(--warning-border)',
+    color: 'var(--warning)',
+    padding: '7px 10px',
+    borderRadius: '6px',
+    fontSize: '12.5px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+}
+
+type EditForm = {
+  date: string
+  logementName: string
+  startTime: string
+  endTime: string
+  notes: string
+  prix: number | null
 }
 
 function buildWhatsAppMessage(slots: MenageSlot[], label: string): string {
@@ -417,11 +621,21 @@ function buildPrintHtml(slots: MenageSlot[], doneIds: Set<string>, periodLabel: 
 </html>`
 }
 
-export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, icalToken, hostName, onClose }: Props) {
+export default function MenageExportModal({ slots: allSlots, doneIds, logementNames, appUrl, icalToken, hostName, onClose, onSlotsChanged }: Props) {
   const [period, setPeriod] = useState<Period>('week')
   const [copied, setCopied] = useState(false)
 
-  const { from, to, label } = useMemo(() => getPeriodRange(period), [period])
+  // État pour la période personnalisée — par défaut aujourd'hui → +60 jours
+  // (utile en début de saison avant qu'il y ait des résas auto-dérivées).
+  const today = toISODate(new Date())
+  const todayPlus60 = toISODate(addDays(new Date(), 60))
+  const [customFrom, setCustomFrom] = useState(today)
+  const [customTo, setCustomTo] = useState(todayPlus60)
+
+  const { from, to, label } = useMemo(
+    () => getPeriodRange(period, customFrom, customTo),
+    [period, customFrom, customTo],
+  )
 
   const slots = useMemo(() => {
     return allSlots.filter(s => s.date >= from && s.date <= to)
@@ -431,6 +645,77 @@ export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, ic
   const cleanerIcalUrl = icalToken
     ? `${appUrl}/api/calendar/menage-feed?token=${icalToken}`
     : null
+
+  // ── Édition / ajout d'un ménage ───────────────────────────────────────
+  // editingSlotId === '__new__' = formulaire d'ajout, sinon = id du slot édité
+  const [editingSlotId, setEditingSlotId] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+  const [editError, setEditError] = useState<string | null>(null)
+
+  function openEdit(slot: MenageSlot) {
+    setEditingSlotId(slot.id)
+    setEditError(null)
+  }
+  function openAdd() {
+    setEditingSlotId('__new__')
+    setEditError(null)
+  }
+  function cancelEdit() {
+    setEditingSlotId(null)
+    setEditError(null)
+  }
+
+  async function saveEdit(form: EditForm) {
+    setEditError(null)
+    // Sécurité : validation minimale (le serveur valide aussi)
+    if (!form.date || !form.logementName.trim()) {
+      setEditError('Date et logement requis')
+      return
+    }
+    if (form.startTime >= form.endTime) {
+      setEditError('L\'heure de fin doit être après l\'heure de début')
+      return
+    }
+    const eventId = editingSlotId === '__new__' ? null : (() => {
+      const slot = slots.find(s => s.id === editingSlotId)
+      return slot?.manualEventId ?? null
+    })()
+    const done = editingSlotId && editingSlotId !== '__new__'
+      ? doneIds.has(editingSlotId)
+      : false
+    startTransition(async () => {
+      const r = await upsertMenageEvent({
+        eventId,
+        date: form.date,
+        logementName: form.logementName,
+        startTime: form.startTime,
+        endTime: form.endTime,
+        notes: form.notes || null,
+        prix: form.prix || null,
+        preserveDone: done,
+      })
+      if (r.ok) {
+        setEditingSlotId(null)
+        onSlotsChanged?.()
+      } else {
+        setEditError(r.error)
+      }
+    })
+  }
+
+  async function handleDelete(slot: MenageSlot) {
+    if (!slot.manualEventId) return
+    if (!confirm('Supprimer ce ménage du planning ?')) return
+    startTransition(async () => {
+      const r = await deleteMenageEvent(slot.manualEventId!)
+      if (r.ok) {
+        setEditingSlotId(null)
+        onSlotsChanged?.()
+      } else {
+        setEditError(r.error ?? 'Erreur de suppression')
+      }
+    })
+  }
 
   async function handleCopyWA() {
     try {
@@ -500,7 +785,7 @@ export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, ic
 
         {/* Sélecteur de période */}
         <div style={s.periodRow}>
-          {(['week', 'next-week', 'month', 'next-month'] as Period[]).map(p => (
+          {(['week', 'next-week', 'month', 'next-month', 'custom'] as Period[]).map(p => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
@@ -510,6 +795,32 @@ export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, ic
             </button>
           ))}
         </div>
+
+        {/* Champs date pour période personnalisée — utile en pré-saison
+            quand il n'y a pas encore de résas auto-dérivées en juin/juillet
+            mais qu'on veut planifier août. */}
+        {period === 'custom' && (
+          <div style={s.customRow}>
+            <label style={s.customLabel}>
+              <span>Du</span>
+              <input
+                type="date"
+                value={customFrom}
+                onChange={e => setCustomFrom(e.target.value)}
+                style={s.dateInput}
+              />
+            </label>
+            <label style={s.customLabel}>
+              <span>Au</span>
+              <input
+                type="date"
+                value={customTo}
+                onChange={e => setCustomTo(e.target.value)}
+                style={s.dateInput}
+              />
+            </label>
+          </div>
+        )}
 
         {/* Liste des créneaux (visible à l'écran + à l'impression) */}
         <div style={s.body}>
@@ -524,6 +835,30 @@ export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, ic
             <ol style={s.list}>
               {slots.map(slot => {
                 const done = doneIds.has(slot.id)
+                const editing = editingSlotId === slot.id
+                if (editing) {
+                  return (
+                    <li key={slot.id} style={s.itemEditing}>
+                      <EditPanel
+                        initial={{
+                          date: slot.date,
+                          logementName: slot.logementName,
+                          startTime: slot.startTime,
+                          endTime: slot.endTime,
+                          notes: slot.notes ?? '',
+                          prix: slot.fraisMenage ?? null,
+                        }}
+                        logementNames={logementNames}
+                        isPending={isPending}
+                        error={editError}
+                        onSave={saveEdit}
+                        onCancel={cancelEdit}
+                        canDelete={!!slot.manualEventId}
+                        onDelete={() => handleDelete(slot)}
+                      />
+                    </li>
+                  )
+                }
                 return (
                 <li key={slot.id} style={{ ...s.item, ...(done ? s.itemDone : {}) }}>
                   <div style={s.itemDate}>
@@ -532,6 +867,15 @@ export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, ic
                     <span style={s.itemHours}>{slot.startTime}–{slot.endTime}</span>
                     {done && <span style={s.doneBadge}><Check size={10} weight="bold" /> Fait</span>}
                     {!done && slot.sameDay && <span style={s.urgentBadge}>Turnover serré</span>}
+                    {slot.isManual && <span style={s.manualBadge}>Saisi</span>}
+                    <button
+                      onClick={() => openEdit(slot)}
+                      style={s.editIconBtn}
+                      title="Modifier ce ménage"
+                      aria-label="Modifier"
+                    >
+                      <PencilSimple size={12} weight="bold" />
+                    </button>
                   </div>
                   <div style={{ ...s.itemLogement, ...(done ? s.itemTextDone : {}) }}>{slot.logementName}</div>
                   {slot.adresse && (
@@ -544,10 +888,43 @@ export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, ic
                       📝 {slot.notes}
                     </div>
                   )}
+                  {slot.fraisMenage != null && slot.fraisMenage > 0 && (
+                    <div style={s.itemMeta}>💶 Forfait : {slot.fraisMenage} €</div>
+                  )}
                 </li>
                 )
               })}
+              {/* Formulaire d'ajout d'un nouveau ménage (en bas de liste) */}
+              {editingSlotId === '__new__' && (
+                <li style={s.itemEditing}>
+                  <EditPanel
+                    initial={{
+                      date: from,
+                      logementName: logementNames[0] ?? '',
+                      startTime: '11:00',
+                      endTime: '14:00',
+                      notes: '',
+                      prix: null,
+                    }}
+                    logementNames={logementNames}
+                    isPending={isPending}
+                    error={editError}
+                    onSave={saveEdit}
+                    onCancel={cancelEdit}
+                    canDelete={false}
+                    onDelete={() => {}}
+                  />
+                </li>
+              )}
             </ol>
+          )}
+
+          {/* Bouton + Ajouter un ménage : visible seulement quand le form
+              d'ajout n'est pas déjà ouvert. */}
+          {editingSlotId !== '__new__' && (
+            <button onClick={openAdd} style={s.addBtn}>
+              <Plus size={13} weight="bold" /> Ajouter un ménage
+            </button>
           )}
         </div>
 
@@ -646,6 +1023,33 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--accent-text)',
     fontWeight: 600,
   },
+  customRow: {
+    display: 'flex',
+    gap: '10px',
+    flexWrap: 'wrap',
+    padding: '0 20px 12px',
+    borderBottom: '1px solid var(--border)',
+  },
+  customLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    fontSize: '12px',
+    color: 'var(--text-2)',
+    flex: '1 1 140px',
+    minWidth: 140,
+  },
+  dateInput: {
+    flex: 1,
+    padding: '6px 10px',
+    // ≥16px : évite le zoom auto sur iOS Safari quand on focus le champ
+    fontSize: '16px',
+    color: 'var(--text)',
+    background: 'var(--bg)',
+    border: '1px solid var(--border)',
+    borderRadius: '7px',
+    fontFamily: 'inherit',
+  },
   body: {
     padding: '20px',
     flex: 1,
@@ -729,6 +1133,51 @@ const s: Record<string, React.CSSProperties> = {
   itemTextDone: {
     textDecoration: 'line-through',
     textDecorationThickness: '1px',
+  },
+  itemEditing: {
+    listStyle: 'none',
+    padding: 0,
+  },
+  editIconBtn: {
+    marginLeft: 'auto',
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    color: 'var(--text-muted)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    padding: 0,
+    flexShrink: 0,
+  },
+  manualBadge: {
+    fontSize: '9.5px',
+    fontWeight: 700,
+    padding: '2px 6px',
+    borderRadius: '999px',
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
+    border: '1px solid var(--accent-border)',
+    letterSpacing: '0.3px',
+  },
+  addBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    marginTop: '12px',
+    padding: '9px 14px',
+    background: 'var(--accent-bg)',
+    border: '1px dashed var(--accent-border-2)',
+    color: 'var(--accent-text)',
+    fontSize: '13px',
+    fontWeight: 600,
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    width: 'fit-content',
   },
   itemLogement: {
     fontSize: '14px',

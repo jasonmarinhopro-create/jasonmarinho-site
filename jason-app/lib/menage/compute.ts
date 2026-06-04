@@ -40,7 +40,8 @@ export type LogementSettings = {
 }
 
 export type MenageSlot = {
-  /** ID dérivé stable : 'auto-<logement_id>-<date>' */
+  /** ID dérivé stable : 'auto-<logement_id>-<date>' pour un slot auto,
+   *  'manual-<calendar_event_id>' pour un slot manuel. */
   id: string
   date: string                    // YYYY-MM-DD (= jour de checkout)
   startTime: string               // HH:MM (heure de début)
@@ -60,6 +61,21 @@ export type MenageSlot = {
   /** Détails de la prochaine occupation, s'il y en a une (sinon null) */
   voyageurEntrant: string | null
   prochainCheckIn: string | null  // YYYY-MM-DD
+  /** True si ce slot vient d'un calendar_event saisi à la main (vs auto). */
+  isManual?: boolean
+  /** ID du calendar_event 'menage' associé (pour édition / suppression). */
+  manualEventId?: string
+}
+
+/** Calendar event 'menage' saisi à la main (par le bouton + Événement ou
+ *  par le bouton "Ajouter un ménage" du modal). */
+export type ManualMenageEvent = {
+  id: string
+  date: string
+  startTime: string | null
+  endTime: string | null
+  title: string                   // attendu : "Ménage · LogementName"
+  description: string | null
 }
 
 const DEFAULT_DUREE = 180
@@ -166,6 +182,94 @@ export function computeMenageSlots(
   }
 
   return slots.sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime))
+}
+
+/**
+ * Convertit un calendar_event 'menage' en MenageSlot en fusionnant les
+ * settings du logement (adresse, contact, prix par défaut). Le nom de
+ * logement est extrait du titre "Ménage · {LogementName}".
+ *
+ * Notes & prix : si la description contient un marker "[€XX]" on l'extrait
+ * comme fraisMenage override. Le reste est utilisé comme notes brutes.
+ */
+export function manualEventToSlot(
+  ev: ManualMenageEvent,
+  logementSettings: LogementSettings[],
+): MenageSlot {
+  // Extrait le nom du logement : on retire le préfixe "Ménage · " ou "Ménage - "
+  const logementName = ev.title.replace(/^Ménage\s*[·\-:]\s*/i, '').trim() || ev.title
+  const logementKey = normalizeLogementName(logementName)
+  const settings = logementSettings.find(l => normalizeLogementName(l.nom) === logementKey)
+
+  const start = ev.startTime ?? settings?.menageHeureDefaut ?? DEFAULT_HEURE
+  const end = ev.endTime ?? addMinutes(start, settings?.menageDureeMin ?? DEFAULT_DUREE)
+
+  // Calcul durée à partir des heures explicites pour rester cohérent
+  // si l'utilisateur a saisi des bornes non standard.
+  const durationMin = (() => {
+    const [sh, sm] = start.split(':').map(Number)
+    const [eh, em] = end.split(':').map(Number)
+    if (isNaN(sh) || isNaN(eh)) return settings?.menageDureeMin ?? DEFAULT_DUREE
+    return Math.max(0, (eh * 60 + em) - (sh * 60 + sm))
+  })()
+
+  // Parse description : [FAIT] est géré ailleurs. On extrait [€xxx] et le reste = notes.
+  let notes: string | null = null
+  let fraisOverride: number | null = null
+  if (ev.description) {
+    const cleaned = ev.description.replace(/\[FAIT\]\s*/g, '').trim()
+    const priceMatch = cleaned.match(/\[(\d+(?:[.,]\d+)?)\s*€\]/)
+    if (priceMatch) {
+      fraisOverride = parseFloat(priceMatch[1].replace(',', '.'))
+    }
+    const withoutPrice = cleaned.replace(/\[(\d+(?:[.,]\d+)?)\s*€\]\s*/g, '').trim()
+    if (withoutPrice.length > 0 && withoutPrice !== '·') notes = withoutPrice
+  }
+
+  return {
+    id: `manual-${ev.id}`,
+    date: ev.date,
+    startTime: start,
+    endTime: end,
+    durationMin,
+    logementId: settings?.id ?? null,
+    logementName: settings?.nom ?? logementName,
+    adresse: settings?.adresse ?? null,
+    contactNom: settings?.contactMenageNom ?? null,
+    contactTel: settings?.contactMenageTel ?? null,
+    notes: notes ?? settings?.menageNotes ?? null,
+    fraisMenage: fraisOverride ?? settings?.fraisMenage ?? null,
+    sameDay: false,
+    voyageurSortant: null,
+    voyageurEntrant: null,
+    prochainCheckIn: null,
+    isManual: true,
+    manualEventId: ev.id,
+  }
+}
+
+/**
+ * Fusionne les slots auto-dérivés des séjours avec les ménages saisis
+ * manuellement. Politique de dédup : si un manuel et un auto matchent
+ * sur (date + logement), le MANUEL gagne (l'hôte a customisé).
+ */
+export function mergeAutoAndManual(
+  autoSlots: MenageSlot[],
+  manualEvents: ManualMenageEvent[],
+  logementSettings: LogementSettings[],
+): MenageSlot[] {
+  const manualSlots = manualEvents.map(ev => manualEventToSlot(ev, logementSettings))
+
+  // Index des slots manuels par clé (logement + date) pour dédup
+  const manualKeys = new Set(
+    manualSlots.map(m => `${normalizeLogementName(m.logementName)}|${m.date}`)
+  )
+  const filteredAuto = autoSlots.filter(a =>
+    !manualKeys.has(`${normalizeLogementName(a.logementName)}|${a.date}`)
+  )
+
+  return [...filteredAuto, ...manualSlots]
+    .sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime))
 }
 
 /** Formate un créneau pour affichage compact. Ex: "11:00 → 14:00 · 3h". */

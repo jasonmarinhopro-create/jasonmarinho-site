@@ -129,6 +129,89 @@ export async function markMenageDone(input: {
   return setMenageDone({ ...input, done: true })
 }
 
+/**
+ * Crée ou met à jour un calendar_event de catégorie 'menage' avec les
+ * infos custom (heure, notes, prix). Utilisé par :
+ *  - Bouton "Modifier" sur un slot du planning (override d'un slot auto)
+ *  - Bouton "+ Ajouter un ménage" pour saisir un ménage hors résa
+ *
+ * Format description : "[€prix] [FAIT] notes-libres"
+ *  - [€xxx] facultatif, override le frais_menage du logement
+ *  - [FAIT] facultatif, géré par setMenageDone
+ *  - le reste = notes (ex: "lit bébé à préparer")
+ */
+export async function upsertMenageEvent(input: {
+  /** ID existant à modifier, ou null pour créer un nouveau */
+  eventId: string | null
+  date: string
+  logementName: string
+  startTime: string
+  endTime: string
+  notes?: string | null
+  prix?: number | null
+  /** Préserve l'état [FAIT] si l'événement était déjà coché */
+  preserveDone?: boolean
+}): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'Non authentifié' }
+
+  // Construit la description : [€XX] + [FAIT]? + notes
+  const parts: string[] = []
+  if (input.prix != null && input.prix > 0) {
+    parts.push(`[${input.prix}€]`)
+  }
+  if (input.preserveDone) parts.push('[FAIT]')
+  if (input.notes && input.notes.trim().length > 0) parts.push(input.notes.trim())
+  const description = parts.join(' ').trim() || null
+
+  const payload = {
+    user_id: user.id,
+    title: `Ménage · ${input.logementName}`,
+    date: input.date,
+    end_date: null as string | null,
+    start_time: input.startTime,
+    end_time: input.endTime,
+    category: 'menage',
+    description,
+  }
+
+  if (input.eventId) {
+    const { error } = await supabase
+      .from('calendar_events')
+      .update(payload)
+      .eq('id', input.eventId)
+      .eq('user_id', user.id)
+    if (error) return { ok: false, error: error.message }
+    revalidatePath('/dashboard/calendrier')
+    return { ok: true, id: input.eventId }
+  }
+
+  const { data, error } = await supabase
+    .from('calendar_events')
+    .insert(payload)
+    .select('id')
+    .single()
+  if (error || !data) return { ok: false, error: error?.message ?? 'Erreur création' }
+  revalidatePath('/dashboard/calendrier')
+  return { ok: true, id: data.id }
+}
+
+/** Supprime un événement ménage par son ID. */
+export async function deleteMenageEvent(eventId: string): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'Non authentifié' }
+  const { error } = await supabase
+    .from('calendar_events')
+    .delete()
+    .eq('id', eventId)
+    .eq('user_id', user.id)
+  if (error) return { ok: false, error: error.message }
+  revalidatePath('/dashboard/calendrier')
+  return { ok: true }
+}
+
 export async function createCalendarEvent(input: EventInput) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
