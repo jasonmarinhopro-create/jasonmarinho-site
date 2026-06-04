@@ -417,7 +417,7 @@ function buildPrintHtml(slots: MenageSlot[], doneIds: Set<string>, periodLabel: 
 </html>`
 }
 
-export default function MenageExportModal({ slots: allSlots, appUrl, icalToken, hostName, onClose }: Props) {
+export default function MenageExportModal({ slots: allSlots, doneIds, appUrl, icalToken, hostName, onClose }: Props) {
   const [period, setPeriod] = useState<Period>('week')
   const [copied, setCopied] = useState(false)
 
