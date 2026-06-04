@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ShareNetwork, UserPlus } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
@@ -942,12 +943,13 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
                   aspectRatio: post.images.length === 1 ? '16 / 10' : '1 / 1',
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={url}
                   alt=""
-                  loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 360px"
+                  style={{ objectFit: 'cover', display: 'block' }}
+                  unoptimized={false}
                 />
                 {i === 3 && post.images.length > 4 && (
                   <span style={s.imageOverlayMore}>+{post.images.length - 4}</span>

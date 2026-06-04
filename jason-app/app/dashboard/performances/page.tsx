@@ -4,7 +4,9 @@ import { getProfile } from '@/lib/queries/profile'
 import PerformancesView from './PerformancesView'
 import { extractCity, findMarketBenchmark, type MarketBenchmark } from '@/lib/lcd/market-benchmarks'
 
-export const dynamic = 'force-dynamic'
+// revalidate: 60 → page servie depuis le cache Vercel entre 2 mutations.
+// Les server actions invalident via revalidatePath, donc l'UX reste fraîche.
+export const revalidate = 60
 
 export type SejourRow = {
   id: string
