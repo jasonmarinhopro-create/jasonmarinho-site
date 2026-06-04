@@ -3044,6 +3044,8 @@ export default function CalendrierView({
 
       {/* ── Modal d'export ménage (PDF, WhatsApp, iCal cleaner) ───────────── */}
       {menageExportOpen && (() => {
+        // Liste des noms de logements disponibles (pour le select Ajouter ménage).
+        const logementNames: string[] = logementOptions.map(l => l.nom).filter(Boolean) as string[]
         // Calcule l'ensemble des slots qui ont déjà un calendar_event [FAIT]
         // associé (matching date + nom de logement). Sert au modal + au PDF
         // pour afficher visuellement l'état "fait" — sinon le PDF ne reflète
@@ -3063,10 +3065,12 @@ export default function CalendrierView({
           <MenageExportModal
             slots={menageSlots}
             doneIds={doneIds}
+            logementNames={logementNames}
             appUrl={appUrl}
             icalToken={icalTokenState}
             hostName={hostName}
             onClose={() => setMenageExportOpen(false)}
+            onSlotsChanged={() => router.refresh()}
           />
         )
       })()}

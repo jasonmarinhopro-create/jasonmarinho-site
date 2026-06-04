@@ -2,7 +2,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import CalendrierView from './CalendrierView'
 import OnboardingTour, { CALENDRIER_STEPS } from '../OnboardingTour'
-import { computeMenageSlots, type Occupation, type LogementSettings, type MenageSlot } from '@/lib/menage/compute'
+import { computeMenageSlots, mergeAutoAndManual, type Occupation, type LogementSettings, type MenageSlot, type ManualMenageEvent } from '@/lib/menage/compute'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 
 export interface ContractEvent {
@@ -231,7 +231,25 @@ export default async function CalendrierPage() {
   // Pour l'instant, on s'appuie uniquement sur contracts + sejours qui ont
   // bien un logement_nom / logement.
 
-  const menageSlots: MenageSlot[] = computeMenageSlots(occupations, allLogementSettings)
+  // Auto-dérivés depuis les séjours
+  const autoSlots = computeMenageSlots(occupations, allLogementSettings)
+
+  // Ménages saisis manuellement (via "+ Événement" ou bouton "Ajouter un
+  // ménage" du modal). On les fusionne avec les auto pour qu'ils
+  // apparaissent dans le planning ET dans le PDF. Politique : si un
+  // manuel matche la date+logement d'un auto → le manuel gagne (custom).
+  const manualMenageEvents: ManualMenageEvent[] = (events ?? [])
+    .filter(e => e.category === 'menage')
+    .map(e => ({
+      id: e.id,
+      date: e.date,
+      startTime: e.start_time,
+      endTime: e.end_time,
+      title: e.title,
+      description: e.description,
+    }))
+
+  const menageSlots: MenageSlot[] = mergeAutoAndManual(autoSlots, manualMenageEvents, allLogementSettings)
 
   const icalToken: string | null = (profileData as any)?.ical_token ?? null
 
