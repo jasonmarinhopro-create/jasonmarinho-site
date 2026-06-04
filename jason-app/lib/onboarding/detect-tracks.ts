@@ -44,25 +44,31 @@ export async function detectTracksProgress(input: DetectInput): Promise<Onboardi
   const supabase = await createClient()
   const manualSet = new Set(completedSteps)
 
+  // Test d'existence (1 row max) au lieu de count('exact') qui fait un
+  // scan full-table. Le layout du dashboard appelle ce helper sur CHAQUE
+  // navigation → 7 scans complets cumulés cross-region peuvent ajouter
+  // 500-1500 ms par clic. Une simple existence check est quasi instantanée.
+  const exists = (q: { data: unknown[] | null }) => Array.isArray(q.data) && q.data.length > 0
+
   const [logements, voyageurs, sejours, contracts, audits, chezNousPosts, affiches] = await Promise.all([
-    supabase.from('logements')          .select('id', { count: 'exact', head: true }).eq('user_id', userId),
-    supabase.from('voyageurs')          .select('id', { count: 'exact', head: true }).eq('user_id', userId),
-    supabase.from('sejours')            .select('id', { count: 'exact', head: true }).eq('user_id', userId),
-    supabase.from('contracts')          .select('id', { count: 'exact', head: true }).eq('user_id', userId).neq('statut', 'annule'),
-    supabase.from('audit_gbp_sessions') .select('id', { count: 'exact', head: true }).eq('user_id', userId),
-    supabase.from('chez_nous_posts')    .select('id', { count: 'exact', head: true }).eq('user_id', userId),
-    supabase.from('affiches')           .select('id', { count: 'exact', head: true }).eq('user_id', userId),
+    supabase.from('logements')          .select('id').eq('user_id', userId).limit(1),
+    supabase.from('voyageurs')          .select('id').eq('user_id', userId).limit(1),
+    supabase.from('sejours')            .select('id').eq('user_id', userId).limit(1),
+    supabase.from('contracts')          .select('id').eq('user_id', userId).neq('statut', 'annule').limit(1),
+    supabase.from('audit_gbp_sessions') .select('id').eq('user_id', userId).limit(1),
+    supabase.from('chez_nous_posts')    .select('id').eq('author_id', userId).limit(1),
+    supabase.from('affiches')           .select('id').eq('user_id', userId).limit(1),
   ])
 
   const auto: Record<string, boolean> = {
-    logement:        (logements.count ?? 0) > 0,
-    voyageur:        (voyageurs.count ?? 0) > 0,
-    sejour:          (sejours.count ?? 0) > 0,
-    contrat:         (contracts.count ?? 0) > 0,
-    gbp_audit:       (audits.count ?? 0) > 0,
+    logement:        exists(logements),
+    voyageur:        exists(voyageurs),
+    sejour:          exists(sejours),
+    contrat:         exists(contracts),
+    gbp_audit:       exists(audits),
     chez_nous_intro: !!chezNousOnboardedAt,
-    chez_nous_post:  (chezNousPosts.count ?? 0) > 0,
-    affiche:         (affiches.count ?? 0) > 0,
+    chez_nous_post:  exists(chezNousPosts),
+    affiche:         exists(affiches),
     stripe_connect:  stripeOnboardingComplete,
     // welcome est manuel mais on le considère fait dès que onboarding_step >= 2
     // (compat avec l'ancien système).
