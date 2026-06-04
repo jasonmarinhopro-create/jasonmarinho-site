@@ -2972,6 +2972,57 @@ export default function CalendrierView({
             anchorRect={sejourPopover.anchor}
             onClose={() => setSejourPopover(null)}
             onToggleMenage={async (slot, done) => {
+              // Update optimiste : on modifie events localement AVANT l'appel
+              // serveur pour que la checkbox bascule immédiatement. Sinon
+              // useState(initial) ignore la nouvelle prop initial après
+              // router.refresh → l'UI reste figée sur l'ancien état alors
+              // que la DB a bien changé.
+              const logLow = slot.logementName.trim().toLowerCase()
+              const matchesEvent = (e: CalEvent) =>
+                e.category === 'menage'
+                && e.date === slot.date
+                && (e.title ?? '').toLowerCase().includes(logLow)
+
+              setEvents(prev => {
+                if (done) {
+                  // COCHER : si un event existe → ajouter [FAIT], sinon créer
+                  // un event temporaire (le router.refresh remplacera l'id
+                  // temporaire par le vrai après sync serveur).
+                  const idx = prev.findIndex(matchesEvent)
+                  if (idx >= 0) {
+                    const e = prev[idx]
+                    const desc = (e.description ?? '').replace(/^\[FAIT\]\s*/, '')
+                    return prev.map((x, i) => i === idx
+                      ? { ...x, description: `[FAIT] ${desc}`.trim() }
+                      : x
+                    )
+                  }
+                  return [...prev, {
+                    id: `tmp-menage-${slot.id}`,
+                    title: `Ménage · ${slot.logementName}`,
+                    date: slot.date,
+                    end_date: null,
+                    start_time: slot.startTime,
+                    end_time: slot.endTime,
+                    category: 'menage',
+                    description: `[FAIT]${slot.notes ? ' · ' + slot.notes : ''}`,
+                  } satisfies CalEvent]
+                }
+                // DÉCOCHER : retirer [FAIT] de la description, supprimer
+                // l'event s'il devient vide (= juste créé via cocher avant).
+                return prev.flatMap(e => {
+                  if (!matchesEvent(e)) return [e]
+                  const stripped = (e.description ?? '').replace(/^\[FAIT\]\s*/, '').trim()
+                  if (stripped.length > 0 && stripped !== '·') {
+                    return [{ ...e, description: stripped }]
+                  }
+                  return []
+                })
+              })
+
+              // Appel serveur en arrière-plan : router.refresh garantit
+              // la cohérence à terme. En cas d'erreur on signale et on
+              // re-fetch pour rollback.
               const r = await setMenageDone({
                 date: slot.date,
                 logementName: slot.logementName,
@@ -2981,11 +3032,10 @@ export default function CalendrierView({
                 notes: slot.notes ?? undefined,
               })
               if (r.ok) {
-                // On NE FERME PAS le popover : l'hôte voit le toggle changer
-                // d'état sur place après le router.refresh.
                 router.refresh()
               } else {
                 alert(r.error)
+                router.refresh()
               }
             }}
           />
