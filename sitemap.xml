@@ -941,6 +941,12 @@
 
   <!-- ── Blog ── -->
   <url>
+    <loc>https://jasonmarinho.com/blog/piscine-lcd-7-regles-securite-fiscalite-2026</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/blog/voyageurs-vehicule-electrique-lcd-7-actions-accueillir</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
