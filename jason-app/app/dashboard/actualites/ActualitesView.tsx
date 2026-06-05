@@ -1,13 +1,17 @@
 'use client'
 
-import { useState, useTransition, useMemo } from 'react'
+import { useState, useTransition, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Newspaper, ArrowUpRight, Clock, Funnel, Star, Check,
   BookmarkSimple, Hourglass, Sparkle, ShareNetwork, CheckCircle,
+  MagnifyingGlass, X,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Actualite } from './page'
 import { markActualiteRead, markAllActualitesRead, toggleActualiteFavorite } from './actions'
+
+// Nombre d'articles affichés au premier rendu (puis +PAGE_SIZE par clic "Voir plus")
+const PAGE_SIZE = 24
 
 const CATEGORIES = [
   { value: 'all',                 label: 'Tout',                color: 'var(--text-2)', bg: 'var(--border)' },
@@ -82,6 +86,17 @@ export default function ActualitesView({
 }) {
   const [activeFilter, setActiveFilter] = useState('all')
   const [showUnreadOnly, setShowUnreadOnly] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  // Pagination : on charge PAGE_SIZE articles, l'utilisateur clique "Voir plus"
+  // pour révéler la prochaine batch. Évite de rendre 200+ cards d'un coup
+  // quand la base grossit.
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+
+  // Reset pagination quand un filtre change (sinon "Voir plus" garde le
+  // décompte d'un set précédent).
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
+  }, [activeFilter, showUnreadOnly, searchQuery])
 
   // Optimistic state
   const [reads, setReads] = useState<Set<string>>(new Set(readIds))
@@ -118,11 +133,42 @@ export default function ActualitesView({
       .slice(0, 3)
   }, [articles, detectedRegions, pinnedIds])
 
-  // Articles principaux (non-pinned + filtrés)
-  const filtered = articles
-    .filter(a => !pinnedIds.has(a.id))
-    .filter(a => activeFilter === 'all' || a.category === activeFilter)
-    .filter(a => !showUnreadOnly || !reads.has(a.id))
+  // Articles principaux (non-pinned + filtrés + recherche texte)
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    return articles
+      .filter(a => !pinnedIds.has(a.id))
+      .filter(a => activeFilter === 'all' || a.category === activeFilter)
+      .filter(a => !showUnreadOnly || !reads.has(a.id))
+      .filter(a => !q || a.title.toLowerCase().includes(q) || a.summary.toLowerCase().includes(q))
+  }, [articles, pinnedIds, activeFilter, showUnreadOnly, reads, searchQuery])
+
+  // Slice par pagination AVANT le groupage temporel : si on faisait l'inverse,
+  // les groupes changeraient à chaque "Voir plus" (pas naturel UX).
+  const visible = filtered.slice(0, visibleCount)
+  const hasMore = filtered.length > visibleCount
+
+  // Buckets temporels (cette semaine / ce mois / plus ancien) appliqués à
+  // la tranche VISIBLE. Donne du rythme sans casser la pagination.
+  const groupedVisible = useMemo(() => {
+    const now = Date.now()
+    const ONE_WEEK = 7 * 86400000
+    const ONE_MONTH = 30 * 86400000
+    const buckets: { key: string; label: string; items: Actualite[] }[] = [
+      { key: 'week',   label: 'Cette semaine', items: [] },
+      { key: 'month',  label: 'Ce mois-ci',    items: [] },
+      { key: 'older',  label: 'Plus ancien',   items: [] },
+    ]
+    for (const a of visible) {
+      const t = new Date(a.published_at ?? a.created_at).getTime()
+      if (isNaN(t)) { buckets[2].items.push(a); continue }
+      const age = now - t
+      if (age <= ONE_WEEK) buckets[0].items.push(a)
+      else if (age <= ONE_MONTH) buckets[1].items.push(a)
+      else buckets[2].items.push(a)
+    }
+    return buckets.filter(b => b.items.length > 0)
+  }, [visible])
 
   function handleMarkRead(id: string) {
     if (!isAuthenticated || reads.has(id)) return
@@ -420,6 +466,31 @@ export default function ActualitesView({
             </section>
           )}
 
+          {/* Search bar — utile à partir de ~50 articles */}
+          {articles.length > 20 && (
+            <div style={s.searchWrap} className="fade-up">
+              <MagnifyingGlass size={14} color="var(--text-muted)" style={s.searchIcon} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Rechercher un article (titre, résumé)…"
+                style={s.searchInput}
+                aria-label="Rechercher dans les actualités"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  style={s.searchClear}
+                  aria-label="Effacer la recherche"
+                >
+                  <X size={11} weight="bold" />
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Filters */}
           {visibleCats.length > 2 && (
             <div style={s.filters} className="fade-up d1">
@@ -463,16 +534,45 @@ export default function ActualitesView({
             </div>
           )}
 
-          {/* Grid */}
-          <div className="guide-priority-grid fade-up d2">
-            {filtered.map(article => renderCard(article))}
-          </div>
+          {/* Grid groupée par période — donne du rythme visuel et évite
+              que les articles s'empilent à l'identique. Le bouton "Voir
+              plus" charge la batch suivante (toutes périodes confondues). */}
+          {groupedVisible.map((bucket, bi) => (
+            <section key={bucket.key} className={bi === 0 ? 'fade-up d2' : 'fade-up'}>
+              {groupedVisible.length > 1 && (
+                <h3 style={s.bucketTitle}>{bucket.label} <span style={s.bucketCount}>· {bucket.items.length}</span></h3>
+              )}
+              <div className="guide-priority-grid">
+                {bucket.items.map(article => renderCard(article))}
+              </div>
+            </section>
+          ))}
+
+          {hasMore && (
+            <div style={s.loadMoreWrap} className="fade-up">
+              <button
+                type="button"
+                onClick={() => setVisibleCount(v => v + PAGE_SIZE)}
+                style={s.loadMoreBtn}
+              >
+                Voir plus d'articles
+                <span style={s.loadMoreCount}>
+                  +{Math.min(PAGE_SIZE, filtered.length - visibleCount)}
+                </span>
+              </button>
+              <p style={s.loadMoreInfo}>
+                {visibleCount} sur {filtered.length} affichés
+              </p>
+            </div>
+          )}
 
           {filtered.length === 0 && (
             <div style={s.noResults} className="glass-card fade-up">
-              {showUnreadOnly
-                ? 'Tous les articles de cette catégorie sont déjà lus. ✓'
-                : 'Aucun article dans cette catégorie pour le moment.'}
+              {searchQuery
+                ? `Aucun résultat pour "${searchQuery}". Essaye d'autres mots-clés.`
+                : showUnreadOnly
+                  ? 'Tous les articles de cette catégorie sont déjà lus. ✓'
+                  : 'Aucun article dans cette catégorie pour le moment.'}
             </div>
           )}
 
@@ -536,6 +636,101 @@ export default function ActualitesView({
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+
+  // ── Recherche
+  searchWrap: {
+    position: 'relative' as const,
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '16px',
+    maxWidth: '560px',
+  },
+  searchIcon: {
+    position: 'absolute' as const,
+    left: 12,
+    pointerEvents: 'none' as const,
+  },
+  searchInput: {
+    width: '100%',
+    padding: '10px 36px 10px 34px',
+    // ≥16px : évite zoom iOS Safari
+    fontSize: '16px',
+    color: 'var(--text)',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '10px',
+    fontFamily: 'inherit',
+    outline: 'none',
+  },
+  searchClear: {
+    position: 'absolute' as const,
+    right: 8,
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    background: 'var(--border)',
+    border: 'none',
+    color: 'var(--text-2)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    padding: 0,
+  },
+
+  // ── Bucket / grouping
+  bucketTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: '15px',
+    fontWeight: 400,
+    color: 'var(--text-2)',
+    margin: '24px 0 12px',
+    paddingBottom: '6px',
+    borderBottom: '1px dashed var(--border)',
+  },
+  bucketCount: {
+    fontSize: '12px',
+    color: 'var(--text-muted)',
+    fontFamily: 'inherit',
+  },
+
+  // ── Voir plus
+  loadMoreWrap: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    gap: '6px',
+    marginTop: '32px',
+    paddingTop: '20px',
+    borderTop: '1px dashed var(--border)',
+  },
+  loadMoreBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '10px 18px',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)',
+    fontSize: '13px',
+    fontWeight: 600,
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  loadMoreCount: {
+    fontSize: '11px',
+    fontWeight: 700,
+    background: 'var(--accent-text)',
+    color: 'var(--bg)',
+    padding: '2px 8px',
+    borderRadius: '999px',
+  },
+  loadMoreInfo: {
+    fontSize: '11.5px',
+    color: 'var(--text-muted)',
+    margin: 0,
+  },
 
   intro: { marginBottom: '28px', maxWidth: '720px' },
   pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
