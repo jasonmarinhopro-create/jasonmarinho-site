@@ -941,10 +941,76 @@
 
   <!-- ── Blog ── -->
   <url>
+    <loc>https://jasonmarinho.com/blog/piscine-lcd-7-regles-securite-fiscalite-2026</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/voyageurs-vehicule-electrique-lcd-7-actions-accueillir</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/eclairage-lcd-7-regles-confort-photos-avis</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/linge-de-maison-lcd-7-regles-draps-impeccables-budget</loc>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/videosurveillance-lcd-6-regles-cameras-legalite</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/punaises-de-lit-lcd-prevenir-detecter-reagir</loc>
+    <lastmod>2026-05-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/climatisation-canicule-lcd-6-actions-preparer-ete</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/acheter-appartement-lcd-7-criteres-rentabilite-avant-signer</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/duree-minimum-sejour-airbnb-criteres-choisir</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/demande-reduction-prix-airbnb-7-reponses-hote</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/securite-incendie-lcd-6-equipements-obligatoires-2026</loc>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/blog/galeres-location-courte-duree-comment-gerer-urgence</loc>
     <lastmod>2026-05-12</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/gerer-lcd-distance-7-piliers-hote-absent</loc>
