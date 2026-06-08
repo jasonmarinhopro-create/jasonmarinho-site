@@ -377,6 +377,7 @@ export async function updateSejourFromCalendar(input: {
   date_arrivee?: string
   date_depart?: string
   montant?: number | null
+  logement?: string | null
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -390,6 +391,7 @@ export async function updateSejourFromCalendar(input: {
   if (input.date_arrivee !== undefined) patch.date_arrivee = input.date_arrivee
   if (input.date_depart !== undefined)  patch.date_depart  = input.date_depart
   if (input.montant !== undefined)      patch.montant      = input.montant
+  if (input.logement !== undefined)     patch.logement     = input.logement
   if (Object.keys(patch).length === 0)  return { error: 'Aucun champ à modifier.' }
 
   const { data: row, error } = await supabase
@@ -409,6 +411,42 @@ export async function updateSejourFromCalendar(input: {
   await invalidateDashboardPrefill(user.id)
 
   return { sejour: row }
+}
+
+/**
+ * Supprime un séjour depuis le calendrier. Idempotent : si le séjour n'existe
+ * plus, on retourne ok plutôt qu'une erreur (race condition). Le revalidate
+ * couvre calendrier + revenus + page voyageur si applicable.
+ */
+export async function deleteSejourFromCalendar(input: {
+  id: string
+}): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'Non authentifié' }
+
+  // On récupère le voyageur_id AVANT de supprimer pour revalidate la fiche
+  const { data: row } = await supabase
+    .from('sejours')
+    .select('voyageur_id')
+    .eq('id', input.id)
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  const { error } = await supabase
+    .from('sejours')
+    .delete()
+    .eq('id', input.id)
+    .eq('user_id', user.id)
+
+  if (error) return { ok: false, error: error.message }
+
+  revalidatePath('/dashboard/calendrier')
+  revalidatePath('/dashboard/revenus')
+  if (row?.voyageur_id) revalidatePath(`/dashboard/voyageurs/${row.voyageur_id}`)
+  await invalidateDashboardPrefill(user.id)
+
+  return { ok: true }
 }
 
 // ─── iCal feeds ─────────────────────────────────────────────────────────────
