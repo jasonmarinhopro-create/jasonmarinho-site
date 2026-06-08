@@ -8,7 +8,7 @@ import {
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
   ChatText,
 } from '@phosphor-icons/react/dist/ssr'
-import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar, setMenageDone } from './actions'
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, updateContractChecklist, syncIcalFeed, generateIcalToken, createSejourFromCalendar, updateSejourFromCalendar, setMenageDone, deleteSejourFromCalendar } from './actions'
 import SejourPopover from './SejourPopover'
 import dynamic from 'next/dynamic'
 
@@ -2975,8 +2975,41 @@ export default function CalendrierView({
             sejour={sej}
             menageBefore={menageBefore}
             menageAfter={menageAfter}
+            logementNames={logementOptions.map(l => l.nom).filter(Boolean)}
             anchorRect={sejourPopover.anchor}
             onClose={() => setSejourPopover(null)}
+            onUpdateSejour={async (form) => {
+              const r = await updateSejourFromCalendar({
+                id: sej.id,
+                date_arrivee: form.date_arrivee,
+                date_depart: form.date_depart,
+                logement: form.logement,
+                montant: form.montant,
+              })
+              if ('error' in r && r.error) return { ok: false, error: r.error }
+              // Mise à jour optimiste du state local pour refléter immédiatement
+              setSejourEvents(prev => prev.map(s => s.id === sej.id ? {
+                ...s,
+                date_arrivee: form.date_arrivee,
+                date_depart: form.date_depart,
+                logement_label: form.logement,
+                montant: form.montant,
+              } : s))
+              setSejourPopover(curr => curr ? {
+                ...curr,
+                sejour: { ...curr.sejour, date_arrivee: form.date_arrivee, date_depart: form.date_depart, logement_label: form.logement, montant: form.montant },
+              } : null)
+              router.refresh()
+              return { ok: true }
+            }}
+            onDeleteSejour={async () => {
+              const r = await deleteSejourFromCalendar({ id: sej.id })
+              if (!r.ok) return { ok: false, error: r.error }
+              // Optimiste : retire du state local + ferme le popover
+              setSejourEvents(prev => prev.filter(s => s.id !== sej.id))
+              router.refresh()
+              return { ok: true }
+            }}
             onToggleMenage={async (slot, done) => {
               // Update optimiste : on modifie events localement AVANT l'appel
               // serveur pour que la checkbox bascule immédiatement. Sinon

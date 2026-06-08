@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
   X, User, House, CalendarBlank, Sparkle, ArrowSquareOut,
-  Broom, CheckCircle, Phone, MapPin,
+  Broom, CheckCircle, Phone, MapPin, PencilSimple, Trash, FloppyDisk,
 } from '@phosphor-icons/react/dist/ssr'
 import type { SejourEvent, MenageSlot } from './page'
 
@@ -15,6 +15,13 @@ export type MenageInfo = {
   done: boolean
 }
 
+export type SejourEditForm = {
+  date_arrivee: string
+  date_depart: string
+  logement: string
+  montant: number | null
+}
+
 type Props = {
   sejour: SejourEvent
   /** Ménage AVANT l'arrivée : prépare le logement pour le voyageur de
@@ -23,11 +30,17 @@ type Props = {
   /** Ménage APRÈS le départ : prépare pour le voyageur suivant (ou
    *  clôt la saison). Null seulement si le logement n'a aucune fiche. */
   menageAfter: MenageInfo | null
+  /** Liste des noms de logements pour le select d'édition. */
+  logementNames: string[]
   /** Anchor element to position popover near (button/event clicked). */
   anchorRect: DOMRect | null
   onClose: () => void
   /** Bascule l'état d'un créneau ménage (date + done). */
   onToggleMenage: (slot: MenageSlot, done: boolean) => void | Promise<void>
+  /** Modifie le séjour (dates / logement / montant). */
+  onUpdateSejour: (form: SejourEditForm) => Promise<{ ok: boolean; error?: string }>
+  /** Supprime le séjour après confirmation. */
+  onDeleteSejour: () => Promise<{ ok: boolean; error?: string }>
 }
 
 function fmtDateFR(date: string): string {
@@ -99,6 +112,160 @@ function MenageSection({
       </button>
     </div>
   )
+}
+
+/** Formulaire d'édition du séjour (dates, logement, montant). Rendu dans
+ *  le popover quand l'hôte clique sur "Modifier". */
+function SejourEditPanel({
+  initial, logementNames, isPending, error,
+  onSave, onCancel,
+}: {
+  initial: SejourEditForm
+  logementNames: string[]
+  isPending: boolean
+  error: string | null
+  onSave: (form: SejourEditForm) => void | Promise<void>
+  onCancel: () => void
+}) {
+  const [form, setForm] = useState<SejourEditForm>(initial)
+
+  // Validation côté client : départ ≥ arrivée (le serveur revérifie).
+  const datesInvalid = form.date_depart < form.date_arrivee
+
+  return (
+    <div style={editStyles.wrap}>
+      <div style={editStyles.row}>
+        <label style={editStyles.field}>
+          <span style={editStyles.label}>Arrivée</span>
+          <input
+            type="date"
+            value={form.date_arrivee}
+            onChange={e => setForm(f => ({ ...f, date_arrivee: e.target.value }))}
+            style={editStyles.input}
+          />
+        </label>
+        <label style={editStyles.field}>
+          <span style={editStyles.label}>Départ</span>
+          <input
+            type="date"
+            value={form.date_depart}
+            onChange={e => setForm(f => ({ ...f, date_depart: e.target.value }))}
+            style={editStyles.input}
+          />
+        </label>
+      </div>
+      <label style={editStyles.field}>
+        <span style={editStyles.label}>Logement</span>
+        {logementNames.length > 0 ? (
+          <select
+            value={form.logement}
+            onChange={e => setForm(f => ({ ...f, logement: e.target.value }))}
+            style={editStyles.input}
+          >
+            {!logementNames.includes(form.logement) && form.logement && (
+              <option value={form.logement}>{form.logement}</option>
+            )}
+            {logementNames.map(n => <option key={n} value={n}>{n}</option>)}
+          </select>
+        ) : (
+          <input
+            type="text"
+            value={form.logement}
+            onChange={e => setForm(f => ({ ...f, logement: e.target.value }))}
+            style={editStyles.input}
+            placeholder="Nom du logement"
+          />
+        )}
+      </label>
+      <label style={editStyles.field}>
+        <span style={editStyles.label}>Montant total (€)</span>
+        <input
+          type="number"
+          min={0}
+          step="0.01"
+          value={form.montant ?? ''}
+          onChange={e => setForm(f => ({ ...f, montant: e.target.value === '' ? null : Number(e.target.value) }))}
+          style={editStyles.input}
+          placeholder="—"
+        />
+      </label>
+      {(error || datesInvalid) && (
+        <div style={editStyles.error}>
+          {datesInvalid ? "La date de départ doit être après l'arrivée." : error}
+        </div>
+      )}
+      <div style={editStyles.actions}>
+        <button onClick={onCancel} disabled={isPending} style={editStyles.btnGhost}>Annuler</button>
+        <button
+          onClick={() => onSave(form)}
+          disabled={isPending || datesInvalid}
+          style={editStyles.btnPrimary}
+        >
+          <FloppyDisk size={12} weight="bold" />
+          {isPending ? 'Enregistrement…' : 'Enregistrer'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+const editStyles: Record<string, React.CSSProperties> = {
+  wrap: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    padding: '12px 14px',
+    background: 'rgba(244,114,182,0.07)',
+    border: '1px solid rgba(244,114,182,0.22)',
+    borderRadius: '10px',
+  },
+  row: { display: 'flex', gap: '10px', flexWrap: 'wrap' },
+  field: { display: 'flex', flexDirection: 'column' as const, gap: '4px', flex: '1 1 120px', minWidth: 110 },
+  label: {
+    fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.3px',
+    textTransform: 'uppercase' as const, color: 'var(--text-muted)',
+  },
+  input: {
+    padding: '7px 9px',
+    fontSize: '16px', // iOS no-zoom
+    color: 'var(--text)',
+    background: 'var(--bg)',
+    border: '1px solid var(--border)',
+    borderRadius: '6px',
+    fontFamily: 'inherit',
+    width: '100%',
+  },
+  error: {
+    fontSize: '12px',
+    color: 'var(--warning)',
+    background: 'var(--warning-bg)',
+    border: '1px solid var(--warning-border)',
+    padding: '6px 10px',
+    borderRadius: '6px',
+  },
+  actions: { display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '2px' },
+  btnGhost: {
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    color: 'var(--text-2)',
+    padding: '7px 12px',
+    borderRadius: '6px',
+    fontSize: '12.5px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  btnPrimary: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    background: 'var(--accent-text)',
+    border: '1px solid var(--accent-text)',
+    color: 'var(--bg)',
+    padding: '7px 12px',
+    borderRadius: '6px',
+    fontSize: '12.5px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
 }
 
 const MOBILE_BREAKPOINT = 640
@@ -177,12 +344,19 @@ function computePosition(anchorRect: DOMRect | null, popoverHeight: number, isMo
   }
 }
 
-export default function SejourPopover({ sejour, menageBefore, menageAfter, anchorRect, onClose, onToggleMenage }: Props) {
+export default function SejourPopover({
+  sejour, menageBefore, menageAfter, logementNames,
+  anchorRect, onClose, onToggleMenage, onUpdateSejour, onDeleteSejour,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [popoverHeight, setPopoverHeight] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   // Pending par slot ID (avant/après peuvent être togglés indépendamment)
   const [pendingSlotId, setPendingSlotId] = useState<string | null>(null)
+  // Édition du séjour (dates, logement, montant) + suppression
+  const [editMode, setEditMode] = useState(false)
+  const [editPending, setEditPending] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
 
   // Détecte mobile (côté client uniquement)
   useEffect(() => {
@@ -302,14 +476,68 @@ export default function SejourPopover({ sejour, menageBefore, menageAfter, ancho
           />
         )}
 
+        {/* ── Édition inline du séjour (dates, logement, montant) ───────── */}
+        {editMode && (
+          <SejourEditPanel
+            initial={{
+              date_arrivee: sejour.date_arrivee,
+              date_depart: sejour.date_depart,
+              logement: sejour.logement_label,
+              montant: sejour.montant,
+            }}
+            logementNames={logementNames}
+            isPending={editPending}
+            error={editError}
+            onSave={async (form) => {
+              setEditError(null)
+              setEditPending(true)
+              try {
+                const r = await onUpdateSejour(form)
+                if (r.ok) setEditMode(false)
+                else setEditError(r.error ?? 'Erreur enregistrement')
+              } finally {
+                setEditPending(false)
+              }
+            }}
+            onCancel={() => { setEditMode(false); setEditError(null) }}
+          />
+        )}
+
         {/* Actions */}
         <div style={s.actions}>
-          {sejour.voyageur_id && (
+          {sejour.voyageur_id && !editMode && (
             <Link href={`/dashboard/voyageurs/${sejour.voyageur_id}`} style={s.btnGhost} onClick={onClose}>
               <User size={12} weight="bold" /> Fiche voyageur
               <ArrowSquareOut size={10} weight="bold" />
             </Link>
           )}
+          {!editMode && (
+            <button onClick={() => setEditMode(true)} style={s.btnGhost} aria-label="Modifier ce séjour">
+              <PencilSimple size={12} weight="bold" /> Modifier
+            </button>
+          )}
+          {!editMode && (
+            <button
+              onClick={async () => {
+                if (!confirm('Supprimer ce séjour ? Cette action est définitive.')) return
+                setEditError(null)
+                setEditPending(true)
+                try {
+                  const r = await onDeleteSejour()
+                  if (r.ok) onClose()
+                  else setEditError(r.error ?? 'Erreur suppression')
+                } finally {
+                  setEditPending(false)
+                }
+              }}
+              disabled={editPending}
+              style={s.btnDanger}
+              aria-label="Supprimer ce séjour"
+            >
+              <Trash size={12} weight="bold" /> Supprimer
+            </button>
+          )}
+          {editError && !editMode && <div style={s.errorInline}>{editError}</div>}
         </div>
       </div>
     </>
@@ -540,6 +768,28 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '8px',
     textDecoration: 'none',
     cursor: 'pointer',
+    fontFamily: 'inherit',
     minHeight: 36,
+  },
+  btnDanger: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '5px',
+    padding: '9px 12px',
+    background: 'transparent',
+    border: '1px solid var(--warning-border)',
+    color: 'var(--warning)',
+    fontSize: '12px',
+    fontWeight: 500,
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    minHeight: 36,
+  },
+  errorInline: {
+    flexBasis: '100%',
+    fontSize: '12px',
+    color: 'var(--warning)',
+    marginTop: '4px',
   },
 }
