@@ -733,13 +733,35 @@ export default function CalendrierView({
   const exportUrl = icalTokenState ? `${appUrl}/api/calendar/feed?token=${icalTokenState}` : ''
   const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
+  // Persistance de la légende (Airbnb/Booking masqués). Sinon chaque
+  // navigation reset ce que l'hôte avait décoché, frustrant.
+  const HIDDEN_LS_KEY = 'jm:cal:hidden-sources:v1'
   const [hiddenSources, setHiddenSources] = useState<Set<string>>(() => new Set())
+
+  // Hydrate depuis localStorage côté client uniquement (évite hydration
+  // mismatch SSR : on lit après le 1er render).
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(HIDDEN_LS_KEY)
+      if (!raw) return
+      const arr = JSON.parse(raw) as unknown
+      if (Array.isArray(arr)) {
+        const filtered = arr.filter((v): v is string => typeof v === 'string')
+        if (filtered.length > 0) setHiddenSources(new Set(filtered))
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function toggleSource(key: string) {
     setHiddenSources(prev => {
       const next = new Set(prev)
       if (next.has(key)) next.delete(key)
       else next.add(key)
+      // Persiste tout de suite : si l'hôte navigue ensuite, on garde l'état.
+      try {
+        localStorage.setItem(HIDDEN_LS_KEY, JSON.stringify(Array.from(next)))
+      } catch {}
       return next
     })
   }
