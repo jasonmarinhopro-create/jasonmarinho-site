@@ -14,6 +14,9 @@ type Props = {
   doneIds: Set<string>
   /** Liste des noms de logements pour le select Ajouter. */
   logementNames: string[]
+  /** Map nom-de-logement → id, pour générer un raccourci "Modifier
+   *  les valeurs par défaut" (heure, forfait, notes) sur la fiche. */
+  logementIdByName?: Record<string, string>
   appUrl: string
   icalToken: string | null
   hostName: string | null
@@ -98,11 +101,12 @@ function fmtDateLong(date: string): string {
 }
 
 function EditPanel({
-  initial, logementNames, isPending, error,
+  initial, logementNames, logementIdByName, isPending, error,
   onSave, onCancel, canDelete, onDelete,
 }: {
   initial: EditForm
   logementNames: string[]
+  logementIdByName?: Record<string, string>
   isPending: boolean
   error: string | null
   onSave: (form: EditForm) => void
@@ -111,6 +115,10 @@ function EditPanel({
   onDelete: () => void
 }) {
   const [form, setForm] = useState<EditForm>(initial)
+  // Raccourci "Modifier les valeurs par défaut" : pointe vers la fiche
+  // du logement sélectionné pour éditer durée/heure/notes/forfait par défaut.
+  // Évite de devoir saisir la même chose à chaque ménage.
+  const selectedLogementId = logementIdByName?.[form.logementName] ?? null
   return (
     <div style={editStyles.wrap}>
       <div style={editStyles.row}>
@@ -188,6 +196,16 @@ function EditPanel({
           placeholder="Instructions pour la femme de ménage"
         />
       </label>
+      {selectedLogementId && (
+        <a
+          href={`/dashboard/logements/${selectedLogementId}`}
+          style={editStyles.defaultLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ⚙ Modifier les valeurs par défaut de ce logement (heure, forfait, notes) ↗
+        </a>
+      )}
       {error && <div style={editStyles.error}>{error}</div>}
       <div style={editStyles.actions}>
         <button onClick={onCancel} disabled={isPending} style={editStyles.btnGhost}>Annuler</button>
@@ -268,6 +286,16 @@ const editStyles: Record<string, React.CSSProperties> = {
     fontSize: '12.5px',
     cursor: 'pointer',
     fontFamily: 'inherit',
+  },
+  defaultLink: {
+    fontSize: '11.5px',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px dashed var(--accent-border)',
+    borderRadius: '6px',
+    padding: '7px 10px',
+    textDecoration: 'none',
+    display: 'block',
   },
 }
 
@@ -621,7 +649,7 @@ function buildPrintHtml(slots: MenageSlot[], doneIds: Set<string>, periodLabel: 
 </html>`
 }
 
-export default function MenageExportModal({ slots: allSlots, doneIds, logementNames, appUrl, icalToken, hostName, onClose, onSlotsChanged }: Props) {
+export default function MenageExportModal({ slots: allSlots, doneIds, logementNames, logementIdByName, appUrl, icalToken, hostName, onClose, onSlotsChanged }: Props) {
   const [period, setPeriod] = useState<Period>('week')
   const [copied, setCopied] = useState(false)
 
@@ -849,6 +877,7 @@ export default function MenageExportModal({ slots: allSlots, doneIds, logementNa
                           prix: slot.fraisMenage ?? null,
                         }}
                         logementNames={logementNames}
+                        logementIdByName={logementIdByName}
                         isPending={isPending}
                         error={editError}
                         onSave={saveEdit}
@@ -907,6 +936,7 @@ export default function MenageExportModal({ slots: allSlots, doneIds, logementNa
                       prix: null,
                     }}
                     logementNames={logementNames}
+                    logementIdByName={logementIdByName}
                     isPending={isPending}
                     error={editError}
                     onSave={saveEdit}
@@ -965,10 +995,15 @@ const s: Record<string, React.CSSProperties> = {
   },
   modal: {
     position: 'fixed',
-    top: '50%', left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 'min(640px, calc(100vw - 32px))',
-    maxHeight: 'calc(100vh - 64px)',
+    // Centré horizontalement, ancré entre top:72px (sous le header
+    // dashboard) et bottom:24px (marge bas viewport). Évite que le
+    // header fasse passer le titre du modal en dessous, et garantit
+    // que le footer reste accessible sur petits écrans.
+    top: 72,
+    bottom: 24,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 'min(640px, calc(100vw - 24px))',
     background: 'var(--floating-surface)',
     border: '1px solid var(--floating-border)',
     borderRadius: '16px',

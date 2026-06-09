@@ -979,10 +979,24 @@ export default function CalendrierView({
           isIcal:   false,
           onClick:  (e?: React.MouseEvent) => {
             // Ouvre un mini-popover au lieu de naviguer vers la fiche voyageur.
-            // L'hôte garde l'accès à la fiche via un bouton dans le popover,
-            // mais voit en priorité : créneau ménage, dates, actions rapides.
-            const target = e?.currentTarget as HTMLElement | undefined
-            const rect = target?.getBoundingClientRect?.() ?? null
+            // Une bannière de séjour multi-semaines peut s'étendre sur 100+ %
+            // de la grille → getBoundingClientRect() renvoie un rect énorme qui
+            // déclenche les clamps de position et le popover sort à l'autre
+            // bout. On crée un mini-rect AUTOUR du point de clic (clientX/Y)
+            // pour qu'il s'ancre exactement où l'utilisateur a tapé.
+            let rect: DOMRect | null = null
+            if (e && typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+              const x = e.clientX
+              const y = e.clientY
+              rect = {
+                left: x, top: y, right: x + 1, bottom: y + 1,
+                width: 1, height: 1, x, y,
+                toJSON: () => ({}),
+              } as DOMRect
+            } else {
+              const target = e?.currentTarget as HTMLElement | undefined
+              rect = target?.getBoundingClientRect?.() ?? null
+            }
             setSejourPopover({ sejour: s, anchor: rect })
           },
         })
@@ -3122,11 +3136,18 @@ export default function CalendrierView({
           )
           if (isDone) doneIds.add(slot.id)
         }
+        // Map nom-de-logement → id pour le raccourci "Modifier les valeurs
+        // par défaut" dans le formulaire d'édition d'un ménage.
+        const logementIdByName: Record<string, string> = {}
+        for (const l of logementOptions) {
+          if (l.nom) logementIdByName[l.nom] = l.id
+        }
         return (
           <MenageExportModal
             slots={menageSlots}
             doneIds={doneIds}
             logementNames={logementNames}
+            logementIdByName={logementIdByName}
             appUrl={appUrl}
             icalToken={icalTokenState}
             hostName={hostName}
