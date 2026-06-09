@@ -583,11 +583,15 @@ export default function RevenusView({
   }, [contracts, entries, thisMonth, thisYear, chartRange])
 
   const chartMaxValue = useMemo(() => {
-    return Math.max(
+    // 15 % de headroom au-dessus de la valeur max → évite qu'une barre seule
+    // (cas de figure début de saison) remplisse 100 % du chart et semble
+    // anormalement grosse. Garde aussi le repère "target" lisible.
+    const raw = Math.max(
       ...chartData.flatMap(m => [m.encaisse + m.prevu, m.n1]),
       currentObjectif ? currentObjectif / 12 : 0,
       1,
     )
+    return raw * 1.15
   }, [chartData, currentObjectif])
 
   // ── Logement stats ───────────────────────────────────────────────────────
@@ -1953,7 +1957,8 @@ const FISC_MEDIA_CSS = `
 `
 
 
-const REGIMES = [
+// REGIMES_FR : 3 cartes pour la France (LMNP / Micro-BIC).
+const REGIMES_FR: FiscalRegimeCard[] = [
   {
     key: 'micro-nc',
     label: 'Micro-BIC',
@@ -1992,6 +1997,51 @@ const REGIMES = [
     forWho: 'Tes charges (crédit, travaux, assurances, frais de gestion…) dépassent l\'abattement forfaitaire, ou tes revenus dépassent les seuils micro-BIC.',
     avantage: 'Déduction de toutes les charges + amortissement du bien → résultat souvent nul, peu ou pas d\'impôt.',
     attention: 'Depuis 2025 : les amortissements déduits sont réintégrés dans le calcul de la plus-value à la revente.',
+  },
+]
+
+// REGIMES_PT : 3 cartes pour le Portugal (Alojamento Local).
+// Sources : portaldasfinancas.gov.pt + CIRS art. 31 (Categoria B Regime
+// Simplificado, coefficient 0,35 sur AL Continental).
+const REGIMES_PT: FiscalRegimeCard[] = [
+  {
+    key: 'simplificado',
+    label: 'Regime Simplificado',
+    sublabel: 'Categoria B (AL Continental)',
+    color: '#60a5fa',
+    bg: 'rgba(96,165,250,0.07)',
+    border: 'rgba(96,165,250,0.2)',
+    seuil: '200 000 €',
+    abattement: 'coef. 0,35',
+    forWho: 'Tu déclares ton AL en Categoria B et ton CA reste sous 200 000 €/an. Régime par défaut pour la plupart des hôtes.',
+    avantage: 'Imposable = CA × 0,35. Pas de comptabilité organisée requise. Modelo 3 + Anexo B annuel.',
+    attention: 'Pas d\'IVA tant que tu restes sous 15 000 € de CA AL. Au-delà, IVA 6 % s\'applique sur le continent.',
+  },
+  {
+    key: 'interior',
+    label: 'AL Interior / Baixa densidade',
+    sublabel: 'Coefficient réduit',
+    color: '#34d399',
+    bg: 'rgba(52,211,153,0.07)',
+    border: 'rgba(52,211,153,0.2)',
+    seuil: 'Zones spécifiques',
+    abattement: 'coef. 0,50 / 0,15',
+    forWho: 'Ton AL est situé dans une zone classée "interior" ou "baixa densidade" par décret (favorisée fiscalement pour repeupler).',
+    avantage: 'Coefficient majoré jusqu\'à 0,50 (Estabelecimento Hospedagem) ou réduit à 0,15 pour les zones intérieures éligibles.',
+    attention: 'Liste des municipalités éligibles publiée par décret. Vérifie ton code postal sur portaldasfinancas.gov.pt avant déclaration.',
+  },
+  {
+    key: 'organizada',
+    label: 'Contabilidade Organizada',
+    sublabel: 'Régime réel — toutes catégories',
+    color: '#f59e0b',
+    bg: 'rgba(245,158,11,0.07)',
+    border: 'rgba(245,158,11,0.2)',
+    seuil: 'Sans plafond',
+    abattement: 'Despesas réelles',
+    forWho: 'Tu dépasses 200 000 € de CA AL, ou tes despesas (crédit, manutenção, condomínio…) dépassent ce que le coefficient 0,35 t\'accorde implicitement (65 % du CA).',
+    avantage: 'Déduction de toutes les despesas réelles + amortissement du bien. Souvent plus avantageux si charges élevées.',
+    attention: 'Comptable obligatoire (TOC). Coût ~600-1 500 €/an. Choix valable 3 ans minimum.',
   },
 ]
 
@@ -2240,6 +2290,26 @@ type FiscalConfig = {
   /** Fonction qui retourne la recommandation selon annuel et charges */
   getReco: (annuel: number, charges: number) => { label: string; detail: string } | null
   subtitle: string
+  /** Cartes régime fiscal détaillées (l'utilisateur peut "déplier").
+   *  Optionnel : si absent, fallback sur REGIMES_FR. */
+  regimes?: FiscalRegimeCard[]
+  /** Sources officielles citées dans le disclaimer.
+   *  Optionnel : si absent, fallback sur les sources FR. */
+  sources?: Array<{ label: string; url: string }>
+}
+
+type FiscalRegimeCard = {
+  key: string
+  label: string
+  sublabel: string
+  color: string
+  bg: string
+  border: string
+  seuil: string
+  abattement: string
+  forWho: string
+  avantage: string
+  attention: string
 }
 
 const FISCAL_CONFIGS: Record<FiscalCountry, FiscalConfig> = {
@@ -2258,6 +2328,11 @@ const FISCAL_CONFIGS: Record<FiscalCountry, FiscalConfig> = {
       : c >= a * 0.30 && c > 1000 ? { label: 'Régime réel recommandé', detail: `Tes charges représentent ${Math.round((c/a)*100)} % de ton CA, le réel sera plus avantageux.` }
       : a > 15000 ? { label: 'Micro-BIC classé recommandé', detail: 'Pense à faire classer ton meublé pour profiter du plafond 77 700 € + 71 % d\'abattement.' }
       : { label: 'Micro-BIC non classé OK', detail: 'Le micro-BIC simplifie la déclaration. Si tes charges dépassent 30 %, le réel sera plus avantageux.' },
+    regimes: REGIMES_FR,
+    sources: [
+      { label: 'service-public.fr', url: 'https://www.service-public.fr/particuliers/vosdroits/F32744' },
+      { label: 'lmnp.ai', url: 'https://lmnp.ai/fiscalite-lmnp' },
+    ],
   },
   PT: {
     flag: '🇵🇹', countryName: 'Portugal',
@@ -2272,6 +2347,11 @@ const FISCAL_CONFIGS: Record<FiscalCountry, FiscalConfig> = {
       : a > 200000 ? { label: 'Contabilidade organizada obligatoire', detail: 'Tu dépasses 200 000 € de CA AL. Le régime simplifié n\'est plus accessible.' }
       : a > 15000 ? { label: 'IVA potentiellement due', detail: 'Au-delà de 15 000 € de CA AL (continental), tu peux être assujetti à l\'IVA. Vérifie sur Portal das Finanças.' }
       : { label: 'Régime simplifié Categoria B', detail: 'Coefficient 0.35 appliqué au CA brut. Pas d\'IVA tant que tu restes sous 15 000 €.' },
+    regimes: REGIMES_PT,
+    sources: [
+      { label: 'portaldasfinancas.gov.pt', url: 'https://www.portaldasfinancas.gov.pt/at/html/index.html' },
+      { label: 'RNAL Turismo de Portugal', url: 'https://rnt.turismodeportugal.pt/RNAL/ConsultaRegisto.aspx' },
+    ],
   },
   ES: {
     flag: '🇪🇸', countryName: 'España',
@@ -2605,10 +2685,10 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
         </div>
       )}
 
-      {/* Expandable regime cards */}
+      {/* Expandable regime cards — country-aware (FR/PT propres, autres = FR fallback) */}
       {open && (
         <div style={sf.grid}>
-          {REGIMES.map(r => (
+          {(config.regimes ?? REGIMES_FR).map(r => (
             <div key={r.key} style={{ ...sf.card, borderColor: r.border, background: r.bg }} className="fisc-card">
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                 <div>
@@ -2634,17 +2714,29 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
         </div>
       )}
 
-      {/* Disclaimer */}
-      <p style={sf.disclaimer} className="fisc-disclaimer">
-        <Info size={12} style={{ flexShrink: 0, marginTop: '1px' }} />
-        <span>
-          Guide informatif basé sur la réglementation en vigueur en 2026 -{' '}
-          <a href="https://www.service-public.fr/particuliers/vosdroits/F32744" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>service-public.fr</a>
-          {', '}
-          <a href="https://lmnp.ai/fiscalite-lmnp" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>lmnp.ai</a>.
-          {' '}Consulte un expert-comptable pour ta situation personnelle.
-        </span>
-      </p>
+      {/* Disclaimer — sources adaptées au pays détecté du logement */}
+      {(() => {
+        const sources = config.sources ?? FISCAL_CONFIGS.FR.sources ?? []
+        return (
+          <p style={sf.disclaimer} className="fisc-disclaimer">
+            <Info size={12} style={{ flexShrink: 0, marginTop: '1px' }} />
+            <span>
+              Guide informatif {config.countryName} basé sur la réglementation en vigueur en 2026
+              {sources.length > 0 ? ' — ' : '. '}
+              {sources.map((src, i) => (
+                <span key={src.url}>
+                  {i > 0 && ', '}
+                  <a href={src.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>
+                    {src.label}
+                  </a>
+                </span>
+              ))}
+              {sources.length > 0 ? '. ' : ''}
+              Consulte un expert-comptable {config.countryName === 'Portugal' ? '(TOC)' : ''} pour ta situation personnelle.
+            </span>
+          </p>
+        )
+      })()}
     </section>
   )
 }
