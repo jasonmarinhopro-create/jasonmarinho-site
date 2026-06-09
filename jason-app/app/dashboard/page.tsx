@@ -134,10 +134,10 @@ export default async function DashboardPage() {
       .gt('montant', 0)
       .gte('date_arrivee', `${yearPfx}-01-01`)
       .lt('date_arrivee', `${parseInt(yearPfx) + 1}-01-01`),
-    // Liens plateformes du profil (inbox Airbnb/Booking/Driing + custom)
+    // Liens plateformes du profil (inbox Airbnb/Booking/Driing/GMB + custom)
     supabase
       .from('profiles')
-      .select('inbox_airbnb_url, inbox_booking_url, inbox_vrbo_url, inbox_abritel_url, inbox_driing_url, custom_platform_links')
+      .select('inbox_airbnb_url, inbox_booking_url, inbox_vrbo_url, inbox_abritel_url, inbox_driing_url, inbox_gmb_url, custom_platform_links')
       .eq('id', userId)
       .maybeSingle(),
   ])
@@ -171,6 +171,7 @@ export default async function DashboardPage() {
     inbox_vrbo_url: string | null
     inbox_abritel_url: string | null
     inbox_driing_url: string | null
+    inbox_gmb_url: string | null
     custom_platform_links: Array<{ label: string; url: string; color?: string }> | null
   } | null }>(12, { data: null })
 
@@ -476,6 +477,7 @@ export default async function DashboardPage() {
             inbox_vrbo_url:    platformLinksRaw?.inbox_vrbo_url    ?? null,
             inbox_abritel_url: platformLinksRaw?.inbox_abritel_url ?? null,
             inbox_driing_url:  platformLinksRaw?.inbox_driing_url  ?? null,
+            inbox_gmb_url:     platformLinksRaw?.inbox_gmb_url     ?? null,
             custom_platform_links: platformLinksRaw?.custom_platform_links ?? [],
           }}
         />
