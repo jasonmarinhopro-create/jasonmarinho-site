@@ -7,6 +7,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import type { MenageSlot } from './page'
 import { upsertMenageEvent, deleteMenageEvent } from './actions'
+import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 
 type Props = {
   slots: MenageSlot[]
@@ -122,15 +123,14 @@ function EditPanel({
   return (
     <div style={editStyles.wrap}>
       <div style={editStyles.row}>
-        <label style={editStyles.field}>
+        <div style={editStyles.field}>
           <span style={editStyles.label}>Date</span>
-          <input
-            type="date"
+          {/* CalendarInput vert brand au lieu de l'input date natif gris */}
+          <CalendarInput
             value={form.date}
-            onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-            style={editStyles.input}
+            onChange={v => setForm(f => ({ ...f, date: v }))}
           />
-        </label>
+        </div>
         <label style={editStyles.field}>
           <span style={editStyles.label}>Logement</span>
           {logementNames.length > 0 ? (
@@ -156,24 +156,20 @@ function EditPanel({
         </label>
       </div>
       <div style={editStyles.row}>
-        <label style={editStyles.field}>
+        <div style={editStyles.field}>
           <span style={editStyles.label}>Début</span>
-          <input
-            type="time"
+          <TimePickerInput
             value={form.startTime}
-            onChange={e => setForm(f => ({ ...f, startTime: e.target.value }))}
-            style={editStyles.input}
+            onChange={v => setForm(f => ({ ...f, startTime: v }))}
           />
-        </label>
-        <label style={editStyles.field}>
+        </div>
+        <div style={editStyles.field}>
           <span style={editStyles.label}>Fin</span>
-          <input
-            type="time"
+          <TimePickerInput
             value={form.endTime}
-            onChange={e => setForm(f => ({ ...f, endTime: e.target.value }))}
-            style={editStyles.input}
+            onChange={v => setForm(f => ({ ...f, endTime: v }))}
           />
-        </label>
+        </div>
         <label style={editStyles.field}>
           <span style={editStyles.label}>Forfait (€)</span>
           <input
@@ -857,9 +853,10 @@ export default function MenageExportModal({ slots: allSlots, doneIds, logementNa
             <p style={s.printSub}>{slots.length} créneau{slots.length > 1 ? 'x' : ''} · généré le {new Date().toLocaleDateString('fr-FR')}</p>
           </div>
 
-          {slots.length === 0 ? (
+          {slots.length === 0 && editingSlotId !== '__new__' && (
             <p style={s.empty}>Aucun créneau ménage prévu sur cette période.</p>
-          ) : (
+          )}
+          {(slots.length > 0 || editingSlotId === '__new__') && (
             <ol style={s.list}>
               {slots.map(slot => {
                 const done = doneIds.has(slot.id)
@@ -995,15 +992,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   modal: {
     position: 'fixed',
-    // Centré horizontalement, ancré entre top:72px (sous le header
-    // dashboard) et bottom:24px (marge bas viewport). Évite que le
-    // header fasse passer le titre du modal en dessous, et garantit
-    // que le footer reste accessible sur petits écrans.
+    // Hauteur AUTO qui s'adapte au contenu, plafonnée par maxHeight pour
+    // éviter de déborder du viewport. Ancré sous le header dashboard (72px)
+    // au lieu d'être centré : évite le vide énorme quand 0-1 créneau.
     top: 72,
-    bottom: 24,
     left: '50%',
     transform: 'translateX(-50%)',
     width: 'min(640px, calc(100vw - 24px))',
+    maxHeight: 'calc(100vh - 96px)',
     background: 'var(--floating-surface)',
     border: '1px solid var(--floating-border)',
     borderRadius: '16px',
