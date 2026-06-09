@@ -11,6 +11,7 @@ import ActionUrgente from './ActionUrgente'
 import ChezNousWidget from './ChezNousWidget'
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import ConseilDuMoment from './ConseilDuMoment'
+import MesPlateformesWidget from './MesPlateformesWidget'
 import OnboardingTour from './OnboardingTour'
 import { selectConseils } from '@/lib/lcd/conseil-du-moment'
 import { getDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
@@ -133,6 +134,12 @@ export default async function DashboardPage() {
       .gt('montant', 0)
       .gte('date_arrivee', `${yearPfx}-01-01`)
       .lt('date_arrivee', `${parseInt(yearPfx) + 1}-01-01`),
+    // Liens plateformes du profil (inbox Airbnb/Booking/Driing + custom)
+    supabase
+      .from('profiles')
+      .select('inbox_airbnb_url, inbox_booking_url, inbox_vrbo_url, inbox_abritel_url, inbox_driing_url, custom_platform_links')
+      .eq('id', userId)
+      .maybeSingle(),
   ])
 
   // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
@@ -158,6 +165,14 @@ export default async function DashboardPage() {
   const { data: cnPosts }         = pick<{ data: any[] | null }>(9, { data: [] })
   const { count: cnTotal }        = pick<{ count: number | null }>(10, { count: 0 })
   const { data: sejoursYearAll }  = pick<{ data: { montant: number | null; date_arrivee: string }[] | null }>(11, { data: [] })
+  const { data: platformLinksRaw } = pick<{ data: {
+    inbox_airbnb_url: string | null
+    inbox_booking_url: string | null
+    inbox_vrbo_url: string | null
+    inbox_abritel_url: string | null
+    inbox_driing_url: string | null
+    custom_platform_links: Array<{ label: string; url: string; color?: string }> | null
+  } | null }>(12, { data: null })
 
   const latestNews = allCachedNews.slice(0, 3)
 
@@ -452,6 +467,18 @@ export default async function DashboardPage() {
 
         {/* ── Conseil du moment : 1 règle contextuelle prioritaire ────── */}
         <ConseilDuMoment conseils={conseils} />
+
+        {/* ── Mes plateformes : accès rapide aux inbox (Airbnb, Booking…) */}
+        <MesPlateformesWidget
+          initialData={{
+            inbox_airbnb_url:  platformLinksRaw?.inbox_airbnb_url  ?? null,
+            inbox_booking_url: platformLinksRaw?.inbox_booking_url ?? null,
+            inbox_vrbo_url:    platformLinksRaw?.inbox_vrbo_url    ?? null,
+            inbox_abritel_url: platformLinksRaw?.inbox_abritel_url ?? null,
+            inbox_driing_url:  platformLinksRaw?.inbox_driing_url  ?? null,
+            custom_platform_links: platformLinksRaw?.custom_platform_links ?? [],
+          }}
+        />
 
         {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
         <section style={s.welcome} className="fade-up dash-welcome">

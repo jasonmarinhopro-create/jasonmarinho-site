@@ -158,3 +158,70 @@ export async function saveAutresRevenusPro(value: number | null): Promise<{ erro
   return {}
 }
 
+
+// ─── Liens plateformes globaux (Airbnb, Booking, Driing, etc.) ─────────
+
+export type PlatformLinksInput = {
+  inbox_airbnb_url?: string | null
+  inbox_booking_url?: string | null
+  inbox_vrbo_url?: string | null
+  inbox_abritel_url?: string | null
+  inbox_driing_url?: string | null
+  custom_platform_links?: Array<{ label: string; url: string; color?: string }>
+}
+
+/**
+ * Met à jour les liens plateformes (inbox/dashboard par plateforme +
+ * liste libre). Validation URL côté serveur, sinon on remet null.
+ */
+export async function savePlatformLinks(input: PlatformLinksInput): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+
+  // Helper : retourne l'URL nettoyée OU null si invalide / vide
+  const cleanUrl = (raw: string | null | undefined): string | null => {
+    if (!raw) return null
+    const trimmed = raw.trim()
+    if (trimmed.length === 0) return null
+    try {
+      const u = new URL(trimmed)
+      if (u.protocol !== 'https:' && u.protocol !== 'http:') return null
+      return u.toString()
+    } catch {
+      return null
+    }
+  }
+
+  // Valide la liste custom : on supprime entries invalides, garde max 20
+  const customSafe = (input.custom_platform_links ?? [])
+    .map(item => ({
+      label: typeof item?.label === 'string' ? item.label.trim().slice(0, 40) : '',
+      url: cleanUrl(item?.url),
+      color: typeof item?.color === 'string' && /^#[0-9a-f]{3,8}$/i.test(item.color)
+        ? item.color
+        : undefined,
+    }))
+    .filter(item => item.label.length > 0 && item.url !== null)
+    .slice(0, 20)
+
+  const patch: Record<string, unknown> = {
+    custom_platform_links: customSafe,
+  }
+  if (input.inbox_airbnb_url !== undefined)  patch.inbox_airbnb_url  = cleanUrl(input.inbox_airbnb_url)
+  if (input.inbox_booking_url !== undefined) patch.inbox_booking_url = cleanUrl(input.inbox_booking_url)
+  if (input.inbox_vrbo_url !== undefined)    patch.inbox_vrbo_url    = cleanUrl(input.inbox_vrbo_url)
+  if (input.inbox_abritel_url !== undefined) patch.inbox_abritel_url = cleanUrl(input.inbox_abritel_url)
+  if (input.inbox_driing_url !== undefined)  patch.inbox_driing_url  = cleanUrl(input.inbox_driing_url)
+
+  const { error } = await supabase
+    .from('profiles')
+    .update(patch)
+    .eq('id', user.id)
+
+  if (error) return { error: error.message }
+  invalidateProfileCache(user.id)
+  revalidatePath('/dashboard')
+  revalidatePath('/dashboard/profil')
+  return {}
+}
