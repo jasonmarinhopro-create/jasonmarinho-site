@@ -15,6 +15,7 @@ import MesPlateformesWidget from './MesPlateformesWidget'
 import OnboardingTour from './OnboardingTour'
 import { selectConseils } from '@/lib/lcd/conseil-du-moment'
 import { getDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
+import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 import type { CategoryId } from '@/lib/chez-nous/categories'
 
@@ -140,6 +141,24 @@ export default async function DashboardPage() {
       .select('inbox_airbnb_url, inbox_booking_url, inbox_vrbo_url, inbox_abritel_url, inbox_driing_url, inbox_gmb_url, custom_platform_links')
       .eq('id', userId)
       .maybeSingle(),
+    // iCal events (Airbnb/Booking/Vrbo) — sans ça, la home ignore les résas
+    // synchronisées et affiche "calendrier serein" alors qu'une résa Airbnb
+    // arrive dans 4 jours.
+    supabase
+      .from('ical_events')
+      .select('id, title, start_date, end_date, description')
+      .eq('user_id', userId)
+      .gte('start_date', `${yearPfx}-01-01`)
+      .order('start_date'),
+    // Séjours avec dates ET voyageur pour l'affichage prochaines arrivées
+    // (le sejours[11] précédent n'a que montant+date_arrivee pour le CA).
+    supabase
+      .from('sejours')
+      .select('id, voyageur_id, logement, date_arrivee, date_depart, voyageurs(prenom, nom)')
+      .eq('user_id', userId)
+      .not('date_arrivee', 'is', null)
+      .not('date_depart', 'is', null)
+      .order('date_arrivee'),
   ])
 
   // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
@@ -174,6 +193,8 @@ export default async function DashboardPage() {
     inbox_gmb_url: string | null
     custom_platform_links: Array<{ label: string; url: string; color?: string }> | null
   } | null }>(12, { data: null })
+  const { data: icalEventsRaw } = pick<{ data: Array<{ id: string; title: string; start_date: string; end_date: string | null; description: string | null }> | null }>(13, { data: [] })
+  const { data: sejoursForArrivals } = pick<{ data: Array<{ id: string; voyageur_id: string | null; logement: string | null; date_arrivee: string; date_depart: string; voyageurs: { prenom: string | null; nom: string | null } | Array<{ prenom: string | null; nom: string | null }> | null }> | null }>(14, { data: [] })
 
   const latestNews = allCachedNews.slice(0, 3)
 
@@ -262,33 +283,103 @@ export default async function DashboardPage() {
   const logements  = logCount ?? 0
   const pl         = (n: number, s = 's') => n !== 1 ? s : ''
 
-  // ── Séjours
-  const activeStays = allC.filter(c =>
-    c.date_arrivee <= today && (!c.date_depart || c.date_depart >= today)
+  // ── Liste unifiée des occupations (contracts + sejours + iCal) ─────────
+  // Avant : seuls les `contracts` alimentaient les widgets arrivées/départs.
+  // Conséquence : un hôte avec uniquement de l'Airbnb voyait "Calendrier
+  // serein" alors qu'une résa Airbnb arrive dans 4 jours. Fix : on fusionne
+  // toutes les sources avec dédup par paire (date_arrivee + logement) pour
+  // ne pas compter 2× un séjour synchro iCal qui a aussi un contrat saisi.
+  type Occ = {
+    id: string
+    source: 'contract' | 'sejour' | 'ical'
+    date_arrivee: string
+    date_depart: string | null
+    logement_nom: string | null
+    label: string
+    contract?: typeof allC[0]
+  }
+  const dedupKey = (date: string | null | undefined, log: string | null | undefined) =>
+    `${(date ?? '').trim()}|${(log ?? '').trim().toLowerCase()}`
+  const seenOcc = new Set<string>()
+
+  const occupations: Occ[] = []
+  for (const c of allC) {
+    if (!c.date_arrivee) continue
+    const k = dedupKey(c.date_arrivee, c.logement_nom)
+    if (seenOcc.has(k)) continue
+    seenOcc.add(k)
+    occupations.push({
+      id: `contract-${c.id}`,
+      source: 'contract',
+      date_arrivee: c.date_arrivee,
+      date_depart: c.date_depart ?? null,
+      logement_nom: c.logement_nom,
+      label: `${c.locataire_prenom ?? ''} ${c.locataire_nom ?? ''}`.trim() || (c.logement_nom ?? 'Réservation'),
+      contract: c,
+    })
+  }
+  for (const s of (sejoursForArrivals ?? [])) {
+    if (!s.date_arrivee || !s.date_depart) continue
+    const k = dedupKey(s.date_arrivee, s.logement)
+    if (seenOcc.has(k)) continue
+    seenOcc.add(k)
+    const v = Array.isArray(s.voyageurs) ? s.voyageurs[0] : s.voyageurs
+    const vName = v ? `${v.prenom ?? ''} ${v.nom ?? ''}`.trim() : ''
+    occupations.push({
+      id: `sejour-${s.id}`,
+      source: 'sejour',
+      date_arrivee: s.date_arrivee,
+      date_depart: s.date_depart,
+      logement_nom: s.logement,
+      label: vName || s.logement || 'Séjour',
+    })
+  }
+  for (const e of (icalEventsRaw ?? [])) {
+    if (!e.start_date) continue
+    // Skip blocages "Not available" / "Closed" générés par Airbnb chaque jour.
+    if (isBlockedIcalEvent(e.title, e.description)) continue
+    const k = dedupKey(e.start_date, e.title)
+    if (seenOcc.has(k)) continue
+    seenOcc.add(k)
+    occupations.push({
+      id: `ical-${e.id}`,
+      source: 'ical',
+      date_arrivee: e.start_date,
+      date_depart: e.end_date,
+      logement_nom: null,
+      label: e.title || 'Réservation',
+    })
+  }
+
+  // ── Filtres temporels appliqués à la liste unifiée
+  const activeStays = occupations.filter(o =>
+    o.date_arrivee <= today && (!o.date_depart || o.date_depart >= today)
   )
-  const weekArrivals = allC.filter(c =>
-    c.date_arrivee > today && c.date_arrivee <= in7
+  const weekArrivals = occupations.filter(o =>
+    o.date_arrivee > today && o.date_arrivee <= in7
   )
-  const weekDepartures = allC.filter(c =>
-    c.date_depart && c.date_depart >= today && c.date_depart <= in7 &&
-    !activeStays.find(a => a.id === c.id) && !weekArrivals.find(a => a.id === c.id)
+  const weekDepartures = occupations.filter(o =>
+    o.date_depart && o.date_depart >= today && o.date_depart <= in7 &&
+    !activeStays.find(a => a.id === o.id) && !weekArrivals.find(a => a.id === o.id)
   )
 
-  // ── Aujourd'hui spécifiquement
-  const todayArrivals = allC.filter(c => c.date_arrivee === today)
-  const todayDepartures = allC.filter(c => c.date_depart === today)
+  // ── Aujourd'hui spécifiquement (sur la liste unifiée)
+  const todayArrivals = occupations.filter(o => o.date_arrivee === today)
+  const todayDepartures = occupations.filter(o => o.date_depart === today)
 
   // ── Prochains événements (14 jours) : arrivées + départs fusionnés et triés
+  // Maintenant alimenté par TOUTES les sources (occupations) au lieu de
+  // contracts seulement → la widget "Calendrier serein" ne ment plus quand
+  // une résa Airbnb arrive dans les 14j.
   const in14 = addDays(today, 14)
-  type UpcomingEvent = { date: string; type: 'arrival' | 'departure'; contract: typeof allC[0] }
+  type UpcomingEvent = { date: string; type: 'arrival' | 'departure'; contract: typeof allC[0] | undefined; occ: Occ }
   const upcomingEventsRaw: UpcomingEvent[] = []
-  for (const c of allC) {
-    if (c.date_arrivee && c.date_arrivee >= today && c.date_arrivee <= in14) {
-      upcomingEventsRaw.push({ date: c.date_arrivee, type: 'arrival', contract: c })
+  for (const o of occupations) {
+    if (o.date_arrivee >= today && o.date_arrivee <= in14) {
+      upcomingEventsRaw.push({ date: o.date_arrivee, type: 'arrival', contract: o.contract, occ: o })
     }
-    if (c.date_depart && c.date_depart >= today && c.date_depart <= in14) {
-      // Évite doublon si même contrat = arrivée et départ tombent dans la fenêtre
-      upcomingEventsRaw.push({ date: c.date_depart, type: 'departure', contract: c })
+    if (o.date_depart && o.date_depart >= today && o.date_depart <= in14) {
+      upcomingEventsRaw.push({ date: o.date_depart, type: 'departure', contract: o.contract, occ: o })
     }
   }
   upcomingEventsRaw.sort((a, b) =>
@@ -310,7 +401,13 @@ export default async function DashboardPage() {
     return fmtShort(d)
   }
 
-  // ── Actions
+  // ── Actions à traiter
+  // Compte les vraies tâches en attente pour les arrivées imminentes (≤7j) :
+  // contrat non signé, paiement en attente, instructions/code d'accès non
+  // envoyé, ménage non planifié. Couvre les contracts (vraies checklists)
+  // + ajoute une alerte "instructions à envoyer" pour les arrivées
+  // synchronisées iCal (sans contrat lié, on ne peut pas tracker en base
+  // mais on rappelle quand même l'action).
   const unsignedContracts = allC.filter(c => {
     const cl = (c.checklist_status as Record<string, boolean>) ?? {}
     return !cl.contrat_signe && c.date_arrivee >= today
@@ -318,7 +415,25 @@ export default async function DashboardPage() {
   const pendingPayments = allC.filter(c =>
     c.stripe_payment_enabled && c.stripe_payment_status !== 'paid'
   )
-  const actionsCount = unsignedContracts.length + pendingPayments.length
+  // Instructions non envoyées pour les contrats avec arrivée < 7j.
+  const pendingInstructions = allC.filter(c => {
+    const cl = (c.checklist_status as Record<string, boolean>) ?? {}
+    return !cl.instructions_envoyees
+      && c.date_arrivee >= today
+      && c.date_arrivee <= in7
+  })
+  // Ménage non planifié pour les contrats avec arrivée < 7j.
+  const pendingMenage = allC.filter(c => {
+    const cl = (c.checklist_status as Record<string, boolean>) ?? {}
+    return !cl.menage_planifie
+      && c.date_arrivee >= today
+      && c.date_arrivee <= in7
+  })
+  const actionsCount =
+    unsignedContracts.length
+    + pendingPayments.length
+    + pendingInstructions.length
+    + pendingMenage.length
 
   // ── KPIs financiers
   const isPaid = (c: typeof allC[0]) =>
@@ -593,12 +708,16 @@ export default async function DashboardPage() {
               <div style={s.upcomingList}>
                 {upcomingEvents.map((e, i) => {
                   const c = e.contract
+                  const o = e.occ
                   const isArr = e.type === 'arrival'
                   const color = isArr ? '#15803d' : '#0369a1'
                   const bg = isArr ? 'rgba(21,128,61,0.10)' : 'rgba(3,105,161,0.10)'
-                  const traveler = [c.locataire_prenom, c.locataire_nom].filter(Boolean).join(' ')
+                  const traveler = c
+                    ? [c.locataire_prenom, c.locataire_nom].filter(Boolean).join(' ')
+                    : (o.source === 'sejour' || o.source === 'ical' ? o.label : '')
+                  const logementLabel = c?.logement_nom ?? o.logement_nom ?? (o.source === 'ical' ? 'Synchro plateforme' : 'Logement')
                   return (
-                    <Link key={`${c.id}_${e.type}_${i}`} href="/dashboard/calendrier" style={s.upcomingItem}>
+                    <Link key={`${o.id}_${e.type}_${i}`} href="/dashboard/calendrier" style={s.upcomingItem}>
                       <div style={{ ...s.upcomingDot, background: bg, color }}>
                         <CalendarBlank size={14} weight="fill" />
                       </div>
@@ -610,7 +729,7 @@ export default async function DashboardPage() {
                           </span>
                         </div>
                         <div style={s.upcomingMainText}>
-                          {c.logement_nom ?? 'Logement'}
+                          {logementLabel}
                           {traveler && <span style={s.upcomingTraveler}> · {traveler}</span>}
                         </div>
                       </div>
