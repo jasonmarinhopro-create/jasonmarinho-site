@@ -167,6 +167,7 @@ export type PlatformLinksInput = {
   inbox_vrbo_url?: string | null
   inbox_abritel_url?: string | null
   inbox_driing_url?: string | null
+  inbox_gmb_url?: string | null
   custom_platform_links?: Array<{ label: string; url: string; color?: string }>
 }
 
@@ -213,6 +214,7 @@ export async function savePlatformLinks(input: PlatformLinksInput): Promise<{ er
   if (input.inbox_vrbo_url !== undefined)    patch.inbox_vrbo_url    = cleanUrl(input.inbox_vrbo_url)
   if (input.inbox_abritel_url !== undefined) patch.inbox_abritel_url = cleanUrl(input.inbox_abritel_url)
   if (input.inbox_driing_url !== undefined)  patch.inbox_driing_url  = cleanUrl(input.inbox_driing_url)
+  if (input.inbox_gmb_url !== undefined)     patch.inbox_gmb_url     = cleanUrl(input.inbox_gmb_url)
 
   const { error } = await supabase
     .from('profiles')

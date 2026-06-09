@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import {
   ArrowSquareOut, House, BookOpen, Bell, GlobeHemisphereWest, Storefront,
-  PencilSimple, Plus, X, Trash, FloppyDisk, Link as LinkIcon,
+  PencilSimple, Plus, X, Trash, FloppyDisk, Link as LinkIcon, MapPin,
 } from '@phosphor-icons/react/dist/ssr'
 import { savePlatformLinks, type PlatformLinksInput } from './profil/actions'
 
@@ -13,10 +13,11 @@ export type PlatformLinksData = {
   inbox_vrbo_url: string | null
   inbox_abritel_url: string | null
   inbox_driing_url: string | null
+  inbox_gmb_url: string | null
   custom_platform_links: Array<{ label: string; url: string; color?: string }>
 }
 
-type BuiltInKey = 'airbnb' | 'booking' | 'vrbo' | 'abritel' | 'driing'
+type BuiltInKey = 'airbnb' | 'booking' | 'vrbo' | 'abritel' | 'driing' | 'gmb'
 
 type BuiltIn = {
   key: BuiltInKey
@@ -35,6 +36,7 @@ const BUILTIN: BuiltIn[] = [
   { key: 'driing',  label: 'Driing',  color: 'var(--accent-text)', bg: 'var(--accent-bg)', icon: <Bell size={18} weight="duotone" />,         placeholder: 'https://driing.com/hote/messages' },
   { key: 'vrbo',    label: 'Vrbo',    color: '#4ade80', bg: 'rgba(74,222,128,0.13)', icon: <GlobeHemisphereWest size={18} weight="duotone" />, placeholder: 'https://www.vrbo.com/hosting' },
   { key: 'abritel', label: 'Abritel', color: '#fbbf24', bg: 'rgba(251,191,36,0.13)', icon: <Storefront size={18} weight="duotone" />,         placeholder: 'https://admin.abritel.fr' },
+  { key: 'gmb',     label: 'Google My Business', color: '#4285F4', bg: 'rgba(66,133,244,0.13)', icon: <MapPin size={18} weight="duotone" />,   placeholder: 'https://business.google.com/dashboard' },
 ]
 
 function urlForKey(data: PlatformLinksData, key: BuiltInKey): string | null {
@@ -44,6 +46,7 @@ function urlForKey(data: PlatformLinksData, key: BuiltInKey): string | null {
     case 'vrbo':    return data.inbox_vrbo_url
     case 'abritel': return data.inbox_abritel_url
     case 'driing':  return data.inbox_driing_url
+    case 'gmb':     return data.inbox_gmb_url
   }
 }
 
@@ -192,6 +195,7 @@ function EditPlatformsModal({
       inbox_vrbo_url: form.inbox_vrbo_url,
       inbox_abritel_url: form.inbox_abritel_url,
       inbox_driing_url: form.inbox_driing_url,
+      inbox_gmb_url: form.inbox_gmb_url,
       custom_platform_links: form.custom_platform_links ?? [],
     }
     startTransition(async () => {
