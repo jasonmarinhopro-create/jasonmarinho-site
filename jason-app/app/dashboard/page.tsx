@@ -2,12 +2,11 @@ import { getProfile } from '@/lib/queries/profile'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
-  CalendarBlank, Warning, CurrencyEur,
+  CalendarBlank, CurrencyEur,
   ArrowRight, Newspaper, UserPlus, Flag, CalendarPlus,
   GraduationCap, Trophy, Flame,
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
-import ActionUrgente from './ActionUrgente'
 import ChezNousWidget from './ChezNousWidget'
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import ConseilDuMoment from './ConseilDuMoment'
@@ -301,6 +300,10 @@ export default async function DashboardPage() {
   const dedupKey = (date: string | null | undefined, log: string | null | undefined) =>
     `${(date ?? '').trim()}|${(log ?? '').trim().toLowerCase()}`
   const seenOcc = new Set<string>()
+  // Dates couvertes par un contract ou un sejour. Les iCal events à ces
+  // dates sont juste le mirror Airbnb/Booking de la même réservation —
+  // on les skip pour éviter le doublon dans "Prochaines arrivées".
+  const datesCoveredByMaster = new Set<string>()
 
   const occupations: Occ[] = []
   for (const c of allC) {
@@ -308,6 +311,7 @@ export default async function DashboardPage() {
     const k = dedupKey(c.date_arrivee, c.logement_nom)
     if (seenOcc.has(k)) continue
     seenOcc.add(k)
+    datesCoveredByMaster.add(c.date_arrivee)
     occupations.push({
       id: `contract-${c.id}`,
       source: 'contract',
@@ -323,6 +327,7 @@ export default async function DashboardPage() {
     const k = dedupKey(s.date_arrivee, s.logement)
     if (seenOcc.has(k)) continue
     seenOcc.add(k)
+    datesCoveredByMaster.add(s.date_arrivee)
     const v = Array.isArray(s.voyageurs) ? s.voyageurs[0] : s.voyageurs
     const vName = v ? `${v.prenom ?? ''} ${v.nom ?? ''}`.trim() : ''
     occupations.push({
@@ -338,6 +343,10 @@ export default async function DashboardPage() {
     if (!e.start_date) continue
     // Skip blocages "Not available" / "Closed" générés par Airbnb chaque jour.
     if (isBlockedIcalEvent(e.title, e.description)) continue
+    // Si un contract ou un sejour couvre déjà cette date → on skip l'iCal
+    // qui n'est que le miroir Airbnb/Booking de la même résa (sinon
+    // doublon visible dans "Prochaines arrivées").
+    if (datesCoveredByMaster.has(e.start_date)) continue
     const k = dedupKey(e.start_date, e.title)
     if (seenOcc.has(k)) continue
     seenOcc.add(k)
@@ -358,14 +367,16 @@ export default async function DashboardPage() {
   const weekArrivals = occupations.filter(o =>
     o.date_arrivee > today && o.date_arrivee <= in7
   )
-  const weekDepartures = occupations.filter(o =>
-    o.date_depart && o.date_depart >= today && o.date_depart <= in7 &&
-    !activeStays.find(a => a.id === o.id) && !weekArrivals.find(a => a.id === o.id)
-  )
 
   // ── Aujourd'hui spécifiquement (sur la liste unifiée)
   const todayArrivals = occupations.filter(o => o.date_arrivee === today)
   const todayDepartures = occupations.filter(o => o.date_depart === today)
+
+  // ── KPIs réservations (vue carrière, pas juste aujourd'hui)
+  // À venir : toute réservation dont l'arrivée est > today
+  // Déjà venus : toute réservation dont l'arrivée est < today (passées)
+  const upcomingReservationsCount = occupations.filter(o => o.date_arrivee > today).length
+  const pastReservationsCount = occupations.filter(o => o.date_arrivee < today).length
 
   // ── Prochains événements (14 jours) : arrivées + départs fusionnés et triés
   // Maintenant alimenté par TOUTES les sources (occupations) au lieu de
@@ -484,10 +495,6 @@ export default async function DashboardPage() {
   const prochainSejour = allC
     .filter(c => c.date_arrivee > today)
     .sort((a, b) => a.date_arrivee.localeCompare(b.date_arrivee))[0] ?? null
-
-  const hasOpData =
-    activeStays.length > 0 || weekArrivals.length > 0 || weekDepartures.length > 0 ||
-    unsignedContracts.length > 0 || pendingPayments.length > 0
 
   const planLabel = profile?.role === 'admin' ? 'Administrateur'
     : profile?.plan === 'driing' ? 'Membre Driing'
@@ -631,13 +638,13 @@ export default async function DashboardPage() {
           </div>
           <div style={s.statsRow} className="dash-stats-row" data-tour="dashboard-stats">
             <div style={s.stat}>
-              <span style={{ ...s.statVal, color: todayArrivals.length > 0 ? 'var(--success-1)' : 'var(--accent-text)' }} className="tabular-nums">{todayArrivals.length}</span>
-              <span style={s.statLbl}>Arrivée{pl(todayArrivals.length)} aujourd&apos;hui</span>
+              <span style={{ ...s.statVal, color: upcomingReservationsCount > 0 ? 'var(--success-1)' : 'var(--accent-text)' }} className="tabular-nums">{upcomingReservationsCount}</span>
+              <span style={s.statLbl}>Réservation{pl(upcomingReservationsCount)} à venir</span>
             </div>
             <div style={s.statDivider} />
             <div style={s.stat}>
-              <span style={{ ...s.statVal, color: todayDepartures.length > 0 ? 'var(--info)' : 'var(--accent-text)' }} className="tabular-nums">{todayDepartures.length}</span>
-              <span style={s.statLbl}>Départ{pl(todayDepartures.length)} aujourd&apos;hui</span>
+              <span style={{ ...s.statVal, color: 'var(--accent-text)' }} className="tabular-nums">{pastReservationsCount}</span>
+              <span style={s.statLbl}>Déjà venu{pl(pastReservationsCount)}</span>
             </div>
             <div style={s.statDivider} />
             <div style={s.stat}>
@@ -756,120 +763,13 @@ export default async function DashboardPage() {
           />
         </section>
 
-        {/* ── Action urgente ───────────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d2">
-          <ActionUrgente
-            unsignedContracts={unsignedContracts}
-            pendingPayments={pendingPayments}
-            today={today}
-          />
-        </section>
-
-        {/* ── Résumé opérationnel ──────────────────────────────────────── */}
-        {hasOpData && (
-          <section style={s.section} className="fade-up d3">
-            <div style={s.opGrid}>
-
-              {(activeStays.length > 0 || weekArrivals.length > 0 || weekDepartures.length > 0) && (
-                <div style={s.opCard} className="glass-card">
-                  <div style={s.opCardHead}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <CalendarBlank size={16} color="#10b981" weight="fill" />
-                      <span style={s.opCardTitle}>Cette semaine</span>
-                    </div>
-                    <Link href="/dashboard/calendrier" style={s.opLink}>
-                      Calendrier <ArrowRight size={12} />
-                    </Link>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                    {activeStays.map(c => (
-                      <div key={c.id} style={s.stayRow}>
-                        <span style={{ ...s.badge, background: 'rgba(16,185,129,0.15)', color: 'var(--success-1)' }}>En cours</span>
-                        <div style={s.stayInfo}>
-                          <span style={s.stayName}>{c.logement_nom ?? 'Logement'}</span>
-                          <span style={s.stayMeta}>jusqu&apos;au {fmtShort(c.date_depart ?? today)}</span>
-                        </div>
-                      </div>
-                    ))}
-                    {weekArrivals.map(c => {
-                      const dta   = diffDays(today, c.date_arrivee)
-                      const label = dta === 0 ? "Aujourd'hui" : dta === 1 ? 'Demain' : `Dans ${dta}j`
-                      const color = dta === 0 ? 'var(--success-1)' : dta === 1 ? '#eab308' : 'var(--info)'
-                      return (
-                        <div key={c.id} style={s.stayRow}>
-                          <span style={{ ...s.badge, background: color + '22', color }}>Arrivée · {label}</span>
-                          <div style={s.stayInfo}>
-                            <span style={s.stayName}>{c.logement_nom ?? 'Logement'}</span>
-                            <span style={s.stayMeta}>
-                              {fmtShort(c.date_arrivee)}{c.date_depart ? ` → ${fmtShort(c.date_depart)}` : ''}
-                            </span>
-                          </div>
-                        </div>
-                      )
-                    })}
-                    {weekDepartures.map(c => {
-                      const dtd   = diffDays(today, c.date_depart!)
-                      const label = dtd === 0 ? "Aujourd'hui" : dtd === 1 ? 'Demain' : `Dans ${dtd}j`
-                      return (
-                        <div key={c.id} style={s.stayRow}>
-                          <span style={{ ...s.badge, background: 'rgba(96,165,250,0.15)', color: 'var(--info)' }}>Départ · {label}</span>
-                          <div style={s.stayInfo}>
-                            <span style={s.stayName}>{c.logement_nom ?? 'Logement'}</span>
-                            <span style={s.stayMeta}>{fmtShort(c.date_depart!)}</span>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {(unsignedContracts.length > 0 || pendingPayments.length > 0) && (
-                <div style={s.opCard} className="glass-card">
-                  <div style={s.opCardHead}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Warning size={16} color="#f97316" weight="fill" />
-                      <span style={s.opCardTitle}>Actions requises</span>
-                      <span style={s.countBadge}>{actionsCount}</span>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                    {unsignedContracts.slice(0, 4).map(c => {
-                      const dta     = diffDays(today, c.date_arrivee)
-                      const urgency = dta <= 2 ? 'var(--danger)' : dta <= 7 ? '#f97316' : '#eab308'
-                      return (
-                        <Link key={c.id} href="/dashboard/calendrier" style={{ textDecoration: 'none' }}>
-                          <div style={s.actionRow}>
-                            <div style={{ ...s.dot, background: urgency }} />
-                            <div style={s.stayInfo}>
-                              <span style={s.stayName}>{c.logement_nom ?? 'Logement'}</span>
-                              <span style={s.stayMeta}>Contrat non signé · Arrivée {fmtShort(c.date_arrivee)}</span>
-                            </div>
-                            <ArrowRight size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-                          </div>
-                        </Link>
-                      )
-                    })}
-                    {pendingPayments.slice(0, 3).map(c => (
-                      <Link key={c.id + '_p'} href="/dashboard/revenus" style={{ textDecoration: 'none' }}>
-                        <div style={s.actionRow}>
-                          <div style={{ ...s.dot, background: '#3b82f6' }} />
-                          <div style={s.stayInfo}>
-                            <span style={s.stayName}>{c.logement_nom ?? 'Logement'}</span>
-                            <span style={s.stayMeta}>
-                              Paiement en attente{c.montant_loyer ? ` · ${c.montant_loyer} €` : ''}
-                            </span>
-                          </div>
-                          <CurrencyEur size={13} color="#3b82f6" style={{ flexShrink: 0 }} />
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
+        {/* ── Section "Action urgente" et "Résumé opérationnel"
+              SUPPRIMÉES : doublons avec la KPI tile #4 d'EtatDesLieux
+              ("Action urgente · Tout est à jour") et avec le widget
+              "Prochaines arrivées & départs" (14j). Si actions = 0 et
+              calendrier serein, l'EtatDesLieux suffit. Si actions > 0,
+              elles apparaissent dans EtatDesLieux + sont déjà reflétées
+              dans le compteur statsRow ci-dessus. */}
 
         {/* ── Objectif revenu annuel ──────────────────────────────────── */}
         {objectifAnnuel !== null && objectifAnnuel > 0 && (
