@@ -227,6 +227,7 @@
             + '<a href="/services/performances">Performances LCD</a>'
             + '<a href="/services/revenus">Suivi des revenus</a>'
             + '<a href="/services/securite">Vérification voyageurs</a>'
+            + '<a href="/services/carnet-voyageurs">Carnet voyageurs (CRM)</a>'
             + '<a href="/services/gabarits-messages">Gabarits de messages</a>'
             + '<a href="/services/qr-affiches">QR & Affiches WiFi</a>'
             + '<a href="/services/audit-gbp">Audit Google Business</a>'
