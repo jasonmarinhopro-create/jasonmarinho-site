@@ -17,7 +17,7 @@ import dynamic from 'next/dynamic'
 // l'utilisateur clique sur le bouton balai. Économise ~15 KB du bundle
 // initial du calendrier.
 const MenageExportModal = dynamic(() => import('./MenageExportModal'), { ssr: false })
-import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning, Broom } from '@phosphor-icons/react/dist/ssr'
+import { ArrowsClockwise, Lightning, SidebarSimple, Share, Copy, Check, Warning, Broom, Funnel } from '@phosphor-icons/react/dist/ssr'
 import TourTrigger from '@/components/dashboard/TourTrigger'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
@@ -727,6 +727,7 @@ export default function CalendrierView({
   const [syncingAll, setSyncingAll] = useState(false)
   const [syncFeedback, setSyncFeedback] = useState<{ ok?: string; err?: string } | null>(null)
   const [showExportPanel, setShowExportPanel] = useState(false)
+  const [showSourcesPanel, setShowSourcesPanel] = useState(false)
   const [icalTokenState, setIcalTokenState] = useState<string | null>(icalToken)
   const [exportBusy, setExportBusy] = useState(false)
   const [exportCopied, setExportCopied] = useState(false)
@@ -2029,6 +2030,89 @@ export default function CalendrierView({
           >
             <Broom size={14} weight="duotone" />
           </button>
+          {/* Bouton Sources — afficher / masquer Airbnb, Booking, Vrbo, séjours…
+              Visible partout. Sur desktop il double la legend inline en bas,
+              sur mobile c'est le SEUL point d'accès (la legend inline est
+              cachée par .cal-legend{display:none} en CSS mobile). */}
+          {(contractEvents.length > 0 || legendSources.length > 0) && (
+            <div style={{ position: 'relative' }}>
+              <button
+                type="button"
+                onClick={() => setShowSourcesPanel(v => !v)}
+                style={{ ...s.topbarIconBtn, ...(showSourcesPanel ? s.topbarIconBtnActive : {}) }}
+                title={hiddenSources.size > 0 ? `${hiddenSources.size} source${hiddenSources.size > 1 ? 's' : ''} masquée${hiddenSources.size > 1 ? 's' : ''}` : 'Afficher / masquer les sources'}
+                aria-label="Filtrer les sources affichées"
+              >
+                <Funnel size={14} weight={hiddenSources.size > 0 ? 'fill' : 'regular'} />
+                {hiddenSources.size > 0 && (
+                  <span style={s.sourcesBadge}>{hiddenSources.size}</span>
+                )}
+              </button>
+              {showSourcesPanel && (
+                <div style={s.exportPanel}>
+                  <div style={s.exportHeader}>
+                    <span style={s.exportTitle}>Sources affichées</span>
+                    <button type="button" onClick={() => setShowSourcesPanel(false)} style={s.exportClose} aria-label="Fermer">
+                      <X size={13} weight="bold" />
+                    </button>
+                  </div>
+                  <p style={s.exportDesc}>
+                    Active ou masque ce qui apparaît dans le calendrier. Ton choix est mémorisé.
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {contractEvents.length > 0 && (() => {
+                      const visible = !hiddenSources.has('internal')
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => toggleSource('internal')}
+                          style={{
+                            ...s.sourcesRow,
+                            ...(visible
+                              ? { borderColor: `${CAT.arrivee.color}55`, background: `${CAT.arrivee.color}10` }
+                              : { opacity: 0.55 }),
+                          }}
+                        >
+                          <span style={{ ...s.legendDot, background: CAT.arrivee.color, opacity: visible ? 1 : 0.35 }} />
+                          <span style={{ flex: 1, textAlign: 'left', textDecoration: visible ? 'none' : 'line-through', color: visible ? CAT.arrivee.color : 'var(--text-3)', fontWeight: 600 }}>Séjours</span>
+                          {visible ? <Check size={12} weight="bold" color={CAT.arrivee.color} /> : <X size={11} weight="bold" color="var(--text-3)" />}
+                        </button>
+                      )
+                    })()}
+                    {legendSources.map(src => {
+                      const visible = !hiddenSources.has(src.color)
+                      return (
+                        <button
+                          key={src.color}
+                          type="button"
+                          onClick={() => toggleSource(src.color)}
+                          style={{
+                            ...s.sourcesRow,
+                            ...(visible
+                              ? { borderColor: `${src.color}55`, background: `${src.color}10` }
+                              : { opacity: 0.55 }),
+                          }}
+                        >
+                          <span style={{ ...s.legendDot, background: src.color, opacity: visible ? 1 : 0.35 }} />
+                          <span style={{ flex: 1, textAlign: 'left', textDecoration: visible ? 'none' : 'line-through', color: visible ? src.color : 'var(--text-3)', fontWeight: 600 }}>{src.label}</span>
+                          {visible ? <Check size={12} weight="bold" color={src.color} /> : <X size={11} weight="bold" color="var(--text-3)" />}
+                        </button>
+                      )
+                    })}
+                  </div>
+                  {hiddenSources.size > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setHiddenSources(new Set())}
+                      style={{ ...s.legendClear, marginTop: '10px', width: '100%', justifyContent: 'center' }}
+                    >
+                      Tout réafficher
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
           {/* Bouton Export iCal — partager le calendrier vers Google/Apple/Outlook */}
           <div style={{ position: 'relative' }}>
             <button
@@ -4087,6 +4171,31 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', fontFamily: 'inherit',
     padding: '3px 6px',
     marginLeft: '2px',
+  },
+  sourcesBadge: {
+    position: 'absolute' as const,
+    top: '-3px', right: '-3px',
+    minWidth: '14px', height: '14px',
+    padding: '0 3px',
+    background: 'var(--accent-text)',
+    color: 'var(--bg)',
+    borderRadius: '7px',
+    fontSize: '9px', fontWeight: 700,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    lineHeight: 1,
+    fontFamily: 'inherit',
+  },
+  sourcesRow: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '9px 11px',
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--r-md)',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    fontSize: '13px',
+    width: '100%',
+    transition: 'all 0.12s',
   },
 
   // ── KPIs compacts mobile (3 cartes) ──
