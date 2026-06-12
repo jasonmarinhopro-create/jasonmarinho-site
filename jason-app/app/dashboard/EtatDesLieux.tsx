@@ -1,24 +1,14 @@
 import Link from 'next/link'
-import { CalendarBlank, CurrencyEur, UsersThree, Lightning } from '@phosphor-icons/react/dist/ssr'
+import { TrendUp, CurrencyEur, UsersThree, Lightning } from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
-  prochainSejour: {
-    logement_nom: string | null
-    date_arrivee: string
-    locataire_prenom?: string | null
-    locataire_nom?: string | null
-  } | null
+  revenuPrevisionnel: number
   revenusThisMois: number
   revenusPrevMois: number
   totalReach: number
   joinedCount: number
   totalGroupCount: number
   urgentCount: number
-  today: string
-}
-
-function diffDays(from: string, to: string) {
-  return Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000)
 }
 
 function fmtEur(n: number) {
@@ -34,20 +24,17 @@ function fmtReach(n: number) {
 }
 
 export default function EtatDesLieux({
-  prochainSejour, revenusThisMois, revenusPrevMois,
-  totalReach, joinedCount, totalGroupCount, urgentCount, today,
+  revenuPrevisionnel, revenusThisMois, revenusPrevMois,
+  totalReach, joinedCount, totalGroupCount, urgentCount,
 }: Props) {
-  // Prochain séjour
-  let sejLabel = 'Aucun séjour prévu'
-  let sejSub   = 'Pas d\'arrivée planifiée'
-  let sejColor = 'var(--info)'
-  if (prochainSejour) {
-    const days = diffDays(today, prochainSejour.date_arrivee)
-    const who  = [prochainSejour.locataire_prenom, prochainSejour.locataire_nom].filter(Boolean).join(' ')
-    sejLabel   = days === 0 ? "Aujourd'hui" : days === 1 ? 'Demain' : `Dans ${days} jour${days > 1 ? 's' : ''}`
-    sejSub     = [who || null, prochainSejour.logement_nom].filter(Boolean).join(' · ') || 'Logement'
-    sejColor   = days <= 1 ? 'var(--success-1)' : days <= 3 ? '#eab308' : 'var(--info)'
-  }
+  // Revenu prévisionnel : forward-looking, complète "Revenu du mois"
+  const previsColor = revenuPrevisionnel > 0 ? 'var(--success-1)' : 'var(--text-muted)'
+  const previsLabel = revenuPrevisionnel > 0
+    ? fmtEur(revenuPrevisionnel)
+    : '0 €'
+  const previsSub = revenuPrevisionnel > 0
+    ? 'des réservations à venir'
+    : 'Aucune résa confirmée à venir'
 
   // Variation revenus
   const variation = revenusPrevMois > 0
@@ -65,16 +52,16 @@ export default function EtatDesLieux({
 
   return (
     <div style={s.grid}>
-      {/* 1, Prochain séjour */}
-      <Link href="/dashboard/calendrier" style={{ textDecoration: 'none' }}>
+      {/* 1, Revenu prévisionnel — résas à venir avec montant connu */}
+      <Link href="/dashboard/revenus" style={{ textDecoration: 'none' }}>
         <div style={s.card} className="kpi-hover">
-          <div style={{ ...s.icon, color: sejColor, background: sejColor + '18', border: `1px solid ${sejColor}30` }}>
-            <CalendarBlank size={18} weight="fill" />
+          <div style={{ ...s.icon, color: previsColor, background: previsColor + '18', border: `1px solid ${previsColor}30` }}>
+            <TrendUp size={18} weight="fill" />
           </div>
           <div style={s.body}>
-            <span style={s.lbl}>Prochain séjour</span>
-            <span style={{ ...s.val, color: sejColor }}>{sejLabel}</span>
-            <span style={s.sub} title={sejSub}>{sejSub}</span>
+            <span style={s.lbl}>Revenu prévisionnel</span>
+            <span style={{ ...s.val, color: previsColor }}>{previsLabel}</span>
+            <span style={s.sub} title={previsSub}>{previsSub}</span>
           </div>
         </div>
       </Link>

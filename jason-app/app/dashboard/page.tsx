@@ -486,10 +486,19 @@ export default async function DashboardPage() {
   const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / 86_400_000) + 1
   const expectedPct = Math.round((dayOfYear / 365) * 100)
 
-  // ── Prochain séjour
-  const prochainSejour = allC
+  // ── Revenu prévisionnel : résas confirmées à venir, peu importe le statut
+  // de paiement (le KPI "à attendre/encaisser dans les semaines/mois"). Couvre
+  // les contracts saisis + les séjours du carnet voyageurs avec un montant.
+  // Les résas iCal pures (Airbnb sans contrat) ne sont pas comptées car on
+  // n'a pas l'info financière — elles restent visibles dans "Prochaines
+  // arrivées" plus bas.
+  const revenuPrevisionnelContracts = allC
     .filter(c => c.date_arrivee > today)
-    .sort((a, b) => a.date_arrivee.localeCompare(b.date_arrivee))[0] ?? null
+    .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
+  const revenuPrevisionnelSejours = (sejoursYearAll ?? [])
+    .filter(s => s.date_arrivee > today)
+    .reduce((acc, s) => acc + (s.montant ?? 0), 0)
+  const revenuPrevisionnel = revenuPrevisionnelContracts + revenuPrevisionnelSejours
 
   const planLabel = profile?.role === 'admin' ? 'Administrateur'
     : profile?.plan === 'driing' ? 'Membre Driing'
@@ -717,14 +726,13 @@ export default async function DashboardPage() {
         {/* ── État des lieux, 4 métriques ─────────────────────────────── */}
         <section style={s.section} className="fade-up d1">
           <EtatDesLieux
-            prochainSejour={prochainSejour}
+            revenuPrevisionnel={revenuPrevisionnel}
             revenusThisMois={revenusThisMois}
             revenusPrevMois={revenusPrevMois}
             totalReach={totalReach}
             joinedCount={joinedCount}
             totalGroupCount={communityGroups.length}
             urgentCount={actionsCount}
-            today={today}
           />
         </section>
 
