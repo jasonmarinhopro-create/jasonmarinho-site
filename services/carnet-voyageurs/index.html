@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carnet voyageurs LCD, ton CRM hôte | Jason Marinho</title>
+  <meta name="description" content="Ton carnet voyageurs intégré : stocke nom, email, téléphone, historique des séjours, CA par voyageur. Récupère tes contacts Airbnb et Booking, lance le rebooking direct. Gratuit pour les hôtes LCD.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/carnet-voyageurs">
+  <meta property="og:title" content="Carnet voyageurs LCD, ton CRM hôte | Jason Marinho">
+  <meta property="og:description" content="Le fichier voyageurs que ni Airbnb ni Booking ne te laissent garder. Stocke, retrouve, contacte. Avec sécurité communautaire intégrée et calcul CA par voyageur.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/carnet-voyageurs">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#004C3F">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(64px,8vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+
+    /* Typo */
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .sub{font-size:clamp(15px,1.4vw,17px);line-height:1.75;color:rgba(255,255,255,.55);margin:0 0 32px;max-width:560px}
+    .sub.dk{color:var(--tm)}
+
+    /* Buttons */
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;font-family:'Outfit',sans-serif}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
+    .btn-p:active{transform:translateY(0)}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:background .2s cubic-bezier(.4,0,.2,1),color .2s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;font-family:'Outfit',sans-serif}
+    .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
+
+    /* Hero */
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,110px) 0 clamp(56px,7vw,80px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px);position:relative}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:28px}
+    .hero-brd a{color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff}
+    .hero-brd span{font-size:11px}
+
+    /* Pain points (above-fold) */
+    .pain-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+    .pain{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 18px 16px}
+    .pain-h{font-family:'Fraunces',serif;color:#fff;font-size:15px;font-weight:400;margin:0 0 6px}
+    .pain-p{font-size:13px;color:rgba(255,255,255,.55);margin:0;line-height:1.6}
+    .pain-cross{color:rgba(255,180,180,.85);font-weight:600;margin-right:6px}
+    @media(max-width:768px){.pain-row{grid-template-columns:1fr;gap:10px}}
+
+    /* Steps */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;position:relative}
+    .steps::before{content:"";position:absolute;top:28px;left:calc(16.66% + 20px);right:calc(16.66% + 20px);height:1px;background:linear-gradient(90deg,rgba(0,76,63,.15),rgba(0,76,63,.08));z-index:0}
+    .step{background:#fff;border:1px solid rgba(0,76,63,.09);border-radius:16px;padding:28px 24px;position:relative;z-index:1}
+    .step-n{width:40px;height:40px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#fff;margin-bottom:20px;font-family:'Fraunces',serif;flex-shrink:0}
+    .step h3{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:400;color:var(--td);margin:0 0 8px}
+    .step p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+
+    /* Voyageur card mock */
+    .voyageur-card{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 14px 40px rgba(0,76,63,.08)}
+    .voy-head{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px solid rgba(0,76,63,.07)}
+    .voy-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,rgba(0,76,63,.12),rgba(0,76,63,.04));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Fraunces',serif;font-size:18px;color:var(--g);font-weight:600}
+    .voy-name{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--td);font-weight:600}
+    .voy-meta{font-size:12px;color:var(--tl);margin-top:2px}
+    .voy-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13.5px}
+    .voy-label{color:var(--tl);font-weight:500}
+    .voy-val{font-weight:600;color:var(--td)}
+    .voy-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,213,107,.13);border:1px solid rgba(255,213,107,.3);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:600;color:#a47900}
+    .voy-tag-vip{background:rgba(0,76,63,.08);border-color:rgba(0,76,63,.2);color:var(--g)}
+
+    /* Cards */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:36px}
+    .card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:26px;transition:box-shadow .2s,transform .2s}
+    .card:hover{box-shadow:0 6px 24px rgba(0,76,63,.09);transform:translateY(-2px)}
+    .card-ic{width:44px;height:44px;border-radius:11px;background:rgba(0,76,63,.08);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:22px;margin-bottom:16px}
+    .card h3{font-family:'Fraunces',serif;font-size:1.05rem;margin:0 0 8px;font-weight:400;color:var(--td)}
+    .card p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
+
+    /* Comparison table */
+    .cmp{margin-top:36px;border:1px solid rgba(0,76,63,.1);border-radius:16px;overflow:hidden;background:#fff}
+    .cmp-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;align-items:center}
+    .cmp-row.head{background:rgba(0,76,63,.05);font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--g)}
+    .cmp-row.head>div{padding:14px 16px}
+    .cmp-row.head>div:nth-child(2),.cmp-row.head>div:nth-child(3),.cmp-row.head>div:nth-child(4){text-align:center}
+    .cmp-row:not(.head){border-top:1px solid rgba(0,76,63,.06)}
+    .cmp-row:not(.head)>div{padding:14px 16px;font-size:14px}
+    .cmp-row:not(.head)>div:first-child{font-weight:500;color:var(--td)}
+    .cmp-row:not(.head)>div:nth-child(2),.cmp-row:not(.head)>div:nth-child(3),.cmp-row:not(.head)>div:nth-child(4){text-align:center;color:var(--tm)}
+    .cmp-yes{color:var(--g);font-weight:600;font-size:18px}
+    .cmp-no{color:#d97171;font-size:16px;font-weight:400}
+    .cmp-row.jm>div:nth-child(4){background:rgba(255,213,107,.08)}
+    @media(max-width:768px){.cmp-row{grid-template-columns:1fr;border-bottom:1px solid rgba(0,76,63,.07)}.cmp-row:not(.head)>div{padding:8px 16px;text-align:left!important;border:none}.cmp-row:not(.head)>div:first-child{padding-top:14px;font-weight:600}.cmp-row:not(.head)>div:nth-child(2)::before{content:"Airbnb : ";color:var(--tl);font-weight:500}.cmp-row:not(.head)>div:nth-child(3)::before{content:"Booking : ";color:var(--tl);font-weight:500}.cmp-row:not(.head)>div:nth-child(4)::before{content:"Carnet Jason : ";color:var(--g);font-weight:600}.cmp-row.head{display:none}}
+
+    /* FAQ */
+    .faq{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+    .faq-item{border:1px solid rgba(0,76,63,.1);border-radius:12px;overflow:hidden}
+    .faq-q{padding:17px 20px;font-weight:600;font-size:14.5px;color:var(--td);cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:#fff;user-select:none}
+    .faq-q:hover{background:rgba(0,76,63,.02)}
+    .faq-a{padding:0 20px 16px;font-size:14px;line-height:1.75;color:var(--tm);display:none}
+    .faq-item.open .faq-a{display:block} .faq-item.open .faq-ic{transform:rotate(180deg)}
+    .faq-ic{transition:transform .2s;color:var(--tl);font-size:13px}
+
+    /* Two col */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}.steps{grid-template-columns:1fr}.steps::before{display:none}}
+    @media(max-width:560px){.cards{grid-template-columns:1fr}}
+
+    /* CTA ban */
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,52px);text-align:center}
+
+    /* Stats strip */
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:42px;padding:32px 0;border-top:1px solid rgba(0,76,63,.1);border-bottom:1px solid rgba(0,76,63,.1)}
+    .stat{text-align:center}
+    .stat-n{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3vw,2.4rem);color:var(--g);font-weight:400;letter-spacing:-.02em}
+    .stat-n em{font-style:italic;color:var(--g)}
+    .stat-l{font-size:12.5px;color:var(--tm);margin-top:6px;line-height:1.5}
+    @media(max-width:560px){.stats{grid-template-columns:1fr;gap:18px}}
+
+    /* Use case blocks */
+    .uses{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:36px}
+    .use{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:28px}
+    .use-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(0,76,63,.08);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--g);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+    .use h3{font-family:'Fraunces',serif;font-size:1.15rem;margin:0 0 10px;color:var(--td);font-weight:400}
+    .use p{font-size:14.5px;line-height:1.75;color:var(--tm);margin:0 0 14px}
+    .use-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+    .use-list li{font-size:14px;color:var(--tm);padding-left:24px;position:relative;line-height:1.6}
+    .use-list li::before{content:"→";position:absolute;left:0;color:var(--g);font-weight:600}
+    @media(max-width:768px){.uses{grid-template-columns:1fr}}
+  </style>
+<!-- JSONLD-AUTO:START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Carnet voyageurs LCD",
+  "url": "https://jasonmarinho.com/services/carnet-voyageurs",
+  "description": "CRM intégré pour hôtes Airbnb / Booking : base voyageurs avec fiches détaillées, historique des séjours, calcul du chiffre d'affaires par voyageur, tags personnalisés et signalements communautaires.",
+  "inLanguage": "fr-FR",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Jason Marinho",
+    "url": "https://jasonmarinho.com"
+  },
+  "provider": {
+    "@type": "Person",
+    "name": "Jason Marinho",
+    "url": "https://jasonmarinho.com"
+  },
+  "serviceType": "Outil LCD gratuit",
+  "areaServed": "France"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://jasonmarinho.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://jasonmarinho.com/services" },
+    { "@type": "ListItem", "position": 3, "name": "Carnet voyageurs", "item": "https://jasonmarinho.com/services/carnet-voyageurs" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Pourquoi tenir un carnet voyageurs alors qu'Airbnb a déjà mes réservations ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Airbnb et Booking ne te transmettent jamais l'email réel ni le téléphone direct du voyageur. Le jour où tu veux relancer un ancien client pour qu'il revienne en direct (sans commission), tu n'as plus de contact. Le carnet voyageurs te permet de garder une trace complète de chaque personne accueillie : prénom, nom, email récupéré au check-in, téléphone, historique. Tes données restent les tiennes, pas celles de la plateforme."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelles informations puis-je stocker dans le carnet ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Prénom, nom (obligatoires), email, téléphone, nationalité, notes privées, tags personnalisés (VIP, professionnel, repeat, problématique…). Pour chaque voyageur, l'app calcule automatiquement le nombre de séjours, le montant total dépensé chez toi et la date du dernier séjour. Tu peux aussi lier les pièces d'identité (CNI, passeport) et les incidents éventuels par séjour."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment le carnet aide-t-il pour la réservation directe ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Un voyageur qui revient une seconde fois te connaît déjà : il a confiance, il ne va pas saboter ta note. C'est le candidat idéal pour la réservation directe. Avec le carnet, tu identifies en un clic tes voyageurs récurrents (filtre 'Plus de séjours'), tu vois leur CA cumulé, et tu peux les relancer par email ou SMS pour leur proposer un tarif préférentiel sans passer par Airbnb. Économie : 14 à 22% de commission OTA en moins."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le carnet est-il connecté à la base de signalements communautaire ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Quand tu ajoutes un nouveau voyageur, l'app vérifie automatiquement si son email ou son téléphone a déjà été signalé par un autre hôte de la communauté Jason Marinho. Tu reçois une alerte immédiate. C'est la même base que /services/securite mais croisée en temps réel avec tes saisies."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Est-ce conforme RGPD ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Le carnet est strictement privé : seul ton compte y a accès. Les données sont hébergées en Europe (Supabase eu-west-2, Londres). Tu peux exporter ou supprimer un voyageur à tout moment depuis sa fiche. Le voyageur peut exercer son droit d'accès et de suppression en te contactant directement, conformément au RGPD."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Combien coûte le carnet voyageurs ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Gratuit dans le plan Découverte, sans limite de nombre de voyageurs. Inclus dans tous les plans payants. Aucun engagement, aucune carte bancaire demandée pour démarrer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Puis-je importer un fichier voyageurs existant ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pas encore d'import CSV en un clic, mais la saisie unitaire est rapide (prénom, nom, email, téléphone, c'est tout pour démarrer). En 30 minutes, tu peux remonter 6 mois d'historique. Pour les hôtes avec 100+ voyageurs, contacte Jason via le formulaire de contact pour un import assisté."
+      }
+    }
+  ]
+}
+</script>
+<!-- JSONLD-AUTO:END -->
+<script defer src="/nav.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":1600,"height":1600},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
+</script>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brd">
+      <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><span>Carnet voyageurs</span>
+    </div>
+    <div class="lbl">Ton CRM hôte intégré</div>
+    <h1 class="h1">Ton carnet voyageurs,<br><em>ton vrai capital</em></h1>
+    <p class="sub">Airbnb et Booking gardent tes contacts. Toi, tu n'as rien. Le carnet voyageurs t'aide à reprendre la main : tu stockes, tu retrouves, tu relances. C'est ton actif long-terme pour transformer un séjour OTA en relation directe sans commission.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Ouvrir mon carnet <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="#fonctionnement" class="btn-ol">Voir comment ça marche</a>
+    </div>
+
+    <!-- Pain points sous le hero -->
+    <div class="pain-row">
+      <div class="pain">
+        <h3 class="pain-h"><span class="pain-cross">✕</span>Sans carnet</h3>
+        <p class="pain-p">Tu cherches dans tes emails Airbnb à chaque retour client. L'email n'est même pas le vrai. Tu perds 80% de tes contacts.</p>
+      </div>
+      <div class="pain">
+        <h3 class="pain-h"><span class="pain-cross">✕</span>Avec un Google Sheet</h3>
+        <p class="pain-p">Tu saisis à la main, tu oublies des colonnes, pas d'alerte sécurité, pas de calcul CA. Plus tu accueilles, plus c'est ingérable.</p>
+      </div>
+      <div class="pain">
+        <h3 class="pain-h" style="color:var(--y)"><i class="ph-bold ph-check" style="margin-right:6px"></i>Avec le carnet Jason</h3>
+        <p class="pain-p">Fiche par voyageur, historique consolidé, sécurité communauté en check automatique, filtres et exports. Tout en un.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="sec" id="fonctionnement">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Fonctionnement</div>
+      <h2 class="h2">3 étapes, <em>30 secondes par voyageur</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:560px;line-height:1.7">Un workflow pensé pour les hôtes pressés. Saisie minimale, enrichissement progressif au fil des séjours.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>Tu reçois la réservation</h3>
+        <p>Demande Airbnb, Booking ou directe. Au check-in, tu collectes les vraies coordonnées (souvent un email Gmail derrière l'alias Airbnb @airbnb.com).</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>Tu crées sa fiche</h3>
+        <p>Prénom, nom, email, téléphone. 4 champs, 30 secondes. L'app vérifie en arrière-plan si le contact a déjà été signalé par la communauté.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>Tu relies les séjours</h3>
+        <p>Chaque séjour passé ou futur se rattache automatiquement à la fiche. CA cumulé, dernière visite, fréquence : tout est calculé en temps réel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOCK FICHE + DESCRIPTION -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Une fiche par voyageur</div>
+        <h2 class="h2">Tout ce qu'il faut, <em>rien de superflu</em></h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 18px">Chaque fiche regroupe les infos qui te servent vraiment : identifier, contacter, qualifier, contractualiser. Pas de champs CRM corporatif qui finissent vides.</p>
+        <ul class="use-list" style="margin-top:18px">
+          <li><strong>Identité &amp; contact</strong> · prénom, nom, email, téléphone, nationalité</li>
+          <li><strong>Historique séjours</strong> · dates, logement, montant, statut paiement</li>
+          <li><strong>CA cumulé</strong> · auto-calculé sur tous les séjours liés</li>
+          <li><strong>Tags &amp; notes</strong> · VIP, repeat, professionnel, à éviter… libres</li>
+          <li><strong>Incidents</strong> · une fiche par séjour si quelque chose s'est passé</li>
+          <li><strong>Contrats</strong> · si tu utilises le générateur de contrat de location</li>
+          <li><strong>Pièce d'identité</strong> · stockage sécurisé conforme RGPD</li>
+        </ul>
+      </div>
+      <div>
+        <!-- Mock fiche voyageur -->
+        <div style="background:rgba(0,76,63,.03);border:1px solid rgba(0,76,63,.08);border-radius:14px;padding:20px;margin-bottom:12px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-bottom:16px">Exemple de fiche</div>
+          <div class="voyageur-card">
+            <div class="voy-head">
+              <div class="voy-avatar">MD</div>
+              <div style="flex:1">
+                <div class="voy-name">Marie Dubois</div>
+                <div class="voy-meta">Inscrite en mars 2025 · Nationalité française</div>
+              </div>
+              <span class="voy-tag voy-tag-vip">VIP</span>
+            </div>
+            <div class="voy-row"><span class="voy-label">Séjours réalisés</span><span class="voy-val">4 séjours</span></div>
+            <div class="voy-row"><span class="voy-label">CA total</span><span class="voy-val" style="color:var(--g);font-family:'Fraunces',serif">1 840 €</span></div>
+            <div class="voy-row"><span class="voy-label">Dernier séjour</span><span class="voy-val">15 mai 2026</span></div>
+            <div class="voy-row"><span class="voy-label">Email vérifié</span><span class="voy-val" style="font-weight:500;color:var(--tm);font-size:13px">marie.dubois@gmail.com</span></div>
+            <div class="voy-row"><span class="voy-label">Téléphone</span><span class="voy-val" style="font-weight:500;color:var(--tm);font-size:13px">+33 6 12 ··· ···</span></div>
+            <div class="voy-row" style="border:none;padding-top:8px"><span class="voy-label">Statut sécurité</span><span class="voy-tag" style="background:rgba(0,200,100,.1);border-color:rgba(0,200,100,.25);color:#1e9d54">✓ Aucun signalement</span></div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:0">Illustration. Tes vraies fiches sont dans l'espace membres.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARATIF VS AIRBNB / BOOKING -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Comparatif</div>
+      <h2 class="h2">Ce que les plateformes <em>ne te donnent pas</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:560px;line-height:1.7">Les inbox Airbnb et Booking gardent le contact masqué. Le carnet Jason est ton coffre-fort externe.</p>
+    </div>
+    <div class="cmp">
+      <div class="cmp-row head">
+        <div>Fonctionnalité</div>
+        <div>Airbnb</div>
+        <div>Booking</div>
+        <div>Carnet Jason</div>
+      </div>
+      <div class="cmp-row jm">
+        <div>Email réel du voyageur</div>
+        <div><span class="cmp-no">✕</span> Alias @airbnb.com</div>
+        <div><span class="cmp-no">✕</span> Masqué</div>
+        <div><span class="cmp-yes">✓</span></div>
+      </div>
+      <div class="cmp-row jm">
+        <div>Numéro de téléphone direct</div>
+        <div><span class="cmp-no">✕</span> Caché</div>
+        <div><span class="cmp-no">✕</span> Caché</div>
+        <div><span class="cmp-yes">✓</span></div>
+      </div>
+      <div class="cmp-row jm">
+        <div>Historique multi-séjours consolidé</div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-yes">✓</span></div>
+      </div>
+      <div class="cmp-row jm">
+        <div>CA cumulé par voyageur</div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-yes">✓</span></div>
+      </div>
+      <div class="cmp-row jm">
+        <div>Tags &amp; notes personnalisés</div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-yes">✓</span></div>
+      </div>
+      <div class="cmp-row jm">
+        <div>Signalements croisés communauté</div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-yes">✓</span></div>
+      </div>
+      <div class="cmp-row jm">
+        <div>Relance directe sans commission</div>
+        <div><span class="cmp-no">✕</span> Interdit</div>
+        <div><span class="cmp-no">✕</span> Interdit</div>
+        <div><span class="cmp-yes">✓</span></div>
+      </div>
+      <div class="cmp-row jm">
+        <div>Récupération si le compte plateforme ferme</div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-no">✕</span></div>
+        <div><span class="cmp-yes">✓</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAS D'USAGE -->
+<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="lbl dk">Cas d'usage concrets</div>
+      <h2 class="h2">Ce que tu en fais <em>vraiment</em></h2>
+    </div>
+    <div class="uses">
+      <div class="use">
+        <span class="use-tag">Repeat business</span>
+        <h3>Relancer les voyageurs récurrents</h3>
+        <p>Un voyageur revenu 2 fois est un actif. Tu filtres ton carnet sur "≥2 séjours", tu sors la liste, tu envoies un email automatique avec un code direct -10%.</p>
+        <ul class="use-list">
+          <li>Filtre intégré "Plus de séjours"</li>
+          <li>Email/SMS hors plateforme = pas de commission</li>
+          <li>14 à 22% d'économie sur chaque rebooking</li>
+        </ul>
+      </div>
+      <div class="use">
+        <span class="use-tag">Sécurité</span>
+        <h3>Bloquer un voyageur problématique</h3>
+        <p>Un voyageur t'a saccagé un séjour. Tu le tagges "à éviter", tu signales à la communauté. Si demain il essaie une autre demande sous un autre nom mais avec le même email, alerte.</p>
+        <ul class="use-list">
+          <li>Tags personnalisés sans limite</li>
+          <li>Cross-check email/téléphone à chaque ajout</li>
+          <li>Alerte instantanée à l'écriture de la fiche</li>
+        </ul>
+      </div>
+      <div class="use">
+        <span class="use-tag">Fiscalité</span>
+        <h3>Justifier ton chiffre d'affaires</h3>
+        <p>Contrôle fiscal ? Tu sors la liste de tous les voyageurs avec le détail des montants, dates, logements. Plus besoin de fouiller 12 mois d'emails Airbnb.</p>
+        <ul class="use-list">
+          <li>Export prêt pour ton comptable</li>
+          <li>Croisé avec /services/revenus</li>
+          <li>Conforme déclaration micro-BIC / LMNP</li>
+        </ul>
+      </div>
+      <div class="use">
+        <span class="use-tag">Conformité</span>
+        <h3>Fiche police / mairie</h3>
+        <p>Certaines villes exigent une fiche de déclaration des voyageurs étrangers. Le carnet stocke nationalité + pièce d'identité, tu sors la fiche en deux clics.</p>
+        <ul class="use-list">
+          <li>Champ "nationalité" structuré</li>
+          <li>Pièce d'identité chiffrée côté serveur</li>
+          <li>RGPD-compliant, hébergé en UE</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="sec">
+  <div class="s-in">
+    <div style="text-align:center;max-width:680px;margin:0 auto">
+      <div class="lbl dk">L'enjeu, en chiffres</div>
+      <h2 class="h2">Ce que vaut un <em>carnet bien tenu</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:10px 0 0;line-height:1.7">Données issues des études marché LCD et des retours d'hôtes utilisant la plateforme.</p>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-n">~<em>17%</em></div>
+        <div class="stat-l">de commission Airbnb moyenne hôte + voyageur que tu économises sur une réservation directe</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n"><em>30%</em></div>
+        <div class="stat-l">des voyageurs reviennent au moins une fois s'ils ont eu un super séjour et qu'ils sont relancés</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n"><em>x4</em></div>
+        <div class="stat-l">le coût d'acquisition d'un nouveau voyageur vs la relance d'un ancien</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec cr">
+  <div class="s-in">
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Questions fréquentes</div>
+        <h2 class="h2">Ce que tu <em>veux savoir</em></h2>
+        <p style="font-size:15px;line-height:1.75;color:var(--tm);margin:0 0 12px">Une question pas listée ? <a href="/contact" style="color:var(--g);font-weight:600;text-decoration:none;border-bottom:1px solid var(--g)">Pose-la directement à Jason</a>.</p>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q">Pourquoi tenir un carnet voyageurs alors qu'Airbnb a déjà mes réservations ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Airbnb et Booking ne te transmettent jamais l'email réel ni le téléphone direct du voyageur. Le jour où tu veux relancer un ancien client pour qu'il revienne en direct (sans commission), tu n'as plus de contact. Le carnet voyageurs te permet de garder une trace complète de chaque personne accueillie : prénom, nom, email récupéré au check-in, téléphone, historique. Tes données restent les tiennes, pas celles de la plateforme.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Quelles informations puis-je stocker dans le carnet ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Prénom, nom (obligatoires), email, téléphone, nationalité, notes privées, tags personnalisés (VIP, professionnel, repeat, problématique…). Pour chaque voyageur, l'app calcule automatiquement le nombre de séjours, le montant total dépensé chez toi et la date du dernier séjour. Tu peux aussi lier les pièces d'identité (CNI, passeport) et les incidents éventuels par séjour.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Comment le carnet aide-t-il pour la réservation directe ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Un voyageur qui revient une seconde fois te connaît déjà : il a confiance, il ne va pas saboter ta note. C'est le candidat idéal pour la réservation directe. Avec le carnet, tu identifies en un clic tes voyageurs récurrents (filtre "Plus de séjours"), tu vois leur CA cumulé, et tu peux les relancer par email ou SMS pour leur proposer un tarif préférentiel sans passer par Airbnb. Économie : 14 à 22% de commission OTA en moins. Voir aussi <a href="/services/acquisition-voyageurs">la formation acquisition</a>.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Le carnet est-il connecté à la base de signalements communautaire ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. Quand tu ajoutes un nouveau voyageur, l'app vérifie automatiquement si son email ou son téléphone a déjà été signalé par un autre hôte de la communauté Jason Marinho. Tu reçois une alerte immédiate. C'est la même base que <a href="/services/securite">/services/securite</a> mais croisée en temps réel avec tes saisies.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Est-ce conforme RGPD ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Oui. Le carnet est strictement privé : seul ton compte y a accès. Les données sont hébergées en Europe (Supabase eu-west-2, Londres). Tu peux exporter ou supprimer un voyageur à tout moment depuis sa fiche. Le voyageur peut exercer son droit d'accès et de suppression en te contactant directement, conformément au RGPD.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Combien coûte le carnet voyageurs ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Gratuit dans le plan Découverte, sans limite de nombre de voyageurs. Inclus dans tous les plans payants. Aucun engagement, aucune carte bancaire demandée pour démarrer. Voir <a href="/tarifs">les tarifs</a>.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Puis-je importer un fichier voyageurs existant ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Pas encore d'import CSV en un clic, mais la saisie unitaire est rapide (prénom, nom, email, téléphone, c'est tout pour démarrer). En 30 minutes, tu peux remonter 6 mois d'historique. Pour les hôtes avec 100+ voyageurs, contacte Jason via <a href="/contact">le formulaire de contact</a> pour un import assisté.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED -->
+<section class="sec rel-sec">
+  <style>
+    .rel-sec .rel-head{text-align:center;margin-bottom:36px}
+    .rel-sec .rel-head .lbl{color:var(--g)}
+    .rel-sec .rel-head .h2{color:var(--td)}
+    .rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto}
+    .rel-card{display:flex;flex-direction:column;gap:12px;background:var(--w);border:1px solid rgba(0,76,63,.1);border-radius:14px;padding:22px;text-decoration:none;color:inherit;transition:transform .22s,box-shadow .22s,border-color .22s}
+    .rel-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
+    .rel-ico{width:42px;height:42px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .rel-ico i{font-size:22px;color:var(--g);line-height:1}
+    .rel-card:hover .rel-ico{background:var(--g)}
+    .rel-card:hover .rel-ico i{color:var(--y)}
+    .rel-body{display:flex;flex-direction:column;gap:6px;flex:1}
+    .rel-kind{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g)}
+    .rel-title{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.2px}
+    .rel-desc{font-size:13px;font-weight:300;color:var(--tm);line-height:1.55;flex:1}
+    .rel-cta{font-size:13px;font-weight:600;color:var(--g);display:flex;align-items:center;gap:6px;margin-top:4px}
+    .rel-cta i{font-size:12px}
+    @media(max-width:900px){.rel-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.rel-grid{grid-template-columns:1fr}}
+  </style>
+  <div class="s-in">
+    <div class="rel-head">
+      <div class="lbl dk">Pour aller plus loin</div>
+      <h2 class="h2">Le carnet s'intègre avec <em>tes autres outils</em></h2>
+    </div>
+    <div class="rel-grid">
+      <a href="/services/securite" class="rel-card">
+        <div class="rel-ico"><i class="ph ph-shield-check"></i></div>
+        <div class="rel-body">
+          <div class="rel-kind">Outil</div>
+          <div class="rel-title">Vérification voyageurs</div>
+          <div class="rel-desc">La base communauté de signalements croisée automatiquement avec tes nouvelles fiches.</div>
+          <div class="rel-cta">Découvrir <i class="ph-bold ph-arrow-right"></i></div>
+        </div>
+      </a>
+      <a href="/services/acquisition-voyageurs" class="rel-card">
+        <div class="rel-ico"><i class="ph ph-megaphone"></i></div>
+        <div class="rel-body">
+          <div class="rel-kind">Formation</div>
+          <div class="rel-title">Acquisition voyageurs</div>
+          <div class="rel-desc">Comment convertir tes anciens contacts du carnet en réservations directes sans commission.</div>
+          <div class="rel-cta">Découvrir <i class="ph-bold ph-arrow-right"></i></div>
+        </div>
+      </a>
+      <a href="/services/revenus" class="rel-card">
+        <div class="rel-ico"><i class="ph ph-chart-line"></i></div>
+        <div class="rel-body">
+          <div class="rel-kind">Outil</div>
+          <div class="rel-title">Suivi des revenus</div>
+          <div class="rel-desc">Le CA par voyageur du carnet alimente automatiquement tes tableaux de bord et tes exports comptables.</div>
+          <div class="rel-cta">Découvrir <i class="ph-bold ph-arrow-right"></i></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="sec dk">
+  <div class="s-in">
+    <div class="cta-ban">
+      <div class="lbl">Ouvre ton carnet</div>
+      <h2 class="h2 lt" style="max-width:520px;margin:0 auto 14px">Reprends la main sur<br><em>tes voyageurs</em></h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.5);margin:0 0 28px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7">Compte gratuit. Pas de carte bancaire. Carnet voyageurs sans limite inclus dans le plan Découverte.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/tarifs" class="btn-ol">Voir les tarifs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script defer src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+<script>
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){q.closest('.faq-item').classList.toggle('open');});
+});
+</script>
+</body>
+</html>
