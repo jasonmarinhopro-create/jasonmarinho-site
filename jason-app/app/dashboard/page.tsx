@@ -9,11 +9,8 @@ import {
 import EtatDesLieux from './EtatDesLieux'
 import ChezNousWidget from './ChezNousWidget'
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
-import ConseilDuMoment from './ConseilDuMoment'
 import MesPlateformesWidget from './MesPlateformesWidget'
 import OnboardingTour from './OnboardingTour'
-import { selectConseils } from '@/lib/lcd/conseil-du-moment'
-import { getDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 import type { CategoryId } from '@/lib/chez-nous/categories'
@@ -55,6 +52,7 @@ export default async function DashboardPage() {
   const profile  = await getProfile()
   const supabase = await createClient()
   const userId   = profile?.userId ?? ''
+  const completedSteps = profile?.onboarding_completed_steps ?? []
   const now      = new Date()
   const today    = todayStr()
   const in7      = addDays(today, 7)
@@ -264,9 +262,6 @@ export default async function DashboardPage() {
     : null
 
   // ── Chez Nous : authors fetchés à part (dépendent des author_ids des posts).
-  // On défère cette query — elle s'exécute en parallèle avec
-  // getDashboardPrefill plus bas via Promise.all pour éviter de bloquer
-  // sur 2 RTT sériels.
   const cnAuthorIds = Array.from(new Set((cnPosts ?? []).map(p => p.author_id)))
   const cnAuthorsPromise = cnAuthorIds.length
     ? supabase.from('profiles').select('id, full_name, pseudo').in('id', cnAuthorIds)
@@ -507,45 +502,11 @@ export default async function DashboardPage() {
   const hasObjectif = !!objectifData
   const hasFormationStarted = totalLessonsDone > 0
 
-  // ─── Conseil du moment : règle contextuelle prioritaire ─────────────
-  // CA 12 mois glissants via cache partagé (déjà touché par /simulateurs
-  // et /calculateurs : 60 s TTL, peut être déjà en cache)
-  // Try/catch défensif : si getDashboardPrefill jette (cache stale, schéma
-  // changé, etc.), on ne crashe pas la page entière — on perd juste l'info
-  // contextuelle du conseil.
-  //
-  // PARALLÉLISÉ avec cnAuthorsPromise : les deux requêtes s'exécutent en
-  // même temps. Avant, on avait : Promise.allSettled → cnAuthors RTT →
-  // getDashboardPrefill RTT. Maintenant : Promise.allSettled → 1 seul RTT
-  // pour les 2 dépendances post-batch.
-  let prefillForConseil: Awaited<ReturnType<typeof getDashboardPrefill>> = []
-  const [prefillResult, cnAuthorsResult] = await Promise.allSettled([
-    getDashboardPrefill(userId),
-    cnAuthorsPromise,
-  ])
-  if (prefillResult.status === 'fulfilled') {
-    prefillForConseil = prefillResult.value
-  } else {
-    console.error('[DashboardPage] getDashboardPrefill failed', prefillResult.reason)
-  }
+  // ── Auteurs Chez Nous (await la promesse déférée plus haut)
+  const cnAuthorsResult = await cnAuthorsPromise
   const cnAuthors: Record<string, { full_name: string | null; pseudo: string | null }> = {}
-  if (cnAuthorsResult.status === 'fulfilled') {
-    ;(cnAuthorsResult.value.data ?? []).forEach(a => {
-      cnAuthors[a.id] = { full_name: a.full_name, pseudo: a.pseudo }
-    })
-  }
-  const caTotal12mForConseil = prefillForConseil.reduce(
-    (sum, l) => sum + (l.stats?.revenuTotal ?? 0), 0
-  )
-  const conseils = selectConseils({
-    hasLogement,
-    hasContract,
-    hasObjectif,
-    hasFormationStarted,
-    caTotal12m: caTotal12mForConseil,
-    monthIndex: now.getMonth(),
-    daysSinceLastContract: null,
-    upcomingArrivalsCount: weekArrivals.length,
+  ;(cnAuthorsResult.data ?? []).forEach(a => {
+    cnAuthors[a.id] = { full_name: a.full_name, pseudo: a.pseudo }
   })
   const setupSteps: SetupStep[] = [
     {
@@ -582,14 +543,18 @@ export default async function DashboardPage() {
     <>
       <div style={s.page} className="dash-page">
 
-        {/* ── Visite guidée : 1ère visite uniquement (localStorage) ───── */}
-        <OnboardingTour userId={userId} />
+        {/* ── Visite guidée : 1ère visite uniquement (DB + localStorage) */}
+        <OnboardingTour
+          userId={userId}
+          initiallyDone={completedSteps.includes('tour:home')}
+        />
 
         {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
-        <SetupChecklist userId={userId} steps={setupSteps} />
-
-        {/* ── Conseil du moment : 1 règle contextuelle prioritaire ────── */}
-        <ConseilDuMoment conseils={conseils} />
+        <SetupChecklist
+          userId={userId}
+          steps={setupSteps}
+          initiallyDismissed={completedSteps.includes('setup:dismissed')}
+        />
 
         {/* ── Mes plateformes : accès rapide aux inbox (Airbnb, Booking…) */}
         <MesPlateformesWidget

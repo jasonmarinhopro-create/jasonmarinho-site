@@ -95,7 +95,12 @@ export default async function RevenusPage() {
 
   return (
     <>
-      <OnboardingTour userId={profile?.userId ?? ''} steps={REVENUS_STEPS} storageScope="revenus" />
+      <OnboardingTour
+        userId={profile?.userId ?? ''}
+        steps={REVENUS_STEPS}
+        storageScope="revenus"
+        initiallyDone={(profile?.onboarding_completed_steps ?? []).includes('tour:revenus')}
+      />
       <RevenusView
         contracts={contracts ?? []}
         initialEntries={[...(entries ?? []), ...sejourEntries]}

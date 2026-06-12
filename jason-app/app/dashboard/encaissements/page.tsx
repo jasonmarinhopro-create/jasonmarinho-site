@@ -42,7 +42,12 @@ export default async function EncaissementsPage() {
 
   return (
     <>
-      <OnboardingTour userId={profile.userId} steps={ENCAISSEMENTS_STEPS} storageScope="encaissements" />
+      <OnboardingTour
+        userId={profile.userId}
+        steps={ENCAISSEMENTS_STEPS}
+        storageScope="encaissements"
+        initiallyDone={profile.onboarding_completed_steps.includes('tour:encaissements')}
+      />
       <EncaissementsView
         summary={stripeSummary}
         impayes={impayes}

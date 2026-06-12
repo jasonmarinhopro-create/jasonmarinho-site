@@ -31,7 +31,12 @@ export default async function CalculateursPage() {
 
   return (
     <>
-      <OnboardingTour userId={profile.userId} steps={CALCULATEURS_STEPS} storageScope="calculateurs" />
+      <OnboardingTour
+        userId={profile.userId}
+        steps={CALCULATEURS_STEPS}
+        storageScope="calculateurs"
+        initiallyDone={profile.onboarding_completed_steps.includes('tour:calculateurs')}
+      />
       <CalculateursUI logementsPrefill={prefill} accountStats={accountStats} />
     </>
   )

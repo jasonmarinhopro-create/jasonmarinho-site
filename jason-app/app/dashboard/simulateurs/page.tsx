@@ -34,7 +34,12 @@ export default async function SimulateursPage() {
 
   return (
     <>
-      <OnboardingTour userId={profile.userId} steps={SIMULATEURS_STEPS} storageScope="simulateurs" />
+      <OnboardingTour
+        userId={profile.userId}
+        steps={SIMULATEURS_STEPS}
+        storageScope="simulateurs"
+        initiallyDone={profile.onboarding_completed_steps.includes('tour:simulateurs')}
+      />
       <SimulateursUI logementsPrefill={prefill} accountStats={accountStats} />
     </>
   )
