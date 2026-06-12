@@ -263,7 +263,7 @@
       /* ── Bloc Explorer : 3 onglets, tous les liens en HTML ── */
       + '<div class="ft-explore">'
         + '<div class="ft-explore-head">'
-          + '<h3 class="ft-explore-h"><i class="ph ph-compass"></i>Explorer par <em>ville & comparatif</em></h3>'
+          + '<h3 class="ft-explore-h"><i class="ph ph-compass"></i><span class="ft-explore-h-text">Explorer par <em>ville</em></span></h3>'
           + '<div class="ft-explore-tabs" role="tablist">'
             + '<button class="ft-tab on" data-panel="revenus" role="tab" aria-selected="true">Études de revenus</button>'
             + '<button class="ft-tab" data-panel="hote" role="tab" aria-selected="false">Devenir hôte</button>'
@@ -335,6 +335,11 @@
 
   // ── Onglets footer "Explorer" (visuel seulement, liens déjà en HTML) ─────
   // Délégation pour fonctionner même si footer injecté plus tard.
+  var HEADING_BY_PANEL = {
+    revenus: 'Explorer par <em>ville</em>',
+    hote:    'Explorer par <em>ville</em>',
+    outils:  'Explorer les <em>outils</em>'
+  };
   document.addEventListener('click', function (e) {
     var tab = e.target.closest && e.target.closest('.ft-tab');
     if (!tab) return;
@@ -348,6 +353,12 @@
     }
     for (var p = 0; p < panels.length; p++) {
       panels[p].classList.toggle('on', panels[p].getAttribute('data-panel') === panelName);
+    }
+    // Titre dynamique : reflète l'onglet actif pour rendre le switch
+    // plus parlant ("Explorer par ville" vs "Explorer les outils").
+    var hText = document.querySelector('.ft-explore-h-text');
+    if (hText && HEADING_BY_PANEL[panelName]) {
+      hText.innerHTML = HEADING_BY_PANEL[panelName];
     }
   });
 }());
