@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { ArrowRight, ArrowLeft, X, Sparkle } from '@phosphor-icons/react/dist/ssr'
+import { markOnboardingStep } from '@/lib/onboarding/actions'
 
 export type TourStep = {
   id: string
@@ -314,11 +315,15 @@ export default function OnboardingTour({
   forceOpen = false,
   steps = DASHBOARD_HOME_STEPS,
   storageScope = 'home',
+  initiallyDone = false,
 }: {
   userId: string
   forceOpen?: boolean
   steps?: TourStep[]
   storageScope?: 'home' | 'simulateurs' | 'logements' | 'calendrier' | 'voyageurs' | 'revenus' | 'encaissements' | 'calculateurs'
+  /** Hydraté depuis profile.onboarding_completed_steps côté serveur : si true,
+   *  le tour a déjà été fait sur un autre appareil → ne pas re-déclencher. */
+  initiallyDone?: boolean
 }) {
   const STEPS = steps
   const [active, setActive] = useState(false)
@@ -328,8 +333,9 @@ export default function OnboardingTour({
   const popoverRef = useRef<HTMLDivElement>(null)
 
   const storageKey = `dash-onboarding-tour-${storageScope}-${userId}`
+  const stepDbKey = `tour:${storageScope}`
 
-  // Démarrage : check si déjà fait OU param URL ?tour=1
+  // Démarrage : check si déjà fait (DB ou localStorage) OU param URL ?tour=1
   useEffect(() => {
     const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
     const urlForce = params?.get('tour') === '1'
@@ -344,6 +350,13 @@ export default function OnboardingTour({
       }
       return
     }
+    // Source de vérité serveur : si la DB dit "fait", on respecte sur tous
+    // les appareils. Évite que les tours réapparaissent à chaque nouveau
+    // login. On rafraîchit le cache localStorage au passage.
+    if (initiallyDone) {
+      try { localStorage.setItem(storageKey, 'done') } catch {}
+      return
+    }
     try {
       if (localStorage.getItem(storageKey) === 'done') return
     } catch {
@@ -352,7 +365,7 @@ export default function OnboardingTour({
     // Donner le temps aux composants de monter avant de chercher les targets
     const t = setTimeout(() => setActive(true), 700)
     return () => clearTimeout(t)
-  }, [storageKey, forceOpen])
+  }, [storageKey, forceOpen, initiallyDone])
 
   // Écoute le CustomEvent dispatché par TourTrigger pour relancer la visite
   // depuis la MÊME page (le param URL seul ne re-déclenche pas le useEffect).
@@ -476,6 +489,11 @@ export default function OnboardingTour({
 
   function finish() {
     try { localStorage.setItem(storageKey, 'done') } catch {}
+    // Sync DB (best-effort, fire-and-forget) pour que le tour ne réapparaisse
+    // pas sur un autre appareil. Si le réseau échoue, le localStorage suffit
+    // pour cet appareil — le tour pourrait re-apparaître ailleurs mais c'est
+    // acceptable comme dégradation.
+    markOnboardingStep(stepDbKey, true).catch(() => {})
     setActive(false)
   }
   function next() {

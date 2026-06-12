@@ -49,7 +49,12 @@ export default async function VoyageursPage() {
 
   return (
     <>
-      <OnboardingTour userId={profile.userId} steps={VOYAGEURS_STEPS} storageScope="voyageurs" />
+      <OnboardingTour
+        userId={profile.userId}
+        steps={VOYAGEURS_STEPS}
+        storageScope="voyageurs"
+        initiallyDone={profile.onboarding_completed_steps.includes('tour:voyageurs')}
+      />
       <VoyageursView voyageurs={list} tableReady={!error} />
     </>
   )

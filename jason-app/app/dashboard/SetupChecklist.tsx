@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { CheckCircle, Circle, ArrowRight, X } from '@phosphor-icons/react/dist/ssr'
+import { markOnboardingStep } from '@/lib/onboarding/actions'
 
 export type SetupStep = {
   key: string
@@ -17,18 +18,28 @@ export type SetupStep = {
 interface Props {
   userId: string
   steps: SetupStep[]
+  /** Hydraté depuis profile.onboarding_completed_steps : si true, l'hôte a
+   *  déjà masqué la checklist sur un autre appareil. */
+  initiallyDismissed?: boolean
 }
 
-export default function SetupChecklist({ userId, steps }: Props) {
-  const [dismissed, setDismissed] = useState(false)
+const DB_KEY = 'setup:dismissed'
+
+export default function SetupChecklist({ userId, steps, initiallyDismissed = false }: Props) {
+  const [dismissed, setDismissed] = useState(initiallyDismissed)
   const storageKey = `dash-setup-dismissed-${userId}`
 
-  // Hydrate dismissed state from localStorage to avoid SSR flash
+  // Hydrate depuis localStorage pour éviter le flash si l'état serveur
+  // n'est pas encore synchronisé (premier dismiss sur cet appareil)
   useEffect(() => {
+    if (initiallyDismissed) {
+      try { localStorage.setItem(storageKey, '1') } catch {}
+      return
+    }
     try {
       if (localStorage.getItem(storageKey) === '1') setDismissed(true)
     } catch {}
-  }, [storageKey])
+  }, [storageKey, initiallyDismissed])
 
   const doneCount = steps.filter(s => s.done).length
   const total = steps.length
@@ -40,6 +51,7 @@ export default function SetupChecklist({ userId, steps }: Props) {
 
   const handleDismiss = () => {
     try { localStorage.setItem(storageKey, '1') } catch {}
+    markOnboardingStep(DB_KEY, true).catch(() => {})
     setDismissed(true)
   }
 

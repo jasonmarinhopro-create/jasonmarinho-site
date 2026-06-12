@@ -255,7 +255,12 @@ export default async function CalendrierPage() {
 
   return (
     <>
-      <OnboardingTour userId={userId} steps={CALENDRIER_STEPS} storageScope="calendrier" />
+      <OnboardingTour
+        userId={userId}
+        steps={CALENDRIER_STEPS}
+        storageScope="calendrier"
+        initiallyDone={(profile?.onboarding_completed_steps ?? []).includes('tour:calendrier')}
+      />
       <CalendrierView
         events={events ?? []}
         contractEvents={contractEvents}

@@ -15,7 +15,12 @@ export default async function LogementsServerPage() {
 
   return (
     <>
-      <OnboardingTour userId={profile.userId} steps={LOGEMENTS_STEPS} storageScope="logements" />
+      <OnboardingTour
+        userId={profile.userId}
+        steps={LOGEMENTS_STEPS}
+        storageScope="logements"
+        initiallyDone={profile.onboarding_completed_steps.includes('tour:logements')}
+      />
       <LogementsPage logements={(logements ?? []) as any[]} />
     </>
   )
