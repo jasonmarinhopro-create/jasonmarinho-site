@@ -124,11 +124,13 @@
       '.ft-tab:hover{background:rgba(255,255,255,.08);color:#fff}',
       '.ft-tab.on{background:rgba(255,213,107,.12);border-color:rgba(255,213,107,.30);color:#FFD56B;font-weight:600}',
       '.ft-panels{margin-top:6px}',
-      '.ft-panel{display:none;flex-wrap:wrap;gap:7px}',
+      '.ft-panel{display:none;flex-direction:column;gap:10px}',
       '.ft-panel.on{display:flex}',
-      '.ft-panel a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.035);color:rgba(255,255,255,.65);text-decoration:none;border:1px solid transparent;transition:all .18s;line-height:1.3;white-space:nowrap}',
-      '.ft-panel a:hover{color:#FFD56B;border-color:rgba(255,213,107,.20);background:rgba(255,213,107,.06)}',
-      '.ft-panel .ft-see-all{margin:6px 4px 0;font-size:12px;font-weight:600;color:#63D683;text-decoration:none;display:inline-flex;align-items:center;gap:5px;padding:6px 0;background:transparent;border:none}',
+      '.ft-panel-hint{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.5;max-width:720px}',
+      '.ft-chips{display:flex;flex-wrap:wrap;gap:7px}',
+      '.ft-chips a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.035);color:rgba(255,255,255,.65);text-decoration:none;border:1px solid transparent;transition:all .18s;line-height:1.3;white-space:nowrap}',
+      '.ft-chips a:hover{color:#FFD56B;border-color:rgba(255,213,107,.20);background:rgba(255,213,107,.06)}',
+      '.ft-panel .ft-see-all{margin:2px 4px 0;font-size:12px;font-weight:600;color:#63D683;text-decoration:none;display:inline-flex;align-items:center;gap:5px;padding:0;background:transparent;border:none;align-self:flex-start}',
       '.ft-panel .ft-see-all:hover{color:#7ce29a;background:transparent}',
 
       /* Baseline */
@@ -141,7 +143,7 @@
 
       /* Responsive */
       '@media(max-width:960px){.ft-hero{grid-template-columns:1fr;gap:36px}.ft-cols{grid-template-columns:1fr 1fr 1fr;gap:28px}.ft-brand-desc{max-width:none}}',
-      '@media(max-width:640px){.ft-cols{grid-template-columns:1fr 1fr;gap:26px}.ft-explore-head{flex-direction:column;align-items:flex-start}.ft-baseline{flex-direction:column;align-items:flex-start}.ft-panel a{font-size:12px;padding:5px 10px}}',
+      '@media(max-width:640px){.ft-cols{grid-template-columns:1fr 1fr;gap:26px}.ft-explore-head{flex-direction:column;align-items:flex-start}.ft-baseline{flex-direction:column;align-items:flex-start}.ft-chips a{font-size:12px;padding:5px 10px}.ft-panel-hint{font-size:12px}}',
       '@media(max-width:420px){.ft-cols{grid-template-columns:1fr;gap:22px}}'
     ].join('');
     document.head.appendChild(style);
@@ -270,15 +272,18 @@
         + '</div>'
         + '<div class="ft-panels">'
           + '<div class="ft-panel on" data-panel="revenus" role="tabpanel">'
-            + panelHtml(REVENU_LINKS)
+            + '<div class="ft-panel-hint">Combien rapporte la LCD dans ces villes ? Tarif moyen, occupation, revenu net.</div>'
+            + '<div class="ft-chips">' + panelHtml(REVENU_LINKS) + '</div>'
             + '<a href="/calculateurs" class="ft-see-all">Voir tous les calculateurs <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
           + '</div>'
           + '<div class="ft-panel" data-panel="hote" role="tabpanel">'
-            + hostPanel
+            + '<div class="ft-panel-hint">Guides locaux pour démarrer ton activité de loueur dans la ville.</div>'
+            + '<div class="ft-chips">' + hostPanel + '</div>'
             + '<a href="/villes" class="ft-see-all">Voir tous les guides hôte <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
           + '</div>'
           + '<div class="ft-panel" data-panel="outils" role="tabpanel">'
-            + panelHtml(COMPARATIF_LINKS)
+            + '<div class="ft-panel-hint">Quel outil ou logiciel choisir ? Comparatifs honnêtes avec prix, forces, limites.</div>'
+            + '<div class="ft-chips">' + panelHtml(COMPARATIF_LINKS) + '</div>'
           + '</div>'
         + '</div>'
       + '</div>'
