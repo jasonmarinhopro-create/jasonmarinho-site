@@ -297,7 +297,10 @@ const styles: Record<string, React.CSSProperties> = {
     borderRight: '1px solid var(--nav-border)',
     display: 'flex', flexDirection: 'column',
     zIndex: 99,
-    backdropFilter: 'blur(20px)',
+    // backdrop-filter retiré : --nav-bg est >=95% opaque sur les 3 thèmes
+    // donc le blur ne flouterait rien de visible (pur cargo cult "frosted
+    // glass"), mais déclenchait un bug Chrome de ghosting/streaks dans le
+    // canvas main quand on hover les nav items (repaint compositor leak).
     transition: 'background 0.25s ease, border-color 0.25s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     overscrollBehavior: 'contain',
     // height géré dans globals.css avec fallbacks (100vh / -webkit-fill-available / 100dvh)

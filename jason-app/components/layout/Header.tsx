@@ -492,8 +492,9 @@ const styles: Record<string, React.CSSProperties> = {
     height: 'var(--header-h)',
     background: 'var(--nav-bg)',
     borderBottom: '1px solid var(--nav-border)',
-    backdropFilter: 'blur(20px)',
-    WebkitBackdropFilter: 'blur(20px)',
+    // backdrop-filter retiré (cf. Sidebar) : --nav-bg est >=95% opaque,
+    // donc invisible visuellement mais déclenche un bug Chrome de
+    // ghosting (lisérets translucides) lors du repaint des nav items.
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
