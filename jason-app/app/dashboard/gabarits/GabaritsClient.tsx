@@ -1332,7 +1332,16 @@ function CompactHeroCard({
       border: `1px solid ${cfg.border}`,
       borderLeft: `3px solid ${cfg.color}`,
       borderRadius: '12px',
-      overflow: 'hidden',
+      // overflow: visible — sinon le menu déroulant des "⋮" est clippé par
+      // les bords de la carte et passe derrière les cartes du dessous. Pas
+      // de risque sur les coins : la carte porte elle-même son background
+      // arrondi, aucun enfant n'a un bg qui atteint les bords.
+      overflow: 'visible',
+      // position + z-index : quand le menu est ouvert, on monte la carte
+      // au-dessus des cartes suivantes (sinon le dropdown reste piégé en
+      // stacking-order document, masqué par le card d'après).
+      position: 'relative' as const,
+      zIndex: menuOpen ? 40 : undefined,
       transition: 'border-color .15s',
     }}>
       {/* Header compact 1 ligne : type-icon + titre + Épingler/Copier + ⋮ + caret */}
