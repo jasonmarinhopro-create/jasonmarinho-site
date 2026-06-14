@@ -24,8 +24,16 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const HAS_SUPABASE = !!(SUPABASE_URL && SERVICE_KEY)
 
+console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+console.log('[build-signalements] DIAGNOSTIC START')
+console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+console.log(`[build-signalements] NEXT_PUBLIC_SUPABASE_URL : ${SUPABASE_URL ? '✓ posée (' + SUPABASE_URL.slice(0, 40) + '...)' : '✗ MANQUANTE — pose-la dans Vercel → projet site statique → Settings → Environment Variables'}`)
+console.log(`[build-signalements] SUPABASE_SERVICE_ROLE_KEY : ${SERVICE_KEY ? '✓ posée (longueur ' + SERVICE_KEY.length + ')' : '✗ MANQUANTE — pose-la dans Vercel → projet site statique → Settings → Environment Variables'}`)
+
 if (!HAS_SUPABASE) {
-  console.log('[build-signalements] Env vars Supabase absentes — génération d\'un placeholder pour la liste publique uniquement.')
+  console.log('[build-signalements] ⚠ Env vars Supabase absentes → liste publique générée vide.')
+  console.log('[build-signalements] → Va dans Vercel, projet SITE STATIQUE (jasonmarinho.com), Settings → Environment Variables, pose les 2 vars ci-dessus, puis Redeploy ce projet (pas jason-app).')
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
 }
 
 const MOIS_FR = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
@@ -51,6 +59,7 @@ function fmtMonth(yyyyMm) {
 async function fetchSignalements() {
   if (!HAS_SUPABASE) return []
   const url = `${SUPABASE_URL}/rest/v1/public_signalements_view?select=*&order=created_at.desc&limit=2000`
+  console.log(`[build-signalements] Fetch: ${url}`)
   const res = await fetch(url, {
     headers: {
       apikey: SERVICE_KEY,
@@ -58,12 +67,27 @@ async function fetchSignalements() {
       Accept: 'application/json',
     },
   })
+  console.log(`[build-signalements] Réponse Supabase status: ${res.status}`)
   if (!res.ok) {
     const text = await res.text()
-    console.warn(`[build-signalements] Supabase fetch failed (${res.status}): ${text}`)
+    console.warn(`[build-signalements] ✗ Supabase fetch FAILED (${res.status}): ${text}`)
+    console.warn('[build-signalements] → Causes probables :')
+    console.warn('[build-signalements]   - migration 20260614_054 pas exécutée dans Supabase (la view public_signalements_view n\'existe pas)')
+    console.warn('[build-signalements]   - SUPABASE_SERVICE_ROLE_KEY invalide ou expirée')
+    console.warn('[build-signalements]   - URL Supabase incorrecte')
     return []
   }
-  return await res.json()
+  const data = await res.json()
+  console.log(`[build-signalements] ✓ Reçu ${Array.isArray(data) ? data.length : 0} ligne(s) de la view public_signalements_view`)
+  if (Array.isArray(data) && data.length > 0) {
+    console.log(`[build-signalements] Premier slug: "${data[0].slug}" · ville: "${data[0].city}" · mois: "${data[0].month}"`)
+  } else {
+    console.log('[build-signalements] ⚠ La view retourne 0 ligne. Causes probables :')
+    console.log('[build-signalements]   - Aucun signalement avec moderation_status=\'approved\' ET public_visible=true en DB')
+    console.log('[build-signalements]   - Vérifie dans Supabase Studio : table reported_guests, filtre moderation_status=approved, public_visible=true')
+    console.log('[build-signalements]   - Si tu as approuvé un signalement, va dans Supabase Studio table reported_guests et vérifie ces 2 colonnes sur la ligne')
+  }
+  return data
 }
 
 function buildFichePage(item) {
