@@ -19,6 +19,7 @@ import {
   deleteSuggestion,
 } from '../actions'
 import SignalementsAdmin from '../signalements/SignalementsAdmin'
+import ModerationQueue from '../signalements/ModerationQueue'
 
 // ─── Types ────────────────────────────────────────────────────────────
 interface DriingMember {
@@ -44,10 +45,21 @@ interface Suggestion {
 
 type Tab = 'driing' | 'reports' | 'suggestions'
 
+// Type retourné par getModerationQueue (signalements publics anonymisés).
+// On accepte un type lâche ici pour ne pas dupliquer les définitions
+// déjà présentes dans moderation-actions.ts (ModerationQueue les utilise).
+interface ModerationData {
+  pending: Array<any>
+  removalRequests: Array<any>
+  approvedCount: number
+  error?: string
+}
+
 interface Props {
   initialDriing: DriingMember[]
   initialReports: Report[]
   initialSuggestions: Suggestion[]
+  moderation: ModerationData
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────
@@ -59,7 +71,7 @@ function daysSince(iso: string): number {
 }
 
 // ─── Component ────────────────────────────────────────────────────────
-export default function AdminQG({ initialDriing, initialReports, initialSuggestions }: Props) {
+export default function AdminQG({ initialDriing, initialReports, initialSuggestions, moderation }: Props) {
   const [driing, setDriing] = useState(initialDriing)
   const [reports, setReports] = useState(initialReports)
   const [suggestions, setSuggestions] = useState(initialSuggestions)
@@ -67,12 +79,17 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
   const [isPending, startT] = useTransition()
 
-  // Counts pour les badges + auto-sélection de la tab prioritaire
+  // Counts pour les badges + auto-sélection de la tab prioritaire.
+  // Le badge "Signalements" agrège : reports privés non validés +
+  // signalements publics en attente de modération + demandes de retrait
+  // (toutes ces actions tombent visuellement dans la même tab).
   const counts = useMemo(() => ({
     driing: driing.filter(m => m.driing_status === 'pending').length,
-    reports: reports.filter(r => !r.is_validated).length,
+    reports: reports.filter(r => !r.is_validated).length
+      + moderation.pending.length
+      + moderation.removalRequests.length,
     suggestions: suggestions.length,
-  }), [driing, reports, suggestions])
+  }), [driing, reports, suggestions, moderation])
 
   const totalPending = counts.driing + counts.reports + counts.suggestions
 
@@ -264,12 +281,23 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
         </div>
       )}
 
-      {/* ── REPORTS ── On embed la console riche /admin/signalements (KPIs,
-          filtres En attente/Validés, bouton Normaliser, édition d'identifiant,
-          actions Valider/Supprimer). embedded=true masque son header pour
-          éviter le doublon avec le titre du QG. */}
+      {/* ── REPORTS ──
+          1) ModerationQueue : signalements PUBLICS (opt-in anonymisé) en
+             attente de modération + demandes de retrait. Couvre le SLA 48h
+             et expose le bouton "Forcer rebuild" du site statique.
+          2) SignalementsAdmin embedded : console privée historique (KPIs,
+             filtres En attente/Validés, édition d'identifiant, Valider/Supprimer).
+          Les deux apparaissent dans la même tab "Signalements" pour
+          centraliser tout l'admin signalement au même endroit. */}
       {tab === 'reports' && (
-        <SignalementsAdmin initialReports={reports} embedded />
+        <>
+          <ModerationQueue
+            pending={moderation.pending}
+            removalRequests={moderation.removalRequests}
+            approvedCount={moderation.approvedCount}
+          />
+          <SignalementsAdmin initialReports={reports} embedded />
+        </>
       )}
 
       {/* ── SUGGESTIONS ── */}
