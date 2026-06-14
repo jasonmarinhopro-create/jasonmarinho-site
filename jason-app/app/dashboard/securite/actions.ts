@@ -134,6 +134,18 @@ export async function reportGuest(formData: {
     ? new Date().toISOString().slice(0, 7)  // YYYY-MM (mois courant)
     : null
 
+  // Si opt-in : exige ville + résumé minimaux pour éviter qu'un
+  // signalement public arrive en modération avec des champs vides (admin
+  // bloqué à l'approbation ensuite).
+  if (make_public) {
+    if (!publicSummaryClean || publicSummaryClean.length < 30) {
+      return { error: 'Le résumé public anonymisé doit faire au moins 30 caractères.' }
+    }
+    if (!publicCityClean) {
+      return { error: 'La ville publique est obligatoire pour publier le signalement anonymisé.' }
+    }
+  }
+
   // Create ONE row per submission
   const { error } = await supabase.from('reported_guests').insert({
     identifier: primaryIdentifier,

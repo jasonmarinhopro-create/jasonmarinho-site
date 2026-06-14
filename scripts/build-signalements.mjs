@@ -22,10 +22,10 @@ const OUT_DIR = path.join(ROOT, 'securite', 'signalements')
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+const HAS_SUPABASE = !!(SUPABASE_URL && SERVICE_KEY)
 
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.log('[build-signalements] Env vars Supabase absentes, skip (no-op).')
-  process.exit(0)
+if (!HAS_SUPABASE) {
+  console.log('[build-signalements] Env vars Supabase absentes — génération d\'un placeholder pour la liste publique uniquement.')
 }
 
 const MOIS_FR = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
@@ -49,6 +49,7 @@ function fmtMonth(yyyyMm) {
 }
 
 async function fetchSignalements() {
+  if (!HAS_SUPABASE) return []
   const url = `${SUPABASE_URL}/rest/v1/public_signalements_view?select=*&order=created_at.desc&limit=2000`
   const res = await fetch(url, {
     headers: {

@@ -108,7 +108,7 @@ export async function approvePublicSignalement(
 
   const slug = generateSlug({ ...report, public_summary: summary, public_city: city })
 
-  const { error: updErr } = await admin
+  const { error: updErr, data: updData } = await admin
     .from('reported_guests')
     .update({
       moderation_status: 'approved',
@@ -121,11 +121,20 @@ export async function approvePublicSignalement(
       is_validated: true,  // côté privé aussi : visible pour la recherche hôtes
     })
     .eq('id', reportId)
+    .select('id, moderation_status, public_slug')
 
-  if (updErr) return { error: updErr.message }
+  if (updErr) {
+    console.error('[approvePublicSignalement] UPDATE failed:', updErr)
+    return { error: `Update échoué : ${updErr.message}${updErr.hint ? ` (${updErr.hint})` : ''}${updErr.code ? ` [code:${updErr.code}]` : ''}` }
+  }
+  if (!updData || updData.length === 0) {
+    console.error('[approvePublicSignalement] UPDATE affected 0 rows, reportId=', reportId)
+    return { error: 'L\'update n\'a affecté aucune ligne. Le signalement existe-t-il encore ?' }
+  }
+  console.log(`[approvePublicSignalement] ✓ approved id=${reportId} slug=${slug}`)
 
   triggerStaticRebuild()
-  revalidatePath('/dashboard/admin/signalements')
+  revalidatePath('/dashboard/admin/signalements', 'page')
   return { success: true, slug }
 }
 
