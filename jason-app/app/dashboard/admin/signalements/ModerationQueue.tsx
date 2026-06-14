@@ -58,6 +58,14 @@ export default function ModerationQueue({ pending, removalRequests, approvedCoun
     return editingCity[p.id] ?? p.public_city ?? ''
   }
 
+  // Reload garanti : router.refresh() peut être pris au piège du cache
+  // server-component selon les configs. window.location.reload() est le
+  // hammer qui marche dans 100% des cas après mutation server.
+  function hardRefresh() {
+    if (typeof window !== 'undefined') window.location.reload()
+    else router.refresh()
+  }
+
   async function handleApprove(p: Pending) {
     setErrorMsg(null)
     startProcessing(async () => {
@@ -66,7 +74,7 @@ export default function ModerationQueue({ pending, removalRequests, approvedCoun
         public_city: getCity(p),
       })
       if (res.error) setErrorMsg(res.error)
-      else router.refresh()
+      else hardRefresh()
     })
   }
 
@@ -76,7 +84,7 @@ export default function ModerationQueue({ pending, removalRequests, approvedCoun
     startProcessing(async () => {
       const res = await rejectPublicSignalement(p.id, reason)
       if (res.error) setErrorMsg(res.error)
-      else router.refresh()
+      else hardRefresh()
     })
   }
 
@@ -86,7 +94,7 @@ export default function ModerationQueue({ pending, removalRequests, approvedCoun
     startProcessing(async () => {
       const res = await removePublicSignalement(reportId, reason)
       if (res.error) setErrorMsg(res.error)
-      else { setRemovalToConfirm(null); router.refresh() }
+      else { setRemovalToConfirm(null); hardRefresh() }
     })
   }
 
@@ -205,6 +213,19 @@ export default function ModerationQueue({ pending, removalRequests, approvedCoun
                 </div>
               </div>
 
+              {/* Diagnostic visible : pourquoi le bouton est désactivé.
+                  Avant ça donnait l'impression que rien ne se passait au
+                  clic, l'hôte pensait que la validation ne marchait pas. */}
+              {(getSummary(p).length < 30 || !getCity(p)) && (
+                <div style={s.disabledHint}>
+                  <Warning size={12} weight="fill" />
+                  {!getCity(p) && getSummary(p).length < 30
+                    ? 'Renseigne la ville publique et le résumé (≥30 caractères) pour pouvoir approuver.'
+                    : !getCity(p)
+                      ? 'Renseigne la ville publique pour pouvoir approuver.'
+                      : `Le résumé doit faire au moins 30 caractères (actuellement ${getSummary(p).length}).`}
+                </div>
+              )}
               <div style={s.actionsRow}>
                 <button onClick={() => handleReject(p)} disabled={isProcessing} style={s.btnSecondary}>
                   <X size={13} weight="bold" /> Refuser
@@ -255,6 +276,7 @@ const s: Record<string, React.CSSProperties> = {
   fieldTextarea: { width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: '13px', fontFamily: 'inherit', resize: 'vertical' as const, minHeight: '80px' },
   publishedPreview: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' },
   actionsRow: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
+  disabledHint: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 11px', background: 'rgba(217,119,6,0.08)', border: '1px solid rgba(217,119,6,0.2)', borderRadius: '7px', fontSize: '12px', color: '#d97706', marginBottom: '10px', lineHeight: 1.5 },
   btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
   btnSecondary: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12.5px', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
   btnDanger: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 12px', background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '7px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
