@@ -196,7 +196,15 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     <div class="lbl">Communauté d'hôtes</div>
     <h1 class="h1">Un doute sur une demande ?<br><em>Consultez la base communauté</em></h1>
     <p class="sub">Avant d'accepter une réservation, vérifiez si le voyageur a déjà été signalé par d'autres hôtes, ou si tout s'est toujours bien passé. Une base alimentée par la communauté, pour la communauté.</p>
-    <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Accéder à la base <i class="ph-bold ph-arrow-right"></i></a>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Accéder à la base <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="/securite/signalements" class="btn-ol">Voir les signalements publics</a>
+    </div>
+    <!-- Compteur live mis à jour par scripts/build-signalements.mjs au build Vercel -->
+    <div style="display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:7px 16px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;font-size:13px;font-weight:600;color:#FFD56B">
+      <i class="ph-bold ph-shield-check"></i>
+      <span><!--SIGNALEMENTS_COUNT:START-->0<!--SIGNALEMENTS_COUNT:END--> signalements publics anonymisés</span>
+    </div>
   </div>
 </header>
 

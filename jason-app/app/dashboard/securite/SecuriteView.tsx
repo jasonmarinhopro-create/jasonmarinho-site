@@ -139,6 +139,9 @@ export default function SecuriteView({
     full_name: '',
     incident_type: INCIDENT_TYPES[0],
     description: '',
+    make_public: false,        // opt-in désactivé par défaut (RGPD safe)
+    public_summary: '',
+    public_city: '',
   })
 
   const [showPositive, setShowPositive] = useState(false)
@@ -183,7 +186,7 @@ export default function SecuriteView({
       if (res.error) { setReportError(res.error); return }
       setReportSuccess(true)
       setShowReport(false)
-      setReport({ email: '', phone: '', full_name: '', incident_type: INCIDENT_TYPES[0], description: '' })
+      setReport({ email: '', phone: '', full_name: '', incident_type: INCIDENT_TYPES[0], description: '', make_public: false, public_summary: '', public_city: '' })
     })
   }
 
@@ -576,6 +579,62 @@ export default function SecuriteView({
                   <span style={{ fontSize: '11px', color: report.description.length < 20 ? 'var(--text-muted)' : 'var(--success-1)' }}>
                     {report.description.length}/20 minimum
                   </span>
+                </div>
+
+                {/* ── OPT-IN PUBLICATION ANONYMISÉE ──────────────────────────
+                     L'hôte peut accepter qu'une version anonymisée du
+                     signalement (sans nom complet ni contacts) soit publiée
+                     sur jasonmarinho.com pour alerter d'autres hôtes ET
+                     ranker SEO. Décoché par défaut (RGPD safe). Si coché,
+                     champs ville + résumé apparaissent et le signalement
+                     passera en file de modération admin. */}
+                <div style={{ marginTop: '4px', padding: '14px 16px', background: 'rgba(255,213,107,0.06)', border: '1px solid rgba(255,213,107,0.18)', borderRadius: '10px' }}>
+                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={report.make_public}
+                      onChange={e => setReport(r => ({ ...r, make_public: e.target.checked }))}
+                      style={{ marginTop: '3px', accentColor: 'var(--accent-text)', width: '15px', height: '15px', flexShrink: 0 }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>
+                        Publier une version <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>anonymisée</em> du signalement
+                      </div>
+                      <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.55 }}>
+                        Aide les autres hôtes à éviter le même incident. <strong>Aucune donnée personnelle ne sera diffusée</strong> : ni nom complet, ni email, ni téléphone, ni date exacte. Soumis à modération Jason avant publication.
+                      </p>
+                    </div>
+                  </label>
+
+                  {report.make_public && (
+                    <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px dashed rgba(255,213,107,0.25)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div>
+                        <label style={{ ...styles.label, fontSize: '12px' }}>Ville (publique, sans rue ni quartier) <span style={{ color: 'var(--danger)' }}>*</span></label>
+                        <input
+                          type="text"
+                          value={report.public_city}
+                          onChange={e => setReport(r => ({ ...r, public_city: e.target.value }))}
+                          style={styles.input}
+                          placeholder="Lyon"
+                          maxLength={80}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ ...styles.label, fontSize: '12px' }}>Résumé public anonymisé <span style={{ color: 'var(--danger)' }}>*</span></label>
+                        <textarea
+                          value={report.public_summary}
+                          onChange={e => setReport(r => ({ ...r, public_summary: e.target.value }))}
+                          style={{ ...styles.textarea, minHeight: '70px' }}
+                          rows={3}
+                          maxLength={600}
+                          placeholder="Ex: Fête nocturne signalée le mois dernier malgré rappel du règlement. 6 personnes au lieu de 2 réservées. Voisins ont alerté."
+                        />
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                          {report.public_summary.length}/600 · Pas de noms, prénoms complets, emails, téléphones, adresses, ou plaque d'immatriculation.
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {reportError && (
