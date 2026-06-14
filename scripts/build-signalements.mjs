@@ -92,8 +92,13 @@ async function fetchSignalements() {
 
 function buildFichePage(item) {
   const monthLabel = fmtMonth(item.month)
-  const title = `${item.incident_type} · ${item.city ?? 'France'}${monthLabel ? ' · ' + monthLabel : ''}`
-  const desc = `Signalement anonymisé : ${item.summary.slice(0, 150)}...`
+  // Le titre met l'INCIDENT en avant (le vrai signal), la ville/mois en
+  // contexte discret. Avant on avait "[INCIDENT] · [VILLE] · [MOIS]" qui
+  // mettait la ville au même niveau d'importance — pas utile pour la
+  // décision d'un hôte qui cherche un PATTERN d'arnaque, pas un endroit.
+  const title = item.incident_type
+  const subtitle = monthLabel ? `Signalé en ${monthLabel}` : 'Signalement récent'
+  const desc = item.summary.slice(0, 155) + (item.summary.length > 155 ? '...' : '')
   const canonical = `https://jasonmarinho.com/securite/signalements/${item.slug}`
 
   return `<!DOCTYPE html>
@@ -136,7 +141,6 @@ a{color:inherit}
 h1{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);line-height:1.2;letter-spacing:-.02em;color:var(--td);margin:0 0 12px;font-weight:400}
 .meta{display:flex;flex-wrap:wrap;gap:10px;font-size:13.5px;color:var(--tm);margin-bottom:32px}
 .meta-it{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:100px}
-.summary{background:#fff;border:1px solid rgba(0,76,63,.1);border-left:3px solid var(--g);border-radius:10px;padding:22px 24px;font-size:16px;line-height:1.75;color:var(--td);margin-bottom:32px}
 .disclaimer{padding:16px 18px;background:rgba(0,76,63,.04);border:1px solid rgba(0,76,63,.12);border-radius:10px;font-size:13px;line-height:1.65;color:var(--tm);margin-bottom:36px}
 .disclaimer strong{color:var(--td)}
 .cta-box{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:16px;padding:28px;text-align:center;color:#fff}
@@ -177,15 +181,15 @@ ${JSON.stringify({
 </head>
 <body>
 <div class="wrap">
-  <div class="brd"><a href="/">Accueil</a> · <a href="/services/securite">Sécurité</a> · <a href="/securite/signalements">Signalements publics</a> · <span>${escHtml(item.city ?? '')}</span></div>
-  <span class="lbl">Signalement anonymisé</span>
-  <h1>${escHtml(item.incident_type)}<br><em style="font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--g)">${escHtml(item.city ?? 'France')}${monthLabel ? ' · ' + monthLabel : ''}</em></h1>
+  <div class="brd"><a href="/">Accueil</a> · <a href="/services/securite">Sécurité</a> · <a href="/securite/signalements">Signalements publics</a> · <span>${escHtml(item.incident_type)}</span></div>
+  <span class="lbl">Signalement anonymisé · ${escHtml(subtitle)}</span>
+  <h1>${escHtml(item.incident_type)}</h1>
+  <p style="font-size:clamp(15px,1.5vw,17px);line-height:1.7;color:var(--tm);margin:0 0 28px;font-weight:300">${escHtml(item.summary)}</p>
   <div class="meta">
-    <span class="meta-it"><i class="ph ph-map-pin"></i>${escHtml(item.city ?? 'France')}</span>
-    ${monthLabel ? `<span class="meta-it"><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span>` : ''}
     <span class="meta-it"><i class="ph ph-shield-check"></i>Source : hôte vérifié</span>
+    ${monthLabel ? `<span class="meta-it"><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span>` : ''}
+    ${item.city ? `<span class="meta-it" style="opacity:.7"><i class="ph ph-map-pin"></i>${escHtml(item.city)}</span>` : ''}
   </div>
-  <div class="summary">${escHtml(item.summary)}</div>
   <div class="disclaimer">
     <strong>Important.</strong> Ce signalement émane d'un hôte vérifié de la communauté Jason Marinho. Le profil est <strong>strictement anonymisé</strong> : aucun nom complet, email, téléphone ou adresse n'est diffusé. Ce signalement n'a aucune valeur de jugement et ne constitue pas une accusation formelle. Pour les vrais nom, email et téléphone, accès réservé aux hôtes inscrits via le dashboard sécurisé.
   </div>
@@ -216,10 +220,16 @@ function buildListPage(items) {
       </div>`
     : `<div class="grid">` + items.map(it => {
         const monthLabel = fmtMonth(it.month)
+        // Hiérarchie : INCIDENT (h3 fraunces) → SUMMARY (le vrai contenu)
+        // → meta discrète (mois · ville). La ville passe en bas en petit
+        // pour ne plus dominer visuellement.
         return `<a href="/securite/signalements/${escHtml(it.slug)}" class="card">
-  <div class="card-head"><span class="card-type">${escHtml(it.incident_type)}</span>${monthLabel ? `<span class="card-when">${escHtml(monthLabel)}</span>` : ''}</div>
-  <div class="card-city"><i class="ph ph-map-pin"></i>${escHtml(it.city ?? 'France')}</div>
-  <p class="card-sum">${escHtml(it.summary.slice(0, 220))}${it.summary.length > 220 ? '…' : ''}</p>
+  <h3 class="card-h">${escHtml(it.incident_type)}</h3>
+  <p class="card-sum">${escHtml(it.summary.slice(0, 240))}${it.summary.length > 240 ? '…' : ''}</p>
+  <div class="card-meta">
+    ${monthLabel ? `<span class="card-when"><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span>` : ''}
+    ${it.city ? `<span class="card-where"><i class="ph ph-map-pin"></i>${escHtml(it.city)}</span>` : ''}
+  </div>
   <span class="card-cta">Lire le signalement <i class="ph-bold ph-arrow-right"></i></span>
 </a>`
       }).join('\n') + `</div>`
@@ -268,15 +278,14 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .count-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;padding:7px 16px;font-size:13.5px;font-weight:600;color:#FFD56B;margin-top:8px}
 .list{max-width:1100px;margin:0 auto;padding:clamp(48px,6vw,72px) clamp(16px,5vw,60px)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
-.card{display:flex;flex-direction:column;gap:10px;padding:22px;background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s,border-color .2s}
+.card{display:flex;flex-direction:column;gap:10px;padding:24px;background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s,border-color .2s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
-.card-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.card-type{font-size:11px;font-weight:600;color:var(--g);background:rgba(0,76,63,.07);padding:3px 9px;border-radius:6px;letter-spacing:.3px}
-.card-when{font-size:11.5px;color:var(--tl)}
-.card-city{font-size:14px;color:var(--tm);font-weight:500;display:flex;align-items:center;gap:5px}
-.card-city i{color:var(--g);font-size:14px}
-.card-sum{font-size:13.5px;line-height:1.6;color:var(--tm);margin:4px 0 6px;flex:1}
-.card-cta{font-size:12.5px;font-weight:600;color:var(--g);display:inline-flex;align-items:center;gap:5px;margin-top:auto}
+.card-h{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0;line-height:1.3;letter-spacing:-.2px}
+.card-sum{font-size:14px;line-height:1.65;color:var(--tm);margin:0;flex:1}
+.card-meta{display:flex;gap:14px;align-items:center;font-size:11.5px;color:var(--tl);padding-top:8px;border-top:1px solid rgba(0,76,63,.06);margin-top:6px}
+.card-meta span{display:inline-flex;align-items:center;gap:4px}
+.card-meta i{font-size:12px;opacity:.6}
+.card-cta{font-size:12.5px;font-weight:600;color:var(--g);display:inline-flex;align-items:center;gap:5px;margin-top:4px}
 .disclaimer{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px) clamp(48px,6vw,72px);font-size:12.5px;color:var(--tl);line-height:1.7}
 .disclaimer strong{color:var(--td)}
 .empty-state{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:18px;padding:clamp(36px,6vw,60px) clamp(24px,5vw,52px);text-align:center;max-width:680px;margin:0 auto}
