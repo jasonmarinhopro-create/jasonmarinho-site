@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml } from '@/lib/email/template'
+import { rateLimit } from '@/lib/security/rate-limit'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
@@ -81,6 +82,14 @@ export async function reportGuest(formData: {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié.' }
+
+  // Rate-limit anti-abus : max 5 signalements / heure / utilisateur.
+  // Évite qu'un hôte (compromis ou malveillant) spamme la base. Upstash
+  // si dispo, fallback in-memory sinon (cf. lib/security/rate-limit).
+  const rl = await rateLimit('reportGuest', user.id, 5, 60 * 60 * 1000)
+  if (!rl.allowed) {
+    return { error: 'Trop de signalements en peu de temps. Réessaie dans une heure.' }
+  }
 
   const { email, phone, full_name, incident_type, description, make_public, public_summary, public_city } = formData
 
