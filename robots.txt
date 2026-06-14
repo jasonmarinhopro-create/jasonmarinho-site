@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://jasonmarinho.com/sitemap.xml
+Sitemap: https://jasonmarinho.com/sitemap-signalements.xml

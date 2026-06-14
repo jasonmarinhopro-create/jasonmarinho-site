@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contester un signalement public · Demande de retrait | Jason Marinho</title>
+  <meta name="description" content="Vous êtes concerné par un signalement public anonymisé sur jasonmarinho.com et souhaitez son retrait ? Remplissez ce formulaire. Délai de réponse : 48h.">
+  <link rel="canonical" href="https://jasonmarinho.com/securite/contester-signalement">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#004C3F">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+    .wrap{max-width:640px;margin:0 auto;padding:48px clamp(16px,5vw,40px)}
+    .brd{font-size:13px;color:var(--tl);margin-bottom:20px}
+    .brd a{color:var(--tm);text-decoration:none}
+    h1{font-family:'Fraunces',serif;font-size:clamp(1.7rem,3vw,2.2rem);line-height:1.2;color:var(--td);margin:0 0 12px;font-weight:400}
+    h1 em{color:var(--g);font-style:italic;font-weight:300}
+    .lead{font-size:15px;line-height:1.7;color:var(--tm);margin:0 0 28px}
+    .form{background:var(--cr);border:1px solid rgba(0,76,63,.1);border-radius:14px;padding:24px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+    .field label{font-size:13px;font-weight:600;color:var(--td)}
+    .field label .req{color:#dc2626}
+    .field input,.field textarea{padding:11px 13px;border:1px solid rgba(0,76,63,.18);border-radius:8px;background:#fff;font-family:'Outfit',sans-serif;font-size:14px;color:var(--td);width:100%}
+    .field input:focus,.field textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.1)}
+    .field textarea{resize:vertical;min-height:110px}
+    .field-hint{font-size:11.5px;color:var(--tl);line-height:1.5}
+    .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:var(--g);color:#fff;font-weight:600;font-size:14.5px;padding:13px 26px;border:none;border-radius:10px;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;justify-content:center;transition:background .15s}
+    .btn:hover:not(:disabled){background:#005a4a}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .legal{margin-top:24px;padding:16px 18px;background:rgba(0,76,63,.04);border-radius:10px;font-size:12.5px;line-height:1.65;color:var(--tm)}
+    .legal strong{color:var(--td)}
+    .ok{padding:18px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:10px;color:#1e9d54;font-size:14px;line-height:1.65;text-align:center}
+    .err{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:14px}
+  </style>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="brd"><a href="/">Accueil</a> · <a href="/services/securite">Sécurité</a> · <a href="/securite/signalements">Signalements publics</a> · <span>Contester</span></div>
+  <h1>Contester un <em>signalement public</em></h1>
+  <p class="lead">Vous êtes concerné par un signalement publié sur cette plateforme et vous le contestez ? Remplissez ce formulaire. Toutes les demandes sont examinées sous <strong>48h ouvrées</strong> conformément à nos obligations LCEN et RGPD.</p>
+
+  <form class="form" id="contest-form" onsubmit="return submitForm(event)">
+    <div id="err-box" class="err" style="display:none"></div>
+
+    <div class="field">
+      <label for="slug">Identifiant du signalement (slug URL) <span class="req">*</span></label>
+      <input type="text" id="slug" name="slug" required placeholder="exemple: lyon-fete-nuisance-juin-2026-abc123">
+      <span class="field-hint">Visible dans l'URL de la page concernée (la partie après /securite/signalements/).</span>
+    </div>
+
+    <div class="field">
+      <label for="fullName">Votre nom complet <span class="req">*</span></label>
+      <input type="text" id="fullName" name="fullName" required autocomplete="name">
+      <span class="field-hint">Permet de vérifier votre identité. Confidentiel, transmis uniquement à Jason.</span>
+    </div>
+
+    <div class="field">
+      <label for="email">Votre email de contact <span class="req">*</span></label>
+      <input type="email" id="email" name="email" required autocomplete="email">
+      <span class="field-hint">Pour vous répondre. Une preuve d'identité pourra vous être demandée.</span>
+    </div>
+
+    <div class="field">
+      <label for="reason">Motif de la contestation</label>
+      <textarea id="reason" name="reason" placeholder="Décrivez en quelques lignes pourquoi ce signalement vous concerne et pourquoi vous en demandez le retrait."></textarea>
+    </div>
+
+    <!-- Honeypot anti-bot -->
+    <div class="hp"><label>Site web</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+
+    <button type="submit" class="btn" id="submit-btn"><i class="ph-bold ph-paper-plane-tilt"></i> Envoyer ma demande</button>
+  </form>
+
+  <div class="legal">
+    <strong>Vos droits.</strong> Conformément au RGPD (art. 17, 21) et à la LCEN, vous disposez d'un droit d'opposition et d'effacement. Jason Marinho s'engage à examiner votre demande sous 48h ouvrées et à y répondre par email. En cas de doute manifeste sur la légitimité du signalement, le retrait est appliqué par précaution. Vous conservez votre droit de saisir la CNIL si vous n'êtes pas satisfait de la réponse.
+  </div>
+</div>
+
+<script>
+  // Pré-rempli le slug si présent en query string (?slug=xxx)
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    if (slug) document.getElementById('slug').value = slug;
+  } catch (e) {}
+
+  // Timestamp pour le time-trap anti-bot (>= 3s entre ouverture et submit)
+  const __t0 = Date.now();
+
+  async function submitForm(e) {
+    e.preventDefault();
+    const errBox = document.getElementById('err-box');
+    const btn = document.getElementById('submit-btn');
+    errBox.style.display = 'none';
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Envoi…';
+
+    const data = {
+      slug: document.getElementById('slug').value.trim(),
+      fullName: document.getElementById('fullName').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      reason: document.getElementById('reason').value.trim(),
+      website: e.target.website ? e.target.website.value : '',
+      t: __t0,
+    };
+
+    try {
+      const res = await fetch('/api/contester-signalement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        errBox.textContent = body.error || 'Erreur lors de l\'envoi. Réessayez ou contactez contact@jasonmarinho.com.';
+        errBox.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i> Envoyer ma demande';
+        return false;
+      }
+      // Succès : remplace le formulaire par message de confirmation
+      document.getElementById('contest-form').outerHTML =
+        '<div class="ok"><strong>Demande enregistrée.</strong><br>Nous l\'examinons sous 48h ouvrées et vous répondons à l\'email indiqué. Merci de votre patience.</div>';
+    } catch (err) {
+      errBox.textContent = 'Impossible de joindre le serveur. Vérifiez votre connexion ou contactez contact@jasonmarinho.com.';
+      errBox.style.display = 'block';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i> Envoyer ma demande';
+    }
+    return false;
+  }
+</script>
+<script defer src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+</body>
+</html>

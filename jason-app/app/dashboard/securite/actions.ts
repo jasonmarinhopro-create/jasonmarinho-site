@@ -69,12 +69,20 @@ export async function reportGuest(formData: {
   full_name?: string
   incident_type: string
   description: string
+  /** OPT-IN explicite : si true, l'hôte accepte qu'une version anonymisée
+   *  soit publiée publiquement après modération. Défaut = false (privé). */
+  make_public?: boolean
+  /** Résumé anonymisé custom (sinon généré côté admin lors de la modération).
+   *  L'hôte peut le pré-remplir au moment du signalement. */
+  public_summary?: string
+  /** Ville où l'incident a eu lieu (publique, sans rue ni quartier). */
+  public_city?: string
 }): Promise<{ success?: boolean; error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié.' }
 
-  const { email, phone, full_name, incident_type, description } = formData
+  const { email, phone, full_name, incident_type, description, make_public, public_summary, public_city } = formData
 
   // Normalisation centralisée : numéros au format +33..., emails lowercased,
   // pas de trailing dot/espace. Garantit cohérence DB + matchings recherche.
@@ -104,6 +112,19 @@ export async function reportGuest(formData: {
     .eq('id', user.id)
     .maybeSingle()
 
+  // Préparation des champs publics si opt-in. Tronqués/validés ici pour ne
+  // pas faire confiance aveugle au front. Le slug et l'approbation finale
+  // viendront du modérateur admin.
+  const publicSummaryClean = make_public && public_summary
+    ? public_summary.trim().slice(0, 600)  // max 600 chars
+    : null
+  const publicCityClean = make_public && public_city
+    ? public_city.trim().slice(0, 80)
+    : null
+  const publicMonth = make_public
+    ? new Date().toISOString().slice(0, 7)  // YYYY-MM (mois courant)
+    : null
+
   // Create ONE row per submission
   const { error } = await supabase.from('reported_guests').insert({
     identifier: primaryIdentifier,
@@ -113,6 +134,11 @@ export async function reportGuest(formData: {
     description: description.trim(),
     reporter_id: user.id,
     is_validated: false,
+    public_visible: !!make_public,
+    public_summary: publicSummaryClean,
+    public_city: publicCityClean,
+    public_month: publicMonth,
+    moderation_status: make_public ? 'pending' : 'private',
   })
 
   if (error) {

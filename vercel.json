@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node scripts/sync-counts.mjs",
+  "buildCommand": "node scripts/sync-counts.mjs && node scripts/build-signalements.mjs",
   "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,

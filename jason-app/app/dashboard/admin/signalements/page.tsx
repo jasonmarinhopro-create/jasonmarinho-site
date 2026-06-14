@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import SignalementsAdmin from './SignalementsAdmin'
+import ModerationQueue from './ModerationQueue'
+import { getModerationQueue } from './moderation-actions'
 
 export const metadata = { title: 'Signalements, Admin' }
 export const dynamic = 'force-dynamic'
@@ -60,5 +62,19 @@ export default async function SignalementsAdminPage() {
     }
   }
 
-  return <SignalementsAdmin initialReports={reports ?? []} diagnostic={diagnostic} />
+  // Queue de modération des signalements publics anonymisés (Sprint 1 du
+  // chantier "signalements publics"). On charge en parallèle de la liste
+  // privée historique.
+  const moderation = await getModerationQueue()
+
+  return (
+    <>
+      <ModerationQueue
+        pending={moderation.pending}
+        removalRequests={moderation.removalRequests}
+        approvedCount={moderation.approvedCount}
+      />
+      <SignalementsAdmin initialReports={reports ?? []} diagnostic={diagnostic} />
+    </>
+  )
 }
