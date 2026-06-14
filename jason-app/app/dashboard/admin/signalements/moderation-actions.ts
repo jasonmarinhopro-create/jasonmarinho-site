@@ -38,11 +38,43 @@ async function requireAdmin(): Promise<{ userId: string } | { error: string }> {
  */
 async function triggerStaticRebuild() {
   const url = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (!url) return
+  if (!url) {
+    console.warn('[triggerStaticRebuild] VERCEL_DEPLOY_HOOK_URL non posé — site statique ne se rebuild pas auto. Pose la var dans Vercel Settings → Environment Variables.')
+    return
+  }
   try {
-    await fetch(url, { method: 'POST' })
-  } catch {
-    // Ignore — le prochain push de toute façon déclenchera un rebuild
+    const res = await fetch(url, { method: 'POST' })
+    if (!res.ok) {
+      console.error(`[triggerStaticRebuild] Webhook a répondu ${res.status}`)
+    } else {
+      console.log('[triggerStaticRebuild] ✓ Rebuild déclenché sur le site statique')
+    }
+  } catch (err) {
+    console.error('[triggerStaticRebuild] Fetch échoué:', err)
+  }
+}
+
+/**
+ * Server action exposée à l'admin pour déclencher un rebuild manuel.
+ * Utile quand le webhook auto ne déclenche pas (env var absente, panne
+ * Vercel, ou pour reforcer après une migration).
+ */
+export async function forceStaticRebuild(): Promise<{ ok?: boolean; error?: string; hookConfigured?: boolean }> {
+  const auth = await requireAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const url = process.env.VERCEL_DEPLOY_HOOK_URL
+  if (!url) {
+    return {
+      error: 'VERCEL_DEPLOY_HOOK_URL non configuré. Va dans Vercel → projet site statique → Settings → Git → Deploy Hooks pour créer le hook, puis pose l\'URL dans les env vars du projet jason-app.',
+      hookConfigured: false,
+    }
+  }
+  try {
+    const res = await fetch(url, { method: 'POST' })
+    if (!res.ok) return { error: `Webhook a répondu ${res.status}`, hookConfigured: true }
+    return { ok: true, hookConfigured: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur réseau', hookConfigured: true }
   }
 }
 
