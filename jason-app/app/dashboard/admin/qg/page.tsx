@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import AdminQG from './AdminQG'
+import { getModerationQueue } from '../signalements/moderation-actions'
 
 export const metadata = { title: 'QG Admin, Jason Marinho' }
 export const dynamic = 'force-dynamic'
@@ -26,12 +27,14 @@ export default async function AdminQGPage() {
     .single()
   if (profile?.role !== 'admin') redirect('/dashboard')
 
-  // 3 fetchs en parallèle (service role bypass RLS)
+  // 4 fetchs en parallèle (service role bypass RLS) + getModerationQueue
+  // pour la file de modération des signalements publics anonymisés.
   const admin = getServiceClient()
   const [
     { data: driingMembers },
     { data: reports },
     { data: suggestions },
+    moderation,
   ] = await Promise.all([
     admin
       .from('profiles')
@@ -49,6 +52,7 @@ export default async function AdminQGPage() {
       .select('id, type, message, user_email, user_id, created_at')
       .order('created_at', { ascending: false })
       .limit(500),
+    getModerationQueue(),
   ])
 
   return (
@@ -56,6 +60,7 @@ export default async function AdminQGPage() {
       initialDriing={driingMembers ?? []}
       initialReports={reports ?? []}
       initialSuggestions={suggestions ?? []}
+      moderation={moderation}
     />
   )
 }

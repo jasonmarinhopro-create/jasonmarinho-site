@@ -166,7 +166,7 @@ export async function approvePublicSignalement(
   console.log(`[approvePublicSignalement] ✓ approved id=${reportId} slug=${slug}`)
 
   triggerStaticRebuild()
-  revalidatePath('/dashboard/admin/signalements', 'page')
+  revalidatePath('/dashboard/admin/qg', 'page')
   return { success: true, slug }
 }
 
@@ -190,7 +190,7 @@ export async function rejectPublicSignalement(
     .eq('id', reportId)
 
   if (error) return { error: error.message }
-  revalidatePath('/dashboard/admin/signalements')
+  revalidatePath('/dashboard/admin/qg')
   return { success: true }
 }
 
@@ -221,7 +221,7 @@ export async function removePublicSignalement(
   if (error) return { error: error.message }
 
   triggerStaticRebuild()
-  revalidatePath('/dashboard/admin/signalements')
+  revalidatePath('/dashboard/admin/qg')
   return { success: true }
 }
 
@@ -318,7 +318,7 @@ export async function registerRemovalRequest(params: {
           { label: 'Email de contact', value: escHtml(email) },
           { label: 'Motif', value: escHtml(reason || '(non renseigné)') },
         ], '#F97583')}
-        ${emailBtn('https://app.jasonmarinho.com/dashboard/admin/signalements', 'Examiner et décider', 'primary')}
+        ${emailBtn('https://app.jasonmarinho.com/dashboard/admin/qg', 'Examiner et décider', 'primary')}
         ${emailNote('Vérifie l\'identité du demandeur (preuve ID si nécessaire) avant retrait. En cas de doute juridique, retire par défaut.')}
       `,
     }),

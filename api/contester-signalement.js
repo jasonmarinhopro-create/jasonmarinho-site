@@ -132,7 +132,7 @@ module.exports = async function handler(req, res) {
 <strong>Résumé public concerné :</strong><br>${escHtml(report.public_summary || '')}<br>
 <em>Ville :</em> ${escHtml(report.public_city || '—')}
 </div>
-<a href="https://app.jasonmarinho.com/dashboard/admin/signalements" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Examiner et décider</a>
+<a href="https://app.jasonmarinho.com/dashboard/admin/qg" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Examiner et décider</a>
 <p style="font-size:12px;color:#7A8C77;margin:18px 0 0">Vérifie l'identité du demandeur (preuve ID si nécessaire) avant retrait. En cas de doute juridique, retire par défaut.</p>
 </div>`
 

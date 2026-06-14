@@ -145,7 +145,7 @@ export async function deleteReport(reportId: string) {
 
   if (deleteError) return { error: deleteError.message }
   revalidatePath('/dashboard/admin')
-  revalidatePath('/dashboard/admin/signalements')
+  revalidatePath('/dashboard/admin/qg')
   return { success: true }
 }
 
@@ -185,7 +185,7 @@ export async function updateReport(reportId: string, patch: {
 
   if (updErr) return { error: updErr.message }
   revalidatePath('/dashboard/admin')
-  revalidatePath('/dashboard/admin/signalements')
+  revalidatePath('/dashboard/admin/qg')
   return { success: true }
 }
 
@@ -215,7 +215,7 @@ export async function normalizeAllReportIdentifiers() {
     if (!upErr) updated++
   }
 
-  revalidatePath('/dashboard/admin/signalements')
+  revalidatePath('/dashboard/admin/qg')
   return { updated }
 }
 

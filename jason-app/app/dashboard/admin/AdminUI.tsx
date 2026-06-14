@@ -328,7 +328,7 @@ export default function AdminUI({
             { href: '/dashboard/admin/communaute', icon: UsersThree,    color: '#93C5FD', bg: 'rgba(147,197,253,0.1)', title: 'Communauté',  desc: `${stats.groupsCount} groupe${stats.groupsCount !== 1 ? 's' : ''}` },
             { href: '/dashboard/admin/guides',     icon: BookOpen,      color: '#fb923c', bg: 'rgba(251,146,60,0.1)',  title: 'Guide LCD',   desc: 'Profils & fiches' },
             { href: '/dashboard/admin/sos-feedback', icon: Warning,     color: 'var(--danger)', bg: 'rgba(220,38,38,0.1)',   title: 'SOS Feedback', desc: 'Signalements & témoignages' },
-            { href: '/dashboard/admin/signalements', icon: ShieldCheck, color: '#f87171', bg: 'rgba(248,113,113,0.1)', title: 'Signalements', desc: `${pendingReportsCount} à valider` },
+            { href: '/dashboard/admin/qg', icon: ShieldCheck, color: '#f87171', bg: 'rgba(248,113,113,0.1)', title: 'Signalements', desc: `${pendingReportsCount} à valider` },
           ].map(({ href, icon: Icon, color, bg, title, desc }) => (
             <Link key={href} href={href} style={s.contentCard} className="admin-content-card">
               <div style={{ ...s.contentIcon, color, background: bg, border: `1px solid ${color}20` }}>
@@ -508,11 +508,12 @@ export default function AdminUI({
         )}
 
         {/* Reports — aperçu compact ; tout le travail (édition, recherche,
-            normalisation) se fait sur la page dédiée /admin/signalements */}
+            normalisation, modération signalements publics) se fait sur le
+            QG admin /admin/qg dans la tab "Signalements". */}
         {tab === 'reports' && (
           <Section title={`${reports.length} signalement${reports.length !== 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
             <Link
-              href="/dashboard/admin/signalements"
+              href="/dashboard/admin/qg"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '10px 14px', marginBottom: '12px',
