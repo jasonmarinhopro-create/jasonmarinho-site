@@ -181,8 +181,16 @@ ${JSON.stringify({
 
 function buildListPage(items) {
   const itemsHtml = items.length === 0
-    ? '<p style="text-align:center;color:var(--tl);padding:60px 20px">Aucun signalement public pour le moment. Reviens bientôt.</p>'
-    : items.map(it => {
+    ? `<div class="empty-state">
+        <div class="empty-ico"><i class="ph ph-shield-check"></i></div>
+        <h2 class="empty-h">La base communautaire <em>démarre tout juste</em></h2>
+        <p class="empty-p">Aucun signalement public à afficher pour le moment. Les hôtes de la communauté Jason Marinho commencent à alimenter cette base en signalant les voyageurs problématiques rencontrés. Reviens dans quelques jours, ou inscris-toi pour accéder à la base privée complète et contribuer.</p>
+        <div class="empty-cta">
+          <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte hôte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+          <a href="/services/securite" class="btn-ol">Comment ça marche</a>
+        </div>
+      </div>`
+    : `<div class="grid">` + items.map(it => {
         const monthLabel = fmtMonth(it.month)
         return `<a href="/securite/signalements/${escHtml(it.slug)}" class="card">
   <div class="card-head"><span class="card-type">${escHtml(it.incident_type)}</span>${monthLabel ? `<span class="card-when">${escHtml(monthLabel)}</span>` : ''}</div>
@@ -190,7 +198,7 @@ function buildListPage(items) {
   <p class="card-sum">${escHtml(it.summary.slice(0, 220))}${it.summary.length > 220 ? '…' : ''}</p>
   <span class="card-cta">Lire le signalement <i class="ph-bold ph-arrow-right"></i></span>
 </a>`
-      }).join('\n')
+      }).join('\n') + `</div>`
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -225,16 +233,16 @@ body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 a{color:inherit}
 .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(56px,7vw,80px) 0}
-.hero-in{max-width:980px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
+.hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
 .brd{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:24px}
 .brd a{color:rgba(255,255,255,.5);text-decoration:none}
 .brd a:hover{color:#fff}
 .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
 h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,2.8rem);line-height:1.15;color:#fff;margin:0 0 16px;font-weight:400}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
-.lead{font-size:16px;line-height:1.7;color:rgba(255,255,255,.6);margin:0 0 14px;max-width:600px}
+.lead{font-size:16px;line-height:1.7;color:rgba(255,255,255,.6);margin:0 0 14px;max-width:640px}
 .count-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;padding:7px 16px;font-size:13.5px;font-weight:600;color:#FFD56B;margin-top:8px}
-.list{max-width:980px;margin:0 auto;padding:48px clamp(16px,5vw,40px)}
+.list{max-width:1100px;margin:0 auto;padding:clamp(48px,6vw,72px) clamp(16px,5vw,60px)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
 .card{display:flex;flex-direction:column;gap:10px;padding:22px;background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s,border-color .2s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
@@ -245,8 +253,19 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .card-city i{color:var(--g);font-size:14px}
 .card-sum{font-size:13.5px;line-height:1.6;color:var(--tm);margin:4px 0 6px;flex:1}
 .card-cta{font-size:12.5px;font-weight:600;color:var(--g);display:inline-flex;align-items:center;gap:5px;margin-top:auto}
-.disclaimer{max-width:980px;margin:48px auto 0;padding:0 clamp(16px,5vw,40px) 48px;font-size:12.5px;color:var(--tl);line-height:1.7}
+.disclaimer{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px) clamp(48px,6vw,72px);font-size:12.5px;color:var(--tl);line-height:1.7}
 .disclaimer strong{color:var(--td)}
+.empty-state{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:18px;padding:clamp(36px,6vw,60px) clamp(24px,5vw,52px);text-align:center;max-width:680px;margin:0 auto}
+.empty-ico{width:64px;height:64px;border-radius:18px;background:rgba(0,76,63,.07);display:inline-flex;align-items:center;justify-content:center;margin-bottom:20px}
+.empty-ico i{font-size:30px;color:var(--g)}
+.empty-h{font-family:'Fraunces',serif;font-size:clamp(22px,2.4vw,28px);font-weight:400;color:var(--td);margin:0 0 12px;letter-spacing:-.3px;line-height:1.25}
+.empty-h em{color:var(--g);font-style:italic;font-weight:300}
+.empty-p{font-size:15px;line-height:1.75;color:var(--tm);margin:0 0 24px;max-width:520px;margin-left:auto;margin-right:auto}
+.empty-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-p{display:inline-flex;align-items:center;gap:7px;background:var(--y);color:var(--gd);font-weight:600;font-size:14.5px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+.btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,213,107,.3)}
+.btn-ol{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--g);border:1px solid rgba(0,76,63,.2);font-weight:500;font-size:14px;padding:11px 20px;border-radius:10px;text-decoration:none;transition:all .2s}
+.btn-ol:hover{background:var(--g);color:#fff;border-color:var(--g)}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -271,9 +290,7 @@ ${JSON.stringify({
   </div>
 </header>
 <main class="list">
-  <div class="grid">
 ${itemsHtml}
-  </div>
 </main>
 <div class="disclaimer">
   <strong>Avertissement.</strong> Les profils signalés sont strictement anonymisés (prénom + initiale, ville, mois). Aucune accusation formelle, aucune valeur de jugement. Toute personne se reconnaissant peut demander le retrait sous 48h via le formulaire de contestation.

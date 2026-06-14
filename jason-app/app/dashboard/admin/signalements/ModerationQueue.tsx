@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { CheckCircle, X, Warning, Eye, Megaphone, Trash } from '@phosphor-icons/react/dist/ssr'
-import { approvePublicSignalement, rejectPublicSignalement, removePublicSignalement } from './moderation-actions'
+import { CheckCircle, X, Warning, Eye, Megaphone, Trash, ArrowsClockwise } from '@phosphor-icons/react/dist/ssr'
+import { approvePublicSignalement, rejectPublicSignalement, removePublicSignalement, forceStaticRebuild } from './moderation-actions'
 
 type Pending = {
   id: string
@@ -98,6 +98,16 @@ export default function ModerationQueue({ pending, removalRequests, approvedCoun
     })
   }
 
+  const [rebuildMsg, setRebuildMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null)
+  async function handleRebuild() {
+    setRebuildMsg(null)
+    startProcessing(async () => {
+      const res = await forceStaticRebuild()
+      if (res.error) setRebuildMsg({ kind: 'err', text: res.error })
+      else setRebuildMsg({ kind: 'ok', text: '✓ Rebuild déclenché. Compte 1-2 minutes pour voir le résultat sur jasonmarinho.com/securite/signalements.' })
+    })
+  }
+
   return (
     <section style={s.wrap}>
       <header style={s.head}>
@@ -119,6 +129,26 @@ export default function ModerationQueue({ pending, removalRequests, approvedCoun
 
       {errorMsg && (
         <div style={s.errorBanner}><Warning size={14} weight="fill" /> {errorMsg}</div>
+      )}
+
+      {/* Bouton rebuild manuel — utile quand un signalement vient d'être
+          approuvé/retiré et qu'on veut forcer la régénération immédiate
+          du site statique sans attendre le webhook auto. */}
+      <div style={s.rebuildBox}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--text-2)' }}>Site public</div>
+          <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.5 }}>
+            Après chaque approbation, le site jasonmarinho.com se rebuild auto si <code>VERCEL_DEPLOY_HOOK_URL</code> est posé. Sinon, force ici.
+          </div>
+        </div>
+        <button onClick={handleRebuild} disabled={isProcessing} style={s.btnSecondary}>
+          <ArrowsClockwise size={13} weight="bold" /> Forcer le rebuild
+        </button>
+      </div>
+      {rebuildMsg && (
+        <div style={{ ...s.errorBanner, background: rebuildMsg.kind === 'ok' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', borderColor: rebuildMsg.kind === 'ok' ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)', color: rebuildMsg.kind === 'ok' ? 'var(--success-1)' : 'var(--danger)' }}>
+          {rebuildMsg.text}
+        </div>
       )}
 
       {/* ── DEMANDES DE RETRAIT (priorité maximale, SLA 48h) ─────────── */}
@@ -277,6 +307,7 @@ const s: Record<string, React.CSSProperties> = {
   publishedPreview: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' },
   actionsRow: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
   disabledHint: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 11px', background: 'rgba(217,119,6,0.08)', border: '1px solid rgba(217,119,6,0.2)', borderRadius: '7px', fontSize: '12px', color: '#d97706', marginBottom: '10px', lineHeight: 1.5 },
+  rebuildBox: { display: 'flex', alignItems: 'center', gap: '14px', padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', marginBottom: '14px', flexWrap: 'wrap' as const },
   btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
   btnSecondary: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12.5px', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
   btnDanger: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 12px', background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '7px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
