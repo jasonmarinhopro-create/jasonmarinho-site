@@ -947,6 +947,12 @@
 
   <!-- ── Blog ── -->
   <url>
+    <loc>https://jasonmarinho.com/blog/accueillir-groupe-lcd-7-regles-preserver-logement-voisins</loc>
+    <lastmod>2026-06-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/blog/cyclotourisme-lcd-7-actions-attirer-voyageurs-velo</loc>
     <lastmod>2026-06-12</lastmod>
     <changefreq>monthly</changefreq>
@@ -1545,12 +1551,6 @@
     <lastmod>2026-03-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://jasonmarinho.com/blog/arnaques-airbnb-2026-classement-types-arnaques-hotes</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/amenager-logement-location-courte-duree-petit-budget</loc>
