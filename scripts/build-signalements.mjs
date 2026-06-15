@@ -152,6 +152,10 @@ a{color:inherit}
 .lbl.dk{color:var(--g)}
 .h1{font-family:'Fraunces',serif;font-size:clamp(1.7rem,3.8vw,2.8rem);line-height:1.15;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:400}
 .lead{font-size:clamp(15px,1.5vw,17px);font-weight:300;line-height:1.7;color:rgba(255,255,255,.72);margin:0;max-width:680px}
+.hint-block{display:inline-flex;align-items:center;gap:12px;background:rgba(255,213,107,.08);border:1px solid rgba(255,213,107,.22);border-radius:10px;padding:10px 16px;margin:0 0 22px;flex-wrap:wrap}
+.hint-lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,213,107,.7)}
+.hint-lbl i{font-size:13px}
+.hint-val{font-family:'JetBrains Mono','SF Mono','Consolas',monospace;font-size:14.5px;font-weight:500;color:var(--y);letter-spacing:.5px}
 .h2{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:400;line-height:1.2;letter-spacing:-.02em;color:var(--td);margin:0 0 14px}
 .h2 em{color:var(--g);font-style:italic;font-weight:300}
 .h2.lt{color:#fff}.h2.lt em{color:var(--y)}
@@ -215,6 +219,10 @@ ${JSON.stringify({
     <div class="brd"><a href="/">Accueil</a> · <a href="/services/securite">Sécurité</a> · <a href="/securite/signalements">Signalements publics</a> · <span>${escHtml(item.incident_type)}</span></div>
     <div class="lbl">Signalement anonymisé${monthLabel ? ' · ' + escHtml(monthLabel) : ''}</div>
     <h1 class="h1">${escHtml(item.incident_type)}</h1>
+    ${item.identifier_hint ? `<div class="hint-block">
+      <span class="hint-lbl"><i class="ph-bold ph-fingerprint"></i>Empreinte partielle</span>
+      <span class="hint-val">${escHtml(item.identifier_hint)}</span>
+    </div>` : ''}
     <p class="lead">${escHtml(item.summary)}</p>
   </div>
 </header>
@@ -301,11 +309,12 @@ function buildListPage(items) {
       </div>`
     : `<div class="grid">` + items.map(it => {
         const monthLabel = fmtMonth(it.month)
-        // Hiérarchie : INCIDENT (h3 fraunces) → SUMMARY (le vrai contenu)
-        // → meta discrète (mois · ville). La ville passe en bas en petit
-        // pour ne plus dominer visuellement.
+        // Hiérarchie : INCIDENT (h3 fraunces) → HINT identifiant
+        // partiel (anti-récidive) → SUMMARY (le vrai contenu) → meta
+        // discrète (mois · ville) en bas.
         return `<a href="/securite/signalements/${escHtml(it.slug)}" class="card">
   <h3 class="card-h">${escHtml(it.incident_type)}</h3>
+  ${it.identifier_hint ? `<div class="card-hint"><i class="ph-bold ph-fingerprint"></i>${escHtml(it.identifier_hint)}</div>` : ''}
   <p class="card-sum">${escHtml(it.summary.slice(0, 240))}${it.summary.length > 240 ? '…' : ''}</p>
   <div class="card-meta">
     ${monthLabel ? `<span class="card-when"><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span>` : ''}
@@ -362,6 +371,8 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .card{display:flex;flex-direction:column;gap:10px;padding:24px;background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s,border-color .2s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
 .card-h{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0;line-height:1.3;letter-spacing:-.2px}
+.card-hint{display:inline-flex;align-items:center;gap:6px;background:rgba(0,76,63,.06);border:1px solid rgba(0,76,63,.15);border-radius:7px;padding:4px 9px;font-family:'JetBrains Mono','SF Mono','Consolas',monospace;font-size:12.5px;font-weight:500;color:var(--g);letter-spacing:.3px;align-self:flex-start}
+.card-hint i{font-size:11px;opacity:.7}
 .card-sum{font-size:14px;line-height:1.65;color:var(--tm);margin:0;flex:1}
 .card-meta{display:flex;gap:14px;align-items:center;font-size:11.5px;color:var(--tl);padding-top:8px;border-top:1px solid rgba(0,76,63,.06);margin-top:6px}
 .card-meta span{display:inline-flex;align-items:center;gap:4px}
