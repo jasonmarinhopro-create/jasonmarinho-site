@@ -28,9 +28,20 @@ type RemovalRequest = {
   removal_request_reason: string | null
 }
 
+type Approved = {
+  id: string
+  public_slug: string | null
+  public_summary: string | null
+  public_city: string | null
+  public_month: string | null
+  incident_type: string | null
+  moderation_decided_at: string | null
+}
+
 interface Props {
   pending: Pending[]
   removalRequests: RemovalRequest[]
+  approved: Approved[]
   approvedCount: number
 }
 
@@ -43,7 +54,7 @@ function fmtAge(iso: string): string {
   return `il y a ${d} j`
 }
 
-export default function ModerationQueue({ pending, removalRequests, approvedCount }: Props) {
+export default function ModerationQueue({ pending, removalRequests, approved, approvedCount }: Props) {
   const router = useRouter()
   const [isProcessing, startProcessing] = useTransition()
   const [editingSummary, setEditingSummary] = useState<Record<string, string>>({})
@@ -268,6 +279,45 @@ export default function ModerationQueue({ pending, removalRequests, approvedCoun
           ))
         )}
       </div>
+
+      {/* ── SIGNALEMENTS PUBLIÉS (gestion + retrait à la demande) ─────
+          Avant : pas de bouton pour retirer un signalement déjà publié
+          sans demande de retrait → impossible de supprimer un test.
+          Maintenant : liste collapsible avec bouton "Retirer" par row. */}
+      {approved.length > 0 && (
+        <details style={{ marginTop: '20px' }}>
+          <summary style={s.sectionTitleClick}>
+            Signalements actuellement en ligne · {approved.length}
+          </summary>
+          <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {approved.map(a => (
+              <div key={a.id} style={s.approvedCard}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={s.approvedTitle}>{a.incident_type ?? 'Signalement'}</div>
+                  <div style={s.approvedMeta}>
+                    {a.public_city && <span>{a.public_city}</span>}
+                    {a.public_month && <span>· {a.public_month}</span>}
+                    {a.moderation_decided_at && <span>· publié {fmtAge(a.moderation_decided_at)}</span>}
+                  </div>
+                  {a.public_summary && (
+                    <div style={s.approvedSummary}>{a.public_summary.slice(0, 140)}{a.public_summary.length > 140 ? '…' : ''}</div>
+                  )}
+                </div>
+                <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                  {a.public_slug && (
+                    <a href={`https://jasonmarinho.com/securite/signalements/${a.public_slug}`} target="_blank" rel="noopener" style={s.btnLink}>
+                      <Eye size={12} /> Voir
+                    </a>
+                  )}
+                  <button onClick={() => handleRemove(a.id)} disabled={isProcessing} style={s.btnDanger}>
+                    <Trash size={12} weight="bold" /> Retirer
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
     </section>
   )
 }
@@ -313,4 +363,9 @@ const s: Record<string, React.CSSProperties> = {
   btnDanger: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 12px', background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '7px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
   btnLink: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 11px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: '7px', fontSize: '12px', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none' },
   empty: { padding: '24px', textAlign: 'center' as const, background: 'var(--bg)', borderRadius: '8px', border: '1px dashed var(--border)' },
+  sectionTitleClick: { fontSize: '13px', fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', cursor: 'pointer', padding: '8px 0', userSelect: 'none' as const, listStyle: 'none' as const },
+  approvedCard: { display: 'flex', gap: '12px', padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '8px', alignItems: 'flex-start' },
+  approvedTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' },
+  approvedMeta: { fontSize: '11.5px', color: 'var(--text-muted)', display: 'flex', gap: '4px', flexWrap: 'wrap' as const, marginBottom: '6px' },
+  approvedSummary: { fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.55, overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, display: '-webkit-box', WebkitLineClamp: 2 as unknown as number, WebkitBoxOrient: 'vertical' as const },
 }

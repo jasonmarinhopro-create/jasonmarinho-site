@@ -301,15 +301,16 @@ export async function removePublicSignalement(
 export async function getModerationQueue(): Promise<{
   pending: Array<{ id: string; identifier: string; identifier_type: string; name: string | null; incident_type: string | null; description: string | null; public_summary: string | null; public_city: string | null; public_month: string | null; reported_at: string; reporter_id: string }>
   removalRequests: Array<{ id: string; public_slug: string | null; public_summary: string | null; removal_request_at: string; removal_request_email: string; removal_request_reason: string | null }>
+  approved: Array<{ id: string; public_slug: string | null; public_summary: string | null; public_city: string | null; public_month: string | null; incident_type: string | null; moderation_decided_at: string | null }>
   approvedCount: number
   error?: string
 }> {
   const auth = await requireAdmin()
-  if ('error' in auth) return { pending: [], removalRequests: [], approvedCount: 0, error: auth.error }
+  if ('error' in auth) return { pending: [], removalRequests: [], approved: [], approvedCount: 0, error: auth.error }
 
   const admin = getServiceClient()
 
-  const [pendingRes, removalRes, approvedRes] = await Promise.all([
+  const [pendingRes, removalRes, approvedRes, approvedListRes] = await Promise.all([
     admin.from('reported_guests')
       .select('id, identifier, identifier_type, name, incident_type, description, public_summary, public_city, public_month, reported_at, reporter_id')
       .eq('moderation_status', 'pending')
@@ -325,11 +326,18 @@ export async function getModerationQueue(): Promise<{
       .select('id', { count: 'exact', head: true })
       .eq('moderation_status', 'approved')
       .eq('public_visible', true),
+    admin.from('reported_guests')
+      .select('id, public_slug, public_summary, public_city, public_month, incident_type, moderation_decided_at')
+      .eq('moderation_status', 'approved')
+      .eq('public_visible', true)
+      .order('moderation_decided_at', { ascending: false })
+      .limit(100),
   ])
 
   return {
     pending: pendingRes.data ?? [],
     removalRequests: removalRes.data ?? [],
+    approved: approvedListRes.data ?? [],
     approvedCount: approvedRes.count ?? 0,
   }
 }

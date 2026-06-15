@@ -51,6 +51,7 @@ type Tab = 'driing' | 'reports' | 'suggestions'
 interface ModerationData {
   pending: Array<any>
   removalRequests: Array<any>
+  approved: Array<any>
   approvedCount: number
   error?: string
 }
@@ -294,6 +295,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
           <ModerationQueue
             pending={moderation.pending}
             removalRequests={moderation.removalRequests}
+            approved={moderation.approved ?? []}
             approvedCount={moderation.approvedCount}
           />
           <SignalementsAdmin initialReports={reports} embedded />

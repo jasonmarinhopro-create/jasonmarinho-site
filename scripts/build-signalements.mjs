@@ -251,8 +251,8 @@ ${JSON.stringify({
     <p class="p">Si tu reçois une demande qui ressemble à ce signalement, voici ce que tu fais avant toute chose. Ces 3 actions couvrent 90 % des cas réels.</p>
     <ul class="list-num">
       <li><span class="num">1</span><span class="txt"><strong>Tu vérifies dans la base communauté.</strong> Email, téléphone ou nom complet du voyageur passés au crible des signalements précédents. 30 secondes, gratuit, depuis ton dashboard hôte.</span></li>
-      <li><span class="num">2</span><span class="txt"><strong>Tu refuses tout paiement hors plateforme.</strong> Stripe, Airbnb Resolution, <a href="https://www.driing.co" style="color:var(--g)">Driing</a> ou virement avec contrat signé. Jamais Wero, jamais virement direct sans trace, jamais hors système sécurisé.</span></li>
-      <li><span class="num">3</span><span class="txt"><strong>Tu gardes tout dans la messagerie plateforme.</strong> Pas de SMS, pas d'email perso avant le check-in. Si Airbnb / Booking doivent arbitrer un litige plus tard, ils ne regarderont QUE ce qui est tracé chez eux.</span></li>
+      <li><span class="num">2</span><span class="txt"><strong>Tu n'acceptes que les paiements sécurisés et traçables.</strong> Encaissement Stripe ou la plateforme de réservation (Airbnb, Booking). Pour les réservations directes, exige un virement bancaire classique <strong>uniquement</strong> avec un contrat de location courte durée signé. <strong>Jamais Wero</strong>, jamais virement instantané sans trace, jamais d'espèces.</span></li>
+      <li><span class="num">3</span><span class="txt"><strong>Tu gardes toujours une trace écrite.</strong> Sur les plateformes (Airbnb, Booking) : utilise la messagerie interne, jamais SMS/email perso avant le check-in. En réservation directe (via <a href="https://www.driing.co" style="color:var(--g)">Driing</a> ou par toi-même) : conserve emails datés, contrat signé, état des lieux photo horodaté. Sans trace écrite, aucun recours possible.</span></li>
     </ul>
   </div>
 </section>
