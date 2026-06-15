@@ -48,16 +48,49 @@ const ARNAQUES = [
   },
 ]
 
+// Liste enrichie avec les arnaques qui circulent activement sur les
+// forums LCD français (groupes Facebook hôtes, Reddit r/Airbnb, etc.).
+// Ordre = fréquence observée + classés par familles.
 const INCIDENT_TYPES = [
-  'Dégradation du logement',
-  'Fête non autorisée',
-  'Non-respect des règles',
-  'Fumée dans le logement',
+  // ── Arnaques financières (les + courantes en 2026) ──
+  'Arnaque WERO / virement instantané (faux paiement)',
+  'Virement direct sans contrat (hors plateforme)',
+  'Arnaque au surpaiement / trop-perçu (chargeback)',
+  'Demande de remboursement abusive (fausse cause)',
+  'Faux dégât pour récupérer la caution',
+  'Faux dégât avec photos générées par IA',
+  'Impayé après séjour',
+
+  // ── Arnaques identitaires / techniques ──
+  'Usurpation d\'identité voyageur (faux profil)',
+  'Phishing hôte (faux email Airbnb/Booking)',
+  'Sous-location frauduleuse non déclarée',
+  'Faux justificatifs (CNI, attestation, etc.)',
+
+  // ── Comportement pendant le séjour ──
+  'Fête non autorisée / EVG / EVJF camouflé',
+  'Nuisances sonores répétées',
   'Présence de personnes non déclarées',
-  'Tentative d\'arnaque / fraude',
-  'Avis négatif abusif',
-  'Impayé / remboursement abusif',
-  'Autre',
+  'Dégradation volontaire du logement',
+  'Vol d\'objets / équipements',
+  'Fumée / cannabis dans le logement',
+  'Non-respect des règles de la maison',
+  'Animaux non déclarés',
+
+  // ── Squat / refus de partir ──
+  'Squat post-séjour (refuse de partir après check-out)',
+  'Réservation longue durée détournée en bail d\'habitation',
+
+  // ── Avis / réputation ──
+  'Avis négatif menaçant pour soutirer remboursement',
+  'Faux avis négatif abusif',
+  'Chantage à l\'avis (1 étoile si pas de geste)',
+
+  // ── Annulations / désistements abusifs ──
+  'Faux problème médical pour annulation gratuite',
+  'Annulation last-minute répétée / no-show',
+
+  'Autre (préciser dans la description)',
 ]
 
 const POSITIVE_TYPES = [

@@ -80,8 +80,12 @@ export async function forceStaticRebuild(): Promise<{ ok?: boolean; error?: stri
 
 /**
  * Génère un slug SEO-friendly à partir des données anonymisées du signalement.
- * Format : [pseudo]-[ville]-[type-court]-[mois-annee]
- * Ex: marie-d-lyon-fete-nuisance-juin-2026
+ * Format : [type-court]-[mois-annee]-[id6]
+ * Ex: arnaque-wero-juin-2026-dde44c
+ *
+ * Volontairement SANS la ville : le SEO et la valeur d'un signalement
+ * portent sur le PATTERN d'arnaque (type + récit), pas le lieu. La ville
+ * reste affichée en métadonnée discrète sur la page.
  */
 function slugify(input: string): string {
   return input
@@ -93,8 +97,7 @@ function slugify(input: string): string {
 }
 
 function generateSlug(report: { id: string; public_summary: string | null; public_city: string | null; public_month: string | null; incident_type: string | null }): string {
-  const cityPart = report.public_city ? slugify(report.public_city) : 'lcd'
-  const typePart = report.incident_type ? slugify(report.incident_type).slice(0, 30) : 'signalement'
+  const typePart = report.incident_type ? slugify(report.incident_type).slice(0, 40) : 'signalement'
   const monthPart = report.public_month
     ? (() => {
         const [y, m] = report.public_month.split('-')
@@ -103,7 +106,66 @@ function generateSlug(report: { id: string; public_summary: string | null; publi
       })()
     : 'recent'
   const idShort = report.id.slice(0, 6)  // évite collisions
-  return `${cityPart}-${typePart}-${monthPart}-${idShort}`
+  // "location-courte-duree" en bourrin dans le slug → différencie nos URLs
+  // de signal-arnaques et autres généralistes, et capture l'intent SEO
+  // "arnaque location courte durée" / "arnaque hôte LCD".
+  return `${typePart}-location-courte-duree-${monthPart}-${idShort}`
+}
+
+/**
+ * Génère un "hint" identifiant partiel pour la publication anonymisée.
+ * Objectif : un hôte qui voit la même partie d'email/téléphone sur 2
+ * signalements peut corréler (anti-récidive) sans qu'on identifie la
+ * personne.
+ *
+ * Pseudonymisation CNIL conforme :
+ *  - phone  → "06 78 ●● ●● ●●"  (4 chiffres visibles seulement)
+ *  - email  → "ma***@gmail.com" (2 chars + masque + domaine)
+ *  - name   → "Marie D."        (prénom + initiale)
+ *
+ * Retourne null si pas d'identifiant exploitable.
+ */
+function maskIdentifier(identifier: string, identifierType: string, name: string | null): string | null {
+  const id = (identifier || '').trim()
+  if (!id) return name ? maskName(name) : null
+
+  if (identifierType === 'phone') {
+    // Garde seulement les chiffres, prend les 4 premiers
+    const digits = id.replace(/\D/g, '')
+    // Si commence par 33 (FR), convertir en format 0X
+    const normalized = digits.startsWith('33') ? '0' + digits.slice(2) : digits
+    if (normalized.length < 4) return null
+    const visible = normalized.slice(0, 4)
+    return `${visible.slice(0, 2)} ${visible.slice(2, 4)} ●● ●● ●●`
+  }
+
+  if (identifierType === 'email') {
+    const atIdx = id.lastIndexOf('@')
+    if (atIdx < 1) return null
+    const local = id.slice(0, atIdx)
+    const domain = id.slice(atIdx + 1)
+    // 2 premières lettres du local + *** + domaine entier (les domaines
+    // génériques type gmail.com / yahoo.fr / outlook.com n'identifient
+    // personne)
+    const localMask = local.slice(0, 2) + '***'
+    return `${localMask}@${domain}`
+  }
+
+  if (identifierType === 'name') {
+    return maskName(id)
+  }
+
+  return null
+}
+
+function maskName(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return ''
+  if (parts.length === 1) return parts[0]
+  // Prénom + initiale du nom de famille
+  const first = parts[0]
+  const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase()
+  return `${first} ${lastInitial}.`
 }
 
 /**
@@ -120,7 +182,7 @@ export async function approvePublicSignalement(
   const admin = getServiceClient()
   const { data: report, error: fetchErr } = await admin
     .from('reported_guests')
-    .select('id, public_summary, public_city, public_month, incident_type, moderation_status')
+    .select('id, identifier, identifier_type, name, public_summary, public_city, public_month, incident_type, moderation_status')
     .eq('id', reportId)
     .maybeSingle()
 
@@ -139,6 +201,13 @@ export async function approvePublicSignalement(
   }
 
   const slug = generateSlug({ ...report, public_summary: summary, public_city: city })
+  // Hint identifiant partiel (4 premiers chiffres tel / 2 lettres email /
+  // prénom + initiale). Généré à l'approbation depuis les champs privés.
+  const identifierHint = maskIdentifier(
+    report.identifier ?? '',
+    report.identifier_type ?? '',
+    report.name ?? null,
+  )
 
   const { error: updErr, data: updData } = await admin
     .from('reported_guests')
@@ -149,6 +218,7 @@ export async function approvePublicSignalement(
       public_summary: summary,
       public_city: city,
       public_slug: slug,
+      public_identifier_hint: identifierHint,
       public_visible: true,
       is_validated: true,  // côté privé aussi : visible pour la recherche hôtes
     })
