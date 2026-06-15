@@ -92,12 +92,18 @@ async function fetchSignalements() {
 
 function buildFichePage(item) {
   const monthLabel = fmtMonth(item.month)
-  // Le titre met l'INCIDENT en avant (le vrai signal), la ville/mois en
-  // contexte discret. Avant on avait "[INCIDENT] · [VILLE] · [MOIS]" qui
-  // mettait la ville au même niveau d'importance — pas utile pour la
-  // décision d'un hôte qui cherche un PATTERN d'arnaque, pas un endroit.
+  // Fil conducteur orienté UTILITÉ HÔTE :
+  //  1. Hero — Identifier l'incident (type + résumé en lead)
+  //  2. Section "Le récit" — Ce qui s'est passé (le summary détaillé)
+  //  3. Section "Les signaux d'alerte" — Comment reconnaître (universel)
+  //  4. Section "Comment se protéger" — Quoi faire avant/après (universel)
+  //  5. CTA — Drive vers inscription dashboard
+  //  6. Footer — Disclaimer + contestation + métadonnées (date, source)
+  //
+  // La ville disparaît du titre/URL/breadcrumb : pas un signal utile pour
+  // reconnaître un pattern. Elle apparaît juste en pied de page comme
+  // métadonnée discrète pour les lecteurs curieux.
   const title = item.incident_type
-  const subtitle = monthLabel ? `Signalé en ${monthLabel}` : 'Signalement récent'
   const desc = item.summary.slice(0, 155) + (item.summary.length > 155 ? '...' : '')
   const canonical = `https://jasonmarinho.com/securite/signalements/${item.slug}`
 
@@ -128,30 +134,51 @@ function buildFichePage(item) {
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css">
 <style>
-:root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
+:root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 a{color:inherit}
-.wrap{max-width:760px;margin:0 auto;padding:clamp(28px,5vw,48px) clamp(18px,5vw,40px)}
-.brd{font-size:13px;color:var(--tl);margin-bottom:20px;line-height:1.6}
-.brd a{color:var(--tm);text-decoration:none}
-.brd a:hover{color:var(--g)}
-.lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);background:rgba(0,76,63,.06);border:1px solid rgba(0,76,63,.15);border-radius:100px;padding:4px 12px;margin-bottom:14px}
-h1{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3.5vw,2.6rem);line-height:1.2;letter-spacing:-.02em;color:var(--td);margin:0 0 12px;font-weight:400}
-.meta{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--tm);margin-bottom:28px}
-.meta-it{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:100px;white-space:nowrap}
-.disclaimer{padding:clamp(14px,3vw,18px);background:rgba(0,76,63,.04);border:1px solid rgba(0,76,63,.12);border-radius:10px;font-size:13px;line-height:1.65;color:var(--tm);margin-bottom:28px}
+.sec{padding:clamp(48px,7vw,80px) 0}
+.sec.cr{background:var(--cr)}
+.sec.dk{background:var(--gd)}
+.s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+.s-in.narrow{max-width:820px}
+.hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(56px,7vw,80px) 0;color:#fff}
+.brd{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:22px;line-height:1.6}
+.brd a{color:rgba(255,255,255,.55);text-decoration:none}
+.brd a:hover{color:#fff}
+.lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
+.lbl.dk{color:var(--g)}
+.h1{font-family:'Fraunces',serif;font-size:clamp(1.7rem,3.8vw,2.8rem);line-height:1.15;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:400}
+.lead{font-size:clamp(15px,1.5vw,17px);font-weight:300;line-height:1.7;color:rgba(255,255,255,.72);margin:0;max-width:680px}
+.h2{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:400;line-height:1.2;letter-spacing:-.02em;color:var(--td);margin:0 0 14px}
+.h2 em{color:var(--g);font-style:italic;font-weight:300}
+.h2.lt{color:#fff}.h2.lt em{color:var(--y)}
+.p{font-size:15px;line-height:1.75;color:var(--tm);margin:0 0 14px;font-weight:400}
+.recit{background:#fff;border:1px solid var(--bd);border-left:3px solid var(--g);border-radius:12px;padding:clamp(20px,3vw,28px);font-size:clamp(15px,1.4vw,17px);line-height:1.75;color:var(--td);font-weight:400}
+.list-num{display:flex;flex-direction:column;gap:14px;margin:24px 0 0}
+.list-num li{display:flex;gap:14px;align-items:flex-start;list-style:none}
+.list-num .num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--g);color:#fff;font-family:'Fraunces',serif;font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.list-num .txt{font-size:14.5px;line-height:1.7;color:var(--tm)}
+.list-num .txt strong{color:var(--td);font-weight:600}
+.cta-box{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:18px;padding:clamp(28px,4vw,40px);text-align:center;color:#fff;margin-top:8px}
+.cta-box h2{font-family:'Fraunces',serif;font-size:clamp(1.3rem,2.3vw,1.7rem);margin:0 0 10px;font-weight:400;line-height:1.25;color:#fff}
+.cta-box h2 em{color:var(--y);font-style:italic;font-weight:300}
+.cta-box p{font-size:14.5px;color:rgba(255,255,255,.6);margin:0 0 22px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+.btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14.5px;padding:13px 24px;border-radius:10px;text-decoration:none;transition:all .2s}
+.btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,213,107,.3)}
+.btn-ol{display:inline-flex;align-items:center;gap:8px;background:transparent;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.22);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+.btn-ol:hover{color:#fff;border-color:rgba(255,255,255,.45)}
+.foot{display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:space-between;padding-top:24px;border-top:1px solid var(--bd);margin-top:32px}
+.foot-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--tl)}
+.foot-meta span{display:inline-flex;align-items:center;gap:5px}
+.foot-meta i{font-size:13px;opacity:.7}
+.contest-link{font-size:12.5px;color:var(--tl);text-align:right;line-height:1.5}
+.contest-link a{color:var(--g);font-weight:500;text-decoration:underline;text-decoration-color:rgba(0,76,63,.25);text-underline-offset:2px}
+.disclaimer{padding:clamp(16px,3vw,20px);background:#fff;border:1px solid var(--bd);border-radius:12px;font-size:13px;line-height:1.7;color:var(--tm);margin-top:20px}
 .disclaimer strong{color:var(--td)}
-.cta-box{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:16px;padding:clamp(22px,4vw,32px);text-align:center;color:#fff}
-.cta-box h2{font-family:'Fraunces',serif;font-size:clamp(1.2rem,2.2vw,1.5rem);margin:0 0 8px;font-weight:400;line-height:1.25}
-.cta-box em{color:var(--y);font-style:italic;font-weight:300}
-.cta-box p{font-size:14px;color:rgba(255,255,255,.6);margin:0 0 18px;line-height:1.65}
-.contest{margin-top:24px;text-align:center;font-size:13px;color:var(--tl);line-height:1.6}
-.contest a{color:var(--g);font-weight:500}
-@media(max-width:560px){.brd{font-size:12px;margin-bottom:16px}.meta{gap:6px;font-size:12px}.meta-it{padding:4px 9px;font-size:11.5px}.cta-box .btn-p{width:100%;justify-content:center}}
-.btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14.5px;padding:12px 22px;border-radius:9px;text-decoration:none;transition:all .2s}
-.btn-p:hover{background:#ffe08f}
+@media(max-width:560px){.brd{font-size:12px;margin-bottom:18px}.cta-box{padding:24px 20px}.cta-box .btn-p{width:100%;justify-content:center;margin-bottom:8px}.foot{flex-direction:column;align-items:flex-start;gap:10px}.contest-link{text-align:left}}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -181,26 +208,79 @@ ${JSON.stringify({
 <script defer src="/nav.js"></script>
 </head>
 <body>
-<div class="wrap">
-  <div class="brd"><a href="/">Accueil</a> · <a href="/services/securite">Sécurité</a> · <a href="/securite/signalements">Signalements publics</a> · <span>${escHtml(item.incident_type)}</span></div>
-  <span class="lbl">Signalement anonymisé · ${escHtml(subtitle)}</span>
-  <h1>${escHtml(item.incident_type)}</h1>
-  <p style="font-size:clamp(15px,1.5vw,17px);line-height:1.7;color:var(--tm);margin:0 0 28px;font-weight:300">${escHtml(item.summary)}</p>
-  <div class="meta">
-    <span class="meta-it"><i class="ph ph-shield-check"></i>Source : hôte vérifié</span>
-    ${monthLabel ? `<span class="meta-it"><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span>` : ''}
-    ${item.city ? `<span class="meta-it" style="opacity:.7"><i class="ph ph-map-pin"></i>${escHtml(item.city)}</span>` : ''}
+
+<!-- HERO : identifier l'incident -->
+<header class="hero">
+  <div class="s-in">
+    <div class="brd"><a href="/">Accueil</a> · <a href="/services/securite">Sécurité</a> · <a href="/securite/signalements">Signalements publics</a> · <span>${escHtml(item.incident_type)}</span></div>
+    <div class="lbl">Signalement anonymisé${monthLabel ? ' · ' + escHtml(monthLabel) : ''}</div>
+    <h1 class="h1">${escHtml(item.incident_type)}</h1>
+    <p class="lead">${escHtml(item.summary)}</p>
   </div>
-  <div class="disclaimer">
-    <strong>Important.</strong> Ce signalement émane d'un hôte vérifié de la communauté Jason Marinho. Le profil est <strong>strictement anonymisé</strong> : aucun nom complet, email, téléphone ou adresse n'est diffusé. Ce signalement n'a aucune valeur de jugement et ne constitue pas une accusation formelle. Pour les vrais nom, email et téléphone, accès réservé aux hôtes inscrits via le dashboard sécurisé.
+</header>
+
+<!-- SECTION 1 : Comment reconnaître ce type de demande -->
+<section class="sec">
+  <div class="s-in narrow">
+    <div class="lbl dk">Reconnaître</div>
+    <h2 class="h2">Les signaux qui doivent <em>te faire reculer</em></h2>
+    <p class="p">Quel que soit le type d'arnaque, ces marqueurs reviennent dans plus de 80 % des cas observés par la communauté Jason Marinho. Si tu en vois 2 ou plus cumulés sur une demande de réservation, vérifie-la immédiatement dans la base.</p>
+    <ul class="list-num">
+      <li><span class="num">1</span><span class="txt"><strong>Profil créé récemment</strong> (moins de 3 mois) avec zéro ou très peu d'avis vérifiables.</span></li>
+      <li><span class="num">2</span><span class="txt"><strong>Photo de profil absente, floue ou trop parfaite</strong> — souvent une photo de stock ou générée par IA.</span></li>
+      <li><span class="num">3</span><span class="txt"><strong>Insistance pour sortir de la plateforme</strong> dès les premiers échanges (WhatsApp, email perso, virement direct, lien Wero).</span></li>
+      <li><span class="num">4</span><span class="txt"><strong>Demande de remise, dérogation ou tarif spécial</strong> qui semble "trop belle pour être vraie" — signal classique de bait.</span></li>
+      <li><span class="num">5</span><span class="txt"><strong>Pression émotionnelle ou temporelle</strong> ("décide vite", "j'ai besoin maintenant", "ne dis pas à Airbnb"). Un voyageur légitime n'utilise jamais ce ton.</span></li>
+    </ul>
   </div>
-  <div class="cta-box">
-    <h2>Vérifie ton voyageur<br><em>avant d'accepter</em></h2>
-    <p>Crée ton compte hôte gratuit pour accéder à la base complète avec contacts vérifiés et alertes croisées.</p>
-    <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+</section>
+
+<!-- SECTION 2 : Comment se protéger -->
+<section class="sec cr">
+  <div class="s-in narrow">
+    <div class="lbl dk">Se protéger</div>
+    <h2 class="h2">Trois réflexes <em>qui te protègent</em></h2>
+    <p class="p">Si tu reçois une demande qui ressemble à ce signalement, voici ce que tu fais avant toute chose. Ces 3 actions couvrent 90 % des cas réels.</p>
+    <ul class="list-num">
+      <li><span class="num">1</span><span class="txt"><strong>Tu vérifies dans la base communauté.</strong> Email, téléphone ou nom complet du voyageur passés au crible des signalements précédents. 30 secondes, gratuit, depuis ton dashboard hôte.</span></li>
+      <li><span class="num">2</span><span class="txt"><strong>Tu refuses tout paiement hors plateforme.</strong> Stripe, Airbnb Resolution, <a href="https://www.driing.co" style="color:var(--g)">Driing</a> ou virement avec contrat signé. Jamais Wero, jamais virement direct sans trace, jamais hors système sécurisé.</span></li>
+      <li><span class="num">3</span><span class="txt"><strong>Tu gardes tout dans la messagerie plateforme.</strong> Pas de SMS, pas d'email perso avant le check-in. Si Airbnb / Booking doivent arbitrer un litige plus tard, ils ne regarderont QUE ce qui est tracé chez eux.</span></li>
+    </ul>
   </div>
-  <p class="contest">Vous êtes la personne concernée par ce signalement et contestez son contenu ? <a href="/securite/contester-signalement?slug=${encodeURIComponent(item.slug)}">Demander le retrait sous 48h</a>.</p>
-</div>
+</section>
+
+<!-- SECTION 3 : CTA inscription -->
+<section class="sec">
+  <div class="s-in narrow">
+    <div class="cta-box">
+      <div class="lbl" style="color:rgba(255,213,107,.7);margin-bottom:10px">Communauté hôtes</div>
+      <h2>Vérifie ton voyageur<br><em>avant d'accepter</em></h2>
+      <p>Crée ton compte hôte gratuit pour accéder à la base complète : nom, email, téléphone vérifiés, alertes croisées sur tes nouvelles demandes.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/securite/signalements" class="btn-ol">Voir tous les signalements</a>
+      </div>
+    </div>
+
+    <!-- Footer : métadonnées discrètes + contestation -->
+    <div class="foot">
+      <div class="foot-meta">
+        <span><i class="ph ph-shield-check"></i>Source : hôte vérifié</span>
+        ${monthLabel ? `<span><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span>` : ''}
+        ${item.city ? `<span><i class="ph ph-map-pin"></i>${escHtml(item.city)}</span>` : ''}
+      </div>
+      <div class="contest-link">
+        Concerné par ce signalement ?<br><a href="/securite/contester-signalement?slug=${encodeURIComponent(item.slug)}">Demander le retrait sous 48h</a>
+      </div>
+    </div>
+
+    <!-- Disclaimer juridique -->
+    <div class="disclaimer">
+      <strong>Important.</strong> Ce signalement émane d'un hôte vérifié de la communauté Jason Marinho. Le profil est <strong>strictement anonymisé</strong> : aucun nom complet, email, téléphone ou adresse précise n'est diffusé. Il n'a aucune valeur de jugement et ne constitue pas une accusation formelle. Pour les vrais nom, email et téléphone, accès réservé aux hôtes inscrits via le dashboard sécurisé.
+    </div>
+  </div>
+</section>
+
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 </body>

@@ -80,8 +80,12 @@ export async function forceStaticRebuild(): Promise<{ ok?: boolean; error?: stri
 
 /**
  * Génère un slug SEO-friendly à partir des données anonymisées du signalement.
- * Format : [pseudo]-[ville]-[type-court]-[mois-annee]
- * Ex: marie-d-lyon-fete-nuisance-juin-2026
+ * Format : [type-court]-[mois-annee]-[id6]
+ * Ex: arnaque-wero-juin-2026-dde44c
+ *
+ * Volontairement SANS la ville : le SEO et la valeur d'un signalement
+ * portent sur le PATTERN d'arnaque (type + récit), pas le lieu. La ville
+ * reste affichée en métadonnée discrète sur la page.
  */
 function slugify(input: string): string {
   return input
@@ -93,8 +97,7 @@ function slugify(input: string): string {
 }
 
 function generateSlug(report: { id: string; public_summary: string | null; public_city: string | null; public_month: string | null; incident_type: string | null }): string {
-  const cityPart = report.public_city ? slugify(report.public_city) : 'lcd'
-  const typePart = report.incident_type ? slugify(report.incident_type).slice(0, 30) : 'signalement'
+  const typePart = report.incident_type ? slugify(report.incident_type).slice(0, 40) : 'signalement'
   const monthPart = report.public_month
     ? (() => {
         const [y, m] = report.public_month.split('-')
@@ -103,7 +106,7 @@ function generateSlug(report: { id: string; public_summary: string | null; publi
       })()
     : 'recent'
   const idShort = report.id.slice(0, 6)  // évite collisions
-  return `${cityPart}-${typePart}-${monthPart}-${idShort}`
+  return `${typePart}-${monthPart}-${idShort}`
 }
 
 /**
