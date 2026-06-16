@@ -642,17 +642,6 @@ export default function SecuriteView({
                   {report.make_public && (
                     <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px dashed rgba(255,213,107,0.25)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       <div>
-                        <label style={{ ...styles.label, fontSize: '12px' }}>Ville (publique, sans rue ni quartier) <span style={{ color: 'var(--danger)' }}>*</span></label>
-                        <input
-                          type="text"
-                          value={report.public_city}
-                          onChange={e => setReport(r => ({ ...r, public_city: e.target.value }))}
-                          style={styles.input}
-                          placeholder="Lyon"
-                          maxLength={80}
-                        />
-                      </div>
-                      <div>
                         <label style={{ ...styles.label, fontSize: '12px' }}>Résumé public anonymisé <span style={{ color: 'var(--danger)' }}>*</span></label>
                         <textarea
                           value={report.public_summary}

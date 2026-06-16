@@ -196,9 +196,8 @@ export async function approvePublicSignalement(
   if (!summary || summary.length < 30) {
     return { error: 'Le résumé public doit faire au moins 30 caractères.' }
   }
-  if (!city) {
-    return { error: 'La ville publique est obligatoire.' }
-  }
+  // city = optionnel : pertinent uniquement sur les nuisances/dégradations
+  // localisées, pas sur les arnaques génériques (WERO/virement/phishing).
 
   const slug = generateSlug({ ...report, public_summary: summary, public_city: city })
   // Hint identifiant partiel (4 premiers chiffres tel / 2 lettres email /
