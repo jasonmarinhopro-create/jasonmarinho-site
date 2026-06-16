@@ -58,15 +58,11 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
   const router = useRouter()
   const [isProcessing, startProcessing] = useTransition()
   const [editingSummary, setEditingSummary] = useState<Record<string, string>>({})
-  const [editingCity, setEditingCity] = useState<Record<string, string>>({})
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [removalToConfirm, setRemovalToConfirm] = useState<string | null>(null)
 
   function getSummary(p: Pending) {
     return editingSummary[p.id] ?? p.public_summary ?? ''
-  }
-  function getCity(p: Pending) {
-    return editingCity[p.id] ?? p.public_city ?? ''
   }
 
   // Reload garanti : router.refresh() peut être pris au piège du cache
@@ -82,7 +78,6 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
     startProcessing(async () => {
       const res = await approvePublicSignalement(p.id, {
         public_summary: getSummary(p),
-        public_city: getCity(p),
       })
       if (res.error) setErrorMsg(res.error)
       else hardRefresh()
@@ -231,15 +226,6 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
               {/* Édition publique */}
               <div style={s.publicBlock}>
                 <div style={s.publicLabel}>VERSION PUBLIQUE (édite si nécessaire avant approbation)</div>
-                <label style={s.fieldLabel}>Ville publique</label>
-                <input
-                  type="text"
-                  value={getCity(p)}
-                  onChange={e => setEditingCity(prev => ({ ...prev, [p.id]: e.target.value }))}
-                  style={s.fieldInput}
-                  placeholder="Lyon"
-                  maxLength={80}
-                />
                 <label style={s.fieldLabel}>Résumé public anonymisé ({getSummary(p).length}/600)</label>
                 <textarea
                   value={getSummary(p)}
@@ -290,8 +276,7 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={s.approvedTitle}>{a.incident_type ?? 'Signalement'}</div>
                   <div style={s.approvedMeta}>
-                    {a.public_city && <span>{a.public_city}</span>}
-                    {a.public_month && <span>· {a.public_month}</span>}
+                    {a.public_month && <span>{a.public_month}</span>}
                     {a.moderation_decided_at && <span>· publié {fmtAge(a.moderation_decided_at)}</span>}
                   </div>
                   {a.public_summary && (

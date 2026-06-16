@@ -275,7 +275,6 @@ ${JSON.stringify({
       <div class="foot-meta">
         <span><i class="ph ph-shield-check"></i>Source : hôte vérifié</span>
         ${monthLabel ? `<span><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span>` : ''}
-        ${item.city ? `<span><i class="ph ph-map-pin"></i>${escHtml(item.city)}</span>` : ''}
       </div>
       <div class="contest-link">
         Concerné par ce signalement ?<br><a href="/securite/contester-signalement?slug=${encodeURIComponent(item.slug)}">Demander le retrait sous 48h</a>
@@ -309,17 +308,14 @@ function buildListPage(items) {
       </div>`
     : `<div class="grid">` + items.map(it => {
         const monthLabel = fmtMonth(it.month)
-        // Hiérarchie : INCIDENT (h3 fraunces) → HINT identifiant
-        // partiel (anti-récidive) → SUMMARY (le vrai contenu) → meta
-        // discrète (mois · ville) en bas.
+        // Hiérarchie : INCIDENT (h3 fraunces) → HINT identifiant partiel
+        // (anti-récidive) → SUMMARY (le contenu) → mois en footer discret.
+        // Ville retirée : pas un signal utile sur les patterns d'arnaque.
         return `<a href="/securite/signalements/${escHtml(it.slug)}" class="card">
   <h3 class="card-h">${escHtml(it.incident_type)}</h3>
   ${it.identifier_hint ? `<div class="card-hint"><i class="ph-bold ph-fingerprint"></i>${escHtml(it.identifier_hint)}</div>` : ''}
   <p class="card-sum">${escHtml(it.summary.slice(0, 240))}${it.summary.length > 240 ? '…' : ''}</p>
-  <div class="card-meta">
-    ${monthLabel ? `<span class="card-when"><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span>` : ''}
-    ${it.city ? `<span class="card-where"><i class="ph ph-map-pin"></i>${escHtml(it.city)}</span>` : ''}
-  </div>
+  ${monthLabel ? `<div class="card-meta"><span class="card-when"><i class="ph ph-calendar"></i>${escHtml(monthLabel)}</span></div>` : ''}
   <span class="card-cta">Lire le signalement <i class="ph-bold ph-arrow-right"></i></span>
 </a>`
       }).join('\n') + `</div>`
