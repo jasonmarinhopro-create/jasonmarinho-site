@@ -60,7 +60,28 @@ export async function POST(request: NextRequest) {
 
     const amountCents = Math.round(Number(contract.montant_caution) * 100)
 
-    // Créer la Checkout Session sur le compte Connect du bailleur
+    // Si une session Checkout existe déjà ET est encore active, on retourne
+    // son URL au lieu d'en créer une seconde. Évite le double-paiement si
+    // le voyageur clique 2× sur le bouton ou si le navigateur retry.
+    if (contract.stripe_deposit_checkout_id && contract.stripe_deposit_status === 'pending') {
+      try {
+        const existing = await stripe.checkout.sessions.retrieve(
+          contract.stripe_deposit_checkout_id,
+          undefined,
+          { stripeAccount: profile.stripe_account_id },
+        )
+        if (existing.status === 'open' && existing.url) {
+          return NextResponse.json({ url: existing.url, reused: true })
+        }
+      } catch {
+        // Session perdue / expirée → on en recrée une fraîche ci-dessous
+      }
+    }
+
+    // Créer la Checkout Session sur le compte Connect du bailleur.
+    // idempotencyKey = contract_id + ':deposit:' + amount → double POST
+    // strictement identique côté Stripe retourne la même session sans
+    // créer de PaymentIntent en doublon.
     const session = await stripe.checkout.sessions.create(
       {
         mode: 'payment',
@@ -88,7 +109,10 @@ export async function POST(request: NextRequest) {
         locale: 'fr',
         metadata: { contract_id: contract.id, token },
       },
-      { stripeAccount: profile.stripe_account_id }
+      {
+        stripeAccount: profile.stripe_account_id,
+        idempotencyKey: `deposit:${contract.id}:${amountCents}`,
+      }
     )
 
     // Sauvegarder l'ID de session en base

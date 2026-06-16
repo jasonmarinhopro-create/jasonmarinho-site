@@ -333,12 +333,17 @@ export async function POST(request: NextRequest) {
 }
 
 // GET /api/contracts/sign?token=xxx
-// Retourne les données du contrat pour la page de signature (sans données sensibles)
+// Retourne les données du contrat pour la page de signature (sans données sensibles).
+//
+// Rate-limit strict (10/min/IP avant : 60/min/IP) : un voyageur légitime fait
+// 1-3 GETs (charge page + retry au cas où). Un attaquant qui brute-force des
+// tokens en peut tester ~14 000/jour avec 10/min → ratio ridicule vs 2^128
+// d'un UUID. Avant : 86 400 tentatives/jour permettait de cibler une cohorte.
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request)
-  const limit = await rateLimit('contracts:sign:read', ip, 60, 60_000)
+  const limit = await rateLimit('contracts:sign:read', ip, 10, 60_000)
   if (!limit.allowed) {
-    return NextResponse.json({ error: 'Trop de requêtes.' }, { status: 429 })
+    return NextResponse.json({ error: 'Trop de requêtes. Réessaye dans 1 minute.' }, { status: 429 })
   }
 
   const { searchParams } = new URL(request.url)

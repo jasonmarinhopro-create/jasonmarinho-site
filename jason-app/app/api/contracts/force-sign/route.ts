@@ -14,8 +14,14 @@ function createServiceClient() {
 
 // POST /api/contracts/force-sign
 // Body: { contract_id, signature_date? }
-// Permet à l'hôte de forcer manuellement la signature d'un contrat bloqué en 'en_attente'
-// alors que le séjour est déjà marqué 'signe' (récupération en cas de bug)
+//
+// ⚠ ENDPOINT ADMIN UNIQUEMENT (depuis sécurisation 2026-06).
+// Avant : tout hôte authentifié pouvait forcer la signature d'un contrat.
+// Problème : signature légalement contestable au sens eIDAS (le locataire
+// n'a pas réellement signé, signature_ip = 'sync-manuel'). Risque
+// juridique réel en cas de litige.
+// Maintenant : réservé à Jason (role='admin'). Utilisé uniquement pour
+// debug/récupération suite à bug technique avéré. Audit log obligatoire.
 export async function POST(request: NextRequest) {
   try {
     // Vérifier que l'hôte est authentifié (getUser valide le token côté serveur Supabase)
@@ -25,6 +31,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
     }
 
+    // Garde admin-only : check role dans profiles
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    if (profile?.role !== 'admin') {
+      log.warn('forceSignAttemptByNonAdmin', { userId: user.id })
+      return NextResponse.json({
+        error: 'Action réservée à l\'administrateur. Si un contrat est bloqué, contacte le support.',
+      }, { status: 403 })
+    }
+
     const { contract_id, signature_date } = await request.json()
     if (!contract_id) {
       return NextResponse.json({ error: 'contract_id manquant.' }, { status: 400 })
@@ -32,12 +51,11 @@ export async function POST(request: NextRequest) {
 
     const db = createServiceClient()
 
-    // Récupérer le contrat (vérification ownership)
+    // Récupérer le contrat (sans restriction user_id puisque admin)
     const { data: contract, error: fetchErr } = await db
       .from('contracts')
       .select('id, statut, sejour_id, token, user_id, locataire_prenom, locataire_nom, logement_adresse')
       .eq('id', contract_id)
-      .eq('user_id', user.id)
       .single()
 
     if (fetchErr || !contract) {
@@ -58,14 +76,17 @@ export async function POST(request: NextRequest) {
 
     const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
-    // Forcer la signature du contrat
+    // Forcer la signature. Marquage explicite "admin-override" pour audit
+    // futur (un signature_ip = admin-override:* est NON-eIDAS et ne doit
+    // pas être utilisé comme preuve dans un litige juridique).
+    log.warn('forceSignByAdmin', { adminId: user.id, contractId: contract_id, contractOwner: contract.user_id })
     const { data: updated, error: updateErr } = await db
       .from('contracts')
       .update({
         statut: 'signe',
         signature_date: signDateIso,
-        signature_ip: 'sync-manuel',
-        signature_user_agent: `Force-sync by host ${user.id}`,
+        signature_ip: `admin-override:${user.id.slice(0, 8)}`,
+        signature_user_agent: `Admin force-sign at ${new Date().toISOString()} for owner ${contract.user_id}`,
       })
       .eq('id', contract_id)
       .select('id, statut')
