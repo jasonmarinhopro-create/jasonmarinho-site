@@ -91,6 +91,10 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
         .eq('id', contractId)
         .single()
       const currentChecklist = (currentRow?.checklist_status as Record<string, boolean>) ?? {}
+      // Garde-fou anti-régression : on n'écrase JAMAIS un état terminal
+      // (captured/released) ou en transition (capturing/releasing). Sans
+      // cette garde, un webhook qui rejoue (Stripe retry 3 jours) pouvait
+      // remettre une caution 'captured' en 'held' = inconsistance.
       await db
         .from('contracts')
         .update({
@@ -107,11 +111,29 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
       const pi = event.data.object as Stripe.PaymentIntent
       const contractId = pi.metadata?.contract_id
       if (!contractId) break
+      // Une annulation Stripe (release ou expiration auto au bout de 7j)
+      // marque la caution comme released. Avant on remettait en 'pending'
+      // ce qui était faux : si l'auth a été annulée, on ne peut pas la
+      // réutiliser. 'released' = état final propre.
       await db
         .from('contracts')
-        .update({ stripe_deposit_status: 'pending', stripe_deposit_payment_intent_id: null })
+        .update({ stripe_deposit_status: 'released' })
         .eq('id', contractId)
-        .eq('stripe_deposit_status', 'held')
+        .in('stripe_deposit_status', ['held', 'releasing', 'pending'])
+      break
+    }
+
+    case 'payment_intent.succeeded': {
+      const pi = event.data.object as Stripe.PaymentIntent
+      const contractId = pi.metadata?.contract_id
+      if (!contractId) break
+      // Caution effectivement encaissée (capture confirmée par Stripe).
+      // Sync DB au cas où la route /capture aurait timeout côté serveur.
+      await db
+        .from('contracts')
+        .update({ stripe_deposit_status: 'captured' })
+        .eq('id', contractId)
+        .in('stripe_deposit_status', ['held', 'capturing'])
       break
     }
 

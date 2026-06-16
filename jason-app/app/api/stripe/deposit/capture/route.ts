@@ -54,18 +54,64 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Compte Stripe non trouvé.' }, { status: 400 })
     }
 
-    // Capturer le PaymentIntent (débit réel)
-    await stripe.paymentIntents.capture(
-      contract.stripe_deposit_payment_intent_id,
-      {},
-      { stripeAccount: profile.stripe_account_id }
-    )
+    // VERROU OPTIMISTE : marque 'capturing' AVANT l'appel Stripe pour
+    // empêcher un double-clic / double-tab du bailleur d'envoyer 2 captures.
+    // .eq('stripe_deposit_status', 'held') = update n'affecte rien si déjà
+    // capturé ailleurs. Si la capture Stripe foire, on remet 'held'.
+    const { data: locked } = await db
+      .from('contracts')
+      .update({ stripe_deposit_status: 'capturing' })
+      .eq('id', contract_id)
+      .eq('stripe_deposit_status', 'held')
+      .select('id')
+      .maybeSingle()
 
-    // Mettre à jour le statut
+    if (!locked) {
+      // Quelqu'un a capturé entre notre check et notre update
+      return NextResponse.json({ error: 'Caution déjà en cours de capture ou déjà capturée.' }, { status: 409 })
+    }
+
+    // Capturer le PaymentIntent (débit réel). idempotencyKey garantit
+    // qu'un retry réseau ne crée pas une seconde capture côté Stripe.
+    let capturedPi: { id: string; status: string } | null = null
+    try {
+      capturedPi = await stripe.paymentIntents.capture(
+        contract.stripe_deposit_payment_intent_id,
+        {},
+        {
+          stripeAccount: profile.stripe_account_id,
+          idempotencyKey: `capture:${contract_id}:${contract.stripe_deposit_payment_intent_id}`,
+        }
+      )
+    } catch (stripeErr) {
+      // Rollback verrou : la capture a foiré, on redonne 'held' pour que
+      // le bailleur puisse réessayer (sinon le contrat reste bloqué
+      // en 'capturing' pour toujours).
+      await db
+        .from('contracts')
+        .update({ stripe_deposit_status: 'held' })
+        .eq('id', contract_id)
+        .eq('stripe_deposit_status', 'capturing')
+      log.error('stripeCapture', stripeErr)
+      return NextResponse.json({ error: 'Erreur Stripe lors de l\'encaissement. Le statut a été rétabli.' }, { status: 502 })
+    }
+
+    // Vérifie que Stripe confirme bien la capture (status = 'succeeded')
+    // avant de marquer la DB comme 'captured'. Évite le marquage faux
+    // si Stripe répond OK mais avec un status inattendu.
+    if (capturedPi?.status !== 'succeeded') {
+      log.error('captureNotSucceeded', { status: capturedPi?.status })
+      return NextResponse.json({
+        error: `Statut Stripe inattendu après capture : ${capturedPi?.status ?? 'inconnu'}. Contacte le support.`,
+      }, { status: 502 })
+    }
+
+    // Confirmation : marque comme capturé en DB
     await db
       .from('contracts')
       .update({ stripe_deposit_status: 'captured' })
       .eq('id', contract_id)
+      .eq('stripe_deposit_status', 'capturing')
 
     return NextResponse.json({ success: true })
   } catch (err) {

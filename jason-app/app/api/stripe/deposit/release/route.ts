@@ -54,18 +54,57 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Compte Stripe non trouvé.' }, { status: 400 })
     }
 
-    // Annuler le PaymentIntent (libère le blocage carte)
-    await stripe.paymentIntents.cancel(
-      contract.stripe_deposit_payment_intent_id,
-      {},
-      { stripeAccount: profile.stripe_account_id }
-    )
+    // VERROU OPTIMISTE : marque 'releasing' AVANT l'appel Stripe.
+    // Évite que 2 clics en parallèle annulent 2× la même PaymentIntent
+    // (Stripe répondrait OK une fois puis erreur, mais on serait dans un
+    // état incohérent côté DB).
+    const { data: locked } = await db
+      .from('contracts')
+      .update({ stripe_deposit_status: 'releasing' })
+      .eq('id', contract_id)
+      .eq('stripe_deposit_status', 'held')
+      .select('id')
+      .maybeSingle()
 
-    // Mettre à jour le statut
+    if (!locked) {
+      return NextResponse.json({ error: 'Caution déjà en cours de libération ou déjà libérée.' }, { status: 409 })
+    }
+
+    // Annuler le PaymentIntent (libère le blocage carte) + idempotency
+    let canceledPi: { id: string; status: string } | null = null
+    try {
+      canceledPi = await stripe.paymentIntents.cancel(
+        contract.stripe_deposit_payment_intent_id,
+        {},
+        {
+          stripeAccount: profile.stripe_account_id,
+          idempotencyKey: `release:${contract_id}:${contract.stripe_deposit_payment_intent_id}`,
+        }
+      )
+    } catch (stripeErr) {
+      // Rollback verrou
+      await db
+        .from('contracts')
+        .update({ stripe_deposit_status: 'held' })
+        .eq('id', contract_id)
+        .eq('stripe_deposit_status', 'releasing')
+      log.error('stripeCancel', stripeErr)
+      return NextResponse.json({ error: 'Erreur Stripe lors de la libération. Le statut a été rétabli.' }, { status: 502 })
+    }
+
+    // Stripe confirme l'annulation ?
+    if (canceledPi?.status !== 'canceled') {
+      log.error('cancelNotCanceled', { status: canceledPi?.status })
+      return NextResponse.json({
+        error: `Statut Stripe inattendu après annulation : ${canceledPi?.status ?? 'inconnu'}.`,
+      }, { status: 502 })
+    }
+
     await db
       .from('contracts')
       .update({ stripe_deposit_status: 'released' })
       .eq('id', contract_id)
+      .eq('stripe_deposit_status', 'releasing')
 
     return NextResponse.json({ success: true })
   } catch (err) {
