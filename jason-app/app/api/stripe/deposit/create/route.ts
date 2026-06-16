@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       try {
         const existing = await stripe.checkout.sessions.retrieve(
           contract.stripe_deposit_checkout_id,
+          undefined,
           { stripeAccount: profile.stripe_account_id },
         )
         if (existing.status === 'open' && existing.url) {
