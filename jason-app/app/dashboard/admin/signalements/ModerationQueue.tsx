@@ -254,24 +254,19 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
                 </div>
               </div>
 
-              {/* Diagnostic visible : pourquoi le bouton est désactivé.
-                  Avant ça donnait l'impression que rien ne se passait au
-                  clic, l'hôte pensait que la validation ne marchait pas. */}
-              {(getSummary(p).length < 30 || !getCity(p)) && (
+              {/* Hint visible si le résumé est encore trop court (ville
+                  désormais optionnelle, pas bloquante). */}
+              {getSummary(p).length < 30 && (
                 <div style={s.disabledHint}>
                   <Warning size={12} weight="fill" />
-                  {!getCity(p) && getSummary(p).length < 30
-                    ? 'Renseigne la ville publique et le résumé (≥30 caractères) pour pouvoir approuver.'
-                    : !getCity(p)
-                      ? 'Renseigne la ville publique pour pouvoir approuver.'
-                      : `Le résumé doit faire au moins 30 caractères (actuellement ${getSummary(p).length}).`}
+                  Le résumé doit faire au moins 30 caractères (actuellement {getSummary(p).length}).
                 </div>
               )}
               <div style={s.actionsRow}>
                 <button onClick={() => handleReject(p)} disabled={isProcessing} style={s.btnSecondary}>
                   <X size={13} weight="bold" /> Refuser
                 </button>
-                <button onClick={() => handleApprove(p)} disabled={isProcessing || getSummary(p).length < 30 || !getCity(p)} style={s.btnPrimary}>
+                <button onClick={() => handleApprove(p)} disabled={isProcessing || getSummary(p).length < 30} style={s.btnPrimary}>
                   <CheckCircle size={13} weight="fill" /> Approuver et publier
                 </button>
               </div>
