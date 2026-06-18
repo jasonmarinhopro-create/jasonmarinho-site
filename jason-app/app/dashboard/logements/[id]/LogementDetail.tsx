@@ -774,6 +774,20 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                   <span style={s.detailVal}>{l.methodes_paiement.split(',').map(m => m.trim()).join(' · ')}</span>
                 </div>
               )}
+              {/* Lien vers la stratégie tarifaire complète (par plateforme + saison) */}
+              <a
+                href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '12px 14px', marginTop: '6px',
+                  background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+                  borderRadius: '10px', textDecoration: 'none',
+                  color: 'var(--accent-text)', fontSize: '13px', fontWeight: 600,
+                }}
+              >
+                <span>Stratégie tarifaire par plateforme &amp; saison</span>
+                <span style={{ fontSize: '11px' }}>Ouvrir →</span>
+              </a>
             </div>
           }
           edit={

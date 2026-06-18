@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect, useTransition, useMemo } from 'react'
-import { CurrencyEur, House, Sun, Snowflake, TrendUp, CheckCircle, Warning, FloppyDisk, ArrowsClockwise } from '@phosphor-icons/react/dist/ssr'
+import { CurrencyEur, House, Sun, Snowflake, TrendUp, CheckCircle, Warning, FloppyDisk, ArrowsClockwise, ChartBar } from '@phosphor-icons/react/dist/ssr'
 import type { LogementPrefill } from '@/lib/lcd/dashboard-prefill'
 import { updateLogementPricing } from '../logements/actions'
+import { findMarketBenchmark } from '@/lib/lcd/market-benchmarks'
 
 // Commissions moyennes appliquées aux plateformes (côté hôte).
 // Airbnb = split fee 3-5 % hôte, on prend 5 %. Booking = 15-18 % hôte,
@@ -251,17 +252,9 @@ function LogementPricingCard({ logement, startsOpen }: { logement: LogementPrefi
             </section>
           )}
 
-          {/* Comparaison vs marché local */}
-          {hasAnyPrice && logement.stats && logement.stats.adrReel > 0 && (
-            <section style={s.section}>
-              <h4 style={s.sectionH}>
-                <TrendUp size={15} weight="fill" color="var(--success-1)" /> Comparaison avec ton ADR réel
-              </h4>
-              <p style={s.sectionP}>
-                Ton ADR observé sur les derniers séjours est <strong>{fmtEur(logement.stats.adrReel)}</strong>.
-                Confronte-le à ton prix de base pour ajuster.
-              </p>
-            </section>
+          {/* Comparaison live : prix saisi vs marché local + ADR réel */}
+          {hasAnyPrice && (
+            <MarketComparison logement={logement} draft={draft} />
           )}
 
           {/* Feedback save */}
@@ -371,6 +364,111 @@ function PricingMatrix({ draft }: { draft: DraftPrices }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────
+// Comparaison vs marché ville (sourcée) + ADR réel observé
+// ─────────────────────────────────────────────────────────────────────
+function MarketComparison({ logement, draft }: { logement: LogementPrefill; draft: DraftPrices }) {
+  const bench = findMarketBenchmark(logement.ville, logement.pays)
+  const adrReel = logement.stats?.adrReel ?? 0
+  // Prix de base "représentatif" du hôte : on prend le max des 3 plateformes
+  // saisies (Airbnb a souvent le prix le plus visible voyageur, mais on
+  // veut comparer le HAUT de gamme tarifaire si Airbnb est vide).
+  const userBase = Math.max(
+    Number(draft.prix_airbnb_nuit) || 0,
+    Number(draft.prix_booking_nuit) || 0,
+    Number(draft.prix_direct_nuit) || 0,
+  )
+  if (userBase === 0) return null
+
+  // 3 comparaisons : vs marché ville (si dispo) + vs ADR réel observé
+  // Le bench peut être null si la ville n'est pas dans nos 83 sourcées —
+  // dans ce cas on affiche juste le bench pays via le retour de
+  // findMarketBenchmark qui fallback déjà.
+  const benchAdr = bench?.adrEur ?? 0
+  const benchDiff = benchAdr > 0 ? Math.round(((userBase - benchAdr) / benchAdr) * 100) : null
+  const reelDiff = adrReel > 0 ? Math.round(((userBase - adrReel) / adrReel) * 100) : null
+
+  function diffLabel(diff: number | null): { text: string; color: string } {
+    if (diff === null) return { text: '—', color: 'var(--text-muted)' }
+    if (Math.abs(diff) < 5) return { text: 'Dans la moyenne', color: 'var(--success-1)' }
+    if (diff > 0) return {
+      text: `+${diff}% au-dessus`,
+      color: diff > 30 ? 'var(--danger)' : '#d97706',
+    }
+    return {
+      text: `${diff}% en dessous`,
+      color: diff < -30 ? 'var(--danger)' : '#d97706',
+    }
+  }
+
+  function reco(diff: number | null): string {
+    if (diff === null) return ''
+    if (Math.abs(diff) < 5) return 'Position optimale, tu es bien dans le marché.'
+    if (diff >= 30) return 'Risque de perdre des réservations face à la concurrence. Envisage de baisser ou de mieux justifier (qualité photo, équipements premium).'
+    if (diff > 5) return 'Léger surplus assumable si ton offre est mieux positionnée (équipements, déco, avis).'
+    if (diff <= -30) return 'Tu laisses de l\'argent sur la table. Teste +10 à 15 % et observe le taux de réservation.'
+    return 'Marge de progression possible, teste +5 à 10 % progressivement.'
+  }
+
+  const benchInfo = diffLabel(benchDiff)
+  const reelInfo = diffLabel(reelDiff)
+  const recoText = reco(benchDiff ?? reelDiff)
+
+  return (
+    <section style={s.section}>
+      <h4 style={s.sectionH}>
+        <ChartBar size={15} weight="fill" color="var(--success-1)" /> Comparaison marché
+      </h4>
+      <p style={s.sectionP}>
+        Confronte ton prix de base au marché local et à tes performances
+        passées pour ajuster sereinement.
+      </p>
+      <div style={s.compareGrid}>
+        {bench && (
+          <div style={s.compareCard}>
+            <div style={s.compareLabel}>Marché {bench.ville} ({bench.pays})</div>
+            <div style={s.compareValue}>{fmtEur(benchAdr)}</div>
+            <div style={{ ...s.compareDiff, color: benchInfo.color }}>{benchInfo.text}</div>
+            <div style={s.compareSource}>Source : {bench.source}</div>
+          </div>
+        )}
+        {!bench && (
+          <div style={s.compareCard}>
+            <div style={s.compareLabel}>Marché ville</div>
+            <div style={s.compareValue} title="Aucun benchmark précis pour cette ville">—</div>
+            <div style={s.compareSource}>Ville hors des 83 sourcées</div>
+          </div>
+        )}
+        {adrReel > 0 ? (
+          <div style={s.compareCard}>
+            <div style={s.compareLabel}>Ton ADR réel observé</div>
+            <div style={s.compareValue}>{fmtEur(adrReel)}</div>
+            <div style={{ ...s.compareDiff, color: reelInfo.color }}>{reelInfo.text}</div>
+            <div style={s.compareSource}>{logement.stats?.nbSejours ?? 0} séjours passés</div>
+          </div>
+        ) : (
+          <div style={s.compareCard}>
+            <div style={s.compareLabel}>Ton ADR réel observé</div>
+            <div style={s.compareValue}>—</div>
+            <div style={s.compareSource}>Pas encore de séjour facturé</div>
+          </div>
+        )}
+        <div style={s.compareCard}>
+          <div style={s.compareLabel}>Ton prix de base saisi</div>
+          <div style={{ ...s.compareValue, color: 'var(--accent-text)' }}>{fmtEur(userBase)}</div>
+          <div style={s.compareSource}>Max des 3 plateformes</div>
+        </div>
+      </div>
+      {recoText && (
+        <div style={s.recoBox}>
+          <Warning size={13} weight="fill" />
+          <span>{recoText}</span>
+        </div>
+      )}
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────
 function fmtEur(n: number): string {
@@ -414,6 +512,14 @@ const s: Record<string, React.CSSProperties> = {
   numInput: { flex: 1, padding: '7px 10px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '7px', color: 'var(--text)', fontSize: '13.5px', fontWeight: 600, fontFamily: 'inherit', width: '80px' },
   pctSign: { fontSize: '13px', color: 'var(--text-muted)', fontWeight: 600 },
   seasonHint: { fontSize: '11px', color: 'var(--text-muted)' },
+
+  compareGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' },
+  compareCard: { padding: '14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', display: 'flex', flexDirection: 'column' as const, gap: '4px' },
+  compareLabel: { fontSize: '11.5px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.4px' },
+  compareValue: { fontSize: '22px', fontFamily: 'var(--font-fraunces), serif', fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.5px', lineHeight: 1.1 },
+  compareDiff: { fontSize: '12px', fontWeight: 600, marginTop: '2px' },
+  compareSource: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' },
+  recoBox: { display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '12px 14px', background: 'rgba(217,119,6,0.08)', border: '1px solid rgba(217,119,6,0.2)', borderRadius: '10px', fontSize: '13px', color: '#d97706', lineHeight: 1.55, fontWeight: 500 },
 
   matrixWrap: { overflowX: 'auto' as const },
   matrix: { width: '100%', borderCollapse: 'collapse' as const, fontSize: '13px' },
