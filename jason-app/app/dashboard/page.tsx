@@ -156,6 +156,13 @@ export default async function DashboardPage() {
       .not('date_arrivee', 'is', null)
       .not('date_depart', 'is', null)
       .order('date_arrivee'),
+    // Stratégie tarifaire : au moins 1 logement avec un prix configuré ?
+    // Utilisé pour la step setupSteps 'prix' (nudge config).
+    supabase
+      .from('logements')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .or('prix_airbnb_nuit.not.is.null,prix_booking_nuit.not.is.null,prix_direct_nuit.not.is.null'),
   ])
 
   // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
@@ -192,6 +199,7 @@ export default async function DashboardPage() {
   } | null }>(12, { data: null })
   const { data: icalEventsRaw } = pick<{ data: Array<{ id: string; title: string; start_date: string; end_date: string | null; description: string | null }> | null }>(13, { data: [] })
   const { data: sejoursForArrivals } = pick<{ data: Array<{ id: string; voyageur_id: string | null; logement: string | null; date_arrivee: string; date_depart: string; voyageurs: { prenom: string | null; nom: string | null } | Array<{ prenom: string | null; nom: string | null }> | null }> | null }>(14, { data: [] })
+  const { count: pricingCount }  = pick<{ count: number | null }>(15, { count: 0 })
 
   const latestNews = allCachedNews.slice(0, 3)
 
@@ -535,6 +543,17 @@ export default async function DashboardPage() {
       done: hasContract, ctaLabel: 'Ouvrir', ctaHref: '/dashboard/calendrier',
       durationLabel: '2 min',
     },
+    // Step "prix" : visible UNIQUEMENT si l'hôte a au moins 1 logement
+    // (sinon ça n'a aucun sens). done = au moins 1 logement avec un prix
+    // par plateforme configuré (Airbnb, Booking ou Direct).
+    ...(hasLogement ? [{
+      key: 'prix', label: 'Définir tes prix par plateforme',
+      desc: 'Stratégie tarifaire Airbnb / Booking / Direct + saisonnalité',
+      done: (pricingCount ?? 0) > 0,
+      ctaLabel: 'Configurer',
+      ctaHref: '/dashboard/calculateurs#mes-prix',
+      durationLabel: '2 min',
+    }] : []),
     {
       key: 'objectif', label: 'Définir ton objectif annuel',
       desc: 'Pour voir où tu en es par rapport à ton plan de vol',
