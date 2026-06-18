@@ -5,7 +5,7 @@ import { getDashboardPrefill, type LogementPrefill as PrefillType } from '@/lib/
 import CalculateursUI from './CalculateursUI'
 import OnboardingTour, { CALCULATEURS_STEPS } from '../OnboardingTour'
 
-export const metadata = { title: 'Calculateurs marché, Jason Marinho' }
+export const metadata = { title: 'Prix & Marché, Jason Marinho' }
 export const dynamic = 'force-dynamic'
 
 // Réutilisé depuis le module partagé pour cache et préfilage cohérents

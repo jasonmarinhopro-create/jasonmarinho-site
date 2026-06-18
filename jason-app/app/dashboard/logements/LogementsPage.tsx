@@ -607,6 +607,14 @@ export default function LogementsPage({ logements: initial }: Props) {
                     </td>
                     <td style={tableTd}>
                       <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
+                        <a
+                          href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ ...iconBtn, textDecoration: 'none', color: 'var(--accent-text)' }}
+                          title="Stratégie prix par plateforme & saison"
+                        >
+                          <CurrencyEur size={13} weight="bold" />
+                        </a>
                         <button
                           onClick={(e) => { e.stopPropagation(); openEdit(l) }}
                           style={iconBtn} title="Modifier"

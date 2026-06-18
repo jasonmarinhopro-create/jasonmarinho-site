@@ -299,3 +299,71 @@ export async function deleteLogement(id: string): Promise<{ error?: string }> {
   await invalidateDashboardPrefill(profile.userId)
   return {}
 }
+
+// ─── Stratégie tarifaire (prix par plateforme + saisonnalité) ──────────
+export type PricingStrategy = {
+  prix_airbnb_nuit?: number | null
+  prix_booking_nuit?: number | null
+  prix_direct_nuit?: number | null
+  prix_saison_basse_pct?: number | null
+  prix_saison_haute_pct?: number | null
+}
+
+/**
+ * Met à jour la stratégie tarifaire d'un logement (prix par plateforme +
+ * multiplicateurs saison). Ownership vérifié par user_id.
+ *
+ * Valide :
+ *  - Prix : numérique positif ou null (= "non défini, j'utilise pas
+ *    cette plateforme")
+ *  - Pourcentages : entiers entre 30 et 200 (-70% à +100% du prix base)
+ */
+export async function updateLogementPricing(
+  id: string,
+  strategy: PricingStrategy,
+): Promise<{ error?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { error: 'Non authentifié.' }
+
+  const clean: Record<string, number | null | string> = {
+    prix_strategie_updated_at: new Date().toISOString(),
+  }
+
+  const priceFields = ['prix_airbnb_nuit', 'prix_booking_nuit', 'prix_direct_nuit'] as const
+  for (const f of priceFields) {
+    const v = strategy[f]
+    if (v === null || v === undefined || v === ('' as unknown)) {
+      clean[f] = null
+    } else {
+      const n = Number(v)
+      if (!Number.isFinite(n) || n < 0 || n > 10000) {
+        return { error: `${f} : valeur invalide (doit être entre 0 et 10 000 €).` }
+      }
+      clean[f] = Math.round(n * 100) / 100
+    }
+  }
+
+  const pctFields = ['prix_saison_basse_pct', 'prix_saison_haute_pct'] as const
+  for (const f of pctFields) {
+    const v = strategy[f]
+    if (v === null || v === undefined) continue
+    const n = Number(v)
+    if (!Number.isInteger(n) || n < 30 || n > 200) {
+      return { error: `${f} : valeur invalide (doit être entre 30 et 200 %).` }
+    }
+    clean[f] = n
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('logements')
+    .update(clean)
+    .eq('id', id)
+    .eq('user_id', profile.userId)
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/calculateurs')
+  revalidatePath('/dashboard/logements')
+  await invalidateDashboardPrefill(profile.userId)
+  return {}
+}

@@ -1,15 +1,20 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Calculator, ChartLineUp, MapPin, Storefront, TrendUp } from '@phosphor-icons/react/dist/ssr'
+import { Calculator, ChartLineUp, MapPin, Storefront, TrendUp, CurrencyEur } from '@phosphor-icons/react/dist/ssr'
 import { EstimateurRevenus, CalculateurPrix, CompareurMesVilles } from '../simulateurs/SimulateursUI'
 import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
 import type { AccountStats } from '@/lib/lcd/account-stats'
 import type { LogementPrefill } from './page'
 import TourTrigger from '@/components/dashboard/TourTrigger'
+import MesPrix from './MesPrix'
 
-type CalcTab = 'revenus' | 'prix' | 'mesvilles'
-const CALC_TABS: CalcTab[] = ['revenus', 'prix', 'mesvilles']
+// "mes-prix" est ouvert par défaut : c'est le hub stratégique des hôtes
+// (saisir/voir ses prix par plateforme + saison). Les 3 autres tabs sont
+// des outils de référence marché (estim revenu, prix moyen, comparaison
+// villes) qui restent disponibles.
+type CalcTab = 'mes-prix' | 'revenus' | 'prix' | 'mesvilles'
+const CALC_TABS: CalcTab[] = ['mes-prix', 'revenus', 'prix', 'mesvilles']
 
 interface Props {
   logementsPrefill?: LogementPrefill[]
@@ -17,13 +22,17 @@ interface Props {
 }
 
 export default function CalculateursUI({ logementsPrefill = [], accountStats }: Props) {
-  const [tab, setTab] = useState<CalcTab>('revenus')
+  // Tab par défaut : "mes-prix" si l'hôte a au moins 1 logement,
+  // sinon "revenus" (les autres tools restent utiles sans logement).
+  const [tab, setTab] = useState<CalcTab>(logementsPrefill.length > 0 ? 'mes-prix' : 'revenus')
 
   useEffect(() => {
     const fromHash = () => {
       const h = (typeof window !== 'undefined' ? window.location.hash.slice(1) : '') as CalcTab
       if (CALC_TABS.includes(h)) setTab(h)
     }
+    // Deep-link depuis Mes Logements : ?logement={id}#mes-prix → switch
+    // tab + le composant MesPrix se positionne sur le bon logement.
     fromHash()
     window.addEventListener('hashchange', fromHash)
     return () => window.removeEventListener('hashchange', fromHash)
@@ -68,17 +77,17 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
 
         <div style={s.hero}>
           <span style={s.heroBadge}>
-            <TrendUp size={13} weight="fill" />
-            3 calculateurs marché
+            <CurrencyEur size={13} weight="fill" />
+            Prix & marché
           </span>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
             <h1 style={s.heroTitle}>
-              Calculateurs <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>marché</em>
+              Prix <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>& marché</em>
             </h1>
             <TourTrigger />
           </div>
           <p style={s.heroDesc}>
-            Estime tes revenus, trouve le bon prix, compare tes villes. Préfilé avec tes vrais logements, comparé au marché européen (83 villes sourcées).
+            Définis ta stratégie tarifaire par plateforme et saison, puis confronte-la au marché européen (83 villes sourcées). Préfilé avec tes vrais logements.
           </p>
         </div>
 
@@ -93,12 +102,15 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
           </div>
         )}
 
-        <div style={s.tabs} role="tablist" aria-label="Calculateurs marché">
+        <div style={s.tabs} role="tablist" aria-label="Prix & marché">
+          <button onClick={() => selectTab('mes-prix')} role="tab" aria-selected={tab === 'mes-prix'} style={s.tab}>
+            <CurrencyEur size={15} weight="fill" /> Mes prix
+          </button>
           <button onClick={() => selectTab('revenus')} role="tab" aria-selected={tab === 'revenus'} style={s.tab}>
-            <TrendUp size={15} weight="fill" /> Revenus
+            <TrendUp size={15} weight="fill" /> Estimer revenus
           </button>
           <button onClick={() => selectTab('prix')} role="tab" aria-selected={tab === 'prix'} style={s.tab}>
-            <Storefront size={15} weight="fill" /> Prix par nuit
+            <Storefront size={15} weight="fill" /> Prix marché
           </button>
           <button onClick={() => selectTab('mesvilles')} role="tab" aria-selected={tab === 'mesvilles'} style={s.tab}>
             <MapPin size={15} weight="fill" /> Mes villes
@@ -108,6 +120,7 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
         <div style={s.bodyCard} role="tabpanel">
           {/* key={tab} : force le remount → anim fadeIn pour un crossfade subtil */}
           <div key={tab} className="anim-fade-in">
+            {tab === 'mes-prix' && <MesPrix logements={logementsPrefill} />}
             {tab === 'revenus' && <EstimateurRevenus logements={logementsPrefill} />}
             {tab === 'prix' && <CalculateurPrix logements={logementsPrefill} />}
             {tab === 'mesvilles' && <CompareurMesVilles logements={logementsPrefill} />}
@@ -126,7 +139,7 @@ function PageSwitcher({ current }: { current: 'fiscal' | 'marche' }) {
         <Calculator size={13} weight="fill" /> Simulateurs fiscaux
       </a>
       <a href="/dashboard/calculateurs" style={!isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={!isFiscal ? 'page' : undefined}>
-        <ChartLineUp size={13} weight="fill" /> Calculateurs marché
+        <ChartLineUp size={13} weight="fill" /> Prix & marché
       </a>
     </div>
   )

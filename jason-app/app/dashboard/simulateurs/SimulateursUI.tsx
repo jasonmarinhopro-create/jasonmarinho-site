@@ -806,7 +806,7 @@ function PageSwitcher({ current }: { current: 'fiscal' | 'marche' }) {
         <Calculator size={13} weight="fill" /> Simulateurs fiscaux
       </a>
       <a href="/dashboard/calculateurs" style={!isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={!isFiscal ? 'page' : undefined}>
-        <ChartLineUp size={13} weight="fill" /> Calculateurs marché
+        <ChartLineUp size={13} weight="fill" /> Prix & marché
       </a>
     </div>
   )

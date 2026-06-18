@@ -22,7 +22,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/audit-gbp/import-url': 'Import URL',
   '/dashboard/audit-gbp/import-csv': 'Audit Express',
   '/dashboard/simulateurs': 'Simulateurs fiscaux',
-  '/dashboard/calculateurs': 'Calculateurs marché',
+  '/dashboard/calculateurs': 'Prix & Marché',
   '/dashboard/voyageurs': 'Mes Voyageurs',
   '/dashboard/communaute': 'Groupes Facebook',
   '/dashboard/securite': 'Sécurité',
