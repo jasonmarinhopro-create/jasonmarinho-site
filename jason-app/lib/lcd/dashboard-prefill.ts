@@ -40,6 +40,11 @@ export type LogementPrefill = {
   pays: 'FR' | 'PT' | 'ES' | 'IT' | 'BE' | 'DE' | 'NL' | 'AT' | 'CH'
   ville: string | null
   tarifNuitee: number | null
+  prixAirbnb: number | null
+  prixBooking: number | null
+  prixDirect: number | null
+  saisonBassePct: number | null
+  saisonHautePct: number | null
   typeLogement: string | null
   nbChambres: number | null
   classementAtoutFrance: ClassementAtoutFrance | null
@@ -73,7 +78,7 @@ export async function getDashboardPrefill(userId: string): Promise<LogementPrefi
       const [{ data: logements }, { data: sejours }] = await Promise.all([
         supabase
           .from('logements')
-          .select('id, nom, adresse, pays, tarif_nuitee_moyen, type_logement, nb_chambres, classement_etoiles')
+          .select('id, nom, adresse, pays, tarif_nuitee_moyen, prix_airbnb_nuit, prix_booking_nuit, prix_direct_nuit, prix_saison_basse_pct, prix_saison_haute_pct, type_logement, nb_chambres, classement_etoiles')
           .eq('user_id', uid)
           .order('created_at', { ascending: false }),
         supabase
@@ -135,6 +140,11 @@ export async function getDashboardPrefill(userId: string): Promise<LogementPrefi
           pays,
           ville: extractCity(l.adresse as string | null),
           tarifNuitee: (l.tarif_nuitee_moyen as number | null) ?? null,
+          prixAirbnb: (l.prix_airbnb_nuit as number | null) ?? null,
+          prixBooking: (l.prix_booking_nuit as number | null) ?? null,
+          prixDirect: (l.prix_direct_nuit as number | null) ?? null,
+          saisonBassePct: (l.prix_saison_basse_pct as number | null) ?? null,
+          saisonHautePct: (l.prix_saison_haute_pct as number | null) ?? null,
           typeLogement: typeLog,
           nbChambres: (l.nb_chambres as number | null) ?? null,
           classementAtoutFrance,
