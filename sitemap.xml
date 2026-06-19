@@ -947,6 +947,12 @@
 
   <!-- ── Blog ── -->
   <url>
+    <loc>https://jasonmarinho.com/blog/barbecue-plancha-lcd-7-regles-autoriser-securite-voisins</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/blog/objets-oublies-voyageurs-lcd-7-regles-gerer-retours</loc>
     <lastmod>2026-06-17</lastmod>
     <changefreq>monthly</changefreq>
