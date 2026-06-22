@@ -625,6 +625,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://jasonmarinho.com/services/photographes-lcd</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/services/simulateurs</loc>
     <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
