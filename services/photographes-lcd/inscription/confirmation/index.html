@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmation abonnement photographe LCD | Jason Marinho</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
+  <link rel="manifest" href="/manifest.json?v=2026-06">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
+  <style>
+    body{margin:0;font-family:'Outfit',sans-serif;background:#FDFCF9;color:#0F1A0D;padding-top:64px}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:#003329;z-index:100}
+    .wrap{max-width:520px;margin:0 auto;padding:80px 24px 60px;text-align:center}
+    .ico{width:80px;height:80px;border-radius:20px;background:rgba(0,200,100,.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:24px;color:#1e9d54;font-size:36px}
+    .ico.cancel{background:rgba(245,158,11,.1);color:#d97706}
+    h1{font-family:'Fraunces',serif;font-size:28px;font-weight:400;color:#0F1A0D;margin:0 0 14px;letter-spacing:-.3px}
+    h1 em{color:#004C3F;font-style:italic;font-weight:300}
+    p{font-size:15px;line-height:1.75;color:#3D5038;margin:0 0 16px}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:#004C3F;color:#fff;font-weight:600;font-size:14.5px;padding:13px 26px;border-radius:10px;text-decoration:none;margin-top:14px}
+    .btn:hover{background:#005a4a}
+  </style>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+<div class="wrap" id="ok-box" style="display:none">
+  <div class="ico"><i class="ph-bold ph-check-circle"></i></div>
+  <h1>Bienvenue dans <em>l'annuaire</em> 🎉</h1>
+  <p>Ton paiement Stripe est confirmé. Ton profil photographe sera <strong>visible publiquement d'ici quelques minutes</strong> (le temps que notre site statique se régénère).</p>
+  <p>Tu recevras un email avec le lien direct de ta fiche et les infos pour modifier ton profil ou résilier ton abonnement à tout moment.</p>
+  <a href="/services/photographes-lcd" class="btn"><i class="ph-bold ph-arrow-left"></i> Retour à l'annuaire</a>
+</div>
+<div class="wrap" id="cancel-box" style="display:none">
+  <div class="ico cancel"><i class="ph-bold ph-clock-counter-clockwise"></i></div>
+  <h1>Paiement <em>annulé</em></h1>
+  <p>Ton abonnement n'a pas été activé. Aucun débit effectué. Ta place fondateur reste réservée 7 jours — tu peux finaliser à tout moment via le lien Stripe reçu par email.</p>
+  <p>Si tu as une question ou un blocage technique, écris à <a href="mailto:contact@jasonmarinho.com" style="color:#004C3F;font-weight:500">contact@jasonmarinho.com</a>.</p>
+  <a href="/services/photographes-lcd" class="btn"><i class="ph-bold ph-arrow-left"></i> Retour à l'annuaire</a>
+</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+  document.getElementById(status === 'paid' ? 'ok-box' : 'cancel-box').style.display = 'block';
+</script>
+<script defer src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+</body>
+</html>
