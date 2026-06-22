@@ -250,7 +250,12 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
               : `${voyageurs.length} voyageur${voyageurs.length > 1 ? 's' : ''}`}
           </p>
         </div>
-        {tableReady && (
+        {/* Bouton "+ Ajouter" : uniquement sur la tab Voyageurs.
+            Le modal qu'il ouvre est dans le wrapper voyageurs — si on
+            l'affichait sur la tab Contrats, openAdd ferait set du state
+            mais le modal JSX n'étant pas rendu, ça donnerait l'illusion
+            que le bouton est cassé. */}
+        {tableReady && topTab === 'voyageurs' && (
           <button onClick={openAdd} className="btn-primary" style={s.addBtn} data-tour="voyageur-create">
             <Plus size={16} weight="bold" />
             Ajouter

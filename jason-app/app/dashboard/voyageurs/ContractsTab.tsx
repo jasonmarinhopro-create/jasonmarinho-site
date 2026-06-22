@@ -84,15 +84,32 @@ export default function ContractsTab({ contracts }: Props) {
   if (contracts.length === 0) {
     return (
       <div style={s.empty}>
-        <FileText size={32} weight="duotone" color="var(--accent-text)" />
+        <div style={s.emptyIcon}>
+          <FileText size={32} weight="duotone" color="var(--accent-text)" />
+        </div>
         <h3 style={s.emptyH}>Aucun contrat pour le moment</h3>
-        <p style={s.emptyP}>
-          Les contrats sont utiles principalement pour les <strong>réservations directes</strong> (Driing, bouche-à-oreille, site perso).
-          Airbnb et Booking fournissent leurs propres CGU et protections — pas besoin de contrat sauf cas particulier.
+        <p style={s.emptyLead}>
+          Les contrats sont utiles principalement pour les <strong>réservations directes</strong> :
+          bouche-à-oreille, site perso, réseaux sociaux, plateformes sans CGU intégrées (Driing, par ex.).
+          Pour les séjours <strong>Airbnb</strong> et <strong>Booking</strong>, c'est rarement nécessaire :
+          ces plateformes fournissent déjà leurs propres conditions générales d'utilisation, leur protection
+          AirCover / Partner Protection, et leur médiation en cas de litige.
         </p>
-        <p style={{ ...s.emptyP, marginTop: '4px' }}>
-          Crée un contrat depuis la fiche d'un voyageur (onglet Séjours → bouton « Créer un contrat »).
-        </p>
+
+        <div style={s.emptyHowTo}>
+          <div style={s.emptyHowToTitle}>Comment créer ton premier contrat</div>
+          <ol style={s.emptyHowToList}>
+            <li>Ouvre la fiche d'un voyageur dans l'onglet <strong>Voyageurs</strong> ci-dessus</li>
+            <li>Dans la section <strong>Séjours</strong>, repère le séjour concerné</li>
+            <li>Clique <strong>« Créer un contrat »</strong> → un wizard te guide en 5 étapes (≈ 2 min)</li>
+            <li>Le locataire signe en ligne via un lien sécurisé envoyé par email</li>
+          </ol>
+        </div>
+
+        <div style={s.emptyCtaRow}>
+          <a href="#voyageurs" style={s.emptyCtaPrimary}>Aller à mes voyageurs →</a>
+          <a href="https://app.jasonmarinho.com/dashboard/guide" style={s.emptyCtaSecondary}>Lire le guide LCD</a>
+        </div>
       </div>
     )
   }
@@ -362,18 +379,64 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   empty: {
-    padding: '40px 24px', textAlign: 'center' as const,
-    background: 'var(--surface)', border: '1px dashed var(--border)',
-    borderRadius: '14px', display: 'flex', flexDirection: 'column' as const,
-    alignItems: 'center', gap: '10px',
+    padding: 'clamp(28px, 4vw, 56px) clamp(20px, 4vw, 56px)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '16px',
+    display: 'flex', flexDirection: 'column' as const,
+    alignItems: 'center', gap: '18px',
+    maxWidth: '880px', margin: '0 auto',
+  },
+  emptyIcon: {
+    width: '64px', height: '64px', borderRadius: '16px',
+    background: 'var(--accent-bg)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   emptyH: {
     fontFamily: 'var(--font-fraunces), serif', fontWeight: 400,
-    fontSize: '20px', color: 'var(--text)', margin: 0,
+    fontSize: 'clamp(22px, 2.4vw, 28px)',
+    color: 'var(--text)', margin: 0,
+    textAlign: 'center' as const,
+    letterSpacing: '-0.3px',
   },
-  emptyP: {
-    fontSize: '14px', color: 'var(--text-muted)', lineHeight: 1.6,
-    margin: 0, maxWidth: '560px',
+  emptyLead: {
+    fontSize: '14.5px', color: 'var(--text-2)', lineHeight: 1.75,
+    margin: 0,
+    maxWidth: '720px',
+    textAlign: 'center' as const,
+  },
+  emptyHowTo: {
+    width: '100%', maxWidth: '640px',
+    padding: '20px 24px',
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    borderRadius: '12px',
+    marginTop: '4px',
+  },
+  emptyHowToTitle: {
+    fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.6px',
+    textTransform: 'uppercase' as const, color: 'var(--accent-text)',
+    marginBottom: '12px',
+  },
+  emptyHowToList: {
+    margin: 0, padding: '0 0 0 22px',
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+    fontSize: '13.5px', color: 'var(--text-2)', lineHeight: 1.65,
+  },
+  emptyCtaRow: {
+    display: 'flex', gap: '10px', flexWrap: 'wrap' as const,
+    justifyContent: 'center', marginTop: '6px',
+  },
+  emptyCtaPrimary: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '11px 22px', background: 'var(--accent-text)', color: 'var(--bg)',
+    borderRadius: '10px', textDecoration: 'none',
+    fontSize: '13.5px', fontWeight: 700, fontFamily: 'inherit',
+  },
+  emptyCtaSecondary: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '11px 18px', background: 'transparent', color: 'var(--text-2)',
+    border: '1px solid var(--border)', borderRadius: '10px',
+    textDecoration: 'none',
+    fontSize: '13.5px', fontWeight: 500, fontFamily: 'inherit',
   },
   emptyResults: {
     padding: '28px 20px', textAlign: 'center' as const,
