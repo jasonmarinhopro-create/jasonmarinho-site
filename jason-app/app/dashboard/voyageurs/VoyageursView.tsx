@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useTransition, useMemo } from 'react'
+import { useState, useTransition, useMemo, useEffect } from 'react'
+import ContractsTab from './ContractsTab'
 import { useRouter } from 'next/navigation'
 import {
   Plus, MagnifyingGlass, Warning,
   X, User, Envelope, Phone, Note,
-  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset,
+  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, FileText,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
 import TourTrigger from '@/components/dashboard/TourTrigger'
@@ -57,13 +58,52 @@ const COUNTRIES: { code: string; name: string }[] = [
 
 const EMPTY_FORM: VoyageurData = { prenom: '', nom: '', email: '', telephone: '', notes: '', nationalite: null }
 
+export type ContractRow = {
+  id: string
+  statut: 'en_attente' | 'signe' | 'annule' | string
+  signature_date: string | null
+  created_at: string
+  locataire_prenom: string | null
+  locataire_nom: string | null
+  locataire_email: string | null
+  logement_nom: string | null
+  logement_adresse: string | null
+  date_arrivee: string | null
+  date_depart: string | null
+  montant_loyer: number | null
+  montant_caution: number | null
+  stripe_payment_enabled: boolean | null
+  stripe_payment_status: string | null
+  stripe_deposit_status: string | null
+  sejour_id: string | null
+  token: string | null
+}
+
 interface Props {
   voyageurs: Voyageur[]
   tableReady: boolean
+  contracts?: ContractRow[]
 }
 
-export default function VoyageursView({ voyageurs, tableReady }: Props) {
+export default function VoyageursView({ voyageurs, tableReady, contracts = [] }: Props) {
   const router = useRouter()
+  // Toggle "Voyageurs" / "Contrats". Sync URL hash pour partage de lien
+  // (#contrats ouvre directement la 2e vue). Voyageurs par défaut.
+  const [topTab, setTopTab] = useState<'voyageurs' | 'contrats'>('voyageurs')
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const fromHash = () => {
+      const h = window.location.hash.slice(1)
+      if (h === 'contrats' || h === 'voyageurs') setTopTab(h)
+    }
+    fromHash()
+    window.addEventListener('hashchange', fromHash)
+    return () => window.removeEventListener('hashchange', fromHash)
+  }, [])
+  function selectTopTab(t: 'voyageurs' | 'contrats') {
+    setTopTab(t)
+    if (typeof window !== 'undefined') history.replaceState(null, '', `#${t}`)
+  }
   const [isPending, startTransition] = useTransition()
   const [search, setSearch] = useState('')
   const [modal, setModal] = useState<'add' | 'edit' | null>(null)
@@ -217,6 +257,35 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
           </button>
         )}
       </div>
+
+      {/* Toggle Voyageurs / Contrats : visible toujours, drive vers la vue
+          Contrats utile surtout aux réservations directes (Airbnb/Booking
+          ont leurs propres CGU). */}
+      <div style={s.topTabs} role="tablist" aria-label="Voyageurs ou contrats">
+        <button
+          onClick={() => selectTopTab('voyageurs')}
+          role="tab"
+          aria-selected={topTab === 'voyageurs'}
+          style={{ ...s.topTab, ...(topTab === 'voyageurs' ? s.topTabActive : {}) }}
+        >
+          <Users size={14} weight="fill" />
+          Voyageurs <span style={s.topTabCount}>{voyageurs.length}</span>
+        </button>
+        <button
+          onClick={() => selectTopTab('contrats')}
+          role="tab"
+          aria-selected={topTab === 'contrats'}
+          style={{ ...s.topTab, ...(topTab === 'contrats' ? s.topTabActive : {}) }}
+        >
+          <FileText size={14} weight="fill" />
+          Contrats <span style={s.topTabCount}>{contracts.length}</span>
+        </button>
+      </div>
+
+      {topTab === 'contrats' && <ContractsTab contracts={contracts} />}
+
+      {/* Vue Voyageurs (rendu conditionnel) */}
+      {topTab === 'voyageurs' && (<>
 
       {/* Stats globales */}
       {tableReady && voyageurs.length > 0 && (
@@ -772,6 +841,9 @@ export default function VoyageursView({ voyageurs, tableReady }: Props) {
           </div>
         </div>
       )}
+
+      </>)}
+      {/* /Vue Voyageurs */}
     </div>
   )
 }
@@ -784,6 +856,31 @@ const MEDIA_CSS = `
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  topTabs: {
+    display: 'inline-flex', gap: '4px', padding: '4px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', marginBottom: '20px',
+  },
+  topTab: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '8px 14px', borderRadius: '7px',
+    fontSize: '13px', fontWeight: 500,
+    color: 'var(--text-2)', background: 'transparent',
+    border: 'none', cursor: 'pointer',
+    fontFamily: 'inherit',
+    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
+  },
+  topTabActive: {
+    background: 'var(--accent-bg)', color: 'var(--accent-text)',
+    fontWeight: 700,
+  },
+  topTabCount: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    minWidth: '20px', padding: '0 6px', height: '18px',
+    background: 'rgba(255,255,255,.06)', borderRadius: '999px',
+    fontSize: '10.5px', fontWeight: 700,
+    marginLeft: '2px',
+  },
   toolbar: {
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
     gap: '16px', flexWrap: 'wrap', marginBottom: '28px',
