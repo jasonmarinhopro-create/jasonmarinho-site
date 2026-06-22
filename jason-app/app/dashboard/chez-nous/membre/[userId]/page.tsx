@@ -88,7 +88,7 @@ export default async function MembrePage({ params }: Props) {
 
       <div style={s.page} className="cn-member-page">
         <Link href="/dashboard/chez-nous" style={s.back}>
-          <ArrowLeft size={14} weight="bold" /> Retour Chez Nous
+          <ArrowLeft size={14} weight="bold" /> Retour Entre Hôtes
         </Link>
 
         <div style={s.layout} className="cn-member-layout">
@@ -223,11 +223,11 @@ export default async function MembrePage({ params }: Props) {
                 <p style={s.emptyDesc}>
                   {isMe
                     ? 'Lance une conversation, pose une question, la famille est là pour toi.'
-                    : 'Ce membre n\'a pas encore posté ou répondu dans Chez Nous.'}
+                    : 'Ce membre n\'a pas encore posté ou répondu dans Entre Hôtes.'}
                 </p>
                 {isMe && (
                   <Link href="/dashboard/chez-nous" style={s.emptyBtn}>
-                    Aller dans Chez Nous
+                    Aller dans Entre Hôtes
                   </Link>
                 )}
               </div>

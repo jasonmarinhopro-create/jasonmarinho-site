@@ -268,7 +268,7 @@ export default function Roadmap({
 
           return (
             <div key={item.id} style={s.card}>
-              {/* Contenu plein-largeur (vote déplacé en bas façon Chez Nous) */}
+              {/* Contenu plein-largeur (vote déplacé en bas façon Entre Hôtes) */}
               <div style={s.cardBody}>
                 <div style={s.cardTop}>
                   <span style={{ ...s.statusPill, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}>
@@ -303,7 +303,7 @@ export default function Roadmap({
                 </div>
               </div>
 
-              {/* Footer actions inline : vote + comment + admin (façon Chez Nous) */}
+              {/* Footer actions inline : vote + comment + admin (façon Entre Hôtes) */}
               <div style={s.cardFooter}>
                 <button
                   type="button"

@@ -35,6 +35,8 @@
     }
   ],
   "redirects": [
+    { "source": "/services/chez-nous", "destination": "/services/entre-hotes", "permanent": true },
+    { "source": "/services/chez-nous/:path*", "destination": "/services/entre-hotes/:path*", "permanent": true },
     { "source": "/formations/:path*", "destination": "/services/formations/:path*", "permanent": true },
     { "source": "/services/groupes-facebook", "destination": "/services/communaute", "permanent": true },
     { "source": "/ressources/gabarits-messages", "destination": "/services/gabarits-messages", "permanent": true },

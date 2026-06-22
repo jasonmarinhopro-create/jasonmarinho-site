@@ -69,7 +69,7 @@ export const HELP_CATEGORIES: HelpCategory[] = [
     emoji: '👥',
     Icon: UsersThree,
     title: 'Communauté & compte',
-    description: 'Chez Nous, groupes FB, abonnement, profil, RGPD',
+    description: 'Entre Hôtes, groupes FB, abonnement, profil, RGPD',
     color: '#f472b6',
     bg: 'rgba(244,114,182,0.10)',
   },

@@ -10,7 +10,7 @@ type Props = {
 }
 
 const REASONS: Array<{ id: string; label: string; desc: string }> = [
-  { id: 'off_topic',  label: 'Hors sujet',     desc: 'Ne correspond pas à la catégorie ou à Chez Nous' },
+  { id: 'off_topic',  label: 'Hors sujet',     desc: 'Ne correspond pas à la catégorie ou à Entre Hôtes' },
   { id: 'spam',       label: 'Spam ou pub',    desc: 'Auto-promo déguisée, message commercial' },
   { id: 'aggressive', label: 'Agressif',       desc: 'Injures, attaques personnelles, manque de respect' },
   { id: 'other',      label: 'Autre',          desc: 'Autre raison à préciser ci-dessous' },
@@ -72,7 +72,7 @@ export default function ReportButton({ postId, replyId }: Props) {
             ) : (
               <>
                 <p style={s.intro}>
-                  Aide-nous à garder Chez Nous propre et utile.
+                  Aide-nous à garder Entre Hôtes propre et utile.
                 </p>
 
                 <div style={s.reasons}>

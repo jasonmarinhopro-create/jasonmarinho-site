@@ -5,7 +5,7 @@
 //
 // SAFE : ne touche QUE les occurrences exactes des couleurs Tailwind
 // connues. Préserve les couleurs de marque (#FFD56B accent, #004C3F vert
-// forêt) et les couleurs spécifiques (badges Chez Nous, charges catégories).
+// forêt) et les couleurs spécifiques (badges Entre Hôtes, charges catégories).
 //
 // Usage : node scripts/migrate-hardcoded-colors.mjs [--dry-run]
 
@@ -86,7 +86,7 @@ const COLOR_MAP = [
 const EXCLUDE = [
   // Catégories charges (revenus) avec couleurs distinctes par catégorie
   'app/dashboard/revenus/RevenusView.tsx',
-  // Badges Chez Nous : couleurs spécifiques par badge (visionnaire violet, etc.)
+  // Badges Entre Hôtes : couleurs spécifiques par badge (visionnaire violet, etc.)
   'lib/badges.ts',
   // Couleurs de marque
   'app/globals.css',

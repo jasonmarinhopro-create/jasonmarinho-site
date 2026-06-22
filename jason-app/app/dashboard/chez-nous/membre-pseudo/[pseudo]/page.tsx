@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 
 /**
  * Route de résolution pseudo → user_id pour les mentions @pseudo dans les
- * messages Chez Nous. Redirige vers /dashboard/chez-nous/membre/[userId]
+ * messages Entre Hôtes. Redirige vers /dashboard/chez-nous/membre/[userId]
  * si le pseudo existe, sinon 404.
  *
  * Pourquoi une route séparée plutôt qu'un mapping côté client : on n'a

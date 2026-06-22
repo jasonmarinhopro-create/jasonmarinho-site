@@ -60,8 +60,8 @@ export default async function ProfilPage() {
     { label: 'Nom complet',       done: !!fullName.trim() },
     { label: 'Adresse bailleur',  done: !!pd?.adresse?.trim() },
     { label: 'Encaissements (Stripe ou IBAN)', done: !!(pd?.stripe_onboarding_complete || pd?.iban?.trim()) },
-    { label: 'Pseudo Chez Nous',  done: !!pd?.pseudo?.trim() },
-    { label: 'Bio Chez Nous',     done: !!pd?.bio?.trim() },
+    { label: 'Pseudo Entre Hôtes',  done: !!pd?.pseudo?.trim() },
+    { label: 'Bio Entre Hôtes',     done: !!pd?.bio?.trim() },
   ]
   const completed = checks.filter(c => c.done).length
   const percent   = Math.round((completed / checks.length) * 100)

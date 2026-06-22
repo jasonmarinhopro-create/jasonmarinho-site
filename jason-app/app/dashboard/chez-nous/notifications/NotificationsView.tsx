@@ -66,7 +66,7 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
   return (
     <div style={s.page}>
       <Link href="/dashboard/chez-nous" style={s.back}>
-        <ArrowLeft size={14} weight="bold" /> Retour à Chez Nous
+        <ArrowLeft size={14} weight="bold" /> Retour à Entre Hôtes
       </Link>
 
       <div style={s.head}>
@@ -124,7 +124,7 @@ export default function NotificationsView({ notifs, postsMap, actorsMap, unreadC
           <p style={s.emptyTitle}>{notifs.length === 0 ? 'Aucune notification' : 'Aucun résultat pour ce filtre'}</p>
           <p style={s.emptyDesc}>
             {notifs.length === 0
-              ? 'Tu seras prévenu ici quand quelqu\'un répondra à un de tes posts, te mentionnera dans Chez Nous, ou acceptera ta réponse.'
+              ? 'Tu seras prévenu ici quand quelqu\'un répondra à un de tes posts, te mentionnera dans Entre Hôtes, ou acceptera ta réponse.'
               : 'Essaie un autre filtre ou bascule sur "Tout".'}
           </p>
         </div>

@@ -41,7 +41,7 @@ const BROADCAST_MENTION_CAP = 300
  * le trigger SQL chez_nous_notify_on_mention).
  *
  * Spéciaux :
- * - @tousleshôtes → broadcast à tous les membres Chez Nous actifs
+ * - @tousleshôtes → broadcast à tous les membres Entre Hôtes actifs
  *   (plafonné à BROADCAST_MENTION_CAP). RÉSERVÉ AUX ADMINS — si l'auteur
  *   n'est pas admin, le tag est ignoré côté notif (le texte reste mais
  *   personne n'est notifié).
@@ -406,9 +406,9 @@ export async function reportContent(input: {
   // Notification admin (fire-and-forget)
   const { sendAdminEmail } = await import('@/lib/email/admin')
   void sendAdminEmail({
-    subject: `[Chez Nous] Signalement : ${input.reason}`,
+    subject: `[Entre Hôtes] Signalement : ${input.reason}`,
     text:
-      `Un membre a signalé un contenu Chez Nous.\n\n` +
+      `Un membre a signalé un contenu Entre Hôtes.\n\n` +
       `Raison : ${input.reason}\n` +
       (message ? `Message : ${message}\n` : '') +
       (input.postId ? `Post : https://app.jasonmarinho.com/dashboard/chez-nous/${input.postId}\n` : '') +
@@ -565,7 +565,7 @@ export async function updateProfilePseudo(input: {
 
 /**
  * Recherche autocomplete de pseudos pour les mentions @ dans les
- * textareas Chez Nous. Renvoie max 6 résultats matchant le préfixe
+ * textareas Entre Hôtes. Renvoie max 6 résultats matchant le préfixe
  * (case-insensitive).
  *
  * Inclut une entrée spéciale 'tousleshôtes' en tête si l'auteur courant

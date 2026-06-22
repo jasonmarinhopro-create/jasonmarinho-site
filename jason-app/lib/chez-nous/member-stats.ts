@@ -32,7 +32,7 @@ export type MemberStats = {
 }
 
 /**
- * Fetch a member's full Chez Nous profile + computed stats.
+ * Fetch a member's full Entre Hôtes profile + computed stats.
  * Respects privacy flags from the member's own profile settings.
  */
 export async function getMemberStats(
@@ -40,7 +40,7 @@ export async function getMemberStats(
   userId: string,
   profile: MemberProfile,
 ): Promise<MemberStats> {
-  // Stats Chez Nous (toujours visibles)
+  // Stats Entre Hôtes (toujours visibles)
   const [postsRes, repliesRes, votesRes, ideasRes, auditsRes, formationsRes, communityRes, logementsRes, postCatsRes, lastPostRes, lastReplyRes, platformsRes] = await Promise.all([
     supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }).eq('author_id', userId),
     supabase.from('chez_nous_replies').select('*', { count: 'exact', head: true }).eq('author_id', userId),

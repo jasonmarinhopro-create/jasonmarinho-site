@@ -139,10 +139,10 @@ export async function sendMentionEmail(opts: {
 
   const verbBySubject: Record<string, string> = {
     reply: `${opts.actorFullName} a répondu à ton post`,
-    mention: `${opts.actorFullName} t'a mentionné dans Chez Nous`,
+    mention: `${opts.actorFullName} t'a mentionné dans Entre Hôtes`,
     accepted: `${opts.actorFullName} a accepté ta réponse`,
   }
-  const subject = verbBySubject[opts.type] ?? `Activité Chez Nous`
+  const subject = verbBySubject[opts.type] ?? `Activité Entre Hôtes`
 
   const verb = opts.type === 'reply'
     ? `a répondu à ton sujet`

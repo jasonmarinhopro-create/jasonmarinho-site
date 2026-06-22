@@ -161,7 +161,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
         }
       `}</style>
       <Link href="/dashboard/chez-nous" style={s.back}>
-        <ArrowLeft size={14} weight="bold" /> Retour à Chez Nous
+        <ArrowLeft size={14} weight="bold" /> Retour à Entre Hôtes
       </Link>
 
       <div style={s.layout}>

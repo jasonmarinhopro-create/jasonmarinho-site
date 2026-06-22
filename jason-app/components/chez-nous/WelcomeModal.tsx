@@ -52,7 +52,7 @@ export default function WelcomeModal() {
             <House size={18} color="var(--accent-text)" weight="fill" />
           </div>
           <div>
-            <p style={s.lbl}>Bienvenue Chez Nous</p>
+            <p style={s.lbl}>Bienvenue Entre Hôtes</p>
             <h2 style={s.title}>L'espace des hôtes LCD</h2>
           </div>
         </div>

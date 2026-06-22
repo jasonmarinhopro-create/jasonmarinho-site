@@ -4033,7 +4033,7 @@ Choisis une période **basse saison** (novembre ou janvier).
 
 ### Règle 5, Ne sois pas seul·e dans ta tête
 
-- **Discute** avec d'autres hôtes (Chez Nous, Facebook, conférences).
+- **Discute** avec d'autres hôtes (Entre Hôtes, Facebook, conférences).
 - **Ne garde pas** les conflits pour toi.
 - **Demande conseil** quand tu hésites.
 
@@ -4170,7 +4170,7 @@ C'est faux **au-delà** d'un certain seuil.
 2. **Identifie** la 1 chose qui t'épuise le plus dans la LCD.
 3. **Choisis** une **règle** parmi les 5 du mental sain et applique-la dès aujourd'hui.
 4. **Bloque** dès maintenant ta **semaine de fermeture** annuelle dans ton calendrier.
-5. **Trouve** un **buddy hôte** dans ton réseau (Chez Nous, communauté FB).
+5. **Trouve** un **buddy hôte** dans ton réseau (Entre Hôtes, communauté FB).
 
 > La LCD est un **marathon**, pas un sprint.
 > Les hôtes qui durent 10 ans sont ceux qui **se protègent** d'eux-mêmes en premier.

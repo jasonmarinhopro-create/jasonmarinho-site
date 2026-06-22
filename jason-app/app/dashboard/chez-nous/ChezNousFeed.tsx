@@ -267,10 +267,10 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
       <div style={s.hero}>
         <div style={s.heroBadge}>
           <House size={13} color="var(--accent-text)" weight="fill" />
-          Chez Nous · entre hôtes LCD
+          Entre Hôtes · entre hôtes LCD
         </div>
         <h1 style={s.heroTitle}>
-          Bienvenue <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Chez Nous</em>
+          Bienvenue <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Entre Hôtes</em>
         </h1>
         <p style={s.heroDesc}>
           L'endroit où on s'entraide pour de vrai. Tu poses tes questions, tu partages tes réussites,
@@ -402,7 +402,7 @@ function InviteFriendsCard({ onClick }: { onClick: () => void }) {
       </p>
       <button onClick={onClick} style={s.inviteBtn}>
         <ShareNetwork size={14} weight="fill" />
-        Partager Chez Nous
+        Partager Entre Hôtes
       </button>
     </div>
   )
@@ -450,7 +450,7 @@ function ComposerCard({ firstName, initials, onOpen, userId, searchInitial, cat,
         <Link
           href={`/dashboard/chez-nous/membre/${userId}`}
           style={{ ...s.composerAvatar, textDecoration: 'none', cursor: 'pointer' }}
-          title="Voir mon profil Chez Nous"
+          title="Voir mon profil Entre Hôtes"
         >
           {initials}
         </Link>
@@ -462,7 +462,7 @@ function ComposerCard({ firstName, initials, onOpen, userId, searchInitial, cat,
               type="search"
               value={searchValue}
               onChange={e => setSearchValue(e.target.value)}
-              placeholder="Rechercher dans Chez Nous…"
+              placeholder="Rechercher dans Entre Hôtes…"
               style={s.composerSearchInput}
             />
             <button
@@ -484,8 +484,8 @@ function ComposerCard({ firstName, initials, onOpen, userId, searchInitial, cat,
               type="button"
               onClick={enterSearch}
               style={s.composerToggleBtn}
-              title="Rechercher dans Chez Nous"
-              aria-label="Rechercher dans Chez Nous"
+              title="Rechercher dans Entre Hôtes"
+              aria-label="Rechercher dans Entre Hôtes"
             >
               <MagnifyingGlass size={16} />
             </button>
@@ -532,7 +532,7 @@ function PostFormModal({ onClose, defaultCategory, firstName, initials }: {
           <div style={s.composerAvatar}>{initials}</div>
           <div>
             <p style={s.modalUserName}>{firstName || 'Toi'}</p>
-            <p style={s.modalUserSub}>Visible par tous les membres Chez Nous</p>
+            <p style={s.modalUserSub}>Visible par tous les membres Entre Hôtes</p>
           </div>
         </div>
 
@@ -557,7 +557,7 @@ function JasonNoteCard() {
         </div>
       </div>
       <p style={s.jasonMessage}>
-        Bienvenue Chez Nous. Cet espace n'a qu'une règle :
+        Bienvenue Entre Hôtes. Cet espace n'a qu'une règle :
         <strong style={{ color: 'var(--accent-text)' }}> on s'entraide</strong>.
         Pose tes questions sans hésiter, partage ce que tu apprends, et surtout
         réponds quand tu peux à ceux qui débutent. C'est comme ça qu'on grandit ensemble.
@@ -784,7 +784,7 @@ function TipCard() {
     <div style={{ ...s.asideCard, background: 'rgba(255,213,107,0.04)', borderColor: 'rgba(255,213,107,0.18)' }}>
       <div style={s.asideHead}>
         <Sparkle size={14} color="var(--accent-text)" weight="fill" />
-        <span style={s.asideTitle}>L'esprit Chez Nous</span>
+        <span style={s.asideTitle}>L'esprit Entre Hôtes</span>
       </div>
       <ul style={s.tipList}>
         <li style={s.tipItem}>Un titre clair, du contexte (ville, plateforme), ça aide tout le monde</li>
@@ -1209,7 +1209,7 @@ function NewMembersBand({ members }: { members: NewMember[] }) {
   return (
     <div style={s.newMembersBand} className="cn-members-band">
       <div style={s.newMembersTextCol} className="cn-members-text-col">
-        <span style={s.newMembersLabel}>Nouveaux Chez Nous</span>
+        <span style={s.newMembersLabel}>Nouveaux Entre Hôtes</span>
         <span style={s.newMembersTitle}>Bienvenue à eux</span>
       </div>
       <div style={s.newMembersList} className="cn-members-list">

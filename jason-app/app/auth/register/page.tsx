@@ -13,7 +13,7 @@ const PERKS = [
   { icon: GraduationCap, label: 'Formations et guides LCD' },
   { icon: Calculator,    label: 'Simulateurs et outils exclusifs' },
   { icon: ChatText,      label: "Gabarits de messages prêts à l'emploi" },
-  { icon: UsersThree,    label: "Communauté d'hôtes Chez Nous" },
+  { icon: UsersThree,    label: "Communauté d'hôtes Entre Hôtes" },
   { icon: Megaphone,     label: 'Veille et actualités LCD' },
 ]
 
@@ -181,7 +181,7 @@ function RegisterForm() {
                   {inviterFrom
                     ? <>👋 <strong>{inviterFrom}</strong> t&apos;invite à rejoindre</>
                     : <>👋 Tu es invité(e) à rejoindre</>
-                  }{' '}<em style={{ color: '#004C3F', fontStyle: 'italic' }}>Chez Nous</em>
+                  }{' '}<em style={{ color: '#004C3F', fontStyle: 'italic' }}>Entre Hôtes</em>
                 </p>
                 <p style={s.inviteBannerDesc}>
                   La communauté privée des hôtes en location courte durée. Crée ton compte
