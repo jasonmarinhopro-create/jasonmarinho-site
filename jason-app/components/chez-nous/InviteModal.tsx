@@ -22,7 +22,7 @@ export default function InviteModal({ open, onClose, inviterName, inviterUserId 
   const fromParam = inviterName ? `&from=${encodeURIComponent(inviterName)}` : ''
   const inviteUrl = `${baseUrl}/auth/register?ref=${inviterUserId}${fromParam}`
   const greeting  = inviterName ? `${inviterName} t'invite` : 'Tu es invité(e)'
-  const message   = `Salut ! ${greeting} à rejoindre Chez Nous, la communauté privée des hôtes en location courte durée. Entraide entre pros, partage d'expériences, contacts par ville. Tout ce qu'il faut pour bien gérer son activité.\n\nRejoins-nous ici : ${inviteUrl}`
+  const message   = `Salut ! ${greeting} à rejoindre Entre Hôtes, la communauté privée des hôtes en location courte durée. Entraide entre pros, partage d'expériences, contacts par ville. Tout ce qu'il faut pour bien gérer son activité.\n\nRejoins-nous ici : ${inviteUrl}`
 
   // Lock body scroll & escape key
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function InviteModal({ open, onClose, inviterName, inviterUserId 
     if (typeof navigator !== 'undefined' && 'share' in navigator) {
       try {
         await navigator.share({
-          title: 'Rejoins Chez Nous',
+          title: 'Rejoins Entre Hôtes',
           text:  message,
           url:   inviteUrl,
         })
@@ -76,7 +76,7 @@ export default function InviteModal({ open, onClose, inviterName, inviterUserId 
   }
 
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
-  const emailUrl    = `mailto:?subject=${encodeURIComponent(`${greeting} sur Chez Nous`)}&body=${encodeURIComponent(message)}`
+  const emailUrl    = `mailto:?subject=${encodeURIComponent(`${greeting} sur Entre Hôtes`)}&body=${encodeURIComponent(message)}`
   const fbUrl       = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(inviteUrl)}&quote=${encodeURIComponent(message)}`
   const hasNativeShare = typeof navigator !== 'undefined' && 'share' in navigator
 

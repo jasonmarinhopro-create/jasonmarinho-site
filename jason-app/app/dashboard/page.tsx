@@ -269,7 +269,7 @@ export default async function DashboardPage() {
       })()
     : null
 
-  // ── Chez Nous : authors fetchés à part (dépendent des author_ids des posts).
+  // ── Entre Hôtes : authors fetchés à part (dépendent des author_ids des posts).
   const cnAuthorIds = Array.from(new Set((cnPosts ?? []).map(p => p.author_id)))
   const cnAuthorsPromise = cnAuthorIds.length
     ? supabase.from('profiles').select('id, full_name, pseudo').in('id', cnAuthorIds)
@@ -519,7 +519,7 @@ export default async function DashboardPage() {
   const hasObjectif = !!objectifData
   const hasFormationStarted = totalLessonsDone > 0
 
-  // ── Auteurs Chez Nous (await la promesse déférée plus haut)
+  // ── Auteurs Entre Hôtes (await la promesse déférée plus haut)
   const cnAuthorsResult = await cnAuthorsPromise
   const cnAuthors: Record<string, { full_name: string | null; pseudo: string | null }> = {}
   ;(cnAuthorsResult.data ?? []).forEach(a => {
@@ -681,6 +681,26 @@ export default async function DashboardPage() {
               <span style={s.quickLabel}>Voir le calendrier</span>
             </Link>
           </div>
+        </section>
+
+        {/* ── Entre Hôtes (remonté en V2 : sortait "de l'ombre" en bas de
+              page, on le place juste après les Quick actions pour qu'il
+              soit visible above-the-fold sur la majorité des écrans). */}
+        <section style={s.section} className="fade-up d2">
+          <ChezNousWidget
+            posts={(cnPosts ?? []).map(p => ({
+              id: p.id,
+              author_id: p.author_id,
+              category: p.category as CategoryId,
+              title: p.title,
+              reply_count: p.reply_count,
+              vote_count: p.vote_count ?? 0,
+              last_reply_at: p.last_reply_at,
+              created_at: p.created_at,
+            }))}
+            authors={cnAuthors}
+            totalPosts={cnTotal ?? 0}
+          />
         </section>
 
         {/* ── Prochains événements 14 jours ─────────────────────────────── */}
@@ -856,23 +876,8 @@ export default async function DashboardPage() {
           </section>
         )}
 
-        {/* ── Chez Nous ───────────────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d3">
-          <ChezNousWidget
-            posts={(cnPosts ?? []).map(p => ({
-              id: p.id,
-              author_id: p.author_id,
-              category: p.category as CategoryId,
-              title: p.title,
-              reply_count: p.reply_count,
-              vote_count: p.vote_count ?? 0,
-              last_reply_at: p.last_reply_at,
-              created_at: p.created_at,
-            }))}
-            authors={cnAuthors}
-            totalPosts={cnTotal ?? 0}
-          />
-        </section>
+        {/* ── (Entre Hôtes a été remonté plus haut après Quick actions
+              pour plus de visibilité — voir commentaire ci-dessus.) */}
 
         {/* ── Actualités du secteur ───────────────────────────────────── */}
         {latestNews.length > 0 && (

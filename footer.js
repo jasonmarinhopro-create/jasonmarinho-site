@@ -243,7 +243,7 @@
             + '<a href="/services/actualites">Actualités LCD</a>'
             + '<a href="/lexique-lcd">Lexique LCD</a>'
             + '<a href="/sos-hote">SOS Hôte (urgences)</a>'
-            + '<a href="/services/chez-nous">Chez Nous (forum)</a>'
+            + '<a href="/services/entre-hotes">Entre Hôtes (forum)</a>'
             + '<a href="/services/communaute">Groupes Facebook</a>'
             + '<a href="/services/ecosysteme">Écosystème LCD</a>'
           + '</div>'

@@ -1,6 +1,6 @@
 /**
  * Map a free-text address to a French region tag.
- * Used in Chez Nous to show where the community is located.
+ * Used in Entre Hôtes to show where the community is located.
  */
 
 export const REGION_KEYWORDS: Record<string, string[]> = {

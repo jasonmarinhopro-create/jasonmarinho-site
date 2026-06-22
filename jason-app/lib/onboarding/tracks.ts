@@ -182,9 +182,9 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
     steps: [
       {
         key: 'chez_nous_intro',
-        title: 'Découvre Chez Nous',
+        title: 'Découvre Entre Hôtes',
         description: 'Le forum privé des hôtes LCD : entraide, conseils, retours d\'expérience.',
-        ctaLabel: 'Visiter Chez Nous',
+        ctaLabel: 'Visiter Entre Hôtes',
         ctaHref: '/dashboard/chez-nous',
         detect: 'auto',
       },

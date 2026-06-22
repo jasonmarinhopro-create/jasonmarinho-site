@@ -31,13 +31,13 @@ export default function ChezNousWidget({
       <div style={s.empty}>
         <div style={s.emptyHead}>
           <House size={16} color="var(--accent-text)" weight="fill" />
-          <h3 style={s.title}>Chez Nous</h3>
+          <h3 style={s.title}>Entre Hôtes</h3>
         </div>
         <p style={s.emptyText}>
           La communauté ouverte vient de naître, sois le premier à lancer une discussion entre hôtes.
         </p>
         <Link href="/dashboard/chez-nous" style={s.cta}>
-          Découvrir Chez Nous <ArrowRight size={12} weight="bold" />
+          Découvrir Entre Hôtes <ArrowRight size={12} weight="bold" />
         </Link>
       </div>
     )
@@ -48,7 +48,7 @@ export default function ChezNousWidget({
       <div style={s.head}>
         <div style={s.headLeft}>
           <House size={16} color="var(--accent-text)" weight="fill" />
-          <h3 style={s.title}>Chez Nous</h3>
+          <h3 style={s.title}>Entre Hôtes</h3>
           <span style={s.count}>{totalPosts}</span>
         </div>
         <Link href="/dashboard/chez-nous" style={s.seeAll}>

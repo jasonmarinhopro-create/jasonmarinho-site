@@ -14,7 +14,7 @@ interface NotificationPanelProps {
   onClose: () => void
   readIds: Set<string>
   onMarkAllRead: () => void
-  /** Compteur de notifications Chez Nous non lues (récupéré dans Header). */
+  /** Compteur de notifications Entre Hôtes non lues (récupéré dans Header). */
   chezNousUnread?: number
   /** Compteur d'alertes contextuelles non lues (table `notifications`). */
   appNotifUnread?: number
@@ -45,7 +45,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
 
   // Auto-switch à l'ouverture vers l'onglet le plus pressant :
   // 1. Alertes contextuelles (priorité métier max)
-  // 2. Chez Nous (interactions sociales)
+  // 2. Entre Hôtes (interactions sociales)
   // 3. Nouveautés produit (info passive)
   useEffect(() => {
     if (!open) return
@@ -174,7 +174,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
           aria-selected={tab === 'cheznous'}
         >
           <ChatCircleDots size={12} weight={tab === 'cheznous' ? 'fill' : 'regular'} />
-          Chez Nous
+          Entre Hôtes
           {chezNousUnread > 0 && (
             <span style={s.tabBadge}>{chezNousUnread > 9 ? '9+' : chezNousUnread}</span>
           )}
@@ -294,7 +294,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
         </div>
       )}
 
-      {/* Contenu — Forum Chez Nous */}
+      {/* Contenu — Forum Entre Hôtes */}
       {tab === 'cheznous' && (
         <div style={s.list}>
           {chezNousUnread > 0 ? (
@@ -307,7 +307,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
                   {chezNousUnread} notification{chezNousUnread > 1 ? 's' : ''} non lue{chezNousUnread > 1 ? 's' : ''}
                 </div>
                 <div style={s.cnDesc}>
-                  Quelqu&apos;un t&apos;a répondu, mentionné ou réagi à ton activité dans le forum Chez Nous.
+                  Quelqu&apos;un t&apos;a répondu, mentionné ou réagi à ton activité dans le forum Entre Hôtes.
                 </div>
               </div>
             </div>
@@ -342,7 +342,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
         )}
         {tab === 'cheznous' && (
           <Link href="/dashboard/chez-nous/notifications" onClick={onClose} style={s.learnMoreBtn}>
-            Voir mes notifications Chez Nous
+            Voir mes notifications Entre Hôtes
             <ArrowRight size={13} weight="bold" />
           </Link>
         )}

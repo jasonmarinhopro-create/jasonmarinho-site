@@ -23,7 +23,7 @@ const DECOUVERTE_FEATURES = [
   'Calendrier + journal des revenus',
   '1 logement, voyageurs illimités',
   'Simulateurs (rentabilité, fiscalité)',
-  'Chez nous (lecture du forum hôtes)',
+  'Entre Hôtes (lecture du forum hôtes)',
   'Roadmap publique + suggestions',
   'Communauté + partenaires exclusifs',
 ]
@@ -35,7 +35,7 @@ const STANDARD_FEATURES = [
   'Performances détaillées + simulateurs',
   'Audit Google Business Profile',
   `${FORMATIONS_TOTAL} formations complètes`,
-  'Chez nous (forum hôtes) + communauté complète',
+  'Entre Hôtes (forum hôtes) + communauté complète',
   'Support prioritaire',
 ]
 

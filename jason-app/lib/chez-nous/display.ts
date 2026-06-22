@@ -1,6 +1,6 @@
 /**
  * Helpers to display a member identity (pseudo or first name)
- * across Chez Nous + member profiles.
+ * across Entre Hôtes + member profiles.
  */
 
 export type MemberDisplay = {

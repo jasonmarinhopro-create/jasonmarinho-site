@@ -12,7 +12,7 @@ import { searchMentions } from '@/app/dashboard/chez-nous/actions'
  * Arrow up/down navigue dans la liste. Escape ferme le popover.
  *
  * Utilisé dans :
- * - Le NewPostForm (modale de création de post Chez Nous)
+ * - Le NewPostForm (modale de création de post Entre Hôtes)
  * - Les inline reply forms (commentaire rapide depuis le feed et page détail)
  * - Le ReplyForm complet sur la page détail
  *

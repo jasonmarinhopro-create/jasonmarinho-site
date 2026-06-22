@@ -19,7 +19,7 @@ const SERVICES = {
   acquisition: { url: '/services/acquisition-voyageurs',     title: 'Service Acquisition de voyageurs',           desc: 'Stratégies pour attirer plus de voyageurs sans dépendre des plateformes.' },
   securite:    { url: '/services/securite',                  title: 'Service Sécurité et protection',             desc: 'Vérifier tes voyageurs, signaler les profils à risque, sécuriser tes séjours.' },
   audit:       { url: '/services/audit-gbp',                 title: 'Audit Google Business Profile',              desc: 'Outil d\'audit GBP intégré : analyse ta fiche en 30 secondes et obtiens les actions à prendre.' },
-  chez_nous:   { url: '/services/chez-nous',                 title: 'Forum Chez Nous',                            desc: 'Le forum privé des hôtes LCD pour s\'entraider entre pros.' },
+  chez_nous:   { url: '/services/entre-hotes',                 title: 'Forum Entre Hôtes',                            desc: 'Le forum privé des hôtes LCD pour s\'entraider entre pros.' },
   formations:  { url: '/services/formations',                title: 'Catalogue des formations LCD',               desc: 'Toutes les formations pensées pour les hôtes et conciergeries.' },
   partenaires: { url: '/services/partenaires',               title: 'Partenaires validés',                        desc: 'Les outils LCD que Jason utilise et recommande, avec offres négociées.' },
   form_gmb:    { url: '/services/formations/google-my-business-lcd', title: 'Formation Google My Business LCD',   desc: 'Maîtriser sa fiche Google Business Profile en 2h30 (7 modules).' },

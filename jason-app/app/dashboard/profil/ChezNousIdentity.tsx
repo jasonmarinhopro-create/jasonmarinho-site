@@ -50,17 +50,17 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
           <House size={20} color="var(--accent-text)" weight="fill" />
         </div>
         <div>
-          <h3 style={s.title}>Profil Chez Nous</h3>
+          <h3 style={s.title}>Profil Entre Hôtes</h3>
           <p style={s.desc}>Comment tu apparais dans la communauté d&apos;hôtes LCD</p>
         </div>
       </div>
 
       <div style={s.body}>
-        {/* Bandeau explicatif Chez Nous */}
+        {/* Bandeau explicatif Entre Hôtes */}
         <Link href="/dashboard/chez-nous" style={s.infoBanner}>
           <UsersThree size={18} weight="fill" color="var(--accent-text)" />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={s.infoTitle}>Qu&apos;est-ce que Chez Nous&nbsp;?</p>
+            <p style={s.infoTitle}>Qu&apos;est-ce que Entre Hôtes&nbsp;?</p>
             <p style={s.infoDesc}>
               Le réseau social privé des hôtes en location courte durée. Échange entre pairs,
               entraide, partage d&apos;expériences.

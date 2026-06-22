@@ -9,7 +9,7 @@ import { getBulkProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import { aggregateRegionsByMember } from '@/lib/chez-nous/regions'
 
 export const dynamic  = 'force-dynamic'
-export const metadata = { title: 'Chez Nous, Jason Marinho' }
+export const metadata = { title: 'Entre Hôtes, Jason Marinho' }
 
 type SearchParams = { cat?: string; sort?: string; q?: string }
 

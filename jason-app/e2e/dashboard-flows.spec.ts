@@ -51,7 +51,7 @@ test.describe('Dashboard — pages clés accessibles', () => {
     await expect(page.locator('body')).toContainText(/(signalement|vérif|rechercher)/i)
   })
 
-  test('Chez Nous filter tabs visible', async ({ page }) => {
+  test('Entre Hôtes filter tabs visible', async ({ page }) => {
     await login(page)
     await page.goto('/dashboard/chez-nous')
     await expect(page.locator('body')).toContainText(/(récent|chez nous|partage)/i)
@@ -84,7 +84,7 @@ test.describe('Dashboard — pages clés accessibles', () => {
     await page.goto('/dashboard')
     // Ouvre la cloche
     await page.getByLabel(/^notifications/i).first().click()
-    // Les 3 onglets doivent être présents : Alertes / Nouveautés / Chez Nous
+    // Les 3 onglets doivent être présents : Alertes / Nouveautés / Entre Hôtes
     await expect(page.locator('body')).toContainText(/alertes/i)
     await expect(page.locator('body')).toContainText(/nouveautés/i)
     await expect(page.locator('body')).toContainText(/chez nous/i)

@@ -19,7 +19,7 @@ const CATEGORY_META: Record<NotificationCategory, { label: string; icon: React.R
   fiscal:    { label: 'Fiscal',        icon: <Receipt size={14} weight="fill" />,         color: '#FFD56B' },
   sync:      { label: 'Synchro',       icon: <Bank size={14} weight="fill" />,            color: '#60A5FA' },
   guide:     { label: 'Guide',         icon: <BookOpen size={14} weight="fill" />,        color: '#A78BFA' },
-  chez_nous: { label: 'Chez Nous',     icon: <ChatCircleDots size={14} weight="fill" />,  color: '#F472B6' },
+  chez_nous: { label: 'Entre Hôtes',     icon: <ChatCircleDots size={14} weight="fill" />,  color: '#F472B6' },
   system:    { label: 'Système',       icon: <Bell size={14} weight="fill" />,            color: 'var(--text-3)' },
 }
 

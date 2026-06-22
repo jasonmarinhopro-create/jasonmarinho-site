@@ -35,7 +35,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/actualites': 'Actualités',
   '/dashboard/actualites/favoris': 'Mes favoris',
   '/dashboard/nouveautes': 'Nouveautés',
-  '/dashboard/chez-nous': 'Chez Nous',
+  '/dashboard/chez-nous': 'Entre Hôtes',
   '/dashboard/chez-nous/notifications': 'Notifications',
   '/dashboard/notifications': 'Mes alertes',
   '/dashboard/logements': 'Mes Logements',
@@ -69,7 +69,7 @@ const PATH_TITLE_PATTERNS: Array<[RegExp, string]> = [
   [/^\/dashboard\/admin\/membres\/[^/]+$/,           'Fiche membre'],
   [/^\/dashboard\/audit-gbp\/resultats\/[^/]+$/,     'Audit GBP'],
   [/^\/dashboard\/chez-nous\/membre\/[^/]+$/,        'Profil membre'],
-  [/^\/dashboard\/chez-nous\/[^/]+$/,                'Chez Nous'],
+  [/^\/dashboard\/chez-nous\/[^/]+$/,                'Entre Hôtes'],
 ]
 
 function resolveTitle(pathname: string): string {
@@ -142,7 +142,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   const { theme, toggleTheme } = useTheme()
   const isAdmin = isAdminProp
 
-  // Cloche unifiée : on récupère les compteurs (Chez Nous + Alertes app) côté
+  // Cloche unifiée : on récupère les compteurs (Entre Hôtes + Alertes app) côté
   // client au mount pour pouvoir les sommer au unreadCount produit (badge agrégé)
   // et les afficher dans les onglets du NotificationPanel.
   // Défensif : try/catch + Promise.allSettled — si une des deux tables est
@@ -336,7 +336,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             <Lifebuoy size={18} weight="regular" />
           </button>
 
-          {/* Notifications — cloche unifiée (Alertes app + Nouveautés produit + Forum Chez Nous) */}
+          {/* Notifications — cloche unifiée (Alertes app + Nouveautés produit + Forum Entre Hôtes) */}
           {(() => {
             const totalUnread = unreadCount + chezNousUnread + appNotifUnread
             return (

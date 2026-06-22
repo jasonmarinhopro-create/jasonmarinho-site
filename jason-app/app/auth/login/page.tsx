@@ -14,7 +14,7 @@ const PERKS = [
   { icon: GraduationCap, label: 'Formations et guides LCD' },
   { icon: Calculator,    label: 'Simulateurs et outils exclusifs' },
   { icon: ChatText,      label: "Gabarits de messages prêts à l'emploi" },
-  { icon: UsersThree,    label: "Communauté d'hôtes Chez Nous" },
+  { icon: UsersThree,    label: "Communauté d'hôtes Entre Hôtes" },
   { icon: Megaphone,     label: 'Veille et actualités LCD' },
 ]
 
