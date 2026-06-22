@@ -947,6 +947,12 @@
 
   <!-- ── Blog ── -->
   <url>
+    <loc>https://jasonmarinho.com/blog/stationnement-voyageurs-lcd-6-solutions-eviter-conflits-voisins</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/blog/barbecue-plancha-lcd-7-regles-autoriser-securite-voisins</loc>
     <lastmod>2026-06-19</lastmod>
     <changefreq>monthly</changefreq>
