@@ -8,6 +8,7 @@ import {
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
   FacebookLogo, CaretDown, House, ChartBar, CalendarBlank, Heart,
   MagnifyingGlass, ChatsCircle, Globe, Calculator, ChartLineUp, Printer, Bank,
+  Camera,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -61,11 +62,12 @@ const navGroups = [
 ]
 
 const adminMain = [
-  { href: '/dashboard/admin',         label: 'Vue d\'ensemble', Icon: Gear },
-  { href: '/dashboard/admin/membres', label: 'Membres',         Icon: UsersThree },
+  { href: '/dashboard/admin',             label: 'Vue d\'ensemble', Icon: Gear },
+  { href: '/dashboard/admin/membres',     label: 'Membres',         Icon: UsersThree },
   // QG : fusion de Membres Driing + Signalements + Suggestions en une
   // seule page avec 3 tabs. Évite la dispersion sur 3 entrées sidebar.
-  { href: '/dashboard/admin/qg',      label: 'QG demandes',     Icon: ShieldCheck },
+  { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
+  { href: '/dashboard/admin/photographes', label: 'Photographes',   Icon: Camera },
 ]
 
 const adminContent = [

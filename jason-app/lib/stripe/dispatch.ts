@@ -153,6 +153,45 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
 
     case 'customer.subscription.created': {
       const sub = event.data.object as Stripe.Subscription
+      // ── Branche photographe : subscription metadata.photographer_id ──
+      // L'admin a déclenché un Checkout via approvePhotographer().
+      // À la création de la subscription, on active le profil photographe
+      // dans l'annuaire (status='active', is_public=true, slug généré).
+      const photographerId = sub.metadata?.photographer_id
+      if (photographerId) {
+        const { data: ph } = await db
+          .from('photographers')
+          .select('id, full_name, ville, email, slug, tier, status')
+          .eq('id', photographerId)
+          .maybeSingle()
+        if (ph && ph.status === 'approved_pending_payment') {
+          // Génère le slug si pas déjà fait
+          let slug = ph.slug
+          if (!slug) {
+            const base = `${ph.full_name}-${ph.ville}`.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80)
+            slug = base
+            // Check unicity, append id short si collision
+            const { data: collision } = await db.from('photographers').select('id').eq('slug', slug).neq('id', photographerId).maybeSingle()
+            if (collision) slug = `${base}-${photographerId.slice(0, 6)}`
+          }
+          await db.from('photographers').update({
+            status: 'active',
+            is_public: true,
+            slug,
+            stripe_customer_id: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
+            stripe_subscription_id: sub.id,
+            stripe_subscription_status: sub.status,
+            updated_at: new Date().toISOString(),
+          }).eq('id', photographerId)
+          // Trigger rebuild du site statique pour générer la fiche publique
+          const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+          if (hookUrl) {
+            fetch(hookUrl, { method: 'POST' }).catch(() => {})
+          }
+        }
+        break
+      }
+      // ── Branche standard : abonnement hôte plateforme ──
       const userId = sub.metadata?.user_id
       if (!userId) break
       const priceId = sub.items.data[0]?.price?.id ?? ''
@@ -168,6 +207,19 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
 
     case 'customer.subscription.updated': {
       const sub = event.data.object as Stripe.Subscription
+      // Branche photographe : sync status, ne touche pas au tier
+      const photographerId = sub.metadata?.photographer_id
+      if (photographerId) {
+        await db.from('photographers').update({
+          stripe_subscription_status: sub.status,
+          // Si Stripe past_due/canceled → on retire de l'annuaire public
+          is_public: sub.status === 'active',
+          updated_at: new Date().toISOString(),
+        }).eq('id', photographerId)
+        const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+        if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+        break
+      }
       const userId = sub.metadata?.user_id
       if (!userId) break
       const priceId = sub.items.data[0]?.price?.id ?? ''
@@ -183,6 +235,19 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
 
     case 'customer.subscription.deleted': {
       const sub = event.data.object as Stripe.Subscription
+      // Branche photographe : retire de l'annuaire
+      const photographerId = sub.metadata?.photographer_id
+      if (photographerId) {
+        await db.from('photographers').update({
+          status: 'cancelled',
+          is_public: false,
+          stripe_subscription_status: 'canceled',
+          updated_at: new Date().toISOString(),
+        }).eq('id', photographerId)
+        const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+        if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+        break
+      }
       const userId = sub.metadata?.user_id
       if (!userId) break
       await db.from('profiles').update({
