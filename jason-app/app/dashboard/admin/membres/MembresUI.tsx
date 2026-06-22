@@ -179,6 +179,14 @@ export default function MembresUI({ members }: { members: Member[] }) {
         .jm-membre-card:hover .jm-action-btn { opacity: 1; }
         .jm-action-btn { opacity: 0.85; }
         .jm-action-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; border-color: var(--border-2) !important; transform: translateY(-1px); }
+        /* Fix dropdown plan : avant, les options s'ouvraient en blanc-sur-blanc
+           illisible sur le thème dark (rendu natif browser). On force les
+           couleurs sur les <option> directement. Compatible light + dark
+           grâce à color-scheme inherited + var() */
+        .jm-membre-card select option { background-color: var(--bg-2); color: var(--text); padding: 8px 12px; font-weight: 500; }
+        .jm-membre-card select option:hover { background-color: rgba(0,76,63,0.55); color: #fff; }
+        .jm-membre-card select option:checked { background: var(--accent-text); color: var(--bg); font-weight: 700; }
+        .jm-membre-card select:focus { outline: none; border-color: var(--accent-text) !important; box-shadow: 0 0 0 3px rgba(0,76,63,.18); }
       `}</style>
 
       {/* ── Stats ── */}
