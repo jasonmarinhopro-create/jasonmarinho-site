@@ -4,3 +4,4 @@ Allow: /
 Sitemap: https://jasonmarinho.com/sitemap.xml
 Sitemap: https://jasonmarinho.com/sitemap-signalements.xml
 Sitemap: https://jasonmarinho.com/sitemap-photographes.xml
+Sitemap: https://jasonmarinho.com/sitemap-menages.xml
