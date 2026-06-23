@@ -17,9 +17,21 @@ function getServiceClient() {
 export default async function Page() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  if (!user) redirect('/auth/login?as=photographe')
 
   const admin = getServiceClient()
+
+  // Strict role gating : seul un photographe (ou admin) peut accéder à cette page.
+  // Un hôte ou un cleaner est redirigé vers son propre espace.
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle()
+  const role = profile?.role
+  if (role === 'cleaner') redirect('/dashboard/ma-fiche-menage')
+  if (role !== 'photographer' && role !== 'admin') redirect('/dashboard')
+
   const { data: photographer } = await admin
     .from('photographers')
     .select('*')
