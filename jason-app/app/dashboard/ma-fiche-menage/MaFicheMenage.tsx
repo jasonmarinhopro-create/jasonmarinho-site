@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Sparkle, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck } from '@phosphor-icons/react/dist/ssr'
-import { updateCleanerFiche, createCustomerPortalSession } from './actions'
+import { Sparkle, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash } from '@phosphor-icons/react/dist/ssr'
+import { updateCleanerFiche, createCustomerPortalSession, uploadCleanerLogo, deleteCleanerLogo } from './actions'
 
 type Cleaner = {
   id: string; email: string; full_name: string; pseudo: string | null; ville: string
@@ -19,6 +19,7 @@ type Cleaner = {
   stripe_subscription_status: string | null
   views_count: number; contacts_count: number
   created_at: string
+  logo_url: string | null
 }
 
 interface Props {
@@ -67,6 +68,31 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
   const [portalBusy, setPortalBusy] = useState(false)
+  const [logoUrl, setLogoUrl] = useState<string | null>(cleaner.logo_url)
+  const [logoBusy, setLogoBusy] = useState(false)
+
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setErr(null); setOk(null); setLogoBusy(true)
+    const fd = new FormData()
+    fd.append('logo', file)
+    if (isAdminPreview) fd.append('targetId', cleaner.id)
+    const res = await uploadCleanerLogo(fd)
+    setLogoBusy(false)
+    if (res.error) setErr(res.error)
+    else if (res.url) { setLogoUrl(res.url); setOk('Logo mis à jour.') }
+    e.target.value = ''
+  }
+
+  async function handleLogoDelete() {
+    if (!window.confirm('Supprimer le logo ?')) return
+    setErr(null); setOk(null); setLogoBusy(true)
+    const res = await deleteCleanerLogo(isAdminPreview ? cleaner.id : undefined)
+    setLogoBusy(false)
+    if (res.error) setErr(res.error)
+    else { setLogoUrl(null); setOk('Logo supprimé.') }
+  }
 
   function toggle(setName: 'prestations' | 'langues', key: string) {
     const next = new Set(form[setName])
@@ -169,6 +195,27 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
       {ok && <div style={s.okBanner}><CheckCircle size={14} weight="fill" /> {ok}</div>}
 
       <form onSubmit={handleSave} style={s.form}>
+        <h3 style={s.sectionTitle}>Logo de l'équipe</h3>
+        <div style={s.logoRow}>
+          <div style={{ ...s.logoPreview, background: logoUrl ? `url('${logoUrl}') center/cover` : 'rgba(0,76,63,0.08)' }}>
+            {!logoUrl && <span style={s.logoInitials}>{(cleaner.pseudo || cleaner.full_name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}</span>}
+          </div>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <p style={s.logoHint}>Format carré recommandé. JPEG, PNG ou WebP. Max 500 KB. Apparaît sur ta fiche publique et dans la liste de l'annuaire.</p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
+              <label style={{ ...s.btnSecondary, cursor: logoBusy ? 'wait' : 'pointer', opacity: logoBusy ? 0.5 : 1 }}>
+                <UploadSimple size={13} weight="bold" /> {logoUrl ? 'Remplacer' : 'Uploader'}
+                <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleLogoUpload} disabled={logoBusy} style={{ display: 'none' }} />
+              </label>
+              {logoUrl && (
+                <button type="button" onClick={handleLogoDelete} disabled={logoBusy} style={{ ...s.btnSecondary, color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.3)' }}>
+                  <Trash size={13} weight="bold" /> Supprimer
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
         <h3 style={s.sectionTitle}>Identité</h3>
         <div style={s.grid2}>
           <Field label="Nom du gérant·e" req>
@@ -348,4 +395,8 @@ const s: Record<string, React.CSSProperties> = {
   btnSecondary: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', background: 'transparent', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
   subscriptionCard: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: 14, padding: 22, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 },
   subscriptionMeta: { fontSize: 13, color: 'var(--text-muted)', margin: '4px 0 0' },
+  logoRow: { display: 'flex', gap: 18, padding: 14, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, flexWrap: 'wrap' as const, alignItems: 'center' },
+  logoPreview: { width: 100, height: 100, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' as const, border: '1px solid var(--border)' },
+  logoInitials: { fontSize: 32, fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, color: 'var(--accent-text)' },
+  logoHint: { fontSize: 12, color: 'var(--text-muted)', margin: '0 0 10px', lineHeight: 1.6 },
 }

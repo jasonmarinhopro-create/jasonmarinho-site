@@ -98,7 +98,10 @@ a{color:inherit}
 .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
 .tag.gold{background:rgba(255,213,107,.15);color:#FFD56B;border:1px solid rgba(255,213,107,.35)}
-h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;margin:0 0 14px}
+h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;margin:0 0 14px;flex:1;min-width:0}
+.hero-id{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.hero-logo{width:96px;height:96px;border-radius:18px;flex-shrink:0;border:1px solid rgba(255,255,255,.15);overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.hero-logo.placeholder{background:rgba(255,213,107,.10);color:var(--y);font-family:'Fraunces',serif;font-size:36px;font-weight:400}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .subtitle{font-size:16px;color:rgba(255,255,255,.65);line-height:1.7;max-width:640px;margin:0}
 .meta-row{display:flex;flex-wrap:wrap;gap:18px;margin-top:24px;font-size:13.5px;color:rgba(255,255,255,.7)}
@@ -161,7 +164,12 @@ ${JSON.stringify({
       ${p.specialite ? `<span class="tag">${escHtml(p.specialite)}</span>` : ''}
       <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>${escHtml(p.ville)}</span>
     </div>
-    <h1>${escHtml(displayName)}<br><em>photographe LCD</em></h1>
+    <div class="hero-id">
+      ${p.logo_url
+        ? `<div class="hero-logo" style="background:url('${escHtml(p.logo_url)}') center/cover"></div>`
+        : `<div class="hero-logo placeholder">${escHtml(displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase())}</div>`}
+      <h1>${escHtml(displayName)}<br><em>photographe LCD</em></h1>
+    </div>
     ${p.zone_couverte ? `<p class="subtitle">Zone d'intervention : ${escHtml(p.zone_couverte)}</p>` : ''}
     <div class="meta-row">
       ${tarif ? `<span><i class="ph-bold ph-currency-eur"></i>${escHtml(tarif)} la session</span>` : ''}
@@ -260,9 +268,15 @@ function buildAnnuaireListPage(items) {
     : `<div class="grid">${items.map(p => {
         const displayName = p.pseudo || p.full_name
         const tarif = fmtTarif(p)
+        const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
         return `<a href="/photographes/${escHtml(p.slug)}" class="card">
   ${p.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
-  <h3 class="card-name">${escHtml(displayName)}</h3>
+  <div class="card-logo-row">
+    ${p.logo_url
+      ? `<div class="card-logo" style="background:url('${escHtml(p.logo_url)}') center/cover"></div>`
+      : `<div class="card-logo placeholder">${escHtml(initials)}</div>`}
+    <h3 class="card-name">${escHtml(displayName)}</h3>
+  </div>
   <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(p.ville)}${p.zone_couverte ? ` <span style="color:var(--tl);font-weight:400">· ${escHtml(p.zone_couverte)}</span>` : ''}</div>
   ${p.specialite ? `<div class="card-spe">${escHtml(p.specialite)}</div>` : ''}
   ${tarif ? `<div class="card-tarif">${escHtml(tarif)}</div>` : ''}
@@ -311,7 +325,10 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,76,63,.1)}
 .card-tag{position:absolute;top:18px;right:18px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:#eee;color:#666}
 .card-tag.gold{background:rgba(255,213,107,.15);color:#b8860b;border:1px solid rgba(255,213,107,.4)}
-.card-name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0;letter-spacing:-.2px}
+.card-name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0;letter-spacing:-.2px;flex:1;min-width:0}
+.card-logo-row{display:flex;align-items:center;gap:12px}
+.card-logo{width:48px;height:48px;border-radius:12px;flex-shrink:0;border:1px solid var(--bd);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.card-logo.placeholder{background:rgba(0,76,63,.06);color:var(--g);font-family:'Fraunces',serif;font-size:18px;font-weight:500}
 .card-ville{font-size:13px;color:var(--tm);font-weight:500;display:flex;align-items:center;gap:5px}
 .card-ville i{color:var(--g);font-size:13px}
 .card-spe{font-size:12.5px;color:var(--g);background:rgba(0,76,63,.06);padding:3px 9px;border-radius:6px;align-self:flex-start}
