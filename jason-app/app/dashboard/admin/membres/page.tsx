@@ -31,6 +31,10 @@ export default async function MembresPage() {
       id, email, full_name, role, driing_status, plan, is_contributor, created_at,
       user_formations(id, progress, enrolled_at, formation:formations(id, title, slug))
     `)
+    // Exclut les comptes pros annuaire qui ont leur propre admin
+    // (/dashboard/admin/photographes et /dashboard/admin/menage).
+    // La page Membres reste centrée sur les hôtes LCD (role user/admin).
+    .not('role', 'in', '("photographer","cleaner")')
     .order('created_at', { ascending: false })
 
   // Normalize Supabase join result: formation relation comes as array from generic client

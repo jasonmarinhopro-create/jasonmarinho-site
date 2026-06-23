@@ -237,7 +237,7 @@ function Field({ k, v }: { k: string; v: string }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { padding: 'clamp(20px, 3vw, 36px)', maxWidth: '1100px', margin: '0 auto' },
+  wrap: { padding: 'clamp(20px, 3vw, 44px)', width: '100%', maxWidth: '1600px', margin: '0 auto' },
   head: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' as const, gap: '14px', marginBottom: '20px' },
   title: { fontSize: '22px', fontWeight: 600, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)', margin: 0 },
   titleEm: { color: 'var(--accent-text)', fontStyle: 'italic', fontWeight: 300 },
