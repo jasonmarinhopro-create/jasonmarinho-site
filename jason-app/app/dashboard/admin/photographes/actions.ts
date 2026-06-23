@@ -223,34 +223,137 @@ export async function rejectPhotographer(photographerId: string, reason: string)
 }
 
 /**
- * Récupère la queue de validation + les actifs + les rejets récents pour
- * la page admin.
+ * Récupère les KPIs + listes pour la page admin photographes.
+ *
+ * Le flow étant désormais self-service (paiement direct), il n'y a plus
+ * de queue de validation manuelle. L'admin se concentre sur :
+ * - active : fiches publiques actuellement dans l'annuaire
+ * - pendingPayment : inscrits qui ont créé un compte mais pas confirmé
+ *   le paiement Stripe (orphelins potentiels nettoyés au prochain
+ *   signup avec le même email)
+ * - hidden : fiches masquées par modération (action admin)
+ * - cancelled : abonnements résiliés (volonté du pro ou non-paiement)
  */
 export async function getPhotographersQueue(): Promise<{
+  active: any[]
+  pendingPayment: any[]
+  hidden: any[]
+  cancelled: any[]
+  founderActiveCount: number
+  // Legacy pour la rétro-compat du composant existant.
   pending: any[]
   approvedPendingPayment: any[]
-  active: any[]
   rejected: any[]
-  founderActiveCount: number
   error?: string
 }> {
   const auth = await requireAdmin()
-  if ('error' in auth) return { pending: [], approvedPendingPayment: [], active: [], rejected: [], founderActiveCount: 0, error: auth.error }
+  if ('error' in auth) return {
+    active: [], pendingPayment: [], hidden: [], cancelled: [],
+    founderActiveCount: 0,
+    pending: [], approvedPendingPayment: [], rejected: [],
+    error: auth.error,
+  }
 
   const admin = getServiceClient()
-  const [pendingRes, approvedRes, activeRes, rejectedRes, founderCountRes] = await Promise.all([
-    admin.from('photographers').select('*').eq('status', 'pending_validation').order('created_at').limit(50),
-    admin.from('photographers').select('*').eq('status', 'approved_pending_payment').order('validated_at', { ascending: false }).limit(50),
-    admin.from('photographers').select('*').eq('status', 'active').order('validated_at', { ascending: false }).limit(100),
-    admin.from('photographers').select('*').eq('status', 'rejected').order('validated_at', { ascending: false }).limit(20),
+  const [activeRes, pendingPaymentRes, hiddenRes, cancelledRes, founderCountRes] = await Promise.all([
+    admin.from('photographers').select('*').eq('status', 'active').order('created_at', { ascending: false }).limit(200),
+    admin.from('photographers').select('*').eq('status', 'pending_payment').order('created_at', { ascending: false }).limit(50),
+    admin.from('photographers').select('*').eq('status', 'hidden').order('updated_at', { ascending: false }).limit(50),
+    admin.from('photographers').select('*').eq('status', 'cancelled').order('updated_at', { ascending: false }).limit(50),
     admin.from('photographers').select('id', { count: 'exact', head: true }).eq('status', 'active').eq('tier', 'fondateur'),
   ])
 
   return {
-    pending: pendingRes.data ?? [],
-    approvedPendingPayment: approvedRes.data ?? [],
     active: activeRes.data ?? [],
-    rejected: rejectedRes.data ?? [],
+    pendingPayment: pendingPaymentRes.data ?? [],
+    hidden: hiddenRes.data ?? [],
+    cancelled: cancelledRes.data ?? [],
     founderActiveCount: founderCountRes.count ?? 0,
+    pending: [], approvedPendingPayment: [], rejected: [],
   }
+}
+
+/**
+ * Masque une fiche active (post-modération) sans toucher à l'abonnement
+ * Stripe. Le pro reste facturé mais sa fiche n'est plus dans l'annuaire
+ * public. Utilisé en cas de signalement / problème à investiguer.
+ */
+export async function hidePhotographer(photographerId: string): Promise<{ success?: boolean; error?: string }> {
+  const auth = await requireAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = getServiceClient()
+  await admin
+    .from('photographers')
+    .update({
+      status: 'hidden',
+      is_public: false,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', photographerId)
+
+  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+
+  revalidatePath('/dashboard/admin/photographes')
+  return { success: true }
+}
+
+/**
+ * Réactive une fiche masquée. Le pro était toujours facturé pendant la
+ * mise en sommeil donc retour immédiat dans l'annuaire.
+ */
+export async function unhidePhotographer(photographerId: string): Promise<{ success?: boolean; error?: string }> {
+  const auth = await requireAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = getServiceClient()
+  await admin
+    .from('photographers')
+    .update({
+      status: 'active',
+      is_public: true,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', photographerId)
+
+  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+
+  revalidatePath('/dashboard/admin/photographes')
+  return { success: true }
+}
+
+/**
+ * Supprime un orphelin pending_payment qui ne s'est jamais converti.
+ * Nettoie la row + le compte Supabase Auth.
+ */
+export async function deleteOrphanPhotographer(photographerId: string): Promise<{ success?: boolean; error?: string }> {
+  const auth = await requireAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = getServiceClient()
+  const { data: ph } = await admin
+    .from('photographers')
+    .select('id, status, stripe_subscription_id, user_id')
+    .eq('id', photographerId)
+    .maybeSingle()
+  if (!ph) return { error: 'Photographe introuvable' }
+  if (ph.status !== 'pending_payment' || ph.stripe_subscription_id) {
+    return { error: 'Cet enregistrement n\'est pas un orphelin (paiement actif ou autre statut).' }
+  }
+
+  await admin.from('photographers').delete().eq('id', photographerId)
+  if (ph.user_id) {
+    await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${ph.user_id}`, {
+      method: 'DELETE',
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY!}`,
+      },
+    }).catch(() => {})
+  }
+
+  revalidatePath('/dashboard/admin/photographes')
+  return { success: true }
 }

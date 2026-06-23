@@ -202,31 +202,102 @@ export async function rejectCleaner(cleanerId: string, reason: string): Promise<
   return { success: true }
 }
 
+/**
+ * Récupère les KPIs + listes pour la page admin ménage. Flow self-service
+ * désormais (pas de validation manuelle), l'admin se concentre sur les
+ * fiches actives + nettoyage orphelins + modération.
+ */
 export async function getCleanersQueue(): Promise<{
+  active: any[]
+  pendingPayment: any[]
+  hidden: any[]
+  cancelled: any[]
+  founderActiveCount: number
   pending: any[]
   approvedPendingPayment: any[]
-  active: any[]
   rejected: any[]
-  founderActiveCount: number
   error?: string
 }> {
   const auth = await requireAdmin()
-  if ('error' in auth) return { pending: [], approvedPendingPayment: [], active: [], rejected: [], founderActiveCount: 0, error: auth.error }
+  if ('error' in auth) return {
+    active: [], pendingPayment: [], hidden: [], cancelled: [],
+    founderActiveCount: 0,
+    pending: [], approvedPendingPayment: [], rejected: [],
+    error: auth.error,
+  }
 
   const admin = getServiceClient()
-  const [pendingRes, approvedRes, activeRes, rejectedRes, founderCountRes] = await Promise.all([
-    admin.from('cleaners').select('*').eq('status', 'pending_validation').order('created_at').limit(50),
-    admin.from('cleaners').select('*').eq('status', 'approved_pending_payment').order('validated_at', { ascending: false }).limit(50),
-    admin.from('cleaners').select('*').eq('status', 'active').order('validated_at', { ascending: false }).limit(100),
-    admin.from('cleaners').select('*').eq('status', 'rejected').order('validated_at', { ascending: false }).limit(20),
+  const [activeRes, pendingPaymentRes, hiddenRes, cancelledRes, founderCountRes] = await Promise.all([
+    admin.from('cleaners').select('*').eq('status', 'active').order('created_at', { ascending: false }).limit(200),
+    admin.from('cleaners').select('*').eq('status', 'pending_payment').order('created_at', { ascending: false }).limit(50),
+    admin.from('cleaners').select('*').eq('status', 'hidden').order('updated_at', { ascending: false }).limit(50),
+    admin.from('cleaners').select('*').eq('status', 'cancelled').order('updated_at', { ascending: false }).limit(50),
     admin.from('cleaners').select('id', { count: 'exact', head: true }).eq('status', 'active').eq('tier', 'fondateur'),
   ])
 
   return {
-    pending: pendingRes.data ?? [],
-    approvedPendingPayment: approvedRes.data ?? [],
     active: activeRes.data ?? [],
-    rejected: rejectedRes.data ?? [],
+    pendingPayment: pendingPaymentRes.data ?? [],
+    hidden: hiddenRes.data ?? [],
+    cancelled: cancelledRes.data ?? [],
     founderActiveCount: founderCountRes.count ?? 0,
+    pending: [], approvedPendingPayment: [], rejected: [],
   }
+}
+
+export async function hideCleaner(cleanerId: string): Promise<{ success?: boolean; error?: string }> {
+  const auth = await requireAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const admin = getServiceClient()
+  await admin.from('cleaners').update({
+    status: 'hidden',
+    is_public: false,
+    updated_at: new Date().toISOString(),
+  }).eq('id', cleanerId)
+  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  revalidatePath('/dashboard/admin/menage')
+  return { success: true }
+}
+
+export async function unhideCleaner(cleanerId: string): Promise<{ success?: boolean; error?: string }> {
+  const auth = await requireAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const admin = getServiceClient()
+  await admin.from('cleaners').update({
+    status: 'active',
+    is_public: true,
+    updated_at: new Date().toISOString(),
+  }).eq('id', cleanerId)
+  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  revalidatePath('/dashboard/admin/menage')
+  return { success: true }
+}
+
+export async function deleteOrphanCleaner(cleanerId: string): Promise<{ success?: boolean; error?: string }> {
+  const auth = await requireAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const admin = getServiceClient()
+  const { data: cl } = await admin
+    .from('cleaners')
+    .select('id, status, stripe_subscription_id, user_id')
+    .eq('id', cleanerId)
+    .maybeSingle()
+  if (!cl) return { error: 'Équipe introuvable' }
+  if (cl.status !== 'pending_payment' || cl.stripe_subscription_id) {
+    return { error: 'Cet enregistrement n\'est pas un orphelin.' }
+  }
+  await admin.from('cleaners').delete().eq('id', cleanerId)
+  if (cl.user_id) {
+    await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${cl.user_id}`, {
+      method: 'DELETE',
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY!}`,
+      },
+    }).catch(() => {})
+  }
+  revalidatePath('/dashboard/admin/menage')
+  return { success: true }
 }
