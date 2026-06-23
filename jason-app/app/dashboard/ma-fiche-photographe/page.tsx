@@ -14,50 +14,72 @@ function getServiceClient() {
   )
 }
 
-export default async function Page() {
+interface PageProps {
+  searchParams?: Promise<{ id?: string }>
+}
+
+export default async function Page({ searchParams }: PageProps) {
+  const sp = await searchParams
+  const previewId = sp?.id
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login?as=photographe')
 
   const admin = getServiceClient()
-
-  // Strict role gating : seul un photographe (ou admin) peut accéder à cette page.
-  // Un hôte ou un cleaner est redirigé vers son propre espace.
   const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
     .maybeSingle()
   const role = profile?.role
-  if (role === 'cleaner') redirect('/dashboard/ma-fiche-menage')
+
+  // Cleaner connecté → vers son propre espace
+  if (role === 'cleaner' && !previewId) redirect('/dashboard/ma-fiche-menage')
   if (role !== 'photographer' && role !== 'admin') redirect('/dashboard')
 
-  const { data: photographer } = await admin
-    .from('photographers')
-    .select('*')
-    .eq('user_id', user.id)
-    .maybeSingle()
+  // Mode preview admin : ?id=<photographer_id> permet à un admin de
+  // voir le dashboard exact qu'un photographe spécifique voit.
+  let photographer: any = null
+  let isAdminPreview = false
+  if (previewId && role === 'admin') {
+    const { data } = await admin
+      .from('photographers')
+      .select('*')
+      .eq('id', previewId)
+      .maybeSingle()
+    photographer = data
+    isAdminPreview = true
+  } else {
+    const { data } = await admin
+      .from('photographers')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle()
+    photographer = data
+  }
 
   if (!photographer) {
-    // Ne devrait pas arriver : le rôle 'photographer' implique une fiche.
-    // Cas limite : compte créé mais paiement Stripe annulé → message clair.
     return (
       <div style={{ padding: 40, maxWidth: 720, margin: '0 auto', fontFamily: 'var(--font-outfit), sans-serif' }}>
         <h1 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: 24, marginBottom: 14 }}>
-          Aucune fiche photographe rattachée
+          {previewId ? 'Photographe introuvable' : 'Aucune fiche photographe rattachée'}
         </h1>
         <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: 14 }}>
-          Ton compte existe mais aucune fiche photographe n'y est associée. Cela peut arriver si le paiement Stripe a été annulé.
-          Inscris-toi à nouveau depuis le site public ou contacte <a href="mailto:contact@jasonmarinho.com" style={{ color: 'var(--accent-text)' }}>contact@jasonmarinho.com</a>.
+          {previewId
+            ? `L'identifiant ${previewId} ne correspond à aucune fiche.`
+            : <>Ton compte existe mais aucune fiche photographe n'y est associée. Cela peut arriver si le paiement Stripe a été annulé. Inscris-toi à nouveau depuis le site public ou contacte <a href="mailto:contact@jasonmarinho.com" style={{ color: 'var(--accent-text)' }}>contact@jasonmarinho.com</a>.</>
+          }
         </p>
-        <a href="https://jasonmarinho.com/annuaires/photographes/inscription" style={{ display: 'inline-block', marginTop: 18, padding: '10px 18px', background: 'var(--accent-text)', color: 'var(--bg)', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13.5 }}>
-          Créer ma fiche
-        </a>
+        {!previewId && (
+          <a href="https://jasonmarinho.com/annuaires/photographes/inscription" style={{ display: 'inline-block', marginTop: 18, padding: '10px 18px', background: 'var(--accent-text)', color: 'var(--bg)', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13.5 }}>
+            Créer ma fiche
+          </a>
+        )}
       </div>
     )
   }
 
-  // KPIs basiques (vues + contacts + ancienneté)
   const createdAt = new Date(photographer.created_at)
   const daysActive = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000))
 
@@ -69,6 +91,7 @@ export default async function Page() {
         contacts: photographer.contacts_count ?? 0,
         daysActive,
       }}
+      isAdminPreview={isAdminPreview}
     />
   )
 }
