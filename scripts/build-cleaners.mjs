@@ -380,6 +380,17 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .empty p{font-size:14px;line-height:1.7;color:var(--tm);margin:0 0 20px}
 .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;padding:12px 22px;border-radius:10px;text-decoration:none}
 .disclaimer{max-width:1100px;margin:30px auto 0;padding:0 clamp(16px,5vw,40px) 50px;font-size:12.5px;color:var(--tl);line-height:1.7}
+.preview-section{max-width:1100px;margin:30px auto 0;padding:0 clamp(16px,5vw,40px)}
+.preview-card{display:flex;gap:24px;padding:28px;background:#fff;border:1px solid var(--bd);border-radius:16px;align-items:center;flex-wrap:wrap}
+.preview-card-text{flex:1;min-width:240px}
+.preview-lbl{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);background:rgba(0,76,63,.06);border:1px solid rgba(0,76,63,.15);border-radius:100px;padding:4px 11px;margin-bottom:12px}
+.preview-h{font-family:'Fraunces',serif;font-size:22px;font-weight:400;color:var(--td);margin:0 0 10px;letter-spacing:-.2px;line-height:1.25}
+.preview-h em{color:var(--g);font-style:italic;font-weight:300}
+.preview-p{font-size:14px;color:var(--tm);line-height:1.7;margin:0 0 14px}
+.preview-cta{display:inline-flex;align-items:center;gap:7px;background:var(--g);color:#fff;font-weight:600;font-size:13.5px;padding:11px 20px;border-radius:10px;text-decoration:none}
+.preview-cta:hover{background:#005a4a}
+.preview-thumb{flex-shrink:0;width:170px;height:170px;border-radius:14px;background:linear-gradient(160deg,#001a11,var(--gd) 60%,#00463a);display:flex;align-items:center;justify-content:center;color:var(--y);font-size:54px}
+@media(max-width:640px){.preview-thumb{width:100%;height:140px}}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -406,6 +417,18 @@ ${JSON.stringify({
 <main class="main">
 ${itemsHtml}
 </main>
+
+<section class="preview-section">
+  <div class="preview-card">
+    <div class="preview-thumb"><i class="ph-bold ph-sparkle"></i></div>
+    <div class="preview-card-text">
+      <span class="preview-lbl">Voir un exemple</span>
+      <h3 class="preview-h">À quoi ressemble une fiche <em>équipe ménage</em> ?</h3>
+      <p class="preview-p">Découvre le mini-site qu'une équipe obtient en s'inscrivant : présentation, prestations, capacité, garanties RC pro, tarifs et formulaire de contact direct. Aperçu fidèle hébergé sur jasonmarinho.com.</p>
+      <a href="/annuaires/menage/exemple-fiche" class="preview-cta"><i class="ph-bold ph-eye"></i> Voir l'exemple de fiche</a>
+    </div>
+  </div>
+</section>
 
 <div class="disclaimer">
   <strong>Comment ça marche.</strong> Tu cliques sur une équipe, tu consultes ses prestations et tu lui envoies une demande via le formulaire de sa fiche. Aucune commission, aucune intermédiation Jason Marinho. La transaction (devis, contrat, paiement) se fait directement entre toi et l'équipe.
