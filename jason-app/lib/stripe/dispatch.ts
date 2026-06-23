@@ -164,7 +164,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           .select('id, full_name, ville, email, slug, tier, status')
           .eq('id', photographerId)
           .maybeSingle()
-        if (ph && ph.status === 'approved_pending_payment') {
+        if (ph && (ph.status === 'approved_pending_payment' || ph.status === 'pending_payment')) {
           // Génère le slug si pas déjà fait
           let slug = ph.slug
           if (!slug) {
@@ -201,7 +201,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           .select('id, full_name, pseudo, ville, email, slug, tier, status')
           .eq('id', cleanerId)
           .maybeSingle()
-        if (cl && cl.status === 'approved_pending_payment') {
+        if (cl && (cl.status === 'approved_pending_payment' || cl.status === 'pending_payment')) {
           let slug = cl.slug
           if (!slug) {
             const nameForSlug = cl.pseudo || cl.full_name

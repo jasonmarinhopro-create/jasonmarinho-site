@@ -55,13 +55,13 @@
 <body>
 <div class="wrap">
   <div class="brd"><a href="/">Accueil</a> · <a href="/services/photographes-lcd">Photographes LCD</a> · <span>Postuler</span></div>
-  <span class="lbl">Candidature fondateur</span>
-  <h1>Rejoins l'annuaire <em>des photographes LCD</em></h1>
-  <p class="lead">Remplis ce formulaire pour postuler. Jason valide manuellement sous 48h ouvrées. Aucun paiement à ce stade — l'abonnement n'est déclenché qu'après validation de ton portfolio.</p>
+  <span class="lbl">Crée ta présence en 2 minutes</span>
+  <h1>Crée ta fiche <em>photographe LCD</em></h1>
+  <p class="lead">Remplis ce formulaire, paye en direct via Stripe, ta fiche est en ligne sous quelques minutes. Pas d'attente, pas de validation manuelle. <a href="/services/photographes-lcd/exemple-fiche" style="color:var(--g);font-weight:500">Voir un exemple de fiche →</a></p>
 
   <div class="pricing-row">
     <i class="ph-bold ph-star" style="color:#FFD56B;font-size:18px"></i>
-    <span><strong>39,98 € TTC / an à vie</strong> pour les 20 premiers fondateurs, ensuite 79,98 €/an. Tarif à vie verrouillé tant que ton abonnement reste actif.</span>
+    <span><strong>39,98 € TTC / an à vie</strong> pour les 20 premiers fondateurs (tarif appliqué automatiquement), ensuite 79,98 €/an. Résiliation libre à tout moment depuis ton espace Stripe.</span>
   </div>
 
   <form class="form" id="signup-form" onsubmit="return submit(event)">
@@ -138,11 +138,11 @@
 
     <div class="hp"><label>Site web (laisser vide)</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
 
-    <button type="submit" class="btn" id="submit-btn"><i class="ph-bold ph-paper-plane-tilt"></i> Envoyer ma candidature</button>
+    <button type="submit" class="btn" id="submit-btn"><i class="ph-bold ph-lock-key"></i> Continuer vers le paiement sécurisé</button>
   </form>
 
   <div class="legal">
-    En soumettant ce formulaire, tu acceptes nos <a href="/cgvu">CGV/CGU</a> et notre <a href="/politique-de-confidentialite">politique de confidentialité</a>. Tes données sont uniquement utilisées pour évaluer ta candidature. Aucune donnée transmise à un tiers.
+    En soumettant ce formulaire, tu acceptes nos <a href="/cgvu">CGV/CGU</a> et notre <a href="/politique-de-confidentialite">politique de confidentialité</a>. Paiement sécurisé via Stripe. Tu seras redirigé vers la page Stripe après validation du formulaire.
   </div>
 </div>
 
@@ -157,7 +157,7 @@
     const errBox = document.getElementById('err-box');
     const btn = document.getElementById('submit-btn');
     errBox.style.display = 'none';
-    btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Envoi…';
+    btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Redirection vers Stripe…';
 
     const ids = ['fullName','email','ville','zoneCouverte','portfolioUrl','instagramHandle','telephone','specialite','tarifMin','tarifMax','bio'];
     const data = { t: __t0, website: e.target.website ? e.target.website.value : '' };
@@ -167,19 +167,18 @@
       const res = await fetch('/api/photographer/signup', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
       });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || !body.checkoutUrl) {
         errBox.textContent = body.error || 'Erreur lors de l\'envoi. Réessaye ou contacte contact@jasonmarinho.com.';
         errBox.style.display = 'block';
-        btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i> Envoyer ma candidature';
+        btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-lock-key"></i> Continuer vers le paiement sécurisé';
         return false;
       }
-      document.getElementById('signup-form').outerHTML =
-        '<div class="ok"><strong>Candidature reçue 🎉</strong><br><br>Jason examine ton profil sous 48h ouvrées. Tu recevras un email avec la suite : en cas de validation, le lien Stripe pour finaliser ton abonnement annuel (à partir de 39,98 € TTC pour les 20 premiers).<br><br>Pense à vérifier tes spams au cas où.</div>';
+      window.location.href = body.checkoutUrl;
     } catch (err) {
       errBox.textContent = 'Impossible de joindre le serveur. Vérifie ta connexion.';
       errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i> Envoyer ma candidature';
+      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-lock-key"></i> Continuer vers le paiement sécurisé';
     }
     return false;
   }
