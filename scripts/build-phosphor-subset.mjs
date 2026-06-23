@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const FONTS_DIR = join(ROOT, 'fonts')
-const SCAN_EXTS = new Set(['.html', '.js'])
+const SCAN_EXTS = new Set(['.html', '.js', '.mjs'])
 const SKIP_DIRS = new Set(['node_modules', '.git', 'jason-app', 'fonts'])
 
 function walk(dir, files = []) {

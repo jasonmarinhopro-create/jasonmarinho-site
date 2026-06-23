@@ -84,6 +84,7 @@
 .ph-bold.ph-credit-card:before { content: "\e1d2"; }
 .ph-bold.ph-currency-circle-dollar:before { content: "\e54c"; }
 .ph-bold.ph-currency-eur:before { content: "\e554"; }
+.ph-bold.ph-database:before { content: "\e1de"; }
 .ph-bold.ph-device-mobile:before { content: "\e1e0"; }
 .ph-bold.ph-device-mobile-camera:before { content: "\e1e2"; }
 .ph-bold.ph-door:before { content: "\e61c"; }
@@ -95,7 +96,9 @@
 .ph-bold.ph-facebook-logo:before { content: "\e226"; }
 .ph-bold.ph-file-text:before { content: "\e23a"; }
 .ph-bold.ph-files:before { content: "\e710"; }
+.ph-bold.ph-fingerprint:before { content: "\e23e"; }
 .ph-bold.ph-flag:before { content: "\e244"; }
+.ph-bold.ph-gauge:before { content: "\e628"; }
 .ph-bold.ph-gavel:before { content: "\ea32"; }
 .ph-bold.ph-gear:before { content: "\e270"; }
 .ph-bold.ph-gift:before { content: "\e276"; }
@@ -110,6 +113,7 @@
 .ph-bold.ph-house-simple:before { content: "\e2c6"; }
 .ph-bold.ph-identification-badge:before { content: "\e6f6"; }
 .ph-bold.ph-identification-card:before { content: "\e2c8"; }
+.ph-bold.ph-image-square:before { content: "\e2cc"; }
 .ph-bold.ph-infinity:before { content: "\e634"; }
 .ph-bold.ph-info:before { content: "\e2ce"; }
 .ph-bold.ph-instagram-logo:before { content: "\e2d0"; }
@@ -138,6 +142,7 @@
 .ph-bold.ph-note-pencil:before { content: "\e34c"; }
 .ph-bold.ph-notebook:before { content: "\e34e"; }
 .ph-bold.ph-paint-brush:before { content: "\e6f0"; }
+.ph-bold.ph-paper-plane-tilt:before { content: "\e398"; }
 .ph-bold.ph-path:before { content: "\e39c"; }
 .ph-bold.ph-percent:before { content: "\e3b6"; }
 .ph-bold.ph-play-circle:before { content: "\e3d2"; }
@@ -145,6 +150,7 @@
 .ph-bold.ph-plus:before { content: "\e3d4"; }
 .ph-bold.ph-plus-circle:before { content: "\e3d6"; }
 .ph-bold.ph-prohibit:before { content: "\e3de"; }
+.ph-bold.ph-question:before { content: "\e3e8"; }
 .ph-bold.ph-receipt:before { content: "\e3ec"; }
 .ph-bold.ph-robot:before { content: "\e762"; }
 .ph-bold.ph-rocket:before { content: "\e3fc"; }
@@ -155,14 +161,18 @@
 .ph-bold.ph-shovel:before { content: "\e9e6"; }
 .ph-bold.ph-sign-in:before { content: "\e428"; }
 .ph-bold.ph-sliders:before { content: "\e432"; }
+.ph-bold.ph-sliders-horizontal:before { content: "\e434"; }
 .ph-bold.ph-snowflake:before { content: "\e5aa"; }
 .ph-bold.ph-sparkle:before { content: "\e6a2"; }
+.ph-bold.ph-spinner:before { content: "\e66a"; }
 .ph-bold.ph-squares-four:before { content: "\e464"; }
 .ph-bold.ph-stack:before { content: "\e466"; }
 .ph-bold.ph-star:before { content: "\e46a"; }
 .ph-bold.ph-storefront:before { content: "\e470"; }
 .ph-bold.ph-sun:before { content: "\e472"; }
 .ph-bold.ph-sun-dim:before { content: "\e474"; }
+.ph-bold.ph-t-shirt:before { content: "\e670"; }
+.ph-bold.ph-table:before { content: "\e476"; }
 .ph-bold.ph-tag:before { content: "\e478"; }
 .ph-bold.ph-target:before { content: "\e47c"; }
 .ph-bold.ph-text-b:before { content: "\e5be"; }
@@ -180,6 +190,7 @@
 .ph-bold.ph-users-four:before { content: "\e68c"; }
 .ph-bold.ph-users-three:before { content: "\e68e"; }
 .ph-bold.ph-video-camera:before { content: "\e4da"; }
+.ph-bold.ph-wallet:before { content: "\e68a"; }
 .ph-bold.ph-warning:before { content: "\e4e0"; }
 .ph-bold.ph-warning-circle:before { content: "\e4e2"; }
 .ph-bold.ph-warning-octagon:before { content: "\e4e4"; }
