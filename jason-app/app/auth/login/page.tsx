@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
@@ -82,6 +82,17 @@ const MAX_ATTEMPTS = 5
 const BLOCK_DURATION_MS = 10 * 60 * 1000
 
 export default function LoginPage() {
+  // useSearchParams() requires a Suspense boundary pour passer le
+  // prerender statique Next.js (sinon le build échoue avec
+  // "missing-suspense-with-csr-bailout").
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100svh', background: '#fff' }} />}>
+      <LoginInner />
+    </Suspense>
+  )
+}
+
+function LoginInner() {
   const supabase = createClient()
   const router = useRouter()
   const searchParams = useSearchParams()
