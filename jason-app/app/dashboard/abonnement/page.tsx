@@ -214,8 +214,8 @@ export default async function AbonnementPage({
                   <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>
                 </div>
                 <div style={styles.priceRow}>
-                  <span style={styles.price}>1,98 €</span>
-                  <span style={styles.priceLabel}> / mois HT</span>
+                  <span style={styles.price}>19,98 €</span>
+                  <span style={styles.priceLabel}> / an HT</span>
                 </div>
                 <p style={styles.planDesc}>Tous les outils pour piloter ton activité LCD.</p>
                 <div style={styles.featureList}>
@@ -295,7 +295,7 @@ export default async function AbonnementPage({
                     }}>
                       <LockKey size={14} weight="fill" />
                       {founderExhausted ? (
-                        <span>Offre Fondateur épuisée — Tarif Standard <strong>3,98 €/mois</strong></span>
+                        <span>Offre Fondateur épuisée — Tarif Standard <strong>38,98 €/an</strong></span>
                       ) : (
                         <span>Offre Fondateur — Plus que <strong>{founderRemaining}</strong> places sur {FOUNDER_TOTAL_SEATS}</span>
                       )}
@@ -320,7 +320,7 @@ export default async function AbonnementPage({
                     </div>
                     {!founderExhausted && (
                       <p style={{ fontSize: '11.5px', color: 'var(--text-2)', lineHeight: 1.55, margin: 0 }}>
-                        Chaque place fondateur garantit le tarif de <strong style={{ color: 'var(--accent-text)' }}>1,98 €/mois à vie</strong>.
+                        Chaque place fondateur garantit le tarif de <strong style={{ color: 'var(--accent-text)' }}>19,98 €/an à vie</strong>.
                       </p>
                     )}
                   </div>
@@ -328,14 +328,14 @@ export default async function AbonnementPage({
                   <div style={styles.priceRow}>
                     {founderExhausted ? (
                       <>
-                        <span style={styles.price}>3,98 €</span>
-                        <span style={styles.priceLabel}> / mois HT</span>
+                        <span style={styles.price}>38,98 €</span>
+                        <span style={styles.priceLabel}> / an HT</span>
                       </>
                     ) : (
                       <>
-                        <span style={styles.price}>1,98 €</span>
-                        <span style={styles.priceLabel}> / mois HT</span>
-                        <span style={styles.priceStrike}>3,98 €</span>
+                        <span style={styles.price}>19,98 €</span>
+                        <span style={styles.priceLabel}> / an HT</span>
+                        <span style={styles.priceStrike}>38,98 €</span>
                       </>
                     )}
                   </div>
@@ -349,14 +349,14 @@ export default async function AbonnementPage({
                     ))}
                   </div>
                   {founderExhausted ? (
-                    <SubscribeButton priceId={STRIPE_PLANS.STANDARD_PUBLIC_MONTHLY} label="Passer en Standard, 3,98 €/mois" />
+                    <SubscribeButton priceId={STRIPE_PLANS.STANDARD_PUBLIC_YEARLY} label="Passer en Standard, 38,98 €/an" />
                   ) : (
-                    <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY} label="Passer en Standard, 1,98 €/mois" />
+                    <SubscribeButton priceId={STRIPE_PLANS.STANDARD_FOUNDING_YEARLY} label="Passer en Standard, 19,98 €/an" />
                   )}
                   <p style={styles.smallNote}>
                     {founderExhausted
-                      ? 'Annuel disponible à 38,98 €/an (économise 18 %). Résiliable à tout moment.'
-                      : 'Prix HT bloqué à vie tant que l’abonnement est actif. Résiliable à tout moment.'}
+                      ? 'Facturation annuelle uniquement. Résiliable à tout moment depuis ton espace.'
+                      : 'Prix HT bloqué à vie tant que l’abonnement est actif. Facturation annuelle. Résiliable à tout moment.'}
                   </p>
                 </div>
               </>
