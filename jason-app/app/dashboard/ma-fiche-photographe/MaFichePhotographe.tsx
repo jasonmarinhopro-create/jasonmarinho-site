@@ -46,6 +46,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await updatePhotographerFiche({
+        targetId: isAdminPreview ? photographer.id : undefined,
         full_name: form.full_name,
         ville: form.ville,
         zone_couverte: form.zone_couverte || null,
@@ -58,13 +59,15 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         telephone: form.telephone || null,
       })
       if (res.error) setErr(res.error)
-      else setOk('Fiche sauvegardée. La version publique se met à jour sous 2-3 minutes.')
+      else setOk(res.adminEdit
+        ? `Fiche de ${photographer.full_name} modifiée par admin. La version publique se met à jour sous 2-3 minutes.`
+        : 'Fiche sauvegardée. La version publique se met à jour sous 2-3 minutes.')
     })
   }
 
   async function handlePortal() {
     setPortalBusy(true)
-    const res = await createCustomerPortalSession()
+    const res = await createCustomerPortalSession(isAdminPreview ? photographer.id : undefined)
     setPortalBusy(false)
     if (res.url) window.location.href = res.url
     else setErr(res.error ?? 'Erreur portail Stripe.')
@@ -80,7 +83,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       {isAdminPreview && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.10)', border: '1px solid rgba(255,213,107,0.35)', borderRadius: 10, fontSize: 13, color: '#b8860b', marginBottom: 18 }}>
           <Star size={14} weight="fill" />
-          <strong>Preview admin :</strong> tu vois le dashboard exact que ce photographe voit. Les modifications via « Enregistrer » échoueront (sécurité — tu n'es pas le propriétaire de la fiche).{' '}
+          <strong>Mode admin :</strong> tu édites la fiche de <strong>{photographer.full_name}</strong> pour son compte. Les modifications « Enregistrer » et l'ouverture du portail Stripe agissent au nom du photographe.{' '}
           <a href="/dashboard/admin/photographes" style={{ color: '#b8860b', textDecoration: 'underline', marginLeft: 'auto' }}>← Retour admin</a>
         </div>
       )}

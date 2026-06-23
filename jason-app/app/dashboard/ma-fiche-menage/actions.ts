@@ -24,21 +24,45 @@ function getServiceClient() {
   )
 }
 
-async function requireOwnFiche(): Promise<{ userId: string; cleanerId: string } | { error: string }> {
+/**
+ * Cleaner connecté → sa propre fiche ; admin avec targetId → édition
+ * pour le compte de l'équipe désignée.
+ */
+async function resolveTargetFiche(targetId?: string): Promise<
+  { cleanerId: string; isAdminEdit: boolean } | { error: string }
+> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié' }
   const admin = getServiceClient()
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle()
+  const isAdmin = profile?.role === 'admin'
+
+  if (targetId && isAdmin) {
+    const { data: target } = await admin
+      .from('cleaners')
+      .select('id')
+      .eq('id', targetId)
+      .maybeSingle()
+    if (!target) return { error: 'Équipe cible introuvable.' }
+    return { cleanerId: target.id, isAdminEdit: true }
+  }
+
   const { data: cl } = await admin
     .from('cleaners')
     .select('id')
     .eq('user_id', user.id)
     .maybeSingle()
   if (!cl) return { error: 'Aucune fiche équipe ménage rattachée à ce compte.' }
-  return { userId: user.id, cleanerId: cl.id }
+  return { cleanerId: cl.id, isAdminEdit: false }
 }
 
 export async function updateCleanerFiche(payload: {
+  targetId?: string
   full_name?: string
   pseudo?: string | null
   ville?: string
@@ -57,9 +81,9 @@ export async function updateCleanerFiche(payload: {
   site_url?: string | null
   instagram_handle?: string | null
   telephone?: string | null
-}): Promise<{ success?: boolean; error?: string }> {
-  const auth = await requireOwnFiche()
-  if ('error' in auth) return { error: auth.error }
+}): Promise<{ success?: boolean; error?: string; adminEdit?: boolean }> {
+  const target = await resolveTargetFiche(payload.targetId)
+  if ('error' in target) return { error: target.error }
 
   const fullName = String(payload.full_name || '').trim().slice(0, 100)
   const ville = String(payload.ville || '').trim().slice(0, 80)
@@ -106,7 +130,7 @@ export async function updateCleanerFiche(payload: {
       telephone: (payload.telephone ?? '').toString().trim().slice(0, 30) || null,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', auth.cleanerId)
+    .eq('id', target.cleanerId)
 
   if (updateErr) {
     log.error('update failed', updateErr)
@@ -117,18 +141,19 @@ export async function updateCleanerFiche(payload: {
   if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
 
   revalidatePath('/dashboard/ma-fiche-menage')
-  return { success: true }
+  if (target.isAdminEdit) revalidatePath('/dashboard/admin/menage')
+  return { success: true, adminEdit: target.isAdminEdit }
 }
 
-export async function createCustomerPortalSession(): Promise<{ url?: string; error?: string }> {
-  const auth = await requireOwnFiche()
-  if ('error' in auth) return { error: auth.error }
+export async function createCustomerPortalSession(targetId?: string): Promise<{ url?: string; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
 
   const admin = getServiceClient()
   const { data: cl } = await admin
     .from('cleaners')
     .select('stripe_customer_id')
-    .eq('id', auth.cleanerId)
+    .eq('id', target.cleanerId)
     .maybeSingle()
   if (!cl?.stripe_customer_id) return { error: 'Abonnement Stripe non encore initialisé.' }
 
