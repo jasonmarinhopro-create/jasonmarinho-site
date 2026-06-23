@@ -39,8 +39,8 @@ async function createCheckoutSession({ stripeKey, priceId, email, metadata }) {
   params.append('customer_email', email)
   params.append('line_items[0][price]', priceId)
   params.append('line_items[0][quantity]', '1')
-  params.append('success_url', `${SITE_URL}/services/menage-lcd/inscription/confirmation?status=paid`)
-  params.append('cancel_url', `${SITE_URL}/services/menage-lcd/inscription/confirmation?status=cancel`)
+  params.append('success_url', `${SITE_URL}/annuaires/menage/inscription/confirmation?status=paid`)
+  params.append('cancel_url', `${SITE_URL}/annuaires/menage/inscription/confirmation?status=cancel`)
   params.append('locale', 'fr')
   params.append('allow_promotion_codes', 'true')
   for (const [k, v] of Object.entries(metadata)) {

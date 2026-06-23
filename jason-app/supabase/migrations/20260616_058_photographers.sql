@@ -6,7 +6,7 @@
 -- Standard 79,98 €/an).
 --
 -- Flow d'inscription :
---  1. Photographe remplit form public /services/photographes-lcd/inscription
+--  1. Photographe remplit form public /annuaires/photographes/inscription
 --     → row créée avec status='pending_validation', is_public=false
 --  2. Jason valide depuis /dashboard/admin/photographes :
 --      - Approuve → status='approved_pending_payment', email envoyé avec
@@ -15,7 +15,7 @@
 --  3. Photographe paie via Stripe Checkout → webhook
 --     customer.subscription.created → status='active', is_public=true,
 --     slug généré, tier (fondateur si <20 actifs sinon standard)
---  4. Profil visible dans /services/photographes-lcd/annuaire
+--  4. Profil visible dans /annuaires/photographes/annuaire
 -- ════════════════════════════════════════════════════════════════════
 
 create table if not exists public.photographers (

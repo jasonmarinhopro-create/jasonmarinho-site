@@ -101,8 +101,8 @@ export async function approveCleaner(cleanerId: string): Promise<{ success?: boo
           tier,
         },
       },
-      success_url: `${SITE_URL}/services/menage-lcd/inscription/confirmation?status=paid`,
-      cancel_url: `${SITE_URL}/services/menage-lcd/inscription/confirmation?status=cancel`,
+      success_url: `${SITE_URL}/annuaires/menage/inscription/confirmation?status=paid`,
+      cancel_url: `${SITE_URL}/annuaires/menage/inscription/confirmation?status=cancel`,
       locale: 'fr',
     })
     checkoutUrl = session.url

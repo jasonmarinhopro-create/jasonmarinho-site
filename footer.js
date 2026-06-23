@@ -232,7 +232,7 @@
             + '<a href="/services/gabarits-messages">Gabarits de messages</a>'
             + '<a href="/services/qr-affiches">QR & Affiches WiFi</a>'
             + '<a href="/services/audit-gbp">Audit Google Business</a>'
-            + '<a href="/services/photographes-lcd">Photographes LCD</a>'
+            + '<a href="/annuaires/photographes">Photographes LCD</a>'
             + '<a href="/services/simulateurs">Simulateurs fiscaux</a>'
             + '<a href="/calculateurs">Calculateurs marché</a>'
           + '</div>'
