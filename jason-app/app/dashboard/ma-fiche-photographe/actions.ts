@@ -122,6 +122,68 @@ export async function updatePhotographerFiche(payload: {
 }
 
 /**
+ * Upload du logo via FormData. File au format jpeg/png/webp, max 500 KB.
+ * Stocké dans le bucket pro-logos sous {photographerId}/avatar.{ext}.
+ * Met à jour photographers.logo_url.
+ */
+export async function uploadPhotographerLogo(formData: FormData): Promise<{ success?: boolean; url?: string; error?: string }> {
+  const targetId = formData.get('targetId') as string | null
+  const target = await resolveTargetFiche(targetId ?? undefined)
+  if ('error' in target) return { error: target.error }
+
+  const file = formData.get('logo') as File | null
+  if (!file || file.size === 0) return { error: 'Aucun fichier.' }
+  if (file.size > 524288) return { error: 'Fichier trop lourd (max 500 KB).' }
+  const mime = file.type
+  const validExt: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }
+  if (!validExt[mime]) return { error: 'Format invalide. Accepté : JPEG, PNG, WebP.' }
+  const ext = validExt[mime]
+
+  const admin = getServiceClient()
+  const path = `${target.photographerId}/avatar.${ext}`
+  const { error: uploadErr } = await admin.storage
+    .from('pro-logos')
+    .upload(path, file, { contentType: mime, upsert: true })
+  if (uploadErr) {
+    log.error('upload logo failed', uploadErr)
+    return { error: 'Upload échoué.' }
+  }
+  const { data: pub } = admin.storage.from('pro-logos').getPublicUrl(path)
+  // Cache buster pour forcer le refetch après chaque update
+  const url = `${pub.publicUrl}?v=${Date.now()}`
+
+  const { error: updateErr } = await admin
+    .from('photographers')
+    .update({ logo_url: url, updated_at: new Date().toISOString() })
+    .eq('id', target.photographerId)
+  if (updateErr) {
+    log.error('update logo_url failed', updateErr)
+    return { error: 'Erreur lors de la sauvegarde.' }
+  }
+
+  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+
+  revalidatePath('/dashboard/ma-fiche-photographe')
+  return { success: true, url }
+}
+
+/**
+ * Supprime le logo. Le bucket conserve le fichier physique (cleanup
+ * cron éventuel) mais photographers.logo_url repasse à null.
+ */
+export async function deletePhotographerLogo(targetId?: string): Promise<{ success?: boolean; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+  const admin = getServiceClient()
+  await admin.from('photographers').update({ logo_url: null, updated_at: new Date().toISOString() }).eq('id', target.photographerId)
+  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  revalidatePath('/dashboard/ma-fiche-photographe')
+  return { success: true }
+}
+
+/**
  * Crée une session Stripe Customer Portal. Admin peut aussi ouvrir le
  * portail d'un autre pro (support).
  */
