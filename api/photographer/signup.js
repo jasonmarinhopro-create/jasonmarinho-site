@@ -93,10 +93,30 @@ async function createCheckoutSession({ stripeKey, priceId, email, metadata }) {
   if (!res.ok) {
     const txt = await res.text()
     console.error('[photographer/signup] stripe checkout failed', res.status, txt)
-    return null
+    let detail = 'Stripe a refusé la création de la session.'
+    try {
+      const j = JSON.parse(txt)
+      if (j?.error?.message) detail = j.error.message
+    } catch {}
+    return { error: `Stripe ${res.status} : ${detail}` }
   }
   const data = await res.json()
-  return data.url || null
+  return { url: data.url || null }
+}
+
+async function rollback({ supabaseUrl, serviceKey, userId, photographerId }) {
+  if (photographerId) {
+    await fetch(`${supabaseUrl}/rest/v1/photographers?id=eq.${photographerId}`, {
+      method: 'DELETE',
+      headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+    }).catch(() => {})
+  }
+  if (userId) {
+    await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+    }).catch(() => {})
+  }
 }
 
 module.exports = async function handler(req, res) {
@@ -230,15 +250,18 @@ module.exports = async function handler(req, res) {
   }
 
   // 5. Crée la session Stripe Checkout
-  const checkoutUrl = await createCheckoutSession({
+  const stripeResult = await createCheckoutSession({
     stripeKey: STRIPE_KEY,
     priceId,
     email,
     metadata: { photographer_id: photographerId, tier, user_id: userId },
   })
-  if (!checkoutUrl) {
-    return res.status(500).json({ error: 'Erreur Stripe. Réessaye ou contacte contact@jasonmarinho.com.' })
+  if (!stripeResult.url) {
+    await rollback({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, photographerId })
+    return res.status(500).json({
+      error: stripeResult.error || 'Erreur Stripe. Réessaye ou contacte contact@jasonmarinho.com.',
+    })
   }
 
-  return res.status(200).json({ ok: true, checkoutUrl, tier })
+  return res.status(200).json({ ok: true, checkoutUrl: stripeResult.url, tier })
 }
