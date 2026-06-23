@@ -34,7 +34,7 @@ async function fetchProfileData(userId: string) {
   const supabase = getServiceClient()
   const { data } = await supabase
     .from('profiles')
-    .select('full_name, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id, stripe_onboarding_complete, is_contributor, last_seen_actualites_at, last_seen_nouveautes_at, onboarding_step, onboarding_completed_at, onboarding_dismissed, onboarding_pinned_track, onboarding_completed_steps, chez_nous_onboarded_at, autres_revenus_pro')
+    .select('full_name, role, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id, stripe_onboarding_complete, is_contributor, last_seen_actualites_at, last_seen_nouveautes_at, onboarding_step, onboarding_completed_at, onboarding_dismissed, onboarding_pinned_track, onboarding_completed_steps, chez_nous_onboarded_at, autres_revenus_pro')
     .eq('id', userId)
     .maybeSingle()
   return data
@@ -66,10 +66,15 @@ export const getProfile = cache(async () => {
   const isDriingMember = profile?.plan === 'driing' || profile?.driing_status === 'confirmed'
   const resolvedPlan = isAdmin ? 'driing' : (isDriingMember ? 'driing' : (profile?.plan ?? 'decouverte'))
 
+  // role : prend la valeur DB (peut être 'photographer'/'cleaner' pour
+  // les pros annuaire), sinon fallback isAdmin → 'admin', sinon 'user'.
+  const dbRole = profile?.role as string | undefined
+  const resolvedRole = (isAdmin ? 'admin' : (dbRole || 'user')) as 'user' | 'admin' | 'photographer' | 'cleaner'
+
   return {
     userId: user.id,
     full_name: profile?.full_name ?? (user.user_metadata?.full_name as string | undefined) ?? null,
-    role: (isAdmin ? 'admin' : 'user') as 'user' | 'driing' | 'admin',
+    role: resolvedRole,
     driing_status: (profile?.driing_status ?? 'none') as 'none' | 'pending' | 'confirmed',
     plan: resolvedPlan as 'decouverte' | 'standard' | 'driing',
     stripe_subscription_id: profile?.stripe_subscription_id ?? null,
