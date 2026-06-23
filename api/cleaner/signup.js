@@ -204,15 +204,30 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Service indisponible (config Stripe).' })
   }
 
-  // Check unicité email
-  const checkUrl = `${SUPABASE_URL}/rest/v1/cleaners?email=eq.${encodeURIComponent(email)}&select=id,status&limit=1`
+  // Check unicité email — avec auto-recovery des orphelins
+  // (status='pending_payment' sans stripe_subscription_id : ce sont des
+  // inscriptions ratées au moment du Stripe Checkout. On les supprime
+  // silencieusement pour permettre le retry avec le même email.)
+  const checkUrl = `${SUPABASE_URL}/rest/v1/cleaners?email=eq.${encodeURIComponent(email)}&select=id,status,stripe_subscription_id,user_id&limit=1`
   const checkRes = await fetch(checkUrl, {
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
   })
   if (checkRes.ok) {
     const existing = await checkRes.json()
     if (Array.isArray(existing) && existing.length > 0) {
-      return res.status(409).json({ error: 'Une fiche avec cet email existe déjà. Connecte-toi sur app.jasonmarinho.com pour la gérer.' })
+      const row = existing[0]
+      const isOrphan = row.status === 'pending_payment' && !row.stripe_subscription_id
+      if (isOrphan) {
+        console.warn('[cleaner/signup] orphan detected, cleaning up before retry', row.id)
+        await rollback({
+          supabaseUrl: SUPABASE_URL,
+          serviceKey: SERVICE_KEY,
+          userId: row.user_id,
+          cleanerId: row.id,
+        })
+      } else {
+        return res.status(409).json({ error: 'Une fiche avec cet email existe déjà. Connecte-toi sur app.jasonmarinho.com pour la gérer.' })
+      }
     }
   }
 
