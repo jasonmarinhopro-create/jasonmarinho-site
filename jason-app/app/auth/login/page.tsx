@@ -9,6 +9,7 @@ import {
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
+import { getPostLoginPathAction } from './actions'
 
 const PERKS = [
   { icon: GraduationCap, label: 'Formations et guides LCD' },
@@ -57,18 +58,11 @@ export default function LoginPage() {
   }, [])
 
   // Détermine la page d'atterrissage post-login en fonction du rôle.
+  // Délégué à un server action qui lit profiles via service role pour
+  // bypass les RLS (le client anon ne peut pas SELECT role).
   async function postLoginPath(): Promise<string> {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return '/dashboard'
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle()
-      if (profile?.role === 'photographer') return '/dashboard/ma-fiche-photographe'
-      if (profile?.role === 'cleaner') return '/dashboard/ma-fiche-menage'
-      return '/dashboard'
+      return await getPostLoginPathAction()
     } catch {
       return '/dashboard'
     }

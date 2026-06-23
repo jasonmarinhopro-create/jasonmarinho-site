@@ -1,6 +1,7 @@
 'use server'
 
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
 export async function loginAction(email: string, password: string) {
@@ -43,3 +44,45 @@ export async function loginAction(email: string, password: string) {
 
   return { success: true as const }
 }
+
+/**
+ * Détermine la page d'atterrissage post-login en fonction du rôle de
+ * l'utilisateur. Lecture via service role pour bypass les RLS (la table
+ * profiles n'a pas de policy SELECT pour l'utilisateur courant côté
+ * client).
+ */
+export async function getPostLoginPathAction(): Promise<string> {
+  try {
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) { return cookieStore.get(name)?.value },
+          set(name: string, value: string, options: CookieOptions) { cookieStore.set(name, value, options) },
+          remove(name: string, options: CookieOptions) { cookieStore.set(name, '', { ...options, maxAge: 0 }) },
+        },
+      }
+    )
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return '/dashboard'
+
+    const admin = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } },
+    )
+    const { data: profile } = await admin
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    if (profile?.role === 'photographer') return '/dashboard/ma-fiche-photographe'
+    if (profile?.role === 'cleaner') return '/dashboard/ma-fiche-menage'
+    return '/dashboard'
+  } catch {
+    return '/dashboard'
+  }
+}
+
