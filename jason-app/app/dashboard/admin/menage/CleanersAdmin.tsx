@@ -146,9 +146,12 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                 <br/><span style={s.cellSub}>actif depuis {fmtAge(c.created_at)}</span>
               </div>
               <div style={s.actions}>
+                <a href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Voir le dashboard exact de l'équipe">
+                  <Sparkle size={11} weight="bold" /> Dashboard
+                </a>
                 {c.slug && (
                   <a href={`https://jasonmarinho.com/menage/${c.slug}`} target="_blank" rel="noopener noreferrer" style={s.linkBtn}>
-                    <ArrowSquareOut size={11} weight="bold" /> Voir
+                    <ArrowSquareOut size={11} weight="bold" /> Fiche pub
                   </a>
                 )}
                 <button onClick={() => handleHide(c)} disabled={busy} style={s.btnSecondary}>

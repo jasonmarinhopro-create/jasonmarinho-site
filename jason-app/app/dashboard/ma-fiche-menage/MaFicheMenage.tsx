@@ -24,6 +24,7 @@ type Cleaner = {
 interface Props {
   cleaner: Cleaner
   kpis: { views: number; contacts: number; daysActive: number }
+  isAdminPreview?: boolean
 }
 
 const PRESTATIONS: Array<[string, string]> = [
@@ -41,7 +42,7 @@ const LANGUES: Array<[string, string]> = [
   ['de', 'Deutsch'], ['pt', 'Português'], ['ar', 'العربية'],
 ]
 
-export default function MaFicheMenage({ cleaner, kpis }: Props) {
+export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }: Props) {
   const [form, setForm] = useState({
     full_name: cleaner.full_name,
     pseudo: cleaner.pseudo ?? '',
@@ -117,6 +118,13 @@ export default function MaFicheMenage({ cleaner, kpis }: Props) {
 
   return (
     <section style={s.wrap}>
+      {isAdminPreview && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.10)', border: '1px solid rgba(255,213,107,0.35)', borderRadius: 10, fontSize: 13, color: '#b8860b', marginBottom: 18 }}>
+          <Star size={14} weight="fill" />
+          <strong>Preview admin :</strong> tu vois le dashboard exact que cette équipe voit. Les modifications via « Enregistrer » échoueront (sécurité — tu n'es pas le propriétaire de la fiche).{' '}
+          <a href="/dashboard/admin/menage" style={{ color: '#b8860b', textDecoration: 'underline', marginLeft: 'auto' }}>← Retour admin</a>
+        </div>
+      )}
       <header style={s.head}>
         <div>
           <h2 style={s.title}>

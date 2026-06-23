@@ -20,9 +20,10 @@ type Photographer = {
 interface Props {
   photographer: Photographer
   kpis: { views: number; contacts: number; daysActive: number }
+  isAdminPreview?: boolean
 }
 
-export default function MaFichePhotographe({ photographer, kpis }: Props) {
+export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false }: Props) {
   const [form, setForm] = useState({
     full_name: photographer.full_name,
     ville: photographer.ville,
@@ -76,6 +77,13 @@ export default function MaFichePhotographe({ photographer, kpis }: Props) {
 
   return (
     <section style={s.wrap}>
+      {isAdminPreview && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.10)', border: '1px solid rgba(255,213,107,0.35)', borderRadius: 10, fontSize: 13, color: '#b8860b', marginBottom: 18 }}>
+          <Star size={14} weight="fill" />
+          <strong>Preview admin :</strong> tu vois le dashboard exact que ce photographe voit. Les modifications via « Enregistrer » échoueront (sécurité — tu n'es pas le propriétaire de la fiche).{' '}
+          <a href="/dashboard/admin/photographes" style={{ color: '#b8860b', textDecoration: 'underline', marginLeft: 'auto' }}>← Retour admin</a>
+        </div>
+      )}
       <header style={s.head}>
         <div>
           <h2 style={s.title}>

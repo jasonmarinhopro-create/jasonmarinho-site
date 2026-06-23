@@ -131,9 +131,12 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                 <br/><span style={s.cellSub}>actif depuis {fmtAge(p.created_at)}</span>
               </div>
               <div style={s.actions}>
+                <a href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Voir le dashboard exact du photographe">
+                  <Camera size={11} weight="bold" /> Dashboard
+                </a>
                 {p.slug && (
                   <a href={`https://jasonmarinho.com/photographes/${p.slug}`} target="_blank" rel="noopener noreferrer" style={s.linkBtn}>
-                    <ArrowSquareOut size={11} weight="bold" /> Voir
+                    <ArrowSquareOut size={11} weight="bold" /> Fiche pub
                   </a>
                 )}
                 <button onClick={() => handleHide(p)} disabled={busy} style={s.btnSecondary} title="Retire la fiche de l'annuaire (abonnement Stripe inchangé)">
