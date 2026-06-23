@@ -11,8 +11,10 @@ import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
 
-function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: 'user' | 'driing' | 'admin'): string {
+function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): string {
   if (role === 'admin') return 'Administrateur'
+  if (role === 'photographer') return 'Photographe annuaire'
+  if (role === 'cleaner') return 'Équipe ménage annuaire'
   if (plan === 'driing') return 'Membre Driing'
   if (plan === 'standard') return 'Standard'
   return 'Découverte'
@@ -26,16 +28,20 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!profile) redirect('/auth/login')
 
   const isAdmin = profile.role === 'admin'
+  const isPro = profile.role === 'photographer' || profile.role === 'cleaner'
   const planLabel = planToLabel(profile.plan, profile.role)
 
   // Onboarding multi-parcours : détecte la progression de chaque parcours.
-  const onboardingState = await detectTracksProgress({
-    userId: profile.userId,
-    completedSteps: profile.onboarding_completed_steps,
-    chezNousOnboardedAt: profile.chez_nous_onboarded_at,
-    onboardingStep: profile.onboarding_step,
-    stripeOnboardingComplete: profile.stripe_onboarding_complete,
-  })
+  // Pros annuaire : pas d'onboarding hôte (sans intérêt pour eux).
+  const onboardingState = isPro
+    ? { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
+    : await detectTracksProgress({
+        userId: profile.userId,
+        completedSteps: profile.onboarding_completed_steps,
+        chezNousOnboardedAt: profile.chez_nous_onboarded_at,
+        onboardingStep: profile.onboarding_step,
+        stripeOnboardingComplete: profile.stripe_onboarding_complete,
+      })
   const onboardingCompleted = onboardingState.totalDone === onboardingState.totalSteps
   const showOnboarding = !onboardingCompleted
 
@@ -61,6 +67,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           hasStripeAccount={profile.stripe_onboarding_complete}
+          proRole={profile.role === 'photographer' || profile.role === 'cleaner' ? profile.role : null}
         />
         <Header
           userName={profile.full_name ?? undefined}

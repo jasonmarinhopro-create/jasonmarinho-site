@@ -91,9 +91,12 @@ interface SidebarProps {
   /** Affiche l'entrée "Encaissements" seulement si l'hôte utilise Stripe Connect.
    *  Évite le clutter pour les hôtes qui n'encaissent que via Airbnb/Booking. */
   hasStripeAccount?: boolean
+  /** Rôle simplifié pour les pros annuaire ('photographer' | 'cleaner').
+   *  Quand renseigné, on affiche une sidebar minimale (juste leur fiche). */
+  proRole?: 'photographer' | 'cleaner' | null
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, proRole = null }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -177,49 +180,65 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
 
         {/* Navigation */}
         <nav style={styles.nav}>
-          {navGroups.map((group, i) => (
-            <div key={i}>
-              {group.label && (
-                <div style={styles.sectionLabel}>{group.label}</div>
-              )}
-              <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
-                {group.items
-                  // Masque "Encaissements" pour les hôtes sans Stripe Connect :
-                  // la page reste accessible par URL directe mais n'encombre
-                  // pas le menu pour ceux qui n'utilisent pas le paiement Stripe.
-                  .filter(item => !(item.href === '/dashboard/encaissements' && !hasStripeAccount))
-                  .map(({ href, label, icon: Icon }) => (
-                  <NavItem
-                    key={href}
-                    href={href}
-                    label={label}
-                    Icon={Icon}
-                    notifDot={href === '/dashboard/actualites' && hasNewActualites}
-                  />
-                ))}
+          {proRole ? (
+            /* Sidebar minimale pour les pros annuaire (photographe / ménage) */
+            <div>
+              <div style={styles.sectionLabel}>Mon annuaire</div>
+              <div style={styles.navSection}>
+                <NavItem
+                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'}
+                  label="Ma fiche"
+                  Icon={proRole === 'photographer' ? Camera : Sparkle}
+                />
               </div>
             </div>
-          ))}
+          ) : (
+            <>
+              {navGroups.map((group, i) => (
+                <div key={i}>
+                  {group.label && (
+                    <div style={styles.sectionLabel}>{group.label}</div>
+                  )}
+                  <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
+                    {group.items
+                      // Masque "Encaissements" pour les hôtes sans Stripe Connect :
+                      // la page reste accessible par URL directe mais n'encombre
+                      // pas le menu pour ceux qui n'utilisent pas le paiement Stripe.
+                      .filter(item => !(item.href === '/dashboard/encaissements' && !hasStripeAccount))
+                      .map(({ href, label, icon: Icon }) => (
+                      <NavItem
+                        key={href}
+                        href={href}
+                        label={label}
+                        Icon={Icon}
+                        notifDot={href === '/dashboard/actualites' && hasNewActualites}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
 
-          {/* Lien Contributeurs, visible pour tous, badge selon statut */}
-          <Link
-            href="/dashboard/contributeurs"
-            onClick={onClose}
-            style={{
-              ...styles.navItem,
-              ...(pathname === '/dashboard/contributeurs' ? styles.navItemActive : {}),
-              marginTop: '2px',
-            }}
-          >
-            <Heart size={18} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? 'var(--accent-text)' : undefined }} />
-            <span style={{ flex: 1 }}>Contributeurs</span>
-            {pathname !== '/dashboard/contributeurs' && (
-              isContributor
-                ? <span style={styles.contributeurBadge}>✦</span>
-                : <span style={styles.contributeurLock}>Rejoindre</span>
-            )}
-            {pathname === '/dashboard/contributeurs' && <div style={styles.activeDot} />}
-          </Link>
+              {/* Lien Contributeurs, visible pour les hôtes, badge selon statut */}
+              <Link
+                href="/dashboard/contributeurs"
+                onClick={onClose}
+                style={{
+                  ...styles.navItem,
+                  ...(pathname === '/dashboard/contributeurs' ? styles.navItemActive : {}),
+                  marginTop: '2px',
+                }}
+              >
+                <Heart size={18} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? 'var(--accent-text)' : undefined }} />
+                <span style={{ flex: 1 }}>Contributeurs</span>
+                {pathname !== '/dashboard/contributeurs' && (
+                  isContributor
+                    ? <span style={styles.contributeurBadge}>✦</span>
+                    : <span style={styles.contributeurLock}>Rejoindre</span>
+                )}
+                {pathname === '/dashboard/contributeurs' && <div style={styles.activeDot} />}
+              </Link>
+            </>
+          )}
 
           {/* Section admin, visible uniquement pour Jason */}
           {isAdmin && (

@@ -1,7 +1,10 @@
 // Vercel serverless function — inscription équipe ménage LCD self-service.
-// Flow : form → insert pending_payment + détermine tier → crée Stripe
-// Checkout session → renvoie l'URL au form qui redirige.
+// Flow : form (email + password + infos) → crée compte Supabase Auth
+// + insert pending_payment + détermine tier → crée Stripe Checkout
+// session → renvoie l'URL au form qui redirige.
 // Activation publique de la fiche au webhook customer.subscription.created.
+// Après paiement, l'équipe se connecte sur app.jasonmarinho.com et gère
+// sa fiche depuis /dashboard/ma-fiche-menage.
 
 const FOUNDER_QUOTA = 20
 const FOUNDER_PRICE_ID = process.env.STRIPE_CLEANER_FOUNDER_PRICE_ID || ''
@@ -32,6 +35,42 @@ const ALLOWED_PRESTATIONS = new Set([
 const ALLOWED_EQUIPE = new Set(['solo', 'duo', 'equipe_3_5', 'equipe_6_plus'])
 const ALLOWED_DELAI = new Set(['jour_meme', '24h', '48h', '72h'])
 const ALLOWED_LANGUES = new Set(['fr', 'en', 'es', 'it', 'de', 'pt', 'ar', 'zh'])
+
+async function createAuthUser({ supabaseUrl, serviceKey, email, password, fullName }) {
+  const res = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+    method: 'POST',
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: fullName, signup_source: 'annuaire_menage' },
+    }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    console.error('[cleaner/signup] auth user create failed', res.status, data)
+    return { error: data?.msg || data?.message || 'Erreur création compte', status: res.status }
+  }
+  return { userId: data?.id || data?.user?.id }
+}
+
+async function setProfileRole({ supabaseUrl, serviceKey, userId, role, fullName }) {
+  await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${userId}`, {
+    method: 'PATCH',
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify({ role, full_name: fullName }),
+  }).catch(err => console.warn('[cleaner/signup] profile role patch failed', err))
+}
 
 async function createCheckoutSession({ stripeKey, priceId, email, metadata }) {
   const params = new URLSearchParams()
@@ -85,6 +124,7 @@ module.exports = async function handler(req, res) {
   const fullName = String(body.fullName || '').trim().slice(0, 100)
   const pseudo = String(body.pseudo || '').trim().slice(0, 100)
   const email = String(body.email || '').trim().toLowerCase().slice(0, 200)
+  const password = String(body.password || '')
   const ville = String(body.ville || '').trim().slice(0, 80)
   const zoneCouverte = String(body.zoneCouverte || '').trim().slice(0, 200)
   const siteUrl = String(body.siteUrl || '').trim().slice(0, 300)
@@ -107,11 +147,14 @@ module.exports = async function handler(req, res) {
     ? body.langues.filter(l => typeof l === 'string' && ALLOWED_LANGUES.has(l)).slice(0, 8)
     : []
 
-  if (!fullName || !email || !ville) {
-    return res.status(400).json({ error: 'Champs obligatoires manquants : nom, email, ville.' })
+  if (!fullName || !email || !ville || !password) {
+    return res.status(400).json({ error: 'Champs obligatoires manquants : nom, email, mot de passe, ville.' })
   }
   if (!email.includes('@') || !email.includes('.')) {
     return res.status(400).json({ error: 'Email invalide.' })
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Le mot de passe doit faire au moins 8 caractères.' })
   }
   if (siteUrl && !/^https?:\/\//i.test(siteUrl)) {
     return res.status(400).json({ error: 'Le site web doit commencer par https://' })
@@ -146,11 +189,26 @@ module.exports = async function handler(req, res) {
   if (checkRes.ok) {
     const existing = await checkRes.json()
     if (Array.isArray(existing) && existing.length > 0) {
-      return res.status(409).json({ error: 'Une fiche avec cet email existe déjà. Contacte Jason si besoin (contact@jasonmarinho.com).' })
+      return res.status(409).json({ error: 'Une fiche avec cet email existe déjà. Connecte-toi sur app.jasonmarinho.com pour la gérer.' })
     }
   }
 
-  // Détermine tier
+  // 1. Crée le compte Supabase Auth
+  const auth = await createAuthUser({
+    supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, email, password, fullName,
+  })
+  if (auth.error) {
+    if (auth.status === 422 || /already.*registered|exists/i.test(auth.error)) {
+      return res.status(409).json({ error: 'Cet email a déjà un compte Jason Marinho. Connecte-toi sur app.jasonmarinho.com.' })
+    }
+    return res.status(500).json({ error: 'Création du compte impossible : ' + auth.error })
+  }
+  const userId = auth.userId
+
+  // 2. Met à jour le rôle profile en 'cleaner'
+  await setProfileRole({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, role: 'cleaner', fullName })
+
+  // 3. Détermine tier
   const tierUrl = `${SUPABASE_URL}/rest/v1/cleaners?tier=eq.fondateur&status=in.(active,pending_payment,approved_pending_payment)&select=id`
   const tierRes = await fetch(tierUrl, {
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
@@ -163,7 +221,7 @@ module.exports = async function handler(req, res) {
   const tier = founderCount < FOUNDER_QUOTA ? 'fondateur' : 'standard'
   const priceId = tier === 'fondateur' ? FOUNDER_PRICE_ID : STANDARD_PRICE_ID
 
-  // Insert pending_payment
+  // 4. Insert pending_payment lié au user_id
   const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/cleaners`, {
     method: 'POST',
     headers: {
@@ -173,6 +231,7 @@ module.exports = async function handler(req, res) {
       Prefer: 'return=representation',
     },
     body: JSON.stringify({
+      user_id: userId,
       email, full_name: fullName,
       pseudo: pseudo || null,
       ville,
@@ -206,11 +265,12 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Erreur lors de l\'enregistrement.' })
   }
 
+  // 5. Crée la session Stripe Checkout
   const checkoutUrl = await createCheckoutSession({
     stripeKey: STRIPE_KEY,
     priceId,
     email,
-    metadata: { cleaner_id: cleanerId, tier },
+    metadata: { cleaner_id: cleanerId, tier, user_id: userId },
   })
   if (!checkoutUrl) {
     return res.status(500).json({ error: 'Erreur Stripe. Réessaye ou contacte contact@jasonmarinho.com.' })

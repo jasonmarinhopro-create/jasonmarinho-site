@@ -37,10 +37,10 @@ export default function LoginPage() {
     }
 
     let redirected = false
-    const redirect = () => {
+    const redirect = async () => {
       if (redirected) return
       redirected = true
-      window.location.replace('/dashboard')
+      window.location.replace(await postLoginPath())
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
@@ -55,6 +55,24 @@ export default function LoginPage() {
 
     return () => subscription.unsubscribe()
   }, [])
+
+  // Détermine la page d'atterrissage post-login en fonction du rôle.
+  async function postLoginPath(): Promise<string> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return '/dashboard'
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
+      if (profile?.role === 'photographer') return '/dashboard/ma-fiche-photographe'
+      if (profile?.role === 'cleaner') return '/dashboard/ma-fiche-menage'
+      return '/dashboard'
+    } catch {
+      return '/dashboard'
+    }
+  }
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -120,7 +138,7 @@ export default function LoginPage() {
     }
 
     setLoading(false)
-    window.location.replace('/dashboard')
+    window.location.replace(await postLoginPath())
   }
 
   async function handleResendConfirmation() {

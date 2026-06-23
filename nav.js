@@ -327,7 +327,7 @@
 
     + '</ul>'
     + '<div class="n-right">'
-      + '<a href="https://app.jasonmarinho.com/auth/login" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
+      + '<a href="/mon-compte" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
       + '<a href="https://app.jasonmarinho.com/auth/register" class="nb-c">Commencer <i class="ph-bold ph-arrow-right"></i></a>'
     + '</div>'
     + '<button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>'
@@ -411,7 +411,7 @@
     + '<a href="/tarifs"><i class="ph ph-tag"></i>Tarifs</a>'
 
     + '<div class="mob-ctas">'
-      + '<a href="https://app.jasonmarinho.com/auth/login" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
+      + '<a href="/mon-compte" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
       + '<a href="https://app.jasonmarinho.com/auth/register" class="mc-c">Commencer <i class="ph-bold ph-arrow-right"></i></a>'
     + '</div>'
 

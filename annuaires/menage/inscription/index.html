@@ -101,11 +101,18 @@
         <div class="field">
           <label for="email">Email pro <span class="req">*</span></label>
           <input type="email" id="email" name="email" required autocomplete="email" placeholder="contact@beeclean.fr">
+          <span class="field-hint">Servira d'identifiant pour ton compte.</span>
         </div>
         <div class="field">
           <label for="telephone">Téléphone</label>
           <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78" autocomplete="tel">
         </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe <span class="req">*</span></label>
+        <input type="password" id="password" name="password" required autocomplete="new-password" minlength="8" placeholder="Au moins 8 caractères">
+        <span class="field-hint">Te servira à te connecter sur app.jasonmarinho.com pour éditer ta fiche à tout moment.</span>
       </div>
 
       <div class="row">
@@ -266,7 +273,7 @@
     btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Redirection vers Stripe…';
 
     const f = e.target;
-    const ids = ['fullName','pseudo','email','telephone','ville','zoneCouverte','siteUrl','instagramHandle','equipeType','logementsGeres','delaiReservation','tarifForfaitMin','tarifForfaitMax','tarifHeure','siret','bio'];
+    const ids = ['fullName','pseudo','email','password','telephone','ville','zoneCouverte','siteUrl','instagramHandle','equipeType','logementsGeres','delaiReservation','tarifForfaitMin','tarifForfaitMax','tarifHeure','siret','bio'];
     const data = { t: __t0, website: f.website ? f.website.value : '' };
     ids.forEach(k => { data[k] = (document.getElementById(k) || {}).value || ''; });
 
