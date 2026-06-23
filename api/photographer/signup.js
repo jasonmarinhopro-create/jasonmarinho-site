@@ -1,6 +1,12 @@
-// Vercel serverless function — inscription photographe LCD.
-// Insert row dans `photographers` avec status='pending_validation'.
-// Envoie email confirm photographe + notif admin Jason.
+// Vercel serverless function — inscription photographe LCD self-service.
+// Flow : form → insert pending_payment + détermine tier → crée Stripe
+// Checkout session → renvoie l'URL au form qui redirige.
+// Activation publique de la fiche au webhook customer.subscription.created.
+
+const FOUNDER_QUOTA = 20
+const FOUNDER_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_FOUNDER_PRICE_ID || ''
+const STANDARD_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_STANDARD_PRICE_ID || ''
+const SITE_URL = 'https://jasonmarinho.com'
 
 const rateLimitMap = new Map()
 function isRateLimited(key, max, windowMs) {
@@ -18,9 +24,36 @@ function getClientIp(req) {
   return (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
     || req.headers['x-real-ip'] || 'unknown'
 }
-function escHtml(s) {
-  if (s == null) return ''
-  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+
+async function createCheckoutSession({ stripeKey, priceId, email, metadata }) {
+  const params = new URLSearchParams()
+  params.append('mode', 'subscription')
+  params.append('customer_email', email)
+  params.append('line_items[0][price]', priceId)
+  params.append('line_items[0][quantity]', '1')
+  params.append('success_url', `${SITE_URL}/services/photographes-lcd/inscription/confirmation?status=paid`)
+  params.append('cancel_url', `${SITE_URL}/services/photographes-lcd/inscription/confirmation?status=cancel`)
+  params.append('locale', 'fr')
+  params.append('allow_promotion_codes', 'true')
+  for (const [k, v] of Object.entries(metadata)) {
+    params.append(`metadata[${k}]`, String(v))
+    params.append(`subscription_data[metadata][${k}]`, String(v))
+  }
+  const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${stripeKey}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: params,
+  })
+  if (!res.ok) {
+    const txt = await res.text()
+    console.error('[photographer/signup] stripe checkout failed', res.status, txt)
+    return null
+  }
+  const data = await res.json()
+  return data.url || null
 }
 
 module.exports = async function handler(req, res) {
@@ -31,7 +64,7 @@ module.exports = async function handler(req, res) {
 
   const ip = getClientIp(req)
   if (isRateLimited(`ip:${ip}`, 3, 15 * 60 * 1000)) {
-    return res.status(200).json({ ok: true })
+    return res.status(429).json({ error: 'Trop de tentatives. Réessaye dans 15 minutes.' })
   }
 
   let body = req.body
@@ -66,12 +99,17 @@ module.exports = async function handler(req, res) {
 
   const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
   const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!SUPABASE_URL || !SERVICE_KEY) {
-    console.error('[photographer/signup] env vars Supabase manquantes')
+  const STRIPE_KEY = process.env.STRIPE_SECRET_KEY
+  if (!SUPABASE_URL || !SERVICE_KEY || !STRIPE_KEY) {
+    console.error('[photographer/signup] env vars manquantes')
     return res.status(500).json({ error: 'Service indisponible' })
   }
+  if (!FOUNDER_PRICE_ID || !STANDARD_PRICE_ID) {
+    console.error('[photographer/signup] price_id Stripe manquants')
+    return res.status(500).json({ error: 'Service indisponible (config Stripe).' })
+  }
 
-  // Check unicité email (évite doublons)
+  // Check unicité email
   const checkUrl = `${SUPABASE_URL}/rest/v1/photographers?email=eq.${encodeURIComponent(email)}&select=id,status&limit=1`
   const checkRes = await fetch(checkUrl, {
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
@@ -79,11 +117,24 @@ module.exports = async function handler(req, res) {
   if (checkRes.ok) {
     const existing = await checkRes.json()
     if (Array.isArray(existing) && existing.length > 0) {
-      return res.status(409).json({ error: 'Une candidature avec cet email existe déjà. Contacte Jason si besoin.' })
+      return res.status(409).json({ error: 'Une fiche avec cet email existe déjà. Contacte Jason si besoin (contact@jasonmarinho.com).' })
     }
   }
 
-  // Insert
+  // Détermine tier : fondateur si <20 actifs ou en cours de paiement
+  const tierUrl = `${SUPABASE_URL}/rest/v1/photographers?tier=eq.fondateur&status=in.(active,pending_payment,approved_pending_payment)&select=id`
+  const tierRes = await fetch(tierUrl, {
+    headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+  })
+  let founderCount = 0
+  if (tierRes.ok) {
+    const rows = await tierRes.json()
+    founderCount = Array.isArray(rows) ? rows.length : 0
+  }
+  const tier = founderCount < FOUNDER_QUOTA ? 'fondateur' : 'standard'
+  const priceId = tier === 'fondateur' ? FOUNDER_PRICE_ID : STANDARD_PRICE_ID
+
+  // Insert pending_payment
   const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/photographers`, {
     method: 'POST',
     headers: {
@@ -101,63 +152,31 @@ module.exports = async function handler(req, res) {
       specialite: specialite || null,
       tarif_min: tarifMin, tarif_max: tarifMax,
       bio: bio || null,
-      status: 'pending_validation',
+      tier,
+      status: 'pending_payment',
     }),
   })
   if (!insertRes.ok) {
     const txt = await insertRes.text()
     console.error('[photographer/signup] INSERT failed', insertRes.status, txt)
-    return res.status(500).json({ error: 'Erreur lors de l\'enregistrement de ta candidature.' })
+    return res.status(500).json({ error: 'Erreur lors de l\'enregistrement.' })
+  }
+  const inserted = await insertRes.json()
+  const photographerId = Array.isArray(inserted) ? inserted[0]?.id : inserted?.id
+  if (!photographerId) {
+    return res.status(500).json({ error: 'Erreur lors de l\'enregistrement.' })
   }
 
-  // Emails (best-effort)
-  const RESEND_KEY = process.env.RESEND_API_KEY
-  if (RESEND_KEY) {
-    // Au photographe
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'notifications@jasonmarinho.com',
-        to: email,
-        subject: `${fullName}, candidature reçue 📸`,
-        html: `<div style="font-family:-apple-system,Segoe UI,Helvetica,sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
-<h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 14px">Ta candidature est bien reçue</h2>
-<p style="color:#3D5038;font-size:14px;line-height:1.7;margin:0 0 14px">Bonjour ${escHtml(fullName)},</p>
-<p style="color:#3D5038;font-size:14px;line-height:1.7;margin:0 0 14px">Merci pour ta candidature à l'annuaire des photographes LCD de Jason Marinho. Nous avons bien reçu tes infos et examinons ton portfolio.</p>
-<div style="background:#fff;border-left:3px solid #63D683;padding:12px 14px;margin:14px 0;border-radius:6px;font-size:13px;line-height:1.7;color:#3D5038">
-<strong>Délai de réponse :</strong> 48h ouvrées maximum.<br>
-<strong>Prochaine étape :</strong> en cas de validation, tu recevras un email avec le lien Stripe pour finaliser ton abonnement annuel (${'<'}80€/an).
-</div>
-<p style="font-size:13px;color:#7A8C77;margin:18px 0 0">Pour toute question, réponds simplement à ce mail.</p>
-</div>`,
-      }),
-    }).catch(() => {})
-
-    // À Jason
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'notifications@jasonmarinho.com',
-        to: 'contact@jasonmarinho.com',
-        subject: `📸 Nouvelle candidature photographe : ${fullName}`,
-        html: `<div style="font-family:-apple-system,sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
-<h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 14px">Nouvelle candidature photographe LCD</h2>
-<div style="background:#fff;padding:14px;border-radius:8px;font-size:13px;line-height:1.7;color:#3D5038">
-<strong>${escHtml(fullName)}</strong><br>
-${escHtml(email)} ${telephone ? ' · ' + escHtml(telephone) : ''}<br>
-${escHtml(ville)}${zoneCouverte ? ' · ' + escHtml(zoneCouverte) : ''}<br>
-${specialite ? '<strong>Spé :</strong> ' + escHtml(specialite) + '<br>' : ''}
-${tarifMin || tarifMax ? '<strong>Tarif :</strong> ' + (tarifMin || '?') + '–' + (tarifMax || '?') + ' €<br>' : ''}
-<strong>Portfolio :</strong> <a href="${escHtml(portfolioUrl)}">${escHtml(portfolioUrl)}</a>${instagramHandle ? ' · @' + escHtml(instagramHandle) : ''}<br>
-${bio ? '<br><em>« ' + escHtml(bio) + ' »</em>' : ''}
-</div>
-<p style="margin:18px 0 0"><a href="https://app.jasonmarinho.com/dashboard/admin/photographes" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Examiner →</a></p>
-</div>`,
-      }),
-    }).catch(() => {})
+  // Crée la session Stripe Checkout
+  const checkoutUrl = await createCheckoutSession({
+    stripeKey: STRIPE_KEY,
+    priceId,
+    email,
+    metadata: { photographer_id: photographerId, tier },
+  })
+  if (!checkoutUrl) {
+    return res.status(500).json({ error: 'Erreur Stripe. Réessaye ou contacte contact@jasonmarinho.com.' })
   }
 
-  return res.status(200).json({ ok: true })
+  return res.status(200).json({ ok: true, checkoutUrl, tier })
 }
