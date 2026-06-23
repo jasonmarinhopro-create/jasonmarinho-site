@@ -16,26 +16,56 @@ function getServiceClient() {
   )
 }
 
-async function requireOwnFiche(): Promise<{ userId: string; photographerId: string } | { error: string }> {
+/**
+ * Résout la fiche cible :
+ * - Photographe connecté : sa propre fiche (via user_id)
+ * - Admin avec targetId : la fiche désignée (édition pour le compte du pro)
+ * - Autre cas : erreur
+ */
+async function resolveTargetFiche(targetId?: string): Promise<
+  { photographerId: string; isAdminEdit: boolean } | { error: string }
+> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié' }
+
   const admin = getServiceClient()
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle()
+  const isAdmin = profile?.role === 'admin'
+
+  // Mode admin : si targetId fourni et user admin → édition pour le compte du pro
+  if (targetId && isAdmin) {
+    const { data: target } = await admin
+      .from('photographers')
+      .select('id')
+      .eq('id', targetId)
+      .maybeSingle()
+    if (!target) return { error: 'Photographe cible introuvable.' }
+    return { photographerId: target.id, isAdminEdit: true }
+  }
+
+  // Mode standard : le pro édite sa propre fiche
   const { data: ph } = await admin
     .from('photographers')
     .select('id')
     .eq('user_id', user.id)
     .maybeSingle()
   if (!ph) return { error: 'Aucune fiche photographe rattachée à ce compte.' }
-  return { userId: user.id, photographerId: ph.id }
+  return { photographerId: ph.id, isAdminEdit: false }
 }
 
 /**
- * Met à jour la fiche du photographe connecté. L'email et le user_id ne
- * sont pas modifiables ici (clé d'identité auth). Le slug n'est pas
- * regénéré (préserve les liens SEO et les URLs partagées).
+ * Met à jour une fiche photographe. Le pro met à jour sa propre fiche ;
+ * un admin peut éditer la fiche de n'importe quel pro en passant targetId.
+ * L'email et le user_id ne sont pas modifiables (clé d'identité auth).
+ * Le slug n'est pas regénéré (préserve les liens SEO).
  */
 export async function updatePhotographerFiche(payload: {
+  targetId?: string
   full_name?: string
   ville?: string
   zone_couverte?: string | null
@@ -46,11 +76,10 @@ export async function updatePhotographerFiche(payload: {
   portfolio_url?: string
   instagram_handle?: string | null
   telephone?: string | null
-}): Promise<{ success?: boolean; error?: string }> {
-  const auth = await requireOwnFiche()
-  if ('error' in auth) return { error: auth.error }
+}): Promise<{ success?: boolean; error?: string; adminEdit?: boolean }> {
+  const target = await resolveTargetFiche(payload.targetId)
+  if ('error' in target) return { error: target.error }
 
-  // Validation minimale, identique au signup
   const fullName = String(payload.full_name || '').trim().slice(0, 100)
   const ville = String(payload.ville || '').trim().slice(0, 80)
   const portfolioUrl = String(payload.portfolio_url || '').trim().slice(0, 300)
@@ -77,34 +106,34 @@ export async function updatePhotographerFiche(payload: {
       telephone: (payload.telephone ?? '').toString().trim().slice(0, 30) || null,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', auth.photographerId)
+    .eq('id', target.photographerId)
 
   if (updateErr) {
     log.error('update failed', updateErr)
     return { error: 'Erreur lors de la sauvegarde.' }
   }
 
-  // Trigger rebuild du site statique pour régénérer la fiche publique
   const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
   if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
 
   revalidatePath('/dashboard/ma-fiche-photographe')
-  return { success: true }
+  if (target.isAdminEdit) revalidatePath('/dashboard/admin/photographes')
+  return { success: true, adminEdit: target.isAdminEdit }
 }
 
 /**
- * Crée une session Stripe Customer Portal pour la gestion d'abonnement
- * (factures, changement de carte, résiliation).
+ * Crée une session Stripe Customer Portal. Admin peut aussi ouvrir le
+ * portail d'un autre pro (support).
  */
-export async function createCustomerPortalSession(): Promise<{ url?: string; error?: string }> {
-  const auth = await requireOwnFiche()
-  if ('error' in auth) return { error: auth.error }
+export async function createCustomerPortalSession(targetId?: string): Promise<{ url?: string; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
 
   const admin = getServiceClient()
   const { data: ph } = await admin
     .from('photographers')
     .select('stripe_customer_id, email')
-    .eq('id', auth.photographerId)
+    .eq('id', target.photographerId)
     .maybeSingle()
   if (!ph?.stripe_customer_id) return { error: 'Abonnement Stripe non encore initialisé.' }
 

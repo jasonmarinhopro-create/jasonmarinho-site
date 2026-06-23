@@ -79,6 +79,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await updateCleanerFiche({
+        targetId: isAdminPreview ? cleaner.id : undefined,
         full_name: form.full_name,
         pseudo: form.pseudo || null,
         ville: form.ville,
@@ -99,13 +100,15 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
         telephone: form.telephone || null,
       })
       if (res.error) setErr(res.error)
-      else setOk('Fiche sauvegardée. La version publique se met à jour sous 2-3 minutes.')
+      else setOk(res.adminEdit
+        ? `Fiche de ${cleaner.pseudo || cleaner.full_name} modifiée par admin. La version publique se met à jour sous 2-3 minutes.`
+        : 'Fiche sauvegardée. La version publique se met à jour sous 2-3 minutes.')
     })
   }
 
   async function handlePortal() {
     setPortalBusy(true)
-    const res = await createCustomerPortalSession()
+    const res = await createCustomerPortalSession(isAdminPreview ? cleaner.id : undefined)
     setPortalBusy(false)
     if (res.url) window.location.href = res.url
     else setErr(res.error ?? 'Erreur portail Stripe.')
@@ -121,7 +124,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
       {isAdminPreview && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.10)', border: '1px solid rgba(255,213,107,0.35)', borderRadius: 10, fontSize: 13, color: '#b8860b', marginBottom: 18 }}>
           <Star size={14} weight="fill" />
-          <strong>Preview admin :</strong> tu vois le dashboard exact que cette équipe voit. Les modifications via « Enregistrer » échoueront (sécurité — tu n'es pas le propriétaire de la fiche).{' '}
+          <strong>Mode admin :</strong> tu édites la fiche de <strong>{cleaner.pseudo || cleaner.full_name}</strong> pour son compte. Les modifications « Enregistrer » et l'ouverture du portail Stripe agissent au nom de l'équipe.{' '}
           <a href="/dashboard/admin/menage" style={{ color: '#b8860b', textDecoration: 'underline', marginLeft: 'auto' }}>← Retour admin</a>
         </div>
       )}
