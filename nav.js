@@ -1,15 +1,17 @@
 (function () {
   'use strict';
 
-  /* ── Phosphor Icons (fallback si non chargé par la page) ── */
-  if (!document.querySelector('link[href*="phosphor"]')) {
-    ['phosphor-bold-subset','phosphor-regular-subset'].forEach(function(n){
+  /* ── Phosphor Icons : assure que les deux subsets (regular + bold) sont chargés ─
+   * Si une page n'inclut qu'un seul subset, on ajoute le ou les manquants
+   * pour éviter les icônes cassées (cas du footer qui mélange ph et ph-bold). */
+  ['phosphor-bold-subset','phosphor-regular-subset'].forEach(function(n){
+    if (!document.querySelector('link[href*="'+n+'"]')) {
       var l = document.createElement('link');
       l.rel = 'stylesheet'; l.type = 'text/css';
-      l.href = '/fonts/'+n+'.css';
+      l.href = '/fonts/'+n+'.css?v=2026-06-23';
       document.head.appendChild(l);
-    });
-  }
+    }
+  });
 
   /* ── Speculation Rules (Chrome 121+ / Edge 121+, ignoré ailleurs) ──
    * Prefetch automatique des pages internes au hover (eagerness moderate)
