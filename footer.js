@@ -112,6 +112,8 @@
       '.ft-cat a:hover{color:#fff}',
       '.ft-cat a:hover::after{width:100%}',
       '.ft-cat a .ft-ext{font-size:10px;color:rgba(255,213,107,.55);margin-left:5px;display:inline-flex;align-items:center;vertical-align:1px}',
+      '.ft-cat a.ft-cat-more{margin-top:6px;font-size:13px;color:rgba(255,213,107,.7);font-weight:500}',
+      '.ft-cat a.ft-cat-more:hover{color:#FFD56B}',
 
       /* Bloc Explorer : onglets + panneaux (tous les liens en HTML, SEO préservé) */
       '.ft-explore{padding:clamp(28px,3.5vw,40px) 0;border-bottom:1px solid rgba(255,255,255,.07)}',
@@ -222,23 +224,21 @@
 
         + '<div class="ft-cols">'
           + '<div class="ft-cat">'
-            + '<h4 class="ft-cat-t">Produit</h4>'
-            + '<a href="/services/calendrier">Calendrier & check-list</a>'
+            + '<h4 class="ft-cat-t">Plateforme hôte</h4>'
+            + '<a href="/services/calendrier">Calendrier &amp; check-list</a>'
             + '<a href="/services/performances">Performances LCD</a>'
-            + '<a href="/services/revenus">Suivi des revenus</a>'
+            + '<a href="/services/carnet-voyageurs">Carnet voyageurs</a>'
             + '<a href="/services/securite">Vérification voyageurs</a>'
-            + '<a href="/securite/signalements">Signalements publics</a>'
-            + '<a href="/services/carnet-voyageurs">Carnet voyageurs (CRM)</a>'
-            + '<a href="/services/gabarits-messages">Gabarits de messages</a>'
-            + '<a href="/services/qr-affiches">QR & Affiches WiFi</a>'
-            + '<a href="/services/audit-gbp">Audit Google Business</a>'
-            + '<a href="/services/simulateurs">Simulateurs fiscaux</a>'
-            + '<a href="/calculateurs">Calculateurs marché</a>'
+            + '<a href="/services/simulateurs">Simulateurs &amp; calculateurs</a>'
+            + '<a href="/services" class="ft-cat-more">Tous les services →</a>'
           + '</div>'
           + '<div class="ft-cat">'
-            + '<h4 class="ft-cat-t">Annuaires</h4>'
+            + '<h4 class="ft-cat-t">Annuaires pros</h4>'
             + '<a href="/annuaires/photographes">Photographes LCD</a>'
-            + '<a href="/annuaires/menage">Ménage LCD</a>'
+            + '<a href="/annuaires/photographes/exemple-fiche">Exemple fiche photo</a>'
+            + '<a href="/annuaires/menage">Équipes de ménage</a>'
+            + '<a href="/annuaires/menage/exemple-fiche">Exemple fiche ménage</a>'
+            + '<a href="/mon-compte" class="ft-cat-more">Mon espace pro →</a>'
           + '</div>'
           + '<div class="ft-cat">'
             + '<h4 class="ft-cat-t">Ressources</h4>'
@@ -248,19 +248,12 @@
             + '<a href="/services/actualites">Actualités LCD</a>'
             + '<a href="/lexique-lcd">Lexique LCD</a>'
             + '<a href="/sos-hote">SOS Hôte (urgences)</a>'
-            + '<a href="/services/entre-hotes">Entre Hôtes (forum)</a>'
-            + '<a href="/services/communaute">Groupes Facebook</a>'
-            + '<a href="/services/ecosysteme">Écosystème LCD</a>'
           + '</div>'
           + '<div class="ft-cat">'
             + '<h4 class="ft-cat-t">Entreprise</h4>'
             + '<a href="/qui-suis-je">Qui suis-je</a>'
             + '<a href="/tarifs">Tarifs</a>'
             + '<a href="/contact">Contact</a>'
-            + '<a href="/pour-qui/chambres-dhotes">Chambres d\'hôtes</a>'
-            + '<a href="/pour-qui/gites">Gîtes</a>'
-            + '<a href="/pour-qui/conciergeries">Conciergeries</a>'
-            + '<a href="/pour-qui/membres-driing">Membres Driing</a>'
             + '<a href="https://driing.co" target="_blank" rel="noopener">Driing<span class="ft-ext"><i class="ph ph-arrow-up-right"></i></span></a>'
             + '<a href="https://app.jasonmarinho.com">Espace membre</a>'
           + '</div>'
