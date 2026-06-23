@@ -8,7 +8,7 @@ import {
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
   FacebookLogo, CaretDown, House, ChartBar, CalendarBlank, Heart,
   MagnifyingGlass, ChatsCircle, Globe, Calculator, ChartLineUp, Printer, Bank,
-  Camera,
+  Camera, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import { createClient } from '@/lib/supabase/client'
@@ -68,6 +68,7 @@ const adminMain = [
   // seule page avec 3 tabs. Évite la dispersion sur 3 entrées sidebar.
   { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
   { href: '/dashboard/admin/photographes', label: 'Photographes',   Icon: Camera },
+  { href: '/dashboard/admin/menage',       label: 'Ménage',          Icon: Sparkle },
 ]
 
 const adminContent = [

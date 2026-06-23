@@ -191,6 +191,41 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
         }
         break
       }
+      // ── Branche ménage : subscription metadata.cleaner_id ──────────
+      // Idem pattern photographe : approuvé par admin → paiement Stripe →
+      // activation publique + slug + trigger rebuild.
+      const cleanerId = sub.metadata?.cleaner_id
+      if (cleanerId) {
+        const { data: cl } = await db
+          .from('cleaners')
+          .select('id, full_name, pseudo, ville, email, slug, tier, status')
+          .eq('id', cleanerId)
+          .maybeSingle()
+        if (cl && cl.status === 'approved_pending_payment') {
+          let slug = cl.slug
+          if (!slug) {
+            const nameForSlug = cl.pseudo || cl.full_name
+            const base = `${nameForSlug}-${cl.ville}`.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80)
+            slug = base
+            const { data: collision } = await db.from('cleaners').select('id').eq('slug', slug).neq('id', cleanerId).maybeSingle()
+            if (collision) slug = `${base}-${cleanerId.slice(0, 6)}`
+          }
+          await db.from('cleaners').update({
+            status: 'active',
+            is_public: true,
+            slug,
+            stripe_customer_id: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
+            stripe_subscription_id: sub.id,
+            stripe_subscription_status: sub.status,
+            updated_at: new Date().toISOString(),
+          }).eq('id', cleanerId)
+          const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+          if (hookUrl) {
+            fetch(hookUrl, { method: 'POST' }).catch(() => {})
+          }
+        }
+        break
+      }
       // ── Branche standard : abonnement hôte plateforme ──
       const userId = sub.metadata?.user_id
       if (!userId) break
@@ -220,6 +255,18 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
         if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
         break
       }
+      // Branche ménage : sync status
+      const cleanerId = sub.metadata?.cleaner_id
+      if (cleanerId) {
+        await db.from('cleaners').update({
+          stripe_subscription_status: sub.status,
+          is_public: sub.status === 'active',
+          updated_at: new Date().toISOString(),
+        }).eq('id', cleanerId)
+        const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+        if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+        break
+      }
       const userId = sub.metadata?.user_id
       if (!userId) break
       const priceId = sub.items.data[0]?.price?.id ?? ''
@@ -244,6 +291,19 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           stripe_subscription_status: 'canceled',
           updated_at: new Date().toISOString(),
         }).eq('id', photographerId)
+        const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
+        if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+        break
+      }
+      // Branche ménage : retire de l'annuaire
+      const cleanerId = sub.metadata?.cleaner_id
+      if (cleanerId) {
+        await db.from('cleaners').update({
+          status: 'cancelled',
+          is_public: false,
+          stripe_subscription_status: 'canceled',
+          updated_at: new Date().toISOString(),
+        }).eq('id', cleanerId)
         const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
         if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
         break
