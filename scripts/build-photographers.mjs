@@ -92,7 +92,7 @@ body{font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td);paddin
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 a{color:inherit}
 .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:48px 0 56px;color:#fff}
-.s-in{max-width:1000px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
+.s-in{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
 .brd{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:22px}
 .brd a{color:rgba(255,255,255,.55);text-decoration:none}
 .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -103,7 +103,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .subtitle{font-size:16px;color:rgba(255,255,255,.65);line-height:1.7;max-width:640px;margin:0}
 .meta-row{display:flex;flex-wrap:wrap;gap:18px;margin-top:24px;font-size:13.5px;color:rgba(255,255,255,.7)}
 .meta-row span{display:inline-flex;align-items:center;gap:6px}
-.body{max-width:1000px;margin:0 auto;padding:48px clamp(16px,5vw,40px) 28px;display:grid;grid-template-columns:1fr 360px;gap:34px}
+.body{max-width:1100px;margin:0 auto;padding:48px clamp(20px,5vw,48px) 28px;display:grid;grid-template-columns:1fr 360px;gap:34px}
 @media(max-width:840px){.body{grid-template-columns:1fr}}
 .card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:24px}
 .card h2{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0 0 12px}
@@ -120,7 +120,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.1)}
 .contact-form textarea{min-height:90px;resize:vertical}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.disclaimer{max-width:1000px;margin:0 auto;padding:20px clamp(16px,5vw,40px) 50px;font-size:12.5px;color:var(--tl);line-height:1.7}
+.disclaimer{max-width:1100px;margin:0 auto;padding:20px clamp(20px,5vw,48px) 50px;font-size:12.5px;color:var(--tl);line-height:1.7}
 .disclaimer strong{color:var(--td)}
 .ok-msg{padding:14px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:8px;color:#1e9d54;font-size:13.5px;text-align:center}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
