@@ -4,7 +4,7 @@
  * les fiches individuelles SEO friendly. Réplique du pattern
  * build-photographers.mjs.
  *
- * - /services/menage-lcd/annuaire/index.html : liste filtrable
+ * - /annuaires/menage/annuaire/index.html : liste filtrable
  * - /menage/[slug]/index.html : fiche individuelle
  * - /sitemap-menages.xml : sitemap dédié
  */
@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
-const ANNUAIRE_DIR = path.join(ROOT, 'services', 'menage-lcd', 'annuaire')
+const ANNUAIRE_DIR = path.join(ROOT, 'annuaires', 'menage', 'annuaire')
 const FICHES_DIR = path.join(ROOT, 'menage')
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -184,8 +184,8 @@ ${JSON.stringify({
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://jasonmarinho.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Ménage LCD', item: 'https://jasonmarinho.com/services/menage-lcd' },
-    { '@type': 'ListItem', position: 3, name: 'Annuaire', item: 'https://jasonmarinho.com/services/menage-lcd/annuaire' },
+    { '@type': 'ListItem', position: 2, name: 'Ménage LCD', item: 'https://jasonmarinho.com/annuaires/menage' },
+    { '@type': 'ListItem', position: 3, name: 'Annuaire', item: 'https://jasonmarinho.com/annuaires/menage/annuaire' },
     { '@type': 'ListItem', position: 4, name: displayName, item: canonical },
   ],
 })}
@@ -195,7 +195,7 @@ ${JSON.stringify({
 <body>
 <header class="hero">
   <div class="s-in">
-    <div class="brd"><a href="/">Accueil</a> · <a href="/services/menage-lcd">Ménage LCD</a> · <a href="/services/menage-lcd/annuaire">Annuaire</a> · <span>${escHtml(displayName)}</span></div>
+    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Ménage LCD</a> · <a href="/annuaires/menage/annuaire">Annuaire</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
       ${isFondateur ? '<span class="tag gold"><i class="ph-bold ph-star" style="font-size:10px"></i>Fondateur</span>' : ''}
       ${c.assurance_rc_pro ? '<span class="tag green"><i class="ph-bold ph-shield-check" style="font-size:10px"></i>RC Pro</span>' : ''}
@@ -308,7 +308,7 @@ async function contactSubmit(e) {
 
 function buildAnnuaireListPage(items) {
   const itemsHtml = items.length === 0
-    ? `<div class="empty"><div class="empty-ico"><i class="ph-bold ph-sparkle" style="font-size:32px;color:var(--g)"></i></div><h2>L'annuaire se construit</h2><p>Aucune équipe active pour le moment. Reviens dans quelques semaines, ou postule si tu gères une équipe de ménage LCD.</p><a href="/services/menage-lcd/inscription" class="btn-p">Postuler comme équipe de ménage →</a></div>`
+    ? `<div class="empty"><div class="empty-ico"><i class="ph-bold ph-sparkle" style="font-size:32px;color:var(--g)"></i></div><h2>L'annuaire se construit</h2><p>Aucune équipe active pour le moment. Reviens dans quelques semaines, ou postule si tu gères une équipe de ménage LCD.</p><a href="/annuaires/menage/inscription" class="btn-p">Postuler comme équipe de ménage →</a></div>`
     : `<div class="grid">${items.map(c => {
         const displayName = c.pseudo || c.full_name
         const forfait = fmtForfait(c)
@@ -333,10 +333,10 @@ function buildAnnuaireListPage(items) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Annuaire des équipes de ménage LCD · ${items.length} pros sélectionnés | Jason Marinho</title>
 <meta name="description" content="${items.length} équipes de ménage spécialisées en location courte durée, sélectionnées par Jason Marinho. Recherche par ville, prestations, capacité.">
-<link rel="canonical" href="https://jasonmarinho.com/services/menage-lcd/annuaire">
+<link rel="canonical" href="https://jasonmarinho.com/annuaires/menage/annuaire">
 <meta property="og:title" content="Annuaire des équipes de ménage LCD · ${items.length} pros sélectionnés">
 <meta property="og:description" content="${items.length} équipes de ménage spécialisées location courte durée, sélectionnées et vérifiées.">
-<meta property="og:url" content="https://jasonmarinho.com/services/menage-lcd/annuaire">
+<meta property="og:url" content="https://jasonmarinho.com/annuaires/menage/annuaire">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <meta name="robots" content="index, follow">
@@ -387,7 +387,7 @@ ${JSON.stringify({
   '@type': 'CollectionPage',
   name: `Annuaire des équipes de ménage LCD (${items.length} pros)`,
   description: 'Annuaire curé des équipes de ménage spécialisées location courte durée.',
-  url: 'https://jasonmarinho.com/services/menage-lcd/annuaire',
+  url: 'https://jasonmarinho.com/annuaires/menage/annuaire',
 })}
 </script>
 <script defer src="/nav.js"></script>
@@ -395,7 +395,7 @@ ${JSON.stringify({
 <body>
 <header class="hero">
   <div class="s-in">
-    <div class="brd"><a href="/">Accueil</a> · <a href="/services/menage-lcd">Ménage LCD</a> · <span>Annuaire</span></div>
+    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Ménage LCD</a> · <span>Annuaire</span></div>
     <span class="lbl">Annuaire vérifié · curé manuellement</span>
     <h1>${items.length} équipe${items.length > 1 ? 's' : ''} de ménage <em>LCD sélectionnée${items.length > 1 ? 's' : ''}</em></h1>
     <p class="lead">Toutes les équipes ci-dessous ont été vérifiées manuellement par Jason Marinho : références LCD réelles (turnover Airbnb/Booking), capacité confirmée, prestations cohérentes. Pas d'intermédiation : tu contactes directement.</p>
@@ -421,9 +421,9 @@ ${itemsHtml}
 function buildSitemap(items) {
   const today = new Date().toISOString().slice(0, 10)
   const urls = [
-    `  <url><loc>https://jasonmarinho.com/services/menage-lcd</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>`,
-    `  <url><loc>https://jasonmarinho.com/services/menage-lcd/annuaire</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>`,
-    `  <url><loc>https://jasonmarinho.com/services/menage-lcd/inscription</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`,
+    `  <url><loc>https://jasonmarinho.com/annuaires/menage</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>`,
+    `  <url><loc>https://jasonmarinho.com/annuaires/menage/annuaire</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>`,
+    `  <url><loc>https://jasonmarinho.com/annuaires/menage/inscription</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`,
     ...items.map(c => {
       return `  <url><loc>https://jasonmarinho.com/menage/${c.slug}</loc><lastmod>${(c.created_at || today).slice(0, 10)}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`
     }),

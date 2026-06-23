@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Postuler comme photographe LCD · Annuaire fondateur | Jason Marinho</title>
   <meta name="description" content="Postule pour rejoindre l'annuaire des photographes LCD de Jason Marinho. 20 places fondateurs à 39,98 €/an à vie. Validation manuelle sous 48h.">
-  <link rel="canonical" href="https://jasonmarinho.com/services/photographes-lcd/inscription">
+  <link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes/inscription">
   <meta name="robots" content="index, follow">
   <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
@@ -54,10 +54,10 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="brd"><a href="/">Accueil</a> · <a href="/services/photographes-lcd">Photographes LCD</a> · <span>Postuler</span></div>
+  <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes LCD</a> · <span>Postuler</span></div>
   <span class="lbl">Crée ta présence en 2 minutes</span>
   <h1>Crée ta fiche <em>photographe LCD</em></h1>
-  <p class="lead">Remplis ce formulaire, paye en direct via Stripe, ta fiche est en ligne sous quelques minutes. Pas d'attente, pas de validation manuelle. <a href="/services/photographes-lcd/exemple-fiche" style="color:var(--g);font-weight:500">Voir un exemple de fiche →</a></p>
+  <p class="lead">Remplis ce formulaire, paye en direct via Stripe, ta fiche est en ligne sous quelques minutes. Pas d'attente, pas de validation manuelle. <a href="/annuaires/photographes/exemple-fiche" style="color:var(--g);font-weight:500">Voir un exemple de fiche →</a></p>
 
   <div class="pricing-row">
     <i class="ph-bold ph-star" style="color:#FFD56B;font-size:18px"></i>
@@ -163,22 +163,49 @@
     const data = { t: __t0, website: e.target.website ? e.target.website.value : '' };
     ids.forEach(k => { data[k] = (document.getElementById(k) || {}).value || ''; });
 
-    try {
-      const res = await fetch('/api/photographer/signup', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-      });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok || !body.checkoutUrl) {
-        errBox.textContent = body.error || 'Erreur lors de l\'envoi. Réessaye ou contacte contact@jasonmarinho.com.';
-        errBox.style.display = 'block';
-        btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-lock-key"></i> Continuer vers le paiement sécurisé';
-        return false;
-      }
-      window.location.href = body.checkoutUrl;
-    } catch (err) {
-      errBox.textContent = 'Impossible de joindre le serveur. Vérifie ta connexion.';
+    function showError(msg) {
+      errBox.textContent = msg;
       errBox.style.display = 'block';
       btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-lock-key"></i> Continuer vers le paiement sécurisé';
+      errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+    try {
+      console.log('[signup] POST /api/photographer/signup', data);
+      const res = await fetch('/api/photographer/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      console.log('[signup] status:', res.status);
+      const text = await res.text();
+      console.log('[signup] raw body:', text);
+      let body = {};
+      try { body = JSON.parse(text); } catch { body = {}; }
+      console.log('[signup] parsed:', body);
+      if (!res.ok) {
+        showError(`${body.error || 'Erreur serveur'} (code ${res.status})`);
+        return false;
+      }
+      if (!body.checkoutUrl) {
+        showError('Réponse invalide du serveur (pas de checkoutUrl). Contacte contact@jasonmarinho.com.');
+        return false;
+      }
+      console.log('[signup] redirecting to:', body.checkoutUrl);
+      window.location.assign(body.checkoutUrl);
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.error('[signup] fetch error', err);
+      if (err.name === 'AbortError') {
+        showError('Le serveur met trop de temps à répondre (>30s). Réessaye ou contacte contact@jasonmarinho.com.');
+      } else {
+        showError('Impossible de joindre le serveur : ' + (err.message || err));
+      }
     }
     return false;
   }

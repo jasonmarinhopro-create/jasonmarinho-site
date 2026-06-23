@@ -121,8 +121,8 @@ export async function approvePhotographer(photographerId: string): Promise<{ suc
           tier,
         },
       },
-      success_url: `${SITE_URL}/services/photographes-lcd/inscription/confirmation?status=paid`,
-      cancel_url: `${SITE_URL}/services/photographes-lcd/inscription/confirmation?status=cancel`,
+      success_url: `${SITE_URL}/annuaires/photographes/inscription/confirmation?status=paid`,
+      cancel_url: `${SITE_URL}/annuaires/photographes/inscription/confirmation?status=cancel`,
       locale: 'fr',
     })
     checkoutUrl = session.url
