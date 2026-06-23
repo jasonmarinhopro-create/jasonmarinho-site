@@ -13,6 +13,20 @@ export interface ChangelogEntry {
 // outils opérationnels) et on retire les détails techniques / refontes
 // internes / micro-ajustements UX qui n'apportent rien au quotidien d'un hôte.
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    id: 'pricing-annuel-only-jun-2026',
+    date: '2026-06-23',
+    tag: 'important',
+    title: 'Plan Standard désormais en annuel uniquement (19,98 €/an Fondateur)',
+    description: 'Simplification : on bascule le plan Standard sur de la facturation annuelle uniquement. Tarif Membre Fondateur 19,98 €/an HT à vie (au lieu de 1,98 €/mois). Tarif public à 38,98 €/an. Les abonnements mensuels en cours restent actifs et se renouvellent normalement.',
+  },
+  {
+    id: 'annuaires-pros-jun-2026',
+    date: '2026-06-22',
+    tag: 'nouveau',
+    title: 'Annuaires Photographes LCD et Équipes Ménage LCD',
+    description: 'Deux nouveaux annuaires lancés sur jasonmarinho.com : photographes spécialisés LCD et équipes de ménage LCD. Côté hôte, l\'accès est gratuit (consulter + contacter directement, sans commission). Côté pro, mini-site dédié à 39,98 €/an à vie pour les 20 premiers fondateurs de chaque catégorie.',
+  },
   // ─── Mai 2026 ──────────────────────────────────────────────────
   {
     id: 'sos-hote-mai-2026',

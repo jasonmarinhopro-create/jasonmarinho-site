@@ -165,7 +165,7 @@ export default function AdminUI({
           <div style={s.kpiBody}>
             <div style={s.kpiLabel}>MRR estimé</div>
             <div style={{ ...s.kpiValue, color: '#15803d' }}>{formatEuro(stats.mrr)}</div>
-            <div style={s.kpiSub}>{payingUsers} Standard × 1,98 €</div>
+            <div style={s.kpiSub}>{payingUsers} Standard × 19,98 €/an</div>
           </div>
         </div>
 
@@ -230,7 +230,7 @@ export default function AdminUI({
           <div style={{ ...s.planCard, borderColor: 'rgba(21,128,61,0.32)', background: 'rgba(21,128,61,0.04)' }}>
             <div style={s.planTop}>
               <span style={{ ...s.planDot, background: '#15803d' }} />
-              <span style={s.planName}>Standard <span style={{ fontSize: '10px', color: '#15803d', fontWeight: 700 }}>1,98 €</span></span>
+              <span style={s.planName}>Standard <span style={{ fontSize: '10px', color: '#15803d', fontWeight: 700 }}>19,98 €/an</span></span>
               <span style={{ ...s.planCount, color: '#15803d' }}>{stats.standardMembers}</span>
             </div>
             <div style={s.planBar}>
