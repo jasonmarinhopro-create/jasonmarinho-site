@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { planFromPriceId } from '@/lib/constants/stripe-plans'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 import { sendPaiementReceivedEmail } from '@/lib/email/host'
+import { sendProWelcomeEmail } from '@/lib/email/pro-welcome'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -188,6 +189,16 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           if (hookUrl) {
             fetch(hookUrl, { method: 'POST' }).catch(() => {})
           }
+          // Email de bienvenue (best-effort, ne bloque pas le webhook)
+          sendProWelcomeEmail({
+            pro: 'photographer',
+            email: ph.email,
+            fullName: ph.full_name,
+            displayName: ph.full_name,
+            ville: ph.ville,
+            slug,
+            tier: ph.tier,
+          }).catch(() => {})
         }
         break
       }
@@ -223,6 +234,16 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           if (hookUrl) {
             fetch(hookUrl, { method: 'POST' }).catch(() => {})
           }
+          // Email de bienvenue (best-effort)
+          sendProWelcomeEmail({
+            pro: 'cleaner',
+            email: cl.email,
+            fullName: cl.full_name,
+            displayName: cl.pseudo || cl.full_name,
+            ville: cl.ville,
+            slug,
+            tier: cl.tier,
+          }).catch(() => {})
         }
         break
       }
