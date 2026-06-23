@@ -1,30 +1,104 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import {
   ArrowRight, Eye, EyeSlash,
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
+  Camera, Sparkle, ChartBar, CreditCard, PencilSimple, Image as ImageIcon, Broom, Tag,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import { getPostLoginPathAction } from './actions'
 
-const PERKS = [
-  { icon: GraduationCap, label: 'Formations et guides LCD' },
-  { icon: Calculator,    label: 'Simulateurs et outils exclusifs' },
-  { icon: ChatText,      label: "Gabarits de messages prêts à l'emploi" },
-  { icon: UsersThree,    label: "Communauté d'hôtes Entre Hôtes" },
-  { icon: Megaphone,     label: 'Veille et actualités LCD' },
-]
+type Profile = 'host' | 'photographe' | 'menage'
+
+const PROFILES: Record<Profile, {
+  brandTitle: string
+  brandDesc: string
+  perks: Array<{ icon: any; label: string }>
+  formTitle: string
+  formSub: string
+  noAccountText: string
+  registerLabel: string
+  registerHref: string
+  quote: string
+}> = {
+  host: {
+    brandTitle: 'Content de te revoir parmi nous.',
+    brandDesc: 'Retrouve tes formations, outils et la communauté LCD. Tout est là.',
+    perks: [
+      { icon: GraduationCap, label: 'Formations et guides LCD' },
+      { icon: Calculator,    label: 'Simulateurs et outils exclusifs' },
+      { icon: ChatText,      label: "Gabarits de messages prêts à l'emploi" },
+      { icon: UsersThree,    label: "Communauté d'hôtes Entre Hôtes" },
+      { icon: Megaphone,     label: 'Veille et actualités LCD' },
+    ],
+    formTitle: 'Bon retour',
+    formSub: 'Connecte-toi à ton espace hôte LCD',
+    noAccountText: 'Pas encore de compte ?',
+    registerLabel: 'Créer un compte gratuit',
+    registerHref: '/auth/register',
+    quote: '"Mon objectif : te donner les meilleurs outils pour développer ton activité, honnêtement."',
+  },
+  photographe: {
+    brandTitle: 'Bon retour dans ton espace photographe.',
+    brandDesc: 'Édite ta fiche, suis tes stats et gère ton abonnement annuel en quelques clics.',
+    perks: [
+      { icon: PencilSimple, label: 'Édite ta fiche à tout moment (bio, tarifs, zone, portfolio)' },
+      { icon: ChartBar,     label: 'Stats : vues de fiche, contacts reçus, ancienneté' },
+      { icon: ImageIcon,    label: 'Aperçu en direct de ta fiche publique' },
+      { icon: CreditCard,   label: "Gère ton abonnement (factures, carte, résiliation) via le portail Stripe" },
+      { icon: ShieldCheck,  label: 'Membre vérifié de l\'annuaire Jason Marinho' },
+    ],
+    formTitle: 'Mon espace photographe',
+    formSub: 'Connecte-toi avec l\'email et le mot de passe choisis à l\'inscription',
+    noAccountText: 'Pas encore de fiche photographe ?',
+    registerLabel: 'Créer ma fiche en 2 minutes',
+    registerHref: 'https://jasonmarinho.com/annuaires/photographes/inscription',
+    quote: '"Un mini-site pro hébergé sur jasonmarinho.com, vérifié, accessible à vie tant que ton abonnement reste actif."',
+  },
+  menage: {
+    brandTitle: 'Bon retour dans ton espace équipe ménage.',
+    brandDesc: 'Édite ta fiche équipe, suis tes stats et gère ton abonnement annuel en quelques clics.',
+    perks: [
+      { icon: PencilSimple, label: 'Édite ta fiche à tout moment (prestations, tarifs, équipe, garanties)' },
+      { icon: ChartBar,     label: 'Stats : vues de fiche, contacts reçus, ancienneté' },
+      { icon: Broom,        label: 'Affiche tes prestations (linge, EDL photo, réappro…)' },
+      { icon: Tag,          label: 'Mets en avant ton tarif horaire OU ton forfait turnover' },
+      { icon: CreditCard,   label: 'Gère ton abonnement (factures, carte, résiliation) via le portail Stripe' },
+    ],
+    formTitle: 'Mon espace équipe ménage',
+    formSub: 'Connecte-toi avec l\'email et le mot de passe choisis à l\'inscription',
+    noAccountText: 'Pas encore de fiche équipe ?',
+    registerLabel: 'Créer ma fiche en 2 minutes',
+    registerHref: 'https://jasonmarinho.com/annuaires/menage/inscription',
+    quote: '"Un mini-site pro hébergé sur jasonmarinho.com, vérifié, accessible à vie tant que ton abonnement reste actif."',
+  },
+}
 
 const MAX_ATTEMPTS = 5
 const BLOCK_DURATION_MS = 10 * 60 * 1000
 
 export default function LoginPage() {
+  // useSearchParams() requires a Suspense boundary pour passer le
+  // prerender statique Next.js (sinon le build échoue avec
+  // "missing-suspense-with-csr-bailout").
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100svh', background: '#fff' }} />}>
+      <LoginInner />
+    </Suspense>
+  )
+}
+
+function LoginInner() {
   const supabase = createClient()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const asParam = searchParams?.get('as') ?? ''
+  const profileKey: Profile = asParam === 'photographe' ? 'photographe' : asParam === 'menage' ? 'menage' : 'host'
+  const ctx = PROFILES[profileKey]
 
   useEffect(() => {
     const hash = window.location.hash
@@ -163,14 +237,12 @@ export default function LoginPage() {
         </a>
 
         <div>
-          <h1 style={s.brandTitle}>Content de te revoir parmi nous.</h1>
-          <p style={s.brandDesc}>
-            Retrouve tes formations, outils et la communauté LCD. Tout est là.
-          </p>
+          <h1 style={s.brandTitle}>{ctx.brandTitle}</h1>
+          <p style={s.brandDesc}>{ctx.brandDesc}</p>
         </div>
 
         <ul style={s.perksList}>
-          {PERKS.map(({ icon: Icon, label }) => (
+          {ctx.perks.map(({ icon: Icon, label }) => (
             <li key={label} style={s.perkItem}>
               <div style={s.perkIcon}><Icon size={15} weight="bold" color="#FFD56B" /></div>
               <span>{label}</span>
@@ -179,9 +251,7 @@ export default function LoginPage() {
         </ul>
 
         <div style={s.quote}>
-          <p style={s.quoteText}>
-            "Mon objectif : te donner les meilleurs outils pour développer ton activité, honnêtement."
-          </p>
+          <p style={s.quoteText}>{ctx.quote}</p>
           <p style={s.quoteAuthor}>Jason Marinho</p>
         </div>
       </div>
@@ -205,8 +275,8 @@ export default function LoginPage() {
         </div>
 
         <div style={s.formCard} className="fade-up">
-          <h2 style={s.formTitle}>Bon retour</h2>
-          <p style={s.formSub}>Connecte-toi à ton espace membre</p>
+          <h2 style={s.formTitle}>{ctx.formTitle}</h2>
+          <p style={s.formSub}>{ctx.formSub}</p>
 
           <form onSubmit={handleLogin} style={s.form}>
             <div style={s.field}>
@@ -270,8 +340,12 @@ export default function LoginPage() {
           </form>
 
           <p style={s.footerText}>
-            Pas encore de compte ?{' '}
-            <Link href="/auth/register" style={s.footerLink}>Créer un compte gratuit</Link>
+            {ctx.noAccountText}{' '}
+            {ctx.registerHref.startsWith('http') ? (
+              <a href={ctx.registerHref} style={s.footerLink}>{ctx.registerLabel}</a>
+            ) : (
+              <Link href={ctx.registerHref} style={s.footerLink}>{ctx.registerLabel}</Link>
+            )}
           </p>
 
           <div style={s.trustRow}>
