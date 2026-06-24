@@ -498,7 +498,97 @@ async function main() {
 
   fs.writeFileSync(path.join(ROOT, 'sitemap-menages.xml'), buildSitemap(items), 'utf8')
 
-  console.log(`[build-cleaners] ✓ ${items.length} fiches + annuaire + sitemap générés`)
+  // Injecte la liste directement dans la page hub /annuaires/menage
+  injectListIntoHub(items)
+
+  console.log(`[build-cleaners] ✓ ${items.length} fiches + annuaire + sitemap + hub injecté`)
+}
+
+function buildHubInjection(items) {
+  if (items.length === 0) {
+    // Fallback : aperçu fiche exemple (Éclat Ménage Bordeaux)
+    return `<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;max-width:680px;margin:0 auto 32px">
+      <div class="lbl dk">Aperçu d'une fiche</div>
+      <h2 class="h2">À quoi ressemble <em>une fiche équipe ménage</em> ?</h2>
+      <p style="font-size:15.5px;color:var(--tm);line-height:1.75;margin:14px 0 0">Voilà concrètement ce que tu obtiens : un mini-site pro hébergé sur jasonmarinho.com avec ton logo, tes prestations, ta zone, tes tarifs, tes garanties RC pro et un formulaire de contact direct.</p>
+    </div>
+    <a href="/annuaires/menage/exemple-fiche" style="display:block;max-width:760px;margin:0 auto;padding:28px;background:#fff;border:1px solid var(--bd);border-radius:18px;text-decoration:none;color:inherit;position:relative">
+      <span style="position:absolute;top:18px;right:18px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:rgba(255,213,107,.18);color:#b8860b;border:1px solid rgba(255,213,107,.4)"><i class="ph-bold ph-eye" style="font-size:10px"></i>Exemple</span>
+      <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+        <div style="width:96px;height:96px;border-radius:18px;flex-shrink:0;background:linear-gradient(160deg,#001a11,var(--gd) 60%,#00463a);color:var(--y);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:36px;font-weight:400">EM</div>
+        <div style="flex:1;min-width:200px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:rgba(255,213,107,.18);color:#b8860b;border:1px solid rgba(255,213,107,.35)"><i class="ph-bold ph-star" style="font-size:9px"></i>Fondateur</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:rgba(99,214,131,.12);color:#1e9d54;border:1px solid rgba(99,214,131,.3)"><i class="ph-bold ph-shield-check" style="font-size:9px"></i>RC Pro</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;color:var(--g);background:rgba(0,76,63,.06);padding:3px 8px;border-radius:6px">Équipe 3-5</span></div>
+          <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:400;color:var(--td);margin:0 0 4px">Éclat Ménage Bordeaux</h3>
+          <div style="font-size:13.5px;color:var(--tm);margin-bottom:6px"><i class="ph ph-map-pin" style="color:var(--g);font-size:13px;margin-right:3px"></i>Bordeaux <span style="color:var(--tl)">· Médoc + Arcachon</span></div>
+          <div style="font-size:14px;color:var(--td);font-weight:600;font-family:'Fraunces',serif">70 – 130 € forfait turnover · 25 €/h</div>
+        </div>
+      </div>
+      <div style="margin-top:18px;padding-top:18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap"><span style="font-size:13px;color:var(--tl)">Prestations · contact direct hôte · pas de commission</span><span style="font-size:13px;font-weight:600;color:var(--g)">Voir la fiche complète <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></span></div>
+    </a>
+  </div>
+</section>`
+  }
+
+  // ≥1 équipe : grille de fiches actives
+  const cardsHtml = items.slice(0, 12).map(c => {
+    const displayName = c.pseudo || c.full_name
+    const forfait = fmtForfait(c)
+    const heure = c.tarif_heure ? `${c.tarif_heure} €/h` : null
+    const tarifLine = [forfait, heure].filter(Boolean).join(' · ')
+    const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
+    const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
+    return `<a href="/menage/${escHtml(c.slug)}" style="display:flex;flex-direction:column;gap:8px;padding:22px;background:#fff;border:1px solid var(--bd);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;position:relative">
+  ${c.tier === 'fondateur' ? '<span style="position:absolute;top:18px;right:18px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgba(255,213,107,.15);color:#b8860b;border:1px solid rgba(255,213,107,.4)"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
+  <div style="display:flex;align-items:center;gap:12px">
+    ${c.logo_url
+      ? `<div style="width:48px;height:48px;border-radius:12px;flex-shrink:0;border:1px solid var(--bd);background:url('${escHtml(c.logo_url)}') center/cover"></div>`
+      : `<div style="width:48px;height:48px;border-radius:12px;flex-shrink:0;background:rgba(0,76,63,.06);color:var(--g);font-family:'Fraunces',serif;font-size:18px;font-weight:500;display:flex;align-items:center;justify-content:center;border:1px solid var(--bd)">${escHtml(initials)}</div>`}
+    <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0;letter-spacing:-.2px">${escHtml(displayName)}</h3>
+  </div>
+  <div style="font-size:13px;color:var(--tm);font-weight:500;display:flex;align-items:center;gap:5px"><i class="ph ph-map-pin" style="color:var(--g);font-size:13px"></i>${escHtml(c.ville)}${c.zone_couverte ? ` <span style="color:var(--tl);font-weight:400">· ${escHtml(c.zone_couverte)}</span>` : ''}</div>
+  ${equipeLabel ? `<div style="font-size:12.5px;color:var(--g);background:rgba(0,76,63,.06);padding:3px 9px;border-radius:6px;align-self:flex-start">${escHtml(equipeLabel)}</div>` : ''}
+  ${tarifLine ? `<div style="font-size:13.5px;color:var(--td);font-weight:600;font-family:'Fraunces',serif">${escHtml(tarifLine)}</div>` : ''}
+  ${c.assurance_rc_pro ? '<div style="font-size:11.5px;color:#1e9d54;display:inline-flex;align-items:center;gap:4px;font-weight:600"><i class="ph-bold ph-shield-check"></i>RC pro</div>' : ''}
+  <span style="font-size:12.5px;font-weight:600;color:var(--g);display:inline-flex;align-items:center;gap:5px;margin-top:8px">Voir le profil <i class="ph-bold ph-arrow-right"></i></span>
+</a>`
+  }).join('')
+  const seeMoreLink = items.length > 12
+    ? `<div style="text-align:center;margin-top:24px"><a href="/annuaires/menage/annuaire" style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--g);text-decoration:none">Voir les ${items.length} équipes actives <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a></div>`
+    : ''
+  return `<section class="sec cr">
+  <div class="s-in">
+    <div style="text-align:center;max-width:680px;margin:0 auto 32px">
+      <span class="lbl dk">${items.length} équipe${items.length > 1 ? 's' : ''} active${items.length > 1 ? 's' : ''}</span>
+      <h2 class="h2">L'annuaire <em>en direct</em></h2>
+      <p style="font-size:15.5px;color:var(--tm);line-height:1.75;margin:14px 0 0">Toutes les équipes ci-dessous ont été vérifiées manuellement par Jason Marinho. Clique sur une fiche pour voir les prestations et contacter directement, sans commission ni intermédiation.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;max-width:1100px;margin:0 auto">${cardsHtml}</div>
+    ${seeMoreLink}
+  </div>
+</section>`
+}
+
+function injectListIntoHub(items) {
+  const hubPath = path.join(ROOT, 'annuaires', 'menage', 'index.html')
+  if (!fs.existsSync(hubPath)) {
+    console.warn('[build-cleaners] hub introuvable, skip injection')
+    return
+  }
+  let hubHtml = fs.readFileSync(hubPath, 'utf8')
+  const startMarker = '<!-- ANNUAIRE_LIST_START -->'
+  const endMarker = '<!-- ANNUAIRE_LIST_END -->'
+  const startIdx = hubHtml.indexOf(startMarker)
+  const endIdx = hubHtml.indexOf(endMarker)
+  if (startIdx === -1 || endIdx === -1) {
+    console.warn('[build-cleaners] markers ANNUAIRE_LIST_* absents du hub, skip injection')
+    return
+  }
+  const before = hubHtml.slice(0, startIdx + startMarker.length)
+  const after = hubHtml.slice(endIdx)
+  const newSection = '\n' + buildHubInjection(items) + '\n'
+  fs.writeFileSync(hubPath, before + newSection + after, 'utf8')
 }
 
 main().catch(err => {
