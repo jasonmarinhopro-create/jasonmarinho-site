@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -51,10 +50,6 @@ function monthPrefix(offset = 0) {
 
 export default async function DashboardPage() {
   const profile  = await getProfile()
-  // Routing par rôle : pros annuaire vont directement à leur fiche.
-  // Hôtes et admins restent sur le dashboard standard ci-dessous.
-  if (profile?.role === 'photographer') redirect('/dashboard/ma-fiche-photographe')
-  if (profile?.role === 'cleaner') redirect('/dashboard/ma-fiche-menage')
   const supabase = await createClient()
   const userId   = profile?.userId ?? ''
   const completedSteps = profile?.onboarding_completed_steps ?? []
