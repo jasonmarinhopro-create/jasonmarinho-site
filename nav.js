@@ -110,18 +110,22 @@
 
       /* Annuaire mega menu : 2 grandes cards côte à côte */
       '.n-mega-ann{min-width:680px;padding:24px;gap:16px;display:flex}',
-      '.n-mega-ann .n-ann-card{flex:1;display:flex;flex-direction:column;gap:10px;background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);color:#fff;border:1px solid rgba(255,213,107,.22);border-radius:14px;padding:22px 22px 20px;text-decoration:none!important;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;white-space:normal!important;min-width:280px}',
+      '.n-mega-ann .n-ann-card{flex:1;display:flex;flex-direction:column;gap:10px;background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);color:#fff;border:1px solid rgba(255,213,107,.22);border-radius:14px;padding:22px 22px 20px;position:relative;overflow:hidden;white-space:normal!important;min-width:280px}',
       '.n-mega-ann .n-ann-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 20%,rgba(255,213,107,.10),transparent 70%);pointer-events:none}',
       '.n-mega-ann .n-ann-card>*{position:relative;z-index:1}',
-      '.n-mega-ann .n-ann-card:hover{border-color:rgba(255,213,107,.5);transform:translateY(-2px)}',
-      '.n-mega-ann .n-ann-card:hover .n-ann-cta{background:var(--y);color:var(--gd)}',
       '.n-mega-ann .n-ann-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);padding:3px 10px;border-radius:999px;background:rgba(255,213,107,.10);align-self:flex-start}',
       '.n-mega-ann .n-ann-dot{width:5px;height:5px;border-radius:50%;background:var(--y);box-shadow:0 0 7px rgba(255,213,107,.7)}',
       '.n-mega-ann .n-ann-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,213,107,.10);color:var(--y);display:flex;align-items:center;justify-content:center;font-size:20px;margin:4px 0 2px}',
       '.n-mega-ann .n-ann-h{font-family:\'Fraunces\',serif;font-size:19px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:0;color:#fff;white-space:normal}',
       '.n-mega-ann .n-ann-h em{color:var(--y);font-style:italic;font-weight:300}',
       '.n-mega-ann .n-ann-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.55;margin:0;white-space:normal}',
-      '.n-mega-ann .n-ann-cta{margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:9px 14px;background:rgba(255,213,107,.15);color:var(--y);font-weight:600;font-size:12.5px;border-radius:8px;text-decoration:none;align-self:flex-start;transition:background .2s,color .2s}',
+      '.n-mega-ann .n-ann-actions{display:flex;flex-direction:column;gap:6px;margin-top:8px}',
+      '.n-mega-ann .n-ann-cta{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:9px;text-decoration:none!important;font-weight:600;font-size:13px;transition:all .2s;white-space:nowrap;justify-content:center}',
+      '.n-mega-ann .n-ann-cta i{font-size:13px;flex-shrink:0}',
+      '.n-mega-ann .n-ann-cta-primary{background:var(--y);color:var(--gd)}',
+      '.n-mega-ann .n-ann-cta-primary:hover{background:#ffe08f;transform:translateY(-1px)}',
+      '.n-mega-ann .n-ann-cta-secondary{background:transparent;color:rgba(255,213,107,.75);border:1px solid rgba(255,213,107,.20)}',
+      '.n-mega-ann .n-ann-cta-secondary:hover{color:var(--y);border-color:rgba(255,213,107,.4);background:rgba(255,213,107,.05)}',
       '@media(max-width:780px){.n-mega-ann{min-width:auto;width:min(94vw,520px);flex-direction:column}.n-mega-ann .n-ann-card{min-width:auto}}',
 
       '.n-tag-free{display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(99,214,131,.18);color:#7AE89A;border:1px solid rgba(99,214,131,.30);margin-left:auto;flex-shrink:0}',
@@ -201,7 +205,11 @@
       '.mob-driing-card .mdc-h{font-family:\'Fraunces\',serif;font-size:18px;line-height:1.25;font-weight:400;color:#fff;letter-spacing:-.01em}',
       '.mob-driing-card .mdc-h em{color:var(--y);font-style:italic;font-weight:300}',
       '.mob-driing-card .mdc-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.5}',
-      '.mob-driing-card .mdc-cta{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(255,213,107,.15);color:var(--y);font-weight:600;font-size:12.5px;border-radius:8px;align-self:flex-start;margin-top:2px}',
+      '.mob-driing-card .mdc-actions{display:flex;flex-direction:column;gap:6px;margin-top:6px}',
+      '.mob-driing-card .mdc-cta{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:9px;text-decoration:none!important;font-weight:600;font-size:13px;justify-content:center;transition:all .2s;white-space:nowrap}',
+      '.mob-driing-card .mdc-cta i{font-size:13px;flex-shrink:0}',
+      '.mob-driing-card .mdc-cta-primary{background:var(--y);color:var(--gd)}',
+      '.mob-driing-card .mdc-cta-secondary{background:transparent;color:rgba(255,213,107,.75);border:1px solid rgba(255,213,107,.20)}',
 
       /* CTAs mobile */
       '.mob-ctas{display:flex;gap:8px;margin-top:auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)}',
@@ -298,20 +306,26 @@
       + '<li class="n-drop">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Annuaire ' + CARET + '</button>'
         + '<div class="n-mega n-mega-ann">'
-          + '<a href="/annuaires/photographes" class="n-ann-card">'
+          + '<div class="n-ann-card">'
             + '<span class="n-ann-tag"><span class="n-ann-dot"></span>Annuaire pro</span>'
             + '<div class="n-ann-icon"><i class="ph-bold ph-camera"></i></div>'
             + '<h3 class="n-ann-h">Photographes <em>LCD</em></h3>'
             + '<p class="n-ann-p">Pros qui maîtrisent l\'angle Airbnb. Photos qui font booker +40 %.</p>'
-            + '<span class="n-ann-cta">Découvrir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
-          + '</a>'
-          + '<a href="/annuaires/menage" class="n-ann-card">'
+            + '<div class="n-ann-actions">'
+              + '<a href="/annuaires/photographes#annuaire" class="n-ann-cta n-ann-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
+              + '<a href="/annuaires/photographes/inscription" class="n-ann-cta n-ann-cta-secondary"><i class="ph-bold ph-plus"></i>Créer ma fiche</a>'
+            + '</div>'
+          + '</div>'
+          + '<div class="n-ann-card">'
             + '<span class="n-ann-tag"><span class="n-ann-dot"></span>Annuaire pro</span>'
             + '<div class="n-ann-icon"><i class="ph-bold ph-sparkle"></i></div>'
             + '<h3 class="n-ann-h">Ménage <em>LCD</em></h3>'
             + '<p class="n-ann-p">Équipes de turnover express, gestion du linge, RC pro vérifiée.</p>'
-            + '<span class="n-ann-cta">Découvrir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
-          + '</a>'
+            + '<div class="n-ann-actions">'
+              + '<a href="/annuaires/menage#annuaire" class="n-ann-cta n-ann-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
+              + '<a href="/annuaires/menage/inscription" class="n-ann-cta n-ann-cta-secondary"><i class="ph-bold ph-plus"></i>Créer ma fiche</a>'
+            + '</div>'
+          + '</div>'
         + '</div>'
       + '</li>'
 
@@ -392,18 +406,24 @@
     + '<div class="mob-acc" id="acc-ann">'
       + '<button class="mob-acc-btn" aria-expanded="false">Annuaire ' + MOB_ARROW + '</button>'
       + '<div class="mob-acc-body">'
-        + '<a href="/annuaires/photographes" class="mob-driing-card">'
+        + '<div class="mob-driing-card">'
           + '<span class="mdc-tag"><span class="mdc-dot"></span>Annuaire pro</span>'
           + '<div class="mdc-h">Photographes <em>LCD</em></div>'
           + '<div class="mdc-p">Annuaire des pros qui maîtrisent l\'angle Airbnb. Photos qui font booker +40 %.</div>'
-          + '<span class="mdc-cta">Découvrir <i class="ph-bold ph-arrow-right"></i></span>'
-        + '</a>'
-        + '<a href="/annuaires/menage" class="mob-driing-card">'
+          + '<div class="mdc-actions">'
+            + '<a href="/annuaires/photographes#annuaire" class="mdc-cta mdc-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
+            + '<a href="/annuaires/photographes/inscription" class="mdc-cta mdc-cta-secondary"><i class="ph-bold ph-plus"></i>Créer ma fiche</a>'
+          + '</div>'
+        + '</div>'
+        + '<div class="mob-driing-card">'
           + '<span class="mdc-tag"><span class="mdc-dot"></span>Annuaire pro</span>'
           + '<div class="mdc-h">Ménage <em>LCD</em></div>'
           + '<div class="mdc-p">Équipes de ménage spécialisées turnover Airbnb. Linge, photo, RC pro vérifiée.</div>'
-          + '<span class="mdc-cta">Découvrir <i class="ph-bold ph-arrow-right"></i></span>'
-        + '</a>'
+          + '<div class="mdc-actions">'
+            + '<a href="/annuaires/menage#annuaire" class="mdc-cta mdc-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
+            + '<a href="/annuaires/menage/inscription" class="mdc-cta mdc-cta-secondary"><i class="ph-bold ph-plus"></i>Créer ma fiche</a>'
+          + '</div>'
+        + '</div>'
       + '</div>'
     + '</div>'
 

@@ -460,7 +460,7 @@ async function main() {
 function buildHubInjection(items) {
   if (items.length === 0) {
     // Fallback : aperçu fiche exemple (Camille Sénéchal)
-    return `<section class="sec cr">
+    return `<section class="sec cr" id="annuaire">
   <div class="s-in">
     <div style="text-align:center;max-width:680px;margin:0 auto 32px">
       <div class="lbl dk">Aperçu d'une fiche</div>
@@ -506,7 +506,7 @@ function buildHubInjection(items) {
   const seeMoreLink = items.length > 12
     ? `<div style="text-align:center;margin-top:24px"><a href="/annuaires/photographes/annuaire" style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--g);text-decoration:none">Voir les ${items.length} photographes actifs <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a></div>`
     : ''
-  return `<section class="sec cr">
+  return `<section class="sec cr" id="annuaire">
   <div class="s-in">
     <div style="text-align:center;max-width:680px;margin:0 auto 32px">
       <span class="lbl dk">${items.length} photographe${items.length > 1 ? 's' : ''} actif${items.length > 1 ? 's' : ''}</span>
