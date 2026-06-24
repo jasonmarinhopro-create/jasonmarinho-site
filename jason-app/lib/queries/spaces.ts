@@ -34,10 +34,12 @@ function getServiceClient() {
  *  - Photographe : actif si row dans photographers où user_id matche.
  *  - Ménage : actif si row dans cleaners où user_id matche.
  *
- * Retourne aussi un `primary` = espace par défaut pour le post-login
- * redirect (généralement le premier espace actif dans l'ordre Hôte/Photo/Ménage).
+ * `primary` correspond au premier espace actif (utilisé par le post-login
+ * redirect). L'espace courant est déduit côté client via usePathname() —
+ * le passer ici en arg casserait le memo entre routes sœurs sous le même
+ * layout (Next.js router cache).
  */
-export const getUserSpaces = cache(async (currentPath: string = '/dashboard'): Promise<SpacesResult> => {
+export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -90,13 +92,5 @@ export const getUserSpaces = cache(async (currentPath: string = '/dashboard'): P
     })
   }
 
-  // Détermine l'espace courant à partir du path
-  let primary = spaces[0]
-  if (currentPath.startsWith('/dashboard/ma-fiche-photographe')) {
-    primary = spaces.find(s => s.key === 'photographer') ?? spaces[0]
-  } else if (currentPath.startsWith('/dashboard/ma-fiche-menage')) {
-    primary = spaces.find(s => s.key === 'cleaner') ?? spaces[0]
-  }
-
-  return { spaces, primary }
+  return { spaces, primary: spaces[0] }
 })

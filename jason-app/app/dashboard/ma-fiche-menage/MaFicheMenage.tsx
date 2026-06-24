@@ -366,7 +366,7 @@ function Field({ label, req, children }: { label: string; req?: boolean; childre
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { padding: 'clamp(20px, 3vw, 44px)', width: '100%', maxWidth: 1200, margin: '0 auto' },
+  wrap: { padding: 'clamp(20px, 3vw, 44px)', width: '100%' },
   head: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' as const, gap: 14, marginBottom: 20 },
   title: { fontSize: 22, fontWeight: 600, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)', margin: 0 },
   titleEm: { color: '#FFD56B', fontStyle: 'italic', fontWeight: 300 },

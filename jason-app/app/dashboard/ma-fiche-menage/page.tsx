@@ -56,21 +56,23 @@ export default async function Page({ searchParams }: PageProps) {
 
   if (!cleaner) {
     return (
-      <div style={{ padding: 40, maxWidth: 720, margin: '0 auto', fontFamily: 'var(--font-outfit), sans-serif' }}>
-        <h1 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: 24, marginBottom: 14 }}>
-          {previewId ? 'Équipe ménage introuvable' : 'Aucune fiche équipe ménage rattachée'}
-        </h1>
-        <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: 14 }}>
-          {previewId
-            ? `L'identifiant ${previewId} ne correspond à aucune fiche.`
-            : <>Ton compte existe mais aucune fiche n'y est associée. Inscris-toi à nouveau depuis le site public ou contacte <a href="mailto:contact@jasonmarinho.com" style={{ color: 'var(--accent-text)' }}>contact@jasonmarinho.com</a>.</>
-          }
-        </p>
-        {!previewId && (
-          <a href="https://jasonmarinho.com/annuaires/menage/inscription" style={{ display: 'inline-block', marginTop: 18, padding: '10px 18px', background: 'var(--accent-text)', color: 'var(--bg)', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13.5 }}>
-            Créer ma fiche
-          </a>
-        )}
+      <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%', fontFamily: 'var(--font-outfit), sans-serif' }}>
+        <div style={{ maxWidth: 640, margin: '40px auto 0', padding: 32, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, textAlign: 'center' as const }}>
+          <h1 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: 22, marginBottom: 12 }}>
+            {previewId ? 'Équipe ménage introuvable' : 'Aucune fiche équipe ménage'}
+          </h1>
+          <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: 14, marginBottom: 22 }}>
+            {previewId
+              ? `L'identifiant ${previewId} ne correspond à aucune fiche.`
+              : <>Aucune fiche équipe ménage n'est rattachée à ce compte. Cela peut arriver si le paiement Stripe a été annulé.</>
+            }
+          </p>
+          {!previewId && (
+            <a href="https://jasonmarinho.com/annuaires/menage/inscription" style={{ display: 'inline-block', padding: '10px 18px', background: 'var(--accent-text)', color: 'var(--bg)', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13.5 }}>
+              Créer ma fiche
+            </a>
+          )}
+        </div>
       </div>
     )
   }

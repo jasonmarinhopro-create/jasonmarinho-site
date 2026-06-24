@@ -116,11 +116,9 @@ interface HeaderProps {
   hasStripeAccount?: boolean
   /** Espaces auxquels l'utilisateur a accès (multi-rôles). Si plus d'un, un sélecteur s'affiche dans le dropdown. */
   spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner'; label: string; href: string; subtitle?: string | null; active: boolean }>
-  /** Clé de l'espace actuellement visité (host/photographer/cleaner). */
-  currentSpaceKey?: 'host' | 'photographer' | 'cleaner'
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], currentSpaceKey = 'host' }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false, spaces = [] }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -145,6 +143,13 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   const pathname = usePathname()
   const { theme, toggleTheme } = useTheme()
   const isAdmin = isAdminProp
+  // Espace courant dérivé du pathname côté client (cf. Sidebar : le layout
+  // server est mémorisé par le router cache entre routes sœurs, un calcul
+  // server-side resterait figé après un client-nav).
+  const currentSpaceKey: 'host' | 'photographer' | 'cleaner' =
+    pathname?.startsWith('/dashboard/ma-fiche-photographe') ? 'photographer'
+    : pathname?.startsWith('/dashboard/ma-fiche-menage') ? 'cleaner'
+    : 'host'
 
   // Cloche unifiée : on récupère les compteurs (Entre Hôtes + Alertes app) côté
   // client au mount pour pouvoir les sommer au unreadCount produit (badge agrégé)
