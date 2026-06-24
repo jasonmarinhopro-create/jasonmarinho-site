@@ -91,13 +91,18 @@ interface SidebarProps {
   /** Affiche l'entrée "Encaissements" seulement si l'hôte utilise Stripe Connect.
    *  Évite le clutter pour les hôtes qui n'encaissent que via Airbnb/Booking. */
   hasStripeAccount?: boolean
-  /** Rôle simplifié pour les pros annuaire ('photographer' | 'cleaner').
-   *  Quand renseigné, on affiche une sidebar minimale (juste leur fiche). */
-  proRole?: 'photographer' | 'cleaner' | null
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, proRole = null }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false }: SidebarProps) {
   const pathname = usePathname()
+  // Le rôle pro est dérivé du pathname côté client : le layout (server) est
+  // mémorisé par le router cache entre routes sœurs, donc une prop calculée
+  // depuis `headers()` reste figée après un client-nav. usePathname() lui
+  // change à chaque navigation, ce qui garantit que la sidebar suit l'espace.
+  const proRole: 'photographer' | 'cleaner' | null =
+    pathname?.startsWith('/dashboard/ma-fiche-photographe') ? 'photographer'
+    : pathname?.startsWith('/dashboard/ma-fiche-menage') ? 'cleaner'
+    : null
   const router = useRouter()
   const supabase = createClient()
   const [adminContentOpen, setAdminContentOpen] = useState(

@@ -27,21 +27,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const [profile, cachedActualites, spacesResult] = await Promise.all([
     getProfile(),
     getCachedPublishedActualites(),
-    getUserSpaces(pathname),
+    getUserSpaces(),
   ])
   if (!profile) redirect('/auth/login')
 
   const isAdmin = profile.role === 'admin'
   const planLabel = planToLabel(profile.plan, profile.role)
 
-  // L'espace actuel se déduit du pathname (sidebar adaptive)
-  const currentSpaceKey = pathname.startsWith('/dashboard/ma-fiche-photographe')
-    ? 'photographer'
-    : pathname.startsWith('/dashboard/ma-fiche-menage')
-      ? 'cleaner'
-      : 'host'
-
-  const isOnProSpace = currentSpaceKey !== 'host'
+  // L'espace courant pour l'onboarding (purement server) — la sidebar et le
+  // header le recalculent client-side via usePathname() pour survivre au
+  // router cache des layouts.
+  const isOnProSpace =
+    pathname.startsWith('/dashboard/ma-fiche-photographe') ||
+    pathname.startsWith('/dashboard/ma-fiche-menage')
 
   // Onboarding hôte : skip si on est sur un espace pro (pas pertinent)
   const onboardingState = isOnProSpace
@@ -74,7 +72,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           hasStripeAccount={profile.stripe_onboarding_complete}
-          proRole={currentSpaceKey === 'photographer' ? 'photographer' : currentSpaceKey === 'cleaner' ? 'cleaner' : null}
         />
         <Header
           userName={profile.full_name ?? undefined}
@@ -87,7 +84,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
           showOnboardingBtn={showOnboarding}
           hasStripeAccount={profile.stripe_onboarding_complete}
           spaces={spacesResult.spaces}
-          currentSpaceKey={currentSpaceKey}
         />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>
