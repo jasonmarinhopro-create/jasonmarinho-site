@@ -83,6 +83,13 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAuthed && path.startsWith('/auth')) {
+    // Exception : si l'utilisateur visite /auth/login?as=photographe ou
+    // ?as=menage, c'est qu'il veut switcher de compte. On laisse la page
+    // login s'afficher (elle proposera un bouton de déconnexion + le form).
+    const asParam = request.nextUrl.searchParams.get('as')
+    if (path === '/auth/login' && (asParam === 'photographe' || asParam === 'menage')) {
+      return supabaseResponse
+    }
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
