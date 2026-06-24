@@ -428,18 +428,21 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                           </Link>
                         )
                       })}
-                      {/* CTAs « devenir » pour les espaces inactifs */}
+                      {/* CTAs « devenir » pour les espaces inactifs — on
+                          reste in-app pour réutiliser le compte connecté
+                          (sinon l'utilisateur devrait ressaisir email + mdp
+                          sur le formulaire public jasonmarinho.com). */}
                       {!spaces.find(s => s.key === 'photographer')?.active && (
-                        <a href="https://jasonmarinho.com/annuaires/photographes/inscription" target="_blank" rel="noopener noreferrer" style={{ ...styles.dropItem, color: 'var(--text-2)' }} onClick={() => setDropdownOpen(false)}>
+                        <Link href="/dashboard/creer-fiche-photographe" style={{ ...styles.dropItem, color: 'var(--text-2)' }} onClick={() => setDropdownOpen(false)}>
                           <span style={{ width: 18, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
                           Créer ma fiche photographe
-                        </a>
+                        </Link>
                       )}
                       {!spaces.find(s => s.key === 'cleaner')?.active && (
-                        <a href="https://jasonmarinho.com/annuaires/menage/inscription" target="_blank" rel="noopener noreferrer" style={{ ...styles.dropItem, color: 'var(--text-2)' }} onClick={() => setDropdownOpen(false)}>
+                        <Link href="/dashboard/creer-fiche-menage" style={{ ...styles.dropItem, color: 'var(--text-2)' }} onClick={() => setDropdownOpen(false)}>
                           <span style={{ width: 18, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
                           Créer ma fiche équipe ménage
-                        </a>
+                        </Link>
                       )}
                     </nav>
                     <div style={styles.dropDivider} />
