@@ -27,22 +27,19 @@ export default async function Page({ searchParams }: PageProps) {
   if (!user) redirect('/auth/login?as=photographe')
 
   const admin = getServiceClient()
+  // Multi-espaces : pas de strict role gating. L'accès se vérifie via la
+  // présence d'une row dans photographers.user_id (sinon empty state).
+  // Seul le mode preview admin est gardé pour le support.
   const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
     .maybeSingle()
-  const role = profile?.role
+  const isAdmin = profile?.role === 'admin'
 
-  // Cleaner connecté → vers son propre espace
-  if (role === 'cleaner' && !previewId) redirect('/dashboard/ma-fiche-menage')
-  if (role !== 'photographer' && role !== 'admin') redirect('/dashboard')
-
-  // Mode preview admin : ?id=<photographer_id> permet à un admin de
-  // voir le dashboard exact qu'un photographe spécifique voit.
   let photographer: any = null
   let isAdminPreview = false
-  if (previewId && role === 'admin') {
+  if (previewId && isAdmin) {
     const { data } = await admin
       .from('photographers')
       .select('*')

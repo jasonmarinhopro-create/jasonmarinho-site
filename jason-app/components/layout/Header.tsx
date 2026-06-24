@@ -114,9 +114,13 @@ interface HeaderProps {
   showOnboardingBtn?: boolean
   /** Forwarded à la sidebar mobile : masque "Encaissements" si pas de Stripe. */
   hasStripeAccount?: boolean
+  /** Espaces auxquels l'utilisateur a accès (multi-rôles). Si plus d'un, un sélecteur s'affiche dans le dropdown. */
+  spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner'; label: string; href: string; subtitle?: string | null; active: boolean }>
+  /** Clé de l'espace actuellement visité (host/photographer/cleaner). */
+  currentSpaceKey?: 'host' | 'photographer' | 'cleaner'
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], currentSpaceKey = 'host' }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -389,6 +393,54 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             {/* Dropdown panel */}
             {dropdownOpen && (
               <div style={styles.dropdown} className="dash-dropdown">
+                {/* Sélecteur d'espace (visible si > 1 espace OU si pas tous les CTAs activés) */}
+                {spaces.length > 0 && (
+                  <>
+                    <div style={{ padding: '12px 14px 6px', fontSize: '10.5px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--text-3)' }}>
+                      Mes espaces
+                    </div>
+                    <nav style={styles.dropNav}>
+                      {spaces.filter(s => s.active).map(s => {
+                        const isCurrent = s.key === currentSpaceKey
+                        return (
+                          <Link
+                            key={s.key}
+                            href={s.href}
+                            style={{
+                              ...styles.dropItem,
+                              background: isCurrent ? 'rgba(0,76,63,0.08)' : 'transparent',
+                              fontWeight: isCurrent ? 600 : 500,
+                            }}
+                            onClick={() => setDropdownOpen(false)}
+                          >
+                            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, borderRadius: 4, background: isCurrent ? 'var(--accent-text)' : 'transparent', color: isCurrent ? 'var(--bg)' : 'var(--text-3)', flexShrink: 0 }}>
+                              {isCurrent ? '✓' : ''}
+                            </span>
+                            <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' as const }}>
+                              <span style={{ fontSize: 13.5 }}>{s.label}</span>
+                              {s.subtitle && <span style={{ fontSize: 11.5, color: 'var(--text-3)', fontWeight: 400 }}>{s.subtitle}</span>}
+                            </span>
+                          </Link>
+                        )
+                      })}
+                      {/* CTAs « devenir » pour les espaces inactifs */}
+                      {!spaces.find(s => s.key === 'photographer')?.active && (
+                        <a href="https://jasonmarinho.com/annuaires/photographes/inscription" target="_blank" rel="noopener noreferrer" style={{ ...styles.dropItem, color: 'var(--text-2)' }} onClick={() => setDropdownOpen(false)}>
+                          <span style={{ width: 18, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
+                          Créer ma fiche photographe
+                        </a>
+                      )}
+                      {!spaces.find(s => s.key === 'cleaner')?.active && (
+                        <a href="https://jasonmarinho.com/annuaires/menage/inscription" target="_blank" rel="noopener noreferrer" style={{ ...styles.dropItem, color: 'var(--text-2)' }} onClick={() => setDropdownOpen(false)}>
+                          <span style={{ width: 18, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
+                          Créer ma fiche équipe ménage
+                        </a>
+                      )}
+                    </nav>
+                    <div style={styles.dropDivider} />
+                  </>
+                )}
+
                 {/* User card */}
                 <div style={styles.dropUserCard}>
                   <div style={styles.dropAvatar}>

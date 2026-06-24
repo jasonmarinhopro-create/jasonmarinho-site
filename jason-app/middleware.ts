@@ -15,7 +15,11 @@ function clearAuthCookies(response: NextResponse) {
 }
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  // Injecte le pathname courant dans un header pour que les layouts
+  // server components puissent y accéder (Next.js ne le passe pas par défaut).
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', request.nextUrl.pathname)
+  let supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

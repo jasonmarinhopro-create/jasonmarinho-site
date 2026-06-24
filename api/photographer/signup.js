@@ -214,8 +214,10 @@ module.exports = async function handler(req, res) {
   }
   const userId = auth.userId
 
-  // 2. Met à jour le rôle profile en 'photographer'
-  await setProfileRole({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, role: 'photographer', fullName })
+  // 2. Met à jour le nom du profile (pas de role : multi-espaces, le rôle
+  //    reste 'user' par défaut, l'accès au dashboard photographe est
+  //    déterminé par la présence d'une row dans photographers.user_id).
+  await setProfileRole({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, role: 'user', fullName })
 
   // 3. Détermine le tier
   const tierUrl = `${SUPABASE_URL}/rest/v1/photographers?tier=eq.fondateur&status=in.(active,pending_payment,approved_pending_payment)&select=id`

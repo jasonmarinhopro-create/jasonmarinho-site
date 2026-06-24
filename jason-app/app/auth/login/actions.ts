@@ -73,13 +73,23 @@ export async function getPostLoginPathAction(): Promise<string> {
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
       { auth: { autoRefreshToken: false, persistSession: false } },
     )
-    const { data: profile } = await admin
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .maybeSingle()
-    if (profile?.role === 'photographer') return '/dashboard/ma-fiche-photographe'
-    if (profile?.role === 'cleaner') return '/dashboard/ma-fiche-menage'
+    // Multi-espaces : on détecte les fiches pro liées au user. Si UNE
+    // seule existe ET pas de logements, on redirige vers cette fiche
+    // (le pro veut aller direct chez lui). Sinon → dashboard hôte par
+    // défaut, et le sélecteur header lui permet de switcher.
+    const [{ data: ph }, { data: cl }, { count: logementsCount }] = await Promise.all([
+      admin.from('photographers').select('id').eq('user_id', user.id).maybeSingle(),
+      admin.from('cleaners').select('id').eq('user_id', user.id).maybeSingle(),
+      admin.from('logements').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+    ])
+    const hasLogements = (logementsCount ?? 0) > 0
+    const hasPhoto = !!ph
+    const hasCleaner = !!cl
+
+    // Si le user n'a qu'un seul espace pro et pas de logements → direct
+    if (!hasLogements && hasPhoto && !hasCleaner) return '/dashboard/ma-fiche-photographe'
+    if (!hasLogements && hasCleaner && !hasPhoto) return '/dashboard/ma-fiche-menage'
+    // Sinon (hôte, ou multi-espaces) → dashboard hôte par défaut
     return '/dashboard'
   } catch {
     return '/dashboard'

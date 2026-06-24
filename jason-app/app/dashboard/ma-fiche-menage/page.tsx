@@ -27,19 +27,17 @@ export default async function Page({ searchParams }: PageProps) {
   if (!user) redirect('/auth/login?as=menage')
 
   const admin = getServiceClient()
+  // Multi-espaces : pas de strict role gating. Accès via cleaners.user_id.
   const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
     .maybeSingle()
-  const role = profile?.role
-
-  if (role === 'photographer' && !previewId) redirect('/dashboard/ma-fiche-photographe')
-  if (role !== 'cleaner' && role !== 'admin') redirect('/dashboard')
+  const isAdmin = profile?.role === 'admin'
 
   let cleaner: any = null
   let isAdminPreview = false
-  if (previewId && role === 'admin') {
+  if (previewId && isAdmin) {
     const { data } = await admin
       .from('cleaners')
       .select('*')

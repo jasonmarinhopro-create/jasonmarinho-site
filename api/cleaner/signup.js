@@ -243,8 +243,9 @@ module.exports = async function handler(req, res) {
   }
   const userId = auth.userId
 
-  // 2. Met à jour le rôle profile en 'cleaner'
-  await setProfileRole({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, role: 'cleaner', fullName })
+  // 2. Met à jour le nom du profile (pas de role spécial : multi-espaces,
+  //    l'accès au dashboard ménage est déterminé par cleaners.user_id).
+  await setProfileRole({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, role: 'user', fullName })
 
   // 3. Détermine tier
   const tierUrl = `${SUPABASE_URL}/rest/v1/cleaners?tier=eq.fondateur&status=in.(active,pending_payment,approved_pending_payment)&select=id`

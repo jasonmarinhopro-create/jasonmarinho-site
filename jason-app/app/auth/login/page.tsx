@@ -100,38 +100,17 @@ function LoginInner() {
   const profileKey: Profile = asParam === 'photographe' ? 'photographe' : asParam === 'menage' ? 'menage' : 'host'
   const ctx = PROFILES[profileKey]
 
-  // Détection d'une session existante (cas changement de compte via /mon-compte)
-  const [existingSession, setExistingSession] = useState<{ email: string; role: string } | null>(null)
-  const [signingOut, setSigningOut] = useState(false)
-
+  // Si l'utilisateur visite /auth/login?as=photographe ou ?as=menage en
+  // étant déjà connecté, on redirige directement vers l'espace ciblé
+  // (le sélecteur d'espace du header lui permet ensuite de switcher).
   useEffect(() => {
-    // Si on a un ?as=, on vérifie si une session existe. On utilise le
-    // server action getPostLoginPathAction qui détermine le bon path en
-    // fonction du rôle DB (lu via service role, bypass RLS). Si le path
-    // retourné correspond au ?as=, on redirige direct. Sinon → bandeau
-    // « déjà connecté, déconnecte-toi pour changer de compte ».
-    if (asParam === 'photographe' || asParam === 'menage') {
-      supabase.auth.getUser().then(async ({ data: { user } }) => {
-        if (!user) return
-        const path = await postLoginPath()
-        const expectedPath = asParam === 'photographe' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'
-        if (path === expectedPath) {
-          // Le rôle DB matche le ?as=, on redirige direct
-          window.location.replace(path)
-        } else {
-          // Mismatch : on affiche le bandeau « déjà connecté »
-          setExistingSession({ email: user.email ?? '', role: 'user' })
-        }
-      })
-    }
+    if (asParam !== 'photographe' && asParam !== 'menage') return
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      const target = asParam === 'photographe' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'
+      window.location.replace(target)
+    })
   }, [asParam])
-
-  async function handleSignOutAndStay() {
-    setSigningOut(true)
-    await supabase.auth.signOut()
-    setExistingSession(null)
-    setSigningOut(false)
-  }
 
 
   useEffect(() => {
@@ -311,42 +290,6 @@ function LoginInner() {
         <div style={s.formCard} className="fade-up">
           <h2 style={s.formTitle}>{ctx.formTitle}</h2>
           <p style={s.formSub}>{ctx.formSub}</p>
-
-          {existingSession && (
-            <div style={{
-              padding: '14px 16px',
-              background: 'rgba(255,213,107,0.08)',
-              border: '1px solid rgba(255,213,107,0.30)',
-              borderRadius: 10,
-              marginBottom: 18,
-              fontSize: 13.5,
-              color: '#0B1D0F',
-              lineHeight: 1.6,
-            }}>
-              <div style={{ fontWeight: 600, marginBottom: 4 }}>Tu es déjà connecté</div>
-              <div style={{ color: 'rgba(11,29,15,0.65)', marginBottom: 10 }}>
-                Compte actuel : <strong>{existingSession.email}</strong>. Pour te connecter à ton espace {asParam === 'photographe' ? 'photographe' : 'équipe ménage'} avec un autre compte, déconnecte-toi d'abord.
-              </div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
-                <button type="button" onClick={handleSignOutAndStay} disabled={signingOut} style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '8px 14px', background: '#004C3F', color: '#fff',
-                  border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600,
-                  cursor: signingOut ? 'wait' : 'pointer', fontFamily: 'inherit',
-                }}>
-                  {signingOut ? 'Déconnexion…' : 'Me déconnecter pour changer de compte'}
-                </button>
-                <a href="/dashboard" style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '8px 14px', background: 'transparent', color: '#0B1D0F',
-                  border: '1px solid rgba(11,29,15,0.2)', borderRadius: 8,
-                  fontSize: 13, fontWeight: 500, textDecoration: 'none',
-                }}>
-                  Rester sur mon compte actuel
-                </a>
-              </div>
-            </div>
-          )}
 
           <form onSubmit={handleLogin} style={s.form}>
             <div style={s.field}>
