@@ -34,8 +34,8 @@ export async function sendProWelcomeEmail(args: ProWelcomeArgs): Promise<void> {
   const isFondateur = tier === 'fondateur'
   const annual = isFondateur ? '39,98 €' : '79,98 €'
   const publicUrl = isPhotographer
-    ? `${SITE_URL}/photographes/${slug}`
-    : `${SITE_URL}/menage/${slug}`
+    ? `${SITE_URL}/annuaires/photographes/${slug}`
+    : `${SITE_URL}/annuaires/menage/${slug}`
   const dashboardPath = isPhotographer
     ? '/dashboard/ma-fiche-photographe'
     : '/dashboard/ma-fiche-menage'

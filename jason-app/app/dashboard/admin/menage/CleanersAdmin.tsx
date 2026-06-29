@@ -150,7 +150,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                   <Sparkle size={11} weight="bold" /> Dashboard
                 </a>
                 {c.slug && (
-                  <a href={`https://jasonmarinho.com/menage/${c.slug}`} target="_blank" rel="noopener noreferrer" style={s.linkBtn}>
+                  <a href={`https://jasonmarinho.com/annuaires/menage/${c.slug}`} target="_blank" rel="noopener noreferrer" style={s.linkBtn}>
                     <ArrowSquareOut size={11} weight="bold" /> Fiche pub
                   </a>
                 )}

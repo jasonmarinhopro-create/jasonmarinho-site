@@ -135,7 +135,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                   <Camera size={11} weight="bold" /> Dashboard
                 </a>
                 {p.slug && (
-                  <a href={`https://jasonmarinho.com/photographes/${p.slug}`} target="_blank" rel="noopener noreferrer" style={s.linkBtn}>
+                  <a href={`https://jasonmarinho.com/annuaires/photographes/${p.slug}`} target="_blank" rel="noopener noreferrer" style={s.linkBtn}>
                     <ArrowSquareOut size={11} weight="bold" /> Fiche pub
                   </a>
                 )}

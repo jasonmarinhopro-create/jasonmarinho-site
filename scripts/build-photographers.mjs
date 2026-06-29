@@ -4,7 +4,7 @@
  * fiches individuelles SEO friendly. Idem pattern build-signalements.
  *
  * - /annuaires/photographes/annuaire/index.html : liste filtrable
- * - /photographes/[slug]/index.html : fiche individuelle
+ * - /annuaires/photographes/[slug]/index.html : fiche individuelle
  * - /sitemap-photographes.xml : sitemap dédié
  *
  * Lance en no-op si env vars Supabase absentes.
@@ -17,7 +17,10 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const ANNUAIRE_DIR = path.join(ROOT, 'annuaires', 'photographes', 'annuaire')
-const FICHES_DIR = path.join(ROOT, 'photographes')
+const FICHES_DIR = path.join(ROOT, 'annuaires', 'photographes')
+// Sous-dossiers à PROTÉGER du cleanup (hub + sous-pages déjà existantes
+// sous /annuaires/photographes/) — sinon le rm récursif les supprimerait.
+const RESERVED_DIRS = new Set(['annuaire', 'inscription', 'exemple-fiche'])
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -59,7 +62,7 @@ function buildFichePage(p) {
   const title = `${displayName} · Photographe LCD ${p.ville} | Jason Marinho`
   const tarif = fmtTarif(p)
   const desc = `${displayName}, photographe spécialisé location courte durée à ${p.ville}${p.zone_couverte ? ' et ' + p.zone_couverte : ''}.${p.specialite ? ' ' + p.specialite + '.' : ''}${tarif ? ' Tarifs ' + tarif + '.' : ''}`
-  const canonical = `https://jasonmarinho.com/photographes/${p.slug}`
+  const canonical = `https://jasonmarinho.com/annuaires/photographes/${p.slug}`
   const isFondateur = p.tier === 'fondateur'
 
   return `<!DOCTYPE html>
@@ -269,7 +272,7 @@ function buildAnnuaireListPage(items) {
         const displayName = p.pseudo || p.full_name
         const tarif = fmtTarif(p)
         const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
-        return `<a href="/photographes/${escHtml(p.slug)}" class="card">
+        return `<a href="/annuaires/photographes/${escHtml(p.slug)}" class="card">
   ${p.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   <div class="card-logo-row">
     ${p.logo_url
@@ -408,7 +411,7 @@ function buildSitemap(items) {
     `  <url><loc>https://jasonmarinho.com/annuaires/photographes/annuaire</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>`,
     `  <url><loc>https://jasonmarinho.com/annuaires/photographes/inscription</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`,
     ...items.map(p => {
-      return `  <url><loc>https://jasonmarinho.com/photographes/${p.slug}</loc><lastmod>${(p.created_at || today).slice(0, 10)}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`
+      return `  <url><loc>https://jasonmarinho.com/annuaires/photographes/${p.slug}</loc><lastmod>${(p.created_at || today).slice(0, 10)}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`
     }),
   ]
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -423,8 +426,13 @@ async function main() {
 
   // Clean photographes dir (regen all)
   if (fs.existsSync(FICHES_DIR)) {
+    // Cleanup : on supprime UNIQUEMENT les sous-dossiers de fiches (slugs).
+    // Hub + annuaire + inscription + exemple-fiche (RESERVED_DIRS) sont
+    // intouchables — sinon le rm casse tout le hub /annuaires/photographes/.
     for (const entry of fs.readdirSync(FICHES_DIR, { withFileTypes: true })) {
-      if (entry.isDirectory()) fs.rmSync(path.join(FICHES_DIR, entry.name), { recursive: true, force: true })
+      if (entry.isDirectory() && !RESERVED_DIRS.has(entry.name)) {
+        fs.rmSync(path.join(FICHES_DIR, entry.name), { recursive: true, force: true })
+      }
     }
   } else {
     fs.mkdirSync(FICHES_DIR, { recursive: true })
@@ -489,7 +497,7 @@ function buildHubInjection(items) {
     const displayName = p.pseudo || p.full_name
     const tarif = fmtTarif(p)
     const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
-    return `<a href="/photographes/${escHtml(p.slug)}" style="display:flex;flex-direction:column;gap:8px;padding:22px;background:#fff;border:1px solid var(--bd);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;position:relative">
+    return `<a href="/annuaires/photographes/${escHtml(p.slug)}" style="display:flex;flex-direction:column;gap:8px;padding:22px;background:#fff;border:1px solid var(--bd);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;position:relative">
   ${p.tier === 'fondateur' ? '<span style="position:absolute;top:18px;right:18px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgba(255,213,107,.15);color:#b8860b;border:1px solid rgba(255,213,107,.4)"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   <div style="display:flex;align-items:center;gap:12px">
     ${p.logo_url

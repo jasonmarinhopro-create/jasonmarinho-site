@@ -102,7 +102,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
   const isActive = photographer.status === 'active'
   const isPending = photographer.status === 'pending_payment' || photographer.status === 'approved_pending_payment'
   const isFondateur = photographer.tier === 'fondateur'
-  const publicUrl = photographer.slug ? `https://jasonmarinho.com/photographes/${photographer.slug}` : null
+  const publicUrl = photographer.slug ? `https://jasonmarinho.com/annuaires/photographes/${photographer.slug}` : null
 
   return (
     <section style={s.wrap}>

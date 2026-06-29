@@ -5,7 +5,7 @@
  * build-photographers.mjs.
  *
  * - /annuaires/menage/annuaire/index.html : liste filtrable
- * - /menage/[slug]/index.html : fiche individuelle
+ * - /annuaires/menage/[slug]/index.html : fiche individuelle
  * - /sitemap-menages.xml : sitemap dédié
  */
 
@@ -16,7 +16,10 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const ANNUAIRE_DIR = path.join(ROOT, 'annuaires', 'menage', 'annuaire')
-const FICHES_DIR = path.join(ROOT, 'menage')
+const FICHES_DIR = path.join(ROOT, 'annuaires', 'menage')
+// Sous-dossiers à PROTÉGER du cleanup (hub + sous-pages déjà existantes
+// sous /annuaires/menage/) — sinon le rm récursif les supprimerait.
+const RESERVED_DIRS = new Set(['annuaire', 'inscription', 'exemple-fiche'])
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -82,7 +85,7 @@ function buildFichePage(c) {
   const forfait = fmtForfait(c)
   const heure = c.tarif_heure ? `${c.tarif_heure} €/h` : null
   const desc = `${displayName}, équipe de ménage spécialisée location courte durée à ${c.ville}${c.zone_couverte ? ' et ' + c.zone_couverte : ''}.${forfait ? ' Forfait turnover ' + forfait + '.' : ''}${heure ? ' Tarif horaire ' + heure + '.' : ''}`
-  const canonical = `https://jasonmarinho.com/menage/${c.slug}`
+  const canonical = `https://jasonmarinho.com/annuaires/menage/${c.slug}`
   const isFondateur = c.tier === 'fondateur'
 
   const prestations = (c.prestations || []).map(p => PRESTATIONS_LABELS[p] || p)
@@ -324,7 +327,7 @@ function buildAnnuaireListPage(items) {
         const tarifLine = [forfait, heure].filter(Boolean).join(' · ')
         const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
         const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
-        return `<a href="/menage/${escHtml(c.slug)}" class="card">
+        return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card">
   ${c.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   <div class="card-logo-row">
     ${c.logo_url
@@ -465,7 +468,7 @@ function buildSitemap(items) {
     `  <url><loc>https://jasonmarinho.com/annuaires/menage/annuaire</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>`,
     `  <url><loc>https://jasonmarinho.com/annuaires/menage/inscription</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`,
     ...items.map(c => {
-      return `  <url><loc>https://jasonmarinho.com/menage/${c.slug}</loc><lastmod>${(c.created_at || today).slice(0, 10)}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`
+      return `  <url><loc>https://jasonmarinho.com/annuaires/menage/${c.slug}</loc><lastmod>${(c.created_at || today).slice(0, 10)}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`
     }),
   ]
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -478,10 +481,14 @@ ${urls.join('\n')}
 async function main() {
   const items = await fetchActive()
 
-  // Clean menage dir
+  // Clean menage dir : on supprime UNIQUEMENT les sous-dossiers de fiches
+  // (slugs). Hub + annuaire + inscription + exemple-fiche (RESERVED_DIRS)
+  // sont intouchables — sinon le rm casse tout le hub /annuaires/menage/.
   if (fs.existsSync(FICHES_DIR)) {
     for (const entry of fs.readdirSync(FICHES_DIR, { withFileTypes: true })) {
-      if (entry.isDirectory()) fs.rmSync(path.join(FICHES_DIR, entry.name), { recursive: true, force: true })
+      if (entry.isDirectory() && !RESERVED_DIRS.has(entry.name)) {
+        fs.rmSync(path.join(FICHES_DIR, entry.name), { recursive: true, force: true })
+      }
     }
   } else {
     fs.mkdirSync(FICHES_DIR, { recursive: true })
@@ -539,7 +546,7 @@ function buildHubInjection(items) {
     const tarifLine = [forfait, heure].filter(Boolean).join(' · ')
     const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
     const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
-    return `<a href="/menage/${escHtml(c.slug)}" style="display:flex;flex-direction:column;gap:8px;padding:22px;background:#fff;border:1px solid var(--bd);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;position:relative">
+    return `<a href="/annuaires/menage/${escHtml(c.slug)}" style="display:flex;flex-direction:column;gap:8px;padding:22px;background:#fff;border:1px solid var(--bd);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;position:relative">
   ${c.tier === 'fondateur' ? '<span style="position:absolute;top:18px;right:18px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgba(255,213,107,.15);color:#b8860b;border:1px solid rgba(255,213,107,.4)"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   <div style="display:flex;align-items:center;gap:12px">
     ${c.logo_url
