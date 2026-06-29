@@ -80,6 +80,7 @@ function buildFichePage(p) {
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <meta property="og:site_name" content="Jason Marinho">
 <meta name="robots" content="index, follow">
+<link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
@@ -301,6 +302,7 @@ function buildAnnuaireListPage(items) {
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <meta name="robots" content="index, follow">
+<link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <link rel="preconnect" href="https://fonts.googleapis.com">
