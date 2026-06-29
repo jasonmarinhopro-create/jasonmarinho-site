@@ -143,7 +143,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
   const isActive = cleaner.status === 'active'
   const isPending = cleaner.status === 'pending_payment' || cleaner.status === 'approved_pending_payment'
   const isFondateur = cleaner.tier === 'fondateur'
-  const publicUrl = cleaner.slug ? `https://jasonmarinho.com/menage/${cleaner.slug}` : null
+  const publicUrl = cleaner.slug ? `https://jasonmarinho.com/annuaires/menage/${cleaner.slug}` : null
 
   return (
     <section style={s.wrap}>
