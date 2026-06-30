@@ -11,6 +11,8 @@ import {
   Camera, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
+import PropertySelector from '@/components/layout/PropertySelector'
+import type { PropertyLite } from '@/lib/queries/active-property'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
@@ -91,9 +93,13 @@ interface SidebarProps {
   /** Affiche l'entrée "Encaissements" seulement si l'hôte utilise Stripe Connect.
    *  Évite le clutter pour les hôtes qui n'encaissent que via Airbnb/Booking. */
   hasStripeAccount?: boolean
+  /** Liste des logements de l'utilisateur — alimente le sélecteur en bas. */
+  allProperties?: PropertyLite[]
+  /** UUID du logement actif (cookie) ou 'all' pour la vue agrégée. */
+  activePropertyId?: string
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId }: SidebarProps) {
   const pathname = usePathname()
   // Le rôle pro est dérivé du pathname côté client : le layout (server) est
   // mémorisé par le router cache entre routes sœurs, donc une prop calculée
@@ -293,6 +299,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
             </>
           )}
         </nav>
+
+        {/* Sélecteur de logement (bas de sidebar, dropdown vers le haut) */}
+        {!proRole && allProperties && (
+          <PropertySelector allProperties={allProperties} currentId={activePropertyId ?? 'all'} />
+        )}
 
         {/* Footer */}
         <div style={styles.sideFooter}>

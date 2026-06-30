@@ -6,6 +6,7 @@ import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { getUserSpaces } from '@/lib/queries/spaces'
+import { getActiveProperty } from '@/lib/queries/active-property'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
 import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
@@ -24,10 +25,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const hdrs = await headers()
   const pathname = hdrs.get('x-pathname') ?? '/dashboard'
 
-  const [profile, cachedActualites, spacesResult] = await Promise.all([
+  const [profile, cachedActualites, spacesResult, activeProperty] = await Promise.all([
     getProfile(),
     getCachedPublishedActualites(),
     getUserSpaces(),
+    getActiveProperty(),
   ])
   if (!profile) redirect('/auth/login')
 
@@ -72,6 +74,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           hasStripeAccount={profile.stripe_onboarding_complete}
+          allProperties={activeProperty.allProperties}
+          activePropertyId={activeProperty.propertyId}
         />
         <Header
           userName={profile.full_name ?? undefined}

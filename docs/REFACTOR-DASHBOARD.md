@@ -42,7 +42,7 @@ git reset --hard origin/backup/pre-dashboard-refactor
 | **Header** | 2 boutons seulement : SOS + Cloche |
 | **Menu user** | En bas-gauche (carte cliquable), contient : Mon compte / Abonnement / Aide / Contributeurs / Mes espaces pro / Mode admin / Déconnexion |
 | **Mode admin** | Bascule via menu user, sidebar dédiée |
-| **Calendrier** | À CONFIRMER : Option A (toggle 📅 Mois / 📋 Liste dans Calendrier) ou Option C (item "Mes réservations" dédié dans sidebar) |
+| **Calendrier** | ✅ Option A : toggle 📅 Mois / 📋 Liste à l'intérieur de `/dashboard/calendrier`. Aucun nouvel item dans la sidebar. Détail des champs de la vue Liste dans `docs/AUDIT-PAGES-A-FUSIONNER.md`. |
 | **Accueil refondu** | Hero dynamique + "⚡ À gérer maintenant" + mini calendrier 7j + suggestions "Pour toi" + Performance repliée + Widget Actualités. Pas de KPIs statiques en évidence. |
 | **Light/Dark/AMOLED** | 3 thèmes supportés. Sidebar reste foncée même en light (contraste). |
 | **Responsive** | 4 breakpoints : ≥1280 / 768-1279 / 480-767 / <480. Mobile : drawer + barre logement sticky + bottom nav 4 raccourcis. |
