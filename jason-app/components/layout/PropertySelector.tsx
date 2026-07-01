@@ -65,8 +65,12 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
   const label = isAll
     ? (allProperties.length > 1 ? 'Tous les logements' : allProperties[0].nom)
     : current!.nom
-  // Si 1 seul logement : statique, pas de dropdown
-  const interactive = allProperties.length > 1
+  // Toujours interactif : même avec 1 seul logement, l'utilisateur doit
+  // pouvoir ouvrir le menu pour accéder à "Ajouter un logement" et
+  // "Gérer mes logements". L'option "Tous les logements" n'apparaît que
+  // s'il y a plus d'1 logement (rendu conditionnel dans le dropdown).
+  const interactive = true
+  const hasMultiple = allProperties.length > 1
 
   async function pick(id: string) {
     if (id === currentId) { setOpen(false); return }
@@ -86,19 +90,21 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
 
   return (
     <div ref={wrapRef} style={styles.wrap}>
-      {open && interactive && (
+      {open && (
         <div style={styles.dropdown} role="menu">
-          {/* Tous les logements (vue agrégée) */}
-          <button
-            onClick={() => pick('all')}
-            style={{ ...styles.item, ...(isAll ? styles.itemCurrent : {}) }}
-            role="menuitem"
-            disabled={busy}
-          >
-            <span style={styles.itemIco}>{isAll ? <Check size={13} weight="bold" /> : <SquaresFour size={13} />}</span>
-            <span style={styles.itemLabel}>Tous les logements</span>
-          </button>
-          {/* Liste */}
+          {/* Tous les logements (vue agrégée) — visible uniquement si plusieurs */}
+          {hasMultiple && (
+            <button
+              onClick={() => pick('all')}
+              style={{ ...styles.item, ...(isAll ? styles.itemCurrent : {}) }}
+              role="menuitem"
+              disabled={busy}
+            >
+              <span style={styles.itemIco}>{isAll ? <Check size={13} weight="bold" /> : <SquaresFour size={13} />}</span>
+              <span style={styles.itemLabel}>Tous les logements</span>
+            </button>
+          )}
+          {/* Liste des logements */}
           {allProperties.map(p => {
             const active = p.id === currentId
             return (
@@ -143,7 +149,11 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
               <span style={styles.lbl}>Logement</span>
               <span style={styles.name}>{label}</span>
             </span>
-            {interactive && <CaretUp size={11} style={{ color: 'var(--text-3)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.18s' }} />}
+            {interactive && (
+              <span style={{ width: 22, height: 22, borderRadius: 6, background: 'rgba(255,255,255,0.06)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', flexShrink: 0 }}>
+                <CaretUp size={13} weight="bold" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.18s' }} />
+              </span>
+            )}
           </>
         )}
       </button>
@@ -152,28 +162,29 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  wrap: { position: 'relative', marginTop: '8px', marginBottom: '10px' },
+  wrap: { position: 'relative', marginTop: '12px', marginBottom: '14px' },
   trigger: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    width: '100%', padding: '8px 10px',
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.10)',
+    display: 'flex', alignItems: 'center', gap: '12px',
+    width: '100%', padding: '12px 14px',       // Padding généreux → look bouton
+    background: 'rgba(255,213,107,0.05)',       // Fond légèrement accent
+    border: '1px solid var(--accent-border)',   // Bordure accent = plus cliquable
     borderRadius: 'var(--r-md)',
     color: 'var(--text)',
     fontFamily: 'inherit',
-    transition: 'background 0.15s, border-color 0.15s',
+    cursor: 'pointer',
+    transition: 'background 0.15s, border-color 0.15s, transform 0.15s',
   },
   ico: {
-    width: '28px', height: '28px', flexShrink: 0,
-    background: 'rgba(255,213,107,0.10)',
+    width: '32px', height: '32px', flexShrink: 0,
+    background: 'rgba(255,213,107,0.15)',
     border: '1px solid var(--accent-border)',
-    borderRadius: '7px',
+    borderRadius: '8px',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
     color: 'var(--accent-text)',
   },
   info: { flex: 1, minWidth: 0, textAlign: 'left' as const, overflow: 'hidden' },
-  lbl: { display: 'block', fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 },
-  name: { display: 'block', fontSize: '13px', color: 'var(--text)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+  lbl: { display: 'block', fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', fontWeight: 700, marginBottom: '2px' },
+  name: { display: 'block', fontSize: '13.5px', color: 'var(--text)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   dropdown: {
     position: 'absolute',
     bottom: 'calc(100% + 6px)', left: 0, right: 0,

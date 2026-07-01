@@ -266,7 +266,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               title={collapsed ? 'Étendre le menu' : 'Réduire le menu'}
               aria-label={collapsed ? 'Étendre la sidebar' : 'Réduire la sidebar'}
             >
-              {collapsed ? <CaretDoubleRight size={14} /> : <CaretDoubleLeft size={14} />}
+              {collapsed ? <CaretDoubleRight size={15} weight="bold" /> : <CaretDoubleLeft size={15} weight="bold" />}
             </button>
           )}
           {onClose && (
@@ -610,10 +610,17 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1.5px solid var(--nav-bg)',
   },
   collapseBtn: {
-    background: 'none', border: 'none', cursor: 'pointer',
-    color: 'var(--text-3)', padding: '4px', borderRadius: '6px',
+    // Bouton chevron collapse — visible et cliquable comme un vrai
+    // bouton, pas juste une icône fantôme. Fond + border accent.
+    background: 'rgba(255,213,107,0.10)',
+    border: '1px solid var(--accent-border)',
+    cursor: 'pointer',
+    color: 'var(--accent-text)',
+    padding: '6px', borderRadius: '7px',
+    width: '28px', height: '28px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
+    transition: 'background 0.15s, transform 0.15s',
   },
   // Carte user cliquable en bas-gauche (remplace l'ancien footer)
   userWrap: {
