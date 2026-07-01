@@ -24,6 +24,15 @@ const nextConfig = {
       { source: '/dashboard/revenus', destination: '/dashboard/finances/revenus', permanent: false },
       { source: '/dashboard/encaissements', destination: '/dashboard/finances/encaissements', permanent: false },
       { source: '/dashboard/performances', destination: '/dashboard/finances/performances', permanent: false },
+      // Étape 6/7 : fusion Apprendre (Formations + Guide LCD) + Entre Hôtes
+      // (Forum + Groupes FB + Écosystème). Exact match uniquement — les
+      // sous-routes dynamiques (formations/[slug], chez-nous/[postId], etc.)
+      // restent à leur URL d'origine.
+      { source: '/dashboard/formations', destination: '/dashboard/apprendre/formations', permanent: false },
+      { source: '/dashboard/guide', destination: '/dashboard/apprendre/guide', permanent: false },
+      { source: '/dashboard/chez-nous', destination: '/dashboard/entre-hotes/forum', permanent: false },
+      { source: '/dashboard/communaute', destination: '/dashboard/entre-hotes/groupes-facebook', permanent: false },
+      { source: '/dashboard/ecosysteme', destination: '/dashboard/entre-hotes/ecosysteme', permanent: false },
     ]
   },
 

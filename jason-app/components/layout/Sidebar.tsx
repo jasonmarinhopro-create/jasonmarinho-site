@@ -57,10 +57,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       // utilitaires (Simulateurs, Calculateurs, Audit GBP, QR & Affiches).
       // Les URLs individuelles restent accessibles directement.
       { href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator },
-      // Apprendre → onglets Formations + Guide LCD à l'Étape 6.
-      { href: '/dashboard/formations',  label: 'Apprendre',        icon: GraduationCap },
-      // Entre Hôtes → onglets Forum + Groupes FB + Écosystème à l'Étape 6.
-      { href: '/dashboard/chez-nous',   label: 'Entre Hôtes',      icon: ChatsCircle },
+      // Apprendre (Étape 6) : fusion à onglets Formations + Guide LCD.
+      { href: '/dashboard/apprendre',   label: 'Apprendre',        icon: GraduationCap },
+      // Entre Hôtes (Étape 6) : fusion à onglets Forum + Groupes FB + Écosystème.
+      { href: '/dashboard/entre-hotes', label: 'Entre Hôtes',      icon: ChatsCircle },
     ],
   },
 ]
