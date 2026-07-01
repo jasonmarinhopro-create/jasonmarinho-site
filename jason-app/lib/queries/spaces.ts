@@ -1,4 +1,5 @@
 import { cache } from 'react'
+import { unstable_cache } from 'next/cache'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 
@@ -39,6 +40,25 @@ function getServiceClient() {
  * le passer ici en arg casserait le memo entre routes sœurs sous le même
  * layout (Next.js router cache).
  */
+// PERF : les 3 queries (logements count + fiche photographe + fiche menage)
+// sont cachees pendant 5 min. Ces valeurs ne changent quasi jamais dans
+// la vie normale d'un utilisateur (ajout d'une fiche pro = action explicite
+// qui peut trigger revalidateTag). Evite de refaire 3 queries a chaque
+// navigation dans le dashboard.
+const fetchSpacesDataForUser = (userId: string) => unstable_cache(
+  async () => {
+    const admin = getServiceClient()
+    const [{ count: logementsCount }, { data: ph }, { data: cl }] = await Promise.all([
+      admin.from('logements').select('id', { count: 'exact', head: true }).eq('user_id', userId),
+      admin.from('photographers').select('full_name, pseudo, slug, status').eq('user_id', userId).maybeSingle(),
+      admin.from('cleaners').select('full_name, pseudo, slug, status').eq('user_id', userId).maybeSingle(),
+    ])
+    return { logementsCount, ph, cl }
+  },
+  ['user-spaces-data', userId],
+  { revalidate: 300, tags: [`spaces:${userId}`] },
+)()
+
 export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -47,15 +67,8 @@ export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
     return { spaces: [host], primary: host }
   }
 
-  const admin = getServiceClient()
   const isAdmin = user.email === ADMIN_EMAIL
-
-  // Parallel : logements count + photographers fiche + cleaners fiche
-  const [{ count: logementsCount }, { data: ph }, { data: cl }] = await Promise.all([
-    admin.from('logements').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-    admin.from('photographers').select('full_name, pseudo, slug, status').eq('user_id', user.id).maybeSingle(),
-    admin.from('cleaners').select('full_name, pseudo, slug, status').eq('user_id', user.id).maybeSingle(),
-  ])
+  const { logementsCount, ph, cl } = await fetchSpacesDataForUser(user.id)
 
   const hasLogements = (logementsCount ?? 0) > 0
   const hasPhoto = !!ph
