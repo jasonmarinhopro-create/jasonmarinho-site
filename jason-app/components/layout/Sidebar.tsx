@@ -105,9 +105,12 @@ interface SidebarProps {
   userPlanLabel?: string
   /** userId : pour le lien vers /chez-nous/membre/[id] depuis le menu user. */
   userId?: string
+  /** Espaces multi-rôles (Hôte + Photographe + Ménage) — permet de switcher
+   *  entre ses fiches pro depuis le menu user en bas-gauche. */
+  spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner'; label: string; href: string; subtitle?: string | null; active: boolean }>
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [] }: SidebarProps) {
   const pathname = usePathname()
   // Le rôle pro est dérivé du pathname côté client : le layout (server) est
   // mémorisé par le router cache entre routes sœurs, donc une prop calculée
@@ -442,6 +445,55 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               <Link href="/dashboard/aide" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
                 <Question size={15} />Centre d&apos;aide
               </Link>
+
+              {/* Mes espaces multi-rôles : bascule Hôte / Photographe / Ménage */}
+              {spaces.length > 0 && (
+                <>
+                  <div style={styles.userMenuDivider} />
+                  <div style={{ padding: '10px 12px 4px', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--text-3)' }}>
+                    Mes espaces
+                  </div>
+                  {spaces.filter(s => s.active).map(s => {
+                    // Détection espace courant via pathname (client-side)
+                    const isCurrent =
+                      s.key === 'photographer' ? (pathname?.startsWith('/dashboard/ma-fiche-photographe') ?? false)
+                      : s.key === 'cleaner'    ? (pathname?.startsWith('/dashboard/ma-fiche-menage') ?? false)
+                      : !pathname?.startsWith('/dashboard/ma-fiche-')
+                    return (
+                      <Link
+                        key={s.key}
+                        href={s.href}
+                        onClick={() => setUserMenuOpen(false)}
+                        style={{
+                          ...styles.userMenuItem,
+                          background: isCurrent ? 'rgba(255,213,107,0.08)' : 'transparent',
+                          color: isCurrent ? 'var(--accent-text)' : 'var(--text-2)',
+                          fontWeight: isCurrent ? 600 : 400,
+                        }}
+                      >
+                        <span style={{ width: 15, textAlign: 'center' as const, color: isCurrent ? 'var(--accent-text)' : 'var(--text-3)' }}>{isCurrent ? '✓' : '·'}</span>
+                        <span style={{ flex: 1, display: 'flex', flexDirection: 'column' as const }}>
+                          <span>{s.label}</span>
+                          {s.subtitle && <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 400 }}>{s.subtitle}</span>}
+                        </span>
+                      </Link>
+                    )
+                  })}
+                  {/* CTAs pour créer les fiches pro manquantes (in-app, sans ressaisir email + mdp) */}
+                  {!spaces.find(s => s.key === 'photographer')?.active && (
+                    <Link href="/dashboard/creer-fiche-photographe" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--text-3)' }}>
+                      <span style={{ width: 15, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
+                      Créer ma fiche photographe
+                    </Link>
+                  )}
+                  {!spaces.find(s => s.key === 'cleaner')?.active && (
+                    <Link href="/dashboard/creer-fiche-menage" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--text-3)' }}>
+                      <span style={{ width: 15, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
+                      Créer ma fiche équipe ménage
+                    </Link>
+                  )}
+                </>
+              )}
 
               <div style={styles.userMenuDivider} />
               <a href="https://jasonmarinho.com" target="_blank" rel="noopener noreferrer" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
