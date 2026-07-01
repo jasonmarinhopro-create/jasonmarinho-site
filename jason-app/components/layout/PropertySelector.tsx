@@ -40,8 +40,25 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
     return () => document.removeEventListener('mousedown', handler)
   }, [open])
 
-  // Cache si pas de logements (rien à choisir)
-  if (allProperties.length === 0) return null
+  // Cas "aucun logement" : au lieu de cacher le composant (l'utilisateur
+  // n'a alors AUCUN moyen d'ajouter un logement depuis la sidebar), on
+  // affiche un CTA "Ajouter mon 1er logement" qui pointe directement vers
+  // /dashboard/logements?new=1. Reste discret et utile.
+  if (allProperties.length === 0) {
+    return (
+      <div style={styles.wrap}>
+        <Link href="/dashboard/logements?new=1" style={{ ...styles.trigger, cursor: 'pointer', textDecoration: 'none' }} title="Ajouter un logement">
+          <span style={styles.ico}><House size={15} weight="duotone" /></span>
+          {!collapsed && (
+            <span style={styles.info}>
+              <span style={styles.lbl}>Logement</span>
+              <span style={{ ...styles.name, color: 'var(--accent-text)' }}>+ Ajouter mon 1er logement</span>
+            </span>
+          )}
+        </Link>
+      </div>
+    )
+  }
 
   const current = allProperties.find(p => p.id === currentId) ?? null
   const isAll = currentId === 'all' || !current

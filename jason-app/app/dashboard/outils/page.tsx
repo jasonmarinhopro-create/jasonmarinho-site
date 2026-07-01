@@ -85,8 +85,10 @@ const s: Record<string, React.CSSProperties> = {
   wrap: {
     padding: 'clamp(20px, 3vw, 44px)',
     width: '100%',
+    maxWidth: 1600,       // Limite pour ne pas s'étaler sur 4K+ (breakpoint XL)
+    margin: '0 auto',     // Centre le contenu si écran plus large que 1600px
   },
-  head: { marginBottom: 24 },
+  head: { marginBottom: 28 },
   title: {
     fontFamily: 'var(--font-fraunces), serif',
     fontSize: 'clamp(22px, 3vw, 28px)',
@@ -106,14 +108,18 @@ const s: Record<string, React.CSSProperties> = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: 14,
+    // Breakpoints via auto-fit + minmax généreux : 1 col mobile, 2 col
+    // tablette (~700px+), 4 col desktop large (~1400px+). Cards plus grandes
+    // (min 320px au lieu de 280) pour ne pas paraître ridicules sur 24".
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gap: 18,
   },
   card: {
     display: 'flex',
     alignItems: 'flex-start',
-    gap: 14,
-    padding: 18,
+    gap: 16,
+    padding: 22,
+    minHeight: 130,       // Cards de taille uniforme pour aligner la grille
     background: 'var(--surface)',
     border: '1px solid var(--border)',
     borderRadius: 'var(--r-lg)',
