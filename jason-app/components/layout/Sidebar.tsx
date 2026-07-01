@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, FileText,
-  UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
+  UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper, ListChecks,
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
@@ -40,6 +40,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
     items: [
       { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
       { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
+      // Mes reservations : entree dediee qui ouvre le calendrier directement
+      // en vue Liste (tableau plat des sejours). Meme page que Calendrier,
+      // juste un ?view=list qui active le toggle Liste au chargement.
+      { href: '/dashboard/calendrier?view=list', label: 'Mes réservations', icon: ListChecks },
       { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
       { href: '/dashboard/gabarits',    label: 'Messages',          icon: FileText },
       // Mes finances : Étape 4 — fusion à onglets Revenus / Encaissements
@@ -191,13 +195,35 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     router.push('/auth/login')
   }
 
+  const searchParams = useSearchParams()
   function NavItem({ href, label, Icon, adminColor, notifDot }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean }) {
-    // Active state : match exact pour /dashboard (sinon toutes les pages
-    // seraient "active"), sinon match prefix pour capturer les sous-routes
-    // (ex : Mes finances active sur /dashboard/finances/revenus).
-    const active = href === '/dashboard'
-      ? pathname === '/dashboard'
-      : (pathname === href || pathname.startsWith(href + '/'))
+    // Active state :
+    // - /dashboard exact (sinon toutes les pages seraient "active")
+    // - Si href contient une querystring (ex Mes reservations = /calendrier?view=list),
+    //   on compare pathname + querystring. Sinon calendrier et mes reservations
+    //   seraient toutes les deux "active" en meme temps.
+    // - Sinon match prefix pour capturer les sous-routes (ex /finances/revenus).
+    let active: boolean
+    if (href === '/dashboard') {
+      active = pathname === '/dashboard'
+    } else if (href.includes('?')) {
+      const [hrefPath, hrefQs] = href.split('?')
+      // Chaque parametre du href doit etre present tel quel dans searchParams
+      const wanted = new URLSearchParams(hrefQs)
+      let qsMatch = true
+      wanted.forEach((val, key) => { if (searchParams?.get(key) !== val) qsMatch = false })
+      active = pathname === hrefPath && qsMatch
+    } else {
+      // href sans qs : on est actif sur cette page SEULEMENT si aucun autre
+      // item de la sidebar ne pointe sur (pathname + une qs specifique). Sinon
+      // /calendrier serait actif alors qu'on est sur /calendrier?view=list.
+      const onCalendrierList = pathname === '/dashboard/calendrier' && searchParams?.get('view') === 'list'
+      if (href === '/dashboard/calendrier' && onCalendrierList) {
+        active = false
+      } else {
+        active = pathname === href || pathname.startsWith(href + '/')
+      }
+    }
     return (
       <Link
         href={href}

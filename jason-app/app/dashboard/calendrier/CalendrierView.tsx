@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
@@ -732,7 +732,11 @@ export default function CalendrierView({
   const [exportBusy, setExportBusy] = useState(false)
   const [exportCopied, setExportCopied] = useState(false)
   const exportUrl = icalTokenState ? `${appUrl}/api/calendar/feed?token=${icalTokenState}` : ''
-  const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
+  // ?view=list dans l'URL force la vue Liste au chargement (utilise par
+  // l'entree sidebar "Mes reservations" pour ouvrir directement en mode liste).
+  const searchParams = useSearchParams()
+  const initialViewMode: 'month' | 'list' = searchParams?.get('view') === 'list' ? 'list' : 'month'
+  const [viewMode, setViewMode] = useState<'month' | 'list'>(initialViewMode)
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
   // Persistance de la légende (Airbnb/Booking masqués). Sinon chaque
   // navigation reset ce que l'hôte avait décoché, frustrant.
@@ -2418,7 +2422,11 @@ export default function CalendrierView({
               const spans   = computeSpans(weekCells)
               const BAR_H   = 18
               const BAR_GAP = 3
-              const BAR_TOP = 32
+              // Offset vertical entre le numero du jour (top:8, hauteur ~22px)
+              // et le debut des barres/pills des sejours. Passe de 32 a 42
+              // pour aerer et eviter que la pastille "aujourd'hui" verte
+              // touche presque le texte du premier evenement en dessous.
+              const BAR_TOP = 42
               const nBars   = Math.min(spans.length, 2)
 
               return (
