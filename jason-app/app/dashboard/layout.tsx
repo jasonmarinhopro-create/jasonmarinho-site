@@ -76,6 +76,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
           hasStripeAccount={profile.stripe_onboarding_complete}
           allProperties={activeProperty.allProperties}
           activePropertyId={activeProperty.propertyId}
+          userName={profile.full_name ?? undefined}
+          userPlanLabel={planLabel}
+          userId={profile.userId}
         />
         <Header
           userName={profile.full_name ?? undefined}
