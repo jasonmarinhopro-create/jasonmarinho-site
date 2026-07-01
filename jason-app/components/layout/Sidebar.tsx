@@ -412,7 +412,18 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
         {/* Carte user cliquable — ouvre le menu vers le HAUT (Étape 3/7) */}
         <div ref={userMenuRef} style={styles.userWrap}>
           {userMenuOpen && (
-            <div style={styles.userMenu} role="menu">
+            <div style={{
+              ...styles.userMenu,
+              // Quand sidebar est reduite (68px), le menu doit s'ouvrir a
+              // COTE (a droite) au lieu de dessus la carte user, sinon il
+              // se retrouve compresse a ~48px avec le texte qui explose.
+              ...(collapsed ? {
+                left: 'calc(100% + 6px)',
+                right: 'auto',
+                bottom: 0,
+                width: '260px',
+              } : {}),
+            }} role="menu">
               {/* Section identité */}
               <div style={styles.userMenuHead}>
                 <div style={styles.userMenuAvatar}>

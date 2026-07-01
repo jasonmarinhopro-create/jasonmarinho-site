@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import { cache } from 'react'
+import { unstable_cache } from 'next/cache'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 
@@ -39,6 +40,26 @@ function getServiceClient() {
  * `cache()` garantit qu'on ne refait pas la query Supabase à chaque appel
  * dans le même rendu serveur (pages + layout partagent le résultat).
  */
+// PERF : la liste des logements du user (via ses 3 sources) est mise en
+// cache Next.js pendant 5 min. Elle change RAREMENT (nouveau logement =
+// action explicite via /dashboard/logements) donc pas la peine de refaire
+// 3-4 queries Supabase a chaque navigation dans le dashboard.
+// Le tag ['logements', userId] permet de revalidatePath ciblee au
+// besoin depuis les server actions create/update/delete.
+const fetchAllPropertiesForUser = (userId: string) => unstable_cache(
+  async () => {
+    const admin = getServiceClient()
+    const [ownedRes, sejoursRes, contractsRes] = await Promise.all([
+      admin.from('logements').select('id, nom, ville').eq('user_id', userId).order('created_at', { ascending: true }),
+      admin.from('sejours').select('logement').eq('user_id', userId).not('logement', 'is', null),
+      admin.from('contracts').select('logement_nom').eq('user_id', userId).not('logement_nom', 'is', null),
+    ])
+    return { ownedRes, sejoursRes, contractsRes }
+  },
+  ['active-property-data', userId],
+  { revalidate: 300, tags: [`logements:${userId}`] },
+)()
+
 export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -46,22 +67,11 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
     return { propertyId: ALL_PROPERTIES, property: null, allProperties: [] }
   }
 
+  // Les 3 queries sont en cache Next.js (revalidate 5 min). La query de
+  // matching par NOM (namesToFetch) reste hors-cache car les noms sont
+  // dynamiques, mais elle n'appelle Supabase que si c'est necessaire.
   const admin = getServiceClient()
-
-  // On lance les 3 queries en parallele : logements(user_id),
-  // sejours(user_id) et contracts(user_id). Puis on merge :
-  //   1. Tous les logements dont user_id = current user (source primaire)
-  //   2. Plus les vrais logements dont le NOM matche un sejour/contract
-  //      du user (couvre les cas legacy ou user_id est different sur
-  //      logements pour raison historique/migration)
-  //   3. Enfin, les noms sans match DB → virtual: pour au moins afficher.
-  // Ceci garantit que Casa Do Peidreiro est TOUJOURS trouve avec son vrai
-  // UUID des qu'il existe en DB, meme si les user_id sont desynchronises.
-  const [ownedRes, sejoursRes, contractsRes] = await Promise.all([
-    admin.from('logements').select('id, nom, ville').eq('user_id', user.id).order('created_at', { ascending: true }),
-    admin.from('sejours').select('logement').eq('user_id', user.id).not('logement', 'is', null),
-    admin.from('contracts').select('logement_nom').eq('user_id', user.id).not('logement_nom', 'is', null),
-  ])
+  const { ownedRes, sejoursRes, contractsRes } = await fetchAllPropertiesForUser(user.id)
 
   const allProperties: PropertyLite[] = []
   const seenIds = new Set<string>()
