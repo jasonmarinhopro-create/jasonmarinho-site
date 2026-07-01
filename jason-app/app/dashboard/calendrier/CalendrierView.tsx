@@ -957,11 +957,22 @@ export default function CalendrierView({
   // le choix de l'utilisateur (défaut : 'month', overridable mobile via le toggle).
   useEffect(() => {
     if (typeof window === 'undefined') return
+    // ?view= dans l'URL prend TOUJOURS la priorite sur le localStorage.
+    // - Si Jason clique "Mes reservations" (/calendrier?view=list) depuis
+    //   /calendrier (Mois) : searchParams change → viewMode passe a 'list'
+    // - Si Jason clique "Calendrier" (/calendrier) depuis Mes reservations :
+    //   searchParams n'a plus ?view= → on retombe sur la derniere pref
+    //   localStorage (souvent 'month' pour eux).
+    const urlView = searchParams?.get('view')
+    if (urlView === 'list' || urlView === 'month') {
+      setViewMode(urlView)
+      return
+    }
     try {
       const saved = window.localStorage.getItem('cal-view-mode')
       if (saved === 'month' || saved === 'list') setViewMode(saved)
     } catch {}
-  }, [])
+  }, [searchParams])
 
   // Persiste le choix de mode quand l'utilisateur switch
   useEffect(() => {
