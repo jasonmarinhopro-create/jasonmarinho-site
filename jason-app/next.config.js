@@ -33,6 +33,13 @@ const nextConfig = {
       { source: '/dashboard/chez-nous', destination: '/dashboard/entre-hotes/forum', permanent: false },
       { source: '/dashboard/communaute', destination: '/dashboard/entre-hotes/groupes-facebook', permanent: false },
       { source: '/dashboard/ecosysteme', destination: '/dashboard/entre-hotes/ecosysteme', permanent: false },
+      // Reservations : la vue Liste est detachee en page dediee
+      // /dashboard/reservations (Etape 7bis). L'ancienne URL avec
+      // ?view=list continuait a fonctionner mais on redirige pour
+      // que les bookmarks/liens pointent vers la nouvelle destination.
+      // NB : Next.js redirects() ne matche pas la querystring dans le
+      // path — utilise has+value.
+      { source: '/dashboard/calendrier', has: [{ type: 'query', key: 'view', value: 'list' }], destination: '/dashboard/reservations', permanent: false },
     ]
   },
 
