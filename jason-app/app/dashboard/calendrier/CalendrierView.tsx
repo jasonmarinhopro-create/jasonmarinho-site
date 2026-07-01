@@ -2422,7 +2422,11 @@ export default function CalendrierView({
               const spans   = computeSpans(weekCells)
               const BAR_H   = 18
               const BAR_GAP = 3
-              const BAR_TOP = 32
+              // Offset vertical entre le numero du jour (top:8, hauteur ~22px)
+              // et le debut des barres/pills des sejours. Passe de 32 a 42
+              // pour aerer et eviter que la pastille "aujourd'hui" verte
+              // touche presque le texte du premier evenement en dessous.
+              const BAR_TOP = 42
               const nBars   = Math.min(spans.length, 2)
 
               return (
