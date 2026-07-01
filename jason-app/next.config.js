@@ -17,6 +17,13 @@ const nextConfig = {
       { source: '/cgv', destination: 'https://jasonmarinho.com/cgvu', permanent: true },
       { source: '/mentions-legales', destination: 'https://jasonmarinho.com/mentions-legales', permanent: true },
       { source: '/politique-de-confidentialite', destination: 'https://jasonmarinho.com/politique-de-confidentialite', permanent: true },
+      // Étape 4/7 refactor : fusion Revenus + Encaissements + Performances
+      // sous /dashboard/finances. Les anciennes URLs redirigent vers les
+      // nouveaux onglets (307 temporaire pour permettre un rollback rapide
+      // si besoin — à passer en 308 permanent une fois validé en prod).
+      { source: '/dashboard/revenus', destination: '/dashboard/finances/revenus', permanent: false },
+      { source: '/dashboard/encaissements', destination: '/dashboard/finances/encaissements', permanent: false },
+      { source: '/dashboard/performances', destination: '/dashboard/finances/performances', permanent: false },
     ]
   },
 

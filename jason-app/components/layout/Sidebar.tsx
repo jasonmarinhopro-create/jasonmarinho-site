@@ -42,11 +42,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
       { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
       { href: '/dashboard/gabarits',    label: 'Messages',          icon: FileText },
-      // Mes finances → pointera vers /dashboard/finances à l'Étape 4.
-      // En attendant, on cible /dashboard/revenus (page existante) pour ne
-      // rien casser. Encaissements + Performances restent accessibles via
-      // leur URL directe.
-      { href: '/dashboard/revenus',     label: 'Mes finances',      icon: ChartBar },
+      // Mes finances : Étape 4 — fusion à onglets Revenus / Encaissements
+      // / Performances. Le lien pointe vers la racine /dashboard/finances
+      // qui redirige sur l'onglet Revenus par défaut.
+      { href: '/dashboard/finances',    label: 'Mes finances',      icon: ChartBar },
       { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
       { href: '/dashboard/securite',    label: 'Sécurité voyageur', icon: ShieldCheck },
     ],
@@ -173,7 +172,12 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   }
 
   function NavItem({ href, label, Icon, adminColor, notifDot }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean }) {
-    const active = pathname === href
+    // Active state : match exact pour /dashboard (sinon toutes les pages
+    // seraient "active"), sinon match prefix pour capturer les sous-routes
+    // (ex : Mes finances active sur /dashboard/finances/revenus).
+    const active = href === '/dashboard'
+      ? pathname === '/dashboard'
+      : (pathname === href || pathname.startsWith(href + '/'))
     return (
       <Link
         href={href}
