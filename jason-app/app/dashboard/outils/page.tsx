@@ -83,7 +83,7 @@ export default function OutilsHubPage() {
 
 const s: Record<string, React.CSSProperties> = {
   wrap: {
-    padding: 'clamp(20px, 3vw, 44px)',
+    padding: 'var(--dash-page-px)',
     width: '100%',
     maxWidth: 1600,       // Limite pour ne pas s'étaler sur 4K+ (breakpoint XL)
     margin: '0 auto',     // Centre le contenu si écran plus large que 1600px

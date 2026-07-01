@@ -152,7 +152,7 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  wrap: { position: 'relative', marginTop: '8px' },
+  wrap: { position: 'relative', marginTop: '8px', marginBottom: '10px' },
   trigger: {
     display: 'flex', alignItems: 'center', gap: '10px',
     width: '100%', padding: '8px 10px',

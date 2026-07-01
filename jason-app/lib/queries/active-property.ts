@@ -58,6 +58,27 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
     ville: r.ville ?? null,
   }))
 
+  // Fallback : certains utilisateurs (dont admins & anciens users) n'ont
+  // pas de row formelle dans `logements` mais renseignent le nom du logement
+  // en texte libre dans `sejours.logement` ou `contracts.logement_nom`.
+  // Si la table logements ne renvoie rien, on aggrège les noms distincts
+  // de sejours + contracts et on synthétise des pseudo-logements avec un id
+  // stable prefixé "virtual:" (le filtre downstream doit gérer ce cas ou
+  // fallback sur 'all'). Ça garantit que le sélecteur affiche toujours
+  // quelque chose d'utile.
+  if (allProperties.length === 0) {
+    const [sejoursRes, contractsRes] = await Promise.all([
+      admin.from('sejours').select('logement').eq('user_id', user.id).not('logement', 'is', null),
+      admin.from('contracts').select('logement_nom').eq('user_id', user.id).not('logement_nom', 'is', null),
+    ])
+    const distinctNames = new Set<string>()
+    ;(sejoursRes.data ?? []).forEach(r => { if (r.logement) distinctNames.add(String(r.logement).trim()) })
+    ;(contractsRes.data ?? []).forEach(r => { if (r.logement_nom) distinctNames.add(String(r.logement_nom).trim()) })
+    Array.from(distinctNames).filter(Boolean).forEach(nom => {
+      allProperties.push({ id: `virtual:${nom}`, nom, ville: null })
+    })
+  }
+
   const cookieStore = await cookies()
   const cookieVal = cookieStore.get(ACTIVE_PROPERTY_COOKIE)?.value ?? ALL_PROPERTIES
 
