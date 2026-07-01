@@ -9,6 +9,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import type { Reservation, LogementLite, Platform, ReservationStatus } from './types'
 import { PLATFORM_META } from './types'
+import Select, { type SelectOption } from '@/components/ui/Select'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -233,23 +234,40 @@ export default function ReservationsView({ reservations, logements }: Props) {
               <button onClick={() => setSearch('')} style={s.searchClear} title="Effacer"><X size={12} /></button>
             )}
           </div>
-          <select value={platform} onChange={e => setPlatform(e.target.value as any)} style={s.select}>
-            {platforms.map(p => (
-              <option key={p} value={p}>{p === 'all' ? 'Toutes plateformes' : PLATFORM_META[p as Platform].label}</option>
-            ))}
-          </select>
+          {/* Selects custom <Select> = dark theme coherent, plus des <select>
+              natifs qui ignorent le CSS et rendent un dropdown blanc illisible */}
+          <Select<Platform | 'all'>
+            value={platform}
+            onChange={setPlatform}
+            options={platforms.map(p => ({
+              value: p,
+              label: p === 'all' ? 'Toutes plateformes' : PLATFORM_META[p as Platform].label,
+              hint: p !== 'all' ? <span style={{ width: 8, height: 8, borderRadius: '50%', background: PLATFORM_META[p as Platform].color, display: 'inline-block' }} /> : null,
+            } satisfies SelectOption<Platform | 'all'>))}
+            ariaLabel="Filtrer par plateforme"
+          />
           {logements.length > 1 && (
-            <select value={logementId} onChange={e => setLogementId(e.target.value)} style={s.select}>
-              <option value="all">Tous logements</option>
-              {logements.map(l => <option key={l.id} value={l.id}>{l.nom}</option>)}
-            </select>
+            <Select
+              value={logementId}
+              onChange={setLogementId}
+              options={[
+                { value: 'all', label: 'Tous logements' },
+                ...logements.map(l => ({ value: l.id, label: l.nom })),
+              ]}
+              ariaLabel="Filtrer par logement"
+            />
           )}
-          <select value={sort} onChange={e => setSort(e.target.value as SortKey)} style={s.select}>
-            <option value="arrival-asc">Arrivée ↑</option>
-            <option value="arrival-desc">Arrivée ↓</option>
-            <option value="amount-desc">Montant ↓</option>
-            <option value="nights-desc">Nuits ↓</option>
-          </select>
+          <Select<SortKey>
+            value={sort}
+            onChange={setSort}
+            options={[
+              { value: 'arrival-asc',  label: 'Arrivée ↑' },
+              { value: 'arrival-desc', label: 'Arrivée ↓' },
+              { value: 'amount-desc',  label: 'Montant ↓' },
+              { value: 'nights-desc',  label: 'Nuits ↓' },
+            ]}
+            ariaLabel="Trier par"
+          />
           <div style={s.viewToggle}>
             <button onClick={() => setView('cards')} style={{ ...s.viewBtn, ...(view === 'cards' ? s.viewBtnActive : {}) }} title="Vue cartes"><SquaresFour size={13} weight={view === 'cards' ? 'fill' : 'regular'} /></button>
             <button onClick={() => setView('table')} style={{ ...s.viewBtn, ...(view === 'table' ? s.viewBtnActive : {}) }} title="Vue tableau"><Rows size={13} weight={view === 'table' ? 'fill' : 'regular'} /></button>
@@ -570,7 +588,8 @@ const s: Record<string, React.CSSProperties> = {
   searchWrap: { display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 9, flex: 1, minWidth: 220 },
   searchInput: { border: 'none', background: 'transparent', outline: 'none', color: 'var(--text)', fontSize: 13, fontFamily: 'inherit', width: '100%' },
   searchClear: { background: 'none', border: 'none', color: 'var(--text-3)', cursor: 'pointer', padding: 2, display: 'flex' },
-  select: { padding: '7px 10px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 9, color: 'var(--text-2)', fontSize: 12.5, fontFamily: 'inherit', cursor: 'pointer' },
+  /* Le style .select natif a ete retire — remplace par <Select> custom
+     dans components/ui/Select.tsx qui gere le dropdown en dark theme. */
   viewToggle: { display: 'flex', border: '1px solid var(--border)', borderRadius: 9, background: 'var(--surface)', padding: 2 },
   viewBtn: { padding: '6px 10px', background: 'transparent', border: 'none', color: 'var(--text-3)', cursor: 'pointer', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' },
   viewBtnActive: { background: 'var(--accent-bg)', color: 'var(--accent-text)' },
