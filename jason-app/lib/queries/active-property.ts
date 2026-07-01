@@ -47,61 +47,64 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
   }
 
   const admin = getServiceClient()
-  const { data: rows } = await admin
-    .from('logements')
-    .select('id, nom, ville')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: true })
-  const allProperties: PropertyLite[] = (rows ?? []).map(r => ({
-    id: r.id,
-    nom: r.nom ?? 'Sans nom',
-    ville: r.ville ?? null,
-  }))
 
-  // Fallback : si la table logements ne renvoie rien avec user_id, on
-  // aggrège les noms depuis sejours + contracts, puis on essaie de
-  // matcher ces noms avec des rows REELLES de la table logements (sans
-  // filtre user_id — utile pour les admins et anciens comptes dont les
-  // logements ont un user_id different, cas legacy). Le nom en base est
-  // typiquement unique donc le match est fiable.
-  // Si aucun match trouve, on tombe sur des pseudo-logements virtuels
-  // (id prefixe "virtual:") pour au moins afficher quelque chose.
-  if (allProperties.length === 0) {
-    const [sejoursRes, contractsRes] = await Promise.all([
-      admin.from('sejours').select('logement').eq('user_id', user.id).not('logement', 'is', null),
-      admin.from('contracts').select('logement_nom').eq('user_id', user.id).not('logement_nom', 'is', null),
-    ])
-    const distinctNames = new Set<string>()
-    ;(sejoursRes.data ?? []).forEach(r => { if (r.logement) distinctNames.add(String(r.logement).trim()) })
-    ;(contractsRes.data ?? []).forEach(r => { if (r.logement_nom) distinctNames.add(String(r.logement_nom).trim()) })
-    const names = Array.from(distinctNames).filter(Boolean)
+  // On lance les 3 queries en parallele : logements(user_id),
+  // sejours(user_id) et contracts(user_id). Puis on merge :
+  //   1. Tous les logements dont user_id = current user (source primaire)
+  //   2. Plus les vrais logements dont le NOM matche un sejour/contract
+  //      du user (couvre les cas legacy ou user_id est different sur
+  //      logements pour raison historique/migration)
+  //   3. Enfin, les noms sans match DB → virtual: pour au moins afficher.
+  // Ceci garantit que Casa Do Peidreiro est TOUJOURS trouve avec son vrai
+  // UUID des qu'il existe en DB, meme si les user_id sont desynchronises.
+  const [ownedRes, sejoursRes, contractsRes] = await Promise.all([
+    admin.from('logements').select('id, nom, ville').eq('user_id', user.id).order('created_at', { ascending: true }),
+    admin.from('sejours').select('logement').eq('user_id', user.id).not('logement', 'is', null),
+    admin.from('contracts').select('logement_nom').eq('user_id', user.id).not('logement_nom', 'is', null),
+  ])
 
-    if (names.length > 0) {
-      // Cherche les vrais UUIDs correspondants dans la table logements
-      // (sans filtre user_id). Permet a un clic sur "Casa Do Peidreiro"
-      // de router vers /dashboard/logements/{vrai-uuid} au lieu de
-      // /dashboard/logements (liste).
-      const { data: matched } = await admin
-        .from('logements')
-        .select('id, nom, ville')
-        .in('nom', names)
-      const foundNames = new Set<string>()
-      ;(matched ?? []).forEach(r => {
-        allProperties.push({
-          id: r.id,
-          nom: r.nom ?? 'Sans nom',
-          ville: r.ville ?? null,
-        })
-        if (r.nom) foundNames.add(r.nom.trim())
-      })
-      // Pour les noms qui n'ont AUCUN match en DB, id virtuel de secours
-      names.forEach(nom => {
-        if (!foundNames.has(nom)) {
-          allProperties.push({ id: `virtual:${nom}`, nom, ville: null })
-        }
-      })
-    }
+  const allProperties: PropertyLite[] = []
+  const seenIds = new Set<string>()
+  const addLogement = (r: { id: string; nom: string | null; ville: string | null }) => {
+    if (seenIds.has(r.id)) return
+    seenIds.add(r.id)
+    allProperties.push({ id: r.id, nom: r.nom ?? 'Sans nom', ville: r.ville ?? null })
   }
+
+  // 1. Logements possedes (user_id match)
+  ;(ownedRes.data ?? []).forEach(addLogement)
+
+  // 2. Noms distincts depuis sejours + contracts du user
+  const distinctNames = new Set<string>()
+  ;(sejoursRes.data ?? []).forEach(r => { if (r.logement) distinctNames.add(String(r.logement).trim()) })
+  ;(contractsRes.data ?? []).forEach(r => { if (r.logement_nom) distinctNames.add(String(r.logement_nom).trim()) })
+  const names = Array.from(distinctNames).filter(Boolean)
+
+  // 2b. Cherche les vrais UUIDs pour ces noms (sans filtre user_id)
+  const foundNames = new Set<string>()
+  ;(ownedRes.data ?? []).forEach(r => { if (r.nom) foundNames.add(r.nom.trim()) })
+  const namesToFetch = names.filter(n => !foundNames.has(n))
+  if (namesToFetch.length > 0) {
+    const { data: matched } = await admin
+      .from('logements')
+      .select('id, nom, ville')
+      .in('nom', namesToFetch)
+    ;(matched ?? []).forEach(r => {
+      addLogement(r)
+      if (r.nom) foundNames.add(r.nom.trim())
+    })
+  }
+
+  // 3. Noms sans aucun match en DB → virtual: pour affichage seulement
+  names.forEach(nom => {
+    if (!foundNames.has(nom)) {
+      const virtualId = `virtual:${nom}`
+      if (!seenIds.has(virtualId)) {
+        seenIds.add(virtualId)
+        allProperties.push({ id: virtualId, nom, ville: null })
+      }
+    }
+  })
 
   const cookieStore = await cookies()
   const cookieVal = cookieStore.get(ACTIVE_PROPERTY_COOKIE)?.value ?? ALL_PROPERTIES
