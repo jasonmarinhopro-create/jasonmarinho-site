@@ -73,16 +73,26 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
   const hasMultiple = allProperties.length > 1
 
   async function pick(id: string) {
-    if (id === currentId) { setOpen(false); return }
     setBusy(true)
     try {
+      // Persiste le cookie du logement actif (filtre dashboard)
       await fetch('/api/me/active-property', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ propertyId: id }),
       })
       setOpen(false)
-      router.refresh()
+      // Comportement selon le type :
+      // - 'all' : reste sur la page courante, refresh pour appliquer le filtre
+      // - 'virtual:xxx' : logement non-persisté en DB → va sur la liste
+      // - UUID réel : ouvre directement la page detail du logement
+      if (id === 'all') {
+        router.refresh()
+      } else if (id.startsWith('virtual:')) {
+        router.push('/dashboard/logements')
+      } else {
+        router.push(`/dashboard/logements/${id}`)
+      }
     } finally {
       setBusy(false)
     }
@@ -162,7 +172,13 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  wrap: { position: 'relative', marginTop: '12px', marginBottom: '14px' },
+  wrap: {
+    position: 'relative',
+    marginTop: '12px', marginBottom: '14px',
+    // Padding horizontal pour que le bouton ne soit pas collé aux bords
+    // de la sidebar (rendait le look "colle" et moche).
+    marginLeft: '8px', marginRight: '8px',
+  },
   trigger: {
     display: 'flex', alignItems: 'center', gap: '12px',
     width: '100%', padding: '12px 14px',       // Padding généreux → look bouton

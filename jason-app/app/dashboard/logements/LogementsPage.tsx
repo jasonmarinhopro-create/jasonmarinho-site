@@ -177,12 +177,21 @@ export default function LogementsPage({ logements: initial }: Props) {
   // Avec ?from=detail, on masque la liste sous-jacente et on retourne à la fiche après fermeture.
   const fromDetail = searchParams.get('from') === 'detail'
   const editIdFromUrl = searchParams.get('edit')
+  // ?new=1 : ouvre directement la modal de creation (utilise par le
+  // selecteur de logement en sidebar : "+ Ajouter un logement" doit
+  // atterrir directement dans le formulaire, sans clic supplementaire).
+  const isNewFromUrl = searchParams.get('new') === '1'
   useEffect(() => {
-    if (!editIdFromUrl) return
-    const target = logements.find(l => l.id === editIdFromUrl)
-    if (target) openEdit(target)
-    // En mode "from=detail" on garde l'URL pour pouvoir revenir à la fiche à la fermeture.
-    if (!fromDetail) router.replace('/dashboard/logements')
+    if (editIdFromUrl) {
+      const target = logements.find(l => l.id === editIdFromUrl)
+      if (target) openEdit(target)
+      if (!fromDetail) router.replace('/dashboard/logements')
+      return
+    }
+    if (isNewFromUrl) {
+      openCreate()
+      router.replace('/dashboard/logements')
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

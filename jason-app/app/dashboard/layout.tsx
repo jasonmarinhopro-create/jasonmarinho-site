@@ -92,6 +92,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
           showOnboardingBtn={showOnboarding}
           hasStripeAccount={profile.stripe_onboarding_complete}
           spaces={spacesResult.spaces}
+          // Forwarded to mobile drawer Sidebar (via Header) — sinon menu user mobile
+          // affiche "Mon compte / Découverte" au lieu du vrai profil
+          isContributor={profile.is_contributor ?? false}
+          allProperties={activeProperty.allProperties}
+          activePropertyId={activeProperty.propertyId}
         />
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>
