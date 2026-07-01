@@ -90,24 +90,33 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
   ;(contractsRes.data ?? []).forEach(r => { if (r.logement_nom) distinctNames.add(String(r.logement_nom).trim()) })
   const names = Array.from(distinctNames).filter(Boolean)
 
-  // 2b. Cherche les vrais UUIDs pour ces noms (sans filtre user_id)
+  // 2b. Cherche les vrais UUIDs pour ces noms (sans filtre user_id).
+  // Match INSENSIBLE A LA CASSE via ilike (le .in() precedent echouait
+  // sur "casa do peidreiro" vs "Casa Do Peidreiro" — casse differente
+  // entre la row logements et le sejour.logement).
   const foundNames = new Set<string>()
-  ;(ownedRes.data ?? []).forEach(r => { if (r.nom) foundNames.add(r.nom.trim()) })
-  const namesToFetch = names.filter(n => !foundNames.has(n))
+  ;(ownedRes.data ?? []).forEach(r => { if (r.nom) foundNames.add(r.nom.trim().toLowerCase()) })
+  const namesToFetch = names.filter(n => !foundNames.has(n.toLowerCase()))
   if (namesToFetch.length > 0) {
-    const { data: matched } = await admin
-      .from('logements')
-      .select('id, nom, ville')
-      .in('nom', namesToFetch)
-    ;(matched ?? []).forEach(r => {
-      addLogement(r)
-      if (r.nom) foundNames.add(r.nom.trim())
+    const admin2 = getServiceClient()
+    // 1 query par nom (typiquement 1-3 noms), avec ilike case-insensitive
+    const results = await Promise.all(
+      namesToFetch.map(nom =>
+        admin2.from('logements').select('id, nom, ville').ilike('nom', nom).limit(1).maybeSingle()
+      )
+    )
+    results.forEach(({ data: r }) => {
+      if (r) {
+        addLogement(r)
+        if (r.nom) foundNames.add(r.nom.trim().toLowerCase())
+      }
     })
   }
 
   // 3. Noms sans aucun match en DB → virtual: pour affichage seulement
+  // (match case-insensitive pour rester coherent avec .ilike ci-dessus)
   names.forEach(nom => {
-    if (!foundNames.has(nom)) {
+    if (!foundNames.has(nom.toLowerCase())) {
       const virtualId = `virtual:${nom}`
       if (!seenIds.has(virtualId)) {
         seenIds.add(virtualId)
