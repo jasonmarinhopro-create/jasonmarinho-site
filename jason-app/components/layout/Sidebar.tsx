@@ -53,9 +53,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
   {
     label: 'Faire grandir mon activité',
     items: [
-      // Outils & calculs → pointera vers /dashboard/outils (hub) à l'Étape 5.
-      // En attendant, /dashboard/simulateurs.
-      { href: '/dashboard/simulateurs', label: 'Outils & calculs', icon: Calculator },
+      // Outils & calculs (Étape 5) : hub avec 4 cartes vers les outils
+      // utilitaires (Simulateurs, Calculateurs, Audit GBP, QR & Affiches).
+      // Les URLs individuelles restent accessibles directement.
+      { href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator },
       // Apprendre → onglets Formations + Guide LCD à l'Étape 6.
       { href: '/dashboard/formations',  label: 'Apprendre',        icon: GraduationCap },
       // Entre Hôtes → onglets Forum + Groupes FB + Écosystème à l'Étape 6.
