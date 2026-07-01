@@ -1140,6 +1140,13 @@ a { color: inherit; }
   border-color: var(--accent-border) !important;
   box-shadow: 0 8px 24px rgba(0, 76, 63, 0.06);
 }
+
+/* Cartes reservation enrichies dans la vue Liste du Calendrier */
+.jm-resa-card:hover {
+  border-color: var(--accent-border) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 76, 63, 0.05);
+}
 .dash-sidebar > nav {
   /* iOS Safari : flex + overflow auto exige min-height: 0 sur le child
      ET une hauteur définie pour le parent (déjà fait sur .dash-sidebar) */

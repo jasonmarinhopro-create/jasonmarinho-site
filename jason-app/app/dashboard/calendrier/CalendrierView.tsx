@@ -272,6 +272,11 @@ function fmtDate(dateStr: string) {
 
 function fmtTime(t: string) { return t.slice(0, 5) }
 function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1) }
+// Format date court pour les cartes reservation : "1 juil" au lieu de "2026-07-01"
+function fmtShortDate(d: string) {
+  const [y, m, dd] = d.split('-').map(Number)
+  return new Date(y, m - 1, dd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+}
 
 // ─── Vue liste : événements chronologiques à venir ─────────────────────────
 
@@ -303,36 +308,52 @@ function ListView({ byDate, today, icalFeeds, onSelect, onSelectSejour }: ListVi
     return { main: main.charAt(0).toUpperCase() + main.slice(1), rel, isPast: diffDays < 0, isToday: diffDays === 0 }
   }
 
+  // Utilitaires reservation
+  function initials(name: string) {
+    return name.split(/\s+/).filter(Boolean).map(w => w[0]).join('').toUpperCase().slice(0, 2)
+  }
+  function nightsBetween(from: string, to: string) {
+    return Math.max(0, Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000))
+  }
+  // Detection source depuis le label du voyageur (nos systemes prefixent parfois
+  // avec la plateforme, ex "Yousef Airbnb", "Ricardo Booking"). Fallback direct.
+  function detectSource(label: string): { key: string; label: string; color: string } {
+    const l = label.toLowerCase()
+    if (l.includes('airbnb')) return { key: 'airbnb', label: 'Airbnb', color: '#FF385C' }
+    if (l.includes('booking')) return { key: 'booking', label: 'Booking', color: '#003580' }
+    if (l.includes('driing')) return { key: 'driing', label: 'Driing', color: '#FFD56B' }
+    if (l.includes('vrbo') || l.includes('abritel')) return { key: 'vrbo', label: 'VRBO', color: '#0072ce' }
+    return { key: 'direct', label: 'Direct', color: '#63D683' }
+  }
+  function sejourStatus(dateArrivee: string, dateDepart: string): { label: string; color: string } {
+    if (dateDepart < today) return { label: 'Terminé', color: 'var(--text-muted)' }
+    if (dateArrivee <= today && dateDepart >= today) return { label: 'En cours', color: '#63D683' }
+    return { label: 'À venir', color: 'var(--accent-text)' }
+  }
+
   function renderDay(d: string) {
     const day = byDate[d]
     if (!day) return null
     const { main, rel, isPast, isToday } = dayLabel(d)
-    const items: Array<{ id: string; title: string; color: string; subtitle?: string; onClick?: () => void; tag?: string }> = []
+
+    // Sejours enrichis : rendu dedie avec beaucoup plus d'infos hote
+    const richSejours = day.sejours.filter(s => s.date_arrivee === d)
+
+    // Autres events : contracts (arrivee/depart), ical (synchro), custom
+    const otherItems: Array<{ id: string; title: string; color: string; subtitle?: string; onClick?: () => void; tag?: string }> = []
     day.contracts.forEach(c => {
-      items.push({
+      otherItems.push({
         id: c.id,
         title: c.title,
         color: (CAT[c.type] ?? CAT.note).color,
         subtitle: c.logement_nom ?? undefined,
-        tag: 'Séjour',
+        tag: c.type === 'arrivee' ? 'Contrat · Arrivée' : c.type === 'depart' ? 'Contrat · Départ' : 'Contrat',
         onClick: () => onSelect(d, c),
-      })
-    })
-    day.sejours.forEach(s => {
-      // N'affiche que le jour d'arrivée pour éviter le bruit (un séjour de 7j ne ferait pas 7 lignes)
-      if (s.date_arrivee !== d) return
-      items.push({
-        id: `sejour-${s.id}`,
-        title: `${s.voyageur_label} · ${s.logement_label}`,
-        color: CAT.sejour.color,
-        subtitle: `Du ${s.date_arrivee} au ${s.date_depart}${s.montant ? ` · ${s.montant} €` : ''}`,
-        tag: 'Séjour',
-        onClick: () => { if (s.voyageur_id) onSelectSejour(s.voyageur_id) },
       })
     })
     day.ical.forEach(e => {
       const feed = icalFeeds.find(f => f.id === e.feed_id)
-      items.push({
+      otherItems.push({
         id: `ical-${e.id}`,
         title: e.title,
         color: e.feed_color,
@@ -343,7 +364,7 @@ function ListView({ byDate, today, icalFeeds, onSelect, onSelectSejour }: ListVi
     })
     day.custom.filter(e => !e.end_date || e.end_date === e.date).forEach(e => {
       const cat = CAT[e.category] ?? CAT.note
-      items.push({
+      otherItems.push({
         id: e.id,
         title: e.title,
         color: cat.color,
@@ -352,16 +373,69 @@ function ListView({ byDate, today, icalFeeds, onSelect, onSelectSejour }: ListVi
         onClick: () => onSelect(d),
       })
     })
-    if (items.length === 0) return null
+
+    if (richSejours.length === 0 && otherItems.length === 0) return null
 
     return (
-      <div key={d} style={{ ...lvs.dayBlock, opacity: isPast ? 0.55 : 1 }}>
+      <div key={d} style={{ ...lvs.dayBlock, opacity: isPast ? 0.6 : 1 }}>
         <div style={lvs.dayHeader}>
           <span style={lvs.dayMain}>{main}</span>
           <span style={{ ...lvs.dayRel, color: isToday ? 'var(--accent-text)' : 'var(--text-muted)' }}>{rel}</span>
         </div>
+
+        {/* Cartes reservations enrichies (sejours) */}
         <div style={lvs.itemsList}>
-          {items.map(it => (
+          {richSejours.map(s => {
+            const source = detectSource(s.voyageur_label)
+            const nights = nightsBetween(s.date_arrivee, s.date_depart)
+            const status = sejourStatus(s.date_arrivee, s.date_depart)
+            const perNight = s.montant && nights > 0 ? Math.round(s.montant / nights) : null
+            // Nom voyageur nettoye (retire les suffixes de source pour l'affichage)
+            const cleanName = s.voyageur_label.replace(/\s*(Airbnb|Booking|Driing|VRBO|Abritel)\s*$/i, '').trim() || s.voyageur_label
+            return (
+              <button
+                key={`sejour-${s.id}`}
+                onClick={() => { if (s.voyageur_id) onSelectSejour(s.voyageur_id) }}
+                style={lvs.resaCard}
+                className="jm-resa-card"
+              >
+                {/* Bandeau accent source */}
+                <span style={{ ...lvs.resaAccent, background: source.color }} />
+                <span style={lvs.resaAvatar}>{initials(cleanName)}</span>
+                <span style={lvs.resaBody}>
+                  <span style={lvs.resaTopRow}>
+                    <span style={lvs.resaName}>{cleanName}</span>
+                    <span style={{ ...lvs.resaBadge, color: source.color, background: `${source.color}1a`, border: `1px solid ${source.color}33` }}>
+                      {source.label}
+                    </span>
+                    <span style={{ ...lvs.resaBadge, color: status.color, background: 'transparent', border: `1px solid ${status.color}55` }}>
+                      {status.label}
+                    </span>
+                  </span>
+                  <span style={lvs.resaMeta}>
+                    <span style={lvs.resaLogement}>🏠 {s.logement_label}</span>
+                  </span>
+                  <span style={lvs.resaDates}>
+                    <span>Arrivée <strong>{fmtShortDate(s.date_arrivee)}</strong></span>
+                    <span style={lvs.resaSep}>→</span>
+                    <span>Départ <strong>{fmtShortDate(s.date_depart)}</strong></span>
+                    <span style={lvs.resaSep}>·</span>
+                    <span>{nights} nuit{nights > 1 ? 's' : ''}</span>
+                    {s.montant && (
+                      <>
+                        <span style={lvs.resaSep}>·</span>
+                        <span style={lvs.resaMontant}>{s.montant.toLocaleString('fr-FR')} €</span>
+                        {perNight && <span style={lvs.resaPerNight}>({perNight}€/nuit)</span>}
+                      </>
+                    )}
+                  </span>
+                </span>
+              </button>
+            )
+          })}
+
+          {/* Autres events : rendu compact d'origine */}
+          {otherItems.map(it => (
             <button key={it.id} onClick={it.onClick} style={lvs.item}>
               <span style={{ ...lvs.itemDot, background: it.color }} />
               <span style={lvs.itemBody}>
@@ -483,6 +557,73 @@ const lvs: Record<string, React.CSSProperties> = {
     flexShrink: 0,
     letterSpacing: '0.3px',
   },
+  // ── Carte reservation enrichie (sejour) ──
+  resaCard: {
+    position: 'relative' as const,
+    display: 'flex', alignItems: 'flex-start', gap: '12px',
+    padding: '14px 14px 14px 18px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '11px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left' as const,
+    width: '100%',
+    color: 'var(--text)',
+    overflow: 'hidden' as const,
+    transition: 'transform 0.15s var(--ease-spring), border-color 0.15s',
+  },
+  resaAccent: {
+    position: 'absolute' as const, top: 0, left: 0, bottom: 0,
+    width: '4px',
+  },
+  resaAvatar: {
+    width: '38px', height: '38px', flexShrink: 0,
+    borderRadius: '50%',
+    background: 'rgba(255,213,107,0.14)',
+    border: '1px solid var(--accent-border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '13px', fontWeight: 600,
+    fontFamily: 'var(--font-fraunces), serif',
+    color: 'var(--accent-text)',
+    letterSpacing: '0.3px',
+  },
+  resaBody: {
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    flex: 1, minWidth: 0,
+  },
+  resaTopRow: {
+    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+  },
+  resaName: {
+    fontSize: '14px', fontWeight: 600,
+    color: 'var(--text)',
+    fontFamily: 'var(--font-fraunces), serif',
+    letterSpacing: '-0.01em',
+  },
+  resaBadge: {
+    fontSize: '10px', fontWeight: 700,
+    padding: '2px 8px', borderRadius: '100px',
+    letterSpacing: '0.4px',
+    textTransform: 'uppercase' as const,
+  },
+  resaMeta: {
+    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+    fontSize: '12px',
+    color: 'var(--text-muted)',
+  },
+  resaLogement: {
+    fontSize: '12px', color: 'var(--text-2)', fontWeight: 500,
+  },
+  resaDates: {
+    display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' as const,
+    fontSize: '12px',
+    color: 'var(--text-3)',
+    marginTop: '2px',
+  },
+  resaSep: { color: 'var(--text-muted)', opacity: 0.6 },
+  resaMontant: { color: 'var(--accent-text)', fontWeight: 600 },
+  resaPerNight: { color: 'var(--text-muted)', fontSize: '11px' },
 }
 
 // ─── Searchable combobox for voyageur / logement ─────────────────────────────
