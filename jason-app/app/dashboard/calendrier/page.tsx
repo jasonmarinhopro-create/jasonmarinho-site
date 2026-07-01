@@ -46,6 +46,12 @@ export interface SejourEvent {
   date_depart: string
   montant: number | null
   contrat_statut: string | null
+  /** Plateforme source (voyageurs.source || sejour.contrat_plateforme).
+   *  Utilise par la vue Liste pour afficher le bon badge (Airbnb, Booking,
+   *  Direct...). Fiable car voyageurs.source est rempli par les syncs iCal.
+   *  Optionnel : les sejours crees manuellement en session (via +Evenement)
+   *  ne l'ont pas — le fallback via label prendra le relai. */
+  platform?: string | null
 }
 
 export interface VoyageurOption {
@@ -102,7 +108,7 @@ export default async function CalendrierPage() {
       .single(),
     supabase
       .from('sejours')
-      .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, voyageurs(prenom, nom)')
+      .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_plateforme, voyageurs(prenom, nom, source)')
       .eq('user_id', userId)
       .not('date_arrivee', 'is', null)
       .not('date_depart', 'is', null),
@@ -147,7 +153,7 @@ export default async function CalendrierPage() {
   const sejourEvents: SejourEvent[] = (sejoursRaw ?? [])
     .filter((s: any) => !sejourIdsWithContract.has(s.id))
     .map((s: any) => {
-      const v = s.voyageurs as { prenom?: string; nom?: string } | null
+      const v = s.voyageurs as { prenom?: string; nom?: string; source?: string } | null
       const voyageurLabel = v
         ? `${v.prenom ?? ''} ${v.nom ?? ''}`.trim() || 'Voyageur'
         : s.voyageur_id ? 'Voyageur' : 'Privé'
@@ -160,6 +166,8 @@ export default async function CalendrierPage() {
         date_depart: s.date_depart,
         montant: s.montant ?? null,
         contrat_statut: s.contrat_statut ?? null,
+        // Priorite au voyageurs.source (rempli par la sync iCal Airbnb/Booking)
+        platform: v?.source ?? s.contrat_plateforme ?? null,
       }
     })
 

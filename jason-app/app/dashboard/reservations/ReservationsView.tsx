@@ -105,7 +105,12 @@ export default function ReservationsView({ reservations, logements }: Props) {
     }
 
     if (platform !== 'all') list = list.filter(r => r.platform === platform)
-    if (logementId !== 'all') list = list.filter(r => r.logement_id === logementId || r.logement_name === logements.find(l => l.id === logementId)?.nom)
+    if (logementId !== 'all') {
+      // logement_id n'est pas persiste sur contracts/sejours → filtre par
+      // NOM du logement (via lookup dans la liste des logements).
+      const targetName = logements.find(l => l.id === logementId)?.nom
+      list = list.filter(r => (targetName && r.logement_name === targetName) || r.logement_id === logementId)
+    }
 
     if (search.trim()) {
       const q = search.trim().toLowerCase()
