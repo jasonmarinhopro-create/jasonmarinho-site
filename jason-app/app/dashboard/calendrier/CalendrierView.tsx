@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import {
   CaretLeft, CaretRight, Plus, Trash, PencilSimple,
   CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon,
@@ -732,7 +732,11 @@ export default function CalendrierView({
   const [exportBusy, setExportBusy] = useState(false)
   const [exportCopied, setExportCopied] = useState(false)
   const exportUrl = icalTokenState ? `${appUrl}/api/calendar/feed?token=${icalTokenState}` : ''
-  const [viewMode, setViewMode] = useState<'month' | 'list'>('month')
+  // ?view=list dans l'URL force la vue Liste au chargement (utilise par
+  // l'entree sidebar "Mes reservations" pour ouvrir directement en mode liste).
+  const searchParams = useSearchParams()
+  const initialViewMode: 'month' | 'list' = searchParams?.get('view') === 'list' ? 'list' : 'month'
+  const [viewMode, setViewMode] = useState<'month' | 'list'>(initialViewMode)
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
   // Persistance de la légende (Airbnb/Booking masqués). Sinon chaque
   // navigation reset ce que l'hôte avait décoché, frustrant.
