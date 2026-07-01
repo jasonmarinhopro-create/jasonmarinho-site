@@ -1110,6 +1110,17 @@ a { color: inherit; }
   padding-right: 0 !important;
 }
 
+/* Cohérence responsive du dashboard sur écrans très larges (4K, 5K, ultra-wide).
+   Sans cette limite, le contenu s'étire sur toute la largeur → cartes petites
+   avec beaucoup de vide, mauvaise lisibilité. On cap à 1720px et on centre. */
+@media (min-width: 1920px) {
+  .dash-main > * {
+    max-width: 1720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 /* Cartes du hub Outils & calculs (Étape 5/7) — hover uniforme */
 .jm-outil-card:hover {
   transform: translateY(-2px);

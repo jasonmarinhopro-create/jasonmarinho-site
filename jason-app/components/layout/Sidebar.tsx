@@ -144,6 +144,22 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     })
   }
 
+  // ── Mode Admin toggle ──
+  // Quand actif (admin uniquement), remplace la sidebar hôte par une
+  // sidebar admin dédiée. Persisté en localStorage. Toggle depuis menu user.
+  const [adminMode, setAdminMode] = useState(false)
+  useEffect(() => {
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('admin-mode') : null
+    setAdminMode(stored === 'true' && !!isAdmin)
+  }, [isAdmin])
+  function toggleAdminMode() {
+    setAdminMode(v => {
+      const next = !v
+      try { localStorage.setItem('admin-mode', String(next)) } catch {}
+      return next
+    })
+  }
+
   // ── Menu user (bas de sidebar, s'ouvre vers le haut) ──
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
@@ -274,6 +290,29 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 />
               </div>
             </div>
+          ) : adminMode && isAdmin ? (
+            /* Mode admin dedicated : sidebar remplacée par Admin uniquement.
+               Bouton "← Retour hôte" en haut pour désactiver. */
+            <>
+              <button
+                onClick={toggleAdminMode}
+                className="jm-nav-item"
+                title={collapsed ? 'Retour mode hôte' : undefined}
+                style={{
+                  ...styles.navItem,
+                  background: 'rgba(192,132,252,0.08)',
+                  border: '1px solid rgba(192,132,252,0.20)',
+                  cursor: 'pointer',
+                  width: '100%', textAlign: 'left',
+                  color: '#C084FC',
+                  marginBottom: 8,
+                  justifyContent: collapsed ? 'center' : 'flex-start',
+                }}
+              >
+                <CaretDoubleLeft size={16} />
+                {!collapsed && <span>Retour mode hôte</span>}
+              </button>
+            </>
           ) : (
             <>
               {navGroups.map((group, i) => (
@@ -294,14 +333,14 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   </div>
                 </div>
               ))}
-              {/* Note : "Contributeurs" a été déplacé dans le dropdown user
-                  du header (accessible via /dashboard/contributeurs).
-                  Sera intégré au menu user complet à l'Étape 3. */}
             </>
           )}
 
-          {/* Section admin, visible uniquement pour Jason */}
-          {isAdmin && (
+          {/* Section admin, visible UNIQUEMENT quand adminMode est actif
+              (bascule via le menu user en bas-gauche). Avant l'Étape 3, elle
+              était toujours affichée pour les admins — trop de bruit visuel
+              pour l'usage quotidien hôte. */}
+          {isAdmin && adminMode && (
             <>
               {/* Séparateur "Admin" — texte caché en mode réduit, ligne conservée */}
               {collapsed ? (
@@ -411,6 +450,28 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               <a href="https://g.page/r/CcLzE7IbhS5_EAE/review" target="_blank" rel="noopener noreferrer" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--accent-text)' }}>
                 <Star size={15} weight="fill" />Laisser un avis Google
               </a>
+
+              {/* Toggle Mode admin — visible uniquement pour les admins */}
+              {isAdmin && (
+                <>
+                  <div style={styles.userMenuDivider} />
+                  <button
+                    onClick={() => { setUserMenuOpen(false); toggleAdminMode() }}
+                    style={{
+                      ...styles.userMenuItem,
+                      width: '100%',
+                      background: adminMode ? 'rgba(192,132,252,0.15)' : 'rgba(192,132,252,0.06)',
+                      border: '1px solid rgba(192,132,252,0.25)',
+                      cursor: 'pointer', textAlign: 'left',
+                      color: '#C084FC',
+                    }}
+                    title={adminMode ? 'Repasser en mode hôte' : 'Basculer sur la sidebar admin dédiée'}
+                  >
+                    <Gear size={15} weight={adminMode ? 'fill' : 'regular'} />
+                    {adminMode ? 'Repasser en mode hôte' : 'Mode admin'}
+                  </button>
+                </>
+              )}
 
               <div style={styles.userMenuDivider} />
               <button onClick={() => { setUserMenuOpen(false); handleSignOut() }} style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'var(--text-3)' }}>
