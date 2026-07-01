@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, MoonStars, Star, MapTrifold, Lifebuoy,
+  Question, CaretDown, ArrowUpRight, Sun, Moon, MoonStars, Star, MapTrifold, Lifebuoy, Heart,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
@@ -486,6 +486,10 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                   <Link href="/dashboard/abonnement" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <CreditCard size={15} />
                     Mon abonnement
+                  </Link>
+                  <Link href="/dashboard/contributeurs" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
+                    <Heart size={15} />
+                    Contributeurs
                   </Link>
                   <Link href="/dashboard/aide" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <Question size={15} />
