@@ -2,14 +2,20 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import {
   MagnifyingGlass, Download, SquaresFour, Rows, House, CalendarBlank,
   CurrencyEur, Users, ChartLineUp, X, ArrowsCounterClockwise,
-  Envelope, Phone, ArrowSquareOut,
+  Envelope, Phone, ArrowSquareOut, Broom, ArrowRight,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Reservation, LogementLite, Platform, ReservationStatus } from './types'
 import { PLATFORM_META } from './types'
 import Select, { type SelectOption } from '@/components/ui/Select'
+import type { MenageSlot } from '@/lib/menage/compute'
+
+// Reutilise le modal Planning menage existant du calendrier (lazy-loaded).
+// Contient le builder PDF/print/WhatsApp/iCal — pas la peine de dupliquer.
+const MenageExportModal = dynamic(() => import('@/app/dashboard/calendrier/MenageExportModal'), { ssr: false })
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -66,9 +72,22 @@ const PERIODS: Array<{ key: Period; label: string }> = [
 interface Props {
   reservations: Reservation[]
   logements: LogementLite[]
+  // ── Props pour la section "Planning ménage" (reutilise MenageExportModal)
+  menageSlots: MenageSlot[]
+  menageDoneIds: string[]
+  menageLogementNames: string[]
+  menageLogementIdByName: Record<string, string>
+  appUrl: string
+  icalToken: string | null
+  hostName: string | null
 }
 
-export default function ReservationsView({ reservations, logements }: Props) {
+export default function ReservationsView({
+  reservations, logements,
+  menageSlots, menageDoneIds, menageLogementNames, menageLogementIdByName,
+  appUrl, icalToken, hostName,
+}: Props) {
+  const [menageModalOpen, setMenageModalOpen] = useState(false)
   const [period, setPeriod] = useState<Period>('upcoming')
   const [platform, setPlatform] = useState<Platform | 'all'>('all')
   const [logementId, setLogementId] = useState<string | 'all'>('all')
@@ -216,6 +235,9 @@ export default function ReservationsView({ reservations, logements }: Props) {
         </div>
       </div>
 
+      {/* PLANNING MÉNAGE — CTA vers le modal Planning menage (WhatsApp/PDF/iCal) */}
+      <PlanningMenageCard slots={menageSlots} onOpen={() => setMenageModalOpen(true)} />
+
       {/* FILTRES */}
       <div style={s.filtersBar}>
         <div style={s.chipsRow}>
@@ -293,7 +315,85 @@ export default function ReservationsView({ reservations, logements }: Props) {
 
       {/* DRAWER DÉTAIL */}
       {selected && <ReservationDrawer r={selected} onClose={() => setSelected(null)} />}
+
+      {/* MODAL PLANNING MÉNAGE — periodes preselectionnees, PDF, WhatsApp, iCal */}
+      {menageModalOpen && (
+        <MenageExportModal
+          slots={menageSlots}
+          doneIds={new Set(menageDoneIds)}
+          logementNames={menageLogementNames}
+          logementIdByName={menageLogementIdByName}
+          appUrl={appUrl}
+          icalToken={icalToken}
+          hostName={hostName}
+          onClose={() => setMenageModalOpen(false)}
+        />
+      )}
     </div>
+  )
+}
+
+// ─── Carte Planning ménage ────────────────────────────────────────────────
+
+function PlanningMenageCard({ slots, onOpen }: { slots: MenageSlot[]; onOpen: () => void }) {
+  // Comptes utiles pour le teaser : cette semaine + semaine prochaine
+  const { thisWeek, nextWeek, next3 } = useMemo(() => {
+    const now = new Date()
+    const day = (now.getDay() + 6) % 7
+    const monday = new Date(now); monday.setDate(now.getDate() - day); monday.setHours(0,0,0,0)
+    const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6)
+    const nextMonday = new Date(monday); nextMonday.setDate(monday.getDate() + 7)
+    const nextSunday = new Date(nextMonday); nextSunday.setDate(nextMonday.getDate() + 6)
+    const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    const monISO = iso(monday), sunISO = iso(sunday), nextMonISO = iso(nextMonday), nextSunISO = iso(nextSunday)
+    const inRange = (d: string, from: string, to: string) => d >= from && d <= to
+    const thisWeek = slots.filter(s => inRange(s.date, monISO, sunISO))
+    const nextWeek = slots.filter(s => inRange(s.date, nextMonISO, nextSunISO))
+    // 3 prochains creneaux depuis aujourd'hui pour le teaser
+    const todayISO = iso(now)
+    const next3 = slots.filter(s => s.date >= todayISO).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3)
+    return { thisWeek: thisWeek.length, nextWeek: nextWeek.length, next3 }
+  }, [slots])
+
+  return (
+    <button onClick={onOpen} style={mc.card} className="jm-menage-card">
+      <div style={mc.headRow}>
+        <div style={mc.headLeft}>
+          <div style={mc.ico}><Broom size={20} weight="duotone" /></div>
+          <div>
+            <div style={mc.title}>Planning ménage</div>
+            <div style={mc.sub}>Génère un récap semaine, PDF, WhatsApp ou lien iCal pour ta femme de ménage.</div>
+          </div>
+        </div>
+        <span style={mc.chevron}><ArrowRight size={14} weight="bold" /></span>
+      </div>
+      <div style={mc.statsRow}>
+        <div style={mc.stat}>
+          <span style={mc.statVal}>{thisWeek}</span>
+          <span style={mc.statLbl}>Cette semaine</span>
+        </div>
+        <div style={mc.statDivider} />
+        <div style={mc.stat}>
+          <span style={mc.statVal}>{nextWeek}</span>
+          <span style={mc.statLbl}>Semaine prochaine</span>
+        </div>
+        <div style={mc.statDivider} />
+        <div style={mc.stat}>
+          <span style={mc.statVal}>{slots.length}</span>
+          <span style={mc.statLbl}>Total à venir</span>
+        </div>
+      </div>
+      {next3.length > 0 && (
+        <div style={mc.previewRow}>
+          {next3.map((s, i) => (
+            <span key={i} style={mc.previewPill}>
+              {fmtDate(s.date, { weekday: 'short', day: 'numeric', month: 'short' })} · {s.logementName}
+            </span>
+          ))}
+          {slots.length > 3 && <span style={{ ...mc.previewPill, background: 'transparent', border: '1px dashed var(--border-2)', color: 'var(--text-3)' }}>+{slots.length - 3} autres</span>}
+        </div>
+      )}
+    </button>
   )
 }
 
@@ -633,6 +733,38 @@ const t: Record<string, React.CSSProperties> = {
   miniAvatar: { width: 26, height: 26, borderRadius: '50%', background: 'rgba(255,213,107,0.14)', border: '1px solid var(--accent-border)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', fontWeight: 600, fontSize: 10.5, fontFamily: 'var(--font-fraunces), serif' },
   dot: { display: 'inline-block', width: 8, height: 8, borderRadius: '50%', marginRight: 6, verticalAlign: 1 },
   status: { fontSize: 12.5, fontWeight: 500 },
+}
+
+const mc: Record<string, React.CSSProperties> = {
+  card: {
+    display: 'flex', flexDirection: 'column' as const, gap: 14,
+    padding: '18px 20px', width: '100%',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: 14,
+    cursor: 'pointer',
+    fontFamily: 'inherit', textAlign: 'left' as const,
+    color: 'var(--text)',
+    transition: 'transform 0.15s var(--ease-spring), border-color 0.15s, box-shadow 0.15s',
+  },
+  headRow: { display: 'flex', alignItems: 'flex-start', gap: 14, justifyContent: 'space-between' },
+  headLeft: { display: 'flex', alignItems: 'flex-start', gap: 14, minWidth: 0, flex: 1 },
+  ico: { width: 42, height: 42, borderRadius: 11, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 17, fontWeight: 500, letterSpacing: '-0.01em' },
+  sub: { fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.55, marginTop: 3, maxWidth: 520 },
+  chevron: { width: 30, height: 30, borderRadius: 8, background: 'var(--bg-2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', flexShrink: 0 },
+  statsRow: { display: 'flex', alignItems: 'center', gap: 22, paddingTop: 12, borderTop: '1px solid var(--border)' },
+  stat: { display: 'flex', flexDirection: 'column' as const, gap: 2, minWidth: 0 },
+  statVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: 20, fontWeight: 500, color: 'var(--accent-text)', lineHeight: 1 },
+  statLbl: { fontSize: 10.5, color: 'var(--text-muted)', letterSpacing: 0.4, textTransform: 'uppercase' as const, fontWeight: 600 },
+  statDivider: { width: 1, height: 24, background: 'var(--border)' },
+  previewRow: { display: 'flex', flexWrap: 'wrap' as const, gap: 6 },
+  previewPill: {
+    display: 'inline-flex', alignItems: 'center', gap: 5,
+    padding: '4px 10px', borderRadius: 999,
+    background: 'var(--bg-2)', border: '1px solid var(--border)',
+    fontSize: 11.5, color: 'var(--text-2)', fontWeight: 500,
+  },
 }
 
 const d: Record<string, React.CSSProperties> = {

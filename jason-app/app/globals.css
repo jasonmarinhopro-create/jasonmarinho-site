@@ -1153,6 +1153,13 @@ a { color: inherit; }
   background: rgba(255, 255, 255, 0.04);
   color: var(--text) !important;
 }
+
+/* Carte Planning ménage (page /reservations) — CTA vers modal MenageExport */
+.jm-menage-card:hover {
+  border-color: var(--accent-text) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(255, 213, 107, 0.08);
+}
 .dash-sidebar > nav {
   /* iOS Safari : flex + overflow auto exige min-height: 0 sur le child
      ET une hauteur définie pour le parent (déjà fait sur .dash-sidebar) */
