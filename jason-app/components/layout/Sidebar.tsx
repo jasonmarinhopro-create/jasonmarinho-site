@@ -214,18 +214,29 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
         data-collapsed={collapsed ? 'true' : 'false'}
         style={styles.sidebar}
       >
-        {/* Logo + bouton collapse (desktop) / close (mobile) */}
-        <div style={styles.logoWrap}>
-          <a href="https://jasonmarinho.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flex: 1, minWidth: 0 }}>
-            <div style={styles.logoIcon}>
-              <JmLogo size={20} />
-            </div>
-            {!collapsed && (
+        {/* Logo + bouton collapse. Layout adaptatif :
+            - Étendu : logo à gauche + bouton chevron à droite
+            - Réduit : logo centré en haut + bouton chevron centré en-dessous
+            Ça garantit que le bouton reste TOUJOURS visible pour permettre
+            de ré-étendre la sidebar. */}
+        <div style={{ ...styles.logoWrap, ...(collapsed ? { flexDirection: 'column' as const, gap: '8px', padding: '14px 8px 12px' } : {}) }}>
+          {collapsed ? (
+            // Mode réduit : juste l'icône du logo, pas de texte, centré
+            <a href="https://jasonmarinho.com" title="Jason Marinho" style={{ display: 'flex', textDecoration: 'none' }}>
+              <div style={styles.logoIcon}>
+                <JmLogo size={20} />
+              </div>
+            </a>
+          ) : (
+            <a href="https://jasonmarinho.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flex: 1, minWidth: 0 }}>
+              <div style={styles.logoIcon}>
+                <JmLogo size={20} />
+              </div>
               <span style={styles.logoText}>
                 Jason <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Marinho</em>
               </span>
-            )}
-          </a>
+            </a>
+          )}
           {/* Bouton collapse (desktop uniquement — mobile utilise le close X) */}
           {!onClose && (
             <button
@@ -287,42 +298,55 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           {/* Section admin, visible uniquement pour Jason */}
           {isAdmin && (
             <>
-              <div style={styles.navDivider}>
-                <div style={styles.navDividerLine} />
-                <span style={{ ...styles.navDividerLabel, color: 'var(--nav-admin-color)' }}>Admin</span>
-                <div style={styles.navDividerLine} />
-              </div>
+              {/* Séparateur "Admin" — texte caché en mode réduit, ligne conservée */}
+              {collapsed ? (
+                <div style={{ height: '1px', background: 'var(--nav-border)', margin: '14px 8px 10px' }} />
+              ) : (
+                <div style={styles.navDivider}>
+                  <div style={styles.navDividerLine} />
+                  <span style={{ ...styles.navDividerLabel, color: 'var(--nav-admin-color)' }}>Admin</span>
+                  <div style={styles.navDividerLine} />
+                </div>
+              )}
 
               <div style={styles.navSection}>
                 {adminMain.map(({ href, label, Icon }) => (
                   <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
                 ))}
 
-                {/* Contenu sub-menu toggle */}
+                {/* Contenu sub-menu toggle — en mode réduit devient une icône
+                    cliquable sans texte ni caret (comportement identique). */}
                 <button
                   onClick={() => setAdminContentOpen(v => !v)}
+                  className="jm-nav-item"
+                  title={collapsed ? 'Contenu' : undefined}
                   style={{
                     ...styles.navItem,
                     background: 'none', border: 'none', cursor: 'pointer',
                     width: '100%', textAlign: 'left',
                     color: 'var(--nav-admin-color)',
+                    justifyContent: collapsed ? 'center' : 'flex-start',
                   }}
                 >
-                  <Gear size={18} weight="regular" style={{ opacity: 0.5 }} />
-                  <span style={{ flex: 1 }}>Contenu</span>
-                  <CaretDown
-                    size={12}
-                    style={{
-                      color: 'var(--nav-admin-color)',
-                      transform: adminContentOpen ? 'rotate(180deg)' : 'none',
-                      transition: 'transform 0.2s',
-                      opacity: 0.6,
-                    }}
-                  />
+                  <Gear size={18} weight="regular" style={{ opacity: 0.5, flexShrink: 0 }} />
+                  {!collapsed && (
+                    <>
+                      <span style={{ flex: 1 }}>Contenu</span>
+                      <CaretDown
+                        size={12}
+                        style={{
+                          color: 'var(--nav-admin-color)',
+                          transform: adminContentOpen ? 'rotate(180deg)' : 'none',
+                          transition: 'transform 0.2s',
+                          opacity: 0.6,
+                        }}
+                      />
+                    </>
+                  )}
                 </button>
 
                 {adminContentOpen && (
-                  <div style={styles.subMenu}>
+                  <div style={collapsed ? styles.navSection : styles.subMenu}>
                     {adminContent.map(({ href, label, Icon }) => (
                       <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
                     ))}
@@ -392,9 +416,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           <button
             type="button"
             onClick={() => setUserMenuOpen(v => !v)}
-            style={styles.userCard}
+            style={{ ...styles.userCard, justifyContent: collapsed ? 'center' : 'flex-start' }}
             aria-haspopup="menu"
             aria-expanded={userMenuOpen}
+            title={collapsed ? `${userName || 'Mon compte'} · ${userPlanLabel || 'Découverte'}` : undefined}
           >
             <div style={styles.userAvatar}>
               {userName ? (userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)) : <UserCircle size={18} />}
