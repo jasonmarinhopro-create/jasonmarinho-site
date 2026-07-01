@@ -16,49 +16,51 @@ import type { PropertyLite } from '@/lib/queries/active-property'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
-const navGroups = [
+// Sidebar refondue (Étape 2/7 du refactor — cf. docs/REFACTOR-DASHBOARD.md).
+// De 20 items à 10 : bloc quotidien (7) + bloc "Faire grandir" (3).
+// Les items retirés (Mes Logements, Guide LCD, Encaissements, Performances,
+// Prix & Marché, Audit GBP, QR & Affiches, Groupes FB, Écosystème LCD)
+// restent accessibles via leur URL directe — ils sont officiellement fusionnés
+// aux étapes 4-6. Les libellés "Mes finances", "Outils & calculs", "Apprendre",
+// "Entre Hôtes" pointent temporairement vers la page principale du groupe
+// (fusion réelle à venir).
+//
+// À NE PAS PERDRE : cette structure doit toujours servir le mono-bien actif
+// avec des libellés en français humain (pas de jargon hôtelier).
+type NavItemDef = {
+  href: string
+  label: string
+  icon: React.ElementType
+  // Affiche un point pulsant rouge (utilisé pour Actualités quand il y a du neuf)
+  pulseIf?: 'hasNewActualites'
+}
+const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
   {
     label: null,
     items: [
-      { href: '/dashboard', label: 'Accueil', icon: HouseSimple },
+      { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
+      { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
+      { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
+      { href: '/dashboard/gabarits',    label: 'Messages',          icon: FileText },
+      // Mes finances → pointera vers /dashboard/finances à l'Étape 4.
+      // En attendant, on cible /dashboard/revenus (page existante) pour ne
+      // rien casser. Encaissements + Performances restent accessibles via
+      // leur URL directe.
+      { href: '/dashboard/revenus',     label: 'Mes finances',      icon: ChartBar },
+      { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
+      { href: '/dashboard/securite',    label: 'Sécurité voyageur', icon: ShieldCheck },
     ],
   },
   {
-    label: 'Apprendre',
+    label: 'Faire grandir mon activité',
     items: [
-      { href: '/dashboard/formations',  label: 'Formations',  icon: GraduationCap },
-      { href: '/dashboard/guide',        label: 'Guide LCD',   icon: BookOpen },
-      { href: '/dashboard/actualites',   label: 'Actualités',  icon: Newspaper },
-    ],
-  },
-  {
-    label: 'Pilotage',
-    items: [
-      { href: '/dashboard/calendrier',   label: 'Calendrier',        icon: CalendarBlank },
-      { href: '/dashboard/logements',    label: 'Mes Logements',     icon: House },
-      { href: '/dashboard/voyageurs',    label: 'Mes Voyageurs',     icon: Users },
-      { href: '/dashboard/gabarits',     label: 'Messages',          icon: FileText },
-      { href: '/dashboard/revenus',      label: 'Revenus',           icon: ChartBar },
-      { href: '/dashboard/encaissements', label: 'Encaissements',    icon: Bank },
-      { href: '/dashboard/performances', label: 'Performances',      icon: ChartLineUp },
-    ],
-  },
-  {
-    label: 'Outils',
-    items: [
-      { href: '/dashboard/simulateurs',         label: 'Simulateurs',       icon: Calculator },
-      { href: '/dashboard/calculateurs',        label: 'Prix & Marché',     icon: ChartLineUp },
-      { href: '/dashboard/audit-gbp',           label: 'Audit GBP',         icon: MagnifyingGlass },
-      { href: '/dashboard/outils-impression',   label: 'QR & Affiches',     icon: Printer },
-      { href: '/dashboard/securite',            label: 'Sécurité Voyageur', icon: ShieldCheck },
-    ],
-  },
-  {
-    label: 'Communauté',
-    items: [
-      { href: '/dashboard/chez-nous',   label: 'Entre Hôtes',   icon: ChatsCircle },
-      { href: '/dashboard/communaute',  label: 'Groupes FB',  icon: UsersThree },
-      { href: '/dashboard/ecosysteme', label: 'Écosystème LCD', icon: Globe },
+      // Outils & calculs → pointera vers /dashboard/outils (hub) à l'Étape 5.
+      // En attendant, /dashboard/simulateurs.
+      { href: '/dashboard/simulateurs', label: 'Outils & calculs', icon: Calculator },
+      // Apprendre → onglets Formations + Guide LCD à l'Étape 6.
+      { href: '/dashboard/formations',  label: 'Apprendre',        icon: GraduationCap },
+      // Entre Hôtes → onglets Forum + Groupes FB + Écosystème à l'Étape 6.
+      { href: '/dashboard/chez-nous',   label: 'Entre Hôtes',      icon: ChatsCircle },
     ],
   },
 ]
@@ -211,43 +213,21 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     <div style={styles.sectionLabel}>{group.label}</div>
                   )}
                   <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
-                    {group.items
-                      // Masque "Encaissements" pour les hôtes sans Stripe Connect :
-                      // la page reste accessible par URL directe mais n'encombre
-                      // pas le menu pour ceux qui n'utilisent pas le paiement Stripe.
-                      .filter(item => !(item.href === '/dashboard/encaissements' && !hasStripeAccount))
-                      .map(({ href, label, icon: Icon }) => (
+                    {group.items.map(({ href, label, icon: Icon, pulseIf }) => (
                       <NavItem
                         key={href}
                         href={href}
                         label={label}
                         Icon={Icon}
-                        notifDot={href === '/dashboard/actualites' && hasNewActualites}
+                        notifDot={pulseIf === 'hasNewActualites' && hasNewActualites}
                       />
                     ))}
                   </div>
                 </div>
               ))}
-
-              {/* Lien Contributeurs, visible pour les hôtes, badge selon statut */}
-              <Link
-                href="/dashboard/contributeurs"
-                onClick={onClose}
-                style={{
-                  ...styles.navItem,
-                  ...(pathname === '/dashboard/contributeurs' ? styles.navItemActive : {}),
-                  marginTop: '2px',
-                }}
-              >
-                <Heart size={18} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? 'var(--accent-text)' : undefined }} />
-                <span style={{ flex: 1 }}>Contributeurs</span>
-                {pathname !== '/dashboard/contributeurs' && (
-                  isContributor
-                    ? <span style={styles.contributeurBadge}>✦</span>
-                    : <span style={styles.contributeurLock}>Rejoindre</span>
-                )}
-                {pathname === '/dashboard/contributeurs' && <div style={styles.activeDot} />}
-              </Link>
+              {/* Note : "Contributeurs" a été déplacé dans le dropdown user
+                  du header (accessible via /dashboard/contributeurs).
+                  Sera intégré au menu user complet à l'Étape 3. */}
             </>
           )}
 
