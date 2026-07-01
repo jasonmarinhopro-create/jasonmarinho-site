@@ -40,10 +40,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
     items: [
       { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
       { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
-      // Mes reservations : entree dediee qui ouvre le calendrier directement
-      // en vue Liste (tableau plat des sejours). Meme page que Calendrier,
-      // juste un ?view=list qui active le toggle Liste au chargement.
-      { href: '/dashboard/calendrier?view=list', label: 'Mes réservations', icon: ListChecks },
+      // Mes reservations : page dediee avec KPIs, filtres, cartes/tableau,
+      // drawer detail voyageur + alertes contextuelles. Detachee du Calendrier
+      // (qui redevient purement vue chronologique Mois).
+      { href: '/dashboard/reservations', label: 'Mes réservations', icon: ListChecks },
       { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
       { href: '/dashboard/gabarits',    label: 'Messages',          icon: FileText },
       // Mes finances : Étape 4 — fusion à onglets Revenus / Encaissements

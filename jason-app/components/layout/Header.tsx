@@ -22,6 +22,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/audit-gbp/import-url': 'Import URL',
   '/dashboard/audit-gbp/import-csv': 'Audit Express',
   '/dashboard/outils': 'Outils & calculs',
+  '/dashboard/reservations': 'Mes réservations',
   // Note : /dashboard/calendrier affiche "Calendrier" par defaut, mais quand
   // ?view=list dans l'URL le titre reste "Calendrier" (la tab bar interieure
   // Mois/Liste indique le sous-mode). L'entree sidebar "Mes reservations"
