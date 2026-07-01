@@ -315,14 +315,15 @@ function ListView({ byDate, today, icalFeeds, onSelect, onSelectSejour }: ListVi
   function nightsBetween(from: string, to: string) {
     return Math.max(0, Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000))
   }
-  // Detection source depuis le label du voyageur (nos systemes prefixent parfois
-  // avec la plateforme, ex "Yousef Airbnb", "Ricardo Booking"). Fallback direct.
-  function detectSource(label: string): { key: string; label: string; color: string } {
-    const l = label.toLowerCase()
-    if (l.includes('airbnb')) return { key: 'airbnb', label: 'Airbnb', color: '#FF385C' }
-    if (l.includes('booking')) return { key: 'booking', label: 'Booking', color: '#003580' }
-    if (l.includes('driing')) return { key: 'driing', label: 'Driing', color: '#FFD56B' }
-    if (l.includes('vrbo') || l.includes('abritel')) return { key: 'vrbo', label: 'VRBO', color: '#0072ce' }
+  // Detection source : PRIORITE au champ voyageurs.source (rempli par les
+  // syncs iCal Airbnb/Booking = source de verite), fallback sur le label
+  // pour les cas ou le voyageur n'a pas de source enregistree.
+  function detectSource(platform: string | null, label: string): { key: string; label: string; color: string } {
+    const s = (platform ?? label).toLowerCase()
+    if (s.includes('airbnb')) return { key: 'airbnb', label: 'Airbnb', color: '#FF385C' }
+    if (s.includes('booking')) return { key: 'booking', label: 'Booking', color: '#003580' }
+    if (s.includes('driing')) return { key: 'driing', label: 'Driing', color: '#B8860B' }
+    if (s.includes('vrbo') || s.includes('abritel')) return { key: 'vrbo', label: 'VRBO', color: '#0072ce' }
     return { key: 'direct', label: 'Direct', color: '#63D683' }
   }
   function sejourStatus(dateArrivee: string, dateDepart: string): { label: string; color: string } {
@@ -386,7 +387,7 @@ function ListView({ byDate, today, icalFeeds, onSelect, onSelectSejour }: ListVi
         {/* Cartes reservations enrichies (sejours) */}
         <div style={lvs.itemsList}>
           {richSejours.map(s => {
-            const source = detectSource(s.voyageur_label)
+            const source = detectSource(s.platform ?? null, s.voyageur_label)
             const nights = nightsBetween(s.date_arrivee, s.date_depart)
             const status = sejourStatus(s.date_arrivee, s.date_depart)
             const perNight = s.montant && nights > 0 ? Math.round(s.montant / nights) : null
