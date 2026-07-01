@@ -1569,7 +1569,11 @@ const cancelBtn: React.CSSProperties = {
 const overlay: React.CSSProperties = {
   position: 'fixed', inset: 0, zIndex: 400,
   background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)',
-  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  // Padding vertical genereux : evite que la modal soit collee au top
+  // (surtout quand le contenu est long et depasse presque 100vh)
+  padding: 'clamp(32px, 6vh, 80px) 20px',
+  overflowY: 'auto',
 }
 
 const modalBox: React.CSSProperties = {
@@ -1577,8 +1581,11 @@ const modalBox: React.CSSProperties = {
   border: '1px solid var(--border-2, #1e3d2f)',
   borderRadius: '22px',
   width: '100%', maxWidth: '560px',
-  maxHeight: '90vh', overflowY: 'auto',
+  // maxHeight reduit + marge auto pour vraiment respirer autour
+  maxHeight: 'calc(100vh - 120px)',
+  overflowY: 'auto',
   boxShadow: '0 32px 100px rgba(0,0,0,0.5)',
+  margin: 'auto',
 }
 
 const modalHeader: React.CSSProperties = {
