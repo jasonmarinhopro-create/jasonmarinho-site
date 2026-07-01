@@ -79,6 +79,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           userName={profile.full_name ?? undefined}
           userPlanLabel={planLabel}
           userId={profile.userId}
+          spaces={spacesResult.spaces}
         />
         <Header
           userName={profile.full_name ?? undefined}
