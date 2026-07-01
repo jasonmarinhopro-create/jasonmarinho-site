@@ -365,8 +365,10 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             )
           })()}
 
-          {/* Profile dropdown */}
-          <div ref={dropdownRef} style={styles.dropdownWrap}>
+          {/* Profile dropdown — DÉPLACÉ dans la Sidebar (menu user en bas-gauche, Étape 3/7).
+              Ce bloc est conservé mais visuellement caché pour ne pas dupliquer.
+              À supprimer complètement dans une étape ultérieure. */}
+          <div style={{ display: 'none' }} ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(v => !v)}
               style={styles.profileBtn}

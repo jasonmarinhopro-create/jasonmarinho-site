@@ -4,11 +4,11 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  HouseSimple, GraduationCap, Handshake, FileText,
+  HouseSimple, GraduationCap, FileText,
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper,
-  FacebookLogo, CaretDown, House, ChartBar, CalendarBlank, Heart,
-  MagnifyingGlass, ChatsCircle, Globe, Calculator, ChartLineUp, Printer, Bank,
-  Camera, Sparkle,
+  FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
+  ChatsCircle, Calculator, Camera, Sparkle,
+  CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -99,9 +99,15 @@ interface SidebarProps {
   allProperties?: PropertyLite[]
   /** UUID du logement actif (cookie) ou 'all' pour la vue agrégée. */
   activePropertyId?: string
+  /** Nom complet, pour affichage dans la carte user en bas de sidebar. */
+  userName?: string
+  /** Label du plan (Découverte / Standard / Membre Driing / Administrateur). */
+  userPlanLabel?: string
+  /** userId : pour le lien vers /chez-nous/membre/[id] depuis le menu user. */
+  userId?: string
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId }: SidebarProps) {
   const pathname = usePathname()
   // Le rôle pro est dérivé du pathname côté client : le layout (server) est
   // mémorisé par le router cache entre routes sœurs, donc une prop calculée
@@ -117,6 +123,38 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     adminContent.some(item => pathname.startsWith(item.href))
   )
   const [hasNewActualites, setHasNewActualites] = useState(initialHasNewActualites)
+
+  // ── Collapse sidebar (mode icônes seulement) ──
+  // Persisté en localStorage. Update la CSS var --sidebar-w globale pour
+  // que Header + main content s'ajustent automatiquement.
+  const [collapsed, setCollapsed] = useState(false)
+  useEffect(() => {
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('sidebar-collapsed') : null
+    setCollapsed(stored === 'true')
+  }, [])
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    document.documentElement.style.setProperty('--sidebar-w', collapsed ? '68px' : '252px')
+  }, [collapsed])
+  function toggleCollapsed() {
+    setCollapsed(v => {
+      const next = !v
+      try { localStorage.setItem('sidebar-collapsed', String(next)) } catch {}
+      return next
+    })
+  }
+
+  // ── Menu user (bas de sidebar, s'ouvre vers le haut) ──
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!userMenuOpen) return
+    function handler(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [userMenuOpen])
 
   useEffect(() => {
     if (pathname !== '/dashboard/actualites') return
@@ -141,6 +179,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
         href={href}
         onClick={onClose}
         className={active ? 'jm-nav-item jm-nav-item--active' : 'jm-nav-item'}
+        title={collapsed ? label : undefined}
         style={{
           ...styles.navItem,
           ...(active ? styles.navItemActive : {}),
@@ -151,8 +190,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           <Icon size={18} weight={active ? 'fill' : 'regular'} />
           {notifDot && !active && <span style={styles.notifDot} />}
         </div>
-        <span>{label}</span>
-        {active && <div style={styles.activeDot} />}
+        {!collapsed && <span>{label}</span>}
+        {active && !collapsed && <div style={styles.activeDot} />}
       </Link>
     )
   }
@@ -171,19 +210,33 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
       )}
 
       <aside
-        className={`dash-sidebar${mobileOpen ? ' open' : ''}`}
+        className={`dash-sidebar${mobileOpen ? ' open' : ''}${collapsed ? ' collapsed' : ''}`}
+        data-collapsed={collapsed ? 'true' : 'false'}
         style={styles.sidebar}
       >
-        {/* Logo */}
+        {/* Logo + bouton collapse (desktop) / close (mobile) */}
         <div style={styles.logoWrap}>
-          <a href="https://jasonmarinho.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flex: 1 }}>
+          <a href="https://jasonmarinho.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flex: 1, minWidth: 0 }}>
             <div style={styles.logoIcon}>
               <JmLogo size={20} />
             </div>
-            <span style={styles.logoText}>
-              Jason <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Marinho</em>
-            </span>
+            {!collapsed && (
+              <span style={styles.logoText}>
+                Jason <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Marinho</em>
+              </span>
+            )}
           </a>
+          {/* Bouton collapse (desktop uniquement — mobile utilise le close X) */}
+          {!onClose && (
+            <button
+              onClick={toggleCollapsed}
+              style={styles.collapseBtn}
+              title={collapsed ? 'Étendre le menu' : 'Réduire le menu'}
+              aria-label={collapsed ? 'Étendre la sidebar' : 'Réduire la sidebar'}
+            >
+              {collapsed ? <CaretDoubleRight size={14} /> : <CaretDoubleLeft size={14} />}
+            </button>
+          )}
           {onClose && (
             <button onClick={onClose} style={styles.closeBtn} className="dash-close-btn">
               <X size={18} />
@@ -209,7 +262,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
             <>
               {navGroups.map((group, i) => (
                 <div key={i}>
-                  {group.label && (
+                  {group.label && !collapsed && (
                     <div style={styles.sectionLabel}>{group.label}</div>
                   )}
                   <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
@@ -282,24 +335,79 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
 
         {/* Sélecteur de logement (bas de sidebar, dropdown vers le haut) */}
         {!proRole && allProperties && (
-          <PropertySelector allProperties={allProperties} currentId={activePropertyId ?? 'all'} />
+          <PropertySelector allProperties={allProperties} currentId={activePropertyId ?? 'all'} collapsed={collapsed} />
         )}
 
-        {/* Footer */}
-        <div style={styles.sideFooter}>
-          <div style={styles.footerDivider} />
-          <a
-            href="https://jasonmarinho.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={styles.footerLink}
+        {/* Carte user cliquable — ouvre le menu vers le HAUT (Étape 3/7) */}
+        <div ref={userMenuRef} style={styles.userWrap}>
+          {userMenuOpen && (
+            <div style={styles.userMenu} role="menu">
+              {/* Section identité */}
+              <div style={styles.userMenuHead}>
+                <div style={styles.userMenuAvatar}>
+                  {(userName || '?').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={styles.userMenuName}>{userName || 'Mon compte'}</div>
+                  <div style={styles.userMenuPlan}>{userPlanLabel || 'Découverte'}</div>
+                </div>
+              </div>
+              <div style={styles.userMenuDivider} />
+
+              {/* Navigation */}
+              <Link href="/dashboard/profil" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                <UserCircle size={15} />Mon compte
+              </Link>
+              {userId && (
+                <Link href={`/dashboard/chez-nous/membre/${userId}`} onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                  <UserCircle size={15} weight="duotone" />Profil forum
+                </Link>
+              )}
+              <Link href="/dashboard/abonnement" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                <CreditCard size={15} />Mon abonnement
+              </Link>
+              <Link href="/dashboard/contributeurs" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                <Heart size={15} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? 'var(--accent-text)' : undefined }} />
+                Contributeurs
+                {!isContributor && <span style={styles.userMenuBadge}>Rejoindre</span>}
+              </Link>
+              <Link href="/dashboard/aide" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                <Question size={15} />Centre d&apos;aide
+              </Link>
+
+              <div style={styles.userMenuDivider} />
+              <a href="https://jasonmarinho.com" target="_blank" rel="noopener noreferrer" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                <ArrowUpRight size={15} />jasonmarinho.com
+              </a>
+              <a href="https://g.page/r/CcLzE7IbhS5_EAE/review" target="_blank" rel="noopener noreferrer" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--accent-text)' }}>
+                <Star size={15} weight="fill" />Laisser un avis Google
+              </a>
+
+              <div style={styles.userMenuDivider} />
+              <button onClick={() => { setUserMenuOpen(false); handleSignOut() }} style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'var(--text-3)' }}>
+                <SignOut size={15} />Se déconnecter
+              </button>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => setUserMenuOpen(v => !v)}
+            style={styles.userCard}
+            aria-haspopup="menu"
+            aria-expanded={userMenuOpen}
           >
-            <JmLogo size={14} color="var(--nav-item)" />
-            jasonmarinho.com
-          </a>
-          <button onClick={handleSignOut} style={styles.signOut}>
-            <SignOut size={16} />
-            Se déconnecter
+            <div style={styles.userAvatar}>
+              {userName ? (userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)) : <UserCircle size={18} />}
+            </div>
+            {!collapsed && (
+              <>
+                <div style={{ flex: 1, minWidth: 0, textAlign: 'left' as const }}>
+                  <div style={styles.userCardName}>{userName || 'Mon compte'}</div>
+                  <div style={styles.userCardPlan}>{userPlanLabel || 'Découverte'}</div>
+                </div>
+                <CaretDown size={11} style={{ color: 'var(--text-3)', transform: userMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.18s' }} />
+              </>
+            )}
           </button>
         </div>
       </aside>
@@ -402,33 +510,6 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column', gap: '2px',
     marginBottom: '4px',
   },
-  sideFooter: {
-    padding: '12px',
-    paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
-    display: 'flex', flexDirection: 'column', gap: '4px',
-    flexShrink: 0,
-  },
-  footerDivider: {
-    height: '1px', background: 'var(--nav-border)', margin: '0 0 4px',
-  },
-  footerLink: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    padding: '9px 12px', borderRadius: '9px',
-    fontSize: '12px', color: 'var(--text-muted)',
-    textDecoration: 'none',
-    transition: 'color 0.18s',
-  },
-  contributeurBadge: {
-    fontSize: '10px', color: 'var(--accent-text)', fontWeight: 700,
-  },
-  contributeurLock: {
-    fontSize: '9px', fontWeight: 600, letterSpacing: '0.4px',
-    color: 'var(--accent-text)',
-    background: 'var(--accent-bg)',
-    border: '1px solid var(--accent-border)',
-    borderRadius: '999px', padding: '2px 7px',
-    opacity: 0.8,
-  },
   notifDot: {
     position: 'absolute',
     top: '-3px', right: '-3px',
@@ -437,13 +518,86 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '50%',
     border: '1.5px solid var(--nav-bg)',
   },
-  signOut: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    padding: '9px 12px', borderRadius: '9px',
-    fontSize: '13px', fontWeight: 400,
-    color: 'var(--text-3)',
+  collapseBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    width: '100%', textAlign: 'left',
-    transition: 'all 0.18s',
+    color: 'var(--text-3)', padding: '4px', borderRadius: '6px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  // Carte user cliquable en bas-gauche (remplace l'ancien footer)
+  userWrap: {
+    position: 'relative',
+    padding: '10px 12px',
+    paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
+    borderTop: '1px solid var(--nav-border)',
+    flexShrink: 0,
+    marginTop: 4,
+  },
+  userCard: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    width: '100%', padding: '6px 8px',
+    background: 'none', border: '1px solid transparent',
+    borderRadius: 'var(--r-md)',
+    cursor: 'pointer', color: 'var(--text)',
+    fontFamily: 'inherit',
+    transition: 'background 0.15s, border-color 0.15s',
+  },
+  userAvatar: {
+    width: '32px', height: '32px', flexShrink: 0,
+    background: 'rgba(0,76,63,0.5)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '50%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: 'var(--accent-text)', fontWeight: 600, fontSize: '12px',
+    fontFamily: 'var(--font-fraunces), serif',
+  },
+  userCardName: {
+    fontSize: '13px', fontWeight: 500, color: 'var(--text)',
+    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+  },
+  userCardPlan: {
+    fontSize: '10.5px', color: 'var(--text-muted)',
+    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+  },
+  userMenu: {
+    position: 'absolute',
+    bottom: 'calc(100% - 4px)', left: '10px', right: '10px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '12px',
+    padding: '4px',
+    boxShadow: '0 20px 40px rgba(0,0,0,0.35)',
+    zIndex: 50,
+  },
+  userMenuHead: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '10px 12px',
+  },
+  userMenuAvatar: {
+    width: '36px', height: '36px', flexShrink: 0,
+    background: 'rgba(0,76,63,0.5)',
+    border: '1.5px solid var(--accent-border)',
+    borderRadius: '50%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: 'var(--accent-text)', fontWeight: 600, fontSize: '13px',
+    fontFamily: 'var(--font-fraunces), serif',
+  },
+  userMenuName: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' },
+  userMenuPlan: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' },
+  userMenuDivider: { height: '1px', background: 'var(--border)', margin: '4px 0' },
+  userMenuItem: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '8px 12px', borderRadius: '7px',
+    fontSize: '13px', color: 'var(--text-2)',
+    textDecoration: 'none', cursor: 'pointer',
+    transition: 'background 0.12s, color 0.12s',
+  },
+  userMenuBadge: {
+    marginLeft: 'auto',
+    fontSize: '9px', fontWeight: 700, letterSpacing: '0.4px',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '999px', padding: '2px 7px',
   },
 }

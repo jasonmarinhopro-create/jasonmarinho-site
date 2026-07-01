@@ -11,6 +11,8 @@ interface Props {
   allProperties: PropertyLite[]
   /** UUID du logement courant, ou 'all'. */
   currentId: string
+  /** Mode sidebar réduite : n'affiche que l'icône (Étape 3). */
+  collapsed?: boolean
 }
 
 /**
@@ -22,7 +24,7 @@ interface Props {
  * Le choix est persisté côté serveur via POST /api/me/active-property
  * puis on rafraîchit la page pour que toutes les queries se réappliquent.
  */
-export default function PropertySelector({ allProperties, currentId }: Props) {
+export default function PropertySelector({ allProperties, currentId, collapsed = false }: Props) {
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -112,16 +114,21 @@ export default function PropertySelector({ allProperties, currentId }: Props) {
       <button
         type="button"
         onClick={() => interactive && setOpen(v => !v)}
-        style={{ ...styles.trigger, cursor: interactive ? 'pointer' : 'default' }}
+        style={{ ...styles.trigger, cursor: interactive ? 'pointer' : 'default', justifyContent: collapsed ? 'center' : 'flex-start' }}
         aria-haspopup={interactive ? 'menu' : undefined}
         aria-expanded={open}
+        title={collapsed ? `Logement : ${label}` : undefined}
       >
         <span style={styles.ico}><House size={15} weight="duotone" /></span>
-        <span style={styles.info}>
-          <span style={styles.lbl}>Logement</span>
-          <span style={styles.name}>{label}</span>
-        </span>
-        {interactive && <CaretUp size={11} style={{ color: 'var(--text-3)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.18s' }} />}
+        {!collapsed && (
+          <>
+            <span style={styles.info}>
+              <span style={styles.lbl}>Logement</span>
+              <span style={styles.name}>{label}</span>
+            </span>
+            {interactive && <CaretUp size={11} style={{ color: 'var(--text-3)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.18s' }} />}
+          </>
+        )}
       </button>
     </div>
   )

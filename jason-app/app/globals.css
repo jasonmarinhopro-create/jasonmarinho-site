@@ -1101,6 +1101,13 @@ a { color: inherit; }
   /* Force un nouveau layer GPU, corrige les bugs de scroll/overflow iOS */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  transition: width 0.2s ease;
+}
+/* Section labels et sub-menu items sont cachés en mode réduit (rendu conditionnel React) */
+.dash-sidebar.collapsed .jm-nav-item {
+  justify-content: center;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 .dash-sidebar > nav {
   /* iOS Safari : flex + overflow auto exige min-height: 0 sur le child
