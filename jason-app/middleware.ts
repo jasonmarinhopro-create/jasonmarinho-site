@@ -81,6 +81,15 @@ export async function middleware(request: NextRequest) {
     if (!isAuthed) {
       const url = request.nextUrl.clone()
       url.pathname = '/auth/login'
+      // Preserve l'intention : si l'utilisateur essayait d'atteindre
+      // une fiche pro, garde le ?as= pour rediriger apres login vers
+      // la bonne page (evite un aller-retour supplementaire depuis /mon-compte).
+      url.search = ''
+      if (path.startsWith('/dashboard/ma-fiche-photographe')) {
+        url.searchParams.set('as', 'photographe')
+      } else if (path.startsWith('/dashboard/ma-fiche-menage')) {
+        url.searchParams.set('as', 'menage')
+      }
       return NextResponse.redirect(url)
     }
     return supabaseResponse
