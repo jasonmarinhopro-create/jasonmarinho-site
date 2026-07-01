@@ -129,9 +129,15 @@ interface HeaderProps {
   hasStripeAccount?: boolean
   /** Espaces auxquels l'utilisateur a accès (multi-rôles). Si plus d'un, un sélecteur s'affiche dans le dropdown. */
   spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner'; label: string; href: string; subtitle?: string | null; active: boolean }>
+  /** Forwarded a la sidebar mobile — pour que le menu user affiche les bonnes infos */
+  isContributor?: boolean
+  /** Forwarded a la sidebar mobile — sélecteur logement */
+  allProperties?: Array<{ id: string; nom: string; ville: string | null }>
+  /** Forwarded a la sidebar mobile — sélecteur logement */
+  activePropertyId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false, spaces = [] }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -281,7 +287,25 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   return (
     <>
       <div className="dash-mobile-sidebar-wrap">
-        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isAdmin={isAdmin} lastSeenActualitesAt={lastSeenActualitesAt} hasNewActualites={hasNewActualites} hasStripeAccount={hasStripeAccount} />
+        {/* Sidebar mobile — reçoit TOUS les props utilisateur pour que le
+            menu user affiche l'identité correcte (bug signalé Étape 3+ :
+            le drawer mobile affichait "Mon compte / Découverte" au lieu du
+            vrai nom + plan car les props étaient tronqués). */}
+        <Sidebar
+          mobileOpen={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          isAdmin={isAdmin}
+          isContributor={isContributor}
+          lastSeenActualitesAt={lastSeenActualitesAt}
+          hasNewActualites={hasNewActualites}
+          hasStripeAccount={hasStripeAccount}
+          userName={initialUserName}
+          userPlanLabel={resolvedPlan}
+          userId={userId}
+          spaces={spaces}
+          allProperties={allProperties}
+          activePropertyId={activePropertyId}
+        />
       </div>
 
       <NotificationPanel
