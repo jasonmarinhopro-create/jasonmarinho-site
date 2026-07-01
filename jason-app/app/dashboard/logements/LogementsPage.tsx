@@ -1569,10 +1569,12 @@ const cancelBtn: React.CSSProperties = {
 const overlay: React.CSSProperties = {
   position: 'fixed', inset: 0, zIndex: 400,
   background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)',
-  display: 'flex', alignItems: 'center', justifyContent: 'center',
-  // Padding vertical genereux : evite que la modal soit collee au top
-  // (surtout quand le contenu est long et depasse presque 100vh)
-  padding: 'clamp(32px, 6vh, 80px) 20px',
+  // flex-start + paddingTop garanti = la modal n'est JAMAIS collee au header
+  // dashboard (64px) ni au bord haut. On force min 88px de marge en haut.
+  // padding-top 88px = 64 (header) + 24 (respiration visible)
+  // + overflowY auto sur l'overlay pour scroller si vraiment tres petit ecran.
+  display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+  padding: '88px 20px 32px',
   overflowY: 'auto',
 }
 
@@ -1581,11 +1583,9 @@ const modalBox: React.CSSProperties = {
   border: '1px solid var(--border-2, #1e3d2f)',
   borderRadius: '22px',
   width: '100%', maxWidth: '560px',
-  // maxHeight reduit + marge auto pour vraiment respirer autour
-  maxHeight: 'calc(100vh - 120px)',
-  overflowY: 'auto',
+  // Pas de maxHeight fixe : la modal peut grandir naturellement,
+  // c'est l'overlay qui gere le scroll. Evite le double scroll (overlay + modal).
   boxShadow: '0 32px 100px rgba(0,0,0,0.5)',
-  margin: 'auto',
 }
 
 const modalHeader: React.CSSProperties = {
