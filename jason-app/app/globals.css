@@ -1110,6 +1110,19 @@ a { color: inherit; }
   padding-right: 0 !important;
 }
 
+/* ── COHÉRENCE PADDING DES PAGES DASHBOARD ─────────────────────────────
+   Toutes les pages doivent avoir le même padding horizontal, quelle que
+   soit leur nature (page standalone, layout fusion, page re-exportée).
+   La règle : padding fluide clamp(20px, 3vw, 44px) — jamais moins de 20,
+   jamais plus de 44. Applique via variable CSS globale pour uniformité. */
+:root {
+  --dash-page-px: clamp(20px, 3vw, 44px);
+}
+/* Applique le padding uniforme à TOUS les enfants directs de .dash-main
+   qui n'ont pas déjà leur propre padding défini via inline style ou classe.
+   Note : les sous-pages re-exportées via /finances, /apprendre, /entre-hotes
+   sont dans un div layout, leur padding vient de leur .dash-page interne. */
+
 /* Cohérence responsive du dashboard sur écrans très larges (4K, 5K, ultra-wide).
    Sans cette limite, le contenu s'étire sur toute la largeur → cartes petites
    avec beaucoup de vide, mauvaise lisibilité. On cap à 1720px et on centre. */

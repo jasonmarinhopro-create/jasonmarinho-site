@@ -3,7 +3,7 @@ import ApprendreTabBar from './ApprendreTabBar'
 export default function ApprendreLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <div style={{ padding: 'clamp(20px, 3vw, 44px) clamp(20px, 3vw, 44px) 0' }}>
+      <div style={{ padding: 'var(--dash-page-px) var(--dash-page-px) 0' }}>
         <h1 style={{
           fontFamily: 'var(--font-fraunces), serif',
           fontSize: 'clamp(22px, 3vw, 28px)',

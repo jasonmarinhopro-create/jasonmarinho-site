@@ -39,7 +39,7 @@ const s: Record<string, React.CSSProperties> = {
   bar: {
     display: 'flex', gap: 4,
     borderBottom: '1px solid var(--border)',
-    padding: '0 clamp(20px, 3vw, 44px)',
+    padding: '0 var(--dash-page-px)',
     overflowX: 'auto', WebkitOverflowScrolling: 'touch',
   },
   tab: {
