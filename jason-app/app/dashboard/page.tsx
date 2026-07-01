@@ -2,18 +2,18 @@ import { getProfile } from '@/lib/queries/profile'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
-  CalendarBlank, CurrencyEur,
-  ArrowRight, Newspaper, UserPlus, Flag, CalendarPlus,
+  CalendarBlank,
+  ArrowRight, Newspaper,
   GraduationCap, Trophy, Flame,
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
-import ChezNousWidget from './ChezNousWidget'
+// ChezNousWidget retiré Étape 7 (déplacé vers /dashboard/entre-hotes)
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import MesPlateformesWidget from './MesPlateformesWidget'
 import OnboardingTour from './OnboardingTour'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
-import type { CategoryId } from '@/lib/chez-nous/categories'
+// CategoryId retiré (utilisé uniquement par ChezNousWidget, désormais dans /entre-hotes)
 
 function getGreeting() {
   const h = parseInt(new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).format(new Date()))
@@ -628,80 +628,54 @@ export default async function DashboardPage() {
                 return 'Aucun séjour prévu cette semaine. Profite de ce calme pour préparer la suite.'
               })()}
             </p>
-          </div>
-          <div style={s.statsRow} className="dash-stats-row" data-tour="dashboard-stats">
-            <div style={s.stat}>
-              <span style={{ ...s.statVal, color: upcomingReservationsCount > 0 ? 'var(--success-1)' : 'var(--accent-text)' }} className="tabular-nums">{upcomingReservationsCount}</span>
-              <span style={s.statLbl}>Réservation{pl(upcomingReservationsCount)} à venir</span>
-            </div>
-            <div style={s.statDivider} />
-            <div style={s.stat}>
-              <span style={{ ...s.statVal, color: 'var(--accent-text)' }} className="tabular-nums">{pastReservationsCount}</span>
-              <span style={s.statLbl}>Déjà venu{pl(pastReservationsCount)}</span>
-            </div>
-            <div style={s.statDivider} />
-            <div style={s.stat}>
-              <span style={{ ...s.statVal, color: actionsCount > 0 ? 'var(--danger)' : 'var(--accent-text)' }} className="tabular-nums">{actionsCount}</span>
-              <span style={s.statLbl}>Action{pl(actionsCount)} à traiter</span>
-            </div>
+
+            {/* Pills d'actions contextuelles (Étape 7/7) — remplace les 3 stats
+                statiques 6/1/0 qui ne changeaient jamais dans la journée.
+                Chaque pill n'apparaît que si son contexte est vrai (pas de
+                "0 actions" qui fait peur : le bloc disparaît). */}
+            {(todayArrivals.length > 0 || todayDepartures.length > 0 || actionsCount > 0 || weekArrivals.length > 0) && (
+              <div style={s.actionPills} className="fade-up">
+                {todayArrivals.length > 0 && (
+                  <Link href="/dashboard/calendrier" style={{ ...s.pill, ...s.pillOk }}>
+                    <span style={s.pillDot} />
+                    {todayArrivals.length} arrivée{pl(todayArrivals.length)} à préparer
+                  </Link>
+                )}
+                {todayDepartures.length > 0 && (
+                  <Link href="/dashboard/calendrier" style={{ ...s.pill, ...s.pillInfo }}>
+                    <span style={s.pillDot} />
+                    {todayDepartures.length} départ{pl(todayDepartures.length)} aujourd&apos;hui
+                  </Link>
+                )}
+                {actionsCount > 0 && (
+                  <Link href="/dashboard/finances/encaissements" style={{ ...s.pill, ...s.pillWarn }}>
+                    <span style={s.pillDot} />
+                    {actionsCount} action{pl(actionsCount)} à traiter
+                  </Link>
+                )}
+                {weekArrivals.length > 0 && todayArrivals.length === 0 && (
+                  <Link href="/dashboard/calendrier" style={s.pill}>
+                    {weekArrivals.length} arrivée{pl(weekArrivals.length)} cette semaine
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         </section>
 
-        {/* ── Quick actions ────────────────────────────────────────────── */}
-        <section style={s.section} className="fade-up d1">
-          <div style={s.quickStrip}>
-            <Link href="/dashboard/calendrier" style={s.quickItem} className="quick-hover">
-              <span style={{ ...s.quickIcon, color: '#15803d', background: 'rgba(21,128,61,0.12)' }}>
-                <CalendarPlus size={18} weight="duotone" />
-              </span>
-              <span style={s.quickLabel}>Nouveau séjour</span>
-            </Link>
-            <Link href="/dashboard/voyageurs" style={s.quickItem} className="quick-hover">
-              <span style={{ ...s.quickIcon, color: '#0369a1', background: 'rgba(3,105,161,0.12)' }}>
-                <UserPlus size={18} weight="duotone" />
-              </span>
-              <span style={s.quickLabel}>Nouveau voyageur</span>
-            </Link>
-            <Link href="/dashboard/revenus" style={s.quickItem} className="quick-hover">
-              <span style={{ ...s.quickIcon, color: '#d97706', background: 'rgba(217,119,6,0.12)' }}>
-                <CurrencyEur size={18} weight="duotone" />
-              </span>
-              <span style={s.quickLabel}>Saisir un revenu</span>
-            </Link>
-            <Link href="/dashboard/securite" style={s.quickItem} className="quick-hover">
-              <span style={{ ...s.quickIcon, color: 'var(--danger)', background: 'rgba(220,38,38,0.12)' }}>
-                <Flag size={18} weight="duotone" />
-              </span>
-              <span style={s.quickLabel}>Signaler un voyageur</span>
-            </Link>
-            <Link href="/dashboard/calendrier" style={s.quickItem} className="quick-hover">
-              <span style={{ ...s.quickIcon, color: '#7c3aed', background: 'rgba(124,58,237,0.12)' }}>
-                <CalendarBlank size={18} weight="duotone" />
-              </span>
-              <span style={s.quickLabel}>Voir le calendrier</span>
-            </Link>
-          </div>
-        </section>
+        {/* ── Quick actions RETIRÉES (Étape 7/7) ────────────────────────
+              Les 5 quick actions (Nouveau séjour, Nouveau voyageur, Saisir
+              revenu, Signaler voyageur, Voir calendrier) sont accessibles
+              depuis chaque page dédiée avec un bouton "+" contextuel. Elles
+              polluaient l'Accueil pour un usage 1-2 fois par mois seulement.
+              Les pills contextuelles du hero les remplacent avec plus de sens.
+              — bloc supprimé volontairement. */}
 
-        {/* ── Entre Hôtes (remonté en V2 : sortait "de l'ombre" en bas de
-              page, on le place juste après les Quick actions pour qu'il
-              soit visible above-the-fold sur la majorité des écrans). */}
-        <section style={s.section} className="fade-up d2">
-          <ChezNousWidget
-            posts={(cnPosts ?? []).map(p => ({
-              id: p.id,
-              author_id: p.author_id,
-              category: p.category as CategoryId,
-              title: p.title,
-              reply_count: p.reply_count,
-              vote_count: p.vote_count ?? 0,
-              last_reply_at: p.last_reply_at,
-              created_at: p.created_at,
-            }))}
-            authors={cnAuthors}
-            totalPosts={cnTotal ?? 0}
-          />
-        </section>
+        {/* ── Entre Hôtes RETIRÉ (Étape 7/7) ────────────────────────────
+              Le widget d'aperçu du forum a été déplacé vers /dashboard/entre-hotes
+              (Étape 6). Un lien direct est disponible dans la sidebar
+              "Faire grandir mon activité > Entre Hôtes".
+              — bloc supprimé volontairement. */}
 
         {/* ── Prochains événements 14 jours ─────────────────────────────── */}
         <section style={s.section} className="fade-up d1">
@@ -990,6 +964,29 @@ const s: Record<string, React.CSSProperties> = {
   welcomeSub:   { fontSize: 'var(--t-sm)', color: 'var(--text-3)', marginBottom: 'var(--s-2)', letterSpacing: '0.3px', textTransform: 'uppercase' as const, fontWeight: 500 },
   welcomeTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(28px,2.6vw,40px)', fontWeight: 400, color: 'var(--text)', marginBottom: 'var(--s-3)', letterSpacing: 'var(--ls-tight)', lineHeight: 'var(--lh-tight)' },
   welcomeDesc:  { fontSize: 'var(--t-base)', fontWeight: 400, color: 'var(--text-2)', maxWidth: '440px', lineHeight: 'var(--lh-relax)' },
+  // Pills d'actions contextuelles (Étape 7). Remplacent les stats statiques.
+  actionPills:  {
+    display: 'flex', flexWrap: 'wrap', gap: 'var(--s-2)',
+    marginTop: 'var(--s-4)',
+  },
+  pill: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    padding: '7px 13px', borderRadius: 'var(--r-pill)',
+    fontSize: 'var(--t-sm)', fontWeight: 500,
+    color: 'var(--text)',
+    background: 'rgba(255,255,255,0.05)',
+    border: '1px solid var(--border)',
+    textDecoration: 'none',
+    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
+    whiteSpace: 'nowrap' as const,
+  },
+  pillOk:   { color: 'var(--success-1)', background: 'var(--success-bg)', borderColor: 'rgba(99,214,131,0.30)' },
+  pillInfo: { color: '#93C5FD', background: 'rgba(147,197,253,0.10)', borderColor: 'rgba(147,197,253,0.25)' },
+  pillWarn: { color: '#FB923C', background: 'rgba(251,146,60,0.10)', borderColor: 'rgba(251,146,60,0.30)' },
+  pillDot:  { width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor', flexShrink: 0 },
+  // Anciennes stats — obsolètes après Étape 7 mais conservées le temps que
+  // rien ne les référence (utilisées par PerformanceCard qui reste sur
+  // /dashboard/finances). À nettoyer plus tard.
   statsRow:     { display: 'flex', alignItems: 'center', gap: 'var(--s-7)', flexShrink: 0 },
   stat:         { textAlign: 'center' as const },
   statVal:      { display: 'block', fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(36px,3vw,44px)', fontWeight: 400, color: 'var(--accent-text)', lineHeight: 'var(--lh-tight)', letterSpacing: 'var(--ls-tight)' },
