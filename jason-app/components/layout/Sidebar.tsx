@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import {
@@ -196,32 +196,55 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   }
 
   const searchParams = useSearchParams()
+
+  // Collecte tous les hrefs de la sidebar (nav principale + admin) pour la
+  // resolution de l'active state. Regle : le href avec le match le plus
+  // profond gagne — sinon `/dashboard/admin` (Vue d'ensemble) serait actif
+  // en meme temps que `/dashboard/admin/photographes` quand on est sur la
+  // sous-page (les 2 sont prefixes valides du pathname).
+  const allHrefs = useMemo(() => [
+    ...navGroups.flatMap(g => g.items.map(i => i.href)),
+    ...adminMain.map(i => i.href),
+    ...adminContent.map(i => i.href),
+  ], [])
+
   function NavItem({ href, label, Icon, adminColor, notifDot }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean }) {
     // Active state :
     // - /dashboard exact (sinon toutes les pages seraient "active")
     // - Si href contient une querystring (ex Mes reservations = /calendrier?view=list),
-    //   on compare pathname + querystring. Sinon calendrier et mes reservations
-    //   seraient toutes les deux "active" en meme temps.
-    // - Sinon match prefix pour capturer les sous-routes (ex /finances/revenus).
+    //   on compare pathname + querystring
+    // - Sinon match exact OU match prefix avec regle "match le plus profond gagne"
     let active: boolean
     if (href === '/dashboard') {
       active = pathname === '/dashboard'
     } else if (href.includes('?')) {
       const [hrefPath, hrefQs] = href.split('?')
-      // Chaque parametre du href doit etre present tel quel dans searchParams
       const wanted = new URLSearchParams(hrefQs)
       let qsMatch = true
       wanted.forEach((val, key) => { if (searchParams?.get(key) !== val) qsMatch = false })
       active = pathname === hrefPath && qsMatch
     } else {
-      // href sans qs : on est actif sur cette page SEULEMENT si aucun autre
-      // item de la sidebar ne pointe sur (pathname + une qs specifique). Sinon
-      // /calendrier serait actif alors qu'on est sur /calendrier?view=list.
+      // Cas special : sur /calendrier?view=list, "Calendrier" ne doit pas
+      // etre actif (c'est "Mes reservations" qui l'est via matching qs).
       const onCalendrierList = pathname === '/dashboard/calendrier' && searchParams?.get('view') === 'list'
       if (href === '/dashboard/calendrier' && onCalendrierList) {
         active = false
+      } else if (pathname === href) {
+        // Match exact : toujours actif
+        active = true
+      } else if (pathname.startsWith(href + '/')) {
+        // Match prefix : actif SEULEMENT si aucun autre href de la sidebar
+        // ne fait un match plus profond. Ex : sur /dashboard/admin/photographes,
+        // /dashboard/admin fait un prefix match mais /dashboard/admin/photographes
+        // fait un match exact plus profond → /dashboard/admin n'est PAS actif.
+        const hasDeeperMatch = allHrefs.some(other =>
+          other !== href
+          && other.startsWith(href + '/')
+          && (pathname === other || pathname.startsWith(other + '/')),
+        )
+        active = !hasDeeperMatch
       } else {
-        active = pathname === href || pathname.startsWith(href + '/')
+        active = false
       }
     }
     return (
