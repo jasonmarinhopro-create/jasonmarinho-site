@@ -3,6 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import ReservationsView from './ReservationsView'
 import type { Reservation, LogementLite } from './types'
+import { computeMenageSlots, mergeAutoAndManual, type LogementSettings, type Occupation, type MenageSlot } from '@/lib/menage/compute'
 
 export const metadata = { title: 'Mes réservations' }
 export const revalidate = 30
@@ -31,6 +32,8 @@ export default async function ReservationsPage() {
     { data: contracts },
     { data: sejoursRaw },
     { data: logementsRaw },
+    { data: events },
+    { data: profileRow },
   ] = await Promise.all([
     supabase
       .from('contracts')
@@ -45,11 +48,25 @@ export default async function ReservationsPage() {
       .eq('user_id', userId)
       .not('date_arrivee', 'is', null)
       .not('date_depart', 'is', null),
+    // Logements avec settings menage (heure defaut, duree, notes) — necessaires
+    // pour computeMenageSlots + le modal Planning menage.
     supabase
       .from('logements')
-      .select('id, nom')
+      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage')
       .eq('user_id', userId)
       .order('nom'),
+    // Events "menage" manuels (via +Evenement dans le calendrier).
+    supabase
+      .from('calendar_events')
+      .select('id, title, date, end_date, start_time, end_time, description, category')
+      .eq('user_id', userId)
+      .eq('category', 'menage'),
+    // profile.ical_token + full_name pour le modal (lien iCal + signature PDF).
+    supabase
+      .from('profiles')
+      .select('ical_token, full_name')
+      .eq('id', userId)
+      .maybeSingle(),
   ])
 
   // Contracts qui pointent sur un sejour → on skip le sejour pour ne pas dupliquer
@@ -121,7 +138,95 @@ export default async function ReservationsPage() {
     id: l.id, nom: l.nom ?? 'Logement',
   }))
 
-  return <ReservationsView reservations={reservations} logements={logements} />
+  // ─── Planning menage — meme calcul que /calendrier ──────────────────
+  // Fusionne contracts + sejours (sans doublons via sejourIdsWithContract)
+  // en Occupation[], puis computeMenageSlots + mergeAutoAndManual pour
+  // integrer les menages manuels du calendrier.
+  const logementSettings: LogementSettings[] = (logementsRaw ?? []).map((l: any) => ({
+    id: l.id,
+    nom: l.nom ?? 'Logement',
+    menageDureeMin: l.menage_duree_min ?? 180,
+    menageHeureDefaut: l.menage_heure_defaut ?? '11:00',
+    menageNotes: l.menage_notes ?? null,
+    adresse: l.adresse ?? null,
+    contactMenageNom: l.contact_menage_nom ?? null,
+    contactMenageTel: l.contact_menage_tel ?? null,
+    fraisMenage: l.frais_menage ?? null,
+  }))
+
+  const occupations: Occupation[] = []
+  for (const c of contracts ?? []) {
+    if (!c.date_arrivee || !c.date_depart) continue
+    occupations.push({
+      sourceId: `contract-${c.id}`,
+      source: 'contract',
+      logementName: c.logement_nom ?? '',
+      dateArrivee: c.date_arrivee,
+      dateDepart: c.date_depart,
+      voyageurLabel: [c.locataire_prenom, c.locataire_nom].filter(Boolean).join(' ').trim() || null,
+    })
+  }
+  for (const s of (sejoursRaw ?? []) as any[]) {
+    if (!s.date_arrivee || !s.date_depart) continue
+    if (sejourIdsWithContract.has(s.id)) continue
+    const v = s.voyageurs as { prenom?: string; nom?: string } | null
+    const voyageurLabel = v
+      ? `${v.prenom ?? ''} ${v.nom ?? ''}`.trim() || null
+      : null
+    occupations.push({
+      sourceId: `sejour-${s.id}`,
+      source: 'sejour',
+      logementName: s.logement ?? '',
+      dateArrivee: s.date_arrivee,
+      dateDepart: s.date_depart,
+      voyageurLabel,
+    })
+  }
+
+  const autoSlots = computeMenageSlots(occupations, logementSettings)
+  const manualMenageEvents = (events ?? []).map(e => ({
+    id: e.id, date: e.date,
+    startTime: e.start_time, endTime: e.end_time,
+    title: e.title, description: e.description,
+  }))
+  const menageSlots: MenageSlot[] = mergeAutoAndManual(autoSlots, manualMenageEvents, logementSettings)
+
+  // done_ids : slots deja marques FAIT via un calendar_event dedie
+  // (description contient [FAIT]) — meme logique que dans le calendrier.
+  const doneIds: string[] = []
+  for (const slot of menageSlots) {
+    const logementLow = slot.logementName.trim().toLowerCase()
+    const isDone = (events ?? []).some(e =>
+      e.date === slot.date
+      && (e.title ?? '').toLowerCase().includes(logementLow)
+      && (e.description ?? '').includes('[FAIT]'),
+    )
+    if (isDone) doneIds.push(slot.id)
+  }
+
+  const logementNames: string[] = logementSettings.map(l => l.nom).filter(Boolean)
+  const logementIdByName: Record<string, string> = {}
+  for (const l of logementSettings) {
+    if (l.nom) logementIdByName[l.nom] = l.id
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+  const icalToken = (profileRow as any)?.ical_token ?? null
+  const hostName = (profileRow as any)?.full_name ?? null
+
+  return (
+    <ReservationsView
+      reservations={reservations}
+      logements={logements}
+      menageSlots={menageSlots}
+      menageDoneIds={doneIds}
+      menageLogementNames={logementNames}
+      menageLogementIdByName={logementIdByName}
+      appUrl={appUrl}
+      icalToken={icalToken}
+      hostName={hostName}
+    />
+  )
 }
 
 /** Normalise n'importe quel champ source/plateforme vers un identifiant clair. */
