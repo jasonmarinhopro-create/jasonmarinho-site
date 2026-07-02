@@ -344,25 +344,33 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
             </div>
           ) : adminMode && isAdmin ? (
             /* Mode admin dedicated : sidebar remplacée par Admin uniquement.
-               Bouton "← Retour hôte" en haut pour désactiver. */
+               Header "Mode admin" + bouton retour hote dans la DA (jaune accent). */
             <>
+              {!collapsed && (
+                <div style={styles.adminModeHeader}>
+                  <div style={styles.adminBadge}>
+                    <span style={styles.adminBadgeDot} />
+                    <span style={styles.adminBadgeLabel}>Mode admin</span>
+                  </div>
+                  <div style={styles.adminHelper}>Tu vois la sidebar admin. Repasse en mode hôte pour retrouver ton dashboard.</div>
+                </div>
+              )}
               <button
                 onClick={toggleAdminMode}
                 className="jm-nav-item"
                 title={collapsed ? 'Retour mode hôte' : undefined}
                 style={{
                   ...styles.navItem,
-                  background: 'rgba(192,132,252,0.08)',
-                  border: '1px solid rgba(192,132,252,0.20)',
-                  cursor: 'pointer',
-                  width: '100%', textAlign: 'left',
-                  color: '#C084FC',
-                  marginBottom: 8,
+                  ...styles.backToHostBtn,
                   justifyContent: collapsed ? 'center' : 'flex-start',
                 }}
               >
-                <CaretDoubleLeft size={16} />
-                {!collapsed && <span>Retour mode hôte</span>}
+                <div style={styles.backToHostIco}>
+                  <CaretDoubleLeft size={13} weight="bold" />
+                </div>
+                {!collapsed && (
+                  <span style={styles.backToHostLabel}>Retour mode hôte</span>
+                )}
               </button>
             </>
           ) : (
@@ -394,16 +402,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               pour l'usage quotidien hôte. */}
           {isAdmin && adminMode && (
             <>
-              {/* Séparateur "Admin" — texte caché en mode réduit, ligne conservée */}
-              {collapsed ? (
-                <div style={{ height: '1px', background: 'var(--nav-border)', margin: '14px 8px 10px' }} />
-              ) : (
-                <div style={styles.navDivider}>
-                  <div style={styles.navDividerLine} />
-                  <span style={{ ...styles.navDividerLabel, color: 'var(--nav-admin-color)' }}>Admin</span>
-                  <div style={styles.navDividerLine} />
-                </div>
-              )}
+              {/* Divider "Admin" retire quand on est deja en mode admin :
+                  le header "Mode admin" au-dessus + le bouton retour hote
+                  suffisent a signaler le contexte. Pas la peine de dupliquer.
+                  En mode reduit on garde juste une fine ligne pour separer. */}
+              {collapsed && <div style={{ height: '1px', background: 'var(--nav-border)', margin: '4px 8px 10px' }} />}
 
               <div style={styles.navSection}>
                 {adminMain.map(({ href, label, Icon }) => (
@@ -563,7 +566,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 <Star size={15} weight="fill" />Laisser un avis Google
               </a>
 
-              {/* Toggle Mode admin — visible uniquement pour les admins */}
+              {/* Toggle Mode admin — visible uniquement pour les admins.
+                  Style aligne sur la DA (accent-text jaune) + petit chip
+                  icon pour un vrai look bouton, plus d'aplat purple hors DA. */}
               {isAdmin && (
                 <>
                   <div style={styles.userMenuDivider} />
@@ -572,14 +577,24 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     style={{
                       ...styles.userMenuItem,
                       width: '100%',
-                      background: adminMode ? 'rgba(192,132,252,0.15)' : 'rgba(192,132,252,0.06)',
-                      border: '1px solid rgba(192,132,252,0.25)',
+                      background: adminMode ? 'var(--accent-bg)' : 'rgba(255,213,107,0.04)',
+                      border: '1px solid var(--accent-border)',
                       cursor: 'pointer', textAlign: 'left',
-                      color: '#C084FC',
+                      color: 'var(--accent-text)',
+                      fontWeight: 500,
                     }}
                     title={adminMode ? 'Repasser en mode hôte' : 'Basculer sur la sidebar admin dédiée'}
                   >
-                    <Gear size={15} weight={adminMode ? 'fill' : 'regular'} />
+                    <span style={{
+                      width: 22, height: 22, flexShrink: 0,
+                      background: 'rgba(255,213,107,0.15)',
+                      border: '1px solid var(--accent-border)',
+                      borderRadius: 6,
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'var(--accent-text)',
+                    }}>
+                      <Gear size={13} weight={adminMode ? 'fill' : 'regular'} />
+                    </span>
                     {adminMode ? 'Repasser en mode hôte' : 'Mode admin'}
                   </button>
                 </>
@@ -720,6 +735,59 @@ const styles: Record<string, React.CSSProperties> = {
     background: '#EF4444',
     borderRadius: '50%',
     border: '1.5px solid var(--nav-bg)',
+  },
+  // ── Mode admin : header + bouton "Retour mode hôte" ──
+  // Aligne sur la DA : accent-text (jaune) au lieu de purple, badge subtle,
+  // helper text pour rappeler le contexte, button avec chip icon type
+  // "back button" moderne.
+  adminModeHeader: {
+    padding: '10px 12px 14px',
+    marginBottom: 6,
+    borderBottom: '1px solid var(--nav-border)',
+    display: 'flex', flexDirection: 'column' as const, gap: 8,
+  },
+  adminBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: 7,
+    padding: '4px 9px',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: 999,
+    width: 'fit-content',
+    color: 'var(--accent-text)',
+    fontSize: 10, fontWeight: 700, letterSpacing: 0.8,
+    textTransform: 'uppercase' as const,
+  },
+  adminBadgeDot: {
+    width: 6, height: 6, borderRadius: '50%',
+    background: 'var(--accent-text)',
+    boxShadow: '0 0 0 3px rgba(255,213,107,0.20)',
+  },
+  adminBadgeLabel: { lineHeight: 1 },
+  adminHelper: {
+    fontSize: 11, color: 'var(--nav-text-muted)',
+    lineHeight: 1.5,
+  },
+  backToHostBtn: {
+    cursor: 'pointer',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)',
+    marginBottom: 10,
+    width: '100%', textAlign: 'left' as const,
+    fontFamily: 'inherit',
+    transition: 'background 0.15s, transform 0.15s',
+  },
+  backToHostIco: {
+    width: 22, height: 22, flexShrink: 0,
+    background: 'rgba(255,213,107,0.15)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: 6,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    color: 'var(--accent-text)',
+  },
+  backToHostLabel: {
+    fontWeight: 600, fontSize: 13,
+    color: 'var(--accent-text)',
   },
   collapseBtn: {
     // Bouton chevron collapse — visible et cliquable comme un vrai
