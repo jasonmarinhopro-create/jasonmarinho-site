@@ -347,7 +347,7 @@
 
     + '</ul>'
     + '<div class="n-right">'
-      + '<a href="/mon-compte" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
+      + '<a href="https://app.jasonmarinho.com/dashboard" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
       + '<a href="https://app.jasonmarinho.com/auth/register" class="nb-c">Commencer <i class="ph-bold ph-arrow-right"></i></a>'
     + '</div>'
     + '<button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>'

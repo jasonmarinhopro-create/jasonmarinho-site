@@ -2,10 +2,11 @@
 
 import { useState, Suspense, useRef } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import {
   ArrowRight, Eye, EyeSlash, CheckCircle, UserPlus,
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
+  HouseLine, Camera, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 
@@ -40,8 +41,118 @@ function PasswordStrength({ password }: { password: string }) {
 export default function RegisterPage() {
   return (
     <Suspense fallback={null}>
-      <RegisterForm />
+      <RegisterEntry />
     </Suspense>
+  )
+}
+
+/**
+ * Etape 0 : selecteur de role. Sans ?role= dans l'URL, on affiche 3 cartes
+ * pour orienter l'utilisateur vers le bon flow d'inscription :
+ *  - Hote LCD  → formulaire in-app classique (RegisterForm)
+ *  - Photographe → redirect vers /annuaires/photographes/inscription
+ *  - Menage → redirect vers /annuaires/menage/inscription
+ *
+ * Les inscriptions photographe/menage passent par le site public parce
+ * qu'elles impliquent un paiement Stripe (39,98€/79,98€ / an) + validation
+ * fiche — c'est un flow different de l'inscription hote gratuite.
+ */
+function RegisterEntry() {
+  const searchParams = useSearchParams()
+  const role = searchParams?.get('role') ?? null
+  // Compatibilite : les liens ?ref=USER (invitation) forcent role=host
+  const isInvited = !!searchParams?.get('ref')
+  if (role === 'host' || isInvited) return <RegisterForm />
+  return <RoleChooser />
+}
+
+/**
+ * Choix du role d'inscription — cartes cliquables. Coherent visuellement
+ * avec la page de login (meme brand panel, meme background).
+ */
+function RoleChooser() {
+  const roles = [
+    {
+      key: 'host',
+      icon: HouseLine,
+      title: 'Hôte LCD',
+      desc: 'Je gère 1 ou plusieurs biens en location courte durée. Je veux les outils, formations et la communauté.',
+      cta: 'Créer mon compte hôte',
+      accent: '#63D683',
+      href: '/auth/register?role=host',
+      external: false,
+      pricing: 'Gratuit à vie',
+    },
+    {
+      key: 'photographe',
+      icon: Camera,
+      title: 'Photographe LCD',
+      desc: "J'accompagne les hôtes en photo/vidéo/drone. Je crée ma fiche dans l'annuaire pour être trouvé.",
+      cta: 'Créer ma fiche photographe',
+      accent: '#FFD56B',
+      href: 'https://jasonmarinho.com/annuaires/photographes/inscription',
+      external: true,
+      pricing: '39,98 €/an à vie (fondateur) puis 79,98 €/an',
+    },
+    {
+      key: 'menage',
+      icon: Sparkle,
+      title: 'Équipe ménage',
+      desc: 'Je fais du turnover pro pour les hôtes. Je crée ma fiche dans l\'annuaire pour être contacté.',
+      cta: 'Créer ma fiche équipe',
+      accent: '#93C5FD',
+      href: 'https://jasonmarinho.com/annuaires/menage/inscription',
+      external: true,
+      pricing: '39,98 €/an à vie (fondateur) puis 79,98 €/an',
+    },
+  ] as const
+
+  return (
+    <div data-theme="light" style={rc.wrap}>
+      <style>{ROLE_CHOOSER_CSS}</style>
+      {/* Bandeau haut */}
+      <div style={rc.topBar}>
+        <a href="https://jasonmarinho.com" style={rc.brandLogo}>
+          <div style={rc.brandLogoIcon}><JmLogo size={20} /></div>
+          <span style={rc.brandLogoText}>Jason <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>Marinho</em></span>
+        </a>
+        <Link href="/auth/login" style={rc.loginLink}>Déjà un compte ? <strong>Se connecter</strong></Link>
+      </div>
+
+      <div style={rc.inner} className="fade-up">
+        <span style={rc.tag}>Créer un compte</span>
+        <h1 style={rc.title}>Qui es-tu <em style={rc.titleEm}>dans le LCD ?</em></h1>
+        <p style={rc.sub}>Choisis le profil qui te correspond pour rejoindre le bon espace. Tu pourras cumuler plusieurs profils plus tard depuis ton dashboard.</p>
+
+        <div style={rc.grid} className="role-grid">
+          {roles.map(r => {
+            const Icon = r.icon
+            const CardTag = r.external ? 'a' : Link
+            const cardProps: any = r.external ? { href: r.href } : { href: r.href }
+            return (
+              <CardTag key={r.key} {...cardProps} style={rc.card} className="role-card">
+                <div style={{ ...rc.cardIco, background: `color-mix(in oklab, ${r.accent} 12%, transparent)`, borderColor: `color-mix(in oklab, ${r.accent} 30%, transparent)`, color: r.accent }}>
+                  <Icon size={22} weight="duotone" />
+                </div>
+                <div style={rc.cardBody}>
+                  <h3 style={rc.cardTitle}>{r.title}</h3>
+                  <p style={rc.cardDesc}>{r.desc}</p>
+                  <div style={rc.cardPricing}>{r.pricing}</div>
+                </div>
+                <span style={rc.cardCta}>
+                  {r.cta} <ArrowRight size={13} weight="bold" />
+                </span>
+              </CardTag>
+            )
+          })}
+        </div>
+
+        <div style={rc.trustRow}>
+          <ShieldCheck size={13} color="rgba(11,29,15,0.35)" weight="bold" />
+          <span style={rc.trustText}>Données sécurisées · RGPD · Aucun partage avec des tiers</span>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -518,4 +629,129 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', color: 'rgba(11,29,15,0.55)', lineHeight: 1.55,
     margin: 0,
   },
+}
+
+// ─── Styles Role Chooser (etape 0 : choix hote/photo/menage) ──────────────
+
+const ROLE_CHOOSER_CSS = `
+  .role-grid { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px) { .role-grid { grid-template-columns: 1fr !important; } }
+  .role-card {
+    transition: transform 0.18s var(--ease-spring, cubic-bezier(0.34,1.56,0.64,1)),
+                border-color 0.18s,
+                box-shadow 0.18s;
+  }
+  .role-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0,76,63,0.28) !important;
+    box-shadow: 0 12px 32px rgba(0,76,63,0.10);
+  }
+`
+
+const rc: Record<string, React.CSSProperties> = {
+  wrap: {
+    minHeight: '100svh',
+    background: '#FDFCF9',
+    display: 'flex', flexDirection: 'column' as const,
+  },
+  topBar: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '18px clamp(20px, 4vw, 40px)',
+    background: '#004C3F',
+    color: '#fff',
+  },
+  brandLogo: { display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' },
+  brandLogoIcon: {
+    width: 34, height: 34, borderRadius: 10,
+    background: 'rgba(255,255,255,0.1)',
+    border: '1px solid rgba(255,213,107,0.25)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  brandLogoText: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, fontWeight: 600, color: '#fff' },
+  loginLink: { fontSize: 13.5, color: 'rgba(255,255,255,0.7)', textDecoration: 'none' },
+  inner: {
+    flex: 1,
+    display: 'flex', flexDirection: 'column' as const,
+    alignItems: 'center', justifyContent: 'center',
+    padding: 'clamp(40px, 5vh, 72px) clamp(20px, 4vw, 48px)',
+    maxWidth: 1200, width: '100%', margin: '0 auto',
+  },
+  tag: {
+    display: 'inline-block',
+    fontSize: 11, fontWeight: 700, letterSpacing: 1.2,
+    textTransform: 'uppercase' as const,
+    color: '#004C3F',
+    background: 'rgba(0,76,63,0.06)',
+    border: '1px solid rgba(0,76,63,0.15)',
+    borderRadius: 100, padding: '5px 12px',
+    marginBottom: 18,
+  },
+  title: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 400,
+    letterSpacing: '-0.03em', lineHeight: 1.15,
+    color: '#0B1D0F', margin: 0, marginBottom: 14,
+    textAlign: 'center' as const,
+  },
+  titleEm: { color: '#004C3F', fontStyle: 'italic', fontWeight: 300 },
+  sub: {
+    fontSize: 15, color: 'rgba(11,29,15,0.6)', lineHeight: 1.65,
+    maxWidth: 620, textAlign: 'center' as const,
+    margin: '0 0 40px',
+  },
+  grid: {
+    display: 'grid',
+    gap: 16,
+    width: '100%', maxWidth: 1000,
+    marginBottom: 24,
+  },
+  card: {
+    display: 'flex', flexDirection: 'column' as const, gap: 14,
+    padding: '26px 22px',
+    background: '#fff',
+    border: '1px solid rgba(0,76,63,0.12)',
+    borderRadius: 16,
+    textDecoration: 'none',
+    color: '#0B1D0F',
+    cursor: 'pointer',
+    height: '100%',
+  },
+  cardIco: {
+    width: 46, height: 46, borderRadius: 12,
+    border: '1px solid',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  cardBody: { flex: 1, display: 'flex', flexDirection: 'column' as const, gap: 8 },
+  cardTitle: {
+    fontFamily: 'var(--font-fraunces), serif',
+    fontSize: 20, fontWeight: 500, letterSpacing: '-0.01em',
+    color: '#0B1D0F', margin: 0,
+  },
+  cardDesc: {
+    fontSize: 13.5, color: 'rgba(11,29,15,0.62)',
+    lineHeight: 1.6, margin: 0,
+  },
+  cardPricing: {
+    fontSize: 11.5, fontWeight: 600, letterSpacing: 0.3,
+    color: 'rgba(11,29,15,0.55)',
+    padding: '5px 10px',
+    background: 'rgba(0,76,63,0.05)',
+    border: '1px solid rgba(0,76,63,0.10)',
+    borderRadius: 8,
+    display: 'inline-block',
+    width: 'fit-content',
+    marginTop: 4,
+  },
+  cardCta: {
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    fontSize: 13, fontWeight: 600,
+    color: '#004C3F',
+    marginTop: 4,
+  },
+  trustRow: {
+    display: 'flex', alignItems: 'center', gap: 7,
+    marginTop: 28,
+  },
+  trustText: { fontSize: 11.5, color: 'rgba(11,29,15,0.4)', letterSpacing: 0.2 },
 }
