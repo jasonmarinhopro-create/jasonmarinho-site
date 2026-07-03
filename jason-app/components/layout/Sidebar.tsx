@@ -166,6 +166,12 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     setAdminMode(v => {
       const next = !v
       try { localStorage.setItem('admin-mode', String(next)) } catch {}
+      // Navigation auto vers la page pertinente : entrer en mode admin
+      // ouvre la Vue d'ensemble admin ; en sortir revient a l'Accueil hote.
+      // Sinon Jason restait sur la derniere page consultee dans l'autre mode,
+      // ce qui etait deroutant (ex : reste sur /admin/photographes en mode
+      // hote alors que le user n'a plus le contexte admin).
+      router.push(next ? '/dashboard/admin' : '/dashboard')
       return next
     })
   }

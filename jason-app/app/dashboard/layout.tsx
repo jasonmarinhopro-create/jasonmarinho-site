@@ -13,6 +13,7 @@ import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
 import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
+import OutilsBackBar from '@/components/dashboard/OutilsBackBar'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): string {
   if (role === 'admin') return 'Administrateur'
@@ -99,6 +100,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           activePropertyId={activeProperty.propertyId}
         />
         <main style={styles.main} className="dash-main">
+          <OutilsBackBar />
           <Suspense fallback={<DashboardLoading />}>
             <PageFadeWrapper>{children}</PageFadeWrapper>
           </Suspense>
