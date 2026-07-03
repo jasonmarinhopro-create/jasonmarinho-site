@@ -1,13 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Calculator, ChartLineUp, MapPin, Storefront, TrendUp, CurrencyEur } from '@phosphor-icons/react/dist/ssr'
+import { MapPin, Storefront, TrendUp, CurrencyEur } from '@phosphor-icons/react/dist/ssr'
 import { EstimateurRevenus, CalculateurPrix, CompareurMesVilles } from '../simulateurs/SimulateursUI'
 import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
 import type { AccountStats } from '@/lib/lcd/account-stats'
 import type { LogementPrefill } from './page'
 import TourTrigger from '@/components/dashboard/TourTrigger'
 import MesPrix from './MesPrix'
+import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 
 // "mes-prix" est ouvert par défaut : c'est le hub stratégique des hôtes
 // (saisir/voir ses prix par plateforme + saison). Les 3 autres tabs sont
@@ -73,7 +74,7 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
       ` }} />
       <div className="calc-root">
 
-        <PageSwitcher current="marche" />
+        <OutilsSwitcher current="marche" />
 
         <div style={s.hero}>
           <span style={s.heroBadge}>
@@ -129,40 +130,6 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
       </div>
     </div>
   )
-}
-
-function PageSwitcher({ current }: { current: 'fiscal' | 'marche' }) {
-  const isFiscal = current === 'fiscal'
-  return (
-    <div style={ps.wrap} role="navigation" aria-label="Choix de la suite d'outils">
-      <a href="/dashboard/simulateurs" style={isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={isFiscal ? 'page' : undefined}>
-        <Calculator size={13} weight="fill" /> Simulateurs fiscaux
-      </a>
-      <a href="/dashboard/calculateurs" style={!isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={!isFiscal ? 'page' : undefined}>
-        <ChartLineUp size={13} weight="fill" /> Prix & marché
-      </a>
-    </div>
-  )
-}
-
-const ps: Record<string, React.CSSProperties> = {
-  wrap: {
-    display: 'inline-flex', gap: '4px', padding: '4px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '10px', marginBottom: 'clamp(18px, 2.5vw, 26px)',
-  },
-  btn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '7px 12px', borderRadius: '7px',
-    fontSize: '12.5px', fontWeight: 500,
-    color: 'var(--text-2)', background: 'transparent',
-    textDecoration: 'none',
-    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
-  },
-  btnActive: {
-    background: 'var(--accent-bg)', color: 'var(--accent-text)',
-    fontWeight: 700,
-  },
 }
 
 const s: Record<string, React.CSSProperties> = {

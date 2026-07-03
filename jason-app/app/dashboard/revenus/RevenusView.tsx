@@ -1918,7 +1918,7 @@ function KpiCard({ icon, label, value, colorClass, sub, subColor }: {
   icon: React.ReactNode; label: string; value: string; colorClass: string; sub?: string; subColor?: string
 }) {
   return (
-    <div style={s.kpiCard} className="kpi-card anim-fade-up">
+    <div style={s.kpiCard} className="kpi-card">
       <div className={`kpi-icon-${colorClass}`} style={s.kpiIcon}>{icon}</div>
       <div style={s.kpiBody}>
         <span style={s.kpiLabel}>{label}</span>

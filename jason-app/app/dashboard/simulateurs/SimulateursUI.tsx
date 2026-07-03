@@ -8,6 +8,7 @@ import type { AccountStats } from '@/lib/lcd/account-stats'
 import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
 import { fmtEur, normalizeType, MiniBox, BenchmarkRow } from '@/components/simulateurs/_shared'
 import TourTrigger from '@/components/dashboard/TourTrigger'
+import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 
 // Lazy-load des 5 simulateurs fiscaux : chacun dans son propre chunk JS.
 // L'utilisateur ne télécharge que ce dont il a besoin selon l'onglet sélectionné.
@@ -745,7 +746,7 @@ export default function SimulateursUI({ logementsPrefill = [], accountStats }: P
       ` }} />
       <div className="sim-root">
 
-        <PageSwitcher current="fiscal" />
+        <OutilsSwitcher current="fiscal" />
 
         <div style={s.hero}>
           <span style={s.heroBadge}>
@@ -796,40 +797,6 @@ export default function SimulateursUI({ logementsPrefill = [], accountStats }: P
       </div>
     </div>
   )
-}
-
-function PageSwitcher({ current }: { current: 'fiscal' | 'marche' }) {
-  const isFiscal = current === 'fiscal'
-  return (
-    <div style={ps.wrap} role="navigation" aria-label="Choix de la suite d'outils">
-      <a href="/dashboard/simulateurs" style={isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={isFiscal ? 'page' : undefined}>
-        <Calculator size={13} weight="fill" /> Simulateurs fiscaux
-      </a>
-      <a href="/dashboard/calculateurs" style={!isFiscal ? { ...ps.btn, ...ps.btnActive } : ps.btn} aria-current={!isFiscal ? 'page' : undefined}>
-        <ChartLineUp size={13} weight="fill" /> Prix & marché
-      </a>
-    </div>
-  )
-}
-
-const ps: Record<string, React.CSSProperties> = {
-  wrap: {
-    display: 'inline-flex', gap: '4px', padding: '4px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '10px', marginBottom: 'clamp(18px, 2.5vw, 26px)',
-  },
-  btn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '7px 12px', borderRadius: '7px',
-    fontSize: '12.5px', fontWeight: 500,
-    color: 'var(--text-2)', background: 'transparent',
-    textDecoration: 'none',
-    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
-  },
-  btnActive: {
-    background: 'var(--accent-bg)', color: 'var(--accent-text)',
-    fontWeight: 700,
-  },
 }
 
 const s: Record<string, React.CSSProperties> = {
