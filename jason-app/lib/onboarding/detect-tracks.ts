@@ -4,20 +4,8 @@
 //  - Manual flags stored in profiles.onboarding_completed_steps
 //  - Profile fields like chez_nous_onboarded_at
 
-import { unstable_cache } from 'next/cache'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/server'
 import { ONBOARDING_TRACKS } from './tracks'
-
-/** Service role client — safe a utiliser dans unstable_cache car il ne lit
- *  aucun cookie/header dynamique. Necessaire ici : createClient() de
- *  @/lib/supabase/server lit les cookies et crashe hors contexte requete. */
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 export interface TrackProgress {
   /** Track key */
@@ -51,55 +39,41 @@ interface DetectInput {
   stripeOnboardingComplete: boolean
 }
 
-// PERF : les 7 tests d'existence sont maintenant caches Next.js pendant
-// 5 min avec un tag `onboarding-existence:{userId}`. Un utilisateur qui
-// crée un logement peut invalider ce cache via revalidateTag depuis la
-// server action correspondante. Sans ca : 7 queries * chaque nav = 300-
-// 800ms bloquants cumules. Avec le cache : quasi 0ms apres le 1er render.
-const fetchExistenceFlags = (userId: string) => unstable_cache(
-  async () => {
-    // Service role : pas de cookies, safe dans unstable_cache. Le userId est
-    // deja verifie par le layout (getProfile) avant d'appeler ce helper.
-    const supabase = getServiceClient()
-    const [logements, voyageurs, sejours, contracts, audits, chezNousPosts, affiches] = await Promise.all([
-      supabase.from('logements')          .select('id').eq('user_id', userId).limit(1),
-      supabase.from('voyageurs')          .select('id').eq('user_id', userId).limit(1),
-      supabase.from('sejours')            .select('id').eq('user_id', userId).limit(1),
-      supabase.from('contracts')          .select('id').eq('user_id', userId).neq('statut', 'annule').limit(1),
-      supabase.from('audit_gbp_sessions') .select('id').eq('user_id', userId).limit(1),
-      supabase.from('chez_nous_posts')    .select('id').eq('author_id', userId).limit(1),
-      supabase.from('affiches')           .select('id').eq('user_id', userId).limit(1),
-    ])
-    const exists = (q: { data: unknown[] | null }) => Array.isArray(q.data) && q.data.length > 0
-    return {
-      logement:        exists(logements),
-      voyageur:        exists(voyageurs),
-      sejour:          exists(sejours),
-      contrat:         exists(contracts),
-      gbp_audit:       exists(audits),
-      chez_nous_post:  exists(chezNousPosts),
-      affiche:         exists(affiches),
-    }
-  },
-  ['onboarding-existence', userId],
-  { revalidate: 300, tags: [`onboarding-existence:${userId}`] },
-)()
-
 export async function detectTracksProgress(input: DetectInput): Promise<OnboardingTracksState> {
   const { userId, completedSteps, chezNousOnboardedAt, onboardingStep, stripeOnboardingComplete } = input
+  const supabase = await createClient()
   const manualSet = new Set(completedSteps)
 
-  const flags = await fetchExistenceFlags(userId)
+  // NOTE PERF : ce helper est appele par le layout dashboard a chaque nav.
+  // Les 7 tests d'existence (limit(1)) sont deja peu chers unitairement mais
+  // cumules ~200-500ms/nav. Une tentative d'ajout de unstable_cache a echoue
+  // (crash "Server Components render error" en prod, digest 1400304292 puis
+  // 2153635556 — probable interaction avec le contexte de la requete Next.js
+  // sur le service role). On garde la version directe qui reste correcte.
+  // Optimisation possible future : passer par une API route dediee OR
+  // deplacer detectTracksProgress hors du layout critique (fetch lazy via
+  // client component + suspense apres le first paint).
+  const exists = (q: { data: unknown[] | null }) => Array.isArray(q.data) && q.data.length > 0
+
+  const [logements, voyageurs, sejours, contracts, audits, chezNousPosts, affiches] = await Promise.all([
+    supabase.from('logements')          .select('id').eq('user_id', userId).limit(1),
+    supabase.from('voyageurs')          .select('id').eq('user_id', userId).limit(1),
+    supabase.from('sejours')            .select('id').eq('user_id', userId).limit(1),
+    supabase.from('contracts')          .select('id').eq('user_id', userId).neq('statut', 'annule').limit(1),
+    supabase.from('audit_gbp_sessions') .select('id').eq('user_id', userId).limit(1),
+    supabase.from('chez_nous_posts')    .select('id').eq('author_id', userId).limit(1),
+    supabase.from('affiches')           .select('id').eq('user_id', userId).limit(1),
+  ])
 
   const auto: Record<string, boolean> = {
-    logement:        flags.logement,
-    voyageur:        flags.voyageur,
-    sejour:          flags.sejour,
-    contrat:         flags.contrat,
-    gbp_audit:       flags.gbp_audit,
+    logement:        exists(logements),
+    voyageur:        exists(voyageurs),
+    sejour:          exists(sejours),
+    contrat:         exists(contracts),
+    gbp_audit:       exists(audits),
     chez_nous_intro: !!chezNousOnboardedAt,
-    chez_nous_post:  flags.chez_nous_post,
-    affiche:         flags.affiche,
+    chez_nous_post:  exists(chezNousPosts),
+    affiche:         exists(affiches),
     stripe_connect:  stripeOnboardingComplete,
     // welcome est manuel mais on le considère fait dès que onboarding_step >= 2
     // (compat avec l'ancien système).
