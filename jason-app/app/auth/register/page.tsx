@@ -71,6 +71,9 @@ function RegisterEntry() {
  * avec la page de login (meme brand panel, meme background).
  */
 function RoleChooser() {
+  // Preconnect vers le site marketing pour warm-up TCP + TLS quand
+  // l'utilisateur choisit photographe/menage. Reduit la latence de la
+  // premiere requete cross-domain de 200-500ms.
   const roles = [
     {
       key: 'host',
@@ -110,6 +113,12 @@ function RoleChooser() {
   return (
     <div data-theme="light" style={rc.wrap}>
       <style>{ROLE_CHOOSER_CSS}</style>
+      {/* PERF : preconnect vers jasonmarinho.com (site marketing) pour warm
+          up le handshake TCP+TLS avant clic. Reduit la latence de la premiere
+          requete cross-domain de ~200-500ms — evite l'impression de "double
+          chargement" quand on clique photographe/menage. */}
+      <link rel="preconnect" href="https://jasonmarinho.com" crossOrigin="" />
+      <link rel="dns-prefetch" href="https://jasonmarinho.com" />
       {/* Bandeau haut */}
       <div style={rc.topBar}>
         <a href="https://jasonmarinho.com" style={rc.brandLogo}>
@@ -127,10 +136,8 @@ function RoleChooser() {
         <div style={rc.grid} className="role-grid">
           {roles.map(r => {
             const Icon = r.icon
-            const CardTag = r.external ? 'a' : Link
-            const cardProps: any = r.external ? { href: r.href } : { href: r.href }
-            return (
-              <CardTag key={r.key} {...cardProps} style={rc.card} className="role-card">
+            const inner = (
+              <>
                 <div style={{ ...rc.cardIco, background: `color-mix(in oklab, ${r.accent} 12%, transparent)`, borderColor: `color-mix(in oklab, ${r.accent} 30%, transparent)`, color: r.accent }}>
                   <Icon size={22} weight="duotone" />
                 </div>
@@ -142,7 +149,34 @@ function RoleChooser() {
                 <span style={rc.cardCta}>
                   {r.cta} <ArrowRight size={13} weight="bold" />
                 </span>
-              </CardTag>
+              </>
+            )
+            // Rendu explicite : <a> pour l'externe (navigation directe
+            // browser, pas de tentative de client-side nav ni prefetch de
+            // Next.js), <Link> pour l'interne (client-side + prefetch auto).
+            if (r.external) {
+              return (
+                <a
+                  key={r.key}
+                  href={r.href}
+                  style={rc.card}
+                  className="role-card"
+                  rel="external noopener"
+                >
+                  {inner}
+                </a>
+              )
+            }
+            return (
+              <Link
+                key={r.key}
+                href={r.href}
+                style={rc.card}
+                className="role-card"
+                prefetch
+              >
+                {inner}
+              </Link>
             )
           })}
         </div>
