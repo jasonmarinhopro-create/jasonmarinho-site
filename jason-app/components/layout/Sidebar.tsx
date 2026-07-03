@@ -49,7 +49,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       // Mes finances : Étape 4 — fusion à onglets Revenus / Encaissements
       // / Performances. Le lien pointe vers la racine /dashboard/finances
       // qui redirige sur l'onglet Revenus par défaut.
-      { href: '/dashboard/finances',    label: 'Mes finances',      icon: ChartBar },
+      // PERF : pointe directement sur l'onglet par defaut (revenus) au lieu
+      // de /dashboard/finances qui redirige serveur → 2 loads visible. Meme
+      // trick pour Apprendre + Entre Hotes ci-dessous.
+      { href: '/dashboard/finances/revenus', label: 'Mes finances',      icon: ChartBar },
       { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
       { href: '/dashboard/securite',    label: 'Sécurité voyageur', icon: ShieldCheck },
     ],
@@ -62,9 +65,9 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       // Les URLs individuelles restent accessibles directement.
       { href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator },
       // Apprendre (Étape 6) : fusion à onglets Formations + Guide LCD.
-      { href: '/dashboard/apprendre',   label: 'Apprendre',        icon: GraduationCap },
+      { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap },
       // Entre Hôtes (Étape 6) : fusion à onglets Forum + Groupes FB + Écosystème.
-      { href: '/dashboard/entre-hotes', label: 'Entre Hôtes',      icon: ChatsCircle },
+      { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle },
     ],
   },
 ]
