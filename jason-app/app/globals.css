@@ -1161,12 +1161,6 @@ a { color: inherit; }
   box-shadow: 0 8px 20px rgba(255, 213, 107, 0.08);
 }
 
-/* Bouton "Retour aux outils" sur les sous-pages du hub Outils & calculs */
-.jm-back-link:hover {
-  background: var(--accent-bg) !important;
-  border-color: var(--accent-border) !important;
-  color: var(--accent-text) !important;
-}
 .dash-sidebar > nav {
   /* iOS Safari : flex + overflow auto exige min-height: 0 sur le child
      ET une hauteur définie pour le parent (déjà fait sur .dash-sidebar) */

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { QrCode, Printer, Sparkle } from '@phosphor-icons/react/dist/ssr'
 import QrSimpleTab from './QrSimpleTab'
 import AfficheTab from './AfficheTab'
+import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 
 interface Logement {
   id: string
@@ -23,6 +24,7 @@ export default function OutilsImpressionView({ plan, logements }: Props) {
 
   return (
     <div style={s.page}>
+      <OutilsSwitcher current="impression" />
       {/* Header */}
       <div style={s.header}>
         <div style={s.headerBadge}>

@@ -266,7 +266,7 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
       {/* Toggle Voyageurs / Contrats : visible toujours, drive vers la vue
           Contrats utile surtout aux réservations directes (Airbnb/Booking
           ont leurs propres CGU). */}
-      <div style={s.topTabs} role="tablist" aria-label="Voyageurs ou contrats">
+      <div style={s.topTabs} role="tablist" aria-label="Voyageurs ou contrats" className="fade-up">
         <button
           onClick={() => selectTopTab('voyageurs')}
           role="tab"
@@ -287,7 +287,11 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
         </button>
       </div>
 
-      {topTab === 'contrats' && <ContractsTab contracts={contracts} />}
+      {topTab === 'contrats' && (
+        <div key="contrats-panel" className="anim-fade-in">
+          <ContractsTab contracts={contracts} />
+        </div>
+      )}
 
       {/* Vue Voyageurs (rendu conditionnel) */}
       {topTab === 'voyageurs' && (<>
