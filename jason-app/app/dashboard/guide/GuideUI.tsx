@@ -1,6 +1,11 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
+
+// useLayoutEffect emet un warning cote SSR — la variante isomorphe s'y
+// replie sur useEffect, cote client on garde useLayoutEffect pour ecrire
+// le filtre AVANT peinture (elimine le flicker Tous → sauvegarde).
+const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 import Link from 'next/link'
 import ComparisonTable from './ComparisonTable'
 import Resources from './Resources'
@@ -95,7 +100,7 @@ export default function GuideUI({ guideCards }: GuideUIProps) {
   const [visibleCount, setVisibleCount] = useState<number>(-1) // -1 = pas encore mesuré
   const cardsContainerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const saved = localStorage.getItem('guide-filter') as ProfileFilter | null
     if (saved && ['all', 'commun', 'gites', 'chambres', 'conciergerie', 'direct'].includes(saved)) {
       setActiveFilter(saved)

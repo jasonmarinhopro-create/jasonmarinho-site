@@ -220,9 +220,13 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
                 onClick={() => selectSavedPost(post)}
                 style={{
                   ...s.chip,
-                  background: active ? 'var(--success-1)' : 'transparent',
-                  borderColor: active ? 'var(--success-1)' : 'rgba(16,185,129,0.45)',
-                  color: active ? '#fff' : '#059669',
+                  // Vert fonce Jason Marinho (--green: #004C3F) en actif,
+                  // outline vert fonce discret en inactif. Remplace l'ancien
+                  // vert clair mint (var(--success-1) = #34D399) qui n'etait
+                  // pas dans la palette de la marque.
+                  background: active ? 'var(--green)' : 'transparent',
+                  borderColor: active ? 'var(--green)' : 'rgba(0,76,63,0.35)',
+                  color: active ? '#fff' : 'var(--text-2)',
                   fontWeight: 600,
                 }}
                 title={post.title}
