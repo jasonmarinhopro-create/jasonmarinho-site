@@ -5,8 +5,19 @@
 //  - Profile fields like chez_nous_onboarded_at
 
 import { unstable_cache } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { ONBOARDING_TRACKS } from './tracks'
+
+/** Service role client — safe a utiliser dans unstable_cache car il ne lit
+ *  aucun cookie/header dynamique. Necessaire ici : createClient() de
+ *  @/lib/supabase/server lit les cookies et crashe hors contexte requete. */
+function getServiceClient() {
+  return createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+}
 
 export interface TrackProgress {
   /** Track key */
@@ -47,7 +58,9 @@ interface DetectInput {
 // 800ms bloquants cumules. Avec le cache : quasi 0ms apres le 1er render.
 const fetchExistenceFlags = (userId: string) => unstable_cache(
   async () => {
-    const supabase = await createClient()
+    // Service role : pas de cookies, safe dans unstable_cache. Le userId est
+    // deja verifie par le layout (getProfile) avant d'appeler ce helper.
+    const supabase = getServiceClient()
     const [logements, voyageurs, sejours, contracts, audits, chezNousPosts, affiches] = await Promise.all([
       supabase.from('logements')          .select('id').eq('user_id', userId).limit(1),
       supabase.from('voyageurs')          .select('id').eq('user_id', userId).limit(1),
