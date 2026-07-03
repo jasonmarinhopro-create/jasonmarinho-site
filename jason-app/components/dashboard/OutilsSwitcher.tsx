@@ -50,6 +50,10 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', flexWrap: 'wrap' as const, gap: '4px', padding: '4px',
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '10px', marginBottom: 'clamp(18px, 2.5vw, 26px)',
+    // Robuste aux parents flex-column (outils-impression) qui stretch les
+    // enfants sur l'axe cross. Sans ça la barre prend toute la largeur.
+    alignSelf: 'flex-start' as const,
+    width: 'fit-content',
   },
   btn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
