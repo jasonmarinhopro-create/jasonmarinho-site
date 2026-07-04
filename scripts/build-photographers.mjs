@@ -3,8 +3,9 @@
  * Build script — génère l'annuaire public des photographes LCD et les
  * fiches individuelles SEO friendly. Idem pattern build-signalements.
  *
- * - /annuaires/photographes/annuaire/index.html : liste filtrable
+ * - /annuaires/photographes/index.html : liste filtrable (l'annuaire)
  * - /annuaires/photographes/[slug]/index.html : fiche individuelle
+ * - /devenir-photographe-lcd/index.html : page pitch (injection de la liste)
  * - /sitemap-photographes.xml : sitemap dédié
  *
  * Lance en no-op si env vars Supabase absentes.
@@ -16,11 +17,13 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
-const ANNUAIRE_DIR = path.join(ROOT, 'annuaires', 'photographes', 'annuaire')
 const FICHES_DIR = path.join(ROOT, 'annuaires', 'photographes')
-// Sous-dossiers à PROTÉGER du cleanup (hub + sous-pages déjà existantes
-// sous /annuaires/photographes/) — sinon le rm récursif les supprimerait.
-const RESERVED_DIRS = new Set(['annuaire', 'inscription', 'exemple-fiche'])
+const DEVENIR_PAGE = path.join(ROOT, 'devenir-photographe-lcd', 'index.html')
+// Sous-dossiers à PROTÉGER du cleanup (sous-pages statiques sous
+// /annuaires/photographes/) — sinon le rm récursif les supprimerait.
+// NB : 'annuaire' n'est plus réservé — l'ancienne URL /annuaires/photographes/annuaire
+// redirige (301 vercel.json) vers /annuaires/photographes.
+const RESERVED_DIRS = new Set(['inscription', 'exemple-fiche'])
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -64,6 +67,8 @@ function buildFichePage(p) {
   const desc = `${displayName}, photographe spécialisé location courte durée à ${p.ville}${p.zone_couverte ? ' et ' + p.zone_couverte : ''}.${p.specialite ? ' ' + p.specialite + '.' : ''}${tarif ? ' Tarifs ' + tarif + '.' : ''}`
   const canonical = `https://jasonmarinho.com/annuaires/photographes/${p.slug}`
   const isFondateur = p.tier === 'fondateur'
+  // NB breadcrumbs : l'annuaire vit désormais directement sur
+  // /annuaires/photographes (plus de sous-niveau /annuaire).
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -151,9 +156,8 @@ ${JSON.stringify({
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://jasonmarinho.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Photographes LCD', item: 'https://jasonmarinho.com/annuaires/photographes' },
-    { '@type': 'ListItem', position: 3, name: 'Annuaire', item: 'https://jasonmarinho.com/annuaires/photographes/annuaire' },
-    { '@type': 'ListItem', position: 4, name: displayName, item: canonical },
+    { '@type': 'ListItem', position: 2, name: 'Annuaire des photographes LCD', item: 'https://jasonmarinho.com/annuaires/photographes' },
+    { '@type': 'ListItem', position: 3, name: displayName, item: canonical },
   ],
 })}
 </script>
@@ -162,7 +166,7 @@ ${JSON.stringify({
 <body>
 <header class="hero">
   <div class="s-in">
-    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes LCD</a> · <a href="/annuaires/photographes/annuaire">Annuaire</a> · <span>${escHtml(displayName)}</span></div>
+    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Annuaire photographes LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
       ${isFondateur ? '<span class="tag gold"><i class="ph-bold ph-star" style="font-size:10px"></i>Fondateur</span>' : ''}
       ${p.specialite ? `<span class="tag">${escHtml(p.specialite)}</span>` : ''}
@@ -268,7 +272,7 @@ async function contactSubmit(e) {
 
 function buildAnnuaireListPage(items) {
   const itemsHtml = items.length === 0
-    ? `<div class="empty"><div class="empty-ico"><i class="ph-bold ph-camera" style="font-size:32px;color:var(--g)"></i></div><h2>L'annuaire se construit</h2><p>Aucun photographe actif pour le moment. Reviens dans quelques semaines, ou postule si tu es photographe LCD.</p><a href="/annuaires/photographes/inscription" class="btn-p">Postuler comme photographe →</a></div>`
+    ? `<div class="empty"><div class="empty-ico"><i class="ph-bold ph-camera" style="font-size:32px;color:var(--g)"></i></div><h2>L'annuaire se construit</h2><p>Aucun photographe actif pour le moment. Reviens dans quelques semaines, ou postule si tu es photographe LCD.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a href="/annuaires/photographes/inscription" class="btn-p">Postuler comme photographe →</a><a href="/devenir-photographe-lcd" class="btn-p" style="background:transparent;border:1px solid rgba(0,76,63,.25);color:var(--g)">Pourquoi rejoindre l'annuaire ?</a></div></div>`
     : `<div class="grid">${items.map(p => {
         const displayName = p.pseudo || p.full_name
         const tarif = fmtTarif(p)
@@ -295,10 +299,10 @@ function buildAnnuaireListPage(items) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Annuaire des photographes LCD · ${items.length} pros sélectionnés | Jason Marinho</title>
 <meta name="description" content="${items.length} photographes professionnels spécialisés en location courte durée, sélectionnés par Jason Marinho. Recherche par ville, tarif, spécialité.">
-<link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes/annuaire">
+<link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes">
 <meta property="og:title" content="Annuaire des photographes LCD · ${items.length} pros sélectionnés">
 <meta property="og:description" content="${items.length} photographes spécialisés location courte durée, sélectionnés et vérifiés.">
-<meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes/annuaire">
+<meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <meta name="robots" content="index, follow">
@@ -363,7 +367,7 @@ ${JSON.stringify({
   '@type': 'CollectionPage',
   name: `Annuaire des photographes LCD (${items.length} pros)`,
   description: 'Annuaire curé des photographes spécialisés location courte durée.',
-  url: 'https://jasonmarinho.com/annuaires/photographes/annuaire',
+  url: 'https://jasonmarinho.com/annuaires/photographes',
 })}
 </script>
 <script defer src="/nav.js"></script>
@@ -371,7 +375,7 @@ ${JSON.stringify({
 <body>
 <header class="hero">
   <div class="s-in">
-    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes LCD</a> · <span>Annuaire</span></div>
+    <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes LCD</a> · <span>Annuaire</span></div>
     <span class="lbl">Annuaire vérifié · curé manuellement</span>
     <h1>${items.length} photographe${items.length > 1 ? 's' : ''} <em>LCD sélectionné${items.length > 1 ? 's' : ''}</em></h1>
     <p class="lead">Tous les photographes ci-dessous ont été vérifiés manuellement par Jason Marinho : portfolio réel en LCD, expérience confirmée, tarifs cohérents marché. Pas d'intermédiation : tu contactes directement.</p>
@@ -409,8 +413,8 @@ ${itemsHtml}
 function buildSitemap(items) {
   const today = new Date().toISOString().slice(0, 10)
   const urls = [
-    `  <url><loc>https://jasonmarinho.com/annuaires/photographes</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>`,
-    `  <url><loc>https://jasonmarinho.com/annuaires/photographes/annuaire</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>`,
+    `  <url><loc>https://jasonmarinho.com/annuaires/photographes</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.85</priority></url>`,
+    `  <url><loc>https://jasonmarinho.com/devenir-photographe-lcd</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`,
     `  <url><loc>https://jasonmarinho.com/annuaires/photographes/inscription</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`,
     ...items.map(p => {
       return `  <url><loc>https://jasonmarinho.com/annuaires/photographes/${p.slug}</loc><lastmod>${(p.created_at || today).slice(0, 10)}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`
@@ -447,19 +451,18 @@ async function main() {
     fs.writeFileSync(path.join(dir, 'index.html'), buildFichePage(p), 'utf8')
   }
 
-  // Génère l'annuaire (URL legacy /annuaires/photographes/annuaire conservée
-  // pour rétro-compat et SEO, mais la liste apparaît aussi sur le hub).
-  fs.mkdirSync(ANNUAIRE_DIR, { recursive: true })
-  fs.writeFileSync(path.join(ANNUAIRE_DIR, 'index.html'), buildAnnuaireListPage(items), 'utf8')
+  // Génère l'annuaire directement sur /annuaires/photographes (index du hub).
+  // L'ancienne URL /annuaires/photographes/annuaire redirige en 301 (vercel.json).
+  fs.writeFileSync(path.join(FICHES_DIR, 'index.html'), buildAnnuaireListPage(items), 'utf8')
 
   // Sitemap dédié
   fs.writeFileSync(path.join(ROOT, 'sitemap-photographes.xml'), buildSitemap(items), 'utf8')
 
-  // Injecte la liste directement dans la page hub /annuaires/photographes
-  // pour que les visiteurs voient les pros actifs immédiatement sans clic.
+  // Injecte la liste dans la page pitch /devenir-photographe-lcd pour que
+  // les photographes voient les pros actifs immédiatement sans clic.
   injectListIntoHub(items)
 
-  console.log(`[build-photographers] ✓ ${items.length} fiches + annuaire + sitemap + hub injecté`)
+  console.log(`[build-photographers] ✓ ${items.length} fiches + annuaire + sitemap + devenir injecté`)
 }
 
 /**
@@ -514,7 +517,7 @@ function buildHubInjection(items) {
 </a>`
   }).join('')
   const seeMoreLink = items.length > 12
-    ? `<div style="text-align:center;margin-top:24px"><a href="/annuaires/photographes/annuaire" style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--g);text-decoration:none">Voir les ${items.length} photographes actifs <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a></div>`
+    ? `<div style="text-align:center;margin-top:24px"><a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--g);text-decoration:none">Voir les ${items.length} photographes actifs <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a></div>`
     : ''
   return `<section class="sec cr" id="annuaire">
   <div class="s-in">
@@ -530,9 +533,9 @@ function buildHubInjection(items) {
 }
 
 function injectListIntoHub(items) {
-  const hubPath = path.join(ROOT, 'annuaires', 'photographes', 'index.html')
+  const hubPath = DEVENIR_PAGE
   if (!fs.existsSync(hubPath)) {
-    console.warn('[build-photographers] hub introuvable, skip injection')
+    console.warn('[build-photographers] page devenir introuvable, skip injection')
     return
   }
   let hubHtml = fs.readFileSync(hubPath, 'utf8')

@@ -43,6 +43,8 @@
     { "source": "/ressources/partenaires", "destination": "/services/ecosysteme", "permanent": true },
     { "source": "/ressources", "destination": "/services", "permanent": true },
     { "source": "/services/partenaires", "destination": "/services/ecosysteme", "permanent": true },
+    { "source": "/annuaires/photographes/annuaire", "destination": "/annuaires/photographes", "permanent": true },
+    { "source": "/annuaires/menage/annuaire", "destination": "/annuaires/menage", "permanent": true },
     { "source": "/photographes/:slug", "destination": "/annuaires/photographes/:slug", "permanent": true },
     { "source": "/menage/:slug", "destination": "/annuaires/menage/:slug", "permanent": true }
   ]
