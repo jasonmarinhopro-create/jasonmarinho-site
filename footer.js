@@ -177,6 +177,23 @@
     { href: '/calculateurs/revenu-lcd-munich', name: 'Munich' },
     { href: '/calculateurs/revenu-lcd-wien', name: 'Vienne' }
   ];
+  // Pages ville × métier pros LCD (générées par scripts/build-pages-pros-villes.mjs)
+  var PROS_VILLES = [
+    { slug: 'paris', name: 'Paris' }, { slug: 'lyon', name: 'Lyon' },
+    { slug: 'bordeaux', name: 'Bordeaux' }, { slug: 'marseille', name: 'Marseille' },
+    { slug: 'nice', name: 'Nice' }, { slug: 'annecy', name: 'Annecy' },
+    { slug: 'strasbourg', name: 'Strasbourg' }, { slug: 'lille', name: 'Lille' },
+    { slug: 'nantes', name: 'Nantes' }, { slug: 'toulouse', name: 'Toulouse' },
+    { slug: 'montpellier', name: 'Montpellier' }, { slug: 'biarritz', name: 'Biarritz' },
+    { slug: 'cannes', name: 'Cannes' }, { slug: 'aix-en-provence', name: 'Aix-en-Provence' },
+    { slug: 'la-rochelle', name: 'La Rochelle' }
+  ];
+  var PHOTOGRAPHE_LINKS = PROS_VILLES.map(function (c) {
+    return { href: '/photographe-lcd-' + c.slug, name: c.name };
+  });
+  var MENAGE_LINKS = PROS_VILLES.map(function (c) {
+    return { href: '/menage-lcd-' + c.slug, name: c.name };
+  });
   var COMPARATIF_LINKS = [
     { href: '/comparatif-airdna-mashvisor', name: 'AirDNA vs Mashvisor' },
     { href: '/comparatif-driing-airbnb-booking', name: 'Driing vs Airbnb vs Booking' },
@@ -268,6 +285,8 @@
           + '<div class="ft-explore-tabs" role="tablist">'
             + '<button class="ft-tab on" data-panel="revenus" role="tab" aria-selected="true">Études de revenus</button>'
             + '<button class="ft-tab" data-panel="hote" role="tab" aria-selected="false">Devenir hôte</button>'
+            + '<button class="ft-tab" data-panel="photographes" role="tab" aria-selected="false">Photographes</button>'
+            + '<button class="ft-tab" data-panel="menage" role="tab" aria-selected="false">Ménage</button>'
             + '<button class="ft-tab" data-panel="outils" role="tab" aria-selected="false">Comparatifs outils</button>'
           + '</div>'
         + '</div>'
@@ -281,6 +300,16 @@
             + '<div class="ft-panel-hint">Guides locaux pour démarrer ton activité de loueur dans la ville.</div>'
             + '<div class="ft-chips">' + hostPanel + '</div>'
             + '<a href="/villes" class="ft-see-all">Voir tous les guides hôte <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
+          + '</div>'
+          + '<div class="ft-panel" data-panel="photographes" role="tabpanel">'
+            + '<div class="ft-panel-hint">Trouver un photographe spécialisé LCD dans ta ville : tarifs locaux, checklist photos, annuaire vérifié.</div>'
+            + '<div class="ft-chips">' + panelHtml(PHOTOGRAPHE_LINKS) + '</div>'
+            + '<a href="/annuaires/photographes" class="ft-see-all">Voir l\'annuaire des photographes <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
+          + '</div>'
+          + '<div class="ft-panel" data-panel="menage" role="tabpanel">'
+            + '<div class="ft-panel-hint">Trouver une équipe de ménage turnover dans ta ville : tarifs locaux, checklist, annuaire vérifié.</div>'
+            + '<div class="ft-chips">' + panelHtml(MENAGE_LINKS) + '</div>'
+            + '<a href="/annuaires/menage" class="ft-see-all">Voir l\'annuaire des équipes ménage <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
           + '</div>'
           + '<div class="ft-panel" data-panel="outils" role="tabpanel">'
             + '<div class="ft-panel-hint">Quel outil ou logiciel choisir ? Comparatifs honnêtes avec prix, forces, limites.</div>'
@@ -337,9 +366,11 @@
   // ── Onglets footer "Explorer" (visuel seulement, liens déjà en HTML) ─────
   // Délégation pour fonctionner même si footer injecté plus tard.
   var HEADING_BY_PANEL = {
-    revenus: 'Explorer par <em>ville</em>',
-    hote:    'Explorer par <em>ville</em>',
-    outils:  'Explorer les <em>outils</em>'
+    revenus:      'Explorer par <em>ville</em>',
+    hote:         'Explorer par <em>ville</em>',
+    photographes: 'Explorer par <em>ville</em>',
+    menage:       'Explorer par <em>ville</em>',
+    outils:       'Explorer les <em>outils</em>'
   };
   document.addEventListener('click', function (e) {
     var tab = e.target.closest && e.target.closest('.ft-tab');
