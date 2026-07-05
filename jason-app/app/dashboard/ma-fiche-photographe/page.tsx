@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import MaFichePhotographe from './MaFichePhotographe'
+import DemandesRecues, { type ProContact } from '@/components/pros/DemandesRecues'
+import { updateContactStatus, updateContactNotes } from './actions'
 
 export const metadata = { title: 'Ma fiche photographe' }
 export const dynamic = 'force-dynamic'
@@ -82,15 +84,33 @@ export default async function Page({ searchParams }: PageProps) {
   const createdAt = new Date(photographer.created_at)
   const daysActive = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000))
 
+  // Demandes reçues via le formulaire de la fiche publique (inbox pipeline)
+  const { data: contacts } = await admin
+    .from('photographer_contacts')
+    .select('id, contact_name, contact_email, message, status, pro_notes, created_at')
+    .eq('photographer_id', photographer.id)
+    .order('created_at', { ascending: false })
+    .limit(100)
+
   return (
-    <MaFichePhotographe
-      photographer={photographer}
-      kpis={{
-        views: photographer.views_count ?? 0,
-        contacts: photographer.contacts_count ?? 0,
-        daysActive,
-      }}
-      isAdminPreview={isAdminPreview}
-    />
+    <>
+      <MaFichePhotographe
+        photographer={photographer}
+        kpis={{
+          views: photographer.views_count ?? 0,
+          contacts: photographer.contacts_count ?? 0,
+          daysActive,
+        }}
+        isAdminPreview={isAdminPreview}
+      />
+      <div style={{ padding: 'clamp(20px, 3vw, 44px)', paddingTop: 0, width: '100%' }}>
+        <DemandesRecues
+          contacts={(contacts ?? []) as ProContact[]}
+          onUpdateStatus={updateContactStatus}
+          onUpdateNotes={updateContactNotes}
+          metier="photographe"
+        />
+      </div>
+    </>
   )
 }
