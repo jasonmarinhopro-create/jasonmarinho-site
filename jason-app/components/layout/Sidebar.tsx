@@ -7,7 +7,7 @@ import {
   HouseSimple, GraduationCap, FileText,
   UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper, ListChecks,
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
-  ChatsCircle, Calculator, Camera, Sparkle, Tray,
+  ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
@@ -219,8 +219,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     // "Ma fiche" reste active sur /demandes (les 2 items allumes).
     '/dashboard/ma-fiche-photographe',
     '/dashboard/ma-fiche-photographe/demandes',
+    '/dashboard/ma-fiche-photographe/clients',
     '/dashboard/ma-fiche-menage',
     '/dashboard/ma-fiche-menage/demandes',
+    '/dashboard/ma-fiche-menage/clients',
   ], [])
 
   function NavItem({ href, label, Icon, adminColor, notifDot }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean }) {
@@ -359,6 +361,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/demandes' : '/dashboard/ma-fiche-menage/demandes'}
                   label="Demandes reçues"
                   Icon={Tray}
+                />
+                <NavItem
+                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/clients' : '/dashboard/ma-fiche-menage/clients'}
+                  label="Mes clients"
+                  Icon={AddressBook}
                 />
               </div>
             </div>

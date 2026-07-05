@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check, Copy } from '@phosphor-icons/react/dist/ssr'
+import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check, Copy, Trash, AddressBook } from '@phosphor-icons/react/dist/ssr'
 
 export interface ProContact {
   id: string
@@ -27,19 +27,40 @@ interface Props {
   /** Server actions injectées par l'espace (photographe ou ménage) */
   onUpdateStatus: (contactId: string, status: string) => Promise<{ error?: string }>
   onUpdateNotes: (contactId: string, notes: string) => Promise<{ error?: string }>
+  onDelete: (contactId: string) => Promise<{ error?: string }>
+  onAddToClients: (contactId: string) => Promise<{ id?: string; already?: boolean; error?: string }>
   /** "photographe" | "équipe" — pour les libellés */
   metier: string
   /** true = page dédiée (titre plein format, pas de marge haute) */
   standalone?: boolean
 }
 
-export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUpdateNotes, metier, standalone = false }: Props) {
+export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUpdateNotes, onDelete, onAddToClients, metier, standalone = false }: Props) {
   const [contacts, setContacts] = useState(initial)
   const [openId, setOpenId] = useState<string | null>(null)
   const [notesDraft, setNotesDraft] = useState<Record<string, string>>({})
   const [notesSaved, setNotesSaved] = useState<string | null>(null)
   const [, startTransition] = useTransition()
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [addedIds, setAddedIds] = useState<Record<string, 'ok' | 'deja'>>({})
+
+  function removeDemande(id: string) {
+    if (!confirm('Supprimer cette demande ? Elle disparaîtra définitivement de ta liste.')) return
+    const prev = contacts
+    setContacts(cs => cs.filter(c => c.id !== id))
+    setOpenId(null)
+    startTransition(async () => {
+      const res = await onDelete(id)
+      if (res?.error) setContacts(prev)
+    })
+  }
+
+  function addToClients(id: string) {
+    startTransition(async () => {
+      const res = await onAddToClients(id)
+      if (!res?.error) setAddedIds(a => ({ ...a, [id]: res.already ? 'deja' : 'ok' }))
+    })
+  }
 
   const nouvelles = contacts.filter(c => c.status === 'nouvelle').length
 
@@ -134,6 +155,11 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                       >
                         {copiedId === c.id ? <><Check size={14} weight="bold" /> Adresse copiée !</> : <><Copy size={14} weight="bold" /> Copier l&apos;adresse</>}
                       </button>
+                      <button onClick={() => addToClients(c.id)} style={s.copyBtn} disabled={!!addedIds[c.id]}>
+                        {addedIds[c.id]
+                          ? <><Check size={14} weight="bold" /> {addedIds[c.id] === 'deja' ? 'Déjà dans le carnet' : 'Ajouté au carnet !'}</>
+                          : <><AddressBook size={14} weight="bold" /> Ajouter à mes clients</>}
+                      </button>
                       <div style={s.statusGroup}>
                         {STATUS_ORDER.map(st => {
                           const m = STATUS_META[st]
@@ -166,9 +192,15 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                         rows={2}
                         style={s.notesInput}
                       />
-                      <button onClick={() => saveNotes(c.id)} style={s.notesSave}>
-                        {notesSaved === c.id ? <><Check size={13} weight="bold" /> Enregistré</> : 'Enregistrer la note'}
-                      </button>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' as const }}>
+                        <button onClick={() => saveNotes(c.id)} style={s.notesSave}>
+                          {notesSaved === c.id ? <><Check size={13} weight="bold" /> Enregistré</> : 'Enregistrer la note'}
+                        </button>
+                        <button onClick={() => removeDemande(c.id)} style={s.deleteBtn}>
+                          <Trash size={13} weight="bold" />
+                          Supprimer la demande
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -270,6 +302,13 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--bg-2)', border: '1px solid var(--border)',
     color: 'var(--text)', fontSize: 13, fontFamily: 'inherit',
     resize: 'vertical' as const, boxSizing: 'border-box' as const,
+  },
+  deleteBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    padding: '7px 12px', borderRadius: 8,
+    background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)',
+    color: 'var(--danger)', fontSize: 12, fontWeight: 600,
+    cursor: 'pointer', fontFamily: 'inherit',
   },
   notesSave: {
     alignSelf: 'flex-start',

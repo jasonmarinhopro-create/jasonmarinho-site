@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
-import DemandesRecues, { type ProContact } from '@/components/pros/DemandesRecues'
-import { updateContactStatus, updateContactNotes, deleteContact, addClientFromContact } from '../actions'
+import ClientsCrm, { type ProClient } from '@/components/pros/ClientsCrm'
+import { createProClient, updateProClient, deleteProClient } from '../actions'
 
-export const metadata = { title: 'Demandes reçues — Photographe' }
+export const metadata = { title: 'Mes clients — Photographe' }
 export const dynamic = 'force-dynamic'
 
 function getServiceClient() {
@@ -21,31 +21,30 @@ export default async function Page() {
   if (!user) redirect('/auth/login?as=photographe')
 
   const admin = getServiceClient()
-  const { data: photographer } = await admin
+  const { data: pro } = await admin
     .from('photographers')
-    .select('id, full_name, pseudo')
+    .select('id')
     .eq('user_id', user.id)
     .maybeSingle()
 
-  if (!photographer) redirect('/dashboard/ma-fiche-photographe')
+  if (!pro) redirect('/dashboard/ma-fiche-photographe')
 
-  const { data: contacts } = await admin
-    .from('photographer_contacts')
-    .select('id, contact_name, contact_email, message, status, pro_notes, created_at')
-    .eq('photographer_id', photographer.id)
+  const { data: clients } = await admin
+    .from('pro_clients')
+    .select('id, nom, email, telephone, ville, logement, statut, notes, created_at')
+    .eq('owner_kind', 'photographer')
+    .eq('owner_id', pro.id)
     .order('created_at', { ascending: false })
-    .limit(200)
+    .limit(500)
 
   return (
     <div style={{ padding: 'clamp(20px, 3vw, 44px)', width: '100%' }}>
-      <DemandesRecues
-        contacts={(contacts ?? []) as ProContact[]}
-        onUpdateStatus={updateContactStatus}
-        onUpdateNotes={updateContactNotes}
-        onDelete={deleteContact}
-        onAddToClients={addClientFromContact}
+      <ClientsCrm
+        clients={(clients ?? []) as ProClient[]}
+        onCreate={createProClient}
+        onUpdate={updateProClient}
+        onDelete={deleteProClient}
         metier="photographe"
-        standalone
       />
     </div>
   )

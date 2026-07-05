@@ -278,3 +278,177 @@ export async function updateContactNotes(
   revalidatePath('/dashboard/ma-fiche-menage')
   return { success: true }
 }
+
+
+/**
+ * Demandes reçues : suppression d'une demande par le pro.
+ */
+export async function deleteContact(
+  contactId: string,
+  targetId?: string,
+): Promise<{ success?: boolean; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+
+  const admin = getServiceClient()
+  const { error } = await admin
+    .from('cleaner_contacts')
+    .delete()
+    .eq('id', contactId)
+    .eq('cleaner_id', target.cleanerId)
+  if (error) {
+    log.error('deleteContact failed', { error: error.message })
+    return { error: 'Suppression impossible. Réessaie.' }
+  }
+  revalidatePath('/dashboard/ma-fiche-menage/demandes')
+  return { success: true }
+}
+
+// ── Mini-CRM "Mes clients" ─────────────────────────────────────────
+
+type ProClientInput = {
+  nom: string
+  email?: string
+  telephone?: string
+  ville?: string
+  logement?: string
+  statut?: string
+  notes?: string
+}
+
+function sanitizeClientInput(data: ProClientInput) {
+  const statut = ['prospect', 'client', 'fidele'].includes(data.statut ?? '') ? data.statut : 'prospect'
+  return {
+    nom: String(data.nom ?? '').trim().slice(0, 120),
+    email: String(data.email ?? '').trim().slice(0, 200) || null,
+    telephone: String(data.telephone ?? '').trim().slice(0, 40) || null,
+    ville: String(data.ville ?? '').trim().slice(0, 100) || null,
+    logement: String(data.logement ?? '').trim().slice(0, 200) || null,
+    statut,
+    notes: String(data.notes ?? '').trim().slice(0, 3000) || null,
+  }
+}
+
+export async function createProClient(
+  data: ProClientInput,
+  targetId?: string,
+): Promise<{ id?: string; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+
+  const clean = sanitizeClientInput(data)
+  if (!clean.nom) return { error: 'Le nom est obligatoire.' }
+
+  const admin = getServiceClient()
+  const { data: row, error } = await admin
+    .from('pro_clients')
+    .insert({ owner_kind: 'cleaner', owner_id: target.cleanerId, ...clean })
+    .select('id')
+    .single()
+  if (error) {
+    log.error('createProClient failed', { error: error.message })
+    return { error: 'Enregistrement impossible. Réessaie.' }
+  }
+  revalidatePath('/dashboard/ma-fiche-menage/clients')
+  return { id: row.id }
+}
+
+export async function updateProClient(
+  clientId: string,
+  data: ProClientInput,
+  targetId?: string,
+): Promise<{ success?: boolean; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+
+  const clean = sanitizeClientInput(data)
+  if (!clean.nom) return { error: 'Le nom est obligatoire.' }
+
+  const admin = getServiceClient()
+  const { error } = await admin
+    .from('pro_clients')
+    .update(clean)
+    .eq('id', clientId)
+    .eq('owner_kind', 'cleaner')
+    .eq('owner_id', target.cleanerId)
+  if (error) {
+    log.error('updateProClient failed', { error: error.message })
+    return { error: 'Mise à jour impossible. Réessaie.' }
+  }
+  revalidatePath('/dashboard/ma-fiche-menage/clients')
+  return { success: true }
+}
+
+export async function deleteProClient(
+  clientId: string,
+  targetId?: string,
+): Promise<{ success?: boolean; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+
+  const admin = getServiceClient()
+  const { error } = await admin
+    .from('pro_clients')
+    .delete()
+    .eq('id', clientId)
+    .eq('owner_kind', 'cleaner')
+    .eq('owner_id', target.cleanerId)
+  if (error) {
+    log.error('deleteProClient failed', { error: error.message })
+    return { error: 'Suppression impossible. Réessaie.' }
+  }
+  revalidatePath('/dashboard/ma-fiche-menage/clients')
+  return { success: true }
+}
+
+/**
+ * Convertit une demande reçue en client du carnet (nom + email repris,
+ * lien source conservé). Dédupliqué par email si déjà présent.
+ */
+export async function addClientFromContact(
+  contactId: string,
+  targetId?: string,
+): Promise<{ id?: string; already?: boolean; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+
+  const admin = getServiceClient()
+  const { data: contact } = await admin
+    .from('cleaner_contacts')
+    .select('id, contact_name, contact_email, message')
+    .eq('id', contactId)
+    .eq('cleaner_id', target.cleanerId)
+    .maybeSingle()
+  if (!contact) return { error: 'Demande introuvable.' }
+
+  // Déduplication par email dans le carnet du pro
+  if (contact.contact_email) {
+    const { data: existing } = await admin
+      .from('pro_clients')
+      .select('id')
+      .eq('owner_kind', 'cleaner')
+      .eq('owner_id', target.cleanerId)
+      .eq('email', contact.contact_email)
+      .maybeSingle()
+    if (existing) return { id: existing.id, already: true }
+  }
+
+  const { data: row, error } = await admin
+    .from('pro_clients')
+    .insert({
+      owner_kind: 'cleaner',
+      owner_id: target.cleanerId,
+      nom: contact.contact_name || contact.contact_email || 'Hôte',
+      email: contact.contact_email,
+      notes: contact.message ? `Demande initiale : ${String(contact.message).slice(0, 500)}` : null,
+      source_contact_id: contact.id,
+    })
+    .select('id')
+    .single()
+  if (error) {
+    log.error('addClientFromContact failed', { error: error.message })
+    return { error: 'Conversion impossible. Réessaie.' }
+  }
+  revalidatePath('/dashboard/ma-fiche-menage/clients')
+  return { id: row.id }
+}
