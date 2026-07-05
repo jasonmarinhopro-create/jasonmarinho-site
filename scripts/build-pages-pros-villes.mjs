@@ -2,8 +2,12 @@
 /**
  * Build script — génère les pages SEO ville × métier pros LCD :
  *
- *   /photographe-lcd-{ville}/index.html   (15 villes)
- *   /menage-lcd-{ville}/index.html        (15 villes)
+ *   /photographe-lcd-{ville}/index.html
+ *   /menage-lcd-{ville}/index.html
+ *
+ * SOURCE DE VÉRITÉ : le tableau CITIES de footer.js (parsé à l'exécution).
+ * Toute ville ajoutée dans CITIES obtient automatiquement ses 2 pages au
+ * prochain run — pas de duplication de données à maintenir ici.
  *
  * Double cible par page :
  *   - HÔTES qui cherchent "photographe airbnb lyon" / "ménage airbnb lyon"
@@ -16,7 +20,8 @@
  *
  * Script déterministe (aucune dépendance réseau) — lancer :
  *   node scripts/build-pages-pros-villes.mjs
- * puis committer l'output. Les données marché sont celles du footer (CITIES).
+ * puis committer l'output. Penser à footer.js (chips auto depuis CITIES)
+ * et sitemap.xml (le script imprime les <url> à jour).
  */
 
 import fs from 'node:fs'
@@ -26,25 +31,51 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 
-// ── Données marché par ville (source : CITIES du footer.js) ────────────────
-// adrMin/adrMax en €/nuit. `revenu` : path de l'étude de revenus si publiée.
-const VILLES = [
-  { slug: 'paris',            name: 'Paris',            pre: 'à Paris',            adrMin: 110, adrMax: 220, occ: 80, annonces: '50 000', desc: "Le marché LCD le plus rentable et le plus encadré de France : plafond 120 nuits/an en résidence principale, compensation stricte ailleurs. Fashion Weeks, Roland-Garros, clientèle internationale exigeante." , revenu: '/calculateurs/revenu-airbnb-paris' },
-  { slug: 'lyon',             name: 'Lyon',             pre: 'à Lyon',             adrMin: 75,  adrMax: 130, occ: 68, annonces: '6 200',  desc: "Capitale gastronomique, zone tendue avec règle de compensation stricte. Eurexpo, Fête des Lumières et un tourisme d'affaires soutenu toute l'année.", revenu: '/calculateurs/revenu-lcd-lyon' },
-  { slug: 'bordeaux',         name: 'Bordeaux',         pre: 'à Bordeaux',         adrMin: 75,  adrMax: 125, occ: 65, annonces: '5 100',  desc: "Ville UNESCO, clientèle œnotouristique et affaires, marché en croissance avec des procédures de changement d'usage de plus en plus strictes.", revenu: '/calculateurs/revenu-lcd-bordeaux' },
-  { slug: 'marseille',        name: 'Marseille',        pre: 'à Marseille',        adrMin: 70,  adrMax: 130, occ: 68, annonces: '7 800',  desc: "Vieux-Port, MuCEM, calanques : un marché LCD en pleine croissance, réglementation zone tendue stricte mais demande touristique forte.", revenu: '/calculateurs/revenu-lcd-marseille' },
-  { slug: 'nice',             name: 'Nice',             pre: 'à Nice',             adrMin: 95,  adrMax: 160, occ: 72, annonces: '8 500',  desc: "Côte d'Azur, marché premium avec l'un des meilleurs RevPAR de France hors Paris. Carnaval, haute saison estivale, clientèle internationale.", revenu: '/calculateurs/revenu-lcd-nice' },
-  { slug: 'annecy',           name: 'Annecy',           pre: 'à Annecy',           adrMin: 90,  adrMax: 150, occ: 64, annonces: '3 800',  desc: "La Venise des Alpes : lac, vieille ville, clientèle familiale et outdoor premium, avec un été exceptionnel et une saisonnalité marquée.", revenu: '/calculateurs/revenu-lcd-annecy' },
-  { slug: 'strasbourg',       name: 'Strasbourg',       pre: 'à Strasbourg',       adrMin: 80,  adrMax: 140, occ: 68, annonces: '4 200',  desc: "Marchés de Noël (2M de visiteurs) + Parlement européen (12 sessions/an) : un marché bipolaire tourisme/institutionnel unique en France.", revenu: '/calculateurs/revenu-lcd-strasbourg' },
-  { slug: 'lille',            name: 'Lille',            pre: 'à Lille',            adrMin: 75,  adrMax: 120, occ: 69, annonces: '3 600',  desc: "Braderie (2,5M de visiteurs en 48h), Eurostar Londres/Bruxelles, marchés de Noël : un marché LCD international et événementiel.", revenu: null },
-  { slug: 'nantes',           name: 'Nantes',           pre: 'à Nantes',           adrMin: 70,  adrMax: 110, occ: 71, annonces: '3 900',  desc: "Voyage à Nantes (700k visiteurs), Hellfest à 30 min, hub tech en croissance : mix tourisme culturel + business + événementiel.", revenu: null },
-  { slug: 'toulouse',         name: 'Toulouse',         pre: 'à Toulouse',         adrMin: 65,  adrMax: 110, occ: 70, annonces: '5 600',  desc: "Capitale aérospatiale (Airbus), 100k étudiants, rugby : un marché 3-en-1 avec demande business continue toute l'année.", revenu: '/calculateurs/revenu-lcd-toulouse' },
-  { slug: 'montpellier',      name: 'Montpellier',      pre: 'à Montpellier',      adrMin: 70,  adrMax: 115, occ: 69, annonces: '4 700',  desc: "70 000 étudiants, climat doux, plages à 10 min : demande continue, saisonnalité estivale forte et workation hivernale.", revenu: '/calculateurs/revenu-lcd-montpellier' },
-  { slug: 'biarritz',         name: 'Biarritz',         pre: 'à Biarritz',         adrMin: 110, adrMax: 200, occ: 63, annonces: '3 100',  desc: "Surf, luxe, Pays Basque : ADR parmi les plus élevés du Sud-Ouest, marché fortement saisonnier, clientèle espagnole importante.", revenu: '/calculateurs/revenu-lcd-biarritz' },
-  { slug: 'cannes',           name: 'Cannes',           pre: 'à Cannes',           adrMin: 130, adrMax: 280, occ: 74, annonces: '3 200',  desc: "Festival du Film, MIPIM, Cannes Lions, Croisette : l'un des RevPAR les plus élevés de France, 5 événements pros + été.", revenu: '/calculateurs/revenu-lcd-cannes' },
-  { slug: 'aix-en-provence',  name: 'Aix-en-Provence',  pre: "à Aix-en-Provence",  adrMin: 100, adrMax: 160, occ: 73, annonces: '2 400',  desc: "Cours Mirabeau, Festival d'Aix, Cézanne : l'un des marchés les plus premium de France, clientèle internationale aisée.", revenu: '/calculateurs/revenu-lcd-aix-en-provence' },
-  { slug: 'la-rochelle',      name: 'La Rochelle',      pre: 'à La Rochelle',      adrMin: 80,  adrMax: 140, occ: 65, annonces: '2 800',  desc: "Vieux-Port, tourisme nautique, Francofolies : un marché moins saturé que les grandes métropoles, clientèle famille et nautisme.", revenu: '/calculateurs/revenu-lcd-la-rochelle' },
-]
+// ── Extraction de CITIES depuis footer.js (source unique de vérité) ────────
+function loadCities() {
+  const src = fs.readFileSync(path.join(ROOT, 'footer.js'), 'utf8')
+  const start = src.indexOf('var CITIES = [')
+  if (start === -1) throw new Error('CITIES introuvable dans footer.js')
+  const open = src.indexOf('[', start)
+  const end = src.indexOf('];', open)
+  if (end === -1) throw new Error('Fin du tableau CITIES introuvable')
+  const literal = src.slice(open, end + 1)
+  // Le littéral est du JS pur (strings simples/doubles quotes) → eval contrôlé
+  return new Function('return ' + literal)()
+}
+
+// Préposition française devant le nom de ville ("à Lyon", "au Touquet", "au Mans")
+function prepo(name) {
+  if (/^Le\s/i.test(name)) return 'au ' + name.replace(/^Le\s/i, '')
+  return 'à ' + name
+}
+
+// Transforme une entrée CITIES brute en données page.
+// adr: '75-130 €/nuit' → adrMin/adrMax. occ: "68 % d'occupation" → 68.
+// ann: '~6 200 annonces' → '6 200'.
+function toVille(c) {
+  const adrM = c.adr.match(/(\d+)\s*-\s*(\d+)/)
+  const occM = c.occ.match(/(\d+)/)
+  const annM = c.ann.match(/~?\s*([\d  ]+)\s*annonces/)
+  if (!adrM || !occM || !annM) throw new Error(`Données illisibles pour ${c.slug} (adr="${c.adr}" occ="${c.occ}" ann="${c.ann}")`)
+  const revenuPath = c.slug === 'paris'
+    ? '/calculateurs/revenu-airbnb-paris'
+    : `/calculateurs/revenu-lcd-${c.slug}`
+  const revenu = fs.existsSync(path.join(ROOT, revenuPath.slice(1), 'index.html')) ? revenuPath : null
+  return {
+    slug: c.slug,
+    name: c.name,
+    pre: prepo(c.name),
+    adrMin: parseInt(adrM[1], 10),
+    adrMax: parseInt(adrM[2], 10),
+    occ: parseInt(occM[1], 10),
+    annonces: annM[1].trim(),
+    desc: c.desc,
+    revenu,
+  }
+}
+
+const VILLES = loadCities().map(toVille)
 
 function escHtml(s) {
   if (s == null) return ''
@@ -501,4 +532,5 @@ for (const v of VILLES) {
   count++
 }
 console.log(`[build-pages-pros-villes] ✓ ${count} pages générées (${VILLES.length} villes × 2 métiers)`)
-console.log('[build-pages-pros-villes] Penser à : footer.js (onglets), sitemap.xml (URLs)')
+console.log('[build-pages-pros-villes] footer.js dérive ses chips de CITIES automatiquement.')
+console.log('[build-pages-pros-villes] Vérifier que sitemap.xml contient bien 1 <url> par page.')
