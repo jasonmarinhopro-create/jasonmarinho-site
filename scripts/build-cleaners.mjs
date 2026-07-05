@@ -80,6 +80,27 @@ function fmtForfait(c) {
   return c.tarif_forfait_min ? `dès ${c.tarif_forfait_min} €` : `jusqu'à ${c.tarif_forfait_max} €`
 }
 
+
+// Lien vers le guide local /{prefix}-{ville-slug} si la page existe
+// (60 villes couvertes). Slugifie la ville saisie librement par le pro.
+function villeGuidePath(ville, prefix) {
+  if (!ville) return null
+  const slug = String(ville).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  if (!slug) return null
+  const dir = `${prefix}-${slug}`
+  return fs.existsSync(path.join(ROOT, dir, 'index.html')) ? `/${dir}` : null
+}
+
+// "Membre depuis juin 2026" — signal d'anciennete/confiance sur la fiche
+const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+function memberSince(createdAt) {
+  if (!createdAt) return null
+  const d = new Date(createdAt)
+  if (isNaN(d.getTime())) return null
+  return `${MOIS_FR[d.getMonth()]} ${d.getFullYear()}`
+}
+
 function buildFichePage(c) {
   const displayName = c.pseudo || c.full_name
   const title = `${displayName} · Équipe ménage LCD ${c.ville} | Jason Marinho`
@@ -88,6 +109,8 @@ function buildFichePage(c) {
   const desc = `${displayName}, équipe de ménage spécialisée location courte durée à ${c.ville}${c.zone_couverte ? ' et ' + c.zone_couverte : ''}.${forfait ? ' Forfait turnover ' + forfait + '.' : ''}${heure ? ' Tarif horaire ' + heure + '.' : ''}`
   const canonical = `https://jasonmarinho.com/annuaires/menage/${c.slug}`
   const isFondateur = c.tier === 'fondateur'
+  const guide = villeGuidePath(c.ville, 'menage-lcd')
+  const depuis = memberSince(c.created_at)
 
   const prestations = (c.prestations || []).map(p => PRESTATIONS_LABELS[p] || p)
   const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
@@ -263,8 +286,20 @@ ${JSON.stringify({
       ${heure ? `<div class="aside-row"><span class="aside-k">Tarif horaire</span><span class="aside-v">${escHtml(heure)}</span></div>` : ''}
       ${c.assurance_rc_pro ? '<div class="aside-row"><span class="aside-k">Assurance</span><span class="aside-v green">✓ RC pro</span></div>' : ''}
       ${isFondateur ? '<div class="aside-row"><span class="aside-k">Statut</span><span class="aside-v" style="color:#b8860b">🌟 Équipe fondatrice</span></div>' : ''}
+      ${depuis ? `<div class="aside-row"><span class="aside-k">Membre de l'annuaire depuis</span><span class="aside-v">${depuis}</span></div>` : ''}
     </div>
+
+    ${guide ? `<div class="card" style="margin-top:16px">
+      <h2>Les tarifs ménage à ${escHtml(c.ville)}</h2>
+      <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes turnover constatées, checklist complète et questions à poser : consulte le guide local avant de demander un devis.</p>
+      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide ménage LCD ${escHtml(c.ville)}</a>
+    </div>` : ''}
   </aside>
+</div>
+
+<div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
+  <a href="/annuaires/menage" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Toutes les équipes ménage LCD</a>
+  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Ménage LCD ${escHtml(c.ville)} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
 </div>
 
 <div class="disclaimer">
@@ -327,18 +362,22 @@ function buildAnnuaireListPage(items) {
         const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
         const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
         return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card">
-  ${c.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
-  <div class="card-logo-row">
+  <div class="card-head">
     ${c.logo_url
       ? `<div class="card-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
       : `<div class="card-logo placeholder">${escHtml(initials)}</div>`}
-    <h3 class="card-name">${escHtml(displayName)}</h3>
+    <div class="card-head-txt">
+      <h3 class="card-name">${escHtml(displayName)}</h3>
+      <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(c.ville)}</div>
+    </div>
+    ${c.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   </div>
-  <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(c.ville)}${c.zone_couverte ? ` <span style="color:var(--tl);font-weight:400">· ${escHtml(c.zone_couverte)}</span>` : ''}</div>
-  ${equipeLabel ? `<div class="card-spe">${escHtml(equipeLabel)}</div>` : ''}
-  ${tarifLine ? `<div class="card-tarif">${escHtml(tarifLine)}</div>` : ''}
-  ${c.assurance_rc_pro ? '<div class="card-rc"><i class="ph-bold ph-shield-check"></i>RC pro</div>' : ''}
-  <span class="card-cta">Voir le profil <i class="ph-bold ph-arrow-right"></i></span>
+  ${c.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(c.zone_couverte)}</div>` : ''}
+  ${equipeLabel || c.assurance_rc_pro ? `<div class="card-chips">${equipeLabel ? `<span class="card-spe">${escHtml(equipeLabel)}</span>` : ''}${c.assurance_rc_pro ? '<span class="card-rc"><i class="ph-bold ph-shield-check"></i>RC pro</span>' : ''}</div>` : ''}
+  <div class="card-foot">
+    ${tarifLine ? `<div class="card-tarif">${escHtml(tarifLine)}</div>` : '<div></div>'}
+    <span class="card-cta">Voir le profil <i class="ph-bold ph-arrow-right"></i></span>
+  </div>
 </a>`
       }).join('')}</div>`
 
@@ -377,21 +416,27 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:15.5px;color:rgba(255,255,255,.7);line-height:1.7;max-width:640px}
 .count-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;padding:7px 16px;font-size:13px;font-weight:600;color:#FFD56B;margin-top:14px}
 .main{max-width:1100px;margin:0 auto;padding:40px clamp(16px,5vw,40px)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
-.card{display:flex;flex-direction:column;gap:8px;padding:22px;background:#fff;border:1px solid var(--bd);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;position:relative}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.card{display:flex;flex-direction:column;gap:12px;padding:24px;background:#fff;border:1px solid var(--bd);border-radius:16px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,76,63,.1)}
-.card-tag{position:absolute;top:18px;right:18px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:#eee;color:#666}
+.card-head{display:flex;align-items:flex-start;gap:14px}
+.card-head-txt{flex:1;min-width:0}
+.card-tag{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:#eee;color:#666;flex-shrink:0;margin-top:2px}
 .card-tag.gold{background:rgba(255,213,107,.15);color:#b8860b;border:1px solid rgba(255,213,107,.4)}
-.card-name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0;letter-spacing:-.2px;flex:1;min-width:0}
-.card-logo-row{display:flex;align-items:center;gap:12px}
-.card-logo{width:48px;height:48px;border-radius:12px;flex-shrink:0;border:1px solid var(--bd);overflow:hidden;display:flex;align-items:center;justify-content:center}
-.card-logo.placeholder{background:rgba(0,76,63,.06);color:var(--g);font-family:'Fraunces',serif;font-size:18px;font-weight:500}
-.card-ville{font-size:13px;color:var(--tm);font-weight:500;display:flex;align-items:center;gap:5px}
+.card-name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0 0 5px;letter-spacing:-.2px;line-height:1.25}
+.card-logo{width:52px;height:52px;border-radius:13px;flex-shrink:0;border:1px solid var(--bd);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.card-logo.placeholder{background:rgba(0,76,63,.06);color:var(--g);font-family:'Fraunces',serif;font-size:19px;font-weight:500}
+.card-ville{font-size:13px;color:var(--tm);font-weight:600;display:flex;align-items:center;gap:5px}
 .card-ville i{color:var(--g);font-size:13px}
-.card-spe{font-size:12.5px;color:var(--g);background:rgba(0,76,63,.06);padding:3px 9px;border-radius:6px;align-self:flex-start}
-.card-tarif{font-size:13.5px;color:var(--td);font-weight:600;font-family:'Fraunces',serif}
-.card-rc{font-size:11.5px;color:#1e9d54;display:inline-flex;align-items:center;gap:4px;font-weight:600}
-.card-cta{font-size:12.5px;font-weight:600;color:var(--g);display:inline-flex;align-items:center;gap:5px;margin-top:8px}
+.card-zone{font-size:12.5px;color:var(--tl);line-height:1.55;padding:8px 12px;background:rgba(0,76,63,.035);border-radius:9px}
+.card-zone strong{color:var(--tm);font-weight:600}
+.card-chips{display:flex;flex-wrap:wrap;gap:6px}
+.card-spe{font-size:12px;font-weight:500;color:var(--g);background:rgba(0,76,63,.06);padding:4px 10px;border-radius:999px}
+.card-rc{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#1e9d54;background:rgba(99,214,131,.10);border:1px solid rgba(99,214,131,.28);padding:4px 10px;border-radius:999px}
+.card-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.card-tarif{font-size:14.5px;color:var(--td);font-weight:600;font-family:'Fraunces',serif}
+.card-tarif span{font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:400;color:var(--tl)}
+.card-cta{font-size:12.5px;font-weight:600;color:var(--g);display:inline-flex;align-items:center;gap:5px}
 .empty{padding:60px 20px;text-align:center;background:#fff;border:1px solid var(--bd);border-radius:16px;max-width:640px;margin:0 auto}
 .empty-ico{display:inline-flex;width:80px;height:80px;border-radius:18px;background:rgba(0,76,63,.06);align-items:center;justify-content:center;margin-bottom:18px}
 .empty h2{font-family:'Fraunces',serif;font-size:22px;color:var(--td);margin:0 0 12px;font-weight:400}
