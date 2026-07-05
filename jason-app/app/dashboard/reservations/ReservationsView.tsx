@@ -192,6 +192,7 @@ export default function ReservationsView({
 
   return (
     <div style={s.wrap}>
+      <style>{MOBILE_CSS}</style>
       {/* HERO */}
       <div style={s.head}>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -444,18 +445,18 @@ function ResaCard({ r, onClick }: { r: Reservation; onClick: () => void }) {
 function TableView({ reservations, onSelect }: { reservations: Reservation[]; onSelect: (r: Reservation) => void }) {
   return (
     <div style={t.wrap}>
-      <div style={t.scroll}>
-        <table style={t.table}>
+      <div style={t.scroll} className="resa-table-scroll">
+        <table style={t.table} className="resa-table">
           <thead>
             <tr>
               <th style={t.th}>Voyageur</th>
               <th style={t.th}>Logement</th>
               <th style={t.th}>Arrivée</th>
               <th style={t.th}>Départ</th>
-              <th style={{ ...t.th, textAlign: 'right' }}>Nuits</th>
+              <th style={{ ...t.th, textAlign: 'right' }} className="resa-col-sec">Nuits</th>
               <th style={{ ...t.th, textAlign: 'right' }}>Montant</th>
-              <th style={t.th}>Source</th>
-              <th style={t.th}>Statut</th>
+              <th style={t.th} className="resa-col-sec">Source</th>
+              <th style={t.th} className="resa-col-sec">Statut</th>
             </tr>
           </thead>
           <tbody>
@@ -467,22 +468,22 @@ function TableView({ reservations, onSelect }: { reservations: Reservation[]; on
                 <tr key={r.id} onClick={() => onSelect(r)} style={t.tr}>
                   <td style={t.td}>
                     <div style={t.voyageurCell}>
-                      <span style={t.miniAvatar}>{initials(r.voyageur_name)}</span>
+                      <span style={t.miniAvatar} className="resa-avatar">{initials(r.voyageur_name)}</span>
                       <span>{r.voyageur_name}</span>
                     </div>
                   </td>
                   <td style={t.td}>{r.logement_name}</td>
                   <td style={t.td}>{fmtDate(r.date_arrivee)}</td>
                   <td style={t.td}>{fmtDate(r.date_depart)}</td>
-                  <td style={{ ...t.td, textAlign: 'right' }}>{n}</td>
+                  <td style={{ ...t.td, textAlign: 'right' }} className="resa-col-sec">{n}</td>
                   <td style={{ ...t.td, textAlign: 'right', color: 'var(--accent-text)', fontWeight: 600 }}>
                     {r.montant != null ? fmtEur(r.montant) : '—'}
                   </td>
-                  <td style={t.td}>
+                  <td style={t.td} className="resa-col-sec">
                     <span style={{ ...t.dot, background: p.color }} />
                     {p.label}
                   </td>
-                  <td style={t.td}>
+                  <td style={t.td} className="resa-col-sec">
                     <span style={{ ...t.status, color: st.color }}>● {st.label}</span>
                   </td>
                 </tr>
@@ -494,6 +495,21 @@ function TableView({ reservations, onSelect }: { reservations: Reservation[]; on
     </div>
   )
 }
+
+// Mobile : le tableau 8 colonnes debordait de l'ecran (colonnes coupees,
+// cf. capture Jason). Sous 768px on masque les colonnes secondaires
+// (Nuits, Source, Statut — toutes visibles dans le drawer au tap sur la
+// ligne) et on compacte paddings/typo pour que Voyageur / Logement /
+// dates / Montant tiennent. Le scroll horizontal reste en filet (touch).
+const MOBILE_CSS = `
+  .resa-table-scroll { -webkit-overflow-scrolling: touch; }
+  @media (max-width: 767px) {
+    .resa-col-sec { display: none !important; }
+    .resa-table th, .resa-table td { padding: 10px 8px !important; font-size: 12px !important; }
+    .resa-table th:first-child, .resa-table td:first-child { padding-left: 12px !important; }
+    .resa-avatar { display: none !important; }
+  }
+`
 
 // ─── Drawer détail ────────────────────────────────────────────────────────
 

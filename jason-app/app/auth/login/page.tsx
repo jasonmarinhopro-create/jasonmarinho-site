@@ -100,15 +100,12 @@ function LoginInner() {
   const profileKey: Profile = asParam === 'photographe' ? 'photographe' : asParam === 'menage' ? 'menage' : 'host'
   const ctx = PROFILES[profileKey]
 
-  // PERF : prefetch la destination probable des le mount. Next.js va warm
-  // up le bundle + les donnees de /dashboard (ou de la fiche pro) pendant
-  // que l'utilisateur tape son email/mot de passe. Gain 1-3s au submit.
-  useEffect(() => {
-    const target = asParam === 'photographe' ? '/dashboard/ma-fiche-photographe'
-      : asParam === 'menage' ? '/dashboard/ma-fiche-menage'
-      : '/dashboard'
-    router.prefetch(target)
-  }, [asParam, router])
+  // NB : PAS de router.prefetch(/dashboard) ici. Prefetcher une route
+  // protegee AVANT l'authentification met en cache la reponse anonyme
+  // (= redirect middleware vers /auth/login). Au submit, router.replace
+  // reutilisait cette entree polluee → rebond sur la page de connexion
+  // ("je n'arrive pas a me connecter", surtout mobile). Le refresh()
+  // post-login purge le Router Cache avant de naviguer.
 
   // Si l'utilisateur visite /auth/login?as=photographe ou ?as=menage en
   // étant déjà connecté, on redirige directement vers l'espace ciblé
@@ -139,11 +136,10 @@ function LoginInner() {
     const redirect = () => {
       if (redirected) return
       redirected = true
-      // Optimiste : redirect direct sur /dashboard (client-side nav via
-      // prefetch). Le server action postLoginPath (qui lisait profiles
-      // + faisait 3 queries multi-espace) etait bloquant → gain 500-1500ms.
-      // Cas pro-only : le layout /dashboard peut faire la redirection
-      // interne sans bloquer l'utilisateur ici.
+      // refresh() purge le Router Cache client : sans ca, une entree
+      // /dashboard mise en cache AVANT l'auth (redirect anonyme) ferait
+      // rebondir la navigation vers /auth/login.
+      router.refresh()
       router.replace('/dashboard')
       // Trigger le multi-espace redirect en arriere-plan (non bloquant)
       resolveOptimalDestination()
@@ -239,12 +235,19 @@ function LoginInner() {
       return
     }
 
-    setLoading(false)
-    // PERF : redirect immediat sur /dashboard via router.replace (client-side
-    // nav qui utilise le prefetch fait au mount). Le multi-espace redirect
-    // (getPostLoginPathAction, 500-1500ms) tourne en arriere-plan et
-    // n'attend PAS avant de rediriger. Gain net : la page apparait 2-3x plus vite.
+    // NB : on garde loading=true pendant la redirection — le bouton reste
+    // sur "Connexion..." jusqu'au changement de page. Avant, il repassait
+    // a "Se connecter" alors que la nav etait en cours → sensation d'echec
+    // sur mobile (l'utilisateur re-tapait le bouton).
+    //
+    // refresh() purge le Router Cache : une visite anonyme de /dashboard
+    // (ou un ancien prefetch) y avait mis en cache le redirect vers
+    // /auth/login — router.replace reutilisait cette entree polluee et
+    // ramenait l'utilisateur sur la page de connexion.
+    router.refresh()
     router.replace('/dashboard')
+    // Le multi-espace redirect (getPostLoginPathAction, 500-1500ms) tourne
+    // en arriere-plan et n'attend PAS avant de rediriger.
     resolveOptimalDestination()
   }
 
