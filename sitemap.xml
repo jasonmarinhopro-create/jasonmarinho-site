@@ -1691,6 +1691,24 @@
 
   <!-- ── Blog ── -->
   <url>
+    <loc>https://jasonmarinho.com/blog/devenir-prestataire-menage-airbnb-se-lancer</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/photographe-airbnb-tarifs-comment-choisir</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/trouver-equipe-menage-airbnb-fiable</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/blog/voyageurs-mobilite-reduite-lcd-6-amenagements-accessibilite-pmr</loc>
     <lastmod>2026-07-03</lastmod>
     <changefreq>monthly</changefreq>
