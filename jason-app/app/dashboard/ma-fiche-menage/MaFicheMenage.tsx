@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Sparkle, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash } from '@phosphor-icons/react/dist/ssr'
+import { Sparkle, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
 import { updateCleanerFiche, createCustomerPortalSession, uploadCleanerLogo, deleteCleanerLogo } from './actions'
 
 type Cleaner = {
@@ -24,7 +24,7 @@ type Cleaner = {
 
 interface Props {
   cleaner: Cleaner
-  kpis: { views: number; contacts: number; daysActive: number }
+  kpis: { views: number; contacts: number; clics: number; daysActive: number }
   isAdminPreview?: boolean
 }
 
@@ -187,6 +187,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
 
       <div style={s.kpiRow}>
         <Kpi v={kpis.views} l="Vues fiche" Icon={Eye} />
+        <Kpi v={kpis.clics} l="Clics site / insta" Icon={CursorClick} />
         <Kpi v={kpis.contacts} l="Contacts reçus" Icon={ChatCircle} />
         <Kpi v={kpis.daysActive} l="Jours d'activité" Icon={Calendar} />
       </div>

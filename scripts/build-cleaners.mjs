@@ -274,8 +274,8 @@ ${JSON.stringify({
         <div class="hp"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
         <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande</button>
       </form>
-      ${c.site_url ? `<a href="${escHtml(c.site_url)}" target="_blank" rel="noopener noreferrer" class="btn-ol"><i class="ph-bold ph-globe"></i>Voir le site</a>` : ''}
-      ${c.instagram_handle ? `<a href="https://instagram.com/${escHtml(c.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(c.instagram_handle)}</a>` : ''}
+      ${c.site_url ? `<a href="${escHtml(c.site_url)}" target="_blank" rel="noopener noreferrer" class="btn-ol" onclick="jmTrack('site')"><i class="ph-bold ph-globe"></i>Voir le site</a>` : ''}
+      ${c.instagram_handle ? `<a href="https://instagram.com/${escHtml(c.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(c.instagram_handle)}</a>` : ''}
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec l'équipe.</div>
     </div>
 
@@ -309,6 +309,14 @@ ${JSON.stringify({
 <script>
 const __slug = "${escHtml(c.slug)}";
 const __t0 = Date.now();
+// Tracking vues + clics sortants → /api/cleaner/track (voir fiche photographe)
+function jmTrack(ev) {
+  try { navigator.sendBeacon('/api/cleaner/track', JSON.stringify({ slug: __slug, event: ev })) } catch (e) {}
+}
+try {
+  var __vk = 'jm_v_' + __slug;
+  if (!sessionStorage.getItem(__vk)) { sessionStorage.setItem(__vk, '1'); jmTrack('view'); }
+} catch (e) { jmTrack('view'); }
 async function contactSubmit(e) {
   e.preventDefault();
   const errBox = document.getElementById('contact-err');

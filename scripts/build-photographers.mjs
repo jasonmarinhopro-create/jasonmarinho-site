@@ -211,8 +211,8 @@ ${JSON.stringify({
     <div class="card">
       <h2>Portfolio</h2>
       <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Consulte le portfolio complet de ${escHtml(displayName)} pour découvrir son style, ses réalisations LCD et choisir si son approche correspond à ton logement.</p>
-      <a href="${escHtml(p.portfolio_url)}" target="_blank" rel="noopener noreferrer" class="btn-p"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
-      ${p.instagram_handle ? `<a href="https://instagram.com/${escHtml(p.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(p.instagram_handle)}</a>` : ''}
+      <a href="${escHtml(p.portfolio_url)}" target="_blank" rel="noopener noreferrer" class="btn-p" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
+      ${p.instagram_handle ? `<a href="https://instagram.com/${escHtml(p.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(p.instagram_handle)}</a>` : ''}
     </div>
   </div>
 
@@ -259,6 +259,16 @@ ${JSON.stringify({
 <script>
 const __slug = "${escHtml(p.slug)}";
 const __t0 = Date.now();
+// Tracking vues + clics sortants → /api/photographer/track (sendBeacon :
+// non bloquant, part meme si l'utilisateur quitte la page).
+// Vue dedupliquee par session pour ne pas compter les reloads.
+function jmTrack(ev) {
+  try { navigator.sendBeacon('/api/photographer/track', JSON.stringify({ slug: __slug, event: ev })) } catch (e) {}
+}
+try {
+  var __vk = 'jm_v_' + __slug;
+  if (!sessionStorage.getItem(__vk)) { sessionStorage.setItem(__vk, '1'); jmTrack('view'); }
+} catch (e) { jmTrack('view'); }
 async function contactSubmit(e) {
   e.preventDefault();
   const errBox = document.getElementById('contact-err');

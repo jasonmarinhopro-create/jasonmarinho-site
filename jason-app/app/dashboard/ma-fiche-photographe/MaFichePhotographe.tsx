@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Camera, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash } from '@phosphor-icons/react/dist/ssr'
+import { Camera, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
 import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo } from './actions'
 
 type Photographer = {
@@ -20,7 +20,7 @@ type Photographer = {
 
 interface Props {
   photographer: Photographer
-  kpis: { views: number; contacts: number; daysActive: number }
+  kpis: { views: number; contacts: number; clics: number; daysActive: number }
   isAdminPreview?: boolean
 }
 
@@ -146,6 +146,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
       <div style={s.kpiRow}>
         <Kpi v={kpis.views} l="Vues fiche" Icon={Eye} />
+        <Kpi v={kpis.clics} l="Clics portfolio / insta" Icon={CursorClick} />
         <Kpi v={kpis.contacts} l="Contacts reçus" Icon={ChatCircle} />
         <Kpi v={kpis.daysActive} l="Jours d'activité" Icon={Calendar} />
       </div>
