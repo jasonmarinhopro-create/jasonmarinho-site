@@ -210,3 +210,58 @@ export async function createCustomerPortalSession(targetId?: string): Promise<{ 
     return { error: 'Impossible de créer la session de gestion d\'abonnement.' }
   }
 }
+
+
+/**
+ * Demandes reçues : met à jour le statut pipeline d'une demande
+ * (nouvelle → répondue → devis envoyé → gagnée/perdue).
+ */
+export async function updateContactStatus(
+  contactId: string,
+  status: string,
+  targetId?: string,
+): Promise<{ success?: boolean; error?: string }> {
+  const VALID = ['nouvelle', 'repondue', 'devis_envoye', 'gagnee', 'perdue']
+  if (!VALID.includes(status)) return { error: 'Statut invalide.' }
+
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+
+  const admin = getServiceClient()
+  const { error } = await admin
+    .from('photographer_contacts')
+    .update({ status })
+    .eq('id', contactId)
+    .eq('photographer_id', target.photographerId)
+  if (error) {
+    log.error('updateContactStatus failed', { error: error.message })
+    return { error: 'Mise à jour impossible. Réessaie.' }
+  }
+  revalidatePath('/dashboard/ma-fiche-photographe')
+  return { success: true }
+}
+
+/**
+ * Demandes reçues : notes privées du pro sur une demande (devis, relances…).
+ */
+export async function updateContactNotes(
+  contactId: string,
+  notes: string,
+  targetId?: string,
+): Promise<{ success?: boolean; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+
+  const admin = getServiceClient()
+  const { error } = await admin
+    .from('photographer_contacts')
+    .update({ pro_notes: String(notes ?? '').slice(0, 2000) || null })
+    .eq('id', contactId)
+    .eq('photographer_id', target.photographerId)
+  if (error) {
+    log.error('updateContactNotes failed', { error: error.message })
+    return { error: 'Enregistrement impossible. Réessaie.' }
+  }
+  revalidatePath('/dashboard/ma-fiche-photographe')
+  return { success: true }
+}

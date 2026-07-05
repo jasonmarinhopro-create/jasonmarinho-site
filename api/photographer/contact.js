@@ -41,7 +41,7 @@ module.exports = async function handler(req, res) {
 
   // Anti-bot honeypot + time-trap
   if (body.website) return res.status(200).json({ ok: true })
-  if (body.t && typeof body.t === 'number' && Date.now() - body.t < 3000) return res.status(200).json({ ok: true })
+  if (body.t && typeof body.t === 'number' && Date.now() - body.t < 1200) return res.status(200).json({ ok: true })
 
   const slug = String(body.slug || '').trim().slice(0, 100)
   const contactName = String(body.contactName || '').trim().slice(0, 100)
@@ -87,8 +87,9 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true })
   }
 
-  // Log dans photographer_contacts (best-effort)
-  fetch(`${SUPABASE_URL}/rest/v1/photographer_contacts`, {
+  // Log dans la table contacts — AWAITÉ : sur Vercel, la lambda est
+  // gelée dès que la réponse part, un fetch non-attendu n'aboutit jamais.
+  const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/photographer_contacts`, {
     method: 'POST',
     headers: {
       apikey: SERVICE_KEY,
@@ -103,23 +104,32 @@ module.exports = async function handler(req, res) {
       message,
       source_url: req.headers['referer'] || null,
     }),
-  }).catch(err => console.warn('[photographer/contact] log insert failed', err))
+  }).catch(err => { console.warn('[photographer/contact] insert failed', err); return null })
+  if (insertRes && !insertRes.ok) console.warn('[photographer/contact] insert status', insertRes.status, await insertRes.text().catch(() => ''))
 
-  // Increment compteur contacts (best-effort, non bloquant)
-  fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_photographer_contacts`, {
+  // Increment compteur contacts (awaité — même contrainte lambda)
+  await fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_photographer_contacts`, {
     method: 'POST',
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ p_id: photographer.id }),
   }).catch(() => {})
 
-  // Emails
+  // Emails — AWAITÉS via Promise.allSettled : sans await, la lambda
+  // Vercel gèle après res.json() et Resend n'est jamais appelé
+  // (cause du "j'ai testé et rien reçu").
   const RESEND_KEY = process.env.RESEND_API_KEY
   if (RESEND_KEY) {
+    const sendEmail = (payload, label) =>
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).then(async r => {
+        if (!r.ok) console.error(`[photographer/contact] resend ${label} failed`, r.status, await r.text().catch(() => ''))
+      }).catch(err => console.error(`[photographer/contact] resend ${label} error`, err))
+
     // Au photographe (le vrai destinataire)
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    await sendEmail({
         from: 'notifications@jasonmarinho.com',
         to: photographer.email,
         reply_to: contactEmail,
@@ -136,14 +146,10 @@ module.exports = async function handler(req, res) {
 <p style="margin:18px 0 0"><a href="mailto:${escHtml(contactEmail)}" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Répondre par email →</a></p>
 <p style="font-size:12px;color:#7A8C77;margin:22px 0 0;line-height:1.6">Tu peux répondre directement à cet email — ton réponse arrivera dans la boîte de ${escHtml(contactName)}. Aucune commission, aucun intermédiaire : tu négocies et factures directement.</p>
 </div>`,
-      }),
-    }).catch(() => {})
+      }, 'pro')
 
     // Au demandeur (accusé de réception)
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    await sendEmail({
         from: 'notifications@jasonmarinho.com',
         to: contactEmail,
         subject: `Ta demande à ${escHtml(displayName)} est partie 📸`,
@@ -154,8 +160,7 @@ module.exports = async function handler(req, res) {
 <div style="background:#fff;padding:14px 16px;border-radius:8px;font-size:13.5px;line-height:1.75;color:#3D5038;margin:14px 0;white-space:pre-wrap;border-left:3px solid #63D683">${escHtml(message)}</div>
 <p style="font-size:13px;color:#7A8C77;margin:18px 0 0;line-height:1.7">Rappel : Jason Marinho ne prend aucune commission. Le devis, le contrat et le paiement se font directement entre toi et le photographe.</p>
 </div>`,
-      }),
-    }).catch(() => {})
+      }, 'accuse-reception')
   }
 
   return res.status(200).json({ ok: true })
