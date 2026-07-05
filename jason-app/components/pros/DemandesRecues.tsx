@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check } from '@phosphor-icons/react/dist/ssr'
+import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check, Copy } from '@phosphor-icons/react/dist/ssr'
 
 export interface ProContact {
   id: string
@@ -29,14 +29,17 @@ interface Props {
   onUpdateNotes: (contactId: string, notes: string) => Promise<{ error?: string }>
   /** "photographe" | "équipe" — pour les libellés */
   metier: string
+  /** true = page dédiée (titre plein format, pas de marge haute) */
+  standalone?: boolean
 }
 
-export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUpdateNotes, metier }: Props) {
+export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUpdateNotes, metier, standalone = false }: Props) {
   const [contacts, setContacts] = useState(initial)
   const [openId, setOpenId] = useState<string | null>(null)
   const [notesDraft, setNotesDraft] = useState<Record<string, string>>({})
   const [notesSaved, setNotesSaved] = useState<string | null>(null)
   const [, startTransition] = useTransition()
+  const [copiedId, setCopiedId] = useState<string | null>(null)
 
   const nouvelles = contacts.filter(c => c.status === 'nouvelle').length
 
@@ -62,10 +65,10 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
   }
 
   return (
-    <section style={s.wrap}>
+    <section style={{ ...s.wrap, ...(standalone ? { marginTop: 0 } : {}) }}>
       <div style={s.head}>
         <div>
-          <h2 style={s.title}>
+          <h2 style={{ ...s.title, ...(standalone ? { fontSize: 'clamp(24px,3vw,32px)' } : {}) }}>
             Demandes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>reçues</em>
           </h2>
           <p style={s.sub}>
@@ -117,6 +120,20 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                         <Envelope size={14} weight="bold" />
                         Répondre par email
                       </a>
+                      {/* mailto: dépend d'un client mail configuré sur l'appareil —
+                          sur un poste sans app mail il ne se passe RIEN. Le bouton
+                          copier garantit qu'on peut toujours répondre (webmail). */}
+                      <button
+                        onClick={async () => {
+                          try { await navigator.clipboard.writeText(c.contact_email) } catch { /* http/vieux navigateurs */ }
+                          setCopiedId(c.id)
+                          setTimeout(() => setCopiedId(id => (id === c.id ? null : id)), 2000)
+                          if (c.status === 'nouvelle') changeStatus(c.id, 'repondue')
+                        }}
+                        style={s.copyBtn}
+                      >
+                        {copiedId === c.id ? <><Check size={14} weight="bold" /> Adresse copiée !</> : <><Copy size={14} weight="bold" /> Copier l&apos;adresse</>}
+                      </button>
                       <div style={s.statusGroup}>
                         {STATUS_ORDER.map(st => {
                           const m = STATUS_META[st]
@@ -224,6 +241,13 @@ const s: Record<string, React.CSSProperties> = {
     padding: '9px 14px', borderRadius: 9,
     background: 'var(--accent-text)', color: 'var(--bg)',
     fontSize: 12.5, fontWeight: 700, textDecoration: 'none',
+  },
+  copyBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: 7,
+    padding: '9px 14px', borderRadius: 9,
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
+    color: 'var(--text)', fontSize: 12.5, fontWeight: 600,
+    cursor: 'pointer', fontFamily: 'inherit',
   },
   statusGroup: {
     display: 'inline-flex', flexWrap: 'wrap' as const, gap: 4,

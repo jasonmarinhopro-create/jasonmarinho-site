@@ -2,8 +2,6 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import MaFicheMenage from './MaFicheMenage'
-import DemandesRecues, { type ProContact } from '@/components/pros/DemandesRecues'
-import { updateContactStatus, updateContactNotes } from './actions'
 
 export const metadata = { title: 'Ma fiche équipe ménage' }
 export const dynamic = 'force-dynamic'
@@ -82,33 +80,16 @@ export default async function Page({ searchParams }: PageProps) {
   const createdAt = new Date(cleaner.created_at)
   const daysActive = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000))
 
-  // Demandes reçues via le formulaire de la fiche publique (inbox pipeline)
-  const { data: contacts } = await admin
-    .from('cleaner_contacts')
-    .select('id, contact_name, contact_email, message, status, pro_notes, created_at')
-    .eq('cleaner_id', cleaner.id)
-    .order('created_at', { ascending: false })
-    .limit(100)
-
   return (
-    <>
-      <MaFicheMenage
-        cleaner={cleaner}
-        kpis={{
-          views: cleaner.views_count ?? 0,
-          contacts: cleaner.contacts_count ?? 0,
-          daysActive,
-        }}
-        isAdminPreview={isAdminPreview}
-      />
-      <div style={{ padding: 'clamp(20px, 3vw, 44px)', paddingTop: 0, width: '100%' }}>
-        <DemandesRecues
-          contacts={(contacts ?? []) as ProContact[]}
-          onUpdateStatus={updateContactStatus}
-          onUpdateNotes={updateContactNotes}
-          metier="équipe"
-        />
-      </div>
-    </>
+    <MaFicheMenage
+      cleaner={cleaner}
+      kpis={{
+        views: cleaner.views_count ?? 0,
+        contacts: cleaner.contacts_count ?? 0,
+        clics: (cleaner.site_clicks_count ?? 0) + (cleaner.instagram_clicks_count ?? 0),
+        daysActive,
+      }}
+      isAdminPreview={isAdminPreview}
+    />
   )
 }
