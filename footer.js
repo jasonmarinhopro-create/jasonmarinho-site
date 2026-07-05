@@ -177,21 +177,12 @@
     { href: '/calculateurs/revenu-lcd-munich', name: 'Munich' },
     { href: '/calculateurs/revenu-lcd-wien', name: 'Vienne' }
   ];
-  // Pages ville × métier pros LCD (générées par scripts/build-pages-pros-villes.mjs)
-  var PROS_VILLES = [
-    { slug: 'paris', name: 'Paris' }, { slug: 'lyon', name: 'Lyon' },
-    { slug: 'bordeaux', name: 'Bordeaux' }, { slug: 'marseille', name: 'Marseille' },
-    { slug: 'nice', name: 'Nice' }, { slug: 'annecy', name: 'Annecy' },
-    { slug: 'strasbourg', name: 'Strasbourg' }, { slug: 'lille', name: 'Lille' },
-    { slug: 'nantes', name: 'Nantes' }, { slug: 'toulouse', name: 'Toulouse' },
-    { slug: 'montpellier', name: 'Montpellier' }, { slug: 'biarritz', name: 'Biarritz' },
-    { slug: 'cannes', name: 'Cannes' }, { slug: 'aix-en-provence', name: 'Aix-en-Provence' },
-    { slug: 'la-rochelle', name: 'La Rochelle' }
-  ];
-  var PHOTOGRAPHE_LINKS = PROS_VILLES.map(function (c) {
+  // Pages ville × métier pros LCD — générées par scripts/build-pages-pros-villes.mjs
+  // depuis CITIES : chaque ville du footer a ses 2 pages, on dérive directement.
+  var PHOTOGRAPHE_LINKS = CITIES.map(function (c) {
     return { href: '/photographe-lcd-' + c.slug, name: c.name };
   });
-  var MENAGE_LINKS = PROS_VILLES.map(function (c) {
+  var MENAGE_LINKS = CITIES.map(function (c) {
     return { href: '/menage-lcd-' + c.slug, name: c.name };
   });
   var COMPARATIF_LINKS = [
