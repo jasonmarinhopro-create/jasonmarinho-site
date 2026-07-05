@@ -66,9 +66,9 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
 
   return (
     <section style={{ ...s.wrap, ...(standalone ? { marginTop: 0 } : {}) }}>
-      <div style={s.head}>
+      <div style={s.head} className="fade-up">
         <div>
-          <h2 style={{ ...s.title, ...(standalone ? { fontSize: 'clamp(24px,3vw,32px)' } : {}) }}>
+          <h2 style={{ ...s.title, ...(standalone ? { fontSize: 'clamp(26px,3vw,38px)' } : {}) }}>
             Demandes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>reçues</em>
           </h2>
           <p style={s.sub}>
@@ -81,7 +81,7 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
       </div>
 
       {contacts.length === 0 ? (
-        <div style={s.empty}>
+        <div style={s.empty} className="fade-up">
           <Tray size={30} color="var(--text-muted)" />
           <p style={s.emptyTitle}>Aucune demande pour le moment</p>
           <p style={s.emptyDesc}>
@@ -89,7 +89,7 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
           </p>
         </div>
       ) : (
-        <div style={s.list}>
+        <div style={s.list} className="fade-up">
           {contacts.map(c => {
             const meta = STATUS_META[c.status] ?? STATUS_META.nouvelle
             const open = openId === c.id

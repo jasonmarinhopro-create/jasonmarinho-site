@@ -37,7 +37,7 @@ export default async function Page() {
     .limit(200)
 
   return (
-    <div style={{ padding: 'clamp(20px, 3vw, 44px)', width: '100%', maxWidth: 900 }}>
+    <div style={{ padding: 'clamp(20px, 3vw, 44px)', width: '100%' }}>
       <DemandesRecues
         contacts={(contacts ?? []) as ProContact[]}
         onUpdateStatus={updateContactStatus}
