@@ -15,9 +15,7 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
 <link rel="manifest" href="/manifest.json?v=2026-06">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="/fonts/site-fonts.css">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
@@ -55,6 +53,14 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .empty h2{font-family:'Fraunces',serif;font-size:22px;color:var(--td);margin:0 0 12px;font-weight:400}
 .empty p{font-size:14px;line-height:1.7;color:var(--tm);margin:0 0 20px}
 .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;padding:12px 22px;border-radius:10px;text-decoration:none}
+.villes-section{max-width:1100px;margin:34px auto 0;padding:0 clamp(16px,5vw,40px)}
+.villes-in{padding:28px;background:#fff;border:1px solid var(--bd);border-radius:16px}
+.villes-h{font-family:'Fraunces',serif;font-size:20px;font-weight:400;color:var(--td);margin:0 0 8px;letter-spacing:-.2px}
+.villes-h em{color:var(--g);font-style:italic;font-weight:300}
+.villes-p{font-size:13.5px;color:var(--tm);margin:0 0 16px;line-height:1.6}
+.villes-chips{display:flex;flex-wrap:wrap;gap:7px}
+.villes-chips a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:rgba(0,76,63,.04);color:var(--tm);text-decoration:none;border:1px solid transparent;transition:all .18s;white-space:nowrap}
+.villes-chips a:hover{color:var(--g);border-color:rgba(0,76,63,.2);background:rgba(0,76,63,.07)}
 .disclaimer{max-width:1100px;margin:30px auto 0;padding:0 clamp(16px,5vw,40px) 50px;font-size:12.5px;color:var(--tl);line-height:1.7}
 .preview-section{max-width:1100px;margin:30px auto 0;padding:0 clamp(16px,5vw,40px)}
 .preview-card{display:flex;gap:24px;padding:28px;background:#fff;border:1px solid var(--bd);border-radius:16px;align-items:center;flex-wrap:wrap}
@@ -97,6 +103,14 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
       <p class="preview-p">Découvre le mini-site qu'une équipe obtient en s'inscrivant : présentation, prestations, capacité, garanties RC pro, tarifs et formulaire de contact direct. Aperçu fidèle hébergé sur jasonmarinho.com.</p>
       <a href="/annuaires/menage/exemple-fiche" class="preview-cta"><i class="ph-bold ph-eye"></i> Voir l'exemple de fiche</a>
     </div>
+  </div>
+</section>
+
+<section class="villes-section">
+  <div class="villes-in">
+    <h2 class="villes-h">Guides ménage LCD <em>par ville</em></h2>
+    <p class="villes-p">Tarifs locaux constatés, checklists et conseils pour choisir ton prestataire, ville par ville.</p>
+    <div class="villes-chips"><a href="/menage-lcd-lyon">Lyon</a><a href="/menage-lcd-bordeaux">Bordeaux</a><a href="/menage-lcd-annecy">Annecy</a><a href="/menage-lcd-nice">Nice</a><a href="/menage-lcd-strasbourg">Strasbourg</a><a href="/menage-lcd-biarritz">Biarritz</a><a href="/menage-lcd-la-rochelle">La Rochelle</a><a href="/menage-lcd-marseille">Marseille</a><a href="/menage-lcd-toulouse">Toulouse</a><a href="/menage-lcd-montpellier">Montpellier</a><a href="/menage-lcd-nantes">Nantes</a><a href="/menage-lcd-lille">Lille</a><a href="/menage-lcd-aix-en-provence">Aix-en-Provence</a><a href="/menage-lcd-cannes">Cannes</a><a href="/menage-lcd-avignon">Avignon</a><a href="/menage-lcd-chamonix">Chamonix</a><a href="/menage-lcd-saint-malo">Saint-Malo</a><a href="/menage-lcd-rennes">Rennes</a><a href="/menage-lcd-colmar">Colmar</a><a href="/menage-lcd-dijon">Dijon</a><a href="/menage-lcd-arcachon">Arcachon</a><a href="/menage-lcd-deauville">Deauville</a><a href="/menage-lcd-reims">Reims</a><a href="/menage-lcd-tours">Tours</a><a href="/menage-lcd-metz">Metz</a><a href="/menage-lcd-rouen">Rouen</a><a href="/menage-lcd-perpignan">Perpignan</a><a href="/menage-lcd-grenoble">Grenoble</a><a href="/menage-lcd-bayonne">Bayonne</a><a href="/menage-lcd-caen">Caen</a><a href="/menage-lcd-vannes">Vannes</a><a href="/menage-lcd-angers">Angers</a><a href="/menage-lcd-la-baule">La Baule</a><a href="/menage-lcd-chambery">Chambéry</a><a href="/menage-lcd-sete">Sète</a><a href="/menage-lcd-brest">Brest</a><a href="/menage-lcd-pau">Pau</a><a href="/menage-lcd-saint-tropez">Saint-Tropez</a><a href="/menage-lcd-honfleur">Honfleur</a><a href="/menage-lcd-le-touquet">Le Touquet</a><a href="/menage-lcd-carcassonne">Carcassonne</a><a href="/menage-lcd-ajaccio">Ajaccio</a><a href="/menage-lcd-antibes">Antibes</a><a href="/menage-lcd-sarlat">Sarlat</a><a href="/menage-lcd-nimes">Nîmes</a><a href="/menage-lcd-le-mans">Le Mans</a><a href="/menage-lcd-versailles">Versailles</a><a href="/menage-lcd-paris">Paris</a><a href="/menage-lcd-megeve">Megève</a><a href="/menage-lcd-beaune">Beaune</a><a href="/menage-lcd-epernay">Épernay</a><a href="/menage-lcd-etretat">Étretat</a><a href="/menage-lcd-menton">Menton</a><a href="/menage-lcd-dinard">Dinard</a><a href="/menage-lcd-quimper">Quimper</a><a href="/menage-lcd-nancy">Nancy</a><a href="/menage-lcd-troyes">Troyes</a><a href="/menage-lcd-bastia">Bastia</a><a href="/menage-lcd-clermont-ferrand">Clermont-Ferrand</a><a href="/menage-lcd-poitiers">Poitiers</a></div>
   </div>
 </section>
 

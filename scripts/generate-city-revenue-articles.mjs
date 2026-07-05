@@ -1056,10 +1056,8 @@ function buildHtml (city) {
   <meta property="og:site_name" content="Jason Marinho">
   <meta name="robots" content="index, follow">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="/fonts/site-fonts.css">
+  <noscript><link rel="stylesheet" href="/fonts/site-fonts.css"></noscript>
   <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css">
   <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css">
   <style>

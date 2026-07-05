@@ -229,7 +229,7 @@ function generateArticleHTML(art) {
       '@type': 'BlogPosting',
       headline: art.title,
       description: art.description,
-      author: { '@type': 'Person', name: 'Jason Marinho', url: 'https://jasonmarinho.com' },
+      author: { '@type': 'Person', name: 'Jason Marinho', url: 'https://jasonmarinho.com/qui-suis-je' },
       publisher: { '@type': 'Organization', name: 'Jason Marinho', url: 'https://jasonmarinho.com' },
       datePublished: art.date,
       dateModified: art.date,
@@ -264,8 +264,7 @@ function generateArticleHTML(art) {
 <meta property="article:section" content="${cat.section}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/site-fonts.css">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
 <style>
