@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Sun, 05 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 06 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Passer de 4,7 à 4,9 étoiles sur Airbnb : la méthode en 6 points pour gagner 0,2 étoile</title>
+      <link>https://jasonmarinho.com/blog/passer-4-7-a-4-9-etoiles-airbnb-methode-6-points</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/passer-4-7-a-4-9-etoiles-airbnb-methode-6-points</guid>
+      <pubDate>Mon, 06 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Zéro à zéro deux étoile change ton classement, ta conversion et l&apos;accès à Superhost et Guest Favorites. Voici la méthode concrète en 6 points pour la gagner en une saison.</description>
+      <category>Visibilité</category>
+    </item>
     <item>
       <title>Ménage Airbnb : se lancer comme prestataire en 2026 (marché, tarifs, premiers clients)</title>
       <link>https://jasonmarinho.com/blog/devenir-prestataire-menage-airbnb-se-lancer</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Une newsletter mensuelle bien faite génère 8-12% de retours fidèles. Voici la structure type, les outils gratuits et la conformité RGPD pour démarrer.</description>
       <category>Visibilité</category>
-    </item>
-    <item>
-      <title>Équipe ménage conciergerie : recruter, former, fidéliser en 2026</title>
-      <link>https://jasonmarinho.com/blog/equipe-menage-conciergerie-recruter-fideliser</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/equipe-menage-conciergerie-recruter-fideliser</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Le ménage est le poste #1 de coûts d&apos;une conciergerie LCD. Voici comment recruter une équipe fiable, la former en 2 semaines, et la garder sur la durée.</description>
-      <category>Conciergerie</category>
     </item>
   </channel>
 </rss>
