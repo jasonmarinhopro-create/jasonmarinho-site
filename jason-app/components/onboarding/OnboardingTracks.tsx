@@ -42,7 +42,18 @@ export function OnboardingTracks({
   const [pinnedKey, setPinnedKey] = useState<string>(initialPinned)
   const [isDismissed, setIsDismissed] = useState(dismissed)
   const [view, setView] = useState<View>(dismissed || completed ? 'pill' : 'track')
+  const [isMobile, setIsMobile] = useState(false)
   const [, startTransition] = useTransition()
+
+  // Format mobile : la carte étendue devient une bottom sheet pleine largeur
+  // (au lieu d'une carte 420px collée bas-droite) avec liste scrollable.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
 
   // Listen for the custom event dispatched by the Header "Parcours" button.
   // Restores from a dismissed state and opens the panel directly.
@@ -88,6 +99,26 @@ export function OnboardingTracks({
   const pinnedDoneCount = doneByTrack[pinnedTrack.key]?.length ?? 0
   const pinnedPct = Math.round((pinnedDoneCount / pinnedTrack.steps.length) * 100)
 
+  // Styles responsive : bottom sheet mobile / carte flottante desktop.
+  const wrapStyle: React.CSSProperties = isMobile
+    ? { ...s.wrap, left: '10px', right: '10px', bottom: '10px', maxWidth: 'none' }
+    : s.wrap
+  const cardStyle: React.CSSProperties = isMobile
+    ? {
+        ...s.card, width: '100%', maxWidth: 'none',
+        maxHeight: 'min(78dvh, 620px)',
+        display: 'flex', flexDirection: 'column', overflow: 'hidden',
+        // Marge de sécurité pour la barre de navigation OS (iOS safe area)
+        paddingBottom: 'max(14px, env(safe-area-inset-bottom))',
+      }
+    : s.card
+  const listStyle: React.CSSProperties = isMobile
+    ? { ...s.list, overflowY: 'auto', minHeight: 0, flex: 1, WebkitOverflowScrolling: 'touch' as const }
+    : s.list
+  const trackListStyle: React.CSSProperties = isMobile
+    ? { ...s.trackList, overflowY: 'auto', minHeight: 0, flex: 1, WebkitOverflowScrolling: 'touch' as const }
+    : s.trackList
+
   // ─── Pill (collapsed)
   if (view === 'pill') {
     return (
@@ -110,8 +141,8 @@ export function OnboardingTracks({
   if (view === 'track') {
     const doneSet = new Set(doneByTrack[pinnedTrack.key] ?? [])
     return (
-      <div style={s.wrap}>
-        <div style={s.card} className="glass-card">
+      <div style={wrapStyle}>
+        <div style={cardStyle} className="glass-card">
           {/* Header */}
           <div style={s.cardHeader}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 0 }}>
@@ -156,7 +187,7 @@ export function OnboardingTracks({
           </div>
 
           {/* Steps list */}
-          <div style={s.list}>
+          <div style={listStyle}>
             {pinnedTrack.steps.map((step, idx) => {
               const isDone = doneSet.has(step.key)
               const isLocked = !!step.requiresPlan && plan === 'decouverte'
@@ -260,8 +291,8 @@ export function OnboardingTracks({
 
   // ─── All tracks view
   return (
-    <div style={s.wrap}>
-      <div style={{ ...s.card, width: '420px' }} className="glass-card">
+    <div style={wrapStyle}>
+      <div style={{ ...cardStyle, ...(isMobile ? {} : { width: '420px' }) }} className="glass-card">
         <div style={s.cardHeader}>
           <div style={{ flex: 1 }}>
             <div style={s.cardTitle}>Mes parcours</div>
@@ -304,11 +335,11 @@ export function OnboardingTracks({
             <Sparkle size={11} weight="fill" />
           </span>
           <span style={s.tipText}>
-            Une <strong>visite guidée</strong> se lance à ta première visite des pages clés (Logements, Calendrier, Simulateurs…). Tu peux la relancer via le bouton <em>« Comment ça marche ? »</em> en haut de chaque page.
+            Une <strong>visite guidée</strong> se lance à ta première visite des pages clés (Mes réservations, Calendrier, Logements…). Tu peux la relancer via le bouton <em>« Comment ça marche ? »</em> en haut de chaque page.
           </span>
         </div>
 
-        <div style={s.trackList}>
+        <div style={trackListStyle}>
           {ONBOARDING_TRACKS.map(track => {
             const done = doneByTrack[track.key]?.length ?? 0
             const total = track.steps.length

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import ReservationsView from './ReservationsView'
+import OnboardingTour, { RESERVATIONS_STEPS } from '../OnboardingTour'
 import type { Reservation, LogementLite } from './types'
 import { computeMenageSlots, mergeAutoAndManual, type LogementSettings, type Occupation, type MenageSlot } from '@/lib/menage/compute'
 
@@ -215,17 +216,25 @@ export default async function ReservationsPage() {
   const hostName = (profileRow as any)?.full_name ?? null
 
   return (
-    <ReservationsView
-      reservations={reservations}
-      logements={logements}
-      menageSlots={menageSlots}
-      menageDoneIds={doneIds}
-      menageLogementNames={logementNames}
-      menageLogementIdByName={logementIdByName}
-      appUrl={appUrl}
-      icalToken={icalToken}
-      hostName={hostName}
-    />
+    <>
+      <OnboardingTour
+        userId={userId}
+        steps={RESERVATIONS_STEPS}
+        storageScope="reservations"
+        initiallyDone={profile.onboarding_completed_steps.includes('tour:reservations')}
+      />
+      <ReservationsView
+        reservations={reservations}
+        logements={logements}
+        menageSlots={menageSlots}
+        menageDoneIds={doneIds}
+        menageLogementNames={logementNames}
+        menageLogementIdByName={logementIdByName}
+        appUrl={appUrl}
+        icalToken={icalToken}
+        hostName={hostName}
+      />
+    </>
   )
 }
 

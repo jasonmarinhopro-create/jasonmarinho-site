@@ -11,6 +11,7 @@ import {
 import type { Reservation, LogementLite, Platform, ReservationStatus } from './types'
 import { PLATFORM_META } from './types'
 import Select, { type SelectOption } from '@/components/ui/Select'
+import TourTrigger from '@/components/dashboard/TourTrigger'
 import type { MenageSlot } from '@/lib/menage/compute'
 
 // Reutilise le modal Planning menage existant du calendrier (lazy-loaded).
@@ -196,7 +197,10 @@ export default function ReservationsView({
       {/* HERO */}
       <div style={s.head}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={s.title}>Mes <em style={s.titleEm}>réservations</em></h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <h1 style={s.title}>Mes <em style={s.titleEm}>réservations</em></h1>
+            <TourTrigger />
+          </div>
           <p style={s.sub}>Pilote toutes tes réservations : filtre, trie, exporte. Clique une carte pour voir le détail voyageur et l&apos;état du contrat.</p>
         </div>
         <button onClick={exportCSV} style={s.exportBtn} title="Exporter en CSV (filtres actifs)">
@@ -205,7 +209,7 @@ export default function ReservationsView({
       </div>
 
       {/* STATS BAR */}
-      <div style={s.kpiRow}>
+      <div style={s.kpiRow} data-tour="resa-kpis">
         <div style={s.kpi}>
           <div style={s.kpiIco}><CalendarBlank size={18} weight="duotone" /></div>
           <div>
@@ -240,7 +244,7 @@ export default function ReservationsView({
       <PlanningMenageCard slots={menageSlots} onOpen={() => setMenageModalOpen(true)} />
 
       {/* FILTRES */}
-      <div style={s.filtersBar}>
+      <div style={s.filtersBar} data-tour="resa-filtres">
         <div style={s.chipsRow}>
           {PERIODS.map(p => (
             <button key={p.key} onClick={() => setPeriod(p.key)}
