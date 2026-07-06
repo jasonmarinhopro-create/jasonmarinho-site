@@ -14,52 +14,59 @@ export type TourStep = {
 }
 
 // Tour par défaut pour le dashboard home.
-// Chemin d'apprentissage : on commence par les ressources (Apprendre →
-// Formations / Guide / Actualités), puis le pilotage quotidien (Calendrier),
-// puis l'action concrète (la checklist). Volontairement on NE pousse PAS
-// directement vers les simulateurs — ils sont une option, pas la priorité.
+// Aligné sur la NOUVELLE sidebar (refactor hubs) : d'abord le quotidien
+// (Calendrier, Mes réservations, Mes finances), puis le bloc « Faire grandir »
+// (Outils & calculs, Apprendre, Entre Hôtes). Les sélecteurs DOIVENT matcher
+// les hrefs exacts de components/layout/Sidebar.tsx — sinon le step est
+// silencieusement skippé sur desktop.
 export const DASHBOARD_HOME_STEPS: TourStep[] = [
   {
     id: 'welcome',
     targetSelector: null,
     title: "Bienvenue dans ton espace LCD",
-    body: "60 secondes pour découvrir ton dashboard et savoir où trouver quoi. Tu peux skipper à tout moment.",
-  },
-  {
-    id: 'formations',
-    targetSelector: 'a[href="/dashboard/formations"]',
-    title: "Apprendre : les Formations",
-    body: "18 formations pour devenir un hôte qui maîtrise vraiment la LCD : juridique, fiscal, Booking, Airbnb, automatisation… Commence par là.",
-  },
-  {
-    id: 'guide',
-    targetSelector: 'a[href="/dashboard/guide"]',
-    title: "Le Guide LCD",
-    body: "Le manuel concret pour les vraies situations : un voyageur qui annule, un mauvais commentaire, un litige de caution… On a tout couvert.",
-  },
-  {
-    id: 'actualites',
-    targetSelector: 'a[href="/dashboard/actualites"]',
-    title: "Reste informé : Actualités",
-    body: "Changements de loi, nouvelles obligations fiscales, actualité Airbnb/Booking. Curé par Jason, pas du bruit de presse — uniquement ce qui te concerne.",
+    body: "60 secondes pour comprendre comment tout est rangé : en haut, ton quotidien d'hôte. En bas, tout ce qui fait grandir ton activité. Tu peux skipper à tout moment.",
   },
   {
     id: 'calendrier',
     targetSelector: 'a[href="/dashboard/calendrier"]',
-    title: "Piloter au quotidien : Calendrier",
-    body: "Toutes tes arrivées, départs, séjours sans contrat. Synchronisé avec Airbnb et Booking via iCal. Le hub central de ton activité.",
+    title: "Ton quotidien : le Calendrier",
+    body: "Arrivées, départs, ménages, mois par mois. Synchronisé avec Airbnb et Booking via iCal — tu n'as plus à jongler entre les plateformes.",
   },
   {
-    id: 'setup',
-    targetSelector: '[data-tour="setup-checklist"]',
-    title: "Tes prochaines étapes concrètes",
-    body: "Cette checklist t'accompagne d'un compte vide à une utilisation pleine. Elle disparaît automatiquement quand tu as fini.",
+    id: 'reservations',
+    targetSelector: 'a[href="/dashboard/reservations"]',
+    title: "Mes réservations : ta tour de contrôle",
+    body: "Toutes tes réservations réunies : CA, nuits vendues, filtres par plateforme et logement, détail voyageur et état du contrat en un clic.",
+  },
+  {
+    id: 'finances',
+    targetSelector: 'a[href="/dashboard/finances/revenus"]',
+    title: "Mes finances : tout l'argent au même endroit",
+    body: "Revenus, encaissements Stripe et performances sont réunis en une seule page à onglets. Une saisie ici alimente aussi tes simulateurs fiscaux.",
+  },
+  {
+    id: 'outils',
+    targetSelector: 'a[href="/dashboard/outils"]',
+    title: "Outils & calculs",
+    body: "Simulateurs fiscaux, Prix & Marché, audit Google Business, QR & affiches : les 4 outils sont regroupés ici, préfilés avec tes vraies données.",
+  },
+  {
+    id: 'apprendre',
+    targetSelector: 'a[href="/dashboard/apprendre/formations"]',
+    title: "Apprendre : Formations + Guide LCD",
+    body: "18 formations (juridique, fiscal, Airbnb, Booking, automatisation…) et le Guide LCD pour les vraies situations : annulation, litige caution, mauvais commentaire.",
+  },
+  {
+    id: 'entre-hotes',
+    targetSelector: 'a[href="/dashboard/entre-hotes/forum"]',
+    title: "Entre Hôtes : ta communauté",
+    body: "Le forum privé des hôtes LCD, les groupes Facebook pour trouver des voyageurs, et l'écosystème de partenaires (photographes, ménage, conciergeries).",
   },
   {
     id: 'done',
     targetSelector: null,
     title: "Tu as la carte. Bonne route ✨",
-    body: "Tout le reste se découvre en cliquant. Une visite guidée se relance à ta première visite des pages importantes (Logements, Calendrier, Simulateurs), ou via le bouton « Comment ça marche ? » en haut de chaque page.",
+    body: "Le widget « Parcours » en bas à droite te guide étape par étape, et une visite guidée se lance à ta première visite des pages clés — relançable via « Comment ça marche ? » en haut de chaque page.",
   },
 ]
 
@@ -282,6 +289,42 @@ export const CALENDRIER_STEPS: TourStep[] = [
   },
 ]
 
+// Tour pour la page Mes réservations — la tour de contrôle des résas
+// (fusion contracts + séjours). Nouvelle page phare du refactor.
+export const RESERVATIONS_STEPS: TourStep[] = [
+  {
+    id: 'intro',
+    targetSelector: null,
+    title: "Toutes tes réservations, un seul endroit",
+    body: "Contrats et séjours sont fusionnés ici en une liste unique : Airbnb, Booking, direct… Tu pilotes tout sans changer de page.",
+  },
+  {
+    id: 'kpis',
+    targetSelector: '[data-tour="resa-kpis"]',
+    title: "Tes chiffres en un coup d'œil",
+    body: "Nombre de réservations, CA sur la période, nuits vendues, prix moyen par nuit. Les chiffres suivent les filtres que tu actives en dessous.",
+  },
+  {
+    id: 'filtres',
+    targetSelector: '[data-tour="resa-filtres"]',
+    title: "Filtre, trie, change de vue",
+    body: "Période, plateforme, logement, recherche par nom ou email. Bascule entre vue cartes (mobile-friendly) et vue tableau (dense, desktop).",
+  },
+  {
+    id: 'drawer',
+    targetSelector: null,
+    title: "Clique une réservation pour le détail",
+    body: "Un panneau s'ouvre avec le voyageur, ses coordonnées, l'état du contrat et du paiement. C'est aussi de là que tu suis ce qui reste à faire.",
+  },
+  {
+    id: 'done',
+    targetSelector: null,
+    title: "Et pour en créer une ?",
+    body: "Les réservations naissent dans le Calendrier (saisie manuelle ou sync iCal Airbnb/Booking) et apparaissent ici automatiquement.",
+    cta: { label: 'Ouvrir le calendrier', href: '/dashboard/calendrier' },
+  },
+]
+
 // Largeur du popover : 380px en desktop, sinon clamp à la viewport - margins.
 // Calculée dynamiquement au runtime pour gérer les rotations mobile.
 function getPopoverW(): number {
@@ -320,7 +363,7 @@ export default function OnboardingTour({
   userId: string
   forceOpen?: boolean
   steps?: TourStep[]
-  storageScope?: 'home' | 'simulateurs' | 'logements' | 'calendrier' | 'voyageurs' | 'revenus' | 'encaissements' | 'calculateurs'
+  storageScope?: 'home' | 'simulateurs' | 'logements' | 'calendrier' | 'voyageurs' | 'revenus' | 'encaissements' | 'calculateurs' | 'reservations'
   /** Hydraté depuis profile.onboarding_completed_steps côté serveur : si true,
    *  le tour a déjà été fait sur un autre appareil → ne pas re-déclencher. */
   initiallyDone?: boolean

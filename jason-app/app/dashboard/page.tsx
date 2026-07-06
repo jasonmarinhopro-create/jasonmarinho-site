@@ -539,7 +539,7 @@ export default async function DashboardPage() {
     },
     {
       key: 'sejour', label: 'Saisir ta première réservation',
-      desc: 'Active le pilotage CA, ADR, occupation et performances',
+      desc: 'Elle apparaîtra dans « Mes réservations » avec CA, occupation et alertes',
       done: hasContract, ctaLabel: 'Ouvrir', ctaHref: '/dashboard/calendrier',
       durationLabel: '2 min',
     },
@@ -556,14 +556,14 @@ export default async function DashboardPage() {
     }] : []),
     {
       key: 'objectif', label: 'Définir ton objectif annuel',
-      desc: 'Pour voir où tu en es par rapport à ton plan de vol',
-      done: hasObjectif, ctaLabel: 'Définir', ctaHref: '/dashboard/revenus',
+      desc: 'Dans « Mes finances », pour voir où tu en es par rapport à ton plan de vol',
+      done: hasObjectif, ctaLabel: 'Définir', ctaHref: '/dashboard/finances/revenus',
       durationLabel: '1 min',
     },
     {
       key: 'apprendre', label: 'Commencer une formation',
       desc: 'Approfondis fiscalité, classement Atout France, automatisation',
-      done: hasFormationStarted, ctaLabel: 'Explorer', ctaHref: '/dashboard/formations',
+      done: hasFormationStarted, ctaLabel: 'Explorer', ctaHref: '/dashboard/apprendre/formations',
     },
   ]
 
