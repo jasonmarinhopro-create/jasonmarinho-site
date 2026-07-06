@@ -11,14 +11,14 @@ export default {
 
   sections: [
     {
-      h2: '1. Pourquoi unifier sa messagerie devient incontournable',
+      h2: 'Pourquoi unifier sa messagerie devient incontournable',
       content: [
         { type: 'p', text: 'Airbnb impose un délai de réponse < 1 h pour le badge "Répond rapidement". Booking pénalise les délais > 4 h en journée. Si tu jongles entre 3 plateformes via 3 apps différentes, tu vas inévitablement laisser passer un message — et perdre en classement sur les deux plateformes en même temps.' },
         { type: 'p', text: 'Une messagerie unifiée centralise les 3 conversations dans une seule interface, avec notifications consolidées. Bonus : la plupart des outils proposent des templates et auto-replies conditionnels qui répondent aux questions courantes sans intervention.' },
       ],
     },
     {
-      h2: '2. Hospitable — le leader du segment',
+      h2: '1. Hospitable — le leader du segment',
       content: [
         { type: 'p', text: 'Hospitable (anciennement Smartbnb) est probablement le PMS le plus utilisé pour la messagerie LCD. Il connecte Airbnb, Booking, VRBO et d\'autres dans une inbox unique. Le killer feature : les "AI replies" qui pré-rédigent une réponse en utilisant ton historique pour que tu valides en 1 clic.' },
         { type: 'ul', items: [
@@ -31,7 +31,7 @@ export default {
       ],
     },
     {
-      h2: '3. Smoobu — l\'option européenne complète',
+      h2: '2. Smoobu — l\'option européenne complète',
       content: [
         { type: 'p', text: 'Smoobu (allemand) est très utilisé en Europe et propose un système de messagerie intégré dans son channel manager. Moins puissant qu\'Hospitable côté AI mais plus complet côté gestion globale (réservations, calendrier, paiements).' },
         { type: 'ul', items: [
@@ -44,7 +44,7 @@ export default {
       ],
     },
     {
-      h2: '4. Lodgify — pour les hôtes qui ont aussi un site direct',
+      h2: '3. Lodgify — pour les hôtes qui ont aussi un site direct',
       content: [
         { type: 'p', text: 'Lodgify cible les hôtes qui veulent un site de réservation directe ET une messagerie unifiée. Inclut un constructeur de site WordPress-like, un channel manager et une boîte de messagerie centralisée.' },
         { type: 'ul', items: [

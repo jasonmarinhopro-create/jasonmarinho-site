@@ -66,7 +66,7 @@ export default {
       ],
     },
     {
-      h2: '5. Comment Airbnb évalue les 4 critères tous les 3 mois',
+      h2: 'Comment Airbnb évalue les 4 critères tous les 3 mois',
       content: [
         { type: 'p', text: 'Le statut Superhost se gagne et se perd à des dates fixes : le 1er janvier, le 1er avril, le 1er juillet et le 1er octobre. À chaque évaluation, Airbnb regarde les 365 jours précédents et vérifie que les 4 critères sont validés simultanément. Si tu rates un seul critère, tu perds le badge le jour de l\'évaluation et tu dois attendre 3 mois pour retenter ta chance.' },
         { type: 'p', text: 'Cela veut dire qu\'un mauvais trimestre peut être absorbé par un bon trimestre suivant, à condition que les ratios moyens sur 365 jours restent dans les clous. C\'est aussi pour ça que la régularité bat la performance ponctuelle : un hôte stable à 4,85 toute l\'année garde son statut, alors qu\'un hôte oscillant entre 5,0 et 4,7 peut le perdre. Pour comprendre comment ces critères Superhost interagissent avec le reste de l\'algorithme, regarde notre analyse de <a href="/blog/algorithme-airbnb-2026-criteres-classement" style="color:var(--g);font-weight:500">l\'algorithme Airbnb 2026 et ses 4 critères de classement</a>.' },
@@ -74,7 +74,7 @@ export default {
       ],
     },
     {
-      h2: '6. Le vrai impact du statut Superhost et ses limites',
+      h2: 'Le vrai impact du statut Superhost et ses limites',
       content: [
         { type: 'p', text: 'Le badge Superhost est visible directement dans les résultats de recherche et sur la fiche annonce. Pour les voyageurs qui ne te connaissent pas, c\'est un signal de confiance fort qui peut faire basculer une réservation en ta faveur, surtout sur un marché concurrentiel. Airbnb donne aussi un coup de pouce au classement aux Superhosts dans son algorithme de matching, et offre des avantages comme un support voyageur prioritaire et des invitations à des événements hôtes.' },
         { type: 'p', text: 'Mais il faut garder le statut en perspective : il ne te protège pas d\'une plateforme qui peut désactiver ton annonce du jour au lendemain, et il ne te dispense pas de construire ta propre <a href="/services/reservation-directe" style="color:var(--g);font-weight:500">stratégie de réservation directe</a> pour réduire ta dépendance. Beaucoup d\'hôtes expérimentés visent le statut Superhost pendant 1 à 2 ans, le temps de capitaliser sur la confiance qu\'il génère, puis basculent progressivement vers leur propre canal direct où ils gardent 100 % du tarif.' },

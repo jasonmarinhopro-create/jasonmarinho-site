@@ -11,7 +11,7 @@ export default {
 
   sections: [
     {
-      h2: '1. Ce que représente vraiment le badge Coup de cœur en 2026',
+      h2: 'Ce que représente vraiment le badge Coup de cœur en 2026',
       content: [
         { type: 'p', text: 'Guest Favorites n\'est pas un statut hôte comme Superhost, mais une distinction attribuée à une annonce précise. Un hôte Superhost avec trois logements peut très bien voir un seul de ses trois logements décrocher le badge, et pas les deux autres. Airbnb annonce que le programme concerne les 2 millions d\'annonces les plus aimées de la plateforme, sur un total de plus de 8 millions d\'annonces actives dans le monde. Autrement dit, environ un logement sur quatre porte le badge à un instant donné, ce qui reste sélectif sans être élitiste.' },
         { type: 'p', text: 'Le badge apparaît sous la forme d\'une couronne ou d\'une bannière dans les résultats de recherche, sur la fiche détaillée du logement et dans les filtres avancés. Concrètement, un voyageur peut cocher "Guest Favorites" pour ne voir que les annonces distinguées. Cela pèse directement sur ton taux de clic dans un marché saturé. Si tu veux comprendre plus largement les leviers qui décident de ton classement dans les résultats, notre analyse de l\'<a href="/blog/algorithme-airbnb-2026-criteres-classement" style="color:var(--g);font-weight:500">algorithme Airbnb en 2026 et de ses 4 critères principaux</a> est un bon complément à cet article.' },
@@ -19,7 +19,7 @@ export default {
       ],
     },
     {
-      h2: '2. Cinq avis minimum, dont au moins un récent',
+      h2: '1. Cinq avis minimum, dont au moins un récent',
       content: [
         { type: 'p', text: 'Le premier verrou est purement quantitatif. Ton annonce doit avoir cumulé au minimum 5 avis voyageurs sur les 4 dernières années, dont au moins 1 avis publié dans les 2 dernières années. Cette double contrainte vise à écarter les annonces trop récentes pour être jugées de manière fiable, et à éviter que des annonces anciennes mais dormantes conservent un badge acquis à l\'époque sur trois séjours.' },
         { type: 'ul', items: [
@@ -33,7 +33,7 @@ export default {
       ],
     },
     {
-      h2: '3. Une note moyenne d\'au moins 4,9 sur 5',
+      h2: '2. Une note moyenne d\'au moins 4,9 sur 5',
       content: [
         { type: 'p', text: 'Le seuil de note est le critère le plus commenté du programme, parce que c\'est celui qui écarte le plus d\'hôtes. Airbnb fixe la barre à 4,9 sur 5 pour la note générale, ce qui laisse très peu de marge à l\'erreur. Sur 20 avis reçus, tu ne peux pas te permettre plus d\'un ou deux avis à 4 étoiles pour rester dans la fourchette, et le moindre avis à 3 étoiles casse ta moyenne pour des semaines. Cette exigence est plus stricte que celle du statut Superhost, fixée à 4,8, et c\'est une différence de fond entre les deux distinctions.' },
         { type: 'ul', items: [
@@ -47,7 +47,7 @@ export default {
       ],
     },
     {
-      h2: '4. Moins de 1 % d\'annulations hôte sur la période',
+      h2: '3. Moins de 1 % d\'annulations hôte sur la période',
       content: [
         { type: 'p', text: 'Airbnb applique un critère de fiabilité opérationnelle. Le taux d\'annulations à l\'initiative de l\'hôte doit rester inférieur à 1 % sur la période analysée. C\'est extrêmement bas. Sur 100 réservations acceptées, une seule annulation de ta part suffit à te faire décrocher, et il faudra plusieurs mois de bonne conduite pour revenir sous le seuil. Les annulations pour cas de force majeure documentés, comme un dégât des eaux ou une hospitalisation, sont exclues du calcul, mais tout le reste compte.' },
         { type: 'ul', items: [
@@ -61,7 +61,7 @@ export default {
       ],
     },
     {
-      h2: '5. Zéro incident majeur géré par le support Airbnb',
+      h2: '4. Zéro incident majeur géré par le support Airbnb',
       content: [
         { type: 'p', text: 'Airbnb ajoute un critère plus difficile à observer par l\'hôte : le taux d\'incidents qualité géré par le service client d\'Airbnb doit lui aussi rester sous 1 %. Concrètement, dès qu\'un voyageur ouvre un litige avec le support Airbnb (remboursement pour logement non conforme, demande d\'intervention pour un problème de sécurité, plainte formelle), un compteur s\'incrémente sur ton annonce. Contrairement à un avis négatif que tu peux amortir par la suite, un incident support laisse une trace qui dure et pèse plusieurs mois.' },
         { type: 'ul', items: [
@@ -75,7 +75,7 @@ export default {
       ],
     },
     {
-      h2: '6. Une communication rapide, complète et bienveillante',
+      h2: '5. Une communication rapide, complète et bienveillante',
       content: [
         { type: 'p', text: 'Le dernier critère est plus qualitatif mais tout aussi observé. Airbnb intègre dans son évaluation la vitesse de réponse aux messages, la complétude des réponses (une phrase courte ne remplace pas une réponse claire) et le ton employé. Un hôte qui répond en 20 minutes avec des messages personnalisés, respectueux et détaillés obtient un boost systémique sur son éligibilité au badge, à qualité égale sur les autres critères.' },
         { type: 'ul', items: [
@@ -90,7 +90,7 @@ export default {
       ],
     },
     {
-      h2: '7. Ce que le badge t\'apporte concrètement en 2026',
+      h2: 'Ce que le badge t\'apporte concrètement en 2026',
       content: [
         { type: 'p', text: 'Le badge n\'est pas seulement un ego trip pour hôte. Airbnb communique en 2026 que les logements Coup de cœur bénéficient d\'un taux de clic supérieur d\'environ 30 % à moyenne équivalente, et d\'une meilleure remontée dans les filtres de recherche. C\'est un différenciateur visuel important sur mobile, où les utilisateurs scrollent vite et fixent leur regard sur les indicateurs de confiance en premier. Concrètement, un voyageur qui hésite entre deux annonces au même prix penchera naturellement vers celle qui porte la bannière.' },
         { type: 'p', text: 'À l\'inverse, le badge crée aussi une attente supplémentaire. Un voyageur qui a réservé un Coup de cœur pardonne moins facilement une salle de bain mal nettoyée ou un WiFi capricieux. C\'est un argument de plus pour ne jamais lâcher sur les fondamentaux terrain, notamment l\'accueil et l\'expérience globale. Si tu veux travailler ces fondamentaux de manière structurée, la <a href="/services/formations" style="color:var(--g);font-weight:500">formation Google My Business et acquisition voyageurs LCD</a> t\'aide à construire une expérience cohérente entre l\'annonce, l\'accueil et le suivi post-séjour.' },
