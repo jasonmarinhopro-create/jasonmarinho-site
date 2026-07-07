@@ -7,6 +7,8 @@ import { citiesByCountry, estimateRevenue, calculatePrice, SUPPORTED_COUNTRIES, 
 import type { AccountStats } from '@/lib/lcd/account-stats'
 import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
 import { fmtEur, normalizeType, MiniBox, BenchmarkRow } from '@/components/simulateurs/_shared'
+import PrevisionnelModal from '@/components/simulateurs/PrevisionnelModal'
+import { FilePdf } from '@phosphor-icons/react/dist/ssr'
 import TourTrigger from '@/components/dashboard/TourTrigger'
 import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 
@@ -71,8 +73,28 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
 
   const maxMonth = Math.max(...res.monthly.map(m => m.revenu))
 
+  const [pdfOpen, setPdfOpen] = useState(false)
+  const TYPE_LABELS: Record<string, string> = {
+    studio: 'Studio', t1: 'T1 / 1 chambre', t2: 'T2 / 2 pièces', t3: 'T3 / 3 pièces', maison: 'Maison entière',
+  }
+  const MODE_LABELS: Record<string, string> = {
+    'toute-annee': "Toute l'année", 'saisonnier-ete': 'Saisonnier été (3 mois)',
+    'saisonnier-hiver': 'Saisonnier hiver (3 mois)', 'weekends': 'Weekends uniquement',
+  }
+  const paysLabel = SUPPORTED_COUNTRIES.find(c => c.code === pays)?.label ?? pays
+
   return (
     <div>
+      {pdfOpen && (
+        <PrevisionnelModal
+          result={res}
+          paysLabel={paysLabel}
+          typeLabel={TYPE_LABELS[typeLogement] ?? typeLogement}
+          nbChambres={nbChambres}
+          modeLabel={MODE_LABELS[mode] ?? mode}
+          onClose={() => setPdfOpen(false)}
+        />
+      )}
       <h2 style={s.sectionTitle}><TrendUp size={20} weight="fill" /> Estimateur de revenus annuels</h2>
       <p style={s.sectionDesc}>
         Combien peut rapporter ton bien (ou un bien que tu envisages d'acheter) selon ta ville, ton type de bien et ton mode d'exploitation.
@@ -246,6 +268,10 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
               </p>
             </div>
           )}
+
+          <button onClick={() => setPdfOpen(true)} style={s.pdfBtn} className="jm-pdf-btn">
+            <FilePdf size={16} weight="fill" /> Exporter en PDF (dossier bancaire)
+          </button>
 
           <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '14px', marginBottom: 0, fontStyle: 'italic' as const, borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
             Source : {res.source}. Estimation indicative (±20 %). Pas une garantie de revenus.
@@ -960,5 +986,13 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '36px', fontWeight: 400,
     color: 'var(--text)', letterSpacing: '-0.02em',
     margin: '4px 0',
+  },
+  pdfBtn: {
+    width: '100%', marginTop: '16px',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+    padding: '11px 16px', borderRadius: '10px',
+    background: 'var(--accent-text)', color: 'var(--bg)',
+    border: 'none', fontSize: '13.5px', fontWeight: 600,
+    cursor: 'pointer', fontFamily: 'inherit',
   },
 }
