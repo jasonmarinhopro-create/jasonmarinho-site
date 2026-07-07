@@ -54,6 +54,11 @@ const CITY_BENCHMARKS: MarketBenchmark[] = [
   { ville: 'Dijon',              pays: 'FR', occupationAnnuellePct: 50, adrEur: 75,  revparAnnuelEur: 13700, saisonHaute: [5,6,9,10,11],   source: 'CRT Bourgogne-Franche-Comté 2024',      tier: 'precise' },
   { ville: 'Reims',              pays: 'FR', occupationAnnuellePct: 54, adrEur: 80,  revparAnnuelEur: 15800, saisonHaute: [5,6,7,8,9,12],  source: 'CRT Grand Est 2024',                    tier: 'precise' },
   { ville: 'Tours',              pays: 'FR', occupationAnnuellePct: 52, adrEur: 72,  revparAnnuelEur: 13700, saisonHaute: [5,6,7,8,9],     source: 'CRT Centre-Val de Loire 2024',          tier: 'precise' },
+  // Carcassonne : Cité médiévale UNESCO (2,2M visiteurs/an), forte
+  // saisonnalité estivale. ADR ~98€, occupation ~49% (EstimOpti/Cocoonr).
+  // RevPAR théorique ADR×occ×365 ≈ 17,5k€ ; l'observé moyen tous types est
+  // ~15,5k€ (appart ~13,4k€, maison ~22,5k€) — fourchette conservatrice.
+  { ville: 'Carcassonne',        pays: 'FR', occupationAnnuellePct: 49, adrEur: 98,  revparAnnuelEur: 17500, saisonHaute: [5,6,7,8,9],     source: 'ADT Aude 2024 + EstimOpti/Cocoonr',     tier: 'precise' },
   { ville: 'Saint-Malo',         pays: 'FR', occupationAnnuellePct: 60, adrEur: 110, revparAnnuelEur: 24100, saisonHaute: [6,7,8,9],       source: 'CRT Bretagne 2024',                     tier: 'precise' },
   { ville: 'Honfleur',           pays: 'FR', occupationAnnuellePct: 58, adrEur: 120, revparAnnuelEur: 25400, saisonHaute: [4,5,6,7,8,9],   source: 'CRT Normandie 2024',                    tier: 'precise' },
   { ville: 'Deauville',          pays: 'FR', occupationAnnuellePct: 56, adrEur: 145, revparAnnuelEur: 29600, saisonHaute: [4,5,6,7,8,9],   source: 'CRT Normandie 2024',                    tier: 'precise' },
