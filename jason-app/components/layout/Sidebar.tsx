@@ -201,7 +201,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
 
   async function handleSignOut() {
     await supabase.auth.signOut()
-    router.push('/auth/login')
+    // Redirection DURE (pas router.push) : force le rechargement complet pour
+    // purger la session côté serveur + le router cache. Un router.push laissait
+    // le layout authentifié en cache → il fallait cliquer plusieurs fois.
+    window.location.assign('/auth/login')
   }
 
   const searchParams = useSearchParams()
