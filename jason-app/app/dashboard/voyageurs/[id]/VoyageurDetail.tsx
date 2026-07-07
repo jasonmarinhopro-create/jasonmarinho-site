@@ -949,8 +949,16 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       <div className="voyageur-layout" style={s.layoutGrid}>
         <div className="voyageur-left" style={s.leftColumn}>
 
-      {/* Profile card */}
-      <div style={s.profileCard} className="fade-up glass-card">
+      {/* Profile card.
+          zIndex conditionnel : .fade-up (will-change) et .glass-card
+          (backdrop-filter) créent un contexte d'empilement par carte → les
+          sections suivantes (Notes privées, Tags) peignent AU-DESSUS du
+          dropdown nationalité en position:absolute. Quand le dropdown est
+          ouvert, on remonte toute la carte au-dessus de ses sœurs. */}
+      <div
+        style={{ ...s.profileCard, ...(profileNatOpen ? { position: 'relative' as const, zIndex: 60 } : {}) }}
+        className="fade-up glass-card"
+      >
         <div style={{ ...s.bigAvatar, background: color }}>
           <span style={s.bigAvatarText}>{initials}</span>
         </div>
