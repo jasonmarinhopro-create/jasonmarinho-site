@@ -6,10 +6,11 @@
 // lien vers le portail officiel, récap copiable et bouton « Fait ».
 
 import { useState, useTransition } from 'react'
-import { Warning, ArrowSquareOut, Check, Copy, X } from '@phosphor-icons/react/dist/ssr'
+import { Warning, ArrowSquareOut, Check, Copy, X, PaperPlaneTilt } from '@phosphor-icons/react/dist/ssr'
 import { getCountry } from '@/lib/countries'
 import { nationaliteName } from '@/lib/nationalites'
 import { markDeclarationDone, ignoreDeclaration } from '@/lib/declarations/actions'
+import SibaSendModal from './SibaSendModal'
 
 export interface PendingDeclaration {
   id: string
@@ -33,6 +34,7 @@ function deadlineInfo(deadlineAt: string): { label: string; color: string } {
 export default function DeclarationsWidget({ declarations }: { declarations: PendingDeclaration[] }) {
   const [hidden, setHidden] = useState<Set<string>>(new Set())
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [sibaModalId, setSibaModalId] = useState<string | null>(null)
   const [, startTransition] = useTransition()
 
   const visible = declarations.filter(d => !hidden.has(d.id))
@@ -96,9 +98,18 @@ export default function DeclarationsWidget({ declarations }: { declarations: Pen
                 </div>
               </div>
               <div style={s.itemActions}>
+                {/* Portugal : envoi automatisé via le Web Service SIBA.
+                    Le lien portail reste dispo en repli (petite icône). */}
+                {d.logement_pays === 'PT' && (
+                  <button onClick={() => setSibaModalId(d.id)} style={s.sibaBtn} title="Déclarer via le Web Service SIBA">
+                    <PaperPlaneTilt size={12} weight="bold" /> Envoyer à SIBA
+                  </button>
+                )}
                 {decl.portalUrl && (
-                  <a href={decl.portalUrl} target="_blank" rel="noopener noreferrer" style={s.portalBtn}>
-                    Portail <ArrowSquareOut size={11} weight="bold" />
+                  <a href={decl.portalUrl} target="_blank" rel="noopener noreferrer"
+                     style={d.logement_pays === 'PT' ? s.portalLinkSmall : s.portalBtn}
+                     title="Ouvrir le portail officiel">
+                    {d.logement_pays === 'PT' ? <ArrowSquareOut size={13} weight="bold" /> : <>Portail <ArrowSquareOut size={11} weight="bold" /></>}
                   </a>
                 )}
                 <button onClick={() => copyRecap(d)} style={s.ghostBtn} title="Copier les infos du voyageur">
@@ -116,6 +127,14 @@ export default function DeclarationsWidget({ declarations }: { declarations: Pen
           )
         })}
       </div>
+
+      {sibaModalId && (
+        <SibaSendModal
+          declarationId={sibaModalId}
+          onClose={() => setSibaModalId(null)}
+          onSent={() => { hide(sibaModalId); setSibaModalId(null) }}
+        />
+      )}
     </div>
   )
 }
@@ -159,6 +178,18 @@ const s: Record<string, React.CSSProperties> = {
     padding: '6px 11px', borderRadius: '8px',
     background: '#f59e0b', color: 'var(--bg)',
     fontSize: '12px', fontWeight: 600, textDecoration: 'none',
+  },
+  sibaBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '6px 12px', borderRadius: '8px', border: 'none',
+    background: '#f59e0b', color: 'var(--bg)',
+    fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+  },
+  portalLinkSmall: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: '28px', height: '28px', borderRadius: '8px',
+    background: 'transparent', border: '1px solid var(--border)',
+    color: 'var(--text-2)', textDecoration: 'none',
   },
   ghostBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
