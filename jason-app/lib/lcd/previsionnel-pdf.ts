@@ -13,12 +13,14 @@ export { DEFAULT_CHARGES }
 export type { ChargeAssumptions, FinancingAssumptions }
 
 // ── Marque ──────────────────────────────────────────────────────────────────
-const GREEN: [number, number, number] = [40, 160, 99]      // #28A063 (lisible sur blanc)
-const GREEN_LIGHT: [number, number, number] = [235, 248, 240]
+// Vert forêt de la marque Jason Marinho (globals.css --green #004C3F).
+const GREEN: [number, number, number] = [0, 76, 63]        // #004C3F — vert forêt
+const GREEN_DEEP: [number, number, number] = [0, 51, 41]   // #003329 — bande d'en-tête
+const GREEN_LIGHT: [number, number, number] = [233, 240, 237]
 const INK: [number, number, number] = [26, 32, 30]
 const MUTED: [number, number, number] = [110, 120, 115]
-const LINE: [number, number, number] = [225, 230, 227]
-const YELLOW: [number, number, number] = [255, 200, 69]
+const LINE: [number, number, number] = [223, 228, 225]
+const YELLOW: [number, number, number] = [201, 162, 39]    // ocre sobre (vs jaune vif) pour l'impression
 
 const MONTHS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
 
@@ -107,37 +109,70 @@ export function buildPrevisionnelPdf(input: PrevisionnelInput): jsPDF {
   let y = 0
 
   // ── Bandeau marque ────────────────────────────────────────────────────────
+  doc.setFillColor(...GREEN_DEEP)
+  doc.rect(0, 0, W, 27, 'F')
+  // Filet vert forêt sous le bandeau (touche institutionnelle)
   doc.setFillColor(...GREEN)
-  doc.rect(0, 0, W, 26, 'F')
+  doc.rect(0, 27, W, 1.2, 'F')
   doc.setTextColor(255, 255, 255)
   doc.setFont('helvetica', 'bold'); doc.setFontSize(16)
   doc.text('Jason Marinho', M, 12)
   doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5)
+  doc.setTextColor(200, 216, 210)
   doc.text('Plateforme de gestion — Location courte durée', M, 18)
   doc.setFontSize(8)
   doc.text('jasonmarinho.com', W - M, 12, { align: 'right' })
   doc.text(`Réf. ${ref}`, W - M, 18, { align: 'right' })
 
-  y = 38
+  y = 40
   doc.setTextColor(...INK)
-  doc.setFont('helvetica', 'bold'); doc.setFontSize(17)
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16)
   doc.text('Prévisionnel de revenus locatifs', M, y)
-  y += 6.5
+  y += 6
   doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...MUTED)
   doc.text(`Location courte durée (meublé de tourisme) — ${r.city}`, M, y)
   y += 5
   doc.setFontSize(9)
   const dateStr = today.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-  doc.text(`Établi le ${dateStr}${input.porteurProjet ? ` — Porteur du projet : ${input.porteurProjet}` : ''}`, M, y)
+  doc.text(`Établi le ${dateStr}${input.porteurProjet ? `  ·  Porteur du projet : ${input.porteurProjet}` : ''}`, M, y)
   y += 8
+
+  // ── Bande de synthèse (les chiffres que le banquier lit en premier) ────────
+  const synthH = 22
+  doc.setFillColor(...GREEN_LIGHT)
+  doc.setDrawColor(...GREEN)
+  doc.setLineWidth(0.3)
+  doc.roundedRect(M, y, CW, synthH, 1.5, 1.5, 'FD')
+  const cells: Array<[string, string]> = [
+    ['Revenu annuel (central)', eur(comp.ca)],
+    ['Résultat d\'exploitation', eur(comp.resultatExploitation)],
+    ...(comp.cashFlow != null ? [['Cash-flow annuel', eur(comp.cashFlow)] as [string, string]] : []),
+    ...(comp.rentabiliteNette != null ? [['Rentabilité nette', pct(comp.rentabiliteNette)] as [string, string]] : [['Marge exploitation', pct(comp.margeExploitationPct)] as [string, string]]),
+  ]
+  const cellW = CW / cells.length
+  cells.forEach((c, i) => {
+    const cx = M + cellW * i
+    if (i > 0) {
+      doc.setDrawColor(...GREEN); doc.setLineWidth(0.15)
+      doc.line(cx, y + 4, cx, y + synthH - 4)
+    }
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...MUTED)
+    doc.text(c[0], cx + cellW / 2, y + 7, { align: 'center' })
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...GREEN)
+    doc.text(c[1], cx + cellW / 2, y + 15.5, { align: 'center' })
+  })
+  y += synthH + 8
 
   // ── Helpers de section ────────────────────────────────────────────────────
   function sectionTitle(n: number, label: string) {
     doc.setFillColor(...GREEN_LIGHT)
     doc.rect(M, y - 4.2, CW, 7, 'F')
+    // Barre d'accent vert forêt à gauche (repère visuel institutionnel)
+    doc.setFillColor(...GREEN)
+    doc.rect(M, y - 4.2, 1.4, 7, 'F')
     doc.setTextColor(...GREEN)
     doc.setFont('helvetica', 'bold'); doc.setFontSize(10)
-    doc.text(`${n}.  ${label.toUpperCase()}`, M + 2.5, y)
+    doc.text(`${n}.  ${label.toUpperCase()}`, M + 4, y)
     y += 6.5
     doc.setTextColor(...INK)
   }
