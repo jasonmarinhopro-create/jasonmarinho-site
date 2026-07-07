@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { fetchAndUpsertIcalFeed } from '@/lib/ical/sync'
+import { syncDeclarationsForVoyageur } from '@/lib/declarations/sync'
 import { invalidateDashboardPrefill } from '@/lib/lcd/dashboard-prefill'
 
 // ─── Custom events ──────────────────────────────────────────────────────────
@@ -337,6 +338,15 @@ export async function createSejourFromCalendar(input: SejourFromCalendarInput) {
     .single()
 
   if (error) return { error: error.message }
+
+  // Détection best-effort des déclarations réglementaires (SIBA, fiche
+  // police…) — couvre les résas Airbnb/Booking saisies sans contrat.
+  if (input.voyageur_id) {
+    try {
+      const created = await syncDeclarationsForVoyageur(supabase, user.id, input.voyageur_id)
+      if (created > 0) revalidatePath('/dashboard')
+    } catch { /* ne bloque jamais la création du séjour */ }
+  }
 
   // Récupère le label voyageur pour le retour client (uniquement si voyageur_id présent)
   let voyageurLabel = input.voyageur_label_libre?.trim() || 'Privé'

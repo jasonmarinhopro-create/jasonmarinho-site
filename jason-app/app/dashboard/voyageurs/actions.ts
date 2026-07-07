@@ -2,6 +2,17 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { syncDeclarationsForVoyageur } from '@/lib/declarations/sync'
+
+/** Best-effort : détecte les déclarations réglementaires (SIBA, fiche
+ *  police…) pour les séjours du voyageur. Ne fait jamais échouer l'action
+ *  appelante ; rafraîchit le widget dashboard si quelque chose est créé. */
+async function syncDeclarations(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, voyageurId: string) {
+  try {
+    const created = await syncDeclarationsForVoyageur(supabase, userId, voyageurId)
+    if (created > 0) revalidatePath('/dashboard')
+  } catch { /* best-effort */ }
+}
 
 export type VoyageurData = {
   prenom: string
@@ -104,6 +115,10 @@ export async function updateVoyageur(id: string, data: VoyageurData): Promise<{ 
     .eq('user_id', session.user.id)
 
   if (error) return { error: error.message }
+  // La nationalité vient (peut-être) d'être renseignée : c'est le déclencheur
+  // typique pour les résas Airbnb/Booking sans contrat — on rattrape les
+  // séjours récents/à venir de ce voyageur.
+  if (data.nationalite) await syncDeclarations(supabase, session.user.id, id)
   revalidatePath('/dashboard/voyageurs')
   revalidatePath(`/dashboard/voyageurs/${id}`)
   return {}
@@ -137,6 +152,7 @@ export async function addSejour(data: SejourData): Promise<{ id?: string; error?
     .single()
 
   if (error) return { error: error.message }
+  await syncDeclarations(supabase, session.user.id, data.voyageur_id)
   revalidatePath(`/dashboard/voyageurs/${data.voyageur_id}`)
   return { id: row.id }
 }
@@ -156,6 +172,7 @@ export async function updateSejour(
     .eq('user_id', session.user.id)
 
   if (error) return { error: error.message }
+  await syncDeclarations(supabase, session.user.id, voyageurId)
   revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
   return {}
 }

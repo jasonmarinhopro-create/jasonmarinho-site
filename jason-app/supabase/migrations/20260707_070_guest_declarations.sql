@@ -29,6 +29,11 @@ create table if not exists public.guest_declarations (
 create unique index if not exists guest_declarations_contract_uidx
   on public.guest_declarations (contract_id);
 
+-- Une seule déclaration par séjour : dédoublonne les flux contrat (qui
+-- porte aussi le sejour_id) et séjour direct (Airbnb/Booking sans contrat).
+create unique index if not exists guest_declarations_sejour_uidx
+  on public.guest_declarations (sejour_id);
+
 create index if not exists guest_declarations_user_statut_idx
   on public.guest_declarations (user_id, statut, deadline_at);
 
