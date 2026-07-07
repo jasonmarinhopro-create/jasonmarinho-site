@@ -279,7 +279,10 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   async function handleSignOut() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/auth/login')
+    // Redirection DURE (pas router.push) : force le rechargement complet pour
+    // purger la session côté serveur + le router cache. Un router.push laissait
+    // le layout authentifié en cache → il fallait cliquer plusieurs fois.
+    window.location.assign('/auth/login')
   }
 
   const initials = useMemo(
