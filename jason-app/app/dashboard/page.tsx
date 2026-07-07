@@ -10,6 +10,7 @@ import EtatDesLieux from './EtatDesLieux'
 // ChezNousWidget retiré Étape 7 (déplacé vers /dashboard/entre-hotes)
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import MesPlateformesWidget from './MesPlateformesWidget'
+import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
@@ -163,6 +164,15 @@ export default async function DashboardPage() {
       .select('id', { count: 'exact', head: true })
       .eq('user_id', userId)
       .or('prix_airbnb_nuit.not.is.null,prix_booking_nuit.not.is.null,prix_direct_nuit.not.is.null'),
+    // Déclarations voyageurs obligatoires (SIBA, fiche police…) en attente,
+    // créées automatiquement à la signature des contrats.
+    supabase
+      .from('guest_declarations')
+      .select('id, voyageur_nom, voyageur_nationalite, logement_nom, logement_pays, date_arrivee, deadline_at')
+      .eq('user_id', userId)
+      .eq('statut', 'a_faire')
+      .order('deadline_at')
+      .limit(5),
   ])
 
   // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
@@ -200,6 +210,15 @@ export default async function DashboardPage() {
   const { data: icalEventsRaw } = pick<{ data: Array<{ id: string; title: string; start_date: string; end_date: string | null; description: string | null }> | null }>(13, { data: [] })
   const { data: sejoursForArrivals } = pick<{ data: Array<{ id: string; voyageur_id: string | null; logement: string | null; date_arrivee: string; date_depart: string; voyageurs: { prenom: string | null; nom: string | null } | Array<{ prenom: string | null; nom: string | null }> | null }> | null }>(14, { data: [] })
   const { count: pricingCount }  = pick<{ count: number | null }>(15, { count: 0 })
+  const { data: pendingDeclarations } = pick<{ data: Array<{
+    id: string
+    voyageur_nom: string
+    voyageur_nationalite: string | null
+    logement_nom: string | null
+    logement_pays: string
+    date_arrivee: string
+    deadline_at: string
+  }> | null }>(16, { data: [] })
 
   const latestNews = allCachedNews.slice(0, 3)
 
@@ -583,6 +602,9 @@ export default async function DashboardPage() {
           steps={setupSteps}
           initiallyDismissed={completedSteps.includes('setup:dismissed')}
         />
+
+        {/* ── Déclarations voyageurs obligatoires (SIBA, fiche police…) ── */}
+        <DeclarationsWidget declarations={pendingDeclarations ?? []} />
 
         {/* ── Mes plateformes : accès rapide aux inbox (Airbnb, Booking…) */}
         <MesPlateformesWidget

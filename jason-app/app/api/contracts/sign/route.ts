@@ -5,6 +5,7 @@ import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { logger } from '@/lib/logger'
+import { createDeclarationForSignedContract, type DeclarationCreateResult } from '@/lib/declarations/create'
 
 export const dynamic = 'force-dynamic'
 
@@ -63,6 +64,13 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const { token, signature_image } = body
+    // Nationalité déclarée par le voyageur sur la page de signature
+    // (optionnelle) : alimente sa fiche + la détection de déclaration
+    // obligatoire (SIBA, fiche police…). Format ISO-2 strict sinon ignorée.
+    const nationalite: string | null =
+      typeof body.nationalite === 'string' && /^[A-Za-z]{2}$/.test(body.nationalite)
+        ? body.nationalite.toUpperCase()
+        : null
 
     if (!token || typeof token !== 'string' || token.length < 16 || token.length > 256) {
       return NextResponse.json({ error: 'Token manquant.' }, { status: 400 })
@@ -205,6 +213,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // ── Étape 3bis : Déclaration voyageur obligatoire (SIBA, fiche police…) ──
+    // Best-effort : crée la ligne guest_declarations si le pays du logement
+    // l'exige pour la nationalité du voyageur. Ne bloque jamais la signature.
+    let declaration: DeclarationCreateResult = { created: false, requirement: null }
+    try {
+      declaration = await createDeclarationForSignedContract(db, contract.id, nationalite)
+    } catch (e) {
+      log.warn('guestDeclaration', { err: String(e) })
+    }
+
     // ── Étape 4 : Récupérer le profil bailleur (IBAN pour virement bancaire) ──
     let hostIban: string | null = null
     let hostBic: string | null = null
@@ -291,6 +309,21 @@ export async function POST(request: NextRequest) {
       { label: 'Locataire', value: escHtml(contract.locataire_prenom) },
     ]) : ''
 
+    // Bloc « déclaration voyageur obligatoire » (SIBA PT, fiche police FR…)
+    // affiché à l'hôte uniquement quand une déclaration vient d'être créée.
+    const req = declaration.requirement
+    const declarationBlock = (declaration.created && req) ? `
+      <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #f59e0b;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
+        <p style="margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#f59e0b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${req.flag} DÉCLARATION OBLIGATOIRE — ${escHtml(req.label.toUpperCase())}</p>
+        <p style="margin:0 0 10px;font-size:13px;color:#e8ede8;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+          <strong>${escHtml(guestName)}</strong> doit être déclaré avant le
+          <strong style="color:#FFD56B;">${escHtml(req.deadlineAt.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }))}</strong>.
+        </p>
+        <p style="margin:0 0 12px;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${escHtml(req.note)}</p>
+        ${req.portalUrl ? `<a href="${req.portalUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #f59e0b;color:#f59e0b;padding:11px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Faire la déclaration sur le portail officiel</a>` : ''}
+        <p style="margin:10px 0 0;font-size:11.5px;color:#7a9e8a;line-height:1.5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Retrouve cette déclaration (et le rappel de deadline) sur ton tableau de bord — marque-la « faite » une fois envoyée.</p>
+      </div>` : ''
+
     const hostEmailHtml = buildEmail({
       title: 'Contrat signé par le locataire',
       preview: `${guestName} a signé le contrat pour ${propertyLabel}.`,
@@ -302,6 +335,7 @@ export async function POST(request: NextRequest) {
           { label: 'Signé le', value: escHtml(signDate) },
           { label: 'Adresse IP', value: escHtml(ip) },
         ], 'var(--success-1)')}
+        ${declarationBlock}
         ${hostPaymentsBlock}
         ${emailBtn(contractUrl, 'Voir le contrat signé', 'green')}
         ${emailBtn(dashboardUrl, 'Tableau de bord', 'secondary')}

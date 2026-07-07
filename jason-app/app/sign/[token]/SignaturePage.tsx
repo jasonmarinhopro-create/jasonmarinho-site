@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { NATIONALITES } from '@/lib/nationalites'
 
 interface Props {
   token: string
@@ -16,6 +17,10 @@ export default function SignaturePage({ token, locataireName }: Props) {
   const [isDrawing, setIsDrawing] = useState(false)
   const [hasSignature, setHasSignature] = useState(false)
   const [agreed, setAgreed] = useState(false)
+  // Nationalité (ISO-2) déclarée par le locataire : alimente la fiche
+  // voyageur de l'hôte + la détection de déclaration réglementaire
+  // (SIBA au Portugal, fiche de police en France…). Optionnelle.
+  const [nationalite, setNationalite] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -130,7 +135,11 @@ export default function SignaturePage({ token, locataireName }: Props) {
       const res = await fetch('/api/contracts/sign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, signature_image: signatureImage }),
+        body: JSON.stringify({
+          token,
+          signature_image: signatureImage,
+          ...(nationalite ? { nationalite } : {}),
+        }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -227,6 +236,30 @@ export default function SignaturePage({ token, locataireName }: Props) {
         </button>
       </div>
 
+      {/* Nationalité : requise par la réglementation locale pour les hôtes
+          (déclaration SIBA au Portugal, fiche de police en France, registre
+          SES en Espagne). Select natif = fiable sur mobile. */}
+      <div style={natField}>
+        <label htmlFor="sign-nationalite" style={natLabel}>
+          Votre nationalité
+        </label>
+        <select
+          id="sign-nationalite"
+          value={nationalite}
+          onChange={e => setNationalite(e.target.value)}
+          style={natSelect}
+        >
+          <option value="">Sélectionner…</option>
+          {NATIONALITES.map(n => (
+            <option key={n.code} value={n.code}>{n.name}</option>
+          ))}
+        </select>
+        <p style={natHint}>
+          Utilisée par votre hôte pour la déclaration réglementaire de votre séjour
+          (obligation légale dans la plupart des pays européens).
+        </p>
+      </div>
+
       {/* Consentement eIDAS */}
       <label style={consentLabel}>
         <input
@@ -294,6 +327,38 @@ const signSubtitle: React.CSSProperties = {
 const canvasWrapper: React.CSSProperties = {
   position: 'relative',
   marginBottom: '20px',
+}
+
+const natField: React.CSSProperties = {
+  marginBottom: '20px',
+}
+
+const natLabel: React.CSSProperties = {
+  display: 'block',
+  fontSize: '13px',
+  fontWeight: 600,
+  color: '#f0ebe1',
+  marginBottom: '8px',
+}
+
+const natSelect: React.CSSProperties = {
+  width: '100%',
+  padding: '11px 12px',
+  borderRadius: '10px',
+  border: '1px solid #1e3d2f',
+  background: '#0a1a13',
+  color: '#f0ebe1',
+  fontSize: '14px',
+  fontFamily: 'inherit',
+  outline: 'none',
+  appearance: 'auto',
+}
+
+const natHint: React.CSSProperties = {
+  fontSize: '11.5px',
+  color: '#6b9a7e',
+  lineHeight: 1.5,
+  margin: '8px 0 0',
 }
 
 const canvasStyle: React.CSSProperties = {
