@@ -196,7 +196,9 @@ function Stat({ label, value, strong }: { label: string; value: string; strong?:
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(16px, 2.5vw, 28px)', maxWidth: '1100px', margin: '0 auto' },
+  // Aligné sur la convention dashboard (cf. ReservationsView) : pleine
+  // largeur jusqu'à 1600px, centré, pour bien exploiter les grands écrans.
+  page: { padding: 'var(--dash-page-px)', width: '100%', maxWidth: 1600, margin: '0 auto' },
   hero: {
     display: 'flex', gap: '16px', alignItems: 'flex-start',
     padding: 'clamp(18px, 2.5vw, 26px)', borderRadius: '16px', marginBottom: '20px',
