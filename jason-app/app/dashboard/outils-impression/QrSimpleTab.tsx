@@ -76,6 +76,22 @@ function isLightColor(hex: string): boolean {
   return (r * 0.299 + g * 0.587 + b * 0.114) > 180
 }
 
+// Damier "transparence" pour l'aperçu. `dark` = damier sombre (quand le QR
+// est clair, pour le garder visible) ; sinon damier clair.
+function checkerboardStyle(dark: boolean): React.CSSProperties {
+  const [a, b] = dark ? ['#3a3a3a', '#2b2b2b'] : ['#e2e2e2', '#f4f4f4']
+  return {
+    backgroundColor: b,
+    backgroundImage:
+      `linear-gradient(45deg, ${a} 25%, transparent 25%),` +
+      `linear-gradient(-45deg, ${a} 25%, transparent 25%),` +
+      `linear-gradient(45deg, transparent 75%, ${a} 75%),` +
+      `linear-gradient(-45deg, transparent 75%, ${a} 75%)`,
+    backgroundSize: '18px 18px',
+    backgroundPosition: '0 0, 0 9px, 9px -9px, -9px 0',
+  }
+}
+
 export default function QrSimpleTab({ plan, logements }: Props) {
   const { theme } = useTheme()
   // Couleur par défaut selon le thème : blanc en sombre, noir en clair.
@@ -452,9 +468,13 @@ export default function QrSimpleTab({ plan, logements }: Props) {
           <div style={s.previewLabel}>Aperçu</div>
           <div className="qrsimple-preview-wrap" style={{
             ...s.previewWrap,
-            background: transparentBg
-              ? (isLightColor(fgColor) ? '#1A1A1A' : '#F5F5F0')
-              : bgColor,
+            // Fond transparent = damier (signal universel "transparence"),
+            // adapté pour que le QR reste visible quelle que soit sa couleur :
+            // damier sombre si le QR est clair, damier clair sinon.
+            // Fond opaque = couleur unie choisie.
+            ...(transparentBg
+              ? checkerboardStyle(isLightColor(fgColor))
+              : { background: bgColor }),
             borderRadius: '12px',
           }}>
             {!hasData ? (
@@ -475,9 +495,9 @@ export default function QrSimpleTab({ plan, logements }: Props) {
               }}
             />
           </div>
-          {transparentBg && isLightColor(fgColor) && (
+          {transparentBg && (
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0, textAlign: 'center' as const }}>
-              Aperçu sur fond sombre · le QR exporté reste transparent
+              Le damier indique la transparence · le QR exporté a un fond transparent
             </p>
           )}
 
