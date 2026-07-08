@@ -739,12 +739,16 @@ em { font-style: italic; color: var(--accent); }
   background: var(--surface-2);
   box-shadow: 0 0 0 3px var(--accent-bg);
 }
-/* Invalid state (HTML5 :invalid + .input-field-error className manuel) */
-.input-field:invalid:not(:placeholder-shown),
+/* Invalid state — :user-invalid (et non :invalid) pour NE PAS rougir un
+ * champ vierge ou pré-rempli par l'autofill du navigateur avant toute
+ * interaction. :invalid matchait dès le chargement (champ required vide +
+ * overlay autofill Chrome compté comme "rempli") → bordures rouges à tort.
+ * .input-field-error reste le déclencheur manuel côté React. */
+.input-field:user-invalid,
 .input-field-error {
   border-color: var(--danger);
 }
-.input-field:invalid:not(:placeholder-shown):focus,
+.input-field:user-invalid:focus,
 .input-field-error:focus {
   box-shadow: 0 0 0 3px var(--danger-bg);
 }
