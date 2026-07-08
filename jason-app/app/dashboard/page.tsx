@@ -597,10 +597,17 @@ export default async function DashboardPage() {
         />
 
         {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
+        {/* On masque aussi si l'hôte a globalement masqué/terminé l'onboarding
+            (onboarding_dismissed / onboarding_completed_at) — évite le flash
+            "checklist qui apparaît puis disparaît" à l'hydratation. */}
         <SetupChecklist
           userId={userId}
           steps={setupSteps}
-          initiallyDismissed={completedSteps.includes('setup:dismissed')}
+          initiallyDismissed={
+            completedSteps.includes('setup:dismissed') ||
+            !!profile?.onboarding_dismissed ||
+            !!profile?.onboarding_completed_at
+          }
         />
 
         {/* ── Déclarations voyageurs obligatoires (SIBA, fiche police…) ── */}

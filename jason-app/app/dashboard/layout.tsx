@@ -10,6 +10,7 @@ import { getActiveProperty } from '@/lib/queries/active-property'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
 import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
+import { persistOnboardingCompleted } from '@/lib/onboarding/persist-complete'
 import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
@@ -43,13 +44,24 @@ export default async function DashboardLayout({ children }: { children: React.Re
     // l'onboarding hôte (Parcours) n'y a pas de sens.
     pathname.startsWith('/dashboard/investir')
 
+  // PERF + fix flash : si l'onboarding est TERMINÉ (onboarding_completed_at),
+  // on NE lance PAS detectTracksProgress (7 requêtes, ~200-500ms) et on NE
+  // rend PAS le widget — c'est le cas de l'hôte qui voit "l'onboarding déjà
+  // complet qui s'affiche puis disparaît". Avant, la détection tournait à
+  // chaque nav même pour lui.
+  // NB : on ne skippe PAS pour onboarding_dismissed seul — le bouton
+  // « Parcours » de l'en-tête permet de le rouvrir, et le widget doit rester
+  // monté (rendu null) pour écouter cet événement de restauration.
+  const onboardingOff = isOnProSpace || !!profile.onboarding_completed_at
+
+  const emptyOnboarding = { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
+
   const [cachedActualites, spacesResult, activeProperty, onboardingState] = await Promise.all([
     getCachedPublishedActualites(),
     getUserSpaces(),
     getActiveProperty(),
-    // Onboarding hôte : skip si on est sur un espace pro/investisseur.
-    isOnProSpace
-      ? Promise.resolve({ totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> })
+    onboardingOff
+      ? Promise.resolve(emptyOnboarding)
       : detectTracksProgress({
           userId: profile.userId,
           completedSteps: profile.onboarding_completed_steps,
@@ -62,7 +74,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const isAdmin = profile.role === 'admin'
   const planLabel = planToLabel(profile.plan, profile.role)
   const onboardingCompleted = onboardingState.totalDone === onboardingState.totalSteps
-  const showOnboarding = !onboardingCompleted
+  const showOnboarding = !onboardingOff && !onboardingCompleted
+
+  // Backfill paresseux : la détection vient de tourner et conclut "terminé",
+  // mais le flag n'était pas encore posé → on l'écrit une fois (fire-and-forget)
+  // pour que les prochaines navs sautent detectTracksProgress.
+  if (!onboardingOff && onboardingCompleted && !profile.onboarding_completed_at) {
+    void persistOnboardingCompleted(profile.userId)
+  }
 
   const doneByTrack: Record<string, string[]> = {}
   onboardingState.tracks.forEach(t => { doneByTrack[t.key] = Array.from(t.doneSteps) })
