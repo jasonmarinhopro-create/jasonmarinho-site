@@ -234,6 +234,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
     '/dashboard/investir/estimateur',
+    '/dashboard/investir/comparateur',
+    '/dashboard/investir/simulateurs',
   ], [])
 
   function NavItem({ href, label, Icon, adminColor, notifDot }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean }) {
@@ -367,6 +369,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               <div style={styles.navSection}>
                 <NavItem href="/dashboard/investir" label="Accueil" Icon={HouseLine} />
                 <NavItem href="/dashboard/investir/estimateur" label="Estimer un bien + PDF" Icon={ChartLineUp} />
+                <NavItem href="/dashboard/investir/comparateur" label="Comparer les villes" Icon={ChartBar} />
+                <NavItem href="/dashboard/investir/simulateurs" label="Rentabilité & fiscalité" Icon={Calculator} />
               </div>
             </div>
           ) : proRole ? (
