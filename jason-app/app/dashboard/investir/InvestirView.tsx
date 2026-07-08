@@ -84,7 +84,7 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
           </div>
           <ArrowRight size={16} weight="bold" style={{ color: 'var(--text-3)' }} />
         </Link>
-        <Link href="/dashboard/calculateurs" style={s.toolCard} className="quick-hover">
+        <Link href="/dashboard/investir/comparateur" style={s.toolCard} className="quick-hover">
           <div style={{ ...s.toolIcon, background: 'rgba(147,197,253,0.12)', color: '#93C5FD' }}><MapPin size={20} weight="fill" /></div>
           <div style={s.toolBody}>
             <div style={s.toolTitle}>Comparer les villes</div>
@@ -92,11 +92,11 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
           </div>
           <ArrowRight size={16} weight="bold" style={{ color: 'var(--text-3)' }} />
         </Link>
-        <Link href="/dashboard/simulateurs" style={s.toolCard} className="quick-hover">
+        <Link href="/dashboard/investir/simulateurs" style={s.toolCard} className="quick-hover">
           <div style={{ ...s.toolIcon, background: 'rgba(99,214,131,0.12)', color: 'var(--success-1)' }}><Calculator size={20} weight="fill" /></div>
           <div style={s.toolBody}>
             <div style={s.toolTitle}>Simuler la rentabilité & fiscalité</div>
-            <div style={s.toolDesc}>Micro-BIC, LMNP, rentabilité nette, seuils TVA. Teste ton scénario.</div>
+            <div style={s.toolDesc}>Micro-BIC, LMNP, rentabilité nette. Teste ton scénario d&apos;achat.</div>
           </div>
           <ArrowRight size={16} weight="bold" style={{ color: 'var(--text-3)' }} />
         </Link>

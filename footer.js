@@ -239,6 +239,7 @@
             + '<a href="/services/carnet-voyageurs">Carnet voyageurs</a>'
             + '<a href="/services/securite">Vérification voyageurs</a>'
             + '<a href="/services/simulateurs">Simulateurs &amp; calculateurs</a>'
+            + '<a href="/investir-lcd">Investir en LCD</a>'
             + '<a href="/services" class="ft-cat-more">Tous les services →</a>'
           + '</div>'
           + '<div class="ft-cat">'
