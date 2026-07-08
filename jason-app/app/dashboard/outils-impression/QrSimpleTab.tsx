@@ -105,9 +105,17 @@ export default function QrSimpleTab({ plan, logements }: Props) {
   const [transparentBg, setTransparentBg] = useState(true)
   const [bgColor, setBgColor] = useState('#FFFFFF')
 
+  // Dès que l'utilisateur choisit une couleur (swatch OU hex), on ne touche
+  // plus JAMAIS à sa couleur automatiquement. Sans ce garde, l'effet ci-dessous
+  // (qui se déclenche notamment quand le ThemeProvider résout/bascule le thème
+  // juste après le montage) remettait la couleur par défaut (blanc en sombre)
+  // par-dessus la couleur saisie → « impossible de personnaliser ».
+  const userPickedColor = useRef(false)
+
   // Si le user toggle le thème pendant la session ET qu'il n'a pas customisé
   // sa couleur (toujours sur la couleur défaut de l'autre thème), on bascule.
   useEffect(() => {
+    if (userPickedColor.current) return
     setFgColorRaw(prev => {
       if (theme === 'light' && prev === '#FFFFFF') return '#000000'
       if (theme === 'dark' && prev === '#000000') return '#FFFFFF'
@@ -126,6 +134,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
     : ['#FFFFFF', '#000000', '#1e3a5f', '#7c3aed', '#b91c1c', '#d97706', '#059669']
 
   function setFgColor(c: string) {
+    userPickedColor.current = true
     setFgColorRaw(c)
     setHexDraft(c.replace('#', '').toUpperCase())
   }
@@ -410,6 +419,7 @@ export default function QrSimpleTab({ plan, logements }: Props) {
                   type="text"
                   value={hexDraft}
                   onChange={e => {
+                    userPickedColor.current = true
                     const raw = e.target.value.replace(/[^0-9a-fA-F]/g, '').slice(0, 6).toUpperCase()
                     setHexDraft(raw)
                     if (raw.length === 6) setFgColorRaw('#' + raw)
