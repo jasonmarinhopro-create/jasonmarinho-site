@@ -41,9 +41,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
   // router cache des layouts.
   const isOnProSpace =
     pathname.startsWith('/dashboard/ma-fiche-photographe') ||
-    pathname.startsWith('/dashboard/ma-fiche-menage')
+    pathname.startsWith('/dashboard/ma-fiche-menage') ||
+    // L'espace investisseur (pré-achat) n'a ni logement ni voyageur :
+    // l'onboarding hôte (Parcours) n'y a pas de sens.
+    pathname.startsWith('/dashboard/investir')
 
-  // Onboarding hôte : skip si on est sur un espace pro (pas pertinent)
+  // Onboarding hôte : skip si on est sur un espace pro/investisseur (pas pertinent)
   const onboardingState = isOnProSpace
     ? { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
     : await detectTracksProgress({

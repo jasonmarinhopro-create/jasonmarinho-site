@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import {
   ArrowRight, Eye, EyeSlash, CheckCircle, UserPlus,
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
-  HouseLine, Camera, Sparkle,
+  HouseLine, Camera, Sparkle, ChartLineUp,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 
@@ -62,6 +62,7 @@ function RegisterEntry() {
   const role = searchParams?.get('role') ?? null
   // Compatibilite : les liens ?ref=USER (invitation) forcent role=host
   const isInvited = !!searchParams?.get('ref')
+  if (role === 'investor') return <RegisterForm investor />
   if (role === 'host' || isInvited) return <RegisterForm />
   return <RoleChooser />
 }
@@ -83,6 +84,17 @@ function RoleChooser() {
       cta: 'Créer mon compte hôte',
       accent: '#63D683',
       href: '/auth/register?role=host',
+      external: false,
+      pricing: 'Gratuit à vie',
+    },
+    {
+      key: 'investor',
+      icon: ChartLineUp,
+      title: 'Investisseur immobilier',
+      desc: "Je veux acheter un bien pour le louer en courte durée. Je veux estimer les revenus, la rentabilité et sortir un prévisionnel pour ma banque.",
+      cta: 'Créer mon compte investisseur',
+      accent: '#63D683',
+      href: '/auth/register?role=investor',
       external: false,
       pricing: 'Gratuit à vie',
     },
@@ -190,7 +202,7 @@ function RoleChooser() {
   )
 }
 
-function RegisterForm() {
+function RegisterForm({ investor = false }: { investor?: boolean }) {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -226,7 +238,7 @@ function RegisterForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email, password, fullName, isDriingMember, newsletterConsent,
-          website, ts: formLoadedAtRef.current,
+          website, ts: formLoadedAtRef.current, isInvestor: investor,
         }),
       })
       const data = await res.json()
@@ -253,9 +265,15 @@ function RegisterForm() {
         </a>
 
         <div>
-          <h1 style={s.brandTitle}>L'espace des hôtes qui veulent aller plus loin.</h1>
+          <h1 style={s.brandTitle}>
+            {investor
+              ? "Analyse ton projet d'investissement LCD, sérieusement."
+              : "L'espace des hôtes qui veulent aller plus loin."}
+          </h1>
           <p style={s.brandDesc}>
-            Formations, outils et communauté pour développer ton activité LCD. Honnêtement.
+            {investor
+              ? "Estime les revenus, la rentabilité, et sors un prévisionnel prêt pour ta banque. Sur des données sourcées."
+              : "Formations, outils et communauté pour développer ton activité LCD. Honnêtement."}
           </p>
         </div>
 

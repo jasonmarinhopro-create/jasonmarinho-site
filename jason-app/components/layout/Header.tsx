@@ -133,7 +133,7 @@ interface HeaderProps {
   /** Forwarded à la sidebar mobile : masque "Encaissements" si pas de Stripe. */
   hasStripeAccount?: boolean
   /** Espaces auxquels l'utilisateur a accès (multi-rôles). Si plus d'un, un sélecteur s'affiche dans le dropdown. */
-  spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner'; label: string; href: string; subtitle?: string | null; active: boolean }>
+  spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner' | 'investor'; label: string; href: string; subtitle?: string | null; active: boolean }>
   /** Forwarded a la sidebar mobile — pour que le menu user affiche les bonnes infos */
   isContributor?: boolean
   /** Forwarded a la sidebar mobile — sélecteur logement */
@@ -170,9 +170,10 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   // Espace courant dérivé du pathname côté client (cf. Sidebar : le layout
   // server est mémorisé par le router cache entre routes sœurs, un calcul
   // server-side resterait figé après un client-nav).
-  const currentSpaceKey: 'host' | 'photographer' | 'cleaner' =
+  const currentSpaceKey: 'host' | 'photographer' | 'cleaner' | 'investor' =
     pathname?.startsWith('/dashboard/ma-fiche-photographe') ? 'photographer'
     : pathname?.startsWith('/dashboard/ma-fiche-menage') ? 'cleaner'
+    : pathname?.startsWith('/dashboard/investir') ? 'investor'
     : 'host'
 
   // Cloche unifiée : on récupère les compteurs (Entre Hôtes + Alertes app) côté
