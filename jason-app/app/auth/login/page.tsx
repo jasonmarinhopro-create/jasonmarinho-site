@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
@@ -182,6 +182,11 @@ function LoginInner() {
   const [emailNotConfirmed, setEmailNotConfirmed] = useState(false)
   const [resendLoading, setResendLoading] = useState(false)
   const [resendSent, setResendSent] = useState(false)
+  // Refs pour lire la VRAIE valeur des champs au submit — l'autofill Chrome
+  // remplit le DOM sans toujours déclencher onChange, donc l'état React peut
+  // rester vide (→ 1er clic qui envoie du vide, "il faut cliquer 2 fois").
+  const emailRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -196,10 +201,23 @@ function LoginInner() {
     setError('')
     setEmailNotConfirmed(false)
 
+    // Lit la valeur réelle du DOM (autofill inclus) et resynchronise l'état :
+    // évite le "clic dans le vide" quand Chrome a rempli sans onChange.
+    const emailVal = (emailRef.current?.value ?? email).trim()
+    const passwordVal = passwordRef.current?.value ?? password
+    if (emailVal !== email) setEmail(emailVal)
+    if (passwordVal !== password) setPassword(passwordVal)
+
+    if (!emailVal || !passwordVal) {
+      setError('Saisis ton email et ton mot de passe.')
+      setLoading(false)
+      return
+    }
+
     let signInError: Error | null = null
     let isUnconfirmed = false
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error } = await supabase.auth.signInWithPassword({ email: emailVal, password: passwordVal })
       if (error) {
         if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
           isUnconfirmed = true
@@ -324,6 +342,7 @@ function LoginInner() {
             <div style={s.field}>
               <label htmlFor="login-email" style={s.label}>Adresse email</label>
               <input
+                ref={emailRef}
                 id="login-email" name="email" type="email"
                 className="input-field" placeholder="toi@email.com"
                 value={email} onChange={e => setEmail(e.target.value)}
@@ -342,6 +361,7 @@ function LoginInner() {
               </div>
               <div style={{ position: 'relative' }}>
                 <input
+                  ref={passwordRef}
                   id="login-password" name="password"
                   type={showPassword ? 'text' : 'password'} className="input-field"
                   placeholder="••••••••"
