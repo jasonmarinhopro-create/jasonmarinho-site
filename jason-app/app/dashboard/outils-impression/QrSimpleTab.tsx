@@ -418,6 +418,12 @@ export default function QrSimpleTab({ plan, logements }: Props) {
                 <input
                   type="text"
                   value={hexDraft}
+                  // Sélectionne tout au focus : le champ est pré-rempli avec 6
+                  // caractères. Sans ça (et avec maxLength), le navigateur refuse
+                  // toute frappe car la longueur max est déjà atteinte → le code
+                  // saisi « reste blanc ». Sélectionner tout fait que la 1re
+                  // frappe remplace la valeur.
+                  onFocus={e => e.currentTarget.select()}
                   onChange={e => {
                     userPickedColor.current = true
                     const raw = e.target.value.replace(/[^0-9a-fA-F]/g, '').slice(0, 6).toUpperCase()
@@ -428,7 +434,6 @@ export default function QrSimpleTab({ plan, logements }: Props) {
                   onBlur={() => setHexDraft(fgColor.replace('#', '').toUpperCase())}
                   placeholder="0B1D0F"
                   spellCheck={false}
-                  maxLength={6}
                   style={s.hexInput}
                 />
                 <div style={{ ...s.hexPreview, background: fgColor }} />
