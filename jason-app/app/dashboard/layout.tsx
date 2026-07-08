@@ -25,16 +25,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const hdrs = await headers()
   const pathname = hdrs.get('x-pathname') ?? '/dashboard'
 
-  const [profile, cachedActualites, spacesResult, activeProperty] = await Promise.all([
-    getProfile(),
-    getCachedPublishedActualites(),
-    getUserSpaces(),
-    getActiveProperty(),
-  ])
+  // PERF : detectTracksProgress (7 tests d'existence, ~200-500ms, non
+  // cachable) ne dépend QUE du profil — pas des 3 autres requêtes. Avant, il
+  // s'exécutait EN SÉRIE après le Promise.all (waterfall qui alourdissait
+  // chaque nav, dont le login → dashboard). On le lance dès que le profil est
+  // prêt, EN PARALLÈLE d'actualites / spaces / activeProperty.
+  const profile = await getProfile()
   if (!profile) redirect('/auth/login')
-
-  const isAdmin = profile.role === 'admin'
-  const planLabel = planToLabel(profile.plan, profile.role)
 
   // L'espace courant pour l'onboarding (purement server) — la sidebar et le
   // header le recalculent client-side via usePathname() pour survivre au
@@ -46,16 +43,24 @@ export default async function DashboardLayout({ children }: { children: React.Re
     // l'onboarding hôte (Parcours) n'y a pas de sens.
     pathname.startsWith('/dashboard/investir')
 
-  // Onboarding hôte : skip si on est sur un espace pro/investisseur (pas pertinent)
-  const onboardingState = isOnProSpace
-    ? { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
-    : await detectTracksProgress({
-        userId: profile.userId,
-        completedSteps: profile.onboarding_completed_steps,
-        chezNousOnboardedAt: profile.chez_nous_onboarded_at,
-        onboardingStep: profile.onboarding_step,
-        stripeOnboardingComplete: profile.stripe_onboarding_complete,
-      })
+  const [cachedActualites, spacesResult, activeProperty, onboardingState] = await Promise.all([
+    getCachedPublishedActualites(),
+    getUserSpaces(),
+    getActiveProperty(),
+    // Onboarding hôte : skip si on est sur un espace pro/investisseur.
+    isOnProSpace
+      ? Promise.resolve({ totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> })
+      : detectTracksProgress({
+          userId: profile.userId,
+          completedSteps: profile.onboarding_completed_steps,
+          chezNousOnboardedAt: profile.chez_nous_onboarded_at,
+          onboardingStep: profile.onboarding_step,
+          stripeOnboardingComplete: profile.stripe_onboarding_complete,
+        }),
+  ])
+
+  const isAdmin = profile.role === 'admin'
+  const planLabel = planToLabel(profile.plan, profile.role)
   const onboardingCompleted = onboardingState.totalDone === onboardingState.totalSteps
   const showOnboarding = !onboardingCompleted
 
