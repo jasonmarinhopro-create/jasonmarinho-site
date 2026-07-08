@@ -221,6 +221,12 @@ export default async function DashboardPage() {
   }> | null }>(16, { data: [] })
 
   const latestNews = allCachedNews.slice(0, 3)
+  // Nombre d'actus publiées depuis la dernière visite de la page Actualités,
+  // pour afficher un badge « N nouvelle(s) » qui donne une raison de cliquer.
+  const lastSeenNews = profile?.last_seen_actualites_at ?? '1970-01-01T00:00:00Z'
+  const freshNewsCount = allCachedNews.filter(
+    a => (a.published_at ?? a.created_at ?? '') > lastSeenNews
+  ).length
 
   // Split de la requête revenus annuelle en this month / prev month / year (JS, gratuit)
   const yearEntries     = entriesYearAll ?? []
@@ -692,6 +698,36 @@ export default async function DashboardPage() {
           </div>
         </section>
 
+        {/* ── Actualités du secteur (remontées en 2e position) ──────────
+              Placées juste sous le bonjour : les arrivées/actions du jour
+              sont déjà résumées dans les pills du hero, donc les actus
+              deviennent le 1er vrai bloc de contenu sans masquer l'urgent.
+              Badge « N nouvelle(s) » (depuis last_seen_actualites_at) pour
+              donner une raison de cliquer à chaque visite. */}
+        {latestNews.length > 0 && (
+          <section style={s.section} className="fade-up d1">
+            <div style={s.sectionHead}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
+                <h3 style={s.sectionTitle}>Actualités du secteur</h3>
+                {freshNewsCount > 0 && (
+                  <span style={s.newsFreshBadge}>
+                    {freshNewsCount} nouvelle{freshNewsCount > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+              <Link href="/dashboard/actualites" style={s.seeAll}>
+                Tout voir <ArrowRight size={12} weight="bold" />
+              </Link>
+            </div>
+            <div style={s.newsGrid}>
+              {latestNews.map(article => (
+                <NewsCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── Quick actions RETIRÉES (Étape 7/7) ────────────────────────
               Les 5 quick actions (Nouveau séjour, Nouveau voyageur, Saisir
               revenu, Signaler voyageur, Voir calendrier) sont accessibles
@@ -882,26 +918,6 @@ export default async function DashboardPage() {
         {/* ── (Entre Hôtes a été remonté plus haut après Quick actions
               pour plus de visibilité — voir commentaire ci-dessus.) */}
 
-        {/* ── Actualités du secteur ───────────────────────────────────── */}
-        {latestNews.length > 0 && (
-          <section style={s.section} className="fade-up d3">
-            <div style={s.sectionHead}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
-                <h3 style={s.sectionTitle}>Actualités du secteur</h3>
-              </div>
-              <Link href="/dashboard/actualites" style={s.seeAll}>
-                Tout voir <ArrowRight size={12} weight="bold" />
-              </Link>
-            </div>
-            <div style={s.newsGrid}>
-              {latestNews.map(article => (
-                <NewsCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
       </div>
     </>
   )
@@ -1025,6 +1041,7 @@ const s: Record<string, React.CSSProperties> = {
   section:      { marginBottom: '28px' },
   sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', margin: 0 },
   sectionHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' },
+  newsFreshBadge: { fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.3px', color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: '999px', padding: '2px 8px', lineHeight: 1.4, whiteSpace: 'nowrap' as const },
   seeAll:       { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500, padding: '5px 10px', borderRadius: '8px', background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)', transition: 'background 0.15s, border-color 0.15s' },
 
   // ── Quick actions ─────────────────────────────────────────────────────────
