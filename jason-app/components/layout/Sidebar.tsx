@@ -9,6 +9,7 @@ import {
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
+  ChartLineUp, HouseLine,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -127,6 +128,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     pathname?.startsWith('/dashboard/ma-fiche-photographe') ? 'photographer'
     : pathname?.startsWith('/dashboard/ma-fiche-menage') ? 'cleaner'
     : null
+  // Espace investisseur : nav dédiée et DÉTACHÉE des opérations hôte
+  // (pas de Calendrier/Réservations/Voyageurs). Pour les comptes qui ne
+  // viennent que pour investir, on ne mélange pas les deux univers.
+  const investorMode = pathname?.startsWith('/dashboard/investir') ?? false
   const router = useRouter()
   const supabase = createClient()
   const [adminContentOpen, setAdminContentOpen] = useState(
@@ -226,6 +231,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-menage',
     '/dashboard/ma-fiche-menage/demandes',
     '/dashboard/ma-fiche-menage/clients',
+    // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
+    '/dashboard/investir',
+    '/dashboard/investir/estimateur',
   ], [])
 
   function NavItem({ href, label, Icon, adminColor, notifDot }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean }) {
@@ -350,7 +358,18 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
 
         {/* Navigation */}
         <nav style={styles.nav}>
-          {proRole ? (
+          {investorMode ? (
+            /* Sidebar dédiée à l'espace investisseur — détachée de l'hôte.
+               Volontairement minimale (on l'enrichira) : le cœur du parcours
+               pré-achat (estimer → prévisionnel PDF → projets) reste ici. */
+            <div>
+              <div style={styles.sectionLabel}>Mon espace investisseur</div>
+              <div style={styles.navSection}>
+                <NavItem href="/dashboard/investir" label="Accueil" Icon={HouseLine} />
+                <NavItem href="/dashboard/investir/estimateur" label="Estimer un bien + PDF" Icon={ChartLineUp} />
+              </div>
+            </div>
+          ) : proRole ? (
             /* Sidebar minimale pour les pros annuaire (photographe / ménage) */
             <div>
               <div style={styles.sectionLabel}>Mon annuaire</div>
@@ -486,8 +505,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           )}
         </nav>
 
-        {/* Sélecteur de logement (bas de sidebar, dropdown vers le haut) */}
-        {!proRole && allProperties && (
+        {/* Sélecteur de logement (bas de sidebar, dropdown vers le haut).
+            Masqué en espace investisseur : un investisseur pré-achat n'a
+            pas de logement à sélectionner. */}
+        {!proRole && !investorMode && allProperties && (
           <PropertySelector allProperties={allProperties} currentId={activePropertyId ?? 'all'} collapsed={collapsed} />
         )}
 
