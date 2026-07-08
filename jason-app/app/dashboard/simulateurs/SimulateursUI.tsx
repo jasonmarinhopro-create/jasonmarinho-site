@@ -90,8 +90,10 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
           result={res}
           paysLabel={paysLabel}
           typeLabel={TYPE_LABELS[typeLogement] ?? typeLogement}
+          typeKey={typeLogement}
           nbChambres={nbChambres}
           modeLabel={MODE_LABELS[mode] ?? mode}
+          modeKey={mode}
           onClose={() => setPdfOpen(false)}
         />
       )}

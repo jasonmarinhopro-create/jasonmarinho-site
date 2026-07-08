@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { email, password, fullName, isDriingMember, newsletterConsent, website, ts } = body
+    const { email, password, fullName, isDriingMember, newsletterConsent, website, ts, isInvestor } = body
 
     // ─── Anti-bot : honeypot + time-trap + domaines jetables ───────────────
     // Fail-silent en 200 OK pour ne pas indiquer la détection aux bots.
@@ -176,6 +176,7 @@ export async function POST(req: NextRequest) {
           email: normalized,
           full_name: fullName || null,
           driing_status: isDriingMember ? 'pending' : 'none',
+          is_investor: !!isInvestor,
         }, { onConflict: 'id', ignoreDuplicates: false })
       if (profileError) {
         log.warn('profileUpsert', { msg: profileError.message })

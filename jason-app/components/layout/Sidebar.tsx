@@ -114,7 +114,7 @@ interface SidebarProps {
   userId?: string
   /** Espaces multi-rôles (Hôte + Photographe + Ménage) — permet de switcher
    *  entre ses fiches pro depuis le menu user en bas-gauche. */
-  spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner'; label: string; href: string; subtitle?: string | null; active: boolean }>
+  spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner' | 'investor'; label: string; href: string; subtitle?: string | null; active: boolean }>
 }
 
 export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [] }: SidebarProps) {
@@ -551,7 +551,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     const isCurrent =
                       s.key === 'photographer' ? (pathname?.startsWith('/dashboard/ma-fiche-photographe') ?? false)
                       : s.key === 'cleaner'    ? (pathname?.startsWith('/dashboard/ma-fiche-menage') ?? false)
-                      : !pathname?.startsWith('/dashboard/ma-fiche-')
+                      : s.key === 'investor'   ? (pathname?.startsWith('/dashboard/investir') ?? false)
+                      : !pathname?.startsWith('/dashboard/ma-fiche-') && !pathname?.startsWith('/dashboard/investir')
                     return (
                       <Link
                         key={s.key}
@@ -583,6 +584,14 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     <Link href="/dashboard/creer-fiche-menage" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--text-3)' }}>
                       <span style={{ width: 15, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
                       Créer ma fiche équipe ménage
+                    </Link>
+                  )}
+                  {/* Pont hôte → investisseur : analyser un nouveau bien à acheter.
+                      La 1re sauvegarde de projet active l'espace investisseur. */}
+                  {!spaces.find(s => s.key === 'investor')?.active && (
+                    <Link href="/dashboard/investir" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--text-3)' }}>
+                      <span style={{ width: 15, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
+                      Analyser un investissement
                     </Link>
                   )}
                 </>

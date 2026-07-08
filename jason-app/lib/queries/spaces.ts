@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
 export interface UserSpace {
-  key: 'host' | 'photographer' | 'cleaner'
+  key: 'host' | 'photographer' | 'cleaner' | 'investor'
   label: string
   href: string
   subtitle?: string | null
@@ -48,12 +48,14 @@ function getServiceClient() {
 const fetchSpacesDataForUser = (userId: string) => unstable_cache(
   async () => {
     const admin = getServiceClient()
-    const [{ count: logementsCount }, { data: ph }, { data: cl }] = await Promise.all([
+    const [{ count: logementsCount }, { data: ph }, { data: cl }, { data: prof }, { count: projectsCount }] = await Promise.all([
       admin.from('logements').select('id', { count: 'exact', head: true }).eq('user_id', userId),
       admin.from('photographers').select('full_name, pseudo, slug, status').eq('user_id', userId).maybeSingle(),
       admin.from('cleaners').select('full_name, pseudo, slug, status').eq('user_id', userId).maybeSingle(),
+      admin.from('profiles').select('is_investor').eq('id', userId).maybeSingle(),
+      admin.from('investor_projects').select('id', { count: 'exact', head: true }).eq('user_id', userId),
     ])
-    return { logementsCount, ph, cl }
+    return { logementsCount, ph, cl, isInvestor: !!prof?.is_investor, projectsCount: projectsCount ?? 0 }
   },
   ['user-spaces-data', userId],
   { revalidate: 300, tags: [`spaces:${userId}`] },
@@ -68,7 +70,7 @@ export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
   }
 
   const isAdmin = user.email === ADMIN_EMAIL
-  const { logementsCount, ph, cl } = await fetchSpacesDataForUser(user.id)
+  const { logementsCount, ph, cl, isInvestor, projectsCount } = await fetchSpacesDataForUser(user.id)
 
   const hasLogements = (logementsCount ?? 0) > 0
   const hasPhoto = !!ph
@@ -104,6 +106,26 @@ export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
       active: true,
     })
   }
+  // Espace investisseur : actif dès que le compte est marqué investisseur
+  // (carte à l'inscription) ou qu'il a déjà sauvegardé un projet d'acquisition.
+  const investorActive = isInvestor || projectsCount > 0
+  if (investorActive) {
+    spaces.push({
+      key: 'investor',
+      label: 'Investisseur',
+      href: '/dashboard/investir',
+      subtitle: projectsCount > 0 ? `${projectsCount} projet${projectsCount > 1 ? 's' : ''}` : 'Analyse d\'acquisition',
+      active: true,
+    })
+  }
 
-  return { spaces, primary: spaces[0] }
+  // Primary = espace d'atterrissage post-login. Un investisseur pur (marqué
+  // investisseur, sans logement ni fiche pro, hors admin) atterrit sur son
+  // espace investisseur plutôt que sur le dashboard hôte vide.
+  const investorSpace = spaces.find(s => s.key === 'investor')
+  const primary = (investorActive && !hasLogements && !isAdmin && investorSpace)
+    ? investorSpace
+    : spaces[0]
+
+  return { spaces, primary }
 })
