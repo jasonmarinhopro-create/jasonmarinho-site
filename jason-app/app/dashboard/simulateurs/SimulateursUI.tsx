@@ -8,7 +8,15 @@ import type { AccountStats } from '@/lib/lcd/account-stats'
 import { ActivityOverview } from '@/components/dashboard/ActivityOverview'
 import { fmtEur, normalizeType, MiniBox, BenchmarkRow } from '@/components/simulateurs/_shared'
 import PrevisionnelModal from '@/components/simulateurs/PrevisionnelModal'
+import Select from '@/components/ui/Select'
 import { FilePdf } from '@phosphor-icons/react/dist/ssr'
+
+// Trigger pleine largeur pour le <Select> custom dans les formulaires
+// (les <select> natifs rendaient un dropdown blanc illisible en dark).
+const fullSelectTrigger: React.CSSProperties = {
+  width: '100%', padding: '11px 14px', fontSize: '15px', fontWeight: 500,
+  borderRadius: '10px',
+}
 import TourTrigger from '@/components/dashboard/TourTrigger'
 import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 
@@ -108,64 +116,98 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
           {logements.length > 0 && (
             <div style={s.field}>
               <label style={s.label}>Logement</label>
-              <select value={logementId} onChange={e => setLogementId(e.target.value)} style={s.input}>
-                {logements.map(l => (
-                  <option key={l.id} value={l.id}>
-                    {l.nom} {l.ville ? `· ${l.ville}` : ''}
-                  </option>
-                ))}
-                <option value="__manual__">— Saisie manuelle (autre bien) —</option>
-              </select>
+              <Select
+                value={logementId}
+                onChange={setLogementId}
+                options={[
+                  ...logements.map(l => ({ value: l.id, label: `${l.nom}${l.ville ? ` · ${l.ville}` : ''}` })),
+                  { value: '__manual__', label: '— Saisie manuelle (autre bien) —' },
+                ]}
+                minWidth="100%"
+                triggerStyle={fullSelectTrigger}
+                ariaLabel="Logement"
+              />
             </div>
           )}
 
           <div style={s.field}>
             <label style={s.label}>Pays</label>
-            <select value={pays} onChange={e => setPays(e.target.value as Pays)} style={s.input}>
-              {SUPPORTED_COUNTRIES.map(c => (
-                <option key={c.code} value={c.code}>{c.flag} {c.label}</option>
-              ))}
-            </select>
+            <Select<Pays>
+              value={pays}
+              onChange={setPays}
+              options={SUPPORTED_COUNTRIES.map(c => ({ value: c.code as Pays, label: `${c.flag} ${c.label}` }))}
+              minWidth="100%"
+              triggerStyle={fullSelectTrigger}
+              ariaLabel="Pays"
+            />
           </div>
 
           <div style={s.field}>
             <label style={s.label}>Ville</label>
-            <select value={ville} onChange={e => setVille(e.target.value)} style={s.input}>
-              <option value="">— Autre ville (moyenne pays) —</option>
-              {cityOptions.map(c => <option key={c.ville} value={c.ville}>{c.ville}</option>)}
-            </select>
+            <Select
+              value={ville}
+              onChange={setVille}
+              options={[
+                { value: '', label: '— Autre ville (moyenne pays) —' },
+                ...cityOptions.map(c => ({ value: c.ville, label: c.ville })),
+              ]}
+              minWidth="100%"
+              triggerStyle={fullSelectTrigger}
+              ariaLabel="Ville"
+            />
           </div>
 
           <div style={s.field}>
             <label style={s.label}>Type de bien</label>
-            <select value={typeLogement} onChange={e => setTypeLogement(e.target.value)} style={s.input}>
-              <option value="studio">Studio</option>
-              <option value="t1">T1 / 1 chambre</option>
-              <option value="t2">T2 / 2 pièces</option>
-              <option value="t3">T3 / 3 pièces</option>
-              <option value="maison">Maison entière</option>
-            </select>
+            <Select
+              value={typeLogement}
+              onChange={setTypeLogement}
+              options={[
+                { value: 'studio', label: 'Studio' },
+                { value: 't1', label: 'T1 / 1 chambre' },
+                { value: 't2', label: 'T2 / 2 pièces' },
+                { value: 't3', label: 'T3 / 3 pièces' },
+                { value: 'maison', label: 'Maison entière' },
+              ]}
+              minWidth="100%"
+              triggerStyle={fullSelectTrigger}
+              ariaLabel="Type de bien"
+            />
           </div>
 
           <div style={s.field}>
             <label style={s.label}>Nombre de chambres</label>
-            <select value={nbChambres} onChange={e => setNbChambres(parseInt(e.target.value, 10))} style={s.input}>
-              <option value={0}>Aucune (studio)</option>
-              <option value={1}>1 chambre</option>
-              <option value={2}>2 chambres</option>
-              <option value={3}>3 chambres</option>
-              <option value={4}>4+ chambres</option>
-            </select>
+            <Select
+              value={String(nbChambres)}
+              onChange={v => setNbChambres(parseInt(v, 10))}
+              options={[
+                { value: '0', label: 'Aucune (studio)' },
+                { value: '1', label: '1 chambre' },
+                { value: '2', label: '2 chambres' },
+                { value: '3', label: '3 chambres' },
+                { value: '4', label: '4+ chambres' },
+              ]}
+              minWidth="100%"
+              triggerStyle={fullSelectTrigger}
+              ariaLabel="Nombre de chambres"
+            />
           </div>
 
           <div style={s.field}>
             <label style={s.label}>Mode d'exploitation</label>
-            <select value={mode} onChange={e => setMode(e.target.value)} style={s.input}>
-              <option value="toute-annee">Toute l'année</option>
-              <option value="saisonnier-ete">Saisonnier été (3 mois)</option>
-              <option value="saisonnier-hiver">Saisonnier hiver (3 mois)</option>
-              <option value="weekends">Weekends uniquement</option>
-            </select>
+            <Select
+              value={mode}
+              onChange={setMode}
+              options={[
+                { value: 'toute-annee', label: "Toute l'année" },
+                { value: 'saisonnier-ete', label: 'Saisonnier été (3 mois)' },
+                { value: 'saisonnier-hiver', label: 'Saisonnier hiver (3 mois)' },
+                { value: 'weekends', label: 'Weekends uniquement' },
+              ]}
+              minWidth="100%"
+              triggerStyle={fullSelectTrigger}
+              ariaLabel="Mode d'exploitation"
+            />
           </div>
 
           {selected?.tarifNuitee && (
@@ -330,57 +372,81 @@ export function CalculateurPrix({ logements }: { logements: LogementPrefill[] })
           {logements.length > 0 && (
             <div style={s.field}>
               <label style={s.label}>Logement</label>
-              <select value={logementId} onChange={e => setLogementId(e.target.value)} style={s.input}>
-                {logements.map(l => <option key={l.id} value={l.id}>{l.nom} {l.ville ? `· ${l.ville}` : ''}</option>)}
-                <option value="__manual__">— Saisie manuelle —</option>
-              </select>
+              <Select
+                value={logementId}
+                onChange={setLogementId}
+                options={[
+                  ...logements.map(l => ({ value: l.id, label: `${l.nom}${l.ville ? ` · ${l.ville}` : ''}` })),
+                  { value: '__manual__', label: '— Saisie manuelle —' },
+                ]}
+                minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Logement"
+              />
             </div>
           )}
 
           <div style={s.field}>
             <label style={s.label}>Pays</label>
-            <select value={pays} onChange={e => setPays(e.target.value as Pays)} style={s.input}>
-              {SUPPORTED_COUNTRIES.map(c => (
-                <option key={c.code} value={c.code}>{c.flag} {c.label}</option>
-              ))}
-            </select>
+            <Select<Pays>
+              value={pays}
+              onChange={setPays}
+              options={SUPPORTED_COUNTRIES.map(c => ({ value: c.code as Pays, label: `${c.flag} ${c.label}` }))}
+              minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Pays"
+            />
           </div>
 
           <div style={s.field}>
             <label style={s.label}>Ville</label>
-            <select value={ville} onChange={e => setVille(e.target.value)} style={s.input}>
-              <option value="">— Autre ville (moyenne pays) —</option>
-              {cityOptions.map(c => <option key={c.ville} value={c.ville}>{c.ville}</option>)}
-            </select>
+            <Select
+              value={ville}
+              onChange={setVille}
+              options={[
+                { value: '', label: '— Autre ville (moyenne pays) —' },
+                ...cityOptions.map(c => ({ value: c.ville, label: c.ville })),
+              ]}
+              minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Ville"
+            />
           </div>
 
           <div style={s.field}>
             <label style={s.label}>Type de bien</label>
-            <select value={typeLogement} onChange={e => setTypeLogement(e.target.value)} style={s.input}>
-              <option value="studio">Studio</option>
-              <option value="t1">T1</option>
-              <option value="t2">T2</option>
-              <option value="t3">T3</option>
-              <option value="maison">Maison</option>
-            </select>
+            <Select
+              value={typeLogement}
+              onChange={setTypeLogement}
+              options={[
+                { value: 'studio', label: 'Studio' },
+                { value: 't1', label: 'T1' },
+                { value: 't2', label: 'T2' },
+                { value: 't3', label: 'T3' },
+                { value: 'maison', label: 'Maison' },
+              ]}
+              minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Type de bien"
+            />
           </div>
 
           <div style={s.field}>
             <label style={s.label}>Nombre de chambres</label>
-            <select value={nbChambres} onChange={e => setNbChambres(parseInt(e.target.value, 10))} style={s.input}>
-              <option value={0}>Aucune</option>
-              <option value={1}>1</option>
-              <option value={2}>2</option>
-              <option value={3}>3</option>
-              <option value={4}>4+</option>
-            </select>
+            <Select
+              value={String(nbChambres)}
+              onChange={v => setNbChambres(parseInt(v, 10))}
+              options={[
+                { value: '0', label: 'Aucune' },
+                { value: '1', label: '1' },
+                { value: '2', label: '2' },
+                { value: '3', label: '3' },
+                { value: '4', label: '4+' },
+              ]}
+              minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Nombre de chambres"
+            />
           </div>
 
           <div style={s.field}>
             <label style={s.label}>Mois cible</label>
-            <select value={month} onChange={e => setMonth(parseInt(e.target.value, 10))} style={s.input}>
-              {MONTHS_LONG.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
-            </select>
+            <Select
+              value={String(month)}
+              onChange={v => setMonth(parseInt(v, 10))}
+              options={MONTHS_LONG.map((m, i) => ({ value: String(i + 1), label: m }))}
+              minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Mois cible"
+            />
           </div>
 
           <div style={s.field}>
@@ -580,24 +646,25 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
                     color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '11px', fontWeight: 700, flexShrink: 0,
                   }}>{i + 1}</div>
-                  <select
-                    value={sel.ville}
-                    onChange={e => updateSelection(i, 'ville', e.target.value)}
-                    style={{ ...s.input, flex: '1 1 180px', minWidth: 0 }}
-                  >
-                    {citiesByCountry(sel.pays).map(c => (
-                      <option key={c.ville} value={c.ville}>
-                        {c.ville}{villesLogements.some(v => v.pays === sel.pays && v.ville === c.ville) ? ' ★ (mon bien)' : ''}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={sel.pays}
-                    onChange={e => updateSelection(i, 'pays', e.target.value)}
-                    style={{ ...s.input, fontSize: '12.5px', flex: '0 1 130px', minWidth: 0 }}
-                  >
-                    {SUPPORTED_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.flag} {c.label}</option>)}
-                  </select>
+                  <div style={{ flex: '1 1 180px', minWidth: 0 }}>
+                    <Select
+                      value={sel.ville}
+                      onChange={v => updateSelection(i, 'ville', v)}
+                      options={citiesByCountry(sel.pays).map(c => ({
+                        value: c.ville,
+                        label: `${c.ville}${villesLogements.some(v => v.pays === sel.pays && v.ville === c.ville) ? ' ★ (mon bien)' : ''}`,
+                      }))}
+                      minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Ville à comparer"
+                    />
+                  </div>
+                  <div style={{ flex: '0 1 130px', minWidth: 0 }}>
+                    <Select
+                      value={sel.pays}
+                      onChange={v => updateSelection(i, 'pays', v)}
+                      options={SUPPORTED_COUNTRIES.map(c => ({ value: c.code, label: `${c.flag} ${c.label}` }))}
+                      minWidth="100%" triggerStyle={{ ...fullSelectTrigger, fontSize: '12.5px' }} ariaLabel="Pays"
+                    />
+                  </div>
                   <button
                     type="button"
                     onClick={() => removeCity(i)}

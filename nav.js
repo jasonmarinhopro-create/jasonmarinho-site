@@ -288,6 +288,7 @@
             + '<a href="/services/simulateurs/taxe-de-sejour">Taxe de séjour<span class="n-arr">→</span></a>'
             + '<a href="/services/simulateurs/franchise-tva-lcd">Franchise TVA<span class="n-arr">→</span></a>'
             + '<div class="n-sub-cat">Calculateurs marché</div>'
+            + '<a href="/investir-lcd">Investir en LCD<span class="n-arr">→</span></a>'
             + '<a href="/calculateurs/revenus-lcd">Estimateur de revenus<span class="n-arr">→</span></a>'
             + '<a href="/calculateurs/prix-lcd">Calculateur de prix<span class="n-arr">→</span></a>'
             + '<a href="/calculateurs/comparer-villes">Comparateur de villes<span class="n-arr">→</span></a>'
