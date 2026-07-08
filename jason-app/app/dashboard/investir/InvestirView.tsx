@@ -76,7 +76,7 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
 
       {/* OUTILS D'ACQUISITION */}
       <div style={s.toolsGrid}>
-        <Link href="/dashboard/simulateurs" style={s.toolCard} className="quick-hover">
+        <Link href="/dashboard/investir/estimateur" style={s.toolCard} className="quick-hover">
           <div style={{ ...s.toolIcon, background: 'var(--accent-bg)', color: 'var(--accent-text)' }}><TrendUp size={20} weight="fill" /></div>
           <div style={s.toolBody}>
             <div style={s.toolTitle}>Estimer les revenus + PDF banque</div>
@@ -106,7 +106,7 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
       <section style={{ marginTop: '28px' }}>
         <div style={s.sectionHead}>
           <h2 style={s.sectionTitle}>Mes projets d&apos;acquisition</h2>
-          <Link href="/dashboard/simulateurs" style={s.newBtn}>
+          <Link href="/dashboard/investir/estimateur" style={s.newBtn}>
             <Plus size={14} weight="bold" /> Nouveau projet
           </Link>
         </div>
@@ -119,7 +119,7 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
               Lance une estimation depuis l&apos;estimateur, puis clique <strong>« Sauvegarder ce projet »</strong>.
               Tu le retrouveras ici avec son prévisionnel PDF.
             </div>
-            <Link href="/dashboard/simulateurs" style={s.emptyCta}>
+            <Link href="/dashboard/investir/estimateur" style={s.emptyCta}>
               <TrendUp size={15} weight="bold" /> Estimer un premier bien
             </Link>
           </div>
