@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 06 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 08 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Chèques-vacances ANCV en LCD : 5 étapes pour les accepter et capter 4,8 millions de voyageurs en 2026</title>
+      <link>https://jasonmarinho.com/blog/cheques-vacances-ancv-lcd-accepter-2026</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/cheques-vacances-ancv-lcd-accepter-2026</guid>
+      <pubDate>Wed, 08 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Inscription gratuite, conditions, format papier ou Connect, promotion : 5 étapes concrètes pour accepter les chèques-vacances ANCV dans ta location courte durée en 2026.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Passer de 4,7 à 4,9 étoiles sur Airbnb : la méthode en 6 points pour gagner 0,2 étoile</title>
       <link>https://jasonmarinho.com/blog/passer-4-7-a-4-9-etoiles-airbnb-methode-6-points</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Les voisins peuvent bloquer ton activité LCD si tu ne respectes pas certaines règles. Voici tes droits, leurs droits, et comment éviter les litiges.</description>
       <category>Réglementation</category>
-    </item>
-    <item>
-      <title>Email marketing pour hôte LCD : newsletter qui fait revenir tes voyageurs</title>
-      <link>https://jasonmarinho.com/blog/email-marketing-newsletter-hote-lcd</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/email-marketing-newsletter-hote-lcd</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Une newsletter mensuelle bien faite génère 8-12% de retours fidèles. Voici la structure type, les outils gratuits et la conformité RGPD pour démarrer.</description>
-      <category>Visibilité</category>
     </item>
   </channel>
 </rss>
