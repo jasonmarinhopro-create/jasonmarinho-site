@@ -85,6 +85,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Champs requis manquants ou invalides.' }, { status: 400 })
   }
 
+  // Signature électronique (mêmes garde-fous que /api/contracts/sign)
+  const signatureImage = body.signature_image
+  if (!signatureImage || typeof signatureImage !== 'string') {
+    return NextResponse.json({ error: 'Signature requise.' }, { status: 400 })
+  }
+  const validImagePrefixes = ['data:image/png;base64,', 'data:image/jpeg;base64,', 'data:image/webp;base64,']
+  if (!validImagePrefixes.some(p => signatureImage.startsWith(p))) {
+    return NextResponse.json({ error: 'Format de signature invalide.' }, { status: 400 })
+  }
+  if (signatureImage.length > 5_000_000) {
+    return NextResponse.json({ error: 'Signature trop volumineuse.' }, { status: 400 })
+  }
+
   // Whitelist stricte : seuls ces champs sont modifiables par le voyageur.
   const update: Record<string, unknown> = {
     prenom,
@@ -100,6 +113,7 @@ export async function POST(req: Request) {
     ville: clean(body.ville, 80),
     pays: cleanCountry(body.pays),
     id_pays_emetteur: cleanCountry(body.id_pays_emetteur),
+    checkin_signature: signatureImage,
     checkin_completed_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
