@@ -191,3 +191,39 @@ export async function deleteSejour(id: string, voyageurId: string): Promise<{ er
   revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
   return {}
 }
+
+// ─── Check-in en ligne (inspiré Partee) ──────────────────────────────────────
+// Génère (idempotent) le lien public /checkin/[token] que l'hôte envoie au
+// voyageur pour qu'il remplisse lui-même son identité avant l'arrivée.
+
+export async function generateCheckinLink(voyageurId: string): Promise<{ url?: string; error?: string }> {
+  const supabase = await createClient()
+  // getUser() : valide le JWT côté serveur (règle sécurité server actions)
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
+
+  // Token existant → on le réutilise (le lien déjà envoyé reste valable)
+  const { data: v, error: readErr } = await supabase
+    .from('voyageurs')
+    .select('checkin_token')
+    .eq('id', voyageurId)
+    .eq('user_id', user.id)
+    .single()
+  if (readErr || !v) return { error: 'Voyageur introuvable.' }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+  if (v.checkin_token) return { url: `${appUrl}/checkin/${v.checkin_token}` }
+
+  const { randomBytes } = await import('crypto')
+  const token = randomBytes(24).toString('base64url')
+
+  const { error } = await supabase
+    .from('voyageurs')
+    .update({ checkin_token: token, checkin_sent_at: new Date().toISOString() })
+    .eq('id', voyageurId)
+    .eq('user_id', user.id)
+  if (error) return { error: error.message }
+
+  revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
+  return { url: `${appUrl}/checkin/${token}` }
+}
