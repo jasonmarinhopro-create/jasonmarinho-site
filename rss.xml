@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 08 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Compte bancaire pro pour hôte LCD : 6 raisons de le séparer et comment le choisir en 2026</title>
+      <link>https://jasonmarinho.com/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026</guid>
+      <pubDate>Fri, 10 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Statut LMNP, seuil TVA, régime réel, suivi de rentabilité : 6 raisons concrètes de ne plus mélanger tes finances perso et LCD, et comment choisir ta banque pro en 2026.</description>
+      <category>Fiscalité</category>
+    </item>
     <item>
       <title>Chèques-vacances ANCV en LCD : 5 étapes pour les accepter et capter 4,8 millions de voyageurs en 2026</title>
       <link>https://jasonmarinho.com/blog/cheques-vacances-ancv-lcd-accepter-2026</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Au-delà du tarif à la nuit, un hôte LCD a 7 leviers pour augmenter son revenu sans augmenter son taux d&apos;occupation. Liste des plus rentables et comment les activer.</description>
       <category>Revenus</category>
-    </item>
-    <item>
-      <title>Droits des voisins en LCD : éviter et gérer les litiges en copropriété</title>
-      <link>https://jasonmarinho.com/blog/droits-voisins-lcd-copropriete-litiges</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/droits-voisins-lcd-copropriete-litiges</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Les voisins peuvent bloquer ton activité LCD si tu ne respectes pas certaines règles. Voici tes droits, leurs droits, et comment éviter les litiges.</description>
-      <category>Réglementation</category>
     </item>
   </channel>
 </rss>
