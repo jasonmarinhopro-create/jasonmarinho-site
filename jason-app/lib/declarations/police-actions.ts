@@ -32,6 +32,9 @@ export interface PoliceFicheContext {
     dateNaissance: string | null
     lieuNaissance: string | null
     nationalite: string | null
+    /** Signature de l'accompagnant qui s'est ajouté lui-même (lien partagé) */
+    signatureDataUrl: string | null
+    signedAt: string | null
   }>
   dateArrivee: string
   dateDepart: string | null
@@ -94,7 +97,7 @@ export async function getPoliceFicheContext(declarationId: string): Promise<Poli
     // Accompagnants du check-in (groupe déclaré sur le même lien)
     const { data: comps } = await supabase
       .from('checkin_companions')
-      .select('prenom, nom, date_naissance, lieu_naissance, nationalite')
+      .select('prenom, nom, date_naissance, lieu_naissance, nationalite, checkin_signature, signed_at')
       .eq('voyageur_id', decl.voyageur_id)
       .eq('user_id', user.id)
       .order('created_at')
@@ -104,6 +107,8 @@ export async function getPoliceFicheContext(declarationId: string): Promise<Poli
       dateNaissance: c.date_naissance ?? null,
       lieuNaissance: c.lieu_naissance ?? null,
       nationalite: c.nationalite ?? null,
+      signatureDataUrl: c.checkin_signature ?? null,
+      signedAt: c.signed_at ?? null,
     }))
   }
 

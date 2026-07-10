@@ -40,6 +40,9 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
     label: null,
     items: [
       { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
+      // Actualités en 2e position : la veille LCD est un axe fort de la
+      // marque — visible dès l'ouverture, avec le point rouge « du neuf ».
+      { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
       { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
       // Mes reservations : page dediee avec KPIs, filtres, cartes/tableau,
       // drawer detail voyageur + alertes contextuelles. Detachee du Calendrier
@@ -54,7 +57,6 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       // de /dashboard/finances qui redirige serveur → 2 loads visible. Meme
       // trick pour Apprendre + Entre Hotes ci-dessous.
       { href: '/dashboard/finances/revenus', label: 'Mes finances',      icon: ChartBar },
-      { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
       { href: '/dashboard/securite',    label: 'Sécurité voyageur', icon: ShieldCheck },
     ],
   },

@@ -253,6 +253,10 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   const [selfConsent, setSelfConsent] = useState(false)
   const [companionDone, setCompanionDone] = useState(false)
   const setSelf = (k: keyof Companion, v: string) => setSelfC(c => ({ ...c, [k]: v }))
+  // Signature de l'accompagnant qui s'ajoute lui-même (ref séparée : le
+  // canvas du mode principal est démonté quand on bascule de mode).
+  const selfSigCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [selfHasSignature, setSelfHasSignature] = useState(false)
 
   // Auto-détection langue navigateur (une seule fois, modifiable via toggle)
   useEffect(() => {
@@ -337,13 +341,27 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
     setTouched(true)
     setError('')
     if (!companionOk(selfC)) return
+    if (!selfHasSignature) { setError(t.errSignature); return }
     if (!selfConsent) { setError(t.errConsent); return }
+
+    // Export signature fond blanc — même mécanique que le mode principal.
+    const canvas = selfSigCanvasRef.current
+    if (!canvas || canvas.width === 0) { setError(t.errSignature); return }
+    const ctx = canvas.getContext('2d')
+    if (!ctx) { setError(t.errSignature); return }
+    ctx.save()
+    ctx.globalCompositeOperation = 'destination-over'
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.restore()
+    const signatureImage = canvas.toDataURL('image/png')
+
     setSubmitting(true)
     try {
       const res = await fetch('/api/checkin/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, mode: 'companion', companion: selfC }),
+        body: JSON.stringify({ token, mode: 'companion', companion: selfC, signature_image: signatureImage }),
       })
       const json = await res.json().catch(() => ({}))
       if (!res.ok || json.error) {
@@ -456,6 +474,19 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
                 />
               </div>
             </div>
+          </div>
+
+          {/* Signature de l'accompagnant : apparaît sur SA fiche de police */}
+          <div style={s.section}>
+            <div style={s.sectionLabel}><Signature size={13} weight="fill" /> {t.signature} *</div>
+            <p style={s.note}>{t.signatureHint}</p>
+            <SignaturePad
+              canvasRef={selfSigCanvasRef}
+              onInk={() => setSelfHasSignature(true)}
+              onClear={() => setSelfHasSignature(false)}
+              clearLabel={t.signatureClear}
+              invalid={touched && !selfHasSignature}
+            />
           </div>
 
           <label style={s.consentRow}>
