@@ -20,6 +20,8 @@ export interface SibaConfigInput {
   siba_codigo_postal: string
   siba_zona_postal: string
   siba_telefone: string
+  /** Envoi auto du boletim dès que le check-in en ligne est complété */
+  siba_auto_envoi?: boolean
 }
 
 export interface SibaContext {
@@ -73,7 +75,7 @@ export async function getSibaContext(declarationId: string): Promise<SibaContext
     const safe = String(decl.logement_nom).replace(ILIKE_ESCAPE, '\\$&')
     const { data: log } = await supabase
       .from('logements')
-      .select('id, nom, adresse, numero_enregistrement, siba_unidade, siba_estabelecimento, siba_chave, siba_abreviatura, siba_localidade, siba_codigo_postal, siba_zona_postal, siba_telefone')
+      .select('id, nom, adresse, numero_enregistrement, siba_unidade, siba_estabelecimento, siba_chave, siba_abreviatura, siba_localidade, siba_codigo_postal, siba_zona_postal, siba_telefone, siba_auto_envoi')
       .eq('user_id', user.id)
       .ilike('nom', safe)
       .limit(1)
@@ -95,6 +97,7 @@ export async function getSibaContext(declarationId: string): Promise<SibaContext
           siba_codigo_postal: log.siba_codigo_postal ?? '',
           siba_zona_postal: log.siba_zona_postal ?? '',
           siba_telefone: log.siba_telefone ?? '',
+          siba_auto_envoi: log.siba_auto_envoi ?? true,
         },
       }
     }
@@ -180,6 +183,7 @@ export async function saveSibaConfig(logementId: string, config: SibaConfigInput
       siba_codigo_postal: config.siba_codigo_postal.trim(),
       siba_zona_postal: config.siba_zona_postal.trim(),
       siba_telefone: config.siba_telefone.trim(),
+      siba_auto_envoi: config.siba_auto_envoi ?? true,
     })
     .eq('id', logementId)
     .eq('user_id', user.id)

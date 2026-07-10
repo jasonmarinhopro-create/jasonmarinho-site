@@ -34,7 +34,7 @@ export default function SibaSendModal({ declarationId, onClose, onSent }: Props)
   const [config, setConfig] = useState<SibaConfigInput>({
     siba_unidade: '', siba_estabelecimento: '00', siba_chave: '',
     siba_abreviatura: '', siba_localidade: '', siba_codigo_postal: '',
-    siba_zona_postal: '', siba_telefone: '',
+    siba_zona_postal: '', siba_telefone: '', siba_auto_envoi: true,
   })
 
   // Formulaire voyageur
@@ -63,6 +63,7 @@ export default function SibaSendModal({ declarationId, onClose, onSent }: Props)
           siba_codigo_postal: cfg.siba_codigo_postal ?? c.siba_codigo_postal,
           siba_zona_postal: cfg.siba_zona_postal ?? c.siba_zona_postal,
           siba_telefone: cfg.siba_telefone ?? c.siba_telefone,
+          siba_auto_envoi: cfg.siba_auto_envoi ?? c.siba_auto_envoi,
         }))
       }
       // Préremplit le voyageur
@@ -143,6 +144,19 @@ export default function SibaSendModal({ declarationId, onClose, onSent }: Props)
               </div>
               <Field label="Téléphone" value={config.siba_telefone} onChange={v => setConfig(c => ({ ...c, siba_telefone: v }))} placeholder="630212592" />
             </div>
+            {/* Envoi automatique après check-in en ligne (opt-out) */}
+            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '9px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={config.siba_auto_envoi ?? true}
+                onChange={e => setConfig(c => ({ ...c, siba_auto_envoi: e.target.checked }))}
+                style={{ marginTop: '2px', accentColor: 'var(--accent-text)' }}
+              />
+              <span style={{ fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.5 }}>
+                <strong>Envoi automatique</strong> : dès qu&apos;un voyageur complète son
+                check-in en ligne, son boletim part tout seul au SIBA (recommandé).
+              </span>
+            </label>
             {error && <p style={s.errorText}>{error}</p>}
             <div style={s.footer}>
               <button onClick={onClose} style={s.secondaryBtn}>Annuler</button>

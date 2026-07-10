@@ -163,9 +163,12 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   const set = (k: keyof CheckinInitial, v: string) => setForm(f => ({ ...f, [k]: v }))
 
   const missing = (v: string) => touched && !v.trim()
+  // Ville requise : c'est le Local_Residencia_Origem du boletim SIBA — sans
+  // elle l'envoi automatique à l'État ne peut pas partir.
   const requiredOk =
     form.prenom.trim() && form.nom.trim() && form.date_naissance.trim() &&
-    form.nationalite.trim() && form.id_type.trim() && form.id_numero.trim()
+    form.nationalite.trim() && form.id_type.trim() && form.id_numero.trim() &&
+    form.ville.trim()
 
   async function submit() {
     setTouched(true)
@@ -298,7 +301,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
           <Field label={t.addressLine} value={form.adresse} onChange={v => set('adresse', v)} />
           <div style={s.row3} className="ck-row">
             <Field label={t.postalCode} value={form.code_postal} onChange={v => set('code_postal', v)} />
-            <Field label={t.city} value={form.ville} onChange={v => set('ville', v)} />
+            <Field label={t.city} required value={form.ville} onChange={v => set('ville', v)} invalid={missing(form.ville)} msg={t.required} />
             <div style={s.fieldWrap}>
               <label style={s.fieldLabel}>{t.country}</label>
               <Select
