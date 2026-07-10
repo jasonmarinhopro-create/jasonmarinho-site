@@ -42,7 +42,7 @@ export default async function CheckinPage({
 
   const { data: voyageur } = await supabase
     .from('voyageurs')
-    .select('id, user_id, prenom, nom, email, telephone, date_naissance, nationalite, adresse, code_postal, ville, pays, id_type, id_numero, id_pays_emetteur, checkin_completed_at')
+    .select('id, user_id, prenom, nom, email, telephone, date_naissance, lieu_naissance, nationalite, adresse, code_postal, ville, pays, id_type, id_numero, id_pays_emetteur, checkin_completed_at')
     .eq('checkin_token', token)
     .maybeSingle()
 
@@ -79,6 +79,7 @@ export default async function CheckinPage({
         email: voyageur.email ?? '',
         telephone: voyageur.telephone ?? '',
         date_naissance: voyageur.date_naissance ?? '',
+        lieu_naissance: voyageur.lieu_naissance ?? '',
         nationalite: voyageur.nationalite ?? '',
         adresse: voyageur.adresse ?? '',
         code_postal: voyageur.code_postal ?? '',

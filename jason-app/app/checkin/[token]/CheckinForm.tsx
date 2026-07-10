@@ -25,6 +25,7 @@ export interface CheckinInitial {
   email: string
   telephone: string
   date_naissance: string
+  lieu_naissance: string
   nationalite: string
   adresse: string
   code_postal: string
@@ -55,6 +56,7 @@ const T: Record<Lang, Record<string, string>> = {
     firstName: 'Prénom',
     lastName: 'Nom',
     birthDate: 'Date de naissance',
+    birthPlace: 'Lieu de naissance',
     nationality: 'Nationalité',
     contact: 'Vos coordonnées',
     email: 'E-mail',
@@ -101,6 +103,7 @@ const T: Record<Lang, Record<string, string>> = {
     firstName: 'First name',
     lastName: 'Last name',
     birthDate: 'Date of birth',
+    birthPlace: 'Place of birth',
     nationality: 'Nationality',
     contact: 'Contact details',
     email: 'E-mail',
@@ -179,6 +182,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   // elle l'envoi automatique à l'État ne peut pas partir.
   const requiredOk =
     form.prenom.trim() && form.nom.trim() && form.date_naissance.trim() &&
+    form.lieu_naissance.trim() &&
     form.nationalite.trim() && form.id_type.trim() && form.id_numero.trim() &&
     form.ville.trim()
 
@@ -298,18 +302,20 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
           </div>
           <div style={s.row2} className="ck-row">
             <Field label={t.birthDate} required type="date" value={form.date_naissance} onChange={v => set('date_naissance', v)} invalid={missing(form.date_naissance)} msg={t.required} />
-            <div style={s.fieldWrap}>
-              <label style={s.fieldLabel}>{t.nationality} *</label>
-              <Select
-                value={form.nationalite}
-                onChange={v => set('nationalite', v)}
-                options={NAT_OPTIONS}
-                placeholder={t.select}
-                ariaLabel={t.nationality}
-                triggerStyle={{ ...s.input, ...(missing(form.nationalite) ? s.inputInvalid : {}) }}
-              />
-              {missing(form.nationalite) && <span style={s.errMsg}>{t.required}</span>}
-            </div>
+            {/* Lieu de naissance : exigé par la fiche individuelle de police (FR) */}
+            <Field label={t.birthPlace} required value={form.lieu_naissance} onChange={v => set('lieu_naissance', v)} invalid={missing(form.lieu_naissance)} msg={t.required} />
+          </div>
+          <div style={s.fieldWrap}>
+            <label style={s.fieldLabel}>{t.nationality} *</label>
+            <Select
+              value={form.nationalite}
+              onChange={v => set('nationalite', v)}
+              options={NAT_OPTIONS}
+              placeholder={t.select}
+              ariaLabel={t.nationality}
+              triggerStyle={{ ...s.input, ...(missing(form.nationalite) ? s.inputInvalid : {}) }}
+            />
+            {missing(form.nationalite) && <span style={s.errMsg}>{t.required}</span>}
           </div>
         </div>
 

@@ -103,6 +103,7 @@ export async function POST(req: Request) {
     prenom,
     nom,
     date_naissance: dateNaissance,
+    lieu_naissance: clean(body.lieu_naissance, 120),
     nationalite,
     id_type: idType,
     id_numero: idNumero,
