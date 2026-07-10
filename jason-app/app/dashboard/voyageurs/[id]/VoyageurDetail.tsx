@@ -1586,8 +1586,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           </div>
           <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
             Envoie ce lien au voyageur : il remplit lui-même son identité (nationalité,
-            date de naissance, pièce d&apos;identité…) — la fiche et les déclarations
-            obligatoires se mettent à jour automatiquement.
+            date de naissance, pièce d&apos;identité…) — la fiche se met à jour et, pour
+            un logement portugais configuré, le boletim part automatiquement au SIBA.
           </p>
           <button
             onClick={handleCheckinLink}

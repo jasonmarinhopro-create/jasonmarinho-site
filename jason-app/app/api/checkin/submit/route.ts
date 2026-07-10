@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { syncDeclarationsForVoyageur } from '@/lib/declarations/sync'
+import { autoSendSibaForVoyageur } from '@/lib/declarations/siba-auto'
 
 export const dynamic = 'force-dynamic'
 
@@ -117,6 +118,14 @@ export async function POST(req: Request) {
   // déclarations obligatoires (SIBA…) pour les séjours de ce voyageur.
   try {
     await syncDeclarationsForVoyageur(supabase, voyageur.user_id, voyageur.id)
+  } catch { /* ne bloque jamais le check-in */ }
+
+  // Boucle fermée : l'identité est maintenant complète → envoi automatique
+  // des boletins SIBA (logements PT configurés, opt-out par logement).
+  // Best-effort : en cas de refus/config manquante, la déclaration reste
+  // 'a_faire' et l'hôte la traite depuis le dashboard comme avant.
+  try {
+    await autoSendSibaForVoyageur(supabase, voyageur.user_id, voyageur.id)
   } catch { /* ne bloque jamais le check-in */ }
 
   return NextResponse.json({ ok: true })
