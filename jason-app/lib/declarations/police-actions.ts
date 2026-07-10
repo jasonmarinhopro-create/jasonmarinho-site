@@ -25,6 +25,14 @@ export interface PoliceFicheContext {
     telephone: string | null
     email: string | null
   }
+  /** Accompagnants du check-in (codes ISO-2 pour nationalite) */
+  companions: Array<{
+    prenom: string
+    nom: string
+    dateNaissance: string | null
+    lieuNaissance: string | null
+    nationalite: string | null
+  }>
   dateArrivee: string
   dateDepart: string | null
   logement: { nom: string; adresse: string | null }
@@ -57,6 +65,7 @@ export async function getPoliceFicheContext(declarationId: string): Promise<Poli
   }
   let signatureDataUrl: string | null = null
   let signedAt: string | null = null
+  let companions: PoliceFicheContext['companions'] = []
   if (decl.voyageur_id) {
     const { data: v } = await supabase
       .from('voyageurs')
@@ -81,6 +90,21 @@ export async function getPoliceFicheContext(declarationId: string): Promise<Poli
       signatureDataUrl = v.checkin_signature ?? null
       signedAt = v.checkin_completed_at ?? null
     }
+
+    // Accompagnants du check-in (groupe déclaré sur le même lien)
+    const { data: comps } = await supabase
+      .from('checkin_companions')
+      .select('prenom, nom, date_naissance, lieu_naissance, nationalite')
+      .eq('voyageur_id', decl.voyageur_id)
+      .eq('user_id', user.id)
+      .order('created_at')
+    companions = (comps ?? []).map(c => ({
+      prenom: c.prenom ?? '',
+      nom: c.nom ?? '',
+      dateNaissance: c.date_naissance ?? null,
+      lieuNaissance: c.lieu_naissance ?? null,
+      nationalite: c.nationalite ?? null,
+    }))
   }
 
   // Date de départ : séjour d'abord, contrat sinon
@@ -115,6 +139,7 @@ export async function getPoliceFicheContext(declarationId: string): Promise<Poli
 
   return {
     voyageur,
+    companions,
     dateArrivee: decl.date_arrivee,
     dateDepart,
     logement,

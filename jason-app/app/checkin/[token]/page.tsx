@@ -57,15 +57,23 @@ export default async function CheckinPage({
 
   // Prochain séjour à venir (contexte dates affiché au voyageur)
   const today = new Date().toISOString().split('T')[0]
-  const { data: nextSejour } = await supabase
-    .from('sejours')
-    .select('logement, date_arrivee, date_depart')
-    .eq('voyageur_id', voyageur.id)
-    .eq('user_id', voyageur.user_id)
-    .gte('date_depart', today)
-    .order('date_arrivee')
-    .limit(1)
-    .maybeSingle()
+  const [{ data: nextSejour }, { data: companions }] = await Promise.all([
+    supabase
+      .from('sejours')
+      .select('logement, date_arrivee, date_depart')
+      .eq('voyageur_id', voyageur.id)
+      .eq('user_id', voyageur.user_id)
+      .gte('date_depart', today)
+      .order('date_arrivee')
+      .limit(1)
+      .maybeSingle(),
+    // Accompagnants déjà déclarés (pré-remplis pour correction)
+    supabase
+      .from('checkin_companions')
+      .select('prenom, nom, date_naissance, lieu_naissance, nationalite, id_type, id_numero, id_pays_emetteur')
+      .eq('voyageur_id', voyageur.id)
+      .order('created_at'),
+  ])
 
   return (
     <CheckinForm
@@ -73,6 +81,16 @@ export default async function CheckinPage({
       hostName={hostProfile?.full_name ?? null}
       sejour={nextSejour ?? null}
       alreadyCompletedAt={voyageur.checkin_completed_at ?? null}
+      initialCompanions={(companions ?? []).map(c => ({
+        prenom: c.prenom ?? '',
+        nom: c.nom ?? '',
+        date_naissance: c.date_naissance ?? '',
+        lieu_naissance: c.lieu_naissance ?? '',
+        nationalite: c.nationalite ?? '',
+        id_type: c.id_type ?? '',
+        id_numero: c.id_numero ?? '',
+        id_pays_emetteur: c.id_pays_emetteur ?? '',
+      }))}
       initial={{
         prenom: voyageur.prenom ?? '',
         nom: voyageur.nom ?? '',

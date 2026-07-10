@@ -13,20 +13,31 @@ const INK: [number, number, number] = [26, 32, 30]
 const MUTED: [number, number, number] = [110, 120, 115]
 const LINE: [number, number, number] = [223, 228, 225]
 
+export interface PoliceFichePerson {
+  prenom: string
+  nom: string
+  dateNaissance: string | null      // yyyy-mm-dd
+  lieuNaissance: string | null
+  nationalite: string | null        // libellé lisible (pas le code ISO)
+  adresse: string | null            // domicile habituel (rue)
+  codePostal: string | null
+  ville: string | null
+  pays: string | null               // libellé lisible
+  telephone: string | null
+  email: string | null
+}
+
 export interface PoliceFicheInput {
-  voyageur: {
+  voyageur: PoliceFichePerson
+  /** Accompagnants du check-in : <15 ans listés sur la fiche du principal,
+   *  15 ans et + = leur propre page de fiche (arrêté du 1er octobre 2015). */
+  companions?: Array<{
     prenom: string
     nom: string
-    dateNaissance: string | null      // yyyy-mm-dd
+    dateNaissance: string | null
     lieuNaissance: string | null
-    nationalite: string | null        // libellé lisible (pas le code ISO)
-    adresse: string | null            // domicile habituel (rue)
-    codePostal: string | null
-    ville: string | null
-    pays: string | null               // libellé lisible
-    telephone: string | null
-    email: string | null
-  }
+    nationalite: string | null      // libellé lisible
+  }>
   sejour: {
     dateArrivee: string               // yyyy-mm-dd
     dateDepart: string | null         // yyyy-mm-dd
@@ -47,8 +58,61 @@ function fmtDay(d: string | null): string {
   return y && m && day ? `${day}/${m}/${y}` : d
 }
 
+function ageOf(dateNaissance: string | null): number | null {
+  if (!dateNaissance || !/^\d{4}-\d{2}-\d{2}$/.test(dateNaissance)) return null
+  const d = new Date(dateNaissance + 'T12:00:00')
+  if (isNaN(d.getTime())) return null
+  const now = new Date()
+  let age = now.getFullYear() - d.getFullYear()
+  const m = now.getMonth() - d.getMonth()
+  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--
+  return age
+}
+
 export function buildPoliceFichePdf(input: PoliceFicheInput): jsPDF {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' })
+
+  // Répartition légale des accompagnants : <15 ans sur la fiche du
+  // principal, 15 ans et + = leur propre fiche (page dédiée).
+  const companions = input.companions ?? []
+  const children = companions.filter(c => { const a = ageOf(c.dateNaissance); return a !== null && a < 15 })
+  const adults = companions.filter(c => { const a = ageOf(c.dateNaissance); return a === null || a >= 15 })
+
+  const childrenLine = children
+    .map(c => `${c.nom.toUpperCase()} ${c.prenom} (${fmtDay(c.dateNaissance)})`)
+    .join(' · ')
+
+  // Page 1 : voyageur principal (avec enfants + signature électronique)
+  renderFichePage(doc, input, input.voyageur, { childrenLine, withSignature: true })
+
+  // Pages suivantes : un accompagnant adulte par page. Domicile = celui du
+  // principal (ils voyagent ensemble) ; signature manuscrite à l'arrivée.
+  for (const a of adults) {
+    doc.addPage()
+    renderFichePage(doc, input, {
+      prenom: a.prenom,
+      nom: a.nom,
+      dateNaissance: a.dateNaissance,
+      lieuNaissance: a.lieuNaissance,
+      nationalite: a.nationalite,
+      adresse: input.voyageur.adresse,
+      codePostal: input.voyageur.codePostal,
+      ville: input.voyageur.ville,
+      pays: input.voyageur.pays,
+      telephone: null,
+      email: null,
+    }, { childrenLine: '', withSignature: false })
+  }
+
+  return doc
+}
+
+function renderFichePage(
+  doc: jsPDF,
+  input: PoliceFicheInput,
+  person: PoliceFichePerson,
+  opts: { childrenLine: string; withSignature: boolean },
+): void {
   const W = 210
   const M = 20
   let y = 24
@@ -91,7 +155,7 @@ export function buildPoliceFichePdf(input: PoliceFicheInput): jsPDF {
     if (!opts?.half || opts.half === 'right') y += 14
   }
 
-  const v = input.voyageur
+  const v = person
   field('Nom', v.nom.toUpperCase(), { half: 'left' })
   field('Prénom(s)', v.prenom, { half: 'right' })
   field('Date de naissance', fmtDay(v.dateNaissance), { half: 'left' })
@@ -107,7 +171,7 @@ export function buildPoliceFichePdf(input: PoliceFicheInput): jsPDF {
   field('Date de départ prévue', fmtDay(input.sejour.dateDepart), { half: 'right' })
 
   // Enfants de moins de 15 ans (peuvent figurer sur la fiche d'un adulte)
-  field('Enfants de moins de 15 ans accompagnant le voyageur (nom, prénom, date de naissance)', '')
+  field('Enfants de moins de 15 ans accompagnant le voyageur (nom, prénom, date de naissance)', opts.childrenLine)
   y += 2
 
   // ── Hébergement ───────────────────────────────────────────────────────
@@ -138,11 +202,12 @@ export function buildPoliceFichePdf(input: PoliceFicheInput): jsPDF {
 
   doc.setFontSize(8.5)
   doc.setTextColor(...MUTED)
-  const signDate = input.signedAt ? fmtDay(input.signedAt.slice(0, 10)) : ''
+  const signDate = opts.withSignature && input.signedAt ? fmtDay(input.signedAt.slice(0, 10)) : ''
   doc.text(`FAIT LE : ${signDate}`, M, y)
   doc.text('SIGNATURE DU VOYAGEUR :', W / 2 + 4, y)
 
-  // Cadre signature (image du check-in si dispo, sinon vide à signer à l'arrivée)
+  // Cadre signature : image du check-in pour le voyageur principal, vide
+  // pour les accompagnants (signature manuscrite à l'arrivée).
   const boxX = W / 2 + 4
   const boxY = y + 3
   const boxW = 60
@@ -150,7 +215,7 @@ export function buildPoliceFichePdf(input: PoliceFicheInput): jsPDF {
   doc.setDrawColor(...LINE)
   doc.setLineWidth(0.4)
   doc.rect(boxX, boxY, boxW, boxH)
-  if (input.signatureDataUrl) {
+  if (opts.withSignature && input.signatureDataUrl) {
     try {
       doc.addImage(input.signatureDataUrl, 'PNG', boxX + 2, boxY + 2, boxW - 4, boxH - 4)
       doc.setFontSize(7)
@@ -168,6 +233,4 @@ export function buildPoliceFichePdf(input: PoliceFicheInput): jsPDF {
     W - 2 * M,
   )
   doc.text(footer, M, 275)
-
-  return doc
 }
