@@ -7,45 +7,125 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/fonts/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/(.*)\\.webp",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/(.*)\\.woff2",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
   ],
   "redirects": [
-    { "source": "/services/chez-nous", "destination": "/services/entre-hotes", "permanent": true },
-    { "source": "/services/chez-nous/:path*", "destination": "/services/entre-hotes/:path*", "permanent": true },
-    { "source": "/formations/:path*", "destination": "/services/formations/:path*", "permanent": true },
-    { "source": "/services/groupes-facebook", "destination": "/services/communaute", "permanent": true },
-    { "source": "/ressources/gabarits-messages", "destination": "/services/gabarits-messages", "permanent": true },
-    { "source": "/ressources/partenaires", "destination": "/services/ecosysteme", "permanent": true },
-    { "source": "/ressources", "destination": "/services", "permanent": true },
-    { "source": "/services/partenaires", "destination": "/services/ecosysteme", "permanent": true },
-    { "source": "/annuaires/photographes/annuaire", "destination": "/annuaires/photographes", "permanent": true },
-    { "source": "/annuaires/menage/annuaire", "destination": "/annuaires/menage", "permanent": true },
-    { "source": "/photographes/:slug", "destination": "/annuaires/photographes/:slug", "permanent": true },
-    { "source": "/menage/:slug", "destination": "/annuaires/menage/:slug", "permanent": true }
+    {
+      "source": "/services/chez-nous",
+      "destination": "/services/entre-hotes",
+      "permanent": true
+    },
+    {
+      "source": "/services/chez-nous/:path*",
+      "destination": "/services/entre-hotes/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/formations/:path*",
+      "destination": "/services/formations/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/services/groupes-facebook",
+      "destination": "/services/communaute",
+      "permanent": true
+    },
+    {
+      "source": "/ressources/gabarits-messages",
+      "destination": "/services/gabarits-messages",
+      "permanent": true
+    },
+    {
+      "source": "/ressources/partenaires",
+      "destination": "/services/ecosysteme",
+      "permanent": true
+    },
+    {
+      "source": "/ressources",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/services/partenaires",
+      "destination": "/services/ecosysteme",
+      "permanent": true
+    },
+    {
+      "source": "/annuaires/photographes/annuaire",
+      "destination": "/annuaires/photographes",
+      "permanent": true
+    },
+    {
+      "source": "/annuaires/menage/annuaire",
+      "destination": "/annuaires/menage",
+      "permanent": true
+    },
+    {
+      "source": "/photographes/:slug",
+      "destination": "/annuaires/photographes/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/menage/:slug",
+      "destination": "/annuaires/menage/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/mon-compte",
+      "destination": "https://app.jasonmarinho.com/auth/login",
+      "permanent": false
+    }
   ]
 }

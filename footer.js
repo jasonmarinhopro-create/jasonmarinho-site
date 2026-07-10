@@ -248,7 +248,7 @@
             + '<a href="/annuaires/menage">Annuaire équipes de ménage</a>'
             + '<a href="/devenir-photographe-lcd">Devenir photographe LCD</a>'
             + '<a href="/devenir-prestataire-menage-lcd">Devenir prestataire ménage</a>'
-            + '<a href="/mon-compte" class="ft-cat-more">Mon espace pro →</a>'
+            + '<a href="https://app.jasonmarinho.com/dashboard" class="ft-cat-more">Mon espace pro →</a>'
           + '</div>'
           + '<div class="ft-cat">'
             + '<h4 class="ft-cat-t">Ressources</h4>'

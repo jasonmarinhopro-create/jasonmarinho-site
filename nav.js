@@ -438,7 +438,7 @@
     + '<a href="/tarifs"><i class="ph ph-tag"></i>Tarifs</a>'
 
     + '<div class="mob-ctas">'
-      + '<a href="/mon-compte" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
+      + '<a href="https://app.jasonmarinho.com/dashboard" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
       + '<a href="https://app.jasonmarinho.com/auth/register" class="mc-c">Commencer <i class="ph-bold ph-arrow-right"></i></a>'
     + '</div>'
 
